@@ -128,6 +128,42 @@ export default [
 
 Cross-context isolation (denying `presentation` of context A from importing `domain` of context B) is enforced via `boundaries/no-private` plus a per-context entry-point pattern: only `src/contexts/<bc>/<layer>/index.ts` is public; all other files inside that layer are treated as private by `eslint-plugin-boundaries`. Phase 1 verifies the exact rule set works against the pinned plugin version.
 
+### Specs target layout
+
+```
+specs/apps/organiclever/
+├── README.md                       # updated: tree + Spec Artifacts list
+├── c4/                             # unchanged
+├── be/                             # unchanged (BE not in scope)
+├── contracts/                      # unchanged
+├── fe/
+│   ├── README.md                   # updated: link ubiquitous-language/
+│   └── gherkin/
+│       ├── README.md               # updated: per-context layout
+│       ├── app-shell/
+│       ├── health/
+│       ├── journal/
+│       ├── landing/
+│       ├── routine/
+│       ├── routing/
+│       ├── settings/
+│       ├── stats/
+│       └── workout-session/
+└── ubiquitous-language/            # NEW (sibling of be/, fe/, c4/, contracts/)
+    ├── README.md                   # index + authoring rules
+    ├── app-shell.md
+    ├── health.md
+    ├── journal.md
+    ├── landing.md
+    ├── routine.md
+    ├── routing.md
+    ├── settings.md
+    ├── stats.md
+    └── workout-session.md
+```
+
+The `ubiquitous-language/` folder is a **shared platform-agnostic glossary** at the same level as `be/` and `fe/`. FE consumes it now; BE will consume it when a future plan adopts DDD on `organiclever-be`.
+
 ### Ubiquitous-language file shape
 
 `specs/apps/organiclever/ubiquitous-language/<context>.md`:

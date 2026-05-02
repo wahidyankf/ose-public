@@ -22,9 +22,9 @@ Restructure `apps/organiclever-web` and `specs/apps/organiclever` around explici
 
 ### FR-1 — Per-bounded-context glossary
 
-A new folder `specs/apps/organiclever/ubiquitous-language/` MUST exist with:
+A new top-level folder `specs/apps/organiclever/ubiquitous-language/` MUST exist as a sibling to `be/`, `fe/`, `c4/`, and `contracts/`. It is the shared platform-agnostic glossary for the OrganicLever product — consumed by `fe/` today and available to `be/` when a future plan adopts DDD on the backend. The folder MUST contain:
 
-- `README.md` — index and authoring rules.
+- `README.md` — index and authoring rules. MUST state: (a) one file per bounded context; (b) glossary updates ride with code/feature changes in the same commit; (c) Gherkin step text MUST use only terms defined in the relevant context's glossary; (d) code identifiers MUST match glossary `Code identifier(s)` column verbatim.
 - One file per bounded context: `<context>.md` (e.g. `journal.md`, `routine.md`, `workout-session.md`, `stats.md`, `settings.md`, `app-shell.md`, `health.md`, `landing.md`, `routing.md`).
 
 Each context glossary file MUST contain:
@@ -32,6 +32,13 @@ Each context glossary file MUST contain:
 - One-line context summary.
 - Term table with columns `Term | Definition | Code identifier(s) | Used in features`.
 - Section listing forbidden synonyms (terms outside this context that mean something different).
+
+`specs/apps/organiclever/README.md` MUST be updated so that:
+
+- The "Structure" tree shows `ubiquitous-language/` at the top level.
+- The "Spec Artifacts" list includes a "Ubiquitous Language" entry linking the new folder.
+
+`specs/apps/organiclever/fe/README.md` MUST link the glossary folder.
 
 ### FR-2 — Spec reorganization
 

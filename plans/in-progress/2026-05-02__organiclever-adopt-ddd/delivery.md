@@ -59,15 +59,22 @@
 
 ---
 
-## Phase 2 — Ubiquitous-language scaffolding
+## Phase 2 — Ubiquitous-language scaffolding in specs
 
-**Goal**: Land glossary folder. No code reorg yet.
+**Goal**: Land the top-level glossary folder under `specs/apps/organiclever/` and wire it into the surrounding spec READMEs. No code reorg yet.
 
-- [ ] Create `specs/apps/organiclever/ubiquitous-language/`.
-- [ ] **Red**: Author `README.md` index with authoring rules (one file per BC, new term => glossary update in same PR).
-- [ ] **Red**: Create one glossary file per bounded context using the template from `tech-docs.md` § "Ubiquitous-language file shape". Populate the term tables by scanning current Gherkin features and `src/lib/*` identifiers.
-- [ ] Cross-link from `specs/apps/organiclever/README.md` and `specs/apps/organiclever/fe/README.md` to the new folder.
-- [ ] **Green**: `npm run lint:md` passes.
+- [ ] Create `specs/apps/organiclever/ubiquitous-language/` as a sibling of `be/`, `fe/`, `c4/`, `contracts/`.
+- [ ] **Red**: Author `specs/apps/organiclever/ubiquitous-language/README.md` index with:
+  - [ ] Statement that the folder is the platform-agnostic glossary shared by FE today and BE in a future plan.
+  - [ ] Authoring rules: one file per bounded context; glossary updates ride with code/feature changes in the same commit; Gherkin steps use only glossary terms; code identifiers match the `Code identifier(s)` column verbatim.
+  - [ ] Index list linking every per-context glossary file.
+  - [ ] Cross-links to `c4/`, `fe/gherkin/`, and the bounded-context-map ADR.
+- [ ] **Red**: Create one glossary file per bounded context using the template from `tech-docs.md` § "Ubiquitous-language file shape". Populate term tables by scanning current Gherkin features and `src/lib/*` identifiers; populate "Forbidden synonyms" by scanning for the same word used differently in another context.
+- [ ] Update `specs/apps/organiclever/README.md`:
+  - [ ] Add `ubiquitous-language/` to the "Structure" tree at the top level.
+  - [ ] Add a "Ubiquitous Language" entry to the "Spec Artifacts" list linking the folder.
+- [ ] Update `specs/apps/organiclever/fe/README.md` to link the glossary folder under "Domains" or a new "Ubiquitous Language" section.
+- [ ] **Green**: `npm run lint:md` passes; `apps/rhino-cli/dist/rhino-cli docs validate-links --staged-only` passes; every bounded context from the Phase 0 ADR has a glossary file.
 - [ ] **Refactor**: Add glossary parity check stub — a small test (or `rhino-cli` invocation) that scans Gherkin features for terms not present in any glossary file, output as warning. Wire into `nx run organiclever-web:spec-coverage` only if non-disruptive; otherwise defer wiring to Phase 9.
 - [ ] Commit: `docs(specs/organiclever): add ubiquitous-language glossary`.
 
@@ -76,6 +83,8 @@
 - [ ] `npm run lint:md` passes.
 - [ ] All file names follow [File Naming Convention](../../../governance/conventions/structure/file-naming.md) (lowercase kebab-case).
 - [ ] Every bounded context in the Phase 0 ADR has a glossary file.
+- [ ] `specs/apps/organiclever/README.md` Structure tree and Spec Artifacts list mention `ubiquitous-language/`.
+- [ ] `specs/apps/organiclever/fe/README.md` links the glossary folder.
 
 ---
 

@@ -20,6 +20,7 @@
  * - These steps are also used as Given preconditions — when used as Given, they must set up state.
  */
 import { createBdd } from "playwright-bdd";
+import { appPath } from "./_app-shell";
 import { expect, type Page } from "@playwright/test";
 
 const { When, Then } = createBdd();
@@ -36,8 +37,8 @@ async function ensureAddEntrySheetOpen(page: Page) {
       .isVisible({ timeout: 500 })
       .catch(() => false))
   ) {
-    await page.goto("http://localhost:3200/app");
-    await page.waitForLoadState("networkidle");
+    await page.goto(appPath("home"));
+    await page.waitForLoadState("domcontentloaded");
   }
   const fab = page.getByRole("button", { name: "Log entry" });
   if (await fab.isVisible()) {
@@ -245,7 +246,7 @@ Then("the custom entry logger is open", async ({ page }) => {
         .isVisible({ timeout: 500 })
         .catch(() => false))
     ) {
-      await page.goto("http://localhost:3200/app");
+      await page.goto(appPath("home"));
       await page.waitForLoadState("domcontentloaded");
     }
     await ensureAddEntrySheetOpen(page);

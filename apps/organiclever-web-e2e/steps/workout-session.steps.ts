@@ -16,6 +16,7 @@
  * - "Then the confirmation sheet is shown" is also used as Given — it must set up state.
  */
 import { createBdd } from "playwright-bdd";
+import { appPath } from "./_app-shell";
 import { expect, type Page } from "@playwright/test";
 
 const { Given, When, Then } = createBdd();
@@ -25,8 +26,8 @@ const { Given, When, Then } = createBdd();
  * WorkoutScreen auto-sends START on mount so it enters exercising state.
  */
 async function openWorkoutScreen(page: Page) {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
   // Open the Add Entry sheet via the FAB (aria-label="Log entry")
   const fab = page.getByRole("button", { name: "Log entry" });
   if (await fab.isVisible()) {

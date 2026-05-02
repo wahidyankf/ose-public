@@ -13,15 +13,16 @@
  * - ExerciseProgressCard renders as a collapsible card — click to expand SVG chart.
  */
 import { createBdd } from "playwright-bdd";
+import { appPath } from "./_app-shell";
 import { expect } from "@playwright/test";
 
 const { Given, When, Then } = createBdd();
 
 Given("the progress screen is loaded", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
   // Click the Progress TabBar button to navigate to the progress screen
-  const progressBtn = page.getByRole("button", { name: "Progress" });
+  const progressBtn = page.getByRole("link", { name: "Progress" }).first();
   if (await progressBtn.isVisible()) {
     await progressBtn.click();
   }
@@ -50,9 +51,9 @@ Then("the reading module content is shown", async ({ page }) => {
 });
 
 Given("there is exercise progress data", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
-  const progressBtn = page.getByRole("button", { name: "Progress" });
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
+  const progressBtn = page.getByRole("link", { name: "Progress" }).first();
   if (await progressBtn.isVisible()) {
     await progressBtn.click();
   }

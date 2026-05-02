@@ -12,15 +12,16 @@
  * - Expanded detail renders below the card header row (no data-testid).
  */
 import { createBdd } from "playwright-bdd";
+import { appPath } from "./_app-shell";
 import { expect } from "@playwright/test";
 
 const { Given, When, Then } = createBdd();
 
 Given("the history screen has entries", async ({ page }) => {
   // Navigate to the app, then click the History tab
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
-  const historyBtn = page.getByRole("button", { name: "History" });
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
+  const historyBtn = page.getByRole("link", { name: "History" }).first();
   if (await historyBtn.isVisible()) {
     await historyBtn.click();
   }
@@ -32,9 +33,9 @@ Then("entries are shown newest first", async ({ page }) => {
 });
 
 Given("the history screen has no entries", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
-  const historyBtn = page.getByRole("button", { name: "History" });
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
+  const historyBtn = page.getByRole("link", { name: "History" }).first();
   if (await historyBtn.isVisible()) {
     await historyBtn.click();
   }
@@ -46,9 +47,9 @@ Then("the empty state message is shown", async ({ page }) => {
 });
 
 Given("the history screen shows a workout entry", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
-  const historyBtn = page.getByRole("button", { name: "History" });
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
+  const historyBtn = page.getByRole("link", { name: "History" }).first();
   if (await historyBtn.isVisible()) {
     await historyBtn.click();
   }

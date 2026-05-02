@@ -14,6 +14,7 @@
  *   since setting up the full routine editing state requires complex prerequisites.
  */
 import { createBdd } from "playwright-bdd";
+import { appPath } from "./_app-shell";
 import { expect } from "@playwright/test";
 
 const { Given, When, Then } = createBdd();
@@ -21,8 +22,8 @@ const { Given, When, Then } = createBdd();
 Given("the edit routine screen is open for a new routine", async ({ page }) => {
   // Navigate to the app shell as a baseline — full EditRoutineScreen setup
   // requires navigating via the WorkoutModuleView UI flow.
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
 });
 
 When("the user enters a routine name", async ({ page }) => {
@@ -54,8 +55,8 @@ Then("the routine is saved", async ({ page }) => {
 });
 
 Given("the edit routine screen is open", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
 });
 
 When("the user adds an exercise", async ({ page }) => {
@@ -77,8 +78,8 @@ Then("the exercise appears in the group", async ({ page }) => {
 });
 
 Given("the edit routine screen is open for an existing routine", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
 });
 
 When("the user confirms deleting the routine", async ({ page }) => {

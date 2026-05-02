@@ -18,6 +18,7 @@
  * - Settings screen is accessed via the "Settings" TabBar button.
  */
 import { createBdd } from "playwright-bdd";
+import { appPath } from "./_app-shell";
 import { expect } from "@playwright/test";
 
 const { Given, When, Then } = createBdd();
@@ -27,10 +28,10 @@ const { Given, When, Then } = createBdd();
 // ---------------------------------------------------------------------------
 
 Given("the settings screen is loaded", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
   // Navigate to Settings via TabBar
-  const settingsBtn = page.getByRole("button", { name: "Settings" });
+  const settingsBtn = page.getByRole("link", { name: "Settings" }).first();
   if (await settingsBtn.isVisible()) {
     await settingsBtn.click();
   }
@@ -87,9 +88,9 @@ Then("the saved toast appears", async ({ page }) => {
 // ---------------------------------------------------------------------------
 
 Given("the settings screen shows dark mode is off", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
-  const settingsBtn = page.getByRole("button", { name: "Settings" });
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
+  const settingsBtn = page.getByRole("link", { name: "Settings" }).first();
   if (await settingsBtn.isVisible()) {
     await settingsBtn.click();
   }
@@ -107,9 +108,9 @@ Then("dark mode is enabled", async ({ page }) => {
   // Dark mode sets data-theme="dark" on <html>. Settings screen is still visible.
   // This step is also used as a Given — ensure the settings screen is loaded.
   if (!(await page.locator("[data-testid='settings-screen']").isVisible())) {
-    await page.goto("http://localhost:3200/app");
-    await page.waitForLoadState("networkidle");
-    const settingsBtn = page.getByRole("button", { name: "Settings" });
+    await page.goto(appPath("home"));
+    await page.waitForLoadState("domcontentloaded");
+    const settingsBtn = page.getByRole("link", { name: "Settings" }).first();
     if (await settingsBtn.isVisible()) {
       await settingsBtn.click();
     }
@@ -126,9 +127,9 @@ Then("dark mode is disabled", async ({ page }) => {
 // ---------------------------------------------------------------------------
 
 Given("the settings screen shows language is English", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
-  const settingsBtn = page.getByRole("button", { name: "Settings" });
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
+  const settingsBtn = page.getByRole("link", { name: "Settings" }).first();
   if (await settingsBtn.isVisible()) {
     await settingsBtn.click();
   }
@@ -144,7 +145,7 @@ When("the user selects Indonesian language", async ({ page }) => {
     await btn.click();
   }
   // Language change reloads the page — wait for it
-  await page.waitForLoadState("networkidle").catch(() => {});
+  await page.waitForLoadState("domcontentloaded").catch(() => {});
 });
 
 Then("the language is set to Indonesian", async ({ page }) => {
@@ -156,9 +157,9 @@ Then("the language is set to Indonesian", async ({ page }) => {
 });
 
 Given("the settings screen shows language is Indonesian", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
-  const settingsBtn = page.getByRole("button", { name: "Settings" });
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
+  const settingsBtn = page.getByRole("link", { name: "Settings" }).first();
   if (await settingsBtn.isVisible()) {
     await settingsBtn.click();
   }
@@ -173,7 +174,7 @@ When("the user selects English language", async ({ page }) => {
   if (await btn.isVisible()) {
     await btn.click();
   }
-  await page.waitForLoadState("networkidle").catch(() => {});
+  await page.waitForLoadState("domcontentloaded").catch(() => {});
 });
 
 Then("the language is set to English", async ({ page }) => {

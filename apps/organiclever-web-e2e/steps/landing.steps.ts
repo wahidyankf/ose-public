@@ -13,7 +13,7 @@ const { Given, When, Then } = createBdd();
 
 Given("I navigate to {string}", async ({ page }, _path: string) => {
   await page.goto("/");
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("domcontentloaded");
 });
 
 Given("I see text {string}", async ({ page }, text: string) => {
@@ -26,7 +26,7 @@ Given("I see a button {string}", async ({ page }, name: string) => {
 
 When("I click {string}", async ({ page }, text: string) => {
   await page.getByText(text).first().click();
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("domcontentloaded");
 });
 
 Then("the URL navigates to {string}", async ({ page }, path: string) => {

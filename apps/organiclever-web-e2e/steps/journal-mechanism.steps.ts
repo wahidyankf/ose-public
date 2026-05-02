@@ -35,6 +35,7 @@
  * while keeping the feature file unchanged.
  */
 import { createBdd } from "playwright-bdd";
+import { appPath } from "./_app-shell";
 import { expect, type Page } from "@playwright/test";
 
 const { Given, When, Then } = createBdd();
@@ -146,8 +147,8 @@ async function ensureOnAppPage(page: Page): Promise<void> {
     .isVisible({ timeout: 500 })
     .catch(() => false);
   if (!isReady) {
-    await page.goto("http://localhost:3200/app");
-    await page.waitForLoadState("networkidle");
+    await page.goto(appPath("home"));
+    await page.waitForLoadState("domcontentloaded");
     await expect(page.getByText("Good morning").first()).toBeVisible({ timeout: 15000 });
   }
 }

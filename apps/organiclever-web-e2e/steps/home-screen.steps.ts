@@ -11,13 +11,14 @@
  * - WorkoutModuleView is shown when the Workout filter is active (or no filter).
  */
 import { createBdd } from "playwright-bdd";
+import { appPath } from "./_app-shell";
 import { expect } from "@playwright/test";
 
 const { Given, When, Then } = createBdd();
 
 Given("the home screen is loaded with entries", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
 });
 
 Then("the entry list is visible", async ({ page }) => {
@@ -28,8 +29,8 @@ Then("the entry list is visible", async ({ page }) => {
 });
 
 Given("the home screen is loaded with workout and reading entries", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
 });
 
 When("the user selects the Workout filter", async ({ page }) => {
@@ -47,8 +48,8 @@ Then("only workout entries are shown", async ({ page }) => {
 });
 
 Given("the home screen shows an entry", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
 });
 
 When("the user taps the entry", async ({ page }) => {

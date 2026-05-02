@@ -11,17 +11,18 @@
  */
 import { createBdd } from "playwright-bdd";
 import { expect } from "@playwright/test";
+import { appPath } from "./_app-shell";
 
 const { Given, When, Then } = createBdd();
 
 Given("the app is freshly loaded", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
+  await page.goto(appPath("home"));
   await page.waitForLoadState("domcontentloaded");
 });
 
 Given("the app shell is visible", async ({ page }) => {
-  await page.goto("http://localhost:3200/app");
-  await page.waitForLoadState("networkidle");
+  await page.goto(appPath("home"));
+  await page.waitForLoadState("domcontentloaded");
 });
 
 Then("the Home tab is active", async ({ page }) => {
@@ -32,9 +33,10 @@ Then("the Home tab is active", async ({ page }) => {
 });
 
 When("the user taps the History tab", async ({ page }) => {
-  const btn = page.getByRole("button", { name: "History" });
-  if (await btn.isVisible()) {
-    await btn.click();
+  // Tab is a <a href="/app/history"> with aria-current — match by role=link.
+  const link = page.getByRole("link", { name: "History" }).first();
+  if (await link.isVisible()) {
+    await link.click();
   }
 });
 
@@ -44,9 +46,9 @@ Then("the History tab is active", async ({ page }) => {
 });
 
 When("the user taps the Progress tab", async ({ page }) => {
-  const btn = page.getByRole("button", { name: "Progress" });
-  if (await btn.isVisible()) {
-    await btn.click();
+  const link = page.getByRole("link", { name: "Progress" }).first();
+  if (await link.isVisible()) {
+    await link.click();
   }
 });
 
@@ -58,9 +60,9 @@ Then("the Progress tab is active", async ({ page }) => {
 });
 
 When("the user taps the Settings tab", async ({ page }) => {
-  const btn = page.getByRole("button", { name: "Settings" });
-  if (await btn.isVisible()) {
-    await btn.click();
+  const link = page.getByRole("link", { name: "Settings" }).first();
+  if (await link.isVisible()) {
+    await link.click();
   }
 });
 
@@ -83,8 +85,8 @@ Then("the Add Entry sheet is open", async ({ page }) => {
   // If the sheet is not already open, navigate to the app and open it.
   const sheetText = page.getByText("Log an entry");
   if (!(await sheetText.isVisible())) {
-    await page.goto("http://localhost:3200/app");
-    await page.waitForLoadState("networkidle");
+    await page.goto(appPath("home"));
+    await page.waitForLoadState("domcontentloaded");
     const fab = page.getByRole("button", { name: "Log entry" });
     if (await fab.isVisible()) {
       await fab.click();

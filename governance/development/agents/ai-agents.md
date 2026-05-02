@@ -715,7 +715,7 @@ color: blue
 **Field Definition:**
 
 - **`color`** (required)
-  - Values: `blue`, `green`, `yellow`, `purple`
+  - Values: `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, `cyan`
   - Indicates the agent's primary role category
   - Used for visual identification in agent listings
   - Helps users choose the right agent type
@@ -731,6 +731,29 @@ Agents are categorized by their **primary role** which aligns with naming suffix
 | 🟨 **Yellow** | **Fixers**       | Modify and propagate existing content | Has `Edit` (usually not `Write`)        | docs-file-manager<br>readme-fixer<br>repo-rules-fixer                                                              |
 | 🟪 **Purple** | **Implementors** | Execute plans with full tool access   | Has `Write`, `Edit`, `Bash` (or Bash)\* | deployers\*<br>swe-\*-dev agents                                                                                   |
 
+### Dual-Mode Color Translation (Claude Code to OpenCode)
+
+The Claude-named color (`blue`, `green`, etc.) is the **source of truth**. Authors write it by hand in `.claude/agents/*.md` and never touch `.opencode/agents/*.md` directly — those are regenerated artefacts.
+
+When `rhino-cli agents sync` writes `.opencode/agents/*.md`, it translates the Claude name to an OpenCode-compatible value because OpenCode 1.14.31+ enforces a schema that accepts only hex codes (`^#[0-9a-fA-F]{6}$`) or seven theme tokens (`primary`, `secondary`, `accent`, `success`, `warning`, `error`, `info`). Named colors such as `blue` are rejected.
+
+**Translation table** (mirrors `ClaudeToOpenCodeColor` in `apps/rhino-cli/internal/agents/types.go`):
+
+| Claude color | OpenCode value | Role hint                         |
+| ------------ | -------------- | --------------------------------- |
+| `blue`       | `primary`      | Maker                             |
+| `green`      | `success`      | Checker                           |
+| `yellow`     | `warning`      | Fixer                             |
+| `purple`     | `secondary`    | Implementor                       |
+| `red`        | `error`        | Reserved future role              |
+| `orange`     | `warning`      | Reserved — closest hue to warning |
+| `pink`       | `accent`       | Reserved future role              |
+| `cyan`       | `info`         | Reserved future role              |
+
+**Single source of truth**: `apps/rhino-cli/internal/agents/types.go` — `ClaudeToOpenCodeColor` map. Any change to the mapping MUST update both the map and this table in the same commit.
+
+**Escape hatch**: If you write a hex code (e.g., `#3B82F6`) or a valid OpenCode theme token (e.g., `primary`) directly in `.claude/agents/*.md`, the converter passes it through unchanged.
+
 **Edge Case Notes:**
 
 - **\*Yellow with Write**: Some Yellow fixer agents (e.g., readme-fixer, repo-rules-fixer) may have Write tool for audit report generation. Documented exception.
@@ -738,7 +761,7 @@ Agents are categorized by their **primary role** which aligns with naming suffix
 - **\*\*Green with Write + Edit**: Link checker agents (docs-link-checker, apps-ayokoding-web-link-checker) also have Edit and Write tools for cache file management, but their primary role is validation (checker). Color is green to reflect primary role. See "Link Checker Agents Note" below.
 - **\*\*\*Green research agent (`web-research-maker`)**: The `web-research-maker` agent has `color: green` despite its `-maker` suffix. Green is used because the agent's primary purpose is validation-adjacent research — verifying external claims and gathering current information — rather than content creation. The green color reflects the validation/research context. See "Research Agent Note" below.
 
-**Color Accessibility Note**: All four colors (blue, green, yellow, purple) are from the verified accessible palette defined in [Color Accessibility Convention](../../conventions/formatting/color-accessibility.md) - the master reference for all color usage in this repository. These colors meet WCAG AA standards for both light and dark modes and work for all types of color blindness (protanopia, deuteranopia, and tritanopia). See the accessibility section below for details on how agents are identified beyond color. All color-related work must reference the Color Accessibility Convention as the authoritative source.
+**Color Accessibility Note**: The four active role colors (blue, green, yellow, purple) are from the verified accessible palette defined in [Color Accessibility Convention](../../conventions/formatting/color-accessibility.md) — the master reference for all color usage in this repository. These colors meet WCAG AA standards for both light and dark modes and work for all types of color blindness (protanopia, deuteranopia, and tritanopia). The additional Claude colors (red, orange, pink, cyan) are reserved for future role categories; when adopted they MUST also be drawn from the accessible palette and verified against the Color Accessibility Convention. See the accessibility section below for details on how agents are identified beyond color. All color-related work must reference the Color Accessibility Convention as the authoritative source.
 
 ### Why This Categorization System
 

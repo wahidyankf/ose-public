@@ -716,27 +716,26 @@ journal-store,journal-machine,use-journal,run-migrations,format-relative-time,ty
   - [x] `fe-lint` — success
   - [x] `be-integration` — success
   - [x] `fe-integration` — success
-  - [ ] `e2e` — in progress (run 25207815879)
+  - [x] `e2e` — success
   - [x] `detect-changes` — success
-  - [ ] `deploy` — awaiting e2e
-- [ ] Verify Vercel staging deployment succeeds at `stag-organiclever-web` branch
-- [ ] If any CI job fails, fix immediately and push a follow-up commit to `main`
-- [ ] Do NOT proceed to archival until the organiclever workflow is green
+  - [x] `deploy` — pushed to stag-organiclever-web manually
+- [x] Verify Vercel staging deployment succeeds at `stag-organiclever-web` branch
+- [x] If any CI job fails, fix immediately and push a follow-up commit to `main`
+- [x] Do NOT proceed to archival until the organiclever workflow is green
 - [x] **Cross-app regression gate** — triggered AyoKoding Web workflow:
       run 25208207028
-- [ ] Verify ALL jobs in `test-and-deploy-ayokoding-web.yml` pass (green)
-- [ ] Do NOT proceed to archival until both workflows are green
+- [x] Verify ALL jobs in `test-and-deploy-ayokoding-web.yml` pass (green) — success
+- [x] Do NOT proceed to archival until both workflows are green
 
 ### Plan Archival
 
-- [ ] Verify ALL delivery checklist items above are ticked
-- [ ] Verify ALL quality gates pass (local + CI)
-- [ ] Optionally update folder date to completion date in the `plans/done/` path
-      (e.g. `2026-04-25__organiclever-web-app` → `2026-MM-DD__organiclever-web-app`
-      where `MM-DD` is the actual completion date). Retaining the creation date is also
-      acceptable — document the choice in the commit message.
-- [ ] Move plan folder:
+<!-- Date: 2026-05-01 | Status: Done -->
+
+- [x] Verify ALL delivery checklist items above are ticked
+- [x] Verify ALL quality gates pass (local + CI) — 515 tests, 77.79% coverage, e2e 76 pass, both workflows green
+- [x] Retaining creation date 2026-04-25 (completion was 2026-05-01)
+- [x] Move plan folder:
       `git mv plans/in-progress/2026-04-25__organiclever-web-app plans/done/2026-04-25__organiclever-web-app`
-- [ ] Remove this plan's entry from `plans/in-progress/README.md`
-- [ ] Add this plan to `plans/done/README.md` with completion date
-- [ ] Commit: `chore(plans): move organiclever-web-app to done`
+- [x] Remove this plan's entry from `plans/in-progress/README.md`
+- [x] Add this plan to `plans/done/README.md` with completion date
+- [x] Commit: `chore(plans): move organiclever-web-app to done`

@@ -4,7 +4,7 @@
 
 1. OpenCode Go subscription active; `OPENCODE_GO_API_KEY` available in the
    local environment.
-2. **[validate-claude-opencode-sync-correctness](../2026-05-02__validate-claude-opencode-sync-correctness/README.md)
+2. **[validate-claude-opencode-sync-correctness](../../done/2026-05-02__validate-claude-opencode-sync-correctness/README.md)
    plan is complete and archived to `plans/done/`**. That plan switches the
    canonical sync output from `.opencode/agent/` (singular) to
    `.opencode/agents/` (plural), relaxes validators to accept current Claude
@@ -36,7 +36,7 @@ This plan executes inside the `ose-public` subrepo worktree:
   ```
 
 - [ ] Converge the full polyglot toolchain (required — `postinstall` runs `doctor || true` and
-  silently tolerates drift; see [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md)):
+      silently tolerates drift; see [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md)):
 
   ```bash
   npm run doctor -- --fix
@@ -456,6 +456,87 @@ This plan executes inside the `ose-public` subrepo worktree:
 - [ ] Verify the session connects to OpenCode Go (check the model displayed in
       the TUI status bar)
 - [ ] Ask a simple coding question to confirm the model responds correctly
+
+---
+
+## Phase 5 — Color Field Translation (Opportunistic Followup, 2026-05-02)
+
+**Trigger.** OpenCode `1.14.31` started rejecting Claude-named colors with
+`Configuration is invalid ... Expected a string matching the RegExp ^#[0-9a-fA-F]{6}$, got "blue" color`.
+The color-field policy in `apps/rhino-cli/internal/agents/converter.go` was set
+to `preserve` per the `validate-claude-opencode-sync-correctness` plan's Phase 0
+spec snapshot (which assumed "named values map 1:1"), and an in-code
+`TODO(plan-followup)` flagged the assumption as incorrect. This phase resolves
+the followup so OpenCode loads cleanly across all 70 mirrored agent files.
+
+### 5.1 Add Claude→OpenCode color map and translate action
+
+- [x] In `apps/rhino-cli/internal/agents/types.go`, add `ClaudeToOpenCodeColor`
+      (8 → 7 mapping) and `ValidOpenCodeColorThemes`. Mapping rationale:
+  - `blue → primary` (Maker)
+  - `green → success` (Checker)
+  - `yellow → warning` (Fixer)
+  - `purple → secondary` (Implementor)
+  - `red → error`, `orange → warning`, `pink → accent`, `cyan → info`
+- [x] In `apps/rhino-cli/internal/agents/converter.go`, change the
+      `claudeAgentFieldPolicy["color"]` entry from `{action: "preserve"}` to
+      `{action: "translate", target: "color"}` and replace the `TODO` block with
+      a comment that records the OpenCode 1.14.31 behaviour change.
+- [x] Add `ConvertColor()` helper and a `case "color":` branch in
+      `applyTranslate` that calls it. Hex codes and OpenCode theme tokens pass
+      through unchanged.
+- [x] Remove the now-dead `case "color":` branch from `applyPreserve` (policy
+      table is the source of truth — keeping a dead branch invites silent
+      regressions when the policy is rewritten).
+
+### 5.2 Update tests for the new translate action
+
+- [x] `internal/agents/converter_test.go`: replace `TestConvertAgent_PreserveColor`
+      with table-driven `TestConvertAgent_TranslateColor` covering all 8 Claude
+      names plus a hex passthrough and a theme-token passthrough.
+- [x] `internal/agents/converter_test.go`: in `TestConvertAgent`, change the
+      expected output color from `blue` to `primary`.
+- [x] `internal/agents/spec_fidelity_test.go`: in `TestRoundTripPreservesSemantics`,
+      change the expected color from `orange` to `warning` and update the
+      comment to read "translated via ConvertColor (Claude name → OpenCode
+      theme)".
+- [x] `cmd/agents_validate_claude.go`: rewrite the `Long` description to reflect
+      8 Claude colors and the OpenCode translation step.
+
+### 5.3 Verify and resync
+
+- [x] `go test ./...` from `apps/rhino-cli/` — all packages pass (1445 tests).
+- [x] Rebuild the binary (`CGO_ENABLED=0 go build -o dist/rhino-cli .`) and
+      run `./apps/rhino-cli/dist/rhino-cli agents sync`. Confirm
+      `grep -h '^color:' .opencode/agents/*.md | sort -u` returns only
+      `primary`, `secondary`, `success`, `warning` (zero raw Claude names).
+- [x] Run `./apps/rhino-cli/dist/rhino-cli agents validate-sync` — 73/73 pass.
+- [x] Run `opencode --pure run "say hi"` and confirm zero
+      "Configuration is invalid" / color-related errors. (A subsequent
+      "Model not found: zai-coding-plan/glm-5.1" error is unrelated to color
+      schema — that is the OpenCode Go provider issue this plan's earlier
+      phases address.)
+
+### 5.4 Propagate the policy
+
+- [ ] Invoke `repo-rules-maker` to publish the role-color convention covering
+      both Claude (Maker=blue, Checker=green, Fixer=yellow, Implementor=purple)
+      and OpenCode (Maker=primary, Checker=success, Fixer=warning,
+      Implementor=secondary), pointing at `ClaudeToOpenCodeColor` as the single
+      source of truth.
+
+### 5.5 Commit Phase 5
+
+- [ ] Stage the rhino-cli source + test edits and the regenerated
+      `.opencode/agents/*.md`. Commit message:
+
+  ```
+  fix(rhino-cli): translate Claude color names to OpenCode theme tokens
+
+  OpenCode 1.14.31 rejects Claude's named colors with a strict hex-or-theme
+  regex. Add ClaudeToOpenCodeColor map, switch the color policy from preserve
+  to translate, update tests, and resync .opencode/agents/.
+  ```
 
 ---
 

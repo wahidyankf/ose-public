@@ -270,35 +270,35 @@ tier. The model IDs above are current as of April 2026.
 
 ## Platform Binding Equivalents
 
-Agents in `.claude/agents/` are auto-synced to `.opencode/agents/` by rhino-cli
-(`npm run sync:claude-to-opencode`). The sync translates Claude Code model aliases to
-OpenCode Go model IDs.
+Agents in the primary binding directory are auto-synced to the secondary binding directory by rhino-cli
+(`npm run sync:claude-to-opencode`). The sync translates primary binding model aliases to
+secondary binding model IDs.
 
 ### Model ID Mapping
 
-| Claude Code (primary)         | OpenCode Go (secondary)    | Capability notes                                                                                 |
-| ----------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------ |
-| omit (planning-grade inherit) | `opencode-go/minimax-m2.7` | MiniMax MoE; SWE-Pro 56.22% (M2.5 predecessor: 80.2% SWE-Bench Verified); highest in OpenCode Go |
-| `model: sonnet`               | `opencode-go/minimax-m2.7` | Same model as planning-grade (no separate execution-grade tier in OpenCode Go)                   |
-| `model: haiku`                | `opencode-go/glm-5`        | Zhipu GLM lighter variant; fast/cheap for mechanical work; no published SWE-Bench score          |
+| Primary binding               | Secondary binding          | Capability notes                                                                            |
+| ----------------------------- | -------------------------- | ------------------------------------------------------------------------------------------- |
+| omit (planning-grade inherit) | `opencode-go/minimax-m2.7` | MiniMax MoE; SWE-Pro 56.22% (M2.5 predecessor: 80.2% SWE-Bench Verified); highest available |
+| `model: sonnet`               | `opencode-go/minimax-m2.7` | Same model as planning-grade (no separate execution-grade tier in secondary binding)        |
+| `model: haiku`                | `opencode-go/glm-5`        | Zhipu GLM lighter variant; fast/cheap for mechanical work; no published SWE-Bench score     |
 
 ### 3-to-2 Tier Collapse
 
-Claude Code has three tiers (planning-grade > execution-grade > fast). OpenCode Go offers a curated
-set of models across multiple labs; the converter maintains the same 3-to-2 collapse: a single large
-model (`minimax-m2.7`) covers planning-grade and execution-grade tiers; a fast model (`glm-5`) covers
-the haiku tier.
+The primary binding has three tiers (planning-grade > execution-grade > fast). The secondary binding
+offers a curated set of models across multiple labs; the converter maintains the same 3-to-2 collapse:
+a single large model (`minimax-m2.7`) covers planning-grade and execution-grade tiers; a fast model
+(`glm-5`) covers the haiku tier.
 
-This collapse is an acceptable platform-level constraint. Tier assignments govern behavior in Claude
-Code sessions (the primary runtime). OpenCode Go uses the highest-benchmark available model for all
-non-fast-tier work.
+This collapse is an acceptable platform-level constraint. Tier assignments govern behavior in primary
+binding sessions (the primary runtime). The secondary binding uses the highest-benchmark available
+model for all non-fast-tier work.
 
 ### Why MiniMax M2.7 as the Default
 
 MiniMax M2.7 is adopted based on lab trajectory and model recency. Its predecessor M2.5 led SWE-Bench
 Verified at 80.2%. M2.7's SWE-Pro score (56.22%) is on a harder suite and not directly comparable to
-GLM-5.1 (58.4% SWE-Bench Pro). Accessible via the flat-rate OpenCode Go subscription; no per-token
-billing. If a stronger model joins the OpenCode Go roster, update only `ConvertModel()` in
+GLM-5.1 (58.4% SWE-Bench Pro). Available via the flat-rate secondary binding subscription; no per-token
+billing. If a stronger model joins the secondary binding's model roster, update only `ConvertModel()` in
 `apps/rhino-cli/internal/agents/converter.go` and re-run `npm run sync:claude-to-opencode`.
 
 ## Special Considerations

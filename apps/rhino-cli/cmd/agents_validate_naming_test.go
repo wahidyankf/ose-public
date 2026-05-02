@@ -206,7 +206,7 @@ func TestValidateAgentsNaming_MissingGitRoot(t *testing.T) {
 func TestAgentsValidateNaming_RealTree(t *testing.T) {
 	tmp := t.TempDir()
 	claudeDir := filepath.Join(tmp, ".claude", "agents")
-	opencodeDir := filepath.Join(tmp, ".opencode", "agent")
+	opencodeDir := filepath.Join(tmp, ".opencode", "agents")
 	if err := os.MkdirAll(claudeDir, 0755); err != nil {
 		t.Fatal(err)
 	}

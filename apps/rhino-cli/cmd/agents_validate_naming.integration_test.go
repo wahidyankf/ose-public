@@ -32,7 +32,7 @@ func (s *validateAgentsNamingIntegSteps) before(_ context.Context, _ *godog.Scen
 	s.tmpDir, _ = os.MkdirTemp("", "validate-naming-agents-*")
 	_ = os.MkdirAll(filepath.Join(s.tmpDir, ".git"), 0755)
 	_ = os.MkdirAll(filepath.Join(s.tmpDir, ".claude", "agents"), 0755)
-	_ = os.MkdirAll(filepath.Join(s.tmpDir, ".opencode", "agent"), 0755)
+	_ = os.MkdirAll(filepath.Join(s.tmpDir, ".opencode", "agents"), 0755)
 	verbose = false
 	quiet = false
 	output = "text"
@@ -54,7 +54,7 @@ func (s *validateAgentsNamingIntegSteps) writeClaudeAgent(name, frontmatterName 
 
 func (s *validateAgentsNamingIntegSteps) writeOpencodeAgent(name string) error {
 	content := "---\ndescription: test\nmodel: zai-coding-plan/glm-5.1\ntools:\n  read: true\n---\nbody\n"
-	path := filepath.Join(s.tmpDir, ".opencode", "agent", name+".md")
+	path := filepath.Join(s.tmpDir, ".opencode", "agents", name+".md")
 	return os.WriteFile(path, []byte(content), 0644)
 }
 

@@ -84,7 +84,7 @@ func runValidateAgentsNaming(cmd *cobra.Command, args []string) error {
 // every naming violation, sorted by path for stable output.
 func agentsValidateNaming(repoRoot string) ([]naming.Violation, error) {
 	claudeDir := filepath.Join(repoRoot, ".claude", "agents")
-	opencodeDir := filepath.Join(repoRoot, ".opencode", "agent")
+	opencodeDir := filepath.Join(repoRoot, ".opencode", "agents")
 
 	claudeFiles, err := listAgentFiles(claudeDir)
 	if err != nil {
@@ -132,9 +132,12 @@ func agentsValidateNaming(repoRoot string) ([]naming.Violation, error) {
 }
 
 // listAgentFiles returns absolute paths for `*.md` files directly under
-// `dir`, excluding `README.md`. A missing directory yields an empty list
-// (not an error) so the validator can run in trees where one harness has
-// not yet been initialised.
+// `dir`, excluding `README.md` and tooling subagents that intentionally
+// live in only one harness (e.g. Nx Cloud's `ci-monitor-subagent.md`
+// exists in `.opencode/agents/`, `.github/agents/`, and `.codex/agents/`
+// but not in `.claude/agents/`). A missing directory yields an empty
+// list (not an error) so the validator can run in trees where one
+// harness has not yet been initialised.
 func listAgentFiles(dir string) ([]string, error) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
@@ -149,7 +152,7 @@ func listAgentFiles(dir string) ([]string, error) {
 			continue
 		}
 		name := e.Name()
-		if name == "README.md" {
+		if name == "README.md" || name == "ci-monitor-subagent.md" {
 			continue
 		}
 		if !strings.HasSuffix(name, ".md") {

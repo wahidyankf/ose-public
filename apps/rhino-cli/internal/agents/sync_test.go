@@ -107,7 +107,7 @@ func TestSyncAll_DryRun(t *testing.T) {
 	}
 
 	// Output directory should NOT be created in dry run mode
-	opencodeDir := filepath.Join(tmpDir, ".opencode", "agent")
+	opencodeDir := filepath.Join(tmpDir, OpenCodeAgentDir)
 	if _, err := os.Stat(opencodeDir); err == nil {
 		t.Error("output directory should not exist in dry run mode")
 	}

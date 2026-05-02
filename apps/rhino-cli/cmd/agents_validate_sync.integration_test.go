@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/cucumber/godog"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/agents"
 )
 
 var specsValidateSyncDir = func() string {
@@ -50,12 +51,12 @@ func (s *validateSyncSteps) after(_ context.Context, _ *godog.Scenario, _ error)
 
 func (s *validateSyncSteps) createSyncedAgentPair() error {
 	agentsDir := filepath.Join(s.tmpDir, ".claude", "agents")
-	opencodeAgentDir := filepath.Join(s.tmpDir, ".opencode", "agent")
+	opencodeAgentDir := filepath.Join(s.tmpDir, agents.OpenCodeAgentDir)
 	if err := os.MkdirAll(agentsDir, 0755); err != nil {
 		return fmt.Errorf("failed to create .claude/agents dir: %w", err)
 	}
 	if err := os.MkdirAll(opencodeAgentDir, 0755); err != nil {
-		return fmt.Errorf("failed to create .opencode/agent dir: %w", err)
+		return fmt.Errorf("failed to create .opencode/agents dir: %w", err)
 	}
 
 	claudeContent := "---\nname: sync-agent\ndescription: A sync agent\ntools: Read\nmodel: sonnet\ncolor: blue\nskills:\n---\nBody.\n"
@@ -101,12 +102,12 @@ func (s *validateSyncSteps) claudeAndOpencodeConfigsThatAreFullySynchronised() e
 
 func (s *validateSyncSteps) anAgentInClaudeWhoseDescriptionDiffersFromItsOpenCodeCounterpart() error {
 	agentsDir := filepath.Join(s.tmpDir, ".claude", "agents")
-	opencodeAgentDir := filepath.Join(s.tmpDir, ".opencode", "agent")
+	opencodeAgentDir := filepath.Join(s.tmpDir, agents.OpenCodeAgentDir)
 	if err := os.MkdirAll(agentsDir, 0755); err != nil {
 		return fmt.Errorf("failed to create .claude/agents dir: %w", err)
 	}
 	if err := os.MkdirAll(opencodeAgentDir, 0755); err != nil {
-		return fmt.Errorf("failed to create .opencode/agent dir: %w", err)
+		return fmt.Errorf("failed to create .opencode/agents dir: %w", err)
 	}
 
 	claudeContent := "---\nname: sync-agent\ndescription: A sync agent\ntools: Read\nmodel: sonnet\ncolor: blue\nskills:\n---\nBody.\n"
@@ -124,12 +125,12 @@ func (s *validateSyncSteps) anAgentInClaudeWhoseDescriptionDiffersFromItsOpenCod
 
 func (s *validateSyncSteps) claudeContainingMoreAgentsThanOpenCode() error {
 	agentsDir := filepath.Join(s.tmpDir, ".claude", "agents")
-	opencodeAgentDir := filepath.Join(s.tmpDir, ".opencode", "agent")
+	opencodeAgentDir := filepath.Join(s.tmpDir, agents.OpenCodeAgentDir)
 	if err := os.MkdirAll(agentsDir, 0755); err != nil {
 		return fmt.Errorf("failed to create .claude/agents dir: %w", err)
 	}
 	if err := os.MkdirAll(opencodeAgentDir, 0755); err != nil {
-		return fmt.Errorf("failed to create .opencode/agent dir: %w", err)
+		return fmt.Errorf("failed to create .opencode/agents dir: %w", err)
 	}
 
 	agent1 := "---\nname: sync-agent\ndescription: A sync agent\ntools: Read\nmodel: sonnet\ncolor: blue\nskills:\n---\nBody.\n"

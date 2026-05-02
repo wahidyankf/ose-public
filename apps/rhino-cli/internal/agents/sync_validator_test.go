@@ -11,7 +11,7 @@ func TestValidateAgentCount(t *testing.T) {
 
 	// Create matching counts
 	claudeDir := filepath.Join(tmpDir, ".claude", "agents")
-	opencodeDir := filepath.Join(tmpDir, ".opencode", "agent")
+	opencodeDir := filepath.Join(tmpDir, OpenCodeAgentDir)
 
 	if err := os.MkdirAll(claudeDir, 0755); err != nil {
 		t.Fatalf("Failed to create claude dir: %v", err)
@@ -50,7 +50,7 @@ func TestValidateAgentCountMismatch(t *testing.T) {
 
 	// Create mismatched counts
 	claudeDir := filepath.Join(tmpDir, ".claude", "agents")
-	opencodeDir := filepath.Join(tmpDir, ".opencode", "agent")
+	opencodeDir := filepath.Join(tmpDir, OpenCodeAgentDir)
 
 	if err := os.MkdirAll(claudeDir, 0755); err != nil {
 		t.Fatalf("Failed to create claude dir: %v", err)
@@ -323,7 +323,7 @@ func TestValidateAgentFile_Success(t *testing.T) {
 	}
 
 	opencodeAgentPath := filepath.Join(tmpDir, "test-agent-opencode.md")
-	if err := ConvertAgent(claudeAgentPath, opencodeAgentPath, false); err != nil {
+	if _, err := ConvertAgent(claudeAgentPath, opencodeAgentPath, false); err != nil {
 		t.Fatalf("ConvertAgent() failed: %v", err)
 	}
 
@@ -414,7 +414,7 @@ func TestValidateSync_AllPass(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	claudeAgentsDir := filepath.Join(tmpDir, ".claude", "agents")
-	opencodeAgentDir := filepath.Join(tmpDir, ".opencode", "agent")
+	opencodeAgentDir := filepath.Join(tmpDir, OpenCodeAgentDir)
 	skill1Claude := filepath.Join(tmpDir, ".claude", "skills", "skill-1")
 	skill1Opencode := filepath.Join(tmpDir, ".opencode", "skill", "skill-1")
 
@@ -431,7 +431,7 @@ func TestValidateSync_AllPass(t *testing.T) {
 		t.Fatalf("failed to create claude agent: %v", err)
 	}
 	opencodeAgentPath := filepath.Join(opencodeAgentDir, "test.md")
-	if err := ConvertAgent(claudeAgentPath, opencodeAgentPath, false); err != nil {
+	if _, err := ConvertAgent(claudeAgentPath, opencodeAgentPath, false); err != nil {
 		t.Fatalf("failed to convert agent: %v", err)
 	}
 
@@ -464,7 +464,7 @@ func TestValidateSync_EmptyRepo(t *testing.T) {
 	// Create empty .claude and .opencode dirs
 	for _, d := range []string{
 		filepath.Join(tmpDir, ".claude", "agents"),
-		filepath.Join(tmpDir, ".opencode", "agent"),
+		filepath.Join(tmpDir, OpenCodeAgentDir),
 		filepath.Join(tmpDir, ".claude", "skills"),
 		filepath.Join(tmpDir, ".opencode", "skill"),
 	} {
@@ -779,7 +779,7 @@ func TestValidateSync_WithMismatches(t *testing.T) {
 
 	// Claude has 2 agents, OpenCode has 1 → count mismatch → FailedChecks gets incremented
 	claudeAgentsDir := filepath.Join(tmpDir, ".claude", "agents")
-	opencodeAgentDir := filepath.Join(tmpDir, ".opencode", "agent")
+	opencodeAgentDir := filepath.Join(tmpDir, OpenCodeAgentDir)
 
 	for _, d := range []string{claudeAgentsDir, opencodeAgentDir} {
 		if err := os.MkdirAll(d, 0755); err != nil {
@@ -827,7 +827,7 @@ func TestValidateSync_WithSkillMismatch(t *testing.T) {
 	// Equal agent counts (0 each) but mismatched skills
 	for _, d := range []string{
 		filepath.Join(tmpDir, ".claude", "agents"),
-		filepath.Join(tmpDir, ".opencode", "agent"),
+		filepath.Join(tmpDir, OpenCodeAgentDir),
 	} {
 		if err := os.MkdirAll(d, 0755); err != nil {
 			t.Fatalf("failed to create agent dir: %v", err)
@@ -874,7 +874,7 @@ func TestValidateSync_WithSkillContentMismatch(t *testing.T) {
 	// Equal agent counts (0 each)
 	for _, d := range []string{
 		filepath.Join(tmpDir, ".claude", "agents"),
-		filepath.Join(tmpDir, ".opencode", "agent"),
+		filepath.Join(tmpDir, OpenCodeAgentDir),
 	} {
 		if err := os.MkdirAll(d, 0755); err != nil {
 			t.Fatalf("failed to create dir: %v", err)

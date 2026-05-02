@@ -494,3 +494,86 @@ func TestFormatValidationMarkdown_VerboseShowsWarningMarker(t *testing.T) {
 		t.Errorf("expected ⚠ marker for warning in verbose listing, got %q", out)
 	}
 }
+
+// ---- Phase 2 sync warning rendering ----
+
+func makeSyncResultWithWarnings() *SyncResult {
+	return &SyncResult{
+		AgentsConverted: 2,
+		SkillsCopied:    1,
+		Duration:        time.Second,
+		FailedFiles:     []string{},
+		Warnings: []ConversionWarning{
+			{AgentName: "alpha", Field: "memory", Reason: "claude-only"},
+			{AgentName: "beta", Field: "isolation", Reason: "claude-only"},
+		},
+	}
+}
+
+func TestFormatSyncText_VerboseShowsWarnings(t *testing.T) {
+	out := FormatSyncText(makeSyncResultWithWarnings(), true, false)
+	if !strings.Contains(out, "Warnings:") {
+		t.Errorf("expected verbose output to contain 'Warnings:' section, got %q", out)
+	}
+	if !strings.Contains(out, "alpha") || !strings.Contains(out, "memory") {
+		t.Errorf("expected agent and field names in warnings, got %q", out)
+	}
+	// Status must remain SUCCESS since no FailedFiles.
+	if !strings.Contains(out, "SUCCESS") {
+		t.Errorf("warnings alone must not flip status to FAILED, got %q", out)
+	}
+}
+
+func TestFormatSyncText_NonVerboseHidesWarnings(t *testing.T) {
+	out := FormatSyncText(makeSyncResultWithWarnings(), false, false)
+	if strings.Contains(out, "Warnings:") {
+		t.Errorf("non-verbose mode must not show warnings section, got %q", out)
+	}
+}
+
+func TestFormatSyncJSON_AlwaysIncludesWarnings(t *testing.T) {
+	// With warnings.
+	out, err := FormatSyncJSON(makeSyncResultWithWarnings())
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	var parsed map[string]any
+	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+	warnings, ok := parsed["warnings"].([]any)
+	if !ok {
+		t.Fatalf("expected warnings array in JSON, got %v", parsed["warnings"])
+	}
+	if len(warnings) != 2 {
+		t.Errorf("expected 2 warnings, got %d", len(warnings))
+	}
+	// Status remains success despite warnings.
+	if parsed["status"] != "success" {
+		t.Errorf("warnings must not change status, got %v", parsed["status"])
+	}
+
+	// With no warnings — must still be empty array, not null.
+	noWarn := makeSyncResult(false)
+	out2, err := FormatSyncJSON(noWarn)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !strings.Contains(out2, `"warnings": []`) {
+		t.Errorf("expected empty warnings array, got: %s", out2)
+	}
+}
+
+func TestFormatSyncMarkdown_WithWarnings(t *testing.T) {
+	out := FormatSyncMarkdown(makeSyncResultWithWarnings())
+	if !strings.Contains(out, "## Warnings") {
+		t.Errorf("expected '## Warnings' section, got %q", out)
+	}
+	if !strings.Contains(out, "alpha") || !strings.Contains(out, "memory") {
+		t.Errorf("expected agent name and field in warnings, got %q", out)
+	}
+	// Status must still be SUCCESS.
+	if !strings.Contains(out, "SUCCESS") {
+		t.Errorf("status must be SUCCESS despite warnings, got %q", out)
+	}
+}

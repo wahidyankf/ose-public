@@ -3,6 +3,7 @@ package agents
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"gopkg.in/yaml.v3"
@@ -216,8 +217,12 @@ This is the agent body content.
 
 	// Convert agent
 	outputPath := filepath.Join(tmpDir, "output.md")
-	if err := ConvertAgent(inputPath, outputPath, false); err != nil {
+	warnings, err := ConvertAgent(inputPath, outputPath, false)
+	if err != nil {
 		t.Fatalf("ConvertAgent() failed: %v", err)
+	}
+	if len(warnings) != 0 {
+		t.Errorf("expected zero warnings for spec-clean fixture, got %v", warnings)
 	}
 
 	// Read output file
@@ -261,6 +266,11 @@ This is the agent body content.
 		t.Errorf("Skills length = %d, want 2", len(agent.Skills))
 	}
 
+	// color was preserved
+	if agent.Color != "blue" {
+		t.Errorf("Color = %q, want %q", agent.Color, "blue")
+	}
+
 	// Verify body is preserved
 	expectedBody := "\n# Test Agent\n\nThis is the agent body content.\n"
 	if string(body) != expectedBody {
@@ -289,7 +299,7 @@ Body content.
 
 	// Convert agent with dry run
 	outputPath := filepath.Join(tmpDir, "output.md")
-	if err := ConvertAgent(inputPath, outputPath, true); err != nil {
+	if _, err := ConvertAgent(inputPath, outputPath, true); err != nil {
 		t.Fatalf("ConvertAgent() failed: %v", err)
 	}
 
@@ -321,7 +331,7 @@ Body content.
 
 	// Convert agent
 	outputPath := filepath.Join(tmpDir, "output.md")
-	if err := ConvertAgent(inputPath, outputPath, false); err != nil {
+	if _, err := ConvertAgent(inputPath, outputPath, false); err != nil {
 		t.Fatalf("ConvertAgent() failed: %v", err)
 	}
 
@@ -380,7 +390,7 @@ func TestConvertAgent_WriteFileError(t *testing.T) {
 	defer func() { _ = os.Chmod(outputDir, 0755) }()
 
 	outputPath := filepath.Join(outputDir, "out.md")
-	err := ConvertAgent(inputPath, outputPath, false)
+	_, err := ConvertAgent(inputPath, outputPath, false)
 	if err == nil {
 		// On some systems (e.g. running as root) this may succeed
 		t.Logf("ConvertAgent succeeded (may be running as root or OS allows it)")
@@ -403,16 +413,16 @@ func TestExtractFrontmatter_NoBody(t *testing.T) {
 }
 
 func TestConvertAgent_MissingSourceFile(t *testing.T) {
-	// Tests os.ReadFile error path (line 128)
+	// Tests os.ReadFile error path
 	tmpDir := t.TempDir()
-	err := ConvertAgent(filepath.Join(tmpDir, "nonexistent.md"), filepath.Join(tmpDir, "out.md"), false)
+	_, err := ConvertAgent(filepath.Join(tmpDir, "nonexistent.md"), filepath.Join(tmpDir, "out.md"), false)
 	if err == nil {
 		t.Error("expected error for missing source file")
 	}
 }
 
 func TestConvertAgent_InvalidYAML(t *testing.T) {
-	// Tests YAML unmarshal error path (line 140)
+	// Tests YAML unmarshal error path
 	tmpDir := t.TempDir()
 	inputPath := filepath.Join(tmpDir, "bad.md")
 	// Valid frontmatter markers but invalid YAML content
@@ -421,7 +431,7 @@ func TestConvertAgent_InvalidYAML(t *testing.T) {
 		t.Fatal(err)
 	}
 	outputPath := filepath.Join(tmpDir, "out.md")
-	err := ConvertAgent(inputPath, outputPath, false)
+	_, err := ConvertAgent(inputPath, outputPath, false)
 	if err == nil {
 		t.Error("expected error for invalid YAML")
 	}
@@ -446,7 +456,7 @@ func TestConvertAgent_WriteError(t *testing.T) {
 
 	// Try to write inside the read-only directory
 	outputPath := filepath.Join(readOnlyDir, "subdir", "out.md")
-	err := ConvertAgent(inputPath, outputPath, false)
+	_, err := ConvertAgent(inputPath, outputPath, false)
 	if err == nil {
 		// On some systems (e.g. running as root) this may succeed
 		t.Logf("ConvertAgent succeeded (may be running as root or OS allows it)")
@@ -454,17 +464,17 @@ func TestConvertAgent_WriteError(t *testing.T) {
 }
 
 func TestConvertAllAgents_ReadDirError(t *testing.T) {
-	// Tests ConvertAllAgents when .claude/agents dir doesn't exist (line 224)
+	// Tests ConvertAllAgents when .claude/agents dir doesn't exist
 	tmpDir := t.TempDir()
 	// No .claude/agents directory
-	_, _, _, err := ConvertAllAgents(tmpDir, false)
+	_, _, _, _, err := ConvertAllAgents(tmpDir, false)
 	if err == nil {
 		t.Error("expected error when .claude/agents directory is missing")
 	}
 }
 
 func TestConvertAllAgents_SkipsNonMdAndReadme(t *testing.T) {
-	// Tests that non-.md files and README.md are skipped (lines 229-230)
+	// Tests that non-.md files and README.md are skipped
 	tmpDir := t.TempDir()
 
 	agentsDir := filepath.Join(tmpDir, ".claude", "agents")
@@ -487,7 +497,7 @@ func TestConvertAllAgents_SkipsNonMdAndReadme(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	converted, failed, failedFiles, err := ConvertAllAgents(tmpDir, false)
+	converted, failed, failedFiles, _, err := ConvertAllAgents(tmpDir, false)
 	if err != nil {
 		t.Fatalf("ConvertAllAgents() unexpected error: %v", err)
 	}
@@ -496,5 +506,213 @@ func TestConvertAllAgents_SkipsNonMdAndReadme(t *testing.T) {
 	}
 	if failed != 0 {
 		t.Errorf("expected 0 failed, got %d (files: %v)", failed, failedFiles)
+	}
+}
+
+// ---- Phase 2 per-field policy tests ----
+
+func TestConvertAgent_DropWarnFields(t *testing.T) {
+	// memory, isolation, background, etc. should be dropped with warnings.
+	tmpDir := t.TempDir()
+	inputPath := filepath.Join(tmpDir, "claude-only-agent.md")
+	content := `---
+name: claude-only-agent
+description: An agent using Claude-only fields
+memory: project
+isolation: worktree
+background: true
+effort: high
+---
+
+Body.
+`
+	if err := os.WriteFile(inputPath, []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	outputPath := filepath.Join(tmpDir, "output.md")
+	warnings, err := ConvertAgent(inputPath, outputPath, false)
+	if err != nil {
+		t.Fatalf("ConvertAgent() error: %v", err)
+	}
+
+	// Warnings collected for each drop-warn field, in any order.
+	wantFields := map[string]bool{"memory": true, "isolation": true, "background": true, "effort": true}
+	gotFields := map[string]bool{}
+	for _, w := range warnings {
+		if w.AgentName != "claude-only-agent" {
+			t.Errorf("warning AgentName = %q, want %q", w.AgentName, "claude-only-agent")
+		}
+		gotFields[w.Field] = true
+	}
+	for f := range wantFields {
+		if !gotFields[f] {
+			t.Errorf("missing warning for field %q", f)
+		}
+	}
+
+	// Confirm output contains none of the dropped fields.
+	body, err := os.ReadFile(outputPath)
+	if err != nil {
+		t.Fatalf("read output: %v", err)
+	}
+	for _, banned := range []string{"memory", "isolation", "background", "effort"} {
+		if strings.Contains(string(body), banned+":") {
+			t.Errorf("output unexpectedly contains banned field %q:\n%s", banned, string(body))
+		}
+	}
+}
+
+func TestConvertAgent_TranslateMaxTurnsToSteps(t *testing.T) {
+	tmpDir := t.TempDir()
+	inputPath := filepath.Join(tmpDir, "agent.md")
+	content := `---
+name: agent
+description: Translate test
+maxTurns: 5
+---
+
+Body.
+`
+	if err := os.WriteFile(inputPath, []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	outputPath := filepath.Join(tmpDir, "output.md")
+	warnings, err := ConvertAgent(inputPath, outputPath, false)
+	if err != nil {
+		t.Fatalf("ConvertAgent() error: %v", err)
+	}
+	if len(warnings) != 0 {
+		t.Errorf("expected 0 warnings for translate path, got %v", warnings)
+	}
+
+	// Inspect emitted frontmatter only — body text is irrelevant.
+	out, err := os.ReadFile(outputPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	front, _, err := ExtractFrontmatter(out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var emitted map[string]interface{}
+	if err := yaml.Unmarshal(front, &emitted); err != nil {
+		t.Fatal(err)
+	}
+	if v, ok := emitted["steps"]; !ok || v != 5 {
+		t.Errorf("expected steps=5 in emitted frontmatter, got %v", emitted)
+	}
+	if _, present := emitted["maxTurns"]; present {
+		t.Errorf("output frontmatter must not contain 'maxTurns', got: %v", emitted)
+	}
+}
+
+func TestConvertAgent_PreserveColor(t *testing.T) {
+	tmpDir := t.TempDir()
+	inputPath := filepath.Join(tmpDir, "colorful.md")
+	content := `---
+name: colorful
+description: Has color
+color: orange
+---
+
+Body.
+`
+	if err := os.WriteFile(inputPath, []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	outputPath := filepath.Join(tmpDir, "output.md")
+	if _, err := ConvertAgent(inputPath, outputPath, false); err != nil {
+		t.Fatalf("ConvertAgent() error: %v", err)
+	}
+
+	out, err := os.ReadFile(outputPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(out), "color: orange") {
+		t.Errorf("expected 'color: orange' in output, got:\n%s", string(out))
+	}
+}
+
+func TestConvertAgent_UnknownFieldEmitsWarning(t *testing.T) {
+	tmpDir := t.TempDir()
+	inputPath := filepath.Join(tmpDir, "typo.md")
+	content := `---
+name: typo
+description: Has unknown field
+foo: bar
+---
+
+Body.
+`
+	if err := os.WriteFile(inputPath, []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	outputPath := filepath.Join(tmpDir, "output.md")
+	warnings, err := ConvertAgent(inputPath, outputPath, false)
+	if err != nil {
+		t.Fatalf("ConvertAgent() error: %v", err)
+	}
+
+	found := false
+	for _, w := range warnings {
+		if w.Field == "foo" && w.Reason == "unknown claude code field" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected warning for unknown field 'foo', got %v", warnings)
+	}
+}
+
+func TestConvertAllAgents_CollectsWarnings(t *testing.T) {
+	tmpDir := t.TempDir()
+	agentsDir := filepath.Join(tmpDir, ".claude", "agents")
+	if err := os.MkdirAll(agentsDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+
+	good := `---
+name: good
+description: Spec-clean
+---
+
+Body.
+`
+	dropWarn := `---
+name: dropper
+description: Has memory field
+memory: project
+---
+
+Body.
+`
+	if err := os.WriteFile(filepath.Join(agentsDir, "good.md"), []byte(good), 0644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(agentsDir, "dropper.md"), []byte(dropWarn), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	converted, failed, _, warnings, err := ConvertAllAgents(tmpDir, false)
+	if err != nil {
+		t.Fatalf("ConvertAllAgents() error: %v", err)
+	}
+	if converted != 2 {
+		t.Errorf("expected 2 converted, got %d", converted)
+	}
+	if failed != 0 {
+		t.Errorf("expected 0 failed, got %d", failed)
+	}
+	if len(warnings) != 1 {
+		t.Fatalf("expected 1 warning, got %d: %v", len(warnings), warnings)
+	}
+	if warnings[0].AgentName != "dropper" || warnings[0].Field != "memory" {
+		t.Errorf("unexpected warning: %+v", warnings[0])
 	}
 }

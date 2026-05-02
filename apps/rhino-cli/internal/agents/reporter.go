@@ -11,6 +11,12 @@ import (
 // ---- Sync formatting ----
 
 // FormatSyncText formats sync results as plain text.
+//
+// When verbose is true and result.Warnings is non-empty, a "Warnings"
+// section listing each ConversionWarning is appended after the Status line.
+// Warnings are advisory and never change the success/failure status:
+// dropped fields per the documented per-field policy are expected
+// behaviour, not a sync failure.
 func FormatSyncText(result *SyncResult, verbose, quiet bool) string {
 	var sb strings.Builder
 
@@ -49,22 +55,43 @@ func FormatSyncText(result *SyncResult, verbose, quiet bool) string {
 		}
 	}
 
+	if verbose && len(result.Warnings) > 0 {
+		sb.WriteString("\nWarnings:\n")
+		for _, w := range result.Warnings {
+			_, _ = fmt.Fprintf(&sb, "  ⚠ %s: dropped field %q (%s)\n", w.AgentName, w.Field, w.Reason)
+		}
+	}
+
 	return sb.String()
 }
 
 // syncJSONOutput represents the JSON output format for sync results.
 type syncJSONOutput struct {
-	Status          string   `json:"status"`
-	Timestamp       string   `json:"timestamp"`
-	AgentsConverted int      `json:"agents_converted"`
-	AgentsFailed    int      `json:"agents_failed"`
-	SkillsCopied    int      `json:"skills_copied"`
-	SkillsFailed    int      `json:"skills_failed"`
-	FailedFiles     []string `json:"failed_files"`
-	DurationMS      int64    `json:"duration_ms"`
+	Status          string        `json:"status"`
+	Timestamp       string        `json:"timestamp"`
+	AgentsConverted int           `json:"agents_converted"`
+	AgentsFailed    int           `json:"agents_failed"`
+	SkillsCopied    int           `json:"skills_copied"`
+	SkillsFailed    int           `json:"skills_failed"`
+	FailedFiles     []string      `json:"failed_files"`
+	Warnings        []syncWarning `json:"warnings"`
+	DurationMS      int64         `json:"duration_ms"`
+}
+
+// syncWarning is the JSON representation of one ConversionWarning emitted
+// during sync. Always serialized as part of syncJSONOutput.Warnings (empty
+// array when none, never null) so consumers can rely on the field shape.
+type syncWarning struct {
+	Agent  string `json:"agent"`
+	Field  string `json:"field"`
+	Reason string `json:"reason"`
 }
 
 // FormatSyncJSON formats sync results as JSON.
+//
+// Warnings are always emitted as a JSON array (empty when no warnings,
+// never null). Warnings do not affect the top-level status field; status
+// is "failure" only when FailedFiles is non-empty.
 func FormatSyncJSON(result *SyncResult) (string, error) {
 	status := "success"
 	if len(result.FailedFiles) > 0 {
@@ -76,6 +103,15 @@ func FormatSyncJSON(result *SyncResult) (string, error) {
 		failedFiles = []string{}
 	}
 
+	warnings := make([]syncWarning, 0, len(result.Warnings))
+	for _, w := range result.Warnings {
+		warnings = append(warnings, syncWarning{
+			Agent:  w.AgentName,
+			Field:  w.Field,
+			Reason: w.Reason,
+		})
+	}
+
 	out := syncJSONOutput{
 		Status:          status,
 		Timestamp:       timeutil.Timestamp(),
@@ -84,6 +120,7 @@ func FormatSyncJSON(result *SyncResult) (string, error) {
 		SkillsCopied:    result.SkillsCopied,
 		SkillsFailed:    result.SkillsFailed,
 		FailedFiles:     failedFiles,
+		Warnings:        warnings,
 		DurationMS:      result.Duration.Milliseconds(),
 	}
 
@@ -123,6 +160,14 @@ func FormatSyncMarkdown(result *SyncResult) string {
 		sb.WriteString("**Status**: ❌ FAILED\n")
 	} else {
 		sb.WriteString("**Status**: ✓ SUCCESS\n")
+	}
+
+	// Warnings section (advisory; does not affect status above).
+	if len(result.Warnings) > 0 {
+		sb.WriteString("\n## Warnings\n\n")
+		for _, w := range result.Warnings {
+			_, _ = fmt.Fprintf(&sb, "- ⚠ `%s`: dropped field `%s` (%s)\n", w.AgentName, w.Field, w.Reason)
+		}
 	}
 
 	return sb.String()

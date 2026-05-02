@@ -17,11 +17,19 @@ type ClaudeAgent struct {
 	Skills      []string `yaml:"skills,omitempty"`
 }
 
-// OpenCodeAgent represents OpenCode format agent configuration
+// OpenCodeAgent represents OpenCode format agent configuration.
+//
+// Field set is the subset of OpenCode-recognized agent fields that
+// rhino-cli emits, per the per-field policy table in
+// converter.go (claudeAgentFieldPolicy). Phase 2 of the
+// validate-claude-opencode-sync-correctness plan added Color (preserved
+// from Claude `color`) and Steps (translated from Claude `maxTurns`).
 type OpenCodeAgent struct {
 	Description string          `yaml:"description"`
-	Model       string          `yaml:"model"` // "zai-coding-plan/glm-5.1" | "zai-coding-plan/glm-5-turbo"
-	Tools       map[string]bool `yaml:"tools"` // read: true, write: true, etc.
+	Model       string          `yaml:"model"`           // "zai-coding-plan/glm-5.1" | "zai-coding-plan/glm-5-turbo"
+	Tools       map[string]bool `yaml:"tools"`           // read: true, write: true, etc.
+	Color       string          `yaml:"color,omitempty"` // pass-through from Claude `color`
+	Steps       int             `yaml:"steps,omitempty"` // translated from Claude `maxTurns`
 	Skills      []string        `yaml:"skills,omitempty"`
 }
 
@@ -35,13 +43,20 @@ type SyncOptions struct {
 	Quiet      bool
 }
 
-// SyncResult contains operation results
+// SyncResult contains operation results.
+//
+// Warnings is the (possibly empty) list of ConversionWarning entries
+// emitted by ConvertAgent during the run — one entry per dropped or
+// translated-with-loss frontmatter field. Warnings are advisory and do
+// NOT change the success exit code; sync still completes successfully
+// when fields are dropped per the documented per-field policy.
 type SyncResult struct {
 	AgentsConverted int
 	AgentsFailed    int
 	SkillsCopied    int
 	SkillsFailed    int
 	FailedFiles     []string
+	Warnings        []ConversionWarning
 	Duration        time.Duration
 }
 

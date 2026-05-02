@@ -11,17 +11,19 @@ func SyncAll(opts SyncOptions) (*SyncResult, error) {
 	startTime := time.Now()
 	result := &SyncResult{
 		FailedFiles: []string{},
+		Warnings:    []ConversionWarning{},
 	}
 
 	// Sync agents (unless skills-only)
 	if !opts.SkillsOnly {
-		agentsConverted, agentsFailed, agentFailedFiles, err := ConvertAllAgents(opts.RepoRoot, opts.DryRun)
+		agentsConverted, agentsFailed, agentFailedFiles, agentWarnings, err := ConvertAllAgents(opts.RepoRoot, opts.DryRun)
 		if err != nil {
 			return nil, err
 		}
 		result.AgentsConverted = agentsConverted
 		result.AgentsFailed = agentsFailed
 		result.FailedFiles = append(result.FailedFiles, agentFailedFiles...)
+		result.Warnings = append(result.Warnings, agentWarnings...)
 	}
 
 	// Sync skills (unless agents-only)

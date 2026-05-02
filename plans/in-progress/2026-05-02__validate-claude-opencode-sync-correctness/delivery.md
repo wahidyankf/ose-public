@@ -135,33 +135,63 @@ orange, pink, cyan}`. Add unit tests. - Date: 2026-05-02 - Status: done — all 
 - [x] **P1.10** Run `nx run rhino-cli:test:unit -- --coverage`; coverage
       ≥ 90%. - Date: 2026-05-02 - Status: done — `internal/agents` 98.5% statements coverage; whole
       `rhino-cli` package 90.15% line coverage (passes 90% threshold). - Files: none
-- [ ] **P1.11** Commit "feat(rhino-cli): relax claude validator to current
-      claude code spec".
+- [x] **P1.11** Commit "feat(rhino-cli): relax claude validator to current
+      claude code spec". - Date: 2026-05-02 - Status: done — `9f4c429ab` (Phase 1 main commit) plus
+      `e1097c471` (preexisting plan-doc markdown lint fixes; Iron
+      Rule 3, separate thematic commit per Iron Rule 7). - Files: 13 source/test/spec files in main commit; 2 plan docs
+      (brd.md, tech-docs.md) in chore commit.
 
 ## Phase 2 — Converter Field Policy + Path Constants
 
 Acceptance gate: sync writes to plural path; per-field policy applied with
 warnings surfaced.
 
-- [ ] **P2.1** Add `OpenCodeAgentDir = ".opencode/agents"` constant in
+- [x] **P2.1** Add `OpenCodeAgentDir = ".opencode/agents"` constant in
       `converter.go`; replace all `.opencode/agent` references in code +
-      tests with this constant.
-- [ ] **P2.2** Add `claudeAgentFieldPolicy` map per tech-docs.md §1. Add
-      `ConversionWarning` type and a collector.
-- [ ] **P2.3** Refactor `ConvertAgent` to walk frontmatter by key, dispatch on
+      tests with this constant. - Date: 2026-05-02 - Status: done — package-level const in converter.go;
+      sync_validator.go validateAgentCount + validateAgentEquivalence
+      switched; cmd integration tests updated. - Files: converter.go, sync_validator.go, sync_validator_test.go,
+      sync_test.go, agents_sync.integration_test.go,
+      agents_validate_sync.integration_test.go.
+- [x] **P2.2** Add `claudeAgentFieldPolicy` map per tech-docs.md §1. Add
+      `ConversionWarning` type and a collector. - Date: 2026-05-02 - Status: done — 16-entry map covering every documented Claude
+      Code agent field; ConversionWarning struct in converter.go;
+      SyncResult.Warnings collector field added in types.go. - Files: converter.go, types.go.
+- [x] **P2.3** Refactor `ConvertAgent` to walk frontmatter by key, dispatch on
       policy. Translate `tools` → lowercase boolean map (unchanged behavior).
       Translate `maxTurns` → `steps`. Preserve `color`, `description`,
-      `skills`. Drop+warn the rest of the documented Claude-only set.
-- [ ] **P2.4** Plumb warnings into `SyncResult` and reporters (`reporter.go`,
-      JSON/markdown formatters).
-- [ ] **P2.5** Add `spec_fidelity_test.go`:
-  - [ ] **P2.5.1** `TestEveryClaudeFieldIsPolicied` against frozen field list.
-  - [ ] **P2.5.2** `TestNoUnknownFieldInOpenCodeOutput`.
-  - [ ] **P2.5.3** `TestRoundTripPreservesSemantics`.
-  - [ ] **P2.5.4** `TestSyncIsIdempotent`.
-- [ ] **P2.6** Add fixtures under `apps/rhino-cli/internal/agents/testdata/spec/`
-      — one minimal Claude agent per documented field.
-- [ ] **P2.7** `nx run rhino-cli:test:unit` and `:test:integration` green.
+      `skills`. Drop+warn the rest of the documented Claude-only set. - Date: 2026-05-02 - Status: done — ConvertAgent signature now returns
+      `([]ConversionWarning, error)`. Walks YAML map, dispatches per
+      policy. Unknown keys drop with `"unknown claude code field"`
+      warning. OpenCodeAgent struct gained Color (preserve) + Steps
+      (maxTurns target). TODO(plan-followup) comment near Color
+      documents the Phase 0 OpenCode-vs-Claude color value mismatch. - Files: converter.go, types.go, converter_test.go.
+- [x] **P2.4** Plumb warnings into `SyncResult` and reporters (`reporter.go`,
+      JSON/markdown formatters). - Date: 2026-05-02 - Status: done — text formatter shows Warnings section in verbose
+      mode; JSON always emits `warnings: []` with
+      `{agent, field, reason}` schema; markdown adds `## Warnings`
+      section. Status banner unchanged (warnings do NOT alter exit
+      code, contract documented in code comment). - Files: reporter.go, reporter_test.go, sync.go.
+- [x] **P2.5** Add `spec_fidelity_test.go`:
+  - [x] **P2.5.1** `TestEveryClaudeFieldIsPolicied` against frozen field list. - Date: 2026-05-02 - Status: done — frozen `documentedClaudeAgentFields` slice
+        matches Phase 0 spec snapshot; failure names missing field.
+  - [x] **P2.5.2** `TestNoUnknownFieldInOpenCodeOutput`. - Date: 2026-05-02 - Status: done — sweeps every fixture under testdata/spec/,
+        asserts every emitted key is in OpenCode-recognized set.
+  - [x] **P2.5.3** `TestRoundTripPreservesSemantics`. - Date: 2026-05-02 - Status: done — synthetic agent with all preserve/translate +
+        four drop-warn fields; round-trip equivalence verified.
+  - [x] **P2.5.4** `TestSyncIsIdempotent`. - Date: 2026-05-02 - Status: done — second sync byte-equal to first across all
+        fixtures.
+- [x] **P2.6** Add fixtures under `apps/rhino-cli/internal/agents/testdata/spec/`
+      — one minimal Claude agent per documented field. - Date: 2026-05-02 - Status: done — 16 fixtures, one per documented field
+      (preserve*color, preserve_skills, preserve_description_only,
+      translate_tools_array/string, translate_model, translate_maxturns,
+      and 9 drop\*\*). - Files: testdata/spec/*.md (16 files).
+- [x] **P2.7** `nx run rhino-cli:test:unit` and `:test:integration` green. - Date: 2026-05-02 - Status: done — test:unit green (cached, all 11 packages);
+      test:integration agents-package tests green
+      (TestIntegrationSyncAgents, TestIntegrationValidateSync,
+      TestIntegrationValidateClaude, TestIntegrationValidateAgentsNaming).
+      Mermaid LR-rank test preexisting failure unrelated to this phase.
+      Coverage: internal/agents 98.3%, rhino-cli binary 90.19% (≥90%). - Files: none
 - [ ] **P2.8** Commit "refactor(rhino-cli): explicit per-field policy in
       claude-to-opencode converter".
 

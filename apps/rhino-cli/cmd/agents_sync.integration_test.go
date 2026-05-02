@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/cucumber/godog"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/agents"
 )
 
 var specsSyncAgentsDir = func() string {
@@ -146,9 +147,9 @@ func (s *syncAgentsSteps) theCommandExitsSuccessfully() error {
 }
 
 func (s *syncAgentsSteps) theOpenCodeDirectoryContainsTheConvertedConfiguration() error {
-	agentPath := filepath.Join(s.tmpDir, ".opencode", "agent", "sync-agent.md")
+	agentPath := filepath.Join(s.tmpDir, agents.OpenCodeAgentDir, "sync-agent.md")
 	if _, err := os.Stat(agentPath); os.IsNotExist(err) {
-		return fmt.Errorf("expected .opencode/agent/sync-agent.md to exist but it does not")
+		return fmt.Errorf("expected .opencode/agents/sync-agent.md to exist but it does not")
 	}
 	skillPath := filepath.Join(s.tmpDir, ".opencode", "skill", "test-skill", "SKILL.md")
 	if _, err := os.Stat(skillPath); os.IsNotExist(err) {
@@ -165,17 +166,17 @@ func (s *syncAgentsSteps) theOutputDescribesThePlannedOperations() error {
 }
 
 func (s *syncAgentsSteps) noFilesAreWrittenToTheOpenCodeDirectory() error {
-	agentPath := filepath.Join(s.tmpDir, ".opencode", "agent", "sync-agent.md")
+	agentPath := filepath.Join(s.tmpDir, agents.OpenCodeAgentDir, "sync-agent.md")
 	if _, err := os.Stat(agentPath); !os.IsNotExist(err) {
-		return fmt.Errorf("expected .opencode/agent/sync-agent.md to NOT exist in dry-run mode")
+		return fmt.Errorf("expected .opencode/agents/sync-agent.md to NOT exist in dry-run mode")
 	}
 	return nil
 }
 
 func (s *syncAgentsSteps) onlyAgentFilesAreWrittenToTheOpenCodeDirectory() error {
-	agentPath := filepath.Join(s.tmpDir, ".opencode", "agent", "sync-agent.md")
+	agentPath := filepath.Join(s.tmpDir, agents.OpenCodeAgentDir, "sync-agent.md")
 	if _, err := os.Stat(agentPath); os.IsNotExist(err) {
-		return fmt.Errorf("expected .opencode/agent/sync-agent.md to exist")
+		return fmt.Errorf("expected .opencode/agents/sync-agent.md to exist")
 	}
 	skillPath := filepath.Join(s.tmpDir, ".opencode", "skill", "test-skill", "SKILL.md")
 	if _, err := os.Stat(skillPath); !os.IsNotExist(err) {
@@ -185,10 +186,10 @@ func (s *syncAgentsSteps) onlyAgentFilesAreWrittenToTheOpenCodeDirectory() error
 }
 
 func (s *syncAgentsSteps) theCorrespondingOpenCodeAgentUsesTheZaiGlmModel() error {
-	agentPath := filepath.Join(s.tmpDir, ".opencode", "agent", "sync-agent.md")
+	agentPath := filepath.Join(s.tmpDir, agents.OpenCodeAgentDir, "sync-agent.md")
 	data, err := os.ReadFile(agentPath)
 	if err != nil {
-		return fmt.Errorf("failed to read .opencode/agent/sync-agent.md: %w", err)
+		return fmt.Errorf("failed to read .opencode/agents/sync-agent.md: %w", err)
 	}
 	if !strings.Contains(string(data), "zai-coding-plan/glm-5.1") {
 		return fmt.Errorf("expected .opencode agent to contain 'zai-coding-plan/glm-5.1' but got:\n%s", string(data))

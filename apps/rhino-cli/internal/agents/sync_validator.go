@@ -71,7 +71,7 @@ func ValidateSync(repoRoot string) (*ValidationResult, error) {
 // validateAgentCount checks that agent counts match
 func validateAgentCount(repoRoot string) ValidationCheck {
 	claudeDir := filepath.Join(repoRoot, ".claude", "agents")
-	opencodeDir := filepath.Join(repoRoot, ".opencode", "agent")
+	opencodeDir := filepath.Join(repoRoot, OpenCodeAgentDir)
 
 	claudeCount := countMarkdownFiles(claudeDir)
 	opencodeCount := countMarkdownFiles(opencodeDir)
@@ -100,7 +100,7 @@ func validateAgentEquivalence(repoRoot string) []ValidationCheck {
 	var checks []ValidationCheck
 
 	claudeDir := filepath.Join(repoRoot, ".claude", "agents")
-	opencodeDir := filepath.Join(repoRoot, ".opencode", "agent")
+	opencodeDir := filepath.Join(repoRoot, OpenCodeAgentDir)
 
 	entries, err := os.ReadDir(claudeDir)
 	if err != nil {

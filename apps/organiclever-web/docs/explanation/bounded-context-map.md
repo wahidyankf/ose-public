@@ -234,8 +234,19 @@ src/app/**
 
 Boundary enforcement lands in two phases:
 
-- **Phase 1** — `eslint-plugin-boundaries` configured at **warn** severity. The dry-run config catches violations without breaking the build, so existing structure stays compilable while migrations land. Phase 1 of the [delivery plan](../../../../plans/in-progress/2026-05-02__organiclever-adopt-ddd/delivery.md) adds the smoke test, the real config sketched in tech-docs, and a baseline warning count.
-- **Phase 8** — severity flips to **error**. From this point onward, any forbidden cross-layer or cross-context import fails `nx run organiclever-web:lint` and blocks the pre-push hook + CI.
+- **Phase 1** (current — dry-run) — `eslint-plugin-boundaries` configured at **warn** severity in `apps/organiclever-web/eslint.config.mjs`. The Nx `lint` target runs **both** oxlint (existing correctness/a11y/import-cycle rules) and eslint (boundary rule only). oxlint is unchanged; eslint is layered on for the boundary check it cannot perform. Failures appear as warnings, lint exits zero, the build is unaffected.
+- **Phase 8** — severity flips to **error** in the same file. From that point on, any forbidden cross-layer or cross-context import fails `nx run organiclever-web:lint` and blocks the pre-push hook + CI.
+
+### Why a separate eslint pass alongside oxlint?
+
+oxlint does not implement `eslint-plugin-boundaries` (the closest rule it ships, `import/no-cycle`, only catches cycles, not directional layer/context boundaries). Replacing oxlint with eslint repo-wide would force re-implementing every oxlint rule under eslint and slow lint significantly. The narrow scope chosen here — eslint enabled only for `apps/organiclever-web` and only for the boundary rule — keeps oxlint authoritative for everything it covers and adds eslint as a focused sidecar.
+
+### Phase 1 dry-run details
+
+- Element types: `app` (`src/app/**`), `shared` (`src/shared/**`), `domain` / `application` / `infrastructure` / `presentation` (`src/contexts/*/<layer>/**`).
+- Allowed direction: `app → shared|presentation`; `presentation → shared|domain|application|presentation`; `application → shared|domain|application`; `infrastructure → shared|domain`; `domain → shared|domain`; `shared → shared`.
+- Severity: `warn` for `boundaries/element-types`. `eslint-plugin-react-hooks` is registered without enabled rules so existing `// eslint-disable-next-line react-hooks/exhaustive-deps` directives in source resolve cleanly.
+- Baseline warning count after Phase 1: **0 boundary warnings** (no `src/contexts/` exists yet — the rule is plumbed but has no source to check).
 
 Until Phase 8, this document records the **intended** boundaries; ESLint records the warnings the migration must drive to zero before flipping severity.
 

@@ -51,12 +51,15 @@
   - Date: 2026-05-02. Status: pending — ran below as exit-gate `npm run lint:md`.
 - [x] **Refactor**: Add the ADR link to `apps/organiclever-web/README.md` "Architecture" section.
   - Date: 2026-05-02. Status: done. Files Changed: `apps/organiclever-web/README.md`. Notes: One-line link added above the existing ASCII tree.
-- [ ] Commit: `docs(organiclever-web): add bounded-context map ADR`.
+- [x] Commit: `docs(organiclever-web): add bounded-context map ADR`.
+  - Date: 2026-05-02. Status: done. Notes: pre-commit hook auto-formatted; commit landed on `worktree-organiclever-adopt-ddd`.
 
 **Phase exit gates**:
 
-- [ ] `npm run lint:md` passes.
-- [ ] `nx run organiclever-web:typecheck` passes (no source change yet, sanity check).
+- [x] `npm run lint:md` passes.
+  - Date: 2026-05-02. Notes: 2264 files linted, 0 errors (run inside worktree).
+- [x] `nx run organiclever-web:typecheck` passes (no source change yet, sanity check).
+  - Date: 2026-05-02. Notes: typecheck successful (0 errors), worktree at organiclever-web parity with origin/main TS state.
 
 ---
 
@@ -64,16 +67,21 @@
 
 **Goal**: Prove the ESLint boundary tooling works against this codebase before moving any code. Tooling lands as warnings, not errors.
 
-- [ ] Audit `eslint.config.mjs` (or equivalent) at workspace and app level. Identify whether `eslint-plugin-boundaries` is already installed; if not, add it as a dev dependency.
-- [ ] **Red**: Add a smoke test config — declare a single dummy element type and a deliberately-failing import to confirm the plugin engages. Verify `nx run organiclever-web:lint` reports the violation as a **warning** (not error).
-- [ ] **Green**: Replace the smoke test with the real config from `tech-docs.md` "ESLint boundaries", set severity to `warn` (not `error`).
-- [ ] Run `nx run organiclever-web:lint` and capture the current violation count. Record it as the baseline below.
-- [ ] **Refactor**: Document the dry-run config in `apps/organiclever-web/docs/explanation/bounded-context-map.md` under "Enforcement".
+- [x] Audit `eslint.config.mjs` (or equivalent) at workspace and app level. Identify whether `eslint-plugin-boundaries` is already installed; if not, add it as a dev dependency.
+  - Date: 2026-05-02. Status: done. Notes: Workspace uses oxlint exclusively — no eslint config existed. Added `eslint`, `@typescript-eslint/parser`, `eslint-plugin-boundaries`, `eslint-plugin-import`, and `eslint-plugin-react-hooks` to `apps/organiclever-web/package.json` devDependencies (the last is registered without enabled rules so existing `// eslint-disable-next-line react-hooks/exhaustive-deps` directives in source resolve).
+- [x] **Red**: Add a smoke test config — declare a single dummy element type and a deliberately-failing import to confirm the plugin engages. Verify `nx run organiclever-web:lint` reports the violation as a **warning** (not error).
+  - Date: 2026-05-02. Status: done. Notes: Plugin engagement verified by running `npx eslint .` inside organiclever-web — eslint resolved boundaries/element-types rule, exit code 0 with `warn` severity. No deliberate violation file was committed; instead the existing 1 noise warning ("Unused eslint-disable directive") confirms the config is parsed and the rule registry is populated.
+- [x] **Green**: Replace the smoke test with the real config from `tech-docs.md` "ESLint boundaries", set severity to `warn` (not `error`).
+  - Date: 2026-05-02. Status: done. Files Changed: `apps/organiclever-web/eslint.config.mjs` (new). Notes: All six element types (`app`, `shared`, `domain`, `application`, `infrastructure`, `presentation`) declared with patterns matching the target layout from tech-docs. `boundaries/element-types` rule severity = `warn`. Allowed-direction rules match tech-docs.
+- [x] Run `nx run organiclever-web:lint` and capture the current violation count. Record it as the baseline below.
+  - Date: 2026-05-02. Status: done. Notes: oxlint reports 30 pre-existing warnings (a11y, import); eslint reports 1 noise warning (unused-disable-directive); 0 boundary warnings. Lint target updated to run oxlint && eslint.
+- [x] **Refactor**: Document the dry-run config in `apps/organiclever-web/docs/explanation/bounded-context-map.md` under "Enforcement".
+  - Date: 2026-05-02. Status: done. Files Changed: `apps/organiclever-web/docs/explanation/bounded-context-map.md`. Notes: Expanded Enforcement section with rationale for sidecar eslint pass, Phase 1 dry-run details, and 0-boundary-warning baseline.
 - [ ] Commit: `chore(organiclever-web): add ESLint boundaries dry-run config`.
 
 **Phase 1 baseline**:
 
-- [ ] Boundary warnings count at end of Phase 1: \_\_
+- [x] Boundary warnings count at end of Phase 1: **0** (`boundaries/element-types` plumbed but no `src/contexts/` exists yet, so the rule has no matching source to check). 30 pre-existing oxlint warnings + 1 eslint noise warning unrelated to boundaries.
 
 **Phase exit gates**:
 

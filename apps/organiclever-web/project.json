@@ -48,10 +48,15 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "npx oxlint@latest --jsx-a11y-plugin .",
+        "command": "npx oxlint@latest --jsx-a11y-plugin . && npx eslint .",
         "cwd": "{projectRoot}"
       },
-      "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/oxlint.json", "{projectRoot}/tsconfig.json"]
+      "inputs": [
+        "{projectRoot}/src/**/*",
+        "{projectRoot}/oxlint.json",
+        "{projectRoot}/eslint.config.mjs",
+        "{projectRoot}/tsconfig.json"
+      ]
     },
     "test:quick": {
       "executor": "nx:run-commands",

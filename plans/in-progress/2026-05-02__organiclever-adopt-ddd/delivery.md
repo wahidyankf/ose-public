@@ -111,7 +111,7 @@
 
 For each of `health`, `landing`, `routing`:
 
-- [ ] Identify all current source files that belong to this context (e.g. `src/services/backend-client*.ts` + `src/app/system/**` for `health`).
+- [ ] Identify all current source files that belong to this context. For `health`: `src/services/backend-client.ts`, `src/services/errors.ts`, `src/layers/backend-client-live.ts`, `src/layers/backend-client-test.ts`, `src/app/system/**`, plus health components under `src/components/app/`. For `landing`: `src/components/landing/**` + `src/app/page.tsx` content. For `routing`: any `not-found.tsx` / `/login` / `/profile` 404 guards under `src/app/**`.
 - [ ] **Red**: Confirm relevant unit tests pass at current location.
 - [ ] **Green**: `git mv` source + test files into `src/contexts/<bc>/{layer}/`. Update imports. Re-run unit tests until green.
 - [ ] **Refactor**: Add `src/contexts/<bc>/<layer>/index.ts` published API. Update `src/app/**` imports to go through the published API.
@@ -130,7 +130,7 @@ For each of `health`, `landing`, `routing`:
 
 **Goal**: Self-contained PGlite-backed context with one aggregate. Moderate complexity.
 
-- [ ] Inventory: `src/lib/settings-store.ts`, `src/lib/use-settings.ts`, `src/app/app/settings/**`, settings-related schemas in `src/lib/schema.ts`.
+- [ ] Inventory: `src/lib/journal/settings-store.ts` (currently misplaced under `journal/`), `src/lib/journal/use-settings.ts`, `src/app/app/settings/**`, `src/components/app/settings/**`. Note: `src/lib/journal/schema.ts` is journal-only — settings types (if any) extracted from `settings-store.ts` itself.
 - [ ] **Red**: Pre-move tests green at current location.
 - [ ] **Green**:
   - [ ] Move pure types and invariants → `src/contexts/settings/domain/`.
@@ -149,9 +149,9 @@ For each of `health`, `landing`, `routing`:
 
 **Goal**: Largest context; system-of-record for events. Migrate in sub-steps to keep each commit small.
 
-- [ ] Inventory: `src/lib/journal-store.ts`, `src/lib/journal-machine.ts`, `src/lib/typed-payloads.ts`, `src/lib/use-journal.ts`, `src/lib/run-migrations.ts`, `src/lib/runtime.ts`, `src/lib/seed.ts`, migrations under `src/layers/migrations/`, `src/lib/schema.ts` journal portions, `src/app/app/home/**` journal-touching parts.
+- [ ] Inventory: `src/lib/journal/journal-store.ts`, `src/lib/journal/journal-machine.ts`, `src/lib/journal/typed-payloads.ts`, `src/lib/journal/use-journal.ts`, `src/lib/journal/run-migrations.ts`, `src/lib/journal/runtime.ts`, `src/lib/journal/seed.ts`, `src/lib/journal/schema.ts`, `src/lib/journal/migrations/`, `src/app/app/home/**` journal-touching parts.
 - [ ] Sub-step 6a — domain: move `JournalEvent` types, `typed-payloads`, invariants → `src/contexts/journal/domain/`. **Red**: tests pre-move green. **Green**: tests post-move green.
-- [ ] Sub-step 6b — application: extract use-cases (`appendEvent`, `bumpEvent`, `listEvents`) into `src/contexts/journal/application/`. Define ports.
+- [ ] Sub-step 6b — application: extract use-cases (`appendEvent`, `bumpEvent`, `listEvents`) into `src/contexts/journal/application/`. Define ports. Move `journal-machine.ts` + its unit test into `src/contexts/journal/application/` per `tech-docs.md` § "xstate machine placement" (orchestrating machine: invokes `fromPromise` actors that hit infrastructure).
 - [ ] Sub-step 6c — infrastructure: move PGlite store, runtime, migrations into `src/contexts/journal/infrastructure/`. Update Effect `Layer` composition.
 - [ ] Sub-step 6d — presentation: move `use-journal.ts` and journal-specific React components into `src/contexts/journal/presentation/`.
 - [ ] Sub-step 6e — wire-up: update `src/app/app/home/**`, `src/app/app/history/**`, and any other consumer to import only from `journal/presentation/index.ts` and `journal/application/index.ts`.
@@ -165,9 +165,9 @@ For each of `health`, `landing`, `routing`:
 
 **Goal**: Three closely related contexts. Migrate in this order: `routine` → `workout-session` → `stats` (so each downstream context's dependency is already in place).
 
-- [ ] Routine: move `routine-store.ts`, `use-routines.ts`, `src/app/app/routines/**` and `src/app/app/workout/**` routine-template-reading parts.
-- [ ] Workout-session: move `workout-machine.ts` and tests → `src/contexts/workout-session/{domain,application}/`. Update so workout-session **only** writes to journal via `journal/application/index.ts`. Move workout pages to `src/app/app/workout/**` consuming `workout-session/presentation/index.ts`.
-- [ ] Stats: move `stats.ts`, history-page projections, progress-page projections → `src/contexts/stats/{domain,application,presentation}/`. Stats reads only from `journal/application/index.ts`.
+- [ ] Routine: move `src/lib/journal/routine-store.ts`, `src/lib/journal/use-routines.ts` (both currently misplaced under `journal/`), `src/app/app/routines/**`, `src/components/app/routine/**`, and `src/app/app/workout/**` routine-template-reading parts → `src/contexts/routine/{domain,application,infrastructure,presentation}/`.
+- [ ] Workout-session: move `src/lib/workout/workout-machine.ts` + unit test → `src/contexts/workout-session/application/` per `tech-docs.md` § "xstate machine placement" (orchestrating machine: `fromPromise saveWorkout` writes to journal). Pure aggregate types/invariants (if any are extracted) → `domain/`. Update so workout-session **only** writes to journal via `journal/application/index.ts`. Move workout pages to `src/app/app/workout/**` consuming `workout-session/presentation/index.ts`.
+- [ ] Stats: move `src/lib/journal/stats.ts` (currently misplaced under `journal/`), history-page projections (`src/components/app/history/**`), progress-page projections (`src/components/app/progress/**`) → `src/contexts/stats/{domain,application,presentation}/`. Stats reads only from `journal/application/index.ts`.
 - [ ] Commit per context: `refactor(organiclever-web): migrate <bc> context`.
 
 **Phase exit gates**: same as Phase 4.
@@ -178,9 +178,10 @@ For each of `health`, `landing`, `routing`:
 
 **Goal**: Last context migration + boundary enforcement turned on.
 
-- [ ] Move `src/lib/translations.ts`, `use-t.ts`, `app-machine.ts`, layout chrome, error boundary, loggers, theme primitives into `src/contexts/app-shell/presentation/` (and `domain/` if any pure types remain).
+- [ ] Move `src/lib/i18n/translations.ts`, `src/lib/i18n/use-t.ts`, `src/lib/app/app-machine.ts` + unit test, layout chrome (`src/app/layout.tsx`-extracted parts), error boundary, loggers (`src/components/app/loggers/**`), theme primitives, plus generic `src/components/app/` chrome and `src/components/app/home/**` page chrome → `src/contexts/app-shell/presentation/` (and `domain/` if any pure types remain). `app-machine` lands in `presentation/` per `tech-docs.md` § "xstate machine placement" (UI shell machine: no IO, no aggregate model — `darkMode`, `isDesktop`, logger selection only).
 - [ ] Decide fate of `src/components/` per Phase 0 Q3. Default: move purely-presentational primitives into `src/contexts/app-shell/presentation/components/`.
-- [ ] Confirm there are no remaining files outside `src/contexts/`, `src/app/`, `src/shared/`, `src/test/`. Any remainder is a finding — either retag context or move to `src/shared/`.
+- [ ] Move `src/lib/utils/fmt.ts` → `src/shared/utils/fmt.ts`. Confirm no other content remains in `src/lib/`.
+- [ ] Confirm there are no remaining files outside `src/contexts/`, `src/app/`, `src/shared/`, `src/test/`, `src/generated-contracts/` (codegen output, untouched). Any remainder is a finding — either retag context or move to `src/shared/`.
 - [ ] **Red**: With ESLint severity still `warn`, run `nx run organiclever-web:lint` and confirm zero warnings.
 - [ ] **Green**: Flip ESLint boundaries to `error`. Run `nx run organiclever-web:lint`; expect exit zero.
 - [ ] **Refactor**: Remove the dry-run note from `bounded-context-map.md`; replace with "Enforcement: ESLint boundaries (error severity)".

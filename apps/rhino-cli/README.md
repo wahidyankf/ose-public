@@ -530,6 +530,68 @@ Duration: 49ms
 Status: ✓ VALIDATION PASSED
 ```
 
+### governance vendor-audit
+
+Scan all `.md` files under a path for forbidden vendor-specific terms in prose.
+
+```bash
+# Audit governance/ (default path)
+rhino-cli governance vendor-audit
+
+# Audit a specific path
+rhino-cli governance vendor-audit governance/
+
+# Output as JSON
+rhino-cli governance vendor-audit -o json
+
+# Via Nx (cached)
+npx nx run rhino-cli:validate:governance-vendor-audit
+```
+
+**What it detects:**
+
+Forbidden vendor terms in prose that violate the
+[governance-vendor-independence convention](../../governance/conventions/structure/governance-vendor-independence.md):
+
+| Forbidden term | Suggested replacement         |
+| -------------- | ----------------------------- |
+| `Claude Code`  | "the coding agent"            |
+| `OpenCode`     | "the secondary coding agent"  |
+| `Anthropic`    | neutral description or remove |
+| `Sonnet`       | "execution-grade model tier"  |
+| `Opus`         | "planning-grade model tier"   |
+| `Haiku`        | "fast model tier"             |
+| `.claude/`     | "primary binding directory"   |
+| `.opencode/`   | "secondary binding directory" |
+
+**Exempted regions (not scanned):**
+
+- Code fences (any language tag, including `binding-example`)
+- Sections under "Platform Binding Examples" headings
+- Inline code spans (backtick-delimited)
+- Link URL portions
+- HTML comments (single-line and multi-line)
+- YAML frontmatter
+- The convention file itself (`governance-vendor-independence.md`)
+
+**Exit codes:**
+
+- `0` - No violations found
+- `1` - One or more violations found
+
+**Example output (violation):**
+
+```
+GOVERNANCE VENDOR AUDIT FAILED: 1 violation(s) found
+  governance/README.md:31  .claude/  →  "primary binding directory"
+```
+
+**Example output (clean):**
+
+```
+GOVERNANCE VENDOR AUDIT PASSED: no violations found
+```
+
 ### test-coverage merge
 
 Merge multiple coverage files from different formats into a single LCOV output.

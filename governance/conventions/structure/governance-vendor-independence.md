@@ -154,21 +154,38 @@ To refactor an existing governance file:
 
 ## Enforcement
 
-<!-- TODO(governance-vendor-independence): Replace this section once Phase 5 tooling lands.
-     The validator will be: `rhino-cli governance vendor-audit [--root governance/]`
-     Wire into rhino-cli test:quick so it runs in CI and pre-push.
--->
+Enforcement is automated via `rhino-cli governance vendor-audit`.
 
-Until automated tooling exists, enforcement is manual:
+### Running the audit manually
 
-- Before merging any PR that touches `governance/`, run:
+```bash
+# Audit the governance/ directory (default)
+go run apps/rhino-cli/main.go governance vendor-audit governance/
 
-  ```bash
-  grep -rln -E "Claude Code|OpenCode|Anthropic|Sonnet|Opus|Haiku|\.claude/|\.opencode/" governance/
-  ```
+# Or via Nx (cached)
+npx nx run rhino-cli:validate:governance-vendor-audit
+```
 
-- Expect output limited to files that have explicit allowlisted regions only.
-- The `repo-rules-checker` agent is expected to detect obvious violations during its audit sweep.
+Exit code 0 means clean; exit code 1 means violations found. Each finding prints:
+
+```
+<file>:<line>  <forbidden-term>  →  "<suggested-replacement>"
+```
+
+### Pre-push integration
+
+The pre-push hook automatically runs `validate:governance-vendor-audit` when any `governance/**/*.md`
+file changes. No manual invocation needed on pushes.
+
+### Scope of the scanner
+
+The scanner respects all exemption mechanisms described in the "Allowlist Mechanism" section above:
+code fences, `binding-example` fences, "Platform Binding Examples" heading sections, inline code
+spans, link URL portions, HTML comments, and YAML frontmatter. The convention file itself
+(`governance-vendor-independence.md`) is also permanently allowlisted.
+
+The `repo-rules-checker` agent continues to detect violations during its full audit sweep as a
+complementary signal.
 
 ## Exceptions and Escape Hatches
 

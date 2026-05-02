@@ -152,7 +152,7 @@ all map to the large model. The `haiku` case is the only distinct branch.
 
 ### 2. `apps/rhino-cli/internal/agents/types.go`
 
-**Struct comment**: `OpenCodeAgent.Model` field (line 23).
+**Struct comment**: `OpenCodeAgent.Model` field (line 29).
 
 Current:
 
@@ -166,16 +166,22 @@ Target:
 Model string `yaml:"model"` // "opencode-go/minimax-m2.7" | "opencode-go/glm-5"
 ```
 
-### 3. `apps/rhino-cli/cmd/agents_sync.go` (comment update)
+### 3. `apps/rhino-cli/cmd/agents_sync.go` (comment update — already done)
 
-Line 25 contains `Model mapping (sonnet/opus → zai-coding-plan/glm-5.1, haiku →
-zai-coding-plan/glm-5-turbo)`. Update to reference OpenCode Go IDs.
+> **No change needed.** The governance vendor-independence initiative already
+> cleaned this file before this plan was authored. `agents_sync.go` contains no
+> `zai-coding-plan` strings. The `Long:` block comment uses an indirection
+> ("model (via ConvertModel — owned by adopt-opencode-go plan)") rather than
+> hardcoding model IDs. Delivery step 2.3 is marked complete with no action.
 
-### 4. `apps/rhino-cli/cmd/agents_validate_sync.go` (comment update)
+### 4. `apps/rhino-cli/cmd/agents_validate_sync.go` (comment update — already done)
 
-Line 21 contains `Model is correctly converted (sonnet/opus/empty → zai-coding-
-plan/glm-5.1, haiku → zai-coding-plan/glm-5-turbo)`. Update to reference
-OpenCode Go IDs.
+> **No change needed.** The governance vendor-independence initiative already
+> cleaned this file before this plan was authored. `agents_validate_sync.go`
+> contains no `zai-coding-plan` strings. The `Long:` block at lines 13–37 uses
+> an indirection ("Model is correctly converted (mapping owned by ConvertModel —
+> see adopt-opencode-go plan for current target IDs)") rather than hardcoding
+> model IDs. Delivery step 2.4 is marked complete with no action.
 
 ### 5. `apps/rhino-cli/internal/agents/converter_test.go`
 
@@ -204,7 +210,7 @@ Target:
 ```
 
 **`TestConvertAgent_*`** assertions referencing `"zai-coding-plan/glm-5.1"`
-(lines 245 and 345): update to `"opencode-go/minimax-m2.7"`.
+(lines 284–285 and 389–390): update to `"opencode-go/minimax-m2.7"`.
 
 ### 6. `apps/rhino-cli/internal/agents/types_test.go`
 
@@ -224,10 +230,11 @@ if agent.Model != "opencode-go/minimax-m2.7" {
 
 ### 7. `apps/rhino-cli/internal/agents/sync_validator_test.go`
 
-Multiple OpenCode content strings contain `zai-coding-plan/glm-5.1` (lines ~635,
-709, 736, 763, 798, 929, 957). Update all to `opencode-go/minimax-m2.7`.
+Multiple OpenCode content strings contain `zai-coding-plan/glm-5.1` (lines 577,
+617, 651, 678, 705, 740, 861, 889 — 8 occurrences total). Update all to
+`opencode-go/minimax-m2.7`.
 
-The comment on line 675 (`// Claude uses "sonnet" → should convert to "zai-coding-
+The comment at line 617 (`// Claude uses "sonnet" → should convert to "zai-coding-
 plan/glm-5.1"`) must be updated to reference `"opencode-go/minimax-m2.7"`.
 
 ### 8. `apps/rhino-cli/cmd/steps_common_test.go`
@@ -251,10 +258,10 @@ must be updated to the new constant name.
 
 ### 9. `apps/rhino-cli/cmd/agents_sync.integration_test.go`
 
-Lines 193–194 assert `"zai-coding-plan/glm-5.1"`. Update to
+Lines 208–209 assert `"zai-coding-plan/glm-5.1"`. Update to
 `"opencode-go/minimax-m2.7"`.
 
-Line 217 references the old step constant. Update to
+Line 232 references the old step constant. Update to
 `stepCorrespondingOpenCodeAgentUsesOpenCodeGoModel`.
 
 ### 10. `apps/rhino-cli/cmd/agents_validate_sync.integration_test.go`

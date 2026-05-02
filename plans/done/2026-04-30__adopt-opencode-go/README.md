@@ -115,6 +115,12 @@ provides a confirmed, provider-agnostic safety net if Exa fails.
 
 ## Success Criteria (Summary)
 
+> **Progress (2026-05-02)**: Phase 5 (color translation) complete — `ConvertColor()` landed,
+> 70 `.opencode/agents/*.md` files regenerated with OpenCode theme tokens, 73/73 `validate-sync`
+> pass. Criteria 1–4 and 6–8 unmet; criterion 5 partially met (color schema valid, model IDs
+> still Z.ai). Subscription confirmed active — next step: export `OPENCODE_GO_API_KEY`,
+> verify model slugs in TUI, then execute Phases 1–3.
+
 1. `ConvertModel("sonnet")` and `ConvertModel("")` return `opencode-go/minimax-m2.7`
 2. `ConvertModel("haiku")` returns `opencode-go/glm-5`
 3. `.opencode/opencode.json` contains `opencode-go/*` model IDs and no Z.ai MCP entries

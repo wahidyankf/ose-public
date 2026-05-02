@@ -117,7 +117,8 @@
   - Date: 2026-05-02. Notes: lint:md scanned 2274 files, 0 errors. validate-links is a future hookup (rhino-cli `docs validate-links` is not present in this branch); links manually inspected. All 9 BCs covered.
 - [x] **Refactor**: Add glossary parity check stub — a small test (or `rhino-cli` invocation) that scans Gherkin features for terms not present in any glossary file, output as warning. Wire into `nx run organiclever-web:spec-coverage` only if non-disruptive; otherwise defer wiring to Phase 9.
   - Date: 2026-05-02. Status: deferred. Notes: Per the explicit "otherwise defer wiring to Phase 9" branch — Gherkin folders are not yet reorganized by bounded context (Phase 9 prerequisite), so the parity check has nothing stable to scan. Phase 9 wires the stub.
-- [ ] Commit: `docs(specs/organiclever): add ubiquitous-language glossary`.
+- [x] Commit: `docs(specs/organiclever): add ubiquitous-language glossary`.
+  - Date: 2026-05-02. Notes: 13 files changed, 338 insertions / 25 deletions.
 
 **Phase exit gates**:
 
@@ -138,16 +139,21 @@
 
 **Goal**: Create empty folder skeleton + path aliases. No source migration yet.
 
-- [ ] **Red**: Add `src/shared/utils/` and `src/contexts/<bc>/` folders for every bounded context (one `.gitkeep` placeholder; layer subfolders created lazily as files arrive).
-- [ ] Update `tsconfig.json` paths if cross-context imports will use `@oc/<bc>` aliases — decide at this phase, lock it in. Default: relative paths, no new aliases (simpler for ESLint boundaries).
-- [ ] **Green**: `nx run organiclever-web:typecheck` passes.
-- [ ] **Refactor**: None.
+- [x] **Red**: Add `src/shared/utils/` and `src/contexts/<bc>/` folders for every bounded context (one `.gitkeep` placeholder; layer subfolders created lazily as files arrive).
+  - Date: 2026-05-02. Notes: 9 BC dirs created (journal, routine, workout-session, stats, settings, app-shell, health, landing, routing) + src/shared/utils/. Each has `.gitkeep`.
+- [x] Update `tsconfig.json` paths if cross-context imports will use `@oc/<bc>` aliases — decide at this phase, lock it in. Default: relative paths, no new aliases (simpler for ESLint boundaries).
+  - Date: 2026-05-02. Decision: **default — relative paths, no new aliases**. Rationale: ESLint-plugin-boundaries' element-type patterns key on physical paths; aliases would require parallel resolver config and add no clarity since cross-context imports are rare and route through `application/index.ts`. Locked.
+- [x] **Green**: `nx run organiclever-web:typecheck` passes.
+  - Date: 2026-05-02. Notes: typecheck passes from cache (no source change).
+- [x] **Refactor**: None.
 - [ ] Commit: `chore(organiclever-web): scaffold contexts and shared folders`.
 
 **Phase exit gates**:
 
-- [ ] `nx run organiclever-web:typecheck` passes.
-- [ ] `nx run organiclever-web:lint` passes (warnings only).
+- [x] `nx run organiclever-web:typecheck` passes.
+  - Date: 2026-05-02.
+- [x] `nx run organiclever-web:lint` passes (warnings only).
+  - Date: 2026-05-02. Notes: 0 errors, 1 eslint warning (pre-existing).
 
 ---
 

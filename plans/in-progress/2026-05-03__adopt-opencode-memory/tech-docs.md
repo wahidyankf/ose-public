@@ -52,17 +52,21 @@ curl -fsSL https://raw.githubusercontent.com/JuliusBrussee/caveman/main/install.
 
 The install script auto-detects all installed agents including OpenCode.
 
-For OpenCode specifically:
+For OpenCode specifically (fallback if curl install doesn't auto-detect):
 
 ```bash
+# Manual skill installation (fallback)
 npx skills add JuliusBrussee/caveman -a opencode
 ```
 
 ### cavemem Installation
 
 ```bash
-# From the cavemem repository
-npx skills add JuliusBrussee/cavemem -a opencode
+# Install cavemem globally via npm
+npm install -g cavemem
+
+# Configure for OpenCode
+cavemem install --ide opencode
 ```
 
 **Note**: cavemem v0.1.3 is early stage. Evaluate after caveman adoption is stable.
@@ -194,4 +198,4 @@ These are independent tools that can be adopted separately or together. This pla
 
 - [caveman GitHub](https://github.com/JuliusBrussee/caveman) — v1.7.0, May 1, 2026
 - [cavemem GitHub](https://github.com/JuliusBrussee/cavemem) — v0.1.3, April 2026
-- [caveman research paper](https://arxiv.org/) — brief communication improves accuracy
+- [caveman research paper](https://arxiv.org/abs/2604.00025) — "Brevity Constraints Reverse Performance Hierarchies in Language Models" (April 2026)

@@ -23,7 +23,7 @@ Implementation follows Red → Green → Refactor for each code item.
 
 ### Install caveman for OpenCode
 
-- [ ] **Red**: Attempt `npx skills add JuliusBrussee/caveman -a opencode`
+- [ ] **Red**: Run the install command and verify it completes without error
 - [ ] **Green**: Verify installation completes without error
 - [ ] **Refactor**: Document installation path in tech-docs.md
 
@@ -81,17 +81,19 @@ Implementation follows Red → Green → Refactor for each code item.
 
 ## Phase 5: Documentation Updates
 
+> **Note**: Phase 5 is documentation-only with no code implementation. These steps use standard checklist format (not TDD) because documentation exists by nature of being written — there are no failing tests to drive documentation creation.
+
 ### Update AGENTS.md with Usage Documentation
 
-- [ ] **Red**: Draft AGENTS.md section for caveman usage
-- [ ] **Green**: Section includes: installation, commands, modes, verification
-- [ ] **Refactor**: Review for clarity and completeness
+- [ ] Draft AGENTS.md section for caveman usage
+- [ ] Include: installation, commands, modes, verification
+- [ ] Review for clarity and completeness
 
 ### Update CLAUDE.md with OpenCode-Specific Notes
 
-- [ ] **Red**: Draft CLAUDE.md section for OpenCode + caveman integration
-- [ ] **Green**: Notes include: RTK + caveman stacking, cross-agent context
-- [ ] **Refactor**: Review for accuracy and accessibility
+- [ ] Draft CLAUDE.md section for OpenCode + caveman integration
+- [ ] Include: RTK + caveman stacking, cross-agent context
+- [ ] Review for accuracy and accessibility
 
 ### Verify Documentation Quality
 
@@ -137,6 +139,14 @@ npx nx affected -t lint
 
 > **Important**: Fix ALL failures found during quality gates, not just those caused by your changes. This follows the root cause orientation principle — proactively fix preexisting errors encountered during work. Do not defer or skip existing issues. Commit preexisting fixes separately with appropriate conventional commit messages.
 
+### Post-Push CI/CD Verification
+
+- [ ] Push changes to `main`
+- [ ] Monitor GitHub Actions for AGENTS.md and CLAUDE.md validation workflows
+- [ ] Verify all CI checks pass (markdown linting, link validation)
+- [ ] If any CI check fails, fix immediately before proceeding
+- [ ] Do NOT proceed to next phase until CI is green
+
 ### Commit Guidelines
 
 - [ ] Commit changes thematically — group related changes into logically cohesive commits
@@ -154,9 +164,17 @@ Suggested commit structure:
 
 ---
 
-## Manual API Verification
+## Manual Behavioral Verification
 
-N/A — this plan does not modify web UI or API endpoints.
+### OpenCode End-to-End Session Verification
+
+- [ ] Start an OpenCode session: `opencode` (or equivalent)
+- [ ] Verify `/caveman` command returns help text with modes listed
+- [ ] Verify `/caveman full` activates compression mode
+- [ ] Verify `/caveman-stats` shows token savings
+- [ ] Test `/caveman lite` and `/caveman ultra` mode switching
+- [ ] Test `/caveman-commit` with staged git changes
+- [ ] Document actual output of each command for record
 
 ---
 

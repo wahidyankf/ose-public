@@ -26,12 +26,12 @@ Reduce token consumption in OpenCode agent sessions by ~75% through compression-
 
 ### Business-Level Success Metrics
 
-| Metric                              | Measurement Method                                        |
-| ----------------------------------- | --------------------------------------------------------- |
-| Token reduction ≥75%                | `caveman-stats` before/after comparison                   |
-| caveman command functional          | `/caveman` returns help text in OpenCode session          |
-| Cross-agent memory operational      | `cavemem search` returns context from Claude Code session |
-| Zero technical accuracy degradation | Code/URLs/paths preserved byte-for-byte                   |
+| Metric                              | Measurement Method                                        | Notes                                                                                                         |
+| ----------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Token reduction ≥75%                | `caveman-stats` before/after comparison                   | **Projected target** — upstream benchmarks show ~75% reduction (caveman repo, May 2026); verify post-adoption |
+| caveman command functional          | `/caveman` returns help text in OpenCode session          |                                                                                                               |
+| Cross-agent memory operational      | `cavemem search` returns context from Claude Code session |                                                                                                               |
+| Zero technical accuracy degradation | Code/URLs/paths preserved byte-for-byte                   |                                                                                                               |
 
 ### Business-Scope Non-Goals
 

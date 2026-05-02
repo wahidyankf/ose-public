@@ -22,4 +22,7 @@ if [ -n "$RANGE" ]; then
   if echo "$CHANGED" | grep -qE '\.md$'; then
     npx nx run rhino-cli:validate:mermaid --args="--changed-only"
   fi
+  if echo "$CHANGED" | grep -qE '^governance/.*\.md$'; then
+    npx nx run rhino-cli:validate:governance-vendor-audit
+  fi
 fi

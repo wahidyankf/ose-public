@@ -93,6 +93,12 @@
       "cache": true,
       "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/governance/**/*.md", "{workspaceRoot}/.claude/**/*.md"],
       "outputs": []
+    },
+    "validate:governance-vendor-audit": {
+      "command": "CGO_ENABLED=0 go run -C apps/rhino-cli main.go governance vendor-audit governance/",
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*.go", "{workspaceRoot}/governance/**/*.md"],
+      "outputs": []
     }
   }
 }

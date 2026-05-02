@@ -471,15 +471,15 @@ category: explanation
 5. **Agent configuration files** - AGENTS.md, .claude/agents/\*.md, .opencode/agents/\*.md
    - AGENTS.md - Human-readable navigation document (~1,000 lines) for developers
    - .claude/agents/\*.md - Primary agent definitions (source of truth) read by developers to understand agent behavior
-   - .opencode/agents/\*.md - Secondary agent definitions (auto-generated from .claude/agents/) for OpenCode compatibility
+   - .opencode/agents/\*.md - Secondary agent definitions (auto-generated from .claude/agents/) for secondary platform binding compatibility
    - Emojis enhance scannability for:
      - Criticality level definitions (CRITICAL, HIGH, MEDIUM, LOW)
      - Section headers (Purpose, Key Concepts, Reference)
      - Status indicators in examples (PASS: Correct, FAIL: Incorrect, Warning)
 
 6. **Root configuration and skill files** - CLAUDE.md, .claude/skills/\*.md
-   - CLAUDE.md - Project guidance document for Claude Code sessions, human-readable
-   - .claude/skills/\*.md - Skill files for OpenCode compatibility (synced from .claude/skills/)
+   - CLAUDE.md - Project guidance document for coding agent sessions, human-readable
+   - .claude/skills/\*.md - Skill files for platform binding compatibility (synced from .claude/skills/)
    - Emojis support scannability of guidance and knowledge content read by developers
 
 **FAIL: DO NOT use emojis in these files:**

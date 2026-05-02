@@ -8,7 +8,7 @@ tags:
   - skills
   - architecture
   - constraints
-  - subagents
+  - delegated-agents
 created: 2026-01-22
 ---
 
@@ -20,19 +20,19 @@ This document defines the architectural constraint governing skill context modes
 
 This convention respects the following core principles:
 
-- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: Explicitly documents the architectural constraint preventing subagents from spawning other subagents. Makes the limitation visible and provides clear guidance on skill design decisions.
+- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: Explicitly documents the architectural constraint preventing delegated agents from spawning other delegated agents. Makes the limitation visible and provides clear guidance on skill design decisions.
 
-- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: Single-level subagent spawning prevents complex nested agent hierarchies. Skills remain simple knowledge containers that work everywhere, avoiding architectural complexity.
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: Single-level delegated agent spawning prevents complex nested agent hierarchies. Skills remain simple knowledge containers that work everywhere, avoiding architectural complexity.
 
 ## Conventions Implemented/Respected
 
 This development practice implements/respects the following conventions:
 
-- **[AI Agents Convention](./ai-agents.md)**: By establishing the architectural constraint that skills must be inline-compatible, this practice ensures agents can reliably compose skills without runtime failures. The AI Agents Convention defines agent structure and tool usage; this architecture ensures skills integrate seamlessly with that structure across both main conversation and subagent contexts.
+- **[AI Agents Convention](./ai-agents.md)**: By establishing the architectural constraint that skills must be inline-compatible, this practice ensures agents can reliably compose skills without runtime failures. The AI Agents Convention defines agent structure and tool usage; this architecture ensures skills integrate seamlessly with that structure across both main conversation and delegated agent contexts.
 
 ## Purpose
 
-This architectural decision establishes that all skills stored in the `.claude/skills/` directory must remain compatible with both main conversation agents and subagents. Since subagents cannot spawn other subagents (architectural constraint of Claude Code and OpenCode), skills with `context: fork` would be unusable in subagent contexts.
+This architectural decision establishes that all skills stored in the `.claude/skills/` directory must remain compatible with both main conversation agents and delegated agents. Since delegated agents cannot spawn other delegated agents (architectural constraint of AI coding agents), skills with `context: fork` would be unusable in delegated agent contexts.
 
 **Target Audience**:
 
@@ -44,9 +44,9 @@ This architectural decision establishes that all skills stored in the `.claude/s
 
 ### Core Limitation
 
-**Subagents cannot spawn other subagents.**
+**Delegated agents cannot spawn other delegated agents.**
 
-This is a fundamental architectural constraint of both Claude Code and OpenCode systems:
+This is a fundamental architectural constraint of AI coding agent systems:
 
 ```
 Main Conversation
@@ -59,15 +59,15 @@ Main Conversation
 
 ### Impact on Skills
 
-Since skills with `context: fork` spawn subagents:
+Since skills with `context: fork` spawn delegated agents:
 
-1. **Main conversation** can use fork skills ✅ (spawns subagent successfully)
-2. **Subagents** cannot use fork skills ❌ (would require spawning nested subagent)
+1. **Main conversation** can use fork skills ✅ (spawns delegated agent successfully)
+2. **Delegated agents** cannot use fork skills ❌ (would require spawning nested delegated agent)
 
 If `.claude/skills/` contains fork skills:
 
 - ✅ Work in main conversation
-- ❌ Break when used by subagents
+- ❌ Break when used by delegated agents
 - ❌ Reduce skill composability
 - ❌ Create confusing "works sometimes" behavior
 
@@ -77,15 +77,15 @@ If `.claude/skills/` contains fork skills:
 
 **Standard**: Skills in `.claude/skills/` support two context modes:
 
-- **Inline skills** (default): Omit `context` field or set `context: inline`. Work in BOTH main conversation AND subagent contexts.
-- **Fork skills** (`context: fork`): Work from MAIN CONVERSATION ONLY (subagents cannot spawn subagents).
+- **Inline skills** (default): Omit `context` field or set `context: inline`. Work in BOTH main conversation AND delegated agent contexts.
+- **Fork skills** (`context: fork`): Work from MAIN CONVERSATION ONLY (delegated agents cannot spawn delegated agents).
 
 **Rationale**:
 
-1. **Universal compatibility** - Work in both main conversation and subagent contexts
+1. **Universal compatibility** - Work in both main conversation and delegated agent contexts
 2. **Predictable behavior** - Skills always inject knowledge, never fail
 3. **Composability** - Agents can freely compose multiple skills
-4. **Subagent safety** - Subagents can use any skill without errors
+4. **Delegated agent safety** - Delegated agents can use any skill without errors
 
 ### Inline Context Mode
 
@@ -103,7 +103,7 @@ description: Knowledge about X for agents
 - **Progressive disclosure** - Name/description at startup, full content on-demand
 - **Knowledge injection** - Add standards and guidance to current conversation
 - **Convention packaging** - Bundle governance knowledge for efficient consumption
-- **Universal compatibility** - Work in main conversation AND subagent contexts
+- **Universal compatibility** - Work in main conversation AND delegated agent contexts
 - **Composition** - Multiple skills work together seamlessly
 
 **Tool usage**: Skills can use `Read`, `Grep`, `Glob` to reference convention documents but should not modify files.
@@ -143,7 +143,7 @@ For complex orchestration, use workflow documents (Layer 5) that coordinate mult
 3. Main conversation uses agent-fixer (separate invocation)
 ```
 
-This avoids subagent nesting while achieving similar orchestration goals.
+This avoids delegated agent nesting while achieving similar orchestration goals.
 
 ### Fork Skill Use Cases (Outside Repository)
 
@@ -152,9 +152,9 @@ Valid use cases for fork skills (in project-specific directories):
 - **Deep research** - Spawn Explore agent for focused investigation
 - **Specialized analysis** - Delegate complex analysis to specific agent type
 - **Parallel exploration** - Multiple fork skills explore different aspects
-- **Workflow delegation** - Main conversation orchestrates multiple subagents
+- **Workflow delegation** - Main conversation orchestrates multiple delegated agents
 
-**Key constraint**: These must be used from main conversation, never from subagents.
+**Key constraint**: These must be used from main conversation, never from delegated agents.
 
 ## Validation and Compliance
 
@@ -166,7 +166,7 @@ When creating or reviewing skills in `.claude/skills/`:
 - [ ] No `agent` field (only valid with `context: fork`)
 - [ ] Skill provides knowledge, not task delegation
 - [ ] Description focuses on knowledge domain, not agent spawning
-- [ ] Skill works identically in main conversation and subagent contexts
+- [ ] Skill works identically in main conversation and delegated agent contexts
 
 ### Common Mistakes
 
@@ -183,7 +183,7 @@ agent: Explore
 ---
 ```
 
-**Problem**: Breaks when subagents try to use this skill.
+**Problem**: Breaks when delegated agents try to use this skill.
 
 **Right**: Keep in `.claude/skills/` but document as main-conversation-only, or use a workflow approach.
 
@@ -247,7 +247,7 @@ graph TD
 **Key**:
 
 - Blue: Main conversation context
-- Purple: Subagent (forked) context
+- Purple: Delegated agent (forked) context
 - Green: Universal inline skills (works everywhere)
 - Orange: Fork skills (main conversation only)
 - Brown: Convention documents (governance layer)
@@ -300,13 +300,13 @@ Exit code 0 (no matches) = compliant, >0 = violations found.
 
 **The Rule**: Skills in `.claude/skills/` support both inline and fork modes.
 
-**The Reason**: Subagents cannot spawn other subagents (architectural constraint).
+**The Reason**: Delegated agents cannot spawn other delegated agents (architectural constraint).
 
-**The Impact**: Universal skill compatibility across main conversation and subagent contexts.
+**The Impact**: Universal skill compatibility across main conversation and delegated agent contexts.
 
-**Key distinction**: When writing skills for agents that may run as subagents, use inline mode for guaranteed compatibility.
+**Key distinction**: When writing skills for agents that may run as delegated agents, use inline mode for guaranteed compatibility.
 
-This architectural decision ensures skills work predictably everywhere, enabling confident skill composition and subagent usage throughout the repository.
+This architectural decision ensures skills work predictably everywhere, enabling confident skill composition and delegated agent usage throughout the repository.
 
 ---
 

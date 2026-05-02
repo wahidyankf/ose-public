@@ -11,14 +11,14 @@ The integration surface in this repository is entirely in two places:
 
 1. **`rhino-cli` converter**: the Go function `ConvertModel()` translates Claude
    Code model aliases to the correct OpenCode model ID. This is the single source
-   of truth for the model mapping. All `.opencode/agent/*.md` files are generated
+   of truth for the model mapping. All `.opencode/agents/*.md` files are generated
    from it; they are never edited manually.
 2. **`.opencode/opencode.json`**: configures the default model, small model,
    provider credentials, and MCP servers for OpenCode sessions.
 
 ```mermaid
 flowchart TD
-    A[".claude/agents/*.md\nmodel: sonnet / haiku / omit"] -->|"rhino-cli ConvertModel()"| B[".opencode/agent/*.md\nmodel: opencode-go/minimax-m2.7"]
+    A[".claude/agents/*.md\nmodel: sonnet / haiku / omit"] -->|"rhino-cli ConvertModel()"| B[".opencode/agents/*.md\nmodel: opencode-go/minimax-m2.7"]
     C[".opencode/opencode.json\nmodel · small_model · provider · mcp"] --> D["OpenCode Session"]
     B --> D
     D -->|"OPENCODE_API_KEY\n(auth.json or provider block)"| E["opencode.ai/go API"]
@@ -43,23 +43,23 @@ agentic code generation on real GitHub issues.
 > different evaluation suites with different difficulty distributions. Scores
 > across suites are directionally comparable but not directly equivalent.
 
-| Model | Tier | Provider | Score | Suite | Source |
-| ----- | ---- | -------- | ----- | ----- | ------ |
-| `minimax-m2.7` | Large (new) | OpenCode Go | 56.22%¹ | SWE-Pro | minimax.io/news/minimax-m27-en, 2026-04-30 |
-| `glm-5` | Small (new) | OpenCode Go | — | — | No published score |
-| `glm-5.1` | Large (current) | Z.ai | 58.4%² | SWE-Bench Pro | _Judgment call_ — widely cited, no canonical URL |
-| `glm-5-turbo` | Small (current) | Z.ai | — | — | No published score |
-| Claude Opus 4.7 | — | Claude Code | 87.6%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-opus-4, accessed 2026-04-30 |
-| Claude Sonnet 4.6 | — | Claude Code | 79.6%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-sonnet-4-6, accessed 2026-04-30 |
-| Claude Haiku 4.5 | — | Claude Code | 73.3%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-haiku-4-5, accessed 2026-04-30 |
+| Model             | Tier            | Provider    | Score   | Suite              | Source                                                                |
+| ----------------- | --------------- | ----------- | ------- | ------------------ | --------------------------------------------------------------------- |
+| `minimax-m2.7`    | Large (new)     | OpenCode Go | 56.22%¹ | SWE-Pro            | minimax.io/news/minimax-m27-en, 2026-04-30                            |
+| `glm-5`           | Small (new)     | OpenCode Go | —       | —                  | No published score                                                    |
+| `glm-5.1`         | Large (current) | Z.ai        | 58.4%²  | SWE-Bench Pro      | _Judgment call_ — widely cited, no canonical URL                      |
+| `glm-5-turbo`     | Small (current) | Z.ai        | —       | —                  | No published score                                                    |
+| Claude Opus 4.7   | —               | Claude Code | 87.6%³  | SWE-Bench Verified | https://www.anthropic.com/news/claude-opus-4, accessed 2026-04-30     |
+| Claude Sonnet 4.6 | —               | Claude Code | 79.6%³  | SWE-Bench Verified | https://www.anthropic.com/news/claude-sonnet-4-6, accessed 2026-04-30 |
+| Claude Haiku 4.5  | —               | Claude Code | 73.3%³  | SWE-Bench Verified | https://www.anthropic.com/news/claude-haiku-4-5, accessed 2026-04-30  |
 
 ¹ "MiniMax M2.7 achieved a 56.22% accuracy rate on SWE-Pro" —
-  https://www.minimax.io/news/minimax-m27-en, accessed 2026-04-30.
-  Predecessor M2.5 scored 80.2% on SWE-Bench Verified (a different, lower-difficulty
-  suite): https://www.minimax.io/news/minimax-m25, accessed 2026-04-30.
+https://www.minimax.io/news/minimax-m27-en, accessed 2026-04-30.
+Predecessor M2.5 scored 80.2% on SWE-Bench Verified (a different, lower-difficulty
+suite): https://www.minimax.io/news/minimax-m25, accessed 2026-04-30.
 
 ² GLM-5.1 score is widely referenced in community benchmarks but no single
-  canonical citation is available. _Judgment call_: used as directional baseline.
+canonical citation is available. _Judgment call_: used as directional baseline.
 
 ³ Claude model scores from Anthropic's published release notes: https://www.anthropic.com/news/claude-sonnet-4-6 (Sonnet 4.6), https://www.anthropic.com/news/claude-opus-4 (Opus 4.7), https://www.anthropic.com/news/claude-haiku-4-5 (Haiku 4.5) — all accessed 2026-04-30.
 
@@ -436,17 +436,17 @@ the "Why No Separate GLM Opus Tier" subsection) with:
 ````markdown
 ## OpenCode / OpenCode Go Equivalents
 
-Agents in `.claude/agents/` are auto-synced to `.opencode/agent/` by rhino-cli
+Agents in `.claude/agents/` are auto-synced to `.opencode/agents/` by rhino-cli
 (`npm run sync:claude-to-opencode`). The sync translates Claude model aliases to
 OpenCode Go model IDs.
 
 ### Model ID Mapping
 
-| Claude Code              | OpenCode Go                | Capability notes                                          |
-| ------------------------ | -------------------------- | --------------------------------------------------------- |
+| Claude Code              | OpenCode Go                | Capability notes                                                                                 |
+| ------------------------ | -------------------------- | ------------------------------------------------------------------------------------------------ |
 | omit (opus-tier inherit) | `opencode-go/minimax-m2.7` | MiniMax MoE; SWE-Pro 56.22% (M2.5 predecessor: 80.2% SWE-Bench Verified); highest in OpenCode Go |
-| `model: sonnet`          | `opencode-go/minimax-m2.7` | Same model as opus-tier (no separate sonnet tier)         |
-| `model: haiku`           | `opencode-go/glm-5`        | Zhipu GLM lighter variant; fast/cheap for mechanical work |
+| `model: sonnet`          | `opencode-go/minimax-m2.7` | Same model as opus-tier (no separate sonnet tier)                                                |
+| `model: haiku`           | `opencode-go/glm-5`        | Zhipu GLM lighter variant; fast/cheap for mechanical work                                        |
 
 ### 3-to-2 Tier Collapse
 
@@ -461,19 +461,19 @@ uses the highest-benchmark available model for all non-haiku work.
 
 ### Model Benchmark Table
 
-| Model | SWE-Bench Score | Suite | Source |
-| ----- | --------------- | ----- | ------ |
-| `opencode-go/minimax-m2.7` (new large) | 56.22%¹ | SWE-Pro | minimax.io/news/minimax-m27-en, 2026-04-30 |
-| `opencode-go/glm-5` (new haiku) | — | — | No published score; fast/cheap |
-| `zai-coding-plan/glm-5.1` (current large) | 58.4%² | SWE-Bench Pro | _Judgment call_ — widely cited |
-| `zai-coding-plan/glm-5-turbo` (current haiku) | — | — | No published score |
-| Claude Sonnet 4.6 (Claude Code reference) | 79.6%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-sonnet-4-6, 2026-04-30 |
-| Claude Opus 4.7 (Claude Code reference) | 87.6%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-opus-4, 2026-04-30 |
+| Model                                         | SWE-Bench Score | Suite              | Source                                                       |
+| --------------------------------------------- | --------------- | ------------------ | ------------------------------------------------------------ |
+| `opencode-go/minimax-m2.7` (new large)        | 56.22%¹         | SWE-Pro            | minimax.io/news/minimax-m27-en, 2026-04-30                   |
+| `opencode-go/glm-5` (new haiku)               | —               | —                  | No published score; fast/cheap                               |
+| `zai-coding-plan/glm-5.1` (current large)     | 58.4%²          | SWE-Bench Pro      | _Judgment call_ — widely cited                               |
+| `zai-coding-plan/glm-5-turbo` (current haiku) | —               | —                  | No published score                                           |
+| Claude Sonnet 4.6 (Claude Code reference)     | 79.6%³          | SWE-Bench Verified | https://www.anthropic.com/news/claude-sonnet-4-6, 2026-04-30 |
+| Claude Opus 4.7 (Claude Code reference)       | 87.6%³          | SWE-Bench Verified | https://www.anthropic.com/news/claude-opus-4, 2026-04-30     |
 
 ¹ "MiniMax M2.7 achieved a 56.22% accuracy rate on SWE-Pro" —
-  https://www.minimax.io/news/minimax-m27-en, accessed 2026-04-30.
-  Predecessor M2.5 scored 80.2% on SWE-Bench Verified (different suite):
-  https://www.minimax.io/news/minimax-m25, accessed 2026-04-30.
+https://www.minimax.io/news/minimax-m27-en, accessed 2026-04-30.
+Predecessor M2.5 scored 80.2% on SWE-Bench Verified (different suite):
+https://www.minimax.io/news/minimax-m25, accessed 2026-04-30.
 
 ² _Judgment call_: no canonical citation; widely referenced figure.
 
@@ -525,7 +525,7 @@ npm run sync:claude-to-opencode
 
 This rebuilds `rhino-cli`, then calls `rhino-cli agents sync` which reads every
 `.claude/agents/*.md`, calls `ConvertModel()` for each agent's `model` field,
-and writes the result to `.opencode/agent/*.md`. The resulting files will contain
+and writes the result to `.opencode/agents/*.md`. The resulting files will contain
 `opencode-go/minimax-m2.7` or `opencode-go/glm-5` throughout.
 
 ## Environment Setup for Developers

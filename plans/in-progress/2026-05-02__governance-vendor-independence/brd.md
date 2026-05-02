@@ -72,7 +72,10 @@ This plan brings `ose-public` in line with that convergence. Doing nothing means
 ## Success Outcomes
 
 - A new contributor using Cursor (or any non-Claude tool) can clone `ose-public`, read `AGENTS.md` + `governance/`, and produce a compliant change without ever opening `.claude/`.
-- A grep over `governance/**` for `Claude Code|Anthropic|Sonnet|Opus|Haiku|\.claude/|\.opencode/` returns only references inside an explicit "platform binding examples" section, not as load-bearing prose.
+- A reader scanning governance documents encounters no load-bearing vendor-specific terms
+  outside designated platform-binding example sections — tool names, model names, and
+  vendor dotdir paths appear only where explicitly labelled as binding examples, not
+  woven into the explanatory prose.
 - The `repo-rules-checker` (or a new linter) flags vendor-term reintroduction in `governance/` as a CRITICAL/HIGH governance finding.
 - All four prod sites still build green; all subagent workflows still execute green; pre-push hook still passes.
 

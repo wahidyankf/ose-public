@@ -12,11 +12,11 @@ files are generated correctly from the new provider IDs automatically.
 
 ## Personas
 
-| Persona | Description |
-| ------- | ----------- |
-| Developer (OpenCode sessions) | Uses OpenCode as a secondary coding assistant alongside Claude Code. Benefits from improved model quality and integrated Exa web search without changing the workflow. |
-| CI / rhino-cli maintainer | Owns the Go code in `apps/rhino-cli/`. Applies model mapping changes and updates test expectations. Runs `npm run validate:config` and `npm run sync:claude-to-opencode` after changes. |
-| Repository governance reviewer | Reviews `model-selection.md` to verify model equivalents table is accurate and that the documented mapping matches the code. |
+| Persona                        | Description                                                                                                                                                                             |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Developer (OpenCode sessions)  | Uses OpenCode as a secondary coding assistant alongside Claude Code. Benefits from improved model quality and integrated Exa web search without changing the workflow.                  |
+| CI / rhino-cli maintainer      | Owns the Go code in `apps/rhino-cli/`. Applies model mapping changes and updates test expectations. Runs `npm run validate:config` and `npm run sync:claude-to-opencode` after changes. |
+| Repository governance reviewer | Reviews `model-selection.md` to verify model equivalents table is accurate and that the documented mapping matches the code.                                                            |
 
 ## Product Scope
 
@@ -25,7 +25,7 @@ files are generated correctly from the new provider IDs automatically.
 - Update `ConvertModel()` in `rhino-cli` to output `opencode-go/*` model IDs
 - Update all `rhino-cli` unit and integration tests for new model IDs
 - Update `.opencode/opencode.json` model fields, provider block, and MCP entries
-- Regenerate all `.opencode/agents/*.md` files via the existing sync mechanism (plural path; the prerequisite [validate-claude-opencode-sync-correctness](../2026-05-02__validate-claude-opencode-sync-correctness/README.md) plan ensures the sync targets `.opencode/agents/`)
+- Regenerate all `.opencode/agents/*.md` files via the existing sync mechanism (plural path; the prerequisite [validate-claude-opencode-sync-correctness](../../done/2026-05-02__validate-claude-opencode-sync-correctness/README.md) plan ensures the sync targets `.opencode/agents/`)
 - Update `model-selection.md` with the new OpenCode Go equivalents table and web search documentation
 - Document Exa web search as the primary search mechanism (`OPENCODE_ENABLE_EXA=true`)
 
@@ -39,12 +39,12 @@ files are generated correctly from the new provider IDs automatically.
 
 ## Product Risks
 
-| Risk | User Impact | Mitigation |
-| ---- | ----------- | ---------- |
-| Exa web search does not work with `opencode-go/*` models | Developer loses web search capability temporarily | Perplexity MCP is configured as a provider-agnostic fallback |
-| Model slug (`minimax-m2.7`) differs from actual OpenCode Go roster | Empty or error sessions; no model connects | Phase 0 slug verification step catches this before any code changes |
-| OpenCode Go beta outage | Developer cannot use OpenCode sessions | Claude Code remains the primary tool; OpenCode is secondary |
-| M2.7 quality below expectations | Developer perception of degraded session quality | Rollback plan exists: revert commits, re-run sync; isolated to `rhino-cli` + config |
+| Risk                                                               | User Impact                                       | Mitigation                                                                          |
+| ------------------------------------------------------------------ | ------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Exa web search does not work with `opencode-go/*` models           | Developer loses web search capability temporarily | Perplexity MCP is configured as a provider-agnostic fallback                        |
+| Model slug (`minimax-m2.7`) differs from actual OpenCode Go roster | Empty or error sessions; no model connects        | Phase 0 slug verification step catches this before any code changes                 |
+| OpenCode Go beta outage                                            | Developer cannot use OpenCode sessions            | Claude Code remains the primary tool; OpenCode is secondary                         |
+| M2.7 quality below expectations                                    | Developer perception of degraded session quality  | Rollback plan exists: revert commits, re-run sync; isolated to `rhino-cli` + config |
 
 ## User Stories
 
@@ -53,7 +53,7 @@ files are generated correctly from the new provider IDs automatically.
    monthly rate, with Exa web search available out of the box.
 2. As a rhino-cli maintainer, I want `ConvertModel()` to output `opencode-go/*`
    model IDs so that agent sync files reflect the correct provider automatically
-   without manual editing of any `.opencode/agent/*.md` file.
+   without manual editing of any `.opencode/agents/*.md` file.
 
 ## Functional Requirements
 
@@ -113,7 +113,7 @@ After running `npm run sync:claude-to-opencode`, every file under
 (for haiku-tier agents) — no file must contain `zai-coding-plan/*`. The
 singular `.opencode/agent/` directory must NOT exist after this plan completes;
 its removal is owned by the prerequisite
-[validate-claude-opencode-sync-correctness](../2026-05-02__validate-claude-opencode-sync-correctness/README.md)
+[validate-claude-opencode-sync-correctness](../../done/2026-05-02__validate-claude-opencode-sync-correctness/README.md)
 plan.
 
 ### FR-5: rhino-cli test suite passes
@@ -173,7 +173,7 @@ Go provider, including:
 - **No regression in Claude Code**: `.claude/agents/*.md` files are not modified.
   Claude Code model aliases (`sonnet`, `haiku`, omit) remain unchanged.
 - **No broken sync**: the sync mechanism (`rhino-cli agents sync`) continues to
-  produce semantically valid `.opencode/agent/*.md` files.
+  produce semantically valid `.opencode/agents/*.md` files.
 - **API key not hardcoded**: the OpenCode Go API key must be sourced from the
   `OPENCODE_GO_API_KEY` environment variable via `{env:OPENCODE_GO_API_KEY}`.
   The key must never appear in any committed file.

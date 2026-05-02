@@ -46,21 +46,21 @@ agentic code generation on real GitHub issues.
 > different evaluation suites with different difficulty distributions. Scores
 > across suites are directionally comparable but not directly equivalent.
 
-| Model | Role | Score | Suite | Source |
-| ----- | ---- | ----- | ----- | ------ |
-| `opencode-go/minimax-m2.7` | New large (opus + sonnet) | 56.22%¹ | SWE-Pro | minimax.io/news/minimax-m27-en, accessed 2026-04-30 |
-| `zai-coding-plan/glm-5.1` | Current large | 58.4%² | SWE-Bench Pro | _Judgment call_: widely cited in community benchmarks; no single canonical URL available |
-| Claude Sonnet 4.6 | Claude Code reference | 79.6%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-sonnet-4-6, accessed 2026-04-30 |
-| Claude Opus 4.7 | Claude Code reference | 87.6%³ | SWE-Bench Verified | https://www.anthropic.com/news/claude-opus-4, accessed 2026-04-30 |
+| Model                      | Role                      | Score   | Suite              | Source                                                                                   |
+| -------------------------- | ------------------------- | ------- | ------------------ | ---------------------------------------------------------------------------------------- |
+| `opencode-go/minimax-m2.7` | New large (opus + sonnet) | 56.22%¹ | SWE-Pro            | minimax.io/news/minimax-m27-en, accessed 2026-04-30                                      |
+| `zai-coding-plan/glm-5.1`  | Current large             | 58.4%²  | SWE-Bench Pro      | _Judgment call_: widely cited in community benchmarks; no single canonical URL available |
+| Claude Sonnet 4.6          | Claude Code reference     | 79.6%³  | SWE-Bench Verified | https://www.anthropic.com/news/claude-sonnet-4-6, accessed 2026-04-30                    |
+| Claude Opus 4.7            | Claude Code reference     | 87.6%³  | SWE-Bench Verified | https://www.anthropic.com/news/claude-opus-4, accessed 2026-04-30                        |
 
 ¹ "MiniMax M2.7 achieved a 56.22% accuracy rate on SWE-Pro" —
-  MiniMax M2.7 launch announcement: https://www.minimax.io/news/minimax-m27-en, accessed 2026-04-30.
-  Predecessor M2.5 scored 80.2% on SWE-Bench Verified (different suite):
-  https://www.minimax.io/news/minimax-m25, accessed 2026-04-30.
+MiniMax M2.7 launch announcement: https://www.minimax.io/news/minimax-m27-en, accessed 2026-04-30.
+Predecessor M2.5 scored 80.2% on SWE-Bench Verified (different suite):
+https://www.minimax.io/news/minimax-m25, accessed 2026-04-30.
 
 ² GLM-5.1 SWE-Bench Pro score is widely referenced in community benchmarks but has
-  no single canonical citation available at time of writing. _Judgment call_: the
-  58.4% figure is used as the directional baseline for comparison.
+no single canonical citation available at time of writing. _Judgment call_: the
+58.4% figure is used as the directional baseline for comparison.
 
 ³ Claude model scores from Anthropic's published release notes: https://www.anthropic.com/news/claude-sonnet-4-6 (Sonnet 4.6), https://www.anthropic.com/news/claude-opus-4 (Opus 4.7), https://www.anthropic.com/news/claude-haiku-4-5 (Haiku 4.5) — all accessed 2026-04-30.
 
@@ -78,8 +78,9 @@ not on a like-for-like score comparison.
 
 - Agentic sessions that chain 10+ tool calls currently bottleneck on Z.ai latency.
   A faster, geo-distributed provider reduces wall-clock time for plan execution.
-- GLM-5.1's 58.4% SWE-Bench Pro ceiling means some agentic code tasks require human
-  correction. MiniMax M2.7 is the latest model from a lab whose prior release (M2.5)
+- GLM-5.1's 58.4% (_Judgment call_ — no canonical citation) SWE-Bench Pro ceiling means
+  some agentic code tasks require human correction. MiniMax M2.7 is the latest model from
+  a lab whose prior release (M2.5)
   scored 80.2% on SWE-Bench Verified — the open-source leaderboard leader. The exact
   M2.7 vs GLM-5.1 gain is inconclusive across different benchmark suites; adoption
   is grounded in lab trajectory and model recency.
@@ -114,12 +115,12 @@ than empirical (measured improvement in task completion rate).
 
 ## Affected Roles
 
-| Role | Impact |
-| ---- | ------ |
-| Developer (OpenCode sessions) | Model quality improves; web-search MCP moves to Perplexity |
-| Developer (Claude Code sessions) | No change — Claude Code uses its own model routing |
-| CI / rhino-cli maintainer | Go code + tests updated; sync regeneration run once |
-| Repository governance | `model-selection.md` table updated to reflect new equivalents |
+| Role                             | Impact                                                        |
+| -------------------------------- | ------------------------------------------------------------- |
+| Developer (OpenCode sessions)    | Model quality improves; web-search MCP moves to Perplexity    |
+| Developer (Claude Code sessions) | No change — Claude Code uses its own model routing            |
+| CI / rhino-cli maintainer        | Go code + tests updated; sync regeneration run once           |
+| Repository governance            | `model-selection.md` table updated to reflect new equivalents |
 
 ## Non-Goals
 
@@ -134,8 +135,8 @@ than empirical (measured improvement in task completion rate).
 
 ## Business Risks
 
-| Risk | Likelihood | Business Impact | Mitigation |
-| ---- | ---------- | --------------- | ---------- |
-| OpenCode Go beta instability causes session disruptions | Medium | Developer productivity loss during active agentic work | Claude Code remains primary; OpenCode is secondary interface. Rollback: revert 3 commits + regenerate sync |
-| MiniMax M2.7 underperforms expectations (56.22% SWE-Pro may not reflect real-world quality) | Medium | Marginal quality improvement over Z.ai, not meeting BG-1 | Per-session model override available; swap to `kimi-k2.6` or `deepseek-v4-pro` via one-line change |
-| Exa web search incompatible with OpenCode Go models | Low | No native web search in OpenCode sessions; Perplexity MCP fallback activates | Perplexity MCP pre-configured; Brave Search MCP documented as alternative |
+| Risk                                                                                        | Likelihood | Business Impact                                                              | Mitigation                                                                                                 |
+| ------------------------------------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| OpenCode Go beta instability causes session disruptions                                     | Medium     | Developer productivity loss during active agentic work                       | Claude Code remains primary; OpenCode is secondary interface. Rollback: revert 3 commits + regenerate sync |
+| MiniMax M2.7 underperforms expectations (56.22% SWE-Pro may not reflect real-world quality) | Medium     | Marginal quality improvement over Z.ai, not meeting BG-1                     | Per-session model override available; swap to `kimi-k2.6` or `deepseek-v4-pro` via one-line change         |
+| Exa web search incompatible with OpenCode Go models                                         | Low        | No native web search in OpenCode sessions; Perplexity MCP fallback activates | Perplexity MCP pre-configured; Brave Search MCP documented as alternative                                  |

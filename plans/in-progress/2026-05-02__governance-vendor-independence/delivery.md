@@ -307,6 +307,15 @@ For each file: read whole file, classify each match, rewrite per recipe (tech-do
 - [ ] Read `apps/rhino-cli/` to identify existing subcommand structure (likely cobra-based per Go convention).
 - [ ] Read `governance/development/workflow/test-driven-development.md` for the project's TDD expectations.
 - [ ] Read `governance/development/infra/bdd-spec-test-mapping.md` for the godog scenario style.
+- [ ] Confirm the spec path prefix before creating the new feature file:
+
+  ```bash
+  find specs/ -name "*.feature" | head -5
+  ```
+
+  Expect: paths matching `specs/apps/rhino/cli/gherkin/<name>.feature`. If the
+  actual structure differs (e.g., `specs/apps/rhino-cli/`), use the confirmed
+  prefix throughout Phase 5 instead of the path shown in the steps below.
 
 ### Steps — Scaffolding
 

@@ -248,9 +248,23 @@ Files identified as vendor-tainted (65 of 157), grouped by refactor weight:
 
 **Tier A — heavy lift (> 30 KB, deep structural rewrite)**:
 
-- `governance/development/agents/ai-agents.md` (112.7 KB)
-- `governance/repository-governance-architecture.md` (30.5 KB)
-- `governance/conventions/structure/ose-primer-sync.md` (38.4 KB)
+> **Note**: The list below reflects the authoritative delivery.md Phase 3.A checklist.
+> The original recon identified 3 representative files; the full Phase 3.A inventory
+> expanded to 12 files after a thorough sweep. `delivery.md` is the authoritative
+> execution checklist; this section is an illustrative sample of the heaviest files.
+
+- `governance/development/agents/ai-agents.md` (115 KB)
+- `governance/conventions/tutorials/in-the-field.md` (99 KB)
+- `governance/conventions/hugo/ayokoding.md` (78 KB)
+- `governance/conventions/tutorials/by-example.md` (66 KB)
+- `governance/conventions/formatting/diagrams.md` (65 KB)
+- `governance/development/quality/criticality-levels.md` (43 KB)
+- `governance/development/pattern/maker-checker-fixer.md` (40 KB)
+- `governance/workflows/plan/plan-execution.md` (39 KB)
+- `governance/conventions/structure/ose-primer-sync.md` (39 KB)
+- `governance/conventions/formatting/color-accessibility.md` (37 KB)
+- `governance/development/quality/fixer-confidence-levels.md` (36 KB)
+- `governance/repository-governance-architecture.md` (31 KB)
 
 **Tier B — moderate lift (10-30 KB)**:
 

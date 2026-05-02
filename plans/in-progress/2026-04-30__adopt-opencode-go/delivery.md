@@ -69,6 +69,14 @@ This plan executes inside the `ose-public` subrepo worktree:
 
 ## Phase 0 — Prerequisites, Slug Verification, and Exa Smoke-Test (Manual, No Code)
 
+> **Execution order note**: Phase 5 (color field translation) was executed ahead of
+> Phases 1–4 as an opportunistic followup triggered by an OpenCode 1.14.31 breaking
+> change (2026-05-02). The color translation work was independent of the OpenCode Go
+> provider migration and did not require `OPENCODE_GO_API_KEY`. Phases 1–4 remain the
+> primary migration work and require an active OpenCode Go subscription before they
+> can proceed. An executor seeing Phase 5 already checked off but Phases 1–4 unchecked
+> is in the correct state — not a sign of a corrupted checklist.
+
 ### Prerequisite plan gate
 
 - [ ] Confirm the validate-claude-opencode-sync-correctness plan is in
@@ -135,51 +143,13 @@ This plan executes inside the `ose-public` subrepo worktree:
 
 ---
 
-## Phase 1 — rhino-cli Go Source Changes
+## Phase 1 — rhino-cli Test Changes (RED — write failing tests first)
 
-### 1.1 Update `ConvertModel()` in converter.go
+> **TDD order**: Write the failing tests first (RED), then implement (GREEN). The test
+> files below expect `opencode-go/*` model IDs; they will fail against the current
+> `zai-coding-plan/*` source until Phase 2 implements the changes.
 
-- [ ] Open `apps/rhino-cli/internal/agents/converter.go`
-- [ ] Replace the `ConvertModel()` function body:
-  - Remove: cases for `"sonnet"`, `"opus"` returning `"zai-coding-plan/glm-5.1"`
-  - Remove: `default` returning `"zai-coding-plan/glm-5.1"`
-  - Remove: case for `"haiku"` returning `"zai-coding-plan/glm-5-turbo"`
-  - Add: case `"haiku"` returning `"opencode-go/glm-5"` (or verified slug)
-  - Add: `default` returning `"opencode-go/minimax-m2.7"` (or verified slug)
-- [ ] The `"sonnet"` and `"opus"` explicit cases can be removed (both fall into
-      `default`) — keep the switch readable with just `"haiku"` and `default`
-
-### 1.2 Update `OpenCodeAgent` struct comment in types.go
-
-- [ ] Open `apps/rhino-cli/internal/agents/types.go`
-- [ ] Line 23: change the inline comment from
-      `// "zai-coding-plan/glm-5.1" | "zai-coding-plan/glm-5-turbo"` to
-      `// "opencode-go/minimax-m2.7" | "opencode-go/glm-5"`
-
-### 1.3 Update comment in agents_sync.go
-
-- [ ] Open `apps/rhino-cli/cmd/agents_sync.go`
-- [ ] Line 25: update the model-mapping comment to reference OpenCode Go IDs
-      instead of `zai-coding-plan/*`
-
-### 1.4 Update comment in agents_validate_sync.go
-
-- [ ] Open `apps/rhino-cli/cmd/agents_validate_sync.go`
-- [ ] Line 21: update the model-mapping comment to reference OpenCode Go IDs
-
-### 1.5 Commit source changes
-
-- [ ] Stage and commit:
-
-  ```
-  feat(rhino-cli): switch ConvertModel to opencode-go provider IDs
-  ```
-
----
-
-## Phase 2 — rhino-cli Test Changes
-
-### 2.1 Update converter_test.go
+### 1.1 Update converter_test.go
 
 - [ ] Open `apps/rhino-cli/internal/agents/converter_test.go`
 - [ ] In `TestConvertModel`, update the 6 table test cases:
@@ -192,7 +162,7 @@ This plan executes inside the `ose-public` subrepo worktree:
 - [ ] Find assertions `agent.Model != "zai-coding-plan/glm-5.1"` (around lines 245
       and 345); update to `"opencode-go/minimax-m2.7"`
 
-### 2.2 Update types_test.go
+### 1.2 Update types_test.go
 
 - [ ] Open `apps/rhino-cli/internal/agents/types_test.go`
 - [ ] In `TestOpenCodeAgent`: update `Model: "zai-coding-plan/glm-5.1"` to
@@ -200,7 +170,7 @@ This plan executes inside the `ose-public` subrepo worktree:
 - [ ] Update the assertion string `"zai-coding-plan/glm-5.1"` to
       `"opencode-go/minimax-m2.7"`
 
-### 2.3 Update sync_validator_test.go
+### 1.3 Update sync_validator_test.go
 
 - [ ] Open `apps/rhino-cli/internal/agents/sync_validator_test.go`
 - [ ] Find all occurrences of `"zai-coding-plan/glm-5.1"` in OpenCode fixture
@@ -210,7 +180,7 @@ This plan executes inside the `ose-public` subrepo worktree:
       `// Claude uses "sonnet" → should convert to "zai-coding-plan/glm-5.1"` to
       `// Claude uses "sonnet" → should convert to "opencode-go/minimax-m2.7"`
 
-### 2.4 Update steps_common_test.go
+### 1.4 Update steps_common_test.go
 
 - [ ] Open `apps/rhino-cli/cmd/steps_common_test.go`
 - [ ] Rename the constant at line 85:
@@ -219,7 +189,7 @@ This plan executes inside the `ose-public` subrepo worktree:
 - [ ] Update the regex value from
       `"zai-coding-plan/glm-5\.1"` to `"opencode-go/minimax-m2\.7"`
 
-### 2.5 Update agents_sync.integration_test.go
+### 1.5 Update agents_sync.integration_test.go
 
 - [ ] Open `apps/rhino-cli/cmd/agents_sync.integration_test.go`
 - [ ] Lines ~193–194: replace `"zai-coding-plan/glm-5.1"` with
@@ -227,19 +197,75 @@ This plan executes inside the `ose-public` subrepo worktree:
 - [ ] Line ~217: replace `stepCorrespondingOpenCodeAgentUsesZaiGlmModel` with
       `stepCorrespondingOpenCodeAgentUsesOpenCodeGoModel`
 
-### 2.6 Update agents_validate_sync.integration_test.go
+### 1.6 Update agents_validate_sync.integration_test.go
 
 - [ ] Open `apps/rhino-cli/cmd/agents_validate_sync.integration_test.go`
 - [ ] Lines ~66, 117, 144: replace `"zai-coding-plan/glm-5.1"` with
       `"opencode-go/minimax-m2.7"` in OpenCode fixture strings
 
-### 2.7 Update agents_validate_naming.integration_test.go
+### 1.7 Update agents_validate_naming.integration_test.go
 
 - [ ] Open `apps/rhino-cli/cmd/agents_validate_naming.integration_test.go`
 - [ ] Line ~56: replace `"zai-coding-plan/glm-5.1"` with
       `"opencode-go/minimax-m2.7"` in the OpenCode fixture string
 
-### 2.8 Verify rhino-cli tests pass
+### 1.8 Confirm tests are RED (fail against current source)
+
+- [ ] Run unit tests and confirm they fail with model ID mismatches:
+
+  ```bash
+  nx run rhino-cli:test:unit
+  ```
+
+  Expect: failures referencing `zai-coding-plan/*` vs `opencode-go/*`. If tests
+  pass here, the test changes did not take effect — re-check before proceeding.
+
+### 1.9 Commit test changes (RED commit)
+
+- [ ] Stage and commit:
+
+  ```
+  test(rhino-cli): update model ID expectations to opencode-go
+  ```
+
+---
+
+## Phase 2 — rhino-cli Go Source Changes (GREEN — implement to make tests pass)
+
+> **TDD order**: These source changes implement the GREEN step. Run the test suite
+> after each sub-step to track progress toward all-green.
+
+### 2.1 Update `ConvertModel()` in converter.go
+
+- [ ] Open `apps/rhino-cli/internal/agents/converter.go`
+- [ ] Replace the `ConvertModel()` function body:
+  - Remove: cases for `"sonnet"`, `"opus"` returning `"zai-coding-plan/glm-5.1"`
+  - Remove: `default` returning `"zai-coding-plan/glm-5.1"`
+  - Remove: case for `"haiku"` returning `"zai-coding-plan/glm-5-turbo"`
+  - Add: case `"haiku"` returning `"opencode-go/glm-5"` (or verified slug)
+  - Add: `default` returning `"opencode-go/minimax-m2.7"` (or verified slug)
+- [ ] The `"sonnet"` and `"opus"` explicit cases can be removed (both fall into
+      `default`) — keep the switch readable with just `"haiku"` and `default`
+
+### 2.2 Update `OpenCodeAgent` struct comment in types.go
+
+- [ ] Open `apps/rhino-cli/internal/agents/types.go`
+- [ ] Line 23: change the inline comment from
+      `// "zai-coding-plan/glm-5.1" | "zai-coding-plan/glm-5-turbo"` to
+      `// "opencode-go/minimax-m2.7" | "opencode-go/glm-5"`
+
+### 2.3 Update comment in agents_sync.go
+
+- [ ] Open `apps/rhino-cli/cmd/agents_sync.go`
+- [ ] Line 25: update the model-mapping comment to reference OpenCode Go IDs
+      instead of `zai-coding-plan/*`
+
+### 2.4 Update comment in agents_validate_sync.go
+
+- [ ] Open `apps/rhino-cli/cmd/agents_validate_sync.go`
+- [ ] Line 21: update the model-mapping comment to reference OpenCode Go IDs
+
+### 2.5 Verify rhino-cli tests pass
 
 - [ ] Build rhino-cli:
 
@@ -287,12 +313,12 @@ This plan executes inside the `ose-public` subrepo worktree:
 
   Expect: green
 
-### 2.9 Commit test changes
+### 2.6 Commit source changes (GREEN commit)
 
 - [ ] Stage and commit:
 
   ```
-  test(rhino-cli): update model ID expectations to opencode-go
+  feat(rhino-cli): switch ConvertModel to opencode-go provider IDs
   ```
 
 ---
@@ -460,6 +486,15 @@ This plan executes inside the `ose-public` subrepo worktree:
 ---
 
 ## Phase 5 — Color Field Translation (Opportunistic Followup, 2026-05-02)
+
+> **TDD exception note**: Phase 5 was executed as an in-flight opportunistic followup
+> triggered by an OpenCode 1.14.31 breaking change discovered while Phases 1–4 awaited
+> an active OpenCode Go subscription. The color translation was independent of the
+> provider migration and could be fully tested without `OPENCODE_GO_API_KEY`. As a
+> result, implementation (5.1) preceded test updates (5.2) — the inverse of the
+> Red→Green order required for planned work. This is an accepted exception for
+> reactive, already-completed work; future phases follow the TDD order specified in
+> Phase 1/2 above.
 
 **Trigger.** OpenCode `1.14.31` started rejecting Claude-named colors with
 `Configuration is invalid ... Expected a string matching the RegExp ^#[0-9a-fA-F]{6}$, got "blue" color`.

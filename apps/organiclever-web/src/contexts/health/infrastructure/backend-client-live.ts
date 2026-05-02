@@ -1,6 +1,6 @@
 import { Effect, Layer } from "effect";
-import { BackendClient } from "@/services/backend-client";
-import { NetworkError } from "@/services/errors";
+import { BackendClient } from "./backend-client";
+import { NetworkError } from "./errors";
 
 const BACKEND_URL = process.env["ORGANICLEVER_BE_URL"] ?? "http://localhost:8202";
 

@@ -1,5 +1,5 @@
 import { Effect, Layer } from "effect";
-import { BackendClient } from "@/services/backend-client";
+import { BackendClient } from "./backend-client";
 
 export type MockResponses = {
   get?: (path: string) => unknown;

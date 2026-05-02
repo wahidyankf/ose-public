@@ -55,8 +55,10 @@ export default defineConfig({
         "src/lib/i18n/use-t.ts",
         "src/proxy.ts",
         "src/test/**",
-        "src/services/**",
-        "src/layers/**",
+        // Dormant BE integration code (legacy `src/services/` + `src/layers/`)
+        // — relocated to the health context's infrastructure layer in the
+        // DDD adoption migration. Still covered by e2e, not unit tests.
+        "src/contexts/health/infrastructure/**",
         "src/generated-contracts/**",
         "**/*.{test,spec}.{ts,tsx}",
         "**/*.stories.{ts,tsx}",

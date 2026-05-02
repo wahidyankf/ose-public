@@ -1,7 +1,7 @@
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, act, cleanup } from "@testing-library/react";
 import { Schema } from "effect";
-import { JournalEntry, EntryId, EntryName, IsoTimestamp } from "@/lib/journal/schema";
+import { JournalEntry, EntryId, EntryName, IsoTimestamp } from "@/contexts/journal/domain/schema";
 import type { UseJournalReturn } from "@/lib/journal/use-journal";
 
 // ---------------------------------------------------------------------------

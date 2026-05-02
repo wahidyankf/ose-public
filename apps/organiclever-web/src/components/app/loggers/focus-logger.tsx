@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Schema } from "effect";
 import { Input, Textarea } from "@open-sharia-enterprise/ts-ui";
 import { appendEntries } from "@/lib/journal/journal-store";
-import { EntryName, IsoTimestamp } from "@/lib/journal/schema";
+import { EntryName, IsoTimestamp } from "@/contexts/journal/domain/schema";
 import type { JournalRuntime } from "@/lib/journal/runtime";
 import { LoggerShell } from "./logger-shell";
 

@@ -6,7 +6,7 @@ import { PgliteService } from "./runtime";
 import { runMigrations } from "./run-migrations";
 import { listRoutines, saveRoutine, deleteRoutine, reorderRoutineExercises } from "./routine-store";
 import type { Routine, ExerciseGroup } from "./routine-store";
-import { NotFound } from "./errors";
+import { NotFound } from "@/contexts/journal/domain/errors";
 
 // ---------------------------------------------------------------------------
 // Test layer — in-memory PGlite with both migrations applied

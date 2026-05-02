@@ -17,7 +17,7 @@ import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
 import { Schema } from "effect";
-import { JournalEntry } from "@/lib/journal/schema";
+import { JournalEntry } from "@/contexts/journal/domain/schema";
 import { kindToHue, kindToIcon } from "@/components/app/home/kind-hue";
 
 // ---------------------------------------------------------------------------

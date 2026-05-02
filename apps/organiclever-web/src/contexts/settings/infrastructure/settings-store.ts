@@ -17,7 +17,7 @@
 
 import { Effect } from "effect";
 import { PgliteService } from "@/lib/journal/runtime";
-import { StorageUnavailable } from "@/lib/journal/errors";
+import { StorageUnavailable } from "@/contexts/journal/domain/errors";
 import type { AppSettings, RestSeconds, Lang } from "../domain";
 
 // Re-export domain types so that consumers importing from this module

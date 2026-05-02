@@ -3,9 +3,9 @@ import { Schema } from "effect";
 import type { Routine } from "@/lib/journal/routine-store";
 import type { AppSettings } from "@/contexts/settings/application";
 import type { JournalRuntime } from "@/lib/journal/runtime";
-import type { ActiveExercise, CompletedSet } from "@/lib/journal/typed-payloads";
+import type { ActiveExercise, CompletedSet } from "@/contexts/journal/domain/typed-payloads";
 import { appendEntries } from "@/lib/journal/journal-store";
-import { IsoTimestamp, EntryName } from "@/lib/journal/schema";
+import { IsoTimestamp, EntryName } from "@/contexts/journal/domain/schema";
 
 // ---------------------------------------------------------------------------
 // resolvedRest — determine rest duration for an exercise + settings combo

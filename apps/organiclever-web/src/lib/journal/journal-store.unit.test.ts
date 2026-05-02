@@ -4,8 +4,8 @@ import { PGlite } from "@electric-sql/pglite";
 import { PgliteService } from "./runtime";
 import { runMigrations } from "./run-migrations";
 import { appendEntries, listEntries, updateEntry, deleteEntry, bumpEntry, clearEntries } from "./journal-store";
-import { EntryId, EntryName, EntryPayload } from "./schema";
-import { EmptyBatch, NotFound } from "./errors";
+import { EntryId, EntryName, EntryPayload } from "@/contexts/journal/domain/schema";
+import { EmptyBatch, NotFound } from "@/contexts/journal/domain/errors";
 import { expect } from "vitest";
 
 const TestPgliteLayer = Layer.scoped(
@@ -22,7 +22,7 @@ const TestPgliteLayer = Layer.scoped(
 
 const makeName = (s: string) => Schema.decodeUnknownSync(EntryName)(s);
 const makePayload = (obj: Record<string, unknown>) => Schema.decodeUnknownSync(EntryPayload)(obj);
-const makeTs = () => new Date().toISOString() as unknown as import("./schema").IsoTimestamp;
+const makeTs = () => new Date().toISOString() as unknown as import("@/contexts/journal/domain/schema").IsoTimestamp;
 
 layer(TestPgliteLayer)("journal-store - appendEntries", (it) => {
   it.effect("returns EmptyBatch error on empty input", () =>

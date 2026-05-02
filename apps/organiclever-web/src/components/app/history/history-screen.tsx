@@ -5,7 +5,7 @@ import { Icon } from "@open-sharia-enterprise/ts-ui";
 import { getLast7Days } from "@/lib/journal/stats";
 import { listEntries } from "@/lib/journal/journal-store";
 import type { JournalRuntime } from "@/lib/journal/runtime";
-import type { JournalEntry } from "@/lib/journal/schema";
+import type { JournalEntry } from "@/contexts/journal/domain/schema";
 import type { DayEntry } from "@/lib/journal/stats";
 import { WeeklyBarChart } from "./weekly-bar-chart";
 import { SessionCard } from "./session-card";

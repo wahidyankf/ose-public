@@ -1,4 +1,4 @@
-import type { Hue } from "@/lib/journal/typed-payloads";
+import type { Hue } from "@/contexts/journal/domain/typed-payloads";
 
 export const KIND_HUE: Record<string, Hue> = {
   workout: "teal",

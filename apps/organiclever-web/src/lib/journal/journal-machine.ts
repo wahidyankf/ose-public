@@ -2,9 +2,9 @@ import { assign, createMachine, fromPromise } from "xstate";
 import { Cause, Option, Runtime } from "effect";
 import type { JournalRuntime } from "./runtime";
 import { appendEntries, listEntries, updateEntry, deleteEntry, bumpEntry, clearEntries } from "./journal-store";
-import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "./schema";
-import type { EntryId } from "./schema";
-import type { StoreError } from "./errors";
+import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "@/contexts/journal/domain/schema";
+import type { EntryId } from "@/contexts/journal/domain/schema";
+import type { StoreError } from "@/contexts/journal/domain/errors";
 
 function extractStoreError(raw: unknown): StoreError {
   if (Runtime.isFiberFailure(raw)) {

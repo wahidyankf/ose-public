@@ -6,8 +6,8 @@ import { PgliteService, makeJournalRuntime } from "./runtime";
 import { runMigrations } from "./run-migrations";
 import { journalMachine } from "./journal-machine";
 import { Schema } from "effect";
-import { EntryName, EntryPayload } from "./schema";
-import { StorageUnavailable } from "./errors";
+import { EntryName, EntryPayload } from "@/contexts/journal/domain/schema";
+import { StorageUnavailable } from "@/contexts/journal/domain/errors";
 
 function makeTestRuntime() {
   const testLayer = Layer.scoped(
@@ -26,7 +26,7 @@ function makeTestRuntime() {
 
 const makeName = (s: string) => Schema.decodeUnknownSync(EntryName)(s);
 const makePayload = (obj: Record<string, unknown>) => Schema.decodeUnknownSync(EntryPayload)(obj);
-const makeTs = () => new Date().toISOString() as unknown as import("./schema").IsoTimestamp;
+const makeTs = () => new Date().toISOString() as unknown as import("@/contexts/journal/domain/schema").IsoTimestamp;
 
 describe("journalMachine", () => {
   it("starts in initializing state", () => {

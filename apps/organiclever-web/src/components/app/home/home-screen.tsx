@@ -6,7 +6,7 @@ import { getLast7Days, getWeeklyStats } from "@/lib/journal/stats";
 import { listEntries } from "@/lib/journal/journal-store";
 import { listRoutines } from "@/lib/journal/routine-store";
 import type { JournalRuntime } from "@/lib/journal/runtime";
-import type { JournalEntry } from "@/lib/journal/schema";
+import type { JournalEntry } from "@/contexts/journal/domain/schema";
 import type { DayEntry, WeeklyStats } from "@/lib/journal/stats";
 import type { Routine } from "@/lib/journal/routine-store";
 import { ENTRY_MODULES } from "./kind-hue";

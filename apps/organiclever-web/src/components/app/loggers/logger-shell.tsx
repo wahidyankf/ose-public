@@ -2,7 +2,7 @@
 
 import { Icon } from "@open-sharia-enterprise/ts-ui";
 import { Button } from "@open-sharia-enterprise/ts-ui";
-import type { Hue } from "@/lib/journal/typed-payloads";
+import type { Hue } from "@/contexts/journal/domain/typed-payloads";
 
 export interface LoggerShellProps {
   isOpen: boolean;

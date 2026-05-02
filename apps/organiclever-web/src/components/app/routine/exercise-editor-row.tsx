@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button, Badge, Icon, Toggle } from "@open-sharia-enterprise/ts-ui";
 import { Input } from "@open-sharia-enterprise/ts-ui";
-import type { ExerciseTemplate } from "@/lib/journal/typed-payloads";
+import type { ExerciseTemplate } from "@/contexts/journal/domain/typed-payloads";
 import { fmtTime } from "@/lib/utils/fmt";
 
 // ---------------------------------------------------------------------------

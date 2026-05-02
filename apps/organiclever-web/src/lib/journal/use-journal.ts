@@ -2,9 +2,9 @@ import { useMemo } from "react";
 import { useActor } from "@xstate/react";
 import { journalMachine } from "./journal-machine";
 import type { JournalRuntime } from "./runtime";
-import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "./schema";
-import type { EntryId } from "./schema";
-import type { StoreError } from "./errors";
+import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "@/contexts/journal/domain/schema";
+import type { EntryId } from "@/contexts/journal/domain/schema";
+import type { StoreError } from "@/contexts/journal/domain/errors";
 
 export type JournalStatus = "loading" | "ready" | "mutating" | "error";
 

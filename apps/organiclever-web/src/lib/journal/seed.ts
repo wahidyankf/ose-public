@@ -1,12 +1,12 @@
 import { Effect, Schema } from "effect";
 import { PgliteService } from "./runtime";
-import { StorageUnavailable } from "./errors";
+import { StorageUnavailable } from "@/contexts/journal/domain/errors";
 import { appendEntries } from "./journal-store";
 import { saveRoutine } from "./routine-store";
 import { saveSettings } from "@/contexts/settings/application";
-import { IsoTimestamp, EntryName, EntryPayload } from "./schema";
+import { IsoTimestamp, EntryName, EntryPayload } from "@/contexts/journal/domain/schema";
 import type { Routine } from "./routine-store";
-import type { ExerciseTemplate } from "./typed-payloads";
+import type { ExerciseTemplate } from "@/contexts/journal/domain/typed-payloads";
 
 // ---------------------------------------------------------------------------
 // Helpers

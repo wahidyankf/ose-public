@@ -5,7 +5,7 @@ import { AppHeader, Button, HuePicker, Icon, Input } from "@open-sharia-enterpri
 import type { HueName } from "@open-sharia-enterprise/ts-ui";
 import type { Routine, ExerciseGroup } from "@/lib/journal/routine-store";
 import type { JournalRuntime } from "@/lib/journal/runtime";
-import type { ExerciseTemplate } from "@/lib/journal/typed-payloads";
+import type { ExerciseTemplate } from "@/contexts/journal/domain/typed-payloads";
 import { saveRoutine, deleteRoutine } from "@/lib/journal/routine-store";
 import { ExerciseEditorRow } from "./exercise-editor-row";
 

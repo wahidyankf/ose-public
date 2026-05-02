@@ -1,5 +1,5 @@
 import { EntryCard } from "./entry-card";
-import type { JournalEntry, EntryId } from "@/lib/journal/types";
+import type { JournalEntry, EntryId } from "@/contexts/journal/domain/types";
 
 interface JournalListProps {
   entries: ReadonlyArray<JournalEntry>;

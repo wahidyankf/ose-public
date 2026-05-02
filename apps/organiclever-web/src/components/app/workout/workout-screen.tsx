@@ -8,7 +8,7 @@ import type { Routine } from "@/lib/journal/routine-store";
 import type { AppSettings } from "@/contexts/settings/application";
 import type { JournalRuntime } from "@/lib/journal/runtime";
 import type { CompletedSession } from "@/lib/app/app-machine";
-import type { CompletedSet } from "@/lib/journal/typed-payloads";
+import type { CompletedSet } from "@/contexts/journal/domain/typed-payloads";
 import { fmtTime } from "@/lib/utils/fmt";
 import { ActiveExerciseRow } from "./active-exercise-row";
 import { RestTimer } from "./rest-timer";

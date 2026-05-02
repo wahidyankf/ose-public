@@ -4,7 +4,7 @@ import { workoutSessionMachine, resolvedRest } from "./workout-machine";
 import type { AppSettings } from "@/contexts/settings/application";
 import type { Routine } from "@/lib/journal/routine-store";
 import type { JournalRuntime } from "@/lib/journal/runtime";
-import type { CompletedSet, ActiveExercise } from "@/lib/journal/typed-payloads";
+import type { CompletedSet, ActiveExercise } from "@/contexts/journal/domain/typed-payloads";
 
 // ---------------------------------------------------------------------------
 // Fixtures

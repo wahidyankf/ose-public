@@ -1,7 +1,7 @@
 import { Context, Effect, Layer, ManagedRuntime } from "effect";
 import type { PGlite } from "@electric-sql/pglite";
 import { runMigrations } from "./run-migrations";
-import { StorageUnavailable } from "./errors";
+import { StorageUnavailable } from "@/contexts/journal/domain/errors";
 
 export const JOURNAL_STORE_DATA_DIR = "ol_journal_v1";
 

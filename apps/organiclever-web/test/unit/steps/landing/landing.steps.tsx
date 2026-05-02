@@ -3,7 +3,7 @@ import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import { expect } from "vitest";
 
-import { LandingPage } from "@/components/landing/landing-page";
+import { LandingPage } from "@/contexts/landing/presentation";
 
 const feature = await loadFeature(
   path.resolve(__dirname, "../../../../../../specs/apps/organiclever/fe/gherkin/landing/landing.feature"),

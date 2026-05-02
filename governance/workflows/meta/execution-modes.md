@@ -39,7 +39,7 @@ Invoke specialized agents via the Agent tool with `subagent_type` when the workf
 - Specialized agents execute in dedicated delegated agent contexts
 - File changes persist to the actual filesystem
 - Agents bring their full specialized knowledge and validation rules
-- Agent tool subagents are distinct from the Task tool: file changes DO persist
+- Agent tool delegated agents are distinct from the Task tool: file changes DO persist
 - SHOULD be used when the workflow's checker/fixer agents exist as defined delegated agent types
 
 #### When to Use Agent Delegation
@@ -91,7 +91,7 @@ Agent tool invocation:
 
 #### Description
 
-User or AI assistant follows workflow steps directly using tools in main context when agents are not available as defined subagent types.
+User or AI assistant follows workflow steps directly using tools in main context when agents are not available as defined delegated agent types.
 
 **Characteristics**:
 
@@ -103,7 +103,7 @@ User or AI assistant follows workflow steps directly using tools in main context
 
 #### When to Use Manual Orchestration
 
-- PASS: Workflow agents are not available as defined subagent types
+- PASS: Workflow agents are not available as defined delegated agent types
 - PASS: You want step-by-step visibility and granular control
 - PASS: You want to review changes between each step
 - PASS: Agent delegation is unavailable or fails
@@ -291,7 +291,7 @@ In the future, a workflow runner could be developed to automate workflow executi
 
 **Important distinction**:
 
-- **Agent tool** (`subagent_type`): Subagent runs with file system access — Write/Edit changes **DO persist**
+- **Agent tool** (`subagent_type`): Delegated agent runs with file system access — Write/Edit changes **DO persist**
 - **Task tool**: Agent runs in isolated context — Write/Edit changes **do NOT persist**
 
 ```

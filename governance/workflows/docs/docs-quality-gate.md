@@ -349,8 +349,8 @@ User: "Run documentation quality gate workflow in normal mode"
 
 The AI will invoke specialized agents via the Agent tool:
 
-- Validate all docs/ content in parallel (`docs-checker`, `docs-tutorial-checker`, `docs-link-checker` subagents)
-- Fix CRITICAL/HIGH findings (`docs-fixer`, `docs-tutorial-fixer` subagents)
+- Validate all docs/ content in parallel (`docs-checker`, `docs-tutorial-checker`, `docs-link-checker` delegated agents)
+- Fix CRITICAL/HIGH findings (`docs-fixer`, `docs-tutorial-fixer` delegated agents)
 - Iterate until zero CRITICAL/HIGH findings achieved
 - Report MEDIUM/LOW findings without fixing them
 

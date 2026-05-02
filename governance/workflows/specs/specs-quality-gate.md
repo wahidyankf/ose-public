@@ -83,8 +83,8 @@ Agent tool with `subagent_type`
 **Fallback Mode**: Manual Orchestration — execute workflow logic directly using
 Read/Write/Edit tools when Agent Delegation is unavailable.
 
-The Agent tool runs subagents that persist file changes to the actual filesystem, making it
-the preferred approach when these agents exist as defined subagent types.
+The Agent tool runs delegated agents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined delegated agent types.
 
 **How to Execute**:
 

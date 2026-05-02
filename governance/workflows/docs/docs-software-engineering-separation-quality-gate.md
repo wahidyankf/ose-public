@@ -71,8 +71,8 @@ and `docs-software-engineering-separation-fixer` via the Agent tool with `subage
 **Fallback Mode**: Manual Orchestration — execute workflow logic directly using
 Read/Write/Edit tools when Agent Delegation is unavailable.
 
-The Agent tool runs subagents that persist file changes to the actual filesystem, making it
-the preferred approach when these agents exist as defined subagent types.
+The Agent tool runs delegated agents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined delegated agent types.
 
 **How to Execute**:
 
@@ -220,8 +220,8 @@ User: "Run docs software engineering separation quality gate workflow for all"
 
 The AI will invoke specialized agents via the Agent tool:
 
-- Validate all explicit relationships (Java, Golang, Elixir, Spring, Spring Boot) (`docs-software-engineering-separation-checker` subagent)
-- Apply separation fixes (`docs-software-engineering-separation-fixer` subagent)
+- Validate all explicit relationships (Java, Golang, Elixir, Spring, Spring Boot) (`docs-software-engineering-separation-checker` delegated agent)
+- Apply separation fixes (`docs-software-engineering-separation-fixer` delegated agent)
 - Iterate until zero findings achieved
 
 ### Validate Specific Language

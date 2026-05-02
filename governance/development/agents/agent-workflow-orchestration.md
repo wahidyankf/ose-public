@@ -9,13 +9,13 @@ tags:
   - orchestration
   - planning
   - verification
-  - subagents
+  - delegated-agents
 created: 2026-03-09
 ---
 
 # Agent Workflow Orchestration Convention
 
-This document defines how AI agents plan, execute, verify, and improve their work during multi-step tasks. It covers when to enter plan mode, how to use subagents, how to manage task state, and how to verify completion before declaring a task done.
+This document defines how AI agents plan, execute, verify, and improve their work during multi-step tasks. It covers when to enter plan mode, how to use delegated agents, how to manage task state, and how to verify completion before declaring a task done.
 
 ## Principles Implemented/Respected
 
@@ -25,7 +25,7 @@ This practice respects the following core principles:
 
 - **[Root Cause Orientation](../../principles/general/root-cause-orientation.md)**: Verification before done enforces the senior engineer standard. The self-improvement loop demands root cause analysis after any mistake rather than moving on.
 
-- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: Subagents keep the main context clean by offloading focused subtasks. One task per subagent prevents multi-purpose subagents that are harder to reason about.
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: Delegated agents keep the main context clean by offloading focused subtasks. One task per delegated agent prevents multi-purpose delegated agents that are harder to reason about.
 
 - **[Automation Over Manual](../../principles/software-engineering/automation-over-manual.md)**: Autonomous bug fixing eliminates unnecessary user hand-holding. Agents run tests, read logs, and resolve failures without requiring step-by-step instruction.
 
@@ -76,27 +76,27 @@ Stop and re-plan when the current approach is not working. The signal to re-plan
 
 Do not keep pushing forward hoping the situation improves. Stopping to re-plan is faster than accumulating a chain of workarounds.
 
-## Subagent Strategy
+## Delegated Agent Strategy
 
-Use subagents to keep the main context window focused and clean.
+Use delegated agents to keep the main context window focused and clean.
 
-### When to Use Subagents
+### When to Use Delegated Agents
 
-Offload work to subagents when:
+Offload work to delegated agents when:
 
 - **Research and exploration**: Reading many files to understand a codebase section, gathering facts before a decision
 - **Parallel analysis**: Multiple independent questions can be answered simultaneously
 - **Complex subtasks**: A subtask is large enough to have its own plan
 
-### Subagent Rules
+### Delegated Agent Rules
 
-- **One task per subagent**: Each subagent has a single, focused responsibility. Do not bundle multiple concerns into one subagent
-- **Use fork skills for structured delegation**: When the task fits a known skill pattern, prefer fork skills over ad hoc subagent invocation
-- **Return summarized results**: Subagents return findings, not raw dumps. The main conversation receives what it needs to make decisions, not everything the subagent read
+- **One task per delegated agent**: Each delegated agent has a single, focused responsibility. Do not bundle multiple concerns into one delegated agent
+- **Use fork skills for structured delegation**: When the task fits a known skill pattern, prefer fork skills over ad hoc delegated agent invocation
+- **Return summarized results**: Delegated agents return findings, not raw dumps. The main conversation receives what it needs to make decisions, not everything the delegated agent read
 
-### When Not to Use Subagents
+### When Not to Use Delegated Agents
 
-Do not spawn a subagent for simple reads or lookups that take one or two tool calls. The overhead is not worth it for small operations.
+Do not spawn a delegated agent for simple reads or lookups that take one or two tool calls. The overhead is not worth it for small operations.
 
 ## Verification Before Done
 
@@ -305,11 +305,11 @@ After any correction, update `local-temp/lessons.md`. This is the direct applica
 
 ### Context Bloat
 
-**Problem**: Conducting extensive research and exploration in the main context rather than using subagents.
+**Problem**: Conducting extensive research and exploration in the main context rather than using delegated agents.
 
 **Why it fails**: The main context fills with details that were needed for the research but are not needed for the decision. This degrades the quality of subsequent reasoning.
 
-**Fix**: Offload research to subagents. Return only the findings needed to make the decision.
+**Fix**: Offload research to delegated agents. Return only the findings needed to make the decision.
 
 ### Vague Lessons
 
@@ -325,18 +325,18 @@ After any correction, update `local-temp/lessons.md`. This is the direct applica
 
 - [Deliberate Problem-Solving](../../principles/general/deliberate-problem-solving.md) - Think before acting; surface assumptions
 - [Root Cause Orientation](../../principles/general/root-cause-orientation.md) - Fix root causes; minimal impact; senior engineer standard
-- [Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md) - Simple subagent structures; focused responsibilities
+- [Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md) - Simple delegated agent structures; focused responsibilities
 
 **Related Practices:**
 
 - [Implementation Workflow](../workflow/implementation.md) - Make it work, make it right, make it fast; surgical changes; goal-driven execution
 - [Maker-Checker-Fixer Pattern](../pattern/maker-checker-fixer.md) - Multi-agent orchestration for content quality workflows
 - [AI Agents Convention](./ai-agents.md) - Agent structure, frontmatter, and tool access standards
-- [Skill Context Architecture](./skill-context-architecture.md) - Inline vs fork skills for subagent delegation
+- [Skill Context Architecture](./skill-context-architecture.md) - Inline vs fork skills for delegated agent invocation
 - [CI Post-Push Verification Convention](../workflow/ci-post-push-verification.md) - Trigger and monitor CI after every push; required final step in plan execution
 - [CI Monitoring Convention](../workflow/ci-monitoring.md) - Check every 3-5 min via ScheduleWakeup; `gh run watch` only for <5 min jobs; rate-limit recovery uses `ScheduleWakeup(delaySeconds=2100)`
 
 **Related Agents / Workflows:**
 
 - `plan-maker` - Creates structured plans following the plan format in this convention
-- [plan-execution workflow](../../workflows/plan/plan-execution.md) - Execute plans with progress tracking and verification (calling context orchestrates; no dedicated subagent)
+- [plan-execution workflow](../../workflows/plan/plan-execution.md) - Execute plans with progress tracking and verification (calling context orchestrates; no dedicated delegated agent)

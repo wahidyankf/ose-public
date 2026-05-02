@@ -267,7 +267,7 @@ graph TD
 
 ### Related Conventions
 
-- **[Maker-Checker-Fixer Pattern](../pattern/maker-checker-fixer.md)** - Three-stage workflow without nested subagents
+- **[Maker-Checker-Fixer Pattern](../pattern/maker-checker-fixer.md)** - Three-stage workflow without nested delegated agents
 - **[Temporary Files Convention](../infra/temporary-files.md)** - Audit reports enabling sequential agent workflows
 
 ## Enforcement

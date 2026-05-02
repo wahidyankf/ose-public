@@ -73,7 +73,7 @@ via the Agent tool with `subagent_type`
 **Fallback Mode**: Manual Orchestration — execute workflow logic directly using
 Read/Write/Edit tools when Agent Delegation is unavailable.
 
-The Agent tool runs subagents that persist file changes to the actual filesystem, making it
+The Agent tool runs delegated agents that persist file changes to the actual filesystem, making it
 the preferred approach when these agents exist as defined delegated agent types.
 
 **How to Execute**:
@@ -269,8 +269,8 @@ User: "Run ayokoding-web general quality gate workflow"
 
 The AI will invoke specialized agents via the Agent tool:
 
-- Validate all ayokoding-web content in parallel (`apps-ayokoding-web-general-checker`, `apps-ayokoding-web-facts-checker`, `apps-ayokoding-web-link-checker` subagents)
-- Fix all findings (`apps-ayokoding-web-general-fixer`, `apps-ayokoding-web-facts-fixer` subagents)
+- Validate all ayokoding-web content in parallel (`apps-ayokoding-web-general-checker`, `apps-ayokoding-web-facts-checker`, `apps-ayokoding-web-link-checker` delegated agents)
+- Fix all findings (`apps-ayokoding-web-general-fixer`, `apps-ayokoding-web-facts-fixer` delegated agents)
 - Iterate until zero findings achieved
 
 ### Validate Specific Language

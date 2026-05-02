@@ -130,6 +130,33 @@ func FormatSyncMarkdown(result *SyncResult) string {
 
 // ---- Validation formatting ----
 
+// validationStatusBanner returns the human-readable status string for a
+// validation run. FailedChecks > 0 → FAILED; else WarningChecks > 0 →
+// PASSED WITH WARNINGS; else PASSED.
+func validationStatusBanner(result *ValidationResult) string {
+	switch {
+	case result.FailedChecks > 0:
+		return "❌ VALIDATION FAILED"
+	case result.WarningChecks > 0:
+		return "⚠ VALIDATION PASSED WITH WARNINGS"
+	default:
+		return "✓ VALIDATION PASSED"
+	}
+}
+
+// validationStatusJSON returns the machine-readable status string for the
+// JSON formatter. Mirrors validationStatusBanner without decoration.
+func validationStatusJSON(result *ValidationResult) string {
+	switch {
+	case result.FailedChecks > 0:
+		return "failure"
+	case result.WarningChecks > 0:
+		return "warning"
+	default:
+		return "success"
+	}
+}
+
 // FormatValidationText formats validation results as plain text.
 func FormatValidationText(result *ValidationResult, verbose, quiet bool) string {
 	var sb strings.Builder
@@ -141,6 +168,9 @@ func FormatValidationText(result *ValidationResult, verbose, quiet bool) string 
 
 	_, _ = fmt.Fprintf(&sb, "Total Checks: %d\n", result.TotalChecks)
 	_, _ = fmt.Fprintf(&sb, "Passed: %d\n", result.PassedChecks)
+	if result.WarningChecks > 0 {
+		_, _ = fmt.Fprintf(&sb, "Warnings: %d\n", result.WarningChecks)
+	}
 	_, _ = fmt.Fprintf(&sb, "Failed: %d\n", result.FailedChecks)
 	_, _ = fmt.Fprintf(&sb, "Duration: %v\n", result.Duration)
 
@@ -162,12 +192,33 @@ func FormatValidationText(result *ValidationResult, verbose, quiet bool) string 
 		}
 	}
 
+	if result.WarningChecks > 0 {
+		sb.WriteString("\nWarnings:\n")
+		for _, check := range result.Checks {
+			if check.Status == "warning" {
+				_, _ = fmt.Fprintf(&sb, "\n  ⚠ %s\n", check.Name)
+				if check.Expected != "" {
+					_, _ = fmt.Fprintf(&sb, "     Expected: %s\n", check.Expected)
+				}
+				if check.Actual != "" {
+					_, _ = fmt.Fprintf(&sb, "     Actual: %s\n", check.Actual)
+				}
+				if check.Message != "" {
+					_, _ = fmt.Fprintf(&sb, "     Message: %s\n", check.Message)
+				}
+			}
+		}
+	}
+
 	if verbose {
 		sb.WriteString("\nAll Checks:\n")
 		for _, check := range result.Checks {
-			if check.Status == "passed" {
+			switch check.Status {
+			case "passed":
 				_, _ = fmt.Fprintf(&sb, "  ✓ %s\n", check.Name)
-			} else {
+			case "warning":
+				_, _ = fmt.Fprintf(&sb, "  ⚠ %s\n", check.Name)
+			default:
 				_, _ = fmt.Fprintf(&sb, "  ❌ %s\n", check.Name)
 			}
 			if verbose && check.Message != "" {
@@ -178,11 +229,7 @@ func FormatValidationText(result *ValidationResult, verbose, quiet bool) string 
 
 	if !quiet {
 		sb.WriteString("\n")
-		if result.FailedChecks > 0 {
-			sb.WriteString("Status: ❌ VALIDATION FAILED\n")
-		} else {
-			sb.WriteString("Status: ✓ VALIDATION PASSED\n")
-		}
+		_, _ = fmt.Fprintf(&sb, "Status: %s\n", validationStatusBanner(result))
 	}
 
 	return sb.String()
@@ -190,13 +237,14 @@ func FormatValidationText(result *ValidationResult, verbose, quiet bool) string 
 
 // validationJSONOutput represents the JSON output format for validation results.
 type validationJSONOutput struct {
-	Status       string                `json:"status"`
-	Timestamp    string                `json:"timestamp"`
-	TotalChecks  int                   `json:"total_checks"`
-	PassedChecks int                   `json:"passed_checks"`
-	FailedChecks int                   `json:"failed_checks"`
-	DurationMS   int64                 `json:"duration_ms"`
-	Checks       []validationJSONCheck `json:"checks"`
+	Status        string                `json:"status"`
+	Timestamp     string                `json:"timestamp"`
+	TotalChecks   int                   `json:"total_checks"`
+	PassedChecks  int                   `json:"passed_checks"`
+	WarningChecks int                   `json:"warning_checks"`
+	FailedChecks  int                   `json:"failed_checks"`
+	DurationMS    int64                 `json:"duration_ms"`
+	Checks        []validationJSONCheck `json:"checks"`
 }
 
 // validationJSONCheck represents a single validation check in JSON format.
@@ -210,24 +258,20 @@ type validationJSONCheck struct {
 
 // FormatValidationJSON formats validation results as JSON.
 func FormatValidationJSON(result *ValidationResult) (string, error) {
-	status := "success"
-	if result.FailedChecks > 0 {
-		status = "failure"
-	}
-
 	checks := make([]validationJSONCheck, 0, len(result.Checks))
 	for _, c := range result.Checks {
 		checks = append(checks, validationJSONCheck(c))
 	}
 
 	out := validationJSONOutput{
-		Status:       status,
-		Timestamp:    timeutil.Timestamp(),
-		TotalChecks:  result.TotalChecks,
-		PassedChecks: result.PassedChecks,
-		FailedChecks: result.FailedChecks,
-		DurationMS:   result.Duration.Milliseconds(),
-		Checks:       checks,
+		Status:        validationStatusJSON(result),
+		Timestamp:     timeutil.Timestamp(),
+		TotalChecks:   result.TotalChecks,
+		PassedChecks:  result.PassedChecks,
+		WarningChecks: result.WarningChecks,
+		FailedChecks:  result.FailedChecks,
+		DurationMS:    result.Duration.Milliseconds(),
+		Checks:        checks,
 	}
 
 	data, err := json.MarshalIndent(out, "", "  ")
@@ -246,6 +290,9 @@ func FormatValidationMarkdown(result *ValidationResult, verbose bool) string {
 	sb.WriteString("## Summary\n\n")
 	_, _ = fmt.Fprintf(&sb, "- **Total Checks**: %d\n", result.TotalChecks)
 	_, _ = fmt.Fprintf(&sb, "- **Passed**: %d\n", result.PassedChecks)
+	if result.WarningChecks > 0 {
+		_, _ = fmt.Fprintf(&sb, "- **Warnings**: %d\n", result.WarningChecks)
+	}
 	_, _ = fmt.Fprintf(&sb, "- **Failed**: %d\n", result.FailedChecks)
 	_, _ = fmt.Fprintf(&sb, "- **Duration**: %v\n\n", result.Duration)
 
@@ -268,12 +315,34 @@ func FormatValidationMarkdown(result *ValidationResult, verbose bool) string {
 		}
 	}
 
+	if result.WarningChecks > 0 {
+		sb.WriteString("## Warnings\n\n")
+		for _, check := range result.Checks {
+			if check.Status == "warning" {
+				_, _ = fmt.Fprintf(&sb, "### ⚠ %s\n\n", check.Name)
+				if check.Expected != "" {
+					_, _ = fmt.Fprintf(&sb, "- **Expected**: %s\n", check.Expected)
+				}
+				if check.Actual != "" {
+					_, _ = fmt.Fprintf(&sb, "- **Actual**: %s\n", check.Actual)
+				}
+				if check.Message != "" {
+					_, _ = fmt.Fprintf(&sb, "- **Message**: %s\n", check.Message)
+				}
+				sb.WriteString("\n")
+			}
+		}
+	}
+
 	if verbose {
 		sb.WriteString("## All Checks\n\n")
 		for _, check := range result.Checks {
-			if check.Status == "passed" {
+			switch check.Status {
+			case "passed":
 				_, _ = fmt.Fprintf(&sb, "- ✓ %s", check.Name)
-			} else {
+			case "warning":
+				_, _ = fmt.Fprintf(&sb, "- ⚠ %s", check.Name)
+			default:
 				_, _ = fmt.Fprintf(&sb, "- ❌ %s", check.Name)
 			}
 			if check.Message != "" {
@@ -284,11 +353,7 @@ func FormatValidationMarkdown(result *ValidationResult, verbose bool) string {
 		sb.WriteString("\n")
 	}
 
-	if result.FailedChecks > 0 {
-		sb.WriteString("**Status**: ❌ VALIDATION FAILED\n")
-	} else {
-		sb.WriteString("**Status**: ✓ VALIDATION PASSED\n")
-	}
+	_, _ = fmt.Fprintf(&sb, "**Status**: %s\n", validationStatusBanner(result))
 
 	return sb.String()
 }

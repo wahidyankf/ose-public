@@ -681,3 +681,111 @@ func TestValidateAllSkills_IgnoresFiles(t *testing.T) {
 		t.Errorf("Expected 1 skill name, got %d", len(skillNames))
 	}
 }
+
+// TestValidateSkill_DocumentedOptionalFieldDoesNotWarn confirms a skill
+// frontmatter that uses any documented Claude Code skill optional field
+// (e.g. disable-model-invocation) emits no warnings.
+func TestValidateSkill_DocumentedOptionalFieldDoesNotWarn(t *testing.T) {
+	tmpDir := t.TempDir()
+	skillDir := filepath.Join(tmpDir, "test-skill")
+	if err := os.MkdirAll(skillDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+
+	content := `---
+name: test-skill
+description: skill with documented optional field
+disable-model-invocation: true
+when_to_use: on demand
+---
+Body.`
+	if err := os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	checks := validateSkill(skillDir, "test-skill")
+	for _, c := range checks {
+		if c.Status == "failed" {
+			t.Errorf("unexpected failed check: %s — %s", c.Name, c.Message)
+		}
+		if c.Status == "warning" {
+			t.Errorf("unexpected warning for documented optional field: %s — %s", c.Name, c.Message)
+		}
+	}
+}
+
+// TestValidateSkill_UnknownFieldEmitsWarning confirms an unknown skill
+// frontmatter field surfaces as a "warning" ValidationCheck (not a
+// failure) naming the field.
+func TestValidateSkill_UnknownFieldEmitsWarning(t *testing.T) {
+	tmpDir := t.TempDir()
+	skillDir := filepath.Join(tmpDir, "test-skill")
+	if err := os.MkdirAll(skillDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+
+	content := `---
+name: test-skill
+description: skill with unknown field
+foo: bar
+---
+Body.`
+	if err := os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	checks := validateSkill(skillDir, "test-skill")
+
+	// No failures expected.
+	for _, c := range checks {
+		if c.Status == "failed" {
+			t.Errorf("unexpected failed check: %s — %s", c.Name, c.Message)
+		}
+	}
+
+	foundWarning := false
+	for _, c := range checks {
+		if c.Status == "warning" && c.Actual == "Unknown field: foo" {
+			foundWarning = true
+		}
+	}
+	if !foundWarning {
+		t.Errorf("expected warning naming unknown field 'foo'; got: %+v", checks)
+	}
+}
+
+// TestValidateSkill_MultipleUnknownFieldsEmitsMultipleWarnings confirms
+// each unrecognized field emits its own warning.
+func TestValidateSkill_MultipleUnknownFieldsEmitsMultipleWarnings(t *testing.T) {
+	tmpDir := t.TempDir()
+	skillDir := filepath.Join(tmpDir, "test-skill")
+	if err := os.MkdirAll(skillDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+
+	content := `---
+name: test-skill
+description: many unknown fields
+foo: 1
+bar: 2
+baz: 3
+---
+Body.`
+	if err := os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	checks := validateSkill(skillDir, "test-skill")
+
+	warned := map[string]bool{}
+	for _, c := range checks {
+		if c.Status == "warning" {
+			warned[c.Actual] = true
+		}
+	}
+	for _, expected := range []string{"Unknown field: foo", "Unknown field: bar", "Unknown field: baz"} {
+		if !warned[expected] {
+			t.Errorf("expected warning for %q; got: %+v", expected, warned)
+		}
+	}
+}

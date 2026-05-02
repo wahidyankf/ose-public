@@ -67,13 +67,27 @@ func TestValidateAgent_ValidAgent(t *testing.T) {
 		skillNames,
 	)
 
-	// Should have 10 checks for a valid agent (no generated-reports check)
+	// Expected checks for a valid agent (no generated-reports check):
+	//   1. YAML formatting
+	//   2. YAML syntax
+	//   3. Required fields
+	//   4. Field order
+	//   5. Valid tools
+	//   6. Valid model
+	//   7. Valid color (color is set, so this check is included)
+	//   8. Filename match
+	//   9. Name uniqueness
+	//  10. Skills exist
+	//  11. No comments
 	if len(checks) != 11 {
 		t.Errorf("Expected 11 checks, got %d", len(checks))
+		for i, c := range checks {
+			t.Logf("  %d: %s [%s]", i, c.Name, c.Status)
+		}
 	}
 
 	for _, check := range checks {
-		if check.Status != "passed" {
+		if check.Status == "failed" {
 			t.Errorf("Check '%s' failed: %s", check.Name, check.Message)
 		}
 	}
@@ -120,7 +134,7 @@ func TestValidateRequiredFields_AllPresent(t *testing.T) {
 	agent := ClaudeAgentFull{
 		Name:        "test-agent",
 		Description: "Test description",
-		Tools:       "Read, Write",
+		Tools:       []string{"Read", "Write"},
 		Model:       "sonnet",
 		Color:       "blue",
 		Skills:      []string{},
@@ -137,7 +151,7 @@ func TestValidateRequiredFields_MissingName(t *testing.T) {
 	agent := ClaudeAgentFull{
 		Name:        "",
 		Description: "Test description",
-		Tools:       "Read, Write",
+		Tools:       []string{"Read", "Write"},
 		Model:       "sonnet",
 		Color:       "blue",
 	}
@@ -157,7 +171,7 @@ func TestValidateRequiredFields_MissingMultiple(t *testing.T) {
 	agent := ClaudeAgentFull{
 		Name:        "",
 		Description: "",
-		Tools:       "Read",
+		Tools:       []string{"Read"},
 		Model:       "",
 		Color:       "",
 	}
@@ -169,15 +183,39 @@ func TestValidateRequiredFields_MissingMultiple(t *testing.T) {
 	}
 }
 
+// TestValidateRequiredFields_ToolsAndColorOptional asserts that the relaxed
+// required-field rule (P1.6) treats tools and color as optional, not
+// required. The Claude Code spec only mandates name + description.
+func TestValidateRequiredFields_ToolsAndColorOptional(t *testing.T) {
+	agent := ClaudeAgentFull{
+		Name:        "test",
+		Description: "desc",
+		// Tools, Model, Color, Skills all empty
+	}
+	check := validateRequiredFields("test.md", agent)
+	if check.Status != "passed" {
+		t.Errorf("Expected 'passed' when only name+description set; got %q (msg=%s)", check.Status, check.Message)
+	}
+}
+
 func TestValidateTools_ValidTools(t *testing.T) {
 	tests := []struct {
 		name  string
-		tools string
+		tools []string
 	}{
-		{"single tool", "Read"},
-		{"multiple tools", "Read, Write, Edit"},
-		{"all valid tools", "Read, Write, Edit, Glob, Grep, Bash, TodoWrite, WebFetch, WebSearch"},
-		{"with extra spaces", "Read,  Write,   Edit"},
+		{"single tool", []string{"Read"}},
+		{"multiple tools", []string{"Read", "Write", "Edit"}},
+		{
+			"all original valid tools",
+			[]string{"Read", "Write", "Edit", "Glob", "Grep", "Bash", "TodoWrite", "WebFetch", "WebSearch"},
+		},
+		{"with extra spaces (already trimmed by parser)", []string{"Read", "Write", "Edit"}},
+		{"new orchestration tools", []string{"Agent", "Task", "SlashCommand"}},
+		{"plan-mode tools", []string{"ExitPlanMode", "EnterPlanMode"}},
+		{"shell tools", []string{"BashOutput", "KillShell"}},
+		{"mcp tools", []string{"ListMcpResourcesTool", "ReadMcpResourceTool"}},
+		{"notebook + question", []string{"NotebookEdit", "AskUserQuestion"}},
+		{"parameterized agent", []string{"Agent(general-purpose)", "Read"}},
 	}
 
 	for _, tt := range tests {
@@ -191,7 +229,7 @@ func TestValidateTools_ValidTools(t *testing.T) {
 }
 
 func TestValidateTools_InvalidTool(t *testing.T) {
-	check := validateTools("test.md", "Read, InvalidTool, Write")
+	check := validateTools("test.md", []string{"Read", "InvalidTool", "Write"})
 
 	if check.Status != "failed" {
 		t.Errorf("Expected status 'failed', got '%s'", check.Status)
@@ -203,15 +241,37 @@ func TestValidateTools_InvalidTool(t *testing.T) {
 }
 
 func TestValidateTools_MultipleInvalid(t *testing.T) {
-	check := validateTools("test.md", "Read, BadTool, AnotherBad")
+	check := validateTools("test.md", []string{"Read", "BadTool", "AnotherBad"})
 
 	if check.Status != "failed" {
 		t.Errorf("Expected status 'failed', got '%s'", check.Status)
 	}
 }
 
-func TestValidateModel_ValidModels(t *testing.T) {
-	validModels := []string{"", "sonnet", "opus", "haiku"}
+// TestValidateTools_AcceptsCommaStringViaParser verifies the upstream
+// shape-tolerance: a comma-separated string passed through ParseClaudeTools
+// yields a []string that validateTools accepts.
+func TestValidateTools_AcceptsCommaStringViaParser(t *testing.T) {
+	tools := ParseClaudeTools("Read, Write, Edit")
+	check := validateTools("test.md", tools)
+	if check.Status != "passed" {
+		t.Errorf("Expected 'passed' for comma-string parsed tools, got '%s': %s", check.Status, check.Message)
+	}
+}
+
+// TestValidateTools_AcceptsArrayViaParser verifies the upstream
+// shape-tolerance: a YAML []interface{} (sequence form) passed through
+// ParseClaudeTools yields a []string that validateTools accepts.
+func TestValidateTools_AcceptsArrayViaParser(t *testing.T) {
+	tools := ParseClaudeTools([]interface{}{"Read", "Write", "Bash"})
+	check := validateTools("test.md", tools)
+	if check.Status != "passed" {
+		t.Errorf("Expected 'passed' for array-form parsed tools, got '%s': %s", check.Status, check.Message)
+	}
+}
+
+func TestValidateModel_ValidModelAliases(t *testing.T) {
+	validModels := []string{"", "sonnet", "opus", "haiku", "inherit"}
 
 	for _, model := range validModels {
 		t.Run("model: "+model, func(t *testing.T) {
@@ -223,16 +283,38 @@ func TestValidateModel_ValidModels(t *testing.T) {
 	}
 }
 
-func TestValidateModel_InvalidModel(t *testing.T) {
-	check := validateModel("test.md", "gpt-4")
+func TestValidateModel_ValidFullModelIDs(t *testing.T) {
+	fullIDs := []string{
+		"claude-opus-4-7",
+		"claude-sonnet-4-6",
+		"claude-haiku-4-5",
+		"claude-3-5-sonnet",
+		"claude-opus-4-7-1m",
+	}
+	for _, id := range fullIDs {
+		t.Run("full id: "+id, func(t *testing.T) {
+			check := validateModel("test.md", id)
+			if check.Status != "passed" {
+				t.Errorf("Expected status 'passed' for model '%s', got '%s'", id, check.Status)
+			}
+		})
+	}
+}
 
-	if check.Status != "failed" {
-		t.Errorf("Expected status 'failed', got '%s'", check.Status)
+func TestValidateModel_InvalidModel(t *testing.T) {
+	for _, m := range []string{"gpt-4", "random", "Claude-Opus", "claude_opus", "anthropic/claude-3"} {
+		t.Run("invalid: "+m, func(t *testing.T) {
+			check := validateModel("test.md", m)
+			if check.Status != "failed" {
+				t.Errorf("Expected status 'failed' for %q, got '%s'", m, check.Status)
+			}
+		})
 	}
 }
 
 func TestValidateColor_ValidColors(t *testing.T) {
-	validColors := []string{"blue", "green", "yellow", "purple"}
+	// Updated 2026-05-02 — Claude Code spec allows all eight named colors.
+	validColors := []string{"red", "blue", "green", "yellow", "purple", "orange", "pink", "cyan"}
 
 	for _, color := range validColors {
 		t.Run("color: "+color, func(t *testing.T) {
@@ -245,10 +327,11 @@ func TestValidateColor_ValidColors(t *testing.T) {
 }
 
 func TestValidateColor_InvalidColor(t *testing.T) {
-	check := validateColor("test.md", "red")
+	// magenta is not in the documented Claude Code color set.
+	check := validateColor("test.md", "magenta")
 
 	if check.Status != "failed" {
-		t.Errorf("Expected status 'failed', got '%s'", check.Status)
+		t.Errorf("Expected status 'failed' for unknown color 'magenta', got '%s'", check.Status)
 	}
 }
 
@@ -377,7 +460,7 @@ color:blue`)
 }
 
 func TestValidateGeneratedReportsTools_HasBoth(t *testing.T) {
-	check := validateGeneratedReportsTools("test.md", "Read, Write, Bash, Grep")
+	check := validateGeneratedReportsTools("test.md", []string{"Read", "Write", "Bash", "Grep"})
 
 	if check.Status != "passed" {
 		t.Errorf("Expected status 'passed', got '%s'", check.Status)
@@ -385,7 +468,7 @@ func TestValidateGeneratedReportsTools_HasBoth(t *testing.T) {
 }
 
 func TestValidateGeneratedReportsTools_MissingWrite(t *testing.T) {
-	check := validateGeneratedReportsTools("test.md", "Read, Bash, Grep")
+	check := validateGeneratedReportsTools("test.md", []string{"Read", "Bash", "Grep"})
 
 	if check.Status != "failed" {
 		t.Errorf("Expected status 'failed', got '%s'", check.Status)
@@ -393,7 +476,7 @@ func TestValidateGeneratedReportsTools_MissingWrite(t *testing.T) {
 }
 
 func TestValidateGeneratedReportsTools_MissingBash(t *testing.T) {
-	check := validateGeneratedReportsTools("test.md", "Read, Write, Grep")
+	check := validateGeneratedReportsTools("test.md", []string{"Read", "Write", "Grep"})
 
 	if check.Status != "failed" {
 		t.Errorf("Expected status 'failed', got '%s'", check.Status)
@@ -401,7 +484,7 @@ func TestValidateGeneratedReportsTools_MissingBash(t *testing.T) {
 }
 
 func TestValidateGeneratedReportsTools_MissingBoth(t *testing.T) {
-	check := validateGeneratedReportsTools("test.md", "Read, Grep")
+	check := validateGeneratedReportsTools("test.md", []string{"Read", "Grep"})
 
 	if check.Status != "failed" {
 		t.Errorf("Expected status 'failed', got '%s'", check.Status)
@@ -451,15 +534,16 @@ func TestValidateAllAgents_MultipleAgents(t *testing.T) {
 		t.Errorf("Expected 33 checks (3 agents × 11), got %d", len(checks))
 	}
 
-	passedCount := 0
+	failedCount := 0
 	for _, check := range checks {
-		if check.Status == "passed" {
-			passedCount++
+		if check.Status == "failed" {
+			failedCount++
+			t.Logf("Unexpected failure: %s — %s", check.Name, check.Message)
 		}
 	}
 
-	if passedCount != 33 {
-		t.Errorf("Expected all 33 checks to pass, got %d passed", passedCount)
+	if failedCount != 0 {
+		t.Errorf("Expected zero failed checks, got %d", failedCount)
 	}
 }
 
@@ -589,43 +673,106 @@ func TestValidateAgent_NoClosingFrontmatter(t *testing.T) {
 	}
 }
 
+// TestValidateRequiredFields_EmptyTools — under the relaxed spec, an empty
+// tools field is now ACCEPTED (tools is optional). This test asserts the
+// new behaviour.
 func TestValidateRequiredFields_EmptyTools(t *testing.T) {
 	agent := ClaudeAgentFull{
 		Name:        "test",
 		Description: "desc",
-		Tools:       "", // empty tools
-		Model:       "sonnet",
-		Color:       "blue",
+		// Tools nil/empty
+		Model: "sonnet",
+		Color: "blue",
 	}
 	check := validateRequiredFields("test.md", agent)
-	if check.Status != "failed" {
-		t.Errorf("expected 'failed' for empty tools, got %q", check.Status)
+	if check.Status != "passed" {
+		t.Errorf("expected 'passed' for missing tools (now optional), got %q", check.Status)
 	}
 }
 
 func TestValidateTools_EmptyEntryInTools(t *testing.T) {
-	// "Read,,Write" → split gives ["Read", "", "Write"]; empty entry must be skipped
-	check := validateTools("test.md", "Read,,Write")
+	// A nil-or-empty slice should pass validateTools.
+	check := validateTools("test.md", []string{"Read", "", "Write"})
 	if check.Status != "passed" {
 		t.Errorf("expected 'passed' when empty entries are skipped, got %q: %s", check.Status, check.Message)
 	}
 }
 
-func TestValidateFieldOrder_TooManyFields(t *testing.T) {
-	// 7 fields → more than the 6 in RequiredFieldOrder
+// TestValidateFieldOrder_OptionalAfterRequired confirms that the relaxed
+// rule allows optional fields in any order, including extra unknown fields
+// (which should now appear as warnings, not failures).
+func TestValidateFieldOrder_OptionalAfterRequired(t *testing.T) {
 	frontmatter := []byte("name: test\ndescription: desc\ntools: Read\nmodel: sonnet\ncolor: blue\nskills:\nextra: value\n")
-	check := validateFieldOrder("test.md", frontmatter)
-	if check.Status != "failed" {
-		t.Errorf("expected 'failed' for too many fields, got %q", check.Status)
+	checks := validateFieldOrder("test.md", frontmatter)
+
+	// First check is the Field Order check; expect passed because required
+	// fields come first.
+	if len(checks) == 0 || checks[0].Status != "passed" {
+		t.Errorf("expected first check 'passed' (required fields appear first), got %+v", checks)
+	}
+
+	// Subsequent check(s) should be warnings naming the unknown field.
+	foundUnknownWarning := false
+	for _, c := range checks[1:] {
+		if c.Status == "warning" && c.Actual == "Unknown field: extra" {
+			foundUnknownWarning = true
+		}
+	}
+	if !foundUnknownWarning {
+		t.Errorf("expected a warning for unknown field 'extra'; got: %+v", checks)
 	}
 }
 
-func TestValidateFieldOrder_WrongOrder(t *testing.T) {
-	// description before name → wrong order
+func TestValidateFieldOrder_OptionalReordered(t *testing.T) {
+	// Optional fields in a different order — previously a FAIL, now PASS.
+	frontmatter := []byte("name: test\ndescription: desc\ncolor: blue\nmodel: sonnet\ntools: Read\nskills:\n")
+	checks := validateFieldOrder("test.md", frontmatter)
+
+	if len(checks) == 0 || checks[0].Status != "passed" {
+		t.Errorf("expected first check 'passed' for reordered optional fields, got %+v", checks)
+	}
+	for _, c := range checks {
+		if c.Status == "failed" {
+			t.Errorf("did not expect any 'failed' check; got %s", c.Name)
+		}
+	}
+}
+
+func TestValidateFieldOrder_RequiredAfterOptional_Fails(t *testing.T) {
+	// description (required) appears AFTER tools (optional) → required-first violation.
+	frontmatter := []byte("name: test\ntools: Read\ndescription: desc\nmodel: sonnet\n")
+	checks := validateFieldOrder("test.md", frontmatter)
+
+	if len(checks) == 0 || checks[0].Status != "failed" {
+		t.Errorf("expected first check 'failed' for required-after-optional, got %+v", checks)
+	}
+}
+
+func TestValidateFieldOrder_MultipleUnknownFields(t *testing.T) {
+	frontmatter := []byte("name: test\ndescription: desc\nfoo: 1\nbar: 2\nbaz: 3\n")
+	checks := validateFieldOrder("test.md", frontmatter)
+
+	warningNames := map[string]bool{}
+	for _, c := range checks {
+		if c.Status == "warning" {
+			warningNames[c.Actual] = true
+		}
+	}
+	for _, expected := range []string{"Unknown field: foo", "Unknown field: bar", "Unknown field: baz"} {
+		if !warningNames[expected] {
+			t.Errorf("expected warning for %q; got: %+v", expected, warningNames)
+		}
+	}
+}
+
+// TestValidateFieldOrder_DescriptionBeforeName — under the relaxed rule,
+// both name and description are required, so description appearing before
+// name is still acceptable (no required-after-optional violation).
+func TestValidateFieldOrder_RequiredFieldsCanReorder(t *testing.T) {
 	frontmatter := []byte("description: desc\nname: test\n")
-	check := validateFieldOrder("test.md", frontmatter)
-	if check.Status != "failed" {
-		t.Errorf("expected 'failed' for wrong field order, got %q", check.Status)
+	checks := validateFieldOrder("test.md", frontmatter)
+	if len(checks) == 0 || checks[0].Status != "passed" {
+		t.Errorf("expected passed when required fields appear in any order before optional, got %+v", checks)
 	}
 }
 
@@ -650,18 +797,18 @@ func TestValidateYAMLFormattingRaw_NoFrontmatterStart(t *testing.T) {
 }
 
 func TestValidateFieldOrder_InvalidYAML(t *testing.T) {
-	// Tests the yaml.Unmarshal error path in validateFieldOrder (line 158-164)
+	// Tests the yaml.Unmarshal error path in validateFieldOrder
 	// Invalid YAML that causes Unmarshal to fail
 	badFrontmatter := []byte(": invalid yaml {\n  unclosed: [bracket")
-	check := validateFieldOrder("test.md", badFrontmatter)
+	checks := validateFieldOrder("test.md", badFrontmatter)
 	// When YAML parsing fails inside validateFieldOrder, it returns a "failed" check
-	if check.Status != "failed" {
-		t.Errorf("expected 'failed' for invalid YAML in validateFieldOrder, got %q: %s", check.Status, check.Message)
+	if len(checks) == 0 || checks[0].Status != "failed" {
+		t.Errorf("expected 'failed' for invalid YAML in validateFieldOrder, got %+v", checks)
 	}
 }
 
 func TestValidateAgent_ValidFormattingButNoClosingDashes(t *testing.T) {
-	// Tests agent_validator.go:42-49 — ExtractFrontmatter error path
+	// Tests agent_validator.go ExtractFrontmatter error path.
 	// The file has valid YAML formatting (space after colon) so it passes
 	// validateYAMLFormatting, but has no closing --- so ExtractFrontmatter fails.
 	tmpDir := t.TempDir()
@@ -703,11 +850,9 @@ func TestValidateAgent_ValidFormattingButNoClosingDashes(t *testing.T) {
 }
 
 func TestValidateAgent_ValidFrontmatterBadYAMLParse(t *testing.T) {
-	// Tests agent_validator.go:58-65 — yaml.Unmarshal into ClaudeAgentFull fails
+	// Tests agent_validator.go yaml.Unmarshal into ClaudeAgentFull failure
 	// Need valid YAML formatting + valid frontmatter markers but YAML that fails
 	// to unmarshal into ClaudeAgentFull.
-	// Use a mapping that has a key with a sequence value for 'skills' but
-	// with truly malformed YAML inside the frontmatter block.
 	tmpDir := t.TempDir()
 	agentsDir := filepath.Join(tmpDir, ".claude", "agents")
 	if err := os.MkdirAll(agentsDir, 0755); err != nil {
@@ -743,5 +888,43 @@ func TestValidateAgent_ValidFrontmatterBadYAMLParse(t *testing.T) {
 	}
 	if !failed {
 		t.Error("expected at least one failed check for invalid YAML frontmatter")
+	}
+}
+
+// TestValidateAgent_OptionalClaudeOnlyFields verifies an agent that uses
+// Claude-only optional fields (memory, isolation, background) validates
+// without failures (the fields are documented in ValidClaudeAgentFields).
+func TestValidateAgent_OptionalClaudeOnlyFields(t *testing.T) {
+	tmpDir := t.TempDir()
+	agentsDir := filepath.Join(tmpDir, ".claude", "agents")
+	if err := os.MkdirAll(agentsDir, 0755); err != nil {
+		t.Fatalf("Failed to create agents dir: %v", err)
+	}
+
+	content := `---
+name: test-agent
+description: Test agent with optional fields
+tools: Read, Write
+model: inherit
+color: orange
+isolation: worktree
+memory: project
+background: true
+effort: high
+---
+Body.`
+	agentPath := filepath.Join(agentsDir, "test-agent.md")
+	if err := os.WriteFile(agentPath, []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	agentNames := make(map[string]bool)
+	skillNames := make(map[string]bool)
+	checks := validateAgent(agentPath, "test-agent.md", agentNames, skillNames)
+
+	for _, c := range checks {
+		if c.Status == "failed" {
+			t.Errorf("unexpected failure: %s — %s", c.Name, c.Message)
+		}
 	}
 }

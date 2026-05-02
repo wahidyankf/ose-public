@@ -97,7 +97,7 @@ func (s *validateClaudeSteps) aClaudeDirWhereAllAgentsAndSkillsAreValid() error 
 	return s.writeSkill(skillsDir, "test-skill", s.validSkillContent("test-skill"))
 }
 
-func (s *validateClaudeSteps) aClaudeDirWithAgentMissingToolsField() error {
+func (s *validateClaudeSteps) aClaudeDirWithAgentMissingDescriptionField() error {
 	agentsDir, err := s.createAgentsDir()
 	if err != nil {
 		return err
@@ -106,8 +106,11 @@ func (s *validateClaudeSteps) aClaudeDirWithAgentMissingToolsField() error {
 	if err != nil {
 		return err
 	}
-	// Agent without the "tools" field
-	badAgentContent := "---\nname: bad-agent\ndescription: A test agent\nmodel: haiku\ncolor: blue\nskills:\n---\nAgent content."
+	// Agent without the "description" field — only name and description
+	// are required per the relaxed Claude Code spec; tools/model/color are
+	// optional. Use a missing description to trigger the required-fields
+	// failure unambiguously.
+	badAgentContent := "---\nname: bad-agent\ntools: Read\nmodel: haiku\ncolor: blue\nskills:\n---\nAgent content."
 	if err := s.writeAgent(agentsDir, "bad-agent", badAgentContent); err != nil {
 		return err
 	}
@@ -157,8 +160,9 @@ func (s *validateClaudeSteps) aClaudeDirWhereSkillsAreValidButAgentsHaveIssues()
 	if err := s.writeSkill(skillsDir, "test-skill", s.validSkillContent("test-skill")); err != nil {
 		return err
 	}
-	// Invalid agent: missing the "tools" field
-	badAgentContent := "---\nname: bad-agent\ndescription: A test agent\nmodel: haiku\ncolor: blue\nskills:\n---\nAgent content."
+	// Invalid agent: missing the "description" field (required per the
+	// relaxed Claude Code spec — only name + description are mandatory).
+	badAgentContent := "---\nname: bad-agent\ntools: Read\nmodel: haiku\ncolor: blue\nskills:\n---\nAgent content."
 	return s.writeAgent(agentsDir, "bad-agent", badAgentContent)
 }
 
@@ -224,7 +228,7 @@ func InitializeValidateClaudeScenario(sc *godog.ScenarioContext) {
 	sc.After(s.after)
 
 	sc.Step(`^a \.claude/ directory where all agents and skills are valid$`, s.aClaudeDirWhereAllAgentsAndSkillsAreValid)
-	sc.Step(`^a \.claude/ directory where one agent is missing the required "tools" field$`, s.aClaudeDirWithAgentMissingToolsField)
+	sc.Step(`^a \.claude/ directory where one agent is missing the required "description" field$`, s.aClaudeDirWithAgentMissingDescriptionField)
 	sc.Step(`^a \.claude/ directory containing two agent files declaring the same name$`, s.aClaudeDirWithTwoAgentsDeclaringSameName)
 	sc.Step(`^a \.claude/ directory where agents are valid but skills have issues$`, s.aClaudeDirWhereAgentsAreValidButSkillsHaveIssues)
 	sc.Step(`^a \.claude/ directory where skills are valid but agents have issues$`, s.aClaudeDirWhereSkillsAreValidButAgentsHaveIssues)

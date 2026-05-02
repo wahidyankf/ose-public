@@ -193,8 +193,9 @@ Invalid agent`
 		t.Error("Expected some failed checks for invalid agent")
 	}
 
-	if result.PassedChecks+result.FailedChecks != result.TotalChecks {
-		t.Error("Total checks should equal passed + failed")
+	if result.PassedChecks+result.WarningChecks+result.FailedChecks != result.TotalChecks {
+		t.Errorf("Total checks should equal passed + warning + failed; got %d+%d+%d != %d",
+			result.PassedChecks, result.WarningChecks, result.FailedChecks, result.TotalChecks)
 	}
 }
 
@@ -364,10 +365,10 @@ func TestValidateClaude_MultipleAgentsAndSkills(t *testing.T) {
 		}
 	}
 
-	// Verify passed + failed = total
-	if result.PassedChecks+result.FailedChecks != result.TotalChecks {
-		t.Errorf("PassedChecks (%d) + FailedChecks (%d) != TotalChecks (%d)",
-			result.PassedChecks, result.FailedChecks, result.TotalChecks)
+	// Verify passed + warning + failed = total
+	if result.PassedChecks+result.WarningChecks+result.FailedChecks != result.TotalChecks {
+		t.Errorf("PassedChecks (%d) + WarningChecks (%d) + FailedChecks (%d) != TotalChecks (%d)",
+			result.PassedChecks, result.WarningChecks, result.FailedChecks, result.TotalChecks)
 	}
 }
 
@@ -404,7 +405,7 @@ func TestValidateClaude_ChecksStructure(t *testing.T) {
 		if check.Name == "" {
 			t.Errorf("Check %d has empty Name", i)
 		}
-		if check.Status != "passed" && check.Status != "failed" {
+		if check.Status != "passed" && check.Status != "warning" && check.Status != "failed" {
 			t.Errorf("Check %d has invalid Status: %s", i, check.Status)
 		}
 		if check.Message == "" {

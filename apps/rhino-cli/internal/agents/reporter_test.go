@@ -397,3 +397,100 @@ func TestFormatValidationMarkdown_FailedCheckDetails(t *testing.T) {
 		t.Errorf("expected bold Actual field, got %q", out)
 	}
 }
+
+// ---- Tri-state warning rendering ----
+
+func makeValidationResultWithWarnings() *ValidationResult {
+	return &ValidationResult{
+		TotalChecks:   3,
+		PassedChecks:  2,
+		WarningChecks: 1,
+		FailedChecks:  0,
+		Duration:      time.Second,
+		Checks: []ValidationCheck{
+			{Name: "Check A", Status: "passed", Message: "ok"},
+			{Name: "Check B", Status: "passed", Message: "ok"},
+			{Name: "Check C - Unknown Field: foo", Status: "warning",
+				Expected: "Field listed in ValidClaudeAgentFields",
+				Actual:   "Unknown field: foo",
+				Message:  "advisory"},
+		},
+	}
+}
+
+func TestFormatValidationText_WithWarnings(t *testing.T) {
+	out := FormatValidationText(makeValidationResultWithWarnings(), false, false)
+	if !strings.Contains(out, "Warnings: 1") {
+		t.Errorf("expected 'Warnings: 1' line, got %q", out)
+	}
+	if !strings.Contains(out, "⚠") {
+		t.Errorf("expected warning marker (⚠), got %q", out)
+	}
+	if !strings.Contains(out, "PASSED WITH WARNINGS") {
+		t.Errorf("expected 'PASSED WITH WARNINGS' status banner, got %q", out)
+	}
+	if strings.Contains(out, "VALIDATION FAILED") {
+		t.Errorf("warnings alone must not produce FAILED banner, got %q", out)
+	}
+}
+
+func TestFormatValidationText_FailureOverridesWarnings(t *testing.T) {
+	r := makeValidationResultWithWarnings()
+	r.FailedChecks = 1
+	r.Checks = append(r.Checks, ValidationCheck{Name: "Boom", Status: "failed", Message: "broke"})
+	r.TotalChecks++
+	out := FormatValidationText(r, false, false)
+	if !strings.Contains(out, "VALIDATION FAILED") {
+		t.Errorf("expected 'VALIDATION FAILED' when failures present, got %q", out)
+	}
+}
+
+func TestFormatValidationText_VerboseShowsWarningMarker(t *testing.T) {
+	out := FormatValidationText(makeValidationResultWithWarnings(), true, false)
+	if !strings.Contains(out, "All Checks:") {
+		t.Errorf("expected verbose section header, got %q", out)
+	}
+	if !strings.Contains(out, "⚠ Check C") {
+		t.Errorf("expected ⚠ marker for warning check in verbose listing, got %q", out)
+	}
+}
+
+func TestFormatValidationJSON_WithWarnings(t *testing.T) {
+	out, err := FormatValidationJSON(makeValidationResultWithWarnings())
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	var parsed map[string]any
+	if err := json.Unmarshal([]byte(out), &parsed); err != nil {
+		t.Fatalf("expected valid JSON: %v", err)
+	}
+	if parsed["status"] != "warning" {
+		t.Errorf("expected status=warning, got %v", parsed["status"])
+	}
+	if parsed["warning_checks"] != float64(1) {
+		t.Errorf("expected warning_checks=1, got %v", parsed["warning_checks"])
+	}
+}
+
+func TestFormatValidationMarkdown_WithWarnings(t *testing.T) {
+	out := FormatValidationMarkdown(makeValidationResultWithWarnings(), false)
+	if !strings.Contains(out, "## Warnings") {
+		t.Errorf("expected '## Warnings' section, got %q", out)
+	}
+	if !strings.Contains(out, "PASSED WITH WARNINGS") {
+		t.Errorf("expected 'PASSED WITH WARNINGS' status, got %q", out)
+	}
+	if !strings.Contains(out, "**Warnings**: 1") {
+		t.Errorf("expected '**Warnings**: 1' summary line, got %q", out)
+	}
+}
+
+func TestFormatValidationMarkdown_VerboseShowsWarningMarker(t *testing.T) {
+	out := FormatValidationMarkdown(makeValidationResultWithWarnings(), true)
+	if !strings.Contains(out, "## All Checks") {
+		t.Errorf("expected verbose 'All Checks' section, got %q", out)
+	}
+	if !strings.Contains(out, "⚠ Check C") {
+		t.Errorf("expected ⚠ marker for warning in verbose listing, got %q", out)
+	}
+}

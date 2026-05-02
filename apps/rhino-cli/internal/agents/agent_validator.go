@@ -5,12 +5,40 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"gopkg.in/yaml.v3"
 )
 
-// validateAgent performs all 12 validation rules for a single agent
+// validModelAlias enumerates the short-form model aliases accepted in
+// Claude Code agent frontmatter. The empty string means "inherit from the
+// parent session" (legacy behaviour); "inherit" is the explicit form added
+// to the spec in 2026.
+var validModelAlias = map[string]bool{
+	"":        true,
+	"sonnet":  true,
+	"opus":    true,
+	"haiku":   true,
+	"inherit": true,
+}
+
+// validModelIDPattern matches full Claude model identifiers such as
+// claude-opus-4-7, claude-sonnet-4-6, claude-haiku-4-5, claude-3-5-sonnet, etc.
+// The regex is intentionally permissive on minor punctuation (lowercase
+// letters, digits, hyphens, dots) so new Claude releases do not break the
+// validator until the spec snapshot is refreshed.
+var validModelIDPattern = regexp.MustCompile(`^claude-[a-z0-9.-]+$`)
+
+// agentToolPattern matches an Agent(...) parameterized tool reference. The
+// captured group is the base tool name (always "Agent"); any trailing
+// (subagent) argument is stripped before allow-list lookup.
+var agentToolPattern = regexp.MustCompile(`^([A-Za-z][A-Za-z0-9_]*)\(.*\)$`)
+
+// validateAgent performs all validation rules for a single agent.
+//
+// Returns a slice of ValidationCheck values. Status may be "passed",
+// "warning", or "failed"; only "failed" should drive a non-zero exit code.
 func validateAgent(
 	agentPath string,
 	filename string,
@@ -53,7 +81,8 @@ func validateAgent(
 		Message: "Valid YAML frontmatter",
 	})
 
-	// Parse YAML into ClaudeAgentFull
+	// Parse YAML into ClaudeAgentFull (custom UnmarshalYAML normalizes
+	// tools into []string regardless of source shape).
 	var agent ClaudeAgentFull
 	if err := yaml.Unmarshal(frontmatter, &agent); err != nil {
 		checks = append(checks, ValidationCheck{
@@ -64,16 +93,15 @@ func validateAgent(
 		return checks
 	}
 
-	// Rule 2: Required fields present
+	// Rule 2: Required fields present (only name + description per spec)
 	requiredFieldsCheck := validateRequiredFields(filename, agent)
 	checks = append(checks, requiredFieldsCheck)
 	if requiredFieldsCheck.Status == "failed" {
 		return checks
 	}
 
-	// Rule 3: Field order matches spec
-	fieldOrderCheck := validateFieldOrder(filename, frontmatter)
-	checks = append(checks, fieldOrderCheck)
+	// Rule 3: Field order (relaxed) — required-first FAIL, unknown WARN.
+	checks = append(checks, validateFieldOrder(filename, frontmatter)...)
 
 	// Rule 4: Valid tool names
 	toolsCheck := validateTools(filename, agent.Tools)
@@ -83,9 +111,12 @@ func validateAgent(
 	modelCheck := validateModel(filename, agent.Model)
 	checks = append(checks, modelCheck)
 
-	// Rule 6: Valid colors
-	colorCheck := validateColor(filename, agent.Color)
-	checks = append(checks, colorCheck)
+	// Rule 6: Valid colors (only enforced when color is set; color is
+	// optional per the relaxed spec).
+	if agent.Color != "" {
+		colorCheck := validateColor(filename, agent.Color)
+		checks = append(checks, colorCheck)
+	}
 
 	// Rule 7: Filename matches name field
 	filenameCheck := validateFilename(filename, agent.Name)
@@ -115,7 +146,9 @@ func validateAgent(
 	return checks
 }
 
-// validateRequiredFields checks that all required fields are present
+// validateRequiredFields checks that all required fields (name, description)
+// are present. Tools and color are NOT required per the Claude Code spec
+// — they are optional fields and their absence is acceptable.
 func validateRequiredFields(filename string, agent ClaudeAgentFull) ValidationCheck {
 	missing := []string{}
 
@@ -125,14 +158,6 @@ func validateRequiredFields(filename string, agent ClaudeAgentFull) ValidationCh
 	if agent.Description == "" {
 		missing = append(missing, "description")
 	}
-	if agent.Tools == "" {
-		missing = append(missing, "tools")
-	}
-	// model can be empty (valid)
-	if agent.Color == "" {
-		missing = append(missing, "color")
-	}
-	// skills can be empty (valid)
 
 	if len(missing) > 0 {
 		return ValidationCheck{
@@ -151,16 +176,27 @@ func validateRequiredFields(filename string, agent ClaudeAgentFull) ValidationCh
 	}
 }
 
-// validateFieldOrder checks that fields are in the correct order
-func validateFieldOrder(filename string, frontmatter []byte) ValidationCheck {
+// validateFieldOrder enforces a two-tier rule:
+//
+//  1. Required fields (name, description) MUST appear before any optional
+//     field. A required-after-optional ordering is a FAIL.
+//  2. Optional fields may appear in any order.
+//  3. Any field NOT in the documented Claude Code field set produces a
+//     "warning" ValidationCheck (one per unknown field) rather than a
+//     failure.
+//
+// The function returns a slice of ValidationCheck values: at most one
+// "Field Order" check (passed or failed), plus zero or more "Unknown Field"
+// warnings.
+func validateFieldOrder(filename string, frontmatter []byte) []ValidationCheck {
 	// Parse as generic YAML to get field order
 	var data yaml.Node
 	if err := yaml.Unmarshal(frontmatter, &data); err != nil {
-		return ValidationCheck{
+		return []ValidationCheck{{
 			Name:    fmt.Sprintf("Agent: %s - Field Order", filename),
 			Status:  "failed",
 			Message: fmt.Sprintf("Failed to parse YAML for order check: %v", err),
-		}
+		}}
 	}
 
 	// Extract field names in order
@@ -176,41 +212,70 @@ func validateFieldOrder(filename string, frontmatter []byte) ValidationCheck {
 		}
 	}
 
-	// Check order against required order
-	expectedOrder := RequiredFieldOrder
-	if len(fieldNames) > len(expectedOrder) {
-		return ValidationCheck{
+	requiredSet := make(map[string]bool, len(RequiredFields))
+	for _, f := range RequiredFields {
+		requiredSet[f] = true
+	}
+
+	// Required-first check: once any optional field is seen, no further
+	// required field may appear.
+	sawOptional := false
+	var outOfOrder []string
+	for _, field := range fieldNames {
+		if requiredSet[field] {
+			if sawOptional {
+				outOfOrder = append(outOfOrder, field)
+			}
+		} else {
+			sawOptional = true
+		}
+	}
+
+	var checks []ValidationCheck
+	if len(outOfOrder) > 0 {
+		checks = append(checks, ValidationCheck{
 			Name:     fmt.Sprintf("Agent: %s - Field Order", filename),
 			Status:   "failed",
-			Expected: fmt.Sprintf("Fields: %v", expectedOrder),
-			Actual:   fmt.Sprintf("Fields: %v", fieldNames),
-			Message:  "Extra fields present",
+			Expected: fmt.Sprintf("Required fields %v appear before any optional field", RequiredFields),
+			Actual:   fmt.Sprintf("Required field(s) appear after optional field: %v", outOfOrder),
+			Message:  "Required fields must appear before optional fields",
+		})
+	} else {
+		checks = append(checks, ValidationCheck{
+			Name:    fmt.Sprintf("Agent: %s - Field Order", filename),
+			Status:  "passed",
+			Message: "Required fields appear before optional fields",
+		})
+	}
+
+	// Unknown-field warnings: one per unrecognized field name.
+	for _, field := range fieldNames {
+		if !ValidClaudeAgentFields[field] {
+			checks = append(checks, ValidationCheck{
+				Name:     fmt.Sprintf("Agent: %s - Unknown Field: %s", filename, field),
+				Status:   "warning",
+				Expected: "Field listed in ValidClaudeAgentFields",
+				Actual:   fmt.Sprintf("Unknown field: %s", field),
+				Message:  fmt.Sprintf("Field %q is not in the documented Claude Code agent field set; verify it is intentional", field),
+			})
 		}
 	}
 
-	for i, field := range fieldNames {
-		if i >= len(expectedOrder) || field != expectedOrder[i] {
-			return ValidationCheck{
-				Name:     fmt.Sprintf("Agent: %s - Field Order", filename),
-				Status:   "failed",
-				Expected: fmt.Sprintf("Order: %v", expectedOrder[:len(fieldNames)]),
-				Actual:   fmt.Sprintf("Order: %v", fieldNames),
-				Message:  "Field order incorrect",
-			}
-		}
-	}
-
-	return ValidationCheck{
-		Name:    fmt.Sprintf("Agent: %s - Field Order", filename),
-		Status:  "passed",
-		Message: "Field order correct",
-	}
+	return checks
 }
 
-// validateTools checks that all tools are valid
-func validateTools(filename string, toolsStr string) ValidationCheck {
-	// Parse tools (comma-separated)
-	tools := strings.Split(toolsStr, ",")
+// validateTools checks that all tools are valid Claude Code tool names.
+//
+// Accepts the normalized []string shape (the YAML-shape variance — string
+// vs sequence — is resolved upstream by ClaudeAgentFull.UnmarshalYAML and
+// ParseClaudeTools). Each entry is matched against ValidTools; the
+// parameterized form Agent(<sub>) is stripped to its base name before
+// lookup.
+//
+// Unknown tool names remain a FAIL (not a warning), because a typo in a
+// tool name silently disables the tool at runtime — that is a real bug,
+// not an advisory.
+func validateTools(filename string, tools []string) ValidationCheck {
 	invalid := []string{}
 
 	for _, tool := range tools {
@@ -218,15 +283,19 @@ func validateTools(filename string, toolsStr string) ValidationCheck {
 		if tool == "" {
 			continue
 		}
-		if !ValidTools[tool] {
+		base := tool
+		if m := agentToolPattern.FindStringSubmatch(tool); m != nil {
+			base = m[1]
+		}
+		if !ValidTools[base] {
 			invalid = append(invalid, tool)
 		}
 	}
 
 	if len(invalid) > 0 {
-		validToolsList := []string{}
-		for tool := range ValidTools {
-			validToolsList = append(validToolsList, tool)
+		validToolsList := make([]string, 0, len(ValidTools))
+		for t := range ValidTools {
+			validToolsList = append(validToolsList, t)
 		}
 		return ValidationCheck{
 			Name:     fmt.Sprintf("Agent: %s - Valid Tools", filename),
@@ -244,30 +313,30 @@ func validateTools(filename string, toolsStr string) ValidationCheck {
 	}
 }
 
-// validateModel checks that the model is valid
+// validateModel checks that the model is a recognized alias OR a
+// well-formed Claude model identifier (e.g. claude-opus-4-7).
 func validateModel(filename string, model string) ValidationCheck {
-	if !ValidModels[model] {
-		validModels := []string{"(empty)", "sonnet", "opus", "haiku"}
+	if validModelAlias[model] || validModelIDPattern.MatchString(model) {
 		return ValidationCheck{
-			Name:     fmt.Sprintf("Agent: %s - Valid Model", filename),
-			Status:   "failed",
-			Expected: fmt.Sprintf("Valid models: %v", validModels),
-			Actual:   fmt.Sprintf("Model: %s", model),
-			Message:  "Invalid model",
+			Name:    fmt.Sprintf("Agent: %s - Valid Model", filename),
+			Status:  "passed",
+			Message: "Model valid",
 		}
 	}
 
 	return ValidationCheck{
-		Name:    fmt.Sprintf("Agent: %s - Valid Model", filename),
-		Status:  "passed",
-		Message: "Model valid",
+		Name:     fmt.Sprintf("Agent: %s - Valid Model", filename),
+		Status:   "failed",
+		Expected: "<empty>|sonnet|opus|haiku|inherit|claude-*",
+		Actual:   fmt.Sprintf("Model: %s", model),
+		Message:  "Invalid model",
 	}
 }
 
 // validateColor checks that the color is valid
 func validateColor(filename string, color string) ValidationCheck {
 	if !ValidColors[color] {
-		validColors := []string{"blue", "green", "yellow", "purple"}
+		validColors := []string{"red", "blue", "green", "yellow", "purple", "orange", "pink", "cyan"}
 		return ValidationCheck{
 			Name:     fmt.Sprintf("Agent: %s - Valid Color", filename),
 			Status:   "failed",
@@ -379,18 +448,25 @@ func validateYAMLFormatting(filename string, content []byte) ValidationCheck {
 	return validateYAMLFormattingRaw(fmt.Sprintf("Agent: %s - YAML Formatting", filename), content)
 }
 
-// validateGeneratedReportsTools checks that generated-reports agents have Write AND Bash
-func validateGeneratedReportsTools(filename string, toolsStr string) ValidationCheck {
-	tools := strings.Split(toolsStr, ",")
+// validateGeneratedReportsTools checks that generated-reports agents have Write AND Bash.
+//
+// Accepts the normalized []string tools form. Trims whitespace from each
+// entry; entries with parameterized syntax (Agent(...)) are matched on
+// the base name.
+func validateGeneratedReportsTools(filename string, tools []string) ValidationCheck {
 	hasWrite := false
 	hasBash := false
 
 	for _, tool := range tools {
 		tool = strings.TrimSpace(tool)
-		if tool == "Write" {
+		base := tool
+		if m := agentToolPattern.FindStringSubmatch(tool); m != nil {
+			base = m[1]
+		}
+		if base == "Write" {
 			hasWrite = true
 		}
-		if tool == "Bash" {
+		if base == "Bash" {
 			hasBash = true
 		}
 	}

@@ -149,6 +149,24 @@ func validateSkill(skillPath string, skillName string) []ValidationCheck {
 		Message: "Name matches directory name",
 	})
 
+	// Rule 7: Unknown frontmatter fields surface as warnings, not failures.
+	// Re-parse the frontmatter into a generic map and walk the keys against
+	// the documented Claude Code skill field allow-list.
+	var generic map[string]interface{}
+	if err := yaml.Unmarshal(frontmatter, &generic); err == nil {
+		for key := range generic {
+			if !ValidClaudeSkillFields[key] {
+				checks = append(checks, ValidationCheck{
+					Name:     fmt.Sprintf("Skill: %s - Unknown Field: %s", skillName, key),
+					Status:   "warning",
+					Expected: "Field listed in ValidClaudeSkillFields",
+					Actual:   fmt.Sprintf("Unknown field: %s", key),
+					Message:  fmt.Sprintf("Field %q is not in the documented Claude Code skill field set; verify it is intentional", key),
+				})
+			}
+		}
+	}
+
 	return checks
 }
 

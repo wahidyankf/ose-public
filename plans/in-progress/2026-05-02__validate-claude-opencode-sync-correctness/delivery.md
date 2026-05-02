@@ -25,63 +25,116 @@ forcing everything into the suggested single commit.
 
 ## Phase 0 — Verification Pre-flight
 
-- [ ] **P0.1** Re-fetch [opencode.ai/docs/agents/](https://opencode.ai/docs/agents/),
+- [x] **P0.1** Re-fetch [opencode.ai/docs/agents/](https://opencode.ai/docs/agents/),
       confirm directory path `"Per-project: .opencode/agents/"` quote intact;
-      record snapshot in `local-temp/opencode-docs-snapshot-2026-05-02.md`.
-- [ ] **P0.2** Re-fetch [opencode.ai/docs/skills/](https://opencode.ai/docs/skills/),
+      record snapshot in `local-temp/opencode-docs-snapshot-2026-05-02.md`. - Date: 2026-05-02 - Status: done - Files: local-temp/opencode-docs-snapshot-2026-05-02.md - Notes: Confirmed plural `.opencode/agents/`. Recognized fields recorded.
+      Color/model/tools formats captured.
+- [x] **P0.2** Re-fetch [opencode.ai/docs/skills/](https://opencode.ai/docs/skills/),
       confirm `.claude/skills/<name>/SKILL.md` is in the search-path list
-      (Option A precondition).
-- [ ] **P0.3** Re-fetch [code.claude.com/docs/en/sub-agents](https://code.claude.com/docs/en/sub-agents),
+      (Option A precondition). - Date: 2026-05-02 - Status: done - Files: local-temp/opencode-docs-snapshot-2026-05-02.md - Notes: Confirmed `.claude/skills/<name>/SKILL.md` listed as native
+      OpenCode discovery path. Option A precondition satisfied.
+- [x] **P0.3** Re-fetch [code.claude.com/docs/en/sub-agents](https://code.claude.com/docs/en/sub-agents),
       lock down current set of supported frontmatter fields (the policy map's
-      ground truth).
-- [ ] **P0.4** Spot check OpenCode TUI behavior locally: open OpenCode in this
+      ground truth). - Date: 2026-05-02 - Status: done - Files: local-temp/opencode-docs-snapshot-2026-05-02.md - Notes: Frozen field list locked: name, description, tools,
+      disallowedTools, model, permissionMode, maxTurns, skills, mcpServers,
+      hooks, memory, background, effort, isolation, color, initialPrompt.
+      Colors: red/blue/green/yellow/purple/orange/pink/cyan. Model accepts
+      sonnet/opus/haiku/inherit/full claude-\* IDs. Tools include Agent
+      (renamed from Task; Task still alias).
+- [x] **P0.4** Spot check OpenCode TUI behavior locally: open OpenCode in this
       repo, run `/agents` and `/skills`, record which entries appear. Confirms
-      whether singular path is silently honored (informational, not blocking).
-- [ ] **P0.5** Confirm Option A vs Option B for FR-2 with Phase 0 evidence;
-      mark choice in this checklist.
+      whether singular path is silently honored (informational, not blocking). - Date: 2026-05-02 - Status: skipped (requires interactive OpenCode TUI session, not
+      runnable from this Claude Code session). Plan tags this as
+      "informational, not blocking". Filesystem inspection earlier confirmed
+      70 agents in singular `.opencode/agent/` and only 1
+      Nx-generated agent in plural `.opencode/agents/`. Behavior consistent
+      with hypothesis that OpenCode reads plural only — but live TUI check
+      deferred to maintainer for P5.5 (mandatory verification at quality
+      gate). Treated as done for blocking purposes. - Files: none
+- [x] **P0.5** Confirm Option A vs Option B for FR-2 with Phase 0 evidence;
+      mark choice in this checklist. - Date: 2026-05-02 - Status: done — **Option A** chosen (stop syncing skills) - Files: local-temp/opencode-docs-snapshot-2026-05-02.md - Notes: opencode.ai/docs/skills explicitly lists `.claude/skills/` as
+      native discovery path. Skill copy is redundant. Phase 4 will execute
+      Option A branch (P4A.\*).
 
 ## Environment Setup (before Phase 1)
 
-- [ ] **ENV.1** Install dependencies in the worktree root: `npm install`.
-- [ ] **ENV.2** Converge the full polyglot toolchain (required for Go / rhino-cli
+- [x] **ENV.1** Install dependencies in the worktree root: `npm install`. - Date: 2026-05-02 - Status: done — 1680 packages, postinstall `doctor` 19/19 tools OK - Files: node_modules/
+- [x] **ENV.2** Converge the full polyglot toolchain (required for Go / rhino-cli
       build): `npm run doctor -- --fix`. The `postinstall` hook runs `doctor || true`
       and silently tolerates drift — explicit `doctor --fix` is mandatory here.
-      See [Worktree Toolchain Initialization](../../../../governance/development/workflow/worktree-setup.md).
-- [ ] **ENV.3** Verify existing tests pass before making any changes:
-      `nx run rhino-cli:test:unit`. All tests must be green before Phase 1 begins.
+      See [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md). - Date: 2026-05-02 - Status: done — 19/19 tools OK, nothing to fix - Files: none
+- [x] **ENV.3** Verify existing tests pass before making any changes:
+      `nx run rhino-cli:test:unit`. All tests must be green before Phase 1 begins. - Date: 2026-05-02 - Status: done — all packages green (cmd, agents, docs, doctor,
+      envbackup, fileutil, git, mermaid, naming, speccoverage, testcoverage) - Files: none
 
 ## Phase 1 — Validator Relaxation (no path change yet)
 
 Acceptance gate: `nx run rhino-cli:test:unit` passes; `validate:claude` emits
 warnings for unknown fields without failing on existing 70 agents.
 
-- [ ] **P1.1** Verify worktree branch is clean: run `git status` and confirm
+- [x] **P1.1** Verify worktree branch is clean: run `git status` and confirm
       no uncommitted changes. This plan uses Trunk Based Development —
       work accumulates on the active worktree branch
       (`worktree-distributed-crafting-pine` or whichever worktree is active)
       and is fast-forward merged to `main` on completion. Do **not** create a
-      new feature branch from main.
-- [ ] **P1.2** Add tri-state `"warning"` status to `ValidationCheck`; update
-      formatter renderers (`reporter.go`, JSON, markdown).
-- [ ] **P1.3** Expand `ValidColors` to `{red, blue, green, yellow, purple,
-      orange, pink, cyan}`. Add unit tests.
-- [ ] **P1.4** Replace `validateModel` with regex-aware version per
-      tech-docs.md §4. Add unit tests for full model IDs and `inherit`.
-- [ ] **P1.5** Replace `validateTools` with shape-tolerant version (string OR
-      array). Add `Agent` and `Agent(<sub>)` to allowed names. Unit tests.
-- [ ] **P1.6** Replace `validateFieldOrder` with two-tier check per
-      tech-docs.md §4. Unit tests for required-first and unknown-field warning.
-- [ ] **P1.7** Update `skill_validator.go` to recognize Claude Code skill
+      new feature branch from main. - Date: 2026-05-02 - Status: done — worktree-distributed-crafting-pine; only delivery.md
+      progress edits modified - Files: none
+- [x] **P1.2** Add tri-state `"warning"` status to `ValidationCheck`; update
+      formatter renderers (`reporter.go`, JSON, markdown). - Date: 2026-05-02 - Status: done — `ValidationResult.WarningChecks` field added,
+      `tallyCheck` helper in `claude_validator.go` aggregates passed /
+      warning / failed; reporter formatters emit ⚠ marker (text),
+      `warning_checks` (JSON), Warnings section (markdown), and the
+      tri-state status banner ("VALIDATION PASSED WITH WARNINGS"). - Files: types.go, reporter.go, claude_validator.go
+- [x] **P1.3** Expand `ValidColors` to `{red, blue, green, yellow, purple,
+orange, pink, cyan}`. Add unit tests. - Date: 2026-05-02 - Status: done — all eight colors now pass; magenta covered as
+      negative case. - Files: types.go, agent_validator_test.go
+- [x] **P1.4** Replace `validateModel` with regex-aware version per
+      tech-docs.md §4. Add unit tests for full model IDs and `inherit`. - Date: 2026-05-02 - Status: done — `validModelAlias` (empty / sonnet / opus / haiku /
+      inherit) plus `validModelIDPattern` (`^claude-[a-z0-9.-]+$`) accept
+      both alias and full model IDs; `gpt-4`, `random`, `Claude-Opus`,
+      `claude_opus`, `anthropic/claude-3` covered as negatives. - Files: agent_validator.go, agent_validator_test.go
+- [x] **P1.5** Replace `validateTools` with shape-tolerant version (string OR
+      array). Add `Agent` and `Agent(<sub>)` to allowed names. Unit tests. - Date: 2026-05-02 - Status: done — shape tolerance handled by `ClaudeAgentFull.UnmarshalYAML`
+      (string or sequence) → `ParseClaudeTools` → `[]string`; `validateTools`
+      now takes `[]string`. `agentToolPattern` strips `Agent(<sub>)` to base
+      `Agent` for allow-list lookup. `ValidTools` extended to include
+      `Agent`, `Task`, `NotebookEdit`, `BashOutput`, `KillShell`,
+      `SlashCommand`, `ExitPlanMode`, `EnterPlanMode`,
+      `ListMcpResourcesTool`, `ReadMcpResourceTool`, `AskUserQuestion`. - Files: types.go, agent_validator.go, agent_validator_test.go
+- [x] **P1.6** Replace `validateFieldOrder` with two-tier check per
+      tech-docs.md §4. Unit tests for required-first and unknown-field warning. - Date: 2026-05-02 - Status: done — required fields (`name`, `description`) must precede
+      optional fields (FAIL on violation); optional fields in any order;
+      unknown fields emit one `warning` ValidationCheck each, naming the
+      field. `RequiredFields` slice replaces strict `RequiredFieldOrder`;
+      `validateRequiredFields` no longer marks `tools` or `color` as
+      required (only `name` + `description` per spec). `validateColor`
+      runs only when color is set. - Files: types.go, agent_validator.go, agent_validator_test.go
+- [x] **P1.7** Update `skill_validator.go` to recognize Claude Code skill
       field allow-list; emit warnings for unknown keys. Required `name` and
-      `description` still hard-required. Unit tests.
-- [ ] **P1.8** Resolve `ClaudeAgent.Tools` vs `ClaudeAgentFull.Tools` shape
+      `description` still hard-required. Unit tests. - Date: 2026-05-02 - Status: done — generic-map walk after `ClaudeSkill` parse emits a
+      `warning` per unrecognized key against `ValidClaudeSkillFields`
+      (covers `license`, `compatibility`, `metadata`, `when_to_use`,
+      `argument-hint`, `arguments`, `disable-model-invocation`,
+      `user-invocable`, `allowed-tools`, `model`, `effort`, `context`,
+      `agent`, `hooks`, `paths`, `shell` + the OpenCode-recognized keys). - Files: types.go, skill_validator.go, skill_validator_test.go
+- [x] **P1.8** Resolve `ClaudeAgent.Tools` vs `ClaudeAgentFull.Tools` shape
       inconsistency: choose `[]string`, refactor consumers, add types_test
-      coverage.
-- [ ] **P1.9** Run `npm run validate:claude` against current `.claude/`
+      coverage. - Date: 2026-05-02 - Status: done — `ClaudeAgentFull.Tools` is now `[]string`; custom
+      `UnmarshalYAML` accepts both string and sequence forms via
+      `claudeAgentFullRaw` wrapper + `ParseClaudeTools`. All consumers
+      (`validateAgent`, `validateRequiredFields`, `validateTools`,
+      `validateGeneratedReportsTools`) updated. New tests cover string
+      tools, array tools, missing tools, and field preservation. - Files: types.go, agent_validator.go, types_test.go
+- [x] **P1.9** Run `npm run validate:claude` against current `.claude/`
       content; expect zero failures, possibly several warnings if any agent
-      uses optional fields.
-- [ ] **P1.10** Run `nx run rhino-cli:test:unit -- --coverage`; coverage
-      ≥ 90%.
+      uses optional fields. - Date: 2026-05-02 - Status: done — `go run ./apps/rhino-cli/main.go agents validate-claude`:
+      Total 1033 / Passed 1029 / Warnings 4 / Failed 0; exit code 0; status
+      "VALIDATION PASSED WITH WARNINGS". The four warnings name the
+      unrecognized skill fields `created` (3 skills) and `version` (1 skill)
+      — preexisting latent issues per FR-9. - Files: none
+- [x] **P1.10** Run `nx run rhino-cli:test:unit -- --coverage`; coverage
+      ≥ 90%. - Date: 2026-05-02 - Status: done — `internal/agents` 98.5% statements coverage; whole
+      `rhino-cli` package 90.15% line coverage (passes 90% threshold). - Files: none
 - [ ] **P1.11** Commit "feat(rhino-cli): relax claude validator to current
       claude code spec".
 
@@ -122,7 +175,7 @@ green; only plural directories tracked.
       (count match).
 - [ ] **P3.2** `git rm -r .opencode/agent/` (singular). Verify no live import
       or doc references survive (`grep -r '.opencode/agent\b' . --include='*.md'
-      --include='*.go' --include='*.json'`).
+--include='*.go' --include='*.json'`).
 - [ ] **P3.3** Update `apps/rhino-cli/cmd/agents_sync.go` long-help text
       per tech-docs.md §7. Remove false SKILL.md rename claim. Update model
       mapping reference (defer details to opencode-go plan).
@@ -202,7 +255,7 @@ duplication of skills.
         failure exit code is returned.
   - [ ] **P5.6.2** Run `rhino-cli agents validate-claude --verbose` against
         an agent that uses an optional Claude-only field (e.g., `isolation:
-        worktree`). Verify it emits a WARNING (not a FAIL) naming the field.
+worktree`). Verify it emits a WARNING (not a FAIL) naming the field.
   - [ ] **P5.6.3** Run `rhino-cli agents sync --help`. Verify the help text
         references `.opencode/agents/` (plural), does not claim
         "SKILL.md → {skill-name}.md conversion", and includes a reference to
@@ -233,22 +286,22 @@ duplication of skills.
         Do NOT tight-loop poll — use `gh run watch` only for jobs expected
         to complete in under 5 minutes.
   - [ ] **P6.6.3** Verify the `nx affected -t typecheck lint test:quick
-        spec-coverage` CI job passes for `rhino-cli` and all affected projects.
+spec-coverage` CI job passes for `rhino-cli` and all affected projects.
   - [ ] **P6.6.4** If any CI check fails, fix the root cause immediately and
         push a follow-up commit. Do NOT proceed to plan archival until CI is
         fully green.
 
 ## Quality Gates Per Phase
 
-| Phase | Gate command | Expected |
-| ----- | ------------ | -------- |
-| 0 | (manual research) | Doc snapshots saved |
-| 1 | `nx run rhino-cli:test:unit -- --coverage` | Pass; ≥ 90% |
-| 2 | `nx run rhino-cli:test:unit && nx run rhino-cli:test:integration` | Pass |
-| 3 | `npm run validate:config` | Pass; zero diffs |
-| 4 | `npm run validate:config` + manual `/skills` in OpenCode | Pass; matching count |
-| 5 | `nx affected -t typecheck lint test:quick spec-coverage` | Pass |
-| 6 | `plan-execution-checker` | Zero findings |
+| Phase | Gate command                                                      | Expected             |
+| ----- | ----------------------------------------------------------------- | -------------------- |
+| 0     | (manual research)                                                 | Doc snapshots saved  |
+| 1     | `nx run rhino-cli:test:unit -- --coverage`                        | Pass; ≥ 90%          |
+| 2     | `nx run rhino-cli:test:unit && nx run rhino-cli:test:integration` | Pass                 |
+| 3     | `npm run validate:config`                                         | Pass; zero diffs     |
+| 4     | `npm run validate:config` + manual `/skills` in OpenCode          | Pass; matching count |
+| 5     | `nx affected -t typecheck lint test:quick spec-coverage`          | Pass                 |
+| 6     | `plan-execution-checker`                                          | Zero findings        |
 
 ## Rollback Plan
 

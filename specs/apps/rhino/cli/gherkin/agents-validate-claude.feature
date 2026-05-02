@@ -12,7 +12,7 @@ Feature: Claude Code Agent and Skill Configuration Validation
     And the output reports all checks as passing
 
   Scenario: An agent file missing a required frontmatter field fails validation
-    Given a .claude/ directory where one agent is missing the required "tools" field
+    Given a .claude/ directory where one agent is missing the required "description" field
     When the developer runs agents validate-claude
     Then the command exits with a failure code
     And the output identifies the agent and the missing field

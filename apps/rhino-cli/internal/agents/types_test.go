@@ -2,6 +2,8 @@ package agents
 
 import (
 	"testing"
+
+	"gopkg.in/yaml.v3"
 )
 
 func TestClaudeAgent(t *testing.T) {
@@ -130,6 +132,21 @@ func TestValidationResult(t *testing.T) {
 	}
 }
 
+// TestValidationResult_TriState exercises the new WarningChecks tally and
+// confirms passed + warning + failed == total.
+func TestValidationResult_TriState(t *testing.T) {
+	r := ValidationResult{
+		TotalChecks:   6,
+		PassedChecks:  3,
+		WarningChecks: 2,
+		FailedChecks:  1,
+	}
+	if r.PassedChecks+r.WarningChecks+r.FailedChecks != r.TotalChecks {
+		t.Errorf("expected counters to sum to total; got %d+%d+%d != %d",
+			r.PassedChecks, r.WarningChecks, r.FailedChecks, r.TotalChecks)
+	}
+}
+
 func TestValidationCheck(t *testing.T) {
 	check := ValidationCheck{
 		Status:   "passed",
@@ -157,5 +174,137 @@ func TestValidationCheckFailed(t *testing.T) {
 	}
 	if check.Expected == check.Actual {
 		t.Error("Expected and Actual should be different for failed check")
+	}
+}
+
+// TestValidationCheckWarning exercises the new tri-state "warning" status.
+func TestValidationCheckWarning(t *testing.T) {
+	check := ValidationCheck{
+		Status:   "warning",
+		Expected: "Field listed in ValidClaudeAgentFields",
+		Actual:   "Unknown field: foo",
+		Message:  "advisory only; does not fail validation",
+	}
+	if check.Status != "warning" {
+		t.Errorf("Expected status 'warning', got '%s'", check.Status)
+	}
+	if check.Expected == "" || check.Actual == "" || check.Message == "" {
+		t.Errorf("warning checks should populate Expected/Actual/Message; got %+v", check)
+	}
+}
+
+// TestClaudeAgentFull_UnmarshalYAML_StringTools confirms the custom YAML
+// unmarshaller normalizes a comma-separated tools string into []string.
+func TestClaudeAgentFull_UnmarshalYAML_StringTools(t *testing.T) {
+	yamlData := []byte(`name: my-agent
+description: an agent
+tools: "Read, Write, Bash"
+model: sonnet
+color: blue
+`)
+	var agent ClaudeAgentFull
+	if err := yaml.Unmarshal(yamlData, &agent); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	want := []string{"Read", "Write", "Bash"}
+	if len(agent.Tools) != len(want) {
+		t.Fatalf("expected %d tools, got %d (%v)", len(want), len(agent.Tools), agent.Tools)
+	}
+	for i, w := range want {
+		if agent.Tools[i] != w {
+			t.Errorf("tool[%d] = %q; want %q", i, agent.Tools[i], w)
+		}
+	}
+}
+
+// TestClaudeAgentFull_UnmarshalYAML_ArrayTools confirms the custom YAML
+// unmarshaller normalizes a YAML sequence of tools into []string.
+func TestClaudeAgentFull_UnmarshalYAML_ArrayTools(t *testing.T) {
+	yamlData := []byte(`name: my-agent
+description: an agent
+tools:
+  - Read
+  - Write
+  - Bash
+model: sonnet
+color: blue
+`)
+	var agent ClaudeAgentFull
+	if err := yaml.Unmarshal(yamlData, &agent); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	want := []string{"Read", "Write", "Bash"}
+	if len(agent.Tools) != len(want) {
+		t.Fatalf("expected %d tools, got %d (%v)", len(want), len(agent.Tools), agent.Tools)
+	}
+	for i, w := range want {
+		if agent.Tools[i] != w {
+			t.Errorf("tool[%d] = %q; want %q", i, agent.Tools[i], w)
+		}
+	}
+}
+
+// TestClaudeAgentFull_UnmarshalYAML_NoTools confirms the custom YAML
+// unmarshaller handles a missing tools field gracefully (nil slice).
+func TestClaudeAgentFull_UnmarshalYAML_NoTools(t *testing.T) {
+	yamlData := []byte(`name: my-agent
+description: an agent
+model: sonnet
+color: blue
+`)
+	var agent ClaudeAgentFull
+	if err := yaml.Unmarshal(yamlData, &agent); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(agent.Tools) != 0 {
+		t.Errorf("expected no tools, got %v", agent.Tools)
+	}
+	if agent.Name != "my-agent" {
+		t.Errorf("expected name to be parsed; got %q", agent.Name)
+	}
+}
+
+// TestClaudeAgentFull_UnmarshalYAML_PreservesOtherFields makes sure no
+// field is lost when the wrapper unmarshalling runs.
+func TestClaudeAgentFull_UnmarshalYAML_PreservesOtherFields(t *testing.T) {
+	yamlData := []byte(`name: a
+description: d
+tools: "Read"
+model: opus
+color: orange
+skills:
+  - skill-1
+  - skill-2
+`)
+	var agent ClaudeAgentFull
+	if err := yaml.Unmarshal(yamlData, &agent); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if agent.Name != "a" || agent.Description != "d" || agent.Model != "opus" || agent.Color != "orange" {
+		t.Errorf("scalar fields lost during unmarshal: %+v", agent)
+	}
+	if len(agent.Skills) != 2 || agent.Skills[0] != "skill-1" || agent.Skills[1] != "skill-2" {
+		t.Errorf("skills slice not preserved: %v", agent.Skills)
+	}
+}
+
+// TestValidClaudeAgentFields_RequiredKeysPresent ensures the documented
+// allow-list contains the fields the validator depends on for required
+// checks.
+func TestValidClaudeAgentFields_RequiredKeysPresent(t *testing.T) {
+	for _, k := range []string{"name", "description", "tools", "model", "color", "skills"} {
+		if !ValidClaudeAgentFields[k] {
+			t.Errorf("required-allow-listed field %q missing from ValidClaudeAgentFields", k)
+		}
+	}
+}
+
+// TestValidClaudeSkillFields_RequiredKeysPresent ensures the documented
+// allow-list contains the fields the validator hard-requires.
+func TestValidClaudeSkillFields_RequiredKeysPresent(t *testing.T) {
+	for _, k := range []string{"name", "description"} {
+		if !ValidClaudeSkillFields[k] {
+			t.Errorf("required-allow-listed field %q missing from ValidClaudeSkillFields", k)
+		}
 	}
 }

@@ -41,14 +41,15 @@ export default defineConfig({
         // Phase 8 settings screen — PGlite+browser-dependent UI; covered by e2e.
         // Migrated to settings/presentation/components/ in DDD adoption Phase 5.
         "src/contexts/settings/presentation/components/settings-screen.tsx",
-        // Phase 4 workout screens — PGlite+XState+setInterval UI; covered by e2e
-        "src/components/app/workout/workout-screen.tsx",
-        "src/components/app/workout/active-exercise-row.tsx",
-        "src/components/app/workout/rest-timer.tsx",
-        "src/components/app/workout/set-edit-sheet.tsx",
-        "src/components/app/workout/set-timer-sheet.tsx",
-        "src/components/app/workout/end-workout-sheet.tsx",
-        "src/components/app/workout/finish-screen.tsx",
+        // Phase 4 workout screens — PGlite+XState+setInterval UI; covered by e2e.
+        // Migrated to workout-session/presentation/components/ in DDD adoption Phase 7b.
+        "src/contexts/workout-session/presentation/components/workout-screen.tsx",
+        "src/contexts/workout-session/presentation/components/active-exercise-row.tsx",
+        "src/contexts/workout-session/presentation/components/rest-timer.tsx",
+        "src/contexts/workout-session/presentation/components/set-edit-sheet.tsx",
+        "src/contexts/workout-session/presentation/components/set-timer-sheet.tsx",
+        "src/contexts/workout-session/presentation/components/end-workout-sheet.tsx",
+        "src/contexts/workout-session/presentation/components/finish-screen.tsx",
         // Phase 1 hook — browser-only; covered by e2e
         "src/lib/hooks/use-hash.ts",
         // Seed — PGlite side-effect-only; covered by integration tests.

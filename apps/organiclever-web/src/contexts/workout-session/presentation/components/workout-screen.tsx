@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useActor } from "@xstate/react";
 import { AppHeader, Button, Icon } from "@open-sharia-enterprise/ts-ui";
-import { workoutSessionMachine, resolvedRest } from "@/lib/workout/workout-machine";
+import { workoutSessionMachine, resolvedRest } from "../../application";
 import type { Routine } from "@/contexts/routine/application";
 import type { AppSettings } from "@/contexts/settings/application";
 import type { JournalRuntime } from "@/contexts/journal/application";

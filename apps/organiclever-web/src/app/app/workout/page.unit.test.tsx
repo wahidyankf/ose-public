@@ -30,7 +30,7 @@ vi.mock("@/contexts/settings/presentation", () => ({
   useSettings: () => ({ state: { status: "loading" } }),
 }));
 
-vi.mock("@/components/app/workout/workout-screen", () => ({
+vi.mock("@/contexts/workout-session/presentation", () => ({
   WorkoutScreen: ({
     routine,
     onFinishWorkout,

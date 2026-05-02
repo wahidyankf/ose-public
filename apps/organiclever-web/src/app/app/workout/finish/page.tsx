@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FinishScreen } from "@/components/app/workout/finish-screen";
+import { FinishScreen } from "@/contexts/workout-session/presentation";
 import { useAppRuntime } from "@/components/app/app-runtime-context";
 import type { CompletedSession } from "@/lib/app/app-machine";
 

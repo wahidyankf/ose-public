@@ -10,7 +10,7 @@ import path from "path";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { expect, vi } from "vitest";
 import { createActor } from "xstate";
-import { workoutSessionMachine } from "@/lib/workout/workout-machine";
+import { workoutSessionMachine } from "@/contexts/workout-session/application";
 import type { AppSettings } from "@/contexts/settings/application";
 import type { Routine } from "@/contexts/routine/application";
 import type { JournalRuntime } from "@/contexts/journal/application";

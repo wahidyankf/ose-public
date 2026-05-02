@@ -28,7 +28,7 @@ vi.mock("@/components/app/app-runtime-context", () => ({
   }),
 }));
 
-vi.mock("@/components/app/workout/finish-screen", () => ({
+vi.mock("@/contexts/workout-session/presentation", () => ({
   FinishScreen: ({ completedSession }: { completedSession: CompletedSession }) => (
     <div data-testid="finish-screen">{completedSession.routineName ?? "no routine"}</div>
   ),

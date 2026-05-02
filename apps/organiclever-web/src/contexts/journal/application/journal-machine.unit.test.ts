@@ -2,12 +2,12 @@ import { describe, it, expect } from "vitest";
 import { createActor, waitFor } from "xstate";
 import { Effect, Layer } from "effect";
 import { PGlite } from "@electric-sql/pglite";
-import { PgliteService, makeJournalRuntime } from "./runtime";
-import { runMigrations } from "./run-migrations";
+import { PgliteService, makeJournalRuntime } from "@/lib/journal/runtime";
+import { runMigrations } from "@/lib/journal/run-migrations";
 import { journalMachine } from "./journal-machine";
 import { Schema } from "effect";
-import { EntryName, EntryPayload } from "@/contexts/journal/domain/schema";
-import { StorageUnavailable } from "@/contexts/journal/domain/errors";
+import { EntryName, EntryPayload } from "../domain/schema";
+import { StorageUnavailable } from "../domain/errors";
 
 function makeTestRuntime() {
   const testLayer = Layer.scoped(

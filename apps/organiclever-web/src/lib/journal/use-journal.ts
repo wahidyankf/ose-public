@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useActor } from "@xstate/react";
-import { journalMachine } from "./journal-machine";
+import { journalMachine } from "@/contexts/journal/application/journal-machine";
 import type { JournalRuntime } from "./runtime";
 import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "@/contexts/journal/domain/schema";
 import type { EntryId } from "@/contexts/journal/domain/schema";

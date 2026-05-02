@@ -1,10 +1,17 @@
 import { assign, createMachine, fromPromise } from "xstate";
 import { Cause, Option, Runtime } from "effect";
-import type { JournalRuntime } from "./runtime";
-import { appendEntries, listEntries, updateEntry, deleteEntry, bumpEntry, clearEntries } from "./journal-store";
-import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "@/contexts/journal/domain/schema";
-import type { EntryId } from "@/contexts/journal/domain/schema";
-import type { StoreError } from "@/contexts/journal/domain/errors";
+import type { JournalRuntime } from "@/lib/journal/runtime";
+import {
+  appendEntries,
+  listEntries,
+  updateEntry,
+  deleteEntry,
+  bumpEntry,
+  clearEntries,
+} from "@/lib/journal/journal-store";
+import type { JournalEntry, NewEntryInput, UpdateEntryInput } from "../domain/schema";
+import type { EntryId } from "../domain/schema";
+import type { StoreError } from "../domain/errors";
 
 function extractStoreError(raw: unknown): StoreError {
   if (Runtime.isFiberFailure(raw)) {

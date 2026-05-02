@@ -56,6 +56,8 @@ device — no network requests, no backend required for core app functionality.
 
 ## Architecture
 
+The app is structured around **bounded contexts** with `domain` / `application` / `infrastructure` / `presentation` layers. See [docs/explanation/bounded-context-map.md](./docs/explanation/bounded-context-map.md) for the authoritative map, layer rules, and ESLint enforcement plan.
+
 ```
 Browser ──── Next.js (organiclever-web)
                     │

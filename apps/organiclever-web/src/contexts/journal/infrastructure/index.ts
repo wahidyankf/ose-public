@@ -14,4 +14,3 @@ export { PgliteService, PgliteLive, makeJournalRuntime, JOURNAL_STORE_DATA_DIR }
 export type { JournalRuntime } from "./runtime";
 
 export { runMigrations } from "./run-migrations";
-export { seedIfEmpty } from "./seed";

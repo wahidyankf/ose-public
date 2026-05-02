@@ -6,19 +6,15 @@
 // through `application/index.ts` until an explicit storage port is
 // introduced in a future plan).
 //
-// Cross-context infrastructure coupling: this file imports `PgliteService`
-// from `@/contexts/journal/infrastructure/runtime` and `StorageUnavailable`
-// from `@/contexts/journal/domain/errors`. The journal context is the
-// system of record for the underlying PGlite handle today; settings borrows
-// the same Layer rather than spinning a parallel one. ESLint
-// `boundaries/element-types` warns about the cross-context infrastructure
-// import (severity = warn) — that warning is expected and resolves when an
-// explicit storage port is introduced in a future plan, at which point the
-// journal infrastructure import collapses to a domain-only one.
+// Cross-context infrastructure coupling: settings shares the platform-wide
+// `PgliteService` Tag and `StorageUnavailable` error type owned by
+// `@/shared/runtime`. The boundaries plugin classifies the imports below as
+// `infrastructure → shared` (allowed), not cross-context infrastructure.
+// The journal context still owns the `PgliteLive` Layer composition (with
+// journal-schema migrations); settings consumes the published Tag.
 
 import { Effect } from "effect";
-import { PgliteService } from "@/contexts/journal/infrastructure/runtime";
-import { StorageUnavailable } from "@/contexts/journal/domain/errors";
+import { PgliteService, StorageUnavailable } from "@/shared/runtime";
 import type { AppSettings, RestSeconds, Lang } from "../domain";
 
 // Re-export domain types so that consumers importing from this module

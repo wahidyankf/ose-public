@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
+import type { AppRuntime } from "@/shared/runtime";
 import { getSettings, saveSettings } from "../application";
 import type { AppSettings } from "../application";
 
@@ -17,7 +17,7 @@ export type SettingsState =
 // Hook
 // ---------------------------------------------------------------------------
 
-export function useSettings(runtime: JournalRuntime) {
+export function useSettings(runtime: AppRuntime) {
   const [state, setState] = useState<SettingsState>({ status: "idle" });
 
   const load = useCallback(() => {

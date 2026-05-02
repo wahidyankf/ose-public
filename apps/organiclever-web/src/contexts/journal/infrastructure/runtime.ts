@@ -1,12 +1,16 @@
-import { Context, Effect, Layer, ManagedRuntime } from "effect";
+import { Effect, Layer } from "effect";
 import type { PGlite } from "@electric-sql/pglite";
+import { PgliteService, makeAppRuntime } from "@/shared/runtime";
+import type { AppRuntime } from "@/shared/runtime";
+import { StorageUnavailable } from "@/shared/runtime";
 import { runMigrations } from "./run-migrations";
-import { StorageUnavailable } from "../domain/errors";
 
 export const JOURNAL_STORE_DATA_DIR = "ol_journal_v1";
 
-export class PgliteService extends Context.Tag("PgliteService")<PgliteService, { readonly db: PGlite }>() {}
-
+// Journal-aware `PgliteService` Layer: opens the PGlite database under the
+// journal-owned IDB dir and runs the journal context's schema migrations
+// before publishing the handle. The Tag itself lives in `@/shared/runtime`
+// because the same Tag is consumed by routine, settings, and stats.
 export const PgliteLive: Layer.Layer<PgliteService, StorageUnavailable> = Layer.scoped(
   PgliteService,
   Effect.acquireRelease(
@@ -30,7 +34,19 @@ export const PgliteLive: Layer.Layer<PgliteService, StorageUnavailable> = Layer.
   ),
 );
 
+// Backwards-compatible aliases: the journal context historically owned the
+// runtime constructor and `JournalRuntime` type; cross-context callers and
+// tests still import them from journal. The implementation now lives in
+// `@/shared/runtime`; these are thin re-exports.
 export const makeJournalRuntime = (layer: Layer.Layer<PgliteService, StorageUnavailable> = PgliteLive) =>
-  ManagedRuntime.make(layer);
+  makeAppRuntime(layer);
 
-export type JournalRuntime = ReturnType<typeof makeJournalRuntime>;
+export type JournalRuntime = AppRuntime;
+
+// Re-export the Tag through the journal infrastructure path so existing
+// barrels (`journal/infrastructure/index.ts`, `journal/application/index.ts`)
+// continue to publish it. Cross-context infrastructure callers should
+// import directly from `@/shared/runtime` instead — the boundaries plugin
+// classifies that as `infrastructure → shared` (allowed) rather than
+// cross-context infrastructure → infrastructure.
+export { PgliteService } from "@/shared/runtime";

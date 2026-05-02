@@ -7,21 +7,18 @@
 // `application/index.ts` until an explicit storage port is introduced in a
 // future plan).
 //
-// Cross-context infrastructure coupling: this file imports `PgliteService`
-// from `@/contexts/journal/infrastructure` and `StorageUnavailable` /
-// `NotFound` from `@/contexts/journal/domain`. The journal context is the
-// system of record for the underlying PGlite handle today; routine borrows
-// the same Layer rather than spinning a parallel one (mirrors the settings
-// context pattern from Phase 5). ESLint `boundaries/element-types` warns
-// about the cross-context infrastructure import (severity = warn) — that
-// warning is expected and resolves when an explicit storage port is
-// introduced in a future plan, at which point the journal infrastructure
-// import collapses to a domain-only one.
+// Cross-context infrastructure coupling: routine shares the platform-wide
+// `PgliteService` Tag, `StorageUnavailable`, and `NotFound` types owned by
+// `@/shared/runtime`. `Hue` is a shared-kernel domain type from journal —
+// the boundaries plugin allows the `infrastructure → domain` cross-context
+// import for type-only references (the routine domain type already
+// references it; routine-store only resurfaces it in function signatures).
+// All boundary-relevant imports below resolve to `infrastructure → shared`
+// or `infrastructure → domain` (own context), both allowed by the rule.
 
 import { Effect } from "effect";
-import { PgliteService } from "@/contexts/journal/infrastructure";
-import { NotFound, StorageUnavailable } from "@/contexts/journal/domain";
-import type { Hue } from "@/contexts/journal/application";
+import { PgliteService, StorageUnavailable, NotFound } from "@/shared/runtime";
+import type { Hue } from "@/contexts/journal/domain";
 import type { ExerciseGroup, Routine } from "../domain";
 
 // Re-export domain types so consumers importing from this module continue to

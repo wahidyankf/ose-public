@@ -44,7 +44,6 @@ export type { JournalContext, JournalEvent } from "./journal-machine";
 // will collapse to that composed runtime.
 export { makeJournalRuntime, PgliteService, PgliteLive, JOURNAL_STORE_DATA_DIR } from "../infrastructure/runtime";
 export type { JournalRuntime } from "../infrastructure/runtime";
-export { seedIfEmpty } from "../infrastructure/seed";
 
 // Domain types re-exported through the application barrel so cross-context
 // callers do not need a second import line for the value types. Effect

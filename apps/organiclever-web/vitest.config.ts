@@ -57,8 +57,10 @@ export default defineConfig({
         // Phase 1 hook — browser-only; covered by e2e
         "src/lib/hooks/use-hash.ts",
         // Seed — PGlite side-effect-only; covered by integration tests.
-        // Migrated to journal/infrastructure/ in DDD adoption Phase 6c.
-        "src/contexts/journal/infrastructure/seed.ts",
+        // Migrated to app-shell/application/ in DDD adoption Phase 8 since
+        // it composes write operations across the journal, routine, and
+        // settings published barrels.
+        "src/contexts/app-shell/application/seed.ts",
         // i18n hook — browser-only; covered by e2e.
         // Migrated to app-shell/presentation/ in DDD adoption Phase 8.
         "src/contexts/app-shell/presentation/use-t.ts",

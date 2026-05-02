@@ -9,11 +9,13 @@
 //
 // `ExerciseTemplate` and the `Hue` palette are owned by the journal context's
 // typed-payloads schema (workout entries embed exercises) and re-imported
-// here as type-only references via the journal application barrel — that
-// matches the strategic relationship "routine reads journal type vocabulary"
-// captured in the bounded-context map ADR.
+// here as type-only references via the journal domain barrel — that matches
+// the strategic relationship "routine reads journal type vocabulary"
+// captured in the bounded-context map ADR. Cross-context `domain → domain`
+// type-only imports are the DDD "shared kernel" pattern, allowed by the
+// ESLint boundaries config.
 
-import type { ExerciseTemplate, Hue } from "@/contexts/journal/application";
+import type { ExerciseTemplate, Hue } from "@/contexts/journal/domain";
 
 export type RoutineId = string;
 

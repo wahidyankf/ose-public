@@ -25,6 +25,9 @@ vi.mock("@/contexts/journal/application", () => ({
   }),
   PgliteLive: {},
   JOURNAL_STORE_DATA_DIR: "test",
+}));
+
+vi.mock("@/contexts/app-shell/application", () => ({
   seedIfEmpty: () => ({}),
 }));
 

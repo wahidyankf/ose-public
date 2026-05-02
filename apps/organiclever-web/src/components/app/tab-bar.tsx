@@ -1,29 +1,44 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Icon } from "@open-sharia-enterprise/ts-ui";
-import type { Tab } from "@/lib/app/app-machine";
 
 interface TabBarProps {
-  activeTab: Tab;
-  onNavigate: (tab: Tab) => void;
   onFabPress: () => void;
 }
 
-interface TabButtonProps {
-  id: Tab;
+interface TabConfig {
+  id: string;
+  href: string;
+  label: string;
+  icon: string;
+}
+
+const LEFT_TABS: ReadonlyArray<TabConfig> = [
+  { id: "home", href: "/app/home", label: "Home", icon: "home" },
+  { id: "progress", href: "/app/progress", label: "Progress", icon: "trend" },
+];
+
+const RIGHT_TABS: ReadonlyArray<TabConfig> = [
+  { id: "history", href: "/app/history", label: "History", icon: "history" },
+  { id: "settings", href: "/app/settings", label: "Settings", icon: "settings" },
+];
+
+interface TabLinkProps {
+  href: string;
   label: string;
   icon: string;
   active: boolean;
-  onClick: () => void;
 }
 
-function TabButton({ id, label, icon, active, onClick }: TabButtonProps) {
+function TabLink({ href, label, icon, active }: TabLinkProps) {
   return (
-    <button
-      key={id}
-      onClick={onClick}
-      className="flex flex-1 cursor-pointer flex-col items-center justify-center gap-[3px] border-0 bg-transparent font-[inherit] transition-colors duration-150 [-webkit-tap-highlight-color:transparent]"
+    <Link
+      href={href}
+      prefetch={false}
+      className="flex flex-1 cursor-pointer flex-col items-center justify-center gap-[3px] border-0 bg-transparent font-[inherit] no-underline transition-colors duration-150 [-webkit-tap-highlight-color:transparent]"
       style={{
         color: active ? "var(--hue-teal)" : "var(--color-muted-foreground)",
         fontSize: 10,
@@ -33,7 +48,7 @@ function TabButton({ id, label, icon, active, onClick }: TabButtonProps) {
     >
       <Icon name={icon} size={22} filled={active} />
       {label}
-    </button>
+    </Link>
   );
 }
 
@@ -41,21 +56,11 @@ function TabButton({ id, label, icon, active, onClick }: TabButtonProps) {
  * Custom 64px mobile TabBar with 5 slots:
  * Home | Progress | FAB(+) | History | Settings
  *
- * Uses custom styles rather than the ts-ui TabBar — the FAB centre slot
- * and 5-item layout are app-specific and not supported by the generic component.
+ * Uses Next.js Link for navigation; active state derives from usePathname().
  */
-export function TabBar({ activeTab, onNavigate, onFabPress }: TabBarProps) {
+export function TabBar({ onFabPress }: TabBarProps) {
+  const pathname = usePathname();
   const [fabPressed, setFabPressed] = useState(false);
-
-  const leftTabs: Array<{ id: Tab; label: string; icon: string }> = [
-    { id: "home", label: "Home", icon: "home" },
-    { id: "progress", label: "Progress", icon: "trend" },
-  ];
-
-  const rightTabs: Array<{ id: Tab; label: string; icon: string }> = [
-    { id: "history", label: "History", icon: "history" },
-    { id: "settings", label: "Settings", icon: "settings" },
-  ];
 
   return (
     <div
@@ -72,19 +77,10 @@ export function TabBar({ activeTab, onNavigate, onFabPress }: TabBarProps) {
         zIndex: 40,
       }}
     >
-      {/* Left tabs: Home + Progress */}
-      {leftTabs.map((tab) => (
-        <TabButton
-          key={tab.id}
-          id={tab.id}
-          label={tab.label}
-          icon={tab.icon}
-          active={activeTab === tab.id}
-          onClick={() => onNavigate(tab.id)}
-        />
+      {LEFT_TABS.map((tab) => (
+        <TabLink key={tab.id} href={tab.href} label={tab.label} icon={tab.icon} active={pathname === tab.href} />
       ))}
 
-      {/* Centre FAB */}
       <div className="flex flex-1 items-center justify-center">
         <button
           onClick={onFabPress}
@@ -110,16 +106,8 @@ export function TabBar({ activeTab, onNavigate, onFabPress }: TabBarProps) {
         </button>
       </div>
 
-      {/* Right tabs: History + Settings */}
-      {rightTabs.map((tab) => (
-        <TabButton
-          key={tab.id}
-          id={tab.id}
-          label={tab.label}
-          icon={tab.icon}
-          active={activeTab === tab.id}
-          onClick={() => onNavigate(tab.id)}
-        />
+      {RIGHT_TABS.map((tab) => (
+        <TabLink key={tab.id} href={tab.href} label={tab.label} icon={tab.icon} active={pathname === tab.href} />
       ))}
     </div>
   );

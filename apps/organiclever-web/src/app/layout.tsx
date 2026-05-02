@@ -22,7 +22,10 @@ export const metadata: Metadata = siteMetadata;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${nunito.variable} ${jetbrainsMono.variable}`}>
+    // suppressHydrationWarning silences React 19's mismatch error on the
+    // `data-theme` attribute we set client-side via the inline script below
+    // (the standard Next.js theme-flash pattern; the warning is benign).
+    <html lang="en" className={`${nunito.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

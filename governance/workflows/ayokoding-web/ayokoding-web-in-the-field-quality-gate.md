@@ -84,8 +84,8 @@ This workflow implements the **Maker-Checker-Fixer pattern** to ensure in-the-fi
 **Fallback Mode**: Manual Orchestration — execute workflow logic directly using
 Read/Write/Edit tools when Agent Delegation is unavailable.
 
-The Agent tool runs subagents that persist file changes to the actual filesystem, making it
-the preferred approach when these agents exist as defined subagent types. Note: this workflow
+The Agent tool runs delegated agents that persist file changes to the actual filesystem, making it
+the preferred approach when these agents exist as defined delegated agent types. Note: this workflow
 includes a manual user review step (step 3) — agent delegation applies to the checker and
 fixer steps, not the human decision point.
 
@@ -136,7 +136,7 @@ graph TB
 
 The `apps-ayokoding-web-in-the-field-maker` and `apps-ayokoding-web-facts-checker` agents invoked
 by this workflow delegate multi-page web research to the
-[`web-research-maker`](../../../.claude/agents/web-research-maker.md) subagent when composing or
+[`web-research-maker`](../../../.claude/agents/web-research-maker.md) delegated agent when composing or
 verifying claims about library versions, API signatures, or production best practices requires
 more than one or two searches, or more than two fetches. In-context `WebSearch`/`WebFetch` remain
 available for single-shot verification against known authoritative URLs. This keeps each agent's

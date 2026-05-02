@@ -39,8 +39,8 @@ This convention exists to:
 
 ### What This Convention Covers
 
-- Any AI agent in `.claude/agents/` (primary) or `.opencode/agents/` (auto-generated mirror) that has `WebSearch` or `WebFetch` in its tool list, or that consumes skills which invoke these tools.
-- Any skill in `.claude/skills/` or `.claude/skills/` whose workflow calls `WebSearch` or `WebFetch`.
+- Any AI agent in the primary binding directory (`.claude/agents/`) or secondary directories (`.opencode/agents/`) that has `WebSearch` or `WebFetch` in its tool list, or that consumes skills which invoke these tools.
+- Any skill in the platform binding skill directories (e.g., `.claude/skills/`) whose workflow calls `WebSearch` or `WebFetch`.
 - Any workflow under `governance/workflows/` that orchestrates agents performing web research.
 - Any `CLAUDE.md` or `AGENTS.md` guidance that shapes agent behaviour around external information gathering.
 
@@ -53,7 +53,7 @@ This convention exists to:
 
 ## The Rule
 
-**Any AI agent that needs to gather information from the public web MUST delegate to the `web-research-maker` subagent unless a documented exception applies.**
+**Any AI agent that needs to gather information from the public web MUST delegate to the `web-research-maker` delegated agent unless a documented exception applies.**
 
 ### The Delegation Threshold
 
@@ -128,7 +128,7 @@ a broken reference), escalate to the maker or checker family, which delegates to
 Use WebSearch and WebFetch to check the claim, then write the finding.
 ```
 
-**Problems:** no threshold, no delegation default, no citation to the convention or the subagent. An author reading this has no guidance on when to delegate and no paper trail justifying the choice either way.
+**Problems:** no threshold, no delegation default, no citation to the convention or the delegated agent. An author reading this has no guidance on when to delegate and no paper trail justifying the choice either way.
 
 ## Validation
 
@@ -143,7 +143,7 @@ To validate an agent complies with this convention:
 
 ## Tools and Automation
 
-- **`web-research-maker`** — the default research primitive. Read-only subagent that returns cited, confidence-tagged findings without bloating the caller's context.
+- **`web-research-maker`** — the default research primitive. Read-only delegated agent that returns cited, confidence-tagged findings without bloating the caller's context.
 - **`repo-rules-checker`** — validates agent compliance with this convention as part of routine governance audits.
 - **`repo-rules-fixer`** — applies fixes to non-compliant agents (adds Web Research Delegation block, cites convention).
 - **Skill: `docs-validating-factual-accuracy`** — the factual-validation methodology that calls this convention as the authoritative source of the delegation rule.

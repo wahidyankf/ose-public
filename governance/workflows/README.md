@@ -63,7 +63,7 @@ Workflows support two execution modes (see [Workflow Execution Mode Convention](
 
 **Agent Delegation (preferred)**: Invoke specialized agents via the Agent tool with `subagent_type`. Each agent runs in an isolated context, returns results to the orchestrating conversation, and file changes persist to the filesystem.
 
-**Manual Orchestration (fallback)**: When agents are unavailable as subagent types, the AI assistant follows workflow steps directly using Read/Write/Edit tools in the main execution context.
+**Manual Orchestration (fallback)**: When agents are unavailable as delegated agent types, the AI assistant follows workflow steps directly using Read/Write/Edit tools in the main execution context.
 
 All workflows support standard input parameters:
 
@@ -263,7 +263,7 @@ See [Workflow Pattern Convention](./meta/workflow-identifier.md) for complete re
 All workflows should be validated for:
 
 - ✅ **Frontmatter completeness** - All required fields present
-- ✅ **Agent existence** - All referenced agents exist in `.claude/agents/` (primary) or `.opencode/agents/` (secondary)
+- ✅ **Agent existence** - All referenced agents exist in the primary binding directory (`.claude/agents/`) or secondary directories (`.opencode/agents/`)
 - ✅ **Type correctness** - Inputs/outputs use valid types
 - ✅ **Dependency acyclicity** - No circular step dependencies
 - ✅ **Reference resolution** - All `{stepN.outputs}` references resolve

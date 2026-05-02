@@ -272,7 +272,7 @@ tier. The model IDs above are current as of April 2026.
 
 Agents in the primary binding directory are auto-synced to the secondary binding directory by rhino-cli
 (`npm run sync:claude-to-opencode`). The sync translates agent model aliases to
-secondary-binding-specific model IDs (e.g., Zhipu AI GLM IDs for OpenCode).
+secondary-binding-specific model IDs (e.g., Zhipu AI GLM IDs for the secondary platform binding).
 
 ### Model ID Mapping
 

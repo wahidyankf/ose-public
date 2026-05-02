@@ -27,7 +27,7 @@ This directory contains universal standards for writing documentation content th
 - [OSS Documentation](./oss-documentation.md) - Standards for repository documentation files (README, CONTRIBUTING, ADRs, security) following open source best practices
 - [Indonesian Content Policy](./indonesian-content-policy.md) - Policy defining when and how to create Indonesian content in ayokoding-web bilingual platform. Establishes English-first policy, defines Indonesian content categories (unique content, strategic translations, discouraged mirrors), and provides decision tree for language selection
 - [README Quality](./readme-quality.md) - Quality standards for README.md files ensuring engagement, accessibility, and scannability. Defines problem-solution hooks, jargon elimination, acronym context requirements, benefits-focused language, navigation structure, and paragraph length limits
-- [Web Research Delegation](./web-research-delegation.md) - Normative rule requiring AI agents to delegate public-web information gathering to the `web-research-maker` subagent when research exceeds the delegation threshold (2+ searches or 3+ fetches per claim). Enumerates three exceptions (single-shot known URL; fixer re-validation; link-reachability checkers)
+- [Web Research Delegation](./web-research-delegation.md) - Normative rule requiring AI agents to delegate public-web information gathering to the `web-research-maker` delegated agent when research exceeds the delegation threshold (2+ searches or 3+ fetches per claim). Enumerates three exceptions (single-shot known URL; fixer re-validation; link-reachability checkers)
 
 ## Related Documentation
 

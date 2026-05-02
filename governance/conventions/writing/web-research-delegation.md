@@ -1,6 +1,6 @@
 ---
 title: "Web Research Delegation Convention"
-description: Normative rule requiring AI agents to delegate public-web information gathering to the web-research-maker subagent, with a narrow documented exception list
+description: Normative rule requiring AI agents to delegate public-web information gathering to the web-research-maker delegated agent, with a narrow documented exception list
 category: explanation
 subcategory: conventions
 tags:
@@ -20,9 +20,9 @@ AI agents frequently need facts that live outside the repository — current API
 
 This convention implements the following core principles:
 
-- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: A single named agent (`web-research-maker`) is the explicit, canonical entry point for public-web research. Agents name the subagent rather than silently invoking `WebSearch`/`WebFetch`, and the delegation threshold (2+ searches or 3+ fetches per claim) is stated in a number rather than left to author judgement. Exceptions are enumerated, not inferred.
+- **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: A single named agent (`web-research-maker`) is the explicit, canonical entry point for public-web research. Agents name the delegated agent rather than silently invoking `WebSearch`/`WebFetch`, and the delegation threshold (2+ searches or 3+ fetches per claim) is stated in a number rather than left to author judgement. Exceptions are enumerated, not inferred.
 
-- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: One rule, one agent, one threshold. Replacing a collection of per-agent, per-skill heuristics with a single default reduces the cognitive surface every agent author must carry. Main-conversation context stays lean because multi-page research happens in an isolated subagent context.
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: One rule, one agent, one threshold. Replacing a collection of per-agent, per-skill heuristics with a single default reduces the cognitive surface every agent author must carry. Main-conversation context stays lean because multi-page research happens in an isolated delegated agent context.
 
 - **[Documentation First](../../principles/content/documentation-first.md)**: The `web-research-maker` agent enforces citation of every factual claim and surfaces confidence tags (`[Verified]`, `[Outdated]`, `[Unverified]`, `[Needs Verification]`). Delegating by default means every agent that consumes web facts consumes them already-cited.
 
@@ -74,9 +74,9 @@ Use this bright-line test whenever an agent considers `WebSearch` or `WebFetch`:
 
 The rule has exactly three exceptions. Exceptions are closed-ended — adding a new one is a governance change, not a judgement call.
 
-1. **Single-shot verification of a known URL.** When an agent already has the authoritative URL (from checker notes, from an audit report, from explicit user instruction) and one `WebFetch` answers the question, run it in-context. Do not launch a subagent for one call.
+1. **Single-shot verification of a known URL.** When an agent already has the authoritative URL (from checker notes, from an audit report, from explicit user instruction) and one `WebFetch` answers the question, run it in-context. Do not launch a delegated agent for one call.
 
-2. **Fixer agents re-validating a single audit finding.** Fixer agents (`docs-fixer`, `apps-ayokoding-web-facts-fixer`, `plan-fixer`, `apps-ayokoding-web-link-fixer`) intentionally operate in the same context as the audit they consume. Their re-validation must be decisive and paired with the fix; delegating to a subagent breaks that coupling. If a fixer discovers research much larger than the audit frame, it should escalate MEDIUM or FALSE_POSITIVE rather than spawn `web-research-maker` itself.
+2. **Fixer agents re-validating a single audit finding.** Fixer agents (`docs-fixer`, `apps-ayokoding-web-facts-fixer`, `plan-fixer`, `apps-ayokoding-web-link-fixer`) intentionally operate in the same context as the audit they consume. Their re-validation must be decisive and paired with the fix; delegating to a delegated agent breaks that coupling. If a fixer discovers research much larger than the audit frame, it should escalate MEDIUM or FALSE_POSITIVE rather than spawn `web-research-maker` itself.
 
 3. **Link-reachability checker and fixer agents.** `docs-link-checker`, `apps-ayokoding-web-link-checker`, and their fixer counterparts are scoped to URL liveness — HTTP status codes, redirect chains, cache freshness. Their domain is explicitly URL-reachability, not content research. They invoke `WebFetch` directly against the URL under test; delegating to `web-research-maker` would add latency without improving the signal (a 404 is a 404).
 

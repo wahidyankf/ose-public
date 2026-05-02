@@ -1,8 +1,8 @@
 "use client";
 
 import { AppHeader, Button, Icon, StatCard } from "@open-sharia-enterprise/ts-ui";
-import type { CompletedSession } from "@/lib/app/app-machine";
-import { fmtTime } from "@/lib/utils/fmt";
+import type { CompletedSession } from "@/contexts/app-shell/presentation/app-machine";
+import { fmtTime } from "@/shared/utils/fmt";
 
 export interface FinishScreenProps {
   completedSession: CompletedSession;

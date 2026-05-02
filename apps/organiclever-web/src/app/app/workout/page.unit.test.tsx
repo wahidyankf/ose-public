@@ -6,7 +6,7 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { render, screen, cleanup, act, fireEvent } from "@testing-library/react";
 import type { Routine } from "@/contexts/routine/application";
-import type { CompletedSession } from "@/lib/app/app-machine";
+import type { CompletedSession } from "@/contexts/app-shell/presentation/app-machine";
 
 const mockPush = vi.fn();
 vi.mock("next/navigation", () => ({
@@ -16,7 +16,7 @@ vi.mock("next/navigation", () => ({
 let mockActiveRoutine: Routine | null = null;
 const mockSetCompletedSession = vi.fn();
 const mockRefreshHome = vi.fn();
-vi.mock("@/components/app/app-runtime-context", () => ({
+vi.mock("@/contexts/app-shell/presentation/app-runtime-context", () => ({
   useAppRuntime: () => ({
     runtime: { runPromise: () => Promise.resolve() },
     activeRoutine: mockActiveRoutine,

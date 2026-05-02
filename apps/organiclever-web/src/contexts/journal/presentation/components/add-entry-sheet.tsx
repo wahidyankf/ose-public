@@ -1,8 +1,8 @@
 "use client";
 
 import { Icon } from "@open-sharia-enterprise/ts-ui";
-import type { ActiveLoggerKind } from "@/lib/app/app-machine";
-import { ENTRY_MODULES } from "@/components/app/home/kind-hue";
+import type { ActiveLoggerKind } from "@/contexts/app-shell/presentation/app-machine";
+import { ENTRY_MODULES } from "@/contexts/app-shell/presentation/components/home/kind-hue";
 
 export interface AddEntrySheetProps {
   isOpen: boolean;

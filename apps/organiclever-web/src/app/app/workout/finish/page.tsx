@@ -5,8 +5,8 @@ export const dynamic = "force-dynamic";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FinishScreen } from "@/contexts/workout-session/presentation";
-import { useAppRuntime } from "@/components/app/app-runtime-context";
-import type { CompletedSession } from "@/lib/app/app-machine";
+import { useAppRuntime } from "@/contexts/app-shell/presentation/app-runtime-context";
+import type { CompletedSession } from "@/contexts/app-shell/presentation/app-machine";
 
 /**
  * /app/workout/finish — shows the post-workout summary. Reads completedSession

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button, Icon, ProgressRing } from "@open-sharia-enterprise/ts-ui";
-import { fmtTime } from "@/lib/utils/fmt";
+import { fmtTime } from "@/shared/utils/fmt";
 
 export interface SetTimerSheetProps {
   /** 1-based set index for the header. */

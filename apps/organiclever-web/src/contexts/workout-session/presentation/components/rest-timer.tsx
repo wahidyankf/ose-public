@@ -2,7 +2,7 @@
 
 import { Button } from "@open-sharia-enterprise/ts-ui";
 import { ProgressRing } from "@open-sharia-enterprise/ts-ui";
-import { fmtTime } from "@/lib/utils/fmt";
+import { fmtTime } from "@/shared/utils/fmt";
 
 export interface RestTimerProps {
   /** Seconds remaining from machine context. Updated by TICK events from WorkoutScreen. */

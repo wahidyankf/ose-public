@@ -3,9 +3,9 @@
 import { createContext, useContext } from "react";
 import type { Actor } from "xstate";
 import type { JournalRuntime } from "@/contexts/journal/application";
-import type { appMachine } from "@/lib/app/app-machine";
+import type { appMachine } from "./app-machine";
 import type { Routine } from "@/contexts/routine/application";
-import type { CompletedSession } from "@/lib/app/app-machine";
+import type { CompletedSession } from "./app-machine";
 
 type AppMachineActor = Actor<typeof appMachine>;
 type AppMachineState = ReturnType<AppMachineActor["getSnapshot"]>;

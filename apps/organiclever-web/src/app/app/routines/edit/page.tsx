@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useRouter } from "next/navigation";
 import { EditRoutineScreen } from "@/contexts/routine/presentation";
-import { useAppRuntime } from "@/components/app/app-runtime-context";
+import { useAppRuntime } from "@/contexts/app-shell/presentation/app-runtime-context";
 
 /**
  * /app/routines/edit — wraps EditRoutineScreen.

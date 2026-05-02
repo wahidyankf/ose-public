@@ -32,15 +32,15 @@ vi.mock("@/contexts/settings/application", () => ({
   saveSettings: () => ({}),
 }));
 
-vi.mock("@/components/app/tab-bar", () => ({
+vi.mock("@/contexts/app-shell/presentation/components/tab-bar", () => ({
   TabBar: () => <div data-testid="tab-bar" />,
 }));
 
-vi.mock("@/components/app/side-nav", () => ({
+vi.mock("@/contexts/app-shell/presentation/components/side-nav", () => ({
   SideNav: () => <div data-testid="side-nav" />,
 }));
 
-vi.mock("@/components/app/overlay-tree", () => ({
+vi.mock("@/contexts/app-shell/presentation/components/overlay-tree", () => ({
   OverlayTree: () => <div data-testid="overlay-tree" />,
 }));
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Sheet } from "@open-sharia-enterprise/ts-ui";
-import { fmtTime } from "@/lib/utils/fmt";
+import { fmtTime } from "@/shared/utils/fmt";
 
 export interface EndWorkoutSheetProps {
   isOpen: boolean;

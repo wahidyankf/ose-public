@@ -15,7 +15,7 @@ vi.mock("next/navigation", () => ({
 let mockEditingRoutine: Routine | null = null;
 const mockSetEditingRoutine = vi.fn();
 const mockRefreshHome = vi.fn();
-vi.mock("@/components/app/app-runtime-context", () => ({
+vi.mock("@/contexts/app-shell/presentation/app-runtime-context", () => ({
   useAppRuntime: () => ({
     runtime: { runPromise: () => Promise.resolve() },
     editingRoutine: mockEditingRoutine,

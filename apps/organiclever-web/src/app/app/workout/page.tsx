@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useRouter } from "next/navigation";
 import { WorkoutScreen } from "@/contexts/workout-session/presentation";
-import { useAppRuntime } from "@/components/app/app-runtime-context";
+import { useAppRuntime } from "@/contexts/app-shell/presentation/app-runtime-context";
 import { useSettings } from "@/contexts/settings/presentation";
 import type { AppSettings } from "@/contexts/settings/application";
 
@@ -32,7 +32,7 @@ export default function WorkoutPage() {
 
   // A null activeRoutine is intentional quick-start mode; no redirect needed.
 
-  const handleFinishWorkout = (session: import("@/lib/app/app-machine").CompletedSession) => {
+  const handleFinishWorkout = (session: import("@/contexts/app-shell/presentation/app-machine").CompletedSession) => {
     setCompletedSession(session);
     refreshHome();
     router.push("/app/workout/finish");

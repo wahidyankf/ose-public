@@ -13,7 +13,7 @@ import { existsSync } from "fs";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
 import { createActor } from "xstate";
-import { appMachine } from "@/lib/app/app-machine";
+import { appMachine } from "@/contexts/app-shell/presentation/app-machine";
 import type { Actor } from "xstate";
 
 const feature = await loadFeature(

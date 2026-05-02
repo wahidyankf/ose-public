@@ -7,7 +7,7 @@ import { LearningLogger } from "./loggers/learning-logger";
 import { MealLogger } from "./loggers/meal-logger";
 import { FocusLogger } from "./loggers/focus-logger";
 import { CustomEntryLogger } from "./loggers/custom-entry-logger";
-import { useAppRuntime } from "./app-runtime-context";
+import { useAppRuntime } from "../app-runtime-context";
 
 /**
  * Overlay tree — renders all five sheet/logger overlays driven by the trimmed

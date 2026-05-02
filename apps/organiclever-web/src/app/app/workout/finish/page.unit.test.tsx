@@ -6,8 +6,8 @@
 
 import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { render, screen, cleanup, act } from "@testing-library/react";
-import type { CompletedSession } from "@/lib/app/app-machine";
-import type { AppRuntimeContextValue } from "@/components/app/app-runtime-context";
+import type { CompletedSession } from "@/contexts/app-shell/presentation/app-machine";
+import type { AppRuntimeContextValue } from "@/contexts/app-shell/presentation/app-runtime-context";
 
 // ---------------------------------------------------------------------------
 // Mocks
@@ -21,7 +21,7 @@ vi.mock("next/navigation", () => ({
 
 let mockContextValue: Partial<AppRuntimeContextValue> = {};
 const mockSetCompletedSession = vi.fn();
-vi.mock("@/components/app/app-runtime-context", () => ({
+vi.mock("@/contexts/app-shell/presentation/app-runtime-context", () => ({
   useAppRuntime: () => ({
     completedSession: mockContextValue.completedSession ?? null,
     setCompletedSession: mockSetCompletedSession,

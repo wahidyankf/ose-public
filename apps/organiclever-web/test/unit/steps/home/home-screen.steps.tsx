@@ -18,7 +18,7 @@ import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
 import { Schema } from "effect";
 import { JournalEntry } from "@/contexts/journal/application";
-import { kindToHue, kindToIcon } from "@/components/app/home/kind-hue";
+import { kindToHue, kindToIcon } from "@/contexts/app-shell/presentation/components/home/kind-hue";
 
 // ---------------------------------------------------------------------------
 // Helpers that mirror HomeScreen logic without needing a runtime

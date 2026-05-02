@@ -5,15 +5,15 @@ export const dynamic = "force-dynamic";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useActor } from "@xstate/react";
-import { appMachine } from "@/lib/app/app-machine";
-import type { CompletedSession } from "@/lib/app/app-machine";
+import { appMachine } from "@/contexts/app-shell/presentation/app-machine";
+import type { CompletedSession } from "@/contexts/app-shell/presentation/app-machine";
 import type { Routine } from "@/contexts/routine/application";
 import { makeJournalRuntime, seedIfEmpty } from "@/contexts/journal/application";
 import { saveSettings } from "@/contexts/settings/application";
-import { TabBar } from "@/components/app/tab-bar";
-import { SideNav } from "@/components/app/side-nav";
-import { OverlayTree } from "@/components/app/overlay-tree";
-import { AppRuntimeProvider, type AppRuntimeContextValue } from "@/components/app/app-runtime-context";
+import { TabBar } from "@/contexts/app-shell/presentation/components/tab-bar";
+import { SideNav } from "@/contexts/app-shell/presentation/components/side-nav";
+import { OverlayTree } from "@/contexts/app-shell/presentation/components/overlay-tree";
+import { AppRuntimeProvider, type AppRuntimeContextValue } from "@/contexts/app-shell/presentation/app-runtime-context";
 
 const MAIN_TAB_PATHS: ReadonlySet<string> = new Set(["/app/home", "/app/history", "/app/progress", "/app/settings"]);
 

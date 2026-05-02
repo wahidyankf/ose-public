@@ -16,17 +16,19 @@ export default defineConfig({
         "src/app/layout.tsx",
         "src/app/**/page.tsx",
         "src/app/api/**",
-        // Phase 1 app shell — UI-only components covered by e2e, not unit tests
-        "src/components/app/app-root.tsx",
-        "src/components/app/tab-bar.tsx",
-        "src/components/app/side-nav.tsx",
-        // Phase 2 home screen — runtime+browser-dependent UI; covered by e2e
-        "src/components/app/home/home-screen.tsx",
-        "src/components/app/home/week-rhythm-strip.tsx",
-        "src/components/app/home/entry-item.tsx",
-        "src/components/app/home/entry-detail-sheet.tsx",
-        "src/components/app/home/routine-card.tsx",
-        "src/components/app/home/workout-module-view.tsx",
+        // Phase 1 app shell — UI-only components covered by e2e, not unit tests.
+        // Migrated to app-shell/presentation/components/ in DDD adoption Phase 8.
+        "src/contexts/app-shell/presentation/components/tab-bar.tsx",
+        "src/contexts/app-shell/presentation/components/side-nav.tsx",
+        "src/contexts/app-shell/presentation/components/overlay-tree.tsx",
+        // Phase 2 home screen — runtime+browser-dependent UI; covered by e2e.
+        // Migrated to app-shell/presentation/components/home/ in DDD adoption Phase 8.
+        "src/contexts/app-shell/presentation/components/home/home-screen.tsx",
+        "src/contexts/app-shell/presentation/components/home/week-rhythm-strip.tsx",
+        "src/contexts/app-shell/presentation/components/home/entry-item.tsx",
+        "src/contexts/app-shell/presentation/components/home/entry-detail-sheet.tsx",
+        "src/contexts/app-shell/presentation/components/home/routine-card.tsx",
+        "src/contexts/app-shell/presentation/components/home/workout-module-view.tsx",
         // Phase 6 routine screens — PGlite+browser-dependent UI; covered by e2e.
         // Migrated to routine/presentation/components/ in DDD adoption Phase 7a.
         "src/contexts/routine/presentation/components/edit-routine-screen.tsx",
@@ -57,8 +59,9 @@ export default defineConfig({
         // Seed — PGlite side-effect-only; covered by integration tests.
         // Migrated to journal/infrastructure/ in DDD adoption Phase 6c.
         "src/contexts/journal/infrastructure/seed.ts",
-        // i18n hook — browser-only; covered by e2e
-        "src/lib/i18n/use-t.ts",
+        // i18n hook — browser-only; covered by e2e.
+        // Migrated to app-shell/presentation/ in DDD adoption Phase 8.
+        "src/contexts/app-shell/presentation/use-t.ts",
         "src/proxy.ts",
         "src/test/**",
         // Dormant BE integration code (legacy `src/services/` + `src/layers/`)

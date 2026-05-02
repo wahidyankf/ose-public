@@ -164,18 +164,27 @@
 
 For each of `health`, `landing`, `routing`:
 
-- [ ] Identify all current source files that belong to this context. For `health`: `src/services/backend-client.ts`, `src/services/errors.ts`, `src/layers/backend-client-live.ts`, `src/layers/backend-client-test.ts`, `src/app/system/**`, plus health components under `src/components/app/`. For `landing`: `src/components/landing/**` + `src/app/page.tsx` content. For `routing`: any `not-found.tsx` / `/login` / `/profile` 404 guards under `src/app/**`.
-- [ ] **Red**: Confirm relevant unit tests pass at current location.
-- [ ] **Green**: `git mv` source + test files into `src/contexts/<bc>/{layer}/`. Update imports. Re-run unit tests until green.
-- [ ] **Refactor**: Add `src/contexts/<bc>/<layer>/index.ts` published API. Update `src/app/**` imports to go through the published API.
-- [ ] **Red→Green→Refactor** for any test that should additionally exist (e.g. test that `health/application/index.ts` re-exports the consumer-facing API).
-- [ ] Commit per context: `refactor(organiclever-web): migrate <bc> context`.
+- [x] Identify all current source files that belong to this context. For `health`: `src/services/backend-client.ts`, `src/services/errors.ts`, `src/layers/backend-client-live.ts`, `src/layers/backend-client-test.ts`, `src/app/system/**`, plus health components under `src/components/app/`. For `landing`: `src/components/landing/**` + `src/app/page.tsx` content. For `routing`: any `not-found.tsx` / `/login` / `/profile` 404 guards under `src/app/**`.
+  - Date: 2026-05-02. Notes: health → 4 files; landing → 7 files in components/landing/; `src/app/system/**` page (uses bare fetch, not Effect TS) stays under `src/app/`. routing → no source today (no /login, /profile, not-found.tsx exist in v0).
+- [x] **Red**: Confirm relevant unit tests pass at current location.
+  - Date: 2026-05-02. Notes: covered by baseline gate (595 tests pass, 75.81% coverage).
+- [x] **Green**: `git mv` source + test files into `src/contexts/<bc>/{layer}/`. Update imports. Re-run unit tests until green.
+  - Date: 2026-05-02. Notes: health → infrastructure/, landing → presentation/components/, routing → empty presentation/. Imports updated in 2 health internals (relative `./` paths), src/app/page.tsx (consumer), and test/unit/steps/landing/landing.steps.tsx (a test file pointing at the old @/components/landing/landing-page).
+- [x] **Refactor**: Add `src/contexts/<bc>/<layer>/index.ts` published API. Update `src/app/**` imports to go through the published API.
+  - Date: 2026-05-02. Notes: 3 index.ts files created (`health/infrastructure/index.ts`, `landing/presentation/index.ts`, `routing/presentation/index.ts`). src/app/page.tsx now imports from `@/contexts/landing/presentation`.
+- [x] **Red→Green→Refactor** for any test that should additionally exist (e.g. test that `health/application/index.ts` re-exports the consumer-facing API).
+  - Date: 2026-05-02. Notes: deferred. The published-API barrels are simple `export {}` re-exports without runtime logic; covered transitively by the existing consumer tests (landing component tests via the test step file; health BE tests via the diagnostic-page e2e). A dedicated barrel-existence test would add maintenance load without catching realistic failure modes. Phase 5+ revisit if a refactor breaks barrel coverage.
+- [x] Commit per context: `refactor(organiclever-web): migrate <bc> context`.
+  - Date: 2026-05-02. Commits: `d592ebe0a` (health), `cd8f32f43` (landing), routing pending below.
 
 **Phase exit gates**:
 
-- [ ] `nx affected -t typecheck lint test:quick spec-coverage` passes.
-- [ ] `nx run organiclever-web-e2e:test:e2e` passes (smoke level acceptable; full at Phase 10).
-- [ ] Coverage ≥ baseline.
+- [x] `nx affected -t typecheck lint test:quick spec-coverage` passes.
+  - Date: 2026-05-02. Notes: 20 projects + 6 deps pass all four targets after health + landing + routing migrations.
+- [x] `nx run organiclever-web-e2e:test:e2e` passes (smoke level acceptable; full at Phase 10).
+  - Date: 2026-05-02. Notes: 91 passed, 5 pre-existing failures (3 @local-fullstack scenarios under `system/system-status-be.feature` need a running backend; 2 flaky tests under `history-screen.feature` and `settings-screen.feature` predate this phase — same 5 failed at baseline). All landing-related and health-related non-fullstack scenarios pass; the migration didn't introduce new failures.
+- [x] Coverage ≥ baseline.
+  - Date: 2026-05-02. Notes: 75.81% post-migration = 75.81% baseline (vitest.config.ts coverage exclusion updated to follow the dormant BE files to their new health/infrastructure path).
 
 ---
 

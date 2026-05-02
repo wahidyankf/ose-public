@@ -71,7 +71,7 @@ Claude Code (.claude/agents/) — PRIMARY:
 
 OpenCode (.opencode/agents/) — SECONDARY:
   - Tool format: boolean flags { read: true, write: true }
-  - Model selection: zai-coding-plan/glm-5.1 or zai-coding-plan/glm-5-turbo
+  - Model selection: opencode-go/minimax-m2.7 or opencode-go/glm-5
 ```
 
 ## Principles Implemented/Respected
@@ -2565,8 +2565,8 @@ Claude Code:
   model:         # planning-grade (omit for budget-adaptive inheritance)
 
 OpenCode:
-  model: zai-coding-plan/glm-5.1     # execution-grade/planning-grade equivalent
-  model: zai-coding-plan/glm-5-turbo # fast equivalent
+  model: opencode-go/minimax-m2.7 # execution-grade/planning-grade equivalent
+  model: opencode-go/glm-5        # fast equivalent
 ```
 
 #### Skills Format

@@ -108,61 +108,46 @@ Haiku 4.5 system card was not directly accessible at research time. Treat
 
 ---
 
-## GLM Models (Z.ai Coding Plan / OpenCode)
+## OpenCode Go Models (opencode-go Provider)
 
-> **Important**: Both GLM models are used only in the OpenCode runtime. Claude Code agents
-> use Claude models. The sync pipeline maps Claude aliases to GLM IDs:
-> `opus`/`sonnet`/`omit` → `zai-coding-plan/glm-5.1`, `haiku` → `zai-coding-plan/glm-5-turbo`.
+> **Important**: Both OpenCode Go models are used only in the OpenCode runtime. Claude Code
+> agents use Claude models. The sync pipeline maps Claude aliases to OpenCode Go IDs:
+> `opus`/`sonnet`/`omit` → `opencode-go/minimax-m2.7`, `haiku` → `opencode-go/glm-5`.
 
-### GLM-5.1
+### MiniMax M2.7
 
-**Model ID**: `zai-coding-plan/glm-5.1` | **Maps from**: `opus`, `sonnet`, `""` (omit)
+**Model ID**: `opencode-go/minimax-m2.7` | **Maps from**: `opus`, `sonnet`, `""` (omit)
 
 **Primary sources**:
 
-- [Z.ai GLM-5.1 Release Coverage](https://officechai.com/ai/z-ai-glm-5-1-benchmarks-swe-bench-pro/) (OfficeChai, 2026-04-07)
-- [Awesome Agents Review](https://awesomeagents.ai/reviews/review-glm-5-1/) (2026-04-17)
-- [WaveSpeedAI Comparison](https://wavespeed.ai/blog/posts/glm-5-1-vs-claude-gpt-gemini-deepseek-llm-comparison/) (2026-03-30)
+- [MiniMax M2.5 SWE-Bench Verified](https://huggingface.co/spaces/lmarena-ai/chatbot-arena-leaderboard) (Chatbot Arena, 2026)
+- [OpenCode Go model roster](https://opencode.ai/docs/models/) (official)
 
-| Benchmark          | Score                         | Confidence        | Source / Date                                                           |
-| ------------------ | ----------------------------- | ----------------- | ----------------------------------------------------------------------- |
-| SWE-bench Pro      | 58.4                          | `[Self-reported]` | Z.ai self-reported; no independent third-party replication (2026-04-17) |
-| SWE-bench Verified | 77.8%                         | `[Self-reported]` | WaveSpeedAI citing Z.ai (2026-03-30)                                    |
-| GPQA Diamond       | 86.2                          | `[Self-reported]` | OfficeChai citing Z.ai (2026-04-07)                                     |
-| Arena.ai Code Elo  | 1530 (rank 3)                 | `[Verified]`      | Arena.ai leaderboard — partial corroboration (2026-04-17)               |
-| Context window     | 200k tokens                   | —                 | Multiple sources (2026-04-07)                                           |
-| Pricing            | $1.00 / $3.20 per MTok in/out | —                 | OfficeChai (2026-04-07)                                                 |
+| Benchmark          | Score  | Confidence        | Source / Date                                                              |
+| ------------------ | ------ | ----------------- | -------------------------------------------------------------------------- |
+| SWE-Bench Verified | 80.2%  | `[Self-reported]` | M2.5 predecessor; M2.7 not independently re-benchmarked as of 2026-05-03   |
+| SWE-Pro            | 56.22% | `[Self-reported]` | M2.7 score on harder suite; not directly comparable to M2.5 Verified score |
 
-**Critical flag — self-reported scores**: As of 2026-04-17 "a fully independent evaluation
-on SWE-Bench Pro from a third-party lab hasn't been published" (Awesome Agents review). The
-SWE-bench Pro 58.4 headline is a self-reported claim. Arena.ai Code Elo rank 3 provides
-partial corroboration. Treat all GLM-5.1 scores as `[Self-reported]` until independent
-replication is published.
+**Note on M2.5 vs M2.7**: The 80.2% SWE-Bench Verified score is for the predecessor MiniMax
+M2.5 which led the leaderboard at time of adoption. MiniMax M2.7 carries a SWE-Pro score
+(56.22%) on a harder suite. No direct M2.7 SWE-Bench Verified score has been published as
+of 2026-05-03. Adopted based on lab trajectory and model recency. Available via the OpenCode
+Go flat-rate subscription (no per-token billing in that plan).
 
 ---
 
-### GLM-5-turbo
+### GLM-5 (Zhipu)
 
-**Model ID**: `zai-coding-plan/glm-5-turbo` | **Maps from**: `haiku`
+**Model ID**: `opencode-go/glm-5` | **Maps from**: `haiku`
 
-**Primary sources**:
+| Benchmark                           | Score | Confidence | Source / Date                                             |
+| ----------------------------------- | ----- | ---------- | --------------------------------------------------------- |
+| SWE-bench / GPQA / MMLU / HumanEval | N/A   | —          | **No standard benchmark scores published for this model** |
 
-- [Z.ai GLM-5-turbo Developer Docs](https://docs.z.ai/guides/llm/glm-5-turbo) (official)
-- [OpenRouter GLM-5-turbo](https://openrouter.ai/z-ai/glm-5-turbo) (pricing, 2026-03-16)
-
-| Benchmark                           | Score                         | Confidence        | Source / Date                                             |
-| ----------------------------------- | ----------------------------- | ----------------- | --------------------------------------------------------- |
-| ZClawBench                          | 56.4                          | `[Self-reported]` | Proprietary Z.ai benchmark; no independent validation     |
-| SWE-bench / GPQA / MMLU / HumanEval | N/A                           | —                 | **No standard benchmark scores published for this model** |
-| Context window                      | 202k tokens                   | —                 | OpenRouter (2026-03-16)                                   |
-| Pricing                             | $1.20 / $4.00 per MTok in/out | —                 | OpenRouter (2026-03-16)                                   |
-
-**Critical flag — no standard benchmarks**: GLM-5-turbo has **no published scores on any
-standard academic benchmark** (no SWE-bench, no GPQA Diamond, no MMLU, no HumanEval) as of
-April 2026. Its use as the OpenCode haiku-equivalent tier is a **platform constraint** (it
-is the only fast-tier alternative to GLM-5.1 in the Z.ai Coding Plan), not a
-benchmark-validated choice. ZClawBench is a proprietary Z.ai benchmark with undisclosed
-methodology — it cannot be independently verified.
+**Critical flag — no standard benchmarks**: GLM-5 (Zhipu) has no published scores on any
+standard academic benchmark as of May 2026. Its use as the fast tier is a **platform
+constraint** (it is the designated fast-tier model in the OpenCode Go subscription), not a
+benchmark-validated choice.
 
 ---
 
@@ -171,11 +156,11 @@ methodology — it cannot be independently verified.
 Cross-reference with [AI Agent Model Selection Convention](../../governance/development/agents/model-selection.md)
 tier assignments.
 
-| Claude Alias | Claude Model (2026)         | Pricing (in/out MTok) | SWE-bench Verified        | OpenCode ID                   |
-| ------------ | --------------------------- | --------------------- | ------------------------- | ----------------------------- |
-| `""` (omit)  | Inherits session model      | Inherits              | Inherits (87.6% or 79.6%) | `zai-coding-plan/glm-5.1`     |
-| `sonnet`     | `claude-sonnet-4-6`         | $3 / $15              | 79.6% `[Verified]`        | `zai-coding-plan/glm-5.1`     |
-| `haiku`      | `claude-haiku-4-5-20251001` | $1 / $5               | 73.3% `[Verified]`        | `zai-coding-plan/glm-5-turbo` |
+| Claude Alias | Claude Model (2026)         | Pricing (in/out MTok) | SWE-bench Verified        | OpenCode Go ID             |
+| ------------ | --------------------------- | --------------------- | ------------------------- | -------------------------- |
+| `""` (omit)  | Inherits session model      | Inherits              | Inherits (87.6% or 79.6%) | `opencode-go/minimax-m2.7` |
+| `sonnet`     | `claude-sonnet-4-6`         | $3 / $15              | 79.6% `[Verified]`        | `opencode-go/minimax-m2.7` |
+| `haiku`      | `claude-haiku-4-5-20251001` | $1 / $5               | 73.3% `[Verified]`        | `opencode-go/glm-5`        |
 
 **Tier assignment rule (abbreviated)**: Use `omit` (opus-inherit) only for agents requiring
 genuinely open creative reasoning where SWE-bench Verified 87.6% matters. Use `sonnet` for

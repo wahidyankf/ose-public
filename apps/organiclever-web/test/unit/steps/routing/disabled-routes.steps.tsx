@@ -61,15 +61,16 @@ describeFeature(feature, ({ ScenarioOutline, Scenario }) => {
   });
 
   Scenario("Old /app URL permanent-redirects to /app/home", ({ Given, When, Then }) => {
-    let pageSource = "";
+    let configSource = "";
 
     Given("the application is running in local-first mode", () => {
-      // Use a path resolved from this test file directly (existing `appRoot`
-      // is intentionally tolerant for the 404 outline; redirect assertion
-      // needs a real on-disk match).
-      const pageFile = path.resolve(__dirname, "../../../../src/app/app/page.tsx");
-      expect(existsSync(pageFile), `expected /app entry page at ${pageFile}`).toBe(true);
-      pageSource = readFileSync(pageFile, "utf8");
+      // The redirect lives in next.config.ts (config-level) so the dev server
+      // and the production build both emit the 308 response. The page.tsx
+      // form returned an HTTP 200 with an embedded RSC redirect in dev mode,
+      // which broke the e2e status assertion.
+      const configFile = path.resolve(__dirname, "../../../../next.config.ts");
+      expect(existsSync(configFile), `expected next.config.ts at ${configFile}`).toBe(true);
+      configSource = readFileSync(configFile, "utf8");
     });
 
     When(`a visitor requests GET "/app"`, () => {
@@ -77,7 +78,9 @@ describeFeature(feature, ({ ScenarioOutline, Scenario }) => {
     });
 
     Then(`the response is a 308 redirect to "/app/home"`, () => {
-      expect(pageSource).toMatch(/permanentRedirect\(["']\/app\/home["']\)/);
+      expect(configSource).toMatch(/source:\s*"\/app"/);
+      expect(configSource).toMatch(/destination:\s*"\/app\/home"/);
+      expect(configSource).toMatch(/permanent:\s*true/);
     });
   });
 });

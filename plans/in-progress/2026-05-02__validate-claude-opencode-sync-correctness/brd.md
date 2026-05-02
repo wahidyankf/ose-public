@@ -6,6 +6,7 @@ The repository advertises **dual-mode AI agent and skill compatibility** (Claude
 Code + OpenCode) as a core architectural property. CLAUDE.md states:
 
 > Repo maintains dual compatibility with Claude Code and OpenCode:
+>
 > - `.claude/`: Source of truth (PRIMARY) — All updates happen here first
 > - `.opencode/`: Auto-generated (SECONDARY) — Synced from `.claude/`
 
@@ -37,7 +38,7 @@ broken sync, every developer would:
 1. Pay $5–$10/month for OpenCode Go.
 2. Open OpenCode and find a near-empty agent roster (only the 1 Nx-generated
    subagent in the plural path).
-3. Lose every Maker / Checker / Fixer / SWE-* agent the repo defines.
+3. Lose every Maker / Checker / Fixer / SWE-\* agent the repo defines.
 4. Have no validator complaint to debug from — `validate:sync` would still be
    green.
 
@@ -48,13 +49,13 @@ agent-level overrides in `opencode.json`, hook propagation).
 
 ## Cost of Doing Nothing
 
-| Risk | Likelihood | Impact |
-| ---- | ---------- | ------ |
-| OpenCode Go migration ships against broken paths; agents invisible | High | Developers cannot use OSE Platform's specialized agents in OpenCode at all; key advertised capability silently absent |
-| Future Claude Code spec additions (new field, new color, new model) hard-fail `validate:claude` | High (3+ field additions in last 12 months) | Pre-push hook blocks commits; one-line fixes blocked by sync tooling |
-| Two parallel directory layouts (`.opencode/agent/` vs `.opencode/agents/`) drift further | High | Confusion compounds; new agents land in wrong dir; diff noise grows |
-| `tools:` deprecated map continues; OpenCode removes support in a future release | Medium | All synced agents lose tool gating overnight; emergency triage |
-| Skill validator silently strips Claude Code-only fields (`disable-model-invocation`, etc.) without warning | Medium | Skills with `disable-model-invocation: true` may auto-invoke unexpectedly in Claude Code if validator drops the field during reformat |
+| Risk                                                                                                       | Likelihood                                  | Impact                                                                                                                                |
+| ---------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| OpenCode Go migration ships against broken paths; agents invisible                                         | High                                        | Developers cannot use OSE Platform's specialized agents in OpenCode at all; key advertised capability silently absent                 |
+| Future Claude Code spec additions (new field, new color, new model) hard-fail `validate:claude`            | High (3+ field additions in last 12 months) | Pre-push hook blocks commits; one-line fixes blocked by sync tooling                                                                  |
+| Two parallel directory layouts (`.opencode/agent/` vs `.opencode/agents/`) drift further                   | High                                        | Confusion compounds; new agents land in wrong dir; diff noise grows                                                                   |
+| `tools:` deprecated map continues; OpenCode removes support in a future release                            | Medium                                      | All synced agents lose tool gating overnight; emergency triage                                                                        |
+| Skill validator silently strips Claude Code-only fields (`disable-model-invocation`, etc.) without warning | Medium                                      | Skills with `disable-model-invocation: true` may auto-invoke unexpectedly in Claude Code if validator drops the field during reformat |
 
 ## Affected Roles
 

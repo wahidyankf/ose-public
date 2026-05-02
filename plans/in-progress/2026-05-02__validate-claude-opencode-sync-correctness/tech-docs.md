@@ -5,13 +5,13 @@
 `rhino-cli` is the single source of truth for sync logic. It exposes three
 relevant commands consumed by `package.json` scripts:
 
-| `npm` script | `rhino-cli` invocation | Purpose |
-| ------------ | ---------------------- | ------- |
-| `validate:claude` | `agents validate-claude` | Validates `.claude/` source format |
-| `sync:claude-to-opencode` | `agents sync` | Converts `.claude/` → `.opencode/` |
-| `validate:sync` | `agents validate-sync` | Validates equivalence between `.claude/` and the sync output |
-| `validate:opencode` | alias for `validate:sync` | Convenience alias; identical behavior to `validate:sync` |
-| `validate:config` | composite | Runs `validate:claude && sync:claude-to-opencode && validate:opencode` (alias chain resolves to `validate:sync`) |
+| `npm` script              | `rhino-cli` invocation    | Purpose                                                                                                          |
+| ------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `validate:claude`         | `agents validate-claude`  | Validates `.claude/` source format                                                                               |
+| `sync:claude-to-opencode` | `agents sync`             | Converts `.claude/` → `.opencode/`                                                                               |
+| `validate:sync`           | `agents validate-sync`    | Validates equivalence between `.claude/` and the sync output                                                     |
+| `validate:opencode`       | alias for `validate:sync` | Convenience alias; identical behavior to `validate:sync`                                                         |
+| `validate:config`         | composite                 | Runs `validate:claude && sync:claude-to-opencode && validate:opencode` (alias chain resolves to `validate:sync`) |
 
 This plan modifies the **output target** of `agents sync`, the **input target**
 of `agents validate-sync`, and the **acceptance set** of `agents validate-claude`.
@@ -242,7 +242,7 @@ Atomic in two commits to avoid intermediate broken state:
 
 If Option A on skills, also:
 
-3. **Commit C (skill cleanup)**: `git rm -r .opencode/skill/` and any
+1. **Commit C (skill cleanup)**: `git rm -r .opencode/skill/` and any
    rhino-cli-generated entries under `.opencode/skills/`.
 
 Each commit passes `nx affected -t typecheck lint test:quick spec-coverage`
@@ -250,31 +250,31 @@ independently so bisection stays useful.
 
 ## Test Matrix
 
-| Layer | Test File | Scope |
-| ----- | --------- | ----- |
-| Unit | `converter_test.go` | Per-field policy: preserve/translate/drop |
-| Unit | `agent_validator_test.go` | Spec-valid colors/models/tools accept; unknown fields warn |
-| Unit | `skill_validator_test.go` | Spec-valid skill fields accept; required fields enforced |
-| Unit | `sync_validator_test.go` | Plural target dir; singular dir absence check |
-| Unit | `spec_fidelity_test.go` | Round-trip; idempotence; OpenCode-known-fields-only |
-| Integration | `agents_sync.integration_test.go` | E2E sync into tmpdir; verifies output dir is plural |
-| Integration | `agents_validate_sync.integration_test.go` | Validates produced output equivalent to source |
-| Integration | `agents_validate_naming.integration_test.go` | Filename-name match in plural output |
+| Layer       | Test File                                    | Scope                                                      |
+| ----------- | -------------------------------------------- | ---------------------------------------------------------- |
+| Unit        | `converter_test.go`                          | Per-field policy: preserve/translate/drop                  |
+| Unit        | `agent_validator_test.go`                    | Spec-valid colors/models/tools accept; unknown fields warn |
+| Unit        | `skill_validator_test.go`                    | Spec-valid skill fields accept; required fields enforced   |
+| Unit        | `sync_validator_test.go`                     | Plural target dir; singular dir absence check              |
+| Unit        | `spec_fidelity_test.go`                      | Round-trip; idempotence; OpenCode-known-fields-only        |
+| Integration | `agents_sync.integration_test.go`            | E2E sync into tmpdir; verifies output dir is plural        |
+| Integration | `agents_validate_sync.integration_test.go`   | Validates produced output equivalent to source             |
+| Integration | `agents_validate_naming.integration_test.go` | Filename-name match in plural output                       |
 
 Tests reference fixtures in `apps/rhino-cli/internal/agents/testdata/` —
 add a `spec/` subfolder with one fixture per documented field.
 
 ## Risk Assessment
 
-| Risk | Likelihood | Mitigation |
-| ---- | ---------- | ---------- |
-| OpenCode silently DOES read singular path (undocumented) | Low | If true, plural is still canonical per docs; we lose nothing by switching. Plan unchanged. |
-| Removing skill copy breaks user with custom OpenCode setup | Low | Option A pre-flight: confirm OpenCode TUI lists all skills via `/skills`. If fails, revert to Option B. |
-| Validator relaxation hides real bugs | Medium | Warnings logged; report formatter shows count; pre-push hook fails on FAIL+WARNING combination if `--strict` flag set in CI. |
-| Refactor regresses coverage below 90% | Medium | Tests added per-field; coverage gate enforces. |
-| Field-policy map missed a Claude Code field | Medium | `TestEveryClaudeFieldIsPolicied` cross-checks against a frozen list pulled from spec verification step in delivery.md. |
-| OpenCode adds new agent field after this plan ships | Medium | Validator warns instead of fails on unknown OpenCode-output fields; informs maintainers without blocking work. |
-| `.opencode/skills/` (Nx-generated) conflicts with sync output if Option B chosen | Medium | Inspect Nx generator config; if it owns `.opencode/skills/`, keep Option A. |
+| Risk                                                                             | Likelihood | Mitigation                                                                                                                   |
+| -------------------------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| OpenCode silently DOES read singular path (undocumented)                         | Low        | If true, plural is still canonical per docs; we lose nothing by switching. Plan unchanged.                                   |
+| Removing skill copy breaks user with custom OpenCode setup                       | Low        | Option A pre-flight: confirm OpenCode TUI lists all skills via `/skills`. If fails, revert to Option B.                      |
+| Validator relaxation hides real bugs                                             | Medium     | Warnings logged; report formatter shows count; pre-push hook fails on FAIL+WARNING combination if `--strict` flag set in CI. |
+| Refactor regresses coverage below 90%                                            | Medium     | Tests added per-field; coverage gate enforces.                                                                               |
+| Field-policy map missed a Claude Code field                                      | Medium     | `TestEveryClaudeFieldIsPolicied` cross-checks against a frozen list pulled from spec verification step in delivery.md.       |
+| OpenCode adds new agent field after this plan ships                              | Medium     | Validator warns instead of fails on unknown OpenCode-output fields; informs maintainers without blocking work.               |
+| `.opencode/skills/` (Nx-generated) conflicts with sync output if Option B chosen | Medium     | Inspect Nx generator config; if it owns `.opencode/skills/`, keep Option A.                                                  |
 
 ## Out-of-Scope (Documented Decisions)
 

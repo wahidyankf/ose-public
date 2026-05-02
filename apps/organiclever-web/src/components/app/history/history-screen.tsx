@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { Icon } from "@open-sharia-enterprise/ts-ui";
 import { getLast7Days } from "@/lib/journal/stats";
-import { listEntries } from "@/contexts/journal/infrastructure/journal-store";
-import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
-import type { JournalEntry } from "@/contexts/journal/domain/schema";
+import { listEntries } from "@/contexts/journal/application";
+import type { JournalRuntime } from "@/contexts/journal/application";
+import type { JournalEntry } from "@/contexts/journal/application";
 import type { DayEntry } from "@/lib/journal/stats";
 import { WeeklyBarChart } from "./weekly-bar-chart";
 import { SessionCard } from "./session-card";

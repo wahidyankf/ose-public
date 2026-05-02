@@ -7,13 +7,14 @@
 // introduced in a future plan).
 //
 // Cross-context infrastructure coupling: this file imports `PgliteService`
-// from `@/lib/journal/runtime` and `StorageUnavailable` from
-// `@/lib/journal/errors`. That coupling is intentional for the duration of
-// Phase 5 — the journal infrastructure (runtime + errors) migrates to
-// `@/contexts/journal/infrastructure/...` in Phase 6, and this import path
-// updates then. ESLint `boundaries/element-types` warns about the
-// cross-context infra import; the warning is expected and resolves in
-// Phase 6.
+// from `@/contexts/journal/infrastructure/runtime` and `StorageUnavailable`
+// from `@/contexts/journal/domain/errors`. The journal context is the
+// system of record for the underlying PGlite handle today; settings borrows
+// the same Layer rather than spinning a parallel one. ESLint
+// `boundaries/element-types` warns about the cross-context infrastructure
+// import (severity = warn) — that warning is expected and resolves when an
+// explicit storage port is introduced in a future plan, at which point the
+// journal infrastructure import collapses to a domain-only one.
 
 import { Effect } from "effect";
 import { PgliteService } from "@/contexts/journal/infrastructure/runtime";

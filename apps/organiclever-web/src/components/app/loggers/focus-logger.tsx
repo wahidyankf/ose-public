@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { Schema } from "effect";
 import { Input, Textarea } from "@open-sharia-enterprise/ts-ui";
-import { appendEntries } from "@/contexts/journal/infrastructure/journal-store";
-import { EntryName, IsoTimestamp } from "@/contexts/journal/domain/schema";
-import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
+import { appendEntries } from "@/contexts/journal/application";
+import { EntryName, IsoTimestamp } from "@/contexts/journal/application";
+import type { JournalRuntime } from "@/contexts/journal/application";
 import { LoggerShell } from "./logger-shell";
 
 export interface FocusLoggerProps {

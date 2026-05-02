@@ -3,8 +3,8 @@ import { createActor } from "xstate";
 import { workoutSessionMachine, resolvedRest } from "./workout-machine";
 import type { AppSettings } from "@/contexts/settings/application";
 import type { Routine } from "@/lib/journal/routine-store";
-import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
-import type { CompletedSet, ActiveExercise } from "@/contexts/journal/domain/typed-payloads";
+import type { JournalRuntime } from "@/contexts/journal/application";
+import type { CompletedSet, ActiveExercise } from "@/contexts/journal/application";
 
 // ---------------------------------------------------------------------------
 // Fixtures

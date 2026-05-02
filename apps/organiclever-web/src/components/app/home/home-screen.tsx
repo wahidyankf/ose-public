@@ -3,10 +3,9 @@
 import { useState, useEffect, useRef } from "react";
 import { Icon } from "@open-sharia-enterprise/ts-ui";
 import { getLast7Days, getWeeklyStats } from "@/lib/journal/stats";
-import { listEntries } from "@/contexts/journal/infrastructure/journal-store";
+import { listEntries } from "@/contexts/journal/application";
 import { listRoutines } from "@/lib/journal/routine-store";
-import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
-import type { JournalEntry } from "@/contexts/journal/domain/schema";
+import type { JournalRuntime, JournalEntry } from "@/contexts/journal/application";
 import type { DayEntry, WeeklyStats } from "@/lib/journal/stats";
 import type { Routine } from "@/lib/journal/routine-store";
 import { ENTRY_MODULES } from "./kind-hue";

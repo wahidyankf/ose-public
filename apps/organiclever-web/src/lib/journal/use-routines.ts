@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
+import type { JournalRuntime } from "@/contexts/journal/application";
 import { listRoutines, saveRoutine, deleteRoutine, reorderRoutineExercises } from "./routine-store";
 import type { Routine } from "./routine-store";
 

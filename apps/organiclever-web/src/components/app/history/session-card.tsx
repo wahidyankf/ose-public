@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Icon, Badge } from "@open-sharia-enterprise/ts-ui";
-import type { JournalEntry } from "@/contexts/journal/domain/schema";
+import type { JournalEntry } from "@/contexts/journal/application";
 import { kindToHue, kindToIcon } from "@/components/app/home/kind-hue";
 
 interface SessionCardProps {

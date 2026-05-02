@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from "react";
 import type { Actor } from "xstate";
-import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
+import type { JournalRuntime } from "@/contexts/journal/application";
 import type { appMachine } from "@/lib/app/app-machine";
 import type { Routine } from "@/lib/journal/routine-store";
 import type { CompletedSession } from "@/lib/app/app-machine";

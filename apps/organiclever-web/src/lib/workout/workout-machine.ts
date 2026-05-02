@@ -2,10 +2,10 @@ import { createMachine, assign, fromPromise } from "xstate";
 import { Schema } from "effect";
 import type { Routine } from "@/lib/journal/routine-store";
 import type { AppSettings } from "@/contexts/settings/application";
-import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
-import type { ActiveExercise, CompletedSet } from "@/contexts/journal/domain/typed-payloads";
-import { appendEntries } from "@/contexts/journal/infrastructure/journal-store";
-import { IsoTimestamp, EntryName } from "@/contexts/journal/domain/schema";
+import type { JournalRuntime } from "@/contexts/journal/application";
+import type { ActiveExercise, CompletedSet } from "@/contexts/journal/application";
+import { appendEntries } from "@/contexts/journal/application";
+import { IsoTimestamp, EntryName } from "@/contexts/journal/application";
 
 // ---------------------------------------------------------------------------
 // resolvedRest — determine rest duration for an exercise + settings combo

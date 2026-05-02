@@ -1,7 +1,7 @@
 "use client";
 
 import type { DayEntry } from "@/lib/journal/stats";
-import type { JournalEntry } from "@/contexts/journal/domain/schema";
+import type { JournalEntry } from "@/contexts/journal/application";
 import { kindToHue } from "./kind-hue";
 
 interface WeekRhythmStripProps {

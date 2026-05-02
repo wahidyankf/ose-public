@@ -1,6 +1,6 @@
 import { Effect } from "effect";
-import { PgliteService } from "@/contexts/journal/infrastructure/runtime";
-import { StorageUnavailable } from "@/contexts/journal/domain/errors";
+import { PgliteService } from "@/contexts/journal/application";
+import { StorageUnavailable } from "@/contexts/journal/application";
 
 // ---------------------------------------------------------------------------
 // Types

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { formatRelativeTime } from "@/lib/journal/format-relative-time";
+import { formatRelativeTime } from "@/shared/utils/format-relative-time";
 import type { JournalEntry, EntryId } from "../../domain/types";
 
 interface EntryCardProps {

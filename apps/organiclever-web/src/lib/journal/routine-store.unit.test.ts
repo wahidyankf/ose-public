@@ -2,11 +2,11 @@ import { layer } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { PGlite } from "@electric-sql/pglite";
 import { expect } from "vitest";
-import { PgliteService } from "@/contexts/journal/infrastructure/runtime";
-import { runMigrations } from "@/contexts/journal/infrastructure/run-migrations";
+import { PgliteService } from "@/contexts/journal/application";
+import { runMigrations } from "@/contexts/journal/application";
 import { listRoutines, saveRoutine, deleteRoutine, reorderRoutineExercises } from "./routine-store";
 import type { Routine, ExerciseGroup } from "./routine-store";
-import { NotFound } from "@/contexts/journal/domain/errors";
+import { NotFound } from "@/contexts/journal/application";
 
 // ---------------------------------------------------------------------------
 // Test layer — in-memory PGlite with both migrations applied

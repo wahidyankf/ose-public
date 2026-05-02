@@ -7,7 +7,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { MealLogger } from "./meal-logger";
-import type { JournalRuntime } from "@/contexts/journal/infrastructure/runtime";
+import type { JournalRuntime } from "@/contexts/journal/application";
 
 afterEach(() => {
   cleanup();

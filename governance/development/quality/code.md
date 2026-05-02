@@ -147,20 +147,20 @@ npx prettier --write [file-path]
 
 **Configuration Validation** (Added 2026-01-22):
 
-Validates `.claude/` and `.opencode/` consistency before commit:
+Validates primary and secondary platform binding directory consistency before commit:
 
-1. Detects if `.claude/` or `.opencode/` in staged files
+1. Detects if binding directories (`.claude/` or `.opencode/`) are in staged files
 2. If changed:
-   - Validates `.claude/` source format (YAML, tools, model, skills)
-   - Syncs `.claude/` → `.opencode/` (auto-sync)
-   - Validates `.opencode/` output (semantic equivalence)
+   - Validates primary binding directory (`.claude/`) source format (YAML, tools, model, skills)
+   - Syncs primary to secondary binding directory (auto-sync)
+   - Validates secondary binding directory (`.opencode/`) output (semantic equivalence)
 3. If unchanged: Skips validation (performance)
 
 **Benefits:**
 
 - Catches config errors before commit (earliest possible)
 - Prevents invalid commits from being created locally
-- Ensures `.claude/` and `.opencode/` stay in sync
+- Ensures primary and secondary binding directories stay in sync
 - Auto-syncs on commit (no manual step)
 - Only runs when config files in staged files (~260ms when needed)
 
@@ -379,9 +379,9 @@ git push
 **Solutions**:
 
 1. Identify which step failed:
-   - `.claude/` validation: Fix source files in `.claude/agents/` or `.claude/skills/`
+   - Primary binding directory validation: Fix source files in `.claude/agents/` or `.claude/skills/`
    - Sync: Check rhino-cli output, may be a bug
-   - `.opencode/` validation: Re-run `npm run sync:claude-to-opencode`
+   - Secondary binding directory validation: Re-run `npm run sync:claude-to-opencode`
 
 2. Run validation manually to debug:
 
@@ -394,8 +394,8 @@ git push
 3. Common validation errors:
    - Invalid tool name: Must be Read, Write, Edit, Glob, Grep, Bash, TodoWrite, WebFetch, WebSearch
    - Missing description: All agents/skills need description field
-   - Invalid model: Must be empty, "sonnet", "opus", or "haiku"
-   - Skill not found: Ensure skill exists in `.claude/skills/`
+   - Invalid model: Must be empty, or a recognized model identifier (`sonnet`, `opus`, `haiku`)
+   - Skill not found: Ensure skill exists in the platform binding skill directory (`.claude/skills/`)
 
 4. Bypass hook temporarily (emergency only):
 

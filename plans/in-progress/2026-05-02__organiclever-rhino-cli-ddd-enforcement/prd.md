@@ -15,11 +15,11 @@ Add two new `rhino-cli` subcommands and one skill extension that together enforc
 ## In scope
 
 - `specs/apps/organiclever/bounded-contexts.yaml` — new registry file.
-- `apps/rhino-cli/cmd/bc/validate.go` (and friends) — new `bc validate` subcommand.
-- `apps/rhino-cli/cmd/ul/validate.go` (and friends) — new `ul validate` subcommand.
+- `apps/rhino-cli/cmd/bc.go`, `apps/rhino-cli/cmd/bc_validate.go` (and friends) — new `bc validate` subcommand.
+- `apps/rhino-cli/cmd/ul.go`, `apps/rhino-cli/cmd/ul_validate.go` (and friends) — new `ul validate` subcommand.
 - `apps/rhino-cli/internal/{bcregistry,glossary}/` — new packages for registry loading and glossary parsing.
 - `apps/rhino-cli/README.md` — new "DDD enforcement" subsection.
-- `specs/apps/rhino-cli/` — new Gherkin features for both subcommands.
+- `specs/apps/rhino/cli/gherkin/` — new Gherkin features for both subcommands.
 - `.claude/skills/apps-organiclever-web-developing-content/SKILL.md` — append Domain-Driven Design section.
 - `apps/organiclever-web/project.json` — extend `test:quick` to call both subcommands.
 
@@ -38,8 +38,9 @@ Add two new `rhino-cli` subcommands and one skill extension that together enforc
 - As the solo maintainer, I want a single registry YAML file to be the canonical source for the OrganicLever bounded-context map, so that any consumer (subcommand, agent, future BE plan) reads from one place instead of re-deriving the map from prose docs.
 - As the solo maintainer, I want `rhino-cli bc validate` to fail on any structural drift between the registry, code folders, glossary files, and Gherkin folders, so that drift is caught at commit time rather than during a future archaeology session.
 - As the solo maintainer, I want `rhino-cli ul validate` to fail on glossary frontmatter, table-schema, code-identifier-existence, and cross-context term-collision violations, so that the ubiquitous language stays in lockstep with the code without requiring manual review.
-- As the rhino-cli developer, I want both subcommands to ship at warning severity first and flip to error severity later, so that I can land them while the sibling DDD plan is still mid-flight without blocking that plan's commits.
+- As the rhino-cli developer, I want both subcommands to default to error severity from the start, with a local `--severity=warn` escape hatch available for temporary false-positive handling, so that drift is caught immediately once the DDD migration is complete.
 - As an agent working on `organiclever-web` (developer agent, plan-executor, future BE swe agent), I want the `apps-organiclever-web-developing-content` skill to auto-load DDD knowledge (BC list, layer rules, xstate placement, cross-context calls, glossary authoring), so that I can place new code correctly without re-reading authoritative tech docs every session.
+- As the solo maintainer, I want a local `ORGANICLEVER_RHINO_DDD_SEVERITY=warn` escape hatch, so that I can temporarily downgrade a false-positive finding post-merge without a code change while I prepare the fix.
 - As the plan-execution-checker, I want each Gherkin acceptance criterion to map to a verifiable, observable output (a file path, a subcommand exit code, a section in a markdown file), so that I can confirm the plan is complete without manual interpretation.
 
 ## Functional requirements

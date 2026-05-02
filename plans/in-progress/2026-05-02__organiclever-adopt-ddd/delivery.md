@@ -23,11 +23,11 @@
 
 **Goal**: Decisions before code moves. No source-code edits in this phase.
 
-- [ ] **Red**: Draft `apps/organiclever-web/docs/explanation/bounded-context-map.md` listing every context, its responsibility, persistence model, and relationships. Include accessible Mermaid diagram.
+- [ ] **Draft**: Author `apps/organiclever-web/docs/explanation/bounded-context-map.md` listing every context, its responsibility, persistence model, and relationships. Include accessible Mermaid diagram.
 - [ ] Cross-check the map against `src/lib/*` clusters (`journal-*`, `routine-*`, `workout-*`, `settings-*`, `stats.ts`, `app-machine.ts`, etc.) to confirm every existing module lands in exactly one context.
 - [ ] Resolve open questions Q1–Q3 from `tech-docs.md`. Record answers in the ADR.
 - [ ] Decide final mapping for spec reorganization (`home/`, `history/`, `progress/`, `system/`, `loggers/` redirections). Append to ADR.
-- [ ] **Green**: Mermaid passes `rhino-cli mermaid validate` if applicable; markdown lint passes; no broken links.
+- [ ] **Review**: Mermaid passes `rhino-cli mermaid validate` if applicable; markdown lint passes; no broken links.
 - [ ] **Refactor**: Add the ADR link to `apps/organiclever-web/README.md` "Architecture" section.
 - [ ] Commit: `docs(organiclever-web): add bounded-context map ADR`.
 
@@ -66,17 +66,17 @@
 **Goal**: Land the top-level glossary folder under `specs/apps/organiclever/` and wire it into the surrounding spec READMEs. No code reorg yet.
 
 - [ ] Create `specs/apps/organiclever/ubiquitous-language/` as a sibling of `be/`, `fe/`, `c4/`, `contracts/`.
-- [ ] **Red**: Author `specs/apps/organiclever/ubiquitous-language/README.md` index with:
+- [ ] **Draft**: Author `specs/apps/organiclever/ubiquitous-language/README.md` index with:
   - [ ] Statement that the folder is the platform-agnostic glossary shared by FE today and BE in a future plan.
   - [ ] Authoring rules: one file per bounded context; glossary updates ride with code/feature changes in the same commit; Gherkin steps use only glossary terms; code identifiers match the `Code identifier(s)` column verbatim.
   - [ ] Index list linking every per-context glossary file.
   - [ ] Cross-links to `c4/`, `fe/gherkin/`, and the bounded-context-map ADR.
-- [ ] **Red**: Create one glossary file per bounded context using the template from `tech-docs.md` § "Ubiquitous-language file shape". Populate term tables by scanning current Gherkin features and `src/lib/*` identifiers; populate "Forbidden synonyms" by scanning for the same word used differently in another context.
+- [ ] **Draft**: Create one glossary file per bounded context using the template from `tech-docs.md` § "Ubiquitous-language file shape". Populate term tables by scanning current Gherkin features and `src/lib/*` identifiers; populate "Forbidden synonyms" by scanning for the same word used differently in another context.
 - [ ] Update `specs/apps/organiclever/README.md`:
   - [ ] Add `ubiquitous-language/` to the "Structure" tree at the top level.
   - [ ] Add a "Ubiquitous Language" entry to the "Spec Artifacts" list linking the folder.
 - [ ] Update `specs/apps/organiclever/fe/README.md` to link the glossary folder under "Domains" or a new "Ubiquitous Language" section.
-- [ ] **Green**: `npm run lint:md` passes; `apps/rhino-cli/dist/rhino-cli docs validate-links --staged-only` passes; every bounded context from the Phase 0 ADR has a glossary file.
+- [ ] **Review**: `npm run lint:md` passes; `apps/rhino-cli/dist/rhino-cli docs validate-links --staged-only` passes; every bounded context from the Phase 0 ADR has a glossary file.
 - [ ] **Refactor**: Add glossary parity check stub — a small test (or `rhino-cli` invocation) that scans Gherkin features for terms not present in any glossary file, output as warning. Wire into `nx run organiclever-web:spec-coverage` only if non-disruptive; otherwise defer wiring to Phase 9.
 - [ ] Commit: `docs(specs/organiclever): add ubiquitous-language glossary`.
 
@@ -227,7 +227,7 @@ For each of `health`, `landing`, `routing`:
 - [ ] Update `apps/organiclever-web/CLAUDE.md` (if it exists) with the same layout note.
 - [ ] Update `.claude/skills/apps-organiclever-web-developing-content/SKILL.md` to mention bounded-context-aware development workflow.
 - [ ] Update `specs/apps/organiclever/README.md` with the new ubiquitous-language folder under "Spec Artifacts".
-- [ ] **Green**: `npm run lint:md` passes; all internal links resolve (`docs-link-checker` if invoked).
+- [ ] **Review**: `npm run lint:md` passes; all internal links resolve (`docs-link-checker` if invoked).
 - [ ] Commit: `docs(organiclever-web): document DDD layout and ubiquitous-language folder`.
 
 **Phase exit gates**:

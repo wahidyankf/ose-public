@@ -7,11 +7,11 @@
 ## Pre-flight
 
 - [ ] **Hard dependency check**: confirm `plans/in-progress/2026-05-02__organiclever-adopt-ddd/` no longer exists and `plans/done/2026-05-02__organiclever-adopt-ddd/` does exist. If still in `in-progress/`, **stop**: this plan cannot start until DDD adoption is fully complete and archived.
-- [ ] Confirm the DDD plan's final SHA is on `origin/main`: `git -C ose-public log --oneline plans/done/2026-05-02__organiclever-adopt-ddd/ | head -5` shows the archive commit.
+- [ ] Confirm the DDD plan's final SHA is on `origin/main`: `git log --oneline plans/done/2026-05-02__organiclever-adopt-ddd/ | head -5` shows the archive commit. (Run from inside the worktree; the `-C ose-public` qualifier is not needed there.)
 - [ ] Confirm `apps/organiclever-web/src/contexts/<bc>/<layer>/` structure exists for all 9 contexts (smoke check: `ls apps/organiclever-web/src/contexts/`).
 - [ ] Confirm `specs/apps/organiclever/ubiquitous-language/<bc>.md` exists for all 9 contexts.
 - [ ] Confirm `specs/apps/organiclever/fe/gherkin/<bc>/` exists for all 9 contexts.
-- [ ] Confirm clean tree on `ose-public` `main`: `git -C ose-public status` shows no uncommitted changes.
+- [ ] Confirm clean tree on `ose-public` `main`: `git status` shows no uncommitted changes. (Run from inside the worktree; no `-C ose-public` qualifier needed.)
 - [ ] Provision worktree: `cd ose-public && claude --worktree organiclever-rhino-cli-ddd-enforcement`. Worktree path: `ose-public/.claude/worktrees/organiclever-rhino-cli-ddd-enforcement/` on branch `worktree-organiclever-rhino-cli-ddd-enforcement`.
 - [ ] Inside the worktree, run `npm install && npm run doctor -- --fix`.
 - [ ] Confirm baseline gates green: `npx nx affected -t typecheck lint test:quick spec-coverage` and `nx run rhino-cli:test:quick`.
@@ -48,7 +48,7 @@
 - [ ] **Red**: Author `specs/apps/organiclever/bounded-contexts.yaml` per the schema in `tech-docs.md`. Populate all 9 contexts with `name`, `summary`, `layers`, `code`, `glossary`, `gherkin`, `relationships`.
 - [ ] **Red**: Manual sanity check — `for ctx in <each>; do test -d <code> && test -f <glossary> && test -d <gherkin>; done`. Every check must pass.
 - [ ] **Red**: Cross-check that every name in the registry corresponds to a path that ESLint considers a `domain`/`application`/`infrastructure`/`presentation` element per the DDD plan's `eslint.config.mjs`.
-- [ ] **Green**: `npm run lint:md` passes (no markdown changed, sanity check). YAML syntactically valid: `cat specs/apps/organiclever/bounded-contexts.yaml | yq .` exits zero.
+- [ ] **Green**: `npm run lint:md` passes (no markdown changed, sanity check). YAML syntactically valid: `yq eval '.' specs/apps/organiclever/bounded-contexts.yaml` exits zero (requires `mikefarah/yq` v4; if `yq` is unavailable, YAML parse errors will surface naturally when any subcommand loads the registry in Phase 2).
 - [ ] **Refactor**: Add cross-link from `plans/done/2026-05-02__organiclever-adopt-ddd/tech-docs.md` to the registry in a follow-up commit (or note as a deferred edit if archived plan is read-only by convention).
 - [ ] Update `specs/apps/organiclever/README.md` "Structure" tree to include `bounded-contexts.yaml` at the top level.
 - [ ] Commit: `feat(specs/organiclever): add bounded-contexts.yaml registry`.
@@ -65,10 +65,10 @@
 
 **Goal**: Build the structural-parity subcommand. TDD with godog at unit level (mocked filesystem), then integration level (real `/tmp` fixtures).
 
-- [ ] **Red**: Author `specs/apps/rhino-cli/bc-validate.feature` with Gherkin scenarios mirroring `prd.md` FR-2 acceptance criteria (clean state, orphan code folder, missing glossary, missing layer, asymmetric relationship).
-- [ ] **Red**: Add unit-level godog suite at `apps/rhino-cli/cmd/bc/validate.unit.test.go` (mocked filesystem via package-level function variables). Confirm the suite **fails** because the subcommand doesn't exist yet.
-- [ ] **Green**: Implement `apps/rhino-cli/internal/bcregistry/` (YAML loader, schema struct, helpers). Implement `apps/rhino-cli/cmd/bc/bc.go` (Cobra parent command) and `apps/rhino-cli/cmd/bc/validate.go` (the `validate` subcommand). Run unit tests until green.
-- [ ] **Green**: Add integration-level godog suite at `apps/rhino-cli/cmd/bc/validate.int.test.go` with `//go:build integration` tag. Real `/tmp` fixtures. Drives `cmd.RunE()` in-process. Run until green.
+- [ ] **Red**: Author `specs/apps/rhino/cli/gherkin/bc-validate.feature` with Gherkin scenarios mirroring `prd.md` FR-2 acceptance criteria (clean state, orphan code folder, missing glossary, missing layer, asymmetric relationship).
+- [ ] **Red**: Add unit-level godog suite at `apps/rhino-cli/cmd/bc_validate_test.go` (package cmd, mocked filesystem via package-level function variables). Confirm the suite **fails** because the subcommand doesn't exist yet.
+- [ ] **Green**: Implement `apps/rhino-cli/internal/bcregistry/` (YAML loader, schema struct, helpers). Implement `apps/rhino-cli/cmd/bc.go` (Cobra parent command `bcCmd`, package cmd) and `apps/rhino-cli/cmd/bc_validate.go` (the `validate` subcommand, package cmd). Run unit tests until green.
+- [ ] **Green**: Add integration-level godog suite at `apps/rhino-cli/cmd/bc_validate.integration_test.go` with `//go:build integration` tag (package cmd). Real `/tmp` fixtures. Drives `cmd.RunE()` in-process. Run until green.
 - [ ] **Refactor**: Extract any shared finding-output helper into `golang-commons` if it doesn't already exist there. Verify ≥90% coverage maintained.
 - [ ] Smoke-run: `rhino-cli bc validate organiclever` against the real working tree. Should exit zero.
 - [ ] Commit: `feat(rhino-cli): add bc validate subcommand for DDD structural parity`.
@@ -86,10 +86,10 @@
 
 **Goal**: Build the glossary-parity subcommand. Same TDD pattern as Phase 2.
 
-- [ ] **Red**: Author `specs/apps/rhino-cli/ul-validate.feature` with Gherkin scenarios mirroring `prd.md` FR-3 acceptance criteria (clean state, missing frontmatter, malformed table header, stale code identifier, missing feature reference, cross-context term collision, forbidden-synonym misuse).
-- [ ] **Red**: Add unit-level godog suite at `apps/rhino-cli/cmd/ul/validate.unit.test.go` with mocked filesystem and mocked ripgrep. Confirm the suite **fails**.
-- [ ] **Green**: Implement `apps/rhino-cli/internal/glossary/` (frontmatter parser, terms-table parser, forbidden-synonyms parser per the parser-shape in `tech-docs.md`). Implement `apps/rhino-cli/cmd/ul/ul.go` (parent) and `apps/rhino-cli/cmd/ul/validate.go` (the `validate` subcommand). Run unit tests until green.
-- [ ] **Green**: Add integration-level godog suite at `apps/rhino-cli/cmd/ul/validate.int.test.go` with `//go:build integration`. Real `/tmp` fixtures including a "table reformatted by Prettier" case. Run until green.
+- [ ] **Red**: Author `specs/apps/rhino/cli/gherkin/ul-validate.feature` with Gherkin scenarios mirroring `prd.md` FR-3 acceptance criteria (clean state, missing frontmatter, malformed table header, stale code identifier, missing feature reference, cross-context term collision, forbidden-synonym misuse).
+- [ ] **Red**: Add unit-level godog suite at `apps/rhino-cli/cmd/ul_validate_test.go` (package cmd, mocked filesystem and mocked ripgrep). Confirm the suite **fails**.
+- [ ] **Green**: Implement `apps/rhino-cli/internal/glossary/` (frontmatter parser, terms-table parser, forbidden-synonyms parser per the parser-shape in `tech-docs.md`). Implement `apps/rhino-cli/cmd/ul.go` (Cobra parent command `ulCmd`, package cmd) and `apps/rhino-cli/cmd/ul_validate.go` (the `validate` subcommand, package cmd). Run unit tests until green.
+- [ ] **Green**: Add integration-level godog suite at `apps/rhino-cli/cmd/ul_validate.integration_test.go` with `//go:build integration` (package cmd). Real `/tmp` fixtures including a "table reformatted by Prettier" case. Run until green.
 - [ ] **Refactor**: Verify ≥90% coverage maintained. Move any cross-cutting parser helper into `golang-commons` if reused.
 - [ ] Smoke-run: `rhino-cli ul validate organiclever` against the real working tree. Should exit zero.
 - [ ] Commit: `feat(rhino-cli): add ul validate subcommand for DDD glossary parity`.
@@ -111,7 +111,7 @@
 - [ ] **Green**: Run `nx run organiclever-web:test:quick`. Should exit zero with both subcommands invoked. Wall-clock delta vs baseline ≤5s (NFR-4).
 - [ ] **Green**: Set `ORGANICLEVER_RHINO_DDD_SEVERITY=warn` and re-run; confirm a deliberate orphan does **not** fail the target. Reset env var.
 - [ ] **Refactor**: Document the env var in `apps/organiclever-web/README.md` "Development" section as the local escape hatch.
-- [ ] Smoke-test pre-push: `git -C ose-public push origin worktree-organiclever-rhino-cli-ddd-enforcement` — Husky pre-push hook must trigger both subcommands and pass.
+- [ ] Smoke-test pre-push: inside the worktree, run `git push origin worktree-organiclever-rhino-cli-ddd-enforcement` — Husky pre-push hook must trigger both subcommands and pass.
 - [ ] Commit: `feat(organiclever-web): wire rhino-cli bc/ul validate into test:quick`.
 
 **Phase exit gates**:
@@ -158,7 +158,7 @@
 - [ ] Manual subcommand verification: introduce one synthetic finding per subcommand (orphan glossary, stale code identifier), confirm `test:quick` exits non-zero, revert the synthetic change.
 - [ ] Invoke `plan-execution-checker` against this plan and address every finding.
 - [ ] Fast-forward merge worktree branch `worktree-organiclever-rhino-cli-ddd-enforcement` into local `main`. Push `origin main`.
-- [ ] Wait for `origin/main` to reflect the SHA. Monitor the relevant GitHub Actions workflow on `wahidyankf/ose-public` (`CI` / push workflow). Verify all checks pass.
+- [ ] Wait for `origin/main` to reflect the SHA. Monitor the following GitHub Actions workflows on `wahidyankf/ose-public`: `test-and-deploy-organiclever-web-development.yml` (triggers on push to `main` for `organiclever-web` changes) and `pr-quality-gate.yml` (for any open PRs if applicable). Verify all checks pass: `gh run list --repo wahidyankf/ose-public --limit 5` to identify the run, then `gh run view <run-id>` every 3–5 min until green.
 - [ ] If any parent-side gitlink bump is needed, perform it from the parent repo.
 - [ ] Move `plans/in-progress/2026-05-02__organiclever-rhino-cli-ddd-enforcement/` → `plans/done/2026-05-02__organiclever-rhino-cli-ddd-enforcement/`.
 - [ ] Update `plans/in-progress/README.md` and `plans/done/README.md` (if any index) to reflect the move.

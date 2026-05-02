@@ -4,34 +4,36 @@
 
 ### High-level shape
 
+#### Directory layout (new + extended files)
+
 ```
 specs/apps/organiclever/
 ├── bounded-contexts.yaml        # NEW — single source of truth for the BC map
-├── ubiquitous-language/         # consumed (read-only) by ul validate
+├── ubiquitous-language/
 │   ├── README.md
 │   ├── journal.md
 │   ├── ...
-└── fe/gherkin/<bc>/             # consumed (read-only) by bc validate
+└── fe/gherkin/<bc>/
 
 apps/organiclever-web/src/contexts/<bc>/<layer>/
-                                 # consumed (read-only) by bc validate (folder existence)
-                                 # and ul validate (code-identifier grep)
 
 apps/rhino-cli/
-├── cmd/
-│   ├── bc/
-│   │   ├── bc.go                # NEW — Cobra parent command
-│   │   └── validate.go          # NEW — `rhino-cli bc validate <app>`
-│   └── ul/
-│       ├── ul.go                # NEW — Cobra parent command
-│       └── validate.go          # NEW — `rhino-cli ul validate <app>`
+├── cmd/                         # flat package (all files package cmd — no subdirs)
+│   ├── bc.go                    # NEW — Cobra parent command (bcCmd)
+│   ├── bc_validate.go           # NEW — `rhino-cli bc validate <app>`
+│   ├── bc_validate_test.go      # NEW — unit-level godog suite (mocked filesystem)
+│   ├── bc_validate.integration_test.go  # NEW — integration-level godog suite (real /tmp)
+│   ├── ul.go                    # NEW — Cobra parent command (ulCmd)
+│   ├── ul_validate.go           # NEW — `rhino-cli ul validate <app>`
+│   ├── ul_validate_test.go      # NEW — unit-level godog suite (mocked filesystem)
+│   └── ul_validate.integration_test.go  # NEW — integration-level godog suite (real /tmp)
 ├── internal/
 │   ├── bcregistry/              # NEW — YAML loader, schema, helpers
 │   ├── glossary/                # NEW — markdown parser, frontmatter, table
 │   └── (existing packages reused)
 └── README.md                    # extended with "DDD enforcement" subsection
 
-specs/apps/rhino-cli/
+specs/apps/rhino/cli/gherkin/
 ├── bc-validate.feature          # NEW — godog scenarios for FR-2
 └── ul-validate.feature          # NEW — godog scenarios for FR-3
 
@@ -40,6 +42,42 @@ apps/organiclever-web/project.json
 
 .claude/skills/apps-organiclever-web-developing-content/SKILL.md
                                  # Domain-Driven Design section appended
+```
+
+#### Component interactions
+
+```mermaid
+%% Color palette: Blue #0173B2, Teal #029E73, Orange #DE8F05, Brown #CA9161, Gray #808080
+%% All colors are color-blind friendly and meet WCAG AA contrast standards
+
+flowchart LR
+    Registry["bounded-contexts.yaml\n#40;single source of truth#41;"]:::teal
+    ULFiles["ubiquitous-language/\n<bc>.md files"]:::brown
+    GherkinFolders["fe/gherkin/<bc>/\n.feature files"]:::brown
+    CodeFolders["organiclever-web/src/contexts/\n<bc>/<layer>/"]:::brown
+
+    BCValidate["rhino-cli bc validate\n#40;structural parity#41;"]:::blue
+    ULValidate["rhino-cli ul validate\n#40;glossary parity#41;"]:::blue
+    TestQuick["organiclever-web\ntest:quick"]:::orange
+    Skill["apps-organiclever-web-developing-content\nSKILL.md — DDD section"]:::gray
+
+    Registry -->|loads| BCValidate
+    Registry -->|loads| ULValidate
+    GherkinFolders -->|checks folder + .feature| BCValidate
+    CodeFolders -->|checks layer subfolders| BCValidate
+    ULFiles -->|checks glossary exists| BCValidate
+    ULFiles -->|parses frontmatter + terms table| ULValidate
+    CodeFolders -->|rg code-identifier grep| ULValidate
+    GherkinFolders -->|checks feature refs| ULValidate
+    BCValidate -->|pre-step| TestQuick
+    ULValidate -->|pre-step| TestQuick
+    Registry -->|BC list pointer| Skill
+
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
 ### Registry YAML schema
@@ -430,7 +468,7 @@ Per the [Three-Level Testing Standard](../../../governance/development/quality/t
 - **Integration (`test:integration`)** — Same Gherkin scenarios consume real `/tmp` filesystem fixtures; drives commands in-process via `cmd.RunE()`; cacheable.
 - **E2E** — Not applicable (CLI app).
 
-Both levels share `specs/apps/rhino-cli/bc-validate.feature` and `specs/apps/rhino-cli/ul-validate.feature`. Step implementations differ between levels (mocked I/O at unit, real I/O at integration).
+Both levels share `specs/apps/rhino/cli/gherkin/bc-validate.feature` and `specs/apps/rhino/cli/gherkin/ul-validate.feature`. Step implementations differ between levels (mocked I/O at unit, real I/O at integration).
 
 ## Decisions
 

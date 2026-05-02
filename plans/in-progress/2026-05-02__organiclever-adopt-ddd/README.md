@@ -92,3 +92,4 @@ This plan is done when **all** of the following are true:
 - [Worktree Toolchain Initialization](../../../governance/development/workflow/worktree-setup.md)
 - [organiclever-web README](../../../apps/organiclever-web/README.md)
 - [organiclever specs README](../../../specs/apps/organiclever/README.md)
+- [Downstream plan: organiclever-rhino-cli-ddd-enforcement](../2026-05-02__organiclever-rhino-cli-ddd-enforcement/README.md) — hard serial dependency; begins only after this plan is archived to `done/`

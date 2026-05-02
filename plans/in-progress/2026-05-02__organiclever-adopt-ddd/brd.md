@@ -60,11 +60,9 @@ The repo already mandates DDD for OSE Platform Islamic-finance systems and ships
 - Sharia-compliance reporting.
 - DDD adoption in other apps (`ayokoding-web`, `oseplatform-web`, `wahidyankf-web`).
 
-## Stakeholders
+## Affected Roles
 
-- **Product owner**: Wahidyan Kresna Fridayoka.
-- **Engineering**: Same.
-- **Reviewers**: plan-checker → plan-fixer → plan-execution-checker.
+- **Solo maintainer (DDD architect hat)**: Wahidyan Kresna Fridayoka — product owner and engineer.
 
 ## Decision record
 

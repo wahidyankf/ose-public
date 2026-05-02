@@ -77,7 +77,7 @@ A new dedicated checker agent (e.g. `apps-organiclever-ddd-checker`) is **delibe
 
 - **Product owner**: Wahidyan Kresna Fridayoka.
 - **Engineering**: Same.
-- **Reviewers**: plan-checker → plan-fixer → plan-execution-checker.
+- **Affected agents (plan workflow)**: plan-checker → plan-fixer → plan-execution-checker.
 - **Consuming agents (skill side)**: `swe-typescript-dev`, `plan-executor`, future `swe-fsharp-dev`, any agent that auto-loads `apps-organiclever-web-developing-content`.
 
 ## Decision record

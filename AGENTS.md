@@ -603,3 +603,34 @@ See [governance/development/agents/model-selection.md](./governance/development/
 - USE for: advanced config options, unfamiliar flags, migration guides, plugin config, edge cases
 - DON'T USE for: basic generator syntax (`nx g @nx/react:app`), standard commands, things you already know
 - The `nx-generate` skill handles generator discovery internally — don't call nx_docs just to look up generator syntax
+
+<!-- rtk-instructions v2 -->
+
+## RTK (Rust Token Killer) — Token-Optimized Commands
+
+RTK is a CLI wrapper that reduces token usage by filtering AI output. See [github.com/rtk-ai/rtk](https://github.com/rtk-ai/rtk) for full details.
+
+### Golden Rule
+
+**Always prefix commands with `rtk`**. If RTK has a dedicated filter, it uses it. If not, passes through unchanged. RTK is always safe to use.
+
+Even in command chains with `&&`, use `rtk`:
+
+```bash
+# Wrong
+git add . && git commit -m "msg" && git push
+
+# Correct
+rtk git add . && rtk git commit -m "msg" && rtk git push
+```
+
+### Meta Commands
+
+```bash
+rtk gain              # Show token savings analytics
+rtk gain --history    # Show command usage history with savings
+rtk discover          # Analyze Claude Code history for missed opportunities
+rtk proxy <cmd>       # Execute raw command without filtering (for debugging)
+```
+
+<!-- /rtk-instructions -->

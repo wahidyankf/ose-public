@@ -270,35 +270,36 @@ tier. The model IDs above are current as of April 2026.
 
 ## Platform Binding Equivalents
 
-Agents in the primary binding directory are auto-synced to the secondary binding directory by rhino-cli
-(`npm run sync:claude-to-opencode`). The sync translates agent model aliases to
-secondary-binding-specific model IDs (e.g., Zhipu AI GLM IDs for the secondary platform binding).
+Agents in `.claude/agents/` are auto-synced to `.opencode/agents/` by rhino-cli
+(`npm run sync:claude-to-opencode`). The sync translates Claude Code model aliases to
+OpenCode Go model IDs.
 
 ### Model ID Mapping
 
-| Primary binding               | Secondary binding             | Capability notes                                                    |
-| ----------------------------- | ----------------------------- | ------------------------------------------------------------------- |
-| omit (planning-grade inherit) | `zai-coding-plan/glm-5.1`     | 744B MoE; SWE-Bench Pro 58.4; ≈ planning-grade tier capability      |
-| `model: sonnet`               | `zai-coding-plan/glm-5.1`     | Same GLM model as planning-grade (no separate execution-grade tier) |
-| `model: haiku`                | `zai-coding-plan/glm-5-turbo` | Purpose-built for agentic tool-calling and throughput               |
-
-**Note**: GLM-5-turbo has no published standard benchmark scores (no SWE-bench, GPQA, or HumanEval). See [benchmark reference](../../../docs/reference/ai-model-benchmarks.md#glm-5-turbo) for details.
+| Claude Code (primary)         | OpenCode Go (secondary)    | Capability notes                                                                                 |
+| ----------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------ |
+| omit (planning-grade inherit) | `opencode-go/minimax-m2.7` | MiniMax MoE; SWE-Pro 56.22% (M2.5 predecessor: 80.2% SWE-Bench Verified); highest in OpenCode Go |
+| `model: sonnet`               | `opencode-go/minimax-m2.7` | Same model as planning-grade (no separate execution-grade tier in OpenCode Go)                   |
+| `model: haiku`                | `opencode-go/glm-5`        | Zhipu GLM lighter variant; fast/cheap for mechanical work; no published SWE-Bench score          |
 
 ### 3-to-2 Tier Collapse
 
-The coding agent has three tiers (planning-grade > execution-grade > fast). The GLM Coding Plan has
-two: `glm-5.1` (top) and `glm-5-turbo` (fast/agentic). Planning-grade and execution-grade agents
-both use `glm-5.1` in the secondary binding because GLM-5.1 is the single best available option.
+Claude Code has three tiers (planning-grade > execution-grade > fast). OpenCode Go offers a curated
+set of models across multiple labs; the converter maintains the same 3-to-2 collapse: a single large
+model (`minimax-m2.7`) covers planning-grade and execution-grade tiers; a fast model (`glm-5`) covers
+the haiku tier.
 
-This collapse is an acceptable platform-level constraint. Tier assignments govern behavior
-in the primary platform binding (the primary runtime). The secondary platform binding uses the best available
-GLM model for all non-fast-tier work.
+This collapse is an acceptable platform-level constraint. Tier assignments govern behavior in Claude
+Code sessions (the primary runtime). OpenCode Go uses the highest-benchmark available model for all
+non-fast-tier work.
 
-### Why No Separate GLM Planning-Grade Tier
+### Why MiniMax M2.7 as the Default
 
-GLM-5.1 benchmarks at SWE-Bench Pro 58.4, comparable to the planning-grade tier (57.3) but below
-the top planning tier. No GLM model currently exceeds top planning-grade capability. Using `glm-5.1` for
-planning-grade agents is the best available option, not a perfect equivalence.
+MiniMax M2.7 is adopted based on lab trajectory and model recency. Its predecessor M2.5 led SWE-Bench
+Verified at 80.2%. M2.7's SWE-Pro score (56.22%) is on a harder suite and not directly comparable to
+GLM-5.1 (58.4% SWE-Bench Pro). Accessible via the flat-rate OpenCode Go subscription; no per-token
+billing. If a stronger model joins the OpenCode Go roster, update only `ConvertModel()` in
+`apps/rhino-cli/internal/agents/converter.go` and re-run `npm run sync:claude-to-opencode`.
 
 ## Special Considerations
 

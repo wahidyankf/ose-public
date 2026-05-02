@@ -232,23 +232,50 @@ src/app/**
 
 ## Enforcement
 
-Boundary enforcement lands in two phases:
-
-- **Phase 1** (current — dry-run) — `eslint-plugin-boundaries` configured at **warn** severity in `apps/organiclever-web/eslint.config.mjs`. The Nx `lint` target runs **both** oxlint (existing correctness/a11y/import-cycle rules) and eslint (boundary rule only). oxlint is unchanged; eslint is layered on for the boundary check it cannot perform. Failures appear as warnings, lint exits zero, the build is unaffected.
-- **Phase 8** — severity flips to **error** in the same file. From that point on, any forbidden cross-layer or cross-context import fails `nx run organiclever-web:lint` and blocks the pre-push hook + CI.
+**Severity: ESLint boundaries (`boundaries/element-types`) at `error` severity** as of Phase 8 of the [DDD adoption plan](../../../../plans/in-progress/2026-05-02__organiclever-adopt-ddd/delivery.md). Any forbidden cross-layer or cross-context import fails `nx run organiclever-web:lint` and blocks the pre-push hook + CI.
 
 ### Why a separate eslint pass alongside oxlint?
 
 oxlint does not implement `eslint-plugin-boundaries` (the closest rule it ships, `import/no-cycle`, only catches cycles, not directional layer/context boundaries). Replacing oxlint with eslint repo-wide would force re-implementing every oxlint rule under eslint and slow lint significantly. The narrow scope chosen here — eslint enabled only for `apps/organiclever-web` and only for the boundary rule — keeps oxlint authoritative for everything it covers and adds eslint as a focused sidecar.
 
-### Phase 1 dry-run details
+### Element types and capture groups
 
-- Element types: `app` (`src/app/**`), `shared` (`src/shared/**`), `domain` / `application` / `infrastructure` / `presentation` (`src/contexts/*/<layer>/**`).
-- Allowed direction: `app → shared|presentation`; `presentation → shared|domain|application|presentation`; `application → shared|domain|application`; `infrastructure → shared|domain`; `domain → shared|domain`; `shared → shared`.
-- Severity: `warn` for `boundaries/element-types`. `eslint-plugin-react-hooks` is registered without enabled rules so existing `// eslint-disable-next-line react-hooks/exhaustive-deps` directives in source resolve cleanly.
-- Baseline warning count after Phase 1: **0 boundary warnings** (no `src/contexts/` exists yet — the rule is plumbed but has no source to check).
+The plugin classifies every source file by its physical path:
 
-Until Phase 8, this document records the **intended** boundaries; ESLint records the warnings the migration must drive to zero before flipping severity.
+- `app` — `src/app/**` (Next.js App Router files)
+- `shared` — `src/shared/**` (cross-context primitives)
+- `domain` / `application` / `infrastructure` / `presentation` — `src/contexts/*/<layer>` (folder mode), capturing the bounded context name as `context`
+
+The capture group lets rules distinguish **own-context layer crossings** (always allowed, e.g. presentation imports its own application/domain/infrastructure) from **cross-context coupling** (allowed only through published `application/` and `presentation/` barrels — and `domain/` for shared-kernel value types).
+
+### Allowed dependency direction
+
+| From layer       | May import                                                                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `app`            | `presentation`, `application`, `shared`                                                                                                          |
+| `presentation`   | own-context (any layer), cross-context `presentation` and `application` barrels, `shared`                                                        |
+| `application`    | own-context `domain`/`infrastructure`/`application`, cross-context `application` barrels, `shared`                                               |
+| `infrastructure` | own-context `domain`/`application`/`infrastructure`, cross-context `domain` (shared-kernel value types like `Hue`, `ExerciseTemplate`), `shared` |
+| `domain`         | own-context `domain`, cross-context `domain` (DDD shared kernel), `shared`                                                                       |
+| `shared`         | `shared` only                                                                                                                                    |
+
+### Cross-context coupling — the legitimate paths
+
+- `app → presentation/application` (composition root): pages assemble views from many contexts.
+- `presentation/application` → other contexts' `presentation`/`application` (consumer/supplier and shared-kernel UI).
+- `infrastructure → @/shared/runtime` for the shared `PgliteService` Tag and `StorageUnavailable` / `NotFound` errors. The journal context owns the `PgliteLive` Layer (which runs the journal-schema migrations); routine and settings adapters borrow the published Tag through `shared/runtime` so the boundaries plugin sees `infrastructure → shared` (allowed) instead of cross-context `infrastructure → infrastructure` (forbidden).
+- `infrastructure → cross-context domain` for shared-kernel value types (e.g. routine row mapping refers to `Hue` from journal's typed payloads).
+- `app-shell/application/seed.ts` — the cross-context bootstrap that pre-populates journal entries, routine templates, and default settings on first launch. Lives in `app-shell/application/` because it is application-layer composition (cross-context `application → application` is the only legitimate cross-context path that crosses use-case boundaries).
+
+### Resolver
+
+`eslint-import-resolver-typescript` is wired via `settings.import/resolver.typescript.project = "./tsconfig.json"` so the `@/...` alias resolves to physical paths and the boundaries plugin classifies cross-context imports correctly. Without the resolver, alias-imported cross-context references would silently slip past the rule.
+
+### Baseline counts (post-Phase 8)
+
+- **Boundary errors**: **0** under severity `error`.
+- **Boundary warnings**: **0**.
+- **Other lint warnings**: 30 preexisting oxlint a11y warnings (label-has-associated-control, no-static-element-interactions, click-events-have-key-events) + 1 preexisting eslint `no-unused-disable-directive` warning in `workout-session/presentation/components/workout-screen.tsx`. None are boundary-related.
 
 ## Related
 

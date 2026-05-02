@@ -173,102 +173,102 @@ Notes: Baselines captured. Executing from main checkout (not worktree) per user 
 
 ### Phase 3.0 — Pre-Flight
 
-- [ ] Run a full inventory grep one more time and confirm the file list still matches tech-docs.md §7 stratification.
-- [ ] Open the Vocabulary Map (in the new convention) in a side buffer; reference during every rewrite.
+- [x] Run a full inventory grep one more time and confirm the file list still matches tech-docs.md §7 stratification.
+- [x] Open the Vocabulary Map (in the new convention) in a side buffer; reference during every rewrite.
 
 ### Phase 3.A — Tier A (heavy lift)
 
 For each file: read whole file, classify each match, rewrite per recipe (tech-docs.md §7.2), `npm run lint:md:fix`, link-check, commit.
 
-- [ ] `governance/development/agents/ai-agents.md` (115 KB).
-  - [ ] Pre-read: capture current section structure as a temp outline.
-  - [ ] Rewrite: vendor terms → neutral; Claude/OpenCode-specific notes moved into `binding-example` fences or a "Platform Binding Examples" section.
-  - [ ] Verify: vendor-term grep over this file returns only allowlisted matches.
-  - [ ] Link-check.
-  - [ ] Commit.
-- [ ] `governance/conventions/tutorials/in-the-field.md` (99 KB) — verify vendor mentions are real (largely tutorial framing; some references to `.claude/` agents may exist).
-- [ ] `governance/conventions/hugo/ayokoding.md` (78 KB).
-- [ ] `governance/conventions/tutorials/by-example.md` (66 KB).
-- [ ] `governance/conventions/formatting/diagrams.md` (65 KB).
-- [ ] `governance/development/quality/criticality-levels.md` (43 KB).
-- [ ] `governance/development/pattern/maker-checker-fixer.md` (40 KB).
-- [ ] `governance/workflows/plan/plan-execution.md` (39 KB).
-- [ ] `governance/conventions/structure/ose-primer-sync.md` (39 KB).
-- [ ] `governance/conventions/formatting/color-accessibility.md` (37 KB).
-- [ ] `governance/development/quality/fixer-confidence-levels.md` (36 KB).
-- [ ] `governance/repository-governance-architecture.md` (31 KB).
+- [x] `governance/development/agents/ai-agents.md` (115 KB).
+  - [x] Pre-read: capture current section structure as a temp outline.
+  - [x] Rewrite: vendor terms → neutral; Claude/OpenCode-specific notes moved into `binding-example` fences or a "Platform Binding Examples" section.
+  - [x] Verify: vendor-term grep over this file returns only allowlisted matches.
+  - [x] Link-check.
+  - [x] Commit.
+- [x] `governance/conventions/tutorials/in-the-field.md` (99 KB) — verify vendor mentions are real (largely tutorial framing; some references to `.claude/` agents may exist).
+- [x] `governance/conventions/hugo/ayokoding.md` (78 KB).
+- [x] `governance/conventions/tutorials/by-example.md` (66 KB).
+- [x] `governance/conventions/formatting/diagrams.md` (65 KB).
+- [x] `governance/development/quality/criticality-levels.md` (43 KB).
+- [x] `governance/development/pattern/maker-checker-fixer.md` (40 KB).
+- [x] `governance/workflows/plan/plan-execution.md` (39 KB).
+- [x] `governance/conventions/structure/ose-primer-sync.md` (39 KB).
+- [x] `governance/conventions/formatting/color-accessibility.md` (37 KB).
+- [x] `governance/development/quality/fixer-confidence-levels.md` (36 KB).
+- [x] `governance/repository-governance-architecture.md` (31 KB).
 
 ### Phase 3.B — Tier B (moderate)
 
-- [ ] `governance/conventions/structure/plans.md` (28 KB).
-- [ ] `governance/workflows/ayokoding-web/ayokoding-web-by-example-quality-gate.md` (28 KB).
-- [ ] `governance/workflows/meta/workflow-identifier.md` (28 KB).
-- [ ] `governance/development/infra/ci-conventions.md` (28 KB).
-- [ ] `governance/conventions/formatting/emoji.md` (28 KB).
-- [ ] `governance/development/workflow/trunk-based-development.md` (27 KB).
-- [ ] `governance/development/agents/model-selection.md` (24 KB) — special handling: rewrite around capability tiers; concrete model names allowlisted into a single "Platform Binding Examples — Model Resolution" section that maps tiers to vendor models.
-- [ ] `governance/workflows/docs/docs-quality-gate.md` (24 KB).
-- [ ] `governance/development/quality/code.md` (23 KB).
-- [ ] `governance/workflows/README.md` (21 KB).
-- [ ] `governance/principles/general/simplicity-over-complexity.md` (19 KB) — Layer 1; vendor mentions should be incidental and easy to neutralize.
-- [ ] `governance/workflows/infra/development-environment-setup.md` (19 KB).
-- [ ] `governance/conventions/README.md` (18 KB).
-- [ ] `governance/development/README.md` (17 KB).
-- [ ] `governance/vision/open-sharia-enterprise.md` (17 KB) — Layer 0; AC-9 says "no semantic change". Limit to literal vendor-name removal only.
-- [ ] `governance/workflows/ayokoding-web/ayokoding-web-in-the-field-quality-gate.md` (17 KB).
-- [ ] `governance/conventions/formatting/linking.md` (16 KB).
-- [ ] `governance/development/workflow/test-driven-development.md` (16 KB).
-- [ ] `governance/development/quality/repository-validation.md` (16 KB).
-- [ ] `governance/workflows/plan/plan-quality-gate.md` (16 KB) — important; this same workflow is invoked at end of plan.
-- [ ] `governance/workflows/ayokoding-web/ayokoding-web-general-quality-gate.md` (16 KB).
-- [ ] `governance/conventions/linking/internal-ayokoding-references.md` (16 KB).
-- [ ] `governance/workflows/repo/repo-rules-quality-gate.md` (15 KB).
-- [ ] `governance/development/infra/bdd-spec-test-mapping.md` (14 KB).
-- [ ] `governance/conventions/hugo/ose-platform.md` (14 KB).
-- [ ] `governance/principles/content/progressive-disclosure.md` (13 KB) — Layer 1; same care as vision.
-- [ ] `governance/principles/content/accessibility-first.md` (13 KB) — Layer 1; same care.
-- [ ] `governance/principles/software-engineering/automation-over-manual.md` (13 KB) — Layer 1.
-- [ ] `governance/development/workflow/worktree-setup.md` (13 KB).
-- [ ] `governance/conventions/writing/web-research-delegation.md` (13 KB).
-- [ ] `governance/development/workflow/git-push-default.md` (13 KB).
-- [ ] `governance/conventions/writing/dynamic-collection-references.md` (12 KB).
-- [ ] `governance/development/workflow/native-first-toolchain.md` (12 KB).
-- [ ] `governance/workflows/meta/execution-modes.md` (12 KB).
-- [ ] `governance/development/workflow/ci-post-push-verification.md` (11 KB).
-- [ ] `governance/development/workflow/git-push-safety.md` (11 KB).
-- [ ] `governance/development/agents/skill-context-architecture.md` (11 KB) — heavy on "Skills" terminology; central rewrite target.
-- [ ] `governance/workflows/repo/repo-ose-primer-extraction-execution.md` (11 KB).
-- [ ] `governance/development/workflow/pr-merge-protocol.md` (10 KB).
-- [ ] `governance/development/quality/markdown.md` (10 KB).
-- [ ] `governance/conventions/structure/no-date-metadata.md` (10 KB).
+- [x] `governance/conventions/structure/plans.md` (28 KB).
+- [x] `governance/workflows/ayokoding-web/ayokoding-web-by-example-quality-gate.md` (28 KB).
+- [x] `governance/workflows/meta/workflow-identifier.md` (28 KB).
+- [x] `governance/development/infra/ci-conventions.md` (28 KB).
+- [x] `governance/conventions/formatting/emoji.md` (28 KB).
+- [x] `governance/development/workflow/trunk-based-development.md` (27 KB).
+- [x] `governance/development/agents/model-selection.md` (24 KB) — special handling: rewrite around capability tiers; concrete model names allowlisted into a single "Platform Binding Examples — Model Resolution" section that maps tiers to vendor models.
+- [x] `governance/workflows/docs/docs-quality-gate.md` (24 KB).
+- [x] `governance/development/quality/code.md` (23 KB).
+- [x] `governance/workflows/README.md` (21 KB).
+- [x] `governance/principles/general/simplicity-over-complexity.md` (19 KB) — Layer 1; vendor mentions should be incidental and easy to neutralize.
+- [x] `governance/workflows/infra/development-environment-setup.md` (19 KB).
+- [x] `governance/conventions/README.md` (18 KB).
+- [x] `governance/development/README.md` (17 KB).
+- [x] `governance/vision/open-sharia-enterprise.md` (17 KB) — Layer 0; AC-9 says "no semantic change". Limit to literal vendor-name removal only.
+- [x] `governance/workflows/ayokoding-web/ayokoding-web-in-the-field-quality-gate.md` (17 KB).
+- [x] `governance/conventions/formatting/linking.md` (16 KB).
+- [x] `governance/development/workflow/test-driven-development.md` (16 KB).
+- [x] `governance/development/quality/repository-validation.md` (16 KB).
+- [x] `governance/workflows/plan/plan-quality-gate.md` (16 KB) — important; this same workflow is invoked at end of plan.
+- [x] `governance/workflows/ayokoding-web/ayokoding-web-general-quality-gate.md` (16 KB).
+- [x] `governance/conventions/linking/internal-ayokoding-references.md` (16 KB).
+- [x] `governance/workflows/repo/repo-rules-quality-gate.md` (15 KB).
+- [x] `governance/development/infra/bdd-spec-test-mapping.md` (14 KB).
+- [x] `governance/conventions/hugo/ose-platform.md` (14 KB).
+- [x] `governance/principles/content/progressive-disclosure.md` (13 KB) — Layer 1; same care as vision.
+- [x] `governance/principles/content/accessibility-first.md` (13 KB) — Layer 1; same care.
+- [x] `governance/principles/software-engineering/automation-over-manual.md` (13 KB) — Layer 1.
+- [x] `governance/development/workflow/worktree-setup.md` (13 KB).
+- [x] `governance/conventions/writing/web-research-delegation.md` (13 KB).
+- [x] `governance/development/workflow/git-push-default.md` (13 KB).
+- [x] `governance/conventions/writing/dynamic-collection-references.md` (12 KB).
+- [x] `governance/development/workflow/native-first-toolchain.md` (12 KB).
+- [x] `governance/workflows/meta/execution-modes.md` (12 KB).
+- [x] `governance/development/workflow/ci-post-push-verification.md` (11 KB).
+- [x] `governance/development/workflow/git-push-safety.md` (11 KB).
+- [x] `governance/development/agents/skill-context-architecture.md` (11 KB) — heavy on "Skills" terminology; central rewrite target.
+- [x] `governance/workflows/repo/repo-ose-primer-extraction-execution.md` (11 KB).
+- [x] `governance/development/workflow/pr-merge-protocol.md` (10 KB).
+- [x] `governance/development/quality/markdown.md` (10 KB).
+- [x] `governance/conventions/structure/no-date-metadata.md` (10 KB).
 
 ### Phase 3.C — Tier C (light, <10 KB each)
 
-- [ ] `governance/README.md`.
-- [ ] `governance/workflows/repo/repo-ose-primer-sync-execution.md`.
-- [ ] `governance/conventions/structure/agent-naming.md` — keep "agent" as generic primary term; "Claude Code agent" replaced with "the agent definition file".
-- [ ] `governance/development/agents/anti-patterns.md`.
-- [ ] `governance/conventions/structure/workflow-naming.md`.
-- [ ] `governance/vision/README.md`.
-- [ ] `governance/development/agents/best-practices.md`.
-- [ ] `governance/conventions/structure/licensing.md`.
-- [ ] `governance/conventions/structure/README.md`.
-- [ ] `governance/workflows/ui/ui-quality-gate.md`.
-- [ ] `governance/conventions/structure/file-naming.md`.
-- [ ] `governance/development/agents/README.md`.
+- [x] `governance/README.md`.
+- [x] `governance/workflows/repo/repo-ose-primer-sync-execution.md`.
+- [x] `governance/conventions/structure/agent-naming.md` — keep "agent" as generic primary term; "Claude Code agent" replaced with "the agent definition file".
+- [x] `governance/development/agents/anti-patterns.md`.
+- [x] `governance/conventions/structure/workflow-naming.md`.
+- [x] `governance/vision/README.md`.
+- [x] `governance/development/agents/best-practices.md`.
+- [x] `governance/conventions/structure/licensing.md`.
+- [x] `governance/conventions/structure/README.md`.
+- [x] `governance/workflows/ui/ui-quality-gate.md`.
+- [x] `governance/conventions/structure/file-naming.md`.
+- [x] `governance/development/agents/README.md`.
 
 ### Phase 3 — Mid-phase exit gate
 
-- [ ] After every 5 file commits, run `npm run lint:md` and the link-checker; do not let backlog accumulate.
-- [ ] Run `git status` after each commit; expect clean.
+- [x] After every 5 file commits, run `npm run lint:md` and the link-checker; do not let backlog accumulate.
+- [x] Run `git status` after each commit; expect clean.
 
 ### Phase 3 — Final exit gate
 
-- [ ] Manual ad-hoc audit: `grep -rln -E "Claude Code|OpenCode|Anthropic|Sonnet|Opus|Haiku|\.claude/|\.opencode/" governance/` returns matches ONLY in:
-  - [ ] `governance/conventions/structure/governance-vendor-independence.md` (the convention itself, allowlisted in its own examples).
-  - [ ] Inside `binding-example` fenced blocks.
-  - [ ] Under "Platform Binding Examples" headings.
-- [ ] Document the residual matches with file:line in a temp note for the Phase 5 allowlist parser.
+- [x] Manual ad-hoc audit: `grep -rln -E "Claude Code|OpenCode|Anthropic|Sonnet|Opus|Haiku|\.claude/|\.opencode/" governance/` returns matches ONLY in:
+  - [x] `governance/conventions/structure/governance-vendor-independence.md` (the convention itself, allowlisted in its own examples).
+  - [x] Inside `binding-example` fenced blocks.
+  - [x] Under "Platform Binding Examples" headings.
+- [x] Document the residual matches with file:line in a temp note for the Phase 5 allowlist parser.
 
 ### Phase 3 — Rollback
 
@@ -280,8 +280,8 @@ For each file: read whole file, classify each match, rewrite per recipe (tech-do
 
 ### Pre-Flight
 
-- [ ] Re-confirm `docs/reference/` exists at `ose-public/docs/reference/`.
-- [ ] Read `governance/development/agents/ai-agents.md#dual-mode-color-translation-claude-code-to-opencode`
+- [x] Re-confirm `docs/reference/` exists at `ose-public/docs/reference/`.
+- [x] Read `governance/development/agents/ai-agents.md#dual-mode-color-translation-claude-code-to-opencode`
       — landed 2026-05-02 (commit `b84127177`) as the first concrete
       "vendor-translation pattern" artifact in the repo. The Claude→OpenCode
       color map (`apps/rhino-cli/internal/agents/types.go`
@@ -293,24 +293,24 @@ For each file: read whole file, classify each match, rewrite per recipe (tech-do
 
 ### Steps
 
-- [ ] Create `docs/reference/platform-bindings.md` populated from tech-docs.md §5 table.
-- [ ] Add row links to upstream tool docs (verify each URL resolves).
-- [ ] Add a "Translation artifacts" subsection that lists per-tool the
+- [x] Create `docs/reference/platform-bindings.md` populated from tech-docs.md §5 table.
+- [x] Add row links to upstream tool docs (verify each URL resolves).
+- [x] Add a "Translation artifacts" subsection that lists per-tool the
       mechanical translations rhino-cli performs during `agents sync`
       (model IDs, tools, color, etc.). The current Claude→OpenCode color
       map is the first concrete entry; reference
       `apps/rhino-cli/internal/agents/types.go` (`ClaudeToOpenCodeColor`)
       and `governance/development/agents/ai-agents.md`
       "Dual-Mode Color Translation (Claude Code to OpenCode)" subsection.
-- [ ] Backfill the AGENTS.md "Platform Bindings" section: replace the TODO marker with the link to `docs/reference/platform-bindings.md`.
-- [ ] Backfill the new convention's "Platform Binding Directory Pattern" section: cross-link to `docs/reference/platform-bindings.md`.
-- [ ] `npm run lint:md` green.
-- [ ] Link-checker green over `docs/reference/platform-bindings.md`, `AGENTS.md`, and the new convention.
-- [ ] Commit: `docs(reference): add platform-bindings catalog; link from AGENTS.md and governance-vendor-independence convention`.
+- [x] Backfill the AGENTS.md "Platform Bindings" section: replace the TODO marker with the link to `docs/reference/platform-bindings.md`.
+- [x] Backfill the new convention's "Platform Binding Directory Pattern" section: cross-link to `docs/reference/platform-bindings.md`.
+- [x] `npm run lint:md` green.
+- [x] Link-checker green over `docs/reference/platform-bindings.md`, `AGENTS.md`, and the new convention.
+- [x] Commit: `docs(reference): add platform-bindings catalog; link from AGENTS.md and governance-vendor-independence convention`.
 
 ### Exit gate
 
-- [ ] `docs/reference/platform-bindings.md` exists and is reachable from AGENTS.md, governance/conventions/structure/governance-vendor-independence.md, and (optionally) governance/README.md.
+- [x] `docs/reference/platform-bindings.md` exists and is reachable from AGENTS.md, governance/conventions/structure/governance-vendor-independence.md, and (optionally) governance/README.md.
 
 ### Rollback
 
@@ -324,10 +324,10 @@ For each file: read whole file, classify each match, rewrite per recipe (tech-do
 
 ### Pre-Flight
 
-- [ ] Read `apps/rhino-cli/` to identify existing subcommand structure (likely cobra-based per Go convention).
-- [ ] Read `governance/development/workflow/test-driven-development.md` for the project's TDD expectations.
-- [ ] Read `governance/development/infra/bdd-spec-test-mapping.md` for the godog scenario style.
-- [ ] Confirm the spec path prefix before creating the new feature file:
+- [x] Read `apps/rhino-cli/` to identify existing subcommand structure (likely cobra-based per Go convention).
+- [x] Read `governance/development/workflow/test-driven-development.md` for the project's TDD expectations.
+- [x] Read `governance/development/infra/bdd-spec-test-mapping.md` for the godog scenario style.
+- [x] Confirm the spec path prefix before creating the new feature file:
 
   ```bash
   find specs/ -name "*.feature" | head -5
@@ -339,55 +339,55 @@ For each file: read whole file, classify each match, rewrite per recipe (tech-do
 
 ### Steps — Scaffolding
 
-- [ ] **RED**: Add a failing godog scenario at `specs/apps/rhino/cli/gherkin/governance-vendor-audit.feature` (matches existing pattern: `specs/apps/rhino/cli/gherkin/<name>.feature`) covering "scanner reports forbidden term in plain markdown". Run the spec; expect failure because the command does not exist yet.
-- [ ] **GREEN**: Implement minimal `rhino-cli governance vendor-audit` command that walks a path and reports any match against a hardcoded forbidden-term list. Exit 1 on findings.
-- [ ] Verify the scenario goes green.
-- [ ] **REFACTOR**: Extract a `Scanner` type with a `Walk(root) ([]Finding, error)` interface.
+- [x] **RED**: Add a failing godog scenario at `specs/apps/rhino/cli/gherkin/governance-vendor-audit.feature` (matches existing pattern: `specs/apps/rhino/cli/gherkin/<name>.feature`) covering "scanner reports forbidden term in plain markdown". Run the spec; expect failure because the command does not exist yet.
+- [x] **GREEN**: Implement minimal `rhino-cli governance vendor-audit` command that walks a path and reports any match against a hardcoded forbidden-term list. Exit 1 on findings.
+- [x] Verify the scenario goes green.
+- [x] **REFACTOR**: Extract a `Scanner` type with a `Walk(root) ([]Finding, error)` interface.
 
 ### Steps — Allowlist mechanism (fence)
 
-- [ ] **RED**: Add scenario "binding-example fence is exempted from scan".
-- [ ] **GREEN**: Implement code-fence parser that recognizes ```binding-example and skips its content range.
-- [ ] **REFACTOR**: Move fence parser into a shared `markdown_fence` helper; add unit tests.
+- [x] **RED**: Add scenario "binding-example fence is exempted from scan".
+- [x] **GREEN**: Implement code-fence parser that recognizes ```binding-example and skips its content range.
+- [x] **REFACTOR**: Move fence parser into a shared `markdown_fence` helper; add unit tests.
 
 ### Steps — Allowlist mechanism (heading scope)
 
-- [ ] **RED**: Add scenario "section under 'Platform Binding Examples' heading is exempted".
-- [ ] **GREEN**: Implement heading-range scanner.
-- [ ] **REFACTOR**: Unify fence and heading allowlist into a single Range type.
+- [x] **RED**: Add scenario "section under 'Platform Binding Examples' heading is exempted".
+- [x] **GREEN**: Implement heading-range scanner.
+- [x] **REFACTOR**: Unify fence and heading allowlist into a single Range type.
 
 ### Steps — Forbidden-term coverage
 
-- [ ] **RED**: Add scenarios for each forbidden-term family:
-  - [ ] vendor product names ("Claude Code", "OpenCode", "Anthropic")
-  - [ ] vendor model names ("Sonnet", "Opus", "Haiku")
-  - [ ] vendor paths ("`.claude/`", "`.opencode/`")
-  - [ ] vendor proper-noun "Skills" pattern (capitalized at start of word, in non-allowlisted prose)
-- [ ] **GREEN**: Implement each pattern.
-- [ ] **REFACTOR**: Centralize the regex set in a `convention.yaml` config file colocated with the new convention.
+- [x] **RED**: Add scenarios for each forbidden-term family:
+  - [x] vendor product names ("Claude Code", "OpenCode", "Anthropic")
+  - [x] vendor model names ("Sonnet", "Opus", "Haiku")
+  - [x] vendor paths ("`.claude/`", "`.opencode/`")
+  - [x] vendor proper-noun "Skills" pattern (capitalized at start of word, in non-allowlisted prose)
+- [x] **GREEN**: Implement each pattern.
+- [x] **REFACTOR**: Centralize the regex set in a `convention.yaml` config file colocated with the new convention.
 
 ### Steps — Suggested replacement output
 
-- [ ] **RED**: Add scenario "scanner output includes suggested replacement column".
-- [ ] **GREEN**: Wire the Vocabulary Map to the report output.
-- [ ] **REFACTOR**: Output formats: human (default), JSON (`--format=json`), SARIF (stretch goal).
+- [x] **RED**: Add scenario "scanner output includes suggested replacement column".
+- [x] **GREEN**: Wire the Vocabulary Map to the report output.
+- [x] **REFACTOR**: Output formats: human (default), JSON (`--format=json`), SARIF (stretch goal).
 
 ### Steps — Wiring into Nx and pre-push
 
-- [ ] Add `vendor-audit` to `apps/rhino-cli/project.json` `test:quick` target dependencies (or as its own Nx target invoked from `test:quick`).
-- [ ] Confirm pre-push hook picks it up via `nx affected -t test:quick`.
-- [ ] Run `nx run rhino-cli:test:quick` → expect exit 0 because Phase 3 leaves `governance/` clean.
-- [ ] Run `rhino-cli governance vendor-audit governance/` → expect exit 0.
-- [ ] Inject a deliberate violation (add "Claude Code" to a governance file in a temp branch), confirm exit 1, then revert.
-- [ ] Coverage: ensure new code meets `apps/rhino-cli` ≥90% threshold (already enforced).
+- [x] Add `vendor-audit` to `apps/rhino-cli/project.json` as `validate:governance-vendor-audit` Nx target (own cacheable target with governance/\*_/_.md inputs).
+- [x] Confirm pre-push hook picks it up: added conditional block `if grep -qE '^governance/.*\.md$'` → `nx run rhino-cli:validate:governance-vendor-audit`.
+- [x] Run `nx run rhino-cli:validate:governance-vendor-audit` → exit 0 (PASSED: no violations found).
+- [x] Run `rhino-cli governance vendor-audit governance/` → exit 0.
+- [x] Inject deliberate violation ("Claude Code is mentioned here." appended to governance/README.md), confirmed exit 1, then reverted. Also discovered and fixed one un-committed governance/README.md fix (link text `.claude/agents/` → `agent catalog`).
+- [x] Coverage: 97.2% governance package, 90.15% overall. ✓
 
 ### Exit gate
 
-- [ ] `rhino-cli governance vendor-audit` command exists and is documented in `apps/rhino-cli/README.md`.
-- [ ] Test coverage ≥90%.
-- [ ] All godog scenarios green.
-- [ ] Pre-push integration verified.
-- [ ] `governance/conventions/structure/governance-vendor-independence.md` "Enforcement" section TODO removed; cite the command directly.
+- [x] `rhino-cli governance vendor-audit` command exists and is documented in `apps/rhino-cli/README.md`.
+- [x] Test coverage ≥90%. (97.2% governance, 90.15% overall)
+- [x] All godog scenarios green. (5/5 pass)
+- [x] Pre-push integration verified (conditional trigger in .husky/pre-push).
+- [x] `governance/conventions/structure/governance-vendor-independence.md` "Enforcement" section TODO removed; `rhino-cli governance vendor-audit` command cited directly.
 
 ### Rollback
 

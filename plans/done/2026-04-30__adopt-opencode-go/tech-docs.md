@@ -18,11 +18,11 @@ The integration surface in this repository is entirely in two places:
 
 ```mermaid
 flowchart TD
-    A[".claude/agents/*.md\nmodel: sonnet / haiku / omit"] -->|"rhino-cli ConvertModel()"| B[".opencode/agents/*.md\nmodel: opencode-go/minimax-m2.7"]
-    C[".opencode/opencode.json\nmodel · small_model · provider · mcp"] --> D["OpenCode Session"]
+    A[".claude/agents/*.md\nmodel: sonnet / haiku / omit"] -->|"rhino-cli ConvertModel()"| B[".opencode/agents/*.md\nmodel: minimax-m2.7"]
+    C[".opencode/opencode.json\nmodel · small_model · mcp"] --> D["OpenCode Session"]
     B --> D
     D -->|"OPENCODE_API_KEY\n(auth.json or provider block)"| E["opencode.ai/go API"]
-    E --> F["Lab Model\nMiniMax · GLM · Kimi · DeepSeek"]
+    E --> F["Lab Model\nMiniMax · GLM · DeepSeek"]
     style A fill:#0173B2,stroke:#000000,color:#FFFFFF
     style B fill:#029E73,stroke:#000000,color:#FFFFFF
     style C fill:#DE8F05,stroke:#000000,color:#000000

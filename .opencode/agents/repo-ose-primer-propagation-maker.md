@@ -8,7 +8,7 @@ tools:
   grep: true
   read: true
   write: true
-color: blue
+color: primary
 skills:
   - repo-syncing-with-ose-primer
   - repo-assessing-criticality-confidence

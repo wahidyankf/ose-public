@@ -8,7 +8,7 @@ tools:
   grep: true
   read: true
   write: true
-color: purple
+color: secondary
 skills:
   - swe-programming-elixir
   - swe-developing-applications-common

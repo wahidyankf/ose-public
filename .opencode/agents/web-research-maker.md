@@ -7,7 +7,7 @@ tools:
   read: true
   webfetch: true
   websearch: true
-color: green
+color: success
 skills:
   - docs-validating-factual-accuracy
   - docs-applying-content-quality
@@ -223,5 +223,5 @@ each with a confidence tag.
 
 - Skill: `docs-validating-factual-accuracy` (see `.claude/skills/docs-validating-factual-accuracy/SKILL.md`)
 - Skill: `docs-applying-content-quality` (see `.claude/skills/docs-applying-content-quality/SKILL.md`)
-- Agents Index: [`.claude/agents/README.md`](./README.md)
+- Agents Index: [`.claude/agents/README.md`](../../.claude/agents/README.md)
 - Dual-mode sync: `npm run sync:claude-to-opencode` (powered by `rhino-cli agents sync`)

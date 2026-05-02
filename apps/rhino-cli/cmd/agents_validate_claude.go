@@ -22,11 +22,13 @@ This command performs the following validations:
 Agents (.claude/agents/):
 - YAML formatting (space after colons required)
 - YAML frontmatter syntax
-- Required fields: name, description, tools, model, color, skills
-- Field order (exact sequence required)
+- Required fields: name, description (per Claude Code spec)
+- Field order (required first, optional any-order; unknown fields warn)
 - Valid tool names (Read, Write, Edit, Glob, Grep, Bash, TodoWrite, WebFetch, WebSearch)
-- Valid model names (empty, sonnet, opus, haiku)
-- Valid colors (blue, green, yellow, purple)
+- Valid model names (empty, sonnet, opus, haiku) or full model IDs
+- Valid colors (red, blue, green, yellow, purple, orange, pink, cyan); translated
+  to OpenCode hex/theme tokens (primary/secondary/accent/success/warning/error/info)
+  during sync
 - Filename matches name field
 - Agent name uniqueness
 - Skills references exist

@@ -457,7 +457,7 @@ You have access to the project's documentation and source code. When creating ne
 
 **Documentation Conventions (Required Reading):**
 
-- [Conventions Index](./README.md) - Index of all conventions
+- [Conventions Index](../../governance/conventions/README.md) - Index of all conventions
 - [Convention Writing Convention](../../governance/conventions/writing/conventions.md) - How to write convention documents (meta-convention)
 - [Color Accessibility Convention](../../governance/conventions/formatting/color-accessibility.md) - MASTER REFERENCE for all color usage (diagrams, visual aids, accessible palette, WCAG standards)
 - [File Naming Convention](../../governance/conventions/structure/file-naming.md) - How to name files with plain kebab-case (README.md is exempt)

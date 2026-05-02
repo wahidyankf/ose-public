@@ -150,7 +150,7 @@ func TestNoUnknownFieldInOpenCodeOutput(t *testing.T) {
 //
 //   - description: byte-equal to source
 //   - tools: equals ConvertTools(source.tools)
-//   - color: byte-equal to source
+//   - color: translated via ConvertColor (Claude name → OpenCode theme)
 //   - skills: order preserved
 //
 // All drop+warn fields (memory, isolation, etc.) MUST NOT appear in the
@@ -226,8 +226,8 @@ Body.
 		}
 	}
 
-	if agent.Color != "orange" {
-		t.Errorf("color not preserved byte-equal: %q", agent.Color)
+	if agent.Color != "warning" {
+		t.Errorf("color not translated to OpenCode theme token: got %q want %q", agent.Color, "warning")
 	}
 
 	wantSkills := []string{"alpha", "beta", "gamma"}

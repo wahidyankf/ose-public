@@ -4,7 +4,7 @@ model: zai-coding-plan/glm-5.1
 tools:
   grep: true
   read: true
-color: blue
+color: primary
 skills:
   - docs-applying-content-quality
 ---

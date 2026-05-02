@@ -68,17 +68,15 @@ var claudeAgentFieldPolicy = map[string]fieldPolicy{
 	// Tooling and behaviour
 	"tools": {action: "translate", target: "tools"},
 	"model": {action: "translate", target: "model"},
-	// TODO(plan-followup): per Phase 0 spec snapshot, OpenCode `color` accepts
-	// hex codes or theme tokens (primary/secondary/accent/success/warning/
-	// error/info), NOT the Claude Code color names (red/blue/green/yellow/
-	// purple/orange/pink/cyan). The plan policy says "preserve" with the
-	// (incorrect) note "named values map 1:1". OpenCode docs state "unknown
-	// fields are ignored" so preservation is harmless today, but if OpenCode
-	// later rejects unknown color values, a Claude→OpenCode color translation
-	// map (e.g. red→error, green→success, yellow→warning) will be needed in
-	// a future plan. spec_fidelity_test.go's TestNoUnknownFieldInOpenCodeOutput
-	// will surface the mismatch via OpenCode-recognized field check.
-	"color":  {action: "preserve"},
+	// OpenCode 1.14.31 rejects Claude's named colors (red/blue/green/yellow/
+	// purple/orange/pink/cyan) — its `color` field accepts only hex codes
+	// (^#[0-9a-fA-F]{6}$) or theme tokens (primary/secondary/accent/success/
+	// warning/error/info). Translate via ClaudeToOpenCodeColor in types.go;
+	// values that already match a hex code or theme token pass through
+	// unchanged. The original "preserve" policy noted in the
+	// validate-claude-opencode-sync-correctness plan was a Phase 0 assumption
+	// proven wrong once OpenCode tightened its schema validator.
+	"color":  {action: "translate", target: "color"},
 	"skills": {action: "preserve"},
 	// Drop-with-warning: documented Claude-only fields with no OpenCode
 	// equivalent today. tools→permission migration is a separate followup
@@ -323,10 +321,6 @@ func applyPreserve(out *OpenCodeAgent, key string, value interface{}) {
 		if s, ok := value.(string); ok {
 			out.Description = s
 		}
-	case "color":
-		if s, ok := value.(string); ok {
-			out.Color = s
-		}
 	case "skills":
 		if seq, ok := value.([]interface{}); ok {
 			skills := make([]string, 0, len(seq))
@@ -365,7 +359,27 @@ func applyTranslate(out *OpenCodeAgent, key string, value interface{}) {
 		case float64:
 			out.Steps = int(v)
 		}
+	case "color":
+		if s, ok := value.(string); ok {
+			out.Color = ConvertColor(s)
+		}
 	}
+}
+
+// ConvertColor maps a Claude Code color value to an OpenCode-compatible
+// color value. Claude named colors translate via ClaudeToOpenCodeColor;
+// hex codes (^#[0-9a-fA-F]{6}$) and OpenCode theme tokens already
+// compatible with the OpenCode schema pass through unchanged. Unknown
+// values pass through as-is — surfaced upstream by validate-claude (which
+// rejects non-spec Claude colors) and by OpenCode's own loader.
+func ConvertColor(c string) string {
+	if c == "" {
+		return ""
+	}
+	if mapped, ok := ClaudeToOpenCodeColor[c]; ok {
+		return mapped
+	}
+	return c
 }
 
 // ConvertAllAgents converts all agents from .claude/agents/ to the

@@ -7,7 +7,7 @@ tools:
   grep: true
   read: true
   write: true
-color: green
+color: success
 skills:
   - docs-applying-content-quality
   - apps-ayokoding-web-developing-content

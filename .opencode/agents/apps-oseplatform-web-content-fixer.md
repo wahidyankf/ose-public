@@ -8,7 +8,7 @@ tools:
   grep: true
   read: true
   write: true
-color: yellow
+color: warning
 skills:
   - docs-applying-content-quality
   - apps-oseplatform-web-developing-content

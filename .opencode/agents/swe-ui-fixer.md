@@ -8,7 +8,7 @@ tools:
   grep: true
   read: true
   write: true
-color: yellow
+color: warning
 skills:
   - swe-developing-frontend-ui
   - repo-assessing-criticality-confidence

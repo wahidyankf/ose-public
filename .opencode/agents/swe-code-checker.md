@@ -7,7 +7,7 @@ tools:
   grep: true
   read: true
   write: true
-color: green
+color: success
 skills:
   - repo-generating-validation-reports
   - repo-assessing-criticality-confidence

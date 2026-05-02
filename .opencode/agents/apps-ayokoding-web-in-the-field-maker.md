@@ -8,7 +8,7 @@ tools:
   grep: true
   read: true
   write: true
-color: blue
+color: primary
 skills:
   - docs-creating-in-the-field-tutorials
   - docs-applying-content-quality

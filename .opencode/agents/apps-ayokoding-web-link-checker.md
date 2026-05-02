@@ -10,7 +10,7 @@ tools:
   webfetch: true
   websearch: true
   write: true
-color: green
+color: success
 skills:
   - docs-applying-content-quality
   - docs-validating-links

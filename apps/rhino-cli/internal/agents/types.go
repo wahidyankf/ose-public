@@ -229,6 +229,44 @@ var ValidColors = map[string]bool{
 	"cyan":   true,
 }
 
+// ClaudeToOpenCodeColor maps Claude Code's eight named colors to OpenCode's
+// seven theme tokens. OpenCode rejects the Claude names outright as of
+// 1.14.31, so the converter MUST translate (not preserve) the field. Hex
+// values pass through unchanged via the converter's translate step. Mapping
+// rationale (best semantic fit; OpenCode docs at opencode.ai/docs/agents/):
+//
+//   - blue   → primary    (Maker role: most prominent action)
+//   - green  → success    (Checker role: validation passed)
+//   - yellow → warning    (Fixer role: applies remediation)
+//   - purple → secondary  (Implementor role: supporting actor)
+//   - red    → error      (failure / destructive)
+//   - orange → warning    (no orange theme; warning is closest hue)
+//   - pink   → accent     (highlight / unusual emphasis)
+//   - cyan   → info       (informational)
+var ClaudeToOpenCodeColor = map[string]string{
+	"blue":   "primary",
+	"green":  "success",
+	"yellow": "warning",
+	"purple": "secondary",
+	"red":    "error",
+	"orange": "warning",
+	"pink":   "accent",
+	"cyan":   "info",
+}
+
+// ValidOpenCodeColorThemes lists the named theme tokens accepted by
+// OpenCode's color field. Hex codes (^#[0-9a-fA-F]{6}$) are also accepted
+// and pass through unchanged.
+var ValidOpenCodeColorThemes = map[string]bool{
+	"primary":   true,
+	"secondary": true,
+	"accent":    true,
+	"success":   true,
+	"warning":   true,
+	"error":     true,
+	"info":      true,
+}
+
 // ValidSkillNamePattern validates skill name format
 // Lowercase letters, numbers, hyphens only, max 64 characters
 var ValidSkillNamePattern = regexp.MustCompile(`^[a-z0-9-]{1,64}$`)

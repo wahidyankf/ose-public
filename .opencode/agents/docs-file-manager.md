@@ -7,7 +7,7 @@ tools:
   glob: true
   grep: true
   read: true
-color: yellow
+color: warning
 skills:
   - repo-practicing-trunk-based-development
   - docs-validating-links

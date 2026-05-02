@@ -266,9 +266,9 @@ This is the agent body content.
 		t.Errorf("Skills length = %d, want 2", len(agent.Skills))
 	}
 
-	// color was preserved
-	if agent.Color != "blue" {
-		t.Errorf("Color = %q, want %q", agent.Color, "blue")
+	// color was translated from Claude "blue" to OpenCode theme "primary"
+	if agent.Color != "primary" {
+		t.Errorf("Color = %q, want %q", agent.Color, "primary")
 	}
 
 	// Verify body is preserved
@@ -608,32 +608,64 @@ Body.
 	}
 }
 
-func TestConvertAgent_PreserveColor(t *testing.T) {
-	tmpDir := t.TempDir()
-	inputPath := filepath.Join(tmpDir, "colorful.md")
-	content := `---
+func TestConvertAgent_TranslateColor(t *testing.T) {
+	cases := []struct {
+		claude   string
+		opencode string
+	}{
+		{"blue", "primary"},
+		{"green", "success"},
+		{"yellow", "warning"},
+		{"purple", "secondary"},
+		{"red", "error"},
+		{"orange", "warning"},
+		{"pink", "accent"},
+		{"cyan", "info"},
+		// Hex passes through unchanged. YAML requires quoting because `#`
+		// starts a comment in unquoted scalars.
+		{`"#0173B2"`, "#0173B2"},
+		// OpenCode theme token already compatible passes through.
+		{"primary", "primary"},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.claude, func(t *testing.T) {
+			tmpDir := t.TempDir()
+			inputPath := filepath.Join(tmpDir, "colorful.md")
+			content := `---
 name: colorful
 description: Has color
-color: orange
+color: ` + tc.claude + `
 ---
 
 Body.
 `
-	if err := os.WriteFile(inputPath, []byte(content), 0644); err != nil {
-		t.Fatal(err)
-	}
+			if err := os.WriteFile(inputPath, []byte(content), 0644); err != nil {
+				t.Fatal(err)
+			}
 
-	outputPath := filepath.Join(tmpDir, "output.md")
-	if _, err := ConvertAgent(inputPath, outputPath, false); err != nil {
-		t.Fatalf("ConvertAgent() error: %v", err)
-	}
+			outputPath := filepath.Join(tmpDir, "output.md")
+			if _, err := ConvertAgent(inputPath, outputPath, false); err != nil {
+				t.Fatalf("ConvertAgent() error: %v", err)
+			}
 
-	out, err := os.ReadFile(outputPath)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !strings.Contains(string(out), "color: orange") {
-		t.Errorf("expected 'color: orange' in output, got:\n%s", string(out))
+			out, err := os.ReadFile(outputPath)
+			if err != nil {
+				t.Fatal(err)
+			}
+			// YAML emitter quotes hex codes (`'#...'`) because `#` would
+			// otherwise start a comment. Accept both quoted and unquoted
+			// forms — both are valid YAML for the same color value.
+			wantUnquoted := "color: " + tc.opencode
+			wantSingleQuoted := "color: '" + tc.opencode + "'"
+			wantDoubleQuoted := "color: \"" + tc.opencode + "\""
+			body := string(out)
+			if !strings.Contains(body, wantUnquoted) &&
+				!strings.Contains(body, wantSingleQuoted) &&
+				!strings.Contains(body, wantDoubleQuoted) {
+				t.Errorf("expected %q (any quoting) in output, got:\n%s", wantUnquoted, body)
+			}
+		})
 	}
 }
 

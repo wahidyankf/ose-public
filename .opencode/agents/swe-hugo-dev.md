@@ -5,7 +5,7 @@ tools:
   glob: true
   grep: true
   read: true
-color: purple
+color: secondary
 ---
 
 # Hugo Developer Agent - DEPRECATED

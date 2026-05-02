@@ -4,7 +4,7 @@ model: zai-coding-plan/glm-5-turbo
 tools:
   bash: true
   grep: true
-color: purple
+color: secondary
 skills:
   - repo-practicing-trunk-based-development
   - apps-organiclever-web-developing-content

@@ -9,7 +9,7 @@ tools:
   webfetch: true
   websearch: true
   write: true
-color: green
+color: success
 skills:
   - docs-applying-content-quality
   - plan-writing-gherkin-criteria

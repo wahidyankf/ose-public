@@ -7,7 +7,7 @@ tools:
   grep: true
   read: true
   write: true
-color: green
+color: success
 skills:
   - docs-creating-in-the-field-tutorials
   - docs-applying-content-quality

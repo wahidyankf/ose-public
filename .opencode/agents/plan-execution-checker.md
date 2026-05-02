@@ -7,7 +7,7 @@ tools:
   grep: true
   read: true
   write: true
-color: green
+color: success
 skills:
   - plan-writing-gherkin-criteria
   - plan-creating-project-plans

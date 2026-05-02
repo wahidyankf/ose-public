@@ -10,7 +10,7 @@ tools:
   webfetch: true
   websearch: true
   write: true
-color: blue
+color: primary
 skills:
   - docs-applying-content-quality
   - plan-writing-gherkin-criteria

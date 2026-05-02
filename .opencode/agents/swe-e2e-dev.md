@@ -8,7 +8,7 @@ tools:
   grep: true
   read: true
   write: true
-color: purple
+color: secondary
 skills:
   - swe-developing-e2e-test-with-playwright
   - swe-developing-applications-common

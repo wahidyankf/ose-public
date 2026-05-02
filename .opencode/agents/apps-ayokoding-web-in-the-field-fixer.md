@@ -8,7 +8,7 @@ tools:
   grep: true
   read: true
   write: true
-color: yellow
+color: warning
 skills:
   - docs-creating-in-the-field-tutorials
   - docs-applying-content-quality

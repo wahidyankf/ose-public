@@ -42,7 +42,7 @@ describe("useSettings", () => {
       () => {
         expect(result.current.state.status).toBe("ready");
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
     if (result.current.state.status === "ready") {
@@ -64,7 +64,7 @@ describe("useSettings", () => {
       () => {
         expect(result.current.state.status).toBe("ready");
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
     await act(async () => {
@@ -77,7 +77,7 @@ describe("useSettings", () => {
           expect(result.current.state.settings.name).toBe("Bob");
         }
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
     if (result.current.state.status === "ready") {

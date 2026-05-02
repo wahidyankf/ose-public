@@ -42,7 +42,7 @@ describe("useJournal", () => {
       () => {
         expect(result.current.status).toBe("ready");
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
     unmount();
@@ -59,7 +59,7 @@ describe("useJournal", () => {
       () => {
         expect(result.current.status).toBe("ready");
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
     // Add batch
@@ -81,7 +81,7 @@ describe("useJournal", () => {
       () => {
         expect(result.current.entries.length).toBeGreaterThan(0);
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
     expect(result.current.entries[0]?.name).toBe("workout");
@@ -100,7 +100,7 @@ describe("useJournal", () => {
       () => {
         expect(result.current.status).toBe("ready");
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
     // Trigger mutation
@@ -126,7 +126,7 @@ describe("useJournal", () => {
       () => {
         expect(result.current.status).toBe("ready");
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
     // Either isMutating was true during mutation, or we verify
@@ -165,7 +165,7 @@ describe("useJournal", () => {
       () => {
         expect(result.current.status).toBe("error");
       },
-      { timeout: 10000 },
+      { timeout: 30000 },
     );
 
     unmount();

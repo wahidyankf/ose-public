@@ -82,6 +82,13 @@ export default defineConfig({
           exclude: ["node_modules", "**/*.int.{test,spec}.{ts,tsx}"],
           environment: "jsdom",
           setupFiles: ["./src/test/setup.ts"],
+          // PGlite-backed `@effect/vitest` `layer()` suites and React-hook
+          // tests using `renderHook` + `waitFor` spin up an in-memory
+          // database in beforeEach via a scoped Layer. Under v8 coverage
+          // instrumentation the cold-start path can exceed the default
+          // timeouts, surfacing as flaky "Hook timed out in 10000ms" or
+          // `waitFor` assertion failures across journal/settings/routine/
+          // stats store and hook tests. Raise both budgets uniformly.
           testTimeout: 30000,
           hookTimeout: 30000,
         },

@@ -94,7 +94,7 @@ layer(TestPgliteLayer)("journal-store - listEntries", (it) => {
         expect(entries[0]?.name).toBe("learning");
         expect(entries[1]?.name).toBe("reading");
       }),
-    { timeout: 10000 },
+    { timeout: 30000 },
   );
 });
 
@@ -193,7 +193,7 @@ layer(TestPgliteLayer)("journal-store - bumpEntry", (it) => {
         const entries = yield* listEntries();
         expect(entries[0]?.name).toBe("reading");
       }),
-    { timeout: 10000 },
+    { timeout: 30000 },
   );
 
   it.effect("returns NotFound for non-existent entry", () =>

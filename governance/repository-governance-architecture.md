@@ -126,7 +126,7 @@ Layer 5: Workflows    WHEN - Orchestrate (multi-step processes)
 | **1** | governance/principles/  | WHY we value approaches       | Rarely          | Why value this approach?  |
 | **2** | governance/conventions/ | WHAT documentation rules      | Occasionally    | What documentation rules? |
 | **3** | governance/development/ | HOW we develop software       | More frequently | How develop software?     |
-| **4** | .claude/agents/         | WHO enforces rules            | Often           | Who enforces rules?       |
+| **4** | `.claude/agents/`       | WHO enforces rules            | Often           | Who enforces rules?       |
 | **5** | governance/workflows/   | WHEN run agents in what order | As needed       | When run which agents?    |
 
 **Skills**: `.claude/skills/` - Delivery infrastructure serving agents (inline knowledge injection or fork-based delegation)
@@ -282,7 +282,7 @@ Development: AI Agents Convention — agent colors use accessible palette
 - **Source code** (TypeScript, Go, Java, Kotlin, Python, Elixir, F#, Rust, C#, Clojure, Dart)
 - **Hugo themes and layouts (historical)** (Go templates)
 - **Build systems** (Nx, npm, Volta)
-- **AI agents** (.claude/agents/)
+- **AI agents** (primary binding agents directory)
 - **Git workflows** (commits, branches, hooks)
 
 **Practice Categories**:

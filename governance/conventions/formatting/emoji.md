@@ -30,7 +30,7 @@ This convention implements the following core principles:
 
 ### What This Convention Covers
 
-- **Where emojis are allowed** - docs/, READMEs, plans/, governance/, AGENTS.md, CLAUDE.md, .claude/agents/, .opencode/agents/, .claude/skills/
+- **Where emojis are allowed** - docs/, READMEs, plans/, governance/, AGENTS.md, CLAUDE.md, primary binding agents and skills directories, secondary binding agents directory
 - **Where emojis are forbidden** - config files (_.json,_.yaml, \*.toml), source code
 - **Semantic emoji usage** - Using emojis for meaning, not decoration
 - **Emoji consistency** - Standard emojis for common concepts
@@ -468,18 +468,18 @@ category: explanation
    - Project plans, requirements, technical docs
    - Human-readable working documents
 
-5. **Agent configuration files** - AGENTS.md, .claude/agents/\*.md, .opencode/agents/\*.md
+5. **Agent configuration files** - AGENTS.md, primary binding agent files, secondary binding agent files
    - AGENTS.md - Human-readable navigation document (~1,000 lines) for developers
-   - .claude/agents/\*.md - Primary agent definitions (source of truth) read by developers to understand agent behavior
-   - .opencode/agents/\*.md - Secondary agent definitions (auto-generated from .claude/agents/) for secondary platform binding compatibility
+   - Primary binding agent files (`.claude/agents/*.md`) - Primary agent definitions (source of truth) read by developers to understand agent behavior
+   - Secondary binding agent files (`.opencode/agents/*.md`) - Secondary agent definitions (auto-generated from primary binding) for secondary platform binding compatibility
    - Emojis enhance scannability for:
      - Criticality level definitions (CRITICAL, HIGH, MEDIUM, LOW)
      - Section headers (Purpose, Key Concepts, Reference)
      - Status indicators in examples (PASS: Correct, FAIL: Incorrect, Warning)
 
-6. **Root configuration and skill files** - CLAUDE.md, .claude/skills/\*.md
+6. **Root configuration and skill files** - CLAUDE.md, primary binding skill files
    - CLAUDE.md - Project guidance document for coding agent sessions, human-readable
-   - .claude/skills/\*.md - Skill files for platform binding compatibility (synced from .claude/skills/)
+   - Primary binding skill files (`.claude/skills/*.md`) - Skill files providing knowledge and execution services to agents
    - Emojis support scannability of guidance and knowledge content read by developers
 
 **FAIL: DO NOT use emojis in these files:**

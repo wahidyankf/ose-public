@@ -2609,10 +2609,10 @@ Agent Skills are **directly copied** from `.claude/skills/` to `.opencode/` (no 
 
 - **[CLAUDE.md](../../../CLAUDE.md)** (PRIMARY) - primary platform binding configuration
 - **[AGENTS.md](../../../AGENTS.md)** (SECONDARY) - secondary platform configuration with auto-generated warning
-- **[.claude/agents/README.md](../../../.claude/agents/README.md)** (PRIMARY) - Agent catalog
-- **[.opencode/agents/README.md](../../../.opencode/agents/README.md)** (SECONDARY) - secondary agent catalog with warning
-- **[.claude/skills/README.md](../../../.claude/skills/README.md)** (PRIMARY) - Agent Skills catalog
-- **[.claude/skills/README.md](../../../.claude/skills/README.md)** (SECONDARY) - secondary skills catalog with warning
+- **[Primary binding agent catalog](../../../.claude/agents/README.md)** (PRIMARY) - Agent catalog
+- **[Secondary binding agent catalog](../../../.opencode/agents/README.md)** (SECONDARY) - secondary agent catalog with warning
+- **[Primary binding skills catalog](../../../.claude/skills/README.md)** (PRIMARY) - Agent Skills catalog
+- **[Secondary binding skills catalog](../../../.claude/skills/README.md)** (SECONDARY) - secondary skills catalog with warning
 
 ### Migration History
 

@@ -73,7 +73,7 @@ If `.claude/skills/` contains fork skills:
 
 ## The Repository Standard
 
-### Skill Context Modes in .claude/skills/
+### Skill Context Modes in the Primary Binding Skills Directory
 
 **Standard**: Skills in `.claude/skills/` support two context modes:
 
@@ -112,7 +112,7 @@ description: Knowledge about X for agents
 
 ### When You Need Fork Behavior
 
-**Option 1: Create fork skills in .claude/skills/ (recommended)**
+**Option 1: Create fork skills in the primary binding skills directory (recommended)**
 
 Fork skills in `.claude/skills/` work from main conversation:
 
@@ -170,7 +170,7 @@ When creating or reviewing skills in `.claude/skills/`:
 
 ### Common Mistakes
 
-#### ❌ Mistake 1: Fork skill with agent field in .claude/skills/
+#### ❌ Mistake 1: Fork skill with agent field in the primary binding skills directory
 
 **Wrong**:
 
@@ -203,7 +203,7 @@ Run the code-checker agent to validate...
 
 **Problem**: Inline skills can't spawn agents. Skill will fail to execute.
 
-**Right**: Either make it a fork skill (outside .claude/skills/) or reference conventions instead of delegating to agents.
+**Right**: Either make it a fork skill (outside the primary binding skills directory) or reference conventions instead of delegating to agents.
 
 #### ❌ Mistake 3: Mixing inline and fork behavior
 
@@ -262,7 +262,7 @@ graph TD
 
 ### Skills Documentation
 
-- **[.claude/skills/README.md](../../../.claude/skills/README.md)** - Skill modes (inline vs fork) and organization
+- **[Primary binding skills catalog](../../../.claude/skills/README.md)** - Skill modes (inline vs fork) and organization
 - **[How to Create a New Skill](../../../docs/how-to/create-new-skill.md)** - Step-by-step skill creation guide
 
 ### Related Conventions

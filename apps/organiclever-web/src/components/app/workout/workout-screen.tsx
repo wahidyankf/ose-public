@@ -36,7 +36,8 @@ interface TimerSet {
 }
 
 /**
- * Builds a CompletedSession summary from the machine context for AppRoot.
+ * Builds a CompletedSession summary from the machine context for the
+ * /app/workout/finish route wrapper.
  */
 function buildCompletedSession(context: {
   elapsedSecs: number;

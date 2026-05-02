@@ -422,28 +422,52 @@ Note: introducing `app/app/layout.tsx` causes the existing `app/app/page.tsx` (w
   - Status: Verified pre-commit
   - Files Changed: none (verification only)
   - Notes: 30 modified + 23 untracked files all attributable to the refactor; `.claire/` is unrelated session artefact and stays untracked. Will go to clean state after the thematic commits in P7.5 push successfully.
-- [ ] Commit thematically using Conventional Commits (`feat(organiclever-web): ...`, `test(organiclever-web-e2e): ...`, `docs(organiclever-web): ...`, etc.) — split frontend, e2e, and docs concerns into separate commits
-- [ ] Push to `origin main`
-- [ ] Trigger `.github/workflows/test-and-deploy-organiclever-web-development.yml` via `gh workflow run test-and-deploy-organiclever-web-development.yml --ref main` (workflow already declares `workflow_dispatch`)
-- [ ] Monitor the dispatched run via `gh run list --workflow=test-and-deploy-organiclever-web-development.yml --limit 1` and `gh run view <run-id>`; poll on a 3–5 min cadence using `ScheduleWakeup(delaySeconds=180)` per the CI monitoring convention — never tight-loop polling, never `gh run watch` for jobs longer than 5 min
-- [ ] If the dev workflow fails, investigate the root cause and fix; re-trigger and re-monitor until green; do not declare done while red
-- [ ] Run `plan-execution-checker` and confirm all requirements + acceptance criteria pass
+- [x] Commit thematically using Conventional Commits (`feat(organiclever-web): ...`, `test(organiclever-web-e2e): ...`, `docs(organiclever-web): ...`, etc.) — split frontend, e2e, and docs concerns into separate commits
+  - Date: 2026-05-02
+  - Status: Done — 5 commits ahead of `origin/main`
+  - Files Changed: see commits b4bdb3dbf / 6b1711e69 / 4f8048a78 / 7a17a90d6 / a7e9fcc01
+  - Notes: feat / test (unit gherkin) / test (e2e) / docs / chore (preexisting plan checkbox fix). All commits pass commitlint + pre-commit lint:md.
+- [x] Push to `origin main`
+  - Date: 2026-05-02
+  - Status: Done
+  - Files Changed: none
+  - Notes: Pushed 6 commits (5 thematic refactor + 1 fix). Pre-push pipeline initially failed on disabled-routes unit step (still asserted page.tsx redirect after the file move to next.config.ts) and on e2e spec-coverage (5 placeholder-step gaps in routing.steps.ts because rhino-cli's stepDefRe rejects regex-literal step registrations). Fixed both in commit dc905d37f, plus two preexisting markdown lint issues in the validate-claude-opencode-sync-correctness plan that arrived via the rebase. Push then succeeded.
+- [x] Trigger `.github/workflows/test-and-deploy-organiclever-web-development.yml` via `gh workflow run test-and-deploy-organiclever-web-development.yml --ref main` (workflow already declares `workflow_dispatch`)
+  - Date: 2026-05-02
+  - Status: Done — run 25243004654 dispatched
+  - Files Changed: none
+  - Notes: <https://github.com/wahidyankf/ose-public/actions/runs/25243004654>; status `pending`. Monitoring in P7.8 via `ScheduleWakeup(180)` cadence per ci-monitoring convention.
+- [x] Monitor the dispatched run via `gh run list --workflow=test-and-deploy-organiclever-web-development.yml --limit 1` and `gh run view <run-id>`; poll on a 3–5 min cadence using `ScheduleWakeup(delaySeconds=180)` per the CI monitoring convention — never tight-loop polling, never `gh run watch` for jobs longer than 5 min
+  - Date: 2026-05-02
+  - Status: Done — `{"conclusion":"success","status":"completed"}`
+  - Files Changed: none
+  - Notes: Polled 3 times at 3-min intervals via ScheduleWakeup(180); first two checks `in_progress`, third `success`. One `gh run view` call per wakeup, well under the GitHub API rate limit.
+- [x] If the dev workflow fails, investigate the root cause and fix; re-trigger and re-monitor until green; do not declare done while red
+  - Date: 2026-05-02
+  - Status: Not applicable — workflow passed on first run
+  - Files Changed: none
+  - Notes: Run 25243004654 succeeded directly; no fix-and-retry cycle needed.
+- [x] Run `plan-execution-checker` and confirm all requirements + acceptance criteria pass
+  - Date: 2026-05-02
+  - Status: PASS — APPROVE for archival
+  - Files Changed: cleanup of two LOW findings — `apps/organiclever-web/src/app/app/workout/page.tsx` (removed empty `useEffect` that became dead code after the quick-start mode design) and stale `AppRoot` references in `apps/organiclever-web/src/components/app/add-entry-sheet.tsx` + `apps/organiclever-web/src/components/app/workout/workout-screen.tsx` (replaced with the post-refactor terminology — OverlayTree / `/app/workout/finish` route wrapper)
+  - Notes: Verdict — zero CRITICAL/HIGH findings; all 13 acceptance criteria PASS; CI run 25243004654 succeeded on first try; 595 tests pass with 75.81 % coverage; spec-coverage 16/87/345 fully covered. The 2 LOW findings are both cosmetic and now resolved.
 - [ ] Move plan folder to `plans/done/` and update both `in-progress/README.md` and `done/README.md`
 
 ## Acceptance Verification Checklist
 
 Each acceptance criterion in `prd.md` must be satisfied at the end of Phase 7:
 
-- [ ] AC-1 — `/app` redirect to `/app/home` (Phase 1 + Phase 7 manual)
-- [ ] AC-2 — every tab path renders the right screen (Phase 1 + Phase 6 e2e)
-- [ ] AC-3 — tab clicks change URL (Phase 2 + Phase 6 e2e)
-- [ ] AC-4 — refresh stays put (Phase 6 e2e)
-- [ ] AC-5 — browser back works (Phase 6 e2e)
-- [ ] AC-6 — workout/finish routes (Phase 3 + Phase 6 e2e)
-- [ ] AC-7 — routine editor route (Phase 3 + Phase 6 e2e)
-- [ ] AC-8 — `/app` 308 (Phase 1 + Phase 6 e2e)
-- [ ] AC-9 — `/login` and `/profile` still 404 (Phase 6 e2e — no regression)
-- [ ] AC-10 — chrome persists (Phase 1 manual + Phase 7 manual)
-- [ ] AC-11 — Add Entry FAB still works on every tab (Phase 2 + Phase 6 e2e)
-- [ ] AC-12 — unknown sub-paths 404 (Phase 7 manual)
-- [ ] AC-13 — appMachine has no navigation region (Phase 5 grep verification)
+- [x] AC-1 — `/app` redirect to `/app/home` (Phase 1 + Phase 7 manual) — config-level 308 redirect verified end-to-end
+- [x] AC-2 — every tab path renders the right screen (Phase 1 + Phase 6 e2e) — four `page.tsx` files + e2e
+- [x] AC-3 — tab clicks change URL (Phase 2 + Phase 6 e2e) — `next/link` + `usePathname` + unit tests
+- [x] AC-4 — refresh stays put (Phase 6 e2e) — URL is the source of truth
+- [x] AC-5 — browser back works (Phase 6 e2e) — `routing.steps.ts` `page.goBack()` step
+- [x] AC-6 — workout/finish routes (Phase 3 + Phase 6 e2e) — both routes + Playwright MCP smoke
+- [x] AC-7 — routine editor route (Phase 3 + Phase 6 e2e) — `/app/routines/edit` + Playwright MCP smoke
+- [x] AC-8 — `/app` 308 (Phase 1 + Phase 6 e2e) — `next.config.ts redirects()` returns HTTP 308 with `Location: /app/home`
+- [x] AC-9 — `/login` and `/profile` still 404 (Phase 6 e2e — no regression) — `disabled-routes` outline unchanged
+- [x] AC-10 — chrome persists (Phase 1 manual + Phase 7 manual) — shared `app/layout.tsx` not remounted on tab transitions
+- [x] AC-11 — Add Entry FAB still works on every tab (Phase 2 + Phase 6 e2e) — `OverlayTree` always rendered; `openAddEntry` callback wired into both chromes
+- [x] AC-12 — unknown sub-paths 404 (Phase 7 manual) — Next.js default 404; `disabled-routes.steps.ts` covers `/app/does-not-exist`
+- [x] AC-13 — appMachine has no navigation region (Phase 5 grep verification) — non-parallel machine, `grep -n 'navigation:' app-machine.ts` returns no match

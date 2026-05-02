@@ -17,8 +17,8 @@ export interface AddEntrySheetProps {
  * plus a "New custom type" row at the bottom.
  *
  * Calls `onSelectEntry(kind)` for every row including 'workout'. The parent
- * (AppRoot) decides how to handle each kind (e.g. route to WorkoutScreen vs
- * open a logger overlay).
+ * (the OverlayTree under the app/ layout) decides how to handle each kind
+ * (e.g. router.push to /app/workout vs open a logger overlay).
  */
 export function AddEntrySheet({ isOpen, onClose, onSelectEntry }: AddEntrySheetProps) {
   if (!isOpen) return null;

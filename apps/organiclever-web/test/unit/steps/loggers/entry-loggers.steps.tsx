@@ -82,7 +82,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the Add Entry sheet is open with all entry kinds", () => {
-      expect(actor.getSnapshot().matches({ overlay: "addEntry" })).toBe(true);
+      expect(actor.getSnapshot().matches("addEntry")).toBe(true);
     });
   });
 
@@ -90,7 +90,7 @@ describeFeature(feature, ({ Scenario }) => {
     Given("the Add Entry sheet is open", () => {
       actor = makeActor();
       actor.send({ type: "OPEN_ADD_ENTRY" });
-      expect(actor.getSnapshot().matches({ overlay: "addEntry" })).toBe(true);
+      expect(actor.getSnapshot().matches("addEntry")).toBe(true);
     });
 
     When("the user closes the Add Entry sheet", () => {
@@ -98,7 +98,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the Add Entry sheet is closed", () => {
-      expect(actor.getSnapshot().matches({ overlay: "none" })).toBe(true);
+      expect(actor.getSnapshot().matches("none")).toBe(true);
     });
   });
 
@@ -113,7 +113,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the reading logger is open", () => {
-      expect(actor.getSnapshot().matches({ overlay: "loggerOpen" })).toBe(true);
+      expect(actor.getSnapshot().matches("loggerOpen")).toBe(true);
       expect(actor.getSnapshot().context.loggerKind).toBe("reading");
     });
   });
@@ -136,7 +136,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the entry is saved and the logger closes", () => {
-      expect(actor.getSnapshot().matches({ overlay: "none" })).toBe(true);
+      expect(actor.getSnapshot().matches("none")).toBe(true);
     });
   });
 
@@ -167,7 +167,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the learning logger is open", () => {
-      expect(actor.getSnapshot().matches({ overlay: "loggerOpen" })).toBe(true);
+      expect(actor.getSnapshot().matches("loggerOpen")).toBe(true);
       expect(actor.getSnapshot().context.loggerKind).toBe("learning");
     });
   });
@@ -189,7 +189,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the entry is saved and the logger closes", () => {
-      expect(actor.getSnapshot().matches({ overlay: "none" })).toBe(true);
+      expect(actor.getSnapshot().matches("none")).toBe(true);
     });
   });
 
@@ -204,7 +204,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the meal logger is open", () => {
-      expect(actor.getSnapshot().matches({ overlay: "loggerOpen" })).toBe(true);
+      expect(actor.getSnapshot().matches("loggerOpen")).toBe(true);
       expect(actor.getSnapshot().context.loggerKind).toBe("meal");
     });
   });
@@ -226,7 +226,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the entry is saved and the logger closes", () => {
-      expect(actor.getSnapshot().matches({ overlay: "none" })).toBe(true);
+      expect(actor.getSnapshot().matches("none")).toBe(true);
     });
   });
 
@@ -241,7 +241,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the focus logger is open", () => {
-      expect(actor.getSnapshot().matches({ overlay: "loggerOpen" })).toBe(true);
+      expect(actor.getSnapshot().matches("loggerOpen")).toBe(true);
       expect(actor.getSnapshot().context.loggerKind).toBe("focus");
     });
   });
@@ -264,7 +264,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the entry is saved and the logger closes", () => {
-      expect(actor.getSnapshot().matches({ overlay: "none" })).toBe(true);
+      expect(actor.getSnapshot().matches("none")).toBe(true);
     });
   });
 
@@ -297,7 +297,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the custom entry logger is open", () => {
-      expect(actor.getSnapshot().matches({ overlay: "customLoggerOpen" })).toBe(true);
+      expect(actor.getSnapshot().matches("customLoggerOpen")).toBe(true);
     });
   });
 
@@ -318,7 +318,7 @@ describeFeature(feature, ({ Scenario }) => {
     });
 
     Then("the custom entry is saved and the logger closes", () => {
-      expect(actor.getSnapshot().matches({ overlay: "none" })).toBe(true);
+      expect(actor.getSnapshot().matches("none")).toBe(true);
     });
   });
 });

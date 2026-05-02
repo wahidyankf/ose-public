@@ -26,3 +26,16 @@ Feature: App Shell Navigation
     Then the Add Entry sheet is open
     When the user closes the Add Entry sheet
     Then the Add Entry sheet is closed
+
+  Scenario Outline: URL persists across page refresh on each tab
+    Given the user is on "<path>"
+    When the user refreshes the page
+    Then the URL is still "<path>"
+    And the "<screen>" screen is visible
+
+    Examples:
+      | path           | screen   |
+      | /app/home      | Home     |
+      | /app/history   | History  |
+      | /app/progress  | Progress |
+      | /app/settings  | Settings |

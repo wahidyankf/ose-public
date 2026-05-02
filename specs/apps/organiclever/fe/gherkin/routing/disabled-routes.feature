@@ -11,3 +11,10 @@ Feature: Disabled Routes
       | method | path     |
       | GET    | /login   |
       | GET    | /profile |
+
+  # AC-8 — /app permanent-redirect to /app/home (308). Listed alongside disabled-routes
+  # so the redirect contract is colocated with the 404 guard rows.
+  Scenario: Old /app URL permanent-redirects to /app/home
+    Given the application is running in local-first mode
+    When a visitor requests GET "/app"
+    Then the response is a 308 redirect to "/app/home"

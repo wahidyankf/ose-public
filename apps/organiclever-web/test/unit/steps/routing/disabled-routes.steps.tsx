@@ -8,7 +8,7 @@
  * so absent files are the authoritative source of truth for routing.
  */
 import path from "path";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { loadFeature, describeFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
 
@@ -37,7 +37,7 @@ function routeFilePaths(method: string, routePath: string): string[] {
   return [path.join(dir, "route.ts"), path.join(dir, "route.js")];
 }
 
-describeFeature(feature, ({ ScenarioOutline }) => {
+describeFeature(feature, ({ ScenarioOutline, Scenario }) => {
   ScenarioOutline("Disabled routes return 404", ({ Given, When, Then }, examples) => {
     // The examples object provides the substituted values for this row.
     const method = String(examples["method"] ?? "");
@@ -57,6 +57,27 @@ describeFeature(feature, ({ ScenarioOutline }) => {
       const candidates = routeFilePaths(method, routePath);
       const anyExists = candidates.some((p) => existsSync(p));
       expect(anyExists, `Route file found for ${method} ${routePath} — this route should be disabled`).toBe(false);
+    });
+  });
+
+  Scenario("Old /app URL permanent-redirects to /app/home", ({ Given, When, Then }) => {
+    let pageSource = "";
+
+    Given("the application is running in local-first mode", () => {
+      // Use a path resolved from this test file directly (existing `appRoot`
+      // is intentionally tolerant for the 404 outline; redirect assertion
+      // needs a real on-disk match).
+      const pageFile = path.resolve(__dirname, "../../../../src/app/app/page.tsx");
+      expect(existsSync(pageFile), `expected /app entry page at ${pageFile}`).toBe(true);
+      pageSource = readFileSync(pageFile, "utf8");
+    });
+
+    When(`a visitor requests GET "/app"`, () => {
+      // Static analysis only — confirmed below in Then.
+    });
+
+    Then(`the response is a 308 redirect to "/app/home"`, () => {
+      expect(pageSource).toMatch(/permanentRedirect\(["']\/app\/home["']\)/);
     });
   });
 });

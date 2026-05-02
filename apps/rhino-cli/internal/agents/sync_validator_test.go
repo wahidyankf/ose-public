@@ -574,7 +574,7 @@ func TestValidateAgentFile_DescriptionMismatch(t *testing.T) {
 	}
 
 	// Write opencode file with different description
-	opencodeContent := "---\ndescription: Different description\ntools:\n  read: true\nmodel: zai-coding-plan/glm-5.1\nskills: []\n---\n\nBody.\n"
+	opencodeContent := "---\ndescription: Different description\ntools:\n  read: true\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nBody.\n"
 	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}
@@ -614,7 +614,7 @@ func TestValidateAgentFile_ModelMismatch(t *testing.T) {
 	claudePath := filepath.Join(tmpDir, "agent.md")
 	opencodePath := filepath.Join(tmpDir, "agent-opencode.md")
 
-	// Claude uses "sonnet" → should convert to "zai-coding-plan/glm-5.1"
+	// Claude uses "sonnet" → should convert to "opencode-go/minimax-m2.7"
 	claudeContent := "---\nname: agent\ndescription: Same desc\ntools:\n  - Read\nmodel: sonnet\n---\n\nBody.\n"
 	if err := os.WriteFile(claudePath, []byte(claudeContent), 0644); err != nil {
 		t.Fatalf("failed to create claude agent: %v", err)
@@ -648,7 +648,7 @@ func TestValidateAgentFile_ToolsMismatch(t *testing.T) {
 	}
 
 	// OpenCode has matching description and model but different tools
-	opencodeContent := "---\ndescription: Same desc\ntools:\n  write: true\nmodel: zai-coding-plan/glm-5.1\nskills: []\n---\n\nBody.\n"
+	opencodeContent := "---\ndescription: Same desc\ntools:\n  write: true\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nBody.\n"
 	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}
@@ -675,7 +675,7 @@ func TestValidateAgentFile_BodyMismatch(t *testing.T) {
 	}
 
 	// OpenCode has matching description, model, tools but different body
-	opencodeContent := "---\ndescription: Same desc\ntools:\n  read: true\nmodel: zai-coding-plan/glm-5.1\nskills: []\n---\n\nDifferent body.\n"
+	opencodeContent := "---\ndescription: Same desc\ntools:\n  read: true\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nDifferent body.\n"
 	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}
@@ -702,7 +702,7 @@ func TestValidateAgentFile_SkillsMismatch(t *testing.T) {
 	}
 
 	// OpenCode has matching description, model, tools but no skills
-	opencodeContent := "---\ndescription: Same desc\ntools:\n  read: true\nmodel: zai-coding-plan/glm-5.1\nskills: []\n---\n\nBody.\n"
+	opencodeContent := "---\ndescription: Same desc\ntools:\n  read: true\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nBody.\n"
 	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}
@@ -737,7 +737,7 @@ func TestValidateSync_WithMismatches(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(claudeAgentsDir, "agent-b.md"), []byte(claudeContent), 0644); err != nil {
 		t.Fatalf("failed to create claude agent-b: %v", err)
 	}
-	if err := os.WriteFile(filepath.Join(opencodeAgentDir, "agent-a.md"), []byte("---\ndescription: Agent A\ntools:\n  read: true\nmodel: zai-coding-plan/glm-5.1\nskills: []\n---\n\nBody A.\n"), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(opencodeAgentDir, "agent-a.md"), []byte("---\ndescription: Agent A\ntools:\n  read: true\nmodel: opencode-go/minimax-m2.7\nskills: []\n---\n\nBody A.\n"), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}
 
@@ -858,7 +858,7 @@ func TestValidateAgentFile_ClaudeYAMLUnmarshalError(t *testing.T) {
 		t.Fatalf("failed to create claude agent: %v", err)
 	}
 	// OpenCode file doesn't matter since we fail before reading it
-	opencodeContent := "---\ndescription: test\nmodel: zai-coding-plan/glm-5.1\n---\n\nBody.\n"
+	opencodeContent := "---\ndescription: test\nmodel: opencode-go/minimax-m2.7\n---\n\nBody.\n"
 	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}
@@ -886,7 +886,7 @@ func TestValidateAgentFile_OpenCodeYAMLUnmarshalError(t *testing.T) {
 	}
 
 	// OpenCode frontmatter where tools is a plain string (incompatible with map[string]bool)
-	opencodeContent := "---\ndescription: Test\nmodel: zai-coding-plan/glm-5.1\ntools: read,write\n---\n\nBody.\n"
+	opencodeContent := "---\ndescription: Test\nmodel: opencode-go/minimax-m2.7\ntools: read,write\n---\n\nBody.\n"
 	if err := os.WriteFile(opencodePath, []byte(opencodeContent), 0644); err != nil {
 		t.Fatalf("failed to create opencode agent: %v", err)
 	}

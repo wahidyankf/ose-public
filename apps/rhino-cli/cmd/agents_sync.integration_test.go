@@ -199,14 +199,14 @@ func (s *syncAgentsSteps) onlyAgentFilesAreWrittenToTheOpenCodeDirectory() error
 	return nil
 }
 
-func (s *syncAgentsSteps) theCorrespondingOpenCodeAgentUsesTheZaiGlmModel() error {
+func (s *syncAgentsSteps) theCorrespondingOpenCodeAgentUsesTheOpenCodeGoModel() error {
 	agentPath := filepath.Join(s.tmpDir, agents.OpenCodeAgentDir, "sync-agent.md")
 	data, err := os.ReadFile(agentPath)
 	if err != nil {
 		return fmt.Errorf("failed to read .opencode/agents/sync-agent.md: %w", err)
 	}
-	if !strings.Contains(string(data), "zai-coding-plan/glm-5.1") {
-		return fmt.Errorf("expected .opencode agent to contain 'zai-coding-plan/glm-5.1' but got:\n%s", string(data))
+	if !strings.Contains(string(data), "opencode-go/minimax-m2.7") {
+		return fmt.Errorf("expected .opencode agent to contain 'opencode-go/minimax-m2.7' but got:\n%s", string(data))
 	}
 	return nil
 }
@@ -229,7 +229,7 @@ func InitializeSyncAgentsScenario(sc *godog.ScenarioContext) {
 	sc.Step(`^the output describes the planned operations$`, s.theOutputDescribesThePlannedOperations)
 	sc.Step(`^no files are written to the \.opencode/ directory$`, s.noFilesAreWrittenToTheOpenCodeDirectory)
 	sc.Step(`^only agent files are written to the \.opencode/ directory$`, s.onlyAgentFilesAreWrittenToTheOpenCodeDirectory)
-	sc.Step(`^the corresponding \.opencode/ agent uses the "zai-coding-plan/glm-5\.1" model identifier$`, s.theCorrespondingOpenCodeAgentUsesTheZaiGlmModel)
+	sc.Step(stepCorrespondingOpenCodeAgentUsesOpenCodeGoModel, s.theCorrespondingOpenCodeAgentUsesTheOpenCodeGoModel)
 }
 
 func TestIntegrationSyncAgents(t *testing.T) {

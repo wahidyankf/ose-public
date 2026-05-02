@@ -157,7 +157,7 @@ func (s *syncAgentsUnitSteps) onlyAgentFilesAreWrittenToTheOpenCodeDirectory() e
 	return nil
 }
 
-func (s *syncAgentsUnitSteps) theCorrespondingOpenCodeAgentUsesTheZaiGlmModel() error {
+func (s *syncAgentsUnitSteps) theCorrespondingOpenCodeAgentUsesTheOpenCodeGoModel() error {
 	// Model translation is handled by the internal agents package; the command
 	// delegates entirely. We just verify the sync succeeded.
 	if s.cmdErr != nil {
@@ -184,7 +184,7 @@ func TestUnitSyncAgents(t *testing.T) {
 			sc.Step(stepOutputDescribesPlannedOperations, s.theOutputDescribesThePlannedOperations)
 			sc.Step(stepNoFilesWrittenToOpenCodeDir, s.noFilesAreWrittenToTheOpenCodeDirectory)
 			sc.Step(stepOnlyAgentFilesWrittenToOpenCodeDir, s.onlyAgentFilesAreWrittenToTheOpenCodeDirectory)
-			sc.Step(stepCorrespondingOpenCodeAgentUsesZaiGlmModel, s.theCorrespondingOpenCodeAgentUsesTheZaiGlmModel)
+			sc.Step(stepCorrespondingOpenCodeAgentUsesOpenCodeGoModel, s.theCorrespondingOpenCodeAgentUsesTheOpenCodeGoModel)
 		},
 		Options: &godog.Options{
 			Format:   "pretty",

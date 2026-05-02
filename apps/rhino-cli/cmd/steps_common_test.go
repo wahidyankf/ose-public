@@ -71,18 +71,18 @@ const (
 
 // Agents sync step patterns.
 const (
-	stepClaudeDirWithValidAgentsAndSkills         = `^a \.claude/ directory with valid agents and skills$`
-	stepClaudeDirWithAgentsAndSkillsToConvert     = `^a \.claude/ directory with agents and skills to convert$`
-	stepClaudeDirWithBothAgentsAndSkills          = `^a \.claude/ directory with both agents and skills$`
-	stepClaudeAgentConfiguredWithSonnetModel      = `^a \.claude/ agent configured with the "sonnet" model$`
-	stepDeveloperRunsSyncAgents                   = `^the developer runs agents sync$`
-	stepDeveloperRunsSyncAgentsWithDryRunFlag     = `^the developer runs agents sync with the --dry-run flag$`
-	stepDeveloperRunsSyncAgentsWithAgentsOnlyFlag = `^the developer runs agents sync with the --agents-only flag$`
-	stepOpenCodeDirContainsConvertedConfig        = `^the \.opencode/ directory contains the converted configuration$`
-	stepOutputDescribesPlannedOperations          = `^the output describes the planned operations$`
-	stepNoFilesWrittenToOpenCodeDir               = `^no files are written to the \.opencode/ directory$`
-	stepOnlyAgentFilesWrittenToOpenCodeDir        = `^only agent files are written to the \.opencode/ directory$`
-	stepCorrespondingOpenCodeAgentUsesZaiGlmModel = `^the corresponding \.opencode/ agent uses the "zai-coding-plan/glm-5\.1" model identifier$`
+	stepClaudeDirWithValidAgentsAndSkills             = `^a \.claude/ directory with valid agents and skills$`
+	stepClaudeDirWithAgentsAndSkillsToConvert         = `^a \.claude/ directory with agents and skills to convert$`
+	stepClaudeDirWithBothAgentsAndSkills              = `^a \.claude/ directory with both agents and skills$`
+	stepClaudeAgentConfiguredWithSonnetModel          = `^a \.claude/ agent configured with the "sonnet" model$`
+	stepDeveloperRunsSyncAgents                       = `^the developer runs agents sync$`
+	stepDeveloperRunsSyncAgentsWithDryRunFlag         = `^the developer runs agents sync with the --dry-run flag$`
+	stepDeveloperRunsSyncAgentsWithAgentsOnlyFlag     = `^the developer runs agents sync with the --agents-only flag$`
+	stepOpenCodeDirContainsConvertedConfig            = `^the \.opencode/ directory contains the converted configuration$`
+	stepOutputDescribesPlannedOperations              = `^the output describes the planned operations$`
+	stepNoFilesWrittenToOpenCodeDir                   = `^no files are written to the \.opencode/ directory$`
+	stepOnlyAgentFilesWrittenToOpenCodeDir            = `^only agent files are written to the \.opencode/ directory$`
+	stepCorrespondingOpenCodeAgentUsesOpenCodeGoModel = `^the corresponding \.opencode/ agent uses the "opencode-go/minimax-m2\.7" model identifier$`
 )
 
 // Agents validate-claude step patterns.

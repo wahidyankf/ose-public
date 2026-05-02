@@ -171,12 +171,12 @@ func TestConvertModel(t *testing.T) {
 		input    string
 		expected string
 	}{
-		{name: "sonnet", input: "sonnet", expected: "zai-coding-plan/glm-5.1"},
-		{name: "opus", input: "opus", expected: "zai-coding-plan/glm-5.1"},
-		{name: "haiku", input: "haiku", expected: "zai-coding-plan/glm-5-turbo"},
-		{name: "empty", input: "", expected: "zai-coding-plan/glm-5.1"},
-		{name: "whitespace", input: "  ", expected: "zai-coding-plan/glm-5.1"},
-		{name: "unknown", input: "unknown-model", expected: "zai-coding-plan/glm-5.1"},
+		{name: "sonnet", input: "sonnet", expected: "opencode-go/minimax-m2.7"},
+		{name: "opus", input: "opus", expected: "opencode-go/minimax-m2.7"},
+		{name: "haiku", input: "haiku", expected: "opencode-go/glm-5"},
+		{name: "empty", input: "", expected: "opencode-go/minimax-m2.7"},
+		{name: "whitespace", input: "  ", expected: "opencode-go/minimax-m2.7"},
+		{name: "unknown", input: "unknown-model", expected: "opencode-go/minimax-m2.7"},
 	}
 
 	for _, tt := range tests {
@@ -281,8 +281,8 @@ This is the agent body content.
 		t.Errorf("Description = %q, want %q", agent.Description, "Test agent for unit testing")
 	}
 
-	if agent.Model != "zai-coding-plan/glm-5.1" {
-		t.Errorf("Model = %q, want %q", agent.Model, "zai-coding-plan/glm-5.1")
+	if agent.Model != "opencode-go/minimax-m2.7" {
+		t.Errorf("Model = %q, want %q", agent.Model, "opencode-go/minimax-m2.7")
 	}
 
 	expectedTools := map[string]bool{"read": true, "write": true, "edit": true}
@@ -386,8 +386,8 @@ Body content.
 	}
 
 	// Empty model should default to the most capable model
-	if agent.Model != "zai-coding-plan/glm-5.1" {
-		t.Errorf("Model = %q, want %q", agent.Model, "zai-coding-plan/glm-5.1")
+	if agent.Model != "opencode-go/minimax-m2.7" {
+		t.Errorf("Model = %q, want %q", agent.Model, "opencode-go/minimax-m2.7")
 	}
 }
 

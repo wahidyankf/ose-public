@@ -53,7 +53,7 @@ func (s *validateAgentsNamingIntegSteps) writeClaudeAgent(name, frontmatterName 
 }
 
 func (s *validateAgentsNamingIntegSteps) writeOpencodeAgent(name string) error {
-	content := "---\ndescription: test\nmodel: zai-coding-plan/glm-5.1\ntools:\n  read: true\n---\nbody\n"
+	content := "---\ndescription: test\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\n---\nbody\n"
 	path := filepath.Join(s.tmpDir, ".opencode", "agents", name+".md")
 	return os.WriteFile(path, []byte(content), 0644)
 }

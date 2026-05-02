@@ -64,7 +64,7 @@ func (s *validateSyncSteps) createSyncedAgentPair() error {
 		return fmt.Errorf("failed to write .claude agent: %w", err)
 	}
 
-	opencodeContent := "---\ndescription: A sync agent\nmodel: zai-coding-plan/glm-5.1\ntools:\n  read: true\nskills:\n---\nBody.\n"
+	opencodeContent := "---\ndescription: A sync agent\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\nskills:\n---\nBody.\n"
 	if err := os.WriteFile(filepath.Join(opencodeAgentDir, "sync-agent.md"), []byte(opencodeContent), 0644); err != nil {
 		return fmt.Errorf("failed to write .opencode agent: %w", err)
 	}
@@ -114,7 +114,7 @@ func (s *validateSyncSteps) anAgentInClaudeWhoseDescriptionDiffersFromItsOpenCod
 		return fmt.Errorf("failed to write .claude agent: %w", err)
 	}
 
-	opencodeContent := "---\ndescription: Different description\nmodel: zai-coding-plan/glm-5.1\ntools:\n  read: true\nskills:\n---\nBody.\n"
+	opencodeContent := "---\ndescription: Different description\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\nskills:\n---\nBody.\n"
 	if err := os.WriteFile(filepath.Join(opencodeAgentDir, "sync-agent.md"), []byte(opencodeContent), 0644); err != nil {
 		return fmt.Errorf("failed to write .opencode agent: %w", err)
 	}
@@ -141,7 +141,7 @@ func (s *validateSyncSteps) claudeContainingMoreAgentsThanOpenCode() error {
 		return fmt.Errorf("failed to write second .claude agent: %w", err)
 	}
 
-	opencodeContent := "---\ndescription: A sync agent\nmodel: zai-coding-plan/glm-5.1\ntools:\n  read: true\nskills:\n---\nBody.\n"
+	opencodeContent := "---\ndescription: A sync agent\nmodel: opencode-go/minimax-m2.7\ntools:\n  read: true\nskills:\n---\nBody.\n"
 	if err := os.WriteFile(filepath.Join(opencodeAgentDir, "sync-agent.md"), []byte(opencodeContent), 0644); err != nil {
 		return fmt.Errorf("failed to write .opencode agent: %w", err)
 	}

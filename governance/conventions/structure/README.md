@@ -21,6 +21,7 @@ This directory contains standards for how documentation is organized, named, and
 ## Documents
 
 - [Agent Naming Convention](./agent-naming.md) - Single exception-free filename rule for agent files in `.claude/agents/` and `.opencode/agents/`. Defines scope vocabulary, role vocabulary (maker, checker, fixer, dev, deployer, manager), and the audit command enforced by `repo-rules-checker`
+- [Governance Vendor-Independence Convention](./governance-vendor-independence.md) - Requires all `governance/` prose to be vendor-neutral. Defines forbidden vendor terms, `binding-example` fence allowlist, vocabulary map (vendor → neutral replacements), platform-binding directory pattern, and migration guidance.
 - [Diataxis Framework](./diataxis-framework.md) - Understanding the four-category documentation organization framework we use (Tutorials, How-To, Reference, Explanation). Foundational framework for all documentation structure
 - [File Naming Convention](./file-naming.md) - Kebab-case filename rules for docs/, governance/, and plans/ directories
 - [ose-primer Sync Convention](./ose-primer-sync.md) - Directional classification, transforms, and safety invariants governing content flow between `ose-public` (upstream) and `ose-primer` (downstream MIT-only template). Consumed by the two sync-maker agents and audited by `repo-rules-checker`

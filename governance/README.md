@@ -79,6 +79,7 @@ graph TD
   - Implements principles in concrete documentation rules
   - Each convention includes "Principles Implemented/Respected" section
   - Enforced by AI agents (docs-checker, docs-maker, etc.)
+  - **[Governance Vendor-Independence Convention](./conventions/structure/governance-vendor-independence.md)** — all `governance/` prose must be vendor-neutral; vendor-specific bindings belong in platform-binding directories
 
 #### Layer 3: Development (HOW - Software Practices)
 

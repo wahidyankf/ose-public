@@ -115,6 +115,7 @@ Content quality standards, validation methodology, and writing guidelines.
 Documentation organization frameworks, file naming, and project planning structure.
 
 - [Agent Naming Convention](./structure/agent-naming.md) - Single exception-free filename rule for agent files in `.claude/agents/` and `.opencode/agents/`. Defines scope vocabulary, role vocabulary (maker, checker, fixer, dev, deployer, manager), and the audit command enforced by `repo-rules-checker`
+- [Governance Vendor-Independence Convention](./structure/governance-vendor-independence.md) - Requires all `governance/` prose to be vendor-neutral. Defines forbidden vendor terms, the `binding-example` fence allowlist mechanism, vocabulary map (vendor → neutral replacements), and migration guidance for governance file rewrites. **Agents**: repo-rules-checker
 - [ose-primer Sync Convention](./structure/ose-primer-sync.md) - Directional classification, transforms, and safety invariants governing content flow between `ose-public` (upstream) and `ose-primer` (downstream MIT-only template). Consumed by the two sync-maker agents and audited by `repo-rules-checker`
 - [Diataxis Framework](./structure/diataxis-framework.md) - Understanding the four-category documentation organization framework we use (Tutorials, How-To, Reference, Explanation)
 - [File Naming Convention](./structure/file-naming.md) - Lowercase kebab-case file names anchored on standard markdown and GitHub compatibility

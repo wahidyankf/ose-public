@@ -156,6 +156,7 @@ specs/apps/a-demo/contracts/generated/
 .claude/settings.local.json
 .claude/settings.local.json.bkup
 .claude/worktrees/
+/worktrees/
 
 # OpenCode generated files (package.json and lockfiles are local MCP runner artifacts)
 .opencode/package-lock.json

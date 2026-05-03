@@ -129,7 +129,8 @@
   - Date: 2026-05-03 | Status: DONE | Coverage 90.16% ≥ 90%; no shared helper needed; internal/glossary 92.9%
 - [x] Smoke-run: `rhino-cli ul validate organiclever` against the real working tree. Should exit zero.
   - Date: 2026-05-03 | Status: PASS | Exits zero after fixing stale identifiers in UL docs
-- [ ] Commit: `feat(rhino-cli): add ul validate subcommand for DDD glossary parity`.
+- [x] Commit: `feat(rhino-cli): add ul validate subcommand for DDD glossary parity`.
+  - Date: 2026-05-03 | Status: DONE | SHA 814260373; UL doc fixes in 5f8f84e27
 
 **Phase exit gates**:
 
@@ -148,10 +149,14 @@
 
 **Goal**: Both subcommands run as part of `nx run organiclever-web:test:quick` at error severity. Profile wall-clock impact.
 
-- [ ] **Red**: Edit `apps/organiclever-web/project.json` to extend the `test:quick` target with two new commands (`rhino-cli bc validate organiclever` and `rhino-cli ul validate organiclever`) per the project.json wiring sketch in `tech-docs.md`. Confirm a deliberate orphan triggers a non-zero exit.
-- [ ] **Green**: Run `nx run organiclever-web:test:quick`. Should exit zero with both subcommands invoked. Wall-clock delta vs baseline ≤5s (NFR-4).
-- [ ] **Green**: Set `ORGANICLEVER_RHINO_DDD_SEVERITY=warn` and re-run; confirm a deliberate orphan does **not** fail the target. Reset env var.
-- [ ] **Refactor**: Document the env var in `apps/organiclever-web/README.md` "Development" section as the local escape hatch.
+- [x] **Red**: Edit `apps/organiclever-web/project.json` to extend the `test:quick` target with two new commands (`rhino-cli bc validate organiclever` and `rhino-cli ul validate organiclever`) per the project.json wiring sketch in `tech-docs.md`. Confirm a deliberate orphan triggers a non-zero exit.
+  - Date: 2026-05-03 | Status: DONE | project.json commands array added; orphan-test dir caused exit code 1; orphan removed
+- [x] **Green**: Run `nx run organiclever-web:test:quick`. Should exit zero with both subcommands invoked. Wall-clock delta vs baseline ≤5s (NFR-4).
+  - Date: 2026-05-03 | Status: PASS | 28.2s wall-clock; delta +1.8s ≤ 5s; both bc/ul subcommands invoked
+- [x] **Green**: Set `ORGANICLEVER_RHINO_DDD_SEVERITY=warn` and re-run; confirm a deliberate orphan does **not** fail the target. Reset env var.
+  - Date: 2026-05-03 | Status: PASS | orphan-test gave "warn" line, exit 0; env var reset; orphan removed
+- [x] **Refactor**: Document the env var in `apps/organiclever-web/README.md` "Development" section as the local escape hatch.
+  - Date: 2026-05-03 | Status: DONE | Added escape hatch block under Testing section with warn usage and production default note
 - [ ] Smoke-test pre-push: inside the worktree, run `git push origin worktree-organiclever-rhino-cli-ddd-enforcement` — Husky pre-push hook must trigger both subcommands and pass.
 - [ ] Commit: `feat(organiclever-web): wire rhino-cli bc/ul validate into test:quick`.
 

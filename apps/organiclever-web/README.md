@@ -186,6 +186,18 @@ Tests use Vitest with `@amiceli/vitest-cucumber` for BDD-style Gherkin specs.
 
 Coverage threshold: 70% lines (enforced by `rhino-cli test-coverage validate`).
 
+`test:quick` also runs `rhino-cli bc validate organiclever` and `rhino-cli ul validate organiclever`
+to enforce DDD structural parity and glossary accuracy. Both run at `error` severity by default.
+
+**Local escape hatch** — if a false-positive blocks you before a fix lands, set:
+
+```bash
+ORGANICLEVER_RHINO_DDD_SEVERITY=warn nx run organiclever-web:test:quick
+```
+
+This downgrades DDD findings to warnings so tests pass. Do not commit with this env var set;
+`error` severity is the production default and ships in CI.
+
 ## Design System
 
 `organiclever-web` uses the OrganicLever (OL) warm OKLCH design system, implemented via

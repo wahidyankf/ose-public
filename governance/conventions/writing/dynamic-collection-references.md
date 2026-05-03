@@ -158,7 +158,7 @@ If a count is needed anywhere, the index document for that collection is the sin
 | Collection       | Authoritative Index                            |
 | ---------------- | ---------------------------------------------- |
 | AI Agents        | `.claude/agents/README.md`                     |
-| Skills           | `.claude/skills/README.md`                     |
+| agent skills     | `.claude/skills/README.md`                     |
 | Conventions      | `governance/conventions/README.md`             |
 | Principles       | `governance/principles/README.md`              |
 | Dev Practices    | `governance/development/README.md`             |
@@ -175,7 +175,7 @@ If a count is needed anywhere, the index document for that collection is the sin
 ```markdown
 ## AI Agents (69 Specialized Agents)
 
-**Skills Infrastructure**: Agents leverage 37 skills providing two modes:
+**Agent skills Infrastructure**: Agents leverage 37 skills providing two modes:
 ```
 
 **After (PASS)**:
@@ -183,7 +183,7 @@ If a count is needed anywhere, the index document for that collection is the sin
 ```markdown
 ## AI Agents
 
-**Skills Infrastructure**: Agents leverage skills providing two modes:
+**Agent skills Infrastructure**: Agents leverage skills providing two modes:
 ```
 
 ---
@@ -217,7 +217,7 @@ If a count is needed anywhere, the index document for that collection is the sin
 **After (PASS)**:
 
 ```markdown
-**Current State**: Skills serving agents across multiple families
+**Current State**: agent skills serving agents across multiple families
 ```
 
 ### Recognizing the Pattern

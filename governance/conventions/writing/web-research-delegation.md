@@ -90,7 +90,7 @@ Agents with `WebSearch` or `WebFetch` in their `tools:` list include a short **W
 
 ### In a skill file
 
-Skills that describe web verification (for example `docs-validating-factual-accuracy`) do not re-state the delegation rule inline; they cite this convention as the authoritative source and keep only the skill-specific integration notes (for example, how returned confidence tags map to audit-report dual-labels).
+Agent skills that describe web verification (for example `docs-validating-factual-accuracy`) do not re-state the delegation rule inline; they cite this convention as the authoritative source and keep only the skill-specific integration notes (for example, how returned confidence tags map to audit-report dual-labels).
 
 ### In a workflow
 
@@ -164,7 +164,7 @@ To validate an agent complies with this convention:
 - `docs-fixer`, `apps-ayokoding-web-facts-fixer`, `plan-fixer` — fixer agents invoking Exception 2 (same-context re-validation)
 - `docs-link-checker`, `apps-ayokoding-web-link-checker`, `apps-ayokoding-web-link-fixer` — link-reachability agents invoking Exception 3
 
-**Skills:**
+**Agent skills:**
 
 - [`docs-validating-factual-accuracy`](../../../.claude/skills/docs-validating-factual-accuracy/SKILL.md) — factual-validation methodology
 - [`docs-applying-content-quality`](../../../.claude/skills/docs-applying-content-quality/SKILL.md) — universal content-quality standards

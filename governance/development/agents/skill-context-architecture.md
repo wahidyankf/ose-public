@@ -22,7 +22,7 @@ This convention respects the following core principles:
 
 - **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: Explicitly documents the architectural constraint preventing delegated agents from spawning other delegated agents. Makes the limitation visible and provides clear guidance on skill design decisions.
 
-- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: Single-level delegated agent spawning prevents complex nested agent hierarchies. Skills remain simple knowledge containers that work everywhere, avoiding architectural complexity.
+- **[Simplicity Over Complexity](../../principles/general/simplicity-over-complexity.md)**: Single-level delegated agent spawning prevents complex nested agent hierarchies. Agent skills remain simple knowledge containers that work everywhere, avoiding architectural complexity.
 
 ## Conventions Implemented/Respected
 
@@ -57,7 +57,7 @@ Main Conversation
    └─ Can spawn subagents ❌ (architectural constraint)
 ```
 
-### Impact on Skills
+### Impact on agent skills
 
 Since skills with `context: fork` spawn delegated agents:
 
@@ -73,9 +73,9 @@ If `.claude/skills/` contains fork skills:
 
 ## The Repository Standard
 
-### Skill Context Modes in the Primary Binding Skills Directory
+### Skill Context Modes in the Primary Binding agent skills Directory
 
-**Standard**: Skills in `.claude/skills/` support two context modes:
+**Standard**: agent skills in `.claude/skills/` support two context modes:
 
 - **Inline skills** (default): Omit `context` field or set `context: inline`. Work in BOTH main conversation AND delegated agent contexts.
 - **Fork skills** (`context: fork`): Work from MAIN CONVERSATION ONLY (delegated agents cannot spawn delegated agents).
@@ -83,7 +83,7 @@ If `.claude/skills/` contains fork skills:
 **Rationale**:
 
 1. **Universal compatibility** - Work in both main conversation and delegated agent contexts
-2. **Predictable behavior** - Skills always inject knowledge, never fail
+2. **Predictable behavior** - agent skills always inject knowledge, never fail
 3. **Composability** - Agents can freely compose multiple skills
 4. **Delegated agent safety** - Delegated agents can use any skill without errors
 
@@ -106,9 +106,9 @@ description: Knowledge about X for agents
 - **Universal compatibility** - Work in main conversation AND delegated agent contexts
 - **Composition** - Multiple skills work together seamlessly
 
-**Tool usage**: Skills can use `Read`, `Grep`, `Glob` to reference convention documents but should not modify files.
+**Tool usage**: agent skills can use `Read`, `Grep`, `Glob` to reference convention documents but should not modify files.
 
-## Fork Skills: Main Conversation Only
+## Fork agent skills: Main Conversation Only
 
 ### When You Need Fork Behavior
 
@@ -229,8 +229,8 @@ For complex cases, spawn the analyzer agent... [delegation content]
 ```mermaid
 graph TD
     MC[Main Conversation] -->|spawns| SA[Subagent Forked Context]
-    MC -->|uses| IS[Inline Skills<br/>.claude/skills/]
-    MC -->|uses| FS[Fork Skills<br/>project-specific dir]
+    MC -->|uses| IS[Inline agent skills<br/>.claude/skills/]
+    MC -->|uses| FS[Fork agent skills<br/>project-specific dir]
     SA -->|uses| IS
     SA -->|CANNOT use| FS
     IS -->|references| CONV[Convention Documents<br/>governance/]
@@ -260,7 +260,7 @@ graph TD
 - **[Repository Governance Architecture](../../repository-governance-architecture.md)** - Six-layer architecture including skills as delivery infrastructure
 - **[AI Agents Convention](./ai-agents.md)** - Agent structure and tool permissions
 
-### Skills Documentation
+### Agent skills Documentation
 
 - **[Primary binding skills catalog](../../../.claude/skills/README.md)** - Skill modes (inline vs fork) and organization
 - **[How to Create a New Skill](../../../docs/how-to/create-new-skill.md)** - Step-by-step skill creation guide
@@ -298,7 +298,7 @@ Exit code 0 (no matches) = compliant, >0 = violations found.
 
 ## Summary
 
-**The Rule**: Skills in `.claude/skills/` support both inline and fork modes.
+**The Rule**: agent skills in `.claude/skills/` support both inline and fork modes.
 
 **The Reason**: Delegated agents cannot spawn other delegated agents (architectural constraint).
 

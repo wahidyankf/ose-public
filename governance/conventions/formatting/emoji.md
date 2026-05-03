@@ -500,7 +500,7 @@ category: explanation
 
 **Consistency with referenced content:**
 
-- Agent files reference Skills and conventions that use emojis (e.g., criticality definitions with 🟠🟡🟢)
+- Agent files reference agent skills and conventions that use emojis (e.g., criticality definitions with 🟠🟡🟢)
 - Agent definitions should be visually consistent with their referenced content
 - When agents display emoji-based definitions in their own documentation, it maintains semantic consistency
 

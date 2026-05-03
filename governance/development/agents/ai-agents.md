@@ -198,10 +198,10 @@ skills: []
 
 6. **`skills`** (required)
    - List of Skill names the agent references (from `.claude/skills/` (primary))
-   - Can be empty array `[]` if agent doesn't use Skills - Skills auto-load when agent is invoked (if task matches Skill description)
+   - Can be empty array `[]` if agent doesn't use agent skills - agent skills auto-load when agent is invoked (if task matches Skill description)
    - Enables composability and explicit knowledge dependencies
    - Example: `skills: [docs-creating-accessible-diagrams, repo-applying-maker-checker-fixer]`
-   - See "Agent Skills References" section below for complete details
+   - See "agent skills References" section below for complete details
 
 ### Optional Frontmatter Fields
 
@@ -236,36 +236,36 @@ created: 2025-11-23
 ---
 ```
 
-### Agent Skills References
+### Agent skills References
 
 **REQUIRED FIELD**: All agents MUST include a `skills:` frontmatter field for composability and consistency.
 
-**Purpose:** The `skills:` field declares which Agent Skills (knowledge packages in the platform binding skills directory) the agent leverages. This enables:
+**Purpose:** The `skills:` field declares which agent skills (knowledge packages in the platform binding skills directory) the agent leverages. This enables:
 
 - **Composability**: Explicit declarations of knowledge dependencies
 - **Consistency**: All agents follow same structure (no special cases)
-- **Discoverability**: Easy to see which agents use which Skills
+- **Discoverability**: Easy to see which agents use which agent skills
 - **Validation**: Checkers can enforce field presence and validate references
 
-#### Skills Field Format
+#### Agent skills Field Format
 
 The `skills` field (already defined as field 6 in Required Frontmatter above) has the following detailed characteristics:
 
 - **Format**: YAML array of strings
 - **Required**: Yes (can be empty `[]`)
 - **Values**: Skill names matching folder names in the platform binding skills directory
-- **Auto-loading**: Agent Skills load when agent invoked AND task matches Skill description
-- **Validation**: Referenced Agent Skills must exist in the platform binding skills directory
+- **Auto-loading**: agent skills load when agent invoked AND task matches Skill description
+- **Validation**: Referenced agent skills must exist in the platform binding skills directory
 - **Example**: `skills: [docs-creating-accessible-diagrams, repo-applying-maker-checker-fixer]`
 
-#### When to Reference Skills vs. Inline Knowledge
+#### When to Reference agent skills vs. Inline Knowledge
 
-**Use Skills references when:**
+**Use agent skills references when:**
 
 - PASS: Knowledge is specialized and deep (e.g., accessible color palettes, Gherkin syntax)
 - PASS: Knowledge is shared across multiple agents (e.g., Maker-Checker-Fixer pattern)
 - PASS: Knowledge requires progressive disclosure (overview at startup, details on-demand)
-- PASS: Knowledge is frequently updated (Skills centralize updates)
+- PASS: Knowledge is frequently updated (agent skills centralize updates)
 - PASS: Knowledge has multiple aspects (Skill can have reference.md, examples.md)
 
 **Use inline knowledge when:**
@@ -275,9 +275,9 @@ The `skills` field (already defined as field 6 in Required Frontmatter above) ha
 - PASS: Knowledge is critical for agent's core operation (always needed)
 - PASS: Knowledge is stable and rarely changes
 
-#### Skills Field Examples
+#### Agent skills Field Examples
 
-**Agent using Skills:**
+**Agent using agent skills:**
 
 ```yaml
 ---
@@ -293,7 +293,7 @@ skills:
 ---
 ```
 
-**Agent not using Skills:**
+**Agent not using agent skills:**
 
 ```yaml
 ---
@@ -306,9 +306,9 @@ skills: []
 ---
 ```
 
-#### Skills Composition Pattern
+#### Agent skills Composition Pattern
 
-Agents can reference multiple Skills that work together:
+Agents can reference multiple agent skills that work together:
 
 ```yaml
 ---
@@ -324,19 +324,19 @@ skills:
 ---
 ```
 
-When this agent is invoked, all three Skills auto-load if the task description matches their triggers. Skills compose seamlessly to provide comprehensive knowledge.
+When this agent is invoked, all three agent skills auto-load if the task description matches their triggers. Agent skills compose seamlessly to provide comprehensive knowledge.
 
-#### Best Practices for Skills References
+#### Best Practices for agent skills References
 
-1. **Minimal set**: Reference only Skills the agent actually uses
-2. **Relevant Skills**: Skills should align with agent's domain
-3. **Order by importance**: List most critical Skills first
-4. **Keep updated**: Add/remove Skills as agent evolves
-5. **Validate references**: Ensure referenced Agent Skills exist in the platform binding skills directory (primary source of truth)
+1. **Minimal set**: Reference only agent skills the agent actually uses
+2. **Relevant agent skills**: agent skills should align with agent's domain
+3. **Order by importance**: List most critical agent skills first
+4. **Keep updated**: Add/remove agent skills as agent evolves
+5. **Validate references**: Ensure referenced agent skills exist in the platform binding skills directory (primary source of truth)
 
-#### Skills Documentation: Frontmatter Only (DRY Principle)
+#### Agent skills Documentation: Frontmatter Only (DRY Principle)
 
-**CRITICAL**: Skills MUST only be declared in frontmatter. Do NOT create documentation sections listing skills in the agent body.
+**CRITICAL**: agent skills MUST only be declared in frontmatter. Do NOT create documentation sections listing skills in the agent body.
 
 **Why Frontmatter Only:**
 
@@ -349,9 +349,9 @@ When this agent is invoked, all three Skills auto-load if the task description m
 **FORBIDDEN Pattern** (violates DRY):
 
 ```markdown
-## Knowledge Dependencies (Skills)
+## Knowledge Dependencies (agent skills)
 
-This agent leverages Skills from `.claude/skills/`:
+This agent leverages agent skills from `.claude/skills/`:
 
 1. **`skill-name`** - what it does
 2. **`other-skill`** - what it does
@@ -377,11 +377,11 @@ This is acceptable because it provides contextual guidance pointing to specific 
 
 **Summary**: Declare skills in frontmatter, optionally reference them inline for context, but NEVER create a dedicated section listing skills with descriptions.
 
-#### Skills vs. Direct Convention References
+#### Agent skills vs. Direct Convention References
 
-Agents can use both Skills AND direct links to convention documents:
+Agents can use both agent skills AND direct links to convention documents:
 
-- **Skills**: For progressive disclosure and shared knowledge (auto-loaded)
+- **Agent skills**: For progressive disclosure and shared knowledge (auto-loaded)
 - **Direct links**: For specific, targeted guidance (always in Reference Documentation section)
 
 **Example combining both:**
@@ -404,7 +404,7 @@ skills:
 ```markdown
 ## Reference Documentation
 
-**Skills**: This agent uses `repo-applying-maker-checker-fixer` and `repo-assessing-criticality-confidence` Skills for validation workflows.
+**Agent skills**: This agent uses `repo-applying-maker-checker-fixer` and `repo-assessing-criticality-confidence` agent skills for validation workflows.
 
 **Conventions:**
 
@@ -412,9 +412,9 @@ skills:
 - `governance/conventions/formatting/linking.md` - Linking Convention
 ```
 
-This pattern provides both auto-loaded knowledge (Skills) and explicit references for specific requirements.
+This pattern provides both auto-loaded knowledge (agent skills) and explicit references for specific requirements.
 
-See [Skills README](../../../.claude/skills/README.md) for complete details on Skills creation, structure, and usage patterns.
+See [agent skills README](../../../.claude/skills/README.md) for complete details on agent skills creation, structure, and usage patterns.
 
 ### Document Structure
 
@@ -1468,9 +1468,9 @@ Quick categorization for existing agents:
 
 ### Purpose
 
-This section defines how to properly separate reusable knowledge (Skills) from agent-specific instructions (Agent files), ensuring maintainability, reducing duplication, and enabling effective knowledge delivery.
+This section defines how to properly separate reusable knowledge (agent skills) from agent-specific instructions (Agent files), ensuring maintainability, reducing duplication, and enabling effective knowledge delivery.
 
-**Validated through**: Agent Skills Simplification pilot (2026-01-03) - docs family achieved 49.2% size reduction while maintaining 100% functionality.
+**Validated through**: agent skills Simplification pilot (2026-01-03) - docs family achieved 49.2% size reduction while maintaining 100% functionality.
 
 ### Knowledge Classification Decision Tree
 
@@ -1636,14 +1636,14 @@ FAIL: Bad: "The content is validated by the agent"
 - `docs-fixer`: How to assess confidence levels for doc fixes
 - `plan-execution-checker`: Post-execution validation against plan requirements
 
-**Rationale**: Agents remain self-contained for their specific task while delegating reusable knowledge to Skills/Conventions.
+**Rationale**: Agents remain self-contained for their specific task while delegating reusable knowledge to agent skills/Conventions.
 
 ### Guidelines for Future Agent Creation
 
 When creating new agents:
 
 1. **Start lean**: Write minimum viable agent with task-specific instructions only
-2. **Reference early**: Link to Skills/Conventions instead of duplicating
+2. **Reference early**: Link to agent skills/Conventions instead of duplicating
 3. **Quick reference OK**: Brief 1-3 line summaries with Skill/Convention links acceptable
 4. **Scan for duplication**: Before finalizing, check if content exists in other agents (use Grep)
 5. **3+ agent rule**: If same content appears in 3+ agents, extract to Skill/Convention
@@ -1652,14 +1652,14 @@ When creating new agents:
 
 Before committing agent changes:
 
-- [ ] No content duplicates Agent Skills (check the platform binding skills directory catalog)
+- [ ] No content duplicates agent skills (check the platform binding skills directory catalog)
 - [ ] No content duplicates Conventions (check `governance/conventions/`)
-- [ ] All Agent Skills referenced exist in the platform binding skills directory (primary source of truth)
+- [ ] All agent skills referenced exist in the platform binding skills directory (primary source of truth)
 - [ ] All Convention links point to valid files
 - [ ] Task-specific instructions retained (agent is self-contained for its job)
 - [ ] Agent within tier limits (Simple <800, Standard <1,200, Complex <1,800)
 
-### Skills Frontmatter Field
+### Agent skills Frontmatter Field
 
 **REQUIRED**: All agents MUST include `skills:` field in frontmatter.
 
@@ -1677,13 +1677,13 @@ created: YYYY-MM-DD
 ---
 ```
 
-**Empty Skills**: If agent doesn't use any Skills yet, use empty list:
+**Empty agent skills**: If agent doesn't use any agent skills yet, use empty list:
 
 ```yaml
 skills: []
 ```
 
-**Multiple Skills**: List all Skills the agent references:
+**Multiple agent skills**: List all agent skills the agent references:
 
 ```yaml
 skills: [skill-one, skill-two, skill-three]
@@ -1728,7 +1728,7 @@ Agent contains:
 - Domain-specific examples (concise)
 - All task-specific decision logic
 
-**Result**: Agent remains fully functional, easier to maintain, zero knowledge loss (Skills/Conventions provide depth).
+**Result**: Agent remains fully functional, easier to maintain, zero knowledge loss (agent skills/Conventions provide depth).
 
 ### Benefits of Proper Separation
 
@@ -1740,7 +1740,7 @@ Agent contains:
 
 **Clarity**:
 
-- Agents focus on task-specific instructions - Skills provide reusable knowledge on-demand
+- Agents focus on task-specific instructions - agent skills provide reusable knowledge on-demand
 - Conventions document authoritative specifications
 
 **Efficiency**:
@@ -1751,7 +1751,7 @@ Agent contains:
 
 **Quality**:
 
-- Skills professionally maintained with examples
+- agent skills professionally maintained with examples
 
 - Conventions peer-reviewed and validated
 - Agents remain focused on core responsibility
@@ -1917,7 +1917,7 @@ Before submitting a new agent, verify:
 - [ ] `tools` explicitly lists required tools only (least privilege)
 - [ ] `model` left empty for planning-grade (or `sonnet`/`haiku` if execution-grade/fast tier is justified)
 - [ ] `color` assigned based on agent role (blue/green/yellow/purple) - required
-- [ ] `skills` field present (can be empty `[]` or list actual Skills) - required
+- [ ] `skills` field present (can be empty `[]` or list actual agent skills) - required
 
 #### Document Structure
 
@@ -2082,21 +2082,21 @@ Your primary job is to [clear, specific purpose statement].
 ```
 Startup: AGENTS.md ──loaded──> Orchestrator (main conversation)
 Runtime: Orchestrator ──spawns──> Agents (isolated contexts)
-        Skills ──delivers via skills: field──> Agents
+        agent skills ──delivers via skills: field──> Agents
          Conventions ──explicit references──> Agents
 ```
 
 **Critical Understanding:**
 
 1. **Agents have isolated contexts** - They do NOT inherit AGENTS.md
-2. **Skills deliver explicitly** - OnlySkills listed in agent's `skills:` field are available
+2. **Agent skills deliver explicitly** - OnlySkills listed in agent's `skills:` field are available
 3. **References are explicit** - Agents link to specific conventions they need
 4. **Orchestrator has AGENTS.md** - Main conversation loads AGENTS.md, not agents
 
 **Rules:**
 
 1. **Don't duplicate** - Agents should reference conventions, not repeat content
-2. **Do specialize** - Agents add domain expertise through Skills and explicit knowledge
+2. **Do specialize** - Agents add domain expertise through agent skills and explicit knowledge
 3. **Follow conventions** - All agents must comply with this convention
 4. **Declare skills explicitly** - Every agent must have non-empty `skills:` field
 
@@ -2188,9 +2188,9 @@ Before committing a new agent:
 
 ## Agent-Skill Separation
 
-**Purpose**: Eliminate duplication between agents by extracting reusable knowledge into Skills. Agents remain focused on task-specific workflows while Skills provide shared domain expertise.
+**Purpose**: Eliminate duplication between agents by extracting reusable knowledge into agent skills. Agents remain focused on task-specific workflows while agent skills provide shared domain expertise.
 
-### When to Use Skills vs. Agent Content
+### When to Use agent skills vs. Agent Content
 
 Use this decision tree to determine where knowledge belongs:
 
@@ -2214,9 +2214,9 @@ Is this knowledge...
    └─ NO → Evaluate based on above criteria
 ```
 
-### What Belongs in Skills
+### What Belongs in agent skills
 
-**Extract to Skills** (reusable knowledge):
+**Extract to agent skills** (reusable knowledge):
 
 1. **Validation Standards**
    - UUID chain generation logic
@@ -2372,7 +2372,7 @@ See `docs-creating-by-example-tutorials` Skill for five-part format, annotation 
 [500 lines of task-specific content creation - RETAINED]
 ```
 
-**Result**: 600 lines removed (55%), all patterns available via Skills.
+**Result**: 600 lines removed (55%), all patterns available via agent skills.
 
 ### Decision Tree Examples
 
@@ -2423,16 +2423,16 @@ Decision: Extract to `repo-applying-maker-checker-fixer` Skill
 1. **Single Source of Truth**: Update Skill once, all agents benefit
 2. **Reduced Duplication**: Eliminate 50-90% of duplicated content
 3. **Easier Maintenance**: Convention changes require updating Skill only
-4. **Better Scalability**: New agents reference existing Skills
+4. **Better Scalability**: New agents reference existing agent skills
 5. **Clearer Agents**: Agents focus on task workflows, not standards
-6. **Progressive Disclosure**: Skills load on-demand, reducing context bloat
+6. **Progressive Disclosure**: agent skills load on-demand, reducing context bloat
 
 ### Implementation Pattern
 
 When simplifying an agent:
 
 1. **Identify duplication**: Look for content appearing in 3+ agents
-2. **Check existing Skills**: Does a Skill already cover this?
+2. **Check existing agent skills**: Does a Skill already cover this?
    - YES → Reference the Skill
    - NO → Consider creating new Skill
 3. **Extract to Skill**: Create/extend Skill with reusable knowledge
@@ -2449,7 +2449,7 @@ When simplifying an agent:
 
 - All agents within tier limits (Simple <800, Standard <1,200, Complex <1,800)
 - Zero functionality regressions
-- All Skills referenced exist
+- All agent skills referenced exist
 - All convention links valid
 
 **Project Achievement** (2026-01-03):
@@ -2458,21 +2458,21 @@ When simplifying an agent:
 - 82.7% average reduction (4x better than target)
 - 28,439 lines eliminated
 - 100% tier compliance (all in Simple tier)
-- Skills created/used to eliminate duplication (at the time: 18; see [Skills README](../../../.claude/skills/README.md) for current catalog)
+- agent skills created/used to eliminate duplication (at the time: 18; see [agent skills README](../../../.claude/skills/README.md) for current catalog)
 
 ### Ongoing Vigilance
 
 **Prevent duplication creep**:
 
-1. **New agent creation**: Reference Skills instead of duplicating
-2. **Agent updates**: Extract new duplication to Skills
+1. **New agent creation**: Reference agent skills instead of duplicating
+2. **Agent updates**: Extract new duplication to agent skills
 3. **Periodic audits**: Run repo-rules-checker for duplication detection
 4. **Code reviews**: Check for embedded Skill knowledge
 5. **Documentation**: Keep AI Agents Convention updated with examples
 
-### Related Skills
+### Related agent skills
 
-**Current Skills** (see [Skills README](../../../.claude/skills/README.md) for complete catalog):
+**Current agent skills** (see [agent skills README](../../../.claude/skills/README.md) for complete catalog):
 
 - `repo-generating-validation-reports` - Report generation, UUID chains, timestamps
 - `repo-assessing-criticality-confidence` - Criticality levels, confidence assessment
@@ -2486,7 +2486,7 @@ When simplifying an agent:
 - `docs-validating-links` - Link validation, caching
 - Plus more in Content Creation, Standards Application, Process Execution categories
 
-See [Skills README](../../../.claude/skills/README.md) for complete catalog.
+See [agent skills README](../../../.claude/skills/README.md) for complete catalog.
 
 ## Related Documentation
 
@@ -2569,9 +2569,9 @@ OpenCode:
   model: opencode-go/glm-5        # fast equivalent
 ```
 
-#### Skills Format
+#### Agent skills Format
 
-**Identical for both platforms** — Agent Skills use the same SKILL.md format:
+**Identical for both platforms** — agent skills use the same SKILL.md format:
 
 ```yaml
 ---
@@ -2586,7 +2586,7 @@ Content...
 **Required fields**: `name` (must match directory name), `description`
 **Optional fields**: `context` (inline or fork)
 
-Agent Skills are **directly copied** from `.claude/skills/` to `.opencode/` (no conversion needed).
+Agent skills are **directly copied** from `.claude/skills/` to `.opencode/` (no conversion needed).
 
 ### Sync Automation
 
@@ -2596,13 +2596,13 @@ Agent Skills are **directly copied** from `.claude/skills/` to `.opencode/` (no 
 
 - `npm run sync:claude-to-opencode` - Full sync (agents + skills)
 - `npm run sync:agents` - Agents only
-- `npm run sync:skills` - Skills only (direct copy)
+- `npm run sync:skills` - agent skills only (direct copy)
 - `npm run validate:sync` - Verify semantic equivalence
 
 **Conversion Logic**:
 
 - **Agents**: Primary format → secondary format (tool arrays → boolean flags, model mapping)
-- **Skills**: Direct copy (no conversion, format identical)
+- **Agent skills**: Direct copy (no conversion, format identical)
 - **Validation**: Confirms both directories are semantically equivalent
 
 ### Documentation References
@@ -2611,7 +2611,7 @@ Agent Skills are **directly copied** from `.claude/skills/` to `.opencode/` (no 
 - **[AGENTS.md](../../../AGENTS.md)** (SECONDARY) - secondary platform configuration with auto-generated warning
 - **[Primary binding agent catalog](../../../.claude/agents/README.md)** (PRIMARY) - Agent catalog
 - **[Secondary binding agent catalog](../../../.claude/agents/README.md)** (SECONDARY) - `.opencode/agents/` contains auto-synced agent files; `.claude/agents/README.md` is the authoritative catalog for both bindings
-- **[Primary binding skills catalog](../../../.claude/skills/README.md)** (PRIMARY) - Agent Skills catalog
+- **[Primary binding skills catalog](../../../.claude/skills/README.md)** (PRIMARY) - agent skills catalog
 - **[Secondary binding skills catalog](../../../.claude/skills/README.md)** (SECONDARY) - secondary skills catalog with warning
 
 ### Migration History
@@ -2635,7 +2635,7 @@ Agent Skills are **directly copied** from `.claude/skills/` to `.opencode/` (no 
 **Problem**: Conversion errors during sync
 **Solution**: Check agent frontmatter format in `.claude/agents/`, fix YAML syntax, re-sync
 
-**Problem**: Skills missing in one directory
+**Problem**: agent skills missing in one directory
 **Solution**: Verify skills exist in `.claude/skills/`, run `npm run sync:skills`
 
 ---

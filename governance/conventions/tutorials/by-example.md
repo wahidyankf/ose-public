@@ -1463,7 +1463,7 @@ This convention implements and respects:
 
 - [ayokoding-web-by-example-quality-gate](../../workflows/ayokoding-web/ayokoding-web-by-example-quality-gate.md) - Quality assurance workflow for by-example tutorials
 
-## Related Skills
+## Related agent skills
 
 - [docs-creating-by-example-tutorials](../../../.claude/skills/docs-creating-by-example-tutorials/SKILL.md) - Skill package for creating by-example tutorials
 

@@ -2427,6 +2427,6 @@ This convention implements and respects:
 
 - [ayokoding-web-in-the-field-quality-gate](../../workflows/ayokoding-web/ayokoding-web-in-the-field-quality-gate.md) - Quality assurance workflow for in-the-field tutorials
 
-## Related Skills
+## Related agent skills
 
 - [docs-creating-in-the-field-tutorials](../../../.claude/skills/docs-creating-in-the-field-tutorials/SKILL.md) - Comprehensive in-the-field tutorial creation guidance

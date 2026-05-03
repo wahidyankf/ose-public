@@ -446,7 +446,7 @@ Test your understanding with these realistic scenarios.
 - [Formula 1 with name]
 - [Formula 2 with name]
 
-**Skills you've gained:**
+**Agent skills you've gained:**
 
 - [Skill 1]
 - [Skill 2]
@@ -1649,7 +1649,7 @@ Test your understanding with these realistic scenarios.
 
 **Key formulas:**
 
-**Skills you've gained:**
+**Agent skills you've gained:**
 
 - [Skill 1]
 - [Skill 2]

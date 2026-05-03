@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/agents"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/bcregistry"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/docs"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/doctor"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/envbackup"
@@ -67,6 +68,9 @@ var gitDefaultDepsFn = git.DefaultDeps
 
 // docs validate-mermaid command delegation.
 var docsValidateMermaidFn = mermaid.ValidateBlocks
+
+// bc validate command delegation.
+var bcValidateAllFn = bcregistry.ValidateAll
 
 // readFileFn is a variable for dependency injection of os.ReadFile in tests.
 var readFileFn = os.ReadFile

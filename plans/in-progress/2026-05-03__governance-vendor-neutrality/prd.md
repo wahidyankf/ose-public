@@ -2,7 +2,7 @@
 
 ## Product Overview
 
-Execute the already-defined [Governance Vendor-Independence Convention](./conventions/structure/governance-vendor-independence.md) by auditing governance/, migrating vendor-specific content to `docs/` following Diátaxis framework, and rewriting governance prose to use vendor-neutral capability tiers.
+Execute the already-defined [Governance Vendor-Independence Convention](../../../governance/conventions/structure/governance-vendor-independence.md) by auditing governance/, migrating vendor-specific content to `docs/` following Diátaxis framework, and rewriting governance prose to use vendor-neutral capability tiers.
 
 ## Acceptance Criteria
 
@@ -51,22 +51,31 @@ And I verify via rhino-cli governance vendor-audit before committing
 2. **Risk**: Benchmark references break if `docs/reference/ai-model-benchmarks.md` is incomplete
    - **Mitigation**: Verify benchmark file is comprehensive before final push
 
+## Personas
+
+- **Maintainer as governance author** — writes and updates governance conventions; must produce vendor-neutral prose by default
+- **`plan-executor` agent** — executes delivery checklist steps; relies on governance rules being toolchain-agnostic
+- **Future AI agents (any platform)** — read governance rules to determine correct behavior; must not require vendor-specific knowledge to interpret rules
+
 ## User Stories
 
 ### As a contributor using a non-Claude AI coding agent
 
-I want governance to be readable so I can follow the repository rules regardless of my toolchain.
+I want governance to be readable,
+so that I can follow the repository rules regardless of my toolchain.
 
 **Acceptance**: Governance prose uses no vendor-specific terms outside allowlisted regions.
 
 ### As an AI agent executing governance rules
 
-I want all rule references to be vendor-neutral so my execution is not coupled to a specific platform.
+I want all rule references to be vendor-neutral,
+so that my execution is not coupled to a specific platform's product lifecycle.
 
 **Acceptance**: Model names replaced with capability tiers (planning-grade, execution-grade, fast).
 
 ### As a future platform maintainer
 
-I want benchmark data isolated in `docs/reference/` so I can update model information without touching governance.
+I want benchmark data isolated in `docs/reference/`,
+so that I can update model information without touching governance prose.
 
 **Acceptance**: Benchmark scores, pricing, and model specs live in `docs/reference/ai-model-benchmarks.md`.

@@ -4,7 +4,7 @@
 
 `governance/` must be readable and actionable by any contributor—human or agent—regardless of which AI coding platform they use. Vendor-specific implementation details belong in dedicated platform-binding directories (`.claude/`, `.opencode/`, etc.) and in `docs/` following Diátaxis framework.
 
-The [Governance Vendor-Independence Convention](./conventions/structure/governance-vendor-independence.md) already establishes the rule. The execution is incomplete.
+The [Governance Vendor-Independence Convention](../../../governance/conventions/structure/governance-vendor-independence.md) already establishes the rule. The execution is incomplete.
 
 ## Scope
 

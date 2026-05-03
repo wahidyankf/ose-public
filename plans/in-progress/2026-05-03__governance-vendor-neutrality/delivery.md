@@ -34,26 +34,27 @@
 - [ ] Run `npm run lint:md:fix` then `npm run lint:md` — expect 0 violations
 - [ ] Verify all benchmark references in governance link to `docs/reference/ai-model-benchmarks.md`
 - [ ] Verify `docs/reference/ai-model-benchmarks.md` follows Diátaxis reference conventions
-- [ ] Run `nx affected -t typecheck lint test:quick` — all pass
+- [ ] Run `nx affected -t typecheck lint test:quick spec-coverage` — all pass
 
 ## Quality Gates
 
 ### Development Environment Setup (First-Time)
 
+- [ ] Provision worktree: `claude --worktree governance-vendor-neutrality` (creates `worktrees/governance-vendor-neutrality/` in repo root)
 - [ ] Run `npm install && npm run doctor -- --fix` to converge toolchain
-- [ ] Verify `rhino-cli` is available: `go run apps/rhino-cli/main.go --version` or `nx run rhino-cli:dev -- --version`
+- [ ] Verify `rhino-cli` is available: `go run apps/rhino-cli/main.go --version`
 
 ### Local Quality Gates (Before Push)
 
 - [ ] Run `rhino-cli governance vendor-audit governance/` — 0 violations
 - [ ] Run `npm run lint:md:fix && npm run lint:md` — 0 violations
-- [ ] Run `nx affected -t typecheck lint test:quick` — all pass
+- [ ] Run `nx affected -t typecheck lint test:quick spec-coverage` — all pass
 - [ ] Verify no new vendor-specific content introduced
 
 ### Post-Push Verification
 
 - [ ] Push changes to `main`
-- [ ] Monitor GitHub Actions workflows for the push
+- [ ] Monitor GitHub Actions: watch `pr-quality-gate.yml` and any push-triggered workflows (markdown lint, link validation)
 - [ ] Verify all CI checks pass
 - [ ] If any CI check fails, fix immediately and push a follow-up commit
 

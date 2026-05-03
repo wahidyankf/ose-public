@@ -6,21 +6,31 @@
 
 ## Pre-flight
 
-- [ ] **Hard dependency check**: confirm `plans/in-progress/2026-05-02__organiclever-adopt-ddd/` no longer exists and `plans/done/2026-05-02__organiclever-adopt-ddd/` does exist. If still in `in-progress/`, **stop**: this plan cannot start until DDD adoption is fully complete and archived.
-- [ ] Confirm the DDD plan's final SHA is on `origin/main`: `git log --oneline plans/done/2026-05-02__organiclever-adopt-ddd/ | head -5` shows the archive commit. (Run from inside the worktree; the `-C ose-public` qualifier is not needed there.)
-- [ ] Confirm `apps/organiclever-web/src/contexts/<bc>/<layer>/` structure exists for all 9 contexts (smoke check: `ls apps/organiclever-web/src/contexts/`).
-- [ ] Confirm `specs/apps/organiclever/ubiquitous-language/<bc>.md` exists for all 9 contexts.
-- [ ] Confirm `specs/apps/organiclever/fe/gherkin/<bc>/` exists for all 9 contexts.
-- [ ] Confirm clean tree on `ose-public` `main`: `git status` shows no uncommitted changes. (Run from inside the worktree; no `-C ose-public` qualifier needed.)
-- [ ] Provision worktree: `cd ose-public && claude --worktree organiclever-rhino-cli-ddd-enforcement`. Worktree path: `ose-public/.claude/worktrees/organiclever-rhino-cli-ddd-enforcement/` on branch `worktree-organiclever-rhino-cli-ddd-enforcement`.
-- [ ] Inside the worktree, run `npm install && npm run doctor -- --fix`.
-- [ ] Confirm baseline gates green: `npx nx affected -t typecheck lint test:quick spec-coverage` and `nx run rhino-cli:test:quick`.
-- [ ] Snapshot baseline metrics: rhino-cli line coverage, organiclever-web `test:quick` wall-clock time. Record below.
+- [x] **Hard dependency check**: confirm `plans/in-progress/2026-05-02__organiclever-adopt-ddd/` no longer exists and `plans/done/2026-05-02__organiclever-adopt-ddd/` does exist. If still in `in-progress/`, **stop**: this plan cannot start until DDD adoption is fully complete and archived.
+  - Date: 2026-05-03 | Status: PASS | plans/done/2026-05-02\_\_organiclever-adopt-ddd/ confirmed present
+- [x] Confirm the DDD plan's final SHA is on `origin/main`: `git log --oneline plans/done/2026-05-02__organiclever-adopt-ddd/ | head -5` shows the archive commit. (Run from inside the worktree; the `-C ose-public` qualifier is not needed there.)
+  - Date: 2026-05-03 | Status: PASS | SHA 3a69cd432 and e9cfc957e on origin/main
+- [x] Confirm `apps/organiclever-web/src/contexts/<bc>/<layer>/` structure exists for all 9 contexts (smoke check: `ls apps/organiclever-web/src/contexts/`).
+  - Date: 2026-05-03 | Status: PASS | All 9 contexts present with correct layer subdirs
+- [x] Confirm `specs/apps/organiclever/ubiquitous-language/<bc>.md` exists for all 9 contexts.
+  - Date: 2026-05-03 | Status: PASS | All 9 .md files confirmed
+- [x] Confirm `specs/apps/organiclever/fe/gherkin/<bc>/` exists for all 9 contexts.
+  - Date: 2026-05-03 | Status: PASS | All 9 gherkin folders with .feature files confirmed
+- [x] Confirm clean tree on `ose-public` `main`: `git status` shows no uncommitted changes. (Run from inside the worktree; no `-C ose-public` qualifier needed.)
+  - Date: 2026-05-03 | Status: PASS | Only delivery.md modified (in-progress plan ticking)
+- [x] Provision worktree: `cd ose-public && claude --worktree organiclever-rhino-cli-ddd-enforcement`. Worktree path: `ose-public/.claude/worktrees/organiclever-rhino-cli-ddd-enforcement/` on branch `worktree-organiclever-rhino-cli-ddd-enforcement`.
+  - Date: 2026-05-03 | Status: PASS | Worktree created via `git worktree add` at SHA 1e6497d3a
+- [x] Inside the worktree, run `npm install && npm run doctor -- --fix`.
+  - Date: 2026-05-03 | Status: PASS | npm install clean; doctor 19/19 tools OK
+- [x] Confirm baseline gates green: `npx nx affected -t typecheck lint test:quick spec-coverage` and `nx run rhino-cli:test:quick`.
+  - Date: 2026-05-03 | Status: PASS | rhino-cli 90.15% ≥ 90%; organiclever-web 78.26% ≥ 70%
+- [x] Snapshot baseline metrics: rhino-cli line coverage, organiclever-web `test:quick` wall-clock time. Record below.
+  - Date: 2026-05-03 | Status: DONE
 
 ### Baseline metrics
 
-- [ ] Baseline `rhino-cli` line coverage: \_\_% (filled in pre-flight, target ≥90%).
-- [ ] Baseline `organiclever-web:test:quick` wall-clock time: \_\_s (filled in pre-flight, used to bound NFR-4 budget).
+- [x] Baseline `rhino-cli` line coverage: 90.15% (filled in pre-flight, target ≥90%).
+- [x] Baseline `organiclever-web:test:quick` wall-clock time: 26.4s (filled in pre-flight; max delta +5s → ≤31.4s).
 
 ---
 
@@ -28,16 +38,23 @@
 
 **Goal**: Resolve open questions in `tech-docs.md` before any code is written.
 
-- [ ] **Author**: For each open question Q1–Q3 in `tech-docs.md`, either accept the default or override with a written rationale. Append answers to `tech-docs.md` under "Open questions" with `RESOLVED:` prefix.
-- [ ] Cross-check the registry YAML schema in `tech-docs.md` against the BC list in `plans/done/2026-05-02__organiclever-adopt-ddd/tech-docs.md`. Any context name mismatch is a blocker — resolve before Phase 1.
-- [ ] **Verify**: `npm run lint:md` passes; markdown clean.
-- [ ] **Polish**: None.
-- [ ] Commit: `docs(plans): resolve Phase 0 open questions for rhino-cli DDD enforcement`.
+- [x] **Author**: For each open question Q1–Q3 in `tech-docs.md`, either accept the default or override with a
+      written rationale. Append answers to `tech-docs.md` under "Open questions" with `RESOLVED:` prefix.
+  - Date: 2026-05-03 | Status: DONE | Q1/Q2/Q3 all accepted defaults with rationale in tech-docs.md
+- [x] Cross-check the registry YAML schema in `tech-docs.md` against the BC list in
+      `plans/done/2026-05-02__organiclever-adopt-ddd/tech-docs.md`. Any context name mismatch is a blocker — resolve
+      before Phase 1.
+  - Date: 2026-05-03 | Status: PASS | 9/9 names match exactly
+- [x] **Verify**: `npm run lint:md` passes; markdown clean.
+  - Date: 2026-05-03 | Status: PASS | 0 errors
+- [x] **Polish**: None.
+- [x] Commit: `docs(plans): resolve Phase 0 open questions for rhino-cli DDD enforcement`.
+  - Date: 2026-05-03 | Status: DONE | Committed in worktree
 
 **Phase exit gates**:
 
-- [ ] All open questions Q1–Q3 marked RESOLVED in `tech-docs.md`.
-- [ ] `npm run lint:md` passes.
+- [x] All open questions Q1–Q3 marked RESOLVED in `tech-docs.md`.
+- [x] `npm run lint:md` passes.
 
 ---
 

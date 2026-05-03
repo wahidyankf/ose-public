@@ -930,6 +930,34 @@ rhino-cli env restore -o json
 - `--force` / `-f` - Skip overwrite confirmation prompt
 - `--include-config` - Also restore known uncommitted config files
 
+### DDD enforcement
+
+`rhino-cli` provides two subcommands to enforce Domain-Driven Design conventions in `organiclever-web`. Both run automatically as part of `nx run organiclever-web:test:quick`.
+
+#### `bc validate`
+
+Validates bounded-context structural parity between `apps/organiclever-web/src/contexts/` and the registry.
+
+```bash
+rhino-cli bc validate organiclever
+```
+
+Checks for each registered context: code directory with declared layer subfolders, glossary file, Gherkin directory. Detects orphan directories and asymmetric relationships.
+
+#### `ul validate`
+
+Validates ubiquitous-language glossary parity between `specs/apps/organiclever/ubiquitous-language/` and the codebase.
+
+```bash
+rhino-cli ul validate organiclever
+```
+
+Checks: frontmatter presence, terms table structure, stale code identifiers (via ripgrep), missing feature references, cross-context term collisions, forbidden-synonym misuse.
+
+**Severity**: both default to `error`. Override locally: `ORGANICLEVER_RHINO_DDD_SEVERITY=warn`.
+
+**See**: [`apps-organiclever-web-developing-content` skill](../../.claude/skills/apps-organiclever-web-developing-content/SKILL.md) § Domain-Driven Design for authoring rules and the BC registry at [`specs/apps/organiclever/bounded-contexts.yaml`](../../specs/apps/organiclever/bounded-contexts.yaml).
+
 ## Help Commands
 
 ```bash

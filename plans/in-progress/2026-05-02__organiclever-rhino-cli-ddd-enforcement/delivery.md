@@ -157,15 +157,21 @@
   - Date: 2026-05-03 | Status: PASS | orphan-test gave "warn" line, exit 0; env var reset; orphan removed
 - [x] **Refactor**: Document the env var in `apps/organiclever-web/README.md` "Development" section as the local escape hatch.
   - Date: 2026-05-03 | Status: DONE | Added escape hatch block under Testing section with warn usage and production default note
-- [ ] Smoke-test pre-push: inside the worktree, run `git push origin worktree-organiclever-rhino-cli-ddd-enforcement` — Husky pre-push hook must trigger both subcommands and pass.
-- [ ] Commit: `feat(organiclever-web): wire rhino-cli bc/ul validate into test:quick`.
+- [x] Smoke-test pre-push: inside the worktree, run `git push origin worktree-organiclever-rhino-cli-ddd-enforcement` — Husky pre-push hook must trigger both subcommands and pass.
+  - Date: 2026-05-03 | Status: PASS | Pre-push triggered; fixed 17 golangci-lint issues (separate commit 34a2adfdb) before push succeeded; hook green
+- [x] Commit: `feat(organiclever-web): wire rhino-cli bc/ul validate into test:quick`.
+  - Date: 2026-05-03 | Status: DONE | SHA 78e5f417a; lint fix in 34a2adfdb
 
 **Phase exit gates**:
 
-- [ ] `nx run organiclever-web:test:quick` exits zero and invokes both subcommands.
-- [ ] Wall-clock delta vs baseline ≤5s (NFR-4 budget).
-- [ ] Env-var override works (warn downgrade verified).
-- [ ] Pre-push hook triggers both subcommands.
+- [x] `nx run organiclever-web:test:quick` exits zero and invokes both subcommands.
+  - Date: 2026-05-03 | Status: PASS | 28.2s, both bc/ul invoked
+- [x] Wall-clock delta vs baseline ≤5s (NFR-4 budget).
+  - Date: 2026-05-03 | Status: PASS | +1.8s ≤ 5s budget
+- [x] Env-var override works (warn downgrade verified).
+  - Date: 2026-05-03 | Status: PASS | ORGANICLEVER_RHINO_DDD_SEVERITY=warn exits 0 with orphan
+- [x] Pre-push hook triggers both subcommands.
+  - Date: 2026-05-03 | Status: PASS | Push with pre-push hook green after lint fixes
 
 ---
 
@@ -173,11 +179,16 @@
 
 **Goal**: Extend the existing `apps-organiclever-web-developing-content` skill with the Domain-Driven Design section. Concise — points to canonical sources, no duplication.
 
-- [ ] **Red**: Author the new "Domain-Driven Design" section in `.claude/skills/apps-organiclever-web-developing-content/SKILL.md` per the design sketch in `tech-docs.md` § "Skill DDD section design". Keep all existing sections intact.
-- [ ] **Red**: Confirm the skill description (frontmatter `description` field) reflects the broader scope without changing the skill name.
-- [ ] **Green**: Run `npm run lint:md` — passes.
-- [ ] **Green**: Run `npm run sync:claude-to-opencode` — both `.claude/skills/` source and any `.opencode/` mirrors stay synced (or the no-mirror invariant is preserved per CLAUDE.md skill policy).
-- [ ] **Refactor**: Add cross-links — `apps/rhino-cli/README.md` "DDD enforcement" subsection (FR-6) links the skill; the skill DDD section links the rhino-cli README and the BC registry.
+- [x] **Red**: Author the new "Domain-Driven Design" section in `.claude/skills/apps-organiclever-web-developing-content/SKILL.md` per the design sketch in `tech-docs.md` § "Skill DDD section design". Keep all existing sections intact.
+  - Date: 2026-05-03 | Status: DONE | DDD section added with all FR-5 components; all existing sections intact
+- [x] **Red**: Confirm the skill description (frontmatter `description` field) reflects the broader scope without changing the skill name.
+  - Date: 2026-05-03 | Status: PASS | Description already includes "DDD bounded-context architecture" — no change needed
+- [x] **Green**: Run `npm run lint:md` — passes.
+  - Date: 2026-05-03 | Status: PASS | 0 errors
+- [x] **Green**: Run `npm run sync:claude-to-opencode` — both `.claude/skills/` source and any `.opencode/` mirrors stay synced (or the no-mirror invariant is preserved per CLAUDE.md skill policy).
+  - Date: 2026-05-03 | Status: PASS | Sync OK: 70 agents converted, 0 skills copied (no-mirror invariant preserved)
+- [x] **Refactor**: Add cross-links — `apps/rhino-cli/README.md` "DDD enforcement" subsection (FR-6) links the skill; the skill DDD section links the rhino-cli README and the BC registry.
+  - Date: 2026-05-03 | Status: DONE | rhino-cli README DDD enforcement section added; SKILL.md links rhino-cli README + BC registry
 - [ ] Commit: `docs(skills,rhino-cli): add DDD section to organiclever skill and document subcommands in rhino-cli README`.
 
 **Phase exit gates**:

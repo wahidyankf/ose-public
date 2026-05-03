@@ -192,7 +192,7 @@ func detectOrphans(repoRoot string, reg *Registry, registeredCode, registeredGlo
 
 	// Glossary root = parent of first context's glossary path.
 	glossaryRoot := filepath.Join(repoRoot, filepath.Dir(reg.Contexts[0].Glossary))
-	findings = append(findings, detectOrphanFiles(glossaryRoot, ".md", registeredGlossary, "orphan glossary file", "registered in bounded-contexts.yaml", severity)...)
+	findings = append(findings, detectOrphanFiles(glossaryRoot, registeredGlossary, "orphan glossary file", "registered in bounded-contexts.yaml", severity)...)
 
 	// Gherkin root = parent of first context's gherkin path.
 	gherkinRoot := filepath.Join(repoRoot, filepath.Dir(reg.Contexts[0].Gherkin))
@@ -223,14 +223,14 @@ func detectOrphanDirs(root string, registered map[string]bool, kind, notReason, 
 	return findings
 }
 
-func detectOrphanFiles(root, ext string, registered map[string]bool, kind, notReason, severity string) []Finding {
+func detectOrphanFiles(root string, registered map[string]bool, kind, notReason, severity string) []Finding {
 	entries, err := osReadDirFn(root)
 	if err != nil {
 		return nil
 	}
 	var findings []Finding
 	for _, e := range entries {
-		if e.IsDir() || !strings.HasSuffix(e.Name(), ext) {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".md") {
 			continue
 		}
 		if e.Name() == "README.md" {

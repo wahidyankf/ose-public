@@ -5,9 +5,20 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/bcregistry"
 )
+
+// fakeStatInfo implements os.FileInfo for testing stat calls.
+type fakeStatInfo struct{ isDir bool }
+
+func (f fakeStatInfo) Name() string       { return "" }
+func (f fakeStatInfo) IsDir() bool        { return f.isDir }
+func (f fakeStatInfo) Size() int64        { return 0 }
+func (f fakeStatInfo) Mode() os.FileMode  { return os.ModeDir }
+func (f fakeStatInfo) ModTime() time.Time { return time.Time{} }
+func (f fakeStatInfo) Sys() any           { return nil }
 
 // ── Parser tests ──────────────────────────────────────────────────────────────
 
@@ -335,7 +346,7 @@ func TestValidateAll_MissingFrontmatterKey(t *testing.T) {
 
 `), nil
 		}
-		osStatFn = func(_ string) (os.FileInfo, error) { return nil, nil }
+		osStatFn = func(_ string) (os.FileInfo, error) { return fakeStatInfo{isDir: false}, nil }
 		grepFn = func(_, _ string, _ []string) int { return 1 }
 	})
 
@@ -375,7 +386,7 @@ func TestValidateAll_StaleCodeIdentifier(t *testing.T) {
 
 `), nil
 		}
-		osStatFn = func(_ string) (os.FileInfo, error) { return nil, nil }
+		osStatFn = func(_ string) (os.FileInfo, error) { return fakeStatInfo{isDir: false}, nil }
 		grepFn = func(_, _ string, _ []string) int { return 0 }
 	})
 
@@ -455,7 +466,7 @@ func TestValidateAll_TermCollision(t *testing.T) {
 
 `), nil
 		}
-		osStatFn = func(_ string) (os.FileInfo, error) { return nil, nil }
+		osStatFn = func(_ string) (os.FileInfo, error) { return fakeStatInfo{isDir: false}, nil }
 		grepFn = func(_, _ string, _ []string) int { return 1 }
 	})
 
@@ -495,7 +506,7 @@ func TestValidateAll_ForbiddenSynonymInUse(t *testing.T) {
 - "BadWord" — do not use.
 `), nil
 		}
-		osStatFn = func(_ string) (os.FileInfo, error) { return nil, nil }
+		osStatFn = func(_ string) (os.FileInfo, error) { return fakeStatInfo{isDir: false}, nil }
 		grepFn = func(_, _ string, _ []string) int { return 3 }
 	})
 
@@ -535,7 +546,7 @@ func TestValidateAll_CleanGlossary(t *testing.T) {
 
 `), nil
 		}
-		osStatFn = func(_ string) (os.FileInfo, error) { return nil, nil }
+		osStatFn = func(_ string) (os.FileInfo, error) { return fakeStatInfo{isDir: false}, nil }
 		grepFn = func(_, _ string, _ []string) int { return 1 }
 	})
 

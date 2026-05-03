@@ -8,13 +8,13 @@ Reduce token consumption in OpenCode agent sessions by ~75% through compression-
 
 ### Business Impact
 
-| Aspect                 | Current State                                 | Expected Outcome                            |
-| ---------------------- | --------------------------------------------- | ------------------------------------------- |
-| Token cost per session | Full prose output                             | ~75% reduction via caveman                  |
-| Context restoration    | Manual re-explanation each session            | Persistent cross-session memory via cavemem |
-| Multi-IDE coherence    | Claude Code and OpenCode operate in isolation | Shared memory store accessible from both    |
+| Aspect                  | Current State | Expected Outcome                              | Actual State (2026-05-03)                     |
+| ----------------------- | ------------- | --------------------------------------------- | --------------------------------------------- |
+| caveman installation    | Not started   | ~75% token reduction via compression          | NOT installed for OpenCode (only Claude Code) |
+| cavemem installation    | Not started   | Cross-agent persistent memory                 | ✅ Installed as MCP server (v0.1.3)           |
+| Cross-agent memory test | Not tested    | Shared SQLite store accessible from both IDEs | Partially complete (MCP wired, not tested)    |
 
-**Rationale**: RTK already filters output tokens at the CLI layer. caveman compresses input/output at the agent communication layer. The two stack additively — RTK (output) + caveman (input/output) = compounded savings. The cross-agent memory eliminates repeated context-setting when switching between Claude Code and OpenCode on the same repo.
+**Rationale**: RTK already filters output tokens at the CLI layer. caveman compresses input/output at the agent communication layer (planned, NOT yet installed for OpenCode). The two stack additively — RTK (output) + caveman (input/output) = compounded savings. cavemem cross-agent memory (MCP server installed) eliminates repeated context-setting when switching between Claude Code and OpenCode on the same repo.
 
 **Gut-based reasoning**: A typical agent session in this repo involves ~50–100 tool calls and ~15–30k output tokens. At 75% compression, that drops to ~4–8k tokens. Across 3–5 sessions per week per IDE (6–10 combined), the monthly token savings are substantial and measurable via `caveman-stats`.
 

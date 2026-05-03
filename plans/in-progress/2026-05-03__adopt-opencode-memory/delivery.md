@@ -1,5 +1,18 @@
 # Delivery Checklist
 
+## Current Status Summary
+
+| Phase                          | Status     | Notes                                                          |
+| ------------------------------ | ---------- | -------------------------------------------------------------- |
+| Phase 1: Environment Setup     | ✅ DONE    | All tools verified present                                     |
+| Phase 2: caveman Installation  | ⬜ PENDING | caveman NOT installed for OpenCode                             |
+| Phase 3: Configure Compression | ⬜ PENDING | Awaiting caveman installation                                  |
+| Phase 4: Measure Token Savings | ⬜ PENDING | Awaiting caveman installation                                  |
+| Phase 5: Documentation Updates | ⬜ PENDING | Partial: tech-docs.md written, AGENTS.md/CLAUDE.md not updated |
+| Phase 6: cavemem Evaluation    | 🔄 PARTIAL | MCP server configured, cross-agent memory testing pending      |
+| Manual Behavioral Verification | ⬜ PENDING | Cannot verify until caveman installed                          |
+| Plan Archival                  | ⬜ PENDING | Waiting for all above                                          |
+
 ## TDD-Shaped Implementation Steps
 
 Implementation follows Red → Green → Refactor for each code item.
@@ -10,12 +23,14 @@ Implementation follows Red → Green → Refactor for each code item.
 
 ### Environment Setup
 
-- [ ] Verify Node.js is available: `node --version` (v24.13.1 expected)
-- [ ] Verify npm is available: `npm --version` (v11.10.1 expected)
-- [ ] Verify OpenCode is installed: `opencode --version` or equivalent
-- [ ] Verify existing RTK installation: `rtk --version` or `which rtk`
-- [ ] Run `npm run doctor` to verify toolchain convergence
-- [ ] Note any preexisting failures for fixing during execution
+- [x] ~~Verify Node.js is available: `node --version` (v24.13.1 expected)~~
+- [x] ~~Verify npm is available: `npm --version` (v11.10.1 expected)~~
+- [x] ~~Verify OpenCode is installed: `opencode --version` or equivalent~~
+- [x] ~~Verify existing RTK installation: `rtk --version` or `which rtk`~~
+- [x] ~~Run `npm run doctor` to verify toolchain convergence~~
+- [x] ~~Note any preexisting failures for fixing during execution~~
+
+**Actual State**: All tools present. Node v24.13.1, npm 11.10.1, OpenCode installed, RTK installed.
 
 ---
 
@@ -39,6 +54,8 @@ Implementation follows Red → Green → Refactor for each code item.
 - [ ] **Green**: Record approximate token usage from session metadata
 - [ ] **Refactor**: Document baseline measurement for comparison
 
+**Actual State**: caveman is NOT installed for OpenCode. It's active for Claude Code only (`.caveman-active` = "full" file). Install script NOT yet run for OpenCode. No `/caveman` command available in OpenCode sessions.
+
 ---
 
 ## Phase 3: Configure Compression
@@ -61,6 +78,15 @@ Implementation follows Red → Green → Refactor for each code item.
 - [ ] **Green**: All technical content preserved exactly (no truncation, no alteration)
 - [ ] **Refactor**: Document preservation verification in tech-docs.md
 
+**Actual State**: caveman not installed for OpenCode — cannot configure. cavemem MCP server IS configured in `.opencode/config.json` and appears functional.
+
+### cavemem MCP Configuration (COMPLETED)
+
+- [x] **COMPLETED**: cavemem v0.1.3 installed at `~/.volta/bin/cavemem`
+- [x] **COMPLETED**: OpenCode MCP server configured via `.opencode/config.json`
+- [x] **COMPLETED**: MCP server path: `/Users/wkf/.volta/tools/image/packages/cavemem/lib/node_modules/cavemem/dist/index.js`
+- [x] **COMPLETED**: Worker daemon operational
+
 ---
 
 ## Phase 4: Measure Token Savings
@@ -76,6 +102,8 @@ Implementation follows Red → Green → Refactor for each code item.
 - [ ] **Red**: Compare baseline vs post-adoption token counts
 - [ ] **Green**: Token reduction is ≥75% (or documented justification if not)
 - [ ] **Refactor**: Update brd.md success metrics with actual measurements
+
+**Actual State**: Cannot measure until caveman is installed for OpenCode.
 
 ---
 
@@ -103,19 +131,9 @@ Implementation follows Red → Green → Refactor for each code item.
 
 ---
 
-## Phase 6: cavemem Evaluation (Deferred)
+## Phase 6: cavemem Evaluation
 
-### Evaluate cavemem Readiness
-
-- [ ] Assess cavemem v0.1.3 stability for production use
-- [ ] If stable: install and test cross-agent memory
-- [ ] If unstable: defer to separate plan and document rationale
-
-### Test Cross-Agent Memory (If Deferred)
-
-- [ ] **Red**: Store observation in Claude Code, search from OpenCode
-- [ ] **Green**: Observation returned from shared store
-- [ ] **Refactor**: Document findings and recommendation
+**Status: PARTIALLY COMPLETE** — cavemem v0.1.3 is installed and operational as OpenCode MCP server. Cross-agent memory access between Claude Code and OpenCode is now possible.
 
 ---
 
@@ -168,6 +186,8 @@ Suggested commit structure:
 
 ### OpenCode End-to-End Session Verification
 
+> **Prerequisite**: caveman must be installed for OpenCode (Phase 2 complete) before running these verifications.
+
 - [ ] Start an OpenCode session: `opencode` (or equivalent)
 - [ ] Verify `/caveman` command returns help text with modes listed
 - [ ] Verify `/caveman full` activates compression mode
@@ -175,6 +195,13 @@ Suggested commit structure:
 - [ ] Test `/caveman lite` and `/caveman ultra` mode switching
 - [ ] Test `/caveman-commit` with staged git changes
 - [ ] Document actual output of each command for record
+
+### cavemem Cross-Agent Memory Verification
+
+- [ ] Store an observation in Claude Code (via `cavemem` CLI or Claude Code plugin)
+- [ ] Search from OpenCode using `cavemem search` MCP tool
+- [ ] Verify the observation is returned from the shared SQLite store
+- [ ] Document cross-agent memory test results
 
 ---
 

@@ -2,20 +2,20 @@
 
 ## Metadata
 
-| Field       | Value                               |
-| ----------- | ----------------------------------- |
-| **Plan ID** | `2026-05-03__adopt-opencode-memory` |
-| **Date**    | 2026-05-03                          |
-| **Owner**   | Wahidyan Kresna Fridayoka           |
-| **Scope**   | `ose-public` repository             |
-| **Status**  | In Progress                         |
+| Field       | Value                                  |
+| ----------- | -------------------------------------- |
+| **Plan ID** | `2026-05-03__adopt-opencode-memory`    |
+| **Date**    | 2026-05-03                             |
+| **Owner**   | Wahidyan Kresna Fridayoka              |
+| **Scope**   | `ose-public` repository + OpenCode IDE |
+| **Status**  | In Progress — **Partially Started**    |
 
 ## Context
 
 RTK (Rust Token Killer) is already adopted for output token filtering. This plan adopts two complementary tools from the caveman ecosystem:
 
-- **caveman** (primary) — ~75% output token reduction via compressed caveman-speak; supports OpenCode natively
-- **cavemem** (secondary, deferred) — cross-agent persistent memory via SQLite + FTS5 + vector index
+- **caveman** (primary) — planned for OpenCode, **NOT YET INSTALLED** (only active for Claude Code via `.caveman-active`)
+- **cavemem** (secondary) — **INSTALLED** as OpenCode MCP server (v0.1.3, in production use)
 
 Both are MIT-licensed and explicitly support OpenCode. `claude-mem` was rejected due to AGPL-3.0 license incompatibility with this repository's MIT license.
 

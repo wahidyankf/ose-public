@@ -16,7 +16,7 @@ This plan delivers two tools for the OpenCode IDE in the `ose-public` repository
 
 ### User Stories
 
-#### Primary — caveman
+#### Primary — caveman (NOT YET INSTALLED for OpenCode)
 
 ```gherkin
 Feature: Token Compression in OpenCode
@@ -24,30 +24,36 @@ Feature: Token Compression in OpenCode
   I want to compress agent communication
   So I can reduce token costs by ~75% while preserving technical accuracy
 
+  # PAUSED — caveman not installed for OpenCode
+  @blocked
   Scenario: caveman command available in OpenCode session
     Given I have an active OpenCode session
     When I type "/caveman" in the chat
     Then the caveman help text is returned
     And available modes (lite/full/ultra/wenyan) are listed
 
+  @blocked
   Scenario: Compression preserves code and technical content byte-for-byte
     Given I have an active OpenCode session with caveman enabled
     When I send a message containing code, URLs, or file paths
     Then all code, URLs, and file paths are preserved exactly
     And no technical content is altered or truncated
 
+  @blocked
   Scenario: Token savings are measurable
     Given I have run a baseline session without caveman
     When I run a comparable session with caveman enabled
     Then the token usage shows ~75% reduction
     And the savings are visible via "caveman-stats"
 
+  @blocked
   Scenario: Different compression modes available
     Given I have an active OpenCode session
     When I invoke "/caveman lite" or "/caveman full" or "/caveman ultra" modes
     Then the compression level matches the requested mode
     And output verbosity scales appropriately
 
+  @blocked
   Scenario: Terse commit messages via caveman-commit
     Given I have staged changes in git
     When I use "/caveman-commit" to generate a commit message
@@ -55,7 +61,7 @@ Feature: Token Compression in OpenCode
     And the commit is valid according to conventional commits format
 ```
 
-#### Secondary — cavemem (deferred evaluation)
+#### Secondary — cavemem (INSTALLED as OpenCode MCP server)
 
 ```gherkin
 Feature: Cross-Agent Memory in OpenCode
@@ -69,14 +75,12 @@ Feature: Cross-Agent Memory in OpenCode
     Then relevant observations from the shared store are returned
     And the SQLite + FTS5 index is accessible
 
-  @defer
   Scenario: Timeline view of observations
     Given I have stored multiple observations over time
     When I invoke the timeline tool
     Then observations are returned in chronological order
     And relevant context is quickly retrievable
 
-  @defer
   Scenario: Cross-agent vector search
     Given cavemem vector index is enabled
     When I search for semantic similarity

@@ -42,6 +42,27 @@
 - `timeline` — chronological view of observations
 - `get_observations` — retrieve stored context
 
+## Actual Installation State (as of 2026-05-03)
+
+### caveman — NOT Installed for OpenCode
+
+caveman is **active only for Claude Code** (`.caveman-active` = "full" file). It has **NOT been installed for OpenCode** via the install script.
+
+**What was planned**: Install via `curl -fsSL https://raw.githubusercontent.com/JuliusBrussee/caveman/main/install.sh | bash` or `npx skills add JuliusBrussee/caveman -a opencode`.
+
+**What happened**: Not executed yet.
+
+### cavemem — INSTALLED and Operational
+
+cavemem v0.1.3 **IS installed and operational** as an OpenCode MCP server.
+
+**Actual setup**:
+
+- Binary: `~/.volta/bin/cavemem`
+- MCP server path: `~/.volta/tools/image/packages/cavemem/lib/node_modules/cavemem/dist/index.js`
+- Config: `~/.opencode/config.json` with MCP server registration
+- Status: `cavemem status` shows worker daemon running
+
 ## Installation for OpenCode
 
 ### caveman Installation

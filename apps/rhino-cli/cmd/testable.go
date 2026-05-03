@@ -9,6 +9,7 @@ import (
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/doctor"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/envbackup"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/git"
+	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/glossary"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/mermaid"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/speccoverage"
 	"github.com/wahidyankf/ose-public/apps/rhino-cli/internal/testcoverage"
@@ -71,6 +72,9 @@ var docsValidateMermaidFn = mermaid.ValidateBlocks
 
 // bc validate command delegation.
 var bcValidateAllFn = bcregistry.ValidateAll
+
+// ul validate command delegation.
+var ulValidateAllFn = glossary.ValidateAll
 
 // readFileFn is a variable for dependency injection of os.ReadFile in tests.
 var readFileFn = os.ReadFile

@@ -74,7 +74,8 @@
   - Date: 2026-05-03 | Note: archived plan treated as read-only per convention; cross-link deferred
 - [x] Update `specs/apps/organiclever/README.md` "Structure" tree to include `bounded-contexts.yaml` at the top level.
   - Date: 2026-05-03 | Status: DONE | Tree and Spec Artifacts section updated
-- [ ] Commit: `feat(specs/organiclever): add bounded-contexts.yaml registry`.
+- [x] Commit: `feat(specs/organiclever): add bounded-contexts.yaml registry`.
+  - Date: 2026-05-03 | Status: DONE | SHA ef1316c5b — committed in worktree
 
 **Phase exit gates**:
 
@@ -100,7 +101,8 @@
   - Date: 2026-05-03 | Status: DONE | No shared helper needed; bcregistry_test.go added; coverage 90.35%
 - [x] Smoke-run: `rhino-cli bc validate organiclever` against the real working tree. Should exit zero.
   - Date: 2026-05-03 | Status: PASS | Fixed journal relationships in registry; exits zero
-- [ ] Commit: `feat(rhino-cli): add bc validate subcommand for DDD structural parity`.
+- [x] Commit: `feat(rhino-cli): add bc validate subcommand for DDD structural parity`.
+  - Date: 2026-05-03 | Status: DONE
 
 **Phase exit gates**:
 
@@ -115,20 +117,30 @@
 
 **Goal**: Build the glossary-parity subcommand. Same TDD pattern as Phase 2.
 
-- [ ] **Red**: Author `specs/apps/rhino/cli/gherkin/ul-validate.feature` with Gherkin scenarios mirroring `prd.md` FR-3 acceptance criteria (clean state, missing frontmatter, malformed table header, stale code identifier, missing feature reference, cross-context term collision, forbidden-synonym misuse).
-- [ ] **Red**: Add unit-level godog suite at `apps/rhino-cli/cmd/ul_validate_test.go` (package cmd, mocked filesystem and mocked ripgrep). Confirm the suite **fails**.
-- [ ] **Green**: Implement `apps/rhino-cli/internal/glossary/` (frontmatter parser, terms-table parser, forbidden-synonyms parser per the parser-shape in `tech-docs.md`). Implement `apps/rhino-cli/cmd/ul.go` (Cobra parent command `ulCmd`, package cmd) and `apps/rhino-cli/cmd/ul_validate.go` (the `validate` subcommand, package cmd). Run unit tests until green.
-- [ ] **Green**: Add integration-level godog suite at `apps/rhino-cli/cmd/ul_validate.integration_test.go` with `//go:build integration` (package cmd). Real `/tmp` fixtures including a "table reformatted by Prettier" case. Run until green.
-- [ ] **Refactor**: Verify ≥90% coverage maintained. Move any cross-cutting parser helper into `golang-commons` if reused.
-- [ ] Smoke-run: `rhino-cli ul validate organiclever` against the real working tree. Should exit zero.
+- [x] **Red**: Author `specs/apps/rhino/cli/gherkin/ul-validate.feature` with Gherkin scenarios mirroring `prd.md` FR-3 acceptance criteria (clean state, missing frontmatter, malformed table header, stale code identifier, missing feature reference, cross-context term collision, forbidden-synonym misuse).
+  - Date: 2026-05-03 | Status: DONE | ul-validate.feature created with 8 scenarios tagged @ul-validate
+- [x] **Red**: Add unit-level godog suite at `apps/rhino-cli/cmd/ul_validate_test.go` (package cmd, mocked filesystem and mocked ripgrep). Confirm the suite **fails**.
+  - Date: 2026-05-03 | Status: DONE | Suite confirmed failing before implementation
+- [x] **Green**: Implement `apps/rhino-cli/internal/glossary/` (frontmatter parser, terms-table parser, forbidden-synonyms parser per the parser-shape in `tech-docs.md`). Implement `apps/rhino-cli/cmd/ul.go` (Cobra parent command `ulCmd`, package cmd) and `apps/rhino-cli/cmd/ul_validate.go` (the `validate` subcommand, package cmd). Run unit tests until green.
+  - Date: 2026-05-03 | Status: DONE | internal/glossary/ (parser.go, types.go, validator.go), ul.go, ul_validate.go; unit tests green
+- [x] **Green**: Add integration-level godog suite at `apps/rhino-cli/cmd/ul_validate.integration_test.go` with `//go:build integration` (package cmd). Real `/tmp` fixtures including a "table reformatted by Prettier" case. Run until green.
+  - Date: 2026-05-03 | Status: DONE | 8 integration scenarios pass; fixed stale code identifiers in 8 ubiquitous-language files
+- [x] **Refactor**: Verify ≥90% coverage maintained. Move any cross-cutting parser helper into `golang-commons` if reused.
+  - Date: 2026-05-03 | Status: DONE | Coverage 90.16% ≥ 90%; no shared helper needed; internal/glossary 92.9%
+- [x] Smoke-run: `rhino-cli ul validate organiclever` against the real working tree. Should exit zero.
+  - Date: 2026-05-03 | Status: PASS | Exits zero after fixing stale identifiers in UL docs
 - [ ] Commit: `feat(rhino-cli): add ul validate subcommand for DDD glossary parity`.
 
 **Phase exit gates**:
 
-- [ ] `nx run rhino-cli:test:quick` passes; coverage ≥90%.
-- [ ] `nx run rhino-cli:test:integration` passes.
-- [ ] `nx run rhino-cli:spec-coverage` passes.
-- [ ] `rhino-cli ul validate organiclever` exits zero against the current registry and glossaries.
+- [x] `nx run rhino-cli:test:quick` passes; coverage ≥90%.
+  - Date: 2026-05-03 | Status: PASS | 90.16% ≥ 90%
+- [x] `nx run rhino-cli:test:integration` passes.
+  - Date: 2026-05-03 | Status: PASS | All integration scenarios pass
+- [x] `nx run rhino-cli:spec-coverage` passes.
+  - Date: 2026-05-03 | Status: PASS | 18 specs, 146 scenarios, 615 steps all covered
+- [x] `rhino-cli ul validate organiclever` exits zero against the current registry and glossaries.
+  - Date: 2026-05-03 | Status: PASS | Exit code 0
 
 ---
 

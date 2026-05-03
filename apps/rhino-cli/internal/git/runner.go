@@ -336,7 +336,8 @@ func step7ValidateLinks(gitRoot string, deps Deps) error {
 		return err
 	}
 	if len(result.BrokenLinks) > 0 {
-		_, _ = fmt.Fprintf(deps.Stderr, "❌ Found %d broken links\n", len(result.BrokenLinks))
+		_, _ = fmt.Fprint(deps.Stderr, docs.FormatLinkText(result, false, false))
+		_, _ = fmt.Fprintf(deps.Stderr, "\n❌ Found %d broken links\n", len(result.BrokenLinks))
 		return fmt.Errorf("found %d broken links", len(result.BrokenLinks))
 	}
 	return nil

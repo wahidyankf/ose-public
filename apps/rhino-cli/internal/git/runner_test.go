@@ -352,6 +352,38 @@ func TestStep7ValidateLinks_BrokenLinksFound_ReturnsError(t *testing.T) {
 	}
 }
 
+func TestStep7ValidateLinks_BrokenLinksFound_StderrContainsDetails(t *testing.T) {
+	d := fakeDeps()
+	stderr := &bytes.Buffer{}
+	d.Stderr = stderr
+	d.ValidateLinks = func(_ docs.ScanOptions) (*docs.LinkValidationResult, error) {
+		broken := docs.BrokenLink{
+			SourceFile: "plans/in-progress/example/delivery.md",
+			LineNumber: 140,
+			LinkText:   "../../../governance/development/pattern/workflow.md",
+			TargetPath: "governance/development/pattern/workflow.md",
+			Category:   "Missing files",
+		}
+		return &docs.LinkValidationResult{
+			BrokenLinks:      []docs.BrokenLink{broken},
+			BrokenByCategory: map[string][]docs.BrokenLink{"Missing files": {broken}},
+		}, nil
+	}
+	if err := step7ValidateLinks(t.TempDir(), d); err == nil {
+		t.Fatal("expected broken links error, got nil")
+	}
+	out := stderr.String()
+	for _, want := range []string{
+		"plans/in-progress/example/delivery.md",
+		"140",
+		"../../../governance/development/pattern/workflow.md",
+	} {
+		if !strings.Contains(out, want) {
+			t.Errorf("stderr missing %q\nfull stderr:\n%s", want, out)
+		}
+	}
+}
+
 func TestStep7ValidateLinks_ValidateLinksError_ReturnsError(t *testing.T) {
 	d := fakeDeps()
 	d.ValidateLinks = func(_ docs.ScanOptions) (*docs.LinkValidationResult, error) {

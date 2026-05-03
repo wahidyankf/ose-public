@@ -10,3 +10,11 @@ Feature: Pre-commit hook orchestration
     When the developer runs rhino-cli git pre-commit
     Then the command exits with a failure code
     And the output mentions that a git repository was not found
+
+  Scenario: Broken-link detection in step 7 reports per-link details
+    Given staged markdown files contain a link to a non-existent target
+    When the developer runs rhino-cli git pre-commit
+    Then the command exits with a failure code
+    And the stderr output identifies the source file containing the broken link
+    And the stderr output identifies the line number of the broken link
+    And the stderr output identifies the broken link target

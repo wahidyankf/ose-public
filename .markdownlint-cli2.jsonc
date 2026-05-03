@@ -23,6 +23,7 @@
     "apps/*/.venv/**",
     ".claude/worktrees/**",
     "local-temp/**",
+    ".memsearch/**",
   ],
 
   // Repository-specific markdown linting rules

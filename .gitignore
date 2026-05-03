@@ -149,6 +149,9 @@ coverage.xml
 # Bundled OpenAPI spec + docs
 specs/apps/a-demo/contracts/generated/
 
+# MemSearch vector index (local user-specific data)
+.memsearch/
+
 # Claude Code settings
 .claude/settings.local.json
 .claude/settings.local.json.bkup

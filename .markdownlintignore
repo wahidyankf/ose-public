@@ -39,6 +39,9 @@ local-temp/
 apps/*/playwright-report/
 apps/*/test-results/
 
+# MemSearch vector index (local user-specific data, rebuilt by memsearch watch)
+.memsearch/
+
 # IDE
 .vscode/
 .idea/

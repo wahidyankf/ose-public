@@ -106,4 +106,10 @@ rtk proxy <cmd>       # Execute raw command without filtering (for debugging)
 
 Full command reference with all workflows and savings: <https://github.com/rtk-ai/rtk>
 
+## Token Compression (OpenCode)
+
+OpenCode uses **caveman** for agent output compression (~75% token reduction). Install: `npx -y skills add JuliusBrussee/caveman -a opencode -y`. Skills live in `.agents/skills/`. Use `/caveman` to toggle, `/caveman lite|full|ultra` to set mode.
+
+**Stack**: RTK filters CLI output (git/npm commands). caveman compresses agent prose. Both active simultaneously = compounded savings.
+
 <!-- /rtk-instructions -->

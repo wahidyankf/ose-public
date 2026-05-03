@@ -634,3 +634,25 @@ rtk proxy <cmd>       # Execute raw command without filtering (for debugging)
 ```
 
 <!-- /rtk-instructions -->
+
+## caveman — Token Compression
+
+**caveman** compresses agent output by ~75% via terse caveman-speak. Works with OpenCode via skill injection. Stacks with RTK (output filtering) for compounded savings. MIT licensed. Installed 2026-05-03.
+
+**Usage**: In OpenCode, type `/caveman` in chat. Modes: `lite`, `full` (default), `ultra`.
+
+**Commands**:
+
+- `/caveman` — toggle on/off
+- `/caveman lite|full|ultra` — set mode
+- `/caveman-stats` — show token savings
+- `/caveman-commit` — generate terse commit message
+- `/caveman-review` — one-line PR comments
+
+**Skills installed**: 8 skills in `.agents/skills/caveman-*`. Auto-loads when mentioned or triggered.
+
+**Stack with RTK**: RTK filters CLI output (git/npm commands); caveman compresses agent prose output. Both run simultaneously for compounded savings.
+
+**Verification**: `opencode stats` shows token usage per session.
+
+<!-- /caveman-instructions -->

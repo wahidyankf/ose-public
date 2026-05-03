@@ -44,17 +44,24 @@
 
 ## Actual Installation State (as of 2026-05-03)
 
-### caveman — NOT Installed for OpenCode
+### caveman — INSTALLED for OpenCode ✅
 
-caveman is **active only for Claude Code** (`.caveman-active` = "full" file). It has **NOT been installed for OpenCode** via the install script.
+**Installation**: `npx -y skills add JuliusBrussee/caveman -a opencode -y`
 
-**What was planned**: Install via `curl -fsSL https://raw.githubusercontent.com/JuliusBrussee/caveman/main/install.sh | bash` or `npx skills add JuliusBrussee/caveman -a opencode`.
+Installed 8 skills to `.agents/skills/`:
 
-**What happened**: Not executed yet.
+- `caveman` — core compression skill
+- `caveman-compress` — compress mode variant
+- `caveman-commit` — terse commit messages
+- `caveman-help` — help/usage
+- `caveman-review` — PR review compression
+- `caveman-stats` — token savings stats
+- `cavecrew` — subagent coordination
+- `compress` — alternative compress mode
 
-### cavemem — INSTALLED and Operational
+**Verification**: `/caveman` command confirmed working via `opencode run "/caveman"`. Output: `Skill "caveman" — caveman mode on. full intensity active.`
 
-cavemem v0.1.3 **IS installed and operational** as an OpenCode MCP server.
+### cavemem — INSTALLED and Operational ✅
 
 **Actual setup**:
 

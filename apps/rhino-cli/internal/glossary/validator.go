@@ -233,7 +233,10 @@ func grepFiles(pattern, root string, exts []string) int {
 		return 0
 	}
 	_ = filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
-		if err != nil || info.IsDir() {
+		if err != nil {
+			return nil //nolint:nilerr // skip unreadable files and continue walking
+		}
+		if info.IsDir() {
 			return nil
 		}
 		for _, ext := range exts {
@@ -253,7 +256,7 @@ func grepFile(path string, re *regexp.Regexp) int {
 	if err != nil {
 		return 0
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	count := 0
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {

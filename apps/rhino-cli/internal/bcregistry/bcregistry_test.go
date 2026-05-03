@@ -6,22 +6,18 @@ import (
 	"path/filepath"
 	"sort"
 	"testing"
+	"time"
 )
 
-// fakeFileInfo implements os.FileInfo for testing.
-type fakeFileInfo struct {
-	name  string
-	isDir bool
-}
+// fakeStatInfo implements os.FileInfo for testing stat calls.
+type fakeStatInfo struct{ isDir bool }
 
-func (f fakeFileInfo) Name() string      { return f.name }
-func (f fakeFileInfo) IsDir() bool       { return f.isDir }
-func (f fakeFileInfo) Size() int64       { return 0 }
-func (f fakeFileInfo) Mode() os.FileMode { return 0 }
-func (f fakeFileInfo) ModTime() any {
-	panic("not used")
-}
-func (f fakeFileInfo) Sys() any { return nil }
+func (f fakeStatInfo) Name() string       { return "" }
+func (f fakeStatInfo) IsDir() bool        { return f.isDir }
+func (f fakeStatInfo) Size() int64        { return 0 }
+func (f fakeStatInfo) Mode() os.FileMode  { return os.ModeDir }
+func (f fakeStatInfo) ModTime() time.Time { return time.Time{} }
+func (f fakeStatInfo) Sys() any           { return nil }
 
 // fakeDirEntry implements fs.DirEntry for testing.
 type fakeDirEntry struct {
@@ -32,13 +28,18 @@ type fakeDirEntry struct {
 func (e fakeDirEntry) Name() string               { return e.name }
 func (e fakeDirEntry) IsDir() bool                { return e.isDir }
 func (e fakeDirEntry) Type() os.FileMode          { return 0 }
-func (e fakeDirEntry) Info() (os.FileInfo, error) { return nil, nil }
+func (e fakeDirEntry) Info() (os.FileInfo, error) { return nil, errors.New("info not used in test") }
 
 // dirEntries builds a []os.DirEntry from name+isDir pairs.
 func dirEntries(pairs ...any) []os.DirEntry {
 	var out []os.DirEntry
 	for i := 0; i+1 < len(pairs); i += 2 {
-		out = append(out, fakeDirEntry{name: pairs[i].(string), isDir: pairs[i+1].(bool)})
+		name, ok1 := pairs[i].(string)
+		isDir, ok2 := pairs[i+1].(bool)
+		if !ok1 || !ok2 {
+			panic("dirEntries: expected string, bool pairs")
+		}
+		out = append(out, fakeDirEntry{name: name, isDir: isDir})
 	}
 	return out
 }
@@ -118,7 +119,7 @@ func TestValidateAll_DefaultSeverity(t *testing.T) {
 	osReadFileFn = func(_ string) ([]byte, error) {
 		return []byte("version: 1\napp: test\ncontexts: []\n"), nil
 	}
-	osStatFn = func(_ string) (os.FileInfo, error) { return nil, nil }
+	osStatFn = func(_ string) (os.FileInfo, error) { return fakeStatInfo{isDir: true}, nil }
 	osReadDirFn = func(_ string) ([]os.DirEntry, error) { return nil, nil }
 
 	findings, err := ValidateAll(ValidateOptions{RepoRoot: "/repo", App: "test", Severity: ""})
@@ -161,7 +162,7 @@ func TestCheckContext_AllPresent(t *testing.T) {
 		osReadDirFn = origReadDir
 	}()
 
-	osStatFn = func(_ string) (os.FileInfo, error) { return nil, nil }
+	osStatFn = func(_ string) (os.FileInfo, error) { return fakeStatInfo{isDir: true}, nil }
 	osReadDirFn = func(_ string) ([]os.DirEntry, error) {
 		return dirEntries("domain", true, "application", true), nil
 	}
@@ -294,7 +295,7 @@ func TestCheckGherkin_NoFeatureFiles(t *testing.T) {
 		osReadDirFn = origReadDir
 	}()
 
-	osStatFn = func(_ string) (os.FileInfo, error) { return nil, nil }
+	osStatFn = func(_ string) (os.FileInfo, error) { return fakeStatInfo{isDir: true}, nil }
 	osReadDirFn = func(_ string) ([]os.DirEntry, error) {
 		return dirEntries("README.md", false), nil
 	}
@@ -317,7 +318,7 @@ func TestCheckGherkin_HasFeatureFile(t *testing.T) {
 		osReadDirFn = origReadDir
 	}()
 
-	osStatFn = func(_ string) (os.FileInfo, error) { return nil, nil }
+	osStatFn = func(_ string) (os.FileInfo, error) { return fakeStatInfo{isDir: true}, nil }
 	osReadDirFn = func(_ string) ([]os.DirEntry, error) {
 		return dirEntries("journal.feature", false), nil
 	}
@@ -340,7 +341,7 @@ func TestCheckGherkin_ReadDirError(t *testing.T) {
 		osReadDirFn = origReadDir
 	}()
 
-	osStatFn = func(_ string) (os.FileInfo, error) { return nil, nil }
+	osStatFn = func(_ string) (os.FileInfo, error) { return fakeStatInfo{isDir: true}, nil }
 	osReadDirFn = func(_ string) ([]os.DirEntry, error) {
 		return nil, errors.New("permission denied")
 	}
@@ -410,7 +411,7 @@ func TestDetectOrphanFiles_FindsOrphan(t *testing.T) {
 	}
 
 	registered := map[string]bool{"/repo/specs/apps/test/ubiquitous-language/journal.md": true}
-	findings := detectOrphanFiles("/repo/specs/apps/test/ubiquitous-language", ".md", registered, "orphan glossary file", "registered in bounded-contexts.yaml", "error")
+	findings := detectOrphanFiles("/repo/specs/apps/test/ubiquitous-language", registered, "orphan glossary file", "registered in bounded-contexts.yaml", "error")
 
 	if len(findings) != 1 {
 		t.Fatalf("expected 1 orphan finding, got %d", len(findings))
@@ -425,7 +426,7 @@ func TestDetectOrphanFiles_SkipsREADME(t *testing.T) {
 		return dirEntries("README.md", false), nil
 	}
 
-	findings := detectOrphanFiles("/repo/specs/apps/test/ubiquitous-language", ".md", map[string]bool{}, "orphan glossary file", "registered", "error")
+	findings := detectOrphanFiles("/repo/specs/apps/test/ubiquitous-language", map[string]bool{}, "orphan glossary file", "registered", "error")
 	if len(findings) != 0 {
 		t.Errorf("expected README.md to be skipped, got %d findings", len(findings))
 	}
@@ -439,7 +440,7 @@ func TestDetectOrphanFiles_SkipsDirectories(t *testing.T) {
 		return dirEntries("subdir", true), nil
 	}
 
-	findings := detectOrphanFiles("/repo", ".md", map[string]bool{}, "orphan", "reason", "error")
+	findings := detectOrphanFiles("/repo", map[string]bool{}, "orphan", "reason", "error")
 	if len(findings) != 0 {
 		t.Errorf("expected directories to be skipped, got %d findings", len(findings))
 	}
@@ -453,7 +454,7 @@ func TestDetectOrphanFiles_ReadDirError(t *testing.T) {
 		return nil, errors.New("permission denied")
 	}
 
-	findings := detectOrphanFiles("/nonexistent", ".md", map[string]bool{}, "orphan", "reason", "error")
+	findings := detectOrphanFiles("/nonexistent", map[string]bool{}, "orphan", "reason", "error")
 	if len(findings) != 0 {
 		t.Errorf("expected 0 findings on readdir error, got %d", len(findings))
 	}

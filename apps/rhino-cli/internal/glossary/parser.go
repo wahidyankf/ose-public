@@ -1,3 +1,4 @@
+// Package glossary provides validation for bounded-context ubiquitous-language glossary files.
 package glossary
 
 import (

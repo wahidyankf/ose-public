@@ -59,7 +59,7 @@ flowchart LR
     BCValidate["rhino-cli bc validate\n#40;structural parity#41;"]:::blue
     ULValidate["rhino-cli ul validate\n#40;glossary parity#41;"]:::blue
     TestQuick["organiclever-web\ntest:quick"]:::orange
-    Skill["apps-organiclever-web-developing-content\nSKILL.md — DDD section"]:::gray
+    Skill["organiclever-web skill\nSKILL.md DDD section"]:::gray
 
     Registry -->|loads| BCValidate
     Registry -->|loads| ULValidate

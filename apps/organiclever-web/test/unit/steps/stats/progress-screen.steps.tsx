@@ -1,7 +1,7 @@
 /**
  * Step definitions for the Progress Screen feature.
  *
- * Covers: specs/apps/organiclever/fe/gherkin/progress/progress-screen.feature
+ * Covers: specs/apps/organiclever/fe/gherkin/stats/progress-screen.feature
  *
  * Tests component logic directly without browser APIs:
  * - Default module selection (workout)
@@ -62,7 +62,7 @@ function makeExerciseProgress(): ExerciseProgress {
 // ---------------------------------------------------------------------------
 
 const feature = await loadFeature(
-  path.resolve(__dirname, "../../../../../../specs/apps/organiclever/fe/gherkin/progress/progress-screen.feature"),
+  path.resolve(__dirname, "../../../../../../specs/apps/organiclever/fe/gherkin/stats/progress-screen.feature"),
 );
 
 describeFeature(feature, ({ Scenario }) => {

@@ -1,7 +1,7 @@
 /**
  * Step definitions for the Workout Session feature.
  *
- * Covers: specs/apps/organiclever/fe/gherkin/workout/workout-session.feature
+ * Covers: specs/apps/organiclever/fe/gherkin/workout-session/workout-session.feature
  *
  * Tests workoutSessionMachine directly (no browser APIs, no PGlite).
  */
@@ -71,7 +71,10 @@ function makeActor(routine: Routine | null, settings = mockSettings) {
 // ---------------------------------------------------------------------------
 
 const feature = await loadFeature(
-  path.resolve(__dirname, "../../../../../../specs/apps/organiclever/fe/gherkin/workout/workout-session.feature"),
+  path.resolve(
+    __dirname,
+    "../../../../../../specs/apps/organiclever/fe/gherkin/workout-session/workout-session.feature",
+  ),
 );
 
 describeFeature(feature, ({ Scenario }) => {

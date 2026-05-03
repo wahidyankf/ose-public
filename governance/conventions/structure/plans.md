@@ -324,10 +324,12 @@ Plans differ from `docs/` in several important ways:
 
 ### Starting Work
 
-1. **Move folder**: Move plan folder from `backlog/` to `in-progress/`
-2. **Update index**: Update both `backlog/README.md` and `in-progress/README.md`
-3. **Git commit**: Commit the move with appropriate message
-4. **Begin execution**: Start implementing according to delivery checklist
+1. **Provision worktree**: Run `claude --worktree <plan-identifier>` from the repo root — this creates `worktrees/<plan-identifier>/` in the repo root (not `.claude/worktrees/`). See [Worktree Path Convention](./worktree-path.md).
+2. **Initialize toolchain**: In the root worktree, run `npm install && npm run doctor -- --fix`. See [Worktree Toolchain Initialization](../../development/workflow/worktree-setup.md).
+3. **Move folder**: Move plan folder from `backlog/` to `in-progress/`
+4. **Update index**: Update both `backlog/README.md` and `in-progress/README.md`
+5. **Git commit**: Commit the move with appropriate message
+6. **Begin execution**: Start implementing according to delivery checklist
 
 ### Completing Work
 

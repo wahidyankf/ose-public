@@ -221,6 +221,12 @@ nx graph                     # Visualize dependencies
 
 **See**: [governance/development/workflow/commit-messages.md](./governance/development/workflow/commit-messages.md)
 
+### Worktree Path
+
+Worktrees in this repo land at **`worktrees/<name>/`** in the repo root — not at the Claude Code default `.claude/worktrees/<name>/`. Routing is handled by `.claude/hooks/worktree-create.sh` (`WorktreeCreate` hook). Both paths are gitignored.
+
+**See**: [governance/conventions/structure/worktree-path.md](./governance/conventions/structure/worktree-path.md)
+
 ## Git Hooks (Automated Quality)
 
 Husky + lint-staged enforce quality:

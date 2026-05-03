@@ -126,10 +126,12 @@ The rule is **triggered by execution mode, not by intent**. Even "small" or "doc
 1. Create or enter the worktree using your preferred method:
 
    ```bash
-   git worktree add .claude/worktrees/my-feature-branch my-feature-branch
+   git worktree add worktrees/my-feature-branch my-feature-branch
    ```
 
-2. Identify the root repository worktree path. This is the directory containing the canonical checkout — typically the parent of `.claude/worktrees/`.
+   This repo overrides the Claude Code default worktree path — worktrees land at repo-root `worktrees/<name>/`, not `.claude/worktrees/<name>/`. See [worktree-path.md](../../conventions/structure/worktree-path.md) for the convention and the WorktreeCreate hook that enforces it.
+
+2. Identify the root repository worktree path. This is the directory containing the canonical checkout — typically the parent of `worktrees/`.
 
 3. Run `npm install` in the root worktree:
 
@@ -156,6 +158,7 @@ The root worktree path is available from the environment context or can be confi
 
 ## Related Documentation
 
+- [Worktree Path Convention](../../conventions/structure/worktree-path.md) - Repo-root `worktrees/<name>/` override and the WorktreeCreate hook that enforces it
 - [Reproducible Environments](./reproducible-environments.md) - Practices for consistent development environments, including Volta pinning and lockfile management
 - [Native-First Toolchain Management](./native-first-toolchain.md) - Architectural decision to use native package managers and `rhino-cli doctor` for toolchain management across 11 languages
 - [AI Agents Convention](../agents/ai-agents.md) - Git Worktree Awareness rules for agents operating across worktrees

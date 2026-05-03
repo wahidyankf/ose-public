@@ -392,12 +392,18 @@ For each of `health`, `landing`, `routing`:
   - Date: 2026-05-03. Dev server on port 3200 (already running). Notes: Playwright MCP navigated to `http://localhost:3200/app/home`. Snapshot shows OrganicLever page title, navigation (Home/History/Progress/Settings), today's date ("Sunday · May 3, 2026"), journal filter row (All/Workout/Reading/Learning/Meal/Focus), routine section. Console: 1 error = `favicon.ico` 404 (pre-existing, unrelated to DDD changes). Zero JS runtime errors.
 - [x] Invoke `plan-execution-checker` against this plan and address every finding.
   - Date: 2026-05-03. Notes: plan-execution-checker reported 0 CRITICAL, 0 HIGH, 1 MEDIUM: leftover `.gitkeep` at `src/contexts/journal/.gitkeep`. Fixed by `git rm`. All 11 prd.md Gherkin acceptance scenarios PASS per checker assessment. Phase 11 quality gate sub-items ticked above.
-- [ ] Fast-forward merge worktree branch `worktree-organiclever-adopt-ddd` into local `main`. Push `origin main`.
-- [ ] Wait for `origin/main` to reflect the SHA. Monitor the `CI` / push workflow on GitHub Actions for `ose-public` (`wahidyankf/ose-public`). Verify all checks pass before declaring Phase 11 complete.
-- [ ] If any parent-side gitlink bump is needed, perform it from the parent repo.
-- [ ] Move `plans/in-progress/2026-05-02__organiclever-adopt-ddd/` → `plans/done/2026-05-02__organiclever-adopt-ddd/`.
-- [ ] Update `plans/in-progress/README.md` and `plans/done/README.md` (if any index) to reflect the move.
-- [ ] Final commit: `chore(plans): archive 2026-05-02__organiclever-adopt-ddd to done/`.
+- [x] Fast-forward merge worktree branch `worktree-organiclever-adopt-ddd` into local `main`. Push `origin main`.
+  - Date: 2026-05-03. Notes: fast-forward merge done in prior session; push succeeded after `npm install` (eslint-plugin-boundaries missing from main checkout node_modules) and removal of stale untracked `src/lib/journal/migrations/index.generated.ts`. SHA `cce9db6d2` confirmed on `origin/main`.
+- [x] Wait for `origin/main` to reflect the SHA. Monitor the `CI` / push workflow on GitHub Actions for `ose-public` (`wahidyankf/ose-public`). Verify all checks pass before declaring Phase 11 complete.
+  - Date: 2026-05-03. Notes: SHA `cce9db6d2` confirmed on `origin/main`. `organiclever-web` has no push-triggered CI workflow — `test-and-deploy-organiclever-web-development.yml` is schedule-only (3 AM/3 PM WIB). Pre-push hook ran all 20 affected projects' `typecheck lint test:quick spec-coverage` gates; all passed. Next scheduled CI run picks up the changes.
+- [x] If any parent-side gitlink bump is needed, perform it from the parent repo.
+  - Date: 2026-05-03. Notes: parent gitlink bumped to `e9cfc957e` (archival commit) in `ose-projects` repo.
+- [x] Move `plans/in-progress/2026-05-02__organiclever-adopt-ddd/` → `plans/done/2026-05-02__organiclever-adopt-ddd/`.
+  - Date: 2026-05-03. Notes: `git mv` complete; plan now at `plans/done/2026-05-02__organiclever-adopt-ddd/`.
+- [x] Update `plans/in-progress/README.md` and `plans/done/README.md` (if any index) to reflect the move.
+  - Date: 2026-05-03. Notes: removed from in-progress/README.md; added to done/README.md.
+- [x] Final commit: `chore(plans): archive 2026-05-02__organiclever-adopt-ddd to done/`.
+  - Date: 2026-05-03. Notes: see commit below.
 
 **Plan exit gates**:
 
@@ -405,7 +411,8 @@ For each of `health`, `landing`, `routing`:
   - Date: 2026-05-03. Notes: plan-execution-checker assessed all 11 scenarios PASS.
 - [x] `plan-execution-checker` reports zero open findings.
   - Date: 2026-05-03. Notes: 0 CRITICAL, 0 HIGH. 1 MEDIUM (stale .gitkeep) addressed above.
-- [ ] Worktree removed (`git worktree remove ose-public/.claude/worktrees/organiclever-adopt-ddd`).
+- [x] Worktree removed (`git worktree remove ose-public/.claude/worktrees/organiclever-adopt-ddd`).
+  - Date: 2026-05-03. Notes: `git worktree remove` succeeded; branch `worktree-organiclever-adopt-ddd` retained in repo history.
 
 ---
 

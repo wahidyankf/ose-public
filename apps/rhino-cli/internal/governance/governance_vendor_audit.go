@@ -30,14 +30,42 @@ var forbiddenTerms = []struct {
 	displayTerm string
 	replacement string
 }{
+	// Harness / coding-agent product names (already governed via existing
+	// allowlist + binding directories).
 	{regexp.MustCompile(`Claude Code`), "Claude Code", `"the coding agent"`},
 	{regexp.MustCompile(`OpenCode`), "OpenCode", `"the coding agent" or drop where redundant`},
-	{regexp.MustCompile(`Anthropic`), "Anthropic", `"the model vendor" or drop`},
+	{regexp.MustCompile(`\bCursor\b`), "Cursor", `"the coding agent" or "AI coding editor"`},
+	{regexp.MustCompile(`\bWindsurf\b`), "Windsurf", `"the coding agent" or "AI coding editor"`},
+	{regexp.MustCompile(`\bCodeium\b`), "Codeium", `"the coding agent" (legacy Windsurf brand)`},
+	{regexp.MustCompile(`\bCopilot\b`), "Copilot", `"the coding agent" or "AI coding assistant"`},
+	{regexp.MustCompile(`\bAider\b`), "Aider", `"the coding agent" or "AI coding assistant"`},
+	{regexp.MustCompile(`\bCline\b`), "Cline", `"the coding agent" or "AI coding assistant"`},
+	{regexp.MustCompile(`\bDevin\b`), "Devin", `"the coding agent" (false-positive risk: personal name; review context)`},
+	// Vendor-specific binding directory paths.
 	{regexp.MustCompile(`\.claude/`), ".claude/", `"primary binding directory"`},
 	{regexp.MustCompile(`\.opencode/`), ".opencode/", `"secondary binding directory"`},
+	{regexp.MustCompile(`\.cursor/`), ".cursor/", `"the platform binding directory"`},
+	{regexp.MustCompile(`\.windsurf/`), ".windsurf/", `"the platform binding directory"`},
+	{regexp.MustCompile(`\.continue/`), ".continue/", `"the platform binding directory"`},
+	{regexp.MustCompile(`\.clinerules/`), ".clinerules/", `"the platform binding directory"`},
+	// Model-vendor company names.
+	{regexp.MustCompile(`Anthropic`), "Anthropic", `"the model vendor" or drop`},
+	{regexp.MustCompile(`\bOpenAI\b`), "OpenAI", `"the model vendor" or drop`},
+	{regexp.MustCompile(`\bxAI\b`), "xAI", `"the model vendor" or drop`},
+	// Model family / model names. Generic prose should use capability tiers
+	// (planning-grade, execution-grade, fast) instead.
 	{regexp.MustCompile(`\bSonnet\b`), "Sonnet", `"execution-grade"`},
 	{regexp.MustCompile(`\bOpus\b`), "Opus", `"planning-grade"`},
 	{regexp.MustCompile(`\bHaiku\b`), "Haiku", `"fast"`},
+	{regexp.MustCompile(`\bGPT\b`), "GPT", `"AI model" or capability tier`},
+	{regexp.MustCompile(`\bGemini\b`), "Gemini", `"AI model" or capability tier`},
+	{regexp.MustCompile(`\bDeepSeek\b`), "DeepSeek", `"AI model" or capability tier`},
+	{regexp.MustCompile(`\bQwen\b`), "Qwen", `"AI model" or capability tier`},
+	{regexp.MustCompile(`\bLlama\b`), "Llama", `"AI model" or capability tier`},
+	{regexp.MustCompile(`\bMistral\b`), "Mistral", `"AI model" or capability tier`},
+	{regexp.MustCompile(`\bGrok\b`), "Grok", `"AI model" (false-positive risk: verb "to grok"; review context)`},
+	// Vendor-branded concepts (capitalized branded forms only).
+	{regexp.MustCompile(`\bSkills\b`), "Skills", `"agent skills" (lowercase)`},
 }
 
 // Finding describes a single vendor-term violation found in a file.

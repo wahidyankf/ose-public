@@ -15,11 +15,13 @@ import (
 )
 
 // Step constant patterns for governance vendor-audit scenarios.
+// The first four use a capture group so any forbidden term ("Claude Code",
+// "Skills", "Sonnet", etc.) drives the same step implementation.
 const (
-	stepGovernanceFileWithForbiddenTermInProse              = `^a governance markdown file containing "Claude Code" in plain prose$`
-	stepGovernanceFileWithForbiddenTermInCodeFence          = `^a governance markdown file containing "Claude Code" inside a code fence$`
-	stepGovernanceFileWithForbiddenTermInBindingFence       = `^a governance markdown file containing "Claude Code" inside a binding-example fence$`
-	stepGovernanceFileWithForbiddenTermUnderPlatformHeading = `^a governance markdown file containing "Claude Code" under a "Platform Binding Examples" heading$`
+	stepGovernanceFileWithForbiddenTermInProse              = `^a governance markdown file containing "([^"]+)" in plain prose$`
+	stepGovernanceFileWithForbiddenTermInCodeFence          = `^a governance markdown file containing "([^"]+)" inside a code fence$`
+	stepGovernanceFileWithForbiddenTermInBindingFence       = `^a governance markdown file containing "([^"]+)" inside a binding-example fence$`
+	stepGovernanceFileWithForbiddenTermUnderPlatformHeading = `^a governance markdown file containing "([^"]+)" under a "Platform Binding Examples" heading$`
 	stepGovernanceDirectoryWithNoForbiddenTerms             = `^a governance directory with no forbidden terms in prose$`
 	stepDeveloperRunsGovernanceVendorAuditOnFile            = `^the developer runs governance vendor-audit on the file$`
 	stepDeveloperRunsGovernanceVendorAuditOnDir             = `^the developer runs governance vendor-audit on the directory$`
@@ -33,8 +35,9 @@ var specsDirUnitGovernanceVendorAudit = func() string {
 }()
 
 type governanceVendorAuditUnitSteps struct {
-	cmdErr    error
-	cmdOutput string
+	cmdErr     error
+	cmdOutput  string
+	activeTerm string
 }
 
 func (s *governanceVendorAuditUnitSteps) before(_ context.Context, _ *godog.Scenario) (context.Context, error) {
@@ -43,6 +46,7 @@ func (s *governanceVendorAuditUnitSteps) before(_ context.Context, _ *godog.Scen
 	output = "text"
 	s.cmdErr = nil
 	s.cmdOutput = ""
+	s.activeTerm = ""
 
 	osGetwd = func() (string, error) { return "/mock-repo", nil }
 	osStat = func(name string) (os.FileInfo, error) {
@@ -62,31 +66,32 @@ func (s *governanceVendorAuditUnitSteps) after(_ context.Context, _ *godog.Scena
 	return context.Background(), nil
 }
 
-func (s *governanceVendorAuditUnitSteps) fileWithForbiddenTermInProse() error {
+func (s *governanceVendorAuditUnitSteps) fileWithForbiddenTermInProse(term string) error {
+	s.activeTerm = term
 	governanceVendorAuditFn = func(_ string) ([]governance.Finding, error) {
 		return []governance.Finding{{
 			Path:        "/mock-repo/governance/foo.md",
 			Line:        23,
-			Match:       "Claude Code",
-			Replacement: `"the coding agent"`,
+			Match:       term,
+			Replacement: `"vendor-neutral replacement"`,
 		}}, nil
 	}
 	return nil
 }
 
-func (s *governanceVendorAuditUnitSteps) fileWithForbiddenTermInCodeFence() error {
+func (s *governanceVendorAuditUnitSteps) fileWithForbiddenTermInCodeFence(_ string) error {
 	// Term is inside a code fence → mock returns zero findings.
 	governanceVendorAuditFn = func(_ string) ([]governance.Finding, error) { return nil, nil }
 	return nil
 }
 
-func (s *governanceVendorAuditUnitSteps) fileWithForbiddenTermInBindingFence() error {
+func (s *governanceVendorAuditUnitSteps) fileWithForbiddenTermInBindingFence(_ string) error {
 	// Term is inside a binding-example fence → mock returns zero findings.
 	governanceVendorAuditFn = func(_ string) ([]governance.Finding, error) { return nil, nil }
 	return nil
 }
 
-func (s *governanceVendorAuditUnitSteps) fileWithForbiddenTermUnderPlatformHeading() error {
+func (s *governanceVendorAuditUnitSteps) fileWithForbiddenTermUnderPlatformHeading(_ string) error {
 	// Term is under Platform Binding Examples heading → mock returns zero findings.
 	governanceVendorAuditFn = func(_ string) ([]governance.Finding, error) { return nil, nil }
 	return nil
@@ -130,8 +135,11 @@ func (s *governanceVendorAuditUnitSteps) exitsWithFailure() error {
 }
 
 func (s *governanceVendorAuditUnitSteps) outputIdentifiesForbiddenTerm() error {
-	if !strings.Contains(s.cmdOutput, "Claude Code") {
-		return fmt.Errorf("expected output to contain 'Claude Code', got: %s", s.cmdOutput)
+	if s.activeTerm == "" {
+		return fmt.Errorf("test setup error: activeTerm not set before outputIdentifiesForbiddenTerm")
+	}
+	if !strings.Contains(s.cmdOutput, s.activeTerm) {
+		return fmt.Errorf("expected output to contain %q, got: %s", s.activeTerm, s.cmdOutput)
 	}
 	if !strings.Contains(s.cmdOutput, "governance/foo.md") {
 		return fmt.Errorf("expected output to contain file path, got: %s", s.cmdOutput)

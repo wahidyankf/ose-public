@@ -145,6 +145,88 @@ func TestScanLines_DetectsModelTierTerms(t *testing.T) {
 	}
 }
 
+func TestScanLines_DetectsExpandedHarnessAndVendorTerms(t *testing.T) {
+	// Each table entry asserts that the named term is detected when used in
+	// plain prose. The replacement text is not asserted; that lives in the
+	// scanner's forbiddenTerms slice.
+	tests := []struct {
+		name  string
+		input string
+		term  string
+	}{
+		{"Cursor harness", "Use Cursor for inline edits.\n", "Cursor"},
+		{"Windsurf harness", "Windsurf flows replace cascading agents.\n", "Windsurf"},
+		{"Codeium legacy", "Codeium is the legacy brand for Windsurf.\n", "Codeium"},
+		{"Copilot harness", "Configure Copilot via the binding directory.\n", "Copilot"},
+		{"Aider harness", "Aider runs in the terminal.\n", "Aider"},
+		{"Cline harness", "Cline integrates with VS Code.\n", "Cline"},
+		{"Devin agent", "Devin is the cloud-based coding agent.\n", "Devin"},
+		{"OpenAI vendor", "OpenAI ships GPT models.\n", "OpenAI"},
+		{"xAI vendor", "xAI publishes Grok variants.\n", "xAI"},
+		{"GPT model family", "Use GPT for completion.\n", "GPT"},
+		{"Gemini model family", "Gemini handles long context well.\n", "Gemini"},
+		{"DeepSeek model family", "DeepSeek released a new checkpoint.\n", "DeepSeek"},
+		{"Qwen model family", "Qwen is competitive on coding benchmarks.\n", "Qwen"},
+		{"Llama model family", "Llama is open-weight.\n", "Llama"},
+		{"Mistral model family", "Mistral releases European-built models.\n", "Mistral"},
+		{"Grok model family", "Grok runs on xAI infrastructure.\n", "Grok"},
+		{".cursor/ path", "The .cursor/ directory is generated.\n", ".cursor/"},
+		{".windsurf/ path", "Look in .windsurf/ for the workspace config.\n", ".windsurf/"},
+		{".continue/ path", "Settings live under .continue/ at repo root.\n", ".continue/"},
+		{".clinerules/ path", "Project lives in .clinerules/ for agent rules.\n", ".clinerules/"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			findings := scanLines("governance/foo.md", tt.input)
+			found := false
+			for _, f := range findings {
+				if f.Match == tt.term {
+					found = true
+					break
+				}
+			}
+			if !found {
+				t.Errorf("expected finding for %q, got: %+v", tt.term, findings)
+			}
+		})
+	}
+}
+
+func TestScanLines_DetectsCapitalizedSkillsTerm(t *testing.T) {
+	t.Run("capitalized branded Skills is detected", func(t *testing.T) {
+		content := "Use Skills to delegate work to specialized agents.\n"
+		findings := scanLines("governance/foo.md", content)
+		found := false
+		for _, f := range findings {
+			if f.Match == "Skills" {
+				found = true
+				break
+			}
+		}
+		if !found {
+			t.Errorf("expected finding for capitalized 'Skills', got: %+v", findings)
+		}
+	})
+
+	t.Run("lowercase agent skills is allowed", func(t *testing.T) {
+		content := "Use agent skills to delegate work to specialized agents.\n"
+		findings := scanLines("governance/foo.md", content)
+		for _, f := range findings {
+			if f.Match == "Skills" {
+				t.Errorf("did not expect a Skills finding for lowercase prose, got: %+v", f)
+			}
+		}
+	})
+
+	t.Run("Skills inside a code fence is exempt", func(t *testing.T) {
+		content := "# Section\n\n```bash\necho Skills\n```\n\nclean prose\n"
+		findings := scanLines("governance/foo.md", content)
+		if len(findings) != 0 {
+			t.Errorf("expected zero findings when Skills is inside a code fence, got: %+v", findings)
+		}
+	})
+}
+
 func TestScanLines_PlatformBindingExamplesHeadingCaseInsensitive(t *testing.T) {
 	content := "# Doc\n\n## PLATFORM BINDING EXAMPLES\n\nClaude Code used here.\n"
 	findings := scanLines("governance/foo.md", content)

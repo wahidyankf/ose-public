@@ -34,3 +34,15 @@ Feature: Governance Vendor Audit
     When the developer runs governance vendor-audit on the directory
     Then the command exits successfully
     And the output reports zero findings
+
+  Scenario: Capitalized branded Skills in plain prose fails the audit
+    Given a governance markdown file containing "Skills" in plain prose
+    When the developer runs governance vendor-audit on the file
+    Then the command exits with a failure code
+    And the output identifies the forbidden term and its location
+
+  Scenario: Capitalized Skills inside a code fence passes the audit
+    Given a governance markdown file containing "Skills" inside a code fence
+    When the developer runs governance vendor-audit on the file
+    Then the command exits successfully
+    And the output reports zero findings

@@ -65,7 +65,7 @@ Scenario: Agent count parity between bindings
   Given the binding-sync layer
   When I count .claude/agents/*.md and .opencode/agents/*.md
   Then the two counts are equal
-  And any mismatch (e.g., the currently-observed 73 vs 71) is fixed before final validation
+  And any mismatch (e.g., the currently-observed 70 vs 71, where .opencode has orphan ci-monitor-subagent.md) is investigated and resolved before final validation
 
 Scenario: Color-translation map covers every used color
   Given .claude/agents/*.md files declare named colors in frontmatter
@@ -94,8 +94,45 @@ Scenario: New governance file passes neutrality before commit
 Scenario: Platform-bindings catalog reflects each tool's documented file
   Given the docs/reference/platform-bindings.md Aider entry
   When I cross-check it against Aider's own documentation
-  Then the entry says CONVENTIONS.md (not AGENTS.md) is Aider's documented instruction file
+  Then the entry says Aider reads CONVENTIONS.md natively; AGENTS.md support claimed by agents.md standard but not documented by Aider itself
   And any AGENTS.md adoption claim is sourced to agents.md, not Aider's own docs
+
+Scenario: Parity checker agent invokes existing tools and reports findings
+  Given the .claude/agents/repo-parity-checker.md agent file exists with the documented invariants
+  When the agent is invoked via Agent tool
+  Then it runs rhino-cli governance vendor-audit, npm run sync:claude-to-opencode, ls/grep/diff against agent dirs, and WebFetch on Aider docs
+  And it writes a dual-label audit report to generated-reports/parity__<uuid>__<YYYY-MM-DD--HH-MM>__audit.md
+  And it does not duplicate logic that already exists in rhino-cli or the sync command
+
+Scenario: Parity fixer auto-remediates only sync drift
+  Given the parity checker reports sync drift as a finding
+  When the parity fixer runs against that finding
+  Then it re-runs npm run sync:claude-to-opencode and stages the result
+  And for color-map gaps, tier-map gaps, orphan agents, or Aider entry drift it flags the finding without auto-fixing
+
+Scenario: Cross-vendor parity Nx target gates pre-push
+  Given the validate:cross-vendor-parity Nx target is wired into .husky/pre-push
+  When a developer pushes a commit that breaks any of the five invariants
+  Then the pre-push hook exits non-zero and blocks the push
+  And the failure message identifies which invariant failed
+  And re-running the target after fixing the invariant exits 0
+
+Scenario: Cross-vendor-parity-quality-gate workflow runs the maker-checker-fixer loop
+  Given the repo-cross-vendor-parity-quality-gate workflow exists at governance/workflows/repo/
+  When a contributor invokes the workflow
+  Then it runs repo-parity-checker as Step 1
+  And it runs repo-parity-fixer as Step 3 only if findings exist
+  And it re-validates with repo-parity-checker as Step 4
+  And it iterates until two consecutive zero-finding validations are confirmed
+  And it terminates with final-status pass on double-zero, partial on max-iterations exhaustion, or fail on technical errors
+
+Scenario: Workflow surfaces non-auto-fixable findings as partial
+  Given the parity checker reports a color-map gap finding
+  When the repo-cross-vendor-parity-quality-gate workflow runs against that finding
+  Then the fixer flags the finding without auto-fixing
+  And the workflow continues to subsequent iterations
+  And if the finding persists at max-iterations the workflow exits with final-status partial
+  And the partial-status report identifies the unfixable finding for human resolution
 ```
 
 ## Product Scope
@@ -110,6 +147,7 @@ Scenario: Platform-bindings catalog reflects each tool's documented file
 - Audit and remediate AGENTS.md and CLAUDE.md per the amended convention
 - Correct `docs/reference/platform-bindings.md` Aider entry per Aider's own docs (research-driven factual fix)
 - Verify behavioral-parity invariants: sync no-op, count parity, color-map coverage, capability-tier-map coverage
+- Author `repo-parity-checker` (green) and `repo-parity-fixer` (yellow) agents in `.claude/agents/` (auto-synced to `.opencode/agents/`); author `repo-cross-vendor-parity-quality-gate` workflow at `governance/workflows/repo/` (mirrors `plan-quality-gate.md`); wire `validate:cross-vendor-parity` Nx target into `.husky/pre-push`
 - Update `governance/README.md` layer-test with vendor-specific content test
 - Validate via `rhino-cli governance vendor-audit`
 
@@ -128,7 +166,7 @@ Scenario: Platform-bindings catalog reflects each tool's documented file
    - Mitigation: Plan schedules amendment immediately before the audit phase; remediation happens in the same plan
 3. **Risk**: Binding sync drifts undetected during this plan's execution
    - Mitigation: Phase 5 explicitly runs `npm run sync:claude-to-opencode` and verifies count parity; mismatches are fixed before push
-4. **Risk**: Color-translation map gap rejects synced agents on current OpenCode (named CSS colors are rejected; only hex or theme tokens valid)
+4. **Risk**: Color-translation map gap causes synced agents to fail on current OpenCode (docs enumerate only hex and theme tokens as valid; named-color rejection is observed behavior but not explicitly stated in public docs)
    - Mitigation: Phase 5 cross-checks color frontmatter against the map; gaps become findings
 5. **Risk**: Capability-tier-map gap leaves an agent's tier unresolved on one or both bindings
    - Mitigation: Phase 5 cross-checks tier frontmatter against the map; gaps become findings
@@ -144,6 +182,9 @@ Scenario: Platform-bindings catalog reflects each tool's documented file
 - **`plan-executor` agent** — executes delivery checklist steps; relies on governance rules being toolchain-agnostic
 - **`repo-rules-checker` agent** — audits governance and (after amendment) AGENTS.md / CLAUDE.md
 - **Future AI agents on any platform (OpenCode, Codex CLI, Aider, Cursor, ...)** — read AGENTS.md natively at session boot; must not require vendor-specific knowledge to interpret rules
+- **Operator running parity gate periodically** — invokes `repo-parity-checker` agent for ad-hoc audits OR runs `nx run rhino-cli:validate:cross-vendor-parity` (also runs automatically on every push via the pre-push hook). Requires no memory of this plan's specifics — invariants are encoded in the agent body and the Nx target script.
+- **`repo-parity-checker` agent** — invokes existing tools (rhino-cli, npm sync, ls/grep, WebFetch) to validate the five invariants and emit a dual-label audit report. Does NOT duplicate logic.
+- **`repo-parity-fixer` agent** — auto-remediates sync drift only; flags color-map / tier-map / orphan / Aider-drift findings for human resolution.
 
 ## User Stories
 
@@ -175,9 +216,16 @@ so that I can invoke the same agents and get behaviorally-equivalent responses.
 
 **Acceptance**: `.claude/agents/*.md` and `.opencode/agents/*.md` counts are equal; every named color and capability tier referenced in agent frontmatter is documented in the corresponding map.
 
-### As the convention author
+### As a convention author
 
 I want AGENTS.md and CLAUDE.md to be in scope of the vendor-independence convention,
 so that the highest-leverage cross-vendor instruction surfaces are governed by the same rules as the rest of `governance/`.
 
 **Acceptance**: `governance-vendor-independence.md` Scope section includes AGENTS.md and CLAUDE.md; Exceptions list no longer lists them; `plans/` exclusion is preserved.
+
+### As a future contributor periodically auditing parity
+
+I want a single agent invocation OR a single Nx target invocation to validate every cross-vendor invariant,
+so that I do not need to remember this plan's specifics or run six separate shell commands by hand.
+
+**Acceptance**: `Agent({subagent_type: "repo-parity-checker"})` produces a dual-label audit report covering all five invariants. `nx run rhino-cli:validate:cross-vendor-parity` exits 0 on a green tree and non-zero with a specific failing-invariant message on a broken tree. The Nx target also runs automatically via `.husky/pre-push`.

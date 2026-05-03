@@ -39,12 +39,15 @@ The agents that consume the artifacts:
 - `rhino-cli governance vendor-audit governance/` returns 0 violations (Phase 0 may already show this — judgment call: re-baseline before assuming remediation work remains)
 - `rhino-cli governance vendor-audit AGENTS.md CLAUDE.md` (or equivalent invocation against those two files after convention amendment) returns 0 violations outside `binding-example` fences and "Platform Binding Examples" sections
 - `npm run sync:claude-to-opencode` is a no-op on a freshly-synced tree
-- `.claude/agents/*.md` count matches `.opencode/agents/*.md` count (currently 73 vs 71 — a real-world drift this plan will surface and fix)
+- `.claude/agents/*.md` count matches `.opencode/agents/*.md` count (currently 70 vs 71 — `.opencode` has one orphan `ci-monitor-subagent.md` that `.claude` does not have; this plan will investigate and resolve)
 - Every named color used in `.claude/agents/*.md` frontmatter has a corresponding entry in the color-translation map in `governance/development/agents/ai-agents.md`
 - Every model tier referenced in `.claude/` and `.opencode/` agent frontmatter has a corresponding entry in `governance/development/agents/model-selection.md`
 - Governance layer-test guidance includes a vendor-specific content decision
+- `repo-parity-checker` (green) and `repo-parity-fixer` (yellow) agents exist in `.claude/agents/` and are mirrored to `.opencode/agents/` by `npm run sync:claude-to-opencode`
+- `nx run rhino-cli:validate:cross-vendor-parity` exits 0 on a green tree (all five invariants pass) and is wired into `.husky/pre-push`
+- `governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md` workflow exists, follows the same iterative check-fix-verify pattern as `plan-quality-gate.md`, and terminates on double-zero on a green tree
 
-> Reasoning basis: The 73 vs 71 count was observed via `ls .claude/agents/*.md | wc -l` and `ls .opencode/agents/*.md | wc -l` on 2026-05-03; this is an observable fact, not a fabricated metric. All other success metrics are check-or-fail invariants (binary: passes or fails the named command), not estimated targets.
+> Reasoning basis: The 70 vs 71 count was verified via `find .claude/agents -name "*.md" ! -name "README.md" | wc -l` (70) and `find .opencode/agents -name "*.md" ! -name "README.md" | wc -l` (71) on 2026-05-03; `.opencode` has one extra file (`ci-monitor-subagent.md`) not present in `.claude`. This is an observable fact, not a fabricated metric. All other success metrics are check-or-fail invariants (binary: passes or fails the named command), not estimated targets.
 
 ### Business Scope — In
 
@@ -54,6 +57,7 @@ The agents that consume the artifacts:
 - Convention amendment of `governance-vendor-independence.md` (Scope section + Exceptions list)
 - AGENTS.md and CLAUDE.md at repo root (newly in scope after convention amendment)
 - Behavioral-parity verification of `.claude/` ↔ `.opencode/` binding sync (count parity, color map, tier map)
+- New `repo-parity-checker` + `repo-parity-fixer` agents, `repo-cross-vendor-parity-quality-gate` workflow, and `validate:cross-vendor-parity` Nx target wired into pre-push hook (Phase 6 — operationalizes Phase 5's manual checks so they cannot decay over time)
 
 ### Business Scope — Out
 
@@ -68,9 +72,9 @@ The agents that consume the artifacts:
    - Mitigation: Run `rhino-cli governance vendor-audit` and require 0 violations before push
 2. **Convention-amendment cascade** — bringing AGENTS.md / CLAUDE.md into scope retroactively flags content that was previously legal. New violations surface immediately.
    - Mitigation: Convention amendment phase runs BEFORE the AGENTS.md / CLAUDE.md audit phase; remediation is scheduled in the same plan
-3. **Binding-sync drift hidden by no-automated-check** — pre-existing 73 vs 71 count delta indicates drift exists right now
-   - Mitigation: Phase 5 surfaces drift via explicit count check; if drift exists, fix it in the same phase by re-running `npm run sync:claude-to-opencode` and committing
-4. **Color-translation gap** — a `.claude/agents/` file uses a named color (e.g., `blue`, `purple`) that has no entry in the translation map → OpenCode 1.14.31+ rejects the synced file
+3. **Binding-sync drift hidden by no-automated-check** — pre-existing 70 vs 71 count delta; `.opencode` has one orphan `ci-monitor-subagent.md` not present in `.claude`, suggesting a `.claude` agent was deleted after the last sync
+   - Mitigation: Phase 5 surfaces drift via explicit count check; investigate the orphan before re-running `npm run sync:claude-to-opencode` (sync may delete the orphan); commit resolution after investigation
+4. **Color-translation gap** — a `.claude/agents/` file uses a named color (e.g., `blue`, `purple`) that has no entry in the translation map → current OpenCode may reject the synced file (docs enumerate only hex and theme tokens as valid; named-color rejection behavior is observed but not explicitly stated in public docs)
    - Mitigation: Phase 5 cross-checks every named color in agent frontmatter against the map; missing entries become findings to fix in this plan
 5. **Capability-tier gap** — a `.claude/` or `.opencode/` agent file references a model tier with no map entry → tier-to-model resolution fails for one or more agents
    - Mitigation: Phase 5 cross-checks every tier reference against the map

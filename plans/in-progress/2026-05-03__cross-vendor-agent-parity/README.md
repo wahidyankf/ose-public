@@ -29,6 +29,7 @@ The [Governance Vendor-Independence Convention](../../../governance/conventions/
   - color-translation map in `governance/development/agents/ai-agents.md` covers every named color used in `.claude/agents/*.md` frontmatter
   - capability-tier map in `governance/development/agents/model-selection.md` covers every model tier referenced in `.claude/` and `.opencode/` agent frontmatter
 - Correct factually-inaccurate Aider entry in `docs/reference/platform-bindings.md` and `AGENTS.md` (web research 2026-05-03 found Aider's own docs only document `CONVENTIONS.md`, not AGENTS.md)
+- **Operationalize parity** — author `repo-parity-checker` (green) and `repo-parity-fixer` (yellow) agents in `.claude/agents/` (auto-synced to `.opencode/agents/`) that invoke existing tools (rhino-cli vendor-audit, npm sync, ls/grep/diff, WebFetch) to validate the five invariants above. Author the `repo-cross-vendor-parity-quality-gate` workflow at `governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md` (mirrors `plan-quality-gate.md` — iterative check-fix-verify, terminates on double-zero). Wire into Nx target `validate:cross-vendor-parity` and pre-push hook so invariants stay green long-term without requiring memory of this plan.
 
 **External standards alignment** (verified 2026-05-03 via `web-research-maker`):
 
@@ -53,7 +54,8 @@ The [Governance Vendor-Independence Convention](../../../governance/conventions/
 5. **Phase X — Convention amendment** (BLOCKING for Phase 4) — Amend `governance-vendor-independence.md` to include `AGENTS.md` and `CLAUDE.md` in scope; preserve `plans/` exclusion.
 6. **Phase 4 — AGENTS.md / CLAUDE.md neutrality audit** — Audit and remediate vendor terms in those two files using the amended convention.
 7. **Phase 5 — Behavioral-parity invariants** — Verify binding-sync layer is in known-good state (sync no-op, count parity, color map coverage, tier map coverage).
-8. **Phase 6 — Final validation** — Run audit + lint + affected-tests; archive plan.
+8. **Phase 6 — Operationalize parity** — Author `repo-parity-checker` and `repo-parity-fixer` agents; author `repo-cross-vendor-parity-quality-gate` workflow; wire `validate:cross-vendor-parity` Nx target into pre-push hook. Promotes Phase 5's manual checks to long-lived automated invariants.
+9. **Phase 7 — Final validation** — Run audit + lint + affected-tests; run new parity gate; archive plan.
 
 ## Navigation
 

@@ -91,7 +91,7 @@ This phase verifies the binding-sync layer is in a known-good state. It runs ver
 
 - [ ] Run `npm run sync:claude-to-opencode` — must complete with no file modifications (no-op)
 - [ ] If drift exists: commit the synced changes with `chore(opencode): re-sync agents from .claude/` and re-run sync to confirm idempotence
-- [ ] Compare counts: `ls .claude/agents/*.md | wc -l` vs `ls .opencode/agents/*.md | wc -l` — must be equal (currently 73 vs 71 — fix in this phase)
+- [ ] Compare counts: `ls .claude/agents/*.md | wc -l` vs `ls .opencode/agents/*.md | wc -l` — must be equal (currently 70 vs 71; `.opencode` has orphan `ci-monitor-subagent.md` — investigate root cause before running sync, as sync may delete the orphan)
 - [ ] If counts differ, diff the agent sets: `diff <(ls .claude/agents/ | sort) <(ls .opencode/agents/ | sort)` — investigate why each missing agent is missing; fix root cause (re-run sync, or remove orphaned files, or add missing agent definitions)
 - [ ] Verify color-translation map coverage:
   - Extract distinct colors from `.claude/agents/*.md` frontmatter: `grep -h "^color:" .claude/agents/*.md | sort -u`
@@ -103,7 +103,68 @@ This phase verifies the binding-sync layer is in a known-good state. It runs ver
   - Any gap is a finding — add missing tier entries to the map; commit the map update
 - [ ] If `rhino-cli` exposes a `validate:sync` Nx target or equivalent, run it and resolve any findings; if absent, document the gap (a future plan can add the automated check)
 
-## Phase 6: Final Validation
+## Phase 6: Operationalize Parity (new agent + Nx gate)
+
+Phase 5 verifies invariants manually via shell commands. Phase 6 promotes those checks into a dedicated checker agent (`repo-parity-checker`) with optional fixer (`repo-parity-fixer`) so the invariants stay green long-term without requiring this plan's executor's memory. The agent calls existing tools — no logic duplication.
+
+### Phase 6.1: Create the parity checker agent
+
+- [ ] **Author** `.claude/agents/repo-parity-checker.md` — green checker agent following [Agent Naming Convention](../../../governance/conventions/structure/agent-naming.md) and [Agent Definition Files](../../../governance/development/agents/ai-agents.md):
+  - Frontmatter: `name: repo-parity-checker`, `color: green`, `model: sonnet`, `description: Validates cross-vendor behavioral-parity invariants by invoking existing tools (rhino-cli vendor-audit, npm run sync:claude-to-opencode, ls/grep/diff). Outputs dual-label findings to generated-reports/.`
+  - Tools: `Bash, Read, Glob, Grep, WebFetch, Write` (Bash for sync/ls/grep, WebFetch for Aider docs drift check, Write for audit report)
+  - Body documents the five invariants checked (sync no-op, count parity, color-map coverage, tier-map coverage, Aider entry accuracy in `docs/reference/platform-bindings.md`) and the dual-label criticality/confidence output format from [Repo Assessing Criticality Confidence skill](../../../.claude/skills/repo-assessing-criticality-confidence/SKILL.md)
+  - Report path pattern: `generated-reports/parity__<uuid>__<YYYY-MM-DD--HH-MM>__audit.md`
+- [ ] **Author** `.claude/agents/repo-parity-fixer.md` — yellow fixer agent (limited scope):
+  - Frontmatter: `name: repo-parity-fixer`, `color: yellow`, `model: sonnet`
+  - Tools: `Bash, Read, Edit, Glob, Grep, Write`
+  - Body documents the only auto-fixable case: re-run `npm run sync:claude-to-opencode` and commit drift idempotently. Color-map gaps, tier-map gaps, and orphan-agent investigation require human judgment — fixer flags them and exits non-zero, does NOT auto-fix
+- [ ] **Verify** by reading both agent files end-to-end (sanity check structure)
+- [ ] **Sync** to OpenCode mirror: `npm run sync:claude-to-opencode` — must produce `.opencode/agents/repo-parity-checker.md` and `.opencode/agents/repo-parity-fixer.md` with the color translation `green→success` and `yellow→warning`
+- [ ] **Polish** — run `npm run lint:md:fix && npm run lint:md` against both agent files
+
+### Phase 6.2: Wire Nx target + pre-push hook
+
+- [ ] **Author** Nx target `validate:cross-vendor-parity` on the `rhino-cli` project (or a new `repo-parity` meta-project — pick whichever is more idiomatic per existing repo patterns; consult `apps/rhino-cli/project.json`). Target invokes the agent's underlying commands directly (not the agent itself — Nx targets shouldn't invoke AI agents):
+  - Run `rhino-cli governance vendor-audit governance/` — exit non-zero on violations
+  - Run `npm run sync:claude-to-opencode` and check `git diff --quiet` — exit non-zero on drift
+  - Compare counts via shell — exit non-zero on mismatch
+  - Color-map and tier-map coverage via grep + diff — exit non-zero on gaps
+- [ ] **Verify** target runs locally and exits 0 once Phases 1-6 are green
+- [ ] **Wire** into `.husky/pre-push`: add `validate:cross-vendor-parity` to the affected-target list (the existing pre-push runs `nx affected -t typecheck lint test:quick spec-coverage` — extend to include the new target; or add a separate `nx run rhino-cli:validate:cross-vendor-parity` invocation)
+- [ ] **Polish** — confirm `npm install` + git commit triggers pre-push and the target runs
+
+### Phase 6.3: Author the repo-cross-vendor-parity-quality-gate workflow
+
+The new agents need a workflow document that orchestrates the iterative check-fix-verify pattern (mirrors `plan-quality-gate.md`). The workflow is what makes the maker-checker-fixer pattern complete — the agents alone don't loop themselves.
+
+- [ ] **Author** `governance/workflows/repo/repo-cross-vendor-parity-quality-gate.md` following [Workflow Naming Convention](../../../governance/conventions/structure/workflow-naming.md) (`<scope>(-<qualifier>)*-<type>` → `repo-cross-vendor-parity-quality-gate`, scope token `repo` matches parent dir `governance/workflows/repo/`). Use [`governance/workflows/plan/plan-quality-gate.md`](../../../governance/workflows/plan/plan-quality-gate.md) as the structural template (frontmatter: name, goal, termination, inputs, outputs; body: execution mode, steps, termination criteria, iteration example, safety features):
+  - Frontmatter `name: repo-cross-vendor-parity-quality-gate`, `goal: Validate cross-vendor behavioral-parity invariants and apply fixes iteratively until zero findings achieved`, `termination: Zero findings on two consecutive validations (max-iterations defaults to 7)`
+  - Inputs: `scope` (default: all five invariants), `mode` (lax/normal/strict/ocd), `min-iterations`, `max-iterations` (default 7), `max-concurrency` (default 2)
+  - Outputs: `final-status` (pass/partial/fail), `iterations-completed`, `final-report` (`generated-reports/parity__*__audit.md`)
+  - Steps: (1) Initial Validation via `repo-parity-checker`, (2) Check for Findings, (3) Apply Fixes via `repo-parity-fixer` (conditional), (4) Re-validate, (5) Iteration Control with consecutive-zero requirement, (6) Finalization
+  - Reuse the same convergence safeguards as plan-quality-gate (false-positive skip list, scoped re-validation, escalation warning at iteration 5)
+  - Document the limited fixer scope: only sync drift is auto-remediated; color-map / tier-map / orphan / Aider-drift findings require human resolution
+- [ ] **Verify** by reading the workflow file end-to-end (sanity check structure)
+- [ ] **Polish** — run `npm run lint:md:fix && npm run lint:md` against the workflow file
+- [ ] **Wire** the workflow into the existing workflow catalog: update `governance/workflows/README.md` with an entry for `repo-cross-vendor-parity-quality-gate`
+
+### Phase 6.4: First green-run + plan handoff
+
+- [ ] **Run** `nx run rhino-cli:validate:cross-vendor-parity` — must exit 0 (counts equal, sync no-op, all maps cover all observed values)
+- [ ] **Run** the workflow end-to-end (`User: "Run repo-cross-vendor-parity-quality-gate workflow"`) and confirm:
+  - Iteration 1 finds zero findings (or any findings are immediately fixable by the fixer)
+  - Iteration 2 confirms zero findings (double-zero termination)
+  - Audit reports land in `generated-reports/parity__*__audit.md`
+- [ ] **Verify** `.opencode/agents/` mirror has both new agents and they pass OpenCode's color/model schema validation (sync command must succeed)
+- [ ] **Document** in `governance/development/agents/ai-agents.md` (or wherever the agent catalog lives) that `repo-parity-checker` / `repo-parity-fixer` exist, what they cover, and how the `repo-cross-vendor-parity-quality-gate` workflow orchestrates them
+- [ ] **Commit thematically**:
+  - `feat(agents): add repo-parity-checker for cross-vendor invariants`
+  - `feat(agents): add repo-parity-fixer for sync-drift remediation`
+  - `feat(workflows): add repo-cross-vendor-parity-quality-gate iterative orchestration`
+  - `feat(rhino-cli): add validate:cross-vendor-parity Nx target`
+  - `chore(husky): wire validate:cross-vendor-parity into pre-push hook`
+
+## Phase 7: Final Validation
 
 - [ ] Run `rhino-cli governance vendor-audit governance/` — expect 0 violations
 - [ ] Run audit against AGENTS.md and CLAUDE.md (via CLI or grep with the combined regex) — expect 0 violations outside fences and Platform Binding Examples sections
@@ -113,6 +174,7 @@ This phase verifies the binding-sync layer is in a known-good state. It runs ver
 - [ ] Run `nx affected -t typecheck lint test:quick spec-coverage` — all pass
 - [ ] Verify `npm run sync:claude-to-opencode` is still a no-op (sanity check after all edits)
 - [ ] Verify final counts: `.claude/agents/*.md` count equals `.opencode/agents/*.md` count
+- [ ] Run `nx run rhino-cli:validate:cross-vendor-parity` (the new Phase 6 target) — expect exit 0
 
 ## Quality Gates
 

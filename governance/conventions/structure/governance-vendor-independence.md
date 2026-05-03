@@ -50,25 +50,73 @@ This convention separates **vendor-neutral governance** (the rules) from **platf
 
 The following patterns are forbidden in `governance/` prose except inside the allowlisted regions defined in the next section.
 
+### Coding-agent / harness product names
+
+| Pattern (regex) | Reason                                                     |
+| --------------- | ---------------------------------------------------------- |
+| `Claude Code`   | Vendor product name                                        |
+| `OpenCode`      | Vendor product name                                        |
+| `\bCursor\b`    | Vendor product name (Anysphere)                            |
+| `\bWindsurf\b`  | Vendor product name (Cognition AI; formerly Codeium)       |
+| `\bCodeium\b`   | Vendor product name (legacy brand for Windsurf)            |
+| `\bCopilot\b`   | Vendor product name (GitHub / Microsoft)                   |
+| `\bAider\b`     | Vendor product name                                        |
+| `\bCline\b`     | Vendor product name                                        |
+| `\bDevin\b`     | Vendor product name (Cognition AI; FP risk: personal name) |
+
+### Vendor-specific binding directory paths
+
+| Pattern (regex) | Reason               |
+| --------------- | -------------------- |
+| `\.claude/`     | Vendor-specific path |
+| `\.opencode/`   | Vendor-specific path |
+| `\.cursor/`     | Vendor-specific path |
+| `\.windsurf/`   | Vendor-specific path |
+| `\.continue/`   | Vendor-specific path |
+| `\.clinerules/` | Vendor-specific path |
+
+### Model-vendor company names
+
+| Pattern (regex) | Reason              |
+| --------------- | ------------------- |
+| `Anthropic`     | Vendor company name |
+| `\bOpenAI\b`    | Vendor company name |
+| `\bxAI\b`       | Vendor company name |
+
+### Model family / model names
+
+| Pattern (regex) | Reason                                                       |
+| --------------- | ------------------------------------------------------------ |
+| `\bSonnet\b`    | Vendor model name                                            |
+| `\bOpus\b`      | Vendor model name                                            |
+| `\bHaiku\b`     | Vendor model name (the AI model, not the poem form)          |
+| `\bGPT\b`       | Vendor model family (OpenAI)                                 |
+| `\bGemini\b`    | Vendor model family (Google)                                 |
+| `\bDeepSeek\b`  | Vendor model family (DeepSeek)                               |
+| `\bQwen\b`      | Vendor model family (Alibaba)                                |
+| `\bLlama\b`     | Vendor model family (Meta; FP risk: animal — negligible)     |
+| `\bMistral\b`   | Vendor model family (Mistral AI; FP risk: wind — negligible) |
+| `\bGrok\b`      | Vendor model family (xAI; FP risk: verb "to grok")           |
+
+### Vendor-branded concepts
+
 | Pattern (regex)                                | Reason                                                    |
 | ---------------------------------------------- | --------------------------------------------------------- |
-| `Claude Code`                                  | Vendor product name                                       |
-| `OpenCode`                                     | Vendor product name                                       |
-| `Anthropic`                                    | Vendor company name                                       |
-| `\bSonnet\b`                                   | Vendor model name                                         |
-| `\bOpus\b`                                     | Vendor model name                                         |
-| `\bHaiku\b`                                    | Vendor model name (the AI model, not the poem form)       |
-| `\.claude/`                                    | Vendor-specific path                                      |
-| `\.opencode/`                                  | Vendor-specific path                                      |
 | `\bSkills\b` (capitalized, as branded concept) | Vendor-branded term; use lowercase "agent skills" instead |
 
 Combined audit regex used by `rhino-cli governance vendor-audit`:
 
 ```
-Claude Code|OpenCode|Anthropic|\bSonnet\b|\bOpus\b|\bHaiku\b|\.claude/|\.opencode/
+Claude Code|OpenCode|\bCursor\b|\bWindsurf\b|\bCodeium\b|\bCopilot\b|\bAider\b|\bCline\b|\bDevin\b|\.claude/|\.opencode/|\.cursor/|\.windsurf/|\.continue/|\.clinerules/|Anthropic|\bOpenAI\b|\bxAI\b|\bSonnet\b|\bOpus\b|\bHaiku\b|\bGPT\b|\bGemini\b|\bDeepSeek\b|\bQwen\b|\bLlama\b|\bMistral\b|\bGrok\b|\bSkills\b
 ```
 
-> **Note**: `MCP` and `AGENTS.md` are NOT forbidden — both are Linux Foundation / AAIF standards shared across all major coding agents.
+> **Note**: `MCP`, `AGENTS.md`, and `Goose` are NOT forbidden — all three are Linux Foundation / AAIF cross-vendor standards shared across all major coding agents.
+>
+> **False-positive notes**:
+>
+> - `\bDevin\b` collides with the personal name. Reviewers should confirm context before treating as a violation.
+> - `\bGrok\b` collides with the verb "to grok" (Heinlein, common in tech writing). Reviewers should distinguish product reference from verb usage.
+> - `\bLlama\b`, `\bMistral\b` collide with non-AI English words but rarely appear in governance prose.
 
 ## Allowlist Mechanism
 
@@ -111,8 +159,12 @@ When rewriting governance prose, replace vendor-specific terms with the vendor-n
 | ---------------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | "Claude Code"                                  | "the coding agent" or "the AI coding agent"                          | Allowed inside `binding-example` blocks and in `docs/reference/platform-bindings.md`                              |
 | "OpenCode"                                     | "the coding agent" / drop where redundant                            | Allowed in cross-references and in the platform-bindings catalog                                                  |
-| "Anthropic"                                    | drop, or "the model vendor"                                          | Allowed only in citation context                                                                                  |
+| "Cursor" / "Windsurf" / "Codeium"              | "the coding agent" or "AI coding editor"                             | Allowed inside `binding-example` blocks and in the platform-bindings catalog                                      |
+| "Copilot" / "Aider" / "Cline" / "Devin"        | "the coding agent" or "AI coding assistant"                          | Allowed inside `binding-example` blocks and in the platform-bindings catalog                                      |
+| "Anthropic" / "OpenAI" / "xAI"                 | drop, or "the model vendor"                                          | Allowed only in citation context                                                                                  |
 | "Sonnet" / "Opus" / "Haiku"                    | capability tier: "planning-grade", "execution-grade", "fast"         | Concrete model names live in platform-binding agent frontmatter only                                              |
+| "GPT" / "Gemini" / "Llama" / "Mistral"         | capability tier or "AI model"                                        | Concrete model names live in platform-binding agent frontmatter only                                              |
+| "DeepSeek" / "Qwen" / "Grok"                   | capability tier or "AI model"                                        | Concrete model names live in platform-binding agent frontmatter only                                              |
 | "Skills" (proper noun, branded)                | "agent skills" (lowercase generic)                                   | Aligned with AAIF / Codex / OpenCode shared term                                                                  |
 | "slash commands"                               | "agent commands" or "workflow commands"                              | No formal AAIF term yet; use lowercase generic                                                                    |
 | "subagents"                                    | "delegated agents" / "agent delegation"                              | Aligned with A2A protocol vocabulary                                                                              |
@@ -142,7 +194,7 @@ See [`docs/reference/platform-bindings.md`](../../../docs/reference/platform-bin
 
 To refactor an existing governance file:
 
-1. **Scan**: run `grep -n -E "Claude Code|OpenCode|Anthropic|Sonnet|Opus|Haiku|\.claude/|\.opencode/" <file>` to find all matches.
+1. **Scan**: prefer `rhino-cli governance vendor-audit <path>` (it respects all allowlist regions). For ad-hoc grep, use `grep -n -E "Claude Code|OpenCode|Cursor|Windsurf|Codeium|Copilot|Aider|Cline|Devin|Anthropic|OpenAI|xAI|Sonnet|Opus|Haiku|GPT|Gemini|DeepSeek|Qwen|Llama|Mistral|Grok|Skills|\.claude/|\.opencode/|\.cursor/|\.windsurf/|\.continue/|\.clinerules/" <file>` to find all matches.
 2. **Classify each match**:
    - Load-bearing prose → rewrite using the Vocabulary Map above.
    - Cross-reference link → rewrite anchor text and link target to neutral equivalent.

@@ -351,3 +351,45 @@ const (
 	stepEnvFileReadFromFeatureBranchNamespace        = `^the \.env file is read from the feature-branch namespace inside the backup directory$`
 	stepEnvFileCopiedBackToOriginalPathInWorktree    = `^the \.env file is copied back to its original path in the worktree$`
 )
+
+// bc validate step patterns.
+const (
+	stepBcRegistryOneContextClean           = `^a registry with one bounded context "journal" declaring layers "\[domain, application, infrastructure, presentation\]"$`
+	stepBcGlossaryFileExistsAtPath          = `^a glossary file exists at the registered glossary path$`
+	stepBcGherkinFolderWithFeatureFile      = `^a gherkin folder exists at the registered gherkin path containing at least one feature file$`
+	stepBcCodeFolderContainsDeclaredLayers  = `^the code folder contains exactly the declared layer subfolders$`
+	stepBcRegistryNotListingPhantom         = `^a registry that does not list a context named "phantom"$`
+	stepBcPhantomFolderExists               = `^a folder "apps/organiclever-web/src/contexts/phantom/" exists on the filesystem$`
+	stepBcRegistryWithMissingGlossary       = `^a registry listing context "journal" with a registered glossary path$`
+	stepBcGlossaryFileDoesNotExist          = `^the glossary file does not exist at that path$`
+	stepBcRegistryWithMissingLayer          = `^a registry listing context "journal" with layers "\[domain, application, infrastructure, presentation\]"$`
+	stepBcCodeFolderMissingInfrastructure   = `^the code folder is missing the "infrastructure" subfolder$`
+	stepBcRegistryWithExtraLayer            = `^a registry listing context "journal" with layers "\[domain, application, presentation\]"$`
+	stepBcCodeFolderHasExtraInfrastructure  = `^the code folder contains an extra "infrastructure" subfolder not declared in the registry$`
+	stepBcRegistryWithMissingGherkin        = `^a registry listing context "journal" with a registered gherkin path$`
+	stepBcGherkinFolderDoesNotExist         = `^the gherkin folder does not exist at that path$`
+	stepBcRegistryWithEmptyGherkin          = `^a registry listing context "journal" with a registered gherkin path$`
+	stepBcGherkinFolderExistsButEmpty       = `^the gherkin folder exists but contains no "\.feature" files$`
+	stepBcRegistryWithRelationshipAsymmetry = `^a registry where context "workout-session" declares a customer-supplier relationship to "journal" as customer$`
+	stepBcJournalNoReciprocal               = `^context "journal" declares no reciprocal relationship$`
+	stepBcRegistryWithOrphanAndWarnFlag     = `^a registry with an orphan code folder present on the filesystem$`
+	stepBcRegistryWithOrphanEnvWarn         = `^a registry with an orphan code folder present on the filesystem$`
+	stepBcEnvVarWarnSet                     = `^the environment variable "ORGANICLEVER_RHINO_DDD_SEVERITY" is set to "warn"$`
+	stepBcRunValidateOrganiclever           = `^the developer runs "rhino-cli bc validate organiclever"$`
+	stepBcRunWithWarnFlag                   = `^the developer runs "rhino-cli bc validate organiclever --severity=warn"$`
+	stepBcRunWithEnvWarn                    = `^the developer runs "rhino-cli bc validate organiclever"$`
+	stepBcRunUnknownApp                     = `^the developer runs "rhino-cli bc validate unknownapp"$`
+	stepBcNoFindingsInOutput                = `^no findings are printed to stdout$`
+	stepBcOutputMentionsOrphan              = `^the output mentions "orphan"$`
+	stepBcOutputMentionsPhantom             = `^the output mentions "phantom"$`
+	stepBcOutputMentionsMissingGlossary     = `^the output mentions "missing glossary"$`
+	stepBcOutputMentionsJournal             = `^the output mentions "journal"$`
+	stepBcOutputMentionsMissingLayer        = `^the output mentions "missing layer"$`
+	stepBcOutputMentionsInfrastructure      = `^the output mentions "infrastructure"$`
+	stepBcOutputMentionsExtraLayer          = `^the output mentions "extra layer"$`
+	stepBcOutputMentionsMissingGherkin      = `^the output mentions "missing gherkin"$`
+	stepBcOutputMentionsNoFeatureFiles      = `^the output mentions "no feature files"$`
+	stepBcOutputMentionsAsymmetry           = `^the output mentions "asymmetry"$`
+	stepBcOutputContainsWarning             = `^the output contains the word "warning"$`
+	stepBcOutputMentionsNotFoundOrApp       = `^the output mentions "not found" or "unknownapp"$`
+)

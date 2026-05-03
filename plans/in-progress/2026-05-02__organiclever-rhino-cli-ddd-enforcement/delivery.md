@@ -88,20 +88,26 @@
 
 **Goal**: Build the structural-parity subcommand. TDD with godog at unit level (mocked filesystem), then integration level (real `/tmp` fixtures).
 
-- [ ] **Red**: Author `specs/apps/rhino/cli/gherkin/bc-validate.feature` with Gherkin scenarios mirroring `prd.md` FR-2 acceptance criteria (clean state, orphan code folder, missing glossary, missing layer, asymmetric relationship).
-- [ ] **Red**: Add unit-level godog suite at `apps/rhino-cli/cmd/bc_validate_test.go` (package cmd, mocked filesystem via package-level function variables). Confirm the suite **fails** because the subcommand doesn't exist yet.
-- [ ] **Green**: Implement `apps/rhino-cli/internal/bcregistry/` (YAML loader, schema struct, helpers). Implement `apps/rhino-cli/cmd/bc.go` (Cobra parent command `bcCmd`, package cmd) and `apps/rhino-cli/cmd/bc_validate.go` (the `validate` subcommand, package cmd). Run unit tests until green.
-- [ ] **Green**: Add integration-level godog suite at `apps/rhino-cli/cmd/bc_validate.integration_test.go` with `//go:build integration` tag (package cmd). Real `/tmp` fixtures. Drives `cmd.RunE()` in-process. Run until green.
-- [ ] **Refactor**: Extract any shared finding-output helper into `golang-commons` if it doesn't already exist there. Verify ≥90% coverage maintained.
-- [ ] Smoke-run: `rhino-cli bc validate organiclever` against the real working tree. Should exit zero.
+- [x] **Red**: Author `specs/apps/rhino/cli/gherkin/bc-validate.feature` with Gherkin scenarios mirroring `prd.md` FR-2 acceptance criteria (clean state, orphan code folder, missing glossary, missing layer, asymmetric relationship).
+  - Date: 2026-05-03 | Status: DONE | 11 scenarios tagged @bc-validate
+- [x] **Red**: Add unit-level godog suite at `apps/rhino-cli/cmd/bc_validate_test.go` (package cmd, mocked filesystem via package-level function variables). Confirm the suite **fails** because the subcommand doesn't exist yet.
+  - Date: 2026-05-03 | Status: DONE | Suite confirmed failing before implementation
+- [x] **Green**: Implement `apps/rhino-cli/internal/bcregistry/` (YAML loader, schema struct, helpers). Implement `apps/rhino-cli/cmd/bc.go` (Cobra parent command `bcCmd`, package cmd) and `apps/rhino-cli/cmd/bc_validate.go` (the `validate` subcommand, package cmd). Run unit tests until green.
+  - Date: 2026-05-03 | Status: DONE | 12 unit scenarios pass + 31 bcregistry unit tests
+- [x] **Green**: Add integration-level godog suite at `apps/rhino-cli/cmd/bc_validate.integration_test.go` with `//go:build integration` tag (package cmd). Real `/tmp` fixtures. Drives `cmd.RunE()` in-process. Run until green.
+  - Date: 2026-05-03 | Status: DONE | 12 integration scenarios pass
+- [x] **Refactor**: Extract any shared finding-output helper into `golang-commons` if it doesn't already exist there. Verify ≥90% coverage maintained.
+  - Date: 2026-05-03 | Status: DONE | No shared helper needed; bcregistry_test.go added; coverage 90.35%
+- [x] Smoke-run: `rhino-cli bc validate organiclever` against the real working tree. Should exit zero.
+  - Date: 2026-05-03 | Status: PASS | Fixed journal relationships in registry; exits zero
 - [ ] Commit: `feat(rhino-cli): add bc validate subcommand for DDD structural parity`.
 
 **Phase exit gates**:
 
-- [ ] `nx run rhino-cli:test:quick` passes; coverage ≥90%.
-- [ ] `nx run rhino-cli:test:integration` passes.
-- [ ] `nx run rhino-cli:spec-coverage` passes (Gherkin↔step parity).
-- [ ] `rhino-cli bc validate organiclever` exits zero against the current registry.
+- [x] `nx run rhino-cli:test:quick` passes; coverage ≥90%.
+- [x] `nx run rhino-cli:test:integration` passes.
+- [x] `nx run rhino-cli:spec-coverage` passes (Gherkin↔step parity).
+- [x] `rhino-cli bc validate organiclever` exits zero against the current registry.
 
 ---
 

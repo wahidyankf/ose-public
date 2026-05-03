@@ -14,7 +14,13 @@ contexts:
     code: apps/organiclever-web/src/contexts/journal
     glossary: specs/apps/organiclever/ubiquitous-language/journal.md
     gherkin: specs/apps/organiclever/fe/gherkin/journal
-    relationships: []
+    relationships:
+      - to: workout-session
+        kind: customer-supplier
+        role: supplier
+      - to: stats
+        kind: customer-supplier
+        role: supplier
 
   - name: workout-session
     summary: >-

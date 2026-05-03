@@ -64,11 +64,18 @@
       "inputs": [
         "default",
         "{projectRoot}/src/generated-contracts/**/*",
-        "{workspaceRoot}/specs/apps/organiclever/fe/gherkin/**/*.feature"
+        "{workspaceRoot}/specs/apps/organiclever/fe/gherkin/**/*.feature",
+        "{workspaceRoot}/specs/apps/organiclever/bounded-contexts.yaml",
+        "{workspaceRoot}/specs/apps/organiclever/ubiquitous-language/**/*.md"
       ],
       "outputs": ["{projectRoot}/coverage"],
       "options": {
-        "command": "node scripts/gen-migrations.mjs && npx vitest run --coverage && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/organiclever-web/coverage/lcov.info 70)",
+        "commands": [
+          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go bc validate organiclever)",
+          "(cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go ul validate organiclever)",
+          "node scripts/gen-migrations.mjs && npx vitest run --coverage && (cd ../../apps/rhino-cli && CGO_ENABLED=0 go run main.go test-coverage validate apps/organiclever-web/coverage/lcov.info 70)"
+        ],
+        "parallel": false,
         "cwd": "{projectRoot}"
       }
     },

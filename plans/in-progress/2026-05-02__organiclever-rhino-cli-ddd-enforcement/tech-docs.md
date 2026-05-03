@@ -486,9 +486,23 @@ Both levels share `specs/apps/rhino/cli/gherkin/bc-validate.feature` and `specs/
 
 ## Open questions (Phase 0 must resolve)
 
-- Q1: Should `bc validate` warn on missing `relationships` declarations entirely, or only on asymmetry? — defaults to **only asymmetry**; missing relationships are valid for independent contexts (`landing`, `routing`, `health`, `settings`).
-- Q2: Should `ul validate` enforce that every code identifier in the BC's `code` path appears in some glossary entry? — defaults to **no, glossary is a sample of important terms, not an exhaustive index**; revisit if glossary discipline drifts.
-- Q3: Should the env var be `ORGANICLEVER_RHINO_DDD_SEVERITY` (app-scoped) or `RHINO_DDD_SEVERITY` (global)? — defaults to **app-scoped**; other apps may want different severities when they adopt DDD.
+- Q1: Should `bc validate` warn on missing `relationships` declarations entirely, or only on asymmetry? — defaults
+  to **only asymmetry**; missing relationships are valid for independent contexts (`landing`, `routing`, `health`,
+  `settings`).
+  - RESOLVED (2026-05-03): **Accept default — only flag asymmetry, not absence.** Independent contexts with
+    empty `relationships: []` generate no finding. A finding fires only when a declared relationship has no
+    reciprocal in the target context, or when `kind`/`role` pairs disagree.
+- Q2: Should `ul validate` enforce that every code identifier in the BC's `code` path appears in some glossary
+  entry? — defaults to **no, glossary is a sample of important terms, not an exhaustive index**; revisit if
+  glossary discipline drifts.
+  - RESOLVED (2026-05-03): **Accept default — no exhaustive coverage.** `ul validate` checks the inverse: every
+    identifier already in the glossary must still exist in code. New symbols not yet in the glossary are not
+    flagged. This keeps the glossary a curated sample and avoids noise from auto-generated identifiers.
+- Q3: Should the env var be `ORGANICLEVER_RHINO_DDD_SEVERITY` (app-scoped) or `RHINO_DDD_SEVERITY` (global)? —
+  defaults to **app-scoped**; other apps may want different severities when they adopt DDD.
+  - RESOLVED (2026-05-03): **Accept default — `ORGANICLEVER_RHINO_DDD_SEVERITY`.** App-scoped lets future DDD
+    adopters (`organiclever-be` or other apps) set their own severity independently. A global var would force one
+    setting across all apps in the same shell, which is too coarse.
 
 ## Risk mitigations
 

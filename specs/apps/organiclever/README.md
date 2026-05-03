@@ -40,16 +40,19 @@ specs/apps/organiclever/
 The frontend's system-status page consumes the backend's health endpoint. Otherwise the v0
 frontend is local-first.
 
-## Domains
+## Bounded Contexts
 
-| Domain  | BE Features | FE Features | Description                                                  |
-| ------- | ----------- | ----------- | ------------------------------------------------------------ |
-| health  | 1           | --          | Service health status                                        |
-| landing | --          | 1           | Marketing landing page                                       |
-| system  | --          | 1           | System-status diagnostic page polling the BE health endpoint |
-| layout  | --          | 1           | Accessibility (WCAG AA compliance)                           |
-| events  | --          | 1           | Generic event mechanism on `/app` (PGlite + Effect.ts CRUD)  |
-| routing | --          | 1           | Disabled-route 404 guards (`/login`, `/profile`)             |
+| Bounded Context | BE Features | FE Features | Description                                              |
+| --------------- | ----------- | ----------- | -------------------------------------------------------- |
+| app-shell       | --          | 2           | Navigation chrome, accessibility, entry-logging overlays |
+| health          | 1           | 1           | Service health status (BE probe + FE diagnostic page)    |
+| journal         | --          | 2           | Append-only event log — system of record (PGlite)        |
+| landing         | --          | 1           | Marketing landing page                                   |
+| routine         | --          | 1           | Workout routine management                               |
+| routing         | --          | 2           | App routing and disabled-route 404 guards                |
+| settings        | --          | 3           | User preferences — dark mode, language                   |
+| stats           | --          | 2           | History and progress projections over journal events     |
+| workout-session | --          | 1           | Active workout session FSM                               |
 
 ## Spec Artifacts
 

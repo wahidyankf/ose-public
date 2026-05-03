@@ -1,19 +1,19 @@
 ---
 name: apps-organiclever-web-developing-content
-description: Comprehensive guide for developing organiclever-web, the landing and promotional website at www.organiclever.com. Covers Next.js 16 App Router, React 19, TailwindCSS, Radix UI/shadcn-ui, cookie-based auth, JSON data files, and Vercel deployment. Essential for development tasks on organiclever-web.
+description: Comprehensive guide for developing organiclever-web, the OrganicLever life journal at www.organiclever.com. Covers DDD bounded-context architecture, PGlite local-first storage, Effect TS, XState, Next.js 16 App Router, and Vercel deployment. Essential for development tasks on organiclever-web.
 ---
 
 # organiclever-web Development Skill
 
 ## Purpose
 
-This Skill provides guidance for developing and managing the **organiclever-web** Next.js 16 application — the landing and promotional website at www.organiclever.com, featuring cookie-based authentication and Radix UI components.
+This Skill provides guidance for developing and managing the **organiclever-web** Next.js 16 application — the OrganicLever life journal at www.organiclever.com. The app is a local-first productivity tracker with PGlite (Postgres-WASM) for in-browser data storage, structured around DDD bounded contexts.
 
 **When to use this Skill:**
 
 - Developing features for organiclever-web
-- Understanding the App Router structure
-- Working with authentication or data patterns
+- Understanding the bounded-context DDD architecture
+- Working with PGlite storage or Effect TS service layer
 - Configuring Vercel deployment
 - Understanding organiclever-web specific conventions
 
@@ -24,93 +24,91 @@ This Skill provides guidance for developing and managing the **organiclever-web*
 **organiclever-web** (`apps/organiclever-web/`):
 
 - **Framework**: Next.js 16 with App Router
-- **React**: React 19
-- **Styling**: TailwindCSS + Radix UI / shadcn-ui components
-- **Auth**: Cookie-based authentication
-- **Data**: JSON data files in `src/data/`
+- **Architecture**: DDD bounded contexts (`domain` / `application` / `infrastructure` / `presentation`)
+- **Storage**: PGlite (Postgres-WASM, IndexedDB-backed) — local-first, no backend required
+- **Effects**: Effect TS for typed functional effects in infrastructure layer
+- **State machines**: XState for UI FSMs (app-shell, workout-session)
 - **URL**: https://www.organiclever.com/
-- **Role**: Landing and promotional page
+- **Role**: Landing page + full life-journal app under `/app/`
 - **Deployment**: Vercel (`prod-organiclever-web` branch)
 
 ### Tech Stack Details
 
-| Layer      | Technology               |
-| ---------- | ------------------------ |
-| Framework  | Next.js 16 (App Router)  |
-| UI Runtime | React 19                 |
-| Styling    | TailwindCSS              |
-| Components | Radix UI / shadcn-ui     |
-| Auth       | Cookie-based sessions    |
-| Data       | JSON files (`src/data/`) |
-| Deployment | Vercel (auto-detected)   |
-| Build      | Next.js built-in         |
+| Layer      | Technology                                |
+| ---------- | ----------------------------------------- |
+| Framework  | Next.js 16 (App Router)                   |
+| UI Runtime | React 19                                  |
+| Styling    | TailwindCSS + OL warm OKLCH design tokens |
+| Components | `@open-sharia-enterprise/ts-ui`           |
+| Storage    | PGlite (Postgres-WASM, IndexedDB)         |
+| Effects    | Effect TS (infrastructure layer only)     |
+| State      | XState v5 (app-shell, workout-session)    |
+| BDD tests  | `@amiceli/vitest-cucumber` + Vitest       |
+| Deployment | Vercel (auto-detected)                    |
 
 ## Directory Structure
 
 ```
 apps/organiclever-web/
 ├── src/
-│   ├── app/                    # Next.js App Router pages
-│   │   ├── dashboard/          # Dashboard route
-│   │   ├── login/              # Login route
-│   │   ├── api/                # API route handlers
-│   │   ├── contexts/           # App-level context providers
-│   │   ├── fonts/              # Font assets
-│   │   ├── layout.tsx          # Root layout
-│   │   └── page.tsx            # Root page
-│   ├── components/             # App-specific components (business logic, hardcoded content)
-│   │   ├── Navigation.tsx      # Sidebar nav with app routes and logout
-│   │   ├── Breadcrumb.tsx      # Pathname-aware breadcrumb
-│   │   └── ui/                 # Generic UI primitives (shadcn-ui, data-agnostic)
-│   ├── contexts/               # Shared React contexts
-│   ├── data/                   # JSON data files
-│   └── lib/                    # Utility functions and helpers
-├── public/                     # Static assets
-├── components.json             # shadcn-ui configuration
-├── next.config.mjs             # Next.js configuration
-├── tailwind.config.ts          # TailwindCSS configuration
-├── tsconfig.json               # TypeScript configuration
-├── vercel.json                 # Vercel deployment configuration
-└── project.json                # Nx project configuration
+│   ├── app/                        # Next.js App Router (thin wrappers only)
+│   │   ├── app/                    # /app/* routes (home, history, progress, settings, workout…)
+│   │   └── system/status/be/       # Server-rendered diagnostic page
+│   ├── contexts/                   # Bounded-context implementations
+│   │   ├── app-shell/              # Navigation chrome, i18n, entry-logging overlays
+│   │   ├── health/                 # Backend health diagnostic (dormant BE client)
+│   │   ├── journal/                # Event log — system of record (PGlite)
+│   │   ├── landing/                # Marketing landing page
+│   │   ├── routine/                # Workout routine management (PGlite)
+│   │   ├── routing/                # 404 guards (disabled routes)
+│   │   ├── settings/               # User preferences — dark mode, language (PGlite)
+│   │   ├── stats/                  # History + progress projections (read-only from journal)
+│   │   └── workout-session/        # Active workout session FSM (XState)
+│   ├── shared/                     # Cross-context utilities
+│   │   ├── runtime/                # PgliteService Tag, AppRuntime, shared tagged errors
+│   │   └── utils/                  # format-relative-time, fmt
+│   ├── generated-contracts/        # Auto-generated from OpenAPI spec (gitignored)
+│   └── test/                       # Test helpers and fixtures
+├── test/unit/steps/                # Vitest-cucumber step implementations (per bounded context)
+├── docs/explanation/               # Architecture docs (bounded-context map)
+└── project.json                    # Nx project configuration
 ```
 
-## Authentication Pattern
+## Bounded-Context Architecture
 
-**Cookie-based authentication**:
-
-- Sessions stored in HTTP cookies (not localStorage)
-- Login/logout handled via `src/app/api/` route handlers
-- Auth state managed through React contexts (`src/contexts/`)
-- Protected routes check cookie presence on server side (App Router)
-
-**Login flow**:
+Every feature lives inside one bounded context under `src/contexts/<bc>/`:
 
 ```
-User submits credentials → API route validates → Sets session cookie → Redirects to dashboard
+src/contexts/<bc>/
+├── domain/           # Pure types, invariants, tagged errors — no IO, no Effect
+├── application/      # Use-cases, ports, XState orchestrating machines — depends on domain
+├── infrastructure/   # PGlite stores, Effect Layers, live adapters — depends on domain + application + shared/runtime
+└── presentation/     # React hooks + components — depends on domain + application
 ```
 
-**Auth context pattern**:
+**Layer rules** (ESLint `boundaries` at **error** severity since Phase 8):
 
-```typescript
-// src/contexts/AuthContext.tsx
-// Provides auth state to components via React context
-// Reads cookie on client, server components check directly
-```
+- `domain` ← no project imports
+- `application` ← `domain` only
+- `infrastructure` ← `domain` + `application` + `@/shared/runtime`
+- `presentation` ← `domain` + `application`
+- Cross-context coupling: only via the target's `application/index.ts` or `presentation/index.ts` barrel
 
-## Data Pattern
+**Published API barrels**: each context exposes `domain/index.ts`, `application/index.ts`, `infrastructure/index.ts`, and `presentation/index.ts`. Consumers always import from the barrel, never from internal files.
 
-**JSON data files** in `src/data/`:
+### Adding a feature (bounded-context-aware workflow)
 
-- Static data stored as JSON (no database)
-- Imported directly in server or client components
-- Immutable at runtime (no write-back to files)
-- Suitable for reference data, config, mock data
+1. Identify which bounded context owns the feature. Consult [`docs/explanation/bounded-context-map.md`](./docs/explanation/bounded-context-map.md).
+2. Ensure the domain term appears in [`specs/apps/organiclever/ubiquitous-language/<bc>.md`](../../specs/apps/organiclever/ubiquitous-language/README.md). Add it if missing — same commit as the code change.
+3. Write or update the Gherkin spec in `specs/apps/organiclever/fe/gherkin/<bc>/`.
+4. Implement: Red (failing step) → Green (minimal code) → Refactor.
+5. Keep all new code inside the correct context layer. If it touches IO, it goes in `infrastructure/`. If it is a use-case, it goes in `application/`. Never break the layer rules.
+6. Run `nx run organiclever-web:lint` to confirm 0 boundary errors before committing.
 
-```typescript
-// Example: importing data
-import users from "@/data/users.json";
-import settings from "@/data/settings.json";
-```
+### XState machine placement rule
+
+- **UI shell machine** (no IO, no aggregate model — e.g., `appMachine` toggling dark mode) → `presentation/`
+- **Orchestrating machine** (invokes `fromPromise` actors hitting infrastructure — e.g., `journalMachine`, `workoutSessionMachine`) → `application/`
 
 ## Design System
 
@@ -212,50 +210,24 @@ render with the warm OL palette. Dark mode toggle uses `.dark` class (Storybook
 
 ## Component Architecture
 
-Components are split across two levels with a strict boundary.
+Components live inside the bounded context that owns them, not in a global `src/components/` folder.
 
-### `src/components/ui/` — Generic UI primitives
+### Where components live
 
-- Generated and managed by the shadcn-ui CLI (`npx shadcn-ui add ...`)
-- Built on Radix UI primitives for accessibility
-- Styled with TailwindCSS utility classes — fully customizable (source owned by project)
-- **Zero business logic** — no hardcoded routes, content, or app-specific data
-- Portable: could be dropped into any Next.js project unchanged
-- Examples: `Button`, `Card`, `Input`, `Dialog`, `Table`, `Label`, `Alert`
+- **Context-owned**: `src/contexts/<bc>/presentation/components/` — components that belong to a specific bounded context
+- **Shared primitives**: `@open-sharia-enterprise/ts-ui` — the shared design system library. Import from here, not from `src/`
+- **App routing chrome**: `src/app/` — Next.js `page.tsx` and `layout.tsx` thin wrappers only; no business logic
 
-### `src/components/` — App-specific components
+```typescript
+// Correct — import from bounded context barrel
+import { JournalList } from "@/contexts/journal/presentation";
+import { HistoryScreen } from "@/contexts/stats/presentation";
 
-- Compose `ui/` primitives with business logic and app content
-- May contain hardcoded routes, brand strings, or prop contracts tied to this app
-- Not portable — tightly coupled to organiclever-web's domain
-- Examples: `Navigation` (hardcodes `/dashboard` routes, "Organic Lever" brand, `logout` prop), `Breadcrumb` (reads live pathname)
+// Correct — import from ts-ui design system
+import { Button, StatCard, TabBar } from "@open-sharia-enterprise/ts-ui";
 
-### Why keep them separate
-
-Do **not** move app-specific components into `ui/`. Three concrete reasons:
-
-1. **shadcn-ui CLI conflict** — `npx shadcn-ui add <component>` writes directly into `components/ui/`. App-specific files placed there risk being silently overwritten.
-2. **Abstraction clarity** — Developers expect `ui/` to contain drop-in, data-agnostic primitives. Finding opinionated, app-coupled components there breaks that contract and creates confusion.
-3. **Portability boundary** — `ui/` components can be extracted into a shared design system in the future. App-specific components cannot. Mixing them makes that extraction painful.
-
-**Decision rule:** if a component has hardcoded routes, brand content, or props tied to this app's domain → `src/components/`. If it is a generic, reusable primitive → `src/components/ui/`.
-
-## Next.js App Router Conventions
-
-### Route Structure
-
-```
-src/app/
-├── layout.tsx          # Root layout (wraps all pages)
-├── page.tsx            # Home page (/)
-├── dashboard/
-│   ├── layout.tsx      # Dashboard layout (optional)
-│   └── page.tsx        # Dashboard page (/dashboard)
-├── login/
-│   └── page.tsx        # Login page (/login)
-└── api/
-    └── auth/
-        └── route.ts    # API handler (/api/auth)
+// Wrong — no global src/components/ exists
+import { SomeComponent } from "@/components/SomeComponent"; // ❌
 ```
 
 ### Server vs Client Components
@@ -264,25 +236,34 @@ src/app/
 
 **Use Client Components when**:
 
-- Interactive state (`useState`, `useReducer`)
-- Browser APIs
+- Interactive state (`useState`, `useReducer`, XState `useActor`)
+- Browser APIs (IndexedDB, window, localStorage)
 - Event handlers (`onClick`, `onChange`)
 - React context consumers
 
-```typescript
-// Server Component (default)
-export default async function DashboardPage() {
-  const data = await fetchData(); // Direct async/await
-  return <div>{data.title}</div>;
-}
+The app layout mounts the PGlite runtime and XState `appMachine` in a client component (`app-runtime-context.tsx`). Per-tab `page.tsx` files are server components that render client presentation components.
 
-// Client Component
-("use client");
-export default function LoginForm() {
-  const [email, setEmail] = useState("");
-  return <input onChange={(e) => setEmail(e.target.value)} />;
-}
+## Next.js App Router Conventions
+
+### Route Structure
+
 ```
+src/app/
+├── layout.tsx                  # Root layout — loads fonts, globals.css
+├── page.tsx                    # Landing page (/) — server component
+├── app/
+│   ├── layout.tsx              # App shell layout — mounts PGlite runtime + appMachine
+│   ├── home/page.tsx           # Home screen (/app/home)
+│   ├── history/page.tsx        # History screen (/app/history)
+│   ├── progress/page.tsx       # Progress screen (/app/progress)
+│   ├── settings/page.tsx       # Settings screen (/app/settings)
+│   ├── workout/page.tsx        # Active workout (/app/workout)
+│   ├── workout/finish/page.tsx # Post-workout summary (/app/workout/finish)
+│   └── routines/edit/page.tsx  # Routine editor (/app/routines/edit)
+└── system/status/be/page.tsx   # Diagnostic page (force-dynamic, no cache)
+```
+
+Every `page.tsx` is a thin wrapper — it imports from the relevant bounded context's `presentation/` barrel and renders the screen component. No business logic in `page.tsx`.
 
 ## Vercel Deployment
 
@@ -360,20 +341,19 @@ Vercel automatically:
 
 ## Comparison with Other Apps
 
-| Aspect              | organiclever-web         | ayokoding-web                  | oseplatform-web         |
-| ------------------- | ------------------------ | ------------------------------ | ----------------------- |
-| **Framework**       | Next.js 16 (App Router)  | Next.js 16 (App Router)        | Next.js 16 (App Router) |
-| **Language**        | TypeScript / React 19    | TypeScript / React 19          | TypeScript / React 19   |
-| **Styling**         | TailwindCSS + Radix UI   | TailwindCSS                    | TailwindCSS             |
-| **Auth**            | Cookie-based sessions    | None                           | None                    |
-| **Data**            | JSON files + API routes  | tRPC + database                | tRPC + database         |
-| **Build**           | Next.js (Vercel)         | Next.js (Vercel)               | Next.js (Vercel)        |
-| **Prod Branch**     | prod-organiclever-web    | prod-ayokoding-web             | prod-oseplatform-web    |
-| **Languages**       | English                  | Bilingual (Indonesian/English) | English only            |
-| **Content Types**   | Landing + promo pages    | Tutorials, essays, videos      | Updates, about page     |
-| **Complexity**      | Static + light auth      | Fullstack bilingual platform   | Simple landing page     |
-| **Prod URL**        | www.organiclever.com     | ayokoding.com                  | oseplatform.com         |
-| **Primary Purpose** | Landing/promotional page | Educational platform           | Project landing page    |
+| Aspect              | organiclever-web                      | ayokoding-web                  | oseplatform-web         |
+| ------------------- | ------------------------------------- | ------------------------------ | ----------------------- |
+| **Framework**       | Next.js 16 (App Router)               | Next.js 16 (App Router)        | Next.js 16 (App Router) |
+| **Architecture**    | DDD bounded contexts                  | Feature folders                | Feature folders         |
+| **Storage**         | PGlite (local-first, IndexedDB)       | tRPC + database                | tRPC + database         |
+| **Auth**            | None (local-first)                    | None                           | None                    |
+| **State**           | XState + Effect TS                    | React state                    | React state             |
+| **Build**           | Next.js (Vercel)                      | Next.js (Vercel)               | Next.js (Vercel)        |
+| **Prod Branch**     | prod-organiclever-web                 | prod-ayokoding-web             | prod-oseplatform-web    |
+| **Languages**       | English                               | Bilingual (Indonesian/English) | English only            |
+| **Complexity**      | Full DDD life journal + local storage | Fullstack bilingual platform   | Simple landing page     |
+| **Prod URL**        | www.organiclever.com                  | ayokoding.com                  | oseplatform.com         |
+| **Primary Purpose** | Local-first life journal + landing    | Educational platform           | Project landing page    |
 
 ## Development Commands
 
@@ -411,49 +391,55 @@ docker compose -f infra/dev/organiclever-web/docker-compose.yml up organiclever-
 
 ## Common Patterns
 
-### Adding a New Page
+### Adding a feature to an existing bounded context
 
 ```typescript
-// src/app/new-feature/page.tsx
-export default function NewFeaturePage() {
-  return (
-    <main>
-      <h1>New Feature</h1>
-    </main>
-  );
-}
+// 1. Add term to specs/apps/organiclever/ubiquitous-language/<bc>.md (same commit as code)
+
+// 2. Add Gherkin scenario in specs/apps/organiclever/fe/gherkin/<bc>/<file>.feature
+
+// 3. Add step implementation in test/unit/steps/<bc>/<file>.steps.tsx
+
+// 4. Implement domain type (if new aggregate field)
+// src/contexts/<bc>/domain/types.ts
+
+// 5. Implement use-case in application layer
+// src/contexts/<bc>/application/my-use-case.ts
+
+// 6. Implement PGlite store operation in infrastructure
+// src/contexts/<bc>/infrastructure/<bc>-store.ts
+
+// 7. Expose via barrel
+// src/contexts/<bc>/application/index.ts  ← add export
+
+// 8. Add/update React hook or component in presentation
+// src/contexts/<bc>/presentation/use-<bc>.ts
+// src/contexts/<bc>/presentation/index.ts  ← add export
+
+// 9. Consume in Next.js page (thin wrapper only)
+// src/app/app/<screen>/page.tsx
+import { SomeScreen } from "@/contexts/<bc>/presentation";
 ```
 
-### Adding an API Route
+### Using ts-ui components
 
 ```typescript
-// src/app/api/new-endpoint/route.ts
-import { NextResponse } from "next/server";
+import {
+  Button,
+  Alert,
+  Input,
+  Icon,
+  Toggle,
+  StatCard,
+  TabBar,
+  SideNav,
+} from "@open-sharia-enterprise/ts-ui";
 
-export async function GET() {
-  return NextResponse.json({ data: "example" });
-}
-
-export async function POST(request: Request) {
-  const body = await request.json();
-  return NextResponse.json({ received: body });
-}
-```
-
-### Using shadcn-ui Components
-
-```typescript
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-export default function ExampleForm() {
-  return (
-    <form>
-      <Input placeholder="Email" type="email" />
-      <Button type="submit">Submit</Button>
-    </form>
-  );
-}
+<Button variant="teal">Primary action</Button>
+<Button variant="sage" size="xl">Hero CTA</Button>
+<Alert variant="success">Entry logged!</Alert>
+<Icon name="dumbbell" size={24} />
+<StatCard label="Streak" value={7} unit="days" hue="terracotta" icon="flame" />
 ```
 
 ## Content Validation Checklist
@@ -466,45 +452,43 @@ Before committing changes:
 - [ ] Images use Next.js `<Image>` component (not `<img>`)
 - [ ] Links use Next.js `<Link>` component (not `<a>` for internal links)
 - [ ] All interactive elements are keyboard accessible
-- [ ] Auth-protected routes check session cookie
-- [ ] API routes return appropriate HTTP status codes
+- [ ] New domain terms added to the relevant ubiquitous-language glossary
+- [ ] `nx run organiclever-web:lint` exits 0 (0 boundary errors)
 
 ## Common Mistakes
 
-### ❌ Mistake 1: Using `<img>` instead of Next.js Image
+### ❌ Mistake 1: Putting business logic in `src/app/` page files
 
-**Wrong**: `<img src="/logo.png" alt="Logo" />`
+**Wrong**: Business logic in `page.tsx`
 
-**Right**: `<Image src="/logo.png" alt="Logo" width={100} height={100} />`
+**Right**: Business logic in the bounded context's `application/` or `presentation/` layers; `page.tsx` only renders the screen component.
 
-### ❌ Mistake 2: Forgetting `"use client"` for interactive components
+### ❌ Mistake 2: Importing from another context's internal files
+
+**Wrong**: `import { journalStore } from "@/contexts/journal/infrastructure/journal-store"` from settings
+
+**Right**: `import { appendEntry } from "@/contexts/journal/application"` — always go through the barrel
+
+### ❌ Mistake 3: Forgetting `"use client"` for interactive components
 
 ```typescript
-// Wrong - useState in server component
+// Wrong - useState in server component causes runtime error
 export default function Counter() {
   const [count, setCount] = useState(0); // Error!
-  return <button onClick={() => setCount(count + 1)}>{count}</button>;
 }
 
 // Right
 ("use client");
 export default function Counter() {
   const [count, setCount] = useState(0);
-  return <button onClick={() => setCount(count + 1)}>{count}</button>;
 }
 ```
-
-### ❌ Mistake 3: Fetching data client-side when server component suffices
-
-**Wrong**: Using `useEffect` + `fetch` in client component for initial data
-
-**Right**: Fetch data in async server component directly
 
 ### ❌ Mistake 4: Direct commits to prod-organiclever-web
 
 **Wrong**: `git checkout prod-organiclever-web && git commit`
 
-**Right**: Commit to `main`, use deployer agent to force-push
+**Right**: Commit to `main`, use `apps-organiclever-web-deployer` agent to force-push
 
 ## Reference Documentation
 

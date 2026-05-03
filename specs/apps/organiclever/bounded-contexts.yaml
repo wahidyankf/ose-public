@@ -1,0 +1,135 @@
+version: 1
+app: organiclever
+contexts:
+  - name: journal
+    summary: >-
+      Append-only event log (PGlite-backed) that is the system of record for
+      everything the user did — workout, reading, learning, meal, focus —
+      modelled as typed payloads on JournalEvent rows.
+    layers:
+      - domain
+      - application
+      - infrastructure
+      - presentation
+    code: apps/organiclever-web/src/contexts/journal
+    glossary: specs/apps/organiclever/ubiquitous-language/journal.md
+    gherkin: specs/apps/organiclever/fe/gherkin/journal
+    relationships: []
+
+  - name: workout-session
+    summary: >-
+      In-progress workout state machine: lifts a Routine template into an active
+      WorkoutSession, tracks set-by-set progress, and persists the outcome
+      through the journal context as a WorkoutPayload JournalEvent.
+    layers:
+      - domain
+      - application
+      - presentation
+    code: apps/organiclever-web/src/contexts/workout-session
+    glossary: specs/apps/organiclever/ubiquitous-language/workout-session.md
+    gherkin: specs/apps/organiclever/fe/gherkin/workout-session
+    relationships:
+      - to: journal
+        kind: customer-supplier
+        role: customer
+      - to: routine
+        kind: conformist
+        role: downstream
+
+  - name: routine
+    summary: >-
+      Reusable workout templates the user authors and runs — each Routine
+      carries an ordered list of RoutineExercise entries with default sets,
+      reps, and weights.
+    layers:
+      - domain
+      - application
+      - infrastructure
+      - presentation
+    code: apps/organiclever-web/src/contexts/routine
+    glossary: specs/apps/organiclever/ubiquitous-language/routine.md
+    gherkin: specs/apps/organiclever/fe/gherkin/routine
+    relationships:
+      - to: workout-session
+        kind: conformist
+        role: upstream
+
+  - name: stats
+    summary: >-
+      Read-only projections over JournalEvents — daily/weekly/monthly
+      aggregates, streaks, and progress charts. No persistence of its own;
+      pure derivations from the journal context.
+    layers:
+      - domain
+      - application
+      - presentation
+    code: apps/organiclever-web/src/contexts/stats
+    glossary: specs/apps/organiclever/ubiquitous-language/stats.md
+    gherkin: specs/apps/organiclever/fe/gherkin/stats
+    relationships:
+      - to: journal
+        kind: customer-supplier
+        role: customer
+
+  - name: settings
+    summary: >-
+      User-local preferences (theme, locale, units) persisted in PGlite. Owns
+      invariants like "exactly one preferences row per user" and the dark-mode
+      toggle.
+    layers:
+      - domain
+      - application
+      - infrastructure
+      - presentation
+    code: apps/organiclever-web/src/contexts/settings
+    glossary: specs/apps/organiclever/ubiquitous-language/settings.md
+    gherkin: specs/apps/organiclever/fe/gherkin/settings
+    relationships: []
+
+  - name: app-shell
+    summary: >-
+      Cross-cutting UI shell — i18n keys, design tokens, layout chrome,
+      navigation skeleton, error boundaries, app loggers, and the UI shell
+      xstate machine. Shared kernel; owns no domain entities.
+    layers:
+      - application
+      - presentation
+    code: apps/organiclever-web/src/contexts/app-shell
+    glossary: specs/apps/organiclever/ubiquitous-language/app-shell.md
+    gherkin: specs/apps/organiclever/fe/gherkin/app-shell
+    relationships: []
+
+  - name: health
+    summary: >-
+      Backend health-endpoint client and the /system/status/be diagnostic page.
+      Reads ORGANICLEVER_BE_URL, probes GET /health, and renders an
+      UP / DOWN / Not configured tile.
+    layers:
+      - infrastructure
+    code: apps/organiclever-web/src/contexts/health
+    glossary: specs/apps/organiclever/ubiquitous-language/health.md
+    gherkin: specs/apps/organiclever/fe/gherkin/health
+    relationships: []
+
+  - name: landing
+    summary: >-
+      Marketing landing surface at / — hero, features, principles, rhythm demo,
+      footer. No domain logic; pure presentational content.
+    layers:
+      - presentation
+    code: apps/organiclever-web/src/contexts/landing
+    glossary: specs/apps/organiclever/ubiquitous-language/landing.md
+    gherkin: specs/apps/organiclever/fe/gherkin/landing
+    relationships: []
+
+  - name: routing
+    summary: >-
+      Disabled-route guards. v0 has no authentication, so /login and /profile
+      exist only as 404 stubs to communicate "feature not yet available"
+      without leaking placeholders into other contexts.
+    layers:
+      - presentation
+    code: apps/organiclever-web/src/contexts/routing
+    glossary: specs/apps/organiclever/ubiquitous-language/routing.md
+    gherkin: specs/apps/organiclever/fe/gherkin/routing
+    relationships: []

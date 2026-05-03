@@ -10,17 +10,16 @@ Backend health-endpoint client and the `/system/status/be` diagnostic page. Read
 
 ## Terms
 
-| Term              | Definition                                                                                                         | Code identifier(s)                                                                             | Used in features   |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------ |
-| `Backend URL`     | The configured `ORGANICLEVER_BE_URL` env var. Server-only.                                                         | `ORGANICLEVER_BE_URL`                                                                          | `health/*.feature` |
-| `Health probe`    | A `GET <backendUrl>/health` request with a 3-second timeout, executed on each request to `/system/status/be`.      | `probeHealth` (use-case fn)                                                                    | `health/*.feature` |
-| `Health status`   | One of `UP`, `DOWN`, or `Not configured`. Determined by the probe result.                                          | `HealthStatus` (TS string-literal)                                                             | `health/*.feature` |
-| `Status tile`     | The card on `/system/status/be` rendering one of the three states with URL, latency, and (on DOWN) failure reason. | `StatusTile` (component)                                                                       | `health/*.feature` |
-| `Backend client`  | The Effect.ts service that issues the health probe. Lives behind a port; the live and test layers are siblings.    | `BackendClient` (Effect Service Tag), `BackendClientLive`, `BackendClientTest` (Effect Layers) | `health/*.feature` |
-| `Diagnostic page` | The route `/system/status/be` itself — server-rendered, `force-dynamic`.                                           | (route segment) `system/status/be`                                                             | `health/*.feature` |
+| Term              | Definition                                                                                                         | Code identifier(s)                                                                                  | Used in features   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- | ------------------ |
+| `Backend URL`     | The configured `ORGANICLEVER_BE_URL` env var. Server-only.                                                         | `ORGANICLEVER_BE_URL`                                                                               | `health/*.feature` |
+| `Health probe`    | A `GET <backendUrl>/health` request with a 3-second timeout, executed on each request to `/system/status/be`.      | `BackendClient` (Effect Service Tag)                                                                | `health/*.feature` |
+| `Health status`   | One of `UP`, `DOWN`, or `Not configured`. Determined by the probe result.                                          | `ApiError`, `NetworkError`                                                                          | `health/*.feature` |
+| `Status tile`     | The card on `/system/status/be` rendering one of the three states with URL, latency, and (on DOWN) failure reason. | (server-rendered page component)                                                                    | `health/*.feature` |
+| `Backend client`  | The Effect.ts service that issues the health probe. Lives behind a port; the live and test layers are siblings.    | `BackendClient` (Effect Service Tag), `BackendClientLive`, `createBackendClientTest` (test factory) | `health/*.feature` |
+| `Diagnostic page` | The route `/system/status/be` itself — server-rendered, `force-dynamic`.                                           | (route segment) system/status/be                                                                    | `health/*.feature` |
 
 ## Forbidden synonyms
 
-- "Status" alone — overloaded with "session status" in `workout-session` and "settings status" in `settings`. Inside `health`, always qualify as "health status" or use the `HealthStatus` identifier.
+- "Status" alone — overloaded with "session status" in `workout-session` and "settings status" in `settings`. Inside `health`, always qualify as "health status".
 - "Endpoint" — refers to the backend's `GET /health` route. Inside `health`, the backend route is the _target_, not an owned concept; prefer "backend URL" or "health endpoint".
-- "Record" — used here only for "health probe record" (the result tuple). Different from `journal`'s `JournalEvent`.

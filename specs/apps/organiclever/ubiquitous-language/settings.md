@@ -12,16 +12,15 @@ User-local preferences (theme, locale, units) persisted in PGlite. Owns invarian
 
 | Term            | Definition                                                                                                    | Code identifier(s)             | Used in features     |
 | --------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------ | -------------------- |
-| `Preferences`   | The aggregate holding all user-local settings. Singleton per user.                                            | `Preferences` (TS type)        | `settings/*.feature` |
-| `Theme`         | One of `light`, `dark`, or `system`. Drives the `data-theme` attribute on `<html>`.                           | `Theme` (TS string-literal)    | `settings/*.feature` |
-| `Locale`        | BCP-47 language tag. Governs i18n key resolution in `app-shell`.                                              | `Locale` (TS type)             | `settings/*.feature` |
-| `Units`         | Measurement units (`kg`/`lb`, `cm`/`in`, etc.) applied to weights and lengths displayed by the UI.            | `Units` (TS type)              | `settings/*.feature` |
+| `Preferences`   | The aggregate holding all user-local settings. Singleton per user.                                            | `AppSettings` (TS type)        | `settings/*.feature` |
+| `Theme`         | One of `light`, `dark`, or `system`. Drives the `data-theme` attribute on `<html>`.                           | `AppSettings` (darkMode field) | `settings/*.feature` |
+| `Locale`        | BCP-47 language tag. Governs i18n key resolution in `app-shell`.                                              | `Lang` (TS type)               | `settings/*.feature` |
+| `Units`         | Measurement units (`kg`/`lb`, `cm`/`in`, etc.) applied to weights and lengths displayed by the UI.            | (not yet implemented)          | `settings/*.feature` |
 | `Settings page` | The route `/app/settings` rendering the preferences form.                                                     | (route segment) `app/settings` | `settings/*.feature` |
-| `Reset data`    | The action that wipes all PGlite stores (journal, routine, settings) and returns the user to the empty state. | `resetAllData` (use-case fn)   | `settings/*.feature` |
-| `Export data`   | The action that serializes all PGlite stores into a downloadable JSON file.                                   | `exportAllData` (use-case fn)  | `settings/*.feature` |
+| `Reset data`    | The action that wipes all PGlite stores (journal, routine, settings) and returns the user to the empty state. | (use-case fn, not yet impl.)   | `settings/*.feature` |
+| `Export data`   | The action that serializes all PGlite stores into a downloadable JSON file.                                   | (use-case fn, not yet impl.)   | `settings/*.feature` |
 
 ## Forbidden synonyms
 
-- "Profile" — not a v0 concept (no auth). Reserved for the disabled `/profile` 404 guard, owned by `routing`.
 - "Configuration" — used by `app-shell` to mean runtime configuration (i18n keys, design tokens). Inside `settings`, prefer "preferences".
 - "Theme" inside `app-shell` — `app-shell` consumes the resolved theme as a CSS class; only `settings` owns the user-chosen value.

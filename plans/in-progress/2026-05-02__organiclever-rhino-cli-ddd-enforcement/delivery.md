@@ -28,10 +28,10 @@
 
 **Goal**: Resolve open questions in `tech-docs.md` before any code is written.
 
-- [ ] **Red**: For each open question Q1–Q3 in `tech-docs.md`, either accept the default or override with a written rationale. Append answers to `tech-docs.md` under "Open questions" with `RESOLVED:` prefix.
+- [ ] **Author**: For each open question Q1–Q3 in `tech-docs.md`, either accept the default or override with a written rationale. Append answers to `tech-docs.md` under "Open questions" with `RESOLVED:` prefix.
 - [ ] Cross-check the registry YAML schema in `tech-docs.md` against the BC list in `plans/done/2026-05-02__organiclever-adopt-ddd/tech-docs.md`. Any context name mismatch is a blocker — resolve before Phase 1.
-- [ ] **Green**: `npm run lint:md` passes; markdown clean.
-- [ ] **Refactor**: None.
+- [ ] **Verify**: `npm run lint:md` passes; markdown clean.
+- [ ] **Polish**: None.
 - [ ] Commit: `docs(plans): resolve Phase 0 open questions for rhino-cli DDD enforcement`.
 
 **Phase exit gates**:
@@ -45,11 +45,11 @@
 
 **Goal**: Land `specs/apps/organiclever/bounded-contexts.yaml` as the single source of truth for the BC map. Verify by hand that every entry resolves before any subcommand exists.
 
-- [ ] **Red**: Author `specs/apps/organiclever/bounded-contexts.yaml` per the schema in `tech-docs.md`. Populate all 9 contexts with `name`, `summary`, `layers`, `code`, `glossary`, `gherkin`, `relationships`.
-- [ ] **Red**: Manual sanity check — `for ctx in <each>; do test -d <code> && test -f <glossary> && test -d <gherkin>; done`. Every check must pass.
-- [ ] **Red**: Cross-check that every name in the registry corresponds to a path that ESLint considers a `domain`/`application`/`infrastructure`/`presentation` element per the DDD plan's `eslint.config.mjs`.
-- [ ] **Green**: `npm run lint:md` passes (no markdown changed, sanity check). YAML syntactically valid: `yq eval '.' specs/apps/organiclever/bounded-contexts.yaml` exits zero (requires `mikefarah/yq` v4; if `yq` is unavailable, YAML parse errors will surface naturally when any subcommand loads the registry in Phase 2).
-- [ ] **Refactor**: Add cross-link from `plans/done/2026-05-02__organiclever-adopt-ddd/tech-docs.md` to the registry in a follow-up commit (or note as a deferred edit if archived plan is read-only by convention).
+- [ ] **Author**: Author `specs/apps/organiclever/bounded-contexts.yaml` per the schema in `tech-docs.md`. Populate all 9 contexts with `name`, `summary`, `layers`, `code`, `glossary`, `gherkin`, `relationships`.
+- [ ] **Author**: Manual sanity check — `for ctx in <each>; do test -d <code> && test -f <glossary> && test -d <gherkin>; done`. Every check must pass.
+- [ ] **Author**: Cross-check that every name in the registry corresponds to a path that ESLint considers a `domain`/`application`/`infrastructure`/`presentation` element per the DDD plan's `eslint.config.mjs`.
+- [ ] **Verify**: `npm run lint:md` passes (no markdown changed, sanity check). YAML syntactically valid: `yq eval '.' specs/apps/organiclever/bounded-contexts.yaml` exits zero (requires `mikefarah/yq` v4; if `yq` is unavailable, YAML parse errors will surface naturally when any subcommand loads the registry in Phase 2).
+- [ ] **Polish**: Add cross-link from `plans/done/2026-05-02__organiclever-adopt-ddd/tech-docs.md` to the registry in a follow-up commit (or note as a deferred edit if archived plan is read-only by convention).
 - [ ] Update `specs/apps/organiclever/README.md` "Structure" tree to include `bounded-contexts.yaml` at the top level.
 - [ ] Commit: `feat(specs/organiclever): add bounded-contexts.yaml registry`.
 

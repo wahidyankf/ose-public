@@ -2,7 +2,7 @@
 
 ## Business problem
 
-The sibling [`2026-05-02__organiclever-adopt-ddd`](../2026-05-02__organiclever-adopt-ddd/README.md) plan migrates `apps/organiclever-web` to a bounded-context layout with explicit ubiquitous language. Once that lands, the plan's correctness depends on **eight artefacts staying in lockstep**: code folder, layer subfolders, ESLint boundaries config, Gherkin folder, glossary file, registry, ADR, and skill content.
+The sibling [`2026-05-02__organiclever-adopt-ddd`](../../done/2026-05-02__organiclever-adopt-ddd/README.md) plan migrates `apps/organiclever-web` to a bounded-context layout with explicit ubiquitous language. Once that lands, the plan's correctness depends on **eight artefacts staying in lockstep**: code folder, layer subfolders, ESLint boundaries config, Gherkin folder, glossary file, registry, ADR, and skill content.
 
 Without mechanical enforcement, drift is inevitable:
 
@@ -12,6 +12,21 @@ Without mechanical enforcement, drift is inevitable:
 4. **Layer slip** — a new xstate machine that calls `fromPromise` against PGlite lands in `presentation/` because the developer didn't know the IO-trigger rule.
 
 ESLint boundaries (delivered by the DDD plan) catches case 4 for TypeScript code-import paths but does **not** catch cases 1–3, and won't catch case 4 for the F# BE when `organiclever-be` adopts DDD. Manual code review is the only thing standing between today's clean migration and tomorrow's drifted mess. That's not a defensible position for a solo maintainer.
+
+## Business impact
+
+**Pain points** (what happens without enforcement):
+
+1. **Glossary rot** — code identifiers get renamed; the glossary `Code identifier(s)` column doesn't follow. The ubiquitous-language payoff erodes silently.
+2. **Folder–registry drift** — phantom bounded-context folders accumulate code outside the registry, invisible to any agent or reviewer scanning the BC map.
+3. **Term collision** — two glossaries independently define the same term differently; Gherkin steps and implementation become ambiguous.
+4. **Layer slip** — new xstate machines land in the wrong layer because the developer or agent lacked the IO-trigger rule at authoring time.
+
+**Expected benefit** (what this plan delivers):
+
+- Drift fails the commit — `rhino-cli bc validate` and `ul validate` run in `nx run organiclever-web:test:quick` (pre-push hook). Cases 1–3 are caught mechanically at commit time, not in a future archaeology session.
+- Layer slip prevented at authoring time — the skill DDD section injects BC list, layer rules, and xstate placement rule into every agent session touching `organiclever-web`.
+- Together the two layers make the DDD migration durable for a solo maintainer without requiring constant manual vigilance.
 
 ## Proposed solution
 
@@ -73,7 +88,7 @@ A new dedicated checker agent (e.g. `apps-organiclever-ddd-checker`) is **delibe
 - Other apps (`ayokoding-web`, `oseplatform-web`, `wahidyankf-web`) — neither uses bounded contexts today.
 - Domain-event taxonomy, C4 parity, ADR-coverage check, aggregate-root marker, layer-purity per language.
 
-## Stakeholders
+## Affected roles
 
 - **Product owner**: Wahidyan Kresna Fridayoka.
 - **Engineering**: Same.

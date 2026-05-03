@@ -315,7 +315,7 @@ Feature: rhino-cli DDD enforcement acceptance
 
 ## Dependencies
 
-- [OrganicLever DDD Adoption Plan (sibling, hard dependency)](../2026-05-02__organiclever-adopt-ddd/README.md)
+- [OrganicLever DDD Adoption Plan (sibling, hard dependency)](../../done/2026-05-02__organiclever-adopt-ddd/README.md)
 - [Three-Level Testing Standard](../../../governance/development/quality/three-level-testing-standard.md)
 - [Test-Driven Development Convention](../../../governance/development/workflow/test-driven-development.md)
 - [Trunk Based Development Convention](../../../governance/development/workflow/trunk-based-development.md)

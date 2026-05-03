@@ -18,7 +18,7 @@ The two subcommands run in `nx run organiclever-web:test:quick` and therefore in
 
 ## Why now
 
-The sibling [`2026-05-02__organiclever-adopt-ddd`](../2026-05-02__organiclever-adopt-ddd/README.md) plan migrates `organiclever-web` to a bounded-context layout. Once the migration lands, the plan's correctness lives in **eight artefacts that must stay in lockstep**: code folder, layer subfolders, ESLint boundaries config, Gherkin folder, glossary file, registry, ADR, and skill. Without mechanical enforcement, drift between these eight is inevitable — humans add terms in code without updating the glossary, agents place new files in the wrong layer, glossaries accumulate stale `Code identifier(s)` entries.
+The sibling [`2026-05-02__organiclever-adopt-ddd`](../../done/2026-05-02__organiclever-adopt-ddd/README.md) plan migrates `organiclever-web` to a bounded-context layout. Once the migration lands, the plan's correctness lives in **eight artefacts that must stay in lockstep**: code folder, layer subfolders, ESLint boundaries config, Gherkin folder, glossary file, registry, ADR, and skill. Without mechanical enforcement, drift between these eight is inevitable — humans add terms in code without updating the glossary, agents place new files in the wrong layer, glossaries accumulate stale `Code identifier(s)` entries.
 
 ESLint boundaries (provided by the DDD adoption plan) covers code-import boundaries inside TypeScript. It does **not** cover the registry ↔ glossary ↔ Gherkin parity, ubiquitous-language drift, or the eventual polyglot case when `organiclever-be` joins DDD. `rhino-cli` is the right tool because it already runs in the pre-push hook for spec-coverage and link validation; the same discipline can catch DDD drift.
 
@@ -26,7 +26,7 @@ The skill extension is cheap insurance: the existing `apps-organiclever-web-deve
 
 ## Dependencies
 
-**Hard dependency — strict serial**: [`2026-05-02__organiclever-adopt-ddd`](../2026-05-02__organiclever-adopt-ddd/README.md) MUST be **fully complete and archived** to `plans/done/` before any phase of this plan begins. Reasons:
+**Hard dependency — strict serial**: [`2026-05-02__organiclever-adopt-ddd`](../../done/2026-05-02__organiclever-adopt-ddd/README.md) MUST be **fully complete and archived** to `plans/done/` before any phase of this plan begins. Reasons:
 
 - The registry YAML lists every BC `code` path; those folders are fully populated only after the DDD adoption plan completes its phased migration.
 - The glossary files (consumed by `ul validate`) are authored during the DDD plan's ubiquitous-language scaffolding phase and only stabilise at the end of its spec-reorganization phase.
@@ -90,7 +90,7 @@ This plan is done when **all** of the following are true:
 
 ## Related
 
-- [OrganicLever DDD Adoption Plan (sibling, hard dependency)](../2026-05-02__organiclever-adopt-ddd/README.md)
+- [OrganicLever DDD Adoption Plan (sibling, hard dependency)](../../done/2026-05-02__organiclever-adopt-ddd/README.md)
 - [Domain-Driven Design (DDD) — Authoritative Standards](../../../docs/explanation/software-engineering/architecture/domain-driven-design-ddd/README.md)
 - [Three-Level Testing Standard](../../../governance/development/quality/three-level-testing-standard.md)
 - [Test-Driven Development Convention](../../../governance/development/workflow/test-driven-development.md)

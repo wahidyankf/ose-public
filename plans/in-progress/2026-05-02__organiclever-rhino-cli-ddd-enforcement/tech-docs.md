@@ -90,7 +90,7 @@ flowchart LR
 #   - rhino-cli bc validate (structural parity)
 #   - rhino-cli ul validate (glossary file resolution)
 #   - apps-organiclever-web-developing-content skill (BC list pointer)
-# Cross-links: see `plans/in-progress/2026-05-02__organiclever-adopt-ddd/tech-docs.md`
+# Cross-links: see `plans/done/2026-05-02__organiclever-adopt-ddd/tech-docs.md`
 # for full design rationale (this file is the machine-readable mirror).
 
 version: 1
@@ -150,7 +150,7 @@ contexts:
 
   - name: app-shell
     summary: Cross-cutting frame — i18n, layout, theming, navigation, loggers.
-    layers: [presentation]
+    layers: [application, presentation]
     code: apps/organiclever-web/src/contexts/app-shell
     glossary: specs/apps/organiclever/ubiquitous-language/app-shell.md
     gherkin: specs/apps/organiclever/fe/gherkin/app-shell
@@ -158,7 +158,7 @@ contexts:
 
   - name: health
     summary: Backend health-endpoint consumption + system-status diagnostic page.
-    layers: [domain, application, infrastructure, presentation]
+    layers: [infrastructure]
     code: apps/organiclever-web/src/contexts/health
     glossary: specs/apps/organiclever/ubiquitous-language/health.md
     gherkin: specs/apps/organiclever/fe/gherkin/health
@@ -396,7 +396,7 @@ Severity controlled by `ORGANICLEVER_RHINO_DDD_SEVERITY` env var (default `error
 
 - **Registry**: `specs/apps/organiclever/bounded-contexts.yaml`
 - **Glossaries**: `specs/apps/organiclever/ubiquitous-language/<bc>.md`
-- **Design intent (full prose)**: `plans/in-progress/2026-05-02__organiclever-adopt-ddd/tech-docs.md` (or `done/...` once archived)
+- **Design intent (full prose)**: `plans/done/2026-05-02__organiclever-adopt-ddd/tech-docs.md`
 - **ADR**: `apps/organiclever-web/docs/explanation/bounded-context-map.md`
 
 ### Bounded contexts
@@ -458,8 +458,6 @@ If either reports a finding:
 
 NEVER silence a finding by lowering severity in production. Use `--severity=warn` only for local exploratory work.
 
-````
-
 ### Three-level testing layout
 
 Per the [Three-Level Testing Standard](../../../governance/development/quality/three-level-testing-standard.md), each subcommand ships with:
@@ -472,19 +470,19 @@ Both levels share `specs/apps/rhino/cli/gherkin/bc-validate.feature` and `specs/
 
 ## Decisions
 
-| #   | Decision                                                                                                                                              | Rationale                                                                                                                                                                                                |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| D1  | Registry is YAML, not JSON.                                                                                                                           | Comment support; human-readable; consistent with other repo configs.                                                                                                                                     |
-| D2  | Registry lives in `specs/apps/organiclever/`, not `apps/organiclever-web/`.                                                                           | Specs are platform-agnostic and shared between FE/BE; the registry will be reused when `organiclever-be` adopts DDD. Code-side path would scope it FE-only.                                              |
-| D3  | Subcommand name is `bc validate` and `ul validate`, not `ddd-bc` or `ddd-ul`.                                                                          | Short, two-letter group prefix matches existing rhino-cli style (e.g. `docs validate-links`). `bc` = bounded context; `ul` = ubiquitous language. Memorable and unambiguous in this repo.               |
-| D4  | Two subcommands, not one.                                                                                                                              | They check orthogonal concerns (structural parity vs glossary parity). Splitting allows independent severity flags and cleaner finding output.                                                          |
-| D5  | Code-identifier check uses ripgrep (with Go fallback), not a TypeScript AST parser.                                                                   | Polyglot-ready (works for F# BE later); no language-specific dependency; whole-word grep is sufficient because identifiers are whole-token by convention in TS/F#/Go.                                   |
-| D6  | Severity defaults to `error`; `warn` is a local escape hatch only.                                                                                     | Default-strict prevents accidental-warning-only operation in production. The DDD plan is complete before this plan begins, so subcommands ship at error severity from day one — no two-wave rollout. The env var override exists only for fast post-merge downgrade if a false positive surfaces. |
-| D7  | Skill DDD section points to canonical sources rather than duplicating them.                                                                           | Prevents drift between skill content and DDD plan `tech-docs.md`. Skill is concise enough to load without bloating any agent's context.                                                                 |
-| D8  | Polyglot import-graph subcommand (`bc deps`) explicitly deferred.                                                                                      | ESLint boundaries already covers TS in DDD plan; F# BE doesn't yet adopt DDD. Wait until polyglot DDD becomes real before building polyglot tooling.                                                    |
-| D9  | New checker agent (`apps-organiclever-ddd-checker`) explicitly deferred.                                                                               | Existing `plan-checker` and `specs-checker` cover most semantic concerns when invoked. New checker = governance overhead. Add only if rhino-cli + skill leave drift unaddressed in production.          |
-| D10 | Registry YAML lists relationships flat per context; symmetry check is validator's responsibility.                                                      | Schema simplicity — flat YAML beats inferred mirroring. Symmetry is a validation rule, not a schema rule.                                                                                                |
-| D11 | `glossary.Parse` is a glossary-shape-specific parser, not a general markdown parser.                                                                  | Smaller code surface; faster; easier to test. The glossary file shape is fixed by FR-1 of the DDD plan; a specialised parser is appropriate.                                                            |
+| #   | Decision                                                                                          | Rationale                                                                                                                                                                                                                                                                                         |
+| --- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1  | Registry is YAML, not JSON.                                                                       | Comment support; human-readable; consistent with other repo configs.                                                                                                                                                                                                                              |
+| D2  | Registry lives in `specs/apps/organiclever/`, not `apps/organiclever-web/`.                       | Specs are platform-agnostic and shared between FE/BE; the registry will be reused when `organiclever-be` adopts DDD. Code-side path would scope it FE-only.                                                                                                                                       |
+| D3  | Subcommand name is `bc validate` and `ul validate`, not `ddd-bc` or `ddd-ul`.                     | Short, two-letter group prefix matches existing rhino-cli style (e.g. `docs validate-links`). `bc` = bounded context; `ul` = ubiquitous language. Memorable and unambiguous in this repo.                                                                                                         |
+| D4  | Two subcommands, not one.                                                                         | They check orthogonal concerns (structural parity vs glossary parity). Splitting allows independent severity flags and cleaner finding output.                                                                                                                                                    |
+| D5  | Code-identifier check uses ripgrep (with Go fallback), not a TypeScript AST parser.               | Polyglot-ready (works for F# BE later); no language-specific dependency; whole-word grep is sufficient because identifiers are whole-token by convention in TS/F#/Go.                                                                                                                             |
+| D6  | Severity defaults to `error`; `warn` is a local escape hatch only.                                | Default-strict prevents accidental-warning-only operation in production. The DDD plan is complete before this plan begins, so subcommands ship at error severity from day one — no two-wave rollout. The env var override exists only for fast post-merge downgrade if a false positive surfaces. |
+| D7  | Skill DDD section points to canonical sources rather than duplicating them.                       | Prevents drift between skill content and DDD plan `tech-docs.md`. Skill is concise enough to load without bloating any agent's context.                                                                                                                                                           |
+| D8  | Polyglot import-graph subcommand (`bc deps`) explicitly deferred.                                 | ESLint boundaries already covers TS in DDD plan; F# BE doesn't yet adopt DDD. Wait until polyglot DDD becomes real before building polyglot tooling.                                                                                                                                              |
+| D9  | New checker agent (`apps-organiclever-ddd-checker`) explicitly deferred.                          | Existing `plan-checker` and `specs-checker` cover most semantic concerns when invoked. New checker = governance overhead. Add only if rhino-cli + skill leave drift unaddressed in production.                                                                                                    |
+| D10 | Registry YAML lists relationships flat per context; symmetry check is validator's responsibility. | Schema simplicity — flat YAML beats inferred mirroring. Symmetry is a validation rule, not a schema rule.                                                                                                                                                                                         |
+| D11 | `glossary.Parse` is a glossary-shape-specific parser, not a general markdown parser.              | Smaller code surface; faster; easier to test. The glossary file shape is fixed by FR-1 of the DDD plan; a specialised parser is appropriate.                                                                                                                                                      |
 
 ## Open questions (Phase 0 must resolve)
 
@@ -505,7 +503,7 @@ Both levels share `specs/apps/rhino/cli/gherkin/bc-validate.feature` and `specs/
 ```bash
 git log --oneline | head -20            # find phase commit
 git revert <phase-commit-sha>            # safe revert
-````
+```
 
 After reverting, all gates must be green before retrying.
 
@@ -528,7 +526,7 @@ Revert the SKILL.md edit. The existing "developing content" sections are untouch
 
 ## References
 
-- [OrganicLever DDD Adoption Plan (sibling)](../2026-05-02__organiclever-adopt-ddd/tech-docs.md) — full design intent for the BC layout this plan validates.
+- [OrganicLever DDD Adoption Plan (sibling)](../../done/2026-05-02__organiclever-adopt-ddd/tech-docs.md) — full design intent for the BC layout this plan validates.
 - [Three-Level Testing Standard](../../../governance/development/quality/three-level-testing-standard.md)
 - [Test-Driven Development Convention](../../../governance/development/workflow/test-driven-development.md)
 - [rhino-cli existing subcommands (reference for style)](../../../apps/rhino-cli/cmd/) — follow established patterns.

@@ -22,8 +22,9 @@
 
 ### Success Metrics
 
-- Zero vendor-specific terms in `governance/` prose (outside allowlisted regions)
-- All benchmark data accessible via `docs/reference/`
+- Zero vendor-specific terms in `governance/` prose outside binding-example fences and "Platform Binding Examples" heading sections (see `governance/conventions/structure/governance-vendor-independence.md`)
+- Run `rhino-cli governance vendor-audit governance/` — expect 0 violations for model names and benchmark citations in load-bearing prose
+- Verify all governance links to benchmark data resolve to `docs/reference/ai-model-benchmarks.md`
 - Governance layer-test guidance includes vendor-specific content decision
 
 ### Business Scope — In

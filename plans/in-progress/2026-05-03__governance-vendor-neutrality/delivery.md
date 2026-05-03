@@ -9,6 +9,7 @@
 
 ## Phase 2: Content Migration & Rewrite
 
+- [ ] Verify `docs/reference/ai-model-benchmarks.md` has benchmark data for every model referenced in governance files — add any missing entries before proceeding
 - [ ] Update `governance/development/agents/model-selection.md`:
   - Rewrite model references using capability tiers (planning-grade, execution-grade, fast)
   - Remove benchmark scores from governance prose
@@ -17,7 +18,7 @@
   - Replace `.claude/agents/` references with "platform binding agents"
   - Update Layer 4 description to reflect vendor-neutrality
 - [ ] Update `governance/repository-governance-architecture.md`:
-  - Clarify Skills are delivery infrastructure (not Layer 4.5)
+  - Clarify agent skills are delivery infrastructure (not Layer 4.5)
   - Ensure agent color palette examples are not load-bearing prose
 - [ ] Check other governance files for vendor-specific content
 - [ ] Verify vendor-specific benchmark content is complete in `docs/reference/ai-model-benchmarks.md`
@@ -36,6 +37,11 @@
 - [ ] Run `nx affected -t typecheck lint test:quick` — all pass
 
 ## Quality Gates
+
+### Development Environment Setup (First-Time)
+
+- [ ] Run `npm install && npm run doctor -- --fix` to converge toolchain
+- [ ] Verify `rhino-cli` is available: `go run apps/rhino-cli/main.go --version` or `nx run rhino-cli:dev -- --version`
 
 ### Local Quality Gates (Before Push)
 

@@ -9,8 +9,9 @@ F#/Giraffe backend REST API and a Next.js 16 frontend.
 
 ```
 specs/apps/organiclever/
-├── README.md              # This file
-├── c4/                    # Unified C4 architecture diagrams
+├── README.md                  # This file
+├── bounded-contexts.yaml      # DDD registry — 9 bounded contexts with layers, paths, relationships
+├── c4/                        # Unified C4 architecture diagrams
 │   ├── README.md          # Diagram index
 │   ├── context.md         # L1 — system context (2 actors)
 │   ├── container.md       # L2 — containers (FE, BE)
@@ -56,6 +57,7 @@ frontend is local-first.
 
 ## Spec Artifacts
 
+- **[bounded-contexts.yaml](./bounded-contexts.yaml)** — Machine-readable DDD registry consumed by `rhino-cli bc validate` and `rhino-cli ul validate` to enforce structural parity and glossary parity
 - **[c4/](./c4/README.md)** — C4 architecture diagrams (context, container, 2 component)
 - **[be/](./be/README.md)** — Backend API specs ([Gherkin features](./be/gherkin/README.md))
 - **[fe/](./fe/README.md)** — Frontend app specs ([Gherkin features](./fe/gherkin/README.md))

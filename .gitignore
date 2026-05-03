@@ -159,4 +159,6 @@ specs/apps/a-demo/contracts/generated/
 
 # OpenCode generated files (package.json and lockfiles are local MCP runner artifacts)
 .opencode/package-lock.json
+.opencode/settings.local.json
+.opencode/opencode.local.json
 .claude/*.lock

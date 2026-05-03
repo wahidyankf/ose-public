@@ -11,20 +11,19 @@
   },
   "permission": {
     "read": "allow",
-    "edit": {
-      "*": "ask",
-      ".claude/**": "allow",
-      ".opencode/**": "allow"
-    },
+    "edit": "allow",
+    "todowrite": "allow",
+    "question": "allow",
+    "webfetch": "allow",
+    "websearch": "allow",
+    "task": "allow",
     "bash": {
-      "*": "ask",
-      "npm run sync*": "allow",
-      "git *": "allow",
-      "nx *": "allow",
-      "npx *": "ask",
-      "go *": "allow",
-      "gofmt *": "allow",
-      "rm -rf *": "deny"
+      "*": "allow",
+      "rm *": "ask",
+      "rm -*": "ask",
+      "trash *": "ask",
+      "trash -*": "ask",
+      "unlink *": "ask"
     },
     "glob": "allow",
     "grep": "allow",

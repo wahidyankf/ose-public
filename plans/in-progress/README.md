@@ -4,7 +4,7 @@ Active project plans currently being worked on.
 
 ## Active Plans
 
-- [2026-05-02 — OrganicLever rhino-cli DDD Enforcement + Skill Extension](./2026-05-02__organiclever-rhino-cli-ddd-enforcement/README.md) — add `rhino-cli bc validate` and `rhino-cli ul validate` subcommands as the mechanical drift gate, plus extend the `apps-organiclever-web-developing-content` skill with a Domain-Driven Design section. **Hard serial dependency**: the OrganicLever DDD Adoption plan is now archived to `done/` — this plan may now start.
+No active plans.
 
 ## Instructions
 

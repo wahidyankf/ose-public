@@ -35,7 +35,7 @@ Fully automated workflow that validates all ayokoding-web content (quality, fact
 - [Lifecycle validation ownership](../meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md) — shared Step 0.
 - [Execution Mode and Research Delegation](./ayokoding-web-general-quality-gate/execution-mode-and-research-delegation.md) — Agent Delegation vs. manual, research delegation.
 - [Steps 1-2: Parallel Validation and Aggregate Findings](./ayokoding-web-general-quality-gate/step-1-and-2-parallel-validation-and-aggregate-findings.md) — run checkers, count findings.
-- [Steps 3-4: Apply Content and Facts Fixes](./ayokoding-web-general-quality-gate/03-apply-fixes.md) — the two fixer steps.
+- [Steps 3-4: Apply Content and Facts Fixes](./ayokoding-web-general-quality-gate/003-apply-fixes.md) — the two fixer steps.
 - [Steps 5-7: Iteration Control, Final Validation, and Finalization](./ayokoding-web-general-quality-gate/step-5-to-7-iteration-final-validation-finalization.md) — continue, confirm, report.
 - [Termination Criteria and Example Usage](./ayokoding-web-general-quality-gate/termination-criteria-and-example-usage.md) — pass/partial/fail, invocation examples.
 - [Iteration Example and Safety Features](./ayokoding-web-general-quality-gate/iteration-example-and-safety-features.md) — worked flow, loop safeguards.

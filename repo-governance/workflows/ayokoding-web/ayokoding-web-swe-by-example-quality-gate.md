@@ -38,9 +38,9 @@ Iterative Maker-Checker-Fixer quality gate for by-example tutorials.
 - [Lifecycle validation ownership](../meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md) — shared Step 0.
 - [Execution Mode, Workflow Overview, and Research Delegation](./ayokoding-web-swe-by-example-quality-gate/execution-mode-workflow-overview-and-research-delegation.md) — how to run, flow diagram.
 - [Steps 1-2: Maker and Checker](./ayokoding-web-swe-by-example-quality-gate/step-1-and-2-maker-and-checker.md) — create examples, validate quality.
-- [Step 3: User Review](./ayokoding-web-swe-by-example-quality-gate/03-user-review.md) — human decision point.
-- [Step 4: Fixer](./ayokoding-web-swe-by-example-quality-gate/04-fixer.md) — apply validated fixes.
-- [Steps 5-6: Iteration Control and Finalization](./ayokoding-web-swe-by-example-quality-gate/05-iteration-control-and-finalization.md) — continue or finalize.
+- [Step 3: User Review](./ayokoding-web-swe-by-example-quality-gate/003-user-review.md) — human decision point.
+- [Step 4: Fixer](./ayokoding-web-swe-by-example-quality-gate/004-fixer.md) — apply validated fixes.
+- [Steps 5-6: Iteration Control and Finalization](./ayokoding-web-swe-by-example-quality-gate/005-iteration-control-and-finalization.md) — continue or finalize.
 - [Termination Criteria](./ayokoding-web-swe-by-example-quality-gate/termination-criteria.md) — success/partial/failure conditions.
 - [Iteration Examples 1-2](./ayokoding-web-swe-by-example-quality-gate/iteration-examples-1-and-2.md) — clean-path and issue-path walkthroughs.
 - [Iteration Example 3](./ayokoding-web-swe-by-example-quality-gate/iteration-example-3.md) — major-rework failing-path walkthrough.

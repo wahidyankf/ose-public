@@ -33,20 +33,20 @@ Both sides are load-bearing.
 | `04-phase-1-system-package-manager.md`          | **Fails** — two numbering systems disagree → `phase-1-system-package-manager.md`, stripping the leading ordinal and keeping the embedded token |
 | `01b-inherited-and-specialized-requirements.md` | **Fails** — insert escape → `inherited-and-specialized-requirements.md`                                                                        |
 | `02-step-1-and-2-maker-and-checker.md`          | **Fails** — ordinal 02 labels steps 1–2, so the systems disagree → `step-1-and-2-maker-and-checker.md` (four real instances)                   |
-| `04-step-4-fixer.md`                            | **Keeps its ordinal, sheds the redundant token** → `04-fixer.md`                                                                               |
-| `04-fixer.md` (post-rename)                     | **Passes** — a real step whose ordinal is that step's own number                                                                               |
+| `04-step-4-fixer.md`                            | **Keeps its ordinal, sheds the redundant token** → `004-fixer.md`                                                                              |
+| `004-fixer.md` (post-rename)                    | **Passes** — a real step whose ordinal is that step's own number                                                                               |
 
 For a step **range**, the ordinal equals the first step:
 `05-step-5-and-6-iteration-control-and-finalization.md` passes, becoming
-`05-iteration-control-and-finalization.md`.
+`005-iteration-control-and-finalization.md`.
 
 **Known deviation, not a second rule**: four `*-quality-gate/` dirs split 2-2 —
-`in-the-field`/`swe-by-example` carry the prescribed `04-fixer.md`; `annotated-concept`/`primer`
+`in-the-field`/`swe-by-example` carry the prescribed `004-fixer.md`; `annotated-concept`/`primer`
 carry `step-4-fixer.md`, which no row licenses. Pre-existing drift.
 
 ## The Keep-Clause Is Not Vacuous
 
-`ayokoding-web-in-the-field-quality-gate/03-user-review.md` passes: its ordinal is its own step,
+`ayokoding-web-in-the-field-quality-gate/003-user-review.md` passes: its ordinal is its own step,
 with no colliding second number. Confirm non-emptiness rather than trusting that:
 
 ```bash
@@ -55,8 +55,18 @@ find repo-governance/workflows -regex '.*/[0-9]+-[^/]*\.md'
 
 No matches means the rule has collapsed into the ban it replaces. Returns 8 today.
 
-One or more digits, not two: a padded `[0-9][0-9]-` glob skips single-digit ordinals and can report
-a false zero. Both return 8 here; the sibling's padded form misses 65 files.
+The regex stays width-agnostic — `[0-9]+`, never `[0-9][0-9][0-9]` — because its job is to find
+every ordinal, including one whose width breaks the rule below. A glob pinned to the prescribed
+width reports a clean tree exactly when the tree is wrong.
+
+## Width
+
+An ordinal that is kept is zero-padded to **three digits** — `003-user-review.md`, never `03-` or
+`3-`. The sibling repositories number the companions of a split plan document at the same width, so
+one workspace-wide width means a reader never has to remember which tree they are in.
+
+Width is not a licence. A filename that fails either question above sheds its ordinal; it does not
+gain a digit.
 
 ## Where Order Comes From
 

@@ -41,3 +41,6 @@ test-results
 # Re-include test directories needed by integration Dockerfiles
 !apps/a-demo-be-elixir-phoenix/test
 !apps/a-demo-fs-ts-nextjs/test
+# Re-include the OSE website's matcher type setup for Next.js type-checking
+!apps/ose-www/src/test
+!apps/ose-www/src/test/**

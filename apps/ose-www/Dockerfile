@@ -2,6 +2,7 @@ FROM node:24-alpine AS deps
 WORKDIR /workspace
 COPY ../../package.json ../../package-lock.json ./
 COPY apps/ose-www/package.json apps/ose-www/
+COPY libs/ts-env-loader/package.json libs/ts-env-loader/
 COPY libs/web-ui/package.json libs/web-ui/
 COPY libs/web-ui-token/package.json libs/web-ui-token/
 RUN npm ci --ignore-scripts
@@ -10,8 +11,11 @@ FROM node:24-alpine AS builder
 WORKDIR /workspace
 COPY --from=deps /workspace/node_modules ./node_modules
 COPY apps/ose-www/ apps/ose-www/
+COPY libs/ts-env-loader/ libs/ts-env-loader/
 COPY libs/web-ui/ libs/web-ui/
 COPY libs/web-ui-token/ libs/web-ui-token/
+COPY libs/ts-env-loader/src/ ./node_modules/@open-sharia-enterprise/ts-env-loader/src/
+COPY libs/ts-env-loader/package.json ./node_modules/@open-sharia-enterprise/ts-env-loader/
 COPY libs/web-ui/src/ ./node_modules/@open-sharia-enterprise/web-ui/src/
 COPY libs/web-ui/package.json ./node_modules/@open-sharia-enterprise/web-ui/
 COPY libs/web-ui-token/src/ ./node_modules/@open-sharia-enterprise/web-ui-token/src/

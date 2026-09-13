@@ -2623,7 +2623,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
 
         log.Printf("[%s] %s %s - Started", r.Method, r.URL.Path, r.RemoteAddr)
         // => Log request start (method, path, client IP)
-        // => Example: [GET] /api/data 192.168.1.1 - Started
+        // => Example: [GET] /api/data 192.0.2.1 - Started
 
         next.ServeHTTP(wrapped, r)           // => Call next handler (blocks until complete)
         // => Pass wrapped ResponseWriter (not original w)
@@ -2633,7 +2633,7 @@ func loggingMiddleware(next http.Handler) http.Handler {
         log.Printf("[%s] %s %s - Completed %d in %v",
             r.Method, r.URL.Path, r.RemoteAddr, wrapped.statusCode, duration)
         // => Log completion (status code, duration)
-        // => Example: [GET] /api/data 192.168.1.1 - Completed 200 in 45ms
+        // => Example: [GET] /api/data 192.0.2.1 - Completed 200 in 45ms
     })
 }
 

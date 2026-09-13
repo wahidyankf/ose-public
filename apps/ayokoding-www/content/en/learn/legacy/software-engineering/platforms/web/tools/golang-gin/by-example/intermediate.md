@@ -1093,7 +1093,7 @@ func ZapLoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
             zap.String("path", c.Request.URL.Path),    // => "/api/users"
             zap.Int("status", c.Writer.Status()),       // => 200
             zap.Duration("latency", time.Since(start)), // => 1.5ms
-            zap.String("ip", c.ClientIP()),             // => "192.168.1.1"
+            zap.String("ip", c.ClientIP()),             // => "192.0.2.1"
             zap.String("user_agent", c.Request.UserAgent()), // => "curl/7.x"
             zap.String("request_id", c.GetString("requestID")), // => "req-abc-123"
             zap.Int("body_size", c.Writer.Size()),      // => Response body bytes

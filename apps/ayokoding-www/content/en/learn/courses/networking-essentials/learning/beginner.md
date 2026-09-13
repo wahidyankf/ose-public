@@ -424,7 +424,7 @@ dig example.com A
 
 **Run**: `dig example.com A`
 
-**Output**:
+**Output** (the sandbox resolver's private address is masked as `<sandbox-resolver>`; the rest is verbatim):
 
 ```text
 ; <<>> DiG 9.10.6 <<>> example.com A
@@ -441,7 +441,7 @@ example.com.  42 IN A 104.20.23.154
 example.com.  42 IN A 172.66.147.243
 
 ;; Query time: 3 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Tue Jul 14 16:56:12 WIB 2026
 ;; MSG SIZE  rcvd: 72
 ```
@@ -491,7 +491,7 @@ dig example.com AAAA
 
 **Run**: `dig example.com AAAA`
 
-**Output**:
+**Output** (the sandbox resolver's private address is masked as `<sandbox-resolver>`; the rest is verbatim):
 
 ```text
 ; <<>> DiG 9.10.6 <<>> example.com AAAA
@@ -508,7 +508,7 @@ example.com.  184 IN AAAA 2606:4700:10::ac42:93f3
 example.com.  184 IN AAAA 2606:4700:10::6814:179a
 
 ;; Query time: 2 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Tue Jul 14 16:56:12 WIB 2026
 ;; MSG SIZE  rcvd: 96
 ```
@@ -532,7 +532,7 @@ dig example.com MX
 
 **Run**: `dig example.com MX`
 
-**Output**:
+**Output** (the sandbox resolver's private address is masked as `<sandbox-resolver>`; the rest is verbatim):
 
 ```text
 ; <<>> DiG 9.10.6 <<>> example.com MX
@@ -548,7 +548,7 @@ dig example.com MX
 example.com.  300 IN MX 0 .
 
 ;; Query time: 28 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Tue Jul 14 16:56:45 WIB 2026
 ;; MSG SIZE  rcvd: 55
 ```
@@ -572,7 +572,7 @@ dig example.com NS
 
 **Run**: `dig example.com NS`
 
-**Output**:
+**Output** (the sandbox resolver's private address is masked as `<sandbox-resolver>`; the rest is verbatim):
 
 ```text
 ; <<>> DiG 9.10.6 <<>> example.com NS
@@ -589,7 +589,7 @@ example.com.  86400 IN NS elliott.ns.cloudflare.com.
 example.com.  86400 IN NS hera.ns.cloudflare.com.
 
 ;; Query time: 27 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Tue Jul 14 16:56:45 WIB 2026
 ;; MSG SIZE  rcvd: 95
 ```
@@ -649,7 +649,7 @@ dig example.com TXT
 
 **Run**: `dig example.com TXT`
 
-**Output**:
+**Output** (the sandbox resolver's private address is masked as `<sandbox-resolver>`; the rest is verbatim):
 
 ```text
 ; <<>> DiG 9.10.6 <<>> example.com TXT
@@ -666,7 +666,7 @@ example.com.  300 IN TXT "_k2n1y4vw3qtb4skdx9e7dxt97qrmmq9"
 example.com.  300 IN TXT "v=spf1 -all"
 
 ;; Query time: 32 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Tue Jul 14 16:56:45 WIB 2026
 ;; MSG SIZE  rcvd: 109
 ```
@@ -701,10 +701,10 @@ nslookup example.com
 
 **Run**: `nslookup example.com`
 
-**Output**:
+**Output** (the sandbox resolver's private address is masked as `<sandbox-resolver>`; the rest is verbatim):
 
 ```text
-;; Got recursion not available from 100.100.100.100, trying next server
+;; Got recursion not available from <sandbox-resolver>, trying next server
 Server:  fd7a:115c:a1e0::53
 Address: fd7a:115c:a1e0::53#53
 
@@ -766,7 +766,7 @@ example.com mail is handled by 0 .
 
 _ex-20 &middot; exercises co-20, co-03_
 
-`dig +trace` is meant to walk the FULL iterative resolution path -- root servers, then the `.com` TLD servers, then `example.com`'s own authoritative servers -- printing every hop. **In this sandboxed environment, that full walk is not reachable**: the default resolver at `100.100.100.100` returns a truncated response to the trace's priming query, and even a direct query aimed at a real root server (`dig +trace example.com @198.41.0.4`) is intercepted by the sandbox's network policy rather than reaching the actual root-to-TLD-to-authoritative chain (confirmed by testing: the same command produces inconsistent, network-policy-shaped results across repeated runs, not a genuine multi-hop trace). The command below is exactly what the syllabus specifies, run for real, with its real (here, restricted) output shown honestly rather than a fabricated full trace.
+`dig +trace` is meant to walk the FULL iterative resolution path -- root servers, then the `.com` TLD servers, then `example.com`'s own authoritative servers -- printing every hop. **In this sandboxed environment, that full walk is not reachable**: the default resolver at `<sandbox-resolver>` returns a truncated response to the trace's priming query, and even a direct query aimed at a real root server (`dig +trace example.com @198.41.0.4`) is intercepted by the sandbox's network policy rather than reaching the actual root-to-TLD-to-authoritative chain (confirmed by testing: the same command produces inconsistent, network-policy-shaped results across repeated runs, not a genuine multi-hop trace). The command below is exactly what the syllabus specifies, run for real, with its real (here, restricted) output shown honestly rather than a fabricated full trace.
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
@@ -790,12 +790,12 @@ dig +trace example.com
 
 **Run**: `dig +trace example.com`
 
-**Output** (genuinely captured, in this sandboxed network):
+**Output** (genuinely captured, in this sandboxed network; the sandbox resolver's private address is masked as `<sandbox-resolver>`; the rest is verbatim):
 
 ```text
 ; <<>> DiG 9.10.6 <<>> +trace example.com
 ;; global options: +cmd
-;; Received 17 bytes from 100.100.100.100#53(100.100.100.100) in 11 ms
+;; Received 17 bytes from <sandbox-resolver>#53(<sandbox-resolver>) in 11 ms
 ```
 
 **Key takeaway**: On an unrestricted network, `dig +trace` prints one `;; Received ... bytes from ...` line per hop -- root, then `.com` TLD, then `example.com`'s own nameservers (Example 15's `elliott.ns.cloudflare.com` / `hera.ns.cloudflare.com`) -- ending with the final ANSWER. This sandbox's network policy prevents that full walk from completing, which the captured 17-byte truncated response above shows honestly rather than hides.

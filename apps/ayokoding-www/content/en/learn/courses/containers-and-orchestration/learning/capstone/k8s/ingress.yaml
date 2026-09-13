@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: containers-capstone.local
+    - host: containers-capstone.test
       http:
         paths:
           - path: /

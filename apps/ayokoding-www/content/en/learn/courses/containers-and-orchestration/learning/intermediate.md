@@ -778,7 +778,7 @@ kubectl expose pod ex45-backend --name ex45 --port=80 --target-port=80
 kubectl run ex45-client --rm -i --restart=Never --image=busybox:1.37 -- nslookup ex45
 ```
 
-**Verification**: Run the supplied commands in a local cluster after `pod/ex45-backend` is Ready. The `nslookup ex45` output contains the ClusterIP for `ex45.default.svc.cluster.local`, not the backend Pod IP, proving the supplied Service name is the client contract.
+**Verification**: Run the supplied commands in a local cluster after `pod/ex45-backend` is Ready. The `nslookup ex45` output contains the ClusterIP for `ex45.default.svc.cluster.local.`, not the backend Pod IP, proving the supplied Service name is the client contract.
 
 **Key takeaway**: Service DNS gives clients a stable name while Deployments replace Pods and their individual addresses.
 
@@ -1034,7 +1034,7 @@ _ex-52 · exercises co-24_
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73; color-blind friendly WCAG AA palette
 %% TD expresses the sequential external request path through the configured data plane.
 graph TD
-    R["Request for<br/>ex52.local slash"]:::blue
+    R["Request for<br/>ex52.test slash"]:::blue
     I["Ingress host<br/>and path rule"]:::orange
     C["Installed Ingress<br/>controller"]:::orange
     S["Service ex52 port 80"]:::teal
@@ -1081,11 +1081,11 @@ spec:
   ingressClassName: nginx
   # => The host is passed to the controller for virtual-host routing.
   rules:
-    - host: ex52.local
+    - host: ex52.test
       # => The HTTP path forwards to a Service, not a Pod IP.
       http: { paths: [{ path: /, pathType: Prefix, backend: { service: { name: ex52, port: { number: 80 } } } }] }
 # => `ingressClassName: nginx` names the controller implementation required by verification.
-# => The exact host rule is `ex52.local`; it is not inferred from a Service name.
+# => The exact host rule is `ex52.test`; it is not inferred from a Service name.
 # => The Prefix path matches the root request sent by the supplied curl command.
 # => The backend names this artifact's Service rather than the Deployment or a Pod IP.
 # => Service port 80 maps to nginx's declared container port 80.
@@ -1100,7 +1100,7 @@ spec:
 # => This diagram's request path corresponds exactly to the manifest's Ingress, Service, and Deployment objects.
 ```
 
-**Verification**: With ingress-nginx installed, save the complete fence as `ex52.yaml`, apply it, and wait for `deployment/ex52-backend`. `kubectl get ingressclass/nginx` and `kubectl -n ingress-nginx get service/ingress-nginx-controller` confirm the required class and controller endpoint. In one terminal, run `kubectl -n ingress-nginx port-forward service/ingress-nginx-controller 8081:80`; in another, run `controller_port=8081 && curl --fail --resolve ex52.local:"$controller_port":127.0.0.1 "http://ex52.local:$controller_port/"`. The request returns nginx HTML through that concrete controller-service port-forward.
+**Verification**: With ingress-nginx installed, save the complete fence as `ex52.yaml`, apply it, and wait for `deployment/ex52-backend`. `kubectl get ingressclass/nginx` and `kubectl -n ingress-nginx get service/ingress-nginx-controller` confirm the required class and controller endpoint. In one terminal, run `kubectl -n ingress-nginx port-forward service/ingress-nginx-controller 8081:80`; in another, run `controller_port=8081 && curl --fail --resolve ex52.test:"$controller_port":127.0.0.1 "http://ex52.test:$controller_port/"`. The request returns nginx HTML through that concrete controller-service port-forward.
 
 **Key takeaway**: An Ingress is a routing declaration, not a proxy process.
 

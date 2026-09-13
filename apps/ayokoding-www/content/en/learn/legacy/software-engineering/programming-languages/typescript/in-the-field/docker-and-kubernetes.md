@@ -776,7 +776,7 @@ kind: Service
 metadata:
   name: typescript-api
   # => Service name
-  # => DNS name within cluster: typescript-api.default.svc.cluster.local
+  # => DNS name within cluster: typescript-api.default.svc.cluster.local.
 
 spec:
   selector:

@@ -170,7 +170,7 @@ same Debian container, again noted plainly at each example that needs it.
 - [Example 2: Encapsulation -- a Payload Gaining and Shedding Headers](/en/c/learn/courses/advanced-networking/learning/beginner#example-2-encapsulation----a-payload-gaining-and-shedding-headers)
 - [Example 3: View the Local Interface's MAC Address](/en/c/learn/courses/advanced-networking/learning/beginner#example-3-view-the-local-interfaces-mac-address)
 - [Example 4: Inspect the ARP Cache](/en/c/learn/courses/advanced-networking/learning/beginner#example-4-inspect-the-arp-cache)
-- [Example 5: IPv4 Binary Anatomy -- 192.168.1.10, Octet by Octet](/en/c/learn/courses/advanced-networking/learning/beginner#example-5-ipv4-binary-anatomy----192168110-octet-by-octet)
+- [Example 5: IPv4 Binary Anatomy -- 192.0.2.10, Octet by Octet](/en/c/learn/courses/advanced-networking/learning/beginner#example-5-ipv4-binary-anatomy----1920210-octet-by-octet)
 - [Example 6: IPv6 Address Expand/Compress -- 2001:db8::1 Round-Trips](/en/c/learn/courses/advanced-networking/learning/beginner#example-6-ipv6-address-expandcompress----2001db81-round-trips)
 - [Example 7: CIDR Prefix to Netmask -- /24, /26, /30 by Hand](/en/c/learn/courses/advanced-networking/learning/beginner#example-7-cidr-prefix-to-netmask----24-26-30-by-hand)
 - [Example 8: Subnet Calculator -- Network, Broadcast, Host Range, Host Count](/en/c/learn/courses/advanced-networking/learning/beginner#example-8-subnet-calculator----network-broadcast-host-range-host-count)

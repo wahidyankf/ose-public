@@ -1774,7 +1774,7 @@ sed 's/[0-9]\+/NUMBER/g' file.txt
                                  # => Replace digit sequences with "NUMBER"
 
 # Practical: validate IP address
-ip="192.168.1.1"
+ip="192.0.2.1"
 if [[ "$ip" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
                                  # => ([0-9]{1,3}\.){3}: three octets with dots
                                  # => Format check only (doesn't validate ranges)

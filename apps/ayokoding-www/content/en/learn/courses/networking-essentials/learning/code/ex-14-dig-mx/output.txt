@@ -11,6 +11,6 @@
 example.com.		300	IN	MX	0 .
 
 ;; Query time: 28 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Tue Jul 14 16:56:45 WIB 2026
 ;; MSG SIZE  rcvd: 55

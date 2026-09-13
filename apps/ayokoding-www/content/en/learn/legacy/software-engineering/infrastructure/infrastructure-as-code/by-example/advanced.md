@@ -2221,14 +2221,14 @@ def get_inventory():
                 inventory[env] = {"hosts": []}
                 # => Create group if first instance for this environment
             inventory[env]["hosts"].append(ip)
-            # => Example: inventory["production"]["hosts"] = ["10.0.1.5", "10.0.1.6"]
+            # => Example: inventory["production"]["hosts"] = ["10.0.x.5", "10.0.x.6"]
 
             # Group by role tag
             role = tags.get("Role", "ungrouped")
             if role not in inventory:
                 inventory[role] = {"hosts": []}
             inventory[role]["hosts"].append(ip)
-            # => Example: inventory["web"]["hosts"] = ["10.0.1.5"]
+            # => Example: inventory["web"]["hosts"] = ["10.0.x.5"]
 
     return inventory
 

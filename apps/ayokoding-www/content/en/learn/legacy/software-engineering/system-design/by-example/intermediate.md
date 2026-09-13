@@ -1605,7 +1605,7 @@ import (
 
 type Node struct {
     NodeID  string
-    Address string // e.g., "cache-1.internal:6379"
+    Address string // e.g., "cache-1.internal.example:6379"
 }
 
 type ConsistentHashRing struct {
@@ -1686,9 +1686,9 @@ func (r *ConsistentHashRing) GetNode(key string) *Node {
 func main() {
     // Build a cache cluster with 3 nodes
     ring := NewConsistentHashRing(50)
-    nodeA := &Node{"cache-a", "10.0.0.1:6379"}
-    nodeB := &Node{"cache-b", "10.0.0.2:6379"}
-    nodeC := &Node{"cache-c", "10.0.0.3:6379"}
+    nodeA := &Node{"cache-a", "192.0.2.1:6379"}
+    nodeB := &Node{"cache-b", "192.0.2.2:6379"}
+    nodeC := &Node{"cache-c", "192.0.2.3:6379"}
 
     ring.AddNode(nodeA)
     ring.AddNode(nodeB)
@@ -1705,7 +1705,7 @@ func main() {
     }
 
     // Simulate adding a 4th node (scale-out event)
-    nodeD := &Node{"cache-d", "10.0.0.4:6379"}
+    nodeD := &Node{"cache-d", "192.0.2.4:6379"}
     ring.AddNode(nodeD)
     // => [RING] Added node 'cache-d' with 50 virtual nodes
 
@@ -1736,7 +1736,7 @@ from dataclasses import dataclass
 @dataclass
 class Node:
     node_id: str
-    address: str  # e.g., "cache-1.internal:6379"
+    address: str  # e.g., "cache-1.internal.example:6379"
 
 class ConsistentHashRing:
     def __init__(self, virtual_nodes: int = 100):
@@ -1796,9 +1796,9 @@ class ConsistentHashRing:
 
 # Build a cache cluster with 3 nodes
 ring = ConsistentHashRing(virtual_nodes=50)
-node_a = Node("cache-a", "10.0.0.1:6379")
-node_b = Node("cache-b", "10.0.0.2:6379")
-node_c = Node("cache-c", "10.0.0.3:6379")
+node_a = Node("cache-a", "192.0.2.1:6379")
+node_b = Node("cache-b", "192.0.2.2:6379")
+node_c = Node("cache-c", "192.0.2.3:6379")
 
 ring.add_node(node_a)
 ring.add_node(node_b)
@@ -1814,7 +1814,7 @@ for key in keys:
     print(f"[RING] '{key}' -> {node.node_id} ({node.address})")
 
 # Simulate adding a 4th node (scale-out event)
-node_d = Node("cache-d", "10.0.0.4:6379")
+node_d = Node("cache-d", "192.0.2.4:6379")
 ring.add_node(node_d)
 # => [RING] Added node 'cache-d' with 50 virtual nodes
 
@@ -3164,14 +3164,14 @@ func main() {
 
     // Services register on startup
     inst1 := &ServiceInstance{InstanceID: "payment-a", ServiceName: "payment-service",
-        Host: "10.0.1.10", Port: 8080}
+        Host: "198.51.100.10", Port: 8080}
     inst2 := &ServiceInstance{InstanceID: "payment-b", ServiceName: "payment-service",
-        Host: "10.0.1.11", Port: 8080}
+        Host: "198.51.100.11", Port: 8080}
 
     registry.Register(inst1)
     registry.Register(inst2)
-    // => [REGISTRY] Registered payment-service/payment-a at 10.0.1.10:8080
-    // => [REGISTRY] Registered payment-service/payment-b at 10.0.1.11:8080
+    // => [REGISTRY] Registered payment-service/payment-a at 198.51.100.10:8080
+    // => [REGISTRY] Registered payment-service/payment-b at 198.51.100.11:8080
 
     client := NewServiceClient(registry)
 
@@ -3180,17 +3180,17 @@ func main() {
         result := client.Call("payment-service", "/charge")
         fmt.Printf("  Call %d: %s\n", i+1, result["served_by"])
     }
-    // => Call 1: 10.0.1.10:8080 (payment-a)
-    // => Call 2: 10.0.1.11:8080 (payment-b)
-    // => Call 3: 10.0.1.10:8080 (payment-a)  (round-robin wraps)
-    // => Call 4: 10.0.1.11:8080 (payment-b)
+    // => Call 1: 198.51.100.10:8080 (payment-a)
+    // => Call 2: 198.51.100.11:8080 (payment-b)
+    // => Call 3: 198.51.100.10:8080 (payment-a)  (round-robin wraps)
+    // => Call 4: 198.51.100.11:8080 (payment-b)
 
     // Simulate instance crash: payment-a stops sending heartbeats, TTL expires
     time.Sleep(6 * time.Second) // wait for TTL=5s to expire
     result := client.Call("payment-service", "/charge")
     fmt.Printf("  After crash: %v\n", result)
     // => [REGISTRY] Evicted expired instance payment-service/payment-a
-    // => [CLIENT] Resolved 'payment-service' -> 10.0.1.11:8080 (only payment-b alive)
+    // => [CLIENT] Resolved 'payment-service' -> 198.51.100.11:8080 (only payment-b alive)
 }
 ```
 
@@ -3208,7 +3208,7 @@ from typing import Optional
 class ServiceInstance:
     instance_id: str      # unique ID: "payment-service-a8f3"
     service_name: str     # logical name: "payment-service"
-    host: str             # IP or hostname: "10.0.1.45"
+    host: str             # IP or hostname: "198.51.100.45"
     port: int             # port: 8080
     registered_at: float  # Unix timestamp for health expiry
     metadata: dict = field(default_factory=dict)
@@ -3308,12 +3308,12 @@ class ServiceClient:
 registry = ServiceRegistry(ttl_seconds=5.0)
 
 # Services register on startup
-inst1 = ServiceInstance("payment-a", "payment-service", "10.0.1.10", 8080, 0)
-inst2 = ServiceInstance("payment-b", "payment-service", "10.0.1.11", 8080, 0)
+inst1 = ServiceInstance("payment-a", "payment-service", "198.51.100.10", 8080, 0)
+inst2 = ServiceInstance("payment-b", "payment-service", "198.51.100.11", 8080, 0)
 registry.register(inst1)
 registry.register(inst2)
-# => [REGISTRY] Registered payment-service/payment-a at 10.0.1.10:8080
-# => [REGISTRY] Registered payment-service/payment-b at 10.0.1.11:8080
+# => [REGISTRY] Registered payment-service/payment-a at 198.51.100.10:8080
+# => [REGISTRY] Registered payment-service/payment-b at 198.51.100.11:8080
 
 client = ServiceClient(registry)
 
@@ -3321,17 +3321,17 @@ client = ServiceClient(registry)
 for i in range(4):
     result = client.call("payment-service", "/charge")
     print(f"  Call {i+1}: {result['served_by']}")
-# => Call 1: 10.0.1.10:8080 (payment-a)
-# => Call 2: 10.0.1.11:8080 (payment-b)
-# => Call 3: 10.0.1.10:8080 (payment-a)  (round-robin wraps)
-# => Call 4: 10.0.1.11:8080 (payment-b)
+# => Call 1: 198.51.100.10:8080 (payment-a)
+# => Call 2: 198.51.100.11:8080 (payment-b)
+# => Call 3: 198.51.100.10:8080 (payment-a)  (round-robin wraps)
+# => Call 4: 198.51.100.11:8080 (payment-b)
 
 # Simulate instance crash: payment-a stops sending heartbeats, TTL expires
 time.sleep(6.0)  # wait for TTL=5s to expire
 result = client.call("payment-service", "/charge")
 print(f"  After crash: {result}")
 # => [REGISTRY] Evicted expired instance payment-service/payment-a
-# => [CLIENT] Resolved 'payment-service' -> 10.0.1.11:8080 (only payment-b alive)
+# => [CLIENT] Resolved 'payment-service' -> 198.51.100.11:8080 (only payment-b alive)
 ```
 
 {{< /tab >}}
@@ -4976,7 +4976,7 @@ func (p *ConnectionPool) Stats() map[string]int {
 
 func main() {
     // Simulate 5 concurrent requests hitting the pool
-    pool := NewConnectionPool("db.internal:5432", 2, 5)
+    pool := NewConnectionPool("db.internal.example:5432", 2, 5)
     // => [POOL] Created connection #1 (total=1)
     // => [POOL] Created connection #2 (total=2)
 
@@ -5133,7 +5133,7 @@ class ConnectionPool:
 
 
 # Simulate 5 concurrent requests hitting the pool
-pool = ConnectionPool(host="db.internal:5432", min_size=2, max_size=5)
+pool = ConnectionPool(host="db.internal.example:5432", min_size=2, max_size=5)
 # => [POOL] Created connection #1 (total=1)
 # => [POOL] Created connection #2 (total=2)
 
@@ -5746,9 +5746,9 @@ func main() {
     securityEvent := &NotificationEvent{
         EventType: "security_alert",
         Title:     "New login from unknown device",
-        Body:      "We detected a login from IP 192.168.1.1 in New York",
+        Body:      "We detected a login from IP 203.0.113.1 in New York",
         Priority:  PriorityCritical,
-        Metadata:  map[string]string{"ip": "192.168.1.1", "location": "New York"},
+        Metadata:  map[string]string{"ip": "203.0.113.1", "location": "New York"},
     }
     result := dispatcher.Dispatch(securityEvent, user)
     fmt.Printf("  Sent to %v channels via %s\n", result["sent"], result["strategy"])
@@ -5899,9 +5899,9 @@ print("=== CRITICAL: Security Alert (fanout - all channels) ===")
 security_event = NotificationEvent(
     event_type="security_alert",
     title="New login from unknown device",
-    body="We detected a login from IP 192.168.1.1 in New York",
+    body="We detected a login from IP 203.0.113.1 in New York",
     priority=Priority.CRITICAL,
-    metadata={"ip": "192.168.1.1", "location": "New York"},
+    metadata={"ip": "203.0.113.1", "location": "New York"},
 )
 result = dispatcher.dispatch(security_event, user)
 print(f"  Sent to {result['sent']} channels via {result['strategy']}")
@@ -8375,9 +8375,9 @@ func (lb *LoadBalancer) DistributionStats() map[string]int {
 func main() {
     // Three servers: server-3 is 2x as powerful (weight=2)
     servers := []*BackendServer{
-        {ServerID: "server-1", Host: "10.0.0.1", Port: 8080, Weight: 1},
-        {ServerID: "server-2", Host: "10.0.0.2", Port: 8080, Weight: 1},
-        {ServerID: "server-3", Host: "10.0.0.3", Port: 8080, Weight: 2}, // 2x capacity
+        {ServerID: "server-1", Host: "192.0.2.1", Port: 8080, Weight: 1},
+        {ServerID: "server-2", Host: "192.0.2.2", Port: 8080, Weight: 1},
+        {ServerID: "server-3", Host: "192.0.2.3", Port: 8080, Weight: 2}, // 2x capacity
     }
     lb := NewLoadBalancer(servers)
 
@@ -8508,9 +8508,9 @@ class LoadBalancer:
 
 # Three servers: server-3 is 2x as powerful (weight=2)
 servers = [
-    BackendServer("server-1", "10.0.0.1", 8080, weight=1),
-    BackendServer("server-2", "10.0.0.2", 8080, weight=1),
-    BackendServer("server-3", "10.0.0.3", 8080, weight=2),  # 2x capacity
+    BackendServer("server-1", "192.0.2.1", 8080, weight=1),
+    BackendServer("server-2", "192.0.2.2", 8080, weight=1),
+    BackendServer("server-3", "192.0.2.3", 8080, weight=2),  # 2x capacity
 ]
 lb = LoadBalancer(servers)
 

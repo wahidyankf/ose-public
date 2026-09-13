@@ -281,7 +281,7 @@ server:
       suffix: .txt
       pattern: '%h %l %u %t "%r" %s %b %D'
       # => %h: client IP, %r: request line, %s: status, %D: time in ms
-      # => Example: 192.168.1.100 - - [06/Feb/2026:10:30:00 +0700] "GET /donations HTTP/1.1" 200 1234 150
+      # => Example: 192.0.2.100 - - [06/Feb/2026:10:30:00 +0700] "GET /donations HTTP/1.1" 200 1234 150
       rotate: true # => Daily rotation
 ```
 

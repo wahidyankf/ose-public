@@ -21,11 +21,11 @@ Same as SWE by-example. Must answer:
 Replace "Brief Explanation" with explicit scenario context:
 
 - State the environment (OS, network segment, tool version)
-- State authorization framing for offensive examples ("authorized pentest on lab target 10.10.10.5")
+- State authorization framing for offensive examples ("authorized pentest on lab target 192.0.2.5")
 - State analyst role for defensive examples ("Tier 1 SOC analyst reviewing alerts")
 
 ```markdown
-**Scenario:** Authorized internal pentest against a lab Ubuntu 22.04 server at 10.10.10.5.
+**Scenario:** Authorized internal pentest against a lab Ubuntu 22.04 server at 192.0.2.5.
 You have completed host discovery and are performing service enumeration.
 ```
 

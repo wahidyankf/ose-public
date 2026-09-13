@@ -46,10 +46,10 @@ pvecm status
 
 # === ON pve02 and pve03: Join the cluster ===
 # Prerequisites: joining node must have no existing VMs (joining wipes local cluster state)
-pvecm add 192.168.1.100
+pvecm add 192.0.2.100
 # => Node joined; /etc/pve/ content synchronized from pve01
 
-pvecm add 192.168.1.100
+pvecm add 192.0.2.100
 # => Node pve03 joined cluster 'mycluster'
 
 # Verify cluster membership from any node
@@ -129,7 +129,7 @@ apt install corosync-qdevice
 # => corosync-qdevice installed
 
 # Add QDevice (copies SSH keys, reconfigures Corosync on all cluster nodes)
-pvecm qdevice setup 192.168.1.200
+pvecm qdevice setup 192.0.2.200
 # => QDevice configured; Corosync restarted on all nodes
 
 # Verify QDevice is active (Expected votes: 3 = 2 nodes + 1 QDevice)
@@ -339,8 +339,8 @@ iface bond0 inet manual
 
 auto vmbr0
 iface vmbr0 inet static
-    address 192.168.1.100/24
-    gateway 192.168.1.1
+    address 192.0.2.100/24
+    gateway 192.0.2.1
     bridge-ports bond0        # Bridge uses bonded interface instead of single NIC
     bridge-stp off
     bridge-fd 0
@@ -395,7 +395,7 @@ NFS provides shared storage accessible from all cluster nodes—essential for on
 pvesh create /storage \
   --storage nfs-share \
   --type nfs \
-  --server 192.168.1.50 \
+  --server 192.0.2.50 \
   --export /mnt/proxmox-storage \
   --content images,iso,backup \
   --options vers=4.2,hard,timeo=600 \
@@ -453,7 +453,7 @@ cat /etc/iscsi/initiatorname.iscsi
 pvesh create /storage \
   --storage iscsi-san \
   --type iscsi \
-  --portal 192.168.1.60 \
+  --portal 192.0.2.60 \
   --target iqn.2025-01.com.company:storage-target-01 \
   --content none
 # => iSCSI storage 'iscsi-san' registered; LUNs appear as raw block devices
@@ -480,7 +480,7 @@ pvesh create /storage \
 
 # Verify iSCSI connection and LVM physical volume
 iscsiadm -m session
-# => tcp: [1] 192.168.1.60:3260 iqn.2025-01.com.company:storage-target-01
+# => tcp: [1] 192.0.2.60:3260 iqn.2025-01.com.company:storage-target-01
 
 pvs
 # => /dev/sdb  iscsi-vg  1024.00g (iSCSI LUN) | /dev/sda3  pve  (local)
@@ -786,11 +786,11 @@ Proxmox SDN (Software-Defined Networking) provides declarative L2/L3 overlay net
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["SDN Zone<br/>(transport: Simple/VXLAN/EVPN)"] --> B["VNet: web-net<br/>10.10.1.0/24"]
-    A --> C["VNet: db-net<br/>10.10.2.0/24"]
-    B --> D["VM 100 (web)<br/>IP: 10.10.1.10"]
-    B --> E["VM 101 (app)<br/>IP: 10.10.1.11"]
-    C --> F["VM 200 (db)<br/>IP: 10.10.2.10"]
+    A["SDN Zone<br/>(transport: Simple/VXLAN/EVPN)"] --> B["VNet: web-net<br/>198.51.100.0/24"]
+    A --> C["VNet: db-net<br/>203.0.113.0/24"]
+    B --> D["VM 100 (web)<br/>IP: 198.51.100.10"]
+    B --> E["VM 101 (app)<br/>IP: 198.51.100.11"]
+    C --> F["VM 200 (db)<br/>IP: 203.0.113.10"]
 
     style A fill:#0173B2,color:#fff,stroke:#000
     style B fill:#DE8F05,color:#000,stroke:#000
@@ -825,12 +825,12 @@ pvesh create /cluster/sdn/vnets \
 
 # Create a subnet (snat=1: outbound NAT; dnszoneprefix: DNS registration)
 pvesh create /cluster/sdn/vnets/web-vnet/subnets \
-  --subnet 10.100.0.0/24 \
+  --subnet 10.100.x.0/24 \
   --type subnet \
-  --gateway 10.100.0.1 \
+  --gateway 10.100.x.1 \
   --dnszoneprefix web \
   --snat 1
-# => Subnet 10.100.0.0/24 added to web-vnet
+# => Subnet 10.100.x.0/24 added to web-vnet
 # => --dnszoneprefix web: VM hostnames registered as web.<hostname>.internal in DNS
 # => --snat 1: masquerade outbound traffic (VMs can reach internet without public IPs)
 
@@ -865,7 +865,7 @@ VXLAN encapsulates L2 Ethernet frames in UDP packets, creating L2 domains that s
 pvesh create /cluster/sdn/zones \
   --zone vxlan-overlay \
   --type vxlan \
-  --peers 192.168.1.100,192.168.1.101,192.168.1.102 \
+  --peers 192.0.2.100,192.0.2.101,192.0.2.102 \
   --mtu 1450
 # => VXLAN zone 'vxlan-overlay' created (all node IPs must be listed as peers)
 # => --type vxlan: encapsulates L2 frames in UDP (no switch VLAN configuration needed)
@@ -881,9 +881,9 @@ pvesh create /cluster/sdn/vnets \
 # => --tag 1001: VXLAN Network Identifier (VNI); 24-bit range supports up to 16 million segments
 
 pvesh create /cluster/sdn/vnets/vxlan-app-net/subnets \
-  --subnet 172.16.0.0/24 \
-  --gateway 172.16.0.1
-# => Subnet 172.16.0.0/24 added
+  --subnet 172.16.x.0/24 \
+  --gateway 172.16.x.1
+# => Subnet 172.16.x.0/24 added
 # => --gateway: L3 gateway IP created on each node (distributed anycast routing)
 
 pvesh set /cluster/sdn
@@ -892,9 +892,9 @@ pvesh set /cluster/sdn
 
 # Verify VXLAN interfaces and test cross-node L2 connectivity
 ip link show type vxlan
-# => vxlan1001: mtu 1450 | vxlan id 1001 local 192.168.1.100 port 4789
-qm agent 100 exec -- bash -c "ping -c3 172.16.0.20"
-# => 64 bytes from 172.16.0.20: ttl=64 time=0.8 ms (traverses VXLAN tunnel)
+# => vxlan1001: mtu 1450 | vxlan id 1001 local 192.0.2.100 port 4789
+qm agent 100 exec -- bash -c "ping -c3 172.16.x.20"
+# => 64 bytes from 172.16.x.20: ttl=64 time=0.8 ms (traverses VXLAN tunnel)
 # => uses QEMU guest agent to run ping inside VM without console access
 ```
 
@@ -941,7 +941,7 @@ pvesh create /cluster/sdn/zones \
   --vrf-vxlan 4000 \
   --mac-prefix "42:00:00:" \
   --exitnodes "pve01,pve02" \
-  --peers 192.168.1.100,192.168.1.101,192.168.1.102
+  --peers 192.0.2.100,192.0.2.101,192.0.2.102
 # => EVPN zone 'evpn-fabric' created with anycast GW MAC prefix
 # => --type evpn: BGP-EVPN zone using VXLAN data plane with BGP control plane
 # => --controller: references the SDN controller that manages BGP sessions
@@ -954,7 +954,7 @@ pvesh create /cluster/sdn/controllers \
   --controller evpn-controller \
   --type evpn \
   --asn 65000 \
-  --peers 192.168.1.100,192.168.1.101,192.168.1.102
+  --peers 192.0.2.100,192.0.2.101,192.0.2.102
 # => BGP ASN 65000 configured; nodes act as route reflectors to each other
 # => --asn 65000: private BGP AS number (64512-65534 range for private use)
 # => --peers: all node IPs form a full IBGP mesh for EVPN route exchange
@@ -968,9 +968,9 @@ pvesh create /cluster/sdn/vnets \
 # => EVPN VNets are automatically routable to other VNets in the same zone (no gateway VM needed)
 
 pvesh create /cluster/sdn/vnets/evpn-app/subnets \
-  --subnet 10.200.0.0/24 \
-  --gateway 10.200.0.1 \
-  --dhcp-range start-address=10.200.0.100,end-address=10.200.0.200
+  --subnet 10.200.x.0/24 \
+  --gateway 10.200.x.1 \
+  --dhcp-range start-address=10.200.x.100,end-address=10.200.x.200
 # => Subnet configured with DHCP range .100-.200; gateway is anycast across all nodes
 # => --dhcp-range: built-in DHCP server allocates IPs in this range to VMs on the VNet
 
@@ -980,7 +980,7 @@ pvesh set /cluster/sdn
 
 # Verify BGP sessions (Established = routing working between nodes)
 vtysh -c "show bgp summary"
-# => 192.168.1.101 AS65000 Established | 192.168.1.102 AS65000 Established
+# => 192.0.2.101 AS65000 Established | 192.0.2.102 AS65000 Established
 # => vtysh: FRRouting CLI; "show bgp summary" lists all BGP peer states
 # => Established state = BGP UPDATE messages exchanging EVPN routes between nodes
 ```
@@ -1003,25 +1003,25 @@ pvesh create /cluster/sdn/controllers \
   --controller fabric-01 \
   --type openfabric \
   --fabric-id 1 \
-  --loopback 10.255.0.0/24
+  --loopback 10.255.x.0/24
 # => OpenFabric controller 'fabric-01' created (fabric-id range: 1-65535)
 # => --type openfabric: IS-IS-based link-state routing protocol optimized for data centers
 # => --fabric-id 1: unique fabric identifier; nodes with same fabric-id form one routing domain
-# => --loopback 10.255.0.0/24: /24 pool; each node gets one /32 loopback from this range
+# => --loopback 10.255.x.0/24: /24 pool; each node gets one /32 loopback from this range
 
 # Add spine node and leaf nodes to the fabric
 pvesh create /cluster/sdn/controllers/fabric-01/nodes \
   --node pve01 \
   --role spine \
-  --loopback 10.255.0.1
-# => pve01 = spine with loopback 10.255.0.1
+  --loopback 10.255.x.1
+# => pve01 = spine with loopback 10.255.x.1
 # => /cluster/sdn/controllers/fabric-01/nodes: API path adds a node to the named fabric
 # => spine role: central routing node; connects to all leaf nodes (hub in hub-and-spoke)
 
 pvesh create /cluster/sdn/controllers/fabric-01/nodes \
   --node pve02 \
   --role leaf \
-  --loopback 10.255.0.2 \
+  --loopback 10.255.x.2 \
   --uplink-interface eno2
 # => pve02 = leaf; uplinks to spine via eno2
 # => --role leaf: edge node; connects to servers/VMs and upstream to spine
@@ -1030,10 +1030,10 @@ pvesh create /cluster/sdn/controllers/fabric-01/nodes \
 pvesh create /cluster/sdn/controllers/fabric-01/nodes \
   --node pve03 \
   --role leaf \
-  --loopback 10.255.0.3 \
+  --loopback 10.255.x.3 \
   --uplink-interface eno2
 # => pve03 = leaf; uplinks to spine via eno2
-# => loopback 10.255.0.3: unique /32 address from the 10.255.0.0/24 pool assigned to pve03
+# => loopback 10.255.x.3: unique /32 address from the 10.255.x.0/24 pool assigned to pve03
 
 pvesh set /cluster/sdn
 # => OpenFabric routing sessions initializing on all nodes
@@ -1067,13 +1067,13 @@ pvesh create /cluster/firewall/ipset \
 # => IP set 'app-servers' created; use +app-servers as source/dest in firewall rules
 # => /cluster/firewall/ipset: cluster-wide IP set visible to all nodes and VMs
 
-pvesh create /cluster/firewall/ipset/app-servers --cidr 10.100.0.10
-# => 10.100.0.10 added to set (web-server-01)
-pvesh create /cluster/firewall/ipset/app-servers --cidr 10.100.0.11
-# => 10.100.0.11 added to set (web-server-02)
-pvesh create /cluster/firewall/ipset/app-servers --cidr 10.100.0.12
+pvesh create /cluster/firewall/ipset/app-servers --cidr 10.100.x.10
+# => 10.100.x.10 added to set (web-server-01)
+pvesh create /cluster/firewall/ipset/app-servers --cidr 10.100.x.11
+# => 10.100.x.11 added to set (web-server-02)
+pvesh create /cluster/firewall/ipset/app-servers --cidr 10.100.x.12
 # => Three app server IPs added to set 'app-servers'
-# => CIDR notation supported: --cidr 10.100.0.0/24 adds entire subnet to the set
+# => CIDR notation supported: --cidr 10.100.x.0/24 adds entire subnet to the set
 
 # Create a security group (reusable rule set)
 pvesh create /cluster/firewall/groups \
@@ -1112,11 +1112,11 @@ pvesh create /nodes/pve01/qemu/100/firewall/rules \
 # Create alias for cleaner rule definitions
 pvesh create /cluster/firewall/aliases \
   --name db-cluster \
-  --cidr 10.200.0.0/24 \
+  --cidr 10.200.x.0/24 \
   --comment "Database cluster subnet"
 # => Alias 'db-cluster' created; use in rules as source/dest
 # => /cluster/firewall/aliases: cluster-scoped; alias resolves on all nodes at rule evaluation
-# => aliases make rules readable: "source=db-cluster" vs "source=10.200.0.0/24"
+# => aliases make rules readable: "source=db-cluster" vs "source=10.200.x.0/24"
 ```
 
 **Key Takeaway**: Security groups apply consistent firewall rules across multiple VMs—updating one security group propagates changes to all VMs using it immediately, eliminating per-VM rule management.
@@ -1154,7 +1154,7 @@ graph LR
 pvesh create /storage \
   --storage pbs-main \
   --type pbs \
-  --server 192.168.1.80 \
+  --server 192.0.2.80 \
   --datastore main \
   --username backup@pbs \
   --password 'PBSBackupPassword!' \
@@ -1323,7 +1323,7 @@ pvesh set /storage/pbs-main \
 
 # Dry-run prune to preview retention (--dry-run: shows decisions without deleting)
 proxmox-backup-client prune \
-  --repository backup@pbs@192.168.1.80:main \
+  --repository backup@pbs@192.0.2.80:main \
   --ns vm/100 \
   --keep-last 3 --keep-daily 14 --keep-weekly 8 --keep-monthly 6 --keep-yearly 2 \
   --dry-run
@@ -1332,7 +1332,7 @@ proxmox-backup-client prune \
 
 # Apply pruning (remove --dry-run)
 proxmox-backup-client prune \
-  --repository backup@pbs@192.168.1.80:main \
+  --repository backup@pbs@192.0.2.80:main \
   --ns vm/100 \
   --keep-last 3 --keep-daily 14 --keep-weekly 8 --keep-monthly 6
 # => 12 expired snapshots pruned | 45.2 GB freed
@@ -1340,7 +1340,7 @@ proxmox-backup-client prune \
 
 # Run garbage collection to reclaim pruned space
 proxmox-backup-client garbage-collect \
-  --repository backup@pbs@192.168.1.80:main
+  --repository backup@pbs@192.0.2.80:main
 # => 23,456 orphaned chunks removed | 38.7 GB freed
 # => garbage-collect removes chunks no longer referenced by any snapshot (pruning only marks expired)
 ```
@@ -1416,7 +1416,7 @@ qm set 100 \
   --vga serial0 \
   --ipconfig0 ip=dhcp \
   --nameserver 8.8.8.8 \
-  --searchdomain lab.internal \
+  --searchdomain lab.internal.example \
   --ciuser ubuntu \
   --cipassword 'CloudInitPass123!' \
   --sshkeys ~/.ssh/id_ed25519.pub
@@ -1428,14 +1428,14 @@ qm set 100 \
 # => --vga serial0: redirects video to serial (works with cloud images that lack VGA drivers)
 # => --ipconfig0 ip=dhcp: configure first NIC via DHCP
 # => --nameserver 8.8.8.8: DNS resolver injected into guest via cloud-init
-# => --searchdomain lab.internal: DNS search domain appended to short hostnames
+# => --searchdomain lab.internal.example: DNS search domain appended to short hostnames
 # => --ciuser: default user account created in guest
 # => --sshkeys: public key authorized for SSH login (no password needed)
 
 # For static IP configuration:
 qm set 100 \
-  --ipconfig0 ip=192.168.1.150/24,gw=192.168.1.1
-# => Static IP 192.168.1.150 configured via cloud-init
+  --ipconfig0 ip=192.0.2.150/24,gw=192.0.2.1
+# => Static IP 192.0.2.150 configured via cloud-init
 # => format: ip=<address>/<prefix>,gw=<gateway> (cloud-init network config v1)
 
 # Custom cloud-init configuration (advanced: override with cicustom)
@@ -1481,7 +1481,7 @@ qm cloudinit update 100
 qm clone 100 200 --name production-web-02 --full 1 --storage local-lvm
 # => full clone: independent copy (--full 1); linked clone (--full 0) shares base disk
 qm set 200 \
-  --ipconfig0 ip=192.168.1.151/24,gw=192.168.1.1 \
+  --ipconfig0 ip=192.0.2.151/24,gw=192.0.2.1 \
   --ciuser ubuntu \
   --sshkeys ~/.ssh/id_ed25519.pub
 # => VM 200 ready with unique IP; starts configured on first boot
@@ -1686,14 +1686,14 @@ filter.ID_NET_NAME = "eno1"
 # => select NIC by stable interface name (not bus position)
 
 [network.network-settings]
-cidr = "192.168.1.100/24"
+cidr = "192.0.2.100/24"
 # => static IP assigned during installation
-gateway = "192.168.1.1"
+gateway = "192.0.2.1"
 # => default gateway for the management network
-dns = "192.168.1.1"
+dns = "192.0.2.1"
 # => DNS resolver; use router or internal DNS server
 EOF
-# => complete answer file: ZFS mirror on sda+sdb, static IP 192.168.1.100, hostname pve01
+# => complete answer file: ZFS mirror on sda+sdb, static IP 192.0.2.100, hostname pve01
 
 # Validate the answer file before embedding in ISO
 proxmox-auto-install-assistant validate-answer node-pve01-answer.toml
@@ -1711,7 +1711,7 @@ proxmox-auto-install-assistant prepare-iso proxmox-ve_9.2-1.iso \
 # PXE-based deployment: fetch unique per-node answer file from HTTP server by MAC
 proxmox-auto-install-assistant prepare-iso proxmox-ve_9.2-1.iso \
   --fetch-from http \
-  --url http://192.168.1.50/pxe/answers/pve01-answer.toml \
+  --url http://192.0.2.50/pxe/answers/pve01-answer.toml \
   --output proxmox-pve01-pxe.iso
 # => ISO fetches answer file at boot; serve unique files per MAC for fleet provisioning
 # => --fetch-from http: ISO downloads answer at boot time (one ISO for all nodes)

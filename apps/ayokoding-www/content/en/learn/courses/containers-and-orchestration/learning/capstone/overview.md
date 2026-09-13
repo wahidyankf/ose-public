@@ -92,7 +92,7 @@ route:
 # => Keeps the Ingress host mapping scoped to curl rather than changing the system hosts file.
 controller_port=8081
 # => Sends the declared host through the port-forwarded nginx controller and checks the application response.
-curl --fail --resolve containers-capstone.local:"$controller_port":127.0.0.1 "http://containers-capstone.local:$controller_port/"
+curl --fail --resolve containers-capstone.test:"$controller_port":127.0.0.1 "http://containers-capstone.test:$controller_port/"
 ```
 
 To verify reconciliation, capture the existing Pod set, delete one exact Pod, wait for that object to

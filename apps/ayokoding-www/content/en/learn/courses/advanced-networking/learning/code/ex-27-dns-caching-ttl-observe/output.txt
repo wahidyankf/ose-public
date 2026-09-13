@@ -17,7 +17,7 @@ example.com.		150	IN	A	104.20.23.154
 example.com.		150	IN	A	172.66.147.243
 
 ;; Query time: 2 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Sat Jul 18 08:17:17 WIB 2026
 ;; MSG SIZE  rcvd: 72
 
@@ -41,7 +41,7 @@ example.com.		148	IN	A	172.66.147.243
 example.com.		148	IN	A	104.20.23.154
 
 ;; Query time: 2 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Sat Jul 18 08:17:19 WIB 2026
 ;; MSG SIZE  rcvd: 72
 

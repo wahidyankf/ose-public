@@ -41,7 +41,7 @@ A username embedded in a path (e.g., `/Users/<name>/`) is machine-specific by de
 
 ## Local IP Addresses and Hostnames
 
-Addresses such as `192.168.1.42`, `10.0.0.5`, or a machine's local hostname reflect a developer's local network configuration.
+Addresses such as `192.168.x.42`, `10.x.0.5`, or a machine's local hostname reflect a developer's local network configuration.
 
 **Acceptable exceptions:** `127.0.0.1` and `localhost` are standard loopback references and may appear in test configuration that explicitly targets a locally running service. However, they must never appear alongside a literal password (see "Verifying a Commit Before Pushing" below).
 

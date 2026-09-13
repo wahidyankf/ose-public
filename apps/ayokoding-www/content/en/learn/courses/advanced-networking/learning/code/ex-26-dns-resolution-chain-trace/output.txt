@@ -1,5 +1,5 @@
 
 ; <<>> DiG 9.10.6 <<>> +trace example.com
 ;; global options: +cmd
-;; Received 17 bytes from 100.100.100.100#53(100.100.100.100) in 8 ms
+;; Received 17 bytes from <sandbox-resolver>#53(<sandbox-resolver>) in 8 ms
 

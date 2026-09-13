@@ -4443,7 +4443,7 @@ kind: Service
 # => Service: stable network endpoint for the pod replicas — DNS-resolvable cluster-internal address
 metadata:
   name: procurement-platform-be-svc
-  # => name: DNS name for in-cluster callers — procurement-platform-be-svc.procurement-platform.svc.cluster.local
+  # => name: DNS name for in-cluster callers — procurement-platform-be-svc.procurement-platform.svc.cluster.local.
   namespace: procurement-platform
   # => namespace: same as the Deployment — Service routes to pods in the same namespace
 spec:

@@ -228,7 +228,7 @@ is exercised by ≥1 example.
   prints. (co-02)
 - **ex-04 · arp-cache-inspect** — run `ip neigh show` — verify IP→MAC entries for reachable local hosts
   appear. (co-02)
-- **ex-05 · ipv4-binary-anatomy** — convert `192.168.1.10` to its 4 octets in binary by hand — verify the
+- **ex-05 · ipv4-binary-anatomy** — convert `192.0.2.10` to its 4 octets in binary by hand — verify the
   binary reconverts to the same decimal address. (co-03)
 - **ex-06 · ipv6-address-expand-compress** — expand `2001:db8::1` to its 8 full hextets, then re-compress it
   — verify both forms round-trip to the same address. (co-03)
@@ -241,7 +241,7 @@ is exercised by ≥1 example.
 - **ex-10 · traceroute-hop-list** — run `traceroute example.com` — verify a numbered hop list with per-hop
   RTTs prints. (co-05)
 - **ex-11 · private-vs-public-address-classify** — classify a list of IPs against the RFC 1918 private ranges
-  (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) — verify each address is correctly labeled private or
+  (`10/8`, `172.16/12`, `192.168/16`) — verify each address is correctly labeled private or
   public. (co-06)
 - **ex-12 · nat-translation-diagram** — a Mermaid diagram of a private-source packet traversing a NAT gateway
   with its source IP:port rewritten to the gateway's public IP:port — verify the before/after address:port

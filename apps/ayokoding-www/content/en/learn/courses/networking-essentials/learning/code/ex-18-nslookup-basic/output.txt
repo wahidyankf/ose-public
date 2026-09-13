@@ -1,4 +1,4 @@
-;; Got recursion not available from 100.100.100.100, trying next server
+;; Got recursion not available from <sandbox-resolver>, trying next server
 Server:		fd7a:115c:a1e0::53
 Address:	fd7a:115c:a1e0::53#53
 

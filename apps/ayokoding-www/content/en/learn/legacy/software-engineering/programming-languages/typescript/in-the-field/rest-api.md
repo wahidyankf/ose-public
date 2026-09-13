@@ -350,7 +350,7 @@ import morgan from "morgan";
 app.use(morgan("combined"));
 // => Log all requests
 // => Format: Apache combined log format
-// => Example: 192.168.1.1 - - [07/Feb/2026:10:00:00 +0000] "GET /users HTTP/1.1" 200 -
+// => Example: 192.0.2.1 - - [07/Feb/2026:10:00:00 +0000] "GET /users HTTP/1.1" 200 -
 ```
 
 **Authentication middleware**:

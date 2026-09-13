@@ -106,7 +106,7 @@ apt install fence-agents
 
 # Test IPMI fencing for pve02 from pve01
 fence_ipmilan \
-  -a 192.168.1.102 \
+  -a 192.0.2.102 \
   -l admin \
   -p 'IPMIPassword123!' \
   -o status
@@ -116,12 +116,12 @@ fence_ipmilan \
 pvesh create /cluster/ha/fencing \
   --type ipmi \
   --name pve02-ipmi \
-  --params 'addr=192.168.1.102,login=admin,passwd=IPMIPassword123!'
+  --params 'addr=192.0.2.102,login=admin,passwd=IPMIPassword123!'
 # => IPMI fencing device configured for pve02
 
 # Test HA fencing mechanism (without triggering actual failover)
 pvesh create /cluster/ha/fencing/pve02-ipmi/test
-# => Fence test: connecting to IPMI at 192.168.1.102...
+# => Fence test: connecting to IPMI at 192.0.2.102...
 # => Power status query: ON
 # => Fence test PASSED: can power-off pve02 if needed
 
@@ -336,7 +336,7 @@ terraform {
 # Configure provider authentication using API token
 provider "proxmox" {
   # => provider block configures the bpg/proxmox provider globally
-  endpoint  = "https://192.168.1.100:8006/"
+  endpoint  = "https://192.0.2.100:8006/"
   # => Proxmox REST API base URL (node IP + port 8006)
   api_token = var.proxmox_api_token
   # => format: "user@realm!tokenid=UUID-secret" (from Example 18)
@@ -418,9 +418,9 @@ resource "proxmox_virtual_environment_vm" "web_server" {
       # => ip_config: cloud-init network configuration for the first NIC
       ipv4 {
         # => ipv4 block: static or DHCP address for the VM guest
-        address = "192.168.1.200/24"
+        address = "192.0.2.200/24"
         # => static IP written to cloud-init drive; applied by cloud-init on first boot
-        gateway = "192.168.1.1"
+        gateway = "192.0.2.1"
         # => default gateway; cloud-init writes to /etc/netplan or /etc/network/interfaces
       }
     }
@@ -435,11 +435,11 @@ resource "proxmox_virtual_environment_vm" "web_server" {
       # => dns block: resolver configuration written to /etc/resolv.conf in VM
       servers = ["8.8.8.8", "8.8.4.4"]
       # => DNS servers written to /etc/resolv.conf in the VM
-      domain  = "lab.internal"
+      domain  = "lab.internal.example"
       # => search domain for short hostname resolution
     }   # => end dns block
   }     # => end initialization block; cloud-init settings complete
-  # => after first boot: VM has 192.168.1.200/24, ubuntu user, SSH key accessible
+  # => after first boot: VM has 192.0.2.200/24, ubuntu user, SSH key accessible
 
   lifecycle {
     # => lifecycle block: instructs Terraform how to handle resource drift
@@ -457,7 +457,7 @@ output "vm_ip" {
   value = proxmox_virtual_environment_vm.web_server.ipv4_addresses
   # => queries guest agent for assigned IPs after first boot
   # => requires qemu-guest-agent running in VM; otherwise output returns empty list
-  # => example output: [["192.168.1.200"]]
+  # => example output: [["192.0.2.200"]]
 } # => end output block
 ```
 
@@ -509,16 +509,16 @@ resource "proxmox_virtual_environment_container" "nginx_proxy" {
       # => dns block configures /etc/resolv.conf inside the container
       servers = ["8.8.8.8"]
       # => DNS resolver; written to container /etc/resolv.conf on create
-      domain  = "lab.internal"
-      # => DNS suffix for FQDN: nginx-proxy-01.lab.internal
+      domain  = "lab.internal.example"
+      # => DNS suffix for FQDN: nginx-proxy-01.lab.internal.example
     }
     ip_config {
       # => ip_config: network configuration for eth0 inside the container
       ipv4 {
         # => ipv4 block: static address or "dhcp"
-        address = "192.168.1.150/24"
+        address = "192.0.2.150/24"
         # => Static IP written to container /etc/network/interfaces on create
-        gateway = "192.168.1.1"
+        gateway = "192.0.2.1"
         # => default IPv4 gateway for the container
       }
     }
@@ -602,9 +602,9 @@ locals {
   # => locals are evaluated once and shared; use for DRY config (avoid repeating values)
   app_containers = {
     # => map value: each key is the container hostname, value is per-instance config
-    "app-01" = { ip = "192.168.1.161", ctid = 501 }
-    "app-02" = { ip = "192.168.1.162", ctid = 502 }
-    "app-03" = { ip = "192.168.1.163", ctid = 503 }
+    "app-01" = { ip = "192.0.2.161", ctid = 501 }
+    "app-02" = { ip = "192.0.2.162", ctid = 502 }
+    "app-03" = { ip = "192.0.2.163", ctid = 503 }
     # => map key = container name (used as hostname); value = per-instance config
     # => add more entries here to scale the fleet; no other config changes required
   }
@@ -628,8 +628,8 @@ resource "proxmox_virtual_environment_container" "app_fleet" {
     hostname = each.key
     # => hostname = map key: "app-01", "app-02", "app-03"
     ip_config {
-      ipv4 { address = "${each.value.ip}/24", gateway = "192.168.1.1" }
-      # => IPs: 192.168.1.161/24, .162/24, .163/24 for each instance
+      ipv4 { address = "${each.value.ip}/24", gateway = "192.0.2.1" }
+      # => IPs: 192.0.2.161/24, .162/24, .163/24 for each instance
     }
     user_account { keys = [file("~/.ssh/id_ed25519.pub")] }
     # => SSH key injected into each container's /root/.ssh/authorized_keys
@@ -699,7 +699,7 @@ pip install proxmoxer>=2.0
 
   vars:
     # => vars block: play-level variables referenced with {{ var_name }} syntax
-    proxmox_host: "192.168.1.100"
+    proxmox_host: "192.0.2.100"
     # => IP or FQDN of any cluster node; API request routed cluster-wide
     proxmox_user: "root@pam"
     # => user@realm: root authenticated via Linux PAM (/etc/passwd)
@@ -758,7 +758,7 @@ pip install proxmoxer>=2.0
           net0: "virtio,bridge=vmbr0"
           # => replace template NIC config; VirtIO for best performance
         ipconfig:
-          ipconfig0: "ip=192.168.1.210/24,gw=192.168.1.1"
+          ipconfig0: "ip=192.0.2.210/24,gw=192.0.2.1"
           # => write cloud-init static IP to cloud-init drive; applied on first boot
         state: present
         # => present: update existing VM config; no error if unchanged
@@ -778,7 +778,7 @@ pip install proxmoxer>=2.0
         # => VM 400 must be stopped before this task starts it
         state: started
         # => started: starts VM if stopped; no-op if already running (idempotent)
-      # => cloud-init runs on first boot; VM gets 192.168.1.210/24 and SSH key
+      # => cloud-init runs on first boot; VM gets 192.0.2.210/24 and SSH key
 
     - name: Snapshot before deployment
       # => POST /nodes/pve01/qemu/400/snapshot
@@ -824,7 +824,7 @@ Building on the `community.proxmox` collection, this example demonstrates fleet-
   # => false: no local facts needed; saves ~2 seconds per run
 
   vars: # => vars: play-level variables shared across all tasks
-    api_host: "192.168.1.100"
+    api_host: "192.0.2.100"
     # => any Proxmox cluster node IP; cluster routes API to correct node
     api_user: "root@pam"
     # => user@realm format (PAM = Linux system authentication)
@@ -836,12 +836,12 @@ Building on the `community.proxmox` collection, this example demonstrates fleet-
     # => VMID 100 must already be a template (run: qm template 100)
     vm_fleet: # => list of dicts; each dict is one CI runner to create
       # => fleet definition: add/remove entries to scale up/down
-      - { name: "ci-runner-01", vmid: 410, ip: "192.168.1.210" }
+      - { name: "ci-runner-01", vmid: 410, ip: "192.0.2.210" }
       # => inline dict: each field accessed as item.name, item.vmid, item.ip
-      - { name: "ci-runner-02", vmid: 411, ip: "192.168.1.211" } # => runner 2
-      - { name: "ci-runner-03", vmid: 412, ip: "192.168.1.212" } # => runner 3
-      - { name: "ci-runner-04", vmid: 413, ip: "192.168.1.213" } # => runner 4
-      - { name: "ci-runner-05", vmid: 414, ip: "192.168.1.214" } # => runner 5
+      - { name: "ci-runner-02", vmid: 411, ip: "192.0.2.211" } # => runner 2
+      - { name: "ci-runner-03", vmid: 412, ip: "192.0.2.212" } # => runner 3
+      - { name: "ci-runner-04", vmid: 413, ip: "192.0.2.213" } # => runner 4
+      - { name: "ci-runner-05", vmid: 414, ip: "192.0.2.214" } # => runner 5
       # => each entry: name=hostname, vmid=VMID, ip=cloud-init IP
 
   tasks:
@@ -896,7 +896,7 @@ Building on the `community.proxmox` collection, this example demonstrates fleet-
         vmid: "{{ item.vmid }}"
         # => target each cloned VM by VMID
         ipconfig: # => ipconfig: dict of cloud-init IP config entries per NIC
-          ipconfig0: "ip={{ item.ip }}/24,gw=192.168.1.1"
+          ipconfig0: "ip={{ item.ip }}/24,gw=192.0.2.1"
           # => unique static IP per runner: .210, .211, .212, .213, .214
         ciuser: ubuntu
         # => cloud-init creates this Linux user with sudo access
@@ -980,7 +980,7 @@ packer {
 # => packer init: downloads and installs the proxmox plugin binary
 
 # Variables for authentication
-variable "proxmox_api_url"          { default = "https://192.168.1.100:8006/api2/json" }
+variable "proxmox_api_url"          { default = "https://192.0.2.100:8006/api2/json" }
 # => override with: packer build -var "proxmox_api_url=https://..." or via PKR_VAR_proxmox_api_url env
 variable "proxmox_api_token_id"     { default = "root@pam!packer" }
 # => token_id format: user@realm!tokenid (API token, not password)
@@ -1199,7 +1199,7 @@ Direct REST API calls enable integration with systems that do not have a dedicat
 
 ```bash
 # Set API base URL (all endpoints are relative to this)
-API_BASE="https://192.168.1.100:8006/api2/json"
+API_BASE="https://192.0.2.100:8006/api2/json"
 # => all Proxmox API endpoints are under /api2/json
 
 # API token (preferred; tokens can be scoped and revoked without affecting user)
@@ -1295,7 +1295,7 @@ import time                        # => time: used for sleep polling and timesta
 
 # Connect using API token (recommended over username/password)
 proxmox = ProxmoxAPI(
-    host='192.168.1.100',
+    host='192.0.2.100',
     # => Proxmox node hostname or IP; any node in the cluster accepts API calls
     user='root@pam',
     # => user@realm: root authenticated via Linux PAM
@@ -2162,7 +2162,7 @@ proxmox-backup-manager prune-job add gfs-policy \
 
 # Dry-run to preview retention decisions before committing
 proxmox-backup-client prune \
-  --repository backup@pbs@192.168.1.80:main \
+  --repository backup@pbs@192.0.2.80:main \
   # => repository format: user@pbs@host:datastore (same credentials as backup job)
   --keep-last 3 --keep-daily 14 --keep-weekly 8 --keep-monthly 6 --keep-yearly 2 \
   # => same retention parameters as the prune-job above (must match for accurate preview)
@@ -2172,7 +2172,7 @@ proxmox-backup-client prune \
 
 # Run GC to reclaim freed space after pruning
 proxmox-backup-client garbage-collect \
-  --repository backup@pbs@192.168.1.80:main
+  --repository backup@pbs@192.0.2.80:main
   # => garbage-collect: removes chunks no longer referenced by any backup snapshot
 # => 285.3 GB freed (4.2 TB → 3.9 TB after orphaned chunk cleanup)
 ```
@@ -2191,8 +2191,8 @@ SDN DHCP integration uses dnsmasq to provide automatic IP assignment to VMs conn
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     A["VM boots<br/>(no IP configured)"] -->|"DHCP Discover"| B["dnsmasq on PVE node<br/>(SDN subnet DHCP)"]
-    B -->|"DHCP Offer<br/>10.100.0.101/24"| A
-    B --> C["DNS registration<br/>vm-name.web.internal"]
+    B -->|"DHCP Offer<br/>198.51.100.101/24"| A
+    B --> C["DNS registration<br/>vm-name.web.internal.example"]
     B --> D["IP Tracking<br/>/cluster/sdn/vnets/ips"]
 
     style A fill:#0173B2,color:#fff,stroke:#000
@@ -2209,11 +2209,11 @@ apt install dnsmasq
 # => dnsmasq installed; SDN uses it to serve DHCP on VNet interfaces
 # => dnsmasq version from Debian Trixie (default on PVE 9); no manual config needed
 
-# Configure DHCP range on SDN subnet (dnszoneprefix: VMs get web-server-01.web.internal)
-pvesh set /cluster/sdn/vnets/web-vnet/subnets/10.100.0.0-24 \
-  --dhcp-range "start-address=10.100.0.100,end-address=10.100.0.200" \
+# Configure DHCP range on SDN subnet (dnszoneprefix: VMs get web-server-01.web.internal.example)
+pvesh set /cluster/sdn/vnets/web-vnet/subnets/198.51.100.0-24 \
+  --dhcp-range "start-address=198.51.100.100,end-address=198.51.100.200" \
   # => 100 IP addresses available (.100 to .200); first available assigned to new VMs
-  --gateway 10.100.0.1 \
+  --gateway 198.51.100.1 \
   # => default gateway injected into VM DHCP offer (must match VNet gateway interface)
   --dnszoneprefix web
   # => DNS zone prefix: VMs registered as <vmname>.web.internal in dnsmasq
@@ -2223,9 +2223,9 @@ pvesh set /cluster/sdn
 # => dnsmasq reconfigured on all nodes; VMs on web-vnet get DHCP from .100-.200
 # => Proxmox writes /etc/dnsmasq.d/sdn-*.conf files from SDN definition
 
-# Add a static DHCP mapping to reserve 10.100.0.101 for VM 100's MAC
+# Add a static DHCP mapping to reserve 198.51.100.101 for VM 100's MAC
 pvesh create /cluster/sdn/vnets/web-vnet/ips \
-  --ip 10.100.0.101 \
+  --ip 198.51.100.101 \
   # => reserved IP: dnsmasq always assigns this IP to the matching MAC address
   --mac AA:BB:CC:DD:EE:FF \
   # => VM 100 MAC address (from VM config: qm config 100 | grep net0)
@@ -2241,11 +2241,11 @@ pvesh set /cluster/sdn
 
 # Verify generated dnsmasq config (Proxmox writes this from SDN definitions)
 cat /etc/dnsmasq.d/sdn-web-vnet.conf
-# => dhcp-range=10.100.0.100,10.100.0.200 | dhcp-host=AA:BB...,10.100.0.101,web-server-01
+# => dhcp-range=198.51.100.100,198.51.100.200 | dhcp-host=AA:BB...,198.51.100.101,web-server-01
 
 # Show active DHCP leases
 cat /var/lib/misc/dnsmasq.leases
-# => AA:BB:CC:DD:EE:FF 10.100.0.101 web-server-01 | AA:BB:...:00 10.100.0.102 nginx-proxy-01
+# => AA:BB:CC:DD:EE:FF 198.51.100.101 web-server-01 | AA:BB:...:00 198.51.100.102 nginx-proxy-01
 ```
 
 **Key Takeaway**: SDN DHCP integration centralizes IP management in the Proxmox cluster—VM IP assignments are visible in the SDN configuration, not scattered across DHCP server leases on separate network infrastructure.

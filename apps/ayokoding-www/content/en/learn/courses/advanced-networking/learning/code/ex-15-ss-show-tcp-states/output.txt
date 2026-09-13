@@ -1,6 +1,6 @@
 --- while open (ESTAB) ---
-ESTAB     0      0         172.17.0.3:34342 172.66.147.243:443
+ESTAB     0      0         172.17.x.3:34342 172.66.147.243:443
 --- after close ---
 State     Recv-Q Send-Q Local Address:Port    Peer Address:PortProcess
-TIME-WAIT 0      0         172.17.0.3:54960 172.66.147.243:443
-TIME-WAIT 0      0         172.17.0.3:34342 172.66.147.243:443
+TIME-WAIT 0      0         172.17.x.3:54960 172.66.147.243:443
+TIME-WAIT 0      0         172.17.x.3:34342 172.66.147.243:443

@@ -3056,14 +3056,14 @@ func main() {
     proxy := newForwardProxy()
 
     // Client 1 requests a legitimate site
-    r1 := proxy.handleRequest("192.168.1.10", "GET", "https://api.example.com/data")
-    // => [FORWARD] 192.168.1.10 -> https://api.example.com/data
+    r1 := proxy.handleRequest("192.0.2.10", "GET", "https://api.example.com/data")
+    // => [FORWARD] 192.0.2.10 -> https://api.example.com/data
     fmt.Printf("Response: %v - %v\n", r1["status"], r1["body"])
     // => Response: 200 - Response from api.example.com
 
     // Client 2 requests the same URL — served from proxy cache
-    r2 := proxy.handleRequest("192.168.1.11", "GET", "https://api.example.com/data")
-    // => [CACHE HIT] 192.168.1.11 -> https://api.example.com/data
+    r2 := proxy.handleRequest("192.0.2.11", "GET", "https://api.example.com/data")
+    // => [CACHE HIT] 192.0.2.11 -> https://api.example.com/data
     fromCache := false
     if v, ok := r2["from_cache"]; ok {
         fromCache = v.(bool)
@@ -3072,8 +3072,8 @@ func main() {
     // => Response: 200 - cached=true  (no external request made)
 
     // Client tries blocked domain
-    r3 := proxy.handleRequest("192.168.1.10", "GET", "https://malware.example.com/file")
-    // => [BLOCKED] 192.168.1.10 -> https://malware.example.com/file
+    r3 := proxy.handleRequest("192.0.2.10", "GET", "https://malware.example.com/file")
+    // => [BLOCKED] 192.0.2.10 -> https://malware.example.com/file
     fmt.Printf("Response: %v - %v\n", r3["status"], r3["body"])
     // => Response: 403 - Access denied by proxy policy
 
@@ -3150,20 +3150,20 @@ class ForwardProxy:
 proxy = ForwardProxy()
 
 # Client 1 requests a legitimate site
-r1 = proxy.handle_request("192.168.1.10", "GET", "https://api.example.com/data")
-# => [FORWARD] 192.168.1.10 -> https://api.example.com/data
+r1 = proxy.handle_request("192.0.2.10", "GET", "https://api.example.com/data")
+# => [FORWARD] 192.0.2.10 -> https://api.example.com/data
 print(f"Response: {r1['status']} - {r1['body']}")
 # => Response: 200 - Response from api.example.com
 
 # Client 2 requests the same URL — served from proxy cache
-r2 = proxy.handle_request("192.168.1.11", "GET", "https://api.example.com/data")
-# => [CACHE HIT] 192.168.1.11 -> https://api.example.com/data
+r2 = proxy.handle_request("192.0.2.11", "GET", "https://api.example.com/data")
+# => [CACHE HIT] 192.0.2.11 -> https://api.example.com/data
 print(f"Response: {r2['status']} - cached={r2.get('from_cache', False)}")
 # => Response: 200 - cached=True  (no external request made)
 
 # Client tries blocked domain
-r3 = proxy.handle_request("192.168.1.10", "GET", "https://malware.example.com/file")
-# => [BLOCKED] 192.168.1.10 -> https://malware.example.com/file
+r3 = proxy.handle_request("192.0.2.10", "GET", "https://malware.example.com/file")
+# => [BLOCKED] 192.0.2.10 -> https://malware.example.com/file
 print(f"Response: {r3['status']} - {r3['body']}")
 # => Response: 403 - Access denied by proxy policy
 
@@ -5835,19 +5835,19 @@ func main() {
     fmt.Println("=== Service Discovery Demo ===\n")
 
     // API Gateway service: 2 instances start up
-    gw1 := registry.register("api-gateway", "10.0.1.1", 8080)
-    gw2 := registry.register("api-gateway", "10.0.1.2", 8080)
-    // => [REGISTRY] Registered api-gateway@10.0.1.1:8080 (id=...)
-    // => [REGISTRY] Registered api-gateway@10.0.1.2:8080 (id=...)
+    gw1 := registry.register("api-gateway", "198.51.100.1", 8080)
+    gw2 := registry.register("api-gateway", "198.51.100.2", 8080)
+    // => [REGISTRY] Registered api-gateway@198.51.100.1:8080 (id=...)
+    // => [REGISTRY] Registered api-gateway@198.51.100.2:8080 (id=...)
 
     // User service: 1 instance
-    _ = registry.register("user-service", "10.0.2.1", 9001)
+    _ = registry.register("user-service", "10.0.x.1", 9001)
 
     fmt.Println()
     // Consumer looks up api-gateway instances
     gateways := registry.getHealthyInstances("api-gateway")
     fmt.Printf("Healthy api-gateway instances: %v\n", gateways)
-    // => Healthy api-gateway instances: [10.0.1.1:8080 10.0.1.2:8080]
+    // => Healthy api-gateway instances: [198.51.100.1:8080 198.51.100.2:8080]
 
     // One gateway fails health check
     registry.markUnhealthy("api-gateway", gw1)
@@ -5855,21 +5855,21 @@ func main() {
 
     gateways = registry.getHealthyInstances("api-gateway")
     fmt.Printf("After health check failure: %v\n", gateways)
-    // => After health check failure: [10.0.1.2:8080]
+    // => After health check failure: [198.51.100.2:8080]
     // => Traffic automatically routes only to healthy instance
 
     // Scale out: third gateway starts
-    _ = registry.register("api-gateway", "10.0.1.3", 8080)
+    _ = registry.register("api-gateway", "198.51.100.3", 8080)
     gateways = registry.getHealthyInstances("api-gateway")
     fmt.Printf("After scale-out: %v\n", gateways)
-    // => After scale-out: [10.0.1.2:8080 10.0.1.3:8080]
+    // => After scale-out: [198.51.100.2:8080 198.51.100.3:8080]
     // => New instance immediately discoverable; no config changes needed
 
     // Service deregisters on clean shutdown
     registry.deregister("api-gateway", gw2)
     gateways = registry.getHealthyInstances("api-gateway")
     fmt.Printf("After graceful shutdown of gw2: %v\n", gateways)
-    // => After graceful shutdown of gw2: [10.0.1.3:8080]
+    // => After graceful shutdown of gw2: [198.51.100.3:8080]
 }
 ```
 
@@ -5939,19 +5939,19 @@ registry = ServiceRegistry()
 print("=== Service Discovery Demo ===\n")
 
 # API Gateway service: 2 instances start up
-gw1 = registry.register("api-gateway", "10.0.1.1", 8080)
-gw2 = registry.register("api-gateway", "10.0.1.2", 8080)
-# => [REGISTRY] Registered api-gateway@10.0.1.1:8080 (id=...)
-# => [REGISTRY] Registered api-gateway@10.0.1.2:8080 (id=...)
+gw1 = registry.register("api-gateway", "198.51.100.1", 8080)
+gw2 = registry.register("api-gateway", "198.51.100.2", 8080)
+# => [REGISTRY] Registered api-gateway@198.51.100.1:8080 (id=...)
+# => [REGISTRY] Registered api-gateway@198.51.100.2:8080 (id=...)
 
 # User service: 1 instance
-us1 = registry.register("user-service", "10.0.2.1", 9001)
+us1 = registry.register("user-service", "10.0.x.1", 9001)
 
 print()
 # Consumer looks up api-gateway instances
 gateways = registry.get_healthy_instances("api-gateway")
 print(f"Healthy api-gateway instances: {gateways}")
-# => Healthy api-gateway instances: ['10.0.1.1:8080', '10.0.1.2:8080']
+# => Healthy api-gateway instances: ['198.51.100.1:8080', '198.51.100.2:8080']
 
 # One gateway fails health check
 registry.mark_unhealthy("api-gateway", gw1)
@@ -5959,21 +5959,21 @@ registry.mark_unhealthy("api-gateway", gw1)
 
 gateways = registry.get_healthy_instances("api-gateway")
 print(f"After health check failure: {gateways}")
-# => After health check failure: ['10.0.1.2:8080']
+# => After health check failure: ['198.51.100.2:8080']
 # => Traffic automatically routes only to healthy instance
 
 # Scale out: third gateway starts
-gw3 = registry.register("api-gateway", "10.0.1.3", 8080)
+gw3 = registry.register("api-gateway", "198.51.100.3", 8080)
 gateways = registry.get_healthy_instances("api-gateway")
 print(f"After scale-out: {gateways}")
-# => After scale-out: ['10.0.1.2:8080', '10.0.1.3:8080']
+# => After scale-out: ['198.51.100.2:8080', '198.51.100.3:8080']
 # => New instance immediately discoverable; no config changes needed
 
 # Service deregisters on clean shutdown
 registry.deregister("api-gateway", gw2)
 gateways = registry.get_healthy_instances("api-gateway")
 print(f"After graceful shutdown of gw2: {gateways}")
-# => After graceful shutdown of gw2: ['10.0.1.3:8080']
+# => After graceful shutdown of gw2: ['198.51.100.3:8080']
 ```
 
 {{< /tab >}}

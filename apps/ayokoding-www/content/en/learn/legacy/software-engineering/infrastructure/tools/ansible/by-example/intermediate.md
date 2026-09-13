@@ -2191,9 +2191,9 @@ servers:
 # => Output:
 # => servers:
 # => - name: web1
-# => ip: 192.168.1.10
+# => ip: 192.0.2.10
 # => - name: web2
-# => ip: 192.168.1.11
+# => ip: 192.0.2.11
 # => No blank lines in list
 
 # Example: conditional with clean formatting
@@ -2226,9 +2226,9 @@ database:
  condition: true
  server_list:
  - name: web1
- ip: 192.168.1.10
+ ip: 192.0.2.10
  - name: web2
- ip: 192.168.1.11
+ ip: 192.0.2.11
  db_host: localhost
  db_port: 5432
  db_ssl_enabled: true

@@ -314,8 +314,8 @@ using capture groups and backreferences.
 
 ```bash
 # Extract IP addresses from Apache-style access log lines
-printf '192.168.1.1 - - [01/Apr/2026:10:00:00] "GET /index.html HTTP/1.1" 200 1234\n
-10.0.0.5 - - [01/Apr/2026:10:01:00] "POST /api HTTP/1.1" 201 567\n' \
+printf '192.0.2.1 - - [01/Apr/2026:10:00:00] "GET /index.html HTTP/1.1" 200 1234\n
+198.51.100.5 - - [01/Apr/2026:10:01:00] "POST /api HTTP/1.1" 201 567\n' \
   | sed -n 's/^\([0-9.]*\) .*/\1/p'
 # => -n suppresses default output
 # => ^ anchors to start of line
@@ -324,8 +324,8 @@ printf '192.168.1.1 - - [01/Apr/2026:10:00:00] "GET /index.html HTTP/1.1" 200 12
 # => \1 in replacement outputs only the captured IP
 # => p prints the result of successful substitutions
 # => Output:
-# => 192.168.1.1
-# => 10.0.0.5
+# => 192.0.2.1
+# => 198.51.100.5
 ```
 
 **Key takeaway:** `sed -n 's/^(field).*$/\1/p'` extracts the first field from structured log
@@ -344,16 +344,16 @@ without loading the entire log into memory.
 
 ```bash
 # Extract only 5xx error lines from access log
-printf '192.168.1.1 - - [01/Apr/2026] "GET / HTTP/1.1" 200 1234\n
-192.168.1.2 - - [01/Apr/2026] "GET /api HTTP/1.1" 500 0\n
-192.168.1.3 - - [01/Apr/2026] "POST /data HTTP/1.1" 503 120\n' \
+printf '192.0.2.1 - - [01/Apr/2026] "GET / HTTP/1.1" 200 1234\n
+192.0.2.2 - - [01/Apr/2026] "GET /api HTTP/1.1" 500 0\n
+192.0.2.3 - - [01/Apr/2026] "POST /data HTTP/1.1" 503 120\n' \
   | sed -n '/ 5[0-9][0-9] /p'
 # => / 5[0-9][0-9] / matches a space, then 5xx status, then space
 # => The space boundaries prevent matching "500" inside a URL
 # => -n + p prints only matched lines
 # => Output:
-# => 192.168.1.2 - - [01/Apr/2026] "GET /api HTTP/1.1" 500 0
-# => 192.168.1.3 - - [01/Apr/2026] "POST /data HTTP/1.1" 503 120
+# => 192.0.2.2 - - [01/Apr/2026] "GET /api HTTP/1.1" 500 0
+# => 192.0.2.3 - - [01/Apr/2026] "POST /data HTTP/1.1" 503 120
 ```
 
 **Key takeaway:** Space-bounded patterns like `/ 5[0-9][0-9] /` match status codes accurately
@@ -518,7 +518,7 @@ a multi-tool pipeline that transforms, filters, and aggregates data.
 
 ```bash
 # Count unique IP addresses in an access log
-printf '10.0.0.1 - GET /page1\n10.0.0.2 - GET /page2\n10.0.0.1 - GET /page3\n' \
+printf '198.51.100.1 - GET /page1\n198.51.100.2 - GET /page2\n198.51.100.1 - GET /page3\n' \
   | sed -E 's/ .*//' \
   | sort \
   | uniq -c \
@@ -528,8 +528,8 @@ printf '10.0.0.1 - GET /page1\n10.0.0.2 - GET /page2\n10.0.0.1 - GET /page3\n' \
 # => uniq -c counts consecutive identical IPs
 # => sort -rn sorts by count descending
 # => Output:
-# =>       2 10.0.0.1
-# =>       1 10.0.0.2
+# =>       2 198.51.100.1
+# =>       1 198.51.100.2
 ```
 
 **Key takeaway:** sed fits naturally in Unix pipelines — pipe into sed, then into `sort`,
@@ -627,12 +627,12 @@ echo "port=3000" | sed "s/3000/$APP_PORT/"
 # => Output: port=8080
 
 # Safer approach: use a variable for the whole expression
-DB_HOST="db.prod.internal"
+DB_HOST="db.prod.internal.example"
 OLD_HOST="localhost"
 echo "host=$OLD_HOST" | sed "s/$OLD_HOST/$DB_HOST/"
 # => Both $OLD_HOST and $DB_HOST are expanded by the shell
-# => sed receives: s/localhost/db.prod.internal/
-# => Output: host=db.prod.internal
+# => sed receives: s/localhost/db.prod.internal.example/
+# => Output: host=db.prod.internal.example
 
 # WARNING: if the variable contains / it breaks the default delimiter
 BAD_PATH="/usr/local/bin"
@@ -919,7 +919,7 @@ server {
 TEMPLATE
 
 # Runtime values
-APP_HOST="myapp.prod.internal"
+APP_HOST="myapp.prod.internal.example"
 DB_PORT="8080"
 APP_ROOT="/var/www/myapp"
 LOG_DIR="/var/log/nginx"
@@ -938,7 +938,7 @@ sed \
 # => Output:
 # => server {
 # =>     listen 8080;
-# =>     server_name myapp.prod.internal;
+# =>     server_name myapp.prod.internal.example;
 # =>     root /var/www/myapp;
 # =>     access_log /var/log/nginx/access.log;
 # => }

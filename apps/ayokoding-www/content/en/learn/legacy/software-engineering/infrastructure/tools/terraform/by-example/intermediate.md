@@ -2211,7 +2211,7 @@ resource "local_file" "instance" {
  # => SSH/WinRM connection configuration
  type = "ssh" # => String value
  # => Connection type: ssh (Linux) or winrm (Windows)
- host = "192.168.1.100" # => String value
+ host = "192.0.2.100" # => String value
  # => Target host IP address
  user = "ubuntu" # => String value
  # => SSH user account
@@ -2339,7 +2339,7 @@ resource "local_file" "instance_marker" {
  # => Terraform configuration
  type = "ssh" # => String value
  # => Sets type
- host = "192.168.1.100" # => String value
+ host = "192.0.2.100" # => String value
  # => Sets host
  user = "ubuntu" # => String value
  # => Sets user
@@ -2409,7 +2409,7 @@ resource "local_file" "app_server" {
  type = "ssh"
  # => Variable type constraint
  # => Sets type
- host = "192.168.1.100"
+ host = "192.0.2.100"
  # => Sets host
  user = "ubuntu"
  # => Sets user

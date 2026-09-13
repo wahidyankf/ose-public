@@ -41,29 +41,29 @@ echo "<peer1-private-key>" | wg pubkey    # peer1's public key, derived from it
 cat /etc/wireguard/wg0.conf   # peer1's config
 # [Interface]
 # PrivateKey = <peer1-private-key>
-# Address = 10.99.0.1/24
+# Address = 10.x.0.1/24
 # ListenPort = 51820
 #
 # [Peer]
 # PublicKey = <peer2-public-key>
 # Endpoint = <peer2-container-ip>:51820
-# AllowedIPs = 10.99.0.2/32
+# AllowedIPs = 10.x.0.2/32
 # PersistentKeepalive = 25
 
 wg-quick up wg0
-ping -c 3 10.99.0.1   # run FROM peer2, toward peer1's tunnel address
+ping -c 3 10.x.0.1   # run FROM peer2, toward peer1's tunnel address
 wg show               # confirms a real handshake and byte counters
 ```
 
 **Run**: entirely inside two Docker containers (`python:3.13-slim` + `wireguard-tools` v1.0.20210914
 installed via `apt-get`, plus `iproute2`/`iputils-ping`), each `--cap-add=NET_ADMIN
---device=/dev/net/tun`, on a dedicated `wgtest` bridge network (`172.19.0.0/16`) created specifically
+--device=/dev/net/tun`, on a dedicated `wgtest` bridge network (`172.19.x.0/16`) created specifically
 for this capture, each container acting as one peer -- Docker Desktop's own Linux VM kernel
 (`6.12.76-linuxkit`) genuinely supports WireGuard: `modprobe wireguard` reports the module isn't a
 loadable `.ko` (`Module wireguard not found`), yet `ip link add wg0 type wireguard` succeeds anyway,
 because this kernel has it compiled in directly, not as a loadable module
 
-**Output**:
+**Output** (private addresses are masked, for example `10.x.0.1`; the rest is verbatim):
 
 ```text
 $ wg genkey
@@ -74,22 +74,22 @@ MSG/UYgPxJpPiviKJWDMQfoGqSgUXvGOGrf0GLLu30w=  # peer1's REAL public key, correct
 $ wg-quick up wg0     # (run on peer1)
 [#] ip link add wg0 type wireguard
 [#] wg setconf wg0 /dev/fd/63
-[#] ip -4 address add 10.99.0.1/24 dev wg0
+[#] ip -4 address add 10.x.0.1/24 dev wg0
 [#] ip link set mtu 1420 up dev wg0
 
 $ wg-quick up wg0     # (run on peer2, peering back to peer1)
 [#] ip link add wg0 type wireguard
 [#] wg setconf wg0 /dev/fd/63
-[#] ip -4 address add 10.99.0.2/24 dev wg0
+[#] ip -4 address add 10.x.0.2/24 dev wg0
 [#] ip link set mtu 1420 up dev wg0
 
-$ ping -c 3 10.99.0.1     # (run from peer2, across the tunnel)
-PING 10.99.0.1 (10.99.0.1) 56(84) bytes of data.
-64 bytes from 10.99.0.1: icmp_seq=1 ttl=64 time=0.459 ms
-64 bytes from 10.99.0.1: icmp_seq=2 ttl=64 time=0.234 ms
-64 bytes from 10.99.0.1: icmp_seq=3 ttl=64 time=0.535 ms
+$ ping -c 3 10.x.0.1     # (run from peer2, across the tunnel)
+PING 10.x.0.1 (10.x.0.1) 56(84) bytes of data.
+64 bytes from 10.x.0.1: icmp_seq=1 ttl=64 time=0.459 ms
+64 bytes from 10.x.0.1: icmp_seq=2 ttl=64 time=0.234 ms
+64 bytes from 10.x.0.1: icmp_seq=3 ttl=64 time=0.535 ms
 
---- 10.99.0.1 ping statistics ---
+--- 10.x.0.1 ping statistics ---
 3 packets transmitted, 3 received, 0% packet loss, time 2091ms
 rtt min/avg/max/mdev = 0.234/0.409/0.535/0.127 ms
 
@@ -100,16 +100,16 @@ interface: wg0
   listening port: 51820
 
 peer: wufpOvCLOT5QmDXTcK1B/MB2b+anbuHq1wGL99DKUSQ=
-  endpoint: 172.19.0.3:51820
-  allowed ips: 10.99.0.2/32
+  endpoint: 172.19.x.3:51820
+  allowed ips: 10.x.0.2/32
   latest handshake: 7 seconds ago
   transfer: 564 B received, 656 B sent
   persistent keepalive: every 25 seconds
 ```
 
 **Key takeaway**: the two peers, each with a completely independent config file naming only the
-OTHER's public key and endpoint, genuinely reach each other over `10.99.0.0/24` -- an address range
-that exists nowhere on the underlying `172.19.0.0/16` Docker bridge network the two containers'
+OTHER's public key and endpoint, genuinely reach each other over `10.x.0.0/24` -- an address range
+that exists nowhere on the underlying `172.19.x.0/16` Docker bridge network the two containers'
 `eth0` interfaces actually sit on -- and `wg show`'s `latest handshake: 7 seconds ago` plus nonzero
 transfer counters prove a real Noise-IK handshake and real encrypted traffic, not just an interface
 that came up. Note that peer1's public key (`MSG/...`) is genuinely DIFFERENT from its own private
@@ -134,49 +134,49 @@ simultaneously a routing table (which destinations go through this peer) AND a c
 (which SOURCE addresses this peer is allowed to claim) -- co-26's "crypto-routing table."
 
 ```bash
-# ex-57: peer2's own AllowedIPs = 10.99.0.1/32 -- ONLY traffic to that one
+# ex-57: peer2's own AllowedIPs = 10.x.0.1/32 -- ONLY traffic to that one
 # address is permitted to use the tunnel; anything else genuinely fails at
 # the KERNEL level, not just "no route found" (co-26, co-25)
 ip route                          # peer2's OS routing table -- shows the crypto-routing entry wg-quick installed
-ping -c 2 10.99.0.99              # an address NEVER listed in any peer's AllowedIPs
-ping -c 2 10.99.0.1               # peer1's address -- IS in AllowedIPs
+ping -c 2 10.x.0.99              # an address NEVER listed in any peer's AllowedIPs
+ping -c 2 10.x.0.1               # peer1's address -- IS in AllowedIPs
 ```
 
 **Run**: on peer2 (the same live container from Example 56), immediately after Example 56's tunnel
 was already up
 
-**Output**:
+**Output** (private addresses are masked, for example `10.x.0.1`; the rest is verbatim):
 
 ```text
 $ ip route
-default via 172.19.0.1 dev eth0
-10.99.0.0/24 dev wg0 proto kernel scope link src 10.99.0.2
-172.19.0.0/16 dev eth0 proto kernel scope link src 172.19.0.3
+default via 172.19.x.1 dev eth0
+10.x.0.0/24 dev wg0 proto kernel scope link src 10.x.0.2
+172.19.x.0/16 dev eth0 proto kernel scope link src 172.19.x.3
 
-$ ping -c 2 10.99.0.99
-PING 10.99.0.99 (10.99.0.99) 56(84) bytes of data.
-From 10.99.0.2 icmp_seq=1 Destination Host Unreachable
+$ ping -c 2 10.x.0.99
+PING 10.x.0.99 (10.x.0.99) 56(84) bytes of data.
+From 10.x.0.2 icmp_seq=1 Destination Host Unreachable
 ping: sendmsg: Required key not available
-From 10.99.0.2 icmp_seq=2 Destination Host Unreachable
+From 10.x.0.2 icmp_seq=2 Destination Host Unreachable
 ping: sendmsg: Required key not available
 
---- 10.99.0.99 ping statistics ---
+--- 10.x.0.99 ping statistics ---
 2 packets transmitted, 0 received, +2 errors, 100% packet loss, time 1043ms
 
-$ ping -c 2 10.99.0.1
-PING 10.99.0.1 (10.99.0.1) 56(84) bytes of data.
-64 bytes from 10.99.0.1: icmp_seq=1 ttl=64 time=0.269 ms
-64 bytes from 10.99.0.1: icmp_seq=2 ttl=64 time=0.550 ms
+$ ping -c 2 10.x.0.1
+PING 10.x.0.1 (10.x.0.1) 56(84) bytes of data.
+64 bytes from 10.x.0.1: icmp_seq=1 ttl=64 time=0.269 ms
+64 bytes from 10.x.0.1: icmp_seq=2 ttl=64 time=0.550 ms
 
---- 10.99.0.1 ping statistics ---
+--- 10.x.0.1 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1020ms
 rtt min/avg/max/mdev = 0.269/0.409/0.550/0.140 ms
 ```
 
 **Key takeaway**: `ping: sendmsg: Required key not available` is WireGuard's OWN kernel-level
-error -- not a generic routing failure -- fired because `10.99.0.99` matches no peer's `AllowedIPs`
+error -- not a generic routing failure -- fired because `10.x.0.99` matches no peer's `AllowedIPs`
 entry, so the kernel has no key to encrypt that packet under and refuses outright; the identical
-destination class (`10.99.0.0/24`) that DOES have a matching `AllowedIPs` entry (`10.99.0.1/32`)
+destination class (`10.x.0.0/24`) that DOES have a matching `AllowedIPs` entry (`10.x.0.1/32`)
 works immediately, with no other configuration different.
 
 **Why it matters**: this dual role -- `AllowedIPs` is both "where do I route this" AND "whose traffic
@@ -191,7 +191,7 @@ both questions at once.
 _ex-58 &middot; exercises co-25_
 
 The other half of co-25: a **split tunnel** routes only chosen subnets through the VPN while
-everything else egresses normally (Example 57's `10.99.0.1/32`); a **full tunnel**
+everything else egresses normally (Example 57's `10.x.0.1/32`); a **full tunnel**
 (`AllowedIPs = 0.0.0.0/0`) routes ALL traffic through it. `wg-quick` genuinely does more work for
 the full-tunnel case, to avoid the tunnel's own traffic recursively trying to route through itself.
 
@@ -209,13 +209,13 @@ ip rule show
 56 (a fresh full-tunnel config, `AllowedIPs = 0.0.0.0/0`) -- the extra `nft`/fwmark steps below need
 capabilities beyond this topic's other, non-privileged captures
 
-**Output**:
+**Output** (private addresses are masked, for example `10.x.0.1`; the rest is verbatim):
 
 ```text
 $ wg-quick up wg0
 [#] ip link add wg0 type wireguard
 [#] wg setconf wg0 /dev/fd/63
-[#] ip -4 address add 10.99.0.3/24 dev wg0
+[#] ip -4 address add 10.x.0.3/24 dev wg0
 [#] ip link set mtu 1420 up dev wg0
 [#] wg set wg0 fwmark 51820
 [#] ip -4 route add 0.0.0.0/0 dev wg0 table 51820
@@ -225,9 +225,9 @@ $ wg-quick up wg0
 [#] nft -f /dev/fd/63
 
 $ ip route
-default via 172.19.0.1 dev eth0
-10.99.0.0/24 dev wg0 proto kernel scope link src 10.99.0.3
-172.19.0.0/16 dev eth0 proto kernel scope link src 172.19.0.4
+default via 172.19.x.1 dev eth0
+10.x.0.0/24 dev wg0 proto kernel scope link src 10.x.0.3
+172.19.x.0/16 dev eth0 proto kernel scope link src 172.19.x.4
 
 $ ip rule show
 0:      from all lookup local
@@ -241,7 +241,7 @@ $ ip rule show
 tags the tunnel's own packets with) is the loop-avoidance rule -- traffic NOT already marked as the
 tunnel's own gets sent to routing table `51820`, whose only entry is `0.0.0.0/0 dev wg0`, while the
 tunnel's OWN marked packets skip that table and go out `eth0` normally. Example 57's split-tunnel
-setup needed none of this extra machinery, because `AllowedIPs = 10.99.0.1/32` never overlaps with
+setup needed none of this extra machinery, because `AllowedIPs = 10.x.0.1/32` never overlaps with
 the tunnel's own endpoint traffic in the first place.
 
 **Why it matters**: full-tunnel mode is what "route ALL of this device's traffic through the VPN"
@@ -275,7 +275,7 @@ wg show   # re-check -- only automatic keepalives could have moved the counters
 **Run**: on peer2 (the same live tunnel from Example 56, right after Example 57's two ping checks
 ran across it), with genuinely nothing else run in between the two `wg show` calls below
 
-**Output**:
+**Output** (private addresses are masked, for example `10.x.0.1`; the rest is verbatim):
 
 ```text
 $ wg show    # right after Example 56/57's traffic on this same tunnel
@@ -284,8 +284,8 @@ interface: wg0
   listening port: 51820
 
 peer: MSG/UYgPxJpPiviKJWDMQfoGqSgUXvGOGrf0GLLu30w=
-  endpoint: 172.19.0.2:51820
-  allowed ips: 10.99.0.1/32
+  endpoint: 172.19.x.2:51820
+  allowed ips: 10.x.0.1/32
   latest handshake: 32 seconds ago
   transfer: 764 B received, 884 B sent
   persistent keepalive: every 25 seconds
@@ -298,8 +298,8 @@ interface: wg0
   listening port: 51820
 
 peer: MSG/UYgPxJpPiviKJWDMQfoGqSgUXvGOGrf0GLLu30w=
-  endpoint: 172.19.0.2:51820
-  allowed ips: 10.99.0.1/32
+  endpoint: 172.19.x.2:51820
+  allowed ips: 10.x.0.1/32
   latest handshake: 1 minute, 13 seconds ago
   transfer: 796 B received, 916 B sent
   persistent keepalive: every 25 seconds

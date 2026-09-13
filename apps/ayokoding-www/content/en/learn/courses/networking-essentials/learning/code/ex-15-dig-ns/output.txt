@@ -12,6 +12,6 @@ example.com.		86400	IN	NS	elliott.ns.cloudflare.com.
 example.com.		86400	IN	NS	hera.ns.cloudflare.com.
 
 ;; Query time: 27 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Tue Jul 14 16:56:45 WIB 2026
 ;; MSG SIZE  rcvd: 95

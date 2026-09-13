@@ -960,7 +960,7 @@ llm:
         # => Path to the provider Python module
       config:
         base_url:
-          http://gpu-server.internal:8000
+          http://gpu-server.internal.example:8000
           # => Self-hosted vLLM endpoint
         model: llama-3.1-70b-instruct # => Exact model ID as loaded in vLLM
         api_key: null # => No auth on internal network (not recommended for prod)

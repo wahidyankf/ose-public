@@ -620,19 +620,19 @@ dig +trace example.com
 
 **Run**: `dig +trace example.com`, on this sandbox's macOS host directly
 
-This sandbox's default resolver (`100.100.100.100`, an internal recursive resolver on this
+This sandbox's default resolver (`<sandbox-resolver>`, an internal recursive resolver in the CGNAT range `100.64/10` on this
 network) truncates the trace at its very first hop instead of walking the full root-TLD
 -authoritative chain -- confirmed by testing (repeated runs, and a direct query aimed at a real
 root server, both produce the same truncated, network-policy-shaped result rather than a genuine
 multi-hop trace). The transcript below is the REAL output this exact command produced, shown
 honestly rather than hidden or replaced with a fabricated full walk.
 
-**Output**:
+**Output** (the sandbox resolver's private address is masked as `<sandbox-resolver>`; the rest is verbatim):
 
 ```text
 ; <<>> DiG 9.10.6 <<>> +trace example.com
 ;; global options: +cmd
-;; Received 17 bytes from 100.100.100.100#53(100.100.100.100) in 8 ms
+;; Received 17 bytes from <sandbox-resolver>#53(<sandbox-resolver>) in 8 ms
 ```
 
 **Key takeaway**: even this truncated result teaches something real -- `+trace`'s first step is
@@ -668,7 +668,7 @@ dig example.com A
 
 **Run**: the two `dig` calls above, ~2 seconds apart, on this sandbox's macOS host directly
 
-**Output**:
+**Output** (the sandbox resolver's private address is masked as `<sandbox-resolver>`; the rest is verbatim):
 
 ```text
 === first query ===
@@ -690,7 +690,7 @@ example.com.  150 IN A 104.20.23.154
 example.com.  150 IN A 172.66.147.243
 
 ;; Query time: 2 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Sat Jul 18 08:17:17 WIB 2026
 ;; MSG SIZE  rcvd: 72
 
@@ -713,7 +713,7 @@ example.com.  148 IN A 172.66.147.243
 example.com.  148 IN A 104.20.23.154
 
 ;; Query time: 2 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Sat Jul 18 08:17:19 WIB 2026
 ;; MSG SIZE  rcvd: 72
 ```
@@ -742,7 +742,7 @@ answer.
 # ex-28: +dnssec asks the resolver to return signature data alongside the
 # answer -- an RRSIG record proves the ANSWER section was validated.
 #
-# This sandbox's default resolver (100.100.100.100, an internal recursive
+# This sandbox's default resolver (<sandbox-resolver>, an internal recursive
 # resolver) answers with "recursion requested but not available" and omits
 # the RRSIG for this particular query, even though the OPT PSEUDOSECTION
 # shows "do" (DNSSEC OK) was honored. Querying a public DNSSEC-validating

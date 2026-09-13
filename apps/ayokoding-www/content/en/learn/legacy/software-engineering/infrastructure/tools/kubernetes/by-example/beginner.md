@@ -901,9 +901,9 @@ ClusterIP is the default Service type that exposes Pods on an internal cluster I
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% ClusterIP Service architecture
 graph TD
- A[ClusterIP Service<br/>10.96.0.10:80] --> B[Pod: web-1<br/>10.244.0.5:8080]
- A --> C[Pod: web-2<br/>10.244.1.6:8080]
- A --> D[Pod: web-3<br/>10.244.2.7:8080]
+ A[ClusterIP Service<br/>10.96.x.10:80] --> B[Pod: web-1<br/>10.244.x.5:8080]
+ A --> C[Pod: web-2<br/>10.244.y.6:8080]
+ A --> D[Pod: web-3<br/>10.244.z.7:8080]
  E[Client Pod<br/>in cluster] --> A
 
  style A fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
@@ -924,7 +924,7 @@ metadata:
  # => Service metadata
  name:
  web-service # => Service name: "web-service"
- # => DNS: web-service.default.svc.cluster.local
+ # => DNS: web-service.default.svc.cluster.local.
 spec:
  # => Service specification
  type:
@@ -1161,7 +1161,7 @@ spec:
  # => Version-pinned for stability
 
 # Pod DNS names:
-# => stateful-app-0.headless-service.default.svc.cluster.local
+# => stateful-app-0.headless-service.default.svc.cluster.local.
 ```
 
 **Key Takeaway**: Use headless Services with StatefulSets for predictable Pod DNS names and direct Pod-to-Pod communication; avoid for regular stateless applications where load balancing and service abstraction are beneficial.

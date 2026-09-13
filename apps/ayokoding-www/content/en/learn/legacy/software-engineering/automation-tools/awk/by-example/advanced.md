@@ -343,11 +343,11 @@ Parsing web server access logs is one of awk's canonical real-world tasks. This 
 extracts status codes and generates a frequency report.
 
 ```bash
-printf '192.168.1.1 - - [01/Apr/2026:10:00:01 +0700] "GET /api/users HTTP/1.1" 200 1234\n
-192.168.1.2 - - [01/Apr/2026:10:00:02 +0700] "POST /api/login HTTP/1.1" 401 89\n
-192.168.1.1 - - [01/Apr/2026:10:00:03 +0700] "GET /api/data HTTP/1.1" 200 5678\n
-192.168.1.3 - - [01/Apr/2026:10:00:04 +0700] "GET /missing HTTP/1.1" 404 55\n
-192.168.1.2 - - [01/Apr/2026:10:00:05 +0700] "GET /api/users HTTP/1.1" 200 1234\n' | awk '
+printf '192.0.2.1 - - [01/Apr/2026:10:00:01 +0700] "GET /api/users HTTP/1.1" 200 1234\n
+192.0.2.2 - - [01/Apr/2026:10:00:02 +0700] "POST /api/login HTTP/1.1" 401 89\n
+192.0.2.1 - - [01/Apr/2026:10:00:03 +0700] "GET /api/data HTTP/1.1" 200 5678\n
+192.0.2.3 - - [01/Apr/2026:10:00:04 +0700] "GET /missing HTTP/1.1" 404 55\n
+192.0.2.2 - - [01/Apr/2026:10:00:05 +0700] "GET /api/users HTTP/1.1" 200 1234\n' | awk '
 {
   status = $9         # => HTTP status code is field 9 in Combined Log Format
   bytes  = $10        # => Response size is field 10
@@ -377,9 +377,9 @@ END {
 # =>   HTTP 404: 1 requests
 # =>
 # => === Top IPs ===
-# =>   192.168.1.1: 2 requests
-# =>   192.168.1.2: 2 requests
-# =>   192.168.1.3: 1 requests
+# =>   192.0.2.1: 2 requests
+# =>   192.0.2.2: 2 requests
+# =>   192.0.2.3: 1 requests
 # =>
 # => Total bytes transferred: 8290
 ```
@@ -1015,7 +1015,7 @@ Combining multiple awk features into a complete pipeline that monitors an nginx 
 and generates an alert when error rates exceed a threshold.
 
 ```bash
-printf '10.0.0.1 200 /api/users 0.123\n10.0.0.2 500 /api/data 2.345\n10.0.0.1 200 /api/users 0.098\n10.0.0.3 500 /api/data 3.210\n10.0.0.1 404 /missing 0.001\n10.0.0.2 200 /api/users 0.456\n' | \
+printf '198.51.100.1 200 /api/users 0.123\n198.51.100.2 500 /api/data 2.345\n198.51.100.1 200 /api/users 0.098\n198.51.100.3 500 /api/data 3.210\n198.51.100.1 404 /missing 0.001\n198.51.100.2 200 /api/users 0.456\n' | \
   awk -v error_threshold=30 -v latency_threshold=1.0 '
 # Format: ip status path latency
 {

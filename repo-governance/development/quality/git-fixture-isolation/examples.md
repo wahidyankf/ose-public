@@ -59,7 +59,7 @@ fn init_throwaway_repo(tempdir: &Path) -> Result<()> {
     };
 
     run_git(&["init"])?;
-    run_git(&["config", "user.email", "fixture@test.local"])?;
+    run_git(&["config", "user.email", "fixture@example.test"])?;
     run_git(&["config", "user.name", "Fixture"])?;
     run_git(&["commit", "--allow-empty", "-m", "init"])?;
     Ok(())

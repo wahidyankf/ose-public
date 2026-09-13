@@ -693,7 +693,7 @@ variable "vpc_cidr" {
 
 **Key Takeaway**: Validation conditions can use any Terraform expression including built-in functions (`contains`, `can`, `regex`, `length`); they run entirely at plan time in the CLI, producing friendly errors before the provider makes a single API call.
 
-**Why It Matters**: Validation catches misconfiguration at the earliest possible moment — before any infrastructure changes — rather than at apply time after partial resource creation. A team that enforces environment naming through validation prevents environment-tag drift that breaks cost allocation dashboards and compliance reports. CIDR validation prevents the hour-long debugging session caused by passing "10.0.1.0" (missing prefix length) to a VPC resource that returns a cryptic AWS API error.
+**Why It Matters**: Validation catches misconfiguration at the earliest possible moment — before any infrastructure changes — rather than at apply time after partial resource creation. A team that enforces environment naming through validation prevents environment-tag drift that breaks cost allocation dashboards and compliance reports. CIDR validation prevents the hour-long debugging session caused by passing "10.0.x.0" (missing prefix length) to a VPC resource that returns a cryptic AWS API error.
 
 ---
 

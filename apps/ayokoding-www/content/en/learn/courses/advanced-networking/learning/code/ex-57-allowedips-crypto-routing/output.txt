@@ -1,23 +1,23 @@
 $ ip route
-default via 172.19.0.1 dev eth0
-10.99.0.0/24 dev wg0 proto kernel scope link src 10.99.0.2
-172.19.0.0/16 dev eth0 proto kernel scope link src 172.19.0.3
+default via 172.19.x.1 dev eth0
+10.x.0.0/24 dev wg0 proto kernel scope link src 10.x.0.2
+172.19.x.0/16 dev eth0 proto kernel scope link src 172.19.x.3
 
-$ ping -c 2 10.99.0.99
-PING 10.99.0.99 (10.99.0.99) 56(84) bytes of data.
-From 10.99.0.2 icmp_seq=1 Destination Host Unreachable
+$ ping -c 2 10.x.0.99
+PING 10.x.0.99 (10.x.0.99) 56(84) bytes of data.
+From 10.x.0.2 icmp_seq=1 Destination Host Unreachable
 ping: sendmsg: Required key not available
-From 10.99.0.2 icmp_seq=2 Destination Host Unreachable
+From 10.x.0.2 icmp_seq=2 Destination Host Unreachable
 ping: sendmsg: Required key not available
 
---- 10.99.0.99 ping statistics ---
+--- 10.x.0.99 ping statistics ---
 2 packets transmitted, 0 received, +2 errors, 100% packet loss, time 1043ms
 
-$ ping -c 2 10.99.0.1
-PING 10.99.0.1 (10.99.0.1) 56(84) bytes of data.
-64 bytes from 10.99.0.1: icmp_seq=1 ttl=64 time=0.269 ms
-64 bytes from 10.99.0.1: icmp_seq=2 ttl=64 time=0.550 ms
+$ ping -c 2 10.x.0.1
+PING 10.x.0.1 (10.x.0.1) 56(84) bytes of data.
+64 bytes from 10.x.0.1: icmp_seq=1 ttl=64 time=0.269 ms
+64 bytes from 10.x.0.1: icmp_seq=2 ttl=64 time=0.550 ms
 
---- 10.99.0.1 ping statistics ---
+--- 10.x.0.1 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1020ms
 rtt min/avg/max/mdev = 0.269/0.409/0.550/0.140 ms

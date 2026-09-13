@@ -1927,7 +1927,7 @@ builder.Services.AddRateLimiter(options =>
 
         // Anonymous requests limited by IP
         var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-        // => ip = "192.168.1.1" for direct connections
+        // => ip = "192.0.2.1" for direct connections
         // => Use X-Forwarded-For header if behind proxy
 
         return RateLimitPartition.GetFixedWindowLimiter(

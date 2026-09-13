@@ -940,7 +940,7 @@ AuditLogs
 
 **What this covers:** Host isolation is the first containment action after confirming a compromise — it cuts off attacker C2 access and prevents lateral movement while preserving evidence on the system. This example shows the bash and PowerShell commands used to isolate a Linux or Windows host using host-based firewall rules, preserving only management access for the IR team.
 
-**Scenario:** An IR analyst confirms a Linux web server is running a reverse shell beacon to `185.220.101.42:4444`. They isolate it using iptables while maintaining SSH access from the IR jump box `10.10.10.5`.
+**Scenario:** An IR analyst confirms a Linux web server is running a reverse shell beacon to `185.220.101.42:4444`. They isolate it using iptables while maintaining SSH access from the IR jump box `192.0.2.5`.
 
 ```bash
 # ============================================================
@@ -961,12 +961,12 @@ iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 # => prevents dropping the current SSH session we're using for containment
 
 # Step 3: Allow SSH from IR jump box ONLY
-iptables -A INPUT  -s 10.10.10.5 -p tcp --dport 22 -j ACCEPT
-# => 10.10.10.5 = IR jump box; substitute your actual IR management IP
-iptables -A OUTPUT -d 10.10.10.5 -p tcp --sport 22 -j ACCEPT
+iptables -A INPUT  -s 192.0.2.5 -p tcp --dport 22 -j ACCEPT
+# => 192.0.2.5 = IR jump box; substitute your actual IR management IP
+iptables -A OUTPUT -d 192.0.2.5 -p tcp --sport 22 -j ACCEPT
 
 # Step 4: Allow DNS to internal resolver (needed for some investigation tools)
-iptables -A OUTPUT -d 10.10.0.53 -p udp --dport 53 -j ACCEPT
+iptables -A OUTPUT -d 198.51.100.53 -p udp --dport 53 -j ACCEPT
 # => substitute your internal DNS resolver IP
 
 # Step 5: Block ALL other inbound and outbound traffic
@@ -1244,7 +1244,7 @@ ioc_extraction:
 # Used during alert triage to add context before analyst escalation
 # ============================================================
 
-MISP_URL="https://misp.corp.internal"
+MISP_URL="https://misp.corp.example"
 MISP_KEY="YOUR_MISP_API_KEY"          # => store in secrets manager, not plaintext
 OTX_KEY="YOUR_OTX_API_KEY"            # => AlienVault OTX API key from otx.alienvault.com
 SUSPECT_IP="185.220.101.42"

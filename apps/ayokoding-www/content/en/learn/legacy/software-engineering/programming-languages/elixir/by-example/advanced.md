@@ -4107,10 +4107,10 @@ rest  # => <<3, 4, 5>>
 # => ::binary type captures rest as binary (not integer list)
 
 # Parse IP address (4 bytes to dotted decimal)
-ip = <<192, 168, 1, 1>>
+ip = <<192, 0, 2, 1>>
 <<a::8, b::8, c::8, d::8>> = ip
 # => Destructures 4 bytes into 4 integers
-"#{a}.#{b}.#{c}.#{d}"  # => "192.168.1.1"
+"#{a}.#{b}.#{c}.#{d}"  # => "192.0.2.1"
 # => String interpolation converts to readable format
 
 # Parse RGB color (3-byte pattern)

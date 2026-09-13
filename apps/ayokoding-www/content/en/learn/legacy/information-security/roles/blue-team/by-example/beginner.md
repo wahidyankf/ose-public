@@ -37,10 +37,10 @@ May 21 02:14:09 bastion-01 sshd[3816]: Failed password for jsmith from 203.0.113
 # => Third failure — now targeting a VALID username "jsmith" (username enumeration likely preceding)
 # => Pattern so far: 3 failures from same IP in 4 seconds → brute-force indicator
 
-May 21 08:32:01 bastion-01 sshd[4102]: Accepted publickey for jsmith from 10.0.1.15 port 52100 ssh2
+May 21 08:32:01 bastion-01 sshd[4102]: Accepted publickey for jsmith from 10.x.1.15 port 52100 ssh2
 # => Successful SSH login                                   (event type: authentication success)
 # => Method: "publickey" — certificate-based auth (preferred; password auth should be disabled)
-# => Source IP: 10.0.1.15 (internal network, expected for this user)
+# => Source IP: 10.x.1.15 (internal network, expected for this user)
 
 May 21 08:32:04 bastion-01 sshd[4102]: pam_unix(sshd:session): session opened for user jsmith by (uid=0)
 # => SSH session officially opened for jsmith              (uid=0 here means opened by PAM/root context)
@@ -315,7 +315,7 @@ returning 500 errors intermittently during a period when no deployment occurred.
 # => Good: the file does not exist (or is properly blocked)
 # => If this returned 200: immediate critical finding — source code exposure
 
-2026/05/21 11:30:17 [error] 1821#1821: *5001 connect() failed (111: Connection refused) while connecting to upstream, upstream: "http://127.0.0.1:8080/api/orders", client: 10.0.2.5
+2026/05/21 11:30:17 [error] 1821#1821: *5001 connect() failed (111: Connection refused) while connecting to upstream, upstream: "http://127.0.0.1:8080/api/orders", client: 10.x.2.5
 # => Upstream connection refused — the backend application server is not responding
 # => Upstream is 127.0.0.1:8080 (local app server, e.g., Node.js or Gunicorn)
 # => Could be: legitimate app crash, OOM kill, or attacker stopped/replaced the service
@@ -408,29 +408,29 @@ source IP 203.0.113.150 as a known scanner.
 # Firewall deny log — iptables/netfilter format on a Linux gateway
 # Format: TIMESTAMP HOSTNAME kernel: [UPTIME] TAG IN=IF OUT=IF SRC=IP DST=IP LEN PROTO SPT DPT
 
-May 21 07:00:01 fw-gw-01 kernel: [88201.445] DENY IN=eth0 SRC=203.0.113.150 DST=10.0.1.10 PROTO=TCP SPT=54100 DPT=22
+May 21 07:00:01 fw-gw-01 kernel: [88201.445] DENY IN=eth0 SRC=203.0.113.150 DST=10.x.1.10 PROTO=TCP SPT=54100 DPT=22
 # => Destination port 22 (SSH) — first probe in the scan sequence
 # => SRC port 54100 changes with each packet; DST port increments sequentially below
 
-May 21 07:00:01 fw-gw-01 kernel: [88201.447] DENY IN=eth0 SRC=203.0.113.150 DST=10.0.1.10 PROTO=TCP SPT=54101 DPT=23
+May 21 07:00:01 fw-gw-01 kernel: [88201.447] DENY IN=eth0 SRC=203.0.113.150 DST=10.x.1.10 PROTO=TCP SPT=54101 DPT=23
 # => Port 23 (Telnet) — 2ms after port 22, sequential port increment
 
-May 21 07:00:01 fw-gw-01 kernel: [88201.449] DENY IN=eth0 SRC=203.0.113.150 DST=10.0.1.10 PROTO=TCP SPT=54102 DPT=25
+May 21 07:00:01 fw-gw-01 kernel: [88201.449] DENY IN=eth0 SRC=203.0.113.150 DST=10.x.1.10 PROTO=TCP SPT=54102 DPT=25
 # => Port 25 (SMTP) — continues the sequential sweep
 # => Timing: 22→23→25 within 4ms — machine speed, not human browsing
 
-May 21 07:00:02 fw-gw-01 kernel: [88202.103] DENY IN=eth0 SRC=203.0.113.150 DST=10.0.1.10 PROTO=TCP SPT=54180 DPT=80
+May 21 07:00:02 fw-gw-01 kernel: [88202.103] DENY IN=eth0 SRC=203.0.113.150 DST=10.x.1.10 PROTO=TCP SPT=54180 DPT=80
 # => Port 80 (HTTP) — web server probe
 # => Still same source IP, destination IP — single host scan in progress
 
-May 21 07:00:02 fw-gw-01 kernel: [88202.104] DENY IN=eth0 SRC=203.0.113.150 DST=10.0.1.10 PROTO=TCP SPT=54181 DPT=443
+May 21 07:00:02 fw-gw-01 kernel: [88202.104] DENY IN=eth0 SRC=203.0.113.150 DST=10.x.1.10 PROTO=TCP SPT=54181 DPT=443
 # => Port 443 (HTTPS) — TLS web probe immediately after HTTP
 
-May 21 07:00:02 fw-gw-01 kernel: [88202.210] DENY IN=eth0 SRC=203.0.113.150 DST=10.0.1.10 PROTO=TCP SPT=54200 DPT=3306
+May 21 07:00:02 fw-gw-01 kernel: [88202.210] DENY IN=eth0 SRC=203.0.113.150 DST=10.x.1.10 PROTO=TCP SPT=54200 DPT=3306
 # => Port 3306 (MySQL) — database port probe
 # => Sequential scan covering SSH, Telnet, SMTP, HTTP, HTTPS, MySQL in under 2 seconds
 
-May 21 07:00:03 fw-gw-01 kernel: [88203.001] DENY IN=eth0 SRC=203.0.113.150 DST=10.0.1.10 PROTO=TCP SPT=54250 DPT=5432
+May 21 07:00:03 fw-gw-01 kernel: [88203.001] DENY IN=eth0 SRC=203.0.113.150 DST=10.x.1.10 PROTO=TCP SPT=54250 DPT=5432
 # => Port 5432 (PostgreSQL) — attacker is building a service map of the target host
 # => 65+ ports probed in 2 seconds → textbook TCP SYN scan (nmap -sS behavior)
 ```
@@ -859,7 +859,7 @@ source.ip: "10.0.1.*" and event.category: "authentication"
 
 // NOT operator: exclude known-good administrative IPs
 
-event.code: "4625" and not source.ip: ("10.0.0.1" or "10.0.0.2")
+event.code: "4625" and not source.ip: ("10.x.0.1" or "10.x.0.2")
 // not source.ip: (...) — exclude the two known jump server IPs from the results
 // This reduces false positives from automated monitoring tools that generate expected failures
 ```
@@ -1378,11 +1378,11 @@ tshark -r /evidence/incident_20260521.pcap \
 
 # STEP 4: Find DNS queries to suspicious domains (example: non-RFC1918 DNS resolvers)
 tshark -r /evidence/incident_20260521.pcap \
-  -Y "dns.flags.response == 0 and not ip.dst == 10.0.0.1" \
+  -Y "dns.flags.response == 0 and not ip.dst == 10.x.0.1" \
   -T fields -e ip.src -e ip.dst -e dns.qry.name \
   2>/dev/null
 # => dns.flags.response == 0: DNS queries only (not responses)
-# => not ip.dst == 10.0.0.1: exclude queries to the internal DNS server (10.0.0.1)
+# => not ip.dst == 10.x.0.1: exclude queries to the internal DNS server (10.x.0.1)
 # => Non-internal DNS destination = host using external DNS resolver or DNS tunneling
 
 # STEP 5: Extract TCP streams for manual inspection of a suspicious conversation
@@ -1422,14 +1422,14 @@ server to an external IP on port 4444 — a port associated with Metasploit's de
 # Firewall flow log — reverse shell detection
 # Format: TIMESTAMP SRC_IP:PORT -> DST_IP:PORT PROTO STATE BYTES_SENT BYTES_RECV DURATION
 
-2026-05-21T16:42:00Z 10.0.1.25:51200 -> 203.0.113.200:4444 TCP ESTABLISHED 1240 8920 00:03:12
-# => Internal host 10.0.1.25 initiated outbound connection to external 203.0.113.200:4444
+2026-05-21T16:42:00Z 10.x.1.25:51200 -> 203.0.113.200:4444 TCP ESTABLISHED 1240 8920 00:03:12
+# => Internal host 10.x.1.25 initiated outbound connection to external 203.0.113.200:4444
 # => Port 4444: Metasploit meterpreter/reverse_tcp default listener port
 # => Duration 00:03:12 (3 minutes 12 seconds) — persistent, not a one-shot HTTP request
 # => BYTES_SENT 1240, BYTES_RECV 8920 — server received more than it sent (typical for interactive shell)
 #    (attacker issues commands = small outbound; command output = large inbound)
 
-2026-05-21T16:45:15Z 10.0.1.25:51202 -> 203.0.113.200:4444 TCP ESTABLISHED 890 12440 00:02:47
+2026-05-21T16:45:15Z 10.x.1.25:51202 -> 203.0.113.200:4444 TCP ESTABLISHED 890 12440 00:02:47
 # => Second connection from same host to same external IP and port
 # => Reconnection pattern: reverse shell reconnected after temporary drop (C2 resilience)
 # => Two sessions in 5 minutes = active interactive control, not an automated beacon
@@ -1446,9 +1446,9 @@ tshark -r /evidence/incident_20260521.pcap \
 #    - ACK flags between data packets (interactive session pattern)
 
 # Endpoint verification — check what process owns the connection on the host
-# (Run on 10.0.1.25 if accessible)
+# (Run on 10.x.1.25 if accessible)
 ss -tnp | grep 4444
-# => tcp  ESTAB  0  0  10.0.1.25:51202  203.0.113.200:4444  users:(("python3",pid=3142,fd=3))
+# => tcp  ESTAB  0  0  10.x.1.25:51202  203.0.113.200:4444  users:(("python3",pid=3142,fd=3))
 # => Process "python3" owns this connection (PID 3142)
 # => Python reverse shell is extremely common: python3 -c 'import socket...' one-liner
 # => Immediately correlate PID 3142 with /proc/3142/cmdline to confirm and preserve evidence
@@ -1484,7 +1484,7 @@ an external IP with payload sizes far above the 56-byte baseline.
 
 # STEP 1: Measure ICMP payload sizes between internal host and external IP
 tshark -r /evidence/incident_20260521.pcap \
-  -Y "icmp and ip.src == 10.0.1.30 and ip.dst == 203.0.113.210" \
+  -Y "icmp and ip.src == 10.x.1.30 and ip.dst == 203.0.113.210" \
   -T fields -e frame.time -e icmp.type -e icmp.code -e data.len \
   2>/dev/null
 # => icmp.type: 8 = echo request (ping), 0 = echo reply
@@ -1500,7 +1500,7 @@ tshark -r /evidence/incident_20260521.pcap \
 
 # STEP 2: Extract ICMP payload content to inspect for structured data
 tshark -r /evidence/incident_20260521.pcap \
-  -Y "icmp.type == 8 and ip.src == 10.0.1.30" \
+  -Y "icmp.type == 8 and ip.src == 10.x.1.30" \
   -T fields -e data \
   2>/dev/null | head 5
 # => -e data: raw hex payload of each ICMP packet
@@ -1514,7 +1514,7 @@ printf '%s' "494e4954202f62696e2f736800" | xxd -r -p
 
 # STEP 3: Quantify the data volume — how much was exfiltrated?
 tshark -r /evidence/incident_20260521.pcap \
-  -Y "icmp and ip.src == 10.0.1.30 and ip.dst == 203.0.113.210" \
+  -Y "icmp and ip.src == 10.x.1.30 and ip.dst == 203.0.113.210" \
   -q -z "io,stat,60,BYTES,icmp"
 # => -z "io,stat,60,...": show bytes per 60-second bucket
 # => Total bytes across all ICMP packets = maximum exfiltration volume estimate
@@ -1708,7 +1708,7 @@ REPORTED_AT:         2026-05-21T04:22:00Z
 # => Timestamp when the SOC analyst opened the ticket (used to calculate MTTD)
 
 AFFECTED_ASSETS:
-  - db-prod-01.corp.example.com (10.0.1.5)
+  - db-prod-01.corp.example.com (10.x.1.5)
 # => List all affected hostnames and IPs; include role (production DB server)
 
 IOCs:

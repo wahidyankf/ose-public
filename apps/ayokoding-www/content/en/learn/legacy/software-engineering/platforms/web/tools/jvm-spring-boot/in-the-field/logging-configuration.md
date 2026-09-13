@@ -95,7 +95,7 @@ logging:
 <!-- logback-spring.xml (Spring Boot variant) -->
 <configuration>
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>logstash.internal:5000</destination>
+        <destination>logstash.internal.example:5000</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
     <root level="INFO">

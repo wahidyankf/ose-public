@@ -85,10 +85,10 @@ sequenceDiagram
     participant C as Client
     participant S as Server
     Note over C,S: Connection established over Wi-Fi -- server assigns Connection ID #61;CID#41; 7f3a...
-    C->>S: QUIC packets, CID=7f3a..., source IP=192.168.1.50
+    C->>S: QUIC packets, CID=7f3a..., source IP=192.0.2.50
     S->>C: QUIC packets, CID=7f3a...
     Note over C: Client switches network -- Wi-Fi to cellular, NEW source IP
-    C->>S: QUIC packets, CID=7f3a... (SAME CID), source IP=10.20.30.40 (NEW IP)
+    C->>S: QUIC packets, CID=7f3a... (SAME CID), source IP=198.51.100.40 (NEW IP)
     Note over S: Server recognizes the SAME Connection ID -- no new handshake needed
     S->>C: QUIC packets, CID=7f3a... (connection continues uninterrupted)
 ```
@@ -850,11 +850,11 @@ default (non-privileged) container capability set does not permit; `--privileged
 specifically, unlike this topic's other root-requiring captures (Examples 13, 17, 50, 51), which
 only needed `NET_ADMIN`/`NET_RAW`
 
-**Output**:
+**Output** (private addresses are masked, for example `172.17.x.1`; the rest is verbatim):
 
 ```text
-default via 172.17.0.1 dev eth0
-172.17.0.0/16 dev eth0 proto kernel scope link src 172.17.0.3
+default via 172.17.x.1 dev eth0
+172.17.x.0/16 dev eth0 proto kernel scope link src 172.17.x.3
 
 --- create namespace 'demo' ---
 namespace demo created
@@ -869,7 +869,7 @@ namespace demo created
 namespace demo deleted
 ```
 
-**Key takeaway**: the host's own routing table shows a real `default via 172.17.0.1` route, but `ip
+**Key takeaway**: the host's own routing table shows a real `default via 172.17.x.1` route, but `ip
 netns exec demo ip route` prints NOTHING at all -- the new namespace's routing table starts
 completely empty, and its loopback interface (`lo`) starts in `state DOWN`, not even up yet -- both
 independent of whatever the host itself has configured.

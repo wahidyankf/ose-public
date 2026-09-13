@@ -264,7 +264,7 @@ public class JdbcPurchaseOrderRepositoryIntegrationTest {
     void setUp() {
         DataSource dataSource = new DriverManagerDataSource(
             postgres.getJdbcUrl(),
-            // => getJdbcUrl(): returns "jdbc:postgresql://localhost:<random-port>/test"
+            // => getJdbcUrl(): returns "jdbc:postgresql://<host>:<random-port>/test"
             // => Random port assigned by Docker — no port conflicts on CI runners
             postgres.getUsername(),
             postgres.getPassword()
@@ -372,7 +372,7 @@ class JdbcPurchaseOrderRepositoryIntegrationTest {
     fun setUp() {
         val dataSource = DriverManagerDataSource(
             postgres.jdbcUrl,
-            // => jdbcUrl: returns "jdbc:postgresql://localhost:<random-port>/test"
+            // => jdbcUrl: returns "jdbc:postgresql://<host>:<random-port>/test"
             // => Random port assigned by Docker — no port conflicts on CI runners
             postgres.username,
             postgres.password
@@ -462,7 +462,7 @@ public class AdoNetPurchaseOrderRepositoryIntegrationTest : IAsyncLifetime
         await _postgres.StartAsync();
         // => StartAsync: pulls the image, starts the container, waits for the health probe
         _repository = new AdoNetPurchaseOrderRepository(_postgres.GetConnectionString());
-        // => GetConnectionString(): "Host=localhost;Port=<random>;Database=...;Username=...;Password=..."
+        // => GetConnectionString(): "Host=localhost;Port=<random>;Database=<database>;Username=<username>;Password=<password>"
     }
 
     public async Task DisposeAsync()
@@ -4295,7 +4295,7 @@ Environment variables are the lowest-level mechanism for runtime configuration a
 # Standard library: running procurement-platform-be with environment variables only
 # Demonstrates the manual environment variable approach that Kubernetes supersedes.
 
-export SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/procurement_dev"
+export SPRING_DATASOURCE_URL="jdbc:postgresql://${DB_HOST:-localhost}:5432/procurement_dev"
 # => SPRING_DATASOURCE_URL: Spring Boot auto-configuration reads this key for the DataSource bean
 # => Hardcoding the host/port/database in a script works locally but cannot be committed to version control
 
@@ -4329,7 +4329,7 @@ metadata:
   namespace: procurement-platform
   # => namespace: isolates procurement-platform-be resources from other services in the cluster
 data:
-  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-svc.procurement-platform:5432/procurement"
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://${DB_HOST:postgres-svc.procurement-platform}:5432/procurement"
   # => Spring Boot reads this key and wires it into the DataSource auto-configuration
   # => postgres-svc.procurement-platform: cluster-internal DNS — <service>.<namespace>.svc.cluster.local
   SERVER_PORT: "8080"

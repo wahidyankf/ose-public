@@ -706,7 +706,7 @@ config :donation_platform, DonationPlatformWeb.Endpoint,
 
 ```bash
 # /opt/donation-platform/.env
-DATABASE_URL=postgresql://user:pass@db.example.com/prod
+DATABASE_URL=postgresql://user:<password>@db.example.com/prod
                                                      # => Database connection
 SECRET_KEY_BASE=abc123...                            # => Phoenix secret
 PORT=4000                                            # => HTTP port

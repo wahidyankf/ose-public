@@ -1000,7 +1000,7 @@ Production applications need different configuration for different environments.
    :host    (or (System/getenv "HOST") "0.0.0.0")
    ;; => Bind all interfaces by default
    :db-url  (or (System/getenv "DATABASE_URL")
-                "jdbc:postgresql://localhost:5432/myapp")
+                "jdbc:postgresql:myapp")
    ;; => Fail loudly if not set in production
    :jwt-secret (or (System/getenv "JWT_SECRET")
                    (throw (ex-info "JWT_SECRET not set" {})))})

@@ -32,7 +32,7 @@ docker compose -p "${PROJECT_NAME}" -f "${COMPOSE_FILE}" up -d --wait
 dotnet build "${FSPROJ}" --configuration Release --nologo -v quiet
 
 # Start backend in background
-export DATABASE_URL="Host=localhost;Port=5435;Database=ose_app;Username=postgres;Password=postgres"
+export DATABASE_URL="Host=localhost;Port=5435;Database=ose_app;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}"
 export OSE_BE_PORT="${PORT}"
 export OSE_BE_CORS_ORIGINS="*"
 export OSE_BE_NATS_URL="nats://localhost:4225"

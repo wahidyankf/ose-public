@@ -617,7 +617,7 @@ jobs:
       - name: Run Liquibase Status
         run: |
           mvn liquibase:status \
-            -Dliquibase.url=jdbc:postgresql://localhost:5432/app_test \
+            -Dliquibase.url=jdbc:postgresql:app_test \
             -Dliquibase.username=app \
             -Dliquibase.password=test_password \
             -Dliquibase.changeLogFile=src/main/resources/db/changelog/db.changelog-master.yaml
@@ -628,7 +628,7 @@ jobs:
       - name: Run Liquibase Update
         run: |
           mvn liquibase:update \
-            -Dliquibase.url=jdbc:postgresql://localhost:5432/app_test \
+            -Dliquibase.url=jdbc:postgresql:app_test \
             -Dliquibase.username=app \
             -Dliquibase.password=test_password \
             -Dliquibase.changeLogFile=src/main/resources/db/changelog/db.changelog-master.yaml
@@ -642,7 +642,7 @@ jobs:
         # => Only runs if a previous step in this job failed
         run: |
           mvn liquibase:rollback \
-            -Dliquibase.url=jdbc:postgresql://localhost:5432/app_test \
+            -Dliquibase.url=jdbc:postgresql:app_test \
             -Dliquibase.username=app \
             -Dliquibase.password=test_password \
             -Dliquibase.rollbackCount=1
@@ -693,7 +693,7 @@ jobs:
       - name: Apply all migrations
         run: |
           mvn liquibase:update \
-            -Dliquibase.url=jdbc:postgresql://localhost:5432/rollback_test \
+            -Dliquibase.url=jdbc:postgresql://${DB_HOST:-localhost}:5432/rollback_test \
             -Dliquibase.username=app \
             -Dliquibase.password=test_password
           # => Apply every changeset to reach the latest schema state
@@ -702,7 +702,7 @@ jobs:
       - name: Rollback one changeset
         run: |
           mvn liquibase:rollback \
-            -Dliquibase.url=jdbc:postgresql://localhost:5432/rollback_test \
+            -Dliquibase.url=jdbc:postgresql://${DB_HOST:-localhost}:5432/rollback_test \
             -Dliquibase.username=app \
             -Dliquibase.password=test_password \
             -Dliquibase.rollbackCount=1
@@ -712,12 +712,12 @@ jobs:
       - name: Re-apply and rollback all new changesets
         run: |
           mvn liquibase:update \
-            -Dliquibase.url=jdbc:postgresql://localhost:5432/rollback_test \
+            -Dliquibase.url=jdbc:postgresql://${DB_HOST:-localhost}:5432/rollback_test \
             -Dliquibase.username=app \
             -Dliquibase.password=test_password
           # => Re-apply to verify idempotency: schema must be identical after re-run
           mvn liquibase:rollbackCount \
-            -Dliquibase.url=jdbc:postgresql://localhost:5432/rollback_test \
+            -Dliquibase.url=jdbc:postgresql://${DB_HOST:-localhost}:5432/rollback_test \
             -Dliquibase.username=app \
             -Dliquibase.password=test_password \
             -Dliquibase.rollbackCount=5
@@ -778,7 +778,7 @@ databaseChangeLog:
 ```bash
 # Release stuck lock via CLI (use when previous migration crashed)
 mvn liquibase:releaseLocks \
-  -Dliquibase.url=jdbc:postgresql://localhost:5432/mydb \
+  -Dliquibase.url=jdbc:postgresql:mydb \
   -Dliquibase.username=app \
   -Dliquibase.password=secret
 # => Sets DATABASECHANGELOGLOCK.LOCKED = false, LOCKGRANTED = NULL, LOCKEDBY = NULL
@@ -1218,10 +1218,10 @@ Schema drift occurs when the actual database schema diverges from what Liquibase
 
 # Method 1: Compare against changelog-generated schema
 mvn liquibase:diff \
-  -Dliquibase.referenceUrl=jdbc:postgresql://reference-db:5432/app \
+  -Dliquibase.referenceUrl=jdbc:postgresql://${REFERENCE_DB_HOST:-reference-db}:5432/app \
   -Dliquibase.referenceUsername=app \
   -Dliquibase.referencePassword=secret \
-  -Dliquibase.url=jdbc:postgresql://production-db:5432/app \
+  -Dliquibase.url=jdbc:postgresql://${DB_HOST:-production-db}:5432/app \
   -Dliquibase.username=app \
   -Dliquibase.password=secret \
   -Dliquibase.diffTypes=tables,columns,indexes,foreignKeys,sequences,views
@@ -1235,7 +1235,7 @@ mvn liquibase:diff \
 ```bash
 # Method 2: Generate changelog from live database and diff against tracked changelog
 mvn liquibase:generateChangeLog \
-  -Dliquibase.url=jdbc:postgresql://production-db:5432/app \
+  -Dliquibase.url=jdbc:postgresql://${DB_HOST:-production-db}:5432/app \
   -Dliquibase.username=app \
   -Dliquibase.password=secret \
   -Dliquibase.outputChangeLogFile=drift-detected.yaml

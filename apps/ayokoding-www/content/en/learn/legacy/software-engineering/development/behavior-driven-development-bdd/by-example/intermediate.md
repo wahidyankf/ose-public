@@ -6379,7 +6379,7 @@ services:
       # => Env: Container environment variables
       - NODE_ENV=test
       # => Env: NODE_ENV = test
-      - DATABASE_URL=postgresql://postgres:password@db:5432/test_db
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-password}@db:5432/test_db
       # => Config: Test database connection
     depends_on:
       # => DependsOn: Start order dependency

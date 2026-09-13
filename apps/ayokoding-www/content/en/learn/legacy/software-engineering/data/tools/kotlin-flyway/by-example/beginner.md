@@ -126,8 +126,8 @@ graph LR
 import org.flywaydb.core.Flyway   // => Import Flyway class from flyway-core dependency
 
 // JDBC connection details
-val jdbcUrl  = "jdbc:postgresql://localhost:5432/mydb"
-                                  // => PostgreSQL JDBC URL: host=localhost, port=5432, db=mydb
+val jdbcUrl  = "jdbc:postgresql:mydb"
+                                  // => PostgreSQL JDBC short form: host defaults to localhost, port to 5432, db=mydb
 val user     = "myuser"           // => Database username (must have CREATE TABLE privileges)
 val password = "mypassword"       // => Database password (load from env in production)
 
@@ -141,7 +141,7 @@ val flyway = Flyway.configure()   // => Creates FlywayConfiguration builder (flu
                                   // => Returns org.flywaydb.core.Flyway object
 
 // flyway is now ready — call flyway.migrate(), flyway.info(), etc.
-println(flyway.configuration.url) // => Output: jdbc:postgresql://localhost:5432/mydb
+println(flyway.configuration.url) // => Output: jdbc:postgresql:mydb
                                   // => Confirms configuration was applied
 ```
 
@@ -160,8 +160,8 @@ import org.flywaydb.core.Flyway   // => Flyway core API
 
 val flyway = Flyway.configure()   // => Builder starts
   .dataSource(                    // => Configure database connection
-    "jdbc:postgresql://localhost:5432/mydb",
-                                  // => JDBC URL: identifies database host, port, name
+    "jdbc:postgresql:mydb",
+                                  // => JDBC URL: identifies the database (short form: localhost, port 5432)
     "myuser",                     // => Database username
     "mypassword"                  // => Database password
   )
@@ -410,7 +410,7 @@ import org.flywaydb.core.Flyway       // => Flyway core API
 
 val flyway = Flyway.configure()        // => Configure builder
   .dataSource(
-    "jdbc:postgresql://localhost:5432/mydb",
+    "jdbc:postgresql:mydb",
     "myuser", "mypassword"
   )
   .load()                              // => Build Flyway instance
@@ -457,7 +457,7 @@ import org.flywaydb.core.api.exception.FlywayValidateException
 
 val flyway = Flyway.configure()            // => Configure builder
   .dataSource(
-    "jdbc:postgresql://localhost:5432/mydb",
+    "jdbc:postgresql:mydb",
     "myuser", "mypassword"
   )
   .load()                                  // => Build Flyway instance
@@ -495,7 +495,7 @@ import org.flywaydb.core.Flyway           // => Flyway core API
 
 val flyway = Flyway.configure()            // => Configure builder
   .dataSource(
-    "jdbc:postgresql://localhost:5432/mydb_dev",
+    "jdbc:postgresql:mydb_dev",
                                            // => DEVELOPMENT database only — NEVER production
     "myuser", "mypassword"
   )
@@ -534,7 +534,7 @@ import org.flywaydb.core.Flyway           // => Flyway core API
 // Scenario: existing database with schema already in place, but no flyway_schema_history
 val flyway = Flyway.configure()            // => Configure builder
   .dataSource(
-    "jdbc:postgresql://localhost:5432/legacy_db",
+    "jdbc:postgresql:legacy_db",
                                            // => Existing database with tables but no Flyway history
     "myuser", "mypassword"
   )
@@ -1108,7 +1108,7 @@ dependencies {
 }
 
 flyway {                                     // => Flyway Gradle plugin configuration block
-  url      = "jdbc:postgresql://localhost:5432/mydb_dev"
+  url      = "jdbc:postgresql:mydb_dev"
                                              // => Development database JDBC URL
                                              // => NEVER put production credentials here
   user     = System.getenv("DB_USER") ?: "dev_user"
@@ -1148,7 +1148,7 @@ Teams using Maven instead of Gradle configure Flyway through the `flyway-maven-p
                                            <!-- => Maven plugin artifact -->
   <version>10.15.0</version>              <!-- => Flyway version (match flyway-core version) -->
   <configuration>
-    <url>jdbc:postgresql://localhost:5432/mydb_dev</url>
+    <url>jdbc:postgresql:mydb_dev</url>
                                            <!-- => Development database JDBC URL -->
     <user>${env.DB_USER}</user>            <!-- => Read DB_USER environment variable -->
     <password>${env.DB_PASSWORD}</password><!-- => Read DB_PASSWORD environment variable -->
@@ -1244,7 +1244,7 @@ object DatabaseFactory {               // => Kotlin object (singleton): one Data
 // => Ktor module function: database initialization before HTTP server starts
 
 fun Application.module() {             // => Ktor module function (called by embeddedServer)
-  val jdbcUrl = System.getenv("DATABASE_URL")  ?: "jdbc:postgresql://localhost:5432/demodb"
+  val jdbcUrl = System.getenv("DATABASE_URL")  ?: "jdbc:postgresql:demodb"
                                         // => Read from environment (production) or use local default
   val dbUser  = System.getenv("DATABASE_USER") ?: "demo"
                                         // => Credentials loaded from environment variables

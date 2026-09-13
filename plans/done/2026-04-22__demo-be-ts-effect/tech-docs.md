@@ -515,7 +515,7 @@ services:
     ports:
       - "8201:8201"
     environment:
-      - DATABASE_URL=postgresql://a_demo_be_ts_effect:a_demo_be_ts_effect@a-demo-be-db:5432/a_demo_be_ts_effect
+      - DATABASE_URL=postgresql://a_demo_be_ts_effect:${POSTGRES_PASSWORD:-a_demo_be_ts_effect}@a-demo-be-db:5432/a_demo_be_ts_effect
       - APP_JWT_SECRET=dev-jwt-secret-at-least-32-chars-long
     volumes:
       - ../../../apps/a-demo-be-ts-effect:/workspace:rw

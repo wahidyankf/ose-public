@@ -11,7 +11,7 @@ open OrganicleverBe.Infrastructure.AppDbContext
 /// live database.
 let private unreachableOptions () : DbContextOptions<AppDbContext> =
     DbContextOptionsBuilder<AppDbContext>()
-        .UseNpgsql("Host=127.0.0.1;Port=1;Database=organiclever_be_unit_test;Username=x;Password=x")
+        .UseNpgsql("Host=127.0.0.1;Port=1;Database=organiclever_be_unit_test;Username=x")
         .UseSnakeCaseNamingConvention()
         .Options
 

@@ -286,7 +286,7 @@ For PostgreSQL instead of H2, add dependency to `pom.xml`:
 Update `application.properties`:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/spring_jpa_tutorial
+spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}:5432/spring_jpa_tutorial
 spring.datasource.username=postgres
 spring.datasource.password=postgres
 spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
@@ -309,7 +309,7 @@ For MySQL, add dependency to `pom.xml`:
 Update `application.properties`:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/spring_jpa_tutorial
+spring.datasource.url=jdbc:mysql://${DB_HOST:localhost}:3306/spring_jpa_tutorial
 spring.datasource.username=root
 spring.datasource.password=root
 spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect

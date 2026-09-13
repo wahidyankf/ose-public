@@ -22,7 +22,7 @@ Keep that reservation-owning terminal open while the dependencies run. In anothe
 the service configuration and start the backend:
 
 ```bash
-export DATABASE_URL='Host=localhost;Port=5432;Database=organiclever;Username=postgres;Password=postgres'
+export DATABASE_URL="Host=localhost;Port=5432;Database=organiclever;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}"
 export ASPNETCORE_URLS='http://localhost:8202'
 
 ./hippo run --class service --disk-path . -- npm exec nx -- run organiclever-be:dev

@@ -4971,10 +4971,10 @@ class DatabaseConnection implements AutoCloseable {
 
     public DatabaseConnection(String url) {
         // => Constructor: initialize database connection
-        // => url: connection string (e.g., "jdbc:mysql://localhost")
+        // => url: connection string (e.g., "jdbc:mysql:///mydb", empty host = localhost)
         System.out.println("Opening connection to: " + url);
             // => Simulate connection establishment
-            // => Output: Opening connection to: jdbc:mysql://localhost
+            // => Output: Opening connection to: jdbc:mysql:///mydb
             // => Resource initialization
             // => closed remains false (connection is open)
     }
@@ -5018,10 +5018,10 @@ class DatabaseConnection implements AutoCloseable {
 public class DatabaseExample {
     public void queryDatabase() {
         // => Demonstrate automatic resource management
-        try (DatabaseConnection conn = new DatabaseConnection("jdbc:mysql://localhost")) {
+        try (DatabaseConnection conn = new DatabaseConnection("jdbc:mysql:///mydb")) {
             // => Opens connection
-            // => conn = new DatabaseConnection("jdbc:mysql://localhost")
-            // => Output: Opening connection to: jdbc:mysql://localhost
+            // => conn = new DatabaseConnection("jdbc:mysql:///mydb")
+            // => Output: Opening connection to: jdbc:mysql:///mydb
             // => conn.close() will be called automatically at block exit
 
             conn.executeQuery("SELECT * FROM users");

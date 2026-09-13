@@ -1563,7 +1563,7 @@ cat > app.env << 'EOF'
 NODE_ENV=production
 LOG_LEVEL=info
 API_KEY=secret-key-12345
-DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydb
+DATABASE_URL=postgresql://myuser:<password>@db:5432/mydb
 EOF
 # => Creates app.env file with application variables
 # => Contains configuration and secrets
@@ -1663,7 +1663,7 @@ docker inspect app --format='{{range .Config.Env}}{{println .}}{{end}}'
 # => NODE_ENV=production
 # => LOG_LEVEL=info
 # => API_KEY=secret-key-12345
-# => DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydb
+# => DATABASE_URL=postgresql://myuser:<password>@db:5432/mydb
 # => Shows all environment variables (CAREFUL: exposes secrets!)
 ```
 
@@ -1731,7 +1731,7 @@ services:
  # => Custom container name: my-api
  environment:
  # => Environment variables for API configuration
- DATABASE_URL: postgresql://appuser:apppass@db:5432/appdb
+ DATABASE_URL: postgresql://appuser:${POSTGRES_PASSWORD:-apppass}@db:5432/appdb
  # => Connection string uses "db" hostname (DNS resolves to db service IP)
  # => Format: postgresql://user:pass@host:port/database
  depends_on:
@@ -2103,7 +2103,7 @@ services:
 
 ```bash
 # File: .env (automatically loaded by Docker Compose)
-DATABASE_URL=postgresql://user:pass@db:5432/myapp
+DATABASE_URL=postgresql://user:${DB_PASSWORD}@db:5432/myapp
 API_TIMEOUT=10000
 PORT=8080
 DB_USER=appuser
@@ -2126,7 +2126,7 @@ docker compose up -d
 
 # Verify environment variables in container
 docker compose exec app printenv | grep -E "DATABASE_URL|API_TIMEOUT|PORT"
-# => DATABASE_URL=postgresql://user:pass@db:5432/myapp
+# => DATABASE_URL=postgresql://user:<password>@db:5432/myapp
 # => API_TIMEOUT=10000
 # => PORT=8081 (overridden by .env.local)
 
@@ -2151,7 +2151,7 @@ docker compose config
 # => environment:
 # => NODE_ENV: production
 # => LOG_LEVEL: debug (from .env.local)
-# => DATABASE_URL: postgresql://user:pass@db:5432/myapp
+# => DATABASE_URL: postgresql://user:<password>@db:5432/myapp
 # => API_TIMEOUT: 10000
 # => PORT: 8081
 # => ports:
@@ -2372,7 +2372,7 @@ services:
  # => Does NOT wait for db/cache to be ready
  # => API may crash if it connects before db is ready
  environment:
- DATABASE_URL: postgresql://appuser:apppass@db:5432/appdb
+ DATABASE_URL: postgresql://appuser:${POSTGRES_PASSWORD:-apppass}@db:5432/appdb
  REDIS_URL: redis://cache:6379
 
  # API service (depends_on with health checks)
@@ -2386,7 +2386,7 @@ services:
  condition: service_healthy
  # => Waits for cache health check to pass
  environment:
- DATABASE_URL: postgresql://appuser:apppass@db:5432/appdb  # => Uses "db" hostname (Docker DNS)
+ DATABASE_URL: postgresql://appuser:${POSTGRES_PASSWORD:-apppass}@db:5432/appdb  # => Uses "db" hostname (Docker DNS)
  REDIS_URL: redis://cache:6379  # => Uses "cache" hostname (Docker DNS)
  healthcheck:
  test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
@@ -2506,7 +2506,7 @@ services:
  # => Can communicate with database (same backend network)
  # => api bridges the two networks — acts as security boundary
  environment:
- DATABASE_URL: postgresql://user:pass@db:5432/mydb  # => "db" resolves via Docker DNS
+ DATABASE_URL: postgresql://user:${POSTGRES_PASSWORD:-pass}@db:5432/mydb  # => "db" resolves via Docker DNS
 # => "db" hostname works because both api and db are on backend network
 
  # Database (backend network only)
@@ -3032,7 +3032,7 @@ services:
  environment:
 # => Test-specific environment variables
  NODE_ENV: test  # => Enables test-specific code paths
- DATABASE_URL: postgresql://test:test@test-db:5432/testdb  # => Separate test DB
+ DATABASE_URL: postgresql://test:${POSTGRES_PASSWORD:-test}@test-db:5432/testdb  # => Separate test DB
 # => Uses test-db service (not the dev db) for full isolation
  command: npm test  # => Runs test suite instead of starting server
 # => Overrides base CMD — exits when tests complete

@@ -155,8 +155,9 @@ graph LR
 (def config
   {:store         :database
    :migration-dir "migrations"              ; => Classpath-relative path to migration files
-   :db            {:connection-uri
-                   "jdbc:postgresql://localhost:5432/mydb?user=app&password=secret"}})
+   :db            {:jdbcUrl  "jdbc:postgresql:mydb"
+                   :user     "app"
+                   :password "secret"}})
 
 ;; Assume migrations 001, 002, and 003 have been applied
 ;; schema_migrations contains rows: 1, 2, 3
@@ -196,8 +197,9 @@ graph LR
 (def config
   {:store         :database
    :migration-dir "migrations"
-   :db            {:connection-uri
-                   "jdbc:postgresql://localhost:5432/devdb?user=dev&password=dev"}})
+   :db            {:jdbcUrl  "jdbc:postgresql:devdb"
+                   :user     "dev"
+                   :password "dev"}})
   ; => WARNING: reset destroys all data in affected tables
   ; => NEVER run against staging or production databases
 
@@ -236,8 +238,9 @@ graph LR
 (def config
   {:store         :database
    :migration-dir "migrations"
-   :db            {:connection-uri
-                   "jdbc:postgresql://localhost:5432/mydb?user=app&password=secret"}})
+   :db            {:jdbcUrl  "jdbc:postgresql:mydb"
+                   :user     "app"
+                   :password "secret"}})
 
 ;; Suppose migrations 001 and 002 are applied; 003, 004 exist on disk but not yet run
 (def pending (migratus/pending-list config))

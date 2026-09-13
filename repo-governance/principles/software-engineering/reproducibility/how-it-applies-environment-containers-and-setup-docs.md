@@ -79,7 +79,7 @@ services:
     volumes:
       - .:/app
     environment:
-      DATABASE_URL: postgresql://developer:dev_password@postgres:5432/ose_dev
+      DATABASE_URL: postgresql://developer:${POSTGRES_PASSWORD:-dev_password}@postgres:5432/ose_dev
       REDIS_URL: redis://redis:6379
 ```
 

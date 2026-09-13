@@ -528,7 +528,7 @@ let logger =
 // => Combined with LogScriptOutput this produces a full preview without mutating the database
 let engine =
     DeployChanges.To
-        .PostgresqlDatabase("Host=localhost;Database=preview;Username=preview;Password=preview")
+        .PostgresqlDatabase("Host=localhost;Database=preview;Username=preview")
         // => Connection string is unused in this pattern; NullJournal prevents DB queries
         .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
         // => NullJournal: returns empty executed list; records nothing; all scripts appear pending
@@ -736,7 +736,7 @@ let testRollbackCompensation () =
         // => do! : awaits the Task; container is fully started and accepting connections after this
 
         let connStr = postgres.GetConnectionString()
-        // => connStr: "Host=localhost;Port=<mapped>;Database=rollback_test;Username=test;Password=test"
+        // => connStr: "Host=localhost;Port=<mapped>;Database=rollback_test;Username=test;Password=<password>"
 
         // Step 1: Apply the forward migration
         let forwardEngine =

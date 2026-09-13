@@ -110,7 +110,7 @@ export const documents = pgTable("documents", {
 // => documents table: id + content + embedding + metadata
 
 const connectionString = process.env.DATABASE_URL!;
-// => DATABASE_URL: e.g. "postgresql://user:pass@host:5432/db"
+// => DATABASE_URL: e.g. "postgresql://<user>:<password>@<host>:5432/<db>"
 const db = drizzle(postgres(connectionString));
 // => db: Drizzle ORM instance connected to PostgreSQL
 

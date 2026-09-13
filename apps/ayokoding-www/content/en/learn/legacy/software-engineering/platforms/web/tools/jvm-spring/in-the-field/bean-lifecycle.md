@@ -40,7 +40,7 @@ public class DatabaseConnectionPool {
             for (int i = 0; i < 10; i++) {
                 // => Creates database connection
                 Connection conn = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/zakat",
+                    "jdbc:postgresql:zakat",
                     "admin", "secret"
                 );
                 connections.add(conn);  // => Adds to pool
@@ -140,7 +140,7 @@ public class DatabaseConnectionPool {
             connections = new ArrayList<>();
             for (int i = 0; i < 10; i++) {
                 Connection conn = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/zakat",
+                    "jdbc:postgresql:zakat",
                     "admin", "secret"
                 );
                 connections.add(conn);

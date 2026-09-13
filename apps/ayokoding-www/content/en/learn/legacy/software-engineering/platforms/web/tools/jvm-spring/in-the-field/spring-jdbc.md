@@ -30,7 +30,7 @@ public class ZakatTransactionRepository {
         try {
             // => Manual connection creation: no pooling, new connection each time
             conn = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/zakat",
+                "jdbc:postgresql:zakat",
                 "admin",
                 "secret"
             );
@@ -76,7 +76,7 @@ public class ZakatTransactionRepository {
 
         try {
             conn = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/zakat",
+                "jdbc:postgresql:zakat",
                 "admin",
                 "secret"
             );
@@ -238,7 +238,7 @@ public class DatabaseConfig {
     public DataSource dataSource() {
         // => HikariCP: production-grade connection pool
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/zakat");
+        config.setJdbcUrl("jdbc:postgresql:zakat");
         config.setUsername("admin");
         config.setPassword("secret");
         config.setMaximumPoolSize(10);  // => Max 10 connections in pool
@@ -462,7 +462,7 @@ public class DatabaseConfig {
     @Bean
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/zakat");
+        config.setJdbcUrl("jdbc:postgresql:zakat");
         config.setUsername("admin");
         config.setPassword("secret");
 

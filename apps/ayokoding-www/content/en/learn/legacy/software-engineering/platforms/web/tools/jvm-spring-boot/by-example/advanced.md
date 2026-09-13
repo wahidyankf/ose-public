@@ -3252,7 +3252,7 @@ data: # => Key-value pairs (unencrypted, plain text)
         newUI: true  # => Enable new UI feature (toggle without code change)
     spring:  # => Spring Boot configuration
       datasource:  # => Database connection settings
-        url: jdbc:postgresql://postgres:5432/mydb  # => JDBC URL (Kubernetes DNS resolves 'postgres' to service IP)
+        url: jdbc:postgresql://${DB_HOST:postgres}:5432/mydb  # => JDBC URL (Kubernetes DNS resolves 'postgres' to service IP)
 ```
 
 ```yaml

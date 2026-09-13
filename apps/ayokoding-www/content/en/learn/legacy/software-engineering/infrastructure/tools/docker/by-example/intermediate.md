@@ -882,7 +882,7 @@ services:
  start_period: 40s
  # => API needs time to connect to database and initialize
  environment:
- DATABASE_URL: postgresql://postgres:secret@database:5432/mydb
+ DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-secret}@database:5432/mydb
  # => Database connection string using service name "database"
  REDIS_URL: redis://redis:6379
  # => Redis connection using service name "redis"
@@ -1111,7 +1111,7 @@ services:
  condition: service_healthy  # => Worker waits for RabbitMQ health check pass
  environment:
  # => Worker connection configuration
- DATABASE_URL: postgresql://postgres:secret@database:5432/jobs  # => "database" is Docker DNS name
+ DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-secret}@database:5432/jobs  # => "database" is Docker DNS name
  RABBITMQ_URL: amqp://guest:guest@message-queue:5672  # => "message-queue" is Docker DNS name
  healthcheck:
  # => Worker process health check
@@ -2594,7 +2594,7 @@ services:
  # => Connects to both networks (bridge between frontend and backend)
  # => api is the only service with access to both tiers
  environment:
- DATABASE_URL: postgresql://postgres:secret@database:5432/mydb
+ DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-secret}@database:5432/mydb
  # => Uses service name "database" for DNS resolution
  # => DNS works because api and database share backend-net
 
@@ -2861,7 +2861,7 @@ services:
  # => Waits for database to be healthy
  environment:
  # => Database connection for migrations
- DATABASE_URL: postgresql://postgres:secret@database:5432/myapp
+ DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-secret}@database:5432/myapp
  # => Full connection string with credentials
  restart: "no"
  # => Runs once, doesn't restart on failure
@@ -2881,7 +2881,7 @@ services:
  # => Waits for migrations to complete successfully
  environment:
  # => Database connection for seeding
- DATABASE_URL: postgresql://postgres:secret@database:5432/myapp
+ DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-secret}@database:5432/myapp
  # => Same connection string as migration
  restart: "no"
  # => Runs once, doesn't restart
@@ -2907,7 +2907,7 @@ services:
  # => Starts only after all init tasks complete
  environment:
  # => API database configuration
- DATABASE_URL: postgresql://postgres:secret@database:5432/myapp
+ DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-secret}@database:5432/myapp
  # => Full database connection URL
  ports:
  # => API port mapping
@@ -3353,7 +3353,7 @@ services:
  # => Also connects to DMZ for public access
  environment:
  # => API database connection
- DATABASE_URL: postgresql://postgres:secret@database:5432/mydb
+ DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-secret}@database:5432/mydb
  # => Full connection string using Docker DNS
 
 networks:
@@ -3769,7 +3769,7 @@ docker compose exec app env
 
 # Print specific variable
 docker compose exec app sh -c 'echo $DATABASE_URL'
-# => postgresql://postgres:production_secret_password@database:5432/myapp
+# => postgresql://postgres:<password>@database:5432/myapp
 
 # Security: Verify secrets are files (not env vars)
 docker compose exec app sh -c 'cat /run/secrets/api_key'
@@ -3858,7 +3858,7 @@ services:
  # => API starts after database is ready
  environment:
  # => API connection settings
- DATABASE_URL: postgresql://postgres:secret@database:5432/mydb
+ DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-secret}@database:5432/mydb
  # => Full database connection URL
  ports:
  # => API port mapping
@@ -3910,7 +3910,7 @@ services:
  # => Database must be ready for integration tests
  environment:
  # => Test environment settings
- DATABASE_URL: postgresql://postgres:secret@database:5432/test_db
+ DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-secret}@database:5432/test_db
  # => Uses test_db (separate from main db)
  NODE_ENV: test
  # => Activates test mode in application
@@ -4698,7 +4698,7 @@ services:
  # => API runtime settings
  NODE_ENV: development
  # => Development mode
- DATABASE_URL: postgresql://postgres:secret@database:5432/dev_db
+ DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-secret}@database:5432/dev_db
  # => Development database connection
  ports:
  # => API port mapping

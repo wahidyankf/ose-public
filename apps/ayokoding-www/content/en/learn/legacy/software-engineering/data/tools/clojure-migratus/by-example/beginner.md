@@ -28,7 +28,7 @@ graph TD
     A[migratus config map] --> B[:store :database]
     A --> C[:migration-dir]
     A --> D[:db connection map]
-    D --> E[:connection-uri]
+    D --> E[:jdbcUrl or :connection-uri]
 
     style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     style B fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -44,8 +44,9 @@ graph TD
   {:store         :database              ; => Use the SQL database store
                                          ; => Other stores exist (:fs) but :database is standard
    :migration-dir "migrations"           ; => Path relative to classpath (resources/migrations/)
-   :db            {:connection-uri       ; => Database connection map (next.jdbc format)
-                   "jdbc:postgresql://localhost:5432/mydb?user=admin&password=secret"}})
+   :db            {:jdbcUrl  "jdbc:postgresql:mydb" ; => Database connection map (next.jdbc format)
+                   :user     "admin"
+                   :password "secret"}})
                                          ; => config is a plain Clojure map; no object creation
                                          ; => Passed as first arg to every migratus/* function
 
@@ -136,7 +137,7 @@ Migratus uses a strict numeric prefix to determine migration order. The prefix m
 
 (def config {:store         :database
              :migration-dir "migrations"
-             :db            {:connection-uri "jdbc:postgresql://localhost:5432/mydb"}})
+             :db            {:connection-uri "jdbc:postgresql:mydb"}})
 
 (migratus/pending-list config)
 ;; => Returns list of migration IDs not yet applied
@@ -161,8 +162,9 @@ The `:store :database` key tells Migratus to use a SQL database as both the migr
   {:store         :database            ; => Required; tells Migratus which store implementation to use
                                        ; => :database uses next.jdbc to run SQL and track state
    :migration-dir "migrations"         ; => Classpath-relative directory containing .sql files
-   :db            {:connection-uri
-                   "jdbc:postgresql://localhost:5432/mydb?user=app&password=secret"}})
+   :db            {:jdbcUrl  "jdbc:postgresql:mydb"
+                   :user     "app"
+                   :password "secret"}})
                                        ; => :db map is passed directly to next.jdbc/get-datasource
 
 ;; The :database store automatically creates a tracking table:
@@ -205,7 +207,7 @@ The `:migration-dir` value is resolved relative to the JVM classpath, not the fi
    :migration-dir "migrations"         ; => Classpath-relative; resolves to resources/migrations/
                                        ; => Do NOT use absolute paths or "resources/migrations"
                                        ; => "resources/" is already the classpath root
-   :db            {:connection-uri "jdbc:postgresql://localhost:5432/mydb"}})
+   :db            {:connection-uri "jdbc:postgresql:mydb"}})
 
 ;; If resources/ is on the classpath (in deps.edn :paths):
 ;; "migrations" => resources/migrations/   OK
@@ -254,7 +256,7 @@ graph TD
 (def config
   {:store         :database
    :migration-dir "migrations"
-   :db            {:connection-uri "jdbc:postgresql://localhost:5432/mydb?user=app&password=secret"}})
+   :db            {:jdbcUrl "jdbc:postgresql:mydb" :user "app" :password "secret"}})
 
 ;; Run all pending migrations:
 (migratus/migrate config)
@@ -288,7 +290,7 @@ graph TD
 (def config
   {:store         :database
    :migration-dir "migrations"
-   :db            {:connection-uri "jdbc:postgresql://localhost:5432/mydb?user=app&password=secret"}})
+   :db            {:jdbcUrl "jdbc:postgresql:mydb" :user "app" :password "secret"}})
 
 ;; Apply migration ID 3 only:
 (migratus/up config 3)
@@ -324,7 +326,7 @@ graph TD
 (def config
   {:store         :database
    :migration-dir "migrations"
-   :db            {:connection-uri "jdbc:postgresql://localhost:5432/mydb?user=app&password=secret"}})
+   :db            {:jdbcUrl "jdbc:postgresql:mydb" :user "app" :password "secret"}})
 
 ;; Roll back migration ID 3:
 (migratus/down config 3)
@@ -359,7 +361,7 @@ graph TD
 (def config
   {:store         :database
    :migration-dir "migrations"
-   :db            {:connection-uri "jdbc:postgresql://localhost:5432/mydb?user=app&password=secret"}})
+   :db            {:jdbcUrl "jdbc:postgresql:mydb" :user "app" :password "secret"}})
 
 ;; Create a new migration named "add-email-index":
 (migratus/create config "add-email-index")
@@ -397,7 +399,7 @@ graph TD
 (def config
   {:store         :database
    :migration-dir "migrations"
-   :db            {:connection-uri "jdbc:postgresql://localhost:5432/mydb?user=app&password=secret"}})
+   :db            {:jdbcUrl "jdbc:postgresql:mydb" :user "app" :password "secret"}})
 
 ;; Inspect pending migrations:
 (migratus/pending-list config)
@@ -656,7 +658,7 @@ Migratus maintains a `schema_migrations` table to track which migrations have be
          '[migratus.core :as migratus])
 
 (def ds (jdbc/get-datasource
-          {:connection-uri "jdbc:postgresql://localhost:5432/mydb?user=app&password=secret"}))
+          {:jdbcUrl "jdbc:postgresql:mydb" :user "app" :password "secret"}))
                                                 ; => Creates next.jdbc datasource
 
 (jdbc/execute! ds ["SELECT id, applied FROM schema_migrations ORDER BY id"])

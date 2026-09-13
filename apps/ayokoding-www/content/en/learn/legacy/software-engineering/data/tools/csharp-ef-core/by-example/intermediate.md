@@ -304,7 +304,7 @@ dotnet ef migrations bundle \
 # => Output: ./deploy/migrate (or migrate.exe on Windows)
 
 # Run bundle against production database
-./deploy/migrate --connection "Host=prod-db;Database=myapp;Username=app;Password=secret"
+./deploy/migrate --connection "Host=prod-db;Database=myapp;Username=app;Password=${DB_PASSWORD}"
 # => Applies all pending migrations to the specified database
 # => Same behavior as: dotnet ef database update
 # => Exit code 0 = success; non-zero = failure; suitable for CI/CD pipeline checks
@@ -347,7 +347,7 @@ await db.Database.MigrateAsync();
 ```bash
 # Scaffold from existing PostgreSQL database
 dotnet ef dbcontext scaffold \
-  "Host=localhost;Database=legacydb;Username=dev;Password=dev" \
+  "Host=localhost;Database=legacydb;Username=dev;Password=${DB_PASSWORD}" \
   Npgsql.EntityFrameworkCore.PostgreSQL \
   --output-dir Models/Generated \
   --context-dir Infrastructure \
@@ -1999,7 +1999,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
         var connectionString =
             Environment.GetEnvironmentVariable("DB_MIGRATE_CONNECTION_STRING")
             // => Prefer environment variable for CI/CD pipelines; avoids storing credentials in source
-            ?? "Host=localhost;Database=myapp_dev;Username=dev;Password=dev";
+            ?? "Host=localhost;Database=myapp_dev;Username=dev;Password=<password>";
             // => Fallback: local development connection string
             // => Never hardcode production credentials here; use env vars in CI
 

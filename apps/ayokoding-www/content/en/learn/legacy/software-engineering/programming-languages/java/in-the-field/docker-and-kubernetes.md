@@ -150,12 +150,12 @@ Applications need environment-specific configuration without hardcoding values.
 
 ```bash
 # Set environment variable
-export DATABASE_URL="jdbc:postgresql://localhost:5432/myapp"
+export DATABASE_URL="jdbc:postgresql:myapp"
 # => Available to current shell and child processes
 # => Lost when shell exits
 
 # Run application with environment variables
-DATABASE_URL="jdbc:postgresql://prod-db:5432/myapp" \
+DATABASE_URL="jdbc:postgresql://${DB_HOST:-prod-db}:5432/myapp" \
 DATABASE_USERNAME="prod_user" \
 DATABASE_PASSWORD="secret123" \
 java -jar myapp-1.0.jar
@@ -178,7 +178,7 @@ java -jar myapp-1.0.jar
 
 ```properties
 # Database configuration
-database.url=${DATABASE_URL:jdbc:postgresql://localhost:5432/myapp}
+database.url=${DATABASE_URL:jdbc:postgresql:myapp}
 # => Uses DATABASE_URL env var if set
 # => Falls back to default after colon
 database.username=${DATABASE_USERNAME:dev_user}
@@ -616,7 +616,7 @@ services:
       # => Maps host port 8080 to container port 8080
       # => Format: "HOST:CONTAINER"
     environment:
-      DATABASE_URL: jdbc:postgresql://db:5432/myapp
+      DATABASE_URL: jdbc:postgresql://db/myapp
       # => Environment variable in container
       # => db: Hostname of database service (DNS resolution)
       DATABASE_USERNAME: postgres

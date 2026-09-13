@@ -1076,7 +1076,7 @@ CMD ["./my_axum_app"]             # => Start the binary
 # Build and run
 docker build -t my-axum-app .
 docker run -p 3000:3000 \
-  -e DATABASE_URL="postgres://user:pass@host/db" \
+  -e DATABASE_URL="postgres://<user>:<password>@<host>/<db>" \
   -e AUTH__JWT_SECRET="production-secret-from-vault" \
   my-axum-app
 # => Passes secrets via environment variables (not baked into image)

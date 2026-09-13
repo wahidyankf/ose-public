@@ -39,17 +39,17 @@ public class DatabaseConfig {
         HikariConfig config = new HikariConfig();
         if ("production".equals(env)) {
             // => Production database
-            config.setJdbcUrl("jdbc:postgresql://prod-db.aws.com:5432/zakat");
+            config.setJdbcUrl("jdbc:postgresql://<prod-db.aws.com>/zakat");
             config.setUsername("prod_user");
             config.setPassword(System.getenv("DB_PASSWORD"));
         } else if ("staging".equals(env)) {
             // => Staging database
-            config.setJdbcUrl("jdbc:postgresql://staging-db.aws.com:5432/zakat");
+            config.setJdbcUrl("jdbc:postgresql://<staging-db.aws.com>/zakat");
             config.setUsername("staging_user");
             config.setPassword(System.getenv("STAGING_DB_PASSWORD"));
         } else {
             // => Development database (default)
-            config.setJdbcUrl("jdbc:postgresql://localhost:5432/zakat_dev");
+            config.setJdbcUrl("jdbc:postgresql:zakat_dev");
             config.setUsername("dev_user");
             config.setPassword("dev_password");
         }
@@ -93,7 +93,7 @@ logging:
 # => Active when spring.profiles.active=dev
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/zakat_dev
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/zakat_dev
     # => Local PostgreSQL for development
     username: dev_user
     password: dev_password # => Plain text acceptable in dev
@@ -112,7 +112,7 @@ logging:
 # => application-staging.yml (staging profile)
 spring:
   datasource:
-    url: jdbc:postgresql://staging-db.aws.com:5432/zakat_staging
+    url: jdbc:postgresql://${DB_HOST:staging-db.aws.com}:5432/zakat_staging
     username: staging_user
     password: ${DB_PASSWORD} # => From environment variable
 
@@ -130,7 +130,7 @@ logging:
 # => application-prod.yml (production profile)
 spring:
   datasource:
-    url: jdbc:postgresql://prod-db.aws.com:5432/zakat_prod
+    url: jdbc:postgresql://${DB_HOST:prod-db.aws.com}:5432/zakat_prod
     username: ${DB_USER} # => From environment or secrets manager
     password: ${DB_PASSWORD}
     hikari:

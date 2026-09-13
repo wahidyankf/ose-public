@@ -869,7 +869,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/ose_platform
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@db:5432/ose_platform
 
   db:
     image: postgres:16
@@ -1620,7 +1620,7 @@ flowchart TD
     D -->|No| E[Compilation Error]
     D -->|Yes| F[Type Erasure]
 
-    F --> G[JavaScript Generation]
+    F --> G[JS Generation]
     G --> H{Target}
 
     H -->|ES5| I[ES5 JavaScript]

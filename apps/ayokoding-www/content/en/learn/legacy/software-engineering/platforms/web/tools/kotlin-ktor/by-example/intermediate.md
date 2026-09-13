@@ -423,7 +423,7 @@ fun createHikariDataSource(
     driver: String = "org.postgresql.Driver"
 ): HikariDataSource {
     val config = HikariConfig().apply {
-        jdbcUrl = url                    // => "jdbc:postgresql://localhost:5432/mydb"
+        jdbcUrl = url                    // => "jdbc:postgresql:mydb"
         driverClassName = driver
         maximumPoolSize = 10             // => Max 10 concurrent DB connections
         minimumIdle = 2                  // => Keep 2 idle connections warm
@@ -1140,7 +1140,7 @@ Ktor uses HOCON (Human-Optimized Config Object Notation) for configuration. `app
 // }
 //
 // database {
-//   url = "jdbc:postgresql://localhost:5432/mydb"
+//   url = "jdbc:postgresql:mydb"
 //   url = ${?DATABASE_URL}       # Override in production
 //   maxPoolSize = 10
 // }

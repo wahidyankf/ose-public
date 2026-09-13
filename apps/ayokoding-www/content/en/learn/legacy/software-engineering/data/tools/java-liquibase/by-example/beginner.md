@@ -410,7 +410,7 @@ graph TD
 ```bash
 # Run from project root (Maven wrapper example)
 ./mvnw liquibase:update \
-  -Dliquibase.url=jdbc:postgresql://localhost:5432/mydb \
+  -Dliquibase.url=jdbc:postgresql:mydb \
   # => JDBC URL of target database
   -Dliquibase.username=myuser \
   # => Database user with CREATE TABLE / ALTER TABLE privileges
@@ -449,7 +449,7 @@ The `liquibase rollbackCount N` command undoes the last N applied changesets by 
 ./mvnw liquibase:rollback \
   -Dliquibase.rollbackCount=1 \
   # => Number of changesets to revert (most recent first)
-  -Dliquibase.url=jdbc:postgresql://localhost:5432/mydb \
+  -Dliquibase.url=jdbc:postgresql:mydb \
   -Dliquibase.username=myuser \
   -Dliquibase.password=mypassword \
   -Dliquibase.changeLogFile=src/main/resources/db/changelog/db.changelog-master.yaml
@@ -498,7 +498,7 @@ The `liquibase rollbackToTag` command reverts all changesets applied after a nam
   -Dliquibase.tag=v1.5.0 \
   # => Creates a row in DATABASECHANGELOG with tag "v1.5.0"
   # => The tag marks the current state; no schema changes occur
-  -Dliquibase.url=jdbc:postgresql://localhost:5432/mydb \
+  -Dliquibase.url=jdbc:postgresql:mydb \
   -Dliquibase.username=myuser \
   -Dliquibase.password=mypassword \
   -Dliquibase.changeLogFile=src/main/resources/db/changelog/db.changelog-master.yaml
@@ -508,7 +508,7 @@ The `liquibase rollbackToTag` command reverts all changesets applied after a nam
   -Dliquibase.rollbackTag=v1.5.0 \
   # => Reverts all changesets applied AFTER the v1.5.0 tag
   # => Stops when it reaches the tag row in DATABASECHANGELOG
-  -Dliquibase.url=jdbc:postgresql://localhost:5432/mydb \
+  -Dliquibase.url=jdbc:postgresql:mydb \
   -Dliquibase.username=myuser \
   -Dliquibase.password=mypassword \
   -Dliquibase.changeLogFile=src/main/resources/db/changelog/db.changelog-master.yaml
@@ -541,7 +541,7 @@ The `liquibase tag` command inserts a specially marked row into `DATABASECHANGEL
   -Dliquibase.tag=release-2026-03-27 \
   # => Tag name is arbitrary; use release versions, dates, or sprint names
   # => Convention: "v{major}.{minor}.{patch}" or "release-YYYY-MM-DD"
-  -Dliquibase.url=jdbc:postgresql://localhost:5432/mydb \
+  -Dliquibase.url=jdbc:postgresql:mydb \
   -Dliquibase.username=myuser \
   -Dliquibase.password=mypassword \
   -Dliquibase.changeLogFile=src/main/resources/db/changelog/db.changelog-master.yaml
@@ -574,7 +574,7 @@ The `liquibase status` command reports which changesets are pending (not yet app
 ```bash
 # Check pending changesets without executing them
 ./mvnw liquibase:status \
-  -Dliquibase.url=jdbc:postgresql://localhost:5432/mydb \
+  -Dliquibase.url=jdbc:postgresql:mydb \
   -Dliquibase.username=myuser \
   -Dliquibase.password=mypassword \
   -Dliquibase.changeLogFile=src/main/resources/db/changelog/db.changelog-master.yaml \
@@ -584,7 +584,7 @@ The `liquibase status` command reports which changesets are pending (not yet app
 
 ```
 # Liquibase output
-3 change sets have not been applied to myuser@jdbc:postgresql://localhost:5432/mydb
+3 change sets have not been applied to myuser@jdbc:postgresql:mydb
 # => 3 changesets in the changelog are not in DATABASECHANGELOG
 
      db/changelog/changes/008-add-product-category.sql::008-add-product-category::demo-be
@@ -1142,7 +1142,7 @@ Spring Boot auto-configures Liquibase when `spring-boot-starter-data-jpa` or `li
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/mydb
+    url: jdbc:postgresql:mydb
     # => Database URL used by both JPA and Liquibase
     username: myuser
     password: mypassword
@@ -1295,7 +1295,7 @@ liquibase {
             // => "main" is the default activity name; can have multiple for different environments
             changeLogFile 'src/main/resources/db/changelog/db.changelog-master.yaml'
             // => Path to master changelog relative to project root
-            url System.getenv('LIQUIBASE_URL') ?: 'jdbc:postgresql://localhost:5432/mydb'
+            url System.getenv('LIQUIBASE_URL') ?: 'jdbc:postgresql:mydb'
             // => Prefer environment variable; fall back to local default
             username System.getenv('LIQUIBASE_USERNAME') ?: 'myuser'
             // => Credentials from environment variables (never hardcode passwords)

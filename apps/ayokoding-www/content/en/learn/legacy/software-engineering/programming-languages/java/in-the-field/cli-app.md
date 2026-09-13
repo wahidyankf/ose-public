@@ -556,7 +556,7 @@ String dbUrl = System.getenv("DATABASE_URL");
 // => Case-sensitive: DATABASE_URL != database_url
 if (dbUrl == null) {
 // => Check if environment variable was set
-    dbUrl = "jdbc:postgresql://localhost/app";  // Default
+    dbUrl = "jdbc:postgresql:app";  // Default
 // => Fallback to development default
 // => Production: fail instead of defaulting (fail-fast)
 // => 12-factor app: configuration via environment
@@ -570,10 +570,10 @@ if (dbUrl == null) {
 // => CLI option for database URL
         description = "Database URL",
 // => Help text shown in --help output
-        defaultValue = "${DATABASE_URL:-jdbc:postgresql://localhost/app}")
+        defaultValue = "${DATABASE_URL:-jdbc:postgresql:app}")
 // => Variable interpolation syntax (shell-like)
 // => ${DATABASE_URL}: try environment variable first
-// => :-jdbc:postgresql://localhost/app: fallback default
+// => :-jdbc:postgresql:app: fallback default (localhost, default port)
 // => Picocli resolves at parse time (not compile time)
 String dbUrl;
 // => Resolved value injected after parsing
@@ -592,7 +592,7 @@ try (InputStream input = new FileInputStream("config.properties")) {
 // => FileInputStream: read bytes from config file
     props.load(input);
 // => Parse properties file into key-value map
-// => Format: db.url=jdbc:postgresql://localhost/app
+// => Format: db.url=jdbc:postgresql:app
     String dbUrl = props.getProperty("db.url");
 // => Get value by key (dot notation for namespacing)
 // => Returns null if key not found (check before use)

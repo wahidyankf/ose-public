@@ -21,7 +21,7 @@ Keep that reservation-owning terminal open while PostgreSQL and NATS run. In ano
 export the backend configuration and start the service:
 
 ```bash
-export DATABASE_URL='Host=localhost;Port=5432;Database=ose_app;Username=postgres;Password=postgres'
+export DATABASE_URL="Host=localhost;Port=5432;Database=ose_app;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}"
 export ASPNETCORE_URLS='http://localhost:8302'
 
 ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-be:codegen

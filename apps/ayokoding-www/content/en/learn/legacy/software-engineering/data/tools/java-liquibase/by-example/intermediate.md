@@ -705,7 +705,7 @@ graph TD
 ```yaml
 # File: liquibase.properties (CLI configuration file)
 
-url: jdbc:postgresql://localhost:5432/mydb
+url: jdbc:postgresql:mydb
 # => JDBC connection URL; matches Spring Boot's spring.datasource.url
 
 username: myuser
@@ -773,10 +773,10 @@ graph LR
 ```bash
 # Compare staging database (target) against production (reference)
 liquibase \
-  --url=jdbc:postgresql://staging-db:5432/mydb \
+  --url=jdbc:postgresql://${DB_HOST:-staging-db}:5432/mydb \
   --username=myuser \
   --password=mypassword \
-  --referenceUrl=jdbc:postgresql://prod-db:5432/mydb \
+  --referenceUrl=jdbc:postgresql://${REFERENCE_DB_HOST:-prod-db}:5432/mydb \
   --referenceUsername=myuser \
   --referencePassword=myprodpassword \
   diff
@@ -792,8 +792,8 @@ liquibase \
 
 # Diff between local dev and CI database to catch schema drift
 liquibase \
-  --url=jdbc:postgresql://localhost:5432/mydb_dev \
-  --referenceUrl=jdbc:postgresql://ci-db:5432/mydb_ci \
+  --url=jdbc:postgresql:mydb_dev \
+  --referenceUrl=jdbc:postgresql://${REFERENCE_DB_HOST:-ci-db}:5432/mydb_ci \
   diff \
   --diffTypes=tables,columns,indexes
   # => --diffTypes filters which object types to compare
@@ -813,8 +813,8 @@ liquibase \
 ```bash
 # Generate a changelog to bring staging in sync with production
 liquibase \
-  --url=jdbc:postgresql://staging-db:5432/mydb \
-  --referenceUrl=jdbc:postgresql://prod-db:5432/mydb \
+  --url=jdbc:postgresql://${DB_HOST:-staging-db}:5432/mydb \
+  --referenceUrl=jdbc:postgresql://${REFERENCE_DB_HOST:-prod-db}:5432/mydb \
   --username=myuser \
   --password=mypassword \
   diffChangeLog \
@@ -838,7 +838,7 @@ liquibase \
 
 # Review the generated file before applying
 liquibase \
-  --url=jdbc:postgresql://staging-db:5432/mydb \
+  --url=jdbc:postgresql://${DB_HOST:-staging-db}:5432/mydb \
   --changelog-file=diff-staging-to-prod.yaml \
   update
   # => Apply the generated changesets to bring staging in sync
@@ -858,7 +858,7 @@ liquibase \
 ```bash
 # Generate a full changelog from the current database schema
 liquibase \
-  --url=jdbc:postgresql://localhost:5432/mydb \
+  --url=jdbc:postgresql:mydb \
   --username=myuser \
   --password=mypassword \
   generateChangeLog \
@@ -880,7 +880,7 @@ liquibase \
 
 # Include data in generated changelog (use cautiously on large tables)
 liquibase \
-  --url=jdbc:postgresql://localhost:5432/mydb \
+  --url=jdbc:postgresql:mydb \
   generateChangeLog \
   --changelog-file=generated-with-data.yaml \
   --dataOutputDirectory=data/
@@ -890,7 +890,7 @@ liquibase \
 
 # Filter generated schema with common flags
 liquibase \
-  --url=jdbc:postgresql://localhost:5432/mydb \
+  --url=jdbc:postgresql:mydb \
   generateChangeLog \
   --changelog-file=generated-core-tables.yaml \
   --includeCatalog=false \

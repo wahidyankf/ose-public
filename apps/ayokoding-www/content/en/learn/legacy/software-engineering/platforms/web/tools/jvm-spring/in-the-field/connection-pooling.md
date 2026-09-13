@@ -22,7 +22,7 @@ import java.sql.*;
 public class ZakatAccountRepository {
 
     // => Connection parameters: hardcoded configuration
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/zakat";
+    private static final String DB_URL = "jdbc:postgresql:zakat";
     private static final String DB_USER = "admin";
     private static final String DB_PASSWORD = "secret";
 
@@ -139,7 +139,7 @@ public class DatabaseConfig {
         HikariConfig config = new HikariConfig();
 
         // => Database connection parameters
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/zakat");
+        config.setJdbcUrl("jdbc:postgresql:zakat");
         config.setUsername("admin");
         config.setPassword("secret");
         config.setDriverClassName("org.postgresql.Driver");
@@ -283,7 +283,7 @@ Spring Boot configures HikariCP automatically:
 spring:
   datasource:
     # => JDBC URL: database connection string
-    url: jdbc:postgresql://localhost:5432/zakat
+    url: jdbc:postgresql:zakat
     username: admin
     password: secret
     driver-class-name: org.postgresql.Driver
@@ -516,7 +516,7 @@ public class PrimaryDatabaseConfig {
     @Primary  // => Default DataSource when multiple exist
     public DataSource primaryDataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/zakat");
+        config.setJdbcUrl("jdbc:postgresql:zakat");
         config.setPoolName("PrimaryPool");
         config.setMaximumPoolSize(20);
         return new HikariDataSource(config);
@@ -530,7 +530,7 @@ public class ReportingDatabaseConfig {
     @Bean
     public DataSource reportingDataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/reporting");
+        config.setJdbcUrl("jdbc:postgresql:reporting");
         config.setPoolName("ReportingPool");
         config.setMaximumPoolSize(10);  // => Smaller pool for read-only queries
         config.setReadOnly(true);  // => Read-only optimization

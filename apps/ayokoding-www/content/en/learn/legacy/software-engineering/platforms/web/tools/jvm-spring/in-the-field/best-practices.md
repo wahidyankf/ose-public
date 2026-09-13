@@ -89,7 +89,7 @@ public class DataConfig {
            // => Method name becomes bean name: "dataSource"
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost/db");
+        config.setJdbcUrl("jdbc:postgresql:db");
         config.setUsername("user");
         config.setPassword("pass");
         config.setMaximumPoolSize(10);
@@ -124,7 +124,7 @@ public class DataConfig {
     @Bean
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://prod-db:5432/app");  // => Hard-coded, different per environment
+        config.setJdbcUrl("jdbc:postgresql://<prod-db>/app");  // => Hard-coded, different per environment
         config.setMaximumPoolSize(50);  // => Hard-coded, can't change without recompile
         return new HikariDataSource(config);
     }
@@ -156,14 +156,14 @@ public class DataConfig {
 **application.properties:**
 
 ```properties
-db.url=jdbc:postgresql://localhost:5432/dev
+db.url=jdbc:postgresql://${DB_HOST:localhost}:5432/dev
 db.pool.size=10
 ```
 
 **application-prod.properties:**
 
 ```properties
-db.url=jdbc:postgresql://prod-db:5432/app
+db.url=jdbc:postgresql://${DB_HOST:prod-db}:5432/app
 db.pool.size=50
 ```
 

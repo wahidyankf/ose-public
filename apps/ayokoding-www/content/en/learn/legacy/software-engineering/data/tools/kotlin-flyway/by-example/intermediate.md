@@ -236,7 +236,7 @@ import org.flywaydb.core.Flyway  // => Flyway core API
 
 val flyway = Flyway.configure()  // => Start fluent builder
     .dataSource(
-        "jdbc:postgresql://localhost:5432/mydb",
+        "jdbc:postgresql:mydb",
         // => JDBC URL for PostgreSQL
         "myuser",                 // => Database username
         "mypassword"              // => Database password
@@ -304,7 +304,7 @@ import org.flywaydb.core.Flyway  // => Flyway core API
 
 val flyway = Flyway.configure()  // => Fluent builder
     .dataSource(
-        "jdbc:postgresql://localhost:5432/mydb",
+        "jdbc:postgresql:mydb",
         "myuser",
         "mypassword"
     )
@@ -372,7 +372,7 @@ import org.flywaydb.core.Flyway  // => Flyway core API
 
 val flyway = Flyway.configure()  // => Fluent builder
     .dataSource(
-        "jdbc:postgresql://localhost:5432/legacy_db",
+        "jdbc:postgresql:legacy_db",
         // => Existing database with tables but no flyway_schema_history
         "myuser",
         "mypassword"
@@ -408,7 +408,7 @@ import org.flywaydb.core.Flyway  // => Flyway core API
 
 val flyway = Flyway.configure()  // => Fluent builder
     .dataSource(
-        "jdbc:postgresql://localhost:5432/mydb",
+        "jdbc:postgresql:mydb",
         "myuser",
         "mypassword"
     )
@@ -425,7 +425,7 @@ println(result.migrationsExecuted)
 // Check what remains pending after targeted migrate
 val flyway2 = Flyway.configure()  // => New builder without target restriction
     .dataSource(
-        "jdbc:postgresql://localhost:5432/mydb",
+        "jdbc:postgresql:mydb",
         "myuser",
         "mypassword"
     )
@@ -457,7 +457,7 @@ import org.flywaydb.core.Flyway  // => Flyway core API
 
 val flyway = Flyway.configure()  // => Fluent builder
     .dataSource(
-        "jdbc:postgresql://localhost:5432/mydb",
+        "jdbc:postgresql:mydb",
         "myuser",
         "mypassword"
     )
@@ -496,7 +496,7 @@ import org.flywaydb.core.Flyway  // => Flyway core API
 
 val flyway = Flyway.configure()  // => Fluent builder
     .dataSource(
-        "jdbc:postgresql://localhost:5432/mydb",
+        "jdbc:postgresql:mydb",
         "myuser",
         "mypassword"
     )
@@ -583,7 +583,7 @@ import org.flywaydb.core.api.exception.FlywayException  // => Base exception for
 
 val flyway = Flyway.configure()  // => Fluent builder
     .dataSource(
-        "jdbc:postgresql://localhost:5432/mydb",
+        "jdbc:postgresql:mydb",
         "myuser",
         "mypassword"
     )
@@ -631,7 +631,7 @@ import org.flywaydb.core.Flyway  // => Flyway core API
 
 val flyway = Flyway.configure()  // => Fluent builder
     .dataSource(
-        "jdbc:postgresql://localhost:5432/mydb",
+        "jdbc:postgresql:mydb",
         "myuser",
         "mypassword"
     )
@@ -1451,7 +1451,7 @@ class PostgresMigrationTest {
         val flyway = Flyway.configure()    // => Fluent builder
             .dataSource(
                 postgres.jdbcUrl,          // => Real PostgreSQL JDBC URL from container
-                // => Example: jdbc:postgresql://localhost:32768/testdb
+                // => Example: jdbc:postgresql://<host>:<mapped-port>/testdb
                 postgres.username,         // => "testuser"
                 postgres.password          // => "testpass"
             )

@@ -661,7 +661,7 @@ _Suggested executor: `swe-rust-dev`_
         context: ../..
         dockerfile: apps/organiclever-be/Dockerfile.integration
       environment:
-        DATABASE_URL: postgres://postgres:postgres@postgres:5432/organiclever
+        DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/organiclever
         PORT: "8202"
         CORS_ORIGINS: "*"
       ports:
@@ -677,7 +677,7 @@ _Suggested executor: `swe-rust-dev`_
       volumes:
         - ../../specs:/specs:ro
       environment:
-        DATABASE_URL: postgres://postgres:postgres@postgres:5432/organiclever
+        DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/organiclever
         API_BASE_URL: http://app:8202
       depends_on:
         - app

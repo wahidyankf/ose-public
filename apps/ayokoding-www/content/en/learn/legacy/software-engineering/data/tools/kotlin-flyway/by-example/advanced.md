@@ -99,7 +99,7 @@ class InlineMigrationResolver : MigrationResolver {
 
 // Wire resolver into Flyway — alongside the default classpath resolver
 val flyway = Flyway.configure()
-    .dataSource("jdbc:postgresql://localhost:5432/demo", "user", "pass")
+    .dataSource("jdbc:postgresql:demo", "user", "pass")
     // => Standard JDBC URL + credentials; replace with env-var driven config in production
     .resolvers(InlineMigrationResolver())
     // => Adds InlineMigrationResolver to the resolver chain; classpath resolver still active
@@ -579,7 +579,7 @@ import org.flywaydb.core.api.output.MigrateResult
 
 // Standalone Flyway runner — invoked by the deployment pipeline before app starts
 fun runMigrationsInPipeline(
-    jdbcUrl: String,    // => from CI secret: jdbc:postgresql://prod-db:5432/myapp
+    jdbcUrl: String,    // => from CI secret: jdbc:postgresql://<prod-host>:<port>/myapp
     user: String,       // => from CI secret: migration_user (limited to DDL only)
     password: String    // => from CI secret: never hardcode
 ): MigrateResult {
@@ -1117,7 +1117,7 @@ object Products : Table("products") {
 fun setupDatabaseAndQuery() {
     // Phase 1: run Flyway migrations (schema must be current before Exposed runs)
     val flyway = Flyway.configure()
-        .dataSource("jdbc:postgresql://localhost:5432/demo", "user", "pass")
+        .dataSource("jdbc:postgresql:demo", "user", "pass")
         // => same credentials used by the application; Flyway runs first
         .locations("classpath:db/migration")
         .load()
@@ -1125,7 +1125,7 @@ fun setupDatabaseAndQuery() {
     // => ensures schema is up-to-date; Exposed DSL calls come AFTER this line
 
     // Phase 2: use Exposed DSL against the Flyway-managed schema
-    Database.connect("jdbc:postgresql://localhost:5432/demo", user = "user", password = "pass")
+    Database.connect("jdbc:postgresql:demo", user = "user", password = "pass")
     // => Exposed connects independently of Flyway; both use the same underlying DB
 
     // Query active products (soft delete pattern from V82)

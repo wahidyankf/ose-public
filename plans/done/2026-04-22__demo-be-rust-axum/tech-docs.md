@@ -605,7 +605,7 @@ services:
     ports:
       - "8201:8201"
     environment:
-      - DATABASE_URL=postgres://a_demo_be_rust_axum:a_demo_be_rust_axum@a-demo-be-db:5432/a_demo_be_rust_axum
+      - DATABASE_URL=postgres://a_demo_be_rust_axum:${POSTGRES_PASSWORD:-a_demo_be_rust_axum}@a-demo-be-db:5432/a_demo_be_rust_axum
       - APP_JWT_SECRET=dev-jwt-secret-at-least-32-chars-long
       - APP_PORT=8201
     volumes:

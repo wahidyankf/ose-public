@@ -1,9 +1,10 @@
-"""Kata 10 (after): threading.local() gives each thread its OWN private "current request" slot."""
+"""Kata 10 (after): local() from threading gives each thread its OWN private "current request" slot."""
 
 import threading
 import time
+from threading import local
 
-request_context = threading.local()  # FIX: each thread gets its own independent attribute namespace
+request_context = local()  # FIX: each thread gets its own independent attribute namespace
 
 
 def handle_request(worker_name: str, request_id: str, delay_before_read: float, observed: dict[str, str]) -> None:

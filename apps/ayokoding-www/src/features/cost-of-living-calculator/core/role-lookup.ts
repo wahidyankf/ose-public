@@ -296,9 +296,9 @@ export function toDisplayCurrencies(
   savingsUsd: number,
   cityCurrency: string,
   displayCurrency: string,
-): { usd: number; local: number; display: number } {
+): { usd: number; localAmount: number; display: number } {
   const cityRate = fxToUsd(fx, cityCurrency);
-  const local = cityRate > 0 ? savingsUsd / cityRate : 0;
+  const localAmount = cityRate > 0 ? savingsUsd / cityRate : 0;
   const display = usdToDisplay(fx, savingsUsd, displayCurrency);
-  return { usd: savingsUsd, local, display };
+  return { usd: savingsUsd, localAmount, display };
 }

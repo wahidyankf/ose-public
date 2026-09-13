@@ -437,7 +437,7 @@ Key-only SSH stops password guessing, but bots still hammer port 22, polluting y
 watches the auth log and TEMPORARILY BANS an IP after N failed attempts -- defense in depth layered
 on the firewall.
 
-**`learning/code/ex-43-firewall-and-fail2ban/jail.local`**:
+**`learning/code/ex-43-firewall-and-fail2ban/sshd.conf`**:
 
 ```ini
 [DEFAULT]
@@ -452,7 +452,7 @@ enabled = true
 port = ssh
 ```
 
-**Run**: `apt-get install -y fail2ban && install jail.local /etc/fail2ban/ && systemctl enable --now
+**Run**: `apt-get install -y fail2ban && install -D sshd.conf /etc/fail2ban/jail.d/sshd.conf && systemctl enable --now
 fail2ban`; fail SSH 5+ times from a test IP, then `fail2ban-client status sshd`.
 
 **Expected**: the repeat-offender IP appears under `Banned IP list`, and `ufw status` shows a deny

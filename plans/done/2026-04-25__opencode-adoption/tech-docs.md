@@ -12,7 +12,7 @@
 │  ├─────────────────────┤         ├─────────────────────┤               │
 │  │ .claude/            │         │ .opencode/          │               │
 │  │   settings.json     │         │   agent/            │               │
-│  │   settings.local    │         │   plugin/           │               │
+│  │  settings.local.json│         │   plugin/           │               │
 │  │   agents/*.md       │         │   skill/            │               │
 │  │   skills/*/SKILL.md │◄───────►│                     │               │
 │  │                     │ shared! │ opencode.json       │               │

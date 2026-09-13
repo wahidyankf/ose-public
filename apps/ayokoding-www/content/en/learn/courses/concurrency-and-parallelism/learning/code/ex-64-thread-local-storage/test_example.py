@@ -1,4 +1,4 @@
-"""Example 64: pytest verification for `threading.local()` Per-Thread Isolation."""
+"""Example 64: pytest verification for `local()` from `threading` Per-Thread Isolation."""
 
 import threading
 

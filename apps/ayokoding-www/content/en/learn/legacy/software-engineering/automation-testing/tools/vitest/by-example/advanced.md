@@ -1356,7 +1356,7 @@ import { test, expect, vi } from "vitest";
 
 test("CI auto-detection prevents watch mode", () => {
   // Vitest checks for CI environment variables:
-  // - CI=true (GitHub Actions, GitLab CI, Travis CI)
+  // - CI=true (GitHub Actions, GitLab CI, and most other CI services)
   // - CONTINUOUS_INTEGRATION=true (Jenkins)
   // - TF_BUILD=true (Azure Pipelines)
 

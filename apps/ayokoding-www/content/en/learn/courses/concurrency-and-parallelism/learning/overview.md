@@ -105,7 +105,7 @@ and honestly on whichever interpreter actually executes them, standard or free-t
   blocking calls with `run_in_executor`, Amdahl's Law, and a map-reduce decomposition.
 - **[Advanced](./advanced.md)** (Examples 58-87) -- free-threaded CPython actually scaling CPU-bound
   threads, double-checked locking, a hand-built reader-writer lock, deadlock detection via a wait-for
-  graph, a lock-free single-owner-queue counter, `threading.local()`, `Future`/`Task` cancellation,
+  graph, a lock-free single-owner-queue counter, `local()` from `threading`, `Future`/`Task` cancellation,
   `asyncio.wait`, `TaskGroup`, a rate-limited concurrent fetch-and-aggregate, a three-stage pipeline,
   work-stealing, `multiprocessing.shared_memory`, `asyncio.to_thread`, the spurious-wakeup guard,
   phased-computation barriers, three-way I/O and CPU benchmarks, graceful shutdown, deadlock-free dining
@@ -264,7 +264,7 @@ and honestly on whichever interpreter actually executes them, standard or free-t
 - [Example 61: A Hand-Built Reader-Writer Lock -- Many Readers, OR One Writer](/en/c/learn/courses/concurrency-and-parallelism/learning/advanced#example-61-a-hand-built-reader-writer-lock----many-readers-or-one-writer)
 - [Example 62: Detecting a Deadlock -- Finding a Cycle in a Wait-For Graph](/en/c/learn/courses/concurrency-and-parallelism/learning/advanced#example-62-detecting-a-deadlock----finding-a-cycle-in-a-wait-for-graph)
 - [Example 63: A "Lock-Free" Counter -- via a Single-Owner Queue, Not a Lock](/en/c/learn/courses/concurrency-and-parallelism/learning/advanced#example-63-a-lock-free-counter----via-a-single-owner-queue-not-a-lock)
-- [Example 64: `threading.local()` -- Per-Thread State That Never Bleeds Across Threads](/en/c/learn/courses/concurrency-and-parallelism/learning/advanced#example-64-threadinglocal----per-thread-state-that-never-bleeds-across-threads)
+- [Example 64: `local()` from `threading` -- Per-Thread State That Never Bleeds Across Threads](/en/c/learn/courses/concurrency-and-parallelism/learning/advanced#example-64-local-from-threading----per-thread-state-that-never-bleeds-across-threads)
 - [Example 65: Cancelling a PENDING `Future` -- Before It Ever Starts](/en/c/learn/courses/concurrency-and-parallelism/learning/advanced#example-65-cancelling-a-pending-future----before-it-ever-starts)
 - [Example 66: `asyncio.wait(..., timeout=...)` -- Returns BOTH the Done AND the Pending Sets](/en/c/learn/courses/concurrency-and-parallelism/learning/advanced#example-66-asynciowait-timeout----returns-both-the-done-and-the-pending-sets)
 - [Example 67: Cancelling a Task -- Catching `CancelledError` to Run Cleanup](/en/c/learn/courses/concurrency-and-parallelism/learning/advanced#example-67-cancelling-a-task----catching-cancellederror-to-run-cleanup)

@@ -172,8 +172,7 @@ export default defineConfig({
               // => Real iPhone 13 hardware
               // => Includes actual GPU, touch hardware
 
-              "browserstack.local": "false",
-              // => Disables local testing mode
+              // => BrowserStack Local (the tunnel to private URLs) stays off by default
               // => Tests public URLs only
 
               "browserstack.networkLogs": "true",

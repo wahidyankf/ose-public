@@ -538,19 +538,19 @@ same script. Run each yourself, predict the buggy output, then compare against t
 
 ### Kata 1 -- `.gitignore` added after tracking
 
-**Task.** Adding `config.local` to `.gitignore` should stop Git from tracking further changes to it. The
+**Task.** Adding `config.local.ini` to `.gitignore` should stop Git from tracking further changes to it. The
 version below adds the pattern AFTER the file is already tracked, which does nothing to a file Git already
 knows about.
 
 **`drilling/code/kata-01-gitignore-after-tracking/setup.sh`** (buggy section)
 
 ```bash
-echo "secret=123" > config.local; git add config.local; git commit -q -m "accidentally track config.local"
+echo "secret=123" > config.local.ini; git add config.local.ini; git commit -q -m "accidentally track config.local.ini"
 
-echo "config.local" > .gitignore
+echo "config.local.ini" > .gitignore
 git add .gitignore; git commit -q -m "add gitignore (too late)"
-echo "secret=456" > config.local          # => edit the already-tracked file again
-git status                                 # => BUG: config.local STILL shows as modified -- .gitignore
+echo "secret=456" > config.local.ini      # => edit the already-tracked file again
+git status                                 # => BUG: config.local.ini STILL shows as modified -- .gitignore
                                             #    only affects UNTRACKED files, never files already in the index
 ```
 
@@ -560,12 +560,12 @@ git status                                 # => BUG: config.local STILL shows as
 **Fix section**
 
 ```bash
-git rm --cached -q config.local
-git commit -q -m "stop tracking config.local"
-echo "secret=789" > config.local           # => edit again
-git status                                  # => FIXED: config.local no longer appears at all -- now
+git rm --cached -q config.local.ini
+git commit -q -m "stop tracking config.local.ini"
+echo "secret=789" > config.local.ini       # => edit again
+git status                                  # => FIXED: config.local.ini no longer appears at all -- now
                                             #    genuinely untracked AND ignored, exactly as .gitignore intended
-cat config.local                             # => the file itself is untouched on disk the whole time
+cat config.local.ini                         # => the file itself is untouched on disk the whole time
 ```
 
 **Root cause**: `.gitignore` patterns are consulted only when deciding whether to WARN about or ADD an
@@ -579,7 +579,7 @@ changes) while `--cached` specifically leaves the working-tree copy on disk unto
 === BUGGY: add the ignore pattern AFTER the file is already tracked ===
 On branch main
 Changes not staged for commit:
- modified:   config.local
+ modified:   config.local.ini
 
 no changes added to commit (use "git add" and/or "git commit -a")
 === FIX: git rm --cached removes it from tracking WITHOUT deleting it from disk ===

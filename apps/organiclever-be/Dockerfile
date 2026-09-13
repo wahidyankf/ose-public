@@ -14,11 +14,15 @@ WORKDIR /src
 COPY apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj apps/organiclever-be/src/OrganicleverBe/
 COPY apps/organiclever-be/generated-contracts apps/organiclever-be/generated-contracts/
 COPY apps/organiclever-be/db apps/organiclever-be/db/
+# The shared env loader is a ProjectReference, so restore needs its project file
+# and publish needs its sources.
+COPY libs/fsharp-env-loader/fsharp-env-loader.fsproj libs/fsharp-env-loader/
 
 RUN dotnet restore apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj
 
 # Copy the remaining sources and publish.
 COPY apps/organiclever-be/src apps/organiclever-be/src/
+COPY libs/fsharp-env-loader/src libs/fsharp-env-loader/src/
 
 RUN dotnet publish apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj \
   -c Release -o /app/publish --no-restore

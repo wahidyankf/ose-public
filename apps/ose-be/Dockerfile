@@ -13,11 +13,15 @@ WORKDIR /src
 COPY apps/ose-be/src/OseBe/OseBe.fsproj apps/ose-be/src/OseBe/
 COPY apps/ose-be/generated-contracts apps/ose-be/generated-contracts/
 COPY apps/ose-be/db apps/ose-be/db/
+# The shared env loader is a ProjectReference, so restore needs its project file
+# and publish needs its sources.
+COPY libs/fsharp-env-loader/fsharp-env-loader.fsproj libs/fsharp-env-loader/
 
 RUN dotnet restore apps/ose-be/src/OseBe/OseBe.fsproj
 
 # Copy the remaining sources and publish.
 COPY apps/ose-be/src apps/ose-be/src/
+COPY libs/fsharp-env-loader/src libs/fsharp-env-loader/src/
 
 RUN dotnet publish apps/ose-be/src/OseBe/OseBe.fsproj \
   -c Release -o /app/publish --no-restore

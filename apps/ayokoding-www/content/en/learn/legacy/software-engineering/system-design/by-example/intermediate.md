@@ -6753,10 +6753,11 @@ import uuid
 import threading
 from typing import Optional
 from contextlib import contextmanager
+from threading import local
 
 # Thread-local storage holds the current request's correlation ID
 # => prevents correlation ID leakage between concurrent requests
-_local = threading.local()
+_local = local()
 
 class StructuredLogger:
     def __init__(self, service_name: str, environment: str = "production"):

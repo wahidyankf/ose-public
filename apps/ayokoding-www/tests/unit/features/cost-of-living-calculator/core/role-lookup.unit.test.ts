@@ -413,13 +413,13 @@ describe("role-lookup", () => {
     it("converts USD savings to USD, local, and display currency", () => {
       const result = toDisplayCurrencies(fx, 10000, "EUR", "USD");
       expect(result.usd).toBeCloseTo(10000, 2);
-      expect(result.local).toBeGreaterThan(0); // EUR amount
+      expect(result.localAmount).toBeGreaterThan(0); // EUR amount
       expect(result.display).toBeCloseTo(10000, 2); // USD display
     });
 
     it("local currency differs from USD for non-USD cities", () => {
       const result = toDisplayCurrencies(fx, 10000, "JPY", "USD");
-      expect(result.local).toBeGreaterThan(result.usd); // JPY amount >> USD
+      expect(result.localAmount).toBeGreaterThan(result.usd); // JPY amount >> USD
     });
 
     it("display currency = USD when displayCurrency is USD", () => {

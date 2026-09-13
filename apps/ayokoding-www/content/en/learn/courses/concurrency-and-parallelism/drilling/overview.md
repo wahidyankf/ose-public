@@ -119,7 +119,7 @@ Nearly every failure mode this topic covers -- races, deadlocks, visibility surp
 BECAUSE some piece of mutable state is reachable and writable from more than one thread at the same time.
 If no state were ever shared and mutable simultaneously, none of locks, semaphores, or conditions would
 be necessary at all -- they all exist specifically to manage this one hazard (Example 8's shared counter;
-Example 64's `threading.local()` fix removes the hazard by giving each thread its OWN, unshared copy).
+Example 64's `local()` fix (from `threading`) removes the hazard by giving each thread its OWN, unshared copy).
 
 </details>
 
@@ -1754,12 +1754,13 @@ kata OK (bug reproduced)
 **After** (`drilling/code/kata-10-thread-local-state-bleed/after/kata.py`)
 
 ```python
-"""Kata 10 (after): threading.local() gives each thread its OWN private "current request" slot."""
+"""Kata 10 (after): local() from threading gives each thread its OWN private "current request" slot."""
 
 import threading
 import time
+from threading import local
 
-request_context = threading.local()  # FIX: each thread gets its own independent attribute namespace
+request_context = local()  # FIX: each thread gets its own independent attribute namespace
 
 
 def handle_request(worker_name: str, request_id: str, delay_before_read: float, observed: dict[str, str]) -> None:
@@ -1791,7 +1792,7 @@ print("kata OK (fix verified)")
 **Root cause**: a single module-level `dict` used as "the current request" has exactly ONE `request_id`
 key, shared by every thread that touches it -- whichever thread writes LAST wins, regardless of which
 thread "logically" owns that write, so a fast worker's write can silently clobber a slow worker's value
-before the slow worker ever reads it back. `threading.local()` gives each thread its OWN, separate
+before the slow worker ever reads it back. `local()` from `threading` gives each thread its OWN, separate
 attribute namespace under the hood -- `request_context.request_id` resolves to a DIFFERENT underlying
 storage location per thread, so no thread's write can ever be visible to, or overwritten by, another
 thread's write to "the same-looking" attribute.

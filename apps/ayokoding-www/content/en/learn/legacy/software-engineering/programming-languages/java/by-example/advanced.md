@@ -1199,7 +1199,7 @@ module com.example.myapp {      // => Module declaration (reverse domain naming)
 
     // Public API
     exports com.example.myapp.api; // => Makes api package accessible to all modules
-    exports com.example.myapp.internal to com.example.test; // => Qualified export: only for test module
+    exports com.example.myapp.impl to com.example.test; // => Qualified export: only for test module
 
     // Reflection access (for frameworks)
     opens com.example.myapp.model; // => Allows deep reflection (Spring, Hibernate)
@@ -1259,8 +1259,8 @@ public class PublicService {     // => Public class in exported package
 **Non-exported package** (internal implementation):
 
 ```java
-// File: com/example/myapp/internal/InternalUtil.java
-package com.example.myapp.internal; // => NOT exported in module-info.java
+// File: com/example/myapp/impl/InternalUtil.java
+package com.example.myapp.impl; // => NOT exported in module-info.java
                                  // => No "exports" statement for this package
                                  // => Module descriptor hides this package
 

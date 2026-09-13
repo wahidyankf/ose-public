@@ -802,20 +802,21 @@ def test_single_owner_counter_is_exact_with_no_lock() -> None:
 
 ---
 
-### Example 64: `threading.local()` -- Per-Thread State That Never Bleeds Across Threads
+### Example 64: `local()` from `threading` -- Per-Thread State That Never Bleeds Across Threads
 
 _ex-64 &middot; exercises co-07, co-19_
 
-`threading.local()` gives EACH thread its own independent copy of an attribute -- setting `local.value` in one thread never affects, and is never visible from, another thread's `local.value`, even though every thread accesses the exact same `local` object by name.
+`local()` from `threading` gives EACH thread its own independent copy of an attribute -- setting `local.value` in one thread never affects, and is never visible from, another thread's `local.value`, even though every thread accesses the exact same `local` object by name.
 
 **`learning/code/ex-64-thread-local-storage/example.py`**
 
 ```python
-"""Example 64: `threading.local()` -- Per-Thread State That Never Bleeds Across Threads."""
+"""Example 64: `local()` from `threading` -- Per-Thread State That Never Bleeds Across Threads."""
 
 import threading  # => co-07, co-19: the built-in escape hatch from shared-mutable-state hazards
+from threading import local  # => co-07: the per-thread storage class, imported by name
 
-_thread_local = threading.local()  # => _thread_local: ONE object, but EVERY thread sees its OWN separate attributes
+_thread_local = local()  # => _thread_local: ONE object, but EVERY thread sees its OWN separate attributes
 
 
 def set_and_read_own_value(thread_id: int, observed: dict[int, int]) -> None:
@@ -835,7 +836,7 @@ if __name__ == "__main__":  # => module entry point
 
     print(f"observed={observed}")  # => Output: observed={0: 0, 1: 1000, 2: 2000, 3: 3000, 4: 4000, 5: 5000}
 
-    # => `threading.local()` creates an object whose ATTRIBUTES are secretly per-thread: setting
+    # => `local()` from `threading` creates an object whose ATTRIBUTES are secretly per-thread: setting
     # => `_thread_local.value` in thread 3 does NOT affect what thread 5 sees when it reads
     # => `_thread_local.value` -- each thread gets its OWN isolated slot for the SAME attribute name,
     # => automatically, with zero explicit locking (co-19). This is the standard tool for state that
@@ -860,7 +861,7 @@ ex-64 OK
 **`learning/code/ex-64-thread-local-storage/test_example.py`**
 
 ```python
-"""Example 64: pytest verification for `threading.local()` Per-Thread Isolation."""
+"""Example 64: pytest verification for `local()` from `threading` Per-Thread Isolation."""
 
 import threading
 
@@ -891,7 +892,7 @@ def test_thread_local_values_never_bleed_across_threads() -> None:
 1 passed
 ```
 
-**Key takeaway**: `threading.local()` provides per-thread storage that looks like ordinary attribute access but is silently isolated per thread -- it sidesteps the shared-mutable-state hazard (co-07) entirely, because there IS no shared state to race on.
+**Key takeaway**: `local()` from `threading` provides per-thread storage that looks like ordinary attribute access but is silently isolated per thread -- it sidesteps the shared-mutable-state hazard (co-07) entirely, because there IS no shared state to race on.
 
 **Why it matters**: Thread-local storage is the standard tool for state that's conceptually per-request or per-thread but inconvenient to thread explicitly through every function call -- a database connection, a request ID for logging, a per-thread cache. Because each thread's `.value` genuinely never bleeds into another's, it removes an entire category of races (co-19's visibility hazard, ex-35) by construction rather than by careful locking.
 

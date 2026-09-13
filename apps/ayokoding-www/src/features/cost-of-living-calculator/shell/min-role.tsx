@@ -231,7 +231,7 @@ export function MinRoleTable({
       >
         <span data-line="display">{fmtCurrencyTrailing(conv.display, displayCurrency)}</span>
         <span data-line="local" className="block text-xs text-muted-foreground">
-          {fmtCurrencyTrailing(conv.local, cityCurrency)}
+          {fmtCurrencyTrailing(conv.localAmount, cityCurrency)}
         </span>
       </TableCell>
     );
@@ -251,7 +251,7 @@ export function MinRoleTable({
           <span data-line="display">{fmtCurrencyTrailing(conv.display, displayCurrency)}</span>
         )}
         <span data-line="local" className="block text-xs text-muted-foreground">
-          {fmtCurrencyTrailing(conv.local, entry.city.currency)}
+          {fmtCurrencyTrailing(conv.localAmount, entry.city.currency)}
         </span>
         <span data-line="usd" className="block text-xs">
           {fmtCurrencyTrailing(entry.essentialSavingsUsd, "USD")}

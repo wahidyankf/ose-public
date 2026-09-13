@@ -173,7 +173,7 @@ by ≥1 example.
 - **ex-61 · reader-writer-lock** — a hand-built RW lock allowing many readers or one writer — verify the invariant. (co-13, co-11)
 - **ex-62 · deadlock-detector-wait-for-graph** — detect a cycle in a wait-for graph — verify the cycle is found. (co-16, co-18)
 - **ex-63 · lock-free-counter-via-queue** — replace a locked counter with a single-owner queue — verify correctness without a lock. (co-20, co-21)
-- **ex-64 · thread-local-storage** — `threading.local` per-thread state — verify no cross-thread bleed. (co-07, co-19)
+- **ex-64 · thread-local-storage** — `local` from `threading` per-thread state — verify no cross-thread bleed. (co-07, co-19)
 - **ex-65 · future-cancellation** — cancel a pending `Future` before it runs — verify it never executes. (co-25, co-23)
 - **ex-66 · timeout-on-gather** — `asyncio.wait` with a timeout over many tasks — verify the pending set is returned. (co-26)
 - **ex-67 · async-cancellation-cleanup** — cancel a task, handle `CancelledError`, run cleanup — verify resources released. (co-26, co-27)

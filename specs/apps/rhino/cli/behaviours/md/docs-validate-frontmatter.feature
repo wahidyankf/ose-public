@@ -67,6 +67,12 @@ Feature: Docs Frontmatter Validation
     Then the command exits with a failure code
     And the frontmatter output identifies the missing description field
 
+  Scenario: A folder whose name ends in repo-governance is outside the governance tree
+    Given a doc without frontmatter under a docs folder whose name ends in repo-governance
+    When the developer runs docs validate-frontmatter
+    Then the command exits successfully
+    And the frontmatter output reports zero fail-level findings
+
   Scenario: The software-engineering schema is unaffected by the governance allow-list
     Given a software-engineering doc with title, description, category, subcategory, and tags frontmatter
     When the developer runs docs validate-frontmatter

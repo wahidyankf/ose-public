@@ -14,12 +14,12 @@ business compliance program.
 
 ## Scope
 
-| Area             | Detail                                                                                                                                                                    |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **In scope**     | Rename `governance/` → `repo-governance/` in `ose-public`; update all path references                                                                                     |
-| **In scope**     | Update `/Users/wkf/ose-projects/CLAUDE.md` (parent repo, 1 ref — the `ose-public/repo-governance/` occurrence; the parent's own `./repo-governance/` refs are unaffected) |
-| **Out of scope** | Any content changes inside governance files                                                                                                                               |
-| **Out of scope** | `ose-infra`, `ose-primer` repos (separate governance trees)                                                                                                               |
+| Area             | Detail                                                                                                                                                           |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **In scope**     | Rename `governance/` → `repo-governance/` in `ose-public`; update all path references                                                                            |
+| **In scope**     | Update `~/ose-projects/CLAUDE.md` (parent repo, 1 ref — the `ose-public/repo-governance/` occurrence; the parent's own `./repo-governance/` refs are unaffected) |
+| **Out of scope** | Any content changes inside governance files                                                                                                                      |
+| **Out of scope** | `ose-infra`, `ose-primer` repos (separate governance trees)                                                                                                      |
 
 ## Approach Summary
 

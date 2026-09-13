@@ -62,7 +62,7 @@ Scenario: Markdown lint passes
 
 - `repo-governance/` directory rename via `git mv`
 - All `repo-governance/` path tokens in `.md`, `.sh`, `.go`, `.json`, `.yaml`, `.yml`, `.feature` files
-- Parent repo `/Users/wkf/ose-projects/CLAUDE.md`
+- Parent repo `~/ose-projects/CLAUDE.md`
 
 **Out of scope:**
 

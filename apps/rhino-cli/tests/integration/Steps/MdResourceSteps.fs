@@ -319,6 +319,11 @@ type MdResourceSteps() =
         writeDoc "repo-governance/glossary/foo.md" "---\ntitle: T\n---\nbody\n"
 
     [<Given>]
+    member _.``a doc without frontmatter under a docs folder whose name ends in repo-governance``() =
+        rootDir <- Some(newTempDir ())
+        writeDoc "docs/reference/renamed-to-repo-governance/foo.md" "# Foo\n\nbody\n"
+
+    [<Given>]
     member _.``a software-engineering doc with title, description, category tutorial, subcategory, and tags frontmatter``
         ()
         =
@@ -1621,6 +1626,12 @@ let ``Governance subtree outside the four sub-trees is still validated`` () =
     FeatureRunner.run
         "docs-validate-frontmatter.feature"
         "Governance subtree outside the four sub-trees is still validated"
+
+[<Fact>]
+let ``A folder whose name ends in repo-governance is outside the governance tree`` () =
+    FeatureRunner.run
+        "docs-validate-frontmatter.feature"
+        "A folder whose name ends in repo-governance is outside the governance tree"
 
 [<Fact>]
 let ``The software-engineering schema is unaffected by the governance allow-list`` () =

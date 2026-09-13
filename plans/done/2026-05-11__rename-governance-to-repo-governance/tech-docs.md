@@ -208,9 +208,9 @@ npm run sync:claude-to-opencode
 
 ### Cross-repo
 
-| File                                                | Refs                                                                                                    |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `/Users/wkf/ose-projects/CLAUDE.md` [Repo-grounded] | 1 (`ose-public/repo-governance/` occurrence; the parent's own `./repo-governance/` refs are unaffected) |
+| File                                       | Refs                                                                                                    |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `~/ose-projects/CLAUDE.md` [Repo-grounded] | 1 (`ose-public/repo-governance/` occurrence; the parent's own `./repo-governance/` refs are unaffected) |
 
 ### Excluded
 
@@ -282,7 +282,7 @@ npm run sync:claude-to-opencode
 
 # 9. Restore parent CLAUDE.md
 sed -i '' 's|ose-public/repo-governance/|ose-public/repo-governance/|g' \
-  /Users/wkf/ose-projects/CLAUDE.md
+  ~/ose-projects/CLAUDE.md
 ```
 
 ---

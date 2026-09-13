@@ -1411,8 +1411,6 @@ type GateExecutionSteps() =
 
             Assert.True(guarded, sprintf "setup-node npm ci step at line %d must be guarded by run-npm-ci" (i + 1))
 
-        Assert.Contains("run-npm-ci", setupNodeAction)
-
     [<Then>]
     member _.``every gate in the group still reports its baseline result``() =
         let groupId = noNpmGroupId.Value

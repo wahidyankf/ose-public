@@ -401,7 +401,7 @@ public class DataConfig {
     @Bean
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/dev");  // => Hard-coded
+        config.setJdbcUrl("jdbc:postgresql:dev");  // => Hard-coded
         config.setUsername("postgres");  // => Hard-coded
         config.setPassword("secret123");  // => Hard-coded, security risk
         config.setMaximumPoolSize(10);
@@ -449,7 +449,7 @@ public class DataConfig {
 **application-dev.properties:**
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/dev
+spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}:5432/dev
 spring.datasource.username=dev_user
 spring.datasource.password=${DEV_DB_PASSWORD}
 ```
@@ -457,7 +457,7 @@ spring.datasource.password=${DEV_DB_PASSWORD}
 **application-prod.properties:**
 
 ```properties
-spring.datasource.url=jdbc:postgresql://prod-db:5432/app
+spring.datasource.url=jdbc:postgresql://${DB_HOST:prod-db}:5432/app
 spring.datasource.username=prod_user
 spring.datasource.password=${PROD_DB_PASSWORD}
 ```

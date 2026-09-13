@@ -256,7 +256,7 @@ services:
       a-demo-fs-ts-nextjs-db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://demo_fs_nextjs:demo_fs_nextjs@a-demo-fs-ts-nextjs-db:5432/demo_fs_nextjs
+      - DATABASE_URL=postgresql://demo_fs_nextjs:${POSTGRES_PASSWORD:-demo_fs_nextjs}@a-demo-fs-ts-nextjs-db:5432/demo_fs_nextjs
       - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}
       - ENABLE_TEST_API=true
       - PORT=3401

@@ -39,7 +39,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: postgresql://developer:dev_password@postgres:5432/ose_dev
+      DATABASE_URL: postgresql://developer:${POSTGRES_PASSWORD:-dev_password}@postgres:5432/ose_dev
       REDIS_URL: redis://redis:6379
     depends_on:
       - postgres

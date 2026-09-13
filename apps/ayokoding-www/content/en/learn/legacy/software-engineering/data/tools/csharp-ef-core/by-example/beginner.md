@@ -511,7 +511,7 @@ dotnet ef database update AddEmailToUsers
 # => Useful for staged rollouts or debugging a specific migration
 
 # Apply to empty database (fresh install)
-dotnet ef database update --connection "Host=localhost;Database=myapp_dev;Username=admin;Password=secret"
+dotnet ef database update --connection "Host=localhost;Database=myapp_dev;Username=admin;Password=${DB_PASSWORD}"
 # => Uses explicit connection string instead of appsettings.json
 # => Creates __EFMigrationsHistory table if it does not exist
 # => Applies all migrations from the beginning
@@ -630,7 +630,7 @@ dotnet ef migrations list
 # => Pending = migration file exists but not yet run
 
 # List against a specific environment database
-dotnet ef migrations list --connection "Host=prod-db.example.com;Database=myapp;Username=ro;Password=secret"
+dotnet ef migrations list --connection "Host=prod-db.example.com;Database=myapp;Username=ro;Password=${DB_PASSWORD}"
 # => Connects to production (or staging) DB to check actual applied migrations
 # => Useful for verifying deployment status without SSH access
 

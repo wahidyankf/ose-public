@@ -567,7 +567,7 @@ services:
       - "8201:8201"
     environment:
       - PORT=8201
-      - DATABASE_URL=jdbc:postgresql://a-demo-be-db:5432/a_demo_be_kotlin_ktor
+      - DATABASE_URL=jdbc:postgresql://${DB_HOST:-a-demo-be-db}:5432/a_demo_be_kotlin_ktor
       - DATABASE_USER=a_demo_be_kotlin_ktor
       - DATABASE_PASSWORD=a_demo_be_kotlin_ktor
       - JWT_SECRET=dev-jwt-secret-at-least-32-chars-long

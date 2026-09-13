@@ -77,7 +77,7 @@ printfn "Connected: %A" result
   ;; Read from environment — the same variable docker-compose sets for the test-runner container
   ;; => System/getenv returns nil if the variable is absent; nil passed to jdbc fails with NullPointerException
   (System/getenv "DATABASE_URL"))
-;; => DATABASE_URL: e.g. "jdbc:postgresql://localhost:5432/procurement_platform_test?user=procurement_platform&password=procurement_platform"
+;; => DATABASE_URL: e.g. "jdbc:postgresql://${DB_HOST}:5432/procurement_platform_test?user=procurement_platform&password=${DB_PASSWORD}"
 
 (defn smoke-connect!
   ;; Open a raw JDBC connection and run a smoke query

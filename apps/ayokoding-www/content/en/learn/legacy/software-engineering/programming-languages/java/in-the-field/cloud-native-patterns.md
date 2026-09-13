@@ -397,12 +397,12 @@ database.pool.size=10
 cache.ttl=3600
 
 # dev environment: Override via environment variables
-DATABASE_URL=jdbc:postgresql://localhost:5432/dev
+DATABASE_URL=jdbc:postgresql:dev
 DATABASE_USERNAME=dev_user
 DATABASE_PASSWORD=dev_password
 
 # prod environment: Override via Kubernetes secrets
-DATABASE_URL=jdbc:postgresql://prod-db:5432/production
+DATABASE_URL=jdbc:postgresql://${DB_HOST:prod-db}:5432/production
 DATABASE_USERNAME=prod_user
 DATABASE_PASSWORD=${DB_PASSWORD}  # From Kubernetes secret
 ```

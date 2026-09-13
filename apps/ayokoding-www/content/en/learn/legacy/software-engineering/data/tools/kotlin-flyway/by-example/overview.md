@@ -214,7 +214,7 @@ Kotlin Flyway initialization runs at application startup:
 
 ```kotlin
 Flyway.configure()
-  .dataSource("jdbc:postgresql://localhost:5432/mydb", "user", "password")
+  .dataSource("jdbc:postgresql:mydb", "user", "password")
   .load()
   .migrate()
 ```

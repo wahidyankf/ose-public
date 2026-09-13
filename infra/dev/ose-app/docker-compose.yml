@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_DB: ose_app_dev
       POSTGRES_USER: ose_app
-      POSTGRES_PASSWORD: ose_app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ose_app}
     ports:
       - "5432:5432"
     healthcheck:
@@ -21,7 +21,7 @@ services:
     ports:
       - "8302:8302"
     environment:
-      DATABASE_URL: "postgresql://ose_app:ose_app@postgres:5432/ose_app_dev"
+      DATABASE_URL: "postgresql://ose_app:${POSTGRES_PASSWORD:-ose_app}@postgres:5432/ose_app_dev"
       OSE_APP_BE_OPENROUTER_API_KEY: "${OSE_APP_BE_OPENROUTER_API_KEY:-}"
       OSE_APP_BE_OPENROUTER_MODEL: "${OSE_APP_BE_OPENROUTER_MODEL:-openrouter/auto}"
       OSE_APP_BE_OPENROUTER_BASE_URL: "${OSE_APP_BE_OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}"

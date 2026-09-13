@@ -60,7 +60,7 @@ public class Application {
     public DataSource dataSource() {
         // => Explicit configuration: clear what happens in all environments
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost/zakat");
+        config.setJdbcUrl("jdbc:postgresql:zakat");
         config.setUsername("zakat_user");
         config.setPassword("password");
         return new HikariDataSource(config);
@@ -244,7 +244,7 @@ public class Application {
         // => Custom DataSource: Boot's auto-configuration backs off
         // => Other data access components still auto-configured
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost/zakat");
+        config.setJdbcUrl("jdbc:postgresql:zakat");
         config.setMaximumPoolSize(50);  // => Custom pool size
         return new HikariDataSource(config);
     }
@@ -325,7 +325,7 @@ public class DataConfig {
     @Bean
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://prod-db.example.com/zakat");  // => Hard-coded production URL
+        config.setJdbcUrl("jdbc:postgresql://<prod-db.example.com>/zakat");  // => Hard-coded production URL
         config.setUsername("prod_user");  // => Hard-coded credentials
         config.setPassword("SecretPassword123");  // => SECURITY VIOLATION: password in code
         config.setMaximumPoolSize(50);  // => Hard-coded production pool size
@@ -368,7 +368,7 @@ spring:
 
 ```bash
 # Production environment
-export DB_URL=jdbc:postgresql://prod-db.example.com/zakat
+export DB_URL=jdbc:postgresql://${DB_HOST:-prod-db.example.com}/zakat
 export DB_USERNAME=prod_user
 export DB_PASSWORD=$(vault read -field=password secret/zakat/db)  # From Vault
 export DB_POOL_SIZE=50
@@ -401,7 +401,7 @@ spring:
   application:
     name: zakat-service  # => Duplicated
   datasource:
-    url: jdbc:postgresql://staging-db/zakat
+    url: jdbc:postgresql://${DB_HOST:staging-db}/zakat
 logging:
   level:
     com.example.zakat: INFO
@@ -413,7 +413,7 @@ spring:
   application:
     name: zakat-service  # => Duplicated (3 times!)
   datasource:
-    url: jdbc:postgresql://prod-db/zakat
+    url: jdbc:postgresql://${DB_HOST:prod-db}/zakat
 logging:
   level:
     com.example.zakat: INFO
@@ -462,10 +462,10 @@ spring:
 # application-prod.yml
 spring:
   datasource:
-    url: jdbc:postgresql://prod-db/zakat  # => Production override
+    url: jdbc:postgresql://${DB_HOST:prod-db}/zakat  # => Production override
 
 # Command line
-java -jar zakat-service.jar --spring.datasource.url=jdbc:postgresql://staging-db/zakat
+java -jar zakat-service.jar --spring.datasource.url=jdbc:postgresql://${DB_HOST:-staging-db}/zakat
 
 # Developer confused: "Why isn't it using application-prod.yml?"
 # => Answer: Command-line arguments override property files
@@ -485,14 +485,14 @@ java -jar zakat-service.jar --spring.datasource.url=jdbc:postgresql://staging-db
 # application-prod.yml: Production defaults
 spring:
   datasource:
-    url: jdbc:postgresql://prod-db/zakat  # => Default for prod profile
+    url: jdbc:postgresql://${DB_HOST:prod-db}/zakat  # => Default for prod profile
     hikari:
       maximum-pool-size: 50
 
 # Override at runtime for specific scenarios:
 java -jar zakat-service.jar \
   --spring.profiles.active=prod \
-  --spring.datasource.url=jdbc:postgresql://prod-db-replica/zakat  # => Override default
+  --spring.datasource.url=jdbc:postgresql://${DB_HOST:-prod-db-replica}/zakat  # => Override default
 ```
 
 ## Starter Dependency Anti-Patterns

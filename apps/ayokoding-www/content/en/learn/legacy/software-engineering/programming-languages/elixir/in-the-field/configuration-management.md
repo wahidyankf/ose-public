@@ -311,7 +311,7 @@ end
 
 ```bash
 # Setting environment variables for production
-export DATABASE_URL="postgresql://user:pass@db.prod.com/myapp"
+export DATABASE_URL="postgresql://user:${DB_PASSWORD}@db.prod.com/myapp"
 export POOL_SIZE="20"
 export SECRET_KEY_BASE="very_long_secret_key_base_string_64_chars_min"
 export STRIPE_API_KEY="sk_live_actual_production_key"

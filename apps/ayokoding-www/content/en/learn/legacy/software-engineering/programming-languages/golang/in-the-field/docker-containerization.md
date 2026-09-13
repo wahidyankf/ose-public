@@ -527,7 +527,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DATABASE_URL=postgres://user:pass@db:5432/mydb
+      - DATABASE_URL=postgres://user:${POSTGRES_PASSWORD:-pass}@db:5432/mydb
       - LOG_LEVEL=debug
     depends_on:
       - db

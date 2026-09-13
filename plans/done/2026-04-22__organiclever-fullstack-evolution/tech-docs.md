@@ -735,7 +735,7 @@ services:
       dockerfile: Dockerfile.be.dev
     ports: ["8202:8202"]
     environment:
-      DATABASE_URL: "Host=organiclever-db;Port=5432;Database=organiclever;Username=organiclever;Password=organiclever"
+      DATABASE_URL: "Host=organiclever-db;Port=5432;Database=organiclever;Username=organiclever;Password=${POSTGRES_PASSWORD:-organiclever}"
     depends_on: [organiclever-db]
     volumes:
       - ../../../apps/organiclever-be:/workspace:rw

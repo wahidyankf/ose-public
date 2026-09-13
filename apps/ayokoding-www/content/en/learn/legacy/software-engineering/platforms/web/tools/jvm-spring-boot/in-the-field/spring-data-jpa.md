@@ -158,7 +158,7 @@ public class DonationController {
 ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/zakat_db
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/zakat_db
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     hikari:

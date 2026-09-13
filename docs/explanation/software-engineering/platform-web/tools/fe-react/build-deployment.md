@@ -571,7 +571,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/ose_platform
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-password}@db:5432/ose_platform
     depends_on:
       - db
     networks:

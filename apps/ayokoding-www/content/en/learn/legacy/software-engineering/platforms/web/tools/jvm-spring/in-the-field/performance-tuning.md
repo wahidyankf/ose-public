@@ -304,7 +304,7 @@ public class DatabaseConfig {
         HikariConfig config = new HikariConfig();
 
         // => Database connection details
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/zakatdb");
+        config.setJdbcUrl("jdbc:postgresql:zakatdb");
         config.setUsername("zakat_user");
         config.setPassword("zakat_password");
 

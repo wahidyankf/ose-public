@@ -63,7 +63,7 @@ func connectMongo(uri string) (*mongo.Client, error) {
     clientOptions := options.Client().ApplyURI(uri)
     // => options.Client() creates client options
     // => ApplyURI parses connection string
-    // => URI format: mongodb://username:password@host:port/database
+    // => URI format: mongodb://<username>:<password>@<host>:<port>/<database>
 
     clientOptions.SetMaxPoolSize(100)
     // => SetMaxPoolSize limits connection pool

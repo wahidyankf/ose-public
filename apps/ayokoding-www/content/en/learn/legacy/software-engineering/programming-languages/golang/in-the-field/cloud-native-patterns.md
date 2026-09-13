@@ -86,7 +86,7 @@ func loadConfig() (*Config, error) {
 
     dbURL := os.Getenv("DATABASE_URL")
     // => DATABASE_URL environment variable
-    // => Example: postgres://user:pass@host:5432/db
+    // => Example: postgres://<user>:<password>@<host>:5432/<db>
 
     if dbURL == "" {
         return nil, fmt.Errorf("DATABASE_URL required")

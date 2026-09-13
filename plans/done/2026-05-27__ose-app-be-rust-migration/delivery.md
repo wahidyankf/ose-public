@@ -812,7 +812,7 @@ apps/ose-app-be/Cargo.toml` exits non-zero because `contexts/mod.rs` and `config
         context: ../..
         dockerfile: apps/ose-app-be/Dockerfile.integration
       environment:
-        DATABASE_URL: postgres://ose_app:ose_app@postgres:5432/ose_app
+        DATABASE_URL: postgres://ose_app:${POSTGRES_PASSWORD:-ose_app}@postgres:5432/ose_app
         PORT: "8302"
         CORS_ORIGINS: "*"
       ports:
@@ -829,7 +829,7 @@ apps/ose-app-be/Cargo.toml` exits non-zero because `contexts/mod.rs` and `config
       volumes:
         - ../../specs:/specs:ro
       environment:
-        DATABASE_URL: postgres://ose_app:ose_app@postgres:5432/ose_app
+        DATABASE_URL: postgres://ose_app:${POSTGRES_PASSWORD:-ose_app}@postgres:5432/ose_app
         API_BASE_URL: http://app:8302
       depends_on:
         - app

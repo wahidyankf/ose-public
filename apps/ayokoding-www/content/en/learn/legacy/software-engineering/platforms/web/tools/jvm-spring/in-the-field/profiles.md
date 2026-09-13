@@ -35,7 +35,7 @@ public class DatabaseFactory {
             // => Staging: shared PostgreSQL for team testing
             System.out.println("Creating staging PostgreSQL database");
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl("jdbc:postgresql://staging-db:5432/zakat");
+            config.setJdbcUrl("jdbc:postgresql://<staging-db>/zakat");
             config.setUsername("staging_user");
             config.setPassword("staging_pass");
             config.setMaximumPoolSize(5);  // => 5 connections: staging load
@@ -44,7 +44,7 @@ public class DatabaseFactory {
             // => Production: dedicated PostgreSQL cluster
             System.out.println("Creating production PostgreSQL database");
             HikariConfig config = new HikariConfig();
-            config.setJdbcUrl("jdbc:postgresql://prod-db-cluster:5432/zakat");
+            config.setJdbcUrl("jdbc:postgresql://<prod-db-cluster>/zakat");
             config.setUsername("prod_user");
             config.setPassword("prod_pass");
             config.setMaximumPoolSize(50);  // => 50 connections: production load
@@ -131,7 +131,7 @@ public class DatabaseConfig {
     public DataSource stagingDataSource() {
         System.out.println("Creating staging PostgreSQL database");
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://staging-db:5432/zakat");
+        config.setJdbcUrl("jdbc:postgresql://<staging-db>/zakat");
         config.setUsername("staging_user");
         config.setPassword("staging_pass");
         config.setMaximumPoolSize(5);
@@ -144,7 +144,7 @@ public class DatabaseConfig {
     public DataSource prodDataSource() {
         System.out.println("Creating production PostgreSQL database");
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://prod-db-cluster:5432/zakat");
+        config.setJdbcUrl("jdbc:postgresql://<prod-db-cluster>/zakat");
         config.setUsername("prod_user");
         config.setPassword("prod_pass");
         config.setMaximumPoolSize(50);
@@ -298,7 +298,7 @@ logging.level.root=DEBUG  # => Verbose logging for development
 
 ```properties
 # => Staging overrides
-spring.datasource.url=jdbc:postgresql://staging-db:5432/zakat
+spring.datasource.url=jdbc:postgresql://${DB_HOST:staging-db}:5432/zakat
 spring.datasource.username=staging_user
 spring.datasource.password=staging_pass
 logging.level.root=INFO
@@ -308,7 +308,7 @@ logging.level.root=INFO
 
 ```properties
 # => Production overrides
-spring.datasource.url=jdbc:postgresql://prod-db-cluster:5432/zakat
+spring.datasource.url=jdbc:postgresql://${DB_HOST:prod-db-cluster}:5432/zakat
 spring.datasource.username=prod_user
 spring.datasource.password=${DB_PASSWORD}  # => From environment variable
 logging.level.root=WARN  # => Minimal logging for production
@@ -549,7 +549,7 @@ public DataSource prodDataSource() { /* ... */ }
 @Bean
 @Profile("prod")
 public DataSource prodDataSource() {
-    config.setJdbcUrl("jdbc:postgresql://prod-db:5432/zakat");
+    config.setJdbcUrl("jdbc:postgresql://<prod-db>/zakat");
     config.setPassword("hardcoded");  // => DANGER!
 }
 

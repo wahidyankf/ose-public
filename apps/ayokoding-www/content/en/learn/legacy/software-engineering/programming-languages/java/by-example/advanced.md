@@ -2192,7 +2192,7 @@ interface DatabaseConnection {
 // PostgreSQL connection implementation
 class PostgresConnection implements DatabaseConnection {
                                  // => Concrete implementation for PostgreSQL databases
-                                 // => JDBC URL pattern: jdbc:postgresql://host:port/database
+                                 // => JDBC URL pattern: jdbc:postgresql://<host>:<port>/<database>
     private Connection connection;
                                  // => Actual JDBC connection object (java.sql.Connection)
                                  // => null until connect() called
@@ -2203,7 +2203,7 @@ class PostgresConnection implements DatabaseConnection {
                                  // => Constructor parameters: host, port, database name
         this.connString = String.format("jdbc:postgresql://%s:%d/%s",
                                        host, port, database);
-                                 // => Example: "jdbc:postgresql://localhost:5432/mydb"
+                                 // => Example: "jdbc:postgresql://<host>:<port>/<database>" (host localhost, port 5432, database mydb)
                                  // => String.format builds JDBC URL from components
     }
 
@@ -2215,7 +2215,7 @@ class PostgresConnection implements DatabaseConnection {
                                  // => Expensive operation: TCP handshake + authentication + initialization
                                  // => May take 100-1000ms depending on network/database
         System.out.println("Connected to PostgreSQL: " + connString);
-                                 // => Output: "Connected to PostgreSQL: jdbc:postgresql://localhost:5432/mydb"
+                                 // => Output: "Connected to PostgreSQL: jdbc:postgresql://<host>:<port>/<database>" (values filled in)
     }
 
     @Override
@@ -2257,7 +2257,7 @@ class PostgresConnection implements DatabaseConnection {
 
     @Override
     public String getConnectionString() { return connString; }
-                                 // => Returns JDBC connection string (e.g., "jdbc:postgresql://localhost:5432/mydb")
+                                 // => Returns JDBC connection string (e.g., "jdbc:postgresql://<host>:<port>/<database>")
                                  // => Useful for debugging or logging connection details
 }
                                  // => End of PostgresConnection class
@@ -2265,7 +2265,7 @@ class PostgresConnection implements DatabaseConnection {
 // MySQL connection implementation
 class MySQLConnection implements DatabaseConnection {
                                  // => Concrete implementation for MySQL databases
-                                 // => JDBC URL pattern: jdbc:mysql://host:port/database
+                                 // => JDBC URL pattern: jdbc:mysql://<host>:<port>/<database>
                                  // => Parallel to PostgresConnection (Factory can return either)
     private Connection connection;
                                  // => JDBC connection object (null until connect() called)
@@ -2276,7 +2276,7 @@ class MySQLConnection implements DatabaseConnection {
                                  // => Constructor for MySQL connection parameters
         this.connString = String.format("jdbc:mysql://%s:%d/%s",
                                        host, port, database);
-                                 // => Example: "jdbc:mysql://localhost:3306/mydb"
+                                 // => Example: "jdbc:mysql://<host>:<port>/<database>" (host localhost, port 3306, database mydb)
                                  // => Note: MySQL default port 3306 (vs Postgres 5432)
     }
 
@@ -2287,7 +2287,7 @@ class MySQLConnection implements DatabaseConnection {
                                  // => DriverManager finds MySQL JDBC driver (com.mysql.cj.jdbc.Driver)
                                  // => Establishes connection: TCP handshake + authentication + MySQL handshake
         System.out.println("Connected to MySQL: " + connString);
-                                 // => Output: "Connected to MySQL: jdbc:mysql://localhost:3306/mydb"
+                                 // => Output: "Connected to MySQL: jdbc:mysql://<host>:<port>/<database>" (values filled in)
     }
 
     @Override
@@ -2325,7 +2325,7 @@ class MySQLConnection implements DatabaseConnection {
     @Override
     public String getConnectionString() { return connString; }
                                  // => Returns MySQL JDBC connection string
-                                 // => Example: "jdbc:mysql://localhost:3306/mydb"
+                                 // => Example: "jdbc:mysql://<host>:<port>/<database>" (host localhost, port 3306, database mydb)
 }
                                  // => End of MySQLConnection class
 

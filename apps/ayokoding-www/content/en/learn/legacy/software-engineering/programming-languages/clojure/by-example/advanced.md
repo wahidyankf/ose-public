@@ -1442,13 +1442,13 @@ Manage environment-specific configuration using environment variables and the en
                                          ;; => Converts string to integer
 
 ;; Development config file: .lein-env
-;; {:database-url "jdbc:postgresql://localhost/dev"
+;; {:database-url "jdbc:postgresql:dev"
 ;;  :port "3000"}
                                          ;; => Dev mode: environ loads this file
                                          ;; => EDN map with config values
 
 ;; Production environment variables (shell)
-;; export DATABASE_URL=jdbc:postgresql://prod-host/db
+;; export DATABASE_URL=jdbc:postgresql://${DB_HOST:-prod-host}/db
                                          ;; => Set DATABASE_URL env var
 ;; export PORT=8080
                                          ;; => Set PORT env var

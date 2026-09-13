@@ -3802,7 +3802,7 @@ Async.RunSynchronously (runTestScenario ())
 (defn production-issue-po
   "Return the issue-po service wired with real infrastructure adapters."
   []
-  (let [po-repo   (make-postgres-po-repo "jdbc:postgresql://prod-db/procurement")
+  (let [po-repo   (make-postgres-po-repo (System/getenv "DB_URL"))
         ;; => Real Postgres adapter — writes to the production database
         publisher (make-kafka-publisher "kafka://prod-broker:9092")]
         ;; => Real Kafka adapter — publishes to the production topic
@@ -4739,7 +4739,7 @@ let buildTwoContextApp () =
 ;; Each context gets its own repository adapter; both share the EventPublisher port map.
 ;; [F#: partial application builds curried service fns — Clojure uses closures]
 (defn build-two-context-app []
-  (let [connection-string "jdbc:postgresql://db/procurement"
+  (let [connection-string (System/getenv "DB_URL")
         ;; => Shared connection string — each adapter manages its own connection
         po-repo       (make-postgres-po-repo connection-string)
         ;; => Purchasing context: PO repository port map
@@ -5734,11 +5734,11 @@ printfn "Production and staging services wired with different publishers"
       ;; => Application service is identical — only injected publisher differs
 
 ;; ── Demonstration ─────────────────────────────────────────────────────────────
-(def prod-config  {:use-outbox true  :connection-string "jdbc:postgresql://prod-db/procurement"
+(def prod-config  {:use-outbox true  :connection-string (System/getenv "DB_URL")
                    :broker-url "kafka://prod-broker:9092"})
 ;; => Production config: outbox for at-least-once delivery
 
-(def stage-config {:use-outbox false :connection-string "jdbc:postgresql://stage-db/procurement"
+(def stage-config {:use-outbox false :connection-string (System/getenv "STAGING_DB_URL")
                    :broker-url "kafka://stage-broker:9092"})
 ;; => Staging config: direct Kafka for simpler local setup
 

@@ -787,7 +787,7 @@ Configure database connection in `application.properties`.
 **File**: `src/main/resources/application.properties`
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/taskdb
+spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}:5432/taskdb
                                       # => PostgreSQL connection URL
 spring.datasource.username=dbuser     # => Database username
 spring.datasource.password=dbpass     # => Database password
@@ -836,7 +836,7 @@ Use profiles for different environments:
 **File**: `application-dev.properties` (development)
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/taskdb_dev
+spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}:5432/taskdb_dev
 spring.jpa.hibernate.ddl-auto=create-drop
                                       # => Drop and recreate schema on restart
 ```
@@ -844,7 +844,7 @@ spring.jpa.hibernate.ddl-auto=create-drop
 **File**: `application-prod.properties` (production)
 
 ```properties
-spring.datasource.url=jdbc:postgresql://prod-db:5432/taskdb
+spring.datasource.url=jdbc:postgresql://${DB_HOST:prod-db}:5432/taskdb
 spring.jpa.hibernate.ddl-auto=validate
                                       # => Only validate schema, don't modify
 ```
@@ -1691,7 +1691,8 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 docker build -t taskmanager:1.0 .
 
 docker run -p 8080:8080 \
-  -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/taskdb \
+  -e DB_HOST=host.docker.internal \
+  -e SPRING_DATASOURCE_URL='jdbc:postgresql://${DB_HOST}:5432/taskdb' \
   taskmanager:1.0
 ```
 
@@ -1701,7 +1702,7 @@ docker run -p 8080:8080 \
 
 ```bash
 java -jar app.jar \
-  --spring.datasource.url=jdbc:postgresql://prod-db:5432/taskdb \
+  --spring.datasource.url=jdbc:postgresql://${DB_HOST:-prod-db}:5432/taskdb \
   --spring.datasource.username=produser \
   --spring.datasource.password=prodpass \
   --spring.jpa.hibernate.ddl-auto=validate

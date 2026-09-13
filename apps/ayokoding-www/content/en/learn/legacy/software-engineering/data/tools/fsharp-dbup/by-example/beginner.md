@@ -76,7 +76,7 @@ open System.Reflection
 // Retrieve connection string from environment (never hardcode credentials)
 let connStr =
     System.Environment.GetEnvironmentVariable("DATABASE_URL")
-// => connStr is e.g. "Host=localhost;Database=myapp;Username=app;Password=secret"
+// => connStr is e.g. "Host=localhost;Database=myapp;Username=app;Password=<password>"
 // => Null if env var absent; validate before passing to builder
 
 // Assemble the upgrade engine using the fluent builder
@@ -115,7 +115,7 @@ open DbUp
 let engineDev =
     DeployChanges.To
         // => Npgsql connection string; DbUp opens this connection when PerformUpgrade runs
-        .PostgresqlDatabase("Host=localhost;Database=myapp_dev;Username=dev;Password=dev")
+        .PostgresqlDatabase("Host=localhost;Database=myapp_dev;Username=dev;Password=<password>")
         .WithScriptsEmbeddedInAssembly(System.Reflection.Assembly.GetExecutingAssembly())
         .LogToConsole()
         .Build()

@@ -1261,7 +1261,7 @@ import (
 
 // ProductionConfig holds all production-required configuration
 type ProductionConfig struct {
-    DatabaseURL     string // => "postgres://user:pass@host:5432/db?sslmode=require"
+    DatabaseURL     string // => "postgres://<user>:<password>@<host>:5432/<db>?sslmode=require"
     JWTSecret       string // => Must be >= 32 characters for security
     AllowedOrigins  []string // => Comma-separated list of allowed CORS origins
     MaxConnections  int    // => Database pool size

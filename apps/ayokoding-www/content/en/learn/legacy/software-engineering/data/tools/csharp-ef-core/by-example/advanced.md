@@ -651,7 +651,7 @@ public class MigrationRollbackTests : IAsyncLifetime
     public async Task InitializeAsync()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseNpgsql("Host=localhost;Database=ef_rollback_test;Username=test;Password=test")
+            .UseNpgsql("Host=localhost;Database=ef_rollback_test;Username=test;Password=<password>")
             // => Use a dedicated test database; never the development or production connection string
             .Options;
         _context = new AppDbContext(options);
@@ -1559,7 +1559,7 @@ public class MigrationBenchmarks
     public async Task Setup()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseNpgsql("Host=localhost;Database=bench_db;Username=bench;Password=bench")
+            .UseNpgsql("Host=localhost;Database=bench_db;Username=bench;Password=<password>")
             .Options;
         _ctx = new AppDbContext(options);
         await _ctx.Database.EnsureDeletedAsync();

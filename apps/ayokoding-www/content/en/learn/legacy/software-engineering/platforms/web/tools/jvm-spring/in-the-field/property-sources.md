@@ -109,7 +109,7 @@ public class Application {
 **application.properties**:
 
 ```properties
-db.url=jdbc:postgresql://localhost:5432/zakat
+db.url=jdbc:postgresql://${DB_HOST:localhost}:5432/zakat
 db.username=admin
 db.password=secret
 db.max.connections=20
@@ -287,7 +287,7 @@ db.max.connections=10
 
 ```properties
 # => Production overrides
-db.url=jdbc:postgresql://prod-db:5432/zakat
+db.url=jdbc:postgresql://${DB_HOST:prod-db}:5432/zakat
 db.username=prod_user
 db.password=${DB_PASSWORD}  # => From environment variable
 db.max.connections=50       # => Overrides base value
@@ -317,7 +317,7 @@ public class AppConfig {
         // => "ZakatCalculator" (from application.properties)
 
         System.out.println(env.getProperty("db.url"));
-        // => "jdbc:postgresql://prod-db:5432/zakat" (from application-prod.properties)
+        // => "jdbc:postgresql://<host>:<port>/<database>" resolved to prod-db:5432/zakat (from application-prod.properties)
 
         System.out.println(env.getProperty("db.password"));
         // => Value of DB_PASSWORD environment variable (resolved placeholder)
@@ -539,7 +539,7 @@ zakat:
     general: 0.025
 
 db:
-  url: jdbc:postgresql://localhost:5432/zakat
+  url: jdbc:postgresql://${DB_HOST:localhost}:5432/zakat
   username: admin
   password: ${DB_PASSWORD}
   max:
@@ -598,7 +598,7 @@ spring:
 // => AVOID: hardcoded values
 @Bean
 public DataSource dataSource() {
-    config.setJdbcUrl("jdbc:postgresql://localhost:5432/zakat");  // => DANGER!
+    config.setJdbcUrl("jdbc:postgresql:zakat");  // => DANGER!
 }
 
 // => PREFER: externalized properties

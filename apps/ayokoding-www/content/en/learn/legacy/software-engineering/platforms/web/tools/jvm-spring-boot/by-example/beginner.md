@@ -3196,7 +3196,7 @@ logging.level.root=DEBUG
 # Production profile configuration
 # Activated with: spring.profiles.active=prod
 
-spring.datasource.url=jdbc:postgresql://prod-server:5432/myapp
+spring.datasource.url=jdbc:postgresql://${DB_HOST:prod-server}:5432/myapp
 # => PostgreSQL production database
 # => Persistent storage with backups
 
@@ -3310,7 +3310,7 @@ logging.level.root=DEBUG
 # src/main/resources/application-prod.properties
 # Production profile configuration - same as Java version
 
-spring.datasource.url=jdbc:postgresql://prod-server:5432/myapp
+spring.datasource.url=jdbc:postgresql://${DB_HOST:prod-server}:5432/myapp
 app.feature.debug=false
 logging.level.root=WARN
 ```
@@ -3443,7 +3443,7 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:postgresql://prod-server:5432/myapp
+    url: jdbc:postgresql://${DB_HOST:prod-server}:5432/myapp
 
 app:
   feature:

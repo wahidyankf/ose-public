@@ -55,7 +55,7 @@ Java's standard library provides **Properties** class for key-value configuratio
 
 ```properties
 # Database configuration
-database.url=jdbc:postgresql://localhost:5432/mydb
+database.url=jdbc:postgresql:mydb
 database.username=admin
 database.password=secret123
 database.pool.size=10
@@ -202,7 +202,7 @@ Set via command line with `-D` flag:
 
 ```bash
 java -Dapp.environment=production \
-     -Ddatabase.url=jdbc:postgresql://prod-db:5432/app \
+     -Ddatabase.url=jdbc:postgresql://${DB_HOST:-prod-db}:5432/app \
      -jar myapp.jar
 ```
 
@@ -256,7 +256,7 @@ System.setProperty("app.environment", "test");
 Set via shell or container orchestration:
 
 ```bash
-export DATABASE_URL=jdbc:postgresql://prod-db:5432/app
+export DATABASE_URL=jdbc:postgresql://${DB_HOST:-prod-db}:5432/app
 export DATABASE_PASSWORD=secret123
 export APP_ENVIRONMENT=production
 
@@ -326,7 +326,7 @@ server.port=8080
 server.shutdown=graceful
 
 # Database configuration
-spring.datasource.url=jdbc:postgresql://localhost:5432/mydb
+spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}:5432/mydb
 spring.datasource.username=admin
 spring.datasource.password=secret123
 spring.datasource.hikari.maximum-pool-size=10
@@ -362,7 +362,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/mydb
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/mydb
     username: admin
     password: secret123
     hikari:
@@ -582,14 +582,14 @@ public class AppService {
 **application-dev.properties:**
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/mydb_dev
+spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}:5432/mydb_dev
 logging.level.root=DEBUG
 ```
 
 **application-prod.properties:**
 
 ```properties
-spring.datasource.url=jdbc:postgresql://prod-db:5432/mydb_prod
+spring.datasource.url=jdbc:postgresql://${DB_HOST:prod-db}:5432/mydb_prod
 logging.level.root=WARN
 ```
 
@@ -654,7 +654,7 @@ public class ProdConfig {
         // => Configuration object for Hikari connection pool
         config.setJdbcUrl(System.getenv("DATABASE_URL"));
         // => Read database URL from environment variable
-        // => Example: jdbc:postgresql://prod-db.example.com:5432/mydb
+        // => Example: jdbc:postgresql://<host>:<port>/<database> (e.g. host prod-db.example.com, database mydb)
         // => Environment variable set by deployment platform (Kubernetes, Docker)
         config.setUsername(System.getenv("DATABASE_USERNAME"));
         // => Database authentication username from env var
@@ -818,7 +818,7 @@ management:
 ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://prod-db:5432/users
+    url: jdbc:postgresql://${DB_HOST:prod-db}:5432/users
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
@@ -1146,8 +1146,8 @@ String dbUrl = System.getenv("DATABASE_URL");
 // => Read database URL from environment variable
 // => Different values per environment (dev/staging/prod)
 // => Set by deployment platform (Kubernetes, Docker, cloud provider)
-// => Example dev: jdbc:postgresql://localhost:5432/mydb
-// => Example prod: jdbc:postgresql://prod-db.internal:5432/mydb
+// => Example dev: jdbc:postgresql:mydb
+// => Example prod: same URL on host prod-db.internal
 String apiKey = System.getenv("API_KEY");
 // => Read API key from environment
 // => Secrets never in code or version control
@@ -1165,13 +1165,13 @@ if (environment.equals("prod")) {
     // => Hard-coded production URL
     // => Adding new environment requires code change
     // => URL changes require recompilation
-    dbUrl = "jdbc:postgresql://prod-db:5432/app";
+    dbUrl = "jdbc:postgresql://<prod-db>/app";
     // => Database hostname hard-coded
     // => Cannot change without modifying source code
 } else {
     // => Assumes everything else is development
     // => What about staging, QA, integration environments?
-    dbUrl = "jdbc:postgresql://dev-db:5432/app";
+    dbUrl = "jdbc:postgresql://<dev-db>/app";
     // => Development URL hard-coded
 }
 // => PROBLEMS: Code knows about infrastructure, tight coupling,
@@ -1215,7 +1215,7 @@ if (environment.equals("prod")) {
 spring:
   datasource:
     # => Spring Boot DataSource configuration
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/mydb}
+    url: ${DATABASE_URL:jdbc:postgresql:mydb}
     # => ${DATABASE_URL:...} reads environment variable DATABASE_URL
     # => Colon syntax provides default value
     # => Default used if DATABASE_URL not set (local development)

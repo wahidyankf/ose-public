@@ -1292,7 +1292,7 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }} # => repository secret, shared with DATABASE_URL
           POSTGRES_DB: testdb
         options: --health-cmd pg_isready --health-interval 10s --health-retries 5
         # => Services work the same way in container jobs
@@ -1309,7 +1309,7 @@ jobs:
 
       - name: Install and test
         env:
-          DATABASE_URL: postgres://test:test@postgres:5432/testdb
+          DATABASE_URL: postgres://test:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/testdb
           # => In container jobs: use service NAME "postgres" as hostname
           # => NOT localhost — that's only for non-container jobs
         run: |
@@ -2096,7 +2096,7 @@ jobs:
         image: postgres:15
         env:
           POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }} # => repository secret, shared with DATABASE_URL
           POSTGRES_DB: integration_db
         options: >-
           --health-cmd pg_isready
@@ -2106,7 +2106,7 @@ jobs:
         # => Health check ensures postgres is ready before steps start
 
     env:
-      DATABASE_URL: postgresql://testuser:testpass@postgres:5432/integration_db
+      DATABASE_URL: postgresql://testuser:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/integration_db
       # => In container jobs, use service name "postgres" as hostname (not localhost)
 
     steps:

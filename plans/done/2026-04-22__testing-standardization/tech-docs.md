@@ -269,7 +269,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://demo_be_test:demo_be_test@postgres:5432/demo_be_test
+      DATABASE_URL: postgresql://demo_be_test:${POSTGRES_PASSWORD:-demo_be_test}@postgres:5432/demo_be_test
     volumes:
       - ../../specs:/specs:ro
     command: ["run-migrations-then-tests"]

@@ -37,7 +37,7 @@ public class DatabaseConfig {
     public DataSource dataSource() {
         HikariConfig config = new HikariConfig();
         // => Hardcoded JDBC URL: not environment-aware
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/zakat_db");
+        config.setJdbcUrl("jdbc:postgresql:zakat_db");
         config.setUsername("zakat_user");  // => Hardcoded credentials: security risk
         config.setPassword("secret123");
         config.setMaximumPoolSize(10);  // => Manual pool tuning

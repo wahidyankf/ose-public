@@ -500,7 +500,7 @@ services:
     environment:
       - NODE_ENV=development
       # => Development environment
-      - DATABASE_URL=postgresql://postgres:password@db:5432/app
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-password}@db:5432/app
       # => Database connection string
       # => db: DNS name of database service (Docker networking)
       # => Containers on same network resolve service names
@@ -836,10 +836,10 @@ type: Opaque
 # => Generic secret type
 
 data:
-  database-url: cG9zdGdyZXNxbDovL3VzZXI6cGFzc0BkYjozNTQzL2RiCg==
+  database-url: cG9zdGdyZXNxbDovLzx1c2VyPjo8cGFzc3dvcmQ+QGRiOjU0MzIvZGIK
   # => Base64-encoded secret
   # => Decode: echo "..." | base64 -d
-  # => postgresql://user:pass@db:5432/db
+  # => postgresql://<user>:<password>@db:5432/db
   # => In production: Use external secrets management (Vault, AWS Secrets Manager)
 ```
 

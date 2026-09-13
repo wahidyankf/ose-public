@@ -44,9 +44,9 @@ JDBC (Java Database Connectivity) is the standard API for database access in Jav
 **Pattern** (without pooling):
 
 ```java
-String url = "jdbc:postgresql://localhost:5432/mydb";  // => JDBC connection URL
+String url = "jdbc:postgresql:mydb";  // => JDBC connection URL
                                                          // => Format: jdbc:<database>://<host>:<port>/<database-name>
-                                                         // => postgresql is database type, localhost:5432 is server
+                                                         // => postgresql is database type; the short form defaults the server to localhost:5432
 String user = "dbuser";  // => Database username
 String password = "dbpass";  // => Database password (NEVER hardcode in production - use environment variables!)
 
@@ -228,7 +228,7 @@ HikariCP is the fastest, most reliable connection pool for Java.
 import com.zaxxer.hikari.*;
 
 HikariConfig config = new HikariConfig();  // => Creates configuration object
-config.setJdbcUrl("jdbc:postgresql://localhost:5432/mydb");  // => Database connection URL
+config.setJdbcUrl("jdbc:postgresql:mydb");  // => Database connection URL
 config.setUsername("dbuser");  // => Database username
 config.setPassword("dbpass");  // => Database password (use environment variables in production!)
 

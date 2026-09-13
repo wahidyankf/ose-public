@@ -23,13 +23,13 @@ public class DatabaseExample {
         // => Production code should use try-catch
         // => Or try-with-resources for auto-cleanup
 
-        String url = "jdbc:postgresql://localhost:5432/mydb";
+        String url = "jdbc:postgresql:mydb";
         // => Database connection string (JDBC URL)
         // => jdbc: protocol identifier
         // => postgresql: database type (also mysql, oracle, h2)
-        // => localhost:5432: host and port
+        // => host and port omitted: the short form defaults to localhost:5432
         // => mydb: database name
-        // => Contains host, port, database name
+        // => Contains database name; host and port use defaults
 
         Connection conn = DriverManager.getConnection(url, user, pass);
         // => conn is JDBC Connection (AutoCloseable)

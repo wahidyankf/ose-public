@@ -26,7 +26,7 @@ let private buildFullClient () : System.Net.Http.HttpClient =
 
                 services.AddDbContext<AppDbContext>(fun opts ->
                     opts
-                        .UseNpgsql("Host=127.0.0.1;Port=1;Database=organiclever_be_unit_test;Username=x;Password=x")
+                        .UseNpgsql("Host=127.0.0.1;Port=1;Database=organiclever_be_unit_test;Username=x")
                         .UseSnakeCaseNamingConvention()
                     |> ignore)
                 |> ignore)

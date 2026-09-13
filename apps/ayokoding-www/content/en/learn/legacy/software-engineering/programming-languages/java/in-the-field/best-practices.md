@@ -1510,9 +1510,9 @@ Externalize configuration to properties files, environment variables, or configu
 ```java
 public class DatabaseConnector {
 // => Hardcoded configuration: inflexible, insecure, environment-locked
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/mydb";
+    private static final String DB_URL = "jdbc:postgresql:mydb";
 // => Hardcoded URL: cannot change between dev/staging/prod without recompilation
-// => localhost hardcoded: won't work in containerized/cloud environments
+// => localhost hardcoded (the short form defaults to localhost:5432): won't work in containerized/cloud environments
     private static final String DB_USER = "admin";
 // => Hardcoded username: same credentials for all environments (unsafe)
     private static final String DB_PASS = "password123"; // Security risk!
@@ -1533,7 +1533,7 @@ public class DatabaseConnector {
 
 ```java
 // application.properties
-database.url=jdbc:postgresql://localhost:5432/mydb
+database.url=jdbc:postgresql://${DB_HOST:localhost}:5432/mydb
 // => Default URL: localhost for local development
 database.user=${DB_USER}
 // => Environment variable placeholder: reads from system environment

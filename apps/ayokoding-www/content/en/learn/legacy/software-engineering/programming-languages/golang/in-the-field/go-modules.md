@@ -475,7 +475,7 @@ export GOPRIVATE=github.com/mycompany/*
 # => Tells go not to use public proxies
 # => Direct git clone from private repos
 
-git config --global url."https://oauth2:TOKEN@github.com/".insteadOf "https://github.com/"
+git config --global url."https://oauth2:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
 # => Injects GitHub token into git URLs
 # => Enables private module fetching
 ```

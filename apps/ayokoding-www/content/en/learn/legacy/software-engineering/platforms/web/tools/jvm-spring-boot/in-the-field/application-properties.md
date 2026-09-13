@@ -37,7 +37,7 @@ public class AppConfig {
 
     // => @Value: injects property value at runtime
     @Value("${db.url}")  // => Property key from application.properties
-    private String dbUrl;  // => Injected value: "jdbc:postgresql://localhost:5432/zakat_db"
+    private String dbUrl;  // => Injected value: "jdbc:postgresql:zakat_db"
 
     @Value("${db.username}")
     private String dbUsername;
@@ -58,7 +58,7 @@ public class AppConfig {
 
 // => application.properties: flat key-value pairs
 // File: src/main/resources/application.properties
-// db.url=jdbc:postgresql://localhost:5432/zakat_db
+// db.url=jdbc:postgresql:zakat_db
 // db.username=zakat_user
 // db.password=secret123  # SECURITY RISK: password in version control!
 // zakat.nisab.gold=85
@@ -250,11 +250,11 @@ Spring Boot resolves properties using 15 precedence levels (highest to lowest):
 // => Complete precedence order (highest precedence wins)
 
 // 1. Command-line arguments
-// java -jar app.jar --spring.datasource.url=jdbc:postgresql://custom:5432/db
+// java -jar app.jar --spring.datasource.url=jdbc:postgresql://cli/db
 // => Overrides everything else, useful for production overrides
 
 // 2. Java System properties (System.getProperty())
-// java -Dspring.datasource.url=jdbc:postgresql://custom:5432/db -jar app.jar
+// java -Dspring.datasource.url=jdbc:postgresql://cli/db -jar app.jar
 // => Less common, used for JVM-level configuration
 
 // 3. OS environment variables
@@ -279,19 +279,19 @@ Spring Boot resolves properties using 15 precedence levels (highest to lowest):
 // => Bundled default configuration (lowest precedence)
 
 // => Example: How precedence works
-// application.yml:        db.url = jdbc:postgresql://localhost:5432/db
-// application-prod.yml:   db.url = jdbc:postgresql://prod:5432/db
-// Environment variable:   DB_URL = jdbc:postgresql://rds:5432/db
-// Command-line:           --db.url=jdbc:postgresql://custom:5432/db
+// application.yml:        db.url = jdbc:postgresql:db
+// application-prod.yml:   db.url = jdbc:postgresql://prod/db
+// Environment variable:   DB_URL = jdbc:postgresql://rds/db
+// Command-line:           --db.url=jdbc:postgresql://cli/db
 //
 // Result with prod profile active + command-line arg:
-// db.url = jdbc:postgresql://custom:5432/db (command-line wins)
+// db.url = jdbc:postgresql://cli/db (command-line wins)
 //
 // Result with prod profile active, no command-line:
-// db.url = jdbc:postgresql://rds:5432/db (environment variable wins)
+// db.url = jdbc:postgresql://rds/db (environment variable wins)
 //
 // Result with prod profile active, no env var or command-line:
-// db.url = jdbc:postgresql://prod:5432/db (application-prod.yml wins)
+// db.url = jdbc:postgresql://prod/db (application-prod.yml wins)
 ```
 
 Verify active properties:
@@ -308,7 +308,7 @@ public class PropertyLogger {
     public void logProperties() {
         // => Logs resolved property after all precedence applied
         System.out.println("Resolved DB URL: " + dbUrl);
-        // => Production output: "Resolved DB URL: jdbc:postgresql://rds:5432/db"
+        // => Production output: "Resolved DB URL: jdbc:postgresql://rds/db"
     }
 }
 ```
@@ -321,7 +321,7 @@ Spring Boot converts environment variables to property names:
 # => Environment variable naming conventions
 
 # 1. Uppercase with underscores → lowercase with dots
-export SPRING_DATASOURCE_URL="jdbc:postgresql://prod:5432/db"
+export SPRING_DATASOURCE_URL="jdbc:postgresql://prod/db"
 # => Maps to: spring.datasource.url
 
 # 2. Numbers preserved
@@ -345,7 +345,7 @@ export SPRING_PROFILES_ACTIVE=prod
 java -jar zakat-service.jar
 
 # => Resolved properties:
-# spring.datasource.url = jdbc:postgresql://production-rds.amazonaws.com:5432/zakat_prod_db
+# spring.datasource.url = jdbc:postgresql://${DB_HOST}:5432/${DB_NAME} resolved to production-rds.amazonaws.com:5432/zakat_prod_db
 # spring.datasource.username = prod_user
 # spring.datasource.password = prod_secret_from_secrets_manager
 ```
@@ -510,7 +510,7 @@ spring:
 # => Bad: Hardcoded production values
 spring:
   datasource:
-    url: jdbc:postgresql://prod-rds.amazonaws.com:5432/zakat_db
+    url: jdbc:postgresql://prod/db
     # => Can't run locally, can't test with different databases
 
 # => Good: Required secrets without defaults

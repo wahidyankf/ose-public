@@ -1158,7 +1158,7 @@ Containerizing Ktor applications requires a multi-stage Docker build that separa
 //     ports:
 //       - "8080:8080"
 //     environment:
-//       - DATABASE_URL=jdbc:postgresql://db:5432/mydb
+//       - DATABASE_URL=jdbc:postgresql://db/mydb
 //       - JWT_SECRET=${JWT_SECRET}       # From .env file or shell environment
 //     depends_on:
 //       db:

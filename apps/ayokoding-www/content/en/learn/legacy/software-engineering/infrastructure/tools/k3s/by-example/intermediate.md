@@ -124,7 +124,7 @@ graph LR
 
 # Install K3s server with external PostgreSQL datastore
 curl -sfL https://get.k3s.io | sh -s - server \
-  --datastore-endpoint="postgres://k3s:secret@db.example.com:5432/k3sdb?sslmode=require" \
+  --datastore-endpoint="postgres://k3s:${K3S_DATASTORE_PASSWORD}@db.example.com:5432/k3sdb?sslmode=require" \
   --tls-san=192.168.1.100
 # => --datastore-endpoint: connection string for external datastore
 # => Format: postgres://<user>:<password>@<host>:<port>/<database>?<options>
@@ -134,7 +134,7 @@ curl -sfL https://get.k3s.io | sh -s - server \
 # === Additional server nodes use the same datastore-endpoint ===
 # Every server node connects to the same external database
 curl -sfL https://get.k3s.io | sh -s - server \
-  --datastore-endpoint="postgres://k3s:secret@db.example.com:5432/k3sdb?sslmode=require" \
+  --datastore-endpoint="postgres://k3s:${K3S_DATASTORE_PASSWORD}@db.example.com:5432/k3sdb?sslmode=require" \
   --token "$(sudo cat /var/lib/rancher/k3s/server/node-token)" \
   --tls-san=192.168.1.100
 # => All server nodes share state through the external PostgreSQL database
@@ -143,7 +143,7 @@ curl -sfL https://get.k3s.io | sh -s - server \
 
 # Verify server started and connected to external datastore
 sudo journalctl -u k3s --since "2 minutes ago" | grep -E "datastore|postgres"
-# => Datastore connection: postgres://k3s:***@db.example.com:5432/k3sdb
+# => Datastore connection: postgres://k3s:<redacted>@db.example.com:5432/k3sdb
 # => K3s redacts the password in logs for security
 
 kubectl get nodes
@@ -152,7 +152,7 @@ kubectl get nodes
 # => Nodes show no "etcd" role (external datastore does not use embedded etcd)
 
 # Note: MySQL is also supported
-# --datastore-endpoint="mysql://k3s:secret@tcp(db.example.com:3306)/k3sdb"
+# --datastore-endpoint="mysql://k3s:${K3S_DATASTORE_PASSWORD}@tcp(db.example.com:3306)/k3sdb"
 ```
 
 **Key Takeaway**: Use `--datastore-endpoint` with a PostgreSQL or MySQL connection string to replace embedded etcd with an external database. All server nodes connect to the same database URL and share state without etcd peer communication.

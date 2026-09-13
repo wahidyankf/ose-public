@@ -131,7 +131,7 @@ public class Application {
         // => Spring Boot won't create default DataSource
         // => Your custom bean takes precedence
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://prod-db/zakat");
+        config.setJdbcUrl("jdbc:postgresql://<prod-db>/zakat");
         config.setMaximumPoolSize(50);
         return new HikariDataSource(config);
     }
@@ -194,7 +194,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost/zakat # => spring.datasource.url
+    url: jdbc:postgresql://${DB_HOST:localhost}/zakat # => spring.datasource.url
     username: zakat_user # => spring.datasource.username
     password: ${DB_PASSWORD} # => Environment variable substitution
     hikari:
@@ -213,7 +213,7 @@ logging:
 # => Properties file: flatter structure
 server.port=8080
 server.servlet.context-path=/api
-spring.datasource.url=jdbc:postgresql://localhost/zakat
+spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}/zakat
 spring.datasource.username=zakat_user
 ```
 
@@ -259,7 +259,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://prod-db.example.com/zakat # => Production database
+    url: jdbc:postgresql://${DB_HOST:prod-db.example.com}/zakat # => Production database
     hikari:
       maximum-pool-size: 50 # => Production pool size
 

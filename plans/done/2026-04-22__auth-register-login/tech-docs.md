@@ -619,7 +619,7 @@ app:
 ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/organiclever
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/organiclever
     username: ${POSTGRES_USER:organiclever}
     password: ${POSTGRES_PASSWORD:organiclever}
   jpa:
@@ -717,7 +717,7 @@ organiclever-be:
     - SPRING_PROFILES_ACTIVE=dev
     - SERVER_PORT=8201
     - MAVEN_OPTS=${MAVEN_OPTS:--Xmx512m}
-    - SPRING_DATASOURCE_URL=jdbc:postgresql://organiclever-db:5432/organiclever
+    - SPRING_DATASOURCE_URL=jdbc:postgresql://${DB_HOST:-organiclever-db}:5432/organiclever
     - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-organiclever}
     - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-organiclever}
     - APP_JWT_SECRET=${APP_JWT_SECRET:-change-me-in-dev-only-not-for-production}

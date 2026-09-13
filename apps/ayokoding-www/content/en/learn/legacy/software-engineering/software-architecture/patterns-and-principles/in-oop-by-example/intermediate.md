@@ -9227,7 +9227,7 @@ System.out.println(results.stream().map(Product::name).toList());
 // => Output: [Laptop, Phone]
 
 // swap to SQL repo — service code is UNCHANGED
-ProductRepository sqlRepo = new SqlProductRepository("jdbc:postgresql://localhost/shop");
+ProductRepository sqlRepo = new SqlProductRepository("jdbc:postgresql:shop");
 ProductCatalogService sqlService = new ProductCatalogService(sqlRepo);
 sqlService.addProduct(new Product("p3", "Tablet", 449.99, "electronics"));
 // => Output: SQL: UPSERT product id='p3' name='Tablet'
@@ -9326,7 +9326,7 @@ service.addProduct(Product("p2", "Phone", 599.99, "electronics"))
 println(service.getElectronics().map { it.name }) // => Output: [Laptop, Phone]
 
 // swap to SQL by changing the injected dependency — zero service changes
-val sqlRepo = SqlProductRepository("jdbc:postgresql://localhost/shop")
+val sqlRepo = SqlProductRepository("jdbc:postgresql:shop")
 val sqlService = ProductCatalogService(sqlRepo)
 sqlService.addProduct(Product("p3", "Tablet", 449.99, "electronics"))
 // => Output: SQL: UPSERT product id='p3' name='Tablet'

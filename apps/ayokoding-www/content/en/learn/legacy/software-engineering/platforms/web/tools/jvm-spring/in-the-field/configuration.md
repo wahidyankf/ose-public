@@ -299,7 +299,7 @@ public class DatabaseConfig {
     public DataSource dataSource() {
         // => HikariCP: production-grade connection pool
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/zakat");
+        config.setJdbcUrl("jdbc:postgresql:zakat");
         config.setUsername("admin");
         config.setPassword("secret");
         config.setMaximumPoolSize(10);  // => Max 10 connections
@@ -349,7 +349,7 @@ public class DataSourceConfig {
     public DataSource prodDataSource() {
         // => PostgreSQL: production database with connection pooling
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://prod-db:5432/zakat");
+        config.setJdbcUrl("jdbc:postgresql://<prod-db>/zakat");
         config.setUsername("prod_user");
         config.setPassword("prod_pass");
         return new HikariDataSource(config);

@@ -3176,7 +3176,7 @@ class DatabaseAmbassador {
 }
 
 // => Application code: calls ambassador — knows nothing about retries, DSN, or pool size
-var db = new DatabaseAmbassador("jdbc:postgresql://localhost/mydb", 3);
+var db = new DatabaseAmbassador("jdbc:postgresql:mydb", 3);
 var rows = db.query("SELECT id, name FROM users WHERE active = ?", true);
 System.out.println(rows);
 // => Output: [{id=1, name=Alice}, {id=2, name=Bob}]
@@ -3230,7 +3230,7 @@ class DatabaseAmbassador(
 }
 
 // => Application code: calls ambassador — knows nothing about retries, DSN, or pool
-val db = DatabaseAmbassador(dsn = "jdbc:postgresql://localhost/mydb", maxRetries = 3)
+val db = DatabaseAmbassador(dsn = "jdbc:postgresql:mydb", maxRetries = 3)
 val rows = db.query("SELECT id, name FROM users WHERE active = ?", true)
 println(rows)
 // => Output: [{id=1, name=Alice}, {id=2, name=Bob}]

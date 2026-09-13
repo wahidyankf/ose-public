@@ -631,7 +631,7 @@ Mirrors `infra/dev/organiclever-jasb/docker-compose.yml` with these changes:
   - `../../../specs/apps/organiclever-be:/specs/apps/organiclever-be:ro` — Gherkin feature
     files; Cabbage resolves the relative path from the test file to the workspace root
 - `depends_on: organiclever-db: condition: service_healthy` — wait for DB before starting
-- Environment: `MIX_ENV=dev`, `PORT=8201`, `DATABASE_URL=postgresql://organiclever:organiclever@organiclever-db:5432/organiclever_exph`,
+- Environment: `MIX_ENV=dev`, `PORT=8201`, `DATABASE_URL=postgresql://organiclever:${POSTGRES_PASSWORD}@organiclever-db:5432/organiclever_exph`,
   `APP_JWT_SECRET`
 - Command: `sh -c "mix ecto.migrate && mix phx.server"`
 - Healthcheck: `wget --spider http://localhost:8201/health`

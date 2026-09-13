@@ -888,7 +888,7 @@ Auto-configures beans based on dependencies on classpath.
 // - No manual configuration needed!
 
 // application.properties
-// spring.datasource.url=jdbc:postgresql://localhost:5432/mydb
+// spring.datasource.url=jdbc:postgresql:mydb
 // spring.datasource.username=user
 // spring.datasource.password=pass
 
@@ -1004,7 +1004,7 @@ Configure beans through external properties.
 # application.yml
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/mydb
+    url: jdbc:postgresql:mydb
     username: user
     password: pass
   jpa:
@@ -1111,7 +1111,7 @@ public class DatabaseProducer {
     public DataSource createDataSource() {
         // => Produce DataSource bean
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/mydb");
+        config.setJdbcUrl("jdbc:postgresql:mydb");
         config.setUsername("user");
         config.setPassword("pass");
         return new HikariDataSource(config);

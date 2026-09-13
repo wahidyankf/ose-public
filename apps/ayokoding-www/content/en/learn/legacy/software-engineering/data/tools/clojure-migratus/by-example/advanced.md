@@ -552,9 +552,10 @@ Validating that every migration's down path actually works prevents nasty surpri
   ; => Use a dedicated test database; never rollback-test against production
   {:store         :database
    :migration-dir "resources/migrations"
-   :db            {:connection-uri
-                   (or (System/getenv "TEST_DATABASE_URL")
-                       "jdbc:postgresql://localhost:5432/testdb?user=test&password=test")}})
+   :db            {:jdbcUrl  (or (System/getenv "TEST_DATABASE_URL")
+                                 "jdbc:postgresql:testdb")
+                   :user     "test"
+                   :password "test"}})
                    ; => or: returns first truthy value; falls back to local default
 
 (deftest test-all-migration-rollbacks
@@ -580,8 +581,8 @@ Validating that every migration's down path actually works prevents nasty surpri
             ; => Loop until no applied migrations remain
 
       ;; Verify schema_migrations is empty
-      (let [ds (jdbc/get-datasource (get-in config [:db :connection-uri]))]
-        ; => get-datasource: creates a HikariCP pool from the URI string
+      (let [ds (jdbc/get-datasource (:db config))]
+        ; => get-datasource: creates a datasource from the :db connection map
         (let [count-result (jdbc/execute-one! ds
                              ["SELECT COUNT(*) AS cnt FROM schema_migrations"])]
           (is (= 0 (:cnt count-result))
@@ -737,31 +738,31 @@ Multi-tenant applications can use PostgreSQL schemas (namespaces) to isolate ten
        (mapv :schema_name)))
        ; => mapv: eager map to vector; returns ["tenant_a" "tenant_b" ...]
 
-(defn make-tenant-config [base-uri schema-name]
+(defn make-tenant-config [base-db schema-name]
   ; => Build a per-tenant config by setting search_path to the tenant schema
   {:store         :database
    :migration-dir "migrations/tenant"
    ; => Separate migration dir for tenant-specific schema (not public schema DDL)
-   :db            {:connection-uri
-                   (str base-uri "&currentSchema=" schema-name)}})
+   :db            (assoc base-db :currentSchema schema-name)})
                    ; => currentSchema: PostgreSQL JDBC option sets search_path for connection
                    ; => All unqualified table names resolve to the tenant schema
 
-(defn migrate-all-tenants! [base-uri admin-db]
+(defn migrate-all-tenants! [base-db admin-db]
   ; => Apply tenant migrations to every active tenant schema
   (let [schemas (tenant-schemas admin-db)]
     (doseq [schema schemas]
       ; => doseq: iterate for side effects; no return value
-      (let [config (make-tenant-config base-uri schema)]
+      (let [config (make-tenant-config base-db schema)]
         (println "Migrating schema:" schema)
         (migratus/migrate config)
         ; => Runs pending migrations scoped to this tenant's search_path
         (println "Done:" schema)))))
 
 (comment
-  (def admin-db (jdbc/get-datasource "jdbc:postgresql://localhost:5432/platform?user=admin&password=secret"))
+  (def base-db {:jdbcUrl "jdbc:postgresql:platform" :user "admin" :password "secret"})
+  (def admin-db (jdbc/get-datasource base-db))
   (migrate-all-tenants!
-    "jdbc:postgresql://localhost:5432/platform?user=admin&password=secret"
+    base-db
     admin-db))
     ; => Migrates every active tenant schema in sequence
     ; => For hundreds of tenants, parallelise with pmap or core.async/pipeline
@@ -983,8 +984,9 @@ The Clojure REPL enables interactive migration development: write a migration, a
   ; => Hardcoded dev credentials; acceptable only in dev namespace
   {:store         :database
    :migration-dir "resources/migrations"
-   :db            {:connection-uri
-                   "jdbc:postgresql://localhost:5432/devdb?user=dev&password=dev"}})
+   :db            {:jdbcUrl  "jdbc:postgresql:devdb"
+                   :user     "dev"
+                   :password "dev"}})
 
 (defn apply-pending! []
   ; => Apply all pending migrations against the dev database
@@ -1008,7 +1010,7 @@ The Clojure REPL enables interactive migration development: write a migration, a
 
 (defn inspect-schema [table-name]
   ; => Query PostgreSQL information_schema to inspect current column definitions
-  (jdbc/execute! (jdbc/get-datasource (get-in dev-config [:db :connection-uri]))
+  (jdbc/execute! (jdbc/get-datasource (:db dev-config))
     ["SELECT column_name, data_type, is_nullable, column_default
       FROM information_schema.columns
       WHERE table_name = ?
@@ -1140,7 +1142,7 @@ Schema drift occurs when the live database schema diverges from the migration hi
         (println "DRIFT: Table" table-name "has unexpected columns:" extra)))))
 
 (comment
-  (def ds (jdbc/get-datasource "jdbc:postgresql://localhost:5432/prod?user=app&password=secret"))
+  (def ds (jdbc/get-datasource {:jdbcUrl "jdbc:postgresql:prod" :user "app" :password "secret"}))
   (report-drift! ds
     {:users    [{:column_name "id"} {:column_name "username"} {:column_name "email"}]
      :orders   [{:column_name "id"} {:column_name "user_id"} {:column_name "total"}]}))
@@ -1317,7 +1319,7 @@ Benchmarking individual migrations identifies slow ones that need optimization b
 (comment
   (def bench-config
     {:store :database :migration-dir "resources/migrations"
-     :db {:connection-uri "jdbc:postgresql://localhost:5432/benchdb?user=bench&password=bench"}})
+     :db {:jdbcUrl "jdbc:postgresql:benchdb" :user "bench" :password "bench"}})
   (def results (benchmark-all bench-config))
   (report-slow-migrations results 500.0))
   ; => Prints any migration taking more than 500ms to apply

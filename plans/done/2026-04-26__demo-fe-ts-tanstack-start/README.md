@@ -529,7 +529,7 @@ docker-compose.
 - Service `a-demo-be-db`: `postgres:17-alpine`, container `a-demo-fe-tss-db`, volume `a-demo-fe-tss-db-data`
   - Environment: `POSTGRES_DB=a_demo_fe_tss`, `POSTGRES_USER=a_demo_fe_tss`, `POSTGRES_PASSWORD=a_demo_fe_tss`
 - Service `demo-be`: Go/Gin backend, container `a-demo-fe-tss-be`, port 8201, `ENABLE_TEST_API=true`
-  - `DATABASE_URL=postgresql://a_demo_fe_tss:a_demo_fe_tss@a-demo-be-db:5432/a_demo_fe_tss`
+  - `DATABASE_URL=postgresql://a_demo_fe_tss:${POSTGRES_PASSWORD}@a-demo-be-db:5432/a_demo_fe_tss`
 - Service `demo-fe`: TanStack Start, container `a-demo-fe-tss`, port 3301, `BACKEND_URL=http://demo-be:8201`
 - Network: `a-demo-fe-tss-network`
 

@@ -3009,7 +3009,7 @@ public class ProductRepositoryTestContainersTest {
     // => Executes before application context initialization
     registry.add("spring.datasource.url", postgres::getJdbcUrl);
     // => Sets JDBC URL with container's random port
-    // => Example: jdbc:postgresql://localhost:54321/testdb
+    // => Example: jdbc:postgresql://<host>:<mapped-port>/testdb
     registry.add("spring.datasource.username", postgres::getUsername);
     // => Sets datasource username to "test"
     registry.add("spring.datasource.password", postgres::getPassword);

@@ -6041,7 +6041,7 @@ configs:
 # Pre-deployment checklist
 
 # 1. Create secrets
-echo "postgresql://user:pass@db:5432/prod" | docker secret create db_url -
+echo "postgresql://user:${DB_PASSWORD}@db:5432/prod" | docker secret create db_url -
 # => Creates db_url secret from connection string
 echo "api_key_value" | docker secret create api_key -
 # => Creates api_key secret

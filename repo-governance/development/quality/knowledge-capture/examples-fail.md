@@ -41,10 +41,10 @@ _other_ finding straight to `backlog/` does not carry to this one.
 ## FAIL: Secret leaked into learnings.md
 
 ```markdown
-## Learning: the staging database connection string is postgres://admin:hunter2@10.0.4.12:5432/app
+## Learning: the staging database connection string is postgres://admin:<literal-password>@<private-staging-ip>:5432/app
 ```
 
-Fails the secret/sensitivity gate outright — discard, or rewrite as
+Fails the secret/sensitivity gate outright (the captured line held the literal password and the private host address, replaced by placeholders here) — discard, or rewrite as
 `postgres://<user>:<placeholder>@<staging-db-host>:5432/<db-name>` if the underlying insight (e.g.,
 "the staging connection string format differs from production") is itself worth keeping.
 

@@ -148,7 +148,7 @@ services:
       [
         "sh",
         "-c",
-        "apk add --no-cache postgresql17-client >/dev/null && until pg_isready -h db -U lesson -d lesson; do sleep 1; done && psql postgresql://lesson:training-password@db:5432/lesson -tAc 'SELECT 1' | grep -x 1",
+        "apk add --no-cache postgresql17-client >/dev/null && until pg_isready -h db -U lesson -d lesson; do sleep 1; done && psql postgresql://lesson:${POSTGRES_PASSWORD:-training-password}@db:5432/lesson -tAc 'SELECT 1' | grep -x 1",
       ]
     # => Health-gating avoids treating merely-started PostgreSQL as ready.
     depends_on: { db: { condition: service_healthy } }

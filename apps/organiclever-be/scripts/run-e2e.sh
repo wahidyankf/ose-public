@@ -32,7 +32,7 @@ docker compose -p "${PROJECT_NAME}" -f "${COMPOSE_FILE}" up -d --wait
 dotnet build "${FSPROJ}" --configuration Release --nologo -v quiet
 
 # Start backend in background
-export DATABASE_URL="Host=localhost;Port=5436;Database=organiclever;Username=postgres;Password=postgres"
+export DATABASE_URL="Host=localhost;Port=5436;Database=organiclever;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}"
 export ORGANICLEVER_BE_PORT="${PORT}"
 export ORGANICLEVER_BE_CORS_ORIGINS="*"
 export ORGANICLEVER_BE_NATS_URL="nats://localhost:4226"

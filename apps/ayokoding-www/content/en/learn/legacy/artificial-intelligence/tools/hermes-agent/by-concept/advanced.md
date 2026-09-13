@@ -613,8 +613,9 @@ WorkingDirectory=/home/hermes            # => Working directory for the process
 # Load environment variables from a secrets file (not checked into version control)
 EnvironmentFile=/etc/hermes/secrets.env  # => Contains ANTHROPIC_API_KEY=sk-... etc.
 
-ExecStart=/home/hermes/.local/bin/hermes gateway
+ExecStart=/bin/sh -c 'exec "$$HOME/.local/bin/hermes" gateway'
                                           # => Start the gateway (blocks; systemd manages lifecycle)
+                                          # => User= sets HOME; $$ passes a literal $ past systemd's own expansion
 
 Restart=on-failure                       # => Restart only on non-zero exit (not on clean stop)
 RestartSec=10                            # => Wait 10 seconds before restarting

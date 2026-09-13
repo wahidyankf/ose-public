@@ -761,7 +761,7 @@ docker inspect --format='{{.State.Status}}' web-app
 # => Output: running
 
 docker inspect --format='{{.NetworkSettings.IPAddress}}' web-app
-# => Output: 172.17.0.2 (container IP on bridge network)
+# => Output: 172.17.x.2 (container IP on bridge network)
 
 docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' web-app
 # => More reliable for multiple networks
@@ -853,8 +853,8 @@ Port mapping exposes container services to the host network. Docker supports TCP
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Port mapping flow
 graph TD
- A["Host<br/>localhost:8080"] --> B["Docker Bridge<br/>172.17.0.1"]
- B --> C["Container<br/>172.17.0.2:80"]
+ A["Host<br/>localhost:8080"] --> B["Docker Bridge<br/>172.17.x.1"]
+ B --> C["Container<br/>172.17.x.2:80"]
 
  style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
  style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
@@ -1279,10 +1279,10 @@ Docker's default bridge network enables container-to-container communication. Co
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Bridge network topology
 graph TD
- A["Host<br/>eth0: 192.168.1.10"] --> B["Docker Bridge<br/>docker0: 172.17.0.1"]
- B --> C["Container 1<br/>web: 172.17.0.2"]
- B --> D["Container 2<br/>api: 172.17.0.3"]
- B --> E["Container 3<br/>db: 172.17.0.4"]
+ A["Host<br/>eth0: 192.168.x.10"] --> B["Docker Bridge<br/>docker0: 172.17.x.1"]
+ B --> C["Container 1<br/>web: 172.17.x.2"]
+ B --> D["Container 2<br/>api: 172.17.x.3"]
+ B --> E["Container 3<br/>db: 172.17.x.4"]
  C -.->|"DNS: api"| D
  D -.->|"DNS: db"| E
 
@@ -1350,7 +1350,7 @@ docker run -d --name old-style-db postgres:15-alpine
 
 # Containers on default bridge need IP addresses (legacy approach)
 docker inspect old-style-db --format='{{.NetworkSettings.IPAddress}}'
-# => 172.17.0.2 (must hardcode IP — brittle, breaks on container restart)
+# => 172.17.x.2 (must hardcode IP — brittle, breaks on container restart)
 
 # Remove network (only when no containers attached)
 docker network rm my-bridge
@@ -1511,7 +1511,7 @@ docker exec frontend nslookup backend
 # => Output shows:
 # => Server: 127.0.0.11 (Docker DNS)
 # => Name: backend
-# => Address: 172.19.0.3 (backend container's IP on app-network)
+# => Address: 172.19.x.3 (backend container's IP on app-network)
 
 docker exec backend nslookup database
 # => Queries DNS from backend container perspective
@@ -1519,20 +1519,20 @@ docker exec backend nslookup database
 # => Output shows:
 # => Server: 127.0.0.11
 # => Name: database
-# => Address: 172.19.0.2 (database container's IP)
+# => Address: 172.19.x.2 (database container's IP)
 
 # Check network connectivity between containers
 docker exec frontend ping -c 1 backend
-# => 64 bytes from 172.19.0.3: seq=0 ttl=64 time=0.123 ms
+# => 64 bytes from 172.19.x.3: seq=0 ttl=64 time=0.123 ms
 
 docker exec backend ping -c 1 database
-# => 64 bytes from 172.19.0.2: seq=0 ttl=64 time=0.089 ms
+# => 64 bytes from 172.19.x.2: seq=0 ttl=64 time=0.089 ms
 
 # Inspect network to see all connected containers
 docker network inspect app-network --format='{{range .Containers}}{{.Name}}: {{.IPv4Address}}{{"\n"}}{{end}}'
-# => database: 172.19.0.2/16
-# => backend: 172.19.0.3/16
-# => frontend: 172.19.0.4/16
+# => database: 172.19.x.2/16
+# => backend: 172.19.x.3/16
+# => frontend: 172.19.x.4/16
 ```
 
 **Key Takeaway**: Use container names as hostnames for inter-container communication. Docker's embedded DNS (127.0.0.11) automatically resolves names to IP addresses on custom bridge networks, enabling service discovery without hardcoded IPs.

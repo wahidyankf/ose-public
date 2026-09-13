@@ -1,6 +1,6 @@
 ; <<>> DiG 9.10.6 <<>> +trace example.com
 ;; global options: +cmd
-;; Received 17 bytes from 100.100.100.100#53(100.100.100.100) in 11 ms
+;; Received 17 bytes from <sandbox-resolver>#53(<sandbox-resolver>) in 11 ms
 
 # NOTE: this sandboxed environment's network policy truncates the +trace walk to a
 # single, incomplete priming response -- see beginner.md's Example 20 commentary for

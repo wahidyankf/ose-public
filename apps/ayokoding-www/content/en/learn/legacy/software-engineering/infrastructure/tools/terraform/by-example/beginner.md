@@ -3330,20 +3330,20 @@ resource "local_file" "network_config" {
 # => Resource definition
  filename = "network.txt" # => String value
  # => Sets filename
- content = "VPC: 10.0.0.0/16" # => String value
+ content = "VPC: 10.0/16" # => String value
  # => Sets content
 }
 
 # Export values for other configurations
 output "vpc_cidr" {
 # => Output value
- value = "10.0.0.0/16" # => String value
+ value = "10.0/16" # => String value
  # => Sets value
 }
 
 output "subnet_cidrs" {
 # => Output value
- value = ["10.0.1.0/24", "10.0.2.0/24"] # => List definition
+ value = ["10.0.x.0/24", "10.0.y.0/24"] # => List definition
  # => Sets value
 }
 

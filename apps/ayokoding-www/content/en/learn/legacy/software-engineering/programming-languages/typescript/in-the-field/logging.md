@@ -109,7 +109,7 @@ const logEntry = {
   // => Log message
   userId: 123,
   // => Structured data
-  ip: "192.168.1.1",
+  ip: "192.0.2.1",
   // => Additional context
 };
 
@@ -264,7 +264,7 @@ Winston supports structured data for queryable, filterable logs.
 
 ```typescript
 // Poor: String concatenation
-logger.info("User Alice logged in from 192.168.1.1");
+logger.info("User Alice logged in from 192.0.2.1");
 // => Hard to query by user or IP
 // => Text parsing required
 
@@ -274,7 +274,7 @@ logger.info("User login", {
   // => Queryable field
   username: "Alice",
   // => Queryable field
-  ip: "192.168.1.1",
+  ip: "192.0.2.1",
   // => Queryable field
   timestamp: new Date().toISOString(),
   // => ISO 8601 timestamp

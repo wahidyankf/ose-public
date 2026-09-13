@@ -652,11 +652,11 @@ standalone.example.com # => Host without group membership
 # Group: webservers (logical grouping of web tier hosts)
 [webservers] # => Group header (INI section format)
  # => Create logical grouping for fleet operations
-web1.example.com ansible_host=192.168.1.10 # => Inventory hostname with IP override
+web1.example.com ansible_host=192.0.2.10 # => Inventory hostname with IP override
  # => DNS name: web1.example.com
- # => Actual IP: 192.168.1.10 (ansible_host connection variable)
-web2.example.com ansible_host=192.168.1.11 # => Second webserver with IP override
- # => Connects to 192.168.1.11 via SSH
+ # => Actual IP: 192.0.2.10 (ansible_host connection variable)
+web2.example.com ansible_host=192.0.2.11 # => Second webserver with IP override
+ # => Connects to 192.0.2.11 via SSH
 web3.example.com ansible_port=2222 # => Third webserver with custom SSH port
  # => Default port 22 overridden to 2222
  # => Useful for security hardening (non-standard SSH ports)
@@ -755,11 +755,11 @@ all: # => Root group containing all hosts in inventory
  web1.example.com: # => First webserver entry
  # => Indented dict contains host variables
  ansible_host:
- 192.168.1.10 # => Connection IP override
- # => Ansible connects to 192.168.1.10 instead of DNS lookup
+ 192.0.2.10 # => Connection IP override
+ # => Ansible connects to 192.0.2.10 instead of DNS lookup
  web2.example.com: # => Second webserver
  ansible_host:
- 192.168.1.11 # => IP override for web2
+ 192.0.2.11 # => IP override for web2
  # => Enables static IP targeting
  web3.example.com: # => Third webserver with custom SSH port
  ansible_port:
@@ -964,17 +964,17 @@ def get_inventory():
  # => With _meta: Ansible calls --list once, gets everything
  "hostvars": { # => Host-specific variables dictionary
  # => Key: hostname, Value: dict of variables
- "web1.local": { # => First host's variable dictionary
+ "web1.test": { # => First host's variable dictionary
  # => Hostname must match exactly in hosts list
- "ansible_host": "192.168.1.10", # => SSH connection IP address
+ "ansible_host": "192.0.2.10", # => SSH connection IP address
  # => Overrides DNS resolution for this host
  "http_port": 8080 # => Custom application variable
  # => Accessible in playbooks as {{ http_port }}
  # => User-defined (not Ansible built-in)
  },
- "web2.local": { # => Second host's variable dictionary
+ "web2.test": { # => Second host's variable dictionary
  # => Separate from web1 variables
- "ansible_host": "192.168.1.11", # => Different SSH IP for web2
+ "ansible_host": "192.0.2.11", # => Different SSH IP for web2
  # => Each host has unique IP
  "http_port": 8080 # => Same http_port as web1
  # => Common configuration across group
@@ -984,7 +984,7 @@ def get_inventory():
  "webservers": { # => Group definition (logical grouping)
  # => Group name used in playbook hosts: webservers
  # => Groups enable fleet operations across multiple hosts
- "hosts": ["web1.local", "web2.local"], # => List of group member hostnames
+ "hosts": ["web1.test", "web2.test"], # => List of group member hostnames
  # => Hostnames must match keys in hostvars
  # => Python list format
  "vars": { # => Group-level variables dictionary
@@ -1028,8 +1028,8 @@ if __name__ == "__main__":
  elif len(sys.argv) == 3 and sys.argv[1] == "--host":
  # => --host mode: Return variables for specific host
  # => Ansible calls --host <hostname> for each host if _meta missing
- # => sys.argv = ["inventory.py", "--host", "web1.local"]
- # => hostname = sys.argv[2] (e.g., "web1.local")
+ # => sys.argv = ["inventory.py", "--host", "web1.test"]
+ # => hostname = sys.argv[2] (e.g., "web1.test")
  print(json.dumps({})) # => Return empty dict (hostvars already in --list)
  # => Performance optimization: empty because _meta provides vars
  # => Performance: hostvars in _meta section eliminates N --host calls
@@ -2041,13 +2041,13 @@ Ansible supports multiple variable types: strings, numbers, booleans, lists, dic
  # => Each list item is a dictionary (server configuration)
  - name: web01 # => First server dictionary (app_servers[0])
  # => Dictionary key 'name' with value 'web01'
- ip: 192.168.1.10 # => IP address key in first server
+ ip: 192.0.2.10 # => IP address key in first server
  # => Access: {{ app_servers[0].ip }}
  role: frontend # => Role key in first server
  # => Identifies server purpose
  - name: web02 # => Second server dictionary (app_servers[1])
  # => Separate dictionary in list
- ip: 192.168.1.11 # => IP address for second server
+ ip: 192.0.2.11 # => IP address for second server
  # => Access: {{ app_servers[1].ip }}
  role: backend # => Role for second server
  # => Different role than first server
@@ -2087,7 +2087,7 @@ Ansible supports multiple variable types: strings, numbers, booleans, lists, dic
  msg: "Server {{ app_servers[0].name }} at {{ app_servers[0].ip }}"
  # => Combined syntax: list index [0] + dictionary key .name
  # => Navigates list then accesses dictionary keys
- # => Output: Server web01 at 192.168.1.10
+ # => Output: Server web01 at 192.0.2.10
  # => Demonstrates complex data structure traversal
 
  # Task-level variable override (precedence demonstration)
@@ -2183,9 +2183,9 @@ Facts are system information automatically collected from managed hosts. Facts i
  # => Nested dictionary access: ['default_ipv4']['address']
  # => Hostname: localhost (short hostname without domain)
  # => FQDN: localhost.localdomain (fully qualified domain name)
- # => Default IPv4: 192.168.1.100 (primary network interface IP)
+ # => Default IPv4: 192.0.2.100 (primary network interface IP)
  # => default_ipv4 is dictionary with address, network, netmask keys
- # => All IPs: ['192.168.1.100', '172.17.0.1'] (all IPv4 addresses)
+ # => All IPs: ['192.0.2.100', '172.17.x.1'] (all IPv4 addresses)
  # => List includes Docker bridge, VPN interfaces, etc.
 
  # Use facts in conditionals (OS-specific logic)
@@ -2521,13 +2521,13 @@ all:
  webservers:
  hosts:
  web1.example.com:
- ansible_host: 192.168.1.10
+ ansible_host: 192.0.2.10
  web2.example.com:
- ansible_host: 192.168.1.11
+ ansible_host: 192.0.2.11
  databases:
  hosts:
  db1.example.com:
- ansible_host: 192.168.1.20
+ ansible_host: 192.0.2.20
 ```
 
 **`group_vars/all.yml`**:
@@ -3000,13 +3000,13 @@ Loop control parameters modify loop behavior: labels, pauses, batch sizes, and e
  vars: # => Server list for demonstrations
  servers: # => List of server dictionaries
  - name: server1
- ip: 192.168.1.10
+ ip: 192.0.2.10
  status: active
  - name: server2
- ip: 192.168.1.11
+ ip: 192.0.2.11
  status: maintenance
  - name: server3
- ip: 192.168.1.12
+ ip: 192.0.2.12
  status: active
 
  tasks: # => Tasks demonstrating loop control features
@@ -3200,7 +3200,7 @@ Advanced loop patterns combine filters, conditionals, and transformations for co
  - name: Combine two lists # => Task 6: Pair corresponding elements
  vars:
  names: [server1, server2, server3] # => First list
- ips: [192.168.1.10, 192.168.1.11, 192.168.1.12] # => Second list
+ ips: [192.0.2.10, 192.0.2.11, 192.0.2.12] # => Second list
  ansible.builtin.debug:
  msg: "{{ item.0 }} -> {{ item.1 }}"
  # => item.0 = element from first list (names)
@@ -3209,7 +3209,7 @@ Advanced loop patterns combine filters, conditionals, and transformations for co
  # => zip filter combines lists element-wise
  # => Creates tuples: (names[i], ips[i]) for each index i
  # => Pairs corresponding elements
- # => Output: server1 -> 192.168.1.10, server2 -> 192.168.1.11, server3 -> 192.168.1.12
+ # => Output: server1 -> 192.0.2.10, server2 -> 192.0.2.11, server3 -> 192.0.2.12
 
  # Flatten nested lists (dimension reduction)
  - name: Flatten nested lists # => Task 7: Reduce nesting

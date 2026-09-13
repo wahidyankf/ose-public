@@ -20,12 +20,12 @@ let ``loadConfig returns the configured values when set`` () =
         Map.ofList
             [ "OSE_BE_OPENROUTER_API_KEY", "sk-test-key"
               "OSE_BE_OPENROUTER_MODEL", "openrouter/custom-model"
-              "OSE_BE_OPENROUTER_BASE_URL", "https://example.internal/v1" ]
+              "OSE_BE_OPENROUTER_BASE_URL", "https://example.invalid/v1" ]
 
     let config = loadConfigWith (readEnvironment values)
     Assert.Equal("sk-test-key", config.ApiKey)
     Assert.Equal("openrouter/custom-model", config.Model)
-    Assert.Equal("https://example.internal/v1", config.BaseUrl)
+    Assert.Equal("https://example.invalid/v1", config.BaseUrl)
 
 [<Fact>]
 let ``isConfigured is false when the API key is blank`` () =

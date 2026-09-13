@@ -37,7 +37,7 @@ result := transform(y)  // => result is "20-transformed" (string)
 security implication.
 
 ```bash
-nmap -sV 10.10.10.5
+nmap -sV 192.0.2.5
 # => -sV: probe open ports to determine service/version info
 # Output:
 # PORT   STATE SERVICE VERSION

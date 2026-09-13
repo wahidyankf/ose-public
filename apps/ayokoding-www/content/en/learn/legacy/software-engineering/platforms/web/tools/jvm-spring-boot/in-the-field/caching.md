@@ -61,7 +61,7 @@ spring:
   cache:
     type: redis
   redis:
-    host: redis.internal
+    host: redis.internal.example
     port: 6379
   cache:
     redis:

@@ -12,6 +12,6 @@ example.com.		184	IN	AAAA	2606:4700:10::ac42:93f3
 example.com.		184	IN	AAAA	2606:4700:10::6814:179a
 
 ;; Query time: 2 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Tue Jul 14 16:56:12 WIB 2026
 ;; MSG SIZE  rcvd: 96

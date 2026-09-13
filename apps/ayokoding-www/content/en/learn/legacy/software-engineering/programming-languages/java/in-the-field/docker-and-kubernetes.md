@@ -1009,7 +1009,7 @@ spec:
   type: ClusterIP
   # => Default type (can omit)
   # => Accessible only within cluster
-  # => DNS name: myapp-internal.default.svc.cluster.local
+  # => DNS name: myapp-internal.default.svc.cluster.local.
   selector:
     app: myapp
   ports:

@@ -14,8 +14,8 @@ management subnets using VLAN tagging and firewall rules. Proper segmentation li
 movement after a breach, containing the blast radius to one zone.
 
 **Scenario:** A Ubuntu 22.04 host acts as an inter-VLAN router with three VLANs: VLAN 10
-(production, 10.0.10.0/24), VLAN 20 (development, 10.0.20.0/24), VLAN 99 (management,
-10.0.99.0/24).
+(production, 10.x.10.0/24), VLAN 20 (development, 10.x.20.0/24), VLAN 99 (management,
+10.x.99.0/24).
 
 ```bash
 # Create VLAN sub-interfaces on eth0
@@ -24,9 +24,9 @@ ip link add link eth0 name eth0.20 type vlan id 20   # => VLAN 20: development s
 ip link add link eth0 name eth0.99 type vlan id 99   # => VLAN 99: management subnet
 
 # Assign gateway IPs to each VLAN interface
-ip addr add 10.0.10.1/24 dev eth0.10                 # => gateway for prod VLAN
-ip addr add 10.0.20.1/24 dev eth0.20                 # => gateway for dev VLAN
-ip addr add 10.0.99.1/24 dev eth0.99                 # => gateway for mgmt VLAN
+ip addr add 10.x.10.1/24 dev eth0.10                 # => gateway for prod VLAN
+ip addr add 10.x.20.1/24 dev eth0.20                 # => gateway for dev VLAN
+ip addr add 10.x.99.1/24 dev eth0.99                 # => gateway for mgmt VLAN
 
 # Bring interfaces up
 ip link set eth0.10 up                               # => prod interface active
@@ -52,17 +52,17 @@ nft add rule inet filter forward ct state established,related accept
 
 # Rule: dev may NOT reach prod (isolation)
 nft add rule inet filter forward \
-    ip saddr 10.0.20.0/24 ip daddr 10.0.10.0/24 drop
+    ip saddr 10.x.20.0/24 ip daddr 10.x.10.0/24 drop
 # => dev-to-prod traffic silently dropped
 
 # Rule: prod may reach dev on port 5432 (DB reads from prod to dev replica) — deny everything else
 nft add rule inet filter forward \
-    ip saddr 10.0.10.0/24 ip daddr 10.0.20.0/24 tcp dport 5432 accept
+    ip saddr 10.x.10.0/24 ip daddr 10.x.20.0/24 tcp dport 5432 accept
 # => narrow exception: prod queries dev DB replica only
 
 # Rule: management subnet reaches everything (admin access)
 nft add rule inet filter forward \
-    ip saddr 10.0.99.0/24 accept
+    ip saddr 10.x.99.0/24 accept
 # => mgmt VLAN is the only zone with unrestricted access
 
 # Verify rules are loaded correctly
@@ -88,7 +88,7 @@ public-key cryptography. This example configures both the server endpoint and a 
 client with annotated wg0.conf files explaining each directive.
 
 **Scenario:** A Ubuntu 22.04 server at 203.0.113.5 acts as VPN concentrator. A remote peer
-client needs encrypted access to the 10.8.0.0/24 internal network.
+client needs encrypted access to the 10.x.0.0/24 internal network.
 
 ```bash
 # --- SERVER: /etc/wireguard/wg0.conf ---
@@ -103,7 +103,7 @@ chmod 600 /etc/wireguard/server_private.key          # => only root can read pri
 # Write server config
 cat > /etc/wireguard/wg0.conf << 'EOF'
 [Interface]
-Address    = 10.8.0.1/24          # VPN tunnel IP assigned to server
+Address    = 10.x.0.1/24          # VPN tunnel IP assigned to server
 ListenPort = 51820                # UDP port WireGuard listens on
 PrivateKey = <server_private_key> # paste contents of server_private.key
 
@@ -115,7 +115,7 @@ PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING 
 [Peer]
 # Client peer registration
 PublicKey  = <client_public_key>  # paste client's public key (see peer section below)
-AllowedIPs = 10.8.0.2/32          # only traffic FROM this IP is accepted from this peer
+AllowedIPs = 10.x.0.2/32          # only traffic FROM this IP is accepted from this peer
 # => AllowedIPs is both routing table and cryptographic ACL
 EOF
 
@@ -127,9 +127,9 @@ wg genkey | tee client_private.key | wg pubkey > client_public.key
 
 cat > /etc/wireguard/wg0.conf << 'EOF'
 [Interface]
-Address    = 10.8.0.2/24          # VPN tunnel IP for this client
+Address    = 10.x.0.2/24          # VPN tunnel IP for this client
 PrivateKey = <client_private_key> # paste client_private.key contents
-DNS        = 10.8.0.1             # use server as DNS resolver over tunnel
+DNS        = 10.x.0.1             # use server as DNS resolver over tunnel
 
 [Peer]
 PublicKey  = <server_public_key>  # paste server_public.key
@@ -200,7 +200,7 @@ table inet firewall {
     ip6 nexthdr  icmpv6 accept      # => IPv6 ICMPv6: required for neighbor discovery
 
     # Allow SSH from management subnet only
-    tcp dport 22 ip saddr 10.0.99.0/24 accept
+    tcp dport 22 ip saddr 10.x.99.0/24 accept
     # => SSH locked to mgmt VLAN; public internet cannot reach port 22
 
     # Allow HTTP/HTTPS from anywhere
@@ -285,7 +285,7 @@ alert http any any -> $HTTP_SERVERS any \
 # --- Apply and test the rules ---
 
 # Test configuration syntax without starting Suricata
-suricata -T -c /etc/suricata/suricata.yaml --set vars.address-groups.HOME_NET="[10.0.0.0/8]"
+suricata -T -c /etc/suricata/suricata.yaml --set vars.address-groups.HOME_NET="[10.x.0.0/8]"
 # => "-T" = test mode; exits 0 if config valid, non-zero with error details
 
 # Reload rules in running Suricata without restart (live rule update)
@@ -391,7 +391,7 @@ without relying on public CAs or paying per-certificate fees. This example confi
 CA directory structure and issues a service certificate with the proper extensions.
 
 **Scenario:** A team needs an internal CA to issue TLS certificates for microservices on a
-10.0.0.0/8 private network. The CA runs on an air-gapped Ubuntu 22.04 management host.
+10.x.0.0/8 private network. The CA runs on an air-gapped Ubuntu 22.04 management host.
 
 ```bash
 # Create CA directory structure following OpenSSL convention
@@ -431,7 +431,7 @@ openssl req -new -key /etc/ssl/myca/private/api-service.key.pem \
 # Create extension file defining SAN and key usage for service cert
 cat > /tmp/api-service-ext.cnf << 'EOF'
 [v3_server]
-subjectAltName         = DNS:api.internal.example.com, IP:10.0.10.50
+subjectAltName         = DNS:api.internal.example.com, IP:10.x.10.50
 keyUsage               = critical, digitalSignature, keyEncipherment
 extendedKeyUsage       = serverAuth
 basicConstraints       = critical, CA:FALSE
@@ -454,7 +454,7 @@ openssl ca \
 # Verify issued cert subject and extensions
 openssl x509 -in /etc/ssl/myca/certs/api-service.cert.pem -noout -text \
   | grep -A5 "Subject Alternative Name"
-# => confirms SAN contains DNS:api.internal.example.com and IP:10.0.10.50
+# => confirms SAN contains DNS:api.internal.example.com and IP:10.x.10.50
 ```
 
 **Key Takeaway:** Internal CAs work only if clients trust the root certificate — distribute
@@ -647,7 +647,7 @@ internet-facing ones.
 vulnerability scans and produces XML reports with severity breakdowns. This example shows how to
 launch a scan via CLI and parse the XML report to extract critical findings.
 
-**Scenario:** A security team runs a weekly authenticated scan of 10.0.10.0/24 (production
+**Scenario:** A security team runs a weekly authenticated scan of 10.x.10.0/24 (production
 subnet) using OpenVAS on an Ubuntu 22.04 GVM host. The scan results are parsed for remediation
 triage.
 
@@ -663,7 +663,7 @@ gvm-check-setup 2>&1 | tail -5
 
 # Create a scan target for the production subnet
 gvm-cli --gmp-username admin --gmp-password changeme socket \
-  --xml "<create_target><name>prod-subnet</name><hosts>10.0.10.0/24</hosts></create_target>"
+  --xml "<create_target><name>prod-subnet</name><hosts>10.x.10.0/24</hosts></create_target>"
 # => returns: <create_target_response id="TARGET-UUID" status="201"/>
 # => TARGET-UUID used in scan task creation
 
@@ -1215,7 +1215,7 @@ and identify over-privileged users, a fundamental step in both AD security harde
 reconnaissance.
 
 **Scenario:** A security analyst on Ubuntu 22.04 queries an Active Directory domain
-(corp.example.com, DC at 10.0.1.10) to enumerate members of privileged groups as part of an
+(corp.example.com, DC at 10.x.1.10) to enumerate members of privileged groups as part of an
 access review.
 
 ```bash
@@ -1226,7 +1226,7 @@ apt-get install -y ldap-utils    # => provides ldapsearch, ldapmodify, ldapadd
 
 # Query the Domain Admins group membership
 ldapsearch \
-  -H ldap://10.0.1.10 \                  # => LDAP server: domain controller IP
+  -H ldap://10.x.1.10 \                  # => LDAP server: domain controller IP
   -D "analyst@corp.example.com" \        # => bind DN: use analyst service account
   -W \                                   # => -W prompts for password interactively
   -b "DC=corp,DC=example,DC=com" \       # => search base: entire domain
@@ -1244,7 +1244,7 @@ ldapsearch \
 
 # Query all groups with adminCount=1 (protected from accidental permission inheritance)
 ldapsearch \
-  -H ldap://10.0.1.10 \
+  -H ldap://10.x.1.10 \
   -D "analyst@corp.example.com" -W \
   -b "DC=corp,DC=example,DC=com" \
   "(adminCount=1)" \                     # => adminCount=1 marks high-privilege objects
@@ -1254,7 +1254,7 @@ ldapsearch \
 
 # Find users with the "Do not require Kerberos preauthentication" flag (AS-REP Roasting target)
 ldapsearch \
-  -H ldap://10.0.1.10 \
+  -H ldap://10.x.1.10 \
   -D "analyst@corp.example.com" -W \
   -b "DC=corp,DC=example,DC=com" \
   "(&(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=4194304))" \
@@ -1265,7 +1265,7 @@ ldapsearch \
 
 # Find accounts that have not logged in for 90+ days (stale accounts = attack surface)
 ldapsearch \
-  -H ldap://10.0.1.10 \
+  -H ldap://10.x.1.10 \
   -D "analyst@corp.example.com" -W \
   -b "DC=corp,DC=example,DC=com" \
   "(&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))" \
@@ -1512,13 +1512,13 @@ configures the KV v2 secrets engine, uses AppRole authentication for a service a
 demonstrates reading and writing secrets.
 
 **Scenario:** A microservice on Ubuntu 22.04 needs to retrieve database credentials at startup
-without hardcoding them in config files. Vault runs at http://vault.internal:8200.
+without hardcoding them in config files. Vault runs at http://vault.test:8200.
 
 ```bash
 # --- Initial Vault setup (run once by administrator) ---
 
 # Authenticate to Vault as administrator
-export VAULT_ADDR="http://vault.internal:8200"
+export VAULT_ADDR="http://vault.test:8200"
 vault login              # => prompts for root token or admin credentials
 # => production: use short-lived tokens issued via OIDC/LDAP, not root token
 
@@ -1624,7 +1624,7 @@ This example configures rsyslog to forward logs to a central collector and logro
 local log retention on Ubuntu 22.04.
 
 **Scenario:** A cluster of application servers must forward their syslog streams to a central
-log server at 10.0.99.50:514 (UDP/TCP). Local logs rotate daily with 30-day retention.
+log server at 10.x.99.50:514 (UDP/TCP). Local logs rotate daily with 30-day retention.
 
 ```bash
 # --- APPLICATION SERVER: /etc/rsyslog.d/50-forwarding.conf ---
@@ -1636,7 +1636,7 @@ module(load="omfwd")                 # => omfwd: output module for forwarding
 # Forward all syslog facilities and severities to central collector
 *.* action(
     type="omfwd"
-    target="10.0.99.50"              # => central log server IP
+    target="10.x.99.50"              # => central log server IP
     port="514"                       # => standard syslog port
     protocol="tcp"                   # => TCP: reliable delivery (retries on failure)
     # protocol="udp" loses messages on network congestion; avoid for security logs
@@ -1757,8 +1757,8 @@ detection:
       - "Failed publickey for"
       - "Invalid user"
       # => each pattern matches a different sshd failure message format
-      # => "Failed password for root from 192.168.1.5 port 45231 ssh2"
-      # => "Invalid user admin from 10.0.0.1 port 22834"
+      # => "Failed password for root from 192.168.x.5 port 45231 ssh2"
+      # => "Invalid user admin from 10.x.0.1 port 22834"
 
   timeframe: 5m # => look-back window: events within 5 minutes
 
@@ -1837,8 +1837,8 @@ mkdir -p "${BASELINE_DIR}"
 
 # Show raw successful login entries (sample of the data)
 grep "Accepted password\|Accepted publickey" "${LOG_FILE}" | head -5
-# => May 21 08:12:45 server01 sshd[12345]: Accepted publickey for alice from 10.0.99.5 port 43210 ssh2
-# => May 21 08:45:03 server01 sshd[12346]: Accepted password for bob from 10.0.99.6 port 52341 ssh2
+# => May 21 08:12:45 server01 sshd[12345]: Accepted publickey for alice from 10.x.99.5 port 43210 ssh2
+# => May 21 08:45:03 server01 sshd[12346]: Accepted password for bob from 10.x.99.6 port 52341 ssh2
 # => each line: timestamp, hostname, process, auth method, username, source IP, port
 
 # --- Baseline 1: Unique source IPs per user ---
@@ -1855,9 +1855,9 @@ grep "Accepted" "${LOG_FILE}" \
     }' \
   | sort -k1,1 -k3,3rn \
   > "${BASELINE_DIR}/user-source-ips.tsv"
-# => alice    10.0.99.5    847    (alice always logs in from 10.0.99.5; 847 times in period)
-# => bob      10.0.99.6    312
-# => svc-ci   10.0.20.100  1204   (CI service account; high frequency is normal for it)
+# => alice    10.x.99.5    847    (alice always logs in from 10.x.99.5; 847 times in period)
+# => bob      10.x.99.6    312
+# => svc-ci   10.x.20.100  1204   (CI service account; high frequency is normal for it)
 
 # --- Baseline 2: Login hour distribution (detect off-hours logins) ---
 grep "Accepted" "${LOG_FILE}" \
@@ -1894,7 +1894,7 @@ grep "Failed password\|Failed publickey\|Invalid user" "${LOG_FILE}" \
   | sort -k3,3rn \
   > "${BASELINE_DIR}/failed-login-baseline.tsv"
 # => root          45.33.32.156    4821   (internet scanners fail constantly; document as baseline noise)
-# => alice         10.0.99.5         3    (alice occasionally miskeys; 3 failures is normal)
+# => alice         10.x.99.5         3    (alice occasionally miskeys; 3 failures is normal)
 # => ALERT threshold: >20 failures from non-scanner IP for a valid user = brute force
 
 # Summarize baseline statistics
@@ -2339,19 +2339,19 @@ kubectl get networkpolicies -A
 # => data        data-allow-backend-only        app=postgres   10s
 
 # Test connectivity (should succeed): frontend pod → backend API
-kubectl exec -n frontend deploy/web -- curl -s http://api.backend.svc.cluster.local:8080/health
+kubectl exec -n frontend deploy/web -- curl -s http://api.backend.svc.cluster.local.:8080/health
 # => {"status":"ok"}  — allowed by NetworkPolicy
 
 # Test connectivity (should fail): frontend pod → postgres (bypassing API)
 kubectl exec -n frontend deploy/web -- \
-  timeout 5 bash -c "echo > /dev/tcp/postgres.data.svc.cluster.local/5432" 2>&1
+  timeout 5 bash -c "echo > /dev/tcp/postgres.data.svc.cluster.local./5432" 2>&1
 # => bash: connect: Connection timed out  — blocked by NetworkPolicy on data namespace
 # => timeout 5 prevents the test from hanging indefinitely
 
 # Test connectivity (should fail): rogue pod in default namespace → postgres
 kubectl run rogue --image=postgres:15 -n default --rm -it -- \
-  psql -h postgres.data.svc.cluster.local -U postgres 2>&1 | head -2
-# => psql: error: connection to server at "postgres.data.svc.cluster.local" failed
+  psql -h postgres.data.svc.cluster.local. -U postgres 2>&1 | head -2
+# => psql: error: connection to server at "postgres.data.svc.cluster.local." failed
 # => Connection timed out — default namespace not in allowlist
 ```
 
@@ -2502,7 +2502,7 @@ This example implements a bash IR script that automates evidence collection acro
 three phases.
 
 **Scenario:** An alert fires at 02:15 UTC indicating unusual outbound traffic from
-server01 (10.0.10.25). The on-call engineer begins IR using this script.
+server01 (10.x.10.25). The on-call engineer begins IR using this script.
 
 ```bash
 #!/usr/bin/env bash
@@ -2563,7 +2563,7 @@ echo "[COLLECTED] System logs" | tee -a "${IR_DIR}/ir-log.txt"
 # --- PHASE 3: CONTAINMENT — isolate the host ---
 
 # Block all outbound connections except to IR team's management IP
-MANAGEMENT_IP="10.0.99.10"
+MANAGEMENT_IP="10.x.99.10"
 iptables -I OUTPUT 1 -d "${MANAGEMENT_IP}" -j ACCEPT
 # => allow IR team access first before blocking everything else
 iptables -I OUTPUT 2 -j DROP

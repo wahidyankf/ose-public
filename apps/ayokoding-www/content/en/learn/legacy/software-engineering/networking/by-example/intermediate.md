@@ -1332,17 +1332,17 @@ NAT allows multiple devices on a private network to share one public IP address.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    subgraph Private["Private Network 192.168.1.0/24"]
-        H1["Host A<br/>192.168.1.10"]
-        H2["Host B<br/>192.168.1.20"]
+    subgraph Private["Private Network 192.168.x.0/24"]
+        H1["Host A<br/>192.168.x.10"]
+        H2["Host B<br/>192.168.x.20"]
     end
-    NAT["NAT Router<br/>Private: 192.168.1.1<br/>Public: 203.0.113.5"]
+    NAT["NAT Router<br/>Private: 192.168.x.1<br/>Public: 203.0.113.5"]
     subgraph Internet["Internet"]
         S["Server<br/>93.184.216.34"]
     end
 
-    H1 -->|"src=192.168.1.10:54321"| NAT
-    H2 -->|"src=192.168.1.20:54322"| NAT
+    H1 -->|"src=192.168.x.10:54321"| NAT
+    H2 -->|"src=192.168.x.20:54322"| NAT
     NAT -->|"src=203.0.113.5:10001"| S
     NAT -->|"src=203.0.113.5:10002"| S
 
@@ -1616,7 +1616,7 @@ def explain_bgp():
     bgp_route = {  # => Dict representing one BGP route entry
         "prefix": "203.0.113.0/24",       # => Network being advertised
         # => /24 prefix: 256 addresses; smaller prefix = more specific route (preferred)
-        "nexthop": "10.0.0.1",             # => Forward packets to this IP
+        "nexthop": "10.0.x.1",             # => Forward packets to this IP
         "as_path": [65003, 65002, 65001],  # => Route passed through these ASes
         # => as_path: [65003, 65002, 65001] = 3 hops; shorter path wins in selection
         "local_pref": 100,                 # => Default preference value
@@ -1630,7 +1630,7 @@ def explain_bgp():
         # => Print each attribute aligned
         print(f"    {k:12s}: {v}")
     # => Output:   prefix      : 203.0.113.0/24
-    #              nexthop     : 10.0.0.1
+    #              nexthop     : 10.0.x.1
 
 explain_bgp()
 # => Call explain_bgp() to print all BGP concepts and sample route

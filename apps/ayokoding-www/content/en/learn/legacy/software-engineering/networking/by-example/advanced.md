@@ -133,8 +133,8 @@ def craft_ip_header(src_ip, dst_ip, protocol, payload_len):  # => Returns 20-byt
     ttl = 64                         # => Time To Live: max hops (decremented by each router)
     checksum = 0                     # => Calculated after header is assembled
 
-    src_bytes = socket.inet_aton(src_ip)   # => "192.168.1.10" -> 4 bytes
-    dst_bytes = socket.inet_aton(dst_ip)   # => "10.0.0.1" -> 4 bytes
+    src_bytes = socket.inet_aton(src_ip)   # => "192.0.2.10" -> 4 bytes
+    dst_bytes = socket.inet_aton(dst_ip)   # => "198.51.100.1" -> 4 bytes
     # => inet_aton: name mirrors inet_ntoa (network-to-ASCII); aton = ASCII-to-network
 
     header = struct.pack(
@@ -176,18 +176,18 @@ def parse_ip_header(data):  # => Decodes 20-byte bytes into a named-field dict
     }
 
 # Craft and immediately parse back
-header = craft_ip_header("192.168.1.10", "10.0.0.1", protocol=17, payload_len=8)
+header = craft_ip_header("192.0.2.10", "198.51.100.1", protocol=17, payload_len=8)
 # => protocol=17: UDP
 print(f"Crafted IP header: {len(header)} bytes")  # => 20 bytes: minimum IPv4 header
 print(f"Raw hex: {header.hex()}")
-# => Raw hex: 45000018abcd400040110000c0a8010a0a000001
+# => Raw hex: 4500001cabcd400040110000c000020ac6336401
 
 parsed = parse_ip_header(header)  # => Decode back to verify correctness
 print("\nParsed IP header:")
 for k, v in parsed.items():  # => Print each field name and decoded value
     print(f"  {k:10s}: {v}")
 # => version: 4, ihl: 20, total_len: 28, ttl: 64, protocol: 17
-# => src: 192.168.1.10, dst: 10.0.0.1, df: True
+# => src: 192.0.2.10, dst: 198.51.100.1, df: True
 ```
 
 **Key Takeaway**: `struct.pack`/`unpack` with network byte order (`!`) serializes Python values into binary protocol headers; format strings map directly to C struct field types.
@@ -824,7 +824,7 @@ def explain_webrtc():  # => Prints 5 WebRTC components and a sample SDP offer
         "a=ice-pwd:secretpassword123456789012\n"  # => ICE password for credential verification
         "a=fingerprint:sha-256 AA:BB:CC:DD:EE:FF:...\na=setup:actpass\n"  # => DTLS fingerprint: cert hash
         "a=mid:audio\na=rtpmap:111 opus/48000/2\n"  # => mid: media ID used in BUNDLE; rtpmap: codec
-        "a=candidate:1 1 udp 2122260223 192.168.1.10 54321 typ host"  # => Host candidate: local LAN IP
+        "a=candidate:1 1 udp 2122260223 192.0.2.10 54321 typ host"  # => Host candidate: local LAN IP
     )  # => Concatenated SDP lines; avoids multi-line string line counting
 
     print("  Example SDP offer (simplified):")  # => Sub-section header
@@ -850,14 +850,14 @@ A VPN (Virtual Private Network) creates an encrypted tunnel between endpoints, m
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    C["Client<br/>192.168.1.10"]
-    TUN["TUN Interface<br/>10.8.0.2 (virtual)"]
+    C["Client<br/>192.0.2.10"]
+    TUN["TUN Interface<br/>10.8.x.2 (virtual)"]
     ENC["Encryption<br/>AES-256-GCM"]
     UDP["UDP/443<br/>Outer packet"]
     VPN["VPN Server<br/>203.0.113.1"]
     NET["Target Network<br/>10.0.0.0/8"]
 
-    C -->|"traffic to 10.0.0.5"| TUN
+    C -->|"traffic to 10.0.x.5"| TUN
     TUN -->|"capture + encrypt"| ENC
     ENC -->|"encapsulate"| UDP
     UDP -->|"internet"| VPN
@@ -1684,7 +1684,7 @@ def explain_packet_capture():  # => Prints BPF filters, tcpdump flags, and Wires
     # => Reference guide to BPF filter syntax, tcpdump flags, and Wireshark display filters
     bpf_filters = {  # => 9 common BPF filter expressions; dict preserves insertion order
         # => BPF: Berkeley Packet Filter — evaluated in kernel before packets reach userspace
-        "host 192.168.1.10":                  "All packets to/from 192.168.1.10",
+        "host 192.0.2.10":                  "All packets to/from 192.0.2.10",
         # => Matches src OR dst — bidirectional; use 'src host' or 'dst host' for directional
         "tcp port 443":                        "HTTPS traffic only",
         # => Matches both TCP SYN/ACK and data; use 'tcp dst port 443' for client->server only
@@ -1700,7 +1700,7 @@ def explain_packet_capture():  # => Prints BPF filters, tcpdump flags, and Wires
         # => Useful for diagnosing MTU mismatch causing fragmentation or PMTUD failures
         "net 10.0.0.0/8":                      "All traffic to/from 10.x.x.x network",
         # => CIDR-aware; matches entire subnet; useful for capturing all private network traffic
-        "src host 10.0.0.1 and dst port 80":   "HTTP from specific host",
+        "src host 10.0.x.1 and dst port 80":   "HTTP from specific host",
         # => Compound filter: 'and'/'or' combine conditions; parentheses for grouping
     }
     print("BPF Filter Expressions:")
@@ -1710,7 +1710,7 @@ def explain_packet_capture():  # => Prints BPF filters, tcpdump flags, and Wires
         # => bpf_filters dict: 9 filters ordered from simple host match to compound
         print(f"  {expr:45s}: {desc}")
         # => Alignment at 45 chars makes filter and description easy to compare visually
-    # => Output:   host 192.168.1.10                             : All packets to/from...
+    # => Output:   host 192.0.2.10                             : All packets to/from...
     #              tcp port 443                                   : HTTPS traffic only
 
     print("\ntcpdump Common Flags:")
@@ -2590,11 +2590,11 @@ def explain_ipv6_migration():  # => Prints 4 migration strategies and address ca
 
 # IPv4-mapped IPv6 addresses (dual-stack representation)
 # => ::ffff:0:0/96: IPv4-mapped range; AF_INET6 sockets may receive IPv4 in this form
-ipv4 = ipaddress.IPv4Address("192.168.1.100")  # => Parse dotted-decimal IPv4
+ipv4 = ipaddress.IPv4Address("192.0.2.100")  # => Parse dotted-decimal IPv4
 ipv4_mapped = ipaddress.IPv6Address(f"::ffff:{ipv4}")  # => Construct IPv4-mapped form
-# => ::ffff:192.168.1.100: IPv4 address represented in IPv6 space
-print(f"IPv4: {ipv4}")  # => 192.168.1.100
-print(f"IPv4-mapped IPv6: {ipv4_mapped}")  # => ::ffff:c0a8:164
+# => ::ffff:192.0.2.100: IPv4 address represented in IPv6 space
+print(f"IPv4: {ipv4}")  # => 192.0.2.100
+print(f"IPv4-mapped IPv6: {ipv4_mapped}")  # => ::ffff:c000:264
 # => Linux dual-stack sockets may present IPv4 connections as IPv4-mapped IPv6
 
 # IPv6 address categories

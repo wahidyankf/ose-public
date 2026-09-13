@@ -77,7 +77,7 @@ let rateLimitHandler : HttpHandler =
         task {
             // Simplified rate check (real: use IMemoryCache or Redis)
             let ip = ctx.Connection.RemoteIpAddress.ToString()
-            let allowed = ip <> "192.168.1.99"   // => Block specific IP for demo
+            let allowed = ip <> "192.0.2.99"   // => Block specific IP for demo
             if allowed then
                 return! next ctx
             else

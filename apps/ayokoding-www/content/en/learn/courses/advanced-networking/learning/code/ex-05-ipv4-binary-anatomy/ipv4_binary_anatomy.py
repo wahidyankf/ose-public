@@ -1,5 +1,5 @@
 # learning/code/ex-05-ipv4-binary-anatomy/ipv4_binary_anatomy.py
-"""Example 5: IPv4 Binary Anatomy -- 192.168.1.10, Octet by Octet."""  # => co-03: this file's own restated purpose, doubling as its module __doc__
+"""Example 5: IPv4 Binary Anatomy -- 192.0.2.10, Octet by Octet."""  # => co-03: this file's own restated purpose, doubling as its module __doc__
 
 from __future__ import annotations  # => DD-39 hygiene: postpones type-annotation evaluation, keeping this file interpreter-version-agnostic
 
@@ -16,7 +16,7 @@ def octet_to_binary(octet: int) -> str:  # => co-03: one IPv4 octet (0-255) -> i
     return "".join(reversed(bits))  # => co-03: reverse -- bits came out LSB-first, MSB must print first
 
 
-def ipv4_to_binary_octets(address: str) -> list[str]:  # => co-03: "192.168.1.10" -> 4 separate 8-bit binary strings
+def ipv4_to_binary_octets(address: str) -> list[str]:  # => co-03: "192.0.2.10" -> 4 separate 8-bit binary strings
     """Split a dotted-decimal IPv4 address into its 4 octets, each rendered in binary."""  # => co-03: documents ipv4_to_binary_octets's contract -- no runtime output, just sets its __doc__
     parts = address.split(".")  # => co-03: dotted-decimal notation -- exactly 4 parts, separated by "."
     if len(parts) != 4:  # => co-03: IPv4 is always 4 octets -- anything else is malformed input
@@ -31,7 +31,7 @@ def binary_octets_to_ipv4(binary_octets: list[str]) -> str:  # => co-03: the EXA
 
 
 if __name__ == "__main__":  # => co-03: entry point -- this block runs only when the file executes directly, not on import
-    address = "192.168.1.10"  # => co-03: the syllabus's fixed test address
+    address = "192.0.2.10"  # => co-03: the syllabus's fixed test address
     binary_octets = ipv4_to_binary_octets(address)  # => co-03: hand-rolled octet-by-octet binary conversion
     print(f"{address} in binary, octet by octet:")  # => co-03: labels the following per-octet printout
     for decimal_str, bits in zip(address.split("."), binary_octets):  # => co-03: pairs each original decimal octet with its binary form

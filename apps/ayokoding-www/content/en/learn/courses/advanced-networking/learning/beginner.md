@@ -227,13 +227,13 @@ ip neigh show
 
 **Run**: `ip neigh show` (same Debian Linux container as Example 3, same reason: macOS has no `ip`)
 
-**Output**:
+**Output** (private addresses are masked, for example `172.17.x.1`; the rest is verbatim):
 
 ```text
-172.17.0.1 dev eth0 lladdr 2a:f0:c7:59:1e:2f STALE
+172.17.x.1 dev eth0 lladdr 2a:f0:c7:59:1e:2f STALE
 ```
 
-**Key takeaway**: `172.17.0.1 ... lladdr 2a:f0:c7:59:1e:2f` is a real IP-to-MAC entry this
+**Key takeaway**: `172.17.x.1 ... lladdr 2a:f0:c7:59:1e:2f` is a real IP-to-MAC entry this
 container's kernel learned via ARP -- `STALE` means the entry hasn't been re-confirmed recently,
 but the MAC address itself is still cached and usable until it's actively re-verified or expires.
 
@@ -244,7 +244,7 @@ suddenly can't reach that other host on the same subnet" that ARP cache inspecti
 
 ---
 
-### Example 5: IPv4 Binary Anatomy -- 192.168.1.10, Octet by Octet
+### Example 5: IPv4 Binary Anatomy -- 192.0.2.10, Octet by Octet
 
 _ex-05 &middot; exercises co-03_
 
@@ -256,7 +256,7 @@ algorithm as any other base conversion -- and proves the conversion round-trips.
 
 ```python
 # learning/code/ex-05-ipv4-binary-anatomy/ipv4_binary_anatomy.py
-"""Example 5: IPv4 Binary Anatomy -- 192.168.1.10, Octet by Octet."""  # => co-03: this file's own restated purpose, doubling as its module __doc__
+"""Example 5: IPv4 Binary Anatomy -- 192.0.2.10, Octet by Octet."""  # => co-03: this file's own restated purpose, doubling as its module __doc__
 
 from __future__ import annotations  # => DD-39 hygiene: postpones type-annotation evaluation, keeping this file interpreter-version-agnostic
 
@@ -273,7 +273,7 @@ def octet_to_binary(octet: int) -> str:  # => co-03: one IPv4 octet (0-255) -> i
     return "".join(reversed(bits))  # => co-03: reverse -- bits came out LSB-first, MSB must print first
 
 
-def ipv4_to_binary_octets(address: str) -> list[str]:  # => co-03: "192.168.1.10" -> 4 separate 8-bit binary strings
+def ipv4_to_binary_octets(address: str) -> list[str]:  # => co-03: "192.0.2.10" -> 4 separate 8-bit binary strings
     """Split a dotted-decimal IPv4 address into its 4 octets, each rendered in binary."""  # => co-03: documents ipv4_to_binary_octets's contract -- no runtime output, just sets its __doc__
     parts = address.split(".")  # => co-03: dotted-decimal notation -- exactly 4 parts, separated by "."
     if len(parts) != 4:  # => co-03: IPv4 is always 4 octets -- anything else is malformed input
@@ -288,7 +288,7 @@ def binary_octets_to_ipv4(binary_octets: list[str]) -> str:  # => co-03: the EXA
 
 
 if __name__ == "__main__":  # => co-03: entry point -- this block runs only when the file executes directly, not on import
-    address = "192.168.1.10"  # => co-03: the syllabus's fixed test address
+    address = "192.0.2.10"  # => co-03: the syllabus's fixed test address
     binary_octets = ipv4_to_binary_octets(address)  # => co-03: hand-rolled octet-by-octet binary conversion
     print(f"{address} in binary, octet by octet:")  # => co-03: labels the following per-octet printout
     for decimal_str, bits in zip(address.split("."), binary_octets):  # => co-03: pairs each original decimal octet with its binary form
@@ -309,17 +309,17 @@ if __name__ == "__main__":  # => co-03: entry point -- this block runs only when
 **Output**:
 
 ```text
-192.168.1.10 in binary, octet by octet:
+192.0.2.10 in binary, octet by octet:
   192 -> 11000000
-  168 -> 10101000
-    1 -> 00000001
+    0 -> 00000000
+    2 -> 00000010
    10 -> 00001010
-full address in binary = 11000000.10101000.00000001.00001010
-reconverted back to decimal = 192.168.1.10
-Round-trips to 192.168.1.10, matches format(n, '08b'): True
+full address in binary = 11000000.00000000.00000010.00001010
+reconverted back to decimal = 192.0.2.10
+Round-trips to 192.0.2.10, matches format(n, '08b'): True
 ```
 
-**Key takeaway**: `192.168.1.10` is `11000000.10101000.00000001.00001010` in binary -- 4 groups of
+**Key takeaway**: `192.0.2.10` is `11000000.00000000.00000010.00001010` in binary -- 4 groups of
 8 bits each, and converting back from binary lands exactly on the original address.
 
 **Why it matters**: CIDR arithmetic (Example 7 onward) is bit-level arithmetic on exactly this
@@ -585,8 +585,8 @@ if __name__ == "__main__":  # => co-04: entry point -- this block runs only when
 Both CIDR blocks match their hand-computed expectations: True
 ```
 
-**Key takeaway**: `192.168.1.0/24` reports 254 usable hosts (`.1` through `.254`); the smaller
-`10.0.0.0/26` reports exactly 62 -- both computed by the same AND/OR bit arithmetic, never a lookup
+**Key takeaway**: `192.168.x.0/24` reports 254 usable hosts (`.1` through `.254`); the smaller
+`10.x.0.0/26` reports exactly 62 -- both computed by the same AND/OR bit arithmetic, never a lookup
 table.
 
 **Why it matters**: this calculator (extended in the capstone) is the tool a network engineer
@@ -613,15 +613,15 @@ ip route
 
 **Run**: `ip route` (same Debian Linux container as Examples 3 and 4, same `iproute2` reason)
 
-**Output**:
+**Output** (private addresses are masked, for example `172.17.x.1`; the rest is verbatim):
 
 ```text
-default via 172.17.0.1 dev eth0
-172.17.0.0/16 dev eth0 proto kernel scope link src 172.17.0.3
+default via 172.17.x.1 dev eth0
+172.17.x.0/16 dev eth0 proto kernel scope link src 172.17.x.3
 ```
 
-**Key takeaway**: `default via 172.17.0.1 dev eth0` is the default route -- any destination not
-matching the more specific `172.17.0.0/16` entry above it gets forwarded to `172.17.0.1`.
+**Key takeaway**: `default via 172.17.x.1 dev eth0` is the default route -- any destination not
+matching the more specific `172.17.x.0/16` entry above it gets forwarded to `172.17.x.1`.
 
 **Why it matters**: "no route to host" and "default gateway unreachable" are two of the most common
 network-outage symptoms, and both point straight at this exact table -- reading it is the first
@@ -676,8 +676,8 @@ _ex-11 &middot; exercises co-06_
 
 **co-06 -- NAT**: NAT (Network Address Translation) rewrites a private source address/port to a
 shared public one at a gateway, so multiple private hosts can share one public IP. The addresses
-NAT exists _for_ are the RFC 1918 private ranges: `10.0.0.0/8`, `172.16.0.0/12`, and
-`192.168.0.0/16` -- anything outside those three blocks is a public, globally-routable address.
+NAT exists _for_ are the RFC 1918 private ranges: `10/8`, `172.16/12`, and
+`192.168/16` -- anything outside those three blocks is a public, globally-routable address.
 
 ```python
 # learning/code/ex-11-private-vs-public-address-classify/classify_private_public.py
@@ -734,8 +734,8 @@ address -> classification:
 All 6 addresses match their expected classification: True
 ```
 
-**Key takeaway**: `172.20.3.4` classifies private but `172.32.0.1` classifies public -- despite
-both starting with `172.`, only `172.16.0.0` through `172.31.255.255` (`/12`) is the actual RFC
+**Key takeaway**: `172.20.x.4` classifies private but `172.32.0.1` classifies public -- despite
+both starting with `172.`, only `172.16.x.y` through `172.31.x.y` (`/12`) is the actual RFC
 1918 range; `172.32.0.0` and up is ordinary public space.
 
 **Why it matters**: this exact `172.16/12` boundary is the single most common RFC 1918
@@ -763,11 +763,11 @@ graph LR
     classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
-_Figure: the packet's source `192.168.1.10:51000` (private, per Example 11's classifier) is
+_Figure: the packet's source `192.168.x.10:51000` (private, per Example 11's classifier) is
 rewritten to `203.0.113.5:40000` (the gateway's own public address and an assigned port) before the
 packet ever leaves the gateway -- the destination never sees the private address at all._
 
-**Key takeaway**: the before/after address:port pair -- `192.168.1.10:51000` becomes
+**Key takeaway**: the before/after address:port pair -- `192.168.x.10:51000` becomes
 `203.0.113.5:40000` -- is the entire mechanism: one rewrite at the gateway, remembered so the reply
 routes back correctly.
 
@@ -919,15 +919,15 @@ ss -tan | grep -E 'State|:443'
 **Run**: the commands above, inside the same Debian Linux container as Examples 3, 4, 9, and 13
 (macOS has no `ss`, same `iproute2` reason)
 
-**Output**:
+**Output** (private addresses are masked, for example `172.17.x.1`; the rest is verbatim):
 
 ```text
 --- while open (ESTAB) ---
-ESTAB     0      0         172.17.0.3:34342 172.66.147.243:443
+ESTAB     0      0         172.17.x.3:34342 172.66.147.243:443
 --- after close ---
 State     Recv-Q Send-Q Local Address:Port    Peer Address:PortProcess
-TIME-WAIT 0      0         172.17.0.3:54960 172.66.147.243:443
-TIME-WAIT 0      0         172.17.0.3:34342 172.66.147.243:443
+TIME-WAIT 0      0         172.17.x.3:54960 172.66.147.243:443
+TIME-WAIT 0      0         172.17.x.3:34342 172.66.147.243:443
 ```
 
 **Key takeaway**: the same connection's local port (`:34342`) shows `ESTAB` while open and

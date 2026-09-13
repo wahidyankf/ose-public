@@ -96,7 +96,7 @@ presentation = encapsulate(data, "TLS", "encrypt=AES256")
 transport = encapsulate(presentation, "TCP", "src_port=54321 dst_port=443 seq=1")
 # => transport: "[TCP header: src_port=54321 dst_port=443 seq=1] [TLS header...]"
 
-network = encapsulate(transport, "IP", "src=192.168.1.10 dst=93.184.216.34")
+network = encapsulate(transport, "IP", "src=192.0.2.10 dst=93.184.216.34")
 # => network: "[IP header: src=... dst=...] [TCP header...] ..."
 
 datalink = encapsulate(network, "Ethernet", "src_mac=AA:BB:CC dst_mac=DD:EE:FF")
@@ -107,7 +107,7 @@ print("Final frame sent on wire:")
 # => datalink holds the complete Ethernet frame wrapping all inner headers
 print(datalink)
 # => Output: [Ethernet header: src_mac=AA:BB:CC dst_mac=DD:EE:FF]
-#            [IP header: src=192.168.1.10 dst=93.184.216.34]
+#            [IP header: src=192.0.2.10 dst=93.184.216.34]
 #            [TCP header: src_port=54321 dst_port=443 seq=1]
 #            [TLS header: encrypt=AES256] GET / HTTP/1.1
 
@@ -217,37 +217,37 @@ import ipaddress  # => Standard library module for IP address manipulation
                   # => Available since Python 3.3 — no external deps needed
 
 # Create an IPv4 address object
-addr = ipaddress.IPv4Address("192.168.1.100")
-# => addr: IPv4Address('192.168.1.100')
-# => Internally stored as 32-bit integer: 3232235876
+addr = ipaddress.IPv4Address("192.0.2.100")
+# => addr: IPv4Address('192.0.2.100')
+# => Internally stored as 32-bit integer: 3221226084
 
-print("Address:", addr)                        # => Output: 192.168.1.100
-print("Packed (bytes):", addr.packed)          # => Output: b'\xc0\xa8\x01d'
-print("Integer:", int(addr))                   # => Output: 3232235876
-print("Is private:", addr.is_private)          # => Output: True (192.168.x.x is RFC1918)
+print("Address:", addr)                        # => Output: 192.0.2.100
+print("Packed (bytes):", addr.packed)          # => Output: b'\xc0\x00\x02d'
+print("Integer:", int(addr))                   # => Output: 3221226084
+print("Is private:", addr.is_private)          # => Output: True (192.0.2.0/24 is an IANA special-purpose block)
 print("Is loopback:", addr.is_loopback)        # => Output: False
 
 # CIDR notation: network + prefix length
-network = ipaddress.IPv4Network("192.168.1.0/24")
-# => network: IPv4Network('192.168.1.0/24')
+network = ipaddress.IPv4Network("192.0.2.0/24")
+# => network: IPv4Network('192.0.2.0/24')
 # => /24 means first 24 bits are network part, last 8 bits are host part
 
-print("\nNetwork:", network)                   # => Output: 192.168.1.0/24
+print("\nNetwork:", network)                   # => Output: 192.0.2.0/24
 print("Netmask:", network.netmask)             # => Output: 255.255.255.0
-print("Network address:", network.network_address)  # => Output: 192.168.1.0
-print("Broadcast:", network.broadcast_address)      # => Output: 192.168.1.255
+print("Network address:", network.network_address)  # => Output: 192.0.2.0
+print("Broadcast:", network.broadcast_address)      # => Output: 192.0.2.255
 print("Num hosts:", network.num_addresses - 2)      # => Output: 254
 # => -2 because .0 (network) and .255 (broadcast) are reserved
 
 # Check if an address belongs to a network
-test_addr = ipaddress.IPv4Address("192.168.1.50")
-# => test_addr: IPv4Address('192.168.1.50')
-print("\n192.168.1.50 in 192.168.1.0/24:", test_addr in network)
+test_addr = ipaddress.IPv4Address("192.0.2.50")
+# => test_addr: IPv4Address('192.0.2.50')
+print("\n192.0.2.50 in 192.0.2.0/24:", test_addr in network)
 # => Output: True
 
-outside_addr = ipaddress.IPv4Address("10.0.0.1")
-# => outside_addr: IPv4Address('10.0.0.1') (different private range)
-print("10.0.0.1 in 192.168.1.0/24:", outside_addr in network)
+outside_addr = ipaddress.IPv4Address("198.51.100.1")
+# => outside_addr: IPv4Address('198.51.100.1') (different network)
+print("198.51.100.1 in 192.0.2.0/24:", outside_addr in network)
 # => Output: False
 ```
 
@@ -264,11 +264,11 @@ Subnetting divides a larger network into smaller sub-networks. The subnet mask d
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    P["Parent: 10.0.0.0/24<br/>256 addresses"]
-    S1["Subnet 1: 10.0.0.0/26<br/>.0 - .63 (62 hosts)"]
-    S2["Subnet 2: 10.0.0.64/26<br/>.64 - .127 (62 hosts)"]
-    S3["Subnet 3: 10.0.0.128/26<br/>.128 - .191 (62 hosts)"]
-    S4["Subnet 4: 10.0.0.192/26<br/>.192 - .255 (62 hosts)"]
+    P["Parent: 198.51.100.0/24<br/>256 addresses"]
+    S1["Subnet 1: 198.51.100.0/26<br/>.0 - .63 (62 hosts)"]
+    S2["Subnet 2: 198.51.100.64/26<br/>.64 - .127 (62 hosts)"]
+    S3["Subnet 3: 198.51.100.128/26<br/>.128 - .191 (62 hosts)"]
+    S4["Subnet 4: 198.51.100.192/26<br/>.192 - .255 (62 hosts)"]
 
     P -->|"prefixlen_diff=2"| S1
     P --> S2
@@ -286,8 +286,8 @@ graph TD
 import ipaddress
 
 # Subnetting: divide a /24 into four /26 subnets
-parent_network = ipaddress.IPv4Network("10.0.0.0/24")
-# => parent_network: 10.0.0.0/24 (256 addresses total)
+parent_network = ipaddress.IPv4Network("198.51.100.0/24")
+# => parent_network: 198.51.100.0/24 (256 addresses total)
 
 # Split into 4 equal subnets (each becomes /26 = 64 addresses, 62 usable)
 subnets = list(parent_network.subnets(prefixlen_diff=2))
@@ -295,7 +295,7 @@ subnets = list(parent_network.subnets(prefixlen_diff=2))
 # => subnets: list of 4 IPv4Network objects
 
 print(f"Parent network: {parent_network}")
-# => Output: Parent network: 10.0.0.0/24
+# => Output: Parent network: 198.51.100.0/24
 print(f"Divided into {len(subnets)} subnets:\n")
 # => Output: Divided into 4 subnets:
 
@@ -309,25 +309,25 @@ for i, subnet in enumerate(subnets):
     print(f"    Usable hosts: {usable}")
     print()
 # => Output:
-# =>   Subnet 1: 10.0.0.0/26
-# =>     Range: 10.0.0.0 - 10.0.0.63    (62 usable)
-# =>   Subnet 2: 10.0.64.0/26
-# =>     Range: 10.0.64.0 - 10.0.64.63  (62 usable -- wait, /26 gives .0-.63)
+# =>   Subnet 1: 198.51.100.0/26
+# =>     Range: 198.51.100.0 - 198.51.100.63    (62 usable)
+# =>   Subnet 2: 203.0.113.0/26
+# =>     Range: 203.0.113.0 - 203.0.113.63  (62 usable -- wait, /26 gives .0-.63)
 
-# Actually subnets of 10.0.0.0/24 with /26:
-# Subnet 1: 10.0.0.0/26   => .0 to .63
-# Subnet 2: 10.0.0.64/26  => .64 to .127
-# Subnet 3: 10.0.0.128/26 => .128 to .191
-# Subnet 4: 10.0.0.192/26 => .192 to .255
+# Actually subnets of 198.51.100.0/24 with /26:
+# Subnet 1: 198.51.100.0/26   => .0 to .63
+# Subnet 2: 198.51.100.64/26  => .64 to .127
+# Subnet 3: 198.51.100.128/26 => .128 to .191
+# Subnet 4: 198.51.100.192/26 => .192 to .255
 
 # Determine which subnet an IP belongs to
-target = ipaddress.IPv4Address("10.0.0.150")
-# => target: 10.0.0.150
+target = ipaddress.IPv4Address("198.51.100.150")
+# => target: 198.51.100.150
 for subnet in subnets:
     if target in subnet:
-        # => 10.0.0.150 falls in 10.0.0.128/26 (.128 to .191)
+        # => 198.51.100.150 falls in 198.51.100.128/26 (.128 to .191)
         print(f"{target} belongs to subnet: {subnet}")
-        # => Output: 10.0.0.150 belongs to subnet: 10.0.0.128/26
+        # => Output: 198.51.100.150 belongs to subnet: 198.51.100.128/26
 ```
 
 **Key Takeaway**: Subnetting divides a network by borrowing bits from the host portion, creating multiple smaller networks with isolated broadcast domains.
@@ -420,9 +420,9 @@ print("Is locally administered:", bool(first_byte & 2))  # => Output: True
 # Simulate ARP table (IP -> MAC mapping)
 # => dict maps IP strings to MAC strings; OS kernel uses similar structure in memory
 arp_table = {
-    "192.168.1.1":   "aa:bb:cc:11:22:33",  # => Gateway router's MAC
-    "192.168.1.100": "aa:bb:cc:44:55:66",  # => Host A's MAC
-    "192.168.1.101": "aa:bb:cc:77:88:99",  # => Host B's MAC
+    "192.0.2.1":   "aa:bb:cc:11:22:33",  # => Gateway router's MAC
+    "192.0.2.100": "aa:bb:cc:44:55:66",  # => Host A's MAC
+    "192.0.2.101": "aa:bb:cc:77:88:99",  # => Host B's MAC
 }
 # => ARP table maintained by OS; entries expire (typically 20 min)
 
@@ -434,8 +434,8 @@ def arp_lookup(ip):
     return f"ARP broadcast needed for {ip}"      # => Must broadcast to find MAC
 
 # => lookup known IP: expect cache hit; lookup unknown IP: expect broadcast message
-print(arp_lookup("192.168.1.1"))    # => Output: ARP cache hit: 192.168.1.1 -> aa:bb:cc:11:22:33
-print(arp_lookup("192.168.1.200"))  # => Output: ARP broadcast needed for 192.168.1.200
+print(arp_lookup("192.0.2.1"))    # => Output: ARP cache hit: 192.0.2.1 -> aa:bb:cc:11:22:33
+print(arp_lookup("192.0.2.200"))  # => Output: ARP broadcast needed for 192.0.2.200
 ```
 
 **Key Takeaway**: MAC addresses identify network interfaces at Layer 2; ARP resolves IP addresses to MAC addresses so frames can be delivered on a local network segment.
@@ -2203,7 +2203,7 @@ import fcntl  # => Standard library for ioctl system calls (Linux/macOS only)
 # Get local hostname and primary IP
 # => gethostname(): reads the kernel's hostname, typically set via /etc/hostname
 hostname = socket.gethostname()
-# => hostname: machine's configured hostname (e.g., "myserver.local")
+# => hostname: machine's configured hostname (e.g., "myserver.localdomain")
 print(f"Hostname: {hostname}")  # => print configured system hostname
 
 # Get all IPs associated with this hostname
@@ -2219,7 +2219,7 @@ for family, *_, sockaddr in ips:  # => unpack tuple; ignore type/proto/canonname
         unique_ips.add(ip)
         family_name = "IPv4" if family == socket.AF_INET else "IPv6"
         # => AF_INET = 2 (IPv4), AF_INET6 = 10 (IPv6)
-        print(f"  {family_name}: {ip}")  # => e.g. "IPv4: 192.168.1.50"
+        print(f"  {family_name}: {ip}")  # => e.g. "IPv4: 192.0.2.50"
 
 # Loopback interface
 loopback = "127.0.0.1"  # => loopback address — always present, no physical hardware
@@ -2390,8 +2390,8 @@ def explain_ttl():
     print("TTL-based Path Discovery:")  # => section heading
     # => hops_example: 5-entry list representing a typical home-to-datacenter path
     hops_example = [  # => (ttl_sent, responding_ip, hop_description)
-        (1, "192.168.1.1",    "Home gateway/router"),     # => TTL=1: first hop
-        (2, "10.0.0.1",       "ISP CPE router"),          # => TTL=2: ISP entry
+        (1, "192.0.2.1",    "Home gateway/router"),     # => TTL=1: first hop
+        (2, "198.51.100.1",       "ISP CPE router"),          # => TTL=2: ISP entry
         (3, "203.0.113.1",    "ISP backbone router"),     # => TTL=3: backbone
         (4, "198.51.100.5",   "Peering exchange"),        # => TTL=4: peering point
         (5, "93.184.216.34",  "Destination (example.com)"),  # => TTL=5: target

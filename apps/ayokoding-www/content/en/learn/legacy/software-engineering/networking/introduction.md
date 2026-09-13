@@ -96,7 +96,7 @@ MAC addresses are 48-bit identifiers written as six pairs of hexadecimal digits,
 
 IP addresses come in two versions:
 
-**IPv4**: The original internet addressing system uses 32-bit addresses divided into four **octets** (8-bit segments). Each octet ranges from 0 to 255, creating addresses like `192.168.1.1`. An IPv4 address written as `192.168.1.1` consists of four octets: `192`, `168`, `1`, and `1`.
+**IPv4**: The original internet addressing system uses 32-bit addresses divided into four **octets** (8-bit segments). Each octet ranges from 0 to 255, creating addresses like `192.0.2.1`. An IPv4 address written as `192.0.2.1` consists of four octets: `192`, `0`, `2`, and `1`.
 
 IPv4 provides approximately 4.3 billion unique addresses. While this seemed vast in the 1980s, internet growth exhausted available IPv4 addresses, driving IPv6 adoption.
 
@@ -108,9 +108,9 @@ IP addresses divide into two categories based on accessibility:
 
 **Private Networks**: Use reserved IP address ranges that don't route on the public internet:
 
-- `10.0.0.0` to `10.255.255.255` (16.7 million addresses)
-- `172.16.0.0` to `172.31.255.255` (1 million addresses)
-- `192.168.0.0` to `192.168.255.255` (65,536 addresses)
+- `10.x.x.x` (`10/8`, 16.7 million addresses)
+- `172.16.x.x` to `172.31.x.x` (`172.16/12`, 1 million addresses)
+- `192.168.x.x` (`192.168/16`, 65,536 addresses)
 
 Private networks enable organizations to reuse these addresses internally. Your home devices likely use `192.168.x.x` addresses. Multiple homes can use identical private addresses because they're isolated from each other.
 

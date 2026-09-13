@@ -598,8 +598,8 @@ const pool = new Pool({
 // Example merging:
 // default.json:        { database: { host: "localhost", port: 5432 } }
 // development.json:    { database: { port: 5433 } }
-// Environment: DB_HOST=192.168.1.100
-// Result:              { database: { host: "192.168.1.100", port: 5433 } }
+// Environment: DB_HOST=192.0.2.100
+// Result:              { database: { host: "192.0.2.100", port: 5433 } }
 ```
 
 **Type-safe configuration wrapper**:

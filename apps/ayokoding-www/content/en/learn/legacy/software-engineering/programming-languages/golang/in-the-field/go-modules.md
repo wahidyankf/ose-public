@@ -487,7 +487,7 @@ export GOPROXY=https://proxy.golang.org,direct
 # => Default: use public proxy, fallback to direct
 # => Proxy caches modules for availability
 
-export GOPROXY=https://company-proxy.internal,direct
+export GOPROXY=https://company-proxy.internal.example,direct
 # => Custom company proxy
 # => Scans for vulnerabilities, caches internally
 ```

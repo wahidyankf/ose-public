@@ -4,8 +4,8 @@ interface: wg0
   listening port: 51820
 
 peer: MSG/UYgPxJpPiviKJWDMQfoGqSgUXvGOGrf0GLLu30w=
-  endpoint: 172.19.0.2:51820
-  allowed ips: 10.99.0.1/32
+  endpoint: 172.19.x.2:51820
+  allowed ips: 10.x.0.1/32
   latest handshake: 32 seconds ago
   transfer: 764 B received, 884 B sent
   persistent keepalive: every 25 seconds
@@ -18,8 +18,8 @@ interface: wg0
   listening port: 51820
 
 peer: MSG/UYgPxJpPiviKJWDMQfoGqSgUXvGOGrf0GLLu30w=
-  endpoint: 172.19.0.2:51820
-  allowed ips: 10.99.0.1/32
+  endpoint: 172.19.x.2:51820
+  allowed ips: 10.x.0.1/32
   latest handshake: 1 minute, 13 seconds ago
   transfer: 796 B received, 916 B sent
   persistent keepalive: every 25 seconds

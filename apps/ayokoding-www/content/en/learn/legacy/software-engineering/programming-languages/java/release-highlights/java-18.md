@@ -237,7 +237,7 @@ public class CustomResolver extends InetAddressResolverProvider {
         return new InetAddressResolver() {
             @Override
             public Stream<InetAddress> lookupByName(String host, LookupPolicy policy) {
-                if (host.equals("test.local")) {
+                if (host.equals("example.test")) {
                     return Stream.of(InetAddress.getLoopbackAddress());
                 }
                 return InetAddressResolver.builtinResolver().lookupByName(host, policy);

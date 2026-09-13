@@ -260,7 +260,7 @@ SecurityEvent
 
 ```
 # => Regex extracts the UPN value from a multi-value SAN string
-# => e.g. "DNS=host.corp.local, upn=admin@corp.local" → "admin@corp.local"
+# => e.g. "DNS=host.corp.example, upn=admin@corp.example" → "admin@corp.example"
 ```
 
 ```
@@ -465,7 +465,7 @@ filebeat.inputs:
           # => Sysmon channel; requires Sysmon installed
         ignore_older: 72h # => Skip events older than 3 days on restart
 output.logstash:
-  hosts: ["logstash.corp.local:5044"] # => Send to Logstash for enrichment
+  hosts: ["logstash.corp.example:5044"] # => Send to Logstash for enrichment
   ssl.enabled: true # => Encrypt in-transit; use mutual TLS in prod
   ssl.certificate_authorities: ["/etc/filebeat/ca.crt"]
 ```
@@ -497,7 +497,7 @@ filter {
 }
 output {
   elasticsearch {
-    hosts     => ["https://es01.corp.local:9200"]
+    hosts     => ["https://es01.corp.example:9200"]
     index     => "sysmon-%{+YYYY.MM.dd}"  # => Daily index rotation for retention mgmt
     user      => "logstash_writer"
     password  => "${LOGSTASH_ES_PASS}"    # => Read from environment; never hardcode
@@ -701,7 +701,7 @@ set -euo pipefail
 RULE="$1"                                          # => Sigma YAML rule file path
 STAGE="${2:-test}"                                 # => Default to test stage if not specified
 REGISTRY_DIR="./rules"                             # => Git-tracked rule registry directory
-STAGING_URL="https://splunk-staging.corp.local"    # => Staging SIEM; never run new rules on prod first
+STAGING_URL="https://splunk-staging.corp.example"    # => Staging SIEM; never run new rules on prod first
 
 case "$STAGE" in
   write)
@@ -1100,14 +1100,14 @@ print(alerts[
 
 **What this covers:** Honeypots are intentionally vulnerable systems or credentials with no legitimate use — any interaction is a high-confidence malicious signal. When a honeypot SSH login fires, the alert triage process validates the source IP, determines whether the credential used was a canary token, assesses lateral movement risk, and contains the threat. This example documents the triage workflow as annotated bash and Python steps.
 
-**Scenario:** Your deception platform fired an alert: SSH login to honeypot `192.168.10.200` from `203.0.113.45` using the canary credential `svc_backup@CORP`. You need to triage it systematically.
+**Scenario:** Your deception platform fired an alert: SSH login to honeypot `192.0.2.200` from `203.0.113.45` using the canary credential `svc_backup@CORP`. You need to triage it systematically.
 
 ```bash
 #!/usr/bin/env bash
 # honeypot_triage.sh  —  Triage a honeypot SSH login alert
 ATTACKER_IP="203.0.113.45"                         # => Source IP from honeypot alert
 CANARY_USER="svc_backup"                           # => Username used (canary credential)
-HONEYPOT="192.168.10.200"                          # => Honeypot IP (no legitimate purpose)
+HONEYPOT="192.0.2.200"                          # => Honeypot IP (no legitimate purpose)
 
 echo "=== Step 1: GeoIP and ASN lookup ==="
 curl -s "https://ipinfo.io/${ATTACKER_IP}/json" |
@@ -1119,7 +1119,7 @@ curl -s "https://ipinfo.io/${ATTACKER_IP}/json" |
 echo "=== Step 2: Check if canary credential was used anywhere else in the last 24h ==="
 # Query SIEM via API for the canary username in authentication logs
 curl -sk -u admin:"$SPLUNK_PASS" \
-  "https://splunk.corp.local:8089/services/search/jobs/export" \
+  "https://splunk.corp.example:8089/services/search/jobs/export" \
   --data-urlencode "search=index=wineventlog EventCode=4624
     Account_Name=$CANARY_USER earliest=-24h@h | stats count by host, IpAddress" \
   -d output_mode=csv                               # => Any 4624 with canary user on real systems
@@ -1652,7 +1652,7 @@ Get-WinEvent -FilterHashtable @{
 
 ```bash
 # Step 5: Verify the detection alert fired in Splunk (run from analyst workstation)
-SPLUNK_URL="https://splunk.corp.local:8089"
+SPLUNK_URL="https://splunk.corp.example:8089"
 SPLUNK_PASS="${SPLUNK_PASS:?}"                     # => Require env var; never hardcode
 
 curl -sk -u "admin:$SPLUNK_PASS" \
@@ -1848,7 +1848,7 @@ import splunklib.client as splunk_client
 from pymisp import PyMISP
 
 # --- MISP connection ---
-MISP_URL    = os.environ["MISP_URL"]               # => e.g. https://misp.corp.local
+MISP_URL    = os.environ["MISP_URL"]               # => e.g. https://misp.corp.example
 MISP_KEY    = os.environ["MISP_APIKEY"]            # => MISP automation key; never hardcode
 MISP_VERIFY = True                                 # => TLS cert validation; False only in lab
 

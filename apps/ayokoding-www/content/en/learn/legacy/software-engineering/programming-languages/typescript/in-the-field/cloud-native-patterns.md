@@ -635,7 +635,7 @@ const app = express();
 
 const USER_SERVICE_URL = process.env.USER_SERVICE_URL!;
 // => Service discovery via environment variable
-// => Kubernetes DNS: http://user-service.default.svc.cluster.local
+// => Kubernetes DNS: http://user-service.default.svc.cluster.local.
 
 // Order service handles order domain
 app.post("/orders", async (req, res) => {

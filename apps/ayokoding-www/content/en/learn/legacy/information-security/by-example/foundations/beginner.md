@@ -19,13 +19,13 @@ tags: ["it-security", "beginner", "by-example"]
 sudo tcpdump -i eth0 -n -v
 
 # => 14:02:31.441892 IP (tos 0x0, ttl 64, id 12345, offset 0, flags [DF], proto TCP (6), length 60)
-# =>   10.0.0.5.54312 > 93.184.216.34.443: Flags [S], seq 3221984512, win 64240, length 0
-# Above: source 10.0.0.5 port 54312 sending SYN to 93.184.216.34 (example.com) port 443 (HTTPS)
+# =>   198.51.100.5.54312 > 93.184.216.34.443: Flags [S], seq 3221984512, win 64240, length 0
+# Above: source 198.51.100.5 port 54312 sending SYN to 93.184.216.34 (example.com) port 443 (HTTPS)
 # Flags [S] means SYN — the start of a TCP three-way handshake
 
 # Capture only TCP traffic on port 22 (SSH) — reduces noise significantly
 sudo tcpdump -i eth0 -n -v 'tcp port 22'
-# => 14:02:45.118934 IP 203.0.113.10.49876 > 10.0.0.5.22: Flags [S], seq 1234567890
+# => 14:02:45.118934 IP 203.0.113.10.49876 > 198.51.100.5.22: Flags [S], seq 1234567890
 # => This shows an inbound SSH connection attempt from 203.0.113.10
 
 # Write capture to file for later offline analysis with Wireshark or tshark
@@ -36,7 +36,7 @@ sudo tcpdump -i eth0 -w /tmp/capture.pcap
 # Read from saved file rather than live interface
 sudo tcpdump -r /tmp/capture.pcap -n -A
 # -A prints packet payload as ASCII — useful for inspecting unencrypted HTTP bodies
-# => 14:02:31.441892 IP 10.0.0.5.54312 > 93.184.216.34.80: Flags [P.], length 78
+# => 14:02:31.441892 IP 198.51.100.5.54312 > 93.184.216.34.80: Flags [P.], length 78
 # =>   GET / HTTP/1.1
 # =>   Host: example.com
 # =>   (ASCII body of the cleartext HTTP request is visible here)
@@ -153,23 +153,23 @@ sudo tcpdump -i eth0 -n -S 'tcp port 22'
 # => (listening... waiting for packets)
 
 # Terminal 2: Initiate an SSH connection to trigger the handshake
-ssh user@10.0.0.5
+ssh user@198.51.100.5
 # => (SSH login prompt appears after handshake completes)
 
 # Back in Terminal 1, tcpdump prints the three handshake packets:
 
 # Packet 1 — SYN (client → server): client requests connection
-# => 14:05:01.112233 IP 203.0.113.10.52100 > 10.0.0.5.22: Flags [S], seq 100000000, win 64240, length 0
+# => 14:05:01.112233 IP 203.0.113.10.52100 > 198.51.100.5.22: Flags [S], seq 100000000, win 64240, length 0
 # => Flags [S] = SYN bit set; seq 100000000 is client's Initial Sequence Number (ISN)
 # => length 0: SYN packets carry no payload data
 
 # Packet 2 — SYN-ACK (server → client): server acknowledges and announces its own ISN
-# => 14:05:01.112890 IP 10.0.0.5.22 > 203.0.113.10.52100: Flags [S.], seq 200000000, ack 100000001, win 65160
+# => 14:05:01.112890 IP 198.51.100.5.22 > 203.0.113.10.52100: Flags [S.], seq 200000000, ack 100000001, win 65160
 # => Flags [S.] = SYN + ACK bits set
 # => seq 200000000: server's ISN; ack 100000001 = client ISN + 1 (acknowledges receipt of SYN)
 
 # Packet 3 — ACK (client → server): client acknowledges server's SYN-ACK; handshake complete
-# => 14:05:01.113001 IP 203.0.113.10.52100 > 10.0.0.5.22: Flags [.], seq 100000001, ack 200000001, length 0
+# => 14:05:01.113001 IP 203.0.113.10.52100 > 198.51.100.5.22: Flags [.], seq 100000001, ack 200000001, length 0
 # => Flags [.] = ACK only (period represents ACK in tcpdump shorthand)
 # => ack 200000001 = server ISN + 1 (acknowledges receipt of server's SYN)
 # => After this packet, the connection is ESTABLISHED; SSH data begins flowing
@@ -227,18 +227,18 @@ sudo ss -tlnp 'sport = :3306'
 
 **What this covers:** nmap is the industry-standard network scanner for discovering hosts, open ports, and running service versions. Understanding nmap output lets you assess your own attack surface and replicate what an attacker would see from outside your network.
 
-**Scenario:** You are auditing your lab network (192.168.1.0/24) to discover which hosts are up, then probing one host more deeply to enumerate its services.
+**Scenario:** You are auditing your lab network (192.0.2.0/24) to discover which hosts are up, then probing one host more deeply to enumerate its services.
 
 ```bash
 # Phase 1: Host discovery scan — find which IPs respond on the network
 # -sn means "ping scan" (no port scan); discovers live hosts without being invasive
-sudo nmap -sn 192.168.1.0/24
+sudo nmap -sn 192.0.2.0/24
 
 # => Starting Nmap 7.93 ( https://nmap.org )
-# => Nmap scan report for 192.168.1.1
+# => Nmap scan report for 192.0.2.1
 # => Host is up (0.0012s latency).    ← gateway/router is alive
 # => MAC Address: AA:BB:CC:DD:EE:01 (Cisco Systems)
-# => Nmap scan report for 192.168.1.10
+# => Nmap scan report for 192.0.2.10
 # => Host is up (0.0034s latency).    ← another host is alive
 # => MAC Address: AA:BB:CC:DD:EE:02 (Dell)
 # => Nmap done: 256 IP addresses (2 hosts up) scanned in 3.14 seconds
@@ -246,7 +246,7 @@ sudo nmap -sn 192.168.1.0/24
 # Phase 2: Service version detection on a single host
 # -sV probes open ports and detects service name and version
 # -p 22,80,443,3306 limits scan to only these ports (faster, less noisy)
-sudo nmap -sV -p 22,80,443,3306 192.168.1.10
+sudo nmap -sV -p 22,80,443,3306 192.0.2.10
 
 # => PORT     STATE  SERVICE   VERSION
 # => 22/tcp   open   ssh       OpenSSH 8.9p1 Ubuntu 3ubuntu0.6 (Ubuntu Linux; protocol 2.0)
@@ -261,7 +261,7 @@ sudo nmap -sV -p 22,80,443,3306 192.168.1.10
 # => Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 # -O flag attempts OS detection (requires root and is slightly more invasive)
-sudo nmap -O 192.168.1.10
+sudo nmap -O 192.0.2.10
 # => OS details: Linux 5.15 - 5.19 (Ubuntu 22.04)
 # => ^--- OS fingerprint based on TCP/IP stack behavior; useful for asset inventory
 ```
@@ -690,14 +690,14 @@ cat ~/.ssh/id_ed25519.pub
 
 # Step 2: Copy the public key to the server using ssh-copy-id
 # ssh-copy-id appends the public key to ~/.ssh/authorized_keys on the server
-ssh-copy-id -i ~/.ssh/id_ed25519.pub user@10.0.0.5
+ssh-copy-id -i ~/.ssh/id_ed25519.pub user@198.51.100.5
 # => /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: ~/.ssh/id_ed25519.pub
-# => user@10.0.0.5's password: (last time you enter the password; key auth replaces this)
+# => user@198.51.100.5's password: (last time you enter the password; key auth replaces this)
 # => Number of key(s) added: 1
-# => Now try logging into the machine: ssh user@10.0.0.5
+# => Now try logging into the machine: ssh user@198.51.100.5
 
 # Step 3: Verify key-based login works BEFORE disabling password auth
-ssh -i ~/.ssh/id_ed25519 user@10.0.0.5
+ssh -i ~/.ssh/id_ed25519 user@198.51.100.5
 # => Enter passphrase for key '/home/<user>/.ssh/id_ed25519': (client-side passphrase, not server password)
 # => Last login: Wed May 21 14:00:00 2026 from 203.0.113.10
 # => (logged in successfully using key auth)
@@ -1304,7 +1304,7 @@ ps auxf | grep -A5 -B5 "miner"
 
 # Find the process's network connections — confirm C2/mining pool connectivity
 sudo ss -tlnp | grep 9999
-# => ESTAB   0   0   10.0.0.5:52000   pool.minexmr.com:4444   users:(("miner",pid=9999))
+# => ESTAB   0   0   198.51.100.5:52000   pool.minexmr.com:4444   users:(("miner",pid=9999))
 # => ^--- Active outbound connection to a known cryptocurrency mining pool
 
 # Find how the binary got there — check for recently modified files
@@ -1336,7 +1336,7 @@ sudo iptables -I OUTPUT -d pool.minexmr.com -j DROP
 
 **What this covers:** Forwarding system logs to a centralized log server in real time prevents an attacker from destroying evidence by deleting local logs after a compromise. rsyslog is the standard syslog daemon on Ubuntu and supports forwarding over TCP (reliable) or UDP (fire-and-forget).
 
-**Scenario:** You are configuring an Ubuntu 22.04 server to forward its authentication and system logs to a central log management server at 10.0.0.100 over TCP port 514 for retention and SIEM ingestion.
+**Scenario:** You are configuring an Ubuntu 22.04 server to forward its authentication and system logs to a central log management server at 198.51.100.100 over TCP port 514 for retention and SIEM ingestion.
 
 ```bash
 # rsyslog configuration for centralized log forwarding
@@ -1356,17 +1356,17 @@ module(load="imklog")      # kernel log messages
 # Forward authentication events immediately (security-critical; use TCP for reliability)
 # @  = UDP (no guarantee of delivery; faster but messages can be lost)
 # @@ = TCP (connection-oriented; messages guaranteed or error reported)
-auth,authpriv.*    @@10.0.0.100:514
+auth,authpriv.*    @@198.51.100.100:514
 # => auth: login events (sshd, sudo, su, cron, passwd)
 # => authpriv: private auth messages (PAM, password changes)
 # => @@: TCP; port 514 is the standard syslog port
 
 # Forward all kernel and daemon messages (includes service starts/stops, errors)
-kern.*             @@10.0.0.100:514
-daemon.*           @@10.0.0.100:514
+kern.*             @@198.51.100.100:514
+daemon.*           @@198.51.100.100:514
 
 # Forward all severity levels for all facilities (belt-and-suspenders)
-*.info;mail.none;news.none   @@10.0.0.100:514
+*.info;mail.none;news.none   @@198.51.100.100:514
 # => *.info: all facilities at info severity and above
 # => mail.none;news.none: exclude mail/news to avoid volume flooding the SIEM
 

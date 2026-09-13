@@ -1437,7 +1437,7 @@ metadata:
 spec:
   ingressClassName: nginx # => Require the installed ingress-nginx controller explicitly.
   rules:
-    - host: ex83.local # => Keep the demonstration host local and deterministic.
+    - host: ex83.test # => Keep the demonstration host local and deterministic.
       http:
         paths:
           - path: /
@@ -1525,16 +1525,16 @@ test "$(kubectl get deployment/ex83 -o jsonpath='{.status.availableReplicas}')" 
 kubectl -n ingress-nginx port-forward service/ingress-nginx-controller 8081:80 & controller_pid=$!
 trap 'kill "$controller_pid" 2>/dev/null || true' EXIT
 # => Bound tunnel/readiness convergence before attempting the asserted Ingress request.
-for attempt in $(seq 1 30); do if curl --noproxy '*' --silent --fail --resolve ex83.local:8081:127.0.0.1 http://ex83.local:8081/ >/dev/null; then break; fi; test "$attempt" = 30 && exit 1; sleep 1; done
+for attempt in $(seq 1 30); do if curl --noproxy '*' --silent --fail --resolve ex83.test:8081:127.0.0.1 http://ex83.test:8081/ >/dev/null; then break; fi; test "$attempt" = 30 && exit 1; sleep 1; done
 # => Prove the Ingress selected the ready Service rather than merely opening a local TCP port.
-curl --noproxy '*' --fail --resolve ex83.local:8081:127.0.0.1 http://ex83.local:8081/ | grep -F '"message":"kubernetes containers capstone"'
+curl --noproxy '*' --fail --resolve ex83.test:8081:127.0.0.1 http://ex83.test:8081/ | grep -F '"message":"kubernetes containers capstone"'
 ```
 
 **Verification**: With Docker Compose, kind, kubectl, and ingress-nginx installed in kind, the Compose
 command waits for the application, PostgreSQL, and Redis health checks. `kind load` transfers the exact
 locally built tag before the Deployment uses it. The bounded replacement loop proves a different Pod
 became Ready and that the Deployment restored one available replica. The bounded controller loop then
-proves the `ex83.local` Ingress reaches the ready Service. Clean up with `kubectl delete -f ex83.yaml`.
+proves the `ex83.test` Ingress reaches the ready Service. Clean up with `kubectl delete -f ex83.yaml`.
 
 **Key takeaway**: One non-root image can serve a dependency-aware Compose stack and a Kubernetes workload
 when configuration, Secret references, health semantics, resources, and network identities are explicit.

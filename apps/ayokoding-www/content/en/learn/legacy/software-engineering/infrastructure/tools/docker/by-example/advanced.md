@@ -21,11 +21,11 @@ Docker Swarm enables orchestrating containers across multiple hosts with built-i
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% Swarm cluster architecture
 graph TD
- A["Manager Node<br/>192.168.1.10"] --> B["Worker Node 1<br/>192.168.1.11"]
- A --> C["Worker Node 2<br/>192.168.1.12"]
- A --> D["Worker Node 3<br/>192.168.1.13"]
- A -.->|"Raft consensus"| E["Manager Node 2<br/>192.168.1.14"]
- A -.->|"Raft consensus"| F["Manager Node 3<br/>192.168.1.15"]
+ A["Manager Node<br/>192.0.2.10"] --> B["Worker Node 1<br/>192.0.2.11"]
+ A --> C["Worker Node 2<br/>192.0.2.12"]
+ A --> D["Worker Node 3<br/>192.0.2.13"]
+ A -.->|"Raft consensus"| E["Manager Node 2<br/>192.0.2.14"]
+ A -.->|"Raft consensus"| F["Manager Node 3<br/>192.0.2.15"]
 
  style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
  style E fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
@@ -37,24 +37,24 @@ graph TD
 
 ```bash
 # Initialize swarm on manager node (first node)
-docker swarm init --advertise-addr 192.168.1.10
+docker swarm init --advertise-addr 192.0.2.10
 # => Swarm initialized: current node (abc123) is now a manager
-# => Outputs: docker swarm join --token SWMTKN-1-xxx 192.168.1.10:2377
+# => Outputs: docker swarm join --token SWMTKN-1-xxx 192.0.2.10:2377
 
 # Get join token for worker nodes
 docker swarm join-token worker
-# => docker swarm join --token SWMTKN-1-worker-xxx 192.168.1.10:2377
+# => docker swarm join --token SWMTKN-1-worker-xxx 192.0.2.10:2377
 
 # Get join token for manager nodes
 docker swarm join-token manager
-# => docker swarm join --token SWMTKN-1-manager-xxx 192.168.1.10:2377
+# => docker swarm join --token SWMTKN-1-manager-xxx 192.0.2.10:2377
 
 # On worker nodes: Join swarm as worker
-docker swarm join --token SWMTKN-1-worker-xxx 192.168.1.10:2377
+docker swarm join --token SWMTKN-1-worker-xxx 192.0.2.10:2377
 # => This node joined a swarm as a worker.
 
 # On additional manager nodes: Join as manager
-docker swarm join --token SWMTKN-1-manager-xxx 192.168.1.10:2377
+docker swarm join --token SWMTKN-1-manager-xxx 192.0.2.10:2377
 # => This node joined a swarm as a manager.
 
 # List swarm nodes (from manager)
@@ -329,9 +329,9 @@ docker service rollback myapp_api
 
 # View service logs (aggregated from all replicas)
 docker service logs -f myapp_web
-# => myapp_web.1.abc123 | 192.168.1.50 - - [29/Dec/2025:11:20:00] "GET / HTTP/1.1" 200
-# => myapp_web.2.def456 | 192.168.1.51 - - [29/Dec/2025:11:20:01] "GET / HTTP/1.1" 200
-# => myapp_web.3.ghi789 | 192.168.1.52 - - [29/Dec/2025:11:20:02] "GET / HTTP/1.1" 200
+# => myapp_web.1.abc123 | 192.0.2.50 - - [29/Dec/2025:11:20:00] "GET / HTTP/1.1" 200
+# => myapp_web.2.def456 | 192.0.2.51 - - [29/Dec/2025:11:20:01] "GET / HTTP/1.1" 200
+# => myapp_web.3.ghi789 | 192.0.2.52 - - [29/Dec/2025:11:20:02] "GET / HTTP/1.1" 200
 
 # Test ingress routing mesh (access service from any node)
 curl http://worker1:8080

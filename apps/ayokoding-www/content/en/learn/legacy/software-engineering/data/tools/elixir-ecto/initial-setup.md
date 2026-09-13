@@ -731,7 +731,7 @@ You're now ready to explore Ecto's powerful features: associations, changesets, 
 1. Verify PostgreSQL is running: `pg_isready`
 2. Check hostname/port in config: `hostname: "localhost", port: 5432`
 3. Verify credentials: `username: "postgres", password: "postgres"`
-4. For Docker PostgreSQL, use `hostname: "host.docker.internal"` on macOS/Windows
+4. For Docker PostgreSQL, use `hostname: "host.docker.internal."` on macOS/Windows
 
 ### Migration Already Applied
 

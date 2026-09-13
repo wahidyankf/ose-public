@@ -1806,7 +1806,7 @@ services:
  # => Forwards logs to syslog server
  options:
  # => Syslog connection options
- syslog-address: "tcp://192.168.1.100:514"
+ syslog-address: "tcp://192.0.2.100:514"
  # => Remote syslog server
  syslog-format: "rfc5424"
  # => RFC5424 format (structured)
@@ -2156,7 +2156,7 @@ docker logs api --tail 20
 # => Each line is a JSON object with all structured fields
 # => {"timestamp":"2025-12-29T11:10:00.123Z","level":"info","message":"Server started","port":3000,"service":"api","environment":"production","container_id":"abc123"}
 # => Fields: timestamp, level, message, service, environment, container_id
-# => {"timestamp":"2025-12-29T11:10:01.456Z","level":"info","message":"HTTP request","method":"GET","path":"/api/users/12345","ip":"::ffff:172.18.0.1","service":"api"}
+# => {"timestamp":"2025-12-29T11:10:01.456Z","level":"info","message":"HTTP request","method":"GET","path":"/api/users/12345","ip":"::ffff:172.18.x.1","service":"api"}
 # => HTTP requests logged with method, path, ip automatically
 # => {"timestamp":"2025-12-29T11:10:01.500Z","level":"debug","message":"Fetching user","user_id":"12345","service":"api"}
 # => Debug logs include user_id for full request traceability
@@ -2552,11 +2552,11 @@ Custom bridge networks provide network isolation, automatic DNS resolution, and 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
- A["frontend-net<br/>172.20.0.0/16"] --> B["frontend<br/>172.20.0.2"]
- A --> C["api<br/>172.20.0.3"]
+ A["frontend-net<br/>172.20/16"] --> B["frontend<br/>172.20.x.2"]
+ A --> C["api<br/>172.20.x.3"]
 
- D["backend-net<br/>172.21.0.0/16"] --> C
- D --> E["database<br/>172.21.0.2"]
+ D["backend-net<br/>172.21/16"] --> C
+ D --> E["database<br/>172.21.x.2"]
 
  B -.->|Can access| C
  B -.x->|Cannot access| E
@@ -2651,18 +2651,18 @@ docker network inspect myproject_frontend-net
 # => "Name": "myproject_frontend-net",
 # => "Driver": "bridge",
 # => "IPAM": {
-# => "Config": [{ "Subnet": "172.20.0.0/16" }]
+# => "Config": [{ "Subnet": "172.20/16" }]
 # => },
 # => "Containers": {
-# => "abc123": { "Name": "frontend", "IPv4Address": "172.20.0.2/16" },
-# => "def456": { "Name": "api", "IPv4Address": "172.20.0.3/16" }
+# => "abc123": { "Name": "frontend", "IPv4Address": "172.20.x.2/16" },
+# => "def456": { "Name": "api", "IPv4Address": "172.20.x.3/16" }
 # => }
 # => }
 
 # Test DNS resolution (automatic service discovery)
 docker exec frontend ping -c 1 api
-# => PING api (172.20.0.3): 56 data bytes
-# => 64 bytes from 172.20.0.3: seq=0 ttl=64 time=0.123 ms
+# => PING api (172.20.x.3): 56 data bytes
+# => 64 bytes from 172.20.x.3: seq=0 ttl=64 time=0.123 ms
 # => DNS resolution works (service name → IP)
 
 # Test network isolation (frontend CANNOT reach database directly)
@@ -2672,8 +2672,8 @@ docker exec frontend ping -c 1 database
 
 # API CAN reach database (connected to both networks)
 docker exec api ping -c 1 database
-# => PING database (172.21.0.2): 56 data bytes
-# => 64 bytes from 172.21.0.2: seq=0 ttl=64 time=0.098 ms
+# => PING database (172.21.x.2): 56 data bytes
+# => 64 bytes from 172.21.x.2: seq=0 ttl=64 time=0.098 ms
 
 # Create standalone network manually
 docker network create \
@@ -2734,18 +2734,18 @@ nc -zv database 5432
 # DNS troubleshooting
 nslookup api
 # => Server: 127.0.0.11 (Docker embedded DNS)
-# => Name: api, Address: 172.20.0.3
+# => Name: api, Address: 172.20.x.3
 
 dig api
 # => Shows DNS query details and TTL
 
 # Check network interfaces
 ip addr show
-# => eth0@if10: inet 172.20.0.2/16 — container's IP on Docker network
+# => eth0@if10: inet 172.20.x.2/16 — container's IP on Docker network
 
 # Show routing table
 ip route show
-# => default via 172.20.0.1 dev eth0 — gateway is the bridge network
+# => default via 172.20.x.1 dev eth0 — gateway is the bridge network
 
 # Check listening ports
 ss -tuln
@@ -2773,8 +2773,8 @@ docker run --rm -it --network myproject_frontend-net \
 
 # Check container network configuration from host
 docker inspect api --format='{{json .NetworkSettings.Networks}}' | jq
-# => "frontend-net": {"IPAddress": "172.20.0.3", "Gateway": "172.20.0.1"}
-# => "backend-net": {"IPAddress": "172.21.0.2"} — multi-network container
+# => "frontend-net": {"IPAddress": "172.20.x.3", "Gateway": "172.20.x.1"}
+# => "backend-net": {"IPAddress": "172.21.x.2"} — multi-network container
 
 # Test connectivity from host to container
 docker port api
@@ -3426,8 +3426,8 @@ docker compose -f docker-compose-frontend.yml up -d
 
 # Verify cross-project communication
 docker exec -it projecta-api-1 ping -c 1 projectb-web-1
-# => PING projectb-web-1 (172.26.0.3): 56 data bytes
-# => 64 bytes from 172.26.0.3: seq=0 ttl=64 time=0.089 ms
+# => PING projectb-web-1 (172.26.x.3): 56 data bytes
+# => 64 bytes from 172.26.x.3: seq=0 ttl=64 time=0.089 ms
 # => Containers from different projects can communicate via external network
 
 # List containers on external network
@@ -3437,9 +3437,9 @@ docker network inspect external-network --format='{{range .Containers}}{{.Name}}
 
 # List containers on DMZ network
 docker network inspect dmz-network --format='{{range .Containers}}{{.Name}} {{.IPv4Address}}{{"\n"}}{{end}}'
-# => projecta-api-1 172.26.0.2/16
-# => projectb-web-1 172.26.0.3/16
-# => projectb-frontend-app-1 172.26.0.4/16
+# => projecta-api-1 172.26.x.2/16
+# => projectb-web-1 172.26.x.3/16
+# => projectb-frontend-app-1 172.26.x.4/16
 
 # Connect standalone container to external network
 docker run -d --name redis \

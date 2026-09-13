@@ -48,7 +48,7 @@ graph TD
 # === Node 1: Initialize the HA cluster with embedded etcd ===
 curl -sfL https://get.k3s.io | sh -s - server \
   --cluster-init \
-  --tls-san=192.168.1.100 \
+  --tls-san=192.0.2.100 \
   --tls-san=k3s-api.example.com
 # => --cluster-init: initializes a new etcd cluster on this node
 # => This is the bootstrap flag — only used on the very first server node
@@ -62,9 +62,9 @@ NODE_TOKEN=$(sudo cat /var/lib/rancher/k3s/server/node-token)
 # === Nodes 2 and 3: Join as additional server nodes ===
 # Run this identically on both node 2 and node 3
 curl -sfL https://get.k3s.io | sh -s - server \
-  --server https://192.168.1.10:6443 \
+  --server https://192.0.2.10:6443 \
   --token "${NODE_TOKEN}" \
-  --tls-san=192.168.1.100
+  --tls-san=192.0.2.100
 # => --server: URL of the first server node (NOT --cluster-init on joining nodes)
 # => --token: the shared cluster token from node 1
 # => Node joins the etcd cluster and becomes a full control-plane member
@@ -125,7 +125,7 @@ graph LR
 # Install K3s server with external PostgreSQL datastore
 curl -sfL https://get.k3s.io | sh -s - server \
   --datastore-endpoint="postgres://k3s:${K3S_DATASTORE_PASSWORD}@db.example.com:5432/k3sdb?sslmode=require" \
-  --tls-san=192.168.1.100
+  --tls-san=192.0.2.100
 # => --datastore-endpoint: connection string for external datastore
 # => Format: postgres://<user>:<password>@<host>:<port>/<database>?<options>
 # => K3s creates its tables in the named database on first startup
@@ -136,7 +136,7 @@ curl -sfL https://get.k3s.io | sh -s - server \
 curl -sfL https://get.k3s.io | sh -s - server \
   --datastore-endpoint="postgres://k3s:${K3S_DATASTORE_PASSWORD}@db.example.com:5432/k3sdb?sslmode=require" \
   --token "$(sudo cat /var/lib/rancher/k3s/server/node-token)" \
-  --tls-san=192.168.1.100
+  --tls-san=192.0.2.100
 # => All server nodes share state through the external PostgreSQL database
 # => No etcd cluster management required between server nodes
 # => Multiple server nodes can be added without changing the datastore config
@@ -322,7 +322,7 @@ tar xzvf cilium-linux-amd64.tar.gz -C /usr/local/bin
 
 # Install Cilium into the K3s cluster
 cilium install --version 1.17.0 \
-  --set k8sServiceHost=192.168.1.10 \
+  --set k8sServiceHost=192.0.2.10 \
   --set k8sServicePort=6443 \
   --set kubeProxyReplacement=true
 # => k8sServiceHost/Port: direct Cilium agents to the API server
@@ -357,7 +357,7 @@ cilium connectivity test
 
 ### Example 34: Custom Cluster CIDR and Service CIDR
 
-K3s uses `10.42.0.0/16` for pods and `10.43.0.0/16` for Services by default. These must be changed when they conflict with your existing network, or when you need larger/smaller address spaces.
+K3s uses `10.42/16` for pods and `10.43/16` for Services by default. These must be changed when they conflict with your existing network, or when you need larger/smaller address spaces.
 
 **Code**:
 
@@ -374,14 +374,14 @@ curl -sfL https://get.k3s.io | sh -s - server \
 
 # Verify pods receive IPs from the new pod CIDR
 kubectl get pods -A -o wide | grep -v "^NAMESPACE"
-# => kube-system   coredns-xxx   1/1   Running   0   172.16.0.2
-# => kube-system   traefik-xxx   1/1   Running   0   172.16.0.3
+# => kube-system   coredns-xxx   1/1   Running   0   172.16.x.2
+# => kube-system   traefik-xxx   1/1   Running   0   172.16.x.3
 # => All pod IPs are in 172.16.0.0/16 range
 
 # Verify Services get IPs from the new service CIDR
 kubectl get services -A | grep -v "^NAMESPACE"
-# => default    kubernetes   ClusterIP   172.17.0.1    <none>   443/TCP
-# => kube-system kube-dns    ClusterIP   172.17.0.10   <none>   53/UDP,53/TCP
+# => default    kubernetes   ClusterIP   172.17.x.1    <none>   443/TCP
+# => kube-system kube-dns    ClusterIP   172.17.x.10   <none>   53/UDP,53/TCP
 
 # CRITICAL: These CIDRs cannot be changed after installation without reinstalling
 # K3s encodes the CIDRs in the cluster's TLS certificates and etcd state
@@ -938,11 +938,11 @@ K3s on bare metal cannot provision cloud LoadBalancers. MetalLB fills this gap b
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     CLI["External Client"]
-    POOL["MetalLB IPAddressPool<br/>192.168.1.200-210"]
-    SVC["Service type: LoadBalancer<br/>EXTERNAL-IP: 192.168.1.200"]
+    POOL["MetalLB IPAddressPool<br/>192.0.2.200-210"]
+    SVC["Service type: LoadBalancer<br/>EXTERNAL-IP: 192.0.2.200"]
     POD["Backend Pods"]
 
-    CLI -->|"ARP → 192.168.1.200"| POOL
+    CLI -->|"ARP → 192.0.2.200"| POOL
     POOL -->|"routes via L2Advertisement"| SVC
     SVC -->|"iptables DNAT"| POD
 
@@ -1004,7 +1004,7 @@ spec:
 # => spec: declares the desired state of the resource
   addresses:
   # => addresses: IP ranges MetalLB assigns to LoadBalancer Services
-  - 192.168.1.200-192.168.1.250
+  - 192.0.2.200-192.0.2.250
   # => addresses: range of IPs MetalLB can assign to LoadBalancer Services
   # => Must be IPs unused by other hosts on your network segment
   # => MetalLB hands them out one per LoadBalancer Service
@@ -1037,9 +1037,9 @@ kubectl expose deployment web --type=LoadBalancer --name=web-lb --port=80
 
 kubectl get service web-lb
 # => NAME     TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
-# => web-lb   LoadBalancer   10.43.50.100   192.168.1.200   80:31456/TCP   15s
-# => EXTERNAL-IP: MetalLB assigned 192.168.1.200 from the pool
-# => This IP is reachable from any host on the 192.168.1.0/24 network
+# => web-lb   LoadBalancer   10.43.x.100   192.0.2.200   80:31456/TCP   15s
+# => EXTERNAL-IP: MetalLB assigned 192.0.2.200 from the pool
+# => This IP is reachable from any host on the 192.0.2.0/24 network
 ```
 
 **Key Takeaway**: MetalLB + `IPAddressPool` + `L2Advertisement` gives bare-metal K3s clusters real LoadBalancer IPs. Services of `type: LoadBalancer` get IPs from the configured pool, announced via ARP to your network.
@@ -1511,7 +1511,7 @@ kubectl get hpa web-hpa
 
 # Generate load to trigger scale-up (in a test environment)
 kubectl run load-gen --image=busybox:1.37 --rm -it -- \
-  sh -c "while true; do wget -q -O- http://web.default.svc.cluster.local; done"
+  sh -c "while true; do wget -q -O- http://web.default.svc.cluster.local.; done"
 # => Sends continuous HTTP requests to the web Service
 # => CPU on web pods rises above 70% → HPA scales up replicas
 
@@ -1859,7 +1859,7 @@ kube-vip provides a floating VIP (virtual IP) that moves between K3s server node
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    VIP["VIP: 192.168.1.100:6443<br/>(ARP leader election)"]
+    VIP["VIP: 192.0.2.100:6443<br/>(ARP leader election)"]
     S1["Server 1<br/>kube-vip leader<br/>(owns VIP)"]
     S2["Server 2<br/>kube-vip follower"]
     S3["Server 3<br/>kube-vip follower"]
@@ -1883,7 +1883,7 @@ graph TD
 # Generate kube-vip static pod manifest for K3s
 # Run this on the FIRST server node before starting K3s
 
-export VIP=192.168.1.100  # => The floating VIP that will front the K3s API
+export VIP=192.0.2.100  # => The floating VIP that will front the K3s API
 export INTERFACE=eth0     # => Network interface on the server nodes
 
 # Pull and run kube-vip to generate the manifest
@@ -1911,7 +1911,7 @@ curl -sfL https://get.k3s.io | sh -s - server \
   --tls-san=${VIP} \
   --tls-san=k3s-api.example.com
 # => --tls-san: VIP must be in the API server certificate's SANs
-# => Clients connect to https://192.168.1.100:6443
+# => Clients connect to https://192.0.2.100:6443
 
 # Verify kube-vip pod is running
 kubectl get pods -n kube-system | grep kube-vip
@@ -1919,9 +1919,9 @@ kubectl get pods -n kube-system | grep kube-vip
 # => One kube-vip pod per server node; only the leader holds the VIP
 
 # Test VIP connectivity
-ping 192.168.1.100
-# => PING 192.168.1.100 — VIP is reachable on the network
-# => ARP: the leader server node responds to ARP for 192.168.1.100
+ping 192.0.2.100
+# => PING 192.0.2.100 — VIP is reachable on the network
+# => ARP: the leader server node responds to ARP for 192.0.2.100
 ```
 
 **Key Takeaway**: kube-vip provides a floating VIP for K3s HA clusters using ARP-based leader election. Place the kube-vip manifest in the auto-deploy directory and set `--tls-san` to the VIP address. The VIP moves automatically when the leader node fails.
@@ -1947,7 +1947,7 @@ sudo ctr run --rm --net-host \
   /kube-vip manifest pod \
   --interface eth0 \
   # => --interface: network interface kube-vip announces the VIP on
-  --address 192.168.1.100 \
+  --address 192.0.2.100 \
   # => --address: the virtual IP shared across control-plane nodes
   --controlplane \
   # => --controlplane: VIP is used for the Kubernetes API server
@@ -1976,7 +1976,7 @@ metadata:
   # => namespace: scopes this resource to the kube-system namespace
 data:
 # => data: the key-value pairs stored in this ConfigMap
-  range-global: "192.168.1.201-192.168.1.250"
+  range-global: "192.0.2.201-192.0.2.250"
   # => range-global: IP range for LoadBalancer Service IPs
   # => kube-vip assigns IPs from this range to services of type LoadBalancer
   # => Similar to MetalLB's IPAddressPool
@@ -1989,8 +1989,8 @@ kubectl expose deployment web --type=LoadBalancer --name=web-lb --port=80
 
 kubectl get service web-lb
 # => NAME     TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
-# => web-lb   LoadBalancer   10.43.50.200   192.168.1.201   80:31789/TCP   15s
-# => EXTERNAL-IP: kube-vip assigned 192.168.1.201 and announces it via ARP
+# => web-lb   LoadBalancer   10.43.x.200   192.0.2.201   80:31789/TCP   15s
+# => EXTERNAL-IP: kube-vip assigned 192.0.2.201 and announces it via ARP
 ```
 
 **Key Takeaway**: kube-vip with `--services` provides LoadBalancer IPs using the same ARP announcement mechanism as the control plane VIP. Configure an IP range via the `kubevip` ConfigMap. This avoids installing MetalLB separately when kube-vip is already deployed.

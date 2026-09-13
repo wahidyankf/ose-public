@@ -22,7 +22,7 @@ iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
                                               # => Allow return traffic for existing sessions
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
                                               # => Only HTTPS reaches the identity proxy
-iptables -A INPUT -p tcp --dport 22 -s 10.0.0.0/8 -j ACCEPT
+iptables -A INPUT -p tcp --dport 22 -s 10.x.0.0/8 -j ACCEPT
                                               # => SSH restricted to internal admin subnet only
 iptables -A INPUT -p icmp -j DROP             # => Block ICMP to reduce network mapping exposure
 
@@ -646,9 +646,9 @@ echo "=== Results: $PASS passed, $FAIL failed ==="
 
 ```bash
 # === RED TEAM: Reconnaissance ===
-# Run from attacker host (10.0.0.5) against target (10.0.0.10)
+# Run from attacker host (10.x.0.5) against target (10.x.0.10)
 
-nmap -sV -sC -O -T4 10.0.0.10 2>&1 | head -30
+nmap -sV -sC -O -T4 10.x.0.10 2>&1 | head -30
 # -sV: service version detection
 # -sC: run default NSE scripts
 # -O: OS fingerprinting
@@ -658,9 +658,9 @@ nmap -sV -sC -O -T4 10.0.0.10 2>&1 | head -30
 
 # === BLUE TEAM: Target server logs during scan ===
 # /var/log/auth.log shows repeated SSH probe attempts:
-# May 21 10:00:01 server sshd[1234]: Connection from 10.0.0.5 port 54321
-# May 21 10:00:01 server sshd[1234]: Invalid user root from 10.0.0.5
-# May 21 10:00:02 server sshd[1235]: Invalid user admin from 10.0.0.5
+# May 21 10:00:01 server sshd[1234]: Connection from 10.x.0.5 port 54321
+# May 21 10:00:01 server sshd[1234]: Invalid user root from 10.x.0.5
+# May 21 10:00:02 server sshd[1235]: Invalid user admin from 10.x.0.5
 # => fail2ban monitors this log in real time
 
 # fail2ban jail configuration (/etc/fail2ban/jail.d/ssh.conf):
@@ -685,15 +685,15 @@ fail2ban-client status sshd
 # => Output:
 # Status for the jail: sshd
 # |- Filter: Currently failed: 1 | Total failed: 47 | File list: /var/log/auth.log
-# `- Actions: Currently banned: 1 | Total banned: 1 | Banned IP list: 10.0.0.5
-# => Scanner IP 10.0.0.5 automatically banned after 3 auth failures
+# `- Actions: Currently banned: 1 | Total banned: 1 | Banned IP list: 10.x.0.5
+# => Scanner IP 10.x.0.5 automatically banned after 3 auth failures
 
 # Verify iptables rule was added
 iptables -L f2b-SSH -n --line-numbers
-# => Chain f2b-SSH: DROP 10.0.0.5/32 (packets from scanner now silently dropped)
+# => Chain f2b-SSH: DROP 10.x.0.5/32 (packets from scanner now silently dropped)
 
 # Unban for further testing
-fail2ban-client set sshd unbanip 10.0.0.5
+fail2ban-client set sshd unbanip 10.x.0.5
 # => Removes DROP rule; IP can connect again (useful for post-exercise cleanup)
 ```
 
@@ -1731,7 +1731,7 @@ rm -rf "$CERT_DIR"                        # => Clean up test artifacts
 
 ## Rules of Engagement
 
-- Scope: 10.0.10.0/24 lab segment only
+- Scope: 10.x.10.0/24 lab segment only
 - No production systems
 - Red team uses real TTPs but stops before data exfiltration
 - Blue team operates normally (no advance notice of specific timing)
@@ -1740,8 +1740,8 @@ rm -rf "$CERT_DIR"                        # => Clean up test artifacts
 
 | Step | MITRE ATT&CK        | Red Team Action                           | Expected Detection                         | Alert Source     | Gap? |
 | ---- | ------------------- | ----------------------------------------- | ------------------------------------------ | ---------------- | ---- |
-| 1    | T1595 (Recon)       | nmap -sV -T4 10.0.10.0/24                 | Port scan from internal IP > 100 ports/10s | Zeek/SIEM        | TBD  |
-| 2    | T1110 (Brute Force) | hydra ssh://10.0.10.5 -l admin -P rockyou | >5 SSH failures/min from same source       | fail2ban/SIEM    | TBD  |
+| 1    | T1595 (Recon)       | nmap -sV -T4 10.x.10.0/24                 | Port scan from internal IP > 100 ports/10s | Zeek/SIEM        | TBD  |
+| 2    | T1110 (Brute Force) | hydra ssh://10.x.10.5 -l admin -P rockyou | >5 SSH failures/min from same source       | fail2ban/SIEM    | TBD  |
 | 3    | T1078 (Valid Accts) | SSH login with captured credential        | Login after recent failures (SIEM rule)    | Auth log/SIEM    | TBD  |
 | 4    | T1003 (Cred Dump)   | Run mimikatz / proc dump of lsass         | lsass memory access with PROCESS_VM_READ   | EDR/Sysmon       | TBD  |
 | 5    | T1021.002 (SMB)     | PsExec to adjacent host using dumped hash | SMB connection within 5min of lsass access | SIEM correlation | TBD  |
@@ -1765,7 +1765,7 @@ rm -rf "$CERT_DIR"                        # => Clean up test artifacts
 
 ## Sample Result Format
 
-# Step 4 (Cred Dump): MISSED — Sysmon not deployed on 10.0.10.5
+# Step 4 (Cred Dump): MISSED — Sysmon not deployed on 10.x.10.5
 
 # Remediation: Deploy Sysmon with SwiftOnSecurity config to all Windows hosts
 
@@ -1910,8 +1910,8 @@ Subject: Post-Incident Review — INC-2026-0521-001 — API Key Exposure
 
 RTO_MINUTES=60
 RPO_MINUTES=15
-PRIMARY_HOST="db-primary.internal"
-STANDBY_HOST="db-standby.internal"
+PRIMARY_HOST="db-primary.test"
+STANDBY_HOST="db-standby.test"
 BACKUP_BUCKET="s3://example-db-backups"
 DB_NAME="production"
 RUNBOOK_START=$(date +%s)                  # => Track elapsed time against RTO
@@ -1975,7 +1975,7 @@ fi
 check_rto
 
 # Step 4: Update DNS / connection string
-log "Step 4: Update DNS to point db.internal → $STANDBY_HOST"
+log "Step 4: Update DNS to point db.test → $STANDBY_HOST"
 # AWS Route 53 example:
 aws route53 change-resource-record-sets \
   --hosted-zone-id Z1234567890 \
@@ -1983,7 +1983,7 @@ aws route53 change-resource-record-sets \
     \"Changes\": [{
       \"Action\": \"UPSERT\",
       \"ResourceRecordSet\": {
-        \"Name\": \"db.internal\",
+        \"Name\": \"db.test\",
         \"Type\": \"CNAME\",
         \"TTL\": 30,
         \"ResourceRecords\": [{\"Value\": \"$STANDBY_HOST\"}]

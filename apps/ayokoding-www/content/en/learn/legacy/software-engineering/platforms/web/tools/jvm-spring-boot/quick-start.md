@@ -1691,7 +1691,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 docker build -t taskmanager:1.0 .
 
 docker run -p 8080:8080 \
-  -e DB_HOST=host.docker.internal \
+  -e DB_HOST=host.docker.internal. \
   -e SPRING_DATASOURCE_URL='jdbc:postgresql://${DB_HOST}:5432/taskdb' \
   taskmanager:1.0
 ```

@@ -232,9 +232,9 @@ A Service provides a stable network identity (IP + DNS name) for a set of pods. 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     C["Client"]
-    SVC["Service ClusterIP<br/>10.43.45.123:80<br/>selector: app=web"]
-    P1["Pod 1<br/>10.42.0.5:80"]
-    P2["Pod 2<br/>10.42.0.6:80"]
+    SVC["Service ClusterIP<br/>10.43.x.123:80<br/>selector: app=web"]
+    P1["Pod 1<br/>10.42.x.5:80"]
+    P2["Pod 2<br/>10.42.x.6:80"]
 
     C -->|stable IP| SVC
     SVC -->|iptables DNAT| P1
@@ -256,7 +256,7 @@ kubectl expose deployment web --port=80 --target-port=80
 
 # Inspect the created Service
 kubectl get service web
-# => web    ClusterIP   10.43.45.123   <none>   80/TCP — cluster-internal only
+# => web    ClusterIP   10.43.x.123   <none>   80/TCP — cluster-internal only
 
 # Create a NodePort Service that exposes the Deployment externally
 kubectl expose deployment web --name=web-np --port=80 --type=NodePort
@@ -264,7 +264,7 @@ kubectl expose deployment web --name=web-np --port=80 --type=NodePort
 
 # Get the assigned NodePort
 kubectl get service web-np
-# => web-np   NodePort   10.43.198.77   <none>   80:31234/TCP — node port 31234
+# => web-np   NodePort   10.43.y.77   <none>   80:31234/TCP — node port 31234
 
 # Test connectivity through the NodePort
 curl http://$(hostname -I | awk '{print $1}'):31234
@@ -303,7 +303,7 @@ kubectl logs web-7d6b8f9b4-4xk2p --previous
 # Combine options: tail 50 lines with timestamps
 kubectl logs web-7d6b8f9b4-4xk2p --tail=50 --timestamps
 # => Prefixes each line with RFC3339 timestamp from containerd log metadata
-# => 2026-04-29T08:05:32Z 192.168.1.5 - - "GET / HTTP/1.1" 200 615
+# => 2026-04-29T08:05:32Z 192.0.2.5 - - "GET / HTTP/1.1" 200 615
 ```
 
 **Key Takeaway**: `kubectl logs` retrieves container stdout/stderr. Use `--follow` for streaming, `--previous` for crash diagnostics, and `-l <selector>` to aggregate across multiple pods.
@@ -329,8 +329,8 @@ cat /etc/nginx/nginx.conf
 # => Container's isolated filesystem view — not the host's nginx config
 
 # Inside the container: test DNS resolution of the web Service
-nslookup web.default.svc.cluster.local
-# => CoreDNS (10.43.0.10) resolves to the Service ClusterIP (10.43.45.123)
+nslookup web.default.svc.cluster.local.
+# => CoreDNS (10.43.z.10) resolves to the Service ClusterIP (10.43.x.123)
 # => Format: <service>.<namespace>.svc.cluster.local
 
 # Exit the container shell
@@ -670,7 +670,7 @@ SERVER_IP=$(hostname -I | awk '{print $1}')
 # => Gets the first IP address of the server
 # => Use this in K3S_URL on worker nodes
 echo "K3S_URL=https://${SERVER_IP}:6443"
-# => K3S_URL=https://192.168.1.10:6443
+# => K3S_URL=https://192.0.2.10:6443
 # => Port 6443 is the Kubernetes API server port
 
 # Display join instructions for a new worker node
@@ -712,14 +712,14 @@ graph LR
 
 ```bash
 # === Run on the SERVER to get join information ===
-SERVER_IP="192.168.1.10"  # => Replace with your server's actual IP
+SERVER_IP="192.0.2.10"  # => Replace with your server's actual IP
 NODE_TOKEN=$(sudo cat /var/lib/rancher/k3s/server/node-token)
 # => Reads the token from the server node
 # => This must be run on the server, then the values passed to the worker
 
 # === Run on the WORKER NODE ===
 # Set environment variables and run the install script in agent mode
-K3S_URL="https://192.168.1.10:6443" \
+K3S_URL="https://192.0.2.10:6443" \
 K3S_TOKEN="K1078a1234567890abcdef::server:abcdef1234" \
   curl -sfL https://get.k3s.io | sh -
 # => K3S_URL: tells the install script this node is a worker (agent mode)
@@ -1278,7 +1278,7 @@ spec:
 # => spec: declares the desired state of the resource
   serviceName: postgres
   # => serviceName: name of the headless Service governing this StatefulSet
-  # => Creates DNS entries: postgres-0.postgres.default.svc.cluster.local
+  # => Creates DNS entries: postgres-0.postgres.default.svc.cluster.local.
   replicas: 1
   # => replicas: number of pods; StatefulSet creates them in order (0, then 1, then 2)
   selector:
@@ -1352,7 +1352,7 @@ spec:
   clusterIP: None
   # => clusterIP None: creates a headless Service (no virtual IP)
   # => Headless Services enable DNS-based pod discovery for StatefulSets
-  # => DNS: postgres-0.postgres.default.svc.cluster.local resolves to pod IP
+  # => DNS: postgres-0.postgres.default.svc.cluster.local. resolves to pod IP
   selector:
   # => selector: determines which pods this resource manages
     app: postgres
@@ -1833,7 +1833,7 @@ write-kubeconfig-mode: "0644"
 
 tls-san:
   - "my-k3s-server.example.com"
-  - "192.168.1.10"
+  - "192.0.2.10"
   # => tls-san: additional Subject Alternative Names in the API server TLS cert
   # => Required when accessing the API from a different IP or hostname
   # => Without this, kubectl returns x509 certificate errors from remote hosts

@@ -616,7 +616,7 @@ simulation instead, so every kata is runnable anywhere Python 3.13 is installed.
 
 ### Kata 1 -- Subnet calculator on a block of your own choosing
 
-Pick a CIDR block other than any used in this topic's worked examples (e.g. `10.20.30.0/28`). By
+Pick a CIDR block other than any used in this topic's worked examples (e.g. `10.x.y.0/28`). By
 hand, compute the network address, broadcast address, first/last usable host, and usable host count.
 Then write a small Python function that computes the same four values from the prefix, and confirm
 your hand math matches exactly (co-04).

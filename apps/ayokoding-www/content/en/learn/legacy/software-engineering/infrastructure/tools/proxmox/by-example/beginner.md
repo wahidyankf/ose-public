@@ -117,7 +117,7 @@ cat /etc/pve/storage.cfg
 
 # Verify network configuration applied by installer
 cat /etc/network/interfaces
-# => auto vmbr0; iface vmbr0 inet static; address 192.168.1.100/24
+# => auto vmbr0; iface vmbr0 inet static; address 192.0.2.100/24
 ```
 
 **Key Takeaway**: The graphical installer configures ZFS/LVM partitioning, network bridges, and the Corosync cluster framework in one pass—document your choices because the configuration files drive all subsequent operations.
@@ -148,7 +148,7 @@ apt install proxmox-auto-install-assistant
 # => Setting up proxmox-auto-install-assistant...
 
 # Generate a template answer file
-proxmox-auto-install-assistant prepare-answer --url https://192.168.1.50/answer.toml
+proxmox-auto-install-assistant prepare-answer --url https://192.0.2.50/answer.toml
 # => Generated answer.toml template at current directory
 
 # Minimal answer.toml for automated installation
@@ -156,8 +156,8 @@ cat > answer.toml << 'EOF'
 [global]
 keyboard = "en-us"
 country = "us"
-fqdn = "pve01.lab.internal"
-mailto = "admin@lab.internal"
+fqdn = "pve01.lab.internal.example"
+mailto = "admin@lab.internal.example"
 timezone = "UTC"
 root_password = "SecurePass123!"
 
@@ -195,22 +195,22 @@ The Proxmox web UI at `https://<host>:8006` provides full cluster management thr
 
 ```bash
 # Access the web UI from a browser on the same network:
-# URL: https://192.168.1.100:8006
+# URL: https://192.0.2.100:8006
 # => Accept self-signed TLS certificate (replace with real cert later)
 # => Username: root | Realm: PAM | Password: set during installation
 
 # Get a ticket (session token) using curl — same as web UI login
-curl -s -k -X POST https://192.168.1.100:8006/api2/json/access/ticket \
+curl -s -k -X POST https://192.0.2.100:8006/api2/json/access/ticket \
   -d 'username=root@pam&password=SecurePass123!' | python3 -m json.tool
 # => {"data": {"ticket": "PVE:root@pam:...", "CSRFPreventionToken": "..."}}
 
 # Store ticket in variable for reuse
-TICKET=$(curl -s -k -X POST https://192.168.1.100:8006/api2/json/access/ticket \
+TICKET=$(curl -s -k -X POST https://192.0.2.100:8006/api2/json/access/ticket \
   -d 'username=root@pam&password=SecurePass123!' | python3 -c "import sys,json; print(json.load(sys.stdin)['data']['ticket'])")
 
 # Query node summary (same data shown in web UI Summary tab)
 curl -s -k -H "Cookie: PVEAuthCookie=$TICKET" \
-  https://192.168.1.100:8006/api2/json/nodes/pve01/status | python3 -m json.tool
+  https://192.0.2.100:8006/api2/json/nodes/pve01/status | python3 -m json.tool
 # => {"data": {"cpuinfo": {"cores": 8}, "memory": {"total": 34359738368}, "kversion": "Linux 7.0-1-pve"}}
 ```
 
@@ -804,7 +804,7 @@ TOKEN_ID="devops@pve!terraform"
 TOKEN_SECRET="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 # => UUID secret from token creation output
 curl -s -k -H "Authorization: PVEAPIToken=${TOKEN_ID}=${TOKEN_SECRET}" \
-  https://192.168.1.100:8006/api2/json/nodes | python3 -m json.tool
+  https://192.0.2.100:8006/api2/json/nodes | python3 -m json.tool
 # => {"data": [{"node": "pve01", "status": "online", ...}]}
 
 # Revoke token (existing API calls immediately get 401 Unauthorized)
@@ -932,7 +932,7 @@ Proxmox uses Linux bridges to connect VMs and containers to physical networks. T
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Physical NIC eno1<br/>(no IP, manual mode)"] --> B["vmbr0 (public bridge)<br/>192.168.1.100/24<br/>bridge-ports eno1"]
+    A["Physical NIC eno1<br/>(no IP, manual mode)"] --> B["vmbr0 (public bridge)<br/>192.0.2.100/24<br/>bridge-ports eno1"]
     B --> C["VM 100 tap<br/>public network"]
     B --> D["VM 101 tap<br/>public network"]
     E["vmbr1 (private bridge)<br/>10.0.1.1/24<br/>bridge-ports none + NAT"] --> F["VM 102 tap<br/>isolated + NAT"]
@@ -958,8 +958,8 @@ cat /etc/network/interfaces
 # => iface eno1 inet manual     (physical NIC, no IP — attached to bridge)
 # => auto vmbr0
 # => iface vmbr0 inet static
-# =>     address 192.168.1.100/24
-# =>     gateway 192.168.1.1
+# =>     address 192.0.2.100/24
+# =>     gateway 192.0.2.1
 # =>     bridge-ports eno1      (physical port attached to bridge)
 # =>     bridge-stp off         (STP disabled; use only in networks without loops)
 # =>     bridge-fd 0            (forwarding delay 0 for immediate forwarding)
@@ -1060,7 +1060,7 @@ Proxmox provides a zone-based iptables firewall with rules at datacenter, host, 
 graph TD
     A["Datacenter Firewall<br/>Global rules all nodes"] --> B["Host Firewall<br/>Node-level rules<br/>(port 8006, SSH)"]
     B --> C["VM/CT Firewall<br/>Per-workload rules<br/>(port 80, 443)"]
-    A --> D["IP Sets<br/>management-nets<br/>192.168.1.0/24"]
+    A --> D["IP Sets<br/>management-nets<br/>192.0.2.0/24"]
     D --> A
 
     style A fill:#0173B2,color:#fff,stroke:#000
@@ -1093,8 +1093,8 @@ pvesh create /cluster/firewall/ipset \
 
 # Add LAN management subnet to the IP set
 pvesh create /cluster/firewall/ipset/management-nets \
-  --cidr 192.168.1.0/24
-# => 192.168.1.0/24 added to management-nets (LAN management subnet)
+  --cidr 192.0.2.0/24
+# => 192.0.2.0/24 added to management-nets (LAN management subnet)
 
 # Add VPN/private address range to the same IP set
 pvesh create /cluster/firewall/ipset/management-nets \
@@ -1381,7 +1381,7 @@ pvesh get /nodes/pve01/tasks/$UPID/log
 # View Proxmox-specific system journal (recent operations)
 journalctl -u pveproxy --since "1 hour ago" --no-pager
 # => Apr 29 12:00:01 pve01 pveproxy[1234]: worker 5678 started
-# => Apr 29 12:00:15 pve01 pveproxy[1234]: 192.168.1.50 - root@pam [29/Apr/2026:...] "GET /api2/json/nodes HTTP/1.1" 200 ...
+# => Apr 29 12:00:15 pve01 pveproxy[1234]: 192.0.2.50 - root@pam [29/Apr/2026:...] "GET /api2/json/nodes HTTP/1.1" 200 ...
 
 # View cluster-wide logs including all nodes (Corosync/quorum events)
 pvesh get /cluster/log --max 100

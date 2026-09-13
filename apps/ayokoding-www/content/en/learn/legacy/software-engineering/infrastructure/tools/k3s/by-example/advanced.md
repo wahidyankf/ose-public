@@ -1973,9 +1973,9 @@ sudo ETCDCTL_ENDPOINTS=https://127.0.0.1:2379 \
   ETCDCTL_CERT=/var/lib/rancher/k3s/server/tls/etcd/server-client.crt \
   ETCDCTL_KEY=/var/lib/rancher/k3s/server/tls/etcd/server-client.key \
   etcdctl member list
-# => ID_OF_SERVER1, started, server-1, https://192.168.1.10:2380
-# => ID_OF_SERVER2, failed, server-2, https://192.168.1.11:2380  ← failed member
-# => ID_OF_SERVER3, started, server-3, https://192.168.1.12:2380
+# => ID_OF_SERVER1, started, server-1, https://192.0.2.10:2380
+# => ID_OF_SERVER2, failed, server-2, https://192.0.2.11:2380  ← failed member
+# => ID_OF_SERVER3, started, server-3, https://192.0.2.12:2380
 
 sudo ETCDCTL_ENDPOINTS=https://127.0.0.1:2379 \
   ETCDCTL_CACERT=/var/lib/rancher/k3s/server/tls/etcd/server-ca.crt \
@@ -1988,7 +1988,7 @@ sudo ETCDCTL_ENDPOINTS=https://127.0.0.1:2379 \
 # Run on server-4 (new host, clean install):
 K3S_TOKEN=$(sudo cat /var/lib/rancher/k3s/server/node-token)  # Get from server-1
 curl -sfL https://get.k3s.io | sh -s - server \
-  --server https://192.168.1.10:6443 \
+  --server https://192.0.2.10:6443 \
   --token "${K3S_TOKEN}"
 # => server-4 joins as a new etcd member and control-plane node
 # => etcd replicates state from existing healthy members to server-4

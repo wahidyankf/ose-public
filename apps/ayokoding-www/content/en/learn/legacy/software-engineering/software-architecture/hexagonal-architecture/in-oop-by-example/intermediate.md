@@ -3217,7 +3217,7 @@ public class WorkflowEngineApprovalRouter implements ApprovalRouterPort {
 
     public WorkflowEngineApprovalRouter(RestTemplate restTemplate, String workflowApiBaseUrl) {
         this.restTemplate = restTemplate;     // => injected; testable by mocking RestTemplate
-        this.workflowApiBaseUrl = workflowApiBaseUrl; // => from configuration; e.g., "https://workflow.internal"
+        this.workflowApiBaseUrl = workflowApiBaseUrl; // => from configuration; e.g., "https://workflow.internal.example"
     }
 
     @Override
@@ -3269,7 +3269,7 @@ private data class WorkflowRequest(
 // => constructor injection: restTemplate and workflowApiBaseUrl are adapter-internal concerns
 class WorkflowEngineApprovalRouter(
     private val restTemplate: RestTemplate,    // => HTTP client; adapter-internal; testable via mock
-    private val workflowApiBaseUrl: String     // => configured at startup; e.g., "https://workflow.internal"
+    private val workflowApiBaseUrl: String     // => configured at startup; e.g., "https://workflow.internal.example"
 ) : ApprovalRouterPort {
 
     // routeApproval: POST approval task to external workflow engine
@@ -3319,7 +3319,7 @@ internal record WorkflowRequest(
 // => implements IApprovalRouterPort; application service unaware of HTTP, URLs, or auth
 public class WorkflowEngineApprovalRouter(
     HttpClient httpClient,          // => typed HttpClient; adapter-internal; registered in DI
-    string workflowApiBaseUrl       // => configured at startup; e.g., "https://workflow.internal"
+    string workflowApiBaseUrl       // => configured at startup; e.g., "https://workflow.internal.example"
 ) : IApprovalRouterPort
 {
     // RouteApproval: POST approval task to external workflow engine

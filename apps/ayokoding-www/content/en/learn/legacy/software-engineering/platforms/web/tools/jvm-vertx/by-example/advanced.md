@@ -285,7 +285,7 @@ public class ServiceDiscoveryDemo extends AbstractVerticle {
     Record record = HttpEndpoint.createRecord(
       "user-service",
       // => Service name used for lookup
-      "user-service.internal",
+      "user-service.internal.example",
       // => Hostname/IP of this service instance
       8080,
       // => Port number

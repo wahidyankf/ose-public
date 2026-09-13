@@ -1310,7 +1310,7 @@ Structured logging with timbre library provides flexible, data-rich log output c
 ;; Structured logging with pure data
 (log/info {:event :user-login            ;; => Log as pure data map
            :user-id 123                  ;; => Structured fields
-           :ip "192.168.1.1"})           ;; => IP address field
+           :ip "192.0.2.1"})           ;; => IP address field
                                          ;; => Machine-parseable data for log aggregation
                                          ;; => JSON-compatible output
 

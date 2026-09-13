@@ -124,20 +124,20 @@ flowchart LR
 Before scanning ports, confirm which hosts are up on a subnet.
 
 ```bash
-sudo nmap -sn 192.168.56.0/24
+sudo nmap -sn 192.168.x.0/24
 ```
 
 - `sudo` — SYN/ICMP probes require raw socket access; root privilege is needed
 - `-sn` — **ping scan** (formerly `-sP`): skips port scanning entirely, only checks host liveness
-- `192.168.56.0/24` — CIDR notation covering all 254 usable IPs in the 192.168.56.x range
-- Kali's VirtualBox host-only adapter typically uses the 192.168.56.x range by default
+- `192.168.x.0/24` — CIDR notation covering all 254 usable IPs in the 192.168.x range
+- Kali's VirtualBox host-only adapter typically uses the 192.168.x range by default
 
 **Sample Output**:
 
 ```text
-Nmap scan report for 192.168.56.1
+Nmap scan report for 192.168.x.1
 Host is up (0.00028s latency).
-Nmap scan report for 192.168.56.101
+Nmap scan report for 192.168.x.101
 Host is up (0.00045s latency).
 Nmap done: 256 IP addresses (2 hosts up) scanned in 1.92 seconds
 ```
@@ -149,13 +149,13 @@ Nmap done: 256 IP addresses (2 hosts up) scanned in 1.92 seconds
 ### Example 2: Fast Top-Port Scan
 
 ```bash
-nmap -T4 -F 192.168.56.101
+nmap -T4 -F 192.168.x.101
 ```
 
 - `-T4` — **timing template 4** (Aggressive): reduces per-probe timeouts for faster scanning
   on reliable local networks; never use T5 on production — it causes packet loss
 - `-F` — **fast scan**: scans only the top 100 most common ports instead of the default 1000
-- `192.168.56.101` — replace with your authorized target's IP address
+- `192.168.x.101` — replace with your authorized target's IP address
 
 Use `-F` for initial triage when time is limited; follow up with a full port scan on interesting
 targets.
@@ -163,7 +163,7 @@ targets.
 ### Example 3: Full Port Scan with Version Detection
 
 ```bash
-sudo nmap -sS -sV -sC -p- -T4 -oA full_scan 192.168.56.101
+sudo nmap -sS -sV -sC -p- -T4 -oA full_scan 192.168.x.101
 ```
 
 - `-sS` — **SYN scan**: sends SYN, waits for SYN-ACK (open) or RST (closed), never completes
@@ -185,7 +185,7 @@ services.
 ### Example 4: UDP Scan for Common Services
 
 ```bash
-sudo nmap -sU --top-ports 20 192.168.56.101
+sudo nmap -sU --top-ports 20 192.168.x.101
 ```
 
 - `-sU` — **UDP scan**: sends UDP packets to each port; open ports may reply, closed ports
@@ -198,7 +198,7 @@ sudo nmap -sU --top-ports 20 192.168.56.101
 ### Example 5: Targeted Script Scan Against HTTP
 
 ```bash
-nmap -p 80,443,8080,8443 --script=http-title,http-headers,http-methods 192.168.56.101
+nmap -p 80,443,8080,8443 --script=http-title,http-headers,http-methods 192.168.x.101
 ```
 
 - `-p 80,443,8080,8443` — scans only the four most common HTTP/HTTPS ports
@@ -237,11 +237,11 @@ nikto performs automated checks for thousands of known vulnerabilities, misconfi
 dangerous files.
 
 ```bash
-nikto -h http://192.168.56.101 -o nikto_output.txt -Format txt
+nikto -h http://192.168.x.101 -o nikto_output.txt -Format txt
 ```
 
 - `nikto` — invokes the web vulnerability scanner
-- `-h http://192.168.56.101` — **host**: target URL including scheme; nikto respects HTTP vs HTTPS
+- `-h http://192.168.x.101` — **host**: target URL including scheme; nikto respects HTTP vs HTTPS
 - `-o nikto_output.txt` — **output file**: saves results for later review and reporting
 - `-Format txt` — output format; alternatives: `htm`, `csv`, `xml`, `json`
 - Nikto's scan is noisy and detectable — it is not stealthy; acceptable in authorized assessments
@@ -250,8 +250,8 @@ nikto -h http://192.168.56.101 -o nikto_output.txt -Format txt
 
 ```text
 - Nikto v2.1.6
-+ Target IP:          192.168.56.101
-+ Target Hostname:    192.168.56.101
++ Target IP:          192.168.x.101
++ Target Hostname:    192.168.x.101
 + Target Port:        80
 + Start Time:         2026-06-24 05:00:00 (GMT+7)
 + Server: Apache/2.4.57 (Debian)
@@ -270,7 +270,7 @@ nikto -h http://192.168.56.101 -o nikto_output.txt -Format txt
 ### Example 7: nikto Against HTTPS with SSL
 
 ```bash
-nikto -h https://192.168.56.101 -ssl -Tuning x6
+nikto -h https://192.168.x.101 -ssl -Tuning x6
 ```
 
 - `-ssl` — forces SSL/TLS even if the port would otherwise be treated as plaintext
@@ -286,7 +286,7 @@ discovery.
 
 ```bash
 gobuster dir \
-  -u http://192.168.56.101 \
+  -u http://192.168.x.101 \
   -w /usr/share/wordlists/dirb/common.txt \
   -x php,html,txt,bak \
   -t 20 \
@@ -294,7 +294,7 @@ gobuster dir \
 ```
 
 - `gobuster dir` — directory/file enumeration mode
-- `-u http://192.168.56.101` — target base URL
+- `-u http://192.168.x.101` — target base URL
 - `-w /usr/share/wordlists/dirb/common.txt` — wordlist; `common.txt` has ~4600 entries covering
   admin, backup, config, login, and other common paths
 - `-x php,html,txt,bak` — **extension fuzzing**: appends each extension to every wordlist entry,
@@ -309,7 +309,7 @@ Many targets protect interesting directories with basic authentication.
 
 ```bash
 gobuster dir \
-  -u http://192.168.56.101/admin \
+  -u http://192.168.x.101/admin \
   -w /usr/share/wordlists/dirb/common.txt \
   -U admin \
   -P password123 \
@@ -385,7 +385,7 @@ flowchart TD
 
 ```bash
 hydra -l admin -P /usr/share/wordlists/rockyou.txt \
-  ssh://192.168.56.101 \
+  ssh://192.168.x.101 \
   -t 4 \
   -V \
   -f
@@ -396,7 +396,7 @@ hydra -l admin -P /usr/share/wordlists/rockyou.txt \
   list of usernames
 - `-P /usr/share/wordlists/rockyou.txt` — **password list**: rockyou.txt contains ~14 million
   real-world passwords leaked from the 2009 RockYou breach; the de-facto standard wordlist
-- `ssh://192.168.56.101` — **target URI**: Hydra parses the scheme to select the correct module
+- `ssh://192.168.x.101` — **target URI**: Hydra parses the scheme to select the correct module
   (ssh, ftp, http-form, rdp, smb, etc.)
 - `-t 4` — **threads**: 4 parallel connections; SSH servers rate-limit aggressively — keep low
   to avoid triggering fail2ban or similar intrusion prevention
@@ -407,8 +407,8 @@ hydra -l admin -P /usr/share/wordlists/rockyou.txt \
 **Sample Success Output**:
 
 ```text
-[22][ssh] host: 192.168.56.101   login: admin   password: password123
-[STATUS] attack finished for 192.168.56.101 (valid pair found)
+[22][ssh] host: 192.168.x.101   login: admin   password: password123
+[STATUS] attack finished for 192.168.x.101 (valid pair found)
 ```
 
 ### Example 12: Hydra HTTP Form Attack
@@ -417,7 +417,7 @@ Web login forms require a different Hydra module and parameter format.
 
 ```bash
 hydra -l admin -P /usr/share/wordlists/rockyou.txt \
-  192.168.56.101 \
+  192.168.x.101 \
   http-post-form \
   "/login.php:username=^USER^&password=^PASS^:Invalid credentials" \
   -t 10

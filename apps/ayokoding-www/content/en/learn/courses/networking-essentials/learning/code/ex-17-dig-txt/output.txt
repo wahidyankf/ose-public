@@ -12,6 +12,6 @@ example.com.		300	IN	TXT	"_k2n1y4vw3qtb4skdx9e7dxt97qrmmq9"
 example.com.		300	IN	TXT	"v=spf1 -all"
 
 ;; Query time: 32 msec
-;; SERVER: 100.100.100.100#53(100.100.100.100)
+;; SERVER: <sandbox-resolver>#53(<sandbox-resolver>)
 ;; WHEN: Tue Jul 14 16:56:45 WIB 2026
 ;; MSG SIZE  rcvd: 109

@@ -2435,8 +2435,8 @@ func main() {
 
     // Register webhooks from configuration (database, config file, etc.)
     webhooks := []Webhook{
-        {Path: "/webhooks/stripe", Method: "POST", Target: "https://billing.internal/stripe"},
-        {Path: "/webhooks/github", Method: "POST", Target: "https://ci.internal/github"},
+        {Path: "/webhooks/stripe", Method: "POST", Target: "https://billing.internal.example/stripe"},
+        {Path: "/webhooks/github", Method: "POST", Target: "https://ci.internal.example/github"},
     }
     for _, wh := range webhooks {
         dr.RegisterWebhook(wh) // => Register before first request
@@ -2456,7 +2456,7 @@ func main() {
     fmt.Println("Registered webhooks:", len(webhooks))
     dr.engine.Run(":8080")
 }
-// POST /webhooks/stripe => {"forwarded_to":"https://billing.internal/stripe","path":"/webhooks/stripe"}
+// POST /webhooks/stripe => {"forwarded_to":"https://billing.internal.example/stripe","path":"/webhooks/stripe"}
 // GET /admin/webhooks   => {"webhooks":[{"method":"POST","path":"/webhooks/stripe"},{"method":"POST","path":"/webhooks/github"}]}
 ```
 

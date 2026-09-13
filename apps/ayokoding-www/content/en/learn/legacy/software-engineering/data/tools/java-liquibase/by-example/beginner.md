@@ -1540,7 +1540,7 @@ Liquibase creates a `DATABASECHANGELOGLOCK` table to prevent concurrent migratio
 -- => LOCKED=false: no migration in progress; next liquibase update will proceed normally
 -- During active migration:
 -- ID | LOCKED | LOCKGRANTED              | LOCKEDBY
--- 1  | true   | 2026-03-27 10:00:00.000  | pod-abc123 (192.168.1.5)
+-- 1  | true   | 2026-03-27 10:00:00.000  | pod-abc123 (192.0.2.5)
 -- => LOCKED=true: a Liquibase process on pod-abc123 is currently running migrations
 -- => LOCKEDBY: hostname and IP of the process holding the lock
 -- => LOCKGRANTED: timestamp when the lock was acquired

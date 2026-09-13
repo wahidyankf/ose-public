@@ -16,7 +16,7 @@ assert.Equal(t, "darwin/arm64", parseOSArch(mockOutput))
 
 ```python
 # Tests hostname parsing logic — the value is synthetic test input
-assert parse_hostname("my-dev-machine.local") == "my-dev-machine"
+assert parse_hostname("my-dev-machine.test") == "my-dev-machine"
 ```
 
 The distinction: if a value exists in the test to verify that the code correctly handles a format or string pattern, it is test data. If the value was copied from the developer's machine because it was convenient, it is machine-specific information.

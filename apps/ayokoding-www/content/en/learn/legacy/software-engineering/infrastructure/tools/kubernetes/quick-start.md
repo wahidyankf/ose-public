@@ -526,7 +526,7 @@ kubectl delete namespace development staging production
 - Use for environments (dev, staging, prod)
 - Resource quotas limit namespace consumption
 - RBAC policies can be namespace-scoped
-- Services can reference across namespaces: `service.namespace.svc.cluster.local`
+- Services can reference across namespaces: `service.namespace.svc.cluster.local.`
 
 ## Concept 7: Labels and Selectors
 

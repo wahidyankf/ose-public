@@ -2678,8 +2678,8 @@ docker exec api ping -c 1 database
 # Create standalone network manually
 docker network create \
  --driver bridge \
- --subnet 172.22.0.0/16 \
- --gateway 172.22.0.1 \
+ --subnet 192.0.2.0/24 \
+ --gateway 192.0.2.1 \
  custom-network
 # => Network created with custom configuration
 
@@ -3297,9 +3297,9 @@ docker network create \
 # => Create Docker network before starting Compose
  --driver bridge \
  # => Bridge driver for container-to-container communication
- --subnet 172.25.0.0/16 \
+ --subnet 198.51.100.0/24 \
  # => Custom subnet avoids conflicts with other networks
- --gateway 172.25.0.1 \
+ --gateway 198.51.100.1 \
  # => Gateway IP for routing
  --attachable \
 # => Allows non-Compose containers to join
@@ -3432,8 +3432,8 @@ docker exec -it projecta-api-1 ping -c 1 projectb-web-1
 
 # List containers on external network
 docker network inspect external-network --format='{{range .Containers}}{{.Name}} {{.IPv4Address}}{{"\n"}}{{end}}'
-# => projecta-database-1 172.25.0.2/16
-# => projecta-api-1 172.25.0.3/16
+# => projecta-database-1 198.51.100.2/24
+# => projecta-api-1 198.51.100.3/24
 
 # List containers on DMZ network
 docker network inspect dmz-network --format='{{range .Containers}}{{.Name}} {{.IPv4Address}}{{"\n"}}{{end}}'
@@ -3455,7 +3455,7 @@ docker exec projecta-database-1 ping -c 1 projectb-web-1
 # Use external network for legacy system integration
 docker run -d --name legacy-service \
  --network external-network \
- --ip 172.25.0.100 \
+ --ip 198.51.100.100 \
  my-legacy-app
 # => Assigns specific IP for compatibility with hardcoded configurations
 

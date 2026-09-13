@@ -289,7 +289,7 @@ resource "aws_vpc" "main" {
 
   cidr_block = "10.0.0.0/16"
   # => CIDR block: the IP address range for this VPC
-  # => /16 gives 65,536 IP addresses (10.0.0.0 to 10.0.255.255)
+  # => /16 gives 65,536 IP addresses (10.0.x.y, x and y each from 0 to 255)
 
   tags = {
     Name = "main-vpc"
@@ -305,7 +305,7 @@ resource "aws_subnet" "public" {
   # => Terraform sees this reference and creates aws_vpc.main BEFORE aws_subnet.public
 
   cidr_block = "10.0.1.0/24"
-  # => /24 subnet gives 256 IP addresses (10.0.1.0 to 10.0.1.255)
+  # => /24 subnet gives 256 IP addresses (10.0.1.x, x from 0 to 255)
   # => Must be a subset of the VPC's 10.0.0.0/16 range
 
   availability_zone = "us-east-1a"
@@ -1349,17 +1349,17 @@ An Ansible inventory defines the hosts and groups that playbooks target. It can 
 # => [web] defines a group named "web"
 # => Hosts in this group are targeted when plays specify hosts: web
 
-web-server-01 ansible_host=10.0.1.10
+web-server-01 ansible_host=192.0.2.10
 # => web-server-01: the inventory hostname (your alias for this host)
-# => ansible_host=10.0.1.10: the actual IP or DNS name Ansible connects to
+# => ansible_host=192.0.2.10: the actual IP or DNS name Ansible connects to
 
-web-server-02 ansible_host=10.0.1.11
+web-server-02 ansible_host=192.0.2.11
 # => Second host in the [web] group
 
 [db]
 # => [db] group for database servers
 
-db-primary ansible_host=10.0.2.10 ansible_user=ec2-user
+db-primary ansible_host=198.51.100.10 ansible_user=ec2-user
 # => ansible_user: the SSH username (overrides default for this host)
 # => ec2-user is the default user for Amazon Linux AMIs
 

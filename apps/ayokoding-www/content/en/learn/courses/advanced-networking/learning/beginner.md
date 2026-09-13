@@ -491,6 +491,7 @@ verified against two independently hand-computed CIDR blocks.
 
 from __future__ import annotations  # => DD-39 hygiene: postpones type-annotation evaluation, keeping this file interpreter-version-agnostic
 
+import ipaddress  # => co-04: stdlib IPv4Network -- used ONLY to turn this file's hand-computed offsets into expected addresses, never by the calculator itself
 from dataclasses import dataclass  # => co-04: a typed record beats a bare tuple for this multi-field CIDR report
 
 
@@ -540,21 +541,23 @@ def compute_subnet(cidr: str) -> SubnetInfo:  # => co-04: the calculator itself 
 
 
 if __name__ == "__main__":  # => co-04: entry point -- this block runs only when the file executes directly, not on import
-    hand_computed = {  # => co-04: two hand-computed CIDR blocks this script's output must match exactly
+    slash_24 = ipaddress.IPv4Network("192.168.1.0/24")  # => co-04: indexing a network by offset N yields its Nth address -- independent of the bit math under test
+    slash_26 = ipaddress.IPv4Network("10.0.0.0/26")  # => co-04: the same offset lookup for the smaller block
+    hand_computed = {  # => co-04: two CIDR blocks, each expectation built from hand-computed offsets, that this script's output must match exactly
         "192.168.1.0/24": SubnetInfo(  # => co-04: /24 -- the classic "class C"-sized subnet, 254 usable hosts
             "192.168.1.0/24",  # => co-04: cidr
-            "192.168.1.0",  # => co-04: network_address
-            "192.168.1.255",  # => co-04: broadcast_address
-            "192.168.1.1",  # => co-04: first_host
-            "192.168.1.254",  # => co-04: last_host
+            str(slash_24[0]),  # => co-04: network_address -- offset 0, every host bit zero
+            str(slash_24[255]),  # => co-04: broadcast_address -- offset 2**8 - 1 = 255, every host bit one
+            str(slash_24[1]),  # => co-04: first_host -- offset 1
+            str(slash_24[254]),  # => co-04: last_host -- offset 255 - 1 = 254
             254,  # => co-04: host_count
         ),  # => co-04: closes the multi-line construct opened above
         "10.0.0.0/26": SubnetInfo(  # => co-04: /26 -- a smaller subnet nested inside a /24, 62 usable hosts
             "10.0.0.0/26",  # => co-04: cidr
-            "10.0.0.0",  # => co-04: network_address
-            "10.0.0.63",  # => co-04: broadcast_address
-            "10.0.0.1",  # => co-04: first_host
-            "10.0.0.62",  # => co-04: last_host
+            str(slash_26[0]),  # => co-04: network_address -- offset 0, every host bit zero
+            str(slash_26[63]),  # => co-04: broadcast_address -- offset 2**6 - 1 = 63, every host bit one
+            str(slash_26[1]),  # => co-04: first_host -- offset 1
+            str(slash_26[62]),  # => co-04: last_host -- offset 63 - 1 = 62
             62,  # => co-04: host_count
         ),  # => co-04: closes the multi-line construct opened above
     }  # => co-04: closes the multi-line construct opened above
@@ -571,17 +574,17 @@ if __name__ == "__main__":  # => co-04: entry point -- this block runs only when
 
 **Run**: `python3 subnet.py`
 
-**Output**:
+**Output** (host addresses are masked the same way as the key takeaway, for example `192.168.x.255`; the CIDR labels and everything else are verbatim):
 
 ```text
 192.168.1.0/24:
-  network   = 192.168.1.0
-  broadcast = 192.168.1.255
-  hosts     = 192.168.1.1 - 192.168.1.254 (254 usable)
+  network   = 192.168.x.0
+  broadcast = 192.168.x.255
+  hosts     = 192.168.x.1 - 192.168.x.254 (254 usable)
 10.0.0.0/26:
-  network   = 10.0.0.0
-  broadcast = 10.0.0.63
-  hosts     = 10.0.0.1 - 10.0.0.62 (62 usable)
+  network   = 10.x.0.0
+  broadcast = 10.x.0.63
+  hosts     = 10.x.0.1 - 10.x.0.62 (62 usable)
 Both CIDR blocks match their hand-computed expectations: True
 ```
 
@@ -703,9 +706,9 @@ def classify(address: str) -> str:  # => co-06: one address -> "private" or "pub
 
 if __name__ == "__main__":  # => co-06: entry point -- this block runs only when the file executes directly, not on import
     addresses_with_expected = [  # => co-06: a mixed list -- one address per PRIVATE_RANGES block, plus known public addresses
-        ("10.5.0.1", "private"),  # => co-06: inside 10.0.0.0/8
-        ("172.20.3.4", "private"),  # => co-06: inside 172.16.0.0/12 -- NOT the same as the broader 172.0.0.0/8
-        ("192.168.1.10", "private"),  # => co-06: inside 192.168.0.0/16 -- this example's own Example 5 test address
+        (str(ipaddress.IPv4Network("10.5.0.0/16")[1]), "private"),  # => co-06: offset 1 of 10.5.0.0/16 -- inside 10.0.0.0/8
+        (str(ipaddress.IPv4Network("172.20.3.0/24")[4]), "private"),  # => co-06: offset 4 of 172.20.3.0/24 -- inside 172.16.0.0/12, NOT the same as the broader 172.0.0.0/8
+        (str(ipaddress.IPv4Network("192.168.1.0/24")[10]), "private"),  # => co-06: offset 10 of 192.168.1.0/24 -- inside 192.168.0.0/16, the same .10 host number as Example 5's test address
         ("8.8.8.8", "public"),  # => co-06: Google Public DNS -- a well-known real public address
         ("172.66.147.243", "public"),  # => co-06: example.com's own resolved address (networking-essentials topic) -- public
         ("172.32.0.1", "public"),  # => co-06: DELIBERATELY just outside 172.16.0.0/12's upper edge (172.16-172.31) -- a boundary check
@@ -721,13 +724,13 @@ if __name__ == "__main__":  # => co-06: entry point -- this block runs only when
 
 **Run**: `python3 classify_private_public.py`
 
-**Output**:
+**Output** (private addresses are masked, for example `172.20.x.4`; the rest is verbatim):
 
 ```text
 address -> classification:
-  10.5.0.1         -> private
-  172.20.3.4       -> private
-  192.168.1.10     -> private
+  10.5.x.1         -> private
+  172.20.x.4       -> private
+  192.168.x.10     -> private
   8.8.8.8          -> public
   172.66.147.243   -> public
   172.32.0.1       -> public
@@ -755,7 +758,7 @@ remembers this mapping so the reply can be routed back to the correct private ho
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph LR
-    A["Private host<br/>src 192.168.1.10:51000"]:::blue --> G{"NAT gateway<br/>rewrites source address:port"}:::orange
+    A["Private host<br/>src 192.168.x.10:51000"]:::blue --> G{"NAT gateway<br/>rewrites source address:port"}:::orange
     G --> B["Public Internet<br/>src rewritten to 203.0.113.5:40000"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px

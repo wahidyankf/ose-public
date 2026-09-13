@@ -2266,7 +2266,7 @@ print(f"\nLoopback test: {data.decode()}")
 print("\nInterface concepts:")  # => print header for interface reference table
 print("  lo/loopback: 127.0.0.1 — kernel-internal, no physical hardware")
 print("  eth0/en0:    LAN IP (e.g. 192.168.1.x) — physical or virtual NIC")
-print("  docker0:     172.17.0.1 — virtual bridge for container networking")
+print("  docker0:     172.17.x.1 — virtual bridge for container networking")
 print("  tun0/wg0:    VPN tunnel interface — virtual, encrypted")
 ```
 

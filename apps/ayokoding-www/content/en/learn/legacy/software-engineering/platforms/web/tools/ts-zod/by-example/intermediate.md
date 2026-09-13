@@ -1593,7 +1593,7 @@ const event = EventSchema.parse({
   id: "550e8400-e29b-41d4-a716-446655440000",
   type: "USER_ACTION",
   timestamp: new Date(),
-  metadata: { browser: "Chrome", ip: "192.168.1.1", sessionId: "abc123" },
+  metadata: { browser: "Chrome", ip: "192.0.2.1", sessionId: "abc123" },
   // => Metadata values are unknown — structure validated, types not
 });
 

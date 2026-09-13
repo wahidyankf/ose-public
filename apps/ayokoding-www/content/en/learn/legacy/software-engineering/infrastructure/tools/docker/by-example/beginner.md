@@ -1308,7 +1308,7 @@ docker network ls
 # Inspect network details
 docker network inspect my-bridge
 # => "Name": "my-bridge", "Driver": "bridge"
-# => "Subnet": "172.18.0.0/16", "Gateway": "172.18.0.1"
+# => "Subnet": "172.18.0.0/16", "Gateway": "172.18.x.1"
 
 # Run database on custom bridge
 docker run -d --name postgres-db \
@@ -1329,11 +1329,11 @@ docker run -d --name api-server \
 # Test DNS resolution from api-server
 docker exec api-server nslookup postgres-db
 # => Server: 127.0.0.11 (Docker embedded DNS)
-# => Address: 172.18.0.2 (container IP on my-bridge)
+# => Address: 172.18.x.2 (container IP on my-bridge)
 
 # Test connectivity between containers
 docker exec api-server ping -c 2 postgres-db
-# => 64 bytes from 172.18.0.2: seq=0 ttl=64 time=0.123 ms
+# => 64 bytes from 172.18.x.2: seq=0 ttl=64 time=0.123 ms
 # => Containers communicate by name, not by IP
 
 # Connect existing container to additional network
@@ -2585,16 +2585,16 @@ docker compose exec web ping -c 1 db
 
 # Verify api can access both web and db (on both networks)
 docker compose exec api ping -c 1 web
-# => 64 bytes from 172.20.0.2: seq=0 ttl=64 time=0.123 ms
+# => 64 bytes from 172.20.x.2: seq=0 ttl=64 time=0.123 ms
 # => Success (both on frontend network)
 
 docker compose exec api ping -c 1 db
-# => 64 bytes from 172.21.0.2: seq=0 ttl=64 time=0.089 ms
+# => 64 bytes from 172.21.x.2: seq=0 ttl=64 time=0.089 ms
 # => Success (both on backend network)
 
 # Verify admin can access db (same backend network)
 docker compose exec admin ping -c 1 db
-# => 64 bytes from 172.21.0.2: seq=0 ttl=64 time=0.095 ms
+# => 64 bytes from 172.21.x.2: seq=0 ttl=64 time=0.095 ms
 
 # Inspect network to see connected services
 docker network inspect myproject_frontend --format='{{range .Containers}}{{.Name}}{{"\n"}}{{end}}'

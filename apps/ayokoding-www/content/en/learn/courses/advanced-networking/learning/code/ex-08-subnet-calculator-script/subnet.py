@@ -3,6 +3,7 @@
 
 from __future__ import annotations  # => DD-39 hygiene: postpones type-annotation evaluation, keeping this file interpreter-version-agnostic
 
+import ipaddress  # => co-04: stdlib IPv4Network -- used ONLY to turn this file's hand-computed offsets into expected addresses, never by the calculator itself
 from dataclasses import dataclass  # => co-04: a typed record beats a bare tuple for this multi-field CIDR report
 
 
@@ -52,21 +53,23 @@ def compute_subnet(cidr: str) -> SubnetInfo:  # => co-04: the calculator itself 
 
 
 if __name__ == "__main__":  # => co-04: entry point -- this block runs only when the file executes directly, not on import
-    hand_computed = {  # => co-04: two hand-computed CIDR blocks this script's output must match exactly
+    slash_24 = ipaddress.IPv4Network("192.168.1.0/24")  # => co-04: indexing a network by offset N yields its Nth address -- independent of the bit math under test
+    slash_26 = ipaddress.IPv4Network("10.0.0.0/26")  # => co-04: the same offset lookup for the smaller block
+    hand_computed = {  # => co-04: two CIDR blocks, each expectation built from hand-computed offsets, that this script's output must match exactly
         "192.168.1.0/24": SubnetInfo(  # => co-04: /24 -- the classic "class C"-sized subnet, 254 usable hosts
             "192.168.1.0/24",  # => co-04: cidr
-            "192.168.1.0",  # => co-04: network_address
-            "192.168.1.255",  # => co-04: broadcast_address
-            "192.168.1.1",  # => co-04: first_host
-            "192.168.1.254",  # => co-04: last_host
+            str(slash_24[0]),  # => co-04: network_address -- offset 0, every host bit zero
+            str(slash_24[255]),  # => co-04: broadcast_address -- offset 2**8 - 1 = 255, every host bit one
+            str(slash_24[1]),  # => co-04: first_host -- offset 1
+            str(slash_24[254]),  # => co-04: last_host -- offset 255 - 1 = 254
             254,  # => co-04: host_count
         ),  # => co-04: closes the multi-line construct opened above
         "10.0.0.0/26": SubnetInfo(  # => co-04: /26 -- a smaller subnet nested inside a /24, 62 usable hosts
             "10.0.0.0/26",  # => co-04: cidr
-            "10.0.0.0",  # => co-04: network_address
-            "10.0.0.63",  # => co-04: broadcast_address
-            "10.0.0.1",  # => co-04: first_host
-            "10.0.0.62",  # => co-04: last_host
+            str(slash_26[0]),  # => co-04: network_address -- offset 0, every host bit zero
+            str(slash_26[63]),  # => co-04: broadcast_address -- offset 2**6 - 1 = 63, every host bit one
+            str(slash_26[1]),  # => co-04: first_host -- offset 1
+            str(slash_26[62]),  # => co-04: last_host -- offset 63 - 1 = 62
             62,  # => co-04: host_count
         ),  # => co-04: closes the multi-line construct opened above
     }  # => co-04: closes the multi-line construct opened above

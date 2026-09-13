@@ -49,6 +49,7 @@ now re-verified against THREE fresh, hand-computed CIDR blocks the beginner tier
 
 from __future__ import annotations  # => DD-39 hygiene: postpones type-annotation evaluation, keeping this file interpreter-version-agnostic
 
+import ipaddress  # => co-04: stdlib IPv4Network -- used ONLY to turn one block's hand-computed offsets into expected addresses, never by the calculator itself
 from dataclasses import dataclass  # => co-04: a typed record beats a bare tuple for this multi-field CIDR report
 
 
@@ -98,6 +99,7 @@ def compute_subnet(cidr: str) -> SubnetReport:  # => co-04: the calculator itsel
 
 
 if __name__ == "__main__":  # => co-04: entry point -- this block runs only when the file executes directly, not on import
+    slash_20 = ipaddress.IPv4Network("172.16.0.0/20")  # => co-04: indexing a network by offset N yields its Nth address -- independent of the bit math under test
     hand_computed = {  # => co-04: THREE hand-computed CIDR blocks this script's output must match exactly -- one small, one medium, one large
         "203.0.113.0/28": SubnetReport(  # => co-04: /28 -- a small 16-address block (TEST-NET-3, RFC 5737), 14 usable hosts
             "203.0.113.0/28",  # => co-04: cidr
@@ -109,10 +111,10 @@ if __name__ == "__main__":  # => co-04: entry point -- this block runs only when
         ),  # => co-04: closes the multi-line construct opened above
         "172.16.0.0/20": SubnetReport(  # => co-04: /20 -- a medium 4096-address block, 4094 usable hosts
             "172.16.0.0/20",  # => co-04: cidr
-            "172.16.0.0",  # => co-04: network_address
-            "172.16.15.255",  # => co-04: broadcast_address
-            "172.16.0.1",  # => co-04: first_host
-            "172.16.15.254",  # => co-04: last_host
+            str(slash_20[0]),  # => co-04: network_address -- offset 0, every host bit zero
+            str(slash_20[4095]),  # => co-04: broadcast_address -- offset 2**12 - 1 = 4095, every host bit one
+            str(slash_20[1]),  # => co-04: first_host -- offset 1
+            str(slash_20[4094]),  # => co-04: last_host -- offset 4095 - 1 = 4094
             4094,  # => co-04: host_count
         ),  # => co-04: closes the multi-line construct opened above
         "198.51.100.128/25": SubnetReport(  # => co-04: /25 -- a half-of-a-/24 block starting at a NON-zero octet, 126 usable hosts
@@ -138,7 +140,7 @@ if __name__ == "__main__":  # => co-04: entry point -- this block runs only when
 
 **Run**: `python3 subnet.py`
 
-**Output**:
+**Output** (the RFC 1918 block's host addresses mask their second octet, for example `172.x.15.255`; the CIDR labels and everything else are verbatim):
 
 ```text
 203.0.113.0/28:
@@ -146,9 +148,9 @@ if __name__ == "__main__":  # => co-04: entry point -- this block runs only when
   broadcast = 203.0.113.15
   hosts     = 203.0.113.1 - 203.0.113.14 (14 usable)
 172.16.0.0/20:
-  network   = 172.16.0.0
-  broadcast = 172.16.15.255
-  hosts     = 172.16.0.1 - 172.16.15.254 (4094 usable)
+  network   = 172.x.0.0
+  broadcast = 172.x.15.255
+  hosts     = 172.x.0.1 - 172.x.15.254 (4094 usable)
 198.51.100.128/25:
   network   = 198.51.100.128
   broadcast = 198.51.100.255

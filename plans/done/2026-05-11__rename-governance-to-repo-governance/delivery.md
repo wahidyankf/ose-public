@@ -221,10 +221,10 @@ Use import alias `governance` to preserve all `governance.Walk(...)` call sites 
 
   ```bash
   sed -i '' 's|ose-public/repo-governance/|ose-public/repo-governance/|g' \
-    /Users/wkf/ose-projects/CLAUDE.md
+    ~/ose-projects/CLAUDE.md
   ```
 
-  Verify: `grep 'ose-public/repo-governance/' /Users/wkf/ose-projects/CLAUDE.md` → 0 results.
+  Verify: `grep 'ose-public/repo-governance/' ~/ose-projects/CLAUDE.md` → 0 results.
 
 ---
 
@@ -282,7 +282,7 @@ No stray references remaining:
 
 - [x] Push: `git push origin main`
 
-- [x] Commit parent repo (`/Users/wkf/ose-projects`):
+- [x] Commit parent repo (`~/ose-projects`):
 
   ```
   refactor(governance): update ose-public repo-governance/ refs to repo-governance/

@@ -146,16 +146,20 @@ type private DocArea =
     | GovernanceArea
 
 /// Determines which documentation area `path` belongs to
-/// [Repo-grounded — `frontmatter.rs::classify_doc_area`].
+/// [Repo-grounded — `frontmatter.rs::classify_doc_area`]. A prefix counts only
+/// where a path segment starts, so a folder whose name merely ends in
+/// `repo-governance` (a plan record named after the rename, say) is not the
+/// governance tree.
 let private classifyDocArea (path: string) : DocArea =
     let slashed = path.Replace('\\', '/')
 
-    if slashed.Contains(softwareDocPrefix, StringComparison.Ordinal) then
+    let isUnder (prefix: string) =
+        slashed.StartsWith(prefix, StringComparison.Ordinal)
+        || slashed.Contains("/" + prefix, StringComparison.Ordinal)
+
+    if isUnder softwareDocPrefix then
         SoftwareArea
-    elif
-        governanceDocPrefixes
-        |> List.exists (fun prefix -> slashed.Contains(prefix, StringComparison.Ordinal))
-    then
+    elif governanceDocPrefixes |> List.exists isUnder then
         GovernanceArea
     else
         UnknownArea

@@ -189,6 +189,13 @@ jobs:
             git push origin "HEAD:$GITHUB_HEAD_REF"
           fi
 
+      # The push-only verify below runs the whole formatting-verify group, whose
+      # format-verify-ruff gate invokes a bare binary for changed Python files.
+      # Ruff is not yet a rhino doctor-managed tool, so it is installed here with
+      # the same pin as the gate matrix's formatting-verify job.
+      - name: Install Ruff
+        if: github.event_name == 'push'
+        run: pipx install ruff==0.15.9
       - name: Verify affected formatting on main
         if: github.event_name == 'push'
         # Runs every formatting-verify gate as a single --group dispatch

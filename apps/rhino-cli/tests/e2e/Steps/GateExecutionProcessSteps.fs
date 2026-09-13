@@ -1372,18 +1372,44 @@ type GateExecutionSteps() =
 
     [<Then>]
     member _.``its step list contains no npm ci invocation``() =
+        let groupId = noNpmGroupId.Value
         let gateJob = gateJobBlock.Value
 
-        Assert.Contains("run-npm-ci: ${{ contains(matrix.group.doctor_tools, 'npm') }}", gateJob)
+        // The gate job installs node_modules only when setup-node's run-npm-ci input is true. That input ORs the
+        // group's declared npm doctor tool with any group the workflow names explicitly, so the selected group, which
+        // declares no npm tool, must not be named.
+        let runNpmCi =
+            gateJob.Split '\n'
+            |> Array.map (fun l -> l.Trim())
+            |> Array.tryFind (fun l -> l.StartsWith "run-npm-ci:")
+            |> Option.defaultWith (fun () -> failwith "gate job must pass run-npm-ci to setup-node")
 
-        let setupNodeAction =
-            File.ReadAllText(Path.Combine(repoRoot, ".github", "actions", "setup-node", "action.yml"))
+        Assert.Contains("contains(matrix.group.doctor_tools, 'npm')", runNpmCi)
+        Assert.DoesNotContain(sprintf "matrix.group.group == '%s'" groupId, runNpmCi)
 
-        Assert.True(
-            setupNodeAction.Split('\n')
-            |> Array.filter (fun l -> l.Trim() = "npm ci" || l.TrimStart().StartsWith "npm ci ")
-            |> Array.forall (fun _ -> true)
-        )
+        // setup-node runs npm ci only behind that input.
+        let actionLines =
+            File.ReadAllText(Path.Combine(repoRoot, ".github", "actions", "setup-node", "action.yml")).Split '\n'
+
+        let npmCiLines =
+            actionLines
+            |> Array.indexed
+            |> Array.filter (fun (_, l) -> l.Trim() = "run: npm ci" || l.Trim().StartsWith "run: npm ci ")
+            |> Array.map fst
+
+        Assert.True(npmCiLines.Length > 0, "setup-node must carry an npm ci step")
+
+        for i in npmCiLines do
+            let mutable start = i
+
+            while start > 0 && not (actionLines.[start].TrimStart().StartsWith "- ") do
+                start <- start - 1
+
+            let guarded =
+                actionLines.[start..i]
+                |> Array.exists (fun l -> l.Trim() = "if: inputs.run-npm-ci == 'true'")
+
+            Assert.True(guarded, sprintf "setup-node npm ci step at line %d must be guarded by run-npm-ci" (i + 1))
 
         Assert.Contains("run-npm-ci", setupNodeAction)
 

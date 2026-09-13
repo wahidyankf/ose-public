@@ -998,16 +998,42 @@ let ``Software-engineering doc with category other than software fails`` () =
         "Software-engineering doc with category other than software fails"
 
 [<Fact>]
-let ``Governance doc with only title fails once when_to_use and description are armed`` () =
+let ``Governance doc with only a description fails on the missing when_to_use`` () =
     FeatureRunner.run
         "docs-validate-frontmatter.feature"
-        "Governance doc with only title fails once when_to_use and description are armed"
+        "Governance doc with only a description fails on the missing when_to_use"
 
 [<Fact>]
-let ``Governance doc with title, description, and when_to_use passes the lighter schema`` () =
+let ``Governance doc with only a when_to_use fails on the missing description`` () =
     FeatureRunner.run
         "docs-validate-frontmatter.feature"
-        "Governance doc with title, description, and when_to_use passes the lighter schema"
+        "Governance doc with only a when_to_use fails on the missing description"
+
+[<Fact>]
+let ``Governance doc with description and when_to_use passes the two-key schema`` () =
+    FeatureRunner.run
+        "docs-validate-frontmatter.feature"
+        "Governance doc with description and when_to_use passes the two-key schema"
+
+[<Fact>]
+let ``Governance doc carrying a title field fails the allow-list`` () =
+    FeatureRunner.run "docs-validate-frontmatter.feature" "Governance doc carrying a title field fails the allow-list"
+
+[<Fact>]
+let ``Governance doc carrying any other key fails the allow-list`` () =
+    FeatureRunner.run "docs-validate-frontmatter.feature" "Governance doc carrying any other key fails the allow-list"
+
+[<Fact>]
+let ``Governance subtree outside the four sub-trees is still validated`` () =
+    FeatureRunner.run
+        "docs-validate-frontmatter.feature"
+        "Governance subtree outside the four sub-trees is still validated"
+
+[<Fact>]
+let ``The software-engineering schema is unaffected by the governance allow-list`` () =
+    FeatureRunner.run
+        "docs-validate-frontmatter.feature"
+        "The software-engineering schema is unaffected by the governance allow-list"
 
 [<Fact>]
 let ``Software-engineering doc with Diataxis tutorial category passes`` () =

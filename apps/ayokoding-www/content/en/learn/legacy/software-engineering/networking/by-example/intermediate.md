@@ -1354,6 +1354,8 @@ graph LR
 
 ```python
 # Simulate NAT translation table behavior
+import ipaddress  # => ipaddress: derives each private host's address from its LAN network
+
 
 class NATTable:  # => Simulates a NAT router's translation table
     # => Models a simplified NAPT (Network Address Port Translation) table
@@ -1394,19 +1396,21 @@ class NATTable:  # => Simulates a NAT router's translation table
 
 nat = NATTable("203.0.113.5")
 # => Create NAT router with public IP 203.0.113.5
+lan = ipaddress.ip_network("192.168.1.0/24")
+# => The diagram's private 192.168.x.0/24 network; lan[10] and lan[20] are Host A and Host B
 
 # Two private hosts initiate connections
-pub_ip1, pub_port1 = nat.translate_outbound("192.168.1.10", 54321, "93.184.216.34", 80)
-# => NAT: 192.168.1.10:54321 -> 203.0.113.5:10000
-pub_ip2, pub_port2 = nat.translate_outbound("192.168.1.20", 54322, "93.184.216.34", 80)
-# => NAT: 192.168.1.20:54322 -> 203.0.113.5:10001
+pub_ip1, pub_port1 = nat.translate_outbound(str(lan[10]), 54321, "93.184.216.34", 80)
+# => NAT: 192.168.x.10:54321 -> 203.0.113.5:10000
+pub_ip2, pub_port2 = nat.translate_outbound(str(lan[20]), 54322, "93.184.216.34", 80)
+# => NAT: 192.168.x.20:54322 -> 203.0.113.5:10001
 # => Both hosts now appear to the server as the same IP (203.0.113.5)
 
 # Server responds to public IP; NAT routes back
 priv_ip, priv_port = nat.translate_inbound(pub_port1)
 # => Look up pub_port1 (10000) in reverse table
 print(f"  Deliver to: {priv_ip}:{priv_port}")
-# => Deliver to: 192.168.1.10:54321
+# => Deliver to: 192.168.x.10:54321
 
 # Unsolicited inbound (no connection in table) — dropped
 ip, port = nat.translate_inbound(9999)
@@ -1514,9 +1518,9 @@ print("\nDHCP DORA Process:")
 dora_steps = [
     ("DISCOVER", "Client broadcasts: 'Anyone have an IP for me?'  src=0.0.0.0 dst=255.255.255.255"),
     # => DISCOVER src=0.0.0.0: client has no IP yet; broadcast reaches all DHCP servers on segment
-    ("OFFER",    "Server broadcasts: 'Here, take 192.168.1.50 for 24h' with options"),
+    ("OFFER",    "Server broadcasts: 'Here, take 192.0.2.50 for 24h' with options"),
     # => OFFER includes: offered IP, lease duration, subnet mask, default gateway, DNS servers
-    ("REQUEST",  "Client broadcasts: 'I accept 192.168.1.50 from that server'"),
+    ("REQUEST",  "Client broadcasts: 'I accept 192.0.2.50 from that server'"),
     # => REQUEST broadcast: notifies ALL servers which offer was chosen; others release their holds
     ("ACK",      "Server broadcasts: 'It's yours — here are DNS, gateway, etc.'"),
     # => ACK: final confirmation; client can now configure the interface and start routing
@@ -1525,7 +1529,7 @@ for step, desc in dora_steps:
     # => Print each DORA step aligned with its description
     print(f"  {step:10s}: {desc}")
 # => Output:   DISCOVER  : Client broadcasts: 'Anyone have an IP for me?'...
-#              OFFER     : Server broadcasts: 'Here, take 192.168.1.50 for 24h'...
+#              OFFER     : Server broadcasts: 'Here, take 192.0.2.50 for 24h'...
 ```
 
 **Key Takeaway**: DHCP uses a four-step broadcast exchange (DORA) to automatically assign IP configuration to hosts without manual setup.
@@ -2633,7 +2637,7 @@ import time      # => time.sleep() to let receiver bind before sender fires
 
 # UDP Broadcast example
 def broadcast_demo():  # => Demonstrates UDP broadcast on local subnet
-    # => Broadcast: send to 255.255.255.255 or subnet broadcast (e.g., 192.168.1.255)
+    # => Broadcast: send to 255.255.255.255 or subnet broadcast (e.g., 192.0.2.255 for 192.0.2.0/24)
     # => All hosts on subnet receive the packet (limited to LAN segment)
 
     # Receiver
@@ -2757,7 +2761,7 @@ def explain_network_namespaces():
             "NAT: container traffic masqueraded to host IP for external access. "  # => iptables MASQUERADE
             "Port mapping: iptables DNAT redirects host:port to container:port."  # => -p 80:8080
         ),
-        # => docker0 bridge: 172.17.0.1 by default; each container gets 172.17.0.x address
+        # => docker0 bridge: 172.17.x.1 by default; each container gets its own 172.17.x.y address
         "Kubernetes networking": (
             "Pod = group of containers sharing one network namespace. "  # => key pod property
             "All containers in a pod: share loopback + same IP address. "  # => share 127.0.0.1

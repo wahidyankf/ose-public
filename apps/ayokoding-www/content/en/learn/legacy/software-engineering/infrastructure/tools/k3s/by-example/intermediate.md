@@ -365,12 +365,12 @@ K3s uses `10.42/16` for pods and `10.43/16` for Services by default. These must 
 # Install K3s with custom pod and service CIDRs
 curl -sfL https://get.k3s.io | sh -s - server \
   --cluster-cidr=172.16.0.0/16 \
-  --service-cidr=172.17.0.0/16 \
-  --cluster-dns=172.17.0.10
+  --service-cidr=198.51.100.0/24 \
+  --cluster-dns=198.51.100.10
 # => --cluster-cidr: pod IP address range (must not overlap with nodes or services)
 # => --service-cidr: virtual IP range for Kubernetes Services
 # => --cluster-dns: must be an IP within service-cidr (CoreDNS's ClusterIP)
-# => Default CoreDNS IP is 10th address in service-cidr: 172.17.0.10
+# => Default CoreDNS IP is 10th address in service-cidr: 198.51.100.10
 
 # Verify pods receive IPs from the new pod CIDR
 kubectl get pods -A -o wide | grep -v "^NAMESPACE"
@@ -380,8 +380,8 @@ kubectl get pods -A -o wide | grep -v "^NAMESPACE"
 
 # Verify Services get IPs from the new service CIDR
 kubectl get services -A | grep -v "^NAMESPACE"
-# => default    kubernetes   ClusterIP   172.17.x.1    <none>   443/TCP
-# => kube-system kube-dns    ClusterIP   172.17.x.10   <none>   53/UDP,53/TCP
+# => default    kubernetes   ClusterIP   198.51.100.1  <none>   443/TCP
+# => kube-system kube-dns    ClusterIP   198.51.100.10 <none>   53/UDP,53/TCP
 
 # CRITICAL: These CIDRs cannot be changed after installation without reinstalling
 # K3s encodes the CIDRs in the cluster's TLS certificates and etcd state

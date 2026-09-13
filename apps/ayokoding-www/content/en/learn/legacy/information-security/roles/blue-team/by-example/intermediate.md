@@ -1094,7 +1094,7 @@ python3 vol.py -f /evidence/host01_20260521.raw windows.netscan.NetScan \
 grep -i "ESTABLISHED" /evidence/netscan.txt | grep -v "127.0.0.1\|::1"
 # => filter to active outbound connections, excluding loopback
 # => example suspicious output:
-#    TCPv4  10.0.0.45:52341  185.220.101.42:443  ESTABLISHED  3948  rundll32.exe
+#    TCPv4  192.0.2.45:52341  185.220.101.42:443  ESTABLISHED  3948  rundll32.exe
 #    => rundll32.exe with external ESTABLISHED connection = highly suspicious
 
 # Step 4: Dump suspicious process for static analysis

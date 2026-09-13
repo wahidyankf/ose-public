@@ -1066,7 +1066,7 @@ def explain_iptables():  # => Prints tables, chains, rules, and nftables compari
          "NAT masquerade: rewrite source IP for outbound traffic (outbound NAT)"),
         # => MASQUERADE: like SNAT but auto-detects outbound IP; required for NAT routing
 
-        ("iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.0.0.5:8080",
+        ("iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 10.0.x.5:8080",
          "Port forward: redirect inbound :80 to internal host:8080"),
         # => DNAT: changes destination before routing; enables port forwarding
 

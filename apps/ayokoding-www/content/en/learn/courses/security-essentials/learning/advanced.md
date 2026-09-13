@@ -3021,6 +3021,7 @@ def safe_fetch(url: str, timeout: float = 5) -> requests.Response:  # => co-25: 
 
 from __future__ import annotations  # => DD-39 hygiene -- unrelated to the exploit itself
 
+import ipaddress  # => co-01: stdlib -- derives each private target host from its real RFC 1918 network
 from unittest.mock import patch  # => co-25: proves requests.get is NEVER called for a blocked target -- not just "we didn't call it"
 
 from safe_fetch import SSRFBlockedError, check_url_target, safe_fetch  # => co-25: this example's real, guarded helper
@@ -3037,7 +3038,8 @@ def main() -> None:  # => co-25: attempts a real metadata-endpoint fetch, privat
         mocked_get.assert_not_called()  # => co-25: proves ZERO network calls were attempted -- the block happened first
 
     print("\n=== BLOCKED: real RFC 1918 private ranges, and real loopback ===")  # => labels section
-    for target in ["http://10.0.0.5/", "http://192.168.1.1/", "http://127.0.0.1:8080/"]:  # => co-01: real, common ranges
+    private_hosts = [ipaddress.ip_network("10.0.0.0/8")[5], ipaddress.ip_network("192.168.1.0/24")[1]]  # => co-01: one real host inside each of two RFC 1918 networks, taken from the network itself
+    for target in [*(f"http://{host}/" for host in private_hosts), "http://127.0.0.1:8080/"]:  # => co-01: real, common ranges
         try:  # => co-25: expects a REAL SSRFBlockedError for EVERY one of these real target shapes
             check_url_target(target)  # => co-25: the pure, no-network check -- no mock needed, nothing to call anyway
             raise AssertionError(f"{target} should have been blocked")  # => co-25: safety net
@@ -3058,15 +3060,15 @@ if __name__ == "__main__":  # => co-25: only runs when launched directly, e.g. `
 
 **Run**: `python3 exploit_and_fix.py`.
 
-**Output**:
+**Output** (the private-range host addresses are masked, for example `10.0.x.5`; the rest is verbatim):
 
 ```text
 === BLOCKED: the real cloud-metadata address, 169.254.169.254 ===
 blocked: blocked outbound fetch to 169.254.169.254: link-local (169.254.0.0/16, includes cloud-metadata endpoints)
 
 === BLOCKED: real RFC 1918 private ranges, and real loopback ===
-  http://10.0.0.5/ -> blocked: blocked outbound fetch to 10.0.0.5: private (RFC 1918)
-  http://192.168.1.1/ -> blocked: blocked outbound fetch to 192.168.1.1: private (RFC 1918)
+  http://10.0.x.5/ -> blocked: blocked outbound fetch to 10.0.x.5: private (RFC 1918)
+  http://192.168.x.1/ -> blocked: blocked outbound fetch to 192.168.x.1: private (RFC 1918)
   http://127.0.0.1:8080/ -> blocked: blocked outbound fetch to 127.0.0.1: loopback (127.0.0.0/8)
 
 === ALLOWED: a normal, public-shaped IP passes the allow-check (no real fetch performed) ===

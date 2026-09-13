@@ -935,7 +935,7 @@ graph TD
     A["Physical NIC eno1<br/>(no IP, manual mode)"] --> B["vmbr0 (public bridge)<br/>192.0.2.100/24<br/>bridge-ports eno1"]
     B --> C["VM 100 tap<br/>public network"]
     B --> D["VM 101 tap<br/>public network"]
-    E["vmbr1 (private bridge)<br/>10.0.1.1/24<br/>bridge-ports none + NAT"] --> F["VM 102 tap<br/>isolated + NAT"]
+    E["vmbr1 (private bridge)<br/>198.51.100.1/24<br/>bridge-ports none + NAT"] --> F["VM 102 tap<br/>isolated + NAT"]
     E --> G["VM 103 tap<br/>isolated + NAT"]
 
     style A fill:#CA9161,color:#000,stroke:#000
@@ -969,13 +969,13 @@ cat >> /etc/network/interfaces << 'EOF'
 
 auto vmbr1
 iface vmbr1 inet static
-    address 10.0.1.1/24
+    address 198.51.100.1/24
     bridge-ports none
     bridge-stp off
     bridge-fd 0
     post-up echo 1 > /proc/sys/net/ipv4/ip_forward
-    post-up iptables -t nat -A POSTROUTING -s 10.0.1.0/24 -o vmbr0 -j MASQUERADE
-    post-down iptables -t nat -D POSTROUTING -s 10.0.1.0/24 -o vmbr0 -j MASQUERADE
+    post-up iptables -t nat -A POSTROUTING -s 198.51.100.0/24 -o vmbr0 -j MASQUERADE
+    post-down iptables -t nat -D POSTROUTING -s 198.51.100.0/24 -o vmbr0 -j MASQUERADE
 EOF
 # => vmbr1: isolated bridge with NAT masquerade for outbound internet access
 # => bridge-ports none: no physical port; VMs on this bridge are isolated from physical network

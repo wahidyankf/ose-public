@@ -348,7 +348,7 @@ graph TD
         GW2 --> A2["Office B network<br/>10.2.0.0/16"]:::teal
     end
     subgraph RemoteAccess["Remote-access -- ONE client into one network"]
-        C["Single remote laptop<br/>10.3.0.5"]:::purple -->|"encrypted tunnel<br/>routes 10.4.0.0/16 only"| GW3["VPN gateway"]:::orange
+        C["Single remote laptop<br/>10.3.x.5"]:::purple -->|"encrypted tunnel<br/>routes 10.4.0.0/16 only"| GW3["VPN gateway"]:::orange
         GW3 --> Net["Office network<br/>10.4.0.0/16"]:::teal
     end
 

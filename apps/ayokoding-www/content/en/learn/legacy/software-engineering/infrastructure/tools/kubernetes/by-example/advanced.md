@@ -1257,7 +1257,7 @@ kubectl run test-app -n test-isolation --image=nginx
 
 # Step 3: Verify DNS works
 kubectl exec -n test-isolation test-app -- nslookup kubernetes.default
-# => Output: Server: 10.96.0.10  Name: kubernetes.default  Address: 10.96.0.1
+# => Output: Server: 10.96.x.10  Name: kubernetes.default  Address: 10.96.x.1
 # => SUCCESS (DNS allowed via egress rule to kube-system port 53)
 
 # Step 4: Verify other traffic blocked

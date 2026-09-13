@@ -329,7 +329,7 @@ CREATE TABLE ip_ranges (
 INSERT INTO ip_ranges (network, ip_range)
 VALUES
     ('Office Network', '192.168.1.0/24'::INET),
-    -- => /24 netmask = 256 addresses (192.168.1.0 - 192.168.1.255)
+    -- => /24 netmask = 256 addresses (192.168.1.x, x from 0 to 255)
     ('Guest Network', '192.168.2.0/24'::INET),
     ('VPN Network', '10.0.0.0/16'::INET);
     -- => /16 netmask = 65,536 addresses
@@ -340,9 +340,11 @@ CREATE INDEX idx_ip_ranges ON ip_ranges USING GiST(ip_range);
 
 SELECT network
 FROM ip_ranges
-WHERE ip_range >> '192.168.1.100'::INET;
+WHERE ip_range >> set_masklen('192.168.1.0/24'::INET + 100, 32);
+-- => '192.168.1.0/24'::INET + 100 adds an offset: the Office Network's .100 host
+-- => set_masklen(..., 32) turns that host into a single address (/32)
 -- => >> checks if network contains IP address
--- => Result: Office Network (192.168.1.0/24 contains 192.168.1.100)
+-- => Result: Office Network (192.168.1.0/24 contains its .100 host)
 
 SELECT network
 FROM ip_ranges

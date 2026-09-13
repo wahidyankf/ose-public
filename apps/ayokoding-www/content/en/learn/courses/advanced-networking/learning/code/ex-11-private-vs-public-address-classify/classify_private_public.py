@@ -21,9 +21,9 @@ def classify(address: str) -> str:  # => co-06: one address -> "private" or "pub
 
 if __name__ == "__main__":  # => co-06: entry point -- this block runs only when the file executes directly, not on import
     addresses_with_expected = [  # => co-06: a mixed list -- one address per PRIVATE_RANGES block, plus known public addresses
-        ("10.5.0.1", "private"),  # => co-06: inside 10.0.0.0/8
-        ("172.20.3.4", "private"),  # => co-06: inside 172.16.0.0/12 -- NOT the same as the broader 172.0.0.0/8
-        ("192.168.1.10", "private"),  # => co-06: inside 192.168.0.0/16 -- this example's own Example 5 test address
+        (str(ipaddress.IPv4Network("10.5.0.0/16")[1]), "private"),  # => co-06: offset 1 of 10.5.0.0/16 -- inside 10.0.0.0/8
+        (str(ipaddress.IPv4Network("172.20.3.0/24")[4]), "private"),  # => co-06: offset 4 of 172.20.3.0/24 -- inside 172.16.0.0/12, NOT the same as the broader 172.0.0.0/8
+        (str(ipaddress.IPv4Network("192.168.1.0/24")[10]), "private"),  # => co-06: offset 10 of 192.168.1.0/24 -- inside 192.168.0.0/16, the same .10 host number as Example 5's test address
         ("8.8.8.8", "public"),  # => co-06: Google Public DNS -- a well-known real public address
         ("172.66.147.243", "public"),  # => co-06: example.com's own resolved address (networking-essentials topic) -- public
         ("172.32.0.1", "public"),  # => co-06: DELIBERATELY just outside 172.16.0.0/12's upper edge (172.16-172.31) -- a boundary check

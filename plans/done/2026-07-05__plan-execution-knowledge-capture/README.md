@@ -117,3 +117,5 @@ flowchart LR
 - Eight phases: Phase 0 (environment + baseline) → convention authoring → workflow wiring → agents +
   skill + binding sync → `ose-primer` propagation → `ose-infra` propagation → Knowledge Capture
   (dogfooding triage) → archival. See [delivery.md](./delivery.md).
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

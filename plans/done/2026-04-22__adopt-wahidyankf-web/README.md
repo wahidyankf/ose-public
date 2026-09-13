@@ -218,3 +218,5 @@ to the local dev server — NEVER to a refetched live URL.
 - [Plans Organization Convention](../../../repo-governance/conventions/structure/plans.md)
 - [Trunk Based Development](../../../repo-governance/development/workflow/trunk-based-development.md)
 - [Repository Governance Architecture](../../../repo-governance/repository-governance-architecture.md)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

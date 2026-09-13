@@ -193,7 +193,7 @@ the expected directory structure.
 
 ```bash
 # Verify the hermes binary location
-# => Should print a path like /home/user/.local/bin/hermes
+# => Should print a path like /home/<user>/.local/bin/hermes
 which hermes
 
 # Inspect the created configuration directory

@@ -78,3 +78,5 @@ User-initiated uniformity audit (2026-05-23): "create a plan to make sure the `s
 - [App README vs Specs Convention](../../../repo-governance/conventions/structure/app-readme-vs-specs.md)
 - [BDD Spec-Test Mapping](../../../repo-governance/development/infra/bdd-spec-test-mapping.md)
 - [Specs Validation Workflow](../../../repo-governance/workflows/specs/specs-quality-gate.md)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

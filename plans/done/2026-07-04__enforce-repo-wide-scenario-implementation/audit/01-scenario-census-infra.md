@@ -1,7 +1,7 @@
 # Scenario Census — ose-infra
 
 Phase 0 audit data for `enforce-repo-wide-scenario-implementation`, scoped to `ose-infra`.
-Source: `/Users/wkf/ose-projects/ose-infra/repo-config.yml` `coverage.projects` (8 entries, read
+Source: `~/ose-projects/ose-infra/repo-config.yml` `coverage.projects` (8 entries, read
 verbatim 2026-07-04). Scenario counts = `grep -E "^\s*(Scenario|Scenario Outline):"` over every
 `.feature` file matched by each project's `specs` glob. "Level-tagged scenarios" = scenarios with a
 literal `@unit`/`@integration`/`@e2e` tag line directly above the `Scenario:`/`Scenario Outline:`

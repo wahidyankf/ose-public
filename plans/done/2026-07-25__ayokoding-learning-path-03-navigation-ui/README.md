@@ -373,3 +373,5 @@ and all quality gates are green — a plan-scoped confirmation of the repo-defau
 this plan does not opt out of (see **DN-11 DECIDED** above). `ayokoding-www` is deployed to
 `prod-ayokoding-www` after every merge. See [delivery.md](./delivery.md) for the `## Worktree` and
 `## Delivery Mode` declarations and the PR-review-cycle steps.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

@@ -1114,7 +1114,7 @@ docker run -d --name dev-app \
  node:18-alpine \
  node server.js
 # => -v "$(pwd)":/app mounts current host directory to /app in container
-# => $(pwd) command substitution expands to absolute path (e.g., /home/user/myapp)
+# => $(pwd) command substitution expands to absolute path (e.g., /home/<user>/myapp)
 # => Bind mounts require absolute paths (relative paths fail)
 # => Host files visible in container at /app/
 # => -w /app sets working directory to /app

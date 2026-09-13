@@ -28,7 +28,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 ## Phase 0 — Environment Setup
 
 - [x] Provision worktree from repo root: `claude --worktree ose-app-bootstrap` — verify `worktrees/ose-app-bootstrap/` exists and is on branch `worktree/ose-app-bootstrap`.
-  - Date: 2026-05-13 | Status: Skipped (user override: "do it in this branch") | Working in main checkout /Users/wkf/ose-projects/ose-public
+  - Date: 2026-05-13 | Status: Skipped (user override: "do it in this branch") | Working in main checkout ~/ose-projects/ose-public
 
 - [x] Initialize the toolchain **in the root worktree** (`cd "$(git rev-parse --show-toplevel)"`), NOT inside the newly created subordinate worktree: run `npm install && npm run doctor -- --fix`. Verify `dotnet --version` reports 10.x and `npx nx --version` succeeds. (Doctor's polyglot lane will not yet provision ose-app-be specifically — that happens once Phase 3 lands `global.json` AND Phase 3's rhino-cli edit registers `apps/ose-app-be/global.json` in `tools.go`; rerun doctor after Phase 3 completes.)
   - Date: 2026-05-13 | Status: Done | dotnet 10.0.105, 20/20 tools OK, npx nx 11.10.1 succeeds

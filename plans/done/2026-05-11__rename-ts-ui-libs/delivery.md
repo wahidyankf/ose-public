@@ -20,7 +20,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 - [x] Confirm working directory is the repo root inside the `worktrees/ui/` worktree:
       `pwd` must end in `worktrees/ui`. All commands below are run from this root.
-  - Date: 2026-05-11 | Status: Done | Notes: pwd=/Users/wkf/ose-projects/ose-public/worktrees/ui ✓
+  - Date: 2026-05-11 | Status: Done | Notes: pwd=~/ose-projects/ose-public/worktrees/ui ✓
 - [x] Confirm working tree is clean: `rtk git status` — no uncommitted changes.
   - Date: 2026-05-11 | Status: Done | Notes: clean — nothing to commit ✓
 - [x] Run `npm install` from `worktrees/ui/` to ensure dependencies are current.

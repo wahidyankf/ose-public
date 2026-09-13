@@ -23,7 +23,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
   - _Suggested executor: `swe-rust-dev`_
   - **Date**: 2026-05-26
   - **Status**: Completed (with deviation)
-  - **Notes**: `claude --worktree` is a Claude Code interactive command, not executable as bash. Per user goal "dont stop before all phases done", executing from main repo root (/Users/wkf/ose-projects/ose-public). Worktree gate mismatch noted and accepted.
+  - **Notes**: `claude --worktree` is a Claude Code interactive command, not executable as bash. Per user goal "dont stop before all phases done", executing from main repo root (~/ose-projects/ose-public). Worktree gate mismatch noted and accepted.
 
 - [x] Initialize toolchain in the repo root (not the new worktree):
       `npm install && npm run doctor -- --fix`. Verify output shows dotnet, rust, cargo, node

@@ -6,7 +6,7 @@
 <!-- Date: 2026-04-25 | Status: done | Files Changed: none | Notes: All five plan files read at session start and verified in current session context. -->
 - [x] Confirm working in `ose-public` repo root (not a parent worktree — subrepo
     worktrees have access to `docs/` and `apps/rhino-cli/`)
-<!-- Date: 2026-04-25 | Status: done | Files Changed: none | Notes: pwd=/Users/wkf/ose-projects/ose-public/.claude/worktrees/swirling-crunching-pebble; apps/rhino-cli/ accessible. -->
+<!-- Date: 2026-04-25 | Status: done | Files Changed: none | Notes: pwd=~/ose-projects/ose-public/.claude/worktrees/swirling-crunching-pebble; apps/rhino-cli/ accessible. -->
 - [x] Install dependencies in the root worktree: `npm install`
 <!-- Date: 2026-04-25 | Status: done | Files Changed: none | Notes: npm install completed cleanly. -->
 - [x] Converge the full polyglot toolchain: `npm run doctor -- --fix` (required — the

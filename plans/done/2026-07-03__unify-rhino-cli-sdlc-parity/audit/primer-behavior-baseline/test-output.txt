@@ -1,6 +1,6 @@
-   Compiling rhino-cli v0.1.0 (/Users/wkf/ose-projects/ose-primer/apps/rhino-cli)
+   Compiling rhino-cli v0.1.0 (~/ose-projects/ose-primer/apps/rhino-cli)
     Finished `release` profile [optimized] target(s) in 57.45s
-     Running unittests src/lib.rs (/Users/wkf/ose-projects/ose-primer/apps/rhino-cli/target/release/deps/rhino_cli-e41f975b5422ce0f)
+     Running unittests src/lib.rs (~/ose-projects/ose-primer/apps/rhino-cli/target/release/deps/rhino_cli-e41f975b5422ce0f)
 
 running 948 tests
 test application::agents::agent_validator::tests::validate_agent_read_error ... ok
@@ -958,13 +958,13 @@ test commands::harness_audit::tests::run_member_covers_all_known_names_without_p
 
 test result: ok. 947 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 2.43s
 
-     Running unittests src/main.rs (/Users/wkf/ose-projects/ose-primer/apps/rhino-cli/target/release/deps/rhino_cli-4c4bb52c2807a074)
+     Running unittests src/main.rs (~/ose-projects/ose-primer/apps/rhino-cli/target/release/deps/rhino_cli-4c4bb52c2807a074)
 
 running 0 tests
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-     Running tests/agents.rs (/Users/wkf/ose-projects/ose-primer/apps/rhino-cli/target/release/deps/agents-c05beabe3599221b)
+     Running tests/agents.rs (~/ose-projects/ose-primer/apps/rhino-cli/target/release/deps/agents-c05beabe3599221b)
 Feature: Harness Binding Emit and Validate
   Scenario: Emitting bindings writes the expected files
    ✔  Given a repository with a canonical AGENTS.md at the root
@@ -1188,7 +1188,7 @@ Feature: Agent Naming Convention Validation
 21 scenarios (21 failed)
 64 steps (43 passed, 21 failed)
 
-thread 'main' (489959086) panicked at /Users/wkf/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cucumber-0.22.1/src/cucumber.rs:1243:13:
+thread 'main' (489959086) panicked at ~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cucumber-0.22.1/src/cucumber.rs:1243:13:
 21 steps failed
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 error: test failed, to rerun pass `--test agents`

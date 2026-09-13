@@ -111,3 +111,5 @@ test ran and passed".**
 - `repo-config.yml` `coverage.projects` — the per-project tier registry this plan drives
 - [Feature Change Completeness](../../../repo-governance/development/quality/feature-change-completeness.md)
 - [nx-targets reference](../../../repo-governance/development/infra/nx-targets.md)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

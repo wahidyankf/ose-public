@@ -52,10 +52,10 @@ terminal: # => Terminal section: controls command execution environment
     # => Any Docker Hub or private registry image
     # => Hermes pulls this image automatically on first run
   docker_volumes: # => Host directories to mount into container
-    - "/home/user/projects:/workspace" # => Mount projects directory at /workspace
+    - "/home/<user>/projects:/workspace" # => Mount projects directory at /workspace
       # => Format: host_path:container_path
       # => Container sees files at /workspace path
-    - "/home/user/.ssh:/root/.ssh:ro" # => Mount SSH keys read-only
+    - "/home/<user>/.ssh:/root/.ssh:ro" # => Mount SSH keys read-only
       # => :ro suffix prevents container writes
       # => SSH keys available inside but not modifiable
   docker_mount_cwd_to_workspace: # => also mounts the shell's cwd into container
@@ -104,7 +104,7 @@ TERMINAL_SSH_USER=deploy                  # => SSH username on remote server
                                           # => Needs appropriate permissions
 TERMINAL_SSH_PORT=22                      # => SSH port (default: 22)
                                           # => Change for non-standard setups
-TERMINAL_SSH_KEY=/home/user/.ssh/id_ed25519
+TERMINAL_SSH_KEY=/home/<user>/.ssh/id_ed25519
                                           # => Path to SSH private key
                                           # => Must have read permissions for agent
 ```
@@ -121,7 +121,7 @@ terminal:
     # => Preserves environment variables, cwd
     # => false: new SSH session per command
   cwd:
-    "/home/deploy/workspace" # => Working directory on remote server
+    "/home/<deploy-user>/workspace" # => Working directory on remote server
     # => Agent starts here each session
   timeout:
     300 # => Command timeout in seconds
@@ -313,10 +313,10 @@ terminal:
       # => Available inside sandbox as-is
 
   credential_files: # => Files mounted into container
-    - "/home/user/.ssh/id_ed25519" # => SSH private key
+    - "/home/<user>/.ssh/id_ed25519" # => SSH private key
       # => Allows git push without password inside container
-    - "/home/user/.aws/credentials" # => AWS credentials file
-    - "/home/user/.kube/config" # => Kubernetes config
+    - "/home/<user>/.aws/credentials" # => AWS credentials file
+    - "/home/<user>/.kube/config" # => Kubernetes config
       # => Mounted read-only by default
       # => Container cannot modify originals
 
@@ -1224,7 +1224,7 @@ mcp_servers: # => Map of MCP server names to their configurations
       - "-y" # => Auto-confirm npx install
       - "@modelcontextprotocol/server-filesystem"
         # => Official filesystem MCP server package
-      - "/home/user/projects" # => Root directory for file access
+      - "/home/<user>/projects" # => Root directory for file access
         # => Server cannot read files outside this path
     env: # => Environment variables for server process
       NODE_ENV:
@@ -1656,14 +1656,14 @@ Wants=network-online.target
 # [Service]: defines how to run and manage the process
 Type=simple                               # => Simple process management
 # Type=simple: systemd treats first process as the service (no forking)
-ExecStart=/home/user/.hermes/bin/hermes gateway
-                                          # => Full path to hermes binary
+ExecStart=%h/.hermes/bin/hermes gateway
+                                          # => %h is the user's home directory (user units)
                                           # => Runs gateway (messaging listener)
 Restart=on-failure                        # => Auto-restart on crash
                                           # => Does NOT restart on clean exit
 RestartSec=5                              # => Wait 5 seconds before restart
                                           # => Prevents restart loops on config errors
-Environment=HOME=/home/user              # => Set HOME for config file discovery
+Environment=HOME=/home/<user>              # => Set HOME for config file discovery
                                           # => systemd services don't inherit shell env
 
 [Install]
@@ -1722,7 +1722,7 @@ systemctl --user status hermes-gateway    # => Check service status
     <key>ProgramArguments</key>
     <!-- ProgramArguments: array of binary path + arguments -->
     <array>
-        <string>/Users/user/.hermes/bin/hermes</string>
+        <string>/Users/<you>/.hermes/bin/hermes</string>
         <!-- Full absolute path — launchd does not use PATH -->
         <string>gateway</string>
         <!-- gateway subcommand: starts messaging listener mode -->
@@ -1740,12 +1740,12 @@ systemctl --user status hermes-gateway    # => Check service status
     <!-- KeepAlive: launchd restarts immediately on any exit -->
 
     <key>StandardOutPath</key>
-    <string>/Users/user/.hermes/logs/gateway.stdout.log</string>
+    <string>/Users/<you>/.hermes/logs/gateway.stdout.log</string>
     <!-- Redirect stdout to log file -->
     <!-- Tail this file to see agent output: tail -f gateway.stdout.log -->
 
     <key>StandardErrorPath</key>
-    <string>/Users/user/.hermes/logs/gateway.stderr.log</string>
+    <string>/Users/<you>/.hermes/logs/gateway.stderr.log</string>
     <!-- Redirect stderr to log file -->
     <!-- Errors and crash reasons appear here -->
 </dict>
@@ -1995,7 +1995,7 @@ You: What's the current directory?
                                           # => Routing: SIMPLE → fallback model (haiku)
                                           # => Cost: ~$0.0001
                                           # => Agent runs: pwd
-                                          # => Response: "/home/user/projects"
+                                          # => Response: "/home/<user>/projects"
 
 You: Refactor this module to use dependency injection
                                           # => Routing: COMPLEX → primary model (sonnet)

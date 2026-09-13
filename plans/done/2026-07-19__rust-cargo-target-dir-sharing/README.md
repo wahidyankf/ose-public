@@ -85,3 +85,5 @@ alternatives.
 
 `worktree-to-pr` (multi-repo — one peer PR per repo). See
 [`delivery.md`](./delivery.md#delivery-mode-worktree-to-pr).
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

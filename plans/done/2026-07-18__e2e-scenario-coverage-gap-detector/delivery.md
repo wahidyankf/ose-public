@@ -557,13 +557,13 @@ defineBddConfig]`.
 ### 6a. ose-primer — apply, verify, draft PR, 3-cycle review, gates
 
 - [x] [AI] Provision the ose-primer worktree:
-      `git -C /Users/wkf/ose-projects/ose-primer worktree add worktrees/e2e-scenario-coverage-gap-detector -b e2e-scenario-coverage-gap-detector origin/main`
-      then `(cd /Users/wkf/ose-projects/ose-primer/worktrees/e2e-scenario-coverage-gap-detector && npm install && npm run doctor -- --fix)`
+      `git -C ~/ose-projects/ose-primer worktree add worktrees/e2e-scenario-coverage-gap-detector -b e2e-scenario-coverage-gap-detector origin/main`
+      then `(cd ~/ose-projects/ose-primer/worktrees/e2e-scenario-coverage-gap-detector && npm install && npm run doctor -- --fix)`
       — acceptance: worktree dir exists and both commands exit 0
 - [x] [AI] Apply the byte-identical rhino-cli source + specs files into the ose-primer worktree:
 
   ```bash
-  OSE_PRIMER_WT=/Users/wkf/ose-projects/ose-primer/worktrees/e2e-scenario-coverage-gap-detector
+  OSE_PRIMER_WT=$HOME/ose-projects/ose-primer/worktrees/e2e-scenario-coverage-gap-detector
   mkdir -p "$OSE_PRIMER_WT/apps/rhino-cli/src/application/e2e_coverage" \
            "$OSE_PRIMER_WT/specs/apps/rhino/behavior/rhino-cli/gherkin/specs"
   cp apps/rhino-cli/src/application/e2e_coverage/mod.rs \
@@ -590,7 +590,7 @@ defineBddConfig]`.
 - [x] [AI] Verify byte-identity of every propagated file against `ose-public`:
 
   ```bash
-  OSE_PRIMER_WT=/Users/wkf/ose-projects/ose-primer/worktrees/e2e-scenario-coverage-gap-detector
+  OSE_PRIMER_WT=$HOME/ose-projects/ose-primer/worktrees/e2e-scenario-coverage-gap-detector
   diff -rq apps/rhino-cli/src/application/e2e_coverage "$OSE_PRIMER_WT/apps/rhino-cli/src/application/e2e_coverage"
   diff apps/rhino-cli/src/application/mod.rs "$OSE_PRIMER_WT/apps/rhino-cli/src/application/mod.rs"
   diff apps/rhino-cli/src/commands/specs_e2e_coverage.rs "$OSE_PRIMER_WT/apps/rhino-cli/src/commands/specs_e2e_coverage.rs"
@@ -615,7 +615,7 @@ defineBddConfig]`.
 - [x] [AI] Commit, push, and open the ose-primer draft PR:
 
   ```bash
-  cd /Users/wkf/ose-projects/ose-primer/worktrees/e2e-scenario-coverage-gap-detector
+  cd ~/ose-projects/ose-primer/worktrees/e2e-scenario-coverage-gap-detector
   git add apps/rhino-cli/src/application/e2e_coverage apps/rhino-cli/src/application/mod.rs \
           apps/rhino-cli/src/commands/specs_e2e_coverage.rs apps/rhino-cli/src/commands/mod.rs \
           apps/rhino-cli/src/cli.rs \
@@ -647,13 +647,13 @@ defineBddConfig]`.
 ### 6b. ose-infra — apply, verify, draft PR, 3-cycle review, gates
 
 - [x] [AI] Provision the ose-infra worktree:
-      `git -C /Users/wkf/ose-projects/ose-infra worktree add worktrees/e2e-scenario-coverage-gap-detector -b e2e-scenario-coverage-gap-detector origin/main`
-      then `(cd /Users/wkf/ose-projects/ose-infra/worktrees/e2e-scenario-coverage-gap-detector && npm install && npm run doctor -- --fix)`
+      `git -C ~/ose-projects/ose-infra worktree add worktrees/e2e-scenario-coverage-gap-detector -b e2e-scenario-coverage-gap-detector origin/main`
+      then `(cd ~/ose-projects/ose-infra/worktrees/e2e-scenario-coverage-gap-detector && npm install && npm run doctor -- --fix)`
       — acceptance: worktree dir exists and both commands exit 0
 - [x] [AI] Apply the byte-identical rhino-cli source + specs files into the ose-infra worktree:
 
   ```bash
-  OSE_INFRA_WT=/Users/wkf/ose-projects/ose-infra/worktrees/e2e-scenario-coverage-gap-detector
+  OSE_INFRA_WT=$HOME/ose-projects/ose-infra/worktrees/e2e-scenario-coverage-gap-detector
   mkdir -p "$OSE_INFRA_WT/apps/rhino-cli/src/application/e2e_coverage" \
            "$OSE_INFRA_WT/specs/apps/rhino/behavior/rhino-cli/gherkin/specs"
   cp apps/rhino-cli/src/application/e2e_coverage/mod.rs \
@@ -680,7 +680,7 @@ defineBddConfig]`.
 - [x] [AI] Verify byte-identity of every propagated file against `ose-public`:
 
   ```bash
-  OSE_INFRA_WT=/Users/wkf/ose-projects/ose-infra/worktrees/e2e-scenario-coverage-gap-detector
+  OSE_INFRA_WT=$HOME/ose-projects/ose-infra/worktrees/e2e-scenario-coverage-gap-detector
   diff -rq apps/rhino-cli/src/application/e2e_coverage "$OSE_INFRA_WT/apps/rhino-cli/src/application/e2e_coverage"
   diff apps/rhino-cli/src/application/mod.rs "$OSE_INFRA_WT/apps/rhino-cli/src/application/mod.rs"
   diff apps/rhino-cli/src/commands/specs_e2e_coverage.rs "$OSE_INFRA_WT/apps/rhino-cli/src/commands/specs_e2e_coverage.rs"
@@ -705,7 +705,7 @@ defineBddConfig]`.
 - [x] [AI] Commit, push, and open the ose-infra draft PR:
 
   ```bash
-  cd /Users/wkf/ose-projects/ose-infra/worktrees/e2e-scenario-coverage-gap-detector
+  cd ~/ose-projects/ose-infra/worktrees/e2e-scenario-coverage-gap-detector
   git add apps/rhino-cli/src/application/e2e_coverage apps/rhino-cli/src/application/mod.rs \
           apps/rhino-cli/src/commands/specs_e2e_coverage.rs apps/rhino-cli/src/commands/mod.rs \
           apps/rhino-cli/src/cli.rs \
@@ -739,7 +739,7 @@ defineBddConfig]`.
 > All checks below must pass before starting Phase 7.
 
 - [x] [AI] Byte-identity holds on both open PR branches:
-      `diff -rq apps/rhino-cli/src/application/e2e_coverage /Users/wkf/ose-projects/ose-primer/worktrees/e2e-scenario-coverage-gap-detector/apps/rhino-cli/src/application/e2e_coverage`
+      `diff -rq apps/rhino-cli/src/application/e2e_coverage ~/ose-projects/ose-primer/worktrees/e2e-scenario-coverage-gap-detector/apps/rhino-cli/src/application/e2e_coverage`
       and the equivalent path swapped for `ose-infra` — acceptance: zero output for both
 - [x] [AI] Both sibling PRs completed 3 review cycles with CI green and no unresolved blocking
       findings: `gh pr view e2e-scenario-coverage-gap-detector --json statusCheckRollup` (run from
@@ -757,11 +757,11 @@ defineBddConfig]`.
 
 - [x] [AI per session override] Merge the ose-primer PR to `main` — only after its 3-cycle review is
       complete and all its quality gates (local + CI) pass
-      — resume signal: from `/Users/wkf/ose-projects/ose-primer`,
+      — resume signal: from `~/ose-projects/ose-primer`,
       `gh pr view e2e-scenario-coverage-gap-detector --json state --jq .state` prints `MERGED`
 - [x] [AI per session override] Merge the ose-infra PR to `main` — only after its 3-cycle review is
       complete and all its quality gates (local + CI) pass
-      — resume signal: from `/Users/wkf/ose-projects/ose-infra`,
+      — resume signal: from `~/ose-projects/ose-infra`,
       `gh pr view e2e-scenario-coverage-gap-detector --json state --jq .state` prints `MERGED`
 
 ---

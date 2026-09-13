@@ -65,3 +65,5 @@ Versions post-cutoff with no security-override justification — defer until 60-
 
 **Created**: 2026-05-15
 **Branch**: `worktree/stack-update`
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

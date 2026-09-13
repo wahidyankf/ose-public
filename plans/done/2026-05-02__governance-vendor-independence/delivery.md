@@ -25,7 +25,7 @@ created: 2026-05-02
 ### Pre-Flight checks
 
 - [x] Confirm we are inside an `ose-public` Scope-A worktree (path matches `ose-public/.claude/worktrees/<name>/`).
-  - **Note**: Executing from main checkout at `/Users/wkf/ose-projects/ose-public` (not a worktree). Plan SHOULD use worktree; user instructed to not stop. Proceeding with awareness of this deviation.
+  - **Note**: Executing from main checkout at `~/ose-projects/ose-public` (not a worktree). Plan SHOULD use worktree; user instructed to not stop. Proceeding with awareness of this deviation.
 - [x] Confirm worktree branch is NOT `main` (`git branch --show-current` reports `worktree-<name>`).
   - **Note**: On `main` branch. See worktree note above.
 - [x] `git status` reports a clean tree.

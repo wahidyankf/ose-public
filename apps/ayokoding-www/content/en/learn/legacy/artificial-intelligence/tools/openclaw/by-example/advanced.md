@@ -494,7 +494,7 @@ Restrict the `exec` tool to specific commands instead of allowing arbitrary shel
       ],
       maxExecutionTime: 30000, // => Kill commands after 30 seconds
       // => Prevents infinite loops
-      workingDirectory: "/home/user/projects",
+      workingDirectory: "/home/<user>/projects",
       // => Restrict to specific directory
       // => Commands cannot escape this path
     },

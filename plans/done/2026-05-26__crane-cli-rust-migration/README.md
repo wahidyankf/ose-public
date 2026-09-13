@@ -20,3 +20,5 @@ standard Rust toolchain already shared by rhino-cli, organiclever-be, ose-cli, a
 and libs/rust-commons. The F# OCR implementation was always a placeholder stub; the Rust port
 implements real tesseract-based OCR via pdftoppm page rasterization. All other checkers are
 direct behavioral ports using idiomatic Rust equivalents with identical JSON output shape.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

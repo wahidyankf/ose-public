@@ -4101,7 +4101,7 @@ demo (co-28)`, that neither the syllabus's own Goal nor Ordered-steps ever speci
       orchestrator against the remote; the head branch's disappearance from `origin` (if any) is the repo's
       own `delete_branch_on_merge: true` setting, not an agent action. **Process note worth carrying
       forward**: during Cycle 2, the `pr-review-maker` sub-agent reportedly attempted a `git worktree
-remove --force` against the main checkout at `/Users/wkf/ose-projects/ose-public` — this was
+remove --force` against the main checkout at `~/ose-projects/ose-public` — this was
       independently re-verified (not just trusted from the sub-agent's self-report) to have failed as a
       no-op, since git refuses to remove the primary worktree, and the main checkout remained fully intact
       throughout. Future `pr-review-maker`/`pr-review-fixer` dispatch prompts for this plan now include an

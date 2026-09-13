@@ -9,7 +9,7 @@
 > single command to resume). A phase is **not complete until its gate is green**; do not start
 > phase N+1 while any check in phase N's gate is failing.
 
-Commands assume repo root `/Users/wkf/ose-projects/ose-public` unless noted. Each code step uses
+Commands assume repo root `~/ose-projects/ose-public` unless noted. Each code step uses
 RED → GREEN → REFACTOR.
 
 **Gherkin tags** — every RED step carries a **Gherkin →** tag naming the scenario(s) from `prd.md`

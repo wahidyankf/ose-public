@@ -696,7 +696,7 @@ jobs:
         # Always pin to a specific version tag (v4), never use @main.
         uses: actions/checkout@v4
         # => Clones the repository at the triggering commit SHA.
-        # => Working directory: $GITHUB_WORKSPACE (e.g. /home/runner/work/repo/repo)
+        # => Working directory: $GITHUB_WORKSPACE (e.g. <runner-home>/work/repo/repo)
         # => The default fetch depth is 1 (shallow clone) for speed.
 
       - name: Verify checkout
@@ -704,7 +704,7 @@ jobs:
           ls -la
           # => Lists files in the repository root — confirms code is present.
           echo "Workspace: $GITHUB_WORKSPACE"
-          # => Prints: Workspace: /home/runner/work/<repo>/<repo>
+          # => Prints: Workspace: <runner-home>/work/<repo>/<repo>
 
       - name: Read a file from the repo
         run: cat README.md
@@ -1091,7 +1091,7 @@ jobs:
         working-directory: frontend
         run: |
           pwd
-          # => Prints: /home/runner/work/<repo>/<repo>/frontend
+          # => Prints: <runner-home>/work/<repo>/<repo>/frontend
           ls
           # => Prints: package.json
 
@@ -1101,14 +1101,14 @@ jobs:
         working-directory: backend
         run: |
           pwd
-          # => Prints: /home/runner/work/<repo>/<repo>/backend
+          # => Prints: <runner-home>/work/<repo>/<repo>/backend
           python3 app.py
           # => Prints: backend
 
       - name: Default directory after working-directory steps
         run: |
           pwd
-          # => Prints: /home/runner/work/<repo>/<repo>  (back to workspace root)
+          # => Prints: <runner-home>/work/<repo>/<repo>  (back to workspace root)
           # => working-directory does not permanently change the CWD.
 ```
 

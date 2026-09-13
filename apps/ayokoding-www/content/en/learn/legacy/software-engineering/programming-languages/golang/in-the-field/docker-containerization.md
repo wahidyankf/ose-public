@@ -318,7 +318,7 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 # => -S: system user (no password, no home)
 # => appuser cannot escalate privileges
 
-WORKDIR /home/appuser/
+WORKDIR /home/appuser
 
 COPY --from=builder /app/myapp .
 RUN chown appuser:appgroup myapp
@@ -478,7 +478,7 @@ RUN apk --no-cache add ca-certificates tzdata
 # => ca-certificates: SSL support
 # => tzdata: timezone support
 
-WORKDIR /home/appuser/
+WORKDIR /home/appuser
 
 # Copy binary from builder
 COPY --from=builder /app/myapp .
@@ -636,7 +636,7 @@ RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o myapp
 FROM alpine:latest
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 RUN apk --no-cache add ca-certificates
-WORKDIR /home/appuser/
+WORKDIR /home/appuser
 COPY --from=builder /app/myapp .
 RUN chown appuser:appgroup myapp
 HEALTHCHECK CMD wget --spider http://localhost:8080/health || exit 1

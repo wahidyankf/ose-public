@@ -146,3 +146,5 @@ flowchart TD
 - [SDLC Gate Standard — rhino-cli Byte-Identity Boundary](../../../docs/reference/sdlc-gate-standard.md#rhino-cli-byte-identity-boundary)
 - [rhino-cli-source-drift-reconciliation](../../done/2026-07-17__rhino-cli-source-drift-reconciliation/README.md) — **predecessor**; restores tri-repo byte-identity before this plan's new subcommand lands. Completed 2026-07-17.
 - [Related Repositories](../../../docs/reference/related-repositories.md)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

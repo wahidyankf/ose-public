@@ -3,9 +3,9 @@
 md5 manifest (`.feature` + behaviour-`README.md`) of
 `specs/apps/rhino/behavior/rhino-cli/gherkin/` across all three sibling repos:
 
-- `ose-public` — `/Users/wkf/ose-projects/ose-public`
-- `ose-primer` — `/Users/wkf/ose-projects/ose-primer`
-- `ose-infra` — `/Users/wkf/ose-projects/ose-infra`
+- `ose-public` — `~/ose-projects/ose-public`
+- `ose-primer` — `~/ose-projects/ose-primer`
+- `ose-infra` — `~/ose-projects/ose-infra`
 
 ## File counts
 

@@ -33,7 +33,7 @@ docs-managing-file-operations	.agents/skills/docs-managing-file-operations/SKILL
 docs-validating-factual-accuracy	.claude/skills/docs-validating-factual-accuracy/SKILL.md
 docs-validating-links	.agents/skills/docs-validating-links/SKILL.md
 docs-validating-software-engineering-separation	.agents/skills/docs-validating-software-engineering-separation/SKILL.md
-find-skills	/Users/wkf/.agents/skills/find-skills/SKILL.md
+find-skills	~/.agents/skills/find-skills/SKILL.md
 grill-me	.agents/skills/grill-me/SKILL.md
 plan-applying-fixes	.agents/skills/plan-applying-fixes/SKILL.md
 plan-creating-project-plans	.agents/skills/plan-creating-project-plans/SKILL.md

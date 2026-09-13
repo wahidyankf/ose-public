@@ -34,7 +34,7 @@ flowchart TD
 
 `ose-public` is the documented upstream source of truth; the merged canon lands here, and
 the sibling plans adopt it. This plan therefore reads sibling files
-(`/Users/wkf/ose-projects/ose-primer/...`, `/Users/wkf/ose-projects/ose-infra/...`) as
+(`~/ose-projects/ose-primer/...`, `~/ose-projects/ose-infra/...`) as
 **merge inputs only** and never writes outside ose-public.
 
 ### D2 — Where the worktree default lands in plan-establishment-execution.md
@@ -165,8 +165,8 @@ sync && … agents emit-bindings` `[Repo-grounded]`.
 
 ## Dependencies
 
-- Sibling clones present and readable at `/Users/wkf/ose-projects/ose-primer` and
-  `/Users/wkf/ose-projects/ose-infra` `[Repo-grounded]` (verified 2026-06-06).
+- Sibling clones present and readable at `~/ose-projects/ose-primer` and
+  `~/ose-projects/ose-infra` `[Repo-grounded]` (verified 2026-06-06).
 - Rust toolchain via `npm run doctor -- --fix`; rhino-cli targets `test:unit`,
   `test:quick`, `lint`, `fmt:check`, `typecheck`, `validate:cross-vendor-parity` exist in
   `apps/rhino-cli/project.json` `[Repo-grounded]`.
@@ -210,7 +210,7 @@ no API endpoints (docs + CLI tooling only).
 
 Objective: same/similar quality and behavior of `repo-governance/workflows/plan/` and its related agents and skills across ose-public, ose-primer, ose-infra. Mode: worktree-to-main. Gate: strict (double-zero). Slug: `plan-domain-parity`. Stage: `plans/in-progress/`.
 
-Sibling repo roots (local clones): `/Users/wkf/ose-projects/ose-public`, `/Users/wkf/ose-projects/ose-primer`, `/Users/wkf/ose-projects/ose-infra` (bare + worktrees layout).
+Sibling repo roots (local clones): `~/ose-projects/ose-public`, `~/ose-projects/ose-primer`, `~/ose-projects/ose-infra` (bare + worktrees layout).
 
 ### Survey facts (empirical, 2026-06-06)
 

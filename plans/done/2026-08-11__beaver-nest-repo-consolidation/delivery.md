@@ -101,7 +101,7 @@ and deleted 2026-08-08 — its scope is absorbed, not dropped.
       direct cross-repo manifest diff, not `parity manifest validate` — that command is local-only
       (each repo checks its own files against its own recorded manifest, never a sibling's manifest)
       and exits 0 in all three repos today even though the boundary is open. Command:
-      `mkdir -p evidence && diff <(git -C /Users/wkf/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(git -C /Users/wkf/ose-projects/ose-primer show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) > plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-parity-divergence-primer.txt; diff <(git -C /Users/wkf/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(git -C /Users/wkf/ose-projects/ose-private show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) > plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-parity-divergence-private.txt`
+      `mkdir -p evidence && diff <(git -C ~/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(git -C ~/ose-projects/ose-primer show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) > plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-parity-divergence-primer.txt; diff <(git -C ~/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(git -C ~/ose-projects/<sibling> show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) > plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-parity-divergence-private.txt`
       — acceptance: both evidence files are recorded; if either is non-empty, **stop and do not
       begin Phase 5** — the boundary is `optimize-cis`'s unfinished AC-15, and Phase 5-7 as written
       only syncs 2 of the files this diff will enumerate (see the widened Phase 6/7 sync scope
@@ -128,12 +128,12 @@ and deleted 2026-08-08 — its scope is absorbed, not dropped.
 
 One worktree per repo, at the same relative path inside each repo's own working tree:
 
-| Repo          | Worktree path (absolute)                                                        |
-| ------------- | ------------------------------------------------------------------------------- |
-| `ose-public`  | `/Users/wkf/ose-projects/ose-public/worktrees/beaver-nest-repo-consolidation/`  |
-| `ose-primer`  | `/Users/wkf/ose-projects/ose-primer/worktrees/beaver-nest-repo-consolidation/`  |
-| `ose-private` | `/Users/wkf/ose-projects/ose-private/worktrees/beaver-nest-repo-consolidation/` |
-| `beaver-nest` | `/Users/wkf/ose-projects/beaver-nest/worktrees/beaver-nest-repo-consolidation/` |
+| Repo          | Worktree path (absolute)                                               |
+| ------------- | ---------------------------------------------------------------------- |
+| `ose-public`  | `~/ose-projects/ose-public/worktrees/beaver-nest-repo-consolidation/`  |
+| `ose-primer`  | `~/ose-projects/ose-primer/worktrees/beaver-nest-repo-consolidation/`  |
+| `<sibling>`   | `~/ose-projects/<sibling>/worktrees/beaver-nest-repo-consolidation/`   |
+| `beaver-nest` | `~/ose-projects/beaver-nest/worktrees/beaver-nest-repo-consolidation/` |
 
 Optional manual pre-provisioning (run from each repo's own root):
 
@@ -145,7 +145,7 @@ the worktree after the plan is archived and pushed.
 
 **Cross-repo execution note**: `plan-execution.md`'s Step 0 worktree gate provisions in the _current_
 repo only. Phases 6 and 7 execute in a different repo than the one holding this plan folder, so each
-requires `cd /Users/wkf/ose-projects/<repo>` first. `ose-primer` and `ose-private`'s topology (bare
+requires `cd ~/ose-projects/<repo>` first. `ose-primer` and `<sibling>`'s topology (bare
 repo with linked worktrees, vs. a normal working tree) is not assumed here and drifts over time —
 verify it live per the
 [Bare-Repo Base-Worktree Landing Method's Verify Topology First step](../../../repo-governance/development/workflow/bare-repo-landing-method.md#verify-topology-first)
@@ -261,15 +261,15 @@ nothing, and has no CI run of its own. Its artifacts ride Phase 5's PR.
       — acceptance: `npm run doctor` exits 0 with no missing-tool findings
 - [ ] [AI] Create the Knowledge Capture scaffold at `plans/in-progress/beaver-nest-repo-consolidation/learnings.md`
       — acceptance: file exists and its first heading is `# Learnings: beaver-nest-repo-consolidation`
-- [ ] [AI] Record the `beaver-nest` working-tree state per [D9](./tech-docs.md#design-decisions) — command: `git -C /Users/wkf/ose-projects/beaver-nest status --porcelain > plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-beaver-nest-status.txt`
+- [ ] [AI] Record the `beaver-nest` working-tree state per [D9](./tech-docs.md#design-decisions) — command: `git -C ~/ose-projects/beaver-nest status --porcelain > plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-beaver-nest-status.txt`
       — acceptance: the file is written; if any listed path falls outside the governance files this plan discards, stop and triage it before copying anything
-- [ ] [AI] Enumerate the exact source path set — command: `git -C /Users/wkf/ose-projects/beaver-nest ls-files apps/beaver-nest-be apps/beaver-nest-fe apps/beaver-nest-be-e2e apps/beaver-nest-fe-e2e specs/apps/beaver-nest infra/dev/beaver-nest-app > plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-source-manifest.txt`
+- [ ] [AI] Enumerate the exact source path set — command: `git -C ~/ose-projects/beaver-nest ls-files apps/beaver-nest-be apps/beaver-nest-fe apps/beaver-nest-be-e2e apps/beaver-nest-fe-e2e specs/apps/beaver-nest infra/dev/beaver-nest-app > plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-source-manifest.txt`
       — acceptance: the manifest is non-empty and its line count is recorded in the file-touch ledger
 - [ ] [AI] Freeze a **fresh** unique-idea-brief manifest — the generic half of this set is volatile
       (both repos' `plans/ideas/` trees are under active cross-repo grooming, so the names and count
       cited in [tech-docs.md §More Detail](./tech-docs.md#more-detail) are a stale 2026-08-06
       snapshot, not an execution input)
-      — command: `git -C /Users/wkf/ose-projects/beaver-nest fetch origin && comm -13 <(find plans/ideas -name '*.md' ! -name README.md -exec basename {} \; | sort -u) <(git -C /Users/wkf/ose-projects/beaver-nest ls-tree -r --name-only origin/main -- plans/ideas | grep '\.md$' | xargs -n1 basename | grep -v '^README.md$' | sort -u) > plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-unique-ideas-manifest.txt`
+      — command: `git -C ~/ose-projects/beaver-nest fetch origin && comm -13 <(find plans/ideas -name '*.md' ! -name README.md -exec basename {} \; | sort -u) <(git -C ~/ose-projects/beaver-nest ls-tree -r --name-only origin/main -- plans/ideas | grep '\.md$' | xargs -n1 basename | grep -v '^README.md$' | sort -u) > plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-unique-ideas-manifest.txt`
       — note: read `origin/main` with `ls-tree`, **never** `ls-files` — `ls-files` reads the local
       index, so a lagging clone would silently reproduce a stale manifest that the `diff` check in
       Phase 4 would then pass
@@ -300,27 +300,27 @@ nothing, and has no CI run of its own. Its artifacts ride Phase 5's PR.
 Pure file creation — no Red→Green→Refactor required per the TDD convention's non-code carve-out.
 Copies preserve content verbatim; the rename happens in Phase 2.
 
-- [ ] [AI] Copy `apps/beaver-nest-be/` to `apps/beavernest-be/` — command: `cp -R /Users/wkf/ose-projects/beaver-nest/apps/beaver-nest-be apps/beavernest-be`
+- [ ] [AI] Copy `apps/beaver-nest-be/` to `apps/beavernest-be/` — command: `cp -R ~/ose-projects/beaver-nest/apps/beaver-nest-be apps/beavernest-be`
       — acceptance: `git status --porcelain apps/beavernest-be | grep -c .` matches the manifest's `apps/beaver-nest-be` line count
   - _Suggested executor: `swe-fsharp-dev`_
-- [ ] [AI] Copy `apps/beaver-nest-fe/` to `apps/beavernest-app-web/` — command: `cp -R /Users/wkf/ose-projects/beaver-nest/apps/beaver-nest-fe apps/beavernest-app-web`
+- [ ] [AI] Copy `apps/beaver-nest-fe/` to `apps/beavernest-app-web/` — command: `cp -R ~/ose-projects/beaver-nest/apps/beaver-nest-fe apps/beavernest-app-web`
       — acceptance: `apps/beavernest-app-web/src/App.tsx` exists
   - _Suggested executor: `swe-typescript-dev`_
 - [ ] [AI] Delete the stale Next.js artifact — command: `rm apps/beavernest-app-web/next-env.d.ts`
       — acceptance: `test ! -e apps/beavernest-app-web/next-env.d.ts` exits 0
-- [ ] [AI] Copy `apps/beaver-nest-be-e2e/` to `apps/beavernest-be-e2e/` — command: `cp -R /Users/wkf/ose-projects/beaver-nest/apps/beaver-nest-be-e2e apps/beavernest-be-e2e`
+- [ ] [AI] Copy `apps/beaver-nest-be-e2e/` to `apps/beavernest-be-e2e/` — command: `cp -R ~/ose-projects/beaver-nest/apps/beaver-nest-be-e2e apps/beavernest-be-e2e`
       — acceptance: `apps/beavernest-be-e2e/steps/` contains 5 step files
   - _Suggested executor: `swe-e2e-dev`_
-- [ ] [AI] Copy `apps/beaver-nest-fe-e2e/` to `apps/beavernest-app-web-e2e/` — command: `cp -R /Users/wkf/ose-projects/beaver-nest/apps/beaver-nest-fe-e2e apps/beavernest-app-web-e2e`
+- [ ] [AI] Copy `apps/beaver-nest-fe-e2e/` to `apps/beavernest-app-web-e2e/` — command: `cp -R ~/ose-projects/beaver-nest/apps/beaver-nest-fe-e2e apps/beavernest-app-web-e2e`
       — acceptance: `apps/beavernest-app-web-e2e/playwright.viewport.config.ts` exists
   - _Suggested executor: `swe-e2e-dev`_
-- [ ] [AI] Copy the specs tree to `specs/apps/beavernest/` — command: `cp -R /Users/wkf/ose-projects/beaver-nest/specs/apps/beaver-nest specs/apps/beavernest`
+- [ ] [AI] Copy the specs tree to `specs/apps/beavernest/` — command: `cp -R ~/ose-projects/beaver-nest/specs/apps/beaver-nest specs/apps/beavernest`
       — acceptance: `find specs/apps/beavernest -name '*.feature' | grep -c .` prints `19`
-- [ ] [AI] Copy the compose stack to `infra/dev/beavernest-app/` — command: `cp -R /Users/wkf/ose-projects/beaver-nest/infra/dev/beaver-nest-app infra/dev/beavernest-app`
+- [ ] [AI] Copy the compose stack to `infra/dev/beavernest-app/` — command: `cp -R ~/ose-projects/beaver-nest/infra/dev/beaver-nest-app infra/dev/beavernest-app`
       — acceptance: `infra/dev/beavernest-app/docker-compose.yml` exists and `infra/dev/beavernest-app/tests/` holds 16 shell tests
-- [ ] [AI] Copy the brand token sheet — command: `cp /Users/wkf/ose-projects/beaver-nest/libs/web-ui-token/src/beaver-nest.css libs/web-ui-token/src/beavernest.css`
+- [ ] [AI] Copy the brand token sheet — command: `cp ~/ose-projects/beaver-nest/libs/web-ui-token/src/beaver-nest.css libs/web-ui-token/src/beavernest.css`
       — acceptance: `libs/web-ui-token/src/beavernest.css` exists and the four existing brand sheets are unmodified
-- [ ] [AI] Copy the staging CI caller — command: `cp /Users/wkf/ose-projects/beaver-nest/.github/workflows/beaver-nest-app-test-local-deploy-stag.yml .github/workflows/beavernest-app-test-local-deploy-stag.yml`
+- [ ] [AI] Copy the staging CI caller — command: `cp ~/ose-projects/beaver-nest/.github/workflows/beaver-nest-app-test-local-deploy-stag.yml .github/workflows/beavernest-app-test-local-deploy-stag.yml`
       — acceptance: the new workflow file exists; no other workflow file is added or removed
 - [ ] [AI] Confirm nothing outside the manifest was copied — command: `git status --porcelain | grep -v -e '^?? apps/beavernest' -e '^?? specs/apps/beavernest' -e '^?? infra/dev/beavernest' -e '^?? libs/web-ui-token/src/beavernest.css' -e '^?? .github/workflows/beavernest' -e '^?? plans/in-progress/beaver-nest-repo-consolidation/evidence/' -e 'learnings.md'`
       — acceptance: prints nothing
@@ -331,7 +331,7 @@ Copies preserve content verbatim; the rename happens in Phase 2.
 > proceeding.
 
 - [ ] [AI] `find apps/beavernest-be apps/beavernest-app-web apps/beavernest-be-e2e apps/beavernest-app-web-e2e -type f | grep -c .` — acceptance: total matches the manifest's app line count minus the one deleted `next-env.d.ts`
-- [ ] [AI] `git -C /Users/wkf/ose-projects/beaver-nest status --porcelain` — acceptance: byte-identical to `plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-beaver-nest-status.txt`, proving the source repo was only read
+- [ ] [AI] `git -C ~/ose-projects/beaver-nest status --porcelain` — acceptance: byte-identical to `plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-beaver-nest-status.txt`, proving the source repo was only read
 - [ ] [AI] `npx nx run-many -t test:quick --all` — acceptance: exits 0; the copied trees are not yet registered as Nx projects, so existing projects must be unaffected
 
 > **Pause Safety**: the product files exist in `ose-public` under their new paths but are not yet
@@ -619,7 +619,7 @@ branch is provisioned (see [tech-docs.md D12](./tech-docs.md#design-decisions)).
 - [ ] [AI] Re-freeze the unique-brief manifest against **current** `origin/main` in both repos before
       triaging — Phase 0's `plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-unique-ideas-manifest.txt` may itself have gone stale
       while Phases 1-3 ran, since both trees are under active grooming
-      — command: `git -C /Users/wkf/ose-projects/beaver-nest fetch origin && comm -13 <(find plans/ideas -name '*.md' ! -name README.md -exec basename {} \; | sort -u) <(git -C /Users/wkf/ose-projects/beaver-nest ls-tree -r --name-only origin/main -- plans/ideas | grep '\.md$' | xargs -n1 basename | grep -v '^README.md$' | sort -u) > plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-4-unique-ideas-manifest.txt; diff plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-unique-ideas-manifest.txt plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-4-unique-ideas-manifest.txt`
+      — command: `git -C ~/ose-projects/beaver-nest fetch origin && comm -13 <(find plans/ideas -name '*.md' ! -name README.md -exec basename {} \; | sort -u) <(git -C ~/ose-projects/beaver-nest ls-tree -r --name-only origin/main -- plans/ideas | grep '\.md$' | xargs -n1 basename | grep -v '^README.md$' | sort -u) > plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-4-unique-ideas-manifest.txt; diff plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-unique-ideas-manifest.txt plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-4-unique-ideas-manifest.txt`
       — acceptance: both manifests exist; if `diff` reports any change, the Phase 4 manifest wins and
       the delta is written into `learnings.md` with a one-line reason per added or removed brief
 - [ ] [AI] Triage **every brief on `plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-4-unique-ideas-manifest.txt`** against
@@ -863,7 +863,7 @@ to close this behavior, since it already shipped via `optimize-cis`.
       replies across multiple cycles; resolving reflects settled disposition, not suppression).
       `gh pr ready 164` then `gh pr merge 164 --squash` — merged as `dae7e9992`.
 
-- [x] [AI] Fast-forward local `main` — command: `git -C /Users/wkf/ose-projects/ose-public checkout main && git pull --ff-only`
+- [x] [AI] Fast-forward local `main` — command: `git -C ~/ose-projects/ose-public checkout main && git pull --ff-only`
       — acceptance: `git status -sb` shows no divergence from `origin/main`
 
       **Date**: 2026-08-11. **Status**: Done. `git merge --ff-only origin/main` — fast-forwarded
@@ -880,7 +880,7 @@ to close this behavior, since it already shipped via `optimize-cis`.
 Identical in substance to Phase 5, adapted to this repo's own footprint. `ose-primer` has no
 `beavernest` product and no `plans/` entry for this plan.
 
-- [ ] [AI] Change into the repo and verify topology — command: `cd /Users/wkf/ose-projects/ose-primer && git config --file "$(git rev-parse --git-common-dir)/config" core.bare`
+- [ ] [AI] Change into the repo and verify topology — command: `cd ~/ose-projects/ose-primer && git config --file "$(git rev-parse --git-common-dir)/config" core.bare`
       — acceptance: the output (`true`, or empty/`false`) records whether the bare-repo git method applies, per the
       [Bare-Repo Base-Worktree Landing Method](../../../repo-governance/development/workflow/bare-repo-landing-method.md#scriptable-form--the-corebare-read) —
       never `git rev-parse --is-bare-repository`, the explicitly forbidden command for this question
@@ -897,14 +897,14 @@ Identical in substance to Phase 5, adapted to this repo's own footprint. `ose-pr
       written by Phase 0 inside `ose-public`'s own worktree — a bare relative path here would resolve
       against the wrong repo and the loop would silently iterate zero times, so the evidence file is
       addressed by its absolute path back into `ose-public`
-      — command: `EVIDENCE=/Users/wkf/ose-projects/ose-public/worktrees/beaver-nest-repo-consolidation/plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-parity-divergence-primer.txt; test -s "$EVIDENCE" || { echo "MISSING-OR-EMPTY: $EVIDENCE"; exit 1; }; N=0; for f in $(awk '/^[<>] /{print $NF}' "$EVIDENCE" | sort -u); do N=$((N+1)); diff <(git -C /Users/wkf/ose-projects/ose-public show main:"$f") "$f" || echo "DIVERGENT: $f"; done; echo "files-checked=$N"`
+      — command: `EVIDENCE=$HOME/ose-projects/ose-public/worktrees/beaver-nest-repo-consolidation/plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-parity-divergence-primer.txt; test -s "$EVIDENCE" || { echo "MISSING-OR-EMPTY: $EVIDENCE"; exit 1; }; N=0; for f in $(awk '/^[<>] /{print $NF}' "$EVIDENCE" | sort -u); do N=$((N+1)); diff <(git -C ~/ose-projects/ose-public show main:"$f") "$f" || echo "DIVERGENT: $f"; done; echo "files-checked=$N"`
       — acceptance: `test -s "$EVIDENCE"` exits 0 (fails loudly, not silently, on a missing or empty
       evidence file); the printed `files-checked=<N>` is greater than 0; and the loop prints no
       `DIVERGENT:` lines — every enumerated file is now byte-identical to `ose-public`'s merged
       version
   - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] Regenerate the parity manifest — command: `cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- parity manifest generate`
-      — acceptance: `diff <(git -C /Users/wkf/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(sort apps/rhino-cli/parity-manifest.sha256)` prints nothing —
+      — acceptance: `diff <(git -C ~/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(sort apps/rhino-cli/parity-manifest.sha256)` prints nothing —
       falsifiable, not just "matches `ose-public`'s" prose
 - [ ] [AI] Apply the four→three edits to each enumerated governance and documentation target
       — command: `grep -rn 'beaver-nest' AGENTS.md README.md docs repo-governance .claude`
@@ -945,7 +945,7 @@ Identical in substance to Phase 5, adapted to this repo's own footprint. `ose-pr
 
 ## Phase 7: Four→Three Sweep in `ose-private` (delivery boundary — PR #3)
 
-- [ ] [AI] Change into the repo and verify topology — command: `cd /Users/wkf/ose-projects/ose-private && git config --file "$(git rev-parse --git-common-dir)/config" core.bare`
+- [ ] [AI] Change into the repo and verify topology — command: `cd ~/ose-projects/<sibling> && git config --file "$(git rev-parse --git-common-dir)/config" core.bare`
       — acceptance: the output (`true`, or empty/`false`) records whether the bare-repo git method applies, per the
       [Bare-Repo Base-Worktree Landing Method](../../../repo-governance/development/workflow/bare-repo-landing-method.md#scriptable-form--the-corebare-read) —
       never `git rev-parse --is-bare-repository`, the explicitly forbidden command for this question
@@ -960,13 +960,13 @@ Identical in substance to Phase 5, adapted to this repo's own footprint. `ose-pr
       written by Phase 0 inside `ose-public`'s own worktree — a bare relative path here would resolve
       against the wrong repo and the loop would silently iterate zero times, so the evidence file is
       addressed by its absolute path back into `ose-public`
-      — command: `EVIDENCE=/Users/wkf/ose-projects/ose-public/worktrees/beaver-nest-repo-consolidation/plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-parity-divergence-private.txt; test -s "$EVIDENCE" || { echo "MISSING-OR-EMPTY: $EVIDENCE"; exit 1; }; N=0; for f in $(awk '/^[<>] /{print $NF}' "$EVIDENCE" | sort -u); do N=$((N+1)); diff <(git -C /Users/wkf/ose-projects/ose-public show main:"$f") "$f" || echo "DIVERGENT: $f"; done; echo "files-checked=$N"`
+      — command: `EVIDENCE=$HOME/ose-projects/ose-public/worktrees/beaver-nest-repo-consolidation/plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-parity-divergence-private.txt; test -s "$EVIDENCE" || { echo "MISSING-OR-EMPTY: $EVIDENCE"; exit 1; }; N=0; for f in $(awk '/^[<>] /{print $NF}' "$EVIDENCE" | sort -u); do N=$((N+1)); diff <(git -C ~/ose-projects/ose-public show main:"$f") "$f" || echo "DIVERGENT: $f"; done; echo "files-checked=$N"`
       — acceptance: `test -s "$EVIDENCE"` exits 0 (fails loudly, not silently, on a missing or empty
       evidence file); the printed `files-checked=<N>` is greater than 0; and the loop prints no
       `DIVERGENT:` lines
   - _Suggested executor: `swe-rust-dev`_
 - [ ] [AI] Regenerate the parity manifest — command: `cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- parity manifest generate`
-      — acceptance: `diff <(git -C /Users/wkf/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(sort apps/rhino-cli/parity-manifest.sha256)` prints nothing
+      — acceptance: `diff <(git -C ~/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(sort apps/rhino-cli/parity-manifest.sha256)` prints nothing
 - [ ] [AI] Apply the four→three edits to each enumerated target
       — command: `grep -rn 'beaver-nest' AGENTS.md README.md docs repo-governance .claude`
       — acceptance: zero matches outside `plans/done/**`
@@ -998,7 +998,7 @@ Identical in substance to Phase 5, adapted to this repo's own footprint. `ose-pr
 - [ ] [AI] `grep -rn 'beaver-nest' AGENTS.md README.md docs repo-governance .claude apps/rhino-cli/src` in `ose-private` — acceptance: zero matches outside `plans/done/**`
 - [ ] [AI] Verify the byte-identity boundary is closed with a direct cross-repo manifest diff (not
       `parity manifest validate`, which is local-only and cannot detect cross-repo divergence) —
-      command: `diff <(git -C /Users/wkf/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(git -C /Users/wkf/ose-projects/ose-primer show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) && diff <(git -C /Users/wkf/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(git -C /Users/wkf/ose-projects/ose-private show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort)`
+      command: `diff <(git -C ~/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(git -C ~/ose-projects/ose-primer show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) && diff <(git -C ~/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(git -C ~/ose-projects/<sibling> show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort)`
       — acceptance: both diffs print nothing
 - [ ] [AI] Confirm the scheduled parity audit is green — command: `gh run list --workflow=rhino-cli-parity-audit.yml --limit 1 --json conclusion`
       — acceptance: reports `success`
@@ -1021,20 +1021,20 @@ reversible via `gh repo unarchive` [Web-cited, GitHub Docs, accessed 2026-08-06]
 
 - [ ] [AI] Verify every prior unit merged — command: `gh pr list --repo wahidyankf/ose-public --state merged --search 'beaver-nest-repo-consolidation' --json number,title`
       — acceptance: the single `ose-public` PR for Phases 1-5 is listed as merged, and the `ose-primer` / `ose-private` sweep PRs are merged in their own repos
-- [ ] [AI] Confirm no surviving repo still references the fourth — command: `for r in ose-public ose-primer ose-private; do grep -rn 'beaver-nest' /Users/wkf/ose-projects/$r/AGENTS.md /Users/wkf/ose-projects/$r/README.md /Users/wkf/ose-projects/$r/docs /Users/wkf/ose-projects/$r/repo-governance; done`
+- [ ] [AI] Confirm no surviving repo still references the fourth — command: `for r in ose-public ose-primer <sibling>; do grep -rn 'beaver-nest' ~/ose-projects/$r/AGENTS.md ~/ose-projects/$r/README.md ~/ose-projects/$r/docs ~/ose-projects/$r/repo-governance; done`
       — acceptance: zero matches outside `plans/done/**`
-- [ ] [AI] Provision the `beaver-nest` worktree and branch — command: `git -C /Users/wkf/ose-projects/beaver-nest worktree add worktrees/beaver-nest-repo-consolidation -b beaver-nest-repo-consolidation-retire origin/main`
-      — acceptance: `git -C /Users/wkf/ose-projects/beaver-nest worktree list` shows the new worktree on branch `beaver-nest-repo-consolidation-retire`
+- [ ] [AI] Provision the `beaver-nest` worktree and branch — command: `git -C ~/ose-projects/beaver-nest worktree add worktrees/beaver-nest-repo-consolidation -b beaver-nest-repo-consolidation-retire origin/main`
+      — acceptance: `git -C ~/ose-projects/beaver-nest worktree list` shows the new worktree on branch `beaver-nest-repo-consolidation-retire`
 - [ ] [AI] Rewrite `beaver-nest`'s `README.md` (inside the new worktree) to a retirement notice stating the product now lives in
       `ose-public` as `apps/beavernest-be` and `apps/beavernest-app-web`, and linking to
       `https://github.com/wahidyankf/ose-public` — this follows GitHub's own pre-archive guidance to
       update the README before archiving
-      — command: `grep -c 'ose-public' /Users/wkf/ose-projects/beaver-nest/worktrees/beaver-nest-repo-consolidation/README.md`
+      — command: `grep -c 'ose-public' ~/ose-projects/beaver-nest/worktrees/beaver-nest-repo-consolidation/README.md`
       — acceptance: prints at least 1
-- [ ] [AI] Commit and push the branch — command: `git -C /Users/wkf/ose-projects/beaver-nest/worktrees/beaver-nest-repo-consolidation add README.md && git -C /Users/wkf/ose-projects/beaver-nest/worktrees/beaver-nest-repo-consolidation commit -m 'docs(readme): point to ose-public ahead of archival' && git -C /Users/wkf/ose-projects/beaver-nest/worktrees/beaver-nest-repo-consolidation push origin beaver-nest-repo-consolidation-retire`
-      — acceptance: `git -C /Users/wkf/ose-projects/beaver-nest/worktrees/beaver-nest-repo-consolidation status -sb` shows the branch pushed
+- [ ] [AI] Commit and push the branch — command: `git -C ~/ose-projects/beaver-nest/worktrees/beaver-nest-repo-consolidation add README.md && git -C ~/ose-projects/beaver-nest/worktrees/beaver-nest-repo-consolidation commit -m 'docs(readme): point to ose-public ahead of archival' && git -C ~/ose-projects/beaver-nest/worktrees/beaver-nest-repo-consolidation push origin beaver-nest-repo-consolidation-retire`
+      — acceptance: `git -C ~/ose-projects/beaver-nest/worktrees/beaver-nest-repo-consolidation status -sb` shows the branch pushed
       — note: the pre-existing uncommitted modifications recorded in `plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-beaver-nest-status.txt`,
-      in the separate primary `/Users/wkf/ose-projects/beaver-nest` checkout, are **not** committed here,
+      in the separate primary `~/ose-projects/beaver-nest` checkout, are **not** committed here,
       whatever their count is by execution time; this step only ever stages `README.md` inside the new worktree
 - [ ] [AI] Open the PR — command: `gh pr create --repo wahidyankf/beaver-nest --base main --head beaver-nest-repo-consolidation-retire --title "docs(readme): retirement notice ahead of archival" --body "Final change before this repo archives — product now lives in ose-public."`
       — acceptance: `gh pr list --repo wahidyankf/beaver-nest --head beaver-nest-repo-consolidation-retire --json number` returns one open PR
@@ -1155,19 +1155,19 @@ not "push directly."
 
 - [ ] [AI] Remove the `ose-public` worktree — command: `git worktree remove worktrees/beaver-nest-repo-consolidation`
       — acceptance: `git worktree list` no longer lists it
-- [ ] [AI] Remove the `ose-primer` worktree — command: `git -C /Users/wkf/ose-projects/ose-primer worktree remove worktrees/beaver-nest-repo-consolidation`
-      — acceptance: `git -C /Users/wkf/ose-projects/ose-primer worktree list` no longer lists it
-- [ ] [AI] Remove the `ose-private` worktree — command: `git -C /Users/wkf/ose-projects/ose-private worktree remove worktrees/beaver-nest-repo-consolidation`
-      — acceptance: `git -C /Users/wkf/ose-projects/ose-private worktree list` no longer lists it
-- [ ] [AI] Remove the `beaver-nest` worktree — command: `git -C /Users/wkf/ose-projects/beaver-nest worktree remove worktrees/beaver-nest-repo-consolidation`
-      — acceptance: `git -C /Users/wkf/ose-projects/beaver-nest worktree list` no longer lists it
-- [x] [AI] Local `/Users/wkf/ose-projects/beaver-nest` clone removed — maintainer decided
+- [ ] [AI] Remove the `ose-primer` worktree — command: `git -C ~/ose-projects/ose-primer worktree remove worktrees/beaver-nest-repo-consolidation`
+      — acceptance: `git -C ~/ose-projects/ose-primer worktree list` no longer lists it
+- [ ] [AI] Remove the `<sibling>` worktree — command: `git -C ~/ose-projects/<sibling> worktree remove worktrees/beaver-nest-repo-consolidation`
+      — acceptance: `git -C ~/ose-projects/<sibling> worktree list` no longer lists it
+- [ ] [AI] Remove the `beaver-nest` worktree — command: `git -C ~/ose-projects/beaver-nest worktree remove worktrees/beaver-nest-repo-consolidation`
+      — acceptance: `git -C ~/ose-projects/beaver-nest worktree list` no longer lists it
+- [x] [AI] Local `~/ose-projects/beaver-nest` clone removed — maintainer decided
       out-of-band that the clone is no longer needed; deletion executed and verified
-      — acceptance: `ls /Users/wkf/ose-projects/ | grep beaver-nest` exits 1 — confirmed
+      — acceptance: `ls ~/ose-projects/ | grep beaver-nest` exits 1 — confirmed
       — **Date**: 2026-08-10 · **Status**: Done · **Files Changed**: none (filesystem-only op, no
       repo file touched) · Notes: the local clone was clean (`git status --porcelain` empty) and had
       no linked worktree at decision time; maintainer confirmed out-of-band, `rm -rf
-/Users/wkf/ose-projects/beaver-nest` executed and verified via `ls | grep beaver-nest` (exit 1).
+~/ose-projects/beaver-nest` executed and verified via `ls | grep beaver-nest` (exit 1).
 
 ### Phase 10 Gate
 

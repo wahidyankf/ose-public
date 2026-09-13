@@ -106,3 +106,5 @@ delivery checklist.
 This plan uses no worktree — see [`delivery.md`](./delivery.md)'s `## Worktree` section for the
 explicit no-worktree declaration and `## Delivery Mode: main-to-origin-main` for the full direct
 local-`main`-to-`origin/main` delivery model, in all four repos.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

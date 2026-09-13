@@ -16,10 +16,10 @@ primary `main` branch — `git rev-parse --is-bare-repository` confirms all four
 a normal (non-bare) working tree checked out at their own root `[Repo-grounded]` (re-verified
 2026-08-05; re-check at delivery time since topology is documented to change over time):
 
-- `ose-public`: `/Users/wkf/ose-projects/ose-public/` (this plan's own home repo)
-- `ose-primer`: `/Users/wkf/ose-projects/ose-primer/`
-- `ose-private`: `/Users/wkf/ose-projects/ose-private/`
-- `beaver-nest`: `/Users/wkf/ose-projects/beaver-nest/`
+- `ose-public`: `~/ose-projects/ose-public/` (this plan's own home repo)
+- `ose-primer`: `~/ose-projects/ose-primer/`
+- `<sibling>`: `~/ose-projects/<sibling>/`
+- `beaver-nest`: `~/ose-projects/beaver-nest/`
 
 This satisfies the Plans Organization Convention's mandatory Worktree Specification by explicit
 N/A-with-reason: `main-to-origin-main` Delivery Mode has no worktree to declare, since there is no
@@ -116,8 +116,8 @@ new reviewable governance change; Phase 6's archival commit (moving this plan's 
   - **Date**: 2026-08-05. **Status**: Done (vacuous). **Files Changed**: none. **Notes**: Baseline
     run found zero preexisting failures — nothing to resolve.
 - [x] [AI] Confirm all four repos have a normal (non-bare) working tree and are on a clean, synced
-      `main`: for each of `/Users/wkf/ose-projects/ose-public`, `/Users/wkf/ose-projects/ose-primer`,
-      `/Users/wkf/ose-projects/ose-private`, `/Users/wkf/ose-projects/beaver-nest`, run
+      `main`: for each of `~/ose-projects/ose-public`, `~/ose-projects/ose-primer`,
+      `~/ose-projects/<sibling>`, `~/ose-projects/beaver-nest`, run
       `git -C <path> rev-parse --is-bare-repository` (expect `false`),
       `git -C <path> branch --show-current` (expect `main`), and
       `git -C <path> status --porcelain` (expect empty) — acceptance: all three checks pass for
@@ -305,7 +305,7 @@ validate` per `AGENTS.md` §Markdown Quality) — exits 0
 > All checks below must pass before starting Phases 2-4. GitHub Actions CI is not checked anywhere
 > in this plan (see Delivery Mode note) — local pre-commit/pre-push hooks are the sole gate.
 
-- [x] [AI] `git -C /Users/wkf/ose-projects/ose-public log --oneline -1 origin/main -- repo-governance/workflows/plan/plan-ideas-grooming.md`
+- [x] [AI] `git -C ~/ose-projects/ose-public log --oneline -1 origin/main -- repo-governance/workflows/plan/plan-ideas-grooming.md`
       returns a commit (the file exists on `origin/main`) — falsifiable both ways: returns empty
       before the push, non-empty after
 - [x] [AI] `rhino-cli repo-governance workflows naming validate` run against `ose-public`'s
@@ -327,7 +327,7 @@ validate` per `AGENTS.md` §Markdown Quality) — exits 0
 ## Phase 2: Propagate to `ose-primer`
 
 - [x] [AI] Sync `ose-primer`'s local `main` with its own `origin/main` before editing: from
-      `/Users/wkf/ose-projects/ose-primer`, run `git checkout main && git pull --ff-only origin main`
+      `~/ose-projects/ose-primer`, run `git checkout main && git pull --ff-only origin main`
       — acceptance: `git status --porcelain` returns empty, `git rev-list --count origin/main..main`
       returns `0`
 - [x] [AI] Read `ose-primer/repo-governance/conventions/structure/workflow-naming.md` in full
@@ -342,7 +342,7 @@ validate` per `AGENTS.md` §Markdown Quality) — exits 0
       pre-edit version touches only the three amendment locations
 - [x] [AI] Copy `ose-public`'s pushed `repo-governance/workflows/plan/plan-ideas-grooming.md`
       byte-identical into `ose-primer/repo-governance/workflows/plan/plan-ideas-grooming.md` —
-      acceptance: `diff /Users/wkf/ose-projects/ose-public/repo-governance/workflows/plan/plan-ideas-grooming.md /Users/wkf/ose-projects/ose-primer/repo-governance/workflows/plan/plan-ideas-grooming.md`
+      acceptance: `diff ~/ose-projects/ose-public/repo-governance/workflows/plan/plan-ideas-grooming.md ~/ose-projects/ose-primer/repo-governance/workflows/plan/plan-ideas-grooming.md`
       returns no output
 - [x] [AI] Read `ose-primer/repo-governance/workflows/README.md` in full and locate its own
       Available Workflows table's insertion point and Type Vocabulary table's insertion point —
@@ -418,7 +418,7 @@ naming validate` reports "VALIDATION PASSED (0 violations)".
 ## Phase 3: Propagate to `ose-private`
 
 - [x] [AI] Sync `ose-private`'s local `main` with its own `origin/main` before editing: from
-      `/Users/wkf/ose-projects/ose-private`, run `git checkout main && git pull --ff-only origin main`
+      `~/ose-projects/<sibling>`, run `git checkout main && git pull --ff-only origin main`
       — acceptance: `git status --porcelain` returns empty, `git rev-list --count origin/main..main`
       returns `0`
 - [x] [AI] Read `ose-private/repo-governance/conventions/structure/workflow-naming.md` in full
@@ -430,7 +430,7 @@ naming validate` reports "VALIDATION PASSED (0 violations)".
       `grep -c "| \`grooming\`" workflow-naming.md`returns`1`
 - [x] [AI] Copy `ose-public`'s pushed `plan-ideas-grooming.md` byte-identical into
       `ose-private/repo-governance/workflows/plan/plan-ideas-grooming.md` — acceptance:
-      `diff /Users/wkf/ose-projects/ose-public/repo-governance/workflows/plan/plan-ideas-grooming.md /Users/wkf/ose-projects/ose-private/repo-governance/workflows/plan/plan-ideas-grooming.md`
+      `diff ~/ose-projects/ose-public/repo-governance/workflows/plan/plan-ideas-grooming.md ~/ose-projects/<sibling>/repo-governance/workflows/plan/plan-ideas-grooming.md`
       returns no output
 - [x] [AI] Read `ose-private/repo-governance/workflows/README.md` in full and locate its own
       insertion points — acceptance: identified against this repo's own structure
@@ -499,7 +499,7 @@ naming validate` reports "VALIDATION PASSED (0 violations)".
 ## Phase 4: Propagate to `beaver-nest`
 
 - [x] [AI] Sync `beaver-nest`'s local `main` with its own `origin/main` before editing: from
-      `/Users/wkf/ose-projects/beaver-nest`, run `git checkout main && git pull --ff-only origin main`
+      `~/ose-projects/beaver-nest`, run `git checkout main && git pull --ff-only origin main`
       — acceptance: `git status --porcelain` returns empty, `git rev-list --count origin/main..main`
       returns `0`
 - [x] [AI] Read `beaver-nest/repo-governance/conventions/structure/workflow-naming.md` in full
@@ -511,7 +511,7 @@ naming validate` reports "VALIDATION PASSED (0 violations)".
       `grep -c "| \`grooming\`" workflow-naming.md`returns`1`
 - [x] [AI] Copy `ose-public`'s pushed `plan-ideas-grooming.md` byte-identical into
       `beaver-nest/repo-governance/workflows/plan/plan-ideas-grooming.md` — acceptance:
-      `diff /Users/wkf/ose-projects/ose-public/repo-governance/workflows/plan/plan-ideas-grooming.md /Users/wkf/ose-projects/beaver-nest/repo-governance/workflows/plan/plan-ideas-grooming.md`
+      `diff ~/ose-projects/ose-public/repo-governance/workflows/plan/plan-ideas-grooming.md ~/ose-projects/beaver-nest/repo-governance/workflows/plan/plan-ideas-grooming.md`
       returns no output
 - [x] [AI] Read `beaver-nest/repo-governance/workflows/README.md` in full and locate its own
       insertion points — acceptance: identified against this repo's own structure

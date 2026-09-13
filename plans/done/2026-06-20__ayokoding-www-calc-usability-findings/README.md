@@ -127,3 +127,5 @@ All screenshots are saved to `local-temp/` with prefix `uwt-`:
 - `uwt-mobile-375-costtab-detail.png` — cost tab on mobile
 - `uwt-desktop-area-rural.png` — after Rural area toggle
 - `uwt-desktop-url-param-country.png` — URL param state (filter mismatch)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

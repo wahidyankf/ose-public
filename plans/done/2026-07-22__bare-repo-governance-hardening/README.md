@@ -138,3 +138,5 @@ A defect **this plan introduced** is tracked in
 the landing sequence numbers eight steps, but the file's own frontmatter and both governance indexes
 call it "the seven-step landing sequence" — nine sites across the three repos. The undercount drops
 exactly the reconcile step the document was written to add.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

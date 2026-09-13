@@ -23,7 +23,7 @@ definition (line 116):
 ## Command and result
 
 ```text
-$ cd /Users/wkf/ose-projects/ose-public
+$ cd ~/ose-projects/ose-public
 $ npx nx run organiclever-be:specs:behavior:coverage --skip-nx-cache
 
 > nx run organiclever-be:"specs:behavior:coverage"

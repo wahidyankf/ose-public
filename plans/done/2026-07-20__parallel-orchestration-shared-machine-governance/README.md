@@ -111,3 +111,5 @@ rules (non-destructive git, explicit-path staging, self-scoped cleanup at the en
 - [tech-docs.md](./tech-docs.md) — HOW: rule deltas, surface inventory, diagrams, design decisions.
 - [delivery.md](./delivery.md) — DO: phased checklist, worktree, parallelization model, delivery mode.
 - [learnings.md](./learnings.md) — Knowledge Capture running log (triaged before archival).
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

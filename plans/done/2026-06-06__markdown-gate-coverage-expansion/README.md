@@ -187,3 +187,5 @@ This plan lives under `plans/`, which all three expanded gates cover (Gate C via
 mermaid gate; every relative link and `#fragment` anchor is authored to resolve; every prose doc
 here uses exactly one H1 with non-skipping heading nesting. The plan validates itself in Phase 7
 (the `plans/` fix-all tree).
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

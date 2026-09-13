@@ -1,7 +1,7 @@
 # Scenario Census — ose-public
 
 Phase 0 audit data for `enforce-repo-wide-scenario-implementation`, scoped to `ose-public`. Source:
-`/Users/wkf/ose-projects/ose-public/repo-config.yml` `coverage.projects` (26 entries, read verbatim
+`~/ose-projects/ose-public/repo-config.yml` `coverage.projects` (26 entries, read verbatim
 2026-07-04, from the live repo — not this worktree). Scenario counts = `grep -E
 "^\s*(Scenario|Scenario Outline):"` over every `.feature` file matched by each project's real spec
 source. "Level-tagged scenarios" = scenarios with a literal `@unit`/`@integration`/`@e2e` tag line

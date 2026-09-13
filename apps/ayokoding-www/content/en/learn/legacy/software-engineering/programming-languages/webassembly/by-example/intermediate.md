@@ -1367,8 +1367,8 @@ wasmtime run --dir /tmp file-reader.wasm
 # => WASI host path /tmp is mapped to WASI guest path /tmp (same name)
 
 # Map host path to a different guest path
-wasmtime run --dir /home/user/data::/ file-reader.wasm
-# => /home/user/data (host) mapped to / (guest)
+wasmtime run --dir ~/data::/ file-reader.wasm
+# => ~/data (host) mapped to / (guest)
 # => module sees / as its root
 
 # Pass environment variables

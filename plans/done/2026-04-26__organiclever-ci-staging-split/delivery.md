@@ -15,7 +15,7 @@
 
 **Implementation notes (2026-04-26)**:
 
-- cwd: `/Users/wkf/ose-projects/ose-public` ✓
+- cwd: `~/ose-projects/ose-public` ✓
 - `npm install` clean (only minor audit warnings, no install failures)
 - `npm run doctor`: 19/19 tools OK; nothing to fix
 - `npm run lint:md`: 2209 files linted, 0 errors

@@ -132,7 +132,7 @@ new everywhere. A byte-identical copy is therefore both correct and simpler than
 **provided** the file's own content is machine-path-agnostic (see DD-4).
 
 **DD-4 — The workflow document must not hardcode any absolute local filesystem path.** This
-session's own grilling research used paths like `/Users/wkf/ose-projects/<repo>/` to do its
+session's own grilling research used paths like `~/ose-projects/<repo>/` to do its
 cross-repo comparisons, but those are specific to one contributor's machine layout. Per
 [Governance Vendor-Independence](../../../repo-governance/conventions/structure/governance-vendor-independence.md)-style
 neutrality (harness-neutral, and by extension contributor-machine-neutral, governance content),

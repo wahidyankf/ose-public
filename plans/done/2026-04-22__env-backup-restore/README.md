@@ -36,3 +36,5 @@ provides a simple, repository-aware backup mechanism.
    developer's local environment instantly.
 4. **Consistency with rhino-cli's mission**: rhino-cli is the "Repository Hygiene & INtegration
    Orchestrator" — env file management is squarely within its scope.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

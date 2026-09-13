@@ -106,3 +106,5 @@ flowchart TD
   classDef win fill:#009E73,stroke:#004d38,color:#ffffff;
   classDef def fill:#0072B2,stroke:#023858,color:#ffffff;
 ```
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

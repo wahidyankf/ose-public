@@ -285,7 +285,7 @@ rev-parse --show-toplevel` prints the worktree path
   - **Date**: 2026-07-28
   - **Status**: done
   - **Files Changed**: new worktree `worktrees/ayokoding-www-tools-ai-benchmark-phase-1-design-and-tokens/` on branch `ayokoding-www-tools-ai-benchmark/phase-1-design-and-tokens` provisioned from `origin/main` (HEAD `20e925c5d`)
-  - **Notes**: `git -C worktrees/ayokoding-www-tools-ai-benchmark-phase-1-design-and-tokens rev-parse --show-toplevel` prints `/Users/wkf/ose-projects/ose-public/worktrees/ayokoding-www-tools-ai-benchmark-phase-1-design-and-tokens` — acceptance met.
+  - **Notes**: `git -C worktrees/ayokoding-www-tools-ai-benchmark-phase-1-design-and-tokens rev-parse --show-toplevel` prints `~/ose-projects/ose-public/worktrees/ayokoding-www-tools-ai-benchmark-phase-1-design-and-tokens` — acceptance met.
 - [x] [AI] Install dependencies in the **root** worktree: `npm install`
       — acceptance: exits 0, `node_modules/` synchronized
   - **Date**: 2026-07-28
@@ -2341,7 +2341,7 @@ typecheck, lint for 25 projects and 6 tasks they depend on` (52 of 56 tasks serv
     was never updated when the phase actually ran) — verified against the real repo state at head
     `fd7d5ec73` rather than asserted. `git -C
 worktrees/ayokoding-www-tools-ai-benchmark-phase-8-filters rev-parse --show-toplevel` prints
-    `/Users/wkf/ose-projects/ose-public/worktrees/ayokoding-www-tools-ai-benchmark-phase-8-filters`,
+    `~/ose-projects/ose-public/worktrees/ayokoding-www-tools-ai-benchmark-phase-8-filters`,
     and the worktree's branch is `ayokoding-www-tools-ai-benchmark/phase-8-filters`, tracking
     `origin/ayokoding-www-tools-ai-benchmark/phase-8-filters` — the worktree this phase's three
     commits (`5139d1826`, `b2d8bd281`, `fd7d5ec73`) are built on.
@@ -2742,7 +2742,7 @@ rev-parse --show-toplevel` prints the worktree path
   - **Status**: done
   - **Notes**: worktree created on branch `ayokoding-www-tools-ai-benchmark/phase-9-10-verify-reveal-retest`
     from `origin/main`; `git rev-parse --show-toplevel` prints
-    `/Users/wkf/ose-projects/ose-public/worktrees/ayokoding-www-tools-ai-benchmark-phase-9-10-verify-reveal-retest`.
+    `~/ose-projects/ose-public/worktrees/ayokoding-www-tools-ai-benchmark-phase-9-10-verify-reveal-retest`.
 
 ### Manual UI verification (Playwright MCP) — all locales × all breakpoints
 

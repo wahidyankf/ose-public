@@ -10,7 +10,7 @@
 
 ## Worktree
 
-Execute on the main checkout at `/Users/wkf/ose-projects/ose-public` (no dedicated worktree — per
+Execute on the main checkout at `~/ose-projects/ose-public` (no dedicated worktree — per
 user directive).
 
 Quality gate command used throughout (run from the repo root):

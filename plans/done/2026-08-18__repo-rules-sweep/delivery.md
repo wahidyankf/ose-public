@@ -163,13 +163,13 @@ _Suggested executor:_ `repo-setup-manager`
       `local-tmp/repo-rules-sweep/baseline-private.md` — acceptance: recorded; at authoring time
       `repo-governance` was 1704 of 2131 and `.claude` was 217.
 - [x] [AI] Confirm `ose-private` is on a clean `main` — acceptance:
-      `git -C /Users/wkf/ose-projects/ose-private status --porcelain --untracked-files=no` prints
+      `git -C ~/ose-projects/<sibling> status --porcelain --untracked-files=no` prints
       nothing. **Tracked files only**: that repository legitimately carries an untracked `local-temp/`
       scratch directory, so a bare `status --short` prints `?? local-temp/` on a perfectly healthy
       tree and would halt Phase 0 on a false negative. Verified 2026-08-18: tracked-clean returns 0
       lines, bare `--short` returns 1.
 - [x] [AI] Confirm `ose-private` topology before relying on plain `git -C` commands — acceptance:
-      `git -C /Users/wkf/ose-projects/ose-private rev-parse --is-bare-repository` prints `false`.
+      `git -C ~/ose-projects/<sibling> rev-parse --is-bare-repository` prints `false`.
       This repository has flipped between bare and normal layouts before; if it prints `true`, switch
       to the `-c core.bare=false --work-tree=` form for every subsequent `ose-private` command.
 
@@ -766,7 +766,7 @@ would publish a wrong list — the exact defect WS-C exists to fix.
       `.fvm-cache/`. Numbered-markdown baseline: **1961** files.
 - [x] [AI] Provision `worktrees/repo-rules-sweep/` in `ose-private` and branch `repo-rules-sweep`
       from its `main` — acceptance: `git worktree list` in `ose-private` shows the path.
-      **Result:** `/Users/wkf/ose-projects/ose-private/worktrees/repo-rules-sweep  884a330f6 [repo-rules-sweep]`.
+      **Result:** `~/ose-projects/<sibling>/worktrees/repo-rules-sweep  884a330f6 [repo-rules-sweep]`.
 - [x] [AI] Apply the Phase 2 and Phase 3 `apps/rhino-cli/` changes byte-identically — acceptance:
       `diff -r` prints nothing for `src/application/governance/`, `src/commands/`, `src/internal/`,
       and `src/application/` between the two repositories, and neither repository still contains
@@ -1077,7 +1077,7 @@ it does not create it.
       apply in full: refuse if `git status --porcelain` is non-empty or the branch is not an ancestor
       of `origin/main`.
 - [ ] [AI] Remove `worktrees/optimize-gov/` with non-force `git worktree remove`, run from the
-      **`ose-public` root checkout** at `/Users/wkf/ose-projects/ose-public` — you cannot remove the
+      **`ose-public` root checkout** at `~/ose-projects/ose-public` — you cannot remove the
       worktree you are standing in — acceptance: `git worktree list` no longer shows it. **The user
       has pre-authorized this removal**, superseding the earlier reasoning that the worktree predates
       the plan; the same written grant covers both worktrees. Do not prompt. The safety preconditions
@@ -1087,11 +1087,11 @@ it does not create it.
       is gone. Safe delete only; it succeeds solely because the branch is fully merged. If it
       refuses, the merge did not land — stop rather than forcing.
 - [ ] [AI] Fast-forward the root checkout's local `main` — acceptance:
-      `git -C /Users/wkf/ose-projects/ose-public rev-list --count HEAD..origin/main` returns 0.
+      `git -C ~/ose-projects/ose-public rev-list --count HEAD..origin/main` returns 0.
       Pushing from a side worktree advances `origin/main` without advancing the root checkout's local
       `main`; this step closes that silent divergence.
 - [ ] [AI] Verify the swept trees actually landed in the root checkout — acceptance:
-      `find /Users/wkf/ose-projects/ose-public/repo-governance -name '*.md' | grep -cE '/[0-9]{2}-'`
+      `find ~/ose-projects/ose-public/repo-governance -name '*.md' | grep -cE '/[0-9]{2}-'`
       returns only the recorded `kept` count, not the 2092 baseline. This asserts the work arrived,
       not merely that a branch pointer moved.
 - [ ] [AI] Delete `local-tmp/repo-rules-sweep/` in both repositories — acceptance: the path no longer
@@ -1103,7 +1103,7 @@ it does not create it.
 - [ ] [AI] `parity-manifest` exits 0 in both repositories against their merged `main`.
 - [ ] [AI] The plan folder exists only under `plans/done/`.
 - [ ] [AI] `git worktree list` shows no plan worktree in **either** repository.
-- [ ] [AI] `git -C /Users/wkf/ose-projects/ose-public rev-list --count HEAD..origin/main` returns 0,
+- [ ] [AI] `git -C ~/ose-projects/ose-public rev-list --count HEAD..origin/main` returns 0,
       and the swept trees are present in the root checkout.
 
 > **Pause Safety**: both repositories carry the swept trees on `main`, the plan is archived, both

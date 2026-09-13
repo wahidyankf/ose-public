@@ -202,3 +202,5 @@ same rule, not a special case invented for this plan.
 - [PR Review Quality Gate workflow](../../../repo-governance/workflows/pr/pr-review-quality-gate.md)
 - [PR Reviewer-Discipline Convention](../../../repo-governance/development/quality/pr-review-disciplines.md)
 - [pr-review-synthesis-maker.md](../../../.claude/agents/pr-review/pr-review-synthesis-maker.md)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

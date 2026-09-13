@@ -248,7 +248,7 @@ disk. If you have multiple keys configured, Pi uses the provider specified in yo
 
 # If 'pi' is not found after install, npm global bin may not be in PATH
 npm config get prefix
-# => /Users/you/.volta/bin   ← this directory must be in PATH
+# => /Users/<you>/.volta/bin   ← this directory must be in PATH
 
 # Add to PATH in ~/.zshrc or ~/.bashrc if needed:
 # export PATH="$(npm config get prefix)/bin:$PATH"

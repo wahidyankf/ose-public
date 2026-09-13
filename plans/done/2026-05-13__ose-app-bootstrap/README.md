@@ -56,3 +56,5 @@ The user originally listed the BE e2e as `ose-app-e2e`. This plan uses `ose-app-
 - Reference E2E pattern: [`apps/organiclever-web-e2e/`](../../../apps/organiclever-web-e2e/), [`apps/organiclever-be-e2e/`](../../../apps/organiclever-be-e2e/)
 - Reference contracts: [`specs/apps/organiclever/containers/contracts/`](../../../specs/apps/organiclever/containers/contracts/)
 - Reference CI workflow: [`.github/workflows/test-and-deploy-organiclever-web-development.yml`](../../../.github/workflows/test-and-deploy-organiclever-web-development.yml)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

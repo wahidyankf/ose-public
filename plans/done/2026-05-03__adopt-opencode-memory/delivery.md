@@ -98,7 +98,7 @@ Implementation follows Red → Green → Refactor for each code item.
 
 - [x] **COMPLETED**: cavemem v0.1.3 installed at `~/.volta/bin/cavemem`
 - [x] **COMPLETED**: OpenCode MCP server configured via `.opencode/config.json`
-- [x] **COMPLETED**: MCP server path: `/Users/wkf/.volta/tools/image/packages/cavemem/lib/node_modules/cavemem/dist/index.js`
+- [x] **COMPLETED**: MCP server path: `~/.volta/tools/image/packages/cavemem/lib/node_modules/cavemem/dist/index.js`
 - [x] **COMPLETED**: Worker daemon operational
 
 ---

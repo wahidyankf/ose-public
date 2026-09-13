@@ -34,3 +34,5 @@ Enable ~75% token reduction in OpenCode agent responses while maintaining techni
 
 - [caveman on GitHub](https://github.com/JuliusBrussee/caveman) — MIT, v1.7.0 (May 1, 2026)
 - [cavemem on GitHub](https://github.com/JuliusBrussee/cavemem) — MIT, v0.1.3 (April 2026)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

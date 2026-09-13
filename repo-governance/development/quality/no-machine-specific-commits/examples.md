@@ -9,7 +9,7 @@ when_to_use: "Use when you need a concrete before/after example of fixing a mach
 
 ```bash
 # WRONG — only works on one machine
-export GOPATH=/Users/jane/go
+export GOPATH=/Users/<name>/go
 ```
 
 ```bash
@@ -21,7 +21,7 @@ export GOPATH="${GOPATH:-$HOME/go}"
 
 ```go
 // WRONG — encodes the developer's home directory
-configPath := "/Users/jane/.config/tool/config.yaml"
+configPath := "/Users/<name>/.config/tool/config.yaml"
 ```
 
 ```go

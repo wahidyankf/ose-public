@@ -74,3 +74,5 @@ None. This plan can start immediately. It does NOT block or get blocked by eithe
 ## Soft Coupling
 
 Once this plan lands, `ose-primer-sync` classifier may grow an entry for the new convention so the upstream template adopts the same vendor-neutrality rules. That is a follow-on plan, not a blocker for this one.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

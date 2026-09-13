@@ -72,7 +72,7 @@ PR instruction exists). Worktree removed after archival.
     20/20 tools OK, 0 warning, 0 missing ("Nothing to fix — all tools are installed").
     Files changed: none.
 - [x] [AI] Verify sibling merge inputs are readable:
-      `test -d /Users/wkf/ose-projects/ose-primer/repo-governance/workflows/plan && test -d /Users/wkf/ose-projects/ose-infra/repo-governance/workflows/plan`
+      `test -d ~/ose-projects/ose-primer/repo-governance/workflows/plan && test -d ~/ose-projects/ose-infra/repo-governance/workflows/plan`
       — acceptance: exits 0
   - _Implementation notes (2026-06-06)_: Status DONE. Both sibling directories exist and
     are readable (`test -d` exits 0). Files changed: none.
@@ -112,14 +112,14 @@ PR instruction exists). Worktree removed after archival.
 ## Phase 1: Plan-Domain Workflow Merges (matrix rows 2–6)
 
 > _Suggested executor: `repo-workflow-maker` (workflow docs); merge-input paths below are
-> the same relative path under `/Users/wkf/ose-projects/ose-primer/` and
-> `/Users/wkf/ose-projects/ose-infra/` unless noted._
+> the same relative path under `~/ose-projects/ose-primer/` and
+> `~/ose-projects/ose-infra/` unless noted._
 
 - [x] [AI] Merge `repo-governance/workflows/plan/plan-establishment-execution.md` (row 3):
       produce 3-way diffs first —
-      `diff repo-governance/workflows/plan/plan-establishment-execution.md /Users/wkf/ose-projects/ose-primer/repo-governance/workflows/plan/plan-establishment-execution.md`
+      `diff repo-governance/workflows/plan/plan-establishment-execution.md ~/ose-projects/ose-primer/repo-governance/workflows/plan/plan-establishment-execution.md`
       and the same against
-      `/Users/wkf/ose-projects/ose-infra/repo-governance/workflows/plan/plan-establishment-execution.md`;
+      `~/ose-projects/ose-infra/repo-governance/workflows/plan/plan-establishment-execution.md`;
       fold every sibling improvement into the public copy; keep the `target-stage` input —
       acceptance: each sibling-only improvement is merged or recorded as deliberately
       excluded (with reason) in implementation notes; `grep -c "target-stage"` on the file
@@ -247,8 +247,8 @@ PR instruction exists). Worktree removed after archival.
 > _Suggested executor: `agent-maker` (agent definition files)_
 
 - [x] [AI] Merge `.claude/agents/plan-maker.md` (row 7) via 3-way diff against
-      `/Users/wkf/ose-projects/ose-primer/.claude/agents/plan-maker.md` and
-      `/Users/wkf/ose-projects/ose-infra/.claude/agents/plan-maker.md` — acceptance:
+      `~/ose-projects/ose-primer/.claude/agents/plan-maker.md` and
+      `~/ose-projects/ose-infra/.claude/agents/plan-maker.md` — acceptance:
       sibling improvements merged or recorded as excluded; repo-specific references (app
       names, paths) preserved.
   - _Implementation notes (2026-06-06)_: Status DONE (executor: agent-maker). Merged:
@@ -286,7 +286,7 @@ PR instruction exists). Worktree removed after archival.
     (repo-specific; 0 leaked). prettier + markdownlint 0 errors. Files changed:
     .claude/agents/plan-execution-checker.md.
 - [x] [AI] Verify `.claude/agents/repo-setup-manager.md` (row 11):
-      `diff .claude/agents/repo-setup-manager.md /Users/wkf/ose-projects/ose-infra/.claude/agents/repo-setup-manager.md`
+      `diff .claude/agents/repo-setup-manager.md ~/ose-projects/ose-infra/.claude/agents/repo-setup-manager.md`
       — acceptance: zero changed lines pub↔infra (survey fact); primer's 3-line drift is
       `rhino-cli-rust` naming (repo-specific, primer-plan concern) — record the verification
       result in implementation notes; no public edit expected.
@@ -377,7 +377,7 @@ PR instruction exists). Worktree removed after archival.
     .claude/skills/grill-me/SKILL.md.
 - [x] [AI] Merge `repo-governance/development/workflow/grilling-with-options.md` (row 15):
       3-way inputs are the public file, primer **none** (no input), and infra
-      `/Users/wkf/ose-projects/ose-infra/repo-governance/development/workflow/grilling.md`
+      `~/ose-projects/ose-infra/repo-governance/development/workflow/grilling.md`
       (different name, broader wording); fold infra's broader wording into the public file;
       the public path and name are kept — acceptance: merged file remains at
       `repo-governance/development/workflow/grilling-with-options.md`; infra-only

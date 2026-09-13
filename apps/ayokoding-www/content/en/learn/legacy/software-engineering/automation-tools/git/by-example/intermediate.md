@@ -970,7 +970,7 @@ git config --local core.hooksPath .hooks              # => Custom hooks director
 
 git config --list --show-origin           # => Shows all config values and their source file:
 # => file:/etc/gitconfig     core.autocrlf=false
-# => file:/home/alice/.gitconfig  user.name=Alice Developer
+# => file:/home/<user>/.gitconfig  user.name=Alice Developer
 # => file:/path/.git/config  user.email=alice-work@company.com
 # => Local values override global which override system
 

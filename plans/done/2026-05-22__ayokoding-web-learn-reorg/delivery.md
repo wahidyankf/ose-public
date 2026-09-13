@@ -29,7 +29,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 ## Phase 0 — Worktree and Baseline
 
-- [ ] Create the worktree: `cd /Users/wkf/ose-projects/ose-public && claude --worktree ayokoding-web-learn-reorg`
+- [ ] Create the worktree: `cd ~/ose-projects/ose-public && claude --worktree ayokoding-web-learn-reorg`
 - [ ] Inside the worktree run `npm install`
 - [ ] Inside the worktree run `npm run doctor -- --fix`
 - [ ] Inside the worktree run the three validation commands and capture exit codes as baseline:

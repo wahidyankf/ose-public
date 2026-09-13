@@ -1,6 +1,6 @@
 # ose-primer `@covers` Marker Adoption (Phase 0 Audit — Deliverable 2)
 
-Command run from `/Users/wkf/ose-projects/ose-primer`:
+Command run from `~/ose-projects/ose-primer`:
 
 ```bash
 git grep -l "@covers " -- apps libs

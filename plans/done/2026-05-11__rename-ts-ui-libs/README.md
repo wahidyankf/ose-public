@@ -52,3 +52,5 @@ governance documentation.
 7. Validate with `nx run-many -t typecheck lint test:quick -p web-ui web-ui-token` and
    affected app typechecks.
 8. Push to `main`, verify CI green.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

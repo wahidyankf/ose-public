@@ -3808,7 +3808,7 @@ ayokoding-www:build` — exit 0.
 - [x] [AI] Fast-forward local `main` after the last side-worktree push (`git checkout main && git pull
 --ff-only`) so the primary checkout does not silently diverge — acceptance: `git status` reports
       `main` up to date with `origin/main`.
-      Evidence: base checkout (`/Users/wkf/ose-projects/ose-public`) `git status` → `On branch main...
+      Evidence: base checkout (`~/ose-projects/ose-public`) `git status` → `On branch main...
       Your branch is up to date with 'origin/main'` at `0834ac1b7`, working tree clean.
 
 ### Phase 6 Gate

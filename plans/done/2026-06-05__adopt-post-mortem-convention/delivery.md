@@ -76,7 +76,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 ## Phase 1: Author the Authoritative Convention
 
 - [x] [AI] Create `repo-governance/conventions/structure/post-mortems.md` (_New file_) adapting the
-      ose-infra original at `/Users/wkf/ose-projects/ose-infra/repo-governance/conventions/structure/post-mortems.md`,
+      ose-infra original at `~/ose-projects/ose-infra/repo-governance/conventions/structure/post-mortems.md`,
       reframed for software incidents per `tech-docs.md` §Adaptation Map. The file MUST contain, in
       this order: frontmatter (sibling shape: `title`, `description`, `category: explanation`,
       `subcategory: conventions`, `tags:`, `created:`), H1, intro stating it is the authoritative
@@ -131,7 +131,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 - [x] [AI] Create directory + `docs/explanation/post-mortems/README.md` (_New file_) as the
       writer-facing template + index, adapting the ose-infra original at
-      `/Users/wkf/ose-projects/ose-infra/docs/explanation/post-mortems/README.md`. It MUST: use
+      `~/ose-projects/ose-infra/docs/explanation/post-mortems/README.md`. It MUST: use
       sibling docs frontmatter shape (`title`, `description`, `category: explanation`, `tags:`,
       `created:`); explain post-mortems are Diátaxis explanation-tier; link the authoritative
       convention `../../../repo-governance/conventions/structure/post-mortems.md` and state the

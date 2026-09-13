@@ -273,3 +273,5 @@ review cycle.
 - [prd.md](./prd.md) — requirements and Gherkin acceptance criteria
 - [tech-docs.md](./tech-docs.md) — gate design, split pattern, migration mechanics
 - [delivery.md](./delivery.md) — phased delivery checklist
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

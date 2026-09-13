@@ -143,3 +143,5 @@ through the single exact-address publication, publish no wildcard/LAN/public/loo
 survive an application restart, demonstrate backup/restore, align companion specs/canonical docs,
 triage all learnings, and archive the plan inside the final delivery PR. Explicitly retaining clean
 worktrees after a declined cleanup prompt is a valid terminal state.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

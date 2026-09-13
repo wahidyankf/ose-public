@@ -23,9 +23,9 @@
 ## Learning: Phase 3's own delivery.md commands pointed at the primary checkout, not the worktree
 
 - **Context**: Phase 3a's sibling-propagation `cp` commands, as written verbatim in this plan's
-  `delivery.md`, sourced from `/Users/wkf/ose-projects/ose-public/apps/rhino-cli/...` (the primary
+  `delivery.md`, sourced from `~/ose-projects/ose-public/apps/rhino-cli/...` (the primary
   checkout, on `main`, no Phase 1/2 changes) instead of
-  `/Users/wkf/ose-projects/ose-public/worktrees/rhino-speccoverage-multiline-scenario-scan/apps/rhino-cli/...`
+  `~/ose-projects/ose-public/worktrees/rhino-speccoverage-multiline-scenario-scan/apps/rhino-cli/...`
   (the worktree where all the actual fix lives).
 - **Observation**: the first copy attempt silently succeeded (cp doesn't error on stale-but-valid
   source) and only 1 of 4 new unit tests appeared in the sibling's `cargo test` run — caught

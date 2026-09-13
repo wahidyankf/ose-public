@@ -2,7 +2,7 @@
 
 Scope: every skip-capable mechanism across the 4 test tools relevant to `ose-public` — Vitest (unit,
 JS/TS apps), Playwright (e2e), xunit.v3/`dotnet test` (F# unit + integration), and cucumber-rs
-(rhino-cli's Gherkin runner). Commands run 2026-07-04 from `/Users/wkf/ose-projects/ose-public`.
+(rhino-cli's Gherkin runner). Commands run 2026-07-04 from `~/ose-projects/ose-public`.
 
 ## 1. Vitest `.skip(` / `.only(` / `.todo(` — repo-wide, all TS/TSX
 

@@ -637,7 +637,7 @@ test("download verifies content type and filename", async ({ page }) => {
 
 2. **Missing file cleanup**: Accumulating test files in temp directories exhausts disk space. Always implement cleanup in fixture teardown with `fs.rm(testDir, { recursive: true, force: true })`.
 
-3. **Hardcoded file paths**: Using absolute paths like `/home/user/test.pdf` breaks on other machines. Always use `path.join(__dirname, ...)` for cross-platform compatibility.
+3. **Hardcoded file paths**: Using absolute paths like `/home/<user>/test.pdf` breaks on other machines. Always use `path.join(__dirname, ...)` for cross-platform compatibility.
 
 4. **No download integrity validation**: Asserting only that download completed misses corrupted files. Always verify content with hash comparison or magic byte checking.
 

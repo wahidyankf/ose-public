@@ -54,8 +54,10 @@ Outcomes:
 This plan executes inside the worktree at `worktrees/optimize-repo-rules-quality-gate-with-rhino-cli/` on branch `worktree-optimize-repo-rules-quality-gate-with-rhino-cli`, provisioned via:
 
 ```bash
-cd /Users/wkf/ose-projects/ose-public
+cd ~/ose-projects/ose-public
 claude --worktree optimize-repo-rules-quality-gate-with-rhino-cli
 ```
 
 Per the [Worktree Path Convention](../../../repo-governance/conventions/structure/worktree-path.md) and the [Plans Organization Convention §Worktree Specification](../../../repo-governance/conventions/structure/plans/worktree-specification.md#worktree-specification), the worktree lands at `worktrees/optimize-repo-rules-quality-gate-with-rhino-cli/` (the `ose-public` override of the upstream default). Publishing path: direct-to-main (default for `ose-public` under Trunk Based Development).
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

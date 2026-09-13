@@ -554,14 +554,14 @@ flowchart TD
 ## Phase 4: Apply byte-identically to ose-primer
 
 > Work in `ose-primer`'s own `worktrees/rust-cargo-target-dir-sharing/` worktree
-> (repo root: `/Users/wkf/ose-projects/ose-primer`). Two Rust crates exist there: `apps/rhino-cli`
+> (repo root: `~/ose-projects/ose-primer`). Two Rust crates exist there: `apps/rhino-cli`
 > and `apps/crud-be-rust-axum` [Repo-grounded — `find apps libs -maxdepth 2 -name Cargo.toml`]. The
 > `apps/rhino-cli` source + `specs/apps/rhino` change is **byte-identical** to ose-public.
 
 - [ ] [AI] Provision the ose-primer plan worktree (idempotent — creates it if absent, confirms it if
       already present):
-      `cd /Users/wkf/ose-projects/ose-primer && git worktree add worktrees/rust-cargo-target-dir-sharing rust-cargo-target-dir-sharing 2>/dev/null || git -C worktrees/rust-cargo-target-dir-sharing rev-parse HEAD`
-      — acceptance: `/Users/wkf/ose-projects/ose-primer/worktrees/rust-cargo-target-dir-sharing/` exists
+      `cd ~/ose-projects/ose-primer && git worktree add worktrees/rust-cargo-target-dir-sharing rust-cargo-target-dir-sharing 2>/dev/null || git -C worktrees/rust-cargo-target-dir-sharing rev-parse HEAD`
+      — acceptance: `~/ose-projects/ose-primer/worktrees/rust-cargo-target-dir-sharing/` exists
 - [ ] [AI] Initialize toolchain in the ose-primer root worktree:
       `npm install && npm run doctor -- --fix`
       — acceptance: both exit 0
@@ -579,11 +579,11 @@ flowchart TD
 - [ ] [AI] Verify byte-identity vs ose-public for every rhino-cli source + specs file — compare each
       repo's own `worktrees/rust-cargo-target-dir-sharing/` copy, NOT the primary checkout: the
       ose-public PR stays open/unmerged until Phase 9 (after this phase runs), so
-      `/Users/wkf/ose-projects/ose-public/apps/rhino-cli` does not yet contain these changes at diff
+      `~/ose-projects/ose-public/apps/rhino-cli` does not yet contain these changes at diff
       time (see [Worktree Toolchain Initialization §Absolute Source Paths in Delivery-Checklist Commands](../../../repo-governance/development/workflow/worktree-setup.md#absolute-source-paths-in-delivery-checklist-commands-same-repo-worktree-vs-primary-checkout)):
-      `diff -rq --exclude=target --exclude=dist /Users/wkf/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli /Users/wkf/ose-projects/ose-primer/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli`
+      `diff -rq --exclude=target --exclude=dist ~/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli ~/ose-projects/ose-primer/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli`
       and
-      `diff -rq --exclude=target --exclude=dist /Users/wkf/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino /Users/wkf/ose-projects/ose-primer/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino`
+      `diff -rq --exclude=target --exclude=dist ~/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino ~/ose-projects/ose-primer/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino`
       — acceptance: both diff invocations report no differences (exit 0)
 - [ ] [AI] Run the doctor for real and verify BOTH crates symlink (dynamic discovery, not a hardcoded
       list): `npm run doctor -- --fix`
@@ -623,15 +623,15 @@ flowchart TD
 ## Phase 5: Apply byte-identically to ose-infra
 
 > Work in `ose-infra`'s own `worktrees/rust-cargo-target-dir-sharing/` worktree
-> (repo root: `/Users/wkf/ose-projects/ose-infra`). Two Rust crates exist there: `apps/rhino-cli`
+> (repo root: `~/ose-projects/ose-infra`). Two Rust crates exist there: `apps/rhino-cli`
 > and `apps/coralpolyp-be` [Repo-grounded — `find apps libs -maxdepth 2 -name Cargo.toml`]; the
 > `doctor` script uses the `nx run rhino-cli:build && ./apps/rhino-cli/dist/rhino-cli doctor` variant
 > (`-- --fix` still reaches the doctor).
 
 - [ ] [AI] Provision the ose-infra plan worktree (idempotent — creates it if absent, confirms it if
       already present):
-      `cd /Users/wkf/ose-projects/ose-infra && git worktree add worktrees/rust-cargo-target-dir-sharing rust-cargo-target-dir-sharing 2>/dev/null || git -C worktrees/rust-cargo-target-dir-sharing rev-parse HEAD`
-      — acceptance: `/Users/wkf/ose-projects/ose-infra/worktrees/rust-cargo-target-dir-sharing/` exists
+      `cd ~/ose-projects/ose-infra && git worktree add worktrees/rust-cargo-target-dir-sharing rust-cargo-target-dir-sharing 2>/dev/null || git -C worktrees/rust-cargo-target-dir-sharing rev-parse HEAD`
+      — acceptance: `~/ose-projects/ose-infra/worktrees/rust-cargo-target-dir-sharing/` exists
 - [ ] [AI] Initialize toolchain in the ose-infra root worktree: `npm install && npm run doctor -- --fix`
       — acceptance: both exit 0
 - [ ] [AI] Reproduce the byte-identical rhino-cli change in ose-infra (same file set as Phase 4),
@@ -642,9 +642,9 @@ flowchart TD
 - [ ] [AI] Verify byte-identity vs ose-public — compare each repo's own
       `worktrees/rust-cargo-target-dir-sharing/` copy, NOT the primary checkout (same rationale as
       Phase 4: the ose-public PR is still open/unmerged at this point):
-      `diff -rq --exclude=target --exclude=dist /Users/wkf/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli /Users/wkf/ose-projects/ose-infra/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli`
+      `diff -rq --exclude=target --exclude=dist ~/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli ~/ose-projects/ose-infra/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli`
       and
-      `diff -rq --exclude=target --exclude=dist /Users/wkf/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino /Users/wkf/ose-projects/ose-infra/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino`
+      `diff -rq --exclude=target --exclude=dist ~/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino ~/ose-projects/ose-infra/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino`
       — acceptance: both diff invocations report no differences (exit 0)
 - [ ] [AI] Run the doctor for real and verify BOTH crates symlink: `npm run doctor -- --fix`
       — acceptance: `readlink apps/rhino-cli/target` AND `readlink apps/coralpolyp-be/target` both
@@ -687,15 +687,15 @@ flowchart TD
       the ose-primer/ose-infra PRs merge (Phase 4/5) their primary checkouts are not auto-updated by
       that remote merge, so each repo's own worktree remains the source of truth for this comparison,
       not the primary checkout:
-      `diff -rq --exclude=target --exclude=dist /Users/wkf/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli /Users/wkf/ose-projects/ose-primer/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli`
+      `diff -rq --exclude=target --exclude=dist ~/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli ~/ose-projects/ose-primer/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli`
       and the equivalent ose-infra pairing
-      (`diff -rq --exclude=target --exclude=dist /Users/wkf/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli /Users/wkf/ose-projects/ose-infra/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli`)
+      (`diff -rq --exclude=target --exclude=dist ~/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli ~/ose-projects/ose-infra/worktrees/rust-cargo-target-dir-sharing/apps/rhino-cli`)
       — acceptance: both `diff` invocations report no differences (exit 0)
 - [ ] [AI] Confirm `specs/apps/rhino` is byte-identical across all three repos, using each repo's
       `worktrees/rust-cargo-target-dir-sharing/` copy:
-      `diff -rq /Users/wkf/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino /Users/wkf/ose-projects/ose-primer/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino`
+      `diff -rq ~/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino ~/ose-projects/ose-primer/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino`
       and the equivalent ose-infra pairing
-      (`diff -rq /Users/wkf/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino /Users/wkf/ose-projects/ose-infra/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino`)
+      (`diff -rq ~/ose-projects/ose-public/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino ~/ose-projects/ose-infra/worktrees/rust-cargo-target-dir-sharing/specs/apps/rhino`)
       — acceptance: both report no differences (exit 0)
 
 ### Phase 6 Gate

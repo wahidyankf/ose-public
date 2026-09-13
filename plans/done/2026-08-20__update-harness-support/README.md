@@ -159,3 +159,5 @@ edges are pushes to the already-open PR, not new PRs.
   the idea brief this plan supersedes for the three surviving harnesses
 - [Governance Word Budget Convention](../../../repo-governance/conventions/structure/governance-word-budget.md) —
   the 500-word fail threshold this plan extends coverage of
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

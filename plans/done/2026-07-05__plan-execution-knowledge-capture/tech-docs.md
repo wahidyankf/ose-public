@@ -161,7 +161,7 @@ through the parity loop. `ose-infra` (private, outside the parity loop) receives
 directly in its own checkout, with the repo-relevance and secret/sensitivity gates emphasized because
 it is where private content lives. Each repo commits and pushes independently to its own `origin main`
 (they are separate git repositories at
-`/Users/wkf/ose-projects/{ose-public,ose-primer,ose-infra}` `[Repo-grounded]`). All git-mechanical
+`~/ose-projects/{ose-public,ose-primer,ose-infra}` `[Repo-grounded]`). All git-mechanical
 steps (worktree add/remove, commit, push) are `[AI]` per the repo's standing rule; there is no PR and
 no `[HUMAN]` merge gate in this plan.
 

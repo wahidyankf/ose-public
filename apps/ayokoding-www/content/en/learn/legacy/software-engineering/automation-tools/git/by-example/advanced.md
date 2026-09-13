@@ -159,7 +159,7 @@ cd ~/repo
 
 # Add a linked worktree for the hotfix branch
 git worktree add ../repo-hotfix hotfix/login
-# => Creates /home/user/repo-hotfix/ with hotfix/login checked out
+# => Creates /home/<user>/repo-hotfix/ with hotfix/login checked out
 # => No full clone — same .git object store; disk usage ~= size of working tree only
 
 # Add a worktree for a new experiment branch
@@ -170,9 +170,9 @@ git worktree add -b experiment/cache ../repo-exp main
 # List all worktrees
 git worktree list
 # => Output:
-# =>   /home/user/repo       a1b2c3d [main]
-# =>   /home/user/repo-hotfix 9f8e7d6 [hotfix/login]
-# =>   /home/user/repo-exp   a1b2c3d [experiment/cache]
+# =>   /home/<user>/repo       a1b2c3d [main]
+# =>   /home/<user>/repo-hotfix 9f8e7d6 [hotfix/login]
+# =>   /home/<user>/repo-exp   a1b2c3d [experiment/cache]
 
 # Work in the hotfix worktree without leaving the main working directory
 git -C ../repo-hotfix log --oneline -3
@@ -224,7 +224,7 @@ git worktree lock ../repo-experiment
 # Verify lock status
 git worktree list --porcelain
 # => Output includes "locked" for the protected worktree:
-# =>   worktree /home/user/repo-experiment
+# =>   worktree /home/<user>/repo-experiment
 # =>   HEAD a1b2c3d
 # =>   branch refs/heads/experiment/ml-pipeline
 # =>   locked
@@ -250,8 +250,8 @@ git worktree move ../repo-experiment ../experiments/ml-pipeline
 
 git worktree list
 # => Output:
-# =>   /home/user/repo                       a1b2c3d [main]
-# =>   /home/user/experiments/ml-pipeline    a1b2c3d [experiment/ml-pipeline]
+# =>   /home/<user>/repo                       a1b2c3d [main]
+# =>   /home/<user>/experiments/ml-pipeline    a1b2c3d [experiment/ml-pipeline]
 ```
 
 **Key Takeaway**: `git worktree lock` protects long-lived worktrees from `prune` and `remove`; `git worktree move` relocates them without re-cloning. Always lock worktrees that will exist for more than a day.
@@ -310,10 +310,10 @@ git worktree add ../release/v3 release/v3.0
 # List all worktrees — the bare repo has no primary working tree
 git worktree list
 # => Output:
-# =>   /home/user/project/.bare    (bare)
-# =>   /home/user/project/main     a1b2c3d [main]
-# =>   /home/user/project/develop  9f8e7d6 [develop]
-# =>   /home/user/project/release/v3 3c4d5e6 [release/v3.0]
+# =>   /home/<user>/project/.bare    (bare)
+# =>   /home/<user>/project/main     a1b2c3d [main]
+# =>   /home/<user>/project/develop  9f8e7d6 [develop]
+# =>   /home/<user>/project/release/v3 3c4d5e6 [release/v3.0]
 
 # Work in any directory independently — commits stay on their branch
 cd ~/project/develop
@@ -399,7 +399,7 @@ git fetch origin && git rebase origin/main
 
 git worktree list
 # => Output:
-# =>   /home/user/repo    a1b2c3d [feat/dashboard]
+# =>   /home/<user>/repo    a1b2c3d [feat/dashboard]
 # => Only the primary worktree remains
 ```
 
@@ -1024,7 +1024,7 @@ git maintenance stop
 
 # Check current maintenance configuration
 git config --list | grep maintenance
-# => Output: maintenance.repo=/home/user/project
+# => Output: maintenance.repo=/home/<user>/project
 # =>         maintenance.strategy=incremental
 ```
 
@@ -1422,7 +1422,7 @@ GPG-signed commits prove cryptographically that a commit was authored by the own
 # List available GPG keys
 gpg --list-secret-keys --keyid-format=long
 # => Output:
-# =>   /home/user/.gnupg/secring.gpg
+# =>   /home/<user>/.gnupg/secring.gpg
 # =>   sec   rsa4096/AABBCCDD11223344 2025-01-01 [SC]
 # =>         FFEE...long fingerprint...
 # =>   uid   Dev User <dev@example.com>

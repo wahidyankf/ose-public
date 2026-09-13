@@ -71,9 +71,9 @@ Expected output:
 ```
 ansible [core 2.15.X]
   config file = /etc/ansible/ansible.cfg
-  configured module search path = ['/home/user/.ansible/plugins/modules', ...]
+  configured module search path = ['/home/<user>/.ansible/plugins/modules', ...]
   ansible python module location = /usr/lib/python3/dist-packages/ansible
-  ansible collection location = /home/user/.ansible/collections
+  ansible collection location = /home/<user>/.ansible/collections
   executable location = /usr/bin/ansible
   python version = 3.11.X
 ```
@@ -202,9 +202,9 @@ Expected output:
 ```
 ansible [core 2.15.X]
   config file = None
-  configured module search path = ['/Users/username/.ansible/plugins/modules', ...]
+  configured module search path = ['/Users/<you>/.ansible/plugins/modules', ...]
   ansible python module location = /opt/homebrew/lib/python3.11/site-packages/ansible
-  ansible collection location = /Users/username/.ansible/collections
+  ansible collection location = /Users/<you>/.ansible/collections
   executable location = /opt/homebrew/bin/ansible
   python version = 3.11.X
 ```

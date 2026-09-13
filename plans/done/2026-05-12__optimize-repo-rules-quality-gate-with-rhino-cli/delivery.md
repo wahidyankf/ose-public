@@ -18,7 +18,7 @@ Each command-implementing phase follows **Red → Green → Refactor**: write th
 
 ## Phase 0 — Provision worktree and verify baseline
 
-- [x] Provision worktree: `cd /Users/wkf/ose-projects/ose-public && claude --worktree optimize-repo-rules-quality-gate-with-rhino-cli`. Acceptance: `git -C worktrees/optimize-repo-rules-quality-gate-with-rhino-cli worktree list` shows the new worktree on branch `worktree-optimize-repo-rules-quality-gate-with-rhino-cli`.
+- [x] Provision worktree: `cd ~/ose-projects/ose-public && claude --worktree optimize-repo-rules-quality-gate-with-rhino-cli`. Acceptance: `git -C worktrees/optimize-repo-rules-quality-gate-with-rhino-cli worktree list` shows the new worktree on branch `worktree-optimize-repo-rules-quality-gate-with-rhino-cli`.
   - 2026-05-12 — **N/A (user override)**. User explicitly waived worktree requirement: "do it in this current branch, no need in separate worktree". Execution proceeds on `main` directly. Files Changed: none.
 - [x] Inside worktree, run `npm install && npm run doctor -- --fix`. Acceptance: doctor reports 0 missing tools.
   - 2026-05-12 — Done. `npm install` succeeded with post-install doctor reporting 20/20 tools OK, 0 missing. Files Changed: none (deps already lockfile-aligned).
@@ -246,10 +246,10 @@ The primary binding is `.claude/agents/repo-rules-checker.md`; the secondary `.o
   5. `feat(workflows): add Step 0.5 deterministic preflight to repo-rules-quality-gate`
   6. `feat(agents): repo-rules-checker consumes preflight JSON and skips deterministic categories`
   7. `docs(conventions): add deterministic-vs-ai-validation-split convention`
-- [x] Fast-forward worktree branch into local main: `cd /Users/wkf/ose-projects/ose-public && git checkout main && git pull --ff-only && git merge --ff-only worktree-optimize-repo-rules-quality-gate-with-rhino-cli`. Acceptance: clean fast-forward, no merge commit.
+- [x] Fast-forward worktree branch into local main: `cd ~/ose-projects/ose-public && git checkout main && git pull --ff-only && git merge --ff-only worktree-optimize-repo-rules-quality-gate-with-rhino-cli`. Acceptance: clean fast-forward, no merge commit.
 - [x] Push to origin: `git push origin main`. Acceptance: remote updates; pre-push hook passes.
 - [x] Verify CI status post-push: `ose-public` has no push-to-main GitHub Actions workflows (all CI workflows are PR-triggered or scheduled — `pr-quality-gate.yml`, `pr-validate-links.yml`, and nightly `test-and-deploy-*` jobs). Direct-to-main pushes do not trigger CI automatically. Acceptance: `gh run list --limit 5` shows no failed runs in the monitoring window; if a scheduled nightly run fires after the push, verify it exits success via `gh run view <run-id>`.
-- [x] Bump parent gitlink (if parent session): `cd /Users/wkf/ose-projects && git add ose-public && git commit -m "chore(gitlinks): bump ose-public to include repo-rules preflight optimization"`. Acceptance: parent SHA updated; clean status.
+- [x] Bump parent gitlink (if parent session): `cd ~/ose-projects && git add ose-public && git commit -m "chore(gitlinks): bump ose-public to include repo-rules preflight optimization"`. Acceptance: parent SHA updated; clean status.
 
 2026-05-12 P9 done. Pre-push gates: `nx run rhino-cli:typecheck`, `lint`, `test:quick`, `spec-coverage`, `test:integration` all PASS (90.43% coverage, 0 lint issues, 0 broken links, integration suites green, 33 specs / 209+ scenarios fully covered). `npm run lint:md`: 0 errors across 2472 files. Worktree override per user instruction — work executed directly on `main`; no worktree merge step needed. Pushed 7 thematic Conventional Commits to `origin/main` (be63c771f, c4b5ddca5, 3c0939894, 4b7c95b66, 7246b11fd, 053b07856, a9d062c2b). Pre-push Husky hook PASSED — verified by clean `git push origin main`. CI verification: `ose-public` has no push-to-main workflows (PR-triggered + scheduled nightly only); no immediate CI to monitor for this direct-to-main push. Parent gitlink bump: deferred to a separate operator session per the parent-rooted-vs-ose-public-rooted boundary (this session is rooted in `ose-public`, not the parent `ose-projects`).
 

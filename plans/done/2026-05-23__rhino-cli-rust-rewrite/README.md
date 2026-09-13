@@ -41,3 +41,5 @@ A drop-in Rust replacement that:
 - Porting `apps/ayokoding-cli` or `apps/ose-cli` — those Go siblings stay Go for now.
 - Touching the `ose-primer` downstream template's own `rhino-cli` — propagation is a follow-up plan.
 - Rewriting `libs/golang-commons` — the new Rust crate replaces its consumers; the lib stays for the two Go siblings.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

@@ -3,7 +3,7 @@
 ## Command and result
 
 ```text
-$ cd /Users/wkf/ose-projects/ose-infra
+$ cd ~/ose-projects/ose-infra
 $ npx nx run coralpolyp-be:specs:behavior:coverage --skip-nx-cache
 
 > nx run coralpolyp-be:"specs:behavior:coverage"

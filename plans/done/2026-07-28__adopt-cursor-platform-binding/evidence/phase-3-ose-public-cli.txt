@@ -44,7 +44,7 @@ Agents naming validation: VALIDATION PASSED (0 violations)
 exit: 0
 --- 7. naming delete test ---
 Agents naming validation: 1 violation(s)
-  [mirror-drift] /Users/wkf/ose-projects/ose-public/worktrees/adopt-cursor-platform-binding/.claude/agents/web-researcher.md — web-researcher.md exists in .claude/agents/ but not in .cursor/agents/
+  [mirror-drift] ~/ose-projects/ose-public/worktrees/adopt-cursor-platform-binding/.claude/agents/web-researcher.md — web-researcher.md exists in .claude/agents/ but not in .cursor/agents/
 Error: 1 naming violation(s) found
 exit after delete: 0
 Agents naming validation: VALIDATION PASSED (0 violations)

@@ -365,7 +365,7 @@ Once `pi serve` is running, any process can send a turn. The simplest client is 
 # Quick test using a one-liner Node REPL command
 node -e '
   const net = require("net");
-  const c = net.connect("/Users/me/.config/pi/pi.sock");
+  const c = net.connect("/Users/<you>/.config/pi/pi.sock");
   c.write(JSON.stringify({
     jsonrpc: "2.0",
     id: 1,
@@ -687,8 +687,8 @@ Sharing a session can leak filesystem layout, customer names in paths, or intern
 
 ```bash
 pi session share <id> --redact-paths    # => Replaces absolute paths with placeholders, e.g.
-                                        # =>   /Users/alice/customer-acme/...
-                                        # =>     becomes /home/user/project/...
+                                        # =>   /Users/<you>/customer-acme/...
+                                        # =>     becomes /home/<user>/project/...
                                         # => Replaces hostnames in URLs:
                                         # =>   https://acme-internal.corp/...
                                         # =>     becomes https://internal.example/...
@@ -701,7 +701,7 @@ pi session share <id> --redact-paths --redact-rules ./my-redactions.json
 
 **Key Takeaway**: `--redact-paths` scrubs absolute paths and hostnames before share; `--redact-rules` adds project-specific patterns (customer names, internal URLs).
 
-**Why It Matters**: A useful session often contains paths like `/Users/you/clients/big-bank-corp/audit-2026/` — the path itself is sensitive even if the content is fine. Built-in redaction means the team default for sharing is safe, and project-specific extra patterns let you cover names and tokens that change between projects. Without this, the safe behaviour is "never share" and Pi's collaboration value drops.
+**Why It Matters**: A useful session often contains paths like `/Users/<you>/clients/big-bank-corp/audit-2026/` — the path itself is sensitive even if the content is fine. Built-in redaction means the team default for sharing is safe, and project-specific extra patterns let you cover names and tokens that change between projects. Without this, the safe behaviour is "never share" and Pi's collaboration value drops.
 
 ## Extension Installation (Examples 52-54)
 

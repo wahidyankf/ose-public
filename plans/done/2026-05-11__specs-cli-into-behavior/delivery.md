@@ -17,7 +17,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 ## Phase 0 — Setup
 
 - [x] 0.1 Provision worktree (run from ose-public repo root): `claude --worktree specs-cli-into-behavior` — creates `worktrees/specs-cli-into-behavior/` per [Worktree Path Convention](../../../repo-governance/conventions/structure/worktree-path.md)
-<!-- 2026-05-11 | Status: SKIPPED per user override | User explicitly said "do it here" — executing in main checkout /Users/wkf/ose-projects/ose-public. Parallel-safety acknowledged. -->
+<!-- 2026-05-11 | Status: SKIPPED per user override | User explicitly said "do it here" — executing in main checkout ~/ose-projects/ose-public. Parallel-safety acknowledged. -->
 - [x] 0.2 Run `npm install && npm run doctor -- --fix` in worktree root
 <!-- 2026-05-11 | Status: done | Files Changed: none | npm install clean, 20/20 tools OK -->
 - [x] 0.3 Verify baseline: `nx run oseplatform-cli:test:quick && nx run ayokoding-cli:test:quick && nx run rhino-cli:test:quick` — all must pass before making any changes

@@ -679,8 +679,8 @@ ssh-keygen -t ed25519 -C "admin@mycompany.com" -f ~/.ssh/id_ed25519
 # => Generating public/private ed25519 key pair.
 # => Enter passphrase (empty for no passphrase): (set a strong passphrase — protects key if stolen)
 # => Enter same passphrase again:
-# => Your identification has been saved in /home/user/.ssh/id_ed25519    ← PRIVATE KEY; never share
-# => Your public key has been saved in /home/user/.ssh/id_ed25519.pub    ← public key; share freely
+# => Your identification has been saved in /home/<user>/.ssh/id_ed25519    ← PRIVATE KEY; never share
+# => Your public key has been saved in /home/<user>/.ssh/id_ed25519.pub    ← public key; share freely
 # => The key fingerprint is: SHA256:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX admin@mycompany.com
 
 # Examine the public key — this is the string that goes onto the server
@@ -698,7 +698,7 @@ ssh-copy-id -i ~/.ssh/id_ed25519.pub user@10.0.0.5
 
 # Step 3: Verify key-based login works BEFORE disabling password auth
 ssh -i ~/.ssh/id_ed25519 user@10.0.0.5
-# => Enter passphrase for key '/home/user/.ssh/id_ed25519': (client-side passphrase, not server password)
+# => Enter passphrase for key '/home/<user>/.ssh/id_ed25519': (client-side passphrase, not server password)
 # => Last login: Wed May 21 14:00:00 2026 from 203.0.113.10
 # => (logged in successfully using key auth)
 

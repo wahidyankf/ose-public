@@ -265,7 +265,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 ## Phase 3 — Propagate to ose-primer
 
 - [x] [AI] Copy this plan folder into ose-primer `plans/in-progress/`. Acceptance: present.
-  - **Done** (2026-07-02): copied to `/Users/wkf/ose-projects/ose-primer/plans/in-progress/unify-rhino-cli-sdlc-parity/` (all 5 docs + audit/), confirmed present.
+  - **Done** (2026-07-02): copied to `~/ose-projects/ose-primer/plans/in-progress/unify-rhino-cli-sdlc-parity/` (all 5 docs + audit/), confirmed present.
 - [x] [AI] `npm install && npm run doctor -- --fix` in ose-primer. Acceptance: tools OK.
   - **Done** (2026-07-02): `npm install` already run earlier this session (primer preexisting-fix work); `npm run doctor -- --fix` re-run now: 19/19 tools OK, nothing to fix.
 - [x] [AI] Copy canonical `apps/rhino-cli` (`src/`, `Cargo.toml`, `Cargo.lock`, `project.json`, `LICENSE`, `tests/*.rs`, union `.feature` tree) from public into primer — a clean copy, zero carve-outs (env paths are data in `repo-config.yml`). Bump cucumber `0.22.1`→`0.23.0` (already the canonical pin — this is the effective version change for primer). Acceptance: `diff -rq` public↔primer `src` empty; `diff` of `Cargo.toml`/`Cargo.lock`/`project.json`/`LICENSE` empty; `cargo test -p rhino-cli` green.
@@ -311,7 +311,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 > not archive until infra's `apps/rhino-cli` is byte-identical to public.
 
 - [x] [AI] Copy this plan folder into ose-infra `plans/in-progress/`. Acceptance: present.
-  - **Done** (2026-07-02): copied to `/Users/wkf/ose-projects/ose-infra/plans/in-progress/unify-rhino-cli-sdlc-parity/`, confirmed present.
+  - **Done** (2026-07-02): copied to `~/ose-projects/ose-infra/plans/in-progress/unify-rhino-cli-sdlc-parity/`, confirmed present.
 - [x] [AI] `npm install && npm run doctor -- --fix` in ose-infra. Acceptance: tools OK.
   - **Done** (2026-07-02): `npm install` clean; `npm run doctor -- --fix`: 9/9 tools OK, nothing to fix.
 - [x] [AI] **Regenerate `apps/rhino-cli` to canonical**: replace infra's divergent module-naming + internal tree + `cli.rs` with the canonical source (which now includes infra's own `validate_terraform`/`validate_ansible` implementations, ported into the canonical in Phase 1 — this is a like-for-like replacement, not a deletion); copy `Cargo.toml`/`Cargo.lock`/`project.json`/`LICENSE`/`tests/*.rs`/union `.feature` tree verbatim — **relicense to MIT** (`Cargo.toml` `license` field + the `apps/rhino-cli/LICENSE` file, no license carve-out); env-validation scan paths come from `repo-config.yml` (no project.json carve-out). Acceptance: `diff -rq` public↔infra `src` empty; `diff` of `Cargo.toml`/`Cargo.lock`/`project.json`/`LICENSE` empty; `cargo test -p rhino-cli` green in infra; `cargo test -p rhino-cli terraform_validator::` and `cargo test -p rhino-cli ansible_validator::` (the canonical IaC validator test modules) both pass in infra, confirming the real Terraform/Ansible drift-detection logic is present and functional post-regeneration, not silently replaced by the pre-Phase-1 stub.

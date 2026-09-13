@@ -359,24 +359,24 @@ use std::path::{Path, PathBuf};
 
 fn main() {
     // Building paths with PathBuf
-    let mut config_dir = PathBuf::from("/home/user");
-                                         // => config_dir: PathBuf owning "/home/user"
-    config_dir.push(".config");          // => Appends component: "/home/user/.config"
-    config_dir.push("my-tool");          // => "/home/user/.config/my-tool"
+    let mut config_dir = PathBuf::from("/home/<user>");
+                                         // => config_dir: PathBuf owning "/home/<user>"
+    config_dir.push(".config");          // => Appends component: "/home/<user>/.config"
+    config_dir.push("my-tool");          // => "/home/<user>/.config/my-tool"
 
     println!("{}", config_dir.display());// => .display() for human-readable output
-                                         // => Output: /home/user/.config/my-tool
+                                         // => Output: /home/<user>/.config/my-tool
 
     // .join() creates a new PathBuf (does not mutate)
     let config_file = config_dir.join("config.toml");
-                                         // => New PathBuf: "/home/user/.config/my-tool/config.toml"
+                                         // => New PathBuf: "/home/<user>/.config/my-tool/config.toml"
     println!("{}", config_file.display());
 
     // Inspecting path components
     println!("{:?}", config_file.extension()); // => Some("toml")
     println!("{:?}", config_file.file_name()); // => Some("config.toml")
     println!("{:?}", config_file.file_stem()); // => Some("config")
-    println!("{:?}", config_file.parent());    // => Some("/home/user/.config/my-tool")
+    println!("{:?}", config_file.parent());    // => Some("/home/<user>/.config/my-tool")
 
     // Existence checks (filesystem calls)
     let src = Path::new("src");
@@ -895,7 +895,7 @@ fn validate_content(content: &str) -> Result<String> {
 
 **Key Takeaway**: `anyhow::Result<T>` accepts any error. Use `bail!` for early error returns, `ensure!` for assertions, and `.context()` to add human-readable context to every error. This produces error chains that pinpoint failures.
 
-**Why It Matters**: A CLI that says `error: Os { code: 2, kind: NotFound, message: "No such file or directory" }` is unfriendly. A CLI that says `error: failed to load configuration: failed to read /home/user/.config/my-tool/config.toml: No such file or directory (os error 2)` tells the user exactly what went wrong and where. The `.context()` chain builds this message automatically from each `?` with context in the call chain.
+**Why It Matters**: A CLI that says `error: Os { code: 2, kind: NotFound, message: "No such file or directory" }` is unfriendly. A CLI that says `error: failed to load configuration: failed to read /home/<user>/.config/my-tool/config.toml: No such file or directory (os error 2)` tells the user exactly what went wrong and where. The `.context()` chain builds this message automatically from each `?` with context in the call chain.
 
 ---
 

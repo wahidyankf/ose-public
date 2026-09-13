@@ -2,19 +2,19 @@
 # Proves Codex resolves skills from THIS repository's .agents/skills/ tree (root r12).
 
 ### Skill roots
-- `r0` = `/Users/wkf/.agents/skills`
-- `r1` = `/Users/wkf/.codex/skills/.system`
-- `r2` = `/Users/wkf/.codex/plugins/cache/caveman/caveman/local/.codex-plugin/migrated-command-skills`
-- `r3` = `/Users/wkf/.codex/plugins/cache/caveman/caveman/local/skills`
-- `r4` = `/Users/wkf/.codex/plugins/cache/claude-cowork/engineering/1.2.0/skills`
-- `r5` = `/Users/wkf/.codex/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.7.0/skills`
-- `r6` = `/Users/wkf/.codex/plugins/cache/claude-plugins-official`
-- `r7` = `/Users/wkf/.codex/plugins/cache/claude-plugins-official/vercel/0.45.1/skills`
-- `r8` = `/Users/wkf/.codex/plugins/cache/openai-bundled`
-- `r9` = `/Users/wkf/.codex/plugins/cache/openai-bundled/sites/0.1.37/skills`
-- `r10` = `/Users/wkf/.codex/plugins/cache/openai-primary-runtime`
-- `r11` = `/Users/wkf/.codex/plugins/cache/openai-primary-runtime/spreadsheets/26.818.11542/skills`
-- `r12` = `/Users/wkf/ose-projects/ose-public/worktrees/update-harness-support/.agents/skills`
+- `r0` = `~/.agents/skills`
+- `r1` = `~/.codex/skills/.system`
+- `r2` = `~/.codex/plugins/cache/caveman/caveman/local/.codex-plugin/migrated-command-skills`
+- `r3` = `~/.codex/plugins/cache/caveman/caveman/local/skills`
+- `r4` = `~/.codex/plugins/cache/claude-cowork/engineering/1.2.0/skills`
+- `r5` = `~/.codex/plugins/cache/claude-plugins-official/chrome-devtools-mcp/1.7.0/skills`
+- `r6` = `~/.codex/plugins/cache/claude-plugins-official`
+- `r7` = `~/.codex/plugins/cache/claude-plugins-official/vercel/0.45.1/skills`
+- `r8` = `~/.codex/plugins/cache/openai-bundled`
+- `r9` = `~/.codex/plugins/cache/openai-bundled/sites/0.1.37/skills`
+- `r10` = `~/.codex/plugins/cache/openai-primary-runtime`
+- `r11` = `~/.codex/plugins/cache/openai-primary-runtime/spreadsheets/26.818.11542/skills`
+- `r12` = `~/ose-projects/ose-public/worktrees/update-harness-support/.agents/skills`
 ### Available skills
 - imagegen: Generate or edit raster images when the task benef (file: r1/imagegen/SKILL.md)
 - openai-docs: Use when the user asks how to build with OpenAI prod (file: r1/openai-docs/SKILL.md)

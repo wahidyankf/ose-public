@@ -118,3 +118,5 @@ and the unverified Stripe cycle claim previously listed here are removed.
 [ms-review]: https://microsoft.github.io/code-with-engineering-playbook/code-reviews/process-guidance/reviewer-guidance/
 [ms-author]: https://microsoft.github.io/code-with-engineering-playbook/code-reviews/process-guidance/author-guidance/
 [tbd]: https://trunkbaseddevelopment.com/short-lived-feature-branches/
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

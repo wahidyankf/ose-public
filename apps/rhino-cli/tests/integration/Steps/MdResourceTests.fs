@@ -191,13 +191,13 @@ let ``Software-engineering doc missing subcategory fails`` () =
     | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
 
 [<Fact>]
-let ``Governance doc missing title entirely fails`` () =
+let ``Governance doc whose two allowed keys are present but empty fails on both`` () =
     let dir = DirectTestFixtures.newTempDir ()
 
     DirectTestFixtures.writeFile
         dir
         "repo-governance/conventions/foo.md"
-        "---\ndescription: D\nwhen_to_use: Use when W.\n---\nbody\n"
+        "---\ndescription: \"\"\nwhen_to_use: \"\"\n---\nbody\n"
     |> ignore
 
     match validateDocsFrontmatter [ dir ] with
@@ -206,7 +206,14 @@ let ``Governance doc missing title entirely fails`` () =
             findings,
             fun (f: Finding) ->
                 f.Severity = Severity.Blocking
-                && f.Message.Contains("\"title\" is missing", StringComparison.Ordinal)
+                && f.Message.Contains("\"description\" is missing or empty", StringComparison.Ordinal)
+        )
+
+        Assert.Contains(
+            findings,
+            fun (f: Finding) ->
+                f.Severity = Severity.Blocking
+                && f.Message.Contains("\"when_to_use\" is missing or empty", StringComparison.Ordinal)
         )
     | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
 

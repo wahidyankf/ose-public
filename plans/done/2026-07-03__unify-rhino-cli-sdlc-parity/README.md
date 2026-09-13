@@ -178,3 +178,5 @@ its infra-only IaC gates, and the self-hosted runner label (CI-workflow layer) �
 - [AGENTS.md §Related Repositories](../../../AGENTS.md) — the three-repo parity model
 - [plan-multi-repo-parity-planning workflow](../../../repo-governance/workflows/plan/plan-multi-repo-parity-planning.md)
 - [repo-governance/development/infra/nx-targets.md](../../../repo-governance/development/infra/nx-targets.md)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

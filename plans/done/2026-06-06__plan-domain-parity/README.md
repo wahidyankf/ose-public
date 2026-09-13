@@ -35,7 +35,7 @@ undecided.
    plan-establishment-execution, plan-execution, and plan README workflow docs; the
    execution-modes meta workflow; the four plan agents; the three plan skills; the
    grilling-with-options convention; and the plans-organization convention. Sibling inputs
-   live at `/Users/wkf/ose-projects/ose-primer/` and `/Users/wkf/ose-projects/ose-infra/`
+   live at `~/ose-projects/ose-primer/` and `~/ose-projects/ose-infra/`
    (same relative paths; infra's grilling convention is at
    `repo-governance/development/workflow/grilling.md`).
 2. **New default worktree behavior** in the merged
@@ -91,11 +91,11 @@ matrix, and the research citations live in [tech-docs.md](./tech-docs.md).
 The three plans were authored in parallel by the plan-multi-repo-parity-planning workflow.
 Each is self-contained, with its own merge steps referencing the sibling clone paths.
 
-| Repo       | Plan path (within that repo)                                 | Local clone root                     |
-| ---------- | ------------------------------------------------------------ | ------------------------------------ |
-| ose-public | `plans/in-progress/plan-domain-parity/README.md` (this plan) | `/Users/wkf/ose-projects/ose-public` |
-| ose-primer | `plans/in-progress/plan-domain-parity/README.md`             | `/Users/wkf/ose-projects/ose-primer` |
-| ose-infra  | `plans/in-progress/plan-domain-parity/README.md`             | `/Users/wkf/ose-projects/ose-infra`  |
+| Repo       | Plan path (within that repo)                                 | Local clone root            |
+| ---------- | ------------------------------------------------------------ | --------------------------- |
+| ose-public | `plans/in-progress/plan-domain-parity/README.md` (this plan) | `~/ose-projects/ose-public` |
+| ose-primer | `plans/in-progress/plan-domain-parity/README.md`             | `~/ose-projects/ose-primer` |
+| ose-infra  | `plans/in-progress/plan-domain-parity/README.md`             | `~/ose-projects/ose-infra`  |
 
 **Recommended execution order**: execute **this plan first** — the merged canon lands
 upstream in ose-public — then the primer and infra plans adopt it. Sibling paths are given
@@ -119,3 +119,5 @@ PR** (no explicit PR instruction exists; per the
 [Git Push Default Convention](../../../repo-governance/development/workflow/git-push-default.md),
 worktree execution does not change the direct-push default). The worktree is removed after
 delivery. See the `## Worktree` section in [delivery.md](./delivery.md).
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

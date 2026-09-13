@@ -262,7 +262,7 @@ cd ose-public
 claude --worktree ayokoding-web-learn-reorg
 
 # Inside the worktree, the path is:
-#   /Users/wkf/ose-projects/ose-public/worktrees/ayokoding-web-learn-reorg/
+#   ~/ose-projects/ose-public/worktrees/ayokoding-web-learn-reorg/
 # Branch: worktree-ayokoding-web-learn-reorg
 
 # First-time setup inside worktree

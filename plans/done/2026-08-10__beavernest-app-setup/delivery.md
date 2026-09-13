@@ -159,9 +159,9 @@ fact complete.
       acceptance: the command exits 0 before any origin-based worktree is provisioned. If it fails,
       stop and ask the user for separate authorization to commit and land the plan; this authoring
       request does not authorize staging or committing it.
-- [x] [AI] Run `npm install` from `/Users/wkf/ose-projects/beaver-nest`; acceptance: npm exits 0 and no
+- [x] [AI] Run `npm install` from `~/ose-projects/beaver-nest`; acceptance: npm exits 0 and no
       unledgered tracked file changes.
-- [x] [AI] Run `npm run doctor -- --fix` from `/Users/wkf/ose-projects/beaver-nest`; acceptance: the
+- [x] [AI] Run `npm run doctor -- --fix` from `~/ose-projects/beaver-nest`; acceptance: the
       doctor exits 0 without changing git identity.
 - [x] [AI] Provision the first unit with
       `git fetch origin && git worktree add -b beaver-nest-app-setup worktrees/beaver-nest-app-setup origin/main`
@@ -211,7 +211,7 @@ fact complete.
 ## Phase 1: Governance-Only Real-Database Rules
 
 Run every Phase 1 command from
-`/Users/wkf/ose-projects/beaver-nest/worktrees/beaver-nest-app-setup/` unless the checkbox names a
+`~/ose-projects/beaver-nest/worktrees/beaver-nest-app-setup/` unless the checkbox names a
 different working directory.
 
 - [x] [AI] Create `plans/in-progress/beaver-nest-app-setup/execution-state.md` with the four required
@@ -347,7 +347,7 @@ different working directory.
 ## Phase 2: Additive SQLite, Migration, and Recovery Backend
 
 After provisioning, run every Phase 2 and Phase 3 command from
-`/Users/wkf/ose-projects/beaver-nest/worktrees/beaver-nest-app-setup-backend/` unless the checkbox
+`~/ose-projects/beaver-nest/worktrees/beaver-nest-app-setup-backend/` unless the checkbox
 names a different working directory.
 
 - [x] [AI] Provision unit 2 with
@@ -926,7 +926,7 @@ names a different working directory.
 ## Phase 4: Frontend Specs and Vite Client-Rendered Workspace
 
 After provisioning, run every Phase 4 through Phase 8 command from
-`/Users/wkf/ose-projects/beaver-nest/worktrees/beaver-nest-app-setup-client-runtime/` unless the
+`~/ose-projects/beaver-nest/worktrees/beaver-nest-app-setup-client-runtime/` unless the
 checkbox names a different working directory.
 
 - [x] [AI] Provision unit 3 with
@@ -2111,7 +2111,7 @@ directory` scenario passes.
       `MERGED`, a non-null merge time, and a merge commit on `origin/main`.
 - [ ] [AI] Before any worktree cleanup, transition safely from the unit 3 worktree to the primary
       checkout with
-      `cd /Users/wkf/ose-projects/beaver-nest && git fetch origin && git switch main && git merge-base --is-ancestor origin/main HEAD && test -z "$(git status --short)"`;
+      `cd ~/ose-projects/beaver-nest && git fetch origin && git switch main && git merge-base --is-ancestor origin/main HEAD && test -z "$(git status --short)"`;
       acceptance: the executor is in the clean primary checkout on `main`, its HEAD contains
       `origin/main`, and no plan worktree is the current working directory for cleanup.
 - [ ] [AI+HUMAN] Present the exact three worktree/branch cleanup targets plus proof that all three PRs

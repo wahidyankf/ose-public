@@ -61,8 +61,8 @@ interpolation must be used instead.
 Publishing with AOT (`-p:PublishAot=true`) for `osx-arm64` produced, verbatim:
 
 ```text
-/Users/wkf/.nuget/packages/argu/6.2.5/lib/netstandard2.0/Argu.dll : warning IL2104: Assembly 'Argu' produced trim warnings. For more information see https://aka.ms/il2104
-/Users/wkf/.nuget/packages/argu/6.2.5/lib/netstandard2.0/Argu.dll : warning IL3053: Assembly 'Argu' produced AOT analysis warnings.
+~/.nuget/packages/argu/6.2.5/lib/netstandard2.0/Argu.dll : warning IL2104: Assembly 'Argu' produced trim warnings. For more information see https://aka.ms/il2104
+~/.nuget/packages/argu/6.2.5/lib/netstandard2.0/Argu.dll : warning IL3053: Assembly 'Argu' produced AOT analysis warnings.
 ```
 
 `FSharp.Core` itself also produced IL2104/IL3053. Per delivery.md's mitigation instruction, the parse

@@ -93,3 +93,5 @@ Once this plan is completed, future work will include:
 8. Implement rate limiting
 9. Add monitoring and observability (Prometheus, Grafana)
 10. Set up database integration (Spring Data JPA, PostgreSQL)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

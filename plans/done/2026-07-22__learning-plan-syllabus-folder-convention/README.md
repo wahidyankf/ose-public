@@ -183,3 +183,5 @@ flowchart TD
 | [tech-docs.md](./tech-docs.md) | HOW — corpus census, design decisions, template design, file impact, rollback |
 | [delivery.md](./delivery.md)   | DO — phased execution checklist with gates                                    |
 | [learnings.md](./learnings.md) | Knowledge-capture running log, drained before archival                        |
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

@@ -270,8 +270,8 @@ flowchart LR
 - [ ] Provision the ose-primer worktree:
 
   ```bash
-  git -C /Users/wkf/ose-projects/ose-primer worktree add worktrees/rhino-cli-git-root-test-fixture-race -b rhino-cli-git-root-test-fixture-race origin/main
-  cd /Users/wkf/ose-projects/ose-primer/worktrees/rhino-cli-git-root-test-fixture-race && npm install && npm run doctor -- --fix
+  git -C ~/ose-projects/ose-primer worktree add worktrees/rhino-cli-git-root-test-fixture-race -b rhino-cli-git-root-test-fixture-race origin/main
+  cd ~/ose-projects/ose-primer/worktrees/rhino-cli-git-root-test-fixture-race && npm install && npm run doctor -- --fix
   ```
 
   — acceptance: worktree directory exists and both commands exit 0
@@ -279,7 +279,7 @@ flowchart LR
 - [ ] Copy the byte-identical fix into the ose-primer worktree:
 
   ```bash
-  cp apps/rhino-cli/src/infrastructure/git/root.rs /Users/wkf/ose-projects/ose-primer/worktrees/rhino-cli-git-root-test-fixture-race/apps/rhino-cli/src/infrastructure/git/root.rs
+  cp apps/rhino-cli/src/infrastructure/git/root.rs ~/ose-projects/ose-primer/worktrees/rhino-cli-git-root-test-fixture-race/apps/rhino-cli/src/infrastructure/git/root.rs
   ```
 
   — acceptance: file copied (repeat per sibling file identified in Phase 1)
@@ -287,7 +287,7 @@ flowchart LR
 - [ ] Verify byte-identity:
 
   ```bash
-  diff apps/rhino-cli/src/infrastructure/git/root.rs /Users/wkf/ose-projects/ose-primer/worktrees/rhino-cli-git-root-test-fixture-race/apps/rhino-cli/src/infrastructure/git/root.rs
+  diff apps/rhino-cli/src/infrastructure/git/root.rs ~/ose-projects/ose-primer/worktrees/rhino-cli-git-root-test-fixture-race/apps/rhino-cli/src/infrastructure/git/root.rs
   ```
 
   — acceptance: zero output (repeat per sibling file)
@@ -295,7 +295,7 @@ flowchart LR
 - [ ] Run ose-primer's local quality gates:
 
   ```bash
-  cd /Users/wkf/ose-projects/ose-primer/worktrees/rhino-cli-git-root-test-fixture-race && npx nx affected -t typecheck lint test:quick
+  cd ~/ose-projects/ose-primer/worktrees/rhino-cli-git-root-test-fixture-race && npx nx affected -t typecheck lint test:quick
   ```
 
   — acceptance: exits 0; fix ALL failures found, including preexisting ones (Root Cause Orientation)
@@ -303,7 +303,7 @@ flowchart LR
 - [ ] Commit, push, and open the ose-primer draft PR:
 
   ```bash
-  cd /Users/wkf/ose-projects/ose-primer/worktrees/rhino-cli-git-root-test-fixture-race
+  cd ~/ose-projects/ose-primer/worktrees/rhino-cli-git-root-test-fixture-race
   git add apps/rhino-cli/src/infrastructure/git/root.rs
   git commit -m "fix(rhino-cli): isolate git-root worktree test fixture from real repo (parity port)"
   git push -u origin rhino-cli-git-root-test-fixture-race
@@ -324,8 +324,8 @@ flowchart LR
 - [ ] Provision the ose-infra worktree:
 
   ```bash
-  git -C /Users/wkf/ose-projects/ose-infra worktree add worktrees/rhino-cli-git-root-test-fixture-race -b rhino-cli-git-root-test-fixture-race origin/main
-  cd /Users/wkf/ose-projects/ose-infra/worktrees/rhino-cli-git-root-test-fixture-race && npm install && npm run doctor -- --fix
+  git -C ~/ose-projects/ose-infra worktree add worktrees/rhino-cli-git-root-test-fixture-race -b rhino-cli-git-root-test-fixture-race origin/main
+  cd ~/ose-projects/ose-infra/worktrees/rhino-cli-git-root-test-fixture-race && npm install && npm run doctor -- --fix
   ```
 
   — acceptance: worktree directory exists and both commands exit 0
@@ -333,7 +333,7 @@ flowchart LR
 - [ ] Copy the byte-identical fix into the ose-infra worktree:
 
   ```bash
-  cp apps/rhino-cli/src/infrastructure/git/root.rs /Users/wkf/ose-projects/ose-infra/worktrees/rhino-cli-git-root-test-fixture-race/apps/rhino-cli/src/infrastructure/git/root.rs
+  cp apps/rhino-cli/src/infrastructure/git/root.rs ~/ose-projects/ose-infra/worktrees/rhino-cli-git-root-test-fixture-race/apps/rhino-cli/src/infrastructure/git/root.rs
   ```
 
   — acceptance: file copied (repeat per sibling file identified in Phase 1)
@@ -341,7 +341,7 @@ flowchart LR
 - [ ] Verify byte-identity:
 
   ```bash
-  diff apps/rhino-cli/src/infrastructure/git/root.rs /Users/wkf/ose-projects/ose-infra/worktrees/rhino-cli-git-root-test-fixture-race/apps/rhino-cli/src/infrastructure/git/root.rs
+  diff apps/rhino-cli/src/infrastructure/git/root.rs ~/ose-projects/ose-infra/worktrees/rhino-cli-git-root-test-fixture-race/apps/rhino-cli/src/infrastructure/git/root.rs
   ```
 
   — acceptance: zero output (repeat per sibling file)
@@ -349,7 +349,7 @@ flowchart LR
 - [ ] Run ose-infra's local quality gates:
 
   ```bash
-  cd /Users/wkf/ose-projects/ose-infra/worktrees/rhino-cli-git-root-test-fixture-race && npx nx affected -t typecheck lint test:quick
+  cd ~/ose-projects/ose-infra/worktrees/rhino-cli-git-root-test-fixture-race && npx nx affected -t typecheck lint test:quick
   ```
 
   — acceptance: exits 0; fix ALL failures found, including preexisting ones (Root Cause Orientation)
@@ -357,7 +357,7 @@ flowchart LR
 - [ ] Commit, push, and open the ose-infra draft PR:
 
   ```bash
-  cd /Users/wkf/ose-projects/ose-infra/worktrees/rhino-cli-git-root-test-fixture-race
+  cd ~/ose-projects/ose-infra/worktrees/rhino-cli-git-root-test-fixture-race
   git add apps/rhino-cli/src/infrastructure/git/root.rs
   git commit -m "fix(rhino-cli): isolate git-root worktree test fixture from real repo (parity port)"
   git push -u origin rhino-cli-git-root-test-fixture-race

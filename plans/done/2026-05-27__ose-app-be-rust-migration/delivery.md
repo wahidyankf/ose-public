@@ -36,7 +36,7 @@ Commit each phase separately with Conventional Commits format:
 > _Executor: repo-setup-manager_
 
 - [ ] Install dependencies in the root worktree: run `npm install` from
-      `/Users/wkf/ose-projects/ose-public/` (worktree root).
+      `~/ose-projects/ose-public/` (worktree root).
       — Acceptance: exits 0, `node_modules/` synchronized.
 
 - [ ] Converge the full polyglot toolchain: run
@@ -72,15 +72,15 @@ Commit each phase separately with Conventional Commits format:
 - [ ] Delete the F# source and test trees from `apps/ose-app-be/`:
 
   ```bash
-  rm -rf /Users/wkf/ose-projects/ose-public/apps/ose-app-be/src/OseAppBe
-  rm -rf /Users/wkf/ose-projects/ose-public/apps/ose-app-be/tests/OseAppBe.Tests
-  rm -rf /Users/wkf/ose-projects/ose-public/apps/ose-app-be/dist
-  rm -rf /Users/wkf/ose-projects/ose-public/apps/ose-app-be/coverage
-  rm -rf /Users/wkf/ose-projects/ose-public/apps/ose-app-be/generated-contracts/OpenAPI
-  rm -f  /Users/wkf/ose-projects/ose-public/apps/ose-app-be/global.json
-  rm -f  /Users/wkf/ose-projects/ose-public/apps/ose-app-be/dotnet-tools.json
-  rm -f  /Users/wkf/ose-projects/ose-public/apps/ose-app-be/fsharplint.json
-  rm -f  /Users/wkf/ose-projects/ose-public/apps/ose-app-be/.editorconfig
+  rm -rf ~/ose-projects/ose-public/apps/ose-app-be/src/OseAppBe
+  rm -rf ~/ose-projects/ose-public/apps/ose-app-be/tests/OseAppBe.Tests
+  rm -rf ~/ose-projects/ose-public/apps/ose-app-be/dist
+  rm -rf ~/ose-projects/ose-public/apps/ose-app-be/coverage
+  rm -rf ~/ose-projects/ose-public/apps/ose-app-be/generated-contracts/OpenAPI
+  rm -f  ~/ose-projects/ose-public/apps/ose-app-be/global.json
+  rm -f  ~/ose-projects/ose-public/apps/ose-app-be/dotnet-tools.json
+  rm -f  ~/ose-projects/ose-public/apps/ose-app-be/fsharplint.json
+  rm -f  ~/ose-projects/ose-public/apps/ose-app-be/.editorconfig
   ```
 
   — Acceptance: none of the deleted paths exist; `ls apps/ose-app-be/` shows only

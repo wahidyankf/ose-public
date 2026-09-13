@@ -250,3 +250,5 @@ Full declarations in [delivery.md](./delivery.md).
 - [Related Repositories](../../../docs/reference/related-repositories.md) — the four-repo definition this plan rewrites
 - [Plans Organization Convention](../../../repo-governance/conventions/structure/plans.md)
 - [PR Merge Protocol](../../../repo-governance/development/workflow/pr-merge-protocol.md)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

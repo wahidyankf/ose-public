@@ -157,3 +157,5 @@ concurrently. **Note**: the repo's
 plan-scoped deviation the user authorized in-session (2026-07-14) — it does not amend the protocol
 itself or apply to any other plan. See [delivery.md](./delivery.md) for the full `## Worktree`,
 `## Parallelization Model`, and `## Delivery Mode` declarations.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

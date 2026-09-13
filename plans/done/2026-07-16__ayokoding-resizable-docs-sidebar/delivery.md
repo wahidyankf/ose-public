@@ -90,7 +90,7 @@ worktrees/ayokoding-resizable-docs-sidebar origin/main`, entered via `EnterWorkt
 - [x] [AI] Verify the dev server starts: `npx nx dev ayokoding-www` (then stop it)
       — acceptance: server boots on port 3101 without error - **Date**: 2026-07-15. **Status**: Done. **Files**: none (manual verification only).
       Port 3101 was already bound by an unrelated, long-running (~2 day uptime) `next dev` instance
-      serving from the primary checkout (`/Users/wkf/ose-projects/ose-public/apps/ayokoding-www`,
+      serving from the primary checkout (`~/ose-projects/ose-public/apps/ayokoding-www`,
       PID 27341/27342) — left untouched as out-of-scope, possibly-in-use infrastructure. Verified
       this worktree's dev server boots cleanly by running the identical `dev` target command
       (`npx tsx src/scripts/generate-indexes.ts && next dev --port <alt>`) on a temporary alternate

@@ -124,3 +124,5 @@ worktree default). Trunk-Based Development applies: stage explicit paths, commit
 > Each repo is edited directly on `main` in its own primary checkout. `ose-infra` is edited in place
 > at `~/ose-projects/ose-infra` on `main` (confirm `git status` works there first) — see
 > `delivery.md` Phase 7.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

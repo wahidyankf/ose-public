@@ -36,7 +36,7 @@ and [Plans Organization Convention §Worktree Specification](../../../repo-gover
 - [x] Provision worktree: `claude --worktree specs-tree-uniform` — creates
       `worktrees/specs-tree-uniform/` in repo root.
   - _Suggested executor: default plan-execution orchestrator_
-  <!-- Date: 2026-05-23 | Status: done | Notes: Worktree already provisioned; execution running from /Users/wkf/ose-projects/ose-public/worktrees/specs-tree-uniform -->
+  <!-- Date: 2026-05-23 | Status: done | Notes: Worktree already provisioned; execution running from ~/ose-projects/ose-public/worktrees/specs-tree-uniform -->
 - [x] Initialize toolchain in the root worktree (not the new worktree):
     `npm install && npm run doctor -- --fix` — exits 0; see
     [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md).

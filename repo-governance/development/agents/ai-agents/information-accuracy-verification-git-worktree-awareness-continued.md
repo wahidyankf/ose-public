@@ -16,7 +16,7 @@ Read: repo-governance/development/agents/ai-agents.md
 
 <!-- FAIL: Hardcoded main-checkout path — reads stale content when run in a worktree -->
 
-Read: /Users/wkf/ose-projects/ose-public/repo-governance/development/agents/ai-agents.md
+Read: /Users/<name>/ose-projects/ose-public/repo-governance/development/agents/ai-agents.md
 ```
 
 **Consequence of violation**: A checker agent reads a file from the main checkout after a fixer has already corrected it in the active worktree. The checker reports the issue as "not fixed" because it compared against stale content, producing a false negative and blocking the workflow.

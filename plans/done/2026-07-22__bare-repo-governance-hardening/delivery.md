@@ -173,16 +173,16 @@ graph TD
   step names `<PRIMER>` or `<INFRA>`. In a bare sibling there is no work tree at `<repo-root>`, so
   every mutation must flow through a linked worktree — stated in Phase 4's preamble and enacted by
   the `worktree add` step in both Phase 4 (`<PRIMER>`) and Phase 5 (`<INFRA>`)
-- `<PRIMER>` = `/Users/wkf/ose-projects/ose-primer` _(bare, `core.bare=true`)_
-- `<INFRA>` = `/Users/wkf/ose-projects/ose-infra` _(bare, `core.bare=true`)_
-- `<PUBLIC>` = `/Users/wkf/ose-projects/ose-public` — the primary `ose-public` checkout (not bare).
+- `<PRIMER>` = `~/ose-projects/ose-primer` _(bare, `core.bare=true`)_
+- `<INFRA>` = `~/ose-projects/ose-infra` _(bare, `core.bare=true`)_
+- `<PUBLIC>` = `~/ose-projects/ose-public` — the primary `ose-public` checkout (not bare).
   After Phase 3's PR merges and local `main` is fast-forwarded, `<PUBLIC>/<C1>` is the merged,
   source-of-truth copy that Phase 4 and Phase 5 copy from
-- `<PRIMER-WT>` = `/Users/wkf/ose-projects/ose-primer/worktrees/bare-repo-governance-hardening` —
+- `<PRIMER-WT>` = `~/ose-projects/ose-primer/worktrees/bare-repo-governance-hardening` —
   Phase 4's propagation worktree, provisioned from `<PRIMER>`'s `origin/main`, removed at the end of
   Phase 4. The Phase 6 `<C1>` Correction Propagation Sub-Cycle re-provisions it at the same path if
   and only if a `<C1>` correction is routed
-- `<INFRA-WT>` = `/Users/wkf/ose-projects/ose-infra/worktrees/bare-repo-governance-hardening` —
+- `<INFRA-WT>` = `~/ose-projects/ose-infra/worktrees/bare-repo-governance-hardening` —
   Phase 5's propagation worktree, provisioned from `<INFRA>`'s `origin/main`, removed at the end of
   Phase 5. The Phase 6 `<C1>` Correction Propagation Sub-Cycle re-provisions it at the same path if
   and only if a `<C1>` correction is routed
@@ -231,13 +231,13 @@ graph TD
       concurrent WIP under `plans/backlog/ayokoding-www-learning-path-*/` from other agents
 - [x] [AI] Verify both sibling repos are reachable and bare, using the method this plan documents
       (**never** `git rev-parse --is-bare-repository`):
-      `git -C /Users/wkf/ose-projects/ose-primer worktree list` and
-      `git -C /Users/wkf/ose-projects/ose-infra worktree list`
+      `git -C ~/ose-projects/ose-primer worktree list` and
+      `git -C ~/ose-projects/ose-infra worktree list`
       — acceptance: each prints a line ending in `(bare)`
-      — **Result**: `ose-primer` → `/Users/wkf/ose-projects/ose-primer  (bare)`; `ose-infra` →
-      `/Users/wkf/ose-projects/ose-infra  (bare)`. Zero linked worktrees in either
+      — **Result**: `ose-primer` → `~/ose-projects/ose-primer  (bare)`; `ose-infra` →
+      `~/ose-projects/ose-infra  (bare)`. Zero linked worktrees in either
 - [x] [AI] Record each sibling's current divergence:
-      `git -C /Users/wkf/ose-projects/ose-primer rev-list --left-right --count origin/main...main`
+      `git -C ~/ose-projects/ose-primer rev-list --left-right --count origin/main...main`
       and the same for `ose-infra`
       — acceptance: the actual counts are recorded here. **Expect non-zero on first run**: as of
       2026-07-21 both siblings read `2 0` (local `main` two commits behind `origin/main`), the live
@@ -1150,7 +1150,7 @@ heading-hierarchy validate` — all exit 0
 - [x] [AI] Verify topology before anything else — `git -C <PRIMER> worktree list`
       — acceptance: prints a line ending in `(bare)`. **Do not** use
       `git rev-parse --is-bare-repository`
-      — **Result**: `/Users/wkf/ose-projects/ose-primer  (bare)`, exit 0. `--is-bare-repository` was
+      — **Result**: `~/ose-projects/ose-primer  (bare)`, exit 0. `--is-bare-repository` was
       not used at any point in this phase
 - [x] [AI] Fetch and record the starting divergence:
       `git -C <PRIMER> fetch origin && git -C <PRIMER> rev-list --left-right --count origin/main...main`
@@ -1162,7 +1162,7 @@ heading-hierarchy validate` — all exit 0
       `git -C <PRIMER> worktree add <PRIMER-WT> -b bare-repo-governance-hardening origin/main`
       — acceptance: `git -C <PRIMER> worktree list` lists `<PRIMER-WT>`
       — **Result**: exit 0; `worktree list` now prints both the bare main worktree and
-      `/Users/wkf/ose-projects/ose-primer/worktrees/bare-repo-governance-hardening  53d9081b7 [bare-repo-governance-hardening]`.
+      `~/ose-projects/ose-primer/worktrees/bare-repo-governance-hardening  53d9081b7 [bare-repo-governance-hardening]`.
       No pre-existing branch or path collision (`branch --list 'bare-repo*'` and
       `branch -r --list 'origin/bare-repo*'` both empty beforehand)
 - [x] [AI] Initialize the toolchain in that worktree: `npm install` then `npm run doctor -- --fix`
@@ -1200,7 +1200,7 @@ heading-hierarchy validate` — all exit 0
       — **Checkbox ticked 2026-07-22 (Phase 7 pre-archival sweep)** — the Result above was already
       complete; the box itself had been left unticked. Re-verified post-merge against the landed
       state rather than the worktree, which no longer exists:
-      `git -C /Users/wkf/ose-projects/ose-primer show origin/main:repo-governance/development/workflow/no-destructive-git-operations.md`
+      `git -C ~/ose-projects/ose-primer show origin/main:repo-governance/development/workflow/no-destructive-git-operations.md`
       contains the string exactly **2** times
 - [x] [AI] **C3** — in `<PRIMER-WT>/repo-governance/conventions/structure/plans.md`, add the same
       bare-repo note beneath the Delivery Mode table, mirroring the Phase 3 edit. Locate by content,
@@ -1412,7 +1412,7 @@ heading-hierarchy validate` — all exit 0
       0 unpushed commits, and merge state confirmed via `gh pr list --head` (`PR #14: MERGED`)
       rather than an ancestry test — squash-merge makes `merge-base --is-ancestor` report
       NOT-MERGED for every merged branch here. `worktree list` now prints only
-      `/Users/wkf/ose-projects/ose-primer  (bare)`
+      `~/ose-projects/ose-primer  (bare)`
 - [x] [AI] **Terminal reconcile** — the step this whole plan exists to codify. `<PRIMER>` is bare,
       so use the bare form per **DD-6**: `git -C <PRIMER> fetch origin main:main`
       — acceptance: exits 0, and
@@ -1492,7 +1492,7 @@ heading-hierarchy validate` — all exit 0
       mermaid gate is scoped to `repo-governance docs` and cannot reach `plans/done/`)
 - [x] [AI] `git -C <PRIMER> worktree list` shows only the bare main worktree — no leftover
       propagation worktree
-      — **Result**: single line, `/Users/wkf/ose-projects/ose-primer  (bare)`
+      — **Result**: single line, `~/ose-projects/ose-primer  (bare)`
 - [x] [AI] `git -C <PRIMER> rev-list --left-right --count origin/main...main` prints `0` and `0`
       — **Result**: `0 0`; both refs at `a94539c03df3bb62f0b42060445467b2fba6aef0`
 
@@ -1521,7 +1521,7 @@ heading-hierarchy validate` — all exit 0
 
 - [x] [AI] Verify topology — `git -C <INFRA> worktree list`
       — acceptance: prints a line ending in `(bare)`
-      — **Result**: `/Users/wkf/ose-projects/ose-infra  (bare)`, exit 0.
+      — **Result**: `~/ose-projects/ose-infra  (bare)`, exit 0.
       `git rev-parse --is-bare-repository` was not used at any point in this phase
 - [x] [AI] Fetch and record the starting divergence:
       `git -C <INFRA> fetch origin && git -C <INFRA> rev-list --left-right --count origin/main...main`
@@ -1535,7 +1535,7 @@ heading-hierarchy validate` — all exit 0
       — **Result**: exit 0. No pre-existing branch or path collision (`branch --list 'bare-repo*'`
       and `branch -r --list 'origin/bare-repo*'` both empty beforehand; `worktrees/` held only a
       `.gitkeep`). `worktree list` then printed the bare line plus
-      `/Users/wkf/ose-projects/ose-infra/worktrees/bare-repo-governance-hardening  f6ecdcc0b [bare-repo-governance-hardening]`
+      `~/ose-projects/ose-infra/worktrees/bare-repo-governance-hardening  f6ecdcc0b [bare-repo-governance-hardening]`
 - [x] [AI] Initialize the toolchain in that worktree: `npm install` then `npm run doctor -- --fix`
       — acceptance: both exit 0
       — **Result**: both exit 0. `doctor --fix` reported "16/16 tools OK, 0 warning, 0 missing" and
@@ -2019,7 +2019,7 @@ default` paragraph stated the pre-reversal "a floor, not a ceiling" rule and lin
       defect. The one red run in this window, `test-and-deploy-coralpolyp-development` (29878402230),
       is on the **pre-merge** sha `f6ecdcc0b` and is unrelated to this changeset.
 - [x] [AI] `git -C <INFRA> worktree list` shows only the bare main worktree
-      — **Result**: one line, `/Users/wkf/ose-projects/ose-infra  (bare)`. `git branch` lists only
+      — **Result**: one line, `~/ose-projects/ose-infra  (bare)`. `git branch` lists only
       `main`; `git branch -r` no longer lists the propagation branch.
 - [x] [AI] `git -C <INFRA> rev-list --left-right --count origin/main...main` prints `0` and `0`
       — **Result**: `0 0`, measured **after** `git fetch` (see the reconcile step above for why the

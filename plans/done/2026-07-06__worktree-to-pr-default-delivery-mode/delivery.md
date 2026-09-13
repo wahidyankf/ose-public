@@ -447,7 +447,7 @@ stateDiagram-v2
 
 ## Phase 4: ose-primer — Replicate + Deliver via worktree-to-pr (review loop → [HUMAN] merge)
 
-> Repo root: `/Users/wkf/ose-projects/ose-primer` [Repo-grounded]. Apply the conceptually identical
+> Repo root: `~/ose-projects/ose-primer` [Repo-grounded]. Apply the conceptually identical
 > change (not necessarily byte-identical — governance prose is not under the rhino-cli byte-identity
 > mandate). Use the ose-public PR branch files as the canonical reference. Primer's PR carries **no
 > archival-in-PR** (the plan folder lives only in ose-public), so its done-definition = review cycles
@@ -455,8 +455,8 @@ stateDiagram-v2
 > - comments answered + gates green.
 
 - [x] [AI] Provision the primer worktree from latest `origin/main` (from the ose-primer root):
-      `git -C /Users/wkf/ose-projects/ose-primer fetch origin && git -C /Users/wkf/ose-projects/ose-primer worktree add -b worktree-to-pr-default-delivery-mode worktrees/worktree-to-pr-default-delivery-mode origin/main`
-      — acceptance: `git -C /Users/wkf/ose-projects/ose-primer worktree list` shows the path. Done.
+      `git -C ~/ose-projects/ose-primer fetch origin && git -C ~/ose-projects/ose-primer worktree add -b worktree-to-pr-default-delivery-mode worktrees/worktree-to-pr-default-delivery-mode origin/main`
+      — acceptance: `git -C ~/ose-projects/ose-primer worktree list` shows the path. Done.
 - [x] [AI] Initialize toolchain: `npm install && npm run doctor -- --fix` in the ose-primer root
       — acceptance: both exit 0. Done.
 - [x] [AI] Open the single draft PR for primer:
@@ -509,7 +509,7 @@ stateDiagram-v2
       and marked the PR ready. Resume signal: `gh pr view --json state` returns `MERGED`. Done:
       merged 2026-07-06T13:29:27Z.
 - [x] [AI] After merge, remove the primer worktree:
-      `git -C /Users/wkf/ose-projects/ose-primer worktree remove worktrees/worktree-to-pr-default-delivery-mode`
+      `git -C ~/ose-projects/ose-primer worktree remove worktrees/worktree-to-pr-default-delivery-mode`
       — acceptance: the path is no longer listed. Done.
 
 ### Phase 4 Gate
@@ -532,14 +532,14 @@ stateDiagram-v2
 
 ## Phase 5: ose-infra — Replicate + Deliver via worktree-to-pr (review loop → [HUMAN] merge)
 
-> Repo root: `/Users/wkf/ose-projects/ose-infra` [Repo-grounded]. Private repo, outside the parity
+> Repo root: `~/ose-projects/ose-infra` [Repo-grounded]. Private repo, outside the parity
 > loop, but carries its own copies. Apply the conceptually identical change; confirm the four-mode
 > vocabulary + both review agents land intact even if some prose phrasing differs (see `tech-docs.md`
 > open question 3). Infra's PR carries **no archival-in-PR** (plan folder lives only in ose-public).
 
 - [x] [AI] Provision the infra worktree from latest `origin/main`:
-      `git -C /Users/wkf/ose-projects/ose-infra fetch origin && git -C /Users/wkf/ose-projects/ose-infra worktree add -b worktree-to-pr-default-delivery-mode worktrees/worktree-to-pr-default-delivery-mode origin/main`
-      — acceptance: `git -C /Users/wkf/ose-projects/ose-infra worktree list` shows the path. Done.
+      `git -C ~/ose-projects/ose-infra fetch origin && git -C ~/ose-projects/ose-infra worktree add -b worktree-to-pr-default-delivery-mode worktrees/worktree-to-pr-default-delivery-mode origin/main`
+      — acceptance: `git -C ~/ose-projects/ose-infra worktree list` shows the path. Done.
 - [x] [AI] Initialize toolchain: `npm install && npm run doctor -- --fix` in the ose-infra root
       — acceptance: both exit 0. Done.
 - [x] [AI] Open the single draft PR for infra:
@@ -590,7 +590,7 @@ false`.
       — handoff: `[AI]` reached the infra done-definition and marked the PR ready. Resume signal:
       `gh pr view --json state` returns `MERGED`. Done: merged 2026-07-06T13:29:22Z.
 - [x] [AI] After merge, remove the infra worktree:
-      `git -C /Users/wkf/ose-projects/ose-infra worktree remove worktrees/worktree-to-pr-default-delivery-mode`
+      `git -C ~/ose-projects/ose-infra worktree remove worktrees/worktree-to-pr-default-delivery-mode`
       — acceptance: the path is no longer listed. Done.
 
 ### Phase 5 Gate

@@ -183,7 +183,7 @@ Expected: ~75% token reduction while code/URLs/paths remain unchanged.
 Example test message:
 
 ```
-Here's the file path: /Users/wkf/ose-projects/ose-public/apps/ayokoding-web/src/app/page.tsx
+Here's the file path: ~/ose-projects/ose-public/apps/ayokoding-web/src/app/page.tsx
 
 And the URL: https://github.com/JuliusBrussee/caveman
 

@@ -31,7 +31,7 @@ Both tracks rewritten in full against a single hypothetical domain — **Confere
 ## Lessons
 
 1. **Sub-agent parallelism worked well for big content rewrites.** Two `apps-ayokoding-web-in-the-field-maker` sub-agents ran in parallel (FP track + OOP track) with a fully locked domain spec passed inline. The shared spec kept vocabulary consistent across both tracks even without cross-agent communication.
-2. **Worktree path confusion**: this work started in a Claude Code worktree at `/Users/wkf/ose-projects/ose-public/worktrees/abundant-mapping-widget/`, but all content edits used absolute paths into the primary checkout. The plan files lived only in the worktree until manually copied to the primary checkout for archive. Lesson: when editing across both worktree and primary, be explicit about which checkout owns which files.
+2. **Worktree path confusion**: this work started in a Claude Code worktree at `~/ose-projects/ose-public/worktrees/abundant-mapping-widget/`, but all content edits used absolute paths into the primary checkout. The plan files lived only in the worktree until manually copied to the primary checkout for archive. Lesson: when editing across both worktree and primary, be explicit about which checkout owns which files.
 3. **Self-validation by the maker subagent saved a checker round-trip.** The maker re-grepped the forbidden-strings list before returning, which let the parent skip a standalone in-the-field-checker run for this content-only rewrite.
 4. **Dropping the dogfooding contract simplified the entire tutorial.** "Mirror mode / intended-layout mode / illustrative mode" was a creative attempt at dogfooding integrity but added three concept categories the reader had to track. Single hypothetical mode reads much cleaner.
 5. **Same domain across both tracks pays off.** Reader can now diff a Guide 5 port definition in F# against the Guide 5 port definition in Java and see exactly what changes — that comparison was much harder when each track had its own codebase.
@@ -42,3 +42,5 @@ Both tracks rewritten in full against a single hypothetical domain — **Confere
 - [prd.md](./prd.md) — Gherkin acceptance criteria
 - [tech-docs.md](./tech-docs.md) — locked hypothetical domain spec + per-guide catalog
 - [delivery.md](./delivery.md) — TDD-shaped delivery checklist
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

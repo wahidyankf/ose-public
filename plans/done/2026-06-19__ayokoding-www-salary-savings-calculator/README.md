@@ -183,3 +183,5 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 | [prd.md](./prd.md)             | WHAT — user stories, Gherkin acceptance criteria, product scope  |
 | [tech-docs.md](./tech-docs.md) | HOW — architecture, design decisions, file impact, dependencies  |
 | [delivery.md](./delivery.md)   | DO — phased execution checklist                                  |
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

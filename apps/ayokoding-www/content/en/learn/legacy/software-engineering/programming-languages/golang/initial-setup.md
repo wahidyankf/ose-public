@@ -462,7 +462,7 @@ With modules, create projects anywhere:
 ```bash
 ~/projects/myapp
 ~/dev/go/myapp
-/home/user/code/myapp
+/home/<user>/code/myapp
 C:\Users\username\projects\myapp
 ```
 

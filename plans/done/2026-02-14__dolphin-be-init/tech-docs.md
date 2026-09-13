@@ -317,7 +317,7 @@ logging:
         "total": 500000000000,
         "free": 400000000000,
         "threshold": 10485760,
-        "path": "/home/wkf/wkf-repos/."
+        "path": "$HOME/<workspace>/."
       }
     },
     "ping": {

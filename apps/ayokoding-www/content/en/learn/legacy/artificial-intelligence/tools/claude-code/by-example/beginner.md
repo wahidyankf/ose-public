@@ -805,7 +805,7 @@ You: exit                           # => Exits Claude Code session
                                     # => Files created/modified remain
                                     # => Can restart with: claude
 $ pwd                               # => Back in normal terminal
-/home/user/projects/my-app          # => Regular shell commands work
+/home/<user>/projects/my-app          # => Regular shell commands work
 $ claude                            # => Restart Claude for new session
                                     # => Fresh context, no memory of previous session
 ```

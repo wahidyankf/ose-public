@@ -50,7 +50,7 @@ to migrate `ayokoding-cli` with minimal duplication.
 This crate is created by the `ose-cli-rust-migration` plan (Phase 0 of that plan). Verify with:
 
 ```bash
-test -d /Users/wkf/ose-projects/ose-public/libs/rust-commons && echo "OK" || echo "MISSING — run ose-cli-rust-migration first"
+test -d ~/ose-projects/ose-public/libs/rust-commons && echo "OK" || echo "MISSING — run ose-cli-rust-migration first"
 ```
 
 ## Approach Summary
@@ -73,3 +73,5 @@ test -d /Users/wkf/ose-projects/ose-public/libs/rust-commons && echo "OK" || ech
 | [prd.md](./prd.md)             | WHAT — user stories, Gherkin acceptance criteria, product scope  |
 | [tech-docs.md](./tech-docs.md) | HOW — architecture, design decisions, file impact, dependencies  |
 | [delivery.md](./delivery.md)   | DO — phased execution checklist                                  |
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

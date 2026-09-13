@@ -72,3 +72,5 @@ This plan uses the five-document multi-file layout:
 Trunk Based Development — work on `main`, direct push to `origin main`, **no PR** (the user
 explicitly requested direct push, trunk-based). See
 [Trunk Based Development Convention](../../../repo-governance/development/workflow/trunk-based-development.md).
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

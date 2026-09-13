@@ -13,7 +13,7 @@ entries already neutralize both known instances, leaving only a standing guard a
 >
 > Resolved 2026-09-02, via `ose-public#440`: the promotion signal fired — `libs/fsharp-crane-core`
 > and `libs/fsharp-env-loader` landed tracked `tests/unit/coverage.json` carrying a local
-> `/Users/wkf/.../adopt-beavernest-test-automation/...` prefix, caught by that PR's `pr-leak-review`
+> `/Users/<maintainer>/.../adopt-beavernest-test-automation/...` prefix, caught by that PR's `pr-leak-review`
 > (machine-specific-absolute-path). Applied the proposed direction as-is: added a root-level
 > `coverage.json` rule to `.gitignore` (next to `coverage/`/`coverage.xml`) and `git rm --cached` the
 > two tracked files. No relative-path emission work needed; the ignore-it remedy the repo had already

@@ -95,3 +95,5 @@ dataset, and the React shell only renders and wires URL state.
   governance-scoped benchmark doc this plan converts into a derived artifact.
 - [Model Selection](../../../repo-governance/development/agents/model-selection.md) — the governance
   consumer of that reference.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

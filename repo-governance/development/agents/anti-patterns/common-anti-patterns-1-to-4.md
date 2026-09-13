@@ -118,8 +118,8 @@ description: >
 ```yaml
 ---
 context: |
-  Always write reports to /home/user/repos/project/local-tmp/<agent-family>/
-  Check files in /home/user/repos/project/docs/
+  Always write reports to /home/<user>/repos/project/local-tmp/<agent-family>/
+  Check files in /home/<user>/repos/project/docs/
 ---
 ```
 

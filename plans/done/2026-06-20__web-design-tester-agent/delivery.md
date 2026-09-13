@@ -34,7 +34,7 @@ at `~/ose-projects/ose-infra` on `main` — confirm `git status` works there bef
 > _Executor: repo-setup-manager_
 
 - [x] [AI] Confirm the ose-public primary checkout is on `main` and synced with `origin/main`
-      (`git -C /Users/wkf/ose-projects/ose-public rev-parse --abbrev-ref HEAD` = `main`; `git fetch`
+      (`git -C ~/ose-projects/ose-public rev-parse --abbrev-ref HEAD` = `main`; `git fetch`
       then fast-forward if behind) — acceptance: on `main`, up to date, no worktree created
 - [x] [AI] Install dependencies: `npm install` — acceptance: exits 0, `node_modules/` synchronized
 - [x] [AI] Converge the toolchain: `npm run doctor -- --fix` — acceptance: exits

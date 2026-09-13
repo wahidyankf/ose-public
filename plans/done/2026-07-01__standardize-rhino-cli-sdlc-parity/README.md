@@ -82,3 +82,5 @@ deploy CRONs exist, which language gates run) remain legitimately divergent.
 - [AGENTS.md §Related Repositories](../../../AGENTS.md) — the three-repo parity model
 - [plan-multi-repo-parity-planning workflow](../../../repo-governance/workflows/plan/plan-multi-repo-parity-planning.md) — the propagation mechanism for Phases 3–4
 - [repo-governance/development/infra/nx-targets.md](../../../repo-governance/development/infra/nx-targets.md) — canonical Nx target names
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

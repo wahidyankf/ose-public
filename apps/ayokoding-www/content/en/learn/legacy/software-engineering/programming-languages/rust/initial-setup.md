@@ -287,7 +287,7 @@ Output shows installed toolchain:
 
 ```
 Default host: x86_64-unknown-linux-gnu
-rustup home:  /home/user/.rustup
+rustup home:  /home/<user>/.rustup
 
 installed toolchains
 --------------------

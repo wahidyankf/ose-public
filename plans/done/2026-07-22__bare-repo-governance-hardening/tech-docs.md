@@ -424,7 +424,7 @@ Verified live [Repo-grounded]:
 
 ```console
 $ git -C ose-primer worktree list
-/Users/wkf/ose-projects/ose-primer  (bare)
+~/ose-projects/ose-primer  (bare)
 
 $ git -C ose-primer merge --ff-only origin/main
 fatal: this operation must be run in a work tree
@@ -622,7 +622,7 @@ delivery step re-anchors by **content**. Do not `sed`-address any of these.
 | `plan-idea-promotion-planning.md` ~L107        | The `[bare-repo git-ops method](...)` link plus its `never git rev-parse --is-bare-repository` clause            | Partial prohibition exists **in `ose-public` only**; link dangles (DD-9)                                                                                                      |
 | `plans/ideas/README.md` L16, L17               | The two brief index lines                                                                                        | Both present; both removed by C7                                                                                                                                              |
 
-**Sibling repos**: `/Users/wkf/ose-projects/ose-primer` and `/Users/wkf/ose-projects/ose-infra`,
+**Sibling repos**: `~/ose-projects/ose-primer` and `~/ose-projects/ose-infra`,
 both `core.bare=true` [Repo-grounded].
 
 > **Live reproduction of the defect, recorded 2026-07-21 during promotion** [Repo-grounded]. An
@@ -756,8 +756,8 @@ sibling entries' descriptive style.
 - **No external dependencies.** No package, service, or tool is added.
 - **No blocking plans.** `plans/done/2026-07-21__shared-course-library-and-learning-paths/` touches
   disjoint paths.
-- **Sibling repo availability** — Phases 4 and 5 require `/Users/wkf/ose-projects/ose-primer` and
-  `/Users/wkf/ose-projects/ose-infra` to be present and reachable. Both verified this session.
+- **Sibling repo availability** — Phases 4 and 5 require `~/ose-projects/ose-primer` and
+  `~/ose-projects/ose-infra` to be present and reachable. Both verified this session.
 
 ## Testing Strategy and Gate Exemptions
 

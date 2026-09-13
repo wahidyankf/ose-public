@@ -394,7 +394,7 @@ See [Trunk Based Development](../../../repo-governance/development/workflow/trun
 ### Environment Setup
 
 - [x] Work directly on `main` in the root checkout — no worktree, no feature branch.
-<!-- Date: 2026-05-24 | Status: Done | Notes: Confirmed on main at /Users/wkf/ose-projects/ose-public -->
+<!-- Date: 2026-05-24 | Status: Done | Notes: Confirmed on main at ~/ose-projects/ose-public -->
 - [x] Initialize toolchain: `npm install && npm run doctor -- --fix`.
 <!-- Date: 2026-05-24 | Status: Done | Notes: npm install OK; doctor 20/20 tools OK -->
 - [x] Confirm `jq` is available: `command -v jq` — prints a path.
@@ -560,3 +560,5 @@ See [Trunk Based Development](../../../repo-governance/development/workflow/trun
 <!-- Date: 2026-05-24 | Status: Done -->
 - [x] Commit: `chore(plans): move guard-env-file-access to done`.
 <!-- Date: 2026-05-24 | Status: Done -->
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

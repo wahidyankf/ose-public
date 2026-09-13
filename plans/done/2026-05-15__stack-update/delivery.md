@@ -280,7 +280,7 @@ job is reachable in CI today (organiclever-be has `tag:lang:java`) and must be f
 ### 2D — golangci-lint version (Path B 2.11.3; tools.go updated in Phase 1A)
 
 - [x] **2D.1** Confirm machine binary is 2.11.3 (from M0.7)
-  - Status: Done 2026-05-16. /Users/wkf/go/bin/golangci-lint reports 2.11.3.
+  - Status: Done 2026-05-16. ~/go/bin/golangci-lint reports 2.11.3.
 - [x] **2D.2** Confirm `apps/rhino-cli/internal/doctor/tools.go` `golangci-lint` `readReq` returns `"2.11.3"` (corrects the 1A.3 fix that originally said 2.12.2)
   - Status: Done 2026-05-16. Verified in 1A.3.
 - [x] **2D.3** Run golangci-lint on rhino-cli: `cd apps/rhino-cli && golangci-lint run ./...`
@@ -916,7 +916,7 @@ literal strings WITHOUT carets.
 - [x] **14.2** Run `npm run doctor` — all tools must show OK; zero FAIL entries
   - Status: Done 2026-05-16. 20/20 OK; dotnet shows 10.0.107 via brew (10.0.300 installed at ~/.dotnet — needs PATH export). CI uses setup-dotnet action.
 - [x] **14.3** Run full typecheck: `npx nx run-many -t typecheck` — zero errors
-  - Status: Partial 2026-05-16. ayokoding-web/ose-web/wahidyankf-web/ose-app-web/web-ui/web-ui-token typecheck PASS. organiclever-web typecheck FAIL: xstate type collision between parent-clone /Users/wkf/ose-projects/ose-public/node_modules/xstate and worktree xstate@5.0.5; plus workout-screen.tsx implicit-any errors under TS 5.8.3 strictness. Environmental + needs annotations. Defer.
+  - Status: Partial 2026-05-16. ayokoding-web/ose-web/wahidyankf-web/ose-app-web/web-ui/web-ui-token typecheck PASS. organiclever-web typecheck FAIL: xstate type collision between parent-clone ~/ose-projects/ose-public/node_modules/xstate and worktree xstate@5.0.5; plus workout-screen.tsx implicit-any errors under TS 5.8.3 strictness. Environmental + needs annotations. Defer.
 - [x] **14.4** Run full lint: `npx nx run-many -t lint` — zero errors
   - Status: Deferred 2026-05-16. Not exercised due to 14.3 blockers. CI will run.
 - [x] **14.5** Run full test:quick: `npx nx run-many -t test:quick` — all pass
@@ -1075,15 +1075,15 @@ For each affected Next.js app (`ayokoding-web`, `ose-web`, `organiclever-web`,
 
 **Known partial / deferred to follow-up plan**:
 
-- **14.3 organiclever-web typecheck FAIL**: (a) xstate type collision — parent clone `/Users/wkf/ose-projects/ose-public/node_modules/xstate` shadows worktree's `xstate@5.0.5` due to Node module resolution walking up from the worktree (env-level npm-workspaces × git-worktree quirk); (b) `workout-screen.tsx` implicit-any errors (TS 5.8.3 stricter inference). Both blocked by xstate dup — type errors cascade from there.
-- **14.5 wahidyankf-web test:quick FAIL**: 2 vitest tests resolve react from parent clone (`/Users/wkf/ose-projects/ose-public/node_modules/react@19.2.4`) instead of worktree's `react@19.2.6` (same resolution quirk). All other web apps PASS.
+- **14.3 organiclever-web typecheck FAIL**: (a) xstate type collision — parent clone `~/ose-projects/ose-public/node_modules/xstate` shadows worktree's `xstate@5.0.5` due to Node module resolution walking up from the worktree (env-level npm-workspaces × git-worktree quirk); (b) `workout-screen.tsx` implicit-any errors (TS 5.8.3 stricter inference). Both blocked by xstate dup — type errors cascade from there.
+- **14.5 wahidyankf-web test:quick FAIL**: 2 vitest tests resolve react from parent clone (`~/ose-projects/ose-public/node_modules/react@19.2.4`) instead of worktree's `react@19.2.6` (same resolution quirk). All other web apps PASS.
 - **Phase 15 / Post-Push / Plan Archive**: requires user-authorized push to `origin main` and CI verification (per repo's `Only create commits when requested by the user` policy).
 - **Manual UI Verification (Playwright MCP)** + **Manual API Verification (curl)**: require running dev servers / curl session and recording observations; deferred to user.
 - **Phase 0 machine-level deferrals**: M0.1 (Go 1.25.8) / M0.5 (Rust 1.93.0) / M0.6 (Dart/Flutter) — machine has newer working majors; non-blocking since CI workflows pin per Phase 1E/1E2.
 
 **Resolution path**:
 
-1. User cleans `/Users/wkf/ose-projects/ose-public/node_modules` (sibling parent clone) OR sets up nested `installStrategy` so worktree node_modules is authoritative.
+1. User cleans `~/ose-projects/ose-public/node_modules` (sibling parent clone) OR sets up nested `installStrategy` so worktree node_modules is authoritative.
 2. After clean install, re-run `nx run organiclever-web:typecheck` — xstate dup error gone. Add explicit type annotations on `workout-screen.tsx` lines 113-302 (parameters n/e/ex/exIdx/s/sIdx/idx) if implicit-any errors persist.
 3. Re-run `nx run wahidyankf-web:test:quick` — react 19.2.6 resolves correctly.
 4. User commits thematic batches and pushes to main; Phase 15 CI verification follows.

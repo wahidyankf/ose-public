@@ -280,7 +280,7 @@ Output:
 
 ```
 Are you sure you want to install "https://repo.hex.pm/installs/1.16.0/hex-2.0.6.ez"? [Yn] y
-* creating /home/user/.mix/archives/hex-2.0.6
+* creating /home/<user>/.mix/archives/hex-2.0.6
 ```
 
 Type `y` and press Enter to install.
@@ -300,7 +300,7 @@ Resolving Hex dependencies...
 Resolution completed in 0.1s
 New:
   phx_new 1.7.10
-* creating /home/user/.mix/archives/phx_new-1.7.10
+* creating /home/<user>/.mix/archives/phx_new-1.7.10
 
 Are you sure you want to install "phx_new 1.7.10"? [Yn] y
 ```

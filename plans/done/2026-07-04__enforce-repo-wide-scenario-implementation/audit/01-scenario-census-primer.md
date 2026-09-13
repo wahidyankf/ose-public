@@ -1,6 +1,6 @@
 # ose-primer Scenario Census (Phase 0 Audit — Deliverable 1)
 
-Source of truth: `/Users/wkf/ose-projects/ose-primer/repo-config.yml`, `coverage.projects` (25 entries,
+Source of truth: `~/ose-projects/ose-primer/repo-config.yml`, `coverage.projects` (25 entries,
 confirmed via `grep -c "^    - name:" repo-config.yml`).
 
 **Method**: scenario counts are literal `grep -E "^\s*Scenario:|^\s*Scenario Outline:"` line counts

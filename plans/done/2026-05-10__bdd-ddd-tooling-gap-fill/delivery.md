@@ -26,7 +26,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
   - **Date**: 2026-05-10
   - **Status**: Aligned to existing worktree `worktrees/graceful-brewing-patterson/` per user direction "do it in current worktree". Worktree spec in this delivery.md updated to match (line 11). Both Worktree section + this checkbox now reflect current cwd.
   - **Files Changed**: `plans/in-progress/bdd-ddd-tooling-gap-fill/delivery.md` (Worktree path → graceful-brewing-patterson)
-  - **Notes**: `pwd` = `/Users/wkf/ose-projects/ose-public/worktrees/graceful-brewing-patterson`; `git rev-parse --show-toplevel` matches. Worktree gate satisfied.
+  - **Notes**: `pwd` = `~/ose-projects/ose-public/worktrees/graceful-brewing-patterson`; `git rev-parse --show-toplevel` matches. Worktree gate satisfied.
 - [x] Initialize toolchain in the root worktree: `npm install && npm run doctor -- --fix` (see [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md)).
   - **Date**: 2026-05-10
   - **Status**: Done. Doctor 19/19 OK; 1718 packages installed; 0 warning, 0 missing.

@@ -24,7 +24,7 @@ cd my-project
 # => Working directory is now my-project/
 
 git init
-# => Initialized empty Git repository in /home/user/my-project/.git/
+# => Initialized empty Git repository in /home/<user>/my-project/.git/
 # => Creates hidden .git/ folder containing: HEAD, config, objects/, refs/
 
 ls -la

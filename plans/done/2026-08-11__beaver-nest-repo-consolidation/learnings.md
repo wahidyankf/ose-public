@@ -333,7 +333,7 @@ never staged/committed, and this execution's worktree — while nominally "the s
 branch/session continuity delivery.md assumes — did not inherit that uncommitted local state. Rather
 than block on an unrecoverable file, re-ran delivery.md's exact `comm -13` command fresh against
 current `origin/main` in both repos (a fresh shallow clone of `beaver-nest`, since no local clone
-exists at `/Users/wkf/ose-projects/beaver-nest`) and wrote the result to
+exists at `~/ose-projects/beaver-nest`) and wrote the result to
 `evidence/phase-4-unique-ideas-manifest.txt`: 8 briefs, byte-identical in content to the set
 tech-docs.md's "More Detail" section already documented as the 2026-08-10 snapshot (4 product +
 4 generic, 0 duplicates) — strong independent corroboration that the re-derivation is correct even

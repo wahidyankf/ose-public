@@ -27,8 +27,8 @@ vim.o.number = true                -- => the first real config line; proves the 
 **Output**:
 
 ```text
-/Users/you/.config/nvim/init.lua
-/Users/you/.config/nvim
+/Users/<you>/.config/nvim/init.lua
+/Users/<you>/.config/nvim
 ```
 
 **Key takeaway**: `:echo $MYVIMRC` reports the exact file Neovim sourced this run; `stdpath('config')` reports the config root independently, even before `init.lua` exists.

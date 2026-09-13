@@ -52,8 +52,8 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
       — acceptance: exits 0 with no unresolved drift
       — done: 13/13 tools OK, 0 warning, 0 missing, "Nothing to fix"
 - [x] [AI] Confirm sibling repos are present and clean:
-      `git -C /Users/wkf/ose-projects/ose-primer status --short` and
-      `git -C /Users/wkf/ose-projects/ose-infra status --short`
+      `git -C ~/ose-projects/ose-primer status --short` and
+      `git -C ~/ose-projects/ose-infra status --short`
       — acceptance: both commands exit 0; any pre-existing WIP is recorded (do NOT `git add -A` in siblings)
       — done: both exit 0, both clean (no output), no preexisting WIP to record
 - [x] [AI] Record markdown/governance baseline in `ose-public`:
@@ -331,7 +331,7 @@ plan-maker}.md` mirrors changed (SKILL.md has no `.opencode` mirror per the Skil
 
 > **Pause Safety**: `ose-public` is fully wired, bindings synced, pushed, and CI-green — a complete,
 > self-consistent single-repo delivery. Safe to stop here indefinitely (the public repo is done; only
-> the primer/infra replicas remain). To resume: `git -C /Users/wkf/ose-projects/ose-primer status`.
+> the primer/infra replicas remain). To resume: `git -C ~/ose-projects/ose-primer status`.
 
 ---
 
@@ -343,14 +343,14 @@ plan-maker}.md` mirrors changed (SKILL.md has no `.opencode` mirror per the Skil
 > every file edited in Phases 1-3. Work in a dedicated worktree inside the primer repo.
 
 - [x] [AI] Provision the primer worktree:
-      `git -C /Users/wkf/ose-projects/ose-primer worktree add worktrees/plan-execution-knowledge-capture origin/main`
+      `git -C ~/ose-projects/ose-primer worktree add worktrees/plan-execution-knowledge-capture origin/main`
       — acceptance: worktree exists tracking `origin/main`
       — **N/A: main-to-origin-main override**. User specified this delivery mode for the whole plan
       execution; per plan-execution Step 0 precedence (user-at-invocation mode wins over a plan's own
       worktree instruction), worked directly in `ose-primer`'s existing clean `main` checkout instead
       of a dedicated worktree — mirrors the same override already applied to `ose-public` in Phase 0.
-- [x] [AI] Initialize toolchain: `npm --prefix /Users/wkf/ose-projects/ose-primer install` and
-      `npm --prefix /Users/wkf/ose-projects/ose-primer run doctor -- --fix`
+- [x] [AI] Initialize toolchain: `npm --prefix ~/ose-projects/ose-primer install` and
+      `npm --prefix ~/ose-projects/ose-primer run doctor -- --fix`
       — acceptance: both exit 0
       — **N/A: main-to-origin-main override**. `ose-primer` main checkout was already confirmed clean
       and up to date (top commit `9e6fc6b66`) from earlier Phase-0 sibling-repo reachability checks;
@@ -358,7 +358,7 @@ plan-maker}.md` mirrors changed (SKILL.md has no `.opencode` mirror per the Skil
 - [x] [AI] Replicate the Phase 1 convention + doc edits in `ose-primer` (create
       `repo-governance/development/quality/knowledge-capture.md`; update `quality/README.md`,
       `conventions/structure/plans.md`, `conventions/structure/post-mortems.md`, `AGENTS.md`)
-      — acceptance: `test -f /Users/wkf/ose-projects/ose-primer/repo-governance/development/quality/knowledge-capture.md`
+      — acceptance: `test -f ~/ose-projects/ose-primer/repo-governance/development/quality/knowledge-capture.md`
       — Done via `repo-rules-maker` (bg agent), targeting ose-primer's own file content/structure
       directly rather than porting an ose-public diff (files had already diverged in unrelated wording
       — confirmed via direct `diff` against ose-public's pre-Phase-3 `plan-maker.md`/`plan-checker.md`).
@@ -371,8 +371,8 @@ plan-maker}.md` mirrors changed (SKILL.md has no `.opencode` mirror per the Skil
       plan-multi-repo-parity-planning.md, plan-multi-repo-parity-planning-and-execution.md) grep-match
       "Knowledge Capture" with concrete step insertions. Committed `02acd3b1e`.
 - [x] [AI] Replicate the Phase 3 agent + skill edits in `ose-primer`, then re-sync:
-      `npm --prefix /Users/wkf/ose-projects/ose-primer run generate:bindings`
-      — acceptance: exits 0; `git -C /Users/wkf/ose-projects/ose-primer status --short .opencode .amazonq` shows no stale drift
+      `npm --prefix ~/ose-projects/ose-primer run generate:bindings`
+      — acceptance: exits 0; `git -C ~/ose-projects/ose-primer status --short .opencode .amazonq` shows no stale drift
       — Done via 2 parallel bg agents (`repo-rules-maker` for SKILL.md, `agent-maker` for the 4
       `.claude/agents/plan-*.md` files — split to respect the 2-bg-agent cap and avoid file
       collisions). All 4 agent-file diffs verified pure-additions (241 insertions, 0 deletions).
@@ -390,7 +390,7 @@ plan-maker}.md` mirrors changed (SKILL.md has no `.opencode` mirror per the Skil
 ### Local Quality Gates + Push (ose-primer)
 
 - [x] [AI] In the primer worktree: `npx nx affected -t typecheck lint test:quick specs:behavior:coverage` and
-      `npm --prefix /Users/wkf/ose-projects/ose-primer run lint:md:fix` — all exit 0; fix ALL failures
+      `npm --prefix ~/ose-projects/ose-primer run lint:md:fix` — all exit 0; fix ALL failures
       — `nx affected` → "No tasks were run" (docs-only change, no project affected). `lint:md:fix` →
       "0 error(s)" across 898 files. `md mermaid validate` → 4 violations + 1 warning, ALL in
       pre-existing `apps/rhino-cli/tests/fixtures/state/*.md` deliberate test fixtures (confirmed via
@@ -417,7 +417,7 @@ plan-maker}.md` mirrors changed (SKILL.md has no `.opencode` mirror per the Skil
 
 > All checks below must pass before starting Phase 5.
 
-- [x] [AI] `test -f /Users/wkf/ose-projects/ose-primer/repo-governance/development/quality/knowledge-capture.md` exits 0
+- [x] [AI] `test -f ~/ose-projects/ose-primer/repo-governance/development/quality/knowledge-capture.md` exits 0
       — confirmed, file exists (291 lines), committed and pushed.
 - [x] [AI] `ose-primer` CI is fully green on the pushed commit(s)
       — confirmed: `validate-env`/`pr-quality-gate`/`main-ci` all `completed`/`success` on `fc37f6175`;
@@ -425,7 +425,7 @@ plan-maker}.md` mirrors changed (SKILL.md has no `.opencode` mirror per the Skil
 
 > **Pause Safety**: both public repos (`ose-public`, `ose-primer`) carry the identical change, pushed
 > and CI-green — the parity loop is satisfied. Safe to stop. To resume:
-> `git -C /Users/wkf/ose-projects/ose-infra status`.
+> `git -C ~/ose-projects/ose-infra status`.
 
 ---
 
@@ -435,20 +435,20 @@ plan-maker}.md` mirrors changed (SKILL.md has no `.opencode` mirror per the Skil
 > gates here — this is where private content (Terraform/k3s/Proxmox/coralpolyp/real hosts) lives._
 
 - [x] [AI] Provision the infra worktree:
-      `git -C /Users/wkf/ose-projects/ose-infra worktree add worktrees/plan-execution-knowledge-capture origin/main`
+      `git -C ~/ose-projects/ose-infra worktree add worktrees/plan-execution-knowledge-capture origin/main`
       — acceptance: worktree exists tracking `origin/main`
       — **N/A, mode override**: same `main-to-origin-main` override applied in Phases 0/4 — worked
       directly in `ose-infra`'s existing clean `main` checkout instead of a dedicated worktree.
-- [x] [AI] Initialize toolchain: `npm --prefix /Users/wkf/ose-projects/ose-infra install` and
-      `npm --prefix /Users/wkf/ose-projects/ose-infra run doctor -- --fix`
+- [x] [AI] Initialize toolchain: `npm --prefix ~/ose-projects/ose-infra install` and
+      `npm --prefix ~/ose-projects/ose-infra run doctor -- --fix`
       — acceptance: both exit 0
       — **N/A: main-to-origin-main override**. `ose-infra` main checkout was already confirmed clean and
       up to date from earlier Phase-0 sibling-repo reachability checks; no fresh install/doctor re-run
       was needed since no new worktree was provisioned.
 - [x] [AI] Replicate the Phase 1-3 edits in `ose-infra` (convention + docs + five workflows + agents +
       skill), then re-sync bindings if `.claude/**` differs:
-      `npm --prefix /Users/wkf/ose-projects/ose-infra run generate:bindings`
-      — acceptance: `test -f /Users/wkf/ose-projects/ose-infra/repo-governance/development/quality/knowledge-capture.md`; binding status clean
+      `npm --prefix ~/ose-projects/ose-infra run generate:bindings`
+      — acceptance: `test -f ~/ose-projects/ose-infra/repo-governance/development/quality/knowledge-capture.md`; binding status clean
       — done: `knowledge-capture.md` created + doc cross-references updated (commit `a3273536a`); all
       five `plan-*` workflows reference knowledge-capture (commit `065be7a7d`); the 4 `.claude/agents/
 plan-*.md` files + SKILL.md edited (commit `c1a7b7d25`); `generate:bindings` re-synced
@@ -456,7 +456,7 @@ plan-*.md` files + SKILL.md edited (commit `c1a7b7d25`); `generate:bindings` re-
 - [x] [AI] In the infra copy of `knowledge-capture.md`, ensure the repo-relevance gate explicitly
       states that infra-specific learnings stay in `ose-infra` only and NEVER cross-route to the public
       repos
-      — acceptance: `grep -c "never\|only in ose-infra\|private" /Users/wkf/ose-projects/ose-infra/repo-governance/development/quality/knowledge-capture.md` ≥ 1
+      — acceptance: `grep -c "never\|only in ose-infra\|private" ~/ose-projects/ose-infra/repo-governance/development/quality/knowledge-capture.md` ≥ 1
       — done: grep count = 30 (≥1 required); wording explicitly states infra-only learnings never
       cross-route to `ose-public`/`ose-primer`.
 - [x] [AI] Verify NO private-infra content (real hostnames, inventories, secrets) was introduced into
@@ -469,7 +469,7 @@ plan-*.md` files + SKILL.md edited (commit `c1a7b7d25`); `generate:bindings` re-
 ### Local Quality Gates + Push (ose-infra)
 
 - [x] [AI] In the infra worktree: `npx nx affected -t typecheck lint test:quick specs:behavior:coverage` and
-      `npm --prefix /Users/wkf/ose-projects/ose-infra run lint:md:fix` — all exit 0; fix ALL failures
+      `npm --prefix ~/ose-projects/ose-infra run lint:md:fix` — all exit 0; fix ALL failures
       — done: `nx affected` → no `apps/`/`libs/` source affected (docs/governance-only change);
       `lint:md:fix` → 0 errors; markdown link/mermaid/heading-hierarchy validators clean (no
       Phase-5-touched file among any preexisting baseline violations) — matches the pattern already
@@ -492,7 +492,7 @@ plan-*.md` files + SKILL.md edited (commit `c1a7b7d25`); `generate:bindings` re-
 
 > All checks below must pass before starting Phase 6.
 
-- [x] [AI] `test -f /Users/wkf/ose-projects/ose-infra/repo-governance/development/quality/knowledge-capture.md` exits 0
+- [x] [AI] `test -f ~/ose-projects/ose-infra/repo-governance/development/quality/knowledge-capture.md` exits 0
       — done: file exists.
 - [x] [AI] `ose-infra` CI is fully green on the pushed commit(s)
       — done: `main-ci`, `pr-quality-gate`, `validate-env` all `completed`/`success` on `9fb7c48c4`

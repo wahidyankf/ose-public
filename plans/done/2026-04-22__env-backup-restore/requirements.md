@@ -153,8 +153,8 @@ Feature: Environment file backup and restore
     And the output reports that the directory does not exist
 
   Scenario: Backup rejects a directory inside the repository
-    Given a repository at /home/user/project
-    When the developer runs env backup --dir /home/user/project/backups
+    Given a repository at /home/<user>/project
+    When the developer runs env backup --dir /home/<user>/project/backups
     Then the command exits with a failure code
     And the output warns that the backup dir must be outside the repo
 

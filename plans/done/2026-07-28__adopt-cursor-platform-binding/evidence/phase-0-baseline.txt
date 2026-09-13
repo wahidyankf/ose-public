@@ -2,7 +2,7 @@
 # Recorded: 2026-07-28
 
 ## ose-public
-root: /Users/wkf/ose-projects/ose-public/worktrees/adopt-cursor-platform-binding
+root: ~/ose-projects/ose-public/worktrees/adopt-cursor-platform-binding
 agents_non_readme: 90
 test -e .cursor; echo $?: 1
 tier_generated: 2
@@ -11,7 +11,7 @@ harness_feature_files: 10
 cursor_binding_dir_exists: 1
 
 ## ose-primer
-root: /Users/wkf/ose-projects/ose-primer
+root: ~/ose-projects/ose-primer
 agents_non_readme: 64
 test -e .cursor; echo $?: 1
 tier_generated: 2
@@ -20,7 +20,7 @@ harness_feature_files: 10
 cursor_binding_dir_exists: 1
 
 ## ose-infra
-root: /Users/wkf/ose-projects/ose-infra
+root: ~/ose-projects/ose-infra
 agents_non_readme: 53
 test -e .cursor; echo $?: 1
 tier_generated: 2

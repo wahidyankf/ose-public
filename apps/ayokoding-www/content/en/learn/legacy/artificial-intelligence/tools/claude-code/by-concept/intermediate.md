@@ -178,7 +178,7 @@ graph LR
   // => disallowedTools takes precedence over allowedTools
   // => Use for sensitive environments with production credentials
 
-  "additionalDirectories": ["../shared-lib", "/home/user/docs"],
+  "additionalDirectories": ["../shared-lib", "/home/<user>/docs"],
   // => Directories outside the project root that Claude Code may read/edit
   // => Useful for monorepo setups or shared documentation
 

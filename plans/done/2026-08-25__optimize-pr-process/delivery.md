@@ -109,9 +109,9 @@ Reuse exactly one worktree per repository for this whole plan; follow the
 [specification][worktree-spec], [cap][worktree-cap], and [path rule][worktree-path]:
 
 - public: `worktrees/optimize-pr-process/` resolves to
-  `/Users/wkf/ose-projects/ose-public/worktrees/optimize-pr-process` — active for assembly;
+  `~/ose-projects/ose-public/worktrees/optimize-pr-process` — active for assembly;
 - private: `worktrees/optimize-pr-process/` resolves to
-  `/Users/wkf/ose-projects/ose-private/worktrees/optimize-pr-process` — reused for every private
+  `~/ose-projects/<sibling>/worktrees/optimize-pr-process` — reused for every private
   admission and source delivery in this plan.
 
 For authored provisioning, run this documentation-only harness command from the relevant repository
@@ -999,17 +999,17 @@ hash, terminal pair records, and archive/index evidence, then performs only the 
 local cleanup that removes the two already-recorded clean plan worktrees.
 
 ```bash
-git -C /Users/wkf/ose-projects/ose-public merge-base --is-ancestor "$PUBLIC_MERGE_SHA" origin/main
-git -C /Users/wkf/ose-projects/ose-private merge-base --is-ancestor "$PRIVATE_MERGE_SHA" origin/main
+git -C ~/ose-projects/ose-public merge-base --is-ancestor "$PUBLIC_MERGE_SHA" origin/main
+git -C ~/ose-projects/<sibling> merge-base --is-ancestor "$PRIVATE_MERGE_SHA" origin/main
 test -d "$ARCHIVE_PATH"
-git -C /Users/wkf/ose-projects/ose-public worktree list --porcelain
-git -C /Users/wkf/ose-projects/ose-private worktree list --porcelain
-PUBLIC_PLAN_WORKTREE=/Users/wkf/ose-projects/ose-public/worktrees/optimize-pr-process
-PRIVATE_PLAN_WORKTREE=/Users/wkf/ose-projects/ose-private/worktrees/optimize-pr-process
+git -C ~/ose-projects/ose-public worktree list --porcelain
+git -C ~/ose-projects/<sibling> worktree list --porcelain
+PUBLIC_PLAN_WORKTREE=$HOME/ose-projects/ose-public/worktrees/optimize-pr-process
+PRIVATE_PLAN_WORKTREE=$HOME/ose-projects/<sibling>/worktrees/optimize-pr-process
 test "$PUBLIC_WORKTREE" = "$PUBLIC_PLAN_WORKTREE"
 test "$PRIVATE_WORKTREE" = "$PRIVATE_PLAN_WORKTREE"
-git -C /Users/wkf/ose-projects/ose-public worktree list --porcelain | rg -Fx "worktree $PUBLIC_PLAN_WORKTREE"
-git -C /Users/wkf/ose-projects/ose-private worktree list --porcelain | rg -Fx "worktree $PRIVATE_PLAN_WORKTREE"
+git -C ~/ose-projects/ose-public worktree list --porcelain | rg -Fx "worktree $PUBLIC_PLAN_WORKTREE"
+git -C ~/ose-projects/<sibling> worktree list --porcelain | rg -Fx "worktree $PRIVATE_PLAN_WORKTREE"
 PUBLIC_BRANCH="$(git -C "$PUBLIC_WORKTREE" branch --show-current)"
 PRIVATE_BRANCH="$(git -C "$PRIVATE_WORKTREE" branch --show-current)"
 test -n "$PUBLIC_BRANCH" && test -n "$PRIVATE_BRANCH"
@@ -1019,10 +1019,10 @@ git -C "$PUBLIC_WORKTREE" status --short
 git -C "$PRIVATE_WORKTREE" status --short
 git -C "$PUBLIC_WORKTREE" log "origin/$PUBLIC_BRANCH..$PUBLIC_BRANCH"
 git -C "$PRIVATE_WORKTREE" log "origin/$PRIVATE_BRANCH..$PRIVATE_BRANCH"
-git -C /Users/wkf/ose-projects/ose-public worktree remove "$PUBLIC_WORKTREE"
-git -C /Users/wkf/ose-projects/ose-private worktree remove "$PRIVATE_WORKTREE"
-git -C /Users/wkf/ose-projects/ose-public worktree prune
-git -C /Users/wkf/ose-projects/ose-private worktree prune
+git -C ~/ose-projects/ose-public worktree remove "$PUBLIC_WORKTREE"
+git -C ~/ose-projects/<sibling> worktree remove "$PRIVATE_WORKTREE"
+git -C ~/ose-projects/ose-public worktree prune
+git -C ~/ose-projects/<sibling> worktree prune
 ```
 
 Run removal only after every terminal record is read back, both PR-list results show a merged PR,
@@ -1687,10 +1687,10 @@ follow-up only; it never creates a new `plans/backlog/**` or `plans/ideas/**` pa
 
 - [ ] `[PHASE-6:G6.01][AI]` Run `gh pr view "$CLOSURE_PR" --repo wahidyankf/ose-public --json url,baseRefOid,headRefOid,body,mergeCommit,state,reviews,comments`; acceptance: immutable PR, readable AI-marked body, merge, and all recorded review evidence equal the Phase 3–5 records.
 - [ ] `[PHASE-6:G6.02][AI]` Run `git fetch origin main && /usr/bin/git diff --binary "$MERGE_SHA^1" "$MERGE_SHA" | /usr/bin/shasum -a 256`; acceptance: fetched main contains every recorded public merge and the recomputed landed hash equals the stored reviewed hash.
-- [ ] `[PHASE-6:G6.03][AI]` Run `git -C /Users/wkf/ose-projects/ose-public worktree list --porcelain && git -C /Users/wkf/ose-projects/ose-private worktree list --porcelain`; acceptance: neither explicit public nor private plan-worktree path remains registered after their separately recorded clean removal, and the terminal record names the final public/private main pins and archive path.
+- [ ] `[PHASE-6:G6.03][AI]` Run `git -C ~/ose-projects/ose-public worktree list --porcelain && git -C ~/ose-projects/<sibling> worktree list --porcelain`; acceptance: neither explicit public nor private plan-worktree path remains registered after their separately recorded clean removal, and the terminal record names the final public/private main pins and archive path.
 
 > **Pause Safety**: The public archive, terminal native PR evidence, final main pins, and worktree
-> removal record are durable. Safe to stop. To resume: `git -C /Users/wkf/ose-projects/ose-public worktree list --porcelain`.
+> removal record are durable. Safe to stop. To resume: `git -C ~/ose-projects/ose-public worktree list --porcelain`.
 
 ## Dormant Lifecycle and Evidence-State Template
 

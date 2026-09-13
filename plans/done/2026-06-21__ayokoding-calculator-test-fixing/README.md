@@ -70,3 +70,5 @@ The plan is done when every listed finding is fixed (or explicitly deferred with
 local + CI gates are green, manual Playwright verification across **both** locales (`en`, `id`) at
 320/375/768/1280 px is captured with committed evidence, and the rule-15 three-tester retest is
 clean or its findings are triaged.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

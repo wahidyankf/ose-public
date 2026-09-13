@@ -550,7 +550,7 @@ A slice (`&[T]` for arrays/vecs, `&str` for strings) is a borrowed view into a c
 ```rust
 fn main() {
     // String slices (&str)
-    let full_path = String::from("/home/user/.config/my-tool/config.toml");
+    let full_path = String::from("/home/<user>/.config/my-tool/config.toml");
                                           // => full_path owns the String
 
     let filename = &full_path[27..];      // => Slice from index 27 to end
@@ -561,8 +561,8 @@ fn main() {
     println!("Filename: {}", filename);   // => Output: Filename: config.toml
 
     let dir = &full_path[..27];           // => Slice from start to index 27
-                                          // => dir is "/home/user/.config/my-tool/"
-    println!("Dir: {}", dir);             // => Output: Dir: /home/user/.config/my-tool/
+                                          // => dir is "/home/<user>/.config/my-tool/"
+    println!("Dir: {}", dir);             // => Output: Dir: /home/<user>/.config/my-tool/
 
     // Array and Vec slices (&[T])
     let args = vec![                      // => Vec<String>, owned collection of Strings

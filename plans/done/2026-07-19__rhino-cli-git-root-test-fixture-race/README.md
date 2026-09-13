@@ -73,3 +73,5 @@ contents.
 - [Knowledge Capture Convention](../../../repo-governance/development/quality/knowledge-capture.md)
 - [Git Identity Guardrail](../../../AGENTS.md#reproducible-environments)
 - `plans/done/2026-07-18__e2e-scenario-coverage-gap-detector/learnings.md` — full incident detail.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

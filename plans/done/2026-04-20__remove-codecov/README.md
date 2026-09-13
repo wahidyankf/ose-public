@@ -292,7 +292,7 @@ and must not be edited.
 ### Environment Setup
 
 - [x] Confirm working directory is `ose-public/` (all commands below run from there)
-<!-- Date: 2026-04-20 | Status: done | Notes: primary working dir is /Users/wkf/ose-projects/ose-public -->
+<!-- Date: 2026-04-20 | Status: done | Notes: primary working dir is ~/ose-projects/ose-public -->
 - [x] Install dependencies: `npm install`
 <!-- Date: 2026-04-20 | Status: done | Notes: completed, audit warnings only -->
 - [x] Converge the polyglot toolchain: `npm run doctor -- --fix`
@@ -607,3 +607,5 @@ The plan is complete when all of the following hold:
 - [ ] Update `plans/in-progress/README.md` — remove the entry for this plan
 - [ ] Update `plans/done/README.md` — add the entry for this plan with completion date
 - [ ] Commit: `chore(plans): move remove-codecov to done`
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

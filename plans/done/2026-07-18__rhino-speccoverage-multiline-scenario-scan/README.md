@@ -92,3 +92,5 @@ no cross-repo deviation. The `libs/web-ui` hack removal is **ose-public-only** â
 outside the byte-identity boundary.
 
 See [Related Repositories reference](../../../docs/reference/related-repositories.md).
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

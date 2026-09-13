@@ -1,4 +1,4 @@
-   Compiling rhino-cli v0.1.0 (/Users/wkf/ose-projects/ose-public/worktrees/optimize-cis/apps/rhino-cli)
+   Compiling rhino-cli v0.1.0 (~/ose-projects/ose-public/worktrees/optimize-cis/apps/rhino-cli)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 9.39s
      Running unittests src/lib.rs (apps/rhino-cli/target/debug/deps/rhino_cli-348ee8ed8665344d)
 application::agents::agent_validator::tests::validate_agent_bad_yaml: test

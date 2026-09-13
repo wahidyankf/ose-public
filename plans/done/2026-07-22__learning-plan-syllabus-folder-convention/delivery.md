@@ -528,7 +528,7 @@ flowchart TD
       `plans/backlog/ayokoding-learning-path-*` path and no `plans/` corpus file, because those are
       `ose-public` content that does not exist in a sibling.
 - [x] [AI] For each sibling, confirm the target file either exists or is legitimately absent:
-      `for r in ose-primer ose-infra; do for p in <each shared path>; do git -C "/Users/wkf/ose-projects/$r" cat-file -e "main:$p" 2>/dev/null || echo "ABSENT $r $p"; done; done`
+      `for r in ose-primer ose-infra; do for p in <each shared path>; do git -C "$HOME/ose-projects/$r" cat-file -e "main:$p" 2>/dev/null || echo "ABSENT $r $p"; done; done`
       — acceptance: every `ABSENT` line is one you can justify in writing before proceeding. A silent
       empty result here is **not** a pass: run it once with a deliberately fake path appended to the
       list and confirm that path prints `ABSENT`, proving the probe reports absence at all.
@@ -536,7 +536,7 @@ flowchart TD
 ### 6.2 — `ose-primer`: worktree, apply, PR
 
 - [x] [AI] Create a worktree off `origin/main` per the bare-repo landing method — acceptance:
-      `git -C /Users/wkf/ose-projects/ose-primer worktree list` lists the new path
+      `git -C ~/ose-projects/ose-primer worktree list` lists the new path
 - [x] [AI] Run `npm install` **and** `npm run doctor -- --fix` in the new worktree, per
       [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md)
       — acceptance: both exit 0
@@ -557,7 +557,7 @@ flowchart TD
 
 ### 6.3 — `ose-infra`: worktree, apply, PR
 
-- [x] [AI] Repeat every step of 6.2 against `/Users/wkf/ose-projects/ose-infra`
+- [x] [AI] Repeat every step of 6.2 against `~/ose-projects/ose-infra`
       — acceptance: same criteria, same 3-cycle review ceiling, same do-not-merge rule
 - [x] [AI] Record any surface that legitimately differs in `ose-infra` (it is the private
       infrastructure repo and does not participate in every parity loop) — acceptance: each
@@ -569,7 +569,7 @@ flowchart TD
 
 - [x] [AI] Both sibling PRs report `OPEN`, with every check `conclusion: success`
 - [x] [AI] The convention's normative text is byte-identical across all three repos:
-      `for r in ose-public ose-primer ose-infra; do git -C "/Users/wkf/ose-projects/$r" show "<branch>:repo-governance/conventions/structure/learning-plan-syllabus.md" | shasum; done`
+      `for r in ose-public ose-primer ose-infra; do git -C "$HOME/ose-projects/$r" show "<branch>:repo-governance/conventions/structure/learning-plan-syllabus.md" | shasum; done`
       prints **one distinct hash**. Negative control: appending a single character to any one copy
       makes it print two — run that mutation once and confirm it does, then revert it.
 - [x] [AI] No sibling worktree holds uncommitted work: `git status --porcelain` prints nothing in each
@@ -665,7 +665,7 @@ flowchart TD
       — acceptance: `git worktree list` no longer prints a line containing
       `worktrees/learning-plan-syllabus-folder-convention`
 - [ ] [AI] Remove both sibling worktrees created in Phase 6, after their merges complete
-      — acceptance: `git -C /Users/wkf/ose-projects/ose-primer worktree list` and the same for
+      — acceptance: `git -C ~/ose-projects/ose-primer worktree list` and the same for
       `ose-infra` no longer print this plan's worktree path
 
 ### Phase 8 Gate

@@ -1,6 +1,6 @@
 # `@covers` Marker Adoption — ose-infra
 
-Command run: `git grep -l "@covers " -- apps libs` from `/Users/wkf/ose-projects/ose-infra`.
+Command run: `git grep -l "@covers " -- apps libs` from `~/ose-projects/ose-infra`.
 
 ## Raw grep result (8 files)
 

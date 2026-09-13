@@ -564,7 +564,7 @@ Implements the [§6 standard](./tech-docs.md#6-post-merge-main-ci--per-project-s
 
 ## Phase 3: Propagate + Converge ose-primer
 
-> Executes in the `ose-primer` repo (`/Users/wkf/ose-projects/ose-primer`). Target state = the
+> Executes in the `ose-primer` repo (`~/ose-projects/ose-primer`). Target state = the
 > [§2.2 primer matrix](./tech-docs.md#22-per-project-target-matrix-post-implementation-ose-primer).
 > Use primer's own worktree; commit to its `main`.
 

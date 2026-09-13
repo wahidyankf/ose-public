@@ -174,3 +174,5 @@ asserts the touched repo passes its own full gate before pause.
 - [SDLC Gate Standard](../../../docs/reference/sdlc-gate-standard.md) — rhino-cli byte-identity boundary
 - [plan-multi-repo-parity-planning workflow](../../../repo-governance/workflows/plan/plan-multi-repo-parity-planning.md)
 - [AGENTS.md §Related Repositories](../../../AGENTS.md) — the three-repo parity model
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

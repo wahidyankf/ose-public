@@ -330,5 +330,5 @@ is intentionally absent from this plan (spec-blind methodology; see `README.md`)
 
 **Not covered**: Full POUR accessibility audit (contrast, keyboard traps, complete ARIA wiring) — deferred to `swe-ui-checker`. Form error states (no text fields with validation errors were reachable without destructive submission). Keyboard-only navigation flow.
 
-**Screenshots evidence trail**: 36 screenshots captured to `/Users/wkf/ose-projects/ose-public/local-temp/uwt-*.png`.
+**Screenshots evidence trail**: 36 screenshots captured to `~/ose-projects/ose-public/local-temp/uwt-*.png`.
 ```

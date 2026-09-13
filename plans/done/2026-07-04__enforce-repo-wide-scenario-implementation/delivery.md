@@ -63,8 +63,8 @@ flowchart TD
 
 ## Phase 0 — Audit & Baseline (all three repos)
 
-> Every audit item below runs **once per repo** (`ose-public`, `/Users/wkf/ose-projects/ose-primer`,
-> `/Users/wkf/ose-projects/ose-infra`) against that repo's own `repo-config.yml` `coverage.projects`
+> Every audit item below runs **once per repo** (`ose-public`, `~/ose-projects/ose-primer`,
+> `~/ose-projects/ose-infra`) against that repo's own `repo-config.yml` `coverage.projects`
 > registry. Each `audit/0*.md` artifact carries one section per repo (or three separate files
 > `0N-<name>-{public,primer,infra}.md` — either is acceptable as long as all three repos are covered and
 > the split is explicit).
@@ -255,10 +255,10 @@ warnings`: 0 issues. `cargo fmt --check`: clean. `cargo test -p rhino-cli`: 1139
       for intent before freezing. Propagate the byte-identical `apps/rhino-cli/` to ose-primer and
       ose-infra using the dependency plan's exact Phase 3/Phase 4 commands. Command (ose-primer):
       `rsync -a --delete --exclude=target --exclude=dist --exclude=cover.out --exclude=lcov.info
-/Users/wkf/ose-projects/ose-public/apps/rhino-cli/ /Users/wkf/ose-projects/ose-primer/apps/rhino-cli/`.
+~/ose-projects/ose-public/apps/rhino-cli/ ~/ose-projects/ose-primer/apps/rhino-cli/`.
       Command (ose-infra):
       `rsync -a --delete --exclude=target --exclude=dist --exclude=cover.out --exclude=lcov.info
-/Users/wkf/ose-projects/ose-public/apps/rhino-cli/ /Users/wkf/ose-projects/ose-infra/apps/rhino-cli/`.
+~/ose-projects/ose-public/apps/rhino-cli/ ~/ose-projects/ose-infra/apps/rhino-cli/`.
       Acceptance: `diff -rq --exclude=target --exclude=dist apps/rhino-cli
 ../ose-primer/apps/rhino-cli` and the equivalent comparison against `ose-infra` show only
       untracked-artifact/README diffs.

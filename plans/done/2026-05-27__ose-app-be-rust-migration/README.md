@@ -58,3 +58,5 @@ deletes all F#/.NET artifacts, and re-wires the Nx workspace targets.
 - Gherkin spec: `specs/apps/ose-app/behavior/be/gherkin/health/health.feature` [Repo-grounded]
 - DDD spec: `specs/apps/ose-app/ddd/bounded-contexts.yaml` [Repo-grounded]
 - Current `project.json`: `apps/ose-app-be/project.json` [Repo-grounded]
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

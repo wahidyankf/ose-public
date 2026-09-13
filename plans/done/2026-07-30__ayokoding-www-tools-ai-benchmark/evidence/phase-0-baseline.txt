@@ -48,7 +48,7 @@ src/features/cost-of-living-calculator/shell/controls.tsx:58:13: warning jsx-a11
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ayokoding-www-tools-ai-benchmark-phase-1-design-and-tokens/apps/ayokoding-www[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m~/ose-projects/ose-public/worktrees/ayokoding-www-tools-ai-benchmark-phase-1-design-and-tokens/apps/ayokoding-www[39m
 
 
 [2m Test Files [22m [1m[32m126 passed[39m[22m[90m (126)[39m
@@ -73,7 +73,7 @@ src/features/cost-of-living-calculator/shell/controls.tsx:58:13: warning jsx-a11
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ayokoding-www-tools-ai-benchmark-phase-1-design-and-tokens/apps/ayokoding-www[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m~/ose-projects/ose-public/worktrees/ayokoding-www-tools-ai-benchmark-phase-1-design-and-tokens/apps/ayokoding-www[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 

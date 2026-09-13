@@ -14914,7 +14914,7 @@ Each cycle below binds exactly one Gherkin scenario, copied verbatim from its `.
       worktree, `gate list --surface=ci --format=json --by-group` (namespaces restored) matches
       `apps/rhino-cli/evidence/gate-before-ose-private.json`, read from that same `ose-private`
       tree — so `ose-private`'s rollback evidence is not `shadow-diff.sh` alone.
-      Verified in `/Users/wkf/ose-projects/ose-private/worktrees/rewrite-rhino-cli`: applied
+      Verified in `~/ose-projects/<sibling>/worktrees/rewrite-rhino-cli`: applied
       ose-public's reviewed Wave F diff (`apps/rhino-cli` + `repo-config.yml`, excluding
       `delivery.md`/`benchmark.md`, which are not carried there), rebuilt, ran the full
       1210-test suite (0 failures), widened coverage (`70 specs, 525 scenarios, 2140 steps —

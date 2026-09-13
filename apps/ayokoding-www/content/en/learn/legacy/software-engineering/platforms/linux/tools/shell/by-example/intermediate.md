@@ -2139,7 +2139,7 @@ echo "${undefined:?Error message}"
                                  # => ${var:?message}: error if unset
 
 # Practical: extract filename
-path="/home/user/documents/file.txt"
+path="/home/<user>/documents/file.txt"
 filename="${path##*/}"           # => Extract filename (Output: file.txt)
 dirname="${path%/*}"             # => Extract directory
 extension="${filename##*.}"      # => Get extension (Output: txt)

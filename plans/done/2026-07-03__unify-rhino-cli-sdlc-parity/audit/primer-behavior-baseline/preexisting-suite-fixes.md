@@ -11,7 +11,7 @@ real behavior. This is entirely unrelated to the `unify-rhino-cli-sdlc-parity` p
 a genuine preexisting defect on `ose-primer`'s `main`, fixed here per this repo's root-cause-orientation
 policy (Iron Rule 3: fix ALL issues, including preexisting).
 
-All fixes below are **uncommitted** in `/Users/wkf/ose-projects/ose-primer`'s working tree as of this
+All fixes below are **uncommitted** in `~/ose-projects/ose-primer`'s working tree as of this
 writing — they land as part of this plan's normal commit/push flow (Local Quality Gates → Push
 sections of `delivery.md`), not committed ad-hoc mid-Phase-0.
 

@@ -54,7 +54,7 @@ and
 
 - [x] [AI] Provision the worktree from repo root: `claude --worktree markdown-gate-coverage-expansion`
     — acceptance: `worktrees/markdown-gate-coverage-expansion/` exists.
-<!-- 2026-06-06 | Status: SKIPPED (user override) | Files Changed: none | Notes: User explicitly instructed "do it in current branch" — working directly in main checkout at /Users/wkf/ose-projects/ose-public. Worktree not provisioned per user directive. -->
+<!-- 2026-06-06 | Status: SKIPPED (user override) | Files Changed: none | Notes: User explicitly instructed "do it in current branch" — working directly in main checkout at ~/ose-projects/ose-public. Worktree not provisioned per user directive. -->
 - [x] [AI] Initialize the toolchain in the **root** worktree: `npm install && npm run doctor -- --fix`
     — acceptance: both exit 0; `node_modules/` synchronized; no unresolved toolchain drift.
 <!-- 2026-06-06 | Status: DONE | Files Changed: none | Notes: npm install (1562 packages audited) + npm run doctor --fix both exited 0; 20/20 tools OK, 0 warnings. -->

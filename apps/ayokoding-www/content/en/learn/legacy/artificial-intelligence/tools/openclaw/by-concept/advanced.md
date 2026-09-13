@@ -1070,7 +1070,7 @@ cat > ~/Library/LaunchAgents/com.openclaw.agent.plist << 'EOF'
     <string>/usr/local/bin/openclaw</string>
     <string>start</string>
     <string>--config</string>
-    <string>/Users/yourname/.openclaw/workspace/openclaw.config.ts</string>
+    <string>/Users/<yourname>/.openclaw/workspace/openclaw.config.ts</string>
   </array>
   <key>EnvironmentVariables</key>
   <dict>
@@ -1082,9 +1082,9 @@ cat > ~/Library/LaunchAgents/com.openclaw.agent.plist << 'EOF'
   <key>KeepAlive</key>
   <true/>                           <!-- Restart if crashed -->
   <key>StandardOutPath</key>
-  <string>/Users/yourname/.openclaw/logs/stdout.log</string>
+  <string>/Users/<yourname>/.openclaw/logs/stdout.log</string>
   <key>StandardErrorPath</key>
-  <string>/Users/yourname/.openclaw/logs/stderr.log</string>
+  <string>/Users/<yourname>/.openclaw/logs/stderr.log</string>
   <key>ThrottleInterval</key>
   <integer>30</integer>             <!-- Wait 30s between restart attempts -->
 </dict>

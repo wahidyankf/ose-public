@@ -48,3 +48,5 @@ Total: ~1117 markdown files. Estimated file moves: ~80-120 directories renamed/r
 5. `generate-indexes.ts --validate` reports zero stale `_index.md` files.
 6. A redirect table covers every renamed URL; Next.js serves redirects in production.
 7. `nx run ayokoding-web:test:quick` passes (current threshold: 82% line coverage).
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

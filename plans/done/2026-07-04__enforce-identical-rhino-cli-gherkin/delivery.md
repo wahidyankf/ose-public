@@ -7,7 +7,7 @@
 This is **one 3-repo execution plan** authored in `ose-public`. `ose-public` is canonical (Phases 0–2);
 `ose-primer` (Phase 3) and `ose-infra` (Phase 4) receive verbatim propagation; Phase 5 verifies
 cross-repo byte-identity, arms the anti-drift gate, and pushes all three. Sibling repos are at
-`/Users/wkf/ose-projects/{ose-primer,ose-infra}` (same parent as this repo).
+`~/ose-projects/{ose-primer,ose-infra}` (same parent as this repo).
 
 ## Worktree
 
@@ -940,9 +940,9 @@ validate` command (output does not contain the string `stub`) — proving the pr
 ## Phase 3 — Propagate to ose-primer
 
 - [x] [AI] Copy canonical `apps/rhino-cli/` (excluding `target/`, `dist/`, `cover.out`, `lcov.info`) from
-      ose-public into `/Users/wkf/ose-projects/ose-primer/apps/rhino-cli/`. Command:
+      ose-public into `~/ose-projects/ose-primer/apps/rhino-cli/`. Command:
       `rsync -a --delete --exclude=target --exclude=dist --exclude=cover.out --exclude=lcov.info
-/Users/wkf/ose-projects/ose-public/apps/rhino-cli/ /Users/wkf/ose-projects/ose-primer/apps/rhino-cli/`.
+~/ose-projects/ose-public/apps/rhino-cli/ ~/ose-projects/ose-primer/apps/rhino-cli/`.
       Acceptance: `diff -rq --exclude=target --exclude=dist ose-public/apps/rhino-cli ose-primer/apps/rhino-cli`
       shows only untracked-artifact/README differences (zero source/tests/feature diffs).
   - **Done 2026-07-04.** Verified `ose-primer` clean before running (no uncommitted WIP at risk). Diff
@@ -951,8 +951,8 @@ validate` command (output does not contain the string `stub`) — proving the pr
       (`.feature` + behaviour-`README.md`); delete the 2 stale files (`env/env-validate.feature`,
       `repo-governance/repo-governance-gherkin-keyword-cardinality.feature`). Command:
       `rsync -a --delete
-/Users/wkf/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/
-/Users/wkf/ose-projects/ose-primer/specs/apps/rhino/behavior/rhino-cli/gherkin/` (the `--delete`
+~/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/
+~/ose-projects/ose-primer/specs/apps/rhino/behavior/rhino-cli/gherkin/` (the `--delete`
       flag removes the 2 stale files since they are absent from the canonical source). Acceptance:
       `diff -rq` of the gherkin `.feature`+README set between public and primer is empty.
   - **Done 2026-07-04.** `diff -rq` empty.
@@ -998,9 +998,9 @@ validate` command (output does not contain the string `stub`) — proving the pr
 ## Phase 4 — Propagate to ose-infra
 
 - [x] [AI] Copy canonical `apps/rhino-cli/` from ose-public into
-      `/Users/wkf/ose-projects/ose-infra/apps/rhino-cli/` (same exclusions). Command:
+      `~/ose-projects/ose-infra/apps/rhino-cli/` (same exclusions). Command:
       `rsync -a --delete --exclude=target --exclude=dist --exclude=cover.out --exclude=lcov.info
-/Users/wkf/ose-projects/ose-public/apps/rhino-cli/ /Users/wkf/ose-projects/ose-infra/apps/rhino-cli/`.
+~/ose-projects/ose-public/apps/rhino-cli/ ~/ose-projects/ose-infra/apps/rhino-cli/`.
       Acceptance: `diff -rq` shows only untracked-artifact/README differences.
       **Done 2026-07-04.** Rsynced clean; infra's own README.md diverges intentionally (outside the
       strict byte-identity boundary) — its one dangling link to a public-only migration plan doc was
@@ -1008,8 +1008,8 @@ validate` command (output does not contain the string `stub`) — proving the pr
 - [x] [AI] Sync infra's gherkin tree to canonical (`.feature` + behaviour-`README.md`). Since infra's
       `.feature` set was already identical to public pre-plan, this applies the de-hollow/gap-fill deltas.
       Command: `rsync -a --delete
-/Users/wkf/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/
-/Users/wkf/ose-projects/ose-infra/specs/apps/rhino/behavior/rhino-cli/gherkin/`. Acceptance:
+~/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/
+~/ose-projects/ose-infra/specs/apps/rhino/behavior/rhino-cli/gherkin/`. Acceptance:
       `diff -rq` of the `.feature`+README set between public and infra is empty.
       **Done 2026-07-04.** `diff -rq` empty; path-list diff empty.
 - [x] [AI] Propagate the boundary/workflow/AGENTS edits (`CLAUDE.md` needs no separate edit — it inherits

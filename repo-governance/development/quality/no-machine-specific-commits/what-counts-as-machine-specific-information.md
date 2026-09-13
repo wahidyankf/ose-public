@@ -14,8 +14,8 @@ Paths rooted at a user's home directory or a tool's local installation prefix ar
 **Prohibited examples:**
 
 ```text
-/Users/jane/projects/open-sharia-enterprise
-/home/alice/go/bin/golangci-lint
+/Users/<name>/projects/open-sharia-enterprise
+/home/<name>/go/bin/golangci-lint
 /opt/homebrew/bin/node
 C:\Users\bob\AppData\Local\Programs\...
 ```
@@ -37,7 +37,7 @@ delivery document for real machine-specific absolute paths.
 
 ## Usernames Embedded in Paths or Configuration
 
-A username embedded in a path (e.g., `/Users/jane/`) is machine-specific by definition. The same applies to usernames used as literal database credentials or API identifiers in source files.
+A username embedded in a path (e.g., `/Users/<name>/`) is machine-specific by definition. The same applies to usernames used as literal database credentials or API identifiers in source files.
 
 ## Local IP Addresses and Hostnames
 

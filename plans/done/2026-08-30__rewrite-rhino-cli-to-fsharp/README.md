@@ -174,3 +174,5 @@ the scaffolding, flip, retirement, benchmark, and propagation PRs.
   [`rhino-cli-byte-identity-drift-reconciliation`](../../ideas/q1-urgent-important/rhino-cli-byte-identity-drift-reconciliation.md).
   Landing either against the Rust crate mid-migration creates rework; sequence them before or after,
   never during.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

@@ -6428,8 +6428,8 @@ services:
       # => Port: host:8080 → container:8080
     volumes:
       # => Volumes: Persistent storage mounts
-      - ./wiremock/mappings:/home/wiremock/mappings
-      # => Mocks: Predefined HTTP responses
+      - ./wiremock:/home/wiremock
+      # => Mocks: WireMock root holding mappings/ (predefined HTTP responses)
 ```
 
 **Docker Management Helper**:

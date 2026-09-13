@@ -32,3 +32,5 @@ same kind as `web/` and `api/` — and belongs there.
 ## Worktree
 
 See [delivery.md](./delivery.md) §Worktree for the canonical declaration, path, and provisioning command.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

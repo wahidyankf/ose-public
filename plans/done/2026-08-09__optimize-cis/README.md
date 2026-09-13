@@ -215,3 +215,5 @@ Raw evidence produced during authoring lives in `local-temp/` (gitignored):
 
 `worktree-to-pr` — mandatory in `ose-public` (`main` is branch-protected including for admins). See
 [`delivery.md`](./delivery.md) for the worktree declaration and delivery boundaries.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

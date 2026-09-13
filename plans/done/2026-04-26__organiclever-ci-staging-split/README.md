@@ -66,3 +66,5 @@ staging E2E green against the live Vercel staging URL.
 | 2     | Update eight `.md` files (6 filename refs + 2 model changes)      | done   |
 | 3     | Local quality gates (markdown lint, YAML validation)              | done   |
 | 4     | Push to `main` + CI verification (incl. Vercel bypass + tag fix)  | done   |
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

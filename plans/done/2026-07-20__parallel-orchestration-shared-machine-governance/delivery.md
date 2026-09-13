@@ -1728,22 +1728,22 @@ opencode + amazonq`) — acceptance: separate cohesive commits; no `git add -A` 
 > Runs in a dedicated `ose-primer` worktree, in parallel with Phase 7 (dogfooding N+1: 2 parallel units).
 
 - [ ] [AI] **Confirm the sibling's repo topology BEFORE anything else** —
-      `git -C /Users/wkf/ose-projects/ose-primer rev-parse --is-bare-repository`
+      `git -C ~/ose-projects/ose-primer rev-parse --is-bare-repository`
       — acceptance: prints `true`. **`ose-primer` is a BARE repo** (verified 2026-07-19): it has no
-      top-level working tree, so `git -C /Users/wkf/ose-projects/ose-primer status` fails with
+      top-level working tree, so `git -C ~/ose-projects/ose-primer status` fails with
       `fatal: this operation must be run in a work tree`. All file work happens inside a worktree.
       If this prints `false`, the topology changed — STOP and re-derive the commands below rather
       than assuming. See [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md)
       §Sibling-Repo Relative Paths From Inside a Worktree, which records a real prior incident of
       silent stale-content propagation in a structurally identical tri-repo plan.
 - [ ] [AI] Fetch and provision the worktree at the repo-local `worktrees/<name>/` path:
-      `git -C /Users/wkf/ose-projects/ose-primer fetch origin main` then
-      `git -C /Users/wkf/ose-projects/ose-primer worktree add worktrees/parallel-orchestration-shared-machine-governance -b parallel-orchestration-shared-machine-governance origin/main`
-      — acceptance: `git -C /Users/wkf/ose-projects/ose-primer worktree list` shows the new worktree
-      at `/Users/wkf/ose-projects/ose-primer/worktrees/parallel-orchestration-shared-machine-governance`, and
-      `git -C <primer-worktree> rev-parse HEAD` equals `git -C /Users/wkf/ose-projects/ose-primer rev-parse origin/main`
+      `git -C ~/ose-projects/ose-primer fetch origin main` then
+      `git -C ~/ose-projects/ose-primer worktree add worktrees/parallel-orchestration-shared-machine-governance -b parallel-orchestration-shared-machine-governance origin/main`
+      — acceptance: `git -C ~/ose-projects/ose-primer worktree list` shows the new worktree
+      at `~/ose-projects/ose-primer/worktrees/parallel-orchestration-shared-machine-governance`, and
+      `git -C <primer-worktree> rev-parse HEAD` equals `git -C ~/ose-projects/ose-primer rev-parse origin/main`
       (proves it is branched from the LATEST origin/main, not a stale local ref)
-- [ ] [AI] Set `<primer-worktree>` = `/Users/wkf/ose-projects/ose-primer/worktrees/parallel-orchestration-shared-machine-governance`
+- [ ] [AI] Set `<primer-worktree>` = `~/ose-projects/ose-primer/worktrees/parallel-orchestration-shared-machine-governance`
       for every subsequent step in this phase; run `npm install && npm run doctor -- --fix` **inside
       that worktree** (`cd` into it — do not rely on the shell's inherited working directory)
       — acceptance: `git -C <primer-worktree> status --porcelain` is empty; toolchain converged
@@ -1818,21 +1818,21 @@ opencode + amazonq`) — acceptance: separate cohesive commits; no `git add -A` 
 > Runs in a dedicated `ose-infra` worktree, in parallel with Phase 6.
 
 - [ ] [AI] **Confirm the sibling's repo topology BEFORE anything else** —
-      `git -C /Users/wkf/ose-projects/ose-infra rev-parse --is-bare-repository`
+      `git -C ~/ose-projects/ose-infra rev-parse --is-bare-repository`
       — acceptance: prints `true`. **`ose-infra` is a BARE repo** (verified 2026-07-19): it has no
-      top-level working tree, so `git -C /Users/wkf/ose-projects/ose-infra status` fails with
+      top-level working tree, so `git -C ~/ose-projects/ose-infra status` fails with
       `fatal: this operation must be run in a work tree`. All file work happens inside a worktree.
       Note this repo's topology has CHANGED before (it was non-bare on 2026-07-02), so treat the
       check as live state — if it prints `false`, STOP and re-derive the commands below.
       See [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md)
       §Sibling-Repo Relative Paths From Inside a Worktree.
 - [ ] [AI] Fetch and provision the worktree at the repo-local `worktrees/<name>/` path:
-      `git -C /Users/wkf/ose-projects/ose-infra fetch origin main` then
-      `git -C /Users/wkf/ose-projects/ose-infra worktree add worktrees/parallel-orchestration-shared-machine-governance -b parallel-orchestration-shared-machine-governance origin/main`
-      — acceptance: `git -C /Users/wkf/ose-projects/ose-infra worktree list` shows the new worktree
-      at `/Users/wkf/ose-projects/ose-infra/worktrees/parallel-orchestration-shared-machine-governance`, and
-      `git -C <infra-worktree> rev-parse HEAD` equals `git -C /Users/wkf/ose-projects/ose-infra rev-parse origin/main`
-- [ ] [AI] Set `<infra-worktree>` = `/Users/wkf/ose-projects/ose-infra/worktrees/parallel-orchestration-shared-machine-governance`
+      `git -C ~/ose-projects/ose-infra fetch origin main` then
+      `git -C ~/ose-projects/ose-infra worktree add worktrees/parallel-orchestration-shared-machine-governance -b parallel-orchestration-shared-machine-governance origin/main`
+      — acceptance: `git -C ~/ose-projects/ose-infra worktree list` shows the new worktree
+      at `~/ose-projects/ose-infra/worktrees/parallel-orchestration-shared-machine-governance`, and
+      `git -C <infra-worktree> rev-parse HEAD` equals `git -C ~/ose-projects/ose-infra rev-parse origin/main`
+- [ ] [AI] Set `<infra-worktree>` = `~/ose-projects/ose-infra/worktrees/parallel-orchestration-shared-machine-governance`
       for every subsequent step in this phase; run `npm install && npm run doctor -- --fix` **inside
       that worktree** (`cd` into it — do not rely on the shell's inherited working directory)
       — acceptance: `git -C <infra-worktree> status --porcelain` is empty; toolchain converged

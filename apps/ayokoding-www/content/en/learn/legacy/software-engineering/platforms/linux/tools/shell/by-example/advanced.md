@@ -218,7 +218,7 @@ file="document.txt"
 length=${#file}                 # => length=12 (character count)
 
 # Substring extraction
-path="/home/user/documents/file.txt"
+path="/home/<user>/documents/file.txt"
 ${path:0:5}                     # => Result: "/home" (offset 0, length 5)
 ${path:6:4}                     # => Result: "user" (offset 6, length 4)
 ${path:11}                      # => Result: "documents/file.txt" (to end)
@@ -235,7 +235,7 @@ ${path##*/}                     # => Remove longest "*/" from start
 
 # Remove suffix pattern (shortest match)
 ${path%/*}                      # => Remove shortest "/*" from end
-                                # => Result: "/home/user/documents" (like dirname)
+                                # => Result: "/home/<user>/documents" (like dirname)
 
 # Remove suffix pattern (longest match)
 ${path%%/*}                     # => Remove longest "/*" from end
@@ -544,7 +544,7 @@ set -euo pipefail               # => Enable all three safety checks
 # Debug mode (print each command before execution)
 set -x                          # => Enable xtrace (also called debug mode)
                                 # => Prints each command to stderr before execution
-                                # => Shows variable expansion: echo $HOME → echo /home/user
+                                # => Shows variable expansion: echo $HOME → echo /home/<user>
                                 # => Prefixes lines with +
                                 # => Critical for debugging complex scripts
 

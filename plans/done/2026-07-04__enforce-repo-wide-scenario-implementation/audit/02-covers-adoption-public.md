@@ -1,6 +1,6 @@
 # `@covers` Marker Adoption — ose-public
 
-Command run: `git grep -l "@covers " -- apps libs` from `/Users/wkf/ose-projects/ose-public`
+Command run: `git grep -l "@covers " -- apps libs` from `~/ose-projects/ose-public`
 (2026-07-04).
 
 ## Raw grep result (8 files)

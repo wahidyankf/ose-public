@@ -293,7 +293,7 @@ Only `~/...` is supported (not `~user/...`).
 A git worktree has a `.git` **file** (not directory) at its root, containing a pointer:
 
 ```text
-gitdir: /Users/dev/main-repo/.git/worktrees/feature-branch
+gitdir: /Users/<you>/main-repo/.git/worktrees/feature-branch
 ```
 
 Detection and name resolution:
@@ -385,7 +385,7 @@ Follows the existing `outputFuncs` pattern from `cmd/helpers.go`:
 ### Text (default)
 
 ```text
-Backed up 3 files to /Users/dev/ose-env-bkup
+Backed up 3 files to /Users/<you>/ose-env-bkup
 
   apps/ayokoding-web/.env.local
   apps/oseplatform-web/.env
@@ -398,16 +398,16 @@ Skipped 1 file:
 With `--verbose`:
 
 ```text
-Backed up 3 files to /Users/dev/ose-env-bkup
+Backed up 3 files to /Users/<you>/ose-env-bkup
 
-  /Users/dev/project/apps/ayokoding-web/.env.local → /Users/dev/ose-env-bkup/apps/ayokoding-web/.env.local (245 B)
+  /Users/<you>/project/apps/ayokoding-web/.env.local → /Users/<you>/ose-env-bkup/apps/ayokoding-web/.env.local (245 B)
   ...
 ```
 
 With `--quiet`:
 
 ```text
-Backed up 3 files to /Users/dev/ose-env-bkup
+Backed up 3 files to /Users/<you>/ose-env-bkup
 ```
 
 ### JSON
@@ -415,7 +415,7 @@ Backed up 3 files to /Users/dev/ose-env-bkup
 ```json
 {
   "direction": "backup",
-  "dir": "/Users/dev/ose-env-bkup",
+  "dir": "/Users/<you>/ose-env-bkup",
   "files": [
     { "relPath": "apps/ayokoding-web/.env.local", "size": 245, "skipped": false },
     { "relPath": "apps/organiclever-web/.env.symlink", "size": 0, "skipped": true, "reason": "symlink" }
@@ -431,7 +431,7 @@ Backed up 3 files to /Users/dev/ose-env-bkup
 ## Env Backup Report
 
 **Direction**: backup
-**Directory**: `/Users/dev/ose-env-bkup`
+**Directory**: `/Users/<you>/ose-env-bkup`
 **Copied**: 3 | **Skipped**: 1
 
 | File                                 | Size  | Status            |

@@ -660,7 +660,7 @@ sudo journalctl -u hermes-gateway -f    # => Follow logs in real time
 
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/me/.local/bin/hermes</string>
+    <string>/Users/<you>/.local/bin/hermes</string>
     <string>gateway</string>             <!-- Run gateway subcommand -->
   </array>
 

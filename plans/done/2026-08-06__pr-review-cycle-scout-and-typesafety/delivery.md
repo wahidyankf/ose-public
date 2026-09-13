@@ -11,12 +11,12 @@ all four repo tracks finish (the plan folder itself lives only in `ose-public`).
 
 One worktree per repo, at the same relative path inside each repo's own working tree:
 
-| Repo          | Worktree path (absolute)                                                              |
-| ------------- | ------------------------------------------------------------------------------------- |
-| `ose-public`  | `/Users/wkf/ose-projects/ose-public/worktrees/pr-review-cycle-scout-and-typesafety/`  |
-| `ose-primer`  | `/Users/wkf/ose-projects/ose-primer/worktrees/pr-review-cycle-scout-and-typesafety/`  |
-| `ose-private` | `/Users/wkf/ose-projects/ose-private/worktrees/pr-review-cycle-scout-and-typesafety/` |
-| `beaver-nest` | `/Users/wkf/ose-projects/beaver-nest/worktrees/pr-review-cycle-scout-and-typesafety/` |
+| Repo          | Worktree path (absolute)                                                     |
+| ------------- | ---------------------------------------------------------------------------- |
+| `ose-public`  | `~/ose-projects/ose-public/worktrees/pr-review-cycle-scout-and-typesafety/`  |
+| `ose-primer`  | `~/ose-projects/ose-primer/worktrees/pr-review-cycle-scout-and-typesafety/`  |
+| `<sibling>`   | `~/ose-projects/<sibling>/worktrees/pr-review-cycle-scout-and-typesafety/`   |
+| `beaver-nest` | `~/ose-projects/beaver-nest/worktrees/pr-review-cycle-scout-and-typesafety/` |
 
 Optional manual pre-provisioning (run from each repo's own root):
 
@@ -28,7 +28,7 @@ claude --worktree pr-review-cycle-scout-and-typesafety
 a worktree in the _current_ repo by default. Since three of the four tracks below execute in a
 different repo than where this plan folder lives (`ose-public`), those three tracks require the
 executing agent/session to first change into that repo's own root (`cd
-/Users/wkf/ose-projects/<repo>`) before the worktree-provisioning step applies there — the automatic
+~/ose-projects/<repo>`) before the worktree-provisioning step applies there — the automatic
 single-repo gate does not itself jump repos. Each track's own Phase 0 states this explicitly.
 
 See [Worktree Path Convention](../../../repo-governance/conventions/structure/worktree-path.md) and
@@ -152,7 +152,7 @@ Every value below is mechanically re-verified live at that repo's own Phase 0 �
 ## Repo Track Template (Phases 0-5, executed once per repo)
 
 > Substitute `{REPO}` with the repo name and `{REPO_ROOT}` with
-> `/Users/wkf/ose-projects/{REPO}` when executing this template for a given track. Substitute every
+> `~/ose-projects/{REPO}` when executing this template for a given track. Substitute every
 > baseline count and the `AGENTS.md` edit-shape instruction from the
 > [Per-Repo Parameters](#per-repo-parameters) row for that repo — do not carry over another repo's
 > numbers or edit shape.
@@ -509,7 +509,7 @@ Runs once `ose-public`'s Phase 5 gate AND all three other repos' Phase 5 gates h
 before. Executes on `ose-public`'s local `main` (the plan folder's only home).
 
 - [ ] [AI] Verify all four tracks' Phase 5 gates hold before proceeding:
-      `git -C /Users/wkf/ose-projects/ose-public rev-parse HEAD` equals that repo's `origin/main`;
+      `git -C ~/ose-projects/ose-public rev-parse HEAD` equals that repo's `origin/main`;
       same check repeated for `ose-primer`, `ose-private`, `beaver-nest` — acceptance: all four hold;
       if any does not, STOP and wait for that track rather than proceeding with a partial set
 - [ ] [AI] Create `learnings.md` in the plan's now-archived folder

@@ -246,7 +246,7 @@ If issues arise after merge:
 - [ ] Update `plans/in-progress/README.md` (no change if entry was never added)
 - [ ] Update `plans/done/README.md` — add plan entry with completion date
 - [ ] Wait for the archival commit to land on `origin/main`
-- [ ] Bump parent gitlink in `/Users/wkf/ose-projects/` to the new ose-public SHA, commit, push parent
+- [ ] Bump parent gitlink in `~/ose-projects/` to the new ose-public SHA, commit, push parent
 
 ## Quality gates
 
@@ -293,3 +293,5 @@ gh run watch  # or background-monitor pattern from ci-monitoring.md
 ```
 
 Spot-check after merge: open `repo-governance/development/agents/ai-agents.md` and grep for `\bSkills\b` — should match nothing outside fenced regions; lowercase `agent skills` should appear in the prose where the branded form was previously used.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

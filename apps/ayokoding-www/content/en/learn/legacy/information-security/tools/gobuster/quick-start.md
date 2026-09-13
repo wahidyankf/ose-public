@@ -160,7 +160,7 @@ by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
 [+] Url:                     http://testphp.vulnweb.com
 [+] Method:                  GET
 [+] Threads:                 10
-[+] Wordlist:                /home/user/wordlists/common.txt
+[+] Wordlist:                /home/<user>/wordlists/common.txt
 [+] Negative Status codes:   404
 [+] User Agent:              gobuster/3.6.0
 [+] Timeout:                 10s
@@ -271,7 +271,7 @@ by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
 ===============================================================
 [+] Domain:     example.com
 [+] Threads:    10
-[+] Wordlist:   /home/user/wordlists/common.txt
+[+] Wordlist:   /home/<user>/wordlists/common.txt
 ===============================================================
 Starting gobuster in DNS enumeration mode
 ===============================================================

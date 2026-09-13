@@ -20,7 +20,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
   - **Date**: 2026-05-23
   - **Status**: Skipped per explicit user override ("do it in current branch")
   - **Files Changed**: none
-  - **Notes**: Worktree gate bypassed by user instruction. Execution runs from `/Users/wkf/ose-projects/ose-public` main checkout directly. Each phase commits land on `origin/main` per Trunk Based Development — plan was designed for that publish path regardless of worktree.
+  - **Notes**: Worktree gate bypassed by user instruction. Execution runs from `~/ose-projects/ose-public` main checkout directly. Each phase commits land on `origin/main` per Trunk Based Development — plan was designed for that publish path regardless of worktree.
 - [x] In the **root worktree** (not the new one), initialize toolchain: `npm install && npm run doctor -- --fix`. Verify: `npm run doctor` exits 0 with all required tools reported as PASS.
   - **Date**: 2026-05-23
   - **Status**: Completed

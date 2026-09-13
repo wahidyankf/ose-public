@@ -108,7 +108,7 @@ either a union-surface gap (adopt `ose-public`'s superset) or a pure stylistic s
 ## Tri-repo verification command (canonical)
 
 ```bash
-# From the parent dir containing all three repos (e.g. /Users/wkf/ose-projects)
+# From the parent dir containing all three repos (e.g. ~/ose-projects)
 for pair in ose-primer ose-infra; do
   diff -rq ose-public/apps/rhino-cli/src "$pair/apps/rhino-cli/src"
   for f in Cargo.toml Cargo.lock project.json LICENSE; do

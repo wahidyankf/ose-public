@@ -130,3 +130,5 @@ judges it as an AI-only category and `repo-rules-fixer` repairs it.
 - [tech-docs.md](./tech-docs.md) — decisions, file-impact analysis, diagrams, rollback.
 - [delivery.md](./delivery.md) — phased, tagged, gated checklist.
 - [learnings.md](./learnings.md) — running log drained by Knowledge Capture.
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

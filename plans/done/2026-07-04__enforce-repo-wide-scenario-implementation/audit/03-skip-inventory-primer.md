@@ -1,6 +1,6 @@
 # ose-primer Skip/Pending/Ignore Marker Inventory (Phase 0 Audit — Deliverable 3)
 
-All searches run via `git grep` from `/Users/wkf/ose-projects/ose-primer`, scoped to the relevant
+All searches run via `git grep` from `~/ose-projects/ose-primer`, scoped to the relevant
 project directories per ecosystem. **Headline finding: every classic skip/pending/ignore marker across
 all 12 language ecosystems is at zero** — the one real, currently-live gap is a _different_ shape of
 vacuous-pass, found empirically in `crud-be-ts-effect`'s cucumber-js suite (see the standout finding

@@ -73,3 +73,5 @@ records the sibling obligation between the two repositories.
 - [tech-docs.md](./tech-docs.md) — the rule's new shape, alternatives, file-impact tree, rollback
 - [delivery.md](./delivery.md) — the phased, executable checklist
 - [learnings.md](./learnings.md) — Knowledge Capture running log
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

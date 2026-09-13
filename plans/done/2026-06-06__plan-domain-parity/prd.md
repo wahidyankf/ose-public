@@ -54,7 +54,7 @@ Scenario: Establishment workflow carries the worktree default and target-stage
   And it retains the "target-stage" input
 
 Scenario: A sibling improvement is not lost in a merge
-  Given any in-scope file and its copies in /Users/wkf/ose-projects/ose-primer and /Users/wkf/ose-projects/ose-infra
+  Given any in-scope file and its copies in ~/ose-projects/ose-primer and ~/ose-projects/ose-infra
   When the 3-way diff review for that file completes
   Then every sibling-only improvement is either present in the merged ose-public copy
   Or recorded in the delivery checklist implementation notes as deliberately excluded with a reason

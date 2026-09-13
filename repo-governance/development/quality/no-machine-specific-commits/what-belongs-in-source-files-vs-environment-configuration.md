@@ -29,5 +29,5 @@ GOPATH=/path/to/your/gopath
 # .env — gitignored, never commit this
 DATABASE_URL=postgres://alice:s3cr3t@localhost:5432/devdb
 API_KEY=sk-live-abc123
-GOPATH=/Users/alice/go
+GOPATH=/Users/<name>/go
 ```

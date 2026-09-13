@@ -1925,7 +1925,7 @@ The `user` module creates, modifies, and removes system users. Manages UID, GID,
  # => 4096 bits provides strong security (2048 minimum recommended)
  # => Larger keys = slower generation but better security
  ssh_key_file: .ssh/id_rsa # => Key file name (relative to home directory)
- # => Full path: /home/testuser/.ssh/id_rsa
+ # => Full path: ~testuser/.ssh/id_rsa
  # => .pub extension added automatically for public key
  register: user_key # => Capture task results in variable
  # => Variable contains: ssh_public_key, ssh_key_file path

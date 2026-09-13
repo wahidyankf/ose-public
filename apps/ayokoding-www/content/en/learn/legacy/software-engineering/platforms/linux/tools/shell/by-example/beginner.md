@@ -52,7 +52,7 @@ echo "Hello, $USER_NAME"        # => Double quotes allow variable expansion
 
 # Echo with command substitution
 echo "Current directory: $(pwd)" # => $(pwd) executes first, result substituted
-                                # => Output: Current directory: /home/user
+                                # => Output: Current directory: /home/<user>
 ```
 
 **Key Takeaway**: Use `echo` for simple output and debugging - it automatically expands variables in double quotes and supports escape sequences with `-e` flag.
@@ -214,7 +214,7 @@ Directory navigation uses `pwd` to show current location, `cd` to change directo
 ```bash
 # Show current directory
 pwd                             # => Returns absolute path from root (/)
-                                # => Output: /home/user
+                                # => Output: /home/<user>
 
 # List current directory contents
 ls                              # => Lists files/directories in current directory
@@ -243,7 +243,7 @@ cd ../..                        # => .. is parent directory
 
 # Change to subdirectory
 cd documents/work               # => Relative path: resolves from current directory
-                                # => From /home/user → /home/user/documents/work
+                                # => From /home/<user> → /home/<user>/documents/work
 
 # Return to previous directory
 cd -                            # => Switches to $OLDPWD (previous directory)
@@ -823,7 +823,7 @@ grep "error" *.log              # => Searches all .log files
                                 # => Output: filename:matching line
 
 # Recursive search
-grep -r "TODO" /home/user/code  # => Searches all files recursively
+grep -r "TODO" ~/code  # => Searches all files recursively
                                 # => -r: recursive
 
 # Show context lines
@@ -991,7 +991,7 @@ echo "Log size: $total_size bytes"
                                 # => ls executes in /tmp
                                 # => Subshell exits, directory change lost
 pwd                             # => Parent shell's working directory unchanged
-                                # => Output: /home/user (wherever we started)
+                                # => Output: /home/<user> (wherever we started)
 
 # Subshell preserves parent variables
 x=10                            # => x=10 in parent shell's memory
@@ -1073,7 +1073,7 @@ export DB_HOST="localhost"      # => Assignment + export in single statement
 env                             # => Queries current process environment table
                                 # => Lists all variables marked for export
                                 # => Format: NAME=value (one per line)
-                                # => Output: HOME=/home/user
+                                # => Output: HOME=/home/<user>
                                 # =>         PATH=/usr/bin:/bin
                                 # =>         USER=alice
                                 # =>         ... (all exported variables)
@@ -1082,7 +1082,7 @@ env                             # => Queries current process environment table
 echo "$HOME"                    # => $HOME expands to value of HOME variable
                                 # => HOME typically set by login process
                                 # => Points to user's home directory
-                                # => Output: /home/user
+                                # => Output: /home/<user>
 echo "$USER"                    # => USER contains current username
                                 # => Output: alice
 echo "$SHELL"                   # => SHELL contains path to user's login shell
@@ -2715,12 +2715,12 @@ name="Alice"                    # => name variable in shell
 cat << EOF                      # => Unquoted delimiter allows expansion
 Hello, $name!                   # => Shell expands $name to "Alice" before feeding to cat
 Your current directory is: $(pwd)
-                                # => $(pwd) executes, returns "/home/user"
-                                # => Expanded line: "Your current directory is: /home/user"
+                                # => $(pwd) executes, returns "/home/<user>"
+                                # => Expanded line: "Your current directory is: /home/<user>"
 EOF                             # => cat receives already-expanded text
-                                # => cat sees: "Hello, Alice!\nYour current directory is: /home/user"
+                                # => cat sees: "Hello, Alice!\nYour current directory is: /home/<user>"
 # => Output: Hello, Alice!
-# =>         Your current directory is: /home/user
+# =>         Your current directory is: /home/<user>
 
 # Here document without expansion (quote delimiter)
 cat << 'EOF'                    # => Quoted delimiter 'EOF' disables all expansion

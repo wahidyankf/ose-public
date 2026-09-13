@@ -652,7 +652,7 @@ itself or for another agent` already covers the case, and the neighbouring scrat
 >
 > `pr-review-security-maker` returned **CLEAN** in leak-only mode at head `ae04b3dfb`, read-only,
 > nothing posted. It examined every candidate rather than pattern-matching: the
-> `/home/user/repos/project/` string is a pre-existing generic placeholder inside a documented
+> `/home/<user>/repos/project/` string is a pre-existing generic placeholder inside a documented
 > anti-pattern whose only change was the trailing directory name; `wahidyankf@gmail.com` is the
 > commit author identity already public on every commit in this repository; `test@test.com` is the
 > stray-override anti-pattern this plan names on purpose; the `a1b2c3`/`d4e5f6` strings are

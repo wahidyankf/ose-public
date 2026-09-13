@@ -364,30 +364,30 @@ lives in `ose-public` alone.
 ### 3a. ose-primer propagation
 
 - [x] [AI] Provision the ose-primer worktree:
-      `git -C /Users/wkf/ose-projects/ose-primer worktree add worktrees/rhino-speccoverage-multiline-scenario-scan -b rhino-speccoverage-multiline-scenario-scan origin/main`
+      `git -C ~/ose-projects/ose-primer worktree add worktrees/rhino-speccoverage-multiline-scenario-scan -b rhino-speccoverage-multiline-scenario-scan origin/main`
       — acceptance: directory exists at
-      `/Users/wkf/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan/`
+      `~/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan/`
       — done: provisioned, confirmed on branch `rhino-speccoverage-multiline-scenario-scan`
 - [x] [AI] Copy the byte-identical files into the ose-primer worktree, then run the sibling tests
       — acceptance: both `cargo test` commands exit 0:
 
   ```bash
-  OSE_PRIMER_WT=/Users/wkf/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan
-  cp /Users/wkf/ose-projects/ose-public/apps/rhino-cli/src/application/speccoverage/checker.rs \
+  OSE_PRIMER_WT=$HOME/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan
+  cp ~/ose-projects/ose-public/apps/rhino-cli/src/application/speccoverage/checker.rs \
      "$OSE_PRIMER_WT/apps/rhino-cli/src/application/speccoverage/checker.rs"
-  cp /Users/wkf/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature \
+  cp ~/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature \
      "$OSE_PRIMER_WT/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature"
-  cp /Users/wkf/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/README.md \
+  cp ~/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/README.md \
      "$OSE_PRIMER_WT/specs/apps/rhino/behavior/rhino-cli/gherkin/README.md"
-  cp /Users/wkf/ose-projects/ose-public/apps/rhino-cli/tests/spec_coverage.rs \
+  cp ~/ose-projects/ose-public/apps/rhino-cli/tests/spec_coverage.rs \
      "$OSE_PRIMER_WT/apps/rhino-cli/tests/spec_coverage.rs"
   cd "$OSE_PRIMER_WT" && cargo test --manifest-path apps/rhino-cli/Cargo.toml --lib extract_ts_scenario_titles && cargo test --manifest-path apps/rhino-cli/Cargo.toml --test spec_coverage
   ```
 
   — done: **CORRECTED SOURCE PATH BUG** — the command above (and the two diff commands below) as
-  originally written in this plan sourced from `/Users/wkf/ose-projects/ose-public/apps/...`, the
+  originally written in this plan sourced from `~/ose-projects/ose-public/apps/...`, the
   PRIMARY ose-public checkout (on `main`, no Phase 1/2 changes) — not
-  `/Users/wkf/ose-projects/ose-public/worktrees/rhino-speccoverage-multiline-scenario-scan/apps/...`,
+  `~/ose-projects/ose-public/worktrees/rhino-speccoverage-multiline-scenario-scan/apps/...`,
   the worktree where all Phase 1/2 work actually lives. Same worktree-vs-primary-checkout confusion
   class as Plan 1's incident, this time in the plan text itself. First copy attempt silently pulled
   stale pre-fix content (only 1/4 unit tests found); caught immediately because the sibling test run
@@ -395,15 +395,15 @@ lives in `ose-public` alone.
   behavior scenarios then passed.
 
 - [x] [AI] Verify byte-identity of `checker.rs` between ose-public and the ose-primer worktree:
-      `diff /Users/wkf/ose-projects/ose-public/apps/rhino-cli/src/application/speccoverage/checker.rs /Users/wkf/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan/apps/rhino-cli/src/application/speccoverage/checker.rs`
+      `diff ~/ose-projects/ose-public/apps/rhino-cli/src/application/speccoverage/checker.rs ~/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan/apps/rhino-cli/src/application/speccoverage/checker.rs`
       — acceptance: no diff output (byte-identical)
       — done: re-run against the corrected worktree source path — no diff (byte-identical)
 - [x] [AI] Verify byte-identity of the behavior feature file between ose-public and ose-primer:
-      `diff /Users/wkf/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature /Users/wkf/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature`
+      `diff ~/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature ~/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature`
       — acceptance: no diff output (AC-6)
       — done: no diff (byte-identical); also verified `tests/spec_coverage.rs` and `gherkin/README.md` no diff
 - [x] [AI] Run the ose-primer parity gate:
-      `cd /Users/wkf/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan && npx nx run rhino-cli:specs:behavior:coverage`
+      `cd ~/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan && npx nx run rhino-cli:specs:behavior:coverage`
       — acceptance: exits 0
       — done: "Spec coverage valid! 57 specs, 317 scenarios, 1317 steps — all covered." (matches
       ose-public exactly)
@@ -418,7 +418,7 @@ lives in `ose-public` alone.
       deps (mechanical, non-destructive); re-ran affected — all green; push then succeeded.
 
   ```bash
-  cd /Users/wkf/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan
+  cd ~/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan
   git add apps/rhino-cli/src/application/speccoverage/checker.rs \
           specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature \
           specs/apps/rhino/behavior/rhino-cli/gherkin/README.md \
@@ -433,40 +433,40 @@ lives in `ose-public` alone.
 ### 3b. ose-infra propagation
 
 - [x] [AI] Provision the ose-infra worktree:
-      `git -C /Users/wkf/ose-projects/ose-infra worktree add worktrees/rhino-speccoverage-multiline-scenario-scan -b rhino-speccoverage-multiline-scenario-scan origin/main`
+      `git -C ~/ose-projects/ose-infra worktree add worktrees/rhino-speccoverage-multiline-scenario-scan -b rhino-speccoverage-multiline-scenario-scan origin/main`
       — acceptance: directory exists at
-      `/Users/wkf/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan/`
+      `~/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan/`
       — done: provisioned, confirmed on branch `rhino-speccoverage-multiline-scenario-scan`
 - [x] [AI] Copy the byte-identical files into the ose-infra worktree, then run the sibling tests
       — acceptance: both `cargo test` commands exit 0: **(source: the ose-public WORKTREE at
-      `/Users/wkf/ose-projects/ose-public/worktrees/rhino-speccoverage-multiline-scenario-scan/...`,
+      `~/ose-projects/ose-public/worktrees/rhino-speccoverage-multiline-scenario-scan/...`,
       not the primary checkout — see Phase 3a's caught bug)**
       — done: copied from the corrected worktree source; all 4 unit tests + all 10 behavior
       scenarios passed on first attempt (no repeat of Phase 3a's bug)
 
   ```bash
-  OSE_INFRA_WT=/Users/wkf/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan
-  cp /Users/wkf/ose-projects/ose-public/apps/rhino-cli/src/application/speccoverage/checker.rs \
+  OSE_INFRA_WT=$HOME/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan
+  cp ~/ose-projects/ose-public/apps/rhino-cli/src/application/speccoverage/checker.rs \
      "$OSE_INFRA_WT/apps/rhino-cli/src/application/speccoverage/checker.rs"
-  cp /Users/wkf/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature \
+  cp ~/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature \
      "$OSE_INFRA_WT/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature"
-  cp /Users/wkf/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/README.md \
+  cp ~/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/README.md \
      "$OSE_INFRA_WT/specs/apps/rhino/behavior/rhino-cli/gherkin/README.md"
-  cp /Users/wkf/ose-projects/ose-public/apps/rhino-cli/tests/spec_coverage.rs \
+  cp ~/ose-projects/ose-public/apps/rhino-cli/tests/spec_coverage.rs \
      "$OSE_INFRA_WT/apps/rhino-cli/tests/spec_coverage.rs"
   cd "$OSE_INFRA_WT" && cargo test --manifest-path apps/rhino-cli/Cargo.toml --lib extract_ts_scenario_titles && cargo test --manifest-path apps/rhino-cli/Cargo.toml --test spec_coverage
   ```
 
 - [x] [AI] Verify byte-identity of `checker.rs` between ose-public and the ose-infra worktree:
-      `diff /Users/wkf/ose-projects/ose-public/apps/rhino-cli/src/application/speccoverage/checker.rs /Users/wkf/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan/apps/rhino-cli/src/application/speccoverage/checker.rs`
+      `diff ~/ose-projects/ose-public/apps/rhino-cli/src/application/speccoverage/checker.rs ~/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan/apps/rhino-cli/src/application/speccoverage/checker.rs`
       — acceptance: no diff output (byte-identical)
       — done: no diff (byte-identical)
 - [x] [AI] Verify byte-identity of the behavior feature file between ose-public and ose-infra:
-      `diff /Users/wkf/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature /Users/wkf/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature`
+      `diff ~/ose-projects/ose-public/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature ~/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan/specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature`
       — acceptance: no diff output (AC-6)
       — done: no diff (byte-identical); also verified `tests/spec_coverage.rs` and `gherkin/README.md` no diff
 - [x] [AI] Run the ose-infra parity gate:
-      `cd /Users/wkf/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan && npx nx run rhino-cli:specs:behavior:coverage`
+      `cd ~/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan && npx nx run rhino-cli:specs:behavior:coverage`
       — acceptance: exits 0
       — done: "Spec coverage valid! 57 specs, 317 scenarios, 1317 steps — all covered." (matches
       ose-public and ose-primer exactly)
@@ -477,7 +477,7 @@ lives in `ose-public` alone.
       on first attempt.
 
   ```bash
-  cd /Users/wkf/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan
+  cd ~/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan
   git add apps/rhino-cli/src/application/speccoverage/checker.rs \
           specs/apps/rhino/behavior/rhino-cli/gherkin/spec-coverage/spec-coverage-validate.feature \
           specs/apps/rhino/behavior/rhino-cli/gherkin/README.md \
@@ -581,7 +581,7 @@ lives in `ose-public` alone.
       final head `2c09a691f024e04253a6a009e3bcb22a592b1483`
 
   ```bash
-  cd /Users/wkf/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan
+  cd ~/ose-projects/ose-primer/worktrees/rhino-speccoverage-multiline-scenario-scan
   npx nx affected -t typecheck lint test:quick specs:behavior:coverage
   gh pr checks rhino-speccoverage-multiline-scenario-scan
   ```
@@ -623,7 +623,7 @@ lives in `ose-public` alone.
       0 failed at final head `4f4fbf348960ca3c75a442721d89ec53322b6a5f`
 
   ```bash
-  cd /Users/wkf/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan
+  cd ~/ose-projects/ose-infra/worktrees/rhino-speccoverage-multiline-scenario-scan
   npx nx affected -t typecheck lint test:quick specs:behavior:coverage
   gh pr checks rhino-speccoverage-multiline-scenario-scan
   ```

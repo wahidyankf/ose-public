@@ -566,7 +566,7 @@ Pathlib provides object-oriented path manipulation replacing os.path functions.
 from pathlib import Path
 
 # Path creation and properties
-p = Path('/home/user/documents/file.txt')     # => Creates Path object
+p = Path('/home/<user>/documents/file.txt')     # => Creates Path object
                                               # => p is Path instance (not string)
 print(p.name)                                 # => Output: 'file.txt'
                                               # => Basename with extension
@@ -574,13 +574,13 @@ print(p.stem)                                 # => Output: 'file'
                                               # => Basename without extension
 print(p.suffix)                               # => Output: '.txt'
                                               # => File extension including dot
-print(p.parent)                               # => Output: Path('/home/user/documents')
+print(p.parent)                               # => Output: Path('/home/<user>/documents')
                                               # => Parent directory as Path object
 
 # Path operations
 config = Path.home() / '.config' / 'app.conf'  # => Path.home() = user's home directory
                                               # => / operator joins paths
-                                              # => config = Path('/home/user/.config/app.conf')
+                                              # => config = Path('/home/<user>/.config/app.conf')
 print(config.exists())                        # => Check if path exists on filesystem
                                               # => Returns True or False
 

@@ -810,7 +810,7 @@ _ex-38 &middot; exercises co-16_
 **Output** (genuinely captured):
 
 ```text
-url before: file:///Users/wkf/ose-projects/ose-public/worktrees/fundamentally-strong-software-engineer-phase-15/apps/ayokoding-www/content/en/learn/fundamentally-strong/software-engineer/frontend-essentials/learning/code/ex-38-prevent-default-link/index.html url after click: file:///Users/wkf/ose-projects/ose-public/worktrees/fundamentally-strong-software-engineer-phase-15/apps/ayokoding-www/content/en/learn/fundamentally-strong/software-engineer/frontend-essentials/learning/code/ex-38-prevent-default-link/index.html report: click handled, default prevented
+url before: file:///<repo-root>/apps/ayokoding-www/content/en/learn/fundamentally-strong/software-engineer/frontend-essentials/learning/code/ex-38-prevent-default-link/index.html url after click: file:///<repo-root>/apps/ayokoding-www/content/en/learn/fundamentally-strong/software-engineer/frontend-essentials/learning/code/ex-38-prevent-default-link/index.html report: click handled, default prevented
 PASS: preventDefault() suppressed the navigation; the page URL never changed
 ```
 

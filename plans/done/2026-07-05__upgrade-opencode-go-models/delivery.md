@@ -42,11 +42,11 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
       `tech-docs.md` against the new roster before proceeding — do not blindly continue with a stale
       target ID. > **Done 2026-07-05**: 13-model roster confirmed unchanged — includes `glm-5.2` and > `minimax-m3`, no bare `glm-5`. Exact match to plan's research snapshot.
 - [x] [AI] Confirm clean git state in all 3 repos before starting: run `git status --short` in
-      `/Users/wkf/ose-projects/ose-public`, `/Users/wkf/ose-projects/ose-primer`,
-      `/Users/wkf/ose-projects/ose-infra`. Acceptance: all three print no output (clean working
+      `~/ose-projects/ose-public`, `~/ose-projects/ose-primer`,
+      `~/ose-projects/ose-infra`. Acceptance: all three print no output (clean working
       tree) and `git rev-list --left-right --count origin/main...HEAD` prints `0 0` in each. > **Done 2026-07-05**: all 3 primary checkouts clean, `0 0` ahead/behind in each.
 - [x] [AI] Investigate `ose-infra`'s `.opencode/opencode.json` provider divergence (Decision 3,
-      `tech-docs.md`). Run `cd /Users/wkf/ose-projects/ose-infra && git log -p --follow -- .opencode/opencode.json | head -200`
+      `tech-docs.md`). Run `cd ~/ose-projects/ose-infra && git log -p --follow -- .opencode/opencode.json | head -200`
       and read the commit message(s) that introduced `zai-coding-plan/*`. Acceptance: record in
       this checklist item's own completion note either (a) "no rationale found — proceeding with
       reconciliation to opencode-go/glm-5.2 + opencode-go/minimax-m3 per Decision 3's default" or
@@ -392,12 +392,12 @@ Then the corresponding .opencode/ agent uses the "opencode-go/glm-5.2" model ide
 
 ## Phase 4 — Propagate to `ose-primer` and `ose-infra`
 
-- [x] [AI] In `/Users/wkf/ose-projects/ose-primer`, copy the byte-identical engine change: apply the
+- [x] [AI] In `~/ose-projects/ose-primer`, copy the byte-identical engine change: apply the
       same edits as Phase 1 to
       `apps/rhino-cli/src/application/agents/converter.rs`,
       `apps/rhino-cli/src/application/agents/sync_validator.rs`, `apps/rhino-cli/tests/agents.rs`,
       and `specs/apps/rhino/behavior/rhino-cli/gherkin/harness/agents-sync.feature`. Acceptance:
-      `diff /Users/wkf/ose-projects/ose-public/apps/rhino-cli/src/application/agents/converter.rs /Users/wkf/ose-projects/ose-primer/apps/rhino-cli/src/application/agents/converter.rs`
+      `diff ~/ose-projects/ose-public/apps/rhino-cli/src/application/agents/converter.rs ~/ose-projects/ose-primer/apps/rhino-cli/src/application/agents/converter.rs`
       (and the same for `sync_validator.rs`/`tests/agents.rs`/the `.feature` file) report "Files
       are identical" for all four pairs.
       Done 2026-07-05: copied all 4 files directly from `ose-public`'s worktree (Phase 1's actual
@@ -434,7 +434,7 @@ Then the corresponding .opencode/ agent uses the "opencode-go/glm-5.2" model ide
       (current correct IDs matching the `\b` regex quirk, plus explicit correction/historical
       notes) — verified each individually. `npm run lint:md:fix`: 897 files, 0 errors.
       `nx affected -t lint`: 26 projects, 0 errors.
-- [x] [AI] In `/Users/wkf/ose-projects/ose-infra`, copy the same byte-identical engine change to the
+- [x] [AI] In `~/ose-projects/ose-infra`, copy the same byte-identical engine change to the
       same 4 files. Acceptance: same byte-identity diff check as above, for all four files, against
       `ose-public`'s versions.
       Done 2026-07-05: copied all 4 files from `ose-public`'s worktree. `diff` confirms all 4 pairs
@@ -490,7 +490,7 @@ crate::models`) in `apps/coralpolyp-be/generated-contracts` — openapi-generato
       false-positive quirk).
 - [x] [AI] Confirm `.pi/settings.json` was NOT created in `ose-primer` or `ose-infra` — per
       `tech-docs.md` Decision 5, Pi's model pin is `ose-public`-only. Acceptance:
-      `ls /Users/wkf/ose-projects/ose-primer/.pi/ /Users/wkf/ose-projects/ose-infra/.pi/ 2>&1` both
+      `ls ~/ose-projects/ose-primer/.pi/ ~/ose-projects/ose-infra/.pi/ 2>&1` both
       report "No such file or directory".
       Done 2026-07-05: both confirmed absent — `ls: .../ose-primer/.pi/: No such file or directory`
       and `ls: .../ose-infra/.pi/: No such file or directory`.

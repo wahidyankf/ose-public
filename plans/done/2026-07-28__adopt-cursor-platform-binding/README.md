@@ -189,3 +189,5 @@ Full per-file verdicts, one table per repository, live in
 - [Model Selection Convention](../../../repo-governance/development/agents/model-selection.md)
 - [Bare-Repo Base-Worktree Landing Method](../../../repo-governance/development/workflow/bare-repo-landing-method.md)
 - [Plans Organization Convention](../../../repo-governance/conventions/structure/plans.md)
+
+> Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

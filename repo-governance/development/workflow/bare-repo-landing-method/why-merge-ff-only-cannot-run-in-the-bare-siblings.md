@@ -7,7 +7,7 @@ when_to_use: Use when explaining or verifying why the bare-topology row of the T
 
 ```console
 $ git -C ose-private worktree list
-/Users/wkf/ose-projects/ose-private  (bare)
+/Users/<name>/ose-projects/<sibling>  (bare)
 
 $ git -C ose-private merge --ff-only origin/main
 fatal: this operation must be run in a work tree

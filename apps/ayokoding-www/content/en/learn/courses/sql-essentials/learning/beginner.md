@@ -85,10 +85,10 @@ anything; SQLite only touches the filesystem once the first statement actually n
 
 **Run**: `sqlite3 app.db < example.sql`
 
-**Output** (path generalized to `/home/user/project/app.db` -- your own path will differ):
+**Output** (path generalized to `/home/<user>/project/app.db` -- your own path will differ):
 
 ```text
-main: /home/user/project/app.db r/w
+main: /home/<user>/project/app.db r/w
 ```
 
 `.tables` prints nothing at all -- an empty line, not an error. That is the correct, expected result

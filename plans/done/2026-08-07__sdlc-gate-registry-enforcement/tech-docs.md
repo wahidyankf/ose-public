@@ -1217,21 +1217,21 @@ the exact delivery branch, prove that it belongs to `origin/main`, and determine
 reverting it. Select the literal repository path and branch from the table below; do not infer
 either from the current checkout.
 
-| Phase | Repository worktree                                                                         | Delivery branch                            |
-| ----- | ------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| 1     | `/Users/wkf/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement`               | `sdlc-gate-registry-enforcement`           |
-| 11    | `/Users/wkf/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-defork`        | `sdlc-gate-registry-enforcement-defork`    |
-| 2     | `/Users/wkf/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-rewire-public` | `sdlc-gate-registry-enforcement-rewire`    |
-| 3     | `/Users/wkf/ose-projects/ose-primer/worktrees/sdlc-gate-registry-enforcement`               | `sdlc-gate-registry-enforcement`           |
-| 4     | `/Users/wkf/ose-projects/ose-private/worktrees/sdlc-gate-registry-enforcement`              | `sdlc-gate-registry-enforcement`           |
-| 5     | `/Users/wkf/ose-projects/beaver-nest/worktrees/sdlc-gate-registry-enforcement`              | `sdlc-gate-registry-enforcement`           |
-| 6     | `/Users/wkf/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-knowledge`     | `sdlc-gate-registry-enforcement-knowledge` |
+| Phase | Repository worktree                                                                | Delivery branch                            |
+| ----- | ---------------------------------------------------------------------------------- | ------------------------------------------ |
+| 1     | `~/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement`               | `sdlc-gate-registry-enforcement`           |
+| 11    | `~/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-defork`        | `sdlc-gate-registry-enforcement-defork`    |
+| 2     | `~/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-rewire-public` | `sdlc-gate-registry-enforcement-rewire`    |
+| 3     | `~/ose-projects/ose-primer/worktrees/sdlc-gate-registry-enforcement`               | `sdlc-gate-registry-enforcement`           |
+| 4     | `~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement`                | `sdlc-gate-registry-enforcement`           |
+| 5     | `~/ose-projects/beaver-nest/worktrees/sdlc-gate-registry-enforcement`              | `sdlc-gate-registry-enforcement`           |
+| 6     | `~/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-knowledge`     | `sdlc-gate-registry-enforcement-knowledge` |
 
 For example, Phase 1 uses the first two assignments below. For any other phase, replace both
 assignments with the literal values from its row before running the remainder unchanged:
 
 ```sh
-ROLLBACK_REPO=/Users/wkf/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement
+ROLLBACK_REPO=$HOME/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement
 ROLLBACK_BRANCH=sdlc-gate-registry-enforcement
 test -d "$ROLLBACK_REPO"
 git -C "$ROLLBACK_REPO" fetch origin main

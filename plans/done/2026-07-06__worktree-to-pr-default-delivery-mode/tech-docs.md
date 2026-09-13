@@ -14,12 +14,12 @@ source code, no UI, no `specs/` feature files. Enforcement of the new `## Delive
 ## Repo Coordination Model
 
 - **`ose-public`** — canonical scaffolding source; authored first. Absolute root:
-  `/Users/wkf/ose-projects/ose-public` [Repo-grounded].
+  `~/ose-projects/ose-public` [Repo-grounded].
 - **`ose-primer`** — public downstream parity repo; receives the identical change. Absolute root:
-  `/Users/wkf/ose-projects/ose-primer` [Repo-grounded].
+  `~/ose-projects/ose-primer` [Repo-grounded].
 - **`ose-infra`** — private repo, **outside** the parity loop, but carries its own copies of these
   governance files; receives the identical conceptual change. Absolute root:
-  `/Users/wkf/ose-projects/ose-infra` [Repo-grounded].
+  `~/ose-projects/ose-infra` [Repo-grounded].
 
 All three repos were verified to carry every target file listed below [Repo-grounded]. The
 governance prose files are **not** required to be byte-identical across repos (only `apps/rhino-cli`

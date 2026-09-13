@@ -195,11 +195,11 @@ sudo adduser devuser
 sudo usermod -aG sudo devuser
 
 # Copy SSH keys
-sudo mkdir -p /home/devuser/.ssh
-sudo cp ~/.ssh/authorized_keys /home/devuser/.ssh/
-sudo chown -R devuser:devuser /home/devuser/.ssh
-sudo chmod 700 /home/devuser/.ssh
-sudo chmod 600 /home/devuser/.ssh/authorized_keys
+sudo mkdir -p ~devuser/.ssh
+sudo cp ~/.ssh/authorized_keys ~devuser/.ssh/
+sudo chown -R devuser:devuser ~devuser/.ssh
+sudo chmod 700 ~devuser/.ssh
+sudo chmod 600 ~devuser/.ssh/authorized_keys
 ```
 
 ### Install and Configure Fail2Ban
@@ -210,12 +210,11 @@ Fail2Ban v1.1.0+ uses nftables and provides layered defense against brute-force 
 # Install Fail2Ban
 sudo apt install fail2ban
 
-# Create local configuration
-sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-sudo nano /etc/fail2ban/jail.local
+# Create an override file for the sshd jail (jail.conf stays untouched)
+sudo nano /etc/fail2ban/jail.d/sshd.conf
 ```
 
-Configure SSH protection in `jail.local`:
+Configure SSH protection in `jail.d/sshd.conf`:
 
 ```ini
 [sshd]

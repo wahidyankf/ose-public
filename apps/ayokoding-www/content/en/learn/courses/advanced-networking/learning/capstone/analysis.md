@@ -17,18 +17,18 @@ traceroute -m 15 -w 1 example.com
 
 **Run**: on this sandbox's macOS host directly (real network path, real routers, no fabrication)
 
-**Output**:
+**Output** (the private-range hop addresses are masked, for example `192.168.x.1`; the rest of the capture is verbatim):
 
 ```text
 traceroute: Warning: example.com has multiple addresses; using 104.20.23.154
 traceroute to example.com (104.20.23.154), 15 hops max, 40 byte packets
- 1  192.168.110.1 (192.168.110.1)  118.369 ms  3.284 ms  1.616 ms
- 2  192.168.0.1 (192.168.0.1)  4.682 ms  138.590 ms  4.476 ms
- 3  192.168.1.1 (192.168.1.1)  6.652 ms  6.366 ms  6.493 ms
- 4  10.2.240.1 (10.2.240.1)  7.859 ms  10.020 ms  7.670 ms
+ 1  192.168.x.1 (192.168.x.1)  118.369 ms  3.284 ms  1.616 ms
+ 2  192.168.y.1 (192.168.y.1)  4.682 ms  138.590 ms  4.476 ms
+ 3  192.168.z.1 (192.168.z.1)  6.652 ms  6.366 ms  6.493 ms
+ 4  10.x.y.1 (10.x.y.1)  7.859 ms  10.020 ms  7.670 ms
  5  180.252.1.101 (180.252.1.101)  7.980 ms  7.394 ms  6.711 ms
  6  * * *
- 7  10.117.100.5 (10.117.100.5)  6.750 ms  6.412 ms  6.618 ms
+ 7  10.x.z.5 (10.x.z.5)  6.750 ms  6.412 ms  6.618 ms
  8  180.240.190.77 (180.240.190.77)  19.519 ms  22.740 ms  27.581 ms
  9  180.240.190.77 (180.240.190.77)  22.043 ms  20.925 ms  28.263 ms
 10  180.240.190.229 (180.240.190.229)  20.472 ms  20.840 ms *
@@ -44,12 +44,12 @@ traceroute to example.com (104.20.23.154), 15 hops max, 40 byte packets
 
 | Hop   | Address                                         | Layer tied to            | What it is                                                                                                                                                                                                                                                                                                                    |
 | ----- | ----------------------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | `192.168.110.1`                                 | Network (routing, co-05) | The local LAN's own gateway -- an RFC 1918 private address (co-06's classification), the first router any packet leaving this machine passes through.                                                                                                                                                                         |
-| 2-3   | `192.168.0.1`, `192.168.1.1`                    | Network                  | Two MORE private-range hops -- a nested/double-NAT setup (a second router, or a local ISP modem/router boundary) before traffic even leaves the premises.                                                                                                                                                                     |
-| 4     | `10.2.240.1`                                    | Network                  | The FIRST hop inside the ISP's own network -- ISPs commonly number internal backbone routers from the private `10.0.0.0/8` range (co-06), never exposing them as public addresses.                                                                                                                                            |
+| 1     | `192.168.x.1`                                   | Network (routing, co-05) | The local LAN's own gateway -- an RFC 1918 private address (co-06's classification), the first router any packet leaving this machine passes through.                                                                                                                                                                         |
+| 2-3   | `192.168.y.1`, `192.168.z.1`                    | Network                  | Two MORE private-range hops -- a nested/double-NAT setup (a second router, or a local ISP modem/router boundary) before traffic even leaves the premises.                                                                                                                                                                     |
+| 4     | `10.x.y.1`                                      | Network                  | The FIRST hop inside the ISP's own network -- ISPs commonly number internal backbone routers from the private `10/8` range (co-06), never exposing them as public addresses.                                                                                                                                                  |
 | 5     | `180.252.1.101`                                 | Network                  | The first genuinely PUBLIC address in the path -- the point where traffic actually leaves the ISP's private internal addressing and becomes globally routable.                                                                                                                                                                |
 | 6     | `* * *`                                         | Network                  | A hop that never replied within the 1-second timeout -- most commonly a router configured to not send ICMP Time-Exceeded replies, or one that deprioritizes/rate-limits them; NOT necessarily packet loss on the actual forwarding path (the NEXT hop still replied normally, proving traffic kept flowing through this hop). |
-| 7     | `10.117.100.5`                                  | Network                  | Back to a PRIVATE address -- common on ISP backbones that use private addressing internally even for routers several hops deep, unrelated to hop 1-3's local-premises private addresses.                                                                                                                                      |
+| 7     | `10.x.z.5`                                      | Network                  | Back to a PRIVATE address -- common on ISP backbones that use private addressing internally even for routers several hops deep, unrelated to hop 1-3's local-premises private addresses.                                                                                                                                      |
 | 8-9   | `180.240.190.77` (twice)                        | Network                  | The SAME router answered for two consecutive TTL values -- happens when a router along the path doesn't decrement TTL in the way `traceroute` expects, or a load-balanced path briefly converges back onto the same device.                                                                                                   |
 | 10-11 | `180.240.190.229`, `180.240.191.165`            | Network                  | Two more ISP backbone hops, continuing to move traffic toward the public internet's edge.                                                                                                                                                                                                                                     |
 | 12    | `172.69.117.60`                                 | Network                  | The FIRST Cloudflare-owned address in the path (`172.69.0.0/16` is a known Cloudflare anycast range) -- traffic has now reached the CDN's own edge network (co-20).                                                                                                                                                           |

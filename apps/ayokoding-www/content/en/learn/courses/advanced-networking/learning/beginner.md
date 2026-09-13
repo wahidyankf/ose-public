@@ -648,15 +648,15 @@ traceroute -m 5 -w 1 example.com
 **Run**: `traceroute -m 5 -w 1 example.com` (run directly on this sandbox's macOS host --
 `traceroute` works without root here, unlike `tcpdump`)
 
-**Output**:
+**Output** (the private-range hop addresses are masked, for example `192.168.x.1`; the rest of the capture is verbatim):
 
 ```text
 traceroute: Warning: example.com has multiple addresses; using 104.20.23.154
 traceroute to example.com (104.20.23.154), 5 hops max, 40 byte packets
- 1  192.168.110.1 (192.168.110.1)  2.161 ms  1.612 ms *
- 2  192.168.0.1 (192.168.0.1)  5.487 ms  5.089 ms  6.474 ms
- 3  192.168.1.1 (192.168.1.1)  7.151 ms  6.772 ms  5.560 ms
- 4  10.2.240.1 (10.2.240.1)  14.181 ms  8.553 ms  10.818 ms
+ 1  192.168.x.1 (192.168.x.1)  2.161 ms  1.612 ms *
+ 2  192.168.y.1 (192.168.y.1)  5.487 ms  5.089 ms  6.474 ms
+ 3  192.168.z.1 (192.168.z.1)  7.151 ms  6.772 ms  5.560 ms
+ 4  10.x.y.1 (10.x.y.1)  14.181 ms  8.553 ms  10.818 ms
  5  180.252.1.101 (180.252.1.101)  7.543 ms  9.109 ms  6.294 ms
 ```
 

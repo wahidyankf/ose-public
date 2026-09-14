@@ -1,0 +1,15 @@
+# Delivery
+
+Execution checkout: the fixture repository root.
+
+## Phase 1: Build
+
+- [AI] Do the thing this phase names. `[AC-01]`
+
+## Phase 2: Verify
+
+- Do the thing this phase names. `[AC-02]`
+
+## Plan Archival
+
+- [AI] Move the plan folder to the done root.

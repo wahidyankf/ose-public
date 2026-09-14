@@ -6,6 +6,10 @@ node_modules/
 # reformatting it here would break `parity manifest validate` in the sibling repository
 apps/rhino-cli/tests/golden-master/manifest.json
 
+# Shared plan-structure corpus: byte-identical with the ose-rules catalog and pinned by digest, so
+# reformatting it breaks every implementation that verifies that digest
+specs/fixtures/plan-structure/
+
 # Build outputs
 dist/
 build/

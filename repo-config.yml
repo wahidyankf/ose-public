@@ -987,6 +987,12 @@ extensions:
             - "CONTRIBUTING.md"
             - "pull_request_template.md"
             - "RTK.md"
+            # The shared plan-structure corpus names two companions this way on purpose:
+            # they are the non-kebab defect its rejected case 012 exists to make a plan
+            # validator report. The corpus is verified against the catalog's digest, so it
+            # cannot be renamed here, and this validator exempts by base name only.
+            - "001-Context.md"
+            - "002-approach_two.md"
         surfaces:
           pre-commit: { scope: affected-file-type, glob: "*.md" }
           ci: { scope: all-file-type }
@@ -998,6 +1004,20 @@ extensions:
         ci-group: markdown
         surfaces:
           pre-commit: { scope: affected-file-type, glob: "*.md" }
+          ci: { scope: all-file-type }
+
+      # Plan structure is judged per plan, not per file: companions and delivery
+      # citations are checked against a plan's other documents, so one edited file
+      # can break a check on a file nobody staged. `plan validate` therefore always
+      # walks the whole plans/ tree; pre-commit only decides whether a staged plan
+      # file makes it worth running.
+      - id: plan-structure
+        type: check
+        command: plan validate
+        kind: rhino-cli
+        ci-group: markdown
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "plans/**" }
           ci: { scope: all-file-type }
 
       - id: actionlint
@@ -1150,6 +1170,10 @@ extensions:
         args:
           exclude:
             - plans/done
+            # The shared plan-structure corpus holds a rejected case whose defect is a
+            # deliberately broken link, and the tree is verified against the catalog's
+            # digest rather than edited, so a link repaired here would break that comparison.
+            - specs/fixtures/plan-structure
         surfaces:
           pre-push: { scope: all-file-type }
           ci: { scope: all-file-type }
@@ -1173,6 +1197,12 @@ extensions:
       # `harness bindings generate` from `.claude/` and never hand-edited;
       # vendored paths retain their upstream documentation. `.claude/` — the
       # canonical source for generated agents and Skills — is covered instead.
+      #
+      # `specs/apps/` and `specs/libs/` rather than `specs/`: each path is walked
+      # whole, and `specs/fixtures/plan-structure` is a copy verified against the
+      # catalog's digest. Adding the READMEs this rule wants to its case trees would
+      # change bytes that must not change, and the rule has no exclusion. The
+      # narrower paths keep every specification tree this repository authors bound.
       - id: governance-readme-index
         type: check
         command: governance readme-index validate
@@ -1182,7 +1212,8 @@ extensions:
           paths:
             - docs/
             - repo-governance/
-            - specs/
+            - specs/apps/
+            - specs/libs/
             - .claude/
           fail-kinds:
             - missing

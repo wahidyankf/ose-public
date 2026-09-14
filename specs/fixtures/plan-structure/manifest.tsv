@@ -1,0 +1,27 @@
+case	expect_exit	expect_rules	note
+accepted/001-minimal-single-file-shape	0		Six documents, single-file technical shape, dateless backlog slug
+accepted/002-directory-shape-with-companions	0		Directory technical shape with three contiguous indexed companions
+accepted/003-done-plan-dated-slug	0		Completed plan under done with a YYYY-MM-DD__ prefixed slug
+accepted/004-idea-brief-exempt	0		An idea brief is not a formal plan and is exempt from the document rule
+accepted/005-checkbox-delivery-items	0		Checklist items written as task-list checkboxes, ticked and unticked, with backticked and bare labels
+accepted/006-structural-sections-and-links	0		Checkout, boundaries and link sections around the phases, with a quoted label in prose
+rejected/001-unknown-lifecycle-root	1	PLAN-LIFECYCLE-001	A root named completed rather than done
+rejected/002-dated-live-slug	1	PLAN-LIFECYCLE-002	A backlog slug carrying a date while the plan is live
+rejected/003-undated-done-slug	1	PLAN-LIFECYCLE-003	A done slug with no completion-date prefix
+rejected/004-non-kebab-slug	1	PLAN-LIFECYCLE-004	A slug using capitals and underscores
+rejected/005-slug-in-two-roots	1	PLAN-LIFECYCLE-005	One slug occupying both backlog and in-progress
+rejected/006-missing-learnings	1	PLAN-DOCUMENT-001	learnings.md absent from a live plan
+rejected/007-both-technical-shapes	1	PLAN-DOCUMENT-002	Both tech-docs.md and tech-docs/ present
+rejected/008-no-technical-shape	1	PLAN-DOCUMENT-003	Neither technical shape present
+rejected/009-two-digit-ordinal	1	PLAN-COMPANION-001	Companions numbered 01 and 02 rather than 001 and 002
+rejected/010-ordinal-gap	1	PLAN-COMPANION-002	Ordinals 001 and 003 with 002 missing
+rejected/011-duplicate-ordinal	1	PLAN-COMPANION-003	Two companions both numbered 001
+rejected/012-non-kebab-companion	1	PLAN-COMPANION-004	Companion names using a capital and an underscore after the ordinal
+rejected/013-unindexed-companion	1	PLAN-COMPANION-005	A companion on disk that the entrypoint does not list
+rejected/014-indexed-missing-companion	1	PLAN-COMPANION-006	An entrypoint listing a companion that does not exist
+rejected/015-duplicate-criterion-id	1	PLAN-CRITERION-001	Two scenarios sharing one acceptance identifier
+rejected/016-unknown-criterion-reference	1	PLAN-CRITERION-002	A delivery item citing an acceptance identifier no scenario defines
+rejected/017-missing-executor-label	1	PLAN-DELIVERY-001	A checklist item with no executor label
+rejected/018-invalid-executor-label	1	PLAN-DELIVERY-002	An executor label outside the two permitted values
+rejected/019-unnumbered-phase	1	PLAN-DELIVERY-003	A delivery phase heading with no phase number
+rejected/020-interleaved-archival	1	PLAN-DELIVERY-004	Archival items placed before the substantive phases

@@ -88,6 +88,16 @@ See `src/RhinoCli.Cli/src/HelpText.fs`:
 - `--say <msg>` — echo to stdout
 - `--help, -h` — print help
 
+## Plan Validation
+
+`plan validate` checks every plan under `plans/` against the shared plan structure: lifecycle roots,
+the six documents, technical companions, acceptance identifiers, and the delivery checklist. The
+retired implementations never had it, so no byte-identity baseline exists for it. Instead it is held
+to the pinned RHINO `plan validate`: the same rule identifiers, messages, diagnostics, and exit
+classes (`0` clean, `1` findings, `2` a plan document it cannot read). The shared corpus in
+[`specs/fixtures/plan-structure/`](../../specs/fixtures/plan-structure/README.md) is what proves
+the two agree, and the `plan-structure` gate runs the command in pre-commit and CI.
+
 ## Adding a Gherkin Scenario
 
 A new scenario anywhere under

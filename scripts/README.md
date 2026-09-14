@@ -1,6 +1,6 @@
 ---
 title: "Repository Shell Scripts"
-description: The two formatter wrapper scripts that the gate registry invokes, and why each one cannot be replaced by a direct CLI call
+description: The two formatter wrapper scripts that the gate registry invokes, why each one cannot be replaced by a direct CLI call, and the adopted public-safety gate
 when_to_use: Read this before adding a script here, or when tracing which gate invokes one of these wrappers.
 ---
 
@@ -20,6 +20,13 @@ belong here.
   when verifying `*.go` formatting without rewriting anything; `gofmt -l` prints each
   unformatted path but still exits 0, so its output has to be converted into a non-zero exit
   code.
+
+## The public-safety gate
+
+[`public-safety/`](./public-safety/README.md) is not a wrapper. It is the outbound public-safety gate, copied byte
+for byte from a release of the [ose-rules](https://github.com/wahidyankf/ose-rules) catalog, so a change to it
+lands upstream first and arrives here as a new release. Its README says what it screens, what it prohibits, and
+how to run its tests.
 
 ## Which gates invoke these
 

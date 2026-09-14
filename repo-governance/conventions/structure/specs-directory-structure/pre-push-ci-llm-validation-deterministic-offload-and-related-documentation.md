@@ -10,7 +10,8 @@ when_to_use: Read this when checking which CI surfaces gate specs/ changes, what
 Specs structure validation remains registry-declared. Per-project BDD coverage runs through every
 affected `test:quick`; repeated primary keywords are valid for a continuous journey.
 
-- `.husky/pre-push` — `gate run --surface=pre-push` reads them from the registry
+- `.husky/pre-push` — `./rhino gate run --surface pre-push` hands the surface to the registry, which
+  reads them
 - `.github/workflows/pr-quality-gate.yml` — the `specs-structure` job in `quality-gate.needs:`
 - `_reusable-www-test-local-deploy.yml` and `_reusable-app-test-local-deploy-stag.yml` — the
   `specs-gate` job in `deploy.needs:`, called by the www and app cron deploys

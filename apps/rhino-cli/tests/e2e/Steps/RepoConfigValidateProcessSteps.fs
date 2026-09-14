@@ -57,8 +57,27 @@ let private replaceFirst (pattern: string) (replacement: string) (input: string)
     + replacement
     + input.Substring(index + pattern.Length)
 
+/// The rhino-cli registry's indentation in raw repo-config.yml text: a v2
+/// document nests it under `extensions.rhino-cli`, four columns in; a v1
+/// document keeps it at the root.
+let private registryIndent (text: string) : string =
+    if text.Contains("\nextensions:\n  rhino-cli:\n", StringComparison.Ordinal) then
+        "    "
+    else
+        ""
+
+/// Shifts a registry fragment written in v1 column positions to where the
+/// registry sits in `text`, so one mutation reads the same for v1 and v2.
+let private reindent (text: string) (fragment: string) : string =
+    let indent = registryIndent text
+
+    fragment.Split('\n')
+    |> Array.map (fun line -> if line = "" then line else indent + line)
+    |> String.concat "\n"
+
 let private sliceHarnessEntry (name: string) (text: string) =
-    let marker = sprintf "\n  - name: %s" name
+    let indent = registryIndent text
+    let marker = sprintf "\n%s  - name: %s" indent name
     let index = text.IndexOf(marker, StringComparison.Ordinal)
 
     if index < 0 then
@@ -69,7 +88,7 @@ let private sliceHarnessEntry (name: string) (text: string) =
     let body =
         lines
         |> Array.skip 1
-        |> Array.takeWhile (fun line -> line.Length = 0 || Char.IsWhiteSpace line.[0])
+        |> Array.takeWhile (fun line -> line.Length = 0 || line.StartsWith(indent + " ", StringComparison.Ordinal))
 
     String.concat "\n" (Array.append [| lines.[0] |] body)
 
@@ -151,11 +170,15 @@ type RepoConfigValidateSteps() =
         let text = canonical ()
 
         text
-        |> replaceFirst "  - name: claude-code\n" "  - name: claude-code\n    unknown-key: true\n"
+        |> replaceFirst
+            (reindent text "  - name: claude-code\n")
+            (reindent text "  - name: claude-code\n    unknown-key: true\n")
         |> fun value -> assertInvalid value "unknown harness key" |> ignore
 
         text
-        |> replaceFirst "  - name: claude-code\n    tier: source\n" "  - name: claude-code\n"
+        |> replaceFirst
+            (reindent text "  - name: claude-code\n    tier: source\n")
+            (reindent text "  - name: claude-code\n")
         |> fun value -> assertInvalid value "missing harness tier" |> ignore
 
     [<Then>]
@@ -169,7 +192,9 @@ type RepoConfigValidateSteps() =
         |> fun value -> assertValid value "same keys with different values"
 
         text
-        |> replaceFirst "  - name: claude-code\n" "  - name: claude-code\n    unknown-key: true\n"
+        |> replaceFirst
+            (reindent text "  - name: claude-code\n")
+            (reindent text "  - name: claude-code\n    unknown-key: true\n")
         |> fun value -> assertInvalid value "different key set" |> ignore
 
     [<Given>]
@@ -234,7 +259,10 @@ type RepoConfigValidateSteps() =
         ()
         =
         let text = canonical ()
-        let harnessEnd = text.IndexOf("\nharness-catalog:", StringComparison.Ordinal)
+
+        let harnessEnd =
+            text.IndexOf("\n" + registryIndent text + "harness-catalog:", StringComparison.Ordinal)
+
         let harnessText = text.Substring(0, harnessEnd)
 
         let ownershipLines =

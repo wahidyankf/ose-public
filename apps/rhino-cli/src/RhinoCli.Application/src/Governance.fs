@@ -1356,7 +1356,7 @@ let private allowedWordBudgetResolvedTreeKeys: Set<string> =
 /// [Repo-grounded — `word_budget.rs::BudgetConfig`].
 let checkNoUnknownWordBudgetKeys (data: string) : Result<unit, string> =
     try
-        let root = rawFrontmatterDeserializer.Deserialize<obj>(data)
+        let root = rawFrontmatterDeserializer.Deserialize<obj>(RepoConfig.normalize data)
 
         match asRawYamlMap root with
         | None -> Ok()
@@ -1473,7 +1473,7 @@ let mergedBudgetConfig (repoRoot: string) : Result<BudgetConfig option, string> 
     if not (File.Exists path) then
         Ok None
     else
-        let data = File.ReadAllText path
+        let data = RepoConfig.normalize (File.ReadAllText path)
 
         match checkNoUnknownWordBudgetKeys data with
         | Error message -> Error message

@@ -11,8 +11,8 @@ Eight gates carry `ci-group: markdown` in `repo-config.yml`: `markdownlint`, `md
 The registry is the source of truth for every command, argument, and surface below — read
 `repo-config.yml` when this page and the registry disagree.
 
-Nothing invokes these by hand. `gate run --surface=pre-commit`, `--surface=pre-push`, and the
-CI matrix derived from `ci-group` execute them; the commands below are what those surfaces run.
+Nothing invokes these by hand. The registry's `gate run --surface=pre-commit` and `--surface=pre-push`,
+which the hooks reach through `./rhino gate run`, and the CI matrix derived from `ci-group` execute them; the commands below are what those surfaces run.
 
 ## 1. Mermaid Diagram Validation
 

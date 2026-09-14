@@ -262,3 +262,10 @@ Feature: Gate execution
     When the gate with id "lockfile-sync" runs on surface "pre-commit"
     Then package-lock.json is unchanged
     And nothing additional is staged
+
+  # Exemption(integration): this scenario's contract is the environment the published gate runner hands its child processes, which only a real process launch observes; alternative-proof: rhino-cli:test:e2e / Every gate child receives the surface it runs for
+  @integration-exempt
+  Scenario: Every gate child receives the surface it runs for
+    Given a pre-commit gate records the OSE_GATE_SURFACE value it receives
+    When the pre-commit gate runs under a launcher that set OSE_GATE_SURFACE to pre-push
+    Then the gate records pre-commit

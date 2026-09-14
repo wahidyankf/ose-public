@@ -1,13 +1,14 @@
 #!/usr/bin/env sh
 set -e
 
-# Generated shim — do not add checks here. Declare them in repo-config.yml
-# under `gates:` with a `pre-commit` surface; `gate run` executes them in
+# Generated shim — do not add checks here. The pinned RHINO binary runs the
+# core gates repo-config.yml declares for the `pre-commit` surface: the
+# public-safety screen first, then this repository's registry. Declare checks
+# under `extensions.rhino-cli.gates` with a `pre-commit` surface; they run in
 # declaration order, which is why the registry lists the staged guard first,
 # then the per-file pass, then the re-staging mutations.
 #
 # The registry dispatcher delegates the per-file pass to
 # `npx lint-staged`, whose block in package.json is itself generated from the
 # registry by `gate emit`. lint-staged keeps its stash-and-restore safety.
-apps/rhino-cli/scripts/rhino-bin.sh \
-	gate run --surface=pre-commit
+exec ./rhino gate run --surface pre-commit

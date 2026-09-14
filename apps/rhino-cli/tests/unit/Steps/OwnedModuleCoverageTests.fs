@@ -552,11 +552,14 @@ let ``Gate document validation rejects hook workflow and package drift independe
 
     Assert.True(
         Result.isError (
-            validate [ local ] [ ".husky/pre-commit", "# gate run --surface=pre-commit" ] [ ".husky/pre-commit" ]
+            validate
+                [ local ]
+                [ ".husky/pre-commit", "# ./rhino gate run --surface pre-commit" ]
+                [ ".husky/pre-commit" ]
         )
     )
 
-    let hook = "#!/bin/sh\ngate run --surface=pre-commit\n"
+    let hook = "#!/bin/sh\nexec ./rhino gate run --surface pre-commit\n"
 
     let workflowMissing =
         validate [ local ] [ ".husky/pre-commit", hook ] [ ".husky/pre-commit" ]
@@ -704,7 +707,7 @@ let ``Gate package validation accepts the exact non-empty lint-staged projection
             registry
             { Files =
                 Map.ofList
-                    [ ".husky/pre-commit", "#!/bin/sh\ngate run --surface=pre-commit\n"
+                    [ ".husky/pre-commit", "#!/bin/sh\nexec ./rhino gate run --surface pre-commit\n"
                       "package.json", package ]
               ExecutableHooks = set [ ".husky/pre-commit" ] }
 

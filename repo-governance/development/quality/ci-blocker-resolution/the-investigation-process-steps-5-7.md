@@ -27,7 +27,7 @@ target directly, or the full local pre-push gate set via the same shim `.husky/p
 
 ```bash
 ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t test:quick
-# or, to run every registry-declared pre-push gate exactly as the hook does:
+# or, to run every registry-declared pre-push gate the hook runs, with each gate's output:
 apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push
 ```
 

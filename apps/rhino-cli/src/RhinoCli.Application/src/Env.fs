@@ -1272,7 +1272,8 @@ let private toSurfaceConfig (dto: SurfaceConfigDto) : Result<SurfaceConfig, stri
 /// ex.Message` pattern.
 let parseContractContent (data: string) (path: string) : Result<Contract, string> =
     try
-        let wrapper = validateDeserializer.Deserialize<EnvContractWrapperDto>(data)
+        let wrapper =
+            validateDeserializer.Deserialize<EnvContractWrapperDto>(RepoConfig.normalize data)
 
         match box wrapper.EnvContract with
         | null -> Error(sprintf "env-contract: section missing from repo-config.yml at %s" path)

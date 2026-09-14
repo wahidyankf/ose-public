@@ -1,10 +1,18 @@
-# repo-config.yml — schema: rhino-cli/repo-config/v1
+# repo-config.yml — ose/repo-config/v2
 #
-# Unified repository configuration. Structure is byte-identical across both
-# parity repos (ose-public, ose-private); values reflect each repo's actual
-# project set and surfaces. rhino-cli commands read their relevant section.
+# Unified repository configuration. The keys before `extensions:` are the v2
+# core, read by the pinned Rust RHINO binary (`./rhino`): who may read this
+# repository and which gates run at each surface. Everything under
+# `extensions.rhino-cli` is this repository's own rhino-cli configuration,
+# unchanged in meaning from schema v1; RHINO reads none of it, and rhino-cli
+# reads only it.
 #
-# Sections defined here:
+# Core sections:
+#   schema, visibility — the v2 schema identity; this repository is public
+#   gates              — what RHINO dispatches at each surface: the public-safety
+#                        screen first, then this repository's registry
+#
+# rhino-cli extension sections:
 #   harness          — all-harness binding registry (§3.2); EVERY `harness` command reads this list
 #   specs            — spec-tree structure config (specs:structure-validation)
 #   governance-word-budget — per-surface instruction-file word budgets (rhino-cli governance word-budget validate)
@@ -13,1361 +21,1462 @@
 #   gate-surface-guards — optional whole-surface execution wrappers
 #   gates            — declared quality-gate registry; every `gate` command (list/run/emit/validate) reads this list
 
-# Vendor-neutral capability grades. The grade is the pivot: an agent declares a
-# `model:` alias, that alias resolves to a grade through the claude-code entry's
-# `model-map:` below, and every other harness realizes the same grade through its
-# own `model-map:`. Effort belongs to the grade rather than to the agent — it was
-# already a pure function of grade across all 90 agents before it was declared
-# here, repeated by hand in each file rather than derived.
-#
-# Weaker models are compensated with more reasoning effort, which is why the
-# planning grade sits at `high` while execution and fast sit at `xhigh`. `ultra`
-# follows the same logic in the other direction; it currently has no members, so
-# the value is a declaration of intent rather than an observed setting.
-model-grades:
-  ultra: { effort: high }
-  planning: { effort: high }
-  execution: { effort: xhigh }
-  fast: { effort: xhigh }
+schema: ose/repo-config/v2
 
-harness:
-  # Authoritative harness registry — all 3 supported coding-agent harnesses.
-  # Fields per entry:
-  #   name        — harness identifier
-  #   tier        — source | generated
-  #   agent-dir   — directory of per-agent files (naming/duplication checks)
-  #   skills-dir  — directory of skill files
-  #   agent-name  — generated default-agent name (where the harness has one)
-  #   mirrors     — source agent-dir this entry must mirror (generated tier)
-  #   skills-mirrors — source skills-dir that skills-dir must mirror (generated tier)
-  #   vendored    — directories inside the mirrored trees the emitter must never touch
-  #   config      — config file path
-  #   instruction — instruction surfaces this harness reads (word budget, per governance-word-budget:)
-  #   ownership   — one declared class (generated | vendored | source) per binding path
-  #
-  # Adding a 4th harness = one entry here; every harness command picks it up automatically.
-  - name: claude-code
-    tier: source
-    agent-dir: .claude/agents
-    skills-dir: .claude/skills
-    # The source vocabulary. `harness claude validate` derives its accepted
-    # `model:` alias set from these values, so a grade cannot be renamed here
-    # without the validator following.
-    model-map:
-      ultra: fable
-      planning: opus
-      execution: sonnet
-      fast: haiku
-    # Declared so the hand-authored config is visible to the cross-harness config-parity
-    # obligation (Multi-Harness Binding Rule 10). Previously only codex declared a `config:`,
-    # so two of the three configs the rule governs had no machine-readable record.
-    config: .claude/settings.json
-    instruction:
-      - CLAUDE.md
-    # Cells are transcribed verbatim from the hand-maintained table this
-    # generation replaces, so the first generated output is byte-identical and
-    # any later diff is a deliberate content change rather than emitter noise.
-    catalog:
-      platform: Claude Code
-      reads-agents-md: "No — reads `CLAUDE.md` (shim `@AGENTS.md`)"
-      instruction-surface: "`CLAUDE.md`, `.claude/`"
-      mcp-config: "`.mcp.json`"
-      agent-surface: "`.claude/agents/*.md`"
-      skills-surface: "`.claude/skills/*/SKILL.md`"
-      status: Active
-    # Every path below carries exactly one of generated | vendored | source.
-    # There is no fourth class and no unclassified residue: a tracked binding
-    # file matching no declaration fails `harness ownership validate`.
-    ownership:
-      - { path: .claude/, class: source, reason: hand-authored tree every mirror is generated from }
-      - { path: .claude/agents, class: source, reason: canonical agent definitions }
-      - { path: .claude/skills, class: source, reason: canonical skill definitions }
-      - { path: .claude/settings.json, class: source, reason: hand-authored permissions and hook registration }
-      - { path: CLAUDE.md, class: source, reason: hand-authored Claude Code instruction surface }
-  - name: opencode
-    tier: generated
-    agent-dir: .opencode/agents
-    mirrors: .claude/agents
-    config: .opencode/opencode.json
-    # No `model-map:` on purpose, and the absence is the switch rather than a
-    # special case in the emitter: a harness that declares no map has no `model`
-    # key written into its mirrors at all. OpenCode then resolves the model
-    # itself — a primary agent takes the globally configured model and a subagent
-    # takes the model of the primary that invoked it — so the mirrors follow
-    # whatever the developer is actually running instead of pinning a model the
-    # repository would have to keep current.
-    instruction:
-      - AGENTS.md
-    catalog:
-      platform: OpenCode
-      reads-agents-md: "Yes"
-      instruction-surface: "`.opencode/agents/` (auto-synced); reads `.claude/skills/` natively"
-      mcp-config: "`opencode.json`"
-      agent-surface: "`.opencode/agents/*.md`"
-      skills-surface: "reads `.claude/skills/` **and** `.agents/skills/`"
-      status: Active
-    ownership:
-      - { path: .opencode/agents, class: generated, reason: emitted from .claude/agents }
-      - { path: .opencode/opencode.json, class: vendored, reason: OpenCode tooling config; no in-repo source }
-      - { path: AGENTS.md, class: source, reason: hand-authored vendor-neutral instruction surface }
-  - name: codex
-    tier: generated
-    agent-dir: .codex/agents
-    mirrors: .claude/agents
-    config: .codex/config.toml
-    # Codex pins a model per agent, so each grade names its counterpart. A grade
-    # absent from this map emits no `model` key and Codex applies its own
-    # default, which is preferable to guessing a counterpart.
-    model-map:
-      ultra: gpt-6-astra
-      planning: gpt-5.6-sol
-      execution: gpt-5.6-terra
-      fast: gpt-5.6-luna
-    skills-dir: .agents/skills
-    skills-mirrors: .claude/skills
-    instruction:
-      - AGENTS.md
-      - RTK.md
-    catalog:
-      platform: OpenAI Codex CLI
-      reads-agents-md: "Yes (since Apr 2025)"
-      instruction-surface: "`AGENTS.md`, `RTK.md`, `AGENTS.override.md` (overrides), `.codex/config.toml`[^trust]"
-      mcp-config: "`.codex/config.toml` `[mcp_servers]`[^mcp]"
-      agent-surface: "`.codex/agents/<name>.toml` standalone files **and** `[agents.<name>]` tables in `config.toml`[^agents]"
-      skills-surface: "`.agents/skills/`[^skills]"
-      status: "Partial (`.codex/` exists)"
-    ownership:
-      - { path: .codex/agents, class: generated, reason: emitted from .claude/agents }
-      - { path: .agents/skills, class: generated, reason: mirrored from .claude/skills }
-      - { path: .codex/config.toml, class: vendored, reason: Nx tooling config; emitter owns the delimited region only }
-      - { path: .codex/ci-monitor-subagent.toml, class: vendored, reason: Nx tooling file config.toml points at }
-      - { path: AGENTS.md, class: source, reason: hand-authored vendor-neutral instruction surface }
-      - { path: RTK.md, class: source, reason: upstream Codex RTK instruction surface }
+# Public, and gated as public: the repository, its history and its Actions logs
+# are readable by anyone, so the safety screen runs first on every surface.
+visibility: public
 
-harness-catalog:
-  # Where the generated catalog region lands, and the date its upstream claims
-  # were last verified by hand. Declared rather than stamped at generation time:
-  # a generated timestamp would change on every run and make the drift guard
-  # fire on its own output.
-  document: docs/reference/platform-bindings.md
-  verified: 2026-08-26
-
-doctor:
-  # Repository-relative .NET SDK version source. The shared Rust source reads
-  # this data rather than naming an application-specific backend path.
-  dotnet-global-json: apps/ose-be/global.json
-
-  # Doctor tools declared here rather than compiled into the F# inventory.
-  # A name absent from BOTH the built-in inventory and this list is rejected
-  # by `--tools` before any tool is probed, so this list is authoritative
-  # alongside the built-ins, not advisory.
-  #
-  # Each entry carries: `name` (the `--tools` identifier), `binary` (what is
-  # executed), `version-args`, `version-stream` (`stdout` or `stderr` —
-  # `java -version` writes to stderr, and a stdout-only probe would report an
-  # installed JDK as missing), `required-version` (compared with >=), and an
-  # `install` map keyed by package manager, whose value is the full argv with
-  # the command first. Doctor maps `darwin` to `brew` and `linux` to `apt`.
-  #
-  # `java` came first: the LMS backend (`ose-lms-be`) needs a JDK, and it is the
-  # tool that motivated `version-stream` in the first place. `go` and
-  # `golangci-lint` follow for the Roots backend lane. Every entry here is
-  # a list item under a key both repositories already declare, so the cross-repo
-  # schema-parity rule on top-level key sets is unaffected.
-  extra-tools:
-    - name: java
-      binary: java
-      version-args: ["-version"]
-      # `java -version` writes its banner to stderr, not stdout. Reading stdout
-      # here would see an empty string and report an installed JDK as missing.
-      version-stream: stderr
-      # The Phase 0 resolved LTS. Compared with >=, so a newer LTS still passes.
-      required-version: "25"
-      install:
-        brew: ["install", "--cask", "temurin@25"]
-        apt: ["apt-get", "install", "-y", "temurin-25-jdk"]
-
-    - name: go
-      binary: go
-      # `go version` writes to stdout — the ordinary case. Declared explicitly
-      # rather than left to a default so it reads side by side with the java
-      # entry above, whose stderr banner motivated the field.
-      version-stream: stdout
-      version-args: ["version"]
-      # The Phase 0 resolved toolchain. Compared with >=, so a newer Go passes.
-      required-version: "1.26"
-      install:
-        # brew only, deliberately. Debian's `golang-go` tracks well behind 1.26,
-        # so naming it here would hand a contributor an install command that
-        # cannot satisfy required-version.
-        brew: ["install", "go"]
-
-    - name: golangci-lint
-      binary: golangci-lint
-      version-stream: stdout
-      version-args: ["--version"]
-      # 2.x carries a different config schema from 1.x; `.golangci.yml` declares
-      # `version: "2"`, so a 1.x binary cannot read it. Pinning the major here
-      # turns that into a doctor row rather than an opaque gate failure.
-      required-version: "2.11"
-      install:
-        brew: ["install", "golangci-lint"]
-        # NOT `apt-get install golangci-lint`: Debian ships 1.x under that name,
-        # and a 1.x binary cannot read a `version: "2"` config at all, so it
-        # would install a tool that fails required-version immediately. The
-        # `apt` key names the linux slot rather than the command -- built-in
-        # tools already put `npx` and a pinned curl download in it -- so the
-        # module-proxy install goes here. CI installs the same pin itself in
-        # pr-quality-gate.yml's gate job, because that job must also put
-        # GOPATH/bin on PATH before the provisioning probe runs.
-        apt: ["go", "install", "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.11.3"]
-
-# governance-word-budget: registered here (config-only) at Phase 1 of
-# plans/done/2026-08-15__optimize-governance-md and armed as a `gates:` entry at
-# Phase 9 — it now runs at pre-push and in CI (see the entry below). Word count
-# is the raw whole-file split_whitespace() count (tech-docs.md §1.2); see also
-# FR-1.5: no exempt/allow/ignore/waiver/override key is ever permitted in this
-# block, enforced by BudgetConfig's deny_unknown_fields schema.
-#
-# The eight instruction surfaces repeat the same 650/750/750 triple. That
-# repetition is deliberate, not an oversight: YAML merge keys (`<<: *anchor`)
-# are NOT an option here — serde_norway does not expand them, so
-# `- <<: *instruction-budget` deserializes as `surfaces[N]: missing field
-# `target``. Verified at Phase 11 of plans/in-progress/update-harness-support by
-# applying exactly that shape and running `rhino-cli repo-config validate`.
-# Calibrated on 2026-08-27 from 400/500/500 after the live gate accumulated 938
-# non-blocking warnings, making its early-warning signal non-actionable. The
-# resolved-tree ceiling stays unchanged as the aggregate startup-context guard.
-governance-word-budget:
-  surfaces:
-    - glob: "repo-governance/**/*.md"
-      target: 650
-      warn: 750
-      fail: 750
-    - glob: ".claude/**/*.md"
-      target: 650
-      warn: 750
-      fail: 750
-    - glob: ".codex/**/*.md"
-      target: 650
-      warn: 750
-      fail: 750
-    - glob: ".opencode/**/*.md"
-      target: 650
-      warn: 750
-      fail: 750
-    # Added at Phase 11 of plans/in-progress/update-harness-support: the Codex
-    # skills mirror is a live instruction surface Codex reads, so it is measured
-    # at the same ceiling as its `.claude/skills/` source. The eight vendored
-    # third-party skill directories under it are excluded by name on the gate
-    # entry below — this repository can neither shorten nor regenerate them.
-    - glob: ".agents/**/*.md"
-      target: 650
-      warn: 750
-      fail: 750
-    - glob: "AGENTS.md"
-      target: 650
-      warn: 750
-      fail: 750
-    - glob: "CLAUDE.md"
-      target: 650
-      warn: 750
-      fail: 750
-    - glob: "RTK.md"
-      target: 650
-      warn: 750
-      fail: 750
-    # Declared last so the select-then-classify overlap rule
-    # (application::governance::word_budget::check_instruction_sizes) picks
-    # this more-specific surface over the general repo-governance/**/*.md
-    # surface above for every README.md, per FR-1.6/FR-3.15.
-    - glob: "**/README.md"
-      target: 900
-      warn: 1000
-      fail: 1000
-  resolved_tree:
-    root: "CLAUDE.md"
-    target: 1200
-    warn: 1500
-    fail: 1500
-
-env-contract:
-  # Surface registry for rhino-cli env validate (code↔config drift detection).
-  # Companion: env-injection: declares, per app, the injection HOME for each key
-  # at every deploy stage (names only, never values).
-  #
-  # Each surface entry carries:
-  #   root      — path relative to repo root
-  #   kind      — "app" (active); "terraform"/"ansible" are forward-scaffold
-  #   lang      — "rust", "typescript", "fsharp", or "go" (app kind only)
-  #   allowlist — keys exempt from drift detection (framework-injected, test-only, etc.)
-  surfaces:
-    - root: apps/organiclever-be
-      kind: app
-      lang: fsharp
-      allowlist:
-        # Forward-declared config not yet consumed by the Phase 1 F# shell
-        # (wired in later phases); declared in .env.example ahead of use.
-        # ORGANICLEVER_BE_PORT is no longer listed here: it is now genuinely
-        # read, via PortResolver in Program.fs.
-        - ORGANICLEVER_BE_CORS_ORIGINS
-        # Tier-selection control var (which .env.<tier> file to load), not an
-        # app config value — same treatment as PORT/HOSTNAME for the TS apps.
-        - APP_ENV
-
-    - root: apps/ose-be
-      kind: app
-      lang: fsharp
-      allowlist:
-        # Forward-declared config not yet consumed by the Phase 1 F# shell
-        # (CORS + OpenRouter wired in later phases); declared ahead of use.
-        # OSE_BE_PORT is no longer listed here: it is now genuinely read, via
-        # PortResolver in Program.fs.
-        - OSE_BE_CORS_ORIGINS
-        - OSE_BE_OPENROUTER_API_KEY
-        - OSE_BE_OPENROUTER_MODEL
-        - OSE_BE_OPENROUTER_BASE_URL
-        # Tier-selection control var (which .env.<tier> file to load), not an
-        # app config value — same treatment as PORT/HOSTNAME for the TS apps.
-        - APP_ENV
-
-    - root: apps/roots-be
-      kind: app
-      lang: go
-      allowlist: []
-      # No allowlist entries. ROOTS_BE_PORT is genuinely read -- cmd/roots-be
-      # passes it beside os.LookupEnv at the composition root -- so the scanner
-      # sees it and no exemption is needed. APP_ENV is not listed because this
-      # service does not consult a tier-selection variable.
-
-    - root: apps/ose-www
-      kind: app
-      lang: typescript
-      allowlist:
-        - PORT # set by scripts/next-with-port.mjs after resolution; not an override source
-        # Resolved by scripts/next-with-port.mjs before the app process starts, so it
-        # is read by the launcher rather than by this app's own source.
-        - OSE_WWW_PORT
-        - HOSTNAME # framework-reserved Next.js dev-server hostname
-
-    - root: apps/ayokoding-www
-      kind: app
-      lang: typescript
-      allowlist:
-        - PORT # set by scripts/next-with-port.mjs after resolution; not an override source
-        # Resolved by scripts/next-with-port.mjs before the app process starts, so it
-        # is read by the launcher rather than by this app's own source.
-        - AYOKODING_WWW_PORT
-        - HOSTNAME
-        - NODE_ENV # Node-reserved; read by static client-data refresh test guard
-
-    - root: apps/organiclever-www
-      kind: app
-      lang: typescript
-      allowlist:
-        - PORT # set by scripts/next-with-port.mjs after resolution; not an override source
-        # Resolved by scripts/next-with-port.mjs before the app process starts, so it
-        # is read by the launcher rather than by this app's own source.
-        - ORGANICLEVER_WWW_PORT
-        - HOSTNAME # framework-reserved Next.js dev-server hostname
-
-    - root: apps/organiclever-app-web
-      kind: app
-      lang: typescript
-      allowlist:
-        - PORT # set by scripts/next-with-port.mjs after resolution; not an override source
-        # Resolved by scripts/next-with-port.mjs before the app process starts, so it
-        # is read by the launcher rather than by this app's own source.
-        - ORGANICLEVER_APP_WEB_PORT
-        - HOSTNAME
-
-    - root: apps/ose-app-web
-      kind: app
-      lang: typescript
-      allowlist:
-        - PORT # set by scripts/next-with-port.mjs after resolution; not an override source
-        # Resolved by scripts/next-with-port.mjs before the app process starts, so it
-        # is read by the launcher rather than by this app's own source.
-        - OSE_APP_WEB_PORT
-        - HOSTNAME
-
-env-injection:
-  # Value-less injection contract (extends env-contract:).
-  # Declares, per app, the injection HOME for its env keys at every deploy stage
-  # it runs in — NAMES ONLY, never values.
-  #
-  # Injection homes:
-  #   env-local         — gitignored apps/<app>/.env.local (developer machine)
-  #   compose           — infra/dev/<stack> docker-compose env (local CI), placeholders only
-  #   vercel-preview     — Vercel project env, Preview scope (stag-*-app-web branch)
-  #   vercel-production  — Vercel project env, Production scope (prod-*-www / prod-*-app-web)
-  #   k3s-coralpolyp     — ose-private coralpolyp secret store (backend k3s rollout)
-  apps:
-    # --- www tier (direct-to-prod; e2e runs on local compose) ---
-    - app: ose-www
-      keys-from: apps/ose-www/.env.example
-      runtime: { local: env-local, local-ci: compose, production: vercel-production }
-    - app: ayokoding-www
-      keys-from: apps/ayokoding-www/.env.example
-      runtime: { local: env-local, local-ci: compose, production: vercel-production }
-    - app: organiclever-www
-      keys-from: apps/organiclever-www/.env.example
-      runtime: { local: env-local, local-ci: compose, production: vercel-production }
-
-    # --- app-web tier (gated staging promotion) ---
-    - app: organiclever-app-web
-      keys-from: apps/organiclever-app-web/.env.example
-      runtime: { local: env-local, local-ci: compose, staging: vercel-preview, production: vercel-production }
-    - app: ose-app-web
-      keys-from: apps/ose-app-web/.env.example
-      runtime: { local: env-local, local-ci: compose, staging: vercel-preview, production: vercel-production }
-
-    # --- backend tier (non-Vercel; k3s via ose-private coralpolyp) ---
-    - app: organiclever-be
-      keys-from: apps/organiclever-be/.env.example
-      runtime: { local-ci: compose, staging: k3s-coralpolyp }
-    - app: ose-be
-      keys-from: apps/ose-be/.env.example
-      runtime: { local-ci: compose, staging: k3s-coralpolyp }
-
-  # CI test-harness keys — test-only, NEVER in any apps/<app>/.env.example.
-  ci-harness:
-    - key: API_BASE_URL
-      class: var
-      environments: [organiclever-app-staging, ose-app-staging]
-    - key: WEB_BASE_URL
-      class: var
-      environments: [organiclever-app-staging, ose-app-staging]
-    - key: VERCEL_AUTOMATION_BYPASS_SECRET
-      class: secret
-      environments: [organiclever-app-staging, ose-app-staging]
-    - key: PLAYWRIGHT_GREP_INVERT
-      class: literal
-      environments: []
-
-# The generated pre-push shim stays tool-neutral. Rhino re-executes the whole
-# surface once through this outer HIPPO admission and the marker prevents the
-# child gate run from admitting a second time.
-gate-surface-guards:
-  pre-push:
-    command: env
-    args:
-      - OSE_HIPPO_PRE_PUSH_ACTIVE=1
-      - ./hippo
-      - run
-      - --class
-      - ephemeral
-      - --disk-path
-      - .
-      - --
-    active-env: OSE_HIPPO_PRE_PUSH_ACTIVE
-
-# Projects permitted to bind a loopback socket inside `test:integration`.
-#
-# The Integration layer is defined by resource ownership, not by transport: a
-# server the test starts on a port it controls and shuts down before it
-# finishes is an owned local resource (see
-# repo-governance/development/infra/nx-targets/mandatory-targets-integration-tests.md).
-# The repository still denies loopback by default so a project cannot adopt one
-# silently; naming a project here is the opt-in, and `reason` is required so the
-# entry stays auditable.
-#
-# This list is NEVER a licence to reach an external network or a service the
-# test did not start. That stays forbidden below E2E for every project, listed
-# or not, and `repo-governance test-boundary validate` enforces both halves.
-integration-loopback: []
-
+# RHINO runs these in order and stops at the first failure. Each registry gate
+# hands its surface to rhino-cli, which runs the gates declared under
+# `extensions.rhino-cli.gates` for that surface. Arguments after `--` in a hook
+# or CI call reach every gate: the commit-message file at commit-msg (the
+# trailing `--` below keeps it a message file for rhino-cli), and the
+# `--group=<id>` selector at ci, which the safety screen ignores.
 gates:
-  # Declared quality-gate registry. Fields per entry:
-  #   id           — stable, unique gate identifier
-  #   type         — check (verifies content) or mutation (rewrites content)
-  #   command      — leaf command run for this gate
-  #   kind         — command runner: rhino-cli | external | nx
-  #   doctor-tools — ordered Doctor tool ids needed before this gate can run (optional)
-  #   wiring       — execution-wiring override, e.g. hand-wired (optional; see below)
-  #   restages     — whether a mutation must re-stage its generated output (optional, default false)
-  #   args         — command-specific arguments such as exclusion lists (optional)
-  #   surfaces     — per-surface ({commit-msg,pre-commit,pre-push,ci}) execution scope; required
-  #   carve-out    — exemption from the cross-surface composition rule (optional)
-  #   verifies     — id of the mutation gate this check verifies (optional)
-  #   category     — mutation category, e.g. formatter (optional)
-  #   ci-group     — CI job group this gate belongs to (DD-3). REQUIRED for every gate whose
-  #                  `surfaces` includes `ci` — `gate validate` hard-errors on a `ci`-surface gate
-  #                  with no declared `ci-group`. Read by `gate list --by-group` (bucketing) and
-  #                  `gate run --group` (dispatch); a gate with `wiring: hand-wired` is excluded
-  #                  from its `ci-group`'s `--group` dispatch in every output format — it runs in
-  #                  its own dedicated CI workflow job instead.
-  # ---------------------------------------------------------------- commit-msg
-  - id: commitlint
-    type: check
-    command: 'npx --no -- commitlint --edit "$1"'
-    kind: external
-    doctor-tools: [npm]
+  - id: public-safety
+    kind: check
+    run:
+      - bash
+      - scripts/public-safety/check.sh
     surfaces:
-      commit-msg: { scope: other }
+      - commit-msg
+      - pre-commit
+      - pre-push
+      - ci
 
-  # -------------------------------------------- pre-commit: guards before work
-  - id: env-staged-guard
-    type: check
-    command: env staged-guard validate
-    kind: rhino-cli
-    carve-out: staged-only
+  - id: registry-commit-msg
+    kind: check
+    run:
+      - apps/rhino-cli/scripts/rhino-bin.sh
+      - gate
+      - run
+      - --surface=commit-msg
+      - --
     surfaces:
-      pre-commit: { scope: other }
+      - commit-msg
 
-  - id: repo-config-schema
-    type: check
-    command: repo-config validate
-    kind: rhino-cli
-    ci-group: governance
+  - id: registry-pre-commit
+    kind: mutation
+    run:
+      - apps/rhino-cli/scripts/rhino-bin.sh
+      - gate
+      - run
+      - --surface=pre-commit
     surfaces:
-      pre-commit:
-        scope: affected-file-type
-        glob: repo-config.yml
-        lint-staged-shell: "{{command}}"
-      ci: { scope: other }
+      - pre-commit
 
-  # ----------------------------------------------- formatters (13 mutations) +
-  # ----------------------------------------------- their ci verifiers (13 checks)
-  - id: format-prettier
-    type: mutation
-    category: formatter
-    command: prettier --write
-    kind: external
-    doctor-tools: [npm]
-    restages: true
+  - id: registry-pre-push
+    kind: check
+    run:
+      - apps/rhino-cli/scripts/rhino-bin.sh
+      - gate
+      - run
+      - --surface=pre-push
     surfaces:
-      pre-commit:
-        scope: affected-file-type
-        globs:
-          - "*.md"
-          - "*.{js,jsx,ts,tsx,mjs,cjs}"
-          - "*.json"
-          - "*.{yml,yaml}"
-          - "*.{css,scss}"
-          - "*.html"
-          - "*.sql"
+      - pre-push
 
-  - id: format-verify-prettier
-    type: check
-    command: prettier --check
-    kind: external
-    ci-group: formatting-verify
-    doctor-tools: [npm]
-    verifies: format-prettier
+  - id: registry-ci
+    kind: check
+    run:
+      - apps/rhino-cli/scripts/rhino-bin.sh
+      - gate
+      - run
+      - --surface=ci
     surfaces:
-      ci:
-        scope: affected-file-type
-        glob: "*.{md,json,yml,yaml,css,scss,html,sql,ts,tsx,js,jsx,mjs,cjs}"
+      - ci
 
-  - id: format-rustfmt
-    type: mutation
-    category: formatter
-    command: rustfmt --edition 2024
-    kind: external
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.rs" }
+extensions:
+  rhino-cli:
+    # Vendor-neutral capability grades. The grade is the pivot: an agent declares a
+    # `model:` alias, that alias resolves to a grade through the claude-code entry's
+    # `model-map:` below, and every other harness realizes the same grade through its
+    # own `model-map:`. Effort belongs to the grade rather than to the agent — it was
+    # already a pure function of grade across all 90 agents before it was declared
+    # here, repeated by hand in each file rather than derived.
+    #
+    # Weaker models are compensated with more reasoning effort, which is why the
+    # planning grade sits at `high` while execution and fast sit at `xhigh`. `ultra`
+    # follows the same logic in the other direction; it currently has no members, so
+    # the value is a declaration of intent rather than an observed setting.
+    model-grades:
+      ultra: { effort: high }
+      planning: { effort: high }
+      execution: { effort: xhigh }
+      fast: { effort: xhigh }
 
-  - id: format-verify-rustfmt
-    type: check
-    command: rustfmt --edition 2024 --check
-    kind: external
-    ci-group: formatting-verify
-    verifies: format-rustfmt
-    surfaces:
-      ci: { scope: affected-file-type, glob: "*.rs" }
-
-  - id: format-fantomas
-    type: mutation
-    category: formatter
-    command: fantomas
-    kind: external
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.fs" }
-
-  - id: format-verify-fantomas
-    type: check
-    # Fantomas exits 99 (not 1) when files need formatting; 1 means an unexpected
-    # error. Any non-zero must fail the gate — never test for exit code 1 alone.
-    # Bare `fantomas` requires a GLOBAL dotnet tool install; a local manifest
-    # install needs `dotnet fantomas`. Phase 0 confirms which this repo uses.
-    command: fantomas --check
-    kind: external
-    ci-group: formatting-verify
-    verifies: format-fantomas
-    surfaces:
-      ci: { scope: affected-file-type, glob: "*.fs" }
-
-  - id: format-ruff
-    type: mutation
-    category: formatter
-    command: ruff format
-    kind: external
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.py" }
-
-  - id: format-verify-ruff
-    type: check
-    command: ruff format --check
-    kind: external
-    ci-group: formatting-verify
-    verifies: format-ruff
-    surfaces:
-      ci: { scope: affected-file-type, glob: "*.py" }
-
-  - id: format-gofmt
-    type: mutation
-    category: formatter
-    command: gofmt -w
-    kind: external
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.go" }
-
-  - id: format-verify-gofmt
-    type: check
-    # `gofmt -l` always exits 0; the wrapper converts non-empty output to failure.
-    command: scripts/verify-gofmt.sh
-    kind: external
-    ci-group: formatting-verify
-    verifies: format-gofmt
-    surfaces:
-      ci: { scope: affected-file-type, glob: "*.go" }
-
-  - id: lint-golangci
-    type: check
-    # golangci-lint cannot consume the gate's flat repository-relative file list:
-    # a list spanning two directories fails with "named files must all be in one
-    # directory" (exit 7), and it resolves the module from its working directory,
-    # so a repository-root invocation fails with "no go files to analyze" (exit 5).
-    # Both verified against 2.11.3. The wrapper groups paths by owning module and
-    # runs golangci-lint once per module from that module's root.
-    command: scripts/lint-golangci.sh
-    kind: external
-    ci-group: lint
-    doctor-tools: [golangci-lint]
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.go" }
-      ci: { scope: affected-file-type, glob: "*.go" }
-
-  - id: format-elixir
-    type: mutation
-    category: formatter
-    command: scripts/format-elixir.sh
-    kind: external
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.{ex,exs}" }
-
-  - id: format-verify-elixir
-    type: check
-    # The wrapper discovers each mix project; do not add --no-exit.
-    command: scripts/format-elixir.sh --check
-    kind: external
-    ci-group: formatting-verify
-    verifies: format-elixir
-    surfaces:
-      ci: { scope: affected-file-type, glob: "*.{ex,exs}" }
-
-  - id: format-csharpier
-    type: mutation
-    category: formatter
-    command: dotnet csharpier format
-    kind: external
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.cs" }
-
-  - id: format-verify-csharpier
-    type: check
-    # `check` fails on unformatted files; do not use `--unformatted-as-warnings`.
-    command: dotnet csharpier check
-    kind: external
-    ci-group: formatting-verify
-    verifies: format-csharpier
-    surfaces:
-      ci: { scope: affected-file-type, glob: "*.cs" }
-
-  - id: format-dart
-    type: mutation
-    category: formatter
-    command: dart format
-    kind: external
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.dart" }
-
-  - id: format-verify-dart
-    type: check
-    # `-o none` prevents the verifier from rewriting files before it fails.
-    command: dart format -o none --set-exit-if-changed
-    kind: external
-    ci-group: formatting-verify
-    verifies: format-dart
-    surfaces:
-      ci: { scope: affected-file-type, glob: "*.dart" }
-
-  - id: format-java
-    type: mutation
-    category: formatter
-    command: scripts/format-java.sh
-    kind: external
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.java" }
-
-  - id: format-verify-java
-    type: check
-    # The wrapper discovers each Gradle root and runs spotlessCheck; do not swap in spotlessApply,
-    # which would mutate files before the verifier could fail on them.
-    command: scripts/format-java.sh --check
-    kind: external
-    ci-group: formatting-verify
-    verifies: format-java
-    surfaces:
-      ci: { scope: affected-file-type, glob: "*.java" }
-
-  - id: format-shfmt
-    type: mutation
-    category: formatter
-    command: shfmt -w
-    kind: external
-    doctor-tools: [shfmt]
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.sh" }
-
-  - id: format-verify-shfmt
-    type: check
-    command: shfmt -d
-    kind: external
-    ci-group: formatting-verify
-    doctor-tools: [shfmt]
-    verifies: format-shfmt
-    surfaces:
-      ci: { scope: affected-file-type, glob: "*.sh" }
-
-  - id: format-tofu
-    type: mutation
-    category: formatter
-    command: tofu fmt
-    kind: external
-    doctor-tools: [tofu]
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.tf" }
-
-  - id: format-verify-tofu
-    type: check
-    command: tofu fmt -check
-    kind: external
-    ci-group: formatting-verify
-    doctor-tools: [tofu]
-    verifies: format-tofu
-    surfaces:
-      ci: { scope: affected-file-type, glob: "*.tf" }
-
-  - id: format-stylua
-    type: mutation
-    category: formatter
-    command: stylua
-    kind: external
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.lua" }
-
-  - id: format-verify-stylua
-    type: check
-    command: stylua --check
-    kind: external
-    ci-group: formatting-verify
-    verifies: format-stylua
-    surfaces:
-      ci: { scope: affected-file-type, glob: "*.lua" }
-
-  - id: format-clang
-    type: mutation
-    category: formatter
-    command: clang-format -i
-    kind: external
-    doctor-tools: [clang-format]
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.{c,h}" }
-
-  - id: format-verify-clang
-    type: check
-    # --Werror is double-dash per LLVM docs; it promotes the
-    # "code should be clang-formatted" warning to an error so the exit is non-zero.
-    command: clang-format --dry-run --Werror
-    kind: external
-    ci-group: formatting-verify
-    doctor-tools: [clang-format]
-    verifies: format-clang
-    surfaces:
-      ci: { scope: affected-file-type, glob: "*.{c,h}" }
-
-  - id: format-buildifier
-    type: mutation
-    category: formatter
-    command: buildifier
-    kind: external
-    restages: true
-    surfaces:
-      pre-commit:
-        scope: affected-file-type
-        glob: "{BUILD,BUILD.bazel,*.bzl}"
-
-  - id: format-verify-buildifier
-    type: check
-    command: buildifier --mode=check
-    kind: external
-    ci-group: formatting-verify
-    verifies: format-buildifier
-    surfaces:
-      ci:
-        scope: affected-file-type
-        glob: "{BUILD,BUILD.bazel,*.bzl}"
-
-  # -------------------------------------------------- per-file checks (12)
-  - id: markdownlint
-    type: check
-    command: markdownlint-cli2
-    kind: external
-    ci-group: markdown
-    doctor-tools: [npm]
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.md" }
-      ci: { scope: all-file-type }
-
-  - id: md-mermaid
-    type: check
-    command: md mermaid validate
-    kind: rhino-cli
-    ci-group: markdown
-    args:
-      exclude:
-        - apps/rhino-cli/tests/fixtures
-        - plans/done
-        - apps/ayokoding-www/content
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.md" }
-      ci: { scope: all-file-type }
-
-  # Rule 3 (common-syntax-errors-label-constraints-rule-3-line-length.md) binds
-  # Mermaid labels at 20 characters per `<br/>` segment, because renderers clip
-  # past roughly 20-22 with no error. The `md-mermaid` entry above runs at the
-  # validator's 30-character default -- Mermaid's `wrappingWidth` baseline, a
-  # backstop, not the rule -- so a green run there proves only that a diagram is
-  # under the backstop. This entry closes that 10-character gap.
-  #
-  # Deliberately scoped `affected-file-type` on BOTH surfaces, never
-  # `all-file-type`: the legacy corpus carries 413 violations across 155 files at
-  # the 20 threshold (measured 2026-09-08 by running the command below with
-  # `--max-label-len 20` over the same excludes). A repo-wide failing gate would
-  # turn `main` red on 155 files nobody touched, which is exactly the corpus-size
-  # objection mermaid-render-fidelity-caveat.md raises. Scoping to changed files
-  # ratchets instead: new and edited diagrams meet Rule 3, untouched ones stay on
-  # the 30 backstop until someone edits them. Widen to `all-file-type` only after
-  # a sweep clears the 413.
-  - id: md-mermaid-strict
-    type: check
-    command: md mermaid validate
-    kind: rhino-cli
-    ci-group: markdown
-    args:
-      max-label-len: ["20"]
-      exclude:
-        - apps/rhino-cli/tests/fixtures
-        - plans/done
-        - apps/ayokoding-www/content
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.md" }
-      ci: { scope: affected-file-type, glob: "*.md" }
-
-  - id: md-heading-hierarchy
-    type: check
-    command: md heading-hierarchy validate
-    kind: rhino-cli
-    ci-group: markdown
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.md" }
-      ci: { scope: all-file-type }
-
-  - id: md-naming
-    type: check
-    command: md naming validate
-    kind: rhino-cli
-    ci-group: markdown
-    args:
-      exempt:
-        - "*__linkedin__*.md"
-        - "CONTRIBUTING.md"
-        - "pull_request_template.md"
-        - "RTK.md"
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.md" }
-      ci: { scope: all-file-type }
-
-  - id: md-frontmatter
-    type: check
-    command: md frontmatter validate
-    kind: rhino-cli
-    ci-group: markdown
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.md" }
-      ci: { scope: all-file-type }
-
-  - id: actionlint
-    type: check
-    command: actionlint
-    kind: external
-    ci-group: shell-docker-actions
-    doctor-tools: [actionlint]
-    surfaces:
-      pre-commit:
-        scope: affected-file-type
-        glob: ".github/workflows/*.{yml,yaml}"
-      ci: { scope: all-file-type }
-
-  - id: artifact-retention
-    type: check
-    # Self-discovers `.github/workflows/*` when invoked with no file arguments,
-    # matching actionlint's all-file-type CI shape above.
-    command: scripts/verify-artifact-retention.sh
-    kind: external
-    ci-group: shell-docker-actions
-    surfaces:
-      pre-commit:
-        scope: affected-file-type
-        glob: ".github/workflows/*.{yml,yaml}"
-      ci: { scope: all-file-type }
-
-  - id: shellcheck
-    type: check
-    command: shellcheck --severity=warning
-    kind: external
-    ci-group: shell-docker-actions
-    doctor-tools: [shellcheck]
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "*.sh" }
-      ci: { scope: affected-file-type, glob: "*.sh" }
-
-  - id: hadolint
-    type: check
-    command: 'sh -ec ''for f; do [ ! -e "$f" ] || hadolint --failure-threshold warning "$f"; done'' --'
-    kind: external
-    ci-group: shell-docker-actions
-    doctor-tools: [hadolint]
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "**/Dockerfile*" }
-      ci: { scope: affected-file-type, glob: "**/Dockerfile*" }
-
-  - id: convention-emoji
-    type: check
-    command: convention emoji validate
-    kind: rhino-cli
-    ci-group: governance
-    surfaces:
-      pre-commit:
-        scope: affected-file-type
-        glob: "*.{json,toml,ts,tsx,js,jsx,mjs,cjs,rs,go,py,cs,clj,dart,ex,exs,fs}"
-      ci: { scope: all-file-type }
-
-  - id: docker-compose-config
-    type: check
-    command: 'sh -ec ''for f; do base=${f%.ci.yml}.yml; if [ "$base" != "$f" ] && [ -f "$base" ]; then docker compose -f "$base" -f "$f" config > /dev/null; else docker compose -f "$f" config > /dev/null; fi; done'' --'
-    kind: external
-    ci-group: shell-docker-actions
-    doctor-tools: [docker]
-    surfaces:
-      pre-commit:
-        scope: affected-file-type
-        glob: "docker-compose*.{yml,yaml}"
-        lint-staged-shell: 'set -e; for f; do base=${f%.ci.yml}.yml; if [ "$base" != "$f" ] && [ -f "$base" ]; then docker compose -f "$base" -f "$f" config > /dev/null; else docker compose -f "$f" config > /dev/null; fi; done'
-      ci:
-        scope: all-file-type
-        globs:
-          - "**/docker-compose*.yml"
-          - "**/docker-compose*.yaml"
-
-  # ------------------------------------- pre-commit mutations, run last (order)
-  - id: harness-bindings-generate
-    type: mutation
-    command: harness bindings generate
-    kind: rhino-cli
-    restages: true
-    surfaces:
-      pre-commit: { scope: other }
-
-  - id: lockfile-sync
-    type: mutation
-    command: git lockfile sync
-    kind: rhino-cli
-    restages: true
-    surfaces:
-      pre-commit: { scope: affected-file-type, glob: "apps/*/package.json" }
-
-  # ------------------------------------------------------ pre-push + ci checks
-  - id: test-quick
-    type: check
-    command: "test:quick"
-    kind: nx
-    args: { parallel: ["1"] }
-    wiring: hand-wired
-    ci-group: rust
-    surfaces:
-      pre-push: { scope: affected-projects }
-      ci: { scope: affected-projects }
-
-  - id: compat-min-version
-    type: check
-    command: "compat:min-version"
-    kind: nx
-    wiring: hand-wired
-    ci-group: rust
-    surfaces:
-      pre-push: { scope: affected-projects }
-      ci: { scope: affected-projects }
-
-  - id: specs-structure
-    type: check
-    command: "specs:structure-validation"
-    kind: nx
-    wiring: hand-wired
-    ci-group: specs
-    surfaces:
-      pre-push: { scope: affected-projects }
-      ci: { scope: affected-projects }
-
-  - id: env-validate
-    type: check
-    command: env validate
-    kind: rhino-cli
-    ci-group: governance
-    surfaces:
-      pre-push: { scope: other }
-      ci: { scope: other }
-
-  - id: md-links
-    type: check
-    command: md links validate
-    kind: rhino-cli
-    ci-group: markdown
-    args:
-      exclude:
-        - plans/done
-    surfaces:
-      pre-push: { scope: all-file-type }
-      ci: { scope: all-file-type }
-
-  # Structural index enforcement across every content tree. `missing` is armed
-  # here (not only in governance-readme-completeness below) so the "every
-  # directory carries a literal README.md" rule binds `docs/` and `specs/` too
-  # — the former FR-3.5 split-directory exemption is removed in
-  # `readme_index.rs`, so a progressive-disclosure `<name>.md` parent no longer
-  # excuses its directory from having one.
-  #
-  # `unannotated` is deliberately NOT armed here: `docs/` indexes are partly
-  # hand-designed Markdown tables and `specs/` targets carry no frontmatter at
-  # all, so a derived annotation cannot be computed for either without a
-  # content restructure. Those two trees therefore get structural enforcement
-  # only; annotation stays scoped to the conforming trees below.
-  #
-  # Secondary binding roots are absent by design: the gate covers
-  # repository-authored governance content, not generated mirrors or vendored
-  # third-party payloads. Generated paths are emitted by
-  # `harness bindings generate` from `.claude/` and never hand-edited;
-  # vendored paths retain their upstream documentation. `.claude/` — the
-  # canonical source for generated agents and Skills — is covered instead.
-  - id: governance-readme-index
-    type: check
-    command: governance readme-index validate
-    kind: rhino-cli
-    ci-group: markdown
-    args:
-      paths:
-        - docs/
-        - repo-governance/
-        - specs/
-        - .claude/
-      fail-kinds:
-        - missing
-        - orphan
-        - ghost
-    surfaces:
-      pre-push: { scope: all-file-type }
-      ci: { scope: all-file-type }
-
-  - id: harness-duplication
-    type: check
-    command: harness duplication validate
-    kind: rhino-cli
-    # Was `ci-group: naming` — accurate while `harness naming validate` and
-    # `repo-governance workflows naming validate` were also members of this
-    # group. Both were withdrawn (see file-naming.md and
-    # ordinal-filename-prefixes.md), leaving this the group's sole member; a
-    # gate that only checks for duplicate registry entries is not a naming
-    # check. Renamed to `harness`, which is what it and any future member of
-    # this ci-group actually validate. No branch-protection required-check
-    # list references the old name in this repository.
-    ci-group: harness
-    surfaces:
-      pre-push: { scope: all-file-type }
-      ci: { scope: all-file-type }
-
-  - id: parity-manifest
-    type: check
-    command: parity manifest validate
-    kind: rhino-cli
-    ci-group: governance
-    surfaces:
-      pre-push: { scope: other }
-      ci: { scope: other }
-
-  # --------------------------------------------- path-gated governance checks
-  # `path-gated` scoping is surface-agnostic — `changed_paths()` computes changed paths for
-  # BOTH `pre-push` and `ci` (via merge-base with origin/main). A gate declared `path-gated` on
-  # `ci` is only proven correct by actually exercising it: stage/commit a triggering file in an
-  # isolated no-origin git fixture and confirm "Running gate <id>" appears (see
-  # optimize-governance-md's Phase 9b-2/16b-2 trigger-matrix evidence for the method). A
-  # never-exercised `ci`-surface `path-gated` declaration reads as green while silently never
-  # firing.
-  - id: vendor-independence
-    type: check
-    command: repo-governance vendor validate repo-governance/
-    kind: rhino-cli
-    ci-group: governance
-    surfaces:
-      pre-push:
-        scope: path-gated
-        trigger:
-          - repo-governance/
-      ci: { scope: other }
-
-  # Second entry for the same binary as vendor-independence above, not a wider
-  # scope on it: `repo-governance vendor validate` accepts a single positional
-  # [PATH], and `args:` can only emit `--flag value` pairs — so an additional
-  # covered surface costs an additional gate entry. The Vendor-Independence
-  # Convention governs AGENTS.md as a canonical root instruction surface
-  # (conventions/structure/governance-vendor-independence/purpose-and-scope.md),
-  # so leaving it ungated let neutrality hold only by hand.
-  #
-  # CLAUDE.md is deliberately NOT gated: its "Platform Binding Examples" heading
-  # opens at line 5 with only deeper headings beneath, and the scanner exempts
-  # everything until the next heading of equal-or-shallower level, so a gate
-  # there could only ever police the four lines above it. Total exemption is
-  # intended — that file is a single-vendor binding shim — and an always-green
-  # gate is exactly the vacuous-trigger failure the path-gated comment above
-  # warns about.
-  - id: vendor-independence-agents-md
-    type: check
-    command: repo-governance vendor validate AGENTS.md
-    kind: rhino-cli
-    ci-group: governance
-    surfaces:
-      pre-push:
-        scope: path-gated
-        trigger:
-          - AGENTS.md
-      ci: { scope: other }
-
-  # Integration's network boundary is default-deny: a project may bind a
-  # loopback socket it owns only when `integration-loopback:` above names it.
-  # Path-gated on the Integration source roots and on the allowlist itself, so
-  # the gate fires exactly when either half of the rule could have moved.
-  - id: test-boundary
-    type: check
-    command: repo-governance test-boundary validate
-    kind: rhino-cli
-    ci-group: governance
-    surfaces:
-      pre-push:
-        scope: path-gated
-        trigger:
-          - apps/
-          - libs/
-          - repo-config.yml
-      ci: { scope: other }
-
-  - id: convention-license
-    type: check
-    command: convention license validate
-    kind: rhino-cli
-    ci-group: governance
-    surfaces:
-      pre-push:
-        scope: path-gated
-        trigger:
-          - repo-governance/
-      ci: { scope: other }
-
-  - id: harness-bindings
-    type: check
-    command: harness bindings validate
-    kind: rhino-cli
-    ci-group: governance
-    surfaces:
-      pre-push:
-        scope: path-gated
-        trigger:
-          - .claude/
-          - .opencode/
-          - .codex/
-          - .agents/
-          - .github/
-          - AGENTS.md
+    harness:
+      # Authoritative harness registry — all 3 supported coding-agent harnesses.
+      # Fields per entry:
+      #   name        — harness identifier
+      #   tier        — source | generated
+      #   agent-dir   — directory of per-agent files (naming/duplication checks)
+      #   skills-dir  — directory of skill files
+      #   agent-name  — generated default-agent name (where the harness has one)
+      #   mirrors     — source agent-dir this entry must mirror (generated tier)
+      #   skills-mirrors — source skills-dir that skills-dir must mirror (generated tier)
+      #   vendored    — directories inside the mirrored trees the emitter must never touch
+      #   config      — config file path
+      #   instruction — instruction surfaces this harness reads (word budget, per governance-word-budget:)
+      #   ownership   — one declared class (generated | vendored | source) per binding path
+      #
+      # Adding a 4th harness = one entry here; every harness command picks it up automatically.
+      - name: claude-code
+        tier: source
+        agent-dir: .claude/agents
+        skills-dir: .claude/skills
+        # The source vocabulary. `harness claude validate` derives its accepted
+        # `model:` alias set from these values, so a grade cannot be renamed here
+        # without the validator following.
+        model-map:
+          ultra: fable
+          planning: opus
+          execution: sonnet
+          fast: haiku
+        # Declared so the hand-authored config is visible to the cross-harness config-parity
+        # obligation (Multi-Harness Binding Rule 10). Previously only codex declared a `config:`,
+        # so two of the three configs the rule governs had no machine-readable record.
+        config: .claude/settings.json
+        instruction:
           - CLAUDE.md
-          - docs/reference/platform-bindings.md
-          - repo-governance/
-      ci: { scope: other }
-
-  # `harness bindings validate` proves each mirror matches its source; it says
-  # nothing about whether the source itself is well-formed. Until this entry
-  # existed, `harness claude validate` was reachable only as the
-  # `npm run validate:claude` script and as a member of `harness audit`, which
-  # the `harness-catalog` note above already records as invoked by nothing — so
-  # the agent frontmatter checks (grade vocabulary, tools, colors, filename
-  # match, duplicate names, skill references) ran on no surface at all.
-  # Path-gated on the binding source and the governance maps the tier and color
-  # checks resolve against: a commit touching none of them cannot change the
-  # verdict.
-  - id: harness-claude
-    type: check
-    command: harness claude validate
-    kind: rhino-cli
-    ci-group: governance
-    surfaces:
-      pre-push:
-        scope: path-gated
-        trigger:
-          - .claude/
-          - repo-governance/development/agents/
-      ci: { scope: other }
-
-  # Path-gating is correct here, unlike a time-based check: this gate reads the
-  # git index for the declared binding trees, so a commit touching none of them
-  # cannot change its verdict. Every trigger below is a path whose contents the
-  # classification depends on — the trees themselves, the instruction files, and
-  # the registry that declares the classes.
-  - id: harness-ownership
-    type: check
-    command: harness ownership validate
-    kind: rhino-cli
-    ci-group: governance
-    surfaces:
-      pre-push:
-        scope: path-gated
-        trigger:
-          - .claude/
-          - .opencode/
-          - .codex/
-          - .agents/
+        # Cells are transcribed verbatim from the hand-maintained table this
+        # generation replaces, so the first generated output is byte-identical and
+        # any later diff is a deliberate content change rather than emitter noise.
+        catalog:
+          platform: Claude Code
+          reads-agents-md: "No — reads `CLAUDE.md` (shim `@AGENTS.md`)"
+          instruction-surface: "`CLAUDE.md`, `.claude/`"
+          mcp-config: "`.mcp.json`"
+          agent-surface: "`.claude/agents/*.md`"
+          skills-surface: "`.claude/skills/*/SKILL.md`"
+          status: Active
+        # Every path below carries exactly one of generated | vendored | source.
+        # There is no fourth class and no unclassified residue: a tracked binding
+        # file matching no declaration fails `harness ownership validate`.
+        ownership:
+          - { path: .claude/, class: source, reason: hand-authored tree every mirror is generated from }
+          - { path: .claude/agents, class: source, reason: canonical agent definitions }
+          - { path: .claude/skills, class: source, reason: canonical skill definitions }
+          - { path: .claude/settings.json, class: source, reason: hand-authored permissions and hook registration }
+          - { path: CLAUDE.md, class: source, reason: hand-authored Claude Code instruction surface }
+      - name: opencode
+        tier: generated
+        agent-dir: .opencode/agents
+        mirrors: .claude/agents
+        config: .opencode/opencode.json
+        # No `model-map:` on purpose, and the absence is the switch rather than a
+        # special case in the emitter: a harness that declares no map has no `model`
+        # key written into its mirrors at all. OpenCode then resolves the model
+        # itself — a primary agent takes the globally configured model and a subagent
+        # takes the model of the primary that invoked it — so the mirrors follow
+        # whatever the developer is actually running instead of pinning a model the
+        # repository would have to keep current.
+        instruction:
           - AGENTS.md
-          - CLAUDE.md
-          - repo-config.yml
-      ci:
-        scope: path-gated
-        trigger:
-          - .claude/
-          - .opencode/
-          - .codex/
-          - .agents/
+        catalog:
+          platform: OpenCode
+          reads-agents-md: "Yes"
+          instruction-surface: "`.opencode/agents/` (auto-synced); reads `.claude/skills/` natively"
+          mcp-config: "`opencode.json`"
+          agent-surface: "`.opencode/agents/*.md`"
+          skills-surface: "reads `.claude/skills/` **and** `.agents/skills/`"
+          status: Active
+        ownership:
+          - { path: .opencode/agents, class: generated, reason: emitted from .claude/agents }
+          - { path: .opencode/opencode.json, class: vendored, reason: OpenCode tooling config; no in-repo source }
+          - { path: AGENTS.md, class: source, reason: hand-authored vendor-neutral instruction surface }
+      - name: codex
+        tier: generated
+        agent-dir: .codex/agents
+        mirrors: .claude/agents
+        config: .codex/config.toml
+        # Codex pins a model per agent, so each grade names its counterpart. A grade
+        # absent from this map emits no `model` key and Codex applies its own
+        # default, which is preferable to guessing a counterpart.
+        model-map:
+          ultra: gpt-6-astra
+          planning: gpt-5.6-sol
+          execution: gpt-5.6-terra
+          fast: gpt-5.6-luna
+        skills-dir: .agents/skills
+        skills-mirrors: .claude/skills
+        instruction:
           - AGENTS.md
-          - CLAUDE.md
-          - repo-config.yml
-
-  # Path-gated on the two inputs the verdict depends on: the registry the table
-  # is rendered from, and the document the region lives in. Nothing else can
-  # change the answer. Without this entry the drift guard would exist but never
-  # run — gates invoke validators directly by `command:`, and nothing invokes
-  # `harness audit`, so aggregate membership alone enforces nothing.
-  - id: harness-catalog
-    type: check
-    command: harness catalog validate
-    kind: rhino-cli
-    ci-group: governance
-    surfaces:
-      pre-push:
-        scope: path-gated
-        trigger:
-          - repo-config.yml
-          - docs/reference/platform-bindings.md
-      ci:
-        scope: path-gated
-        trigger:
-          - repo-config.yml
-          - docs/reference/platform-bindings.md
-
-  # Armed at Phase 9 of plans/done/2026-08-15__optimize-governance-md, dark-launched at Phase 1
-  # (config-only, see governance-word-budget: above). No pre-commit surface (FR-1.14): a
-  # whole-tree scan on every commit buys no additional coverage over pre-push/ci.
-  #
-  # args.exclude: repo-relative path PREFIXES (str::starts_with — not globs; see
-  # word_budget::check_instruction_sizes's doc comment). The **/README.md surface
-  # (declared in governance-word-budget: above) has no scoping relationship to the
-  # other covered-surface globs — it matches every README.md in the repo. These
-  # prefixes keep it from reaching trees FR-1.3 never declared as covered surfaces
-  # (plans/, docs/, specs/) and a local, gitignored Flutter SDK version-manager cache
-  # (.fvm/, .fvm-cache/) that only exists on disk for developers who run `fvm` locally
-  # and is entirely absent from CI.
-  - id: governance-word-budget
-    type: check
-    command: governance word-budget validate
-    kind: rhino-cli
-    ci-group: governance
-    args:
-      exclude:
-        - plans/
-        - docs/
-        - specs/
-        - .fvm/
-        - .fvm-cache/
-    surfaces:
-      pre-push: &word-budget-triggers
-        scope: path-gated
-        trigger:
-          - repo-governance/
-          - .claude/
-          - .codex/
-          - .opencode/
-          - .agents/
-          - AGENTS.md
-          - CLAUDE.md
           - RTK.md
-          - repo-config.yml
-      ci: *word-budget-triggers
+        catalog:
+          platform: OpenAI Codex CLI
+          reads-agents-md: "Yes (since Apr 2025)"
+          instruction-surface: "`AGENTS.md`, `RTK.md`, `AGENTS.override.md` (overrides), `.codex/config.toml`[^trust]"
+          mcp-config: "`.codex/config.toml` `[mcp_servers]`[^mcp]"
+          agent-surface: "`.codex/agents/<name>.toml` standalone files **and** `[agents.<name>]` tables in `config.toml`[^agents]"
+          skills-surface: "`.agents/skills/`[^skills]"
+          status: "Partial (`.codex/` exists)"
+        ownership:
+          - { path: .codex/agents, class: generated, reason: emitted from .claude/agents }
+          - { path: .agents/skills, class: generated, reason: mirrored from .claude/skills }
+          - {
+              path: .codex/config.toml,
+              class: vendored,
+              reason: Nx tooling config; emitter owns the delimited region only,
+            }
+          - { path: .codex/ci-monitor-subagent.toml, class: vendored, reason: Nx tooling file config.toml points at }
+          - { path: AGENTS.md, class: source, reason: hand-authored vendor-neutral instruction surface }
+          - { path: RTK.md, class: source, reason: upstream Codex RTK instruction surface }
 
-  # New gate id (FR-3.20) — shares the governance readme-index binary with
-  # governance-readme-index above via --paths/--fail-kinds (FR-5.8). Scoped to just the
-  # trees Phases 1-8 of plans/done/2026-08-15__optimize-governance-md actually brought to
-  # compliance — repo-governance/, .claude/, .codex/ — narrower than FR-1.11's
-  # originally-declared 6-entry list (which also named docs/, specs/): those two trees
-  # were never remediated by any phase of this plan and carry ~880 pre-existing
-  # missing/unannotated findings; a follow-up plan tracks bringing them to the same bar.
-  # governance-readme-index's own orphan/ghost enforcement (FR-3.19) is untouched.
-  - id: governance-readme-completeness
-    type: check
-    command: governance readme-index validate
-    kind: rhino-cli
-    ci-group: governance
-    args:
-      paths:
-        - repo-governance/
-        - .claude/
-        - .codex/
-      fail-kinds:
-        - missing
-        - unannotated
-    surfaces:
-      pre-push: &readme-completeness-triggers
-        scope: path-gated
-        trigger:
-          - repo-governance/
-          - .claude/
-          - .codex/
-          - repo-config.yml
-      ci: *readme-completeness-triggers
+    harness-catalog:
+      # Where the generated catalog region lands, and the date its upstream claims
+      # were last verified by hand. Declared rather than stamped at generation time:
+      # a generated timestamp would change on every run and make the drift guard
+      # fire on its own output.
+      document: docs/reference/platform-bindings.md
+      verified: 2026-08-26
+
+    doctor:
+      # Repository-relative .NET SDK version source. The shared Rust source reads
+      # this data rather than naming an application-specific backend path.
+      dotnet-global-json: apps/ose-be/global.json
+
+      # Doctor tools declared here rather than compiled into the F# inventory.
+      # A name absent from BOTH the built-in inventory and this list is rejected
+      # by `--tools` before any tool is probed, so this list is authoritative
+      # alongside the built-ins, not advisory.
+      #
+      # Each entry carries: `name` (the `--tools` identifier), `binary` (what is
+      # executed), `version-args`, `version-stream` (`stdout` or `stderr` —
+      # `java -version` writes to stderr, and a stdout-only probe would report an
+      # installed JDK as missing), `required-version` (compared with >=), and an
+      # `install` map keyed by package manager, whose value is the full argv with
+      # the command first. Doctor maps `darwin` to `brew` and `linux` to `apt`.
+      #
+      # `java` came first: the LMS backend (`ose-lms-be`) needs a JDK, and it is the
+      # tool that motivated `version-stream` in the first place. `go` and
+      # `golangci-lint` follow for the Roots backend lane. Every entry here is
+      # a list item under a key both repositories already declare, so the cross-repo
+      # schema-parity rule on top-level key sets is unaffected.
+      extra-tools:
+        - name: java
+          binary: java
+          version-args: ["-version"]
+          # `java -version` writes its banner to stderr, not stdout. Reading stdout
+          # here would see an empty string and report an installed JDK as missing.
+          version-stream: stderr
+          # The Phase 0 resolved LTS. Compared with >=, so a newer LTS still passes.
+          required-version: "25"
+          install:
+            brew: ["install", "--cask", "temurin@25"]
+            apt: ["apt-get", "install", "-y", "temurin-25-jdk"]
+
+        - name: go
+          binary: go
+          # `go version` writes to stdout — the ordinary case. Declared explicitly
+          # rather than left to a default so it reads side by side with the java
+          # entry above, whose stderr banner motivated the field.
+          version-stream: stdout
+          version-args: ["version"]
+          # The Phase 0 resolved toolchain. Compared with >=, so a newer Go passes.
+          required-version: "1.26"
+          install:
+            # brew only, deliberately. Debian's `golang-go` tracks well behind 1.26,
+            # so naming it here would hand a contributor an install command that
+            # cannot satisfy required-version.
+            brew: ["install", "go"]
+
+        - name: golangci-lint
+          binary: golangci-lint
+          version-stream: stdout
+          version-args: ["--version"]
+          # 2.x carries a different config schema from 1.x; `.golangci.yml` declares
+          # `version: "2"`, so a 1.x binary cannot read it. Pinning the major here
+          # turns that into a doctor row rather than an opaque gate failure.
+          required-version: "2.11"
+          install:
+            brew: ["install", "golangci-lint"]
+            # NOT `apt-get install golangci-lint`: Debian ships 1.x under that name,
+            # and a 1.x binary cannot read a `version: "2"` config at all, so it
+            # would install a tool that fails required-version immediately. The
+            # `apt` key names the linux slot rather than the command -- built-in
+            # tools already put `npx` and a pinned curl download in it -- so the
+            # module-proxy install goes here. CI installs the same pin itself in
+            # pr-quality-gate.yml's gate job, because that job must also put
+            # GOPATH/bin on PATH before the provisioning probe runs.
+            apt: ["go", "install", "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.11.3"]
+
+    # governance-word-budget: registered here (config-only) at Phase 1 of
+    # plans/done/2026-08-15__optimize-governance-md and armed as a `gates:` entry at
+    # Phase 9 — it now runs at pre-push and in CI (see the entry below). Word count
+    # is the raw whole-file split_whitespace() count (tech-docs.md §1.2); see also
+    # FR-1.5: no exempt/allow/ignore/waiver/override key is ever permitted in this
+    # block, enforced by BudgetConfig's deny_unknown_fields schema.
+    #
+    # The eight instruction surfaces repeat the same 650/750/750 triple. That
+    # repetition is deliberate, not an oversight: YAML merge keys (`<<: *anchor`)
+    # are NOT an option here — serde_norway does not expand them, so
+    # `- <<: *instruction-budget` deserializes as `surfaces[N]: missing field
+    # `target``. Verified at Phase 11 of plans/in-progress/update-harness-support by
+    # applying exactly that shape and running `rhino-cli repo-config validate`.
+    # Calibrated on 2026-08-27 from 400/500/500 after the live gate accumulated 938
+    # non-blocking warnings, making its early-warning signal non-actionable. The
+    # resolved-tree ceiling stays unchanged as the aggregate startup-context guard.
+    governance-word-budget:
+      surfaces:
+        - glob: "repo-governance/**/*.md"
+          target: 650
+          warn: 750
+          fail: 750
+        - glob: ".claude/**/*.md"
+          target: 650
+          warn: 750
+          fail: 750
+        - glob: ".codex/**/*.md"
+          target: 650
+          warn: 750
+          fail: 750
+        - glob: ".opencode/**/*.md"
+          target: 650
+          warn: 750
+          fail: 750
+        # Added at Phase 11 of plans/in-progress/update-harness-support: the Codex
+        # skills mirror is a live instruction surface Codex reads, so it is measured
+        # at the same ceiling as its `.claude/skills/` source. The eight vendored
+        # third-party skill directories under it are excluded by name on the gate
+        # entry below — this repository can neither shorten nor regenerate them.
+        - glob: ".agents/**/*.md"
+          target: 650
+          warn: 750
+          fail: 750
+        - glob: "AGENTS.md"
+          target: 650
+          warn: 750
+          fail: 750
+        - glob: "CLAUDE.md"
+          target: 650
+          warn: 750
+          fail: 750
+        - glob: "RTK.md"
+          target: 650
+          warn: 750
+          fail: 750
+        # Declared last so the select-then-classify overlap rule
+        # (application::governance::word_budget::check_instruction_sizes) picks
+        # this more-specific surface over the general repo-governance/**/*.md
+        # surface above for every README.md, per FR-1.6/FR-3.15.
+        - glob: "**/README.md"
+          target: 900
+          warn: 1000
+          fail: 1000
+      resolved_tree:
+        root: "CLAUDE.md"
+        target: 1200
+        warn: 1500
+        fail: 1500
+
+    env-contract:
+      # Surface registry for rhino-cli env validate (code↔config drift detection).
+      # Companion: env-injection: declares, per app, the injection HOME for each key
+      # at every deploy stage (names only, never values).
+      #
+      # Each surface entry carries:
+      #   root      — path relative to repo root
+      #   kind      — "app" (active); "terraform"/"ansible" are forward-scaffold
+      #   lang      — "rust", "typescript", "fsharp", or "go" (app kind only)
+      #   allowlist — keys exempt from drift detection (framework-injected, test-only, etc.)
+      surfaces:
+        - root: apps/organiclever-be
+          kind: app
+          lang: fsharp
+          allowlist:
+            # Forward-declared config not yet consumed by the Phase 1 F# shell
+            # (wired in later phases); declared in .env.example ahead of use.
+            # ORGANICLEVER_BE_PORT is no longer listed here: it is now genuinely
+            # read, via PortResolver in Program.fs.
+            - ORGANICLEVER_BE_CORS_ORIGINS
+            # Tier-selection control var (which .env.<tier> file to load), not an
+            # app config value — same treatment as PORT/HOSTNAME for the TS apps.
+            - APP_ENV
+
+        - root: apps/ose-be
+          kind: app
+          lang: fsharp
+          allowlist:
+            # Forward-declared config not yet consumed by the Phase 1 F# shell
+            # (CORS + OpenRouter wired in later phases); declared ahead of use.
+            # OSE_BE_PORT is no longer listed here: it is now genuinely read, via
+            # PortResolver in Program.fs.
+            - OSE_BE_CORS_ORIGINS
+            - OSE_BE_OPENROUTER_API_KEY
+            - OSE_BE_OPENROUTER_MODEL
+            - OSE_BE_OPENROUTER_BASE_URL
+            # Tier-selection control var (which .env.<tier> file to load), not an
+            # app config value — same treatment as PORT/HOSTNAME for the TS apps.
+            - APP_ENV
+
+        - root: apps/roots-be
+          kind: app
+          lang: go
+          allowlist: []
+          # No allowlist entries. ROOTS_BE_PORT is genuinely read -- cmd/roots-be
+          # passes it beside os.LookupEnv at the composition root -- so the scanner
+          # sees it and no exemption is needed. APP_ENV is not listed because this
+          # service does not consult a tier-selection variable.
+
+        - root: apps/ose-www
+          kind: app
+          lang: typescript
+          allowlist:
+            - PORT # set by scripts/next-with-port.mjs after resolution; not an override source
+            # Resolved by scripts/next-with-port.mjs before the app process starts, so it
+            # is read by the launcher rather than by this app's own source.
+            - OSE_WWW_PORT
+            - HOSTNAME # framework-reserved Next.js dev-server hostname
+
+        - root: apps/ayokoding-www
+          kind: app
+          lang: typescript
+          allowlist:
+            - PORT # set by scripts/next-with-port.mjs after resolution; not an override source
+            # Resolved by scripts/next-with-port.mjs before the app process starts, so it
+            # is read by the launcher rather than by this app's own source.
+            - AYOKODING_WWW_PORT
+            - HOSTNAME
+            - NODE_ENV # Node-reserved; read by static client-data refresh test guard
+
+        - root: apps/organiclever-www
+          kind: app
+          lang: typescript
+          allowlist:
+            - PORT # set by scripts/next-with-port.mjs after resolution; not an override source
+            # Resolved by scripts/next-with-port.mjs before the app process starts, so it
+            # is read by the launcher rather than by this app's own source.
+            - ORGANICLEVER_WWW_PORT
+            - HOSTNAME # framework-reserved Next.js dev-server hostname
+
+        - root: apps/organiclever-app-web
+          kind: app
+          lang: typescript
+          allowlist:
+            - PORT # set by scripts/next-with-port.mjs after resolution; not an override source
+            # Resolved by scripts/next-with-port.mjs before the app process starts, so it
+            # is read by the launcher rather than by this app's own source.
+            - ORGANICLEVER_APP_WEB_PORT
+            - HOSTNAME
+
+        - root: apps/ose-app-web
+          kind: app
+          lang: typescript
+          allowlist:
+            - PORT # set by scripts/next-with-port.mjs after resolution; not an override source
+            # Resolved by scripts/next-with-port.mjs before the app process starts, so it
+            # is read by the launcher rather than by this app's own source.
+            - OSE_APP_WEB_PORT
+            - HOSTNAME
+
+    env-injection:
+      # Value-less injection contract (extends env-contract:).
+      # Declares, per app, the injection HOME for its env keys at every deploy stage
+      # it runs in — NAMES ONLY, never values.
+      #
+      # Injection homes:
+      #   env-local         — gitignored apps/<app>/.env.local (developer machine)
+      #   compose           — infra/dev/<stack> docker-compose env (local CI), placeholders only
+      #   vercel-preview     — Vercel project env, Preview scope (stag-*-app-web branch)
+      #   vercel-production  — Vercel project env, Production scope (prod-*-www / prod-*-app-web)
+      #   k3s-coralpolyp     — coralpolyp secret store in the private infrastructure repository (backend k3s rollout)
+      apps:
+        # --- www tier (direct-to-prod; e2e runs on local compose) ---
+        - app: ose-www
+          keys-from: apps/ose-www/.env.example
+          runtime: { local: env-local, local-ci: compose, production: vercel-production }
+        - app: ayokoding-www
+          keys-from: apps/ayokoding-www/.env.example
+          runtime: { local: env-local, local-ci: compose, production: vercel-production }
+        - app: organiclever-www
+          keys-from: apps/organiclever-www/.env.example
+          runtime: { local: env-local, local-ci: compose, production: vercel-production }
+
+        # --- app-web tier (gated staging promotion) ---
+        - app: organiclever-app-web
+          keys-from: apps/organiclever-app-web/.env.example
+          runtime: { local: env-local, local-ci: compose, staging: vercel-preview, production: vercel-production }
+        - app: ose-app-web
+          keys-from: apps/ose-app-web/.env.example
+          runtime: { local: env-local, local-ci: compose, staging: vercel-preview, production: vercel-production }
+
+        # --- backend tier (non-Vercel; k3s via the private coralpolyp store) ---
+        - app: organiclever-be
+          keys-from: apps/organiclever-be/.env.example
+          runtime: { local-ci: compose, staging: k3s-coralpolyp }
+        - app: ose-be
+          keys-from: apps/ose-be/.env.example
+          runtime: { local-ci: compose, staging: k3s-coralpolyp }
+
+      # CI test-harness keys — test-only, NEVER in any apps/<app>/.env.example.
+      ci-harness:
+        - key: API_BASE_URL
+          class: var
+          environments: [organiclever-app-staging, ose-app-staging]
+        - key: WEB_BASE_URL
+          class: var
+          environments: [organiclever-app-staging, ose-app-staging]
+        - key: VERCEL_AUTOMATION_BYPASS_SECRET
+          class: secret
+          environments: [organiclever-app-staging, ose-app-staging]
+        - key: PLAYWRIGHT_GREP_INVERT
+          class: literal
+          environments: []
+
+    # The generated pre-push shim stays tool-neutral. Rhino re-executes the whole
+    # surface once through this outer HIPPO admission and the marker prevents the
+    # child gate run from admitting a second time.
+    gate-surface-guards:
+      pre-push:
+        command: env
+        args:
+          - OSE_HIPPO_PRE_PUSH_ACTIVE=1
+          - ./hippo
+          - run
+          - --class
+          - ephemeral
+          - --disk-path
+          - .
+          - --
+        active-env: OSE_HIPPO_PRE_PUSH_ACTIVE
+
+    # Projects permitted to bind a loopback socket inside `test:integration`.
+    #
+    # The Integration layer is defined by resource ownership, not by transport: a
+    # server the test starts on a port it controls and shuts down before it
+    # finishes is an owned local resource (see
+    # repo-governance/development/infra/nx-targets/mandatory-targets-integration-tests.md).
+    # The repository still denies loopback by default so a project cannot adopt one
+    # silently; naming a project here is the opt-in, and `reason` is required so the
+    # entry stays auditable.
+    #
+    # This list is NEVER a licence to reach an external network or a service the
+    # test did not start. That stays forbidden below E2E for every project, listed
+    # or not, and `repo-governance test-boundary validate` enforces both halves.
+    integration-loopback: []
+
+    gates:
+      # Declared quality-gate registry. Fields per entry:
+      #   id           — stable, unique gate identifier
+      #   type         — check (verifies content) or mutation (rewrites content)
+      #   command      — leaf command run for this gate
+      #   kind         — command runner: rhino-cli | external | nx
+      #   doctor-tools — ordered Doctor tool ids needed before this gate can run (optional)
+      #   wiring       — execution-wiring override, e.g. hand-wired (optional; see below)
+      #   restages     — whether a mutation must re-stage its generated output (optional, default false)
+      #   args         — command-specific arguments such as exclusion lists (optional)
+      #   surfaces     — per-surface ({commit-msg,pre-commit,pre-push,ci}) execution scope; required
+      #   carve-out    — exemption from the cross-surface composition rule (optional)
+      #   verifies     — id of the mutation gate this check verifies (optional)
+      #   category     — mutation category, e.g. formatter (optional)
+      #   ci-group     — CI job group this gate belongs to (DD-3). REQUIRED for every gate whose
+      #                  `surfaces` includes `ci` — `gate validate` hard-errors on a `ci`-surface gate
+      #                  with no declared `ci-group`. Read by `gate list --by-group` (bucketing) and
+      #                  `gate run --group` (dispatch); a gate with `wiring: hand-wired` is excluded
+      #                  from its `ci-group`'s `--group` dispatch in every output format — it runs in
+      #                  its own dedicated CI workflow job instead.
+      # ---------------------------------------------------------------- commit-msg
+      - id: commitlint
+        type: check
+        command: 'npx --no -- commitlint --edit "$1"'
+        kind: external
+        doctor-tools: [npm]
+        surfaces:
+          commit-msg: { scope: other }
+
+      # -------------------------------------------- pre-commit: guards before work
+      - id: env-staged-guard
+        type: check
+        command: env staged-guard validate
+        kind: rhino-cli
+        carve-out: staged-only
+        surfaces:
+          pre-commit: { scope: other }
+
+      - id: repo-config-schema
+        type: check
+        command: repo-config validate
+        kind: rhino-cli
+        ci-group: governance
+        surfaces:
+          pre-commit:
+            scope: affected-file-type
+            glob: repo-config.yml
+            lint-staged-shell: "{{command}}"
+          ci: { scope: other }
+
+      # ----------------------------------------------- formatters (13 mutations) +
+      # ----------------------------------------------- their ci verifiers (13 checks)
+      - id: format-prettier
+        type: mutation
+        category: formatter
+        command: prettier --write
+        kind: external
+        doctor-tools: [npm]
+        restages: true
+        surfaces:
+          pre-commit:
+            scope: affected-file-type
+            globs:
+              - "*.md"
+              - "*.{js,jsx,ts,tsx,mjs,cjs}"
+              - "*.json"
+              - "*.{yml,yaml}"
+              - "*.{css,scss}"
+              - "*.html"
+              - "*.sql"
+
+      - id: format-verify-prettier
+        type: check
+        command: prettier --check
+        kind: external
+        ci-group: formatting-verify
+        doctor-tools: [npm]
+        verifies: format-prettier
+        surfaces:
+          ci:
+            scope: affected-file-type
+            glob: "*.{md,json,yml,yaml,css,scss,html,sql,ts,tsx,js,jsx,mjs,cjs}"
+
+      - id: format-rustfmt
+        type: mutation
+        category: formatter
+        command: rustfmt --edition 2024
+        kind: external
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.rs" }
+
+      - id: format-verify-rustfmt
+        type: check
+        command: rustfmt --edition 2024 --check
+        kind: external
+        ci-group: formatting-verify
+        verifies: format-rustfmt
+        surfaces:
+          ci: { scope: affected-file-type, glob: "*.rs" }
+
+      - id: format-fantomas
+        type: mutation
+        category: formatter
+        command: fantomas
+        kind: external
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.fs" }
+
+      - id: format-verify-fantomas
+        type: check
+        # Fantomas exits 99 (not 1) when files need formatting; 1 means an unexpected
+        # error. Any non-zero must fail the gate — never test for exit code 1 alone.
+        # Bare `fantomas` requires a GLOBAL dotnet tool install; a local manifest
+        # install needs `dotnet fantomas`. Phase 0 confirms which this repo uses.
+        command: fantomas --check
+        kind: external
+        ci-group: formatting-verify
+        verifies: format-fantomas
+        surfaces:
+          ci: { scope: affected-file-type, glob: "*.fs" }
+
+      - id: format-ruff
+        type: mutation
+        category: formatter
+        command: ruff format
+        kind: external
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.py" }
+
+      - id: format-verify-ruff
+        type: check
+        command: ruff format --check
+        kind: external
+        ci-group: formatting-verify
+        verifies: format-ruff
+        surfaces:
+          ci: { scope: affected-file-type, glob: "*.py" }
+
+      - id: format-gofmt
+        type: mutation
+        category: formatter
+        command: gofmt -w
+        kind: external
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.go" }
+
+      - id: format-verify-gofmt
+        type: check
+        # `gofmt -l` always exits 0; the wrapper converts non-empty output to failure.
+        command: scripts/verify-gofmt.sh
+        kind: external
+        ci-group: formatting-verify
+        verifies: format-gofmt
+        surfaces:
+          ci: { scope: affected-file-type, glob: "*.go" }
+
+      - id: lint-golangci
+        type: check
+        # golangci-lint cannot consume the gate's flat repository-relative file list:
+        # a list spanning two directories fails with "named files must all be in one
+        # directory" (exit 7), and it resolves the module from its working directory,
+        # so a repository-root invocation fails with "no go files to analyze" (exit 5).
+        # Both verified against 2.11.3. The wrapper groups paths by owning module and
+        # runs golangci-lint once per module from that module's root.
+        command: scripts/lint-golangci.sh
+        kind: external
+        ci-group: lint
+        doctor-tools: [golangci-lint]
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.go" }
+          ci: { scope: affected-file-type, glob: "*.go" }
+
+      - id: format-elixir
+        type: mutation
+        category: formatter
+        command: scripts/format-elixir.sh
+        kind: external
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.{ex,exs}" }
+
+      - id: format-verify-elixir
+        type: check
+        # The wrapper discovers each mix project; do not add --no-exit.
+        command: scripts/format-elixir.sh --check
+        kind: external
+        ci-group: formatting-verify
+        verifies: format-elixir
+        surfaces:
+          ci: { scope: affected-file-type, glob: "*.{ex,exs}" }
+
+      - id: format-csharpier
+        type: mutation
+        category: formatter
+        command: dotnet csharpier format
+        kind: external
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.cs" }
+
+      - id: format-verify-csharpier
+        type: check
+        # `check` fails on unformatted files; do not use `--unformatted-as-warnings`.
+        command: dotnet csharpier check
+        kind: external
+        ci-group: formatting-verify
+        verifies: format-csharpier
+        surfaces:
+          ci: { scope: affected-file-type, glob: "*.cs" }
+
+      - id: format-dart
+        type: mutation
+        category: formatter
+        command: dart format
+        kind: external
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.dart" }
+
+      - id: format-verify-dart
+        type: check
+        # `-o none` prevents the verifier from rewriting files before it fails.
+        command: dart format -o none --set-exit-if-changed
+        kind: external
+        ci-group: formatting-verify
+        verifies: format-dart
+        surfaces:
+          ci: { scope: affected-file-type, glob: "*.dart" }
+
+      - id: format-java
+        type: mutation
+        category: formatter
+        command: scripts/format-java.sh
+        kind: external
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.java" }
+
+      - id: format-verify-java
+        type: check
+        # The wrapper discovers each Gradle root and runs spotlessCheck; do not swap in spotlessApply,
+        # which would mutate files before the verifier could fail on them.
+        command: scripts/format-java.sh --check
+        kind: external
+        ci-group: formatting-verify
+        verifies: format-java
+        surfaces:
+          ci: { scope: affected-file-type, glob: "*.java" }
+
+      - id: format-shfmt
+        type: mutation
+        category: formatter
+        command: shfmt -w
+        kind: external
+        doctor-tools: [shfmt]
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.sh" }
+
+      - id: format-verify-shfmt
+        type: check
+        command: shfmt -d
+        kind: external
+        ci-group: formatting-verify
+        doctor-tools: [shfmt]
+        verifies: format-shfmt
+        surfaces:
+          ci: { scope: affected-file-type, glob: "*.sh" }
+
+      - id: format-tofu
+        type: mutation
+        category: formatter
+        command: tofu fmt
+        kind: external
+        doctor-tools: [tofu]
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.tf" }
+
+      - id: format-verify-tofu
+        type: check
+        command: tofu fmt -check
+        kind: external
+        ci-group: formatting-verify
+        doctor-tools: [tofu]
+        verifies: format-tofu
+        surfaces:
+          ci: { scope: affected-file-type, glob: "*.tf" }
+
+      - id: format-stylua
+        type: mutation
+        category: formatter
+        command: stylua
+        kind: external
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.lua" }
+
+      - id: format-verify-stylua
+        type: check
+        command: stylua --check
+        kind: external
+        ci-group: formatting-verify
+        verifies: format-stylua
+        surfaces:
+          ci: { scope: affected-file-type, glob: "*.lua" }
+
+      - id: format-clang
+        type: mutation
+        category: formatter
+        command: clang-format -i
+        kind: external
+        doctor-tools: [clang-format]
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.{c,h}" }
+
+      - id: format-verify-clang
+        type: check
+        # --Werror is double-dash per LLVM docs; it promotes the
+        # "code should be clang-formatted" warning to an error so the exit is non-zero.
+        command: clang-format --dry-run --Werror
+        kind: external
+        ci-group: formatting-verify
+        doctor-tools: [clang-format]
+        verifies: format-clang
+        surfaces:
+          ci: { scope: affected-file-type, glob: "*.{c,h}" }
+
+      - id: format-buildifier
+        type: mutation
+        category: formatter
+        command: buildifier
+        kind: external
+        restages: true
+        surfaces:
+          pre-commit:
+            scope: affected-file-type
+            glob: "{BUILD,BUILD.bazel,*.bzl}"
+
+      - id: format-verify-buildifier
+        type: check
+        command: buildifier --mode=check
+        kind: external
+        ci-group: formatting-verify
+        verifies: format-buildifier
+        surfaces:
+          ci:
+            scope: affected-file-type
+            glob: "{BUILD,BUILD.bazel,*.bzl}"
+
+      # -------------------------------------------------- per-file checks (12)
+      - id: markdownlint
+        type: check
+        command: markdownlint-cli2
+        kind: external
+        ci-group: markdown
+        doctor-tools: [npm]
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.md" }
+          ci: { scope: all-file-type }
+
+      - id: md-mermaid
+        type: check
+        command: md mermaid validate
+        kind: rhino-cli
+        ci-group: markdown
+        args:
+          exclude:
+            - apps/rhino-cli/tests/fixtures
+            - plans/done
+            - apps/ayokoding-www/content
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.md" }
+          ci: { scope: all-file-type }
+
+      # Rule 3 (common-syntax-errors-label-constraints-rule-3-line-length.md) binds
+      # Mermaid labels at 20 characters per `<br/>` segment, because renderers clip
+      # past roughly 20-22 with no error. The `md-mermaid` entry above runs at the
+      # validator's 30-character default -- Mermaid's `wrappingWidth` baseline, a
+      # backstop, not the rule -- so a green run there proves only that a diagram is
+      # under the backstop. This entry closes that 10-character gap.
+      #
+      # Deliberately scoped `affected-file-type` on BOTH surfaces, never
+      # `all-file-type`: the legacy corpus carries 413 violations across 155 files at
+      # the 20 threshold (measured 2026-09-08 by running the command below with
+      # `--max-label-len 20` over the same excludes). A repo-wide failing gate would
+      # turn `main` red on 155 files nobody touched, which is exactly the corpus-size
+      # objection mermaid-render-fidelity-caveat.md raises. Scoping to changed files
+      # ratchets instead: new and edited diagrams meet Rule 3, untouched ones stay on
+      # the 30 backstop until someone edits them. Widen to `all-file-type` only after
+      # a sweep clears the 413.
+      - id: md-mermaid-strict
+        type: check
+        command: md mermaid validate
+        kind: rhino-cli
+        ci-group: markdown
+        args:
+          max-label-len: ["20"]
+          exclude:
+            - apps/rhino-cli/tests/fixtures
+            - plans/done
+            - apps/ayokoding-www/content
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.md" }
+          ci: { scope: affected-file-type, glob: "*.md" }
+
+      - id: md-heading-hierarchy
+        type: check
+        command: md heading-hierarchy validate
+        kind: rhino-cli
+        ci-group: markdown
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.md" }
+          ci: { scope: all-file-type }
+
+      - id: md-naming
+        type: check
+        command: md naming validate
+        kind: rhino-cli
+        ci-group: markdown
+        args:
+          exempt:
+            - "*__linkedin__*.md"
+            - "CONTRIBUTING.md"
+            - "pull_request_template.md"
+            - "RTK.md"
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.md" }
+          ci: { scope: all-file-type }
+
+      - id: md-frontmatter
+        type: check
+        command: md frontmatter validate
+        kind: rhino-cli
+        ci-group: markdown
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.md" }
+          ci: { scope: all-file-type }
+
+      - id: actionlint
+        type: check
+        command: actionlint
+        kind: external
+        ci-group: shell-docker-actions
+        doctor-tools: [actionlint]
+        surfaces:
+          pre-commit:
+            scope: affected-file-type
+            glob: ".github/workflows/*.{yml,yaml}"
+          ci: { scope: all-file-type }
+
+      # The adopted public-safety suite: every case the catalog ships for the screen
+      # the core `public-safety` gate runs. CI only — it is the screen's own test,
+      # not a screen of the change.
+      - id: public-safety-tests
+        type: check
+        command: bash scripts/public-safety/tests/run.sh
+        kind: external
+        ci-group: shell-docker-actions
+        surfaces:
+          ci: { scope: other }
+
+      - id: artifact-retention
+        type: check
+        # Self-discovers `.github/workflows/*` when invoked with no file arguments,
+        # matching actionlint's all-file-type CI shape above.
+        command: scripts/verify-artifact-retention.sh
+        kind: external
+        ci-group: shell-docker-actions
+        surfaces:
+          pre-commit:
+            scope: affected-file-type
+            glob: ".github/workflows/*.{yml,yaml}"
+          ci: { scope: all-file-type }
+
+      - id: shellcheck
+        type: check
+        command: shellcheck --severity=warning
+        kind: external
+        ci-group: shell-docker-actions
+        doctor-tools: [shellcheck]
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "*.sh" }
+          ci: { scope: affected-file-type, glob: "*.sh" }
+
+      - id: hadolint
+        type: check
+        command: 'sh -ec ''for f; do [ ! -e "$f" ] || hadolint --failure-threshold warning "$f"; done'' --'
+        kind: external
+        ci-group: shell-docker-actions
+        doctor-tools: [hadolint]
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "**/Dockerfile*" }
+          ci: { scope: affected-file-type, glob: "**/Dockerfile*" }
+
+      - id: convention-emoji
+        type: check
+        command: convention emoji validate
+        kind: rhino-cli
+        ci-group: governance
+        surfaces:
+          pre-commit:
+            scope: affected-file-type
+            glob: "*.{json,toml,ts,tsx,js,jsx,mjs,cjs,rs,go,py,cs,clj,dart,ex,exs,fs}"
+          ci: { scope: all-file-type }
+
+      - id: docker-compose-config
+        type: check
+        command: 'sh -ec ''for f; do base=${f%.ci.yml}.yml; if [ "$base" != "$f" ] && [ -f "$base" ]; then docker compose -f "$base" -f "$f" config > /dev/null; else docker compose -f "$f" config > /dev/null; fi; done'' --'
+        kind: external
+        ci-group: shell-docker-actions
+        doctor-tools: [docker]
+        surfaces:
+          pre-commit:
+            scope: affected-file-type
+            glob: "docker-compose*.{yml,yaml}"
+            lint-staged-shell: 'set -e; for f; do base=${f%.ci.yml}.yml; if [ "$base" != "$f" ] && [ -f "$base" ]; then docker compose -f "$base" -f "$f" config > /dev/null; else docker compose -f "$f" config > /dev/null; fi; done'
+          ci:
+            scope: all-file-type
+            globs:
+              - "**/docker-compose*.yml"
+              - "**/docker-compose*.yaml"
+
+      # ------------------------------------- pre-commit mutations, run last (order)
+      - id: harness-bindings-generate
+        type: mutation
+        command: harness bindings generate
+        kind: rhino-cli
+        restages: true
+        surfaces:
+          pre-commit: { scope: other }
+
+      - id: lockfile-sync
+        type: mutation
+        command: git lockfile sync
+        kind: rhino-cli
+        restages: true
+        surfaces:
+          pre-commit: { scope: affected-file-type, glob: "apps/*/package.json" }
+
+      # ------------------------------------------------------ pre-push + ci checks
+      - id: test-quick
+        type: check
+        command: "test:quick"
+        kind: nx
+        args: { parallel: ["1"] }
+        wiring: hand-wired
+        ci-group: rust
+        surfaces:
+          pre-push: { scope: affected-projects }
+          ci: { scope: affected-projects }
+
+      - id: compat-min-version
+        type: check
+        command: "compat:min-version"
+        kind: nx
+        wiring: hand-wired
+        ci-group: rust
+        surfaces:
+          pre-push: { scope: affected-projects }
+          ci: { scope: affected-projects }
+
+      - id: specs-structure
+        type: check
+        command: "specs:structure-validation"
+        kind: nx
+        wiring: hand-wired
+        ci-group: specs
+        surfaces:
+          pre-push: { scope: affected-projects }
+          ci: { scope: affected-projects }
+
+      - id: env-validate
+        type: check
+        command: env validate
+        kind: rhino-cli
+        ci-group: governance
+        surfaces:
+          pre-push: { scope: other }
+          ci: { scope: other }
+
+      - id: md-links
+        type: check
+        command: md links validate
+        kind: rhino-cli
+        ci-group: markdown
+        args:
+          exclude:
+            - plans/done
+        surfaces:
+          pre-push: { scope: all-file-type }
+          ci: { scope: all-file-type }
+
+      # Structural index enforcement across every content tree. `missing` is armed
+      # here (not only in governance-readme-completeness below) so the "every
+      # directory carries a literal README.md" rule binds `docs/` and `specs/` too
+      # — the former FR-3.5 split-directory exemption is removed in
+      # `readme_index.rs`, so a progressive-disclosure `<name>.md` parent no longer
+      # excuses its directory from having one.
+      #
+      # `unannotated` is deliberately NOT armed here: `docs/` indexes are partly
+      # hand-designed Markdown tables and `specs/` targets carry no frontmatter at
+      # all, so a derived annotation cannot be computed for either without a
+      # content restructure. Those two trees therefore get structural enforcement
+      # only; annotation stays scoped to the conforming trees below.
+      #
+      # Secondary binding roots are absent by design: the gate covers
+      # repository-authored governance content, not generated mirrors or vendored
+      # third-party payloads. Generated paths are emitted by
+      # `harness bindings generate` from `.claude/` and never hand-edited;
+      # vendored paths retain their upstream documentation. `.claude/` — the
+      # canonical source for generated agents and Skills — is covered instead.
+      - id: governance-readme-index
+        type: check
+        command: governance readme-index validate
+        kind: rhino-cli
+        ci-group: markdown
+        args:
+          paths:
+            - docs/
+            - repo-governance/
+            - specs/
+            - .claude/
+          fail-kinds:
+            - missing
+            - orphan
+            - ghost
+        surfaces:
+          pre-push: { scope: all-file-type }
+          ci: { scope: all-file-type }
+
+      - id: harness-duplication
+        type: check
+        command: harness duplication validate
+        kind: rhino-cli
+        # Was `ci-group: naming` — accurate while `harness naming validate` and
+        # `repo-governance workflows naming validate` were also members of this
+        # group. Both were withdrawn (see file-naming.md and
+        # ordinal-filename-prefixes.md), leaving this the group's sole member; a
+        # gate that only checks for duplicate registry entries is not a naming
+        # check. Renamed to `harness`, which is what it and any future member of
+        # this ci-group actually validate. No branch-protection required-check
+        # list references the old name in this repository.
+        ci-group: harness
+        surfaces:
+          pre-push: { scope: all-file-type }
+          ci: { scope: all-file-type }
+
+      - id: parity-manifest
+        type: check
+        command: parity manifest validate
+        kind: rhino-cli
+        ci-group: governance
+        surfaces:
+          pre-push: { scope: other }
+          ci: { scope: other }
+
+      # --------------------------------------------- path-gated governance checks
+      # `path-gated` scoping is surface-agnostic — `changed_paths()` computes changed paths for
+      # BOTH `pre-push` and `ci` (via merge-base with origin/main). A gate declared `path-gated` on
+      # `ci` is only proven correct by actually exercising it: stage/commit a triggering file in an
+      # isolated no-origin git fixture and confirm "Running gate <id>" appears (see
+      # optimize-governance-md's Phase 9b-2/16b-2 trigger-matrix evidence for the method). A
+      # never-exercised `ci`-surface `path-gated` declaration reads as green while silently never
+      # firing.
+      - id: vendor-independence
+        type: check
+        command: repo-governance vendor validate repo-governance/
+        kind: rhino-cli
+        ci-group: governance
+        surfaces:
+          pre-push:
+            scope: path-gated
+            trigger:
+              - repo-governance/
+          ci: { scope: other }
+
+      # Second entry for the same binary as vendor-independence above, not a wider
+      # scope on it: `repo-governance vendor validate` accepts a single positional
+      # [PATH], and `args:` can only emit `--flag value` pairs — so an additional
+      # covered surface costs an additional gate entry. The Vendor-Independence
+      # Convention governs AGENTS.md as a canonical root instruction surface
+      # (conventions/structure/governance-vendor-independence/purpose-and-scope.md),
+      # so leaving it ungated let neutrality hold only by hand.
+      #
+      # CLAUDE.md is deliberately NOT gated: its "Platform Binding Examples" heading
+      # opens at line 5 with only deeper headings beneath, and the scanner exempts
+      # everything until the next heading of equal-or-shallower level, so a gate
+      # there could only ever police the four lines above it. Total exemption is
+      # intended — that file is a single-vendor binding shim — and an always-green
+      # gate is exactly the vacuous-trigger failure the path-gated comment above
+      # warns about.
+      - id: vendor-independence-agents-md
+        type: check
+        command: repo-governance vendor validate AGENTS.md
+        kind: rhino-cli
+        ci-group: governance
+        surfaces:
+          pre-push:
+            scope: path-gated
+            trigger:
+              - AGENTS.md
+          ci: { scope: other }
+
+      # Integration's network boundary is default-deny: a project may bind a
+      # loopback socket it owns only when `integration-loopback:` above names it.
+      # Path-gated on the Integration source roots and on the allowlist itself, so
+      # the gate fires exactly when either half of the rule could have moved.
+      - id: test-boundary
+        type: check
+        command: repo-governance test-boundary validate
+        kind: rhino-cli
+        ci-group: governance
+        surfaces:
+          pre-push:
+            scope: path-gated
+            trigger:
+              - apps/
+              - libs/
+              - repo-config.yml
+          ci: { scope: other }
+
+      - id: convention-license
+        type: check
+        command: convention license validate
+        kind: rhino-cli
+        ci-group: governance
+        surfaces:
+          pre-push:
+            scope: path-gated
+            trigger:
+              - repo-governance/
+          ci: { scope: other }
+
+      - id: harness-bindings
+        type: check
+        command: harness bindings validate
+        kind: rhino-cli
+        ci-group: governance
+        surfaces:
+          pre-push:
+            scope: path-gated
+            trigger:
+              - .claude/
+              - .opencode/
+              - .codex/
+              - .agents/
+              - .github/
+              - AGENTS.md
+              - CLAUDE.md
+              - docs/reference/platform-bindings.md
+              - repo-governance/
+          ci: { scope: other }
+
+      # `harness bindings validate` proves each mirror matches its source; it says
+      # nothing about whether the source itself is well-formed. Until this entry
+      # existed, `harness claude validate` was reachable only as the
+      # `npm run validate:claude` script and as a member of `harness audit`, which
+      # the `harness-catalog` note above already records as invoked by nothing — so
+      # the agent frontmatter checks (grade vocabulary, tools, colors, filename
+      # match, duplicate names, skill references) ran on no surface at all.
+      # Path-gated on the binding source and the governance maps the tier and color
+      # checks resolve against: a commit touching none of them cannot change the
+      # verdict.
+      - id: harness-claude
+        type: check
+        command: harness claude validate
+        kind: rhino-cli
+        ci-group: governance
+        surfaces:
+          pre-push:
+            scope: path-gated
+            trigger:
+              - .claude/
+              - repo-governance/development/agents/
+          ci: { scope: other }
+
+      # Path-gating is correct here, unlike a time-based check: this gate reads the
+      # git index for the declared binding trees, so a commit touching none of them
+      # cannot change its verdict. Every trigger below is a path whose contents the
+      # classification depends on — the trees themselves, the instruction files, and
+      # the registry that declares the classes.
+      - id: harness-ownership
+        type: check
+        command: harness ownership validate
+        kind: rhino-cli
+        ci-group: governance
+        surfaces:
+          pre-push:
+            scope: path-gated
+            trigger:
+              - .claude/
+              - .opencode/
+              - .codex/
+              - .agents/
+              - AGENTS.md
+              - CLAUDE.md
+              - repo-config.yml
+          ci:
+            scope: path-gated
+            trigger:
+              - .claude/
+              - .opencode/
+              - .codex/
+              - .agents/
+              - AGENTS.md
+              - CLAUDE.md
+              - repo-config.yml
+
+      # Path-gated on the two inputs the verdict depends on: the registry the table
+      # is rendered from, and the document the region lives in. Nothing else can
+      # change the answer. Without this entry the drift guard would exist but never
+      # run — gates invoke validators directly by `command:`, and nothing invokes
+      # `harness audit`, so aggregate membership alone enforces nothing.
+      - id: harness-catalog
+        type: check
+        command: harness catalog validate
+        kind: rhino-cli
+        ci-group: governance
+        surfaces:
+          pre-push:
+            scope: path-gated
+            trigger:
+              - repo-config.yml
+              - docs/reference/platform-bindings.md
+          ci:
+            scope: path-gated
+            trigger:
+              - repo-config.yml
+              - docs/reference/platform-bindings.md
+
+      # Armed at Phase 9 of plans/done/2026-08-15__optimize-governance-md, dark-launched at Phase 1
+      # (config-only, see governance-word-budget: above). No pre-commit surface (FR-1.14): a
+      # whole-tree scan on every commit buys no additional coverage over pre-push/ci.
+      #
+      # args.exclude: repo-relative path PREFIXES (str::starts_with — not globs; see
+      # word_budget::check_instruction_sizes's doc comment). The **/README.md surface
+      # (declared in governance-word-budget: above) has no scoping relationship to the
+      # other covered-surface globs — it matches every README.md in the repo. These
+      # prefixes keep it from reaching trees FR-1.3 never declared as covered surfaces
+      # (plans/, docs/, specs/) and a local, gitignored Flutter SDK version-manager cache
+      # (.fvm/, .fvm-cache/) that only exists on disk for developers who run `fvm` locally
+      # and is entirely absent from CI.
+      - id: governance-word-budget
+        type: check
+        command: governance word-budget validate
+        kind: rhino-cli
+        ci-group: governance
+        args:
+          exclude:
+            - plans/
+            - docs/
+            - specs/
+            - .fvm/
+            - .fvm-cache/
+            # Adopted byte-identical from the ose-rules catalog; editing it here breaks that identity.
+            - scripts/public-safety/
+        surfaces:
+          pre-push:
+            scope: path-gated
+            trigger:
+              - repo-governance/
+              - .claude/
+              - .codex/
+              - .opencode/
+              - .agents/
+              - AGENTS.md
+              - CLAUDE.md
+              - RTK.md
+              - repo-config.yml
+          ci:
+            scope: path-gated
+            trigger:
+              - repo-governance/
+              - .claude/
+              - .codex/
+              - .opencode/
+              - .agents/
+              - AGENTS.md
+              - CLAUDE.md
+              - RTK.md
+              - repo-config.yml
+
+      # New gate id (FR-3.20) — shares the governance readme-index binary with
+      # governance-readme-index above via --paths/--fail-kinds (FR-5.8). Scoped to just the
+      # trees Phases 1-8 of plans/done/2026-08-15__optimize-governance-md actually brought to
+      # compliance — repo-governance/, .claude/, .codex/ — narrower than FR-1.11's
+      # originally-declared 6-entry list (which also named docs/, specs/): those two trees
+      # were never remediated by any phase of this plan and carry ~880 pre-existing
+      # missing/unannotated findings; a follow-up plan tracks bringing them to the same bar.
+      # governance-readme-index's own orphan/ghost enforcement (FR-3.19) is untouched.
+      - id: governance-readme-completeness
+        type: check
+        command: governance readme-index validate
+        kind: rhino-cli
+        ci-group: governance
+        args:
+          paths:
+            - repo-governance/
+            - .claude/
+            - .codex/
+          fail-kinds:
+            - missing
+            - unannotated
+        surfaces:
+          pre-push:
+            scope: path-gated
+            trigger:
+              - repo-governance/
+              - .claude/
+              - .codex/
+              - repo-config.yml
+          ci:
+            scope: path-gated
+            trigger:
+              - repo-governance/
+              - .claude/
+              - .codex/
+              - repo-config.yml

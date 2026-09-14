@@ -68,3 +68,10 @@ Feature: Repo-specific behaviour is data-driven from repo-config.yml
     Given repo-config.yml declares a path to a file that already exists
     When the configured path is confined to the repository root
     Then the resolved path reads as the existing regular file, not a directory
+
+  # Exemption(e2e): the extension read is typed in-process loader state absent from public command output; alternative-proof: rhino-cli:test:integration / A v2 repository configuration is read from its rhino-cli extension
+  @e2e-exempt
+  Scenario: A v2 repository configuration is read from its rhino-cli extension
+    Given a v2 repo-config.yml whose rhino-cli extension declares a doctor skip tool
+    When rhino-cli runs
+    Then it reads the skip tool from the extension and none of the core gates

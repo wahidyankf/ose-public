@@ -66,6 +66,17 @@ let private surfaceName (surface: GateSurface) : string =
     | PrePush -> "pre-push"
     | Ci -> "ci"
 
+/// The environment a gate run hands every child it launches: `inherited`
+/// with `OSE_GATE_SURFACE` naming the surface this run executes, replacing
+/// any value a launcher exported. The pinned Rust RHINO runner exports the
+/// same variable to its children, so a registry gate it launches for one
+/// surface still tells its own children the surface they run for.
+let surfaceEnvironment (surface: GateSurface) (inherited: Map<string, string>) : Map<string, string> =
+    inherited |> Map.add "OSE_GATE_SURFACE" (surfaceName surface)
+
+let private childEnvironment (surface: GateSurface) : (string * string) list =
+    surfaceEnvironment surface Map.empty |> Map.toList
+
 let private gateTypeName (gateType: GateType) : string =
     match gateType with
     | Check -> "check"
@@ -970,13 +981,14 @@ let private runRhinoCliLeaf
     (fixedArgs: string list)
     (files: string list)
     (repoRoot: string)
+    (childEnv: (string * string) list)
     : Result<int, string> =
     match argumentsWithDerivedFiles command fixedArgs files with
     | Error message -> Error message
     | Ok arguments ->
         let currentExe = Diagnostics.Process.GetCurrentProcess().MainModule.FileName
 
-        Ok(runInherited currentExe arguments repoRoot [])
+        Ok(runInherited currentExe arguments repoRoot childEnv)
 
 /// Prepends the repository's local Node executable directory to a child
 /// `PATH`, matching the local-tool resolution npm scripts already receive
@@ -1004,6 +1016,7 @@ let private runExternalLeaf
     (files: string list)
     (commitMessageFile: string option)
     (repoRoot: string)
+    (childEnv: (string * string) list)
     : Result<int, string> =
     if command.Trim() = "" then
         Error "external gate command cannot be empty"
@@ -1017,12 +1030,18 @@ let private runExternalLeaf
             | Some _ -> command
             | None -> commandWithFiles
 
-        Ok(runInherited "sh" ([ "-c"; script; "gate-external" ] @ arguments) repoRoot [ "PATH", path ])
+        Ok(runInherited "sh" ([ "-c"; script; "gate-external" ] @ arguments) repoRoot (("PATH", path) :: childEnv))
 
 /// Runs an Nx target over all or affected projects for the declared scope
 /// [Repo-grounded — `gate/run.rs::run_nx_leaf`].
 [<ExcludeFromCodeCoverage>]
-let private runNxLeaf (target: string) (fixedArgs: string list) (scope: ScopeKind) (repoRoot: string) : int =
+let private runNxLeaf
+    (target: string)
+    (fixedArgs: string list)
+    (scope: ScopeKind)
+    (repoRoot: string)
+    (childEnv: (string * string) list)
+    : int =
     let nxArguments =
         match scope with
         | AllProjects -> [ "exec"; "nx"; "--"; "run-many"; "--all"; "-t"; target ]
@@ -1032,7 +1051,7 @@ let private runNxLeaf (target: string) (fixedArgs: string list) (scope: ScopeKin
         | Other
         | PathGated -> [ "exec"; "nx"; "--"; "affected"; "-t"; target ]
 
-    runInherited "npm" (nxArguments @ fixedArgs) repoRoot []
+    runInherited "npm" (nxArguments @ fixedArgs) repoRoot childEnv
 
 /// Runs one declared gate through the executor for its declared kind
 /// [Repo-grounded — `gate/run.rs::run_leaf`].
@@ -1045,11 +1064,14 @@ let private runLeaf
     (scope: ScopeKind)
     (commitMessageFile: string option)
     (repoRoot: string)
+    (surface: GateSurface)
     : Result<int, string> =
+    let childEnv = childEnvironment surface
+
     match kind with
-    | RhinoCli -> runRhinoCliLeaf command fixedArgs files repoRoot
-    | External -> runExternalLeaf command fixedArgs files commitMessageFile repoRoot
-    | Nx -> Ok(runNxLeaf command fixedArgs scope repoRoot)
+    | RhinoCli -> runRhinoCliLeaf command fixedArgs files repoRoot childEnv
+    | External -> runExternalLeaf command fixedArgs files commitMessageFile repoRoot childEnv
+    | Nx -> Ok(runNxLeaf command fixedArgs scope repoRoot childEnv)
 
 /// Returns whether this entry belongs to the single aggregate pre-commit
 /// batch [Repo-grounded — `gate/run.rs::is_pre_commit_batch_eligible`].
@@ -1069,10 +1091,14 @@ let private isPreCommitBatchEligible
 /// Runs the batched `lint-staged` invocation for eligible pre-commit gates
 /// [Repo-grounded — `gate/run.rs::run_lint_staged_batch`].
 [<ExcludeFromCodeCoverage>]
-let private runLintStagedBatch (repoRoot: string) (write: string -> unit) : Result<unit, string> =
+let private runLintStagedBatch
+    (repoRoot: string)
+    (surface: GateSurface)
+    (write: string -> unit)
+    : Result<unit, string> =
     write "Running lint-staged batch\n"
 
-    if runInherited "npx" [ "--no"; "--"; "lint-staged" ] repoRoot [] = 0 then
+    if runInherited "npx" [ "--no"; "--"; "lint-staged" ] repoRoot (childEnvironment surface) = 0 then
         Ok()
     else
         Error "lint-staged batch failed"
@@ -1188,7 +1214,10 @@ let runSurfaceGuardAtRoot
                 planSurfaceGuard config parsedSurface gateRunArgs currentExe (fun name ->
                     Environment.GetEnvironmentVariable name |> Option.ofObj)
 
-            executeSurfaceGuardPlan surface (fun command arguments -> runInherited command arguments repoRoot []) plan
+            executeSurfaceGuardPlan
+                surface
+                (fun command arguments -> runInherited command arguments repoRoot (childEnvironment parsedSurface))
+                plan
 
 /// Resolves the gates selected by a declared CI group, excluding hand-wired
 /// members: they are dispatched by their own dedicated CI workflow job, not
@@ -1387,7 +1416,7 @@ let runAtRootWithOnlyAndMessageFile
                                                 if batchRan then
                                                     loop rest batchRan worktreeSnapshot groupSummary
                                                 else
-                                                    match runLintStagedBatch repoRoot write with
+                                                    match runLintStagedBatch repoRoot surface write with
                                                     | Error message -> Error message
                                                     | Ok() -> loop rest true None groupSummary
                                             else
@@ -1405,6 +1434,7 @@ let runAtRootWithOnlyAndMessageFile
                                                             scope.Scope
                                                             commitMessageFile
                                                             repoRoot
+                                                            surface
                                                     with
                                                     | Error message -> Error message
                                                     | Ok exitCode ->
@@ -1620,7 +1650,7 @@ let private validateLocalHookShims (repoRoot: string) (config: RepoConfig) : Res
                 loop rest
             else
                 let shimPath = Path.Combine(repoRoot, ".husky", shimName)
-                let expectedInvocation = sprintf "gate run --surface=%s" shimName
+                let expectedInvocation = sprintf "./rhino gate run --surface %s" shimName
 
                 let hasRegistryInvocation =
                     File.Exists shimPath
@@ -1629,7 +1659,7 @@ let private validateLocalHookShims (repoRoot: string) (config: RepoConfig) : Res
                 if not (hasExecutableMode shimPath) || not hasRegistryInvocation then
                     Error(
                         sprintf
-                            "Gate surface shim .husky/%s must be executable and invoke gate run --surface=%s"
+                            "Gate surface shim .husky/%s must be executable and invoke ./rhino gate run --surface %s"
                             shimName
                             shimName
                     )
@@ -1878,7 +1908,9 @@ let private validateCiMatrixContract (config: RepoConfig) (workflow: Workflow) :
                             step.Env
                             |> List.exists (fun (name, value) ->
                                 value.Contains "matrix.group.group"
-                                && normalized.Contains(sprintf "gate run --surface=ci --group=\"$%s\"" name)))
+                                && normalized.Contains(
+                                    sprintf "./rhino gate run --surface ci -- --group=\"$%s\"" name
+                                )))
 
                 let noRawGroupIdSplice =
                     not (workflowRunBodiesReference workflow "matrix.group.group")
@@ -1898,7 +1930,7 @@ let private validateCiMatrixContract (config: RepoConfig) (workflow: Workflow) :
             Ok()
         else
             Error
-                "CI workflow must derive its gate matrix from the enumerate job's grouped gate list, dispatch it through the gate job, and make quality-gate depend on build-rhino, enumerate, and gate"
+                "CI workflow must derive its gate matrix from the enumerate job's grouped gate list, dispatch each group in the gate job through ./rhino gate run --surface ci -- --group=\"$<matrix group env>\", and make quality-gate depend on build-rhino, enumerate, and gate"
 
 /// Validates that Doctor setup is selected from registry metadata rather than
 /// performing a full bootstrap in every CI job
@@ -1987,7 +2019,12 @@ let private validateCiGateInvocations (config: RepoConfig) (workflow: Workflow) 
         match commands with
         | [] -> Ok()
         | (command: string) :: rest ->
-            if not (command.Contains "gate run --surface=ci") then
+            if
+                not (
+                    command.Contains "gate run --surface=ci"
+                    || command.Contains "gate run --surface ci"
+                )
+            then
                 loop rest
             else
                 match splitAfter "--only=" command with
@@ -2256,7 +2293,7 @@ let validateDocuments (config: RepoConfig) (documents: GateValidationDocuments) 
                     loop rest
                 else
                     let path = sprintf ".husky/%s" shimName
-                    let expected = sprintf "gate run --surface=%s" shimName
+                    let expected = sprintf "./rhino gate run --surface %s" shimName
                     let contents = documents.Files |> Map.tryFind path |> Option.defaultValue ""
 
                     if
@@ -2267,7 +2304,7 @@ let validateDocuments (config: RepoConfig) (documents: GateValidationDocuments) 
                     else
                         Error(
                             sprintf
-                                "Gate surface shim .husky/%s must be executable and invoke gate run --surface=%s"
+                                "Gate surface shim .husky/%s must be executable and invoke ./rhino gate run --surface %s"
                                 shimName
                                 shimName
                         )

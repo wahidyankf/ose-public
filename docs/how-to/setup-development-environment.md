@@ -84,8 +84,9 @@ cd ose-public
 npm run doctor
 ```
 
-If doctor shows all green, you are ready. To run what the push hook actually runs, use
-`apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+If doctor shows all green, you are ready. To run the push hook's registry gates and see their output,
+use `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`. The hook itself runs
+`./rhino gate run --surface pre-push`, which screens the push for public safety first.
 
 ## Full Setup
 

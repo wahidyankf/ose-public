@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Claude Code PreToolUse hook: warm Nx cache before git push
 #
-# The pre-push git hook (.husky/pre-push) delegates to
-# `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`, which executes
-# every registry-declared pre-push-surface gate. This hook warms the Nx cache for the
+# The pre-push git hook (.husky/pre-push) runs `./rhino gate run --surface pre-push`,
+# whose registry gate delegates to `apps/rhino-cli/scripts/rhino-bin.sh gate run
+# --surface=pre-push`, which executes every registry-declared pre-push-surface gate. This hook warms the Nx cache for the
 # affected-projects-scoped subset (the only gates `nx affected` actually caches — the
 # other pre-push gates are direct CLI validators, not Nx targets) so the real pre-push
 # hook hits cached results and completes in seconds instead of taking 20+ minutes on a

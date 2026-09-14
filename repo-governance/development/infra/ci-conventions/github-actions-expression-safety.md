@@ -16,7 +16,7 @@ expression directly:
    variable, then reference the **shell** variable in `run:`:
 
    ```yaml
-   - run: apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=ci --group="$GROUP_ID"
+   - run: ./rhino gate run --surface ci -- --group="$GROUP_ID"
      env:
        GROUP_ID: ${{ matrix.group.group }}
    ```

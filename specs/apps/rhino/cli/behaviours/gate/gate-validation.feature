@@ -133,3 +133,13 @@ Feature: Gate conformance validation
     Given a CI matrix dispatcher step carries matrix.group.group through a differently-named env var
     When "rhino-cli gate validate" runs
     Then it exits zero
+
+  Scenario: A hook that bypasses the pinned RHINO binary is caught
+    Given a declared pre-commit surface hook invokes rhino-cli gate run instead of the pinned RHINO binary
+    When gate validate runs
+    Then it fails and names the hook file and its ./rhino gate run invocation
+
+  Scenario: A matrix group dispatched straight to the repository CLI is caught
+    Given a CI matrix dispatcher step runs the repository CLI's gate run for its group instead of the pinned RHINO binary
+    When "rhino-cli gate validate" runs
+    Then it fails and states that the group must be dispatched through ./rhino gate run --surface ci

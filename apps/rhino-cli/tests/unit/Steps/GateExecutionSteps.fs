@@ -67,6 +67,7 @@ type GateExecutionSteps() =
     let mutable guardExitCode = 0
     let mutable guardStartFails = false
     let mutable selectedGateRan = false
+    let mutable childSurfaceEnvironment: Map<string, string> = Map.empty
 
     let replaceGates gates =
         registry <- { empty with Gates = gates }
@@ -204,6 +205,23 @@ type GateExecutionSteps() =
         )
 
         guardStartFails <- true
+
+    [<Given>]
+    member _.``a pre-commit gate records the OSE_GATE_SURFACE value it receives``() =
+        surface <- "pre-commit"
+
+        replaceGates
+            [ gate "surface-recorder" Check External "sh record-surface.sh" PreCommit (scope Other None [] []) ]
+
+    [<When>]
+    member _.``the pre-commit gate runs under a launcher that set OSE_GATE_SURFACE to pre-push``() =
+        childSurfaceEnvironment <-
+            surfaceEnvironment PreCommit (Map [ "OSE_GATE_SURFACE", "pre-push"; "HOME", "/home/test" ])
+
+    [<Then>]
+    member _.``the gate records pre-commit``() =
+        Assert.Equal(Some "pre-commit", Map.tryFind "OSE_GATE_SURFACE" childSurfaceEnvironment)
+        Assert.Equal(Some "/home/test", Map.tryFind "HOME" childSurfaceEnvironment)
 
     [<Given>]
     member _.``pre-push has no execution guard and has a recording gate``() = configureRecordingGate None
@@ -1043,3 +1061,7 @@ let ``lockfile-sync regenerates the lockfile and restages it`` () =
 [<Fact>]
 let ``lockfile-sync is a no-op when the lockfile is already current`` () =
     FeatureRunner.run "lockfile-sync is a no-op when the lockfile is already current"
+
+[<Fact>]
+let ``Every gate child receives the surface it runs for`` () =
+    FeatureRunner.run "Every gate child receives the surface it runs for"

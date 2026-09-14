@@ -1009,15 +1009,77 @@ let private parseRepoConfig (data: string) : Result<RepoConfig, string> =
         with ex ->
             Error ex.Message
 
-/// Strictly parses an in-memory `repo-config.yml` document.
+/// Returns the document every rhino-cli reader consumes. A v1 document is
+/// returned unchanged. An `ose/repo-config/v2` document keeps its core keys
+/// for the pinned Rust RHINO binary, so only its `extensions.rhino-cli`
+/// mapping is returned, as a document of its own (empty when the extension is
+/// absent). Text that does not load as YAML is returned unchanged, for the
+/// strict parser to report.
+let normalize (data: string) : string =
+    let stream = YamlStream()
+
+    let loaded =
+        try
+            use reader = new StringReader(data)
+            stream.Load reader
+            stream.Documents.Count > 0
+        with _ ->
+            false
+
+    let child (mapping: YamlMappingNode) (key: string) : YamlNode option =
+        mapping.Children
+        |> Seq.tryFind (fun kv ->
+            match kv.Key with
+            | :? YamlScalarNode as k -> k.Value = key
+            | _ -> false)
+        |> Option.map (fun kv -> kv.Value)
+
+    let asMapping (node: YamlNode) : YamlMappingNode option =
+        match node with
+        | :? YamlMappingNode as m -> Some m
+        | _ -> None
+
+    let render (extension: YamlMappingNode) : string =
+        use writer = new StringWriter()
+        YamlStream([| YamlDocument(extension) |]).Save(writer, false)
+        writer.ToString()
+
+    let root =
+        if loaded then
+            asMapping stream.Documents.[0].RootNode
+        else
+            None
+
+    let isV2 =
+        root
+        |> Option.bind (fun rootMap -> child rootMap "schema")
+        |> Option.exists (fun node ->
+            match node with
+            | :? YamlScalarNode as schema -> schema.Value = "ose/repo-config/v2"
+            | _ -> false)
+
+    match root with
+    | Some rootMap when isV2 ->
+        child rootMap "extensions"
+        |> Option.bind asMapping
+        |> Option.bind (fun extensions -> child extensions "rhino-cli")
+        |> Option.bind asMapping
+        |> Option.map render
+        |> Option.defaultValue "{}\n"
+    | _ -> data
+
+/// Strictly parses an in-memory `repo-config.yml` document, v1 or v2 (see
+/// [`normalize`]).
 ///
 /// This is the application boundary used by callers that already own the
 /// document bytes (for example an editor integration or a Unit test). File
 /// discovery and reading remain the responsibility of [`load`].
 let parse (data: string) : Result<RepoConfig, string> =
-    match gateEnumFindings "repo-config.yml" data with
+    let document = normalize data
+
+    match gateEnumFindings "repo-config.yml" document with
     | Error message -> Error message
-    | Ok() -> parseRepoConfig data
+    | Ok() -> parseRepoConfig document
 
 /// Loads and parses `repo-config.yml` at `repoRoot`
 /// [Repo-grounded — `repo_config/mod.rs::load`].

@@ -26,11 +26,14 @@ does not delegate to the registry, a stale generated `lint-staged` block, or inv
 
 ## Hook shims
 
-| Git event      | Shim                | Delegation                              |
-| -------------- | ------------------- | --------------------------------------- |
-| Commit message | `.husky/commit-msg` | `gate run --surface=commit-msg -- "$1"` |
-| Before commit  | `.husky/pre-commit` | `gate run --surface=pre-commit`         |
-| Before push    | `.husky/pre-push`   | `gate run --surface=pre-push`           |
+| Git event      | Shim                | Delegation                                      |
+| -------------- | ------------------- | ----------------------------------------------- |
+| Commit message | `.husky/commit-msg` | `./rhino gate run --surface commit-msg -- "$1"` |
+| Before commit  | `.husky/pre-commit` | `./rhino gate run --surface pre-commit`         |
+| Before push    | `.husky/pre-push`   | `./rhino gate run --surface pre-push`           |
+
+The pinned RHINO binary runs the public-safety screen first, then hands the surface to the registry
+through `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=<surface>`.
 
 The dispatcher runs each declared gate in registry order and stops at the first failure. A hook failure
 aborts its Git operation; fix the reported gate and retry.
@@ -41,10 +44,10 @@ flowchart LR
     Commit["git commit"] --> Message["commit-msg shim"]
     Commit --> PreCommit["pre-commit shim"]
     Push["git push"] --> PrePush["pre-push shim"]
-    Message --> Registry["repo-config.yml gates"]
+    Message --> Registry["registry gates"]
     PreCommit --> Registry
     PrePush --> Registry
-    Registry --> CI["CI matrix + retained jobs"]
+    Registry --> CI["CI matrix jobs"]
 
     style Commit fill:#0173B2,color:#FFFFFF
     style Push fill:#0173B2,color:#FFFFFF

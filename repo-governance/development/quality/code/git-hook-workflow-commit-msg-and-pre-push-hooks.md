@@ -45,6 +45,7 @@ $ git commit -m "added new feature"
 
 1. You run `git push`
 2. Pre-push hook triggers (`.husky/pre-push` — a shim line invoking
+   `./rhino gate run --surface pre-push`, which runs the public-safety screen and then
    `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`)
 3. `gate run --surface=pre-push` orchestrates every registry-declared `pre-push`-surface gate in
    declaration order, failing fast. The gate set is registry-driven and changes as `repo-config.yml`

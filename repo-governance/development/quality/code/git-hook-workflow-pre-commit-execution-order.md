@@ -13,6 +13,7 @@ when_to_use: "Use to trace what runs on git commit."
 
 1. You run `git commit`
 2. Pre-commit hook triggers (`.husky/pre-commit` — a shim line invoking
+   `./rhino gate run --surface pre-commit`, which runs the public-safety screen and then
    `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-commit`)
 3. `gate run --surface=pre-commit` orchestrates all registry-declared `pre-commit`-surface gates in
    declaration order, failing fast:

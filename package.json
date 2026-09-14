@@ -113,7 +113,8 @@
       "ruff format"
     ],
     "*.go": [
-      "gofmt -w"
+      "gofmt -w",
+      "scripts/lint-golangci.sh"
     ],
     "*.{ex,exs}": [
       "scripts/format-elixir.sh"

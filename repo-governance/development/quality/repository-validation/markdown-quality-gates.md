@@ -18,10 +18,13 @@ which the hooks reach through `./rhino gate run`, and the CI matrix derived from
 
 **Command**: `md mermaid validate`
 
-Checks maximum horizontal width (4 nodes per rank), label line length, single diagram per fenced
-block, and valid syntax. Diagram types covered: `flowchart`/`graph` (all directions) and
-`stateDiagram-v2`/`stateDiagram` (v1) — state node count contributes to width; state display names
-and transition edge labels are subject to the label-length limit.
+A split command. F# selects the Markdown files in scope that hold a Mermaid block and hands each to
+the pinned RHINO as `--file`; RHINO applies the `md-mermaid` section of `repo-config.yml`:
+`accTitle` and `accDescr` on every diagram, node and edge labels of at most 30 graphemes, and the
+colour palette. When no selected file holds a diagram, RHINO is not started. F# then checks maximum
+horizontal width (4 nodes per rank), single diagram per fenced block, and valid syntax. Diagram
+types covered: `flowchart`/`graph` (all directions) and `stateDiagram-v2`/`stateDiagram` (v1) —
+state node count contributes to width.
 
 **Registry exclusions**: `apps/rhino-cli/tests/fixtures`, `plans/done`,
 `apps/ayokoding-www/content`. The `--exclude` flag is repeatable; pass extra prefixes to suppress
@@ -33,10 +36,11 @@ noise in project-specific runs.
 
 **Command**: `md mermaid validate --max-label-len 20` (gate `md-mermaid-strict`)
 
-`md-mermaid` above runs at the validator's default of 30 — Mermaid's `wrappingWidth` baseline, a
+`md-mermaid` above leaves labels to RHINO's limit of 30 — Mermaid's `wrappingWidth` baseline, a
 backstop. The binding limit is 20 (see
 [Rule 3](../../../conventions/formatting/diagrams/common-syntax-errors-label-constraints-rule-3-line-length.md));
-this gate closes that gap. Same command, same exclusions, same surfaces — but scoped to **changed**
+this gate closes that gap: with an explicit `--max-label-len`, F# checks node labels, state display
+names and transition edge labels too. Same command, same exclusions, same surfaces — but scoped to **changed**
 `.md` files on both, so it ratchets new and edited diagrams to 20 without failing on the untouched
 legacy corpus.
 

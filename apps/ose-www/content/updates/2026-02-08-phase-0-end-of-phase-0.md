@@ -32,15 +32,17 @@ Phase 1 is different. It's about solidifying infrastructure and gaining developm
 ```mermaid
 %% Color Palette: Blue #0173B2 (weeks 1-8), Teal #029E73 (weeks 9-10), Orange #DE8F05 (weeks 11-12)
 graph LR
-    W18["Weeks 1-8: Foundation\n437 commits"]:::w18
-    W910["Weeks 9-10:\nInfrastructure Maturity"]:::w910
-    W1112["Weeks 11-12: Final Sprint\n431 commits"]:::w1112
+    accTitle: Why This Milestone Matters
+    accDescr: Weeks 1-8: Foundation 437 commits leads to Weeks 9-10: Infrastructure Maturity; Weeks 9-10: Infrastructure Maturity leads to Weeks 11-12: Final Sprint 431 commits.
+    W18["Weeks 1-8:<br/>Foundation<br/>437 commits"]:::w18
+    W910["Weeks 9-10:<br/>Infrastructure<br/>Maturity"]:::w910
+    W1112["Weeks 11-12: Final<br/>Sprint<br/>431 commits"]:::w1112
 
     W18 --> W910 --> W1112
 
     classDef w18 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef w910 fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef w1112 fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef w910 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef w1112 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 **Weeks 1-8: Foundation Establishment**
@@ -95,13 +97,15 @@ Week 8 marked the shift from exploration to production-ready systems. The six-la
 ```mermaid
 %% Color Palette: Gray #808080 (vision/skills), Blue #0173B2 (principles), Orange #DE8F05 (conventions), Teal #029E73 (development), Purple #CC78BC (agents), Brown #CA9161 (workflows)
 graph TD
-    L0["Layer 0: Vision - WHY we exist"]:::vision
-    L1["L1: Principles\nWHY we value approaches"]:::principles
-    L2["L2: Conventions\nWHAT rules apply"]:::conventions
-    L3["L3: Development\nHOW we build"]:::development
-    L4["L4: AI Agents\nWHO enforces"]:::agents
-    L5["L5: Workflows\nWHEN we execute"]:::workflows
-    SK["Skills:\nDelivery Infrastructure"]:::skills
+    accTitle: Governance Architecture Maturity Week 8
+    accDescr: Layer 0: Vision - WHY we exist leads to L1: Principles WHY we value approaches; L1: Principles WHY we value approaches leads to L2: Conventions WHAT rules apply; and 4 more links.
+    L0["Layer 0: Vision -<br/>WHY we exist"]:::vision
+    L1["L1: Principles<br/>WHY we value<br/>approaches"]:::principles
+    L2["L2: Conventions<br/>WHAT rules apply"]:::conventions
+    L3["L3: Development<br/>HOW we build"]:::development
+    L4["L4: AI Agents<br/>WHO enforces"]:::agents
+    L5["L5: Workflows<br/>WHEN we execute"]:::workflows
+    SK["Skills:<br/>Delivery<br/>Infrastructure"]:::skills
 
     L0 --> L1
     L1 --> L2
@@ -110,13 +114,13 @@ graph TD
     L4 --> L5
     L4 -.->|"loads"| SK
 
-    classDef vision fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef vision fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
     classDef principles fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef conventions fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef development fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef agents fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef workflows fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef skills fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef conventions fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef development fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef agents fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef workflows fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef skills fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 **Layer 0: Vision**
@@ -333,10 +337,12 @@ We resolved 161 broken links through validation, fixed inconsistent naming acros
 ```mermaid
 %% Color Palette: Blue #0173B2 (clients), Orange #DE8F05 (backend), Teal #029E73 (data)
 graph TD
-    LC["Local: Flutter Desktop"]:::client
+    accTitle: Phase 1 Preview: OrganicLever Begins
+    accDescr: Local: Flutter Desktop leads to Monolith: Spring Boot via API; Web: Next.js leads to Monolith: Spring Boot via API; Mobile: Flutter leads to Monolith: Spring Boot via API; and 1 more links.
+    LC["Local: Flutter<br/>Desktop"]:::client
     WF["Web: Next.js"]:::client
     MA["Mobile: Flutter"]:::client
-    BE["Monolith: Spring Boot"]:::backend
+    BE["Monolith: Spring<br/>Boot"]:::backend
     DB["Database: PostgreSQL"]:::data
 
     LC -->|"API"| BE
@@ -345,8 +351,8 @@ graph TD
     BE --> DB
 
     classDef client fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef backend fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:4px
-    classDef data fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef backend fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:4px
+    classDef data fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 **Client Applications:**

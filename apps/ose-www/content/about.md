@@ -78,14 +78,16 @@ The roadmap organizes work through mission-aligned workstreams:
 ```mermaid
 %% Color-blind friendly palette with text contrast suitable for WCAG AA
 flowchart TB
-    Mission["OSE Mission<br/>Trustworthy open systems"]
+    accTitle: Concurrent Workstreams
+    accDescr: OSE Mission Trustworthy open systems leads to Product Delivery OrganicLever; OSE Mission Trustworthy open systems leads to Business & Enterprise Research Domain discovery and prototypes; and 4 more links.
+    Mission["OSE Mission<br/>Trustworthy open<br/>systems"]
 
     Mission --> Product["Product Delivery<br/>OrganicLever"]
-    Mission --> Research["Business & Enterprise Research<br/>Domain discovery and prototypes"]
-    Mission --> Shariah["Shariah & Regulatory Research<br/>Rules, evidence, and review"]
-    Mission --> Trust["Trust & Assurance<br/>Security, privacy, and compliance"]
-    Mission --> Platform["Platform & Operations<br/>Architecture, tooling, and infrastructure"]
-    Mission --> Learning["Public Learning<br/>AyoKoding and OSE updates"]
+    Mission --> Research["Business &<br/>Enterprise Research<br/>Domain discovery and<br/>prototypes"]
+    Mission --> Shariah["Shariah & Regulatory<br/>Research<br/>Rules, evidence, and<br/>review"]
+    Mission --> Trust["Trust & Assurance<br/>Security, privacy,<br/>and compliance"]
+    Mission --> Platform["Platform &<br/>Operations<br/>Architecture,<br/>tooling, and<br/>infrastructure"]
+    Mission --> Learning["Public Learning<br/>AyoKoding and OSE<br/>updates"]
 
     Product <-. "needs and evidence" .-> Research
     Product <-. "controls and review" .-> Shariah
@@ -94,12 +96,12 @@ flowchart TB
     Research -. "findings" .-> Learning
     Platform -. "learnings" .-> Learning
 
-    classDef mission fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:3px
-    classDef product fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef mission fill:#CA9161,stroke:#000000,color:#000000,stroke-width:3px
+    classDef product fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef research fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef assurance fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef platform fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
-    classDef learning fill:#56B4E9,stroke:#000000,color:#000000,stroke-width:2px
+    classDef learning fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
 
     class Mission mission
     class Product product

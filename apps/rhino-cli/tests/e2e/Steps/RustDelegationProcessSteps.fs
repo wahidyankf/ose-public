@@ -83,6 +83,12 @@ let private delegationRow (command: string) : string =
     | "md links validate" -> "  - command: md links validate\n    class: split\n    rhino: md internal-link validate\n"
     | other -> sprintf "  - command: %s\n    class: stay\n    keeps: [fixture-rule]\n" other
 
+/// Markdown with one short, valid Mermaid diagram, and Markdown with none.
+let private diagramDoc =
+    "# Diagram\n\n```mermaid\nflowchart TD\n    A[Start] --> B[End]\n```\n"
+
+let private plainDoc = "# Plain\n\nNo diagram here.\n"
+
 type RustDelegationProcessSteps() =
     let root =
         let dir =
@@ -185,6 +191,11 @@ type RustDelegationProcessSteps() =
         git [ "add"; path ] |> ignore
 
     [<Given>]
+    member _.``a staged file "([^"]*)" that holds a diagram``(path: string) =
+        write path diagramDoc
+        git [ "add"; path ] |> ignore
+
+    [<Given>]
     member _.``a gate registry whose rhino-cli gates run "([^"]*)" and "([^"]*)"``(first: string, second: string) =
         for hook in [ "commit-msg"; "pre-commit"; "pre-push" ] do
             write (".husky/" + hook) (sprintf "#!/bin/sh\nexec ./rhino gate run --surface %s\n" hook)
@@ -216,6 +227,17 @@ type RustDelegationProcessSteps() =
                 quoted
 
         rowsYaml <- listed |> List.map delegationRow |> String.concat ""
+
+    [<Given>]
+    member _.``a Markdown tree with a diagram in "([^"]*)", none in "([^"]*)" and a diagram in "([^"]*)"``
+        (first: string, plain: string, second: string)
+        =
+        write first diagramDoc
+        write plain plainDoc
+        write second diagramDoc
+
+    [<Given>]
+    member _.``a Markdown tree with no diagram in "([^"]*)"``(plain: string) = write plain plainDoc
 
     [<When>]
     member _.``the developer runs each command in this delegation table``(table: Table) =
@@ -406,8 +428,20 @@ let ``A split command runs its F# remainder only after RHINO completed`` () =
     FeatureRunner.run "A split command runs its F# remainder only after RHINO completed"
 
 [<Fact>]
+let ``A split Mermaid check hands RHINO only the selected Markdown files that hold a diagram`` () =
+    FeatureRunner.run "A split Mermaid check hands RHINO only the selected Markdown files that hold a diagram"
+
+[<Fact>]
+let ``A split Mermaid check does not start RHINO when no selected file holds a diagram`` () =
+    FeatureRunner.run "A split Mermaid check does not start RHINO when no selected file holds a diagram"
+
+[<Fact>]
 let ``The gate runner hands a delegated gate no staged files`` () =
     FeatureRunner.run "The gate runner hands a delegated gate no staged files"
+
+[<Fact>]
+let ``The gate runner hands a file-scoped split gate its staged Markdown files`` () =
+    FeatureRunner.run "The gate runner hands a file-scoped split gate its staged Markdown files"
 
 [<Fact>]
 let ``Gate validation requires one delegation row per rhino-cli gate command`` () =

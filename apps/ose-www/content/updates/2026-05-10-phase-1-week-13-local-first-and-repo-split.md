@@ -66,7 +66,9 @@ Each context has the layers it actually uses—not every context has all four. E
 ```mermaid
 %% Color Palette: Blue #0173B2 (presentation), Orange #DE8F05 (domain), Teal #029E73 (application), Purple #CC78BC (infrastructure)
 graph LR
-    subgraph "organiclever-web — 9 bounded contexts"
+    accTitle: Nine Bounded Contexts
+    accDescr: journal leads to PGlite WASM browser-resident DB; routine leads to PGlite WASM browser-resident DB; settings leads to PGlite WASM browser-resident DB; workout-session leads to XState appMachine, workoutSessionMachine; app-shell leads to XState appMachine, workoutSessionMachine.
+    subgraph "organiclever-web — 9<br/>bounded contexts"
         J["journal"]:::full
         R["routine"]:::full
         S["settings"]:::full
@@ -79,7 +81,7 @@ graph LR
     end
 
     PG["PGlite (WASM)<br/>browser-resident DB"]:::infra
-    XS["XState\nappMachine,\nworkoutSessionMachine"]:::application
+    XS["XState<br/>appMachine,<br/>workoutSession<br/>Machine"]:::application
 
     J --> PG
     R --> PG
@@ -87,12 +89,12 @@ graph LR
     WS --> XS
     AS --> XS
 
-    classDef full fill:#0173B2,stroke:#000,color:#FFF,stroke-width:2px
-    classDef three fill:#029E73,stroke:#000,color:#FFF,stroke-width:2px
-    classDef two fill:#CC78BC,stroke:#000,color:#FFF,stroke-width:2px
-    classDef pres fill:#DE8F05,stroke:#000,color:#FFF,stroke-width:2px
-    classDef infra fill:#CC78BC,stroke:#000,color:#FFF,stroke-width:2px
-    classDef application fill:#029E73,stroke:#000,color:#FFF,stroke-width:2px
+    classDef full fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef three fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef two fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef pres fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef infra fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef application fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### C4 + DDD Across Web Apps
@@ -106,10 +108,12 @@ Phase 0 and early Phase 1 lived in a single repository. As of this period, the c
 ```mermaid
 %% Color Palette: Purple #CC78BC (parent), Blue #0173B2 (public/template), Orange #DE8F05 (private)
 graph TB
+    accTitle: Three-Repo Split
+    accDescr: Shows ose-projects parent container private, ose-public main product monorepo MIT, ose-infra infra monorepo proprietary, ose-primer downstream template MIT.
     OP["ose-projects<br/>(parent container)<br/>private"]:::parent
 
     subgraph "tracked as gitlinks"
-        OPB["ose-public<br/>main product monorepo<br/>MIT"]:::public
+        OPB["ose-public<br/>main product<br/>monorepo<br/>MIT"]:::public
         OI["ose-infra<br/>infra monorepo<br/>proprietary"]:::private
         OPR["ose-primer<br/>downstream template<br/>MIT"]:::public
     end
@@ -121,9 +125,9 @@ graph TB
     OPB <-.bidirectional sync.-> OPR
     OI <-.adoption only.-> OPR
 
-    classDef parent fill:#CC78BC,stroke:#000,color:#FFF,stroke-width:2px
-    classDef public fill:#0173B2,stroke:#000,color:#FFF,stroke-width:2px
-    classDef private fill:#DE8F05,stroke:#000,color:#FFF,stroke-width:2px
+    classDef parent fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef public fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef private fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 - **`ose-public`** — the main product monorepo. Public on GitHub, MIT. Hosts `organiclever-*`, `ayokoding-web`, `ose-web`, `wahidyankf-web`, and the polyglot CLI tools `rhino-cli`, `ayokoding-cli`, `ose-cli`.

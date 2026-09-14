@@ -464,10 +464,10 @@ type MdSteps() =
         writeDoc "docs/d.md" (mermaidBlock "flowchart TD\n    A[ok] --> B[fine]")
 
     [<Given>]
-    member _.``a markdown file under plans/ containing a Mermaid flowchart with a label longer than 30 characters``() =
+    member _.``a markdown file under plans/ containing a flowchart with a width violation``() =
         writeDoc
             "plans/p.md"
-            (mermaidBlock "flowchart TD\n    A[This label is definitely longer than thirty characters total]")
+            (mermaidBlock "flowchart TD\n    R --> A\n    R --> B\n    R --> C\n    R --> D\n    R --> E")
 
     [<Given>]
     member _.``a markdown file with a flowchart line "A --> B & C & D"``() =
@@ -607,7 +607,7 @@ type MdSteps() =
         mermaidResult <- Some(validateMermaid [ "docs" ] None None [] baseOptions)
 
     [<When>]
-    member _.``the developer runs docs validate-mermaid with --max-label-len 40``() =
+    member _.``the developer runs docs validate-mermaid with --max-label-len (\d+)``(limit: int) =
         mermaidResult <-
             Some(
                 validateMermaid
@@ -616,7 +616,7 @@ type MdSteps() =
                     None
                     []
                     { defaultMermaidValidateOptions with
-                        MaxLabelLen = 40 }
+                        MaxLabelLen = limit }
             )
 
     [<When>]
@@ -655,15 +655,29 @@ type MdSteps() =
         mermaidResult <- Some(validateMermaid [] None mermaidChangedFiles [] defaultMermaidValidateOptions)
 
     [<When>]
-    member _.``the developer runs docs validate-mermaid with -o json``() =
-        let result = validateMermaid [ "docs" ] None None [] defaultMermaidValidateOptions
+    member _.``the developer renders the docs validate-mermaid result as JSON``() =
+        let result =
+            validateMermaid
+                [ "docs" ]
+                None
+                None
+                []
+                { defaultMermaidValidateOptions with
+                    MaxLabelLen = 30 }
 
         mermaidResult <- Some result
         mermaidRendered <- Some(formatMermaidJson result)
 
     [<When>]
-    member _.``the developer runs docs validate-mermaid with -o markdown``() =
-        let result = validateMermaid [ "docs" ] None None [] defaultMermaidValidateOptions
+    member _.``the developer renders the docs validate-mermaid result as markdown``() =
+        let result =
+            validateMermaid
+                [ "docs" ]
+                None
+                None
+                []
+                { defaultMermaidValidateOptions with
+                    MaxLabelLen = 30 }
 
         mermaidResult <- Some result
         mermaidRendered <- Some(formatMermaidMarkdown result)
@@ -934,7 +948,7 @@ type MdSteps() =
         Assert.Contains(
             result.Violations,
             fun (v: MermaidViolation) ->
-                v.Kind = MermaidLabelTooLong
+                v.Kind = MermaidWidthExceeded
                 && v.FilePath.Replace('\\', '/').Contains("plans/p.md", StringComparison.Ordinal)
         )
 

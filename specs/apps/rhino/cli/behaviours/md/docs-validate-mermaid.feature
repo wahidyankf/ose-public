@@ -13,7 +13,7 @@ Feature: Mermaid Flowchart Structural Validation
 
   Scenario: A node label exceeding the character limit is flagged
     Given a markdown file containing a flowchart with a node label longer than the limit
-    When the developer runs docs validate-mermaid
+    When the developer runs docs validate-mermaid with --max-label-len 20
     Then the command exits with a failure code
     And the output identifies the file, block, and node with the oversized label
 
@@ -101,7 +101,7 @@ Feature: Mermaid Flowchart Structural Validation
 
   Scenario: A state diagram preceded by a Mermaid comment line is still validated
     Given a markdown file containing an over-long state label with a %% comment above the directive
-    When the developer runs docs validate-mermaid
+    When the developer runs docs validate-mermaid with --max-label-len 20
     Then the command exits with a failure code
 
   Scenario: A commented non-flowchart block is still ignored
@@ -132,15 +132,19 @@ Feature: Mermaid Flowchart Structural Validation
     When the developer runs docs validate-mermaid with the --changed-only flag
     Then the command exits successfully
 
+  # Exemption(e2e): the JSON renderer is internal to the F# remainder, because the public md mermaid validate process is a RHINO split that refuses --output json; alternative-proof: rhino-cli:test:integration / JSON output contains structured violation data
+  @e2e-exempt
   Scenario: JSON output contains structured violation data
     Given a markdown file containing a flowchart with a label length violation
-    When the developer runs docs validate-mermaid with -o json
+    When the developer renders the docs validate-mermaid result as JSON
     Then the output is valid JSON
     And the JSON contains the violation kind, file path, block index, and node id
 
+  # Exemption(e2e): the Markdown renderer is internal to the F# remainder, because the public md mermaid validate process refuses --output markdown and RHINO writes only text or json; alternative-proof: rhino-cli:test:integration / Markdown output produces a formatted table
+  @e2e-exempt
   Scenario: Markdown output produces a formatted table
     Given a markdown file containing a flowchart with a label length violation
-    When the developer runs docs validate-mermaid with -o markdown
+    When the developer renders the docs validate-mermaid result as markdown
     Then the output contains a table with File, Block, Line, Severity, Kind, and Detail columns
 
   Scenario: Verbose flag includes per-file detail in text output
@@ -156,7 +160,7 @@ Feature: Mermaid Flowchart Structural Validation
     And the output contains no text
 
   Scenario: Plans directory is scanned by default
-    Given a markdown file under plans/ containing a Mermaid flowchart with a label longer than 30 characters
+    Given a markdown file under plans/ containing a flowchart with a width violation
     When the developer runs docs validate-mermaid without path arguments
     Then the command exits with a failure code
     And the output identifies the file under plans/

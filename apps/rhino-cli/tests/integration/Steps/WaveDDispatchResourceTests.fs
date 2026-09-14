@@ -135,11 +135,11 @@ let ``route accepts every md mermaid validate threshold flag`` () =
     Assert.Equal(0, code)
 
 [<Fact>]
-let ``route renders md mermaid validate as markdown and honours --quiet`` () =
+let ``route honours --quiet on md mermaid validate`` () =
     let root = newTempDir ()
 
     let code, _, _ =
-        runCaptured (okRoot root) [| "md"; "mermaid"; "validate"; "-o"; "markdown"; "--quiet" |]
+        runCaptured (okRoot root) [| "md"; "mermaid"; "validate"; "--quiet" |]
 
     Assert.Equal(0, code)
 

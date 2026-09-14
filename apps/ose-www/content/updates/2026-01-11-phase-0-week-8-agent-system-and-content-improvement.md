@@ -21,13 +21,15 @@ Layer 0 is Vision—the foundational WHY we exist (democratize Shariah-compliant
 ```mermaid
 %% Color Palette: Gray #808080 (vision/skills), Blue #0173B2 (principles), Orange #DE8F05 (conventions), Teal #029E73 (development), Purple #CC78BC (agents), Brown #CA9161 (workflows)
 graph TD
-    L0["Layer 0: Vision - WHY we exist"]:::vision
+    accTitle: Governance Architecture Taking Shape
+    accDescr: Layer 0: Vision - WHY we exist leads to Layer 1: Principles; Layer 1: Principles leads to Layer 2: Conventions; Layer 2: Conventions leads to Layer 3: Development; and 3 more links.
+    L0["Layer 0: Vision -<br/>WHY we exist"]:::vision
     L1["Layer 1: Principles"]:::principles
     L2["Layer 2: Conventions"]:::conventions
     L3["Layer 3: Development"]:::development
     L4["Layer 4: AI Agents"]:::agents
     L5["Layer 5: Workflows"]:::workflows
-    SK["Skills: Delivery Infra"]:::skills
+    SK["Skills: Delivery<br/>Infra"]:::skills
 
     L0 --> L1
     L1 --> L2
@@ -36,13 +38,13 @@ graph TD
     L4 --> L5
     L4 -.->|"loads"| SK
 
-    classDef vision fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef vision fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
     classDef principles fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef conventions fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef development fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef agents fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef workflows fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef skills fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef conventions fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef development fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef agents fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef workflows fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef skills fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 **Six-Layer Governance Architecture:**

@@ -799,9 +799,14 @@ let commandKey (command: string) : string =
     |> String.concat " "
 
 /// A rhino-cli gate whose command RHINO runs walks its own declared surface,
-/// so it is handed no files.
+/// so it is handed no files. A file-scoped split command still gets the files
+/// its scope selects: its F# half picks which of them RHINO checks.
 let private delegatesToRhino (gate: GateEntry) : bool =
-    gate.Kind = RhinoCli && (RustRhino.tryFind (commandKey gate.Command)).IsSome
+    let key = commandKey gate.Command
+
+    gate.Kind = RhinoCli
+    && (RustRhino.tryFind key).IsSome
+    && not (List.contains key RustRhino.fileScoped)
 
 /// Produces the exact ordered leaf plan for one surface/selector. It shares
 /// the registry, scope, glob, exclusion, group, and batch policies used by

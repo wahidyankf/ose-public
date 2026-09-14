@@ -957,17 +957,42 @@ let ``route falls back to the default --max-label-len on an unparsable value on 
     Assert.Equal(0, code)
 
 [<Fact>]
-let ``route reports a mermaid violation and its JSON kind for a too-long label`` () =
+let ``route reports a mermaid violation for a label over an explicit limit`` () =
     let root = newTempDir ()
-
+    stubRhino root 0
     writeFile root "docs/diagram.md" "```mermaid\nflowchart TD\n  A[This label is far longer than one character]\n```\n"
 
-    let code, out, err =
-        runCaptured (okRoot root) [| "md"; "mermaid"; "validate"; "-o"; "json" |]
+    let code, _, err =
+        runCaptured (okRoot root) [| "md"; "mermaid"; "validate"; "--max-label-len"; "20" |]
 
     Assert.Equal(1, code)
-    Assert.Contains("\"kind\"", out)
     Assert.Contains("violation(s)", err)
+
+[<Fact>]
+let ``route leaves label length to RHINO when md mermaid validate gets no explicit limit`` () =
+    let root = newTempDir ()
+    stubRhino root 0
+
+    writeFile
+        root
+        "docs/diagram.md"
+        "```mermaid\nflowchart TD\n  A[This label is far longer than thirty characters in all]\n```\n"
+
+    let code, _, _ = runCaptured (okRoot root) [| "md"; "mermaid"; "validate" |]
+
+    Assert.Equal(0, code)
+
+[<Fact>]
+let ``route refuses JSON output on md mermaid validate before starting RHINO`` () =
+    let root = newTempDir ()
+    stubRhino root 0
+    writeFile root "docs/diagram.md" "```mermaid\nflowchart TD\n  A[Start] --> B[End]\n```\n"
+
+    let code, _, err =
+        runCaptured (okRoot root) [| "md"; "mermaid"; "validate"; "-o"; "json" |]
+
+    Assert.Equal(2, code)
+    Assert.Contains("./rhino md mermaid validate --output json", err)
 
 [<Fact>]
 let ``route reports a Blocking frontmatter finding for a governance doc carrying a disallowed key`` () =

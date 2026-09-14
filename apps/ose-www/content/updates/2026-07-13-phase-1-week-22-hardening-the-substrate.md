@@ -102,12 +102,14 @@ resolves to a real step implementation on a real runner.
 ```mermaid
 %% Color Palette: Blue #0173B2 (spec), Orange #DE8F05 (link), Teal #029E73 (impl), Purple #CC78BC (gate)
 graph LR
+    accTitle: De-Hollowing the Specs: Gherkin That Actually Runs
+    accDescr: .feature Gherkin scenario leads to @covers marker → code symbol; @covers marker → code symbol leads to real step impl cucumber-rs, vitest-cucumber, TickSpec, Kaocha, cabbage.
     G[".feature<br/>Gherkin scenario"]:::spec --> C["@covers marker<br/>→ code symbol"]:::link
-    C --> S["real step impl<br/>(cucumber-rs, vitest-cucumber,<br/>TickSpec, Kaocha, cabbage)"]:::impl
+    C --> S["real step impl<br/>(cucumber-rs,<br/>vitest-cucumber,<br/>TickSpec, Kaocha,<br/>cabbage)"]:::impl
 
-    classDef spec fill:#0173B2,stroke:#000,color:#FFF,stroke-width:2px
-    classDef link fill:#DE8F05,stroke:#000,color:#FFF,stroke-width:2px
-    classDef impl fill:#029E73,stroke:#000,color:#FFF,stroke-width:2px
+    classDef spec fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef link fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef impl fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 The second half is enforcement: that step implementation is checked at runtime, and the per-tier
@@ -116,11 +118,13 @@ guard turns any silent skip into a hard failure.
 ```mermaid
 %% Color Palette: Blue #0173B2 (spec), Orange #DE8F05 (link), Teal #029E73 (impl), Purple #CC78BC (gate)
 graph LR
-    S["real step impl<br/>(cucumber-rs, vitest-cucumber,<br/>TickSpec, Kaocha, cabbage)"]:::impl --> X["rhino-cli runtime<br/>cross-check"]:::gate
+    accTitle: De-Hollowing the Specs: Gherkin That Actually Runs 2
+    accDescr: real step impl cucumber-rs, vitest-cucumber, TickSpec, Kaocha, cabbage leads to rhino-cli runtime cross-check; rhino-cli runtime cross-check leads to fail-on-skip guard per test tier.
+    S["real step impl<br/>(cucumber-rs,<br/>vitest-cucumber,<br/>TickSpec, Kaocha,<br/>cabbage)"]:::impl --> X["rhino-cli runtime<br/>cross-check"]:::gate
     X --> K["fail-on-skip guard<br/>per test tier"]:::gate
 
-    classDef impl fill:#029E73,stroke:#000,color:#FFF,stroke-width:2px
-    classDef gate fill:#CC78BC,stroke:#000,color:#FFF,stroke-width:2px
+    classDef impl fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gate fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 The payoff is a spec suite that can no longer lie. If a scenario passes, it ran; if it ran, it
@@ -204,15 +208,17 @@ mechanical emitter was added, keeping the "edit `.claude/` first, then sync" wor
 ```mermaid
 %% Color Palette: Blue #0173B2 (source), Orange #DE8F05 (opencode), Teal #029E73 (amazonq), Purple #CC78BC (native)
 graph TB
-    SRC[".claude/ + AGENTS.md<br/>(single source of truth)"]:::source
+    accTitle: Amazon Q: A Third Agent-Harness Binding
+    accDescr: .claude/ + AGENTS.md single source of truth leads to .opencode/ agent mirrors via generate:bindings; .claude/ + AGENTS.md single source of truth leads to .amazonq/ rules + agent config via agents emit-bindings; and 1 more links.
+    SRC[".claude/ + AGENTS.md<br/>single source of<br/>truth"]:::source
     SRC -->|"generate:bindings"| OC[".opencode/<br/>agent mirrors"]:::opencode
     SRC -->|"agents emit-bindings"| AQ[".amazonq/<br/>rules + agent config"]:::amazonq
-    SRC -.->|"read natively"| CC["Claude Code / Codex /<br/>Copilot / Cursor …"]:::native
+    SRC -.->|"read natively"| CC["Claude Code, Codex,<br/>Copilot, Cursor …"]:::native
 
-    classDef source fill:#0173B2,stroke:#000,color:#FFF,stroke-width:2px
-    classDef opencode fill:#DE8F05,stroke:#000,color:#FFF,stroke-width:2px
-    classDef amazonq fill:#029E73,stroke:#000,color:#FFF,stroke-width:2px
-    classDef native fill:#CC78BC,stroke:#000,color:#FFF,stroke-width:2px
+    classDef source fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef opencode fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef amazonq fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef native fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 Alongside it, the OpenCode Go model mapping was refreshed to the current roster — **`opencode-go/glm-5.2`**

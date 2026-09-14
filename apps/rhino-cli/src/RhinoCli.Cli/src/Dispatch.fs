@@ -998,7 +998,9 @@ let private runMdMermaidValidateLeaf (repoRoot: string) (format: OutputFormat) (
     let changedOnly = hasFlag [ "--changed-only" ] rawArgs
     let verbose = hasFlag [ "-v"; "--verbose" ] rawArgs
     let quiet = hasFlag [ "-q"; "--quiet" ] rawArgs
-    let maxLabelLen = intFlag [ "--max-label-len" ] 30 rawArgs
+    // RHINO's md-mermaid section owns the label limit; F# checks labels only
+    // against an explicit --max-label-len.
+    let maxLabelLen = intFlag [ "--max-label-len" ] Int32.MaxValue rawArgs
     let maxWidth = intFlag [ "--max-width" ] 4 rawArgs
     let maxDepthRaw = intFlag [ "--max-depth" ] 0 rawArgs
     let maxDepth = if maxDepthRaw = 0 then Int32.MaxValue else maxDepthRaw
@@ -1024,22 +1026,29 @@ let private runMdMermaidValidateLeaf (repoRoot: string) (format: OutputFormat) (
               MaxDepth = maxDepth
               MaxSubgraphNodes = maxSubgraphNodes } }
 
-    let result = Md.validateMermaidDocs opts
+    RustRhino.runSplitOnFiles
+        (RustRhino.run repoRoot)
+        (fun line -> eprintfn "%s" line)
+        "md mermaid validate"
+        rawArgs
+        (Md.selectMermaidFiles opts)
+        (fun () ->
+            let result = Md.validateMermaidDocs opts
 
-    let output =
-        Formatters.render
-            format
-            (fun () -> Md.formatMermaidText result verbose quiet)
-            (fun () -> Md.formatMermaidJson result)
-            (fun () -> Md.formatMermaidMarkdown result)
+            let output =
+                Formatters.render
+                    format
+                    (fun () -> Md.formatMermaidText result verbose quiet)
+                    (fun () -> Md.formatMermaidJson result)
+                    (fun () -> Md.formatMermaidMarkdown result)
 
-    let err =
-        if List.isEmpty result.Violations then
-            None
-        else
-            Some(sprintf "found %d violation(s)" (List.length result.Violations))
+            let err =
+                if List.isEmpty result.Violations then
+                    None
+                else
+                    Some(sprintf "found %d violation(s)" (List.length result.Violations))
 
-    printResultAndExitCode output err
+            printResultAndExitCode output err)
 
 /// `md frontmatter validate` [Repo-grounded —
 /// `md_validate_frontmatter.rs::run`].

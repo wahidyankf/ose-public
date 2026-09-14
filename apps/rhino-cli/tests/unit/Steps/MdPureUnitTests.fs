@@ -301,7 +301,8 @@ let private validateState source =
             BlockIndex = 0
             Source = source
             StartLine = 1 } ]
-        defaultMermaidValidateOptions
+        { defaultMermaidValidateOptions with
+            MaxLabelLen = 30 }
 
 [<Fact>]
 let ``state diagram edge labels participate in label-length validation`` () =
@@ -441,8 +442,7 @@ let ``Mermaid JSON formatter emits width values`` () =
 let ``document audit reports Mermaid failures`` () =
     let result =
         runAuditDocuments
-            [ "doc.md",
-              "# Title\n\n```mermaid\nflowchart TD\n A[This label is definitely longer than thirty characters total]\n```" ]
+            [ "doc.md", "# Title\n\n```mermaid\nflowchart TD\n A --> B\n A --> C\n A --> D\n A --> E\n A --> F\n```" ]
 
     Assert.False(List.isEmpty result.Failures)
     Assert.Contains(result.Failures, fun failure -> failure.StartsWith("validate-mermaid", StringComparison.Ordinal))

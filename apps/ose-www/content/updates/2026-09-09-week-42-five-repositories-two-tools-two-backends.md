@@ -214,8 +214,8 @@ accDescr: OpenAPI and Gherkin generate and specify a Java backend. End-to-end HT
 
     classDef contract fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef service fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef proof fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef deferred fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef proof fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef deferred fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 OpenAPI generates the response models used by the controllers, so a contract change that the code
@@ -251,8 +251,8 @@ accDescr: OpenAPI and Gherkin generate and specify a Go backend. End-to-end HTTP
 
     classDef contract fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef service fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef proof fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef deferred fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef proof fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef deferred fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 Its current OpenAPI contract exposes only `/api/v1/health`. The generated server interface makes an

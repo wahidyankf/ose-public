@@ -51,19 +51,21 @@ The pattern we're developing is the maker-checker-fixer workflow. When we need n
 ```mermaid
 %% Color Palette: Blue #0173B2 (maker), Orange #DE8F05 (checker), Teal #029E73 (human review), Purple #CC78BC (fixer)
 graph TD
+    accTitle: AI Agents: Automation with Oversight
+    accDescr: Maker: Create draft leads to Checker: Validate and audit via Draft; Checker: Validate and audit leads to Human: Review and approve via Audit report; and 1 more links.
     M["Maker: Create draft"]:::maker
-    C["Checker: Validate and audit"]:::checker
-    H["Human: Review and approve"]:::human
-    F["Fixer: Apply corrections"]:::fixer
+    C["Checker: Validate<br/>and audit"]:::checker
+    H["Human: Review and<br/>approve"]:::human
+    F["Fixer: Apply<br/>corrections"]:::fixer
 
     M -->|"Draft"| C
     C -->|"Audit report"| H
     H -->|"Approved fixes"| F
 
     classDef maker fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef checker fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef human fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef fixer fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef checker fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef human fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef fixer fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 This three-stage workflow with human review in the middle is crucial. We're not trying to fully automate content creation—we're using AI to handle routine work while preserving human judgment for decisions that matter. The agents catch formatting inconsistencies, broken links, and accessibility issues. Humans make choices about tone, messaging, and content strategy.

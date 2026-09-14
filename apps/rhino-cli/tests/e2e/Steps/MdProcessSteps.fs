@@ -486,20 +486,14 @@ type MdProcessSteps() =
         writeDoc "docs/clean.md" "# Clean\n"
 
     [<Given>]
-    member _.``a markdown file containing a flowchart with a label length violation``() =
-        writeDoc
-            "docs/d.md"
-            (mermaidBlock "flowchart TD\n    A[This label is definitely longer than thirty characters total]")
-
-    [<Given>]
     member _.``a markdown file containing a flowchart with no violations``() =
         writeDoc "docs/d.md" (mermaidBlock "flowchart TD\n    A[ok] --> B[fine]")
 
     [<Given>]
-    member _.``a markdown file under plans/ containing a Mermaid flowchart with a label longer than 30 characters``() =
+    member _.``a markdown file under plans/ containing a flowchart with a width violation``() =
         writeDoc
             "plans/p.md"
-            (mermaidBlock "flowchart TD\n    A[This label is definitely longer than thirty characters total]")
+            (mermaidBlock "flowchart TD\n    R --> A\n    R --> B\n    R --> C\n    R --> D\n    R --> E")
 
 
 
@@ -618,8 +612,16 @@ type MdProcessSteps() =
                 | None -> []
 
             invoke ([ "md"; "mermaid"; "validate"; "docs" ] @ thresholdArguments)
-        | "the developer runs docs validate-mermaid with --max-label-len 40" ->
-            invoke [ "md"; "mermaid"; "validate"; "docs"; "--max-label-len"; "40" ]
+        | limitStep when
+            limitStep.StartsWith(
+                "the developer runs docs validate-mermaid with --max-label-len ",
+                StringComparison.Ordinal
+            )
+            ->
+            let limit =
+                limitStep.Substring("the developer runs docs validate-mermaid with --max-label-len ".Length)
+
+            invoke [ "md"; "mermaid"; "validate"; "docs"; "--max-label-len"; limit ]
         | "the developer runs docs validate-mermaid with --max-width 5" ->
             invoke [ "md"; "mermaid"; "validate"; "docs"; "--max-width"; "5" ]
         | "the developer runs docs validate-mermaid with --max-depth 3" ->
@@ -629,10 +631,6 @@ type MdProcessSteps() =
         | "the developer runs docs validate-mermaid with the --changed-only flag" ->
             prepareChangedOnlyRepository ()
             invoke [ "md"; "mermaid"; "validate"; "--changed-only" ]
-        | "the developer runs docs validate-mermaid with -o json" ->
-            invoke [ "md"; "mermaid"; "validate"; "docs"; "-o"; "json" ]
-        | "the developer runs docs validate-mermaid with -o markdown" ->
-            invoke [ "md"; "mermaid"; "validate"; "docs"; "-o"; "markdown" ]
         | "the developer runs docs validate-mermaid with --verbose" ->
             invoke [ "md"; "mermaid"; "validate"; "docs"; "--verbose" ]
         | "the developer runs docs validate-mermaid with --quiet" ->
@@ -958,14 +956,6 @@ let ``With --changed-only only files changed since upstream are checked`` () =
     FeatureRunner.run
         "docs-validate-mermaid.feature"
         "With --changed-only only files changed since upstream are checked"
-
-[<Fact>]
-let ``JSON output contains structured violation data`` () =
-    FeatureRunner.run "docs-validate-mermaid.feature" "JSON output contains structured violation data"
-
-[<Fact>]
-let ``Markdown output produces a formatted table`` () =
-    FeatureRunner.run "docs-validate-mermaid.feature" "Markdown output produces a formatted table"
 
 [<Fact>]
 let ``Verbose flag includes per-file detail in text output`` () =

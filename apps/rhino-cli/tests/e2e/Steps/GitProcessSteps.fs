@@ -193,7 +193,8 @@ type GitProcessSteps() =
 
     [<When>]
     member _.``the pre-commit hook runs md mermaid validate on the staged file``() =
-        invoke [ "md"; "mermaid"; "validate"; "--staged-only" ]
+        // RHINO owns the default label limit; the strict pre-commit gate passes --max-label-len 20.
+        invoke [ "md"; "mermaid"; "validate"; "--staged-only"; "--max-label-len"; "20" ]
 
     [<Then>]
     member _.``the command exits with a failure code``() =

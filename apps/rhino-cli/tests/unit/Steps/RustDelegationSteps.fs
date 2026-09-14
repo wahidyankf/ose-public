@@ -75,6 +75,8 @@ type RustDelegationSteps() =
     let mutable rows: DelegationRow list = []
     let mutable staged: string list = []
     let mutable findings: string list option = None
+    /// Markdown paths and whether each holds a diagram; stands in for the F# file selection.
+    let mutable markdownTree: (string * bool) list = []
     let stdout = StringBuilder()
     let errors = ResizeArray<string>()
 
@@ -110,6 +112,31 @@ type RustDelegationSteps() =
                     None)
 
         match delegation.Class with
+        | RustRhino.Split when List.contains delegation.Command RustRhino.fileScoped ->
+            // The fake selection keeps the diagram files outside every --exclude prefix and, when
+            // paths are given, inside one of them, as the F# scan does.
+            let rec partition (args: string list) (excluded: string list) (paths: string list) =
+                match args with
+                | "--exclude" :: value :: tail -> partition tail (excluded @ [ value ]) paths
+                | "--max-label-len" :: _ :: tail -> partition tail excluded paths
+                | flag :: tail when flag.StartsWith("-", StringComparison.Ordinal) -> partition tail excluded paths
+                | path :: tail -> partition tail excluded (paths @ [ path ])
+                | [] -> excluded, paths
+
+            let excluded, paths = partition rest [] []
+
+            let within (prefix: string) (path: string) =
+                path = prefix || path.StartsWith(prefix + "/", StringComparison.Ordinal)
+
+            let files =
+                markdownTree
+                |> List.filter (fun (path, hasDiagram) ->
+                    hasDiagram
+                    && not (excluded |> List.exists (fun prefix -> within prefix path))
+                    && (List.isEmpty paths || paths |> List.exists (fun prefix -> within prefix path)))
+                |> List.map fst
+
+            RustRhino.runSplitOnFiles runner errors.Add delegation.Command rest files remainder
         | RustRhino.Delegate -> RustRhino.runDelegated runner errors.Add delegation.Command rest
         | RustRhino.Split -> RustRhino.runSplit runner errors.Add delegation.Command rest remainder
 
@@ -152,6 +179,11 @@ type RustDelegationSteps() =
     member _.``a staged file "([^"]*)"``(path: string) = staged <- staged @ [ path ]
 
     [<Given>]
+    member _.``a staged file "([^"]*)" that holds a diagram``(path: string) =
+        staged <- staged @ [ path ]
+        markdownTree <- markdownTree @ [ path, true ]
+
+    [<Given>]
     member _.``a gate registry whose rhino-cli gates run "([^"]*)" and "([^"]*)"``(first: string, second: string) =
         gates <-
             [ gateOf "first" first PrePush (scopeOf Other None)
@@ -172,6 +204,15 @@ type RustDelegationSteps() =
 
         rows <- listed |> List.map rowFor
 
+    [<Given>]
+    member _.``a Markdown tree with a diagram in "([^"]*)", none in "([^"]*)" and a diagram in "([^"]*)"``
+        (first: string, plain: string, second: string)
+        =
+        markdownTree <- [ first, true; plain, false; second, true ]
+
+    [<Given>]
+    member _.``a Markdown tree with no diagram in "([^"]*)"``(plain: string) = markdownTree <- [ plain, false ]
+
     [<When>]
     member _.``the developer runs each command in this delegation table``(table: Table) =
         let expected = table.Rows |> Array.map (fun row -> row.[0], row.[1]) |> List.ofArray
@@ -180,6 +221,7 @@ type RustDelegationSteps() =
             expected |> List.map fst |> List.sort,
             RustRhino.delegations
             |> List.map (fun delegation -> delegation.Command)
+            |> List.filter (fun command -> not (List.contains command RustRhino.fileScoped))
             |> List.sort
         )
 
@@ -208,7 +250,12 @@ type RustDelegationSteps() =
         | Error message -> failwith message
         | Ok plan ->
             let invocation = List.exactlyOne plan
-            Assert.Empty(invocation.Files)
+
+            if List.contains invocation.Command RustRhino.fileScoped then
+                Assert.Equal<string list>(staged, invocation.Files)
+            else
+                Assert.Empty(invocation.Files)
+
             exitCode <- Some(run (String.Join(" ", invocation.Arguments)))
 
     [<When>]
@@ -388,8 +435,20 @@ let ``A split command runs its F# remainder only after RHINO completed`` () =
     FeatureRunner.run "A split command runs its F# remainder only after RHINO completed"
 
 [<Fact>]
+let ``A split Mermaid check hands RHINO only the selected Markdown files that hold a diagram`` () =
+    FeatureRunner.run "A split Mermaid check hands RHINO only the selected Markdown files that hold a diagram"
+
+[<Fact>]
+let ``A split Mermaid check does not start RHINO when no selected file holds a diagram`` () =
+    FeatureRunner.run "A split Mermaid check does not start RHINO when no selected file holds a diagram"
+
+[<Fact>]
 let ``The gate runner hands a delegated gate no staged files`` () =
     FeatureRunner.run "The gate runner hands a delegated gate no staged files"
+
+[<Fact>]
+let ``The gate runner hands a file-scoped split gate its staged Markdown files`` () =
+    FeatureRunner.run "The gate runner hands a file-scoped split gate its staged Markdown files"
 
 [<Fact>]
 let ``Gate validation requires one delegation row per rhino-cli gate command`` () =
@@ -456,6 +515,55 @@ let ``runSplit refuses JSON before starting RHINO or the remainder`` () =
     Assert.Equal(RustRhino.UsageFailure, exit)
     Assert.Empty(calls)
     Assert.Contains("./rhino md internal-link validate --output json", Assert.Single(errors))
+
+[<Fact>]
+let ``runSplitOnFiles appends one --file per selected path and skips RHINO for an empty selection`` () =
+    let calls = ResizeArray<string list>()
+    let errors = ResizeArray<string>()
+
+    let exit =
+        RustRhino.runSplitOnFiles
+            (recordingRunner calls 0)
+            errors.Add
+            "md mermaid validate"
+            [ "--exclude"; "plans/done" ]
+            [ "docs/a.md"; "docs/c.md" ]
+            (fun () -> 1)
+
+    Assert.Equal(1, exit)
+
+    Assert.Equal<string list>(
+        [ "md"; "mermaid"; "validate"; "--file"; "docs/a.md"; "--file"; "docs/c.md" ],
+        Assert.Single(calls)
+    )
+
+    calls.Clear()
+
+    Assert.Equal(
+        0,
+        RustRhino.runSplitOnFiles (recordingRunner calls 1) errors.Add "md mermaid validate" [] [] (fun () -> 0)
+    )
+
+    Assert.Empty(calls)
+    Assert.Empty(errors)
+
+[<Fact>]
+let ``runSplitOnFiles refuses JSON before starting RHINO or the remainder`` () =
+    let calls = ResizeArray<string list>()
+    let errors = ResizeArray<string>()
+
+    let exit =
+        RustRhino.runSplitOnFiles
+            (recordingRunner calls 0)
+            errors.Add
+            "md mermaid validate"
+            [ "-o"; "json" ]
+            [ "docs/a.md" ]
+            (fun () -> failwith "the remainder must not run")
+
+    Assert.Equal(RustRhino.UsageFailure, exit)
+    Assert.Empty(calls)
+    Assert.Contains("./rhino md mermaid validate --output json", Assert.Single(errors))
 
 [<Fact>]
 let ``runWith reports exit 3 when starting RHINO throws`` () =

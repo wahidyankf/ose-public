@@ -51,7 +51,13 @@ type PreCommitPolicySteps() =
     [<When>]
     member _.``the pre-commit hook runs md mermaid validate on the staged file``() =
         let blocks = Md.extractMermaidBlocks targetFile content
-        let result = Md.validateMermaidBlocks blocks Md.defaultMermaidValidateOptions
+        // RHINO owns the default label limit; the strict pre-commit gate passes --max-label-len 20.
+        let result =
+            Md.validateMermaidBlocks
+                blocks
+                { Md.defaultMermaidValidateOptions with
+                    MaxLabelLen = 20 }
+
         output <- Md.formatMermaidText result false false
         exitCode <- if List.isEmpty result.Violations then 0 else 1
 

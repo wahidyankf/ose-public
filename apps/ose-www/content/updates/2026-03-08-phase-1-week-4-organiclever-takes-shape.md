@@ -31,7 +31,9 @@ Flutter app was deferred—desktop and mobile clients will come later when the b
 ```mermaid
 %% Color Palette: Blue #0173B2 (frontend), Orange #DE8F05 (backend), Teal #029E73 (testing)
 graph TD
-    OW["organiclever-web<br/>Next.js 16 + React 19"]:::frontend
+    accTitle: OrganicLever: From Plan to Product
+    accDescr: organiclever-web Next.js 16 + React 19 leads to organiclever-be Spring Boot 4.0.3 via REST API; organiclever-web-e2e Playwright leads to organiclever-web Next.js 16 + React 19 via tests; and 1 more links.
+    OW["organiclever-web<br/>Next.js 16 + React<br/>19"]:::frontend
     OB["organiclever-be<br/>Spring Boot 4.0.3"]:::backend
     OWE["organiclever-web-e2e<br/>Playwright"]:::testing
     OBE["organiclever-be-e2e<br/>Playwright"]:::testing
@@ -41,8 +43,8 @@ graph TD
     OBE -->|"tests"| OB
 
     classDef frontend fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef backend fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef testing fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef backend fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef testing fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Three-Tier Testing Infrastructure
@@ -62,18 +64,20 @@ The key insight: shared Gherkin specs ensure integration and E2E tiers test the 
 ```mermaid
 %% Color Palette: Purple #CC78BC (specs), Orange #DE8F05 (unit), Blue #0173B2 (integration), Teal #029E73 (e2e)
 graph TD
-    GK["Gherkin Specs<br/>26 features, 99 scenarios"]:::specs
-    UT["Unit Tests<br/>Vitest · JUnit · Go test"]:::unit
-    IT["Integration Tests<br/>Cucumber · MockMvc · Godog"]:::integration
-    E2E["E2E Tests<br/>Playwright (2x daily)"]:::e2e
+    accTitle: Three-Tier Testing Infrastructure
+    accDescr: Gherkin Specs 26 features, 99 scenarios leads to Integration Tests Cucumber · MockMvc · Godog via drives; Gherkin Specs 26 features, 99 scenarios leads to E2E Tests Playwright 2x daily via drives.
+    GK["Gherkin Specs<br/>26 features, 99<br/>scenarios"]:::specs
+    UT["Unit Tests<br/>Vitest · JUnit · Go<br/>test"]:::unit
+    IT["Integration Tests<br/>Cucumber · MockMvc ·<br/>Godog"]:::integration
+    E2E["E2E Tests<br/>Playwright (2x<br/>daily)"]:::e2e
 
     GK -->|"drives"| IT
     GK -->|"drives"| E2E
 
-    classDef specs fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef unit fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef specs fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef unit fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef integration fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef e2e fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef e2e fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Coverage Enforcement: Zero to 95 Percent

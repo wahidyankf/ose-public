@@ -23,17 +23,6 @@ Feature: Pre-commit hook orchestration
     Then the command exits with a failure code
     And the output indicates a mermaid violation was found
 
-  Scenario: staged-prose-heading-blocks — staged docs file with bad heading hierarchy blocks commit
-    Given a staged markdown file under docs containing two H1 headings
-    When the pre-commit hook runs md heading-hierarchy validate on the staged file
-    Then the command exits with a failure code
-    And the output indicates a heading hierarchy violation was found
-
-  Scenario: staged-skill-file-exempt — staged SKILL.md with bad heading hierarchy does not block commit
-    Given a staged SKILL.md under .claude/skills with multiple H1 headings
-    When the pre-commit hook runs md heading-hierarchy validate on the staged file
-    Then the heading hierarchy step does not block the commit for that file
-
   Scenario: link-step-honors-exclusions — staged plans/done broken link does not block commit
     Given a staged markdown file under plans/done containing a broken internal link
     When the pre-commit hook runs md links validate on staged files

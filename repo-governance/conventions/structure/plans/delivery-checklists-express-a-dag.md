@@ -57,4 +57,4 @@ authenticate it. The resolvability rule is likewise **unenforced by decision** a
 time: whether a reference resolves depends on the state of `main` when its unit lands, which a
 plan-time check cannot evaluate. It surfaces at push, in the all-file-type gates themselves.
 
-See [Delivery Checklists Express a DAG — Delivery Units and Planning Granularity](./delivery-checklists-express-a-dag-continued.md) for how DAG nodes map to natural units and mode-specific integration.
+See [Delivery Checklists Express a DAG — Delivery Units and Planning Granularity](./delivery-units-and-planning-granularity.md) for how DAG nodes map to natural units and mode-specific integration.

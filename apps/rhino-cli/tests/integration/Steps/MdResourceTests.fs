@@ -32,7 +32,7 @@ let ``validateDocsFrontmatter rejects an empty path list`` () =
     | Ok _ -> Assert.Fail("expected an Error for an empty path list")
 
 [<Fact>]
-let ``An explicit YAML null value for a required frontmatter field is treated as missing`` () =
+let ``An explicit YAML null value for a present frontmatter field is treated as empty`` () =
     let dir = DirectTestFixtures.newTempDir ()
 
     DirectTestFixtures.writeFile
@@ -47,78 +47,8 @@ let ``An explicit YAML null value for a required frontmatter field is treated as
             findings,
             fun (f: Finding) ->
                 f.Severity = Severity.Blocking
-                && f.Message.Contains("\"title\" is missing", StringComparison.Ordinal)
+                && f.Message.Contains("\"title\" is empty", StringComparison.Ordinal)
         )
-    | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
-
-[<Fact>]
-let ``A boolean frontmatter value for category is rendered via its string form in the finding message`` () =
-    let dir = DirectTestFixtures.newTempDir ()
-
-    DirectTestFixtures.writeFile
-        dir
-        "docs/explanation/software-engineering/foo.md"
-        "---\ntitle: T\ndescription: D\ncategory: true\nsubcategory: S\ntags: [a]\n---\nbody\n"
-    |> ignore
-
-    match validateDocsFrontmatter [ dir ] with
-    | Ok findings ->
-        Assert.Contains(findings, fun (f: Finding) -> f.Message.Contains("found \"true\"", StringComparison.Ordinal))
-    | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
-
-[<Fact>]
-let ``A numeric frontmatter value for category is rendered via its string form in the finding message`` () =
-    let dir = DirectTestFixtures.newTempDir ()
-
-    DirectTestFixtures.writeFile
-        dir
-        "docs/explanation/software-engineering/foo.md"
-        "---\ntitle: T\ndescription: D\ncategory: 5\nsubcategory: S\ntags: [a]\n---\nbody\n"
-    |> ignore
-
-    match validateDocsFrontmatter [ dir ] with
-    | Ok findings ->
-        Assert.Contains(findings, fun (f: Finding) -> f.Message.Contains("found \"5\"", StringComparison.Ordinal))
-    | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
-
-[<Fact>]
-let ``A category value carrying an explicit YAML !!bool tag renders via stringValue's lowercase bool branch`` () =
-    // Unlike a plain (untagged) `category: true`, which YamlDotNet's default
-    // deserializer keeps as the literal string "true" (see the plain
-    // boolean-form test above), an explicit `!!bool` tag forces YamlDotNet
-    // to hand back a real boxed `System.Boolean`, exercising `stringValue`'s
-    // `Some(:? bool as b) -> if b then "true" else "false"` arm rather than
-    // its string arm.
-    let dir = DirectTestFixtures.newTempDir ()
-
-    DirectTestFixtures.writeFile
-        dir
-        "docs/explanation/software-engineering/foo.md"
-        "---\ntitle: T\ndescription: D\ncategory: !!bool true\nsubcategory: S\ntags: [a]\n---\nbody\n"
-    |> ignore
-
-    match validateDocsFrontmatter [ dir ] with
-    | Ok findings ->
-        Assert.Contains(findings, fun (f: Finding) -> f.Message.Contains("found \"true\"", StringComparison.Ordinal))
-    | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
-
-[<Fact>]
-let ``A category value carrying an explicit YAML !!int tag renders via stringValue's ToString fallback branch`` () =
-    // As above: unlike a plain (untagged) `category: 5`, which YamlDotNet
-    // keeps as the literal string "5", an explicit `!!int` tag forces a real
-    // boxed `System.Int32`, exercising `stringValue`'s `Some other ->
-    // other.ToString()` fallback arm.
-    let dir = DirectTestFixtures.newTempDir ()
-
-    DirectTestFixtures.writeFile
-        dir
-        "docs/explanation/software-engineering/foo.md"
-        "---\ntitle: T\ndescription: D\ncategory: !!int 5\nsubcategory: S\ntags: [a]\n---\nbody\n"
-    |> ignore
-
-    match validateDocsFrontmatter [ dir ] with
-    | Ok findings ->
-        Assert.Contains(findings, fun (f: Finding) -> f.Message.Contains("found \"5\"", StringComparison.Ordinal))
     | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
 
 [<Fact>]
@@ -151,13 +81,13 @@ let ``A tags field that is not a YAML sequence fails the non-empty-list requirem
         | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
 
 [<Fact>]
-let ``Software-engineering doc missing description fails`` () =
+let ``Software-engineering doc with an empty description fails`` () =
     let dir = DirectTestFixtures.newTempDir ()
 
     DirectTestFixtures.writeFile
         dir
         "docs/explanation/software-engineering/foo.md"
-        "---\ntitle: T\ncategory: explanation\nsubcategory: S\ntags: [a]\n---\nbody\n"
+        "---\ntitle: T\ndescription: \"\"\ncategory: explanation\nsubcategory: S\ntags: [a]\n---\nbody\n"
     |> ignore
 
     match validateDocsFrontmatter [ dir ] with
@@ -166,18 +96,18 @@ let ``Software-engineering doc missing description fails`` () =
             findings,
             fun (f: Finding) ->
                 f.Severity = Severity.Blocking
-                && f.Message.Contains("\"description\" is missing", StringComparison.Ordinal)
+                && f.Message.Contains("\"description\" is empty", StringComparison.Ordinal)
         )
     | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
 
 [<Fact>]
-let ``Software-engineering doc missing subcategory fails`` () =
+let ``Software-engineering doc with an empty subcategory fails`` () =
     let dir = DirectTestFixtures.newTempDir ()
 
     DirectTestFixtures.writeFile
         dir
         "docs/explanation/software-engineering/foo.md"
-        "---\ntitle: T\ndescription: D\ncategory: explanation\ntags: [a]\n---\nbody\n"
+        "---\ntitle: T\ndescription: D\ncategory: explanation\nsubcategory: \"\"\ntags: [a]\n---\nbody\n"
     |> ignore
 
     match validateDocsFrontmatter [ dir ] with
@@ -186,7 +116,7 @@ let ``Software-engineering doc missing subcategory fails`` () =
             findings,
             fun (f: Finding) ->
                 f.Severity = Severity.Blocking
-                && f.Message.Contains("\"subcategory\" is missing", StringComparison.Ordinal)
+                && f.Message.Contains("\"subcategory\" is empty", StringComparison.Ordinal)
         )
     | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
 
@@ -206,19 +136,19 @@ let ``Governance doc whose two allowed keys are present but empty fails on both`
             findings,
             fun (f: Finding) ->
                 f.Severity = Severity.Blocking
-                && f.Message.Contains("\"description\" is missing or empty", StringComparison.Ordinal)
+                && f.Message.Contains("\"description\" is empty", StringComparison.Ordinal)
         )
 
         Assert.Contains(
             findings,
             fun (f: Finding) ->
                 f.Severity = Severity.Blocking
-                && f.Message.Contains("\"when_to_use\" is missing or empty", StringComparison.Ordinal)
+                && f.Message.Contains("\"when_to_use\" is empty", StringComparison.Ordinal)
         )
     | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
 
 [<Fact>]
-let ``A markdown file with no frontmatter fences at all fails`` () =
+let ``A markdown file with no frontmatter fences at all leaves the absent block to RHINO`` () =
     let dir = DirectTestFixtures.newTempDir ()
 
     DirectTestFixtures.writeFile
@@ -228,11 +158,7 @@ let ``A markdown file with no frontmatter fences at all fails`` () =
     |> ignore
 
     match validateDocsFrontmatter [ dir ] with
-    | Ok findings ->
-        Assert.Contains(
-            findings,
-            fun (f: Finding) -> f.Message.Contains("no YAML frontmatter", StringComparison.Ordinal)
-        )
+    | Ok findings -> Assert.Empty(findings)
     | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
 
 [<Fact>]
@@ -258,8 +184,8 @@ let ``A frontmatter block that parses as a YAML sequence rather than a mapping i
     ()
     =
     // Valid YAML, but not a mapping (`asRawMap`'s `_ -> None` arm) — falls
-    // back to an empty map rather than an `invalid-yaml` finding, so every
-    // required field is reported missing.
+    // back to an empty map rather than an `invalid-yaml` finding. An empty map
+    // has no present-but-blank value, and RHINO reports the absent keys.
     let dir = DirectTestFixtures.newTempDir ()
 
     DirectTestFixtures.writeFile
@@ -269,20 +195,7 @@ let ``A frontmatter block that parses as a YAML sequence rather than a mapping i
     |> ignore
 
     match validateDocsFrontmatter [ dir ] with
-    | Ok findings ->
-        Assert.Contains(
-            findings,
-            fun (f: Finding) ->
-                f.Severity = Severity.Blocking
-                && f.Message.Contains("\"title\" is missing", StringComparison.Ordinal)
-        )
-
-        Assert.Contains(
-            findings,
-            fun (f: Finding) ->
-                f.Severity = Severity.Blocking
-                && f.Message.Contains("\"category\" is missing", StringComparison.Ordinal)
-        )
+    | Ok findings -> Assert.Empty(findings)
     | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
 
 [<Fact>]
@@ -328,110 +241,6 @@ let ``validateDocsFrontmatter skips files under a node_modules subdirectory`` ()
         )
     | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
 
-// ---- docs-validate-heading-hierarchy.feature — direct edge cases ----
-
-[<Fact>]
-let ``A heading line with more than six hash characters is not treated as an ATX heading`` () =
-    let dir = DirectTestFixtures.newTempDir ()
-
-    DirectTestFixtures.writeFile dir "a.md" "# Title\n\n####### Too many hashes\n\n## Section\n"
-    |> ignore
-
-    match validateDocsHeadingHierarchy [ dir ] with
-    | Ok findings -> Assert.Empty(findings)
-    | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
-
-[<Fact>]
-let ``A line consisting only of hash characters with no following text is not treated as an ATX heading`` () =
-    let dir = DirectTestFixtures.newTempDir ()
-
-    DirectTestFixtures.writeFile dir "a.md" "# Title\n\n###\n\n## Section\n"
-    |> ignore
-
-    match validateDocsHeadingHierarchy [ dir ] with
-    | Ok findings -> Assert.Empty(findings)
-    | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
-
-[<Fact>]
-let ``validateDocsHeadingHierarchy rejects an empty path list`` () =
-    match validateDocsHeadingHierarchy [] with
-    | Error message -> Assert.Equal("at least one path is required", message)
-    | Ok _ -> Assert.Fail("expected an Error for an empty path list")
-
-[<Fact>]
-let ``A root-level markdown file is allowlisted by the heading-hierarchy prose allowlist`` () =
-    let dir = DirectTestFixtures.newTempDir ()
-    DirectTestFixtures.writeFile dir "TOPLEVEL.md" "## Not H1\n" |> ignore
-
-    let findings = validateDocsHeadingHierarchyAllowlisted dir []
-
-    Assert.Contains(
-        findings,
-        fun (f: Finding) ->
-            (f.Path |> Option.defaultValue "").Replace('\\', '/').EndsWith("TOPLEVEL.md", StringComparison.Ordinal)
-    )
-
-[<Fact>]
-let ``A markdown file placed directly under apps/ without a project subdirectory is default-denied`` () =
-    let dir = DirectTestFixtures.newTempDir ()
-    DirectTestFixtures.writeFile dir "apps/orphan.md" "## Not H1\n" |> ignore
-
-    let findings = validateDocsHeadingHierarchyAllowlisted dir []
-
-    Assert.DoesNotContain(
-        findings,
-        fun (f: Finding) ->
-            (f.Path |> Option.defaultValue "").Replace('\\', '/').Contains("apps/orphan.md", StringComparison.Ordinal)
-    )
-
-[<Fact>]
-let ``validateDocsHeadingHierarchyAllowlistedDetailed filters non-allowlisted and excluded paths and reports the detailed shape for the rest``
-    ()
-    =
-    let dir = DirectTestFixtures.newTempDir ()
-
-    DirectTestFixtures.writeFile dir "docs/page.md" "# First\n\n# Second\n"
-    |> ignore
-
-    DirectTestFixtures.writeFile dir ".claude/skills/foo/SKILL.md" "# First\n\n# Second\n"
-    |> ignore
-
-    DirectTestFixtures.writeFile dir "docs/excluded/page2.md" "# First\n\n# Second\n"
-    |> ignore
-
-    let findings =
-        validateDocsHeadingHierarchyAllowlistedDetailed dir [ "docs/excluded" ]
-
-    Assert.Contains(
-        findings,
-        fun (f: HeadingFinding) -> f.File.Replace('\\', '/').Contains("docs/page.md", StringComparison.Ordinal)
-    )
-
-    Assert.DoesNotContain(
-        findings,
-        fun (f: HeadingFinding) -> f.File.Replace('\\', '/').Contains(".claude/skills", StringComparison.Ordinal)
-    )
-
-    Assert.DoesNotContain(
-        findings,
-        fun (f: HeadingFinding) -> f.File.Replace('\\', '/').Contains("docs/excluded", StringComparison.Ordinal)
-    )
-
-[<Fact>]
-let ``validateDocsHeadingHierarchyForPaths validates only the allowlisted paths passed to it`` () =
-    let dir = DirectTestFixtures.newTempDir ()
-
-    DirectTestFixtures.writeFile dir "docs/page.md" "# First\n\n# Second\n"
-    |> ignore
-
-    let findings = validateDocsHeadingHierarchyForPaths dir [ "docs/page.md" ]
-
-    Assert.Contains(
-        findings,
-        fun (f: Finding) ->
-            (f.Path |> Option.defaultValue "").Replace('\\', '/').Contains("docs/page.md", StringComparison.Ordinal)
-    )
-
 // ---- docs-validate-links.feature — direct edge cases ----
 
 [<Fact>]
@@ -439,7 +248,7 @@ let ``validateDocsLinks accepts a RepoRoot that points directly at a single mark
     let dir = DirectTestFixtures.newTempDir ()
 
     let filePath =
-        DirectTestFixtures.writeFile dir "note.md" "See [missing](./does-not-exist.md) for details.\n"
+        DirectTestFixtures.writeFile dir "note.md" "See ![missing](./does-not-exist.png) for details.\n"
 
     let findings =
         validateDocsLinks
@@ -527,7 +336,7 @@ let ``categorizeBrokenLink maps a broken link's path to its report category`` ()
 let ``validateAllLinksDetailed reports broken links, broken anchors, and their categories`` () =
     let dir = DirectTestFixtures.newTempDir ()
 
-    DirectTestFixtures.writeFile dir "broken.md" "See [missing](./workflows/gone.md) and [bare](#).\n"
+    DirectTestFixtures.writeFile dir "broken.md" "See ![missing](./workflows/gone.png) and [bare](#).\n"
     |> ignore
 
     let result =
@@ -921,47 +730,6 @@ let ``formatMermaidJson includes actualWidth and maxWidth for a width-exceeded v
     Assert.Equal(5, v.GetProperty("actualWidth").GetInt32())
     Assert.Equal(4, v.GetProperty("maxWidth").GetInt32())
 
-// ---- docs-validate-naming.feature — direct edge cases ----
-
-[<Fact>]
-let ``validateDocsNamingExempt honors * and ? wildcards in exempt glob patterns`` () =
-    let dir = DirectTestFixtures.newTempDir ()
-
-    DirectTestFixtures.writeFile dir "FooBar__linkedin__profile.md" "# X\n"
-    |> ignore
-
-    DirectTestFixtures.writeFile dir "XY.md" "# X\n" |> ignore
-    DirectTestFixtures.writeFile dir "BadName.md" "# X\n" |> ignore
-
-    match validateDocsNamingExempt [ dir ] [ "*__linkedin__*.md"; "X?.md" ] with
-    | Ok findings ->
-        Assert.DoesNotContain(
-            findings,
-            fun (f: Finding) ->
-                (f.Path |> Option.defaultValue "")
-                    .Replace('\\', '/')
-                    .EndsWith("FooBar__linkedin__profile.md", StringComparison.Ordinal)
-        )
-
-        Assert.DoesNotContain(
-            findings,
-            fun (f: Finding) ->
-                (f.Path |> Option.defaultValue "").Replace('\\', '/').EndsWith("XY.md", StringComparison.Ordinal)
-        )
-
-        Assert.Contains(
-            findings,
-            fun (f: Finding) ->
-                (f.Path |> Option.defaultValue "").Replace('\\', '/').EndsWith("BadName.md", StringComparison.Ordinal)
-        )
-    | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
-
-[<Fact>]
-let ``validateDocsNamingExempt rejects an empty path list`` () =
-    match validateDocsNamingExempt [] [] with
-    | Error message -> Assert.Equal("at least one path is required", message)
-    | Ok _ -> Assert.Fail("expected an Error for an empty path list")
-
 // ---- repo-governance-frontmatter-audit.feature — direct edge cases ----
 
 [<Fact>]
@@ -998,7 +766,7 @@ let ``validateFrontmatterDatesDetailed rejects an empty path list and reports li
 
     let dir = DirectTestFixtures.newTempDir ()
 
-    DirectTestFixtures.writeFile dir "dated.md" "---\ntitle: T\nupdated: 2026-01-01\n---\n\nbody\n"
+    DirectTestFixtures.writeFile dir "dated.md" "---\ntitle: T\n---\n\n- **Created**: 2026-01-01\n"
     |> ignore
 
     match validateFrontmatterDatesDetailed [ dir ] [] with
@@ -1007,21 +775,11 @@ let ``validateFrontmatterDatesDetailed rejects an empty path list and reports li
             findings,
             fun (f: FrontmatterDatesFinding) ->
                 f.File.Replace('\\', '/').EndsWith("dated.md", StringComparison.Ordinal)
-                && f.Line = 3
+                && f.Line = 5
         )
     | Error message -> Assert.Fail(sprintf "expected Ok, got Error %s" message)
 
 // ---- md-audit.feature — direct edge cases ----
-
-[<Fact>]
-let ``runAudit fails when the naming validator reports a violation`` () =
-    let dir = DirectTestFixtures.newTempDir ()
-    DirectTestFixtures.writeFile dir "BadName.md" "# X\n" |> ignore
-
-    let result = runAudit dir
-
-    Assert.False(List.isEmpty result.Failures)
-    Assert.Contains("MD AUDIT FAILED", result.Report)
 
 [<Fact>]
 let ``runAudit fails when the mermaid validator reports a violation`` () =

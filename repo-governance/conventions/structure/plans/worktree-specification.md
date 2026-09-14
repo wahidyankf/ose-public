@@ -94,4 +94,4 @@ sync it before any delivery packet begins. The exception ends at execution.
 unit, refresh the resolved work location from `origin/main`, then begin the next. See
 [PRs Open at Delivery Boundaries](./prs-open-at-delivery-boundaries-rules.md).
 
-See [Worktree Specification — Executor Lifecycle and Example](./worktree-specification-continued.md) for how the executor enters, syncs, and cleans up the worktree, plus a worked `## Worktree` block.
+See [Worktree Specification — Executor Lifecycle and Example](./worktree-specification-executor-lifecycle.md) for how the executor enters, syncs, and cleans up the worktree, plus a worked `## Worktree` block.

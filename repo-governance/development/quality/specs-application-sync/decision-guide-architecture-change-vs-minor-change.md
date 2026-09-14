@@ -5,7 +5,7 @@ when_to_use: "Use when uncertain whether a REST/tRPC/data-store/app-level change
 
 # Decision Guide: Architecture Change vs. Minor Change
 
-Use this table when uncertain whether a change requires a spec update. Continued in [Decision Guide (continued)](./decision-guide-continued.md).
+Use this table when uncertain whether a change requires a spec update. Continued in [Decision Guide (continued)](./decision-guide-change-types-table.md).
 
 | Change Type                                             | Spec Update Required?                                | Reasoning                              |
 | ------------------------------------------------------- | ---------------------------------------------------- | -------------------------------------- |

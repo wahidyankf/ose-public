@@ -27,7 +27,7 @@ section for required separate, detailed RED/GREEN/REFACTOR checkboxes inside one
 ## Conventions Implemented/Respected
 
 - **[File Naming Convention](../../../conventions/structure/file-naming.md)**: Workflow file follows plain name convention for workflows
-- **[Linking Convention](../../conventions/formatting/linking.md)**: All cross-references use GitHub-compatible markdown with `.md` extensions
+- **[Linking Convention](../../../conventions/formatting/linking.md)**: All cross-references use GitHub-compatible markdown with `.md` extensions
 - **[Content Quality Principles](../../../conventions/writing/quality.md)**: Active voice, proper heading hierarchy, single H1
 - **[Grilling-With-Options Convention](../../../development/workflow/grilling-with-options.md)**:
   Pre-execution grill MUST present 2-4 concrete options per question; open-ended questions

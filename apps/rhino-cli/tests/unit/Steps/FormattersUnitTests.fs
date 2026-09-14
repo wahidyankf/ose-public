@@ -1,6 +1,6 @@
 /// Plain xunit tests for `RhinoCli.Cli.Formatters` — the per-format
 /// renderers and `Finding.Message`-parsing adapters that recover Rust's
-/// structured `EmojiFinding`/`LicenseFinding` fields for JSON/Markdown
+/// structured `LicenseFinding` fields for JSON/Markdown
 /// output. `shadow-diff.sh` already proves these byte-match the real Rust
 /// binary against live repo data; these tests pin that behaviour at the
 /// unit level and cover the malformed-message guard clauses shadow-diff's
@@ -11,34 +11,10 @@ open Xunit
 open RhinoCli.Domain.Types
 open RhinoCli.Cli.Formatters
 
-let private emojiFinding (message: string) : Finding =
-    { Severity = Severity.Blocking
-      Message = message
-      Path = None }
-
 let private licenseFinding (message: string) (path: string) : Finding =
     { Severity = Severity.Blocking
       Message = message
       Path = Some path }
-
-// ---- toEmojiFindingJson ----
-
-[<Fact>]
-let ``toEmojiFindingJson recovers every field from a well-formed message`` () =
-    let f = emojiFinding "src/x.ts:1:2  [high]  U+2713"
-    let json = toEmojiFindingJson f
-    Assert.Equal("src/x.ts", json.file)
-    Assert.Equal(1, json.line)
-    Assert.Equal(2, json.column)
-    Assert.Equal("high", json.severity)
-    Assert.Equal("U+2713", json.codepoint)
-
-[<Fact>]
-let ``toEmojiFindingJson throws on a malformed message`` () =
-    let f = emojiFinding "not a well-formed emoji finding"
-
-    Assert.Throws<System.Exception>(fun () -> toEmojiFindingJson f |> ignore)
-    |> ignore
 
 // ---- toLicenseFindingJson ----
 
@@ -75,43 +51,6 @@ let ``toLicenseFindingJson throws when the message has no em-dash separator`` ()
 
     Assert.Throws<System.Exception>(fun () -> toLicenseFindingJson f |> ignore)
     |> ignore
-
-// ---- emojiText / emojiJson / emojiMarkdown ----
-
-[<Fact>]
-let ``emojiText reports PASSED when there are no findings`` () =
-    Assert.Equal("EMOJI AUDIT PASSED: no emoji codepoints found in forbidden file types\n", emojiText [])
-
-[<Fact>]
-let ``emojiText reports FAILED with each finding's message`` () =
-    let s = emojiText [ emojiFinding "src/x.ts:1:2  [high]  U+2713" ]
-    Assert.Equal("EMOJI AUDIT FAILED: 1 emoji codepoint(s) found\n  src/x.ts:1:2  [high]  U+2713\n", s)
-
-[<Fact>]
-let ``emojiJson renders a passed envelope for an empty finding list`` () =
-    let expected =
-        "{\n  \"schema\": \"rhino-cli/emoji-audit/v1\",\n  \"status\": \"passed\",\n  \"result\": []\n}\n"
-
-    Assert.Equal(expected, emojiJson [])
-
-[<Fact>]
-let ``emojiJson renders a failed envelope with one finding`` () =
-    let s = emojiJson [ emojiFinding "src/x.ts:1:2  [high]  U+2713" ]
-    Assert.Contains("\"status\": \"failed\"", s)
-    Assert.Contains("\"file\": \"src/x.ts\"", s)
-    Assert.Contains("\"codepoint\": \"U+2713\"", s)
-    Assert.EndsWith("}\n", s)
-
-[<Fact>]
-let ``emojiMarkdown renders PASSED when there are no findings`` () =
-    let s = emojiMarkdown []
-    Assert.Equal("## Governance Emoji Audit\n\n**PASSED**: no emoji codepoints found in forbidden file types\n", s)
-
-[<Fact>]
-let ``emojiMarkdown renders a table row per finding`` () =
-    let s = emojiMarkdown [ emojiFinding "src/x.ts:1:2  [high]  U+2713" ]
-    Assert.Contains("**FAILED**: 1 emoji codepoint(s) found", s)
-    Assert.Contains("| src/x.ts | 1 | 2 | U+2713 | high |", s)
 
 // ---- licenseText / licenseJson / licenseMarkdown ----
 

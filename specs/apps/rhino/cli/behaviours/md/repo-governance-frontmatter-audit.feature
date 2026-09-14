@@ -11,18 +11,6 @@ Feature: Governance Frontmatter Date-Metadata Audit
     Then the command exits successfully
     And the output reports zero frontmatter findings
 
-  Scenario: Frontmatter with forbidden updated field fails
-    Given a governance markdown file whose frontmatter contains a forbidden updated field
-    When the developer runs md frontmatter validate on the file
-    Then the command exits with a failure code
-    And the output identifies the forbidden frontmatter field and its location
-
-  Scenario: Frontmatter with forbidden created field fails
-    Given a governance markdown file whose frontmatter contains a forbidden created field
-    When the developer runs md frontmatter validate on the file
-    Then the command exits with a failure code
-    And the output identifies the forbidden created field and its location
-
   Scenario: Body containing Last Updated footer block fails
     Given a governance markdown file whose body contains a Last Updated footer block
     When the developer runs md frontmatter validate on the file

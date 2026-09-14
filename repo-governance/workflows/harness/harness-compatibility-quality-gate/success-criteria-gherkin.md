@@ -44,4 +44,4 @@ Scenario: Fixer updates catalog entries for unambiguous in-scope drift
   And it writes a fix report using the same UUID chain as the audit
 ```
 
-**Continued in** [Success Criteria (Gherkin) — Part 2](./success-criteria-gherkin-continued.md).
+**Continued in** [Success Criteria (Gherkin) — Part 2](./success-criteria-gherkin-escalation-scenarios.md).

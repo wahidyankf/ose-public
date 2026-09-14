@@ -16,12 +16,12 @@ This document defines how a main agent manages subagents it spawns via the Agent
 ## The Six Standards
 
 - [Standard 1 — Default Concurrency](./subagent-orchestration/standard-1-default-concurrency.md) — the concurrency cap.
-- [Standard 1 (Continued)](./subagent-orchestration/standard-1-continued.md) — worked examples.
+- [Standard 1 (Continued)](./subagent-orchestration/standard-1-worked-examples.md) — worked examples.
 - [Standard 2 — 3-Minute Stuck-Detection Polling](./subagent-orchestration/standard-2-stuck-detection-polling.md) — polling, recovery.
-- [Standard 2 (Continued)](./subagent-orchestration/standard-2-continued.md) — signal table, examples.
+- [Standard 2 (Continued)](./subagent-orchestration/standard-2-healthy-versus-stuck-signals.md) — signal table, examples.
 - [Standard 3 and Standard 4](./subagent-orchestration/standard-3-and-4.md) — chunk sizing, task IDs.
 - [Standard 5 — Status-Update Cadence](./subagent-orchestration/standard-5-status-update-cadence.md) — reporting cadence.
-- [Standard 5 (Continued)](./subagent-orchestration/standard-5-continued.md) — rationale, examples.
+- [Standard 5 (Continued)](./subagent-orchestration/standard-5-heartbeat-trigger-examples.md) — rationale, examples.
 - [Standard 6 — Touched-File Ledger](./subagent-orchestration/standard-6-touched-file-ledger.md) — the ledger requirement.
 
 ## Anti-Patterns and Tooling

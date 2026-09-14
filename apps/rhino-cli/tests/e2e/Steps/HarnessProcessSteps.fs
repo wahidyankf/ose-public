@@ -26,6 +26,24 @@ let private repositoryRoot =
 let private executable =
     Path.Combine(repositoryRoot, "apps", "rhino-cli", "src", "dist", "rhino-cli-fsharp")
 
+/// `repo-config validate` is a split command that starts `./rhino` in the temp
+/// repository before its F# remainder; this no-op stand-in lets the harness
+/// scenarios exercise that remainder.
+let private stubRhino (root: string) =
+    let path = Path.Combine(root, "rhino")
+    File.WriteAllText(path, "#!/bin/sh\nexit 0\n")
+
+    File.SetUnixFileMode(
+        path,
+        UnixFileMode.UserRead
+        ||| UnixFileMode.UserWrite
+        ||| UnixFileMode.UserExecute
+        ||| UnixFileMode.GroupRead
+        ||| UnixFileMode.GroupExecute
+        ||| UnixFileMode.OtherRead
+        ||| UnixFileMode.OtherExecute
+    )
+
 type HarnessProcessSteps() =
     let root =
         Path.Combine(Path.GetTempPath(), "rhino-harness-e2e-" + Guid.NewGuid().ToString("N"))
@@ -368,6 +386,7 @@ coverage:
     do
         Directory.CreateDirectory(root) |> ignore
         initialiseGit ()
+        stubRhino root
 
     let buildOwnershipFixture () =
         writeOwnershipRegistry false

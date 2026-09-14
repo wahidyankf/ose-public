@@ -5,7 +5,7 @@ when_to_use: "Use when implementing thread-reply/resolve logic, or when checking
 
 # GitHub Reviews API Mechanics — Part 2
 
-Continued from [GitHub Reviews API Mechanics — Part 1](./github-reviews-api-mechanics-part-1.md).
+Continued from [GitHub Reviews API Mechanics — Part 1](./github-reviews-api-mechanics-review-posting.md).
 
 - **List unresolved threads**: a `gh api graphql` query using `reviewThreads(isResolved: false)` — the
   fixer never relies on top-level PR comments for state, only on review-thread resolution status.

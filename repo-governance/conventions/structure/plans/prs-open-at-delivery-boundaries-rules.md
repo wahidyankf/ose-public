@@ -28,4 +28,4 @@ checkout and provisions no worktree, per
    [Phase 0 Opens No PR](./phase-0-opens-no-pr.md#phase-0-opens-no-pr--the-earliest-pr-is-phase-1-hard-rule) above, which
    remains the sole authority on Phase 0 itself.
 
-See [PRs Open at Delivery Boundaries — Rules 5-7 and Boundary Test](./prs-open-at-delivery-boundaries-rules-continued.md) for the remaining rules and `*-to-pr` scoping note, and [Natural Seams and Deployable State](./prs-open-at-delivery-boundaries-natural-seams.md) for where to split a delivery unit and what its resulting `main` state must guarantee.
+See [PRs Open at Delivery Boundaries — Rules 5-7 and Boundary Test](./prs-open-at-delivery-boundaries-rules-5-to-7.md) for the remaining rules and `*-to-pr` scoping note, and [Natural Seams and Deployable State](./prs-open-at-delivery-boundaries-natural-seams.md) for where to split a delivery unit and what its resulting `main` state must guarantee.

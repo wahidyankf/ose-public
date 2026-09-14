@@ -9,7 +9,7 @@ Each layer closes a distinct escape mechanism. No single layer covers all of the
 all six are mandatory rather than any one being sufficient on its own -- and why the rule does not
 wait on confirming any single mechanism as _the_ cause before applying. The first three rows map
 directly onto the three still-unconfirmed hypotheses from
-[The Motivating Incident](./the-motivating-incident-part-1.md); the point of defense-in-depth is that a
+[The Motivating Incident](./the-motivating-incident-repository-corruption.md); the point of defense-in-depth is that a
 fixture built to this convention is protected under **any** of them, not just whichever one a
 future investigation confirms.
 

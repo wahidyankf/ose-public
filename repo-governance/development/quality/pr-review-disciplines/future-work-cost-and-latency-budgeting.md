@@ -15,6 +15,6 @@ runs the coordinator alone and a `lite` PR fans out to only five specialists —
 earliest-clean-exit rule, since the ceiling is reached only by a PR that never converges, and the
 typical PR exits after one or two cycles. Actual per-PR cost therefore sits well under that worst case. This convention does not yet mandate a specific budget or alert
 threshold. It recommends that whoever owns the
-[Post-Cutover Monitoring Plan](./post-cutover-monitoring-rollback-monitoring-plan-part-1.md)'s cost/latency-per-review metric also
+[Post-Cutover Monitoring Plan](./post-cutover-monitoring-rollback-monitoring-plan-precision-and-rate.md)'s cost/latency-per-review metric also
 track the absolute per-PR dollar figure over time, not only the per-tier trend, so a repo-wide cost
 creep is visible before it grows into a rollback-trigger-level concern.

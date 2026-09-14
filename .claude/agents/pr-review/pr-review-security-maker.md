@@ -70,7 +70,7 @@ When a caller supplies lifecycle delegation, first apply the shared
 [Secrets and Env Standards](../../../repo-governance/conventions/security/secrets-and-env-standards.md),
 [Git Fixture Isolation](../../../repo-governance/development/quality/git-fixture-isolation.md),
 [No Destructive Git Operations](../../../repo-governance/development/workflow/no-destructive-git-operations.md),
-[nine-discipline table](../../../repo-governance/development/quality/pr-review-disciplines/the-nine-reviewer-disciplines-table-part-1.md),
+[nine-discipline table](../../../repo-governance/development/quality/pr-review-disciplines/the-nine-reviewer-disciplines-table-architecture-to-performance.md),
 [Criticality Levels](../../../repo-governance/development/quality/criticality-levels.md). Related:
 `pr-review-governance-maker`, `pr-review-synthesis-maker`, `pr-review-fixer`.
 

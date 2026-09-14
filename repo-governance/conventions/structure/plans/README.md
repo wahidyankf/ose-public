@@ -32,11 +32,11 @@ when_to_use: "Read this index to find the right Plans Organization Convention ch
 - [Placement, Legend, and Execution Semantics](./executor-tagging-placement-legend-and-execution-semantics.md) — Adding the executor-tag legend to a delivery.md file or handling a [HUMAN] stop during execution.
 - [Phases as Natural Pauses With Clear Gates](./phases-as-natural-pauses.md) — Writing a delivery.md phase's closing gate and Pause Safety note.
 - [Delivery Checklists Express a DAG](./delivery-checklists-express-a-dag.md) — Requires a Parallelization Model naming concurrent vs. serial delivery nodes.
-- [Delivery Units and Planning Granularity](./delivery-checklists-express-a-dag-continued.md) — Mapping DAG nodes onto natural units and mode-specific integration opportunities.
+- [Delivery Units and Planning Granularity](./delivery-units-and-planning-granularity.md) — Mapping DAG nodes onto natural units and mode-specific integration opportunities.
 - [the Earliest PR Is Phase 1](./phase-0-opens-no-pr.md) — Scoping a plan's Phase 0 to confirm it contains no PR-creation or merge step.
 - [Baseline Artifacts and Enforcement](./phase-0-opens-no-pr-rationale-and-enforcement.md) — A Phase 0 step writes evidence.
 - [PRs Open at Delivery Boundaries](./prs-open-at-delivery-boundaries-rules.md) — Deciding if a phase opens a PR.
-- [Rules 5-7 and \*-to-pr Scope](./prs-open-at-delivery-boundaries-rules-continued.md) — Deciding whether work may share a PR or await another merge.
+- [Rules 5-7 and \*-to-pr Scope](./prs-open-at-delivery-boundaries-rules-5-to-7.md) — Deciding whether work may share a PR or await another merge.
 - [Boundary Test](./prs-open-at-delivery-boundaries-boundary-test.md) — Testing a delivery boundary.
 - [Natural Seams and Deployable State](./prs-open-at-delivery-boundaries-natural-seams.md) — Splitting delivery by cohesive purpose while preserving atomic consistency, immediate production deployability, and prompt trunk integration.
 - [What Every PR Body Must Carry](./prs-open-at-delivery-boundaries-pr-body.md) — Writing or reviewing a PR description.
@@ -46,7 +46,7 @@ when_to_use: "Read this index to find the right Plans Organization Convention ch
 - [Atomicity-Rule Redirect](./prs-open-at-delivery-boundaries-pr-size-atomicity.md) — Legacy redirect. Follow old links.
 - [Delivery Boundaries Declaration and Applicability](./delivery-boundaries-and-applicability.md) — Writing a Delivery Boundaries table, or checking whether a grandfathered plan must retrofit gates.
 - [Worktree Specification](./worktree-specification.md) — Writing a plan's Worktree section or resolving worktree entry/cleanup.
-- [Executor Lifecycle and Example](./worktree-specification-continued.md) — Auditing worktree entry, sync, and cleanup.
+- [Executor Lifecycle and Example](./worktree-specification-executor-lifecycle.md) — Auditing worktree entry, sync, and cleanup.
 - [One Worktree Per Repository Per Plan](./worktree-cap.md) — A plan produces a second delivery unit in the same repository.
 - [Delivery Mode](./delivery-mode-the-four-modes.md) — The four delivery modes, their work location, integration target, and merge authority.
 - [main-to-origin-main Content Restriction](./delivery-mode-content-restriction.md) — Deciding whether a plan may select main-to-origin-main as its delivery mode.

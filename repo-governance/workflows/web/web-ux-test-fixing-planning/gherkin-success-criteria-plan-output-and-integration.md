@@ -41,4 +41,4 @@ Scenario: A non-UI plan omits the assets folder
   Then no assets/ folder is created
 ```
 
-**Continued in** [Gherkin Success Criteria — Part 2](./gherkin-success-criteria-part-2.md).
+**Continued in** [Gherkin Success Criteria — Part 2](./gherkin-success-criteria-merge-mode-and-escalation.md).

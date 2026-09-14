@@ -56,6 +56,7 @@
     <Compile Include="Steps/RepoConfigValidateResourceTests.fs" />
     <Compile Include="Steps/PlanStructureResourceSteps.fs" />
     <Compile Include="Steps/PlanStructureResourceTests.fs" />
+    <Compile Include="Steps/RustDelegationResourceSteps.fs" />
   </ItemGroup>
 
   <ItemGroup>

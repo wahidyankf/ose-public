@@ -30,4 +30,4 @@ checkable by anyone. What the finding claims would disprove it **is** checkable,
 a human. The 80-floor stays: no finding in that sample was posted below it, so it may be exactly
 what keeps weak findings out, and this data cannot show otherwise.
 
-**Continued in** [Nine Reviewer Disciplines: Table (2)](./the-nine-reviewer-disciplines-table-part-2.md) — Performance through Type-soundness, plus the scout/synthesis roles.
+**Continued in** [Nine Reviewer Disciplines: Table (2)](./the-nine-reviewer-disciplines-table-documentation-to-type-soundness.md) — Performance through Type-soundness, plus the scout/synthesis roles.

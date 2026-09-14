@@ -77,5 +77,5 @@ preflight record and final assertions make the judgment auditable.
   and propagates parity identity into plans.
 - [Rules Propagation](../../workflows/rules/rules-propagation.md) — one-repo runs that preserve the
   same identity in the sibling obligation.
-- [PRs Open at Delivery Boundaries](../../conventions/structure/plans/prs-open-at-delivery-boundaries-rules-continued.md)
+- [PRs Open at Delivery Boundaries](../../conventions/structure/plans/prs-open-at-delivery-boundaries-rules-5-to-7.md)
   — repositories merge ready parity PRs independently and record the unfinished counterpart.

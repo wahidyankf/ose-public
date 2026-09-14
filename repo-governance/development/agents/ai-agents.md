@@ -16,7 +16,7 @@ Standards for creating, structuring, and managing AI agents in the platform bind
 - [Required Frontmatter](./ai-agents/agent-file-structure-required-frontmatter.md) — six fields.
 - [Optional Frontmatter](./ai-agents/agent-file-structure-optional-frontmatter-fields.md) — optional fields.
 - [Agent skills References](./ai-agents/agent-file-structure-skills-references.md) — skills field format.
-- [Agent skills References (Continued)](./ai-agents/agent-file-structure-skills-references-continued.md) — DRY rule.
+- [Agent skills References (Continued)](./ai-agents/agent-file-structure-skills-usage-in-body.md) — DRY rule.
 - [Document Structure](./ai-agents/agent-file-structure-document-structure.md) — body layout.
 
 ## Naming and Tool Access
@@ -25,7 +25,7 @@ Standards for creating, structuring, and managing AI agents in the platform bind
 - [Naming Guidelines](./ai-agents/agent-naming-conventions-guidelines-and-name-vs-description.md) — name vs. desc.
 - [Tool Access Patterns](./ai-agents/tool-access-patterns.md) — four patterns.
 - [Report-Generating Agents](./ai-agents/tool-access-patterns-report-generating-agents.md) — Write+Bash rule.
-- [Report-Generating (Continued)](./ai-agents/tool-access-patterns-report-generating-agents-continued.md) — progressive write.
+- [Report-Generating (Continued)](./ai-agents/tool-access-patterns-progressive-report-writing.md) — progressive write.
 - [Writing to Bindings](./ai-agents/tool-access-patterns-writing-to-platform-binding-directories.md) — binding-dir tools.
 
 ## Model Selection and Color
@@ -37,7 +37,7 @@ Standards for creating, structuring, and managing AI agents in the platform bind
 - [Research Agent Note](./ai-agents/platform-binding-examples-research-agent-note.md) — research note.
 - [Assigning Colors](./ai-agents/platform-binding-examples-assigning-colors-to-new-agents.md) — assignment.
 - [Color Accessibility](./ai-agents/platform-binding-examples-color-accessibility.md) — accessibility.
-- [Identification Example](./ai-agents/platform-binding-examples-color-accessibility-continued.md) — example.
+- [Identification Example](./ai-agents/platform-binding-examples-agent-identification.md) — example.
 - [Colors in Documentation](./ai-agents/platform-binding-examples-using-colors-in-documentation.md) — usage.
 
 ## Responsibility, Invocation, and Referencing
@@ -65,7 +65,7 @@ Standards for creating, structuring, and managing AI agents in the platform bind
 - [Verification Principles](./ai-agents/information-accuracy-verification-principles.md) — principles.
 - [Worktree Awareness](./ai-agents/information-accuracy-verification-git-worktree-awareness.md) — rel. paths.
 - [Toolchain Init Rule](./ai-agents/information-accuracy-verification-git-worktree-toolchain-init.md) — init rule.
-- [Default Push Behaviour](./ai-agents/information-accuracy-verification-git-worktree-awareness-continued.md) — push rule.
+- [Default Push Behaviour](./ai-agents/information-accuracy-verification-default-push-behaviour.md) — push rule.
 - [Verification Checklist](./ai-agents/information-accuracy-verification-checklist.md) — checklist.
 - [When to Create](./ai-agents/creating-new-agents-when-to-create.md) — criteria.
 - [Creation Checklist](./ai-agents/creating-new-agents-checklist.md) — checklist.

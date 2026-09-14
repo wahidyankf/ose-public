@@ -16,7 +16,7 @@ Understanding common mistakes in AI agent development helps teams build more mai
 - [God Agent, Excessive Tools, Vague Descriptions, and Hardcoded Values](./anti-patterns/common-anti-patterns-1-to-4.md) — patterns 1-4.
 - [Error Handling, Tool Documentation, Model Choice, Testing, and Naming](./anti-patterns/common-anti-patterns-5-to-9.md) — patterns 5-9.
 - [Anti-Pattern 10: Enumeration-Based Guards](./anti-patterns/anti-pattern-10-enumeration-based-guards.md) — denylist guards that fail open.
-- [Anti-Pattern 10 (Continued)](./anti-patterns/anti-pattern-10-continued.md) — confidence-assessment recipe.
+- [Anti-Pattern 10 (Continued)](./anti-patterns/anti-pattern-10-confidence-assessment.md) — confidence-assessment recipe.
 - [Anti-Pattern 11: Verification Prompts That Presuppose Their Conclusion](./anti-patterns/anti-pattern-11-presupposing-verification.md) — leading prompts.
 
 ## Summary and Reference

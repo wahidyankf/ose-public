@@ -40,28 +40,11 @@
 /// GRA-UNIONCASE-001), not `ReadmeIndexFindingKind`'s two-tier severity
 /// string or the shared `RhinoCli.Domain.Types.Finding` record.
 ///
-/// `check_instruction_sizes` globs for covered surfaces using `glob`
-/// (crates.io) in Rust; this port implements a small `**`-aware segment
-/// matcher instead of pulling in a NuGet glob package, since every real
-/// `governance-word-budget.surfaces` glob in `repo-config.yml` is one of
-/// three shapes: a literal root file (`AGENTS.md`), a `<dir>/**/*.md`
-/// recursive-descent pattern, or the `**/README.md` catch-all — `*` never
-/// appears mid-segment other than the trailing `*.md`/`*` wildcard, so a
-/// single-`*`-per-segment matcher plus `**` segment-skipping is sufficient;
-/// widening it is future work if a more elaborate glob is ever configured.
-///
-/// Like `governance` readme-index, `word-budget` is not yet listed in
-/// `FSHARP_NAMESPACES`, so `checkInstructionSizes`/`checkResolvedTree` are
-/// called directly by step definitions against an explicit `repoRoot`,
-/// never through CLI argv parsing. Four scenarios ("The old command is
-/// gone", "The old config block is gone", "The old gate id is replaced...",
-/// "No inbound link to the renamed convention is left broken") are
-/// registry/text proxy checks against this repository's own live
-/// `repo-config.yml`/governance tree, mirroring `word_budget.rs`'s own test
-/// module comment that "full CLI-dispatch and gate-registry-list assertions
-/// belong to cli.rs/gate tests, out of this module's scope" — the F# port
-/// has no `cli.rs`/`gate` equivalent yet either, so these stay proxy checks
-/// here too rather than exercising a CLI dispatcher that does not exist.
+/// Per-file surface budgets are RHINO's `governance word-budget validate`
+/// (`word-limit-exceeded`), which `RustRhino` starts before this remainder.
+/// The F# remainder checks only the resolved `@`-import tree, which RHINO does
+/// not measure. It still parses `surfaces:`, so the schema check and the
+/// registry scenarios read the same section RHINO reads.
 module RhinoCli.Application.Governance
 
 open System
@@ -79,7 +62,6 @@ open RhinoCli.Application.Md
 type ReadmeIndexFindingKind =
     | Orphan
     | Ghost
-    | Missing
     | Unannotated
 
     /// The lowercase name this kind is addressed by in `--fail-kinds`.
@@ -87,7 +69,6 @@ type ReadmeIndexFindingKind =
         match this with
         | Orphan -> "orphan"
         | Ghost -> "ghost"
-        | Missing -> "missing"
         | Unannotated -> "unannotated"
 
 /// One reported problem from the README index audit
@@ -490,22 +471,11 @@ let private auditOneDir (dir: string) (root: string) : ReadmeIndexFinding list =
 
     if File.Exists readmePath then
         splitIndexFindings @ auditIndexFile readmePath dir
-    elif String.Equals(dir, root, StringComparison.Ordinal) then
-        // The scan root itself is never required to carry a README — a
-        // caller passes a covered-tree root deliberately. A descendant
-        // directory is never exempt.
-        splitIndexFindings
     else
-        let targets = listSiblingTargets dir
-
-        if not (Set.isEmpty targets.Files) || not (Set.isEmpty targets.SubDirs) then
-            splitIndexFindings
-            @ [ { File = dir
-                  Severity = "high"
-                  Kind = ReadmeIndexFindingKind.Missing
-                  Message = sprintf "missing: %s contains indexable content but has no README.md" dir } ]
-        else
-            splitIndexFindings
+        // A directory with indexable content and no README.md is RHINO's
+        // `missing-readme-index` finding (`md-readme-index.trees`); F#
+        // audits only the indexes that exist.
+        splitIndexFindings
 
 /// Audits every directory reachable from `root`
 /// [Repo-grounded — `readme_index.rs::audit_root`].
@@ -1010,7 +980,7 @@ let wordBudgetSeverityLabel (severity: WordBudgetSeverity) : string =
     | WordBudgetSeverity.Warn -> "warn"
     | WordBudgetSeverity.Fail -> "fail"
 
-/// One finding produced by [`checkInstructionSizes`] or [`checkResolvedTree`]
+/// One finding produced by [`checkResolvedTree`] or [`checkResolvedTextTree`]
 /// [Repo-grounded — `word_budget.rs::Finding`].
 type WordBudgetFinding =
     { Path: string
@@ -1046,33 +1016,11 @@ let classify (size: uint64) (target: uint64) (_warn: uint64) (fail: uint64) : Wo
     elif size <= fail then WordBudgetSeverity.Warn
     else WordBudgetSeverity.Fail
 
-/// Builds a human-readable message for a surface finding
-/// [Repo-grounded — `word_budget.rs::surface_message`].
-let private surfaceMessage
-    (path: string)
-    (size: uint64)
-    (target: uint64)
-    (warn: uint64)
-    (fail: uint64)
-    (severity: WordBudgetSeverity)
-    : string =
-    // Coverage note: surfaceMessage's sole caller (checkInstructionSizes)
-    // never invokes it for a `Within` finding — it short-circuits to `None`
-    // for `severity = Within` before building any message. The branch below
-    // is retained for completeness/exhaustiveness of the match, not because
-    // any caller reaches it.
-    match severity with
-    | WordBudgetSeverity.Within -> sprintf "%s is %d words (within %d-word target)" path size target
-    | WordBudgetSeverity.Warn when size <= warn -> sprintf "%s is %d words (over %d-word target)" path size target
-    | WordBudgetSeverity.Warn -> sprintf "%s is %d words (over %d-word warn threshold)" path size warn
-    | WordBudgetSeverity.Fail ->
-        sprintf "%s is %d words (over %d-word fail limit); apply %s" path size fail progressiveDisclosureRef
-
 /// Builds a human-readable message for the resolved-tree finding
 /// [Repo-grounded — `word_budget.rs::resolved_tree_message`].
 let private resolvedTreeMessage (size: uint64) (rt: ResolvedTree) (severity: WordBudgetSeverity) : string =
-    // Coverage note: same as surfaceMessage above — checkResolvedTree, the
-    // sole caller, returns `None` for `severity = Within` before ever
+    // Coverage note: checkResolvedTree and checkResolvedTextTree, the only
+    // callers, return `None` for `severity = Within` before ever
     // calling this function, so the branch below is unreachable in practice.
     match severity with
     | WordBudgetSeverity.Within -> sprintf "resolved tree (%s) is %d words (ok)" rt.Root size
@@ -1087,127 +1035,6 @@ let private resolvedTreeMessage (size: uint64) (rt: ResolvedTree) (severity: Wor
             size
             rt.Fail
             progressiveDisclosureRef
-
-// ---- glob matching: `**`-aware, single `*` per segment (see module doc) ----
-
-/// Matches one path segment (no `/`) against a pattern segment carrying at
-/// most one `*` wildcard — every real `governance-word-budget.surfaces`
-/// glob only ever uses `*.md`, never a multi-star or character-class
-/// pattern within a segment [Repo-grounded — `word_budget.rs` relies on the
-/// `glob` crate's fuller semantics; this port narrows to what the live
-/// config actually uses].
-let private singleSegmentMatches (pattern: string) (name: string) : bool =
-    match pattern.IndexOf('*') with
-    | -1 -> String.Equals(pattern, name, StringComparison.Ordinal)
-    | starIdx ->
-        let prefix = pattern.Substring(0, starIdx)
-        let suffix = pattern.Substring(starIdx + 1)
-
-        name.Length >= prefix.Length + suffix.Length
-        && name.StartsWith(prefix, StringComparison.Ordinal)
-        && name.EndsWith(suffix, StringComparison.Ordinal)
-
-/// Matches a `/`-split pattern-segment list against a `/`-split name-segment
-/// list, where a bare `**` segment consumes zero or more name segments.
-let rec private globSegmentsMatch (patternSegs: string list) (nameSegs: string list) : bool =
-    match patternSegs with
-    | [] -> List.isEmpty nameSegs
-    | [ "**" ] -> true
-    | "**" :: prest ->
-        let rec tryConsume (remaining: string list) : bool =
-            if globSegmentsMatch prest remaining then
-                true
-            else
-                match remaining with
-                | _ :: rest -> tryConsume rest
-                | [] -> false
-
-        tryConsume nameSegs
-    | pseg :: prest ->
-        match nameSegs with
-        | nseg :: nrest when singleSegmentMatches pseg nseg -> globSegmentsMatch prest nrest
-        | _ -> false
-
-/// Matches a forward-slash `pattern` against a forward-slash repo-relative
-/// `relPath` [Repo-grounded — `word_budget.rs::check_instruction_sizes`'s
-/// use of `glob::glob`].
-let private globMatchesRelPath (pattern: string) (relPath: string) : bool =
-    globSegmentsMatch (pattern.Split('/') |> Array.toList) (relPath.Split('/') |> Array.toList)
-
-/// Recursively collects every file reachable from `dir`, skipping
-/// [`skipDirs`] (the same vendored/generated exclusion list `readme-index`
-/// already uses) [Repo-grounded — `word_budget.rs::SKIP_DIRS`,
-/// `is_in_skipped_dir`].
-[<ExcludeFromCodeCoverage>]
-let rec private collectAllFilesRec (dir: string) : string list =
-    if not (Directory.Exists dir) then
-        []
-    else
-        Directory.GetFileSystemEntries dir
-        |> Array.sort
-        |> Array.toList
-        |> List.collect (fun entry ->
-            if Directory.Exists entry then
-                if skipDirs.Contains(Path.GetFileName entry) then
-                    []
-                else
-                    collectAllFilesRec entry
-            else
-                [ entry ])
-
-/// Checks every instruction-file surface against its budget.
-///
-/// **Select-then-classify overlap precedence**: when a path matches more
-/// than one surface, the *last-declared* matching surface wins — Pass 1
-/// glob-matches every surface in `config.Surfaces` declaration order,
-/// recording the most recently matched surface per resolved path; Pass 2
-/// classifies each winning `(path, surface)` pair exactly once. `excludes`
-/// holds repo-relative path **prefixes** matched via `str.StartsWith`, not
-/// globs [Repo-grounded — `word_budget.rs::check_instruction_sizes`].
-[<ExcludeFromCodeCoverage>]
-let checkInstructionSizes (repoRoot: string) (config: BudgetConfig) (excludes: string list) : WordBudgetFinding list =
-    let allFiles = collectAllFilesRec repoRoot
-
-    let relOf (full: string) : string =
-        Path.GetRelativePath(repoRoot, full).Replace('\\', '/')
-
-    let mutable winners: Map<string, Surface> = Map.empty
-
-    for surface in config.Surfaces do
-        for full in allFiles do
-            let rel = relOf full
-
-            if globMatchesRelPath surface.Glob rel then
-                let excluded =
-                    excludes
-                    |> List.exists (fun prefix -> rel.StartsWith(prefix, StringComparison.Ordinal))
-
-                if not excluded then
-                    winners <- Map.add rel surface winners
-
-    winners
-    |> Map.toList
-    |> List.sortBy fst
-    |> List.choose (fun (rel, surface) ->
-        let full = Path.Combine(repoRoot, rel.Replace('/', Path.DirectorySeparatorChar))
-        let contents = if File.Exists full then File.ReadAllText full else ""
-        let size = wordCount contents
-        let severity = classify size surface.Target surface.Warn surface.Fail
-
-        if severity = WordBudgetSeverity.Within then
-            None
-        else
-            let message =
-                surfaceMessage rel size surface.Target surface.Warn surface.Fail severity
-
-            Some
-                { Path = rel
-                  Size = size
-                  Target = surface.Target
-                  Warn = surface.Warn
-                  Fail = surface.Fail
-                  Severity = severity
-                  Message = message })
 
 // ---- resolved `@`-import tree ----
 
@@ -1273,13 +1100,6 @@ let registeredExcludesFor (repoRoot: string) (gateId: string) : Result<string li
         |> Option.bind (fun config -> config.Gates |> List.tryFind (fun g -> g.Id = gateId))
         |> Option.bind (fun gate -> gate.Args.TryFind "exclude")
         |> Option.defaultValue [])
-
-/// Returns the `exclude` list registered against the `governance-word-budget`
-/// gate — see `registeredExcludesFor`'s doc comment
-/// [Repo-grounded — `word_budget.rs::registered_excludes`].
-[<ExcludeFromCodeCoverage>]
-let registeredExcludes (repoRoot: string) : Result<string list, string> =
-    registeredExcludesFor repoRoot "governance-word-budget"
 
 [<ExcludeFromCodeCoverage>]
 let checkResolvedTree (repoRoot: string) (config: BudgetConfig) : WordBudgetFinding option =
@@ -1704,19 +1524,9 @@ let auditReadmeIndexTexts (tree: GovernanceTextTree) (paths: string list) : Read
 
             if Map.containsKey readme tree then
                 splitFindings @ auditTreeIndex tree readme directory
-            elif directory = root then
-                splitFindings
             else
-                let targets = treeSiblingTargets tree directory
-
-                if Set.isEmpty targets.Files && Set.isEmpty targets.SubDirs then
-                    splitFindings
-                else
-                    splitFindings
-                    @ [ { File = directory
-                          Severity = "high"
-                          Kind = ReadmeIndexFindingKind.Missing
-                          Message = sprintf "missing: %s contains indexable content but has no README.md" directory } ]))
+                // A missing README.md is RHINO's `missing-readme-index` finding.
+                splitFindings))
     |> List.distinct
     |> List.sortBy (fun finding -> finding.File, finding.Kind.Name)
 
@@ -1830,48 +1640,6 @@ let rewriteReadmeIndexTextPaths (tree: GovernanceTextTree) (paths: string list) 
             rewriteLinkTargets content renameMap
         else
             content)
-
-/// Pure word-budget classification over caller-supplied text files.
-let checkInstructionTextSizes (files: GovernanceTextTree) (config: BudgetConfig) (excludes: string list) =
-    let files =
-        files
-        |> Map.toSeq
-        |> Seq.map (fun (path, text) -> normalizeTreePath path, text)
-        |> Map.ofSeq
-
-    let mutable winners: Map<string, Surface> = Map.empty
-
-    for surface in config.Surfaces do
-        for KeyValue(path, _) in files do
-            let path = normalizeTreePath path
-
-            if
-                globMatchesRelPath surface.Glob path
-                && not (
-                    excludes
-                    |> List.exists (fun prefix -> path.StartsWith(prefix, StringComparison.Ordinal))
-                )
-            then
-                winners <- Map.add path surface winners
-
-    winners
-    |> Map.toList
-    |> List.sortBy fst
-    |> List.choose (fun (path, surface) ->
-        let size = files |> Map.tryFind path |> Option.defaultValue "" |> wordCount
-        let severity = classify size surface.Target surface.Warn surface.Fail
-
-        if severity = WordBudgetSeverity.Within then
-            None
-        else
-            Some
-                { Path = path
-                  Size = size
-                  Target = surface.Target
-                  Warn = surface.Warn
-                  Fail = surface.Fail
-                  Severity = severity
-                  Message = surfaceMessage path size surface.Target surface.Warn surface.Fail severity })
 
 /// Pure resolved-tree word count with depth and cycle guards.
 let resolveTextTreeSize (files: GovernanceTextTree) root =

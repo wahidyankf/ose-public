@@ -68,7 +68,7 @@ nx affected -t test:quick
 - Prevents hook bypass
 - Maintains quality gate
 
-**See**: [Nx Target Standards](../infra/nx-targets.md) for `test:quick` composition rules per project type.
+**See**: [Nx Target Standards](../../infra/nx-targets.md) for `test:quick` composition rules per project type.
 
 ## Anti-Pattern 6: Ad-Hoc Validation Logic
 

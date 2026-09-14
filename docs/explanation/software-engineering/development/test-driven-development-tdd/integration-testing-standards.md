@@ -6,7 +6,6 @@ subcategory: development
 tags: [tdd, integration-testing, local-resources, isolation]
 principles: [automation-over-manual, reproducibility]
 created: 2026-02-09
-updated: 2026-09-05
 ---
 
 # Integration Testing Standards

@@ -43,8 +43,8 @@ Cycle status is not merge readiness. Default integration remains exact-head/base
 - [Cycle Credit](./pr-review-cycle/cycle-non-credit-record.md) — clean and stale credit.
 - [Sibling Handoff](./pr-review-cycle/sibling-handoff-record.md) — successor record.
 - [Pipeline Diagrams](./pr-review-cycle/pipeline-diagrams.md) — optional-cycle sequence.
-- [GitHub Reviews API, Part 1](./pr-review-cycle/github-reviews-api-mechanics-part-1.md) — posting mechanics.
-- [GitHub Reviews API, Part 2](./pr-review-cycle/github-reviews-api-mechanics-part-2.md) — thread mechanics.
+- [GitHub Reviews API, Part 1](./pr-review-cycle/github-reviews-api-mechanics-review-posting.md) — posting mechanics.
+- [GitHub Reviews API, Part 2](./pr-review-cycle/github-reviews-api-mechanics-threads.md) — thread mechanics.
 - [Review State](./pr-review-cycle/review-state-is-never-the-gate.md) — COMMENT-state rule.
 - [Steps 0-1](./pr-review-cycle/steps-0-1-resolve-and-review.md) — resolve and review.
 - [Step 2](./pr-review-cycle/step-2-pass-result.md) — authenticate pass output.

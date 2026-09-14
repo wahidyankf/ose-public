@@ -32,6 +32,7 @@
     <Compile Include="Steps/GovernanceProcessSteps.fs" />
     <Compile Include="Steps/HarnessProcessSteps.fs" />
     <Compile Include="Steps/PlanStructureProcessSteps.fs" />
+    <Compile Include="Steps/RustDelegationProcessSteps.fs" />
   </ItemGroup>
 
   <ItemGroup>

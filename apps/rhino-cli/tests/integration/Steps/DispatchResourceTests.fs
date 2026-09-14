@@ -24,6 +24,16 @@ let private writeFile (root: string) (relativePath: string) (content: string) =
     Directory.CreateDirectory(Path.GetDirectoryName(full)) |> ignore
     File.WriteAllText(full, content)
 
+/// Delegated and split leaves start `./rhino` at the repository root before
+/// any F# remainder; this stand-in exits with `exitCode` for every command.
+let private stubRhino (root: string) (exitCode: int) =
+    writeFile root "rhino" (sprintf "#!/bin/sh\nexit %d\n" exitCode)
+
+    File.SetUnixFileMode(
+        Path.Combine(root, "rhino"),
+        UnixFileMode.UserRead ||| UnixFileMode.UserWrite ||| UnixFileMode.UserExecute
+    )
+
 /// Runs `route`, capturing stdout/stderr around the call and restoring the
 /// prior writers afterwards even if `route` throws.
 let private runCaptured (getRepoRoot: unit -> Result<string, string>) (argv: string[]) : int * string * string =
@@ -100,30 +110,6 @@ let ``route rejects an unknown output format as exit 1`` () =
     Assert.Equal(1, code)
     Assert.Contains("unknown output format", err)
 
-// ---- convention emoji validate ----
-
-[<Fact>]
-let ``route reports PASSED for a clean emoji scan`` () =
-    let root = newTempDir ()
-    let code, out, _ = runCaptured (okRoot root) [| "convention"; "emoji"; "validate" |]
-    Assert.Equal(0, code)
-    Assert.Contains("EMOJI AUDIT PASSED", out)
-
-[<Fact>]
-let ``route reports FAILED and exit 1 for an emoji finding`` () =
-    // U+2713 (check mark), written as an escape rather than a literal
-    // glyph, so this file never trips the very emoji-audit gate it is
-    // exercising here.
-    let root = newTempDir ()
-    writeFile root "src/example.ts" "\u2713\n"
-
-    let code, out, err =
-        runCaptured (okRoot root) [| "convention"; "emoji"; "validate"; "-o"; "json" |]
-
-    Assert.Equal(1, code)
-    Assert.Contains("\"status\": \"failed\"", out)
-    Assert.Contains("Error: 1 emoji finding(s) found", err)
-
 // ---- convention license validate ----
 
 [<Fact>]
@@ -153,6 +139,7 @@ let ``route reports FAILED and exit 1 for a missing LICENSE`` () =
 [<Fact>]
 let ``route passes convention audit when every member passes`` () =
     let root = newTempDir ()
+    stubRhino root 0
     let code, out, _ = runCaptured (okRoot root) [| "convention"; "audit" |]
     Assert.Equal(0, code)
     Assert.Contains("CONVENTION AUDIT PASSED: all 2 validators passed", out)
@@ -160,6 +147,7 @@ let ``route passes convention audit when every member passes`` () =
 [<Fact>]
 let ``route fails convention audit and lists the failing member`` () =
     let root = newTempDir ()
+    stubRhino root 0
     Directory.CreateDirectory(Path.Combine(root, "apps", "foo")) |> ignore
     let code, _, err = runCaptured (okRoot root) [| "convention"; "audit" |]
     Assert.Equal(1, code)
@@ -199,6 +187,7 @@ let ``route surfaces a parity validate failure for a non-git repoRoot`` () =
 [<Fact>]
 let ``route passes repo-config validate for a schema-clean fixture`` () =
     let root = newTempDir ()
+    stubRhino root 0
     writeFile root "repo-config.yml" "harness:\n  - name: probe\n    tier: source\n"
 
     let code, out, _ = runCaptured (okRoot root) [| "repo-config"; "validate" |]
@@ -209,14 +198,14 @@ let ``route passes repo-config validate for a schema-clean fixture`` () =
 [<Fact>]
 let ``route fails repo-config validate and lists the finding`` () =
     let root = newTempDir ()
+    stubRhino root 0
 
     writeFile
         root
         "repo-config.yml"
         "harness:\n  - name: probe\n    tier: source\n    ownership:\n      - { path: somewhere, class: vendored, reason: \"\" }\n"
 
-    let code, out, err =
-        runCaptured (okRoot root) [| "repo-config"; "validate"; "-o"; "json" |]
+    let code, out, err = runCaptured (okRoot root) [| "repo-config"; "validate" |]
 
     Assert.Equal(1, code)
     Assert.Contains("required non-empty value", out)
@@ -225,6 +214,7 @@ let ``route fails repo-config validate and lists the finding`` () =
 [<Fact>]
 let ``route surfaces a repo-config validate schema failure to stderr only`` () =
     let root = newTempDir ()
+    stubRhino root 0
     writeFile root "repo-config.yml" "harness: \"not-a-list\"\n"
 
     let code, out, err = runCaptured (okRoot root) [| "repo-config"; "validate" |]
@@ -817,6 +807,7 @@ let ``route rejects an unknown output format for test-coverage validate`` () =
 [<Fact>]
 let ``route accepts an explicit -o text on convention audit`` () =
     let root = newTempDir ()
+    stubRhino root 0
     let code, _, _ = runCaptured (okRoot root) [| "convention"; "audit"; "-o"; "text" |]
     Assert.Equal(0, code)
 
@@ -853,15 +844,6 @@ let ``route resolves --skip after a preceding non-flag token on convention audit
     Assert.Equal(0, code)
 
 [<Fact>]
-let ``route resolves an absolute positional path on convention emoji validate`` () =
-    let root = newTempDir ()
-
-    let code, _, _ =
-        runCaptured (okRoot root) [| "convention"; "emoji"; "validate"; root |]
-
-    Assert.Equal(0, code)
-
-[<Fact>]
 let ``route renders JSON for a passing convention license validate`` () =
     let root = newTempDir ()
 
@@ -874,6 +856,7 @@ let ``route renders JSON for a passing convention license validate`` () =
 [<Fact>]
 let ``route renders JSON for both members of a passing convention audit`` () =
     let root = newTempDir ()
+    stubRhino root 0
 
     let code, out, _ =
         runCaptured (okRoot root) [| "convention"; "audit"; "-o"; "json" |]
@@ -882,14 +865,12 @@ let ``route renders JSON for both members of a passing convention audit`` () =
     Assert.Contains("\"status\": \"passed\"", out)
 
 [<Fact>]
-let ``route reports an emoji finding inside convention audit`` () =
-    // \u2713 escape rather than the literal check mark so this file
-    // doesn't trip the emoji-in-source-code convention it tests.
+let ``route reports a failing delegated emoji member inside convention audit`` () =
     let root = newTempDir ()
-    writeFile root "src/example.ts" "\u2713\n"
+    stubRhino root 1
     let code, _, err = runCaptured (okRoot root) [| "convention"; "audit" |]
     Assert.Equal(1, code)
-    Assert.Contains("emoji: 1 emoji finding(s) found", err)
+    Assert.Contains("emoji: ./rhino convention emoji validate exited 1", err)
 
 // ---- parity manifest generate / validate round-trip ----
 
@@ -967,16 +948,6 @@ let ``route rejects every invalid name in a multi-value --tools list on doctor``
 // ---- md links / mermaid / heading-hierarchy / frontmatter / frontmatter-dates ----
 
 [<Fact>]
-let ``route resolves a successful git diff --cached staged-file list on md links validate --staged-only`` () =
-    let root = newGitRepoFixture ()
-
-    let code, out, _ =
-        runCaptured (okRoot root) [| "md"; "links"; "validate"; "--staged-only" |]
-
-    Assert.Equal(0, code)
-    Assert.Contains("All links valid", out)
-
-[<Fact>]
 let ``route falls back to the default --max-label-len on an unparsable value on md mermaid validate`` () =
     let root = newTempDir ()
 
@@ -999,19 +970,10 @@ let ``route reports a mermaid violation and its JSON kind for a too-long label``
     Assert.Contains("violation(s)", err)
 
 [<Fact>]
-let ``route resolves an explicit positional path on md heading-hierarchy validate`` () =
+let ``route reports a Blocking frontmatter finding for a governance doc carrying a disallowed key`` () =
     let root = newTempDir ()
-    writeFile root "docs/example.md" "# Title\n\n### Skips a level\n"
-
-    let code, _, _ =
-        runCaptured (okRoot root) [| "md"; "heading-hierarchy"; "validate"; Path.Combine(root, "docs") |]
-
-    Assert.Equal(0, code)
-
-[<Fact>]
-let ``route reports a Blocking frontmatter finding for a governance doc missing frontmatter entirely`` () =
-    let root = newTempDir ()
-    writeFile root "repo-governance/conventions/example.md" "# No frontmatter here\n"
+    stubRhino root 0
+    writeFile root "repo-governance/conventions/example.md" "---\ntitle: T\ndescription: D\nwhen_to_use: W\n---\n"
 
     let code, _, err = runCaptured (okRoot root) [| "md"; "frontmatter"; "validate" |]
 
@@ -1021,6 +983,7 @@ let ``route reports a Blocking frontmatter finding for a governance doc missing 
 [<Fact>]
 let ``route falls back past a registeredExcludesFor failure on md frontmatter-dates validate`` () =
     let root = newTempDir ()
+    stubRhino root 0
     writeFile root "repo-config.yml" "harness:\n  - name: probe\n    bogus_key: true\n"
 
     let code, _, _ =
@@ -1033,6 +996,7 @@ let ``route falls back past a registeredExcludesFor failure on md frontmatter-da
 [<Fact>]
 let ``route surfaces a mergedBudgetConfig parse error on governance word-budget validate`` () =
     let root = newTempDir ()
+    stubRhino root 0
 
     writeFile
         root
@@ -1048,6 +1012,7 @@ let ``route surfaces a mergedBudgetConfig parse error on governance word-budget 
 [<Fact>]
 let ``route resolves an absolute --paths entry on governance readme-index validate`` () =
     let root = newTempDir ()
+    stubRhino root 0
 
     let code, _, _ =
         runCaptured (okRoot root) [| "governance"; "readme-index"; "validate"; "--paths"; root |]
@@ -1055,9 +1020,11 @@ let ``route resolves an absolute --paths entry on governance readme-index valida
     Assert.Equal(0, code)
 
 [<Fact>]
-let ``route reports a readme-index finding for an orphan doc directory`` () =
+let ``route reports a readme-index finding for a doc the README does not index`` () =
     let root = newTempDir ()
-    writeFile root "docs/sub/file.md" "# File\n"
+    stubRhino root 0
+    writeFile root "docs/README.md" "# Docs\n"
+    writeFile root "docs/orphan.md" "# Orphan\n"
 
     let code, _, err =
         runCaptured (okRoot root) [| "governance"; "readme-index"; "validate" |]
@@ -1314,38 +1281,7 @@ let ``route reports a failed install attempt and exits 1 on doctor --fix with PA
     finally
         Environment.SetEnvironmentVariable("PATH", originalPath)
 
-// ---- md leaves: absolute positional paths, JSON closures, git-unavailable fallback ----
-
-[<Fact>]
-let ``route resolves an absolute positional directory on md naming validate`` () =
-    let root = newTempDir ()
-    Directory.CreateDirectory(Path.Combine(root, "somedir")) |> ignore
-
-    let code, out, _ =
-        runCaptured (okRoot root) [| "md"; "naming"; "validate"; Path.Combine(root, "somedir") |]
-
-    Assert.Equal(0, code)
-    Assert.Contains("DOCS NAMING VALIDATION PASSED", out)
-
-[<Fact>]
-let ``route selects the JSON formatter closure on md naming validate`` () =
-    let root = newTempDir ()
-
-    let code, out, _ =
-        runCaptured (okRoot root) [| "md"; "naming"; "validate"; "-o"; "json" |]
-
-    Assert.Equal(0, code)
-    Assert.Contains("\"schema\": \"rhino-cli/docs-validate-naming/v1\"", out)
-
-[<Fact>]
-let ``route selects the JSON formatter closure on md frontmatter-dates validate`` () =
-    let root = newTempDir ()
-
-    let code, out, _ =
-        runCaptured (okRoot root) [| "md"; "frontmatter-dates"; "validate"; "-o"; "json" |]
-
-    Assert.Equal(0, code)
-    Assert.Contains("\"schema\": \"rhino-cli/frontmatter-audit/v1\"", out)
+// ---- md leaves: git-unavailable fallback ----
 
 [<Fact>]
 let ``route falls back to a repo-wide scan when git is unavailable on md mermaid validate --changed-only`` () =
@@ -1361,25 +1297,6 @@ let ``route falls back to a repo-wide scan when git is unavailable on md mermaid
         Assert.Contains("Found 0 violation(s)", out)
     finally
         Environment.SetEnvironmentVariable("PATH", originalPath)
-
-[<Fact>]
-let ``route reports a skipped-level finding for an absolute positional file on md heading-hierarchy validate`` () =
-    let root = newTempDir ()
-    writeFile root "docs/example.md" "# Title\n\n### Skips a level\n"
-
-    let code, out, err =
-        runCaptured
-            (okRoot root)
-            [| "md"
-               "heading-hierarchy"
-               "validate"
-               Path.Combine(root, "docs", "example.md")
-               "-o"
-               "json" |]
-
-    Assert.Equal(1, code)
-    Assert.Contains("skipping H2", out)
-    Assert.Contains("1 docs heading hierarchy finding(s) found", err)
 
 // ---- gate emit: missing --surface ----
 

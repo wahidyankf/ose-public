@@ -9,7 +9,7 @@ when_to_use: "Read this index to find the right In-the-Field Tutorial Convention
 - [Structure Integration with General Tutorial Standards](./structure-integration-with-general-tutorial-standards.md) — Structuring a new In-the-Field guide or verifying it inherits the right general-tutorial requirements.
 - [Core Characteristics](./core-characteristics-focus-and-coverage.md) — The production-implementation focus, in-scope/out-of-scope coverage, and the 20-40 guide-count target for In-the-Field content.
 - [Standard Library First Principle](./standard-library-first-principle.md) — You need the rationale for teaching standard-library approaches before frameworks, or the topic progression table.
-- [Standard Library First Principle](./standard-library-first-principle-table-continued.md) — The second half of the standard-library-to-framework topic progression table (Web Framework through Service Discovery).
+- [Standard Library First Principle](./standard-library-first-principle-table-web-framework-onward.md) — The second half of the standard-library-to-framework topic progression table (Web Framework through Service Discovery).
 - [Standard Library First Principle](./standard-library-first-principle-key-patterns.md) — Deciding whether a specific topic justifies introducing a production framework.
 - [Guide Structure Overview](./guide-structure-overview-and-part1.md) — The six-part recommended guide structure and the requirements for Part 1, which establishes production relevance.
 - [Testing Example](./guide-structure-part2-testing-example.md) — Writing the standard-library testing example for a Part 2 section.

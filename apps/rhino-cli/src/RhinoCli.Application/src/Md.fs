@@ -1,36 +1,17 @@
-/// Port of the Rust `md` namespace's `docs validate-frontmatter` and
-/// `docs validate-heading-hierarchy` validators
-/// [Repo-grounded — `apps/rhino-cli/src/application/docs/frontmatter.rs`,
-/// `apps/rhino-cli/src/commands/md_validate_frontmatter.rs`,
-/// `apps/rhino-cli/src/application/docs/heading_hierarchy.rs`,
-/// `apps/rhino-cli/src/commands/md_validate_heading_hierarchy.rs`] for
-/// `specs/apps/rhino/cli/behaviours/md/docs-validate-frontmatter.feature`'s
-/// 11 scenarios and
-/// `specs/apps/rhino/cli/behaviours/md/docs-validate-heading-hierarchy.feature`'s
-/// 12 scenarios.
+/// Port of the Rust `md` namespace's validators F# still owns beside RHINO:
+/// `docs validate-frontmatter` [Repo-grounded —
+/// `apps/rhino-cli/src/application/docs/frontmatter.rs`,
+/// `apps/rhino-cli/src/commands/md_validate_frontmatter.rs`], the image and
+/// anchor remainder of `md links validate`, the frontmatter-dates body
+/// annotations, and the `md audit` aggregate over them. Markdown file naming
+/// and heading hierarchy are RHINO's `md naming validate` and
+/// `md heading-hierarchy validate`; the CLI hands both commands to `./rhino`
+/// whole, so no F# rule for either remains here. The ATX heading parser below
+/// survives only because the links remainder slugs heading anchors with it.
 ///
-/// Scope: this PR (Wave D PR2) additionally ports the heading-hierarchy
-/// validator — the `md` namespace's remaining three feature files (links,
-/// mermaid, naming, audit) land in later Wave D PRs against this same file.
 /// Findings reuse the shared `RhinoCli.Domain.Types.Finding` record
-/// (`Severity`/`Message`/`Path`) rather than a bespoke `DocsHeadingFinding`
-/// type, matching `Convention.fs`'s established "shared Finding over bespoke
-/// per-validator types" precedent and this file's own frontmatter-validator
-/// precedent — the Rust source's separate `kind` and `line` fields are
-/// folded into each finding's `Message` text instead of becoming extra
-/// fields on the shared record, since every Rust `kind` value is already
-/// reproduced verbatim inside its finding's message text and no scenario
-/// here asserts on an exact line number.
-///
-/// `md` is not yet listed in `FSHARP_NAMESPACES` (that flip is later,
-/// separate Wave D integration work), so — matching `TestCoverage.fs`'s
-/// `validate`-before-the-Wave-C-flip precedent — both validators are called
-/// directly by their step definitions with a path list (or repo root) built
-/// by hand, not parsed from CLI argv. No text/JSON/Markdown rendering lives
-/// in this file for the same reason `reporter.rs`'s formatting stays out of
-/// `Doctor.fs` until a scenario needs it: none of these feature files'
-/// scenarios assert on rendered output, only on the structured `Finding`
-/// list.
+/// (`Severity`/`Message`/`Path`) rather than bespoke per-validator types,
+/// matching `Convention.fs`'s precedent.
 ///
 /// Wave D PR4 additionally ports the `docs validate-mermaid` validator
 /// [Repo-grounded — `apps/rhino-cli/src/domain/mermaid/{types,diagram,
@@ -61,16 +42,10 @@
 /// `apps/rhino-cli/tests/git_hooks.rs`'s markdown-validator scenarios],
 /// **integration**-tier (unlike every scenario above): the fixture stages
 /// real files in a throwaway git repo and asserts on rendered stdout/stderr
-/// text, not on the structured `Finding` list alone, so line 22-23's "no
-/// scenario here asserts on an exact line number" no longer holds for the
-/// links validator specifically — its broken-file `Finding.Message` now
-/// leads with `"Line %d: "` so the CLI-facing caller's rendered output
-/// surfaces it. This section also adds
-/// `validateDocsHeadingHierarchyForPaths`, the positional-path counterpart
-/// to `validateDocsHeadingHierarchyAllowlisted` that
-/// `md_validate_heading_hierarchy.rs::run` uses when lint-staged passes
-/// explicit file arguments instead of scanning the whole repo. Per this
-/// file's own "no rendering lives in this file" precedent above, the
+/// text, not on the structured `Finding` list alone, so the links
+/// validator's broken-file `Finding.Message` leads with `"Line %d: "` for the
+/// CLI-facing caller's rendered output to surface it. Rendering stays out of
+/// this file, so the
 /// integration test's step definitions
 /// (`tests/integration/Steps/PreCommitHookSteps.fs`) compose these
 /// functions' `Finding list`/`MermaidValidationResult` outputs into
@@ -116,24 +91,6 @@ let private validCategories: Set<string> =
 /// [Repo-grounded — `frontmatter.rs::SKIP_DIRS`].
 let private skipDirs: Set<string> =
     Set.ofList [ "node_modules"; ".git"; ".next"; "dist"; "build"; "target" ]
-
-/// Directory names that are skipped during the heading-hierarchy validator's
-/// recursive walks — the Rust source keeps this as a second, separate
-/// constant (`frontmatter.rs::SKIP_DIRS` above vs. `naming.rs::SKIP_DIRS`
-/// here) rather than a single shared list, so this port mirrors that split
-/// instead of merging them. A superset of `skipDirs` above: the same six
-/// names, plus `generated-reports`
-/// [Repo-grounded — `heading_hierarchy.rs`'s `use super::naming::SKIP_DIRS`,
-/// `naming.rs::SKIP_DIRS`].
-let private namingSkipDirs: Set<string> =
-    Set.ofList
-        [ "node_modules"
-          ".git"
-          ".next"
-          "dist"
-          "build"
-          "target"
-          "generated-reports" ]
 
 /// Classifies a markdown file as belonging to a known documentation area
 /// [Repo-grounded — `frontmatter.rs::DocArea`].
@@ -242,67 +199,45 @@ let private mkWarn (path: string) (message: string) : Finding =
       Message = message
       Path = Some path }
 
-/// Validates the full software-engineering frontmatter schema. Required
-/// fields: `title`, `description`, `category` (one of `validCategories`, or
-/// the deprecated `"software"` value, which reports `Advisory` rather than
-/// `Blocking`), `subcategory`, `tags` (non-empty list)
+/// A `Blocking` finding when `key` is present in `fm` but its value is blank.
+/// An absent key is RHINO's: the `md-frontmatter` surface's `require` list
+/// reports it before this remainder runs.
+let private blankValueFinding (path: string) (fm: IDictionary<obj, obj>) (key: string) : Finding list =
+    if Option.isSome (tryGetRawValue fm key) && not (hasNonEmptyString fm key) then
+        [ mkFail path (sprintf "field \"%s\" is empty" key) ]
+    else
+        []
+
+/// Validates the software-engineering frontmatter values RHINO leaves to
+/// F#: a present `title`, `description`, `category` or `subcategory` with a
+/// blank value, a present `tags` that is not a non-empty list, and the
+/// deprecated `"software"` category, which reports `Advisory` rather than
+/// `Blocking`. RHINO's `md-frontmatter` surface owns the required keys and the
+/// `category` enum
 /// [Repo-grounded — `frontmatter.rs::validate_software_schema`].
-///
-/// Gherkin (binds) — "Software-engineering doc with all required frontmatter
-/// fields passes", "...category tutorial...", "...category how-to...",
-/// "...category reference...", "...category explanation..." passing
-/// scenarios, and "Software-engineering doc missing title fails", "...missing
-/// category field fails", "...category other than software fails", and
-/// "...deprecated software category emits warn not fail" — all from
-/// `specs/apps/rhino/cli/behaviours/md/docs-validate-frontmatter.feature`.
 let private validateSoftwareSchema (path: string) (fm: IDictionary<obj, obj>) : Finding list =
-    let titleFinding =
-        if hasNonEmptyString fm "title" then
+    let categoryAdvisory =
+        if
+            hasNonEmptyString fm "category"
+            && stringValue (tryGetRawValue fm "category") = "software"
+        then
+            [ mkWarn
+                  path
+                  "field \"category\" value \"software\" is deprecated; use one of: tutorial, how-to, reference, explanation" ]
+        else
             []
-        else
-            [ mkFail path "required field \"title\" is missing or empty" ]
-
-    let descriptionFinding =
-        if hasNonEmptyString fm "description" then
-            []
-        else
-            [ mkFail path "required field \"description\" is missing or empty" ]
-
-    let categoryFindings =
-        if hasNonEmptyString fm "category" then
-            let v = stringValue (tryGetRawValue fm "category")
-
-            if Set.contains v validCategories then
-                []
-            elif v = "software" then
-                [ mkWarn
-                      path
-                      "field \"category\" value \"software\" is deprecated; use one of: tutorial, how-to, reference, explanation" ]
-            else
-                [ mkFail
-                      path
-                      (sprintf
-                          "field \"category\" must be one of: tutorial, how-to, reference, explanation; found \"%s\""
-                          v) ]
-        else
-            [ mkFail path "required field \"category\" is missing or empty" ]
-
-    let subcategoryFinding =
-        if hasNonEmptyString fm "subcategory" then
-            []
-        else
-            [ mkFail path "required field \"subcategory\" is missing or empty" ]
 
     let tagsFinding =
-        if hasNonEmptyList fm "tags" then
-            []
+        if Option.isSome (tryGetRawValue fm "tags") && not (hasNonEmptyList fm "tags") then
+            [ mkFail path "field \"tags\" must be a non-empty list" ]
         else
-            [ mkFail path "required field \"tags\" must be a non-empty list" ]
+            []
 
-    titleFinding
-    @ descriptionFinding
-    @ categoryFindings
-    @ subcategoryFinding
+    blankValueFinding path fm "title"
+    @ blankValueFinding path fm "description"
+    @ blankValueFinding path fm "category"
+    @ categoryAdvisory
+    @ blankValueFinding path fm "subcategory"
     @ tagsFinding
 
 /// The only frontmatter keys a `repo-governance/` file may carry. This is an
@@ -312,33 +247,21 @@ let private validateSoftwareSchema (path: string) (fm: IDictionary<obj, obj>) : 
 let private governanceAllowedKeys: Set<string> =
     Set.ofList [ "description"; "when_to_use" ]
 
-/// Validates the governance-document frontmatter schema: `description` and
-/// `when_to_use` are both required and non-empty, and no other key may be
-/// present. `title` was dropped from the required set when the tree moved to
-/// the two-key allow-list — its sole consumer was
-/// `governance readme-index generate`'s link text, which falls back to the
-/// title-cased filename stem
+/// Validates the governance-document frontmatter values RHINO leaves to F#:
+/// a present `description` or `when_to_use` with a blank value, and the
+/// two-key allow-list — no other key may be present. RHINO's `md-frontmatter`
+/// surface requires both keys
 /// [Repo-grounded — `frontmatter.rs::validate_governance_schema`].
 ///
-/// Gherkin (binds) — "Governance doc with only a description fails on the
-/// missing when_to_use", "Governance doc with only a when_to_use fails on the
-/// missing description", "Governance doc with description and when_to_use
+/// Gherkin (binds) — "Governance doc with description and when_to_use
 /// passes the two-key schema", "Governance doc carrying a title field fails
 /// the allow-list", and "Governance doc carrying any other key fails the
 /// allow-list" —
 /// `specs/apps/rhino/cli/behaviours/md/docs-validate-frontmatter.feature`.
 let private validateGovernanceSchema (path: string) (fm: IDictionary<obj, obj>) : Finding list =
-    let descriptionFinding =
-        if hasNonEmptyString fm "description" then
-            []
-        else
-            [ mkFail path "required field \"description\" is missing or empty" ]
+    let descriptionFinding = blankValueFinding path fm "description"
 
-    let whenToUseFinding =
-        if hasNonEmptyString fm "when_to_use" then
-            []
-        else
-            [ mkFail path "required field \"when_to_use\" is missing or empty" ]
+    let whenToUseFinding = blankValueFinding path fm "when_to_use"
 
     // Keys are compared as their raw scalar text so a non-string key (which
     // YAML permits) is reported rather than silently admitted.
@@ -358,9 +281,9 @@ let private validateGovernanceSchema (path: string) (fm: IDictionary<obj, obj>) 
     descriptionFinding @ whenToUseFinding @ disallowedFindings
 
 /// Reads `path`, extracts its frontmatter block, parses it as YAML, and
-/// delegates to the area-specific schema validator. Returns a single
-/// `missing-frontmatter` finding when no `---` fence is found, or a single
-/// `invalid-yaml` finding when the block is not valid YAML. A block that
+/// delegates to the area-specific schema validator. Returns no finding when
+/// no `---` fence is found (RHINO's required-key rule reports the absent
+/// block), or a single `invalid-yaml` finding when the block is not valid YAML. A block that
 /// parses to `null` or a non-mapping scalar (e.g. an empty `---\n---\n`
 /// block) is treated as an empty frontmatter map — matching
 /// `serde_norway::Value::get` returning `None` for every key on a
@@ -368,7 +291,7 @@ let private validateGovernanceSchema (path: string) (fm: IDictionary<obj, obj>) 
 /// [Repo-grounded — `frontmatter.rs::scan_frontmatter_file`].
 let private scanFrontmatterContent (path: string) (area: DocArea) (content: string) : Finding list =
     match extractFrontmatter content with
-    | None -> [ mkFail path "file has no YAML frontmatter (delimited by `---` fences)" ]
+    | None -> []
     | Some frontmatter ->
         try
             let parsed = deserializer.Deserialize<obj>(frontmatter)
@@ -559,12 +482,8 @@ let validateDocsFrontmatterDocuments (documents: (string * string) list) : Findi
     |> List.sortBy (fun finding -> finding.Path |> Option.defaultValue "", finding.Message)
 
 // ---------------------------------------------------------------------------
-// docs validate-heading-hierarchy
+// ATX headings (the links remainder's anchor slugs)
 // ---------------------------------------------------------------------------
-
-/// One parsed ATX heading: its one-based source line number and level (1-6)
-/// [Repo-grounded — `heading_hierarchy.rs::Heading`].
-type private Heading = { Line: int; Level: int }
 
 /// Parses the opening of a fenced code block from the start of a
 /// (leading-whitespace-trimmed) line. Returns `Some (fenceChar, length)`
@@ -616,10 +535,8 @@ let private parseHeadingLevel (s: string) : int option =
                 if rest = "" then None else Some level
 
 /// Collects all ATX heading titles from `content` (fence-aware) as
-/// `(line, level, title)` tuples. Shared by `collectHeadings` below (which
-/// only needs `line`/`level`) and the links validator's anchor-slug logic
-/// further down (which also needs `title`) — folding what would otherwise
-/// be two near-identical fence-tracking loops into one
+/// `(line, level, title)` tuples for the links validator's anchor-slug logic
+/// further down
 /// [Repo-grounded — `links.rs::collect_atx_headings`].
 let private collectAtxHeadingTitles (content: string) : (int * int * string) list =
     let lines = content.Split('\n')
@@ -654,295 +571,6 @@ let private collectAtxHeadingTitles (content: string) : (int * int * string) lis
 
     out |> List.ofSeq
 
-/// Parses all ATX headings from `content`, skipping lines inside fenced code
-/// blocks. A line that opens or closes a fence is itself never treated as a
-/// heading candidate, matching the Rust source's `continue`-before-heading-
-/// check ordering [Repo-grounded — `heading_hierarchy.rs::collect_headings`].
-let private collectHeadings (content: string) : Heading list =
-    collectAtxHeadingTitles content
-    |> List.map (fun (line, level, _) -> { Line = line; Level = level })
-
-/// Applies the H1-uniqueness and no-level-skipping rules to a file's parsed
-/// headings. Returns an empty list when `headings` is empty (the file has no
-/// headings at all) [Repo-grounded — `heading_hierarchy.rs::analyze_headings`].
-///
-/// Gherkin (binds) — "Tree where every .md has exactly one H1 and no skipped
-/// levels passes", "File with two H1 headings fails", "File with H2 followed
-/// directly by H4 (skipping H3) fails", and "Single-line file with no
-/// headings is ignored (passes)" — all from
-/// `specs/apps/rhino/cli/behaviours/md/docs-validate-heading-hierarchy.feature`.
-/// One finding from [`analyzeHeadingsDetailed`], carrying the `line`/`kind`
-/// fields the CLI's JSON/Markdown rendering needs beyond generic `Finding`
-/// [Repo-grounded — `heading_hierarchy.rs::DocsHeadingFinding`].
-type HeadingFinding =
-    { File: string
-      Line: int
-      Severity: string
-      Kind: string
-      Message: string }
-
-/// Same rule as `analyzeHeadings` but returns the richer per-finding shape
-/// (line number, machine-readable kind) the CLI-facing formatters need
-/// [Repo-grounded — `heading_hierarchy.rs::analyze_headings`].
-let private analyzeHeadingsDetailed (path: string) (headings: Heading list) : HeadingFinding list =
-    match headings with
-    | [] -> []
-    | _ ->
-        let h1s = headings |> List.filter (fun h -> h.Level = 1)
-        let h1Count = h1s.Length
-
-        let h1Finding =
-            match h1Count with
-            | 0 ->
-                [ { File = path
-                    Line = headings.[0].Line
-                    Severity = "high"
-                    Kind = "missing-h1"
-                    Message = "markdown file has no H1 heading; every documented file must have exactly one H1" } ]
-            | 1 -> []
-            | _ ->
-                let firstH1Line = h1s.[0].Line
-                let secondH1Line = h1s.[1].Line
-
-                [ { File = path
-                    Line = secondH1Line
-                    Severity = "high"
-                    Kind = "duplicate-h1"
-                    Message =
-                      sprintf
-                          "markdown file has %d H1 headings (first at line %d); every file must have exactly one H1"
-                          h1Count
-                          firstH1Line } ]
-
-        let skipFindings =
-            headings
-            |> List.pairwise
-            |> List.choose (fun (prev, cur) ->
-                if cur.Level > prev.Level + 1 then
-                    Some
-                        { File = path
-                          Line = cur.Line
-                          Severity = "high"
-                          Kind = "skipped-level"
-                          Message =
-                            sprintf
-                                "H%d heading follows H%d, skipping H%d; heading levels must not skip"
-                                cur.Level
-                                prev.Level
-                                (prev.Level + 1) }
-                else
-                    None)
-
-        h1Finding @ skipFindings
-
-let private analyzeHeadings (path: string) (headings: Heading list) : Finding list =
-    analyzeHeadingsDetailed path headings
-    |> List.map (fun f -> mkFail f.File f.Message)
-
-/// Reads `path`, extracts its headings, and applies the hierarchy rules
-/// [Repo-grounded — `heading_hierarchy.rs::scan_file_heading_hierarchy`].
-[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
-let private scanFileHeadingHierarchy (path: string) : Finding list =
-    File.ReadAllText(path) |> collectHeadings |> analyzeHeadings path
-
-/// Walks `root` recursively and validates each markdown file. Returns an
-/// empty list when `root` does not exist on the filesystem
-/// [Repo-grounded — `heading_hierarchy.rs::walk_heading_hierarchy_path`].
-[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
-let private walkHeadingHierarchyPath (root: string) : Finding list =
-    collectFilesSkipping namingSkipDirs root
-    |> List.filter (fun p -> p.EndsWith(".md", StringComparison.Ordinal))
-    |> List.collect scanFileHeadingHierarchy
-
-/// Returns `true` when the repository-relative path `repoRel` is in the
-/// heading-hierarchy validator's prose allowlist:
-/// `docs/`, `repo-governance/`, `plans/` (except `plans/done/`), `specs/`,
-/// root-level `*.md` files, `apps/<name>/README.md` and
-/// `libs/<name>/README.md`, and `apps/<name>/docs/**` and
-/// `libs/<name>/docs/**`. Everything else — including `.claude/`,
-/// `.opencode/`, deep `apps/`/`libs/` internals, `plans/done/`, and noise
-/// directories — is default-deny
-/// [Repo-grounded — `heading_hierarchy.rs::is_prose_allowlisted`].
-let private isProseAllowlisted (repoRel: string) : bool =
-    let r = repoRel.Replace('\\', '/')
-
-    let stripPrefix (prefix: string) (value: string) : string option =
-        if value.StartsWith(prefix, StringComparison.Ordinal) then
-            Some(value.Substring(prefix.Length))
-        else
-            None
-
-    if r.StartsWith("plans/done/", StringComparison.Ordinal) || r = "plans/done" then
-        false
-    elif
-        r.StartsWith("docs/", StringComparison.Ordinal)
-        || r.StartsWith("repo-governance/", StringComparison.Ordinal)
-        || r.StartsWith("plans/", StringComparison.Ordinal)
-        || r.StartsWith("specs/", StringComparison.Ordinal)
-    then
-        true
-    elif not (r.Contains('/')) && r.EndsWith(".md", StringComparison.Ordinal) then
-        true
-    else
-        match stripPrefix "apps/" r |> Option.orElse (stripPrefix "libs/" r) with
-        | None -> false
-        | Some rest ->
-            match rest.IndexOf('/') with
-            | -1 -> false
-            | idx ->
-                let tail = rest.Substring(idx + 1)
-                tail = "README.md" || tail.StartsWith("docs/", StringComparison.Ordinal)
-
-/// Applies the heading-hierarchy rules to an in-memory staged document.
-/// This is the pure core used by hook policy tests; filesystem enumeration
-/// and reads remain adapter concerns in the functions below.
-let validateDocsHeadingHierarchyContent (repoRelativePath: string) (content: string) : Finding list =
-    if isProseAllowlisted repoRelativePath then
-        content |> collectHeadings |> analyzeHeadings repoRelativePath
-    else
-        []
-
-/// Validates an in-memory Markdown document set. `allowlistedOnly` selects
-/// the repository prose policy used by the public command; the unrestricted
-/// mode models explicit path operands, which validate every supplied file.
-let validateDocsHeadingHierarchyDocuments
-    (allowlistedOnly: bool)
-    (excludePrefixes: string list)
-    (documents: (string * string) list)
-    : Finding list =
-    let isExcluded (path: string) : bool =
-        let normalized = path.Replace('\\', '/')
-
-        excludePrefixes
-        |> List.exists (fun prefix ->
-            let trimmed = prefix.Replace('\\', '/').TrimEnd('/')
-
-            trimmed <> ""
-            && (normalized = trimmed
-                || normalized.StartsWith(trimmed + "/", StringComparison.Ordinal)))
-
-    documents
-    |> List.filter (fun (path, _) -> path.EndsWith(".md", StringComparison.Ordinal))
-    |> List.filter (fun (path, _) -> not (isExcluded path))
-    |> List.filter (fun (path, _) -> not allowlistedOnly || isProseAllowlisted path)
-    |> List.collect (fun (path, content) -> content |> collectHeadings |> analyzeHeadings path)
-    |> List.sortBy (fun finding -> finding.Path |> Option.defaultValue "", finding.Message)
-
-/// Performs an allowlisted heading-hierarchy scan rooted at `repoRoot`. Only
-/// files whose repository-relative path satisfies `isProseAllowlisted` are
-/// checked; `excludePrefixes` are additional repository-relative prefixes to
-/// skip, applied after the allowlist filter. The returned list is sorted by
-/// file path, then by message
-/// [Repo-grounded — `heading_hierarchy.rs::validate_docs_heading_hierarchy_allowlisted`].
-///
-/// Gherkin (binds) — "prose-allowlist-runs — docs file triggers a heading
-/// finding", "agent-skill-file-exempt — no finding for agent or skill
-/// files", "plans-done-excluded — no finding for plans/done files",
-/// "exclude-flag-suppresses-tree — --exclude docs suppresses docs findings",
-/// "specs-allowlisted — specs tree triggers a heading finding",
-/// "app-readme-allowlisted — project-root README triggers a heading
-/// finding", "app-internals-default-deny — deep app files yield no finding",
-/// and "project-docs-subtree-allowlisted — app and lib docs trees trigger
-/// findings" — all from
-/// `specs/apps/rhino/cli/behaviours/md/docs-validate-heading-hierarchy.feature`.
-[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
-let validateDocsHeadingHierarchyAllowlisted (repoRoot: string) (excludePrefixes: string list) : Finding list =
-    collectFilesSkipping namingSkipDirs repoRoot
-    |> List.filter (fun p -> p.EndsWith(".md", StringComparison.Ordinal))
-    |> List.choose (fun path ->
-        let rel = Path.GetRelativePath(repoRoot, path).Replace('\\', '/')
-
-        if not (isProseAllowlisted rel) then
-            None
-        elif
-            excludePrefixes
-            |> List.exists (fun pfx -> rel.StartsWith(pfx, StringComparison.Ordinal))
-        then
-            None
-        else
-            Some path)
-    |> List.collect scanFileHeadingHierarchy
-    |> List.sortBy (fun f -> (f.Path |> Option.defaultValue "", f.Message))
-
-/// CLI-facing counterpart to `validateDocsHeadingHierarchyAllowlisted`
-/// carrying the richer `HeadingFinding` shape (line, kind), sorted by file
-/// then line — matching the Rust source's own sort key exactly, unlike the
-/// generic-`Finding` overload above, which sorts by message for lack of a
-/// `Line` field to sort on
-/// [Repo-grounded — `heading_hierarchy.rs::validate_docs_heading_hierarchy_allowlisted`].
-[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
-let validateDocsHeadingHierarchyAllowlistedDetailed
-    (repoRoot: string)
-    (excludePrefixes: string list)
-    : HeadingFinding list =
-    collectFilesSkipping namingSkipDirs repoRoot
-    |> List.filter (fun p -> p.EndsWith(".md", StringComparison.Ordinal))
-    |> List.choose (fun path ->
-        let rel = Path.GetRelativePath(repoRoot, path).Replace('\\', '/')
-
-        if not (isProseAllowlisted rel) then
-            None
-        elif
-            excludePrefixes
-            |> List.exists (fun pfx -> rel.StartsWith(pfx, StringComparison.Ordinal))
-        then
-            None
-        else
-            Some path)
-    |> List.collect (fun path -> File.ReadAllText(path) |> collectHeadings |> analyzeHeadingsDetailed path)
-    |> List.sortBy (fun f -> (f.File, f.Line))
-
-/// Validates heading hierarchy in every markdown file reachable from
-/// `paths`, without any prose-allowlist filtering — the counterpart callers
-/// use when they already know every supplied path should be checked. The
-/// returned list is sorted by file path, then by message
-/// [Repo-grounded — `heading_hierarchy.rs::validate_docs_heading_hierarchy`].
-[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
-let validateDocsHeadingHierarchy (paths: string list) : Result<Finding list, string> =
-    if List.isEmpty paths then
-        Error "at least one path is required"
-    else
-        paths
-        |> List.collect walkHeadingHierarchyPath
-        |> List.sortBy (fun f -> (f.Path |> Option.defaultValue "", f.Message))
-        |> Ok
-
-/// CLI-facing entry for `md heading-hierarchy validate <path>...`'s
-/// positional-path branch: applies the same prose allowlist
-/// `validateDocsHeadingHierarchyAllowlisted`'s repo-wide walk uses to each
-/// explicit `paths` entry before validating, so a file outside the allowlist
-/// (e.g. `.claude/skills/**`) staged and passed explicitly by lint-staged is
-/// silently skipped rather than scanned. Returns an empty list — not an
-/// error — when every path is filtered out, matching the Rust command's
-/// early `return Ok(())` for that case
-/// [Repo-grounded — `md_validate_heading_hierarchy.rs::run`'s
-/// `args.positional`-non-empty branch].
-///
-/// Gherkin (binds) — "staged-prose-heading-blocks — staged docs file with bad
-/// heading hierarchy blocks commit" and "staged-skill-file-exempt — staged
-/// SKILL.md with bad heading hierarchy does not block commit" — both from
-/// `specs/apps/rhino/cli/behaviours/git/git-pre-commit.feature`.
-[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
-let validateDocsHeadingHierarchyForPaths (repoRoot: string) (paths: string list) : Finding list =
-    let allowlisted =
-        paths
-        |> List.choose (fun p ->
-            let abs = if Path.IsPathRooted p then p else Path.Combine(repoRoot, p)
-            let rel = Path.GetRelativePath(repoRoot, abs).Replace('\\', '/')
-
-            if isProseAllowlisted rel then Some abs else None)
-
-    if List.isEmpty allowlisted then
-        []
-    else
-        // Coverage note: `validateDocsHeadingHierarchy`'s only Error case is
-        // an empty `paths` list — impossible here, since `allowlisted` was
-        // just proven non-empty by the `if` above. This `Error` arm is
-        // unreachable via this caller.
-        match validateDocsHeadingHierarchy allowlisted with
-        | Ok findings -> findings
-        | Error _ -> []
-
 // ---------------------------------------------------------------------------
 // docs validate-links
 // ---------------------------------------------------------------------------
@@ -950,7 +578,7 @@ let validateDocsHeadingHierarchyForPaths (repoRoot: string) (paths: string list)
 /// Directories skipped by the links validator's full-repo walk — the
 /// cross-repo noise-skip set shared by the markdown gate validators
 /// (mermaid, links, heading-hierarchy) in the Rust source, a superset of
-/// both `skipDirs` and `namingSkipDirs` above
+/// `skipDirs` above
 /// [Repo-grounded — `links.rs::FULL_REPO_SKIP_DIRS`].
 let private linksSkipDirs: Set<string> =
     Set.ofList
@@ -983,7 +611,15 @@ let private skillTreeMarkers: string list = [ ".claude/skills/"; ".agents/skills
 
 /// One relative markdown link parsed out of a source line, before
 /// validation [Repo-grounded — `links.rs::LinkInfo`].
-type private LinkInfo = { LineNumber: int; Url: string }
+type private LinkInfo =
+    {
+        LineNumber: int
+        Url: string
+        /// `![alt](src)` image syntax. RHINO's `md internal-link validate` owns
+        /// a missing `[text](path)` target and skips images, so F# reports a
+        /// missing target only for an image.
+        IsImage: bool
+    }
 
 /// Matches `[text](url)` markdown link syntax [Repo-grounded — `links.rs::link_re`].
 let private linkRegex = Regex(@"\[([^\]]+)\]\(([^)]+)\)", RegexOptions.Compiled)
@@ -1110,7 +746,10 @@ let private extractLinksFromContent (content: string) : LinkInfo list =
                     || url.StartsWith("mailto:", StringComparison.Ordinal)
 
                 if not isExternal && not (shouldSkipLink url) then
-                    links.Add { LineNumber = lineNum; Url = url }
+                    links.Add
+                        { LineNumber = lineNum
+                          Url = url
+                          IsImage = m.Index > 0 && stripped.[m.Index - 1] = '!' }
 
     links |> List.ofSeq
 
@@ -1271,14 +910,17 @@ let private validateFileLinksWith
                 let target = resolveLink filePath pathPart
 
                 if not (pathExists target) then
-                    [ mkFail
-                          rel
-                          (sprintf
-                              "Line %d: link \"%s\" in %s points to a non-existent file: %s"
-                              link.LineNumber
-                              link.Url
+                    if link.IsImage then
+                        [ mkFail
                               rel
-                              target) ]
+                              (sprintf
+                                  "Line %d: link \"%s\" in %s points to a non-existent file: %s"
+                                  link.LineNumber
+                                  link.Url
+                                  rel
+                                  target) ]
+                    else
+                        []
                 else
                     match fragment with
                     | Some frag when frag <> "" ->
@@ -1523,11 +1165,14 @@ let private validateFileLinksDetailed (repoRoot: string) (filePath: string) (lin
                 let target = resolveLink filePath pathPart
 
                 if not (File.Exists target || Directory.Exists target) then
-                    [ { LineNumber = link.LineNumber
-                        SourceFile = rel
-                        LinkText = link.Url
-                        TargetPath = target
-                        Category = categorizeBrokenLink link.Url } ]
+                    if link.IsImage then
+                        [ { LineNumber = link.LineNumber
+                            SourceFile = rel
+                            LinkText = link.Url
+                            TargetPath = target
+                            Category = categorizeBrokenLink link.Url } ]
+                    else
+                        []
                 else
                     match fragment with
                     | Some frag when frag <> "" ->
@@ -3032,18 +2677,14 @@ let formatMermaidJson (result: MermaidValidationResult) : string =
     root.ToJsonString(options)
 
 // ---------------------------------------------------------------------------
-// docs validate-naming
+// md links validate remainder sources
 // ---------------------------------------------------------------------------
-
-/// Regex accepting valid lowercase-kebab-case markdown filenames
-/// [Repo-grounded — `naming.rs::kebab_case_re`].
-let private kebabCaseRegex = Regex(@"^[a-z0-9-]+\.md$", RegexOptions.Compiled)
 
 /// Translates a `glob`-crate-style pattern (`*`, `?`, `[...]`) into an
 /// anchored regex matching a bare filename — .NET has no built-in bare-glob
-/// matcher, so this hand-rolls the small subset `--exempt` patterns actually
-/// use (`*__linkedin__*.md`, exact names, etc.) [Repo-grounded — the `glob`
-/// crate's `Pattern` semantics as used by `naming.rs::is_naming_exempt`].
+/// matcher, so this hand-rolls the `*` and `?` subset the
+/// `md-internal-link.exclude-sources` globs use [Repo-grounded — the `glob`
+/// crate's `Pattern` semantics].
 let private globToRegex (pattern: string) : Regex =
     let sb = Text.StringBuilder("^")
 
@@ -3056,122 +2697,50 @@ let private globToRegex (pattern: string) : Regex =
     sb.Append("$") |> ignore
     Regex(sb.ToString(), RegexOptions.Compiled)
 
-/// Returns `true` when `basename` matches any pattern in `exemptGlobs`
-/// [Repo-grounded — `naming.rs::is_naming_exempt`'s glob loop].
-let private matchesAnyExemptGlob (exemptGlobs: string list) (basename: string) : bool =
-    exemptGlobs |> List.exists (fun pat -> (globToRegex pat).IsMatch basename)
+/// Compiles `md-internal-link.exclude-sources` globs into case-insensitive
+/// matchers over repository-relative paths (`*` crosses `/`)
+/// [Repo-grounded — RHINO `scan.rs::glob_set`].
+let linkSourceExclusions (globs: string list) : Regex list =
+    globs
+    |> List.map (fun pattern -> Regex((globToRegex pattern).ToString(), RegexOptions.IgnoreCase))
 
-/// Basenames always exempt from the kebab-case rule, matching
-/// ecosystem-standard or structurally-required filenames dictated by
-/// external convention (GitHub directory indexes, the Claude Code Agent
-/// Skills spec, the agents.md standard, Hugo's `_index.md` section-page
-/// convention, GitHub's contributing-guide convention, etc.) rather than a
-/// naming choice this repo's kebab-case rule governs. Callers may supply
-/// additional `exemptGlobs` patterns, matched against the bare filename
-/// [Repo-grounded — `naming.rs::is_naming_exempt`'s `matches!` literal set].
-let private alwaysExemptNamingBasenames: Set<string> =
-    Set.ofList
-        [ "README.md"
-          "SKILL.md"
-          "AGENTS.md"
-          "CLAUDE.md"
-          "_index.md"
-          "CONTRIBUTING.md"
-          "LICENSING-NOTICE.md"
-          "ROADMAP.md"
-          "SECURITY.md" ]
-
-/// Builds the lowercase-kebab-case violation message for `basename`
-/// [Repo-grounded — `naming.rs::walk_naming_path`'s finding `message`].
-let private namingViolationMessage (basename: string) : string =
-    sprintf
-        "filename \"%s\" violates lowercase-kebab-case rule (^[a-z0-9-]+\\.md$); rename to lowercase-kebab-case or add an exemption"
-        basename
-
-/// Returns `true` when `path` is an audit artifact below the repository's
-/// mandated `generated-reports/` directory. The explicit component check is
-/// needed because lint-staged passes individual files to this validator, so
-/// a recursive directory walker never observes their parent directory entry
-/// [Repo-grounded — `naming.rs::path_is_within_generated_reports`].
-let private pathIsWithinGeneratedReports (path: string) : bool =
-    path.Replace('\\', '/').Split('/') |> Array.contains "generated-reports"
-
-/// Walks `root` recursively and collects naming findings for non-compliant
-/// files, skipping any name matching `exemptGlobs`. Returns an empty list
-/// when `root` does not exist on the filesystem
-/// [Repo-grounded — `naming.rs::walk_naming_path`].
+/// The repository-relative Markdown sources the `md links validate` F#
+/// remainder reads — the set RHINO's `md internal-link validate` reads: every
+/// `.md` file (extension matched case-insensitively) with no directory named
+/// in `scan.exclude-directories` on its path, minus the paths matching an
+/// `md-internal-link.exclude-sources` glob (case-insensitive; `*` crosses
+/// `/`). `repoConfigText` is the raw top-level `repo-config.yml`; a missing
+/// section or unreadable text excludes nothing beyond `linksSkipDirs`
+/// [Repo-grounded — RHINO `scan.rs::markdown_files`, `scan.rs::glob_set`,
+/// `markdown/internal_link.rs::validate`].
 [<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
-let private walkNamingPath (exemptGlobs: string list) (root: string) : Finding list =
-    collectFilesSkipping namingSkipDirs root
-    |> List.filter (fun p -> p.EndsWith(".md", StringComparison.Ordinal))
-    |> List.filter (fun p -> not (pathIsWithinGeneratedReports p))
-    |> List.choose (fun path ->
-        let basename = Path.GetFileName path
-
-        if Set.contains basename alwaysExemptNamingBasenames then
+let linkRemainderSources (repoRoot: string) (repoConfigText: string) : string list =
+    let section =
+        try
+            deserializer.Deserialize<obj>(repoConfigText) |> asRawMap
+        with _ ->
             None
-        elif matchesAnyExemptGlob exemptGlobs basename then
-            None
-        elif kebabCaseRegex.IsMatch basename then
-            None
-        else
-            Some(mkFail path (namingViolationMessage basename)))
 
-/// Validates the lowercase-kebab-case filename convention for every markdown
-/// file reachable from `paths`. The returned list is sorted by file path,
-/// then by message [Repo-grounded — `naming.rs::validate_docs_naming`].
-///
-/// Gherkin (binds) — "Tree where every markdown file uses lowercase
-/// kebab-case passes":
-///   Given a documentation tree where every markdown file uses lowercase kebab-case
-///   When the developer runs docs validate-naming
-///   Then the command exits successfully
-///   And the output reports zero docs naming findings
-///
-/// Gherkin (binds) — "File with uppercase characters fails":
-///   Given a documentation tree containing a markdown file whose basename has uppercase characters
-///   When the developer runs docs validate-naming
-///   Then the command exits with a failure code
-///   And the output identifies the offending filename and its rule violation
-///
-/// Gherkin (binds) — "README.md is exempt and passes regardless of placement":
-///   Given a documentation tree where a nested directory contains only a README.md file
-///   When the developer runs docs validate-naming
-///   Then the command exits successfully
-///   And the output reports zero docs naming findings
-[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
-let validateDocsNamingExempt (paths: string list) (exemptGlobs: string list) : Result<Finding list, string> =
-    if List.isEmpty paths then
-        Error "at least one path is required"
-    else
-        paths
-        |> List.collect (walkNamingPath exemptGlobs)
-        |> List.sortBy (fun f -> (f.Path |> Option.defaultValue "", f.Message))
-        |> Ok
+    let strings (sectionKey: string) (key: string) : string list =
+        section
+        |> Option.bind (fun root -> tryGetRawValue root sectionKey)
+        |> Option.bind asRawMap
+        |> Option.bind (fun map -> tryGetRawValue map key)
+        |> Option.bind asRawList
+        |> Option.defaultValue []
+        |> List.map (fun value -> stringValue (Some value))
+        |> List.filter (fun value -> value <> "")
 
-[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
-let validateDocsNaming (paths: string list) : Result<Finding list, string> = validateDocsNamingExempt paths []
+    let excludedSources =
+        linkSourceExclusions (strings "md-internal-link" "exclude-sources")
 
-/// Applies the Markdown filename policy to repository-relative in-memory
-/// documents. Content is intentionally ignored because this rule concerns
-/// names only.
-let validateDocsNamingDocuments (documents: (string * string) list) (exemptGlobs: string list) : Finding list =
-    documents
-    |> List.map fst
-    |> List.filter (fun path -> path.EndsWith(".md", StringComparison.Ordinal))
-    |> List.filter (fun path -> not (pathIsWithinGeneratedReports path))
-    |> List.choose (fun path ->
-        let basename = Path.GetFileName path
+    let skip =
+        Set.union linksSkipDirs (Set.ofList (strings "scan" "exclude-directories"))
 
-        if
-            Set.contains basename alwaysExemptNamingBasenames
-            || matchesAnyExemptGlob exemptGlobs basename
-            || kebabCaseRegex.IsMatch basename
-        then
-            None
-        else
-            Some(mkFail path (namingViolationMessage basename)))
-    |> List.sortBy (fun finding -> finding.Path |> Option.defaultValue "", finding.Message)
+    collectFilesSkippingUnsorted skip repoRoot
+    |> List.filter (fun path -> path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+    |> List.map (fun path -> Path.GetRelativePath(repoRoot, path).Replace('\\', '/'))
+    |> List.filter (fun rel -> not (excludedSources |> List.exists (fun glob -> glob.IsMatch rel)))
 
 // ---------------------------------------------------------------------------
 // md frontmatter-dates validate
@@ -3229,62 +2798,6 @@ type FrontmatterDatesFinding =
       Severity: string
       Message: string }
 
-/// Returns the 1-based file-level line number of the first occurrence of
-/// `field:` within `frontmatter`, falling back to line 2 (the first line
-/// after the opening `---`) when not found
-/// [Repo-grounded — `frontmatter_audit.rs::find_field_line`].
-let private findFieldLine (frontmatter: string) (field: string) : int =
-    let prefix = field + ":"
-
-    frontmatter.Split('\n')
-    |> Array.toList
-    |> List.mapi (fun i line -> i, line)
-    |> List.tryFind (fun (_, line) -> line.TrimStart(' ').StartsWith(prefix, StringComparison.Ordinal))
-    |> function
-        | Some(i, _) -> i + 2
-        | None -> 2
-
-/// Returns a finding when the parsed `frontmatter` YAML contains a forbidden
-/// top-level `updated` key. Unparseable YAML or a non-mapping block report no
-/// finding — out of scope for this audit, matching the Rust source
-/// [Repo-grounded — `frontmatter_audit.rs::check_frontmatter_updated_field`].
-let private checkFrontmatterUpdatedFieldDetailed (path: string) (frontmatter: string) : FrontmatterDatesFinding list =
-    if frontmatter.Trim() = "" then
-        []
-    else
-        try
-            let parsed = deserializer.Deserialize<obj>(frontmatter)
-
-            let forbidden =
-                // `updated` is forbidden everywhere this audit reaches.
-                // `created` is forbidden only under `repo-governance/`, whose
-                // frontmatter allow-list admits `description` and
-                // `when_to_use` alone; `docs/` and site content still carry a
-                // legitimate `created` date.
-                if path.Replace('\\', '/').Contains("repo-governance/", StringComparison.Ordinal) then
-                    [ "updated"; "created" ]
-                else
-                    [ "updated" ]
-
-            match asRawMap parsed with
-            | None -> []
-            | Some fm ->
-                forbidden
-                |> List.choose (fun key ->
-                    match tryGetRawValue fm key with
-                    | None -> None
-                    | Some _ ->
-                        Some
-                            { File = path
-                              Line = findFieldLine frontmatter key
-                              Severity = "high"
-                              Message =
-                                sprintf
-                                    "forbidden \"%s:\" field in YAML frontmatter; remove per no-date-metadata convention"
-                                    key })
-        with _ ->
-            []
-
 /// Scans `body` line-by-line for forbidden inline date annotations and
 /// `**Last Updated**` footer markers, checked in that order per line — a line
 /// matching the inline-annotation pattern is not also checked against the
@@ -3322,16 +2835,16 @@ let private checkBodyAnnotationsDetailed
             else
                 [])
 
-/// Reads `path` and scans its content for both frontmatter and body
-/// date-metadata violations, returning the richer per-finding shape (line
-/// number) the CLI's JSON/Markdown rendering needs
+/// Reads `path` and scans its body for date-metadata violations, returning
+/// the richer per-finding shape (line number) the CLI's JSON/Markdown
+/// rendering needs. A forbidden `updated` frontmatter key is RHINO's
+/// `md-frontmatter` `forbid` rule, and a `created` key under
+/// `repo-governance/` fails the governance allow-list
 /// [Repo-grounded — `frontmatter_audit.rs::scan_frontmatter_content`].
 let private scanFrontmatterDatesContentDetailed (path: string) (content: string) : FrontmatterDatesFinding list =
-    let frontmatter, body, frontmatterEndLine =
-        splitFrontmatterAndBodyWithEndLine content
+    let _, body, frontmatterEndLine = splitFrontmatterAndBodyWithEndLine content
 
-    checkFrontmatterUpdatedFieldDetailed path frontmatter
-    @ checkBodyAnnotationsDetailed path body frontmatterEndLine
+    checkBodyAnnotationsDetailed path body frontmatterEndLine
 
 [<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 let private scanFrontmatterDatesFileDetailed (path: string) : FrontmatterDatesFinding list =
@@ -3460,21 +2973,13 @@ let validateFrontmatterDatesDocuments
 // md audit
 // ---------------------------------------------------------------------------
 
-/// Member validators `runAudit` dispatches, in the same order the Rust
-/// source's `MEMBERS` constant lists them — restricted to the five member
-/// validators this file has ported so far. `frontmatter-dates` and
-/// `readme-index` are not yet ported to F# (the latter is a `governance`-
-/// namespace command not yet started); this PR's sole scenario (an empty
-/// repository, where every member trivially passes) does not require either,
-/// so — matching this file's own established "port only what a scenario
-/// needs" precedent — they are left for the Wave D/governance PR that ports
-/// them [Repo-grounded — `apps/rhino-cli/src/commands/md_audit.rs::MEMBERS`].
+/// Member validators `runAudit` dispatches, in the order the Rust source's
+/// `MEMBERS` constant lists them, restricted to the members F# still owns.
+/// `validate-naming` and `validate-heading-hierarchy` are RHINO's; the CLI's
+/// `md audit` leaf runs them through `./rhino`
+/// [Repo-grounded — `apps/rhino-cli/src/commands/md_audit.rs::MEMBERS`].
 let private auditMembers: string list =
-    [ "validate-naming"
-      "validate-frontmatter"
-      "validate-heading-hierarchy"
-      "validate-links"
-      "validate-mermaid" ]
+    [ "validate-frontmatter"; "validate-links"; "validate-mermaid" ]
 
 /// The aggregated result of `runAudit`: every member validator's failure
 /// message (empty when all passed) and the human-readable summary line the
@@ -3487,8 +2992,8 @@ type MdAuditResult =
 /// Converts a `Finding`-list validator outcome into `runAuditMember`'s
 /// shared `Result<unit, string>` shape: an `Error` is reformatted with
 /// `name`, and a findings list containing at least one `Blocking` entry
-/// becomes an `Error` too — folds what would otherwise be four near-identical
-/// match expressions (one per `Finding`-returning member validator) into one.
+/// becomes an `Error` too — one match expression for every
+/// `Finding`-returning member validator.
 /// The blocking-severity check itself is `RhinoCli.Domain.Finding.hasBlocking`
 /// (Wave D PR11) rather than a private copy here, since the git pre-commit
 /// hook shim's integration tests need the identical predicate.
@@ -3497,9 +3002,8 @@ let private findingsOutcome (name: string) (result: Result<Finding list, string>
     match result with
     // Coverage note: every call site of findingsOutcome in this file passes
     // either a hardcoded `Ok findings` (validate-links) or the result of
-    // calling validateDocsNaming/validateDocsFrontmatter/
-    // validateDocsHeadingHierarchy with a single-element `[ repoRoot ]` list —
-    // and each of those three functions' sole Error case is an empty input
+    // calling validateDocsFrontmatter with a single-element `[ repoRoot ]`
+    // list — and that function's sole Error case is an empty input
     // path list, which `[ repoRoot ]` can never be. This Error arm is
     // therefore unreachable from within runAuditMember; it exists for
     // findingsOutcome's own generality as a private helper.
@@ -3516,9 +3020,7 @@ let private findingsOutcome (name: string) (result: Result<Finding list, string>
 [<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 let private runAuditMember (repoRoot: string) (name: string) : Result<unit, string> =
     match name with
-    | "validate-naming" -> findingsOutcome name (validateDocsNaming [ repoRoot ])
     | "validate-frontmatter" -> findingsOutcome name (validateDocsFrontmatter [ repoRoot ])
-    | "validate-heading-hierarchy" -> findingsOutcome name (validateDocsHeadingHierarchy [ repoRoot ])
     | "validate-links" ->
         let findings =
             validateDocsLinks
@@ -3541,11 +3043,9 @@ let private runAuditMember (repoRoot: string) (name: string) : Result<unit, stri
             Ok()
         else
             Error(sprintf "%s: %d violation(s) reported" name result.Violations.Length)
-    // Coverage note: runAuditMember is `private` (unlike Convention.fs's
-    // `internal` twin, which a test can drive directly with a bogus name),
-    // so its sole reachable caller is runAudit, which only ever supplies
-    // names drawn from the hardcoded `auditMembers` list five lines above —
-    // itself an exact match for this function's five explicit cases. This
+    // Coverage note: runAuditMember is `private`, so its sole reachable caller is runAudit, which only ever supplies
+    // names drawn from the hardcoded `auditMembers` list above —
+    // itself an exact match for this function's three explicit cases. This
     // fallback can never actually fire.
     | _ -> Error(sprintf "unknown md validator: %s" name)
 
@@ -3590,9 +3090,7 @@ let runAuditDocuments (documents: (string * string) list) : MdAuditResult =
         validateMermaidDocuments documents [] None None [] defaultMermaidValidateOptions
 
     let failures =
-        [ findingFailure "validate-naming" (validateDocsNamingDocuments documents [])
-          findingFailure "validate-frontmatter" (validateDocsFrontmatterDocuments documents)
-          findingFailure "validate-heading-hierarchy" (validateDocsHeadingHierarchyDocuments false [] documents)
+        [ findingFailure "validate-frontmatter" (validateDocsFrontmatterDocuments documents)
           findingFailure "validate-links" (validateDocsLinksDocuments documents None [])
           if List.isEmpty mermaidResult.Violations then
               None

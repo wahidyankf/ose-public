@@ -9,6 +9,15 @@ open System
 open System.Globalization
 open RhinoCli.Domain.Types
 open RhinoCli.Application
+open RhinoCli.Infrastructure
+
+/// Runs a whole-delegated validator: RHINO's argv, output and exit, unchanged.
+let private runDelegatedLeaf (repoRoot: string) (command: string) (rawArgs: string list) : int =
+    RustRhino.runDelegated (RustRhino.run repoRoot) (fun line -> eprintfn "%s" line) command rawArgs
+
+/// Runs a split validator: RHINO first, then the F# remainder only when RHINO completed.
+let private runSplitLeaf (repoRoot: string) (command: string) (rawArgs: string list) (remainder: unit -> int) : int =
+    RustRhino.runSplit (RustRhino.run repoRoot) (fun line -> eprintfn "%s" line) command rawArgs remainder
 
 /// `-h`/`--help` always prints the same canonical top-level help and exits
 /// `0`, regardless of where it appears or what subcommand precedes it
@@ -73,8 +82,8 @@ let private collectPathFlags (args: string list) : string list =
     loop args []
 
 /// Collects every positional (non-flag, non-flag-value) argument in `args`
-/// for `convention emoji validate` — `-o`/`--output`/`-p`/`--path` and their
-/// values are excluded, mirroring `EmojiAuditArgs.positional`. `extraValueFlags`
+/// — `-o`/`--output`/`-p`/`--path` and their values are excluded.
+/// `extraValueFlags`
 /// names additional flags (e.g. `--exclude`, `--exempt`, `--paths`) whose
 /// following value must also be skipped rather than leak into the result —
 /// every caller that also reads one of those flags via
@@ -104,27 +113,6 @@ let private collectSkipFlags (args: string list) : string list =
 
     loop args []
 
-/// Resolves the emoji leaf's effective scan paths the same way the Rust CLI
-/// layer does: positional overrides `-p`/`--path`, and an empty result of
-/// both defaults to `["."]`, each resolved to an absolute path under
-/// `repoRoot` [Repo-grounded —
-/// `convention_validate_emoji.rs::run`'s path-resolution block].
-let private resolveEmojiPaths (repoRoot: string) (args: string list) : string list =
-    let positional = collectPositionals [] args
-    let flagged = collectPathFlags args
-
-    let relative =
-        if not (List.isEmpty positional) then positional
-        elif not (List.isEmpty flagged) then flagged
-        else [ "." ]
-
-    relative
-    |> List.map (fun p ->
-        if System.IO.Path.IsPathRooted p then
-            p
-        else
-            System.IO.Path.Combine(repoRoot, p))
-
 /// Prints `output` to stdout and, on a non-empty finding list, the trailing
 /// `Error: {message}` line the Rust CLI's shared `dispatch()` appends to
 /// stderr for every failing leaf [Repo-grounded — `cli.rs::dispatch`'s
@@ -137,40 +125,6 @@ let private printResultAndExitCode (output: string) (errorMessage: string option
     | Some message ->
         eprintfn "Error: %s" message
         1
-
-/// `Convention.runEmojiValidate`'s scan-itself-failed case (unreadable path,
-/// etc.) is `Success = false` with `Findings = []` — the one case its
-/// `Output` field cannot be reused for CLI rendering (it is always
-/// text-shaped), and where Rust's `run()` returns before printing anything
-/// to stdout at all [Repo-grounded —
-/// `convention_validate_emoji.rs::run`'s `.context("emoji audit failed")?`,
-/// which propagates before the `match output_format` print block runs].
-let private runEmojiLeaf (repoRoot: string) (format: OutputFormat) (args: string list) : int =
-    let paths = resolveEmojiPaths repoRoot args
-    let result = Convention.runEmojiValidate paths
-
-    // Genuinely unreachable from this leaf: `Emoji.audit`'s only `Success =
-    // false` trigger is an empty paths list, and `resolveEmojiPaths` always
-    // defaults to `["."]` when neither a positional nor `-p`/`--path` is
-    // given, so `paths` here is never empty.
-    if not result.Success && List.isEmpty result.Findings then
-        eprintfn "Error: emoji audit failed: %s" result.Output
-        1
-    else
-        let output =
-            Formatters.render
-                format
-                (fun () -> Formatters.emojiText result.Findings)
-                (fun () -> Formatters.emojiJson result.Findings)
-                (fun () -> Formatters.emojiMarkdown result.Findings)
-
-        let err =
-            if List.isEmpty result.Findings then
-                None
-            else
-                Some(sprintf "%d emoji finding(s) found" (List.length result.Findings))
-
-        printResultAndExitCode output err
 
 let private runLicenseLeaf (repoRoot: string) (format: OutputFormat) : int =
     let result = Convention.runLicenseValidate repoRoot
@@ -200,20 +154,9 @@ let private runAuditLeaf (repoRoot: string) (format: OutputFormat) (args: string
 
     let runMember (name: string) : string option =
         if name = "emoji" then
-            let result = Convention.runEmojiValidate [ repoRoot ]
-
-            printf
-                "%s"
-                (Formatters.render
-                    format
-                    (fun () -> Formatters.emojiText result.Findings)
-                    (fun () -> Formatters.emojiJson result.Findings)
-                    (fun () -> Formatters.emojiMarkdown result.Findings))
-
-            if List.isEmpty result.Findings then
-                None
-            else
-                Some(sprintf "emoji: %d emoji finding(s) found" (List.length result.Findings))
+            match runDelegatedLeaf repoRoot "convention emoji validate" [] with
+            | 0 -> None
+            | code -> Some(sprintf "emoji: ./rhino convention emoji validate exited %d" code)
         else
             let result = Convention.runLicenseValidate repoRoot
 
@@ -961,16 +904,17 @@ let private changedMdFilesOption (repoRoot: string) : string list option =
     with _ ->
         None
 
-/// `md links validate` [Repo-grounded — `md_validate_links.rs::run`].
+/// `md links validate`'s F# remainder: image targets and heading anchors over
+/// the sources RHINO's `md internal-link validate` reads. `RustRhino.runSplit`
+/// refuses the retired `--exclude` before RHINO starts; a path argument and
+/// `--staged-only` pass through to narrow only this remainder's sources
+/// [Repo-grounded — `md_validate_links.rs::run`].
 let private mdLinksValidateRun
     (repoRoot: string)
     (format: OutputFormat)
     (rawArgs: string list)
     : string * string option =
-    let positional = collectPositionals [ "--exclude" ] rawArgs
-    let stagedOnly = hasFlag [ "--staged-only" ] rawArgs
-    let exclude = collectRepeatableFlag [ "--exclude" ] rawArgs
-    let stagedFiles = if stagedOnly then stagedMdFilesOption repoRoot else None
+    let positional = collectPositionals [] rawArgs
 
     let scanRoot =
         match positional with
@@ -981,11 +925,36 @@ let private mdLinksValidateRun
     if not (IO.Directory.Exists scanRoot) then
         "", Some(sprintf "spec folder does not exist: %s" (positional |> List.tryHead |> Option.defaultValue scanRoot))
     else
+        let configPath = IO.Path.Combine(repoRoot, "repo-config.yml")
+
+        let configText =
+            if IO.File.Exists configPath then
+                IO.File.ReadAllText configPath
+            else
+                ""
+
+        let scope =
+            IO.Path.GetRelativePath(repoRoot, scanRoot).Replace('\\', '/').TrimEnd('/')
+
+        let inScope (source: string) =
+            scope = "." || source.StartsWith(scope + "/", StringComparison.Ordinal)
+
+        let staged =
+            if hasFlag [ "--staged-only" ] rawArgs then
+                stagedMdFilesOption repoRoot
+            else
+                None
+
+        let sources =
+            Md.linkRemainderSources repoRoot configText
+            |> List.filter inScope
+            |> List.filter (fun source -> staged |> Option.forall (List.contains source))
+
         let result: Md.LinkValidationResult =
             Md.validateAllLinksDetailed
-                { RepoRoot = scanRoot
-                  StagedFiles = stagedFiles
-                  ExcludePrefixes = exclude }
+                { RepoRoot = repoRoot
+                  StagedFiles = Some sources
+                  ExcludePrefixes = [] }
 
         let output =
             Formatters.render
@@ -1072,73 +1041,6 @@ let private runMdMermaidValidateLeaf (repoRoot: string) (format: OutputFormat) (
 
     printResultAndExitCode output err
 
-/// `md heading-hierarchy validate` [Repo-grounded —
-/// `md_validate_heading_hierarchy.rs::run`].
-let private runMdHeadingHierarchyValidateLeaf (repoRoot: string) (format: OutputFormat) (rawArgs: string list) : int =
-    let positional = collectPositionals [ "--exclude" ] rawArgs
-    let exclude = collectRepeatableFlag [ "--exclude" ] rawArgs
-
-    let findings: Md.HeadingFinding list =
-        if List.isEmpty positional then
-            Md.validateDocsHeadingHierarchyAllowlistedDetailed repoRoot exclude
-        else
-            match Md.validateDocsHeadingHierarchyForPaths repoRoot positional with
-            | genericFindings ->
-                genericFindings
-                |> List.map (fun f ->
-                    { Md.HeadingFinding.File = f.Path |> Option.defaultValue ""
-                      Line = 0
-                      Severity = "high"
-                      Kind = ""
-                      Message = f.Message })
-
-    let output =
-        Formatters.render
-            format
-            (fun () -> Formatters.headingHierarchyText findings)
-            (fun () -> Formatters.headingHierarchyJson findings)
-            (fun () -> Formatters.headingHierarchyMarkdown findings)
-
-    let err =
-        if List.isEmpty findings then
-            None
-        else
-            Some(sprintf "%d docs heading hierarchy finding(s) found" (List.length findings))
-
-    printResultAndExitCode output err
-
-/// `md naming validate` [Repo-grounded — `md_validate_naming.rs::run`].
-let private runMdNamingValidateLeaf (repoRoot: string) (format: OutputFormat) (rawArgs: string list) : int =
-    let positional = collectPositionals [ "--exempt" ] rawArgs
-    let absPaths = resolveAbsPaths repoRoot [ "docs/"; "repo-governance/" ] positional
-    let exempt = collectRepeatableFlag [ "--exempt" ] rawArgs
-
-    // Genuinely unreachable: `Md.validateDocsNamingExempt`'s only `Error`
-    // trigger is an empty paths list, and `resolveAbsPaths` always defaults
-    // to `["docs/"; "repo-governance/"]` when no positional path is given —
-    // `absPaths` here is never empty. Same reasoning applies to
-    // `runMdFrontmatterValidateLeaf`'s and
-    // `runMdFrontmatterDatesValidateLeaf`'s identical `Error` arms below.
-    match Md.validateDocsNamingExempt absPaths exempt with
-    | Error message ->
-        eprintfn "Error: docs validate-naming failed: %s" message
-        1
-    | Ok findings ->
-        let output =
-            Formatters.render
-                format
-                (fun () -> Formatters.namingText findings)
-                (fun () -> Formatters.namingJson findings)
-                (fun () -> Formatters.namingMarkdown findings)
-
-        let err =
-            if List.isEmpty findings then
-                None
-            else
-                Some(sprintf "%d docs naming finding(s) found" (List.length findings))
-
-        printResultAndExitCode output err
-
 /// `md frontmatter validate` [Repo-grounded —
 /// `md_validate_frontmatter.rs::run`].
 let private runMdFrontmatterValidateLeaf (repoRoot: string) (format: OutputFormat) (rawArgs: string list) : int =
@@ -1199,8 +1101,9 @@ let private runMdFrontmatterDatesValidateLeaf (repoRoot: string) (format: Output
         registeredExcludes
         @ (flagExclude |> List.filter (fun e -> not (List.contains e registeredExcludes)))
 
-    // Genuinely unreachable — see `runMdNamingValidateLeaf`'s comment above:
-    // `defaultPaths` here is likewise always non-empty, so `absPaths` is too.
+    // Genuinely unreachable: `Md.validateFrontmatterDatesDetailed`'s only
+    // `Error` trigger is an empty paths list, and `defaultPaths` here is
+    // always non-empty, so `absPaths` is too.
     match Md.validateFrontmatterDatesDetailed absPaths excludes with
     | Error message ->
         eprintfn "Error: frontmatter-audit failed: %s" message
@@ -1223,16 +1126,11 @@ let private runMdFrontmatterDatesValidateLeaf (repoRoot: string) (format: Output
 
 /// `governance word-budget validate` [Repo-grounded —
 /// `governance_validate_word_budget.rs::run`/`run_for_root`].
-let private runGovernanceWordBudgetValidateLeaf (repoRoot: string) (format: OutputFormat) (rawArgs: string list) : int =
-    let flagExclude = collectRepeatableFlag [ "--exclude" ] rawArgs
-
-    let registeredExcludes =
-        match Governance.registeredExcludes repoRoot with
-        | Ok excludes -> excludes
-        | Error _ -> []
-
-    let excludes = registeredExcludes @ flagExclude
-
+let private runGovernanceWordBudgetValidateLeaf
+    (repoRoot: string)
+    (format: OutputFormat)
+    (_rawArgs: string list)
+    : int =
     match Governance.mergedBudgetConfig repoRoot with
     | Error message ->
         eprintfn "Error: %s" message
@@ -1243,9 +1141,9 @@ let private runGovernanceWordBudgetValidateLeaf (repoRoot: string) (format: Outp
 
         0
     | Ok(Some config) ->
-        let findings =
-            Governance.checkInstructionSizes repoRoot config excludes
-            @ (Governance.checkResolvedTree repoRoot config |> Option.toList)
+        // Per-file budgets are RHINO's `governance-word-budget.surfaces`; F#
+        // keeps only the resolved instruction tree.
+        let findings = Governance.checkResolvedTree repoRoot config |> Option.toList
 
         let output =
             Formatters.render
@@ -1650,13 +1548,23 @@ let private runMdAuditLeaf (repoRoot: string) (format: OutputFormat) (rawArgs: s
     let skip = collectRepeatableFlag [ "--skip" ] rawArgs
 
     let members: (string * (unit -> int)) list =
-        [ "validate-naming", (fun () -> runMdNamingValidateLeaf repoRoot format [])
-          "validate-frontmatter", (fun () -> runMdFrontmatterValidateLeaf repoRoot format [])
-          "validate-heading-hierarchy", (fun () -> runMdHeadingHierarchyValidateLeaf repoRoot format [])
-          "validate-links", (fun () -> runMdLinksValidateLeaf repoRoot format [])
+        [ "validate-naming", (fun () -> runDelegatedLeaf repoRoot "md naming validate" [])
+          "validate-frontmatter",
+          (fun () ->
+              runSplitLeaf repoRoot "md frontmatter validate" [] (fun () ->
+                  runMdFrontmatterValidateLeaf repoRoot format []))
+          "validate-heading-hierarchy", (fun () -> runDelegatedLeaf repoRoot "md heading-hierarchy validate" [])
+          "validate-links",
+          (fun () -> runSplitLeaf repoRoot "md links validate" [] (fun () -> runMdLinksValidateLeaf repoRoot format []))
           "validate-mermaid", (fun () -> runMdMermaidValidateLeaf repoRoot format [])
-          "frontmatter-dates", (fun () -> runMdFrontmatterDatesValidateLeaf repoRoot format [])
-          "readme-index", (fun () -> runGovernanceReadmeIndexValidateLeaf repoRoot format []) ]
+          "frontmatter-dates",
+          (fun () ->
+              runSplitLeaf repoRoot "md frontmatter-dates validate" [] (fun () ->
+                  runMdFrontmatterDatesValidateLeaf repoRoot format []))
+          "readme-index",
+          (fun () ->
+              runSplitLeaf repoRoot "governance readme-index validate" [] (fun () ->
+                  runGovernanceReadmeIndexValidateLeaf repoRoot format [])) ]
 
     let active = members |> List.filter (fun (name, _) -> not (List.contains name skip))
 
@@ -2301,7 +2209,9 @@ let private runHarnessAuditLeaf (repoRoot: string) (format: OutputFormat) (rawAr
                 | "validate-sync" -> runHarnessSyncValidateLeaf repoRoot format []
                 | "validate-bindings" -> runHarnessBindingsValidateLeaf repoRoot format []
                 | "validate-catalog" -> runHarnessCatalogValidateLeaf repoRoot format []
-                | _ -> runGovernanceWordBudgetValidateLeaf repoRoot format []
+                | _ ->
+                    runSplitLeaf repoRoot "governance word-budget validate" [] (fun () ->
+                        runGovernanceWordBudgetValidateLeaf repoRoot format [])
 
             if exitCode <> 0 then
                 failures.Add name
@@ -2451,12 +2361,13 @@ let route (getRepoRoot: unit -> Result<string, string>) (argv: string[]) : int =
                     1
                 | Ok format ->
                     match leaf with
-                    | "emoji" -> runEmojiLeaf repoRoot format rest
+                    | "emoji" -> runDelegatedLeaf repoRoot "convention emoji validate" rest
                     | "license" -> runLicenseLeaf repoRoot format
                     | "audit" -> runAuditLeaf repoRoot format rest
                     | "generate" -> runParityGenerate repoRoot
                     | "validate" -> runParityValidate repoRoot
-                    | "repo-config-validate" -> runRepoConfigValidateLeaf repoRoot
+                    | "repo-config-validate" ->
+                        runSplitLeaf repoRoot "repo-config validate" rest (fun () -> runRepoConfigValidateLeaf repoRoot)
                     | "plan-validate" -> runPlanValidateLeaf repoRoot format
                     | "env-init" -> runEnvInitLeaf repoRoot rest
                     | "env-backup" -> runEnvBackupLeaf repoRoot format rest
@@ -2464,15 +2375,25 @@ let route (getRepoRoot: unit -> Result<string, string>) (argv: string[]) : int =
                     | "env-validate" -> runEnvValidateLeaf repoRoot rest
                     | "env-staged-guard-validate" -> runEnvStagedGuardValidateLeaf repoRoot
                     | "doctor" -> runDoctorLeaf repoRoot format rest
-                    | "md-links-validate" -> runMdLinksValidateLeaf repoRoot format rest
+                    | "md-links-validate" ->
+                        runSplitLeaf repoRoot "md links validate" rest (fun () ->
+                            runMdLinksValidateLeaf repoRoot format rest)
                     | "md-mermaid-validate" -> runMdMermaidValidateLeaf repoRoot format rest
-                    | "md-heading-hierarchy-validate" -> runMdHeadingHierarchyValidateLeaf repoRoot format rest
-                    | "md-naming-validate" -> runMdNamingValidateLeaf repoRoot format rest
-                    | "md-frontmatter-validate" -> runMdFrontmatterValidateLeaf repoRoot format rest
-                    | "md-frontmatter-dates-validate" -> runMdFrontmatterDatesValidateLeaf repoRoot format rest
+                    | "md-heading-hierarchy-validate" -> runDelegatedLeaf repoRoot "md heading-hierarchy validate" rest
+                    | "md-naming-validate" -> runDelegatedLeaf repoRoot "md naming validate" rest
+                    | "md-frontmatter-validate" ->
+                        runSplitLeaf repoRoot "md frontmatter validate" rest (fun () ->
+                            runMdFrontmatterValidateLeaf repoRoot format rest)
+                    | "md-frontmatter-dates-validate" ->
+                        runSplitLeaf repoRoot "md frontmatter-dates validate" rest (fun () ->
+                            runMdFrontmatterDatesValidateLeaf repoRoot format rest)
                     | "md-audit" -> runMdAuditLeaf repoRoot format rest
-                    | "governance-word-budget-validate" -> runGovernanceWordBudgetValidateLeaf repoRoot format rest
-                    | "governance-readme-index-validate" -> runGovernanceReadmeIndexValidateLeaf repoRoot format rest
+                    | "governance-word-budget-validate" ->
+                        runSplitLeaf repoRoot "governance word-budget validate" rest (fun () ->
+                            runGovernanceWordBudgetValidateLeaf repoRoot format rest)
+                    | "governance-readme-index-validate" ->
+                        runSplitLeaf repoRoot "governance readme-index validate" rest (fun () ->
+                            runGovernanceReadmeIndexValidateLeaf repoRoot format rest)
                     | "governance-readme-index-generate" -> runGovernanceReadmeIndexGenerateLeaf repoRoot format rest
                     | "git-lockfile-sync" -> runGitLockfileSyncLeaf repoRoot
                     | "gate-validate" -> runGateValidateLeaf repoRoot

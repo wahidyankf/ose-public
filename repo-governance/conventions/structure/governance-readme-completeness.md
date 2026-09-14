@@ -36,8 +36,7 @@ is scanned directly.
 - `orphan` — a sibling `.md` file or subdirectory README exists but is unlinked.
 - `ghost` — the index links a target that does not exist on disk.
 - `missing` — a directory needs an index but has none.
-- `unannotated` — the index links a target with no `- [<title>](<path>) — <description>
-<when_to_use>` annotation (an em-dash or `--` followed by non-whitespace text).
+- `unannotated` — the index links a target with no `- [<title>](<path>) — <description> <when_to_use>` annotation (an em-dash or `--` followed by non-whitespace text).
 
 ## Remediation
 

@@ -1,13 +1,8 @@
 /// Plain xunit tests exercising `RhinoCli.Application.Convention` behaviour
-/// that has no dedicated Gherkin scenario: guard clauses, SPDX-prose
-/// classification variants, GFM table-parsing edge cases, and non-BMP
-/// codepoint counting. Kept separate from `ConventionSteps.fs` (which binds
+/// that has no dedicated Gherkin scenario: SPDX-prose classification
+/// variants and GFM table-parsing edge cases. Kept separate from `ConventionSteps.fs` (which binds
 /// only real, frozen feature-file scenarios) so this file can grow test
 /// cases without inflating the plan's tracked Gherkin scenario count.
-///
-/// Fixtures below use `\uXXXX`/`\UXXXXXXXX` escapes rather than literal
-/// emoji characters so this file doesn't trip the emoji-in-source-code
-/// convention it tests [mirrors `emoji_audit.rs`'s own test-fixture note].
 module RhinoCli.Tests.Integration.Steps.ConventionResourceTests
 
 open System
@@ -26,56 +21,6 @@ let private writeFile (root: string) (relativePath: string) (content: string) =
     let full = Path.Combine(root, relativePath)
     Directory.CreateDirectory(Path.GetDirectoryName(full)) |> ignore
     File.WriteAllText(full, content)
-
-// ---- runEmojiValidate guard clauses ----
-
-[<Fact>]
-let ``runEmojiValidate fails with a guard message when no paths are given`` () =
-    let result = runEmojiValidate []
-    Assert.False(result.Success)
-    Assert.Contains("at least one path is required", result.Output)
-    Assert.Empty(result.Findings)
-
-[<Fact>]
-let ``runEmojiValidate passes when the only path does not exist`` () =
-    let missing =
-        Path.Combine(Path.GetTempPath(), "rhino-cli-does-not-exist-" + Guid.NewGuid().ToString("N"))
-
-    let result = runEmojiValidate [ missing ]
-    Assert.True(result.Success)
-    Assert.Empty(result.Findings)
-
-// ---- non-BMP codepoint counting (surrogate pairs) ----
-
-[<Fact>]
-let ``a non-BMP codepoint before a flagged emoji does not shift its column`` () =
-    let root = newTempDir ()
-
-    try
-        // U+1F680 (rocket) is two UTF-16 code units but one codepoint; U+2713
-        // (check mark) immediately after it must still be reported at column
-        // 2, not column 3, and its own codepoint is never itself flagged
-        // since 0x1F680 falls inside the audited 0x1F000-0x1FFFF block too.
-        writeFile root "src/example.ts" "\U0001F680\u2713\n"
-        let result = runEmojiValidate [ root ]
-        Assert.False(result.Success)
-        let messages = result.Findings |> List.map (fun f -> f.Message)
-        Assert.Contains(messages, fun m -> m.Contains(":1:1  ") && m.Contains("U+1F680"))
-        Assert.Contains(messages, fun m -> m.Contains(":1:2  ") && m.Contains("U+2713"))
-    finally
-        Directory.Delete(root, true)
-
-[<Fact>]
-let ``formatCodepoint renders codepoints above U+FFFF without zero-padding`` () =
-    let root = newTempDir ()
-
-    try
-        writeFile root "src/example.ts" "\U0001F680\n"
-        let result = runEmojiValidate [ root ]
-        Assert.False(result.Success)
-        Assert.Contains(result.Findings, fun f -> f.Message.Contains("U+1F680"))
-    finally
-        Directory.Delete(root, true)
 
 // ---- License.classifyLine SPDX-prose variants (Rust parity —
 // license_audit.rs::classify_license_line recognises the same breadth) ----
@@ -275,44 +220,11 @@ let ``LICENSING-NOTICE.md missing entirely yields zero claims without error`` ()
     finally
         Directory.Delete(root, true)
 
-// ---- runConventionAudit: aggregate success path ----
-
-[<Fact>]
-let ``runConventionAudit passes when every validator passes`` () =
-    let root = newTempDir ()
-
-    try
-        writeFile root "apps/sample/LICENSE" "MIT License\n"
-        writeFile root "libs/other/LICENSE" "MIT License\n"
-        writeFile root "specs/LICENSE" "MIT License\n"
-        writeFile root "apps/sample/index.ts" "const ok = true\n"
-
-        let result = runConventionAudit root []
-        Assert.True(result.Success)
-        Assert.Empty(result.Findings)
-    finally
-        Directory.Delete(root, true)
-
-[<Fact>]
-let ``runConventionAudit skips a named validator`` () =
-    let root = newTempDir ()
-
-    try
-        // No LICENSE files at all would fail the license validator; skipping
-        // it must still let the (passing) emoji validator's result through.
-        writeFile root "apps/sample/index.ts" "const ok = true\n"
-
-        let result = runConventionAudit root [ "license" ]
-        Assert.True(result.Success)
-    finally
-        Directory.Delete(root, true)
-
 // ---- Additional coverage-gap-closing tests: classifyLine's
 // SPDX-License-Identifier header form, splitMarkdownRow's missing-trailing-
 // pipe tolerance, parseLicensingNotice's header-at-EOF/empty-cell/short-row
 // skip branches, License.audit's mismatch computation for a claimed
-// directory with no identified LICENSE at all, and runAuditMember's
-// emoji-failure error branch. ----
+// directory with no identified LICENSE at all. ----
 
 [<Fact>]
 let ``license audit strips the SPDX-License-Identifier prefix when classifying a LICENSE file`` () =

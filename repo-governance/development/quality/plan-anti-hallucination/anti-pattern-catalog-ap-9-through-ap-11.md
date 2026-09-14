@@ -23,5 +23,5 @@ Resolve the relative path and confirm the file exists before linking.
 
 If the command was not recorded, stderr was suppressed, the exit status was not inspected, or no
 known-positive control probe was run, the zero proves nothing. See
-[Absence and Completeness Claims](./absence-and-completeness-claims-zero-result-search-evidence-part-1.md). A failed search and a
+[Absence and Completeness Claims](./absence-and-completeness-claims-zero-result-search-evidence-checklist.md). A failed search and a
 clean search are textually identical.

@@ -36,7 +36,7 @@ Plans then executes a cross-repo parity objective in one run.
 - [Step 1 — Planning](./plan-multi-repo-parity-planning-and-execution/step-1-planning-phase.md) — nested workflow.
 - [Steps 2-3 — Gate & Grill](./plan-multi-repo-parity-planning-and-execution/step-2-and-3-phase-gate-and-pre-execution-grill.md) — readiness, third grill.
 - [Step 4 — Execution](./plan-multi-repo-parity-planning-and-execution/step-4-execution-phase.md) — plan-execution per repo.
-- [Step 4 — Execution (cont.)](./plan-multi-repo-parity-planning-and-execution/step-4-execution-phase-continued.md) — propagation, manifest gate.
+- [Step 4 — Execution (cont.)](./plan-multi-repo-parity-planning-and-execution/step-4-execution-phase-propagation-and-delivery.md) — propagation, manifest gate.
 - [Step 5 — Finalization](./plan-multi-repo-parity-planning-and-execution/step-5-cross-repo-finalization.md) — sibling links, report.
 - [Termination & Grilling](./plan-multi-repo-parity-planning-and-execution/termination-criteria-and-grilling-contract.md) — outcomes, three grills.
 - [Example Usage](./plan-multi-repo-parity-planning-and-execution/example-usage.md) — two worked examples.

@@ -5,7 +5,7 @@ when_to_use: Use when testing whether a specific phase qualifies as a delivery b
 
 # PRs Open at Delivery Boundaries — Boundary Test and Rationale
 
-Continues [PRs Open at Delivery Boundaries — Rules 5-7 and \*-to-pr Scope](./prs-open-at-delivery-boundaries-rules-continued.md).
+Continues [PRs Open at Delivery Boundaries — Rules 5-7 and \*-to-pr Scope](./prs-open-at-delivery-boundaries-rules-5-to-7.md).
 
 **The boundary test** — a phase is a delivery boundary when all four hold:
 
@@ -28,7 +28,7 @@ rewrites — and the review cannot judge the work's intent, because the intent o
 phases later. Grouping to the natural boundary makes each review see one complete thought with
 every artifact required to build, verify, operate, roll back, and remain internally consistent.
 
-The counterweight is rule 6 in [PRs Open at Delivery Boundaries — Rules 5-7](./prs-open-at-delivery-boundaries-rules-continued.md): the same instinct, over-applied, produces one end-of-plan mega-PR
+The counterweight is rule 6 in [PRs Open at Delivery Boundaries — Rules 5-7](./prs-open-at-delivery-boundaries-rules-5-to-7.md): the same instinct, over-applied, produces one end-of-plan mega-PR
 that no reviewer can hold in their head and that diverges from `main` for the plan's whole lifetime.
 Delivery boundaries are the calibration point between those two failure modes. Numeric LOC and
 file counts never create, erase, or force the boundary.

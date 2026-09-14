@@ -1,12 +1,12 @@
-/// Renders `RhinoCli.Application.Convention` results into the exact
-/// text/JSON/markdown shapes the Rust CLI layer emits
-/// [Repo-grounded — `apps/rhino-cli/src/commands/convention_validate_emoji.rs`,
-/// `.../convention_validate_license.rs`]. Kept in `RhinoCli.Cli` rather than
+/// Renders `RhinoCli.Application` results into the exact text/JSON/markdown
+/// shapes the Rust CLI layer emits
+/// [Repo-grounded — `apps/rhino-cli/src/commands/convention_validate_license.rs`
+/// and its sibling command modules]. Kept in `RhinoCli.Cli` rather than
 /// `RhinoCli.Application` because the Rust source draws the same line: the
 /// shared `Finding` record covers what the *application* layer needs
-/// (severity, message, path), while these three per-field JSON envelopes are
+/// (severity, message, path), while these per-field JSON envelopes are
 /// a CLI-output concern specific to each validator, mirroring Rust's
-/// distinct `EmojiFinding`/`LicenseFinding` structs.
+/// distinct per-command finding structs.
 module RhinoCli.Cli.Formatters
 
 open System
@@ -14,7 +14,6 @@ open System.Globalization
 open System.Text.Json
 open System.Text.Json.Serialization
 open System.Text.Encodings.Web
-open System.Text.RegularExpressions
 open RhinoCli.Domain.Types
 open RhinoCli.Application
 
@@ -23,19 +22,6 @@ let private jsonOptions =
     opts.WriteIndented <- true
     opts.Encoder <- JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     opts
-
-/// One emoji finding shaped for JSON, mirroring Rust's `FindingJson`.
-type EmojiFindingJson =
-    { file: string
-      line: int
-      column: int
-      codepoint: string
-      severity: string }
-
-type EmojiEnvelope =
-    { schema: string
-      status: string
-      result: EmojiFindingJson list }
 
 type LicenseFindingJson =
     { path: string
@@ -50,25 +36,6 @@ type LicenseEnvelope =
     { schema: string
       status: string
       result: LicenseInnerResult }
-
-let private emojiMessageRe =
-    Regex(@"^(.*):(\d+):(\d+)  \[(\w+)\]  (.+)$", RegexOptions.Compiled)
-
-/// Recovers `RhinoCli.Application.Convention.Emoji`'s per-finding fields
-/// (file/line/column/severity/codepoint) from its combined `Finding.Message`
-/// string, which `Emoji.scanFileRaw` builds as
-/// `"{file}:{line}:{column}  [{severity}]  {codepoint}"`.
-let toEmojiFindingJson (f: Finding) : EmojiFindingJson =
-    let m = emojiMessageRe.Match(f.Message)
-
-    if not m.Success then
-        failwithf "malformed emoji finding message: %s" f.Message
-
-    { file = m.Groups.[1].Value
-      line = int m.Groups.[2].Value
-      column = int m.Groups.[3].Value
-      severity = m.Groups.[4].Value
-      codepoint = m.Groups.[5].Value }
 
 /// Recovers `RhinoCli.Application.Convention.License`'s per-finding
 /// `kind`/`message` fields from its combined `Finding.Message` string, which
@@ -91,52 +58,6 @@ let toLicenseFindingJson (f: Finding) : LicenseFindingJson =
     { path = f.Path |> Option.defaultValue ""
       kind = kind
       message = afterKind.Substring(sepIdx + 3) }
-
-/// `EMOJI AUDIT PASSED/FAILED` text, byte-identical to
-/// `convention_validate_emoji.rs::format_text`.
-let emojiText (findings: Finding list) : string =
-    if List.isEmpty findings then
-        "EMOJI AUDIT PASSED: no emoji codepoints found in forbidden file types\n"
-    else
-        let header =
-            sprintf "EMOJI AUDIT FAILED: %d emoji codepoint(s) found\n" (List.length findings)
-
-        let body =
-            findings |> List.map (fun f -> sprintf "  %s\n" f.Message) |> String.concat ""
-
-        header + body
-
-/// JSON envelope, byte-identical to
-/// `convention_validate_emoji.rs::format_json`.
-let emojiJson (findings: Finding list) : string =
-    let status = if List.isEmpty findings then "passed" else "failed"
-
-    let env: EmojiEnvelope =
-        { schema = "rhino-cli/emoji-audit/v1"
-          status = status
-          result = findings |> List.map toEmojiFindingJson }
-
-    JsonSerializer.Serialize(env, jsonOptions) + "\n"
-
-/// GFM table, byte-identical to
-/// `convention_validate_emoji.rs::format_markdown`.
-let emojiMarkdown (findings: Finding list) : string =
-    if List.isEmpty findings then
-        "## Governance Emoji Audit\n\n**PASSED**: no emoji codepoints found in forbidden file types\n"
-    else
-        let header =
-            sprintf "## Governance Emoji Audit\n\n**FAILED**: %d emoji codepoint(s) found\n\n" (List.length findings)
-
-        let tableHeader =
-            "| File | Line | Column | Codepoint | Severity |\n|------|------|--------|-----------|----------|\n"
-
-        let rows =
-            findings
-            |> List.map toEmojiFindingJson
-            |> List.map (fun f -> sprintf "| %s | %d | %d | %s | %s |\n" f.file f.line f.column f.codepoint f.severity)
-            |> String.concat ""
-
-        header + tableHeader + rows
 
 /// `LICENSE AUDIT PASSED/FAILED` text, byte-identical to
 /// `convention_validate_license.rs::format_text`.
@@ -188,141 +109,12 @@ let licenseMarkdown (findings: Finding list) : string =
         header + sub + tableHeader + rows
 
 /// Renders one validator's result in the requested `OutputFormat`, given its
-/// per-format renderers — shared by the emoji and license leaf commands.
+/// per-format renderers — shared by every leaf that takes `-o`.
 let render (format: OutputFormat) (asText: unit -> string) (asJson: unit -> string) (asMarkdown: unit -> string) =
     match format with
     | Text -> asText ()
     | Json -> asJson ()
     | Markdown -> asMarkdown ()
-
-// ---------------------------------------------------------------------------
-// md naming
-// ---------------------------------------------------------------------------
-
-type NamingFindingJson =
-    { file: string
-      severity: string
-      message: string }
-
-type NamingEnvelope =
-    { schema: string
-      status: string
-      result: NamingFindingJson list }
-
-let private toNamingJson (f: Finding) : NamingFindingJson =
-    { file = f.Path |> Option.defaultValue ""
-      severity = "high"
-      message = f.Message }
-
-/// `DOCS NAMING VALIDATION PASSED/FAILED` text, byte-identical to
-/// `md_validate_naming.rs::format_text`.
-let namingText (findings: Finding list) : string =
-    if List.isEmpty findings then
-        "DOCS NAMING VALIDATION PASSED: no naming violations found\n"
-    else
-        let header =
-            sprintf "DOCS NAMING VALIDATION FAILED: %d violation(s) found\n" (List.length findings)
-
-        let body =
-            findings
-            |> List.map (fun f -> sprintf "  %s  [high]  %s\n" (f.Path |> Option.defaultValue "") f.Message)
-            |> String.concat ""
-
-        header + body
-
-let namingJson (findings: Finding list) : string =
-    let status = if List.isEmpty findings then "passed" else "failed"
-
-    let env: NamingEnvelope =
-        { schema = "rhino-cli/docs-validate-naming/v1"
-          status = status
-          result = findings |> List.map toNamingJson }
-
-    JsonSerializer.Serialize(env, jsonOptions) + "\n"
-
-let namingMarkdown (findings: Finding list) : string =
-    if List.isEmpty findings then
-        "## Docs Filename Naming Validation\n\n**PASSED**: no naming violations found\n"
-    else
-        let header =
-            sprintf "## Docs Filename Naming Validation\n\n**FAILED**: %d violation(s) found\n\n" (List.length findings)
-
-        let tableHeader = "| File | Severity | Message |\n|------|----------|---------|\n"
-
-        let rows =
-            findings
-            |> List.map (fun f -> sprintf "| %s | high | %s |\n" (f.Path |> Option.defaultValue "") f.Message)
-            |> String.concat ""
-
-        header + tableHeader + rows
-
-// ---------------------------------------------------------------------------
-// md heading-hierarchy
-// ---------------------------------------------------------------------------
-
-type HeadingFindingJson =
-    { file: string
-      line: int
-      severity: string
-      kind: string
-      message: string }
-
-type HeadingEnvelope =
-    { schema: string
-      status: string
-      result: HeadingFindingJson list }
-
-let private toHeadingJson (f: Md.HeadingFinding) : HeadingFindingJson =
-    { file = f.File
-      line = f.Line
-      severity = f.Severity
-      kind = f.Kind
-      message = f.Message }
-
-/// `DOCS HEADING HIERARCHY VALIDATION PASSED/FAILED` text, byte-identical to
-/// `md_validate_heading_hierarchy.rs::format_text`.
-let headingHierarchyText (findings: Md.HeadingFinding list) : string =
-    if List.isEmpty findings then
-        "DOCS HEADING HIERARCHY VALIDATION PASSED: no heading hierarchy violations found\n"
-    else
-        let header =
-            sprintf "DOCS HEADING HIERARCHY VALIDATION FAILED: %d violation(s) found\n" (List.length findings)
-
-        let body =
-            findings
-            |> List.map (fun f -> sprintf "  %s:%d  [%s]  [%s]  %s\n" f.File f.Line f.Severity f.Kind f.Message)
-            |> String.concat ""
-
-        header + body
-
-let headingHierarchyJson (findings: Md.HeadingFinding list) : string =
-    let status = if List.isEmpty findings then "passed" else "failed"
-
-    let env: HeadingEnvelope =
-        { schema = "rhino-cli/docs-validate-heading-hierarchy/v1"
-          status = status
-          result = findings |> List.map toHeadingJson }
-
-    JsonSerializer.Serialize(env, jsonOptions) + "\n"
-
-let headingHierarchyMarkdown (findings: Md.HeadingFinding list) : string =
-    if List.isEmpty findings then
-        "## Docs Heading Hierarchy Validation\n\n**PASSED**: no heading hierarchy violations found\n"
-    else
-        let header =
-            sprintf
-                "## Docs Heading Hierarchy Validation\n\n**FAILED**: %d violation(s) found\n\n"
-                (List.length findings)
-
-        let tableHeader =
-            "| File | Line | Severity | Kind | Message |\n|------|------|----------|------|---------|\n"
-
-        let rows =
-            findings
-            |> List.map (fun f -> sprintf "| %s | %d | %s | %s | %s |\n" f.File f.Line f.Severity f.Kind f.Message)
-            |> String.concat ""
-
-        header + tableHeader + rows
 
 // ---------------------------------------------------------------------------
 // md frontmatter (docs validate-frontmatter)

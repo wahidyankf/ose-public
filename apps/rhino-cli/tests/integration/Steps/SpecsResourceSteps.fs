@@ -272,7 +272,7 @@ type SpecsSteps() =
     member _.``a spec folder at "specs/apps/testapp" containing a markdown file with a broken internal link``() =
         specApp <- "testapp"
         let baseDir = specCreateTree "testapp" true
-        File.WriteAllText(Path.Combine(baseDir, "product", "spec.md"), "# Spec\n\n[missing](./no-such-file.md)\n")
+        File.WriteAllText(Path.Combine(baseDir, "product", "spec.md"), "# Spec\n\n![missing](./no-such-file.png)\n")
 
     [<Given>]
     member _.``a spec folder at "specs/apps/testapp" containing only markdown files with external HTTPS links``() =

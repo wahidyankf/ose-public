@@ -193,7 +193,9 @@ function LearningDetail({ entry }: DetailProps) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-      {quality != null && <div style={{ fontSize: 13 }}>Quality: {"⭐".repeat(Math.min(Math.max(quality, 0), 5))}</div>}
+      {quality != null && (
+        <div style={{ fontSize: 13 }}>Quality: {"\u2B50".repeat(Math.min(Math.max(quality, 0), 5))}</div>
+      )}
       {source && <div style={{ fontSize: 13, color: "var(--color-muted-foreground)" }}>Source: {source}</div>}
       {durationMins > 0 && (
         <div style={{ fontSize: 13, color: "var(--color-muted-foreground)" }}>{durationMins} min</div>

@@ -75,4 +75,4 @@ See [Indentation Convention](../../../conventions/formatting/indentation.md) for
 - MD042: No empty links
 - Disabled MD041: Allows frontmatter before H1
 
-See [Linking Convention](../../conventions/formatting/linking.md) for linking standards.
+See [Linking Convention](../../../conventions/formatting/linking.md) for linking standards.

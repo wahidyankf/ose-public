@@ -43,7 +43,7 @@ Feature: Gate execution
   @integration-exempt
   Scenario: Rhino CLI kind receives derived files
     Given a rhino-cli gate matches staged files "a.md" and "b.md"
-    When "rhino-cli gate run --surface=pre-commit --only=md-naming" runs
+    When "rhino-cli gate run --surface=pre-commit --only=md-mermaid" runs
     Then the local rhino-cli leaf receives only "a.md" and "b.md"
 
   # Exemption(integration): this scenario's contract is the published gate runner's process and transaction orchestration, while its selection policy is proven in-process; alternative-proof: rhino-cli:test:e2e / External kind preserves fixed argv before files

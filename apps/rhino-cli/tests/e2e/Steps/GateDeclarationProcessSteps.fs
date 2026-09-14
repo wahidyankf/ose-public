@@ -60,6 +60,15 @@ let private initializeGitRepository (root: string) =
     proc.WaitForExit()
     Assert.Equal(0, proc.ExitCode)
 
+/// `repo-config validate` is a split command that starts `./rhino` at the
+/// repository root before its F# remainder; this no-op stand-in lets the
+/// scenarios exercise that remainder.
+let private stubRhino (root: string) =
+    let path = Path.Combine(root, "rhino")
+    File.WriteAllText(path, "#!/bin/sh\nexit 0\n")
+
+    File.SetUnixFileMode(path, UnixFileMode.UserRead ||| UnixFileMode.UserWrite ||| UnixFileMode.UserExecute)
+
 /// Mirrors `gate_specs.rs::config` — a registry-only document.
 let private config (gates: string) : string = "gates:\n" + gates
 
@@ -99,6 +108,7 @@ type GateDeclarationSteps() =
 
         Directory.CreateDirectory dir |> ignore
         initializeGitRepository dir
+        stubRhino dir
         dir
 
     let mutable pendingGateType: string option = None

@@ -1,9 +1,9 @@
-/// TickSpec step definitions binding the `convention` namespace's three
+/// TickSpec step definitions binding the `convention` namespace's two
 /// Gherkin feature files to `RhinoCli.Application.Convention`
 /// [Repo-grounded —
 /// `specs/apps/rhino/cli/behaviours/convention/convention-audit.feature`,
-/// `.../repo-governance-emoji-audit.feature`,
-/// `.../repo-governance-license-audit.feature`].
+/// `.../repo-governance-license-audit.feature`]. Emoji rules are RHINO's
+/// `convention-emoji` section.
 ///
 /// Each xunit `[<Fact>]` below runs exactly one scenario at a time: it slices
 /// the single named scenario's lines out of the real, frozen feature file
@@ -17,7 +17,6 @@ module RhinoCli.Tests.Integration.Steps.ConventionResourceSteps
 /// TickSpec bindings to these canonical features.
 let private behaviourFeatureOwnership =
     [ "specs/apps/rhino/cli/behaviours/convention/convention-audit.feature"
-      "specs/apps/rhino/cli/behaviours/convention/repo-governance-emoji-audit.feature"
       "specs/apps/rhino/cli/behaviours/convention/repo-governance-license-audit.feature" ]
 
 
@@ -63,44 +62,6 @@ type ConventionSteps() =
         Directory.CreateDirectory(Path.GetDirectoryName(full)) |> ignore
         File.WriteAllText(full, content)
 
-    // ---- Given: repo-governance-emoji-audit.feature ----
-
-    [<Given>]
-    member _.``a source tree containing no emoji codepoints in forbidden file types``() =
-        rootDir <- Some(newTempDir ())
-        writeFile "clean.json" "{ \"label\": \"hello there\" }\n"
-        targetPath <- rootDir
-
-    [<Given>]
-    member _.``a JSON file containing an emoji codepoint``() =
-        rootDir <- Some(newTempDir ())
-        writeFile "emoji.json" "{ \"label\": \"hi \u2705 there\" }\n"
-        targetPath <- Some(Path.Combine(root (), "emoji.json"))
-
-    [<Given>]
-    member _.``a Go source file containing an emoji codepoint``() =
-        rootDir <- Some(newTempDir ())
-        writeFile "main.go" "package main\n\n// hi \u2705 there\n"
-        targetPath <- Some(Path.Combine(root (), "main.go"))
-
-    [<Given>]
-    member _.``a forbidden file containing multibyte non-emoji unicode such as Arabic``() =
-        rootDir <- Some(newTempDir ())
-        writeFile "arabic.json" "{ \"label\": \"مرحبا\" }\n"
-        targetPath <- Some(Path.Combine(root (), "arabic.json"))
-
-    [<Given>]
-    member _.``a source tree with an emoji-containing file inside the archived directory``() =
-        rootDir <- Some(newTempDir ())
-        writeFile "archived/old.json" "{ \"label\": \"hi \u2705 there\" }\n"
-        targetPath <- rootDir
-
-    [<Given>]
-    member _.``a source tree with an emoji-containing agent skill source file``() =
-        rootDir <- Some(newTempDir ())
-        writeFile ".claude/skills/sample/SKILL.md" "# Sample skill \u2705\n"
-        targetPath <- rootDir
-
     // ---- Given: repo-governance-license-audit.feature ----
 
     [<Given>]
@@ -132,20 +93,13 @@ type ConventionSteps() =
     // ---- When ----
 
     [<When>]
-    member _.``the developer runs convention emoji validate on the tree``() =
-        result <- Some(runEmojiValidate [ target () ])
-
-    [<When>]
-    member _.``the developer runs convention emoji validate on the file``() =
-        result <- Some(runEmojiValidate [ target () ])
-
-    [<When>]
     member _.``the developer runs convention license validate``() =
         result <- Some(runLicenseValidate (root ()))
 
     [<When>]
     member _.``the developer runs "rhino-cli convention audit"``() =
-        result <- Some(runConventionAudit (root ()) [])
+        // Emoji is RHINO's `convention emoji validate`; F# aggregates the license member.
+        result <- Some(aggregateConventionResults [ "license", runLicenseValidate (root ()) ] [])
 
     // ---- Then ----
 
@@ -158,17 +112,6 @@ type ConventionSteps() =
     member _.``the command exits with a failure code``() =
         let r = outcome ()
         Assert.False(r.Success, sprintf "expected failure, got output:\n%s" r.Output)
-
-    [<Then>]
-    member _.``the output reports zero emoji findings``() = Assert.Empty((outcome ()).Findings)
-
-    [<Then>]
-    member _.``the output identifies the offending file line and codepoint``() =
-        let r = outcome ()
-        Assert.NotEmpty(r.Findings)
-        let finding = List.head r.Findings
-        Assert.Contains("U+", finding.Message)
-        Assert.Contains(finding.Message, r.Output)
 
     [<Then>]
     member _.``the output reports zero license findings``() = Assert.Empty((outcome ()).Findings)
@@ -293,29 +236,3 @@ let ``LICENSING-NOTICE.md table row mismatching SPDX in LICENSE fails`` () =
     FeatureRunner.run
         "repo-governance-license-audit.feature"
         "LICENSING-NOTICE.md table row mismatching SPDX in LICENSE fails"
-
-// ---- repo-governance-emoji-audit.feature ----
-
-[<Fact>]
-let ``Clean source tree passes`` () =
-    FeatureRunner.run "repo-governance-emoji-audit.feature" "Clean source tree passes"
-
-[<Fact>]
-let ``Emoji codepoint in a JSON file fails`` () =
-    FeatureRunner.run "repo-governance-emoji-audit.feature" "Emoji codepoint in a JSON file fails"
-
-[<Fact>]
-let ``Emoji codepoint in a Go source file fails`` () =
-    FeatureRunner.run "repo-governance-emoji-audit.feature" "Emoji codepoint in a Go source file fails"
-
-[<Fact>]
-let ``Multibyte non-emoji unicode does not trigger a finding`` () =
-    FeatureRunner.run "repo-governance-emoji-audit.feature" "Multibyte non-emoji unicode does not trigger a finding"
-
-[<Fact>]
-let ``emoji-audit skips archived directory`` () =
-    FeatureRunner.run "repo-governance-emoji-audit.feature" "emoji-audit skips archived directory"
-
-[<Fact>]
-let ``emoji-audit skips policy-permitted agent skill files`` () =
-    FeatureRunner.run "repo-governance-emoji-audit.feature" "emoji-audit skips policy-permitted agent skill files"

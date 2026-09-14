@@ -81,9 +81,9 @@
       "node_modules/.bin/markdownlint-cli2",
       "apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate --exclude \"apps/rhino-cli/tests/fixtures\" --exclude \"plans/done\" --exclude \"apps/ayokoding-www/content\"",
       "apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate --exclude \"apps/rhino-cli/tests/fixtures\" --exclude \"plans/done\" --exclude \"apps/ayokoding-www/content\" --max-label-len \"20\"",
-      "apps/rhino-cli/scripts/rhino-bin.sh md heading-hierarchy validate",
-      "apps/rhino-cli/scripts/rhino-bin.sh md naming validate --exempt \"*__linkedin__*.md\" --exempt \"CONTRIBUTING.md\" --exempt \"pull_request_template.md\" --exempt \"RTK.md\" --exempt \"001-Context.md\" --exempt \"002-approach_two.md\"",
-      "apps/rhino-cli/scripts/rhino-bin.sh md frontmatter validate"
+      "bash -c 'apps/rhino-cli/scripts/rhino-bin.sh md heading-hierarchy validate' --",
+      "bash -c 'apps/rhino-cli/scripts/rhino-bin.sh md naming validate' --",
+      "bash -c 'apps/rhino-cli/scripts/rhino-bin.sh md frontmatter validate' --"
     ],
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "node_modules/.bin/prettier --write"
@@ -155,7 +155,7 @@
       "sh -ec 'for f; do [ ! -e \"$f\" ] || hadolint --failure-threshold warning \"$f\"; done' --"
     ],
     "*.{json,toml,ts,tsx,js,jsx,mjs,cjs,rs,go,py,cs,clj,dart,ex,exs,fs}": [
-      "apps/rhino-cli/scripts/rhino-bin.sh convention emoji validate"
+      "bash -c 'apps/rhino-cli/scripts/rhino-bin.sh convention emoji validate' --"
     ],
     "docker-compose*.{yml,yaml}": [
       "bash -c 'set -e; for f; do base=${f%.ci.yml}.yml; if [ \"$base\" != \"$f\" ] && [ -f \"$base\" ]; then docker compose -f \"$base\" -f \"$f\" config > /dev/null; else docker compose -f \"$f\" config > /dev/null; fi; done' --"

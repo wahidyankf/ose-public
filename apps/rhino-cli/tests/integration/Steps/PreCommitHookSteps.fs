@@ -1,6 +1,6 @@
 /// TickSpec step definitions binding the resequenced `git-pre-commit.feature`'s
-/// 5 scenarios to the git pre-commit hook's `md links validate`, `md mermaid
-/// validate`, and `md heading-hierarchy validate` steps
+/// 3 scenarios to the git pre-commit hook's `md links validate` and `md mermaid
+/// validate` steps
 /// [Repo-grounded — `specs/apps/rhino/cli/behaviours/git/git-pre-commit.feature`,
 /// `apps/rhino-cli/tests/git_hooks.rs`].
 ///
@@ -201,7 +201,7 @@ type PreCommitHookSteps() =
     [<Given>]
     member _.``staged markdown files contain a link to a non-existent target``() =
         targetFile <- "docs/index.md"
-        writeAndStage workDir targetFile "# Index\nSee [missing](./does-not-exist.md).\n"
+        writeAndStage workDir targetFile "# Index\nSee ![missing](./does-not-exist.png).\n"
 
     [<Given>]
     member _.``a staged markdown file under docs containing a mermaid diagram with a label exceeding the maximum length``
@@ -215,19 +215,9 @@ type PreCommitHookSteps() =
         writeAndStage workDir targetFile content
 
     [<Given>]
-    member _.``a staged markdown file under docs containing two H1 headings``() =
-        targetFile <- "docs/two-h1.md"
-        writeAndStage workDir targetFile "# First\n\ntext\n\n# Second\n\nmore text\n"
-
-    [<Given>]
-    member _.``a staged SKILL.md under .claude/skills with multiple H1 headings``() =
-        targetFile <- ".claude/skills/my-skill/SKILL.md"
-        writeAndStage workDir targetFile "# One\n\n# Two\n\n# Three\n"
-
-    [<Given>]
     member _.``a staged markdown file under plans/done containing a broken internal link``() =
         targetFile <- "plans/done/2024-01-01__old/notes.md"
-        writeAndStage workDir targetFile "# Notes\nSee [missing](./does-not-exist.md).\n"
+        writeAndStage workDir targetFile "# Notes\nSee ![missing](./does-not-exist.png).\n"
 
     // ---- When ----
 
@@ -278,29 +268,6 @@ type PreCommitHookSteps() =
                 stderrText <- sprintf "Error: %d mermaid violation(s) found\n" result.Violations.Length
                 exitCode <- 1
 
-    /// `md heading-hierarchy validate` has no `--staged-only` flag;
-    /// lint-staged invokes it with the staged file's path as a positional
-    /// argument, which is also how the real hook exercises it
-    /// [Repo-grounded —
-    /// `git_hooks.rs::when_run_heading_hierarchy_validate_staged`].
-    [<When>]
-    member _.``the pre-commit hook runs md heading-hierarchy validate on the staged file``() =
-        let findings = Md.validateDocsHeadingHierarchyForPaths workDir [ targetFile ]
-
-        if List.isEmpty findings then
-            stdoutText <- "DOCS HEADING HIERARCHY VALIDATION PASSED: no heading hierarchy violations found\n"
-            stderrText <- ""
-            exitCode <- 0
-        else
-            stdoutText <-
-                sprintf
-                    "DOCS HEADING HIERARCHY VALIDATION FAILED: %d violation(s) found\n%s\n"
-                    findings.Length
-                    (Finding.formatText findings)
-
-            stderrText <- sprintf "Error: %d docs heading hierarchy finding(s) found\n" findings.Length
-            exitCode <- (if Finding.hasBlocking findings then 1 else 0)
-
     // ---- Then ----
 
     [<Then>]
@@ -316,19 +283,12 @@ type PreCommitHookSteps() =
 
     [<Then>]
     member _.``the stderr output identifies the broken link target``() =
-        Assert.Contains("./does-not-exist.md", combinedOutput ())
+        Assert.Contains("./does-not-exist.png", combinedOutput ())
 
     [<Then>]
     member _.``the output indicates a mermaid violation was found``() =
         Assert.Contains("[FAIL]", stdoutText)
         Assert.Contains("Found 1 violation(s)", stdoutText)
-
-    [<Then>]
-    member _.``the output indicates a heading hierarchy violation was found``() =
-        Assert.Contains("DOCS HEADING HIERARCHY VALIDATION FAILED", stdoutText)
-
-    [<Then>]
-    member _.``the heading hierarchy step does not block the commit for that file``() = Assert.Equal(0, exitCode)
 
     [<Then>]
     member _.``the link validation step does not report a broken link for the plans/done file``() =
@@ -408,14 +368,6 @@ let ``Broken-link detection in step 7 reports per-link details`` () =
 [<Fact>]
 let ``staged-mermaid-blocks — staged malformed mermaid diagram blocks commit`` () =
     FeatureRunner.run "staged-mermaid-blocks — staged malformed mermaid diagram blocks commit"
-
-[<Fact>]
-let ``staged-prose-heading-blocks — staged docs file with bad heading hierarchy blocks commit`` () =
-    FeatureRunner.run "staged-prose-heading-blocks — staged docs file with bad heading hierarchy blocks commit"
-
-[<Fact>]
-let ``staged-skill-file-exempt — staged SKILL.md with bad heading hierarchy does not block commit`` () =
-    FeatureRunner.run "staged-skill-file-exempt — staged SKILL.md with bad heading hierarchy does not block commit"
 
 [<Fact>]
 let ``link-step-honors-exclusions — staged plans/done broken link does not block commit`` () =

@@ -37,6 +37,23 @@ let private runCli (root: string) =
     proc.WaitForExit()
     proc.ExitCode, stdout + stderr
 
+/// `repo-config validate` is split: it starts `./rhino` in the temp repository
+/// before its F# remainder, so a no-op stand-in lets the remainder scenarios run.
+let private stubRhino (root: string) =
+    let path = Path.Combine(root, "rhino")
+    File.WriteAllText(path, "#!/bin/sh\nexit 0\n")
+
+    File.SetUnixFileMode(
+        path,
+        UnixFileMode.UserRead
+        ||| UnixFileMode.UserWrite
+        ||| UnixFileMode.UserExecute
+        ||| UnixFileMode.GroupRead
+        ||| UnixFileMode.GroupExecute
+        ||| UnixFileMode.OtherRead
+        ||| UnixFileMode.OtherExecute
+    )
+
 let private initializeGitRepository (root: string) =
     let info =
         ProcessStartInfo(FileName = "git", WorkingDirectory = root, UseShellExecute = false)
@@ -46,6 +63,7 @@ let private initializeGitRepository (root: string) =
     use proc = Process.Start info
     proc.WaitForExit()
     Assert.Equal(0, proc.ExitCode)
+    stubRhino root
 
 let private replaceFirst (pattern: string) (replacement: string) (input: string) =
     let index = input.IndexOf(pattern, StringComparison.Ordinal)

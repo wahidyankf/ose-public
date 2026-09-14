@@ -34,6 +34,23 @@ let private wordBudgetConfig =
     + "  resolved_tree:\n    root: \"CLAUDE.md\"\n    target: 1200\n    warn: 1500\n    fail: 1500\n"
     + "gates:\n  - id: governance-word-budget\n    type: check\n    command: governance word-budget validate\n    kind: rhino-cli\n    surfaces:\n      pre-push: { scope: all-file-type }\n"
 
+/// A split command starts `./rhino` in the temp repository before its F#
+/// remainder; this no-op stand-in lets the remainder scenarios run.
+let private stubRhino (root: string) =
+    let path = Path.Combine(root, "rhino")
+    File.WriteAllText(path, "#!/bin/sh\nexit 0\n")
+
+    File.SetUnixFileMode(
+        path,
+        UnixFileMode.UserRead
+        ||| UnixFileMode.UserWrite
+        ||| UnixFileMode.UserExecute
+        ||| UnixFileMode.GroupRead
+        ||| UnixFileMode.GroupExecute
+        ||| UnixFileMode.OtherRead
+        ||| UnixFileMode.OtherExecute
+    )
+
 let private initialize root =
     Directory.CreateDirectory root |> ignore
 
@@ -45,6 +62,7 @@ let private initialize root =
     use commandProcess = Process.Start info
     commandProcess.WaitForExit()
     Assert.Equal(0, commandProcess.ExitCode)
+    stubRhino root
     File.WriteAllText(Path.Combine(root, "repo-config.yml"), wordBudgetConfig)
 
 let private invoke root arguments =
@@ -172,10 +190,6 @@ type GovernanceProcessSteps() =
         Assert.False(File.Exists(full (currentDirectory + "/" + name)))
 
     [<Given>]
-    member _.``"([^"]+)" contains no "([^"]+)"``(directory: string, name: string) =
-        Assert.False(File.Exists(full (directory + name)))
-
-    [<Given>]
     member _.``file "([^"]+)" exists``(path: string) =
         write path "# Index\n"
         currentDirectory <- parent path
@@ -284,9 +298,6 @@ type GovernanceProcessSteps() =
         Assert.Contains(name, output)
         Assert.Contains("unannotated", output)
 
-    [<Then>]
-    member _.``the finding reports a missing index for that directory``() = Assert.Contains("missing", output)
-
     [<Given>]
     member _.``the developer invokes governance readme-index validate with "--paths (.*)"``(path: string) =
         arguments <- [ "--paths"; path ]
@@ -308,10 +319,9 @@ type GovernanceProcessSteps() =
         Assert.Equal(0, exitCode)
 
     [<Given>]
-    member _.``a scanned directory has one "orphan" finding and one "missing" finding``() =
-        write "repo-governance/README.md" "# Root\n"
+    member _.``a scanned directory has one "orphan" finding and one "ghost" finding``() =
+        write "repo-governance/README.md" "# Root\n\n- [Ghost](./ghost.md) - a link to no file\n"
         write "repo-governance/orphan.md" "# Orphan\n"
-        write "repo-governance/missing/child.md" "# Child\n"
 
     [<When>]
     member _.``the developer runs governance readme-index validate with "--fail-kinds (.*)"``(kind: string) =
@@ -444,30 +454,6 @@ type GovernanceProcessSteps() =
         |> List.iter (fun value -> Assert.Contains(string value, config))
 
     [<Given>]
-    member _.``"([^"]+)" contains (\d+) words``(path: string, count: int) =
-        lastPath <- path
-        write path (words count)
-
-    [<Given>]
-    member _.``a file "([^"]+)" contains (\d+) words``(path: string, count: int) =
-        lastPath <- path
-        write path (words count)
-
-    [<Given>]
-    member _.``"([^"]+)" contains (\d+) prose words``(path: string, count: int) =
-        lastPath <- path
-        write path (words count)
-
-    [<Given>]
-    member _.``it contains a Mermaid block of (\d+) words``(count: int) =
-        File.AppendAllText(full lastPath, " " + words count)
-
-    [<Given>]
-    member _.``no file exists at "([^"]+)"``(path: string) =
-        lastPath <- path
-        Assert.False(File.Exists(full path))
-
-    [<Given>]
     member _.``the resolved CLAUDE.md tree totals (\d+) words``(count: int) =
         lastPath <- "CLAUDE.md"
         write lastPath (words count)
@@ -501,56 +487,9 @@ type GovernanceProcessSteps() =
     member _.``the word-budget command exits with a failure code``() = Assert.NotEqual(0, exitCode)
 
     [<Then>]
-    member _.``the output contains no finding for that file``() = Assert.DoesNotContain(lastPath, output)
-
-    [<Then>]
-    member _.``the output contains no finding naming that file``() = Assert.DoesNotContain(lastPath, output)
-
-    [<Then>]
-    member _.``the output contains a "([^"]+)" finding naming that file``(severity: string) =
-        Assert.Contains(severity.ToUpperInvariant(), output.ToUpperInvariant())
-        Assert.Contains(lastPath, output)
-
-    [<Then>]
-    member _.``the output contains a "([^"]+)" finding naming "([^"]+)"``(severity: string, path: string) =
-        Assert.Contains(severity.ToUpperInvariant(), output.ToUpperInvariant())
-        Assert.Contains(path, output)
-
-    [<Then>]
-    member _.``the output contains a "([^"]+)" finding naming that file, not a "([^"]+)" finding``
-        (wanted: string, unwanted: string)
-        =
-        Assert.Contains(wanted.ToUpperInvariant(), output.ToUpperInvariant())
-        Assert.DoesNotContain((unwanted + ": " + lastPath).ToUpperInvariant(), output.ToUpperInvariant())
-
-    [<Then>]
     member _.``the output contains a "([^"]+)" finding for the resolved tree``(severity: string) =
         Assert.Contains(severity.ToUpperInvariant(), output.ToUpperInvariant())
         Assert.Contains("resolved-tree", output)
-
-    [<Then>]
-    member _.``no finding is emitted for "([^"]+)"``(path: string) = Assert.DoesNotContain(path, output)
-
-    [<Then>]
-    member _.``the finding names "([^"]+)"``(path: string) = Assert.Contains(path, output)
-
-    [<Then>]
-    member _.``the finding states the word count (\d+) and the ceiling (\d+)``(count: int, ceiling: int) =
-        Assert.Contains(string count, output)
-        Assert.Contains(string ceiling, output)
-
-    [<Then>]
-    member _.``the finding links the governance word budget convention``() =
-        Assert.Contains("progressive-disclosure.md", output)
-
-    [<Then>]
-    member _.``the reported word count is (\d+)``(count: int) = Assert.Contains(string count, output)
-
-    [<Then>]
-    member _.``this holds even though 900 words exceeds the general surface's 750-word fail ceiling, because the winning README-specific surface classifies 900 words as "([^"]+)" against its own 900-word target``
-        (_severity: string)
-        =
-        Assert.Equal(0, exitCode)
 
     [<Then>]
     member _.``the output contains no gate id "([^"]+)"``(gateId: string) = Assert.DoesNotContain(gateId, output)
@@ -624,9 +563,7 @@ let private readmeScenarios =
     [ "A complete index passes"
       "A missing sibling link fails"
       "A missing subdirectory README link fails"
-      "A missing README fails when siblings exist"
       "The rule does not reach grandchildren"
-      "A split directory still needs its own README"
       "A split directory whose parent omits a child fails"
       "An uncovered tree is not scanned"
       "A generated mirror directory is not scanned"
@@ -642,22 +579,10 @@ let private readmeScenarios =
       "Rewrite-paths updates link targets without touching order" ]
 
 let private wordScenarios =
-    [ "A file within target passes silently"
-      "A file between target and fail warns without blocking"
-      "A file over the ceiling fails the gate"
-      "Every covered surface is scanned"
-      "A configured glob matching no file is a no-op"
-      "A root entry point uses the ordinary 750-word ceiling"
-      "A README.md file under the specific-surface target produces zero findings"
-      "A README.md file uses the wider README-specific glob threshold"
-      "A README.md file over the wider ceiling still fails"
-      "Non-prose content counts toward the budget"
-      "An out-of-scope file is never scanned"
-      "The config schema rejects an exemption key"
+    [ "The config schema rejects an exemption key"
       "The old command is gone"
       "The old gate id is replaced by the armed word-budget gate"
       "An oversized resolved tree fails"
-      "A generated mirror is still subject to the word budget"
       "No inbound link to the renamed convention is left broken" ]
 
 [<Fact>]

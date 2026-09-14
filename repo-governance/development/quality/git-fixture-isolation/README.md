@@ -9,9 +9,9 @@ when_to_use: "Read this index to find the right Git Fixture Isolation Convention
 - [Conventions Implemented/Respected](./conventions-implemented-respected.md) — Conventions this convention implements. Use to trace this convention's cross-references.
 - [Purpose](./purpose.md) — Why this convention exists. Use when orienting to why git-fixture isolation is required.
 - [Scope](./scope.md) — Which tests and fixtures this convention covers. Use when checking whether a test or fixture is in scope.
-- [The Motivating Incident (part 1)](./the-motivating-incident-part-1.md) — The incident: a git-fixture test corrupted the real repository. Use for the incident that motivated this convention.
-- [The Motivating Incident (part 2)](./the-motivating-incident-part-2.md) — Root-cause investigation status and open hypotheses. Use for the incident's root-cause status.
-- [The Motivating Incident (part 3)](./the-motivating-incident-part-3.md) — Why exit-status checking alone cannot catch this defect class. Use when evaluating whether an exit-status check alone is sufficient isolation.
+- [The Motivating Incident (part 1)](./the-motivating-incident-repository-corruption.md) — The incident: a git-fixture test corrupted the real repository. Use for the incident that motivated this convention.
+- [The Motivating Incident (part 2)](./the-motivating-incident-root-cause-status.md) — Root-cause investigation status and open hypotheses. Use for the incident's root-cause status.
+- [The Motivating Incident (part 3)](./the-motivating-incident-exit-status-limits.md) — Why exit-status checking alone cannot catch this defect class. Use when evaluating whether an exit-status check alone is sufficient isolation.
 - [The Rule: Six Mandatory Layers (Standard 1)](./the-rule-six-mandatory-layers-standard-1.md) — Standard 1: cap discovery (GIT_CEILING_DIRECTORIES). Use when implementing capped git-discovery in a fixture.
 - [The Rule: Six Mandatory Layers (Standard 2)](./the-rule-six-mandatory-layers-standard-2.md) — Standard 2: no ambient discovery (explicit GIT_DIR). Use when implementing explicit GIT_DIR targeting in a fixture.
 - [The Rule: Six Mandatory Layers (Standards 3-4)](./the-rule-six-mandatory-layers-standards-3-4.md) — Standards 3-4: identity/config hygiene, escape guard. Use when implementing identity blanking or an escape guard.

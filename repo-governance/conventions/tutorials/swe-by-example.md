@@ -35,7 +35,7 @@ This convention **extends the [Tutorials Convention](../tutorials/general.md) fo
 18. [File Naming and Organization: Directory Structure and Naming](./swe-by-example/file-naming-and-directory-structure.md) — Defines the
 19. [Examples-by-Level Section: Slug Algorithm and Example Numbering](./swe-by-example/examples-by-level-slug-algorithm-and-numbering.md) — Details the
 20. [Frontmatter Requirements and Quality Checklist](./swe-by-example/frontmatter-requirements-and-quality-checklist.md) — Checklist start.
-    - [Quality Checklist: Educational Value, Diagrams, and Structure](./swe-by-example/quality-checklist-continued.md) — Continues the
+    - [Quality Checklist: Educational Value, Diagrams, and Structure](./swe-by-example/quality-checklist-educational-value-diagrams-structure.md) — Continues the
 21. [Validation and Enforcement, and Relationship to Other Tutorial Types](./swe-by-example/validation-enforcement-and-relationship-to-other-types.md) — Lists what
 22. [Cross-Language Consistency, Standards Summary, and Principles](./swe-by-example/cross-language-consistency-and-standards-summary.md) — Defines what
 23. [Scope and Related References](./swe-by-example/scope-and-related-references.md) — States what

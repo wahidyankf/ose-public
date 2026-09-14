@@ -69,7 +69,7 @@ fix_p2_normal()        # MEDIUM + HIGH confidence
 - Team accountability
 - Maintains codebase health
 
-**See**: [Nx Target Standards](../infra/nx-targets.md) for the full execution model and CI integration rules.
+**See**: [Nx Target Standards](../../infra/nx-targets.md) for the full execution model and CI integration rules.
 
 ## Anti-Pattern 9: Undocumented Validation Rules
 

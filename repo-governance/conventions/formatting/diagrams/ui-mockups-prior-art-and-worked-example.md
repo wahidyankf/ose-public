@@ -22,8 +22,8 @@ The full funnel is demonstrated for the Salary Savings Calculator compare-all sc
 - Stage 1 diverge (low-fi): three named alternatives in
   [`example-low-fi-wireframe.md`](../../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/assets/example-low-fi-wireframe.md)
 - Stage 2 narrow (hi-fi finalists):
-  [`example-hi-fi-option-a-ranked-table.png`](../../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/assets/example-hi-fi-option-a-ranked-table.png)
+  [`example-hi-fi-option-a-ranked-table.svg`](../../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/assets/example-hi-fi-option-a-ranked-table.svg)
   and
-  [`example-hi-fi-option-c-split.png`](../../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/assets/example-hi-fi-option-c-split.png)
+  [`example-hi-fi-option-c-split.svg`](../../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/assets/example-hi-fi-option-c-split.svg)
 - Stages 3–4 select + justify: named selection (Option A) and the rationale table in
   [`assets/README.md`](../../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/assets/README.md)

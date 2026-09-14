@@ -17,5 +17,5 @@ not: a new escape appends here without touching the reasoning it exists to test.
 7. `<M>` was never constrained, and `<pattern>` was never quoted.
 
 Entries 1-7 were each closed by naming the thing just abused — the era before the invariants
-existed. [Entries 8 onward](./refutation-clause-escape-ledger-part-2.md) were closed differently,
+existed. [Entries 8 onward](./refutation-clause-escape-ledger-invariant-closures.md) were closed differently,
 and that difference is the point of keeping the record.

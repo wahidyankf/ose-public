@@ -8,7 +8,7 @@ when_to_use: "Use when you need the rationale behind a specific markdown quality
 - [Content Quality Convention](../../../conventions/writing/quality.md) — heading hierarchy
   enforcement (prose allowlist + gate locations)
 - [Indentation Convention](../../../conventions/formatting/indentation.md)
-- [Linking Convention](../../conventions/formatting/linking.md) — anchor (`#fragment`)
+- [Linking Convention](../../../conventions/formatting/linking.md) — anchor (`#fragment`)
   validation via `rhino-cli md links validate`
 - [Diagram and Schema Convention](../../../conventions/formatting/diagrams.md) — Mermaid
   validation gate location (pre-commit + CI; not pre-push)

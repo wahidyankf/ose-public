@@ -1,6 +1,5 @@
 /// Plain xunit tests for the Wave D half of `RhinoCli.Cli.Formatters` — the
-/// `md naming`, `md heading-hierarchy`, `md frontmatter`,
-/// `md frontmatter-dates`, `md links`, `governance word-budget`, and
+/// `md frontmatter`, `md frontmatter-dates`, `md links`, `governance word-budget`, and
 /// `governance readme-index` renderers, in all three output formats.
 ///
 /// `shadow-diff.sh` proves these byte-match the Rust binary, but only for the
@@ -26,13 +25,6 @@ let private finding (severity: Severity) (path: string) (message: string) : Find
     { Severity = severity
       Message = message
       Path = Some path }
-
-let private headingFinding: Md.HeadingFinding =
-    { File = "docs/a.md"
-      Line = 12
-      Severity = "high"
-      Kind = "skipped-level"
-      Message = "h2 followed by h4" }
 
 let private frontmatterDatesFinding: Md.FrontmatterDatesFinding =
     { File = "docs/b.md"
@@ -91,82 +83,6 @@ let ``render dispatches to the arm its format names`` () =
     Assert.Equal("T", pick Text)
     Assert.Equal("J", pick Json)
     Assert.Equal("M", pick Markdown)
-
-// ---------------------------------------------------------------------------
-// md naming
-// ---------------------------------------------------------------------------
-
-[<Fact>]
-let ``namingText reports the passing line when there are no findings`` () =
-    Assert.Equal("DOCS NAMING VALIDATION PASSED: no naming violations found\n", namingText [])
-
-[<Fact>]
-let ``namingText counts violations and renders one indented row each`` () =
-    let text =
-        namingText
-            [ finding Severity.Blocking "docs/Bad_Name.md" "uppercase"
-              finding Severity.Blocking "docs/other.MD" "extension" ]
-
-    Assert.StartsWith("DOCS NAMING VALIDATION FAILED: 2 violation(s) found\n", text)
-    Assert.Contains("  docs/Bad_Name.md  [high]  uppercase\n", text)
-    Assert.Contains("  docs/other.MD  [high]  extension\n", text)
-
-[<Fact>]
-let ``namingJson carries its schema and flips status with the finding list`` () =
-    let passed = namingJson []
-    assertJsonSchema "rhino-cli/docs-validate-naming/v1" passed
-    Assert.Contains("\"status\": \"passed\"", passed)
-
-    let failed = namingJson [ finding Severity.Blocking "docs/Bad_Name.md" "uppercase" ]
-    assertJsonSchema "rhino-cli/docs-validate-naming/v1" failed
-    Assert.Contains("\"status\": \"failed\"", failed)
-    Assert.Contains("docs/Bad_Name.md", failed)
-
-[<Fact>]
-let ``namingMarkdown renders a three-column table only when findings exist`` () =
-    Assert.Equal("## Docs Filename Naming Validation\n\n**PASSED**: no naming violations found\n", namingMarkdown [])
-
-    let markdown =
-        namingMarkdown [ finding Severity.Blocking "docs/Bad_Name.md" "uppercase" ]
-
-    Assert.Contains("**FAILED**: 1 violation(s) found", markdown)
-    Assert.Contains("| File | Severity | Message |", markdown)
-    Assert.Contains("| docs/Bad_Name.md | high | uppercase |", markdown)
-
-// ---------------------------------------------------------------------------
-// md heading-hierarchy
-// ---------------------------------------------------------------------------
-
-[<Fact>]
-let ``headingHierarchyText reports the passing line when there are no findings`` () =
-    Assert.Equal(
-        "DOCS HEADING HIERARCHY VALIDATION PASSED: no heading hierarchy violations found\n",
-        headingHierarchyText []
-    )
-
-[<Fact>]
-let ``headingHierarchyText renders file, line, severity and kind per row`` () =
-    let text = headingHierarchyText [ headingFinding ]
-    Assert.StartsWith("DOCS HEADING HIERARCHY VALIDATION FAILED: 1 violation(s) found\n", text)
-    Assert.Contains("  docs/a.md:12  [high]  [skipped-level]  h2 followed by h4\n", text)
-
-[<Fact>]
-let ``headingHierarchyJson carries its schema and both statuses`` () =
-    let passed = headingHierarchyJson []
-    assertJsonSchema "rhino-cli/docs-validate-heading-hierarchy/v1" passed
-    Assert.Contains("\"status\": \"passed\"", passed)
-
-    let failed = headingHierarchyJson [ headingFinding ]
-    Assert.Contains("\"status\": \"failed\"", failed)
-    Assert.Contains("skipped-level", failed)
-
-[<Fact>]
-let ``headingHierarchyMarkdown renders a five-column table when findings exist`` () =
-    Assert.Contains("**PASSED**", headingHierarchyMarkdown [])
-
-    let markdown = headingHierarchyMarkdown [ headingFinding ]
-    Assert.Contains("| File | Line | Severity | Kind | Message |", markdown)
-    Assert.Contains("| docs/a.md | 12 | high | skipped-level | h2 followed by h4 |", markdown)
 
 // ---------------------------------------------------------------------------
 // md frontmatter

@@ -14,10 +14,12 @@ chain honest before there is pressure on it.
 
 ```mermaid
 flowchart LR
+    accTitle: System Context
+    accDescr: Operations engineer leads to OrganicLever BE via health check; OrganicLever App Web leads to OrganicLever BE via system-status diagnostic; OpenAPI 3.1 contract leads to OrganicLever BE via generates models; and 1 more links.
     OPS[Operations engineer] -->|health check| BE[OrganicLever BE]
-    APP[OrganicLever App Web] -->|system-status diagnostic| BE
+    APP[OrganicLever App Web] -->|system-status<br/>diagnostic| BE
     CONTRACT[(OpenAPI 3.1 contract)] -->|generates models| BE
-    CONTRACT -->|generates client types| APP
+    CONTRACT -->|generates client<br/>types| APP
 ```
 
 Both callers read the same contract, which is why a route's shape is a cross-project change rather

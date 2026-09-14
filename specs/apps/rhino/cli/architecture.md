@@ -15,12 +15,14 @@ file except through an explicit generator verb (`harness bindings generate`,
 
 ```mermaid
 flowchart LR
-    DEV[Repository contributor] --> CLI[rhino-cli]
-    HOOK[Git hooks<br/>pre-commit, commit-msg<br/>pre-push] --> CLI
-    CI[GitHub Actions workflows] --> CLI
+    accTitle: System Context
+    accDescr: Repository contributor leads to rhino-cli; Git hooks pre-commit, commit-msg pre-push leads to rhino-cli; GitHub Actions workflows leads to rhino-cli; rhino-cli leads to Working tree and Git index; rhino-cli leads to repo-config.yml; and 1 more links.
+    DEV[Repository<br/>contributor] --> CLI[rhino-cli]
+    HOOK[Git hooks<br/>pre-commit,<br/>commit-msg<br/>pre-push] --> CLI
+    CI[GitHub Actions<br/>workflows] --> CLI
     CLI --> TREE[(Working tree<br/>and Git index)]
     CLI --> CFG[(repo-config.yml)]
-    CLI --> TOOLS[Local toolchain<br/>git, dotnet, node, prettier]
+    CLI --> TOOLS[Local toolchain<br/>git, dotnet, node,<br/>prettier]
 ```
 
 Three actors invoke the same binary with the same argv grammar: a contributor at a terminal, a Git
@@ -48,9 +50,11 @@ is the local last resort and is the only tier that needs the SDK.
 
 ```mermaid
 flowchart TD
-    PROG[RhinoCli.Program<br/>entry point] --> DISP[RhinoCli.Cli<br/>Dispatch, HelpText, Formatters]
-    DISP --> APP[RhinoCli.Application<br/>one module per namespace]
-    APP --> INFRA[RhinoCli.Infrastructure<br/>GitRoot]
+    accTitle: Components
+    accDescr: RhinoCli.Program entry point leads to RhinoCli.Cli Dispatch, HelpText, Formatters; RhinoCli.Cli Dispatch, HelpText, Formatters leads to RhinoCli.Application one module per namespace; RhinoCli.Application one module per namespace leads to RhinoCli.Infrastructure GitRoot; and 2 more links.
+    PROG[RhinoCli.Program<br/>entry point] --> DISP[RhinoCli.Cli<br/>Dispatch, HelpText,<br/>Formatters]
+    DISP --> APP[RhinoCli.Application<br/>one module per<br/>namespace]
+    APP --> INFRA[RhinoCli.<br/>Infrastructure<br/>GitRoot]
     APP --> DOM[RhinoCli.Domain<br/>Finding, Types]
     DISP --> DOM
 ```

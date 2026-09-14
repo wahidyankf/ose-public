@@ -22,16 +22,17 @@ dependencies, and capacity allow.
   security, operational, or quality checks.
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2', 'primaryTextColor':'#fff', 'primaryBorderColor':'#000', 'lineColor':'#000', 'secondaryColor':'#DE8F05', 'tertiaryColor':'#029E73', 'clusterBkg':'#f5f5f5', 'clusterBorder':'#000', 'edgeLabelBackground':'#fff'}}}%%
 flowchart TB
-    Mission["OSE Mission<br/>Trustworthy open systems"]
+    accTitle: 🔀 Operating Model
+    accDescr: OSE Mission Trustworthy open systems leads to Product Delivery OrganicLever; OSE Mission Trustworthy open systems leads to Business & Enterprise Research Domain discovery and prototypes; and 4 more links.
+    Mission["OSE Mission<br/>Trustworthy open<br/>systems"]
 
     Mission --> Product["Product Delivery<br/>OrganicLever"]
-    Mission --> Business["Business & Enterprise Research<br/>Domain discovery and prototypes"]
-    Mission --> Shariah["Shariah & Regulatory Research<br/>Principles, rules, and review"]
-    Mission --> Trust["Trust & Assurance<br/>Security, privacy, and compliance"]
-    Mission --> Platform["Platform & Operations<br/>Architecture, tooling, and infrastructure"]
-    Mission --> Learning["Public Learning<br/>AyoKoding and OSE updates"]
+    Mission --> Business["Business &<br/>Enterprise Research<br/>Domain discovery and<br/>prototypes"]
+    Mission --> Shariah["Shariah & Regulatory<br/>Research<br/>Principles, rules,<br/>and review"]
+    Mission --> Trust["Trust & Assurance<br/>Security, privacy,<br/>and compliance"]
+    Mission --> Platform["Platform &<br/>Operations<br/>Architecture,<br/>tooling, and<br/>infrastructure"]
+    Mission --> Learning["Public Learning<br/>AyoKoding and OSE<br/>updates"]
 
     Product <-. "evidence & needs" .-> Business
     Product <-. "controls & review" .-> Shariah
@@ -40,12 +41,12 @@ flowchart TB
     Business -. "research" .-> Learning
     Platform -. "learnings" .-> Learning
 
-    classDef mission fill:#CA9161,stroke:#000,color:#fff,stroke-width:3px
-    classDef product fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef research fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef assurance fill:#DE8F05,stroke:#000,color:#000,stroke-width:2px
-    classDef platform fill:#CC78BC,stroke:#000,color:#000,stroke-width:2px
-    classDef learning fill:#56B4E9,stroke:#000,color:#000,stroke-width:2px
+    classDef mission fill:#CA9161,stroke:#000000,color:#000000,stroke-width:3px
+    classDef product fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef research fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef assurance fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef platform fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef learning fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
 
     class Mission mission
     class Product product

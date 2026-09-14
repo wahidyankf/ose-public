@@ -13,7 +13,9 @@ be generated ahead of a request.
 
 ```mermaid
 flowchart LR
-    VISITOR[Visitor<br/>desktop, tablet, mobile] --> WWW[OSE Web]
+    accTitle: System Context
+    accDescr: Visitor desktop, tablet, mobile leads to OSE Web; Content author leads to content/**.md Markdown + YAML; OSE Web leads to content/**.md Markdown + YAML; OSE Web leads to Vercel Edge Network; and 1 more links.
+    VISITOR[Visitor<br/>desktop, tablet,<br/>mobile] --> WWW[OSE Web]
     AUTHOR[Content author] --> CONTENT[(content/**.md<br/>Markdown + YAML)]
     WWW --> CONTENT
     WWW --> VERCEL[Vercel Edge Network]

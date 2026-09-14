@@ -14,6 +14,8 @@ nothing a reload would need to recover.
 
 ```mermaid
 flowchart LR
+    accTitle: System Context
+    accDescr: Compliance officer leads to OSE App Web; Risk team member leads to OSE App Web; OSE App Web leads to OSE BE via HTTP /api/v1/*; OSE App Web leads to Vercel Edge Network.
     OFFICER[Compliance officer] --> WEB[OSE App Web]
     RISK[Risk team member] --> WEB
     WEB -->|HTTP /api/v1/*| BE[OSE BE]

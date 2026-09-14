@@ -13,9 +13,11 @@ The browser is the database.
 
 ```mermaid
 flowchart LR
+    accTitle: System Context
+    accDescr: End user desktop, mobile leads to OrganicLever App Web; OrganicLever App Web leads to PGlite Postgres-WASM in IndexedDB; OrganicLever App Web leads to OrganicLever BE via system-status diagnostic.
     USER[End user<br/>desktop, mobile] --> APP[OrganicLever App Web]
-    APP --> PG[(PGlite<br/>Postgres-WASM in IndexedDB)]
-    APP -->|system-status diagnostic| BE[OrganicLever BE]
+    APP --> PG[(PGlite<br/>Postgres-WASM in<br/>IndexedDB)]
+    APP -->|system-status<br/>diagnostic| BE[OrganicLever BE]
 ```
 
 The only outbound call is the system-status diagnostic. Every user-visible write lands in PGlite, so

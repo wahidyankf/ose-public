@@ -13,9 +13,11 @@ provider credential and the only one that writes to the database.
 
 ```mermaid
 flowchart LR
+    accTitle: System Context
+    accDescr: OSE App Web leads to OSE BE via HTTP /api/v1/*; Operations engineer leads to OSE BE via health check; OSE BE leads to PostgreSQL 17 documents, policies, reports; OSE BE leads to NATS JetStream; and 1 more links.
     WEB[OSE App Web] -->|HTTP /api/v1/*| BE[OSE BE]
     OPS[Operations engineer] -->|health check| BE
-    BE --> PG[(PostgreSQL 17<br/>documents, policies, reports)]
+    BE --> PG[(PostgreSQL 17<br/>documents, policies,<br/>reports)]
     BE --> NATS[NATS JetStream]
     BE -->|LLM requests| OR[OpenRouter]
 ```

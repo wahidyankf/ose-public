@@ -14,9 +14,11 @@ rather than tracking anything.
 
 ```mermaid
 flowchart LR
-    VISITOR[Visitor<br/>desktop, tablet, mobile] --> WWW[OrganicLever Web]
+    accTitle: System Context
+    accDescr: Visitor desktop, tablet, mobile leads to OrganicLever Web; OrganicLever Web leads to Vercel Edge Network; OrganicLever Web leads to web-ui and web-ui-token.
+    VISITOR[Visitor<br/>desktop, tablet,<br/>mobile] --> WWW[OrganicLever Web]
     WWW --> VERCEL[Vercel Edge Network]
-    WWW --> UI[web-ui and web-ui-token]
+    WWW --> UI[web-ui and<br/>web-ui-token]
 ```
 
 The site is the entry point to the product: a visitor arrives here and leaves for the app. Nothing

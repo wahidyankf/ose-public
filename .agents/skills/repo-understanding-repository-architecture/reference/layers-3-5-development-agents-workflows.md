@@ -84,11 +84,12 @@ Agent: docs-fixer (applies corrections)
 
 **Example**:
 
-```
-Maker-Checker-Fixer Workflow:
-1. Maker creates → draft
-2. Checker validates → audit report
-3. User reviews → approve/reject
-4. Fixer applies fixes → corrected
-5. Terminate: all findings resolved
+```mermaid
+flowchart TD
+    accTitle: Layer 5: Workflows WHEN - Multi-Step Processes
+    accDescr: The maker creates a draft, the checker validates it into an audit report, the user approves or rejects it, the fixer applies fixes, and the workflow terminates when all findings are resolved.
+    M["Maker creates<br/>draft"] --> C["Checker validates<br/>audit report"]
+    C --> U["User reviews<br/>approve or reject"]
+    U --> F["Fixer applies fixes<br/>corrected"]
+    F --> T["Terminate<br/>findings resolved"]
 ```

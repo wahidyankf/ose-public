@@ -14,8 +14,10 @@ Next.js process.
 
 ```mermaid
 flowchart LR
-    LEARNER[Learner<br/>desktop, tablet, mobile] --> WEB[AyoKoding Web]
-    AUTHOR[Content Author] --> CONTENT[(content/en, content/id<br/>Markdown + YAML)]
+    accTitle: System Context
+    accDescr: Learner desktop, tablet, mobile leads to AyoKoding Web; Content Author leads to content/en, content/id Markdown + YAML; AyoKoding Web leads to content/en, content/id Markdown + YAML; AyoKoding Web leads to Vercel Edge Network; and 2 more links.
+    LEARNER[Learner<br/>desktop, tablet,<br/>mobile] --> WEB[AyoKoding Web]
+    AUTHOR[Content Author] --> CONTENT[(content/en,<br/>content/id<br/>Markdown + YAML)]
     WEB --> CONTENT
     WEB --> VERCEL[Vercel Edge Network]
     WEB --> GA4[Google Analytics 4]

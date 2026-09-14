@@ -13,12 +13,14 @@ in a report. Everything runs locally against files on disk; the tool never reach
 
 ```mermaid
 flowchart LR
-    DEV[Repository contributor] --> CLI[crane-cli]
+    accTitle: System Context
+    accDescr: Repository contributor leads to crane-cli; pdf-to-md agents leads to crane-cli; Quality-gate workflow leads to crane-cli; crane-cli leads to PDF and Markdown files; crane-cli leads to Report and skiplist files; and 1 more links.
+    DEV[Repository<br/>contributor] --> CLI[crane-cli]
     AGENT[pdf-to-md agents] --> CLI
-    GATE[Quality-gate workflow] --> CLI
-    CLI --> PDF[(PDF and Markdown files)]
-    CLI --> REPORT[(Report and skiplist files)]
-    CLI --> TESS[Tesseract language data<br/>apps/crane-cli/tessdata]
+    GATE[Quality-gate<br/>workflow] --> CLI
+    CLI --> PDF[(PDF and Markdown<br/>files)]
+    CLI --> REPORT[(Report and skiplist<br/>files)]
+    CLI --> TESS[Tesseract language<br/>data<br/>apps/crane-cli/<br/>tessdata]
 ```
 
 Three callers share one argv grammar and one JSON output shape. The agents are the reason the
@@ -38,7 +40,9 @@ Crane is ports-and-adapters. The executable owns its inbound command adapter and
 
 ```mermaid
 flowchart TD
-    IN[crane-cli<br/>Adapters/In/CliAdapter] --> LOGIC[fsharp-crane-core<br/>Core/Logic]
+    accTitle: Components
+    accDescr: crane-cli Adapters/In/CliAdapter leads to fsharp-crane-core Core/Logic; fsharp-crane-core Core/Logic leads to fsharp-crane-core Core/Domain; fsharp-crane-core Core/Logic leads to fsharp-crane-core Adapters/Out.
+    IN[crane-cli<br/>Adapters/In/<br/>CliAdapter] --> LOGIC[fsharp-crane-core<br/>Core/Logic]
     LOGIC --> DOMAIN[fsharp-crane-core<br/>Core/Domain]
     LOGIC --> OUT[fsharp-crane-core<br/>Adapters/Out]
 ```

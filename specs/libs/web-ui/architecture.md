@@ -13,12 +13,14 @@ data fetching, or application state.
 
 ```mermaid
 flowchart LR
+    accTitle: Consuming Boundary
+    accDescr: ayokoding-www leads to web-ui; organiclever-app-web leads to web-ui; organiclever-www leads to web-ui; ose-app-web leads to web-ui; ose-www leads to web-ui; web-ui leads to web-ui-token structural + brand tokens; web-ui leads to Radix UI primitives.
     AYO[ayokoding-www] --> UI[web-ui]
     OLA[organiclever-app-web] --> UI
     OLW[organiclever-www] --> UI
     OSA[ose-app-web] --> UI
     OSW[ose-www] --> UI
-    UI --> TOK[web-ui-token<br/>structural + brand tokens]
+    UI --> TOK[web-ui-token<br/>structural + brand<br/>tokens]
     UI --> RADIX[Radix UI primitives]
 ```
 

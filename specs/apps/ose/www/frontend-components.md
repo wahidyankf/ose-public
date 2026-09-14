@@ -19,10 +19,12 @@ machine-facing and are not entered through the browser navigation.
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
 graph LR
-    VISITOR("Visitor<br/>Desktop / Tablet / Mobile"):::actor
+    accTitle: View 1 — Visitor to Pages
+    accDescr: Visitor Desktop / Tablet / Mobile leads to Home Page ──────────────── / Hero, mission Social links via browser; Visitor Desktop / Tablet / Mobile leads to About Page ──────────────── /about/ Platform info via browser; and 2 more links.
+    VISITOR("Visitor<br/>Desktop / Tablet /<br/>Mobile"):::actor
 
     subgraph SPA["Next.js UI"]
-        subgraph LAYER1["Pages (Server Components)"]
+        subgraph LAYER1["Pages (Server<br/>Components)"]
             HP["Home Page<br/>────────────────<br/>/<br/>Hero, mission<br/>Social links"]:::page
             AP["About Page<br/>────────────────<br/>/about/<br/>Platform info"]:::page
             UL["Updates Listing<br/>────────────────<br/>/updates/<br/>All update posts"]:::page
@@ -50,9 +52,11 @@ content renderers.
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
 graph LR
+    accTitle: View 2 — Pages to Layout Components and Content Renderers
+    accDescr: Home Page ──────────────── / Hero, mission Social links leads to Header ──────────────── Logo, search trigger Theme toggle Nav links; Home Page ──────────────── / Hero, mission Social links leads to Footer ──────────────── Copyright Links; and 13 more links.
     subgraph SPA["Next.js UI"]
 
-        subgraph LAYER1["Pages (Server Components)"]
+        subgraph LAYER1["Pages (Server<br/>Components)"]
             HP["Home Page<br/>────────────────<br/>/<br/>Hero, mission<br/>Social links"]:::page
             AP["About Page<br/>────────────────<br/>/about/<br/>Platform info"]:::page
             UL["Updates Listing<br/>────────────────<br/>/updates/<br/>All update posts"]:::page
@@ -94,7 +98,7 @@ graph LR
     MDR --> MERMAID
 
     classDef page fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef layout fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef layout fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef renderer fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
@@ -106,9 +110,11 @@ content-backed pages call the server-side tRPC API.
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
 graph LR
+    accTitle: View 3 — Header, Search, Theme, and the tRPC API
+    accDescr: Header ──────────────── Logo, search trigger Theme toggle Nav links leads to SearchDialog ──────────────── Cmd+K trigger Live results Navigate on select; and 6 more links.
     subgraph SPA["Next.js UI"]
 
-        subgraph LAYER1["Pages (Server Components)"]
+        subgraph LAYER1["Pages (Server<br/>Components)"]
             UL["Updates Listing<br/>────────────────<br/>/updates/<br/>All update posts"]:::page
             UD["Update Detail<br/>────────────────<br/>/updates/[slug]/<br/>Single update"]:::page
         end
@@ -118,7 +124,7 @@ graph LR
             MOBILE["Mobile Nav<br/>────────────────<br/>Hamburger menu<br/>Sheet drawer"]:::layout
         end
 
-        subgraph LAYER4["Search (Client Component)"]
+        subgraph LAYER4["Search (Client<br/>Component)"]
             SD["SearchDialog<br/>────────────────<br/>Cmd+K trigger<br/>Live results<br/>Navigate on select"]:::search
             SP2["SearchProvider<br/>────────────────<br/>Context provider<br/>tRPC query hook"]:::search
         end
@@ -143,10 +149,10 @@ graph LR
     UL -->|"content.listUpdates"| API
 
     classDef page fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef layout fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef layout fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef search fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
-    classDef theme fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef external fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px,stroke-dasharray:5 5
+    classDef theme fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef external fill:#808080,stroke:#000000,color:#000000,stroke-width:2px,stroke-dasharray:5 5
 ```
 
 ## Gherkin Coverage by Component

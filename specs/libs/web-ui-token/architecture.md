@@ -13,11 +13,13 @@ beyond exporting those values.
 
 ```mermaid
 flowchart LR
+    accTitle: Consuming Boundary
+    accDescr: web-ui components leads to web-ui-token; ayokoding-www leads to web-ui-token; organiclever apps leads to web-ui-token; ose apps leads to web-ui-token; web-ui-token leads to Tailwind v4 theme layer.
     UI[web-ui components] --> TOK[web-ui-token]
     AYO[ayokoding-www] --> TOK
     OL[organiclever apps] --> TOK
     OSE[ose apps] --> TOK
-    TOK --> TW[Tailwind v4 theme layer]
+    TOK --> TW[Tailwind v4 theme<br/>layer]
 ```
 
 ## The Structural / Brand Split

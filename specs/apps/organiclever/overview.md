@@ -53,11 +53,13 @@ The two flows a user runs most often today:
 ```mermaid
 %% Color palette: Blue #0173B2 (screen), Teal #029E73 (action)
 graph TD
+    accTitle: Primary user flows
+    accDescr: Home screen leads to FAB; FAB leads to pick Workout; pick Workout leads to pick Routine; pick Routine leads to Workout screen log sets, rest timer; and 4 more links.
     HOME["Home screen"]:::screen
     FAB["FAB"]:::action
     PICK_W["pick Workout"]:::action
     PICK_R["pick Routine"]:::action
-    WORK["Workout screen<br/>(log sets, rest timer)"]:::screen
+    WORK["Workout screen<br/>log sets, rest timer"]:::screen
     DONE["End Workout"]:::action
     CONF["Confirm"]:::action
     FIN["Finish screen"]:::screen
@@ -73,7 +75,7 @@ graph TD
     FIN --> HOME2
 
     classDef screen fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef action fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef action fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 **Flow B — Check recent activity (< 1 min)**
@@ -81,8 +83,10 @@ graph TD
 ```mermaid
 %% Color palette: Blue #0173B2 (screen), Teal #029E73 (action)
 graph TD
+    accTitle: Primary user flows 2
+    accDescr: Home screen leads to recent entry list bump entry to resurface; Home screen leads to History tab; History tab leads to filter by type.
     HOME["Home screen"]:::screen
-    RECENT["recent entry list<br/>(bump entry to resurface)"]:::action
+    RECENT["recent entry list<br/>bump entry to<br/>resurface"]:::action
     HIST["History tab"]:::screen
     FILTER["filter by type"]:::action
 
@@ -91,7 +95,7 @@ graph TD
     HIST --> FILTER
 
     classDef screen fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef action fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef action fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## In plain language

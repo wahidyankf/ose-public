@@ -44,15 +44,19 @@ Skills sit alongside CLAUDE.md, AGENTS.md and direct references as delivery mech
 
 **Default behaviour** - Progressive knowledge injection:
 
-```
-Knowledge Flow (Inline):
-L2: Conventions ──┬── CLAUDE.md/AGENTS.md (startup) ──> Claude/OpenCode
-                  ├── Skills inline (on-demand) ────> Current conversation
-                  └── Direct refs (explicit) ───────> L4: Agents
-
-L3: Development ──┬── CLAUDE.md/AGENTS.md (startup) ──> Claude/OpenCode
-                  ├── Skills inline (on-demand) ────> Current conversation
-                  └── Direct refs (explicit) ───────> L4: Agents
+```mermaid
+flowchart LR
+    accTitle: Inline Skills Knowledge Delivery
+    accDescr: L2 Conventions and L3 Development each reach Claude or OpenCode through CLAUDE.md and AGENTS.md at startup, the current conversation through inline skills on demand, and L4 Agents through explicit direct references.
+    L2["L2 Conventions"] --> A["CLAUDE.md, AGENTS.md<br/>at startup"]
+    L3["L3 Development"] --> A
+    L2 --> S["Skills inline<br/>on demand"]
+    L3 --> S
+    L2 --> R["Direct refs<br/>explicit"]
+    L3 --> R
+    A --> CO["Claude or OpenCode"]
+    S --> CV["Current<br/>conversation"]
+    R --> AG["L4 Agents"]
 ```
 
 **Characteristics**:
@@ -66,11 +70,13 @@ L3: Development ──┬── CLAUDE.md/AGENTS.md (startup) ──> Claude/Ope
 
 **Delegation behaviour** with `context: fork`:
 
-```
-Delegation Flow (Fork):
-Skills (context: fork) ──delegates to──> Isolated Agent Context
-                         ──returns──> Summarized Results
-                         ──to──> Main Conversation
+```mermaid
+flowchart LR
+    accTitle: Fork Skills Task Delegation
+    accDescr: A fork skill delegates to an isolated agent context, which returns summarized results to the main conversation.
+    S["Fork skill<br/>context: fork"] -->|delegates to| I["Isolated agent<br/>context"]
+    I -->|returns| R["Summarized<br/>results"]
+    R -->|to| M["Main<br/>conversation"]
 ```
 
 **Characteristics**:

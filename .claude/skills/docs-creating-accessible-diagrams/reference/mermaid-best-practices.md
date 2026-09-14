@@ -9,6 +9,8 @@ Use this as a starting point for all Mermaid diagrams:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Standard Mermaid Template with Accessibility
+    accDescr: Start Process Primary leads to Decision Point Evaluate; Decision Point Evaluate leads to Success Path Complete via Yes; Decision Point Evaluate leads to Alternate Path Optional via No.
     A["Start Process<br/>Primary"]:::blue
     B{"Decision Point<br/>Evaluate"}:::orange
     C["Success Path<br/>Complete"]:::teal
@@ -19,9 +21,9 @@ graph TD
     B -->|No| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Essential Mermaid Rules
@@ -41,14 +43,14 @@ graph TD
 
 **CORRECT** - Use double-percent for comments:
 
-```mermaid
+```text
 %% This is a comment
 %% Color palette: Blue #0173B2, Orange #DE8F05
 ```
 
 **WRONG** - Do NOT use this syntax (causes syntax errors):
 
-```mermaid
+```text
 %%{ This breaks rendering }%%
 ```
 
@@ -69,7 +71,7 @@ graph TD
 
 **Edge labels also need escaping:**
 
-```mermaid
+```text
 A -->|Function#40;param#41;| B
 ```
 

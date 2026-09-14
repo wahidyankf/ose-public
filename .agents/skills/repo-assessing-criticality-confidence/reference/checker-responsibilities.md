@@ -4,22 +4,25 @@
 
 **Decision tree**:
 
+```mermaid
+flowchart TD
+    accTitle: Categorizing Findings by Criticality
+    accDescr: Four questions asked in order: breaking functionality or blocking users is CRITICAL, significant harm or a convention breach is HIGH, a minor quality or style issue is MEDIUM, and a suggestion or optimization is LOW.
+    Q1{"Breaks function<br/>or blocks users?"} -->|Yes| C["CRITICAL"]
+    Q1 -->|No| Q2{"Significant harm or<br/>convention breach?"}
+    Q2 -->|Yes| H["HIGH"]
+    Q2 -->|No| Q3{"Minor quality or<br/>style issue?"}
+    Q3 -->|Yes| M["MEDIUM"]
+    Q3 -->|No| Q4{"Suggestion or<br/>optimization?"}
+    Q4 -->|Yes| L["LOW"]
 ```
-1. Does it BREAK functionality or BLOCK users?
-   YES → CRITICAL
-   NO → Continue
 
-2. Does it cause SIGNIFICANT quality degradation or violate DOCUMENTED conventions?
-   YES → HIGH
-   NO → Continue
+Ask the questions in order and stop at the first yes:
 
-3. Is it a MINOR quality issue or style inconsistency?
-   YES → MEDIUM
-   NO → Continue
-
-4. Is it a suggestion, optimization, or future consideration?
-   YES → LOW
-```
+1. Does it break functionality or block users? Then it is CRITICAL.
+2. Does it cause significant quality degradation or violate documented conventions? Then it is HIGH.
+3. Is it a minor quality issue or style inconsistency? Then it is MEDIUM.
+4. Is it a suggestion, optimization, or future consideration? Then it is LOW.
 
 ## Standardized Report Format
 

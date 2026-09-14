@@ -51,14 +51,16 @@
 
 **Example Traceability**:
 
+```mermaid
+flowchart TD
+    accTitle: Layer 1: Principles WHY - Values
+    accDescr: The vision Accessible to everyone inspires the Accessibility First principle, which governs the Color Accessibility convention and the AI Agents development rule.
+    V["Vision<br/>Accessible to<br/>everyone"] -->|inspires| P["Principle<br/>Accessibility First"]
+    P -->|governs| C["Convention<br/>Color Accessibility"]
+    P -->|governs| D["Development<br/>AI Agents"]
 ```
-Vision: "Accessible to everyone"
-    ↓ inspires
-Principle: Accessibility First
-    ↓ governs
-Convention: Color Accessibility Convention
-Development: AI Agents Convention — agent colors use accessible palette
-```
+
+The development example is the AI Agents Convention: agent colors use the accessible palette.
 
 ## Layer 2: Conventions (WHAT - Documentation Rules)
 

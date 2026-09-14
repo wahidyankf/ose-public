@@ -110,10 +110,20 @@ let delegations: Delegation list =
         Class = Split
         Rhino = "harness parity validate"
         Section = "harness-parity"
+        Retired = [] }
+      { Command = "md mermaid validate"
+        Class = Split
+        Rhino = "md mermaid validate"
+        Section = "md-mermaid"
         Retired = [] } ]
 
 let tryFind (command: string) : Delegation option =
     delegations |> List.tryFind (fun delegation -> delegation.Command = command)
+
+/// Split commands whose RHINO half checks only the files the F# half selects,
+/// each passed as `--file`, instead of walking RHINO's declared surface. A gate
+/// runs them on the files its scope selects.
+let fileScoped: string list = [ "md mermaid validate" ]
 
 let private words (text: string) : string list =
     text.Split(' ', StringSplitOptions.RemoveEmptyEntries) |> List.ofArray
@@ -281,3 +291,21 @@ let runSplit
         error message
         UsageFailure
     | Ok argv -> combine (runner argv) remainder
+
+/// A file-scoped split command: RHINO checks only `files`, one `--file` each,
+/// then the F# remainder runs only when RHINO completed. An empty selection
+/// never starts RHINO.
+let runSplitOnFiles
+    (runner: string list -> int)
+    (error: string -> unit)
+    (command: string)
+    (rawArgs: string list)
+    (files: string list)
+    (remainder: unit -> int)
+    : int =
+    match rhinoArgv (delegationFor command) rawArgs with
+    | Error message ->
+        error message
+        UsageFailure
+    | Ok _ when List.isEmpty files -> combine 0 remainder
+    | Ok argv -> combine (runner (argv @ (files |> List.collect (fun file -> [ "--file"; file ])))) remainder

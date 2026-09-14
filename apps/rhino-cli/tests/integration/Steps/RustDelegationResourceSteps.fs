@@ -93,6 +93,12 @@ let private delegationRow (command: string) : string =
         sprintf "  - command: %s\n    class: %s\n    rhino: %s\n" command className delegation.Rhino
     | None -> sprintf "  - command: %s\n    class: stay\n    keeps: [fixture-rule]\n" command
 
+/// Markdown with one short, valid Mermaid diagram, and Markdown with none.
+let private diagramDoc =
+    "# Diagram\n\n```mermaid\nflowchart TD\n    A[Start] --> B[End]\n```\n"
+
+let private plainDoc = "# Plain\n\nNo diagram here.\n"
+
 type RustDelegationResourceSteps() =
     let root =
         let dir =
@@ -196,6 +202,11 @@ type RustDelegationResourceSteps() =
         runTool "git" [ "add"; path ] root |> ignore
 
     [<Given>]
+    member _.``a staged file "([^"]*)" that holds a diagram``(path: string) =
+        write path diagramDoc
+        runTool "git" [ "add"; path ] root |> ignore
+
+    [<Given>]
     member _.``a gate registry whose rhino-cli gates run "([^"]*)" and "([^"]*)"``(first: string, second: string) =
         for hook in [ "commit-msg"; "pre-commit"; "pre-push" ] do
             write (".husky/" + hook) (sprintf "#!/bin/sh\nexec ./rhino gate run --surface %s\n" hook)
@@ -227,6 +238,17 @@ type RustDelegationResourceSteps() =
                 quoted
 
         rowsYaml <- listed |> List.map delegationRow |> String.concat ""
+
+    [<Given>]
+    member _.``a Markdown tree with a diagram in "([^"]*)", none in "([^"]*)" and a diagram in "([^"]*)"``
+        (first: string, plain: string, second: string)
+        =
+        write first diagramDoc
+        write plain plainDoc
+        write second diagramDoc
+
+    [<Given>]
+    member _.``a Markdown tree with no diagram in "([^"]*)"``(plain: string) = write plain plainDoc
 
     [<When>]
     member _.``the developer runs each command in this delegation table``(table: Table) =
@@ -278,7 +300,12 @@ type RustDelegationResourceSteps() =
         | Error message -> failwith message
         | Ok plan ->
             let invocation = List.exactlyOne plan
-            Assert.Empty(invocation.Files)
+
+            if List.contains invocation.Command RustRhino.fileScoped then
+                Assert.Equal<string list>(input.ChangedPaths, invocation.Files)
+            else
+                Assert.Empty(invocation.Files)
+
             run invocation.Arguments
 
     [<When>]
@@ -409,6 +436,9 @@ module private FeatureRunner =
 [<InlineData("A delegated command refuses a path because RHINO walks its declared surface")>]
 [<InlineData("A split command refuses JSON output and names the RHINO command that provides it")>]
 [<InlineData("A split command runs its F# remainder only after RHINO completed")>]
+[<InlineData("A split Mermaid check hands RHINO only the selected Markdown files that hold a diagram")>]
+[<InlineData("A split Mermaid check does not start RHINO when no selected file holds a diagram")>]
 [<InlineData("The gate runner hands a delegated gate no staged files")>]
+[<InlineData("The gate runner hands a file-scoped split gate its staged Markdown files")>]
 [<InlineData("Gate validation requires one delegation row per rhino-cli gate command")>]
 let ``delegated validators start the repository's stub RHINO through the real launcher`` title = FeatureRunner.run title

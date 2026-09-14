@@ -215,6 +215,37 @@ md-internal-link:
     - ".claude/skills/**"
     - ".agents/skills/**"
     - "apps/ose-www/content/**"
+md-mermaid:
+  authoring-rule: rendered
+  node-label-graphemes: 30
+  edge-label-graphemes: 30
+  fill-colors:
+    - "#0173B2"
+    - "#DE8F05"
+    - "#029E73"
+    - "#CC78BC"
+    - "#CA9161"
+    - "#808080"
+    - "#000000"
+    - "#FFFFFF"
+  edge-colors:
+    - "#0173B2"
+    - "#DE8F05"
+    - "#029E73"
+    - "#CC78BC"
+    - "#CA9161"
+    - "#808080"
+    - "#000000"
+    - "#FFFFFF"
+  text-colors:
+    - "#0173B2"
+    - "#DE8F05"
+    - "#029E73"
+    - "#CC78BC"
+    - "#CA9161"
+    - "#808080"
+    - "#000000"
+    - "#FFFFFF"
 md-naming:
   surfaces:
     - { glob: "**/*.md", style: kebab-case }
@@ -1756,9 +1787,9 @@ extensions:
         rhino: repo-config validate
         keeps: [repo-config-extension-schema]
       - command: md mermaid validate
-        class: stay
-        until: unit-8
-        keeps: [md-mermaid]
+        class: split
+        rhino: md mermaid validate
+        keeps: [mermaid-width, mermaid-multiple-diagrams, mermaid-strict-label-length]
       - command: md heading-hierarchy validate
         class: delegate
         rhino: md heading-hierarchy validate

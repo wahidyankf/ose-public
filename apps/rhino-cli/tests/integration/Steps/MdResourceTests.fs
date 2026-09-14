@@ -504,7 +504,11 @@ let ``A state-diagram edge label written as "b: label" without a leading space b
           Source = sprintf "stateDiagram-v2\n    a --> b: %s" longLabel
           StartLine = 1 }
 
-    let result = validateMermaidBlocks [ block ] defaultMermaidValidateOptions
+    let result =
+        validateMermaidBlocks
+            [ block ]
+            { defaultMermaidValidateOptions with
+                MaxLabelLen = 30 }
 
     Assert.Contains(
         result.Violations,
@@ -593,7 +597,11 @@ let ``A state "label" as ID declaration with an oversized label reports a label-
           Source = sprintf "stateDiagram-v2\n    state \"%s\" as N\n    [*] --> N" longLabel
           StartLine = 1 }
 
-    let result = validateMermaidBlocks [ block ] defaultMermaidValidateOptions
+    let result =
+        validateMermaidBlocks
+            [ block ]
+            { defaultMermaidValidateOptions with
+                MaxLabelLen = 30 }
 
     Assert.Contains(
         result.Violations,
@@ -663,7 +671,9 @@ let ``validateMermaidDocs accepts an absolute path entry in opts.Paths`` () =
               StagedFiles = None
               ChangedFiles = None
               ExcludePrefixes = []
-              Options = defaultMermaidValidateOptions }
+              Options =
+                { defaultMermaidValidateOptions with
+                    MaxLabelLen = 30 } }
 
     Assert.Contains(result.Violations, fun (v: MermaidViolation) -> v.Kind = MermaidLabelTooLong)
 
@@ -788,7 +798,7 @@ let ``runAudit fails when the mermaid validator reports a violation`` () =
     DirectTestFixtures.writeFile
         dir
         "doc.md"
-        "# Title\n\n```mermaid\nflowchart TD\n    A[This label is definitely longer than thirty characters total]\n```\n"
+        "# Title\n\n```mermaid\nflowchart TD\n    A --> B\n    A --> C\n    A --> D\n    A --> E\n    A --> F\n```\n"
     |> ignore
 
     let result = runAudit dir

@@ -84,14 +84,16 @@ ecosystem.**
 ```mermaid
 %% Color Palette: Blue #0173B2 (F#), Orange #DE8F05 (Java), Teal #029E73 (Rust), Purple #CC78BC (final)
 graph LR
+    accTitle: The Backend Language Odyssey: F → Java → Rust → F
+    accDescr: F/Giraffe start leads to Java/ Spring Boot; Java/ Spring Boot leads to Rust/Axum; Rust/Axum leads to F/Giraffe settled.
     A["F#/Giraffe<br/>(start)"]:::fs --> B["Java/<br/>Spring Boot"]:::jv
     B --> C["Rust/Axum"]:::rs
     C --> D["F#/Giraffe<br/>(settled)"]:::final
 
-    classDef fs fill:#0173B2,stroke:#000,color:#FFF,stroke-width:2px
-    classDef jv fill:#DE8F05,stroke:#000,color:#FFF,stroke-width:2px
-    classDef rs fill:#029E73,stroke:#000,color:#FFF,stroke-width:2px
-    classDef final fill:#CC78BC,stroke:#000,color:#FFF,stroke-width:2px
+    classDef fs fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef jv fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef rs fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef final fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 Both backends share the same internal shape: **hexagonal layers inside DDD bounded contexts**, with
@@ -160,6 +162,8 @@ tRPC/content internals; only the role label changed.
 ```mermaid
 %% Color Palette: Blue #0173B2 (www), Orange #DE8F05 (app-web), Teal #029E73 (be)
 graph TB
+    accTitle: A Cleaner App Taxonomy: -www / -app-web / -be
+    accDescr: ose-app-web leads to ose-be; organiclever-app-web leads to organiclever-be.
     subgraph OSE["OSE Platform"]
         OW["ose-www"]:::www
         OAW["ose-app-web"]:::app
@@ -173,9 +177,9 @@ graph TB
         LAW --> LB
     end
 
-    classDef www fill:#0173B2,stroke:#000,color:#FFF,stroke-width:2px
-    classDef app fill:#DE8F05,stroke:#000,color:#FFF,stroke-width:2px
-    classDef be fill:#029E73,stroke:#000,color:#FFF,stroke-width:2px
+    classDef www fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef app fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef be fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 The two app clients (`ose-app-web`, `organiclever-app-web`) consume the shared `web-ui` design-system

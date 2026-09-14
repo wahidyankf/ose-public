@@ -1344,13 +1344,15 @@ type MermaidValidationResult =
       Warnings: MermaidWarning list }
 
 /// The default validation options used by the CLI when no flags are
-/// specified: `MaxLabelLen = 30`, `MaxWidth = 4`, `MaxDepth = Int32.MaxValue`
+/// specified: `MaxLabelLen = Int32.MaxValue` (RHINO's `md-mermaid` section
+/// owns the label limit, so F# checks labels only against an explicit
+/// `--max-label-len`), `MaxWidth = 4`, `MaxDepth = Int32.MaxValue`
 /// (the CLI's `0 = unlimited` sentinel, mapped once at the call site rather
 /// than threaded as a magic `0` through the comparison logic below),
 /// `MaxSubgraphNodes = 6`
 /// [Repo-grounded — `validator.rs::default_validate_options`].
 let defaultMermaidValidateOptions: MermaidValidateOptions =
-    { MaxLabelLen = 30
+    { MaxLabelLen = Int32.MaxValue
       MaxWidth = 4
       MaxDepth = Int32.MaxValue
       MaxSubgraphNodes = 6 }
@@ -2415,6 +2417,18 @@ let validateMermaidDocs (opts: MermaidScanOptions) : MermaidValidationResult =
                 [])
 
     validateMermaidBlocks blocks opts.Options
+
+/// The repository-relative paths, in scan order, of the Markdown files `opts`
+/// selects that hold at least one Mermaid block: the files RHINO checks for
+/// `md mermaid validate`.
+[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
+let selectMermaidFiles (opts: MermaidScanOptions) : string list =
+    applyMermaidExcludes opts.RepoRoot (collectMermaidFiles opts) opts.ExcludePrefixes
+    |> List.filter (fun f ->
+        File.Exists f
+        && not (List.isEmpty (extractMermaidBlocks f (File.ReadAllText f))))
+    |> List.map (fun f -> Path.GetRelativePath(opts.RepoRoot, f).Replace('\\', '/'))
+    |> List.distinct
 
 /// Validates Mermaid blocks from an in-memory repository while preserving
 /// the public command's path, staged/changed, and exclusion precedence.

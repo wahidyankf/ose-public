@@ -104,12 +104,32 @@ Feature: Validators RHINO provides run through the repository's pinned RHINO
       | 2     | with a broken heading anchor | 2    | is not printed         |
       | 78    | whose links all resolve      | 78   | is not printed         |
 
+  Scenario: A split Mermaid check hands RHINO only the selected Markdown files that hold a diagram
+    Given a repository whose pinned RHINO records its arguments and exits 0
+    And a Markdown tree with a diagram in "docs/a.md", none in "docs/b.md" and a diagram in "plans/done/c.md"
+    When the developer runs "md mermaid validate --exclude plans/done"
+    Then RHINO receives the arguments "md mermaid validate --file docs/a.md"
+
+  Scenario: A split Mermaid check does not start RHINO when no selected file holds a diagram
+    Given a repository whose pinned RHINO records its arguments and exits 0
+    And a Markdown tree with no diagram in "docs/b.md"
+    When the developer runs "md mermaid validate"
+    Then the command exits with code 0
+    And RHINO was not started
+
   Scenario: The gate runner hands a delegated gate no staged files
     Given a repository whose pinned RHINO records its arguments and exits 0
     And a pre-commit gate "md-naming" running "md naming validate" for staged "*.md" files
     And a staged file "docs/guide.md"
     When the developer runs the pre-commit surface for "md-naming" only
     Then RHINO receives the arguments "md naming validate"
+
+  Scenario: The gate runner hands a file-scoped split gate its staged Markdown files
+    Given a repository whose pinned RHINO records its arguments and exits 0
+    And a pre-commit gate "md-mermaid" running "md mermaid validate" for staged "*.md" files
+    And a staged file "docs/guide.md" that holds a diagram
+    When the developer runs the pre-commit surface for "md-mermaid" only
+    Then RHINO receives the arguments "md mermaid validate --file docs/guide.md"
 
   Scenario Outline: Gate validation requires one delegation row per rhino-cli gate command
     Given a gate registry whose rhino-cli gates run "md naming validate" and "md links validate"

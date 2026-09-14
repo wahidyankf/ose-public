@@ -257,7 +257,10 @@ type PreCommitHookSteps() =
                       StagedFiles = Some staged
                       ChangedFiles = None
                       ExcludePrefixes = []
-                      Options = Md.defaultMermaidValidateOptions }
+                      // RHINO owns the default label limit; the strict pre-commit gate passes --max-label-len 20.
+                      Options =
+                        { Md.defaultMermaidValidateOptions with
+                            MaxLabelLen = 20 } }
 
             stdoutText <- Md.formatMermaidText result false false
 

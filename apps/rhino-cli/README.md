@@ -2,9 +2,8 @@
 
 **RHINO** – Repository Hygiene & INtegration Orchestrator
 
-Command-line tools for repository management and automation. Canonical implementation is F# (this
-project); the predecessor Rust crate and, before that, the original Go binary are recoverable from
-git history.
+Command-line tools for repository management and automation, implemented in F#. The predecessor Rust
+crate and the original Go binary are recoverable from Git history.
 
 ## What is rhino-cli?
 
@@ -17,10 +16,9 @@ Gherkin specs in
 
 ## Status
 
-Production. Ported 1:1 from the Rust crate scenario-by-scenario (`rewrite-rhino-cli-to-fsharp`
-plan); `shadow-diff.sh` proved byte-identical stdout/stderr/exit-code behaviour against the Rust
-binary for every namespace before each wave's flip, and `parity manifest validate` now guards
-byte-identity of this app's own tree against its checked-in SHA-256 manifest going forward.
+Production. Ported 1:1 from the Rust crate; `shadow-diff.sh` proved byte-identical stdout, stderr
+and exit codes against the Rust binary for every namespace, and `parity manifest validate` guards
+this app's tree against its checked-in SHA-256 manifest.
 
 ## Quick Start
 
@@ -109,7 +107,8 @@ the two agree, and the `plan-structure` gate runs the command in pre-commit and 
 | `split`    | The named `./rhino` command runs first; F# checks only the rules in `keeps`    |
 | `stay`     | F# owns the rules in `keeps`; `until` names the later unit that delegates them |
 
-`src/RhinoCli.Infrastructure/src/RustRhino.fs` launches the pinned binary.
+`src/RhinoCli.Infrastructure/src/RustRhino.fs` launches the pinned binary. `md mermaid validate` is a file-scoped split:
+RHINO gets one `--file` per selected diagram file and is skipped when there is none; the gate runner keeps its files.
 `tests/unit/Steps/KeepListSourceScanTests.fs` scans the Application sources and fails when a rule is missing from every
 `keeps` list or is one RHINO v0.3.0 provides. `plan-structure` is the one exception (see
 [Plan Validation](#plan-validation)).
@@ -147,7 +146,7 @@ for the bump-review process.
 
 ## See also
 
-- Rewrite plan (`rewrite-rhino-cli-to-fsharp`, `plans/`): records the Rust-to-F# port and prior
-  Rust-to-Go history (recoverable from Git; not linked because `plans/done/` is repo-specific)
+- Rewrite plan (`rewrite-rhino-cli-to-fsharp`, recoverable from Git): records the F# port and its
+  Rust and Go history
 - Gherkin specs (shared with the retired Rust and Go binaries):
   [`specs/apps/rhino/cli/behaviours/`](../../specs/apps/rhino/cli/behaviours/)

@@ -70,8 +70,10 @@ These specifications are consumed at all three testing levels. Unit tests mock d
 ```mermaid
 %% Color Palette: Purple #CC78BC (contracts), Blue #0173B2 (scripting), Orange #DE8F05 (JVM), Teal #029E73 (functional)
 graph LR
-    OA["OpenAPI 3.1 Contract<br/>specs/apps/a-demo/contracts/"]:::contract
-    GK["Gherkin BDD Specs<br/>14 features, 78 scenarios"]:::contract
+    accTitle: One Contract, Many Languages
+    accDescr: OpenAPI 3.1 Contract specs/apps/a-demo/contracts/ leads to Go / Gin via codegen; OpenAPI 3.1 Contract specs/apps/a-demo/contracts/ leads to Python / FastAPI via codegen; OpenAPI 3.1 Contract specs/apps/a-demo/contracts/ leads to TypeScript / Effect via codegen; and 30 more links.
+    OA["OpenAPI 3.1 Contract<br/>specs/apps/a-demo/<br/>contracts/"]:::contract
+    GK["Gherkin BDD Specs<br/>14 features, 78<br/>scenarios"]:::contract
 
     GO["Go / Gin"]:::scripting
     PY["Python / FastAPI"]:::scripting
@@ -85,7 +87,7 @@ graph LR
     RS["Rust / Axum"]:::functional
     CJ["Clojure / Pedestal"]:::functional
 
-    PG["PostgreSQL<br/>shared schema pattern"]:::contract
+    PG["PostgreSQL<br/>shared schema<br/>pattern"]:::contract
 
     OA -->|"codegen"| GO
     OA -->|"codegen"| PY
@@ -123,10 +125,10 @@ graph LR
     RS --> PG
     CJ --> PG
 
-    classDef contract fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef contract fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef scripting fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef jvm fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef functional fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef jvm fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef functional fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### What Every Backend Shares
@@ -257,6 +259,8 @@ All frontends have contract codegen from the shared OpenAPI specification and ar
 ```mermaid
 %% Color Palette: Blue #0173B2 (frontends), Purple #CC78BC (contract), Orange #DE8F05 (backends), Teal #029E73 (testing)
 graph LR
+    accTitle: Demo Frontends: Three Frameworks, One API
+    accDescr: Next.js 16 React + shadcn-ui leads to OpenAPI 3.1 Contract; TanStack Start Type-safe routing leads to OpenAPI 3.1 Contract; Flutter Web Dart leads to OpenAPI 3.1 Contract; and 6 more links.
     subgraph Frontends
         NX["Next.js 16<br/>React + shadcn-ui"]:::frontend
         TS["TanStack Start<br/>Type-safe routing"]:::frontend
@@ -285,9 +289,9 @@ graph LR
     BE -->|"tests"| B1
 
     classDef frontend fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef contract fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef backend fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef testing fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef contract fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef backend fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef testing fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Hugo to Next.js: Platform Migrations
@@ -322,6 +326,8 @@ You are reading this update on the migrated ose-web. The Hugo site that publishe
 ```mermaid
 %% Color Palette: Orange #DE8F05 (before), Blue #0173B2 (after), Teal #029E73 (shared)
 graph LR
+    accTitle: ose-web
+    accDescr: ayokoding-web Hugo + Hextra leads to Migration; ose-web Hugo + PaperMod leads to Migration; Migration leads to ayokoding-web Next.js 16 + tRPC FlexSearch, Mermaid, KaTeX; Migration leads to ose-web Next.js 16 + tRPC; and 2 more links.
     subgraph Before
         AH["ayokoding-web<br/>Hugo + Hextra"]:::before
         OH["ose-web<br/>Hugo + PaperMod"]:::before
@@ -330,7 +336,7 @@ graph LR
     M["Migration"]:::shared
 
     subgraph After
-        AN["ayokoding-web<br/>Next.js 16 + tRPC<br/>FlexSearch, Mermaid, KaTeX"]:::after
+        AN["ayokoding-web<br/>Next.js 16 + tRPC<br/>FlexSearch, Mermaid,<br/>KaTeX"]:::after
         ON["ose-web<br/>Next.js 16 + tRPC"]:::after
         UI["libs/web-ui<br/>libs/web-ui-token<br/>Shared Components"]:::shared
     end
@@ -342,9 +348,9 @@ graph LR
     AN --> UI
     ON --> UI
 
-    classDef before fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef before fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef after fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef shared fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef shared fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## OrganicLever Fullstack Evolution
@@ -372,9 +378,11 @@ JWT-based authentication with refresh tokens was implemented initially in Spring
 ```mermaid
 %% Color Palette: Blue #0173B2 (frontend), Orange #DE8F05 (backend), Purple #CC78BC (contract), Teal #029E73 (external)
 graph LR
-    FE["organiclever-web<br/>Next.js 16 + React 19"]:::frontend
+    accTitle: Authentication and OAuth
+    accDescr: organiclever-contracts OpenAPI 3.1 leads to organiclever-web Next.js 16 + React 19 via codegen; organiclever-contracts OpenAPI 3.1 leads to organiclever-be F / Giraffe via codegen; and 5 more links.
+    FE["organiclever-web<br/>Next.js 16 + React<br/>19"]:::frontend
     BE["organiclever-be<br/>F# / Giraffe"]:::backend
-    CT["organiclever-contracts<br/>OpenAPI 3.1"]:::contract
+    CT["organiclever-<br/>contracts<br/>OpenAPI 3.1"]:::contract
     PG["PostgreSQL"]:::external
     GA["Google OAuth"]:::external
     FEE["organiclever-web-e2e<br/>Playwright"]:::frontend
@@ -390,9 +398,9 @@ graph LR
     BEE -->|"tests"| BE
 
     classDef frontend fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef backend fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef contract fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef external fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef backend fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef contract fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef external fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Infrastructure Maturation
@@ -439,12 +447,14 @@ Each of the 11 demo backends has a dedicated workflow (`test-a-demo-be-*.yml`) t
 ```mermaid
 %% Color Palette: Purple #CC78BC (templates), Blue #0173B2 (backend), Orange #DE8F05 (frontend), Teal #029E73 (platform)
 graph LR
+    accTitle: CI/CD: From 7 to 29 Workflows
+    accDescr: backend-coverage leads to Go/Gin; backend-lint leads to Go/Gin; backend-integration leads to Go/Gin; backend-coverage leads to Python/FastAPI; backend-lint leads to Python/FastAPI; backend-integration leads to Python/FastAPI; backend-coverage leads to...9 more; backend-lint leads to...9 more; and 6 more links.
     subgraph Reusable Templates
         RC["backend-coverage"]:::template
         RE["backend-e2e"]:::template
         RI["backend-integration"]:::template
         RL["backend-lint"]:::template
-        RS["backend-spec-coverage"]:::template
+        RS["backend-<br/>spec-coverage"]:::template
         RT["backend-typecheck"]:::template
         RF["frontend-e2e"]:::template
         RD["test-and-deploy"]:::template
@@ -483,10 +493,10 @@ graph LR
     RD --> P1
     RD --> P2
 
-    classDef template fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef template fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef backend fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef frontend fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef platform fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef frontend fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef platform fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 The **`demo-ci-test-standardization`** and **`ci-standardization`** plans tracked the workflow buildout. Reusable templates eliminated duplication—each backend workflow is roughly 30 lines composing shared templates, rather than 200+ lines of duplicated YAML.

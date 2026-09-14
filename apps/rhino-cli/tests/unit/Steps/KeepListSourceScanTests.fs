@@ -81,59 +81,59 @@ let private sites () : string list =
         functions @ literals @ cases)
     |> List.distinct
 
-/// The rule each known site implements.
-let private ruleOf: Map<string, string> =
-    [ "Md.fs validateDocsFrontmatter", "md-frontmatter-values"
-      "Md.fs validateDocsFrontmatterDocuments", "md-frontmatter-values"
-      "Md.fs validateDocsLinksContent", "md-links-anchor-and-image"
-      "Md.fs validateDocsLinksDocuments", "md-links-anchor-and-image"
-      "Md.fs validateDocsLinks", "md-links-anchor-and-image"
-      "Md.fs validateAllLinksDetailed", "md-links-anchor-and-image"
-      "Md.fs kind broken-anchor", "md-links-anchor-and-image"
-      "Md.fs validateMermaidBlocks", "md-mermaid"
-      "Md.fs validateMermaidDocs", "md-mermaid"
-      "Md.fs validateMermaidDocuments", "md-mermaid"
-      "Md.fs validateFrontmatterDates", "md-frontmatter-dates-body"
-      "Md.fs validateFrontmatterDatesDetailed", "md-frontmatter-dates-body"
-      "Md.fs validateFrontmatterDatesDocuments", "md-frontmatter-dates-body"
-      "Governance.fs auditReadmeIndex", "readme-index-links"
-      "Governance.fs auditReadmeIndexTexts", "readme-index-links"
-      "Governance.fs ReadmeIndexFindingKind.Orphan", "readme-index-orphan"
-      "Governance.fs ReadmeIndexFindingKind.Ghost", "readme-index-ghost"
-      "Governance.fs ReadmeIndexFindingKind.Unannotated", "readme-index-unannotated"
-      "Governance.fs checkResolvedTree", "word-budget-resolved-tree"
-      "Governance.fs checkResolvedTextTree", "word-budget-resolved-tree"
-      "Governance.fs checkNoUnknownWordBudgetKeys", "repo-config-extension-schema"
-      "Convention.fs runLicenseValidate", "convention-license"
-      "Convention.fs validateLicenseSnapshot", "convention-license"
-      "RepoConfig.fs validateRepoRelativePath", "repo-config-extension-schema"
-      "RepoConfig.fs validateText", "repo-config-extension-schema"
-      "RepoConfig.fs validateAtRoot", "repo-config-extension-schema"
-      "RepoGovernance.fs auditLayerCoherence", "repo-governance-layer-coherence"
-      "RepoGovernance.fs auditLayerCoherenceDocuments", "repo-governance-layer-coherence"
-      "RepoGovernance.fs auditTraceability", "repo-governance-traceability"
-      "RepoGovernance.fs auditTraceabilityDocuments", "repo-governance-traceability"
-      "HarnessPolicy.fs validateRequestedHarness", "harness-name"
-      "HarnessRuntime.fs validateHarnessName", "harness-name"
-      "HarnessRuntime.fs validateCatalogCoverageState", "harness-catalog"
-      "HarnessRuntime.fs validateCatalogCoverage", "harness-catalog"
-      "HarnessRuntime.fs runHarnessCatalogValidate", "harness-catalog"
-      "HarnessRuntime.fs validateCodexAgentFilenames", "harness-codex-agents"
-      "HarnessRuntime.fs validateCodexAgentsDir", "harness-codex-agents"
-      "HarnessRuntime.fs validateVendoredDeclarations", "harness-vendored-declarations"
-      "HarnessRuntime.fs validateRegistryDrivenScripts", "harness-registry-scripts"
-      "HarnessRuntime.fs auditSkillsMirrors", "harness-skills-mirror"
-      "HarnessRuntime.fs validateMirrorOrphanState", "harness-skills-mirror"
-      "HarnessRuntime.fs validateMirrorOrphans", "harness-skills-mirror"
-      "HarnessRuntime.fs validateAgentCountValues", "harness-agent-count"
-      "HarnessRuntime.fs validateAgentYaml", "harness-claude-frontmatter"
-      "HarnessRuntime.fs validateAgentDocument", "harness-claude-frontmatter"
-      "HarnessRuntime.fs validateYamlFormattingRaw", "harness-claude-frontmatter"
-      "HarnessRuntime.fs validateSync", "harness-sync"
-      "HarnessRuntime.fs validateBindingContent", "harness-bindings"
-      "HarnessRuntime.fs validateBindings", "harness-bindings"
-      "HarnessRuntime.fs validateClaude", "harness-claude"
-      "HarnessRuntime.fs validateOwnership", "harness-ownership" ]
+/// The rules each known site implements.
+let private ruleOf: Map<string, string list> =
+    [ "Md.fs validateDocsFrontmatter", [ "md-frontmatter-values" ]
+      "Md.fs validateDocsFrontmatterDocuments", [ "md-frontmatter-values" ]
+      "Md.fs validateDocsLinksContent", [ "md-links-anchor-and-image" ]
+      "Md.fs validateDocsLinksDocuments", [ "md-links-anchor-and-image" ]
+      "Md.fs validateDocsLinks", [ "md-links-anchor-and-image" ]
+      "Md.fs validateAllLinksDetailed", [ "md-links-anchor-and-image" ]
+      "Md.fs kind broken-anchor", [ "md-links-anchor-and-image" ]
+      "Md.fs validateMermaidBlocks", [ "mermaid-width"; "mermaid-multiple-diagrams"; "mermaid-strict-label-length" ]
+      "Md.fs validateMermaidDocs", [ "mermaid-width"; "mermaid-multiple-diagrams"; "mermaid-strict-label-length" ]
+      "Md.fs validateMermaidDocuments", [ "mermaid-width"; "mermaid-multiple-diagrams"; "mermaid-strict-label-length" ]
+      "Md.fs validateFrontmatterDates", [ "md-frontmatter-dates-body" ]
+      "Md.fs validateFrontmatterDatesDetailed", [ "md-frontmatter-dates-body" ]
+      "Md.fs validateFrontmatterDatesDocuments", [ "md-frontmatter-dates-body" ]
+      "Governance.fs auditReadmeIndex", [ "readme-index-links" ]
+      "Governance.fs auditReadmeIndexTexts", [ "readme-index-links" ]
+      "Governance.fs ReadmeIndexFindingKind.Orphan", [ "readme-index-orphan" ]
+      "Governance.fs ReadmeIndexFindingKind.Ghost", [ "readme-index-ghost" ]
+      "Governance.fs ReadmeIndexFindingKind.Unannotated", [ "readme-index-unannotated" ]
+      "Governance.fs checkResolvedTree", [ "word-budget-resolved-tree" ]
+      "Governance.fs checkResolvedTextTree", [ "word-budget-resolved-tree" ]
+      "Governance.fs checkNoUnknownWordBudgetKeys", [ "repo-config-extension-schema" ]
+      "Convention.fs runLicenseValidate", [ "convention-license" ]
+      "Convention.fs validateLicenseSnapshot", [ "convention-license" ]
+      "RepoConfig.fs validateRepoRelativePath", [ "repo-config-extension-schema" ]
+      "RepoConfig.fs validateText", [ "repo-config-extension-schema" ]
+      "RepoConfig.fs validateAtRoot", [ "repo-config-extension-schema" ]
+      "RepoGovernance.fs auditLayerCoherence", [ "repo-governance-layer-coherence" ]
+      "RepoGovernance.fs auditLayerCoherenceDocuments", [ "repo-governance-layer-coherence" ]
+      "RepoGovernance.fs auditTraceability", [ "repo-governance-traceability" ]
+      "RepoGovernance.fs auditTraceabilityDocuments", [ "repo-governance-traceability" ]
+      "HarnessPolicy.fs validateRequestedHarness", [ "harness-name" ]
+      "HarnessRuntime.fs validateHarnessName", [ "harness-name" ]
+      "HarnessRuntime.fs validateCatalogCoverageState", [ "harness-catalog" ]
+      "HarnessRuntime.fs validateCatalogCoverage", [ "harness-catalog" ]
+      "HarnessRuntime.fs runHarnessCatalogValidate", [ "harness-catalog" ]
+      "HarnessRuntime.fs validateCodexAgentFilenames", [ "harness-codex-agents" ]
+      "HarnessRuntime.fs validateCodexAgentsDir", [ "harness-codex-agents" ]
+      "HarnessRuntime.fs validateVendoredDeclarations", [ "harness-vendored-declarations" ]
+      "HarnessRuntime.fs validateRegistryDrivenScripts", [ "harness-registry-scripts" ]
+      "HarnessRuntime.fs auditSkillsMirrors", [ "harness-skills-mirror" ]
+      "HarnessRuntime.fs validateMirrorOrphanState", [ "harness-skills-mirror" ]
+      "HarnessRuntime.fs validateMirrorOrphans", [ "harness-skills-mirror" ]
+      "HarnessRuntime.fs validateAgentCountValues", [ "harness-agent-count" ]
+      "HarnessRuntime.fs validateAgentYaml", [ "harness-claude-frontmatter" ]
+      "HarnessRuntime.fs validateAgentDocument", [ "harness-claude-frontmatter" ]
+      "HarnessRuntime.fs validateYamlFormattingRaw", [ "harness-claude-frontmatter" ]
+      "HarnessRuntime.fs validateSync", [ "harness-sync" ]
+      "HarnessRuntime.fs validateBindingContent", [ "harness-bindings" ]
+      "HarnessRuntime.fs validateBindings", [ "harness-bindings" ]
+      "HarnessRuntime.fs validateClaude", [ "harness-claude" ]
+      "HarnessRuntime.fs validateOwnership", [ "harness-ownership" ] ]
     |> Map.ofList
 
 /// Sites that match the scan's shape but implement no rule, each with the reason.
@@ -146,6 +146,7 @@ let private notRules: Map<string, string> =
 let private rhinoProvided: Map<string, string> =
     [ "md-naming", "md naming validate: invalid-md-name, fragmented-md-name"
       "md-heading-hierarchy", "md heading-hierarchy validate: missing-h1, multiple-h1, heading-level-jump"
+      "mermaid-label-length", "md mermaid validate: mermaid-legibility, a label longer than the declared limit"
       "convention-emoji", "convention emoji validate: emoji-in-prohibited-file"
       "readme-missing", "md readme-index validate: missing-readme-index"
       "md-links-missing-target", "md internal-link validate: internal-link-missing"
@@ -244,7 +245,10 @@ let ``Every rule F# still implements is on a delegation row's keep list`` () =
 
     let unkept =
         sites ()
-        |> List.choose (fun site -> Map.tryFind site ruleOf |> Option.map (fun rule -> rule, site))
+        |> List.collect (fun site ->
+            Map.tryFind site ruleOf
+            |> Option.defaultValue []
+            |> List.map (fun rule -> rule, site))
         |> List.filter (fun (rule, _) -> not (kept.Contains rule))
         |> List.map (fun (rule, site) -> sprintf "%s (%s)" rule site)
 
@@ -254,11 +258,12 @@ let ``Every rule F# still implements is on a delegation row's keep list`` () =
 let ``No F# rule site implements a rule RHINO provides`` () =
     let duplicated =
         sites ()
-        |> List.choose (fun site ->
-            match Map.tryFind site ruleOf with
-            | Some rule when rule <> namedException && rhinoProvided.ContainsKey rule ->
-                Some(sprintf "%s implements %s, which RHINO provides (%s)" site rule rhinoProvided.[rule])
-            | _ -> None)
+        |> List.collect (fun site ->
+            Map.tryFind site ruleOf
+            |> Option.defaultValue []
+            |> List.filter (fun rule -> rule <> namedException && rhinoProvided.ContainsKey rule)
+            |> List.map (fun rule ->
+                sprintf "%s implements %s, which RHINO provides (%s)" site rule rhinoProvided.[rule]))
 
     Assert.True(List.isEmpty duplicated, sprintf "F# re-implements RHINO rules: %s" (describe duplicated))
 

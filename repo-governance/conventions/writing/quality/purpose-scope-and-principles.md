@@ -33,7 +33,9 @@ These principles apply to markdown content in:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161 %%
 graph TD
-    A[Content Quality Principles] --> B[Writing Style & Tone]
+    accTitle: Scope
+    accDescr: Content Quality Principles leads to Writing Style & Tone; Content Quality Principles leads to Heading Hierarchy; Writing Style & Tone leads to Active Voice; Active Voice leads to Professional Tone; and 6 more links.
+    A[Content Quality<br/>Principles] --> B[Writing Style & Tone]
     A --> C[Heading Hierarchy]
 
     B --> B1[Active Voice]
@@ -46,9 +48,9 @@ graph TD
     C2 --> C3[Descriptive Headings]
     C3 --> C4[Semantic Structure]
 
-    classDef blueNode fill:#0173B2,stroke:#000,color:#fff
-    classDef orangeNode fill:#DE8F05,stroke:#000,color:#000
-    classDef tealNode fill:#029E73,stroke:#000,color:#fff
+    classDef blueNode fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orangeNode fill:#DE8F05,stroke:#000000,color:#000000
+    classDef tealNode fill:#029E73,stroke:#000000,color:#000000
     class A blueNode
     class B orangeNode
     class C tealNode
@@ -59,25 +61,27 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161 %%
 graph TD
-    A[Content Quality Principles] --> D[Accessibility Standards]
-    A --> E[Formatting Conventions]
+    accTitle: Scope (2)
+    accDescr: Content Quality Principles leads to Accessibility Standards; Content Quality Principles leads to Formatting Conventions; Accessibility Standards leads to Alt Text Required; Alt Text Required leads to Semantic HTML; Semantic HTML leads to ARIA Labels; and 8 more links.
+    A[Content Quality<br/>Principles] --> D[Accessibility<br/>Standards]
+    A --> E[Formatting<br/>Conventions]
 
     D --> D1[Alt Text Required]
     D1 --> D2[Semantic HTML]
     D2 --> D3[ARIA Labels]
     D3 --> D4[Color Contrast]
-    D4 --> D5[Screen Reader Support]
+    D4 --> D5[Screen Reader<br/>Support]
 
-    E --> E1[Code Block Formatting]
+    E --> E1[Code Block<br/>Formatting]
     E1 --> E2[Text Formatting]
     E2 --> E3[List Formatting]
     E3 --> E4[Blockquotes & Callouts]
     E4 --> E5[Table Formatting]
-    E5 --> E6[Line Length Guidelines]
+    E5 --> E6[Line Length<br/>Guidelines]
 
-    classDef blueNode fill:#0173B2,stroke:#000,color:#fff
-    classDef purpleNode fill:#CC78BC,stroke:#000,color:#000
-    classDef brownNode fill:#CA9161,stroke:#000,color:#000
+    classDef blueNode fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef purpleNode fill:#CC78BC,stroke:#000000,color:#000000
+    classDef brownNode fill:#CA9161,stroke:#000000,color:#000000
     class A blueNode
     class D purpleNode
     class E brownNode

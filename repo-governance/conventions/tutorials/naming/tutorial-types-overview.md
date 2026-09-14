@@ -8,6 +8,8 @@ when_to_use: Use when you need the big-picture map of how the six tutorial types
 ```mermaid
 %% Full Set Tutorial Package Architecture
 graph TB
+    accTitle: Tutorial Types Overview
+    accDescr: Initial Setup 0-5% leads to Quick Start 5-30%; Quick Start 5-30% leads to By-Example PRIORITY: Move fast; Quick Start 5-30% leads to By-Concept Learn deep; By-Example PRIORITY: Move fast leads to Cookbook Practical recipes; and 1 more links.
     subgraph "FULL SET TUTORIAL PACKAGE"
         subgraph "Foundational (0-30%)"
             A["Initial Setup<br/>0-5%"]
@@ -28,11 +30,16 @@ graph TB
     D -.-> E
     C -.-> E
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style C fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    class A blue
+    class B orange
+    class D purple
+    class C teal
+    class E brown
 ```
 
 **Legend**:

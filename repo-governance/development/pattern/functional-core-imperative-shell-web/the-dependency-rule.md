@@ -5,9 +5,12 @@ when_to_use: "Use when checking whether a core/ file has accidentally imported R
 
 # The Dependency Rule
 
-```
-shell/  --imports-->  core/      ALLOWED
-core/   --imports-->  shell/     FORBIDDEN
+```mermaid
+flowchart LR
+    accTitle: The Dependency Rule
+    accDescr: shell/ leads to core/ via may import; core/ leads to shell/ via must not import.
+    SH["shell/"] -->|may import| CO["core/"]
+    CO -.->|must not import| SH
 ```
 
 `core/` MUST NOT import any of: `react`, `react-dom`, `next`, `next/*`, node builtins (`fs`, `path`, `node:*`),

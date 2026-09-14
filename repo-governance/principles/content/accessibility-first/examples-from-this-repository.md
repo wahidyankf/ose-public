@@ -13,6 +13,8 @@ when_to_use: Use when looking for worked examples of accessibility principles ap
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
+    accTitle: Mermaid Diagrams
+    accDescr: Primary Flow Blue leads to Decision Point Orange; Decision Point Orange leads to Success Outcome Teal via Yes.
     A["Primary Flow<br/>(Blue)"]:::blue
     B["Decision Point<br/>(Orange)"]:::orange
     C["Success Outcome<br/>(Teal)"]:::teal
@@ -21,8 +23,8 @@ graph TD
     B -->|Yes| C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 **Accessibility features**:

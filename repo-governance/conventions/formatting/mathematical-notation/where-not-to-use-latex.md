@@ -36,8 +36,10 @@ Mermaid diagrams don't process LaTeX. Use plain text notation:
 
 ```mermaid
 graph TD
- A[Input: r_f, beta, r_m] --> B[r_e = r_f + β * mkt_premium]
- B --> C[Output: Cost of Equity]
+ accTitle: Mermaid Diagrams
+ accDescr: Input: r_f, beta, r_m leads to r_e = r_f + β * mkt_premium; r_e = r_f + β * mkt_premium leads to Output: Cost of Equity.
+ A[Input: r_f, beta,<br/>r_m] --> B[r_e = r_f + β *<br/>mkt_premium]
+ B --> C[Output: Cost of<br/>Equity]
 ```
 
 ## ASCII Art Diagrams

@@ -43,12 +43,14 @@ Convention documents define **how to write and format documentation** in this re
 
 ### Decision Tree
 
-```
-Does this define HOW TO WRITE OR FORMAT DOCUMENTATION?
-├─ Yes → conventions/ (this directory)
-└─ No → Is it about software development processes/quality?
-    ├─ Yes → development/
-    └─ No → Might belong elsewhere (reference/, how-to/, etc.)
+```mermaid
+flowchart TD
+    accTitle: Decision Tree
+    accDescr: How to write or format docs? leads to conventions/ via Yes; How to write or format docs? leads to Software process or quality? via No; Software process or quality? leads to development/ via Yes; and 1 more links.
+    Q1{"How to write or<br/>format docs?"} -->|Yes| C["conventions/"]
+    Q1 -->|No| Q2{"Software process<br/>or quality?"}
+    Q2 -->|Yes| D["development/"]
+    Q2 -->|No| E["Elsewhere:<br/>reference/, how-to/"]
 ```
 
 ### Examples of Scope Boundaries

@@ -44,18 +44,19 @@ when_to_use: Use for a concrete end-to-end traceability example.
 
 **Complete Chain**:
 
+```mermaid
+flowchart TD
+    accTitle: Color Accessibility (Vision → Agents)
+    accDescr: Vision leads to Principle via inspires; Principle leads to Convention via governs; Convention leads to Development via governs; Development leads to Agents via governs; Agents leads to Workflow via orchestrated by; and 1 more links.
+    V["Vision"] -->|inspires| P["Principle"]
+    P -->|governs| C["Convention"]
+    C -->|governs| D["Development"]
+    D -->|governs| A["Agents"]
+    A -->|orchestrated by| W["Workflow"]
+    W -->|served by| S["Agent skills"]
 ```
-Vision (Democratize access)
-    ↓ inspires
-Principle (Accessibility First)
-    ↓ governs
-Convention (Color Accessibility)
-    ↓ governs
-Development (AI Agents Convention)
-    ↓ governs
-Agents (docs-checker, docs-fixer, agent-maker)
-    ↓ orchestrated by
-Workflow (Maker-Checker-Fixer)
-    ↓ served by
-Agent skills (docs-creating-accessible-diagrams - inline knowledge delivery)
-```
+
+In this chain the vision is to democratize access, the principle is Accessibility First, the convention is Color
+Accessibility, and the development rule is the AI Agents Convention. The agents are docs-checker, docs-fixer and
+agent-maker, the workflow is Maker-Checker-Fixer, and the skill is docs-creating-accessible-diagrams, delivered as
+inline knowledge.

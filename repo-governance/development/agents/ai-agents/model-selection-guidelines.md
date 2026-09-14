@@ -41,31 +41,24 @@ in `repo-config.yml`, not in code. A harness that declares no `model-map:` pins 
 
 Enter from the bottom: each grade must be argued past, never assumed.
 
+```mermaid
+flowchart TD
+    accTitle: Model Selection Decision Tree
+    accDescr: Purely mechanical task? leads to Fast: haiku via Yes; Purely mechanical task? leads to Applies rules or checklists? via No; Applies rules or checklists? leads to Execution-grade: sonnet via Yes; and 6 more links.
+    Q1{"Purely<br/>mechanical task?"}
+    Q1 -->|Yes| F["Fast:<br/>haiku"]
+    Q1 -->|No| Q2{"Applies rules or<br/>checklists?"}
+    Q2 -->|Yes| X["Execution-grade:<br/>sonnet"]
+    Q2 -->|No| Q3{"Needs creative<br/>reasoning?"}
+    Q3 -->|Yes| P["Planning-grade:<br/>opus"]
+    Q3 -->|No| Q4{"Failed at<br/>planning grade?"}
+    Q4 -->|Yes, with evidence| U["Ultra:<br/>fable"]
+    Q4 -->|No, but feels hard| P
+    Q4 -->|None of the above| X
 ```
-Start: Choosing Agent Model
-    │
-    ├─ Is the task purely mechanical, with no reasoning required?
-    │   │
-    │   └─ Yes → Fast (model: haiku)
-    │
-    ├─ Does the task apply rules, validate against checklists,
-    │   or follow a structured procedure?
-    │   │
-    │   └─ Yes → Execution-grade (model: sonnet)
-    │
-    ├─ Does the task require creative reasoning, code generation,
-    │   architectural decisions, or nuanced content creation?
-    │   │
-    │   └─ Yes → Planning-grade (model: opus)
-    │
-    ├─ Has this agent DEMONSTRABLY failed at the planning grade?
-    │   │
-    │   ├─ Yes, with recorded evidence → Ultra (model: fable)
-    │   │
-    │   └─ No, but it feels hard → Planning-grade
-    │
-    └─ None of the above → Execution-grade
-                            (safer than fast for ambiguous cases)
-```
+
+Structured procedures count as applying rules; code generation, architectural decisions, and nuanced content
+creation count as creative reasoning. Execution-grade is the default for ambiguous cases because it is safer than
+fast.
 
 **Important**: Every agent MUST include a `**Model Selection Justification**` block explaining why the chosen grade is appropriate. `harness claude validate` fails any agent whose body omits it, and any agent whose `effort` contradicts its grade. See [Model Selection Convention](../model-selection.md) for full requirements.

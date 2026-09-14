@@ -11,13 +11,14 @@ when_to_use: Use when a Skill needs to spawn or delegate work and you must check
 
 This is a fundamental architectural constraint of AI coding agent systems:
 
-```
-Main Conversation
-├─ Can spawn subagents ✅
-└─ Subagent (forked context)
-   ├─ Can use inline skills ✅
-   ├─ Can reference conventions ✅
-   └─ Can spawn subagents ❌ (architectural constraint)
+```mermaid
+flowchart TD
+    accTitle: Core Limitation
+    accDescr: Main conversation leads to Subagent: forked context via can spawn; Subagent: forked context leads to Inline skills via can use; Subagent: forked context leads to Conventions via can reference; and 1 more links.
+    M["Main conversation"] -->|can spawn| S["Subagent:<br/>forked context"]
+    S -->|can use| IS["Inline skills"]
+    S -->|can reference| CV["Conventions"]
+    S -.->|cannot spawn| X["Further subagents"]
 ```
 
 ## Impact on agent skills

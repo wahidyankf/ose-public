@@ -13,7 +13,7 @@ when_to_use: "Use when a Mermaid state diagram edge label containing a colon fai
 
 **Problem Example (FAIL: BROKEN)**:
 
-```mermaid
+```text
 stateDiagram-v2
     complex --> updated: swap! update :count inc
     updated --> final: swap! update :users conj
@@ -27,8 +27,10 @@ Remove colons from edge label text. Use plain text descriptions instead of liter
 
 ```mermaid
 stateDiagram-v2
-    complex --> updated: swap! update count inc
-    updated --> final: swap! update users conj
+    accTitle: Common Mermaid Syntax Errors: Colons in State Diagram Edge Labels
+    accDescr: complex moves to updated on swap! update count inc; updated moves to final on swap! update users conj.
+    complex --> updated: swap! update count<br/>inc
+    updated --> final: swap! update users<br/>conj
 ```
 
 **Alternative - Descriptive Text**:
@@ -37,8 +39,10 @@ If the code syntax is critical to show, use descriptive text that avoids colons:
 
 ```mermaid
 stateDiagram-v2
-    complex --> updated: update count with increment
-    updated --> final: add user to collection
+    accTitle: Common Mermaid Syntax Errors: Colons in State Diagram Edge Labels (2)
+    accDescr: complex moves to updated on update count with increment; updated moves to final on add user to collection.
+    complex --> updated: update count with<br/>increment
+    updated --> final: add user to<br/>collection
 ```
 
 **Rule**: Avoid colons in state diagram edge labels. Remove colons from code snippets in labels (e.g., use `count` instead of `:count` for Clojure keywords, use `key value` instead of `key: value` for object notation).

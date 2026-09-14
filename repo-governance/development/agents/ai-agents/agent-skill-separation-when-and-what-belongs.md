@@ -11,25 +11,23 @@ when_to_use: Use when deciding whether new knowledge should live in an agent ski
 
 Use this decision tree to determine where knowledge belongs:
 
+```mermaid
+flowchart TD
+    accTitle: When to Use agent skills vs. Agent Content
+    accDescr: Used by 3+ agents? leads to Extract to Skill via Yes; Used by 3+ agents? leads to Reusable domain expertise? via No; Reusable domain expertise? leads to Create or extend Skill via Yes; and 5 more links.
+    Q1{"Used by<br/>3+ agents?"} -->|Yes| S1["Extract to Skill"]
+    Q1 -->|No| Q2{"Reusable domain<br/>expertise?"}
+    Q2 -->|Yes| S2["Create or<br/>extend Skill"]
+    Q2 -->|No| Q3{"Agent-specific<br/>workflow?"}
+    Q3 -->|Yes| A["Keep in agent"]
+    Q3 -->|No| Q4{"Convention<br/>details?"}
+    Q4 -->|Yes| L4["Link to the<br/>convention doc"]
+    Q4 -->|No| E4["Evaluate by<br/>criteria above"]
 ```
-Is this knowledge...
 
-└─ Used by 3+ agents?
-   ├─ YES → Extract to Skill
-   └─ NO → Keep in agent
-
-└─ Reusable domain expertise? (color palettes, validation standards, report formats)
-   ├─ YES → Create/extend Skill
-   └─ NO → Keep in agent
-
-└─ Agent-specific workflow? (task sequence, unique logic, custom decisions)
-   ├─ YES → Keep in agent
-   └─ NO → Consider Skill
-
-└─ Convention details? (standards, rules, formats)
-   ├─ YES → Link to convention document, optionally reference Skill
-   └─ NO → Evaluate based on above criteria
-```
+Ask the questions in order; the first Yes decides. Domain expertise covers color palettes, validation standards, and report formats. Agent-specific workflow covers
+task sequence, unique logic, and custom decisions. Convention details cover standards, rules, and formats; link to
+the convention document and optionally reference a Skill.
 
 ## What Belongs in agent skills
 

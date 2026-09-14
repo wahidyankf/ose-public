@@ -57,8 +57,12 @@ when_to_use: "Read when deciding whether a concept section needs a diagram and w
 ```mermaid
 %% This is a correct comment
 graph LR
+    accTitle: Color-Blind Friendly Palette
+    accDescr: Start leads to End.
     A[Start] --> B[End]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    class A blue
+    class B teal
 ```

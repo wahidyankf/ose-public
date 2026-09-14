@@ -30,7 +30,7 @@ PASS: **Good** (controlled):
 
 FAIL: **Bad** (subgraphs):
 
-```mermaid
+```text
 graph TD
     subgraph Eager
         A[Load All] --> B[Process]
@@ -47,6 +47,8 @@ PASS: **Good** (separate diagrams with headers):
 
 ```mermaid
 graph TD
+    accTitle: Diagram Size and Splitting: Splitting Guidelines
+    accDescr: Load All Data leads to Process Immediately.
     A[Load All Data] --> B[Process Immediately]
 ```
 
@@ -54,6 +56,8 @@ graph TD
 
 ```mermaid
 graph TD
+    accTitle: Diagram Size and Splitting: Splitting Guidelines (2)
+    accDescr: Load On Demand leads to Process When Needed.
     A[Load On Demand] --> B[Process When Needed]
 ```
 

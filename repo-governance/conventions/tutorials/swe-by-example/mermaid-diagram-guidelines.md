@@ -44,6 +44,8 @@ when_to_use: "Read when deciding whether an example needs a diagram, which diagr
 
 ```mermaid
 graph LR
+    accTitle: Diagram Types by Use Case
+    accDescr: Input leads to Transform; Transform leads to Validate; Validate leads to Output.
     A[Input] --> B[Transform]
     B --> C[Validate]
     C --> D[Output]
@@ -53,6 +55,8 @@ graph LR
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Diagram Types by Use Case (2)
+    accDescr: start moves to Idle; Idle moves to Running on start; Running moves to Paused on pause; Paused moves to Running on resume; Running moves to end on stop.
     [*] --> Idle
     Idle --> Running: start()
     Running --> Paused: pause()
@@ -64,6 +68,8 @@ stateDiagram-v2
 
 ```mermaid
 sequenceDiagram
+    accTitle: Diagram Types by Use Case (3)
+    accDescr: Client sends Request to Server; Server sends Query to Database; Database sends Result to Server; Server sends Response to Client.
     Client->>+Server: Request
     Server->>+Database: Query
     Database-->>-Server: Result
@@ -74,6 +80,8 @@ sequenceDiagram
 
 ```mermaid
 graph TD
+    accTitle: Diagram Types by Use Case (4)
+    accDescr: slice header ptr, len=3, cap=5 leads to backing array [10, 20, 30, _, _] via points to.
     A["slice header<br/>ptr, len=3, cap=5"]
     B["backing array<br/>[10, 20, 30, _, _]"]
     A -->|points to| B
@@ -96,8 +104,12 @@ graph TD
 ```mermaid
 %% This is a correct comment
 graph LR
+    accTitle: Color-Blind Friendly Palette
+    accDescr: Start leads to End.
     A[Start] --> B[End]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    class A blue
+    class B teal
 ```

@@ -37,16 +37,14 @@ Every validation and fix is **documented in `local-tmp/<agent-family>/`**:
 
 **False Positive Feedback Loop**:
 
-```
-Checker: Flags issue (potential false positive)
-   ↓
-Fixer: Re-validates, detects FALSE_POSITIVE
-   ↓
-Fixer: Reports false positive with suggestion for checker improvement
-   ↓
-User: Updates checker logic based on feedback
-   ↓
-Checker: Improved accuracy in future runs
+```mermaid
+flowchart TD
+    accTitle: 4. Iterative Improvement
+    accDescr: Checker flags an issue leads to Fixer finds FALSE_POSITIVE; Fixer finds FALSE_POSITIVE leads to Fixer suggests a checker fix; Fixer suggests a checker fix leads to User updates checker logic; and 1 more links.
+    C1["Checker flags<br/>an issue"] --> F1["Fixer finds<br/>FALSE_POSITIVE"]
+    F1 --> F2["Fixer suggests a<br/>checker fix"]
+    F2 --> U["User updates<br/>checker logic"]
+    U --> C2["More accurate<br/>future runs"]
 ```
 
 **Result**: Pattern enables continuous improvement of validation logic.

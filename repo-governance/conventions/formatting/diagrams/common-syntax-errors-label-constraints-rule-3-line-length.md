@@ -32,6 +32,8 @@ Count every character including spaces, colons, slashes, and Unicode.
 
 ```mermaid
 graph TD
+    accTitle: Common Mermaid Syntax Errors: Label Constraints — Rule 3, Maximum Line Length
+    accDescr: Client leads to Backend process single deployable via JWKS public key.
     A["Backend process<br/>single deployable"]:::blue
     B[Client]-->|"JWKS public key"| A
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
@@ -39,7 +41,7 @@ graph TD
 
 **DO NOT:**
 
-```mermaid
+```text
 graph TD
     A["Single deployable<br/>backend process"]:::blue
     %% BROKEN: "Single deployable backend process" is 34 chars — clipped
@@ -52,6 +54,8 @@ graph TD
 
 ```mermaid
 graph TD
+    accTitle: Common Mermaid Syntax Errors: Label Constraints — Rule 3, Maximum Line Length (2)
+    accDescr: Shows Backend process single deployable.
     A["Backend process<br/>single deployable"]:::blue
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```

@@ -16,7 +16,7 @@ when_to_use: "Use when you tried `\n` for a line break in a Mermaid label and it
 
 **Problem Example (FAIL: BROKEN)**:
 
-```mermaid
+```text
 graph LR
     P0["Phase 0\nRepository Setup\n& Knowledge Base"]:::blue
     P1["Phase 1"] -->|"Revenue\n& Learnings"| P2["Phase 2"]
@@ -30,7 +30,9 @@ Use `<br/>` for multi-line labels, or shorten to single-line text:
 
 ```mermaid
 graph LR
-    P0["Phase 0<br/>Setup & Knowledge Base"]:::blue
+    accTitle: Common Mermaid Syntax Errors: Escape Sequences Do Not Create Line Breaks
+    accDescr: Phase 1 leads to Phase 2 via Revenue & Learnings.
+    P0["Phase 0<br/>Setup & Knowledge<br/>Base"]:::blue
     P1["Phase 1"] -->|"Revenue & Learnings"| P2["Phase 2"]
 ```
 

@@ -82,18 +82,16 @@ git push origin main
 
 ## Decision Tree: Rebase vs Merge Conflicts
 
+```mermaid
+flowchart TD
+    accTitle: Decision Tree: Rebase vs Merge Conflicts
+    accDescr: Conflict during rebase? leads to Continue the rebase via 1-2 files; Conflict during rebase? leads to Abort rebase, merge instead via 3+ files or repeats; and 1 more links.
+    Q{"Conflict during<br/>rebase?"}
+    Q -->|1-2 files| C["Continue the<br/>rebase"]
+    Q -->|3+ files or repeats| M["Abort rebase,<br/>merge instead"]
+    Q -->|Unsure or stuck| M
 ```
-Conflict during rebase?
-├─ Few conflicts (1-2 files)
-│  └─ Continue with rebase (resolve commit-by-commit)
-│
-├─ Many conflicts (3+ files) OR same file multiple times
-│  └─ Abort rebase, use merge instead
-│     └─ git rebase --abort
-│     └─ git pull origin main
-│
-└─ Unsure or stuck
-   └─ Abort rebase, use merge (safer)
-      └─ git rebase --abort
-      └─ git pull origin main
-```
+
+Resolve a continued rebase commit by commit. To switch to a merge, run `git rebase --abort` and then
+`git pull origin main`; merging is the safer choice when unsure or stuck, or when the same file conflicts more
+than once.

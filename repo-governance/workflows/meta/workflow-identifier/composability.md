@@ -49,10 +49,12 @@ Run `rtk ./hippo run --class ephemeral --disk-path . -- npm install`, then
 
 Output from one workflow becomes input to another:
 
+```mermaid
+flowchart TD
+    accTitle: 4. Report Summary (Agent)
+    accDescr: content-creation- workflow leads to full-docs- validation-workflow via new-docs-path; full-docs- validation-workflow leads to deployment- workflow via validation-passed.
+    CC["content-creation-<br/>workflow"] -->|new-docs-path| FV["full-docs-<br/>validation-workflow"]
+    FV -->|validation-passed| DW["deployment-<br/>workflow"]
 ```
-content-creation-workflow
-    ↓ outputs: new-docs-path
-full-docs-validation-workflow
-    ↓ outputs: validation-passed
-deployment-workflow (uses validation-passed)
-```
+
+Each arrow carries the upstream workflow's output, and the deployment workflow consumes `validation-passed`.

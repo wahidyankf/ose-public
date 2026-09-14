@@ -11,21 +11,27 @@ when_to_use: Use when you need a visual overview of the Gherkin workflow, links 
 
 ```mermaid
 graph TD
- A[Write Gherkin Scenario] -- define behaviour --> B[Scenario: Login Success]
+ accTitle: Mermaid Diagram: Gherkin Workflow
+ accDescr: Write Gherkin Scenario leads to Scenario: Login Success via define behaviour; Scenario: Login Success leads to Given: Initial state; Given: Initial state leads to When: User action; and 7 more links.
+ A[Write Gherkin<br/>Scenario] -- define behaviour --> B[Scenario: Login<br/>Success]
  B --> C[Given: Initial state]
  C --> D[When: User action]
- D --> E[Then: Expected outcome]
+ D --> E[Then: Expected<br/>outcome]
  E --> F{Implement Feature}
- F -- code written --> G[Write Step Definitions]
+ F -- code written --> G[Write Step<br/>Definitions]
  G --> H[Run Automated Tests]
  H -- pass --> I[Feature Complete]
  H -- fail --> J[Fix & Re-run Tests]
  J --> I
 
- style A fill:#0173B2,stroke:#000,color:#fff
- style B fill:#DE8F05,stroke:#000,color:#000
- style I fill:#029E73,stroke:#000,color:#fff
- style J fill:#CC78BC,stroke:#000,color:#fff
+ classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+ classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+ classDef teal fill:#029E73,stroke:#000000,color:#000000
+ classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+ class A blue
+ class B orange
+ class I teal
+ class J purple
 ```
 
 ## Related Conventions

@@ -40,17 +40,22 @@ when_to_use: Use when reviewing a Primer audit report and deciding the next acti
 
 ```mermaid
 graph TD
+    accTitle: 3. User Review (Manual Decision Point)
+    accDescr: Overall Status? leads to Proceed to Fixer via EXCELLENT or NEEDS IMPROVEMENT; Overall Status? leads to Return to Maker via FAILING; Proceed to Fixer leads to Auto-fix safe?; and 2 more links.
     A{Overall Status?}
     A -->|EXCELLENT or NEEDS IMPROVEMENT| B[Proceed to Fixer]
     A -->|FAILING| C[Return to Maker]
 
     B --> D{Auto-fix safe?}
-    D -->|HIGH confidence only| E[Run Fixer with HIGH only]
+    D -->|HIGH confidence only| E[Run Fixer with HIGH<br/>only]
     D -->|HIGH + MEDIUM| F[Run Fixer with both]
 
-    style A fill:#DE8F05,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#CA9161,color:#fff
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    class A orange
+    class B teal
+    class C brown
 ```
 
 **Decision matrix**:

@@ -43,14 +43,17 @@ when_to_use: Use for Layer 1's scope and traceability requirements.
 
 **Example Traceability**:
 
+```mermaid
+flowchart TD
+    accTitle: Layer 1: Principles (WHY - Values)
+    accDescr: Vision leads to Accessibility First principle via inspires; Accessibility First principle leads to Color Accessibility convention via governs; Accessibility First principle leads to AI Agents convention via governs.
+    V["Vision"] -->|inspires| P["Accessibility<br/>First principle"]
+    P -->|governs| C["Color Accessibility<br/>convention"]
+    P -->|governs| D["AI Agents<br/>convention"]
 ```
-Vision: "Accessible to everyone"
-    ↓ inspires
-Principle: Accessibility First
-    ↓ governs
-Convention: Color Accessibility Convention
-Development: AI Agents Convention — agent colors use accessible palette
-```
+
+The vision is to be accessible to everyone. The AI Agents Convention applies the principle by requiring agent
+colors from the accessible palette.
 
 **Requirements**:
 

@@ -43,6 +43,8 @@ when_to_use: Use when reviewing a by-example audit report and deciding the next 
 
 ```mermaid
 graph TD
+    accTitle: 3. User Review (Manual Decision Point)
+    accDescr: Overall Status? leads to Proceed to Fixer via EXCELLENT or NEEDS IMPROVEMENT; Overall Status? leads to Return to Maker via FAILING; Proceed to Fixer leads to Auto-fix safe?; and 2 more links.
     A{Overall Status?}
     A -->|EXCELLENT or NEEDS IMPROVEMENT| B[Proceed to Fixer]
     A -->|FAILING| C[Return to Maker]
@@ -51,21 +53,27 @@ graph TD
     D -->|HIGH confidence only| E[Run Fixer, HIGH only]
     D -->|HIGH + MEDIUM| F[Run Fixer with both]
 
-    style A fill:#DE8F05,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#CA9161,color:#fff
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    class A orange
+    class B teal
+    class C brown
 ```
 
 When the status is FAILING, the return-to-maker rework path is:
 
 ```mermaid
 graph TD
+    accTitle: 3. User Review (Manual Decision Point) (2)
+    accDescr: Return to Maker leads to Major rework needed; Major rework needed leads to Add coverage gaps; Major rework needed leads to Restructure examples; Major rework needed leads to Rewrite annotations.
     C[Return to Maker] --> G[Major rework needed]
     G --> H[Add coverage gaps]
     G --> I[Restructure examples]
     G --> J[Rewrite annotations]
 
-    style C fill:#CA9161,color:#fff
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    class C brown
 ```
 
 **Decision matrix**:

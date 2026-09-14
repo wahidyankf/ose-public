@@ -31,6 +31,8 @@ apps/
 
 ```mermaid
 flowchart LR
+    accTitle: Examples
+    accDescr: Request leads to Authenticated?; Authenticated? leads to Process via Yes; Authenticated? leads to Return 401 via No; Process leads to Response.
     A[Request] --> B{Authenticated?}
     B -->|Yes| C[Process]
     B -->|No| D[Return 401]

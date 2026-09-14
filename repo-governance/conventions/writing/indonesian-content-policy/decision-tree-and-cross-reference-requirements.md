@@ -9,19 +9,19 @@ when_to_use: Use when unsure whether a specific piece of content should be Indon
 
 Use this decision tree when considering Indonesian content creation:
 
-```
-START: Should I create Indonesian content?
-│
-├─ Is this a programming tutorial or technical reference?
-│  ├─ Yes → Has user EXPLICITLY requested Indonesian translation?
-│  │  ├─ Yes → Create Indonesian translation with maintenance commitment
-│  │  └─ No → Create in ENGLISH only
-│  │
-│  └─ No → Is this personal essay, opinion, or culturally-specific?
-│     ├─ Yes → Create in INDONESIAN (encouraged)
-│     └─ No → Consider value proposition
-│        ├─ High unique value → Create in INDONESIAN
-│        └─ Low unique value → Create in ENGLISH
+```mermaid
+flowchart TD
+    accTitle: Decision Tree: Should I Create Indonesian Content?
+    accDescr: Tutorial or reference? leads to User asked for Indonesian? via Yes; User asked for Indonesian? leads to Translate and maintain it via Yes; User asked for Indonesian? leads to English only via No; and 5 more links.
+    Q1{"Tutorial or<br/>reference?"}
+    Q1 -->|Yes| Q2{"User asked for<br/>Indonesian?"}
+    Q2 -->|Yes| TR["Translate and<br/>maintain it"]
+    Q2 -->|No| EN1["English only"]
+    Q1 -->|No| Q3{"Essay, opinion<br/>or cultural?"}
+    Q3 -->|Yes| ID1["Indonesian,<br/>encouraged"]
+    Q3 -->|No| Q4{"High unique<br/>value?"}
+    Q4 -->|Yes| ID2["Indonesian"]
+    Q4 -->|No| EN2["English"]
 ```
 
 **Examples by Content Type**:

@@ -42,6 +42,8 @@ Determine whether to continue fixing or finalize.
 
 ```mermaid
 graph LR
+    accTitle: 5. Iteration Control (Sequential)
+    accDescr: Fixer applies fixes leads to Checker re-validates; Checker re-validates leads to Clean?; Clean? leads to Publication ready via YES; Clean? leads to More fixes needed via NO; and 1 more links.
     A[Fixer applies fixes]
     B[Checker re-validates]
     C{Clean?}
@@ -54,9 +56,12 @@ graph LR
     C -->|NO| E
     E --> A
 
-    style A fill:#029E73,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A teal
+    class B orange
+    class D purple
 ```
 
 ## 6. Finalization (Sequential)

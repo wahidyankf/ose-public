@@ -21,6 +21,8 @@ flowchart LR
 
 ```mermaid
 flowchart LR
+    accTitle: Flowchart
+    accDescr: User Request leads to Authenticated?; Authenticated? leads to Process Request via Yes; Authenticated? leads to Return 401 via No; Process Request leads to Return Response.
     A[User Request] --> B{Authenticated?}
     B -->|Yes| C[Process Request]
     B -->|No| D[Return 401]
@@ -47,6 +49,8 @@ sequenceDiagram
 
 ```mermaid
 sequenceDiagram
+    accTitle: Sequence Diagram
+    accDescr: Client sends POST /transactions to API; API sends Save transaction to Database; Database sends Confirmation to API; API sends 201 Created to Client.
     participant Client
     participant API
     participant Database
@@ -85,6 +89,8 @@ classDiagram
 
 ```mermaid
 classDiagram
+    accTitle: Class Diagram
+    accDescr: Transaction leads to Account via involves.
     class Transaction {
         +String id
         +BigDecimal amount
@@ -130,6 +136,8 @@ erDiagram
 
 ```mermaid
 erDiagram
+    accTitle: Entity Relationship Diagram
+    accDescr: CUSTOMER leads to ACCOUNT via owns; ACCOUNT leads to TRANSACTION via contains; TRANSACTION leads to TRANSACTION_TYPE via has.
     CUSTOMER ||--o{ ACCOUNT : owns
     ACCOUNT ||--o{ TRANSACTION : contains
     TRANSACTION }o--|| TRANSACTION_TYPE : has
@@ -165,6 +173,8 @@ stateDiagram-v2
 
 ```mermaid
 stateDiagram-v2
+    accTitle: State Diagram
+    accDescr: start moves to Pending; Pending moves to Processing on start; Processing moves to Completed on success; Processing moves to Failed on error; Failed moves to Pending on retry; Completed moves to end.
     [*] --> Pending
     Pending --> Processing : start
     Processing --> Completed : success
@@ -192,6 +202,8 @@ gitGraph
 
 ```mermaid
 gitGraph
+    accTitle: Git Graph
+    accDescr: Illustrates git graph.
     commit
     branch develop
     checkout develop

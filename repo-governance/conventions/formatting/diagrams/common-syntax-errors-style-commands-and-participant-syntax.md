@@ -11,7 +11,7 @@ when_to_use: "Use when a Mermaid sequence diagram's style commands or participan
 
 **Problem Example (FAIL: BROKEN):**
 
-```mermaid
+```text
 sequenceDiagram
     participant User
     participant System
@@ -29,6 +29,8 @@ For sequence diagrams, use `box` syntax for grouping and coloring instead:
 
 ```mermaid
 sequenceDiagram
+    accTitle: Error 4: Style Commands in Sequence Diagrams
+    accDescr: User sends Request to System; System sends Response to User.
     box Blue User Side
         participant User
     end
@@ -44,13 +46,15 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
+    accTitle: Error 4: Style Commands in Sequence Diagrams (2)
+    accDescr: User leads to System.
     User[User]:::blue
     System[System]:::orange
 
     User --> System
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
 ```
 
 **Rationale**: Mermaid diagram types have different syntax capabilities. `style` commands are only valid in graph-based diagrams (graph, flowchart), not in interaction diagrams (sequenceDiagram, classDiagram, stateDiagram).
@@ -65,7 +69,7 @@ flowchart LR
 
 **Problem Example (FAIL: BROKEN)**:
 
-```mermaid
+```text
 sequenceDiagram
     participant Main as "main()"
     participant Loop as "Event Loop"
@@ -84,6 +88,8 @@ Use simple participant identifiers without the `as` keyword:
 
 ```mermaid
 sequenceDiagram
+    accTitle: Error 5: Sequence Diagram Participant Syntax with as Keyword
+    accDescr: Main sends Start execution to EventLoop; EventLoop sends Call async function to API1; API1 sends Return result to EventLoop.
     participant Main
     participant EventLoop
     participant API1
@@ -99,6 +105,8 @@ If you need descriptive names, use CamelCase or underscores without the `as` key
 
 ```mermaid
 sequenceDiagram
+    accTitle: Error 5: Sequence Diagram Participant Syntax with as Keyword (2)
+    accDescr: MainFunction sends Initialize to EventLoop; EventLoop sends Retrieve data to FetchData; FetchData sends Data received to EventLoop.
     participant MainFunction
     participant EventLoop
     participant FetchData

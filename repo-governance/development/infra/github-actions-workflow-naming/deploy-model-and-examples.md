@@ -12,20 +12,25 @@ call:
 
 ```mermaid
 flowchart TD
-    A[app-test-local-deploy-stag<br/>tests pass] -->|force-push| W[stag-*-app-web branch]
+    accTitle: Deploy Model
+    accDescr: app-test-local- deploy-stag tests pass leads to stag-*-app-web branch via force-push; app-test-local- deploy-stag tests pass leads to stag-*-be branch via force-push; stag-*-app-web branch leads to Vercel staging URL via Vercel builds; and 3 more links.
+    A[app-test-local-<br/>deploy-stag<br/>tests pass] -->|force-push| W[stag-*-app-web<br/>branch]
     A -->|force-push| B[stag-*-be branch]
     W -->|Vercel builds| VS[Vercel staging URL]
-    B -->|triggers| BD[be-build-deploy-stag workflow]
-    BD -->|GHCR image| CP[ose-private coralpolyp<br/>cluster rollout]
-    A2[app-test-stag<br/>e2e vs staging] -->|on pass: STOP| X[prod CD = separate plan]
+    B -->|triggers| BD[be-build-deploy-stag<br/>workflow]
+    BD -->|GHCR image| CP[private repo<br/>cluster rollout]
+    A2[app-test-stag<br/>e2e vs staging] -->|on pass: STOP| X[prod CD = separate<br/>plan]
 
-    style A fill:#DE8F05,stroke:#000,color:#000
-    style A2 fill:#DE8F05,stroke:#000,color:#000
-    style W fill:#0173B2,stroke:#000,color:#FFF
-    style B fill:#0173B2,stroke:#000,color:#FFF
-    style VS fill:#029E73,stroke:#000,color:#FFF
-    style CP fill:#CA9161,stroke:#000,color:#FFF
-    style X fill:#808080,stroke:#000,color:#FFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    classDef gray fill:#808080,stroke:#000000,color:#000000
+    class A,A2 orange
+    class W,B blue
+    class VS teal
+    class CP brown
+    class X gray
 ```
 
 - **Web (Vercel)**: The branch push is the entire deploy — Vercel listens to `stag-*`/`prod-*`

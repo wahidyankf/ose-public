@@ -9,32 +9,25 @@ When creating a new agent, assign a color based on its **primary capability**:
 
 **Decision Tree:**
 
+```mermaid
+flowchart TD
+    accTitle: Platform Binding Examples — Assigning Colors to New Agents
+    accDescr: Agent's primary capability? leads to blue: Maker via Creates new content; Agent's primary capability? leads to green: Checker via Validates, reports; Agent's primary capability? leads to yellow: Fixer via Modifies existing; and 1 more links.
+    S{"Agent's primary<br/>capability?"}
+    S -->|Creates new content| M["blue:<br/>Maker"]
+    S -->|Validates, reports| C["green:<br/>Checker"]
+    S -->|Modifies existing| F["yellow:<br/>Fixer"]
+    S -->|Executes plans| I["purple:<br/>Implementor"]
 ```
-Start: What is the agent's primary capability?
-    │
-    ├─ Creates new files/content from scratch
-    │   └─> color: blue (Maker)
-    │       - Must have `Write` tool
-    │       - Examples: docs-maker, plan-maker
-    │
-    ├─ Validates/checks and generates reports
-    │   └─> color: green (Checker)
-    │       - Has `Write`, `Bash` (no Edit)
-    │       - Write needed for audit reports in local-tmp/<agent-family>/
-    │       - Bash needed for UTC+7 timestamps
-    │       - Examples: rules-checker, plan-checker, docs-checker
-    │       - EXCEPTION: Link checkers also have Edit tool for cache management (see "Link Checker Agents Note" below)
-    │
-    ├─ Modifies/updates existing content only
-    │   └─> color: yellow (Fixer)
-    │       - Has `Edit` but NOT `Write`
-    │       - Examples: docs-file-manager, readme-fixer, repo-workflow-fixer
-    │
-    └─ Executes plans/orchestrates tasks
-        └─> color: purple (Implementor)
-            - Has Write, Edit, AND Bash
-            - Examples: swe-*-dev agents; plan execution itself is orchestrated by the calling context via the plan-execution workflow (no dedicated subagent)
-```
+
+- Maker (`blue`): must have `Write`. Examples: docs-maker, plan-maker.
+- Checker (`green`): has `Write` and `Bash` but no `Edit`; `Write` is needed for audit reports in
+  `local-tmp/<agent-family>/`, and `Bash` for UTC+7 timestamps. Examples: rules-checker, plan-checker,
+  docs-checker. Exception: link checkers also have the `Edit` tool for cache management (see "Link Checker Agents
+  Note" below).
+- Fixer (`yellow`): has `Edit` but not `Write`. Examples: docs-file-manager, readme-fixer, repo-workflow-fixer.
+- Implementor (`purple`): has `Write`, `Edit`, and `Bash`. Examples: `swe-*-dev` agents; plan execution itself is
+  orchestrated by the calling context via the plan-execution workflow (no dedicated subagent).
 
 **Edge Cases:**
 

@@ -24,12 +24,14 @@ defined in the Custody Rule.
 ```mermaid
 %% Corpus lifecycle: the default path is the left spine; promotion is trigger-gated.
 stateDiagram-v2
-    [*] --> Authored: plan creates syllabus/
-    Authored --> ArchiveWithPlan: no consumer outside plans/
-    Authored --> Promoted: a non-plan consumer exists
-    ArchiveWithPlan --> Archived: plan moves to plans/done/
-    ArchiveWithPlan --> Promoted: non-plan consumer appears
-    Promoted --> DurableHome: git mv + links rewritten
+    accTitle: Corpus Disposition
+    accDescr: start moves to Authored on plan creates syllabus/; Authored moves to ArchiveWithPlan on no consumer outside plans/; Authored moves to Promoted on a non-plan consumer exists; and 5 more links.
+    [*] --> Authored: plan creates<br/>syllabus/
+    Authored --> ArchiveWithPlan: no consumer outside<br/>plans/
+    Authored --> Promoted: a non-plan consumer<br/>exists
+    ArchiveWithPlan --> Archived: plan moves to<br/>plans/done/
+    ArchiveWithPlan --> Promoted: non-plan consumer<br/>appears
+    Promoted --> DurableHome: git mv + links<br/>rewritten
     Archived --> [*]
     DurableHome --> [*]
 ```

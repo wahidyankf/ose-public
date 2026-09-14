@@ -14,14 +14,20 @@ Go is a compiled language - you write source code, compile it into a binary exec
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: Hello World and Go Compilation (Golang)
+    accDescr: Source Code main.go leads to Go Compiler via go build; Go Compiler leads to Binary Executable main via code generation; Binary Executable main leads to Running Binary Output via./main.
     A["Source Code<br/>main.go"] -->|go build| B["Go Compiler"]
     B -->|code generation| C["Binary Executable<br/>main"]
     C -->|./main| D["Running Binary<br/>Output"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A blue
+    class B orange
+    class C teal
+    class D purple
 ```
 
 **Code**:

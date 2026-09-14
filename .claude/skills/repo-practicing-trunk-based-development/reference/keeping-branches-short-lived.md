@@ -14,7 +14,7 @@ Branch lifespan discipline still applies with full force:
 **1. Experimental Work (High Risk)**
 
 - **Definition**: Unproven ideas, may be abandoned
-- **Duration**: Days to weeks (not months)
+- **Duration**: A day or two, like any plan branch
 - **Example**: Exploring new framework, prototyping radical redesign
 - **Note**: an experimental branch is still short-lived — abandon or land it, do not let it drift
 
@@ -32,12 +32,13 @@ Branch lifespan discipline still applies with full force:
 - **Example**: Financial system change requiring dual approval
 - **Note**: this is the case where a plan legitimately opts into a `[HUMAN]` merge gate
 
-**4. Parallel Maintenance Versions**
+**4. Environment Branches**
 
-- **Definition**: Supporting multiple major versions simultaneously
-- **Duration**: Ongoing (release branches)
-- **Example**: Supporting v1.x while developing v2.x
-- **Note**: release branches are the one sanctioned long-lived exception
+- **Definition**: A branch tracking what is deployed to one environment
+- **Duration**: Ongoing
+- **Example**: A production branch that receives each release from `main`
+- **Note**: the one sanctioned long-lived exception; it only receives from the trunk and is never
+  developed on. Releases are tagged commits on `main`, never release branches
 
 ## Declaring the Delivery Mode
 
@@ -50,9 +51,10 @@ worktree: "worktrees/[plan-identifier]"
 branch: "[plan-identifier]"
 ```
 
-For the categories above that go beyond an ordinary plan branch (experimental, compliance, parallel
-maintenance versions), state the expected lifespan and the landing strategy alongside the mode, since
-those are the cases where a branch risks outliving its plan.
+For the categories above that go beyond an ordinary plan branch (experimental, compliance), state the
+expected lifespan and the landing strategy alongside the mode, since those are the cases where a
+branch risks outliving its plan. An environment branch is not a plan branch and never carries a plan's
+work.
 
 ## ❌ NOT Justified Reasons to Let a Branch Live Long
 

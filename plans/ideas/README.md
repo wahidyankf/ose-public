@@ -1,11 +1,11 @@
 # Idea Briefs (Two-Pagers)
 
 This folder holds **two-pagers**: shortened, promotable idea briefs that are richer than a one-line
-todo but deliberately **not** full five-document plans. Each idea is one `<slug>.md` file. `ideas/`
+todo but deliberately **not** full six-document plans. Each idea is one `<slug>.md` file. `ideas/`
 is the first stage of the plan lifecycle:
 
 ```text
-ideas/ (two-pagers) → backlog/ (full 5-doc plans) → in-progress/ → done/
+ideas/ (two-pagers) → backlog/ (full 6-doc plans) → in-progress/ → done/
 ```
 
 ## Two-Pagers
@@ -260,7 +260,7 @@ flat idea count exceeded the 60-file threshold.
 - **Pre-grooming demotions** (5), performed on maintainer instruction immediately before the sweep
   and then swept by it. Recorded here for the audit trail, **not** as a grooming action — this
   workflow never writes under `plans/backlog/`, so the demotion is a separate act that happened to
-  precede the run. Each five-document backlog plan collapsed into one two-pager carrying a
+  precede the run. Each full backlog plan collapsed into one two-pager carrying a
   `> Provenance: demoted from the full backlog/ plan ...` line:
   `oxlint-upgrade-and-lint-reproducibility` (Q1), `rhino-cli-governance-tooling-defects` (Q1),
   `file-naming-convention-rework` (Q1), `harness-mirror-and-test-isolation-defects` (Q1), and

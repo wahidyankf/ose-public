@@ -13,7 +13,7 @@ The audit sweep is delegated; the repair is not.
    Agent tool. The checker reads the plan, its assets, the relevant implementation, specifications,
    and governance, and returns the frozen ledger. It never edits a file.
 2. The root freezes that ledger, writes it to `local-tmp/plan/`, and performs the repairs itself.
-   There is no `plan-fixer`: it was retired when this workflow became a governance gate, because a
+   There is no separate fixer agent: repair moved to the root when this workflow became a governance gate, because a
    single bounded repair pass over plan documents has no fan-out to isolate.
 3. The root owns every user interaction. A decision the checker cannot settle returns as a
    `## User Decisions Required` envelope and is resolved through root-owned

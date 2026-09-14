@@ -225,7 +225,10 @@ type RustDelegationProcessSteps() =
         for row in table.Rows do
             File.Delete argvFile
             cli (words row.[0]) [] ""
-            Assert.True(((current ()).ExitCode = 0), sprintf "%s failed: %s" row.[0] (current ()).Stderr)
+            // A refusal (2) or a launch failure (3) never starts RHINO; a split
+            // remainder may still report findings (1) against this empty fixture.
+            let code = (current ()).ExitCode
+            Assert.True((code = 0 || code = 1), sprintf "%s exited %d: %s" row.[0] code (current ()).Stderr)
             perCommand <- perCommand @ [ row.[1], String.Join("\n", recordedArguments ()) ]
 
     [<When>]

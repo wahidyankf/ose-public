@@ -89,15 +89,16 @@ flowchart TD
 - `in-progress/` - Active projects being worked on
 - `done/` - Completed and archived projects
 
-**Standard Plan Files (inside plan folders)** — five-document multi-file layout:
+**Standard Plan Files (inside plan folders)** — the six-document mature core:
 
 - `README.md` - Plan overview and navigation
 - `brd.md` - Business Requirements Document (business goal, impact, affected roles, success metrics)
 - `prd.md` - Product Requirements Document (personas, user stories, Gherkin acceptance criteria, scope)
-- `tech-docs.md` - Technical documentation (architecture, decisions, file impact)
+- `tech-docs.md`, or `tech-docs/README.md` with mapped companions - Technical documentation (architecture, decisions, file impact), in exactly one of the two forms
 - `delivery.md` - Delivery checklist (phased `- [ ]` items, one action per checkbox)
+- `learnings.md` - Learnings captured during execution, each routed before archival
 
-Single-file layout (`README.md` only) is an exception for trivially-small plans.
+A new formal plan never collapses to one `README.md`: simple work belongs in the task list, and early work in an idea brief.
 
 See [AGENTS.md Plans Organization](../../AGENTS.md#plans--temporary-files) for full details.
 
@@ -157,11 +158,12 @@ See [AGENTS.md Plans Organization](../../AGENTS.md#plans--temporary-files) for f
    ├── brd.md
    ├── prd.md
    ├── tech-docs.md
-   └── delivery.md
+   ├── delivery.md
+   └── learnings.md
    ```
 
-   - Create full five-document plan structure
-   - Define business intent (brd), product requirements (prd), technical approach (tech-docs), and delivery checklist (delivery)
+   - Create the six-document plan structure (mature core plus one technical form)
+   - Define business intent (brd), product requirements (prd), technical approach (tech-docs), delivery checklist (delivery), and learnings log (learnings)
    - Delete the two-pager from `plans/ideas/` (the idea now lives as a plan)
 
 3. **Move to in-progress/** (Execution Phase)

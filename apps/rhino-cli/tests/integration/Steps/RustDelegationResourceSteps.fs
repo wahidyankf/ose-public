@@ -236,7 +236,9 @@ type RustDelegationResourceSteps() =
         for row in table.Rows do
             File.Delete argvFile
             run (words row.[0])
-            Assert.Equal(Some 0, exitCode)
+            // A refusal (2) or a launch failure (3) never starts RHINO; a split
+            // remainder may still report findings (1) against this empty fixture.
+            Assert.True((exitCode = Some 0 || exitCode = Some 1), sprintf "%s exited %A" row.[0] exitCode)
             perCommand <- perCommand @ [ row.[1], String.Join("\n", recordedArguments ()) ]
 
     [<When>]

@@ -27,6 +27,8 @@
       "**/.env.development": "deny",
       "**/.env.production": "deny",
       "**/.env.staging": "deny",
+      "**/.env.prod": "deny",
+      "**/.env.stag": "deny",
       "**/.env.test": "deny",
       "**/.env.example": "allow",
       "apps/*/content/**/*.env": "allow"
@@ -38,6 +40,8 @@
       "**/.env.development": "deny",
       "**/.env.production": "deny",
       "**/.env.staging": "deny",
+      "**/.env.prod": "deny",
+      "**/.env.stag": "deny",
       "**/.env.test": "deny",
       "**/.env.example": "allow",
       "apps/*/content/**/*.env": "allow"

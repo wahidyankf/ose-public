@@ -1,6 +1,12 @@
 ---
 name: plan-grooming-idea-briefs
-description: Invocable entry point for the plan-ideas-grooming workflow — sweeps one or more repos' plans/ideas/ folders and converges them into a deduplicated, Eisenhower-quadrant-organized, correctly-resident set of two-pagers. Carries the ten-step procedure, the three residency rules (secrets-bearing, single-repo-only, generalizable), the two classification rubrics (urgency, importance), the fail-safe-toward-duplication relocation sequence, and the six-clause termination audit. Use when a repo's flat idea count exceeds 60, when 90 days have elapsed since the last recorded run, or when a maintainer asks for idea grooming across repos.
+description: >-
+  Invocable entry point for the plan-ideas-grooming workflow: sweeps plans/ideas/ across repos into a deduplicated,
+  Eisenhower-quadrant, correctly resident set of two-pagers, with residency rules, classification rubrics, fail-safe
+  relocation, and a termination audit.
+when_to_use: >-
+  Use when a repo's flat idea count exceeds 60, 90 days have passed since the last recorded run, or a maintainer asks
+  for idea grooming across repos.
 ---
 
 # Grooming Idea Briefs
@@ -27,7 +33,7 @@ essentials and the traps; it does not restate all ten steps verbatim.
 - A maintainer explicitly asks for idea grooming across one or more repos.
 
 Do **not** use it to file a new idea (write the two-pager directly) or to promote a ripe idea into a
-backlog plan (that is `plan-idea-promotion-planning`).
+backlog plan (that is `plan-planning`, following the Plans convention's promotion steps).
 
 ## Inputs
 
@@ -56,4 +62,4 @@ See [Traps and Termination Audit](./reference/traps-and-termination-audit.md) fo
 
 - [`plan-ideas-grooming` workflow](../../../repo-governance/workflows/plan/plan-ideas-grooming.md) — the normative procedure.
 - [Ideas Folder (Two-Pagers) convention](../../../repo-governance/conventions/structure/plans/ideas-folder-overview-rationale-and-file-layout.md#ideas-folder-two-pagers) — the template every survivor is reshaped against.
-- [`plan-idea-promotion-planning`](../../../repo-governance/workflows/plan/plan-idea-promotion-planning.md) — promotes a groomed idea to a plan; this Skill never does.
+- [Promoting a Two-Pager](../../../repo-governance/conventions/structure/plans/promoting-ideas-and-worked-examples.md) — how a groomed idea becomes a plan through `plan-planning`; this Skill never promotes.

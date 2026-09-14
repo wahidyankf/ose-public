@@ -27,15 +27,15 @@ graph TD
     B --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Best Practices for Mermaid Diagrams
 
 1. **Always include borders**: Use `stroke:#000000` (black) for shape definition and contrast
-2. **Use white text on dark fills**: `color:#FFFFFF` for light readability on dark backgrounds
-3. **Use black text on light fills**: `color:#000000` for light-colored backgrounds
+2. **Use white text only on blue**: `color:#FFFFFF` on Blue `#0173B2` measures 5.13:1
+3. **Use black text on orange, teal, purple, and gray**: `color:#000000`, since white text on those fills measures below 4.5:1 (see [Text on Palette Fills](./verified-color-palette.md#text-on-palette-fills))
 4. **Define colors in classDef**: Don't use inline color specifications
 5. **Use hex codes**: Never use CSS color names like "red", "green"
 6. **Use accessible palette in classDef** (REQUIRED FOR ACCESSIBILITY): The `classDef` must contain the correct accessible hex codes from the verified palette - this is what makes diagrams accessible
@@ -66,7 +66,7 @@ graph TD
     B -->|No| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
 ```

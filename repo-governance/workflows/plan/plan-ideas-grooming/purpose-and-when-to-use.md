@@ -28,4 +28,5 @@ with every rename's inbound/outbound links rewritten by the same mechanism reloc
 - Do **not** use it to file a brand-new idea (write the two-pager directly per the
   [Ideas Folder convention](../../../conventions/structure/plans/ideas-folder-overview-rationale-and-file-layout.md#ideas-folder-two-pagers)), and do
   not use it to promote a single ripe idea into a full plan (that is
-  [`plan-idea-promotion-planning`](../plan-idea-promotion-planning.md)).
+  [`plan-planning`](../plan-planning.md), per
+  [Promoting a Two-Pager](../../../conventions/structure/plans/promoting-ideas-and-worked-examples.md)).

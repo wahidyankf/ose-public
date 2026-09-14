@@ -34,7 +34,7 @@ created: YYYY-MM-DD
 
 **Purpose**: Motivate the learner and set expectations
 
-**Required Elements**: - Opening hook (why this topic matters) - Learning context (real-world relevance) - What learner will achieve by the end - Time estimate (if applicable) - Motivational element (builds excitement)
+**Required Elements**: - Opening hook (why this topic matters) - Learning context (real-world relevance) - What learner will achieve by the end - Motivational element (builds excitement)
 
 **Example Structure**:
 

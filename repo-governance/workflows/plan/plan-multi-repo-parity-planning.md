@@ -11,7 +11,7 @@ Authors one plan per sibling repo, grilling every cross-repo gap first.
 
 Plan authoring and validation use [plan-maker](../../../.claude/agents/plan/plan-maker.md) and
 [plan-checker](../../../.claude/agents/plan/plan-checker.md). Repair belongs to the
-[plan-quality-gate](./plan-quality-gate.md) itself; there is no `plan-fixer`.
+[plan-quality-gate](./plan-quality-gate.md) itself; there is no separate fixer agent.
 
 ## Goal and Termination
 
@@ -51,6 +51,7 @@ Plan authoring and validation use [plan-maker](../../../.claude/agents/plan/plan
 - [Step 6 — Authoring](./plan-multi-repo-parity-planning/step-6-plan-authoring.md) — plan-maker handoff.
 - [Step 6 — Required Contents](./plan-multi-repo-parity-planning/step-6-plan-authoring-required-contents.md) — matrix, links.
 - [Steps 7-8 — Gate & Delivery](./plan-multi-repo-parity-planning/step-7-and-8-quality-gate-and-delivery.md) — deliver.
+- [Delivering the Plans](./plan-multi-repo-parity-planning/delivering-the-parity-plans.md) — execute, same run.
 - [Termination & Grilling](./plan-multi-repo-parity-planning/termination-criteria-and-grilling-contract.md) — outcomes.
 - [Example Usage](./plan-multi-repo-parity-planning/example-usage.md) — worked runs.
 - [Safety & Related](./plan-multi-repo-parity-planning/safety-features-and-related-workflows.md) — guarantees, links.

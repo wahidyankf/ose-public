@@ -22,7 +22,7 @@ This convention separates **vendor-neutral governance** (the rules) from **platf
 - `AGENTS.md` — canonical root instruction file (read natively by OpenCode, OpenAI Codex CLI, and other AGENTS.md-aware coding agents). Vendor-neutrality here is the load-bearing surface for cross-vendor behavioural parity.
 - `CLAUDE.md` — Claude Code shim. While CLAUDE.md is itself a Claude-Code platform binding artifact (its filename names the vendor by design), its **prose body** must be vendor-neutral by the same standard as `repo-governance/`. Two specific allowances apply:
   - The single-line `@AGENTS.md` import directive is treated as an inline binding directive, not a forbidden vendor term.
-  - Vendor-specific clarifications inside CLAUDE.md belong inside ` ```binding-example ` fenced blocks or under a "Platform Binding Examples" heading per the Allowlist Mechanism — never as load-bearing prose.
+  - CLAUDE.md holds that directive and nothing else. Its vendor-specific clarifications live in the [Platform Bindings Catalog](../../../../docs/reference/platform-bindings.md), never in the shim.
 
 **Out of scope** (vendor terms are intentionally present here):
 

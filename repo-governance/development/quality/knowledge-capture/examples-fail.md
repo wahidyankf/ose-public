@@ -34,7 +34,7 @@ filed directly at `plans/backlog/reconcile-parity-audit-exception/` rather than 
 
 Fails the routing-timing rule: `plans/ideas/` is the only destination an executing run may file new
 future work to. "It is already plan-ready" is the run's own judgment, and the ripeness gate in
-[plan-idea-promotion-planning](../../../workflows/plan/plan-idea-promotion-planning.md) exists
+[Promoting a Two-Pager](../../../conventions/structure/plans/promoting-ideas-and-worked-examples.md) exists
 precisely because that judgment is not a substitute for it. A prior human instruction sending some
 _other_ finding straight to `backlog/` does not carry to this one.
 

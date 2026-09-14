@@ -12,8 +12,8 @@ themselves, their quadrant subfolders, and the `## Grooming Log` / `> Last groom
 appends to that folder's own `README.md`. It **never** creates, moves, renames into, or otherwise
 writes any file under `plans/backlog/` or `plans/in-progress/` in any repo, in any of its ten
 steps, under any `delivery-mode`. Promoting a groomed, ripe idea into a full backlog plan is a
-categorically separate action, performed only by
-[`plan-idea-promotion-planning`](../plan-idea-promotion-planning.md), invoked explicitly and
+categorically separate action, performed only through [`plan-planning`](../plan-planning.md) per
+[Promoting a Two-Pager](../../../conventions/structure/plans/promoting-ideas-and-worked-examples.md), invoked explicitly and
 separately by a maintainer or another workflow — `plan-ideas-grooming` never invokes it and never
 performs a promotion itself, even when a surviving idea looks obviously ready. If a step's output
 would require writing outside `plans/ideas/**`, that output is out of scope for this workflow:

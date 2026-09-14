@@ -44,5 +44,6 @@ emits Codex agent files under `.codex/agents/` and mirrors Skills to non-vendore
 ## Source and generated bindings
 
 `.claude/agents/` is the source of truth. Mirrors are generated, never hand-edited — see
-[Multi-harness configuration](../../CLAUDE.md#multi-harness-configuration)
-for the sync workflow and format differences.
+[Generated bindings](../../docs/reference/platform-bindings.md#generated-bindings) for the sync
+workflow and [Translation Artifacts](../../docs/reference/platform-bindings.md#translation-artifacts)
+for the format differences.

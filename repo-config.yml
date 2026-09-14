@@ -29,6 +29,14 @@ visibility: public
 
 # RHINO validator sections, read by the pinned ./rhino. rhino-cli reads only
 # extensions.rhino-cli, so a split command's F# remainder never sees these.
+# The one tier a canonical agent declares. It equals `model-grades.planning`, which the
+# F# emitter already projects into every plan agent's Claude source.
+model-tiers:
+  claude:
+    plan:
+      model: opus
+      effort: high
+
 scan:
   exclude-directories:
     - .git
@@ -52,6 +60,63 @@ scan:
     - cover
     - fixtures
     - raw
+    # Archived plans are frozen history (plans/done/ is immutable, see
+    # repo-governance/development/quality/markdown/archive-exclusion.md): an old
+    # delivery checklist quoting the bare instruction import is not a live source.
+    - done
+harness-parity:
+  canonical:
+    instruction: AGENTS.md
+    # Claude Code reads CLAUDE.md, which holds the one import directive and no
+    # rule of its own, so the repository has one instruction body.
+    instruction-adapter: CLAUDE.md
+  # Empty on purpose. RHINO names an adapter by one path component after its
+  # prefix, while this repository's agents live in family directories and its
+  # .agents/skills tree is a byte mirror rather than a route. Agent and skill
+  # parity stay with the rhino-cli harness validators (extensions.rhino-cli
+  # delegation), and RHINO owns the instruction pair.
+  harnesses: []
+  prohibited-instruction-sources:
+    - "**/AGENTS.md"
+    - "**/AGENTS.override.md"
+    - "**/CLAUDE.md"
+    - ".claude/rules/**/*.md"
+    - "**/GEMINI.md"
+    - "**/.cursorrules"
+    - "**/.windsurfrules"
+    - ".github/copilot-instructions.md"
+  # OpenCode reads always-on instructions from its settings file's
+  # `instructions` key, so that key is a competing source in vendor syntax.
+  prohibited-instruction-fields:
+    - file: .opencode/opencode.json
+      format: json
+      field: instructions
+  capabilities: []
+  constraints: []
+
+# Portable metadata covers only the plan-system rows the catalog defines: the canonical plan
+# agents and the six planning skills' sources. Every other agent and skill keeps its
+# Claude-native frontmatter, which the rhino-cli harness validators check.
+metadata:
+  surfaces:
+    - glob: ".agents/agents/*.md"
+      schema: agent
+    # Declared after the agent glob so the directory index is read as governance, not as an agent.
+    - glob: ".agents/agents/README.md"
+      schema: governance
+    - glob: ".claude/skills/grill-me/SKILL.md"
+      schema: skill
+    - glob: ".claude/skills/plan-creating-project-plans/SKILL.md"
+      schema: skill
+    - glob: ".claude/skills/plan-grooming-idea-briefs/SKILL.md"
+      schema: skill
+    - glob: ".claude/skills/plan-writing-gherkin-criteria/SKILL.md"
+      schema: skill
+    - glob: ".claude/skills/plan-validating-quality/SKILL.md"
+      schema: skill
+    - glob: ".claude/skills/plan-verifying-execution/SKILL.md"
+      schema: skill
+
 governance-word-budget:
   count: whitespace-separated
   surfaces:
@@ -105,7 +170,8 @@ md-heading-hierarchy:
     - glob: "plans/ideas/**"
     - glob: "plans/README.md"
     - glob: "AGENTS.md"
-    - glob: "CLAUDE.md"
+    # CLAUDE.md is not a surface: it holds only the @AGENTS.md import, so it has
+    # no heading to check.
     - glob: "CONTRIBUTING.md"
     - glob: "LICENSING-NOTICE.md"
     - glob: "README.md"
@@ -337,6 +403,11 @@ extensions:
           - { path: .claude/, class: source, reason: hand-authored tree every mirror is generated from }
           - { path: .claude/agents, class: source, reason: canonical agent definitions }
           - { path: .claude/skills, class: source, reason: canonical skill definitions }
+          - {
+              path: .agents/agents,
+              class: source,
+              reason: canonical plan agent definitions the .claude/agents/plan sources route to,
+            }
           - { path: .claude/settings.json, class: source, reason: hand-authored permissions and hook registration }
           - { path: CLAUDE.md, class: source, reason: hand-authored Claude Code instruction surface }
       - name: opencode
@@ -1454,13 +1525,10 @@ extensions:
       # (conventions/structure/governance-vendor-independence/purpose-and-scope.md),
       # so leaving it ungated let neutrality hold only by hand.
       #
-      # CLAUDE.md is deliberately NOT gated: its "Platform Binding Examples" heading
-      # opens at line 5 with only deeper headings beneath, and the scanner exempts
-      # everything until the next heading of equal-or-shallower level, so a gate
-      # there could only ever police the four lines above it. Total exemption is
-      # intended — that file is a single-vendor binding shim — and an always-green
-      # gate is exactly the vacuous-trigger failure the path-gated comment above
-      # warns about.
+      # CLAUDE.md is deliberately NOT gated: it holds only the `@AGENTS.md` import
+      # directive, which the scanner treats as a binding directive rather than a
+      # vendor term, so a gate there could never fail. An always-green gate is
+      # exactly the vacuous-trigger failure the path-gated comment above warns about.
       - id: vendor-independence-agents-md
         type: check
         command: repo-governance vendor validate AGENTS.md
@@ -1712,7 +1780,6 @@ extensions:
         keeps: []
       - command: harness bindings generate
         class: stay
-        until: unit-4
         keeps: [harness-name]
       - command: git lockfile sync
         class: stay
@@ -1729,8 +1796,8 @@ extensions:
         rhino: md readme-index validate
         keeps: [readme-index-links, readme-index-orphan, readme-index-ghost, readme-index-unannotated]
       - command: harness duplication validate
-        class: stay
-        until: unit-4
+        class: split
+        rhino: harness parity validate
         keeps: [harness-duplication]
       - command: parity manifest validate
         class: stay
@@ -1745,20 +1812,20 @@ extensions:
         class: stay
         keeps: [convention-license]
       - command: harness bindings validate
-        class: stay
-        until: unit-4
+        class: split
+        rhino: harness parity validate
         keeps: [harness-bindings, harness-codex-agents, harness-vendored-declarations, harness-registry-scripts]
       - command: harness claude validate
-        class: stay
-        until: unit-4
+        class: split
+        rhino: harness parity validate
         keeps: [harness-claude, harness-claude-frontmatter]
       - command: harness ownership validate
-        class: stay
-        until: unit-4
+        class: split
+        rhino: harness parity validate
         keeps: [harness-ownership]
       - command: harness catalog validate
-        class: stay
-        until: unit-4
+        class: split
+        rhino: harness parity validate
         keeps: [harness-catalog]
       - command: governance word-budget validate
         class: split
@@ -1770,7 +1837,6 @@ extensions:
         keeps: [md-frontmatter-dates-body]
       - command: harness sync validate
         class: stay
-        until: unit-4
         keeps: [harness-sync, harness-skills-mirror, harness-agent-count]
       - command: repo-governance layer-coherence validate
         class: stay

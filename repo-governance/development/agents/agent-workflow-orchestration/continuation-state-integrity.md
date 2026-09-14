@@ -49,5 +49,5 @@ task-list discipline, handoff templates, and continuation gates make the obligat
 
 - [Task List Discipline](../../practice/task-list-discipline.md) — durable execution state.
 - [File-Touch Discipline](../../practice/file-touch-discipline.md) — separate ownership ledger.
-- [Plan Handover Execution](../../../workflows/plan/plan-handover-execution.md) — write-side record.
-- [Plan Takeover Execution](../../../workflows/plan/plan-takeover-execution.md) — read-side gate.
+- [Plan Handover and Takeover](../../../workflows/plan/plan-handover-and-takeover.md) — the handover record and the
+  takeover gate.

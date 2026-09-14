@@ -18,6 +18,11 @@ Feature: Validators RHINO provides run through the repository's pinned RHINO
       | convention emoji validate        | convention emoji validate       |
       | governance word-budget validate  | governance word-budget validate |
       | governance readme-index validate | md readme-index validate        |
+      | harness bindings validate        | harness parity validate         |
+      | harness claude validate          | harness parity validate         |
+      | harness ownership validate       | harness parity validate         |
+      | harness catalog validate         | harness parity validate         |
+      | harness duplication validate     | harness parity validate         |
     Then RHINO receives each command's own validator words
 
   Scenario: Output flags reach RHINO in RHINO's own spelling

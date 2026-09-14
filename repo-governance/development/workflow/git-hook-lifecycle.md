@@ -80,8 +80,10 @@ CI-only `format-verify-*` check linked by `verifies`, so pushed code is independ
 
 ## Bypass policy
 
-`--no-verify` is prohibited except during an active CI-blocker investigation. A bypass does not
-remove the CI gate, and it must never be used to avoid fixing a registry, generated-artifact, or hook
+Skipping hooks with `--no-verify` needs explicit authorization that names the bypass for that one
+operation, as [Git Push Safety](git-push-safety.md) requires. A request to commit or push never
+implies it, and there is no emergency or CI-blocker-investigation exception. A bypass does not remove
+the CI gate, and it must never be used to avoid fixing a registry, generated-artifact, or hook
 conformance failure.
 
 See [SDLC Gate Standard](../../../docs/reference/sdlc-gate-standard.md) for the governing rule and

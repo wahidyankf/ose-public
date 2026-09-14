@@ -36,3 +36,8 @@ file). No text regex can distinguish that from an unrelated string concatenation
 is accepted deliberately; it is why the operator-facing documentation
 ([configure-app-environments.md](../../../../docs/how-to/configure-app-environments.md)) describes the
 guard as best-effort rather than promising agents cannot touch these files.
+
+**Other harness layers.** The secondary binding's permission layer in `.opencode/opencode.json` also denies
+`.env.prod` and `.env.stag`. Codex has no enforcement inside this repository: its deny rules live
+only in untracked per-user configuration, so for Codex this policy is recorded here but not enforced
+by any tracked file.

@@ -14,7 +14,7 @@ example below starts with a verb a reasonable person would call read-only.
 Two independent reasons, both in the escape ledger: its script parser executes a shell under `-n`
 ([entry 2](./refutation-clause-escape-ledger.md)), and a line range addresses by absolute position
 in the file the fix edits, so the clause cannot survive its own fix
-([entry 17](./refutation-clause-escape-ledger-part-2.md)). `rg -nF` addresses by content and `cat`
+([entry 17](./refutation-clause-escape-ledger-invariant-closures.md)). `rg -nF` addresses by content and `cat`
 returns the whole file, covering every claim a range could express — see
 [writing a clause that survives its own fix](../../pr-review-specialist-protocol/reference/refutation-clause-authoring.md).
 

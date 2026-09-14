@@ -72,7 +72,7 @@ During PR quality-gate invocation, first apply the shared
 
 [CI Blocker Resolution](../../repo-governance/development/quality/ci-blocker-resolution.md),
 [Regression Test Mandate](../../repo-governance/development/quality/regression-test-mandate.md),
-[nine-discipline table](../../repo-governance/development/quality/pr-review-disciplines/the-nine-reviewer-disciplines-table-part-1.md),
+[nine-discipline table](../../repo-governance/development/quality/pr-review-disciplines/the-nine-reviewer-disciplines-table-architecture-to-performance.md),
 [Criticality Levels](../../repo-governance/development/quality/criticality-levels.md). Related:
 `pr-review-logic-maker`, `pr-review-synthesis-maker`, `pr-review-fixer`, `ci-checker`.
 

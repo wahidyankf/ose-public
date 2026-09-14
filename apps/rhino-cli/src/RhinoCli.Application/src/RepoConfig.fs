@@ -247,6 +247,21 @@ type IntegrationLoopbackEntry = { Project: string; Reason: string }
 /// [Repo-grounded — `repo_config/mod.rs::HarnessCatalog`].
 type HarnessCatalog = { Document: string; Verified: string }
 
+/// One `delegation:` row: how a rhino-cli validator command relates to RHINO,
+/// and the F# rules it still owns.
+type DelegationRow =
+    {
+        Command: string
+        /// `delegate`, `split` or `stay`.
+        Class: string
+        /// RHINO's command words for a `delegate` or `split` row.
+        Rhino: string option
+        /// The rule ids F# still implements for this command.
+        Keeps: string list
+        /// The unit that retires a `stay` row, when one is planned.
+        Until: string option
+    }
+
 /// Parsed `repo-config.yml`, trimmed to this port's scope (see module doc
 /// comment) [Repo-grounded — `repo_config/mod.rs::RepoConfig`].
 type RepoConfig =
@@ -260,6 +275,8 @@ type RepoConfig =
         HarnessCatalog: HarnessCatalog option
         /// Projects allowed an owned loopback socket in `test:integration`.
         IntegrationLoopback: IntegrationLoopbackEntry list
+        /// The `extensions.rhino-cli.delegation` rows.
+        Delegation: DelegationRow list
     }
 
 /// The value `load`/`loadOptional` never produce on their own but that
@@ -275,7 +292,8 @@ let empty: RepoConfig =
           ExtraTools = [] }
       ModelGrades = Map.empty
       HarnessCatalog = None
-      IntegrationLoopback = [] }
+      IntegrationLoopback = []
+      Delegation = [] }
 
 /// The Doctor tool inventory `config` actually exposes: the compiled-in tools
 /// plus every tool declared under `doctor.extra-tools`. A configuration that
@@ -389,6 +407,14 @@ type IntegrationLoopbackEntryDto =
       Reason: string | null }
 
 [<CLIMutable>]
+type DelegationRowDto =
+    { Command: string | null
+      Class: string | null
+      Rhino: string | null
+      Keeps: ResizeArray<string>
+      Until: string | null }
+
+[<CLIMutable>]
 type RepoConfigDto =
     { Harness: ResizeArray<HarnessEntryDto>
       Gates: ResizeArray<GateEntryDto>
@@ -396,7 +422,8 @@ type RepoConfigDto =
       Doctor: DoctorConfigDto
       ModelGrades: Dictionary<string, ModelGradeDto>
       HarnessCatalog: HarnessCatalogDto
-      IntegrationLoopback: ResizeArray<IntegrationLoopbackEntryDto> }
+      IntegrationLoopback: ResizeArray<IntegrationLoopbackEntryDto>
+      Delegation: ResizeArray<DelegationRowDto> }
 
 /// Matches `repo-config.yml`'s kebab-case keys (`agent-dir`,
 /// `dotnet-global-json`, ...) against the DTOs' PascalCase properties without
@@ -1005,7 +1032,25 @@ let private parseRepoConfig (data: string) : Result<RepoConfig, string> =
                                               Reason =
                                                 (match entry.Reason with
                                                  | null -> ""
-                                                 | reason -> reason) }) }))
+                                                 | reason -> reason) })
+                          Delegation =
+                            toOptionList dto.Delegation
+                            |> List.choose (fun row ->
+                                match box row with
+                                | null -> None
+                                | _ ->
+                                    match row.Command with
+                                    | null -> None
+                                    | command ->
+                                        Some
+                                            { Command = command
+                                              Class =
+                                                (match row.Class with
+                                                 | null -> ""
+                                                 | value -> value)
+                                              Rhino = Option.ofObj row.Rhino
+                                              Keeps = toOptionList row.Keeps
+                                              Until = Option.ofObj row.Until }) }))
         with ex ->
             Error ex.Message
 

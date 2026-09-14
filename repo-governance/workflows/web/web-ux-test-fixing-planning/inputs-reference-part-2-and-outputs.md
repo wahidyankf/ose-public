@@ -5,7 +5,7 @@ when_to_use: "Use when you need the exact type/required/default contract for the
 
 # Inputs Reference — Part 2, and Outputs
 
-Continued from [Inputs Reference — Part 1](./inputs-reference-part-1.md).
+Continued from [Inputs Reference — Part 1](./inputs-reference-parameter-contract.md).
 
 This child holds the full parameter contract for the workflow's remaining three inputs and
 every declared output. See

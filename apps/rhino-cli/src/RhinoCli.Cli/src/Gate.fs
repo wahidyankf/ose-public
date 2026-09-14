@@ -20,6 +20,7 @@ open System.Text.Encodings.Web
 open YamlDotNet.RepresentationModel
 open RhinoCli.Domain.Types
 open RhinoCli.Application.RepoConfig
+open RhinoCli.Infrastructure
 
 let private jsonOptions =
     let opts = JsonSerializerOptions()
@@ -784,6 +785,24 @@ type GatePlanningInput =
       TrackedPaths: string list
       ExistingPaths: Set<string> }
 
+/// A gate command's validator words: the leading words before the first path
+/// or flag argument (`repo-governance vendor validate AGENTS.md` keys as
+/// `repo-governance vendor validate`).
+let commandKey (command: string) : string =
+    command.Split([| ' '; '\t' |], StringSplitOptions.RemoveEmptyEntries)
+    |> Array.takeWhile (fun word ->
+        not (
+            word.StartsWith("-", StringComparison.Ordinal)
+            || word.Contains "/"
+            || word.Contains "."
+        ))
+    |> String.concat " "
+
+/// A rhino-cli gate whose command RHINO runs walks its own declared surface,
+/// so it is handed no files.
+let private delegatesToRhino (gate: GateEntry) : bool =
+    gate.Kind = RhinoCli && (RustRhino.tryFind (commandKey gate.Command)).IsSome
+
 /// Produces the exact ordered leaf plan for one surface/selector. It shares
 /// the registry, scope, glob, exclusion, group, and batch policies used by
 /// the runtime executor while leaving Git/process work at the adapter edge.
@@ -876,14 +895,16 @@ let planRun
                                       Restages = false
                                       Batched = true }
                         else
-                            match argumentsWithDerivedFiles gate.Command (fixedArguments gate) files with
+                            let derived = if delegatesToRhino gate then [] else files
+
+                            match argumentsWithDerivedFiles gate.Command (fixedArguments gate) derived with
                             | Error _ ->
                                 Some
                                     { Id = gate.Id
                                       Kind = gate.Kind
                                       Command = gate.Command
                                       Arguments = []
-                                      Files = files
+                                      Files = derived
                                       Restages = gate.Restages
                                       Batched = false }
                             | Ok arguments ->
@@ -892,7 +913,7 @@ let planRun
                                       Kind = gate.Kind
                                       Command = gate.Command
                                       Arguments = arguments
-                                      Files = files
+                                      Files = derived
                                       Restages = gate.Restages
                                       Batched = false })
                 |> Ok)
@@ -1430,7 +1451,7 @@ let runAtRootWithOnlyAndMessageFile
                                                             gate.Kind
                                                             gate.Command
                                                             (fixedArguments gate)
-                                                            files
+                                                            (if delegatesToRhino gate then [] else files)
                                                             scope.Scope
                                                             commitMessageFile
                                                             repoRoot
@@ -1581,6 +1602,55 @@ let private validateVerifiesReferences (config: RepoConfig) : Result<unit, strin
                         loop rest
 
     loop config.Gates
+
+/// Validator commands that no gate runs but that still carry a `delegation:` row.
+let private ungatedValidators: Set<string> =
+    Set.ofList
+        [ "md frontmatter-dates validate"
+          "harness sync validate"
+          "repo-governance layer-coherence validate"
+          "repo-governance traceability validate" ]
+
+/// Missing, duplicate and extra `delegation:` rows, keyed by validator command.
+/// A row is extra when no rhino-cli gate runs its command and the command is
+/// not one of `knownCommands`, the ungated validators.
+let delegationFindings (config: RepoConfig) (knownCommands: Set<string>) : string list =
+    let gateCommands =
+        config.Gates
+        |> List.filter (fun gate -> gate.Kind = RhinoCli)
+        |> List.map (fun gate -> commandKey gate.Command)
+        |> List.distinct
+
+    let rows = config.Delegation |> List.map (fun row -> row.Command)
+
+    let missing =
+        gateCommands
+        |> List.filter (fun command -> not (List.contains command rows))
+        |> List.map (sprintf "delegation: the row for rhino-cli gate command \"%s\" is missing")
+
+    let duplicate =
+        rows
+        |> List.countBy id
+        |> List.filter (fun (_, count) -> count > 1)
+        |> List.map (fst >> sprintf "delegation: the row for \"%s\" is a duplicate")
+
+    let extra =
+        rows
+        |> List.distinct
+        |> List.filter (fun command -> not (List.contains command gateCommands || knownCommands.Contains command))
+        |> List.map (sprintf "delegation: the row for \"%s\" is extra; no rhino-cli gate or validator runs it")
+
+    missing @ duplicate @ extra
+
+/// Holds the `delegation:` rows to the rhino-cli gate registry once the
+/// registry declares any row.
+let private validateDelegationRows (config: RepoConfig) : Result<unit, string> =
+    if List.isEmpty config.Delegation then
+        Ok()
+    else
+        match delegationFindings config ungatedValidators with
+        | [] -> Ok()
+        | finding :: _ -> Error finding
 
 /// Validates that each formatter mutation is covered by exactly one check
 /// gate [Repo-grounded — `gate/validate.rs::validate_formatter_verification`].
@@ -2378,6 +2448,7 @@ let validateDocuments (config: RepoConfig) (documents: GateValidationDocuments) 
     |> Result.bind (fun () -> validateLocalHookComposition config)
     |> Result.bind (fun () -> validateVerifiesReferences config)
     |> Result.bind (fun () -> validateFormatterVerification config)
+    |> Result.bind (fun () -> validateDelegationRows config)
     |> Result.bind validateHooks
     |> Result.bind validateWorkflow
     |> Result.bind validatePackage
@@ -2393,6 +2464,7 @@ let validateAtRoot (repoRoot: string) : Result<unit, string> =
         |> Result.bind (fun () -> validateLocalHookComposition config)
         |> Result.bind (fun () -> validateVerifiesReferences config)
         |> Result.bind (fun () -> validateFormatterVerification config)
+        |> Result.bind (fun () -> validateDelegationRows config)
         |> Result.bind (fun () -> validateLocalHookShims repoRoot config)
         |> Result.bind (fun () -> validateCiWorkflow repoRoot config)
         |> Result.bind (fun () -> validateLintStaged repoRoot config)

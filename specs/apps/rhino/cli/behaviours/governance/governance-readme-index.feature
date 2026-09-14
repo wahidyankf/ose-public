@@ -26,27 +26,11 @@ Feature: README sibling index
     Then the command exits with a failure code
     And the finding names "structure/README.md" as unindexed
 
-  Scenario: A missing README fails when siblings exist
-    Given directory ".claude/skills/grill-me/reference/" contains "01-options.md"
-    And it contains no "README.md"
-    When the developer runs governance readme-index validate
-    Then the command exits with a failure code
-    And the finding reports a missing index for that directory
-
   Scenario: The rule does not reach grandchildren
     Given "repo-governance/README.md" links "./conventions/README.md"
     And it does not link "./conventions/structure/plans.md"
     When the developer runs governance readme-index validate
     Then the command exits successfully
-
-  Scenario: A split directory still needs its own README
-    Given file "repo-governance/development/agents/ai-agents.md" exists
-    And directory "repo-governance/development/agents/ai-agents/" contains "01-catalog.md" and "02-naming.md"
-    And "ai-agents/" contains no "README.md"
-    And "ai-agents.md" links "./ai-agents/01-catalog.md" and "./ai-agents/02-naming.md"
-    When the developer runs governance readme-index validate
-    Then the command exits with a failure code
-    And the finding reports a missing index for that directory
 
   Scenario: A split directory whose parent omits a child fails
     Given file "repo-governance/development/agents/ai-agents.md" exists
@@ -102,10 +86,10 @@ Feature: README sibling index
     And running it again with no "--paths" flag scans the unmodified DEFAULT_PATHS list
 
   Scenario: The --fail-kinds flag restricts which findings contribute to the exit code
-    Given a scanned directory has one "orphan" finding and one "missing" finding
+    Given a scanned directory has one "orphan" finding and one "ghost" finding
     When the developer runs governance readme-index validate with "--fail-kinds orphan"
     Then the exit code reflects only the "orphan" finding
-    And the "missing" finding is still printed in the output
+    And the "ghost" finding is still printed in the output
 
   Scenario: generate writes a conforming annotated index for a directory needing one
     Given a covered directory contains a markdown file with description and when_to_use frontmatter, and no "README.md"

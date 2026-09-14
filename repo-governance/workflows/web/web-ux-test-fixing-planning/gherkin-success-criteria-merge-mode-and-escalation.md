@@ -5,7 +5,7 @@ when_to_use: "Use when verifying merge-mode behaviour, grill enforcement, unreac
 
 # Gherkin Success Criteria — Part 2
 
-**Continued from** [Gherkin Success Criteria — Part 1](./gherkin-success-criteria-part-1.md).
+**Continued from** [Gherkin Success Criteria — Part 1](./gherkin-success-criteria-plan-output-and-integration.md).
 
 ```gherkin
 Scenario: Merge mode extends an existing findings plan

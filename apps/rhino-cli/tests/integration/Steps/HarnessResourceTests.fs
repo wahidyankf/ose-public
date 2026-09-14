@@ -2286,9 +2286,9 @@ let ``repoGovernanceAuditJson serializes a real word-budget finding`` () =
          + "      fail: 1\n"
          + "  resolved_tree:\n"
          + "    root: \"small.md\"\n"
-         + "    target: 999\n"
-         + "    warn: 999\n"
-         + "    fail: 999\n")
+         + "    target: 1\n"
+         + "    warn: 1\n"
+         + "    fail: 1\n")
 
     let json = repoGovernanceAuditJson root
     Assert.Contains("small.md", json)

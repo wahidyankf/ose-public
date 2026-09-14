@@ -13,13 +13,13 @@ guard against three known failure modes of LLM-driven review: a stated confidenc
 not track actual correctness, a CRITICAL finding that reviewers merely agree on rather than
 demonstrate, and a fixed-cycle policy mistaken for a data-derived optimum. The following four
 enhancements close those gaps as documented manual procedures and rules layered on top of the
-[Nine Reviewer Disciplines](./the-nine-reviewer-disciplines-table-part-1.md) above.
+[Nine Reviewer Disciplines](./the-nine-reviewer-disciplines-table-architecture-to-performance.md) above.
 
 ### Confidence-Calibration Spot-Check
 
 A stated numeric confidence is only as trustworthy as its **calibration** — how closely a model's
 self-reported confidence tracks its actual accuracy. Every specialist already inherits the
-[0-100 confidence scale with a hard drop below 80](./the-nine-reviewer-disciplines-table-part-1.md); this
+[0-100 confidence scale with a hard drop below 80](./the-nine-reviewer-disciplines-table-architecture-to-performance.md); this
 enhancement is the documented manual procedure that keeps that ≥80 threshold honest over time:
 
 1. Periodically sample a batch of past findings that crossed the ≥80 confidence-to-post threshold

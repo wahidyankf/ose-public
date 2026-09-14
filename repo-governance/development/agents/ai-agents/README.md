@@ -12,13 +12,13 @@ when_to_use: "Read this index to find the right AI Agents Convention child docum
 - [Required Frontmatter](./agent-file-structure-required-frontmatter.md) — Authoring or validating an agent's required frontmatter fields.
 - [Optional Frontmatter Fields](./agent-file-structure-optional-frontmatter-fields.md) — Deciding whether to add an optional frontmatter field to an agent.
 - [Agent skills References](./agent-file-structure-skills-references.md) — Referencing a Skill via frontmatter versus documenting inline.
-- [Agent skills References](./agent-file-structure-skills-references-continued.md) — Reviewing how an agent documents its skills usage in its body.
+- [Agent skills References](./agent-file-structure-skills-usage-in-body.md) — Reviewing how an agent documents its skills usage in its body.
 - [Document Structure](./agent-file-structure-document-structure.md) — Laying out the body sections of a new agent definition file.
 - [Agent Naming Guidance](./agent-naming-conventions.md) — Naming or renaming an agent definition file.
 - [Naming Guidelines and Agent Name vs. Description](./agent-naming-conventions-guidelines-and-name-vs-description.md) — Choosing an agent's short name, or writing its frontmatter description.
 - [Tool Access Patterns](./tool-access-patterns.md) — Deciding the baseline tool-access pattern for a new agent.
 - [Report-Generating Agents](./tool-access-patterns-report-generating-agents.md) — Creating or auditing a checker agent's frontmatter tools list.
-- [Report-Generating Agents](./tool-access-patterns-report-generating-agents-continued.md) — Implementing or reviewing how a checker agent writes its audit report progressively.
+- [Report-Generating Agents](./tool-access-patterns-progressive-report-writing.md) — Implementing or reviewing how a checker agent writes its audit report progressively.
 - [Writing to Platform Binding Directories](./tool-access-patterns-writing-to-platform-binding-directories.md) — An agent's tools list must allow writing to a binding directory.
 - [Model Selection Guidelines](./model-selection-guidelines.md) — Deciding which model tier a new or existing agent should declare.
 - [Agent Color Categorization](./agent-color-categorization.md) — Assigning or validating the color field on an agent definition.
@@ -27,7 +27,7 @@ when_to_use: "Read this index to find the right AI Agents Convention child docum
 - [Research Agent Note](./platform-binding-examples-research-agent-note.md) — Handling a research agent's color assignment.
 - [Assigning Colors to New Agents](./platform-binding-examples-assigning-colors-to-new-agents.md) — Creating a new agent and choosing its color field value.
 - [Color Accessibility for Agent Identification](./platform-binding-examples-color-accessibility.md) — Verifying that an agent's assigned color remains distinguishable for accessibility.
-- [Agent Identification Example](./platform-binding-examples-color-accessibility-continued.md) — Continues color accessibility guidance with a worked agent-identification example.
+- [Agent Identification Example](./platform-binding-examples-agent-identification.md) — Continues color accessibility guidance with a worked agent-identification example.
 - [Using Colors in Documentation and Examples](./platform-binding-examples-using-colors-in-documentation.md) — Documenting an agent's color, or picking an example color value.
 - [Agent Responsibility Boundaries](./agent-responsibility-boundaries.md) — Single-responsibility, overlap-avoidance, and specialization-vs-generalization rules for agents.
 - [Patterns and Decision Matrix](./agent-invocation-patterns-and-decision-matrix.md) — Deciding whether to invoke an agent via the Task tool or inline.
@@ -46,7 +46,7 @@ when_to_use: "Read this index to find the right AI Agents Convention child docum
 - [Principles and Requirements](./information-accuracy-verification-principles.md) — What an agent must verify before reporting a claim.
 - [Git Worktree Awareness](./information-accuracy-verification-git-worktree-awareness.md) — A spawned agent reads or writes files inside a worktree.
 - [Git Worktree Awareness](./information-accuracy-verification-git-worktree-toolchain-init.md) — The two-step toolchain-initialization rule for a new worktree.
-- [Git Worktree Awareness](./information-accuracy-verification-git-worktree-awareness-continued.md) — The default-push-behaviour rule, with an example and its consequences.
+- [Git Worktree Awareness](./information-accuracy-verification-default-push-behaviour.md) — The default-push-behaviour rule, with an example and its consequences.
 - [Verification Checklist for Agents](./information-accuracy-verification-checklist.md) — A final checklist before an agent reports a task complete.
 - [When to Create a New Agent](./creating-new-agents-when-to-create.md) — Deciding whether a task needs a new agent or fits an existing one.
 - [Agent Creation Checklist](./creating-new-agents-checklist.md) — The step-by-step checklist while creating a new agent definition file.

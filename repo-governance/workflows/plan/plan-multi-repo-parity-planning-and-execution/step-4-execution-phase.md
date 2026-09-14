@@ -65,4 +65,4 @@ or cleanup that must complete to leave durable state valid. Let such in-flight w
 its evidence, and keep downstream nodes blocked. Continue-on-failure may resume scheduling only for
 nodes proven independent of the failed node and its outputs.
 
-**Continues in** [Step 4 — Execution Phase (Continued)](./step-4-execution-phase-continued.md).
+**Continues in** [Step 4 — Execution Phase (Continued)](./step-4-execution-phase-propagation-and-delivery.md).

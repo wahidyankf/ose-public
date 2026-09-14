@@ -10,12 +10,12 @@ when_to_use: "Read this index to find the right Plan Anti-Hallucination Conventi
 - [Hallucination Categories](./hallucination-categories-in-plan-context.md) — Categories of hallucination in plan content. Use to classify a suspected hallucination.
 - [The Four Confidence Labels](./the-four-confidence-labels.md) — The four confidence labels for plan claims. Use when labeling a claim's confidence.
 - [Repo-Grounding Rule (HARD)](./repo-grounding-rule-hard.md) — The mandatory repo-grounding rule for presence claims. Use when a plan asserts something exists.
-- [Absence/Completeness: Zero-Result Evidence (1)](./absence-and-completeness-claims-zero-result-search-evidence-part-1.md) — Why absence claims fail differently; the four-point checklist. Use before citing a zero-result search as evidence.
-- [Absence/Completeness: Zero-Result Evidence (2)](./absence-and-completeness-claims-zero-result-search-evidence-part-2.md) — A measured example, plus a verification recipe. Use for a worked example before trusting a zero result.
+- [Absence/Completeness: Zero-Result Evidence (1)](./absence-and-completeness-claims-zero-result-search-evidence-checklist.md) — Why absence claims fail differently; the four-point checklist. Use before citing a zero-result search as evidence.
+- [Absence/Completeness: Zero-Result Evidence (2)](./absence-and-completeness-claims-zero-result-search-evidence-worked-example.md) — A measured example, plus a verification recipe. Use for a worked example before trusting a zero result.
 - [Absence/Completeness: Diff Required](./absence-and-completeness-claims-completeness-claim-requires-a-diff.md) — A completeness claim needs a diff, not a text search. Use before citing a search as proof a list is complete.
-- [Absence/Completeness: Concept Sweep (1)](./absence-and-completeness-claims-concept-sweep-part-1.md) — Why one regex is never an acceptance criterion. Use before trusting a single regex sweep as proof.
-- [Absence/Completeness: Concept Sweep (2)](./absence-and-completeness-claims-concept-sweep-part-2.md) — The six-point minimum discipline for a concept sweep. Use when designing a concept sweep.
-- [Absence/Completeness: Concept Sweep (3)](./absence-and-completeness-claims-concept-sweep-part-3.md) — Index-staleness and competing-convention edge cases. Use for the index-staleness edge case.
+- [Absence/Completeness: Concept Sweep (1)](./absence-and-completeness-claims-concept-sweep-why-one-regex-fails.md) — Why one regex is never an acceptance criterion. Use before trusting a single regex sweep as proof.
+- [Absence/Completeness: Concept Sweep (2)](./absence-and-completeness-claims-concept-sweep-minimum-discipline.md) — The six-point minimum discipline for a concept sweep. Use when designing a concept sweep.
+- [Absence/Completeness: Concept Sweep (3)](./absence-and-completeness-claims-concept-sweep-edge-cases.md) — Index-staleness and competing-convention edge cases. Use for the index-staleness edge case.
 - [Absence/Completeness: Invocation and Capped Query](./absence-and-completeness-claims-real-invocation-and-capped-query.md) — Check a validator's real invocation; capped-query undercounts. Use before trusting a validator result or count.
 - [Refuse-on-Uncertainty and Web Research](./refuse-on-uncertainty-rule-and-web-research-delegation.md) — The refuse-on-uncertainty rule; the web-research threshold. Use when uncertain about a plan claim.
 - [Anti-Patterns: AP-1 - AP-4](./anti-pattern-catalog-ap-1-through-ap-4.md) — Version/path/target/name fabrication. Use as a checklist for AP-1 - AP-4.

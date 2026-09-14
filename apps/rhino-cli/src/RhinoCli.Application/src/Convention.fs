@@ -1,26 +1,18 @@
-/// Port of the Rust `convention` namespace's two file-system validators
-/// (emoji, license) and their aggregate runner
+/// Port of the Rust `convention` namespace's license validator and the pure
+/// aggregate behind `convention audit`
 /// [Repo-grounded —
-/// `apps/rhino-cli/src/application/repo_governance/emoji_audit.rs`,
 /// `apps/rhino-cli/src/application/repo_governance/license_audit.rs`,
-/// `apps/rhino-cli/src/commands/convention_audit.rs`]. Wave A's first
-/// namespace: findings from both validators are represented with the shared
-/// `RhinoCli.Domain.Types.Finding` record rather than bespoke per-validator
-/// types, since `Severity` / `Message` / `Path` already cover everything
-/// either validator needs to report.
+/// `apps/rhino-cli/src/commands/convention_audit.rs`]. The emoji validator is
+/// RHINO's `convention emoji validate`; the CLI hands that command to
+/// `./rhino` whole. Findings use the shared `RhinoCli.Domain.Types.Finding`
+/// record, since `Severity` / `Message` / `Path` cover everything the license
+/// validator reports.
 module RhinoCli.Application.Convention
 
 open System
 open System.Diagnostics.CodeAnalysis
 open System.IO
 open RhinoCli.Domain.Types
-
-// Grants RhinoCli.Tests.Unit direct access to `internal` members below, so
-// `runAuditMember`'s unreachable-via-`runConventionAudit` branch can be unit
-// tested the same way Rust tests the equivalent `run_member` directly
-// [Repo-grounded — `convention_audit.rs::tests::run_member_unknown_returns_error`].
-[<assembly: System.Runtime.CompilerServices.InternalsVisibleTo("RhinoCli.UnitTests")>]
-do ()
 
 /// The outcome of running one convention validator: whether it passed, the
 /// human-readable text a CLI invocation would print, and the structured
@@ -29,171 +21,6 @@ type ValidatorResult =
     { Success: bool
       Output: string
       Findings: Finding list }
-
-/// Emoji-codepoint scanning over forbidden file types
-/// [Repo-grounded — `emoji_audit.rs`].
-module private Emoji =
-
-    /// File extensions for which emoji are forbidden.
-    let forbiddenExtensions: string list =
-        [ ".json"
-          ".yaml"
-          ".yml"
-          ".toml"
-          ".go"
-          ".ts"
-          ".tsx"
-          ".js"
-          ".jsx"
-          ".py"
-          ".java"
-          ".kt"
-          ".rs"
-          ".fs"
-          ".cs"
-          ".dart"
-          ".exs"
-          ".ex"
-          ".clj" ]
-
-    /// Returns `true` when `name` ends with one of `forbiddenExtensions`
-    /// (case-insensitive).
-    let hasForbiddenExtension (name: string) : bool =
-        let lower = name.ToLowerInvariant()
-
-        forbiddenExtensions
-        |> List.exists (fun ext -> lower.EndsWith(ext, StringComparison.Ordinal))
-
-    /// Directory names to skip during the walk.
-    let skipDirs: Set<string> =
-        set
-            [ "node_modules"
-              ".agents"
-              ".git"
-              ".next"
-              "dist"
-              "build"
-              "target"
-              "generated"
-              "generated-contracts"
-              "generated-sources"
-              "generated-test-sources"
-              "generated-reports"
-              "archived"
-              "test-results"
-              "playwright-report"
-              "coverage"
-              ".venv"
-              "__pycache__"
-              ".pytest_cache"
-              ".dart_tool"
-              "out"
-              ".cache"
-              "storybook-static"
-              ".playwright-mcp"
-              "raw" ]
-
-    /// Recursively walks `path` and returns every file found, skipping
-    /// directories named in `skipDirs`. A `path` that is itself a file is
-    /// returned as a single-element list, mirroring `WalkDir::new(root)`
-    /// accepting a file root.
-    [<ExcludeFromCodeCoverage>]
-    let rec walk (path: string) : string list =
-        if File.Exists path then
-            [ path ]
-        elif Directory.Exists path then
-            Directory.GetFileSystemEntries path
-            |> Array.toList
-            |> List.collect (fun entry ->
-                if Directory.Exists entry then
-                    let name = Path.GetFileName entry
-                    if skipDirs.Contains name then [] else walk entry
-                else
-                    [ entry ])
-        else
-            []
-
-    /// Returns `true` when `codepoint` falls within one of the emoji
-    /// Unicode blocks checked by this audit
-    /// [Repo-grounded — `emoji_audit.rs::is_emoji_rune`].
-    let isEmojiCodepoint (codepoint: int) : bool =
-        (codepoint >= 0x2300 && codepoint <= 0x23FF)
-        || (codepoint >= 0x2600 && codepoint <= 0x27BF)
-        || codepoint = 0x200D
-        || codepoint = 0xFE0F
-        || (codepoint >= 0x1F000 && codepoint <= 0x1FFFF)
-
-    /// Formats `codepoint` as a Unicode codepoint string (e.g. `U+1F680`).
-    let formatCodepoint (codepoint: int) : string =
-        if codepoint <= 0xFFFF then
-            sprintf "U+%04X" codepoint
-        else
-            sprintf "U+%X" codepoint
-
-    /// Splits `line` into Unicode scalar values (matching Rust's
-    /// `str::chars`), combining UTF-16 surrogate pairs into a single
-    /// codepoint so multi-byte emoji beyond the BMP are counted once.
-    let codepointsOf (line: string) : int list =
-        let rec loop (i: int) (acc: int list) : int list =
-            if i >= line.Length then
-                List.rev acc
-            elif
-                i + 1 < line.Length
-                && Char.IsHighSurrogate(line.[i])
-                && Char.IsLowSurrogate(line.[i + 1])
-            then
-                loop (i + 2) (Char.ConvertToUtf32(line.[i], line.[i + 1]) :: acc)
-            else
-                loop (i + 1) (int line.[i] :: acc)
-
-        loop 0 []
-
-    /// Scans a single file for emoji codepoints line by line, returning raw
-    /// `(file, line, column, codepoint)` tuples so callers can sort before
-    /// rendering into `Finding`s.
-    [<ExcludeFromCodeCoverage>]
-    let scanFileRaw (path: string) : (string * int * int * string) list =
-        File.ReadAllLines(path)
-        |> Array.toList
-        |> List.mapi (fun lineIdx line -> (lineIdx + 1, line))
-        |> List.collect (fun (lineNumber, line) ->
-            codepointsOf line
-            |> List.mapi (fun colIdx codepoint -> (colIdx + 1, codepoint))
-            |> List.filter (fun (_, codepoint) -> isEmojiCodepoint codepoint)
-            |> List.map (fun (column, codepoint) -> (path, lineNumber, column, formatCodepoint codepoint)))
-
-    /// Walks each root in `paths` and reports any emoji codepoints found in
-    /// files with a forbidden extension. Findings are sorted by file, then
-    /// line, then column.
-    [<ExcludeFromCodeCoverage>]
-    let audit (paths: string list) : Result<Finding list, string> =
-        if List.isEmpty paths then
-            Error "at least one path is required"
-        else
-            paths
-            |> List.collect walk
-            |> List.filter (fun p -> hasForbiddenExtension (Path.GetFileName p))
-            |> List.sort
-            |> List.collect scanFileRaw
-            |> List.sortBy (fun (file, line, column, _) -> (file, line, column))
-            |> List.map (fun (file, line, column, codepoint) ->
-                { Severity = Severity.Blocking
-                  Message = sprintf "%s:%d:%d  [high]  %s" file line column codepoint
-                  Path = Some file })
-            |> Ok
-
-    /// Renders emoji findings as human-readable text.
-    let formatText (findings: Finding list) : string =
-        if List.isEmpty findings then
-            "EMOJI AUDIT PASSED: no emoji codepoints found in forbidden file types\n"
-        else
-            let header =
-                sprintf "EMOJI AUDIT FAILED: %d emoji codepoint(s) found\n" (List.length findings)
-
-            let body =
-                findings |> List.map (fun f -> sprintf "  %s\n" f.Message) |> String.concat ""
-
-            header + body
 
 /// Per-directory `LICENSE` presence and SPDX-consistency audit
 /// [Repo-grounded — `license_audit.rs`].
@@ -547,20 +374,6 @@ module private License =
 
             header + body
 
-/// Runs the emoji-codepoint validator over `paths`
-/// [Repo-grounded — `convention_validate_emoji.rs::run`].
-[<ExcludeFromCodeCoverage>]
-let runEmojiValidate (paths: string list) : ValidatorResult =
-    match Emoji.audit paths with
-    | Error message ->
-        { Success = false
-          Output = sprintf "EMOJI AUDIT FAILED: %s\n" message
-          Findings = [] }
-    | Ok findings ->
-        { Success = List.isEmpty findings
-          Output = Emoji.formatText findings
-          Findings = findings }
-
 /// Runs the per-directory LICENSE validator over `repoRoot`
 /// [Repo-grounded — `convention_validate_license.rs::run`].
 [<ExcludeFromCodeCoverage>]
@@ -569,101 +382,6 @@ let runLicenseValidate (repoRoot: string) : ValidatorResult =
 
     { Success = List.isEmpty findings
       Output = License.formatText findings
-      Findings = findings }
-
-/// The convention validators `convention audit` runs, in order
-/// [Repo-grounded — `convention_audit.rs::MEMBERS`].
-let private auditMembers: string list = [ "emoji"; "license" ]
-
-/// Runs one named convention validator against `repoRoot` with its default
-/// arguments, returning `Error` with a short reason when it reports
-/// findings.
-[<ExcludeFromCodeCoverage>]
-let internal runAuditMember (repoRoot: string) (name: string) : Result<unit, string> =
-    match name with
-    | "emoji" ->
-        let result = runEmojiValidate [ repoRoot ]
-
-        if result.Success then
-            Ok()
-        else
-            Error(sprintf "%d emoji finding(s) found" (List.length result.Findings))
-    | "license" ->
-        let result = runLicenseValidate repoRoot
-
-        if result.Success then
-            Ok()
-        else
-            Error(sprintf "%d license finding(s) found" (List.length result.Findings))
-    | other -> Error(sprintf "unknown convention validator: %s" other)
-
-/// Runs every convention validator in sequence against `repoRoot`, skipping
-/// any name listed in `skip`
-/// [Repo-grounded — `convention_audit.rs::run`].
-[<ExcludeFromCodeCoverage>]
-let runConventionAudit (repoRoot: string) (skip: string list) : ValidatorResult =
-    let failures =
-        auditMembers
-        |> List.filter (fun name -> not (List.contains name skip))
-        |> List.choose (fun name ->
-            match runAuditMember repoRoot name with
-            | Ok() -> None
-            | Error message -> Some(sprintf "%s: %s" name message))
-
-    if List.isEmpty failures then
-        let passedCount = List.length auditMembers - List.length skip
-
-        { Success = true
-          Output = sprintf "CONVENTION AUDIT PASSED: all %d validators passed\n" passedCount
-          Findings = [] }
-    else
-        let header =
-            sprintf "CONVENTION AUDIT FAILED: %d validator(s) reported failures\n" (List.length failures)
-
-        let body =
-            failures
-            |> List.map (fun failure -> sprintf "  %s\n" failure)
-            |> String.concat ""
-
-        { Success = false
-          Output = header + body
-          Findings = [] }
-
-/// Pure emoji validation over caller-supplied repository-relative files.
-/// The filesystem adapter above materializes the same `(path, contents)`
-/// boundary before applying this policy.
-let validateEmojiTexts (files: (string * string) list) : ValidatorResult =
-    let isSkipped (path: string) =
-        path.Replace('\\', '/').Split('/') |> Array.exists Emoji.skipDirs.Contains
-
-    let findings =
-        files
-        |> List.filter (fun (path, _) -> Emoji.hasForbiddenExtension path && not (isSkipped path))
-        |> List.collect (fun (path, contents) ->
-            contents.Replace("\r\n", "\n").Split('\n')
-            |> Array.toList
-            |> List.mapi (fun lineIndex line -> lineIndex + 1, line)
-            |> List.collect (fun (lineNumber, line) ->
-                Emoji.codepointsOf line
-                |> List.mapi (fun columnIndex codepoint -> columnIndex + 1, codepoint)
-                |> List.choose (fun (column, codepoint) ->
-                    if Emoji.isEmojiCodepoint codepoint then
-                        Some
-                            { Severity = Severity.Blocking
-                              Message =
-                                sprintf
-                                    "%s:%d:%d  [high]  %s"
-                                    path
-                                    lineNumber
-                                    column
-                                    (Emoji.formatCodepoint codepoint)
-                              Path = Some path }
-                    else
-                        None)))
-        |> List.sortBy (fun finding -> finding.Path, finding.Message)
-
-    { Success = List.isEmpty findings
-      Output = Emoji.formatText findings
       Findings = findings }
 
 /// In-memory view of the paths and text owned by the license audit.

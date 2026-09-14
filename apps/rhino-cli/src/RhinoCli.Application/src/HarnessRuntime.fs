@@ -4065,18 +4065,19 @@ let evaluatePrePushWordBudgetGate
 
 /// Simulates `rhino-cli gate run --surface=pre-push` scoped to exactly the
 /// `governance-word-budget` gate entry: skips the gate entirely when
-/// `pushRangePaths` matches none of [`wordBudgetGateTriggers`], otherwise runs
-/// `checkInstructionSizes` and exits non-zero when any finding is `Fail`
+/// `pushRangePaths` matches none of [`wordBudgetGateTriggers`], otherwise
+/// checks the resolved `@`-import tree and exits non-zero when it is over its
+/// `Fail` band; per-file surface budgets are RHINO's
 /// [Repo-grounded — `gate/run.rs::run_at_root_with_only_and_message_file`,
-/// `word_budget.rs::check_instruction_sizes`].
+/// `word_budget.rs::check_resolved_tree`].
 let runPrePushWordBudgetGate
     (repoRoot: string)
     (config: BudgetConfig)
     (pushRangePaths: string list)
     : PrePushWordBudgetOutcome =
     evaluatePrePushWordBudgetGate pushRangePaths (fun () ->
-        let findings = checkInstructionSizes repoRoot config []
-        findings |> List.exists (fun f -> f.Severity = WordBudgetSeverity.Fail))
+        checkResolvedTree repoRoot config
+        |> Option.exists (fun f -> f.Severity = WordBudgetSeverity.Fail))
 
 // ---------------------------------------------------------------------------
 // `repo-governance audit` preflight — governance-word-budget category only
@@ -4145,16 +4146,9 @@ let wordBudgetRuleChecks
 /// [Repo-grounded — `commands/governance_audit.rs::run`,
 /// `audit_orchestrator.rs::run_audit`'s word-budget category].
 let runRepoGovernanceAuditWordBudgetCategory (repoRoot: string) : RepoGovernanceAuditCategory =
-    let excludes =
-        match registeredExcludes repoRoot with
-        | Ok e -> e
-        | Error _ -> []
-
     let findings =
         match mergedBudgetConfig repoRoot with
-        | Ok(Some config) ->
-            checkInstructionSizes repoRoot config excludes
-            @ (checkResolvedTree repoRoot config |> Option.toList)
+        | Ok(Some config) -> checkResolvedTree repoRoot config |> Option.toList
         | _ -> []
 
     let hasFail =

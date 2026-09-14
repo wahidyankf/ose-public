@@ -1122,19 +1122,16 @@ let private readGitSha (repoRoot: string) : string =
 
 /// Only hard `Fail` word-budget findings block this preflight — `Warn` is
 /// advisory, matching `governance word-budget validate`'s own exit gating.
+/// Per-file surface budgets are RHINO's; this category measures only the
+/// resolved `@`-import tree.
 [<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage>]
 let private auditWordBudget (repoRoot: string) : AuditFinding list =
     match Governance.mergedBudgetConfig repoRoot with
     | Error _
     | Ok None -> []
     | Ok(Some config) ->
-        let excludes = Governance.registeredExcludes repoRoot |> Result.defaultValue []
-
-        let findings =
-            Governance.checkInstructionSizes repoRoot config excludes
-            @ (Governance.checkResolvedTree repoRoot config |> Option.toList)
-
-        findings
+        Governance.checkResolvedTree repoRoot config
+        |> Option.toList
         |> List.filter (fun f -> f.Severity = Governance.WordBudgetSeverity.Fail)
         |> List.map (fun f -> createAuditFinding "governance-word-budget" f.Path 0 f.Message)
 

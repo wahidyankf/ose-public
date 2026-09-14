@@ -16,9 +16,11 @@ let ``frontmatter documents accept an empty document list`` () =
 
 [<Theory>]
 [<InlineData("---\ntitle: null\ndescription: D\ncategory: explanation\nsubcategory: S\ntags: [a]\n---\n",
-             "\"title\" is missing")>]
-[<InlineData("---\ntitle: T\ncategory: explanation\nsubcategory: S\ntags: [a]\n---\n", "\"description\" is missing")>]
-[<InlineData("---\ntitle: T\ndescription: D\ncategory: explanation\ntags: [a]\n---\n", "\"subcategory\" is missing")>]
+             "\"title\" is empty")>]
+[<InlineData("---\ntitle: T\ndescription: \"\"\ncategory: explanation\nsubcategory: S\ntags: [a]\n---\n",
+             "\"description\" is empty")>]
+[<InlineData("---\ntitle: T\ndescription: D\ncategory: explanation\nsubcategory: \"\"\ntags: [a]\n---\n",
+             "\"subcategory\" is empty")>]
 [<InlineData("---\ntitle: T\ndescription: D\ncategory: explanation\nsubcategory: S\ntags: 42\n---\n",
              "\"tags\" must be a non-empty list")>]
 [<InlineData("---\ntitle: T\ndescription: D\ncategory: explanation\nsubcategory: S\ntags: {a: b}\n---\n",
@@ -27,32 +29,24 @@ let ``frontmatter documents report invalid required values`` (body: string) (exp
     let findings = validateDocsFrontmatterDocuments [ softwareDoc body ]
     Assert.Contains(findings, fun (finding: Finding) -> finding.Message.Contains(expected, StringComparison.Ordinal))
 
-[<Theory>]
-[<InlineData("true", "true")>]
-[<InlineData("5", "5")>]
-[<InlineData("!!bool true", "true")>]
-[<InlineData("!!int 5", "5")>]
-let ``frontmatter category values use their stable string representation`` (value: string) (expected: string) =
-    let body =
-        sprintf "---\ntitle: T\ndescription: D\ncategory: %s\nsubcategory: S\ntags: [a]\n---\n" value
+[<Fact>]
+let ``frontmatter documents report invalid YAML`` () =
+    let findings =
+        validateDocsFrontmatterDocuments [ softwareDoc "---\ntitle: [unterminated\n---\n" ]
 
-    let findings = validateDocsFrontmatterDocuments [ softwareDoc body ]
-    Assert.Contains(findings, fun (finding: Finding) -> finding.Message.Contains(sprintf "found \"%s\"" expected))
+    Assert.Contains(
+        findings,
+        fun (finding: Finding) -> finding.Message.Contains("frontmatter is not valid YAML", StringComparison.Ordinal)
+    )
 
-[<Theory>]
-[<InlineData("# No frontmatter\n", "no YAML frontmatter")>]
-[<InlineData("---\ntitle: [unterminated\n---\n", "frontmatter is not valid YAML")>]
-let ``frontmatter documents report absent and invalid YAML`` (body: string) (expected: string) =
-    let findings = validateDocsFrontmatterDocuments [ softwareDoc body ]
-    Assert.Contains(findings, fun (finding: Finding) -> finding.Message.Contains(expected, StringComparison.Ordinal))
+[<Fact>]
+let ``a document without frontmatter leaves the absent block to RHINO`` () =
+    Assert.Empty(validateDocsFrontmatterDocuments [ softwareDoc "# No frontmatter\n" ])
 
 [<Fact>]
 let ``a YAML sequence frontmatter is treated as an empty mapping`` () =
-    let findings =
-        validateDocsFrontmatterDocuments [ softwareDoc "---\n- a\n- b\n---\n" ]
-
-    Assert.Contains(findings, fun (finding: Finding) -> finding.Message.Contains("\"title\" is missing"))
-    Assert.Contains(findings, fun (finding: Finding) -> finding.Message.Contains("\"category\" is missing"))
+    // An empty mapping has no present-but-blank value; RHINO reports the absent keys.
+    Assert.Empty(validateDocsFrontmatterDocuments [ softwareDoc "---\n- a\n- b\n---\n" ])
 
 [<Fact>]
 let ``governance frontmatter accepts exactly description and when_to_use`` () =
@@ -70,28 +64,6 @@ let ``governance frontmatter rejects a key outside the two-key allow-list`` () =
 
     Assert.Single(findings) |> ignore
     Assert.Contains("field \"title\" is not permitted", findings.Head.Message)
-
-[<Fact>]
-let ``heading documents ignore malformed ATX heading markers`` () =
-    let findings =
-        validateDocsHeadingHierarchyDocuments
-            false
-            []
-            [ "too-many.md", "# Title\n\n####### Too many\n\n## Section\n"
-              "no-text.md", "# Title\n\n###\n\n## Section\n"
-              "no-separator.md", "# Title\n\n##No separator\n\n## Section\n" ]
-
-    Assert.Empty(findings)
-
-[<Fact>]
-let ``heading content policy distinguishes every prose allowlist shape`` () =
-    let invalidHierarchy = "# First\n\n# Second\n"
-
-    Assert.NotEmpty(validateDocsHeadingHierarchyContent "TOPLEVEL.md" invalidHierarchy)
-    Assert.Empty(validateDocsHeadingHierarchyContent "apps/orphan.md" invalidHierarchy)
-    Assert.NotEmpty(validateDocsHeadingHierarchyContent "apps/project/README.md" invalidHierarchy)
-    Assert.NotEmpty(validateDocsHeadingHierarchyContent "libs/project/docs/page.md" invalidHierarchy)
-    Assert.Empty(validateDocsHeadingHierarchyContent "src/random.md" invalidHierarchy)
 
 [<Fact>]
 let ``link helper classifications are deterministic`` () =
@@ -136,15 +108,54 @@ let ``link documents resolve files directories duplicate anchors and report brok
 [<Fact>]
 let ``link document staging and exclusions select only requested inputs`` () =
     let documents =
-        [ "docs/staged.md", "[missing](./gone.md)"
-          "docs/unstaged.md", "[missing](./also-gone.md)"
-          "plans/done/excluded.md", "[missing](./gone.md)" ]
+        [ "docs/staged.md", "![missing](./gone.png)"
+          "docs/unstaged.md", "![missing](./also-gone.png)"
+          "plans/done/excluded.md", "![missing](./gone.png)" ]
 
     let findings =
         validateDocsLinksDocuments documents (Some [ "docs/staged.md" ]) [ "plans/done" ]
 
     Assert.Single(findings) |> ignore
     Assert.Equal(Some "docs/staged.md", findings.Head.Path)
+
+[<Fact>]
+let ``link anchors skip headings inside a longer fence and malformed ATX lines`` () =
+    let content =
+        String.concat
+            "\n"
+            [ "# Title"
+              ""
+              "[shown](#shown) [hidden](#hidden) [seven](#seven)"
+              ""
+              "````md"
+              "## Hidden"
+              "```"
+              "## Still hidden"
+              "````"
+              "``not a fence``"
+              "####### seven"
+              "###"
+              "#tag"
+              "## Shown" ]
+
+    let findings = validateDocsLinksDocuments [ "self.md", content ] None []
+    Assert.Equal(2, findings.Length)
+    Assert.Contains(findings, fun (finding: Finding) -> finding.Message.Contains("hidden", StringComparison.Ordinal))
+    Assert.Contains(findings, fun (finding: Finding) -> finding.Message.Contains("seven", StringComparison.Ordinal))
+
+[<Fact>]
+let ``link source exclusions match globs case-insensitively with a star that crosses slashes`` () =
+    let excluded (path: string) =
+        linkSourceExclusions [ "plans/done/*"; "notes/?.md"; "a+b.md" ]
+        |> List.exists (fun glob -> glob.IsMatch path)
+
+    Assert.True(excluded "plans/done/2026/delivery.md")
+    Assert.True(excluded "PLANS/DONE/README.md")
+    Assert.True(excluded "notes/x.md")
+    Assert.False(excluded "notes/xy.md")
+    Assert.True(excluded "a+b.md")
+    Assert.False(excluded "aab.md")
+    Assert.False(excluded "docs/plans/done/x.md")
 
 [<Fact>]
 let ``GitHub slugging retains Unicode word characters and removes punctuation`` () =
@@ -427,10 +438,10 @@ let ``Mermaid JSON formatter emits width values`` () =
     Assert.Equal(4, value.GetProperty("maxWidth").GetInt32())
 
 [<Fact>]
-let ``document audit reports naming and Mermaid failures`` () =
+let ``document audit reports Mermaid failures`` () =
     let result =
         runAuditDocuments
-            [ "BadName.md",
+            [ "doc.md",
               "# Title\n\n```mermaid\nflowchart TD\n A[This label is definitely longer than thirty characters total]\n```" ]
 
     Assert.False(List.isEmpty result.Failures)
@@ -539,24 +550,7 @@ let ``Mermaid formatters include optional label violation fields`` () =
     Assert.Equal(10, value.GetProperty("maxLabelLen").GetInt32())
 
 [<Fact>]
-let ``naming document policy handles exemptions generated reports and invalid names`` () =
-    let documents =
-        [ "README.md", ""
-          "docs/good-name.md", ""
-          "docs/FooBar__linkedin__profile.md", ""
-          "docs/XY.md", ""
-          "generated-reports/BadName.md", ""
-          "docs/BadName.md", ""
-          "docs/not-markdown.txt", "" ]
-
-    let findings =
-        validateDocsNamingDocuments documents [ "*__linkedin__*.md"; "X?.md" ]
-
-    Assert.Single(findings) |> ignore
-    Assert.Contains("BadName.md", findings.Head.Path |> Option.defaultValue "")
-
-[<Fact>]
-let ``frontmatter date documents report field inline and footer findings with source lines`` () =
+let ``frontmatter date documents report body annotations and leave the updated key to RHINO`` () =
     let documents =
         [ "field.md", "---\ntitle: T\nupdated: 2026-01-01\n---\nbody"
           "inline.md", "# Title\n\n- **Created**: 2026-01-01\n"
@@ -567,8 +561,8 @@ let ``frontmatter date documents report field inline and footer findings with so
           "invalid.md", "---\ntitle: [unterminated\n---\nbody" ]
 
     let findings = validateFrontmatterDatesDocuments documents [] []
-    Assert.Equal(3, findings.Length)
-    Assert.Contains(findings, fun (finding: Finding) -> finding.Path = Some "field.md")
+    Assert.Equal(2, findings.Length)
+    Assert.DoesNotContain(findings, fun (finding: Finding) -> finding.Path = Some "field.md")
     Assert.Contains(findings, fun (finding: Finding) -> finding.Path = Some "inline.md")
     Assert.Contains(findings, fun (finding: Finding) -> finding.Path = Some "footer.md")
 

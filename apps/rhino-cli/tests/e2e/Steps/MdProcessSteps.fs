@@ -1,15 +1,11 @@
-/// Published-process E2E TickSpec step definitions binding `docs-validate-frontmatter.feature`'s 11
-/// scenarios to `RhinoCli.Application.Md.validateDocsFrontmatter` and
-/// `docs-validate-heading-hierarchy.feature`'s 12 scenarios to
-/// `RhinoCli.Application.Md.validateDocsHeadingHierarchy`/
-/// `validateDocsHeadingHierarchyAllowlisted`
+/// Published-process E2E TickSpec step definitions binding `docs-validate-frontmatter.feature`'s
+/// F#-remainder scenarios to `RhinoCli.Application.Md.validateDocsFrontmatter`
 /// [Repo-grounded —
 /// `specs/apps/rhino/cli/behaviours/md/docs-validate-frontmatter.feature`,
-/// `specs/apps/rhino/cli/behaviours/md/docs-validate-heading-hierarchy.feature`,
 /// `apps/rhino-cli/src/application/docs/frontmatter.rs`,
-/// `apps/rhino-cli/src/commands/md_validate_frontmatter.rs`,
-/// `apps/rhino-cli/src/application/docs/heading_hierarchy.rs`,
-/// `apps/rhino-cli/src/commands/md_validate_heading_hierarchy.rs`].
+/// `apps/rhino-cli/src/commands/md_validate_frontmatter.rs`]. Naming and
+/// heading-hierarchy rules are RHINO's; `gate/rust-delegation.feature` binds
+/// their delegation.
 ///
 /// Follows `ConventionSteps.fs`'s/`TestCoverageSteps.fs`'s per-scenario
 /// slicing convention: each xunit `[<Fact>]` below runs exactly one scenario,
@@ -19,13 +15,7 @@
 /// `test-coverage validate` before its Wave C flip — every scenario below
 /// calls one of `RhinoCli.Application.Md`'s validators directly with a path
 /// list (or a repo root standing in for it) built by hand rather than
-/// parsing an argv string. The heading-hierarchy scenarios that exercise the
-/// prose allowlist (`docs`/`.claude`/`plans/done`/`specs`/`apps`/`libs`
-/// trees) set the `useAllowlist` instance field from their `Given` step so
-/// the single shared "the developer runs docs validate-heading-hierarchy"
-/// `When` step — reused verbatim by both the plain-tree and the
-/// allowlist-tree scenarios — knows which of the two validator entry points
-/// to call.
+/// parsing an argv string.
 ///
 /// Also binds `docs-validate-mermaid.feature`'s 39 scenarios to
 /// `RhinoCli.Application.Md.validateMermaidDocs`/`parseMermaidDiagram`
@@ -56,10 +46,8 @@ module RhinoCli.Tests.E2E.Steps.MdProcessSteps
 /// Exact static-coverage ownership for the published-process adapter.
 let private behaviourFeatureOwnership =
     [ "specs/apps/rhino/cli/behaviours/md/docs-validate-frontmatter.feature"
-      "specs/apps/rhino/cli/behaviours/md/docs-validate-heading-hierarchy.feature"
       "specs/apps/rhino/cli/behaviours/md/docs-validate-links.feature"
       "specs/apps/rhino/cli/behaviours/md/docs-validate-mermaid.feature"
-      "specs/apps/rhino/cli/behaviours/md/docs-validate-naming.feature"
       "specs/apps/rhino/cli/behaviours/md/md-audit.feature"
       "specs/apps/rhino/cli/behaviours/md/repo-governance-frontmatter-audit.feature" ]
 
@@ -118,6 +106,23 @@ let private runGit (root: string) (arguments: string list) : string =
 
     result.Stdout
 
+/// A split md command starts `./rhino` in the temp repository before its F#
+/// remainder; this no-op stand-in lets the remainder scenarios run.
+let private stubRhino (root: string) =
+    let path = Path.Combine(root, "rhino")
+    File.WriteAllText(path, "#!/bin/sh\nexit 0\n")
+
+    File.SetUnixFileMode(
+        path,
+        UnixFileMode.UserRead
+        ||| UnixFileMode.UserWrite
+        ||| UnixFileMode.UserExecute
+        ||| UnixFileMode.GroupRead
+        ||| UnixFileMode.GroupExecute
+        ||| UnixFileMode.OtherRead
+        ||| UnixFileMode.OtherExecute
+    )
+
 /// Instance step-definition container — see `ConventionSteps.fs`'s module
 /// doc comment for why TickSpec's one-instance-per-scenario lifecycle makes
 /// instance-level mutable fields the idiomatic state-threading mechanism
@@ -146,6 +151,7 @@ type MdProcessSteps() =
 
             Directory.CreateDirectory(dir) |> ignore
             runGit dir [ "init"; "-q"; "-b"; "main" ] |> ignore
+            stubRhino dir
             rootDir <- Some dir
             dir
 
@@ -219,40 +225,6 @@ type MdProcessSteps() =
             "---\ntitle: T\ndescription: D\ncategory: explanation\nsubcategory: S\ntags: [a]\n---\nbody\n"
 
     [<Given>]
-    member _.``a software-engineering doc whose frontmatter omits the title field``() =
-        rootDir <- Some(newTempDir ())
-
-        writeDoc
-            "docs/explanation/software-engineering/foo.md"
-            "---\ndescription: D\ncategory: explanation\nsubcategory: S\ntags: [a]\n---\nbody\n"
-
-    [<Given>]
-    member _.``a software-engineering doc whose frontmatter omits the category field``() =
-        rootDir <- Some(newTempDir ())
-
-        writeDoc
-            "docs/explanation/software-engineering/foo.md"
-            "---\ntitle: T\ndescription: D\nsubcategory: S\ntags: [a]\n---\nbody\n"
-
-    [<Given>]
-    member _.``a software-engineering doc whose frontmatter declares category as something other than software``() =
-        rootDir <- Some(newTempDir ())
-
-        writeDoc
-            "docs/explanation/software-engineering/foo.md"
-            "---\ntitle: T\ndescription: D\ncategory: random\nsubcategory: S\ntags: [a]\n---\nbody\n"
-
-    [<Given>]
-    member _.``a governance doc carrying only a description frontmatter field``() =
-        rootDir <- Some(newTempDir ())
-        writeDoc "repo-governance/conventions/foo.md" "---\ndescription: D\n---\nbody\n"
-
-    [<Given>]
-    member _.``a governance doc carrying only a when_to_use frontmatter field``() =
-        rootDir <- Some(newTempDir ())
-        writeDoc "repo-governance/conventions/foo.md" "---\nwhen_to_use: Use when W.\n---\nbody\n"
-
-    [<Given>]
     member _.``a governance doc with description and when_to_use frontmatter``() =
         rootDir <- Some(newTempDir ())
 
@@ -284,46 +256,6 @@ type MdProcessSteps() =
         rootDir <- Some(newTempDir ())
         writeDoc "docs/reference/renamed-to-repo-governance/foo.md" "# Foo\n\nbody\n"
 
-    [<Given>]
-    member _.``a software-engineering doc with title, description, category tutorial, subcategory, and tags frontmatter``
-        ()
-        =
-        rootDir <- Some(newTempDir ())
-
-        writeDoc
-            "docs/explanation/software-engineering/foo.md"
-            "---\ntitle: T\ndescription: D\ncategory: tutorial\nsubcategory: S\ntags: [a]\n---\nbody\n"
-
-    [<Given>]
-    member _.``a software-engineering doc with title, description, category how-to, subcategory, and tags frontmatter``
-        ()
-        =
-        rootDir <- Some(newTempDir ())
-
-        writeDoc
-            "docs/explanation/software-engineering/foo.md"
-            "---\ntitle: T\ndescription: D\ncategory: how-to\nsubcategory: S\ntags: [a]\n---\nbody\n"
-
-    [<Given>]
-    member _.``a software-engineering doc with title, description, category reference, subcategory, and tags frontmatter``
-        ()
-        =
-        rootDir <- Some(newTempDir ())
-
-        writeDoc
-            "docs/explanation/software-engineering/foo.md"
-            "---\ntitle: T\ndescription: D\ncategory: reference\nsubcategory: S\ntags: [a]\n---\nbody\n"
-
-    [<Given>]
-    member _.``a software-engineering doc with title, description, category explanation, subcategory, and tags frontmatter``
-        ()
-        =
-        rootDir <- Some(newTempDir ())
-
-        writeDoc
-            "docs/explanation/software-engineering/foo.md"
-            "---\ntitle: T\ndescription: D\ncategory: explanation\nsubcategory: S\ntags: [a]\n---\nbody\n"
-
     /// The deprecated `category: software` value is itself the "all required
     /// frontmatter fields" fixture this scenario needs — every required
     /// field is present, `category` is merely the deprecated-but-recognised
@@ -336,57 +268,6 @@ type MdProcessSteps() =
             "docs/explanation/software-engineering/foo.md"
             "---\ntitle: T\ndescription: D\ncategory: software\nsubcategory: S\ntags: [a]\n---\nbody\n"
 
-    // ---- Given (docs-validate-heading-hierarchy.feature) ----
-
-    [<Given>]
-    member _.``a documentation tree where every markdown file has exactly one H1 and no skipped heading levels``() =
-        writeDoc "a.md" "# Title\n\n## Section\n\n### Sub\n\n## Section Two\n"
-        writeDoc "sub/b.md" "# Other\n\n## X\n"
-
-    [<Given>]
-    member _.``a documentation tree containing a markdown file with two H1 headings``() =
-        writeDoc "a.md" "# First\n\n# Second\n"
-
-    [<Given>]
-    member _.``a documentation tree containing a markdown file with an H2 followed directly by an H4``() =
-        writeDoc "a.md" "## Two\n\n#### Four\n"
-
-    [<Given>]
-    member _.``a documentation tree containing a single-line markdown file with no headings``() =
-        writeDoc "a.md" "just a single line\n"
-
-    [<Given>]
-    member _.``a docs directory containing a markdown file with two H1 headings``() =
-        writeDoc "docs/page.md" "# First\n\n# Second\n"
-
-    [<Given>]
-    member _.``a .claude/agents directory containing a markdown file with no H1 heading``() =
-        writeDoc ".claude/agents/my-agent.md" "## Not H1\n\n### Also not H1\n"
-
-    [<Given>]
-    member _.``a plans/done directory containing a markdown file with a skipped heading level``() =
-        writeDoc "plans/done/2024-01-01__old-plan/delivery.md" "# T\n\n### Skip\n"
-
-    [<Given>]
-    member _.``a repo-governance directory containing a markdown file with two H1 headings``() =
-        writeDoc "repo-governance/rule.md" "# X\n\n# Y\n"
-
-    [<Given>]
-    member _.``a specs directory containing a markdown file with two H1 headings``() =
-        writeDoc "specs/apps/foo/overview.md" "# A\n\n# B\n"
-
-    [<Given>]
-    member _.``an apps/example directory whose README.md contains a skipped heading level``() =
-        writeDoc "apps/example/README.md" "# App\n\n### Skip\n"
-
-    [<Given>]
-    member _.``an apps/example/src directory containing a markdown file with no H1 heading``() =
-        writeDoc "apps/example/src/notes.md" "## No H1\n"
-
-    [<Given>]
-    member _.``a libs/example/docs directory containing a markdown file with two H1 headings``() =
-        writeDoc "libs/example/docs/guide.md" "# A\n\n# B\n"
-
     // ---- Given (docs-validate-links.feature) ----
 
     [<Given>]
@@ -395,28 +276,12 @@ type MdProcessSteps() =
         writeDoc "destination.md" "# Destination\n"
 
     [<Given>]
-    member _.``a markdown file with a link pointing to a non-existent file``() =
-        writeDoc "broken-source.md" "See [missing](./does-not-exist.md) for details.\n"
+    member _.``a markdown file with an image link pointing to a non-existent file``() =
+        writeDoc "broken-source.md" "![diagram](./does-not-exist.png)\n"
 
     [<Given>]
     member _.``a markdown file containing only external HTTPS links``() =
         writeDoc "external-only.md" "See [a](https://example.com) and [b](https://example.org/page).\n"
-
-    [<Given>]
-    member _.``a markdown file with a broken link that has not been staged in git``() =
-        writeDoc "unstaged-broken.md" "See [missing](./does-not-exist.md) for details.\n"
-
-    [<Given>]
-    member _.``a markdown file under plans/done with a broken internal link``() =
-        writeDoc "plans/done/2024-01-01__example/delivery.md" "See [missing](./does-not-exist.md).\n"
-
-    [<Given>]
-    member _.``a markdown file under docs with a different broken internal link``() =
-        writeDoc "docs/reference/page.md" "See [missing](./also-missing.md).\n"
-
-    [<Given>]
-    member _.``a markdown file under libs with a broken internal link``() =
-        writeDoc "libs/example/README.md" "See [missing](./does-not-exist.md).\n"
 
     [<Given>]
     member _.``a markdown file that links to an existing heading anchor in another file``() =
@@ -698,24 +563,6 @@ type MdProcessSteps() =
     member _.``a markdown file with a flowchart forming the cycle A --> B --> C --> A``() =
         writeDoc "docs/d.md" (mermaidBlock "flowchart TD\n    A --> B\n    B --> C\n    C --> A")
 
-    // ---- Given (docs-validate-naming.feature) ----
-
-    [<Given>]
-    member _.``a documentation tree where every markdown file uses lowercase kebab-case``() =
-        rootDir <- Some(newTempDir ())
-        writeDoc "docs/foo-bar.md" "# Foo Bar\n"
-        writeDoc "docs/nested/another-file.md" "# Another File\n"
-
-    [<Given>]
-    member _.``a documentation tree containing a markdown file whose basename has uppercase characters``() =
-        rootDir <- Some(newTempDir ())
-        writeDoc "docs/FooBar.md" "# Foo Bar\n"
-
-    [<Given>]
-    member _.``a documentation tree where a nested directory contains only a README.md file``() =
-        rootDir <- Some(newTempDir ())
-        writeDoc "docs/nested/README.md" "# Nested\n"
-
     // ---- Given (md-audit.feature) ----
 
     [<Given>]
@@ -726,14 +573,6 @@ type MdProcessSteps() =
     [<Given>]
     member _.``a governance directory with no forbidden date metadata in markdown files``() =
         writeDoc "repo-governance/clean.md" "---\ntitle: T\n---\n\nClean body.\n"
-
-    [<Given>]
-    member _.``a governance markdown file whose frontmatter contains a forbidden updated field``() =
-        writeDoc "repo-governance/dated.md" "---\ntitle: T\nupdated: 2026-01-01\n---\n\nbody\n"
-
-    [<Given>]
-    member _.``a governance markdown file whose frontmatter contains a forbidden created field``() =
-        writeDoc "repo-governance/created-frontmatter.md" "---\ntitle: T\ncreated: 2026-01-01\n---\n\nbody\n"
 
     [<Given>]
     member _.``a governance markdown file whose body contains a Last Updated footer block``() =
@@ -771,14 +610,7 @@ type MdProcessSteps() =
     member _.``^(?!the parser processes the file$)(.*)$``(step: string) =
         match step with
         | "the developer runs docs validate-frontmatter" -> invoke [ "md"; "frontmatter"; "validate" ]
-        | "the developer runs docs validate-heading-hierarchy" -> invoke [ "md"; "heading-hierarchy"; "validate" ]
-        | "the developer runs docs validate-heading-hierarchy with --exclude docs" ->
-            invoke [ "md"; "heading-hierarchy"; "validate"; "--exclude"; "docs" ]
         | "the developer runs docs validate-links" -> invoke [ "md"; "links"; "validate" ]
-        | "the developer runs docs validate-links with the --staged-only flag" ->
-            invoke [ "md"; "links"; "validate"; "--staged-only" ]
-        | "the developer runs docs validate-links with --exclude plans/done" ->
-            invoke [ "md"; "links"; "validate"; "--exclude"; "plans/done" ]
         | "the developer runs docs validate-mermaid" ->
             let thresholdArguments =
                 match mermaidThresholds with
@@ -812,7 +644,6 @@ type MdProcessSteps() =
             invoke [ "md"; "mermaid"; "validate"; "--exclude"; "plans/done" ]
         | "the developer runs docs validate-mermaid with an empty --exclude value" ->
             invoke [ "md"; "mermaid"; "validate"; "--exclude"; "" ]
-        | "the developer runs docs validate-naming" -> invoke [ "md"; "naming"; "validate" ]
         | "the developer runs \"rhino-cli md audit\"" ->
             invoke [ "md"; "audit"; "--skip"; "readme-index"; "--skip"; "frontmatter-dates" ]
         | "the developer runs md frontmatter validate on the directory"
@@ -831,35 +662,15 @@ type MdProcessSteps() =
         | "the command exits successfully" -> Assert.Equal(0, result.ExitCode)
         | "the command exits with a failure code" -> Assert.NotEqual(0, result.ExitCode)
         | "the frontmatter output reports zero fail-level findings"
-        | "the output reports zero docs heading hierarchy findings"
         | "the output reports no broken links found"
-        | "the output reports zero docs naming findings"
         | "the output reports zero frontmatter findings"
         | "the output reports no violations"
         | "the output reports no new violations or warnings introduced by these fixes" ->
             Assert.Equal(0, result.ExitCode)
-        | "the frontmatter output identifies the missing title field" -> Assert.Contains("\"title\" is missing", output)
-        | "the frontmatter output identifies the missing category field" ->
-            Assert.Contains("\"category\" is missing", output)
-        | "the frontmatter output identifies the wrong category value" -> Assert.Contains("must be one of", output)
-        | "the frontmatter output identifies the missing when-to-use field" ->
-            Assert.Contains("\"when_to_use\" is missing", output)
-        | "the frontmatter output identifies the missing description field" ->
-            Assert.Contains("\"description\" is missing", output)
         | "the frontmatter output identifies title as a key outside the allow-list" ->
             Assert.Contains("field \"title\" is not permitted", output)
         | "the frontmatter output identifies category as a key outside the allow-list" ->
             Assert.Contains("field \"category\" is not permitted", output)
-        | "the output identifies the offending file and the duplicate H1 violation"
-        | "the output identifies the duplicate H1 violation in the docs file"
-        | "the output identifies the duplicate H1 violation in the specs file"
-        | "the output identifies the duplicate H1 violation in the lib docs file" ->
-            Assert.Contains("H1 headings", output)
-        | "the output identifies the offending file and the skipped heading level"
-        | "the output identifies the skipped heading level in the app README" ->
-            Assert.Contains("must not skip", output)
-        | "the output does not mention the docs file" -> Assert.DoesNotContain("docs/page.md", output)
-        | "the output identifies the repo-governance file" -> Assert.Contains("repo-governance", output)
         | "the output identifies the file containing the broken link" -> Assert.Contains("broken-source.md", output)
         | "the output does not mention the plans/done file" -> Assert.DoesNotContain("plans/done", output)
         | "the output does mention the docs file" ->
@@ -868,8 +679,6 @@ type MdProcessSteps() =
                 || output.Contains("docs/wide.md", StringComparison.Ordinal),
                 sprintf "expected a docs finding, got: %s" output
             )
-        | "the output identifies the libs file containing the broken link" ->
-            Assert.Contains("libs/example/README.md", output)
         | "the output identifies the broken anchor"
         | "the output identifies the broken same-file anchor" ->
             Assert.Contains("anchor", output, StringComparison.OrdinalIgnoreCase)
@@ -901,13 +710,7 @@ type MdProcessSteps() =
         | "the output does mention the plans/done file" -> Assert.Contains("plans/done", output)
         | "the output identifies the file under specs/" -> Assert.Contains("specs/apps/foo/notes.md", output)
         | "no width violation is reported for the cycle members" -> Assert.DoesNotContain("width_exceeded", output)
-        | "the output identifies the offending filename and its rule violation" ->
-            Assert.Contains("FooBar.md", output)
-            Assert.Contains("lowercase-kebab-case", output)
         | "the output reports all md validators passed" -> Assert.Contains("MD AUDIT PASSED", output)
-        | "the output identifies the forbidden frontmatter field and its location" ->
-            Assert.Contains("updated:", output)
-        | "the output identifies the forbidden created field and its location" -> Assert.Contains("created:", output)
         | "the output identifies the forbidden footer block and its location" -> Assert.Contains("Last Updated", output)
         | "the output identifies the forbidden inline annotation and its location" ->
             Assert.Contains("inline date annotation", output)
@@ -989,32 +792,6 @@ let ``Software-engineering doc with all required frontmatter fields passes`` () 
         "Software-engineering doc with all required frontmatter fields passes"
 
 [<Fact>]
-let ``Software-engineering doc missing title fails`` () =
-    FeatureRunner.run "docs-validate-frontmatter.feature" "Software-engineering doc missing title fails"
-
-[<Fact>]
-let ``Software-engineering doc missing category field fails`` () =
-    FeatureRunner.run "docs-validate-frontmatter.feature" "Software-engineering doc missing category field fails"
-
-[<Fact>]
-let ``Software-engineering doc with category other than software fails`` () =
-    FeatureRunner.run
-        "docs-validate-frontmatter.feature"
-        "Software-engineering doc with category other than software fails"
-
-[<Fact>]
-let ``Governance doc with only a description fails on the missing when_to_use`` () =
-    FeatureRunner.run
-        "docs-validate-frontmatter.feature"
-        "Governance doc with only a description fails on the missing when_to_use"
-
-[<Fact>]
-let ``Governance doc with only a when_to_use fails on the missing description`` () =
-    FeatureRunner.run
-        "docs-validate-frontmatter.feature"
-        "Governance doc with only a when_to_use fails on the missing description"
-
-[<Fact>]
 let ``Governance doc with description and when_to_use passes the two-key schema`` () =
     FeatureRunner.run
         "docs-validate-frontmatter.feature"
@@ -1047,126 +824,18 @@ let ``The software-engineering schema is unaffected by the governance allow-list
         "The software-engineering schema is unaffected by the governance allow-list"
 
 [<Fact>]
-let ``Software-engineering doc with Diataxis tutorial category passes`` () =
-    FeatureRunner.run
-        "docs-validate-frontmatter.feature"
-        "Software-engineering doc with Diataxis tutorial category passes"
-
-[<Fact>]
-let ``Software-engineering doc with Diataxis how-to category passes`` () =
-    FeatureRunner.run
-        "docs-validate-frontmatter.feature"
-        "Software-engineering doc with Diataxis how-to category passes"
-
-[<Fact>]
-let ``Software-engineering doc with Diataxis reference category passes`` () =
-    FeatureRunner.run
-        "docs-validate-frontmatter.feature"
-        "Software-engineering doc with Diataxis reference category passes"
-
-[<Fact>]
-let ``Software-engineering doc with Diataxis explanation category passes`` () =
-    FeatureRunner.run
-        "docs-validate-frontmatter.feature"
-        "Software-engineering doc with Diataxis explanation category passes"
-
-[<Fact>]
 let ``Software-engineering doc with deprecated software category emits warn not fail`` () =
     FeatureRunner.run
         "docs-validate-frontmatter.feature"
         "Software-engineering doc with deprecated software category emits warn not fail"
 
 [<Fact>]
-let ``Tree where every .md has exactly one H1 and no skipped levels passes`` () =
-    FeatureRunner.run
-        "docs-validate-heading-hierarchy.feature"
-        "Tree where every .md has exactly one H1 and no skipped levels passes"
-
-[<Fact>]
-let ``File with two H1 headings fails`` () =
-    FeatureRunner.run "docs-validate-heading-hierarchy.feature" "File with two H1 headings fails"
-
-[<Fact>]
-let ``File with H2 followed directly by H4 (skipping H3) fails`` () =
-    FeatureRunner.run
-        "docs-validate-heading-hierarchy.feature"
-        "File with H2 followed directly by H4 (skipping H3) fails"
-
-[<Fact>]
-let ``Single-line file with no headings is ignored (passes)`` () =
-    FeatureRunner.run "docs-validate-heading-hierarchy.feature" "Single-line file with no headings is ignored (passes)"
-
-[<Fact>]
-let ``prose-allowlist-runs — docs file triggers a heading finding`` () =
-    FeatureRunner.run
-        "docs-validate-heading-hierarchy.feature"
-        "prose-allowlist-runs — docs file triggers a heading finding"
-
-[<Fact>]
-let ``agent-skill-file-exempt — no finding for agent or skill files`` () =
-    FeatureRunner.run
-        "docs-validate-heading-hierarchy.feature"
-        "agent-skill-file-exempt — no finding for agent or skill files"
-
-[<Fact>]
-let ``plans-done-excluded — no finding for plans/done files`` () =
-    FeatureRunner.run "docs-validate-heading-hierarchy.feature" "plans-done-excluded — no finding for plans/done files"
-
-[<Fact>]
-let ``exclude-flag-suppresses-tree — --exclude docs suppresses docs findings`` () =
-    FeatureRunner.run
-        "docs-validate-heading-hierarchy.feature"
-        "exclude-flag-suppresses-tree — --exclude docs suppresses docs findings"
-
-[<Fact>]
-let ``specs-allowlisted — specs tree triggers a heading finding`` () =
-    FeatureRunner.run
-        "docs-validate-heading-hierarchy.feature"
-        "specs-allowlisted — specs tree triggers a heading finding"
-
-[<Fact>]
-let ``app-readme-allowlisted — project-root README triggers a heading finding`` () =
-    FeatureRunner.run
-        "docs-validate-heading-hierarchy.feature"
-        "app-readme-allowlisted — project-root README triggers a heading finding"
-
-[<Fact>]
-let ``app-internals-default-deny — deep app files yield no finding`` () =
-    FeatureRunner.run
-        "docs-validate-heading-hierarchy.feature"
-        "app-internals-default-deny — deep app files yield no finding"
-
-[<Fact>]
-let ``project-docs-subtree-allowlisted — app and lib docs trees trigger findings`` () =
-    FeatureRunner.run
-        "docs-validate-heading-hierarchy.feature"
-        "project-docs-subtree-allowlisted — app and lib docs trees trigger findings"
-
-[<Fact>]
 let ``A document set with all valid internal links passes validation`` () =
     FeatureRunner.run "docs-validate-links.feature" "A document set with all valid internal links passes validation"
 
 [<Fact>]
-let ``A broken internal link is detected and reported`` () =
-    FeatureRunner.run "docs-validate-links.feature" "A broken internal link is detected and reported"
-
-[<Fact>]
 let ``External URLs are not validated`` () =
     FeatureRunner.run "docs-validate-links.feature" "External URLs are not validated"
-
-[<Fact>]
-let ``With --staged-only only staged files are checked`` () =
-    FeatureRunner.run "docs-validate-links.feature" "With --staged-only only staged files are checked"
-
-[<Fact>]
-let ``exclude flag skips the named subtree`` () =
-    FeatureRunner.run "docs-validate-links.feature" "exclude flag skips the named subtree"
-
-[<Fact>]
-let ``repo-wide scan finds broken link outside original three-directory scope`` () =
-    FeatureRunner.run
-        "docs-validate-links.feature"
-        "repo-wide scan finds broken link outside original three-directory scope"
 
 [<Fact>]
 let ``valid anchor link passes validation`` () =
@@ -1356,28 +1025,12 @@ let ``A cyclic flowchart ranks as its underlying chain`` () =
     FeatureRunner.run "docs-validate-mermaid.feature" "A cyclic flowchart ranks as its underlying chain"
 
 [<Fact>]
-let ``Tree where every markdown file uses lowercase kebab-case passes`` () =
-    FeatureRunner.run "docs-validate-naming.feature" "Tree where every markdown file uses lowercase kebab-case passes"
-
-[<Fact>]
-let ``File with uppercase characters fails`` () =
-    FeatureRunner.run "docs-validate-naming.feature" "File with uppercase characters fails"
-
-[<Fact>]
-let ``README.md is exempt and passes regardless of placement`` () =
-    FeatureRunner.run "docs-validate-naming.feature" "README.md is exempt and passes regardless of placement"
-
-[<Fact>]
 let ``Every md validator passes on a repository with no markdown files`` () =
     FeatureRunner.run "md-audit.feature" "Every md validator passes on a repository with no markdown files"
 
 [<Fact>]
 let ``Clean directory passes the audit`` () =
     FeatureRunner.run "repo-governance-frontmatter-audit.feature" "Clean directory passes the audit"
-
-[<Fact>]
-let ``Frontmatter with forbidden updated field fails`` () =
-    FeatureRunner.run "repo-governance-frontmatter-audit.feature" "Frontmatter with forbidden updated field fails"
 
 [<Fact>]
 let ``Body containing Last Updated footer block fails`` () =

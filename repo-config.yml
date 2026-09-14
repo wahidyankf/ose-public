@@ -27,6 +27,186 @@ schema: ose/repo-config/v2
 # are readable by anyone, so the safety screen runs first on every surface.
 visibility: public
 
+# RHINO validator sections, read by the pinned ./rhino. rhino-cli reads only
+# extensions.rhino-cli, so a split command's F# remainder never sees these.
+scan:
+  exclude-directories:
+    - .git
+    - node_modules
+    - dist
+    - build
+    - target
+    - .next
+    - coverage
+    - generated-reports
+    - local-tmp
+    - archived
+    - apps-labs
+    - worktrees
+    - .terraform
+    - generated-contracts
+    - .nx
+    - .fvm-cache
+    - deps
+    - _build
+    - cover
+    - fixtures
+    - raw
+governance-word-budget:
+  count: whitespace-separated
+  surfaces:
+    - { glob: "repo-governance/**/*.md", target: 650, warn: 750, fail: 750 }
+    - { glob: ".claude/**/*.md", target: 650, warn: 750, fail: 750 }
+    - { glob: ".codex/**/*.md", target: 650, warn: 750, fail: 750 }
+    - { glob: ".opencode/**/*.md", target: 650, warn: 750, fail: 750 }
+    - { glob: ".agents/**/*.md", target: 650, warn: 750, fail: 750 }
+    - { glob: "AGENTS.md", target: 650, warn: 750, fail: 750 }
+    - { glob: "CLAUDE.md", target: 650, warn: 750, fail: 750 }
+    - { glob: "RTK.md", target: 650, warn: 750, fail: 750 }
+    - { glob: "repo-governance/**/README.md", target: 900, warn: 1000, fail: 1000 }
+    - { glob: ".claude/**/README.md", target: 900, warn: 1000, fail: 1000 }
+    - { glob: ".codex/**/README.md", target: 900, warn: 1000, fail: 1000 }
+    - { glob: ".opencode/**/README.md", target: 900, warn: 1000, fail: 1000 }
+    - { glob: ".agents/**/README.md", target: 900, warn: 1000, fail: 1000 }
+    - { glob: "apps/**/README.md", target: 900, warn: 1000, fail: 1000 }
+    - { glob: "libs/**/README.md", target: 900, warn: 1000, fail: 1000 }
+    - { glob: ".github/**/README.md", target: 900, warn: 1000, fail: 1000 }
+    - { glob: "infra/**/README.md", target: 900, warn: 1000, fail: 1000 }
+    - { glob: "scripts/README.md", target: 900, warn: 1000, fail: 1000 }
+    - { glob: "social-media-posts/README.md", target: 900, warn: 1000, fail: 1000 }
+    - { glob: "README.md", target: 900, warn: 1000, fail: 1000 }
+md-frontmatter:
+  surfaces:
+    - glob: "docs/explanation/software-engineering/**/*.md"
+      require: [title, description, category, subcategory, tags]
+      enum:
+        category: [tutorial, how-to, reference, explanation, software]
+      forbid: [updated]
+    - glob: "repo-governance/**/*.md"
+      require: [description, when_to_use]
+      forbid: [updated, created]
+    # No date metadata in the remaining trees `md frontmatter-dates validate` covers.
+    - glob: ".claude/agents/**/*.md"
+      require: []
+      forbid: [updated]
+    - glob: ".claude/skills/**/*.md"
+      require: []
+      forbid: [updated]
+    - glob: "plans/**/*.md"
+      require: []
+      forbid: [updated]
+md-heading-hierarchy:
+  surfaces:
+    - glob: "docs/**"
+    - glob: "repo-governance/**"
+    - glob: "specs/**"
+    - glob: "plans/in-progress/**"
+    - glob: "plans/backlog/**"
+    - glob: "plans/ideas/**"
+    - glob: "plans/README.md"
+    - glob: "AGENTS.md"
+    - glob: "CLAUDE.md"
+    - glob: "CONTRIBUTING.md"
+    - glob: "LICENSING-NOTICE.md"
+    - glob: "README.md"
+    - glob: "RTK.md"
+    - glob: "SECURITY.md"
+    - glob: "roadmap.md"
+    - glob: "apps/ayokoding-www/README.md"
+    - glob: "apps/ayokoding-www-be-e2e/README.md"
+    - glob: "apps/ayokoding-www-fe-e2e/README.md"
+    - glob: "apps/crane-cli/README.md"
+    - glob: "apps/organiclever-app-web/README.md"
+    - glob: "apps/organiclever-app-web-e2e/README.md"
+    - glob: "apps/organiclever-be/README.md"
+    - glob: "apps/organiclever-be-e2e/README.md"
+    - glob: "apps/organiclever-www/README.md"
+    - glob: "apps/organiclever-www-fe-e2e/README.md"
+    - glob: "apps/ose-app-web/README.md"
+    - glob: "apps/ose-app-web-e2e/README.md"
+    - glob: "apps/ose-be/README.md"
+    - glob: "apps/ose-be-e2e/README.md"
+    - glob: "apps/ose-lms-be/README.md"
+    - glob: "apps/ose-lms-be-e2e/README.md"
+    - glob: "apps/ose-www/README.md"
+    - glob: "apps/ose-www-be-e2e/README.md"
+    - glob: "apps/ose-www-fe-e2e/README.md"
+    - glob: "apps/rhino-cli/README.md"
+    - glob: "apps/roots-be/README.md"
+    - glob: "apps/roots-be-e2e/README.md"
+    - glob: "libs/fsharp-crane-core/README.md"
+    - glob: "libs/fsharp-env-loader/README.md"
+    - glob: "libs/ts-env-loader/README.md"
+    - glob: "libs/web-ui/README.md"
+    - glob: "libs/web-ui-token/README.md"
+    - glob: "apps/ayokoding-www/docs/**"
+  single-h1: true
+  max-level-jump: 1
+md-internal-link:
+  exclude-sources:
+    - "plans/done/**"
+    - "apps/ayokoding-www/content/**"
+    - ".claude/skills/**"
+    - ".agents/skills/**"
+    - "apps/ose-www/content/**"
+md-naming:
+  surfaces:
+    - { glob: "**/*.md", style: kebab-case }
+  exempt:
+    - "**/README.md"
+    - "**/SKILL.md"
+    - "**/AGENTS.md"
+    - "**/CLAUDE.md"
+    - "**/_index.md"
+    - "**/CONTRIBUTING.md"
+    - "**/LICENSING-NOTICE.md"
+    - "**/ROADMAP.md"
+    - "**/SECURITY.md"
+    - "**/*__linkedin__*.md"
+    - "**/pull_request_template.md"
+    - "**/RTK.md"
+md-readme-index:
+  trees:
+    - path: .claude/agents
+    - path: .claude/skills
+    - path: docs/explanation
+    - path: docs/how-to
+    - path: docs/reference
+    - path: docs/tutorials
+    - path: repo-governance
+    - path: specs/apps/ayokoding
+    - path: specs/apps/crane
+    - path: specs/apps/organiclever
+    - path: specs/apps/ose/app-web
+    - path: specs/apps/ose/be
+    - path: specs/apps/ose/lms-be
+    - path: specs/apps/ose/www/behaviours/backend
+    - path: specs/apps/ose/www/behaviours/frontend/app-shell
+    - path: specs/apps/ose/www/behaviours/frontend/landing
+    - path: specs/apps/rhino
+    - path: specs/apps/roots
+convention-emoji:
+  prohibited:
+    - glob: "**/*.json"
+    - glob: "**/*.yaml"
+    - glob: "**/*.yml"
+    - glob: "**/*.toml"
+    - glob: "**/*.go"
+    - glob: "**/*.ts"
+    - glob: "**/*.tsx"
+    - glob: "**/*.js"
+    - glob: "**/*.jsx"
+    - glob: "**/*.py"
+    - glob: "**/*.java"
+    - glob: "**/*.kt"
+    - glob: "**/*.rs"
+    - glob: "**/*.fs"
+    - glob: "**/*.cs"
+    - glob: "**/*.dart"
+    - glob: "**/*.exs"
+    - glob: "**/*.ex"
+    - glob: "**/*.clj"
+
 # RHINO runs these in order and stops at the first failure. Each registry gate
 # hands its surface to rhino-cli, which runs the gates declared under
 # `extensions.rhino-cli.gates` for that surface. Arguments after `--` in a hook
@@ -973,28 +1153,26 @@ extensions:
         kind: rhino-cli
         ci-group: markdown
         surfaces:
-          pre-commit: { scope: affected-file-type, glob: "*.md" }
+          pre-commit:
+            scope: affected-file-type
+            glob: "*.md"
+            # RHINO reads its own surface; lint-staged's file arguments are dropped.
+            lint-staged-shell: "{{command}}"
           ci: { scope: all-file-type }
 
+      # Exemptions live in `md-naming.exempt` above. The shared plan-structure corpus,
+      # whose rejected case 012 names two companions in a non-kebab form on purpose,
+      # sits under an excluded `fixtures` directory.
       - id: md-naming
         type: check
         command: md naming validate
         kind: rhino-cli
         ci-group: markdown
-        args:
-          exempt:
-            - "*__linkedin__*.md"
-            - "CONTRIBUTING.md"
-            - "pull_request_template.md"
-            - "RTK.md"
-            # The shared plan-structure corpus names two companions this way on purpose:
-            # they are the non-kebab defect its rejected case 012 exists to make a plan
-            # validator report. The corpus is verified against the catalog's digest, so it
-            # cannot be renamed here, and this validator exempts by base name only.
-            - "001-Context.md"
-            - "002-approach_two.md"
         surfaces:
-          pre-commit: { scope: affected-file-type, glob: "*.md" }
+          pre-commit:
+            scope: affected-file-type
+            glob: "*.md"
+            lint-staged-shell: "{{command}}"
           ci: { scope: all-file-type }
 
       - id: md-frontmatter
@@ -1003,7 +1181,10 @@ extensions:
         kind: rhino-cli
         ci-group: markdown
         surfaces:
-          pre-commit: { scope: affected-file-type, glob: "*.md" }
+          pre-commit:
+            scope: affected-file-type
+            glob: "*.md"
+            lint-staged-shell: "{{command}}"
           ci: { scope: all-file-type }
 
       # Plan structure is judged per plan, not per file: companions and delivery
@@ -1085,6 +1266,8 @@ extensions:
           pre-commit:
             scope: affected-file-type
             glob: "*.{json,toml,ts,tsx,js,jsx,mjs,cjs,rs,go,py,cs,clj,dart,ex,exs,fs}"
+            # RHINO reads its own surface; lint-staged's file arguments are dropped.
+            lint-staged-shell: "{{command}}"
           ci: { scope: all-file-type }
 
       - id: docker-compose-config
@@ -1167,23 +1350,18 @@ extensions:
         command: md links validate
         kind: rhino-cli
         ci-group: markdown
-        args:
-          exclude:
-            - plans/done
-            # The shared plan-structure corpus holds a rejected case whose defect is a
-            # deliberately broken link, and the tree is verified against the catalog's
-            # digest rather than edited, so a link repaired here would break that comparison.
-            - specs/fixtures/plan-structure
+        # Sources come from `md-internal-link.exclude-sources` and
+        # `scan.exclude-directories` above: `plans/done` is excluded there, and the
+        # shared plan-structure corpus (whose rejected case holds a deliberately broken
+        # link) sits under an excluded `fixtures` directory.
         surfaces:
           pre-push: { scope: all-file-type }
           ci: { scope: all-file-type }
 
-      # Structural index enforcement across every content tree. `missing` is armed
-      # here (not only in governance-readme-completeness below) so the "every
-      # directory carries a literal README.md" rule binds `docs/` and `specs/` too
-      # — the former FR-3.5 split-directory exemption is removed in
-      # `readme_index.rs`, so a progressive-disclosure `<name>.md` parent no longer
-      # excuses its directory from having one.
+      # Structural index enforcement across every content tree. The "every
+      # directory carries a literal README.md" rule is RHINO's
+      # `md readme-index validate` (`md-readme-index.trees` above), which runs
+      # before this remainder; this gate keeps the orphan and ghost rules.
       #
       # `unannotated` is deliberately NOT armed here: `docs/` indexes are partly
       # hand-designed Markdown tables and `specs/` targets carry no frontmatter at
@@ -1216,7 +1394,6 @@ extensions:
             - specs/libs/
             - .claude/
           fail-kinds:
-            - missing
             - orphan
             - ghost
         surfaces:
@@ -1427,28 +1604,14 @@ extensions:
       # (config-only, see governance-word-budget: above). No pre-commit surface (FR-1.14): a
       # whole-tree scan on every commit buys no additional coverage over pre-push/ci.
       #
-      # args.exclude: repo-relative path PREFIXES (str::starts_with — not globs; see
-      # word_budget::check_instruction_sizes's doc comment). The **/README.md surface
-      # (declared in governance-word-budget: above) has no scoping relationship to the
-      # other covered-surface globs — it matches every README.md in the repo. These
-      # prefixes keep it from reaching trees FR-1.3 never declared as covered surfaces
-      # (plans/, docs/, specs/) and a local, gitignored Flutter SDK version-manager cache
-      # (.fvm/, .fvm-cache/) that only exists on disk for developers who run `fvm` locally
-      # and is entirely absent from CI.
+      # Per-file budgets are RHINO's top-level `governance-word-budget.surfaces`, which
+      # runs first; this gate's F# remainder keeps only the resolved instruction tree
+      # (`extensions.rhino-cli.governance-word-budget.resolved_tree`).
       - id: governance-word-budget
         type: check
         command: governance word-budget validate
         kind: rhino-cli
         ci-group: governance
-        args:
-          exclude:
-            - plans/
-            - docs/
-            - specs/
-            - .fvm/
-            - .fvm-cache/
-            # Adopted byte-identical from the ose-rules catalog; editing it here breaks that identity.
-            - scripts/public-safety/
         surfaces:
           pre-push:
             scope: path-gated
@@ -1482,7 +1645,9 @@ extensions:
       # originally-declared 6-entry list (which also named docs/, specs/): those two trees
       # were never remediated by any phase of this plan and carry ~880 pre-existing
       # missing/unannotated findings; a follow-up plan tracks bringing them to the same bar.
-      # governance-readme-index's own orphan/ghost enforcement (FR-3.19) is untouched.
+      # governance-readme-index's own orphan/ghost enforcement (FR-3.19) is untouched. A
+      # directory without a literal README.md is RHINO's `md readme-index validate` finding
+      # (`md-readme-index.trees`), which runs first; this gate keeps the annotation rule.
       - id: governance-readme-completeness
         type: check
         command: governance readme-index validate
@@ -1494,7 +1659,6 @@ extensions:
             - .claude/
             - .codex/
           fail-kinds:
-            - missing
             - unannotated
         surfaces:
           pre-push:
@@ -1511,3 +1675,106 @@ extensions:
               - .claude/
               - .codex/
               - repo-config.yml
+
+    # One row per validator command: the 23 distinct commands of the 26 kind: rhino-cli gates,
+    # then the four ungated validators that still hold F# rules. `gate validate` refuses a
+    # missing, duplicate or extra row. `keeps` names the rules F# still implements.
+    delegation:
+      - command: env staged-guard validate
+        class: stay
+        keeps: [env-staged-guard]
+      - command: repo-config validate
+        class: split
+        rhino: repo-config validate
+        keeps: [repo-config-extension-schema]
+      - command: md mermaid validate
+        class: stay
+        until: unit-8
+        keeps: [md-mermaid]
+      - command: md heading-hierarchy validate
+        class: delegate
+        rhino: md heading-hierarchy validate
+        keeps: []
+      - command: md naming validate
+        class: delegate
+        rhino: md naming validate
+        keeps: []
+      - command: md frontmatter validate
+        class: split
+        rhino: md frontmatter validate
+        keeps: [md-frontmatter-values]
+      - command: plan validate
+        class: stay
+        keeps: [plan-structure]
+      - command: convention emoji validate
+        class: delegate
+        rhino: convention emoji validate
+        keeps: []
+      - command: harness bindings generate
+        class: stay
+        until: unit-4
+        keeps: [harness-name]
+      - command: git lockfile sync
+        class: stay
+        keeps: [lockfile-sync]
+      - command: env validate
+        class: stay
+        keeps: [env-parity]
+      - command: md links validate
+        class: split
+        rhino: md internal-link validate
+        keeps: [md-links-anchor-and-image]
+      - command: governance readme-index validate
+        class: split
+        rhino: md readme-index validate
+        keeps: [readme-index-links, readme-index-orphan, readme-index-ghost, readme-index-unannotated]
+      - command: harness duplication validate
+        class: stay
+        until: unit-4
+        keeps: [harness-duplication]
+      - command: parity manifest validate
+        class: stay
+        keeps: [parity-manifest]
+      - command: repo-governance vendor validate
+        class: stay
+        keeps: [repo-governance-vendor-independence]
+      - command: repo-governance test-boundary validate
+        class: stay
+        keeps: [repo-governance-test-boundary]
+      - command: convention license validate
+        class: stay
+        keeps: [convention-license]
+      - command: harness bindings validate
+        class: stay
+        until: unit-4
+        keeps: [harness-bindings, harness-codex-agents, harness-vendored-declarations, harness-registry-scripts]
+      - command: harness claude validate
+        class: stay
+        until: unit-4
+        keeps: [harness-claude, harness-claude-frontmatter]
+      - command: harness ownership validate
+        class: stay
+        until: unit-4
+        keeps: [harness-ownership]
+      - command: harness catalog validate
+        class: stay
+        until: unit-4
+        keeps: [harness-catalog]
+      - command: governance word-budget validate
+        class: split
+        rhino: governance word-budget validate
+        keeps: [word-budget-resolved-tree]
+      - command: md frontmatter-dates validate
+        class: split
+        rhino: md frontmatter validate
+        keeps: [md-frontmatter-dates-body]
+      - command: harness sync validate
+        class: stay
+        until: unit-4
+        keeps: [harness-sync, harness-skills-mirror, harness-agent-count]
+      - command: repo-governance layer-coherence validate
+        class: stay
+        keeps: [repo-governance-layer-coherence]
+      - command: repo-governance traceability validate
+        class: stay
+        keeps: [repo-governance-traceability]

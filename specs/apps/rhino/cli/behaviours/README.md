@@ -40,7 +40,6 @@ cli/behaviours/
 | File                                    | Command(s)                    | Scenarios |
 | --------------------------------------- | ----------------------------- | --------- |
 | `convention-audit.feature`              | `convention audit`            | 1         |
-| `repo-governance-emoji-audit.feature`   | `convention emoji validate`   | 6         |
 | `repo-governance-license-audit.feature` | `convention license validate` | 4         |
 
 ### env
@@ -74,14 +73,14 @@ cli/behaviours/
 | File                     | Command(s)          | Scenarios |
 | ------------------------ | ------------------- | --------- |
 | `git-lockfile.feature`   | `git lockfile sync` | 3         |
-| `git-pre-commit.feature` | `git pre-commit`    | 5         |
+| `git-pre-commit.feature` | `git pre-commit`    | 3         |
 
 ### governance
 
 | File                              | Command(s)                         | Scenarios |
 | --------------------------------- | ---------------------------------- | --------- |
-| `governance-word-budget.feature`  | `governance word-budget validate`  | 22        |
-| `governance-readme-index.feature` | `governance readme-index validate` | 19        |
+| `governance-word-budget.feature`  | `governance word-budget validate`  | 9         |
+| `governance-readme-index.feature` | `governance readme-index validate` | 17        |
 
 ### harness
 
@@ -105,13 +104,11 @@ cli/behaviours/
 
 | File                                        | Command(s)                      | Scenarios |
 | ------------------------------------------- | ------------------------------- | --------- |
-| `docs-validate-frontmatter.feature`         | `md frontmatter validate`       | 11        |
-| `docs-validate-heading-hierarchy.feature`   | `md heading-hierarchy validate` | 12        |
-| `docs-validate-links.feature`               | `md links validate`             | 10        |
+| `docs-validate-frontmatter.feature`         | `md frontmatter validate`       | 8         |
+| `docs-validate-links.feature`               | `md links validate`             | 7         |
 | `docs-validate-mermaid.feature`             | `md mermaid validate`           | 39        |
-| `docs-validate-naming.feature`              | `md naming validate`            | 3         |
 | `md-audit.feature`                          | `md audit`                      | 1         |
-| `repo-governance-frontmatter-audit.feature` | `md frontmatter-dates validate` | 5         |
+| `repo-governance-frontmatter-audit.feature` | `md frontmatter-dates validate` | 4         |
 
 ### plan
 

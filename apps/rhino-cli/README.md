@@ -98,6 +98,22 @@ classes (`0` clean, `1` findings, `2` a plan document it cannot read). The share
 [`specs/fixtures/plan-structure/`](../../specs/fixtures/plan-structure/README.md) is what proves
 the two agree, and the `plan-structure` gate runs the command in pre-commit and CI.
 
+## RHINO Delegation
+
+`rhino-cli` keeps only the governance rules the pinned RHINO does not provide. Each validator command has one row in
+`repo-config.yml` `extensions.rhino-cli.delegation`, and `gate validate` refuses a missing, duplicate, or extra row:
+
+| Class      | Behaviour                                                                      |
+| ---------- | ------------------------------------------------------------------------------ |
+| `delegate` | The leaf runs the named `./rhino` command; no F# rule remains                  |
+| `split`    | The named `./rhino` command runs first; F# checks only the rules in `keeps`    |
+| `stay`     | F# owns the rules in `keeps`; `until` names the later unit that delegates them |
+
+`src/RhinoCli.Infrastructure/src/RustRhino.fs` launches the pinned binary.
+`tests/unit/Steps/KeepListSourceScanTests.fs` scans the Application sources and fails when a rule is missing from every
+`keeps` list or is one RHINO v0.3.0 provides. `plan-structure` is the one exception (see
+[Plan Validation](#plan-validation)).
+
 ## Adding a Gherkin Scenario
 
 A new scenario anywhere under

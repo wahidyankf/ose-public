@@ -20,7 +20,7 @@ This document defines how AI agents plan, execute, verify, and improve their wor
 - [DAG-First Orchestration and Background-Slot Preference](./agent-workflow-orchestration/operating-budgets-dag-first-and-background-slot.md) — sequencing.
 - [Harness Capability Gating](./agent-workflow-orchestration/operating-budgets-harness-capability-gating.md) — capability checks.
 - [The PR Is the Independent Merge Point](./agent-workflow-orchestration/operating-budgets-pr-independent-merge-point.md) — worktree isolation.
-- [The PR Is the Independent Merge Point (Continued)](./agent-workflow-orchestration/operating-budgets-pr-independent-merge-point-continued.md) — per-repo scope.
+- [The PR Is the Independent Merge Point (Continued)](./agent-workflow-orchestration/operating-budgets-worktree-per-repository-unit.md) — per-repo scope.
 - [CI and GitHub Actions Monitoring Cadence](./agent-workflow-orchestration/operating-budgets-ci-monitoring-cadence.md) — polling cadence.
 
 ## Verification and Bug Fixing

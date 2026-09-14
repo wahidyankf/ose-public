@@ -51,7 +51,7 @@ breaking change, as a scheduled hygiene audit, or when onboarding a new harness.
 - [Step 6: Finalization](./harness-compatibility-quality-gate/step-6-finalization.md) — status reporting.
 - [Termination Criteria](./harness-compatibility-quality-gate/termination-criteria.md) — pass/partial/fail.
 - [Success Criteria — Part 1](./harness-compatibility-quality-gate/success-criteria-gherkin.md) — Phase 0/1, sync fix.
-- [Success Criteria — Part 2](./harness-compatibility-quality-gate/success-criteria-gherkin-continued.md) — escalation, budget.
+- [Success Criteria — Part 2](./harness-compatibility-quality-gate/success-criteria-gherkin-escalation-scenarios.md) — escalation, budget.
 - [Example Usage](./harness-compatibility-quality-gate/example-usage.md) — invocation examples.
 - [Iteration Example](./harness-compatibility-quality-gate/iteration-example.md) — worked traces.
 - [Safety Features](./harness-compatibility-quality-gate/safety-features.md) — loop and fix safeguards.

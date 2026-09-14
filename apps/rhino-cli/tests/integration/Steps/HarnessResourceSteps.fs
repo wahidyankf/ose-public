@@ -1115,7 +1115,8 @@ type HarnessResourceSteps() =
     /// Mirrors the live `governance-word-budget:` surfaces for `AGENTS.md` and
     /// `RTK.md` in `repo-config.yml` (650/750/750), scoped to just the two
     /// surfaces this feature's scenarios name — not the full 9-surface table
-    /// `GovernanceWordBudgetSteps.fs`'s own canonical fixture carries.
+    /// `GovernanceWordBudgetSteps.fs`'s own canonical fixture carries. The F#
+    /// pre-push gate reads only its resolved tree (CLAUDE.md, fail 1500).
     let wordBudgetFixtureConfig: Governance.BudgetConfig =
         let surface (glob: string) : Governance.Surface =
             { Glob = glob
@@ -2021,7 +2022,14 @@ type HarnessResourceSteps() =
 
     [<Given>]
     member _.``"([^"]+)" exceeds its fail ceiling``(path: string) =
-        writeBudgetFixture (scenarioRoot ()) path 800
+        // Per-file budgets are RHINO's; the F# gate fails only on the resolved
+        // tree, so its root imports the oversized file.
+        let root = scenarioRoot ()
+        let treeRoot = wordBudgetFixtureConfig.ResolvedTree.Root
+        writeBudgetFixture root path 1600
+
+        if path <> treeRoot then
+            File.WriteAllText(Path.Combine(root, treeRoot), sprintf "@%s\n" path)
 
     [<Given>]
     member _.``"([^"]+)" is within its fail ceiling``(path: string) =
@@ -2120,9 +2128,7 @@ type HarnessResourceSteps() =
         writeBudgetFixture root "RTK.md" 10
         writeBudgetFixture root "CLAUDE.md" 10
 
-        let findings = Governance.checkInstructionSizes root wordBudgetFixtureConfig []
-
-        Assert.Empty(findings)
+        Assert.True((Governance.checkResolvedTree root wordBudgetFixtureConfig).IsNone)
 
     [<When>]
     member _.``the developer runs "rhino-cli repo-governance audit" with JSON output``() =

@@ -37,7 +37,7 @@ of scope — but the moment one is quoted in a plan, a gate, or a PR, it is in s
 
 ## Related Documentation
 
-- [Acceptance clauses must be falsifiable](../quality/plan-anti-hallucination/absence-and-completeness-claims-zero-result-search-evidence-part-1.md) — a target that
+- [Acceptance clauses must be falsifiable](../quality/plan-anti-hallucination/absence-and-completeness-claims-zero-result-search-evidence-checklist.md) — a target that
   cannot fail is not a target; these rules are how you keep it from failing for the wrong reason.
 - [Mechanize Cross-File Invariants](../practice/mechanize-cross-file-invariants.md) — the same instinct
   applied to rules rather than numbers.

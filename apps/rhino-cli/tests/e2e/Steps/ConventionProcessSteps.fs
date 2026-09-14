@@ -2,7 +2,6 @@ module RhinoCli.Tests.E2E.Steps.ConventionProcessSteps
 
 let private behaviourFeatureOwnership =
     [ "specs/apps/rhino/cli/behaviours/convention/convention-audit.feature"
-      "specs/apps/rhino/cli/behaviours/convention/repo-governance-emoji-audit.feature"
       "specs/apps/rhino/cli/behaviours/convention/repo-governance-license-audit.feature" ]
 
 open System
@@ -17,6 +16,23 @@ let private repositoryRoot =
 let private executable =
     Path.Combine(repositoryRoot, "apps/rhino-cli/src/dist/rhino-cli-fsharp")
 
+/// A delegated command starts `./rhino` in the temp repository; this no-op
+/// stand-in keeps the remaining convention scenarios independent of RHINO.
+let private stubRhino (root: string) =
+    let path = Path.Combine(root, "rhino")
+    File.WriteAllText(path, "#!/bin/sh\nexit 0\n")
+
+    File.SetUnixFileMode(
+        path,
+        UnixFileMode.UserRead
+        ||| UnixFileMode.UserWrite
+        ||| UnixFileMode.UserExecute
+        ||| UnixFileMode.GroupRead
+        ||| UnixFileMode.GroupExecute
+        ||| UnixFileMode.OtherRead
+        ||| UnixFileMode.OtherExecute
+    )
+
 let private initialize root =
     Directory.CreateDirectory root |> ignore
 
@@ -28,6 +44,7 @@ let private initialize root =
     use commandProcess = Process.Start info
     commandProcess.WaitForExit()
     Assert.Equal(0, commandProcess.ExitCode)
+    stubRhino root
 
 let private invoke root arguments =
     let info =
@@ -70,33 +87,6 @@ type ConventionProcessSteps() =
         Directory.CreateDirectory(Path.Combine(root, directory)) |> ignore
 
     [<Given>]
-    member _.``a source tree containing no emoji codepoints in forbidden file types``() =
-        write "clean.json" "{ \"label\": \"hello\" }"
-
-    [<Given>]
-    member _.``a JSON file containing an emoji codepoint``() =
-        write "emoji.json" "{ \"label\": \"hi \u2705\" }"
-        target <- "emoji.json"
-
-    [<Given>]
-    member _.``a Go source file containing an emoji codepoint``() =
-        write "main.go" "package main\n// \u2705"
-        target <- "main.go"
-
-    [<Given>]
-    member _.``a forbidden file containing multibyte non-emoji unicode such as Arabic``() =
-        write "arabic.json" "{ \"label\": \"مرحبا\" }"
-        target <- "arabic.json"
-
-    [<Given>]
-    member _.``a source tree with an emoji-containing file inside the archived directory``() =
-        write "archived/old.json" "\u2705"
-
-    [<Given>]
-    member _.``a source tree with an emoji-containing agent skill source file``() =
-        write ".claude/skills/sample/SKILL.md" "# Skill \u2705"
-
-    [<Given>]
     member _.``a repository where every required directory has a matching MIT LICENSE file``() =
         write "apps/foo/LICENSE" "MIT License\n"
         write "libs/bar/LICENSE" "MIT License\n"
@@ -116,14 +106,6 @@ type ConventionProcessSteps() =
         write "LICENSING-NOTICE.md" "| Path | License |\n| --- | --- |\n| apps/foo | Apache-2.0 |\n"
 
     [<When>]
-    member _.``the developer runs convention emoji validate on the tree``() =
-        run [ "convention"; "emoji"; "validate"; "." ]
-
-    [<When>]
-    member _.``the developer runs convention emoji validate on the file``() =
-        run [ "convention"; "emoji"; "validate"; target ]
-
-    [<When>]
     member _.``the developer runs convention license validate``() =
         run [ "convention"; "license"; "validate" ]
 
@@ -135,15 +117,6 @@ type ConventionProcessSteps() =
 
     [<Then>]
     member _.``the command exits with a failure code``() = Assert.NotEqual(0, exitCode)
-
-    [<Then>]
-    member _.``the output reports zero emoji findings``() =
-        Assert.Contains("no emoji codepoints", output)
-
-    [<Then>]
-    member _.``the output identifies the offending file line and codepoint``() =
-        Assert.Contains(target, output)
-        Assert.Contains("U+", output)
 
     [<Then>]
     member _.``the output reports zero license findings``() = Assert.Contains("no findings", output)
@@ -200,10 +173,4 @@ module private FeatureRunner =
 [<InlineData("repo-governance-license-audit.feature", "App directory missing LICENSE file fails")>]
 [<InlineData("repo-governance-license-audit.feature", "Lib directory missing LICENSE file fails")>]
 [<InlineData("repo-governance-license-audit.feature", "LICENSING-NOTICE.md table row mismatching SPDX in LICENSE fails")>]
-[<InlineData("repo-governance-emoji-audit.feature", "Clean source tree passes")>]
-[<InlineData("repo-governance-emoji-audit.feature", "Emoji codepoint in a JSON file fails")>]
-[<InlineData("repo-governance-emoji-audit.feature", "Emoji codepoint in a Go source file fails")>]
-[<InlineData("repo-governance-emoji-audit.feature", "Multibyte non-emoji unicode does not trigger a finding")>]
-[<InlineData("repo-governance-emoji-audit.feature", "emoji-audit skips archived directory")>]
-[<InlineData("repo-governance-emoji-audit.feature", "emoji-audit skips policy-permitted agent skill files")>]
 let ``convention commands cross the published process boundary`` file title = FeatureRunner.run file title

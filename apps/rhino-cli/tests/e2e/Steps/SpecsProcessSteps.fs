@@ -24,6 +24,15 @@ let private repositoryRoot =
 let private executable =
     Path.Combine(repositoryRoot, "apps", "rhino-cli", "src", "dist", "rhino-cli-fsharp")
 
+/// `md links validate` is a split command that starts `./rhino` at the
+/// repository root before its F# remainder; this no-op stand-in lets the
+/// scenarios exercise that remainder.
+let private stubRhino (root: string) =
+    let path = Path.Combine(root, "rhino")
+    File.WriteAllText(path, "#!/bin/sh\nexit 0\n")
+
+    File.SetUnixFileMode(path, UnixFileMode.UserRead ||| UnixFileMode.UserWrite ||| UnixFileMode.UserExecute)
+
 type SpecsProcessSteps() =
     let root =
         Path.Combine(Path.GetTempPath(), "rhino-specs-e2e-" + Guid.NewGuid().ToString("N"))
@@ -54,6 +63,7 @@ type SpecsProcessSteps() =
         Directory.CreateDirectory root |> ignore
         let initialized = run "git" [ "init"; "--quiet" ]
         Assert.Equal(0, initialized.ExitCode)
+        stubRhino root
 
     let write (path: string) (content: string) =
         let absolute = Path.Combine(root, path.Replace('/', Path.DirectorySeparatorChar))
@@ -138,7 +148,7 @@ type SpecsProcessSteps() =
             write "specs/apps/testapp/target.md" "# Target\n"
         elif step.Contains("broken internal link", StringComparison.Ordinal) then
             addDirectory "specs/apps/testapp"
-            write "specs/apps/testapp/README.md" "[missing](./missing.md)\n"
+            write "specs/apps/testapp/README.md" "![missing](./missing.png)\n"
         elif step.Contains("external HTTPS links", StringComparison.Ordinal) then
             addDirectory "specs/apps/testapp"
             write "specs/apps/testapp/README.md" "[external](https://example.com)\n"

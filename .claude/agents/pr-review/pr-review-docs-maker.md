@@ -67,7 +67,7 @@ During PR quality-gate invocation, first apply the shared
 
 [Diátaxis Framework](../../../repo-governance/conventions/structure/diataxis-framework.md),
 [Content Quality Principles](../../../repo-governance/conventions/writing/quality.md),
-[nine-discipline table](../../../repo-governance/development/quality/pr-review-disciplines/the-nine-reviewer-disciplines-table-part-1.md),
+[nine-discipline table](../../../repo-governance/development/quality/pr-review-disciplines/the-nine-reviewer-disciplines-table-architecture-to-performance.md),
 [Criticality Levels](../../../repo-governance/development/quality/criticality-levels.md). Related
 agents: `pr-review-governance-maker`, `pr-review-logic-maker`, `pr-review-synthesis-maker`,
 `pr-review-fixer`, `web-researcher`, `docs-checker` (repository-wide validation this discipline

@@ -21,6 +21,6 @@ This practice implements/respects the following conventions:
 
 - **[Convention Writing Convention](../../../conventions/writing/conventions.md)**: Content offload targets (convention and development docs) follow the structure and quality standards defined in this convention.
 
-- **[Linking Convention](../../conventions/formatting/linking.md)**: All offload summaries include relative links with .md extension to comprehensive convention documents, ensuring GitHub-compatible navigation.
+- **[Linking Convention](../../../conventions/formatting/linking.md)**: All offload summaries include relative links with .md extension to comprehensive convention documents, ensuring GitHub-compatible navigation.
 
 - **[File Naming Convention](../../../conventions/structure/file-naming.md)**: New convention and development documents created during offload use plain kebab-case filenames (e.g., `file-naming.md`, `content-preservation.md`), with directory hierarchy encoding the category.

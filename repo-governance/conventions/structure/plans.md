@@ -52,11 +52,11 @@ Standards for organizing planning documents in `plans/` — temporary, distinct 
 - [Tagging — Placement and Legend](./plans/executor-tagging-placement-legend-and-execution-semantics.md) — legend.
 - [Phases as Natural Pauses](./plans/phases-as-natural-pauses.md) — gates.
 - [Checklists Express a DAG](./plans/delivery-checklists-express-a-dag.md) — parallelization.
-- [Delivery Units and Granularity](./plans/delivery-checklists-express-a-dag-continued.md) — units.
+- [Delivery Units and Granularity](./plans/delivery-units-and-planning-granularity.md) — units.
 - [Phase 0 Opens No PR](./plans/phase-0-opens-no-pr.md) — no PR at setup.
 - [Phase 0 — Rationale and Enforcement](./plans/phase-0-opens-no-pr-rationale-and-enforcement.md) — evidence.
 - [PRs Open — Rules 1-4](./plans/prs-open-at-delivery-boundaries-rules.md) — boundary rules.
-- [PRs Open — Rules 5-7](./plans/prs-open-at-delivery-boundaries-rules-continued.md) — remaining rules.
+- [PRs Open — Rules 5-7](./plans/prs-open-at-delivery-boundaries-rules-5-to-7.md) — remaining rules.
 - [PRs Open — Boundary Test](./plans/prs-open-at-delivery-boundaries-boundary-test.md) — qualification.
 - [PRs Open — Natural Seams and Deployable State](./plans/prs-open-at-delivery-boundaries-natural-seams.md) — cohesive boundaries, atomic consistency, immediate production deployability, and prompt trunk integration.
 - [PRs Open — PR Body](./plans/prs-open-at-delivery-boundaries-pr-body.md) — why, entry, skip.
@@ -66,7 +66,7 @@ Standards for organizing planning documents in `plans/` — temporary, distinct 
 - [Atomicity-Rule Redirect](./plans/prs-open-at-delivery-boundaries-pr-size-atomicity.md) — Legacy redirect. Follow old links.
 - [Delivery Boundaries](./plans/delivery-boundaries-and-applicability.md) — table.
 - [Worktree Specification](./plans/worktree-specification.md) — declaring worktree.
-- [Worktree Specification — Lifecycle](./plans/worktree-specification-continued.md) — cleanup.
+- [Worktree Specification — Lifecycle](./plans/worktree-specification-executor-lifecycle.md) — cleanup.
 - [Worktree Cap](./plans/worktree-cap.md) — one per repo.
 - [Delivery Mode — The Four Modes](./plans/delivery-mode-the-four-modes.md) — mode table.
 - [Delivery Mode — Content Restriction](./plans/delivery-mode-content-restriction.md) — validity.

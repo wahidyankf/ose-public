@@ -2,7 +2,6 @@ module RhinoCli.Tests.Unit.Steps.ConventionSteps
 
 let private behaviourFeatureOwnership =
     [ "specs/apps/rhino/cli/behaviours/convention/convention-audit.feature"
-      "specs/apps/rhino/cli/behaviours/convention/repo-governance-emoji-audit.feature"
       "specs/apps/rhino/cli/behaviours/convention/repo-governance-license-audit.feature" ]
 
 open System
@@ -41,30 +40,6 @@ type ConventionSteps() =
                   LicensingNotice = None }
 
     [<Given>]
-    member _.``a source tree containing no emoji codepoints in forbidden file types``() =
-        files <- [ "clean.json", "{ \"label\": \"hello\" }" ]
-
-    [<Given>]
-    member _.``a JSON file containing an emoji codepoint``() =
-        files <- [ "emoji.json", "{ \"label\": \"hi \u2705\" }" ]
-
-    [<Given>]
-    member _.``a Go source file containing an emoji codepoint``() =
-        files <- [ "main.go", "package main\n// \u2705" ]
-
-    [<Given>]
-    member _.``a forbidden file containing multibyte non-emoji unicode such as Arabic``() =
-        files <- [ "arabic.json", "{ \"label\": \"مرحبا\" }" ]
-
-    [<Given>]
-    member _.``a source tree with an emoji-containing file inside the archived directory``() =
-        files <- [ "archived/old.json", "\u2705" ]
-
-    [<Given>]
-    member _.``a source tree with an emoji-containing agent skill source file``() =
-        files <- [ ".claude/skills/sample/SKILL.md", "# Sample \u2705" ]
-
-    [<Given>]
     member _.``a repository where every required directory has a matching MIT LICENSE file``() =
         licenses <-
             Some
@@ -93,14 +68,6 @@ type ConventionSteps() =
                   LicensingNotice = Some "| Path | License |\n| --- | --- |\n| apps/foo | Apache-2.0 |\n" }
 
     [<When>]
-    member _.``the developer runs convention emoji validate on the tree``() =
-        result <- Some(validateEmojiTexts files)
-
-    [<When>]
-    member _.``the developer runs convention emoji validate on the file``() =
-        result <- Some(validateEmojiTexts files)
-
-    [<When>]
     member _.``the developer runs convention license validate``() =
         result <- Some(validateLicenseSnapshot (Option.get licenses))
 
@@ -116,15 +83,6 @@ type ConventionSteps() =
     [<Then>]
     member _.``the command exits with a failure code``() =
         Assert.False((outcome ()).Success, (outcome ()).Output)
-
-    [<Then>]
-    member _.``the output reports zero emoji findings``() = Assert.Empty((outcome ()).Findings)
-
-    [<Then>]
-    member _.``the output identifies the offending file line and codepoint``() =
-        let finding = (outcome ()).Findings |> List.exactlyOne
-        Assert.Contains("U+", finding.Message)
-        Assert.Contains(finding.Message, (outcome ()).Output)
 
     [<Then>]
     member _.``the output reports zero license findings``() = Assert.Empty((outcome ()).Findings)
@@ -195,12 +153,6 @@ module private FeatureRunner =
 [<InlineData("repo-governance-license-audit.feature", "App directory missing LICENSE file fails")>]
 [<InlineData("repo-governance-license-audit.feature", "Lib directory missing LICENSE file fails")>]
 [<InlineData("repo-governance-license-audit.feature", "LICENSING-NOTICE.md table row mismatching SPDX in LICENSE fails")>]
-[<InlineData("repo-governance-emoji-audit.feature", "Clean source tree passes")>]
-[<InlineData("repo-governance-emoji-audit.feature", "Emoji codepoint in a JSON file fails")>]
-[<InlineData("repo-governance-emoji-audit.feature", "Emoji codepoint in a Go source file fails")>]
-[<InlineData("repo-governance-emoji-audit.feature", "Multibyte non-emoji unicode does not trigger a finding")>]
-[<InlineData("repo-governance-emoji-audit.feature", "emoji-audit skips archived directory")>]
-[<InlineData("repo-governance-emoji-audit.feature", "emoji-audit skips policy-permitted agent skill files")>]
 let ``convention policy scenarios stay in process`` file title = FeatureRunner.run file title
 
 [<Fact>]

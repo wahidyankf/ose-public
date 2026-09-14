@@ -16,6 +16,15 @@ let private repositoryRoot =
 let private executable =
     Path.Combine(repositoryRoot, "apps/rhino-cli/src/dist/rhino-cli-fsharp")
 
+/// `repo-config validate` is a split command that starts `./rhino` at the
+/// repository root before its F# remainder; this no-op stand-in lets the
+/// scenarios exercise that remainder.
+let private stubRhino (root: string) =
+    let path = Path.Combine(root, "rhino")
+    File.WriteAllText(path, "#!/bin/sh\nexit 0\n")
+
+    File.SetUnixFileMode(path, UnixFileMode.UserRead ||| UnixFileMode.UserWrite ||| UnixFileMode.UserExecute)
+
 type RepoConfigProcessSteps() =
     let root =
         Path.Combine(Path.GetTempPath(), "rhino-repo-config-e2e-" + Guid.NewGuid().ToString("N"))
@@ -34,6 +43,7 @@ type RepoConfigProcessSteps() =
         use proc = Process.Start info
         proc.WaitForExit()
         Assert.Equal(0, proc.ExitCode)
+        stubRhino root
 
     [<Given>]
     member _.``repo-config.yml declares a doctor .NET SDK path with a leading ./ segment``() =

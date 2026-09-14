@@ -27,7 +27,7 @@ Cmd::new("git")
 ```
 
 This is not a hypothetical -- it is the actual fixture behind the repeated real-repository
-corruption described in [The Motivating Incident](./the-motivating-incident-part-1.md) above. It has **zero**
+corruption described in [The Motivating Incident](./the-motivating-incident-repository-corruption.md) above. It has **zero**
 structural defense against any of the six layers: no `GIT_CEILING_DIRECTORIES`, no
 `GIT_DIR`/`GIT_WORK_TREE`, no `GIT_CONFIG_GLOBAL`/`GIT_CONFIG_SYSTEM`, no pre-write escape guard,
 and `.output().expect(...)` does not actually check exit status for the `init`/`config`/`add`/

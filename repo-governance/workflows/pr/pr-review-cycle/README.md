@@ -14,9 +14,9 @@ when_to_use: "Use to locate an explicitly requested PR-review-cycle child docume
 - [Sibling-Handoff Record](./sibling-handoff-record.md) — paired-repository schema.
 - [Cycle Credit Record](./cycle-non-credit-record.md) — positive clean and stale non-credit state.
 - [Pipeline Diagrams](./pipeline-diagrams.md) — optional-cycle sequence.
-- [GitHub Reviews API Mechanics — Part 1](./github-reviews-api-mechanics-part-1.md) — review-posting
+- [GitHub Reviews API Mechanics — Part 1](./github-reviews-api-mechanics-review-posting.md) — review-posting
   and line-anchor mechanics.
-- [GitHub Reviews API Mechanics — Part 2](./github-reviews-api-mechanics-part-2.md) — thread,
+- [GitHub Reviews API Mechanics — Part 2](./github-reviews-api-mechanics-threads.md) — thread,
   untrusted-input, and write-scope mechanics.
 - [Review STATE Is Never the Gate](./review-state-is-never-the-gate.md) — COMMENT-state rule and
   severity-based blocking.

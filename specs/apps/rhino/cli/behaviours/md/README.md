@@ -5,11 +5,14 @@ Gherkin scenarios for rhino-cli documentation validation commands.
 Features in this domain:
 
 - `docs-validate-frontmatter.feature` — frontmatter validation
-- `docs-validate-heading-hierarchy.feature` — heading hierarchy validation
 - `docs-validate-links.feature` — link validation
 - `docs-validate-mermaid.feature` — Mermaid diagram validation
-- `docs-validate-naming.feature` — file naming convention validation
 - `repo-governance-frontmatter-audit.feature` — frontmatter-dates audit (`md frontmatter-dates validate`)
+
+File naming, heading hierarchy, required and forbidden frontmatter keys, and missing link targets are rules of
+the pinned RHINO (`md-naming`, `md-heading-hierarchy`, `md-frontmatter`, `md-internal-link`). The scenarios here
+cover only what rhino-cli still checks itself;
+[`gate/rust-delegation.feature`](../gate/rust-delegation.feature) covers the delegation.
 
 > This directory was renamed from `gherkin/docs/` to `gherkin/md/` (matching the `md` CLI command
 > group), and `repo-governance-frontmatter-audit.feature` above was split in from

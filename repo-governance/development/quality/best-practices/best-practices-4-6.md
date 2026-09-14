@@ -69,7 +69,7 @@ nx test  # Non-standard target name; runs ALL tests (slow!)
 - Reduces friction for developers
 - Maintains quality gate
 
-**See**: [Nx Target Standards](../infra/nx-targets.md) for `test:quick` composition rules per project type.
+**See**: [Nx Target Standards](../../infra/nx-targets.md) for `test:quick` composition rules per project type.
 
 ## Practice 6: Use Standardized Validation Patterns
 

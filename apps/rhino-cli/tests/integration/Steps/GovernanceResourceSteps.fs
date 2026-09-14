@@ -262,15 +262,6 @@ type GovernanceSteps() =
         Assert.False(File.Exists(path) || Directory.Exists(path), sprintf "expected %s to be absent" path)
 
     [<Given>]
-    member _.``"([^"]+)" contains no "([^"]+)"``(dirLabel: string, name: string) =
-        let parent =
-            currentDir
-            |> Option.defaultWith (fun () -> failwith "a parent directory must be established first")
-
-        let path = Path.Combine(parent, basename dirLabel, name)
-        Assert.False(File.Exists(path) || Directory.Exists(path), sprintf "expected %s to be absent" path)
-
-    [<Given>]
     member _.``file "([^"]+)" exists``(path: string) =
         let dir = Path.Combine(scenarioRoot (), basename (dirPrefix path))
         Directory.CreateDirectory dir |> ignore
@@ -405,13 +396,6 @@ type GovernanceSteps() =
             sprintf "expected an unannotated finding naming %s: %A" name lastFindings
         )
 
-    [<Then>]
-    member _.``the finding reports a missing index for that directory``() =
-        Assert.True(
-            lastFindings |> List.exists (fun f -> f.Kind = ReadmeIndexFindingKind.Missing),
-            sprintf "expected a missing-index finding: %A" lastFindings
-        )
-
     // ---- Given/When/Then: --paths flag scenario ----
 
     [<Given>]
@@ -434,16 +418,16 @@ type GovernanceSteps() =
     // ---- Given/When/Then: --fail-kinds flag scenario ----
 
     [<Given>]
-    member _.``a scanned directory has one "orphan" finding and one "missing" finding``() =
+    member _.``a scanned directory has one "orphan" finding and one "ghost" finding``() =
         syntheticFindings <-
             [ { File = "orphan.md"
                 Severity = "high"
                 Kind = ReadmeIndexFindingKind.Orphan
                 Message = "orphan: orphan.md exists but is not linked" }
-              { File = "some-dir"
+              { File = "ghost.md"
                 Severity = "high"
-                Kind = ReadmeIndexFindingKind.Missing
-                Message = "missing: some-dir contains indexable content but has no README.md" } ]
+                Kind = ReadmeIndexFindingKind.Ghost
+                Message = "ghost: README.md links ghost.md, which does not exist" } ]
 
     [<When>]
     member _.``the developer runs governance readme-index validate with "--fail-kinds (.*)"``(kinds: string) =
@@ -703,16 +687,8 @@ let ``A missing subdirectory README link fails`` () =
     FeatureRunner.run "A missing subdirectory README link fails"
 
 [<Fact>]
-let ``A missing README fails when siblings exist`` () =
-    FeatureRunner.run "A missing README fails when siblings exist"
-
-[<Fact>]
 let ``The rule does not reach grandchildren`` () =
     FeatureRunner.run "The rule does not reach grandchildren"
-
-[<Fact>]
-let ``A split directory still needs its own README`` () =
-    FeatureRunner.run "A split directory still needs its own README"
 
 [<Fact>]
 let ``A split directory whose parent omits a child fails`` () =
@@ -869,9 +845,7 @@ type GovernanceWordBudgetSteps() =
             configuredWordBudget
             |> Option.defaultWith (fun () -> failwith "word-budget config not established")
 
-        let sizeFindings = checkInstructionSizes root config []
-        let treeFinding = checkResolvedTree root config
-        lastFindings <- sizeFindings @ (Option.toList treeFinding)
+        lastFindings <- checkResolvedTree root config |> Option.toList
 
         lastResolvedTreeSize <- resolveTreeSize (Path.Combine(root, config.ResolvedTree.Root))
 
@@ -913,25 +887,6 @@ type GovernanceWordBudgetSteps() =
     [<Given>]
     member _.``"([^"]+)" contains (\d+) words``(path: string, n: int) = writeWordsAt path n
 
-    [<Given>]
-    member _.``a file "([^"]+)" contains (\d+) words``(path: string, n: int) = writeWordsAt path n
-
-    [<Given>]
-    member _.``"([^"]+)" contains (\d+) prose words``(path: string, n: int) = writeWordsAt path n
-
-    [<Given>]
-    member _.``it contains a Mermaid block of (\d+) words``(n: int) =
-        match lastPath with
-        | None -> failwith "no prior file established for the Mermaid-block fixture"
-        | Some path ->
-            // The two fence-marker tokens ("```mermaid" and "```") are each
-            // one whitespace-delimited token themselves, already counted
-            // toward this step's stated block size.
-            let bodyWords = max 0 (n - 2)
-            let addition = sprintf "\n\n```mermaid\n%s\n```\n" (nWords bodyWords)
-            let full = Path.Combine(scenarioRoot (), path)
-            File.AppendAllText(full, addition)
-
     // F#'s lexer rejects an '@' character inside a double-backtick
     // identifier (FS1104) — unlike every other step in this file, this
     // step's text carries a literal '@'. `\x40` is the regex hex escape for
@@ -958,17 +913,6 @@ type GovernanceWordBudgetSteps() =
     member _.``"([^"]+)" imports "([^"]+)"``(fromPath: string, toPath: string) =
         let content = sprintf "@%s\n%s" toPath (nWords 5)
         File.WriteAllText(Path.Combine(scenarioRoot (), fromPath), content)
-
-    [<Given>]
-    member _.``no file exists at "([^"]+)"``(path: string) =
-        let resolved = Path.Combine(scenarioRoot (), path)
-        lastPath <- Some path
-        Assert.False(File.Exists resolved, sprintf "fixture file must be absent before validation: %s" resolved)
-
-        Assert.False(
-            Directory.Exists resolved,
-            sprintf "fixture directory must be absent before validation: %s" resolved
-        )
 
     [<Given>]
     member _.``the resolved CLAUDE.md tree totals (\d+) words``(n: int) =
@@ -1088,120 +1032,19 @@ type GovernanceWordBudgetSteps() =
     // ---- Then: finding-presence steps ----
 
     [<Then>]
-    member _.``the output contains no finding for that file``() =
-        match lastPath with
-        | None -> Assert.True(List.isEmpty lastFindings)
-        | Some path -> Assert.False(lastFindings |> List.exists (fun f -> f.Path = path))
-
-    [<Then>]
-    member _.``the output contains no finding naming that file``() =
-        match lastPath with
-        | None -> Assert.True(List.isEmpty lastFindings)
-        | Some path -> Assert.False(lastFindings |> List.exists (fun f -> f.Path = path))
-
-    [<Then>]
-    member _.``the output contains a "([^"]+)" finding naming that file``(sev: string) =
-        match lastPath with
-        | None -> failwith "no prior file established"
-        | Some path ->
-            Assert.True(
-                lastFindings
-                |> List.exists (fun f -> f.Path = path && wordBudgetSeverityLabel f.Severity = sev),
-                sprintf "expected a %s finding naming %s: %A" sev path lastFindings
-            )
-
-    [<Then>]
-    member _.``the output contains a "([^"]+)" finding naming "([^"]+)"``(sev: string, path: string) =
-        Assert.True(
-            lastFindings
-            |> List.exists (fun f -> f.Path = path && wordBudgetSeverityLabel f.Severity = sev),
-            sprintf "expected a %s finding naming %s: %A" sev path lastFindings
-        )
-
-    [<Then>]
-    member _.``the output contains a "([^"]+)" finding naming that file, not a "([^"]+)" finding``
-        (want: string, notWant: string)
-        =
-        match lastPath with
-        | None -> failwith "no prior file established"
-        | Some path ->
-            Assert.True(
-                lastFindings
-                |> List.exists (fun f -> f.Path = path && wordBudgetSeverityLabel f.Severity = want)
-            )
-
-            Assert.False(
-                lastFindings
-                |> List.exists (fun f -> f.Path = path && wordBudgetSeverityLabel f.Severity = notWant)
-            )
-
-    [<Then>]
     member _.``the output contains a "([^"]+)" finding for the resolved tree``(sev: string) =
         Assert.True(
             lastFindings
             |> List.exists (fun f -> f.Path = "resolved-tree" && wordBudgetSeverityLabel f.Severity = sev)
         )
 
-    [<Then>]
-    member _.``no finding is emitted for "([^"]+)"``(path: string) =
-        Assert.False(
-            lastFindings |> List.exists (fun f -> f.Path = path),
-            sprintf "expected no finding naming %s: %A" path lastFindings
-        )
-
-    [<Then>]
-    member _.``the finding names "([^"]+)"``(path: string) =
-        Assert.True(
-            lastFindings |> List.exists (fun f -> f.Path = path),
-            sprintf "expected a finding naming %s: %A" path lastFindings
-        )
-
     // ---- Then: finding-detail steps ----
-
-    [<Then>]
-    member _.``the finding states the word count (\d+) and the ceiling (\d+)``(count: int, ceiling: int) =
-        match
-            lastPath
-            |> Option.bind (fun path -> lastFindings |> List.tryFind (fun f -> f.Path = path))
-        with
-        | None -> failwith (sprintf "no finding for %A: %A" lastPath lastFindings)
-        | Some f ->
-            Assert.Equal(uint64 count, f.Size)
-            Assert.Equal(uint64 ceiling, f.Fail)
-
-    [<Then>]
-    member _.``the finding links the governance word budget convention``() =
-        match
-            lastPath
-            |> Option.bind (fun path -> lastFindings |> List.tryFind (fun f -> f.Path = path))
-        with
-        | None -> failwith (sprintf "no finding for %A: %A" lastPath lastFindings)
-        | Some f ->
-            Assert.Contains("progressive disclosure", f.Message)
-            Assert.Contains("repo-governance/principles/content/progressive-disclosure.md", f.Message)
-
-    [<Then>]
-    member _.``the reported word count is (\d+)``(n: int) =
-        match lastPath with
-        | None -> failwith "no prior file established"
-        | Some path ->
-            let full = Path.Combine(scenarioRoot (), path)
-            Assert.Equal(uint64 n, wordCount (File.ReadAllText full))
 
     [<Then>]
     member _.``the reported resolved-tree word count is (\d+)``(n: int) =
         Assert.Equal(uint64 n, lastResolvedTreeSize)
 
     // ---- Then: narrative-only steps (the real assertion already ran above) ----
-
-    [<Then>]
-    member _.``this holds even though 900 words exceeds the general surface's 750-word fail ceiling, because the winning README-specific surface classifies 900 words as "([^"]+)" against its own 900-word target``
-        (severity: string)
-        =
-        Assert.Equal(WordBudgetSeverity.Fail, classify 900UL 650UL 750UL 750UL)
-        Assert.Equal(WordBudgetSeverity.Within, classify 900UL 900UL 1000UL 1000UL)
-        Assert.Equal("ok", severity)
-        Assert.Empty(lastFindings)
 
     [<Then>]
     member _.``the command terminates``() =
@@ -1372,52 +1215,8 @@ module private WordBudgetFeatureRunner =
             scenario.Action.Invoke()
 
 [<Fact>]
-let ``A file within target passes silently`` () =
-    WordBudgetFeatureRunner.run "A file within target passes silently"
-
-[<Fact>]
-let ``A file between target and fail warns without blocking`` () =
-    WordBudgetFeatureRunner.run "A file between target and fail warns without blocking"
-
-[<Fact>]
-let ``A file over the ceiling fails the gate`` () =
-    WordBudgetFeatureRunner.run "A file over the ceiling fails the gate"
-
-[<Fact>]
-let ``Every covered surface is scanned`` () =
-    WordBudgetFeatureRunner.run "Every covered surface is scanned"
-
-[<Fact>]
 let ``The covered surfaces are exactly the live entry points of the supported harnesses`` () =
     WordBudgetFeatureRunner.run "The covered surfaces are exactly the live entry points of the supported harnesses"
-
-[<Fact>]
-let ``A configured glob matching no file is a no-op`` () =
-    WordBudgetFeatureRunner.run "A configured glob matching no file is a no-op"
-
-[<Fact>]
-let ``A root entry point uses the ordinary 750-word ceiling`` () =
-    WordBudgetFeatureRunner.run "A root entry point uses the ordinary 750-word ceiling"
-
-[<Fact>]
-let ``A README.md file under the specific-surface target produces zero findings`` () =
-    WordBudgetFeatureRunner.run "A README.md file under the specific-surface target produces zero findings"
-
-[<Fact>]
-let ``A README.md file uses the wider README-specific glob threshold`` () =
-    WordBudgetFeatureRunner.run "A README.md file uses the wider README-specific glob threshold"
-
-[<Fact>]
-let ``A README.md file over the wider ceiling still fails`` () =
-    WordBudgetFeatureRunner.run "A README.md file over the wider ceiling still fails"
-
-[<Fact>]
-let ``Non-prose content counts toward the budget`` () =
-    WordBudgetFeatureRunner.run "Non-prose content counts toward the budget"
-
-[<Fact>]
-let ``An out-of-scope file is never scanned`` () =
-    WordBudgetFeatureRunner.run "An out-of-scope file is never scanned"
 
 [<Fact>]
 let ``The config schema rejects an exemption key`` () =
@@ -1446,10 +1245,6 @@ let ``An oversized resolved tree fails`` () =
 [<Fact>]
 let ``Import cycles terminate`` () =
     WordBudgetFeatureRunner.run "Import cycles terminate"
-
-[<Fact>]
-let ``A generated mirror is still subject to the word budget`` () =
-    WordBudgetFeatureRunner.run "A generated mirror is still subject to the word budget"
 
 [<Fact>]
 let ``No inbound link to the renamed convention is left broken`` () =
@@ -1738,77 +1533,6 @@ let ``wordBudgetSeverityLabel maps every severity to its lowercase label`` () =
     Assert.Equal("ok", wordBudgetSeverityLabel WordBudgetSeverity.Within)
     Assert.Equal("warn", wordBudgetSeverityLabel WordBudgetSeverity.Warn)
     Assert.Equal("fail", wordBudgetSeverityLabel WordBudgetSeverity.Fail)
-
-[<Fact>]
-let ``checkInstructionSizes reports the warn-threshold wording once size exceeds warn but stays within fail`` () =
-    let root = newTempDir "warnthreshold"
-
-    try
-        File.WriteAllText(Path.Combine(root, "big.md"), String.Join(" ", Array.create 15 "w"))
-
-        let config: BudgetConfig =
-            { Surfaces =
-                [ { Glob = "*.md"
-                    Target = 5UL
-                    Warn = 10UL
-                    Fail = 20UL } ]
-              ResolvedTree =
-                { Root = "root.md"
-                  Target = 1UL
-                  Warn = 1UL
-                  Fail = 1UL } }
-
-        let findings = checkInstructionSizes root config []
-
-        Assert.Contains(
-            findings,
-            fun f ->
-                f.Severity = WordBudgetSeverity.Warn
-                && f.Message.Contains "over 10-word warn threshold"
-        )
-    finally
-        Directory.Delete(root, true)
-
-[<Fact>]
-let ``checkInstructionSizes matches a bare double-star glob against every file`` () =
-    let root = newTempDir "barstarstar"
-
-    try
-        File.WriteAllText(Path.Combine(root, "anything.md"), String.Join(" ", Array.create 5 "w"))
-
-        let config: BudgetConfig =
-            { Surfaces =
-                [ { Glob = "**"
-                    Target = 1UL
-                    Warn = 2UL
-                    Fail = 2UL } ]
-              ResolvedTree =
-                { Root = "root.md"
-                  Target = 1UL
-                  Warn = 1UL
-                  Fail = 1UL } }
-
-        let findings = checkInstructionSizes root config []
-
-        Assert.Contains(findings, fun f -> f.Severity = WordBudgetSeverity.Fail && f.Path.Contains "anything.md")
-    finally
-        Directory.Delete(root, true)
-
-[<Fact>]
-let ``checkInstructionSizes returns no findings for a repository root that does not exist`` () =
-    let config: BudgetConfig =
-        { Surfaces =
-            [ { Glob = "*.md"
-                Target = 1UL
-                Warn = 2UL
-                Fail = 2UL } ]
-          ResolvedTree =
-            { Root = "root.md"
-              Target = 1UL
-              Warn = 1UL
-              Fail = 1UL } }
-
-    Assert.Empty(checkInstructionSizes "/no/such/rhino-cli-governance-root" config [])
 
 [<Fact>]
 let ``checkResolvedTree reports the target-relative wording when size is within warn but exceeds target`` () =

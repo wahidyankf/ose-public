@@ -36,4 +36,4 @@ when_to_use: "Use when wiring a quality gate to fail CI on violation."
 - Team accountability
 - Maintains codebase health
 
-**See**: [Nx Target Standards](../infra/nx-targets.md) for the full execution model and CI integration rules.
+**See**: [Nx Target Standards](../../infra/nx-targets.md) for the full execution model and CI integration rules.

@@ -26,7 +26,7 @@ source or lands a behaviour change.
 
 - [Purpose, Execution Mode, and When to Use](./web-ux-test-fixing-planning/purpose-execution-mode-and-when-to-use.md) — purpose, delegation vs manual mode, when to run it.
 - [Inputs at a Glance and Grilling](./web-ux-test-fixing-planning/inputs-at-a-glance-and-grilling.md) — input quick-reference table and human checkpoints.
-- [Inputs Reference — Part 1](./web-ux-test-fixing-planning/inputs-reference-part-1.md) — YAML contract, target-urls through locales.
+- [Inputs Reference — Part 1](./web-ux-test-fixing-planning/inputs-reference-parameter-contract.md) — YAML contract, target-urls through locales.
 - [Inputs Reference — Part 2 and Outputs](./web-ux-test-fixing-planning/inputs-reference-part-2-and-outputs.md) — YAML contract, remaining inputs and all outputs.
 - [Systematic Coverage & Recurrence](./web-ux-test-fixing-planning/systematic-coverage-and-recurrence.md) — the enumerate-don't-sample forcing function.
 
@@ -42,6 +42,6 @@ source or lands a behaviour change.
 
 ### Reference
 
-- [Gherkin Success Criteria — Part 1](./web-ux-test-fixing-planning/gherkin-success-criteria-part-1.md) — first four scenarios.
-- [Gherkin Success Criteria — Part 2](./web-ux-test-fixing-planning/gherkin-success-criteria-part-2.md) — remaining four scenarios.
+- [Gherkin Success Criteria — Part 1](./web-ux-test-fixing-planning/gherkin-success-criteria-plan-output-and-integration.md) — first four scenarios.
+- [Gherkin Success Criteria — Part 2](./web-ux-test-fixing-planning/gherkin-success-criteria-merge-mode-and-escalation.md) — remaining four scenarios.
 - [Related Documents, Principles, and Conventions](./web-ux-test-fixing-planning/related-documents-principles-and-conventions.md) — agents, workflows, principles, conventions.

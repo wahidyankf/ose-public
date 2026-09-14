@@ -534,9 +534,9 @@ type GateExecutionSteps() =
             "repo-config.yml"
             (config (
                 gate
-                    "md-naming"
+                    "md-mermaid"
                     "check"
-                    "md naming validate"
+                    "md mermaid validate"
                     "rhino-cli"
                     "      pre-commit: { scope: affected-file-type, glob: '*.md' }\n"
             ))
@@ -544,8 +544,8 @@ type GateExecutionSteps() =
         stage [ "a.md"; "b.md" ]
 
     [<When>]
-    member _.``"rhino-cli gate run --surface=pre-commit --only=md-naming" runs``() =
-        runGate "pre-commit" (Some "md-naming")
+    member _.``"rhino-cli gate run --surface=pre-commit --only=md-mermaid" runs``() =
+        runGate "pre-commit" (Some "md-mermaid")
 
     [<Then>]
     member _.``the local rhino-cli leaf receives only "a.md" and "b.md"``() =
@@ -873,6 +873,9 @@ type GateExecutionSteps() =
     [<Given>]
     member _.``the frontmatter-date gate declares an excluded violating website path``() =
         initGit ()
+        // md frontmatter-dates validate is split: it starts ./rhino before its F# remainder.
+        write "rhino" "#!/bin/sh\nexit 0\n"
+        makeExecutable (Path.Combine(root, "rhino"))
 
         write
             "repo-config.yml"
@@ -880,7 +883,7 @@ type GateExecutionSteps() =
                 "  - id: md-frontmatter-dates\n    type: check\n    command: md frontmatter-dates validate\n    kind: rhino-cli\n    args:\n      exclude:\n        - apps/website\n    surfaces:\n      ci: { scope: all-file-type }\n")
 
         write "repo-governance/clean.md" "# Clean\n"
-        write "repo-governance/apps/website/dated.md" "---\ntitle: Excluded\nupdated: 2026-08-05\n---\n"
+        write "repo-governance/apps/website/dated.md" "# Excluded\n\n- **Created**: 2026-08-05\n"
 
         stage
             [ "repo-config.yml"

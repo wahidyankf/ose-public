@@ -12,7 +12,7 @@ when_to_use: "Use as a checklist for AP-12 - AP-14."
 Text search cannot find omissions. A completeness claim requires enumerating ground truth from its
 owning authority (which is often not a file on disk — `git branch -r`, `nx show project`, `git
 ls-files`) and diffing it against what the document claims. See
-[Absence and Completeness Claims](./absence-and-completeness-claims-zero-result-search-evidence-part-1.md).
+[Absence and Completeness Claims](./absence-and-completeness-claims-zero-result-search-evidence-checklist.md).
 
 ## AP-13: A concept sweep whose acceptance criterion is its own regex
 
@@ -20,7 +20,7 @@ ls-files`) and diffing it against what the document claims. See
 
 The pattern that produced the edits cannot also be the evidence they are complete; it re-confirms
 the author's own assumption about what the target text looks like. See
-[A concept sweep validated by its own regex](./absence-and-completeness-claims-concept-sweep-part-1.md).
+[A concept sweep validated by its own regex](./absence-and-completeness-claims-concept-sweep-why-one-regex-fails.md).
 `plan-checker` rejects any acceptance criterion of this shape.
 
 ## AP-14: Citing a validator result without checking its real invocation

@@ -246,7 +246,13 @@ type GateExecutionSteps() =
     [<Given>]
     member _.``a rhino-cli gate matches staged files "a.md" and "b.md"``() =
         let entry =
-            gate "md-naming" Check RhinoCli "md naming validate" PreCommit (scope AffectedFileType (Some "*.md") [] [])
+            gate
+                "md-mermaid"
+                Check
+                RhinoCli
+                "md mermaid validate"
+                PreCommit
+                (scope AffectedFileType (Some "*.md") [] [])
 
         replaceGates [ entry ]
         changed <- [ "a.md"; "b.md" ]
@@ -254,7 +260,7 @@ type GateExecutionSteps() =
         only <- Some entry.Id
 
     [<When>]
-    member _.``"rhino-cli gate run --surface=pre-commit --only=md-naming" runs``() = run ()
+    member _.``"rhino-cli gate run --surface=pre-commit --only=md-mermaid" runs``() = run ()
 
     [<Then>]
     member _.``the local rhino-cli leaf receives only "a.md" and "b.md"``() =

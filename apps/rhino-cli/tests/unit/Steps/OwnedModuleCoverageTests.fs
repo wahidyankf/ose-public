@@ -33,19 +33,7 @@ let private gate id gateType kind : GateEntry =
 let private config gates : RepoConfig = { RepoConfig.empty with Gates = gates }
 
 [<Fact>]
-let ``Convention pure policy handles astral emoji and every supported license spelling`` () =
-    let astralEmoji = System.Char.ConvertFromUtf32(0x1F600)
-
-    let emoji =
-        Convention.validateEmojiTexts
-            [ "astral.json", astralEmoji
-              "joiner.json", "a\u200Db"
-              "variation.json", "a\uFE0Fb" ]
-
-    Assert.False(emoji.Success)
-    Assert.Contains(emoji.Findings, fun finding -> finding.Message.Contains("U+1F600"))
-    Assert.Contains(emoji.Findings, fun finding -> finding.Message.Contains("U+200D"))
-
+let ``Convention pure policy handles every supported license spelling`` () =
     let licenseTexts =
         [ "apps/spdx", "SPDX-License-Identifier: MIT"
           "apps/mit", "MIT"
@@ -69,30 +57,9 @@ let ``Convention pure policy handles astral emoji and every supported license sp
     Assert.True(license.Success, license.Output)
 
 [<Fact>]
-let ``Governance pure word-budget policy distinguishes all messages and rejects unknown YAML keys`` () =
-    let thresholds: BudgetConfig =
-        { Surfaces =
-            [ { Glob = "**/*.md"
-                Target = 1UL
-                Warn = 3UL
-                Fail = 5UL } ]
-          ResolvedTree =
-            { Root = "AGENTS.md"
-              Target = 1UL
-              Warn = 3UL
-              Fail = 5UL } }
-
-    let files =
-        [ "docs/target.md", "one two"
-          "docs/warn.md", "one two three four"
-          "docs/fail.md", "one two three four five six" ]
-        |> Map.ofList
-
-    let findings = checkInstructionTextSizes files thresholds []
-    Assert.Equal(3, findings.Length)
-    Assert.Contains(findings, fun finding -> finding.Message.Contains("over 1-word target"))
-    Assert.Contains(findings, fun finding -> finding.Message.Contains("over 3-word warn threshold"))
-    Assert.Contains(findings, fun finding -> finding.Message.Contains("over 5-word fail limit"))
+let ``Governance pure word-budget policy labels severities and rejects unknown YAML keys`` () =
+    Assert.Equal("warn", wordBudgetSeverityLabel WordBudgetSeverity.Warn)
+    Assert.Equal("fail", wordBudgetSeverityLabel WordBudgetSeverity.Fail)
     Assert.Equal("ok", wordBudgetSeverityLabel WordBudgetSeverity.Within)
 
     for text in
@@ -127,7 +94,6 @@ let ``Governance pure text tree normalizes paths and exercises file directory an
     let findings = auditReadmeIndexTexts tree [ "./docs/" ]
     Assert.Contains(findings, fun finding -> finding.Kind = ReadmeIndexFindingKind.Ghost)
     Assert.Contains(findings, fun finding -> finding.Kind = ReadmeIndexFindingKind.Orphan)
-    Assert.Contains(findings, fun finding -> finding.Kind = ReadmeIndexFindingKind.Missing)
     Assert.Equal("ghost", ReadmeIndexFindingKind.Ghost.Name)
 
     let generated = generateReadmeIndexTexts tree [ "docs" ]
@@ -159,21 +125,6 @@ let ``Governance pure text policies handle link suffixes non-sibling links empty
     Assert.Contains("other.md", rewritten.["docs/README.md"])
     Assert.Contains("unterminated", rewritten.["docs/README.md"])
     Assert.Empty(auditReadmeIndexTexts Map.empty [ "" ])
-
-    let allMarkdown: BudgetConfig =
-        { Surfaces =
-            [ { Glob = "**"
-                Target = 0UL
-                Warn = 1UL
-                Fail = 2UL } ]
-          ResolvedTree =
-            { Root = "AGENTS.md"
-              Target = 0UL
-              Warn = 1UL
-              Fail = 2UL } }
-
-    Assert.Single(checkInstructionTextSizes (Map.ofList [ "README.md", "one" ]) allMarkdown [])
-    |> ignore
 
 [<Fact>]
 let ``Governance resolved text tree reports both warning bands and failure while stopping cycles`` () =

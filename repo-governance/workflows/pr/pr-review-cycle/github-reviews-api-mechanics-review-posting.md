@@ -39,4 +39,4 @@ sole poster of record every cycle.
   CRITICAL findings included. See
   [Review STATE Is Never the Gate](./review-state-is-never-the-gate.md).
 
-Continued in [GitHub Reviews API Mechanics — Part 2](./github-reviews-api-mechanics-part-2.md).
+Continued in [GitHub Reviews API Mechanics — Part 2](./github-reviews-api-mechanics-threads.md).

@@ -140,16 +140,6 @@ type GovernanceSteps() =
         tree <- Map.remove (combine currentDirectory name) tree
 
     [<Given>]
-    member _.``"([^"]+)" contains no "([^"]+)"``(directory: string, name: string) =
-        let target =
-            if directory.EndsWith("/") then
-                directory.TrimEnd('/')
-            else
-                combine (parent currentDirectory) directory
-
-        tree <- Map.remove (combine target name) tree
-
-    [<Given>]
     member _.``file "([^"]+)" exists``(path: string) =
         add path "# Index\n"
         currentDirectory <- parent path
@@ -249,10 +239,6 @@ type GovernanceSteps() =
                 && finding.Message.Contains(name)
         )
 
-    [<Then>]
-    member _.``the finding reports a missing index for that directory``() =
-        Assert.Contains(findings, fun finding -> finding.Kind = ReadmeIndexFindingKind.Missing)
-
     [<Given>]
     member _.``the developer invokes governance readme-index validate with "--paths (.*)"``(path: string) =
         scanPaths <- Some [ path ]
@@ -271,16 +257,16 @@ type GovernanceSteps() =
         Assert.Equal<string list>(defaultPaths, defaultResolvedPaths)
 
     [<Given>]
-    member _.``a scanned directory has one "orphan" finding and one "missing" finding``() =
+    member _.``a scanned directory has one "orphan" finding and one "ghost" finding``() =
         findings <-
             [ { File = "orphan.md"
                 Severity = "high"
                 Kind = ReadmeIndexFindingKind.Orphan
                 Message = "orphan" }
-              { File = "missing"
+              { File = "ghost.md"
                 Severity = "high"
-                Kind = ReadmeIndexFindingKind.Missing
-                Message = "missing" } ]
+                Kind = ReadmeIndexFindingKind.Ghost
+                Message = "ghost" } ]
 
     [<When>]
     member _.``the developer runs governance readme-index validate with "--fail-kinds (.*)"``(kind: string) =
@@ -289,7 +275,7 @@ type GovernanceSteps() =
     [<Then>]
     member _.``the exit code reflects only the "([^"]+)" finding``(kind: string) =
         Assert.True(hasFailingFinding findings [ kind ])
-        Assert.False(hasFailingFinding findings [ "ghost" ])
+        Assert.False(hasFailingFinding findings [ "unannotated" ])
 
     [<Then>]
     member _.``the "([^"]+)" finding is still printed in the output``(kind: string) =
@@ -430,9 +416,7 @@ type GovernanceWordBudgetSteps() =
         files <- Map.add path (words count) files
 
     let run () =
-        findings <-
-            checkInstructionTextSizes files canonicalConfig []
-            @ (checkResolvedTextTree files canonicalConfig |> Option.toList)
+        findings <- checkResolvedTextTree files canonicalConfig |> Option.toList
 
         resolvedSize <- resolveTextTreeSize files canonicalConfig.ResolvedTree.Root
 
@@ -455,16 +439,6 @@ type GovernanceWordBudgetSteps() =
     member _.``"([^"]+)" contains (\d+) words``(path: string, count: int) = setWords path count
 
     [<Given>]
-    member _.``a file "([^"]+)" contains (\d+) words``(path: string, count: int) = setWords path count
-
-    [<Given>]
-    member _.``"([^"]+)" contains (\d+) prose words``(path: string, count: int) = setWords path count
-
-    [<Given>]
-    member _.``it contains a Mermaid block of (\d+) words``(count: int) =
-        files <- Map.add lastPath (Map.find lastPath files + " " + words count) files
-
-    [<Given>]
     member _.``"([^"]+)" imports "([^"]+)" via an \x40-directive``(fromPath: string, toPath: string) =
         let count = Map.find fromPath files |> wordCount |> int
         files <- Map.add fromPath (sprintf "@%s\n%s" toPath (words (count - 1))) files
@@ -472,11 +446,6 @@ type GovernanceWordBudgetSteps() =
     [<Given>]
     member _.``"([^"]+)" imports "([^"]+)"``(fromPath: string, toPath: string) =
         files <- Map.add fromPath (sprintf "@%s\n%s" toPath (words 5)) files
-
-    [<Given>]
-    member _.``no file exists at "([^"]+)"``(path: string) =
-        lastPath <- path
-        files <- Map.remove path files
 
     [<Given>]
     member _.``the resolved CLAUDE.md tree totals (\d+) words``(count: int) = setWords "CLAUDE.md" count
@@ -515,42 +484,6 @@ type GovernanceWordBudgetSteps() =
     member _.``the word-budget command exits with a failure code``() = Assert.True(failed)
 
     [<Then>]
-    member _.``the output contains no finding for that file``() =
-        Assert.DoesNotContain(findings, fun finding -> finding.Path = lastPath)
-
-    [<Then>]
-    member _.``the output contains no finding naming that file``() =
-        Assert.DoesNotContain(findings, fun finding -> finding.Path = lastPath)
-
-    [<Then>]
-    member _.``the output contains a "([^"]+)" finding naming that file``(severity: string) =
-        Assert.Contains(
-            findings,
-            fun finding -> finding.Path = lastPath && wordBudgetSeverityLabel finding.Severity = severity
-        )
-
-    [<Then>]
-    member _.``the output contains a "([^"]+)" finding naming "([^"]+)"``(severity: string, path: string) =
-        Assert.Contains(
-            findings,
-            fun finding -> finding.Path = path && wordBudgetSeverityLabel finding.Severity = severity
-        )
-
-    [<Then>]
-    member _.``the output contains a "([^"]+)" finding naming that file, not a "([^"]+)" finding``
-        (wanted: string, unwanted: string)
-        =
-        Assert.Contains(
-            findings,
-            fun finding -> finding.Path = lastPath && wordBudgetSeverityLabel finding.Severity = wanted
-        )
-
-        Assert.DoesNotContain(
-            findings,
-            fun finding -> finding.Path = lastPath && wordBudgetSeverityLabel finding.Severity = unwanted
-        )
-
-    [<Then>]
     member _.``the output contains a "([^"]+)" finding for the resolved tree``(severity: string) =
         Assert.Contains(
             findings,
@@ -560,38 +493,8 @@ type GovernanceWordBudgetSteps() =
         )
 
     [<Then>]
-    member _.``no finding is emitted for "([^"]+)"``(path: string) =
-        Assert.DoesNotContain(findings, fun finding -> finding.Path = path)
-
-    [<Then>]
-    member _.``the finding names "([^"]+)"``(path: string) =
-        Assert.Contains(findings, fun finding -> finding.Path = path)
-
-    [<Then>]
-    member _.``the finding states the word count (\d+) and the ceiling (\d+)``(count: int, ceiling: int) =
-        let finding = findings |> List.find (fun item -> item.Path = lastPath)
-        Assert.Equal(uint64 count, finding.Size)
-        Assert.Equal(uint64 ceiling, finding.Fail)
-
-    [<Then>]
-    member _.``the finding links the governance word budget convention``() =
-        let finding = findings |> List.find (fun item -> item.Path = lastPath)
-        Assert.Contains("progressive disclosure", finding.Message)
-
-    [<Then>]
-    member _.``the reported word count is (\d+)``(count: int) =
-        Assert.Equal(uint64 count, wordCount (Map.find lastPath files))
-
-    [<Then>]
     member _.``the reported resolved-tree word count is (\d+)``(count: int) =
         Assert.Equal(uint64 count, resolvedSize)
-
-    [<Then>]
-    member _.``this holds even though 900 words exceeds the general surface's 750-word fail ceiling, because the winning README-specific surface classifies 900 words as "([^"]+)" against its own 900-word target``
-        (severity: string)
-        =
-        Assert.Equal("ok", severity)
-        Assert.Empty(findings)
 
     [<Then>]
     member _.``the command terminates``() = Assert.Equal(12UL, resolvedSize)
@@ -694,9 +597,7 @@ let private readmeScenarios =
     [ "A complete index passes"
       "A missing sibling link fails"
       "A missing subdirectory README link fails"
-      "A missing README fails when siblings exist"
       "The rule does not reach grandchildren"
-      "A split directory still needs its own README"
       "A split directory whose parent omits a child fails"
       "An uncovered tree is not scanned"
       "A generated mirror directory is not scanned"
@@ -712,18 +613,7 @@ let private readmeScenarios =
       "Rewrite-paths updates link targets without touching order" ]
 
 let private wordBudgetScenarios =
-    [ "A file within target passes silently"
-      "A file between target and fail warns without blocking"
-      "A file over the ceiling fails the gate"
-      "Every covered surface is scanned"
-      "The covered surfaces are exactly the live entry points of the supported harnesses"
-      "A configured glob matching no file is a no-op"
-      "A root entry point uses the ordinary 750-word ceiling"
-      "A README.md file under the specific-surface target produces zero findings"
-      "A README.md file uses the wider README-specific glob threshold"
-      "A README.md file over the wider ceiling still fails"
-      "Non-prose content counts toward the budget"
-      "An out-of-scope file is never scanned"
+    [ "The covered surfaces are exactly the live entry points of the supported harnesses"
       "The config schema rejects an exemption key"
       "The old command is gone"
       "The old config block is gone"
@@ -731,7 +621,6 @@ let private wordBudgetScenarios =
       "The resolved tree is measured in words"
       "An oversized resolved tree fails"
       "Import cycles terminate"
-      "A generated mirror is still subject to the word budget"
       "No inbound link to the renamed convention is left broken" ]
 
 [<Fact>]

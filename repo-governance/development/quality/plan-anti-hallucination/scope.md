@@ -13,7 +13,7 @@ when_to_use: "Use to check whether this applies to an agent."
 - Every step of the `plan-quality-gate` and `plan-execution` workflows.
 - The pre-execution gate that refuses to start when claims are unverifiable.
 - **Absence and completeness claims made by any validating agent** — the
-  [Absence and Completeness Claims](./absence-and-completeness-claims-zero-result-search-evidence-part-1.md) rules bind every checker
+  [Absence and Completeness Claims](./absence-and-completeness-claims-zero-result-search-evidence-checklist.md) rules bind every checker
   or fixer that reports "zero occurrences found" or "this list is complete", not only the four plan
   agents.
 

@@ -66,13 +66,18 @@
     <Compile Include="Steps/GateValidationSteps.fs" />
     <Compile Include="Steps/ParityManifestSteps.fs" />
     <Compile Include="Steps/PlanStructureSteps.fs" />
+    <Compile Include="Steps/RustDelegationSteps.fs" />
     <Compile Include="Steps/OwnedModuleCoverageTests.fs" />
+    <Compile Include="Steps/KeepListSourceScanTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="../../../../specs/apps/rhino/cli/behaviours/**/*.feature" />
     <!-- The shared plan-structure corpus, read in memory so Unit never touches the filesystem. -->
     <EmbeddedResource Include="../../../../specs/fixtures/plan-structure/**" LogicalName="plan-structure/%(RecursiveDir)%(Filename)%(Extension)" />
+    <!-- The keep-list scan reads the governance rule sources and the registry in memory. -->
+    <EmbeddedResource Include="../../src/RhinoCli.Application/src/Convention.fs;../../src/RhinoCli.Application/src/Governance.fs;../../src/RhinoCli.Application/src/Harness*.fs;../../src/RhinoCli.Application/src/Md.fs;../../src/RhinoCli.Application/src/RepoConfig.fs;../../src/RhinoCli.Application/src/RepoGovernance.fs" LogicalName="keep-list/src/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="../../../../repo-config.yml" LogicalName="keep-list/repo-config.yml" />
   </ItemGroup>
 
   <ItemGroup>

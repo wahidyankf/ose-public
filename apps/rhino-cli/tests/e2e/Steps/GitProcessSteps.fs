@@ -61,6 +61,15 @@ let private write (root: string) (relativePath: string) (content: string) =
     Directory.CreateDirectory(Path.GetDirectoryName absolutePath) |> ignore
     File.WriteAllText(absolutePath, content)
 
+/// `md links validate` is a split command that starts `./rhino` at the
+/// repository root before its F# remainder; this no-op stand-in lets the
+/// scenarios exercise that remainder.
+let private stubRhino (root: string) =
+    let path = Path.Combine(root, "rhino")
+    File.WriteAllText(path, "#!/bin/sh\nexit 0\n")
+
+    File.SetUnixFileMode(path, UnixFileMode.UserRead ||| UnixFileMode.UserWrite ||| UnixFileMode.UserExecute)
+
 type GitProcessSteps() =
     let root =
         Path.Combine(Path.GetTempPath(), "rhino-cli-git-e2e-" + Guid.NewGuid().ToString("N"))
@@ -74,6 +83,7 @@ type GitProcessSteps() =
     do
         Directory.CreateDirectory root |> ignore
         runGit root [ "init"; "-q"; "-b"; "main" ] |> ignore
+        stubRhino root
 
     let stagedFiles () =
         (runGit root [ "diff"; "--cached"; "--name-only" ]).Split('\n', StringSplitOptions.RemoveEmptyEntries)
@@ -153,7 +163,7 @@ type GitProcessSteps() =
     [<Given>]
     member _.``staged markdown files contain a link to a non-existent target``() =
         targetFile <- "docs/index.md"
-        write root targetFile "# Index\nSee [missing](./does-not-exist.md).\n"
+        write root targetFile "# Index\nSee ![missing](./does-not-exist.png).\n"
         runGit root [ "add"; targetFile ] |> ignore
 
     [<Given>]
@@ -170,34 +180,20 @@ type GitProcessSteps() =
         runGit root [ "add"; targetFile ] |> ignore
 
     [<Given>]
-    member _.``a staged markdown file under docs containing two H1 headings``() =
-        targetFile <- "docs/two-h1.md"
-        write root targetFile "# First\n\n# Second\n"
-        runGit root [ "add"; targetFile ] |> ignore
-
-    [<Given>]
-    member _.``a staged SKILL.md under .claude/skills with multiple H1 headings``() =
-        targetFile <- ".claude/skills/my-skill/SKILL.md"
-        write root targetFile "# One\n\n# Two\n"
-        runGit root [ "add"; targetFile ] |> ignore
-
-    [<Given>]
     member _.``a staged markdown file under plans/done containing a broken internal link``() =
         targetFile <- "plans/done/2024-01-01__old/notes.md"
-        write root targetFile "# Notes\nSee [missing](./does-not-exist.md).\n"
+        write root "repo-config.yml" "md-internal-link:\n  exclude-sources:\n    - 'plans/done/**'\n"
+        write root targetFile "# Notes\nSee ![missing](./does-not-exist.png).\n"
         runGit root [ "add"; targetFile ] |> ignore
 
     [<When>]
     member _.``the pre-commit hook runs md links validate on staged files``() =
-        invoke [ "md"; "links"; "validate"; "--staged-only"; "--exclude"; "plans/done" ]
+        // The remainder reads its source exclusions from repo-config.yml, as RHINO does.
+        invoke [ "md"; "links"; "validate" ]
 
     [<When>]
     member _.``the pre-commit hook runs md mermaid validate on the staged file``() =
         invoke [ "md"; "mermaid"; "validate"; "--staged-only" ]
-
-    [<When>]
-    member _.``the pre-commit hook runs md heading-hierarchy validate on the staged file``() =
-        invoke [ "md"; "heading-hierarchy"; "validate"; targetFile ]
 
     [<Then>]
     member _.``the command exits with a failure code``() =
@@ -213,19 +209,11 @@ type GitProcessSteps() =
 
     [<Then>]
     member _.``the stderr output identifies the broken link target``() =
-        Assert.Contains("./does-not-exist.md", combinedOutput ())
+        Assert.Contains("./does-not-exist.png", combinedOutput ())
 
     [<Then>]
     member _.``the output indicates a mermaid violation was found``() =
         Assert.Contains("violation", combinedOutput (), StringComparison.OrdinalIgnoreCase)
-
-    [<Then>]
-    member _.``the output indicates a heading hierarchy violation was found``() =
-        Assert.Contains("heading hierarchy", combinedOutput (), StringComparison.OrdinalIgnoreCase)
-
-    [<Then>]
-    member _.``the heading hierarchy step does not block the commit for that file``() =
-        Assert.Equal(0, result.Value.ExitCode)
 
     [<Then>]
     member _.``the link validation step does not report a broken link for the plans/done file``() =
@@ -275,7 +263,5 @@ let ``lockfile scenario crosses the published CLI boundary`` scenario = FeatureR
 [<Theory>]
 [<InlineData("Broken-link detection in step 7 reports per-link details")>]
 [<InlineData("staged-mermaid-blocks — staged malformed mermaid diagram blocks commit")>]
-[<InlineData("staged-prose-heading-blocks — staged docs file with bad heading hierarchy blocks commit")>]
-[<InlineData("staged-skill-file-exempt — staged SKILL.md with bad heading hierarchy does not block commit")>]
 [<InlineData("link-step-honors-exclusions — staged plans/done broken link does not block commit")>]
 let ``pre-commit scenario crosses the published CLI boundary`` scenario = FeatureRunner.runPreCommit scenario

@@ -85,7 +85,7 @@ type SpecsSteps() =
             addFile "specs/apps/testapp/target.md" "# Target\n"
         | text when text.Contains("broken internal link", StringComparison.Ordinal) ->
             addDirectory "specs/apps/testapp"
-            addFile "specs/apps/testapp/README.md" "[missing](./missing.md)\n"
+            addFile "specs/apps/testapp/README.md" "![missing](./missing.png)\n"
         | text when text.Contains("only markdown files with external HTTPS links", StringComparison.Ordinal) ->
             addDirectory "specs/apps/testapp"
             addFile "specs/apps/testapp/README.md" "[external](https://example.com)\n"

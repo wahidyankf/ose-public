@@ -200,7 +200,12 @@ jobs:
         if: github.event_name == 'push'
         # Runs every formatting-verify gate as a single --group dispatch
         # instead of the pre-optimization one-at-a-time --only loop, mirroring
-        # every other CI surface's group-based invocation.
+        # every other CI surface's group-based invocation. The pinned RHINO
+        # binary runs the public-safety screen first and drops each gate's own
+        # output, so a failure is rerun below through the repository CLI.
+        run: ./rhino gate run --surface ci -- --group=formatting-verify
+      - name: Show the failing formatting-verify output
+        if: failure() && github.event_name == 'push'
         run: apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=ci --group=formatting-verify
 
   build-rhino:
@@ -325,7 +330,17 @@ jobs:
         env:
           DOCTOR_TOOLS: ${{ join(matrix.group.doctor_tools, ',') }}
           RHINO_CLI_FSHARP_BIN: ${{ github.workspace }}/apps/rhino-cli/src/dist/rhino-cli-fsharp
-      - run: apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=ci --group="$GROUP_ID"
+      # The pinned RHINO binary runs the public-safety screen first, then this
+      # group through the repository registry. It drops each gate's own output
+      # by design, so the step after it reruns a failing group through the
+      # repository CLI to put that output in the job log.
+      - run: ./rhino gate run --surface ci -- --group="$GROUP_ID"
+        env:
+          RHINO_CLI_FSHARP_BIN: ${{ github.workspace }}/apps/rhino-cli/src/dist/rhino-cli-fsharp
+          GROUP_ID: ${{ matrix.group.group }}
+      - name: Show the failing group's gate output
+        if: failure()
+        run: apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=ci --group="$GROUP_ID"
         env:
           RHINO_CLI_FSHARP_BIN: ${{ github.workspace }}/apps/rhino-cli/src/dist/rhino-cli-fsharp
           GROUP_ID: ${{ matrix.group.group }}

@@ -1807,7 +1807,7 @@ let ``validateAtRoot rejects a missing local-hook shim file`` () =
 
     match RhinoCli.Cli.Gate.validateAtRoot root with
     | Ok() -> Assert.Fail("expected Error for a missing .husky/commit-msg shim")
-    | Error message -> Assert.Contains("must be executable and invoke gate run --surface=commit-msg", message)
+    | Error message -> Assert.Contains("must be executable and invoke ./rhino gate run --surface commit-msg", message)
 
 [<Fact>]
 let ``validateAtRoot treats an empty CI workflow document as declaring no jobs`` () =
@@ -1914,7 +1914,7 @@ let ``validateAtRoot rejects an unconditional full Doctor bootstrap in the CI wo
             [ "jobs:\n"
               "  build-rhino:\n    steps:\n      - uses: actions/upload-artifact@v4\n      - run: npm run doctor -- --fix\n"
               "  enumerate:\n    needs: build-rhino\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json --by-group\n"
-              "  gate:\n    needs: [build-rhino, enumerate]\n    strategy:\n      matrix:\n        group: '${{ fromJson(needs.enumerate.outputs.groups) }}'\n    steps:\n      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n        env:\n          GROUP_ID: ${{ matrix.group.group }}\n"
+              "  gate:\n    needs: [build-rhino, enumerate]\n    strategy:\n      matrix:\n        group: '${{ fromJson(needs.enumerate.outputs.groups) }}'\n    steps:\n      - run: ./rhino gate run --surface ci -- --group=\"$GROUP_ID\"\n        env:\n          GROUP_ID: ${{ matrix.group.group }}\n"
               "  quality-gate:\n    needs: [build-rhino, enumerate, gate]\n    steps:\n      - run: echo done\n" ])
 
     match RhinoCli.Cli.Gate.validateAtRoot root with
@@ -1941,7 +1941,7 @@ let ``validateAtRoot accepts a literal --only selector naming a declared CI gate
             [ "jobs:\n"
               "  build-rhino:\n    steps:\n      - uses: actions/upload-artifact@v4\n"
               "  enumerate:\n    needs: build-rhino\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json --by-group\n"
-              "  gate:\n    needs: [build-rhino, enumerate]\n    strategy:\n      matrix:\n        group: '${{ fromJson(needs.enumerate.outputs.groups) }}'\n    steps:\n      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n        env:\n          GROUP_ID: ${{ matrix.group.group }}\n"
+              "  gate:\n    needs: [build-rhino, enumerate]\n    strategy:\n      matrix:\n        group: '${{ fromJson(needs.enumerate.outputs.groups) }}'\n    steps:\n      - run: ./rhino gate run --surface ci -- --group=\"$GROUP_ID\"\n        env:\n          GROUP_ID: ${{ matrix.group.group }}\n"
               "  quality-gate:\n    needs: [build-rhino, enumerate, gate]\n    steps:\n      - run: rhino-cli gate run --surface=ci --only=known-check\n" ])
 
     match RhinoCli.Cli.Gate.validateAtRoot root with
@@ -2026,7 +2026,7 @@ let private lintStagedEligibleConfig =
 
 let private writeLintStagedFixture (root: string) =
     writeAt root "repo-config.yml" lintStagedEligibleConfig
-    writeAt root ".husky/pre-commit" "#!/bin/sh\nrhino-cli gate run --surface=pre-commit\n"
+    writeAt root ".husky/pre-commit" "#!/bin/sh\nexec ./rhino gate run --surface pre-commit\n"
     makeExecutableAt root ".husky/pre-commit"
 
 [<Fact>]

@@ -26,7 +26,7 @@ git checkout README.md
 ## 13.2 Verify pre-push targets (cache warm)
 
 ```bash
-# Run the same gate set pre-push would run, exactly as .husky/pre-push invokes it
+# Run the registry gate set .husky/pre-push runs, with each gate's output
 apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push
 ```
 

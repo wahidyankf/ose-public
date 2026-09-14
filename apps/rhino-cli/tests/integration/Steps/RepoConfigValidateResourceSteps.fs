@@ -96,11 +96,30 @@ type RepoConfigValidateSteps() =
         | Error message -> failwith message
         | Ok repoRoot -> repoRoot, File.ReadAllText(Path.Combine(repoRoot, "repo-config.yml"))
 
+    /// The rhino-cli registry's indentation in raw repo-config.yml text: a v2
+    /// document nests it under `extensions.rhino-cli`, four columns in; a v1
+    /// document keeps it at the root.
+    let registryIndent (text: string) : string =
+        if text.Contains("\nextensions:\n  rhino-cli:\n", StringComparison.Ordinal) then
+            "    "
+        else
+            ""
+
+    /// Shifts a registry fragment written in v1 column positions to where the
+    /// registry sits in `text`, so one mutation reads the same for v1 and v2.
+    let reindent (text: string) (fragment: string) : string =
+        let indent = registryIndent text
+
+        fragment.Split('\n')
+        |> Array.map (fun line -> if line = "" then line else indent + line)
+        |> String.concat "\n"
+
     /// Slices the `- name: codex` harness entry out of raw repo-config.yml
-    /// text: from its own line up to (but excluding) the next line that
-    /// starts at column 0, mirroring the Rust suite's `slice_codex_entry`.
+    /// text: from its own line up to (but excluding) the next line at or left
+    /// of the registry's own indentation, mirroring the Rust suite's `slice_codex_entry`.
     let sliceCodexEntry (text: string) : string =
-        let marker = "\n  - name: codex"
+        let indent = registryIndent text
+        let marker = sprintf "\n%s  - name: codex" indent
         let idx = text.IndexOf(marker, StringComparison.Ordinal)
 
         if idx < 0 then
@@ -112,7 +131,7 @@ type RepoConfigValidateSteps() =
         let entryLines =
             lines
             |> Array.skip 1
-            |> Array.takeWhile (fun l -> l.Length = 0 || Char.IsWhiteSpace(l.[0]))
+            |> Array.takeWhile (fun l -> l.Length = 0 || l.StartsWith(indent + " ", StringComparison.Ordinal))
 
         String.concat "\n" (Array.append [| lines.[0] |] entryLines)
 
@@ -186,8 +205,8 @@ type RepoConfigValidateSteps() =
     member _.``it fails when a required key is missing or an unknown key is present``() =
         let withUnknownKey =
             replaceFirst
-                "  - name: claude-code\n"
-                "  - name: claude-code\n    bogus-unknown-key: true\n"
+                (reindent (Option.get canonicalText) "  - name: claude-code\n")
+                (reindent (Option.get canonicalText) "  - name: claude-code\n    bogus-unknown-key: true\n")
                 (Option.get canonicalText)
 
         let okUnknown, outputUnknown = runValidate withUnknownKey
@@ -195,8 +214,8 @@ type RepoConfigValidateSteps() =
 
         let withMissingTier =
             replaceFirst
-                "  - name: claude-code\n    tier: source\n"
-                "  - name: claude-code\n"
+                (reindent (Option.get canonicalText) "  - name: claude-code\n    tier: source\n")
+                (reindent (Option.get canonicalText) "  - name: claude-code\n")
                 (Option.get canonicalText)
 
         let okMissing, outputMissing = runValidate withMissingTier
@@ -214,8 +233,8 @@ type RepoConfigValidateSteps() =
 
         let keyVariant =
             replaceFirst
-                "  - name: claude-code\n"
-                "  - name: claude-code\n    bogus-unknown-key: true\n"
+                (reindent (Option.get canonicalText) "  - name: claude-code\n")
+                (reindent (Option.get canonicalText) "  - name: claude-code\n    bogus-unknown-key: true\n")
                 (Option.get canonicalText)
 
         let okValue, _ = runValidate valueVariant

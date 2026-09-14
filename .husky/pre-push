@@ -1,13 +1,15 @@
 #!/usr/bin/env sh
 set -e
 
-# Generated shim — do not add checks here. Declare them in repo-config.yml
-# under `gates:` with a `pre-push` surface.
+# Generated shim — do not add checks here. The pinned RHINO binary runs the
+# core gates repo-config.yml declares for the `pre-push` surface: the
+# public-safety screen first, over the ref updates Git supplies on stdin, then
+# this repository's registry. Declare checks under `extensions.rhino-cli.gates`
+# with a `pre-push` surface; the registry's HIPPO surface guard still wraps them.
 #
 # Path-gated entries carry their own trigger lists in the registry, so the
 # hand-written `git diff --name-only @{u}..HEAD` block this file used to carry
 # is gone; `gate run` computes the changed set itself and skips entries whose
 # triggers miss. Heavy tiers (test:integration, test:e2e) are never declared on
 # any gate surface — see tech-docs 2.2.3.
-apps/rhino-cli/scripts/rhino-bin.sh \
-	gate run --surface=pre-push
+exec ./rhino gate run --surface pre-push

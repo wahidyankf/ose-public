@@ -371,5 +371,5 @@ mid-stream "FAILED" text is informational, not that verdict. Discovered during
 `rewrite-rhino-cli-to-fsharp`'s Phase 9c follow-up, where a real `parity-manifest` gate failure was
 mistaken for a `governance-readme-index` failure because of pre-existing, already-deferred
 "unannotated" findings printing "FAILED" text on a check whose actual summary line read `PASS`. When
-debugging a suspected gate failure, run `rhino-bin.sh gate run --surface=<s> --group=<g>` and read
-its final per-check summary line, not any individual check's own verbose mid-stream text.
+debugging a suspected gate failure, run `rhino-bin.sh gate run --surface=<s> --group=<g>` (not
+`./rhino gate run`, which drops each check's output) and read its final per-check summary line, not any individual check's own verbose mid-stream text.

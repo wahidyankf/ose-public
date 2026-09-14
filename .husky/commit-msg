@@ -1,9 +1,10 @@
 #!/usr/bin/env sh
 set -e
 
-# Generated shim — do not add checks here. Declare them in repo-config.yml
-# under `gates:` with a `commit-msg` surface; `gate run` executes them in
-# declaration order. `rhino-cli gate validate` fails if this file and the
-# registry disagree.
-apps/rhino-cli/scripts/rhino-bin.sh \
-	gate run --surface=commit-msg -- "$1"
+# Generated shim — do not add checks here. The pinned RHINO binary runs the
+# core gates repo-config.yml declares for the `commit-msg` surface: the
+# public-safety screen first, then this repository's registry, whose gates live
+# under `extensions.rhino-cli.gates` and run in declaration order. Both read the
+# message file passed after `--`. `rhino-cli gate validate` fails if this file
+# and the registry disagree.
+exec ./rhino gate run --surface commit-msg -- "$1"

@@ -55,7 +55,7 @@ type GateValidationSteps() =
     do
         for hook in [ "commit-msg"; "pre-commit"; "pre-push" ] do
             let relative = ".husky/" + hook
-            write relative (sprintf "#!/bin/sh\nrhino-cli gate run --surface=%s\n" hook)
+            write relative (sprintf "#!/bin/sh\nexec ./rhino gate run --surface %s\n" hook)
             executableHooks <- executableHooks.Add relative
 
     let validate () =
@@ -105,7 +105,7 @@ type GateValidationSteps() =
                     "      pre-commit: { scope: affected-file-type, glob: '*.md' }\n"
             ))
 
-        write ".husky/pre-commit" "#!/bin/sh\nrhino-cli gate run --surface=pre-commit\n"
+        write ".husky/pre-commit" "#!/bin/sh\nexec ./rhino gate run --surface pre-commit\n"
 
     [<Given>]
     member _.``a staged-only check declares pre-commit but no ci surface``() =
@@ -116,7 +116,7 @@ type GateValidationSteps() =
                 + "    carve-out: staged-only\n"
             ))
 
-        write ".husky/pre-commit" "#!/bin/sh\nrhino-cli gate run --surface=pre-commit\n"
+        write ".husky/pre-commit" "#!/bin/sh\nexec ./rhino gate run --surface pre-commit\n"
 
     [<Given>]
     member _.``a declared pre-push surface has a non-delegating hook``() =
@@ -150,7 +150,7 @@ type GateValidationSteps() =
                 [ "jobs:\n"
                   "  build-rhino:\n    steps:\n      - uses: actions/upload-artifact@v4\n"
                   "  enumerate:\n    needs: build-rhino\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json --by-group\n"
-                  "  gate:\n    needs: [build-rhino, enumerate]\n    strategy:\n      matrix:\n        group: '${{ fromJson(needs.enumerate.outputs.groups) }}'\n    steps:\n      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n        env:\n          GROUP_ID: ${{ matrix.group.group }}\n"
+                  "  gate:\n    needs: [build-rhino, enumerate]\n    strategy:\n      matrix:\n        group: '${{ fromJson(needs.enumerate.outputs.groups) }}'\n    steps:\n      - run: ./rhino gate run --surface ci -- --group=\"$GROUP_ID\"\n        env:\n          GROUP_ID: ${{ matrix.group.group }}\n"
                   "  quality-gate:\n    needs: [build-rhino, enumerate, gate]\n    steps:\n      - run: rhino-cli gate run --surface=ci --only=unknown-check\n" ])
 
     [<Given>]
@@ -199,7 +199,7 @@ type GateValidationSteps() =
             ))
 
         write "package.json" """{"lint-staged":{"*.md":"prettier --check"}}"""
-        write ".husky/pre-commit" "#!/bin/sh\nrhino-cli gate run --surface=pre-commit\n"
+        write ".husky/pre-commit" "#!/bin/sh\nexec ./rhino gate run --surface pre-commit\n"
 
     [<Given>]
     member _.``a formatter mutation has no verifying check``() =
@@ -388,7 +388,7 @@ type GateValidationSteps() =
                   "      matrix:\n"
                   "        group: ${{ fromJson(needs.enumerate.outputs.groups) }}\n"
                   "    steps:\n"
-                  "      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n"
+                  "      - run: ./rhino gate run --surface ci -- --group=\"$GROUP_ID\"\n"
                   "        env:\n"
                   "          GROUP_ID: ${{ matrix.group.group }}\n"
                   "  quality-gate:\n"
@@ -433,7 +433,7 @@ type GateValidationSteps() =
                   "      matrix:\n"
                   "        group: ${{ fromJson(needs.enumerate.outputs.groups) }}\n"
                   "    steps:\n"
-                  "      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n"
+                  "      - run: ./rhino gate run --surface ci -- --group=\"$GROUP_ID\"\n"
                   "        env:\n"
                   "          GROUP_ID: ${{ matrix.group.group }}\n"
                   "      - run: |\n"
@@ -500,7 +500,7 @@ type GateValidationSteps() =
                   "      matrix:\n"
                   "        group: ${{ fromJson(needs.enumerate.outputs.groups) }}\n"
                   "    steps:\n"
-                  "      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n"
+                  "      - run: ./rhino gate run --surface ci -- --group=\"$GROUP_ID\"\n"
                   "        env:\n"
                   "          GROUP_ID: ${{ matrix.group.group }}\n"
                   "      - run: |\n"
@@ -542,7 +542,7 @@ type GateValidationSteps() =
                   "      matrix:\n"
                   "        group: ${{ fromJson(needs.enumerate.outputs.groups) }}\n"
                   "    steps:\n"
-                  "      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n"
+                  "      - run: ./rhino gate run --surface ci -- --group=\"$GROUP_ID\"\n"
                   "        env:\n"
                   "          GROUP_ID: ${{ matrix.group.group }}\n"
                   "      - run: echo \"debug group id is ${{ matrix.group.group }}\"\n"
@@ -576,7 +576,7 @@ type GateValidationSteps() =
                   "      matrix:\n"
                   "        group: ${{ fromJson(needs.enumerate.outputs.groups) }}\n"
                   "    steps:\n"
-                  "      - run: rhino-cli gate run --surface=ci --group=\"$CI_SELECTED_GROUP\"\n"
+                  "      - run: ./rhino gate run --surface ci -- --group=\"$CI_SELECTED_GROUP\"\n"
                   "        env:\n"
                   "          CI_SELECTED_GROUP: ${{ matrix.group.group }}\n"
                   "  quality-gate:\n"
@@ -611,8 +611,8 @@ type GateValidationSteps() =
                       "  - id: test-quick\n    type: check\n    command: test:quick\n    kind: nx\n    wiring: hand-wired\n    ci-group: fixture-group\n    surfaces:\n      ci: { scope: affected-projects }\n" ]
             ))
 
-        write ".husky/pre-push" "#!/bin/sh\nrhino-cli gate run --surface=pre-push\n"
-        write ".husky/pre-commit" "#!/bin/sh\nrhino-cli gate run --surface=pre-commit\n"
+        write ".husky/pre-push" "#!/bin/sh\nexec ./rhino gate run --surface pre-push\n"
+        write ".husky/pre-commit" "#!/bin/sh\nexec ./rhino gate run --surface pre-commit\n"
 
         write
             ".github/workflows/pr-quality-gate.yml"
@@ -621,7 +621,7 @@ type GateValidationSteps() =
                 [ "jobs:\n"
                   "  build-rhino:\n    steps:\n      - uses: actions/upload-artifact@v4\n"
                   "  enumerate:\n    needs: build-rhino\n    steps:\n      - run: rhino-cli gate list --surface=ci --format=json --by-group\n"
-                  "  gate:\n    needs: [build-rhino, enumerate]\n    strategy:\n      matrix:\n        group: '${{ fromJson(needs.enumerate.outputs.groups) }}'\n    steps:\n      - uses: actions/download-artifact@v4\n      - run: rhino-cli gate run --surface=ci --group=\"$GROUP_ID\"\n        env:\n          GROUP_ID: ${{ matrix.group.group }}\n"
+                  "  gate:\n    needs: [build-rhino, enumerate]\n    strategy:\n      matrix:\n        group: '${{ fromJson(needs.enumerate.outputs.groups) }}'\n    steps:\n      - uses: actions/download-artifact@v4\n      - run: ./rhino gate run --surface ci -- --group=\"$GROUP_ID\"\n        env:\n          GROUP_ID: ${{ matrix.group.group }}\n"
                   "  test-quick:\n    steps:\n      - run: npx nx affected -t test:quick\n"
                   "  quality-gate:\n    needs: [build-rhino, enumerate, gate, test-quick]\n" ])
 
@@ -733,6 +733,67 @@ type GateValidationSteps() =
     member _.``validation fails and identifies the commit-msg hook``() =
         Assert.False(isSuccess ())
         Assert.Contains(".husky/commit-msg", output)
+
+    [<Given>]
+    member _.``a declared pre-commit surface hook invokes rhino-cli gate run instead of the pinned RHINO binary``() =
+        write
+            "repo-config.yml"
+            (config (
+                gate
+                    "format"
+                    "mutation"
+                    "prettier --write"
+                    "external"
+                    "      pre-commit: { scope: affected-file-type, glob: '*.md' }\n"
+            ))
+
+        write ".husky/pre-commit" "#!/bin/sh\nrhino-cli gate run --surface=pre-commit\n"
+
+    [<Given>]
+    member _.``a CI matrix dispatcher step runs the repository CLI's gate run for its group instead of the pinned RHINO binary``
+        ()
+        =
+        write
+            "repo-config.yml"
+            (config (
+                gate "known-check" "check" "known-check" "external" "      ci: { scope: affected-projects }\n"
+                + "    ci-group: fixture-group\n"
+            ))
+
+        write
+            ".github/workflows/pr-quality-gate.yml"
+            (String.concat
+                ""
+                [ "jobs:\n"
+                  "  build-rhino:\n"
+                  "    steps:\n"
+                  "      - run: cargo build --profile gate --manifest-path apps/rhino-cli/Cargo.toml\n"
+                  "  enumerate:\n"
+                  "    needs: build-rhino\n"
+                  "    steps:\n"
+                  "      - run: rhino-cli gate list --surface=ci --format=json --by-group\n"
+                  "  gate:\n"
+                  "    needs: [build-rhino, enumerate]\n"
+                  "    strategy:\n"
+                  "      matrix:\n"
+                  "        group: ${{ fromJson(needs.enumerate.outputs.groups) }}\n"
+                  "    steps:\n"
+                  "      - run: apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=ci --group=\"$GROUP_ID\"\n"
+                  "        env:\n"
+                  "          GROUP_ID: ${{ matrix.group.group }}\n"
+                  "  quality-gate:\n"
+                  "    needs: [build-rhino, enumerate, gate]\n" ])
+
+    [<Then>]
+    member _.``it fails and names the hook file and its ./rhino gate run invocation``() =
+        Assert.False(isSuccess ())
+        Assert.Contains(".husky/pre-commit", output)
+        Assert.Contains("./rhino gate run --surface pre-commit", output)
+
+    [<Then>]
+    member _.``it fails and states that the group must be dispatched through ./rhino gate run --surface ci``() =
+        Assert.False(isSuccess ())
+        Assert.Contains("./rhino gate run --surface ci", output)
 
     [<Then>]
     member _.``it exits zero``() =
@@ -881,3 +942,11 @@ let ``A matrix group id spliced directly into a shell command is rejected`` () =
 [<Fact>]
 let ``A matrix group id with a non-default env var name still validates`` () =
     FeatureRunner.run "A matrix group id with a non-default env var name still validates"
+
+[<Fact>]
+let ``A hook that bypasses the pinned RHINO binary is caught`` () =
+    FeatureRunner.run "A hook that bypasses the pinned RHINO binary is caught"
+
+[<Fact>]
+let ``A matrix group dispatched straight to the repository CLI is caught`` () =
+    FeatureRunner.run "A matrix group dispatched straight to the repository CLI is caught"

@@ -87,6 +87,38 @@ type RepoConfigSteps() =
                 "the skip-tools list must come from repo-config.yml, not a source-hard-coded default"
             )
 
+    // ---- Given/Then: "A v2 repository configuration is read from its rhino-cli extension" ----
+
+    [<Given>]
+    member _.``a v2 repo-config.yml whose rhino-cli extension declares a doctor skip tool``() =
+        useOwnedTempDir ()
+        // RHINO owns the core keys; every rhino-cli section lives under the
+        // extension, so the core gate below must not reach the F# registry.
+        writeFile
+            "repo-config.yml"
+            (String.concat
+                ""
+                [ "schema: ose/repo-config/v2\n"
+                  "visibility: public\n"
+                  "gates:\n"
+                  "  - id: public-safety\n"
+                  "    kind: check\n"
+                  "    run: [bash, scripts/public-safety/check.sh]\n"
+                  "    surfaces: [commit-msg, pre-commit, pre-push, ci]\n"
+                  "extensions:\n"
+                  "  rhino-cli:\n"
+                  "    doctor:\n"
+                  "      skip-tools:\n"
+                  "        - widget-tool\n" ])
+
+    [<Then>]
+    member _.``it reads the skip tool from the extension and none of the core gates``() =
+        match loadedConfig with
+        | None -> Assert.Fail("no config was loaded by a When step")
+        | Some config ->
+            Assert.Equal<string list>([ "widget-tool" ], config.Doctor.SkipTools)
+            Assert.Empty(config.Gates)
+
     // ---- Given/When/Then: codex entry + exactly-three-harnesses scenarios ----
 
     [<Given>]
@@ -386,3 +418,7 @@ let ``A leading ./ in a configured path is rejected`` () =
 [<Fact>]
 let ``An existing configured file resolves without a trailing separator`` () =
     FeatureRunner.run "An existing configured file resolves without a trailing separator"
+
+[<Fact>]
+let ``A v2 repository configuration is read from its rhino-cli extension`` () =
+    FeatureRunner.run "A v2 repository configuration is read from its rhino-cli extension"

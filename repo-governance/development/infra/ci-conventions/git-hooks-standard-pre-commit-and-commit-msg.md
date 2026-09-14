@@ -10,9 +10,9 @@ to keep the raw hook files thin and testable.
 
 ## pre-commit
 
-The pre-commit hook delegates entirely to
-`rtk apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-commit`. `repo-config.yml:gates` is
-the live inventory, including ordering, scope, blocking behaviour, mutations, and restaging. Query
+The pre-commit hook delegates entirely to `./rhino gate run --surface pre-commit`, which runs the
+public-safety screen and then `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-commit`.
+`repo-config.yml`'s `extensions.rhino-cli.gates` is the live inventory, including ordering, scope, blocking behaviour, mutations, and restaging. Query
 that registry instead of maintaining a second list here:
 
 ```bash

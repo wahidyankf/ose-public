@@ -500,6 +500,28 @@ type GateExecutionSteps() =
         Assert.Equal("leaf-ran\n", File.ReadAllText(Path.Combine(root, "leaf.txt")))
         Assert.False(File.Exists(Path.Combine(root, "guard-arguments.txt")))
 
+    // --- Every gate child receives the surface it runs for ---------------
+
+    [<Given>]
+    member _.``a pre-commit gate records the OSE_GATE_SURFACE value it receives``() =
+        initGit ()
+        write "record-surface.sh" "#!/bin/sh\nprintf '%s\\n' \"$OSE_GATE_SURFACE\" > surface.txt\n"
+
+        write
+            "repo-config.yml"
+            (config (
+                gate "surface-recorder" "check" "sh record-surface.sh" "external" "      pre-commit: { scope: other }\n"
+            ))
+
+    [<When>]
+    member _.``the pre-commit gate runs under a launcher that set OSE_GATE_SURFACE to pre-push``() =
+        runGateWithEnvironment "pre-commit" (Some "surface-recorder") [ "OSE_GATE_SURFACE", "pre-push" ]
+
+    [<Then>]
+    member _.``the gate records pre-commit``() =
+        Assert.True(isSuccess (), sprintf "surface recorder failed: %s" output)
+        Assert.Equal("pre-commit\n", File.ReadAllText(Path.Combine(root, "surface.txt")))
+
     // --- Rhino CLI kind receives derived files -----------------------------
 
     [<Given>]
@@ -1419,9 +1441,9 @@ type GateExecutionSteps() =
 
         let idx =
             lines
-            |> Array.tryFindIndex (fun l -> l.Contains "gate run --surface=ci")
+            |> Array.tryFindIndex (fun l -> l.Contains "./rhino gate run --surface ci")
             |> Option.defaultWith (fun () ->
-                failwithf "gate job must contain the gate run --surface=ci step for group %s" groupId)
+                failwithf "gate job must contain the ./rhino gate run --surface ci step for group %s" groupId)
 
         let mutable start = idx
 
@@ -1734,3 +1756,7 @@ let ``lockfile-sync regenerates the lockfile and restages it`` () =
 [<Fact>]
 let ``lockfile-sync is a no-op when the lockfile is already current`` () =
     FeatureRunner.run "lockfile-sync is a no-op when the lockfile is already current"
+
+[<Fact>]
+let ``Every gate child receives the surface it runs for`` () =
+    FeatureRunner.run "Every gate child receives the surface it runs for"

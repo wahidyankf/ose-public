@@ -10,7 +10,7 @@ when_to_use: Use when explaining why the guarded install and transactional Docto
 A new worktree can hit two independent kinds of toolchain drift, and a single command does not cover both:
 
 1. **Node/Nx dependency drift** — handled by the checksum-pinned HIPPO-guarded `npm install`. `node_modules/` is not tracked by git, so it is not automatically synchronized between worktrees.
-2. **Polyglot native toolchain drift** — handled by the transactionally dispatched `npm run doctor -- --fix`. The monorepo spans native toolchains beyond Node — Rust, .NET/F#, and the shell/Terraform/container linters (see [Native-First Toolchain Management](../native-first-toolchain.md)); a session needs any of them to be correct the moment the pre-push hook (`apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`) fans out its affected-projects gates, including `nx affected -t test:quick`.
+2. **Polyglot native toolchain drift** — handled by the transactionally dispatched `npm run doctor -- --fix`. The monorepo spans native toolchains beyond Node — Rust, .NET/F#, and the shell/Terraform/container linters (see [Native-First Toolchain Management](../native-first-toolchain.md)); a session needs any of them to be correct the moment the pre-push hook (`./rhino gate run --surface pre-push`) fans out its affected-projects gates, including `nx affected -t test:quick`.
 
 Skipping either step leaves the other layer vulnerable. Doing only the guarded install handles `node_modules/` but leaves native toolchain drift undetected; doing only transactional Doctor convergence can leave the Nx workspace operating against a stale `node_modules/`.
 

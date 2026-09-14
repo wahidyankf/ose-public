@@ -15,7 +15,7 @@ When the Nx workspace resolves dependencies, it reads from `node_modules/` relat
 
 AI agents working on worktrees routinely touch apps across many languages: `ose-be` and `organiclever-be` (F#/Giraffe), `rhino-cli` (Rust) and `crane-cli` (F#), TypeScript frontends, and more. The probability that a new worktree session will need a toolchain that has drifted is high, and the cost of discovering the drift mid-task — through an obscure Gradle, Cargo, `mix`, or `dotnet` error — is much higher than the cost of running `npm run doctor -- --fix` deliberately upfront.
 
-Even worktree sessions whose stated intent is "I'm just editing docs" should run the full two-step init, because the pre-push hook runs `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push` (including `nx affected -t test:quick`) which can fan out to arbitrary language tasks depending on what the doc change touches.
+Even worktree sessions whose stated intent is "I'm just editing docs" should run the full two-step init, because the pre-push hook runs `./rhino gate run --surface pre-push`, whose registry gates (including `nx affected -t test:quick`) can fan out to arbitrary language tasks depending on what the doc change touches.
 
 ## `doctor --fix` Is Idempotent and Fast When Healthy
 

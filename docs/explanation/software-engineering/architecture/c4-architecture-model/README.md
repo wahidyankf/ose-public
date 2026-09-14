@@ -219,7 +219,9 @@ C4 diagrams MUST pass the following validation checks:
 
 ```mermaid
 graph LR
-    ZMS["Zakat Management System"]:::blue
+    accTitle: System Context
+    accDescr: Donor Person leads to Zakat Management System via Submits Zakat calculation HTTPS/JSON; Zakat Management System leads to Donor Person via Displays Zakat obligations HTTPS/JSON; and 3 more links.
+    ZMS["Zakat Management<br/>System"]:::blue
     Donor["Donor<br/>(Person)"]:::orange
     Beneficiary["Beneficiary<br/>(Person)"]:::orange
     PayGW["Payment Gateway<br/>(External System)"]:::teal
@@ -231,26 +233,28 @@ graph LR
     ZMS -->|"Reports<br/>distributions<br/>[HTTPS/JSON]"| CompRep
     ZMS -->|"Disburses funds<br/>[HTTPS/JSON]"| Beneficiary
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 ### Container Diagram
 
 ```mermaid
 graph TD
+    accTitle: Container Diagram
+    accDescr: Zakat Web UI Container: Next.js User interface for Zakat calculations leads to Zakat API Container: Spring Boot Business logic and Zakat calculations via Makes API calls HTTPS/REST; and 2 more links.
     Web["Zakat Web UI<br/>[Container: Next.js]<br/>User interface for<br/>Zakat calculations"]:::blue
-    API["Zakat API<br/>[Container: Spring Boot]<br/>Business logic and<br/>Zakat calculations"]:::blue
-    DB["Zakat Database<br/>[Container: PostgreSQL]<br/>Stores Zakat<br/>assessments"]:::teal
+    API["Zakat API<br/>[Container: Spring<br/>Boot]<br/>Business logic and<br/>Zakat calculations"]:::blue
+    DB["Zakat Database<br/>[Container:<br/>PostgreSQL]<br/>Stores Zakat<br/>assessments"]:::teal
     MQ["Message Broker<br/>[Container: RabbitMQ]<br/>Event distribution"]:::teal
 
     Web -->|"Makes API calls<br/>[HTTPS/REST]"| API
     API -->|"Reads/writes<br/>[TCP/SQL]"| DB
     API -->|"Publishes events<br/>[AMQP]"| MQ
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
-    classDef teal fill:#029E73,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 ## Related Documentation

@@ -17,11 +17,13 @@ Deployment architecture, environment branches, and Vercel configuration for the 
 
 ```mermaid
 graph LR
+    accTitle: Deployment Diagram
+    accDescr: main branch Trunk-Based Dev leads to prod-ose-www Deploy Only via Merge/Push; main branch Trunk-Based Dev leads to prod-ayokoding-www Deploy Only - Next.js via Merge/Push; and 13 more links.
     subgraph "Source Control"
         MAIN[main branch<br/>Trunk-Based Dev]
         PROD_OSE[prod-ose-www<br/>Deploy Only]
-        PROD_AYO[prod-ayokoding-www<br/>Deploy Only - Next.js]
-        PROD_OL[prod-organiclever-www<br/>Deploy Only]
+        PROD_AYO[prod-ayokoding-www<br/>Deploy Only -<br/>Next.js]
+        PROD_OL[prod-<br/>organiclever-www<br/>Deploy Only]
     end
 
     subgraph "Build System"
@@ -57,18 +59,16 @@ graph LR
     NX_BUILD -.->|Orchestrates| SPRING_BUILD
     NX_BUILD -.->|Orchestrates| RUST_BUILD
 
-    style MAIN fill:#0077b6,stroke:#03045e,color:#ffffff
-    style PROD_OSE fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style PROD_AYO fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style PROD_OL fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style NX_BUILD fill:#6a4c93,stroke:#22223b,color:#ffffff
-    style NEXT_BUILD fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style SPRING_BUILD fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style RUST_BUILD fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style VERCEL_OSE fill:#e76f51,stroke:#9d0208,color:#ffffff
-    style VERCEL_AYO fill:#e76f51,stroke:#9d0208,color:#ffffff
-    style VERCEL_OL fill:#e76f51,stroke:#9d0208,color:#ffffff
-    style LOCAL fill:#6a4c93,stroke:#22223b,color:#ffffff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    class MAIN blue
+    class PROD_OSE,PROD_AYO,PROD_OL teal
+    class NX_BUILD,LOCAL purple
+    class NEXT_BUILD,SPRING_BUILD,RUST_BUILD brown
+    class VERCEL_OSE,VERCEL_AYO,VERCEL_OL orange
 ```
 
 ## Deployment Configuration

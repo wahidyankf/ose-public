@@ -51,7 +51,9 @@ apps/
 
 ```mermaid
 graph TD
-    OseWeb["OSE Platform Web<br/>[Next.js 16 App Router]<br/>Landing page"]:::blue
+    accTitle: Apps → Containers
+    accDescr: AyoKoding CLI Container: Rust Content link validation leads to AyoKoding Web Next.js 16, tRPC Educational content via Validates links File system; and 2 more links.
+    OseWeb["OSE Platform Web<br/>[Next.js 16 App<br/>Router]<br/>Landing page"]:::blue
     AyoWeb["AyoKoding Web<br/>[Next.js 16, tRPC]<br/>Educational content"]:::blue
     AyoCLI["AyoKoding CLI<br/>[Container: Rust]<br/>Content link validation"]:::blue
     RhinoCLI["Rhino CLI<br/>[Container: F#]<br/>Repository management"]:::blue
@@ -60,7 +62,7 @@ graph TD
     RhinoCLI -->|"Manages repository<br/>[File system]"| OseWeb
     RhinoCLI -->|"Manages repository<br/>[File system]"| AyoWeb
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ### Libs → Supporting Components
@@ -110,7 +112,9 @@ If `crane-cli` has an Nx dependency on `fsharp-crane-core` (builds it), show thi
 
 ```mermaid
 graph LR
-    OseWeb["OSE Platform Web<br/>[Next.js 16 App Router]<br/>Landing page"]:::blue
+    accTitle: Full Platform View
+    accDescr: AyoKoding CLI Container: Rust Content link validation leads to AyoKoding Web Next.js 16, tRPC Educational content; Rhino CLI Container: F Repository management leads to OSE Platform Web Next.js 16 App Router Landing page; and 3 more links.
+    OseWeb["OSE Platform Web<br/>[Next.js 16 App<br/>Router]<br/>Landing page"]:::blue
     AyoWeb["AyoKoding Web<br/>[Next.js 16, tRPC]<br/>Educational content"]:::blue
     AyoCLI["AyoKoding CLI<br/>[Container: Rust]<br/>Content link validation"]:::blue
     RhinoCLI["Rhino CLI<br/>[Container: F#]<br/>Repository management"]:::blue
@@ -122,20 +126,22 @@ graph LR
     OseWeb --> Vercel
     AyoWeb --> Vercel
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
-    classDef teal fill:#029E73,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 **Future containers (planned):**
 
 ```mermaid
 graph LR
+    accTitle: Full Platform View 2
+    accDescr: Zakat Web UI Container: Next.js User interface leads to Zakat API Container: Spring Boot Zakat calculations.
     ZakatWeb["Zakat Web UI<br/>[Container: Next.js]<br/>User interface"]:::purple
-    ZakatAPI["Zakat API<br/>[Container: Spring Boot]<br/>Zakat calculations"]:::purple
+    ZakatAPI["Zakat API<br/>[Container: Spring<br/>Boot]<br/>Zakat calculations"]:::purple
 
     ZakatWeb -.-> ZakatAPI
 
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 **Note**: Use purple for future/planned containers with dashed lines (`-.->`) for planned relationships.

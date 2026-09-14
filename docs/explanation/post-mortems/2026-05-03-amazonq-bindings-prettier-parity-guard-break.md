@@ -71,12 +71,14 @@ The trigger is distinct from the root cause: an `Edit` call running Prettier is 
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Brown #CA9161, Gray #808080
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
-    Edit["Agent issues Edit/Write call"]:::blue
-    Hook["PostToolUse hook fires<br/>runs Prettier on staged files"]:::blue
+    accTitle: Trigger
+    accDescr: Agent issues Edit/Write call leads to PostToolUse hook fires runs Prettier on staged files; PostToolUse hook fires runs Prettier on staged files leads to Prettier reformats.amazonq/ artifacts; and 3 more links.
+    Edit["Agent issues<br/>Edit/Write call"]:::blue
+    Hook["PostToolUse hook<br/>fires<br/>runs Prettier on<br/>staged files"]:::blue
     Rewrite["Prettier reformats<br/>.amazonq/ artifacts"]:::orange
-    Bytes["Bytes on disk diverge from<br/>rhino-cli emitter output"]:::orange
-    Guard["validate:cross-vendor-parity<br/>byte-compare runs"]:::gray
-    Fail["Guard fails: bytes mismatch<br/>CI / pre-commit red"]:::brown
+    Bytes["Bytes on disk<br/>diverge from<br/>rhino-cli emitter<br/>output"]:::orange
+    Guard["validate:cross-<br/>vendor-parity<br/>byte-compare runs"]:::gray
+    Fail["Guard fails: bytes<br/>mismatch<br/>CI / pre-commit red"]:::brown
 
     Edit --> Hook
     Hook --> Rewrite
@@ -85,10 +87,10 @@ graph TD
     Guard --> Fail
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Contributing Factors

@@ -25,6 +25,8 @@ This guide helps you choose the right location based on the type and lifecycle o
 
 ```mermaid
 flowchart TD
+    accTitle: Quick Decision Tree
+    accDescr: New Work leads to Is this a structured project with deliverables?; Is this a structured project with deliverables? leads to What's the status? via Yes; What's the status? leads to plans/backlog/ via Planning; and 8 more links.
     Start([New Work]) --> Q1{Is this a structured<br/>project with<br/>deliverables?}
     Q1 -->|Yes| Q2{What's the<br/>status?}
     Q2 -->|Planning| Backlog[plans/backlog/]
@@ -37,13 +39,14 @@ flowchart TD
     Q4 -->|Reference| Reference[docs/reference/]
     Q4 -->|Conceptual| Explanation[docs/explanation/]
 
-    style Backlog fill:#DE8F05,stroke:#000000,color:#FFFFFF
-    style InProgress fill:#CA9161,stroke:#000000,color:#FFFFFF
-    style Done fill:#029E73,stroke:#000000,color:#FFFFFF
-    style Tutorial fill:#CC78BC,stroke:#000000,color:#FFFFFF
-    style HowTo fill:#CC78BC,stroke:#000000,color:#FFFFFF
-    style Reference fill:#CC78BC,stroke:#000000,color:#FFFFFF
-    style Explanation fill:#CC78BC,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class Backlog orange
+    class InProgress brown
+    class Done teal
+    class Tutorial,HowTo,Reference,Explanation purple
 ```
 
 ## The Two Work Folders

@@ -43,7 +43,9 @@ owner stores that behaviour in its recursively discovered `specs/apps/**/behavio
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Discover<br/>Collaborate on Features"]:::blue
+    accTitle: BDD Workflow
+    accDescr: Discover Collaborate on Features leads to Write Gherkin Feature Scenarios; Write Gherkin Feature Scenarios leads to Implement Steps TypeScript Code; Implement Steps TypeScript Code leads to Run Owner Nx Targets Execute Tests; and 4 more links.
+    A["Discover<br/>Collaborate on<br/>Features"]:::blue
     B["Write Gherkin<br/>Feature Scenarios"]:::purple
     C["Implement Steps<br/>TypeScript Code"]:::teal
     D["Run Owner Nx Targets<br/>Execute Tests"]:::orange
@@ -60,9 +62,9 @@ graph TD
     G --> C
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Owner-Local Adapter Execution
@@ -70,8 +72,10 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Owner-Local Adapter Execution
+    accDescr: Feature Files donation.feature leads to Owner Runtime Adapter Parse Gherkin; Owner Runtime Adapter Parse Gherkin leads to Step Definitions TypeScript Functions; Step Definitions TypeScript Functions leads to Context State Test Data; and 4 more links.
     A["Feature Files<br/>donation.feature"]:::blue
-    B["Owner Runtime Adapter<br/>Parse Gherkin"]:::orange
+    B["Owner Runtime<br/>Adapter<br/>Parse Gherkin"]:::orange
     C["Step Definitions<br/>TypeScript Functions"]:::purple
     D["Context State<br/>Test Data"]:::brown
     E["Execute Actions<br/>Service Calls"]:::teal
@@ -88,10 +92,10 @@ graph TD
     F -->|No| H
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Playwright E2E Flow
@@ -99,6 +103,8 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Playwright E2E Flow
+    accDescr: Test Scenario User Flow leads to Launch Browser Chromium/Firefox; Launch Browser Chromium/Firefox leads to Navigate to Page page.goto; Navigate to Page page.goto leads to Interact with UI Fill Forms, Click; and 4 more links.
     A["Test Scenario<br/>User Flow"]:::blue
     B["Launch Browser<br/>Chromium/Firefox"]:::purple
     C["Navigate to Page<br/>page.goto#40;#41;"]:::teal
@@ -117,9 +123,9 @@ graph TD
     F -->|No| H
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Financial BDD Testing
@@ -127,9 +133,11 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Financial BDD Testing
+    accDescr: Donation Feature Business Rules leads to Gherkin Scenarios Zakat Validation; Gherkin Scenarios Zakat Validation leads to Step Definitions TypeScript Implementation; Step Definitions TypeScript Implementation leads to DonationService Business Logic; and 3 more links.
     A["Donation Feature<br/>Business Rules"]:::blue
     B["Gherkin Scenarios<br/>Zakat Validation"]:::purple
-    C["Step Definitions<br/>TypeScript Implementation"]:::teal
+    C["Step Definitions<br/>TypeScript<br/>Implementation"]:::teal
     D["DonationService<br/>Business Logic"]:::orange
     E["Type Safety<br/>Money Type"]:::teal
     F["Currency Validation<br/>USD/SAR/EUR"]:::orange
@@ -143,10 +151,10 @@ graph TD
     F --> G
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Gherkin Syntax

@@ -31,10 +31,12 @@ TypeScript provides two primary ways to define object shapes: interfaces and typ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Primitives["Primitives<br/>(string, number, boolean)"]:::blue
-    Literals["Literal Types<br/>#40;'USD', 42, true#41;"]:::orange
-    Objects["Object Types<br/>#40;interfaces, types#41;"]:::teal
-    Functions["Function Types<br/>#40;arrow, declarations#41;"]:::purple
+    accTitle: Type Hierarchy and Relationships
+    accDescr: Primitives string, number, boolean leads to Literal Types 'USD', 42, true; Primitives string, number, boolean leads to Object Types interfaces, types; Primitives string, number, boolean leads to Function Types arrow, declarations; and 2 more links.
+    Primitives["Primitives<br/>string, number,<br/>boolean"]:::blue
+    Literals["Literal Types<br/>'USD', 42, true"]:::orange
+    Objects["Object Types<br/>interfaces, types"]:::teal
+    Functions["Function Types<br/>arrow, declarations"]:::purple
     Generics["Generic Types<br/>#40;T, K, V#41;"]:::brown
 
     Primitives --> Literals
@@ -46,10 +48,10 @@ graph TD
     Note1["Type System:<br/>- Structural typing<br/>- Duck typing<br/>- Compile-time only"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Interfaces
@@ -154,6 +156,8 @@ type DonationMap = Record<string, Donation>;
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Generic Type Constraints Flow
+    accDescr: Generic Type T leads to Constraint T extends HasId; Constraint T extends HasId leads to Constraint Satisfied?; Constraint Satisfied? leads to Type Accepted T is valid via Yes; and 1 more links.
     Generic["Generic Type T"]:::blue
     Constraint["Constraint<br/>T extends HasId"]:::orange
     Satisfied{"Constraint<br/>Satisfied?"}:::purple
@@ -165,14 +169,14 @@ graph LR
     Satisfied -->|Yes| Accept
     Satisfied -->|No| Reject
 
-    Note1["Constraint example:<br/>T extends { id: string }<br/>ensures T has id property"]
-    Note2["Multiple constraints:<br/>T extends A & B"]
+    Note1["Constraint example:<br/>T extends { id:<br/>string }<br/>ensures T has id<br/>property"]
+    Note2["Multiple<br/>constraints:<br/>T extends A & B"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Basic Generics
@@ -293,6 +297,8 @@ const rates: ExchangeRates = {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Structural Typing Duck Typing
+    accDescr: Object id: 'D1' name: 'John' email: 'j@ex.com' leads to Satisfies A?; Object id: 'D1' name: 'John' email: 'j@ex.com' leads to Satisfies B?; Satisfies A? leads to Accepted as A via Has id, name; and 1 more links.
     Type1["Interface A<br/>{id: string<br/>name: string}"]:::blue
     Type2["Interface B<br/>{id: string<br/>email: string}"]:::orange
     Object["Object<br/>{id: 'D1'<br/>name: 'John'<br/>email: 'j@ex.com'}"]:::teal
@@ -309,9 +315,9 @@ graph LR
     Note1["Structural typing:<br/>Shape matters,<br/>not declaration"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Intersection Types

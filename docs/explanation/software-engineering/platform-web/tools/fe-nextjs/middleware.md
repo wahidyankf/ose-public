@@ -84,6 +84,8 @@ export const config = {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Execution Flow
+    accDescr: Client Request leads to Middleware Edge Runtime; Middleware Edge Runtime leads to Decision; Decision leads to Redirect via Redirect; Decision leads to Rewrite via Rewrite; Decision leads to Modify Request via Continue; and 1 more links.
     A["Client Request"]:::blue
     B["Middleware<br/>#40;Edge Runtime#41;"]:::orange
     C{"Decision"}:::orange
@@ -100,8 +102,8 @@ graph TD
     F --> G
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 

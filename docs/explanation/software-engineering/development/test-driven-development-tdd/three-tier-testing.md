@@ -138,18 +138,22 @@ testing
 ## Test Pyramid
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
-    E2E["E2E Tests\nReal public boundary\nImpacted manual + scheduled"]
-    INT["Integration Tests\nReal local · no remote calls\nImpacted manual + scheduled"]
-    UNIT["Unit Tests\nIn process · deterministic\nMandatory in every quick gate"]
+    accTitle: Test Pyramid
+    accDescr: E2E Tests Real public boundary Impacted manual + scheduled leads to Integration Tests Real local · no remote calls Impacted manual + scheduled; and 1 more links.
+    E2E["E2E Tests<br/>Real public boundary<br/>Impacted manual +<br/>scheduled"]
+    INT["Integration Tests<br/>Real local · no<br/>remote calls<br/>Impacted manual +<br/>scheduled"]
+    UNIT["Unit Tests<br/>In process ·<br/>deterministic<br/>Mandatory in every<br/>quick gate"]
 
     E2E --> INT
     INT --> UNIT
 
-    style E2E fill:#CC78BC,color:#fff
-    style INT fill:#DE8F05,color:#fff
-    style UNIT fill:#029E73,color:#fff
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    class E2E purple
+    class INT orange
+    class UNIT teal
 ```
 
 ## File Naming and Directory Structure

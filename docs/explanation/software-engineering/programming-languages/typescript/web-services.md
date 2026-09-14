@@ -113,6 +113,8 @@ app.post("/api/donations", async (req: Request<{}, {}, DonationCreateRequest>, r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: HTTP Request/Response Cycle with Middleware
+    accDescr: Client sends HTTP Request to M1; M1 sends Log request to M1; M1 sends next to M2; M2 sends Check auth token to M2; M2 sends 401 Unauthorized to Client; and 7 more links.
     participant Client
     participant M1 as Middleware 1<br/>#40;Logger#41;
     participant M2 as Middleware 2<br/>#40;Auth#41;
@@ -200,11 +202,13 @@ app.use(errorHandler);
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Middleware Chain Execution
+    accDescr: Incoming Request leads to Logger Middleware Log request details; Logger Middleware Log request details leads to Auth Middleware Verify JWT token via next; and 7 more links.
     Request["Incoming Request"]:::blue
     Logger["Logger Middleware<br/>Log request details"]:::orange
     Auth["Auth Middleware<br/>Verify JWT token"]:::orange
     Validator["Validator Middleware<br/>Check request body"]:::orange
-    Handler["Route Handler<br/>Process business logic"]:::teal
+    Handler["Route Handler<br/>Process business<br/>logic"]:::teal
     Response["Send Response"]:::blue
     Error["Error Handler<br/>Handle exceptions"]:::purple
 
@@ -219,12 +223,12 @@ graph TD
     Handler -.->|Exception| Error
     Error -.-> Response
 
-    Note1["Middleware chain:<br/>Functions called<br/>sequentially via<br/>next#40;#41; function"]
+    Note1["Middleware chain:<br/>Functions called<br/>sequentially via<br/>next() function"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Express Router
@@ -579,6 +583,8 @@ tRPC provides end-to-end type safety between TypeScript client and server.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: tRPC Procedure Call Flow
+    accDescr: C sends client.getDonation.queryid to tC; tC sends HTTP POST /trpc/getDonation to tS; tS sends Validate input with Zod schema to tS; tS sends Validation error to tC; tS sends Execute procedure to H; and 5 more links.
     participant C as Client
     participant tC as tRPC Client
     participant tS as tRPC Server
@@ -1296,8 +1302,9 @@ export class DonationModule {}
 ## Express.js API Architecture
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
+    accTitle: Express.js API Architecture
+    accDescr: Express Application leads to Middleware Stack; Express Application leads to Router Layer; Express Application leads to Error Handler; Middleware Stack leads to Body Parser / CORS Helmet / Morgan; and 5 more links.
     A[Express Application] --> B[Middleware Stack]
     A --> C[Router Layer]
     A --> D[Error Handler]
@@ -1312,18 +1319,22 @@ flowchart TD
 
     D --> I[Error Response]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#0173B2,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A,F blue
+    class B orange
+    class C teal
+    class E purple
 ```
 
 ## NestJS Module Architecture
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart LR
+    accTitle: NestJS Module Architecture
+    accDescr: App Module leads to Zakat Module; App Module leads to Donation Module; App Module leads to Auth Module; App Module leads to Database Module; Zakat Module leads to Zakat Controller; and 12 more links.
     A[App Module] --> B[Zakat Module]
     A --> C[Donation Module]
     A --> D[Auth Module]
@@ -1347,9 +1358,12 @@ flowchart LR
     B3 --> E2
     C3 --> E2
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A,E blue
+    class B orange
+    class C teal
+    class D purple
 ```

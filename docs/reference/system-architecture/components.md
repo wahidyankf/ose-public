@@ -30,13 +30,15 @@ Shows the internal components within each container. Components are groupings of
 
 ```mermaid
 graph TB
+    accTitle: rhino-cli Components F CLI Tool
+    accDescr: Root Command Repository automation leads to Automation Module Extensible automation; Root Command Repository automation leads to Flags Parser Command-line arguments; Automation Module Extensible automation leads to Config Loader Configuration; and 1 more links.
     subgraph "CLI Interface"
-        RHINO_ROOT[Root Command<br/>Repository automation]
-        RHINO_FLAGS[Flags Parser<br/>Command-line arguments]
+        RHINO_ROOT[Root Command<br/>Repository<br/>automation]
+        RHINO_FLAGS[Flags Parser<br/>Command-line<br/>arguments]
     end
 
     subgraph "Automation Modules"
-        AUTO_MODULE[Automation Module<br/>Extensible automation]
+        AUTO_MODULE[Automation Module<br/>Extensible<br/>automation]
     end
 
     subgraph "Infrastructure"
@@ -49,8 +51,10 @@ graph TB
     AUTO_MODULE --> RHINO_CONFIG
     AUTO_MODULE --> RHINO_LOGGER
 
-    style RHINO_ROOT fill:#0077b6,stroke:#03045e,color:#ffffff
-    style AUTO_MODULE fill:#2a9d8f,stroke:#264653,color:#ffffff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    class RHINO_ROOT blue
+    class AUTO_MODULE teal
 ```
 
 **Component Responsibilities:**

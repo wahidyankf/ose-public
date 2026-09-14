@@ -73,6 +73,8 @@ Top-level route hierarchy:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Route Hierarchy
+    accDescr: BrowserRouter leads to Routes; Routes leads to Route /; Routes leads to Route /dashboard; Routes leads to Route /zakat; Routes leads to Route *; Route / leads to HomePage; Route /dashboard leads to DashboardPage; and 2 more links.
     A[BrowserRouter] --> B[Routes]
     B --> C[Route /]
     B --> D[Route /dashboard]
@@ -84,12 +86,14 @@ graph LR
     E --> J[ZakatCalculator]
     G --> L[NotFoundPage]
 
-    style A fill:#0173B2
-    style B fill:#029E73
-    style C fill:#DE8F05
-    style D fill:#DE8F05
-    style E fill:#DE8F05
-    style G fill:#CC78BC
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A blue
+    class B teal
+    class C,D,E orange
+    class G purple
 ```
 
 Nested dashboard routes:
@@ -99,6 +103,8 @@ Nested dashboard routes:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Route Hierarchy 2
+    accDescr: Routes leads to Route /donations; Routes leads to Route /dashboard; Route /donations leads to DonationsList; Route /dashboard leads to Nested Routes; Nested Routes leads to /dashboard/overview; Nested Routes leads to /dashboard/reports; and 1 more links.
     B[Routes] --> F[Route /donations]
     B --> D[Route /dashboard]
     F --> K[DonationsList]
@@ -107,10 +113,10 @@ graph LR
     M --> O[/dashboard/reports]
     M --> P[/dashboard/settings]
 
-    style B fill:#029E73
-    style D fill:#DE8F05
-    style F fill:#DE8F05
-    style M fill:#029E73
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    class B,M teal
+    class D,F orange
 ```
 
 **Route Structure**:

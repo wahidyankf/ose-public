@@ -50,15 +50,16 @@ Both are required. This document assumes you understand Gherkin syntax and Playw
 
 ## Architecture Overview
 
+```mermaid
+flowchart TD
+    accTitle: Architecture Overview
+    accDescr: npx bddgen turns the feature files under specs into generated spec files under .features-gen, and npx playwright test runs those specs against the step definitions under tests/steps.
+    F["specs/**/*.feature"] -->|npx bddgen| G[".features-gen/<br/>**/*.spec.ts"]
+    G -->|npx playwright test| S["tests/steps/**/*.ts"]
 ```
-specs/**/*.feature
-       │
-       ▼ npx bddgen
-.features-gen/**/*.spec.ts   (generated — do not edit)
-       │
-       ▼ npx playwright test
-tests/steps/**/*.ts          (your step definitions)
-```
+
+The specs under `.features-gen/` are generated on every `bddgen` run, so never edit them; the step definitions
+under `tests/steps/` are the files you write.
 
 1. `bddgen` reads every `.feature` file and generates a matching `.spec.ts` in `.features-gen/`
 2. Playwright executes the generated spec files

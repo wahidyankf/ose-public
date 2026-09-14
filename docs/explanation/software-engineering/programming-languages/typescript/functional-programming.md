@@ -78,6 +78,8 @@ const agricultureZakat = createZakatCalculator(0.1);
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Data Transformation Pipeline
+    accDescr: Input Data Donations Array leads to map Transform each; map Transform each leads to filter Select subset; filter Select subset leads to reduce Aggregate result; reduce Aggregate result leads to Output Total amount.
     Input["Input Data<br/>Donations Array"]:::blue
     Map["map#40;#41;<br/>Transform each"]:::orange
     Filter["filter#40;#41;<br/>Select subset"]:::orange
@@ -89,11 +91,11 @@ graph TD
     Filter --> Reduce
     Reduce --> Output
 
-    Note1["map: donations -> amounts<br/>filter: amounts >= 1000<br/>reduce: sum all amounts"]
+    Note1["map: donations -><br/>amounts<br/>filter: amounts >=<br/>1000<br/>reduce: sum all<br/>amounts"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ```typescript
@@ -125,13 +127,15 @@ const processDonation = pipe(validateAmount, applyFee, calculateNet);
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    subgraph ImperativeShell["Imperative Shell (I/O, Side Effects)"]
+    accTitle: Functional Core / Imperative Shell
+    accDescr: HTTP Handler leads to Validate & Parse via Raw input; Validate & Parse leads to Pure Business Logic via Clean data; Pure Business Logic leads to Transform for output via Business result; and 1 more links.
+    subgraph ImperativeShell["Imperative Shell<br/>side effects"]
         Shell1["HTTP Handler"]:::orange
         Validation["Validate &<br/>Parse"]:::blue
         Transform["Transform<br/>for output"]:::blue
         Shell2["Database Access"]:::orange
     end
-    subgraph FunctionalCore["Functional Core (Pure Logic)"]
+    subgraph FunctionalCore["Functional Core<br/>pure logic"]
         Core["Pure Business Logic"]:::teal
     end
 
@@ -141,8 +145,8 @@ graph TD
     Transform -->|Persist| Shell2
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 **Functional Core**: pure functions, no side effects, easy to test. **Imperative Shell**: I/O operations, side effects, thin layer around the core.
@@ -152,7 +156,9 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    subgraph Compose ["compose#40;f, g#41; - Right to Left"]
+    accTitle: Compose and Pipe Functions
+    accDescr: Input x leads to gx; gx leads to fgx; fgx leads to Result; Input x leads to fx; fx leads to gfx; gfx leads to Result.
+    subgraph Compose ["compose f, g<br/>right to left"]
         Input1["Input x"]:::blue
         G["g#40;x#41;"]:::orange
         F["f#40;g#40;x#41;#41;"]:::teal
@@ -160,7 +166,7 @@ graph LR
         Input1 --> G --> F --> Output1
     end
 
-    subgraph Pipe ["pipe#40;f, g#41; - Left to Right"]
+    subgraph Pipe ["pipe f, g<br/>left to right"]
         Input2["Input x"]:::blue
         F2["f#40;x#41;"]:::orange
         G2["g#40;f#40;x#41;#41;"]:::teal
@@ -168,11 +174,11 @@ graph LR
         Input2 --> F2 --> G2 --> Output2
     end
 
-    Note1["compose: mathematical notation<br/>pipe: data flow intuition"]
+    Note1["compose:<br/>mathematical<br/>notation<br/>pipe: data flow<br/>intuition"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Currying and Partial Application

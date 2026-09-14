@@ -116,6 +116,8 @@ React usage in this platform follows the software engineering principles from [r
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 timeline
+    accTitle: React Version Strategy
+    accDescr: Illustrates react version strategy.
     title React Version Timeline (2018-2026)
     2018-09 : React 16.8 : Hooks introduction : useState, useEffect
     2020-10 : React 17.0 : No new features : Gradual upgrades support
@@ -229,6 +231,8 @@ Core documentation sections:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart LR
+    accTitle: Documentation Organization
+    accDescr: React Documentation leads to Core Patterns; React Documentation leads to Architecture; React Documentation leads to Advanced Topics; React Documentation leads to Integration; Core Patterns leads to Idioms; Core Patterns leads to Best Practices; and 5 more links.
     A["React Documentation"]:::blue
     B["Core Patterns"]:::teal
     C["Architecture"]:::teal
@@ -244,14 +248,14 @@ flowchart LR
     B --> B2["Best Practices"]
     B --> B3["Anti-Patterns"]
 
-    C --> C1["Component Architecture"]
+    C --> C1["Component<br/>Architecture"]
     C --> C2["State Management"]
     C --> C3["Hooks"]
     C --> C4["TypeScript"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
@@ -262,6 +266,8 @@ Advanced and specialized documentation sections:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart LR
+    accTitle: Documentation Organization 2
+    accDescr: React Documentation leads to Advanced Topics; React Documentation leads to Integration; React Documentation leads to Specialized; Advanced Topics leads to Performance; Advanced Topics leads to Testing; Advanced Topics leads to Accessibility; and 9 more links.
     A["React Documentation"]:::blue
     D["Advanced Topics"]:::purple
     E["Integration"]:::orange
@@ -283,12 +289,12 @@ flowchart LR
 
     F --> F1["Build & Deployment"]
     F --> F2["Domain-Driven Design"]
-    F --> F3["Functional Programming"]
+    F --> F3["Functional<br/>Programming"]
     F --> F4["Version Migration"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 

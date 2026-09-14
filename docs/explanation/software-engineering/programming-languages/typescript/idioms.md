@@ -140,6 +140,8 @@ Idiomatic TypeScript code:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Common TypeScript Patterns Catalog
+    accDescr: TypeScript Idioms leads to Type Patterns; TypeScript Idioms leads to Narrowing Patterns; TypeScript Idioms leads to Functional Patterns; TypeScript Idioms leads to Structural Patterns; Type Patterns leads to Branded Types; and 11 more links.
     Patterns["TypeScript Idioms"]:::blue
     Type["Type Patterns"]:::orange
     Narrowing["Narrowing Patterns"]:::teal
@@ -161,17 +163,17 @@ graph LR
 
     Functional --> Composition["Function Composition"]
     Functional --> Currying["Currying"]
-    Functional --> HigherOrder["Higher-Order Functions"]
+    Functional --> HigherOrder["Higher-Order<br/>Functions"]
 
     Structural --> Builder["Builder Pattern"]
     Structural --> Repository["Repository Pattern"]
     Structural --> Factory["Factory Pattern"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### TypeScript Version Context
@@ -194,13 +196,15 @@ Type guards allow TypeScript to narrow types at runtime, providing type safety f
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Type Guard Selection Flow
+    accDescr: Need Runtime Type Check? leads to Type of Value?; Type of Value? leads to ✅ Use typeof string, number, boolean via Primitive; and 12 more links.
     A["Need Runtime<br/>Type Check?"]:::blue --> B{"Type of<br/>Value?"}:::orange
 
-    B -->|"Primitive"| C["✅ Use typeof<br/>(string, number, boolean)"]:::teal
+    B -->|"Primitive"| C["✅ Use typeof<br/>string, number,<br/>boolean"]:::teal
     B -->|"Class Instance"| D["✅ Use instanceof<br/>(Money, Date, Error)"]:::teal
     B -->|"Object Shape"| E{"Has Discriminant<br/>Property?"}:::orange
 
-    E -->|"Yes"| F["✅ Check Discriminant<br/>(obj.kind === 'success')"]:::purple
+    E -->|"Yes"| F["✅ Check Discriminant<br/>obj.kind ===<br/>'success'"]:::purple
     E -->|"No"| G["✅ Use 'in' operator<br/>('amount' in obj)"]:::purple
 
     C --> H["Type Narrowing"]:::teal
@@ -208,16 +212,16 @@ graph TD
     F --> H
     G --> H
 
-    H --> H1["TypeScript narrows type"]
+    H --> H1["TypeScript narrows<br/>type"]
     H --> H2["Autocomplete works"]
     H --> H3["Type-safe operations"]
 
     Note["Custom Guards:<br/>Function returning<br/>'value is Type'"]
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 **Key Principles**:
@@ -400,6 +404,8 @@ TypeScript provides built-in utility types for common transformations.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Utility Type Selection Guide
+    accDescr: Transform Type? leads to What Change?; What Change? leads to ✅ Partial<T> all props optional via Make optional; What Change? leads to ✅ Required<T> remove optional via Make required; and 10 more links.
     A["Transform<br/>Type?"]:::blue --> B{"What<br/>Change?"}:::orange
 
     B -->|"Make optional"| C["✅ Partial<T><br/>(all props optional)"]:::teal
@@ -416,12 +422,12 @@ graph LR
     G --> I
     H --> I
 
-    Note["Combine utilities:<br/>Partial&lt;Pick&lt;T,K&gt;&gt;"]
+    Note["Combine utilities:<br/>Partial&lt;Pick&lt;T<br/>,K&gt;&gt;"]
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 Where those common uses show up:
@@ -429,12 +435,14 @@ Where those common uses show up:
 ```mermaid
 %% Color Palette: Teal #029E73
 graph LR
-    I["Common Uses"]:::teal --> I1["• API updates (Partial)"]
-    I --> I2["• Immutability (Readonly)"]
-    I --> I3["• Subset types (Pick/Omit)"]
-    I --> I4["• Union filtering (Extract)"]
+    accTitle: Utility Type Selection Guide 2
+    accDescr: Common Uses leads to • API updates Partial; Common Uses leads to • Immutability Readonly; Common Uses leads to • Subset types Pick/Omit; Common Uses leads to • Union filtering Extract.
+    I["Common Uses"]:::teal --> I1["• API updates<br/>(Partial)"]
+    I --> I2["• Immutability<br/>(Readonly)"]
+    I --> I3["• Subset types<br/>(Pick/Omit)"]
+    I --> I4["• Union filtering<br/>(Extract)"]
 
-    classDef teal fill:#029E73,stroke:#000,color:#fff
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 **Common Utility Types**:
@@ -716,10 +724,12 @@ type PaymentMethodArrays = ToArray<PaymentMethod>;
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Builder Pattern Flow
+    accDescr: new Builder leads to setDonorIdid; setDonorIdid leads to setAmountmoney; setAmountmoney leads to setCategorycat; setCategorycat leads to build; build leads to Donation Object.
     Start["new Builder#40;#41;"]:::blue
     Step1["setDonorId#40;id#41;"]:::orange
-    Step2["setAmount#40;money#41;"]:::orange
-    Step3["setCategory#40;cat#41;"]:::orange
+    Step2["setAmount(money)"]:::orange
+    Step3["setCategory(cat)"]:::orange
     Build["build#40;#41;"]:::teal
     Result["Donation Object"]:::blue
 
@@ -732,8 +742,8 @@ graph TD
     Note1["Builder Pattern:<br/>Fluent API for<br/>complex object<br/>construction"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### infer Keyword
@@ -843,6 +853,8 @@ Mapped types transform all properties of an object type.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Mapped Type Selection Guide
+    accDescr: Need to Transform Object Type? leads to What Transformation?; What Transformation? leads to Add or Remove Modifiers? via Property Modifiers; What Transformation? leads to Rename or Filter Keys? via Key Changes; and 6 more links.
     A["Need to Transform<br/>Object Type?"]:::blue --> B{"What<br/>Transformation?"}:::orange
 
     B -->|"Property Modifiers"| C{"Add or Remove<br/>Modifiers?"}:::orange
@@ -850,18 +862,18 @@ graph LR
 
     C -->|"Make Optional"| E["✅ Partial<T><br/>or [P in keyof T]?"]:::teal
     C -->|"Make Required"| F["✅ Required<T><br/>or [P in keyof T]-?"]:::teal
-    C -->|"Make Readonly"| G["✅ Readonly<T><br/>or readonly [P in keyof T]"]:::teal
-    C -->|"Remove Readonly"| H["✅ -readonly [P in keyof T]"]:::purple
+    C -->|"Make Readonly"| G["✅ Readonly<T><br/>or readonly [P in<br/>keyof T]"]:::teal
+    C -->|"Remove Readonly"| H["✅ -readonly [P in<br/>keyof T]"]:::purple
 
     D -->|"Rename Keys"| I["✅ Key Remapping<br/>[P as NewKey]"]:::purple
-    D -->|"Filter Keys"| J["✅ Conditional Mapping<br/>[P as Condition ? P : never]"]:::purple
+    D -->|"Filter Keys"| J["✅ Conditional<br/>Mapping<br/>[P as Condition ? P<br/>: never]"]:::purple
 
     Note["Built-in Utilities:<br/>Partial, Required,<br/>Readonly, Pick, Omit<br/>cover common cases"]
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 Every branch above converges on the same guarantees:
@@ -869,11 +881,13 @@ Every branch above converges on the same guarantees:
 ```mermaid
 %% Color Palette: Teal #029E73
 graph LR
-    K["Transformed Type"]:::teal --> K1["All properties affected"]
-    K --> K2["Type-safe transformation"]
+    accTitle: Mapped Type Selection Guide 2
+    accDescr: Transformed Type leads to All properties affected; Transformed Type leads to Type-safe transformation; Transformed Type leads to Compiler enforced.
+    K["Transformed Type"]:::teal --> K1["All properties<br/>affected"]
+    K --> K2["Type-safe<br/>transformation"]
     K --> K3["Compiler enforced"]
 
-    classDef teal fill:#029E73,stroke:#000,color:#fff
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 **Key Principles**:
@@ -1111,9 +1125,11 @@ Discriminated unions (tagged unions) provide type-safe state modeling.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Decorator Pattern Structure
+    accDescr: Component Interface leads to ConcreteComponent Base via implements; Component Interface leads to Decorator Wraps component via implements; Decorator Wraps component leads to ConcreteComponent Base via wraps; Decorator Wraps component leads to Enhanced behaviour.
     Interface["Component<br/>Interface"]:::blue
     Concrete["ConcreteComponent<br/>#40;Base#41;"]:::orange
-    Decorator["Decorator<br/>#40;Wraps component#41;"]:::teal
+    Decorator["Decorator<br/>Wraps component"]:::teal
     Enhanced["Enhanced behaviour"]:::purple
 
     Interface -.->|implements| Concrete
@@ -1121,12 +1137,12 @@ graph TD
     Decorator -->|wraps| Concrete
     Decorator --> Enhanced
 
-    Note1["Decorator adds<br/>behaviour dynamically<br/>without modifying<br/>original class"]
+    Note1["Decorator adds<br/>behaviour<br/>dynamically<br/>without modifying<br/>original class"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Basic Discriminated Unions
@@ -1502,8 +1518,9 @@ function handlePayment(payment: Payment): void {
 ## TypeScript Idioms
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
+    accTitle: TypeScript Idioms
+    accDescr: TS Idioms leads to Type Narrowing Type Guards; TS Idioms leads to Discriminated Unions Tagged Types; TS Idioms leads to Utility Types Transformations; Type Narrowing Type Guards leads to typeof instanceof; and 2 more links.
     A[TS Idioms] --> B[Type Narrowing<br/>Type Guards]
     A --> C[Discriminated Unions<br/>Tagged Types]
     A --> D[Utility Types<br/>Transformations]
@@ -1512,8 +1529,12 @@ flowchart TD
     C --> F[Exhaustive Checks<br/>never]
     D --> G[Partial Required<br/>Pick Omit]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A blue
+    class B orange
+    class C teal
+    class D purple
 ```

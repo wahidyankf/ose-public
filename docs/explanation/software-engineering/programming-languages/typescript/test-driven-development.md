@@ -41,9 +41,11 @@ Test-Driven Development (TDD) follows Red-Green-Refactor cycle: write failing te
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: TDD Red-Green-Refactor
+    accDescr: Red Phase Write Failing Test leads to Test Fails Expected Error; Test Fails Expected Error leads to Green Phase Minimal Implementation; Green Phase Minimal Implementation leads to Test Passes Feature Works; and 6 more links.
     A["Red Phase<br/>Write Failing Test"]:::orange
     B["Test Fails<br/>Expected Error"]:::brown
-    C["Green Phase<br/>Minimal Implementation"]:::teal
+    C["Green Phase<br/>Minimal<br/>Implementation"]:::teal
     D["Test Passes<br/>Feature Works"]:::teal
     E["Refactor Phase<br/>Clean Code"]:::purple
     F{"Tests<br/>Pass?"}:::orange
@@ -61,10 +63,10 @@ graph TD
     G --> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Test Pyramid
@@ -72,16 +74,18 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TB
-    A["E2E Tests<br/>Playwright, Full Flows<br/>Slow, Few"]:::orange
-    B["Integration Tests<br/>Real local · no remote calls<br/>Manual impacted"]:::purple
-    C["Unit Tests<br/>In-process injected boundaries<br/>99% line hard gate"]:::teal
+    accTitle: Test Pyramid
+    accDescr: E2E Tests Playwright, Full Flows Slow, Few leads to Integration Tests Real local · no remote calls Manual impacted; and 1 more links.
+    A["E2E Tests<br/>Playwright, Full<br/>Flows<br/>Slow, Few"]:::orange
+    B["Integration Tests<br/>Real local · no<br/>remote calls<br/>Manual impacted"]:::purple
+    C["Unit Tests<br/>In-process injected<br/>boundaries<br/>99% line hard gate"]:::teal
 
     A --> B
     B --> C
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Jest Execution Flow
@@ -89,6 +93,8 @@ graph TB
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Jest Execution Flow
+    accDescr: Coverage Report leads to coverage flag; jest Command Test Discovery leads to Collect Tests *.test.ts files; Collect Tests *.test.ts files leads to Setup beforeEach Test Fixtures; and 7 more links.
     A["jest Command<br/>Test Discovery"]:::blue
     B["Collect Tests<br/>*.test.ts files"]:::purple
     C["Setup beforeEach<br/>Test Fixtures"]:::brown
@@ -110,10 +116,10 @@ graph TD
     H --> I
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Financial Domain Testing
@@ -121,12 +127,14 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Financial Domain Testing
+    accDescr: Zakat Calculator Business Logic leads to Unit Test calculate method; Zakat Calculator Business Logic leads to Edge Cases Nisab Boundary; Zakat Calculator Business Logic leads to Property Test fast-check; and 5 more links.
     A["Zakat Calculator<br/>Business Logic"]:::blue
-    B["Unit Test<br/>calculate#40;#41; method"]:::teal
+    B["Unit Test<br/>calculate() method"]:::teal
     C["Edge Cases<br/>Nisab Boundary"]:::purple
     D["Property Test<br/>fast-check"]:::purple
     E["Integration Test<br/>Database Persistence"]:::orange
-    F["Type Safety<br/>Money Type Validation"]:::teal
+    F["Type Safety<br/>Money Type<br/>Validation"]:::teal
     G["Compliance<br/>2.5% Rate Check"]:::teal
 
     A --> B
@@ -139,9 +147,9 @@ graph TD
     E --> G
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Jest 30.x

@@ -168,6 +168,8 @@ content site depends on a per-domain CLI.
 
 ```mermaid
 graph LR
+    accTitle: C4 Level 2: Container Diagram
+    accDescr: rhino-cli F CLI leads to Nx Workspace Build Orchestration via Repository automation; Nx Workspace Build Orchestration leads to ose-www Next.js App via Manages; Nx Workspace Build Orchestration leads to ayokoding-www Next.js App via Manages; and 1 more links.
     subgraph "CLI Tools"
         RHINO[rhino-cli<br/>F# CLI]
     end
@@ -186,23 +188,27 @@ graph LR
     NX -.->|Manages| AYO
     NX -.->|Manages| RHINO
 
-    style OSE fill:#0077b6,stroke:#03045e,color:#ffffff
-    style AYO fill:#0077b6,stroke:#03045e,color:#ffffff
-    style RHINO fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style NX fill:#6a4c93,stroke:#22223b,color:#ffffff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class OSE,AYO blue
+    class RHINO teal
+    class NX purple
 ```
 
 **OrganicLever platform applications:**
 
 ```mermaid
 graph LR
+    accTitle: C4 Level 2: Container Diagram 2
+    accDescr: organiclever-www-fe-e2e Playwright FE E2E leads to organiclever-www Next.js App via Tests; organiclever-be-e2e Playwright E2E leads to organiclever-be F/Giraffe API via Tests; Nx Workspace Build Orchestration leads to organiclever-www Next.js App via Manages; and 1 more links.
     subgraph "OrganicLever Platform"
         OL_FE[organiclever-www<br/>Next.js App]
         OL_BE[organiclever-be<br/>F#/Giraffe API]
     end
 
     subgraph "E2E Test Suites"
-        OL_WWW_FE_E2E[organiclever-www-fe-e2e<br/>Playwright FE E2E]
+        OL_WWW_FE_E2E[organiclever-<br/>www-fe-e2e<br/>Playwright FE E2E]
         OL_BE_E2E[organiclever-be-e2e<br/>Playwright E2E]
     end
 
@@ -213,11 +219,14 @@ graph LR
     NX -.->|Manages| OL_FE
     NX -.->|Manages| OL_BE
 
-    style OL_FE fill:#0077b6,stroke:#03045e,color:#ffffff
-    style OL_BE fill:#e76f51,stroke:#9d0208,color:#ffffff
-    style OL_WWW_FE_E2E fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style OL_BE_E2E fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style NX fill:#6a4c93,stroke:#22223b,color:#ffffff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class OL_FE blue
+    class OL_BE orange
+    class OL_WWW_FE_E2E,OL_BE_E2E brown
+    class NX purple
 ```
 
 ## Application Interactions

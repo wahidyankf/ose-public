@@ -118,6 +118,8 @@ Next.js usage in this platform follows the software engineering principles from 
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 timeline
+    accTitle: Next.js Version Strategy
+    accDescr: Illustrates next.js version strategy.
     title Next.js Version Timeline (2020-2026)
     2020-10 : Next.js 10 : Automatic Image Optimization : Internationalization
     2021-06 : Next.js 11 : Webpack 5 default : Script Optimization
@@ -235,7 +237,9 @@ Core documentation sections:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart LR
-    A["Next.js Documentation"]:::blue
+    accTitle: Documentation Organization
+    accDescr: Next.js Documentation leads to Core Patterns; Next.js Documentation leads to Architecture; Core Patterns leads to Idioms; Core Patterns leads to Best Practices; Core Patterns leads to Anti-Patterns; Architecture leads to App Router; and 3 more links.
+    A["Next.js<br/>Documentation"]:::blue
     B["Core Patterns"]:::teal
     C["Architecture"]:::teal
 
@@ -252,7 +256,7 @@ flowchart LR
     C --> C4["Data Fetching"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 Advanced, integration, and template documentation sections:
@@ -262,7 +266,9 @@ Advanced, integration, and template documentation sections:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart LR
-    A["Next.js Documentation"]:::blue
+    accTitle: Documentation Organization 2
+    accDescr: Next.js Documentation leads to Advanced Topics; Next.js Documentation leads to Integration; Next.js Documentation leads to Templates; Advanced Topics leads to Rendering; Advanced Topics leads to API Routes; Advanced Topics leads to Middleware; and 9 more links.
+    A["Next.js<br/>Documentation"]:::blue
     D["Advanced Topics"]:::purple
     E["Integration"]:::orange
     F["Templates"]:::purple
@@ -284,10 +290,10 @@ flowchart LR
     F --> F1["Page Template"]
     F --> F2["Layout Template"]
     F --> F3["API Route Template"]
-    F --> F4["Server Action Template"]
+    F --> F4["Server Action<br/>Template"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 

@@ -42,24 +42,28 @@ Understanding the tool integration workflow helps optimize your development setu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: ESLint → Prettier → TypeScript Pipeline
+    accDescr: Source Code TypeScript leads to ESLint Code Quality Rules; ESLint Code Quality Rules leads to Lint errors found?; Lint errors found? leads to Auto-fix Issues via Auto-fixable; Auto-fix Issues leads to fix flag; and 4 more links.
     Code["Source Code<br/>#40;TypeScript#41;"]:::blue --> ESLint["ESLint<br/>Code Quality Rules"]:::orange
     ESLint --> ESLintErrors{"Lint errors<br/>found?"}:::orange
     ESLintErrors -->|"Auto-fixable"| AutoFix["Auto-fix Issues<br/>--fix flag"]:::teal
-    ESLintErrors -->|"Manual"| ManualFix["Manual Fixes Required"]:::purple
+    ESLintErrors -->|"Manual"| ManualFix["Manual Fixes<br/>Required"]:::purple
     ESLintErrors -->|No| Prettier["Prettier<br/>Code Formatting"]:::brown
     AutoFix --> Prettier
     ManualFix --> Code
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: ESLint → Prettier → TypeScript Pipeline 2
+    accDescr: Prettier Code Formatting leads to Format Code Consistent Style; Format Code Consistent Style leads to TypeScript Compiler tsc; TypeScript Compiler tsc leads to noEmit; TypeScript Compiler tsc leads to Type errors found?; and 2 more links.
     Prettier["Prettier<br/>Code Formatting"]:::brown --> PrettierFormat["Format Code<br/>Consistent Style"]:::teal
     PrettierFormat --> TSC["TypeScript Compiler<br/>tsc --noEmit"]:::blue
     TSC --> TypeErrors{"Type errors<br/>found?"}:::orange
@@ -67,10 +71,10 @@ graph TD
     TypeErrors -->|No| Success["Code Ready to Commit"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## ESLint 9.x/10.x
@@ -82,14 +86,16 @@ ESLint resolves configuration files following a specific hierarchy. Understandin
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: ESLint Configuration Hierarchy
+    accDescr: eslint src/file.ts leads to Check src/ for config; Check src/ for config leads to Check parent directories; Check parent directories leads to Find eslint.config.js at project root; and 5 more links.
     Start["eslint src/file.ts"]:::blue
     FileDir["Check src/<br/>for config"]:::orange
-    ParentDir["Check parent directories"]:::orange
-    RootConfig["Find eslint.config.js<br/>at project root"]:::teal
+    ParentDir["Check parent<br/>directories"]:::orange
+    RootConfig["Find<br/>eslint.config.js<br/>at project root"]:::teal
     UserConfig["Check ~/.eslintrc"]:::brown
     DefaultConfig["Use ESLint defaults"]:::purple
 
-    Merge["Merge Configurations<br/>(closer = higher priority)"]:::teal
+    Merge["Merge Configurations<br/>closer = higher<br/>priority"]:::teal
     ApplyRules["Apply Rules to File"]:::blue
     Result["Lint Results"]:::teal
 
@@ -102,13 +108,13 @@ graph TD
     Merge --> ApplyRules
     ApplyRules --> Result
 
-    Note1["Priority #40;high to low#41;:<br/>1. Inline comments<br/>2. File-level config<br/>3. Project config<br/>4. User config<br/>5. Defaults"]
+    Note1["Priority (high to<br/>low):<br/>1. Inline comments<br/>2. File-level config<br/>3. Project config<br/>4. User config<br/>5. Defaults"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Flat Config Setup (9.x)
@@ -195,6 +201,8 @@ When should you use `eslint --fix` vs manual fixes? This decision tree helps opt
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Auto-fix vs Manual Fix Decision
+    accDescr: Use leads to fix Flag Auto-apply fixes; Review Change Then leads to fix; ESLint Error Found leads to Safe to auto-fix?; Safe to auto-fix? leads to Style-only change? via Yes; and 3 more links.
     Start["ESLint Error Found"]:::blue
     SafeRule{"Safe to<br/>auto-fix?"}:::orange
     StyleOnly{"Style-only<br/>change?"}:::orange
@@ -211,10 +219,10 @@ graph LR
     Examples["Auto-fixable:<br/>- Missing semicolons<br/>- Unused imports<br/>- Spacing issues<br/><br/>Manual fixes:<br/>- Type errors<br/>- Logic errors<br/>- Security issues"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Prettier 3.x
@@ -226,29 +234,31 @@ Different strategies for organizing imports affect readability and maintainabili
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Import Sorting Strategies
+    accDescr: Import Statements leads to By Type Built-in, External, Internal; Import Statements leads to Alphabetical A-Z; Import Statements leads to By Usage Frequency Most used first; and 1 more links.
     Imports["Import Statements"]:::blue
 
-    ByType["By Type<br/>(Built-in, External, Internal)"]:::orange
+    ByType["By Type<br/>Built-in, External,<br/>Internal"]:::orange
     ByAlpha["Alphabetical<br/>#40;A-Z#41;"]:::teal
-    ByUsage["By Usage Frequency<br/>#40;Most used first#41;"]:::purple
-    ByLayer["By Architecture Layer<br/>#40;Domain, App, Infra#41;"]:::brown
+    ByUsage["By Usage Frequency<br/>Most used first"]:::purple
+    ByLayer["By Architecture<br/>Layer<br/>Domain, App, Infra"]:::brown
 
     Imports --> ByType
     Imports --> ByAlpha
     Imports --> ByUsage
     Imports --> ByLayer
 
-    TypeExample["1. Built-in: fs, path<br/>2. External: express, zod<br/>3. Internal: @domain/*"]
-    AlphaExample["import { a } from 'a'<br/>import { b } from 'b'<br/>import { z } from 'z'"]
-    LayerExample["1. Domain entities<br/>2. Application services<br/>3. Infrastructure"]
+    TypeExample["1. Built-in: fs,<br/>path<br/>2. External:<br/>express, zod<br/>3. Internal:<br/>@domain/*"]
+    AlphaExample["import { a } from<br/>'a'<br/>import { b } from<br/>'b'<br/>import { z } from<br/>'z'"]
+    LayerExample["1. Domain entities<br/>2. Application<br/>services<br/>3. Infrastructure"]
 
-    Note1["ESLint plugin:<br/>eslint-plugin-import or<br/>prettier-plugin-sort-imports"]
+    Note1["ESLint plugin:<br/>eslint-plugin-import<br/>or<br/>prettier-plugin-<br/>sort-imports"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Configuration
@@ -396,8 +406,9 @@ git commit -m "feat: add donation validation"
 ## TypeScript Quality Tools
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
+    accTitle: TypeScript Quality Tools
+    accDescr: TS Quality leads to ESLint Linting; TS Quality leads to Prettier Formatting; TS Quality leads to TypeScript Type Checking; ESLint Linting leads to @typescript-eslint TS Rules; Prettier Formatting leads to Opinionated No Config Needed; and 1 more links.
     A[TS Quality] --> B[ESLint<br/>Linting]
     A --> C[Prettier<br/>Formatting]
     A --> D[TypeScript<br/>Type Checking]
@@ -406,8 +417,12 @@ flowchart TD
     C --> F[Opinionated<br/>No Config Needed]
     D --> G[strict: true<br/>Maximum Safety]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A blue
+    class B orange
+    class C teal
+    class D purple
 ```

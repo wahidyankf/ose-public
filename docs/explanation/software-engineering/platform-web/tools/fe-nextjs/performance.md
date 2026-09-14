@@ -187,6 +187,8 @@ export default async function WaqfProjectPage({
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Image Optimization Benefits
+    accDescr: next/image leads to Automatic Optimization; next/image leads to Responsive Sizing; next/image leads to Lazy Loading; next/image leads to Modern Formats; Automatic Optimization leads to Better LCP Score; Responsive Sizing leads to Better LCP Score; and 2 more links.
     A["next/image"]:::blue
     B["Automatic<br/>Optimization"]:::teal
     C["Responsive<br/>Sizing"]:::teal
@@ -204,7 +206,7 @@ graph TD
     E --> F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
@@ -465,6 +467,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Next.js Caching Layers
+    accDescr: Request leads to Router Cache Client-side; Router Cache Client-side leads to Full Route Cache Server-side; Full Route Cache Server-side leads to Data Cache Server-side; Data Cache Server-side leads to React Cache Per-request.
     A["Request"]:::blue
     B["Router Cache<br/>#40;Client-side#41;"]:::teal
     C["Full Route Cache<br/>#40;Server-side#41;"]:::teal
@@ -477,8 +481,8 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 

@@ -46,10 +46,12 @@ Domain-Driven Design (DDD) is a strategic approach to software development that 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Presentation["Presentation Layer<br/>#40;Controllers, UI#41;"]:::blue
-    Application["Application Layer<br/>#40;Use Cases, Services#41;"]:::orange
-    Domain["Domain Layer<br/>#40;Entities, Value Objects,<br/>Aggregates#41;"]:::teal
-    Infrastructure["Infrastructure Layer<br/>(Database, External APIs)"]:::purple
+    accTitle: DDD Layers Hierarchy
+    accDescr: Presentation Layer Controllers, UI leads to Application Layer Use Cases, Services; Application Layer Use Cases, Services leads to Domain Layer Entities, Value Objects, Aggregates; and 2 more links.
+    Presentation["Presentation Layer<br/>Controllers, UI"]:::blue
+    Application["Application Layer<br/>Use Cases, Services"]:::orange
+    Domain["Domain Layer<br/>(Entities, Value<br/>Objects,<br/>Aggregates#41;"]:::teal
+    Infrastructure["Infrastructure Layer<br/>Database, External<br/>APIs"]:::purple
 
     Presentation --> Application
     Application --> Domain
@@ -60,9 +62,9 @@ graph TD
     Note2["Domain Layer:<br/>Pure business logic<br/>No dependencies"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Value Objects
@@ -403,8 +405,10 @@ Aggregates are clusters of entities with consistency boundaries. Only the aggreg
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Aggregate Boundary with Entities and Value Objects
+    accDescr: External Access leads to ZakatCalculation Aggregate Root; ZakatCalculation Aggregate Root leads to WealthItem Entity; ZakatCalculation Aggregate Root leads to WealthItem Entity; ZakatCalculation Aggregate Root leads to NisabThreshold Value Object; and 2 more links.
     Outside["External Access"]:::brown
-    Root["ZakatCalculation<br/>#40;Aggregate Root#41;"]:::blue
+    Root["ZakatCalculation<br/>Aggregate Root"]:::blue
     Entity1["WealthItem<br/>#40;Entity#41;"]:::orange
     Entity2["WealthItem<br/>#40;Entity#41;"]:::orange
     VO1["Money<br/>#40;Value Object#41;"]:::teal
@@ -418,13 +422,13 @@ graph TD
     Entity2 --> VO1
 
     Note1["Aggregate Root:<br/>Only entry point<br/>Enforces invariants<br/>Guards consistency"]
-    Note2["Entities:<br/>Inside aggregate<br/>Not accessed directly<br/>from outside"]
+    Note2["Entities:<br/>Inside aggregate<br/>Not accessed<br/>directly<br/>from outside"]
     Note3["Value Objects:<br/>Shared across<br/>aggregate boundary<br/>Immutable"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### ZakatCalculation Aggregate
@@ -779,6 +783,8 @@ type DomainEventUnion = DonationReceivedEvent | ZakatCalculatedEvent | CampaignG
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Domain Event Flow
+    accDescr: Donation Campaign leads to Event List private via 1. State Change; Event List private leads to Campaign Service via 2. Collect Events; Campaign Service leads to Event Publisher via 3. Publish; and 3 more links.
     subgraph Aggregate["Aggregate"]
         Agg["Donation<br/>Campaign"]:::blue
         Events["Event List<br/>(private)"]:::blue
@@ -802,10 +808,10 @@ graph TD
     Bus -->|"4. Dispatch"| H2
     Bus -->|"4. Dispatch"| H3
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 **Key Points**:
@@ -917,6 +923,8 @@ Repositories abstract persistence for aggregates.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Repository Pattern
+    accDescr: Application Service leads to Repository Interface CampaignRepository via Uses Interface; Application Service leads to Aggregate Root DonationCampaign via Works With; Repository Interface CampaignRepository leads to Repository Implementation TypeORMCampaignRepository via Implemented By; and 2 more links.
     subgraph Domain["Domain Layer"]
         Agg["Aggregate Root<br/>(DonationCampaign)"]:::blue
         RepIntf["Repository Interface<br/>(CampaignRepository)"]:::blue
@@ -927,7 +935,7 @@ graph TD
     end
 
     subgraph Infrastructure["Infrastructure Layer"]
-        RepImpl["Repository Implementation<br/>(TypeORMCampaignRepository)"]:::teal
+        RepImpl["Repository<br/>Implementation<br/>TypeORMCampaign<br/>Repository"]:::teal
         ORM["TypeORM<br/>Entity"]:::teal
         DB[("PostgreSQL<br/>Database")]:::purple
     end
@@ -938,10 +946,10 @@ graph TD
     RepImpl -->|"Maps To/From"| ORM
     ORM -->|"Persists"| DB
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 **Key Principles**:
@@ -1172,6 +1180,8 @@ Application services orchestrate use cases by coordinating domain objects.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Use Case Execution Flow
+    accDescr: C sends executecommand to UC; UC sends findByIdid to R; R sends Entity to UC; UC sends performOperation to E; E sends calculateBusinessRule to DS; DS sends Result to E; and 6 more links.
     participant C as Controller
     participant UC as Use Case
     participant R as Repository

@@ -118,6 +118,8 @@ This document defines **authoritative standards** for visualizing DDD bounded co
 
 ```mermaid
 graph LR
+    accTitle: System Context Enterprise Context Map
+    accDescr: Donation Management Context leads to Beneficiary Registry Context; Zakat Calculation Context leads to Payment Context; Donation Management Context leads to Payment Context; Zakat Calculation Context leads to Compliance Reporting External; and 1 more links.
     ZC["Zakat Calculation<br/>Context"]:::blue
     DM["Donation Management<br/>Context"]:::blue
     BR["Beneficiary Registry<br/>Context"]:::blue
@@ -130,9 +132,9 @@ graph LR
     ZC --> CompRep
     DM --> CompRep
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
-    classDef teal fill:#029E73,stroke:#000,color:#FFF
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
 ```
 
 ### Container Diagram (Single System with Multiple Contexts)
@@ -141,27 +143,31 @@ graph LR
 
 ```mermaid
 graph LR
+    accTitle: Container Diagram Single System with Multiple Contexts
+    accDescr: Zakat Web UI Container: Next.js User interface leads to Zakat Calculation Context Container: Spring Boot Calculate Zakat; Zakat Web UI Container: Next.js User interface leads to Donation Management Container: Spring Boot Manage campaigns; and 1 more links.
     ZakatWeb["Zakat Web UI<br/>[Container: Next.js]<br/>User interface"]:::blue
-    ZakatAPI["Zakat Calculation Context<br/>[Container: Spring Boot]<br/>Calculate Zakat"]:::blue
-    DonationAPI["Donation Management<br/>[Container: Spring Boot]<br/>Manage campaigns"]:::blue
-    BeneficiaryAPI["Beneficiary Registry<br/>[Container: Spring Boot]<br/>Register beneficiaries"]:::blue
+    ZakatAPI["Zakat Calculation<br/>Context<br/>[Container: Spring<br/>Boot]<br/>Calculate Zakat"]:::blue
+    DonationAPI["Donation Management<br/>[Container: Spring<br/>Boot]<br/>Manage campaigns"]:::blue
+    BeneficiaryAPI["Beneficiary<br/>Registry<br/>[Container: Spring<br/>Boot]<br/>Register beneficiaries"]:::blue
 
     ZakatWeb --> ZakatAPI
     ZakatWeb --> DonationAPI
     DonationAPI --> BeneficiaryAPI
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Persistence and messaging layer:**
 
 ```mermaid
 graph LR
-    ZakatAPI["Zakat Calculation<br/>[Container: Spring Boot]"]:::blue
-    DonationAPI["Donation Management<br/>[Container: Spring Boot]"]:::blue
-    ZakatDB["Zakat Database<br/>[Container: PostgreSQL]<br/>Zakat assessment storage"]:::teal
-    DonationDB["Donation Database<br/>[Container: PostgreSQL]<br/>Campaign storage"]:::teal
-    BeneficiaryDB["Beneficiary Database<br/>[Container: PostgreSQL]<br/>Beneficiary storage"]:::teal
+    accTitle: Container Diagram Single System with Multiple Contexts 2
+    accDescr: Zakat Calculation Container: Spring Boot leads to Zakat Database Container: PostgreSQL Zakat assessment storage; Zakat Calculation Container: Spring Boot leads to Event Bus Container: RabbitMQ Domain events; and 3 more links.
+    ZakatAPI["Zakat Calculation<br/>[Container: Spring<br/>Boot]"]:::blue
+    DonationAPI["Donation Management<br/>[Container: Spring<br/>Boot]"]:::blue
+    ZakatDB["Zakat Database<br/>[Container:<br/>PostgreSQL]<br/>Zakat assessment storage"]:::teal
+    DonationDB["Donation Database<br/>[Container:<br/>PostgreSQL]<br/>Campaign storage"]:::teal
+    BeneficiaryDB["Beneficiary<br/>Database<br/>[Container:<br/>PostgreSQL]<br/>Beneficiary storage"]:::teal
     MQ["Event Bus<br/>[Container: RabbitMQ]<br/>Domain events"]:::teal
 
     ZakatAPI --> ZakatDB
@@ -170,8 +176,8 @@ graph LR
     DonationAPI --> BeneficiaryDB
     DonationAPI --> MQ
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
-    classDef teal fill:#029E73,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 ## Component Diagram (Bounded Context Internals)
@@ -184,12 +190,14 @@ graph LR
 
 ```mermaid
 graph LR
-    Controller["Zakat Controller<br/>[Component: REST Controller]<br/>HTTP endpoints"]:::blue
-    CalcService["Calculation Service<br/>[Component: Domain Service]<br/>Orchestrates calculations"]:::blue
-    Assessment["Assessment Aggregate<br/>[Component: Aggregate Root]<br/>Zakat assessment lifecycle"]:::blue
-    Calculator["Zakat Calculator<br/>[Component: Domain Service]<br/>Pure calculation logic"]:::blue
-    AssessmentRepo["Assessment Repository<br/>[Component: Repository]<br/>Persistence"]:::teal
-    EventPublisher["Event Publisher<br/>[Component: Infrastructure]<br/>Domain events"]:::teal
+    accTitle: OPTIONAL: Show Aggregates and Domain Services
+    accDescr: Zakat Controller Component: REST Controller HTTP endpoints leads to Calculation Service Component: Domain Service Orchestrates calculations; Calculation Service Component: Domain Service Orchestrates calculations leads to Assessment Aggregate Component: Aggregate Root Zakat assessment lifecycle; and 3 more links.
+    Controller["Zakat Controller<br/>[Component: REST<br/>Controller]<br/>HTTP endpoints"]:::blue
+    CalcService["Calculation Service<br/>[Component: Domain<br/>Service]<br/>Orchestrates calculations"]:::blue
+    Assessment["Assessment<br/>Aggregate<br/>[Component:<br/>Aggregate Root]<br/>Zakat assessment lifecycle"]:::blue
+    Calculator["Zakat Calculator<br/>[Component: Domain<br/>Service]<br/>Pure calculation logic"]:::blue
+    AssessmentRepo["Assessment<br/>Repository<br/>[Component:<br/>Repository]<br/>Persistence"]:::teal
+    EventPublisher["Event Publisher<br/>[Component:<br/>Infrastructure]<br/>Domain events"]:::teal
 
     Controller --> CalcService
     CalcService --> Assessment
@@ -197,8 +205,8 @@ graph LR
     Assessment --> AssessmentRepo
     Assessment --> EventPublisher
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
-    classDef teal fill:#029E73,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 ## Shared Kernel Visualization
@@ -211,18 +219,20 @@ graph LR
 
 ```mermaid
 graph TD
-    SharedLib["Shared Domain Library<br/>[Library: ts-shared-domain]<br/>Money, Currency value objects"]:::purple
+    accTitle: REQUIRED: Show Shared Kernel as Supporting Components
+    accDescr: Zakat Calculation Context Container: Spring Boot leads to Shared Domain Library Library: ts-shared-domain Money, Currency value objects via Uses Money Shared Kernel; and 2 more links.
+    SharedLib["Shared Domain<br/>Library<br/>[Library:<br/>ts-shared-domain]<br/>Money, Currency value objects"]:::purple
 
-    ZakatAPI["Zakat Calculation Context<br/>[Container: Spring Boot]"]:::blue
-    DonationAPI["Donation Management Context<br/>[Container: Spring Boot]"]:::blue
-    PaymentAPI["Payment Context<br/>[Container: Spring Boot]"]:::blue
+    ZakatAPI["Zakat Calculation<br/>Context<br/>[Container: Spring<br/>Boot]"]:::blue
+    DonationAPI["Donation Management<br/>Context<br/>[Container: Spring<br/>Boot]"]:::blue
+    PaymentAPI["Payment Context<br/>[Container: Spring<br/>Boot]"]:::blue
 
     ZakatAPI -.->|"Uses Money<br/>[Shared Kernel]"| SharedLib
     DonationAPI -.->|"Uses Money<br/>[Shared Kernel]"| SharedLib
     PaymentAPI -.->|"Uses Money<br/>[Shared Kernel]"| SharedLib
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 **Note**: Use dashed lines (`-.->`) for library dependencies to distinguish from runtime communication.

@@ -41,22 +41,24 @@ V8 organizes memory into different spaces optimized for different object lifespa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: V8 Memory Spaces Architecture
+    accDescr: V8 Heap leads to New Space Young Generation 1-8 MB; V8 Heap leads to Old Space Old Generation Variable size; V8 Heap leads to Large Object Space > 1 MB objects; and 5 more links.
     Heap["V8 Heap"]:::blue
 
-    NewSpace["New Space<br/>#40;Young Generation#41;<br/>1-8 MB"]:::orange
-    OldSpace["Old Space<br/>#40;Old Generation#41;<br/>Variable size"]:::teal
-    LargeSpace["Large Object Space<br/>#40;#62; 1 MB objects#41;"]:::purple
-    CodeSpace["Code Space<br/>#40;JIT compiled code#41;"]:::brown
+    NewSpace["New Space<br/>Young Generation<br/>1-8 MB"]:::orange
+    OldSpace["Old Space<br/>Old Generation<br/>Variable size"]:::teal
+    LargeSpace["Large Object Space<br/>#62; 1 MB objects"]:::purple
+    CodeSpace["Code Space<br/>JIT compiled code"]:::brown
 
     Heap --> NewSpace
     Heap --> OldSpace
     Heap --> LargeSpace
     Heap --> CodeSpace
 
-    NewDesc["Short-lived objects<br/>Fast allocation<br/>Scavenge GC #40;minor#41;"]
-    OldDesc["Long-lived objects<br/>Promoted from new space<br/>Mark-Sweep GC #40;major#41;"]
+    NewDesc["Short-lived objects<br/>Fast allocation<br/>Scavenge GC (minor)"]
+    OldDesc["Long-lived objects<br/>Promoted from new<br/>space<br/>Mark-Sweep GC<br/>(major)"]
     LargeDesc["Arrays, buffers<br/>Allocated directly<br/>No copying"]
-    CodeDesc["Compiled JavaScript<br/>Read-only after compilation"]
+    CodeDesc["Compiled JavaScript<br/>Read-only after<br/>compilation"]
 
     NewSpace -.-> NewDesc
     OldSpace -.-> OldDesc
@@ -64,10 +66,10 @@ graph LR
     CodeSpace -.-> CodeDesc
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Heap Regions
@@ -114,10 +116,12 @@ V8 uses mark-sweep algorithm for old generation garbage collection. Understandin
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Start["GC Triggered<br/>#40;Memory pressure#41;"]:::blue
+    accTitle: Garbage Collection Cycle Mark-Sweep
+    accDescr: GC Triggered Memory pressure leads to Mark Phase Traverse object graph; Mark Phase Traverse object graph leads to Identify GC Roots Global, Stack, Closures; and 8 more links.
+    Start["GC Triggered<br/>Memory pressure"]:::blue
 
-    Mark["Mark Phase<br/>Traverse object graph"]:::orange
-    MarkRoots["Identify GC Roots<br/>(Global, Stack, Closures)"]:::orange
+    Mark["Mark Phase<br/>Traverse object<br/>graph"]:::orange
+    MarkRoots["Identify GC Roots<br/>Global, Stack,<br/>Closures"]:::orange
     MarkReachable["Mark all reachable<br/>objects as alive"]:::orange
 
     Sweep["Sweep Phase<br/>Reclaim memory"]:::teal
@@ -144,10 +148,10 @@ graph TD
     Note1["Major GC pause time:<br/>10-100ms depending<br/>on heap size"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### GC Types
@@ -304,15 +308,17 @@ Weak references allow garbage collection of referenced objects, preventing memor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: WeakMap/WeakSet Lifecycle
+    accDescr: start moves to Referenced on Object created; Referenced moves to WeakReferenced on Add to WeakMap/WeakSet; Referenced moves to StrongReferenced on Add to Map/Set; WeakReferenced moves to Referenced on Object still in use; and 5 more links.
     [*] --> Referenced: Object created
-    Referenced --> WeakReferenced: Add to WeakMap/WeakSet
+    Referenced --> WeakReferenced: Add to<br/>WeakMap/WeakSet
     Referenced --> StrongReferenced: Add to Map/Set
 
     WeakReferenced --> Referenced: Object still in use
     WeakReferenced --> GCEligible: No strong references
 
     StrongReferenced --> Referenced: Object kept alive
-    StrongReferenced --> StrongReferenced: Collection prevents GC
+    StrongReferenced --> StrongReferenced: Collection prevents<br/>GC
 
     GCEligible --> Collected: GC runs
     Collected --> [*]: Memory reclaimed
@@ -378,6 +384,8 @@ Systematically detecting and fixing memory leaks using Chrome DevTools and heap 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Memory Leak Detection Workflow
+    accDescr: Dev sends Start app with --inspect to App; App sends Take snapshot before.heapsnapshot to Heap; Heap sends Load baseline to DevTools; Dev sends Run suspected leak operation to App; and 14 more links.
     participant Dev as Developer
     participant App as Node App
     participant Heap as Heap Snapshot
@@ -656,10 +664,11 @@ async function processAllDonations() {
 ## TypeScript Memory Management
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
+    accTitle: TypeScript Memory Management
+    accDescr: V8 Memory leads to Heap Memory Objects/Arrays; V8 Memory leads to Stack Memory Primitives/References; V8 Memory leads to Garbage Collection Mark & Sweep; Heap Memory Objects/Arrays leads to Young Generation Short-lived; and 3 more links.
     A[V8 Memory] --> B[Heap Memory<br/>Objects/Arrays]
-    A --> C[Stack Memory<br/>Primitives/References]
+    A --> C[Stack Memory<br/>Primitives/<br/>References]
     A --> D[Garbage Collection<br/>Mark & Sweep]
 
     B --> E[Young Generation<br/>Short-lived]
@@ -668,8 +677,12 @@ flowchart TD
     D --> G[Minor GC<br/>Scavenge]
     D --> H[Major GC<br/>Mark-Compact]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A blue
+    class B orange
+    class C teal
+    class D purple
 ```

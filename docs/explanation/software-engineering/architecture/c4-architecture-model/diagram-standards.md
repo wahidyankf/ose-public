@@ -125,7 +125,7 @@ All System Context diagrams MUST include:
 
 **Example**:
 
-```mermaid
+```text
 Donor -->|"Submits Zakat<br/>calculation<br/>[HTTPS/JSON]"| ZMS
 ```
 
@@ -141,7 +141,9 @@ Donor -->|"Submits Zakat<br/>calculation<br/>[HTTPS/JSON]"| ZMS
 
 ```mermaid
 graph LR
-    ZMS["Zakat Management System"]:::blue
+    accTitle: OSE-Specific Patterns
+    accDescr: Donor Person leads to Zakat Management System; Zakat Management System leads to Donor Person; Administrator Person leads to Zakat Management System; Zakat Management System leads to Payment Gateway External System; and 2 more links.
+    ZMS["Zakat Management<br/>System"]:::blue
     Donor["Donor<br/>(Person)"]:::orange
     Beneficiary["Beneficiary<br/>(Person)"]:::orange
     Admin["Administrator<br/>(Person)"]:::orange
@@ -155,9 +157,9 @@ graph LR
     ZMS --> CompRep
     ZMS --> Beneficiary
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 ## Container Requirements
@@ -203,10 +205,12 @@ All Container diagrams MUST include:
 
 ```mermaid
 graph LR
+    accTitle: Alignment with DDD Bounded Contexts
+    accDescr: Zakat Web UI Container: Next.js User interface leads to Zakat API Container: Spring Boot Business logic; Zakat API Container: Spring Boot Business logic leads to Zakat Database Container: PostgreSQL Assessment storage; and 3 more links.
     Web["Zakat Web UI<br/>[Container: Next.js]<br/>User interface"]:::blue
-    API["Zakat API<br/>[Container: Spring Boot]<br/>Business logic"]:::blue
-    CalcService["Calculation Service<br/>[Container: Spring Boot]<br/>Zakat calculations"]:::blue
-    DB["Zakat Database<br/>[Container: PostgreSQL]<br/>Assessment storage"]:::teal
+    API["Zakat API<br/>[Container: Spring<br/>Boot]<br/>Business logic"]:::blue
+    CalcService["Calculation Service<br/>[Container: Spring<br/>Boot]<br/>Zakat calculations"]:::blue
+    DB["Zakat Database<br/>[Container:<br/>PostgreSQL]<br/>Assessment storage"]:::teal
     MQ["Message Broker<br/>[Container: RabbitMQ]<br/>Event distribution"]:::teal
 
     Web --> API
@@ -215,8 +219,8 @@ graph LR
     CalcService --> MQ
     API --> MQ
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
-    classDef teal fill:#029E73,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 ## Component Requirements

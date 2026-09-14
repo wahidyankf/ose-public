@@ -1018,14 +1018,17 @@ export const DonationForm: React.FC = () => {
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   timeout: 10000,
+  // Sends the refresh token, which lives only in an httpOnly cookie that script cannot read
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Add auth token to requests
+// Add the access token to requests. It is held in session storage, never in
+// persistent browser storage such as localStorage.
 apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem("authToken");
+  const token = sessionStorage.getItem("accessToken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

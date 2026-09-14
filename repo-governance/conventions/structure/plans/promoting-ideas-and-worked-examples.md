@@ -25,9 +25,8 @@ When a two-pager is ripe:
 4. **Delete** the two-pager and remove its line from `plans/ideas/README.md` (the idea now lives as a
    plan).
 
-The [plan-idea-promotion-planning workflow](../../../workflows/plan/plan-idea-promotion-planning.md)
-orchestrates these four steps end to end — ripeness gate, the deep prior-art study, the
-`plan-planning` hand-off, and the two-pager retirement.
+[plan-planning](../../../workflows/plan/plan-planning.md) carries steps 1–3 with the two-pager as its input.
+Confirm ripeness before it starts, and delete the two-pager only after the plan exists.
 
 ## Ideas as a Home for Execution Learnings
 

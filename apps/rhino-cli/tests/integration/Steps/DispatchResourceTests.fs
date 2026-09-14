@@ -1313,6 +1313,7 @@ let ``route surfaces a read failure as Error when the agents directory is unread
     ()
     =
     let root = newTempDir ()
+    stubRhino root 0
     let agentsDir = Path.Combine(root, ".claude", "agents")
     Directory.CreateDirectory(agentsDir) |> ignore
     File.SetUnixFileMode(agentsDir, UnixFileMode.None)
@@ -1329,6 +1330,7 @@ let ``route surfaces a read failure as Error when the agents directory is unread
 [<Fact>]
 let ``route reports duplication clusters for two agents sharing a 10-line window on harness duplication validate`` () =
     let root = newTempDir ()
+    stubRhino root 0
 
     let body =
         [ 1..10 ]
@@ -1350,6 +1352,7 @@ let ``route reports duplication clusters for two agents sharing a 10-line window
 [<Fact>]
 let ``route falls back to the default catalog path when repo-config.yml fails to load on harness catalog validate`` () =
     let root = newTempDir ()
+    stubRhino root 0
     writeFile root "repo-config.yml" "harness:\n  - name: probe\n    bogus_key: true\n"
 
     let code, _, err = runCaptured (okRoot root) [| "harness"; "catalog"; "validate" |]

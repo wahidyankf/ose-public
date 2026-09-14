@@ -61,7 +61,7 @@ toolchain, or verifying an environment after adding a new project language.
 - [Notes](./development-environment-setup/notes.md) — pinning, idempotency, platform notes.
 - [Principles Respected](./development-environment-setup/principles-implemented-respected.md) — governance.
 - [Related Documentation](./development-environment-setup/related-documentation.md) — how-to guide, governance docs.
-- [Agents](./development-environment-setup/agents.md) — rules-checker follow-up.
+- [Related Agents](./development-environment-setup/related-agents.md) — rules-checker follow-up.
 
 ## Related Workflows
 

@@ -1,7 +1,11 @@
 ---
 name: plan-verifying-execution
-description: Post-execution verification methodology for plan-execution-checker — confirms completed plan implementation actually did what the plan said, as the temporal sibling of plan-validating-quality's pre-execution rules (same rule domains — operational readiness, manual assertions, worktree usage, anti-hallucination, knowledge capture, delivery mode — checked against the post-execution repo state instead of the authored plan text).
-when_to_use: When validating that a completed plan implementation meets requirements, follows technical documentation, completes the delivery checklist, and passed all execution-time gates before archival to plans/done/.
+description: >-
+  Post-execution verification methodology for plan-execution-checker: confirms a completed implementation did what the
+  plan said, checking the rule domains of plan-validating-quality against the post-execution repository state.
+when_to_use: >-
+  When validating that a completed plan implementation meets its requirements, technical documentation, delivery
+  checklist, and execution-time gates before archival to plans/done/.
 ---
 
 # Verifying Plan Execution

@@ -1,6 +1,6 @@
 ---
 name: repo-defining-workflows
-description: Workflow pattern standards for creating multi-agent orchestrations including YAML frontmatter (name, goal, termination, inputs, outputs), execution phases (sequential/parallel/conditional), agent coordination patterns, and Gherkin success criteria. Essential for defining reusable, validated workflow processes.
+description: Workflow pattern standards for creating multi-agent orchestrations including two-key frontmatter with the goal, termination, inputs and outputs contract in body sections, execution phases (sequential/parallel/conditional), agent coordination patterns, and success criteria. Essential for defining reusable, validated workflow processes.
 ---
 
 # Defining Workflows
@@ -20,7 +20,7 @@ parallel, or conditional coordination.
 
 ## Workflow Structure
 
-See [Workflow Structure](./reference/workflow-structure.md) for the required YAML frontmatter schema (name, goal, termination, inputs, outputs), YAML colon-quoting rule, and the full workflow content template (Purpose, Agents Involved, Input Parameters, Execution Phases, Success Criteria, Example Usage, Related Workflows).
+See [Workflow Structure](./reference/workflow-structure.md) for the two-key frontmatter (`description`, `when_to_use`), the YAML colon-quoting rule, and the body sections that carry the contract (Goal and Termination, Inputs, Outputs, Steps, Termination Criteria, Example Usage, Related Workflows). The contract never goes in frontmatter: the metadata schema is closed, and a body contract is readable without a YAML parser.
 
 ## Execution Patterns
 
@@ -50,17 +50,23 @@ description: Workflow name: detailed description
 description: "Workflow name: detailed description"
 ```
 
-### ❌ Mistake 2: Missing agent dependencies
+### ❌ Mistake 2: Contract fields in frontmatter
+
+**Wrong**: `name`, `goal`, `termination`, `inputs`, or `outputs` as frontmatter keys — they fail the closed
+metadata schema and hide the contract from readers
+**Right**: exactly `description` and `when_to_use` in frontmatter; the contract in the body sections
+
+### ❌ Mistake 3: Missing agent dependencies
 
 **Wrong**: Parallel execution when agent-2 needs agent-1 output
 **Right**: Sequential execution with explicit dependency
 
-### ❌ Mistake 3: No success criteria
+### ❌ Mistake 4: No success criteria
 
 **Wrong**: Workflow without Gherkin validation criteria
 **Right**: Clear Gherkin scenarios for success validation
 
-### ❌ Mistake 4: Missing parameters documentation
+### ❌ Mistake 5: Missing parameters documentation
 
 **Wrong**: Undocumented parameters that users must guess
 **Right**: Table with all parameters, types, defaults, descriptions
@@ -79,12 +85,10 @@ description: "Workflow name: detailed description"
 
 Before publishing workflow:
 
-- [ ] Valid YAML frontmatter (all colons quoted)
-- [ ] name field matches filename
-- [ ] goal is clear and concise
-- [ ] termination criteria defined (success/failure)
-- [ ] All inputs documented (type, required, default)
-- [ ] All outputs documented (type, pattern for file outputs)
+- [ ] Frontmatter carries exactly `description` and `when_to_use` (colons quoted); the identifier is the filename stem
+- [ ] Goal and Termination section: goal is clear and concise, success/failure criteria defined
+- [ ] Inputs section documents every input (type, required or optional, default)
+- [ ] Outputs section documents every output (type, pattern for file outputs)
 - [ ] Every `*-quality-gate` applies lifecycle ownership Step 0 and emits `lifecycle-status`
 - [ ] Execution phases clearly defined
 - [ ] Dependencies explicit (sequential vs parallel)

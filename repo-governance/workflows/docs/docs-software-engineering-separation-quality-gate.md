@@ -67,4 +67,4 @@ updating style guide or AyoKoding content, before major releases, or periodicall
 - [Notes](./docs-software-engineering-separation-quality-gate/notes.md) — key operating characteristics.
 - [Principles Respected](./docs-software-engineering-separation-quality-gate/principles-implemented-respected.md) — governance.
 - [Conventions Respected](./docs-software-engineering-separation-quality-gate/conventions-implemented-respected.md) — governance.
-- [Agents](./docs-software-engineering-separation-quality-gate/agents.md) — checker/fixer agent links.
+- [Related Agents](./docs-software-engineering-separation-quality-gate/related-agents.md) — checker/fixer agent links.

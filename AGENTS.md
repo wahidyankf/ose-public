@@ -114,7 +114,8 @@ Verify UI/API behaviour manually; investigate CI failures at the root cause, nev
 ## AI Agents
 
 [Agent catalog](./.claude/agents/README.md) is authoritative. Agent skills authored at
-`.claude/skills/<name>/SKILL.md` have non-vendored mirrors under `.agents/skills/`.
+`.claude/skills/<name>/SKILL.md` have non-vendored mirrors under `.agents/skills/`. The three plan
+agents' canonical definitions live in [`.agents/agents/`](./.agents/agents/README.md).
 
 **See**: [ai-agents.md](./repo-governance/development/agents/ai-agents.md)
 

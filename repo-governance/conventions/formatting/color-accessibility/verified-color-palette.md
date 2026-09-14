@@ -22,6 +22,20 @@ Use these colors for all color-dependent visualizations:
 | White  | #FFFFFF  | 255, 255, 255 | 0°, 0%, 100%   | Text on dark, light backgrounds    | N/A (light bg)             | PASS: 21.00:1 (AAA)       |
 | Gray   | #808080  | 128, 128, 128 | 0°, 0%, 50%    | Secondary elements, disabled state | PASS: 7.00:1 (AAA)         | PASS: 4.00:1 (AA)         |
 
+## Text on Palette Fills
+
+Text on a filled shape uses the one of black and white that reaches 4.5:1 on that fill:
+
+| Fill   | Hex Code | Text            | Contrast |
+| ------ | -------- | --------------- | -------: |
+| Blue   | #0173B2  | white `#FFFFFF` |   5.13:1 |
+| Orange | #DE8F05  | black `#000000` |   8.04:1 |
+| Teal   | #029E73  | black `#000000` |   6.14:1 |
+| Purple | #CC78BC  | black `#000000` |   6.98:1 |
+| Gray   | #808080  | black `#000000` |   5.32:1 |
+
+White text on orange, teal, purple, or gray measures below 4.5:1, so it is never paired with them.
+
 ## Usage Recommendations by Context
 
 | Context                | Primary           | Secondary        | Tertiary | Quaternary               | Neutral         |

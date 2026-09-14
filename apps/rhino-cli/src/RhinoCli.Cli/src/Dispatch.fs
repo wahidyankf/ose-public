@@ -2204,11 +2204,19 @@ let private runHarnessAuditLeaf (repoRoot: string) (format: OutputFormat) (rawAr
 
             let exitCode =
                 match name with
-                | "detect-duplication" -> runHarnessDuplicationLeaf repoRoot format
-                | "validate-claude" -> runHarnessClaudeLeaf repoRoot format []
+                | "detect-duplication" ->
+                    runSplitLeaf repoRoot "harness duplication validate" [] (fun () ->
+                        runHarnessDuplicationLeaf repoRoot format)
+                | "validate-claude" ->
+                    runSplitLeaf repoRoot "harness claude validate" [] (fun () ->
+                        runHarnessClaudeLeaf repoRoot format [])
                 | "validate-sync" -> runHarnessSyncValidateLeaf repoRoot format []
-                | "validate-bindings" -> runHarnessBindingsValidateLeaf repoRoot format []
-                | "validate-catalog" -> runHarnessCatalogValidateLeaf repoRoot format []
+                | "validate-bindings" ->
+                    runSplitLeaf repoRoot "harness bindings validate" [] (fun () ->
+                        runHarnessBindingsValidateLeaf repoRoot format [])
+                | "validate-catalog" ->
+                    runSplitLeaf repoRoot "harness catalog validate" [] (fun () ->
+                        runHarnessCatalogValidateLeaf repoRoot format [])
                 | _ ->
                     runSplitLeaf repoRoot "governance word-budget validate" [] (fun () ->
                         runGovernanceWordBudgetValidateLeaf repoRoot format [])
@@ -2408,15 +2416,25 @@ let route (getRepoRoot: unit -> Result<string, string>) (argv: string[]) : int =
                     | "specs-counts-validate" -> runSpecsCountsValidateLeaf repoRoot rest
                     | "specs-structure-validate" -> runSpecsStructureValidateLeaf repoRoot rest
                     | "specs-scaffold-dart" -> runSpecsScaffoldDartLeaf format rest
-                    | "harness-duplication-validate" -> runHarnessDuplicationLeaf repoRoot format
-                    | "harness-claude-validate" -> runHarnessClaudeLeaf repoRoot format rest
+                    | "harness-duplication-validate" ->
+                        runSplitLeaf repoRoot "harness duplication validate" rest (fun () ->
+                            runHarnessDuplicationLeaf repoRoot format)
+                    | "harness-claude-validate" ->
+                        runSplitLeaf repoRoot "harness claude validate" rest (fun () ->
+                            runHarnessClaudeLeaf repoRoot format rest)
                     | "harness-sync-validate" -> runHarnessSyncValidateLeaf repoRoot format rest
                     | "harness-sync-triage" -> runHarnessSyncTriageLeaf repoRoot rest
-                    | "harness-bindings-validate" -> runHarnessBindingsValidateLeaf repoRoot format rest
+                    | "harness-bindings-validate" ->
+                        runSplitLeaf repoRoot "harness bindings validate" rest (fun () ->
+                            runHarnessBindingsValidateLeaf repoRoot format rest)
                     | "harness-bindings-generate" -> runHarnessBindingsGenerateLeaf repoRoot format rest
-                    | "harness-ownership-validate" -> runHarnessOwnershipLeaf repoRoot format rest
+                    | "harness-ownership-validate" ->
+                        runSplitLeaf repoRoot "harness ownership validate" rest (fun () ->
+                            runHarnessOwnershipLeaf repoRoot format rest)
                     | "harness-catalog-generate" -> runHarnessCatalogGenerateLeaf repoRoot format rest
-                    | "harness-catalog-validate" -> runHarnessCatalogValidateLeaf repoRoot format rest
+                    | "harness-catalog-validate" ->
+                        runSplitLeaf repoRoot "harness catalog validate" rest (fun () ->
+                            runHarnessCatalogValidateLeaf repoRoot format rest)
                     | "harness-audit" -> runHarnessAuditLeaf repoRoot format rest
                     | "specs-audit" -> runSpecsAuditLeaf repoRoot format rest
                     // Genuinely unreachable, not deletable: every leaf name

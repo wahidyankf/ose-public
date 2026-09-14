@@ -1,9 +1,0 @@
----
-description: Links to the harness-compatibility-checker and -fixer agent definitions this workflow invokes.
-when_to_use: Use when looking up the exact agent definition files this workflow orchestrates.
----
-
-# Agents
-
-- [harness-compatibility-checker](../../../../.claude/agents/repo/harness-compatibility-checker.md) — validates parity invariants (Phase 0) and detects external harness drift (Phase 1)
-- [harness-compatibility-fixer](../../../../.claude/agents/repo/harness-compatibility-fixer.md) — applies validated parity and harness-compatibility fixes

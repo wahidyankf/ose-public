@@ -74,7 +74,7 @@ directory and fails naming any file it cannot classify.
 
 | Class       | What it means                                                               | Paths here                                                                                                                         |
 | ----------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `source`    | Hand-authored canonical input; never written by the emitter                 | `.claude/`, `CLAUDE.md`, `AGENTS.md`                                                                                               |
+| `source`    | Hand-authored canonical input; never written by the emitter                 | `.claude/`, `.agents/agents/`, `CLAUDE.md`, `AGENTS.md`                                                                            |
 | `generated` | Emitted from canonical source; must reproduce byte-for-byte                 | `.opencode/agents/`, `.codex/agents/`, `.agents/skills/` (emitter-owned subdirectories)                                            |
 | `vendored`  | Third-party payload with no in-repo source; survives regeneration untouched | `.opencode/opencode.json`, `.codex/config.toml`, `.codex/ci-monitor-subagent.toml`, the eight `.agents/skills/` plugin directories |
 
@@ -95,6 +95,19 @@ generated bridge file.
 Some harnesses rank a tool-specific file **above** `AGENTS.md` when both are present. Those files
 must never carry content that diverges from `AGENTS.md`. See the
 [No-shadowing note](#no-shadowing-note) below.
+
+### Claude Code session settings
+
+`.claude/settings.json` configures the Claude Code sessions opened in this repository:
+
+- A `PostToolUse` hook runs Prettier and then `markdownlint-cli2 --fix` on every Markdown file an
+  edit tool writes, alongside the standard formatting and lint pipeline. The hook reads the tool
+  payload with `jq`, so `jq` must be installed.
+- Reading and editing under `.claude/` and `.opencode/` is pre-authorized, so no approval prompt
+  fires. That permission does not override the ownership classes above: edit `source` and
+  `vendored` paths only, and regenerate `generated` paths.
+- Skills load only from trusted sources. Every skill in this repository is maintained by the
+  project team.
 
 ### Provenance of pre-existing partial bindings
 

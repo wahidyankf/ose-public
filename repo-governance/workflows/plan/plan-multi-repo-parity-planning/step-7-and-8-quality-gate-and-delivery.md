@@ -17,7 +17,7 @@ one of that gate's three named pre-authorizations.
 The gate takes no mode: it has no severity threshold, and every admitted ledger row must be closed.
 Each plan must return `PASS`.
 
-**On any `BLOCKED_*` verdict**: read the returned ledger. There is no `plan-fixer` to re-run — the
+**On any `BLOCKED_*` verdict**: read the returned ledger. There is no separate fixer agent to re-run — the
 gate repairs its own ledger inside its bounded cycles, so a `BLOCKED_NON_CONVERGENT` result means
 the plan needs an external decision, not another gate pass. Surface it to the invoker as a blocking
 issue and do not deliver that plan. Re-invoke the gate only after the named external change lands.

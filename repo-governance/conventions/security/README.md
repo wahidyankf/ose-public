@@ -27,6 +27,11 @@ the safe path explicit.
   write, or edit exactly .env.prod or .env.stag; every other real .env\* file is agent-readable.
   Full policy in secrets-and-env-standards.md. Use when an AI agent needs to know whether it may
   directly open a specific .env\* file.
+- [Public Outbound Safety](./public-outbound-safety.md) — Requires every outbound artifact from a public
+  repository to pass a safety screen first, with no allowlist, suppression, or bypass, plus a full read
+  of each change before commit, synthetic fixtures, and a disclosure response. Use before any commit,
+  push, pull request, comment, release, or published log, when adding a publication surface or writing
+  examples or fixtures, and after something unsafe was published.
 
 ## Related Documentation
 

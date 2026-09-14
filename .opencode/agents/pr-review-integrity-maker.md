@@ -42,8 +42,8 @@ this agent owns exactly one discipline.
 regression tests per the
 [Regression Test Mandate](../../repo-governance/development/quality/regression-test-mandate.md).
 Flag `CRITICAL`/`HIGH` any change that weakens, skips, or games a check instead of genuinely
-fixing the issue it exists to catch — loosening an assertion, an untracked
-`#[ignore]`/`.skip()`/`xit()`, widening a coverage threshold instead of adding coverage, or
+fixing the issue it exists to catch — loosening an assertion, an
+`#[ignore]`/`.skip()`/`xit()` or quarantine that removes protection without a replacement, widening a coverage threshold instead of adding coverage, or
 swallowing an error a test was designed to surface. Per
 [CI Blocker Resolution](../../repo-governance/development/quality/ci-blocker-resolution.md): CI
 blockers get fixed at the root cause, never bypassed.
@@ -52,7 +52,7 @@ blockers get fixed at the root cause, never bypassed.
 this agent asks "does this weaken the check?", not "is the defect actually fixed?".
 
 **Severity definitions**: `CRITICAL` = CI-gaming that hides a real, currently-shipping defect;
-`HIGH` = a missing regression test for a bug fix, or an untracked skip/loosened assertion;
+`HIGH` = a missing regression test for a bug fix, or a skip or loosened assertion that removes real protection;
 `MEDIUM` = a coverage-threshold change without clearly equivalent replacement coverage; `LOW` = a
 minor test hygiene concern with no gaming risk.
 
@@ -63,8 +63,8 @@ During PR quality-gate invocation, first apply the shared
 
 - A legitimate test simplification that still exercises the same behaviour at the same strength.
 - A test refactor improving clarity (renaming, extracting helpers) without weakening assertions.
-- An intentional, **tracked** skip carrying a linked follow-up issue or plan reference — the
-  mandate is against untracked skips, not all skips.
+- A skip, quarantine, or deletion whose protection a replacement test in the same diff restores at
+  the same strength. A linked follow-up issue or plan reference is not a replacement.
 - A coverage-threshold change matched by genuinely equivalent coverage elsewhere in the diff.
 - Speculative "this test could theoretically be gamed" with no concrete diff evidence.
 

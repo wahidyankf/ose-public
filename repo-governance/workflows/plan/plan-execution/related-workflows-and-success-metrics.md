@@ -8,7 +8,7 @@ when_to_use: Use when composing plan execution with other workflows, or when tra
 This workflow can be composed with:
 
 - **plan-quality-gate**: Validate plan quality before executing (recommended pre-step)
-- **[plan-multi-repo-parity-planning-and-execution](../plan-multi-repo-parity-planning-and-execution.md)**: composite that nests this workflow per repo after a multi-repo parity planning phase
+- **[plan-multi-repo-parity-planning](../plan-multi-repo-parity-planning.md)**: authors parity plans across sibling repos, then nests this workflow per repo when it delivers them in the same run
 - Content creation workflows: Execute content-focused plans
 - Release workflows: Execute release plans with deployment
 - **rules-quality-gate**: Validate repository consistency after plan execution

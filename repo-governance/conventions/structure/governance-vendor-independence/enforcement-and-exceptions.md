@@ -38,9 +38,9 @@ Exit code 0 means clean; exit code 1 means violations found. Each finding prints
 Two gates cover the audit at pre-push and in CI: one triggers on any `repo-governance/**/*.md`
 change, the other on `AGENTS.md`. No manual invocation is needed on pushes.
 
-`CLAUDE.md` carries no gate. Its "Platform Binding Examples" heading opens near the top of the
-file, so the allowlist below exempts the whole body — a gate there could only police the few lines
-above that heading, and a check that can never fail is worse than none.
+`CLAUDE.md` carries no gate. It holds only the `@AGENTS.md` import directive, which the scanner
+treats as a binding directive rather than a vendor term, so a gate there could never fail — and a
+check that can never fail is worse than none.
 
 ### Scope of the scanner
 

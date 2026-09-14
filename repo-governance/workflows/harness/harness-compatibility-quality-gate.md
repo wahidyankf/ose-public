@@ -59,4 +59,4 @@ breaking change, as a scheduled hygiene audit, or when onboarding a new harness.
 - [Notes](./harness-compatibility-quality-gate/notes.md) — cadence, guard distinction.
 - [Principles Implemented/Respected](./harness-compatibility-quality-gate/principles-implemented-respected.md) — traceability.
 - [Conventions Implemented/Respected](./harness-compatibility-quality-gate/conventions-implemented-respected.md) — traceability.
-- [Agents](./harness-compatibility-quality-gate/agents.md) — checker and fixer definitions.
+- [Related Agents](./harness-compatibility-quality-gate/related-agents.md) — checker and fixer definitions.

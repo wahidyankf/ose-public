@@ -20,7 +20,7 @@ c0f90898d01eeec3a251c1a942f70cdd65fb0e6e08556f5b6bfe2563ebf118f9  apps/rhino-cli
 1b7208649993aa7e0e1efb257e95b1ca1e18219616f975c8b87862b24d35fa38  apps/rhino-cli/src/RhinoCli.Application/src/TestBoundary.fs
 ff952cefdb43ae992704f845a322a9cff246f288df1484e5005c4b75f1579785  apps/rhino-cli/src/RhinoCli.Application/src/TestCoverage.fs
 bf6df2031e43d7352bd145de54960b18c4934b7a8ea160fd358d345fc5b3b58c  apps/rhino-cli/src/RhinoCli.Cli/RhinoCli.Cli.fsproj
-577f07d6dd2a0ddc1142d2c04b95745b6c21979bef28ffe76c9229e509a53a67  apps/rhino-cli/src/RhinoCli.Cli/src/Dispatch.fs
+e693b5b8a4ca5d988e91662508e706594e628b8bd295f6a2de213c71ce7cebf6  apps/rhino-cli/src/RhinoCli.Cli/src/Dispatch.fs
 8378a5bd68592ede130fffd038b7b4b5107ae37d474a156af24ec55f24bb6e27  apps/rhino-cli/src/RhinoCli.Cli/src/Formatters.fs
 70d00c5bdf5bcca9235b868a46dfa857d63b98514df9c52840782da5b1dfc5a5  apps/rhino-cli/src/RhinoCli.Cli/src/Gate.fs
 0752beb52fc50d1744a576b06100e5164097372595f45b87618cc27c16e305c0  apps/rhino-cli/src/RhinoCli.Cli/src/HelpText.fs
@@ -30,7 +30,7 @@ bf6df2031e43d7352bd145de54960b18c4934b7a8ea160fd358d345fc5b3b58c  apps/rhino-cli
 7c0cc665fc637d4096b025320e9257ae4be57d9e438ad9a0e56d1301697ecffd  apps/rhino-cli/src/RhinoCli.Domain/src/Types.fs
 766efb8c63597c79fc5039da733d417ee1e963e44207458ae09d11d9834fe678  apps/rhino-cli/src/RhinoCli.Infrastructure/RhinoCli.Infrastructure.fsproj
 ea9c28fc3b1c41add46abd4de607b27e0b3b985b0d9825ad6763e2341892f91a  apps/rhino-cli/src/RhinoCli.Infrastructure/src/GitRoot.fs
-75ea28e60bdc43d7b26b5cd5d88a74435abb99c4f34db256ad7e9f195adefd2c  apps/rhino-cli/src/RhinoCli.Infrastructure/src/RustRhino.fs
+62cf853aa81bc788499253a701ceebf236a432aca92c15564bc3bc068281ef79  apps/rhino-cli/src/RhinoCli.Infrastructure/src/RustRhino.fs
 631376afb9e4d7c5192d38f51b533c18b64cca83c18ed5c50982ba9acce51d74  apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj
 153a226f5ef1d6916aa6e6425b278a606a48659fcba9623c9d01e5cf3b2589a5  apps/rhino-cli/src/RhinoCli.Program/src/Program.fs
 822f6ec8446562a4de9a3b1a2481af50fac01bbedc32e1963142709e5f48ec13  apps/rhino-cli/src/fsharplint.json
@@ -54,7 +54,7 @@ e9d49e4f2cf3a0ca38c59cbf643c406468b07612b93b3ee8f92c381c995506ad  specs/apps/rhi
 5ececf3d03dddbedbe4b1008b3b198b59976d1edd84cfda7b63b58f3b4139f71  specs/apps/rhino/cli/behaviours/gate/gate-execution.feature
 92c774c9a7a85b50d81350563d14ccf16211811dc560ee5fc732e49249dd02af  specs/apps/rhino/cli/behaviours/gate/gate-validation.feature
 b84936d25b271a6047dac1fdb6bba73c7a457088c1674eef4401a7b1fef6a8ac  specs/apps/rhino/cli/behaviours/gate/parity-manifest.feature
-c936172cf3586055ca01cdb6caef28e3843d8a0c80657137185bd255e1cbd072  specs/apps/rhino/cli/behaviours/gate/rust-delegation.feature
+c96d39b58f3a49e0078fec0f0ae802549705a1c055a5f01cf740b55d9c3f8462  specs/apps/rhino/cli/behaviours/gate/rust-delegation.feature
 577fda4d3b81e12cd31edbbcb458bc4bdc49fc1a2f5b347f6df1e4bfba43d890  specs/apps/rhino/cli/behaviours/git/README.md
 53822c41173a5e382796c928001693811cbd7eb5fa65c0290eacab0b1f2050fa  specs/apps/rhino/cli/behaviours/git/git-lockfile.feature
 a6eabb0690a323afc5ad19d9ccc198e7bb841f5a84539fc1f6e1a7c9cbf9f349  specs/apps/rhino/cli/behaviours/git/git-pre-commit.feature

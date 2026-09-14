@@ -36,9 +36,8 @@ select `worktree-to-pr`. The PRs remain in draft until the invoker promotes them
   is its multi-repo analogue (one plan per repo, one grill session across all repos)
 - [Plan Execution](../plan-execution.md) — downstream workflow that executes the plans this
   workflow creates; runs after plans are established and promoted to `in-progress/`
-- [Plan Multi-Repo Parity Planning and Execution](../plan-multi-repo-parity-planning-and-execution.md) —
-  end-to-end composite that runs this workflow as its planning phase and continues directly into
-  plan-execution for every resulting plan
+- [Delivering the Parity Plans](./delivering-the-parity-plans.md) — carries the gated plans on to
+  plan-execution for every resulting plan in the same run
 - [PR Leak Review](../../pr/pr-leak-review.md) — runs once against the exact current head during
   each repo's execution phase when its authored plan resolves to a `*-to-pr` delivery mode
 - [PR Review Cycle](../../pr/pr-review-cycle.md) — runs only when the user explicitly requests the

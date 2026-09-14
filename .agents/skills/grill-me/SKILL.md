@@ -5,6 +5,8 @@ description: >
   until shared understanding is reached. Resolves every branch of the decision tree. Use
   when the user wants to stress-test a plan, get grilled on their design, or mentions
   "grill me".
+when_to_use: >-
+  Use at a planning gate or before any irreversible choice with more than one defensible answer.
 ---
 
 # Grill Me

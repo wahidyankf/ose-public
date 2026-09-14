@@ -1,5 +1,5 @@
 ---
-description: Links to plan-idea-promotion-planning, plan-planning, plan-execution, and the conventions this workflow's steps reshape ideas against.
+description: Links to plan-planning, plan-execution, and the conventions this workflow's steps reshape ideas against.
 when_to_use: Use when navigating from this workflow to a composed workflow or a governing convention.
 ---
 
@@ -7,12 +7,11 @@ when_to_use: Use when navigating from this workflow to a composed workflow or a 
 
 ## Related Workflows
 
-- [`plan-idea-promotion-planning`](../plan-idea-promotion-planning.md) — promotes a single ripe
-  two-pager (post-grooming, already deduplicated and classified) into a full backlog plan. This
-  workflow converges the idea corpus that promotion later reads from; it never itself promotes an
-  idea to a plan.
-- [`plan-planning`](../plan-planning.md) — the generic plan-authoring lifecycle that
-  `plan-idea-promotion-planning` hands off to. Not invoked by this workflow.
+- [`plan-planning`](../plan-planning.md) — the plan-authoring lifecycle a ripe two-pager
+  (post-grooming, already deduplicated and classified) is promoted through, per
+  [Promoting a Two-Pager](../../../conventions/structure/plans/promoting-ideas-and-worked-examples.md).
+  This workflow converges the idea corpus that promotion later reads from; it never invokes
+  `plan-planning` and never itself promotes an idea to a plan.
 - [`plan-execution`](../plan-execution.md) — this workflow's `## Execution Mode` (Direct
   Orchestration, no dedicated delegated agent) follows the same orchestration pattern
   `plan-execution` establishes for its own procedural steps.

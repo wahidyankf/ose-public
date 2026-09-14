@@ -136,13 +136,13 @@ links.
 
 **Rationale**: no repo-specific content; straightforward merge.
 
-### Row 9 — plan-fixer Agent Drift
+### Row 9 — Fixer Agent Drift
 
 **Decision**: best-of merge.
 
 **Rationale**: same as row 8.
 
-**Superseded**: `plan-fixer` was later retired. `plan-quality-gate` became a governance gate that
+**Superseded**: the fixer agent was later retired. `plan-quality-gate` became a governance gate that
 repairs its own frozen ledger, so no separate fixer agent exists in either repository. This row is
 kept as the historical record of the decision taken at the time.
 

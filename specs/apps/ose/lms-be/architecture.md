@@ -16,6 +16,8 @@ reader can tell an unmade decision from an unrecorded one.
 
 ```mermaid
 flowchart LR
+    accTitle: System Context
+    accDescr: Ops probe leads to OSE LMS BE via GET health; Feature author leads to OSE LMS BE via GET hello; OSE LMS BE leads to Actuator health.
     OPS[Ops probe] -->|GET health| BE[OSE LMS BE]
     DEV[Feature author] -->|GET hello| BE
     BE --> ACT[Actuator health]
@@ -39,6 +41,8 @@ failure this rule exists to prevent.
 
 ```mermaid
 flowchart TD
+    accTitle: Components
+    accDescr: Application leads to HealthController; Application leads to HelloController; Application leads to PortResolver; HealthController leads to HealthResponse; HelloController leads to HelloResponse.
     APP[Application] --> HC[HealthController]
     APP --> HL[HelloController]
     APP --> PR[PortResolver]

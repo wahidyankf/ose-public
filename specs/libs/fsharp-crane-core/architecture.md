@@ -13,6 +13,8 @@ decision, report and skiplist persistence logic, the extraction cache, and the P
 
 ```mermaid
 flowchart LR
+    accTitle: Consuming Boundary
+    accDescr: crane-cli leads to fsharp-crane-core; fsharp-crane-core leads to PDF adapter; fsharp-crane-core leads to OCR adapter; fsharp-crane-core leads to Report, skiplist, and cache files.
     CRANE[crane-cli] --> CORE[fsharp-crane-core]
     CORE --> PDFADP[PDF adapter]
     CORE --> OCRADP[OCR adapter]

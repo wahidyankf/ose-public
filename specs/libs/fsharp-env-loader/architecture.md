@@ -14,9 +14,11 @@ service resolve their tier file and their port by exactly the same rules.
 
 ```mermaid
 flowchart LR
+    accTitle: Consuming Boundary
+    accDescr: ose-be leads to fsharp-env-loader; organiclever-be leads to fsharp-env-loader; fsharp-env-loader leads to .env.APP_ENV tier file; fsharp-env-loader leads to process environment.
     OSB[ose-be] --> LIB[fsharp-env-loader]
     OLB[organiclever-be] --> LIB
-    LIB --> FILE[(.env.APP_ENV tier file)]
+    LIB --> FILE[(.env.APP_ENV tier<br/>file)]
     LIB --> PROC[(process environment)]
 ```
 

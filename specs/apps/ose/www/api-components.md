@@ -17,9 +17,11 @@ parses frontmatter, renders HTML with syntax highlighting, and builds a FlexSear
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
 graph LR
+    accTitle: Component Diagram: api perspective tRPC HTTP
+    accDescr: Next.js Client or Playwright leads to App Router ──────────────── /api/trpc/trpc Route Handler via tRPC calls; Next.js Client or Playwright leads to RSS Feed ──────────────── /feed.xml RSS 2.0 XML via HTTP GET; and 6 more links.
     CLIENT("Next.js Client<br/>or Playwright"):::actor
 
-    subgraph SERVER["Next.js Server (tRPC API + Route Handlers)"]
+    subgraph SERVER["Next.js Server (tRPC<br/>API + Route<br/>Handlers)"]
 
         subgraph LAYER1["tRPC Router"]
             ROUTER["App Router<br/>────────────────<br/>/api/trpc/[trpc]<br/>Route Handler"]:::handler
@@ -51,7 +53,7 @@ graph LR
     ROUTER --> MH
 
     classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef handler fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef handler fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
     classDef procedure fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
@@ -60,7 +62,9 @@ graph LR
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
 graph LR
-    subgraph SERVER["Next.js Server (tRPC API + Route Handlers)"]
+    accTitle: Component Diagram: api perspective tRPC HTTP 2
+    accDescr: content.getBySlug ──────────────── Fetch page by slug Returns HTML + meta leads to ContentService ──────────────── readAllContent In-memory cache All metadata; and 8 more links.
+    subgraph SERVER["Next.js Server (tRPC<br/>API + Route<br/>Handlers)"]
 
         subgraph LAYER2["tRPC Procedures"]
             CP["content.getBySlug<br/>────────────────<br/>Fetch page by slug<br/>Returns HTML + meta"]:::procedure
@@ -80,7 +84,7 @@ graph LR
         end
 
         subgraph LAYER4["Search"]
-            SI["SearchIndex<br/>────────────────<br/>FlexSearch<br/>Title + stripped body"]:::search
+            SI["SearchIndex<br/>────────────────<br/>FlexSearch<br/>Title + stripped<br/>body"]:::search
         end
 
         subgraph LAYER5["Schemas"]
@@ -103,9 +107,9 @@ graph LR
     CP --> FS
     SQ --> SS
 
-    classDef handler fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef handler fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
     classDef procedure fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef service fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef service fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef search fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef schema fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
@@ -115,10 +119,12 @@ graph LR
 ```mermaid
 %% Color Palette: Blue #0173B2 | Orange #DE8F05 | Teal #029E73 | Purple #CC78BC | Brown #CA9161 | Gray #808080
 graph LR
-    subgraph SERVER["Next.js Server (tRPC API + Route Handlers)"]
+    accTitle: Component Diagram: api perspective tRPC HTTP 3
+    accDescr: ContentService ──────────────── readAllContent In-memory cache All metadata leads to ContentReader ──────────────── readFileContent gray-matter parse Frontmatter + body; ContentReader ──────────────── readFileContent gray-matter parse Frontmatter + body leads to Content Directory content/**/*.md; and 3 more links.
+    subgraph SERVER["Next.js Server (tRPC<br/>API + Route<br/>Handlers)"]
 
         subgraph LAYER4["Search"]
-            SI["SearchIndex<br/>────────────────<br/>FlexSearch<br/>Title + stripped body"]:::search
+            SI["SearchIndex<br/>────────────────<br/>FlexSearch<br/>Title + stripped<br/>body"]:::search
             SM["stripMarkdown()<br/>────────────────<br/>Remove formatting<br/>Plain text output"]:::service
         end
 
@@ -146,10 +152,10 @@ graph LR
     %% Schemas validate input/output
     CS --> FS
 
-    classDef service fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef service fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef search fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef schema fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
-    classDef datastore fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef datastore fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Gherkin Coverage by Component

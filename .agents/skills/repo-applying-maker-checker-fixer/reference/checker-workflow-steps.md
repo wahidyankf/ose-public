@@ -2,13 +2,15 @@
 
 Checker agents follow a consistent 5-step workflow:
 
+```mermaid
+flowchart TD
+    accTitle: Maker-Checker-Fixer — Checker Workflow: 5-Step Process
+    accDescr: Step 0 initializes the report, steps 1 to N validate the content, and the final step finalizes the report.
+    I["Step 0<br/>Initialize report"] --> V["Steps 1 to N<br/>Validate content"]
+    V --> F["Final step<br/>Finalize report"]
 ```
-Step 0: Initialize Report
-    ↓
-Step 1-N: Validate Content (domain-specific)
-    ↓
-Final Step: Finalize Report
-```
+
+The validation steps between the first and the last are domain-specific.
 
 ## Step 0: Initialize Report File
 

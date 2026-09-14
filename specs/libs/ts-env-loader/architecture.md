@@ -14,12 +14,14 @@ here.
 
 ```mermaid
 flowchart LR
+    accTitle: Consuming Boundary
+    accDescr: ayokoding-www leads to ts-env-loader; organiclever-app-web leads to ts-env-loader; organiclever-www leads to ts-env-loader; ose-app-web leads to ts-env-loader; ose-www leads to ts-env-loader; ts-env-loader leads to .env.APP_ENV tier file; ts-env-loader leads to process environment.
     AYO[ayokoding-www] --> LIB[ts-env-loader]
     OLA[organiclever-app-web] --> LIB
     OLW[organiclever-www] --> LIB
     OSA[ose-app-web] --> LIB
     OSW[ose-www] --> LIB
-    LIB --> FILE[(.env.APP_ENV tier file)]
+    LIB --> FILE[(.env.APP_ENV tier<br/>file)]
     LIB --> PROC[(process environment)]
 ```
 

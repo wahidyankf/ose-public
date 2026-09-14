@@ -21,9 +21,16 @@
 
 Fixer agents MUST process findings in strict priority order:
 
+```mermaid
+flowchart TD
+    accTitle: Execution Order for Fixers
+    accDescr: Fixers process P0 fixes first, then P1 fixes, then P2 fixes, and P3-P4 fixes last.
+    P0["P0 fixes"] --> P1["P1 fixes"]
+    P1 --> P2["P2 fixes"]
+    P2 --> P3["P3-P4 fixes"]
 ```
-1. P0 fixes (CRITICAL + HIGH) → Auto-fix, block if fails
-2. P1 fixes (HIGH + HIGH OR CRITICAL + MEDIUM) → Auto-fix HIGH+HIGH, flag CRITICAL+MEDIUM
-3. P2 fixes (MEDIUM + HIGH OR HIGH + MEDIUM) → Auto-fix MEDIUM+HIGH if approved, flag HIGH+MEDIUM
-4. P3-P4 fixes (LOW priority) → Include in summary only
-```
+
+- P0, CRITICAL + HIGH: auto-fix, and block if the fix fails.
+- P1, HIGH + HIGH or CRITICAL + MEDIUM: auto-fix HIGH + HIGH, and flag CRITICAL + MEDIUM.
+- P2, MEDIUM + HIGH or HIGH + MEDIUM: auto-fix MEDIUM + HIGH if approved, and flag HIGH + MEDIUM.
+- P3-P4, LOW priority: include in the summary only.

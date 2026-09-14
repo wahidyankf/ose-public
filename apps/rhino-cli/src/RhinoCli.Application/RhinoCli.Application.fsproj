@@ -26,6 +26,7 @@
     <Compile Include="src/Specs.fs" />
     <Compile Include="src/Contracts.fs" />
     <Compile Include="src/TestBoundary.fs" />
+    <Compile Include="src/Plan.fs" />
     <Compile Include="src/RepoGovernance.fs" />
   </ItemGroup>
 

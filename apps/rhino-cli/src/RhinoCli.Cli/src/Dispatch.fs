@@ -299,6 +299,29 @@ let private runRepoConfigValidateLeaf (repoRoot: string) : int =
 
                 1
 
+// ---------------------------------------------------------------------------
+// Plan structure
+// ---------------------------------------------------------------------------
+
+/// `plan validate` checks every plan under `plans/` against the shared plan
+/// structure and writes exactly what the pinned RHINO `plan validate` writes
+/// [Repo-grounded — RHINO `v0.3.0` `src/plan.rs` and `src/report.rs`]: one
+/// JSON document for `--output json`, otherwise the text summary on stdout
+/// and one finding per line on stderr.
+let private runPlanValidateLeaf (repoRoot: string) (format: OutputFormat) : int =
+    let report =
+        Plan.validate (Plan.listPlanFiles repoRoot) (Plan.readPlanDocument repoRoot)
+
+    let outcome =
+        match format with
+        | Json -> Plan.renderJson report
+        | Text
+        | Markdown -> Plan.renderText report
+
+    printf "%s" outcome.Stdout
+    eprintf "%s" outcome.Stderr
+    outcome.ExitCode
+
 /// `env init` also ignores `-o`/`--output` — it always prints the same plain
 /// text and always exits `0`, regardless of per-file outcome [Repo-grounded —
 /// `env_init.rs::run`, whose only failure mode (git-root lookup) `route`
@@ -2298,6 +2321,7 @@ let private routeTable: (string list * string) list =
       [ "parity"; "manifest"; "generate" ], "generate"
       [ "parity"; "manifest"; "validate" ], "validate"
       [ "repo-config"; "validate" ], "repo-config-validate"
+      [ "plan"; "validate" ], "plan-validate"
       [ "env"; "init" ], "env-init"
       [ "env"; "backup" ], "env-backup"
       [ "env"; "restore" ], "env-restore"
@@ -2433,6 +2457,7 @@ let route (getRepoRoot: unit -> Result<string, string>) (argv: string[]) : int =
                     | "generate" -> runParityGenerate repoRoot
                     | "validate" -> runParityValidate repoRoot
                     | "repo-config-validate" -> runRepoConfigValidateLeaf repoRoot
+                    | "plan-validate" -> runPlanValidateLeaf repoRoot format
                     | "env-init" -> runEnvInitLeaf repoRoot rest
                     | "env-backup" -> runEnvBackupLeaf repoRoot format rest
                     | "env-restore" -> runEnvRestoreLeaf repoRoot format rest

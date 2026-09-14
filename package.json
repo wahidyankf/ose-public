@@ -82,7 +82,7 @@
       "apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate --exclude \"apps/rhino-cli/tests/fixtures\" --exclude \"plans/done\" --exclude \"apps/ayokoding-www/content\"",
       "apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate --exclude \"apps/rhino-cli/tests/fixtures\" --exclude \"plans/done\" --exclude \"apps/ayokoding-www/content\" --max-label-len \"20\"",
       "apps/rhino-cli/scripts/rhino-bin.sh md heading-hierarchy validate",
-      "apps/rhino-cli/scripts/rhino-bin.sh md naming validate --exempt \"*__linkedin__*.md\" --exempt \"CONTRIBUTING.md\" --exempt \"pull_request_template.md\" --exempt \"RTK.md\"",
+      "apps/rhino-cli/scripts/rhino-bin.sh md naming validate --exempt \"*__linkedin__*.md\" --exempt \"CONTRIBUTING.md\" --exempt \"pull_request_template.md\" --exempt \"RTK.md\" --exempt \"001-Context.md\" --exempt \"002-approach_two.md\"",
       "apps/rhino-cli/scripts/rhino-bin.sh md frontmatter validate"
     ],
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
@@ -143,6 +143,9 @@
     ],
     "{BUILD,BUILD.bazel,*.bzl}": [
       "buildifier"
+    ],
+    "plans/**": [
+      "apps/rhino-cli/scripts/rhino-bin.sh plan validate"
     ],
     ".github/workflows/*.{yml,yaml}": [
       "actionlint",

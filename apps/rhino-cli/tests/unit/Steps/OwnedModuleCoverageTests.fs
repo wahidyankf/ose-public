@@ -751,3 +751,126 @@ let ``RepoConfig parses the grade vocabulary and each harness's model map`` () =
         // An entry declaring no `model-map:` is the state that makes a mirror
         // pin no model at all, so it must parse to an empty map, not a failure.
         Assert.True((byName "opencode").ModelMap.IsEmpty)
+
+// Plan edge shapes the shared corpus never reaches. Every expected outcome below
+// is RHINO v0.3.0's own exit code, stdout and stderr for the same tree on disk,
+// so these hold the F# port to RHINO's bytes rather than to a reading of its source.
+
+/// Runs the pure plan validator over in-memory documents; `refuse` names the
+/// read failure a document meets, if any.
+let private planReport (documents: (string * string) list) (refuse: string -> string option) : Plan.PlanReport =
+    let tree = Map.ofList documents
+
+    let read path =
+        match refuse path, Map.tryFind path tree with
+        | Some reason, _ -> Plan.Unreadable reason
+        | None, Some text -> Plan.Found text
+        | None, None -> Plan.Missing
+
+    Plan.validate (List.map fst documents) read
+
+let private planOutcome exitCode stdout stderr : Plan.PlanOutcome =
+    { Plan.ExitCode = exitCode
+      Plan.Stdout = stdout
+      Plan.Stderr = stderr }
+
+[<Fact>]
+let ``Plan reads fences, CRLF, unterminated text, link suffixes, and an extensionless companion as RHINO does`` () =
+    let documents =
+        [ "plans/backlog/edge-plan/README.md", "# Plan\n"
+          "plans/backlog/edge-plan/brd.md", "# BRD\n"
+          "plans/backlog/edge-plan/delivery.md",
+          "# Delivery\n\n## Phase 1\n\n- [ ] work without a label\n- [ ] [AI] cite [AC-01\n"
+          "plans/backlog/edge-plan/learnings.md", "# Learnings\n"
+          "plans/backlog/edge-plan/tech-docs/001-first", "# First"
+          "plans/backlog/edge-plan/tech-docs/README.md",
+          "# Tech\r\n\n```md\n[hidden](002-hidden.md)\n~~~\n```\n[slash](back\\slash.md)\n[first](001-first) [anchor](001-first#part) [query](001-first?x=1) [dir](sub/x.md) [web](https://example.com) [open](unclosed" ]
+
+    let report = planReport documents (fun _ -> None)
+
+    Assert.Equal(
+        planOutcome
+            1
+            "[plan] checked 1 plan, 3 findings\n"
+            "[plan] plans/backlog/edge-plan:1:1 PLAN-DOCUMENT-001 prd.md required plan document is missing\n[plan] plans/backlog/edge-plan/delivery.md:5:1 PLAN-DELIVERY-001 - checklist item carries no executor label\n[plan] plans/backlog/edge-plan/tech-docs/README.md:7:1 PLAN-COMPANION-006 back\\slash.md entrypoint lists a companion that does not exist\n",
+        Plan.renderText report
+    )
+
+    Assert.Equal(
+        planOutcome
+            1
+            "{\"schemaVersion\":1,\"command\":\"plan\",\"exitCode\":1,\"subject\":\"plan\",\"inspected\":1,\"scanned\":[],\"notes\":[],\"violations\":[{\"kind\":\"PLAN-DOCUMENT-001\",\"path\":\"plans/backlog/edge-plan\",\"message\":\"required plan document is missing\",\"line\":1,\"column\":1,\"field\":\"prd.md\"},{\"kind\":\"PLAN-DELIVERY-001\",\"path\":\"plans/backlog/edge-plan/delivery.md\",\"message\":\"checklist item carries no executor label\",\"line\":5,\"column\":1,\"field\":\"-\"},{\"kind\":\"PLAN-COMPANION-006\",\"path\":\"plans/backlog/edge-plan/tech-docs/README.md\",\"message\":\"entrypoint lists a companion that does not exist\",\"line\":7,\"column\":1,\"field\":\"back\\\\slash.md\"}]}\n"
+            "",
+        Plan.renderJson report
+    )
+
+[<Fact>]
+let ``Plan checks a CRLF delivery against an unterminated requirements document as RHINO does`` () =
+    let documents =
+        [ "plans/backlog/criteria-plan/README.md", "# Plan\n"
+          "plans/backlog/criteria-plan/brd.md", "# BRD\n"
+          "plans/backlog/criteria-plan/delivery.md",
+          "# Delivery\r\n\r\n## Phase 1\r\n\r\n- [ ] [AI] work [AC-01] and [broken\r\n"
+          "plans/backlog/criteria-plan/learnings.md", "# Learnings\n"
+          "plans/backlog/criteria-plan/prd.md", "# PRD\n\n```gherkin\nScenario: [AC-01] one\n```"
+          "plans/backlog/criteria-plan/tech-docs.md", "# Tech\n" ]
+
+    let report = planReport documents (fun _ -> None)
+    Assert.Equal(planOutcome 0 "[plan] checked 1 plan, no findings\n" "", Plan.renderText report)
+
+    Assert.Equal(
+        planOutcome
+            0
+            "{\"schemaVersion\":1,\"command\":\"plan\",\"exitCode\":0,\"subject\":\"plan\",\"inspected\":1,\"scanned\":[],\"notes\":[],\"violations\":[]}\n"
+            "",
+        Plan.renderJson report
+    )
+
+[<Fact>]
+let ``Plan names an unknown root holding quotes and control characters as RHINO does`` () =
+    let documents = [ "plans/we\"ird/root\t\r\n\u0001/slug/README.md", "# Plan\n" ]
+
+    let report = planReport documents (fun _ -> None)
+
+    Assert.Equal(
+        planOutcome
+            1
+            "[plan] checked 1 plan, 7 findings\n"
+            "[plan] plans/we\"ird:1:1 PLAN-LIFECYCLE-001 we\"ird plan root is not one of ideas, backlog, in-progress, done\n[plan] plans/we\"ird/root\t\r\n\u0001:1:1 PLAN-DOCUMENT-001 README.md required plan document is missing\n[plan] plans/we\"ird/root\t\r\n\u0001:1:1 PLAN-DOCUMENT-001 brd.md required plan document is missing\n[plan] plans/we\"ird/root\t\r\n\u0001:1:1 PLAN-DOCUMENT-001 delivery.md required plan document is missing\n[plan] plans/we\"ird/root\t\r\n\u0001:1:1 PLAN-DOCUMENT-001 learnings.md required plan document is missing\n[plan] plans/we\"ird/root\t\r\n\u0001:1:1 PLAN-DOCUMENT-001 prd.md required plan document is missing\n[plan] plans/we\"ird/root\t\r\n\u0001:1:1 PLAN-DOCUMENT-003 tech-docs plan carries no technical shape\n",
+        Plan.renderText report
+    )
+
+    Assert.Equal(
+        planOutcome
+            1
+            "{\"schemaVersion\":1,\"command\":\"plan\",\"exitCode\":1,\"subject\":\"plan\",\"inspected\":1,\"scanned\":[],\"notes\":[],\"violations\":[{\"kind\":\"PLAN-LIFECYCLE-001\",\"path\":\"plans/we\\\"ird\",\"message\":\"plan root is not one of ideas, backlog, in-progress, done\",\"line\":1,\"column\":1,\"field\":\"we\\\"ird\"},{\"kind\":\"PLAN-DOCUMENT-001\",\"path\":\"plans/we\\\"ird/root\\t\\r\\n\\u0001\",\"message\":\"required plan document is missing\",\"line\":1,\"column\":1,\"field\":\"README.md\"},{\"kind\":\"PLAN-DOCUMENT-001\",\"path\":\"plans/we\\\"ird/root\\t\\r\\n\\u0001\",\"message\":\"required plan document is missing\",\"line\":1,\"column\":1,\"field\":\"brd.md\"},{\"kind\":\"PLAN-DOCUMENT-001\",\"path\":\"plans/we\\\"ird/root\\t\\r\\n\\u0001\",\"message\":\"required plan document is missing\",\"line\":1,\"column\":1,\"field\":\"delivery.md\"},{\"kind\":\"PLAN-DOCUMENT-001\",\"path\":\"plans/we\\\"ird/root\\t\\r\\n\\u0001\",\"message\":\"required plan document is missing\",\"line\":1,\"column\":1,\"field\":\"learnings.md\"},{\"kind\":\"PLAN-DOCUMENT-001\",\"path\":\"plans/we\\\"ird/root\\t\\r\\n\\u0001\",\"message\":\"required plan document is missing\",\"line\":1,\"column\":1,\"field\":\"prd.md\"},{\"kind\":\"PLAN-DOCUMENT-003\",\"path\":\"plans/we\\\"ird/root\\t\\r\\n\\u0001\",\"message\":\"plan carries no technical shape\",\"line\":1,\"column\":1,\"field\":\"tech-docs\"}]}\n"
+            "",
+        Plan.renderJson report
+    )
+
+[<Fact>]
+let ``Plan refuses a plan document it cannot read as RHINO does`` () =
+    let documents =
+        [ "plans/backlog/locked-plan/README.md", "# Plan\n"
+          "plans/backlog/locked-plan/brd.md", "# BRD\n"
+          "plans/backlog/locked-plan/delivery.md", "# Delivery\n\n## Phase 1\n\n- [ ] [AI] work [AC-01]\n"
+          "plans/backlog/locked-plan/learnings.md", "# Learnings\n"
+          "plans/backlog/locked-plan/prd.md", "# PRD\n\n```gherkin\nScenario: [AC-01] one\n```\n"
+          "plans/backlog/locked-plan/tech-docs.md", "# Tech\n" ]
+
+    let report =
+        planReport documents (fun path ->
+            if path.EndsWith("/delivery.md", StringComparison.Ordinal) then
+                Some "Permission denied (os error 13)"
+            else
+                None)
+
+    Assert.Equal(
+        planOutcome 2 "" "[plan] plans/backlog/locked-plan/delivery.md: Permission denied (os error 13)\n",
+        Plan.renderText report
+    )
+
+    Assert.Equal(
+        planOutcome 2 "" "[plan] plans/backlog/locked-plan/delivery.md: Permission denied (os error 13)\n",
+        Plan.renderJson report
+    )

@@ -50,6 +50,10 @@ apps/*/test-results/
 # These files contain prose blocks at 4-space indent (MD046) due to PDF layout faithfully reproduced
 docs/reference/security/frameworks/nist-sp-800-53-rev5.md
 
+# Shared plan-structure corpus — byte-identical with the ose-rules catalog and pinned by digest;
+# its rejected cases are malformed on purpose
+specs/fixtures/plan-structure/
+
 # Archived content — internal links may be stale; do not validate
 plans/done/
 archived/

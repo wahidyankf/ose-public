@@ -18,6 +18,7 @@ cli/behaviours/
 ├── governance/             # governance subcommand family (word-budget, readme-index)
 ├── harness/                # harness subcommand family (agent/binding machinery)
 ├── md/                     # md subcommand family
+├── plan/                   # plan subcommand family (structural plan validation)
 ├── repo-config/            # repo-config.yml-driven-behaviour regressions
 ├── repo-config-validate/   # repo-config validate schema-parity gate
 ├── repo-governance/        # repo-governance subcommand family
@@ -112,6 +113,12 @@ cli/behaviours/
 | `md-audit.feature`                          | `md audit`                      | 1         |
 | `repo-governance-frontmatter-audit.feature` | `md frontmatter-dates validate` | 5         |
 
+### plan
+
+| File                     | Command(s)      | Scenarios |
+| ------------------------ | --------------- | --------- |
+| `plan-structure.feature` | `plan validate` | 6         |
+
 ### repo-config
 
 | File                  | Command(s)                                                  | Scenarios |
@@ -182,6 +189,7 @@ for the canonical purpose of this folder.
 - [rhino](./governance/README.md) — cli/behaviours/governance
 - [rhino](./harness/README.md) — cli/behaviours/harness
 - [rhino](./md/README.md) — cli/behaviours/md
+- [Plan Domain](./plan/README.md) — Gherkin specs for `plan validate`, the structural plan validator held to RHINO parity.
 - [Repo-Config Domain](./repo-config/README.md) — Gherkin specs proving per-repo behaviour is read from repo-config.yml rather than hard-coded.
 - [Repo-Config-Validate Domain](./repo-config-validate/README.md) — Gherkin specs for the repo-config validate schema-parity gate.
 - [rhino](./repo-governance/README.md) — cli/behaviours/repo-governance

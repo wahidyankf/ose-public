@@ -65,11 +65,14 @@
     <Compile Include="Steps/GateExecutionSteps.fs" />
     <Compile Include="Steps/GateValidationSteps.fs" />
     <Compile Include="Steps/ParityManifestSteps.fs" />
+    <Compile Include="Steps/PlanStructureSteps.fs" />
     <Compile Include="Steps/OwnedModuleCoverageTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="../../../../specs/apps/rhino/cli/behaviours/**/*.feature" />
+    <!-- The shared plan-structure corpus, read in memory so Unit never touches the filesystem. -->
+    <EmbeddedResource Include="../../../../specs/fixtures/plan-structure/**" LogicalName="plan-structure/%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>

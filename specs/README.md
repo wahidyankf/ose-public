@@ -68,3 +68,4 @@ For the detailed rules, see the [BDD standards](../docs/explanation/software-eng
 
 - [Apps](./apps/README.md) — Product-family specification indexes for AyoKoding, Crane, OrganicLever, OSE, and Rhino.
 - [Libs](./libs/README.md) — Specification indexes for the shared libraries: Crane core, env loaders, and web UI.
+- [Fixtures](./fixtures/README.md) — Shared corpora this repository verifies against rather than authors.

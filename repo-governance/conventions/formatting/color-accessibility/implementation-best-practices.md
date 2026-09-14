@@ -29,13 +29,13 @@ Borders provide shape definition that doesn't rely on fill color:
 
 PASS: **Good:**
 
-```mermaid
+```text
 classDef box fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
 FAIL: **Avoid:**
 
-```mermaid
+```text
 classDef box fill:#0173B2,color:#0000FF
 ```
 
@@ -60,8 +60,10 @@ The comment is helpful for transparency and verification, but the accessible hex
 **Example:**
 
 ```mermaid
-<!-- Uses accessible colors: blue (#0173B2) for primary, orange (#DE8F05) for warnings -->
+%% Uses accessible colors: blue (#0173B2) for primary, orange (#DE8F05) for warnings
 graph TD
+    accTitle: 4. Document Your Color Choices (Recommended for Transparency)
+    accDescr: Shows Item.
     A[Item]:::blue
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```

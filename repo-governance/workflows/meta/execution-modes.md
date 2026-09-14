@@ -43,11 +43,18 @@ This convention defines the execution modes for workflows in this repository: **
 
 ## Execution Mode Decision Flow
 
+```mermaid
+flowchart TD
+    accTitle: Execution Mode Decision Flow
+    accDescr: What does the step reference? leads to Defined as a subagent_type? via Named agent; Defined as a subagent_type? leads to Agent Delegation via Yes, preferred; and 4 more links.
+    Q{"What does the<br/>step reference?"}
+    Q -->|Named agent| E{"Defined as a<br/>subagent_type?"}
+    E -->|Yes, preferred| AD["Agent Delegation"]
+    E -->|No, fallback| MO["Manual<br/>Orchestration"]
+    Q -->|Nested workflow| NW["Execute that<br/>workflow"]
+    NW -.->|recursively| Q
+    Q -->|Procedure| MO
 ```
-What does the workflow step reference?
-├── Named agent → Agent exists as defined subagent_type in .claude/agents/?
-│   ├── YES → Use Agent Delegation (preferred)
-│   └── NO  → Use Manual Orchestration (fallback)
-├── Nested workflow → Execute that workflow (recursively apply this decision flow)
-└── Procedure → Use Manual Orchestration (follow procedure steps directly)
-```
+
+A named agent is defined when `.claude/agents/` holds it as a `subagent_type`. A nested workflow applies this
+decision flow recursively, and a procedure's steps are followed directly.

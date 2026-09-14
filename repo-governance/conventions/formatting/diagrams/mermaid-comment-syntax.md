@@ -13,12 +13,14 @@ when_to_use: "Use when adding explanatory comments inside a Mermaid diagram defi
 %% This is a comment
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Mermaid Comment Syntax
+    accDescr: Start leads to End.
     A[Start] --> B[End]
 ```
 
 **Incorrect Syntax** ():
 
-```mermaid
+```text
 %% WRONG EXAMPLE - DO NOT USE
 %% The %%{ }%% syntax below is INVALID and will cause errors
 %% %%{ This is a comment }%%
@@ -37,6 +39,8 @@ graph TD
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
+    accTitle: Mermaid Comment Syntax (2)
+    accDescr: Start leads to Process; Process leads to End.
     A[Start] --> B[Process] --> C[End]
 ```
 

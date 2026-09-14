@@ -19,15 +19,19 @@ when_to_use: Use when explaining inline skill delivery.
 
 **Default behaviour** - Progressive knowledge injection:
 
-```
-Knowledge Flow (Inline):
-L2: Conventions ──┬── CLAUDE.md/AGENTS.md (startup) ──> Claude/OpenCode
-                  ├── agent skills inline (on-demand) ────> Current conversation
-                  └── Direct refs (explicit) ───────> L4: Agents
-
-L3: Development ──┬── CLAUDE.md/AGENTS.md (startup) ──> Claude/OpenCode
-                  ├── agent skills inline (on-demand) ────> Current conversation
-                  └── Direct refs (explicit) ───────> L4: Agents
+```mermaid
+flowchart LR
+    accTitle: Inline agent skills (Knowledge Delivery)
+    accDescr: L2: Conventions leads to CLAUDE.md or AGENTS.md via startup; L3: Development leads to CLAUDE.md or AGENTS.md via startup; CLAUDE.md or AGENTS.md leads to Claude or OpenCode; and 6 more links.
+    L2["L2: Conventions"] -->|startup| CM["CLAUDE.md or<br/>AGENTS.md"]
+    L3["L3: Development"] -->|startup| CM
+    CM --> H["Claude or<br/>OpenCode"]
+    L2 -->|on-demand| SK["Inline agent<br/>skills"]
+    L3 -->|on-demand| SK
+    SK --> CC["Current<br/>conversation"]
+    L2 -->|explicit| DR["Direct references"]
+    L3 -->|explicit| DR
+    DR --> L4["L4: Agents"]
 ```
 
 **Characteristics**:

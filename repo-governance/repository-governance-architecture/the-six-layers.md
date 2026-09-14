@@ -5,19 +5,22 @@ when_to_use: Use for an at-a-glance view of all six layers.
 
 # The Six Layers
 
+```mermaid
+flowchart TD
+    accTitle: The Six Layers
+    accDescr: Layer 0: Vision leads to Layer 1: Principles via inspires; Layer 1: Principles leads to Layer 2: Conventions via governs; Layer 1: Principles leads to Layer 3: Development via governs; and 4 more links.
+    L0["Layer 0: Vision"] -->|inspires| L1["Layer 1: Principles"]
+    L1 -->|governs| L2["Layer 2: Conventions"]
+    L1 -->|governs| L3["Layer 3: Development"]
+    L2 -->|governs| L3
+    L2 -->|governs| L4["Layer 4: AI Agents"]
+    L3 -->|governs| L4
+    L4 -->|orchestrated by| L5["Layer 5: Workflows"]
 ```
-Layer 0: Vision       WHY WE EXIST       (foundational purpose)
-    ↓ inspires
-Layer 1: Principles   WHY - Values       (governs L2, L3)
-    ↓ governs
-Layer 2: Conventions  WHAT - Doc Rules   (governs L3, L4)
-    ↓ governs (with L2)
-Layer 3: Development  HOW - Practices    (governs L4)
-    ↓ governs (implemented by)
-Layer 4: AI Agents    WHO - Executors    (atomic tasks)
-    ↓ orchestrated by
-Layer 5: Workflows    WHEN - Orchestrate (multi-step processes)
-```
+
+Each layer answers one question. Vision is why we exist, principles are the values behind it, conventions are what
+the documentation rules are, development is how we practice, AI agents are who executes atomic tasks, and
+workflows are when multi-step processes run.
 
 **Agent skills Infrastructure** (Delivery):
 

@@ -28,7 +28,7 @@ when_to_use: "Use as a fast lookup when you need to know how to escape a specifi
 
 **Example: Complex node text with multiple escapes:**
 
-```mermaid
+```text
 graph TD
     A[HashMap#60;K, V#62;<br/>O#40;1#41; lookup<br/>Values: #91;1, 2, 3#93;<br/>Dict: #123;a: 1#125;]
 ```

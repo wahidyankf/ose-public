@@ -54,11 +54,14 @@ agent judges the size by eye, and no other document restates the numbers.
 
 ## Agent Isolation and Delivery Pattern
 
-```
-Startup: AGENTS.md ──loaded──> Orchestrator (main conversation)
-Runtime: Orchestrator ──spawns──> Agents (isolated contexts)
-        agent skills ──delivers via skills: field──> Agents
-         Conventions ──explicit references──> Agents
+```mermaid
+flowchart LR
+    accTitle: Agent Isolation and Delivery Pattern
+    accDescr: AGENTS.md leads to Orchestrator main conversation via loaded at startup; Orchestrator main conversation leads to Agents: isolated contexts via spawns at runtime; Agent skills leads to Agents: isolated contexts via via skills field; and 1 more links.
+    AG["AGENTS.md"] -->|loaded at startup| O["Orchestrator<br/>main conversation"]
+    O -->|spawns at runtime| A["Agents:<br/>isolated contexts"]
+    SK["Agent skills"] -->|via skills field| A
+    CV["Conventions"] -->|explicit references| A
 ```
 
 **Critical Understanding:**

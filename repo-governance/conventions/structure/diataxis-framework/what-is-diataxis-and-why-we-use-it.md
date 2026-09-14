@@ -9,14 +9,20 @@ when_to_use: Use when you need the conceptual definition of Diátaxis or the rat
 
 Diátaxis is a systematic approach to technical documentation authoring that divides documentation into four distinct categories based on user needs and context:
 
-```
-                    Practical Steps          Understanding
-                    ─────────────────────────────────────
-Learning-oriented   │ TUTORIALS          │ EXPLANATION  │
-                    │                    │              │
-Problem-oriented    │ HOW-TO GUIDES      │ REFERENCE    │
-                    ─────────────────────────────────────
-                    Action-oriented       Information-oriented
+```mermaid
+flowchart TD
+    accTitle: What is Diátaxis?
+    accDescr: Tutorials: practical steps leads to How-To Guides: practical steps via Action-oriented; Explanation: understanding leads to Reference: understanding via Information-oriented.
+    subgraph LEARN["Learning-oriented"]
+        T["Tutorials:<br/>practical steps"]
+        X["Explanation:<br/>understanding"]
+    end
+    subgraph PROB["Problem-oriented"]
+        H["How-To Guides:<br/>practical steps"]
+        R["Reference:<br/>understanding"]
+    end
+    T ---|Action-oriented| H
+    X ---|Information-oriented| R
 ```
 
 Each category serves a different purpose and addresses different user needs.

@@ -9,11 +9,13 @@ when_to_use: Use when explaining fork-mode skill delegation.
 
 **Delegation behaviour** with `context: fork`:
 
-```
-Delegation Flow (Fork):
-Agent skills (context: fork) ──delegates to──> Isolated Agent Context
-                         ──returns──> Summarized Results
-                         ──to──> Main Conversation
+```mermaid
+flowchart LR
+    accTitle: Fork agent skills (Task Delegation)
+    accDescr: Agent skills, context: fork leads to Isolated agent context via delegates to; Isolated agent context leads to Summarized results via returns; Summarized results leads to Main conversation via to.
+    S["Agent skills,<br/>context: fork"] -->|delegates to| I["Isolated agent<br/>context"]
+    I -->|returns| R["Summarized<br/>results"]
+    R -->|to| M["Main conversation"]
 ```
 
 **Characteristics**:

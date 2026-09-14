@@ -11,9 +11,12 @@ encoders/decoders from the spec (e.g., `specs/apps/organiclever/be/contracts/`) 
 
 The dependency chain is:
 
-```
-codegen → typecheck
-codegen → build
+```mermaid
+flowchart LR
+    accTitle: Codegen Dependency Chain
+    accDescr: codegen leads to typecheck; codegen leads to build.
+    CG["codegen"] --> TC["typecheck"]
+    CG --> B["build"]
 ```
 
 Both `typecheck` and `build` declare `dependsOn: ["codegen"]` in their `project.json`. This

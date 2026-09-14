@@ -14,6 +14,8 @@ Go's goroutines are lightweight threads managed by the Go runtime, not the OS. U
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Goroutines and Concurrency (Golang Beginner)
+    accDescr: Main sends Create channel to Ch; Main sends go func spawn to Worker; Worker sends Send 42 to Ch; Main sends Receive to Ch; Ch sends Returns 42 to Main.
     participant Main as Main Goroutine
     participant Ch as Channel
     participant Worker as Worker Goroutine

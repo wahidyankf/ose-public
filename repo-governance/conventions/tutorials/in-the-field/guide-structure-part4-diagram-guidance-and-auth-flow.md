@@ -37,6 +37,8 @@ when_to_use: Use when deciding whether a guide needs a diagram, or building a TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 stateDiagram-v2
+    accTitle: Guide Structure Part 4: Diagram Guidance and Authentication Flow
+    accDescr: start moves to Red on Write test; Red moves to Green on Test fails; Green moves to Refactor on Test passes; Refactor moves to Red on Tests still pass, next feature.
     [*] --> Red: Write test
 
     Red --> Green: Test fails
@@ -61,8 +63,8 @@ stateDiagram-v2
         Keep tests passing
     end note
 
-    classDef redState fill:#CC78BC,stroke:#000000,color:#FFFFFF
-    classDef greenState fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef redState fill:#CC78BC,stroke:#000000,color:#000000
+    classDef greenState fill:#029E73,stroke:#000000,color:#000000
     classDef refactorState fill:#0173B2,stroke:#000000,color:#FFFFFF
 
     class Red redState
@@ -75,14 +77,15 @@ stateDiagram-v2
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A1[Client] -->|Username + Password<br/>Base64 encoded| A2[Server]
-    A2 -->|Validates credentials<br/>every request| A3[Database]
+    accTitle: Guide Structure Part 4: Diagram Guidance and Authentication Flow (2)
+    accDescr: Client leads to Server via Username + Password Base64; Server leads to Database via Checks credentials per request; Database leads to Server via User found; Server leads to Client via 200 OK + Resource.
+    A1[Client] -->|Username + Password<br/>Base64| A2[Server]
+    A2 -->|Checks credentials<br/>per request| A3[Database]
     A3 -->|User found| A2
     A2 -->|200 OK + Resource| A1
 
-    style A1 fill:#0173B2,stroke:#000,color:#fff
-    style A2 fill:#0173B2,stroke:#000,color:#fff
-    style A3 fill:#0173B2,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A1,A2,A3 blue
 ```
 
 **Limitation**: Database query on every request (high latency, database load).
@@ -92,6 +95,8 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Guide Structure Part 4: Diagram Guidance and Authentication Flow (3)
+    accDescr: Client leads to Auth Server via credentials; Auth Server leads to Database via validates; Database leads to Auth Server: JWT via user found; Auth Server: JWT leads to Client: JWT via JWT token; and 2 more links.
     B1[Client] -- credentials --> B2[Auth Server]
     B2 -- validates --> B3[Database]
     B3 -- user found --> B4[Auth Server: JWT]
@@ -99,13 +104,8 @@ graph TD
     B5 -- JWT in header --> B6[App Server]
     B6 -- verify + respond --> B7[Protected Resource]
 
-    style B1 fill:#DE8F05,stroke:#000,color:#fff
-    style B2 fill:#DE8F05,stroke:#000,color:#fff
-    style B3 fill:#DE8F05,stroke:#000,color:#fff
-    style B4 fill:#DE8F05,stroke:#000,color:#fff
-    style B5 fill:#DE8F05,stroke:#000,color:#fff
-    style B6 fill:#DE8F05,stroke:#000,color:#fff
-    style B7 fill:#DE8F05,stroke:#000,color:#fff
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    class B1,B2,B3,B4,B5,B6,B7 orange
 ```
 
 **Improvement**: Single database query during login, subsequent requests use cryptographic verification (fast, stateless).

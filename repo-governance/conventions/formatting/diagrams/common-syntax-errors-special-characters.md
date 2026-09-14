@@ -13,7 +13,7 @@ This section documents critical Mermaid syntax rules discovered through debuggin
 
 **Problem Examples (FAIL: BROKEN):**
 
-```mermaid
+```text
 graph TD
     A[O 1 lookup]                   %% ERROR: Parentheses cause syntax error
     A --> B[function args]          %% ERROR: Parentheses cause syntax error
@@ -35,7 +35,7 @@ Escape special characters using HTML entity codes:
 
 **In node text:**
 
-```mermaid
+```text
 graph TD
     A[O#40;1#41; lookup]                     %% CORRECT: Escaped parentheses
     A --> B[function#40;args#41;]            %% CORRECT: Escaped parentheses
@@ -50,6 +50,8 @@ Edge labels use `-->|text|` syntax and require the same escaping:
 
 ```mermaid
 graph TD
+    accTitle: Error 1: Special Characters in Node Text and Edge Labels
+    accDescr: A leads to Iterator via iter; Iterator leads to Has Item? via next; D leads to Value via get[key].
     A -->|iter#40;#41;| B[Iterator]          %% CORRECT: Escaped parentheses in edge label
     B -->|next#40;#41;| C{Has Item?}         %% CORRECT: Escaped parentheses in edge label
     D -->|get#91;key#93;| E[Value]           %% CORRECT: Escaped brackets in edge label

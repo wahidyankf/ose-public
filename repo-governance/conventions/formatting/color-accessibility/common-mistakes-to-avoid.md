@@ -9,7 +9,7 @@ when_to_use: "Use when reviewing color usage for common accessibility mistakes s
 
 FAIL: **Problem**: Red-blind and green-blind users cannot distinguish these colors
 
-```mermaid
+```text
 FAIL: WRONG
 graph TD
     A[Success]:::green
@@ -22,20 +22,22 @@ graph TD
 PASS: **Solution**: Use colors from verified palette
 
 ```mermaid
-PASS: CORRECT
+%% PASS: CORRECT
 graph TD
+    accTitle: Mistake 1: Using Red-Green Combinations
+    accDescr: Shows Success, Error.
     A[Success]:::teal
     B[Error]:::orange
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
 ```
 
 ## Mistake 2: Relying on Color Alone
 
 FAIL: **Problem**: Color-blind users cannot distinguish elements
 
-```mermaid
+```text
 FAIL: WRONG
 graph TD
     A:::blue
@@ -48,20 +50,22 @@ graph TD
 PASS: **Solution**: Add text labels and shapes
 
 ```mermaid
-PASS: CORRECT
+%% PASS: CORRECT
 graph TD
+    accTitle: Mistake 2: Relying on Color Alone
+    accDescr: Shows Primary Task Blue Rectangle, Warning State Orange Diamond.
     A["Primary Task<br/>(Blue Rectangle)"]:::blue
     B["Warning State<br/>(Orange Diamond)"]:::orange
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
 ```
 
 ## Mistake 3: Using Yellow for Important Information
 
 FAIL: **Problem**: Yellow is invisible to tritanopia (blue-yellow blind)
 
-```mermaid
+```text
 FAIL: WRONG - Yellow not visible to tritanopia users
 graph TD
     A[Important!]:::yellow
@@ -72,18 +76,20 @@ graph TD
 PASS: **Solution**: Use orange or teal instead
 
 ```mermaid
-PASS: CORRECT - Orange visible to all color blindness types
+%% PASS: CORRECT - Orange visible to all color blindness types
 graph TD
+    accTitle: Mistake 3: Using Yellow for Important Information
+    accDescr: Shows Important!.
     A[Important!]:::orange
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
 ```
 
 ## Mistake 4: No Contrast Verification
 
 FAIL: **Problem**: Insufficient contrast causes readability issues
 
-```mermaid
+```text
 FAIL: WRONG - Purple text on light purple might have low contrast
 graph TD
     A[Text]:::weakContrast
@@ -94,11 +100,13 @@ graph TD
 PASS: **Solution**: Verify with contrast checker
 
 ```mermaid
-PASS: CORRECT - Use verified palette with sufficient contrast
+%% PASS: CORRECT - Use verified palette with sufficient contrast
 graph TD
-    A["Text (White on Purple)"]:::goodContrast
+    accTitle: Mistake 4: No Contrast Verification
+    accDescr: Shows Text Black on Purple.
+    A["Text<br/>(Black on Purple)"]:::goodContrast
 
-    classDef goodContrast fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef goodContrast fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Mistake 5: Using CSS Color Names

@@ -24,6 +24,8 @@ when_to_use: "Use when deciding or reviewing which orientation a Mermaid diagram
 ```mermaid
 %% TD required: parent classes must appear above subclasses to show inheritance direction
 graph TD
+    accTitle: Diagram Orientation
+    accDescr: Animal leads to Dog; Animal leads to Cat.
     Animal --> Dog
     Animal --> Cat
 ```
@@ -34,6 +36,8 @@ graph TD
 
 ```mermaid
 graph LR
+    accTitle: Diagram Orientation (2)
+    accDescr: Start leads to Process; Process leads to End.
     A[Start] --> B[Process]
     B --> C[End]
 ```

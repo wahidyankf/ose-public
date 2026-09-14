@@ -82,10 +82,13 @@ PASS: All tests passed
 
 **Goal-driven pattern (continuous verification)**:
 
-```
-1. Define success criteria
-2. Implement
-3. Verify against criteria
-4. If verification fails → fix and repeat step 3
-5. If verification passes → done
+```mermaid
+flowchart TD
+    accTitle: Loop Until Verified
+    accDescr: Define success criteria leads to Implement; Implement leads to Verify against criteria; Verify against criteria leads to Fix via Fails; Fix leads to Verify against criteria; Verify against criteria leads to Done via Passes.
+    D["Define success<br/>criteria"] --> I["Implement"]
+    I --> V{"Verify against<br/>criteria"}
+    V -->|Fails| F["Fix"]
+    F --> V
+    V -->|Passes| DN["Done"]
 ```

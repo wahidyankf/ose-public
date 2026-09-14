@@ -17,13 +17,15 @@ Use `<br/>` to create line breaks inside node labels. The `\n` escape sequence r
 
 ```mermaid
 graph TD
+    accTitle: Rule 1: Node label line breaks — only
+    accDescr: Shows Auth service issues JWT.
     A["Auth service<br/>issues JWT"]:::blue
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **DO NOT:**
 
-```mermaid
+```text
 graph TD
     A["Auth service\nissues JWT"]:::blue
     %% BROKEN: renders as "Auth service\nissues JWT" (literal backslash-n)
@@ -38,12 +40,14 @@ Edge labels are the text inside `|"..."|` arrow syntax: `A -->|"text"| B`. They 
 
 ```mermaid
 graph TD
+    accTitle: Rule 2: Edge labels — plain text only, no HTML
+    accDescr: Client leads to Auth service via JWKS public key.
     A[Client]-->|"JWKS public key"| B[Auth service]
 ```
 
 **DO NOT:**
 
-```mermaid
+```text
 graph TD
     A[Client]-->|"JWKS key<br/>via HTTPS"| B[Auth service]
     %% BROKEN: renders as "JWKS key<br/>via HTTPS" with visible tag

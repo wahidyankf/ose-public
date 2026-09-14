@@ -46,6 +46,8 @@ the caller for review.
 
 ```mermaid
 flowchart TD
+  accTitle: Phase A — Load Plans and Build the Dependency DAG (Edges, Report, and Diagram)
+  accDescr: planA P0 setup leads to planA P1 RED; planA P1 RED leads to planA P1 GREEN; planB P0 setup leads to planB P1 impl; and 1 more links.
   subgraph Legend
     L1[SEQUENTIAL edge]:::seq
     L2[PARALLELIZABLE nodes]:::par
@@ -53,9 +55,9 @@ flowchart TD
   A0[planA P0 setup] --> A1[planA P1 RED]:::seq
   A1 --> A2[planA P1 GREEN]:::seq
   B0[planB P0 setup]:::par --> B1[planB P1 impl]:::par
-  A2 -->|shares rhino-cli| C1[planC rhino step waits]:::seq
-  classDef seq fill:#0072B2,stroke:#001f3f,color:#ffffff
-  classDef par fill:#009E73,stroke:#003b2b,color:#ffffff
+  A2 -->|shares rhino-cli| C1[planC rhino step<br/>waits]:::seq
+  classDef seq fill:#0173B2,stroke:#000000,color:#FFFFFF
+  classDef par fill:#029E73,stroke:#000000,color:#000000
 ```
 
 > **Pause Safety**: safe to stop after Phase A. Nothing has been executed; only the schedule exists.

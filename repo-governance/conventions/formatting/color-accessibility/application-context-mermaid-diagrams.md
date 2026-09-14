@@ -17,8 +17,10 @@ when_to_use: "Use when writing or reviewing a Mermaid diagram under docs/ that n
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 ```mermaid
-<!-- Uses colors: blue (#0173B2), orange (#DE8F05), teal (#029E73) for accessibility -->
+%% Uses colors: blue (#0173B2), orange (#DE8F05), teal (#029E73) for accessibility
 graph TD
+    accTitle: Implementation Example
+    accDescr: User Request Blue leads to Processing Orange; Processing Orange leads to Response Teal.
     A["User Request<br/>(Blue)"]:::blue
     B["Processing<br/>(Orange)"]:::orange
     C["Response<br/>(Teal)"]:::teal
@@ -47,15 +49,15 @@ graph TD
 ## Complete Mermaid Template with Accessibility
 
 ```mermaid
-<!--
-Uses accessible colors:
-- Blue (#0173B2) for primary flow
-- Orange (#DE8F05) for decision points
-- Teal (#029E73) for success outcomes
-- Gray (#808080) for optional paths
-Always includes black borders for shape definition.
--->
+%% Uses accessible colors:
+%% - Blue (#0173B2) for primary flow
+%% - Orange (#DE8F05) for decision points
+%% - Teal (#029E73) for success outcomes
+%% - Gray (#808080) for optional paths
+%% Always includes black borders for shape definition.
 graph TD
+    accTitle: Complete Mermaid Template with Accessibility
+    accDescr: Start Process Primary leads to Decision Evaluate; Decision Evaluate leads to Success Path Complete via Yes; Decision Evaluate leads to Alternate Path Optional via No.
     A["Start Process<br/>Primary"]:::blue
     B{"Decision<br/>Evaluate"}:::orange
     C["Success Path<br/>Complete"]:::teal

@@ -15,13 +15,15 @@ Describe the action in plain words instead of quoting a URL path.
 
 ```mermaid
 graph TD
+    accTitle: Rule 4: No URL paths or dot-prefixed tokens in edge labels
+    accDescr: Client leads to Auth service via JWKS public key; Client leads to API via health check.
     A[Client]-->|"JWKS public key"| B[Auth service]
     C[Client]-->|"health check"| D[API]
 ```
 
 **DO NOT:**
 
-```mermaid
+```text
 graph TD
     A[Client]-->|"GET /.well-known/jwks.json"| B[Auth service]
     %% BROKEN: "." in "/.well-known" is parsed as CSS class selector
@@ -39,6 +41,8 @@ Separator characters like `─────────────────�
 
 ```mermaid
 graph TD
+    accTitle: Rule 5: Keep separator lines proportional
+    accDescr: Shows Auth service ──────────── issues JWT.
     A["Auth service<br/>────────────<br/>issues JWT"]:::blue
     %% Separator length matches "Auth service" (12 chars)
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
@@ -46,7 +50,7 @@ graph TD
 
 **DO NOT:**
 
-```mermaid
+```text
 graph TD
     A["Auth service<br/>────────────────────────────<br/>issues JWT"]:::blue
     %% BROKEN: separator (28 dashes) forces node wider than text lines,

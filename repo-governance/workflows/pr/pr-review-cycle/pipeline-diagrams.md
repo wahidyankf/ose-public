@@ -10,20 +10,22 @@ when_to_use: "Use when you need the visual pipeline shape rather than the prose 
 ```mermaid
 %% Color palette: Gold #ECE133 (scout), Blue #0173B2 (specialists), Purple #CC78BC (coordinator), Orange #DE8F05 (fixer), Teal #029E73 (CI gate)
 flowchart LR
-  SC["pr-review-scout-maker"]:::gold
-  subgraph FANOUT["up to 9 concurrent specialists<br/>(DD-10 content-type filter may skip up to 2)"]
-    A["pr-review-architecture-maker"]:::blue
-    L["pr-review-logic-maker"]:::blue
-    G["pr-review-governance-maker"]:::blue
-    S["pr-review-security-maker"]:::blue
-    I["pr-review-integrity-maker"]:::blue
-    P["pr-review-performance-maker"]:::blue
+  accTitle: Participants Flowchart
+  accDescr: pr-review-scout- maker leads to up to 9 concurrent specialists DD-10 content-type filter may skip up to 2 via route-selected specialists; pr-review-scout- maker leads to pr-review- synthesis-maker via context_brief + class probe; and 11 more links.
+  SC["pr-review-scout-<br/>maker"]:::gold
+  subgraph FANOUT["up to 9 concurrent<br/>specialists<br/>(DD-10 content-type<br/>filter may skip<br/>up to 2)"]
+    A["pr-review-<br/>architecture-maker"]:::blue
+    L["pr-review-logic-<br/>maker"]:::blue
+    G["pr-review-<br/>governance-maker"]:::blue
+    S["pr-review-security-<br/>maker"]:::blue
+    I["pr-review-integrity-<br/>maker"]:::blue
+    P["pr-review-<br/>performance-maker"]:::blue
     D["pr-review-docs-maker"]:::blue
-    N["pr-review-instruction-maker"]:::blue
-    T["pr-review-types-maker"]:::blue
+    N["pr-review-<br/>instruction-maker"]:::blue
+    T["pr-review-types-<br/>maker"]:::blue
   end
-  SC -->|"route-selected specialist set"| FANOUT
-  SC -.->|"context_brief + probe<br/>(class, prior-use)"| SY
+  SC -->|"route-selected<br/>specialists"| FANOUT
+  SC -.->|"context_brief +<br/>class probe"| SY
   A --> SY
   L --> SY
   G --> SY
@@ -32,23 +34,25 @@ flowchart LR
   P --> SY
   N --> SY
   T --> SY
-  D --> SY["pr-review-synthesis-maker<br/>(coordinator)"]:::purple
-  SY -->|"ONE consolidated<br/>review, Reviews API"| FX["pr-review-fixer"]:::orange
-  FX --> CI["CI-green gate<br/>(hard, per cycle)"]:::teal
+  D --> SY["pr-review-<br/>synthesis-maker"]:::purple
+  SY -->|"ONE review via<br/>Reviews API"| FX["pr-review-fixer"]:::orange
+  FX --> CI["hard CI-green gate<br/>per cycle"]:::teal
 
-  classDef gold fill:#ECE133,stroke:#000000,color:#000000
+  classDef gold fill:#CA9161,stroke:#000000,color:#000000
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
   classDef purple fill:#CC78BC,stroke:#000000,color:#000000
   classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 ## Loop Sequence Diagram (One Cycle)
 
 ```mermaid
 sequenceDiagram
+  accTitle: Loop Sequence Diagram (One Cycle)
+  accDescr: O sends rehydrate cycle history and ceiling state to GH; GH sends reviews, dispositions, probes, checkpoints, threads to O; O sends cycle number N of {total} to SC; and 14 more links.
   participant O as Orchestrator (this workflow)
-  participant SC as pr-review-scout-maker
+  participant SC as pr-review-scout-<br/>maker
   participant SP as up to 9 specialist-makers<br/>(DD-10 may skip up to 2)
   participant SY as pr-review-synthesis-maker
   participant GH as GitHub PR Reviews API

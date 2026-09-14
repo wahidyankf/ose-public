@@ -18,27 +18,27 @@ validators never execute tests; runtime code coverage belongs to its correspondi
 
 ```mermaid
 flowchart TD
-    A[Developer pushes code] --> B[Pre-push hook]
-    B --> E["affected test:quick<br/>types + lint + Unit + static"]
+    accTitle: Quality Gates (pre-push enforcement)
+    accDescr: Developer pushes code leads to Pre-push hook; Pre-push hook leads to affected test:quick types + lint + Unit + static; affected test:quick types + lint + Unit + static leads to All pass?; and 6 more links.
+    A[Developer pushes<br/>code] --> B[Pre-push hook]
+    B --> E["affected test:quick<br/>types + lint + Unit<br/>+ static"]
     E --> F{All pass?}
     F -- No --> G[Push blocked]
     F -- Yes --> H[Push succeeds]
 
-    P[PR opened / updated] --> Q["GitHub Actions CI<br/>nx affected -t test:quick<br/>(bounded project parallelism)"]
+    P[PR opened / updated] --> Q["GitHub Actions CI<br/>nx affected -t<br/>test:quick<br/>(bounded project<br/>parallelism)"]
     Q --> R{Pass?}
     R -- No --> S[PR merge blocked]
     R -- Yes --> T[PR merge allowed]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#029E73,color:#fff
-    style P fill:#0173B2,color:#fff
-    style Q fill:#DE8F05,color:#fff
-    style S fill:#CC78BC,color:#fff
-    style T fill:#029E73,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A,P blue
+    class B,F,Q orange
+    class E,H,T teal
+    class G,S purple
 ```
 
 ## Scheduled and On-Demand Testing
@@ -50,20 +50,18 @@ coverage, then complete Integration, then complete unfiltered E2E outside the pu
 
 ```mermaid
 flowchart TD
-    H2["Scheduled/manual quality CI"] --> C2["all applicable<br/>test:coverage:*"]
-    C2 --> I2["complete test:integration"]
-    I2 --> E2["complete unfiltered test:e2e"]
+    accTitle: Scheduled and On-Demand Testing
+    accDescr: Scheduled/manual quality CI leads to all applicable test:coverage:*; all applicable test:coverage:* leads to complete test:integration; complete test:integration leads to complete unfiltered test:e2e; On demand / CI matrix leads to test:unit; and 2 more links.
+    H2["Scheduled/manual<br/>quality CI"] --> C2["all applicable<br/>test:coverage:*"]
+    C2 --> I2["complete<br/>test:integration"]
+    I2 --> E2["complete unfiltered<br/>test:e2e"]
 
-    J[On demand / CI matrix] --> K[test:unit]
+    J[On demand / CI<br/>matrix] --> K[test:unit]
     J --> L[test:integration]
     L --> M[test:e2e]
 
-    style H2 fill:#0173B2,color:#fff
-    style C2 fill:#CA9161,color:#fff
-    style I2 fill:#CA9161,color:#fff
-    style E2 fill:#CA9161,color:#fff
-    style J fill:#0173B2,color:#fff
-    style K fill:#CA9161,color:#fff
-    style L fill:#CA9161,color:#fff
-    style M fill:#CA9161,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    class H2,J blue
+    class C2,I2,E2,K,L,M brown
 ```

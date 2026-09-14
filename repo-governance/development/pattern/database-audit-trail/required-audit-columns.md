@@ -9,8 +9,10 @@ Every table MUST include all six columns in the order listed below.
 
 ```mermaid
 graph TD
-    T["Table<br/>(any domain entity)"] --> R[Required Audit Columns]
-    T --> O[Optional Audit Columns]
+    accTitle: Required Audit Columns
+    accDescr: Table any domain entity leads to Required Audit Columns; Table any domain entity leads to Optional Audit Columns; Required Audit Columns leads to created_at TIMESTAMPTZ NOT NULL; and 5 more links.
+    T["Table<br/>(any domain entity)"] --> R[Required Audit<br/>Columns]
+    T --> O[Optional Audit<br/>Columns]
 
     R --> C1["created_at<br/>TIMESTAMPTZ NOT NULL"]
     C1 --> C2["created_by<br/>VARCHAR NOT NULL"]
@@ -20,8 +22,8 @@ graph TD
     O --> C5["deleted_at<br/>TIMESTAMPTZ NULL"]
     C5 --> C6["deleted_by<br/>VARCHAR NULL"]
 
-    classDef required fill:#0173B2,color:#ffffff,stroke:#0173B2
-    classDef optional fill:#029E73,color:#ffffff,stroke:#029E73
+    classDef required fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef optional fill:#029E73,stroke:#000000,color:#000000
 
     class R,C1,C2,C3,C4 required
     class O,C5,C6 optional

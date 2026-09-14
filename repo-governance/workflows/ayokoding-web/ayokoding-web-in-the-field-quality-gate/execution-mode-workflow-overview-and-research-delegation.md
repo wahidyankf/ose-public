@@ -48,18 +48,25 @@ context — use this when agent delegation is unavailable.
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'fontSize':'14px'}}}%%
 graph TB
-    A[Maker: Create/Update Guides] -- maker or manual --> B[Checker: Validate Quality]
+    accTitle: Workflow Overview
+    accDescr: Maker: Create/Update Guides leads to Checker: Validate Quality via maker or manual; Checker: Validate Quality leads to User Review via checker; User Review leads to Fixer: Apply Fixes via Issues found; and 4 more links.
+    A[Maker: Create/Update<br/>Guides] -- maker or manual --> B[Checker: Validate<br/>Quality]
     B -- checker --> C{User Review}
     C -- Issues found --> D[Fixer: Apply Fixes]
     D -- re-check --> E[Re-validate Quality]
     C -- Quality approved --> F[Publication Ready]
     C -- Major rework needed --> G[Iterate via Maker]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CA9161,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    class A blue
+    class B orange
+    class D teal
+    class F purple
+    class G brown
 ```
 
 ## Research Delegation

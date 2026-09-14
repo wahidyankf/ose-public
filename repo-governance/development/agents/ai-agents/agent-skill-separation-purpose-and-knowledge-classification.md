@@ -15,22 +15,19 @@ This section defines how to properly separate reusable knowledge (agent skills) 
 
 When writing or updating an agent, use this decision tree to determine where content belongs:
 
+```mermaid
+flowchart TD
+    accTitle: Knowledge Classification Decision Tree
+    accDescr: Reusable across 3+ agents? leads to Actionable how-to guidance? via Yes; Actionable how-to guidance? leads to Skill in.claude/skills/ via Yes; Reusable across 3+ agents? leads to Technical spec or standard? via Yes; and 3 more links.
+    Q1{"Reusable across<br/>3+ agents?"}
+    Q1 -->|Yes| Q2{"Actionable how-to<br/>guidance?"}
+    Q2 -->|Yes| SK["Skill in<br/>.claude/skills/"]
+    Q1 -->|Yes| Q3{"Technical spec<br/>or standard?"}
+    Q3 -->|Yes| CV["Convention in<br/>conventions/"]
+    Q1 -->|No| Q4{"Task-specific<br/>workflow?"}
+    Q4 -->|Yes| AG["Keep in the<br/>agent file"]
 ```
-Is this content reusable across 3+ agents?
-│
-├─ YES → Move to Skill or Convention Document
-│   │
-│   ├─ Is it actionable "how-to" guidance?
-│   │   └─ YES → Create/update Skill in .claude/skills/
-│   │       Examples: applying-content-quality, creating-accessible-diagrams
-│   │
-│   └─ Is it technical specification or standard?
-│       └─ YES → Create/update Convention in repo-governance/conventions/
-│           Examples: Color Accessibility Convention, Mathematical Notation Convention
-│
-└─ NO → Keep in Agent File
-    │
-    └─ Is it task-specific workflow, validation logic, or decision criteria?
-        └─ YES → This is agent-specific knowledge, keep in agent
-            Examples: "When to use this agent", validation workflow steps, tool usage patterns
-```
+
+Examples: agent skills such as `applying-content-quality` and `creating-accessible-diagrams`; Conventions such as the
+Color Accessibility Convention and the Mathematical Notation Convention in `repo-governance/conventions/`; and
+agent-specific knowledge such as "When to use this agent", validation workflow steps, and tool usage patterns.

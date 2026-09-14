@@ -11,7 +11,7 @@ when_to_use: "Use when a Mermaid diagram has quote characters or nested escaping
 
 **Problem Example (FAIL: BROKEN)**:
 
-```mermaid
+```text
 graph TD
     F[let x = "hello"]        %% ERROR: Inner quotes conflict with node syntax
     G[const name = "Alice"]   %% ERROR: Parser sees "hello" as end of node label
@@ -25,6 +25,8 @@ Remove the inner quotes or use descriptive text:
 
 ```mermaid
 graph TD
+    accTitle: Error 2: Literal Quotes Inside Node Text
+    accDescr: Shows let x = hello, const name = Alice, let x = string value.
     F[let x = hello]              %% CORRECT: No inner quotes
     G[const name = Alice]         %% CORRECT: No inner quotes
     H[let x = string value]       %% CORRECT: Descriptive text
@@ -40,7 +42,7 @@ graph TD
 
 **Problem Example (FAIL: BROKEN):**
 
-```mermaid
+```text
 graph TD
     A["JSON #123;name:Alice#125;"]    %% ERROR: Nested escaping fails
 ```
@@ -51,7 +53,7 @@ graph TD
 
 Simplify the text - remove quotes or use plain text instead of trying to escape multiple special characters:
 
-```mermaid
+```text
 graph TD
     A["JSON #123;name:Alice#125;"]                %% CORRECT: No quotes, just entity codes
     B["JSON object with name field"]              %% CORRECT: Plain text description

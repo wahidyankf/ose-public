@@ -16,18 +16,16 @@ When creating new documentation, ask:
 
 ### Decision Tree
 
-```
-Start here
-    │
-    ├─ Teaching someone to DO something?
-    │   │
-    │   ├─ Complete beginner? → Tutorial
-    │   └─ Has experience? → How-To
-    │
-    └─ Teaching someone to UNDERSTAND something?
-        │
-        ├─ Need specific facts/data? → Reference
-        └─ Need context/reasoning? → Explanation
+```mermaid
+flowchart TD
+    accTitle: Decision Tree
+    accDescr: Start here leads to Teach how to DO something?; Start here leads to Teach to UNDERSTAND something?; Teach how to DO something? leads to Tutorial via Complete beginner; and 3 more links.
+    S["Start here"] --> D1{"Teach how to<br/>DO something?"}
+    S --> U1{"Teach to UNDERSTAND<br/>something?"}
+    D1 -->|Complete beginner| T["Tutorial"]
+    D1 -->|Has experience| H["How-To"]
+    U1 -->|Needs facts or data| R["Reference"]
+    U1 -->|Needs reasoning| E["Explanation"]
 ```
 
 ## Common Mistakes to Avoid

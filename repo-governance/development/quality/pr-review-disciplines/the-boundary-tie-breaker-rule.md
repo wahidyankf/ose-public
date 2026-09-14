@@ -31,16 +31,18 @@ cases so the coordinator does not have to re-derive the tie-breaker from scratch
 %% Color palette: Blue #0173B2 (governance), Orange #DE8F05 (architecture), Teal #029E73 (correctness), Purple #CC78BC (coordinator re-categorization)
 %% Direction TD (not LR): the longest decision chain is five nodes, which LR would push past the 4-node width budget.
 flowchart TD
-  Q["Finding under review"] --> R{"Is there a documented,<br/>mechanically-checkable<br/>rule for this?"}
+  accTitle: The Boundary Tie-Breaker Rule
+  accDescr: Finding under review leads to Is there a documented, mechanically- checkable rule for this?; Is there a documented, mechanically- checkable rule for this? leads to Governance via Yes; and 5 more links.
+  Q["Finding under review"] --> R{"Is there a<br/>documented,<br/>mechanically-<br/>checkable<br/>rule for this?"}
   R -->|Yes| GOV["Governance"]:::blue
-  R -->|No| N{"Does it need a NEW<br/>tradeoff judgment<br/>(structure/boundary)?"}
-  N -->|Yes| ARCH["Architecture<br/>(decide, then WRITE<br/>the rule for next time)"]:::orange
-  N -->|No| CORR["Correctness<br/>(satisfies domain intent?)"]:::teal
-  ARCH -.->|"looks misfiled?"| SYN["pr-review-synthesis-maker<br/>owns arch↔correctness<br/>re-categorization"]:::purple
+  R -->|No| N{"Does it need a NEW<br/>tradeoff judgment<br/>(structure/<br/>boundary)?"}
+  N -->|Yes| ARCH["Architecture<br/>(decide, then WRITE<br/>the rule for next<br/>time)"]:::orange
+  N -->|No| CORR["Correctness<br/>(satisfies domain<br/>intent?)"]:::teal
+  ARCH -.->|"looks misfiled?"| SYN["pr-review-synthesis-<br/>maker<br/>owns<br/>arch↔correctness<br/>re-categorization"]:::purple
   CORR -.->|"looks misfiled?"| SYN
 
   classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
   classDef orange fill:#DE8F05,stroke:#000000,color:#000000
-  classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+  classDef teal fill:#029E73,stroke:#000000,color:#000000
   classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```

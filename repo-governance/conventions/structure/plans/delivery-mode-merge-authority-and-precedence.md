@@ -36,16 +36,19 @@ resolve_delivery_mode(invocation_arg, plan_field):
 
 ```mermaid
 flowchart LR
-    A["Invocation argument given?"] -->|Yes, valid mode| Z["Use invocation argument"]
-    A -->|No| B["Plan field declares a mode?"]
+    accTitle: Delivery Mode — Merge Authority and Resolution Precedence
+    accDescr: Invocation argument given? leads to Use invocation argument via Yes, valid mode; Invocation argument given? leads to Plan field declares a mode? via No; and 2 more links.
+    A["Invocation argument<br/>given?"] -->|Yes, valid mode| Z["Use invocation<br/>argument"]
+    A -->|No| B["Plan field declares<br/>a mode?"]
     B -->|Yes, valid mode| Y["Use plan field"]
-    B -->|No| X["Default: worktree-to-pr"]
+    B -->|No| X["Default:<br/>worktree-to-pr"]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF
-    style B fill:#0173B2,stroke:#000000,color:#FFFFFF
-    style Z fill:#029E73,stroke:#000000,color:#FFFFFF
-    style Y fill:#029E73,stroke:#000000,color:#FFFFFF
-    style X fill:#CA9161,stroke:#000000,color:#FFFFFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    class A,B blue
+    class Z,Y teal
+    class X brown
 ```
 
 An invalid non-empty value at either tier (a string that is not one of the four modes) is a

@@ -15,6 +15,8 @@ when_to_use: Use when designing a tutorial's skill-level progression, documentat
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 graph TD
+ accTitle: Tutorial Levels
+ accDescr: Initial Setup 0-5% leads to Quick Start 5-30%; Quick Start 5-30% leads to Beginner 0-60%; Beginner 0-60% leads to Intermediate 60-85%; Intermediate 60-85% leads to Advanced 85-95%.
  A["Initial Setup<br/>0-5%"]:::blue
  B["Quick Start<br/>5-30%"]:::orange
  C["Beginner<br/>0-60%"]:::teal
@@ -26,11 +28,16 @@ graph TD
  C --> D
  D --> E
 
- style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
- style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
- style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
- style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
- style E fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ class A blue
+ class B orange
+ class C teal
+ class D purple
+ class E brown
 ```
 
 **Why this works**:

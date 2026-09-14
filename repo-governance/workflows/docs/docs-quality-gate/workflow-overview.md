@@ -8,10 +8,12 @@ when_to_use: "Use when you need a visual summary of the workflow's control flow 
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'fontSize':'14px'}}}%%
 graph TB
-    Start([Start Workflow]) --> Step1[Step 1: Parallel Validation]
+    accTitle: Workflow Overview
+    accDescr: [Start Workflow] leads to Step 1: Parallel Validation; Step 1: Parallel Validation leads to docs-checker Factual Accuracy; Step 1: Parallel Validation leads to docs-tutorial- checker Pedagogy; docs-checker Factual Accuracy leads to docs-link-checker Links; and 9 more links.
+    Start([Start Workflow]) --> Step1[Step 1: Parallel<br/>Validation]
 
     Step1 --> Check1[docs-checker<br/>Factual Accuracy]
-    Step1 --> Check2[docs-tutorial-checker<br/>Pedagogy]
+    Step1 --> Check2[docs-tutorial-<br/>checker<br/>Pedagogy]
     Check1 --> Check3[docs-link-checker<br/>Links]
 
     Check2 --> Step2{Step 2: Aggregate<br/>Findings}
@@ -26,11 +28,10 @@ graph TB
     Step5 -->|Continue| Step1
     Step5 -->|Done| Step6[Step 6: Report]
 
-    Step6 --> End([End: pass/partial/fail])
+    Step6 --> End([End:<br/>pass/partial/fail])
 
-    style Check1 fill:#029E73,color:#fff
-    style Check2 fill:#029E73,color:#fff
-    style Check3 fill:#029E73,color:#fff
-    style Step3 fill:#CC78BC,color:#fff
-    style Step4 fill:#CC78BC,color:#fff
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class Check1,Check2,Check3 teal
+    class Step3,Step4 purple
 ```

@@ -10,7 +10,9 @@ when_to_use: Use when you are unsure which of the six tutorial types fits a piec
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 graph TB
- START[Need to learn a topic?] --> Q1{Never used before?}
+ accTitle: Decision Tree
+ accDescr: Need to learn a topic? leads to Never used before?; Never used before? leads to Quick 5-min check? via Yes; Never used before? leads to Cookbook via No; and 12 more links.
+ START[Need to learn a<br/>topic?] --> Q1{Never used before?}
  Q1 -- Yes --> Q2{Quick 5-min check?}
  Q1 -- No --> CB[Cookbook]
 
@@ -32,13 +34,18 @@ graph TB
  Q7 -- Yes --> ADV[Advanced]
  Q7 -- No --> CB
 
- style IS fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
- style QS fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
- style BEG fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
- style INT fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
- style ADV fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
- style CB fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
- style BE fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+ classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+ classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+ classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+ classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+ classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+ class IS,BE blue
+ class QS orange
+ class BEG teal
+ class INT purple
+ class ADV brown
+ class CB gray
 ```
 
 ## Quick Reference Table

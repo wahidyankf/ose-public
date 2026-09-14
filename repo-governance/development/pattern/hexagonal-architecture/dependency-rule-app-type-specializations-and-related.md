@@ -12,6 +12,8 @@ boundaries in the reverse direction.
 
 ```mermaid
 flowchart LR
+    accTitle: Dependency Rule
+    accDescr: Inbound Adapters\nHTTP, CLI, GraphQL leads to Application\nUse-cases, Ports; Application\nUse-cases, Ports leads to Domain\nEntities, Rules; Outbound Adapters\nDB, HTTP clients leads to Application\nUse-cases, Ports.
     IA["Inbound Adapters\n(HTTP, CLI, GraphQL)"]:::outer
     AP["Application\n(Use-cases, Ports)"]:::app
     DO["Domain\n(Entities, Rules)"]:::domain
@@ -21,9 +23,9 @@ flowchart LR
     AP --> DO
     OA --> AP
 
-    classDef domain fill:#005f73,color:#ffffff,stroke:#003d4f
-    classDef app fill:#0a9396,color:#ffffff,stroke:#006d70
-    classDef outer fill:#94d2bd,color:#001219,stroke:#52b69a
+    classDef domain fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef app fill:#029E73,stroke:#000000,color:#000000
+    classDef outer fill:#808080,stroke:#000000,color:#000000
 ```
 
 The diagram reads left-to-right but the dependency rule applies in all directions: adapters depend on application;

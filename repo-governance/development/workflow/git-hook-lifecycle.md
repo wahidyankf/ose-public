@@ -41,6 +41,8 @@ aborts its Git operation; fix the reported gate and retry.
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 flowchart LR
+    accTitle: Hook shims
+    accDescr: git commit leads to commit-msg shim; git commit leads to pre-commit shim; git push leads to pre-push shim; commit-msg shim leads to registry gates; pre-commit shim leads to registry gates; and 2 more links.
     Commit["git commit"] --> Message["commit-msg shim"]
     Commit --> PreCommit["pre-commit shim"]
     Push["git push"] --> PrePush["pre-push shim"]
@@ -49,10 +51,12 @@ flowchart LR
     PrePush --> Registry
     Registry --> CI["CI matrix jobs"]
 
-    style Commit fill:#0173B2,color:#FFFFFF
-    style Push fill:#0173B2,color:#FFFFFF
-    style Registry fill:#009E73,color:#FFFFFF
-    style CI fill:#DE8F05,color:#000000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef tone fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    class Commit,Push blue
+    class Registry tone
+    class CI orange
 ```
 
 ## Pre-commit generation boundary

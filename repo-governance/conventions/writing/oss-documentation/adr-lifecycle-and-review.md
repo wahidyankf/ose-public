@@ -32,16 +32,23 @@ when_to_use: "Read this to file, supersede, or run a review meeting for an ADR."
 %% Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 
 graph LR
+    accTitle: Lifecycle Management
+    accDescr: Proposed leads to Accepted via Approved; Proposed leads to Rejected via Rejected; Accepted leads to Superseded via Decision Changed; Accepted leads to Deprecated via No Longer Relevant.
     Proposed[Proposed] -->|Approved| Accepted[Accepted]
     Proposed -->|Rejected| Rejected[Rejected]
     Accepted -->|Decision Changed| Superseded[Superseded]
     Accepted -->|No Longer Relevant| Deprecated[Deprecated]
 
-    style Proposed fill:#0173B2,stroke:#000,color:#fff
-    style Accepted fill:#029E73,stroke:#000,color:#fff
-    style Rejected fill:#DE8F05,stroke:#000,color:#fff
-    style Superseded fill:#CC78BC,stroke:#000,color:#fff
-    style Deprecated fill:#CA9161,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    class Proposed blue
+    class Accepted teal
+    class Rejected orange
+    class Superseded purple
+    class Deprecated brown
 ```
 
 **Superseding ADRs:**

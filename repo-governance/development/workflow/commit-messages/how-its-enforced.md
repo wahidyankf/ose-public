@@ -57,13 +57,18 @@ module.exports = {
 
 ## Workflow
 
+```mermaid
+flowchart TD
+    accTitle: Workflow
+    accDescr: Developer writes code leads to Stage changes: git add; Stage changes: git add leads to Pre-commit runs Prettier; Pre-commit runs Prettier leads to Write commit message; Write commit message leads to Commitlint: message valid?; and 4 more links.
+    W["Developer<br/>writes code"] --> S["Stage changes:<br/>git add"]
+    S --> P["Pre-commit runs<br/>Prettier"]
+    P --> M["Write commit<br/>message"]
+    M --> H{"Commitlint:<br/>message valid?"}
+    H -->|Valid| OK["Commit succeeds"]
+    H -->|Invalid| R["Rejected with<br/>error message"]
+    R --> FX["Fix message,<br/>try again"]
+    FX --> H
 ```
-1. Developer writes code
-2. Developer stages changes (git add)
-3. Pre-commit hook runs (Prettier formats files)
-4. Developer writes commit message
-5. Commit-msg hook runs (Commitlint validates message)
-   ├─ Valid → Commit succeeds
-   └─ Invalid → Commit rejected with error message
-6. Developer fixes message and tries again
-```
+
+The pre-commit hook formats files with Prettier, and the commit-msg hook runs Commitlint on the message.

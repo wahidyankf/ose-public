@@ -9,7 +9,7 @@ when_to_use: Use when auditing content or diagrams for accessibility anti-patter
 
 FAIL: **Problem**: Information conveyed only through color.
 
-```mermaid
+```text
 graph TD
     A[Task]:::red
     B[Task]:::green
@@ -24,11 +24,13 @@ PASS: **Solution**: Combine color with text labels and shapes.
 
 ```mermaid
 graph TD
+    accTitle: Using Color Alone
+    accDescr: Shows Error State Orange Circle, Success State Teal Rectangle.
     A["Error State<br/>(Orange Circle)"]:::orange
     B["Success State<br/>(Teal Rectangle)"]:::teal
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 ## Missing Alt Text

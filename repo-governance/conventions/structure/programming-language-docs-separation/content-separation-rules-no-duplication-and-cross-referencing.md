@@ -11,17 +11,19 @@ when_to_use: Read this when checking whether content duplicates ayokoding-www, o
 
 **Decision tree**:
 
+```mermaid
+flowchart TD
+    accTitle: Rule 4: No Duplication Between Platforms
+    accDescr: Generic language content? leads to ayokoding-www: education via Yes; Generic language content? leads to OSE Platform- specific? via No; OSE Platform- specific? leads to docs/explanation/ style guide via Yes; and 1 more links.
+    Q1{"Generic language<br/>content?"}
+    Q1 -->|Yes| A["ayokoding-www:<br/>education"]
+    Q1 -->|No| Q2{"OSE Platform-<br/>specific?"}
+    Q2 -->|Yes| D["docs/explanation/<br/>style guide"]
+    Q2 -->|No| A
 ```
-Is this content about {LANGUAGE} fundamentals or generic patterns?
-├─ Yes → ayokoding-www (educational content)
-│   Examples: syntax, by-example code, generic error patterns, DDD in Rust
-│
-└─ No → Is this content OSE Platform-specific?
-    ├─ Yes → docs/explanation/ (style guide)
-    │   Examples: "We use Axum for HTTP", "Name bindings like this in OSE Platform"
-    │
-    └─ No → Still ayokoding-www (generic programming knowledge)
-```
+
+Examples for `ayokoding-www`: syntax, by-example code, generic error patterns, DDD in Rust. Examples for
+`docs/explanation/`: "We use Axum for HTTP", "Name bindings like this in OSE Platform".
 
 **Example - Error Handling**:
 

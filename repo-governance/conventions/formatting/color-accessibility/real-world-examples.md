@@ -8,17 +8,16 @@ when_to_use: "Use when you need a complete worked example contrasting accessible
 ## Good Example: Accessible Mermaid Diagram
 
 ```mermaid
-<!--
-Uses accessible colors:
-- Blue (#0173B2) for primary flow
-- Orange (#DE8F05) for decisions
-- Teal (#029E73) for success
-- Gray (#808080) for optional paths
-
-Tested for: protanopia, deuteranopia, tritanopia
-All colors meet WCAG AA contrast requirements
--->
+%% Uses accessible colors:
+%% - Blue (#0173B2) for primary flow
+%% - Orange (#DE8F05) for decisions
+%% - Teal (#029E73) for success
+%% - Gray (#808080) for optional paths
+%% Tested for: protanopia, deuteranopia, tritanopia
+%% All colors meet WCAG AA contrast requirements
 graph TD
+    accTitle: Good Example: Accessible Mermaid Diagram
+    accDescr: Receive Request Blue: Primary leads to Validate Request Orange: Decision; Validate Request Orange: Decision leads to Process Request Teal: Success via Valid; Validate Request Orange: Decision leads to Return Error Gray: Alternative via Invalid; and 1 more links.
     A["Receive Request<br/>(Blue: Primary)"]:::blue
     B{"Validate Request<br/>(Orange: Decision)"}:::orange
     C["Process Request<br/>(Teal: Success)"]:::teal
@@ -31,9 +30,9 @@ graph TD
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 **Why this works:**
@@ -49,7 +48,7 @@ graph TD
 
 ## Bad Example: Inaccessible Diagram
 
-```mermaid
+```text
 <!-- This diagram fails accessibility requirements -->
 graph TD
     A[Success]:::green

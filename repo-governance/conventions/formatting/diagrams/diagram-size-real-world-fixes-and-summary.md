@@ -13,6 +13,8 @@ Combined hierarchy + pattern matching:
 
 ```mermaid
 graph TD
+    accTitle: Real-World Fixes
+    accDescr: Shape leads to Circle; Shape leads to Rectangle; Shape leads to Triangle; switchshape leads to Pattern Match; Pattern Match leads to Handle Circle via Circle; Pattern Match leads to Handle Rectangle via Rectangle; and 1 more links.
     Shape --> Circle
     Shape --> Rectangle
     Shape --> Triangle
@@ -29,6 +31,8 @@ graph TD
 
 ```mermaid
 graph TD
+    accTitle: Real-World Fixes (2)
+    accDescr: Shape sealed interface leads to Circle; Shape sealed interface leads to Rectangle; Shape sealed interface leads to Triangle.
     Shape[Shape<br/>sealed interface] --> Circle
     Shape --> Rectangle
     Shape --> Triangle
@@ -38,6 +42,8 @@ graph TD
 
 ```mermaid
 graph TD
+    accTitle: Real-World Fixes (3)
+    accDescr: switchshape leads to Type?; Type? leads to area = π × r² via Circle; Type? leads to area = w × h via Rectangle; and 1 more links.
     A[switch#40;shape#41;] --> B{Type?}
     B -->|Circle| C[area = π × r²]
     B -->|Rectangle| D[area = w × h]
@@ -50,6 +56,8 @@ Combined BlockingQueue + ConcurrentHashMap:
 
 ```mermaid
 graph TD
+    accTitle: Real-World Fixes (4)
+    accDescr: BlockingQueue leads to put; put leads to take; ConcurrentHashMap leads to PutIfAbsent; PutIfAbsent leads to Compute; Compute leads to Merge.
     BQ[BlockingQueue] --> Put[put#40;#41;]
     Put --> Take[take#40;#41;]
 
@@ -64,6 +72,8 @@ graph TD
 
 ```mermaid
 graph TD
+    accTitle: Real-World Fixes (5)
+    accDescr: Producer leads to BlockingQueue via putitem; BlockingQueue leads to Consumer via take; BlockingQueue leads to Producer via Blocks if full; Consumer leads to BlockingQueue via Blocks if empty.
     Producer --> |put#40;item#41;| Queue[BlockingQueue]
     Queue --> |take#40;#41;| Consumer
     Queue --> |Blocks if full| Producer
@@ -74,7 +84,9 @@ graph TD
 
 ```mermaid
 graph TD
-    A[putIfAbsent#40;k,v#41;] --> B{Key exists?}
+    accTitle: Real-World Fixes (6)
+    accDescr: putIfAbsent k,v leads to Key exists?; Key exists? leads to Insert value via No; Key exists? leads to Return existing via Yes.
+    A[putIfAbsent<br/>#40;k,v#41;] --> B{Key exists?}
     B -->|No| C[Insert value]
     B -->|Yes| D[Return existing]
 ```

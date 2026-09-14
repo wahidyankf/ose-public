@@ -773,6 +773,8 @@ Before deploying to production:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Blue-Green Deployment
+    accDescr: Load Balancer leads to Blue Environment Current; Load Balancer leads to Green Environment New Version; Switch Traffic leads to Load Balancer.
     A["Load Balancer"]:::blue
     B["Blue Environment<br/>#40;Current#41;"]:::teal
     C["Green Environment<br/>#40;New Version#41;"]:::purple
@@ -783,8 +785,8 @@ graph LR
     D -.-> A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
@@ -795,6 +797,8 @@ graph LR
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Canary Deployment
+    accDescr: Load Balancer leads to 90% Traffic Stable Version; Load Balancer leads to 10% Traffic Canary Version; 10% Traffic Canary Version leads to Monitor Metrics; Monitor Metrics leads to Rollout to 100% via Success; and 1 more links.
     A["Load Balancer"]:::blue
     B["90% Traffic<br/>Stable Version"]:::teal
     C["10% Traffic<br/>Canary Version"]:::orange
@@ -809,8 +813,8 @@ graph TD
     D -->|Failure| F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 

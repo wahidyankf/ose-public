@@ -34,38 +34,47 @@ external network reach. E2E tests invoke the real public browser, HTTP/API, or p
 boundary with isolated synthetic data.
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
+    accTitle: The Boundary Contract
+    accDescr: TypeScript Testing leads to Unit Tests Vitest + injected fakes In process; TypeScript Testing leads to Integration Tests Vitest or native runner Real local · no remote calls; and 4 more links.
     A[TypeScript Testing]
-    A --> B[Unit Tests\nVitest + injected fakes\nIn process]
-    A --> C[Integration Tests\nVitest or native runner\nReal local · no remote calls]
-    A --> D[E2E Tests\nPlaywright or public process\nReal public boundary]
+    A --> B[Unit Tests<br/>Vitest + injected<br/>fakes<br/>In process]
+    A --> C[Integration Tests<br/>Vitest or native<br/>runner<br/>Real local · no<br/>remote calls]
+    A --> D[E2E Tests<br/>Playwright or public<br/>process<br/>Real public boundary]
 
     B --> B1[Domain logic\nValue objects\nPure functions]
-    C --> C1[Filesystem\nEnvironment\nEmbedded local database]
+    C --> C1[Filesystem<br/>Environment<br/>Embedded local<br/>database]
     D --> D1[Real browser\nReal HTTP/API\nPublished executable]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A blue
+    class B teal
+    class C orange
+    class D purple
 ```
 
 ## Test Pyramid
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
-    A[E2E Tests\nReal public boundary\nImpacted manual + scheduled]
-    B[Integration Tests\nReal local · no remote calls\nImpacted manual + scheduled]
+    accTitle: Test Pyramid
+    accDescr: E2E Tests Real public boundary Impacted manual + scheduled leads to Integration Tests Real local · no remote calls Impacted manual + scheduled; and 1 more links.
+    A[E2E Tests<br/>Real public boundary<br/>Impacted manual +<br/>scheduled]
+    B[Integration Tests<br/>Real local · no<br/>remote calls<br/>Impacted manual +<br/>scheduled]
     C[Unit Tests\nIn process\nEvery quick gate]
 
     A --> B
     B --> C
 
-    style A fill:#CC78BC,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    class A purple
+    class B orange
+    class C teal
 ```
 
 ---

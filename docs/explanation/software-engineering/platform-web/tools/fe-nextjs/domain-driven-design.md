@@ -868,39 +868,21 @@ Organize code into layers with clear dependencies.
 
 ### Architecture Layers
 
+```mermaid
+flowchart TD
+    accTitle: Architecture Layers
+    accDescr: Presentation layer Next.js leads to Application layer; Application layer leads to Domain layer; Domain layer leads to Infrastructure layer.
+    P["Presentation layer<br/>Next.js"] --> A["Application layer"]
+    A --> D["Domain layer"]
+    D --> I["Infrastructure<br/>layer"]
 ```
-┌─────────────────────────────────────────┐
-│     Presentation Layer (Next.js)        │
-│  - Pages/Routes (app/)                  │
-│  - React Components (components/)       │
-│  - Server Actions                       │
-└─────────────────────────────────────────┘
-                  ↓
-┌─────────────────────────────────────────┐
-│     Application Layer                   │
-│  - Use Cases (application/use-cases/)   │
-│  - DTOs (application/dtos/)             │
-│  - Application Services                 │
-└─────────────────────────────────────────┘
-                  ↓
-┌─────────────────────────────────────────┐
-│     Domain Layer                        │
-│  - Aggregates (domain/aggregates/)      │
-│  - Entities (domain/entities/)          │
-│  - Value Objects (domain/value-objects/)│
-│  - Domain Events (domain/events/)       │
-│  - Domain Services (domain/services/)   │
-│  - Repository Interfaces                │
-└─────────────────────────────────────────┘
-                  ↓
-┌─────────────────────────────────────────┐
-│     Infrastructure Layer                │
-│  - Repositories (infrastructure/repos/) │
-│  - External Services                    │
-│  - Database (Prisma)                    │
-│  - Event Bus                            │
-└─────────────────────────────────────────┘
-```
+
+- Presentation: pages and routes in `app/`, React components in `components/`, and Server Actions.
+- Application: use cases in `application/use-cases/`, DTOs in `application/dtos/`, and application services.
+- Domain: aggregates, entities, value objects, domain events and domain services under `domain/`, plus
+  repository interfaces.
+- Infrastructure: repositories in `infrastructure/repos/`, external services, the Prisma database, and the event
+  bus.
 
 ### Dependency Rule
 

@@ -58,14 +58,16 @@ Content sites no longer depend on any CLI — `ayokoding-www` and `ose-www` drop
 
 ```mermaid
 graph TD
+  accTitle: Visual Dependency Graph
+  accDescr: crane-cli leads to fsharp-crane-core.
   RC[rhino-cli]
   CC[crane-cli]
   FCC[fsharp-crane-core]
 
   CC --> FCC
 
-  classDef lib fill:#029E73,stroke:#016B4E,color:#FFFFFF
-  classDef cli fill:#DE8F05,stroke:#A56A04,color:#FFFFFF
+  classDef lib fill:#029E73,stroke:#000000,color:#000000
+  classDef cli fill:#DE8F05,stroke:#000000,color:#000000
 
   class FCC lib
   class RC,CC cli
@@ -75,9 +77,11 @@ graph TD
 
 ```mermaid
 graph TD
+  accTitle: Visual Dependency Graph 2
+  accDescr: organiclever-www-fe-e2e leads to organiclever-www; organiclever-app-web-e2e leads to organiclever-app-web; organiclever-be-e2e leads to organiclever-be; organiclever-app-web leads to organiclever-contracts; organiclever-app-web leads to rhino-cli; organiclever-be leads to organiclever-contracts.
   %% E2E tests (top level)
-  OLWWWFEE2E[organiclever-www-fe-e2e]
-  OLAPPE2E[organiclever-app-web-e2e]
+  OLWWWFEE2E[organiclever-<br/>www-fe-e2e]
+  OLAPPE2E[organiclever-<br/>app-web-e2e]
   OLBE2E[organiclever-be-e2e]
 
   %% Apps
@@ -86,7 +90,7 @@ graph TD
   OLB[organiclever-be]
 
   %% Shared
-  OLC[organiclever-contracts]
+  OLC[organiclever-<br/>contracts]
   RC[rhino-cli]
 
   %% Edges
@@ -97,9 +101,9 @@ graph TD
   OLAPP --> RC
   OLB --> OLC
 
-  classDef cli fill:#DE8F05,stroke:#A56A04,color:#FFFFFF
-  classDef product fill:#CA9161,stroke:#977048,color:#FFFFFF
-  classDef e2e fill:#0173B2,stroke:#01537F,color:#FFFFFF
+  classDef cli fill:#DE8F05,stroke:#000000,color:#000000
+  classDef product fill:#CA9161,stroke:#000000,color:#000000
+  classDef e2e fill:#0173B2,stroke:#000000,color:#FFFFFF
 
   class RC cli
   class OLWWW,OLAPP,OLB,OLC product

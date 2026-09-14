@@ -61,11 +61,13 @@ This guide covers Next.js 16+ rendering strategies for enterprise applications.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Rendering Strategy Decision Tree
+    accDescr: Need to render page? leads to Content changes per request?; Content changes per request? leads to Content changes frequently? via No; Content changes per request? leads to User-specific content? via Yes; and 6 more links.
     A["Need to render page?"]:::blue
     B{"Content changes<br/>per request?"}:::orange
     C{"Content changes<br/>frequently?"}:::orange
     D["Static Rendering<br/>#40;SSG#41;"]:::teal
-    E["Incremental Static<br/>Regeneration #40;ISR#41;"]:::teal
+    E["Incremental Static<br/>Regeneration (ISR)"]:::teal
     F{"User-specific<br/>content?"}:::orange
     G["Dynamic Rendering<br/>#40;SSR#41;"]:::purple
     H{"Can split<br/>static/dynamic?"}:::orange
@@ -82,8 +84,8 @@ graph TD
     H -->|No| G
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
@@ -473,6 +475,8 @@ export default function DashboardPage() {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Streaming Benefits
+    accDescr: Request leads to HTML Shell Immediate; HTML Shell Immediate leads to Fast Component Streams first; HTML Shell Immediate leads to Slow Component Streams later.
     A["Request"]:::blue
     B["HTML Shell<br/>Immediate"]:::teal
     C["Fast Component<br/>Streams first"]:::teal
@@ -483,8 +487,8 @@ graph LR
     B --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Incremental Static Regeneration (ISR)

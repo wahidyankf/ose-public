@@ -29,8 +29,10 @@ TypeScript/JavaScript uses a single-threaded event loop with asynchronous operat
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Event Loop Phases
+    accDescr: Start leads to Timers setTimeout/setInterval; Timers setTimeout/setInterval leads to Poll I/O events; Poll I/O events leads to Check setImmediate; Check setImmediate leads to Microtasks Promises.
     Start["Start"]:::blue
-    Timers["Timers<br/>#40;setTimeout/setInterval#41;"]:::orange
+    Timers["Timers<br/>setTimeout/<br/>setInterval"]:::orange
     Poll["Poll<br/>#40;I/O events#41;"]:::teal
     Check["Check<br/>#40;setImmediate#41;"]:::orange
     Microtasks["Microtasks<br/>#40;Promises#41;"]:::teal
@@ -38,10 +40,10 @@ graph TD
     Start --> Timers --> Poll --> Check --> Microtasks
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 **Event loop phases** (repeating cycle): (1) **Timers** — execute `setTimeout`/`setInterval` callbacks; (2) **Pending Callbacks** — deferred I/O errors from prior cycle; (3) **Idle/Prepare** — internal use; (4) **Poll** — wait for I/O events, execute I/O callbacks; (5) **Check** — `setImmediate` callbacks; (6) **Close Callbacks** — `socket.on('close')` etc. After Microtasks completes, the loop repeats from Timers. Between phases, `process.nextTick()` and microtasks (`Promise.then`) run before moving to the next phase.
@@ -53,6 +55,8 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Async/Await Flow Visualization
+    accDescr: C sends await fetchDonationid to F; F sends fetch/api/donations/id to API; API sends SELECT * FROM donations to DB; DB sends Donation data to API; API sends HTTP 200 + JSON to F; and 1 more links.
     participant C as Caller
     participant F as fetchDonation
     participant API as API Server
@@ -109,6 +113,8 @@ async function processDonation(id: string): Promise<void> {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Sequential vs Parallel Execution
+    accDescr: Start leads to await fetchid1 Wait 100ms; await fetchid1 Wait 100ms leads to await fetchid2 Wait 100ms; await fetchid2 Wait 100ms leads to await fetchid3 Wait 100ms; and 4 more links.
     subgraph Sequential["Sequential Execution (Slow)"]
         S1["Start"]:::blue --> S2["await fetch(id1)<br/>Wait 100ms"]:::orange
         S2 --> S3["await fetch(id2)<br/>Wait 100ms"]:::orange
@@ -122,13 +128,13 @@ graph TD
         P3 --> P4["Complete<br/>Total: 100ms"]:::teal
     end
 
-    Note1["Sequential: Each await<br/>blocks next operation<br/>100ms + 100ms + 100ms<br/>= 300ms total"]
-    Note2["Parallel: All operations<br/>start immediately<br/>max(100ms, 100ms, 100ms)<br/>= 100ms total"]
+    Note1["Sequential: Each<br/>await<br/>blocks next<br/>operation<br/>100ms + 100ms +<br/>100ms<br/>= 300ms total"]
+    Note2["Parallel: All<br/>operations<br/>start immediately<br/>max(100ms, 100ms,<br/>100ms)<br/>= 100ms total"]
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 **Key Principles**:
@@ -194,24 +200,26 @@ async function processParallel(ids: string[]): Promise<Donation[]> {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Promise Combinator Selection Guide
+    accDescr: Multiple Promises to Coordinate? leads to What Behaviour?; What Behaviour? leads to ✅ Promise.all Fail-fast via All must succeed; What Behaviour? leads to Success or Completion? via First to complete; and 7 more links.
     A["Multiple Promises<br/>to Coordinate?"]:::blue --> B{"What<br/>Behaviour?"}:::orange
 
     B -->|"All must succeed"| C["✅ Promise.all()<br/>(Fail-fast)"]:::teal
     B -->|"First to complete"| D{"Success or<br/>Completion?"}:::orange
-    B -->|"Need all results"| E["✅ Promise.allSettled()<br/>(Never rejects)"]:::teal
+    B -->|"Need all results"| E["✅<br/>Promise.allSettled()<br/>(Never rejects)"]:::teal
 
     D -->|"First success"| F["✅ Promise.any()<br/>(Ignore failures)"]:::purple
     D -->|"First complete"| G["✅ Promise.race()<br/>(Success or failure)"]:::purple
 
-    Ex1["Example: Fetch 3 donations<br/>Need all or none"]:::blue --> C
-    Ex2["Example: Check all records<br/>Want all results"]:::blue --> E
-    Ex3["Example: Fetch from mirrors<br/>First success wins"]:::blue --> F
-    Ex4["Example: Fetch with timeout<br/>First to finish"]:::blue --> G
+    Ex1["Example: Fetch 3<br/>donations<br/>Need all or none"]:::blue --> C
+    Ex2["Example: Check all<br/>records<br/>Want all results"]:::blue --> E
+    Ex3["Example: Fetch from<br/>mirrors<br/>First success wins"]:::blue --> F
+    Ex4["Example: Fetch with<br/>timeout<br/>First to finish"]:::blue --> G
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 What each combinator resolves to:
@@ -219,13 +227,15 @@ What each combinator resolves to:
 ```mermaid
 %% Color Palette: Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Promise Combinator Selection Guide 2
+    accDescr: ✅ Promise.all leads to All succeed → array One fails → reject; ✅ Promise.allSettled leads to All settle → array status, value/reason; ✅ Promise.any leads to One succeeds → value All fail → AggregateError; and 1 more links.
     C["✅ Promise.all()"]:::teal --> C1["All succeed → array<br/>One fails → reject"]
-    E["✅ Promise.allSettled()"]:::teal --> E1["All settle → array<br/>{status, value/reason}"]
-    F["✅ Promise.any()"]:::purple --> F1["One succeeds → value<br/>All fail → AggregateError"]
-    G["✅ Promise.race()"]:::purple --> G1["First complete → value/error"]
+    E["✅<br/>Promise.allSettled()"]:::teal --> E1["All settle → array<br/>{status,<br/>value/reason}"]
+    F["✅ Promise.any()"]:::purple --> F1["One succeeds → value<br/>All fail →<br/>AggregateError"]
+    G["✅ Promise.race()"]:::purple --> G1["First complete →<br/>value/error"]
 
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 **Key Principles**:
@@ -303,6 +313,8 @@ async function fetchFromMultipleSources(sources: string[]): Promise<Donation> {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Web Worker Communication Pattern
+    accDescr: M sends Create Worker to M; M sends postMessagedata to W; W sends expensiveCalculationdata to W; W sends postMessageresult to M; M sends onmessage handler to M; M sends postMessagemore data to W; and 3 more links.
     participant M as Main Thread
     participant W as Worker Thread
 
@@ -367,6 +379,8 @@ worker.onerror = (error: ErrorEvent) => {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 sequenceDiagram
+    accTitle: AbortController Cancellation Flow
+    accDescr: App sends new AbortController to AC; AC sends controller + signal to App; App sends fetchurl, signal to Fetch; Fetch sends HTTP Request to Server; Server sends HTTP Response to Fetch; and 6 more links.
     participant App as Application
     participant AC as AbortController
     participant Fetch as fetch() API
@@ -481,6 +495,8 @@ setTimeout(() => controller.abort(), 5000);
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Promise Error Propagation
+    accDescr: Promise Created leads to Promise Resolution; Promise Resolution leads to .then handler via Success; Promise Resolution leads to .catch handler via Rejection; .then handler leads to Process value; Process value leads to Handler throws?; and 8 more links.
     A["Promise Created"]:::blue --> B{"Promise<br/>Resolution"}:::orange
 
     B -->|"Success"| C[".then() handler"]:::teal
@@ -501,12 +517,12 @@ graph TD
     Reject --> Next1[".catch() or<br/>unhandled rejection"]:::purple
     Propagate --> Next1
 
-    Note1["Unhandled rejection:<br/>Browser: unhandledrejection<br/>Node.js: process warning"]
+    Note1["Unhandled rejection:<br/>Browser:<br/>unhandledrejection<br/>Node.js: process<br/>warning"]
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 **Key Principles**:
@@ -562,6 +578,8 @@ async function fetchDonationUnsafe(id: string): Promise<Donation> {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Rate Limiting Pattern
+    accDescr: Queue of Tasks 1000 items leads to Rate Limiter; Rate Limiter leads to Concurrent Batch max 10 at once; Concurrent Batch max 10 at once leads to Task 1; and 4 more links.
     A["Queue of Tasks<br/>(1000 items)"]:::blue --> B["Rate Limiter"]:::orange
     B --> C["Concurrent Batch<br/>(max 10 at once)"]:::teal
 
@@ -571,11 +589,11 @@ graph LR
     C --> T4["..."]:::teal
     C --> T10["Task 10"]:::teal
 
-    Note1["Rate Limiting:<br/>- Prevents API throttling<br/>- Controls resource usage<br/>- Maintains system stability"]
+    Note1["Rate Limiting:<br/>- Prevents API<br/>throttling<br/>- Controls resource<br/>usage<br/>- Maintains system<br/>stability"]
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 Each batch then completes and the next one starts, until the queue drains:
@@ -583,6 +601,8 @@ Each batch then completes and the next one starts, until the queue drains:
 ```mermaid
 %% Color Palette: Teal #029E73, Purple #CC78BC, Orange #DE8F05
 graph LR
+    accTitle: Rate Limiting Pattern 2
+    accDescr: Task 1 leads to Batch complete; Task 2 leads to Batch complete; Task 3 leads to Batch complete;... leads to Batch complete; Task 10 leads to Batch complete; and 1 more links.
     T1["Task 1"]:::teal --> Complete1["Batch complete"]:::purple
     T2["Task 2"]:::teal --> Complete1
     T3["Task 3"]:::teal --> Complete1
@@ -591,9 +611,9 @@ graph LR
 
     Complete1 --> Next["Start Next Batch<br/>(Task 11-20)"]:::orange
 
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 **Rate Limiting Implementation**:

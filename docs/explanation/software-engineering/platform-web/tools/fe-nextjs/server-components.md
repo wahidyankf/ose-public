@@ -255,9 +255,11 @@ export function ZakatForm({ defaultNisab }: ZakatFormProps) {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Composition Patterns
+    accDescr: Server Component Page leads to Server Component Data Display; Server Component Page leads to Client Component Interactive Form; Server Component Page leads to Server Component Results; Server Component Results leads to Client Component Chart.
     A["Server Component<br/>#40;Page#41;"]:::blue
     B["Server Component<br/>#40;Data Display#41;"]:::blue
-    C["Client Component<br/>#40;Interactive Form#41;"]:::orange
+    C["Client Component<br/>Interactive Form"]:::orange
     D["Server Component<br/>#40;Results#41;"]:::blue
     E["Client Component<br/>#40;Chart#41;"]:::orange
 
@@ -267,7 +269,7 @@ graph TD
     D --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Pattern 1: Server Component with Client Component Children

@@ -231,26 +231,31 @@ export const RealtimeDonations: React.FC = () => {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: useEffect Lifecycle
+    accDescr: Component Mounts leads to Run Effect; Run Effect leads to Has Dependencies?; Has Dependencies? leads to Watch Dependencies via Yes; Has Dependencies? leads to Effect Runs Once via No; and 10 more links.
     A[Component Mounts] --> B[Run Effect]
     B --> C{Has Dependencies?}
     C -->|Yes| D[Watch Dependencies]
     C -->|No| E[Effect Runs Once]
-    D --> F{Dependencies Changed?}
+    D --> F{Dependencies<br/>Changed?}
     F -->|Yes| G[Run Cleanup]
     F -->|No| H[Skip Effect]
     G --> B
     H --> I[Component Renders]
     E --> I
-    I --> J{Component Unmounting?}
+    I --> J{Component<br/>Unmounting?}
     J -->|Yes| K[Run Final Cleanup]
     J -->|No| F
     K --> L[Component Unmounted]
 
-    style A fill:#0173B2
-    style B fill:#029E73
-    style G fill:#DE8F05
-    style K fill:#DE8F05
-    style L fill:#CC78BC
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A blue
+    class B teal
+    class G,K orange
+    class L purple
 ```
 
 The lifecycle follows this pattern:

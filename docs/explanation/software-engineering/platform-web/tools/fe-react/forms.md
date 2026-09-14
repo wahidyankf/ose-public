@@ -136,6 +136,8 @@ Form validation follows a clear flow from user input to error display:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Form Validation
+    accDescr: User Input leads to onChange Event; onChange Event leads to Update Field Value; Update Field Value leads to Clear Field Error; Clear Field Error leads to Update State; Update State leads to onBlur Event; and 15 more links.
     A[User Input] --> B{onChange Event}
     B --> C[Update Field Value]
     C --> D[Clear Field Error]
@@ -163,12 +165,12 @@ graph TD
     Q --> S[User Corrects]
     S --> A
 
-    style A fill:#0173B2
-    style H fill:#029E73
-    style K fill:#DE8F05
-    style P fill:#029E73
-    style Q fill:#DE8F05
-    style R fill:#029E73
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    class A blue
+    class H,P,R teal
+    class K,Q orange
 ```
 
 **Validation Strategy**:

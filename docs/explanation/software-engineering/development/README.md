@@ -36,20 +36,26 @@ contract is the [canonical BDD standard](../../../../repo-governance/development
 
 ```mermaid
 graph TD
-    A[Testable behaviour owner] --> B[Write canonical Gherkin]
-    B --> C[Bind mandatory Unit proof]
-    C --> D{Real local-resource boundary?}
-    D -->|Yes| E[Bind local Integration proof]
-    D -->|No| F[Record Integration exemption]
+    accTitle: Quick Decision: How BDD and TDD Combine
+    accDescr: Testable behaviour owner leads to Write canonical Gherkin; Write canonical Gherkin leads to Bind mandatory Unit proof; Bind mandatory Unit proof leads to Real local-resource boundary?; and 6 more links.
+    A[Testable behaviour<br/>owner] --> B[Write canonical<br/>Gherkin]
+    B --> C[Bind mandatory Unit<br/>proof]
+    C --> D{Real local-resource<br/>boundary?}
+    D -->|Yes| E[Bind local<br/>Integration proof]
+    D -->|No| F[Record Integration<br/>exemption]
     E --> G{Public boundary?}
     F --> G
     G -->|Yes| H[Bind E2E proof]
     G -->|No| I[Record E2E exemption]
 
-    style B fill:#0173B2,stroke:#000000,color:#FFFFFF
-    style C fill:#029E73,stroke:#000000,color:#FFFFFF
-    style E fill:#DE8F05,stroke:#000000,color:#FFFFFF
-    style H fill:#CC78BC,stroke:#000000,color:#FFFFFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class B blue
+    class C teal
+    class E orange
+    class H purple
 ```
 
 **Decision Matrix**:
@@ -144,29 +150,32 @@ TDD and BDD complement each other throughout the development process:
 
 ```mermaid
 graph TD
-    A[Discovery: Three Amigos] --> B[Formulation: Write Gherkin]
-    B --> C[Automation: Step Defs RED]
+    accTitle: How TDD and BDD Work Together
+    accDescr: Discovery: Three Amigos leads to Formulation: Write Gherkin; Formulation: Write Gherkin leads to Automation: Step Defs RED; Automation: Step Defs RED leads to For Each Step; and 8 more links.
+    A[Discovery: Three<br/>Amigos] --> B[Formulation: Write<br/>Gherkin]
+    B --> C[Automation: Step<br/>Defs RED]
     C --> D{For Each Step}
 
-    D --> E[TDD: Write Unit Test RED]
-    E --> F[TDD: Minimal Code GREEN]
+    D --> E[TDD: Write Unit Test<br/>RED]
+    E --> F[TDD: Minimal Code<br/>GREEN]
     F --> G[TDD: Refactor]
     G --> H{More Steps?}
 
     H -->|Yes| D
-    H -->|No| I[Applicable adapters GREEN]
+    H -->|No| I[Applicable adapters<br/>GREEN]
     I --> J[Refactor: All Layers]
     J --> K[Living Documentation]
 
-    style A fill:#029E73,stroke:#000000,color:#FFFFFF
-    style B fill:#0173B2,stroke:#000000,color:#FFFFFF
-    style C fill:#DE8F05,stroke:#000000,color:#FFFFFF
-    style E fill:#DE8F05,stroke:#000000,color:#FFFFFF
-    style F fill:#029E73,stroke:#000000,color:#FFFFFF
-    style G fill:#CA9161,stroke:#000000,color:#FFFFFF
-    style I fill:#029E73,stroke:#000000,color:#FFFFFF
-    style J fill:#CA9161,stroke:#000000,color:#FFFFFF
-    style K fill:#CC78BC,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A,F,I teal
+    class B blue
+    class C,E orange
+    class G,J brown
+    class K purple
 ```
 
 **Legend**: 🟢 Teal = Passing tests (GREEN) | 🟠 Orange = Failing tests (RED) | 🟤 Brown = Refactoring

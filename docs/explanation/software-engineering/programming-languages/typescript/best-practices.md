@@ -513,11 +513,13 @@ Best practices are proven approaches that improve code quality, reduce bugs, and
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Types["Type Safety<br/>#40;TypeScript strict mode#41;"]:::blue
-    Tests["Tests<br/>#40;Unit, Integration#41;"]:::orange
-    Linting["Linting<br/>#40;ESLint, Prettier#41;"]:::teal
-    Docs["Documentation<br/>#40;Comments, README#41;"]:::purple
-    Code["Clean Code<br/>#40;Readable, Maintainable#41;"]:::brown
+    accTitle: Code Quality Pyramid
+    accDescr: Type Safety TypeScript strict mode leads to Tests Unit, Integration; Tests Unit, Integration leads to Linting ESLint, Prettier; Linting ESLint, Prettier leads to Documentation Comments, README; and 1 more links.
+    Types["Type Safety<br/>TypeScript strict<br/>mode"]:::blue
+    Tests["Tests<br/>Unit, Integration"]:::orange
+    Linting["Linting<br/>ESLint, Prettier"]:::teal
+    Docs["Documentation<br/>Comments, README"]:::purple
+    Code["Clean Code<br/>Readable,<br/>Maintainable"]:::brown
 
     Types --> Tests
     Tests --> Linting
@@ -528,10 +530,10 @@ graph TD
     Note2["Top:<br/>Clean code is<br/>easy to understand"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### 1. Code Clarity Over Cleverness
@@ -690,6 +692,8 @@ Favor composition and delegation over class inheritance. This provides greater f
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Error Handling Strategies
+    accDescr: Operation Executes leads to Success?; Success? leads to Try-Catch Pattern throw Error via Failure; Success? leads to Result Pattern ok: false, error: E via Failure; and 2 more links.
     Operation["Operation Executes"]:::blue
     Success{"Success?"}:::orange
     ThrowPattern["Try-Catch Pattern<br/>throw Error"]:::purple
@@ -703,13 +707,13 @@ graph TD
     ThrowPattern --> Caller1
     ResultPattern --> Caller2
 
-    Note1["Result Pattern preferred<br/>for business logic<br/>Exceptions for<br/>programmer errors"]
+    Note1["Result Pattern<br/>preferred<br/>for business logic<br/>Exceptions for<br/>programmer errors"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ```typescript
@@ -759,11 +763,13 @@ Prefer explicit configuration and dependencies over implicit conventions or "mag
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Dependency Injection Pattern
+    accDescr: Interface: DonationRepository leads to DonationService Business Logic; Interface: Logger leads to DonationService Business Logic; Interface: EventPublisher leads to DonationService Business Logic; PostgresRepository leads to Interface: DonationRepository via implements; and 2 more links.
     Interface1["Interface:<br/>DonationRepository"]:::blue
     Interface2["Interface:<br/>Logger"]:::blue
     Interface3["Interface:<br/>EventPublisher"]:::blue
 
-    Service["DonationService<br/>#40;Business Logic#41;"]:::orange
+    Service["DonationService<br/>Business Logic"]:::orange
 
     Impl1["PostgresRepository"]:::teal
     Impl2["WinstonLogger"]:::teal
@@ -777,11 +783,11 @@ graph LR
     Impl2 -->|implements| Interface2
     Impl3 -->|implements| Interface3
 
-    Note1["Service depends on<br/>interfaces, not<br/>concrete implementations"]
+    Note1["Service depends on<br/>interfaces, not<br/>concrete<br/>implementations"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ```typescript
@@ -2352,8 +2358,9 @@ class DonationDistributionService {
 ## TypeScript Code Organization
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart LR
+    accTitle: TypeScript Code Organization
+    accDescr: TS Project Structure leads to src/ Source Code; TS Project Structure leads to tests/ Test Files; TS Project Structure leads to types/ Type Definitions; TS Project Structure leads to dist/ Compiled Output; and 13 more links.
     A[TS Project Structure] --> B[src/<br/>Source Code]
     A --> C[tests/<br/>Test Files]
     A --> D[types/<br/>Type Definitions]
@@ -2377,20 +2384,22 @@ flowchart LR
     B1 --> F[Zakat Module]
     B1 --> G[Donation Module]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A,E blue
+    class B,F orange
+    class C,G teal
+    class D purple
 ```
 
 ## Type Safety Best Practices
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart LR
+    accTitle: Type Safety Best Practices
+    accDescr: Type Safety leads to Strict Mode Enable All Checks; Type Safety leads to Type Guards Runtime Checks; Type Safety leads to Generics Type Parameters; Type Safety leads to Branded Types Nominal Typing; and 13 more links.
     A[Type Safety] --> B[Strict Mode<br/>Enable All Checks]
     A --> C[Type Guards<br/>Runtime Checks]
     A --> D[Generics<br/>Type Parameters]
@@ -2414,10 +2423,12 @@ flowchart LR
 
     E1 --> F[ZakatAmount Type<br/>Branded number]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A,E blue
+    class B,F orange
+    class C teal
+    class D purple
 ```

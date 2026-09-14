@@ -46,6 +46,8 @@ Data fetching is essential for React applications. This guide covers fetch API, 
 %% checked horizontal axis and exceeds MaxWidth=4. TD keeps depth on the
 %% unchecked vertical axis (Diagrams Convention, Flowchart Width Constraints).
 graph TD
+    accTitle: Data Fetching Strategy Decision Tree
+    accDescr: Need Data Fetching? leads to Complexity?; Complexity? leads to Caching Needed? via Simple; Complexity? leads to TanStack Query via Complex; Caching Needed? leads to useEffect + fetch via No; and 3 more links.
     A[Need Data Fetching?] --> B{Complexity?}
 
     B -->|Simple| C{Caching Needed?}
@@ -57,10 +59,14 @@ graph TD
     F -->|Yes| G[SWR]
     F -->|No| D
 
-    style A fill:#0173B2
-    style D fill:#029E73
-    style E fill:#DE8F05
-    style G fill:#CC78BC
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A blue
+    class D teal
+    class E orange
+    class G purple
 ```
 
 What each choice brings with it:
@@ -69,6 +75,8 @@ What each choice brings with it:
 %% Color Palette: Teal #029E73, Orange #DE8F05, Purple #CC78BC
 %% LR keeps this two-level fan-out shallow; depth is the checked axis in LR and is 2 here.
 graph LR
+    accTitle: Data Fetching Strategy Decision Tree 2
+    accDescr: TanStack Query leads to Query Basics; TanStack Query leads to Mutations; TanStack Query leads to Optimistic Updates; useEffect + fetch leads to Loading States; useEffect + fetch leads to Error Handling; and 2 more links.
     D[TanStack Query] --> H[Query Basics]
     D --> I[Mutations]
     D --> J[Optimistic Updates]
@@ -76,12 +84,15 @@ graph LR
     E[useEffect + fetch] --> K[Loading States]
     E --> L[Error Handling]
 
-    G[SWR] --> M[Stale-While-Revalidate]
+    G[SWR] --> M[Stale-While-<br/>Revalidate]
     G --> N[Auto Background Sync]
 
-    style D fill:#029E73
-    style E fill:#DE8F05
-    style G fill:#CC78BC
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class D teal
+    class E orange
+    class G purple
 ```
 
 **Recommendations**:

@@ -25,8 +25,10 @@ local development commands use the root HIPPO consumer.
 
 ```mermaid
 graph LR
+    accTitle: CI/CD Pipeline Overview
+    accDescr: Git Commit leads to Pre-commit + Commit-msg Hooks; Pre-commit + Commit-msg Hooks leads to Validated Commit; Validated Commit leads to Git Push.
     COMMIT[Git Commit]
-    HOOKS[Pre-commit + Commit-msg<br/>Hooks]
+    HOOKS[Pre-commit +<br/>Commit-msg<br/>Hooks]
     VALIDATED[Validated Commit]
     PUSH[Git Push]
 
@@ -34,16 +36,18 @@ graph LR
     HOOKS --> VALIDATED
     VALIDATED --> PUSH
 
-    style COMMIT fill:#0077b6,stroke:#03045e,color:#ffffff
-    style HOOKS fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style VALIDATED fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style PUSH fill:#0077b6,stroke:#03045e,color:#ffffff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    class COMMIT,PUSH blue
+    class HOOKS,VALIDATED teal
 ```
 
 **Pre-commit quality gates (run in parallel):**
 
 ```mermaid
 graph LR
+    accTitle: CI/CD Pipeline Overview 2
+    accDescr: Pre-commit Hook leads to AyoKoding Update; Pre-commit Hook leads to Prettier Format; Pre-commit Hook leads to Link Validator.
     PRE_COMMIT[Pre-commit Hook]
     AYOKODING[AyoKoding Update]
     PRETTIER[Prettier Format]
@@ -53,16 +57,18 @@ graph LR
     PRE_COMMIT --> PRETTIER
     PRE_COMMIT --> LINK_VAL
 
-    style PRE_COMMIT fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style PRETTIER fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style AYOKODING fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style LINK_VAL fill:#457b9d,stroke:#1d3557,color:#ffffff
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    class PRE_COMMIT teal
+    class PRETTIER,AYOKODING,LINK_VAL brown
 ```
 
 **Pre-push and remote CI flow:**
 
 ```mermaid
 graph LR
+    accTitle: CI/CD Pipeline Overview 3
+    accDescr: Git Push leads to Pre-push Hook; Git Push leads to Pull Request; Pull Request leads to Env Branch + Vercel.
     PUSH[Git Push]
     PRE_PUSH[Pre-push Hook]
     PR[Pull Request]
@@ -72,10 +78,14 @@ graph LR
     PUSH --> PR
     PR --> DEPLOY
 
-    style PUSH fill:#0077b6,stroke:#03045e,color:#ffffff
-    style PRE_PUSH fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style PR fill:#6a4c93,stroke:#22223b,color:#ffffff
-    style DEPLOY fill:#e76f51,stroke:#9d0208,color:#ffffff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    class PUSH blue
+    class PRE_PUSH teal
+    class PR purple
+    class DEPLOY orange
 ```
 
 ## Git Hooks (Local Quality Gates)
@@ -349,6 +359,8 @@ runs are no-ops, avoiding both the Storybook build and the Vercel deployment.
 
 ```mermaid
 graph TB
+    accTitle: Quality Assurance Layers
+    accDescr: Code Changes leads to Prettier Auto-fix; Prettier Auto-fix leads to Content Processing Auto-fix; Content Processing Auto-fix leads to Link Validation Block; Link Validation Block leads to Commitlint Block; Commitlint Block leads to Tests Block; and 6 more links.
     CODE[Code Changes]
 
     subgraph "Layer 1: Local Hooks"
@@ -386,18 +398,16 @@ graph TB
     L3_BUILD --> L3_CACHE
     L3_CACHE --> DEPLOY
 
-    style CODE fill:#0077b6,stroke:#03045e,color:#ffffff
-    style L1_FORMAT fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style L1_CONTENT fill:#2a9d8f,stroke:#264653,color:#ffffff
-    style L1_LINKS fill:#e76f51,stroke:#9d0208,color:#ffffff
-    style L1_COMMIT fill:#e76f51,stroke:#9d0208,color:#ffffff
-    style L1_TEST fill:#e76f51,stroke:#9d0208,color:#ffffff
-    style L1_MD fill:#e76f51,stroke:#9d0208,color:#ffffff
-    style L2_FORMAT fill:#6a4c93,stroke:#22223b,color:#ffffff
-    style L2_LINKS fill:#e76f51,stroke:#9d0208,color:#ffffff
-    style L3_BUILD fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style L3_CACHE fill:#457b9d,stroke:#1d3557,color:#ffffff
-    style DEPLOY fill:#2a9d8f,stroke:#264653,color:#ffffff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    class CODE blue
+    class L1_FORMAT,L1_CONTENT,DEPLOY teal
+    class L1_LINKS,L1_COMMIT,L1_TEST,L1_MD,L2_LINKS orange
+    class L2_FORMAT purple
+    class L3_BUILD,L3_CACHE brown
 ```
 
 ### Quality Gate Categories

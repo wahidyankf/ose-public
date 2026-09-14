@@ -43,15 +43,17 @@ Type safety is TypeScript's core strength. A properly type-safe codebase prevent
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Type Narrowing Decision Tree
+    accDescr: unknown value leads to typeof; unknown value leads to instanceof; unknown value leads to 'property' in obj; unknown value leads to Custom type guard; and 4 more links.
     Unknown["unknown value"]:::blue
     TypeOf{"typeof"}:::orange
     InstanceOf{"instanceof"}:::orange
     In{"'property' in obj"}:::orange
     Custom{"Custom type guard"}:::purple
 
-    Narrowed1["Narrowed to primitive<br/>#40;string, number, etc#41;"]:::teal
-    Narrowed2["Narrowed to class<br/>#40;Money, Donation#41;"]:::teal
-    Narrowed3["Narrowed to interface<br/>with property"]:::teal
+    Narrowed1["Narrowed to<br/>primitive<br/>string, number, etc"]:::teal
+    Narrowed2["Narrowed to class<br/>Money, Donation"]:::teal
+    Narrowed3["Narrowed to<br/>interface<br/>with property"]:::teal
     Narrowed4["Narrowed to<br/>custom type"]:::teal
 
     Unknown --> TypeOf
@@ -67,9 +69,9 @@ graph LR
     Note1["Type guards narrow<br/>union types to<br/>specific types"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Branded Types
@@ -81,25 +83,27 @@ Branded types (nominal typing) create distinct types from primitives, preventing
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Branded Types Pattern
+    accDescr: Primitive Type string leads to Brand Helper type Brand<T, B>; Brand Helper type Brand<T, B> leads to Branded Type DonationId; Branded Type DonationId leads to Smart Constructor createDonationId; and 1 more links.
     Primitive["Primitive Type<br/>#40;string#41;"]:::blue
-    Brand["Brand Helper<br/>type Brand#60;T, B#62;"]:::orange
+    Brand["Brand Helper<br/>type Brand#60;T,<br/>B#62;"]:::orange
     Branded["Branded Type<br/>#40;DonationId#41;"]:::teal
-    Constructor["Smart Constructor<br/>createDonationId#40;#41;"]:::purple
-    Function["Type-Safe Function<br/>getDonation(id: DonationId)"]:::brown
+    Constructor["Smart Constructor<br/>createDonationId()"]:::purple
+    Function["Type-Safe Function<br/>getDonation(id:<br/>DonationId)"]:::brown
 
     Primitive --> Brand
     Brand --> Branded
     Branded --> Constructor
     Constructor --> Function
 
-    Note1["Prevents mixing<br/>DonationId with DonorId<br/>at compile time"]
+    Note1["Prevents mixing<br/>DonationId with<br/>DonorId<br/>at compile time"]
     Note2["Smart constructor<br/>validates format<br/>before branding"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Basic Branding
@@ -255,11 +259,13 @@ Discriminated unions (tagged unions) model mutually exclusive states safely.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    Union["Payment Union<br/>Pending | Processing |<br/>Completed | Failed"]:::blue
+    accTitle: Discriminated Union Narrowing
+    accDescr: status leads to 'pending' Access submittedAt; status leads to 'processing' Access processedBy; status leads to 'completed' Access transactionId; status leads to 'failed' Access error; and 5 more links.
+    Union["Payment Union<br/>Pending | Processing<br/>|<br/>Completed | Failed"]:::blue
     Check{"Check status<br/>discriminant"}:::orange
     Pending["status === 'pending'<br/>Access submittedAt"]:::teal
-    Processing["status === 'processing'<br/>Access processedBy"]:::teal
-    Completed["status === 'completed'<br/>Access transactionId"]:::teal
+    Processing["status ===<br/>'processing'<br/>Access processedBy"]:::teal
+    Completed["status ===<br/>'completed'<br/>Access transactionId"]:::teal
     Failed["status === 'failed'<br/>Access error"]:::purple
 
     Union --> Check
@@ -268,12 +274,12 @@ graph LR
     Check -->|"completed"| Completed
     Check -->|"failed"| Failed
 
-    Note1["Discriminant field<br/>#40;status#41; narrows<br/>union to specific type"]
+    Note1["Discriminant field<br/>(status) narrows<br/>union to specific<br/>type"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Payment State Machine
@@ -849,8 +855,9 @@ const handleUSD: USDHandler = handleMoney; // ✓ OK
 ## Type Safety Mechanisms
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart LR
+    accTitle: Type Safety Mechanisms
+    accDescr: Type Safety in TS leads to Static Analysis Compile-Time; Type Safety in TS leads to Runtime Guards Type Predicates; Type Safety in TS leads to Branded Types Nominal Typing; and 13 more links.
     A[Type Safety in TS] --> B[Static Analysis<br/>Compile-Time]
     A --> C[Runtime Guards<br/>Type Predicates]
     A --> D[Branded Types<br/>Nominal Typing]
@@ -873,12 +880,12 @@ flowchart LR
     D1 --> G[ZakatAmount<br/>Branded]
     E1 --> H[Donation Input<br/>Validated]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#0173B2,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A,E,H blue
+    class B,F orange
+    class C,G teal
+    class D purple
 ```

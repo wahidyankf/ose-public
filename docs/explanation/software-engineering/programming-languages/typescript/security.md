@@ -142,12 +142,14 @@ The following diagram illustrates the defense-in-depth approach to input validat
 
 ```mermaid
 graph TD
+    accTitle: Zod Schema Validation
+    accDescr: Client Request leads to Layer 1: Controller Structure check + Sanitize; Layer 1: Controller Structure check + Sanitize leads to ❌ Reject 400 / Constraint violation via Invalid; and 5 more links.
     CLIENT[Client Request]:::blue
-    L1["Layer 1: Controller<br/>Structure check + Sanitize"]:::teal
-    L2["Layer 2: Schema Validation<br/>Zod + Business Rules"]:::purple
+    L1["Layer 1: Controller<br/>Structure check +<br/>Sanitize"]:::teal
+    L2["Layer 2: Schema<br/>Validation<br/>Zod + Business Rules"]:::purple
     L3["Layer 3: Database<br/>Check Constraints"]:::brown
     SUCCESS["✅ Success<br/>Donation created"]:::teal
-    REJECT["❌ Reject<br/>400 / Constraint violation"]:::orange
+    REJECT["❌ Reject<br/>400 / Constraint<br/>violation"]:::orange
 
     CLIENT --> L1
     L1 -->|Invalid| REJECT
@@ -157,11 +159,11 @@ graph TD
     L3 -->|Violation| REJECT
     L3 -->|Pass| SUCCESS
 
-    classDef blue fill:#0173B2,stroke:#000000,color:#FFF
-    classDef teal fill:#029E73,stroke:#000000,color:#FFF
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFF
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFF
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
 ```
 
 **Defense-in-Depth Layers**:
@@ -830,6 +832,8 @@ The following diagram illustrates the complete JWT authentication flow in a Type
 
 ```mermaid
 sequenceDiagram
+    accTitle: JWT Authentication
+    accDescr: Client sends POST /api/auth/login email, password to Auth; Auth sends authenticateemail, password to Service; Service sends Find user by email to DB; DB sends User record with passwordHash to Service; and 31 more links.
     participant Client as Client<br/>(Browser/Mobile)
     participant Auth as AuthController<br/>login/refresh
     participant Service as AuthService<br/>authenticate
@@ -1933,8 +1937,9 @@ describe("DonationController (security)", () => {
 **Maintainers**: OSE Platform Documentation Team
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart LR
+    accTitle: Sources
+    accDescr: TypeScript Security leads to Type Safety Compile-Time; TypeScript Security leads to Input Validation Runtime; TypeScript Security leads to Authentication JWT; TypeScript Security leads to Data Protection Encryption; and 14 more links.
     A[TypeScript Security] --> B[Type Safety<br/>Compile-Time]
     A --> C[Input Validation<br/>Runtime]
     A --> D[Authentication<br/>JWT]
@@ -1959,11 +1964,12 @@ flowchart LR
     B1 --> F[Zakat Amount<br/>Type-Safe]
     C1 --> G[Donation Input<br/>Schema Valid]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A,E blue
+    class B,F orange
+    class C,G teal
+    class D purple
 ```

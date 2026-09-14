@@ -508,6 +508,8 @@ Context values propagate down the component tree to all descendants:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Context Propagation
+    accDescr: AuthProvider leads to App Component; AuthProvider leads to App Component via Provides Auth Context; App Component leads to Dashboard; App Component leads to Profile; App Component leads to Settings; and 5 more links.
     A[AuthProvider] --> B[App Component]
     A -.->|Provides Auth Context| B
     B --> C[Dashboard]
@@ -519,16 +521,14 @@ graph LR
     D -.->|useAuth#40;#41;| I[Edit Profile]
     E -.->|useAuth#40;#41;| J[Preferences]
 
-    style A fill:#0173B2
-    style B fill:#029E73
-    style C fill:#DE8F05
-    style D fill:#DE8F05
-    style E fill:#DE8F05
-    style F fill:#CC78BC
-    style G fill:#CC78BC
-    style H fill:#CC78BC
-    style I fill:#CC78BC
-    style J fill:#CC78BC
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A blue
+    class B teal
+    class C,D,E orange
+    class F,G,H,I,J purple
 ```
 
 **Key Points**:
@@ -1154,7 +1154,9 @@ export const InfiniteDonationsList: React.FC = () => {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A[Need to manage state?] --> B{Single component?}
+    accTitle: State Management Decision Tree
+    accDescr: Need to manage state? leads to Single component?; Single component? leads to useState/useReducer via Yes; Single component? leads to Related components? via No; Related components? leads to Prop Drilling via Parent-Child; and 8 more links.
+    A[Need to manage<br/>state?] --> B{Single component?}
     B -->|Yes| C[useState/useReducer]
     B -->|No| D{Related components?}
 
@@ -1171,10 +1173,14 @@ graph TD
     K -->|Yes| F
     K -->|No| L[Keep as props]
 
-    style C fill:#029E73
-    style G fill:#0173B2
-    style I fill:#DE8F05
-    style J fill:#CC78BC
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class C teal
+    class G blue
+    class I orange
+    class J purple
 ```
 
 ## Related Documentation

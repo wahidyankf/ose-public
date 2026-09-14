@@ -81,14 +81,13 @@ Java/Spring Boot package structure and F# module hierarchy for combined DDD+Hexa
 
 The standards form a dependency chain. Read them in order for first-time orientation:
 
-```
-Bounded Context Mapping
-        ↓
-Aggregate Port Boundary
-        ↓
-Cross-Context Integration
-        ↓
-Module Organization
+```mermaid
+flowchart TD
+    accTitle: How These Standards Relate
+    accDescr: Bounded Context Mapping leads to Aggregate Port Boundary; Aggregate Port Boundary leads to Cross-Context Integration; Cross-Context Integration leads to Module Organization.
+    B["Bounded Context<br/>Mapping"] --> A["Aggregate Port<br/>Boundary"]
+    A --> C["Cross-Context<br/>Integration"]
+    C --> M["Module<br/>Organization"]
 ```
 
 Practitioners working on a specific concern can jump directly to the relevant standard. Each standard cross-references the others where needed.

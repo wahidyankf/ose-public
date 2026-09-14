@@ -33,11 +33,13 @@ TypeScript uses ES modules as its primary module system. Understanding module re
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Module Dependency Graph
+    accDescr: app.ts Entry Point leads to zakat-service.ts; zakat-service.ts leads to zakat-calculator.ts; zakat-service.ts leads to donation-repository.ts; zakat-calculator.ts leads to money.ts Value Object; donation-repository.ts leads to money.ts Value Object.
     App["app.ts<br/>#40;Entry Point#41;"]:::blue
     ZakatService["zakat-service.ts"]:::orange
     ZakatCalc["zakat-calculator.ts"]:::teal
     Money["money.ts<br/>#40;Value Object#41;"]:::brown
-    DonRepo["donation-repository.ts"]:::purple
+    DonRepo["donation-<br/>repository.ts"]:::purple
 
     App --> ZakatService
     ZakatService --> ZakatCalc
@@ -48,10 +50,10 @@ graph TD
     Note1["Dependencies flow<br/>from high-level<br/>to low-level<br/>modules"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ```typescript
@@ -86,6 +88,8 @@ const wealth = createMoney(100000, "USD");
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: ESM Import/Export Flow
+    accDescr: Module zakat.ts leads to export default ZakatCalculator; Module zakat.ts leads to export interface Money; Module zakat.ts leads to export function createMoney; export default ZakatCalculator leads to Default Import ZakatCalculator; and 4 more links.
     Module["Module<br/>zakat.ts"]:::blue
     Export1["export default<br/>ZakatCalculator"]:::orange
     Export2["export interface<br/>Money"]:::orange
@@ -109,9 +113,9 @@ graph LR
     Note1["ESM is static:<br/>imports resolved<br/>at compile time"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Barrel Export Pattern
@@ -119,6 +123,8 @@ graph LR
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Barrel Export Pattern
+    accDescr: money.ts leads to index.ts Barrel; zakat-calculator.ts leads to index.ts Barrel; donation.ts leads to index.ts Barrel; index.ts Barrel leads to app.ts Consumer.
     Barrel["index.ts<br/>#40;Barrel#41;"]:::blue
     Module1["money.ts"]:::orange
     Module2["zakat-calculator.ts"]:::orange
@@ -134,8 +140,8 @@ graph LR
     Note2["import { Money,<br/>ZakatCalculator }<br/>from './domain'"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Package Managers
@@ -147,6 +153,8 @@ Modern bundlers eliminate unused code through tree-shaking. Understanding this p
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Tree-Shaking Optimization Flow
+    accDescr: Source Code ES Modules leads to Parse AST Dependency Graph; Parse AST Dependency Graph leads to Mark Used Exports; Mark Used Exports leads to Identify Unused Code; and 5 more links.
     Source["Source Code<br/>#40;ES Modules#41;"]:::blue
     Parse["Parse AST<br/>Dependency Graph"]:::orange
     MarkUsed["Mark Used Exports"]:::teal
@@ -164,7 +172,7 @@ graph TD
     Note2["Side effects prevent<br/>elimination"]
 
     subgraph Example["Example: Lodash"]
-        Import["import {map} from 'lodash-es'"]
+        Import["import {map} from<br/>'lodash-es'"]
         Used["map function"]
         Unused["filter, reduce, etc."]
         Result["Bundle includes<br/>only map"]
@@ -175,10 +183,10 @@ graph TD
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ```json
@@ -234,15 +242,17 @@ Circular dependencies create initialization issues and should be detected early.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Circular Dependency Detection
+    accDescr: Build Module Graph leads to Analyze Import Paths; Analyze Import Paths leads to Circular dependency?; Circular dependency? leads to Valid Dependency Tree via No; Circular dependency? leads to Circular Dependency Found via Yes; and 3 more links.
     Start["Build Module Graph"]:::blue
     Analyze["Analyze Import Paths"]:::orange
     DetectCycle{"Circular<br/>dependency?"}:::orange
-    NoCircular["Valid Dependency Tree"]:::teal
-    Circular["Circular Dependency Found"]:::purple
+    NoCircular["Valid Dependency<br/>Tree"]:::teal
+    Circular["Circular Dependency<br/>Found"]:::purple
 
     Strategy1["Strategy 1:<br/>Extract Shared Types"]:::brown
     Strategy2["Strategy 2:<br/>Dependency Injection"]:::brown
-    Strategy3["Strategy 3:<br/>Event-Based Decoupling"]:::brown
+    Strategy3["Strategy 3:<br/>Event-Based<br/>Decoupling"]:::brown
 
     Start --> Analyze
     Analyze --> DetectCycle
@@ -255,10 +265,10 @@ graph TD
     Example["Example Circular:<br/>A imports B<br/>B imports C<br/>C imports A"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Node.js Module Resolution Algorithm
@@ -266,7 +276,9 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Import["import { X } from 'module'"]:::blue
+    accTitle: Node.js Module Resolution Algorithm
+    accDescr: import X from 'module' leads to Relative path./ or../?; Relative path./ or../? leads to Resolve relative to current file via Yes; and 8 more links.
+    Import["import { X } from<br/>'module'"]:::blue
     Relative{"Relative path<br/>#40;./ or ../#41;?"}:::orange
     Builtin{"Built-in<br/>module?"}:::orange
     LocalFile["Resolve relative to<br/>current file"]:::teal
@@ -274,7 +286,7 @@ graph TD
     PackageJson["Read package.json<br/>exports/main field"]:::brown
     IndexFile["Try index.js/ts"]:::brown
     Success["Module Resolved"]:::teal
-    Error["Module Not Found Error"]:::purple
+    Error["Module Not Found<br/>Error"]:::purple
 
     Import --> Relative
     Relative -->|Yes| LocalFile
@@ -290,10 +302,10 @@ graph TD
     Note1["Resolution order:<br/>1. Relative paths<br/>2. Built-in modules<br/>3. node_modules"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ```json
@@ -352,10 +364,11 @@ packages:
 ## Module System
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart LR
+    accTitle: Module System
+    accDescr: TS Module System leads to ES Modules import/export; TS Module System leads to CommonJS require/module.exports; TS Module System leads to AMD/UMD Legacy; TS Module System leads to Module Resolution Node/Classic; and 12 more links.
     A[TS Module System] --> B[ES Modules<br/>import/export]
-    A --> C[CommonJS<br/>require/module.exports]
+    A --> C[CommonJS<br/>require/<br/>module.exports]
     A --> D[AMD/UMD<br/>Legacy]
     A --> E[Module Resolution<br/>Node/Classic]
 
@@ -376,20 +389,22 @@ flowchart LR
     B1 --> F[Zakat Module<br/>Named Exports]
     E2 --> G[@app/zakat<br/>Path Alias]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#0173B2,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A,E,G blue
+    class B,F orange
+    class C teal
+    class D purple
 ```
 
 ## Dependency Management
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
+    accTitle: Dependency Management
+    accDescr: package.json leads to npm install; npm install leads to Resolve Dependencies; Resolve Dependencies leads to Conflicts?; Conflicts? leads to Version Resolution via Yes; Conflicts? leads to Download Packages via No; and 8 more links.
     A[package.json] --> B[npm install]
     B --> C[Resolve Dependencies]
     C --> D{Conflicts?}
@@ -409,8 +424,12 @@ flowchart TD
 
     K --> L[Compilation]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style K fill:#CC78BC,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A blue
+    class C orange
+    class G teal
+    class K purple
 ```

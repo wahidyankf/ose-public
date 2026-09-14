@@ -39,7 +39,9 @@ Performance is critical for financial applications processing donations, calcula
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Measure["Measure<br/>#40;Profile, Benchmark#41;"]:::blue
+    accTitle: Optimization Pipeline
+    accDescr: Measure Profile, Benchmark leads to Identify Bottlenecks Hot paths; Identify Bottlenecks Hot paths leads to Optimize Improve code; Optimize Improve code leads to Verify Improvement Re-measure; Verify Improvement Re-measure leads to Performance Goal Met?; and 2 more links.
+    Measure["Measure<br/>Profile, Benchmark"]:::blue
     Identify["Identify Bottlenecks<br/>#40;Hot paths#41;"]:::orange
     Optimize["Optimize<br/>#40;Improve code#41;"]:::teal
     Verify["Verify Improvement<br/>#40;Re-measure#41;"]:::purple
@@ -55,10 +57,10 @@ graph TD
     Note1["Always measure<br/>before and after<br/>optimization"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Profiling
@@ -253,11 +255,13 @@ class DonationStats {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Memory Management Strategies
+    accDescr: Memory Strategy leads to Object Pooling Reuse objects; Memory Strategy leads to Caching Store results; Memory Strategy leads to Immutability Prevent mutations; Object Pooling Reuse objects leads to Garbage Collection Automatic cleanup; and 2 more links.
     Strategy["Memory Strategy"]:::blue
-    Pool["Object Pooling<br/>#40;Reuse objects#41;"]:::orange
-    Cache["Caching<br/>#40;Store results#41;"]:::teal
-    Immutable["Immutability<br/>#40;Prevent mutations#41;"]:::purple
-    GC["Garbage Collection<br/>#40;Automatic cleanup#41;"]:::brown
+    Pool["Object Pooling<br/>Reuse objects"]:::orange
+    Cache["Caching<br/>Store results"]:::teal
+    Immutable["Immutability<br/>Prevent mutations"]:::purple
+    GC["Garbage Collection<br/>Automatic cleanup"]:::brown
 
     Strategy --> Pool
     Strategy --> Cache
@@ -266,13 +270,13 @@ graph TD
     Cache --> GC
     Immutable --> GC
 
-    Note1["Object pooling:<br/>Reduces GC pressure<br/>for frequently created<br/>objects"]
+    Note1["Object pooling:<br/>Reduces GC pressure<br/>for frequently<br/>created<br/>objects"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Array vs Set vs Map
@@ -360,6 +364,8 @@ function calculateTotal(amounts: Float64Array): number {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Lazy Loading Pattern
+    accDescr: App sends Request heavy module to Loader; Loader sends Return cached module to App; Loader sends import'./heavy' to Module; Module sends Module loaded to Loader; Loader sends Cache module to Loader; and 1 more links.
     participant App
     participant Loader
     participant Module
@@ -969,8 +975,9 @@ setInterval(() => {
 ## Performance Optimization
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart LR
+    accTitle: Performance Optimization
+    accDescr: TS Performance leads to Compilation Speed; TS Performance leads to Runtime Performance; TS Performance leads to Bundle Size; TS Performance leads to Type Checking; Compilation Speed leads to Project References Incremental; and 11 more links.
     A[TS Performance] --> B[Compilation Speed]
     A --> C[Runtime Performance]
     A --> D[Bundle Size]
@@ -983,7 +990,7 @@ flowchart LR
     C --> C2[const Enums<br/>Inlined Values]
     C --> C3[Optimize Loops<br/>Reduce Allocations]
 
-    D --> D1[Tree Shaking<br/>Dead Code Elimination]
+    D --> D1[Tree Shaking<br/>Dead Code<br/>Elimination]
     D --> D2[Code Splitting<br/>Dynamic Imports]
     D --> D3[Minification<br/>Terser]
 
@@ -993,11 +1000,12 @@ flowchart LR
     B1 --> F[Monorepo Build<br/>Fast Incremental]
     D1 --> G[Small Bundle<br/>Production]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A,E blue
+    class B,F orange
+    class C,G teal
+    class D purple
 ```

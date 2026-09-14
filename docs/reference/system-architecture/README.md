@@ -27,14 +27,16 @@ of software that live together and the role Nx plays in coordinating their work.
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TB
+    accTitle: Platform at a glance
+    accDescr: People using OSE leads to Public websites Platform, product, learning via Explore public information; People using OSE leads to Product applications Web experiences via Use product experiences; and 8 more links.
     PEOPLE[People using OSE]
 
     subgraph "Open Sharia Enterprise"
-        PUBLIC[Public websites<br/>Platform, product, learning]
+        PUBLIC[Public websites<br/>Platform, product,<br/>learning]
         PRODUCT[Product applications<br/>Web experiences]
         API[Backend services<br/>HTTP APIs]
-        TOOLS[Tooling and test suites<br/>Quality and delivery]
-        LIBS[Shared libraries<br/>Reusable capabilities]
+        TOOLS[Tooling and test<br/>suites<br/>Quality and delivery]
+        LIBS[Shared libraries<br/>Reusable<br/>capabilities]
         NX[Nx workspace<br/>Task coordination]
     end
 
@@ -49,13 +51,16 @@ graph TB
     NX -.->|Coordinates tasks for| API
     NX -.->|Coordinates tasks for| TOOLS
 
-    style PEOPLE fill:#029E73,stroke:#000000,color:#ffffff
-    style PUBLIC fill:#0173B2,stroke:#000000,color:#ffffff
-    style PRODUCT fill:#0173B2,stroke:#000000,color:#ffffff
-    style API fill:#DE8F05,stroke:#000000,color:#000000
-    style TOOLS fill:#CC78BC,stroke:#000000,color:#000000
-    style LIBS fill:#CC78BC,stroke:#000000,color:#000000
-    style NX fill:#CA9161,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    class PEOPLE teal
+    class PUBLIC,PRODUCT blue
+    class API orange
+    class TOOLS,LIBS purple
+    class NX brown
 ```
 
 The key architectural boundaries are:

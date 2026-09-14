@@ -49,6 +49,8 @@ Presentational and container component types:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Component Types
+    accDescr: React Components leads to Presentational; React Components leads to Container; Presentational leads to Pure UI; Presentational leads to No Business Logic; Presentational leads to Receives Props; Container leads to State Management; and 2 more links.
     A[React Components] --> B[Presentational]
     A --> C[Container]
 
@@ -60,15 +62,12 @@ graph LR
     C --> I[Business Logic]
     C --> J[API Calls]
 
-    style A fill:#0173B2
-    style B fill:#029E73
-    style C fill:#DE8F05
-    style E fill:#029E73
-    style F fill:#029E73
-    style G fill:#029E73
-    style H fill:#DE8F05
-    style I fill:#DE8F05
-    style J fill:#DE8F05
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    class A blue
+    class B,E,F,G teal
+    class C,H,I,J orange
 ```
 
 Custom hooks component type:
@@ -78,17 +77,18 @@ Custom hooks component type:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Component Types 2
+    accDescr: React Components leads to Custom Hooks; Custom Hooks leads to Reusable Logic; Custom Hooks leads to State + Effects; Custom Hooks leads to No UI.
     A[React Components] --> D[Custom Hooks]
 
     D --> K[Reusable Logic]
     D --> L[State + Effects]
     D --> M[No UI]
 
-    style A fill:#0173B2
-    style D fill:#CC78BC
-    style K fill:#CC78BC
-    style L fill:#CC78BC
-    style M fill:#CC78BC
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A blue
+    class D,K,L,M purple
 ```
 
 **Architecture Layers**:

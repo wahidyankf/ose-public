@@ -1116,8 +1116,10 @@ export async function GET() {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Data Fetching Strategy"]:::blue
-    B["Static #40;Default#41;<br/>Cache forever"]:::teal
+    accTitle: Cache Configuration Matrix
+    accDescr: Data Fetching Strategy leads to Static Default Cache forever; Data Fetching Strategy leads to Revalidate Time-based refresh; Data Fetching Strategy leads to Dynamic No cache; Data Fetching Strategy leads to Force Cache Override defaults; and 4 more links.
+    A["Data Fetching<br/>Strategy"]:::blue
+    B["Static (Default)<br/>Cache forever"]:::teal
     C["Revalidate<br/>Time-based refresh"]:::teal
     D["Dynamic<br/>No cache"]:::orange
     E["Force Cache<br/>Override defaults"]:::purple
@@ -1128,13 +1130,13 @@ graph TD
     A --> E
 
     B --> B1["Use: Static content<br/>Example: About page"]
-    C --> C1["Use: Semi-static data<br/>Example: Gold prices"]
+    C --> C1["Use: Semi-static<br/>data<br/>Example: Gold prices"]
     D --> D1["Use: User-specific<br/>Example: Dashboard"]
-    E --> E1["Use: Override settings<br/>Example: CDN data"]
+    E --> E1["Use: Override<br/>settings<br/>Example: CDN data"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 

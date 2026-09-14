@@ -100,6 +100,8 @@ TypeScript development in this platform follows the software engineering princip
 
 ```mermaid
 timeline
+    accTitle: TypeScript Version Strategy
+    accDescr: Illustrates typescript version strategy.
     title TypeScript Version Timeline (2023-2025)
     2023-03 : TypeScript 5.0 ⭐
             : ECMAScript Decorators
@@ -1572,8 +1574,9 @@ async function processDonation(data: DonationInput): Promise<Result<Donation, Er
 ## TypeScript Type System
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart LR
+    accTitle: TypeScript Type System
+    accDescr: TypeScript Types leads to Primitive Types; TypeScript Types leads to Object Types; TypeScript Types leads to Advanced Types; TypeScript Types leads to Utility Types; Primitive Types leads to string number boolean; and 15 more links.
     A[TypeScript Types] --> B[Primitive Types]
     A --> C[Object Types]
     A --> D[Advanced Types]
@@ -1600,19 +1603,22 @@ flowchart LR
     D1 --> G[Amount Union]
     E1 --> H[Optional Fields]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A,E blue
+    class B orange
+    class C,F teal
+    class D purple
 ```
 
 ## Compilation Process
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
+    accTitle: Compilation Process
+    accDescr: .ts Files leads to TypeScript Compiler tsc; TypeScript Compiler tsc leads to Type Checking; Type Checking leads to Types Valid?; Types Valid? leads to Compilation Error via No; and 10 more links.
     A[.ts Files] --> B[TypeScript Compiler<br/>tsc]
     B --> C[Type Checking]
     C --> D{Types Valid?}
@@ -1633,8 +1639,12 @@ flowchart TD
 
     L --> M[Runtime Execution]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style G fill:#CC78BC,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A blue
+    class B orange
+    class C teal
+    class G purple
 ```

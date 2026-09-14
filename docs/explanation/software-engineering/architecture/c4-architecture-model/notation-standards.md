@@ -124,6 +124,8 @@ This ensures readers can instantly recognize element types by color across all C
 
 ```mermaid
 graph TD
+    accTitle: Graph Direction
+    accDescr: Illustrates graph direction.
     %% diagram content here
 ```
 
@@ -139,10 +141,12 @@ graph TD
 
 ```mermaid
 graph TD
-    ZMS["Zakat Management System<br/>[System]"]:::blue
-    API["Zakat API<br/>[Container: Spring Boot]<br/>Business logic"]:::blue
+    accTitle: Node Definition Format
+    accDescr: Shows Zakat Management System System, Zakat API Container: Spring Boot Business logic.
+    ZMS["Zakat Management<br/>System<br/>[System]"]:::blue
+    API["Zakat API<br/>[Container: Spring<br/>Boot]<br/>Business logic"]:::blue
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ### Relationship Labels
@@ -178,9 +182,11 @@ API -->|"Publishes events<br/>[AMQP]"| MQ
 
 ```mermaid
 graph TD
-    API["Zakat API<br/>[Container: Spring Boot]<br/>Business logic"]:::blue
+    accTitle: Line Breaks
+    accDescr: Shows Zakat API Container: Spring Boot Business logic.
+    API["Zakat API<br/>[Container: Spring<br/>Boot]<br/>Business logic"]:::blue
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Bad** (no line breaks):
@@ -263,7 +269,9 @@ API["Zakat API [Container: Spring Boot] Business logic"]:::blue
 
 ```mermaid
 graph TD
-    ZMS["Zakat Management System"]:::blue
+    accTitle: System Context Diagram
+    accDescr: Donor Person leads to Zakat Management System via Submits Zakat calculation HTTPS/JSON; Zakat Management System leads to Donor Person via Displays Zakat obligations HTTPS/JSON; and 4 more links.
+    ZMS["Zakat Management<br/>System"]:::blue
     Donor["Donor<br/>(Person)"]:::orange
     Beneficiary["Beneficiary<br/>(Person)"]:::orange
     Admin["Administrator<br/>(Person)"]:::orange
@@ -277,18 +285,20 @@ graph TD
     ZMS -->|"Reports<br/>distributions<br/>[HTTPS/JSON]"| CompRep
     ZMS -->|"Disburses funds<br/>[HTTPS/JSON]"| Beneficiary
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 ### Container Diagram
 
 ```mermaid
 graph TD
+    accTitle: Container Diagram
+    accDescr: Zakat Web UI Container: Next.js User interface leads to Zakat API Container: Spring Boot Business logic via Makes API calls HTTPS/REST; and 3 more links.
     Web["Zakat Web UI<br/>[Container: Next.js]<br/>User interface"]:::blue
-    API["Zakat API<br/>[Container: Spring Boot]<br/>Business logic"]:::blue
-    DB["Zakat Database<br/>[Container: PostgreSQL]<br/>Assessment storage"]:::teal
+    API["Zakat API<br/>[Container: Spring<br/>Boot]<br/>Business logic"]:::blue
+    DB["Zakat Database<br/>[Container:<br/>PostgreSQL]<br/>Assessment storage"]:::teal
     MQ["Message Broker<br/>[Container: RabbitMQ]<br/>Event distribution"]:::teal
     Cache["Session Cache<br/>[Container: Redis]<br/>User sessions"]:::teal
 
@@ -297,8 +307,8 @@ graph TD
     API -->|"Reads/writes<br/>[TCP/SQL]"| DB
     API -->|"Publishes events<br/>[AMQP]"| MQ
 
-    classDef blue fill:#0173B2,stroke:#000,color:#FFF
-    classDef teal fill:#029E73,stroke:#000,color:#FFF
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
 ```
 
 ## Validation Checklist

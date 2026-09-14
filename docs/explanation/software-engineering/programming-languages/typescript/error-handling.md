@@ -46,9 +46,11 @@ The Result pattern makes errors explicit in the type system.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Error Propagation Through Layers
+    accDescr: Presentation Layer API Endpoint leads to Application Layer Use Case via Request; Application Layer Use Case leads to Domain Layer Business Logic via Command; and 4 more links.
     Presentation["Presentation Layer<br/>#40;API Endpoint#41;"]:::blue
     Application["Application Layer<br/>#40;Use Case#41;"]:::orange
-    Domain["Domain Layer<br/>#40;Business Logic#41;"]:::teal
+    Domain["Domain Layer<br/>Business Logic"]:::teal
     Infrastructure["Infrastructure Layer<br/>#40;Database#41;"]:::purple
 
     Presentation -->|Request| Application
@@ -59,13 +61,13 @@ graph LR
     Domain -.->|Error| Application
     Application -.->|Error| Presentation
 
-    Note1["Errors flow upward<br/>Each layer transforms<br/>error into appropriate<br/>domain error"]
+    Note1["Errors flow upward<br/>Each layer<br/>transforms<br/>error into<br/>appropriate<br/>domain error"]
     Note2["Result type carries<br/>success or failure<br/>explicitly"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Basic Result Type
@@ -110,6 +112,8 @@ if (result.ok) {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Result Type Pattern Flow
+    accDescr: Operation Executes leads to Success?; Success? leads to ok: true value: T via Success; Success? leads to ok: false error: E via Failure; ok: true value: T leads to Consumer Checks ok field; and 3 more links.
     Operation["Operation<br/>Executes"]:::blue
     Check{"Success?"}:::orange
     OkResult["ok: true<br/>value: T"]:::teal
@@ -128,10 +132,10 @@ graph TD
     Note1["No exceptions thrown<br/>Errors are values<br/>Compiler enforces<br/>error handling"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Result Combinators
@@ -387,6 +391,8 @@ Handle errors in asynchronous operations safely.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Try-Catch vs Result Pattern
+    accDescr: C1 sends call function to F1; F1 sends return value to C1; F1 sends throw Error to C1; C2 sends call function to F2; F2 sends ok: true, value: T to C2; and 1 more links.
     participant C1 as Caller #40;Try-Catch#41;
     participant F1 as Function
     participant C2 as Caller #40;Result#41;
@@ -685,8 +691,9 @@ async function calculateZakatWithContext(wealth: number, nisab: number): Promise
 ## Error Handling Patterns
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart LR
+    accTitle: Error Handling Patterns
+    accDescr: Error Handling leads to Try-Catch Exceptions; Error Handling leads to Result Type Success/Failure; Error Handling leads to Error Union Type | Error; Error Handling leads to Promise Rejection Async Errors; and 10 more links.
     A[Error Handling] --> B[Try-Catch<br/>Exceptions]
     A --> C[Result Type<br/>Success/Failure]
     A --> D[Error Union<br/>Type | Error]
@@ -707,20 +714,22 @@ flowchart LR
     B2 --> F[ZakatError<br/>Custom Class]
     C1 --> G[Result<Amount><br/>Type-Safe]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    class A,E blue
+    class B,F orange
+    class C,G teal
+    class D purple
 ```
 
 ## Async Error Flow
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#000','primaryBorderColor':'#0173B2','lineColor':'#DE8F05','secondaryColor':'#029E73','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 sequenceDiagram
+    accTitle: Async Error Flow
+    accDescr: C sends await operation to A; A sends Query Data to DB; DB sends Data to A; A sends Result to C; DB sends Error to A; A sends Handle Error to EH; and 4 more links.
     participant C as Client Code
     participant A as Async Function
     participant DB as Database

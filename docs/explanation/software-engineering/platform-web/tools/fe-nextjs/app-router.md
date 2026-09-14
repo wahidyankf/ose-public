@@ -463,9 +463,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    A["Root Layout<br/>#40;app/layout.tsx#41;"]:::blue
-    B["Marketing Layout<br/>#40;marketing/layout.tsx#41;"]:::teal
-    C["Platform Layout<br/>#40;platform/layout.tsx#41;"]:::teal
+    accTitle: Layout Hierarchy
+    accDescr: Root Layout app/layout.tsx leads to Marketing Layout marketing/layout.tsx; Root Layout app/layout.tsx leads to Platform Layout platform/layout.tsx; Marketing Layout marketing/layout.tsx leads to Home Page /; Marketing Layout marketing/layout.tsx leads to About Page /about; and 2 more links.
+    A["Root Layout<br/>app/layout.tsx"]:::blue
+    B["Marketing Layout<br/>marketing/layout.tsx"]:::teal
+    C["Platform Layout<br/>platform/layout.tsx"]:::teal
     D["Home Page<br/>#40;/#41;"]:::purple
     E["About Page<br/>#40;/about#41;"]:::purple
     F["Dashboard Page<br/>#40;/dashboard#41;"]:::purple
@@ -479,7 +481,7 @@ graph TD
     C --> G
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
@@ -943,10 +945,12 @@ app/
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Error Hierarchy
+    accDescr: global-error.tsx Root-level errors leads to app/error.tsx App errors; app/error.tsx App errors leads to app/zakat/error.tsx Zakat errors; app/zakat/error.tsx Zakat errors leads to app/zakat/history/error.tsx History errors; app/zakat/history/error.tsx History errors leads to Success.
     A["global-error.tsx<br/>Root-level errors"]:::orange
     B["app/error.tsx<br/>App errors"]:::orange
     C["app/zakat/error.tsx<br/>Zakat errors"]:::orange
-    D["app/zakat/history/error.tsx<br/>History errors"]:::orange
+    D["app/zakat/<br/>history/error.tsx<br/>History errors"]:::orange
     E["Success"]:::teal
 
     A --> B
@@ -954,8 +958,8 @@ graph TD
     C --> D
     D --> E
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Error Recovery

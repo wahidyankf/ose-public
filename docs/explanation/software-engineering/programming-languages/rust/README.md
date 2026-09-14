@@ -184,9 +184,11 @@ OSE Platform **requires Rust 2024 edition** for all crates:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Documentation Organization
+    accDescr: Rust Standards Index OSE Platform leads to Core Standards; Rust Standards Index OSE Platform leads to Specialized Standards; Rust Standards Index OSE Platform leads to Learning Resources AyoKoding; Core Standards leads to Coding Standards; and 13 more links.
     A["Rust Standards Index<br/>(OSE Platform)"]:::blue
     B["Core Standards"]:::orange
-    C["Specialized Standards"]:::teal
+    C["Specialized<br/>Standards"]:::teal
     D["Learning Resources<br/>(AyoKoding)"]:::purple
 
     A --> B
@@ -199,20 +201,20 @@ graph LR
     B --> H["Build Configuration"]:::orange
 
     C --> I["Security Standards"]:::teal
-    C --> J["Concurrency Standards"]:::teal
+    C --> J["Concurrency<br/>Standards"]:::teal
     C --> K["DDD Standards"]:::teal
     C --> L["API Standards"]:::teal
-    C --> M["Performance Standards"]:::teal
+    C --> M["Performance<br/>Standards"]:::teal
     C --> N["Error Handling"]:::teal
     C --> O["Memory Management"]:::teal
     C --> P["Type Safety"]:::teal
 
     D --> Q["By Example<br/>(Annotated examples)"]:::purple
-    D --> R["In the Field<br/>(Production patterns)"]:::purple
+    D --> R["In the Field<br/>Production patterns"]:::purple
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
 ```
 

@@ -36,6 +36,8 @@ Finite State Machines (FSMs) model systems with distinct states and transitions.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: State Transition Rules
+    accDescr: Current State leads to Event Received; Event Received leads to Valid Transition?; Valid Transition? leads to Execute Transition Update State via Yes; Valid Transition? leads to Reject Invalid Transition via No; and 2 more links.
     Start["Current State"]:::blue
     Event["Event Received"]:::orange
     Valid{"Valid<br/>Transition?"}:::purple
@@ -50,15 +52,15 @@ graph TD
     Execute --> End
     Reject --> Start
 
-    Note1["Transition Table:<br/>State + Event -> Next State"]
-    Note2["Guards:<br/>Additional conditions<br/>for transitions"]
+    Note1["Transition Table:<br/>State + Event -><br/>Next State"]
+    Note2["Guards:<br/>Additional<br/>conditions<br/>for transitions"]
     Note3["Actions:<br/>Side effects during<br/>transition"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ## Basic FSM Implementation
@@ -68,6 +70,8 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Payment State Machine Visualization
+    accDescr: start moves to Pending on Create payment; Pending moves to Processing on submit; Processing moves to Completed on approve; Processing moves to Failed on reject; Failed moves to Pending on retry; and 2 more links.
     [*] --> Pending: Create payment
     Pending --> Processing: submit
     Processing --> Completed: approve
@@ -226,6 +230,8 @@ function processDonation(state: DonationState): string {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Donation Campaign State Machine
+    accDescr: start moves to Draft on Create campaign; Draft moves to Active on activate; Active moves to Paused on pause; Paused moves to Active on resume; Active moves to Completed on complete; and 5 more links.
     [*] --> Draft: Create campaign
     Draft --> Active: activate
     Active --> Paused: pause
@@ -317,6 +323,8 @@ campaign.transition("pause"); // active -> paused
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: XState Machine Configuration
+    accDescr: Machine Config leads to States; Machine Config leads to Initial State; Machine Config leads to Context Data; States leads to State 1 entry, exit; States leads to State 2 entry, exit; and 3 more links.
     Config["Machine Config"]:::blue --> States["States"]:::orange
     Config --> Initial["Initial State"]:::orange
     Config --> Context["Context Data"]:::orange
@@ -328,10 +336,10 @@ graph TD
     T1 --> Guards["Guards"]
     T1 --> Actions["Actions"]
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
 ```
 
 ### Basic XState Machine
@@ -390,6 +398,8 @@ service.send({ type: "APPROVE" });
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 sequenceDiagram
+    accTitle: Guard and Action Execution Flow
+    accDescr: Event sends Evaluate guard condition to Guard; Guard sends Allow transition to Transition; Transition sends Execute entry actions to Action; Action sends Complete to Transition; Guard sends Block transition to Event.
     participant Event
     participant Guard
     participant Transition
@@ -483,6 +493,8 @@ const donationMachine = createMachine<DonationContext, DonationEvent>({
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 stateDiagram-v2
+    accTitle: Nested State Hierarchy
+    accDescr: start moves to processing; start moves to validating; validating moves to approved; approved moves to disbursing; processing moves to completed; processing moves to failed.
     [*] --> processing
 
     state processing {
@@ -546,6 +558,8 @@ const campaignMachine = createMachine({
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 stateDiagram-v2
+    accTitle: Parallel State Regions
+    accDescr: start moves to parallel_processing; start moves to validation; start moves to fraud_check.
     [*] --> parallel_processing
 
     state parallel_processing {
@@ -561,6 +575,8 @@ The two regions run concurrently and independently. `validation`:
 ```mermaid
 %% Color Palette: Teal #029E73
 stateDiagram-v2
+    accTitle: Parallel State Regions 2
+    accDescr: start moves to validating; validating moves to validated.
     [*] --> validating
     validating --> validated
 ```
@@ -570,6 +586,8 @@ stateDiagram-v2
 ```mermaid
 %% Color Palette: Teal #029E73
 stateDiagram-v2
+    accTitle: Parallel State Regions 3
+    accDescr: start moves to checking; checking moves to cleared.
     [*] --> checking
     checking --> cleared
 ```
@@ -767,6 +785,8 @@ payment.transition({ type: "REFUND" });
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 stateDiagram-v2
+    accTitle: Campaign State Transitions
+    accDescr: start moves to draft; draft moves to active on publish; active moves to paused on pause; paused moves to active on resume; active moves to completed on reach_goal; active moves to cancelled on cancel; and 3 more links.
     [*] --> draft
     draft --> active: publish
     active --> paused: pause

@@ -66,13 +66,15 @@ When should you use type assertions vs validation? This decision tree helps you 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Type Assertion Decision Tree
+    accDescr: Data Source leads to Internal source?; Internal source? leads to Can trust structure? via Yes; Internal source? leads to Use Runtime Validation Zod/io-ts via No; Can trust structure? leads to Type-only change? via Yes; and 3 more links.
     Start["Data Source"]:::blue
     Internal{"Internal<br/>source?"}:::orange
     TrustSource{"Can trust<br/>structure?"}:::orange
     TypeOnly{"Type-only<br/>change?"}:::orange
     UseAssertion["Use Type Assertion<br/>#40;as#41;"]:::teal
-    UseValidation["Use Runtime Validation<br/>#40;Zod/io-ts#41;"]:::purple
-    TypeGuard["Use Type Guard<br/>#40;type predicate#41;"]:::brown
+    UseValidation["Use Runtime<br/>Validation<br/>#40;Zod/io-ts#41;"]:::purple
+    TypeGuard["Use Type Guard<br/>type predicate"]:::brown
 
     Start --> Internal
     Internal -->|Yes| TrustSource
@@ -83,13 +85,13 @@ graph TD
     TypeOnly -->|No| TypeGuard
 
     Note1["External data ALWAYS<br/>requires validation"]
-    Note2["Type assertions bypass<br/>runtime checks"]
+    Note2["Type assertions<br/>bypass<br/>runtime checks"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### Using `any`
@@ -101,15 +103,17 @@ Using `any` creates a ripple effect of type safety erosion throughout your codeb
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: The any Escape Hatch Consequences
+    accDescr: User Input any leads to processDonationdata: any; processDonationdata: any leads to calculateFeeamount: any; calculateFeeamount: any leads to formatCurrencyvalue: any; formatCurrencyvalue: any leads to Runtime Error Uncaught TypeError; and 4 more links.
     Input["User Input<br/>#40;any#41;"]:::blue
-    ProcessA["processDonation(data: any)"]:::orange
-    ProcessB["calculateFee(amount: any)"]:::orange
-    ProcessC["formatCurrency(value: any)"]:::orange
+    ProcessA["processDonation(<br/>data: any)"]:::orange
+    ProcessB["calculateFee(amount:<br/>any)"]:::orange
+    ProcessC["formatCurrency(<br/>value: any)"]:::orange
     Error["Runtime Error<br/>Uncaught TypeError"]:::purple
     SafeInput["Validated Input<br/>#40;Donation#41;"]:::teal
     SafeA["processDonation<br/>(data: Donation)"]:::teal
-    SafeB["calculateFee(amount: number)"]:::teal
-    SafeC["formatCurrency(value: number)"]:::teal
+    SafeB["calculateFee(amount:<br/>number)"]:::teal
+    SafeC["formatCurrency(<br/>value: number)"]:::teal
     CompileError["Compile-time Error<br/>Type mismatch caught"]:::brown
 
     subgraph Unsafe["Type Safety Erosion with any"]
@@ -130,10 +134,10 @@ graph TD
     Note2["Errors caught at<br/>compile time"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ```typescript
@@ -967,9 +971,11 @@ interface DonationFilters {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Error Handling Decision Flow
+    accDescr: Error Occurs leads to Can You Recover?; Can You Recover? leads to Handle Gracefully retry, default value via Yes; Can You Recover? leads to Need to Add Context? via No; and 8 more links.
     A["Error Occurs"]:::blue --> B{"Can You<br/>Recover?"}:::orange
 
-    B -->|"Yes"| C["Handle Gracefully<br/>(retry, default value)"]:::teal
+    B -->|"Yes"| C["Handle Gracefully<br/>retry, default value"]:::teal
     B -->|"No"| D{"Need to Add<br/>Context?"}:::orange
 
     D -->|"Yes"| E["Wrap Error<br/>(custom error class)"]:::purple
@@ -986,11 +992,11 @@ graph TD
 
     Note["❌ NEVER:<br/>Silent failures,<br/>Generic messages,<br/>Excessive try-catch"]
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#000
-    classDef brown fill:#CA9161,stroke:#000,color:#000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000
 ```
 
 **Key Principles**:
@@ -1714,6 +1720,8 @@ Compare different async patterns from worst to best for handling donation proces
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Promise Pattern Comparison
+    accDescr: App sends fetchDonationid, callback to Fetch; Fetch sends callbackerr1, donation to App; App sends validateDonationdonation, callback to Validate; Validate sends callbackerr2, valid to App; App sends saveDonationvalid, callback to Save; and 13 more links.
     participant App
     participant Fetch as fetchDonation
     participant Validate as validateDonation
@@ -1782,6 +1790,8 @@ Shared mutable state creates conflicts and unpredictable behaviour in concurrent
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Mutable State Management Problems
+    accDescr: start moves to Clean on Initial State; Clean moves to Modified1 on User A modifies; Clean moves to Modified2 on User B modifies; Modified1 moves to Conflict on User B overwrites; and 11 more links.
     [*] --> Clean: Initial State
     Clean --> Modified1: User A modifies
     Clean --> Modified2: User B modifies
@@ -1918,13 +1928,15 @@ Abstraction is powerful but can be harmful when overdone. This flowchart helps d
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Over-Abstraction Detection
+    accDescr: Adding Abstraction leads to More than 2 use cases?; More than 2 use cases? leads to Keep It Simple No abstraction needed via No; and 7 more links.
     Start["Adding Abstraction"]:::blue
     Q1{"More than<br/>2 use cases?"}:::orange
     Q2{"Reduces<br/>duplication?"}:::orange
     Q3{"Simplifies<br/>code?"}:::orange
     Q4{"Easy to<br/>understand?"}:::orange
 
-    KeepSimple["Keep It Simple<br/>No abstraction needed"]:::teal
+    KeepSimple["Keep It Simple<br/>No abstraction<br/>needed"]:::teal
     GoodAbstraction["Good Abstraction<br/>Proceed"]:::teal
     Refactor["Refactor<br/>Simplify abstraction"]:::brown
     OverAbstraction["Over-Abstraction<br/>Harmful complexity"]:::purple
@@ -1939,13 +1951,13 @@ graph TD
     Q4 -->|No| Refactor
     Q4 -->|Yes| GoodAbstraction
 
-    Warning["Warning Signs:<br/>- Generic names (Manager)<br/>- Many type parameters;<br/>- Callback inception;<br/>- Harder than duplicating code"]
+    Warning["Warning Signs:<br/>- Generic names<br/>(Manager)<br/>- Many type<br/>parameters;<br/>- Callback<br/>inception;<br/>- Harder than<br/>duplicating code"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
 ```
 
 ### God Object

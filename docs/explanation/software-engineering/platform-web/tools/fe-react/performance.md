@@ -46,6 +46,8 @@ Render and bundle optimization strategies:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Performance Optimization Strategy
+    accDescr: Performance Issue? leads to Identify Problem; Identify Problem leads to Memoization via Slow Renders; Identify Problem leads to Code Splitting via Large Bundle; Memoization leads to React.memo; Memoization leads to useMemo; and 4 more links.
     A[Performance Issue?] --> B{Identify Problem}
 
     B -->|Slow Renders| C[Memoization]
@@ -57,13 +59,14 @@ graph LR
 
     D --> J[React.lazy]
     D --> K[Dynamic Import]
-    D --> L[Route-Based Splitting]
+    D --> L[Route-Based<br/>Splitting]
 
-    style A fill:#0173B2
-    style C fill:#029E73
-    style D fill:#DE8F05
-    style G fill:#029E73
-    style J fill:#DE8F05
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    class A blue
+    class C,G teal
+    class D,J orange
 ```
 
 List and computation optimization strategies:
@@ -73,6 +76,8 @@ List and computation optimization strategies:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Performance Optimization Strategy 2
+    accDescr: Performance Issue? leads to Identify Problem; Identify Problem leads to Virtualization via Long Lists; Identify Problem leads to Web Workers via Heavy Computation; Virtualization leads to react-window; Virtualization leads to react-virtualized; and 2 more links.
     A[Performance Issue?] --> B{Identify Problem}
 
     B -->|Long Lists| E[Virtualization]
@@ -82,12 +87,14 @@ graph LR
     E --> N[react-virtualized]
 
     F --> O[Offload to Worker]
-    F --> P[Process in Background]
+    F --> P[Process in<br/>Background]
 
-    style A fill:#0173B2
-    style E fill:#CC78BC
-    style F fill:#DE8F05
-    style M fill:#CC78BC
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    class A blue
+    class E,M purple
+    class F orange
 ```
 
 **Optimization Tools**:

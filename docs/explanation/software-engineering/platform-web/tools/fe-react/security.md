@@ -45,16 +45,18 @@ Cross-Site Scripting (XSS) prevention follows multiple defensive layers:
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: XSS Prevention
+    accDescr: User Input leads to Input Type?; Input Type? leads to React Auto-Escape via Plain Text; Input Type? leads to Sanitize with DOMPurify via HTML Content; Input Type? leads to Validate URL via URL; and 13 more links.
     A[User Input] --> B{Input Type?}
 
     B -->|Plain Text| C[React Auto-Escape]
-    B -->|HTML Content| D[Sanitize with DOMPurify]
+    B -->|HTML Content| D[Sanitize with<br/>DOMPurify]
     B -->|URL| E[Validate URL]
 
     C --> F[Render Safely]
 
     D --> G{Sanitized?}
-    G -->|Yes| H[dangerouslySetInnerHTML]
+    G -->|Yes| H[dangerously<br/>SetInnerHTML]
     G -->|No| I[Reject]
 
     E --> J{Valid Protocol?}
@@ -67,16 +69,15 @@ graph TD
     I --> M[Log Security Event]
     L --> M
 
-    F --> N[Content Security Policy]
-    N --> O[XSS Protection Headers]
+    F --> N[Content Security<br/>Policy]
+    N --> O[XSS Protection<br/>Headers]
 
-    style A fill:#0173B2
-    style C fill:#029E73
-    style D fill:#DE8F05
-    style F fill:#029E73
-    style I fill:#DE8F05
-    style L fill:#DE8F05
-    style O fill:#029E73
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    class A blue
+    class C,F,O teal
+    class D,I,L orange
 ```
 
 **XSS Defense Layers**:

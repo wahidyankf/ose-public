@@ -1,0 +1,584 @@
+#!/bin/sh
+# The repository's bootstrap for the independently released RHINO executable.
+#
+# A documented fork of the sibling `./hippo` bootstrap. The two tools are
+# unrelated, but the problem their consumers have is identical -- install a
+# pinned, checksummed release exactly once into a cache several checkouts on
+# one machine share -- and that problem was already solved next door. What is
+# preserved is every safety property: lock validation, the platform matrix,
+# warm-cache digest and identity verification, install serialization, live-owner
+# identity checks, release claims, and bounded retention.
+#
+# What differs, and why:
+#
+#   * Platforms are Rust target triples, because that is how RHINO names its
+#     release assets.
+#   * There is no repository-local policy file to point the executable at.
+#     RHINO reads `repo-config.yml` from the root of the repository it is
+#     inspecting and holds no runtime configuration of its own.
+#   * The argument vector is passed through untouched. Nothing here knows what
+#     RHINO's commands are, and nothing here should have to be edited when it
+#     gains one.
+#
+# Neither wrapper may reach the other's state: they resolve separate cache
+# roots, separate install guards, separate locks, and separate assets. That is
+# asserted by `specs/tools/rhino-consumer/behaviours/rhino-bootstrap.feature`
+# rather than left to review.
+set -eu
+
+# This wrapper reads no argument of its own: every one is forwarded. It once
+# read `--bootstrap-exec`, which resolved the release and then ran the caller's
+# command with `RHINO_BIN` naming the verified executable, so that a gate of
+# several checks paid the resolution once rather than once per check. The gate
+# surfaces declared in `repo-config.yml` are dispatched by the executable
+# itself, which is a resolve-once of its own, and nothing calls the flag any
+# more. A warm resolution costs about a tenth of a second; six of them cost the
+# same as the one parallel run the flag bought.
+
+tool_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
+lock_file="$tool_dir/rhino.lock"
+
+# Every lock key must resolve exactly once. Ambiguous pins fail as invalid
+# configuration before any network or cache operation occurs.
+lock_value() {
+	key=$1
+	value=$(awk -F= -v key="$key" '$1 == key { print substr($0, index($0, "=") + 1) }' "$lock_file")
+	case "$value" in
+	'' | *'
+'*)
+		echo "rhino lock has missing or duplicate $key" >&2
+		exit 78
+		;;
+	esac
+	printf '%s\n' "$value"
+}
+
+# Pin both release identity and source commit so a correctly checksummed asset
+# still cannot impersonate a different build.
+version=$(lock_value version)
+commit=$(lock_value commit)
+if ! printf '%s\n' "$version" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+	echo "rhino lock has an invalid version" >&2
+	exit 78
+fi
+case "$commit" in
+*[!0-9a-f]* | '')
+	echo "rhino lock has an invalid commit" >&2
+	exit 78
+	;;
+esac
+if [ "${#commit}" -ne 40 ]; then
+	echo "rhino lock has an invalid commit" >&2
+	exit 78
+fi
+expected_identity="{\"schemaVersion\":1,\"version\":\"$version\",\"commit\":\"$commit\"}"
+
+# Normalize only the platform matrix published by the upstream release job. A
+# host outside it has no asset to fetch, so it is refused here rather than by a
+# download that would surface as a transport failure a caller keeps retrying.
+case "$(uname -s)" in
+Darwin) target_system=apple-darwin ;;
+Linux) target_system=unknown-linux-gnu ;;
+*)
+	echo "rhino does not support this operating system" >&2
+	exit 78
+	;;
+esac
+case "$(uname -m)" in
+x86_64 | amd64) target_machine=x86_64 ;;
+arm64 | aarch64) target_machine=aarch64 ;;
+*)
+	echo "rhino does not support this architecture" >&2
+	exit 78
+	;;
+esac
+# A Rust target triple: the name the release asset is published under, and the
+# name the lock pins a checksum against.
+target="$target_machine-$target_system"
+
+checksum=$(lock_value "$target")
+case "$checksum" in
+*[!0-9a-f]* | '')
+	echo "rhino lock has an invalid checksum" >&2
+	exit 78
+	;;
+esac
+if [ "${#checksum}" -ne 64 ]; then
+	echo "rhino lock has an invalid checksum" >&2
+	exit 78
+fi
+
+# Keep downloaded binaries outside the repository by default. Tests may point
+# at an isolated cache without weakening checksum verification.
+if [ -n "${RHINO_INSTALL_CACHE:-}" ]; then
+	cache_root=$RHINO_INSTALL_CACHE
+elif [ "$target_system" = apple-darwin ]; then
+	cache_root=${XDG_CACHE_HOME:-"$HOME/Library/Caches"}/rhino
+else
+	cache_root=${XDG_CACHE_HOME:-"$HOME/.cache"}/rhino
+fi
+
+binary_dir="$cache_root/$version/$target"
+binary="$binary_dir/rhino"
+binary_digest="$binary.sha256"
+install_lock="$binary_dir.lock"
+
+hash_file() {
+	if command -v sha256sum >/dev/null 2>&1; then
+		sha256sum "$1" | awk '{print $1}'
+	else
+		shasum -a 256 "$1" | awk '{print $1}'
+	fi
+}
+
+hash_stream() {
+	if command -v sha256sum >/dev/null 2>&1; then
+		sha256sum | awk '{print $1}'
+	else
+		shasum -a 256 | awk '{print $1}'
+	fi
+}
+
+valid_sha256() {
+	case "$1" in
+	*[!0-9a-f]* | '') return 1 ;;
+	esac
+	[ "${#1}" -eq 64 ]
+}
+
+binary_identity_is_valid() {
+	identity=$("$1" version --json 2>/dev/null) || return 1
+	[ "$identity" = "$expected_identity" ]
+}
+
+cached_binary_is_valid() {
+	[ -x "$binary" ] && [ -f "$binary_digest" ] || return 1
+	cached_digest=$(sed -n '1p' "$binary_digest" 2>/dev/null || true)
+	valid_sha256 "$cached_digest" || return 1
+	[ "$(hash_file "$binary")" = "$cached_digest" ] || return 1
+	binary_identity_is_valid "$binary"
+}
+
+process_identity() {
+	process_start=$(LC_ALL=C ps -o lstart= -p "$1" 2>/dev/null | awk '{$1=$1; print; exit}')
+	[ -n "$process_start" ] || return 1
+	printf '%s\n' "$process_start" | hash_stream
+}
+
+# A platform branch rather than a fallback chain: the BSD form means
+# "filesystem status" to GNU coreutils, which writes a block of filesystem
+# detail to standard output before failing on the format operand, so a chained
+# `|| stat -c` would rank releases by that prose instead of by time -- and only
+# on Linux, where the first form does not simply succeed.
+file_identity() {
+	if [ "$target_system" = apple-darwin ]; then
+		stat -f '%d:%i' "$1" 2>/dev/null
+	else
+		stat -c '%d:%i' "$1" 2>/dev/null
+	fi
+}
+
+file_modified_epoch() {
+	if [ "$target_system" = apple-darwin ]; then
+		stat -f '%m' "$1" 2>/dev/null
+	else
+		stat -c '%Y' "$1" 2>/dev/null
+	fi
+}
+
+release_claim_record=
+install_owner_record=
+install_owner_record_digest=
+install_owner_file_identity=
+install_owner_published=
+install_guard_open=
+
+# Every consumer repository ships its own copy of this wrapper, and on one
+# machine they all resolve to the same cache root. A consumer therefore
+# publishes a claim on its pinned release before contending for anything, so a
+# peer's retention pass can see the release is in use. The claim names the
+# owning PID and its process-start digest, and it deliberately outlives the
+# exec below: exec preserves both, so the claim stays truthful for as long as
+# the release is actually running.
+publish_release_claim() {
+	claim_pid=$$
+	claim_identity=$(process_identity "$claim_pid" || true)
+	if [ -z "$claim_identity" ]; then
+		echo "rhino bootstrap cannot establish its release claim identity" >&2
+		exit 78
+	fi
+	release_claim_record=$(mktemp "$cache_root/$version/.release-claim.$claim_pid.$claim_identity.XXXXXX")
+	chmod 600 "$release_claim_record"
+	printf '%s\n%s\n' "$claim_pid" "$claim_identity" >"$release_claim_record"
+}
+
+# A claim is readable entirely from its file name, which mktemp publishes in
+# one atomic step. A peer that is mid-publication is therefore already visible
+# as live, and a claim whose owner died is reclaimed here under the guard.
+release_is_claimed() {
+	claim_found=
+	for claim_record in "$1"/.release-claim.*; do
+		[ -f "$claim_record" ] && [ ! -L "$claim_record" ] || continue
+		claim_name=${claim_record##*/}
+		claim_fields=${claim_name#.release-claim.}
+		claim_pid=${claim_fields%%.*}
+		claim_remainder=${claim_fields#*.}
+		[ "$claim_remainder" != "$claim_fields" ] || continue
+		claim_identity=${claim_remainder%%.*}
+		case "$claim_pid" in
+		'' | *[!0-9]*) continue ;;
+		esac
+		valid_sha256 "$claim_identity" || continue
+		lock_pid=$claim_pid
+		lock_identity=$claim_identity
+		if lock_owner_is_stale; then
+			rm -f -- "$claim_record"
+			continue
+		fi
+		claim_found=1
+	done
+	[ -n "$claim_found" ]
+}
+
+acquire_install_guard() {
+	# Retention walks the whole cache root, so its guard must too. A guard
+	# scoped to one platform cannot serialize a prune against a peer install.
+	guard_path="$cache_root/.install-guard.lock"
+	exec 9>"$guard_path"
+	chmod 600 "$guard_path"
+	install_guard_open=1
+
+	if [ "$target_system" = apple-darwin ]; then
+		if ! command -v lockf >/dev/null 2>&1; then
+			echo "rhino bootstrap requires lockf on Darwin" >&2
+			exit 78
+		fi
+		if lockf -t 300 9; then
+			return 0
+		fi
+	else
+		if ! command -v flock >/dev/null 2>&1; then
+			echo "rhino bootstrap requires flock on Linux" >&2
+			exit 78
+		fi
+		if flock -E 75 -w 300 9; then
+			return 0
+		fi
+	fi
+
+	echo "rhino bootstrap timed out waiting for its install guard" >&2
+	exit 75
+}
+
+release_install_guard() {
+	if [ -n "$install_guard_open" ]; then
+		exec 9>&-
+		install_guard_open=
+	fi
+}
+
+release_install_lock() {
+	if [ -n "$install_owner_published" ] && [ -f "$install_lock" ] && [ ! -L "$install_lock" ]; then
+		published_identity=$(file_identity "$install_lock" || true)
+		published_digest=$(hash_file "$install_lock" 2>/dev/null || true)
+		if [ "$published_identity" = "$install_owner_file_identity" ] &&
+			[ "$published_digest" = "$install_owner_record_digest" ]; then
+			rm -f -- "$install_lock"
+		fi
+	fi
+	if [ -n "$install_owner_record" ]; then
+		rm -f -- "$install_owner_record"
+	fi
+	install_owner_published=
+}
+
+lock_owner_is_stale() {
+	case "$lock_pid" in
+	'' | *[!0-9]*) return 1 ;;
+	esac
+	if ! kill -0 "$lock_pid" 2>/dev/null; then
+		return 0
+	fi
+	valid_sha256 "$lock_identity" || return 1
+	live_identity=$(process_identity "$lock_pid" || true)
+	[ -n "$live_identity" ] && [ "$lock_identity" != "$live_identity" ]
+}
+
+reclaim_orphan_install_records() {
+	now=$(date +%s)
+	case "$now" in
+	'' | *[!0-9]*) return ;;
+	esac
+
+	for orphan_record in "$cache_root/$version"/.install-owner.*; do
+		[ -f "$orphan_record" ] && [ ! -L "$orphan_record" ] || continue
+		orphan_name=${orphan_record##*/}
+		orphan_fields=${orphan_name#.install-owner.}
+		orphan_pid=${orphan_fields%%.*}
+		orphan_remainder=${orphan_fields#*.}
+		[ "$orphan_remainder" != "$orphan_fields" ] || continue
+		orphan_identity=${orphan_remainder%%.*}
+		orphan_nonce=${orphan_remainder#*.}
+		[ "$orphan_nonce" != "$orphan_remainder" ] || continue
+		case "$orphan_pid" in
+		'' | *[!0-9]*) continue ;;
+		esac
+		valid_sha256 "$orphan_identity" || continue
+		case "$orphan_nonce" in
+		'' | *[!A-Za-z0-9]*) continue ;;
+		esac
+
+		observed_modified=$(file_modified_epoch "$orphan_record" || true)
+		case "$observed_modified" in
+		'' | *[!0-9]*) continue ;;
+		esac
+		[ "$observed_modified" -le "$now" ] || continue
+		orphan_age=$((now - observed_modified))
+		[ "$orphan_age" -ge 300 ] || continue
+
+		# Age only bounds abandoned-file retention; it never proves staleness.
+		# The PID must be dead or its live process-start digest must differ.
+		lock_pid=$orphan_pid
+		lock_identity=$orphan_identity
+		lock_owner_is_stale || continue
+
+		observed_file_identity=$(file_identity "$orphan_record" || true)
+		observed_record_digest=$(hash_file "$orphan_record" 2>/dev/null || true)
+		confirmed_file_identity=$(file_identity "$orphan_record" || true)
+		confirmed_record_digest=$(hash_file "$orphan_record" 2>/dev/null || true)
+		confirmed_modified=$(file_modified_epoch "$orphan_record" || true)
+		if [ -n "$observed_file_identity" ] && [ "$confirmed_file_identity" = "$observed_file_identity" ] &&
+			[ -n "$observed_record_digest" ] && [ "$confirmed_record_digest" = "$observed_record_digest" ] &&
+			[ "$confirmed_modified" = "$observed_modified" ]; then
+			rm -f -- "$orphan_record"
+		fi
+	done
+}
+
+reclaim_legacy_install_lock() {
+	observed_file_identity=$(file_identity "$install_lock" || true)
+	lock_pid=$(sed -n '1p' "$install_lock/pid" 2>/dev/null || true)
+	lock_identity=$(sed -n '1p' "$install_lock/identity" 2>/dev/null || true)
+
+	# An empty legacy mkdir lock contains no published owner. Atomic rmdir is
+	# safe even if an older bootstrap is between mkdir and its first write: that
+	# writer then fails closed under set -e instead of running concurrently.
+	if [ ! -e "$install_lock/pid" ] && [ ! -e "$install_lock/identity" ]; then
+		confirmed_file_identity=$(file_identity "$install_lock" || true)
+		if [ -n "$observed_file_identity" ] && [ "$confirmed_file_identity" = "$observed_file_identity" ]; then
+			if rmdir "$install_lock" 2>/dev/null; then
+				return 0
+			fi
+		fi
+		return 1
+	fi
+
+	lock_owner_is_stale || return 1
+	confirmed_file_identity=$(file_identity "$install_lock" || true)
+	confirmed_pid=$(sed -n '1p' "$install_lock/pid" 2>/dev/null || true)
+	confirmed_identity=$(sed -n '1p' "$install_lock/identity" 2>/dev/null || true)
+	if [ -n "$observed_file_identity" ] && [ "$confirmed_file_identity" = "$observed_file_identity" ] &&
+		[ "$confirmed_pid" = "$lock_pid" ] && [ "$confirmed_identity" = "$lock_identity" ]; then
+		rm -f -- "$install_lock/identity" "$install_lock/pid"
+		if rmdir "$install_lock" 2>/dev/null; then
+			return 0
+		fi
+	fi
+	return 1
+}
+
+reclaim_atomic_install_lock() {
+	[ -f "$install_lock" ] && [ ! -L "$install_lock" ] || return 1
+	observed_file_identity=$(file_identity "$install_lock" || true)
+	observed_record_digest=$(hash_file "$install_lock" 2>/dev/null || true)
+	lock_pid=$(sed -n '1p' "$install_lock" 2>/dev/null || true)
+	lock_identity=$(sed -n '2p' "$install_lock" 2>/dev/null || true)
+	expected_record_digest=$(printf '%s\n%s\n' "$lock_pid" "$lock_identity" | hash_stream)
+	[ "$observed_record_digest" = "$expected_record_digest" ] || return 1
+	lock_owner_is_stale || return 1
+
+	# Every current wrapper holds the per-release kernel install guard across
+	# reclamation and publication. The identity reread additionally protects
+	# compatibility with an older wrapper that does not know that guard.
+	confirmed_file_identity=$(file_identity "$install_lock" || true)
+	confirmed_record_digest=$(hash_file "$install_lock" 2>/dev/null || true)
+	if [ -n "$observed_file_identity" ] && [ "$confirmed_file_identity" = "$observed_file_identity" ] &&
+		[ -n "$observed_record_digest" ] && [ "$confirmed_record_digest" = "$observed_record_digest" ]; then
+		if rm -f -- "$install_lock"; then
+			return 0
+		fi
+	fi
+	return 1
+}
+
+acquire_install_lock() {
+	attempts=0
+	install_owner_pid=$$
+	install_owner_identity=$(process_identity "$install_owner_pid" || true)
+	if [ -z "$install_owner_identity" ]; then
+		echo "rhino bootstrap cannot establish its install-lock identity" >&2
+		exit 78
+	fi
+
+	install_owner_record=$(mktemp "$cache_root/$version/.install-owner.$install_owner_pid.$install_owner_identity.XXXXXX")
+	trap 'release_install_lock' EXIT HUP INT TERM
+	chmod 600 "$install_owner_record"
+	printf '%s\n%s\n' "$install_owner_pid" "$install_owner_identity" >"$install_owner_record"
+	install_owner_record_digest=$(hash_file "$install_owner_record")
+	install_owner_file_identity=$(file_identity "$install_owner_record")
+
+	# A hard link publishes a complete immutable record atomically. Existing
+	# directory locks are interpreted only for compatibility with older wrappers.
+	while :; do
+		if [ -L "$install_lock" ]; then
+			:
+		elif [ -d "$install_lock" ]; then
+			if reclaim_legacy_install_lock; then
+				continue
+			fi
+		elif [ -e "$install_lock" ]; then
+			if reclaim_atomic_install_lock; then
+				continue
+			fi
+		elif ln "$install_owner_record" "$install_lock" 2>/dev/null; then
+			published_identity=$(file_identity "$install_lock" || true)
+			published_digest=$(hash_file "$install_lock" 2>/dev/null || true)
+			if [ "$published_identity" != "$install_owner_file_identity" ] ||
+				[ "$published_digest" != "$install_owner_record_digest" ]; then
+				echo "rhino bootstrap could not publish its install-lock identity" >&2
+				exit 78
+			fi
+			install_owner_published=1
+			return 0
+		fi
+
+		attempts=$((attempts + 1))
+		if [ "$attempts" -ge 300 ]; then
+			echo "rhino bootstrap timed out waiting for its install lock" >&2
+			exit 75
+		fi
+		sleep 1
+	done
+}
+
+# A cache root is shared by every consumer repository on the machine, so a
+# fixed "keep three" budget evicts releases other repositories are still pinned
+# to and forces them to re-download on their next run. Idleness, not rank,
+# decides what is reclaimable; the ranked budget applies only to idle releases.
+retention_idle_seconds=604800
+
+prune_cache() {
+	now=$(date +%s)
+	case "$now" in
+	'' | *[!0-9]*) return ;;
+	esac
+	inventory=$(mktemp "$cache_root/.retention.XXXXXX")
+	trap 'rm -f -- "$inventory"' EXIT HUP INT TERM
+	for candidate_path in "$cache_root"/v*; do
+		[ -d "$candidate_path" ] || continue
+		candidate=${candidate_path##*/}
+		case "$candidate" in
+		v[0-9]*.[0-9]*.[0-9]*) ;;
+		*) continue ;;
+		esac
+		# A release another live consumer has claimed is never a candidate,
+		# whatever the retention budget would otherwise allow.
+		if release_is_claimed "$candidate_path"; then
+			continue
+		fi
+		modified=$(file_modified_epoch "$candidate_path")
+		# Never date a release whose timestamp is unreadable, and never reclaim
+		# one used inside the idle window: it is still in service for some other
+		# repository even though no consumer happens to be running right now.
+		case "$modified" in
+		'' | *[!0-9]*) continue ;;
+		esac
+		if [ "$((now - modified))" -lt "$retention_idle_seconds" ]; then
+			continue
+		fi
+		printf '%s %s\n' "$modified" "$candidate" >>"$inventory"
+	done
+	# Retain the pinned release plus two recent fallbacks. Candidate directory
+	# names are validated as versions before recursive removal is possible.
+	recent=0
+	LC_ALL=C sort -rn "$inventory" | while IFS=' ' read -r _ candidate; do
+		[ -n "$candidate" ] || continue
+		if [ "$candidate" = "$version" ]; then
+			continue
+		fi
+		recent=$((recent + 1))
+		if [ "$recent" -gt 2 ]; then
+			rm -rf -- "${cache_root:?}/$candidate"
+		fi
+	done
+	rm -f -- "$inventory"
+	trap - EXIT HUP INT TERM
+}
+
+mkdir -p "$cache_root/$version"
+publish_release_claim
+acquire_install_guard
+reclaim_orphan_install_records
+# Claims outlive their owner by design, so every guarded run also clears the
+# ones whose owner is gone from its own release directory.
+release_is_claimed "$cache_root/$version" || true
+installed_release=
+
+if ! cached_binary_is_valid; then
+	acquire_install_lock
+	trap 'release_install_lock' EXIT HUP INT TERM
+	if ! cached_binary_is_valid; then
+		# Download into the same cache filesystem, verify the pinned archive and
+		# embedded identity, then publish the executable with two atomic renames.
+		temporary_dir=$(mktemp -d "$cache_root/.install.XXXXXX")
+		trap 'rm -rf -- "$temporary_dir"; release_install_lock' EXIT HUP INT TERM
+		asset="rhino-$target.tar.gz"
+		base_url=${RHINO_DOWNLOAD_BASE_URL:-"https://github.com/wahidyankf/rhino/releases/download/$version"}
+		archive="$temporary_dir/$asset"
+		curl --fail --location --silent --show-error --retry 3 --output "$archive" "$base_url/$asset"
+		if [ "$(hash_file "$archive")" != "$checksum" ]; then
+			echo "rhino release checksum mismatch" >&2
+			exit 78
+		fi
+		if [ "$(tar -tzf "$archive")" != rhino ]; then
+			echo "rhino release archive has an invalid inventory" >&2
+			exit 78
+		fi
+		tar -xzf "$archive" -C "$temporary_dir" rhino
+		chmod 700 "$temporary_dir/rhino"
+		if ! binary_identity_is_valid "$temporary_dir/rhino"; then
+			echo "rhino release identity does not match its lock" >&2
+			exit 78
+		fi
+		hash_file "$temporary_dir/rhino" >"$temporary_dir/rhino.sha256"
+		mkdir -p "$binary_dir"
+		mv "$temporary_dir/rhino" "$binary.tmp.$$"
+		mv "$temporary_dir/rhino.sha256" "$binary_digest.tmp.$$"
+		mv "$binary.tmp.$$" "$binary"
+		mv "$binary_digest.tmp.$$" "$binary_digest"
+		rm -rf -- "$temporary_dir"
+		installed_release=1
+	fi
+	release_install_lock
+	trap - EXIT HUP INT TERM
+fi
+# Retention mutates the shared cache root, so it runs while the guard is still
+# held and only one consumer prunes at a time. What keeps it off a release a
+# peer is publishing is that peer's claim, published before it took the guard.
+if [ -n "$installed_release" ]; then
+	prune_cache
+fi
+release_install_guard
+
+# `exec` rather than a call, and that is load-bearing rather than tidy: the
+# release claim published above names this process, and exec preserves both the
+# PID and its start time, so the claim stays truthful for exactly as long as the
+# work runs. A forked child would leave the claim owned by a process that had
+# already exited, and a peer's retention pass would be free to reclaim a release
+# still in use.
+
+# The vector goes through untouched. Nothing above knows what the commands are,
+# and a repository that wants a narrower invocation says so at the call site
+# rather than here -- a wrapper that edited the vector would be a second place
+# where the command surface is written down, and the two would drift.
+exec "$binary" "$@"

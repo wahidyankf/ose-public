@@ -1,0 +1,51 @@
+name: RHINO Consumer Smoke
+
+on:
+  # The same boundary as the HIPPO consumer smoke: every change to the pinned
+  # RHINO bootstrap is proved on both operating systems before it merges, and
+  # the schedule re-installs the pin from an empty cache so a withdrawn or
+  # altered release asset surfaces here rather than in a contributor's hook.
+  pull_request:
+    paths:
+      - rhino
+      - rhino.lock
+      - .github/scripts/test-rhino-bootstrap.sh
+      - .github/workflows/rhino-consumer-smoke.yml
+  schedule:
+    - cron: "0 6,18 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rhino-consumer-smoke-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  consumer:
+    name: Consumer (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      # Hermetic: every scenario installs from local fixture releases into its
+      # own temporary cache, so this step proves the bootstrap's locking,
+      # verification, and retention without reaching the network.
+      - name: Verify the bootstrap contract
+        run: ./.github/scripts/test-rhino-bootstrap.sh
+
+      # The wrapper refuses to run a binary whose digest or reported identity
+      # differs from rhino.lock, so a successful identity call is the proof.
+      - name: Install and identify the pinned release
+        env:
+          RHINO_INSTALL_CACHE: ${{ runner.temp }}/rhino-cache
+        run: ./rhino version --json

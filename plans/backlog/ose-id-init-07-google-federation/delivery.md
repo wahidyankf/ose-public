@@ -511,7 +511,7 @@ Mailpit SMTP 1026/UI `http://127.0.0.1:8026`, and fake Google 8502 via
 `OSE_ID_FAKE_GOOGLE_PORT`. In the browser, `browser_navigate` to the web URL, `browser_snapshot`,
 `browser_click` Continue with Google, and drive fake subjects `google-subject-new-001` /
 `google.new.user@example.test` and `google-subject-existing-001` /
-`already.local@example.test`. Use `browser_fill_form` for the fake-provider choice, then inspect
+`already-linked@example.test`. Use `browser_fill_form` for the fake-provider choice, then inspect
 `browser_console_messages`, `browser_network_requests`, and storage through `browser_evaluate`; expected
 return is the allowlisted OSE URL with 2xx/3xx flow status, only an opaque HttpOnly OSE cookie, and no
 provider/OSE token, code, nonce, subject, or assertion in URL/localStorage/sessionStorage. Capture

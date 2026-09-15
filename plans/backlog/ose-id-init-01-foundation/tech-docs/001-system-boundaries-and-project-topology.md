@@ -89,12 +89,12 @@ code that has no domain behavior.
 flowchart TD
   accTitle: OSE ID backend hexagonal boundary
   accDescr: Plan 01 REST health and later Plan 04 OIDC adapters enter the same application boundary. Future GraphQL resolvers and Model Context Protocol tools may reuse it. Application and domain policy call outbound ports implemented by infrastructure adapters.
-  REST["REST health; OIDC later"] --> APP["Use cases and ports"]
-  GQL["GraphQL adapter future"] -.-> APP
+  REST["REST + OIDC"] --> APP["Use cases and ports"]
+  GQL["Future GraphQL"] -.-> APP
   MCP["Future MCP adapter"] -.-> APP
-  APP --> DOM["Domain model and policies"]
+  APP --> DOM["Domain policies"]
   APP --> OUT["Outbound ports"]
-  OUT --> INF["Data email provider adapters"]
+  OUT --> INF["Data and providers"]
 
   classDef current fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
   classDef future fill:#808080,stroke:#000000,color:#000000,stroke-width:2px

@@ -118,7 +118,7 @@ Cache-Control: private, no-store
 WWW-Authenticate: Bearer
 
 {
-  "type": "https://errors.ose.local/invalid-access-token",
+  "type": "urn:ose:lms:problem:invalid-access-token",
   "title": "Authentication required",
   "status": 401,
   "code": "invalid_access_token"
@@ -299,7 +299,7 @@ Content-Type: application/problem+json
 Cache-Control: private, no-store
 
 {
-  "type": "https://errors.ose.local/authentication-required",
+  "type": "urn:ose:lms:problem:authentication-required",
   "title": "Authentication required",
   "status": 401,
   "code": "authentication_required"

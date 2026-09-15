@@ -46,7 +46,7 @@ Feature: Google federation backend
       And provider tokens never become OSE session state
 
     Scenario: Matching email does not auto-link
-      Given an OSE Person and an unlinked Google subject share already.local@example.test
+      Given an OSE Person and an unlinked Google subject share already-linked@example.test
       When the Google subject completes first sign-in
       Then OSE ID does not attach the provider to the existing Person by email
       And an explicit safe account path is required

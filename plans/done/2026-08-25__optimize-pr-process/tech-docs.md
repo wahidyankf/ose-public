@@ -105,9 +105,9 @@ historical receipts and are deliberately absent from this active file-impact tre
 `plans/ideas/q2-not-urgent-important/merge-queue-adoption.md`, plus their PR #281 backlink repair,
 are historical evidence only and are never re-admitted.
 
-### External Repository — `ose-private` (Record Only; No Edit Authority)
+### External Repository — the private sibling (Record Only; No Edit Authority)
 
-`ose-private` is a separate repository and is deliberately outside this public file-impact tree.
+The private sibling is a separate repository and is deliberately outside this public file-impact tree.
 Its own plan, worktree, branch, before-ledger, PR, and explicit deviation record decide any private
 edit. A public PR may record only a sibling obligation and public-safe semantic deviation; neither
 that record nor a public propagation manifest grants private-file authority.
@@ -119,7 +119,7 @@ discovery result. The scheduled `PRE-A1-ADMISSION` plan-only PR is the one expli
 A1/A2/A3/B public paths: it must add each exact source path, every generated mirror (if any), its
 owning unit, and bounded before-ledger to this tree and matching delivery ledger before `PUB-A1`
 starts. PR #289 is public provenance only. Its paired private plan-only `PRIV-ADMISSION` completed
-in [private PR #64](https://github.com/wahidyankf/ose-private/pull/64) at
+in private PR #64 (private, not linked) at
 `db40c969f8c6a554837efab1cf266c8d505c02a6`; it supplied the private-safe counterpart and historically
 released `PRIV-A1`, completed by private PR #65 at `71c8a0f1f318bf856141f1067a31f15f307b7f3b`.
 Neither admission edits a rule. A propagation manifest may recommend placement but cannot itself
@@ -373,7 +373,7 @@ could use reasoned `N/A`, with its applicability condition and proof; a noncondi
 `N/A`. Only uncovered rows read the five plan documents. PR #290 merged at
 `1c916103e75e48c939439d381e8f3ddb9ea3dd54` and its reader receipt, PR #291, at
 `92fb921ac9ea5b875f0a83c7a525d82c8af17e1b`. The later native private-admission receipt merged in
-[private PR #64](https://github.com/wahidyankf/ose-private/pull/64) at
+private PR #64 (private, not linked) at
 `db40c969f8c6a554837efab1cf266c8d505c02a6`, releasing `PRIV-A1` only.
 
 It records every blocker first: zero authorizes ACTIVATE; exactly one proven unique blocker may use the

@@ -120,18 +120,18 @@ verification checklist.
 
 ### `BOUNDARY_PATHS` declares the whole `apps/rhino-cli/src` byte-identical, but per-repo tool extensions already violate it
 
-**Observed**: While propagating the canonical dotnet-channel fix (task #224) into `ose-private`'s
+**Observed**: While propagating the canonical dotnet-channel fix (task #224) into the private sibling's
 `doctor/tools.rs`, a full `diff` against canonical showed far more divergence than the propagated
-delta alone — `ose-private` carries its own extra tool definitions and tests (`install_clang_format`,
-OpenTofu-specific tooling) that canonical does not have, because `ose-private` needs IaC tooling the
+delta alone — the private sibling carries its own extra tool definitions and tests (`install_clang_format`,
+OpenTofu-specific tooling) that canonical does not have, because the private sibling needs IaC tooling the
 other repos don't. `application/parity.rs`'s `BOUNDARY_PATHS` constant declares the entirety of
 `apps/rhino-cli/src` (plus `tests/`, `Cargo.toml`, `Cargo.lock`, `project.json`, `LICENSE`, and the
 Gherkin tree) as byte-identical across all four repos — no carve-out for repo-specific tool
 provisioning. This means `doctor/tools.rs` byte-identity was already structurally unattainable before
 this session's propagation work, independent of anything fixed here.
 
-**Why it matters**: The plan's own Phase 4 tasks (#65-69: "author ose-private gates: section",
-"fold pre-existing local surplus checks into registry") already assume `ose-private` legitimately
+**Why it matters**: The plan's own Phase 4 tasks (#65-69: "author the private sibling gates: section",
+"fold pre-existing local surplus checks into registry") already assume the private sibling legitimately
 extends the tool registry beyond canonical — so the boundary model and the per-repo extension model
 are in tension for this one file. Either `doctor/tools.rs` needs an explicit boundary carve-out (e.g.
 tracking only a canonical _subset_ of tool definitions, with each repo layering its own extensions on
@@ -144,7 +144,7 @@ unpropagated fixes among expected structural differences.
 reconciled)" note in
 [`sdlc-gate-standard.md` § rhino-cli Byte-Identity Boundary](../../../docs/reference/sdlc-gate-standard.md#rhino-cli-byte-identity-boundary)
 (no new disclosure — reuses the "infra-only IaC" framing that document already states publicly for
-`ose-private`). The code-level fix (narrow `BOUNDARY_PATHS` or an accepted-superset comparison mode)
+the private sibling). The code-level fix (narrow `BOUNDARY_PATHS` or an accepted-superset comparison mode)
 is `apps/rhino-cli` work, so per the code-routing rule it is filed as a follow-up idea brief instead
 of landed inline:
 [`rhino-cli-tools-superset-carveout`](../../../plans/ideas/q2-not-urgent-important/rhino-cli-tools-superset-carveout.md)
@@ -152,10 +152,10 @@ of landed inline:
 two directions before a five-document plan is warranted — the correct promotion path per
 `plans/ideas/README.md`).
 
-### PR #22 (ose-private) Cycle 1 CI gate skipped a second time — same outage, worse symptom (webhook throttling, not job cancellation)
+### PR #22 (the private sibling) Cycle 1 CI gate skipped a second time — same outage, worse symptom (webhook throttling, not job cancellation)
 
 **Observed**: After pushing the dotnet-channel propagation fix (`6ff8b1775`, then a retry empty commit
-`099b2a100`) to `ose-private` PR #22, no `pull_request` workflow run was created at all — not queued,
+`099b2a100`) to the private sibling's PR #22, no `pull_request` workflow run was created at all — not queued,
 not cancelled, simply absent (`gh api .../commits/<sha>/status` reported `total_count: 0`). Root cause:
 `githubstatus.com`'s unresolved-incidents feed explicitly stated _"Webhook triggers are currently
 throttled... we are processing approximately 15% of webhooks, so many events such as pushes and pull
@@ -168,21 +168,21 @@ consistent with an ~85% webhook drop rate.
 **Why it matters**: The session's standing `/goal` (user-set) had already generalized the PR #20
 exception into a explicit standing policy for this session — _"if github runner down and blocking the
 PR quality gate, just continue, don't make it a blocker... but keep the pr review cycle"_ — so this
-instance did not require a fresh AskUserQuestion round; it was pre-authorized. `ose-private`'s branch
+instance did not require a fresh AskUserQuestion round; it was pre-authorized. The private sibling's branch
 protection API also 403s with _"Upgrade to GitHub Pro... to enable this feature"_, confirming (as with
 `ose-primer`) that no required-status-check is actually enforced on a free-tier private repo, so no
 admin-override merge is needed later either. The review-cycle discipline itself (scout → specialists →
 synthesis → fixer, 3 full cycles) still runs in full per the standing goal — only the CI-gate
 confirmation step is treated as non-blocking during the outage.
 
-**Home**: routed inline — repo-relevance gate applies (this instance is `ose-private`-sourced), so
+**Home**: routed inline — repo-relevance gate applies (this instance is private-sibling-sourced), so
 only the generalized, repo-agnostic failure signature (webhook-trigger absence, distinct from job
 cancellation) was folded into
 [`ci-blocker-resolution.md` § Operational CI-Availability Exceptions](../../../repo-governance/development/quality/ci-blocker-resolution.md#operational-ci-availability-exceptions)
-— no `ose-private`-specific detail (repo name, PR number, runner-pool identity, branch-protection
+— no private-sibling-specific detail (repo name, PR number, runner-pool identity, branch-protection
 tier) was carried into this `ose-public` document.
 
-### PR #22 (ose-private) Cycle 2 CI gate skipped a third time — same outage, still active hours later
+### PR #22 (the private sibling) Cycle 2 CI gate skipped a third time — same outage, still active hours later
 
 **Observed**: After Cycle 2's fixer pushed `00f153b99` (12 of 13 threads resolved, full local
 verification green — 1353 cargo tests, clippy clean, fmt clean, `gate validate` exit 0, `nx affected`
@@ -200,7 +200,7 @@ needed again; each instance still gets its own live githubstatus.com check befor
 established protocol, rather than assuming the outage is still active from a stale prior check.
 
 **Home**: routed inline — same repo-relevance handling as the entry above; folded into the same
-generalized `ci-blocker-resolution.md` section without carrying any `ose-private`-specific detail
+generalized `ci-blocker-resolution.md` section without carrying any private-sibling-specific detail
 into `ose-public`.
 
 ### GitHub Actions outage resolved between cycles — always re-verify live, never assume still-down
@@ -244,7 +244,7 @@ regenerated — never hand-resolved directly in the generated artifact, even whe
 looks correct, because `gate validate` (or the equivalent drift check) is specifically designed to
 catch exactly that kind of silent divergence.
 
-**Home**: routed inline — repo-relevance gate applies (this instance is `ose-private`-sourced, PR
+**Home**: routed inline — repo-relevance gate applies (this instance is private-sibling-sourced, PR
 #22), so only the generalized mechanism (not the repo name, PR number, or specific `package.json`
 diff) was folded into
 [`pr-merge-protocol.md` § Resolving Merge Conflicts in Generated Files](../../../repo-governance/development/workflow/pr-merge-protocol.md#resolving-merge-conflicts-in-generated-files),
@@ -278,11 +278,11 @@ just a different mechanism. A human with access to the runner host still needs t
 user-writable path in the composite action) to prevent recurrence — flagged as a new `[HUMAN]`
 follow-up, not fixed here since it requires host-level access this session doesn't have.
 
-**Home**: routed inline — repo-relevance gate applies (`ose-private`-sourced); the generalized
+**Home**: routed inline — repo-relevance gate applies (private-sibling-sourced); the generalized
 failure signature ("a generic, identical failure across many otherwise-unrelated matrix legs, traced
 to a shared setup step") was folded into
 [`ci-blocker-resolution.md` § Operational CI-Availability Exceptions](../../../repo-governance/development/quality/ci-blocker-resolution.md#operational-ci-availability-exceptions)
-signature list, alongside the webhook-drop and job-cancellation signatures. No `ose-private`-specific
+signature list, alongside the webhook-drop and job-cancellation signatures. No private-sibling-specific
 detail (repo name, PR number, the `/usr/share/dotnet` path, the runner label) was carried into
 `ose-public`.
 
@@ -290,8 +290,8 @@ detail (repo name, PR number, the `/usr/share/dotnet` path, the runner label) wa
 
 **What changed**: mid-execution, after Phase 4 landed and with Phase 5 (`beaver-nest`) partially
 executed but never pushed, the user directed a permanent scope narrowing: the enforced byte-identity
-boundary drops from `ose-public` + `ose-primer` + `ose-private` + `beaver-nest` to just `ose-public` +
-`ose-private`. Two independent decisions, given together:
+boundary drops from `ose-public` + `ose-primer` + the private sibling + `beaver-nest` to just `ose-public` +
+the private sibling. Two independent decisions, given together:
 
 1. **`beaver-nest` (Phase 5) is cancelled, not deferred.** `beaver-nest` is slated for future
    deprecation and eventual merge into `ose-public`. Real local commits existed in its attached

@@ -236,7 +236,7 @@ technical one, and it is now discharged.
 **What the wait actually bought**, measured against the merged tree: `featureReferences(source,
 literalPattern)` exists to reuse [Repo-grounded — `scripts/behaviour-coverage.mjs:302`],
 `doctorToolInventoryFor (config)` exists [Repo-grounded — `RepoConfig.fs:284`], `setup-java`
-exists as the composite-action model, and `ose-private` already carries `extra-tools: []` so no key
+exists as the composite-action model, and the private sibling already carries `extra-tools: []` so no key
 set changes. Every claim in this decision record now checks out against real code rather than a
 prediction.
 
@@ -341,7 +341,7 @@ unlike `ose-be`, which carries that tag precisely because it _does_ have the ada
 
 **Rationale**: the image is buildable and runnable locally, which proves the packaging works and
 matches the `ose-be` file inventory. The deploy half is deliberately withheld because the k3s rollout
-lives in `ose-private`'s coralpolyp and there is no manifest for this service; wiring GHCR publication
+lives in the private sibling's coralpolyp and there is no manifest for this service; wiring GHCR publication
 to a rollout that does not exist would produce images nothing consumes.
 
 ### D-7 — Full `env-contract` registration via a paired `rhino-cli` change
@@ -361,7 +361,7 @@ and register `apps/islamic-be` in `repo-config.yml`'s `env-contract:` surfaces w
 **Cost, stated plainly**: `Env.fs` currently dispatches `"typescript"` and `"fsharp"`, returning
 `Error "unsupported lang: %s"` otherwise [Repo-grounded — `Env.fs:1590`–`:1592`]. `Env.fs` is line 9
 of `apps/rhino-cli/parity-manifest.sha256`, so `apps/rhino-cli/src` is held byte-identical across
-`ose-public` and `ose-private` with zero carve-outs, and rhino-cli behaviour must be
+`ose-public` and the private sibling with zero carve-outs, and rhino-cli behaviour must be
 cucumber-covered in both repositories. This decision therefore converts DU5 into a cross-repository
 parity delivery with a recorded shared identity.
 
@@ -381,7 +381,7 @@ and `os.LookupEnv("VAR")`.
 ### D-8 — Lane-first delivery-unit sequencing
 
 **Decision**: Land the Go lane before any Go code, in six `ose-public` delivery units plus one
-`ose-private` parity PR paired with DU5.
+the private sibling parity PR paired with DU5.
 
 **Rationale**: landing `islamic-be` before the lane is not merely untidy — it is red CI, because the
 Go targets execute in three toolchain-less jobs (§1.4). The lane must precede or accompany the app.
@@ -429,8 +429,8 @@ a default keeps the two entries symmetric and reviewable side by side.
 
 **Consequence**: parity rule 4 holds both repositories' `repo-config.yml` top-level key sets
 identical. `lms-init` DU1 added the `doctor.extra-tools` key to **both** repositories — `ose-public`
-carries the `java` entry, `ose-private` carries `extra-tools: []`
-[Repo-grounded — `ose-private` `repo-config.yml:272`] — so this plan adds a list item under an
+carries the `java` entry, the private sibling carries `extra-tools: []`
+[Repo-grounded — the private sibling `repo-config.yml:272`] — so this plan adds a list item under an
 existing key and changes no key set. DU5's gate verifies that explicitly.
 
 ## 3. File-Impact Analysis

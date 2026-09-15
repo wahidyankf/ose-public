@@ -5,7 +5,7 @@ codify the resulting licensing standard.
 
 > Idea, added (original capture undated; generic item — source line: "FSL standards"; FSL interpretation
 > unconfirmed).
-> Relocated from ose-private/plans/ideas/fsl-standards.md on 2026-08-06 by plan-ideas-grooming.
+> Relocated from private-sibling/plans/ideas/fsl-standards.md on 2026-08-06 by plan-ideas-grooming.
 
 ## Problem / context
 
@@ -23,9 +23,9 @@ part of the repo toward a source-available posture, or to standardize how licens
 ## Prior art / precedents
 
 - **fsl-license-migration plan** — prior in-repo work that already moved licensing toward FSL; the
-  concrete precedent for any FSL standard. [done plan](https://github.com/wahidyankf/ose-private/blob/main/plans/done/2026-04-04__fsl-license-migration/README.md)
+  concrete precedent for any FSL standard. done plan (private, not linked)
 - **Licensing convention** — the existing in-repo licensing rule any FSL standard would be codified
-  into. [licensing.md](https://github.com/wahidyankf/ose-private/blob/main/repo-governance/conventions/structure/licensing.md)
+  into. licensing.md (private, not linked)
 - **Functional Source License (Sentry)** — the source-available license this idea is about, converting
   to Apache-2.0/MIT after two years. [fsl.software](https://fsl.software)
 - **Business Source License (BUSL)** — FSL's four-year predecessor that FSL improves on; the reference

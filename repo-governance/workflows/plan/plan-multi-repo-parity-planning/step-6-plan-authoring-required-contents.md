@@ -21,7 +21,7 @@ at the agreed stage. Example (from a plan at `plans/in-progress/foo/README.md`):
 
 This plan is part of a parity set. See sibling plans for context:
 
-- `ose-private`: `plans/in-progress/foo/README.md`
+- `private-sibling`: `plans/in-progress/foo/README.md`
 ```
 
 **(c) Delivery checklist item** to write a decision-rationale document at the agreed location per

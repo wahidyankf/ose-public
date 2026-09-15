@@ -6,18 +6,18 @@ This repository's governance surfaces have grown without a size ceiling. [Repo-g
 measured 2026-08-13, reproduced by this plan's own audit] Measured across the source
 (non-generated) governance Markdown in both repos:
 
-| Repo          | Governance `.md` | Over 500 words | Excess words   |
-| ------------- | ---------------- | -------------- | -------------- |
-| `ose-public`  | 347              | **298**        | ~594,000       |
-| `ose-private` | 287              | **247**        | ~523,000       |
-| **Total**     | **634**          | **545**        | **~1,117,000** |
+| Repo                | Governance `.md` | Over 500 words | Excess words   |
+| ------------------- | ---------------- | -------------- | -------------- |
+| `ose-public`        | 347              | **298**        | ~594,000       |
+| The private sibling | 287              | **247**        | ~523,000       |
+| **Total**           | **634**          | **545**        | **~1,117,000** |
 
 **This table is deliberately scoped to source (non-generated) content only** —
 `repo-governance/` + `.claude/`, excluding the `.cursor`/`.opencode`/`.amazonq` generated mirrors
 and root `AGENTS.md`/`CLAUDE.md`. It answers "how much is our own authored content," not "how
 many files will the gate flag." The `governance-word-budget` gate's actual **covered surface**
 is broader (see §Scope Boundaries below and `prd.md` FR-1.3) and its current live baseline is
-**464** for `ose-public` and **349** for `ose-private` [Repo-grounded, re-derived 2026-08-13 via
+**464** for `ose-public` and **349** for the private sibling [Repo-grounded, re-derived 2026-08-13 via
 `tech-docs.md` §7's census script]. `delivery.md`'s Phase 1/10 Gate acceptance criteria cite
 these full-surface numbers, not the 298/247 above.
 
@@ -143,7 +143,7 @@ census above and in `brd.md` §Success Metrics.
 | README index authority | Parent `X.md` is the index; split dirs exempt from the README rule                                                                                              | One list to maintain, not two kept in sync by a gate                                                                                |
 | README rule scope      | Source governance surfaces + `docs/` + `specs/`                                                                                                                 | Excludes `apps/` (658 of 721 missing READMEs are content trees), `plans/`, and generated mirrors                                    |
 | Frontmatter            | Add `when_to_use` only; keep `description`                                                                                                                      | `description` is already required and 87% populated — it _is_ the tldr                                                              |
-| Repos                  | `ose-public` first, then `ose-private`                                                                                                                          | Private never inherits a pattern that later changes under it                                                                        |
+| Repos                  | `ose-public` first, then the private sibling                                                                                                                    | Private never inherits a pattern that later changes under it                                                                        |
 | `ose-primer`           | **Deferred**                                                                                                                                                    | See "Accepted divergence" below                                                                                                     |
 | Concurrency            | N=3 background agents                                                                                                                                           | Repo default; the splits are judgment-heavy content work, not mechanical                                                            |
 
@@ -181,7 +181,7 @@ gate group will grow measurably.
 
 ### Accepted divergence: `ose-primer`
 
-`apps/rhino-cli` is byte-identical across `ose-public`, `ose-primer`, and `ose-private`
+`apps/rhino-cli` is byte-identical across `ose-public`, `ose-primer`, and the private sibling
 (659 files pinned in `apps/rhino-cli/parity-manifest.sha256`). This plan changes rhino-cli in
 two repos only.
 
@@ -223,7 +223,7 @@ surface is explicitly excluded from via `args.exclude`.
 **In scope** (README completeness, `missing`/`unannotated` — `governance-readme-completeness`,
 armed Phase 9): `repo-governance/`, `.claude/`, `.codex/`, `.pi/` — a 4-entry list. FR-3.7
 originally scoped this wider, also adding `docs/` and `specs/`; narrowed to this list at the
-Phase 9 (`ose-public`) / Phase 16 (`ose-private`) arming step by user decision (word/readme-budget
+Phase 9 (`ose-public`) / Phase 16 (the private sibling) arming step by user decision (word/readme-budget
 gates exist to optimize agent context, not to police human-facing documentation — see `prd.md`
 FR-3.7 and `delivery.md`'s Phase 9 execution log). **Not** the generated mirror trees — a
 94-entry annotated index [Repo-grounded, verified 2026-08-13] fits no defensible ceiling, and
@@ -247,10 +247,10 @@ A generated mirror that violates the word budget is **never hand-edited** — th
 
 ## Repos and Delivery
 
-| Repo          | Worktree                           | Plan docs         | PRs                                |
-| ------------- | ---------------------------------- | ----------------- | ---------------------------------- |
-| `ose-public`  | `worktrees/optimize-governance-md` | **Authoritative** | 10 (2 executable, 8 markdown-only) |
-| `ose-private` | `worktrees/optimize-governance-md` | none (uses this)  | 7 (2 executable, 5 markdown-only)  |
+| Repo                | Worktree                           | Plan docs         | PRs                                |
+| ------------------- | ---------------------------------- | ----------------- | ---------------------------------- |
+| `ose-public`        | `worktrees/optimize-governance-md` | **Authoritative** | 10 (2 executable, 8 markdown-only) |
+| The private sibling | `worktrees/optimize-governance-md` | none (uses this)  | 7 (2 executable, 5 markdown-only)  |
 
 **17 PRs total, 4 executable.** Phase 0 opens none; the earliest PR is Phase 1 — see
 `delivery.md` §PR Map and §Delivery Boundaries for the full phase-to-PR mapping, including PR17

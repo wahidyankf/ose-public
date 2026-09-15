@@ -264,12 +264,12 @@ simpler. Rejected on the user's decision: it pays the two-repository parity cost
 forever, whereas the refactor pays it once in total.
 
 **Rejected — no doctor entry at all, Gradle toolchain plus CI `setup-java` only.** Zero
-`rhino-cli` change and zero `ose-private` involvement. Rejected because `npm run doctor` would then
+`rhino-cli` change and zero the private sibling involvement. Rejected because `npm run doctor` would then
 give no JDK signal, and a fresh clone would fail at build time with no diagnosis.
 
 **Honest cost, stated plainly:** the refactor is still a two-repository change. Both F# files sit in
 the parity manifest, and parity rule 4 holds both `repo-config.yml` key sets identical, so
-`ose-private` gains the same `doctor.extra-tools` key with an empty list. The saving is on every
+the private sibling gains the same `doctor.extra-tools` key with an empty list. The saving is on every
 _future_ language, not on this one.
 
 **Revisit when:** a third consumer of `extra-tools` appears and the schema proves too narrow — for
@@ -393,7 +393,7 @@ against code that exists.
 
 ## 5. File-Impact Analysis
 
-`R-PUB:` denotes `ose-public`; `R-PRI:` denotes `ose-private`. Both trees are root-relative to their
+`R-PUB:` denotes `ose-public`; `R-PRI:` denotes the private sibling. Both trees are root-relative to their
 own repository.
 
 ```text
@@ -536,7 +536,7 @@ path, and each is discovered the same way before any edit:
 
 **Ordering that is not obvious from the tree.** `repo-config.yml` is edited in both DU1 and DU2, for
 different keys, in different repositories. DU1 adds `doctor.extra-tools` to _both_ repositories
-(empty in `ose-private`, satisfying the identical-key-set parity rule). DU2 adds the Java gate pair
+(empty in the private sibling, satisfying the identical-key-set parity rule). DU2 adds the Java gate pair
 and the populated `java` entry to `ose-public` only. Attempting DU2's entry before DU1's schema
 change makes `rhino-cli repo-config validate` fail on an unknown key.
 

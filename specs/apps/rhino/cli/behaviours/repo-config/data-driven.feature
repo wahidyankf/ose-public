@@ -1,7 +1,7 @@
 @repo-config-data-driven
 Feature: Repo-specific behaviour is data-driven from repo-config.yml
 
-  As a maintainer keeping rhino-cli byte-identical across ose-public and ose-private
+  As a maintainer keeping rhino-cli byte-identical across ose-public and the private sibling
   I want every per-repo behaviour (env globs, gate arguments, doctor tool skips) read from repo-config.yml
   So that the source stays identical and only the per-repo data file differs
 

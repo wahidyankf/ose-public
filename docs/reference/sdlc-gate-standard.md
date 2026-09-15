@@ -1,6 +1,6 @@
 ---
 title: SDLC Gate Standard
-description: Target standard for gate mechanics across ose-public and ose-private — identical check set, order, and invocation mechanism; only project/app set diverges
+description: Target standard for gate mechanics across ose-public and the private sibling — identical check set, order, and invocation mechanism; only project/app set diverges
 category: reference
 tags:
   - sdlc
@@ -16,7 +16,7 @@ created: 2026-06-30
 > Source of truth: [`tech-docs.md`](../../plans/done/2026-07-01__standardize-rhino-cli-sdlc-parity/tech-docs.md)
 
 This document defines the target standard for SDLC gate mechanics across the two bound OSE
-repositories: `ose-public` and `ose-private`. **Identical gate mechanics** means the
+repositories: `ose-public` and the private sibling. **Identical gate mechanics** means the
 same check set, the same order, and the same invocation mechanism across the bound repos. The only sanctioned variation
 is the project/app set (and therefore the per-app deploy/CRON workflows and language-specific gate
 jobs). See [Divergence Policy](#divergence-policy) for the exact boundary.
@@ -204,7 +204,7 @@ follows from it. Everything in "Drift" below must converge to one form.
 `apps/rhino-cli` is held to a stricter, second-pass target beyond the gate mechanics above: **zero
 carve-outs**. `apps/rhino-cli`'s `src/` (including `src/tests/`), `project.json`, and `LICENSE`, plus
 the Gherkin behaviour tree at `specs/apps/rhino/cli/behaviours/**` (every `.feature` file and
-every `README.md`), are byte-identical across `ose-public` and `ose-private`. The
+every `README.md`), are byte-identical across `ose-public` and the private sibling. The
 canonical source carries the
 **union command surface** — every repo's `rhino-cli` binary exposes the full command superset, and a
 command with no applicable projects in a given repo (for example, `java` in `ose-public`) is
@@ -220,7 +220,7 @@ Within `apps/rhino-cli` itself, the only sanctioned divergence anywhere is:
 1. **Each repo's app/language set** — the data `repo-config.yml` carries per repo (coverage
    registry, env-validation scan paths) differs, driving which of the union's dormant commands are
    actually exercised in that repo.
-2. **The CI runner label** (for example, `ose-private`'s `[self-hosted, linux, ose-self-hosted]`) — a
+2. **The CI runner label** (for example, the private sibling's `[self-hosted, linux, ose-self-hosted]`) — a
    CI-workflow-YAML concern that lives outside `apps/rhino-cli` entirely, so it never affects source
    byte-identity.
 
@@ -228,7 +228,7 @@ See [tech-docs.md §4 "rhino-cli Source-Identity Standard"](../../plans/done/202
 for the full synthesis approach and acceptance criteria.
 
 **Known exception (tracked, not yet reconciled): `doctor/tools.rs` tool-provisioning extensions.**
-`ose-private` legitimately needs IaC tool provisioning (the same infra-only IaC surface named under
+The private sibling legitimately needs IaC tool provisioning (the same infra-only IaC surface named under
 [Allowed Divergence](#allowed-divergence) below) that the other bound repos do not, and its
 `doctor/tools.rs` was originally observed to carry extra tool-definition and test entries beyond the
 canonical set as a result. **Re-measured 2026-08-07** (see the linked brief's "Live re-measurement"
@@ -261,14 +261,14 @@ separate decision.
 The following variations are not flagged as drift:
 
 - **App set and per-app deploy CRONs** — `ose-public` ships content/web apps (`ose-www`,
-  `ayokoding-www`, `organiclever-www`, `*-app-web`, `*-be`); `ose-private` ships
+  `ayokoding-www`, `organiclever-www`, `*-app-web`, `*-be`); the private sibling ships
   `coralpolyp`. Each repo keeps only the deploy CRON workflows for apps it actually ships, and both
   repos' deploy CRONs push to real Vercel/self-hosted environments.
 - **Language gate jobs** — the PR gate's per-language jobs (golang, jvm, dotnet, python, rust, elixir,
   clojure, dart, typescript) exist only for languages present in that repo.
 - **Infra-only IaC gates** — `terraform fmt`/`validate`/`tflint`, `ansible-lint`, `yamllint` exist
-  only in `ose-private`, in both hooks and the PR gate.
-- **Self-hosted runner labels** — `ose-private` runs on `[self-hosted, linux, ose-self-hosted]`.
+  only in the private sibling, in both hooks and the PR gate.
+- **Self-hosted runner labels** — the private sibling runs on `[self-hosted, linux, ose-self-hosted]`.
 - **lint-staged formatter entries** — only for languages present (for example `*.go`, `*.{ex,exs}`
   exist where that language ships). The common entries (`*.md`, `*.json`, `*.{yml,yaml}`,
   `*.{css,scss}`, `*.rs`, `*.fs`) must match across all repos.
@@ -299,7 +299,7 @@ The following must converge — this is the work of the standardization plan:
 > [Related Repositories §Repositories outside the parity set](./related-repositories.md#repositories-outside-the-parity-set).
 > Rows have been re-scoped to the surviving pair; no row below obligates work against any other repo.
 
-Verified 2026-07-01 across `ose-public` and `ose-private` by directly running the acceptance
+Verified 2026-07-01 across `ose-public` and the private sibling by directly running the acceptance
 command for every mechanics row (not by inspecting config alone; corrected same-day after a follow-up
 audit found two rows below were marked ✅ while infra's pre-commit still ran `test:quick` in the wrong
 stage via a legacy monolith that bypassed lint-staged — both fixed before this table's final pass). ✅ =
@@ -339,7 +339,7 @@ release-build `cargo run` dispatch (via `apps/rhino-cli/Cargo.toml`) cited by th
 `apps/rhino-cli/scripts/rhino-bin.sh` resolver shim created in this repo's `optimize-cis` PR
 (`apps/rhino-cli/scripts/rhino-bin.sh`, added 2026-08-09). This note records the mechanism change
 without re-dating the table above, which remains a historical snapshot of the 2026-07-01
-cross-repo run; `ose-private` propagation of the shim is tracked separately (see
+cross-repo run; the private sibling's propagation of the shim is tracked separately (see
 AC-15 in `plans/done/2026-08-09__optimize-cis/delivery.md`).
 
 **Language-port note (2026-08-30, also not part of the 2026-07-01 verification pass above)**:
@@ -354,10 +354,10 @@ itself is left as the historical 2026-07-01 snapshot rather than rewritten in pl
 schema" row was renamed to `governance-word-budget:` in `ose-public` by this repo's
 `optimize-governance-md` plan (Phase 1b). This note records the rename without re-dating the table
 above, which remains a historical snapshot of the 2026-07-01 cross-repo run and is accurate for
-that date — `instruction-size:` is still the live section name in `ose-private` as of this note. The
+that date — `instruction-size:` is still the live section name in the private sibling as of this note. The
 rename opens a cross-repo parity obligation (a `repo-config.yml` schema-section rename is exactly the
 class of change the [Parity Status](#parity-status) table exists to track); propagation to
-`ose-private` is not yet scheduled against a specific plan at the time of this note.
+the private sibling is not yet scheduled against a specific plan at the time of this note.
 
 **Gate-output-semantics note (2026-08-30, not part of the 2026-07-01 verification pass above)**: a
 single check's own verbose output text (e.g. `governance readme-index validate` printing

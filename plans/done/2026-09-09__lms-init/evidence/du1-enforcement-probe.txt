@@ -82,7 +82,7 @@ output:
 name in NEITHER inventory        -> exit 1  (expected 1: rejected)
 name in the BUILT-IN inventory   -> exit 0  (expected 0: accepted)
 
-================ ose-private ================
+================ private-sibling ================
 
 --- VIOLATING: extra-tools entry missing required 'name' ---
 input:

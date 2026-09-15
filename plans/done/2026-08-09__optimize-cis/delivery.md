@@ -62,7 +62,7 @@ to make a merge possible. If merging is blocked, the change is wrong — not the
 ## Delivery Boundaries
 
 **PR budget: 3 total — exactly one per repo.** `ose-public` opens a single draft PR right after
-Phase 1's gate passes and keeps it open through Phase 12; `ose-primer` and `ose-private` each open
+Phase 1's gate passes and keeps it open through Phase 12; `ose-primer` and the private sibling each open
 their own single PR inside Phase 10. **Phase 0 opens no PR.** No phase opens a second PR in a repo
 that already has one open — if a phase is about to open one, stop: that means this section drifted,
 not that a new PR is warranted. (This budget was exceeded in practice by 2 authorized follow-up PRs
@@ -117,27 +117,27 @@ overrides two parameters:
    workflow's own exhaustion behavior.
 
 **This plan also authors a third, narrower deviation, dated 2026-08-09: two additional follow-up
-PRs beyond the 3-PR budget above — `ose-primer` #31 and `ose-private` #30.** Both were opened after
+PRs beyond the 3-PR budget above — `ose-primer` #31 and the private sibling #30.** Both were opened after
 each sibling's own budgeted PR had already merged: `ose-primer` #30 merged 2026-08-09T05:39:32Z
-and #31 opened 07:04:15Z (+1h 24m later); `ose-private` #29 merged 2026-08-09T05:52:40Z and #30
+and #31 opened 07:04:15Z (+1h 24m later); the private sibling #29 merged 2026-08-09T05:52:40Z and #30
 opened 07:03:59Z (+1h 11m later). A lint-component defect on the pinned Rust toolchain(s) (missing
 `clippy`/`rustfmt` component declarations) did not block `ose-primer` #30, which merged 23/23 checks
-green. `ose-private` #29 did **not** merge clean: the same lint-component defect was already failing
+green. The private sibling #29 did **not** merge clean: the same lint-component defect was already failing
 inside its own CI run at merge time — `coralpolyp` had failed by 05:48:10Z (before the 05:52:40Z
 merge), and both `Rust quality gate` (completed 05:55:45Z) and the cascading `Quality gate`
 aggregator (completed 05:58:26Z) finished with FAILURE conclusions minutes after the merge, per
-`gh api repos/wahidyankf/ose-private/commits/aaa1b55353115fd60ddf2e5238836f383ce8c325/check-runs`.
-The defect was therefore not "discovered independently after" merge for `ose-private` #29 — it was
+`gh api repos/wahidyankf/<private-sibling>/commits/aaa1b55353115fd60ddf2e5238836f383ce8c325/check-runs`.
+The defect was therefore not "discovered independently after" merge for the private sibling #29 — it was
 already visible and failing inside that PR's own CI run, which had not even finished when the merge
 happened. Splitting the fix into a separate PR — rather than reopening or force-amending the
 already-merged budgeted PR — was the only path that kept each repo's branch protection intact (no
 direct-push, no amend-after-merge). Maintainer authorization for this deviation was given
 2026-08-09. Both follow-up PRs are now merged: `ose-primer` #31 merged clean (23/23 checks green,
-clean squash-merge). `ose-private` #30 merged via `--admin` override, with the pre-existing,
+clean squash-merge). The private sibling #30 merged via `--admin` override, with the pre-existing,
 unrelated `coralpolyp` infra flake (a self-hosted-runner systemd-sandbox issue, already
 root-caused as unrelated to this plan's changes earlier in the session) still red on its cascading
 `Quality gate` aggregator — per the maintainer's standing, explicit authorization to merge
-`ose-private` with this specific check red. `ose-public`'s own plan-authoring PR, #161 (docs-only,
+the private sibling with this specific check red. `ose-public`'s own plan-authoring PR, #161 (docs-only,
 merged 2026-08-08 before #162 opened), is a sixth plan-attributable PR but was never counted
 against the 3-PR budget since no repo ever held two PRs open simultaneously; it is recorded in
 `baseline/pr-numbers.md` for accounting completeness. See `baseline/pr-numbers.md` for the full,
@@ -147,15 +147,15 @@ current PR ledger across all three repos.
 but as accepted-with-reason residue under the closure clause the maintainer already authorized
 above** (cap-at-10-cycles, "record any still-open finding as accepted-with-reason in the PR
 description"): AC-15's `apps/rhino-cli` byte-identity parity across `ose-public`/`ose-primer`/
-`ose-private` does **not** currently hold. Cycle 6's `validate.rs` fix landed in `ose-public` only;
-both siblings' follow-up PRs (`ose-primer` #31, `ose-private` #30) were already merged by the time
+the private sibling does **not** currently hold. Cycle 6's `validate.rs` fix landed in `ose-public` only;
+both siblings' follow-up PRs (`ose-primer` #31, the private sibling #30) were already merged by the time
 the gap was re-confirmed at cycle 7 of the PR-Review Maker→Fixer Cycle on `ose-public` #162, so
 nothing propagates automatically. A full manifest diff against both siblings' current `main` (not
 just `ose-primer`'s, which is what the raw review finding checked) found a **17-file union** — 15
-files diverge against `ose-primer`, 8 against `ose-private`, 6 overlap, and 1
+files diverge against `ose-primer`, 8 against the private sibling, 6 overlap, and 1
 (`specs/apps/rhino/behavior/rhino-cli/gherkin/README.md`) was omitted from the cycle-7 count. See
 the AC-15 checkbox annotation in Phase 10 Gate below for the full file list and the filed follow-up
-tracking propagation. Opening propagation PRs in `ose-primer`/`ose-private` from this cycle was
+tracking propagation. Opening propagation PRs in `ose-primer`/the private sibling from this cycle was
 considered and rejected: both sibling PRs are already merged, this agent's write scope for a
 PR-review fixer pass is limited to the `ose-public` PR under review (no cross-repo PR authority),
 and reopening either merged sibling mid-cycle is exactly the "heavy" cost this plan's own
@@ -224,8 +224,8 @@ independent measurement pass.
   - **Date**: 2026-08-08. **Status**: Done. **Files Changed**: `baseline/measurements.md` (M6 section). **Notes**: 2,747 MiB (2.75 GiB) after cold `test:quick`.
 - [x] [AI] Record M3 and M4 baselines from run history: `gh run list -R wahidyankf/ose-public -L 50 --json databaseId,workflowName,status,conclusion,createdAt,startedAt,updatedAt` plus per-run job durations — acceptance: median runner-seconds and p50 wall-clock recorded for `pr-quality-gate`.
   - **Date**: 2026-08-08. **Status**: Done. **Files Changed**: `baseline/measurements.md` (M3/M4 sections). **Notes**: median of 18 completed `pr-quality-gate` runs — M3 = 7,103.5 runner-s, M4 = 974.5 s p50 wall-clock. Both differ from the illustrative brd.md authoring-time figures (10,945 s / from-run-history) since CI state naturally drifts between authoring and execution; this fresh capture is the authoritative Phase 0 baseline that later phases diff against.
-- [x] [AI] Record each repo's branch-protection **required status check contexts** into `baseline/required-checks.md`: `gh api repos/wahidyankf/<repo>/branches/main/protection --jq '.required_status_checks.contexts'` for `ose-public`, `ose-primer`, `ose-private` — acceptance: the file records, per repo, the exact context strings (`ose-public` is known to require exactly `Quality gate` `[Repo-grounded]`) or an explicit "no protection payload readable" note.
-  - **Date**: 2026-08-08. **Status**: Done. **Files Changed**: added `baseline/required-checks.md`. **Notes**: `ose-public` confirmed `["Quality gate"]`. `ose-primer`: branch-protection API 404s — `main` is protected via a repository **ruleset** instead (PR/linear-history/no-deletion rules, no `required_status_checks` rule type), i.e. no GitHub-required CI context currently gates merges there — recorded verbatim, flagged for Phase 6/10 attention since those phases assume a required CI context. `ose-private`: both protection and ruleset APIs return 403 (private repo, needs GitHub Pro) — recorded as "no protection payload readable" per the acceptance criterion's explicit escape hatch.
+- [x] [AI] Record each repo's branch-protection **required status check contexts** into `baseline/required-checks.md`: `gh api repos/wahidyankf/<repo>/branches/main/protection --jq '.required_status_checks.contexts'` for `ose-public`, `ose-primer`, the private sibling — acceptance: the file records, per repo, the exact context strings (`ose-public` is known to require exactly `Quality gate` `[Repo-grounded]`) or an explicit "no protection payload readable" note.
+  - **Date**: 2026-08-08. **Status**: Done. **Files Changed**: added `baseline/required-checks.md`. **Notes**: `ose-public` confirmed `["Quality gate"]`. `ose-primer`: branch-protection API 404s — `main` is protected via a repository **ruleset** instead (PR/linear-history/no-deletion rules, no `required_status_checks` rule type), i.e. no GitHub-required CI context currently gates merges there — recorded verbatim, flagged for Phase 6/10 attention since those phases assume a required CI context. The private sibling: both protection and ruleset APIs return 403 (private repo, needs GitHub Pro) — recorded as "no protection payload readable" per the acceptance criterion's explicit escape hatch.
   - _**Load-bearing.** A required context is satisfied only by a job reporting under that exact name. Phase 6 rewrites the workflow that emits it; if the name drifts, every PR in that repo becomes permanently unmergeable and only a repo-settings change — which an agent must not make — can undo it._
 - [x] [AI] Record M7 baseline: `gh api repos/wahidyankf/ose-public/actions/caches --jq '[.actions_caches[].size_in_bytes] | add'` — acceptance: byte total and percentage of the 10 GiB ceiling recorded.
   - **Date**: 2026-08-08. **Status**: Done. **Files Changed**: `baseline/measurements.md` (M7 section). **Notes**: 8,280,363,514 bytes = 7.71 GiB = 77.12% of 10 GiB ceiling. Differs from brd.md's illustrative 98.0% (natural cache-state drift since authoring) — this fresh capture is the authoritative Phase 0 baseline.
@@ -385,7 +385,7 @@ independent measurement pass.
 - [x] [AI] Measure M1 with the same `bash` harness used at baseline, then append a `Phase 2` row to `scoreboard.md` with `Status = IMPROVED`/`REGRESSED`/`UNCHANGED` against the Phase 0 baseline row — acceptance: recorded; expected to fall from 3,047 ms toward ~1,200 ms (the remaining `npx` tax is removed in Phase 3).
   - **Date**: 2026-08-09. **Status**: Done. **Notes**: mean 2,534 ms (N=3: 2,759/2,576/2,266), all exit 0, same 10-file harness (staged trivial reversible append, `npx lint-staged --no-stash`, `git checkout HEAD --`/`git reset --` revert, `git status --porcelain` confirmed identical to pre-measurement state after). vs Phase 0 baseline (3,898 ms): −1,364 ms / −35.0 %, `Status = IMPROVED`. Note: this item's own acceptance text cites a baseline of "3,047 ms" — `baseline/measurements.md`'s actual recorded Phase 0 M1 baseline is 3,898 ms; the 3,047 figure does not match any recorded baseline value and looks like a stale/pre-baseline draft number. Used the real recorded baseline (3,898 ms) for the scoreboard Δ, not the stale 3,047 figure.
 - [x] [AI] Commit this phase's changes thematically and push to the open PR branch — acceptance: push succeeds; the PR's check run starts.
-  - **Date**: 2026-08-09. **Status**: Done. **Files Changed**: none new (git operations). **Notes**: 2 commits — `a69e74dab` (main Phase 2 change: emit.rs, rhino-bin.sh, gate_specs.rs, both .feature files, 3 husky hooks, package.json lint-staged block, delivery.md, scoreboard.md) and `443bfd6bf` (`apps/rhino-cli/parity-manifest.sha256` regeneration — the first push attempt was correctly blocked by the local `parity-manifest` pre-push gate since `emit.rs` is byte-identity-governed across ose-public/ose-primer/ose-private; ran `rhino-cli parity manifest generate` to update the local checksum, root-cause fix not a bypass. **Cross-repo propagation obligation opened**: the identical `emit.rs`/`rhino-bin.sh`/`gate_specs.rs` change must land byte-for-byte in `ose-primer` and `ose-private` — already tracked as this plan's Phase 10 scope, not deferred or forgotten). Both commits secrets-scanned clean before staging. Pushed to `worktree/optimize-cis` (PR #162); second push succeeded, parity-manifest gate reported "current".
+  - **Date**: 2026-08-09. **Status**: Done. **Files Changed**: none new (git operations). **Notes**: 2 commits — `a69e74dab` (main Phase 2 change: emit.rs, rhino-bin.sh, gate_specs.rs, both .feature files, 3 husky hooks, package.json lint-staged block, delivery.md, scoreboard.md) and `443bfd6bf` (`apps/rhino-cli/parity-manifest.sha256` regeneration — the first push attempt was correctly blocked by the local `parity-manifest` pre-push gate since `emit.rs` is byte-identity-governed across ose-public/ose-primer/private-sibling; ran `rhino-cli parity manifest generate` to update the local checksum, root-cause fix not a bypass. **Cross-repo propagation obligation opened**: the identical `emit.rs`/`rhino-bin.sh`/`gate_specs.rs` change must land byte-for-byte in `ose-primer` and the private sibling — already tracked as this plan's Phase 10 scope, not deferred or forgotten). Both commits secrets-scanned clean before staging. Pushed to `worktree/optimize-cis` (PR #162); second push succeeded, parity-manifest gate reported "current".
 
 > **Pause Safety**: hooks dispatch through the shim and all gates still run identically. Safe to stop. To resume: `cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- gate validate`.
 
@@ -828,15 +828,15 @@ Independent of Phases 5–7; may run in parallel.
 
 ---
 
-## Phase 10 — Cross-repo propagation (`ose-primer`, `ose-private`)
+## Phase 10 — Cross-repo propagation (`ose-primer`, the private sibling)
 
-**Repo scope is exactly three: `ose-public`, `ose-primer`, `ose-private`.** `beaver-nest` is
+**Repo scope is exactly three: `ose-public`, `ose-primer`, the private sibling.** `beaver-nest` is
 excluded — its `rhino-cli` is a fork with no `src/commands/gate/` subsystem, it is already the
 fastest repo of the four, and it is slated for deprecation immediately after this plan. See
 [`README.md` §Affected repositories](./README.md#affected-repositories--three-of-four).
 
-- [x] [AI] Resolve the parity-message contradiction this plan trips over. `apps/rhino-cli/src/application/parity.rs:560` and its test at line 867 both state the manifest files are "byte-identical across ose-public, ose-primer, ose-private, and beaver-nest", but `AGENTS.md:445-447` scopes the boundary to three repos and `beaver-nest` has no `apps/rhino-cli/parity-manifest.sha256` — command: `env -u GIT_DIR -u GIT_WORK_TREE -u GIT_COMMON_DIR cargo test --manifest-path apps/rhino-cli/Cargo.toml --lib parity` — acceptance: both strings name exactly the three parity repos, the test asserting the message passes, and `grep -c "beaver-nest" apps/rhino-cli/src/application/parity.rs` returns 0.
-  - **Date**: 2026-08-09. **Status**: PASS on substance, with one stated deviation on the literal `grep` clause. Commit `c182c543a`. Both strings now read "byte-identical across ose-public, ose-primer, and ose-private" and "the other two repos"; `application::parity` tests are 16/16 and `gate_specs` 74/74 scenarios, 276/276 steps.
+- [x] [AI] Resolve the parity-message contradiction this plan trips over. `apps/rhino-cli/src/application/parity.rs:560` and its test at line 867 both state the manifest files are "byte-identical across ose-public, ose-primer, the private sibling, and beaver-nest", but `AGENTS.md:445-447` scopes the boundary to three repos and `beaver-nest` has no `apps/rhino-cli/parity-manifest.sha256` — command: `env -u GIT_DIR -u GIT_WORK_TREE -u GIT_COMMON_DIR cargo test --manifest-path apps/rhino-cli/Cargo.toml --lib parity` — acceptance: both strings name exactly the three parity repos, the test asserting the message passes, and `grep -c "beaver-nest" apps/rhino-cli/src/application/parity.rs` returns 0.
+  - **Date**: 2026-08-09. **Status**: PASS on substance, with one stated deviation on the literal `grep` clause. Commit `c182c543a`. Both strings now read "byte-identical across ose-public, ose-primer, and the private sibling" and "the other two repos"; `application::parity` tests are 16/16 and `gate_specs` 74/74 scenarios, 276/276 steps.
   - **Deviation**: `grep -c "beaver-nest" apps/rhino-cli/src/application/parity.rs` returns **3**, not the 0 the acceptance specifies. All three sit inside a **negative regression guard** added alongside the fix — a comment, an `assert!(!message.contains("beaver-nest"))`, and that assertion's failure message. A guard that forbids a string must name it, so the literal clause and a negative guard cannot both be satisfied; the guard is the stronger artifact, because plain absence would let the fourth repo silently return. The verifiable equivalent, which does hold: **zero occurrences in the production region** (everything above `#[cfg(test)]`), with all 3 in the test region.
   - **Fixed as a class, not at the cited sites**: the plan named `parity.rs:560` and its test at `:867`, but four sites stated the rule. The other two were `apps/rhino-cli/tests/gate_specs.rs`, whose cucumber step asserted the same 4-repo string and would have gone red, and two `repo-governance/workflows/plan/` docs claiming byte-identity "across all four bound repos" — a direct contradiction of `AGENTS.md`. Both governance docs now name the three repos and state why `beaver-nest` is outside the boundary. Per-file verdicts: `parity.rs` fixed, `gate_specs.rs` fixed, `plan-multi-repo-parity-planning.md` fixed, `plan-multi-repo-parity-planning-and-execution.md` fixed; remaining repo-wide hits are all inside `plans/backlog/beaver-nest-repo-consolidation/`, which is a backlog plan that documents this same defect and owns its own remediation — left untouched deliberately.
   - _Not scope creep: this plan edits `apps/rhino-cli/src/` heavily, so every parity failure during this phase prints an instruction to propagate into a repo that has no manifest to propagate into._
@@ -845,7 +845,7 @@ fastest repo of the four, and it is slated for deprecation immediately after thi
   - _One worktree per repo per plan (HARD RULE). Never run git-mutating agents in a primary checkout._
 - [x] [AI] Propagate every `apps/rhino-cli/` source change to both sibling worktrees, then regenerate derived artifacts in each: `cargo run --profile gate --quiet --manifest-path apps/rhino-cli/Cargo.toml -- gate emit && npm run generate:bindings` — acceptance: `npm run validate:sync` exits 0 in each, and generated artifacts are staged in the same commit as their source.
 - [x] [AI] Add the `ci_group` field to every `ci`-surface gate in each sibling's `repo-config.yml`, mirroring the group taxonomy adopted in Phase 5 — command: `cargo run --profile gate --quiet --manifest-path apps/rhino-cli/Cargo.toml -- gate validate` in each — acceptance: exits 0 in both; every `ci`-surface gate declares a group.
-  - _`ose-private` is the largest single win available: 23 of its 33 `lint-staged` entries are `cargo run` invocations (vs 7 here), and its CI overhead is **91.9 %** `[Repo-grounded]`._
+  - _the private sibling is the largest single win available: 23 of its 33 `lint-staged` entries are `cargo run` invocations (vs 7 here), and its CI overhead is **91.9 %** `[Repo-grounded]`._
 - [x] [AI] Apply the grouped workflow, `build-rhino` artifact job, conditional `npm ci`, and the `github.sha`-free Nx cache key to `.github/` in each sibling — command: `actionlint .github/workflows/pr-quality-gate.yml` in each — acceptance: exits 0; each sibling's gate jobs contain no `setup-rust` and no `cargo install`.
   - _All three repos carry the same `github.sha` cache-key defect and the same unconditional `npm ci` `[Repo-grounded]`._
 - [x] [AI] Apply the same protected-context guard in each sibling: confirm that repo's terminal job name still matches the contexts captured in `baseline/required-checks.md` — acceptance: for each sibling, either the recorded context string is still emitted by a job, or the file recorded that no protection payload was readable.
@@ -855,13 +855,13 @@ fastest repo of the four, and it is slated for deprecation immediately after thi
 
 ### Version unification, sibling side (DD-9)
 
-- [x] [AI] Replace `channel = "stable"` with `channel = "1.95.0"` in `ose-primer/apps/crud-be-rust-axum/rust-toolchain.toml` and `ose-private/apps/coralpolyp-be/rust-toolchain.toml` — acceptance: `grep -h '^channel' $(find . -name rust-toolchain.toml -not -path './target/*' -not -path './node_modules/*') | sort -u` returns exactly one line per repo, reading `1.95.0`.
+- [x] [AI] Replace `channel = "stable"` with `channel = "1.95.0"` in `ose-primer/apps/crud-be-rust-axum/rust-toolchain.toml` and `private-sibling/apps/coralpolyp-be/rust-toolchain.toml` — acceptance: `grep -h '^channel' $(find . -name rust-toolchain.toml -not -path './target/*' -not -path './node_modules/*') | sort -u` returns exactly one line per repo, reading `1.95.0`.
   - _These two crates are the only sites in any repo that build on a floating alias. Everything else is already pinned._
 - [x] [AI] Align every sibling `rust-version` to `1.95.0`, including the lone `1.94.0` outlier in `ose-primer/apps/crud-be-rust-axum/Cargo.toml` — acceptance: the `^rust-version` `sort -u` returns exactly one line per repo (AC-19).
 - [x] [AI] Propagate the Phase 4 `doctor` change (channel-sourced expected-rustc) into both siblings as part of the `apps/rhino-cli/` propagation, then run `npm run doctor` in each — acceptance: exits 0 in both and reports the `rust-toolchain.toml` channel as the source (AC-20).
-- [x] [AI] Replace `ose-private`'s `dtolnay/rust-toolchain@stable` in `.github/actions/setup-rust/action.yml` with the `actions-rust-lang/setup-rust-toolchain@v1` form the other repos use, so the pinned channel is installed rather than fetched lazily on first `cargo` call — command: `actionlint .github/actions/setup-rust/action.yml` — acceptance: exits 0; the action installs the toolchain `rust-toolchain.toml` names.
-  - _Today `ose-private` installs `stable`, never uses it, then downloads `1.95.0` mid-job — a full toolchain fetch per Rust job `[Repo-grounded]`._
-- [x] [AI] Correct the two stale version claims: `ose-private/repo-governance/workflows/infra/infra-development-environment-setup.md:59` states `>= 1.80 (MSRV)` where `apps/coralpolyp-be/Cargo.toml` declares otherwise, and `docs/.../rust/README.md:84` in **both** siblings hardcodes `Rust 1.82+ (stable)` — acceptance: neither file states a version number; both point at the declaring file, matching the `ose-public`/`beaver-nest` pattern.
+- [x] [AI] Replace the private sibling's `dtolnay/rust-toolchain@stable` in `.github/actions/setup-rust/action.yml` with the `actions-rust-lang/setup-rust-toolchain@v1` form the other repos use, so the pinned channel is installed rather than fetched lazily on first `cargo` call — command: `actionlint .github/actions/setup-rust/action.yml` — acceptance: exits 0; the action installs the toolchain `rust-toolchain.toml` names.
+  - _Today the private sibling installs `stable`, never uses it, then downloads `1.95.0` mid-job — a full toolchain fetch per Rust job `[Repo-grounded]`._
+- [x] [AI] Correct the two stale version claims: `private-sibling/repo-governance/workflows/infra/infra-development-environment-setup.md:59` states `>= 1.80 (MSRV)` where `apps/coralpolyp-be/Cargo.toml` declares otherwise, and `docs/.../rust/README.md:84` in **both** siblings hardcodes `Rust 1.82+ (stable)` — acceptance: neither file states a version number; both point at the declaring file, matching the `ose-public`/`beaver-nest` pattern.
   - _Fix the class, not the cited sites: `grep -rn 'Rust 1\.\|rustc 1\.\|>= 1\.' docs repo-governance` per repo, with a per-file verdict._
   - _Suggested executor: `docs-fixer`_
 - [x] [AI] Record and relocate the Rust-toolchain lint-component guard that shipped ad hoc during propagation (commits `bf8c2f893`, `52e179c23` in `ose-primer`, closing the live `apps/crud-be-rust-axum/rust-toolchain.toml` defect this section's first item also fixes) — it was undeclared in every plan document and initially lived in `gate validate`, a command invoked by nothing in any of the three repos (verified: zero non-documentation hits for `gate validate` across `repo-config.yml`, `.github/`, `package.json`, `.husky/`, and every `project.json`) — command: `env -u GIT_DIR -u GIT_WORK_TREE -u GIT_COMMON_DIR cargo test --manifest-path apps/rhino-cli/Cargo.toml --lib doctor::checker && cargo test --manifest-path apps/rhino-cli/Cargo.toml --test doctor` — acceptance: both exit 0, and the guard reports a `ToolStatus::Warning` (not a blocking failure) naming the missing component(s).
@@ -880,13 +880,13 @@ fastest repo of the four, and it is slated for deprecation immediately after thi
 - [ ] [AI] Uninstall each toolchain in `rustup toolchain list` absent from the required set (baseline orphans: `1.80` 1.1 GB, `1.94` 1.2 GB, `1.96.0` 952 MB; plus `1.88` 1.2 GB once the MSRV alignment has landed in all three repos) — command: `rustup toolchain uninstall <name>` per orphan — acceptance: `du -sh ~/.rustup` falls by at least 3 GB; `rustup toolchain list` contains only the required set plus any retained `stable`.
   - _Reversible via `rustup toolchain install <name>`, but the undo needs network, so the proof step below runs immediately rather than waiting for the phase gate._
 - [x] [AI] Set the default toolchain explicitly so nothing depends on a floating alias: `rustup default 1.95.0` — acceptance: `rustup show` reports `1.95.0` as active and default.
-- [ ] [AI] Prove nothing was over-pruned: `npx nx run rhino-cli:test:quick` in `ose-public`, and `cargo build --manifest-path apps/rhino-cli/Cargo.toml` in each of `ose-primer`, `ose-private`, and `beaver-nest` — acceptance: all exit 0 **and none emits `info: downloading component` or `syncing channel updates`**, proving each needed toolchain was still present rather than silently re-fetched.
+- [ ] [AI] Prove nothing was over-pruned: `npx nx run rhino-cli:test:quick` in `ose-public`, and `cargo build --manifest-path apps/rhino-cli/Cargo.toml` in each of `ose-primer`, the private sibling, and `beaver-nest` — acceptance: all exit 0 **and none emits `info: downloading component` or `syncing channel updates`**, proving each needed toolchain was still present rather than silently re-fetched.
   - _Without the no-download assertion this step passes either way: rustup would transparently re-fetch what was just removed and report success. Same false-pass shape as the benchmark trap recorded in `learnings.md`._
 
 - [ ] [AI] Record the `beaver-nest` exclusion and its tripwire in `learnings.md`: if deprecation slips past this plan, file a follow-up `plans/backlog/` entry for the three repo-agnostic wins it would still benefit from (DD-6 gate profile, DD-8 cache key, DD-5 conditional `npm ci`) — acceptance: an entry exists naming all three.
 - [x] [AI] Commit this phase's `ose-public`-side changes (the `parity.rs` message fix) thematically and push to the open `ose-public` PR branch — acceptance: push succeeds and the PR's check run starts. **This step must run before the Phase 10 Gate's "CI green" check below — otherwise that check validates a stale run from before this phase's own change.**
 
-### Sibling PRs — `ose-primer` and `ose-private`
+### Sibling PRs — `ose-primer` and the private sibling
 
 > Each sibling is its own repo with its own PR and its own required-status-check surface. The
 > **PR-Review Maker→Fixer Cycle runs independently in each** — running it once in `ose-public` does
@@ -898,23 +898,23 @@ fastest repo of the four, and it is slated for deprecation immediately after thi
 - [x] [AI] Run the PR-Review Maker→Fixer Cycle on the `ose-primer` PR, iteratively until clean, capped at 10 cycles (see §Delivery Boundaries) — acceptance: a cycle reports zero CRITICAL/HIGH/MEDIUM findings, or the cap is reached with residue recorded as accepted-with-reason.
 - [x] [AI] Flip the `ose-primer` PR to ready for review — `gh pr ready -R wahidyankf/ose-primer <n>` — acceptance: `gh pr view -R wahidyankf/ose-primer <n> --json isDraft` reports `false`.
 - [x] [AI] Merge the `ose-primer` PR once the five hardened preconditions hold — acceptance: `gh pr view -R wahidyankf/ose-primer <n> --json state` reports `MERGED`.
-- [x] [AI] In the `ose-private` worktree: run that repo's local quality gates, commit thematically, push the branch, and open a draft PR against `main` titled `chore(gates): propagate optimize-cis gate changes and unify Rust version` — acceptance: PR exists and CI (`pr-quality-gate`) has started.
-- [x] [AI] Run the PR-Review Maker→Fixer Cycle on the `ose-private` PR, iteratively until clean, capped at 10 cycles (see §Delivery Boundaries) — acceptance: a cycle reports zero CRITICAL/HIGH/MEDIUM findings, or the cap is reached with residue recorded as accepted-with-reason.
-- [x] [AI] Flip the `ose-private` PR to ready for review — `gh pr ready -R wahidyankf/ose-private <n>` — acceptance: `gh pr view -R wahidyankf/ose-private <n> --json isDraft` reports `false`.
-- [x] [AI] Merge the `ose-private` PR once the five hardened preconditions hold — acceptance: `gh pr view -R wahidyankf/ose-private <n> --json state` reports `MERGED`.
+- [x] [AI] In the private-sibling worktree: run that repo's local quality gates, commit thematically, push the branch, and open a draft PR against `main` titled `chore(gates): propagate optimize-cis gate changes and unify Rust version` — acceptance: PR exists and CI (`pr-quality-gate`) has started.
+- [x] [AI] Run the PR-Review Maker→Fixer Cycle on the private-sibling PR, iteratively until clean, capped at 10 cycles (see §Delivery Boundaries) — acceptance: a cycle reports zero CRITICAL/HIGH/MEDIUM findings, or the cap is reached with residue recorded as accepted-with-reason.
+- [x] [AI] Flip the private-sibling PR to ready for review — `gh pr ready -R wahidyankf/<private-sibling> <n>` — acceptance: `gh pr view -R wahidyankf/<private-sibling> <n> --json isDraft` reports `false`.
+- [x] [AI] Merge the private-sibling PR once the five hardened preconditions hold — acceptance: `gh pr view -R wahidyankf/<private-sibling> <n> --json state` reports `MERGED`.
 - [x] [AI] Remove both sibling worktrees now that their PRs have merged: `git -C <repo> worktree remove worktrees/optimize-cis` — acceptance: `git worktree list` in each repo no longer lists it.
 
 ### Phase 10 Gate
 
 > All checks below must pass before starting Phase 11.
 
-- [ ] [AI] `parity manifest validate` in `ose-public`, `ose-primer`, and `ose-private` — acceptance: exits 0 with an identical manifest hash in all three (AC-15).
+- [ ] [AI] `parity manifest validate` in `ose-public`, `ose-primer`, and the private sibling — acceptance: exits 0 with an identical manifest hash in all three (AC-15).
   - **Date**: 2026-08-09. **Status**: NOT MET as literally specified — left unchecked rather than
-    ticked against a caveat. Both siblings' follow-up PRs (`ose-primer` #31, `ose-private` #30) were
+    ticked against a caveat. Both siblings' follow-up PRs (`ose-primer` #31, the private sibling #30) were
     already merged by the time this gap was found, so re-verification at cycle 7 of the PR-Review
     Maker→Fixer Cycle on `ose-public` #162 found `apps/rhino-cli` byte-identity broken across a
     **17-file union** (not 14 — the cycle-7 reproduction command diffed only against `ose-primer`'s
-    manifest, surfacing 15 files there; a same-shape diff against `ose-private`'s manifest surfaces
+    manifest, surfacing 15 files there; a same-shape diff against the private sibling's manifest surfaces
     8 files, 6 of which overlap the `ose-primer` set, for a 17-file union. Independently
     re-reproduced at cycle 8 by diffing git blob OIDs for all 659 `parity-manifest.sha256` paths
     directly, confirming 15/8/6/17). Full list, `apps/rhino-cli/src/` unless noted:
@@ -933,8 +933,8 @@ fastest repo of the four, and it is slated for deprecation immediately after thi
     Phase 10's CI-green check, and mirrors the `.nx/cache` (DD-8) precedent: disclosed in the PR
     body, `delivery.md`, and a filed follow-up.
 - [ ] [AI] CI green in all three repos — acceptance: latest `pr-quality-gate` conclusion is `success` in each.
-  - **Date**: 2026-08-09. **Status**: NOT MET as literally specified — left unchecked rather than ticked against a caveat. `ose-public` #162 is genuinely green (`Quality gate`: `SUCCESS`). `ose-primer` #31 merged clean (23/23 checks). `ose-private` #30 merged via `--admin` override with its `Quality gate` aggregator (via the `coralpolyp` job) still red — the pre-existing, unrelated self-hosted-runner systemd-sandbox flake already root-caused earlier this session, not a defect this plan introduced — per the maintainer's standing, explicit authorization to accept this specific check red. `ose-private`'s post-merge `main` branch run had not completed as of this measurement; the most recent completed run on `main` concluded `failure` on the same `coralpolyp` flake. This item stays honestly unchecked rather than claiming a green it cannot currently show.
-- [x] [AI] Measure M3 per sibling repo, then append `Phase 10` rows to `scoreboard.md` (one per repo) — acceptance: `ose-primer` and `ose-private` each record a post-change median runner-seconds figure against their Phase 0 baselines (11,683 s and 9,239 s respectively); both show a reduction.
+  - **Date**: 2026-08-09. **Status**: NOT MET as literally specified — left unchecked rather than ticked against a caveat. `ose-public` #162 is genuinely green (`Quality gate`: `SUCCESS`). `ose-primer` #31 merged clean (23/23 checks). The private sibling #30 merged via `--admin` override with its `Quality gate` aggregator (via the `coralpolyp` job) still red — the pre-existing, unrelated self-hosted-runner systemd-sandbox flake already root-caused earlier this session, not a defect this plan introduced — per the maintainer's standing, explicit authorization to accept this specific check red. The private sibling's post-merge `main` branch run had not completed as of this measurement; the most recent completed run on `main` concluded `failure` on the same `coralpolyp` flake. This item stays honestly unchecked rather than claiming a green it cannot currently show.
+- [x] [AI] Measure M3 per sibling repo, then append `Phase 10` rows to `scoreboard.md` (one per repo) — acceptance: `ose-primer` and the private sibling each record a post-change median runner-seconds figure against their Phase 0 baselines (11,683 s and 9,239 s respectively); both show a reduction.
 - [x] [AI] Confirm `beaver-nest` was not modified — acceptance: `git -C ~/ose-projects/beaver-nest status --porcelain` is empty.
 - [x] [AI] Measure M9, then append a `Phase 10` row to `scoreboard.md` — acceptance: across all three repos the `^channel` and `^rust-version` `sort -u` sets each contain **exactly one** value and the two agree (`1.95.0`), down from 3 distinct declared values at baseline (AC-19).
 - [x] [AI] Measure M9's machine half, folded into the same `Phase 10` scoreboard row as the repo-side M9 measurement above — acceptance: every entry of `rustup toolchain list` appears in the required set, except a `stable` retained with its recorded predicate result (AC-21).
@@ -966,7 +966,7 @@ fastest repo of the four, and it is slated for deprecation immediately after thi
 
 - [x] [AI] Apply the litmus test to every `learnings.md` entry — keep only entries where a durable surface would catch this automatically next time; discard the rest with a one-line reason.
 - [x] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize to `<placeholder>` tokens or discard if the entry cannot be sanitized without losing its meaning.
-- [x] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays in `ose-private` only; public-governance content may route to `ose-public`/`ose-primer`; never cross-route private content into a public repo.
+- [x] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays in the private sibling only; public-governance content may route to `ose-public`/`ose-primer`; never cross-route private content into a public repo.
 - [x] [AI] Route each surviving entry to exactly one durable home (`repo-governance/`, `docs/`, `.claude/agents/`, `.claude/skills/`, or a `plans/backlog/` follow-up), landing small non-code edits inline.
   - _Two entries are already expected: the `zsh`-word-splitting measurement trap (a benchmarking-method rule) and the cross-worktree cargo lock contention finding._
 - [x] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing two-pagers FIRST for a brief already covering the same area — fold into that brief rather than creating a new file.
@@ -994,7 +994,7 @@ fastest repo of the four, and it is slated for deprecation immediately after thi
 > Phase 10 (the `parity.rs` message fix), Phase 11 (`results.md`), and Phase 12 (Knowledge Capture
 > routing). The plan folder's `git mv` to `plans/done/` happens here, in this section's first step,
 > not inside Phase 12 — it must ride inside this PR before merge, since `main` is branch-protected
-> and the PR budget is exactly 3. The `ose-primer`/`ose-private` PRs are separate repos and already
+> and the PR budget is exactly 3. The `ose-primer`/the private sibling PRs are separate repos and already
 > merged inside Phase 10 — see its "Sibling PRs" subsection; they are not part of this PR's diff.
 
 - [x] [AI] Move the plan folder — `git mv plans/in-progress/optimize-cis plans/done/YYYY-MM-DD__optimize-cis` using the actual completion date — update `plans/in-progress/README.md` (remove the entry), `plans/done/README.md` (add the entry with completion date), and any other README referencing this plan. This must land inside the open PR: `main` is branch-protected with no direct-push path, and the plan's PR budget is exactly 3 (§Delivery Boundaries) — there is no follow-up PR to carry it — acceptance: `git status` shows the move staged; `grep -rl 'plans/in-progress/optimize-cis' plans/ docs/` (excluding the moved folder itself) returns nothing.
@@ -1002,7 +1002,7 @@ fastest repo of the four, and it is slated for deprecation immediately after thi
 - [ ] [AI] Run the PR-Review Maker→Fixer Cycle on the `ose-public` PR, iteratively until clean, capped at 10 cycles (see §Delivery Boundaries) — acceptance: a cycle reports zero CRITICAL/HIGH/MEDIUM findings, or the cap is reached with residue recorded as accepted-with-reason.
 - [ ] [AI] Flip the `ose-public` PR to ready for review — `gh pr ready -R wahidyankf/ose-public <n>` — acceptance: `gh pr view -R wahidyankf/ose-public <n> --json isDraft` reports `false`.
 - [ ] [AI] Merge once the five hardened preconditions hold.
-- [ ] [AI] Final confirmation, closing the plan's full PR set: all 6 plan-attributable PRs are merged — `ose-public` #161, #162; `ose-primer` #30, #31; `ose-private` #29, #30 (3 budgeted plus the 3rd deviation's 2 authorized follow-ups plus #161 — see `baseline/pr-numbers.md`) — acceptance: `gh pr view -R wahidyankf/<repo> <n> --json state -q .state` reports `MERGED` for each of the 6 PR numbers above (a plan-scoped check per PR number, not `gh pr list --state open`, which any unrelated open PR in the repo — e.g. `ose-primer` #29 — would falsify). `parity manifest validate` returning an identical hash in all three repos is **not** part of this acceptance clause as of 2026-08-09 — AC-15 is open, accepted-with-reason (see Phase 10 Gate's AC-15 annotation and the 4th §Delivery Boundaries item above); this closing item does not assert a condition the plan does not currently satisfy.
+- [ ] [AI] Final confirmation, closing the plan's full PR set: all 6 plan-attributable PRs are merged — `ose-public` #161, #162; `ose-primer` #30, #31; the private sibling #29, #30 (3 budgeted plus the 3rd deviation's 2 authorized follow-ups plus #161 — see `baseline/pr-numbers.md`) — acceptance: `gh pr view -R wahidyankf/<repo> <n> --json state -q .state` reports `MERGED` for each of the 6 PR numbers above (a plan-scoped check per PR number, not `gh pr list --state open`, which any unrelated open PR in the repo — e.g. `ose-primer` #29 — would falsify). `parity manifest validate` returning an identical hash in all three repos is **not** part of this acceptance clause as of 2026-08-09 — AC-15 is open, accepted-with-reason (see Phase 10 Gate's AC-15 annotation and the 4th §Delivery Boundaries item above); this closing item does not assert a condition the plan does not currently satisfy.
 
 ---
 
@@ -1044,7 +1044,7 @@ fastest repo of the four, and it is slated for deprecation immediately after thi
 - [ ] [AI] All tests pass (`npx nx affected -t test:quick`)
 - [ ] [AI] All nine success metrics have a recorded verdict in `results.md`
 - [ ] [AI] Gate coverage proven invariant on all four surfaces (M5/AC-4)
-- [ ] [AI] Parity manifest identical across `ose-public`, `ose-primer`, and `ose-private`
+- [ ] [AI] Parity manifest identical across `ose-public`, `ose-primer`, and the private sibling
 - [ ] [AI] Documentation updated wherever the old invocation form was named
 
 ## Plan Archival

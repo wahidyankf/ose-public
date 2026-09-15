@@ -35,5 +35,5 @@ env-injection:
 and `.env.example` are the same conceptual surface (the env contract), and `env validate` is already
 wired into `.husky/pre-push` and `validate-env.yml`, so extending it adds the check with no
 new target wiring. The check remains static and value-free. Actual presence of secret values in
-GitHub, Vercel, or k3s is not machine-checkable from this repo and stays a wire-vercel / ose-private
+GitHub, Vercel, or k3s is not machine-checkable from this repo and stays a wire-vercel / the private sibling
 `[HUMAN]` responsibility — the manifest is what they verify against.

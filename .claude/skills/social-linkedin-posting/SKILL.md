@@ -9,7 +9,7 @@ when_to_use: When implementing or maintaining social-linkedin-post-maker, or any
 ## Overview
 
 Every LinkedIn post is a file in `social-media-posts/linkedin/YYYY/` summarizing completed
-`origin/main` work across the ose-public and ose-private repos, under a hard 3,000
+`origin/main` work across the ose-public and private-sibling repos, under a hard 3,000
 character body limit measured mechanically, never estimated.
 
 ## Reference Modules

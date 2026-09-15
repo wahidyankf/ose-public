@@ -12,9 +12,9 @@ it to the root — so the manifests misdescribe their own packages and no gate w
 
 Search rule: every `package.json` sitting beside a `vite*.config.*` that declares `vitest`, checked
 for a `vite` declaration. Eleven packages match across the two repos. **One** is declared
-(`@open-sharia-enterprise/ts-ui` in `ose-private`, at `^7.3.5`); the other ten are not — nine in
+(`@open-sharia-enterprise/ts-ui` in the private sibling, at `^7.3.5`); the other ten are not — nine in
 `ose-public` (`web-ui`, `web-ui-token`, `ts-env-loader`, `ayokoding-www`, `ose-www`, `ose-app-web`,
-`organiclever-www`, `organiclever-app-web`, `wahidyankf-www`) and one in `ose-private`
+`organiclever-www`, `organiclever-app-web`, `wahidyankf-www`) and one in the private sibling
 (`ts-ui-tokens`).
 
 They all work because `vite` is a peer dependency of `vitest`
@@ -23,7 +23,7 @@ workspace package into the root `node_modules` and finds it. That arrangement is
 of hoisting, not a decision anyone made or reviewed.
 
 **Be precise about what this is not.** It is not an outage risk. The one time the class bit —
-`ose-private` PR #51 failing `ts-ui:test:unit` with `Cannot find module 'vite'` — the cause was that
+the private sibling's PR #51 failing `ts-ui:test:unit` with `Cannot find module 'vite'` — the cause was that
 repo's self-hosted runner cache symlinking `node_modules` into `$HOME`, so Node realpath'd the
 symlink and the ancestor walk continued under `$HOME` instead of the repository. Fixed in `a34d0f15e`
 by copying workspace trees instead of symlinking them. `ose-public` never had that scheme at all,
@@ -66,7 +66,7 @@ since the versions are already resolved and already installed.
   builtins, maps subpaths to their package (`vite/client` → `vite`, `@vitejs/plugin-react/x` →
   `@vitejs/plugin-react`), and fails naming any specifier the package does not declare. Written before
   the declarations land, its failing state is the actual repository — nine findings in `ose-public`,
-  one in `ose-private` — which is stronger evidence than a fixture.
+  one in the private sibling — which is stronger evidence than a fixture.
 - **Then declare the ten, inertly.** Each pinned to the version _its own_ repo's lockfile already
   resolves, with the lockfile diff required to be declaration-only: any changed `version`, `resolved`,
   or `integrity` field means the range was wrong and the hygiene change has become an upgrade.
@@ -82,7 +82,7 @@ In scope: ten `package.json` files, both `package-lock.json` files, and — for 
 Out of scope (for now):
 
 - Upgrading `vite` in either repo.
-- Reconciling the 7.x/8.x split — `ose-public` hoists 8.0.13, `ose-private` resolves 7.3.5. A single
+- Reconciling the 7.x/8.x split — `ose-public` hoists 8.0.13, the private sibling resolves 7.3.5. A single
   shared range across both would force a resolution change in one of them, which is exactly what the
   declaration-only lockfile check exists to prevent.
 - Extending the gate beyond config files to application source.

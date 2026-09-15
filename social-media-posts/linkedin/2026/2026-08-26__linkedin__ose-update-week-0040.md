@@ -1,6 +1,6 @@
 Posted: Wednesday, August 26, 2026
 Platform: LinkedIn
-Window: 2026-08-18 18:36:31 +0700 → 2026-08-26 07:33:08 +0700. ~216 commits across three repos (ose-public 75, ose-private 64, beaver-nest 77).
+Window: 2026-08-18 18:36:31 +0700 → 2026-08-26 07:33:08 +0700. ~216 commits across three repos (ose-public 75, private sibling 64, beaver-nest 77).
 
 ---
 
@@ -11,7 +11,7 @@ Highlights: BeaverNest now has its own focused repository. Its former Flutter/F#
 
 🌐 Cross-repo
 
-ose-public and ose-private remain the parity pair. BeaverNest is independent; live work belongs in wahidyankf/beaver-nest, outside ose-public's Rhino byte-identity and governance propagation.
+ose-public and the private sibling remain the parity pair. BeaverNest is independent; live work belongs in wahidyankf/beaver-nest, outside ose-public's Rhino byte-identity and governance propagation.
 
 🌳 ose-public
 
@@ -19,7 +19,7 @@ Runtime port handling now follows a single contract across all listeners: an exp
 
 Contributor docs now agree on setup, Nx, ports, prerequisites, names, and repository boundaries. PR review gained risk-based routing, shared context, evidence-backed refutation, and bounded recovery.
 
-🏗️ ose-private
+🏗️ Private sibling
 
 The active Node B/C CI pool now uses a 3+3 topology: six clearly named runners on a 6 GB profile with thin-pool discard. The obsolete pdm-ose VM and template were retired.
 

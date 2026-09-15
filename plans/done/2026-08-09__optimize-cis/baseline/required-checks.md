@@ -25,7 +25,7 @@ so protection is enforced via a **repository ruleset**, not classic branch prote
 no GitHub-required status-check context currently gates merges into `ose-primer`'s `main` via this
 mechanism.
 
-## ose-private
+## The private sibling
 
 Both the classic branch-protection endpoint and the rulesets endpoint return
 `403 Upgrade to GitHub Pro or make this repository public to enable this feature` — **no protection

@@ -86,7 +86,7 @@ Scenario: The new check is evaluated against existing plans before landing
 
 ```gherkin
 Scenario: The scaffolding is present in both repositories
-  Given the change has landed in ose-public and ose-private
+  Given the change has landed in ose-public and private-sibling
   When each repository's plan-archival template and plan-checker rule surface are read
   Then both scaffold the same two steps and both carry the same presence check
   And each repository's Skill mirrors match their sources
@@ -100,7 +100,7 @@ Scenario: The scaffolding is present in both repositories
 - The `plan-validating-quality` rule surface — one presence check, placed per `tech-docs.md`.
 - The `plan-applying-fixes` recipe surface — one repair recipe.
 - Regenerated non-vendored Skill mirrors under `.agents/skills/`.
-- The equivalent surfaces in `ose-private`.
+- The equivalent surfaces in the private sibling.
 - One `rules-propagation` run per repository.
 
 **Out**

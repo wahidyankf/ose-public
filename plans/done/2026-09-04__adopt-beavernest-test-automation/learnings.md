@@ -15,7 +15,7 @@ Route: <filled only after Phase 21 safety and overlap gates>
 ```
 
 `public` may enter an authorized public durable surface after the overlap scan. `private-only` may
-be reported or routed only inside `ose-private`; it never enters a public idea, plan, rule, or
+be reported or routed only inside the private sibling; it never enters a public idea, plan, rule, or
 export. `discard` records a one-line reason and is not routed.
 
 Before archival, every surviving entry must be routed inline to a non-code home, filed as a

@@ -859,7 +859,7 @@ Apply the seven-step per-course convention to each course; each course is its ow
       would catch this automatically next time; discard the rest with a one-line reason.
 - [x] [AI] Apply the secret/sensitivity gate — sanitize any secret, credential, token, or private
       hostname, or discard if unsanitizable.
-- [x] [AI] Apply the repo-relevance gate — infra-private content stays in `ose-private` only.
+- [x] [AI] Apply the repo-relevance gate — infra-private content stays in the private sibling only.
 - [x] [AI] Route each surviving learning to exactly one durable home; code-homed learnings are
       filed as a separate `plans/backlog/<slug>/` plan, never landed inline.
 - [x] [AI] For any entry routed to `plans/ideas/`, scan `plans/ideas/README.md` and the existing

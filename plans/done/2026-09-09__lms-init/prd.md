@@ -141,7 +141,7 @@ Feature: LMS BE listener port resolution
 
 Both extend the existing `specs/apps/rhino/cli/behaviours/system/doctor.feature`, beside its current
 "A repo-config-declared tool is skipped from the check" scenario [Repo-grounded]. Both land
-byte-identically in `ose-public` and `ose-private`, because `rhino-cli` behaviour must be
+byte-identically in `ose-public` and the private sibling, because `rhino-cli` behaviour must be
 cucumber-covered in both repositories.
 
 ```gherkin

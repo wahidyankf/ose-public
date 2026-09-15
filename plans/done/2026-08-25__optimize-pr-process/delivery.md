@@ -27,7 +27,7 @@
 | [Repo-grounded] Merged [PUB-IDEAS-5 PR #281](https://github.com/wahidyankf/ose-public/pull/281)                                                                                                                      | PUB-IDEAS-5 completed at `e70ef47b945cbc91d23a641230a87a2b8879f75a`; its receipt named PUB-IDEAS-6                                                                                                                          |
 | [Repo-grounded] Merged [plan amendment PR #282](https://github.com/wahidyankf/ose-public/pull/282)                                                                                                                   | PUB-IDEAS-6 four-path live-backlink authority at `56e5fa6c5168ffe5569d21a4b685a76168dd6f13`; strict revalidation remains required                                                                                           |
 | [Repo-grounded] Merged [plan-state PR #283](https://github.com/wahidyankf/ose-public/pull/283)                                                                                                                       | Historical PUB-IDEAS-6 state and finite-runbook evidence at `6ecb22d0a4f7216cfb6865c502ca21801ebed70b`; superseded by #285/#286/#288 retirements                                                                            |
-| [Repo-grounded] Merged [private PR #63](https://github.com/wahidyankf/ose-private/pull/63)                                                                                                                           | Former two-path private patch landed at `25bb1d81f53156d001f2ab25cca07d23ab8ce062`; its terminal record names PRE-A1-ADMISSION                                                                                              |
+| [Repo-grounded] Merged private PR #63 (private, not linked)                                                                                                                                                          | Former two-path private patch landed at `25bb1d81f53156d001f2ab25cca07d23ab8ce062`; its terminal record names PRE-A1-ADMISSION                                                                                              |
 | [Repo-grounded] Merged [public PR #289](https://github.com/wahidyankf/ose-public/pull/289)                                                                                                                           | PRE-A1 admission and direct PUB-A1 size-policy edits at `539cda50e6aa48079d347ae6131b81901120cd84`; provenance only for private PRIV-ADMISSION                                                                              |
 | [Repo-grounded] Merged [public PR #285](https://github.com/wahidyankf/ose-public/pull/285), [#286](https://github.com/wahidyankf/ose-public/pull/286), and [#288](https://github.com/wahidyankf/ose-public/pull/288) | Remaining public idea briefs retired at `5e45ae3e1969359a233ac8be2d7b176492d0531b`, `d440f7385aa32eadeaf224bb10a633837a31055a`, and `70dbe4187dd720d8fe344960d227c44cf3d549f5`; their old checklist is a historical receipt |
 | [Repo-grounded] Merged [public PR #299](https://github.com/wahidyankf/ose-public/pull/299), [#301](https://github.com/wahidyankf/ose-public/pull/301), and [#302](https://github.com/wahidyankf/ose-public/pull/302) | Public A2, A3, and bounded-recovery source rules completed at `3900acef8221960898ad8a29a174783ce062c4b7`, `2fd13017271b5a4c272c4529e945a684d91d33fc`, and `d19179fd0cef2620c18575d7299ec6da12854acb`                        |
@@ -43,7 +43,7 @@
 > and public PR #289 then admitted the exact A-wave paths and completed direct PUB-A1 policy work.
 > PR #289 is provenance only. PR #290's terminal-handoff receipt was read back after its reader
 > successor landed; it released `PRIV-ADMISSION`, whose native private receipt merged in
-> [private PR #64](https://github.com/wahidyankf/ose-private/pull/64) at
+> private PR #64 (private, not linked) at
 > `db40c969f8c6a554837efab1cf266c8d505c02a6`. Private PR #65 then completed `PRIV-A1` at
 > `71c8a0f1f318bf856141f1067a31f15f307b7f3b` and released public `PUB-A2`. No private path or
 > content is reproduced here.
@@ -51,7 +51,7 @@
 ### PR #290 Post-Merge Terminal Handoff — Complete
 
 - [x] `[PLAN-QUALITY-290:P5.HANDOFF][AI]` Completed immutable evidence: PR #290 terminal handoff,
-      its reader-state successor, and [private PR #64](https://github.com/wahidyankf/ose-private/pull/64)
+      its reader-state successor, and private PR #64 (private, not linked)
       at `db40c969f8c6a554837efab1cf266c8d505c02a6` were read back. Private PR #65 subsequently merged
       `PRIV-A1` at `71c8a0f1f318bf856141f1067a31f15f307b7f3b` and released public `PUB-A2`.
 
@@ -719,20 +719,20 @@ Write the resolved values and the exact admitted source paths to that `RECORD`, 
 is local preparation only; the same resolved values and read-back result must appear in the unit's
 PR route/reply artifact before the associated gate passes.
 
-| Unit             | `REPO`                   | `BRANCH`                                                    | `RECORD`                                                   |
-| ---------------- | ------------------------ | ----------------------------------------------------------- | ---------------------------------------------------------- |
-| PRE-A1-ADMISSION | `wahidyankf/ose-public`  | `optimize-pr-process-plan-amendment-a-rules-admission`      | `local-tmp/optimize-pr-process/pre-a1-admission-record.md` |
-| PRIV-ADMISSION   | `wahidyankf/ose-private` | `optimize-pr-process-priv-plan-amendment-a-rules-admission` | `local-tmp/optimize-pr-process/priv-admission-record.md`   |
-| PUB-A1           | `wahidyankf/ose-public`  | `optimize-pr-process-pub-a1`                                | `local-tmp/optimize-pr-process/pub-a1-record.md`           |
-| PRIV-A1          | `wahidyankf/ose-private` | `optimize-pr-process-priv-a1-size-policy`                   | `local-tmp/optimize-pr-process/priv-a1-record.md`          |
-| PUB-A2           | `wahidyankf/ose-public`  | `optimize-pr-process-pub-a2`                                | `local-tmp/optimize-pr-process/pub-a2-record.md`           |
-| PRIV-A2          | `wahidyankf/ose-private` | `optimize-pr-process-priv-a2`                               | `local-tmp/optimize-pr-process/priv-a2-record.md`          |
-| PUB-A3           | `wahidyankf/ose-public`  | `optimize-pr-process-pub-a3`                                | `local-tmp/optimize-pr-process/pub-a3-record.md`           |
-| PRIV-A3          | `wahidyankf/ose-private` | `optimize-pr-process-priv-a3`                               | `local-tmp/optimize-pr-process/priv-a3-record.md`          |
-| PUB-B            | `wahidyankf/ose-public`  | `optimize-pr-process-pub-b`                                 | `local-tmp/optimize-pr-process/pub-b-record.md`            |
-| PRIV-B           | `wahidyankf/ose-private` | `optimize-pr-process-priv-b`                                | `local-tmp/optimize-pr-process/priv-b-record.md`           |
-| PUB-C            | `wahidyankf/ose-public`  | `optimize-pr-process-pub-c`                                 | `local-tmp/optimize-pr-process/pub-c-record.md`            |
-| PRIV-C           | `wahidyankf/ose-private` | `optimize-pr-process-priv-c`                                | `local-tmp/optimize-pr-process/priv-c-record.md`           |
+| Unit             | `REPO`                         | `BRANCH`                                                    | `RECORD`                                                   |
+| ---------------- | ------------------------------ | ----------------------------------------------------------- | ---------------------------------------------------------- |
+| PRE-A1-ADMISSION | `wahidyankf/ose-public`        | `optimize-pr-process-plan-amendment-a-rules-admission`      | `local-tmp/optimize-pr-process/pre-a1-admission-record.md` |
+| PRIV-ADMISSION   | `wahidyankf/<private-sibling>` | `optimize-pr-process-priv-plan-amendment-a-rules-admission` | `local-tmp/optimize-pr-process/priv-admission-record.md`   |
+| PUB-A1           | `wahidyankf/ose-public`        | `optimize-pr-process-pub-a1`                                | `local-tmp/optimize-pr-process/pub-a1-record.md`           |
+| PRIV-A1          | `wahidyankf/<private-sibling>` | `optimize-pr-process-priv-a1-size-policy`                   | `local-tmp/optimize-pr-process/priv-a1-record.md`          |
+| PUB-A2           | `wahidyankf/ose-public`        | `optimize-pr-process-pub-a2`                                | `local-tmp/optimize-pr-process/pub-a2-record.md`           |
+| PRIV-A2          | `wahidyankf/<private-sibling>` | `optimize-pr-process-priv-a2`                               | `local-tmp/optimize-pr-process/priv-a2-record.md`          |
+| PUB-A3           | `wahidyankf/ose-public`        | `optimize-pr-process-pub-a3`                                | `local-tmp/optimize-pr-process/pub-a3-record.md`           |
+| PRIV-A3          | `wahidyankf/<private-sibling>` | `optimize-pr-process-priv-a3`                               | `local-tmp/optimize-pr-process/priv-a3-record.md`          |
+| PUB-B            | `wahidyankf/ose-public`        | `optimize-pr-process-pub-b`                                 | `local-tmp/optimize-pr-process/pub-b-record.md`            |
+| PRIV-B           | `wahidyankf/<private-sibling>` | `optimize-pr-process-priv-b`                                | `local-tmp/optimize-pr-process/priv-b-record.md`           |
+| PUB-C            | `wahidyankf/ose-public`        | `optimize-pr-process-pub-c`                                 | `local-tmp/optimize-pr-process/pub-c-record.md`            |
+| PRIV-C           | `wahidyankf/<private-sibling>` | `optimize-pr-process-priv-c`                                | `local-tmp/optimize-pr-process/priv-c-record.md`           |
 
 Each record has the following literal contract. `AR-ENTRY` refuses a missing pre-entry field;
 later fields are populated only by their named transition, so an executor never invents a value or
@@ -1014,7 +1014,7 @@ PUBLIC_BRANCH="$(git -C "$PUBLIC_WORKTREE" branch --show-current)"
 PRIVATE_BRANCH="$(git -C "$PRIVATE_WORKTREE" branch --show-current)"
 test -n "$PUBLIC_BRANCH" && test -n "$PRIVATE_BRANCH"
 gh pr list --repo wahidyankf/ose-public --head "$PUBLIC_BRANCH" --state all --json number,state,mergedAt
-gh pr list --repo wahidyankf/ose-private --head "$PRIVATE_BRANCH" --state all --json number,state,mergedAt
+gh pr list --repo wahidyankf/<private-sibling> --head "$PRIVATE_BRANCH" --state all --json number,state,mergedAt
 git -C "$PUBLIC_WORKTREE" status --short
 git -C "$PRIVATE_WORKTREE" status --short
 git -C "$PUBLIC_WORKTREE" log "origin/$PUBLIC_BRANCH..$PUBLIC_BRANCH"
@@ -1324,7 +1324,7 @@ the existing merge-gate line is preserved unchanged as required by the merge-ste
 
 - [x] `[PRIV-ADMISSION:P1.01][AI]` Record the private predecessor and create the admission branch.
       **Date:** 2026-08-24; **Status:** complete; **Files Changed:** private-only (not enumerated);
-      **Notes:** native receipt is [private PR #64](https://github.com/wahidyankf/ose-private/pull/64) at `db40c969f8c6a554837efab1cf266c8d505c02a6`.
+      **Notes:** native receipt is private PR #64 (private, not linked) at `db40c969f8c6a554837efab1cf266c8d505c02a6`.
 - [x] `[PRIV-ADMISSION:P1.02][AI]` Classify the private semantic counterpart, deviation, or `N/A`.
       **Date:** 2026-08-24; **Status:** complete; **Files Changed:** private-only (not enumerated);
       **Notes:** classification evidence remains in private PR #64.

@@ -58,14 +58,14 @@ that and records the result.
 
 ## Success Metrics
 
-| Metric                   | Target                                                                                                                                     |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Health endpoint liveness | `GET /api/v1/health` returns 200 with `{"status":"healthy"}` in the E2E suite.                                                             |
-| Unit line coverage       | At least 99% over the production denominator, enforced by `islamic-be:test:unit`.                                                          |
-| Gherkin binding coverage | Every active scenario bound at Unit and E2E; zero unexplained `allowedUnbound`.                                                            |
-| CI correctness           | Go targets execute only in the `go` job; the `typescript`, `dotnet`, and `flutter` jobs all skip them.                                     |
-| Cross-repo parity        | `apps/rhino-cli/src` **and** `parity-manifest.sha256` byte-identical between `ose-public` and `ose-private`, with the nightly audit green. |
-| Doctor dividend          | Registering Go costs one `repo-config.yml` list item and zero `rhino-cli` edits, validating `lms-init` D-4's rationale.                    |
+| Metric                   | Target                                                                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Health endpoint liveness | `GET /api/v1/health` returns 200 with `{"status":"healthy"}` in the E2E suite.                                                                   |
+| Unit line coverage       | At least 99% over the production denominator, enforced by `islamic-be:test:unit`.                                                                |
+| Gherkin binding coverage | Every active scenario bound at Unit and E2E; zero unexplained `allowedUnbound`.                                                                  |
+| CI correctness           | Go targets execute only in the `go` job; the `typescript`, `dotnet`, and `flutter` jobs all skip them.                                           |
+| Cross-repo parity        | `apps/rhino-cli/src` **and** `parity-manifest.sha256` byte-identical between `ose-public` and the private sibling, with the nightly audit green. |
+| Doctor dividend          | Registering Go costs one `repo-config.yml` list item and zero `rhino-cli` edits, validating `lms-init` D-4's rationale.                          |
 
 ## Business-Scope Non-Goals
 

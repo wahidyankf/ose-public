@@ -106,7 +106,7 @@ against a currently-noncompliant repo.** These are two separate risks, handled t
    `path-gated` gate id, `governance-readme-completeness`, scoped to FR-3.7's covered-tree list
    (the scope widening lives here, not in the continuity gate — narrowed to a 4-entry list at
    the Phase 9/16 arming step; see `prd.md` FR-3.7) — armed once
-   Phases 2–8 (`ose-public`) / 11–15 (`ose-private`) have populated the missing indexes and
+   Phases 2–8 (`ose-public`) / 11–15 (the private sibling) have populated the missing indexes and
    annotations. See `prd.md` FR-3.19/FR-3.20 and §4 below for the full design.
 
 ### 1.2 Word counting
@@ -268,7 +268,7 @@ hook files.
 
 [Repo-grounded] Root-relative tree of concrete, enumerable targets this plan touches directly,
 plus bounded glob patterns for the bulk content splits. Counts are re-derived from the current
-commit (2026-08-13); `ose-private` paths are a byte-for-byte mirror of the `ose-public` rhino-cli
+commit (2026-08-13); the private sibling paths are a byte-for-byte mirror of the `ose-public` rhino-cli
 boundary, landed separately in Phase 10.
 
 ```text
@@ -411,7 +411,7 @@ AGENTS.md                                                        [E] rewritten a
 CLAUDE.md                                                         [E] rewritten, 907 → ≤500 words (Phase 8)
 repo-governance/README.md + every top-level index                [E] updated to reflect splits (Phase 8)
 
-ose-private/ (mirrored root; Phases 10–16)
+<private-sibling>/ (mirrored root; Phases 10–16)
 ├── apps/rhino-cli/                                             [E] byte-for-byte copy of the ose-public
 │                                                                     rhino-cli boundary (Phase 10)
 ├── repo-config.yml                                              [E] equivalent changes, adjusted for
@@ -571,10 +571,10 @@ validate` command (gate id `md-readme-index`) — see §1.1 above for the full r
 decision record. It splits into two `repo-config.yml` registrations sharing one implementation
 (`application/governance/readme_index.rs`, `commands/governance_validate_readme_index.rs`):
 
-| Gate id                          | Finding kinds            | Scope                                                                                                                                               | Arming                                                                          |
-| -------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `governance-readme-index`        | `orphan`, `ghost`        | `all-file-type`, current `DEFAULT_PATHS` (4 entries, unwidened)                                                                                     | Continuously armed — renamed in place at Phase 1, no gap                        |
-| `governance-readme-completeness` | `missing`, `unannotated` | `path-gated`, FR-1.11's 5-entry trigger list, FR-3.7's 4-entry covered-tree scope (narrowed from an originally-wider 6-entry design at arming time) | Dark-launched Phase 1 → armed Phase 9 (`ose-public`) / Phase 16 (`ose-private`) |
+| Gate id                          | Finding kinds            | Scope                                                                                                                                               | Arming                                                                                |
+| -------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `governance-readme-index`        | `orphan`, `ghost`        | `all-file-type`, current `DEFAULT_PATHS` (4 entries, unwidened)                                                                                     | Continuously armed — renamed in place at Phase 1, no gap                              |
+| `governance-readme-completeness` | `missing`, `unannotated` | `path-gated`, FR-1.11's 5-entry trigger list, FR-3.7's 4-entry covered-tree scope (narrowed from an originally-wider 6-entry design at arming time) | Dark-launched Phase 1 → armed Phase 9 (`ose-public`) / Phase 16 (the private sibling) |
 
 **The mechanism** [Repo-grounded — `apps/rhino-cli/src/application/repo_config/mod.rs::fixed_arguments`]:
 one binary, two `repo-config.yml` registrations, differentiated entirely by each entry's `args:`
@@ -737,7 +737,7 @@ unregistered gate id runs nowhere, so "register but don't arm" is free for a new
 `md-frontmatter` is already armed and already running repo-wide, FR-4's two FAIL-severity checks
 cannot land as FAIL in the same PR that adds them — doing so would fail CI for every contributor
 the moment PR1 merges, since 0/214 `repo-governance/**/*.md` files currently carry `when_to_use`
-and the backfill only completes across Phases 2–5 (`ose-public`) / 11–13 (`ose-private`).
+and the backfill only completes across Phases 2–5 (`ose-public`) / 11–13 (the private sibling).
 
 FR-4 therefore follows the same register-then-arm shape as FR-1/FR-3, adapted to an
 already-active gate:
@@ -812,7 +812,7 @@ check.
 ### 6.1 Cross-repo parity
 
 `apps/rhino-cli/src`, `tests`, `Cargo.toml`, `Cargo.lock`, `project.json`, `LICENSE`, and
-`specs/apps/rhino/behavior/rhino-cli/gherkin` are byte-identical across repos. In `ose-private`
+`specs/apps/rhino/behavior/rhino-cli/gherkin` are byte-identical across repos. In the private sibling
 the rhino-cli change is a **byte-for-byte copy** of the `ose-public` change, not a
 reimplementation. After copying:
 

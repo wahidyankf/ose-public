@@ -1,13 +1,13 @@
 # Rewrite rhino-cli: Rust to F# port
 
 **Status**: In Progress
-**Scope**: `ose-public` **and** `ose-private` — replace `apps/rhino-cli/` (Rust) with a
+**Scope**: `ose-public` **and** the private sibling — replace `apps/rhino-cli/` (Rust) with a
 behavior-equivalent F# binary, namespace by namespace behind a dispatch shim, then retire the Rust
 crate, tear down the Rust CI surface, and re-establish the byte-identity parity boundary across both
 repos.
 **Created**: 2026-08-25
 **Started**: 2026-08-25
-**Plan docs**: single-sourced here in `ose-public`. `ose-private` carries **no** copy of this
+**Plan docs**: single-sourced here in `ose-public`. The private sibling carries **no** copy of this
 folder — the work lands in both repos, the document lives in one, so the two can never drift.
 
 ## Context
@@ -103,7 +103,7 @@ counts both sides with the same command shape and records the real ratio, whatev
 - A nine-row before/after benchmark record, published to a durable home outside `plans/`
 - Propagation of the four rules this plan decides, and a sweep of the ~52 files that describe
   `rhino-cli` as a Rust project
-- Identical landing in `ose-private`, delivery unit by delivery unit
+- Identical landing in the private sibling, delivery unit by delivery unit
 
 **Out of scope**:
 

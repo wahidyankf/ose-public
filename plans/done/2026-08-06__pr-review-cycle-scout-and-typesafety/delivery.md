@@ -45,7 +45,7 @@ opened — running that repo's PR-Review Maker→Fixer Cycle and performing the 
 not open a second PR.
 
 **Archival-in-PR applies to `ose-public`'s track only.** This plan's folder lives exclusively in
-`ose-public`'s `plans/` — `ose-primer`, `ose-private`, and `beaver-nest` have no `plans/` entry for
+`ose-public`'s `plans/` — `ose-primer`, the private sibling, and `beaver-nest` have no `plans/` entry for
 this work, so their PRs carry no plan-folder content and have no archival step at all. This is the
 ordinary cross-repo carve-out from the
 [Archival-in-PR HARD RULE](../../../repo-governance/conventions/structure/plans/delivery-mode-the-four-modes.md#delivery-mode),
@@ -61,7 +61,7 @@ Phases 6-7 run once, after all four tracks' Phase 5 gates pass, pushing `learnin
 (Phase 0 → 1 → 2 → 3 → 4 → 5, artifacts feeding the next phase within that repo), converging on a
 single shared terminal chain (Phase 6 → 7) that depends on **all four** chains' Phase 5 completing.
 No repo's track depends on any other repo's track — a stalled `ose-primer` track does not block
-`ose-private` from proceeding, and none of the four blocks Phase 0 baseline work in another.
+the private sibling from proceeding, and none of the four blocks Phase 0 baseline work in another.
 
 **Not a byte-identity-boundary sibling-PR scenario**: unlike the byte-identity-boundary sibling-PR
 scenario [`pr-review-quality-gate.md`'s own Notes section](../../../repo-governance/workflows/pr/pr-review-quality-gate.md#notes)
@@ -110,7 +110,7 @@ flowchart TD
     direction TB
     B0["Phase 0"]:::blue --> B14["Phases 1-4"]:::blue --> B5["Phase 5<br/>Dogfood+Merge"]:::orange
   end
-  subgraph TC["Track C: ose-private"]
+  subgraph TC["Track C: private sibling"]
     direction TB
     C0["Phase 0"]:::blue --> C14["Phases 1-4"]:::blue --> C5["Phase 5<br/>Dogfood+Merge"]:::orange
   end
@@ -140,7 +140,7 @@ Every value below is mechanically re-verified live at that repo's own Phase 0 �
 2026-08-05 snapshot, not a substitute for the live check. Source: brd.md's
 [Current-State Baseline](./brd.md#current-state-baseline-mechanically-verified-2026-08-05).
 
-| Parameter                                               | `ose-public`                | `ose-primer`                | `ose-private`                                                                    | `beaver-nest`               |
+| Parameter                                               | `ose-public`                | `ose-primer`                | The private sibling                                                              | `beaver-nest`               |
 | ------------------------------------------------------- | --------------------------- | --------------------------- | -------------------------------------------------------------------------------- | --------------------------- |
 | `eight` count in `pr-review-disciplines.md`             | 26                          | 26                          | 26                                                                               | 26                          |
 | `eight` count in `pr-review-quality-gate.md`            | 6                           | 6                           | **5**                                                                            | 6                           |
@@ -173,7 +173,7 @@ pr-review-cycle-scout-and-typesafety` — acceptance: `git worktree list` shows 
       between plan-authoring and execution start): `grep -c eight
 repo-governance/development/quality/pr-review-disciplines.md` matches that repo's own row;
       `grep -c eight repo-governance/workflows/pr/pr-review-quality-gate.md` matches that repo's own
-      row (5 for `ose-private`, 6 for the other three); `wc -c AGENTS.md` is within a small margin of
+      row (5 for the private sibling, 6 for the other three); `wc -c AGENTS.md` is within a small margin of
       that repo's own baseline byte count; `ls .claude/agents/ | grep -c pr-review` returns `10` —
       acceptance: all four match; if any differs materially, STOP and re-baseline `brd.md`'s row for
       this repo before proceeding (another actor may have touched this surface since plan authoring)
@@ -290,7 +290,7 @@ repo-governance/workflows/pr/pr-review-quality-gate.md` returns `>= 1`
       `grep -c "eleven pipeline agents"
 repo-governance/workflows/pr/pr-review-quality-gate.md` returns `1`
 - [ ] [AI] Sweep every remaining literal `eight` occurrence in the file (6 total in `ose-public`/
-      `ose-primer`/`beaver-nest`, **5** in `ose-private` — per this repo's own Per-Repo Parameters
+      `ose-primer`/`beaver-nest`, **5** in the private sibling — per this repo's own Per-Repo Parameters
       row — minus ones already touched): read each in context, same historical-narration-vs-current-
       count judgment as Phase 1 — acceptance: `grep -n eight
 repo-governance/workflows/pr/pr-review-quality-gate.md` shows only deliberate exceptions
@@ -372,7 +372,7 @@ maker.md` no longer contains its old Pre-Fan-Out Duties section and now carries 
       [Per-Repo Parameters table](#per-repo-parameters) — do NOT copy another repo's diff:
   - `ose-public` / `ose-primer` / `beaver-nest`: change the single word `eight` → `nine`, no other
     change, per [DD-6](./tech-docs.md#design-decisions).
-  - `ose-private`: no literal `eight` exists in the bullet — instead add `pr-review-types-maker` to
+  - The private sibling: no literal `eight` exists in the bullet — instead add `pr-review-types-maker` to
     the explicit specialist list (`pr-review-{architecture,logic,governance,security,integrity,
 performance,docs,instruction,types}-maker`) and prepend a short clause naming
     `pr-review-scout-maker` as the stage-0 classifier ahead of the fan-out, per
@@ -381,7 +381,7 @@ performance,docs,instruction,types}-maker`) and prepend a short clause naming
   Acceptance (all repos): `wc -c AGENTS.md` returns a value consistent with that repo's own edit
   direction from the Per-Repo Parameters table (net non-positive delta from Phase 0's re-verified
   baseline for the three word-swap repos; net-positive but still under the 30,000 B hard-fail ceiling
-  for `ose-private`) AND `grep -c "nine discipline\|pr-review-types-maker" AGENTS.md` returns `>= 1`
+  for the private sibling) AND `grep -c "nine discipline\|pr-review-types-maker" AGENTS.md` returns `>= 1`
 
 - [ ] [AI] Run `npm run generate:bindings` — acceptance: exits 0; `.opencode/agents/pr-review-scout-
 maker.md` and `.opencode/agents/pr-review-types-maker.md` now exist; `.opencode/agents/pr-
@@ -392,7 +392,7 @@ review-synthesis-maker.md` reflects the trimmed source
       verify the target name via `nx show projects` rather than assuming `ose-public`'s naming) —
       acceptance: exits 0, `AGENTS.md` reported within its 30,000 B hard ceiling (expected: still in
       the pre-existing WARN band per this repo's own Per-Repo Parameters row, unchanged or improved
-      for the three word-swap repos, still under hard-fail for `ose-private` despite the net-positive
+      for the three word-swap repos, still under hard-fail for the private sibling despite the net-positive
       edit — NOT a new regression this plan introduces in any repo)
 
 #### Local Quality Gates (Before Push)
@@ -471,7 +471,7 @@ plans/done/YYYY-MM-DD__pr-review-cycle-scout-and-typesafety` (today's completion
       Completed Projects entry summarizing the three shipped enhancements and the four-repo dogfood
       result); commit as `chore(plans): archive pr-review-cycle-scout-and-typesafety` and push to the
       PR branch — acceptance: `git status` on the `ose-public` PR branch shows the rename staged and
-      committed, and the commit is pushed. **`ose-primer` / `ose-private` / `beaver-nest` skip this
+      committed, and the commit is pushed. **`ose-primer` / the private sibling / `beaver-nest` skip this
       item entirely** — their PRs carry no `plans/` content to archive.
 - [ ] [AI] Re-confirm the CI-green gate after any archival commit (`ose-public` only) — acceptance:
       `gh pr checks <PR>` reports zero failing/pending checks
@@ -510,7 +510,7 @@ before. Executes on `ose-public`'s local `main` (the plan folder's only home).
 
 - [ ] [AI] Verify all four tracks' Phase 5 gates hold before proceeding:
       `git -C ~/ose-projects/ose-public rev-parse HEAD` equals that repo's `origin/main`;
-      same check repeated for `ose-primer`, `ose-private`, `beaver-nest` — acceptance: all four hold;
+      same check repeated for `ose-primer`, the private sibling, `beaver-nest` — acceptance: all four hold;
       if any does not, STOP and wait for that track rather than proceeding with a partial set
 - [ ] [AI] Create `learnings.md` in the plan's now-archived folder
       (`plans/done/YYYY-MM-DD__pr-review-cycle-scout-and-typesafety/`, on `ose-public`'s local `main`,
@@ -558,7 +558,7 @@ plans/in-progress/README.md plans/done/README.md | head -5` shows exactly one ar
       commit (the one from `ose-public`'s Track A Phase 5 PR) — acceptance: holds
 - [ ] [AI] Verify all four repos actually completed — the negative control for
       [prd.md's silent-partial-rollout risk](./prd.md#product-level-risks): for each of `ose-public`,
-      `ose-primer`, `ose-private`, `beaver-nest`, `grep -c "nine discipline\|nine specialist"
+      `ose-primer`, the private sibling, `beaver-nest`, `grep -c "nine discipline\|nine specialist"
 repo-governance/development/quality/pr-review-disciplines.md` returns `>= 1` on that repo's own
       `origin/main` — acceptance: all four repos return `>= 1`; if any returns `0`, the plan is NOT
       done — that repo's track did not actually complete and must be resumed, not silently treated as

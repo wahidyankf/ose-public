@@ -57,7 +57,7 @@
 
 - **Context**: Phase 2's `emit.rs` edit (DD-1 resolver-shim rendering) is inside the zero-carve-out
   `apps/rhino-cli` byte-identity boundary (`src/`, `Cargo.toml`, `Cargo.lock`, `project.json`,
-  `LICENSE`, the shared Gherkin tree) spanning `ose-public`/`ose-primer`/`ose-private`.
+  `LICENSE`, the shared Gherkin tree) spanning `ose-public`/`ose-primer`/the private sibling.
 - **Observation**: the first `git push` after committing the edit was blocked by the local
   `parity-manifest` pre-push gate — not a cross-repo diff, just this repo's own recorded checksum of
   `emit.rs` going stale the moment the file changed. Fix was `rhino-cli parity manifest generate`
@@ -116,7 +116,7 @@
   triage as a documentation gap: the RED-step convention in this plan's own delivery.md items only
   ever names the unit-test command, never the integration-test command, for scenarios of this kind.
 
-**Terminal state**: ROUTED INLINE to [`apps/rhino-cli/README.md`](../../../apps/rhino-cli/README.md) §Adding a Gherkin Scenario: Two Binding Sites — both sites named, `cargo test --test gate_specs` given as the pre-commit verification, and the same-or-earlier-phase rule stated. Deliberately **not** placed in the Gherkin tree's own README, which is manifest-tracked inside the `apps/rhino-cli` byte-identity boundary: putting a documentation note there would have obligated byte-identical propagation to `ose-primer` and `ose-private`, re-opening two sibling worktrees for a doc line. `apps/rhino-cli/README.md` is outside the manifest and is where a contributor adding a scenario already looks.
+**Terminal state**: ROUTED INLINE to [`apps/rhino-cli/README.md`](../../../apps/rhino-cli/README.md) §Adding a Gherkin Scenario: Two Binding Sites — both sites named, `cargo test --test gate_specs` given as the pre-commit verification, and the same-or-earlier-phase rule stated. Deliberately **not** placed in the Gherkin tree's own README, which is manifest-tracked inside the `apps/rhino-cli` byte-identity boundary: putting a documentation note there would have obligated byte-identical propagation to `ose-primer` and the private sibling, re-opening two sibling worktrees for a doc line. `apps/rhino-cli/README.md` is outside the manifest and is where a contributor adding a scenario already looks.
 
 ## Learning: `cargo hack check --rust-version` installs a major.minor toolchain distinct from the pinned patch
 
@@ -303,7 +303,7 @@ affected` or `git diff` directly in the workflow YAML.
 
 ## Learning: a pinned toolchain without declared components is a race, not a pin
 
-- **Context**: `ose-private`'s Rust quality gate failed intermittently across four runs.
+- **Context**: the private sibling's Rust quality gate failed intermittently across four runs.
   `apps/coralpolyp-be/rust-toolchain.toml` pinned `channel = "1.95.0"` and stopped there, while
   `apps/rhino-cli/rust-toolchain.toml` pinned the same channel _and_ declared
   `components = ["clippy", "rustfmt", "llvm-tools"]`. CI pre-installs every declared MSRV with
@@ -366,4 +366,4 @@ affected` or `git diff` directly in the workflow YAML.
   precondition is one the script cannot name. Prove it with a two-arm probe that differs only in
   the suspected property before changing any provisioning.
 
-**Terminal state**: ROUTED to `ose-private` — the causal analysis is folded into that repo's `plans/ideas/q2-not-urgent-important/preexisting-deploy-workflow-failures.md` (commit `73adc2e7c`), and the `Delegate=yes` fix with its probe evidence is committed in that repo's `infra/on-premise/ansible/playbook-runner.yml`. Kept out of `ose-public` under the repo-relevance gate: it describes private on-premise runner infrastructure.
+**Terminal state**: ROUTED to the private sibling — the causal analysis is folded into that repo's `plans/ideas/q2-not-urgent-important/preexisting-deploy-workflow-failures.md` (commit `73adc2e7c`), and the `Delegate=yes` fix with its probe evidence is committed in that repo's `infra/on-premise/ansible/playbook-runner.yml`. Kept out of `ose-public` under the repo-relevance gate: it describes private on-premise runner infrastructure.

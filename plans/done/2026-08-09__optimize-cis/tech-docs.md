@@ -79,12 +79,12 @@ arguments overstates both its cost and its failure rate.
 
 ### B.1 — CI cost roll-up, `pr-quality-gate`, 22 completed runs per repo
 
-| repo        | jobs/run |   job-s/run |  setup-node | setup-lang | checkout | provision | real work |   overhead |
-| ----------- | -------: | ----------: | ----------: | ---------: | -------: | --------: | --------: | ---------: |
-| ose-public  |       45 |    10,945 s | **5,894 s** |    1,082 s |    503 s |     534 s |   2,492 s | **77.2 %** |
-| ose-primer  |       48 |    11,683 s | **6,597 s** |    1,241 s |    169 s |     275 s |   2,684 s |     77.0 % |
-| ose-private |       35 |     9,239 s | **5,024 s** |    1,932 s |    117 s |     968 s |     751 s |     91.9 % |
-| beaver-nest |       19 | **2,226 s** |     1,302 s |      251 s |    170 s |       0 s |     438 s |     80.3 % |
+| repo                | jobs/run |   job-s/run |  setup-node | setup-lang | checkout | provision | real work |   overhead |
+| ------------------- | -------: | ----------: | ----------: | ---------: | -------: | --------: | --------: | ---------: |
+| ose-public          |       45 |    10,945 s | **5,894 s** |    1,082 s |    503 s |     534 s |   2,492 s | **77.2 %** |
+| ose-primer          |       48 |    11,683 s | **6,597 s** |    1,241 s |    169 s |     275 s |   2,684 s |     77.0 % |
+| The private sibling |       35 |     9,239 s | **5,024 s** |    1,932 s |    117 s |     968 s |     751 s |     91.9 % |
+| beaver-nest         |       19 | **2,226 s** |     1,302 s |      251 s |    170 s |       0 s |     438 s |     80.3 % |
 
 ### B.2 — The 41-job validator fleet in `ose-public` (n = 792 job instances)
 
@@ -117,7 +117,7 @@ The figures are consistent; only the grouping differs.
 
 ### B.3 — The controlled experiment already run in your repos
 
-`ose-private` ran both topologies inside the sample window, same repo, same runners:
+The private sibling ran both topologies inside the sample window, same repo, same runners:
 
 | Check            | As its own job |  Grouped | Ratio |
 | ---------------- | -------------: | -------: | ----: |
@@ -360,19 +360,19 @@ while every build actually runs on `1.95.0`. The check cannot detect the drift i
 
 - `~/.rustup` holds **6 toolchains / 7.2 GB**, of which `1.80` (1.1 GB), `1.94` (1.2 GB), and
   `1.96.0` (952 MB) are pinned by nothing in any of the four repos.
-- `ose-private`'s `setup-rust` installs `stable` via `dtolnay/rust-toolchain@stable` (default input,
+- The private sibling's `setup-rust` installs `stable` via `dtolnay/rust-toolchain@stable` (default input,
   no caller overrides it) — a different mechanism from the `actions-rust-lang/setup-rust-toolchain@v1`
   the other three use. Since `apps/rhino-cli/rust-toolchain.toml` pins `1.95.0`, rustup then
-  downloads `1.95.0` on the first `cargo` call. **Every `ose-private` Rust job installs a toolchain
+  downloads `1.95.0` on the first `cargo` call. **Every the private sibling Rust job installs a toolchain
   it never uses, then fetches the one it needs.**
 - The `Pre-install pinned MSRV toolchain(s)` block exists verbatim in all four `setup-rust` actions
   purely to work around the floor/channel gap — it serialises a rustup install to stop parallel
   `cargo hack check --rust-version` tasks corrupting the shared download dir. Aligning MSRV to the
   channel makes the block install the already-present pinned toolchain, dissolving the race.
-- `ose-private/repo-governance/workflows/infra/infra-development-environment-setup.md:59` states the
+- `private-sibling/repo-governance/workflows/infra/infra-development-environment-setup.md:59` states the
   Rust requirement as `>= 1.80 (MSRV) | apps/coralpolyp-be/Cargo.toml`, but that file declares
   `1.88`. The doc is stale and is the likely origin of the orphaned `1.80` toolchain.
-- `ose-primer` and `ose-private` both carry `docs/.../rust/README.md:84` → `**Version**: Rust 1.82+
+- `ose-primer` and the private sibling both carry `docs/.../rust/README.md:84` → `**Version**: Rust 1.82+
 (stable)`, a hardcoded number matching no declaration. `ose-public` and `beaver-nest` instead
   point at `Cargo.toml` with no number — the correct pattern, and the one to converge on.
 
@@ -560,17 +560,17 @@ Markers: `[E]` edited · `[N]` new · `[D]` deleted · `[G]` generated (never ha
   because the workflow's matrix source changes shape first. DD-1 must land before the CI sites are
   rewritten, since CI consumes the same emitted form.
 - **`repo-config.yml` is byte-relevant across repos.** `apps/rhino-cli` is under a byte-identity parity
-  gate spanning `ose-public`, `ose-primer`, and `ose-private` with zero carve-outs
+  gate spanning `ose-public`, `ose-primer`, and the private sibling with zero carve-outs
   ([Related Repositories](../../../docs/reference/related-repositories.md)). Any `src/` edit here opens a
   cross-repo obligation that the propagation phase must discharge before the parity gate can pass.
 - **`beaver-nest` carries a fork** of `rhino-cli` and is in neither parity boundary, so it receives the
   workflow-level changes only if its own measurements justify them — it is already the fast repo.
 - **Four files exist only in the siblings** and so cannot appear in the `ose-public` tree above:
   `ose-primer/apps/crud-be-rust-axum/rust-toolchain.toml` and
-  `ose-private/apps/coralpolyp-be/rust-toolchain.toml` (`channel = "stable"` → `1.95.0`),
-  `ose-private/.github/actions/setup-rust/action.yml` (`dtolnay/rust-toolchain@stable` → the
+  `private-sibling/apps/coralpolyp-be/rust-toolchain.toml` (`channel = "stable"` → `1.95.0`),
+  `private-sibling/.github/actions/setup-rust/action.yml` (`dtolnay/rust-toolchain@stable` → the
   `actions-rust-lang` form the other repos use), and
-  `ose-private/repo-governance/workflows/infra/infra-development-environment-setup.md` (stale
+  `private-sibling/repo-governance/workflows/infra/infra-development-environment-setup.md` (stale
   `>= 1.80` claim). Phase 10 owns all four.
 - **`beaver-nest` still constrains the machine-side prune.** It is excluded from this plan's changes,
   not from the machine whose `~/.rustup` the prune edits, so its pinned channel is part of the

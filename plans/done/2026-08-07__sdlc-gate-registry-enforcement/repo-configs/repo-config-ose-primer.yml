@@ -17,7 +17,7 @@
 # repo-config.yml — schema: rhino-cli/repo-config/v1
 #
 # Unified repository configuration. Structure is byte-identical across all three
-# repos (ose-public, ose-primer, ose-private); values reflect each repo's actual
+# repos (ose-public, ose-primer, private-sibling); values reflect each repo's actual
 # project set and surfaces. rhino-cli commands read their relevant section.
 #
 # Sections defined here:

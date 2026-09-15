@@ -1,6 +1,6 @@
 # An unsourced `ci-monitor-subagent.md` mirror survives only by a hardcoded filename skip
 
-One-line summary: `ose-private` carries `.opencode/agents/ci-monitor-subagent.md` with no
+One-line summary: the private sibling carries `.opencode/agents/ci-monitor-subagent.md` with no
 `.claude/agents/` source, and the mirror-drift validator stays quiet about it only because
 `rhino-cli` hardcodes a skip for that exact filename — a carve-out that both parity repos inherit
 through the byte-identity boundary.
@@ -16,7 +16,7 @@ through the byte-identity boundary.
 This repo's binding model is unambiguous: `.claude/` is the only hand-authored surface, and
 `.opencode/`, `.codex/`, and `.agents/` are emitted by `rhino-cli harness bindings generate`. A
 file sitting in a generated mirror directory with no source is therefore drift by construction — no
-regeneration will ever update it, and no source edit will ever reach it. `ose-private` has exactly
+regeneration will ever update it, and no source edit will ever reach it. The private sibling has exactly
 one such file: `.opencode/agents/ci-monitor-subagent.md`, present in the mirror and absent from
 `.claude/agents/`.
 
@@ -34,7 +34,7 @@ raises the real possibility that the file was installed by tooling rather than a
 case the right answer is a declared exclusion, not a deletion. That origin is not established.
 
 The carve-out also does not stay in one repo. `apps/rhino-cli` is byte-identical across `ose-public`
-and `ose-private` with no carve-outs, so both ship a validator that names a
+and the private sibling with no carve-outs, so both ship a validator that names a
 specific file that exists in only one of them.
 
 ## Why now
@@ -54,7 +54,7 @@ additional harness compounds a divergence nobody can see.
 > ose-public cleanliness argument now rests on the agent directories alone. And Rule 8 makes vendored
 > ownership a **declared** class — ose-public declares `.codex/ci-monitor-subagent.toml` vendored
 > with a reason, which is exactly the "declared exclusion, not a deletion" outcome this brief
-> proposed, applied to the Codex sibling of the same file. The ose-private orphan and the hardcoded
+> proposed, applied to the Codex sibling of the same file. The private-sibling orphan and the hardcoded
 > `list_agent_files` skip that hides it both survive untouched.
 
 Finally, the skip lives in a byte-identity-gated file. Every future change to the naming validator
@@ -99,7 +99,7 @@ In every outcome the terminal state is the same: no filename-specific literal re
 
 ## Rough scope & non-goals
 
-In scope: the one orphan file in `ose-private`; the hardcoded skip in
+In scope: the one orphan file in the private sibling; the hardcoded skip in
 `apps/rhino-cli/src/commands/harness_validate_naming.rs` across all three byte-identical copies; and
 any governance sentence that currently implies every `.opencode/agents/*.md` has a `.claude/` source
 when the validator cannot actually certify that.
@@ -115,7 +115,7 @@ Out of scope:
   routed here.
 - What the CI-monitoring workflow or its plugin actually does. Its behaviour is not being re-litigated;
   only the provenance of one mirror file is.
-- Any `ose-private` infrastructure content. This brief concerns governance and tooling shape only.
+- Any private-sibling infrastructure content. This brief concerns governance and tooling shape only.
 
 ## Risks & open questions
 
@@ -129,7 +129,7 @@ Out of scope:
 - **Is a coordinated two-repo landing proportionate?** The validator sits inside the byte-identity
   boundary, so even a two-line change must land in both parity repos in lockstep. That cost may
   exceed the value of removing one carve-out. (open)
-- **Does `ose-private` want this at all?** It is proprietary and sits outside the content-parity
+- **Does the private sibling want this at all?** It is proprietary and sits outside the content-parity
   loop, so a normalization that `ose-public` finds obviously correct may not be wanted there. Same
   question shape as
   [sibling-main-ci-never-runs-on-merge](./sibling-main-ci-never-runs-on-merge.md). (open)
@@ -143,7 +143,7 @@ repo's `.claude/agents/`, and the naming validator hardcodes no filename. Any su
 declared in `repo-config.yml` where an auditor can read it, so the gate's coverage is legible rather
 than buried in a Rust literal.
 
-Promotion signal: ripe once two things are known — the file's actual origin in `ose-private`, and the
+Promotion signal: ripe once two things are known — the file's actual origin in the private sibling, and the
 count of unsourced mirror files that appear when the skip is removed across all repos. Those two
 answers also decide whether this deserves a plan at all: if the origin is "stale leftover" and the
 count is one, this is a delete plus a small validator change and should simply be done, folded into

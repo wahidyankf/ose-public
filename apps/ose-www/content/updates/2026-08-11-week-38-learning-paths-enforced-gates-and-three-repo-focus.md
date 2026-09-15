@@ -17,7 +17,7 @@ tags:
     "sqlite",
   ]
 categories: ["updates"]
-summary: "A month after hardening the engineering substrate, OSE turned that foundation into visible work: ayokoding.com gained a broad software-engineering curriculum, a shared course library, and path-aware navigation; a parser fix exposed hundreds of Mermaid violations that a green gate had silently missed; one registry became the source of truth for local and CI checks; measured optimization made quick tests and Rust builds substantially lighter while CI wall-clock time and cache use regressed; ose-infra became ose-private; and BeaverNest's short-lived fourth repository was folded back into ose-public, leaving the ecosystem focused on three repositories again."
+summary: "A month after hardening the engineering substrate, OSE turned that foundation into visible work: ayokoding.com gained a broad software-engineering curriculum, a shared course library, and path-aware navigation; a parser fix exposed hundreds of Mermaid violations that a green gate had silently missed; one registry became the source of truth for local and CI checks; measured optimization made quick tests and Rust builds substantially lighter while CI wall-clock time and cache use regressed; ose-infra became the private sibling; and BeaverNest's short-lived fourth repository was folded back into ose-public, leaving the ecosystem focused on three repositories again."
 showtoc: true
 ---
 
@@ -97,17 +97,17 @@ The standalone repository was archived rather than deleted, preserving its histo
 
 This consolidation does **not** mean BeaverNest is a finished product. It still has no assistant, content builder, posting workflow, or live staging or production deployment. It means the product can grow without forcing the same small team to maintain a fourth engineering-governance surface.
 
-At the same time, `ose-infra` became `ose-private`, which better describes its actual role: private infrastructure, operations, and product-support work around the public platform. The official OSE family is therefore back to three repositories. `ose-public` holds the public products, libraries, documentation, and governance source of truth. `ose-primer` remains the downstream starter and polyglot reference repository, while `ose-private` holds proprietary infrastructure and operational work.
+At the same time, `ose-infra` became the private sibling, which better describes its actual role: private infrastructure, operations, and product-support work around the public platform. The official OSE family is therefore back to three repositories. `ose-public` holds the public products, libraries, documentation, and governance source of truth. `ose-primer` remains the downstream starter and polyglot reference repository, while the private sibling holds proprietary infrastructure and operational work.
 
 The operational boundary is settled, but the wording has not fully converged yet. A few active documents in the sibling repositories still describe the short-lived four-repository state. Those references need normal cross-repository reconciliation; they are not evidence that the archived repository remains live.
 
 ## Infrastructure: Better Diagnosis, Different Destination
 
-With the repository roles clearer, `ose-private` remained focused on the operational work. The twin-k3s-cluster milestone still did not ship. During the month, the design first moved toward a shared three-node on-premise cluster, then Kubernetes moved back into the cloud backlog. The local hosts now focus on CI and platform virtual machines instead.
+With the repository roles clearer, the private sibling remained focused on the operational work. The twin-k3s-cluster milestone still did not ship. During the month, the design first moved toward a shared three-node on-premise cluster, then Kubernetes moved back into the cloud backlog. The local hosts now focus on CI and platform virtual machines instead.
 
 That change followed real operational learning. Repeated host disappearances were traced to an onboard network adapter whose transmit path could wedge while the physical link still appeared up. The response disabled aggravating offloads, added a watchdog for the failure signature, and moved alerting away from the same interface it needed to diagnose. Runner recovery, probes, and jobs were validated on additional runner lanes, while later lockups were recorded rather than prematurely declared solved.
 
-`ose-private` also tightened its local CoralPolyp sandbox so Linux test processes cannot escape the intended network boundary or interfere with the host user's service manager. CoralPolyp's full CI E2E recovery remains an open plan, not a completed result.
+The private sibling also tightened its local CoralPolyp sandbox so Linux test processes cannot escape the intended network boundary or interfere with the host user's service manager. CoralPolyp's full CI E2E recovery remains an open plan, not a completed result.
 
 ## ose-primer: A Clearer First Run
 
@@ -133,7 +133,7 @@ The immediate work is narrower than last month's ambition list.
 
 Across the three repositories, the onboarding and README refresh still needs clean-checkout verification.
 
-In `ose-private`, CoralPolyp's CI E2E path needs recovery before the private backend can be treated as deployable.
+In the private sibling, CoralPolyp's CI E2E path needs recovery before the private backend can be treated as deployable.
 
 BeaverNest can begin its first real capability inside `ose-public` when that capability is clear, without overstating the current skeleton as a usable personal operating system.
 

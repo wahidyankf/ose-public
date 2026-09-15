@@ -8,12 +8,12 @@
 `benchmark.md`'s B2-B8 re-measurement step could not re-measure **B7** (CI critical path) in either
 repository. B7 reads the `build-rhino` job duration from the three most recent green
 `pr-quality-gate.yml` runs on `main`, and as of this date `main` in both `ose-public` and
-`ose-private` still carries the pre-removal `Cargo.toml` (tree-sitter still listed, confirmed via
+the private sibling still carries the pre-removal `Cargo.toml` (tree-sitter still listed, confirmed via
 `git show main:apps/rhino-cli/Cargo.toml | grep -c tree-sitter` returning `1` in both repos) —
 this Phase 1 removal has not merged to `main` yet, so no post-removal CI run of that job exists to
 sample. B1 through B6 and B8 were successfully re-measured against the post-removal crate in both
 worktrees and are recorded in `benchmark.md` without a `†` marker; only B7 keeps its `†` and its
-pre-removal Before figure (70.67 s `ose-public`, 88.67 s `ose-private`). B7 must be re-measured once
+pre-removal Before figure (70.67 s `ose-public`, 88.67 s the private sibling). B7 must be re-measured once
 this PR merges to `main` and three green post-merge `pr-quality-gate.yml` runs exist — Phase 10's
 verdict step should treat B7 as provisional until then.
 
@@ -131,12 +131,12 @@ this machine.
 
 ### Startup measurement (50 runs each, `osx-arm64`, exit code 0 asserted every iteration)
 
-| Binary                                    | Total (50 runs) | Mean per invocation | Failures |
-| ----------------------------------------- | --------------- | ------------------- | -------- |
-| NativeAOT                                 | 0.762 s         | **15.23 ms**        | 0/50     |
-| Self-contained, non-AOT                   | 10.042 s        | **200.84 ms**       | 0/50     |
-| Rust, Phase 0 B5 baseline (`ose-public`)  | 0.562 s         | **11.2 ms**         | 0/50     |
-| Rust, Phase 0 B5 baseline (`ose-private`) | 0.767 s         | **15.3 ms**         | 0/50     |
+| Binary                                          | Total (50 runs) | Mean per invocation | Failures |
+| ----------------------------------------------- | --------------- | ------------------- | -------- |
+| NativeAOT                                       | 0.762 s         | **15.23 ms**        | 0/50     |
+| Self-contained, non-AOT                         | 10.042 s        | **200.84 ms**       | 0/50     |
+| Rust, Phase 0 B5 baseline (`ose-public`)        | 0.562 s         | **11.2 ms**         | 0/50     |
+| Rust, Phase 0 B5 baseline (the private sibling) | 0.767 s         | **15.3 ms**         | 0/50     |
 
 Commands used, both run from the repo root:
 
@@ -299,7 +299,7 @@ tree — no `git add`/`git commit` while broken), `npx nx run rhino-cli-fsharp:d
 to exit non-zero (confirmed), the reference was restored, the same target was re-run and required to
 exit 0 (confirmed), `git diff --exit-code -- apps/rhino-cli/src-fsharp/` was required to exit 0
 (confirmed), and `git rev-parse HEAD` was confirmed unchanged across the whole sequence in both
-repos. All exit codes matched the required shape in both `ose-public` and `ose-private`.
+repos. All exit codes matched the required shape in both `ose-public` and the private sibling.
 
 **Terminal state**: Discard — the fix is the shipped
 `apps/rhino-cli/scripts/dotnet-deps-audit.sh` wrapper itself (confirmed present on disk), already
@@ -337,52 +337,52 @@ Confirmed already present and unedited in `ose-public`'s `.github/workflows/pr-q
 carries `tag:lang:fsharp`, so this existing mapping already routes it to the `dotnet` job with no
 new line added, exactly as delivery.md's acceptance predicted.
 
-**`ose-private` is different and needed real work, not confirmation.** Per the delta table at the
-top of this file, `ose-private` had **no** `has-dotnet-projects` output, **no** `lang:fsharp`
+**The private sibling is different and needed real work, not confirmation.** Per the delta table at the
+top of this file, the private sibling had **no** `has-dotnet-projects` output, **no** `lang:fsharp`
 mapping, and **no** `dotnet` CI job at all before Phase 2 — it never carried an F# or C# project.
 Phase 2 added all three there: the `has-dotnet-projects` output and its `lang:fsharp | lang:csharp`
 case in the `detect` job, and a new `dotnet` job mirroring `ose-public`'s (gated on
 `needs.detect.outputs.has-dotnet-projects == 'true'`). This is genuinely new CI surface in
-`ose-private`, not a like-for-like mirror of an existing job.
+the private sibling, not a like-for-like mirror of an existing job.
 
-**A gap the delta table implied but did not spell out**: `ose-private`'s `typescript` job excluded
+**A gap the delta table implied but did not spell out**: the private sibling's `typescript` job excluded
 only `tag:lang:rust` (`ose-public`'s equivalent excludes `lang:fsharp`, `lang:csharp`, `lang:rust`,
 `lang:dart`). Left as-is, the moment `rhino-cli-fsharp` existed as an affected `lang:fsharp` project,
 this job's own `nx affected` would have swept it in and run its targets on a runner installing no
 .NET SDK. Fixed by adding `,tag:lang:fsharp` to that job's `--exclude`.
 
-**`ose-private`'s new `dotnet` job needs `setup-rust`, unlike `ose-public`'s.** `rhino-cli-fsharp`'s
+**The private sibling's new `dotnet` job needs `setup-rust`, unlike `ose-public`'s.** `rhino-cli-fsharp`'s
 `specs:behavior:coverage`/`specs:structure-validation`/`specs:gherkin-cardinality-validation`/
 `governance-*`/`env:validation` targets shell out to `cargo run --manifest-path
 apps/rhino-cli/Cargo.toml` directly, mirroring `crane-cli`'s own existing `project.json` (the
 established precedent for this shape in this repo). `ose-public`'s `dotnet` job runs on GH-hosted
 `ubuntu-latest`, which ships a Rust toolchain preinstalled, so it has never needed an explicit
-`setup-rust` step for this. `ose-private`'s runners are `[self-hosted, linux, ose-self-hosted]`,
+`setup-rust` step for this. The private sibling's runners are `[self-hosted, linux, ose-self-hosted]`,
 which — per this repo's own `gate` job comment — have **no ambient Rust toolchain**. Its new
 `dotnet` job therefore adds `./.github/actions/setup-rust` explicitly; omitting it would have made
 every one of those five targets fail with "cargo: command not found" the first time an affected
 `lang:fsharp` project's `test:quick`/`test:specs` chain ran there.
 
-**`ose-private` had no `.config/dotnet-tools.json` or `.config/` directory at all** — no F# project
+**The private sibling had no `.config/dotnet-tools.json` or `.config/` directory at all** — no F# project
 had ever needed one there. Phase 2 created it (copied verbatim from `ose-public`'s, since it is a
 generic tool-version manifest with no repo-specific content: `fantomas` 7.0.5, `dotnet-fsharplint`
 0.26.10, `fsharp-analyzers` 0.36.0), so `rhino-cli-fsharp`'s `lint` target's `dotnet tool restore`
-step has a manifest to restore from. Verified: `dotnet tool restore` in `ose-private` now installs
+step has a manifest to restore from. Verified: `dotnet tool restore` in the private sibling now installs
 all three tools successfully.
 
-**`ose-private`'s `format` job gained a new `needs: build-rhino` dependency edge.** Unlike
-`ose-public`'s `format` job, `ose-private`'s never depended on `build-rhino` — its `rhino-bin.sh`
+**The private sibling's `format` job gained a new `needs: build-rhino` dependency edge.** Unlike
+`ose-public`'s `format` job, the private sibling's never depended on `build-rhino` — its `rhino-bin.sh`
 calls resolved the Rust binary through tier 3 (build on demand) rather than a prebuilt artifact, and
 it carried no `RHINO_CLI_BIN` at all. Adding the F# artifact's `download-artifact`/`chmod
 +x`/`RHINO_CLI_FSHARP_BIN` wiring there — required for parity with the `format`/`enumerate`/`gate`
 three-job list delivery.md names — needed a real `needs: build-rhino` edge first, since downloading
 an artifact from a job that has not necessarily finished (or run) is not reliable without one. This
-is a genuine, judgment-call CI-topology change in `ose-private` only: it adds wall-clock
+is a genuine, judgment-call CI-topology change in the private sibling only: it adds wall-clock
 serialization between `build-rhino` and `format` that did not exist before, with no functional risk
 while `FSHARP_NAMESPACES` stays empty. `ose-public`'s `format` job already depended on `build-rhino`
 before this plan, so no equivalent change was needed there.
 
-**Terminal state**: Discard — a factual record of new `ose-private` CI infrastructure
+**Terminal state**: Discard — a factual record of new the private sibling CI infrastructure
 (the `dotnet` job, `has-dotnet-projects` output, `.config/dotnet-tools.json`, the `format` job's new
 `needs: build-rhino` edge), all shipped and self-documenting in the committed
 `.github/workflows/pr-quality-gate.yml` and `.config/` files. No separate durable doc needed.
@@ -406,10 +406,10 @@ plan's own now-archiving documents. Not a generalizable rule.
 
 ## 2026-08-26 — Phase 2: publish RID pinned to `linux-x64` (judgment call)
 
-Neither `ose-public`'s `ubuntu-latest` GH-hosted runners nor `ose-private`'s
+Neither `ose-public`'s `ubuntu-latest` GH-hosted runners nor the private sibling's
 `[self-hosted, linux, ose-self-hosted]` runners have their CPU architecture stated anywhere in this
 plan or its workflows. `ubuntu-latest` is documented by GitHub as `x64` today, so `-r linux-x64` is
-correct there. `ose-private`'s self-hosted runner architecture is `[Unverified]` from this plan's own
+correct there. The private sibling's self-hosted runner architecture is `[Unverified]` from this plan's own
 sources — `linux-x64` is used for both repos' `build-rhino` publish step as the reasonable default
 for this class of infrastructure, but this is a judgment call, not a grounded fact, and should be
 confirmed against the actual self-hosted runner hardware before this PR merges. If the self-hosted
@@ -417,7 +417,7 @@ runner is `linux-arm64`, the publish step's `-r` flag needs a matching correctio
 there — `ose-public` stays `linux-x64` either way).
 
 **Terminal state**: Discard — the judgment call is empirically resolved: every
-`ose-private` CI run since Phase 2 has published and executed the `linux-x64` binary successfully on
+the private sibling CI run since Phase 2 has published and executed the `linux-x64` binary successfully on
 its self-hosted runner, confirming the assumption was correct. No open question remains.
 
 ## 2026-08-26 — Phase 2: `RhinoCli.Program` → `RhinoCli.Cli` reference direction (judgment call)
@@ -512,9 +512,9 @@ below). The script's own disposition is filed separately as
 (originally filed to `plans/backlog/`; relocated to `plans/ideas/` on 2026-09-08, because Knowledge
 Capture may not write under `plans/backlog/`).
 
-## 2026-08-28 — Phase 6: two Wave D defects only `ose-private`'s corpus could expose
+## 2026-08-28 — Phase 6: two Wave D defects only the private sibling's corpus could expose
 
-Wave D's `ose-public` shadow-diff was green at 60/0. The identical run in `ose-private` — same
+Wave D's `ose-public` shadow-diff was green at 60/0. The identical run in the private sibling — same
 commit, byte-identical sources, both binaries freshly built — reported **9 differences**. Neither
 defect was reachable from `ose-public` data, so verifying the wave in one repo alone would have
 shipped both.
@@ -538,7 +538,7 @@ never produced, and the run totals diverged (`110` vs `109`). Fixed with an expl
 `| Path | Size (words) | Severity | Message |` with `| --- |` separators and a **backticked**
 path. This is invisible whenever the finding list is empty — both sides then print the same
 `**PASSED**` line and never render a table at all. `ose-public` has no surface over its word
-budget, so the table never rendered there; `ose-private`'s
+budget, so the table never rendered there; the private sibling's
 `repo-governance/workflows/plan/plan-execution/README.md` (901 words against a 900-word target) is
 the single row that made the drift observable.
 
@@ -546,7 +546,7 @@ the single row that made the drift observable.
 
 A formatter branch that only renders when findings exist is **untested by a green shadow-diff on a
 clean corpus**. Both defects sat in already-merged Wave D PRs whose own shadow-diffs passed. For
-every remaining wave, treat `ose-private`'s run as a first-class gate rather than a mirror-and-
+every remaining wave, treat the private sibling's run as a first-class gate rather than a mirror-and-
 confirm formality, and prefer a unit test that constructs a finding directly over relying on live
 repo data to happen to contain one — `WaveDParityRegressionUnitTests.fs` pins both behaviours that
 way, so neither can regress in either repo regardless of corpus.
@@ -818,7 +818,7 @@ justified two entries no longer applies once F# is the only implementation.
 `git mv` (86 files, all recognized as renames). `fsharp-source-root: apps/rhino-cli/src/` — the
 literal value every downstream reader (9d's formatter-glob step, Phase 10's build/source-size
 measurements) must derive from `test -d` against its own tree, never by reading this file from
-`ose-private` (it carries no copy of this plan). `tech-docs.md` §Target layout's `TBD` is replaced
+the private sibling (it carries no copy of this plan). `tech-docs.md` §Target layout's `TBD` is replaced
 with this same path in the same commit as this entry.
 
 **Coverage-scope widening** (item 4): `rhino-cli:specs:behavior:coverage`'s `--shared-steps` argument
@@ -1230,9 +1230,9 @@ which matches the row's pre-existing (and separately inaccurate) wording. The
 organiclever-be/CLI-apps misclassification itself is pre-existing and unrelated to the Rust→F# port;
 flagged here as a discovered gap, out of scope for 9e, not fixed.
 
-### Repeat in ose-private
+### Repeat in the private sibling
 
-Per the plan's own instruction, 9e is authored separately in ose-private rather than copied — its
+Per the plan's own instruction, 9e is authored separately in the private sibling rather than copied — its
 own enumerating grep and its own per-file verdict table are expected to produce a different file
 list, and that difference is stated here rather than reconciled.
 
@@ -1260,10 +1260,10 @@ constraint**, exactly as this entry itself already states. No further action; th
 discovered-but-deferred doc-accuracy gaps (coverage-threshold table, pre-existing link rot) remain
 correctly out of scope, as this entry itself already records.
 
-## 2026-08-30 — Phase 9e: descriptive documentation sweep (ose-private)
+## 2026-08-30 — Phase 9e: descriptive documentation sweep (the private sibling)
 
-Authored fresh in `ose-private`, not copied from `ose-public` — the plan's own instruction
-anticipates the two repos' file lists differing, and here they differ structurally: `ose-private`
+Authored fresh in the private sibling, not copied from `ose-public` — the plan's own instruction
+anticipates the two repos' file lists differing, and here they differ structurally: the private sibling
 keeps a real, unrelated Rust backend (`coralpolyp-be`), so this sweep could not be a blanket
 "Rust → F#" replace — it had to preserve Rust as `✅ Active` while adding net-new F# entries
 alongside it.
@@ -1294,7 +1294,7 @@ alongside it.
 ### Repo-specific divergence: Rust stays Active
 
 Unlike `ose-public` (Rust fully retired repo-wide except the AyoKoding course-content series),
-`ose-private` has `coralpolyp-be`, a real independent Rust backend. Both
+the private sibling has `coralpolyp-be`, a real independent Rust backend. Both
 `programming-languages/README.md` edits above had to _narrow_ the existing Rust row/bullet rather
 than delete it, and add new F# row/bullet alongside — net addition, not substitution.
 
@@ -1325,20 +1325,20 @@ projects' coverage, not rhino-cli's own).
 
 Same pattern as `ose-public`'s entry above: broken-link baseline is pre-existing, confined to
 archived `plans/done/**` docs, unrelated to Rust/rhino-cli. 9e introduces zero new broken links in
-`ose-private` either.
+the private sibling either.
 
-**Terminal state**: Routed (ose-private) — this entry is the record of
-`ose-private`'s own already-executed sweep; not touched further from this `ose-public`-only session,
+**Terminal state**: Routed (the private sibling) — this entry is the record of
+the private sibling's own already-executed sweep; not touched further from this `ose-public`-only session,
 per this task's repo scope. The one "collateral, out-of-scope" finding (`coralpolyp-be`/`coralpolyp-fe`
-stale "Active" claims in `ose-private`'s `programming-languages/README.md`) is a
-repo-relevance-gated, `ose-private`-only documentation fix outside this session's reach — flagged
-here for a future `ose-private` housekeeping pass, not filed as a `plans/backlog/` item in this
+stale "Active" claims in the private sibling's `programming-languages/README.md`) is a
+repo-relevance-gated, private-sibling-only documentation fix outside this session's reach — flagged
+here for a future the private sibling housekeeping pass, not filed as a `plans/backlog/` item in this
 repo.
 
-## 2026-08-30 — 9d gap-fix: ose-private's leftover format-job `setup-rust`
+## 2026-08-30 — 9d gap-fix: the private sibling's leftover format-job `setup-rust`
 
 Discovered during the Phase 9 Gate audit, not during 9d itself. 9d's own checklist had an unchecked
-item — "sweep `ose-private`'s six in-file `setup-rust` uses to zero" — that five-of-six satisfied,
+item — "sweep the private sibling's six in-file `setup-rust` uses to zero" — that five-of-six satisfied,
 but the `format` job's use survived unnoticed.
 
 **Verified genuinely dead**: `apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=pre-commit --format=json`
@@ -1353,11 +1353,11 @@ test coverage (`specs/apps/rhino/behavior/rhino-cli/gherkin/system/cargo-target-
 scenarios; implementation `RhinoCli.Application/src/Doctor.fs`). This is rhino-cli's OWN feature —
 symlinking every Rust crate's `target/` directory into a shared cache — tested with a real `cargo`
 process to validate the symlinking logic against actual Cargo output. Since `apps/rhino-cli` must
-stay byte-identical across `ose-public`/`ose-private` (parity requirement), and `ose-public` still
-has 198 real `.rs` course examples exercising this exact code path, `ose-private`'s copy of the same
+stay byte-identical across `ose-public`/the private sibling (parity requirement), and `ose-public` still
+has 198 real `.rs` course examples exercising this exact code path, the private sibling's copy of the same
 test suite needs the same real coverage — removing it would either silently skip real assertions
 (violates the plan's no-skip-tests rule) or fail outright with cargo absent. Confirmed via `find` /
-`grep`: `coralpolyp-be`, previously assumed to be ose-private's own real Rust project justifying this
+`grep`: `coralpolyp-be`, previously assumed to be the private sibling's own real Rust project justifying this
 kind of thing, does **not currently exist** in this repo (removed pre-session, per
 `applications.md`'s own note — "removed and will return... when the product need re-arises"); the
 `dotnet` job's `setup-rust` need is unrelated to that and stands on its own via the parity argument
@@ -1365,21 +1365,21 @@ above.
 
 **Fix**: removed only the `format` job's `- uses: ./.github/actions/setup-rust` on branch
 `rhino-fsharp-9d-setup-rust-sweep` (built off `origin/main`, avoiding the squash-merge-divergence
-issue from earlier in Phase 9), verified `actionlint` exits 0, opened `ose-private` PR #127, all 14
+issue from earlier in Phase 9), verified `actionlint` exits 0, opened the private sibling's PR #127, all 14
 CI checks green, merged (`50a8316421`). `grep -c 'setup-rust' .github/workflows/pr-quality-gate.yml`
-is now **1** in `ose-private` (the `dotnet` job's), not the originally-planned **0** —
+is now **1** in the private sibling (the `dotnet` job's), not the originally-planned **0** —
 `delivery.md`'s 9d checkbox and Phase 9 Gate checkbox both carry a deviation note pointing here.
 
 ### Collateral, out-of-scope finding: `coralpolyp-be`/`coralpolyp-fe` "Active" claims
 
 While tracing the `dotnet`-job justification, confirmed `docs/explanation/software-engineering/programming-languages/README.md`'s
 table cites `Rust: ✅ Active - coralpolyp-be` and `TypeScript: ✅ Active - coralpolyp-fe` — neither
-app currently exists in `ose-private` (`find . -iname '*coralpolyp*'` matches only two archived
+app currently exists in the private sibling (`find . -iname '*coralpolyp*'` matches only two archived
 `plans/done/**` entries). This pre-dates the 9e sweep's own edit to that row (which only touched the
 Rust→F# wording, not the coralpolyp-be citation itself) and is out of this sweep's scope, same class
 as ose-public's `ci-standards/SKILL.md` coverage-threshold discovery. Flagged here, not fixed.
 
-**Terminal state**: Discard — fully shipped and merged (`ose-private` PR #127,
+**Terminal state**: Discard — fully shipped and merged (the private sibling's PR #127,
 `50a8316421`). The `dotnet` job's own retained `setup-rust` is justified and durable via the parity
 argument stated in the entry itself; no separate write needed.
 
@@ -1478,9 +1478,9 @@ figures exactly (B1/B4/B5/B6/B8, and B7 provisional). `tech-docs.md`'s "Phase 10
 table is likewise consistent (both checked line-by-line against this entry and the entry below). Not
 touched further, per this task's instruction.
 
-## 2026-08-30 — Phase 10: "after" measurements in ose-private, and a live CI-stall incident
+## 2026-08-30 — Phase 10: "after" measurements in the private sibling, and a live CI-stall incident
 
-Same nine rows measured in `ose-private` (branch `rhino-fsharp-10-benchmark-measure`, off
+Same nine rows measured in the private sibling (branch `rhino-fsharp-10-benchmark-measure`, off
 `origin/main`, no commits — this repo carries no `benchmark.md` of its own, so all figures were
 written directly into `ose-public`'s single-sourced `benchmark.md`). Every row's direction matches
 `ose-public`'s: B1/B2/B6/Size better, B3 unchanged (noise), B4/B5/B8 worse, B7 provisional. B4
@@ -1488,7 +1488,7 @@ written directly into `ose-public`'s single-sourced `benchmark.md`). Every row's
 incremental compilation is structural, not a one-repository artifact.
 
 **B7 differs materially between repositories and is called out, not averaged**: 158.00 s
-(`ose-public`) vs. 762.00 s (`ose-private`). `ose-private`'s figure is dominated by that
+(`ose-public`) vs. 762.00 s (the private sibling). The private sibling's figure is dominated by that
 repository's already-documented self-hosted-runner artifact-upload variance — one of the three
 sampled runs (33237644795) is the exact same run this file's Phase-2-era B7 re-measurement already
 cited at 831 s, and it still reads 831 s now, confirming ongoing runner-pool noise rather than a new
@@ -1544,7 +1544,7 @@ path is on this ledger — see the Step 4 verdicts below for why.
   cross-repo input — there is no code path that writes one repo's manifest from another repo's
   bytes. Falsifiable: `rhino-bin.sh parity manifest validate` exits 0 against each repo's own
   committed manifest independently, and the two repos' committed manifests are not byte-identical
-  (`ose-private` carries an extra GPG-check boundary file `ose-public` does not, per
+  (the private sibling carries an extra GPG-check boundary file `ose-public` does not, per
   [[project_rhino_cli_parity_boundary_drift]]) — proof a raw copy would not silently validate.
 - **R3**: every job in `pr-quality-gate.yml` that invokes `rhino-cli` runs
   `actions/download-artifact@v4` before it; the only job that runs
@@ -1663,10 +1663,10 @@ exit codes recorded. Since no binding-mirrored file (`.claude/`, `repo-governanc
 `generated-reports/rules-propagation__ose-public__2026-08-30__manifest.md`, and `delivery.md`.
 Reconciled against `git status --porcelain` below before commit.
 
-**Step 9 — sibling obligation**: `ose-private` gets its own, independently-authored R1-R4
-propagation (11a's own instruction: "Repeat 11a in `ose-private`, authored there rather than
+**Step 9 — sibling obligation**: the private sibling gets its own, independently-authored R1-R4
+propagation (11a's own instruction: "Repeat 11a in the private sibling, authored there rather than
 copied"), producing its own manifest under its own `generated-reports/`. The descriptive sweep's
-`ose-private` repeat already happened at 9e and is not repeated here.
+private-sibling repeat already happened at 9e and is not repeated here.
 
 **Step 8.1-8.2 results (ose-public)**: `rtk npm run generate:bindings` exits 0, 91 agents
 converted / 0 skills copied, and produces zero tracked-file diff (no mirror drift to regenerate).
@@ -1693,12 +1693,12 @@ unledgered path.
 verification (bindings/sync/harness checks all exit 0) and Step 8.4 ledger reconciliation
 (`git status --porcelain` matched the Step 1 ledger). No further action.
 
-## 2026-08-30 — Phase 11a: rules-propagation repeated independently in ose-private
+## 2026-08-30 — Phase 11a: rules-propagation repeated independently in the private sibling
 
-Same nine-step propagation run repeated in `ose-private` (scratch branch off `origin/main`, no
+Same nine-step propagation run repeated in the private sibling (scratch branch off `origin/main`, no
 commits — this repo carries no plan-doc copy of `rewrite-rhino-cli-to-fsharp`, matching Phase 10's
 own precedent, so all findings are recorded here rather than in a per-repo file). Manifest written
-to that repo's own `generated-reports/rules-propagation__ose-private__2026-08-30__manifest.md`
+to that repo's own `generated-reports/rules-propagation__private-sibling__2026-08-30__manifest.md`
 (gitignored there too, same as `ose-public`'s).
 
 R1-R3 verified identically to `ose-public`: `rhino-bin.sh` and `Parity.fs` are byte-identical
@@ -1717,20 +1717,20 @@ don't name `rhino-cli`'s manifest or binary-invocation rule specifically) — **
 written**, same standing constraint.
 
 **R4 resolves differently here, and this is the reason the plan says "authored there rather than
-copied" rather than letting a single write serve both repos**: `ose-private` has **zero** `.rs`
+copied" rather than letting a single write serve both repos**: the private sibling has **zero** `.rs`
 files anywhere in its tree (`find . -name "*.rs" -not -path "./node_modules/*"` → 0) — there is no
 `apps/ayokoding-www` in this repo at all. `package.json`'s lint-staged `"*.rs"` →
 `rustfmt --edition 2024` entry is still declared but currently matches no file — inert, not false.
 Unlike `ose-public`, where R4 exists specifically to block an overstated "no Rust toolchain at all"
-claim against 198 real `.rs` files, `ose-private` has no active-Rust-elsewhere fact to guard
+claim against 198 real `.rs` files, the private sibling has no active-Rust-elsewhere fact to guard
 against; R4's placement verdict here is "N/A — nothing to place."
 
-`wc -w AGENTS.md CLAUDE.md` in `ose-private`: 542 + 420 = 962, both below the 750-word-per-file
+`wc -w AGENTS.md CLAUDE.md` in the private sibling: 542 + 420 = 962, both below the 750-word-per-file
 ceiling — recorded per the Phase 11 Gate, moot for the same reason as `ose-public` (nothing was an
 instruction-surface candidate).
 
-Sibling obligation discharged: this entry and `ose-private`'s own (uncommitted, ephemeral)
-manifest are the `ose-private` half `ose-public`'s Phase 11a named as owed.
+Sibling obligation discharged: this entry and the private sibling's own (uncommitted, ephemeral)
+manifest are the private-sibling half `ose-public`'s Phase 11a named as owed.
 
 **Terminal state**: Verified/already-terminal — same R1-R3 deferral and R4 "N/A —
 nothing to place" verdict as `ose-public`'s run; recorded here per this plan's sibling-obligation

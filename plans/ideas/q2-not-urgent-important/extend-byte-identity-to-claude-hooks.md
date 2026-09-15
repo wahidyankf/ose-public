@@ -1,24 +1,24 @@
 # Extend cross-repo byte-identity checking to `.claude/hooks/`
 
 One-line summary: `apps/rhino-cli` has an enforced byte-identity gate across `ose-public` and
-`ose-private`; `.claude/hooks/` — including the security-load-bearing `block-env-file-access.sh` —
+the private sibling; `.claude/hooks/` — including the security-load-bearing `block-env-file-access.sh` —
 has no equivalent check, and drifted silently between those repos during
 `restrict-env-access-to-prod-and-stag`.
 
 > Idea, added 2026-08-13 — captured from `restrict-env-access-to-prod-and-stag`'s Phase 9/10
-> (ose-private's `plans/done/2026-08-13__restrict-env-access-to-prod-and-stag/learnings.md`, "Two variants of one
+> (the private sibling's `plans/done/2026-08-13__restrict-env-access-to-prod-and-stag/learnings.md`, "Two variants of one
 > guard script is how drift hides" and "Phase 9 cross-repo verification caught the exact drift class
 > predicted at authoring time").
-> Relocated from ose-private/plans/ideas/extend-byte-identity-to-claude-hooks.md on 2026-08-19 by plan-ideas-grooming.
+> Relocated from private-sibling/plans/ideas/extend-byte-identity-to-claude-hooks.md on 2026-08-19 by plan-ideas-grooming.
 
 ## Problem / context
 
 This plan's Phase 9 hash-compared `.claude/hooks/block-env-file-access.sh` between `ose-public` and
-`ose-private` and found they had diverged: `ose-public`'s copy had gained three security hardening
+the private sibling and found they had diverged: `ose-public`'s copy had gained three security hardening
 fixes (default-deny on any command text referencing a restricted tier, symlink-target resolution,
 case-insensitive matching) during this plan's own PR-review cycle in `ose-public`, none of which had
-been ported back to `ose-private`. The `.claude/settings.json` `permissions.deny` list had drifted
-too (`ose-private` was missing both `Write(**/.env.prod)` and `Write(**/.env.stag)` entries that
+been ported back to the private sibling. The `.claude/settings.json` `permissions.deny` list had drifted
+too (the private sibling was missing both `Write(**/.env.prod)` and `Write(**/.env.stag)` entries that
 `ose-public` had). Both were fixed as part of this plan's Phase 9, but only because Phase 9 happened
 to include an explicit hash-check step for these specific files — nothing would have caught the drift
 otherwise, and nothing prevents the same class of drift recurring the next time either file is edited
@@ -47,7 +47,7 @@ relies on a human or agent remembering to check it manually — exactly the fail
 - Identify which `.claude/hooks/*.sh` files are security-load-bearing (deny/block hooks) versus
   purely repo-specific (formatting, cache-warming) — only the former need cross-repo identity.
 - Extend the `rhino-cli` byte-identity gate (or add a lighter sibling CI job) to hash-compare the
-  security-load-bearing hooks across `ose-public` and `ose-private`.
+  security-load-bearing hooks across `ose-public` and the private sibling.
 - Fail CI on drift, same as the existing `rhino-cli` gate does today.
 
 ## Rough scope & non-goals

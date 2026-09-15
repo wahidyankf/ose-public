@@ -337,7 +337,7 @@ the canonical feature and driver, proves the target consumes that feature, chang
 map in the same edit. A failed driver, empty normalized corpus, missing feature, reverse transition,
 or mapping mismatch restores the last green bootstrap configuration and blocks dependent tasks.
 
-## `ose-private` Project Matrix
+## The private sibling Project Matrix
 
 | Project            | Profile                                                      | Behavior owner / corpus                              | Unit                  | Integration                                                 | E2E                                                      |
 | ------------------ | ------------------------------------------------------------ | ---------------------------------------------------- | --------------------- | ----------------------------------------------------------- | -------------------------------------------------------- |

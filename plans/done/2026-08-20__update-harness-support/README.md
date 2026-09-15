@@ -3,7 +3,7 @@
 **Status**: In Progress
 **Delivery Mode**: `worktree-to-pr`
 **Worktree**: `worktrees/update-harness-support/`
-**Repositories**: `ose-public` (primary), `ose-private` (paired `apps/rhino-cli/**` twin)
+**Repositories**: `ose-public` (primary), the private sibling (paired `apps/rhino-cli/**` twin)
 
 ## Context
 
@@ -69,7 +69,7 @@ none for harness drift]. A claim can be arbitrarily old and CI stays green.
 9. **OpenCode v1 conformance corrections**, with two deferred moves filed as idea briefs: the
    OpenCode v2-beta migration, and moving canonical source out of `.claude/` to a vendor-neutral
    location.
-10. **Paired `ose-private` twin branches** so `apps/rhino-cli/**` byte-identity never breaks.
+10. **Paired the private sibling twin branches** so `apps/rhino-cli/**` byte-identity never breaks.
 
 ### Out of scope
 
@@ -90,7 +90,7 @@ none for harness drift]. A claim can be arbitrarily old and CI stays green.
 
 Thirteen phases in **one worktree and one PR per repository**. This overrides the default rule that
 would split the work across several PRs: the entire plan lands in exactly one `ose-public` PR paired
-with exactly one `ose-private` PR, merged together — two PRs total. Phases remain the unit of
+with exactly one the private sibling PR, merged together — two PRs total. Phases remain the unit of
 sequencing and each keeps its own gate, but no phase opens a PR of its own.
 
 The keystone is Phase 1: contract the registry to three entries first, because every downstream
@@ -116,7 +116,7 @@ flowchart TD
     P9 --> P10["Phase 10<br/>Catalog becomes<br/>generated"]
     P10 --> P11["Phase 11<br/>Word-budget<br/>coverage"]
     P11 --> P12["Phase 12<br/>Knowledge<br/>Capture"]
-    P12 --> MERGE{{"Terminal review<br/>+ paired merge<br/>(ose-public + ose-private)"}}
+    P12 --> MERGE{{"Terminal review<br/>+ paired merge<br/>(ose-public + private sibling)"}}
     MERGE --> ARCH["Plan Archival"]
 
     P3 -.->|"push, keep green"| PR

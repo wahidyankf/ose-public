@@ -25,7 +25,7 @@ Four things, delivered as one sweep per repository:
   order.
 - **Rules-gate operator** (maintainer, or the `repo-rules-quality-gate` workflow) — expects naming
   drift to be reported by the same machinery as every other repo rule.
-- **Release operator** (maintainer) — lands the identical sweep and tooling in `ose-private`.
+- **Release operator** (maintainer) — lands the identical sweep and tooling in the private sibling.
 
 ## User Stories
 
@@ -58,7 +58,7 @@ document.
 ### US-6 — Keep both repositories saying one thing
 
 **As a** release operator, **I want** the convention, the machinery updates, and the sweep applied
-identically in `ose-private` with the `rhino-cli` change byte-identical, **so that** cross-repo rule
+identically in the private sibling with the `rhino-cli` change byte-identical, **so that** cross-repo rule
 work needs no per-repo naming translation.
 
 ### US-7 — Name a new kind of agent without amending a vocabulary
@@ -177,7 +177,7 @@ Scenario: No letter-suffix insert escapes remain
   And every former escape file is reachable from its parent index
 
 Scenario: Both repositories end on the same rule
-  Given ose-public and ose-private have both been swept
+  Given ose-public and private-sibling have both been swept
   When the maintainer compares the ordinal-prefix convention and the rhino-cli index tooling across them
   Then the convention states the same rule in both
   And the parity-manifest gate exits 0 in both

@@ -23,7 +23,7 @@ treat it as authoritative.
 (`.opencode/`, `.codex/`, `.agents/skills/`) are _generated_ by `npm run generate:bindings` and must
 never be hand-edited. `npm run validate:sync` fails if a mirror does not match its source.
 
-**Parity boundary.** `apps/rhino-cli/` is byte-identical between `ose-public` and `ose-private`.
+**Parity boundary.** `apps/rhino-cli/` is byte-identical between `ose-public` and the private sibling.
 `apps/rhino-cli/parity-manifest.sha256` lists 123 file hashes, and a nightly GitHub Actions job in
 each repository downloads `ose-public`'s manifest from `main` and fails on any diff. Changing a file
 inside that boundary in one repository obligates the same change in the other.
@@ -48,8 +48,8 @@ ending with "Todo lists and progress tracking". `mandatory-report-generation.md`
 | -------------------------------------------------- | ------- |
 | `ose-public` primary checkout `generated-reports/` | 471     |
 | `ose-public` primary checkout `local-tmp/`         | 7       |
-| `ose-private` `generated-reports/`                 | 96      |
-| `ose-private` `local-tmp/`                         | 22      |
+| The private sibling `generated-reports/`           | 96      |
+| The private sibling `local-tmp/`                   | 22      |
 
 `generated-reports/` is per-checkout, not shared: this plan's own worktree holds three further
 entries of its own. Cleanup is therefore per-checkout, discovered at runtime, not a single path.
@@ -254,7 +254,7 @@ leaves one permanent config-shaped file in a directory the new rule defines as h
 human-requested deliverables. That is exactly the shape of exception that eroded the previous rule.
 
 **Cost this decision imposes:** an F# default-path change inside the parity boundary, its unit
-tests, a manifest regeneration, and the same change in `ose-private` within the same window. This is
+tests, a manifest regeneration, and the same change in the private sibling within the same window. This is
 the only code in the plan.
 
 ### D-5: No enforcement gate
@@ -277,13 +277,13 @@ live enforcement.
 **Chosen** by maintainer decision, over delivering `ose-public` and recording a sibling obligation.
 
 The two repositories shard this convention under different filenames (15 shards in `ose-public`, 18
-in `ose-private`), so propagation is semantic — the same rule restated into each repository's own
+in the private sibling), so propagation is semantic — the same rule restated into each repository's own
 shard structure. Files are never copied between the two repositories. The single exception is
 `RepoGovernance.fs`, which is inside the byte-identity boundary and must match exactly.
 
 **Ordering constraint.** `.github/workflows/rhino-cli-parity-audit.yml` runs at 02:00 UTC daily and
 compares each repository's manifest against `ose-public`'s `main`. `ose-public` lands first as
-canonical; `ose-private` must follow before the next scheduled run, or that run reports drift.
+canonical; the private sibling must follow before the next scheduled run, or that run reports drift.
 
 ### D-7: This plan is two `rules-propagation` runs, not a documentation edit
 
@@ -297,8 +297,8 @@ every rule one of three **enforcement dispositions**, none of which may be silen
 
 `delivery.md` therefore carries the workflow's ten steps as explicit `RP-` checkboxes rather than a
 link to it. **One run touches one repository**, so the steps appear twice: Phase 1–3 execute the
-`ose-public` run, Phase 5 executes an independent `ose-private` run against that repository's own
-shard set and its own conflict corpus. Nothing in the `ose-private` run is satisfied by the
+`ose-public` run, Phase 5 executes an independent the private sibling run against that repository's own
+shard set and its own conflict corpus. Nothing in the private-sibling run is satisfied by the
 `ose-public` run having happened.
 
 Four falsifiable statements are propagated: the destination test, the `local-tmp/<agent-family>/`
@@ -395,7 +395,7 @@ counts them as `HISTORICAL`.
 Mirrors are regenerated with `npm run generate:bindings`, never hand-edited. `.codex/config.toml`
 has hand-authored tables outside its delimited region that must survive regeneration untouched.
 
-**Ordering across repositories.** `ose-public` PRs merge first. The `ose-private` delivery follows
+**Ordering across repositories.** `ose-public` PRs merge first. The private-sibling delivery follows
 in the same session because of the nightly parity audit window described in D-6.
 
 **Two writing hazards specific to this repository.** Markdown written by a script or heredoc skips
@@ -408,7 +408,7 @@ written with an editor tool. And governance index files sit near a 500-word FAIL
 - No new runtime dependency, package, or tool.
 - Depends on existing commands only: `npm run generate:bindings`, `npm run validate:sync`,
   `npm run harness:bindings-validation`, `nx run rhino-cli:test:quick`, `nx affected -t build`.
-- `ose-private` delivery depends on `ose-public`'s `rhino-cli` change being on `main` first, because
+- The private sibling delivery depends on `ose-public`'s `rhino-cli` change being on `main` first, because
   `ose-public` is the canonical manifest source.
 
 ## Rollback

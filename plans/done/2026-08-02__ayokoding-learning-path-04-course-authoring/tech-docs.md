@@ -866,7 +866,7 @@ The target codebases and the principle-modules that build each stack skill (the 
 `just-enough-cpp`, `detection-engineering-and-siem-operations`, `capstone-build-your-own-pentest-engine`
 — are library courses every path can include):
 
-- **`ose-public` / `ose-primer` / `ose-private`** (this workspace family) [Repo-grounded — `AGENTS.md`]
+- **`ose-public` / `ose-primer` / the private sibling** (this workspace family) [Repo-grounded — `AGENTS.md`]
   — Nx monorepo, F#/Giraffe backends, Rust CLIs, Playwright E2E, multi-harness AI-agent binding.
 - **`remotebrowser`** [Web-cited — <https://github.com/remotebrowser/remotebrowser>, accessed
   2026-07-18] — async-Python/FastAPI browser-fleet orchestration over CDP + MCP; built by

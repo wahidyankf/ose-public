@@ -1152,7 +1152,7 @@ MERGED_COMMIT: 8bca5d45b5e27cb037319f88fbdb343183bfeb3d
     The entries contain only public repository paths, public PR URLs, and generic branch examples;
     no credential, token, private hostname, inventory, or secret is recorded.
 - [x] [AI] Apply the **repo-relevance gate** — infra-private content (Terraform, k3s, Proxmox, real
-      hostnames/inventories) stays in `ose-private` only and is NEVER cross-routed into
+      hostnames/inventories) stays in the private sibling only and is NEVER cross-routed into
       `ose-public`/`ose-primer`; public-governance content may propagate via the existing parity loop —
       acceptance: no infra-private content appears in this repo's routed output.
   - **Date**: 2026-08-02. **Status**: Done. **Files Changed**: none (review only).

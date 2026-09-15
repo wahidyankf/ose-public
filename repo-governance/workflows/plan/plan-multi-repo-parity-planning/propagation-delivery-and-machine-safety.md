@@ -6,16 +6,16 @@ when_to_use: Use when deciding whether repos can run in parallel, how a repo's p
 # Propagation Shape and Resource Schedule
 
 The repos form a logical propagation fan-out, not a content-dependency chain: **`ose-public` is the
-source of truth**, and `ose-private` is its one downstream target. Where a parity set covers more
+source of truth**, and the private sibling is its one downstream target. Where a parity set covers more
 than two repos, downstream repos may remain independent DAG nodes, but resource-heavy worktree
 provisioning, toolchain setup, builds, and validation each enter
 [Resource-Aware Development](../../../development/practice/resource-aware-development.md).
 Independent compute may overlap only when HIPPO admits its fixed reservations. Dependency,
 shared-output, byte-identity, transactional, and documented correctness edges remain sequential.
-`ose-private` does not participate in the parity loop for content it does not carry.
+The private sibling does not participate in the parity loop for content it does not carry.
 
 The one hard serialization: **`apps/rhino-cli` must stay byte-identical across the parity repos
-— `ose-public` and `ose-private`** — so plans touching it propagate one repo at a time
+— `ose-public` and the private sibling** — so plans touching it propagate one repo at a time
 rather than concurrently
 ([AGENTS.md §Related Repositories](../../../../AGENTS.md#related-repositories)).
 

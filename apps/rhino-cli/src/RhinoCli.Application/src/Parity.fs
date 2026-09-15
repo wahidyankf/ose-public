@@ -123,7 +123,7 @@ let private sha256Hex (bytes: byte[]) : string =
 /// [Repo-grounded — `parity.rs::drift_error`].
 let private driftError (path: string) : string =
     sprintf
-        "%s no longer matches %s.\n\nThis file is byte-identical across ose-public and ose-private.\nChanging it here obligates propagating the identical change to the other repo.\nIf that is intended, run: rhino-cli parity manifest generate"
+        "%s no longer matches %s.\n\nThis file is byte-identical across ose-public and the private sibling.\nChanging it here obligates propagating the identical change to the other repo.\nIf that is intended, run: rhino-cli parity manifest generate"
         path
         ManifestPath
 

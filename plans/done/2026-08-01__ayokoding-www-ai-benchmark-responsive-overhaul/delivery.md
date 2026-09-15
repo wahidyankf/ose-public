@@ -4293,7 +4293,7 @@ Scenario: Price figures disclose their unit basis
       credential, token, or private hostname to a `<placeholder>` token, or discard if unsanitizable
       — acceptance: `learnings.md` contains no raw secret
 - [x] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
-      in `ose-private` only and is NEVER cross-routed into `ose-public`/`ose-primer`; public
+      in the private sibling only and is NEVER cross-routed into `ose-public`/`ose-primer`; public
       governance content may propagate via the existing parity loop
       — acceptance: no infra-private content appears in this repo's routed output
 - [x] [AI] Route the DD-26 verification-gap learning specifically — a breakpoint verification that

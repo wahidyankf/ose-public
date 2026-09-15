@@ -41,7 +41,7 @@ Restrictions](../../../conventions/structure/plans/per-repository-delivery-mode-
 ([`plan-planning`](../plan-planning/plan-docs-only-carve-out.md))
 that once let this workflow push directly to each processed repo's own `main` with no PR gate
 is retired there — a plan-docs-only change in `ose-public` uses `worktree-to-pr` like
-any other change. The carve-out survives, narrowed, only in `ose-private` as an
+any other change. The carve-out survives, narrowed, only in the private sibling as an
 infrastructure-as-code exception — but this workflow's write scope is strictly `plans/ideas/**`
 (see the Scope Boundary above), which is never infrastructure-as-code work, so no invocation of this
 workflow can ever qualify for it. There is no override.

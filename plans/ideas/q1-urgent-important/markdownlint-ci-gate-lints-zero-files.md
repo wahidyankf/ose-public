@@ -6,7 +6,7 @@ needs a positive pattern, so it receives none, lints `0 file(s)`, and reports PA
 
 > Surfaced 2026-08-17 during `optimize-gov` PR review, after twelve real violations reached a green
 > PR.
-> Absorbed ose-private's parallel copy of this brief on 2026-08-19 by plan-ideas-grooming; the gate
+> Absorbed the private sibling's parallel copy of this brief on 2026-08-19 by plan-ideas-grooming; the gate
 > is identical in both repos, so one brief now covers both.
 
 ## Problem / context
@@ -56,7 +56,7 @@ commits. They surfaced only when the changed set was linted by hand.
 `ci: { scope: affected-file-type }`, so a documentation-only change makes no Nx project affected and
 the gate is skipped outright — the same run logs show `Skipping gate format-verify-prettier` on a
 commit whose diff was ~34 Markdown files. Four `repo-governance/glossary/` files were committed
-having never been formatted at all. Note `ose-private` already spells this one
+having never been formatted at all. Note the private sibling already spells this one
 `ci: { scope: all-file-type }`, with a comment explaining the choice, so the two repos disagree.
 
 Corroborated 2026-08-18 in `repo-clean-up`: a branch of ~60 changed Markdown files carried five
@@ -95,7 +95,7 @@ SDK caches `.fvm/` and `.fvm-cache/`, which are absent from `.markdownlint-cli2.
 list. So arming the gate is cheap **provided** those two directories are ignored first — and
 guaranteed to fail loudly if they are not.
 
-`ose-private` has no `.fvm` tree and reports 0 errors across 3127 files, so there the fix is the
+The private sibling has no `.fvm` tree and reports 0 errors across 3127 files, so there the fix is the
 missing glob alone.
 
 The cost of leaving it is that every future Markdown defect lands unchallenged, exactly as twelve
@@ -115,8 +115,8 @@ just did.
 1. Add `.fvm/**` and `.fvm-cache/**` to `.markdownlint-cli2.jsonc` `ignores` (this repo only).
 2. Give the `markdownlint` gate's `ci` surface `glob: "*.md"`, matching its own `pre-commit`
    surface. Land in both repos — the config is identical today.
-3. Align `format-verify-prettier`'s `ci` scope with `ose-private`'s `all-file-type`.
-4. Capture `ose-private`'s own CI log for the gate to confirm the `0 file(s)` line there directly.
+3. Align `format-verify-prettier`'s `ci` scope with the private sibling's `all-file-type`.
+4. Capture the private sibling's own CI log for the gate to confirm the `0 file(s)` line there directly.
    Its behaviour is currently **inferred** from a byte-identical `rhino-cli` and an identical gate
    entry, not observed — its logs were unreadable during the 2026-08-17 GitHub incident, so that
    capture is still outstanding.

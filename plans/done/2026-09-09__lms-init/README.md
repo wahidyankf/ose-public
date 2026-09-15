@@ -11,7 +11,7 @@ repository to build, format, test, and gate a **Java** project at all, because n
 ever existed here.
 
 This plan is single-sourced in `ose-public` and delivers coordinated changes to both `ose-public`
-and `ose-private`. Each repository keeps its own worktree, branch, PR, gates, rules-propagation
+and the private sibling. Each repository keeps its own worktree, branch, PR, gates, rules-propagation
 manifest, and cleanup proof.
 
 ## Context
@@ -33,7 +33,7 @@ set of languages today, and each one silently mis-handles Java until it is taugh
 | Tag vocabulary, ports, language docs            | `lang:java` is not an allowed value; no port, no style guide, no developer agent            |
 
 Two of those files sit inside `apps/rhino-cli/parity-manifest.sha256` and are held byte-identical
-with `ose-private`, which is what makes this a two-repository plan.
+with the private sibling, which is what makes this a two-repository plan.
 
 ## Scope
 

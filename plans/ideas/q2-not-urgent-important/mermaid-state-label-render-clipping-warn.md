@@ -57,7 +57,7 @@ state-diagram-specific until measured otherwise).
 - The calibration is renderer-specific — GitHub's Mermaid version can shift the clipping boundary, so
   the threshold needs a documented re-derivation path rather than a hard-coded magic number. (open)
 - The rule touches `apps/rhino-cli/**`, which must stay byte-identical across `ose-public` and
-  `ose-private` — execution is a coordinated two-repo change plus companion Gherkin.
+  the private sibling — execution is a coordinated two-repo change plus companion Gherkin.
 - What predictor actually generalizes (glyph-width estimate vs. something layout-dependent) is
   unknown until the sweep is run. (open)
 

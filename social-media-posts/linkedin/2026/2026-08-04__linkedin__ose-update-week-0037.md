@@ -1,6 +1,6 @@
 Posted: Tuesday, August 4, 2026
 Platform: LinkedIn
-Window: 2026-07-27 19:14:49 +0700 → 2026-08-04 22:05:42 +0700. 474 commits after the boundary across the four repos (ose-public 175, ose-primer 19, ose-private 109, beaver-nest 171), 28 pull requests merged (24 / 1 / 1 / 2).
+Window: 2026-07-27 19:14:49 +0700 → 2026-08-04 22:05:42 +0700. 474 commits after the boundary across the four repos (ose-public 175, ose-primer 19, private sibling 109, beaver-nest 171), 28 pull requests merged (24 / 1 / 1 / 2).
 
 ---
 
@@ -13,7 +13,7 @@ Week 37 ends with four repos, a benchmark/wider library, prerendering, B/C CI, a
 
 🌐 Cross-repo
 
-`ose-infra` is now `ose-private`; charter, refs, and labels align. BeaverNest is fourth; parity unchanged. Cursor/OpenCode bindings landed.
+`ose-infra` is now the private sibling; charter, refs, and labels align. BeaverNest is fourth; parity unchanged. Cursor/OpenCode bindings landed.
 
 🌳 ose-public
 
@@ -21,7 +21,7 @@ ayokoding's bilingual, cited benchmark compares models from five coding harnesse
 
 Rendering triggers are gone: portfolio routes prerender, Storybook is conditional, and health deters indexing. Billing is unverified; no savings claim yet.
 
-🏗️ ose-private
+🏗️ Private sibling
 
 On-premise now hosts CI/platform VMs; Kubernetes moved to cloud backlog. B/C runner recovery, probes, alerts, and jobs passed. One-VLAN switching uses host/tailnet fencing. Two Node A lockups joined the postmortem; BIOS is deferred.
 

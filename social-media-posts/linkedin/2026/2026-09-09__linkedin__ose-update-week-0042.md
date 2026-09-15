@@ -1,6 +1,6 @@
 Posted: Wednesday, September 9, 2026
 Platform: LinkedIn
-Window: 2026-09-02 18:41:48 +0700 → 2026-09-09 19:17:36 +0700. ~358 commits across five repos (ose-public 69, ose-private 32, beaver-nest 117, rhino 80, hippo 60).
+Window: 2026-09-02 18:41:48 +0700 → 2026-09-09 19:17:36 +0700. ~358 commits across five repos (ose-public 69, private sibling 32, beaver-nest 117, rhino 80, hippo 60).
 
 ---
 
@@ -11,7 +11,7 @@ Highlights: Since Week 41, BeaverNest's resource guard became HIPPO, standalone 
 
 🌐 Cross-repo
 
-The OSE Code Repositories are a routing set, not a parent, five-way parity group, or shared release train. Only ose-public and ose-private form parity. BeaverNest is an independent family product; RHINO and HIPPO version and release independently.
+The OSE Code Repositories are a routing set, not a parent, five-way parity group, or shared release train. Only ose-public and the private sibling form parity. BeaverNest is an independent family product; RHINO and HIPPO version and release independently.
 
 Standalone Rust RHINO is not the in-tree F# Rhino reported last week. That byte-identical public/private CLI remains inside those two repositories.
 
@@ -23,7 +23,7 @@ The new OSE LMS backend uses Java 25 and Spring Boot, generated OpenAPI models, 
 
 Roots BE establishes a Go 1.26/Gin lane for reusable Sharia-compliance capability. Its contract exposes only health; no judgement, persistence, or authentication has shipped. The rename from Islamic BE makes that general-purpose boundary explicit.
 
-🏗️ ose-private
+🏗️ Private sibling
 
 Private converged on the same behaviour-driven test contract, in-tree F# Rhino boundary, and HIPPO v0.5.2 consumer—engineering alignment, not a public product claim.
 

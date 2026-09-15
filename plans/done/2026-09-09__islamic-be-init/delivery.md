@@ -17,7 +17,7 @@ than guessing it.
 This plan does not begin until [`lms-init`](../../in-progress/lms-init/README.md) has **merged** both:
 
 - **DU1** — config-driven doctor tool inventory, landed byte-identically in `ose-public` and
-  `ose-private`, with `doctor.extra-tools` present in both `repo-config.yml` files.
+  the private sibling, with `doctor.extra-tools` present in both `repo-config.yml` files.
 - **DU2** — Java language enablement, which generalizes `scripts/behaviour-coverage.mjs`, adds the
   `has-<lang>` detect/job/exclude/aggregate pattern and the `setup-java` composite action, and adds
   `tag:lang:java` to the `typescript`, `dotnet`, and `flutter` exclude lists.
@@ -29,7 +29,7 @@ upstream work. The rationale and the accepted cost are recorded in [`tech-docs.m
 ## Delivery Mode
 
 `worktree-to-pr`. DU1–DU4 and DU6 are `ose-public`-only. DU5 is applied independently to
-`ose-public` and `ose-private`: each repository has its own branch, commits, pull request,
+`ose-public` and the private sibling: each repository has its own branch, commits, pull request,
 current-head/base CI, and merge.
 
 `worktree-to-pr` is mandatory in `ose-public`: `main` is branch-protected including for admins, so
@@ -43,7 +43,7 @@ authenticated clean current-head `pr-leak-review`, and the applicable surface ga
 
 - Public: `R-PUB:worktrees/ose-islamic/`
 - Private: `R-PRI:worktrees/islamic-be-init/` — provisioned lazily at Phase 5, the only unit that
-  touches `ose-private`
+  touches the private sibling
 
 ### Provisioned Worktree Identity
 
@@ -75,18 +75,18 @@ authenticated clean current-head `pr-leak-review`, and the applicable surface ga
 
 ### Delivery Branch Inventory
 
-| Branch                                | Repository    | Mode    | Lifecycle state | Proof                                                                                                                                                       |
-| ------------------------------------- | ------------- | ------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `worktree/ose-islamic`                | `ose-public`  | `to-pr` | `active`        | carries the plan-authoring PR #488 and every Phase 0 record; removed by the terminal cleanup gate                                                           |
-| `worktree/islamic-be-init`            | `ose-private` | `to-pr` | `active`        | provisioned at Phase 5; hosts the `ose-private` half of the DU5 pair; removed by the terminal cleanup gate                                                  |
-| `islamic-be-init/du1-go-lane`         | `ose-public`  | `to-pr` | `delivered`     | PR #496, reviewed head `d534cadf3e6c5a3d93ee980c1f1c3b041ca48612`, squashed to `f9e40bc675824719b13fa8d32e48b297dc7c75c7`; branch deleted local and remote  |
-| `islamic-be-init/du2-specs-contracts` | `ose-public`  | `to-pr` | `delivered`     | PR #497, reviewed head `bbf0d709e964968cd6fb0a226f9c24354a9c2dc8`, squashed to `fbb459cad0a567dcace99ec6f555c493a17f58c9`; branch deleted local and remote  |
-| `islamic-be-init/du3-service`         | `ose-public`  | `to-pr` | `delivered`     | PR #498, reviewed head `5554cd6f7e205ffa7b2b35270af5b2da6c964683`, squashed to `1ee0672909de1acf1f339a1b31c00cf78c5a7387`; branch deleted local and remote  |
-| `islamic-be-init/du4-e2e`             | `ose-public`  | `to-pr` | `delivered`     | PR #499, reviewed head `26b236814f930af738ab8f7ad4a845d9ddfd4f4b`, squashed to `78ef5ae26c87144f908207b4020b67966dd4834a`; branch deleted local and remote  |
-| `islamic-be-init/du5-rhino-go-env`    | `ose-public`  | `to-pr` | `delivered`     | PR #500, reviewed head `72c3b65675d07883bdb4ce7a4e98ad0feb74820f`, squashed to `4127ff43c5f5d862538fac9202fdc7ae0c90bf7f`; branch deleted local and remote  |
-| `islamic-be-init/du5-rhino-go-env`    | `ose-private` | `to-pr` | `delivered`     | PR #169, reviewed head `a79332f8bf78332ab627317d4df129fc489b561e`, squashed to `2ba5397da07403598097eddb1a57d5876a7a0f39`; remote branch deleted at cleanup |
-| `islamic-be-init/du6-registry`        | `ose-public`  | `to-pr` | `delivered`     | PR #501, reviewed head `d7f5ebbed089908376fc3f9afe4e491c10beff18`, squashed to `e1746881a541725b19ef13bdbbb9a97fcc59f93c`; branch deleted local and remote  |
-| `islamic-be-init/phase7-knowledge`    | `ose-public`  | `to-pr` | `active`        | branched from `e1746881a541725b19ef13bdbbb9a97fcc59f93c`; carries the Phase 7 routings and the Phase 8 archival; record its PR and head SHA at merge        |
+| Branch                                | Repository          | Mode    | Lifecycle state | Proof                                                                                                                                                       |
+| ------------------------------------- | ------------------- | ------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `worktree/ose-islamic`                | `ose-public`        | `to-pr` | `active`        | carries the plan-authoring PR #488 and every Phase 0 record; removed by the terminal cleanup gate                                                           |
+| `worktree/islamic-be-init`            | The private sibling | `to-pr` | `active`        | provisioned at Phase 5; hosts the private-sibling half of the DU5 pair; removed by the terminal cleanup gate                                                |
+| `islamic-be-init/du1-go-lane`         | `ose-public`        | `to-pr` | `delivered`     | PR #496, reviewed head `d534cadf3e6c5a3d93ee980c1f1c3b041ca48612`, squashed to `f9e40bc675824719b13fa8d32e48b297dc7c75c7`; branch deleted local and remote  |
+| `islamic-be-init/du2-specs-contracts` | `ose-public`        | `to-pr` | `delivered`     | PR #497, reviewed head `bbf0d709e964968cd6fb0a226f9c24354a9c2dc8`, squashed to `fbb459cad0a567dcace99ec6f555c493a17f58c9`; branch deleted local and remote  |
+| `islamic-be-init/du3-service`         | `ose-public`        | `to-pr` | `delivered`     | PR #498, reviewed head `5554cd6f7e205ffa7b2b35270af5b2da6c964683`, squashed to `1ee0672909de1acf1f339a1b31c00cf78c5a7387`; branch deleted local and remote  |
+| `islamic-be-init/du4-e2e`             | `ose-public`        | `to-pr` | `delivered`     | PR #499, reviewed head `26b236814f930af738ab8f7ad4a845d9ddfd4f4b`, squashed to `78ef5ae26c87144f908207b4020b67966dd4834a`; branch deleted local and remote  |
+| `islamic-be-init/du5-rhino-go-env`    | `ose-public`        | `to-pr` | `delivered`     | PR #500, reviewed head `72c3b65675d07883bdb4ce7a4e98ad0feb74820f`, squashed to `4127ff43c5f5d862538fac9202fdc7ae0c90bf7f`; branch deleted local and remote  |
+| `islamic-be-init/du5-rhino-go-env`    | The private sibling | `to-pr` | `delivered`     | PR #169, reviewed head `a79332f8bf78332ab627317d4df129fc489b561e`, squashed to `2ba5397da07403598097eddb1a57d5876a7a0f39`; remote branch deleted at cleanup |
+| `islamic-be-init/du6-registry`        | `ose-public`        | `to-pr` | `delivered`     | PR #501, reviewed head `d7f5ebbed089908376fc3f9afe4e491c10beff18`, squashed to `e1746881a541725b19ef13bdbbb9a97fcc59f93c`; branch deleted local and remote  |
+| `islamic-be-init/phase7-knowledge`    | `ose-public`        | `to-pr` | `active`        | branched from `e1746881a541725b19ef13bdbbb9a97fcc59f93c`; carries the Phase 7 routings and the Phase 8 archival; record its PR and head SHA at merge        |
 
 Append every plan-created delivery branch before use. Before removal, classify every entry as
 delivered, unused, or retained/escalated; an active or unrecorded branch blocks cleanup.
@@ -96,10 +96,10 @@ delivered, unused, or retained/escalated; an active or unrecorded branch blocks 
 - Objective slug: `islamic-be-init`
 - Common worktree basename: `islamic-be-init`
 
-| Repository    | Corresponding short-lived branch   |
-| ------------- | ---------------------------------- |
-| `ose-public`  | `islamic-be-init/du5-rhino-go-env` |
-| `ose-private` | `islamic-be-init/du5-rhino-go-env` |
+| Repository          | Corresponding short-lived branch   |
+| ------------------- | ---------------------------------- |
+| `ose-public`        | `islamic-be-init/du5-rhino-go-env` |
+| The private sibling | `islamic-be-init/du5-rhino-go-env` |
 
 DU1, DU2, DU3, DU4, and DU6 are `ose-public`-only and declare no parity branch.
 
@@ -123,7 +123,7 @@ baseline.
       title — `du1-doctor-config` is the branch name and does not appear in the private repository's
       PR title:
       `rtk gh pr list --repo wahidyankf/ose-public --state merged --head lms-init/du1-doctor-config`
-      and the same for `wahidyankf/ose-private`. Acceptance: each returns a merged PR; record both
+      and the same for `wahidyankf/<private-sibling>`. Acceptance: each returns a merged PR; record both
       numbers and 40-character merge SHAs in this file. If either is missing, **stop and report** —
       do not build the doctor refactor here.
   - **Date**: 2026-09-08
@@ -131,10 +131,10 @@ baseline.
   - **Files Changed**: none (verification only)
   - **`ose-public`**: PR #491, branch `lms-init/du1-doctor-config`, merge SHA
     `c6fffc3844d9e5d912d6467967ab6ba433967314`
-  - **`ose-private`**: PR #167, branch `lms-init/du1-doctor-config`, merge SHA
+  - **The private sibling**: PR #167, branch `lms-init/du1-doctor-config`, merge SHA
     `fc0a273fdc8aa9b4eb6d75520b23e83adeede0d5`
   - **Note**: the originally-authored `--search "du1-doctor-config"` returned empty for
-    `ose-private` because that string is the branch name and does not appear in its PR title
+    the private sibling because that string is the branch name and does not appear in its PR title
     (`refactor(rhino-cli): resolve the doctor tool inventory from repo-config`). The checkbox now
     specifies `--head`, which matches in both repositories. Caught because an empty result was
     treated as a stop-and-report rather than as absence of the work.
@@ -146,9 +146,9 @@ baseline.
   - **Status**: done — key present in both repositories
   - **Files Changed**: `plans/in-progress/islamic-be-init/evidence/phase-0-extra-tools.txt` (new)
   - **`ose-public`**: `repo-config.yml:174`, `extra-tools:` carrying the `java` entry
-  - **`ose-private`**: `repo-config.yml:272`, `extra-tools: []`
+  - **The private sibling**: `repo-config.yml:272`, `extra-tools: []`
   - **Note**: an unsorted key-list diff reports a difference — `doctor` sits at position 4 in
-    `ose-public` and 7 in `ose-private`. That is ordering, not membership. Parity rule 4 constrains
+    `ose-public` and 7 in the private sibling. That is ordering, not membership. Parity rule 4 constrains
     the key _set_; the sorted comparison is identical. Recorded so a later reader does not
     mistake the ordering diff for real drift and "fix" it by reordering a file.
 - [x] [AI] Confirm `lms-init` DU2 is merged and read the shape it left behind:
@@ -194,7 +194,7 @@ baseline.
   - **Status**: done — green
   - **Files Changed**: `plans/in-progress/islamic-be-init/evidence/phase-0-parity-audit.txt` (new)
   - Latest run `34196758969` on `main`, `conclusion: success`, `2026-09-08T06:54Z`
-  - **Ordering check that makes this meaningful**: `ose-private` DU1 merged at `2026-09-08T05:15Z`,
+  - **Ordering check that makes this meaningful**: the private sibling DU1 merged at `2026-09-08T05:15Z`,
     so the 06:54Z audit ran _after_ both halves of the parity pair landed. A green audit dated
     before the pair converged would have proven nothing about the current state; this one does.
 
@@ -336,7 +336,7 @@ baseline.
   - **Date**: 2026-09-08 — **Status**: pass. Recorded in the Upstream Verification notes above and in
     `evidence/phase-0-upstream.md`:
     - DU1 `ose-public` PR #491 → `c6fffc3844d9e5d912d6467967ab6ba433967314`
-    - DU1 `ose-private` PR #167 → `fc0a273fdc8aa9b4eb6d75520b23e83adeede0d5`
+    - DU1 the private sibling's PR #167 → `fc0a273fdc8aa9b4eb6d75520b23e83adeede0d5`
     - DU2 `ose-public` PR #493 → `2e3ff7a8e76b5a5b6c4fceebef196c4e953ced9c`
 - [x] [AI] `rtk npm run doctor` — exits 0
   - **Date**: 2026-09-08 — **Status**: pass, exit 0. `16/17 tools OK, 1 warning, 0 missing`; the
@@ -370,7 +370,7 @@ Delivery boundary. Lands every gate a Go project needs, before any Go project ex
   > tags against the vocabulary, and the conflict scan found the table already drifted from reality
   > (`lang:fsharp`, `platform:giraffe`, `domain:config` all in use but undocumented). Adding those
   > three is in scope as tidy; arming a validator is not. `axum`/`dotnet` are documented but unused
-  > in `ose-public` and left alone — this run cannot see whether `ose-private` uses them. No sibling
+  > in `ose-public` and left alone — this run cannot see whether the private sibling uses them. No sibling
   > obligation: both files sit outside `parity-manifest.sha256`.
 
 - [x] [AI] Edit `repo-governance/development/infra/nx-targets/tag-convention-four-dimension-scheme.md`: admit `go` to `lang:`, `gin` to `platform:`, and `islamic` to `domain:` — acceptance: all three values appear in the Allowed Values column
@@ -1271,10 +1271,10 @@ DU1–DU4; gates only DU6.
 
 ### Parity Preflight — before the first mutation in either repository
 
-- [x] [AI] Confirm no other plan holds an open parity PR pair: `rtk gh pr list --repo wahidyankf/ose-public --state open --search "rhino-cli in:title"` and the same for `wahidyankf/ose-private`. Acceptance: neither returns an open PR touching `apps/rhino-cli`. Two concurrent pairs race on the same generated manifest — see `tech-docs.md` §1.5. — verified again immediately before the first mutation: PR #499 was the only open PR in either repository
+- [x] [AI] Confirm no other plan holds an open parity PR pair: `rtk gh pr list --repo wahidyankf/ose-public --state open --search "rhino-cli in:title"` and the same for `wahidyankf/<private-sibling>`. Acceptance: neither returns an open PR touching `apps/rhino-cli`. Two concurrent pairs race on the same generated manifest — see `tech-docs.md` §1.5. — verified again immediately before the first mutation: PR #499 was the only open PR in either repository
 - [x] [AI] Confirm `rhino-cli-parity-audit.yml` is green on `main`: `rtk gh run list --workflow rhino-cli-parity-audit.yml --limit 1 --json conclusion,url`. Acceptance: `conclusion` is `success`; save to `evidence/du5-parity-preflight.txt`.
 - [x] [AI] Confirm the branch name `islamic-be-init/du5-rhino-go-env` is unused in both repositories: `rtk git ls-remote --heads origin islamic-be-init/du5-rhino-go-env` in each. Acceptance: both return empty.
-- [x] [AI] Provision the private worktree. From the `ose-private` repository root run `claude --worktree islamic-be-init`. Acceptance: `rtk git worktree list --porcelain` in that repository lists a route ending in `worktrees/islamic-be-init`. Record it in the Provisioned Worktree Identity block above.
+- [x] [AI] Provision the private worktree. From the private sibling root run `claude --worktree islamic-be-init`. Acceptance: `rtk git worktree list --porcelain` in that repository lists a route ending in `worktrees/islamic-be-init`. Record it in the Provisioned Worktree Identity block above.
 - [x] [AI] Bind both worktree routes to shell variables so no later step names a machine path: `PUBLIC_WT="$(rtk git rev-parse --show-toplevel)"` from this worktree, and `PRIVATE_WT="$(rtk git rev-parse --show-toplevel)"` from the private one. Acceptance: both expand to a directory containing `apps/rhino-cli/`; the routes are recorded relative to each repository root, never as absolute paths
 - [x] [AI] Verify byte-identity is intact before touching it: `rtk diff -ru "$PUBLIC_WT/apps/rhino-cli/src" "$PRIVATE_WT/apps/rhino-cli/src"`. Acceptance: no differences; save to `evidence/du5-preflight-diff.txt`.
 
@@ -1300,7 +1300,7 @@ DU1–DU4; gates only DU6.
 ### Integration
 
 - [x] [AI] Commit in each repository on `islamic-be-init/du5-rhino-go-env` with the source edit and the regenerated manifest in **one** commit, message `feat(rhino-cli): scan Go source for environment reads`. Acceptance: `rtk git show --stat` in each lists both `Env.fs` and `parity-manifest.sha256` — public `72c3b6567`, private `a79332f8bf`; each lists `Env.fs` and `parity-manifest.sha256`
-- [x] [AI] Push both branches and open a draft PR in each repository, each body stating the new-code cost/benefit and naming its counterpart PR. Acceptance: both PRs exist and cross-reference — ose-public#500 and ose-private#169, cross-referenced
+- [x] [AI] Push both branches and open a draft PR in each repository, each body stating the new-code cost/benefit and naming its counterpart PR. Acceptance: both PRs exist and cross-reference — ose-public#500 and the private sibling#169, cross-referenced
 - [x] [AI] Poll CI every 2 minutes in both repositories until `pr-quality-gate.yml` and `pr-leak-review` complete on each current head — acceptance: all report success; never use `gh run watch` — all checks pass in both; leak reviews `5146300220` (public) and `5146295091` (private), each pinned to its exact head with `pass` 0/0/0
 - [x] [AI] Merge both pull requests within the same working session, so the nightly parity audit never observes a mismatched pair. Acceptance: both merge; record each PR number and 40-character head SHA in the Delivery Branch Inventory — merged back to back: public squash `4127ff43c5f5d862538fac9202fdc7ae0c90bf7f`, private squash `2ba5397da07403598097eddb1a57d5876a7a0f39`
 - [x] [AI] Record the unconverged counterpart as a sibling obligation in `learnings.md` from the moment the first PR merges until the second does — acceptance: the entry names the outstanding repository and is cleared only when both are in — recorded in `learnings.md` under "a manifest-covered change opens a divergence window until both PRs land"
@@ -1312,7 +1312,7 @@ DU1–DU4; gates only DU6.
 - [x] [AI] `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run rhino-cli:test:quick` in **both** repositories — exits zero in each — 757 tests pass in each at merged main
 - [x] [AI] Recursive diff of `apps/rhino-cli/src`, `project.json`, `LICENSE`, and `parity-manifest.sha256` across repositories — reports zero differences — zero differences; behaviours corpus identical too
 - [x] [AI] `rtk apps/rhino-cli/scripts/rhino-bin.sh parity manifest validate` in both — each reports the manifest is current — each reports the manifest is current
-- [x] [AI] `rtk gh workflow run rhino-cli-parity-audit.yml --repo wahidyankf/ose-private` completes successfully against the merged state — save the run URL to `evidence/du5-parity-audit.txt` — run 34272185735 completed/success; saved to `evidence/du5-parity-audit.txt`
+- [x] [AI] `rtk gh workflow run rhino-cli-parity-audit.yml --repo wahidyankf/<private-sibling>` completes successfully against the merged state — save the run URL to `evidence/du5-parity-audit.txt` — run 34272185735 completed/success; saved to `evidence/du5-parity-audit.txt`
 - [x] [AI] Confirm both `repo-config.yml` files carry an identical top-level key set — acceptance: the schema-parity comparison reports no difference — 10 keys each, no difference; DU5 touched the file in neither repository
 
 > **Pause Safety**: both repositories carry the Go env scanner and a matching regenerated parity
@@ -1351,7 +1351,7 @@ Delivery boundary. Requires DU3, DU4, and DU5 merged.
 
 Opens a PR only if a learning routes to a durable home in this repository.
 
-- [x] [AI] Run both safety gates — secret/sensitivity and repo-relevance — over every `learnings.md` entry — acceptance: each entry is cleared or removed with a stated reason. Secret/sensitivity: zero machine paths, home directories, token shapes, hostnames, or IPs across all 27 entries. Repo-relevance: the four `ose-private` mentions name the parity relationship and two PR numbers, both already public in `AGENTS.md` §Related Repositories; no infra-private content.
+- [x] [AI] Run both safety gates — secret/sensitivity and repo-relevance — over every `learnings.md` entry — acceptance: each entry is cleared or removed with a stated reason. Secret/sensitivity: zero machine paths, home directories, token shapes, hostnames, or IPs across all 27 entries. Repo-relevance: the four the private sibling mentions name the parity relationship and two PR numbers, both already public in `AGENTS.md` §Related Repositories; no infra-private content.
 - [x] [AI] Route each surviving entry to exactly one durable home: a convention, a doc, an agent, a skill, code, a test, or a post-mortem — acceptance: every entry names its destination
 - [x] [AI] Land small non-code routings inline in this plan's commits — acceptance: the routed content exists at its destination. Nine routings landed across eight `repo-governance/` files; each was checked first for whether its home already stated the rule, and the halves that were already documented (the paired-PR obligation, the generate-reads-the-index order, the npm-install step) were discarded rather than restated.
 - [x] [AI] For each large non-code routing and **every** code routing, author a `plans/ideas/` two-pager only with literal user authorization; otherwise record `Reported without plan authorization` and surface it to the user — acceptance: no `plans/backlog/` folder is created directly. No literal authorization was given, so no two-pager was authored and no `plans/backlog/` folder exists; 17 entries carry `Reported without plan authorization` with executable handoff evidence.
@@ -1371,7 +1371,7 @@ Opens a PR only if a learning routes to a durable home in this repository.
 
 ## Phase 8: Plan Archival
 
-- [x] [AI] Confirm every phase gate above is ticked and every PR is merged — acceptance: Phases 0 through 7 show no unticked gate item. All six PRs merged: `ose-public` #496, #497, #498, #499, #500, #501 and `ose-private` #169, each verified `MERGED` against the GitHub API rather than from notes.
+- [x] [AI] Confirm every phase gate above is ticked and every PR is merged — acceptance: Phases 0 through 7 show no unticked gate item. All six PRs merged: `ose-public` #496, #497, #498, #499, #500, #501 and the private sibling #169, each verified `MERGED` against the GitHub API rather than from notes.
 - [x] [AI] Reconcile the Delivery Branch Inventory: mark each branch `delivered` with its PR number and reviewed head SHA — acceptance: no branch remains `pending`. Every 40-character head and squash SHA re-read from `gh pr view`; DU5 (both repos) and DU6 were still carrying placeholders and are now recorded. `islamic-be-init/phase7-knowledge` appended before use.
 - [ ] [AI] Remove `worktrees/islamic-be-init/` and its branches after confirming nothing is uncommitted — acceptance: `git worktree list` no longer lists the route and the identity block authorizes the removal
 - [x] [AI] Update `plans/in-progress/README.md` to remove this plan from Active Plans — acceptance: the list no longer names it. Only `lms-init` remains.

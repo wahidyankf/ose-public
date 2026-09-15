@@ -8,10 +8,10 @@
 [#302](https://github.com/wahidyankf/ose-public/pull/302); the archive itself merged in
 [#303](https://github.com/wahidyankf/ose-public/pull/303) at
 `bc122a3d978b337fb4cd32be6b0b73752e684368`. Its private semantic counterparts landed in
-[#65](https://github.com/wahidyankf/ose-private/pull/65),
-[#68](https://github.com/wahidyankf/ose-private/pull/68),
-[#70](https://github.com/wahidyankf/ose-private/pull/70), and
-[#72](https://github.com/wahidyankf/ose-private/pull/72). The merged PRs and their native review
+#65 (private, not linked),
+#68 (private, not linked),
+#70 (private, not linked), and
+#72 (private, not linked). The merged PRs and their native review
 artifacts are the durable execution record; this archived plan preserves the rationale and route.
 
 ## Outcome

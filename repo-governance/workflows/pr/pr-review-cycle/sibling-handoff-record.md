@@ -27,7 +27,7 @@ Canonical shape (repeated hexadecimal characters are example values, not wildcar
 {"source_repository":"wahidyankf/ose-public","source_pr":307,
  "source_final_reviewed_head":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
  "source_merge_sha":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
- "successor_repository":"wahidyankf/ose-private","successor_pr":75,
+ "successor_repository":"wahidyankf/<private-sibling>","successor_pr":75,
  "successor_initial_head":"cccccccccccccccccccccccccccccccccccccccc",
  "successor_base_sha":"dddddddddddddddddddddddddddddddddddddddd",
  "successor_branch":"worktree/update-pr-review"}

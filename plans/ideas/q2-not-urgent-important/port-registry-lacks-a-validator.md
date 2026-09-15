@@ -39,7 +39,7 @@ difference between fixing the problem and relocating it.
 
 ## Prior art / precedents
 
-- **The shipped registry** — `ose-private`'s `docs/reference/port-registry.md`, the artifact this
+- **The shipped registry** — the private sibling's `docs/reference/port-registry.md`, the artifact this
   brief would give a checker, including its explicit no-validator rationale.
 - **[`repo-config.yml`](../../../repo-config.yml)** — the in-repo precedent for a central, machine-readable, validated
   declaration file, and the obvious candidate host for a per-repo port block.

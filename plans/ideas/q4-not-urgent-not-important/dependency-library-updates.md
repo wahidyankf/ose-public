@@ -4,7 +4,7 @@ One-line summary: a standing sweep to move the repo's pinned library dependencie
 soak windows clear, rather than letting them drift stale.
 
 > Idea, added (original capture undated; development-experience item — source line: "libraries update").
-> Relocated from ose-private/plans/ideas/dependency-library-updates.md on 2026-08-06 by plan-ideas-grooming.
+> Relocated from private-sibling/plans/ideas/dependency-library-updates.md on 2026-08-06 by plan-ideas-grooming.
 
 ## Problem / context
 
@@ -47,10 +47,10 @@ each step small.
 ## Prior art / precedents
 
 - **Dependency-bump policy** — the internal three-path soak/CVE-clean policy this sweep advances
-  within. [dependency-bump-policy.md](https://github.com/wahidyankf/ose-private/blob/main/repo-governance/development/workflow/dependency-bump-policy.md)
+  within. dependency-bump-policy.md (private, not linked)
 - **adopt-dependency-bump-policy / dependency-bump plans** — prior in-repo work that codified and ran
-  this exact bump discipline. [adopt plan](https://github.com/wahidyankf/ose-private/blob/main/plans/done/2026-06-04__adopt-dependency-bump-policy/README.md),
-  [bump plan](https://github.com/wahidyankf/ose-private/blob/main/plans/done/2026-06-04__dependency-bump/README.md)
+  this exact bump discipline. adopt plan (private, not linked),
+  bump plan (private, not linked)
 - **GitHub Dependabot version updates** — established pattern of automated PRs advancing dependencies
   with a stabilization cooldown. [dependabot](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/about-dependabot-version-updates)
 - **Renovate** — multi-language automated dependency-update tool with scheduling, the direct external

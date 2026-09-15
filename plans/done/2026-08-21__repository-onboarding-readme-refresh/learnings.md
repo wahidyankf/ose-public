@@ -187,7 +187,7 @@ All four `apps/rhino-cli` files sit under `tests/fixtures/state/` and are in the
 Reading one settles it: `03-long-state-label.md` contains a state literally named
 `ThisLabelIsLongerThan30CharsAndFails`. These are **negative fixtures** — inputs authored to make the
 validator fail, so that the validator's own tests can assert it does. "Fixing" them would break the
-suite that proves the gate works, and they are byte-identical with `ose-private` besides, so an edit
+suite that proves the gate works, and they are byte-identical with the private sibling besides, so an edit
 would open a cross-repository obligation for a change that should never be made.
 
 `plans/done` is `historical-exempt` by this plan's own Classification Rule 3, so its 32 files want an
@@ -207,7 +207,7 @@ as a fourth missed-site shape: the definitional site, which re-injects the error
 downstream use of the term
 
 An independent reviewer found the ledger asserting that `apps/rhino-cli/**` and
-`specs/apps/rhino/behavior/rhino-cli/**` are byte-identical with `ose-private`. The real boundary is
+`specs/apps/rhino/behavior/rhino-cli/**` are byte-identical with the private sibling. The real boundary is
 seven pathspecs in `BOUNDARY_PATHS`, and of the 27 `identity-bound` Markdown paths exactly 25 are in
 the 603-entry parity manifest. The reviewer named four sites. I fixed those four. The next pass
 found the claim alive at two more — including the vocabulary entry that _defines_ the label the fix

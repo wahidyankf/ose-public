@@ -849,7 +849,7 @@ ayokoding-www`) served the already-green build on port 3101; `next dev` itself a
       catch this automatically next time; discard the rest with a one-line reason.
 - [x] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize any secret,
       credential, token, or private hostname to a `<placeholder>` token, or discard if unsanitizable.
-- [x] [AI] Apply the **repo-relevance gate** — infra-private content stays in `ose-private` only and is
+- [x] [AI] Apply the **repo-relevance gate** — infra-private content stays in the private sibling only and is
       NEVER cross-routed into `ose-public`/`ose-primer`.
 - [x] [AI] Route each surviving learning to exactly one durable home per the open-ended routing
       matrix — **code homes (`apps/`, `libs/`, tests) are ALWAYS filed as a separate

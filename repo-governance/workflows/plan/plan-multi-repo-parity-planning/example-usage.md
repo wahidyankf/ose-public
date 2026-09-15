@@ -9,7 +9,7 @@ when_to_use: Use when constructing an invocation of this workflow or explaining 
 
 ```
 User: "Run plan-multi-repo-parity-planning for objective: standardize markdown gates across
-       ose-public and ose-private"
+       ose-public and <private-sibling>"
 ```
 
 The orchestrator surveys each repo, builds the deviation matrix, grills the invoker (Step 3),
@@ -37,4 +37,4 @@ User: "Run plan-multi-repo-parity-planning for objective: add test:coverage:beha
 ```
 
 Surveys only `ose-public`, builds a single-column deviation matrix, grills the
-invoker, authors one plan, and delivers it. `ose-private` is excluded from this run.
+invoker, authors one plan, and delivers it. The private sibling is excluded from this run.

@@ -7,7 +7,7 @@ That table was built from a `crane-cli` spike (3,770 LOC, a prototype, not the r
 2026-08-25; the real port that actually shipped is 19,710 F# lines across five projects. Full
 commands, both repositories' figures, and the per-row verdict rationale live in
 [`benchmark.md`](./benchmark.md); this table exists to mark, per row, which spike-era projection
-turned out right, wrong, or unmeasurable at spike time. `ose-public` figures shown; `ose-private`'s
+turned out right, wrong, or unmeasurable at spike time. `ose-public` figures shown; the private sibling's
 are in `benchmark.md` and track the same directions.
 
 | Original projected axis                  | Projection (spike)                      | Phase 10 actual (real port)                                                      | Verdict                                                                                                                                                                                               |
@@ -408,7 +408,7 @@ not track each other, and neither is the ordering criterion on its own.
 
 ### DD-5 — Both repos in the same delivery units
 
-`apps/rhino-cli/` is byte-identical across `ose-public` and `ose-private`: both parity manifests
+`apps/rhino-cli/` is byte-identical across `ose-public` and the private sibling: both parity manifests
 list the same 603 paths and the file lists diff empty [Repo-grounded — `diff` over both
 `parity-manifest.sha256` path columns on 2026-08-25]. Splitting the migration across two plans would
 leave the boundary red for the whole migration. Each wave therefore lands in both repos before its
@@ -589,8 +589,8 @@ documented instead.
 outlive the crate. The justification that a .NET floor already exists is not. `repo-config.yml`
 pins `dotnet-global-json: apps/ose-be/global.json`; `apps/ose-be/` is a sibling of
 `apps/rhino-cli/`, and .NET resolves `global.json` by walking upward from the working directory,
-never sideways. No repo-root `global.json` exists in `ose-public`, and `ose-private` has none at
-all — as this plan's own `ose-private` delta table already states.
+never sideways. No repo-root `global.json` exists in `ose-public`, and the private sibling has none at
+all — as this plan's own the private sibling delta table already states.
 
 **Decision (resolved)**: `apps/rhino-cli/global.json` (SDK `10.0.204`, `rollForward: latestMinor`,
 matching `apps/ose-be/global.json` and `apps/organiclever-be/global.json` verbatim), placed at
@@ -605,7 +605,7 @@ SDK-not-found error named this exact `global.json` path, confirming the ancestor
 from `apps/rhino-cli/src/`. `test -f` alone would not have caught a file that exists but does not
 scope, which is why this proof exists.
 
-### DD-9 — `ose-private`'s cross-phase gate baseline lives in the app tree, transiently
+### DD-9 — the private sibling's cross-phase gate baseline lives in the app tree, transiently
 
 Phase 2's before/after gate-list comparison (`delivery.md:645-668`) must survive from Phase 2
 through Phase 8's Wave F check (`delivery.md:14466-14470`) — six phases, six separate PRs — so it
@@ -616,17 +616,17 @@ any time) and must be a **committed, tracked** artifact in each repo's own tree.
 [evidence-capture convention](../../../repo-governance/development/quality/evidence-capture/the-rule.md#where-the-folder-lives):
 `plans/in-progress/rewrite-rhino-cli-to-fsharp/evidence/gate-before-ose-public.json`, inside the
 plan's own folder, travelling to `plans/done/` on archival like any other plan evidence.
-`ose-private` cannot receive the same treatment — this plan's own Plan Archival section
-deliberately keeps `ose-private` carrying **no** copy of this plan's folder, so the plan-folder
+The private sibling cannot receive the same treatment — this plan's own Plan Archival section
+deliberately keeps the private sibling carrying **no** copy of this plan's folder, so the plan-folder
 `evidence/` location the convention names does not exist there to receive anything.
 
-**Decision**: `ose-private`'s baseline is committed instead at
-`apps/rhino-cli/evidence/gate-before-ose-private.json` — the app tree is the only location
+**Decision**: the private sibling's baseline is committed instead at
+`apps/rhino-cli/evidence/gate-before-private-sibling.json` — the app tree is the only location
 committable from that repo's own worktree without a cross-repo read of `ose-public`'s plan folder.
 This is a deliberate, scoped exception to the convention's plan-folder rule, for this one artifact,
 and it is **temporary, not permanent**: Phase 8's Gate removes `apps/rhino-cli/evidence/` from
-`ose-private` immediately once the Wave F check — its last consumer — has run, so nothing survives
-into `ose-private`'s tree past that phase and nothing is left for a future reader to mistake for a
+the private sibling immediately once the Wave F check — its last consumer — has run, so nothing survives
+into the private sibling's tree past that phase and nothing is left for a future reader to mistake for a
 stray misplacement.
 
 ## File-Impact Analysis
@@ -648,7 +648,7 @@ apps/rhino-cli/
 │   ├── rhino-bin.sh                                          [E] Phase 2: FSHARP_NAMESPACES table, shipped empty; [E] once per wave; [E] Phase 9c: collapsed to one resolution path
 │   ├── shadow-diff.sh                                        [N] Phase 2: differential runner comparing both binaries
 │   └── deny-check.sh                                         [D] Phase 9c: the cargo-deny wrapper deps:audit actually runs; all four of its inputs are deleted
-├── evidence/                                                 [N] Phase 2, `ose-private` only — see DD-9; [D] Phase 8 Gate, torn down once Wave F's check consumes it; never present in `ose-public`, where the equivalent capture lives in the plan's own `evidence/` folder instead
+├── evidence/                                                 [N] Phase 2, `<private-sibling>` only — see DD-9; [D] Phase 8 Gate, torn down once Wave F's check consumes it; never present in `ose-public`, where the equivalent capture lives in the plan's own `evidence/` folder instead
 └── src-fsharp/                                               [N] Phase 2, see below
 
 apps/rhino-cli/src-fsharp/
@@ -670,8 +670,8 @@ apps/rhino-cli/src-fsharp/
 ├── workflows/_reusable-www-test-local-deploy.yml             [E?] Phase 9d: per-file remove-or-retain verdict, not a pre-decided removal
 ├── workflows/_reusable-app-test-local-deploy-stag.yml        [E?] Phase 9d: per-file remove-or-retain verdict, not a pre-decided removal
 ├── actions/setup-dotnet/action.yml                           [ ] UNCHANGED — reused as-is by build-rhino
-├── actions/setup-rust/action.yml                             [ ] UNCHANGED in ose-public — the format job still needs it for the 198 course examples; [D] in ose-private only
-└── actions/README.md                                         [ ] UNCHANGED in ose-public — the setup-rust row stays; [E] in ose-private, where the action is deleted
+├── actions/setup-rust/action.yml                             [ ] UNCHANGED in ose-public — the format job still needs it for the 198 course examples; [D] in <private-sibling> only
+└── actions/README.md                                         [ ] UNCHANGED in ose-public — the setup-rust row stays; [E] in <private-sibling>, where the action is deleted
 
 repo-config.yml                                               [E] Phase 9d: rhino-cli gate entries rustfmt/clippy -> fantomas/F# analyzers
 docs/reference/system-architecture/{technology-stack,applications,components}.md  [E] Phase 9e: the three files under this directory matching the enumerating grep
@@ -691,20 +691,20 @@ specs/apps/rhino/                                             [E] Phase 9a — R
 
 `rhino-cli` is the **only** project in either repo carrying `tag:lang:rust`
 [Repo-grounded — `grep -rl '"lang:rust"' --include=project.json` returns exactly
-`apps/rhino-cli/project.json` in `ose-public` and in `ose-private`]. Three consequences follow, and
+`apps/rhino-cli/project.json` in `ose-public` and in the private sibling]. Three consequences follow, and
 this plan owns all three.
 
 **Phases 2-8 — CI carries both binaries.** From the first shim flip, every job that runs
 `rhino-bin.sh` needs the F# binary too, or it falls back to compiling on demand inside a job that
 installs no SDK. The change is confined to `pr-quality-gate.yml`:
 
-| Job           | Line (today)                                | Phase 2 change                                                                                                                                                                                                                                                                                                              |
-| ------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `build-rhino` | `cargo build --profile gate`                | Keep it, add `./.github/actions/setup-dotnet`, a `dotnet publish` step, and a second `upload-artifact` named `rhino-cli-fsharp-binary`.                                                                                                                                                                                     |
-| `format`      | downloads `rhino-cli-gate-binary`           | Add a second `download-artifact`; export `RHINO_CLI_FSHARP_BIN` alongside `RHINO_CLI_BIN`.                                                                                                                                                                                                                                  |
-| `enumerate`   | downloads `rhino-cli-gate-binary`           | Same. `gate list` stays Rust until wave F, but the shim must be able to resolve both.                                                                                                                                                                                                                                       |
-| `gate`        | downloads `rhino-cli-gate-binary`           | Same, across all six matrix groups.                                                                                                                                                                                                                                                                                         |
-| `detect`      | maps `lang:fsharp` to `has-dotnet-projects` | `ose-public`: no edit — the mapping already exists, so the existing `dotnet` job picks up the new project's tests. `ose-private`: not true there — that repo's `detect` job had no `has-dotnet-projects` output or `lang:fsharp`/`lang:csharp` case at all, so both were added new (see `delivery.md`'s Phase 2 checklist). |
+| Job           | Line (today)                                | Phase 2 change                                                                                                                                                                                                                                                                                                                    |
+| ------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `build-rhino` | `cargo build --profile gate`                | Keep it, add `./.github/actions/setup-dotnet`, a `dotnet publish` step, and a second `upload-artifact` named `rhino-cli-fsharp-binary`.                                                                                                                                                                                           |
+| `format`      | downloads `rhino-cli-gate-binary`           | Add a second `download-artifact`; export `RHINO_CLI_FSHARP_BIN` alongside `RHINO_CLI_BIN`.                                                                                                                                                                                                                                        |
+| `enumerate`   | downloads `rhino-cli-gate-binary`           | Same. `gate list` stays Rust until wave F, but the shim must be able to resolve both.                                                                                                                                                                                                                                             |
+| `gate`        | downloads `rhino-cli-gate-binary`           | Same, across all six matrix groups.                                                                                                                                                                                                                                                                                               |
+| `detect`      | maps `lang:fsharp` to `has-dotnet-projects` | `ose-public`: no edit — the mapping already exists, so the existing `dotnet` job picks up the new project's tests. The private sibling: not true there — that repo's `detect` job had no `has-dotnet-projects` output or `lang:fsharp`/`lang:csharp` case at all, so both were added new (see `delivery.md`'s Phase 2 checklist). |
 
 `build-rhino` measured 69-74 s and gates every other job, so the added publish step lands directly
 on the critical path. Every wave gate re-measures it into `benchmark.md`. This is the cost of a
@@ -717,7 +717,7 @@ consumers. It does **not** become dead in `ose-public`: the `format` job still i
 action directory and that one in-file use survive. Phase 9d gives each of the five referencing
 workflows (`pr-quality-gate.yml`, `validate-env.yml`, `dependency-vulnerability-audit.yml`,
 `_reusable-www-test-local-deploy.yml`, `_reusable-app-test-local-deploy-stag.yml`) an explicit
-remove-or-retain verdict rather than deleting them as a set. In `ose-private`, which has zero Rust
+remove-or-retain verdict rather than deleting them as a set. In the private sibling, which has zero Rust
 course examples, all six in-file uses go to zero and the action directory is deleted. `build-rhino` drops the `cargo build` step and renames
 its single remaining artifact back to `rhino-cli-gate-binary`, so consumer jobs need no further
 edit.
@@ -745,7 +745,7 @@ CI after re-homing proves nothing on its own — the assertion may simply have s
   [DD-8](#dd-8--the-depsaudit-narrowing-and-the-sdk-floor). `compat:min-version` is **removed**,
   but not because a .NET floor already exists — `repo-config.yml` pins
   `dotnet-global-json: apps/ose-be/global.json`, which is a **sibling** of `apps/rhino-cli/` and so
-  cannot scope to it (.NET resolves `global.json` upward only), and `ose-private` has no
+  cannot scope to it (.NET resolves `global.json` upward only), and the private sibling has no
   `global.json` at all. Phase 9c therefore establishes a `global.json` that actually covers
   `apps/rhino-cli/src-fsharp/` in both repos. `compat:min-version` is the **only** target removed,
   so of the 20 the other **19** keep their names and no downstream caller changes — `deps:audit`
@@ -760,7 +760,7 @@ CI after re-homing proves nothing on its own — the assertion may simply have s
   two entries to one for the same reason. `nx show project rhino-cli --json` is the one name every
   caller uses from Phase 9c onward.
 - **Parity manifest regeneration order** — regenerate in `ose-public` first, then reproduce the
-  _semantic_ change in `ose-private` by re-running the generator there. Never copy the manifest
+  _semantic_ change in the private sibling by re-running the generator there. Never copy the manifest
   file between repos; each repo's generator must produce it from its own tree.
 - **`setup-rust` removal is still conditional** — Phase 9a re-runs
   `grep -rl '"lang:rust"' --include=project.json` rather than trusting this document's measurement,

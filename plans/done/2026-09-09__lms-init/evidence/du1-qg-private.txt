@@ -1,4 +1,4 @@
-### DU1 Local Quality Gates — ose-private — 2026-09-08
+### DU1 Local Quality Gates — private-sibling — 2026-09-08
 
 $ nx affected -t typecheck
 

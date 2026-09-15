@@ -2,7 +2,7 @@ DU5 — regenerated parity manifests are byte-identical across repositories
 ========================================================================
 
 $ diff -u <ose-public>/apps/rhino-cli/parity-manifest.sha256 \
-          <ose-private>/apps/rhino-cli/parity-manifest.sha256
+          <private-sibling>/apps/rhino-cli/parity-manifest.sha256
 (no output — the two manifests are byte-identical)
 
 Entries changed by DU5 (2 of 108):
@@ -13,7 +13,7 @@ Entries changed by DU5 (2 of 108):
 
 $ parity manifest validate  (each repository, against its staged tree)
 ose-public : apps/rhino-cli/parity-manifest.sha256 is current
-ose-private: apps/rhino-cli/parity-manifest.sha256 is current
+private-sibling: apps/rhino-cli/parity-manifest.sha256 is current
 
 $ diff -r apps/rhino-cli/src  (public vs private, excluding build output)
 (no output — identical)

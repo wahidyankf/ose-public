@@ -16,7 +16,7 @@ created: 2026-08-02
 
 **Status**: Complete (2026-08-07) — Phases 1, 1.1, 2, 3, 4, and 6 landed; Phase 5 cancelled.
 **Delivery Mode**: `worktree-to-pr`
-**Repos in scope**: `ose-public` and `ose-private` (enforced, ongoing) — **amended 2026-08-07**, see
+**Repos in scope**: `ose-public` and the private sibling (enforced, ongoing) — **amended 2026-08-07**, see
 [delivery.md §Scope Amendment](./delivery.md#scope-amendment-2026-08-07). `ose-primer` received a
 one-time Phase 3 propagation (merged, PR #3) and is now synced periodically/manually, outside the
 enforced boundary, for cost reasons. `beaver-nest` (Phase 5) is cancelled — it is slated for future
@@ -64,21 +64,21 @@ satisfy. `[Repo-grounded]` — every row below was captured by reading each repo
 [tech-docs §1](./tech-docs.md#1-audit-baseline--what-actually-runs-today) for the full per-check
 table this summarizes:
 
-| Drift                                                                         | Evidence                                                                                                                                             |
-| ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Six checks are **pre-commit-only** — they never reach any CI gate             | `md naming validate`, `md frontmatter validate`, `convention emoji validate`, `docker compose config`, every formatter, `env staged-guard validate`  |
-| `harness bindings validate` is **pre-push-only** in all four repos            | Absent from `pr-quality-gate.yml` and `main-ci.yml`; `harness sync validate` / `npm run validate:sync` run in **zero** workflows                     |
-| `md mermaid validate` + `md heading-hierarchy validate` are **main-ci-only**  | Absent from the PR gate in `ose-public`, `ose-primer`, `beaver-nest` (`ose-private` alone has them)                                                  |
-| The PR gate's specs job is pinned to **one hardcoded project**                | `pr-quality-gate.yml` `specs-gate` runs `--projects=rhino-cli`; the standard says affected-scoped                                                    |
-| Formatting is **never verified** anywhere, in any of **14** languages         | The PR `format` job auto-commits fixes rather than failing; `main-ci.yml` has no format job                                                          |
-| Shell is linted but **never formatted** in two repos                          | `ose-primer` and `ose-private` run `shellcheck` with no `shfmt`; `ose-private` also formats terraform in a hook block, outside `lint-staged`         |
-| **19 declared formatters match zero tracked files**                           | `ose-public` declares Go/Elixir/C#/Clojure/Dart formatters for languages it has none of; `beaver-nest` declares nine                                 |
-| The `rhino-cli` byte-identity boundary is **already violated**                | `src/application/agents/sync_validator.rs` differs between `ose-public` and the two other bound repos, under a **zero-carve-out** rule               |
-| **No surface in any repo can detect** that violation                          | Byte-identity is a cross-repo property; every gate runs inside one repo. There is no manifest, no comparison, and no validator anywhere              |
-| `beaver-nest`'s "fork" is mostly `ose-public`'s app names hardcoded in source | 8 of 10 current source divergences are repo-specific data; its newer F# env-scanning and test-isolation fixes must also be upstreamed before copying |
-| ~700 lines of **dead** pre-commit pipeline replicated byte-for-byte           | `application/git/pre_commit.rs` is reachable only from `commands/git_pre_commit.rs`, which no CLI subcommand dispatches to                           |
-| The PR gate's `format` job **does not run on push to `main`**                 | `if: github.event_name == 'pull_request'` — so a direct push to `main` skips the entire per-file validator set                                       |
-| The standard's own Stage 3/4 tables omit checks that really run               | `md readme-index validate`, `harness duplication validate`, `convention license validate`                                                            |
+| Drift                                                                         | Evidence                                                                                                                                                 |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Six checks are **pre-commit-only** — they never reach any CI gate             | `md naming validate`, `md frontmatter validate`, `convention emoji validate`, `docker compose config`, every formatter, `env staged-guard validate`      |
+| `harness bindings validate` is **pre-push-only** in all four repos            | Absent from `pr-quality-gate.yml` and `main-ci.yml`; `harness sync validate` / `npm run validate:sync` run in **zero** workflows                         |
+| `md mermaid validate` + `md heading-hierarchy validate` are **main-ci-only**  | Absent from the PR gate in `ose-public`, `ose-primer`, `beaver-nest` (the private sibling alone has them)                                                |
+| The PR gate's specs job is pinned to **one hardcoded project**                | `pr-quality-gate.yml` `specs-gate` runs `--projects=rhino-cli`; the standard says affected-scoped                                                        |
+| Formatting is **never verified** anywhere, in any of **14** languages         | The PR `format` job auto-commits fixes rather than failing; `main-ci.yml` has no format job                                                              |
+| Shell is linted but **never formatted** in two repos                          | `ose-primer` and the private sibling run `shellcheck` with no `shfmt`; the private sibling also formats terraform in a hook block, outside `lint-staged` |
+| **19 declared formatters match zero tracked files**                           | `ose-public` declares Go/Elixir/C#/Clojure/Dart formatters for languages it has none of; `beaver-nest` declares nine                                     |
+| The `rhino-cli` byte-identity boundary is **already violated**                | `src/application/agents/sync_validator.rs` differs between `ose-public` and the two other bound repos, under a **zero-carve-out** rule                   |
+| **No surface in any repo can detect** that violation                          | Byte-identity is a cross-repo property; every gate runs inside one repo. There is no manifest, no comparison, and no validator anywhere                  |
+| `beaver-nest`'s "fork" is mostly `ose-public`'s app names hardcoded in source | 8 of 10 current source divergences are repo-specific data; its newer F# env-scanning and test-isolation fixes must also be upstreamed before copying     |
+| ~700 lines of **dead** pre-commit pipeline replicated byte-for-byte           | `application/git/pre_commit.rs` is reachable only from `commands/git_pre_commit.rs`, which no CLI subcommand dispatches to                               |
+| The PR gate's `format` job **does not run on push to `main`**                 | `if: github.event_name == 'pull_request'` — so a direct push to `main` skips the entire per-file validator set                                           |
+| The standard's own Stage 3/4 tables omit checks that really run               | `md readme-index validate`, `harness duplication validate`, `convention license validate`                                                                |
 
 The rule is right. The wiring is not. This plan makes the rule **impossible to violate** by moving the
 check set out of hand-written shell and YAML into a single declared registry that both hooks and CI
@@ -107,7 +107,7 @@ read, plus a validator that fails when a surface silently drops a check.
    is rewritten, and `deps-audit.yml` is replaced by `dependency-vulnerability-audit.yml` — kept out
    of the registry, but finally named for what it does (which needs a small
    workflow-naming-convention amendment to be legal).
-5. **`rhino-cli` byte-identity becomes enforceable, between `ose-public` and `ose-private`** (amended
+5. **`rhino-cli` byte-identity becomes enforceable, between `ose-public` and the private sibling** (amended
    2026-08-07 from the original four-repo design — see delivery.md's Scope Amendment). The same
    defect one layer down: a ratified zero-carve-out rule that nothing checks, and that is already
    broken. A committed checksum manifest turns local drift into a blocking gate; a scheduled audit
@@ -144,21 +144,21 @@ together with the first canonical byte change; intermediate PRs are reversible i
 checkpoints and controlled pause-safe states when their exact refs and next node are recorded, not
 claims that identity is restored or permission for unrelated boundary work. The transaction blocks
 unrelated `apps/rhino-cli` edits and Phase 6, advances through canonical de-fork/rewire and the
-`ose-private` copy PR, and closes only when **both** merged manifests and bounded diffs agree. If
-`ose-private` convergence fails, the canonical transaction commits are reverted. Exact open, resume,
+private sibling copy PR, and closes only when **both** merged manifests and bounded diffs agree. If
+the private sibling convergence fails, the canonical transaction commits are reverted. Exact open, resume,
 close, and rollback commands are in
 [delivery.md §Bounded Byte-Identity Propagation Transaction](./delivery.md#bounded-byte-identity-propagation-transaction).
 
-| Phase | Unit                                                                       | Repo          | Opens PR                    |
-| ----- | -------------------------------------------------------------------------- | ------------- | --------------------------- |
-| 0     | Baseline convergence                                                       | all four      | No (per the Phase-0 rule)   |
-| 1     | Gate engine — registry schema, `gate` commands, specs                      | `ose-public`  | yes                         |
-| 11    | De-fork canonical source + parity manifest                                 | `ose-public`  | yes                         |
-| 2     | Surface rewire + `main-ci.yml` deletion + doc amendments                   | `ose-public`  | yes                         |
-| 3     | Engine propagation + rewire — landed one-time; periodic sync going forward | `ose-primer`  | yes (already merged, PR #3) |
-| 4     | Engine propagation + rewire                                                | `ose-private` | yes                         |
-| 5     | ~~Join the byte-identity boundary + rewire~~ — **CANCELLED 2026-08-07**    | `beaver-nest` | No (cancelled before Land)  |
-| 6     | Knowledge capture (rescoped to `ose-public` + `ose-private`)               | `ose-public`  | yes                         |
+| Phase | Unit                                                                       | Repo                | Opens PR                    |
+| ----- | -------------------------------------------------------------------------- | ------------------- | --------------------------- |
+| 0     | Baseline convergence                                                       | all four            | No (per the Phase-0 rule)   |
+| 1     | Gate engine — registry schema, `gate` commands, specs                      | `ose-public`        | yes                         |
+| 11    | De-fork canonical source + parity manifest                                 | `ose-public`        | yes                         |
+| 2     | Surface rewire + `main-ci.yml` deletion + doc amendments                   | `ose-public`        | yes                         |
+| 3     | Engine propagation + rewire — landed one-time; periodic sync going forward | `ose-primer`        | yes (already merged, PR #3) |
+| 4     | Engine propagation + rewire                                                | The private sibling | yes                         |
+| 5     | ~~Join the byte-identity boundary + rewire~~ — **CANCELLED 2026-08-07**    | `beaver-nest`       | No (cancelled before Land)  |
+| 6     | Knowledge capture (rescoped to `ose-public` + the private sibling)         | `ose-public`        | yes                         |
 
 Phase 4 is the sole remaining node in the enforced transaction after Phase 2. Phase 3 already landed
 independently and is out of scope going forward. Phase 5 is cancelled.
@@ -193,6 +193,6 @@ copies rather than reconstructs:
 - [Nx Targets](../../../repo-governance/development/infra/nx-targets.md) — references `main-ci.yml`
 - [CI/CD System Architecture](../../../docs/reference/system-architecture/ci-cd.md) — references `main-ci.yml`
 - [`2026-07-01__standardize-rhino-cli-sdlc-parity`](../../done/2026-07-01__standardize-rhino-cli-sdlc-parity/README.md) — the predecessor that ratified the rule
-- `tri-repo-rhino-cli-byte-identity-gate` — the idea brief this plan fulfills (since deleted; see git history): R-11/R-12's hermetic parity gate plus the scheduled unauthenticated-fetch audit ([tech-docs §2.8.4](./tech-docs.md#284-enforcement--a-hermetic-gate-plus-a-non-hermetic-audit)) answer its open questions on run location, cadence, and the `ose-private` auth model. Retired in Phase 6.
+- `tri-repo-rhino-cli-byte-identity-gate` — the idea brief this plan fulfills (since deleted; see git history): R-11/R-12's hermetic parity gate plus the scheduled unauthenticated-fetch audit ([tech-docs §2.8.4](./tech-docs.md#284-enforcement--a-hermetic-gate-plus-a-non-hermetic-audit)) answer its open questions on run location, cadence, and the private-sibling auth model. Retired in Phase 6.
 
 > Home prefix normalised: absolute home-directory paths in this plan's files were rewritten to a portable form (such as `~/`, `$HOME/`, or a `<placeholder>`), so captured output here is not byte-verbatim.

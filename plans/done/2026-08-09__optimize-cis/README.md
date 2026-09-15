@@ -35,7 +35,7 @@ The real costs sit in three places, none of which is the Rust:
    `rhino-cli:test:quick` compiles the same 82-dependency tree under three distinct profiles.
 
 **The fix is not speculative — it is already running in your own repos.** `beaver-nest` groups
-related checks onto shared jobs and costs **4.9× less** for the same coverage. `ose-private` ran both
+related checks onto shared jobs and costs **4.9× less** for the same coverage. The private sibling ran both
 topologies in the same sample window, on the same runners: `actionlint` fell from **234 s to 16 s**
 (14.6×) purely by moving from its own job into a grouped one.
 
@@ -82,7 +82,7 @@ is the dominant local cost; `npx` costs a real but smaller **~250–263 ms** per
 | ------------------------- | -------: | --------------------: | ---------: |
 | ose-public                |       45 | **10,945 s (182:25)** | **77.2 %** |
 | ose-primer                |       48 |     11,683 s (194:43) |     77.0 % |
-| ose-private               |       35 |      9,239 s (153:59) |     91.9 % |
+| The private sibling       |       35 |      9,239 s (153:59) |     91.9 % |
 | **beaver-nest (grouped)** |   **19** |   **2,226 s (37:06)** |     80.3 % |
 
 `setup-node` — which runs a full `npm ci` — executes **792× per 22 runs** in `ose-public` at a p50 of
@@ -115,7 +115,7 @@ consumed **414,000 runner-seconds (115 hours)**.
 | `apps/rhino-cli/project.json`                 | `test:quick` stops compiling the same tree under three profiles                                                                                                                                                                                                                   |
 | Disk hygiene                                  | `local-temp/` retention; unpinned toolchain pruning; worktree `target/` sharing                                                                                                                                                                                                   |
 | `rust-toolchain.toml` + `Cargo.toml` MSRV     | One Rust version (`1.95.0`) across all three repos, replacing 3 disagreeing declared values; `doctor` validates the channel and, repo-wide, that every `rust-toolchain.toml` declares the `rustfmt`/`clippy` lint components (`apps/rhino-cli/src/application/doctor/checker.rs`) |
-| Cross-repo parity                             | `ose-primer` and `ose-private` receive the full change set under the byte-identity gate; `beaver-nest` is excluded (see below)                                                                                                                                                    |
+| Cross-repo parity                             | `ose-primer` and the private sibling receive the full change set under the byte-identity gate; `beaver-nest` is excluded (see below)                                                                                                                                              |
 
 ### Out of scope
 
@@ -132,12 +132,12 @@ consumed **414,000 runner-seconds (115 hours)**.
 
 ### Affected repositories — three of four
 
-| Repo          | In scope |                                                              Measured cost today | Rationale                                                                                                              |
-| ------------- | :------: | -------------------------------------------------------------------------------: | ---------------------------------------------------------------------------------------------------------------------- |
-| `ose-public`  | **yes**  |                                             10,945 runner-s/run, 77.2 % overhead | Primary; all four axes                                                                                                 |
-| `ose-primer`  | **yes**  |                                             11,683 runner-s/run, 77.0 % overhead | Highest absolute CI cost of the four; byte-identity boundary makes propagation mandatory anyway                        |
-| `ose-private` | **yes**  | 9,239 runner-s/run, **91.9 % overhead**, 23 `cargo run` entries in `lint-staged` | Largest proportional win; its self-hosted pool also queues at p50 18:42, so removing jobs relieves contention directly |
-| `beaver-nest` |  **no**  |                                              2,226 runner-s/run, 80.3 % overhead | Excluded — see below                                                                                                   |
+| Repo                | In scope |                                                              Measured cost today | Rationale                                                                                                              |
+| ------------------- | :------: | -------------------------------------------------------------------------------: | ---------------------------------------------------------------------------------------------------------------------- |
+| `ose-public`        | **yes**  |                                             10,945 runner-s/run, 77.2 % overhead | Primary; all four axes                                                                                                 |
+| `ose-primer`        | **yes**  |                                             11,683 runner-s/run, 77.0 % overhead | Highest absolute CI cost of the four; byte-identity boundary makes propagation mandatory anyway                        |
+| The private sibling | **yes**  | 9,239 runner-s/run, **91.9 % overhead**, 23 `cargo run` entries in `lint-staged` | Largest proportional win; its self-hosted pool also queues at p50 18:42, so removing jobs relieves contention directly |
+| `beaver-nest`       |  **no**  |                                              2,226 runner-s/run, 80.3 % overhead | Excluded — see below                                                                                                   |
 
 **Why `beaver-nest` is excluded.** Three independent reasons, any one of which would be sufficient:
 

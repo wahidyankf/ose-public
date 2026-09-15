@@ -54,7 +54,7 @@ Both counts match the plan's predictions exactly, so Phase 3's sweep is sized co
 - `ose-public` — [#232](https://github.com/wahidyankf/ose-public/pull/232), opened as a draft after
   the Phase 0 gate. Every later phase pushes to this same PR; a second number appearing means the
   one-PR-per-repository override was violated.
-- `ose-private` — [#56](https://github.com/wahidyankf/ose-private/pull/56), opened during the
+- The private sibling — #56 (private, not linked), opened during the
   Cross-Repo Parity Ritual, after Phase 11.
 
 ## Phase 1 notes
@@ -218,9 +218,9 @@ Both counts match the plan's predictions exactly, so Phase 3's sweep is sized co
 Re-checked 2026-08-19 by reading `apps/rhino-cli/parity-manifest.sha256` in **both** repositories
 rather than converging one onto the other.
 
-- `ose-private` on `main` at `6949b4040`, clean, no worktree, identical to `origin/main`.
-- Boundary size: 579 paths in `ose-private`, 574 in this branch.
-- The difference is exactly the five paths this plan deleted, all present only in `ose-private`:
+- The private sibling on `main` at `6949b4040`, clean, no worktree, identical to `origin/main`.
+- Boundary size: 579 paths in the private sibling, 574 in this branch.
+- The difference is exactly the five paths this plan deleted, all present only in the private sibling:
   - `apps/rhino-cli/src/application/agents/cursor.rs`
   - `apps/rhino-cli/src/commands/harness_emit_bindings.rs`
   - `apps/rhino-cli/tests/cursor_binding.rs`
@@ -228,7 +228,7 @@ rather than converging one onto the other.
   - `specs/apps/rhino/behavior/rhino-cli/gherkin/cursor-binding/README.md`
 - No path exists only in `ose-public`. The boundary is otherwise byte-for-byte the same set, so the
   cross-repo obligation is a straight replay of this branch's `apps/rhino-cli/**` and
-  `specs/apps/rhino/**` changes, with no `ose-private`-only file to reconcile in the other direction.
+  `specs/apps/rhino/**` changes, with no private-sibling-only file to reconcile in the other direction.
 
 ## Phase 4 notes
 
@@ -600,18 +600,18 @@ keys are `file` and `args`. A new subcommand is never a code-only change.
 Sweep command and set: `git grep -ilE "\.cursor/|\.amazonq/|\.pi/|\.kiro/|Amazon Q|Antigravity|Windsurf|Junie|Aider" -- plans/ideas`
 → `local-tmp/harness-ideas-sweep.txt`, **10 paths**. One verdict per path, no exceptions.
 
-| Path                                             | Verdict        | What changed                                                                                                                                                               |
-| ------------------------------------------------ | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `plans/ideas/README.md`                          | NARROWED       | four one-liners rewritten to match their briefs' new scope; two new briefs inserted alphabetically                                                                         |
-| `q2/extend-byte-identity-to-claude-hooks.md`     | NARROWED       | out-of-scope list named `.amazonq/`/`.cursor/` mirrors; retargeted to the surviving three. Hook byte-identity premise untouched                                            |
-| `q2/governance-command-name-reconciliation.md`   | NARROWED       | same shape — `.cursor/` in the regenerate-in-same-commit sentence. Command-name premise untouched                                                                          |
-| `q2/governance-path-ownership-registry.md`       | NARROWED       | zero-owner path 2 (`.cursor/**`) deleted; Rule 8 delivers this brief's proposal for binding trees. Four wider zero-owner paths survive                                     |
-| `q2/harness-binding-catalog-drift.md`            | NARROWED       | Windsurf/Devin and Copilot moot; Codex finding fixed in Phase 4; OpenCode prose fixed in Phase 9. Only the read-the-body-not-the-summary lesson survives                   |
-| `q2/harness-converter-preserve-agent-mode.md`    | NARROWED       | Amazon Q and Cursor tiers gone; the dropped-field risk now spans OpenCode **and** Codex, so the brief widened rather than shrank                                           |
-| `q2/harness-level-env-file-enforcement-gap.md`   | NARROWED       | retitled; Cursor/Amazon Q halves moot, Codex half survives, OpenCode joins it — the original excused OpenCode on an unrelated ground                                       |
-| `q2/ose-private-opencode-ci-monitor-orphan.md`   | NARROWED       | dropped mirrors and the deleted `.opencode/commands                                                                                                                        | skills` counter-examples corrected; ose-public solved the Codex sibling by declaring it vendored |
-| `q2/refresh-agent-illustrative-example-paths.md` | NARROWED       | the ~183-hit count is stale across a changed mirror set — recount before acting                                                                                            |
-| `q2/vendor-audit-kiro-term.md`                   | FALSE-POSITIVE | matched on the very terms it exists to catch. DD-3 keeps dropped-harness tokens in the scanner deliberately — the scanner guards vendor-neutral prose, not the binding set |
+| Path                                               | Verdict        | What changed                                                                                                                                                               |
+| -------------------------------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `plans/ideas/README.md`                            | NARROWED       | four one-liners rewritten to match their briefs' new scope; two new briefs inserted alphabetically                                                                         |
+| `q2/extend-byte-identity-to-claude-hooks.md`       | NARROWED       | out-of-scope list named `.amazonq/`/`.cursor/` mirrors; retargeted to the surviving three. Hook byte-identity premise untouched                                            |
+| `q2/governance-command-name-reconciliation.md`     | NARROWED       | same shape — `.cursor/` in the regenerate-in-same-commit sentence. Command-name premise untouched                                                                          |
+| `q2/governance-path-ownership-registry.md`         | NARROWED       | zero-owner path 2 (`.cursor/**`) deleted; Rule 8 delivers this brief's proposal for binding trees. Four wider zero-owner paths survive                                     |
+| `q2/harness-binding-catalog-drift.md`              | NARROWED       | Windsurf/Devin and Copilot moot; Codex finding fixed in Phase 4; OpenCode prose fixed in Phase 9. Only the read-the-body-not-the-summary lesson survives                   |
+| `q2/harness-converter-preserve-agent-mode.md`      | NARROWED       | Amazon Q and Cursor tiers gone; the dropped-field risk now spans OpenCode **and** Codex, so the brief widened rather than shrank                                           |
+| `q2/harness-level-env-file-enforcement-gap.md`     | NARROWED       | retitled; Cursor/Amazon Q halves moot, Codex half survives, OpenCode joins it — the original excused OpenCode on an unrelated ground                                       |
+| `q2/private-sibling-opencode-ci-monitor-orphan.md` | NARROWED       | dropped mirrors and the deleted `.opencode/commands                                                                                                                        | skills` counter-examples corrected; ose-public solved the Codex sibling by declaring it vendored |
+| `q2/refresh-agent-illustrative-example-paths.md`   | NARROWED       | the ~183-hit count is stale across a changed mirror set — recount before acting                                                                                            |
+| `q2/vendor-audit-kiro-term.md`                     | FALSE-POSITIVE | matched on the very terms it exists to catch. DD-3 keeps dropped-harness tokens in the scanner deliberately — the scanner guards vendor-neutral prose, not the binding set |
 
 **A term-based sweep matches the brief that exists to catch those terms.** `vendor-audit-kiro-term`
 is a false positive by construction: any pattern broad enough to find briefs _about_ dropped

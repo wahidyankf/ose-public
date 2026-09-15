@@ -3,7 +3,7 @@
 Knowledge Capture per the
 [Knowledge Capture Convention](../../../repo-governance/development/quality/knowledge-capture.md),
 triaged across all four repo tracks' Phases 0-5 (`ose-public` PR #139, `ose-primer` PR #19,
-`ose-private` PR #21, `beaver-nest` PR #3) before Phase 7 finalization.
+the private sibling's PR #21, `beaver-nest` PR #3) before Phase 7 finalization.
 
 ## Learning: a stale-terminology fix scoped to only the cited occurrences leaves self-contradicting duplicates behind
 
@@ -51,8 +51,8 @@ count as "outstanding" against the precondition.
 - **Context**: this plan's `tech-docs.md`/dispatch prompts assumed `gh pr merge --merge` (matching
   `ose-public`'s own history) as the default across all four tracks. `ose-primer`'s track checked its
   own last 5 merged PRs before merging and found the repo's actual convention is **squash**, not
-  merge — despite `ose-public`, `ose-private`, and `beaver-nest` all using real 2-parent merge
-  commits. Both `ose-primer` (Track B) and `ose-private` (Track C, whose own history was itself mixed)
+  merge — despite `ose-public`, the private sibling, and `beaver-nest` all using real 2-parent merge
+  commits. Both `ose-primer` (Track B) and the private sibling (Track C, whose own history was itself mixed)
   independently ran the parent-count check before merging and used the correct flag as a result.
 - **Observation**: this verify-before-merging discipline was ad-hoc executor judgment, not backed by
   any written instruction in the workflow doc that actually governs the merge step.
@@ -67,7 +67,7 @@ verification command directly.
 
 ## Learning: a downstream track's own template-adaptation "fix" did not indicate an ose-public defect
 
-- **Context**: `ose-private`'s Track C report described "catching and fixing two pre-existing bugs
+- **Context**: the private sibling's Track C report described "catching and fixing two pre-existing bugs
   from `ose-public`'s own template" (a dangling `D5` citation and a missing `Cycle`-field wiring)
   during Phase 1-4 adaptation, before its dogfood cycles began.
 - **Observation**: verified directly against `ose-public`'s merged `origin/main` — the `D5` reference

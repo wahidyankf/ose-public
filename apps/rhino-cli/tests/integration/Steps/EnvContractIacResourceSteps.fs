@@ -7,11 +7,11 @@
 /// Follows `EnvValidateSteps.fs`'s `FeatureRunner`/`extractScenario`
 /// boilerplate convention: the scenario is extracted from the real, frozen
 /// feature file rather than a duplicated/rewritten copy of its wording. The
-/// scenario's "ose-private"/"ose-public" wording names narrative shapes, not
+/// scenario's "the private sibling"/"ose-public" wording names narrative shapes, not
 /// this repository's live `repo-config.yml` — both sides are built as
 /// hermetic, synthetic fixtures under a temp directory so the test passes
-/// identically in either physical repo this code is mirrored into. "ose-
-/// private declares terraform and ansible surfaces" is modeled as one
+/// identically in either physical repo this code is mirrored into. "the
+/// private sibling declares terraform and ansible surfaces" is modeled as one
 /// synthetic [`Contract`] whose `Terraform`/`Ansible` surfaces are backed by
 /// fixture files with a deliberate mismatch (so real drift exists);
 /// "ose-public, which declares no such surfaces" is modeled as a second
@@ -59,7 +59,7 @@ type EnvContractIacSteps() =
     // ---- Given ----
 
     [<Given>]
-    member _.``ose-private declares terraform and ansible surfaces in repo-config.yml``() =
+    member _.``the private sibling declares terraform and ansible surfaces in repo-config.yml``() =
         let root = newTempDir "with-drift"
 
         // Terraform surface: `terraform.tfvars.example` declares BOGUS_KEY

@@ -123,7 +123,7 @@ landing a check that immediately reddens unrelated work is not shipping.
 └── plans/in-progress/*/delivery.md [E] — only those the new check flags; enumerated at execution, each fixed or recorded
 ```
 
-The same tree applies to `ose-private`, against its own shard filenames. Nothing is copied between
+The same tree applies to the private sibling, against its own shard filenames. Nothing is copied between
 repositories; the semantic delta is restated in each.
 
 ### More Detail

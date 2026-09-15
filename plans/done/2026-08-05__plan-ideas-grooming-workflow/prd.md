@@ -7,7 +7,7 @@ repeatable mechanism for sweeping one or more OSE repos' `plans/ideas/` folders 
 analogy to Scrum's "backlog grooming": merging/splitting near-duplicate ideas, classifying every
 idea into an Eisenhower quadrant folder, reshaping each into strict two-pager compliance,
 correcting cross-repo residency per three placement rules (generalizable → `ose-public`,
-secrets-bearing → `ose-private` only, single-repo-only → that repo only), and **renaming** an
+secrets-bearing → the private sibling only, single-repo-only → that repo only), and **renaming** an
 idea-doc's filename when it no longer matches its content (post-merge/split, non-kebab-case, or a
 residency-driven context change), with every rename's inbound/outbound links rewritten by the same
 mechanism that already handles relocation link-rewriting. This plan authors the workflow document
@@ -89,7 +89,7 @@ Feature: plan-ideas-grooming.md exists identically across all four repos
 
   Scenario: the workflow file is byte-identical in every repo after propagation
     Given plan-ideas-grooming.md has been authored and pushed to origin/main in ose-public
-    When the file is propagated to ose-primer, ose-private, and beaver-nest
+    When the file is propagated to ose-primer, private-sibling, and beaver-nest
     Then diff between ose-public's copy and each sibling repo's copy reports no differences
     And each sibling repo's own naming-validate check passes on the propagated file
 
@@ -104,7 +104,7 @@ Feature: plan-ideas-grooming.md exists identically across all four repos
 Feature: workflow-naming.md convention amendment propagates without blind-copy drift
 
   Scenario: each repo's amendment is adapted, not overwritten
-    Given ose-primer, ose-private, and beaver-nest each already carry a workflow-naming.md that
+    Given ose-primer, private-sibling, and beaver-nest each already carry a workflow-naming.md that
       differs from ose-public's copy by 12 to 68 lines before this plan's changes
     When the grooming type token is propagated to a sibling repo
     Then that repo's own pre-existing content outside the Type Vocabulary table is unchanged

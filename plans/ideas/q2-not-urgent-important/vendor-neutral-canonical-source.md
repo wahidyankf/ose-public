@@ -93,7 +93,7 @@ source lives.
   does not own them — but this has not been tested. (open)
 - Is a neutral source worth its cost while Claude Code remains the overwhelmingly dominant harness
   here? Honestly arguable; the answer likely changes with usage, not with argument. (open)
-- Does making `.claude/` generated weaken the byte-identity story with `ose-private`, or strengthen
+- Does making `.claude/` generated weaken the byte-identity story with the private sibling, or strengthen
   it by making both repositories mirror the same neutral tree? (open)
 
 ## What success looks like + promotion signal

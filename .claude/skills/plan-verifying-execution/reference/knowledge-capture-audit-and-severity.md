@@ -24,7 +24,7 @@
    evidence for reported entries, and `rtk git log`/`rtk git diff` for inline commits.
 3. Run `Grep` for secret-shaped patterns across `learnings.md`.
 4. Run `Grep` for infra-private terms (Terraform, k3s, Proxmox, `coralpolyp`, real hostnames) across
-   any non-`ose-private` routed destination named in the entries.
+   any non-private-sibling routed destination named in the entries.
 5. For any entry routed to `plans/ideas/`, `Bash git diff` this plan's commits for new files under
    `plans/ideas/`, then read `plans/ideas/README.md` as it stood before this plan's changes to check
    whether an existing brief already covered the same topic.

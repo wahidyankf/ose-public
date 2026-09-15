@@ -64,12 +64,12 @@ escalate any newly exposed material decision through the canonical envelope. See
 - Draft PR against `main`; exact-current-head/base PR CI and applicable surface gates before merge
 - Small, frequent commits; merge `[AI]` once the hardened preconditions hold
 
-**Direct-push modes (`worktree-to-origin-main`, `main-to-origin-main`) — `ose-private` infrastructure-as-code plans only**:
+**Direct-push modes (`worktree-to-origin-main`, `main-to-origin-main`) — private-sibling infrastructure-as-code plans only**:
 
 - Not available in `ose-public` (branch-protected `main`, including for admins) — see
   the Per-Repository Delivery Mode Restrictions HARD RULE in
   [delivery-mode.md](delivery-mode.md)
-- Reachable only for a genuinely infrastructure-as-code plan in `ose-private`
+- Reachable only for a genuinely infrastructure-as-code plan in the private sibling
 - For small, obviously-safe changes where a PR adds no review value, in that one repo
 - Declare the mode explicitly in `## Delivery Mode` — never assume it
 - No separate approval gate: declaring the mode IS the decision

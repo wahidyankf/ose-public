@@ -51,7 +51,7 @@ checks `gh run` / GitHub Actions status at any point.
 - Phase 0 (setup) and Phase 1 (author in `ose-public`) are strictly serial — Phase 1 produces the
   finalized content every propagation phase copies/adapts, so no propagation may start before
   Phase 1's changes have landed on `ose-public`'s `origin/main`.
-- Phases 2, 3, and 4 (propagate to `ose-primer`, `ose-private`, `beaver-nest` respectively) are
+- Phases 2, 3, and 4 (propagate to `ose-primer`, the private sibling, `beaver-nest` respectively) are
   mutually independent: no shared files, no shared repo, no ordering constraint between them. They
   fan out to fill all 3 background slots — each phase operates in its own already-separate git
   repository, so no worktree isolation is needed for the independence to hold.
@@ -63,14 +63,14 @@ checks `gh run` / GitHub Actions status at any point.
 
 ### Delivery Boundaries
 
-| Phase(s) | Delivery unit                                                          | Repo checkout              | Integration point                                                   |
-| -------- | ---------------------------------------------------------------------- | -------------------------- | ------------------------------------------------------------------- |
-| 0        | — (setup and baseline, `ose-public` only)                              | —                          | none                                                                |
-| 1        | Author `grooming` token + workflow doc + catalog entry in `ose-public` | `ose-public` local `main`  | direct push to `ose-public:origin/main`                             |
-| 2        | Propagate to `ose-primer`                                              | `ose-primer` local `main`  | direct push to `ose-primer:origin/main`                             |
-| 3        | Propagate to `ose-private`                                             | `ose-private` local `main` | direct push to `ose-private:origin/main`                            |
-| 4        | Propagate to `beaver-nest`                                             | `beaver-nest` local `main` | direct push to `beaver-nest:origin/main`                            |
-| 5-6      | Knowledge Capture + Archival (`ose-public` only)                       | `ose-public` local `main`  | direct push to `ose-public:origin/main` (Phase 6's archival commit) |
+| Phase(s) | Delivery unit                                                          | Repo checkout                    | Integration point                                                   |
+| -------- | ---------------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------- |
+| 0        | — (setup and baseline, `ose-public` only)                              | —                                | none                                                                |
+| 1        | Author `grooming` token + workflow doc + catalog entry in `ose-public` | `ose-public` local `main`        | direct push to `ose-public:origin/main`                             |
+| 2        | Propagate to `ose-primer`                                              | `ose-primer` local `main`        | direct push to `ose-primer:origin/main`                             |
+| 3        | Propagate to the private sibling                                       | The private sibling local `main` | direct push to `<private-sibling>:origin/main`                      |
+| 4        | Propagate to `beaver-nest`                                             | `beaver-nest` local `main`       | direct push to `beaver-nest:origin/main`                            |
+| 5-6      | Knowledge Capture + Archival (`ose-public` only)                       | `ose-public` local `main`        | direct push to `ose-public:origin/main` (Phase 6's archival commit) |
 
 Every change-producing phase (1-4) is its own delivery unit and pushes directly to its own repo's
 `origin/main` — there is no PR boundary to declare under this Delivery Mode. Phases 5-6 produce no
@@ -124,7 +124,7 @@ new reviewable governance change; Phase 6's archival commit (moving this plan's 
       all four repos, or any dirty/non-`main`/bare state is explicitly surfaced to the user before
       Phase 1 begins
   - **Date**: 2026-08-05. **Status**: Done (with surfaced exception). **Files Changed**: none.
-    **Notes**: All four repos confirmed non-bare, on `main`. `ose-primer`, `ose-private`,
+    **Notes**: All four repos confirmed non-bare, on `main`. `ose-primer`, the private sibling,
     `beaver-nest` are clean (`git status --porcelain` empty) and `0` commits ahead of their own
     `origin/main`. `ose-public` is dirty by this plan's own Phase 0 work-in-progress: this plan's
     own `delivery.md`/`learnings.md` edits (in-flight, expected), plus a `package-lock.json` diff
@@ -146,7 +146,7 @@ new reviewable governance change; Phase 6's archival commit (moving this plan's 
       explicitly surfaced and accepted by the user) — falsifiable both ways:
       `git -C <path> status --porcelain` returns empty for a clean tree, non-empty for a dirty one;
       re-run after any surfaced dirty state is resolved
-  - **Date**: 2026-08-05. **Status**: Done. **Notes**: `ose-primer`/`ose-private`/`beaver-nest`
+  - **Date**: 2026-08-05. **Status**: Done. **Notes**: `ose-primer`/the private sibling/`beaver-nest`
     clean; `ose-public` dirty by this plan's own in-flight/Phase-0-byproduct changes only —
     surfaced above, falsifiable both ways (empty before this plan touched anything, non-empty now).
 - [x] [AI] Each repo's local `main` is not ahead of its own `origin/main` yet (no plan work has
@@ -415,26 +415,26 @@ naming validate` reports "VALIDATION PASSED (0 violations)".
 > hooks passed. Safe to stop indefinitely — independent of Phases 3-4's progress. To resume: verify
 > this gate, then continue to whichever of Phases 3-4 has not yet run.
 
-## Phase 3: Propagate to `ose-private`
+## Phase 3: Propagate to the private sibling
 
-- [x] [AI] Sync `ose-private`'s local `main` with its own `origin/main` before editing: from
+- [x] [AI] Sync the private sibling's local `main` with its own `origin/main` before editing: from
       `~/ose-projects/<sibling>`, run `git checkout main && git pull --ff-only origin main`
       — acceptance: `git status --porcelain` returns empty, `git rev-list --count origin/main..main`
       returns `0`
-- [x] [AI] Read `ose-private/repo-governance/conventions/structure/workflow-naming.md` in full
+- [x] [AI] Read `private-sibling/repo-governance/conventions/structure/workflow-naming.md` in full
       (confirmed to differ from `ose-public`'s copy by 68 lines pre-existing) and locate its own
       Type Vocabulary table's last row — acceptance: insertion point identified against this
       repo's own structure
-- [x] [AI] Edit `ose-private/repo-governance/conventions/structure/workflow-naming.md`: apply the
+- [x] [AI] Edit `private-sibling/repo-governance/conventions/structure/workflow-naming.md`: apply the
       same conceptual amendment as Phase 1 to this repo's own file — acceptance:
       `grep -c "| \`grooming\`" workflow-naming.md`returns`1`
 - [x] [AI] Copy `ose-public`'s pushed `plan-ideas-grooming.md` byte-identical into
-      `ose-private/repo-governance/workflows/plan/plan-ideas-grooming.md` — acceptance:
+      `private-sibling/repo-governance/workflows/plan/plan-ideas-grooming.md` — acceptance:
       `diff ~/ose-projects/ose-public/repo-governance/workflows/plan/plan-ideas-grooming.md ~/ose-projects/<sibling>/repo-governance/workflows/plan/plan-ideas-grooming.md`
       returns no output
-- [x] [AI] Read `ose-private/repo-governance/workflows/README.md` in full and locate its own
+- [x] [AI] Read `private-sibling/repo-governance/workflows/README.md` in full and locate its own
       insertion points — acceptance: identified against this repo's own structure
-- [x] [AI] Edit `ose-private/repo-governance/workflows/README.md`: apply the same conceptual
+- [x] [AI] Edit `private-sibling/repo-governance/workflows/README.md`: apply the same conceptual
       catalog additions as Phase 1 — acceptance: `grep -c "plan-ideas-grooming" workflows/README.md`
       returns ≥ `2`
 
@@ -456,7 +456,7 @@ naming validate` reports "VALIDATION PASSED (0 violations)".
 
   **Date**: 2026-08-05 **Status**: Complete
   **Files Changed**: `apps/rhino-cli/src/commands/workflows_validate_naming.rs`
-  **Notes**: `ose-private` also carries its own `rhino-cli` fork and hit the identical
+  **Notes**: the private sibling also carries its own `rhino-cli` fork and hit the identical
   `WORKFLOW_TYPES` gap as `ose-public` (Phase 1) and `ose-primer` (Phase 2) — third occurrence of
   the same class of bug, confirming the learning already logged. Applied the same minimal TDD fix
   (RED via failing `naming validate`, GREEN via const + one test). `test:quick`,
@@ -466,7 +466,7 @@ naming validate` reports "VALIDATION PASSED (0 violations)".
 
 - [x] Commit changes thematically — Conventional Commits format
 
-- [x] [AI] Commit and push to `origin main` from `ose-private`'s local checkout (direct push, no
+- [x] [AI] Commit and push to `origin main` from the private sibling's local checkout (direct push, no
       PR)
 
   **Date**: 2026-08-05 **Status**: Complete
@@ -478,13 +478,13 @@ naming validate` reports "VALIDATION PASSED (0 violations)".
 > GitHub Actions CI is not checked anywhere in this plan — local pre-commit/pre-push hooks are the
 > sole gate.
 
-- [x] [AI] `diff` between `ose-public`'s and `ose-private`'s `origin/main` copies of
+- [x] [AI] `diff` between `ose-public`'s and the private sibling's `origin/main` copies of
       `plan-ideas-grooming.md` returns no output
-- [x] [AI] `ose-private`'s own naming-validate equivalent reports the file compliant on
+- [x] [AI] the private sibling's own naming-validate equivalent reports the file compliant on
       `origin/main`
 - [x] [AI] No secret, credential, or infra-state value was introduced by this propagation —
-      `grep -riE "(api[_-]?key|password|secret|token)\s*[:=]" ose-private/repo-governance/workflows/plan/plan-ideas-grooming.md`
-      returns no match (this is a pure governance-doc propagation; `ose-private`'s stricter secrecy
+      `grep -riE "(api[_-]?key|password|secret|token)\s*[:=]" private-sibling/repo-governance/workflows/plan/plan-ideas-grooming.md`
+      returns no match (this is a pure governance-doc propagation; the private sibling's stricter secrecy
       posture applies to everything it receives)
 
   **Date**: 2026-08-05 **Status**: Complete
@@ -492,7 +492,7 @@ naming validate` reports "VALIDATION PASSED (0 violations)".
   **Notes**: All three gate checks pass: byte-identical diff, naming validate PASSED, no secret
   pattern match.
 
-> **Pause Safety**: `ose-private`'s propagation is pushed directly to its own `main`; local
+> **Pause Safety**: the private sibling's propagation is pushed directly to its own `main`; local
 > pre-push hooks passed. Safe to stop indefinitely — independent of Phases 2 and 4's progress. To
 > resume: verify this gate, then continue to whichever of Phases 2/4 has not yet run.
 
@@ -615,7 +615,7 @@ package-lock.json`. Correct fix: `npm dedupe`, which hoisted the package to root
 learnings.md` — no match.
 
 - [x] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
-      in `ose-private` only and is NEVER cross-routed into `ose-public`/`ose-primer`; public
+      in the private sibling only and is NEVER cross-routed into `ose-public`/`ose-primer`; public
       governance content may propagate via the existing parity loop — acceptance: no infra-private
       content appears in this repo's routed output
 
@@ -693,7 +693,7 @@ learnings.md` — no match.
 
   **Date**: 2026-08-05 **Status**: Complete — every phase's Local Quality Gates section above
   records a clean pre-push (`ose-public` twice: Phase 1 + this Phase 5/6 doc commit;
-  `ose-primer`/`ose-private`/`beaver-nest` once each), with all failures root-caused and fixed, none
+  `ose-primer`/the private sibling/`beaver-nest` once each), with all failures root-caused and fixed, none
   bypassed.
 
 - [x] [AI] Confirm no `plans/ideas/**` path was created, modified, or deleted in any of the four
@@ -713,7 +713,7 @@ learnings.md` — no match.
   Phase-5-Knowledge-Capture carve-out, rather than leave a written acceptance scenario silently
   violated. With that correction, verified precisely: `git log --format="" --name-only <range> |
 grep plans/ideas` for each repo's actual Phase 1-4 commit range (ose-public
-  `d070c6d3e..a21ff4287`; ose-primer `a664e4d68..b954ed75f`; ose-private `f188bcc2e..329d2a84f`;
+  `d070c6d3e..a21ff4287`; ose-primer `a664e4d68..b954ed75f`; the private sibling `f188bcc2e..329d2a84f`;
   beaver-nest `86fa76945..333f5bd6f`) — zero matches in all four repos. (A first attempt using an
   unscoped `~10`-commit range on `ose-public` produced a false-positive match from an unrelated
   prior commit outside this plan; corrected to per-commit `git show --stat` and the precise range
@@ -759,5 +759,5 @@ plans/in-progress/plan-ideas-grooming-workflow` (absent) against local `main`, w
 
 ## Plan Complete
 
-All six phases delivered and gated across `ose-public`, `ose-primer`, `ose-private`, and
+All six phases delivered and gated across `ose-public`, `ose-primer`, the private sibling, and
 `beaver-nest`. Archived 2026-08-05.

@@ -2,12 +2,12 @@
 
 Dispatched after both DU1 pull requests merged:
   ose-public  #491 squash commit c6fffc3844d9e5d912d6467967ab6ba433967314
-  ose-private #167 squash commit fc0a273fdc8aa9b4eb6d75520b23e83adeede0d5
+  private-sibling #167 squash commit fc0a273fdc8aa9b4eb6d75520b23e83adeede0d5
 
-Command: gh workflow run rhino-cli-parity-audit.yml --repo wahidyankf/ose-private
+Command: gh workflow run rhino-cli-parity-audit.yml --repo wahidyankf/private-sibling
 
 workflow:   Rhino CLI Parity Audit
-run URL:    https://github.com/wahidyankf/ose-private/actions/runs/34190037201
+run URL:    https://github.com/wahidyankf/private-sibling/actions/runs/34190037201
 head SHA:   fc0a273fdc8aa9b4eb6d75520b23e83adeede0d5
 status:     completed
 conclusion: success

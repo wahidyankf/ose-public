@@ -71,15 +71,15 @@ are structural and are stated in `prd.md` §Acceptance Criteria:
 
 ## Success Metrics
 
-| Metric                                                         | Baseline (2026-08-13) | Target        |
-| -------------------------------------------------------------- | --------------------- | ------------- |
-| Governance `.md` over 500 words — `ose-public` (source-only)¹  | 298                   | **0**         |
-| Governance `.md` over 500 words — `ose-private` (source-only)¹ | 247                   | **0**         |
-| `repo-governance/**/*.md` with `when_to_use`                   | 0 / 214               | **214 / 214** |
-| `repo-governance/**/*.md` with `description`                   | 187 / 214             | **214 / 214** |
-| Covered directories with a compliant sibling index             | not measured          | **100%**      |
-| Per-file size gates in `repo-config.yml`                       | 1 (bytes)             | 1 (words)     |
-| Files exempted from the word budget                            | —                     | **0**         |
+| Metric                                                               | Baseline (2026-08-13) | Target        |
+| -------------------------------------------------------------------- | --------------------- | ------------- |
+| Governance `.md` over 500 words — `ose-public` (source-only)¹        | 298                   | **0**         |
+| Governance `.md` over 500 words — the private sibling (source-only)¹ | 247                   | **0**         |
+| `repo-governance/**/*.md` with `when_to_use`                         | 0 / 214               | **214 / 214** |
+| `repo-governance/**/*.md` with `description`                         | 187 / 214             | **214 / 214** |
+| Covered directories with a compliant sibling index                   | not measured          | **100%**      |
+| Per-file size gates in `repo-config.yml`                             | 1 (bytes)             | 1 (words)     |
+| Files exempted from the word budget                                  | —                     | **0**         |
 
 Every metric is derived by running the gate itself, not by hand-counting.
 
@@ -87,7 +87,7 @@ Every metric is derived by running the gate itself, not by hand-counting.
 only, per `README.md` §Context. The `governance-word-budget` gate's actual **covered surface**
 (FR-1.3: also `.cursor/`, `.codex/`, `.opencode/`, `.pi/`, `.amazonq/`, root `AGENTS.md`, root
 `CLAUDE.md` — generated mirrors are gated, not exempted, per FR-1.4) has a **larger** current
-baseline: **464** for `ose-public` and **349** for `ose-private` [Repo-grounded, re-derived
+baseline: **464** for `ose-public` and **349** for the private sibling [Repo-grounded, re-derived
 2026-08-13 via `tech-docs.md` §7's census script against the full FR-1.3 surface]. 298/247 remain
 accurate and useful as the narrower "how much of this is our own authored content vs. derivative
 mirror copies" narrative in `README.md` §Context and in this document's Business Impact section
@@ -122,7 +122,7 @@ FR-1.9's "zero files" target is scoped to the full covered surface (464/349 toda
   word budget.
 - **Generated mirrors are never hand-edited.** A mirror violation is fixed in `.claude/`
   source or in the binding generator.
-- **`ose-public` completes before `ose-private` begins** its content work.
+- **`ose-public` completes before the private sibling begins** its content work.
 - **Exactly one worktree named `optimize-governance-md` per repository**, matching the
   plan-folder identifier per the
   [Worktree Specification HARD RULE](../../../repo-governance/conventions/structure/plans/worktree-specification.md#worktree-specification)

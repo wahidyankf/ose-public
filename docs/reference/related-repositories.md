@@ -12,7 +12,7 @@ created: 2026-04-18
 # Related Repositories
 
 The **OSE Code Repositories** are the five repositories Open Sharia Enterprise is built and
-maintained in: `ose-public`, `ose-private`, RHINO, HIPPO, and BeaverNest. The name labels that set
+maintained in: `ose-public`, the private sibling, RHINO, HIPPO, and BeaverNest. The name labels that set
 so a reader can find every part of the project from any one of them. It is not a GitHub
 organization, not a parent or container repository, and not a shared release train — each of the
 five versions, gates, and releases on its own schedule.
@@ -28,7 +28,7 @@ consumer-boundary rules are governed by the
 | Repository                                               | Visibility  | Role                                                             | Start there when…                                                  |
 | -------------------------------------------------------- | ----------- | ---------------------------------------------------------------- | ------------------------------------------------------------------ |
 | [`ose-public`](https://github.com/wahidyankf/ose-public) | Public, MIT | The OSE product platform and its public research                 | You want to understand or run OSE itself.                          |
-| `ose-private`                                            | Private     | Authorized product operations and infrastructure work            | You are an authorized maintainer following its private onboarding. |
+| The private sibling                                      | Private     | Authorized product operations and infrastructure work            | You are an authorized maintainer following its private onboarding. |
 | [RHINO](https://github.com/wahidyankf/rhino)             | Public, MIT | Upstream repository-hygiene validation, specifications, releases | You are changing RHINO behavior rather than OSE integration.       |
 | [HIPPO](https://github.com/wahidyankf/hippo)             | Public, MIT | Upstream resource coordination, specifications, releases         | You are changing HIPPO behavior rather than OSE integration.       |
 | [BeaverNest](https://github.com/wahidyankf/beaver-nest)  | Public, MIT | Independent family product and applied learning lab              | You are changing the BeaverNest product.                           |
@@ -38,7 +38,7 @@ consumer-boundary rules are governed by the
 Choose **OSE Public** when the question is about the OSE product, its public website, research, or
 product engineering. Start with [Getting started with OSE Public](../tutorials/getting-started-with-ose-public.md).
 
-`ose-private` is not a public setup target. Its documentation and local sandbox instructions are
+The private sibling is not a public setup target. Its documentation and local sandbox instructions are
 available only to authorized maintainers; public documentation intentionally does not describe its
 internal implementation, access model, or operational layout.
 
@@ -109,7 +109,7 @@ family product requires human product judgment.
 
 ## Shared boundaries
 
-The `apps/rhino-cli` source must stay byte-identical across `ose-public` and `ose-private` — the
+The `apps/rhino-cli` source must stay byte-identical across `ose-public` and the private sibling — the
 parity pair this page describes. See the
 [SDLC gate standard](./sdlc-gate-standard.md#rhino-cli-byte-identity-boundary) for the policy.
 
@@ -124,22 +124,22 @@ a green `parity manifest validate` in either repo.
 
 The byte-identity boundary covers `apps/rhino-cli` and the shared Gherkin tree, and nothing else.
 `package.json` script names in particular have diverged: the harness-bindings validator is
-`harness:bindings-validation` in `ose-public` and `validate:harness-bindings` in `ose-private`,
+`harness:bindings-validation` in `ose-public` and `validate:harness-bindings` in the private sibling,
 running the same underlying command. Resolve every command a cross-repo plan invokes against each
 repository's own `package.json` rather than assuming the name carries over.
 
 The `volta` toolchain pins in `package.json` have diverged the same way: `ose-public` pins
-`npm` to `11.11.0` and `ose-private` to `11.16.0`. Nothing compares them, so on one host with one
+`npm` to `11.11.0` and the private sibling to `11.16.0`. Nothing compares them, so on one host with one
 installed npm, `rhino-cli doctor` reports a version warning in `ose-public` and a clean
-16/16 in `ose-private` — two verdicts from the same machine. Read a doctor warning about a
+16/16 in the private sibling — two verdicts from the same machine. Read a doctor warning about a
 toolchain version as a statement about that repo's pin, not about the host.
 
 ## Sync cadence
 
 Content parity and the `rhino-cli` byte-identity boundary above answer **what** stays identical;
-this answers **how often** `ose-private` is brought current with `ose-public`.
+this answers **how often** the private sibling is brought current with `ose-public`.
 
-**`ose-private` is kept current through recorded sibling obligations.** `rhino-cli` and shared
+**The private sibling is kept current through recorded sibling obligations.** `rhino-cli` and shared
 `repo-governance/` content (conventions, workflows, agent definitions) propagate from `ose-public`
 through a separate one-repository run, not an unrecorded batch. The repositories need not merge at
 the same time: each ready PR lands when its own hardened prerequisites and merge opportunity permit,
@@ -147,7 +147,7 @@ and the unfinished counterpart remains an explicit sibling obligation until conv
 backs live authorized-maintainer and infrastructure operations, so the gap should remain short and
 visible rather than silent.
 
-For portable governance, agent, and skill changes, public is the source and `ose-private` is the
+For portable governance, agent, and skill changes, public is the source and the private sibling is the
 only propagation target. Verify the portable manifest byte-for-byte at convergence; list
 private-only operational exceptions explicitly.
 
@@ -156,9 +156,9 @@ private-only operational exceptions explicitly.
 - **Elixir/Erlang CI toolchain provisioning.** `ose-public`'s `rust` job in `pr-quality-gate.yml`
   installs Erlang/Elixir via `erlef/setup-beam` and sets `RHINO_REQUIRE_ELIXIR=1`, so the two
   Elixir formatter-wrapper scenarios bound in
-  `apps/rhino-cli/tests/unit/Steps/GateExecutionSteps.fs` run for real on every push. `ose-private`
+  `apps/rhino-cli/tests/unit/Steps/GateExecutionSteps.fs` run for real on every push. The private sibling
   carries no Elixir source and provisions no such toolchain, so those same byte-identical tests
-  self-skip there instead — a deliberate, not accidental, divergence: nothing in `ose-private`
+  self-skip there instead — a deliberate, not accidental, divergence: nothing in the private sibling
   needs the coverage the toolchain would exercise.
 
 ## Contribution and access boundaries

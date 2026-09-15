@@ -1,6 +1,6 @@
 Posted: Tuesday, August 18, 2026
 Platform: LinkedIn
-Window: 2026-08-11 18:49:50 +0700 → 2026-08-18 18:36:31 +0700. ~106 commits across both repos (ose-public 53, ose-private 53).
+Window: 2026-08-11 18:49:50 +0700 → 2026-08-18 18:36:31 +0700. ~106 commits across both repos (ose-public 53, private sibling 53).
 
 ---
 
@@ -12,7 +12,7 @@ Highlights: BeaverNest now runs a responsive Flutter workspace through its F# ba
 
 🌐 Cross-repo
 
-- ose-public and ose-private now form the parity pair. ose-primer can evolve independently rather than inherit tooling and governance designed for different needs.
+- ose-public and the private sibling now form the parity pair. ose-primer can evolve independently rather than inherit tooling and governance designed for different needs.
 - A shared glossary gives repository-wide terms one meaning. Governance files use one word-based budget, and every main content-tree directory must carry an indexed README.
 - Local environment setup now creates `.env.local`. Real environment files remain blocked from commits, while agent read protections focus on `.env.prod` and `.env.stag`.
 
@@ -24,7 +24,7 @@ AyoKoding gained connections in software and AI careers, security and operations
 
 Two dormant link-checking CLIs, their shared Rust library, and an empty legacy web shell were retired. The central Markdown gate now checks both live content trees directly, closing the gap those unused tools had hidden.
 
-🏗️ ose-private
+🏗️ Private sibling
 
 CoralPolyp was removed after recovery work showed that no current product needs to keep the app group alive. The backend, frontend, E2E suites, sandbox, workflows, and stale environment wiring are no longer available; the platform can add them back when a concrete need returns.
 

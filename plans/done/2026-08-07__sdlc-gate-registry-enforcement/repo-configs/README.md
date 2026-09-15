@@ -17,12 +17,12 @@ One file per repo, holding the **complete `repo-config.yml` as it should look af
 this plan adds. Execution copies from here, so the four registries are reviewable side by side before
 any repo is touched.
 
-| File                                                           | Repo          | Formatters | Registry notes                                             |
-| -------------------------------------------------------------- | ------------- | ---------- | ---------------------------------------------------------- |
-| [`repo-config-ose-public.yml`](./repo-config-ose-public.yml)   | `ose-public`  | 13         | Canonical. Prunes the one dead Clojure entry               |
-| [`repo-config-ose-primer.yml`](./repo-config-ose-primer.yml)   | `ose-primer`  | 10         | Polyglot. Prunes 0, **adds** shfmt and sql/html globs      |
-| [`repo-config-ose-private.yml`](./repo-config-ose-private.yml) | `ose-private` | 4          | Prunes 5, adds shfmt and tofu. Carries the `iac-lint` pair |
-| [`repo-config-beaver-nest.yml`](./repo-config-beaver-nest.yml) | `beaver-nest` | 5          | Prunes 9                                                   |
+| File                                                                   | Repo                | Formatters | Registry notes                                             |
+| ---------------------------------------------------------------------- | ------------------- | ---------- | ---------------------------------------------------------- |
+| [`repo-config-ose-public.yml`](./repo-config-ose-public.yml)           | `ose-public`        | 13         | Canonical. Prunes the one dead Clojure entry               |
+| [`repo-config-ose-primer.yml`](./repo-config-ose-primer.yml)           | `ose-primer`        | 10         | Polyglot. Prunes 0, **adds** shfmt and sql/html globs      |
+| [`repo-config-private-sibling.yml`](./repo-config-private-sibling.yml) | The private sibling | 4          | Prunes 5, adds shfmt and tofu. Carries the `iac-lint` pair |
+| [`repo-config-beaver-nest.yml`](./repo-config-beaver-nest.yml)         | `beaver-nest`       | 5          | Prunes 9                                                   |
 
 ## Before copying, re-verify the unchanged part
 
@@ -44,7 +44,7 @@ diff <(sed -n '/^harness:/,/^gates:/p' "$TARGET_ARTIFACT" | sed '$d' | sed '$d')
 ```
 
 Repeat with the explicit pairs `ose-primer`/`repo-config-ose-primer.yml`,
-`ose-private`/`repo-config-ose-private.yml`, and
+the private sibling/`repo-config-private-sibling.yml`, and
 `beaver-nest`/`repo-config-beaver-nest.yml`.
 
 Verified against all four current `main` refs on 2026-08-04: the command above prints nothing. Each
@@ -56,7 +56,7 @@ reverts someone else's change.
 ## Why the entry sets differ
 
 Gate entry **sets** are data and legitimately differ per repo; the **schema** and the engine reading
-it do not. This is the same rule that already lets `ose-private` carry an `iac-lint` pair the others
+it do not. This is the same rule that already lets the private sibling carry an `iac-lint` pair the others
 lack — see
 [tech-docs §2.3](../tech-docs.md#23-why-gate-sets-may-differ-per-repo-but-the-schema-may-not).
 
@@ -73,7 +73,7 @@ files; expected future use does not satisfy the current tracked-file requirement
 
 - **Every target declares `doctor:`.** `ose-public` and `beaver-nest` select their .NET SDK source
   with `dotnet-global-json`; `ose-primer` omits it because its two backend pins differ, and skips
-  only `tofu` and `clang-format`; `ose-private` declares no exclusions. `ose-primer` no longer skips
+  only `tofu` and `clang-format`; the private sibling declares no exclusions. `ose-primer` no longer skips
   `shfmt`, because its target registry declares the formatter.
 - **Every live repo header says "all three repos"**, and the section list is already inconsistent.
   The target headers instead describe a shared schema across all four repos and list the same eight
@@ -83,7 +83,7 @@ files; expected future use does not satisfy the current tracked-file requirement
 
   ```sh
   OSE_REPOS_ROOT=/path/to/ose-checkouts
-  for TARGET_REPO in ose-public ose-primer ose-private beaver-nest; do
+  for TARGET_REPO in ose-public ose-primer <private-sibling> beaver-nest; do
     sed -n '/Sections defined here/,/^$/p' "$OSE_REPOS_ROOT/$TARGET_REPO/repo-config.yml" | grep -c '^#   [a-z]'
   done
   ```

@@ -332,7 +332,7 @@ env-injection:
   #   compose           — infra/dev/<stack> docker-compose env (local CI), placeholders only
   #   vercel-preview     — Vercel project env, Preview scope (stag-*-app-web branch)
   #   vercel-production  — Vercel project env, Production scope (prod-*-www / prod-*-app-web)
-  #   k3s-coralpolyp     — ose-private coralpolyp secret store (backend k3s rollout)
+  #   k3s-coralpolyp     — private-sibling coralpolyp secret store (backend k3s rollout)
   apps:
     # --- www tier (direct-to-prod; e2e runs on local compose) ---
     - app: ose-www
@@ -356,7 +356,7 @@ env-injection:
       keys-from: apps/ose-app-web/.env.example
       runtime: { local: env-local, local-ci: compose, staging: vercel-preview, production: vercel-production }
 
-    # --- backend tier (non-Vercel; k3s via ose-private coralpolyp) ---
+    # --- backend tier (non-Vercel; k3s via private-sibling coralpolyp) ---
     - app: organiclever-be
       keys-from: apps/organiclever-be/.env.example
       runtime: { local-ci: compose, staging: k3s-coralpolyp }

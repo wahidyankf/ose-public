@@ -11,17 +11,17 @@
 
 ## Worktree
 
-| Repo          | Worktree path                      | Branch                            |
-| ------------- | ---------------------------------- | --------------------------------- |
-| `ose-public`  | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` |
-| `ose-private` | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` |
+| Repo                | Worktree path                      | Branch                            |
+| ------------------- | ---------------------------------- | --------------------------------- |
+| `ose-public`        | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` |
+| The private sibling | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` |
 
 **Exactly one worktree named `optimize-governance-md` per repository**, reused across every delivery unit
 landed there — the
 [one-worktree-per-repo-per-plan HARD RULE](../../../repo-governance/conventions/structure/plans/worktree-cap.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule).
 Two repos, two worktrees, no more. Verify with `git worktree list` before creating anything.
 
-After `git worktree add` in `ose-private`, run `npm install` **and**
+After `git worktree add` in the private sibling, run `npm install` **and**
 `npm run doctor -- --fix` per
 [Worktree Toolchain Initialization](../../../repo-governance/development/workflow/worktree-setup.md).
 
@@ -141,7 +141,7 @@ graph TD
 ```
 
 **Fan-out windows**: Phases 2–6 are independent (N=3 concurrent). Phases 11–15 are independent
-within `ose-private`. Everything else serializes.
+within the private sibling. Everything else serializes.
 
 ### Delivery Boundaries
 
@@ -163,13 +163,13 @@ merges before the next phase in the same repo begins its own commits.
 | 7        | `.claude/skills/` split                          | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 7 (PR7)   |
 | 8        | Root instruction files                           | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 8 (PR8)   |
 | 9        | Arm the gates (`ose-public`)                     | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 9 (PR9)   |
-| 10       | `ose-private` gate sync                          | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 10 (PR10) |
+| 10       | The private sibling gate sync                    | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 10 (PR10) |
 | 11       | `repo-governance/conventions/` split (private)   | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 11 (PR11) |
 | 12       | `repo-governance/development/` split (private)   | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 12 (PR12) |
 | 13       | `workflows/`, `principles/`, `vision/` (private) | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 13 (PR13) |
 | 14       | `.claude/agents/` → skills (private)             | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 14 (PR14) |
 | 15       | `.claude/skills/`, root files (private)          | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 15 (PR15) |
-| 16       | Arm the gates (`ose-private`)                    | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 16 (PR16) |
+| 16       | Arm the gates (the private sibling)              | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 16 (PR16) |
 | 17       | Knowledge capture and archival (`ose-public`)    | `worktrees/optimize-governance-md` | `worktree/optimize-governance-md` | yes — at Phase 17 (PR17) |
 
 ---
@@ -1311,28 +1311,28 @@ path-gating proof, since it was never dark-launched:
 - `ose-public` census: **0 files over 500 words**
 - PR9 merged
 
-> **Pause Safety**: `ose-public` is complete and enforced. `ose-private` work has not started.
+> **Pause Safety**: `ose-public` is complete and enforced. The private sibling work has not started.
 > This is the natural long-pause point.
 
 ---
 
-## Phase 10 — `ose-private` gate sync (PR10, executable)
+## Phase 10 — the private sibling gate sync (PR10, executable)
 
-- [ ] `[AI]` `git worktree add worktrees/optimize-governance-md` in `ose-private`; verify exactly one
+- [ ] `[AI]` `git worktree add worktrees/optimize-governance-md` in the private sibling; verify exactly one
 - [ ] `[AI]` `npm install && npm run doctor -- --fix`
 - [ ] `[AI]` Baseline: `gate run --surface=pre-push` green; record the census to `evidence/`
 - [ ] `[AI]` Copy the rhino-cli boundary **byte-for-byte** from `ose-public` — `src`, `tests`,
       `Cargo.toml`, `Cargo.lock`, `project.json`, `LICENSE`, and the Gherkin tree. Do not
       reimplement.
 - [ ] `[AI]` Apply the equivalent `repo-config.yml` changes, adjusted for private's surfaces
-      (**no `.pi/`**; `.amazonq/` has one file). This includes renaming `ose-private`'s own
+      (**no `.pi/`**; `.amazonq/` has one file). This includes renaming the private sibling's own
       already-armed `md-readme-index` entry **in place** to `governance-readme-index`
       (`scope: all-file-type` unchanged, no gap — same FR-3.19 guarantee as `ose-public`
       Phase 1) and adding the new `governance-word-budget`/`governance-readme-completeness`
       entries unarmed, exactly mirroring `ose-public`'s Phase 1 registration state
 - [ ] `[AI]` `git mv` and rewrite the convention doc; rewrite inbound links — discover the set
       live with `grep -rl "instruction-size\|instruction-file-size-budget" repo-governance
-.claude docs AGENTS.md` in the `ose-private` checkout; do not reuse the `ose-public` count
+.claude docs AGENTS.md` in the private-sibling checkout; do not reuse the `ose-public` count
 - [ ] `[AI]` `rhino-cli parity manifest generate && git add` + `validate`
 - [ ] **Command**: `npx nx run rhino-cli:test:quick && npx nx run
 rhino-cli:specs:behavior:coverage`
@@ -1348,19 +1348,19 @@ rhino-cli:specs:behavior:coverage`
 - Boundary diff versus `ose-public` is empty for all seven boundary paths
 - `parity manifest validate` exits 0
 - `governance-word-budget` runs and reports failures matching a live re-run of `tech-docs.md`
-  §7's census script (adjusted for `ose-private`'s checkout — no `.pi/` there) against the full
-  FR-1.3-scoped covered surface (measured 2026-08-13: **349** files for `ose-private` — not the
+  §7's census script (adjusted for the private sibling's checkout — no `.pi/` there) against the full
+  FR-1.3-scoped covered surface (measured 2026-08-13: **349** files for the private sibling — not the
   narrower 247 "source (non-generated)" figure in `README.md` §Context/`brd.md` §Success
   Metrics; re-verify live, since the count drifts)
   [Repo-grounded — re-derived directly against FR-1.3's declared glob list]
 - `governance-readme-index` (`orphan`/`ghost`) is armed and reports **zero** failures — renamed
-  in place from `ose-private`'s own already-armed `md-readme-index`, no gap
+  in place from the private sibling's own already-armed `md-readme-index`, no gap
 - `governance-word-budget` and `governance-readme-completeness` are **not** armed yet;
   `missing`/`unannotated` findings against the not-yet-split content are expected and not a
   gate failure — Phases 11–15 are what clear them, before Phase 16 arms enforcement
 - PR10 merged
 
-> **Pause Safety**: `ose-private`'s rhino-cli boundary is byte-for-byte synced with `ose-public`
+> **Pause Safety**: the private sibling's rhino-cli boundary is byte-for-byte synced with `ose-public`
 > and its new gates are registered-but-unarmed, mirroring `ose-public`'s Phase 1 state. Safe to
 > stop before Phases 11–15's content splitting begins. To resume: re-run
 > `rhino-cli parity manifest validate` and confirm the boundary diff against `ose-public` is
@@ -1369,7 +1369,7 @@ rhino-cli:specs:behavior:coverage`
 > **Discovered gap (2026-08-15, PR10 CI)**: the byte-for-byte copy also imports `ose-public`'s
 > already-Phase-9-armed `frontmatter.rs::validate_governance_schema` FAIL-severity logic for
 > `md-frontmatter` — there is no WARN/FAIL toggle in the Rust source, only in whether
-> `repo-config.yml` registers a `ci` surface for it. `ose-private`'s pre-existing `repo-config.yml`
+> `repo-config.yml` registers a `ci` surface for it. The private sibling's pre-existing `repo-config.yml`
 > already had `ci: { scope: all-file-type }` registered for `md-frontmatter` (unrelated to this
 > plan), so the copy silently turned a full-tree FAIL scan on 5 phases ahead of schedule and broke
 > PR10's CI on pre-existing repo-wide debt Phases 11–15 haven't cleared yet. Fix applied in PR10:
@@ -1381,7 +1381,7 @@ rhino-cli:specs:behavior:coverage`
 
 ---
 
-## Phases 11–15 — `ose-private` content (PR11–PR15, markdown-only)
+## Phases 11–15 — the private sibling content (PR11–PR15, markdown-only)
 
 Same four operations as Phases 2–8, applied to private's surfaces (`<subtree>` = the phase's own
 path from the table below). Independent within the repo; fan out up to N=3.
@@ -1427,19 +1427,19 @@ validate <subtree>` (direct invocation — `governance-readme-completeness` is n
 Identical to the Phase 2–5 gate, scoped to the phase's subtree. Phase 14 additionally requires
 five recorded behavioural verifications. Phase 15 additionally requires the resolved-tree check.
 
-> **Pause Safety**: each merged subtree is self-consistent in `ose-private`.
+> **Pause Safety**: each merged subtree is self-consistent in the private sibling.
 
 ---
 
-## Phase 16 — Arm the gates in `ose-private` (PR16, executable)
+## Phase 16 — Arm the gates in the private sibling (PR16, executable)
 
-Identical structure to Phase 9, applied to `ose-private` (steps 16a–16c mirror 9a–9c 1:1;
-substitute `ose-private`'s own 349-failure full-covered-surface baseline (see Phase 10 Gate) and
+Identical structure to Phase 9, applied to the private sibling (steps 16a–16c mirror 9a–9c 1:1;
+substitute the private sibling's own 349-failure full-covered-surface baseline (see Phase 10 Gate) and
 trigger list for `ose-public`'s).
 
 ### 16a. RED
 
-- [ ] `[AI]` Add a fixture file over the ceiling in `ose-private`; confirm
+- [ ] `[AI]` Add a fixture file over the ceiling in the private sibling; confirm
       `gate run --surface=pre-push` fails
 
   **Gherkin (binds) →** "A triggered gate validates the whole covered tree, not just changed
@@ -1455,7 +1455,7 @@ trigger list for `ose-public`'s).
   ```
 
 - [ ] `[AI]` Confirm `rhino-cli md frontmatter validate` currently reports `when_to_use` and
-      `description` findings at WARN (not FAIL) in `ose-private` — the pre-arm baseline this
+      `description` findings at WARN (not FAIL) in the private sibling — the pre-arm baseline this
       phase's GREEN step must change (see `prd.md` §FR-4 "Dark-launch sequencing")
 
   **Gherkin (underpins) →** "A missing when_to_use fails"; "A missing description now fails, not
@@ -1465,7 +1465,7 @@ trigger list for `ose-public`'s).
 
 ### 16b. GREEN
 
-- [ ] `[AI]` Register `governance-word-budget` in `ose-private`'s `gates:` with `pre-push` and
+- [ ] `[AI]` Register `governance-word-budget` in the private sibling's `gates:` with `pre-push` and
       `ci` only, both `scope: path-gated`, `ci-group: governance`, and the 10-entry trigger list
       from `prd.md` §FR-1.10 adjusted for private's surfaces (no `.pi/`; one `.amazonq/` file).
       No `pre-commit` surface.
@@ -1475,7 +1475,7 @@ trigger list for `ose-public`'s).
       plus the same `args: { paths: [...], fail-kinds: [missing, unannotated] }` block from
       Phase 9b's GREEN step, paths list adjusted identically (no `.pi/`)
 - [ ] `[AI]` Register `governance-word-budget` (only) as a `repo-governance audit` category
-- [ ] `[AI]` **Arm FR-4** in `ose-private` (register-then-arm for the already-active
+- [ ] `[AI]` **Arm FR-4** in the private sibling (register-then-arm for the already-active
       `md-frontmatter` gate): run `rhino-cli md frontmatter validate` against
       `repo-governance/**/*.md` and confirm zero files are missing `when_to_use` or
       `description` — true only once Phases 11–15 have merged. **Correction (2026-08-15, see
@@ -1483,7 +1483,7 @@ trigger list for `ose-public`'s).
       action — PR10 discovered the byte-for-byte-copied `frontmatter.rs` already carries
       `ose-public`'s Phase-9 FAIL-severity logic (no WARN toggle exists in the Rust source, only
       in whether `repo-config.yml` registers a `ci` surface). PR10 dropped `md-frontmatter`'s
-      `ci: { scope: all-file-type }` surface entry in `ose-private`'s `repo-config.yml` to avoid
+      `ci: { scope: all-file-type }` surface entry in the private sibling's `repo-config.yml` to avoid
       breaking CI on pre-existing debt ahead of schedule. This step's actual action is: **re-add**
       `ci: { scope: all-file-type }` to `repo-config.yml`'s `md-frontmatter` entry once the zero-gap
       confirmation above passes — do not look for a `frontmatter.rs` change to make, there isn't
@@ -1494,7 +1494,7 @@ trigger list for `ose-public`'s).
 
 ### 16b-2. Prove the gating both ways
 
-- [ ] `[AI]` Repeat the 5-case trigger matrix from Phase 9's §9b-2, adjusted for `ose-private`'s
+- [ ] `[AI]` Repeat the 5-case trigger matrix from Phase 9's §9b-2, adjusted for the private sibling's
       surfaces, and record every run in `evidence/phase-16b-2-trigger-matrix.txt`
 
 ### 16c. Parity and PR
@@ -1511,8 +1511,8 @@ trigger list for `ose-public`'s).
   `governance-readme-completeness` newly armed this phase; `governance-readme-index` armed
   since Phase 10); `gate validate` exits 0
 - `rhino-cli md frontmatter validate` reports `when_to_use` and `description` findings at
-  **FAIL** severity for `repo-governance/**/*.md` in `ose-private` — FR-4 is armed
-- `ose-private` census: **0 files over 500 words**
+  **FAIL** severity for `repo-governance/**/*.md` in the private sibling — FR-4 is armed
+- The private sibling census: **0 files over 500 words**
 - `governance-readme-index` reports **zero** `orphan`/`ghost` failures;
   `governance-readme-completeness` reports **zero** `missing`/`unannotated` failures
 - The 5-case trigger matrix in `evidence/phase-16b-2-trigger-matrix.txt` matches expectations
@@ -1532,7 +1532,7 @@ trigger list for `ose-public`'s).
       surface would catch this automatically next time; discard the rest with a one-line reason
 - [x] `[AI]` Apply the **secret/sensitivity gate** — sanitize any secret, credential, token, or
       private hostname to a `<placeholder>` token, or discard if unsanitizable
-- [x] `[AI]` Apply the **repo-relevance gate** — infra-private content stays in `ose-private`
+- [x] `[AI]` Apply the **repo-relevance gate** — infra-private content stays in the private sibling
       only and is NEVER cross-routed into `ose-public`/`ose-primer`
 - [x] `[AI]` Route each surviving learning to exactly one durable home per the open-ended routing
       matrix; code homes (`apps/`, `libs/`, tests) are ALWAYS filed as a separate

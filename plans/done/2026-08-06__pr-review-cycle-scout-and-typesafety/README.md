@@ -6,7 +6,7 @@ The PR Review Quality Gate pipeline is not `ose-public`-only governance: it is d
 byte-for-byte-independent, in all **four** OSE repos —
 [`ose-public`](https://github.com/wahidyankf/ose-public),
 [`ose-primer`](https://github.com/wahidyankf/ose-primer),
-[`ose-private`](https://github.com/wahidyankf/ose-private), and
+the private sibling (private, not linked), and
 [`beaver-nest`](https://github.com/wahidyankf/beaver-nest) — each carrying its own
 `repo-governance/workflows/pr/pr-review-quality-gate.md`,
 `repo-governance/development/quality/pr-review-disciplines.md`, and 10
@@ -46,7 +46,7 @@ now-superseded eight-agent shape.
 
 ## Scope
 
-**Repo scope**: all four OSE repos — `ose-public`, `ose-primer`, `ose-private`, `beaver-nest` — each
+**Repo scope**: all four OSE repos — `ose-public`, `ose-primer`, the private sibling, `beaver-nest` — each
 carrying its own independent copy of the PR Review Quality Gate pipeline. This is a fifth kind of
 cross-repo boundary, distinct from the two already named in
 [Related Repositories](../../../docs/reference/related-repositories.md) (content-parity is
@@ -166,7 +166,7 @@ here for auditability rather than re-litigated):
 Live verification (2026-08-05) confirmed all four repos run byte-for-byte-independent but
 structurally identical pipelines (10 `pr-review-*.md` agents each, same discipline/workflow doc
 shape) — see [brd.md's baseline](./brd.md#current-state-baseline-mechanically-verified-2026-08-05)
-for the exact per-repo counts and the specific wording divergences (`ose-private`'s `AGENTS.md`
+for the exact per-repo counts and the specific wording divergences (the private sibling's `AGENTS.md`
 names disciplines explicitly rather than saying "eight"; `ose-primer`'s `AGENTS.md` sits far closer
 to its byte ceiling than the other three) that make this **not** a safe blind four-way broadcast of
 one diff.
@@ -177,7 +177,7 @@ one diff.
 [Plans Organization Convention §Delivery Mode](../../../repo-governance/conventions/structure/plans/delivery-mode-the-four-modes.md#delivery-mode)),
 run as **four independent tracks, one per repo**. Each track executes in its own dedicated worktree
 inside that repo (`worktrees/pr-review-cycle-scout-and-typesafety/` in each of `ose-public`,
-`ose-primer`, `ose-private`, `beaver-nest`), opens its own PR against that repo's own `main`, and runs
+`ose-primer`, the private sibling, `beaver-nest`), opens its own PR against that repo's own `main`, and runs
 that repo's own (pre-this-plan, unmodified) PR Review Quality Gate workflow for 3 cycles before an
 `[AI]` merge under the five hardened preconditions — four PRs total, none blocking any other. See
 [delivery.md's Parallelization Model](./delivery.md#parallelization-model) for the full DAG and the

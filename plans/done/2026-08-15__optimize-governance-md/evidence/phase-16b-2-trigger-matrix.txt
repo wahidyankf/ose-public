@@ -1,9 +1,9 @@
-Phase 16b-2 — 5-case trigger matrix (ose-private), mirroring Phase 9b-2
+Phase 16b-2 — 5-case trigger matrix (private-sibling), mirroring Phase 9b-2
 
 Method: isolated throwaway git fixture (/tmp/wf16-fixture, git init, no origin — same
 pattern as Phase 16a's RED proof), containing only a minimal repo-config.yml with the
 two new gate entries (governance-word-budget, governance-readme-completeness) copied
-verbatim from ose-private's repo-config.yml. With no origin/main, gate run's pre-push
+verbatim from private-sibling's repo-config.yml. With no origin/main, gate run's pre-push
 candidate-path resolution falls back to staged_paths() (merge_base_paths' documented
 fixture fallback), so staging a file simulates a pre-push/CI trigger check. Each case:
 stage the file, run `gate run --surface=pre-push --only=<gate-id>` for both gates,
@@ -39,9 +39,9 @@ Case 5 — touch repo-config.yml
   always re-triggers both gates)
 
 All 5 outcomes match the Phase 9b-2 reference matrix (ose-public), confirming the
-path-gated trigger wiring in ose-private's repo-config.yml behaves identically.
+path-gated trigger wiring in private-sibling's repo-config.yml behaves identically.
 
-Note: a live test against the real ose-private working tree (staging the actual
+Note: a live test against the real private-sibling working tree (staging the actual
 Phase 16 files) does NOT exercise this path — `gate run --surface=pre-push`'s
 candidate-path source for a real repo with an origin is `git diff --name-only
 <merge-base with origin/main> HEAD` (committed diff), not staged files; staging alone

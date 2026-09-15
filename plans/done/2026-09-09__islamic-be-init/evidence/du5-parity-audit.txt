@@ -1,14 +1,14 @@
 Phase 5 Gate — verified against the MERGED state of both repositories
 =====================================================================
 ose-public  main @ 4127ff43c5f5d862538fac9202fdc7ae0c90bf7f  (PR #500, reviewed head 72c3b65675d07883bdb4ce7a4e98ad0feb74820f)
-ose-private main @ 2ba5397da07403598097eddb1a57d5876a7a0f39  (PR #169, reviewed head a79332f8bf78332ab627317d4df129fc489b561e)
+private-sibling main @ 2ba5397da07403598097eddb1a57d5876a7a0f39  (PR #169, reviewed head a79332f8bf78332ab627317d4df129fc489b561e)
 Both merged in the same session, so the nightly audit never observed a mismatched pair.
 
 1. rhino-cli-parity-audit.yml against the merged state
 ------------------------------------------------------
-$ gh workflow run rhino-cli-parity-audit.yml --repo wahidyankf/ose-private
+$ gh workflow run rhino-cli-parity-audit.yml --repo wahidyankf/private-sibling
 run 34272185735  completed/success  2026-09-08T19:59:46Z
-https://github.com/wahidyankf/ose-private/actions/runs/34272185735
+https://github.com/wahidyankf/private-sibling/actions/runs/34272185735
 
 2. Byte-identity across repositories
 ------------------------------------

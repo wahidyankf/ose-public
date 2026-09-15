@@ -29,9 +29,9 @@ contain a secret, credential, token, API key, private IP/hostname, or insecure i
 A learning routes **only** to the repo(s) it actually pertains to:
 
 - **Infra-private content** (Terraform, k3s, Proxmox, `coralpolyp`, on-prem infrastructure, real
-  hostnames or inventories) MUST stay in `ose-private` **only** and MUST NEVER cross-route into the
+  hostnames or inventories) MUST stay in the private sibling **only** and MUST NEVER cross-route into the
   public `ose-public` repo.
-- **Public-governance content** MAY propagate `ose-public` → `ose-private` via the existing parity
+- **Public-governance content** MAY propagate `ose-public` → the private sibling via the existing parity
   loop (see the
   [Multi-Repo Parity Planning workflow](../../../workflows/plan/plan-multi-repo-parity-planning.md)).
   No other repository is a propagation target — a repository outside the parity set receives

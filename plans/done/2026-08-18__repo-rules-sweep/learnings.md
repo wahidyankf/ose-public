@@ -116,7 +116,7 @@ Two consequences, both hit in execution:
   A basename-only map (`renames-public-basenames.tsv`) had to be derived, after separately proving
   0 conflicting targets and 0 basename collisions outside the swept tree. Neither proof is something
   the command asks for or checks.
-- The 8 **directory** renames in `ose-private` were unreachable by design: the changed segment is
+- The 8 **directory** renames in the private sibling were unreachable by design: the changed segment is
   not the last one. They needed a hand-written path-level pass over every tracked `.md`.
 
 The failure is silent. A map that matches nothing reports `0 file(s) updated` and exits 0, which is
@@ -199,7 +199,7 @@ The range clause immediately below ("for a step range, the ordinal equals the fi
 intended reconciliation, but it is stated after the table and never applied to that row, so the
 document reads as self-contradicting at the exact point a reader checks a hard case.
 
-This is not academic: the ose-private sweep hit 18 collision groups where the ordinal is the only
+This is not academic: the private-sibling sweep hit 18 collision groups where the ordinal is the only
 disambiguator, and the convention gave no answer for them either (entry 8).
 
 **Litmus**: pass — a convention that contradicts itself in its worked example will keep producing
@@ -213,7 +213,7 @@ site-fixing anti-pattern Iron Rule 3 forbids.
 
 ## 8. Fixed-width truncated shard basenames make an ordinal load-bearing
 
-`ose-private` carries 18 groups (40 files) whose basenames were truncated to a fixed width by an
+The private sibling carries 18 groups (40 files) whose basenames were truncated to a fixed width by an
 earlier word-budget split, leaving pairs like
 `04-anti-pattern-10-…-tha.md` and `05-anti-pattern-10-…-tha.md` that differ **only** by their
 ordinal. Stripping the ordinal collides.
@@ -230,7 +230,7 @@ there against 8 here).
 producing distinct names, so the same collision will recur at the next split.
 **Safety gates**: secret/sensitivity — pass, no infra content: the affected files are governance
 shards, and only the collision shape is described here, not private paths; repo-relevance — the
-instances are in `ose-private`, but the **rule gap** is public-governance content and belongs in
+instances are in the private sibling, but the **rule gap** is public-governance content and belongs in
 both.
 **Routing**: **filed** as WS-B of
 [`plans/backlog/file-naming-convention-rework/`](../../backlog/file-naming-convention-rework/README.md),
@@ -276,7 +276,7 @@ one, and the gap is mechanically checkable.
 `args` values differ and must be re-derived, never copied (proven in P5.9: six prefixes there,
 seven here).
 **Routing**: **routed inline** to this plan's own commits — WS-C already landed the word-budget half
-in `governance-word-budget.md` and, in `ose-private`, the new
+in `governance-word-budget.md` and, in the private sibling, the new
 `governance-word-budget/excluded-prefixes.md` shard. The remaining `md-naming` half is folded into
 WS-B's scope (entry 6a names the same exemption drift), not filed separately.
 

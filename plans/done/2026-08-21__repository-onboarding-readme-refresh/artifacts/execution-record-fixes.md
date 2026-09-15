@@ -77,19 +77,19 @@ product or behavioral change is smuggled into this documentation unit.
 The independent read-aloud pass against the twelve-clause Human Voice Contract failed all five
 documents on at least one clause. These rows are its corrections.
 
-| ID   | Clause      | File                 | Defect                                                                                                         | Correction                                                    |
-| ---- | ----------- | -------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| C-09 | V1          | tutorial             | Three sentences of product definition before the reader's task, the first verbatim from the README.            | Task paragraph now leads; the duplicated sentence is gone.    |
-| C-10 | non-clause  | tutorial             | "recognise" — British spelling against an American corpus.                                                     | Aligned to "recognize".                                       |
-| C-11 | V3          | `CONTRIBUTING.md`    | Nx and monorepo used cold at an audience directed to fork.                                                     | Both glossed on first use, with a link to Nx.                 |
-| C-12 | V9          | `CONTRIBUTING.md`    | `npm install` failure answered only with a cache clean, though the file itself names missing Cargo as a cause. | Added a missing-Cargo entry with the real route out.          |
-| C-13 | V10, V12    | `CONTRIBUTING.md`    | Closed on a bare 🚀 whose celebratory tone fights the closed-intake message, with no next step.                | Emoji removed; the file now ends on two concrete moves.       |
-| C-14 | V9          | setup how-to         | Quick Start runs `source ~/.zshrc` for a path that explicitly invites Ubuntu readers.                          | Now `source ~/.zshrc   # or source ~/.bashrc on Ubuntu`.      |
-| C-15 | V8          | setup how-to         | Rust step ended blind while the neighbouring Node step showed expected output.                                 | Added an expected-output line after `rustc --version`.        |
-| C-16 | V3          | setup how-to         | "E2E" never expanded.                                                                                          | Expanded on first use.                                        |
-| C-17 | non-clause  | setup how-to         | "Two setup paths" above three bullets.                                                                         | Corrected to "Three setup paths".                             |
-| C-18 | V8          | `README.md`          | `nx show projects` block stated no outcome.                                                                    | Now says what the list contains, funded by an offsetting cut. |
-| C-19 | V3, factual | related-repositories | Table described `ose-private` as doing "local CoralPolyp sandbox work" — a codename removed on 2026-08-18.     | Row now reads "infrastructure work".                          |
+| ID   | Clause      | File                 | Defect                                                                                                           | Correction                                                    |
+| ---- | ----------- | -------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| C-09 | V1          | tutorial             | Three sentences of product definition before the reader's task, the first verbatim from the README.              | Task paragraph now leads; the duplicated sentence is gone.    |
+| C-10 | non-clause  | tutorial             | "recognise" — British spelling against an American corpus.                                                       | Aligned to "recognize".                                       |
+| C-11 | V3          | `CONTRIBUTING.md`    | Nx and monorepo used cold at an audience directed to fork.                                                       | Both glossed on first use, with a link to Nx.                 |
+| C-12 | V9          | `CONTRIBUTING.md`    | `npm install` failure answered only with a cache clean, though the file itself names missing Cargo as a cause.   | Added a missing-Cargo entry with the real route out.          |
+| C-13 | V10, V12    | `CONTRIBUTING.md`    | Closed on a bare 🚀 whose celebratory tone fights the closed-intake message, with no next step.                  | Emoji removed; the file now ends on two concrete moves.       |
+| C-14 | V9          | setup how-to         | Quick Start runs `source ~/.zshrc` for a path that explicitly invites Ubuntu readers.                            | Now `source ~/.zshrc   # or source ~/.bashrc on Ubuntu`.      |
+| C-15 | V8          | setup how-to         | Rust step ended blind while the neighbouring Node step showed expected output.                                   | Added an expected-output line after `rustc --version`.        |
+| C-16 | V3          | setup how-to         | "E2E" never expanded.                                                                                            | Expanded on first use.                                        |
+| C-17 | non-clause  | setup how-to         | "Two setup paths" above three bullets.                                                                           | Corrected to "Three setup paths".                             |
+| C-18 | V8          | `README.md`          | `nx show projects` block stated no outcome.                                                                      | Now says what the list contains, funded by an offsetting cut. |
+| C-19 | V3, factual | related-repositories | Table described the private sibling as doing "local CoralPolyp sandbox work" — a codename removed on 2026-08-18. | Row now reads "infrastructure work".                          |
 
 **C-19 is the row worth noting.** It entered as a voice finding about an unexplained term and turned
 out to be a staleness defect: the sandbox it named had already been retired, and the comparison table

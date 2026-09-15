@@ -32,7 +32,7 @@ type EnvContractIacSteps() =
                 Ok(result surface.Root [] [] [ "CONSUMED_KEY" ]) }
 
     [<Given>]
-    member _.``ose-private declares terraform and ansible surfaces in repo-config.yml``() =
+    member _.``the private sibling declares terraform and ansible surfaces in repo-config.yml``() =
         contract <-
             { Surfaces =
                 [ { Root = "infra/terraform-surface"
@@ -70,7 +70,7 @@ type EnvContractIacSteps() =
 [<Fact>]
 let ``IaC dispatch is selected by declared surface data`` () =
     let steps = EnvContractIacSteps()
-    steps.``ose-private declares terraform and ansible surfaces in repo-config.yml`` ()
+    steps.``the private sibling declares terraform and ansible surfaces in repo-config.yml`` ()
     steps.``env validate runs`` ()
     steps.``validate_terraform and validate_ansible execute and report drift`` ()
     steps.``ose-public, which declares no such surfaces, skips validation by data, not by stub`` ()

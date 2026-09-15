@@ -10,10 +10,10 @@ unchanged.
   `62608547df0d2063d369537e0753f22699456f44`. Its `plans/ideas/` tree contains 83 Markdown paths:
   82 briefs plus the index. The tree count used pinned `git ls-tree`; brief sizes used pinned
   `git show | wc -l -w`; inbound references used pinned `git grep -n -F`. All 19 paths below exist.
-- [Repo-grounded] Private source: `ose-private` commit
+- [Repo-grounded] Private source: the private sibling commit
   `718c20c923707d777a89639f760f98d53740bd70`. The one brief is 135 lines and 1,381 words; its
   tracked inbound index entry is `plans/ideas/README.md:22`.
-- [Repo-grounded] Private PR [#63](https://github.com/wahidyankf/ose-private/pull/63) merged the
+- [Repo-grounded] Private PR #63 (private, not linked) merged the
   two-path `PRIV-IDEAS` retirement at `25bb1d81f53156d001f2ab25cca07d23ab8ce062`. Its terminal
   comment names `PRE-A1-ADMISSION` as the public historical successor; no private overlay remains.
 
@@ -105,14 +105,14 @@ the sole live unit, followed by a private A2 admission receipt and private A2 so
 
 ## Private Disposition
 
-1. `plans/ideas/q2-not-urgent-important/pr-review-governance-reference-defects.md` in `ose-private`
+1. `plans/ideas/q2-not-urgent-important/pr-review-governance-reference-defects.md` in the private sibling
    **Outcome:** `partial`. **Family:** cold-reader reference clarity. **Owner:** `REQUIREMENTS`;
    secondary `DESIGN`. **Retirement:** `PRIV-IDEAS`. Retain clear artifact/path/term references,
    two-repo archival and N/A semantics, scope guarding, semantic propagation, and fresh pins. Replace
    ambiguous `classifier evidence` with the review-route record. Reject “worthless without
    validator,” legacy Cycle 10/12/two-clean rules, three-repo assumptions, the stale five-consumer
    count (the pinned base has six), and the unrelated 168-annotation sweep. Private PR
-   [#62 review 5000710561](https://github.com/wahidyankf/ose-private/pull/62#pullrequestreview-5000710561)
+   #62 review 5000710561 (private, not linked)
    remains historical discovery evidence, not current authority. This row was retired in private
    PR #63 and remains historical planning evidence only.
 

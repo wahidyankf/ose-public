@@ -36,7 +36,7 @@ third-party action that shells out to `rustup toolchain install`, with **no retr
 while the expensive, large, most-likely-to-fail download is exactly that one.
 
 **Verified complication:** the two parity copies of this action have already diverged.
-`ose-public` installs via `actions-rust-lang/setup-rust-toolchain@v1`; `ose-private`
+`ose-public` installs via `actions-rust-lang/setup-rust-toolchain@v1`; the private sibling
 uses `dtolnay/rust-toolchain@stable`. So "apply the same fix identically" is not a copy-paste.
 
 ## Why now

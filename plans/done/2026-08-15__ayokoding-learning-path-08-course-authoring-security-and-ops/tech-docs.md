@@ -285,7 +285,7 @@ For this band specifically:
   `detection-engineering-and-siem-operations` are grounded against this publicly verified target;
   version-sensitive specifics are re-verified via `apps-ayokoding-www-facts-checker` at authoring time,
   never written as fixed facts in the stable spine.
-- **`ose-public` / `ose-primer` / `ose-private`** — this workspace family's own CI/CD, IaC, and
+- **`ose-public` / `ose-primer` / the private sibling** — this workspace family's own CI/CD, IaC, and
   operational practice is an illustrative target for `self-managed-kubernetes-and-gitops`,
   `platform-engineering-and-devex`, and `site-reliability-engineering`.
 

@@ -7,17 +7,17 @@ Run against `origin/main` merged into `worktree/ose-islamic`. Every check below 
 
 ## `lms-init` DU1 — config-driven doctor tool inventory
 
-| Check                                 | Result                                                                                                      |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Merge commit                          | `c6fffc384 refactor(rhino-cli): resolve the doctor tool inventory from repo-config`                         |
-| `doctor.extra-tools` in `ose-public`  | present, `repo-config.yml:174`, first entry `java`                                                          |
-| `doctor.extra-tools` in `ose-private` | present, `repo-config.yml:272`, value `[]`                                                                  |
-| Top-level key-set parity              | holds — both repositories carry the key                                                                     |
-| `builtinDoctorToolInventory`          | `RepoConfig.fs:174`                                                                                         |
-| `doctorToolInventoryFor (config)`     | `RepoConfig.fs:284`, appends configured names to the built-ins                                              |
-| `Doctor.fs` re-exports                | `Doctor.fs:781`, `:786`; extra tools become `ToolDef`s at `:1811`                                           |
-| `DoctorExtraTool` schema              | `RepoConfig.fs:214`–`:224` — `Name`, `Binary`, `VersionArgs`, `VersionStream`, `RequiredVersion`, `Install` |
-| `go` in `builtinDoctorToolInventory`  | **absent** — so D-9's `extra-tools` registration is both possible and necessary                             |
+| Check                                       | Result                                                                                                      |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Merge commit                                | `c6fffc384 refactor(rhino-cli): resolve the doctor tool inventory from repo-config`                         |
+| `doctor.extra-tools` in `ose-public`        | present, `repo-config.yml:174`, first entry `java`                                                          |
+| `doctor.extra-tools` in the private sibling | present, `repo-config.yml:272`, value `[]`                                                                  |
+| Top-level key-set parity                    | holds — both repositories carry the key                                                                     |
+| `builtinDoctorToolInventory`                | `RepoConfig.fs:174`                                                                                         |
+| `doctorToolInventoryFor (config)`           | `RepoConfig.fs:284`, appends configured names to the built-ins                                              |
+| `Doctor.fs` re-exports                      | `Doctor.fs:781`, `:786`; extra tools become `ToolDef`s at `:1811`                                           |
+| `DoctorExtraTool` schema                    | `RepoConfig.fs:214`–`:224` — `Name`, `Binary`, `VersionArgs`, `VersionStream`, `RequiredVersion`, `Install` |
+| `go` in `builtinDoctorToolInventory`        | **absent** — so D-9's `extra-tools` registration is both possible and necessary                             |
 
 The schema matches `tech-docs.md` §2 D-9's YAML field for field, including `version-stream`.
 

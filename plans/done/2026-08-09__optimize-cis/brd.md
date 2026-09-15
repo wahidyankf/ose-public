@@ -32,12 +32,12 @@ evidence instead of on feel.
 
 ## Affected Roles
 
-| Role                          | Current pain                                                                                                          | After                                                          |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| **Maintainer (solo)**         | 3.5 s to commit a doc fix; 194 s to push a `rhino-cli` change; PR gate wall-clock dominated by setup                  | Sub-second commits; ~90 s pushes; PR gate cost cut ~3×         |
-| **AI agents executing plans** | Every agent commit pays the same tax, multiplied by parallel fan-out (N=3 default) and by 3 review cycles             | Proportional reduction across every agent-driven commit        |
-| **CI runner budget**          | `ose-public` burns 10,945 runner-s/run on `ubuntu-latest`; `ose-private` queues p50 18:42 on a small self-hosted pool | Fewer jobs contending for the shared four-repo pool            |
-| **Local disk**                | 28 GB attributable; `local-temp` alone 12.31 GB and unbounded                                                         | ~16 GB reclaimable, with hygiene encoded so it does not regrow |
+| Role                          | Current pain                                                                                                                | After                                                          |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **Maintainer (solo)**         | 3.5 s to commit a doc fix; 194 s to push a `rhino-cli` change; PR gate wall-clock dominated by setup                        | Sub-second commits; ~90 s pushes; PR gate cost cut ~3×         |
+| **AI agents executing plans** | Every agent commit pays the same tax, multiplied by parallel fan-out (N=3 default) and by 3 review cycles                   | Proportional reduction across every agent-driven commit        |
+| **CI runner budget**          | `ose-public` burns 10,945 runner-s/run on `ubuntu-latest`; the private sibling queues p50 18:42 on a small self-hosted pool | Fewer jobs contending for the shared four-repo pool            |
+| **Local disk**                | 28 GB attributable; `local-temp` alone 12.31 GB and unbounded                                                               | ~16 GB reclaimable, with hygiene encoded so it does not regrow |
 
 ## Success Metrics
 
@@ -161,7 +161,7 @@ not a target.
 - **`repo-config.yml` stays authoritative.** Groups are declared, never derived — consistent with this
   repository's standing preference for explicit central registries over convention-based magic.
 - **Generated artifacts are never hand-edited** and land in the same commit as their source.
-- **Byte-identity parity** across `ose-public`, `ose-primer`, and `ose-private` must hold once
+- **Byte-identity parity** across `ose-public`, `ose-primer`, and the private sibling must hold once
   cross-repo propagation lands (Phase 10) and stay held through plan close. **Update (plan close,
   2026-08-09/10)**: this did not literally hold at close — the gap was closed via the
   accepted-with-reason mechanism rather than held, per `delivery.md`'s Phase 10 Gate AC-15

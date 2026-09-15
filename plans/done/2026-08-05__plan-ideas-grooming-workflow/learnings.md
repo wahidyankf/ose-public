@@ -7,7 +7,7 @@
 
 ## Learning: `apps/rhino-cli` byte-identity across repos is aspirational, not current state
 
-AGENTS.md states `apps/rhino-cli` byte-identity spans `ose-public`, `ose-primer`, `ose-private`
+AGENTS.md states `apps/rhino-cli` byte-identity spans `ose-public`, `ose-primer`, the private sibling
 with zero carve-outs. `diff -rq` between `ose-public`'s and `ose-primer`'s `apps/rhino-cli/src`
 trees during Phase 2 showed dozens of files differ and several exist only on one side — the two
 codebases have already diverged substantially (matches the pre-existing project note about
@@ -50,7 +50,7 @@ class. The eventual `doctor --fix` code change itself, if promoted, will be a se
 ## Learning: `beaver-nest`'s rhino-cli fork test binary rejects `cargo test <filter>` syntax
 
 Running `cargo test --manifest-path apps/rhino-cli/Cargo.toml --quiet <test-name>` in
-`beaver-nest` (used successfully in `ose-public`/`ose-primer`/`ose-private` for the same
+`beaver-nest` (used successfully in `ose-public`/`ose-primer`/the private sibling for the same
 grooming-fix verification) failed with `error: unexpected argument '<test-name>' found` against
 an integration test binary named `agent_naming_validator` — a `beaver-nest`-specific fork
 artifact whose binary parses its own CLI args (clap-based) rather than accepting the standard

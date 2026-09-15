@@ -16,7 +16,7 @@ created: 2026-08-06
 
 ## Context
 
-The OSE family is four repositories. Three of them — `ose-public`, `ose-primer`, `ose-private` —
+The OSE family is four repositories. Three of them — `ose-public`, `ose-primer`, the private sibling —
 form the **parity loop** whose generic content is deliberately kept aligned. The fourth,
 [`beaver-nest`](https://github.com/wahidyankf/beaver-nest), sits outside that loop but is a full
 family member, and every governance rule written for "all four repos" must be authored, propagated,
@@ -61,14 +61,14 @@ scaffolding, drifted**:
    large parts of the crate in `ose-public` only [Repo-grounded — `diff -rq` across both trees,
    re-verified 2026-08-10]. **Note for Phase 5**: `optimize-cis` also fixed, as a side effect,
    `apps/rhino-cli/src/application/parity.rs`'s runtime message — it already reads
-   `"byte-identical across ose-public, ose-primer, and ose-private"` with a test asserting it never
+   `"byte-identical across ose-public, ose-primer, and <private-sibling>"` with a test asserting it never
    names `beaver-nest` (commit `c182c543a`, 2026-08-09). `docs/reference/sdlc-gate-standard.md` was
    not part of that fix and still says "four bound repos" / "four OSE repositories" and names
    `beaver-nest`. Phase 5's TDD cycle must be re-derived against this: the RED step will not fail on
    `parity.rs` anymore, so that sub-step is already satisfied — the remaining GREEN-step work is the
    `sdlc-gate-standard.md` sweep and the rest of the documentation targets. Separately, the
    byte-identity boundary among the three **surviving**
-   repos is itself not yet closed: `ose-public`, `ose-primer`, and `ose-private` currently carry
+   repos is itself not yet closed: `ose-public`, `ose-primer`, and the private sibling currently carry
    three different `parity-manifest.sha256` contents [Repo-grounded — direct diff, 2026-08-10];
    `optimize-cis` shipped with this open and accepted-with-reason as its own AC-15. This plan's
    Phase 5-7 sweep still assumes a closed boundary as its starting point — Phase 0 must re-confirm
@@ -109,7 +109,7 @@ rather than papering over it.
 ## Scope
 
 **Repo scope**: three repositories. `ose-public` receives the ported product and hosts this plan
-folder; `ose-primer` and `ose-private` receive only the terminology sweep that follows from the
+folder; `ose-primer` and the private sibling receive only the terminology sweep that follows from the
 family shrinking to three. `beaver-nest` is the **subject** of the plan, not a target of it — no
 change lands there beyond the final archive flip.
 
@@ -151,7 +151,7 @@ Four delivery units, executed in order:
    gates, and prove the gates green. One PR.
 2. **Port the narrative surface** — vision doc, unique ideas, docs registration — and record the
    `beaver-nest-app-setup` plan's disposition. One PR.
-3. **Sweep four→three** across `ose-public`, then `ose-primer`, then `ose-private`. Three PRs,
+3. **Sweep four→three** across `ose-public`, then `ose-primer`, then the private sibling. Three PRs,
    serialized on the `apps/rhino-cli` byte-identity boundary.
 4. **Archive** the GitHub repository and reconcile the local checkout.
 
@@ -183,7 +183,7 @@ re-verification step, not stale hedging, and is now expected to pass on first tr
 [`plans/done/2026-08-07__sdlc-gate-registry-enforcement`](../../done/2026-08-07__sdlc-gate-registry-enforcement/README.md)
 originally declared all four repos in scope, so it needed `beaver-nest` to still exist as a live,
 writable repository — archiving first would have stranded its fourth track. That plan **amended its
-scope on 2026-08-07** to `ose-public` and `ose-private` only, with `beaver-nest`'s Phase 5
+scope on 2026-08-07** to `ose-public` and the private sibling only, with `beaver-nest`'s Phase 5
 cancelled precisely because this consolidation retires it. It is done — the ordering constraint is
 now historical context, not a live blocker.
 
@@ -212,7 +212,7 @@ correct post-optimization form is `apps/rhino-cli/scripts/rhino-bin.sh <subcomma
 historical note**: its own closing acceptance clause states plainly that "`parity manifest validate`
 returning an identical hash in all three repos is **not** part of this acceptance clause as of
 2026-08-09 — AC-15 is open, accepted-with-reason." Re-verified 2026-08-10: `ose-public`,
-`ose-primer`, and `ose-private` still carry three different `apps/rhino-cli/parity-manifest.sha256`
+`ose-primer`, and the private sibling still carry three different `apps/rhino-cli/parity-manifest.sha256`
 contents (17 differing entries between `ose-public` and `ose-primer` alone). This plan's Phase 5-7
 four→three sweep assumes a **closed** byte-identity boundary as its starting point. Phase 0 must
 re-check `parity manifest validate` in all three repos and, if still open, close that boundary first

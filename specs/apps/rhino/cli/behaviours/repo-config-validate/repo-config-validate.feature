@@ -1,7 +1,7 @@
 @repo-config-validate
 Feature: Schema-parity gate for repo-config.yml
 
-  As a maintainer keeping rhino-cli byte-identical across ose-public and ose-private
+  As a maintainer keeping rhino-cli byte-identical across ose-public and the private sibling
   I want a "repo-config validate" command that strict-deserializes repo-config.yml
   So that both repo-config.yml files are guaranteed to carry an identical key set
 

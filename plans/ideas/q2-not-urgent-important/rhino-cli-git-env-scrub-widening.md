@@ -53,7 +53,7 @@ already-half-built invariant, not fixing an observed defect.
   fork (pre-archival); `find_root_from`'s own doc comment already states the "scrub ambient
   hook-exported repo-location variables" intent this brief completes.
 - [Related Repositories reference](../../../docs/reference/related-repositories.md) — defines the
-  `apps/rhino-cli` byte-identity boundary spanning `ose-public` and `ose-private` with
+  `apps/rhino-cli` byte-identity boundary spanning `ose-public` and the private sibling with
   zero carve-outs; any fix here obligates the same change in the other byte-identity repo, not
   `beaver-nest` (out of scope, forked, and being archived).
 - [File-Touch Discipline](../../../repo-governance/development/practice/file-touch-discipline.md) —
@@ -64,7 +64,7 @@ already-half-built invariant, not fixing an observed defect.
 Add the same three `env_remove` calls to `find_root_from` (and audit `find_root` and any other
 `Command::new("git")` call site in the same module for the same gap), then regenerate
 `apps/rhino-cli/parity-manifest.sha256` and propagate the identical change to
-`ose-private` in lockstep, per the standing byte-identity boundary.
+the private sibling in lockstep, per the standing byte-identity boundary.
 
 ## Rough scope & non-goals
 
@@ -88,6 +88,6 @@ Out of scope: any other divergence between `beaver-nest`'s former `rhino-cli` fo
 
 Success: `find_root_from` (and any sibling call site with the same gap) scrubs all five ambient
 git-location variables, matching its own doc comment's stated intent, landed identically across
-`ose-public` and `ose-private`. Promotion signal: ripe for a small, self-contained
+`ose-public` and the private sibling. Promotion signal: ripe for a small, self-contained
 `backlog/` plan (or a direct in-repo fix, since it is a narrow, low-risk, single-behaviour change)
 whenever a maintainer picks it up — no external dependency blocks it today.

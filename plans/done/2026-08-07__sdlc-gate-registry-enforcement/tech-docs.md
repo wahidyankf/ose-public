@@ -14,7 +14,7 @@ created: 2026-08-02
 # Tech Docs — SDLC Gate Registry Enforcement
 
 > **Scope Amendment (2026-08-07)**: the byte-identity design below describes the original four-repo
-> boundary; it is narrowed to **`ose-public` + `ose-private`** — see
+> boundary; it is narrowed to **`ose-public` + the private sibling** — see
 > [delivery.md §Scope Amendment](./delivery.md#scope-amendment-2026-08-07). `beaver-nest` (§2.8) is
 > **cancelled**, not executed — `beaver-nest` is slated for future deprecation/merge into
 > `ose-public`. `ose-primer` already fulfilled its one-time propagation and is now periodic/manual,
@@ -73,7 +73,7 @@ Two further structural findings:
 
 Per-repo variation on the above is small and does not change any verdict:
 
-- `ose-private` alone already runs `markdown-per-file` (mermaid, heading-hierarchy) in its PR gate,
+- The private sibling alone already runs `markdown-per-file` (mermaid, heading-hierarchy) in its PR gate,
   and its pre-push additionally runs `specs structure validate` and `npm run lint:md`. It also adds an
   `iac-lint` gate (terraform, yamllint) the other three do not have.
 - `ose-primer` adds per-language gates for its polyglot demo apps and names its audit workflow
@@ -85,7 +85,7 @@ Per-repo variation on the above is small and does not change any verdict:
 ### 1.1 Readiness refresh — 2026-08-04
 
 `[Repo-grounded]` Re-verified against current `main` at `f60b711f3` (`ose-public`), `0b67746b2` (`ose-primer`),
-`346209fc4` (`ose-private`), and `cd2ec0e4d` (`beaver-nest`). The hook captures still match all twelve
+`346209fc4` (the private sibling), and `cd2ec0e4d` (`beaver-nest`). The hook captures still match all twelve
 live hooks; every target `package.json` now matches its live file outside `lint-staged`; the live
 `lint-staged` blocks are unchanged; and none of the gate workflow files in the audit table changed
 after the final 2026-08-02 audit. The table's gate-surface verdicts therefore remain current.
@@ -117,7 +117,7 @@ The tree below is root-relative in each affected repository. A bounded pattern i
 the exact set is discovered with `git ls-files` before editing; Phase 0 records that expansion in
 the file-touch ledger. `[E]` means edit, `[N]` new, `[D]` delete, and `[G]` generated from the named
 canonical source rather than hand-edited. Phases 3–5 apply the same listed root-relative targets in
-`ose-primer`, `ose-private`, and `beaver-nest` after the canonical `ose-public` changes merge.
+`ose-primer`, the private sibling, and `beaver-nest` after the canonical `ose-public` changes merge.
 
 ```text
 .
@@ -377,7 +377,7 @@ divergences in [§2.2.4](#224-the-full-formatter-and-per-file-inventory) and
 [§2.3](#23-why-gate-sets-may-differ-per-repo-but-the-schema-may-not) are visible side by side instead
 of asserted in prose. `husky-hooks/current/` makes the before-state auditable too, and measuring it
 proves the drift this plan exists to stop: `pre-push` currently differs from `ose-public`'s copy in
-**all three** downstream repos (`ose-primer` 4 lines, `beaver-nest` 2, `ose-private` 56), and nothing
+**all three** downstream repos (`ose-primer` 4 lines, `beaver-nest` 2, private sibling 56), and nothing
 detects it. And the `lint-staged` artifacts are a **falsifiable target**: Phase 1's emitter is correct
 when its output is byte-identical to the committed `package-json/lint-staged-{repo}.json`, which is a
 diff, not a judgement.
@@ -599,9 +599,9 @@ standalone `cljfmt check` from `clj -Tcljfmt check` and `lein cljfmt check`. Bar
 therefore require globally invocable tool forms; Phase 0 confirms their availability.
 
 `keep` = declared and needed. `drop` = **declared but the repo has zero tracked files of that type**.
-`add` = files exist with no formatter declared. `—` = correctly absent — note `ose-private` never
+`add` = files exist with no formatter declared. `—` = correctly absent — note the private sibling never
 declares a `*.go` or `*.{ex,exs}` `lint-staged` key at all, so its `gofmt`/`format-elixir.sh` cells
-read `—` rather than `drop`, the same way `ose-primer`/`ose-private`'s `stylua`/`clang-format`/
+read `—` rather than `drop`, the same way `ose-primer`/the private sibling's `stylua`/`clang-format`/
 `buildifier` cells do.
 
 `[Repo-grounded]` — measured tracked-file counts behind each verdict, via `git ls-files` by
@@ -635,8 +635,8 @@ alone carries nine, plus a `*.sql` prettier glob matching nothing. They are not 
 "this repo formats Dart", a tool `npm run doctor` may install, and — under this plan — a formatter
 that would demand a `verifies`-linked CI job for a language the repo does not have.
 
-Three `add` verdicts are the mirror-image defect: `ose-primer` and `ose-private` `shellcheck` shell
-scripts they never format, and `ose-private` has 3 tracked `.tf` files handled by a hand-written
+Three `add` verdicts are the mirror-image defect: `ose-primer` and the private sibling `shellcheck` shell
+scripts they never format, and the private sibling has 3 tracked `.tf` files handled by a hand-written
 `.husky/pre-commit` block instead of `lint-staged`.
 
 Also surfaced: `ose-primer` tracks 46 `.sql` and 3 `.html` files with no prettier glob covering
@@ -668,7 +668,7 @@ matching its glob.** Not "if the language is plausible", not "if the canonical s
 files, verifiable by `git ls-files`.
 
 This does **not** breach byte-identity. The engine that reads the registry is identical everywhere;
-the entry set is data, exactly like `ose-private`'s `iac-lint` pair
+the entry set is data, exactly like the private sibling's `iac-lint` pair
 ([§2.3](#23-why-gate-sets-may-differ-per-repo-but-the-schema-may-not)). It also removes an unwanted
 side effect of the union-surface principle: without pruning, `gate validate`'s new pairing check
 would demand a `format-verify-dart` CI job in three repos that have no Dart.
@@ -709,13 +709,13 @@ These are entry-set differences, not schema differences, and are legitimate per 
 | `md naming validate --exempt "*__linkedin__*.md"`               | public, beaver-nest | `args` difference                                                                   |
 | `md mermaid validate --exclude apps/ayokoding-www/content`      | public              | `args` difference                                                                   |
 
-**The `ose-private` terraform case needs explicit handling in Phase 4.** Its IaC formatting runs as a
+**The private-sibling terraform case needs explicit handling in Phase 4.** Its IaC formatting runs as a
 hand-written block inside `.husky/pre-commit`, not through `lint-staged`, so `gate emit` reading the
 per-file registry would not reproduce it. It must be declared as an ordinary
 `scope: affected-file-type, glob: "*.tf"` mutation like every other formatter, and the inline hook
 block deleted — otherwise the registry's completeness claim is false in that repo on day one.
 
-`[Repo-grounded]` **This deliberately substitutes `tofu` for `terraform`.** `ose-private`'s current
+`[Repo-grounded]` **This deliberately substitutes `tofu` for `terraform`.** The private sibling's current
 `.husky/pre-commit` invokes the HashiCorp `terraform` binary (`terraform fmt -check -recursive
 infra/on-premise/terraform/`), not OpenTofu. Phase 4 declares the new `lint-staged`/registry mutation
 as `tofu fmt` / `tofu fmt -check` instead, matching `ose-public`'s existing choice and the `tofu`
@@ -728,7 +728,7 @@ checks and treats any difference as blocking; this is not an unsupported blanket
 ### 2.3 Why gate sets may differ per repo but the schema may not
 
 The `apps/rhino-cli` byte-identity boundary requires the engine to be identical across `ose-public`,
-`ose-primer`, and `ose-private`. The registry is data, and the boundary explicitly permits per-repo
+`ose-primer`, and the private sibling. The registry is data, and the boundary explicitly permits per-repo
 data divergence — the existing `repo-config.yml` already differs per repo in `specs.domain-areas`,
 `env-contract` scan paths, and the harness lists.
 
@@ -737,7 +737,7 @@ This plan states the rule for `gates:` explicitly, because it is a list rather t
 - **The schema is identical** — every entry in every repo conforms to the same field contract and the
   same enums. `rhino-cli repo-config validate` enforces this and already runs at pre-commit, the PR
   gate, and the schema-parity gate.
-- **The entry set may differ**, because it follows the repo's actual app and tool set. `ose-private`
+- **The entry set may differ**, because it follows the repo's actual app and tool set. The private sibling
   declaring an `iac-lint` gate is sanctioned divergence of the same kind as it shipping Terraform at
   all. This is recorded under
   [Allowed Divergence](../../../docs/reference/sdlc-gate-standard.md#allowed-divergence).
@@ -911,7 +911,7 @@ Order matters and is enforced by the phase gates:
 The
 [rhino-cli Byte-Identity Boundary](../../../docs/reference/sdlc-gate-standard.md#rhino-cli-byte-identity-boundary)
 declares `apps/rhino-cli`'s `src/`, `Cargo.toml`, `Cargo.lock`, `project.json`, `LICENSE`, and the
-gherkin behavior tree byte-identical across `ose-public`, `ose-primer`, and `ose-private`, with
+gherkin behavior tree byte-identical across `ose-public`, `ose-primer`, and the private sibling, with
 **zero carve-outs**. `beaver-nest` is excluded as a declared fork.
 
 That rule has the identical defect as the Gate Composition Rule: it is ratified prose that nothing
@@ -922,7 +922,7 @@ current `main` on 2026-08-04 after its backend-readiness work changed the fork.
 
 **The three-repo boundary is already violated.**
 `src/application/agents/sync_validator.rs` line 676 carries `opencode-go/wrong` in `ose-public` and
-`zai-coding-plan/wrong` in both `ose-primer` and `ose-private`. It is the model-mismatch negative
+`zai-coding-plan/wrong` in both `ose-primer` and the private sibling. It is the model-mismatch negative
 fixture in `validate_agent_equivalence_fails_on_model_mismatch`; both strings exercise the same
 branch, so no behaviour differs. That is precisely why it survived — a zero-carve-out rule was broken
 by a one-line test fixture and **no surface in any repo could have noticed**, because byte-identity
@@ -974,7 +974,7 @@ along with the test-target Git isolation from `project.json`.
 `application/git/pre_commit.rs` is reachable only from `commands/git_pre_commit.rs`, which is
 declared `pub mod` in `commands.rs` but wired to **no CLI subcommand** — a leftover of the Go-to-Rust
 port. The whole pipeline is unreachable from the binary's command surface, yet it is replicated
-byte-for-byte into `ose-primer` and `ose-private`, and it is the single largest hardcoded-`ose`-paths
+byte-for-byte into `ose-primer` and the private sibling, and it is the single largest hardcoded-`ose`-paths
 site. It also owns the only consumers of `STAGED_SKIP_PREFIXES`, `staged_md_files`, and `has_match`.
 
 Deleting it is **not** a one-file removal. Blast radius, all of which the plan must handle:
@@ -1013,7 +1013,7 @@ covers it. The plan uses two, split on exactly the hermeticity line
 `plans/ideas/tri-repo-rhino-cli-byte-identity-gate.md` (since deleted; see git history)
 (surfaced 2026-07-17), answering its open questions on run location (hermetic gate: locally, in
 `pre-push` and `ci`; audit: scheduled workflow), cadence (audit runs on a schedule, not per-commit),
-and the `ose-private` auth model (the audit is unauthenticated-fetch, per B below). The idea brief is
+and the private-sibling auth model (the audit is unauthenticated-fetch, per B below). The idea brief is
 retired in Phase 6.
 
 **A. `parity manifest validate` — an ordinary registry gate (hermetic, blocking).**
@@ -1034,7 +1034,7 @@ moment someone edits byte-identical source, and the failure message says what th
 ```text
 apps/rhino-cli/src/application/docs/naming.rs no longer matches parity-manifest.sha256.
 
-This file is byte-identical across ose-public, ose-primer, ose-private, and beaver-nest.
+This file is byte-identical across ose-public, ose-primer, <private-sibling>, and beaver-nest.
 Changing it here obligates propagating the identical change to the other three repos.
 If that is intended, run: rhino-cli parity manifest generate
 ```
@@ -1049,8 +1049,8 @@ it is not a gate. So it takes the same shape as the dependency audit: `schedule`
 [§2.2.3](#223-what-is-deliberately-outside-the-registry)'s boundary table.
 
 It fetches `ose-public`'s canonical `parity-manifest.sha256` and compares. `ose-public` is a public
-repository, so `ose-primer`, `ose-private`, and `beaver-nest` can all fetch it unauthenticated —
-including `ose-private`, whose own contents stay private because the data flows one way, downstream.
+repository, so `ose-primer`, the private sibling, and `beaver-nest` can all fetch it unauthenticated —
+including the private sibling, whose own contents stay private because the data flows one way, downstream.
 
 Filename and `name:` follow the convention amendment already in scope: domain `rhino-cli` (the
 `{cli-name}` form the convention permits) and the verb `audit` being added for the dependency
@@ -1091,7 +1091,7 @@ only safe once canonical is de-forked.
 Extending the boundary from three repos to four is an **amendment, not a clarification**. Today
 `docs/reference/related-repositories.md:118` and the SDLC Gate Standard both state that `beaver-nest`
 "carries a **fork** of that shared tool which is explicitly **not** bound by the byte-identity rule",
-and `AGENTS.md` states the boundary "spans `ose-public`, `ose-primer`, `ose-private` with zero
+and `AGENTS.md` states the boundary "spans `ose-public`, `ose-primer`, the private sibling with zero
 carve-outs".
 
 All three statements become false and must change in all four repos. The consequence is real and
@@ -1114,16 +1114,16 @@ carve-out.
 | Document                                                                          | Change                                                                                                                                                                                                                                                                                                                                                                                  |
 | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `docs/reference/sdlc-gate-standard.md`                                            | Composition rule becomes `(pre-commit ∪ pre-push) == PR gate`. Stage table drops stage 5. Stage 5 section removed. Stage 3 and 4 tables corrected to include `md readme-index validate`, `harness duplication validate`, `convention license validate`. Registry described as the normative mechanism. Allowed Divergence gains the gate-entry-set rule.                                |
-| `repo-governance/development/workflow/git-hook-lifecycle.md`                      | Rewritten. Currently describes a pre-push that no longer exists, cites the non-existent target `specs:coverage`, and (in `ose-primer`) cites the non-existent workflow `validate-markdown.yml`. Its CI-parity table is replaced by a pointer to `gate list`, so it cannot restale. Created fresh in `ose-private`, which lacks it.                                                      |
+| `repo-governance/development/workflow/git-hook-lifecycle.md`                      | Rewritten. Currently describes a pre-push that no longer exists, cites the non-existent target `specs:coverage`, and (in `ose-primer`) cites the non-existent workflow `validate-markdown.yml`. Its CI-parity table is replaced by a pointer to `gate list`, so it cannot restale. Created fresh in the private sibling, which lacks it.                                                |
 | `repo-governance/development/infra/nx-targets.md`                                 | Drops `main-ci` references.                                                                                                                                                                                                                                                                                                                                                             |
 | `docs/reference/system-architecture/ci-cd.md`                                     | Drops `main-ci` references; documents the matrix derivation.                                                                                                                                                                                                                                                                                                                            |
 | `AGENTS.md`                                                                       | Git Hooks section updated to describe the shim form. Watch the instruction-size budget — this section should shrink, not grow.                                                                                                                                                                                                                                                          |
 | `repo-governance/development/infra/github-actions-workflow-naming.md`             | Adds `dependency` to the cross-cutting `{domain}` list and `audit` to the verb vocabulary, so `dependency-vulnerability-audit.yml` is legal. Registers it, `pr-quality-gate.yml`, and `validate-env.yml` in the Cross-cutting workflows table; removes `main-ci.yml`. See [§2.2.3](#223-what-is-deliberately-outside-the-registry).                                                     |
 | `.github/workflows/README.md`                                                     | Row for `deps-audit.yml` replaced by `dependency-vulnerability-audit.yml`; `main-ci.yml` row removed; row added for `rhino-cli-parity-audit.yml`.                                                                                                                                                                                                                                       |
 | `docs/reference/related-repositories.md`                                          | Line 118's "`beaver-nest` carries a **fork** ... explicitly **not** bound by the byte-identity rule" is deleted. The byte-identity boundary becomes four repos. The two-boundary framing stays — content parity is still `ose-public` ↔ `ose-primer` only — but the byte-identity boundary now matches the four-repo set. See [§2.8.6](#286-the-governance-change-this-requires).       |
-| `AGENTS.md` (Related Repositories)                                                | "`apps/rhino-cli` byte-identity spans `ose-public`, `ose-primer`, `ose-private`" becomes all four; "`beaver-nest` ... carries a **fork** of `rhino-cli`" is removed. The sentence distinguishing the two boundaries must be rewritten, not merely edited — the current wording's whole point is that the sets differ.                                                                   |
+| `AGENTS.md` (Related Repositories)                                                | "`apps/rhino-cli` byte-identity spans `ose-public`, `ose-primer`, the private sibling" becomes all four; "`beaver-nest` ... carries a **fork** of `rhino-cli`" is removed. The sentence distinguishing the two boundaries must be rewritten, not merely edited — the current wording's whole point is that the sets differ.                                                             |
 | `docs/reference/sdlc-gate-standard.md` (byte-identity section)                    | Boundary extended to four repos; `tests/` added to the file set; the manifest gate and the cross-repo audit documented as the enforcement, replacing "second-pass target" prose.                                                                                                                                                                                                        |
-| `repo-governance/workflows/plan/multi-plans-execution.md`                         | The scheduling rule's "byte-identical propagation across `ose-public`/`ose-primer`/`ose-private`" is extended to name all four bound repos, so the multi-plan scheduler serializes a `beaver-nest`-touching plan against a concurrent `apps/rhino-cli` edit elsewhere too.                                                                                                              |
+| `repo-governance/workflows/plan/multi-plans-execution.md`                         | The scheduling rule's "byte-identical propagation across `ose-public`/`ose-primer`/the private sibling" is extended to name all four bound repos, so the multi-plan scheduler serializes a `beaver-nest`-touching plan against a concurrent `apps/rhino-cli` edit elsewhere too.                                                                                                        |
 | `repo-governance/workflows/plan/plan-multi-repo-parity-planning-and-execution.md` | "`apps/rhino-cli` byte-identity across all three repos" is extended to "all four bound repos", matching [§2.8.6](#286-the-governance-change-this-requires).                                                                                                                                                                                                                             |
 | `repo-governance/workflows/plan/plan-multi-repo-parity-planning.md`               | The "byte-identical across all three repos" language is extended to four repos; the literal `git -C ose-public ls-files ... across all three repos` manual `md5`-diff snippet is replaced with a pointer to `cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- parity manifest validate`, so it cannot silently diverge from the mechanism this plan introduces. |
 
@@ -1165,7 +1165,7 @@ graph TD
     P1B["Phase 11<br/>De-fork canonical source<br/>+ parity manifest<br/>ose-public"]
     P2["Phase 2<br/>Rewire + retire main-ci<br/>ose-public"]
     P3["Phase 3<br/>Propagate + rewire<br/>ose-primer"]
-    P4["Phase 4<br/>Propagate + rewire<br/>ose-private"]
+    P4["Phase 4<br/>Propagate + rewire<br/>private sibling"]
     P5["Phase 5<br/>Join boundary + rewire<br/>beaver-nest"]
     P6["Phase 6<br/>Knowledge capture"]
 

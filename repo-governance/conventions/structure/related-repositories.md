@@ -12,7 +12,7 @@ The descriptive catalogue is [Related Repositories](../../../docs/reference/rela
 ## The OSE Code Repositories
 
 **OSE Code Repositories** names the five repositories this project is built and maintained in:
-`ose-public`, `ose-private`, [RHINO](https://github.com/wahidyankf/rhino),
+`ose-public`, the private sibling, [RHINO](https://github.com/wahidyankf/rhino),
 [HIPPO](https://github.com/wahidyankf/hippo), and
 [BeaverNest](https://github.com/wahidyankf/beaver-nest). The name labels that set for routing and
 nothing else. It is not a GitHub organization, not a parent or container repository, and not a
@@ -21,7 +21,7 @@ repository to name the other four so a contributor can find them, and obligates 
 
 ## OSE parity pair
 
-The OSE parity set contains exactly `ose-public` and `ose-private`. Public is the canonical source
+The OSE parity set contains exactly `ose-public` and the private sibling. Public is the canonical source
 for portable governance, agent, skill, workflow, and Rhino changes; private receives those changes
 through an explicit sibling obligation in its own delivery. Private-only operations, licensing
 exceptions, and CI constraints remain local and must be recorded as divergences.

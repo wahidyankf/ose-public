@@ -103,7 +103,7 @@ committed during any step.
 ## Cross-Repository Propagation
 
 `ose-public` is the canonical content source. Before its PR merges, prepare the corresponding
-`ose-private` change and record a portable-file manifest of paths and byte hashes without private
+the private sibling change and record a portable-file manifest of paths and byte hashes without private
 facts. Every manifest file is byte-identical in public and private; private-only operational files are
 explicitly excluded rather than silently allowed to drift. After the public merge, commit and push the
 private worktree directly to `origin/main` under this plan's user-authorized exception; record the
@@ -140,7 +140,7 @@ live-plan retrofit inventory so a future Primer plan cannot retain the retired f
 │   ├── backlog/ayokoding-learning-path-{06..18}-*/ [E] — retrofit every matching future plan document
 │   ├── ideas/README.md [E] — index any new Low-finding or non-convergence idea
 │   └── ideas/<deduplicated-topic>.md [N] — only when no existing two-pager owns the learning
-├── ose-private manifest-matched canonical paths [E] — byte-identical real-time governance delivery
+├── <private-sibling> manifest-matched canonical paths [E] — byte-identical real-time governance delivery
 │   in its own repo
 └── ose-primer applicable canonical paths and live plans [E] — companion policy delivery and retrofit
     in its own repo

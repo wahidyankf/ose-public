@@ -46,7 +46,7 @@ re-measured the same way on 2026-08-10 [Repo-grounded]. Where the two differ, th
 | `plans/ideas/` two-pagers                      | 43 in `beaver-nest`, 35 duplicates → **8 in `beaver-nest`, 0 duplicates** (all 8 now unique)                                                                                                                                                                                                                                                                    |
 | `beaver-nest`-unique ideas                     | 8 (4 product-specific, 4 generic-governance) — split unchanged though totals moved                                                                                                                                                                                                                                                                              |
 | `apps/rhino-cli` divergence                    | genuine fork — 58 → **95** differing/upstream-only paths (widened post-`optimize-cis`); `parity.rs`, `commands/gate/`, `commands/git/`, `parity-manifest.sha256` remain upstream-only                                                                                                                                                                           |
-| 3-repo `parity-manifest.sha256`                | **open** as of 2026-08-10 — `ose-public`/`ose-primer`/`ose-private` carry three different contents; `optimize-cis`'s own AC-15 records this accepted-with-reason, not closed                                                                                                                                                                                    |
+| 3-repo `parity-manifest.sha256`                | **open** as of 2026-08-10 — `ose-public`/`ose-primer`/the private sibling carry three different contents; `optimize-cis`'s own AC-15 records this accepted-with-reason, not closed                                                                                                                                                                              |
 | `beaver-nest-be` implemented endpoints         | **2** — `GET /api/v1/health`, `GET /api/v1/readiness`                                                                                                                                                                                                                                                                                                           |
 | `beaver-nest-be` source                        | 858 → 980 lines F#+SQL; sole DB migration is still an empty-journal script, zero domain tables                                                                                                                                                                                                                                                                  |
 | `beaver-nest-fe` source                        | 211 lines; single-screen Vite/React SPA whose own copy reads "No workspace features yet" [methodology: `find src -type f -not -path 'src/generated-contracts/*' -not -path 'src/test/*' -not -name '*.test.*' -not -name '*.spec.*' \| xargs wc -l`, run from `apps/beaver-nest-fe`, excluding tests and the generated OpenAPI client]                          |
@@ -76,7 +76,7 @@ Three findings from this baseline drive the plan's shape:
    2026-08-06 baseline both `docs/reference/sdlc-gate-standard.md:186` and
    `apps/rhino-cli/src/application/parity.rs:557` asserted `apps/rhino-cli` is byte-identical across
    "all four bound repos". Re-verified 2026-08-10: `parity.rs` (now around line 560) **already emits
-   the three-repo message** — `"byte-identical across ose-public, ose-primer, and ose-private"`, with
+   the three-repo message** — `"byte-identical across ose-public, ose-primer, and <private-sibling>"`, with
    an explicit test asserting the string never contains `beaver-nest` — landed by `optimize-cis`'s own
    Phase 7 (commit `c182c543a`, 2026-08-09) as a side effect of resolving a contradiction _that plan_
    tripped over. `docs/reference/sdlc-gate-standard.md` was **not** part of that fix and still says
@@ -203,14 +203,14 @@ All four are observable checks, verifiable on demand — no fabricated baselines
 
 1. **The family is three repositories.**
    `grep -rn "beaver-nest" AGENTS.md README.md docs/reference/ repo-governance/ .claude/ apps/rhino-cli/src` returns
-   zero hits in each of `ose-public`, `ose-primer`, and `ose-private`, except where the string appears
+   zero hits in each of `ose-public`, `ose-primer`, and the private sibling, except where the string appears
    inside `plans/done/**` (an immutable archive) or as a historical reference explicitly marked as
    such. [Observable fact]
 2. **The product is present and green in `ose-public`.**
    `nx run-many -t test:quick -p beavernest-be,beavernest-app-web,beavernest-be-e2e,beavernest-app-web-e2e`
    exits 0. [Observable fact]
 3. **The governance contradiction is gone.**
-   `grep -rn "ose-private, and beaver-nest" apps/rhino-cli/src` returns zero hits, and
+   `grep -rn "<private-sibling>, and beaver-nest" apps/rhino-cli/src` returns zero hits, and
    `docs/reference/sdlc-gate-standard.md` and `docs/reference/related-repositories.md` agree on a
    three-repo byte-identity boundary. [Observable fact]
 4. **The repository is archived, not deleted.**

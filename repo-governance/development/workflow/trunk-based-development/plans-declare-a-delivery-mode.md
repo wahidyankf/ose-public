@@ -14,7 +14,7 @@ When creating project plans in `plans/` folder:
   for the field syntax and the three-tier precedence).
 - **If `main-to-origin-main` is chosen**: document why in the plan and confirm the mode is actually
   permitted under the per-repository restriction. Neither direct-push mode has an executable path in
-  `ose-public`; `worktree-to-origin-main` is also unavailable in `ose-private`. Only explicitly
+  `ose-public`; `worktree-to-origin-main` is also unavailable in the private sibling. Only explicitly
   declared `main-to-origin-main` remains there, for stateful IaC needing the primary checkout's real
   secrets/local state or CI-IaC changing its own pipeline, runner, or toolchain provisioning where
   PR self-validation is circular. See

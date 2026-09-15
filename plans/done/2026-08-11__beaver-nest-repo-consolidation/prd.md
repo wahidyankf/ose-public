@@ -22,7 +22,7 @@ This plan delivers a **repository-topology change**, not a feature. Three things
    and solution-file entries, all green under `ose-public`'s existing gates.
 2. The BeaverNest narrative surface — a child product vision alongside the ecosystem vision, and the
    `beaver-nest`-unique idea two-pagers on the Phase 0 manifest, folded into `ose-public`'s backlog.
-3. A four→three sweep of repository terminology across `ose-public`, `ose-primer`, and `ose-private`,
+3. A four→three sweep of repository terminology across `ose-public`, `ose-primer`, and the private sibling,
    including the `apps/rhino-cli` runtime string, landing byte-identically where the byte-identity
    boundary requires it — followed by archiving `github.com/wahidyankf/beaver-nest`.
 
@@ -137,13 +137,13 @@ Feature: Four-repo terminology reduced to three
       | repo        |
       | ose-public  |
       | ose-primer  |
-      | ose-private |
+      | private-sibling |
 
   Scenario: The rhino-cli runtime no longer claims a four-repo byte-identity boundary
     Given the parity message in apps/rhino-cli/src/application/parity.rs has been updated
-    When I run "grep -c 'ose-private, and beaver-nest' apps/rhino-cli/src/application/parity.rs"
+    When I run "grep -c 'private-sibling, and beaver-nest' apps/rhino-cli/src/application/parity.rs"
     Then the count is 0
-    And the message names exactly ose-public, ose-primer, and ose-private
+    And the message names exactly ose-public, ose-primer, and private-sibling
 
   Scenario: The rhino-cli change is byte-identical across the parity boundary
     Given the parity.rs edit has landed in all three parity repos
@@ -160,7 +160,7 @@ Feature: Four-repo terminology reduced to three
   Scenario: The LinkedIn post agent gathers from three repos
     Given .claude/agents/social-linkedin-post-maker.md has been swept
     When I read its commit-gathering instruction
-    Then it names exactly ose-public, ose-primer, and ose-private
+    Then it names exactly ose-public, ose-primer, and private-sibling
     And its generated mirrors under .opencode and .cursor carry the same three names
 
 Feature: Retirement of the fourth repository

@@ -5,7 +5,7 @@ when_to_use: Use when choosing a plan's delivery mode, to confirm worktree-to-pr
 
 # Practice 12: Default to `worktree-to-pr`; Select a Direct-Push Mode Deliberately
 
-**Principle**: the repo-wide default delivery mode is `worktree-to-pr` — a short-lived plan branch in a disposable worktree, pushed to a draft PR against `main`, driven green, then merged. Direct push has no executable path in `ose-public` (`main` is branch-protected, including for admins). `ose-private` also prohibits `worktree-to-origin-main`; only explicitly declared `main-to-origin-main` survives for named stateful IaC or CI-IaC self-validation-circularity work — never as the assumed path. See [Plans Organization Convention §Per-Repository Delivery Mode Restrictions (HARD RULE)](../../../conventions/structure/plans/per-repository-delivery-mode-restrictions.md#per-repository-delivery-mode-restrictions-hard-rule).
+**Principle**: the repo-wide default delivery mode is `worktree-to-pr` — a short-lived plan branch in a disposable worktree, pushed to a draft PR against `main`, driven green, then merged. Direct push has no executable path in `ose-public` (`main` is branch-protected, including for admins). The private sibling also prohibits `worktree-to-origin-main`; only explicitly declared `main-to-origin-main` survives for named stateful IaC or CI-IaC self-validation-circularity work — never as the assumed path. See [Plans Organization Convention §Per-Repository Delivery Mode Restrictions (HARD RULE)](../../../conventions/structure/plans/per-repository-delivery-mode-restrictions.md#per-repository-delivery-mode-restrictions-hard-rule).
 
 **Good Example:**
 
@@ -18,11 +18,11 @@ gh pr create --draft --base main --title "feat(auth): add email validation"
 # Review cycle + CI run; merge once the hardened preconditions hold
 ```
 
-**Also correct — deliberately declared `main-to-origin-main` for a named `ose-private` stateful IaC
+**Also correct — deliberately declared `main-to-origin-main` for a named private-sibling stateful IaC
 or CI-IaC exception** (the one repository where this mode has an executable path):
 
 ```bash
-# ose-private plan declares `## Delivery Mode: main-to-origin-main` for a one-line Terraform var fix
+# <private-sibling> plan declares `## Delivery Mode: main-to-origin-main` for a one-line Terraform var fix
 git commit -m "fix(infra): correct a Terraform variable default"
 git push origin main
 ```

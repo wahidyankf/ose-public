@@ -169,7 +169,7 @@ runtime:
   row stops delivery until the plan is amended and the natural seam, internal consistency, and exact
   resulting `main` deployability are revalidated; the file count does not determine the boundary.
 
-## `ose-private` Root
+## The private sibling Root
 
 ```text
 .

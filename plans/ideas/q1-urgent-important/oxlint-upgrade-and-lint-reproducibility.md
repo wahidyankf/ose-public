@@ -24,7 +24,7 @@ damaging anything.
 
 The differential was checked rather than assumed: against identical source, oxlint 1.78.0 exits 0 and
 1.79.0 exits 1 on that file. `repo-rules-sweep` then pinned **1.78.0** across all 22 call sites (21 in
-`ose-public`, 1 in `ose-private`) under the
+`ose-public`, 1 in the private sibling) under the
 [Code-Routing Downstream Rule](../../../repo-governance/development/quality/knowledge-capture/the-code-routing-downstream-rule.md)'s
 blocker carve-out. That pin defers the finding three ways: the render defect is still shipped, every
 subsequent oxlint improvement is now invisible, and nobody has asked what **else** among

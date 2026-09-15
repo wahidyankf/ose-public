@@ -92,7 +92,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
       sources: Google SRE, Allspaw, PagerDuty, Atlassian).
       — acceptance: `test -f repo-governance/conventions/structure/post-mortems.md` succeeds; all
       mandatory sections present; no infra terms (Proxmox/Tailscale/dual-WAN/Proxmox) appear:
-      `grep -Ei 'proxmox|tailscale|dual-wan|on-premise|pve-ose' repo-governance/conventions/structure/post-mortems.md`
+      `grep -Ei 'proxmox|tailscale|dual-wan|on-premise|internal-host' repo-governance/conventions/structure/post-mortems.md`
       returns nothing; `grep -c 'no-secrets-in-git.md' repo-governance/conventions/structure/post-mortems.md`
       is ≥ 1 and `grep -c 'no-secrets-in-committed-files' repo-governance/conventions/structure/post-mortems.md`
       is 0.
@@ -117,7 +117,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 > All checks below must pass before starting Phase 2.
 
 - [x] [AI] `test -f repo-governance/conventions/structure/post-mortems.md` succeeds.
-- [x] [AI] `grep -Ei 'proxmox|tailscale|dual-wan|on-premise|pve-ose' repo-governance/conventions/structure/post-mortems.md`
+- [x] [AI] `grep -Ei 'proxmox|tailscale|dual-wan|on-premise|internal-host' repo-governance/conventions/structure/post-mortems.md`
       returns nothing (software-only framing).
 - [x] [AI] `grep -q 'no-secrets-in-git.md' repo-governance/conventions/structure/post-mortems.md` and
       NOT `no-secrets-in-committed-files` — correct ose-public no-secrets reference used.

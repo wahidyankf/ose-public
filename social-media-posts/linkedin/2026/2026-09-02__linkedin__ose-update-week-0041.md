@@ -1,6 +1,6 @@
 Posted: Wednesday, September 2, 2026
 Platform: LinkedIn
-Window: 2026-08-26 07:33:08 +0700 → 2026-09-02 18:41:48 +0700. ~344 commits across three repos (ose-public 151, ose-private 68, beaver-nest 125).
+Window: 2026-08-26 07:33:08 +0700 → 2026-09-02 18:41:48 +0700. ~344 commits across three repos (ose-public 151, private sibling 68, beaver-nest 125).
 
 ---
 
@@ -21,7 +21,7 @@ The logical-owner model now covers CLI, AyoKoding, libraries, OrganicLever, and 
 
 wahidyankf-www now lives in grind-in-public rather than OSE. CI uploads must also declare retention explicitly.
 
-🏗️ ose-private
+🏗️ Private sibling
 
 Private reached the same F# Rhino endpoint and owner-centric specification model, preserving parity without keeping two implementations alive. Delivery rules now retain portable worktree identity, explicit tester outputs, and recovery evidence.
 

@@ -283,7 +283,7 @@ planned lightweight hexagonal structure is an architectural constraint, not a de
 native target: only readiness and diagnostics are ports in this slice, and a browser-shortcut port is
 not introduced without a real second implementation. The Install entry is progressive enhancement
 only; a later HTTPS/PWA plan owns manifest, service worker, offline caching, and immediate auto-update.
-Execution begins only after the `ose-private` `restrict-env-access-to-prod-and-stag` plan meets the
+Execution begins only after the private-sibling `restrict-env-access-to-prod-and-stag` plan meets the
 technical design's semantic-completion predicate and its public implementation is merged. Flutter does not expose tier-file
 configuration to users: it preserves the backend runtime's `APP_ENV` contract while retiring only
 the legacy Vite guard and its frontend-specific spec identity.

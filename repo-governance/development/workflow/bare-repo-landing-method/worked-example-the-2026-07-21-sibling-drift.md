@@ -7,7 +7,7 @@ when_to_use: Use as a concrete reference example when explaining why the termina
 
 A sibling repository was found in exactly the state this method exists to close, on the same day
 this document was written. The transcript below is preserved verbatim, so it uses the name as it
-stood that day: `ose-infra` is the repository now named `ose-private`. That name is not a path to
+stood that day: `ose-infra` is the repository now known as the private sibling. That name is not a path to
 run against today — the method, not the repository, is what this example teaches:
 
 ```console

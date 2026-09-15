@@ -8,7 +8,7 @@ when_to_use: Use before pushing anything, or when a plan needs to override the w
 The repo-wide default integration target for every push is a **PR branch opened against `main`**
 (the `worktree-to-pr` delivery mode). Direct push to `origin main` has **no executable path at all
 in `ose-public`** — `main` is branch-protected against direct pushes for every actor, including
-admins. In `ose-private`, `worktree-to-origin-main` is also unavailable; only explicitly selected
+admins. In the private sibling, `worktree-to-origin-main` is also unavailable; only explicitly selected
 `main-to-origin-main` remains, and only for named stateful IaC work needing real secrets/local state
 or named CI-IaC work whose PR self-validation is circular. Markdown-only content and standing
 go-ahead do not create another exception (Standard 2). This applies to general work and every

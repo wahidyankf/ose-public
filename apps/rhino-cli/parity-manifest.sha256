@@ -6,13 +6,13 @@ fe3b0fa079bad46272ecd289e2b04e227f07441285dc7c4a2cc001f32de88360  apps/rhino-cli
 dd11339a1e2ee050446c4c19e074bc39c2ee384a80685d50062690400c190c29  apps/rhino-cli/src/RhinoCli.Application/src/Convention.fs
 5947ae9608d0d9b3547ce5f4c65c8b62821b3ba10fcd3f1bf72bb36f7a295fa5  apps/rhino-cli/src/RhinoCli.Application/src/Doctor.fs
 4ee5b80be0bb7721c1a676d059aaba8dafffee5e1e29d7f68c241559177337d8  apps/rhino-cli/src/RhinoCli.Application/src/DoctorResource.fs
-05a8a9f719b8900f13bbb36a65d6c28baa05b069cd7ab2e8f4bd84b1b5ce5ae4  apps/rhino-cli/src/RhinoCli.Application/src/Env.fs
+80ef24c0afa2a761e1beac00f594aec5bfa5d9e96f3d11ceab7d5db65492af76  apps/rhino-cli/src/RhinoCli.Application/src/Env.fs
 b52a8b26f31676f54e2bfed81d4635c01ce51685db53231c32853acf96a1dab9  apps/rhino-cli/src/RhinoCli.Application/src/Git.fs
 1001b3a5c055fd9762923aa109c700eb81800d89bd1b7855d25760c2fe703138  apps/rhino-cli/src/RhinoCli.Application/src/Governance.fs
 258eed854c668e3bc23bf7fd51c43d9bac649110e30ba5e90c208fa4e5b4c942  apps/rhino-cli/src/RhinoCli.Application/src/HarnessPolicy.fs
 7ad8c9288df0196b0d2d82b7d0c2df7e328565bdeb2296558323df5975e0054a  apps/rhino-cli/src/RhinoCli.Application/src/HarnessRuntime.fs
 684215fd43c842e6519f8d2db66a14836576531909a312e3c7ab4de39622f316  apps/rhino-cli/src/RhinoCli.Application/src/Md.fs
-e33cfdd05369f5b9f22540a066f866548adf9287380a270d345e58ebcd49a605  apps/rhino-cli/src/RhinoCli.Application/src/Parity.fs
+87ec21f514336fdadb1c619f77fba555df3129f5b5a5540ba1d0dac7434ac51e  apps/rhino-cli/src/RhinoCli.Application/src/Parity.fs
 a2125bd5f62efad7a1a84ee4eea7090c2e215783cb44e9a47fef03c9c357793d  apps/rhino-cli/src/RhinoCli.Application/src/Plan.fs
 f017af560db340919a403f55452c782cdb3a68dd7bcf08ec683df10b5dffa1f5  apps/rhino-cli/src/RhinoCli.Application/src/RepoConfig.fs
 4a5871faa711cdc351f3325e5390483f8550bf8f62e5f154ff83eb20d7e27cb9  apps/rhino-cli/src/RhinoCli.Application/src/RepoGovernance.fs
@@ -41,7 +41,7 @@ a9beff62283400b8867a7cd7b683aad0345ae89244b9d992d97a3dab42247b31  specs/apps/rhi
 297b4c21e9086050d403acd80f6309226f992c821f496d13ac216fd7f1205c6c  specs/apps/rhino/cli/behaviours/convention/convention-audit.feature
 8b8e3bdc740490fc6bf754748a9f17af67980924c475967c453711d2a7f72106  specs/apps/rhino/cli/behaviours/convention/repo-governance-license-audit.feature
 0fc2366d1dcf4e322736be4644a1a363dd34a45a6c2805f33930edc753d2b08e  specs/apps/rhino/cli/behaviours/env-contract/README.md
-5fb652507a1532a898e686b792e4012ea479c80816b4c4c3c1470b184fff2d4d  specs/apps/rhino/cli/behaviours/env-contract/iac-env-validation.feature
+cc4ce4d3096baf52965d903618810145875d8a2090fd52f6694bbe63b82ac7fe  specs/apps/rhino/cli/behaviours/env-contract/iac-env-validation.feature
 0617c5a3acdd788369255f942e8726789977df49baf4c6476a152a97f531deaf  specs/apps/rhino/cli/behaviours/env/README.md
 fb76727589bef3c5a054cc471b4483de474bb7e8f8da74d7cc71faf0fac2c304  specs/apps/rhino/cli/behaviours/env/env-backup.feature
 5f2e7d37c18611c3200e14aeb788d153322c8e7048ac4725464274d40bd8c046  specs/apps/rhino/cli/behaviours/env/env-init.feature
@@ -53,7 +53,7 @@ e837c0ffea4b247d84af1b6811619213c86e093c2bd706ed99c2a191d1ff1209  specs/apps/rhi
 e9d49e4f2cf3a0ca38c59cbf643c406468b07612b93b3ee8f92c381c995506ad  specs/apps/rhino/cli/behaviours/gate/gate-enumeration.feature
 5ececf3d03dddbedbe4b1008b3b198b59976d1edd84cfda7b63b58f3b4139f71  specs/apps/rhino/cli/behaviours/gate/gate-execution.feature
 92c774c9a7a85b50d81350563d14ccf16211811dc560ee5fc732e49249dd02af  specs/apps/rhino/cli/behaviours/gate/gate-validation.feature
-b84936d25b271a6047dac1fdb6bba73c7a457088c1674eef4401a7b1fef6a8ac  specs/apps/rhino/cli/behaviours/gate/parity-manifest.feature
+ac75e6095c9d4674f430a4bf38dfab131a68fb8afb4a517bb4a004459d2d2c7a  specs/apps/rhino/cli/behaviours/gate/parity-manifest.feature
 cf175cae1e89ac7022c7f714c70668a1323266e86f46aa84c06b5fad7e863fa5  specs/apps/rhino/cli/behaviours/gate/rust-delegation.feature
 577fda4d3b81e12cd31edbbcb458bc4bdc49fc1a2f5b347f6df1e4bfba43d890  specs/apps/rhino/cli/behaviours/git/README.md
 53822c41173a5e382796c928001693811cbd7eb5fa65c0290eacab0b1f2050fa  specs/apps/rhino/cli/behaviours/git/git-lockfile.feature
@@ -84,9 +84,9 @@ a2c023d42324194a91efaa032c29d204b1533fd62b5d2a1f87633f09c35a1c16  specs/apps/rhi
 bf16fe8c62c9f86c358bf77816915480a278d7e4d6e93bb158055ebf9a410b79  specs/apps/rhino/cli/behaviours/plan/README.md
 7da66d31220672386a8e423faa81231c755bd8c641431c988af7e4f95fa462d5  specs/apps/rhino/cli/behaviours/plan/plan-structure.feature
 57d69234a0e4d3d0eaf6d7d6f617a46651c1fe4e3cda281c8385851f59168b34  specs/apps/rhino/cli/behaviours/repo-config-validate/README.md
-b8ef29846f9b919f63cb0e1dcf57b07fe3f39e0575c2d25e09fa1fa70b302edd  specs/apps/rhino/cli/behaviours/repo-config-validate/repo-config-validate.feature
+fc9d503a01af127ffc41bf4ef63daef9497bf0bcd58523719d966f773257ac8e  specs/apps/rhino/cli/behaviours/repo-config-validate/repo-config-validate.feature
 b7a12b83528bba83513e5aa696620bec57de4e2c5c057eb783ed97d0538c70cb  specs/apps/rhino/cli/behaviours/repo-config/README.md
-0d209a77594fb20d9ce8327a6d9b62437be99ff436185ca5034d8e454e864a7c  specs/apps/rhino/cli/behaviours/repo-config/data-driven.feature
+531121870219f40d9d27f5267f0f2906ceb9d330686bbcf6a3760f01ea6cfecc  specs/apps/rhino/cli/behaviours/repo-config/data-driven.feature
 f212455934e58f6cb41eb13361c3b3923f0ab686ba202f83784f80e69145c171  specs/apps/rhino/cli/behaviours/repo-governance/README.md
 c4ee41cae3b2d4f918d669a3040ec03cd163051231d07cd8925dd3ce5bf24caf  specs/apps/rhino/cli/behaviours/repo-governance/repo-governance-audit.feature
 6f1f1529df19246ee75e526a7e6ea3ef5aa9580df6237e22b989b62432024995  specs/apps/rhino/cli/behaviours/repo-governance/repo-governance-layer-coherence.feature

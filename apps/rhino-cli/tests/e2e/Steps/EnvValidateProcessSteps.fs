@@ -113,7 +113,7 @@ type EnvValidateProcessSteps() =
             "env-contract:\n  surfaces:\n    - root: surface\n      kind: app\n      lang: go\n"
 
     [<Given>]
-    member _.``ose-private declares terraform and ansible surfaces in repo-config.yml``() =
+    member _.``the private sibling declares terraform and ansible surfaces in repo-config.yml``() =
         write root "infra/terraform/main.tf" "variable \"REQUIRED_KEY\" {\n  description = \"required\"\n}\n"
         write root "infra/terraform/terraform.tfvars.example" "BOGUS_KEY = \"value\"\n"
 

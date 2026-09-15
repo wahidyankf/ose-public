@@ -5,7 +5,7 @@
 Re-found the split between `local-tmp/` and `generated-reports/` on **who the artifact is for**
 instead of **what shape the artifact has**, then bring every rule, agent, skill, harness mirror, and
 the one code path that hardcodes a temporary directory into line across `ose-public` and
-`ose-private`.
+the private sibling.
 
 ## Context
 
@@ -16,10 +16,10 @@ that looks like a report belongs in the folder a maintainer treats as their outb
 
 The measured result at authoring time:
 
-| Repository    | `generated-reports/` | `local-tmp/` |
-| ------------- | -------------------- | ------------ |
-| `ose-public`  | 471 entries          | 7 entries    |
-| `ose-private` | 96 entries           | 22 entries   |
+| Repository          | `generated-reports/` | `local-tmp/` |
+| ------------------- | -------------------- | ------------ |
+| `ose-public`        | 471 entries          | 7 entries    |
+| The private sibling | 96 entries           | 22 entries   |
 
 The folder meant to surface work a maintainer asked for holds 567 machine-authored audit artifacts,
 the oldest from July. The scratch folder is nearly empty. A maintainer who says "find out how

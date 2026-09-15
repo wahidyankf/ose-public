@@ -27,7 +27,7 @@ branch, no PR, no review gate:
 -- a `pull_request` ruleset rule is active with `bypass_actors: []` and
 `current_user_can_bypass: "never"`. **Neither direct-push mode has an executable path there,
 regardless of topology or worktree usage.** In
-`ose-private`, `worktree-to-origin-main` is also unavailable. Only explicitly declared
+the private sibling, `worktree-to-origin-main` is also unavailable. Only explicitly declared
 `main-to-origin-main` remains, and only for stateful IaC needing the primary checkout's real
 secrets/local state or CI-IaC changing the repository's own pipeline, runner, or toolchain
 provisioning where PR self-validation is circular. In either eligible category, the change must also

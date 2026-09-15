@@ -27,21 +27,21 @@ Every number below was produced by `find`/`wc`/`grep`/`diff` against the four re
 
 ### Per-repo idea count and two-pager conformance
 
-| Repo          | Idea docs (excl. `README.md`) | Two-pager conformant | Non-conformant |
-| ------------- | ----------------------------- | -------------------- | -------------- |
-| `ose-public`  | 51                            | 50                   | 1              |
-| `ose-primer`  | 5                             | 5                    | 0              |
-| `ose-private` | 20                            | 17                   | 3              |
-| `beaver-nest` | 43                            | 43                   | 0              |
-| **Total**     | **119**                       | **115**              | **4**          |
+| Repo                | Idea docs (excl. `README.md`) | Two-pager conformant | Non-conformant |
+| ------------------- | ----------------------------- | -------------------- | -------------- |
+| `ose-public`        | 51                            | 50                   | 1              |
+| `ose-primer`        | 5                             | 5                    | 0              |
+| The private sibling | 20                            | 17                   | 3              |
+| `beaver-nest`       | 43                            | 43                   | 0              |
+| **Total**           | **119**                       | **115**              | **4**          |
 
 Conformance was checked mechanically per file: exactly one `#` (H1) line, exactly seven `##`
 (H2) lines (the template's 7 named sections), and at least one `>` (blockquote) line within the
 first 10 lines (the provenance note). The 4 non-conformant files:
 `ose-public/governance-path-ownership-registry.md` (no blockquote detected in the first 10 lines),
-`ose-private/dependency-library-updates.md` and `ose-private/onprem-e1000e-driver-update.md`
+`private-sibling/dependency-library-updates.md` and `private-sibling/onprem-e1000e-driver-update.md`
 (8 H2 headings instead of 7 — an extra subsection each), and
-`ose-private/verify-deployed-reality-not-artifact.md` (no blockquote detected). These are noted as
+`private-sibling/verify-deployed-reality-not-artifact.md` (no blockquote detected). These are noted as
 a concrete input the future workflow run will need to reshape (per `prd.md`'s "two-pager reshape"
 step) — this plan does not touch them.
 
@@ -50,15 +50,15 @@ step) — this plan does not touch them.
 35 distinct idea-doc basenames (29% of all 119 files) appear under the same filename in two or
 more of the four repos:
 
-| Present in                                             | Basename count | Byte-identical everywhere they appear | Diverged in ≥1 repo                                                                                                                                                                                                                                                                                                                                                     |
-| ------------------------------------------------------ | -------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| All 4 repos                                            | 3              | 1 (`pr-review-bot-identity.md`)       | 2 (`source-code-credential-scanning.md`, `merge-queue-adoption.md`)                                                                                                                                                                                                                                                                                                     |
-| 3 repos (`ose-public` + `ose-private` + `beaver-nest`) | 4              | 0                                     | 4 (`standardize-cis.md`, `rhino-cli-env-backup-scripts.md`, `iam-service-module.md`, `demo-apps-standards-recheck.md` — each diverged from `ose-private`'s copy by 76-82 diff lines, while 2 of the 4 are byte-identical between `ose-public` and `beaver-nest`)                                                                                                        |
-| 2 repos (`ose-public` + `beaver-nest`, exclusively)    | 28             | 20                                    | 8 (`vitest-glob-coverage-guard.md` 263 diff lines, `ose-private-opencode-ci-monitor-orphan.md` 260, `audit-e2e-reuse-existing-server-config.md` 242, `cross-repo-governance-link-parity.md` 239, `mermaid-validator-does-not-check-syntax.md` 27, `sibling-main-ci-never-runs-on-merge.md` 18, `acceptance-clause-vacuity.md` 8, `syllabus-conformance-validator.md` 7) |
-| **Total**                                              | **35**         | **21**                                | **14**                                                                                                                                                                                                                                                                                                                                                                  |
+| Present in                                                   | Basename count | Byte-identical everywhere they appear | Diverged in ≥1 repo                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------------------------------------------------ | -------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| All 4 repos                                                  | 3              | 1 (`pr-review-bot-identity.md`)       | 2 (`source-code-credential-scanning.md`, `merge-queue-adoption.md`)                                                                                                                                                                                                                                                                                                         |
+| 3 repos (`ose-public` + the private sibling + `beaver-nest`) | 4              | 0                                     | 4 (`standardize-cis.md`, `rhino-cli-env-backup-scripts.md`, `iam-service-module.md`, `demo-apps-standards-recheck.md` — each diverged from the private sibling's copy by 76-82 diff lines, while 2 of the 4 are byte-identical between `ose-public` and `beaver-nest`)                                                                                                      |
+| 2 repos (`ose-public` + `beaver-nest`, exclusively)          | 28             | 20                                    | 8 (`vitest-glob-coverage-guard.md` 263 diff lines, `private-sibling-opencode-ci-monitor-orphan.md` 260, `audit-e2e-reuse-existing-server-config.md` 242, `cross-repo-governance-link-parity.md` 239, `mermaid-validator-does-not-check-syntax.md` 27, `sibling-main-ci-never-runs-on-merge.md` 18, `acceptance-clause-vacuity.md` 8, `syllabus-conformance-validator.md` 7) |
+| **Total**                                                    | **35**         | **21**                                | **14**                                                                                                                                                                                                                                                                                                                                                                      |
 
-Qualitative pattern observed: `ose-private`'s copies diverge the most from `ose-public`'s
-(76-82 diff lines on every shared basename checked) — consistent with `ose-private` adapting
+Qualitative pattern observed: the private sibling's copies diverge the most from `ose-public`'s
+(76-82 diff lines on every shared basename checked) — consistent with the private sibling adapting
 shared ideas for its infra-private context rather than merely re-filing them. The 8 diverged
 `ose-public`↔`beaver-nest` pairs with large diff counts (239-263 lines) are not simple duplicates;
 they read as independently-evolved forks of a shared original idea, each repo appending its own
@@ -70,14 +70,14 @@ need to reconcile content, not just delete a redundant copy, for these 8.
 - **Rule-6 (single-repo-only, already correctly placed)**: 11 files —
   4 `beaver-nest-*`-prefixed files in `beaver-nest` (`beaver-nest-first-deploy.md`,
   `beaver-nest-persistence-layer.md`, `beaver-nest-first-llm-integration.md`,
-  `beaver-nest-be-nullbyte-path-error-envelope.md`) plus 7 infra-only files in `ose-private`
+  `beaver-nest-be-nullbyte-path-error-envelope.md`) plus 7 infra-only files in the private sibling
   (`onprem-nic-hardware-fallback.md`, `onprem-e1000e-driver-update.md`,
   `onprem-gitops-iac-automation.md`, `on-premise-host-intake-runbook.md`,
   `ci-runner-health-monitoring.md`, `worktree-portable-terraform-state.md`,
   `re-enable-coralpolyp-staging-schedule.md`).
 - **Rule-4 (generalizable, currently confined to one non-`ose-public` repo)**: roughly 12 files —
   2 in `ose-primer` (`rhino-cli-exclude-dir-shared-steps-gap.md`, `rust-msrv-1-94-1-upgrade.md`),
-  ~6 in `ose-private` (`dependency-library-updates.md`, `fsl-standards.md`,
+  ~6 in the private sibling (`dependency-library-updates.md`, `fsl-standards.md`,
   `ose-public-nx-affected-rhino-cli-gap.md`, `preexisting-deploy-workflow-failures.md`,
   `rhino-cli-sync-validator-wrong-model-drift.md`, `verify-deployed-reality-not-artifact.md`), and
   4 in `beaver-nest` (`coverage-artifact-relative-paths.md`, `cross-repo-port-registry.md`,
@@ -85,8 +85,8 @@ need to reconcile content, not just delete a redundant copy, for these 8.
   count is a filename-and-topic heuristic (does the concern read as cross-cutting tooling/governance
   rather than repo-local infra), not a rule-4 determination; the future workflow re-derives this
   from each file's actual content, not this list.
-- **Rule-5 (secret-bearing, plausibly misplaced outside `ose-private`)**: 1 plausible candidate —
-  `rhino-cli-env-backup-scripts.md` (currently triplicated across `ose-public`, `ose-private`, and
+- **Rule-5 (secret-bearing, plausibly misplaced outside the private sibling)**: 1 plausible candidate —
+  `rhino-cli-env-backup-scripts.md` (currently triplicated across `ose-public`, the private sibling, and
   `beaver-nest`) inherently concerns backing up real `.env*` secret values, though it is arguably
   also a generalizable _tooling_ concern (every repo's `rhino-cli` dev setup needs this), so its
   final residency is a genuine judgment call for the future workflow, not a clear-cut case. A
@@ -196,7 +196,7 @@ maintainer wears, and agents that consume the resulting files:
   operationally complex than a single-repo plan, with more surface area for a partial failure (one
   repo's push lands, another's doesn't). **Mitigation**: `tech-docs.md` documents each propagation
   phase as fully independent of its siblings (no shared state, no ordering constraint between
-  `ose-primer`/`ose-private`/`beaver-nest`), so a stalled or failed propagation in one repo never
+  `ose-primer`/the private sibling/`beaver-nest`), so a stalled or failed propagation in one repo never
   blocks the others, and `delivery.md`'s phase gates make each repo's completion state
   independently verifiable via direct `origin/main` checks (no PR state to reconcile).
 - **Risk**: `main-to-origin-main` Delivery Mode means changes land on each repo's `main` with no

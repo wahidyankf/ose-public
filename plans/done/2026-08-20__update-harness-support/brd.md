@@ -69,7 +69,7 @@ nothing unclassified.
 | Contributor driving OpenCode     | Generated agent mirrors unchanged and upstream citation corrected; **loses** the seven Nx skill directories and the `/monitor-ci` command, with no fallback; gains a reviewed path to promote a mirror-side edit back to source |
 | Contributor driving Codex CLI    | Gains 93 generated agent definitions and a full real-file skills mirror; stops being blocked from creating the officially-correct `.codex/agents/` dir                                                                          |
 | Agents executing governance work | Read a catalog that is generated from declared data, so a claim and its machine-readable source can no longer disagree                                                                                                          |
-| `ose-private` maintainer         | Receives exactly one paired twin branch and PR for the whole plan; `apps/rhino-cli/**` byte-identity never breaks mid-plan                                                                                                      |
+| The private sibling maintainer   | Receives exactly one paired twin branch and PR for the whole plan; `apps/rhino-cli/**` byte-identity never breaks mid-plan                                                                                                      |
 
 ## Success Signals
 
@@ -95,7 +95,7 @@ These are observable checks, not measured KPIs.
 8. `harness sync triage` exits 0 on a clean tree and exits non-zero naming both files when canonical
    source and its mirror have both been hand-edited — and `harness sync promote` leaves
    `git diff --quiet` over canonical source exiting 0, proving it never overwrites.
-9. `apps/rhino-cli/parity-manifest.sha256` matches between `ose-public` and `ose-private` at every
+9. `apps/rhino-cli/parity-manifest.sha256` matches between `ose-public` and the private sibling at every
    terminal paired merge, so the nightly `rhino-cli-parity-audit.yml` stays green.
 
 ## Business-Scope Non-Goals
@@ -117,7 +117,7 @@ These are observable checks, not measured KPIs.
 | Blind text substitution over 669 "Cursor"-matching files corrupts unrelated code               | High       | High   | 441 of those are under `apps/` and are database/text/CSS cursors. Sweep is scoped to a verified 60-file governance set with a per-file verdict; no repo-wide `sed`             |
 | No automated check tells anyone a vendor moved, so an upstream change goes unnoticed           | Medium     | Medium | Accepted by decision. Mitigated structurally — eleven tracked upstream conventions become three — and the compatibility workflow remains runnable on demand for a manual check |
 | Dropping a harness someone silently depended on                                                | Low        | Medium | Solo-maintainer repository; the three survivors are user-confirmed. Re-adding a native-tier harness is a one-line registry entry                                               |
-| `ose-private` twin drifts and the nightly parity audit goes red after a one-sided merge        | Medium     | High   | Exactly two PRs exist and they merge in the same session; the parity ritual is a checklist block before the merge, not a follow-up                                             |
+| The private sibling twin drifts and the nightly parity audit goes red after a one-sided merge  | Medium     | High   | Exactly two PRs exist and they merge in the same session; the parity ritual is a checklist block before the merge, not a follow-up                                             |
 | Generated catalog fights Prettier and breaks byte-equality (the `.amazonq/` post-mortem class) | Medium     | Medium | Design the generator to emit Prettier-stable output OR add the catalog to `.prettierignore`, decided by measurement in Phase 10                                                |
 
 ## Related

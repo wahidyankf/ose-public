@@ -67,7 +67,7 @@ family already establishes the exact pattern to extend.
 - A two-tier exemption mechanism: inline per-occurrence annotation with a mandatory written reason,
   plus a config path allowlist for structurally out-of-scope trees.
 - Wire into `pre-push` and the CI `markdown-per-file` job; remediate existing violations first so
-  it lands green; propagate byte-identically to `ose-private`.
+  it lands green; propagate byte-identically to the private sibling.
 
 ## Rough scope & non-goals
 

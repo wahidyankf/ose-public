@@ -241,7 +241,7 @@ identity.
 
 ```gherkin
 Scenario: Repository relationship claims agree
-  Given content parity covers ose-public and ose-private while rhino-cli byte identity covers the same pair
+  Given content parity covers ose-public and private-sibling while rhino-cli byte identity covers the same pair
   When the reader compares living relationship documentation across the repository
   Then each document states the same two boundaries without including beaver-nest in either one
   And repository-specific product content is not described as parity content

@@ -16,10 +16,10 @@ satisfies the subdirectory requirement — no index carries two links to one tar
 
 ## The Two Gates
 
-| Gate id                          | Finding kinds                | Scan scope (`--paths`)                            | Armed                                             |
-| -------------------------------- | ---------------------------- | ------------------------------------------------- | ------------------------------------------------- |
-| `governance-readme-index`        | `missing`, `orphan`, `ghost` | `docs/`, `repo-governance/`, `specs/`, `.claude/` | Continuous since Phase 1                          |
-| `governance-readme-completeness` | `missing`, `unannotated`     | `repo-governance/`, `.claude/`, `.codex/`         | Phase 9 (`ose-public`) / Phase 16 (`ose-private`) |
+| Gate id                          | Finding kinds                | Scan scope (`--paths`)                            | Armed                                                   |
+| -------------------------------- | ---------------------------- | ------------------------------------------------- | ------------------------------------------------------- |
+| `governance-readme-index`        | `missing`, `orphan`, `ghost` | `docs/`, `repo-governance/`, `specs/`, `.claude/` | Continuous since Phase 1                                |
+| `governance-readme-completeness` | `missing`, `unannotated`     | `repo-governance/`, `.claude/`, `.codex/`         | Phase 9 (`ose-public`) / Phase 16 (the private sibling) |
 
 Structural enforcement covers every content tree. Annotation enforcement stays scoped to trees that
 can satisfy it: `docs/` indexes are partly hand-designed tables and `specs/` targets carry no

@@ -100,7 +100,7 @@ durable half.
 
 ### M9 — union `{1.88, 1.95.0}` against a single-value target
 
-`ose-primer` and `ose-private` each declare exactly `1.95.0` on merged `main`. `ose-public`'s merged
+`ose-primer` and the private sibling each declare exactly `1.95.0` on merged `main`. `ose-public`'s merged
 `main` still carries `rust-version = "1.88"` in four manifests. The fix is already on the open PR
 branch, so this becomes true the moment that PR merges — no further edit is required.
 
@@ -120,7 +120,7 @@ measurement of the repo.
   measured shortfall against a stated target rather than a silently rescoped one.
 - **AC-15 cross-repo parity** — filed as
   [`plans/ideas/q1-urgent-important/rhino-cli-parity-propagation-optimize-cis.md`](../../ideas/q1-urgent-important/rhino-cli-parity-propagation-optimize-cis.md).
-  `apps/rhino-cli` byte-identity across `ose-public`, `ose-primer`, and `ose-private` does not
+  `apps/rhino-cli` byte-identity across `ose-public`, `ose-primer`, and the private sibling does not
   currently hold (see `delivery.md`'s Phase 10 Gate AC-15 annotation and §Delivery Boundaries' 4th
   item for the full file list and reproduction). Filed as a follow-up rather than reopening either
   already-merged sibling PR mid-cycle.

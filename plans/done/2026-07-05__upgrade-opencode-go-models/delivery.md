@@ -636,8 +636,8 @@ longer than default limit`) that raced against a wall-clock timeout under the lo
       (`gh api .../check-runs/<id>/annotations`), which read "The self-hosted runner lost
       communication with the server" — a transient self-hosted-runner network flake, not a content
       regression. Re-ran via `gh run rerun 28732235952 --repo wahidyankf/ose-infra --failed`; the
-      rerun then queued for an extended period because `ose-ci-runner-1` had gone `offline` and
-      `ose-ci-runner-2` was occupied by `ose-primer`'s concurrently-running "Nightly Dependency
+      rerun then queued for an extended period because `internal-host-1` had gone `offline` and
+      `internal-host-2` was occupied by `ose-primer`'s concurrently-running "Nightly Dependency
       Audit" workflow (a known cross-repo shared-runner contention pattern) — resolved on its own
       once the runner freed up, with the reran job and the final "Quality gate" aggregator both
       completing `success`.

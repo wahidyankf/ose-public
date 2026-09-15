@@ -112,13 +112,11 @@ type HarnessCatalogSteps() =
 let ``catalog renders registry`` () =
     let w = HarnessCatalogSteps() in
 
-    w
-        .``each harness entry in repo-config.yml carries catalog fields including display name, instruction surfaces, agent surface, skills surface, and status`` ()
+    w.``each harness entry in repo-config.yml carries catalog fields including display name, instruction surfaces, agent surface, skills surface, and status`` ()
 
     w.``rhino-cli harness catalog generate runs`` ()
 
-    w
-        .``docs/reference/platform-bindings.md contains one table row per registry entry between the generated-region markers`` ()
+    w.``docs/reference/platform-bindings.md contains one table row per registry entry between the generated-region markers`` ()
 
     w.``prose outside those markers is byte-identical to its pre-run content`` ()
 

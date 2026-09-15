@@ -271,8 +271,7 @@ let ``in-sync report`` () =
 let ``fresh clone ignores timestamps`` () =
     TriageScenario.run
         (fun s ->
-            s
-                .``a fixture repository cloned fresh, so every file's modification time is its checkout time and carries no information`` ())
+            s.``a fixture repository cloned fresh, so every file's modification time is its checkout time and carries no information`` ())
         (fun s -> s.``rhino-cli harness sync triage runs`` ())
         (fun s ->
             s.``it exits 0 reporting zero divergences, because detection compares content and never a clock`` ()
@@ -293,8 +292,7 @@ let ``canonical divergence`` () =
         (fun s -> s.``a canonical source agent was hand-edited and the generator has not been run since`` ())
         (fun s -> s.``rhino-cli harness sync triage runs`` ())
         (fun s ->
-            s
-                .``it exits non-zero naming the canonical side and naming the generate command rather than the promote command`` ()
+            s.``it exits non-zero naming the canonical side and naming the generate command rather than the promote command`` ()
 
             s.``it exits 0 once the generator is run`` ())
 
@@ -316,8 +314,7 @@ let ``promotion diff is non-mutating`` () =
         (fun s ->
             s.``a proposed unified diff against the canonical source is emitted`` ()
 
-            s
-                .``the canonical source file is byte-identical to what it was before the promote run, proving nothing was overwritten`` ())
+            s.``the canonical source file is byte-identical to what it was before the promote run, proving nothing was overwritten`` ())
 
 [<Fact>]
 let ``promotion computes at-risk fields`` () =
@@ -327,8 +324,7 @@ let ``promotion computes at-risk fields`` () =
         (fun s ->
             s.``the output lists exactly those fields under an at-risk heading`` ()
 
-            s
-                .``an agent whose canonical source carries none of them lists nothing, proving the list is computed rather than hardcoded`` ())
+            s.``an agent whose canonical source carries none of them lists nothing, proving the list is computed rather than hardcoded`` ())
 
 [<Fact>]
 let ``direct both-diverged promotion warns`` () =

@@ -400,8 +400,7 @@ let ``every backup behaviour has in-process Unit proof`` title =
         s.``the output is valid JSON`` ()
         s.``the JSON includes the direction, backup directory, list of files, copied count, and skipped count`` ()
     | "Env files inside auto-generated directories are not discovered" ->
-        s
-            .``a git repository containing .env files inside node_modules, dist, build, .next, __pycache__, target, vendor, coverage, and generated-contracts directories`` ()
+        s.``a git repository containing .env files inside node_modules, dist, build, .next, __pycache__, target, vendor, coverage, and generated-contracts directories`` ()
 
         s.``the developer runs rhino-cli env backup`` ()
         s.``the command exits successfully`` ()

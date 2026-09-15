@@ -332,6 +332,17 @@ type GovernanceProcessSteps() =
     member _.``the exit code reflects only the "([^"]+)" finding``(kind: string) =
         Assert.NotEqual(0, exitCode)
         Assert.Contains(kind, output)
+        let flaggedExit, flaggedOutput = exitCode, output
+        // Without its orphan the tree still fails an unflagged run but passes under the flag, so only the named
+        // kind sets the exit code.
+        File.Delete(full "repo-governance/orphan.md")
+        run [ "governance"; "readme-index"; "validate" ]
+        Assert.Equal(0, exitCode)
+        arguments <- []
+        run [ "governance"; "readme-index"; "validate" ]
+        Assert.NotEqual(0, exitCode)
+        exitCode <- flaggedExit
+        output <- flaggedOutput
 
     [<Then>]
     member _.``the "([^"]+)" finding is still printed in the output``(kind: string) = Assert.Contains(kind, output)

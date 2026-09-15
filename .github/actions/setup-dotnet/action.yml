@@ -69,8 +69,12 @@ runs:
     - name: Install Fantomas
       shell: bash
       # A persisted $HOME/.dotnet/tools from a prior job already has this tool installed, which
-      # makes a bare `install` fail; `update` is idempotent for both the first-ever and repeat case.
-      run: dotnet tool install -g fantomas || dotnet tool update -g fantomas
+      # makes a bare `install` fail. Use the repository manifest as the version authority, then
+      # update an existing global install to those same bytes instead of floating to latest.
+      run: |
+        version="$(jq -er '.tools.fantomas.version' .config/dotnet-tools.json)"
+        dotnet tool install -g fantomas --version "$version" ||
+          dotnet tool update -g fantomas --version "$version"
 
     - name: Install fsharplint
       shell: bash

@@ -192,8 +192,7 @@ let ``inherited model has no Codex counterpart`` () =
 let ``frontmatter names determine flat Codex files`` () =
     let steps = HarnessCodexBindingSteps()
 
-    steps
-        .``a repository whose \.claude/agents/ holds two agents in different role subfolders whose name frontmatter differs from their filename`` ()
+    steps.``a repository whose \.claude/agents/ holds two agents in different role subfolders whose name frontmatter differs from their filename`` ()
 
     steps.``the developer runs harness bindings generate`` ()
     steps.``the command exits successfully`` ()
@@ -204,8 +203,7 @@ let ``frontmatter names determine flat Codex files`` () =
 let ``Codex config rewrite preserves manual tables and is idempotent`` () =
     let steps = HarnessCodexBindingSteps()
 
-    steps
-        .``a repository whose \.codex/config\.toml carries hand-maintained mcp_servers, features, and ci-monitor-subagent tables`` ()
+    steps.``a repository whose \.codex/config\.toml carries hand-maintained mcp_servers, features, and ci-monitor-subagent tables`` ()
 
     steps.``the developer runs harness bindings generate twice`` ()
     steps.``the command exits successfully`` ()

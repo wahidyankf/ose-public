@@ -91,9 +91,6 @@ type GovernanceSteps() =
     let mutable resolvedWithFlag: string list option = None
     let mutable resolvedWithoutFlag: string list option = None
 
-    // ---- "The --fail-kinds flag ..." state ----
-    let mutable syntheticFindings: ReadmeIndexFinding list = []
-
     // ---- gate-id-rename state ----
     let mutable gateIds: string list = []
     let mutable previousGate: (string * string) option = None
@@ -419,30 +416,31 @@ type GovernanceSteps() =
 
     [<Given>]
     member _.``a scanned directory has one "orphan" finding and one "ghost" finding``() =
-        syntheticFindings <-
-            [ { File = "orphan.md"
-                Severity = "high"
-                Kind = ReadmeIndexFindingKind.Orphan
-                Message = "orphan: orphan.md exists but is not linked" }
-              { File = "ghost.md"
-                Severity = "high"
-                Kind = ReadmeIndexFindingKind.Ghost
-                Message = "ghost: README.md links ghost.md, which does not exist" } ]
+        let dir = Path.Combine(scenarioRoot (), "repo-governance")
+        Directory.CreateDirectory dir |> ignore
+        File.WriteAllText(Path.Combine(dir, "README.md"), "# Index\n\n- [Ghost](./ghost.md) - a link to no file\n")
+        File.WriteAllText(Path.Combine(dir, "orphan.md"), "# Orphan\n")
+        currentDir <- Some dir
+        scanPathsOverride <- Some [ dir ]
 
     [<When>]
     member _.``the developer runs governance readme-index validate with "--fail-kinds (.*)"``(kinds: string) =
-        let failKinds = kinds.Split(' ') |> Array.toList
-        activeFailKinds <- failKinds
-        lastFindings <- syntheticFindings
+        activeFailKinds <- kinds.Split(' ') |> Array.toList
+        runValidate ()
 
     [<Then>]
-    member _.``the exit code reflects only the "([^"]+)" finding``(_kind: string) =
+    member _.``the exit code reflects only the "([^"]+)" finding``(kind: string) =
+        Assert.Equal<string list>([ kind ], activeFailKinds)
         Assert.True(hasFailingFinding lastFindings activeFailKinds)
-        Assert.False(hasFailingFinding lastFindings [ "missing-does-not-exist" ])
+        // The rest of the audit fails an unflagged run but not this one, so the flag alone sets the exit code.
+        let others = lastFindings |> List.filter (fun f -> f.Kind.Name <> kind)
+        Assert.True(hasFailingFinding others [])
+        Assert.False(hasFailingFinding others activeFailKinds)
 
     [<Then>]
     member _.``the "([^"]+)" finding is still printed in the output``(kind: string) =
         Assert.True(lastFindings |> List.exists (fun f -> f.Kind.Name = kind))
+        Assert.Contains(kind, RhinoCli.Cli.Formatters.readmeIndexText lastFindings)
 
     // ---- Given/When/Then: generate scenarios ----
 

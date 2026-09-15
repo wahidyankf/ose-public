@@ -736,8 +736,7 @@ coverage:
 
     [<Given>]
     member this.``a freshly generated catalog with a clean git diff``() =
-        this
-            .``each harness entry in repo-config.yml carries catalog fields including display name, instruction surfaces, agent surface, skills surface, and status`` ()
+        this.``each harness entry in repo-config.yml carries catalog fields including display name, instruction surfaces, agent surface, skills surface, and status`` ()
 
         run [ "harness"; "catalog"; "generate" ]
         Assert.Equal(0, exitCode)

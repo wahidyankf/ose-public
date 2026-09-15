@@ -189,7 +189,7 @@ let ``restore counts an already-skipped entry without copying it`` () =
     let dest = newTempDir ()
 
     try
-        File.WriteAllBytes(Path.Combine(dest, ".env"), Array.zeroCreate<byte> (int DefaultMaxSize + 1))
+        File.WriteAllBytes(Path.Combine(dest, ".env"), Array.zeroCreate<byte>(int DefaultMaxSize + 1))
 
         let opts = defaultOptions repo dest
 
@@ -209,7 +209,7 @@ let ``restore's dry-run counts already-skipped entries but performs no copy`` ()
     let dest = newTempDir ()
 
     try
-        File.WriteAllBytes(Path.Combine(dest, ".env"), Array.zeroCreate<byte> (int DefaultMaxSize + 1))
+        File.WriteAllBytes(Path.Combine(dest, ".env"), Array.zeroCreate<byte>(int DefaultMaxSize + 1))
         File.WriteAllText(Path.Combine(dest, "secrets.json"), "{}")
 
         let opts =

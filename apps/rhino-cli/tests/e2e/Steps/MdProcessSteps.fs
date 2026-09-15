@@ -836,6 +836,10 @@ let ``External URLs are not validated`` () =
     FeatureRunner.run "docs-validate-links.feature" "External URLs are not validated"
 
 [<Fact>]
+let ``An image link to a missing file is reported`` () =
+    FeatureRunner.run "docs-validate-links.feature" "An image link to a missing file is reported"
+
+[<Fact>]
 let ``valid anchor link passes validation`` () =
     FeatureRunner.run "docs-validate-links.feature" "valid anchor link passes validation"
 

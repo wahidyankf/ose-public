@@ -274,8 +274,12 @@ type GovernanceSteps() =
 
     [<Then>]
     member _.``the exit code reflects only the "([^"]+)" finding``(kind: string) =
-        Assert.True(hasFailingFinding findings [ kind ])
-        Assert.False(hasFailingFinding findings [ "unannotated" ])
+        Assert.Equal<string list>([ kind ], failKinds)
+        Assert.True(hasFailingFinding findings failKinds)
+        // The other findings fail an unflagged run but not this one, so the flag alone sets the exit code.
+        let others = findings |> List.filter (fun finding -> finding.Kind.Name <> kind)
+        Assert.True(hasFailingFinding others [])
+        Assert.False(hasFailingFinding others failKinds)
 
     [<Then>]
     member _.``the "([^"]+)" finding is still printed in the output``(kind: string) =

@@ -65,7 +65,9 @@ module Infrastructure =
               EnsureConsumer =
                 fun () ->
                     task {
-                        let! created = js.CreateOrUpdateConsumerAsync(StreamName, ConsumerConfig(ConsumerName))
+                        let! created =
+                            js.CreateOrUpdateConsumerAsync(StreamName, ConsumerConfig(ConsumerName))
+
                         consumer <- Some created
                     }
               Publish =

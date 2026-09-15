@@ -1,66 +1,63 @@
-# Business Requirements — LMS Authentication
+# Business Requirements — LMS User Identity Integration
 
 ## Business Goal
 
-Enable an LMS user to create an account and return later through the same stable authentication
-contract, whether the caller is a mobile app, an automated API consumer, or a web BFF. The current
-service exposes only health and greeting routes and owns no user or credential state
-[Repo-grounded: `apps/ose-lms-be/README.md`; `specs/apps/ose/lms-be/architecture.md`].
+Give LMS users authenticated access through the shared OSE identity and company model without making
+LMS another credential authority or weakening its ownership of learning-domain permissions.
 
 ## Why Now
 
-The next authenticated LMS capabilities need a trusted account identity. Adding isolated feature
-data before authentication would either make that data public or force each feature to invent an
-identity placeholder. This plan establishes one reusable identity and session boundary first.
+The original LMS plan was the first concrete identity need, but its local password/JWT design would
+create the silo that OSE ID is intended to prevent. The correct sequence is to deliver OSE ID first and
+then integrate LMS as its first relying party and API resource.
 
 ## Business Outcomes
 
-- A person can create one username-based account without supplying email or other profile data.
-- Mobile and API clients receive a standard bearer-token contract; web clients can use the same
-  contract server-to-server through a BFF.
-- A leaked or replayed refresh token has a bounded blast radius because rotation revokes its current
-  session family, while other logins remain usable.
-- Operators can tune authentication throttles without a rebuild and can revoke the session that
-  logs out immediately.
+- One OSE account signs into LMS through the same identity authority future products can reuse.
+- LMS stores no password, provider token, recovery secret, signing private key, or refresh-token family.
+- A companyless person can enter LMS with a personal entitlement and no synthetic company.
+- A company member enters LMS only when the active company grants LMS entitlement.
+- LMS domain roles remain independently evolvable and cannot be escalated through an identity claim.
+- Developers run the authenticated LMS journey locally through one deterministic owned stack.
 
 ## Affected Roles
 
-- **LMS learner:** registers, logs in, refreshes a session, and logs out.
-- **Client developer:** integrates either directly from a trusted mobile/API client or through a
-  BFF that owns browser cookies.
-- **Operator:** supplies database and signing secrets, observes health, and tunes security limits.
-- **Maintainer/agent:** evolves the contract-first Java service and proves it at every applicable
-  test layer.
+| Role               | Need                                                                       |
+| ------------------ | -------------------------------------------------------------------------- |
+| Personal LMS user  | Predictable OSE ID sign-in without being forced into a company.            |
+| LMS user           | Predictable OSE ID sign-in, context selection, logout, and errors.         |
+| Multi-company user | Enter LMS under exactly one entitled active company and switch explicitly. |
+| LMS developer      | One local target for LMS and every identity dependency.                    |
+| LMS maintainer     | Standards-based validation with no credential/session implementation.      |
+| Security operator  | Clear issuer/audience/tenant boundary and auditable denial.                |
 
 ## Success Measures
 
-- Every product acceptance criterion in [`prd.md`](./prd.md) has Unit proof and applicable
-  Integration and E2E proof or a valid boundary exemption. [Observable fact]
-- OpenAPI, generated models, controllers, and observed HTTP responses agree under contract lint,
-  compilation, tests, and manual evidence. [Observable fact]
-- Passwords, raw refresh tokens, signing secrets, and raw source-address throttle keys are absent
-  from persisted rows, error bodies, and captured logs. [Observable fact]
-- Register, login, refresh, logout, protected hello, and public health journeys pass the local and
-  exact-head PR quality gates. [Observable fact]
+- End-to-end LMS login completes through OSE ID Authorization Code + PKCE and reaches a protected LMS
+  resource in both an entitled personal context and a selected entitled company context.
+- Wrong issuer, signature, audience, expiry, entitlement, context type, membership, or company context
+  is denied.
+- Repository searches and schema inspection find no LMS password hash, auth signing secret, local token
+  issuer, refresh-token table, provider token, or credential endpoint.
+- `(iss, sub)` remains the request principal key when email/profile data changes; this slice introduces
+  no LMS profile table before a learning-domain feature needs one.
+- The authenticated local stack, including the concrete `ose-lms-app-web` BFF and its session database,
+  passes twice from clean state and leaves no owned resource.
 
 ## Business Non-Goals
 
-- User profile, email ownership, password recovery, account deletion, organization membership,
-  course authorization, roles, permissions, MFA, federation, or social login.
-- Direct browser token storage or cookie issuance by `ose-lms-be`; the web BFF owns its browser
-  session and CSRF protection.
-- A device registry, device identifier, device fingerprint, concurrent-login cap, session eviction,
-  or “maximum three devices” behavior.
-- Production deployment, secret provisioning, key-distribution infrastructure, or asymmetric JWT
-  verification by other services.
+- Implementing identity-provider features in LMS.
+- Moving instructor/learner/course permissions to OSE ID.
+- Production rollout or forcing other apps to integrate in the same delivery.
+- Replacing OSE ID's company-admin area with an LMS membership console.
 
 ## Risks and Mitigations
 
-| Risk                                                               | Mitigation                                                                                                            |
-| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| A stolen refresh token is replayed                                 | Rotate on every use; atomically consume it; revoke the entire current family on reuse.                                |
-| JWT logout is assumed to be stateless                              | Validate the persisted `sid` on every protected request so revocation is immediate.                                   |
-| Username existence leaks through login                             | Return the same status/body and perform a dummy Argon2 verification for unknown and wrong-password attempts.          |
-| A proxy collapses source throttles or lets callers spoof addresses | Trust forwarded addresses only from explicitly configured proxy CIDRs; otherwise use the direct peer.                 |
-| HMAC key replacement invalidates outstanding access tokens         | Keep access lifetime at 15 minutes; refresh with a still-valid persisted family issues a token signed by the new key. |
-| Authentication dependencies introduce licensing drift              | Use Spring-managed dependencies and Apache-2.0 Flyway artifacts from `org.flywaydb`; run dependency/license gates.    |
+| Risk                                         | Consequence                                   | Mitigation                                                                                          |
+| -------------------------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Stale tenant/entitlement claim               | Removed member keeps temporary access         | Short upstream token life plus reauthorization/revocation policy for sensitive operations           |
+| Email used as local key                      | Profile change duplicates or hijacks identity | Unique `(issuer, subject)` mapping; email is display/contact only                                   |
+| LMS trusts broad token                       | Cross-client token substitution               | Exact issuer, signature, algorithm, audience, time, entitlement, and company validation             |
+| OSE ID unavailable locally                   | Developers bypass authentication              | Clear dependency error; composed local stack; no debug principal/header/password fallback           |
+| Domain roles leak into shared ID             | Product coupling and escalation               | LMS-local role tables/policies after identity and tenant validation                                 |
+| Personal users are forced into a fake tenant | False tenancy and isolation semantics         | Discriminated personal/company context; personal rows are person-scoped and contain no `company_id` |

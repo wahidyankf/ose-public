@@ -22,7 +22,7 @@ series does not deploy the service.
 
 | Order | Plan                                                                                  | Locally verifiable outcome                                                           | Depends on |
 | ----: | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------- |
-|     1 | [Foundation](./ose-id-init-01-foundation/README.md)                                   | Four projects, PostgreSQL, migrations, health/readiness, and an owned local runner   | —          |
+|     1 | [Foundation](../in-progress/ose-id-init-01-foundation/README.md) (in progress)        | Four projects, PostgreSQL, migrations, health/readiness, and an owned local runner   | —          |
 |     2 | [Local email account](./ose-id-init-02-local-email-account/README.md)                 | Backend registration, verification, password sign-in/recovery, sessions, and Mailpit | 01         |
 |     3 | [Company tenancy core](./ose-id-init-03-company-tenancy-core/README.md)               | Personal/company contexts, memberships, entitlements, invitations, and RLS           | 02         |
 |     4 | [OIDC/OAuth provider](./ose-id-init-04-oidc-oauth-provider/README.md)                 | OpenIddict, PKCE, consent contract, audiences/scopes, and context-bound claims       | 03         |
@@ -33,7 +33,7 @@ series does not deploy the service.
 |     9 | [Local scale and composition](./ose-id-init-09-local-scale-and-composition/README.md) | No-affinity multi-instance proof and reusable dependent-app stack contract           | 06, 07, 08 |
 
 Plans 06, 07, and 08 are independent siblings after Plan 05. Plan 09 joins them; only after Plan 09
-may the blocked [`lms-user`](../in-progress/lms-user/README.md) plan execute. A future OSE ID deployment
+may the blocked [`lms-user`](./lms-user/README.md) plan execute. A future OSE ID deployment
 plan is outside this series and must wait for the Kubernetes foundation in the private sibling, beginning with
 `start-infra-04-deploy-tencent-lighthouse-k3s-cluster`, plus any then-current platform handoff gates.
 

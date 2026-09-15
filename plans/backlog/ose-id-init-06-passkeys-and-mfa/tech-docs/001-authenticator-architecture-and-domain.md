@@ -44,7 +44,7 @@ Future GraphQL or Model Context Protocol adapters must reuse the same use cases 
 They do not receive authenticator secrets, recovery plaintext, WebAuthn challenge internals, or a generic
 “execute factor action” escape hatch. Consequential MCP mutations would additionally require an explicit
 confirmation/threat-model plan. This plan delivers only the specified REST/BFF ceremonies and follows the
-Init 01 [transport rules](../../ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#future-graphql-and-model-context-protocol-adapters).
+Init 01 [transport rules](../../../in-progress/ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#future-graphql-and-model-context-protocol-adapters).
 
 ## Physical PostgreSQL Contract
 
@@ -60,7 +60,7 @@ timestamptz NULL`, and `deleted_by varchar(255) NULL`. Check
 `(deleted_at IS NULL) = (deleted_by IS NULL)`. “Six audit columns” below means this exact contract.
 
 Every table also inherits the OSE ID
-[audit/soft-delete profile](../../ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md):
+[audit/soft-delete profile](../../../in-progress/ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md):
 named update/delete time checks, `BEFORE DELETE` guard, only `ON DELETE RESTRICT`, no runtime `DELETE`/
 `TRUNCATE`/DDL privilege, explicit actor stamping, and `deleted_at IS NULL` on all active queries and
 active-row indexes. Globally unique credential/challenge/generation/verifier values remain unique across

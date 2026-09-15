@@ -18,7 +18,7 @@ workflow correctness may depend on one adapter instance or sticky routing.
 This plan proves only the delivered REST/OIDC/BFF surfaces across instances. It does not install or load
 test-only GraphQL/MCP adapters. A later transport plan must extend the no-affinity matrix and readiness/
 shutdown/resource-accounting proof for its real wire protocol, following the Init 01
-[backend architecture](../../ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#backend-architecture-pragmatic-hexagonal-ddd).
+[backend architecture](../../../in-progress/ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#backend-architecture-pragmatic-hexagonal-ddd).
 
 The same rule applies to persistence across replicas. OSE-owned tables use SqlKata-compiled PostgreSQL
 queries with Npgsql execution, explicit columns and transaction ownership, bounded cancellation/

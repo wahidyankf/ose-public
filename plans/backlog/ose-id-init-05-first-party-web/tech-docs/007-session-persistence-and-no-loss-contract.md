@@ -111,7 +111,7 @@ CREATE TABLE ose_id_web.web_session (
 Global uniqueness of migration version/checksum and `handle_digest` prevents reuse after soft delete.
 The migration installs `trg_schema_migrations_reject_hard_delete` and
 `trg_web_session_reject_hard_delete` as `BEFORE DELETE` guards and applies the inherited
-[audit/soft-delete profile](../../ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md).
+[audit/soft-delete profile](../../../in-progress/ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md).
 Every request/worker mutation supplies a safe actor; the `system` default is migration/bootstrap only.
 
 The cookie contains a random 256-bit handle. Only its keyed digest is stored. `transaction_cipher`

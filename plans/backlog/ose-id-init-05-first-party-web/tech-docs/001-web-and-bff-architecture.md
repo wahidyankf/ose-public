@@ -17,7 +17,7 @@ backend-rendered ASP.NET pages are viable but duplicate OSE web conventions and 
 The BFF consumes the versioned REST/render-safe operations delivered by `ose-id-be`; it does not define
 the backend application boundary. Backend handlers map BFF requests into the same transport-neutral use
 cases described by the Init 01
-[hexagonal architecture](../../ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#one-use-case-multiple-inbound-adapters).
+[hexagonal architecture](../../../in-progress/ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#one-use-case-multiple-inbound-adapters).
 Consequently, BFF response models must not become Domain/Application types, and the backend must not
 encode Next.js route or component concerns.
 

@@ -18,7 +18,7 @@ A future GraphQL resolver or Model Context Protocol tool adapter must call these
 GraphQL argument nor an MCP tool argument may become trusted `CompanyId`, role, entitlement, or RLS state.
 Adapters cannot expose `IQueryable`, EF navigation graphs, cross-company counts, or generic object lookup.
 The Init 01
-[transport rules](../../ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#future-graphql-and-model-context-protocol-adapters)
+[transport rules](../../../in-progress/ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#future-graphql-and-model-context-protocol-adapters)
 remain binding; this plan delivers REST only.
 
 Persistence ports are use-case-shaped and transport-neutral. SqlKata + `SqlKata.Execution`/Npgsql

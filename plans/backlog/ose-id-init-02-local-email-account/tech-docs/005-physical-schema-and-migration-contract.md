@@ -13,7 +13,7 @@ capability, session, rate-limit, or identity-audit rows to backfill.
 Every new table below appends these six columns in this exact order, as required by the repository
 [`database-audit-trail`](../../../../repo-governance/development/pattern/database-audit-trail.md) and
 the inherited OSE ID
-[audit/soft-delete profile](../../ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md).
+[audit/soft-delete profile](../../../in-progress/ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md).
 The migration role owns tables; the serving role receives only explicitly required `SELECT`, `INSERT`,
 and `UPDATE` privileges. There is no framework-metadata exception.
 

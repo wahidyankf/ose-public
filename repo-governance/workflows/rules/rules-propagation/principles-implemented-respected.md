@@ -18,8 +18,9 @@ when_to_use: Use when tracing a step of this workflow upward to the principle th
   admission test is this principle applied to the instruction surface: the fullest statement lives
   in the layer that owns the subject, and only what must be read unprompted sits above it.
 - **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)** —
-  Step 7 pushes every rule toward a mechanical check, and Step 8 defers repository-wide detection
-  to the deterministic gates and the composed quality gate rather than re-deriving them.
+  Step 7 pushes every rule toward a mechanical check, and Step 8 runs the applicable deterministic
+  gates. A suspected wider semantic concern goes directly to `rules-checker` as new propagation
+  input instead of recursively invoking the independent quality gate.
 
 ## Respected
 

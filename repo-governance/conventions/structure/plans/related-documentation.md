@@ -20,7 +20,7 @@ when_to_use: Use when looking for a related convention or guide that this plans 
 - [Plan Anti-Hallucination Convention](../../../development/quality/plan-anti-hallucination.md) — Pre-write verification recipes, repo-grounding rule, refuse-on-uncertainty, anti-pattern catalog (AP-1 through AP-10), specialized-executor annotation; consumed by the Execution-Grade Clarity rule and by the four plan agents
 - [Grilling-With-Options Convention](../../../development/workflow/grilling-with-options.md) — Every grill question during plan creation (pre-write, post-write) MUST present 2-4 concrete options with trade-off descriptions; open-ended questions without options are FORBIDDEN; consumed by plan-maker Steps 1 and 8
 - [No Secrets in Git Convention](../../security/no-secrets-in-committed-files.md) — Hard iron rule prohibiting secret values in any committed file, including plans and their permanent `done/` history
-- [Evidence Capture Convention](../../../development/quality/evidence-capture.md) — Standards for the plan `evidence/` subfolder: screenshot naming (phase/locale/breakpoint), curl/API response records, locale coverage requirements, and what `plan-execution-checker` validates
+- [Evidence Capture Convention](../../../development/quality/evidence-capture.md) — Standards for the plan `evidence/` subfolder: screenshot naming (phase/locale/breakpoint), HTTP or native API wire records, locale coverage requirements, and what `plan-execution-checker` validates
 
 **Development Guides**:
 

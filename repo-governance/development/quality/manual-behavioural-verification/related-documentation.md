@@ -10,4 +10,5 @@ when_to_use: "Use for a related convention on testing or evidence."
 - [Implementation Workflow Convention](../../workflow/implementation.md) -- Three-stage workflow where manual verification fits in the "make it work" stage
 - [Specs-Application Sync Convention](.././specs-application-sync.md) -- Spec updates required alongside code changes
 - [User-Facing Delivery Hardening Convention](.././user-facing-delivery-hardening.md) -- Extends this convention to a per-breakpoint, per-locale visual sign-off against the design mockups **before archival**, plus fifteen sibling rules for user-facing delivery
-- [Evidence Capture Convention](.././evidence-capture.md) -- Where and how to store verification evidence: screenshots in `evidence/`, curl outputs inline in `delivery.md`, locale and breakpoint coverage requirements
+- [Evidence Capture Convention](.././evidence-capture.md) -- Where and how to store screenshots and
+  HTTP curl or non-HTTP native-client wire evidence, including locale and breakpoint coverage

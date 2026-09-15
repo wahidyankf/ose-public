@@ -10,9 +10,9 @@ Every table MUST include all six columns in the order listed below.
 ```mermaid
 graph TD
     accTitle: Required Audit Columns
-    accDescr: Table any domain entity leads to Required Audit Columns; Table any domain entity leads to Optional Audit Columns; Required Audit Columns leads to created_at TIMESTAMPTZ NOT NULL; and 5 more links.
+    accDescr: Every table has four required non-null audit columns and two required nullable deletion audit columns.
     T["Table<br/>(any domain entity)"] --> R[Required Audit<br/>Columns]
-    T --> O[Optional Audit<br/>Columns]
+    T --> O[Required Nullable<br/>Delete Columns]
 
     R --> C1["created_at<br/>TIMESTAMPTZ NOT NULL"]
     C1 --> C2["created_by<br/>VARCHAR NOT NULL"]
@@ -23,10 +23,10 @@ graph TD
     C5 --> C6["deleted_by<br/>VARCHAR NULL"]
 
     classDef required fill:#0173B2,stroke:#000000,color:#FFFFFF
-    classDef optional fill:#029E73,stroke:#000000,color:#000000
+    classDef nullable fill:#029E73,stroke:#000000,color:#000000
 
     class R,C1,C2,C3,C4 required
-    class O,C5,C6 optional
+    class O,C5,C6 nullable
 ```
 
 | Column       | Type           | Nullable | Default    | Description                         |
@@ -38,4 +38,5 @@ graph TD
 | `deleted_at` | `TIMESTAMPTZ`  | NULL     | —          | When the row was soft-deleted (UTC) |
 | `deleted_by` | `VARCHAR(255)` | NULL     | —          | Who or what soft-deleted the row    |
 
-Blue columns (required) are always non-null and populated by the database default or the calling service. Green columns (optional by value) are always present in the schema but null for active rows.
+Blue columns are always non-null and populated by the database default or the calling service. Green
+columns are required in the schema but nullable by value, remaining null for active rows.

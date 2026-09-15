@@ -31,7 +31,8 @@ self-promoted beyond the declared value.
 Steps 0 through 6 are strictly sequential: each one's output is the next one's input, and a
 placement decision made before the conflict scan completes is a placement decision made blind.
 Fan-out is available only inside Step 3, where independent subject areas may be scanned
-concurrently, and inside Step 8's composed gate.
+concurrently. Step 8 runs deterministic gates and a subject-local closure read; it never nests the
+independent rules quality gate.
 
 ## Dry Run
 

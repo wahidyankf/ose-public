@@ -11,7 +11,7 @@
 **Quality Conventions**:
 
 - [Code Quality Convention](../../../../repo-governance/development/quality/code.md) - Git hooks, linting, formatting
-- [Manual Behavioural Verification](../../../../repo-governance/development/quality/manual-behavioural-verification.md) - Playwright MCP for UI, curl for API testing
+- [Manual Behavioural Verification](../../../../repo-governance/development/quality/manual-behavioural-verification.md) - real-browser UI proof, `rtk curl` for HTTP, and protocol-native clients for non-HTTP APIs
 - [Feature Change Completeness](../../../../repo-governance/development/quality/feature-change-completeness.md) - Specs, contracts, and tests must update with every feature change
 - [CI Blocker Resolution](../../../../repo-governance/development/quality/ci-blocker-resolution.md) - Preexisting CI failures must be investigated and fixed, never bypassed
 - [Reproducible Environments](../../../../repo-governance/development/workflow/reproducible-environments.md) - Volta, package-lock.json

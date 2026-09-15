@@ -44,12 +44,12 @@ rather than accepting the claim.
 Use when the rule change is large enough to review on its own, or when the current tree holds work
 that must ship separately.
 
-## Strict verification
+## Strict subject-local verification
 
-> Propagate this rule, mode ocd.
+> Propagate this rule and ask `rules-checker` for a strict subject-local audit.
 
-Raises the threshold handed to the composed quality gate at Step 8, so lower-severity findings also
-block delivery.
+Adds a direct semantic review without nesting `rules-quality-gate`. Treat any confirmed finding as
+new propagation input and resolve it through the normal steps before delivery.
 
 ## Related Documents
 

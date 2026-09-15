@@ -45,9 +45,9 @@ conforming one.
 
 ## Convergence
 
-The composed quality gate at Step 8 is bounded by its own iteration limits. Where a finding
-survives repeated fixes, the run reports it rather than continuing — a fix loop that will not
-converge is information, not an obstacle to grind through.
+Every Step 8 deterministic check and direct subject-local review is bounded by its own process or
+review pass. Where a finding survives repeated fixes, the run reports it rather than continuing — a
+fix loop that will not converge is information, not an obstacle to grind through.
 
 ## Idempotency
 

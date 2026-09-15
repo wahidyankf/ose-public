@@ -35,6 +35,6 @@ This convention states sixteen durable rules -- spanning authoring, execution, a
 - Pure library/internal refactors with no observable output (see
   [Manual Behavioural Verification](./manual-behavioural-verification.md) scope).
 - Documentation/governance-only changes.
-- Incidental API behaviour outside a feature change (covered by the curl path in
+- Incidental API behaviour outside a feature change (covered by the protocol-appropriate wire path in
   [Manual Behavioural Verification](./manual-behavioural-verification.md)); API **feature-change**
   plans are covered here — see Rule 16.

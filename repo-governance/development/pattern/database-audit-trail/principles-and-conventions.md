@@ -9,7 +9,10 @@ when_to_use: "Use when you need to trace this pattern's audit-column requirement
 
 This pattern implements the following core principles:
 
-- **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**: All audit metadata is stored in dedicated, named columns with mandatory types and nullability. There is no implicit or hidden tracking; every change is visible in the schema.
+- **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**:
+  Current-row creation, latest-mutation, and deletion attribution use dedicated, named columns with
+  mandatory types and nullability. Intermediate security or domain history remains explicit through
+  append-only audit events rather than being inferred from these six columns.
 
 - **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: DbUp discovers and applies migration scripts automatically at startup. EF Core handles entity mapping. Manual service code is only required for soft-delete columns (`deleted_at`, `deleted_by`).
 

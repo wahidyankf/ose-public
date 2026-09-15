@@ -17,40 +17,40 @@ validation rules layered on top of the base five validation-scope sections.
 
 ## Reference Modules
 
-- `reference/01-structure-and-requirements-validation.md` and
-  `reference/02-technical-documentation-validation.md` — Validation Scope 1-3: folder/file structure,
+- `reference/structure-and-requirements-validation.md` and
+  `reference/technical-documentation-validation.md` — Validation Scope 1-3: folder/file structure,
   BRD/PRD content placement, technical documentation and the File-Impact tree HARD RULE.
-- `reference/03-delivery-checklist-validation-part1.md` and
-  `reference/04-delivery-checklist-validation-part2.md` — Validation Scope 4: the full HARD RULE
+- `reference/delivery-checklist-validation-part1.md` and
+  `reference/delivery-checklist-validation-part2.md` — Validation Scope 4: the full HARD RULE
   summary layer for delivery checklists and the granularity standard.
-- `reference/05-pr-step-authorization-check.md` and
-  `reference/06-pr-boundary-detection-and-consistency-validation.md` — the PR Step Authorization
+- `reference/pr-step-authorization-check.md` and
+  `reference/pr-boundary-detection-and-consistency-validation.md` — the PR Step Authorization
   Check (with detection scripts), No PR Outside a Declared Delivery Boundary, and Validation Scope 5
   (Consistency).
-- `reference/07-workflow-overview.md` — the Step 0-7 execution sequence (false-positive skip list,
+- `reference/workflow-overview.md` — the Step 0-7 execution sequence (false-positive skip list,
   re-validation mode, codebase inspection).
-- `reference/08-factual-accuracy-validation.md` — Factual Accuracy Validation (Step 4b).
-- `reference/09-rule8-operational-readiness-validation.md`,
-  `reference/10-rule9-manual-behavioural-assertion-validation.md`,
-  `reference/11-rule10-worktree-specification-validation.md`, and
-  `reference/12-rule11-execution-grade-clarity-validation.md` — rules 8-11: Operational Readiness
+- `reference/factual-accuracy-validation.md` — Factual Accuracy Validation (Step 4b).
+- `reference/rule8-operational-readiness-validation.md`,
+  `reference/rule9-manual-behavioural-assertion-validation.md`,
+  `reference/rule10-worktree-specification-validation.md`, and
+  `reference/rule11-execution-grade-clarity-validation.md` — rules 8-11: Operational Readiness
   (5b), Manual Behavioural Assertion (5c), Worktree Specification (5d), Execution-Grade Clarity (5e).
-- `reference/13-rule12-anti-hallucination-scan.md`,
-  `reference/14-rule13-harness-neutrality-scan.md`,
-  `reference/15-rule14-executor-tag-validation.md`, and
-  `reference/16-rule15-phase-gate-and-natural-pause-validation.md` — rules 12-15:
+- `reference/rule12-anti-hallucination-scan.md`,
+  `reference/rule13-harness-neutrality-scan.md`,
+  `reference/rule14-executor-tag-validation.md`, and
+  `reference/rule15-phase-gate-and-natural-pause-validation.md` — rules 12-15:
   Anti-Hallucination Scan (5f), Harness-Neutrality Scan (5g), Executor-Tag Validation (5h),
   Phase-Gate & Natural-Pause (5i).
-- `reference/17-rules16-specs-gherkin-and-regression-test.md`,
-  `reference/18-rule17-ui-design-funnel-completeness.md`, and
-  `reference/19-rule18-knowledge-capture-phase-presence.md` — rules 16-18: Specs & Gherkin Coverage
+- `reference/rules16-specs-gherkin-and-regression-test.md`,
+  `reference/rule17-ui-design-funnel-completeness.md`, and
+  `reference/rule18-knowledge-capture-phase-presence.md` — rules 16-18: Specs & Gherkin Coverage
   (5j) plus the Regression Test Mandate, UI-Design-Funnel Completeness (5k), Knowledge Capture Phase
   Presence (5l).
-- `reference/20-rule19-delivery-mode-validation-part1.md` and
-  `reference/21-rule19-delivery-mode-validation-part2.md` — rule 19: Delivery Mode Validation (5m).
-- `reference/22-rule20-learning-bearing-syllabus-completeness.md` — rule 20: Learning-Bearing
+- `reference/rule19-delivery-mode-validation-part1.md` and
+  `reference/rule19-delivery-mode-validation-part2.md` — rule 19: Delivery Mode Validation (5m).
+- `reference/rule20-learning-bearing-syllabus-completeness.md` — rule 20: Learning-Bearing
   Syllabus Completeness (5n).
-- `reference/23-rule21-vercel-mcp-capability-declaration.md` — rule 21: Vercel MCP Capability
+- `reference/rule21-vercel-mcp-capability-declaration.md` — rule 21: Vercel MCP Capability
   Declaration (5o).
 
 ## Core Principles

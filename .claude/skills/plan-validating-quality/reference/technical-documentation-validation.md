@@ -20,6 +20,25 @@ mechanism when the documented existing mechanism already satisfies the stated ne
 appropriate model, exact old/new contract, field purpose/lifecycle guide, compatibility boundaries,
 expand-migrate-verify-contract sequence, rollback triggers, and no-loss proof.
 
+**API contract delta (HIGH when applicable)**: a plan that changes HTTP, BFF, RPC, event, or standard
+protocol operations uses the `tech-docs/` directory form and maps exactly one separately numbered API
+contract delta document. Require action, exact operation, caller, auth/context, request/response/error
+semantics, applicable safety properties, machine-readable contract/codegen impact, compatibility and
+recovery, and Unit/Integration/E2E proof. An API-adjacent no-change claim requires an evidenced no-delta
+document. Missing document or material field: **HIGH**. See the
+[API Contract Delta convention](../../../../repo-governance/conventions/structure/plans/api-contract-delta.md).
+The operation table is only an index. Report HIGH when an operation lacks its detailed headers,
+parameters, schemas and serialized examples, status/problem-code behaviour, validation, lifecycle and
+privacy rules, compatibility/rollback, or full Gherkin-style contract scenarios. Scenarios may be
+inline or reached through an exact anchor to that operation's one-to-one detailed set in the same API
+document or the plan's dedicated numbered BDD/spec-delta companion in the same `tech-docs/` folder.
+The packet names exact scenario IDs/titles, canonical `specs/**` destination, and
+Unit/Integration/E2E disposition; the set covers success, validation, authorization/context, errors,
+replay/concurrency, and privacy. A generic BDD-map link, prose pointer, or other external pointer is
+HIGH.
+Report HIGH when a structured serialized request, response, event, message, manifest, descriptor, or
+problem example is inline instead of in its own language-labelled fenced block.
+
 **File-impact tree (HARD RULE)**: the single `tech-docs.md` or one companion mapped by
 `tech-docs/README.md` has a `## File-Impact Analysis` whose primary view is a root-relative fenced
 `text` tree; each planned path or bounded pattern carries `[E]`, `[N]`,

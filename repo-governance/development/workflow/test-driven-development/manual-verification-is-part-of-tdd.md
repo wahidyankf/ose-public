@@ -13,7 +13,7 @@ the exact steps and expected observations. Treat it like an automated test:
    linked checklist) — preconditions, steps, expected observations. Mark each expected
    observation as a discrete check. The script is "red" because the implementation does not
    yet satisfy it.
-2. **Run the script**: Execute the steps using Playwright MCP for UI, `curl` for HTTP APIs,
+2. **Run the script**: Execute the steps using Playwright MCP for UI, `rtk curl` for HTTP APIs,
    or whatever boundary tool fits. Confirm each expected observation fails (right reason).
 3. **Green (implement)**: Make the minimum change needed for every check in the script to
    pass. Re-run the entire script. Every check must pass.
@@ -23,4 +23,5 @@ the exact steps and expected observations. Treat it like an automated test:
    cover a recurring behaviour are technical debt — automate them.
 
 See [Manual Behavioural Verification Convention](../../quality/manual-behavioural-verification.md)
-for the script structure and tooling defaults (Playwright MCP for UI, `curl` for API).
+for the script structure and tooling defaults (real-browser UI proof, `rtk curl` for HTTP APIs, and
+protocol-native wire clients for non-HTTP APIs).

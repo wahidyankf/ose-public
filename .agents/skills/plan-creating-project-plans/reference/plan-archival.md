@@ -13,7 +13,8 @@ Every delivery plan MUST end with a plan archival section:
       pending. Checked boxes alone are not proof.
 - [ ] Verify ALL delivery checklist items are ticked
 - [ ] Verify ALL quality gates pass (local + CI)
-- [ ] Verify ALL manual assertions pass with committed evidence in `evidence/` (screenshots + curl output)
+- [ ] Verify ALL manual assertions pass with committed `evidence/` artifacts (screenshots plus
+      HTTP `rtk curl` or non-HTTP protocol-native wire output, as applicable)
 - [ ] Verify ALL supported locales were exercised in UI verification (not just the default)
 - [ ] Verify every rule-15 EWT/UWT/DWT defect finding is fixed (ticked) — deferral requires explicit user permission (only when genuinely impossible)
       for EWT/UWT/DWT defect findings; SG-### proposals and USS-### suggestions may be triaged or deferred

@@ -47,8 +47,9 @@ Integration/E2E adapter also starts red. Contract, property/fuzz, snapshot/visua
 performance, and accessibility proof supplement those adapters where relevant.
 
 **Manual verification is TDD-compatible** when it is a written, dated, repeatable script with
-discrete expected observations — not an informal "click around" check. Use Playwright MCP for UI
-and `curl` for API verification. Promote manual scripts to automated tests whenever feasible.
+discrete expected observations — not an informal "click around" check. Use real-browser tooling for
+UI, `rtk curl` for HTTP APIs, and a protocol-native wire client for non-HTTP APIs. Promote manual
+scripts to automated tests whenever feasible.
 
 **Mini-TDD passes are encouraged**: split a feature into multiple small Red→Green→Refactor cycles,
 one per behaviour. Each cycle is independently committable.

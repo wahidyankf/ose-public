@@ -22,7 +22,7 @@ title: "Reference"
 - [16 Gherkin Acceptance Criteria](./gherkin-acceptance-criteria.md) — the requirement that all plans have Gherkin-format acceptance criteria
 - [17 Delivery Plan Tdd Structure](./delivery-plan-tdd-structure.md) — the mandatory TDD shape for code-touching delivery-plan implementation steps
 - [18 Operational Readiness](./operational-readiness.md) — the mandatory operational-readiness sections every delivery plan must include
-- [19 Manual Ui And Api Verification](./manual-ui-and-api-verification.md) — mandatory manual UI (Playwright) and API (curl) behavioural assertion sections
+- [19 Manual Ui And Api Verification](./manual-ui-and-api-verification.md) — mandatory real-browser UI and HTTP/non-HTTP API wire assertions
 - [20 Manual Verification Retest Rules](./manual-verification-retest-rules.md) — the Rule-15/Rule-16 pre-archival retest rules for web-UI feature-change plans
 - [21 Knowledge Capture Scaffold And Entries](./knowledge-capture-scaffold-and-entries.md) — the mandatory Knowledge Capture phase and learnings.md scaffold/entry shape
 - [22 Knowledge Capture Phase Template](./knowledge-capture-phase-template.md) — the Knowledge Capture phase template, inserted as the last substantive phase

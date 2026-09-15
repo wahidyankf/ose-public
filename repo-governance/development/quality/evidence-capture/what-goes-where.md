@@ -9,11 +9,12 @@ when_to_use: "Use when unsure which evidence file to save a specific artifact in
 
 Short text evidence that fits naturally in the notes:
 
-- **curl responses** — paste the JSON response as a fenced code block:
+- **Short API wire results** — paste the command, status/result metadata, and serialized response as
+  fenced blocks. HTTP uses `rtk curl`; non-HTTP RPC/events use the protocol-native client:
 
   ````markdown
   - [x] [AI] Verify `/api/health` returns 200 — acceptance: status 200, `{"status":"ok"}`
-    > **Evidence** (2026-06-20): `curl http://localhost:8202/api/health`
+    > **Evidence** (2026-06-20): `rtk curl http://localhost:8202/api/health`
     >
     > ```json
     > { "status": "ok", "version": "1.2.3" }
@@ -43,8 +44,8 @@ File-based artifacts that would bloat `delivery.md` if inlined:
 - **Screenshots** — one per breakpoint per locale tested; filename encodes context:
   `phase-{N}-{description}-{locale}-{breakpoint}px.png`
   Example: `phase-2-tools-page-en-1280px.png`, `phase-2-tools-page-id-375px.png`
-- **Long curl responses** — if a response exceeds ~20 lines, save to
-  `evidence/phase-{N}-{endpoint-slug}.txt` and reference by path in `delivery.md`
+- **Long API wire results** — if a response exceeds ~20 lines, save to
+  `evidence/phase-{N}-{operation-slug}.txt` and reference it from `delivery.md`
 - **Lighthouse reports** — `evidence/phase-{N}-lighthouse-{locale}.json`
 - **Test coverage HTML** — `evidence/phase-{N}-coverage-report.html` (if exported)
 

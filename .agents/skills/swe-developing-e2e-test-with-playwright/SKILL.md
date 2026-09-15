@@ -76,7 +76,7 @@ automated Playwright specs whenever the behaviour recurs.
   — full Red→Green→Refactor rules, "Manual verification is part of TDD" subsection, and all test
   levels covered.
 - [Manual Behavioural Verification](../../../repo-governance/development/quality/manual-behavioural-verification.md)
-  — Playwright MCP tool list, verification checklists, and `curl` for API verification.
+  — real-browser checklists, `rtk curl` for HTTP APIs, and protocol-native clients for non-HTTP APIs.
 
 ## Related Standards
 

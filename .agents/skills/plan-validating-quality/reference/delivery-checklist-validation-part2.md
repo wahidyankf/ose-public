@@ -9,14 +9,20 @@
   screens/components need the design-funnel artefacts (≥2 named low-fi alternatives, 2 hi-fi
   `.excalidraw.png` finalists, named selection, rationale, grounding/prior-art note, responsive
   strategy across mobile/tablet/desktop). Full detail in
-  `reference/18-rule17-ui-design-funnel-completeness.md` (Step 5k). Pure-refactor/no-UI/
+  `reference/rule17-ui-design-funnel-completeness.md` (Step 5k). Pure-refactor/no-UI/
   governance-only plans exempt. See
   [UI Mockups in Plan Docs convention](../../../../repo-governance/conventions/formatting/diagrams/ui-mockups-principles-and-scope.md#ui-mockups-in-plan-docs-principles-in-practice-and-scope).
 - **Manual-assertion locale and evidence completeness (UI/API plans)**: manual-assertion steps must
   cover all supported locales on a multi-locale app and capture committed evidence (screenshots to
-  `evidence/`, curl responses inlined). Full detail in
-  `reference/10-rule9-manual-behavioural-assertion-validation.md` items 4-5 (Step 5c). Single-locale
-  coverage, or no evidence-capture step, is **HIGH**. See
+  `evidence/`; HTTP or native wire results inlined or saved as named sanitized evidence). An
+  API-changing plan must additionally provide literal,
+  copy-pasteable `rtk curl` success and representative failure commands per changed HTTP-accessible operation, with
+  exact assertions, synthetic fixtures, independently attributable evidence, cleanup, and failure
+  routing. Every changed non-HTTP RPC/event operation needs an equivalent fully written
+  protocol-native client success/failure recipe and proof. Full detail in
+  `reference/rule9-manual-behavioural-assertion-validation.md` items 2-3 and 6 (Step 5c). Single-locale
+  coverage, no evidence-capture step, or a non-executable/non-independent wire recipe is **HIGH**;
+  an operation with no applicable curl/native-client recipe is **CRITICAL**. See
   [Evidence Capture Convention](../../../../repo-governance/development/quality/evidence-capture.md).
 - **Rule-15 three-tester retest (web-UI feature-change plans)**: a near-end step runs the
   [`web-ux-test-fixing-planning`](../../../../repo-governance/workflows/web/web-ux-test-fixing-planning.md)
@@ -38,7 +44,7 @@
   Rule 16.
 - **Knowledge Capture phase presence**: every substantive plan's `delivery.md` carries a final
   Knowledge Capture phase (or explicit "none" record). Full detail in
-  `reference/19-rule18-knowledge-capture-phase-presence.md` (Step 5l). Silent absence: **MEDIUM**;
+  `reference/rule18-knowledge-capture-phase-presence.md` (Step 5l). Silent absence: **MEDIUM**;
   explicit "none": PASS. See
   [Knowledge Capture Convention](../../../../repo-governance/development/quality/knowledge-capture.md).
 - **Automatic rules-propagation coverage (conditional HARD RULE)**: independently classify scope

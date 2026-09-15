@@ -1,31 +1,40 @@
 # Gherkin Acceptance Criteria — Integration with Plans
 
+## Separate Plan Identity From Product Behaviour
+
+A heading or mapping table may carry the plan requirement ID. A Gherkin packet intended for `specs/`
+must write its Feature, Rule, Background, Scenario, Scenario Outline, Examples, steps, comments,
+and tags in the owning app/lib's durable domain language. It must not contain a plan slug, number,
+phase, delivery-unit name, or plan acceptance-criterion identifier. Outside the fence, record
+`ADD`/`UPDATE`/`DELETE`/`RETAIN`, the exact owner-relative feature path, durable scenario title, and
+Unit/Integration/E2E disposition. This keeps traceability while allowing the packet to be copied into
+the long-lived owner corpus unchanged.
+
 ## Plan Acceptance Criteria Format
 
-Plans use Gherkin for phase-level acceptance criteria:
+Plans use Gherkin for phase-level acceptance criteria. Keep the Markdown heading outside the fence:
+
+### Acceptance Criteria
 
 ```gherkin
-## Acceptance Criteria
-
-Scenario: Phase 1 foundation complete
-  Given Skills infrastructure is required
-  When Phase 1 implementation is complete
+Scenario: Required skills are discoverable
+  Given the repository requires reusable agent skills
+  When the agent bindings are generated
   Then .claude/skills/ directory should exist with README and TEMPLATE
-  And 3 Skills should be created (maker-checker-fixer, color-accessibility, repository-architecture)
-  And AI Agents Convention should document skills: frontmatter field
-  And all 3 Skills should auto-load when relevant tasks described
+  And the required skills should be present
+  And the AI Agents Convention should document the skills frontmatter field
+  And each required skill should load for its declared task
   And existing agents should continue working without modification
 ```
 
 ## User Story Acceptance Criteria
 
-User stories in requirements use detailed Gherkin scenarios:
+User stories in requirements use detailed Gherkin scenarios. Keep the story statement and descriptive
+label outside the Gherkin fence:
+
+**User story:** As a content editor, I want to preview articles before publishing.
 
 ```gherkin
-User Story: As a content editor, I want to preview articles before publishing
-
-Acceptance Criteria:
-
 Scenario: Preview unpublished article
   Given I am logged in as content editor
   And I have draft article "Test Article"

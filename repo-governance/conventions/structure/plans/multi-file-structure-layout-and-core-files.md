@@ -13,7 +13,7 @@ when_to_use: Use when scaffolding a multi-file plan folder or clarifying what be
 ├── tech-docs.md             # Technical documentation and architecture (one allowed form)
 ├── delivery.md              # Step-by-step delivery checklist
 ├── learnings.md             # Transient running log of generalizable learnings
-└── evidence/                # (optional) committed testing evidence — screenshots, curl responses
+└── evidence/                # (optional) committed testing evidence — screenshots, API wire results
     ├── phase-1-homepage-en-1280px.png
     └── phase-2-api-health.txt
 ```

@@ -8,14 +8,14 @@ when_to_use: "Use when tracing this convention to the principles/conventions beh
 ## Principles Implemented/Respected
 
 - **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**: Evidence
-  makes verification visible and checkable. "I tested it" is implicit; a screenshot and a curl response
-  in the delivery notes are explicit.
+  makes verification visible and checkable. "I tested it" is implicit; a screenshot or attributable
+  HTTP/non-HTTP wire result in the delivery notes is explicit.
 - **[Root Cause Orientation](../../../principles/general/root-cause-orientation.md)**: When a defect surfaces
   post-archival, evidence lets the investigator reconstruct what the state was at delivery time — a root
   cause investigation tool, not just a bureaucratic artifact.
 - **[Deliberate Problem-Solving](../../../principles/general/deliberate-problem-solving.md)**: Capturing
   evidence forces the tester to actually observe the system, not just trust that tests passed. The act of
-  taking a screenshot and recording the curl output is itself the deliberate observation step.
+  taking a screenshot or recording the API wire result is itself the deliberate observation step.
 
 ## Conventions Implemented/Respected
 

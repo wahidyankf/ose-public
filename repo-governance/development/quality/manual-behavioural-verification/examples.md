@@ -5,7 +5,7 @@ when_to_use: "Use for a concrete example of this convention applied."
 
 # Examples
 
-## PASS: Complete verification workflow
+## PASS: Complete HTTP verification workflow
 
 ```
 1. Implement the feature (code changes)
@@ -14,11 +14,17 @@ when_to_use: "Use for a concrete example of this convention applied."
 4. Start dev server
 5. Manually verify UI renders correctly in ALL locales at ALL breakpoints
    (browser_navigate, browser_snapshot, browser_take_screenshot → evidence/)
-6. Manually verify API responds correctly (curl → inline in delivery.md)
+6. Run each changed HTTP operation's literal rtk curl success and representative
+   failure recipe from delivery.md; assert status, headers, media type, body/schema,
+   and stable failure code independently
 7. Check for console errors (browser_console_messages)
-8. Record evidence: screenshot paths in delivery.md, curl output inline
+8. Record independently attributable sanitized screenshots, headers, and bodies at
+   the delivery.md evidence destinations; run cleanup or its named failure route
 9. Declare the feature complete
 ```
+
+For a changed non-HTTP RPC/event operation, replace step 6 with its fully written protocol-native
+wire-client success/failure recipe under the same assertions, evidence, and cleanup standard.
 
 ## FAIL: Skipping manual verification
 

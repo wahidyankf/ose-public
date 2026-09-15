@@ -70,8 +70,8 @@ Then the response should be received within 200ms
 
 ```gherkin
 # ❌ Bad - Multiple behaviours
-# Deliberate non-conforming example — the repeated primary Then is the violation
-# being illustrated; split unrelated behaviour into separate scenarios
+# Deliberate non-conforming example — unrelated user-management and article-creation
+# outcomes are combined; repeated primary keywords alone are allowed
 Scenario: User management and article creation
   Given I create user "Alice"
   Then user "Alice" should exist

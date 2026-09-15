@@ -17,7 +17,7 @@ higher-layer adapter's failing test before its production implementation lands.
 | **Contract**                     | API contracts (OpenAPI, Pact) — request/response shape and semantics | OpenAPI spec lint, codegen drift checks, contract round-trip tests       |
 | **Property / fuzz**              | Invariants over generated inputs, not handwritten cases              | fast-check (TS), gopter (Go), QuickCheck-family in F#/Elixir/Rust        |
 | **Snapshot / visual regression** | Stable rendered output (UI, generated docs)                          | Vitest snapshots, Playwright visual diff                                 |
-| **Manual verification**          | Human-driven behavioural check that supplements automation           | Playwright MCP browser session, `curl` for API, Storybook walkthrough    |
+| **Manual verification**          | Human-driven behavioural check that supplements automation           | Real browser, `rtk curl` for HTTP, native client for non-HTTP APIs       |
 | **Performance / load**           | Latency, throughput, resource usage budgets                          | k6, Lighthouse CI, `nx run [project]:bench` targets                      |
 | **Accessibility (a11y)**         | WCAG AA conformance, semantic HTML, focus order                      | axe, Storybook a11y addon, Playwright a11y assertions                    |
 | **Security**                     | Authn/authz boundaries, input validation, OWASP-class regressions    | Targeted unit/integration tests, fuzz harnesses, security-focused E2E    |

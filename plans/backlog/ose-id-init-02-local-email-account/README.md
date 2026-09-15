@@ -65,5 +65,5 @@ authentication state, not an OIDC client session or API bearer token.
 - [Technical design](tech-docs/README.md)
 - [Execution checklist](delivery.md)
 - [Execution learnings](learnings.md)
-- [Prerequisite plan](../ose-id-init-01-foundation/README.md)
+- [Prerequisite plan](../../in-progress/ose-id-init-01-foundation/README.md)
 - [Next plan](../ose-id-init-03-company-tenancy-core/README.md)

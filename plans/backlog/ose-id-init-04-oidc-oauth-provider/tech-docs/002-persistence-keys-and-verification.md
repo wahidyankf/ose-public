@@ -6,7 +6,7 @@ Implement the exact version-resolved OpenIddict application, authorization, scop
 interfaces as infrastructure adapters over SqlKata's PostgreSQL compiler and Npgsql. Register them
 through OpenIddict's supported `Replace*Store` seams. This is required because every protocol row must
 obey the inherited
-[database audit and soft-delete contract](../../ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md),
+[database audit and soft-delete contract](../../../in-progress/ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md),
 including delete/prune operations. EF Core remains migration-time tooling only; no runtime `DbContext`,
 change tracker, `IQueryable`, LINQ-to-database, or generic repository exists. OpenIddict-facing models
 remain infrastructure details rather than Domain, Application, or public API contracts.

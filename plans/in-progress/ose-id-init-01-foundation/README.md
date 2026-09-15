@@ -1,7 +1,7 @@
 # OSE ID Init 01 — Local Foundation
 
-> **Status:** Backlog — first delivery in the OSE ID initialization chain. Execute only after a pure
-> lifecycle move to `plans/in-progress/ose-id-init-01-foundation/` lands on `origin/main`.
+> **Status:** In Progress — first delivery in the OSE ID initialization chain. The lifecycle move to
+> `plans/in-progress/ose-id-init-01-foundation/` has landed; execution starts at Phase 0.
 
 Create the smallest safe OSE ID platform foundation: four registered Nx projects, an ASP.NET Core
 backend, a Next.js web shell, PostgreSQL schema ownership, health/readiness contracts, and one
@@ -77,4 +77,4 @@ create a principal or authorize a product.
 - [Technical design](tech-docs/README.md)
 - [Execution checklist](delivery.md)
 - [Execution learnings](learnings.md)
-- [Next plan: local email account](../ose-id-init-02-local-email-account/README.md)
+- [Next plan: local email account](../../backlog/ose-id-init-02-local-email-account/README.md)

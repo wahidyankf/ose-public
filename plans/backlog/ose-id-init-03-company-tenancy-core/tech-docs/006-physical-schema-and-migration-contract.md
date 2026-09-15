@@ -60,7 +60,7 @@ CURRENT_TIMESTAMP`, `created_by varchar(255) NOT NULL DEFAULT 'system'`, `update
 zone NOT NULL DEFAULT CURRENT_TIMESTAMP`, `updated_by varchar(255) NOT NULL DEFAULT 'system'`,
 `deleted_at timestamp with time zone NULL`, and `deleted_by varchar(255) NULL`. Each has
 `CHECK ((deleted_at IS NULL) = (deleted_by IS NULL))`. All tables inherit the OSE ID
-[audit/soft-delete profile](../../ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md):
+[audit/soft-delete profile](../../../in-progress/ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md):
 named update/delete time checks, `BEFORE DELETE` guard, only `ON DELETE RESTRICT`, actor stamping,
 active-row predicates, and no runtime `DELETE`/`TRUNCATE`/DDL privilege. The migration role owns every
 table; the non-owner/non-superuser/`NOBYPASSRLS` application role receives only named DML privileges.

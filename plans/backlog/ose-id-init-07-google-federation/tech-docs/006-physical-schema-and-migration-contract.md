@@ -21,7 +21,7 @@ Both new tables append the existing six columns in this exact order:
 | `deleted_by` | `character varying(255)`   | nullable                             | non-null exactly when `deleted_at` is non-null |
 
 Both tables inherit the OSE ID
-[audit/soft-delete profile](../../ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md),
+[audit/soft-delete profile](../../../in-progress/ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md),
 including named update/delete time checks, active-row predicates, and `BEFORE DELETE` guards.
 `ose_id_migrator` owns every object. `PUBLIC` receives no privilege. `ose_id_app` receives only
 `SELECT, INSERT, UPDATE`; it receives no `DELETE`, `TRUNCATE`, `REFERENCES`, `TRIGGER`, ownership, DDL,

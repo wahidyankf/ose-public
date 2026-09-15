@@ -11,9 +11,10 @@ execution checklist.
 
 ## Active Plans
 
-- [LMS user identity integration](./lms-user/README.md) — blocked until all nine OSE ID initialization
-  plans complete; then integrate LMS as an OIDC client/resource with stable personal/company context
-  mapping and an owned authenticated local stack.
+- [OSE ID Init 01 — Local Foundation](./ose-id-init-01-foundation/README.md) — four registered Nx
+  projects, an ASP.NET Core backend, a Next.js web shell, PostgreSQL schema ownership, health/readiness
+  contracts, and one deterministic local runner; no account, sign-in, OIDC, company, or product
+  authorization behavior.
 
 ## Instructions
 

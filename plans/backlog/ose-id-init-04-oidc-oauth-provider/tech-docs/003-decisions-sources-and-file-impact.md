@@ -47,7 +47,7 @@ clients could bypass it. A backend-rendered MVC UI is viable but rejects the sel
 
 OSE ID-authored source/docs inherit the repository root MIT license. OpenIddict (Apache-2.0) and other
 dependencies retain their own license obligations. Production configuration is absent and fail-closed;
-deployment waits for the `ose-private` Kubernetes plan rather than embedding temporary hosting here.
+deployment waits for the private-sibling Kubernetes plan rather than embedding temporary hosting here.
 
 ## Primary Source Record
 

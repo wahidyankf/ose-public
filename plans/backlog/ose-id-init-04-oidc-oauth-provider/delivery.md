@@ -42,7 +42,7 @@ Phase 0 resolves the predecessor's archived path and confirms
 identity/session/tenancy contracts must match this plan. This backlog plan must then be promoted by a
 pure move to `plans/in-progress/ose-id-init-04-oidc-oauth-provider/` on `origin/main` before execution.
 Production deployment remains outside scope and blocked at minimum by
-`ose-private/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus the then-current
+`private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus the then-current
 platform handoff gates.
 
 ## Parallelization Model

@@ -49,7 +49,7 @@ flowchart LR
 - OIDC/OAuth endpoints, access/ID/refresh tokens, client registration, consent, LMS integration, or BFF.
 - Companies, memberships, invitations, entitlements, RLS tenant policies, or personal/company context.
 - Google or other provider login, passkeys, TOTP, recovery codes, SMS, or production email delivery.
-- Production deployment/configuration. A future deploy plan is blocked at minimum by ose-private
+- Production deployment/configuration. A future deploy plan is blocked at minimum by the private sibling
   `plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and then-current platform handoff gates.
 
 ## Resulting Main State

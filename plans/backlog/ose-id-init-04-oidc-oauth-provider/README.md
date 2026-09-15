@@ -28,7 +28,7 @@ will render the backend-owned authorization transaction.
 ## Non-Goals
 
 - Production deployment, DNS, Kubernetes, cloud key custody, production certificates, or production
-  client registrations. Those wait for the separately planned `ose-private` Kubernetes platform.
+  client registrations. Those wait for the Kubernetes platform planned in the private sibling.
 - Next.js sign-in, consent, context, or account-security UI; Init 05 owns those screens. This slice
   owns only the backend-rendered `GET /connect/logout` confirmation/cancellation surface required to
   prevent logout-by-GET.
@@ -71,5 +71,5 @@ localhost issuer that fails closed outside explicit local/test mode.
 
 - Successor: [first-party web](../ose-id-init-05-first-party-web/README.md).
 - Production deployment remains blocked at minimum on
-  `ose-private/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and then-current
+  `private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and then-current
   platform handoff gates.

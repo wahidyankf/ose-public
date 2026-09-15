@@ -60,7 +60,7 @@ server component, module singleton, temp directory, or local file stores correct
 
 Production-mode configuration checks reject localhost backend/callbacks, local session protection,
 test identities, and absent production prerequisites before the server listens. Actual deployment
-remains blocked at minimum on the `ose-private` K3s cluster plan and then-current handoff gates.
+remains blocked at minimum on the private-sibling K3s cluster plan and then-current handoff gates.
 
 ## Manual Evidence
 

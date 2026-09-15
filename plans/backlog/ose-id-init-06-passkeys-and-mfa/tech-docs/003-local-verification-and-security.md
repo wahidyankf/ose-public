@@ -60,4 +60,4 @@ videos, screenshots, database dumps, and CI artifacts. Leak findings are release
 
 Production deployment is outside scope. Startup rejects localhost RP/origins, test authenticators,
 local data-protection/key settings, and absent production prerequisites. Deployment remains blocked at
-minimum by the `ose-private` K3s cluster plan and the then-current platform handoff gates.
+minimum by the private-sibling K3s cluster plan and the then-current platform handoff gates.

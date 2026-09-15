@@ -90,6 +90,6 @@ risk while remaining safe to merge because it contains no enabled identity behav
 - Delivering an end-user identity experience.
 - Claiming production readiness, high availability, regulatory compliance, or zero operating cost.
 - Selecting production email, secrets, Kubernetes, database, telemetry, or incident platforms.
-- Starting a deploy plan before ose-private
+- Starting a deploy plan before the private sibling
   `plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and then-current platform handoff
   gates have completed.

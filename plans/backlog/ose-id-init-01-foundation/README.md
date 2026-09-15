@@ -50,7 +50,7 @@ runtime guard, database ownership, health model, and local-runner interface inst
   `http://127.0.0.1:8501` (`OSE_ID_BE_PORT=8501`), and PostgreSQL `127.0.0.1:5438`
   (`OSE_ID_POSTGRES_PORT=5438`).
 - Reject non-local runtime modes because production deployment, secrets, networking, HA, and Kubernetes
-  integration belong to a later plan blocked at minimum on ose-private
+  integration belong to a later plan blocked at minimum on the private sibling
   `plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus then-current platform handoff gates.
 
 ## Non-Goals

@@ -54,7 +54,7 @@ renders safe state.
 - OIDC `amr`/freshness reflect completed methods, not requested or configured methods.
 - No Google/Facebook provider enters this milestone.
 - Local/test mode is explicit; production fails closed until a future deploy plan, blocked at minimum on
-  `ose-private/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and its then-current
+  `private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and its then-current
   platform handoff gates.
 - OSE-authored source/docs inherit root MIT; dependencies retain their own licenses.
 - At least 99% Unit line coverage is required for authored C# and TypeScript production code, with only

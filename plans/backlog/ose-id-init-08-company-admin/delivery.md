@@ -725,5 +725,5 @@ process/container/network/volume/temp-secret inventories are empty.
 
 > **Pause Safety:** after merge and terminal audit, the delivery is complete. Before merge, retain the
 > worktree. Safe to stop. To resume: `rtk git status --short` and reconcile it with the branch inventory.
-> Deployment is outside this plan and blocked at minimum on ose-private
+> Deployment is outside this plan and blocked at minimum on the private sibling
 > `plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus then-current handoff gates.

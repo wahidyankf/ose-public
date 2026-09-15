@@ -42,7 +42,7 @@ revocation. Instance-local state is rejected. Redis remains a future measured op
 OSE-authored source/docs inherit the root MIT license; framework/browser libraries retain their own
 licenses. Production WebAuthn RP/domain, key custody, support, operations, and deployment wait for a
 future deploy plan blocked at minimum by
-`ose-private/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus then-current
+`private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus then-current
 platform handoff gates.
 
 ## Primary Source and Prior-Art Record
@@ -126,4 +126,4 @@ local-only, and license boundaries are **high confidence**.
 Phase 0 resolves exact test/project paths, framework APIs, database tables, feature-gate mechanism,
 locale set, browser support, and generated ownership. Any rule/enforcement edit triggers full rules
 propagation. This plan excludes social providers, company admin, LMS source, production environment
-files, deployment workflows/manifests, Kubernetes, and edits to `ose-private`.
+files, deployment workflows/manifests, Kubernetes, and edits to the private sibling.

@@ -25,7 +25,7 @@ local-only operation. This slice preserves those decisions while moving credenti
   compatibility, or future RLS.
 - Docker Compose alone may remain an implementation detail, but Nx owns the developer interface so
   dependency order, evidence, and cleanup integrate with repository targets.
-- Kubernetes manifests are deferred until ose-private
+- Kubernetes manifests are deferred until the private sibling
   `plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus then-current platform handoff
   gates are complete and a public OSE ID production plan defines environment contracts.
 

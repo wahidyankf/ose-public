@@ -99,7 +99,7 @@ type EnvBackupProcessSteps() =
         File.CreateSymbolicLink(Path.Combine(root, ".env.symlink"), Path.Combine(root, "target.txt"))
         |> ignore
 
-        File.WriteAllBytes(Path.Combine(root, ".env.large"), Array.zeroCreate<byte> (1024 * 1024 + 1))
+        File.WriteAllBytes(Path.Combine(root, ".env.large"), Array.zeroCreate<byte>(1024 * 1024 + 1))
         write root ".env" "regular=1"
 
     [<Given>]

@@ -57,7 +57,8 @@ module Infrastructure =
           UpdatedAt = r.UpdatedAt }
 
     /// Builds the EF-backed journal repository over an AppDbContext.
-    [<ExcludeFromCodeCoverage(Justification = "Integration-tested against real PostgreSQL — see tests/integration/JournalRepositoryTests.fs")>]
+    [<ExcludeFromCodeCoverage(Justification =
+        "Integration-tested against real PostgreSQL — see tests/integration/JournalRepositoryTests.fs")>]
     let efRepository (db: AppDbContext) : JournalRepository =
         { Create =
             fun row ->
@@ -78,14 +79,16 @@ module Infrastructure =
           List =
             fun () ->
                 task {
-                    let! rows = db.JournalEntries.AsNoTracking().OrderByDescending(fun e -> e.CreatedAt).ToListAsync()
+                    let! rows =
+                        db.JournalEntries.AsNoTracking().OrderByDescending(fun e -> e.CreatedAt).ToListAsync()
 
                     return rows |> Seq.map toRow |> List.ofSeq
                 }
           Update =
             fun row ->
                 task {
-                    let! existing = db.JournalEntries.AsNoTracking().FirstOrDefaultAsync(fun e -> e.Id = row.Id)
+                    let! existing =
+                        db.JournalEntries.AsNoTracking().FirstOrDefaultAsync(fun e -> e.Id = row.Id)
 
                     match Option.ofObj (box existing) with
                     | None -> return None

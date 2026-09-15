@@ -114,6 +114,7 @@ type RustDelegationResourceSteps() =
 
     let mutable exitCode: int option = None
     let mutable stdout = ""
+    let mutable brokenTree = false
     let mutable stderr = ""
     let mutable gatesYaml = ""
     let mutable rowsYaml = ""
@@ -182,6 +183,7 @@ type RustDelegationResourceSteps() =
 
         write "docs/guide.md" (sprintf "# Guide\n\nSee [the manual](./manual.md%s).\n" anchor)
         write "docs/manual.md" "# Manual\n"
+        brokenTree <- (tree <> "whose links all resolve")
 
     [<Given>]
     member _.``a pre-commit gate "([^"]*)" running "([^"]*)" for staged "([^"]*)" files``
@@ -363,10 +365,12 @@ type RustDelegationResourceSteps() =
     member _.``the rhino-cli links report (follows RHINO's output|is not printed)``(report: string) =
         Assert.Equal("rhino done\n", File.ReadAllText printFile)
 
-        if report = "is not printed" then
-            Assert.Equal("", stdout)
-        else
-            Assert.NotEqual<string>("", stdout)
+        match report with
+        | "is not printed" -> Assert.Equal("", stdout)
+        | _ when brokenTree ->
+            Assert.StartsWith("# Broken Links Report\n", stdout)
+            Assert.Contains("guide.md", stdout)
+        | _ -> Assert.Equal("All links valid! No broken links found.\n", stdout)
 
     [<Then>]
     member _.``gate validation passes``() =

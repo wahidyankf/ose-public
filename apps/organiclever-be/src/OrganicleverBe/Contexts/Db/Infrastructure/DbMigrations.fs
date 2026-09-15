@@ -20,7 +20,8 @@ module Infrastructure =
     /// Applies all pending embedded migrations to the given PostgreSQL connection
     /// string. The migration scripts live as embedded resources in the
     /// OrganicleverBe assembly. Fails fast if any script cannot be applied.
-    [<ExcludeFromCodeCoverage(Justification = "Integration-tested against real PostgreSQL — see tests/integration/DatabaseBootTests.fs")>]
+    [<ExcludeFromCodeCoverage(Justification =
+        "Integration-tested against real PostgreSQL — see tests/integration/DatabaseBootTests.fs")>]
     let runMigrations (connStr: string) : unit =
         runMigrationsWith
             (fun connectionString ->

@@ -527,8 +527,17 @@ type GateExecutionSteps() =
     [<Given>]
     member _.``a rhino-cli gate matches staged files "a.md" and "b.md"``() =
         initGit ()
-        write "a.md" "# A\n"
-        write "b.md" "# B\n"
+        // md mermaid validate is a file-scoped split: RHINO receives one --file per derived file that holds a
+        // diagram, so a recording stub shows exactly which files the gate derived.
+        write "rhino" "#!/bin/sh\nprintf '%s\\n' \"$*\" >> \"$(dirname \"$0\")/rhino-argv.txt\"\nexit 0\n"
+        makeExecutable (Path.Combine(root, "rhino"))
+
+        let diagram =
+            "# Diagram\n\n```mermaid\nflowchart TD\n    A[Start] --> B[End]\n```\n"
+
+        write "a.md" diagram
+        write "b.md" diagram
+        write "c.md" diagram
 
         write
             "repo-config.yml"
@@ -550,6 +559,11 @@ type GateExecutionSteps() =
     [<Then>]
     member _.``the local rhino-cli leaf receives only "a.md" and "b.md"``() =
         Assert.True(isSuccess (), sprintf "rhino-cli leaf failed: %s" output)
+
+        Assert.Equal(
+            "md mermaid validate --file a.md --file b.md\n",
+            File.ReadAllText(Path.Combine(root, "rhino-argv.txt"))
+        )
 
     // --- External kind preserves fixed argv before files / Nx delegation ---
 

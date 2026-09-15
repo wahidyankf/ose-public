@@ -12,5 +12,6 @@ open OseBe.Infrastructure.Repositories.EfRepositories
 module Infrastructure =
 
     /// The EF-backed document repository for this context.
-    [<ExcludeFromCodeCoverage(Justification = "Integration-tested against real PostgreSQL — see tests/integration/DatabaseBootTests.fs")>]
+    [<ExcludeFromCodeCoverage(Justification =
+        "Integration-tested against real PostgreSQL — see tests/integration/DatabaseBootTests.fs")>]
     let repository (db: AppDbContext) : InternalPolicyDocumentRepository = internalPolicyDocumentRepository db

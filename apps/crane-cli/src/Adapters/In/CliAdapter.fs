@@ -388,7 +388,8 @@ let private assemblyVersion () =
 
 // ---- Public entry point ----
 
-[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification = "Integration-tested via CLI scenarios; composition root dispatching is not unit-tested")>]
+[<System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage(Justification =
+    "Integration-tested via CLI scenarios; composition root dispatching is not unit-tested")>]
 let run (pdfAdapter: IPdfPort) (argv: string[]) : int =
     if Array.exists (fun a -> a = "--version" || a = "-V") argv then
         printfn "%s" (assemblyVersion ())

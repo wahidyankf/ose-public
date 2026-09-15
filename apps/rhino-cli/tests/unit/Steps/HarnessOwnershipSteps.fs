@@ -187,8 +187,7 @@ let ``unclassified ownership is falsifiable`` () =
         s.``a tracked file with no declared class is introduced under a binding directory`` ()
         s.``rhino-cli harness ownership validate exits non-zero naming that exact file as unclassified`` ()
 
-        s
-            .``it exits 0 once the file is removed, proving the check is falsifiable in both directions rather than always-green`` ())
+        s.``it exits 0 once the file is removed, proving the check is falsifiable in both directions rather than always-green`` ())
 
 [<Fact>]
 let ``generated ownership has a byte guard`` () =
@@ -204,8 +203,7 @@ let ``vendored ownership preserves external content`` () =
         s.``a fixture repository declaring one vendored skill directory with a recorded reason`` ()
         s.``the vendored file is hand-edited`` ()
 
-        s
-            .``rhino-cli harness ownership validate still exits 0, because a vendored path has no in-repo source to compare against`` ()
+        s.``rhino-cli harness ownership validate still exits 0, because a vendored path has no in-repo source to compare against`` ()
 
         s.``the vendored file is still present, so nothing deleted it in passing`` ())
 
@@ -216,8 +214,7 @@ let ``source ownership cannot be emitted into`` () =
         s.``rhino-cli harness bindings generate runs`` ()
         s.``every declared source path is byte-identical to what it was before the run`` ()
 
-        s
-            .``a registry declaring an emitter output directory as source makes the generator refuse rather than silently succeed`` ())
+        s.``a registry declaring an emitter output directory as source makes the generator refuse rather than silently succeed`` ())
 
 [<Fact>]
 let ``all tracked binding files are classified`` () =

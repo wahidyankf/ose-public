@@ -144,7 +144,7 @@ type EnvSteps() =
         let targetFile = Path.Combine(dir, "target.txt")
         File.WriteAllText(targetFile, "target contents")
         File.CreateSymbolicLink(Path.Combine(dir, ".env.symlink"), targetFile) |> ignore
-        File.WriteAllBytes(Path.Combine(dir, ".env.large"), Array.zeroCreate<byte> (int DefaultMaxSize + 1))
+        File.WriteAllBytes(Path.Combine(dir, ".env.large"), Array.zeroCreate<byte>(int DefaultMaxSize + 1))
         writeFile dir ".env" "regular=1"
 
     [<Given>]

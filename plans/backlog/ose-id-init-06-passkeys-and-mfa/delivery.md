@@ -37,8 +37,8 @@ Phase 0 resolves the predecessor's archived path and proves `ose-id-init-05-firs
 on current `origin/main`, including secure BFF, account-security shell, locales, and UI contracts. This
 plan's pure backlog→in-progress promotion must be on `origin/main` before execution. Production
 deployment remains outside scope and blocked at minimum on
-`ose-private/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus then-current
-platform handoff gates; this plan does not edit `ose-private`.
+`private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus then-current
+platform handoff gates; this plan does not edit the private sibling.
 
 ## Parallelization Model
 

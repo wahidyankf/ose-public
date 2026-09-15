@@ -34,7 +34,7 @@ series does not deploy the service.
 
 Plans 06, 07, and 08 are independent siblings after Plan 05. Plan 09 joins them; only after Plan 09
 may the blocked [`lms-user`](../in-progress/lms-user/README.md) plan execute. A future OSE ID deployment
-plan is outside this series and must wait for the Kubernetes foundation in `ose-private`, beginning with
+plan is outside this series and must wait for the Kubernetes foundation in the private sibling, beginning with
 `start-infra-04-deploy-tencent-lighthouse-k3s-cluster`, plus any then-current platform handoff gates.
 
 Three waves emptied this queue:

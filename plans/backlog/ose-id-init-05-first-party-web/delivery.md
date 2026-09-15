@@ -37,8 +37,8 @@ Phase 0 resolves the archived predecessor path and proves `ose-id-init-04-oidc-o
 complete on `origin/main` with the expected transaction, client, context, consent, and startup-guard
 contracts. This plan's pure backlog→in-progress promotion must be on `origin/main` before execution.
 Production deployment remains outside scope and blocked at minimum by
-`ose-private/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster`, followed by the
-then-current platform handoff gates. This plan does not modify `ose-private`.
+`private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster`, followed by the
+then-current platform handoff gates. This plan does not modify the private sibling.
 
 ## Parallelization Model
 

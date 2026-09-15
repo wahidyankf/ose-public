@@ -53,7 +53,7 @@ aggregates/commands/queries; persistence mapping; migrations; RLS; notification/
 
 OSE-authored source/docs inherit root MIT; dependencies and assets retain their own licenses. No
 Kubernetes, deployment workflow, production config/mail, DNS, cloud secret, or operator network belongs
-here. A future deploy plan is blocked at minimum on ose-private
+here. A future deploy plan is blocked at minimum on the private sibling
 `plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` plus then-current handoff gates.
 
 Rollback disables the guarded web routes/adapters; it does not change Plan 03 data or security behavior.

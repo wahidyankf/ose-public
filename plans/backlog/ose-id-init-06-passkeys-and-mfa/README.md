@@ -20,7 +20,7 @@ truthful authentication-method/freshness claims.
 - Local-run-only delivery; production startup rejects localhost/test authenticator configuration.
 - OSE ID source/docs inherit the repository MIT license; dependencies retain their own licenses.
 - Production deployment waits at minimum for
-  `ose-private/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and the then-current
+  `private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and the then-current
   platform handoff gates.
 
 ## Non-Goals

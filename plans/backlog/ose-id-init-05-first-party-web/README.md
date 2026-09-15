@@ -21,7 +21,7 @@ Init 04; it never becomes a second identity or authorization authority.
 - Local-run-only composition. Production startup remains fail-closed and deployment remains deferred.
 - OSE ID source/docs inherit the root MIT license; dependencies keep their upstream licenses.
 - Production deployment waits at minimum for
-  `ose-private/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and the then-current
+  `private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and the then-current
   platform handoff gates.
 
 ## Non-Goals

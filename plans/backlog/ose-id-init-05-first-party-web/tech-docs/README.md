@@ -54,7 +54,7 @@ TypeScript/React stack; identity and authorization policy do not move into JavaS
 - No inactive Google, Facebook, passkey, or MFA control appears in this milestone.
 - Web processes are stateless; no request depends on local disk, mutable process memory, or affinity.
 - Local/test mode is explicit. Production fails before listen until a future deploy plan, blocked at
-  minimum on `ose-private/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and its
+  minimum on `private-sibling/plans/backlog/start-infra-04-deploy-tencent-lighthouse-k3s-cluster` and its
   then-current platform handoff gates.
 - OSE-authored source/docs inherit the root MIT license; dependencies keep their own licenses.
 - At least 99% Unit line coverage is required for authored production code, with only canonical

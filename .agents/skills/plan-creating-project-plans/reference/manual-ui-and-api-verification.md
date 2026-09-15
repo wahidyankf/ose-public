@@ -1,4 +1,4 @@
-# Manual Behavioural Assertions — UI (Playwright) and API (curl)
+# Manual Behavioural Assertions — UI and API Wire Boundaries
 
 When the plan touches web UI or API code, delivery plans MUST include manual assertion sections.
 **Two hard requirements bind every manual-assertion section:**
@@ -9,7 +9,12 @@ When the plan touches web UI or API code, delivery plans MUST include manual ass
    is INCOMPLETE.
 2. **Evidence capture** — every manual-verification step produces a committed artifact: screenshots
    in the plan's `evidence/` subfolder (named `phase-N-<description>-<locale>-<breakpoint>px.png`),
-   curl responses inlined in `delivery.md`. See the
+   HTTP curl and non-HTTP native-client results inlined in `delivery.md` or saved as named sanitized evidence. For every changed
+   HTTP-accessible operation, the plan supplies literal `rtk curl` commands for success and at least one representative
+   failure plus exact expected status, headers, media type, body/schema, fixture, evidence, cleanup,
+   and failure routing. For every changed non-HTTP RPC/event operation, supply equivalent success/failure
+   recipes using its protocol-native wire client. A prose placeholder or one exchange standing in for
+   several cases is incomplete. See the
    [Evidence Capture Convention](../../../../repo-governance/development/quality/evidence-capture.md).
 
 ## For Web UI Plans — Playwright MCP
@@ -30,17 +35,18 @@ When the plan touches web UI or API code, delivery plans MUST include manual ass
 - [ ] [AI] Document evidence in this checklist: reference each screenshot (`![alt](./evidence/...)`)
 ```
 
-## For API Plans — curl
+## For API Plans — HTTP curl or Non-HTTP Native Client
 
 ```markdown
-### Manual API Verification (curl)
+### Manual API Wire Verification
 
 - [ ] [AI] Start backend server: `rtk ./hippo run --class service --disk-path . -- npm exec nx -- dev [project-name]`
-- [ ] [AI] Verify health endpoint: `curl -s http://localhost:[port]/api/health | jq .` — paste response inline
-- [ ] [AI] Verify affected endpoints return expected responses — paste command + status + body inline
-- [ ] [AI] Test error cases with invalid payloads — verify proper error responses
+- [ ] [AI] Verify health endpoint: `rtk curl -sS -D <headers-file> -o <body-file> http://127.0.0.1:<port>/health/ready`; assert the documented status, headers, media type, and body/schema.
+- [ ] [AI] For every changed HTTP-accessible operation, run its fully written `rtk curl` success command and assert the documented response; do not leave method, URL, headers, body, or fixture to discovery.
+- [ ] [AI] For every changed HTTP-accessible operation, run at least one fully written representative failure command and assert its status, headers, media type, body/schema or redirect, and documented transport-native error code.
+- [ ] [AI] For every changed non-HTTP RPC/event operation, run its fully written protocol-native client success and representative failure recipes and assert the same wire-level contract.
 - [ ] [AI] For locale-sensitive responses, verify each locale via `Accept-Language` header
-- [ ] [AI] Document evidence: inline curl command + status + body (or save responses > 20 lines to `evidence/`)
+- [ ] [AI] Document a distinct sanitized evidence row/file for each operation and case, then run the written cleanup; route any mismatch to the named operation owner.
 ```
 
 ## For Full-Stack Plans — Both + End-to-End

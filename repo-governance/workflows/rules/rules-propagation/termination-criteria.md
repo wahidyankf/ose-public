@@ -56,8 +56,8 @@ commitment to ship them together.
 - Weakening, generalizing, omitting, or ambiguously paraphrasing any obligation, named audience,
   strength, scope, boundary, exception, pass/violation condition, or enforcement disposition to make
   a word counter pass.
-- Declaring the composed quality gate's pre-existing findings as this run's, or this run's findings
-  as pre-existing, without demonstrating the baseline.
+- Declaring a deterministic gate's or direct checker's pre-existing findings as this run's, or this
+  run's findings as pre-existing, without demonstrating the baseline.
 
 ## Related Documents
 

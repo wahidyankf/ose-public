@@ -23,4 +23,6 @@ This practice implements/respects the following conventions:
 
 - **[Code Quality Convention](.././code.md)**: Automated quality gates (typecheck, lint, test:quick) catch code-level issues. Manual verification catches behavioural issues that survive those gates. Together they form a complete quality boundary.
 
-- **[Evidence Capture Convention](.././evidence-capture.md)**: Manual verification must leave a committed record — screenshots in the plan's `evidence/` subfolder, curl outputs inline in `delivery.md`. "Verified manually" without a record is incomplete.
+- **[Evidence Capture Convention](.././evidence-capture.md)**: Manual verification leaves a committed
+  record: screenshots for UI and independently attributable HTTP curl or non-HTTP native-client wire
+  results for APIs. "Verified manually" without a record is incomplete.

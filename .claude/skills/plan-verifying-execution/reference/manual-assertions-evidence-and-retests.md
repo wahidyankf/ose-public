@@ -3,9 +3,12 @@
 1. **Evidence Capture**
    - Verify each ticked manual-verification checkbox carries committed evidence: **Screenshots** —
      the plan's `evidence/` subfolder contains at least one screenshot per locale per breakpoint
-     tested, and `delivery.md` references them; **curl** — API-verification notes contain the
-     command, HTTP status, and response body.
-   - A bare "verified manually" note with NO screenshot and NO curl response: **HIGH** finding
+     tested, and `delivery.md` references them; **API wire evidence** — every changed HTTP-accessible
+     operation has separately attributable sanitized success/failure evidence for the literal `rtk curl`
+     recipes, including asserted status, headers, media type, body/schema, and stable failure code. Every
+     changed non-HTTP RPC/event operation has equivalent evidence from its protocol-native wire client.
+     Evidence identifies the synthetic fixture, cleanup result, and owner of any mismatch.
+   - A bare "verified manually" note with no screenshot or per-operation wire evidence: **HIGH** finding
    - UI-verification checkbox ticked but `evidence/` has zero screenshots for it: **HIGH** finding
 
 2. **Rule-15 Three-Tester Retest (web-UI feature-change plans)**
@@ -44,5 +47,5 @@
 - Missing manual API verification for API changes: **HIGH**
 - End-to-end flow broken: **CRITICAL**
 - Verification covered only the default locale on a multi-locale app: **HIGH**
-- "Verified manually" with no committed evidence (no screenshot, no curl output): **HIGH**
+- "Verified manually" with no committed evidence (no screenshot or per-operation wire output): **HIGH**
 - UI-verification checkbox ticked but no screenshot in `evidence/`: **HIGH**

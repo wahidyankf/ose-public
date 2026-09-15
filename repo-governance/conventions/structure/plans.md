@@ -41,6 +41,7 @@ Standards for organizing planning documents in `plans/` — temporary, distinct 
 - [Additional File Purposes](./plans/multi-file-structure-additional-file-purposes.md) — technical shape, delivery, learnings, and evidence.
 - [Comprehensive Decision Records](./plans/comprehensive-decision-records.md) — substantive solution choices, alternatives, and prior art without editorial iteration history.
 - [Schema and Migration Contracts](./plans/schema-and-migration-contracts.md) — required contracts for persisted-data changes.
+- [API Contract Delta](./plans/api-contract-delta.md) — the numbered operation contract required for API changes and API-adjacent evidenced no-delta decisions.
 - [Delivery Reconciliation and Conditional Recovery](./plans/delivery-reconciliation-and-recovery.md) — Places governance and architecture reconciliation with the change and gives conditional recovery work explicit terminal states. Use when delivery may change repository rules, documented C4 elements, or invoke rollback/recovery work.
 - [File-Impact Analysis Format](./plans/file-impact-analysis-format.md) — annotated file tree.
 - [The Knowledge Capture Phase](./plans/the-knowledge-capture-phase.md) — final phase.

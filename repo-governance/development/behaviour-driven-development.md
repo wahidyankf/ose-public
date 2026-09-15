@@ -5,10 +5,18 @@ when_to_use: "Use before changing observable behaviour, adding a test adapter, o
 
 # Behaviour-Driven Development
 
-Every testable application, library, and executable tool expresses observable behaviour in
-canonical Gherkin `.feature` files below `specs/apps/` or `specs/libs/`. Discover the corpus
-recursively; never maintain a second registration list. A dedicated E2E project implements its
-owner's corpus and never owns an independent specification.
+Every testable application, library, and executable tool expresses observable behaviour in canonical
+Gherkin `.feature` files below `specs/apps/` or `specs/libs/`. Discover the corpus recursively; never
+maintain another list. Dedicated E2E projects implement their owner's corpus, not an independent spec.
+
+Canonical Gherkin uses its owner's durable domain language. A Feature,
+Rule, Background, Scenario, Scenario Outline, Examples table, step, comment, or tag destined for
+`specs/` must exclude plan-specific slugs, plan numbers, plan phases, plan delivery-unit names, and
+plan-specific acceptance-criterion identifiers. Plans expire; owner corpora do not. Plans map
+requirements to scenario titles and owner-relative feature paths outside copy-ready Gherkin.
+
+**Unenforced by decision:** plan and specs checkers review this semantically because keyword gates
+would misclassify domain terms.
 
 ## Principles Implemented/Respected
 
@@ -75,8 +83,8 @@ permission alone does not make a test E2E; it must observe the public boundary.
 
 Every scenario requires explicit `When` and `Then` steps. A scenario may repeat primary keywords
 when they express one continuous user journey; do not split an existing journey merely for
-keyword uniformity. Each expanded Scenario Outline example counts separately. Each non-exempt scenario must resolve exactly once in every
-applicable adapter, every step must have exactly one binding, and every binding must be used.
+keyword uniformity. Each expanded Scenario Outline example counts separately. Each non-exempt scenario
+resolves exactly once in every applicable adapter; every step has one binding, and every binding is used.
 
 - [BDD Coverage, Exemptions, and Execution](./behaviour-driven-development/coverage-exemptions-and-execution.md) — Static coverage targets, higher-layer exemptions, test:quick composition, and runtime execution surfaces. Use when defining BDD coverage targets, documenting an Integration/E2E exemption, or selecting a runtime execution surface.
 

@@ -55,4 +55,7 @@ The plan-execution-checker validates:
   - **Thematic commits**: Authorized changes use the fewest build-valid, independently reviewable
     and revertible coherent commits, with required completion artifacts kept together
   - **Environment setup performed**: Evidence that dev environment was set up before implementation began
-  - **Manual behavioural assertions**: Playwright MCP was used to verify web UI changes (navigation, DOM, console errors, screenshots); curl was used to verify API changes (status codes, response shapes, error cases). Documented in delivery.md.
+  - **Manual behavioural assertions**: Real-browser tooling verified UI changes. Every changed HTTP
+    operation ran its planned `rtk curl` success/failure recipes; changed non-HTTP RPC/events ran their
+    planned protocol-native equivalents. Assertions and independently attributable evidence are in
+    `delivery.md`.

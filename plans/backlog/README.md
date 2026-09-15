@@ -14,9 +14,28 @@ step-by-step execution record.
 
 ## Planned Projects
 
-**The queue is empty.** Every proposed piece of work currently lives as a two-pager idea brief in
-[`../ideas/`](../ideas/README.md), sorted into Eisenhower quadrants. Promote one here when it is
-ripe — when its open questions have shrunk to ones only a full plan can answer.
+### OSE ID initialization series
+
+The original OSE Identity/CIAM idea is split into nine independently reviewable, local-only plans. OSE
+ID source code is MIT licensed. Every intermediate state is production-disabled and fail-closed; this
+series does not deploy the service.
+
+| Order | Plan                                                                                  | Locally verifiable outcome                                                           | Depends on |
+| ----: | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------- |
+|     1 | [Foundation](./ose-id-init-01-foundation/README.md)                                   | Four projects, PostgreSQL, migrations, health/readiness, and an owned local runner   | —          |
+|     2 | [Local email account](./ose-id-init-02-local-email-account/README.md)                 | Backend registration, verification, password sign-in/recovery, sessions, and Mailpit | 01         |
+|     3 | [Company tenancy core](./ose-id-init-03-company-tenancy-core/README.md)               | Personal/company contexts, memberships, entitlements, invitations, and RLS           | 02         |
+|     4 | [OIDC/OAuth provider](./ose-id-init-04-oidc-oauth-provider/README.md)                 | OpenIddict, PKCE, consent contract, audiences/scopes, and context-bound claims       | 03         |
+|     5 | [First-party web](./ose-id-init-05-first-party-web/README.md)                         | Identifier-first Next.js/BFF sign-in, recovery, consent, and context UI              | 04         |
+|     6 | [Passkeys and MFA](./ose-id-init-06-passkeys-and-mfa/README.md)                       | Passkeys, TOTP, and recovery codes                                                   | 05         |
+|     7 | [Google federation](./ose-id-init-07-google-federation/README.md)                     | Google-only upstream login and deterministic fake-provider proof                     | 05         |
+|     8 | [Company admin](./ose-id-init-08-company-admin/README.md)                             | Company-scoped member, invitation, and entitlement administration                    | 05         |
+|     9 | [Local scale and composition](./ose-id-init-09-local-scale-and-composition/README.md) | No-affinity multi-instance proof and reusable dependent-app stack contract           | 06, 07, 08 |
+
+Plans 06, 07, and 08 are independent siblings after Plan 05. Plan 09 joins them; only after Plan 09
+may the blocked [`lms-user`](../in-progress/lms-user/README.md) plan execute. A future OSE ID deployment
+plan is outside this series and must wait for the Kubernetes foundation in `ose-private`, beginning with
+`start-infra-04-deploy-tencent-lighthouse-k3s-cluster`, plus any then-current platform handoff gates.
 
 Three waves emptied this queue:
 
@@ -65,7 +84,8 @@ instruction to a plan creates an exception — the promotion path below is the o
 When promoting a two-pager to a plan:
 
 1. Create folder: `[project-identifier]/`
-2. Add standard files: README.md, brd.md, prd.md, tech-docs.md, delivery.md — carrying the
-   two-pager's problem, scope, and open questions forward
+2. Add `README.md`, `brd.md`, `prd.md`, `delivery.md`, and either a compact `tech-docs.md` or, for a
+   substantial design, `tech-docs/README.md` plus numbered topic documents. Carry the two-pager's
+   problem, scope, decisions, and open questions forward.
 3. Add the plan to this list
 4. Delete the two-pager from `../ideas/` and drop its line from `../ideas/README.md`

@@ -8,7 +8,7 @@ when_to_use: "Use when you need a related workflow or convention document."
 **Related Conventions:**
 
 - [Manual Behavioural Verification](.././manual-behavioural-verification.md) — the visual/behavioural verification baseline this hardens.
-- [Evidence Capture Convention](.././evidence-capture.md) — where and how to store committed verification evidence: screenshots in `evidence/`, curl outputs inline in `delivery.md`, locale and breakpoint coverage requirements.
+- [Evidence Capture Convention](.././evidence-capture.md) — where and how to store committed verification evidence: screenshots in `evidence/`, HTTP or native wire results inline or saved as named sanitized evidence, and locale/breakpoint coverage requirements.
 - [Feature Change Completeness](.././feature-change-completeness.md) — completeness for app/lib changes.
 - [Test-Driven Development](../../workflow/test-driven-development.md) — RED/GREEN/REFACTOR shape and value-bearing tests.
 - [UI Mockups in Plan Docs](../../../conventions/formatting/diagrams.md) — both-tiers mockups, design funnel, theme-token colors.

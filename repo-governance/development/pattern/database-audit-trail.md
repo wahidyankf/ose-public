@@ -8,6 +8,13 @@ when_to_use: "Use when creating a database table or migration."
 Every database table in open-sharia-enterprise MUST include six audit trail columns recording who created,
 updated, and soft-deleted each row, and when.
 
+Hard deletion of audited rows is forbidden. Removal must update both `deleted_at` and `deleted_by`;
+ordinary queries must exclude rows whose `deleted_at` is non-null.
+
+**Enforcement disposition:** Unenforced by decision. Schema and persistence reviewers must verify
+the live database catalog and every language-specific write/query path because static prose checks
+cannot prove runtime migrations, indirect cascades, or generated SQL behaviour.
+
 ## Contents
 
 - [Principles and Conventions](./database-audit-trail/principles-and-conventions.md) — The core principles and conventions this pattern implements - explicit metadata, automated migrations, reproducibility, and documentation-first. Use when you need to trace this pattern's audit-column requirement back to the principles and conventions it implements.

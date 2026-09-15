@@ -1,15 +1,16 @@
 ---
-description: What runs before this workflow, what it composes, and what it hands off to.
+description: What runs before this workflow, its independent quality-gate boundary, and what follows it.
 when_to_use: Use when deciding whether propagation is the right workflow, or what should follow it.
 ---
 
 # Related Workflows
 
-## Composed By This Workflow
+## Independent Quality-Gate Boundary
 
-- **[rules-quality-gate](../rules-quality-gate.md)** — runs at Step 8 as the verifier.
-  It owns repository-wide duplication, contradiction, and traceability detection; this workflow
-  deliberately does not duplicate that scope.
+- **[rules-quality-gate](../rules-quality-gate.md)** — hands confirmed rule-writing work to this
+  workflow but is never invoked from it. Step 8 runs deterministic gates and subject-local semantic
+  closure; a suspected repository-wide concern is checked by invoking `rules-checker` directly and
+  treating any finding as new propagation input. This acyclic boundary prevents circular verdicts.
 
 ## Runs Before
 
@@ -23,9 +24,8 @@ when_to_use: Use when deciding whether propagation is the right workflow, or wha
 
 - **The sibling repository's own propagation.** Step 9 records the obligation; discharging it is a
   separate run in that repository, not a continuation of this one.
-- **[rules-quality-gate](../rules-quality-gate.md), scheduled.** The composed run at
-  Step 8 is scoped to the run's `mode`; the periodic full sweep remains the repository's standing
-  health check.
+- **[rules-quality-gate](../rules-quality-gate.md), scheduled independently.** Its periodic full
+  sweep remains the repository's standing health check; it is not a nested propagation step.
 
 ## Not This Workflow
 

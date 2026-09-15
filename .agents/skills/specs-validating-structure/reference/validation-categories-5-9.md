@@ -21,6 +21,11 @@ links validate`; do not substitute LLM path arithmetic.
 no consuming implementation (acceptable for new areas). **LOW**: implementation exists but spec
 area doesn't mention it.
 
+Canonical Feature, Rule, Background, Scenario, Scenario Outline, Examples, step, comment, and tag
+content must use the owning app/lib's durable domain language. A plan slug, plan number, phase,
+delivery-unit name, or plan acceptance-criterion identifier in canonical Gherkin is **HIGH**: report
+the exact feature/scenario and require the plan metadata to move to its external traceability map.
+
 ## Category 8: Spec Tree Shape Compliance [Deterministic via rhino-cli]
 
 Outside delegated quality-gate runs, shell out to `rhino-cli specs structure validate <app>`, parse

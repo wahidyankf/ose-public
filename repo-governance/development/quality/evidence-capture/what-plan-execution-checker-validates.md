@@ -13,7 +13,8 @@ capture as part of Step 7 (Manual Behavioural Assertions). It checks:
 2. **Delivery.md references evidence** — implementation notes under ticked UI-verification
    checkboxes contain `![...]` references or explicit `evidence/` file paths.
 3. **Locale coverage** — for multi-locale apps, evidence covers ALL supported locales.
-4. **curl evidence** — for API verification steps, implementation notes contain the command,
-   status code, and response body (inline or referenced).
+4. **API wire evidence** — each changed HTTP operation records its `rtk curl` success/failure commands,
+   status/headers/media type/body, and evidence; each changed non-HTTP RPC/event records equivalent
+   protocol-native invocations and results.
 5. **No "verified manually" without evidence** — a bare "verified manually" note with no
-   screenshot and no curl response is a **HIGH** finding.
+   screenshot and no attributable HTTP/non-HTTP API wire result is a **HIGH** finding.

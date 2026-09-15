@@ -42,3 +42,18 @@ companions. Reader jobs, cohesion, navigation, and ownership decide the shape; l
 New formal plans never collapse to a single README. Simple work uses the harness task list; early
 ideas use an explicitly requested brief. Archived plans and the existing Rhino plan retain their
 recorded contract.
+
+An API-affecting mature plan must choose the directory form and map exactly one separately numbered
+`NNN-api-contract-delta.md`. The document covers HTTP, BFF, RPC, event, and standard protocol
+operations with the navigation index and complete per-operation request, response, error, security,
+compatibility, and example packets required by the
+[API Contract Delta convention](../../../../repo-governance/conventions/structure/plans/api-contract-delta.md).
+Each operation includes full Gherkin scenarios or an exact anchor to its one-to-one detailed set in
+the same API document or the plan's dedicated numbered BDD/spec-delta companion in the same
+`tech-docs/` folder. The packet names exact scenario IDs/titles, canonical `specs/**` destination, and
+Unit/Integration/E2E disposition; the set covers success, validation, authorization/context, errors,
+replay/concurrency, and privacy. Summary tables, generic BDD-map links, prose pointers, and other
+external pointers are incomplete. Every structured serialized example uses its own
+language-labelled fenced block; never compress a request, response, event, message, manifest,
+descriptor, or problem payload into inline code.
+An API-adjacent plan that changes no contract records an evidenced no-delta disposition there.

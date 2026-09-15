@@ -1,6 +1,8 @@
-<!-- Append observations during execution; do not rewrite prior entries. -->
-<!-- Each entry needs evidence, a durable-home candidate, and a terminal disposition in Knowledge Capture. -->
+# Learnings — LMS User Identity Integration
 
-# Learnings: lms-user
+The plan was revised before execution after the shared OSE ID architecture became the upstream
+decision, and again when that architecture was split into nine independently reviewable initialization
+plans. The former LMS-local credential/JWT design was not implemented and has no migration burden.
 
-No execution learnings recorded yet.
+During execution, record only new observations. The final phase must route, report, or discard every
+entry with a terminal disposition.

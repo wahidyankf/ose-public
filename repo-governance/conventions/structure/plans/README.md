@@ -26,6 +26,7 @@ when_to_use: "Read this index to find the right Plans Organization Convention ch
   bootcamp-executable checkbox.
 - [Execution-Grade Clarity](./execution-grade-clarity.md) — Writing or reviewing a delivery.md checkbox for execution-grade clarity.
 - [Schema and Migration Contracts](./schema-and-migration-contracts.md) — Making schema changes, compatibility, migration, rollback, and no-loss proof executable.
+- [API Contract Delta](./api-contract-delta.md) — Requiring a numbered operation contract for API changes and API-adjacent evidenced no-delta decisions.
 - [Delivery Reconciliation and Conditional Recovery](./delivery-reconciliation-and-recovery.md) — Reconciles governance/C4 changes and conditional recovery within delivery.
 - [[AI] vs [HUMAN]](./executor-tagging-tags-and-bias.md) — Deciding whether a delivery.md checkbox should be tagged [AI], [HUMAN], or [AI+HUMAN].
 - [Git-Mechanical Steps Are [AI]](./executor-tagging-git-mechanical-steps.md) — Tagging a worktree-provisioning, push, or worktree-removal step in delivery.md.

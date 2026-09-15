@@ -21,6 +21,18 @@ Use this checklist when adding a new table or reviewing an existing one.
 - [ ] DbUp `PerformUpgrade()` is called in `Program.fs` before the server starts accepting requests
 - [ ] DbUp result is checked and startup aborts on failure
 
+## Removal and Query Discipline (All Languages and Persistence Tools)
+
+- [ ] No application, migration, maintenance command, foreign-key cascade, or repository path uses
+      `DELETE` or `TRUNCATE` to remove audited rows
+- [ ] Every removal updates both `deleted_at` to the current UTC instant and `deleted_by` to the
+      responsible actor
+- [ ] Repeated removal is rejected or handled idempotently without overwriting the original deletion
+      attribution
+- [ ] Ordinary reads exclude rows whose `deleted_at` is non-null
+- [ ] Reads that intentionally include soft-deleted rows are named clearly and restricted to an
+      explicit admin or audit use case
+
 ## Entity Type (F# / EF Core)
 
 - [ ] Entity record type is `[<CLIMutable>]` and mapped via `IEntityTypeConfiguration`
@@ -30,11 +42,11 @@ Use this checklist when adding a new table or reviewing an existing one.
 
 ## Repository Layer (F# / EF Core)
 
-- [ ] No `DELETE` statement issued against audited tables
 - [ ] Soft-delete sets both `DeletedAt = DateTimeOffset.UtcNow` and `DeletedBy = actor`
 - [ ] Soft-delete filters `not m.DeletedAt.HasValue` to guard against double-deletes
 
 ## Queries
 
-- [ ] All EF Core queries filter `not m.DeletedAt.HasValue` unless the endpoint is explicitly an admin/audit endpoint
-- [ ] Functions that intentionally return soft-deleted rows are named clearly (e.g., `fetchAllIncludingDeleted`) and the route is restricted to admin roles
+- [ ] All EF Core queries implement the universal removal and query discipline above
+- [ ] Functions that intentionally return soft-deleted rows use an explicit name such as
+      `fetchAllIncludingDeleted`

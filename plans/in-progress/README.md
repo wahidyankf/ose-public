@@ -11,8 +11,9 @@ execution checklist.
 
 ## Active Plans
 
-- [LMS username and password authentication](./lms-user/README.md) — add PostgreSQL-backed
-  registration, JWT access tokens, rotating refresh tokens, logout, and complete test coverage.
+- [LMS user identity integration](./lms-user/README.md) — blocked until all nine OSE ID initialization
+  plans complete; then integrate LMS as an OIDC client/resource with stable personal/company context
+  mapping and an owned authenticated local stack.
 
 ## Instructions
 

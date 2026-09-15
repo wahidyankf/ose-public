@@ -84,7 +84,7 @@ lifecycle rules; numeric counts never set their boundaries.
 - [gherkin-acceptance-criteria.md](reference/gherkin-acceptance-criteria.md) — Gherkin format and journey coherence
 - [delivery-plan-tdd-structure.md](reference/delivery-plan-tdd-structure.md) — outcome-section and granular RED/GREEN/REFACTOR evidence shape
 - [operational-readiness.md](reference/operational-readiness.md) — Local Quality Gates, Post-Push, Env Setup, Commits
-- [manual-ui-and-api-verification.md](reference/manual-ui-and-api-verification.md) — Playwright/curl manual verification
+- [manual-ui-and-api-verification.md](reference/manual-ui-and-api-verification.md) — real-browser and API wire verification
 - [manual-verification-retest-rules.md](reference/manual-verification-retest-rules.md) — rule-15/rule-16 pre-archival retests
 - [knowledge-capture-scaffold-and-entries.md](reference/knowledge-capture-scaffold-and-entries.md) — `learnings.md` scaffold + entry shape
 - [knowledge-capture-phase-template.md](reference/knowledge-capture-phase-template.md) — Knowledge Capture phase template

@@ -18,13 +18,18 @@ or `specs/` MUST carry explicit steps adding/updating companion `specs/` `.featu
    **HIGH**.
 3. **`test:coverage:behaviour` gate present** — the checklist or a phase gate runs the project's
    `test:coverage:behaviour` target. Missing: **HIGH**.
-4. **Behaviour-change exemption** — behaviour-preserving refactors, no-behaviour-change dependency bumps,
+4. **Owner-scoped copy-ready Gherkin** — packets destined for `specs/` contain no plan slug, number,
+   phase, delivery-unit name, or plan acceptance-criterion ID. The external delta map records the plan
+   requirement, action, exact feature path, durable scenario title, and adapter disposition. Leakage or
+   a missing map is **HIGH**.
+5. **Behaviour-change exemption** — behaviour-preserving refactors, no-behaviour-change dependency bumps,
    docs/governance-only plans are exempt (mirrors Feature Change Completeness applicability). Verify
    the exemption is legitimate and stated; an illegitimate exemption is **HIGH**.
 
 **Finding severity**: behaviour-affecting plan with no specs/Gherkin step: **HIGH**. Specs step present
 but no `test:coverage:behaviour` gate: **HIGH**. Step present but vague (no specific feature path/domain):
-**MEDIUM**. Illegitimate "no behaviour change" exemption: **HIGH**.
+**MEDIUM**. Plan identity inside copy-ready Gherkin or missing external traceability: **HIGH**.
+Illegitimate "no behaviour change" exemption: **HIGH**.
 
 ## 16b. Regression Test Mandate (bug-fix plans — MANDATORY)
 

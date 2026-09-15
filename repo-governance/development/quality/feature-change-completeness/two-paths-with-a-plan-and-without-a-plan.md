@@ -17,4 +17,13 @@ This convention binds **both** ways a behaviour change reaches `apps/`, `libs/`,
    outcome and proof boundary binds them. See
    [Gherkin-Tagged Delivery Steps](../../workflow/test-driven-development/gherkin-tagged-delivery-steps.md#gherkin-tagged-delivery-steps).
 
+   The plan's BDD spec-delta map records each plan requirement, `ADD`/`UPDATE`/`DELETE`/`RETAIN`
+   action, exact owner-relative feature path, exact durable scenario title, and Unit/Integration/E2E
+   disposition outside the copy-ready Gherkin fence. The packet itself follows the owning app/lib's
+   durable language and contains no plan identity or lifecycle metadata.
+
+   This external traceability map is **unenforced by decision**. The plan checker reviews it
+   semantically; a deterministic check cannot prove that domain-specific paths, titles, and adapter
+   dispositions are complete and correctly mapped.
+
 The end state is identical on both paths: code under `apps/`/`libs/` never lands without its companion `specs/` Gherkin. The plan path simply moves the obligation earlier, into planning, so missing specs are never discovered late.

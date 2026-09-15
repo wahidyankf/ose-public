@@ -13,7 +13,9 @@ when_to_use: Use when checking execution against rules 6-11 of the hard, non-neg
    without another boundary prompt unless the user prescribed one. Keep required completion
    artifacts together; split independent concerns and never exceed authorized scope. Follow
    Conventional Commits.
-3. **Manual Behavioural Assertions**: After quality gates pass, use Playwright MCP for web UI verification and curl for API verification. Fix any broken behaviour before proceeding.
+3. **Manual Behavioural Assertions**: After quality gates pass, use real-browser tooling for web UI,
+   `rtk curl` for HTTP APIs, and a protocol-native wire client for non-HTTP RPC/events. Run every
+   changed operation's planned success/failure recipe and fix broken behaviour before proceeding.
 4. **Progress Streaming (Observability)**: The live Task list is the user's monitoring window — keep it fresh in real time. Never run silent for more than one checkbox. After each phase completes, emit a one-line user-visible status: phase name, items ticked / total, files changed, any preexisting fixes.
 5. **Resume Reconciliation (Canonical Instructions and Disk Are Truth)**: On every start or
    re-entry, first re-read canonical instructions and reconcile the active user-rule decision

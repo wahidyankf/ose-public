@@ -16,12 +16,19 @@ performed.
    - If UI is broken or has JS console errors: CRITICAL finding
    - If no manual UI verification was documented but plan touched UI: HIGH finding
 
-2. **curl Assertions for API Changes**
-   - If the plan touched any API endpoint, check delivery.md for "Manual API Verification" notes
-   - Start the backend server and use curl to independently verify key endpoints
-     (`curl -s http://localhost:[port]/api/health | jq .`, then the affected endpoint)
-   - If API returns errors or unexpected responses: CRITICAL finding
-   - If no manual API verification was documented but plan touched API: HIGH finding
+2. **Wire Assertions for API Changes**
+   - If the plan changed an HTTP, BFF, RPC, event, or standard-protocol operation, check `delivery.md`
+     for its manual API verification notes.
+   - For **every changed HTTP-accessible operation**, start the real local backend and independently run
+     the plan's literal `rtk curl` success command and at least one representative failure command.
+     Assert the exact URL, method, request headers/media/body or fixture, expected status, response
+     headers/media/schema, and stable failure code. Confirm synthetic setup, independently attributable
+     sanitized evidence, cleanup, and the named owner for any mismatch.
+   - For every changed non-HTTP RPC/event operation, run the plan's protocol-native wire client with
+     the same success/failure, setup, assertion, evidence, cleanup, and ownership standard. A generated
+     client or one exchange claimed as proof for several operation/case rows is insufficient.
+   - If an operation returns an unexpected response or the documented recipe is not runnable: CRITICAL finding.
+   - If manual API verification was omitted for any changed operation: HIGH finding.
 
 3. **End-to-End Flow Verification**
    - If the plan touches both UI and API, verify the full flow: use Playwright MCP to interact with

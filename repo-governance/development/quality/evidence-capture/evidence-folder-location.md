@@ -1,6 +1,6 @@
 ---
 description: "Where captured evidence lives within a plan folder."
-when_to_use: "Use when deciding where to save a screenshot or curl output during plan execution."
+when_to_use: "Use when deciding where to save a screenshot or API wire result during plan execution."
 ---
 
 # Evidence Folder Location

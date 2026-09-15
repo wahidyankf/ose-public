@@ -7,7 +7,7 @@ mechanism, so an agent session on either of those harnesses is unguarded.
 > Idea, added 2026-08-13 — captured from `restrict-env-access-to-prod-and-stag`'s Phase 10 Knowledge
 > Capture (`plans/done/2026-08-13__restrict-env-access-to-prod-and-stag/tech-docs.md` DD-9,
 > `plans/done/2026-08-13__restrict-env-access-to-prod-and-stag/learnings.md`).
-> Relocated from ose-private/plans/ideas/harness-level-env-file-enforcement-gap.md on 2026-08-19 by plan-ideas-grooming.
+> Relocated from private-sibling/plans/ideas/harness-level-env-file-enforcement-gap.md on 2026-08-19 by plan-ideas-grooming.
 
 ## Problem / context
 

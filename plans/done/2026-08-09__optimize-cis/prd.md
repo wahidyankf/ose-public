@@ -37,7 +37,7 @@ checks are grouped; a binary that resolves correctly after the ambient sweeper d
 ### P3 — The CI runner pool
 
 Four repos share a limited pool — free `ubuntu-latest` for three, a small self-hosted pool for
-`ose-private` where job queueing already runs at p50 18:42. Every unnecessary job is contention
+the private sibling where job queueing already runs at p50 18:42. Every unnecessary job is contention
 imposed on the other three repos.
 
 **Needs**: fewer, denser jobs; no job that installs a toolchain it never uses.
@@ -242,7 +242,7 @@ Scenario: Scratch space cannot silently regrow
 
 ```gherkin
 Scenario: The byte-identity gate passes after propagation
-  Given the change set has been propagated to ose-primer and ose-private
+  Given the change set has been propagated to ose-primer and private-sibling
   When "rhino-cli parity manifest validate" runs in each of the three repos
   Then each run exits zero
   And the reported manifest hash is identical across all three
@@ -290,7 +290,7 @@ Scenario: Enumeration can group CI gates by declared group
 
 ```gherkin
 Scenario: Toolchain channel and MSRV agree within a repo
-  Given a repository among ose-public, ose-primer, and ose-private
+  Given a repository among ose-public, ose-primer, and private-sibling
   When every rust-toolchain.toml channel and every Cargo.toml rust-version is collected
   Then both sets contain exactly one distinct value
   And that value is the same in both sets

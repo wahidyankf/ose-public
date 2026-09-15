@@ -5,12 +5,12 @@ Captured 2026-09-09.
 --- 1. no other plan holds an open parity PR pair ---
 $ gh pr list --repo wahidyankf/ose-public  --state open --search 'rhino-cli in:title'
 []
-$ gh pr list --repo wahidyankf/ose-private --state open --search 'rhino-cli in:title'
+$ gh pr list --repo wahidyankf/private-sibling --state open --search 'rhino-cli in:title'
 []
 
 Broader check -- every open PR in both repositories:
   ose-public:  #499 feat(islamic-be-e2e): drive the health scenarios through real HTTP
-  ose-private: (none)
+  private-sibling: (none)
   The single open PR is this plan's own DU4 and touches no apps/rhino-cli file.
 
 --- 2. rhino-cli-parity-audit.yml green on main ---
@@ -19,4 +19,4 @@ $ gh run list --workflow rhino-cli-parity-audit.yml --limit 3
 
 --- 3. branch islamic-be-init/du5-rhino-go-env unused in both repositories ---
   ose-public:  unused
-  ose-private: unused
+  private-sibling: unused

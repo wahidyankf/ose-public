@@ -1,6 +1,6 @@
 # `main-ci` never runs on a sibling merge commit
 
-One-line summary: `ose-private` has no post-merge CI signal on `main`, because the
+One-line summary: the private sibling has no post-merge CI signal on `main`, because the
 only workflow that would provide one is schedule-triggered — so a merge to `main` there
 is verified by its PR checks and then never re-verified in its merged state.
 
@@ -12,10 +12,10 @@ is verified by its PR checks and then never re-verified in its merged state.
 ## Problem / context
 
 The bare-repo governance plan's terminal gate asked for CI green on `main` across every bound repo.
-`ose-public` satisfied it. `ose-private` did not, and the reason is narrower and more interesting than
+`ose-public` satisfied it. The private sibling did not, and the reason is narrower and more interesting than
 "CI was red":
 
-- On `ose-private` at merge commit `1d64990bb`, **`pr-quality-gate` and `validate-env` both ran and
+- On the private sibling at merge commit `1d64990bb`, **`pr-quality-gate` and `validate-env` both ran and
   both passed.** The merge was not unverified.
 - **`main-ci` did not run at all**, because that workflow is schedule-triggered rather than
   push-triggered.
@@ -33,7 +33,7 @@ that is green because nothing looked, not because something passed.
 
 - The bare-repo plan closed with this as its only unmet item, so the question is already scoped and
   the evidence is already gathered — the cheapest moment to act.
-- Cross-repo parity is a standing norm here, and `ose-public` having a post-merge signal `ose-private`
+- Cross-repo parity is a standing norm here, and `ose-public` having a post-merge signal the private sibling
   lacks is precisely the kind of asymmetry that parity work exists to remove.
 - A plan is currently in progress
   ([learning-plan-syllabus-folder-convention](../../done/2026-07-22__learning-plan-syllabus-folder-convention/README.md))
@@ -83,7 +83,7 @@ concurrency flake, which has its own brief.
 - **What does `main-ci` check that `pr-quality-gate` does not?** If the answer is "nothing material",
   this brief closes as a documentation fix rather than a CI change. Measuring that overlap is the
   cheapest way to size the whole thing. (open)
-- Does `ose-private`, being private and not part of every parity loop, want this at all? It is
+- Does the private sibling, being private and not part of every parity loop, want this at all? It is
   explicitly exempted from the content-parity workflow, and this may fall under the same exemption.
   (open)
 - A push-triggered run on `main` in a bare-repo workflow may interact with how those repos are pushed

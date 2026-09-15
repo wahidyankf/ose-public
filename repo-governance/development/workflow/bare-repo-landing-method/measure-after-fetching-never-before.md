@@ -12,7 +12,7 @@ answer it gives is `0 0` — indistinguishable from a genuinely reconciled repos
 
 That false clean is not hypothetical. Immediately after a merge landed on the remote, this sequence
 was observed in a bare sibling (transcript preserved verbatim — `ose-infra` is the repository now
-named `ose-private`):
+known as the private sibling):
 
 ```console
 $ git -C ose-infra rev-list --left-right --count origin/main...main

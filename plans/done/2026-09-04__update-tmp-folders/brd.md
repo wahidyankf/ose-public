@@ -29,7 +29,7 @@ largest source of the 567 accumulated artifacts.
 ## Business Impact
 
 - **A requested report is unfindable.** New output lands in a directory holding 471 (`ose-public`)
-  and 96 (`ose-private`) prior entries with no ordering a human reads by. The deliverable exists and
+  and 96 (the private sibling) prior entries with no ordering a human reads by. The deliverable exists and
   is still effectively lost.
 - **The distinction has stopped teaching anything.** Two directories that both mean "temporary
   machine output" carry no information. An agent choosing between them is guessing, so the choice
@@ -75,10 +75,10 @@ Measured after delivery, in both repositories:
 
 ## Business Risks
 
-| Risk                                                                                                  | Severity | Mitigation                                                                                                                               |
-| ----------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Deleting 567 artifacts destroys something still referenced                                            | Medium   | Delete via the existing dated-quarantine pattern, prove nothing load-bearing moved, then delete. Reversible until the final step.        |
-| The suppression ledger is lost in the move, so previously accepted false positives resurface silently | Medium   | Move the file explicitly as a named step with a byte-count check, in the same delivery unit as the code default that reads it.           |
-| The two repositories diverge because propagation is partial                                           | Medium   | `ose-private` is delivered inside this plan, not deferred. The `rhino-cli` parity manifest makes any code-side divergence a CI failure.  |
-| The new rule drifts back, because nothing enforces it                                                 | Medium   | Accepted by the maintainer. The mitigation is that the rule now states a test an agent can apply, not a category an agent must classify. |
-| A stale absolute path in an agent leaves reports written somewhere unswept                            | Low      | The sweep is discovery-driven with a recorded per-file verdict, not a hardcoded edit list.                                               |
+| Risk                                                                                                  | Severity | Mitigation                                                                                                                                    |
+| ----------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Deleting 567 artifacts destroys something still referenced                                            | Medium   | Delete via the existing dated-quarantine pattern, prove nothing load-bearing moved, then delete. Reversible until the final step.             |
+| The suppression ledger is lost in the move, so previously accepted false positives resurface silently | Medium   | Move the file explicitly as a named step with a byte-count check, in the same delivery unit as the code default that reads it.                |
+| The two repositories diverge because propagation is partial                                           | Medium   | The private sibling is delivered inside this plan, not deferred. The `rhino-cli` parity manifest makes any code-side divergence a CI failure. |
+| The new rule drifts back, because nothing enforces it                                                 | Medium   | Accepted by the maintainer. The mitigation is that the rule now states a test an agent can apply, not a category an agent must classify.      |
+| A stale absolute path in an agent leaves reports written somewhere unswept                            | Low      | The sweep is discovery-driven with a recorded per-file verdict, not a hardcoded edit list.                                                    |

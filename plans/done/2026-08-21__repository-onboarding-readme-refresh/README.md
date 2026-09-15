@@ -53,10 +53,10 @@ result, and recover from common failures without guessing.
 
 ### Out of scope
 
-- Any delivery into `ose-private`, `ose-primer`, or `beaver-nest`. Documentation here may describe
+- Any delivery into the private sibling, `ose-primer`, or `beaver-nest`. Documentation here may describe
   those repositories accurately; no branch, PR, metadata change, or file edit lands in them.
 - The `apps/rhino-cli/` tree and its bound Gherkin under `specs/apps/rhino/behavior/rhino-cli/`.
-  Most of those paths are byte-identical with `ose-private`, and changing one would open a
+  Most of those paths are byte-identical with the private sibling, and changing one would open a
   cross-repository obligation this plan explicitly does not carry. The plan declines the whole of
   both trees rather than only the byte-identical subset, so the rule is simple to check. They are
   recorded in the ledger as `identity-bound` and audited without being edited.

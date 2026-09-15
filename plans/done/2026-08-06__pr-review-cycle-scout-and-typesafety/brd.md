@@ -36,23 +36,23 @@ repo is not evidence for another.
 - **Pipeline agent count — identical across all four repos**: 10 files under
   `.claude/agents/pr-review-*.md` (8 discipline specialists + `pr-review-synthesis-maker` +
   `pr-review-fixer`), mirrored identically under `.opencode/agents/`, in `ose-public`, `ose-primer`,
-  `ose-private`, and `beaver-nest` alike. Verified: `ls .claude/agents/ | grep -c pr-review` → `10` in
+  the private sibling, and `beaver-nest` alike. Verified: `ls .claude/agents/ | grep -c pr-review` → `10` in
   each repo.
-- **"eight" mentions — three repos match, `ose-private` diverges by one**:
+- **"eight" mentions — three repos match, the private sibling diverges by one**:
 
-  | Repo          | `pr-review-disciplines.md` | `pr-review-quality-gate.md` |
-  | ------------- | -------------------------- | --------------------------- |
-  | `ose-public`  | 26                         | 6                           |
-  | `ose-primer`  | 26                         | 6                           |
-  | `ose-private` | 26                         | **5**                       |
-  | `beaver-nest` | 26                         | 6                           |
+  | Repo                | `pr-review-disciplines.md` | `pr-review-quality-gate.md` |
+  | ------------------- | -------------------------- | --------------------------- |
+  | `ose-public`        | 26                         | 6                           |
+  | `ose-primer`        | 26                         | 6                           |
+  | The private sibling | 26                         | **5**                       |
+  | `beaver-nest`       | 26                         | 6                           |
 
   Verified via `grep -c eight repo-governance/development/quality/pr-review-disciplines.md` and the
   same against `repo-governance/workflows/pr/pr-review-quality-gate.md`, run separately in each repo.
   Every occurrence needs inspection during that repo's Phase 1/2 — not all become `nine` (some
   describe a fixed historical fact, e.g. "the eight discipline specialists" retiring the single
   monolith), so each occurrence is individually judged rather than blindly sed-replaced, and
-  `ose-private`'s one-fewer count must be independently re-confirmed rather than assumed to be a
+  the private sibling's one-fewer count must be independently re-confirmed rather than assumed to be a
   stale measurement — its Phase 2 sweep expects to find 5, not 6.
 
 - **No cycle-number field exists today, in any of the four repos**: `grep -A8 "^## Consolidated
@@ -66,24 +66,24 @@ Review Header" .claude/agents/pr-review-synthesis-maker.md | grep -c "\*\*Cycle\
 - **`AGENTS.md` PR Review Cycle wording diverges structurally, not just numerically** — this is the
   most consequential baseline finding for this plan's per-repo edit design:
 
-  | Repo          | Wording pattern                                                                                                                                                                                                                 | Bytes measured (`wc -c AGENTS.md`) | Budget (warn / hard-fail) |
-  | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | ------------------------- |
-  | `ose-public`  | Says "eight discipline pr-review-\*-maker specialists fan out to..." — a single swappable word                                                                                                                                  | 28,944 B                           | 27,000 / 30,000 B         |
-  | `ose-primer`  | Same "eight discipline..." pattern as `ose-public`                                                                                                                                                                              | **29,852 B**                       | 27,000 / 30,000 B         |
-  | `ose-private` | **No literal "eight" at all** — names the eight disciplines explicitly by list (architecture, logic, governance, security, integrity, performance, docs, instruction) fanning out to synthesis-maker to fixer, no scout mention | 26,754 B                           | 27,000 / 30,000 B         |
-  | `beaver-nest` | Same "eight discipline..." pattern as `ose-public`                                                                                                                                                                              | 29,547 B                           | 27,000 / 30,000 B         |
+  | Repo                | Wording pattern                                                                                                                                                                                                                 | Bytes measured (`wc -c AGENTS.md`) | Budget (warn / hard-fail) |
+  | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | ------------------------- |
+  | `ose-public`        | Says "eight discipline pr-review-\*-maker specialists fan out to..." — a single swappable word                                                                                                                                  | 28,944 B                           | 27,000 / 30,000 B         |
+  | `ose-primer`        | Same "eight discipline..." pattern as `ose-public`                                                                                                                                                                              | **29,852 B**                       | 27,000 / 30,000 B         |
+  | The private sibling | **No literal "eight" at all** — names the eight disciplines explicitly by list (architecture, logic, governance, security, integrity, performance, docs, instruction) fanning out to synthesis-maker to fixer, no scout mention | 26,754 B                           | 27,000 / 30,000 B         |
+  | `beaver-nest`       | Same "eight discipline..." pattern as `ose-public`                                                                                                                                                                              | 29,547 B                           | 27,000 / 30,000 B         |
 
   Verified via `grep -n "eight discipline"` and `grep -n -i "pr.review"` against each repo's
   `AGENTS.md`, and `wc -c AGENTS.md` in each repo, all on 2026-08-05. Two consequences drive Phase 4's
   per-repo design:
-  1. **`ose-private`'s edit is not a word-swap.** Its bullet must gain `pr-review-types-maker` in the
+  1. **The private sibling's edit is not a word-swap.** Its bullet must gain `pr-review-types-maker` in the
      explicit specialist list and a `pr-review-scout-maker` mention ahead of the fan-out — a
      multi-word insertion, not `eight` → `nine`. This is net **byte-positive**, the opposite direction
-     of the other three repos' edits, and `ose-private` also currently has the most headroom (26,754 B,
+     of the other three repos' edits, and the private sibling also currently has the most headroom (26,754 B,
      4,246 B under hard-fail) of the four — the one repo where a positive-byte edit is actually safe.
   2. **`ose-primer`'s headroom is razor-thin.** At 29,852 B it sits only **148 B below the 30,000 B
      hard-fail ceiling** — the tightest of any repo by a wide margin (`ose-public` has 1,056 B of
-     headroom, `beaver-nest` has 453 B, `ose-private` has 3,246 B before this plan's positive edit).
+     headroom, `beaver-nest` has 453 B, the private sibling has 3,246 B before this plan's positive edit).
      `eight` → `nine` is still net `-1` byte there, same direction as `ose-public`/`beaver-nest`, so
      the edit itself does not worsen the margin — but this repo has effectively zero slack for any
      scope creep in that bullet (e.g. accidentally naming the two new agents inline), and its own
@@ -96,7 +96,7 @@ Review Header" .claude/agents/pr-review-synthesis-maker.md | grep -c "\*\*Cycle\
   since this figure was recorded. **Constraint this imposes on this plan**: in `ose-public`,
   `ose-primer`, and `beaver-nest`, the `AGENTS.md` PR Review Cycle bullet edit must be
   net-neutral-to-negative in byte count relative to whatever each repo's re-measured baseline turns
-  out to be; in `ose-private`, the edit is net-positive by design (per the divergence above) and must
+  out to be; in the private sibling, the edit is net-positive by design (per the divergence above) and must
   be re-verified against that repo's own hard-fail ceiling explicitly rather than assumed safe from
   its current headroom alone. In no repo does the bullet grow to individually name
   `pr-review-scout-maker` or `pr-review-types-maker` — those stay documented in
@@ -119,7 +119,7 @@ Review Header" .claude/agents/pr-review-synthesis-maker.md | grep -c "\*\*Cycle\
   (a broad `any`, an unjustified `unsafe`, a non-exhaustive match silently defaulting) is exactly the
   kind of defect that ships silently today because no specialist's charter names it and CI's build
   step, by definition, cannot catch what still compiles — true in `ose-public`, `ose-primer`,
-  `ose-private`, and `beaver-nest` alike, since all four ship the same four statically-typed
+  the private sibling, and `beaver-nest` alike, since all four ship the same four statically-typed
   languages.
 - **Four repos converge on one pipeline shape instead of drifting.** Before this plan, all four repos
   already ran byte-for-byte-independent copies of the same eight-discipline design — a design decision
@@ -146,7 +146,7 @@ Review Header" .claude/agents/pr-review-synthesis-maker.md | grep -c "\*\*Cycle\
 ## Business-Level Success Metrics
 
 All four bullets below are verified **once per repo** — a metric holding in `ose-public` is not
-evidence it holds in `ose-primer`, `ose-private`, or `beaver-nest`.
+evidence it holds in `ose-primer`, the private sibling, or `beaver-nest`.
 
 - **Observable fact**: every consolidated review posted by `pr-review-synthesis-maker` after each
   repo's PR merges carries a `**Cycle**: N of {total}` header line. Verifiable by reading any
@@ -203,12 +203,12 @@ evidence it holds in `ose-primer`, `ose-private`, or `beaver-nest`.
   track's own Phase 4 delivery item re-measures live after the edit as an explicit acceptance
   criterion, per repo — `ose-primer`'s track treats this check as load-bearing rather than routine.
 - **Risk (new to the 4-repo scope)**: treating the plan's `ose-public`-authored diff as a template and
-  blindly re-applying it to the other three repos would silently miscount `ose-private`'s
+  blindly re-applying it to the other three repos would silently miscount the private sibling's
   quality-gate.md "eight" occurrences (5, not 6) or apply the wrong edit shape to its `AGENTS.md`
   bullet (list-expansion, not word-swap). **Mitigation**: each repo's Phase 0 re-baseline step
   re-verifies that repo's own counts live before any edit, and Phase 4's `AGENTS.md` delivery item is
   written per-repo (not copy-pasted) in [delivery.md](./delivery.md), explicitly branching on
-  `ose-private`'s divergent wording.
+  the private sibling's divergent wording.
 
 ## Related Documentation
 

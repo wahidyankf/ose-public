@@ -134,7 +134,7 @@ Stage/commit only when explicitly instructed. License MIT — see
 ## Related Repositories
 
 The five **OSE Code Repositories** are a routing set — never a parent repo, parity group, or
-shared release. Parity sibling: [ose-private](https://github.com/wahidyankf/ose-private);
+shared release. Parity sibling: a private repository, not linked from this public tree;
 `apps/rhino-cli` byte-identical. Independent: [RHINO](https://github.com/wahidyankf/rhino)
 repository hygiene, upstream of the in-tree `apps/rhino-cli`;
 [HIPPO](https://github.com/wahidyankf/hippo) resource coordination;

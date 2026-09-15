@@ -122,14 +122,14 @@ doctor gate without bypassing it.
 
 ## Cross-Repository Execution Dependency
 
-This plan depends on `ose-private`'s
+This plan depends on the private sibling's
 `restrict-env-access-to-prod-and-stag` plan completing first.
 [Repo-grounded: checked 2026-08-13] Its Phase 8 changes the same
 `ose-public` BeaverNest application identities while it establishes the tiered `APP_ENV` contract and
 agent access restrictions. The Flutter migration must start from that finished state, not compete
 with it or absorb a half-applied environment convention.
 
-The predecessor's archive path on `ose-private/main` is necessary but not sufficient evidence of
+The predecessor's archive path on `private-sibling/main` is necessary but not sufficient evidence of
 completion. Phase 0 must query the archived README for a recognized terminal status
 (`**Status**: Done`, `**Status**: Complete`, or `**Status**: Completed`), reject any unchecked
 delivery items, and verify the archive has no
@@ -254,7 +254,7 @@ applies to the live runtime/project/spec ownership at P2, not to the isolated fo
 ├── .github/workflows/{beavernest-app-test-local-deploy-stag.yml,publish-images.yml} [E] PR trigger, FVM setup, identity and artifacts
 ├── repo-governance/vision/beavernest.md [E] product application identity
 ├── {repo-config.yml,package.json,package-lock.json,.fvmrc} [E/N] project registry, dependency removal, exact FVM pin
-├── ose-private@main:plans/{in-progress,done}/ [G] external predecessor README/delivery validation only; no file is edited from this worktree
+├── <private-sibling>@main:plans/{in-progress,done}/ [G] external predecessor README/delivery validation only; no file is edited from this worktree
 ├── plans/in-progress/README.md [E] active-plan index
 └── plans/in-progress/beaver-flutter/{README.md,brd.md,prd.md,tech-docs.md,delivery.md,learnings.md,assets/**,evidence/**} [E] plan, visual contract, and evidence
 ```

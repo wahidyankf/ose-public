@@ -323,7 +323,7 @@ To add a new generated binding:
    before `git add` produces a stale manifest. `parity manifest validate` is `scope: other` on
    both `pre-push` and `ci` — unconditional, not path-gated — so it fires on every push regardless
    of what changed, and unlike `harness-bindings-generate` it has no pre-commit auto-regeneration.
-   Land the equivalent binding change in the paired `ose-private` PR too; the two repos' binding
+   Land the equivalent binding change in the paired private-sibling PR too; the two repos' binding
    surfaces are byte-identical.
 
 ## Related

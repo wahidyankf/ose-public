@@ -53,7 +53,7 @@ next-vendor-hits-this-again denylist.
 ## Risks & open questions
 
 - The change touches `apps/rhino-cli/**`, required byte-identical across `ose-public`
-  and `ose-private` — this is why the originating single-repo plan could not fix it; execution must be a
+  and the private sibling — this is why the originating single-repo plan could not fix it; execution must be a
   coordinated two-repo parity change.
 - Denylist vs. allowlist redesign is the real open decision: patch the one term now, or fix the class
   so the next unnamed vendor fails closed? A patch is cheap but recurring; the redesign is larger

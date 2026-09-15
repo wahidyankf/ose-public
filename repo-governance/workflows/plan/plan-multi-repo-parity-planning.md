@@ -22,7 +22,7 @@ Plan authoring and validation use [plan-maker](../../../.claude/agents/plan/plan
 ## Inputs
 
 - **`objective`** (string, required) — The shared topic to standardize or align across repos (e.g., 'standardize markdown gates', 'align agent catalogs')
-- **`repos`** (string, optional, default `ose-public, ose-private`) — Comma-separated target repository names or absolute paths in the parity set (e.g., 'ose-public, ose-private')
+- **`repos`** (string, optional, default `ose-public, <private-sibling>`) — Comma-separated target repository names or absolute paths in the parity set (e.g., 'ose-public, the private sibling')
 - **`mode`** (enum: main-to-origin-main, worktree-to-origin-main, worktree-to-pr, optional, default `worktree-to-pr`) — Where plans are authored and how they are delivered (see Modes section)
 - **`stage`** (enum: in-progress, backlog, optional, default `in-progress`) — Plan stage folder in each target repo
 - **`max-concurrency`** (number, optional, default `3`) — Background agents run concurrently — the N in the N+1 model (1 main thread + N background agents = N+1 total). Raise only when independent work, machine capacity, and budget headroom all allow; lower under budget, runner, or disk pressure. Never self-promoted beyond the declared value.

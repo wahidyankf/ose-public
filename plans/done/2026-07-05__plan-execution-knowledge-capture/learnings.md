@@ -12,7 +12,7 @@
 
 - **Context**: Phase 5 (propagating the Knowledge Capture convention to `ose-infra`) pushed 4 commits
   to `origin main`, triggering `main-ci`, `pr-quality-gate`, and `validate-env` concurrently.
-- **Observation**: `ose-ci-runner-1` was `offline` for the entire monitoring window; `ose-ci-runner-2`
+- **Observation**: `internal-host-1` was `offline` for the entire monitoring window; `internal-host-2`
   was the sole `online` runner, so it processed jobs from all three workflow runs interleaved rather
   than in parallel. Each workflow's aggregate `status` stayed `queued` for an extended period even
   though individual jobs were completing steadily, one at a time, with zero failures. A previously

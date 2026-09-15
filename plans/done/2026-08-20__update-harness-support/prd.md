@@ -454,7 +454,7 @@ Feature: rhino-cli changes land as one paired cross-repo merge
   Scenario: The whole plan lands as exactly two PRs merged together
     Given apps/rhino-cli/parity-manifest.sha256 currently holds 579 entries and is identical in both parity repositories
     When the plan reaches its terminal merge
-    Then exactly one ose-public PR and exactly one ose-private PR exist on branch worktree/update-harness-support, where the default per-boundary rule would have produced three PRs per repository
+    Then exactly one ose-public PR and exactly one private-sibling PR exist on branch worktree/update-harness-support, where the default per-boundary rule would have produced three PRs per repository
     And both are merged in the same session
     And rhino-cli parity manifest validate exits 0 in both repositories, where merging only one side would make the nightly parity audit diff exit non-zero
 ```

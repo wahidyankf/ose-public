@@ -68,7 +68,7 @@ boundary.
 ## Rough scope & non-goals
 
 **In scope**: the subcommand, its unit + Gherkin coverage, its toolchain wiring, and byte-identical
-propagation across `ose-public` / `ose-private`.
+propagation across `ose-public` / the private sibling.
 
 **Non-goals**: retrofitting existing course files to the shape (the convention grandfathers the 17-file
 ordered-list cohort and the capstone variant); validating course _body content_ (only structural

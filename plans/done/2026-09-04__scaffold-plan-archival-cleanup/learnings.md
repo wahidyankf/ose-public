@@ -8,10 +8,10 @@
 **What happened.** Item 7 was verified against four constructed fixtures — fires on two, silent on
 two — and declared verified in both directions. It was not. Every fixture had been authored to the
 `### Plan Archival` heading the rule named, so the fixture set was structurally incapable of
-exposing that the rule keyed on that literal heading. Running the same check against `ose-private`'s
+exposing that the rule keyed on that literal heading. Running the same check against the private sibling's
 real plans at Phase 3 produced a false positive within minutes, on a plan
 (`sync-ci-iac-carveout-widening-to-siblings`) that carries all three cleanup steps but files them
-under `## Phase 3: ose-private Archival`.
+under `## Phase 3: <private-sibling> Archival`.
 
 **Why it matters.** A fixture set written by the same author, at the same sitting, from the same
 mental model as the rule inherits that model's blind spots. Fixtures prove a rule is internally
@@ -45,13 +45,13 @@ executor neither chases six phantom failures nor, worse, reads exit 2 as a pass.
 ## L-3 — Word-budget headroom is per repository, and RP-5 fires in one repo but not the other
 
 **What happened.** `ose-public`'s Rule 10 shard is 519 words and absorbed the new item with room to
-spare. `ose-private`'s is **625** — the same insertion would have crossed the 650-word target, so
+spare. The private sibling's is **625** — the same insertion would have crossed the 650-word target, so
 the RP-5 evict-rather-than-raise protocol became mandatory there and was a no-op here. The eviction
 candidate had to be found in that repository's own text: a `**Finding severity**:` paragraph
 restating in one list the severity every numbered item already carried inline.
 
 **Why it matters.** A propagation plan that sizes its edit against one repository has not sized it.
-The two shards had already drifted — `ose-private`'s carries an item 8 that `ose-public`'s does not,
+The two shards had already drifted — the private sibling's carries an item 8 that `ose-public`'s does not,
 which is also why the new check is item 7 there and item 9 here.
 
 **Routing** — `repo-governance`: `rules-propagation` RP-4 should say headroom is measured per
@@ -95,7 +95,7 @@ canonical template's text is fitted into a downstream document, not just presenc
 ## L-6 — A step that names a canonical structure needs that structure to exist in the target
 
 **What happened.** The new classification step instructs the executor to classify every
-`Delivery Branch Inventory` entry. Two live `ose-private` plans — both `worktree-to-pr`, both
+`Delivery Branch Inventory` entry. Two live the private sibling plans — both `worktree-to-pr`, both
 therefore owing an inventory under `worktree-specification.md` — declared none; they carried a
 differently-named `### Delivery Boundaries` table instead. The step landed correctly and was
 literally unexecutable, because the thing it classifies did not exist in the document.

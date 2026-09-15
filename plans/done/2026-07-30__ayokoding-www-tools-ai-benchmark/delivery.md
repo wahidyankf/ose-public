@@ -4015,14 +4015,14 @@ origin/main -b ayokoding-www-tools-ai-benchmark/phase-11-12-capture-archival` �
 "password|api[_-]?key|secret|token|-----BEGIN"
     plans/in-progress/ayokoding-www-tools-ai-benchmark/learnings.md` → no match.
 - [x] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content
-      (Terraform, k3s, Proxmox, real hostnames or inventories) stays in `ose-private` only and is NEVER
+      (Terraform, k3s, Proxmox, real hostnames or inventories) stays in the private sibling only and is NEVER
       cross-routed into `ose-public`/`ose-primer`; public-governance content may propagate via the
       existing parity loop — acceptance: no infra-private content appears in this repo's routed output
   - **Date**: 2026-07-30
   - **Status**: done
   - **Notes**: all 4 entries are `ayokoding-www` app-level content (Playwright config, cmdk search,
     Tailwind design tokens, Vitest config) — none references Terraform, k3s, Proxmox, or any
-    `ose-private` infrastructure. N/A confirmed, no cross-routing violation possible.
+    the private sibling infrastructure. N/A confirmed, no cross-routing violation possible.
 - [x] [AI] Route each surviving learning to exactly one durable home per the open-ended routing
       matrix — non-code homes may land inline (small edit) or as a `plans/backlog/` follow-up (large);
       code homes (`apps/`, `libs/`, tests) are **ALWAYS** filed as a separate `plans/backlog/<slug>/`

@@ -47,7 +47,7 @@ flowchart LR
     L --> Q
 ```
 
-The diagram applies independently in `ose-public` and `ose-private`: one repository-local
+The diagram applies independently in `ose-public` and the private sibling: one repository-local
 specification corpus feeds static compliance and applicable runtime adapters. Quick receives unit
 runtime plus static proof; full/scheduled gates add integration and E2E runtime. Shared Rhino
 sources and enforcement remain byte-identical where the parity contract applies.

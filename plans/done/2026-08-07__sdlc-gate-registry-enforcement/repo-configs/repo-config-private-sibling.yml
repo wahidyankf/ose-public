@@ -1,6 +1,6 @@
 # TARGET STATE — do not copy this banner into the repo.
 #
-# This is the COMPLETE repo-config.yml as it should look in ose-private AFTER the
+# This is the COMPLETE repo-config.yml as it should look in private-sibling AFTER the
 # sdlc-gate-registry-enforcement plan lands. Everything above the `gates:`
 # section is this repo's CURRENT YAML content, reproduced verbatim as of
 # 2026-08-02. This plan also corrects the stale header below and adds the
@@ -8,7 +8,7 @@
 #
 # Before copying, re-verify the unchanged part still matches:
 #   diff <(sed -n '/^harness:/,/^gates:/p' <this file> | sed '$d' | sed '$d') \
-#        <(sed -n '/^harness:/,$p' ose-private/repo-config.yml)
+#        <(sed -n '/^harness:/,$p' private-sibling/repo-config.yml)
 # The range compares existing YAML while excluding this banner, the deliberately
 # corrected header, and the new `gates:` section.
 # A non-empty diff means another change landed since 2026-08-02 — reconcile
@@ -178,7 +178,7 @@ env-contract:
   # Surface registry for rhino-cli env validate (code↔config drift detection).
   # Each surface entry carries:
   #   root      — path relative to repo root
-  #   kind      — "app" | "terraform" | "ansible" (all three are live validators in ose-private)
+  #   kind      — "app" | "terraform" | "ansible" (all three are live validators in private-sibling)
   #   lang      — "rust" | "typescript" | "fsharp" (app kind only)
   #   allowlist — keys exempt from drift detection (framework-injected, test-only, etc.)
   surfaces:
@@ -208,7 +208,7 @@ env-injection:
   #   compose           — infra/dev/<stack> docker-compose env (local CI), placeholders only
   #   vercel-preview     — Vercel project env, Preview scope (stag-*-app-web branch)
   #   vercel-production  — Vercel project env, Production scope (prod-*-www / prod-*-app-web)
-  #   k3s-coralpolyp     — ose-private coralpolyp secret store (backend k3s rollout)
+  #   k3s-coralpolyp     — private-sibling coralpolyp secret store (backend k3s rollout)
   apps:
     # --- coralpolyp app-group (backend + frontend; staging is real and automated
     #     via test-coralpolyp-staging.yml; production promotion is manual — no
@@ -438,7 +438,7 @@ gates:
         lint-staged-shell: 'for f; do docker compose -f "$f" config > /dev/null; done'
       ci: { scope: all-file-type }
 
-  # ------------------------------------------- IaC gates — ose-private ONLY
+  # ------------------------------------------- IaC gates — private-sibling ONLY
   - id: iac-terraform-lint
     type: check
     command: ./scripts/lint-terraform.sh

@@ -5,7 +5,7 @@ three-letter placeholder and is overwritten only by a real measurement — Phase
 column, Phase 10 fills **After**. The placeholder appears nowhere else in this plan, so a count of it
 is an honest progress reading.
 
-The plan documents are single-sourced in `ose-public`; `ose-private` carries no copy of this folder.
+The plan documents are single-sourced in `ose-public`; the private sibling carries no copy of this folder.
 Its figures therefore live here, in a second table, rather than in a `benchmark.md` of its own.
 
 Gate arithmetic, counted as **occurrences** rather than lines, because a table row carries both of
@@ -19,7 +19,7 @@ its cells on one physical line:
 | End of Phase 10                   | 0                                                                     |
 
 The count returns to 18 at the end of Phase 0 rather than falling to 9, because P0.17 adds the
-second table: nine filled `ose-private` **Before** cells and nine fresh **After** placeholders.
+second table: nine filled the private sibling **Before** cells and nine fresh **After** placeholders.
 
 The command above assigns `$PH` inline via `printf` so it is self-contained and runnable verbatim
 from this page. Copying only the `grep` half without the `PH=...;` prefix silently returns `0` —
@@ -53,7 +53,7 @@ green post-merge `pr-quality-gate.yml` runs exist — see the dated `learnings.m
 | B8   | Artifact size               | 4,489,568 B   | 124,712 B launcher / 92,996,313 B full payload | **worse** — true footprint ~20.7x larger           |
 | Size | Source lines (src/ only)    | 49,460        | 19,710                                         | **better**, Δ -29,750 lines (0.40x)                |
 
-## Measurements — ose-private
+## Measurements — the private sibling
 
 | Row  | Metric                      | Before (Rust) | After (F#)                                     | Verdict                                             |
 | ---- | --------------------------- | ------------- | ---------------------------------------------- | --------------------------------------------------- |
@@ -81,10 +81,10 @@ staged set as Phase 0 — a single new `apps/rhino-cli/bench-probe.md` holding o
 paragraph, staged, hook run, then the file removed and the index reset). Taken once `convention`
 and `parity` were the only namespaces in `FSHARP_NAMESPACES`.
 
-| Metric                   | ose-public | ose-private |
-| ------------------------ | ---------- | ----------- |
-| B5 — startup, mean of 50 | 33.94 ms   | 37.13 ms    |
-| B6 — full pre-commit     | 3.85 s     | 3.01 s      |
+| Metric                   | ose-public | The private sibling |
+| ------------------------ | ---------- | ------------------- |
+| B5 — startup, mean of 50 | 33.94 ms   | 37.13 ms            |
+| B6 — full pre-commit     | 3.85 s     | 3.01 s              |
 
 Both B6 figures are markedly faster than their Phase 0 Rust baselines (14.24 s / 13.18 s) — this
 reflects only two of nine namespaces routing through the CLI-layer work this wave adds, not yet a
@@ -98,7 +98,7 @@ repository. No row is dropped for being unfavourable to F#.
 
 ## Interim measurement: after wave B
 
-`ose-public` only — this wave's PR does not touch `ose-private`. Same methodology as "after wave
+`ose-public` only — this wave's PR does not touch the private sibling. Same methodology as "after wave
 A" above: Python `time.time()`-around-`subprocess.run` for B5 (50 invocations of `--help` against
 the freshly rebuilt (`nx run rhino-cli-fsharp:build`) published self-contained
 `dist/rhino-cli-fsharp` binary, exit code asserted per iteration, zero failures), `/usr/bin/time
@@ -121,7 +121,7 @@ through F# at this point.
 
 ## Interim measurement: after wave C
 
-`ose-public` only — this wave's PR does not touch `ose-private`. Same methodology as "after wave
+`ose-public` only — this wave's PR does not touch the private sibling. Same methodology as "after wave
 B" above: Python `time.time()`-around-`subprocess.run` for B5 (50 invocations of `--help` against
 the freshly rebuilt (`nx run rhino-cli-fsharp:build`) published self-contained
 `dist/rhino-cli-fsharp` binary, exit code asserted per iteration, zero failures), `/usr/bin/time
@@ -144,7 +144,7 @@ count, and only six of the CLI's namespaces route through F# at this point.
 
 ## Interim measurement: after wave D
 
-`ose-public` only — this wave's PR does not touch `ose-private`. Same methodology as "after wave
+`ose-public` only — this wave's PR does not touch the private sibling. Same methodology as "after wave
 C" above: Python `time.time()`-around-`subprocess.run` for B5 (50 invocations of `--help` against
 the freshly rebuilt (`nx run rhino-cli-fsharp:build`) published self-contained
 `dist/rhino-cli-fsharp` binary, exit code asserted per iteration, zero failures), `/usr/bin/time
@@ -172,7 +172,7 @@ identified one-off cause is recorded as observed, not adjusted or re-run to chas
 
 ## Interim measurement: after wave E
 
-`ose-public` only — this wave's PR does not touch `ose-private`. Same methodology as "after wave
+`ose-public` only — this wave's PR does not touch the private sibling. Same methodology as "after wave
 D" above: Python `time.time()`-around-`subprocess.run` for B5 (50 invocations of `--help` against
 the freshly rebuilt (`nx run rhino-cli-fsharp:build`) published self-contained
 `dist/rhino-cli-fsharp` binary, exit code asserted per iteration, zero failures), `/usr/bin/time
@@ -198,7 +198,7 @@ identified rather than as a wave-E effect.
 
 ## Interim measurement: after wave F
 
-`ose-public` only — this wave's PR does not touch `ose-private`. Same methodology as "after wave
+`ose-public` only — this wave's PR does not touch the private sibling. Same methodology as "after wave
 E" above: Python `time.time()`-around-`subprocess.run` for B5 (50 invocations of `--help` against
 the freshly rebuilt (`nx run rhino-cli-fsharp:build`) published self-contained
 `dist/rhino-cli-fsharp` binary, exit code asserted per iteration, zero failures), `/usr/bin/time
@@ -222,7 +222,7 @@ larger three-namespace addition.
 **Noise floor for the Verdict column.** Unless a bullet below states an explicit repeat count (B3,
 B5, B7), the recorded figure is a **single run** — B1, B2, B4, and B6 were not repeated. This doc's
 own repeated measurement shows how much that matters: B3's two consecutive warm-build runs differed
-by 42% in `ose-public` and by 4.4x in `ose-private`, and B3's and B4's table values are each smaller
+by 42% in `ose-public` and by 4.4x in the private sibling, and B3's and B4's table values are each smaller
 than that spread. At Phase 10, any row's Before/After delta smaller than the larger of (a) the
 cross-repo noise floor stated below (~1-2 s) or (b) that row's own observed run-to-run spread, where
 one was measured, is recorded as `unchanged`, never `better`/`worse` — the raw delta is still
@@ -238,26 +238,26 @@ on the same machine, though not simultaneously, so cross-repo differences of a s
 machine noise rather than signal.
 
 - **B1** — `cargo build --offline` into a throwaway `CARGO_TARGET_DIR`. `ose-public` **17.59 s**,
-  73 crates, `debug/rhino-cli` 21,597,000 bytes. `ose-private` **16.00 s**, 73 crates, 21,597,016
+  73 crates, `debug/rhino-cli` 21,597,000 bytes. The private sibling **16.00 s**, 73 crates, 21,597,016
   bytes.
 - **B2** — `cargo build --profile gate` into a throwaway `CARGO_TARGET_DIR`, the profile CI actually
-  builds. `ose-public` **34.44 s** / 79 crates; `ose-private` **35.57 s** / 79 crates.
+  builds. `ose-public` **34.44 s** / 79 crates; the private sibling **35.57 s** / 79 crates.
 - **B3** — the same build run twice against a warm target; the second run is the figure.
-  `ose-public` 0.34 s then **0.24 s**; `ose-private` 0.75 s then **0.17 s**. Neither second run
+  `ose-public` 0.34 s then **0.24 s**; private sibling 0.75 s then **0.17 s**. Neither second run
   emitted a `Compiling` line or changed the binary mtime.
 - **B4** — touch one source file, rebuild. The plan-prescribed target is `src/main.rs`, which is a
   14-line shim over `src/lib.rs`, so only the thin bin crate relinks: **0.43 s** in `ose-public`,
-  **0.35 s** in `ose-private`. Because that figure flatters Rust against any F# comparison, the
+  **0.35 s** in the private sibling. Because that figure flatters Rust against any F# comparison, the
   honest second measurement is recorded too — touching `src/commands/gate/validate.rs` (2,766 lines)
-  costs **13.15 s** in `ose-public` and **15.24 s** in `ose-private`. Phase 10 must reproduce both
+  costs **13.15 s** in `ose-public` and **15.24 s** in the private sibling. Phase 10 must reproduce both
   shapes.
 - **B5** — 50 invocations of `--help`, exit code asserted per iteration. `ose-public` total 0.562 s,
-  mean **11.2 ms**; `ose-private` total 0.767 s, mean **15.3 ms**. Zero non-zero exits in either.
+  mean **11.2 ms**; the private sibling total 0.767 s, mean **15.3 ms**. Zero non-zero exits in either.
 - **B6** — one full `.husky/pre-commit` against a pinned staged set: a single new
   `apps/rhino-cli/bench-probe.md` holding one heading and one paragraph, staged, hook run, then the
   file removed and the index reset. Pinning the staged set is what makes the two repositories
   comparable, because every gate in this hook is file-type scoped. `ose-public` **5.24 s**,
-  `ose-private` **3.38 s**, both exit 0, both restored to their exact prior `git status --porcelain`.
+  the private sibling **3.38 s**, both exit 0, both restored to their exact prior `git status --porcelain`.
   An earlier `ose-public` run against an unpinned staged set read 7.25 s, and an instrumented
   variant of it read 6.66 s while recording **5** rhino-cli binary invocations through a counting
   `RHINO_CLI_BIN` wrapper. That invocation count is the figure Phase 10 compares; the 7.25 s wall
@@ -265,14 +265,14 @@ machine noise rather than signal.
   rather than silent.
 - **B7** — the `build-rhino` job duration from the three most recent green `pr-quality-gate.yml`
   runs on `main`. `ose-public`: 73 s, 69 s, 70 s (runs 32810578748, 32797537004, 32796057166), mean
-  **70.67 s**. `ose-private`: 89 s, 88 s, 89 s (runs 32797359073, 32796938182, 32795391522), mean
+  **70.67 s**. The private sibling: 89 s, 88 s, 89 s (runs 32797359073, 32796938182, 32795391522), mean
   **88.67 s**.
 - **B7 after Phase 2** — the same three-most-recent-green-runs-on-`main` measurement, re-taken once
   Phase 2's F# scaffolding had merged and `build-rhino` had grown a second responsibility: it now
   publishes the self-contained `dist/rhino-cli-fsharp` alongside the Rust `gate` binary, because
   every downstream job resolves that artifact through `RHINO_CLI_FSHARP_BIN` rather than building
   F# from source. `ose-public`: 293 s, 296 s, 289 s (runs 33237638893, 33235713582, 33231338842),
-  mean **292.67 s**. `ose-private`: 831 s, 391 s, 819 s (runs 33237644795, 33232904277,
+  mean **292.67 s**. The private sibling: 831 s, 391 s, 819 s (runs 33237644795, 33232904277,
   33229933531), mean **680.33 s** — recorded with its spread, not smoothed: that repository's
   self-hosted runner produced a 2.1x range across three consecutive runs, so its mean is not a
   figure Phase 10 should read a small delta against. The rise over the 70.67 s / 88.67 s Phase 0
@@ -312,14 +312,14 @@ Phase 10 clause, not here, so it is where a future executor can actually be held
 
 The Before figure for B1 was measured twice in each repository — once as found, and again after
 Phase 1 removed the unused `tree-sitter` dependency from `Cargo.toml`. `ose-public` as found: **19.91 s**,
-79 crates, 21,597,224 bytes; after removal **17.59 s**, 73 crates, 21,597,000 bytes. `ose-private`
+79 crates, 21,597,224 bytes; after removal **17.59 s**, 73 crates, 21,597,000 bytes. The private sibling
 as found: **22.39 s**, 79 crates, 21,597,240 bytes; after removal **16.00 s**, 73 crates,
 21,597,016 bytes. Both tables' **B1** row records the post-removal figure — see "Baseline
 provenance" above the measurement tables, and the note below for B2 through B8.
 
 `rhino-cli:test:quick` exits 0 after the removal in both repositories, so each baseline is a working
-one. In `ose-private` the target was also run before the removal, uncached, at 441.72 s, and after
-it at 363.06 s; the first `ose-private` run of the day returned a full Nx cache hit in 1.99 s, which
+one. In the private sibling the target was also run before the removal, uncached, at 441.72 s, and after
+it at 363.06 s; the first the private sibling run of the day returned a full Nx cache hit in 1.99 s, which
 is why every recorded figure here uses `--skip-nx-cache`.
 
 ## Post-removal B2-B8 re-measurement note
@@ -329,21 +329,21 @@ the same Python `time.time()`-around-`subprocess.run` methodology as the rest of
 timed invocation asserting exit code 0.
 
 - **B2** — `cargo build --profile gate` into a fresh throwaway `CARGO_TARGET_DIR`. `ose-public`
-  **21.09 s**; `ose-private` **19.27 s**. Both faster than their pre-removal B2 figures (34.44 s /
+  **21.09 s**; the private sibling **19.27 s**. Both faster than their pre-removal B2 figures (34.44 s /
   35.57 s), consistent with a smaller, tree-sitter-free dependency graph.
 - **B3** — the same build run twice against the warm target from B2; the second run is the figure.
-  `ose-public` 0.31 s then **0.18 s**; `ose-private` 0.24 s then **0.16 s**.
+  `ose-public` 0.31 s then **0.18 s**; private sibling 0.24 s then **0.16 s**.
 - **B4** — touch `apps/rhino-cli/src/main.rs`, rebuild: **0.37 s** in both repositories. The honest
   second shape — touching `src/commands/gate/validate.rs` (2,766 lines) — costs **9.77 s** in
-  `ose-public` and **11.17 s** in `ose-private`; both recorded here in prose, matching how the
+  `ose-public` and **11.17 s** in the private sibling; both recorded here in prose, matching how the
   pre-removal B4 dual shape was documented above.
 - **B5** — 50 invocations of `--help` against the freshly built `gate`-profile binary, exit code
   asserted per iteration, zero failures in either repo. `ose-public` total 0.374 s, mean **7.47 ms**;
-  `ose-private` total 0.418 s, mean **8.35 ms**.
+  the private sibling total 0.418 s, mean **8.35 ms**.
 - **B6** — one full `.husky/pre-commit` against the same pinned staged set as the original
   measurement (a single new `apps/rhino-cli/bench-probe.md` holding one heading and one paragraph),
   staged, hook run, then the file removed and the index reset. `ose-public` **14.24 s**,
-  `ose-private` **13.18 s**, both exit 0, both restored to their exact prior `git status --porcelain`.
+  the private sibling **13.18 s**, both exit 0, both restored to their exact prior `git status --porcelain`.
   These figures are markedly higher than the pre-removal 5.24 s / 3.38 s; the difference is
   attributable to hook-internal work unrelated to the Rust build itself (this run's hook output shows
   a `harness-bindings-generate` step re-syncing agents, which the earlier run's output did not
@@ -452,7 +452,7 @@ run list` sample" wording, rather than a fresh query. The After sample's other t
 - **Whole-run CI wall time: roughly unchanged.** 388 s vs. 398 s on the single sampled pair, well
   within this repository's documented self-hosted-runner noise band.
 
-## Phase 10 "After" measurements — ose-private
+## Phase 10 "After" measurements — the private sibling
 
 Same commands as the ose-public section above, run in that repository's own worktree on branch
 `rhino-fsharp-10-benchmark-measure` (off `origin/main`). `<fsharp-source-root>` also resolved to
@@ -495,7 +495,7 @@ matching this runner pool's already-documented flakiness. Reran via `gh run reru
 --failed`; excluded from A7's three-run sample regardless (it was not among the three most recent
 green runs at measurement time).
 
-### Verdict — ose-private
+### Verdict — the private sibling
 
 - **B1: better.** 9.33 s vs. 16.00 s, Δ -6.67 s.
 - **B2: better.** 10.35 s vs. 19.27 s, Δ -8.92 s.
@@ -512,7 +512,7 @@ green runs at measurement time).
 - **Source size: better.** 19,710 vs. 49,460, Δ -29,750 lines (0.40x) — identical to ose-public.
 
 **Cross-repo material difference, called out rather than averaged**: B7's After figure is 158.00 s
-in `ose-public` versus 762.00 s in `ose-private` — a ~4.8x gap driven entirely by `ose-private`'s
+in `ose-public` versus 762.00 s in the private sibling — a ~4.8x gap driven entirely by the private sibling's
 self-hosted-runner artifact-upload variance (already documented before this rewrite, reconfirmed by
 the identical-run cross-check above), not by anything language-related. Every other row's two
 repositories agree to within the noise floor already established on this page.
@@ -522,12 +522,12 @@ repositories agree to within the noise floor already established on this page.
 Full findings, verbatim errors, and per-construct results are in `learnings.md`. Summary recorded
 here per the Phase 1 Gate's own requirement that the binding choice land in both files:
 
-| Binary                                    | Mean startup (50 runs, `osx-arm64`) |
-| ----------------------------------------- | ----------------------------------- |
-| NativeAOT                                 | 15.23 ms                            |
-| Self-contained, non-AOT                   | 200.84 ms                           |
-| Rust, Phase 0 B5 baseline (`ose-public`)  | 11.2 ms                             |
-| Rust, Phase 0 B5 baseline (`ose-private`) | 15.3 ms                             |
+| Binary                                          | Mean startup (50 runs, `osx-arm64`) |
+| ----------------------------------------------- | ----------------------------------- |
+| NativeAOT                                       | 15.23 ms                            |
+| Self-contained, non-AOT                         | 200.84 ms                           |
+| Rust, Phase 0 B5 baseline (`ose-public`)        | 11.2 ms                             |
+| Rust, Phase 0 B5 baseline (the private sibling) | 15.3 ms                             |
 
 **Selected publish mode: self-contained, non-AOT.** NativeAOT is faster to start but fails at
 runtime for two of the four required constructs (a DU argument parse via `Argu`, and

@@ -530,7 +530,7 @@ apps/islamic-be`. Same source tree, same linter, same version; the gate passes a
 
 ### DU5: "Nx detected a flaky task" can mean a missing dependency
 
-- **Observed**: `rhino-cli:test:coverage:unit` failed in the `ose-private` worktree with
+- **Observed**: `rhino-cli:test:coverage:unit` failed in the private-sibling worktree with
   `ERR_MODULE_NOT_FOUND: @cucumber/gherkin`, then passed after `npm install`. Nx saw one task hash
   produce two outcomes and labelled it flaky.
 - **Why it matters here**: the repo rule is to fix a flaky test at its root cause and never retry
@@ -553,11 +553,11 @@ apps/islamic-be`. Same source tree, same linter, same version; the gate passes a
 
 - **Observed**: `Env.fs` and `env-validate-app-drift.feature` are inside
   `apps/rhino-cli/parity-manifest.sha256`, which the `parity manifest validate` gate enforces in both
-  repositories. Changing them in `ose-public` alone makes `ose-private`'s manifest stale the moment
+  repositories. Changing them in `ose-public` alone makes the private sibling's manifest stale the moment
   the public PR merges.
 - **The obligation**: the two PRs are one delivery unit with two heads. Both must be opened
   cross-referencing each other and merged in the same session; neither is independently shippable,
-  and stopping between them leaves `ose-private` red on a gate it did nothing to break.
+  and stopping between them leaves the private sibling red on a gate it did nothing to break.
 - **Mechanical detail worth keeping**: `parity manifest generate` reads the **git index**, not the
   worktree — it refuses to run while a covered file is unstaged. So the sequence is stage the source
   edits, generate, stage the manifest, commit as one. Regenerating before staging cannot work.
@@ -577,7 +577,7 @@ apps/islamic-be`. Same source tree, same linter, same version; the gate passes a
 
 - **Observed**: the two DU5 leak reviews were launched concurrently, one per repository. Both wrote
   their review body to the same generic filename in the shared session scratchpad. One overwrote the
-  other between write and read, and `ose-public#500` was briefly posted with `ose-private#169`'s
+  other between write and read, and `ose-public#500` was briefly posted with `<private-sibling>#169`'s
   marker — wrong repository, wrong PR number, wrong head SHA.
 - **How it was caught**: the agent read back what it had posted instead of trusting the API call's
   exit status, spotted the mismatch, rewrote the body to a uniquely-named file, verified the content

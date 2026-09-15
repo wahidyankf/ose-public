@@ -24,12 +24,12 @@ Same treatment as [`repo-configs/`](../repo-configs/README.md).
 is not a duplicate of the above; it is the emitter's acceptance oracle, kept separate so the gate has
 something byte-exact to compare against.
 
-| Repo          | Complete file                                            | Emitted block                                                    | Glob keys (live → target) | Top-level keys |
-| ------------- | -------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------- | -------------- |
-| `ose-public`  | [`package-ose-public.json`](./package-ose-public.json)   | [`lint-staged-ose-public.json`](./lint-staged-ose-public.json)   | 26 → 25                   | 15             |
-| `ose-primer`  | [`package-ose-primer.json`](./package-ose-primer.json)   | [`lint-staged-ose-primer.json`](./lint-staged-ose-primer.json)   | 20 → 22                   | 14             |
-| `ose-private` | [`package-ose-private.json`](./package-ose-private.json) | [`lint-staged-ose-private.json`](./lint-staged-ose-private.json) | 18 → 16                   | 14             |
-| `beaver-nest` | [`package-beaver-nest.json`](./package-beaver-nest.json) | [`lint-staged-beaver-nest.json`](./lint-staged-beaver-nest.json) | 26 → 16                   | 16             |
+| Repo                | Complete file                                                    | Emitted block                                                            | Glob keys (live → target) | Top-level keys |
+| ------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------- | -------------- |
+| `ose-public`        | [`package-ose-public.json`](./package-ose-public.json)           | [`lint-staged-ose-public.json`](./lint-staged-ose-public.json)           | 26 → 25                   | 15             |
+| `ose-primer`        | [`package-ose-primer.json`](./package-ose-primer.json)           | [`lint-staged-ose-primer.json`](./lint-staged-ose-primer.json)           | 20 → 22                   | 14             |
+| The private sibling | [`package-private-sibling.json`](./package-private-sibling.json) | [`lint-staged-private-sibling.json`](./lint-staged-private-sibling.json) | 18 → 16                   | 14             |
+| `beaver-nest`       | [`package-beaver-nest.json`](./package-beaver-nest.json)         | [`lint-staged-beaver-nest.json`](./lint-staged-beaver-nest.json)         | 26 → 16                   | 16             |
 
 `[Repo-grounded]` Counts measured 2026-08-02 by parsing each repo's live `package.json`. Reverified
 2026-08-04: each complete target matches its current repo outside `lint-staged`, every complete
@@ -47,7 +47,7 @@ or Volta pin is touched by this plan. Verified — this prints `IDENTICAL` four 
 REPOS=/path/to/ose-checkouts node -e '
 const fs = require("fs");
 const repos = process.env.REPOS;
-for (const r of ["ose-public", "ose-primer", "ose-private", "beaver-nest"]) {
+for (const r of ["ose-public", "ose-primer", "<private-sibling>", "beaver-nest"]) {
   const a = JSON.parse(fs.readFileSync(`package-${r}.json`, "utf8"));
   const b = JSON.parse(fs.readFileSync(`${repos}/${r}/package.json`, "utf8"));
   delete a["lint-staged"];
@@ -65,7 +65,7 @@ reconcile it rather than overwriting, or the copy silently reverts someone else'
 # Should print MATCH four times.
 node -e '
 const fs=require("fs");
-for(const r of ["ose-public","ose-primer","ose-private","beaver-nest"]){
+for(const r of ["ose-public","ose-primer","<private-sibling>","beaver-nest"]){
   const full=JSON.parse(fs.readFileSync(`package-${r}.json`,"utf8"))["lint-staged"];
   const blk=JSON.parse(fs.readFileSync(`lint-staged-${r}.json`,"utf8"));
   console.log(r+": "+(JSON.stringify(full)===JSON.stringify(blk)?"MATCH":"DRIFT"));

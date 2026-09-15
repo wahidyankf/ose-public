@@ -15,7 +15,7 @@ created: 2026-08-30
 # rhino-cli: Rust to F# Rewrite — Measured Outcome
 
 **rhino-cli was rewritten from Rust to F# and merged to `main` in both `ose-public` and
-`ose-private` on 2026-08-30**, closing out the `rewrite-rhino-cli-to-fsharp` plan. This page is the
+the private sibling on 2026-08-30**, closing out the `rewrite-rhino-cli-to-fsharp` plan. This page is the
 durable home for that rewrite's measured comparison, so the next proposal to change a component's
 implementation language starts from data rather than argument. Full commands, both repositories'
 raw figures, and per-row methodology notes live in that plan's `benchmark.md` (archived with the

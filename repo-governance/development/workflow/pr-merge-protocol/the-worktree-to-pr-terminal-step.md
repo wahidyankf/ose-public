@@ -41,5 +41,5 @@ rather than assuming it, and never reach for `reset --hard`.
 `ose-public` sets `delete_branch_on_merge: true`, which overrides `gh pr merge --delete-branch=false`,
 so GitHub deletes the remote branch at merge and there is no ref left for the lease to compare
 against — `git ls-remote` returns empty. `git fetch origin --prune` followed by a plain `git push -u`
-is the whole fix; no force of any kind is needed. `ose-private` sets `delete_branch_on_merge: false`,
+is the whole fix; no force of any kind is needed. The private sibling sets `delete_branch_on_merge: false`,
 so its branches survive the merge and must be deleted explicitly during cleanup.

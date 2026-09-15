@@ -6,7 +6,7 @@
 **Delivery mode:** `worktree-to-pr`
 
 This plan is single-sourced in `ose-public` and delivers coordinated changes to both `ose-public`
-and `ose-private`. Each repository retains its own worktree, branch, PR, gates, rules-propagation
+and the private sibling. Each repository retains its own worktree, branch, PR, gates, rules-propagation
 manifest, and recovery proof.
 
 ## Context
@@ -32,7 +32,7 @@ domain code and AyoKoding educational DDD content stay unchanged.
 [Repo-grounded] Across the two OSE repositories, test sources and project metadata are also inconsistent: tests appear under several
 project-specific paths, and 20 explicit project-local `package.json` files mix true package
 boundaries with scripts or dependencies that may be owned by Nx/root workspace configuration.
-`ose-private` adds two direct library manifests and its own test/spec surfaces.
+The private sibling adds two direct library manifests and its own test/spec surfaces.
 
 ## Outcome
 
@@ -51,7 +51,7 @@ real package/tool boundary requires them; Nx commands never depend on a proxy ma
   `rtk nx show projects`,
   including inferred contract projects and the 26 projects backed by `apps/**/project.json` or
   `libs/**/project.json`.
-- [Repo-grounded] Inventory the three current `ose-private` Nx projects (`rhino-cli`, `ts-ui`, and
+- [Repo-grounded] Inventory the three current the private sibling Nx projects (`rhino-cli`, `ts-ui`, and
   `ts-ui-tokens`) and re-resolve the actual set from current `origin/main` at execution because the
   Rhino rewrite is independently in progress; `rhino-cli-fsharp` is currently absent.
 - [Judgment call] Define application, executable-tool, library, contract-library, and dedicated-E2E
@@ -63,7 +63,7 @@ real package/tool boundary requires them; Nx commands never depend on a proxy ma
   manifests or forwarding scripts.
 - [Judgment call] Standardize OSE-native Nx targets and attach commands, inputs, dependencies,
   outputs, and cache behavior to every applicable `project.json` or inferred project definition.
-- [Repo-grounded] Make all 211 current `ose-public` and 76 current `ose-private` feature files under
+- [Repo-grounded] Make all 211 current `ose-public` and 76 current the private sibling feature files under
   `specs/apps/` and `specs/libs/` discoverable recursively, measured and enforced independently per
   repository with no manual file registration.
 - [Judgment call] Extend Rhino's compliance machinery to prove corpus completeness, driver
@@ -106,7 +106,7 @@ real package/tool boundary requires them; Nx commands never depend on a proxy ma
 - Treating placeholder echo commands as proof that a test layer exists.
 - Removing a project-local `package.json` that is proven necessary for publishing, workspace
   package resolution, deployment/build tooling, or another direct consumer.
-- Copying public-only product/application owners into `ose-private`; private scope follows its own
+- Copying public-only product/application owners into the private sibling; private scope follows its own
   project inventory while shared Rhino/governance surfaces preserve required parity.
 
 ## Resolved Material Decisions
@@ -119,7 +119,7 @@ real package/tool boundary requires them; Nx commands never depend on a proxy ma
 | Gherkin/BDD coverage       | Require exact 100% item and applicable-adapter coverage; no rounding or per-item exemption                                                                                                                  | [Judgment call] Explicitly selected by the user; makes one uncovered behavior a deterministic failure                                                                          | A new approved testing ADR provides an equally complete, mechanically stronger proof                        |
 | Test layout                | `tests/unit/`, `tests/integration/`, and `tests/e2e/`, with layer-neutral non-executable support separated                                                                                                  | [Judgment call] Explicitly selected by the user; BeaverNest prior art supports but does not decide the OSE layout                                                              | A native runner proves the same non-overlap with a clearer cross-language layout                            |
 | Project-local manifests    | Delete any `apps/`/`libs/` `package.json` without a proven package/tool boundary; put commands directly in `project.json`; no proxy                                                                         | [Judgment call] Explicitly selected by the user; removes duplicate command ownership without breaking real package consumers                                                   | A tool proves a manifest is a required direct boundary that `project.json` cannot represent                 |
-| Repository scope           | Execute independently in `ose-public` and `ose-private`, with paired shared-rule/Rhino outcomes                                                                                                             | [Judgment call] Explicitly selected by the user; enforcement is incomplete if the private sibling can drift                                                                    | The repositories stop sharing the affected contract through an approved parity decision                     |
+| Repository scope           | Execute independently in `ose-public` and the private sibling, with paired shared-rule/Rhino outcomes                                                                                                       | [Judgment call] Explicitly selected by the user; enforcement is incomplete if the private sibling can drift                                                                    | The repositories stop sharing the affected contract through an approved parity decision                     |
 | Rules propagation          | Run per repository whenever enforcement/rules surfaces change                                                                                                                                               | [Repo-grounded] Both repositories define rules as normative prose plus config, machinery, bindings, hooks, and CI; propagation makes the new gates discoverable and consistent | No revisit; this is a repository workflow obligation                                                        |
 | DDD disposition            | Remove engineering tests/docs/gates; preserve production code and education                                                                                                                                 | [Judgment call] Explicitly selected by the user; avoids enforcing an immature concept without destructive product refactors                                                    | A new approved DDD concept/ADR defines bounded contexts, ownership, adoption criteria, and enforcement      |
 | Specs/C4 structure         | `specs/{apps,libs}/<owner>/` entry with `architecture.md` and `behaviors/`, grouped by product/surface                                                                                                      | [Judgment call] Explicitly selected by the user; adopts BeaverNest's coherent corpus without copying British spelling or discarding useful OSE contracts                       | Evidence shows a distinct view needs a mapped `architecture/` split                                         |

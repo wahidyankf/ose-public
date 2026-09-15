@@ -105,12 +105,12 @@ Rule 1 is evaluated first so every one of the 1,004 READMEs is audited and carri
 disposition. Auditing 373 of them then reaches an exempt verdict: they sit under a tree this plan
 must not hand-edit. Those overrides are applied here, after the audit, not by skipping it.
 
-| Exempt tree                                                   | Final disposition   | Paths     | Of which README | Why the plan does not hand-edit it                                                                        |
-| ------------------------------------------------------------- | ------------------- | --------- | --------------- | --------------------------------------------------------------------------------------------------------- |
-| `apps/rhino-cli/**`, `specs/apps/rhino/behavior/rhino-cli/**` | `identity-bound`    | 27        | 20              | No-edit scope. 25 of the 27 are byte-identical with `ose-private`; the other 2 are excluded by plan rule. |
-| `plans/done/**`, `archived/**`                                | `historical-exempt` | 1,390     | 236             | Completed and archived work. Historical claims are not rewritten to match the present.                    |
-| `.agents/**`, `.opencode/**`                                  | `generated`         | 649       | 117             | Harness mirrors. Regenerate from the canonical `.claude/` source; a hand-edit is drift.                   |
-| **Total**                                                     | —                   | **2,066** | **373**         | None is scheduled for hand-editing.                                                                       |
+| Exempt tree                                                   | Final disposition   | Paths     | Of which README | Why the plan does not hand-edit it                                                                              |
+| ------------------------------------------------------------- | ------------------- | --------- | --------------- | --------------------------------------------------------------------------------------------------------------- |
+| `apps/rhino-cli/**`, `specs/apps/rhino/behavior/rhino-cli/**` | `identity-bound`    | 27        | 20              | No-edit scope. 25 of the 27 are byte-identical with the private sibling; the other 2 are excluded by plan rule. |
+| `plans/done/**`, `archived/**`                                | `historical-exempt` | 1,390     | 236             | Completed and archived work. Historical claims are not rewritten to match the present.                          |
+| `.agents/**`, `.opencode/**`                                  | `generated`         | 649       | 117             | Harness mirrors. Regenerate from the canonical `.claude/` source; a hand-edit is drift.                         |
+| **Total**                                                     | —                   | **2,066** | **373**         | None is scheduled for hand-editing.                                                                             |
 
 Effective dispositions after the overrides, which must still total the tracked corpus:
 
@@ -1222,7 +1222,7 @@ The real byte-identity boundary is exactly seven pathspecs, read from `BOUNDARY_
 `apps/rhino-cli/src/application/parity.rs`: `apps/rhino-cli/src`, `apps/rhino-cli/tests`,
 `apps/rhino-cli/Cargo.toml`, `apps/rhino-cli/Cargo.lock`, `apps/rhino-cli/project.json`,
 `apps/rhino-cli/LICENSE`, and `specs/apps/rhino/behavior/rhino-cli/gherkin`. Those are
-byte-identical with `ose-private` — zero carve-outs, not merely parallel content — and the
+byte-identical with the private sibling — zero carve-outs, not merely parallel content — and the
 repository enforces it with the registered `rhino-cli parity manifest validate` gate on pre-push and
 CI, against a 603-entry checksum manifest.
 

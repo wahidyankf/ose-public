@@ -54,7 +54,7 @@ specs/
 | `wahidyankf-www`             | `specs/apps/wahidyankf/www/`       |
 | each behavior-owning library | `specs/libs/<library>/`            |
 
-`ose-private` applies the same shape to `specs/apps/rhino/cli/`, `specs/libs/ts-ui/`, and
+The private sibling applies the same shape to `specs/apps/rhino/cli/`, `specs/libs/ts-ui/`, and
 `specs/libs/ts-ui-tokens/`. It does not create entries for public-only products.
 
 Dedicated E2E and inferred contract projects link to the owner's entry; they do not receive a

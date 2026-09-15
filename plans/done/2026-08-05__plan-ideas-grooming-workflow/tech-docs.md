@@ -34,7 +34,7 @@ flowchart LR
     A["ose-public<br/>workflow-naming.md<br/>(+ grooming token)"] --> BC["ose-public<br/>plan-ideas-grooming.md<br/>+ workflows/README.md"]
     BC -->|"direct push to<br/>origin/main<br/>(no PR)"| D{{"ose-public<br/>origin/main updated"}}
     D -->|"adapt + byte-copy<br/>workflow doc"| E["ose-primer"]
-    D -->|"adapt + byte-copy<br/>workflow doc"| F["ose-private"]
+    D -->|"adapt + byte-copy<br/>workflow doc"| F["private sibling"]
     D -->|"adapt + byte-copy<br/>workflow doc"| G["beaver-nest"]
 
     classDef repo fill:#0072B2,stroke:#000,color:#fff
@@ -49,7 +49,7 @@ flowchart LR
 flowchart TD
     P0["P0: Setup + Baseline"] --> P1["P1: Author in ose-public"]
     P1 -->|"blocks — propagation copies<br/>the FINAL pushed content"| P2["P2: Propagate ose-primer"]
-    P1 --> P3["P3: Propagate ose-private"]
+    P1 --> P3["P3: Propagate private sibling"]
     P1 --> P4["P4: Propagate beaver-nest"]
     P2 --> P5["P5: Knowledge Capture"]
     P3 --> P5
@@ -69,7 +69,7 @@ changes landing on `origin/main` (a direct push, not a PR merge — see DD-5).
 ```mermaid
 flowchart TD
     Start(["Idea needs a repo assignment"]) --> Q1{"Inherently requires<br/>a real secret/credential/<br/>infra-state value?"}
-    Q1 -->|"yes"| Private["ose-private only<br/>(Rule 5)"]
+    Q1 -->|"yes"| Private["private sibling only<br/>(Rule 5)"]
     Q1 -->|"no"| Q2{"Names a file/app/concern<br/>that exists in exactly<br/>one repo?"}
     Q2 -->|"yes"| SingleRepo["That repo only<br/>(Rule 6)"]
     Q2 -->|"no"| Public["ose-public<br/>(Rule 4 — generalizable<br/>default)"]
@@ -210,7 +210,7 @@ ose-primer/ (propagation target — adapted amendment + byte-copy)
 │   ose-public's pushed file
 └── repo-governance/workflows/README.md [E] — same conceptual catalog additions
 
-ose-private/ (propagation target — adapted amendment + byte-copy)
+<private-sibling>/ (propagation target — adapted amendment + byte-copy)
 ├── repo-governance/conventions/structure/workflow-naming.md [E]
 ├── repo-governance/workflows/plan/plan-ideas-grooming.md [N]
 └── repo-governance/workflows/README.md [E]
@@ -353,7 +353,7 @@ outputs:
    merging, so the merge lands in the correct destination repo, not wherever the pair happened to
    be compared first.
 4. **Residency decision (Rules 4-6)** — apply, in fixed order, first match wins: (a) secrets check
-   → `ose-private` only; (b) single-repo-only check (file/app/concern provably exists in exactly
+   → the private sibling only; (b) single-repo-only check (file/app/concern provably exists in exactly
    one repo, verified via `Glob`/`Bash test -f` against that repo's tree) → that repo only; (c)
    default → `ose-public` (generalizable). Log the matched rule for every decision.
 5. **Relocation (when Step 4's target differs from the idea's current repo)** — create the file at

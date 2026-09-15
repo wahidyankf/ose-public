@@ -9,7 +9,7 @@
 > docs, evidence, metadata, commits, or PRs. Use `.env.example`, variable names, and `<placeholder>`
 > tokens only.
 > 🚧 **Scope rule**: this plan delivers into `ose-public` only. No branch, PR, metadata change, or
-> file edit lands in `ose-private`, `ose-primer`, or `beaver-nest`, and no delivery unit changes a
+> file edit lands in the private sibling, `ose-primer`, or `beaver-nest`, and no delivery unit changes a
 > path inside `apps/rhino-cli/` or `specs/apps/rhino/behavior/rhino-cli/`.
 
 ## Worktree
@@ -726,7 +726,7 @@ no PR.
     `lint:md` baselines. Split by fixability and routed to Phase 8 as L-009: the 4 failing
     `apps/rhino-cli` files are deliberate negative fixtures under `tests/fixtures/state/` — one
     holds a state named `ThisLabelIsLongerThan30CharsAndFails` — so they must stay broken, and they
-    are byte-identical with `ose-private` besides.
+    are byte-identical with the private sibling besides.
     Confirmed the binding regeneration inside the pre-commit surface left the tree clean — still
     exactly 5 staged paths at that moment, nothing unstaged. P2-009 later widened the unit to
     seven paths; the file-touch ledger records the expansion.
@@ -739,7 +739,7 @@ no PR.
     zero credentials, emails, or absolute local paths, the only `/Users/` line being the grep pattern
     in P0-G01's own sanitization assertion, and the only URL the contracted
     `https://oseplatform.com/`. Pass 1 returned two HIGH and one MEDIUM: the ledger claimed whole-tree
-    byte identity with `ose-private` for `apps/rhino-cli/**`, when `BOUNDARY_PATHS` is seven
+    byte identity with the private sibling for `apps/rhino-cli/**`, when `BOUNDARY_PATHS` is seven
     pathspecs and 25 of the 27 `identity-bound` paths are in the 603-entry manifest — the two
     absentees being the very READMEs the ledger used the claim to exclude; two items were ticked
     before their execution-record rows existed, violating the plan's own append-only rule in the
@@ -879,9 +879,9 @@ no PR.
     and closed-intake posture, and the two labelled reader paths, which appear before any build
     detail — a reader chooses a path by line 22 without meeting Nx, npm, or a target name. Question
     three was the single real gap: the README never said how this repository differs from its
-    siblings. Added one paragraph giving `ose-private` and `ose-primer` accurate one-line
+    siblings. Added one paragraph giving the private sibling and `ose-primer` accurate one-line
     descriptions and routing to the repository comparison — descriptions and links only, no reader
-    path or metadata change for either, as the contract requires. `ose-private` is named without a
+    path or metadata change for either, as the contract requires. The private sibling is named without a
     link because it is private and public documentation does not describe its internals. Verified
     rather than assumed: all 15 relative links resolve on disk, both section anchors match their
     headings, the voice scan finds none of the forbidden words, and `ose-www`'s `dev` target and its
@@ -2425,7 +2425,7 @@ record.
   - **One voice finding turned out to be a factual defect**, which is the strongest
     argument for reading aloud at all. The reviewer flagged an unexplained codename
     in the repository-comparison table; checking it showed the table described
-    `ose-private` as doing "local CoralPolyp sandbox work", while a published
+    the private sibling as doing "local CoralPolyp sandbox work", while a published
     2026-08-18 update states CoralPolyp "was removed after recovery work showed
     that no current product needs to keep the app group alive". The row was stale,
     not merely jargony, and now reads "infrastructure work". (The name itself is
@@ -2500,11 +2500,11 @@ install`, with its own recovery entry, so no reader is stranded; and the
     Contributions, "not being accepted at this time", plus "an internal delivery
     process, not an invitation to submit external pull requests") agree; no
     document invites outside pull requests.
-  - **Sibling-repository claims agree**: `ose-private` is described as closed to
+  - **Sibling-repository claims agree**: the private sibling is described as closed to
     the public in both the README and the related-repositories reference;
     `ose-primer` is described as a separate, openly licensed starter free to
     diverge. `rhino-cli` byte identity is asserted only as spanning `ose-public`
-    and `ose-private`, matching AGENTS.md's "sole parity sibling" and the P7-006
+    and the private sibling, matching AGENTS.md's "sole parity sibling" and the P7-006
     parity result.
   - **One real defect, and it fails this item.** The recorded platform contract
     (P2-003) gives native Windows exactly three words of allowance — "Nothing. No
@@ -2568,7 +2568,7 @@ install`, with its own recovery entry, so no reader is stranded; and the
     manifest matches the tree.
   - Together these close the cross-repository risk this item exists for: because
     nothing under `apps/rhino-cli/` or its behavior specs changed, this plan opened
-    **no** four-repo parity-propagation obligation in `ose-private`, `ose-primer`,
+    **no** four-repo parity-propagation obligation in the private sibling, `ose-primer`,
     or `beaver-nest` — consistent with the plan-level constraint that no delivery
     unit may change a path inside those trees.
   - **P7-006 re-run at `400712aa9`, over the now-complete merged range.** The
@@ -2616,7 +2616,7 @@ install`, with its own recovery entry, so no reader is stranded; and the
     maintainer contact address is a deliberately public security-disclosure
     address, also unchanged.
   - The review specifically confirmed the private-sibling boundary holds: every
-    `ose-private` mention is confined to "it exists and is closed" or the
+    the private sibling mention is confined to "it exists and is closed" or the
     already-public `rhino-cli` byte-identity boundary. No host, path, or
     operational detail leaked.
   - Zero secret or credential leaks, so ordinary execution continues and the

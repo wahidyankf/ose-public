@@ -5,7 +5,7 @@ when_to_use: Use when a rule change needs to be authored and propagated across t
 
 # Operating Budgets — Authoring and Propagating Repository Rules
 
-These budgets bound how agents spend two scarce resources — external API rate limits and token burn — and how repository rules themselves are created and kept in sync. They apply to every agent and to the main conversation, across the OSE repositories — `ose-private` and `ose-public`.
+These budgets bound how agents spend two scarce resources — external API rate limits and token burn — and how repository rules themselves are created and kept in sync. They apply to every agent and to the main conversation, across the OSE repositories — the private sibling and `ose-public`.
 
 ## Authoring and Propagating Repository Rules
 

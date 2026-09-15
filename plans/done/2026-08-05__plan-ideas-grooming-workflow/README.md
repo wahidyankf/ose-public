@@ -2,20 +2,20 @@
 
 ## Context
 
-`plans/ideas/` across the four OSE repos (`ose-public`, `ose-primer`, `ose-private`,
+`plans/ideas/` across the four OSE repos (`ose-public`, `ose-primer`, the private sibling,
 `beaver-nest`) has grown into a flat, unorganized pile of two-pager idea briefs — 52 files in
-`ose-public`, 44 in `beaver-nest`, 21 in `ose-private`, 6 in `ose-primer` `[Repo-grounded]`
+`ose-public`, 44 in `beaver-nest`, 21 in the private sibling, 6 in `ose-primer` `[Repo-grounded]`
 (counted 2026-08-05). Nothing merges near-duplicate ideas, nothing classifies them by
 urgency/importance, and nothing decides which repo an idea should actually live in. A direct
 `diff` confirms `rhino-cli-env-backup-scripts.md` is **byte-identical** across `ose-public`,
-`ose-private`, and `beaver-nest` `[Repo-grounded]` — the same idea, filed three times, with no
+the private sibling, and `beaver-nest` `[Repo-grounded]` — the same idea, filed three times, with no
 mechanism reconciling that duplication or deciding which repo should own it.
 
 This plan does **not** perform that reorganization. It authors a new, reusable **workflow
 document** — `plan-ideas-grooming.md` — that defines how the reorganization should happen: merge
 near-duplicate ideas, split ideas that bundle unrelated concerns, classify by Eisenhower quadrant,
 reshape into strict two-pager compliance, correct cross-repo residency per three placement rules
-(generalizable → `ose-public`, secrets-bearing → `ose-private` only, single-repo-only → that repo
+(generalizable → `ose-public`, secrets-bearing → the private sibling only, single-repo-only → that repo
 only), and **rename** an idea-doc's filename when it no longer matches its content (post-merge/
 split, non-kebab-case, or a residency-driven context change). The name draws the direct analogy to
 Scrum's "backlog grooming" — periodically refining, reorganizing, splitting, merging, and pruning
@@ -47,7 +47,7 @@ compliantly.
   Available Workflows table, the Type Vocabulary table, and the Plan workflow family bullet list.
 - Propagate the same conceptual amendments (adapted, not blind-copied, since `workflow-naming.md`
   and `workflows/README.md` already carry real per-repo drift — confirmed by `diff`, 12–292 lines
-  of difference depending on the file and repo `[Repo-grounded]`) to `ose-primer`, `ose-private`,
+  of difference depending on the file and repo `[Repo-grounded]`) to `ose-primer`, the private sibling,
   and `beaver-nest`.
 - Propagate `plan-ideas-grooming.md` itself as a byte-identical copy to all three sibling
   repos — it is brand-new content with no existing drift to reconcile, and is authored
@@ -62,7 +62,7 @@ compliantly.
 - Any change to `plans/ideas/README.md` in any repo.
 - Running `npm run generate:bindings` or any harness-sync command.
 
-**Affected repos**: `ose-public` (source of truth, authored first), `ose-primer`, `ose-private`,
+**Affected repos**: `ose-public` (source of truth, authored first), `ose-primer`, the private sibling,
 `beaver-nest` (propagation targets).
 
 ## Approach Summary

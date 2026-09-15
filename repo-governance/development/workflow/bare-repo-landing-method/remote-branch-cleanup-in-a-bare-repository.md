@@ -10,7 +10,7 @@ direct `git push origin HEAD:main`, the merged remote branch still has to be del
 repository the obvious command does not work, and the reason has nothing to do with the branch:
 
 ```console
-$ git -C ose-private push origin --delete <branch>
+$ git -C <private-sibling> push origin --delete <branch>
 NX  Command failed: git diff --name-only --no-renames --relative HEAD .
 fatal: this operation must be run in a work tree
 husky - pre-push script failed (code 1)

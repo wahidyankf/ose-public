@@ -20,7 +20,7 @@ created: 2026-06-06
 
 This document records every decision made during the `plan-domain-parity` effort
 (2026-06-06). The effort aligned the planning-system files across the sibling
-repositories — ose-public and ose-private — covering fourteen governance
+repositories — ose-public and the private sibling — covering fourteen governance
 markdown files, four AI agent definitions, three AI skills, and the
 multi-harness binding surface. All 26 deviation-matrix rows were resolved in a
 grilled session with the invoker on 2026-06-06 before any implementation began.
@@ -45,7 +45,7 @@ The survey (empirical, 2026-06-06) established these facts before any decisions:
 - `plan-quality-gate.md` is byte-identical in both repos — no action needed.
 - `plan-multi-repo-parity-planning.md` exists only in ose-public.
 - The grilling convention exists as `grilling-with-options.md` in ose-public and
-  `grilling.md` (different name, broader wording) in ose-private.
+  `grilling.md` (different name, broader wording) in the private sibling.
 - The OpenCode emitter in rhino-cli still emits the deprecated boolean `tools`
   flags format (e.g., `tools: { read: true }`).
 - The `.codex/agents/` directory is not an official OpenAI Codex CLI convention —
@@ -96,7 +96,7 @@ removed with `git worktree remove`.
 **Rationale**: the invoker directed both the worktree default and the push
 mechanics (HEAD pushed to the confirmed push target, defaulting to
 `origin main`). The `target-stage` field is retained because ose-public and
-ose-private already use it; dropping it would be a regression. The
+the private sibling already use it; dropping it would be a regression. The
 [Worktree Toolchain Initialization](../../repo-governance/development/workflow/worktree-setup.md)
 convention covers the initialization sequence.
 

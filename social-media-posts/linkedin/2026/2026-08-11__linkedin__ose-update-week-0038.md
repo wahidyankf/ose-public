@@ -1,6 +1,6 @@
 Posted: Tuesday, August 11, 2026
 Platform: LinkedIn
-Window: 2026-08-04 22:05:42 +0700 → 2026-08-11 18:49:50 +0700. 339 commits in the endpoint ancestry delta across the three repos (ose-public 219, ose-primer 52, ose-private 68), 67 pull requests merged (38 / 17 / 12).
+Window: 2026-08-04 22:05:42 +0700 → 2026-08-11 18:49:50 +0700. 339 commits in the endpoint ancestry delta across the three repos (ose-public 219, ose-primer 52, private sibling 68), 67 pull requests merged (38 / 17 / 12).
 
 ---
 
@@ -27,7 +27,7 @@ It is still a walking skeleton. There is no assistant, content builder, posting 
 
 The public onboarding refresh also began, with clearer reader journeys and verified setup guidance.
 
-🏗️ ose-private
+🏗️ Private sibling
 
 The local CoralPolyp sandbox gained a real egress boundary and Linux user-service isolation. Full CoralPolyp CI E2E recovery remains open, with a focused plan now filed. Kubernetes is still backlog work.
 

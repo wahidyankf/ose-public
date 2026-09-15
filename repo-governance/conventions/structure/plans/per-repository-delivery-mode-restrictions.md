@@ -1,5 +1,5 @@
 ---
-description: States which delivery modes are actually available in ose-public and ose-private given each repo's branch-protection state.
+description: States which delivery modes are actually available in ose-public and the private sibling given each repo's branch-protection state.
 when_to_use: Use when confirming which delivery modes are actually permitted in the specific repository a plan targets.
 ---
 
@@ -16,7 +16,7 @@ available wherever a plan finds it easier.
   legacy endpoint alone, so check the rulesets API too before concluding a repo is unprotected.
   `worktree-to-origin-main` and `main-to-origin-main` are therefore **unavailable** here — no
   credential or role can push to `main` outside a merged PR.
-- **`ose-private`**: `worktree-to-pr` is likewise the required mode for **every plan except** two
+- **The private sibling**: `worktree-to-pr` is likewise the required mode for **every plan except** two
   qualifying categories. Only `main-to-origin-main` is available for either category;
   `worktree-to-origin-main` remains unavailable. The first category is stateful infrastructure as
   code (Terraform, Ansible, and equivalent state-changing infra work) needing the real `.env`
@@ -28,9 +28,9 @@ available wherever a plan finds it easier.
   `.md`-only / explicit-go-ahead content restriction above: the exception is granted for one of
   these **two stated reasons specifically** — infrastructure secrets/state or CI-pipeline
   self-validation circularity — not for any `.md`-only plan-docs change or ad-hoc go-ahead. A
-  non-IaC, non-CI-IaC, plan-docs-only change in `ose-private` uses `worktree-to-pr` like everything
+  non-IaC, non-CI-IaC, plan-docs-only change in the private sibling uses `worktree-to-pr` like everything
   else — the old two-condition test no longer applies there.
-  **`ose-private`'s own branch-protection state is unverified as of this PR** — its rules API returned
+  **The private sibling's own branch-protection state is unverified as of this PR** — its rules API returned
   `403 Upgrade to GitHub Pro` when checked live, so this rule's restriction there rests on a
   convention-enforced (not independently confirmed mechanically-enforced) footing until it is checked
   with sufficient API access.

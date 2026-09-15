@@ -82,7 +82,7 @@ maps emptiness to an exit code. No module prints from inside a rule, which is wh
 suite assert on the finding list rather than on captured stdout.
 
 **Byte-identical parity.** `apps/rhino-cli/parity-manifest.sha256` names every file that must be
-identical in `ose-private`. A change to any listed file opens an obligation in the other
+identical in the private sibling. A change to any listed file opens an obligation in the other
 repository; the `parity-manifest` gate proves the manifest matches the local tree, and the plan
 that changed the file carries the cross-repository half.
 

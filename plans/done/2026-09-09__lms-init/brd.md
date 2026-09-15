@@ -26,7 +26,7 @@ Three reasons, in order of weight:
    it.
 3. **The doctor refactor unblocks the language after this one.** Making the tool inventory
    config-driven is a one-time two-repository change. Once landed, the next language to arrive needs
-   a `repo-config.yml` entry rather than an `ose-private` parity delivery.
+   a `repo-config.yml` entry rather than a private-sibling parity delivery.
 
 ## Affected Roles
 
@@ -72,7 +72,7 @@ Stated as exclusions so a reader does not infer them from the presence of a back
 | Risk                                                                                                         | Consequence if it lands                                                                       | How this plan reduces it                                                                                                                  |
 | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | **Stack fragmentation.** A second backend stack doubles the toolchain the maintainer must keep current       | Security patching, dependency bumps, and CI maintenance roughly double for backend work       | Recorded as an accepted cost in `tech-docs.md` with the rejected alternatives; scope held to one service with no deployment surface       |
-| **Two-repository drift.** The `rhino-cli` change lands unevenly across `ose-public` and `ose-private`        | The nightly parity audit goes red and stays red, eroding trust in a signal meant to be silent | The parity change is its own delivery unit, landed in both repositories before anything depends on it, with the manifest regenerated      |
+| **Two-repository drift.** The `rhino-cli` change lands unevenly across `ose-public` and the private sibling  | The nightly parity audit goes red and stays red, eroding trust in a signal meant to be silent | The parity change is its own delivery unit, landed in both repositories before anything depends on it, with the manifest regenerated      |
 | **Governance tail underestimated.** Java enablement turns out larger than the service it enables             | The plan stalls mid-way with a half-enabled language and a project that cannot be gated       | Enablement is delivered before the service, so a stall leaves a coherent `main` with no orphaned Java project                             |
 | **Shell rots unused.** The LMS never receives domain work and the service becomes maintenance with no return | Ongoing dependency and CI cost for a permanently empty service                                | Deliberately minimal: no persistence, no deployment, no infrastructure to maintain — deleting it later removes four projects and no data  |
 | **Version currency.** Java 25, Spring Boot 4.1, and Gradle 9.7 all move during and after delivery            | Pinned versions go stale and the "current LTS" claim stops being true                         | Every version is pinned in a named file with the resolution command recorded, and re-resolved at Phase 0 rather than trusted from writing |

@@ -17,7 +17,7 @@ surface with a safe backend diagnostics snapshot.
 ## Execution Prerequisite
 
 This plan is **blocked from execution** until the cross-repository
-`ose-private` `restrict-env-access-to-prod-and-stag` plan is genuinely complete.
+the private sibling `restrict-env-access-to-prod-and-stag` plan is genuinely complete.
 [Repo-grounded: checked 2026-08-13] Its `ose-public` implementation is merged as PR #176, but a
 dated archive path alone is not enough: an archive can retain an `In Progress` status or unresolved
 delivery checklist. Executing this Flutter replacement before semantic completion would race or
@@ -25,7 +25,7 @@ silently inherit an unfinished environment-tier and agent-access contract for th
 projects.
 
 Completion is not inferred from a path, check box, or PR description. Before this plan's Phase 0
-begins, its executor must verify that the upstream plan is archived under `ose-private/plans/done/`
+begins, its executor must verify that the upstream plan is archived under `private-sibling/plans/done/`
 on `main`, absent from `plans/in-progress/`, has a recognized terminal README status (`Done`,
 `Complete`, or `Completed`), and has no unchecked delivery items. It must also verify that the
 corresponding `ose-public` implementation PR is merged and reachable from `origin/main`; record the

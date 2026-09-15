@@ -44,7 +44,7 @@ get deleted when the workflow is followed. The damage is narrower and still real
   rule rather than minting a new rule number.
 - Give `plan-fixer` the matching repair recipe.
 - Regenerate the affected Skill mirrors.
-- Do the same in `ose-private`, as a second independent `rules-propagation` run.
+- Do the same in the private sibling, as a second independent `rules-propagation` run.
 
 **Out of scope**
 

@@ -65,7 +65,7 @@ let DefaultMaxSize: int64 = 1024L * 1024L
 
 /// Default name of the backup directory placed outside the repository
 /// [Repo-grounded — `backup.rs::DEFAULT_BACKUP_DIR`]. This is ose-public's
-/// own canonical value; ose-private's Rust constant differs and its F# port
+/// own canonical value; the private sibling's Rust constant differs and its F# port
 /// must mirror whatever that repository's own constant currently is, not
 /// this literal.
 [<Literal>]

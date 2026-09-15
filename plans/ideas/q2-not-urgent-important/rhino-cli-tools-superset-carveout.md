@@ -1,15 +1,15 @@
 # Reconcile `apps/rhino-cli/src/application/doctor/tools.rs`'s "zero carve-outs" byte-identity target with its real, needed per-repo extensions
 
 One-line summary: `docs/reference/sdlc-gate-standard.md` states `apps/rhino-cli/src` is byte-identical
-across the bound repos with **zero carve-outs**, but `ose-private`'s `doctor/tools.rs` legitimately
+across the bound repos with **zero carve-outs**, but the private sibling's `doctor/tools.rs` legitimately
 carries extra IaC tool-provisioning definitions and tests (e.g. OpenTofu-specific tooling) that
 canonical does not — a structural tension between the stated target and a real, needed divergence that
 predates this brief and will keep causing every byte-identity check on this file to either false-flag
 or silently ignore known drift.
 
 > Provenance: surfaced 2026-08-07 during `sdlc-gate-registry-enforcement`'s Phase 6 byte-identity
-> propagation work (canonical `doctor/tools.rs` fix propagated into `ose-private`). A full `diff`
-> against canonical showed far more divergence than the propagated delta alone — `ose-private` needs
+> propagation work (canonical `doctor/tools.rs` fix propagated into the private sibling). A full `diff`
+> against canonical showed far more divergence than the propagated delta alone — the private sibling needs
 > IaC tooling the other bound repos don't. Documented provisionally in
 > `docs/reference/sdlc-gate-standard.md`'s "Known exception (tracked, not yet reconciled)" note; this
 > brief is the follow-up to actually resolve it in code.
@@ -19,8 +19,8 @@ or silently ignore known drift.
 `docs/reference/sdlc-gate-standard.md` §"rhino-cli Byte-Identity Boundary" states the target for the
 whole `apps/rhino-cli/src` tree (plus `tests/`, `Cargo.toml`, `Cargo.lock`, `project.json`, `LICENSE`,
 and the Gherkin behaviour tree) is **zero carve-outs** — byte-identical across every bound repo. The
-plan's own Phase 4 work (registry authoring for `ose-private`) already assumed the opposite for tool
-provisioning: `ose-private` needs infra-only IaC tooling (`terraform`, `ansible-lint`, `yamllint` —
+plan's own Phase 4 work (registry authoring for the private sibling) already assumed the opposite for tool
+provisioning: the private sibling needs infra-only IaC tooling (`terraform`, `ansible-lint`, `yamllint` —
 already documented as [Allowed Divergence](../../../docs/reference/sdlc-gate-standard.md#allowed-divergence)
 at the `repo-config.yml`/workflow level) that the other repos don't, and that need reaches down into
 `doctor/tools.rs`'s tool-definition and test functions themselves, not just the CI-workflow-YAML layer
@@ -38,7 +38,7 @@ provision tools the others don't need) are in tension for exactly this one file.
 
 **Live re-measurement (2026-08-07, this review cycle) — flagged for re-confirmation before
 promotion.** Comparing this PR's canonical `apps/rhino-cli/src/application/doctor/tools.rs` (1075
-lines) against `ose-private`'s `origin/main` copy (1045 lines, commit `1cb9cd236`) directly:
+lines) against the private sibling's `origin/main` copy (1045 lines, commit `1cb9cd236`) directly:
 
 - `fn`-signature sets are **identical** — 36 of 36 functions match by name in both files, including
   `install_clang_format` and the `OpenTofu`-specific helpers cited above as the motivating example.
@@ -49,7 +49,7 @@ lines) against `ose-private`'s `origin/main` copy (1045 lines, commit `1cb9cd236
   `sdlc-gate-registry-enforcement` PR #152 Cycle 2 review, tracked as task #238) — **not** a residual
   extra-tool-definition surplus.
 
-This does not reproduce the "`ose-private` carries extra `OpenTofu`/`clang-format` tool definitions
+This does not reproduce the "private sibling carries extra `OpenTofu`/`clang-format` tool definitions
 canonical does not have" example above as of this measurement — canonical (`ose-public`) already
 carries that tooling identically (added by `ea286ee88`, predating this brief). The structural tension
 this brief describes (whole-file byte-identity vs. legitimate per-repo tool extension) may still be
@@ -60,7 +60,7 @@ bullets above as still-current evidence.
 
 ## Why now
 
-Nothing is actively broken — the known divergence has existed since `ose-private`'s Phase 4 tool
+Nothing is actively broken — the known divergence has existed since the private sibling's Phase 4 tool
 registry authoring and hasn't caused a wrong propagation yet, only manual overhead each time a
 byte-identity check runs against this file. What makes it worth tracking now is that
 `sdlc-gate-registry-enforcement` just finished the first end-to-end propagation cycle across the
@@ -77,9 +77,9 @@ understood rather than theoretical.
   set for the byte-identity check; the actual comparison mechanism (full-file hash/diff) that would
   need an accepted-superset mode.
 - `apps/rhino-cli/src/application/doctor/tools.rs` — the concrete file carrying the divergence today
-  (`ose-private`'s extra IaC tool definitions and tests beyond the canonical set).
+  (the private sibling's extra IaC tool definitions and tests beyond the canonical set).
 - `sdlc-gate-registry-enforcement` (`plans/done/2026-08-07__sdlc-gate-registry-enforcement/`, once
-  archived) — the plan whose Phase 4 (`ose-private` registry authoring) and Phase 6 (byte-identity
+  archived) — the plan whose Phase 4 (private-sibling registry authoring) and Phase 6 (byte-identity
   propagation) tasks are the direct source of this finding; see its `learnings.md` for the original
   observation.
 
@@ -115,7 +115,7 @@ Out of scope:
   divergence is checked, not about adding more of it.
 - `beaver-nest`'s `rhino-cli` fork — out of the enforced byte-identity boundary per the
   `sdlc-gate-registry-enforcement` Scope Amendment (2026-08-07); this brief inherits that same
-  two-repo (`ose-public`, `ose-private`) scope; no third repo is synced.
+  two-repo (`ose-public`, the private sibling) scope; no third repo is synced.
 
 ## Risks & open questions
 

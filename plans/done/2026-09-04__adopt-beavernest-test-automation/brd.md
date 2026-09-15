@@ -3,7 +3,7 @@
 ## Business Goal
 
 [Judgment call] Give maintainers and delivery agents one trustworthy answer to two questions for
-every project in `ose-public` and `ose-private`: “which test layers apply?” and “has every specified
+every project in `ose-public` and the private sibling: “which test layers apply?” and “has every specified
 behavior been covered at each applicable layer?” The answer must be visible through Nx targets
 rather than tribal knowledge.
 
@@ -25,7 +25,7 @@ rather than tribal knowledge.
 - [Repo-grounded] Executable tests are distributed across `src/**`, project-specific test paths,
   and dedicated E2E roots, so folder location does not reliably communicate runtime boundary.
 - [Repo-grounded] Twenty project-local `package.json` files exist under direct `ose-public` project
-  roots and two under `ose-private`; some are real dependency/package boundaries, while others may
+  roots and two under the private sibling; some are real dependency/package boundaries, while others may
   duplicate commands that Nx already owns in `project.json`.
 
 ## Affected Roles

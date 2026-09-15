@@ -25,7 +25,7 @@ The file is under 20 bytes from its ceiling; the next rule addition is blocked. 
 wall until headroom is restored.
 
 **The ceiling has now blocked a real correction (2026-07-22, `bare-repo-governance-hardening`).**
-`ose-private`'s `AGENTS.md` gained a one-clause bareness carve-out to §Delivery Mode — 23,902 → 24,096
+The private sibling's `AGENTS.md` gained a one-clause bareness carve-out to §Delivery Mode — 23,902 → 24,096
 bytes, comfortably inside its passing band. `ose-public` **cannot absorb the same clause**: with
 under 20 bytes of headroom there is no room for a clause of any size. So a downstream sibling now
 leads the source of truth on the repo's most-loaded instruction surface, and the gap cannot be closed

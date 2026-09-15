@@ -69,7 +69,7 @@ fixer loop still closes after the move.
 reads by default, so settled findings stay settled after the move.
 
 **US-5** — As a maintainer of both repositories, I find the same rule stated in `ose-public` and
-`ose-private`, so the two do not drift.
+the private sibling, so the two do not drift.
 
 **US-6** — As an agent reading the convention, I can classify a novel artifact from the rule alone
 without inventing a category, so the rule does not decay the way the type-based rule did.
@@ -121,7 +121,7 @@ Scenario: rhino-cli loads accepted false positives from the relocated ledger
 
 ```gherkin
 Scenario: The rule is stated identically in both repositories
-  Given the Temporary Files Convention exists in "ose-public" and "ose-private" under different shard filenames
+  Given the Temporary Files Convention exists in "ose-public" and "private-sibling" under different shard filenames
   When the intent-based rule is propagated to both
   Then each repository's convention states the same two-question test and the same "local-tmp/<agent-family>/" layout
   And neither repository retains a live instruction to write agent output to "generated-reports/"
@@ -186,7 +186,7 @@ Scenario: The rules-propagation run leaves no rule undispositioned
 
 ```gherkin
 Scenario: Both repository runs reach a landed terminal state
-  Given the rules-propagation workflow has been run independently against "ose-public" and "ose-private"
+  Given the rules-propagation workflow has been run independently against "ose-public" and "private-sibling"
   When both runs complete
   Then each reports "final-status: landed" rather than "partial" or "halted"
   And each run's PR body states every statement's destination, disposition, and any supersession or eviction it caused
@@ -222,9 +222,9 @@ Scenario: Both repository runs reach a landed terminal state
 
 ## Product Risks
 
-| Risk                                                                                               | Severity | Mitigation                                                                                                            |
-| -------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
-| An agent edited for the new path keeps a second stale mention elsewhere in its own file            | Medium   | Classify every occurrence per file with a recorded verdict; AC-6 is the falsifiable close condition.                  |
-| The `local-tmp/<agent-family>/` token is ambiguous for agents whose name is not `<family>-checker` | Medium   | `tech-docs.md` fixes the token as the report filename's existing `{agent-family}` component — one source, not two.    |
-| Harness mirrors are hand-edited instead of regenerated, so `validate:sync` fails                   | Low      | Regeneration is an explicit step; mirrors are never edited directly.                                                  |
-| The two repositories land in different windows and the nightly parity audit reports drift          | Low      | `ose-public` lands first as canonical; `ose-private` follows in the same session, before the 02:00 UTC scheduled run. |
+| Risk                                                                                               | Severity | Mitigation                                                                                                                  |
+| -------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| An agent edited for the new path keeps a second stale mention elsewhere in its own file            | Medium   | Classify every occurrence per file with a recorded verdict; AC-6 is the falsifiable close condition.                        |
+| The `local-tmp/<agent-family>/` token is ambiguous for agents whose name is not `<family>-checker` | Medium   | `tech-docs.md` fixes the token as the report filename's existing `{agent-family}` component — one source, not two.          |
+| Harness mirrors are hand-edited instead of regenerated, so `validate:sync` fails                   | Low      | Regeneration is an explicit step; mirrors are never edited directly.                                                        |
+| The two repositories land in different windows and the nightly parity audit reports drift          | Low      | `ose-public` lands first as canonical; the private sibling follows in the same session, before the 02:00 UTC scheduled run. |

@@ -1,14 +1,14 @@
-Phase 16a RED — ose-private
+Phase 16a RED — private-sibling
 =============================
 
 1. governance-word-budget whole-covered-tree proof (isolated throwaway git
-   fixture, no origin, ose-private's real rhino-bin.sh binary):
+   fixture, no origin, private-sibling's real rhino-bin.sh binary):
 
    Staged: repo-governance/conventions/formatting/linking.md (compliant)
    Unstaged/untracked: repo-governance/development/agents/ai-agents.md (917 words)
    repo-config.yml fixture carried the FR-1.10 governance-word-budget gate
    block verbatim (pre-push + ci, path-gated, 9-entry trigger list — no
-   .pi/ for ose-private).
+   .pi/ for private-sibling).
 
    $ rhino-cli gate run --surface=pre-push
    EXIT=1
@@ -24,19 +24,19 @@ Phase 16a RED — ose-private
 2. Frontmatter WARN pre-arm baseline — DEVIATION FROM PLAN TEXT.
 
    The plan's 16a step 2 assumes a WARN-severity baseline mirroring
-   ose-public's pre-Phase-9 state. This does not hold for ose-private:
+   ose-public's pre-Phase-9 state. This does not hold for private-sibling:
    Phase 10 copied the rhino-cli boundary byte-for-byte from ose-public
    AFTER Phase 9 had already merged upstream, so the FR-4 severity flip
    (missing-description / missing-when-to-use: WARN -> FAIL) arrived
-   already-armed in ose-private's very first rhino-cli copy. There was
-   never a WARN-severity window in ose-private's history to reproduce.
+   already-armed in private-sibling's very first rhino-cli copy. There was
+   never a WARN-severity window in private-sibling's history to reproduce.
 
-   Verified instead, against ose-private's real rhino-cli binary:
+   Verified instead, against private-sibling's real rhino-cli binary:
      - apps/rhino-cli/src/application/docs/frontmatter.rs:
        validate_governance_schema uses mk_fail() (FAIL) for both
        missing-description and missing-when-to-use, with an inline
        comment: "FR-4 armed at Phase 9 (ose-public) / Phase 16
-       (ose-private)".
+       (private-sibling)".
      - Isolated fixture (repo-governance/conventions/zz-fixture.md, no
        description/when_to_use) -> 2 [fail] findings, exit 1. Confirms
        FAIL severity is live, not WARN.
@@ -46,7 +46,7 @@ Phase 16a RED — ose-private
        files missing when_to_use/description) is already met.
 
    Net effect: Phase 16b's "Arm FR-4" step requires no code change in
-   ose-private — it is a confirm-only step. The severity flip and the
+   private-sibling — it is a confirm-only step. The severity flip and the
    governance-word-budget audit-category registration
    (harness_audit.rs MEMBERS: "validate-word-budget") both already
    shipped via Phase 10's byte-for-byte rhino-cli copy.

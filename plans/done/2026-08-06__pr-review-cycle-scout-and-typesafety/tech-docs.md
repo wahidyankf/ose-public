@@ -11,11 +11,11 @@ orchestration boundary (fan-out is concurrent, cross-cycle is sequential, CI-gre
 stays exactly as documented today.
 
 **This architecture is applied identically in all four repos** (`ose-public`, `ose-primer`,
-`ose-private`, `beaver-nest`) — each repo runs its own independent instance of the 10-agent-to-
+the private sibling, `beaver-nest`) — each repo runs its own independent instance of the 10-agent-to-
 12-agent transition described below. Nothing in this section's diagrams or design decisions differs
 by repo; the per-repo divergence is confined to the mechanical edit shape of two specific files
 (`AGENTS.md`'s wording, per repo, and `pr-review-quality-gate.md`'s "eight" occurrence count in
-`ose-private`), documented in [File-Impact Analysis](#file-impact-analysis) below, not to the
+the private sibling), documented in [File-Impact Analysis](#file-impact-analysis) below, not to the
 architecture itself.
 
 ### Diagram 1 — Component Interactions (Before → After)
@@ -139,14 +139,14 @@ Thresholds and tier semantics are **unchanged** from the pre-plan D12 — only t
   `AGENTS.md`.** Per [brd.md's baseline](./brd.md#current-state-baseline-mechanically-verified-2026-08-05),
   three repos (`ose-public`, `ose-primer`, `beaver-nest`) share the pattern "eight discipline
   `pr-review-*-maker` specialists fan out to..." — a single-word `eight` → `nine` swap, net `-1`
-  byte. `ose-private` has no literal "eight" in its bullet at all; it names the eight disciplines
+  byte. The private sibling has no literal "eight" in its bullet at all; it names the eight disciplines
   explicitly by list with no scout mention, so its edit is a multi-word insertion (add
   `pr-review-types-maker` to the list, add a scout clause ahead of the fan-out) — net **byte-positive**,
   the opposite direction of the other three. Each repo sits at a different point against its own
   27,000 B warn / 30,000 B hard-fail budget (`ose-public` 28,944 B, `ose-primer` **29,852 B** — only
-  148 B of headroom, the tightest by far — `ose-private` 26,754 B, `beaver-nest` 29,547 B); any
+  148 B of headroom, the tightest by far — private sibling 26,754 B, `beaver-nest` 29,547 B); any
   net-positive edit in the three tight repos risks tripping the warn threshold further, while
-  `ose-private`'s comparatively large headroom is exactly why its edit is safe to be net-positive
+  the private sibling's comparatively large headroom is exactly why its edit is safe to be net-positive
   there and nowhere else. The catalog (`.claude/agents/README.md`) and the convention
   (`pr-review-disciplines.md`) remain the authoritative, budget-unconstrained sources for the two new
   agents' names and charters, in every repo.
@@ -213,13 +213,13 @@ findings**` field (raw count per fanned-out specialist, including zero-finding s
 ## File-Impact Analysis
 
 The tree below is the pattern applied **once per repo**, root-relative inside each of
-`ose-public/`, `ose-primer/`, `ose-private/`, and `beaver-nest/` independently — it is not a single
+`ose-public/`, `ose-primer/`, `private-sibling/`, and `beaver-nest/` independently — it is not a single
 shared tree, since each repo has its own copy of every file listed:
 
 ```text
 .
 ├── AGENTS.md [E] — PR Review Cycle bullet edit; shape is per-repo, see DD-6 (three repos: single-word
-│   eight → nine; ose-private: multi-word list insertion, net byte-positive)
+│   eight → nine; <private-sibling>: multi-word list insertion, net byte-positive)
 ├── .claude/
 │   └── agents/
 │       ├── README.md [E] — catalog entries for both new agents
@@ -238,7 +238,7 @@ shared tree, since each repo has its own copy of every file listed:
     └── workflows/pr/pr-review-quality-gate.md [E] — Participants list (add scout), both mermaid
         diagrams (flowchart + sequenceDiagram), Loop Algorithm pseudocode, Cycle-number header field
         documentation, sweep applicable "eight" occurrences to "nine" (6 total in ose-public/
-        ose-primer/beaver-nest; **5** in ose-private — see brd.md's baseline)
+        ose-primer/beaver-nest; **5** in <private-sibling> — see brd.md's baseline)
 ```
 
 ### More Detail
@@ -250,13 +250,13 @@ shared tree, since each repo has its own copy of every file listed:
   individually, and never carried over from another repo's generated output.
 - **Sweep-count rationale, per repo**: the two `eight`→`nine` sweeps (26 occurrences in
   `pr-review-disciplines.md` in every repo; 6 in `pr-review-quality-gate.md` in three repos, **5** in
-  `ose-private`) are not a blind find-and-replace, in any repo — each occurrence is read in context
+  the private sibling) are not a blind find-and-replace, in any repo — each occurrence is read in context
   and judged as a current-count statement (becomes `nine`) or a historical narration of the original
   eight-discipline cutover (stays `eight`), per that repo's own Phase 1/Phase 2 track in
   [delivery.md](./delivery.md). A count matching in one repo does not excuse skipping the read-in-
   context judgment in another — the occurrence text itself can differ even where the count matches.
 - **`AGENTS.md` edit shape divergence (DD-6)**: `ose-public`, `ose-primer`, `beaver-nest` all apply
-  the same single-word `eight` → `nine` swap; `ose-private` applies a structurally different edit
+  the same single-word `eight` → `nine` swap; the private sibling applies a structurally different edit
   (list insertion) because its bullet never said "eight" to begin with. Each repo's Phase 4 delivery
   item in [delivery.md](./delivery.md) is written to match that repo's actual wording, not copied
   from `ose-public`'s diff.
@@ -415,7 +415,7 @@ independent merge on an independent `main`. Each repo's revert:
 3. Restores that repo's `pr-review-disciplines.md` and `pr-review-quality-gate.md` to their
    eight-discipline text.
 4. Restores that repo's own `AGENTS.md` wording to its pre-plan form — the single `eight` wording in
-   `ose-public`/`ose-primer`/`beaver-nest`, or the explicit eight-item list in `ose-private`.
+   `ose-public`/`ose-primer`/`beaver-nest`, or the explicit eight-item list in the private sibling.
 
 Run `npm run generate:bindings && npm run validate:sync` in that repo after its revert, identical to
 that repo's own forward-delivery Phase 4 step, to resynchronize its mirrors. A partial rollback (some

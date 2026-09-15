@@ -6,16 +6,16 @@ when_to_use: Use when explaining or verifying why the bare-topology row of the T
 # Why Merge --ff-only Cannot Run in the Bare Siblings
 
 ```console
-$ git -C ose-private worktree list
+$ git -C <private-sibling> worktree list
 /Users/<name>/ose-projects/<sibling>  (bare)
 
-$ git -C ose-private merge --ff-only origin/main
+$ git -C <private-sibling> merge --ff-only origin/main
 fatal: this operation must be run in a work tree
 
-$ git -C ose-private status --porcelain
+$ git -C <private-sibling> status --porcelain
 fatal: this operation must be run in a work tree
 
-$ git -C ose-private fetch origin main:main
+$ git -C <private-sibling> fetch origin main:main
 ```
 
 Unlike the two commands above, this one exits `0` with no error — the point of this example.

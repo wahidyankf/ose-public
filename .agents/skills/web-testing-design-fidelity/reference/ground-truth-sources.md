@@ -13,7 +13,7 @@ Document and apply all five, each judged against the **running** page:
    is a finding. **Must NOT duplicate** the static source-token audit — report the rendered symptom.
 3. **Design-system primitives (the shared component library)** — flag **reinvented UI** the shared
    library already provides. The shared library is **`libs/web-ui`** in this repo (it is `libs/ts-ui`
-   in the `ose-private` sibling repo). A bespoke button/card/input that should have
+   in the private sibling). A bespoke button/card/input that should have
    reused a `libs/web-ui` primitive is a finding — it fragments the design language.
 4. **Optional external design source** — a Figma link or mockup URL passed **at invocation**. When
    provided, `WebFetch` it and compare the live page against it; when absent, skip this source (its

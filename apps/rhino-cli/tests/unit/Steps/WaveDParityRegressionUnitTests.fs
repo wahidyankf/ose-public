@@ -1,5 +1,5 @@
 /// Regression tests for two Wave D parity defects that `shadow-diff.sh`
-/// caught only against `ose-private`'s corpus — neither reproduces on
+/// caught only against the private sibling's corpus — neither reproduces on
 /// `ose-public` data, so both would have shipped had the wave been verified
 /// in one repo alone.
 module RhinoCli.Tests.Unit.Steps.WaveDParityRegressionUnitTests
@@ -8,7 +8,7 @@ open Xunit
 open RhinoCli.Application
 open RhinoCli.Cli.Formatters
 
-/// The label that exposed the defect, from `ose-private`'s
+/// The label that exposed the defect, from the private sibling's
 /// `plans/done/2026-07-27__harden-onprem-nic-resilience/tech-docs.md`.
 /// U+1F4DD is one Unicode scalar but two UTF-16 code units, so the old
 /// `String.Length` measured 31 against a `--max-label-len` of 30 and emitted

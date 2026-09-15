@@ -3,7 +3,7 @@
 Stand up `islamic-be` — a Go/Gin REST API serving generic Islamic tools — and its Playwright
 companion `islamic-be-e2e`, on top of the Go language lane this monorepo still lacks.
 
-**Status**: Complete — all eight phases delivered; six delivery units merged to `origin/main` as PRs #496–#501 in `ose-public` and #169 in `ose-private`
+**Status**: Complete — all eight phases delivered; six delivery units merged to `origin/main` as PRs #496–#501 in `ose-public` and #169 in the private sibling
 **Delivery Mode**: `worktree-to-pr`
 **Depends on**: [`lms-init`](../../in-progress/lms-init/README.md) DU1 and DU2 — **both merged and verified**
 (`c6fffc3` and #493)
@@ -40,8 +40,8 @@ Java, and its first two delivery units generalize the exact seams Go needs:
   `builtinDoctorToolInventory` and `doctorToolInventoryFor (config)` now split the resolution
   [Repo-grounded — `RepoConfig.fs:174`, `:284`], and `go` remains absent from the built-in list, so
   registering it is a `repo-config.yml` entry with **no `rhino-cli` change and no parity cost** —
-  the saving D-4 of `lms-init` was designed to produce. `ose-private` already carries
-  `extra-tools: []` [Repo-grounded — `ose-private` `repo-config.yml:272`], so the key set is
+  the saving D-4 of `lms-init` was designed to produce. The private sibling already carries
+  `extra-tools: []` [Repo-grounded — the private sibling `repo-config.yml:272`], so the key set is
   identical and this plan adds a list item, not a key.
 - **DU2** taught `behaviour-coverage.mjs` a fourth language and factored the shared
   feature-reference scan into `featureReferences(source, literalPattern)`
@@ -55,7 +55,7 @@ against the tree, so this plan is unblocked. See [`tech-docs.md`](./tech-docs.md
 
 ## Scope
 
-**Repositories**: `ose-public` (primary) and `ose-private` (one paired parity PR for the
+**Repositories**: `ose-public` (primary) and the private sibling (one paired parity PR for the
 byte-identical `Env.fs` change and its regenerated manifest).
 
 **New projects**: `islamic-be` (Go 1.26 / Gin, port 8402), `islamic-be-e2e` (Playwright + BDD),
@@ -70,7 +70,7 @@ CD — no GHCR publish, no `stag-islamic-be` branch, no k3s manifest.
 
 ## Approach Summary
 
-Six delivery units in `ose-public`; DU5 additionally lands a paired PR in `ose-private`:
+Six delivery units in `ose-public`; DU5 additionally lands a paired PR in the private sibling:
 
 1. **DU1 — Go platform lane** — tag vocabulary, `setup-go`, `go` CI job, three exclude-list fixes,
    `lint-golangci` gate, `go` doctor declaration, behaviour-coverage Go extractor.

@@ -90,7 +90,7 @@ type ParityManifestSteps() =
     member _.``the parity gate names the edited source and deliberate remedy``() =
         validate ()
         Assert.Contains("apps/rhino-cli/src/main.rs", output ())
-        Assert.Contains("byte-identical across ose-public and ose-private", output ())
+        Assert.Contains("byte-identical across ose-public and the private sibling", output ())
         Assert.Contains("rhino-cli parity manifest generate", output ())
 
     [<Then>]

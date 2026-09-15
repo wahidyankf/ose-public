@@ -36,7 +36,7 @@ identity/dependency declarations to E2E script/dependency containers; whether ea
 direct boundary is not currently recorded. Test locations likewise vary, including project-root
 tests, `src/tests/**`, and dedicated E2E source trees.
 
-### `ose-private`
+### The private sibling
 
 [Repo-grounded] `rtk nx show projects --json` currently returns three projects: `rhino-cli`, `ts-ui`,
 and `ts-ui-tokens`; `rhino-cli-fsharp` is absent. Recursive inspection finds 76 feature files. The
@@ -400,7 +400,7 @@ workspace manifest.
 ### Selected — one plan, independent per-repository proof, paired shared outcomes
 
 [Judgment call] As explicitly directed by the user, this plan governs both `ose-public` and
-`ose-private`. The plan remains single-sourced in public, while execution provisions one matching
+the private sibling. The plan remains single-sourced in public, while execution provisions one matching
 worktree per repository and creates separate branches/PRs/gate evidence. Shared Rhino and common
 governance contracts are delivered as paired outcomes; repository-specific projects retain their
 own owner matrices.

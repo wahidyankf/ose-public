@@ -30,7 +30,7 @@ execute:
 | `test-stag`         | Run e2e tests against the **deployed staging** environment (no docker-compose).                                                                                                                   |
 | `deploy-stag`       | Force-push to the `stag-*` branch. That branch push is the deploy trigger: Vercel builds web apps from it; backends trigger a `{product}-be-build-deploy-stag.yml` workflow.                      |
 | `deploy-prod`       | Force-push to the `prod-*` branch. Same mechanism as `deploy-stag` for the production target.                                                                                                     |
-| `build-deploy-stag` | For non-Vercel backends: build the container image, push it to GHCR, and hand the cluster rollout to ose-private `coralpolyp`. Triggered on push to the `stag-*-be` branch.                       |
+| `build-deploy-stag` | For non-Vercel backends: build the container image, push it to GHCR, and hand the cluster rollout to the private sibling's `coralpolyp`. Triggered on push to the `stag-*-be` branch.             |
 | `build-deploy-prod` | Same as `build-deploy-stag` for the production target (deferred — see [deploy model](./deploy-model-and-examples.md#deploy-model)).                                                               |
 | `quality-gate`      | The PR quality gate: `typecheck`, `lint`, and `test:quick` (Unit runtime plus every applicable static `test:coverage:*` validator), with cross-language lint jobs. No Integration or E2E runtime. |
 | `validate`          | A repo-wide validation job (markdown, links, heading hierarchy, Mermaid).                                                                                                                         |

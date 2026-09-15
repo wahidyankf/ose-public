@@ -6,7 +6,7 @@ three repos — so the summary a reader meets first understates the procedure by
 document exists to add.
 
 > Surfaced 2026-07-22 during `bare-repo-governance-hardening` Phase 6, by `pr-review-maker` on
-> `ose-private` PR #17. Flagged there as "upstream — do not fix here", correctly: the file is under a
+> the private sibling's PR #17. Flagged there as "upstream — do not fix here", correctly: the file is under a
 > byte-identity invariant, so editing it in a sibling would manufacture the drift that PR closed.
 
 ## Problem / context
@@ -24,7 +24,7 @@ Three surfaces describe that sequence as seven-step:
 | `repo-governance/development/README.md`                 | "the seven-step base-worktree landing sequence" |
 | `repo-governance/development/workflow/README.md`        | "the seven-step base-worktree landing sequence" |
 
-All three exist in **each** of `ose-public` and `ose-private` — six sites, verified by
+All three exist in **each** of `ose-public` and the private sibling — six sites, verified by
 `grep -c "seven-step"` against each repo's `origin/main` blobs. The count is wrong everywhere,
 consistently, because the indexes were written from the frontmatter and the frontmatter was written
 before the reconcile step was promoted into the numbered list.
@@ -37,9 +37,9 @@ filing separately:
   central rule is that carve-outs must key on the **property** (`core.bare=true`, "no primary
   checkout"), never on repo names, because topology flips per clone. Any "today" hedge is doing a
   lot of work.
-- The `ose-private` PR body's verification line quotes
+- The private-sibling PR body's verification line quotes
   `--exclude apps/ayokoding-www/content --exclude apps/ose-www/content`. Neither path exists in
-  `ose-private`. Harmless no-ops, but they are vestigial excludes copy-pasted from the `ose-public`
+  the private sibling. Harmless no-ops, but they are vestigial excludes copy-pasted from the `ose-public`
   invocation, and they will keep propagating unless someone stops quoting them.
 
 ## Why now

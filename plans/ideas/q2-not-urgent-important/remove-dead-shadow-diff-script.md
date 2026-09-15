@@ -71,7 +71,7 @@ deletion is the default rather than a tie-break.
 ## Rough scope & non-goals
 
 In scope: `apps/rhino-cli/scripts/shadow-diff.sh` and its live references, in `ose-public` and
-`ose-private` (the script is inside the `apps/rhino-cli` byte-identity boundary, so the two repos
+the private sibling (the script is inside the `apps/rhino-cli` byte-identity boundary, so the two repos
 must reach the same outcome).
 
 Out of scope:

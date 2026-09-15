@@ -44,7 +44,7 @@ routes them to a plan rather than an inline patch.
   cycle-9 review of the PR-review rules PR. Four files under `.agents/skills/` carry
   `../../../agents/...` links copied byte-for-byte from `.claude/skills/`, where they resolve to
   `.claude/agents/`. Under `.agents/`, which has no sibling `agents/` directory, they resolve to
-  nothing — and ose-private carries the same four. These are not anchors that drifted: they are
+  nothing — and the private sibling carries the same four. These are not anchors that drifted: they are
   unresolvable the moment the mirror is written, for every such link, because the emitter copies
   bytes across trees of different depth without rewriting relative paths. Repointing the 47 anchors
   by hand leaves this class fully intact, so the emitter is the thing to change, not the link text.
@@ -91,7 +91,7 @@ adds a test to that binary, which makes it cheapest to fix before any workstream
 
 In scope: `apps/rhino-cli/src/application/agents/`, `src/commands/`, `tests/`, the companion Gherkin
 under `specs/apps/rhino/`, and `.claude/skills/`. The first two workstreams touch the parity boundary
-and must land in `ose-public` and `ose-private` as a paired merge with the manifest regenerated on
+and must land in `ose-public` and the private sibling as a paired merge with the manifest regenerated on
 both sides; the anchor repair is `ose-public` content only and carries no parity obligation.
 
 Out of scope (for now):

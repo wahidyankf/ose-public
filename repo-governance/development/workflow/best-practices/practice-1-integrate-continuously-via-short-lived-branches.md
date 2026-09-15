@@ -20,14 +20,14 @@ gh pr create --draft --base main
 # Review cycle + CI, then merge once the preconditions hold; branch deleted
 ```
 
-**Also correct — a declared direct-push mode for a trivial `ose-private` infrastructure-as-code
+**Also correct — a declared direct-push mode for a trivial private-sibling infrastructure-as-code
 change** (the one repo where this mode has an executable path; `main` is branch-protected,
 including for admins, in `ose-public` — see [Plans Organization Convention
 §Per-Repository Delivery Mode
 Restrictions (HARD RULE)](../../../conventions/structure/plans/per-repository-delivery-mode-restrictions.md#per-repository-delivery-mode-restrictions-hard-rule)):
 
 ```bash
-# ose-private plan declares `## Delivery Mode: main-to-origin-main` for a single Terraform tag fix
+# <private-sibling> plan declares `## Delivery Mode: main-to-origin-main` for a single Terraform tag fix
 git commit -m "fix(infra): correct a resource tag"
 git push origin main
 ```

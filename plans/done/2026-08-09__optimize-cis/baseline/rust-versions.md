@@ -5,19 +5,19 @@ Three independent sources of truth, all disagreeing today.
 
 ## Source 1 — `rust-toolchain.toml` → `channel` (what `cargo` actually builds with)
 
-| Repo        | Path                                         | `channel` |
-| ----------- | -------------------------------------------- | --------- |
-| ose-public  | `libs/rust-commons/rust-toolchain.toml`      | `1.95.0`  |
-| ose-public  | `apps/ayokoding-cli/rust-toolchain.toml`     | `1.95.0`  |
-| ose-public  | `apps/rhino-cli/rust-toolchain.toml`         | `1.95.0`  |
-| ose-public  | `apps/ose-cli/rust-toolchain.toml`           | `1.95.0`  |
-| ose-primer  | `rust-toolchain.toml`                        | `1.95.0`  |
-| ose-primer  | `apps/rhino-cli/rust-toolchain.toml`         | `1.95.0`  |
-| ose-primer  | `apps/crud-be-rust-axum/rust-toolchain.toml` | `stable`  |
-| ose-private | `apps/coralpolyp-be/rust-toolchain.toml`     | `stable`  |
-| ose-private | `apps/rhino-cli/rust-toolchain.toml`         | `1.95.0`  |
-| beaver-nest | `apps/rhino-cli/rust-toolchain.toml`         | `1.95.0`  |
-| beaver-nest | `libs/rust-commons/rust-toolchain.toml`      | `1.95.0`  |
+| Repo                | Path                                         | `channel` |
+| ------------------- | -------------------------------------------- | --------- |
+| ose-public          | `libs/rust-commons/rust-toolchain.toml`      | `1.95.0`  |
+| ose-public          | `apps/ayokoding-cli/rust-toolchain.toml`     | `1.95.0`  |
+| ose-public          | `apps/rhino-cli/rust-toolchain.toml`         | `1.95.0`  |
+| ose-public          | `apps/ose-cli/rust-toolchain.toml`           | `1.95.0`  |
+| ose-primer          | `rust-toolchain.toml`                        | `1.95.0`  |
+| ose-primer          | `apps/rhino-cli/rust-toolchain.toml`         | `1.95.0`  |
+| ose-primer          | `apps/crud-be-rust-axum/rust-toolchain.toml` | `stable`  |
+| The private sibling | `apps/coralpolyp-be/rust-toolchain.toml`     | `stable`  |
+| The private sibling | `apps/rhino-cli/rust-toolchain.toml`         | `1.95.0`  |
+| beaver-nest         | `apps/rhino-cli/rust-toolchain.toml`         | `1.95.0`  |
+| beaver-nest         | `libs/rust-commons/rust-toolchain.toml`      | `1.95.0`  |
 
 **Tally: `1.95.0` at 9 sites; `stable` at 2 sites (`crud-be-rust-axum`, `coralpolyp-be`)** — matches
 `tech-docs.md` §DD-9 exactly. `beaver-nest` matches the expectation of `1.95.0` at both its sites; no
@@ -25,18 +25,18 @@ divergence observed.
 
 ## Source 2 — `Cargo.toml` → `rust-version` (MSRV floor)
 
-| Repo        | Path                                | `rust-version` |
-| ----------- | ----------------------------------- | -------------- |
-| ose-public  | `libs/rust-commons/Cargo.toml`      | `1.88`         |
-| ose-public  | `apps/ayokoding-cli/Cargo.toml`     | `1.88`         |
-| ose-public  | `apps/rhino-cli/Cargo.toml`         | `1.88`         |
-| ose-public  | `apps/ose-cli/Cargo.toml`           | `1.88`         |
-| ose-primer  | `apps/crud-be-rust-axum/Cargo.toml` | `1.94.0`       |
-| ose-primer  | `apps/rhino-cli/Cargo.toml`         | `1.88`         |
-| ose-private | `apps/coralpolyp-be/Cargo.toml`     | `1.88`         |
-| ose-private | `apps/rhino-cli/Cargo.toml`         | `1.88`         |
-| beaver-nest | `libs/rust-commons/Cargo.toml`      | `1.88`         |
-| beaver-nest | `apps/rhino-cli/Cargo.toml`         | `1.88`         |
+| Repo                | Path                                | `rust-version` |
+| ------------------- | ----------------------------------- | -------------- |
+| ose-public          | `libs/rust-commons/Cargo.toml`      | `1.88`         |
+| ose-public          | `apps/ayokoding-cli/Cargo.toml`     | `1.88`         |
+| ose-public          | `apps/rhino-cli/Cargo.toml`         | `1.88`         |
+| ose-public          | `apps/ose-cli/Cargo.toml`           | `1.88`         |
+| ose-primer          | `apps/crud-be-rust-axum/Cargo.toml` | `1.94.0`       |
+| ose-primer          | `apps/rhino-cli/Cargo.toml`         | `1.88`         |
+| The private sibling | `apps/coralpolyp-be/Cargo.toml`     | `1.88`         |
+| The private sibling | `apps/rhino-cli/Cargo.toml`         | `1.88`         |
+| beaver-nest         | `libs/rust-commons/Cargo.toml`      | `1.88`         |
+| beaver-nest         | `apps/rhino-cli/Cargo.toml`         | `1.88`         |
 
 **Tally: `1.88` at 9 sites; `1.94.0` at 1 site (`crud-be-rust-axum`)** — matches `tech-docs.md` §DD-9
 exactly.
@@ -58,7 +58,7 @@ i.e. `doctor` validates the installed `rustc` against the **MSRV floor** (`1.88`
 1. `1.95.0` — the dominant `rust-toolchain.toml` channel (9/11 sites)
 2. `1.88` — the dominant `Cargo.toml` rust-version floor (9/10 sites), and the value `doctor` checks
    against
-3. `stable`/`1.94.0` — the two outlier declarations (`ose-primer`'s and `ose-private`'s
+3. `stable`/`1.94.0` — the two outlier declarations (`ose-primer`'s and the private sibling's
    `crud-be-rust-axum`/`coralpolyp-be`), each disagreeing with its own repo's dominant value
 
 ## Machine toolchain inventory

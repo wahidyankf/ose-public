@@ -22,7 +22,7 @@ command and count that produced it, which turns an assumption into a checkable a
 ## L-2 — The two repos' npm script names have diverged; never reuse a script name across them
 
 **What happened.** `npm run harness:bindings-validation` exists only in `ose-public`;
-`ose-private` spells the same underlying command `validate:harness-bindings`. Separately, the plan
+the private sibling spells the same underlying command `validate:harness-bindings`. Separately, the plan
 named the Markdown linter `md:lint` in four places; the real script in both repos is `lint:md`, and
 `md:lint` exists in neither.
 
@@ -50,7 +50,7 @@ than assumed.
 conflict. They were not. `ose-public` sets `delete_branch_on_merge: true`, so GitHub deleted the
 remote branch at merge and `git ls-remote` returned empty — there was no remote ref for the lease to
 compare against. `git fetch origin --prune` followed by a plain `git push -u` was the whole fix; no
-force of any kind was needed. The two repos differ here: `ose-private` sets
+force of any kind was needed. The two repos differ here: the private sibling sets
 `delete_branch_on_merge: false`, so its branches survive a merge and must be deleted explicitly.
 
 **Litmus.** Yes — both the diagnostic and the per-repo setting difference are durable facts.
@@ -84,7 +84,7 @@ recording why the asymmetry is harmless prevents that.
 ## L-7 — Family tokens are per-repository, so the same collision can resolve differently in each repo
 
 **What happened.** The take-over-execution family resolves to `plan-takeover-execution` in
-`ose-public` and `plan-take-over-execution` in `ose-private`. Both follow the same rule —
+`ose-public` and `plan-take-over-execution` in the private sibling. Both follow the same rule —
 declaration wins over filename — applied to each repository's own declarations. Forcing a match
 would have renamed ~50 files for cosmetic symmetry.
 
@@ -111,7 +111,7 @@ point of failure.
 
 **What happened.** A stop-hook message asserted that `scaffold-plan-archival-cleanup` "is not
 mentioned as being executed at all". It had been completed and archived in the prior segment
-(`ose-public` PRs #468, #469, #470, #472; `ose-private` PR #153; archived to
+(`ose-public` PRs #468, #469, #470, #472; the private sibling's PR #153; archived to
 `plans/done/2026-09-04__scaffold-plan-archival-cleanup/`).
 
 **Litmus.** No. The general principle — verify a claim against the repository before acting on it —
@@ -124,7 +124,7 @@ duplicate an existing rule rather than add coverage.
 
 **What happened.** Phase 6 sweeps `generated-reports/` in every checkout. Its only stated guard is
 `.known-false-positives.md`. Executing it against `ose-public` I recorded the entry count (492) and
-deleted, without listing what was in there. Listing `ose-private`'s copy afterwards showed three
+deleted, without listing what was in there. Listing the private sibling's copy afterwards showed three
 `.execution-chain-*` files alongside the reports — cross-family state that the rule this very plan
 introduced says belongs at the `local-tmp/` root. So `ose-public`'s sweep almost certainly deleted
 its own chain files, and I cannot now prove otherwise, because I kept a number instead of a listing.
@@ -132,7 +132,7 @@ its own chain files, and I cannot now prove otherwise, because I kept a number i
 The outcome happens to be correct: every rule and skill surface in both repositories now points
 chains at `local-tmp/`, so a chain file under `generated-reports/` sat at a path nothing reads, and
 relocating a stale one would only let a future report claim parentage from an unrelated finished
-run. `ose-private` was swept the same way deliberately, having reasoned it through rather than
+run. The private sibling was swept the same way deliberately, having reasoned it through rather than
 having got there by accident.
 
 **Litmus.** Yes, twice over. The convention can state which files a legacy sweep must relocate and
@@ -146,7 +146,7 @@ have turned this from a lucky outcome into a checked one.
 ## L-11 — Three audit reports were committed inside a gitignored directory, and the plan assumed none could be
 
 **What happened.** Phase 6 opens with "Every path here is untracked and gitignored. Nothing in this
-phase is committed or pushed." That is true of `ose-private` and false of `ose-public`, which has
+phase is committed or pushed." That is true of the private sibling and false of `ose-public`, which has
 three `generated-reports/plan__*__2026-08-13__audit.md` files tracked on `main` despite
 `.gitignore:90` ignoring the directory — they were added before the ignore rule or force-added past
 it. The sweep therefore produced three unstaged **deletions of tracked files**, in the primary
@@ -203,4 +203,4 @@ unreachable `validateGeneratedReportsTools` check — are reported here as
 because the user has not literally authorized a plan artifact for them. Handoff evidence: each is
 described in `tech-docs.md` with its rationale, and the `Harness.fs` item additionally carries its
 full disposition (unreachable branch, left unchanged deliberately, must not be cited as coverage) in
-both repositories' RP-7 records and in the body of `ose-private` PR #155.
+both repositories' RP-7 records and in the body of the private sibling's PR #155.

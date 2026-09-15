@@ -21,7 +21,7 @@ left open everywhere.
 
 **Enforcement**: `plan-checker` flags any `ose-public` `## Delivery Mode` other than
 `worktree-to-pr` as **HIGH**, including `main-to-pr`; no invocation branch may bypass the declared
-designated worktree. In `ose-private`, `worktree-to-origin-main` is also invalid; a private
+designated worktree. In the private sibling, `worktree-to-origin-main` is also invalid; a private
 `main-to-origin-main` selection is valid only for the binding stateful IaC or CI-IaC categories.
 
 ## Important Note on File Naming

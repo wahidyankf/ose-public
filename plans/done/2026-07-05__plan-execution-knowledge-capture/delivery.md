@@ -484,7 +484,7 @@ plan-*.md` files + SKILL.md edited (commit `c1a7b7d25`); `generate:bindings` re-
       (`28749973864`), `pr-quality-gate` (`28749973863`), `validate-env` (`28749973882`) for commit
       `9fb7c48c4`. All three workflows reached `status: completed`, `conclusion: success` — zero
       failures across the entire polling history. Progress was throttled by a real infra condition
-      (single active CI runner — `ose-ci-runner-1` offline, `ose-ci-runner-2` sole active runner
+      (single active CI runner — `internal-host-1` offline, `internal-host-2` sole active runner
       serializing jobs across all 3 concurrent workflow runs), not a code defect; this is captured as a
       Phase 6 Knowledge Capture learning routed to an `ose-infra`-only backlog plan.
 

@@ -4918,7 +4918,7 @@ test result: ok. 1394 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; f
      Running tests/env_contract.rs (apps/rhino-cli/target/debug/deps/env_contract-dfbbc251254c8fa1)
 Feature: IaC env-validation dispatch for terraform and ansible surfaces
   Scenario: IaC env-validation is preserved in the canonical
-   ✔  Given ose-private declares terraform and ansible surfaces in repo-config.yml
+   ✔  Given private-sibling declares terraform and ansible surfaces in repo-config.yml
    ✔  When env validate runs
    ✔  Then validate_terraform and validate_ansible execute and report drift
    ✔  And ose-public and ose-primer, which declare no such surfaces, skip validation by data, not by stub

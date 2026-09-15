@@ -11,7 +11,7 @@ when_to_use: Use when explaining why there is no develop/release/hotfix branch, 
 - **No `develop` branch**: We don't use GitFlow or similar multi-branch strategies
 - **No release branches**: Releases are tagged commits on `main`
 - **No long-lived hotfix branches**: Hotfixes use the repository's resolved delivery mode.
-  `ose-public` always uses a short-lived `worktree-to-pr` branch; `ose-private` does too unless an
+  `ose-public` always uses a short-lived `worktree-to-pr` branch; the private sibling does too unless an
   explicitly declared `main-to-origin-main` change qualifies as stateful IaC or circular CI-IaC.
 
 ## Working on `main` Directly
@@ -24,16 +24,16 @@ when_to_use: Use when explaining why there is no develop/release/hotfix branch, 
 > **Per-repository restriction (independent of the shape described here)**: in `ose-public`,
 > `main` is branch-protected against direct pushes — including for admins — so
 > **neither direct-push mode has an executable path there at all**. In
-> `ose-private`, `worktree-to-origin-main` is also unavailable. Only explicitly declared
+> the private sibling, `worktree-to-origin-main` is also unavailable. Only explicitly declared
 > `main-to-origin-main` remains, and only for stateful IaC needing the primary checkout's real
 > secrets/local state or CI-IaC changing its own pipeline, runner, or toolchain provisioning where
 > PR self-validation is circular. See
 > [Plans Organization Convention §Per-Repository Delivery Mode Restrictions](../../../conventions/structure/plans/per-repository-delivery-mode-restrictions.md#per-repository-delivery-mode-restrictions-hard-rule)
 > for the full rule. The PASS example immediately below is therefore **not executable in this repo
 > (`ose-public`)** — it is retained as illustrative TBD vocabulary and remains genuinely runnable only
-> as `ose-private` `main-to-origin-main` for one of those two named categories.
+> as the private sibling's `main-to-origin-main` for one of those two named categories.
 
-PASS (only for explicitly declared, eligible `ose-private` `main-to-origin-main` work — never in
+PASS (only for explicitly declared, eligible private-sibling `main-to-origin-main` work — never in
 `ose-public`): **You may commit directly to `main` only when**:
 
 - The work is stateful IaC needing the primary checkout's real secrets/local state, or CI-IaC whose
@@ -45,7 +45,7 @@ PASS (only for explicitly declared, eligible `ose-private` `main-to-origin-main`
 **Example workflow**:
 
 ```bash
-# ose-private stateful-IaC plan explicitly declares main-to-origin-main and Worktree: N/A
+# <private-sibling> stateful-IaC plan explicitly declares main-to-origin-main and Worktree: N/A
 git switch main
 git pull --rebase origin main
 

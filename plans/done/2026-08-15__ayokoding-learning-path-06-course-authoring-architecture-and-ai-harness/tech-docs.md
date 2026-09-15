@@ -456,7 +456,7 @@ the relevant illustrative targets are:
 - **`remotebrowser`** [Web-cited — <https://github.com/remotebrowser/remotebrowser>, accessed
   2026-07-18] — async-Python/FastAPI browser-fleet orchestration over CDP + MCP; illustrates
   `browser-automation-with-cdp` and the harness cluster.
-- **`ose-public` / `ose-primer` / `ose-private`** [Repo-grounded — `AGENTS.md`] — illustrates
+- **`ose-public` / `ose-primer` / the private sibling** [Repo-grounded — `AGENTS.md`] — illustrates
   `software-architecture`, `domain-driven-design`, `distributed-systems`, and
   `event-driven-architecture` patterns already in use in this workspace.
 

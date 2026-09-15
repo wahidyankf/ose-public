@@ -2,7 +2,7 @@
 
 ## Product Overview
 
-[Judgment call] The product of this plan is a coordinated `ose-public` and `ose-private` testing contract expressed through Nx targets,
+[Judgment call] The product of this plan is a coordinated `ose-public` and the private sibling testing contract expressed through Nx targets,
 recursive Gherkin ownership, adapter-specific compliance, project documentation, and CI gates. A
 developer uses the same target vocabulary across TypeScript, F#, applications, libraries, CLIs,
 contracts, and dedicated E2E harnesses while each project retains its native runner.
@@ -159,7 +159,7 @@ Feature: OSE project test automation contract
     Then coverage fails below 100 percent with the missing item identity and no rounded pass
 
   Scenario: AC-REPO-01 Both OSE repositories enforce the testing contract
-    Given the current ose-public and ose-private project and specification inventories
+    Given the current ose-public and private-sibling project and specification inventories
     When repository testing and parity gates run
     Then each repository passes its own enforcement and every shared Rhino surface remains identical
 
@@ -220,7 +220,7 @@ Feature: OSE project test automation contract
 - Removal of unnecessary direct project-local package manifests and proxy scripts after a
   direct-consumer audit.
 - Coordinated adoption, enforcement, rules propagation, CI, and proof in both `ose-public` and
-  `ose-private`.
+  the private sibling.
 - Complete deletion of DDD-specific artifacts under both repositories' `specs/**`.
 - DDD engineering-surface retirement and link/index reconciliation.
 

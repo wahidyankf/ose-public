@@ -13,7 +13,7 @@ created: 2026-08-02
 # BRD — SDLC Gate Registry Enforcement
 
 > **Scope Amendment (2026-08-07)**: the byte-identity boundary is narrowed to **`ose-public` +
-> `ose-private`** — see [delivery.md §Scope Amendment](./delivery.md#scope-amendment-2026-08-07).
+> the private sibling** — see [delivery.md §Scope Amendment](./delivery.md#scope-amendment-2026-08-07).
 > `beaver-nest` is **cancelled** (slated for future deprecation/merge into `ose-public`); `ose-primer`
 > already fulfilled its one-time propagation and is now periodic/manual, outside continuous
 > enforcement. The rationale and audit findings below are left as originally authored — historical
@@ -71,7 +71,7 @@ The audit found the byte-identity boundary has the identical shape of failure as
 Rule: ratified prose, zero enforcement, silent drift.
 
 `src/application/agents/sync_validator.rs` carries `opencode-go/wrong` in `ose-public` and
-`zai-coding-plan/wrong` in `ose-primer` and `ose-private`. It is a one-line negative test fixture and
+`zai-coding-plan/wrong` in `ose-primer` and the private sibling. It is a one-line negative test fixture and
 nothing behaves differently — which is exactly why it survived a zero-carve-out rule. Byte-identity is
 a **cross-repo** property, and every gate in this ecosystem runs inside a **single** repo. The rule was
 never enforceable as written, in any repo, by any surface that exists.
@@ -170,7 +170,7 @@ treated as a defect of this one.
 Extending byte-identity from three repos to four is an **amendment**, not a clarification. Three
 documents currently say the opposite and become false:
 `docs/reference/related-repositories.md` ("`beaver-nest` carries a **fork** ... explicitly **not**
-bound by the byte-identity rule"), `AGENTS.md` ("spans `ose-public`, `ose-primer`, `ose-private`"),
+bound by the byte-identity rule"), `AGENTS.md` ("spans `ose-public`, `ose-primer`, the private sibling"),
 and the SDLC Gate Standard's boundary section.
 
 **`beaver-nest` gives up the right to diverge.** After this plan, a `rhino-cli` change it needs lands
@@ -240,8 +240,8 @@ The plan is done when, in all four repos:
 
 ## Stakeholders
 
-| Role                                                          | Interest                                                                                |
-| ------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Repo maintainer                                               | One quality bar, enforced; twelve files collapse to four registries plus shims          |
-| Contributing agents                                           | A single place to answer "what will gate my change, and where"                          |
-| Downstream repos (`ose-primer`, `ose-private`, `beaver-nest`) | Parity is validated rather than asserted; `beaver-nest`'s fork gains the same guarantee |
+| Role                                                                | Interest                                                                                |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Repo maintainer                                                     | One quality bar, enforced; twelve files collapse to four registries plus shims          |
+| Contributing agents                                                 | A single place to answer "what will gate my change, and where"                          |
+| Downstream repos (`ose-primer`, the private sibling, `beaver-nest`) | Parity is validated rather than asserted; `beaver-nest`'s fork gains the same guarantee |

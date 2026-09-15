@@ -13,7 +13,7 @@ created: 2026-08-02
 # PRD — SDLC Gate Registry Enforcement
 
 > **Scope Amendment (2026-08-07)**: the byte-identity boundary this PRD specifies as spanning "all
-> four repos" is narrowed to **`ose-public` + `ose-private`** — see
+> four repos" is narrowed to **`ose-public` + the private sibling** — see
 > [delivery.md §Scope Amendment](./delivery.md#scope-amendment-2026-08-07) for the full rationale.
 > `beaver-nest` (R-11's Phase 5 join, R-13) is **cancelled** — `beaver-nest` is slated for future
 > deprecation and merge into `ose-public`. `ose-primer` already fulfilled its one-time propagation
@@ -46,7 +46,7 @@ consumer's point of view: the maintainer running hooks locally, CI runners invok
 instead of four independently-drifting surfaces. `gate validate` turns the previously-prose Gate
 Composition Rule into a mechanical check, `main-ci.yml` retires without losing any check it uniquely
 carried, and the same generate-and-validate shape is extended to keep `apps/rhino-cli` byte-identical
-across all four repos this plan touches (`ose-public`, `ose-primer`, `ose-private`, `beaver-nest`).
+across all four repos this plan touches (`ose-public`, `ose-primer`, the private sibling, `beaver-nest`).
 
 ## Personas
 
@@ -61,7 +61,7 @@ solo-maintainer's own hats and the agents that consume the registry on their beh
 - **Contributing agent authoring a gate** — an agent (e.g. `repo-rules-maker`, or a plan executor)
   adding or editing a `gates:` entry, relying on `repo-config validate` / `gate validate` to catch a
   malformed or incomplete declaration before it is pushed (R-1, R-4).
-- **Downstream-repo maintainer/agent** (`ose-primer`, `ose-private`, `beaver-nest`) — consumes the
+- **Downstream-repo maintainer/agent** (`ose-primer`, the private sibling, `beaver-nest`) — consumes the
   byte-identical `rhino-cli` gate engine while declaring repo-specific registry data, and relies on
   `rhino-cli parity manifest validate` / the scheduled parity audit for the byte-identity guarantee
   (R-10, R-11, R-12, R-13).
@@ -579,7 +579,7 @@ Feature: Formatting verification
 A `git ls-files` audit found **19 declared formatter entries across the four repos that match zero
 tracked files** — `ose-public` declaring Go, Elixir, C#, Clojure and Dart formatters for languages it
 does not contain; `beaver-nest` declaring nine. Three defects run the other way: `ose-primer` and
-`ose-private` `shellcheck` shell scripts they never format, and `ose-private` has tracked `.tf` files
+the private sibling `shellcheck` shell scripts they never format, and the private sibling has tracked `.tf` files
 outside `lint-staged` entirely.
 
 The rule is presence-based: a formatter is declared **if and only if** the repo has at least one
@@ -598,8 +598,8 @@ Feature: Presence-based formatter declaration
       | repo        | ext   |
       | ose-public  | .go   |
       | ose-public  | .dart |
-      | ose-private | .fs   |
-      | ose-private | .py   |
+      | private-sibling | .fs   |
+      | private-sibling | .py   |
       | beaver-nest | .lua  |
       | beaver-nest | .tf   |
 
@@ -613,8 +613,8 @@ Feature: Presence-based formatter declaration
       | repo        | ext  |
       | ose-primer  | .sh  |
       | ose-primer  | .sql |
-      | ose-private | .sh  |
-      | ose-private | .tf  |
+      | private-sibling | .sh  |
+      | private-sibling | .tf  |
 
   Scenario: Pruning does not breach byte-identity
     Given the four repos declare different formatter entry sets
@@ -703,10 +703,10 @@ Feature: Standard and implementation agree
     And it names no workflow file that does not exist
     And its check list is generated from or verified against the registry
 
-  Scenario: ose-private gains the hook-lifecycle doc it lacks
-    Given ose-private has no git-hook-lifecycle.md
+  Scenario: private-sibling gains the hook-lifecycle doc it lacks
+    Given private-sibling has no git-hook-lifecycle.md
     When propagation completes
-    Then the document exists in ose-private
+    Then the document exists in private-sibling
 ```
 
 ## R-10 — Cross-repo parity preserved
@@ -722,10 +722,10 @@ Feature: Byte-identity and schema parity
   Scenario: The engine is byte-identical across all four bound repos
     Given the gate engine lands in apps/rhino-cli
     When src/, tests/, Cargo.toml, Cargo.lock, project.json and LICENSE are compared
-    Then ose-public, ose-primer, ose-private and beaver-nest are byte-identical
+    Then ose-public, ose-primer, private-sibling and beaver-nest are byte-identical
 
   Scenario: Registry values may differ per repo but the schema may not
-    Given ose-private declares an "iac-lint" gate that ose-public does not
+    Given private-sibling declares an "iac-lint" gate that ose-public does not
     When "rhino-cli repo-config validate" runs in each repo
     Then each exits zero
     And each gate entry conforms to the same schema
@@ -796,7 +796,7 @@ Feature: Byte-identity manifest
 
   Scenario: The live three-repo violation is closed
     Given sync_validator.rs carried "opencode-go/wrong" in ose-public
-    And it carried "zai-coding-plan/wrong" in ose-primer and ose-private
+    And it carried "zai-coding-plan/wrong" in ose-primer and private-sibling
     When convergence completes
     Then all four repos carry the identical fixture string
     And the model-mismatch test still fails on a mismatched model
@@ -824,11 +824,11 @@ Feature: Cross-repo parity audit
     Then it reports failure
     And the report names each differing path
 
-  Scenario: ose-private can read canonical without credentials
+  Scenario: private-sibling can read canonical without credentials
     Given ose-public is a public repository
-    When rhino-cli-parity-audit.yml runs in ose-private
+    When rhino-cli-parity-audit.yml runs in private-sibling
     Then it fetches ose-public's manifest unauthenticated
-    And no ose-private content is transmitted
+    And no private-sibling content is transmitted
 
   Scenario: The workflow name derives mechanically from its filename
     Given the workflow file rhino-cli-parity-audit.yml

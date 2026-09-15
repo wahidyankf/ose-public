@@ -5,7 +5,7 @@
 [Judgment call] As explicitly directed by the user, retire DDD testing and documentation on engineering surfaces until OSE has
 a more mature concept. Preserve production domain code and AyoKoding educational content.
 
-Every DDD-specific artifact below `specs/**` in `ose-public` or `ose-private` is deleted. No DDD
+Every DDD-specific artifact below `specs/**` in `ose-public` or the private sibling is deleted. No DDD
 specification is retained, migrated to the new logical corpus, or classified as a useful exception.
 
 ## Delete or Remove

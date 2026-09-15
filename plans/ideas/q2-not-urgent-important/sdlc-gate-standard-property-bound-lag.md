@@ -13,7 +13,7 @@ Two defects, both from binding a statement to a **repo name** where it should be
 **property of the clone**. Verified by diffing `ose-public`'s working copy against
 `git show origin/main:docs/reference/sdlc-gate-standard.md` in each sibling:
 
-1. **§Worktree-Agnostic Execution** says "`ose-private` is a bare repo worked only through linked
+1. **§Worktree-Agnostic Execution** says "the private sibling is a bare repo worked only through linked
    worktrees (no primary checkout exists), so worktree-agnostic execution is a hard requirement
    there". Naming one repo implies the other two are not bare. Both siblings are.
 2. **The evidence table's "Worktree-agnostic guardrails" row** claims the guardrails were "verified

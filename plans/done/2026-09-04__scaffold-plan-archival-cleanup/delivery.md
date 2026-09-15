@@ -10,7 +10,7 @@ rather than mint Rule 22) and the both-directions verification requirement.
 ## Delivery Mode: worktree-to-pr
 
 Mandatory in `ose-public` — `main` is branch-protected including for admins. Used identically in
-`ose-private`; its narrow infrastructure-as-code direct-push exception does not apply to a Skill
+the private sibling; its narrow infrastructure-as-code direct-push exception does not apply to a Skill
 change.
 
 ## Worktree
@@ -38,10 +38,10 @@ path only in ignored runtime evidence after reconciliation with `git worktree li
 
 ### Delivery Branch Inventory
 
-| Branch                                                    | Mode             | Lifecycle state | Proof                                                                                                                                                                                                                                                                                                                                                                       |
-| --------------------------------------------------------- | ---------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `worktree/scaffold-plan-archival-cleanup` (`ose-public`)  | `worktree-to-pr` | `delivered`     | Created `2026-09-04T07:42:00Z` from `origin/main` `a9e6e6af6`. Promotion PR 469 merged at reviewed head `5b48c9aea8663927a4ea48329cd0abd9e52fcaf8`; DU-1 PR 470 merged at reviewed head `c5617afdb8d4cc7b659b30bfb43202d0fbf82e94`; archival PR merged at the head recorded in the plan-execution final report. Worktree and branch removed at the terminal post-merge step |
-| `worktree/scaffold-plan-archival-cleanup` (`ose-private`) | `worktree-to-pr` | `delivered`     | Created `2026-09-04T08:09:10Z` from `origin/main`. DU-2 PR 153 merged at reviewed head `9bd7349235d3d2534e6001d276ac3b222c37051e`, merge commit `c55c97e465014c4e069413384ff5ea1fc62bdd1e`. Worktree removed and both refs deleted `2026-09-04`; `git branch -a` shows no residual ref                                                                                      |
+| Branch                                                          | Mode             | Lifecycle state | Proof                                                                                                                                                                                                                                                                                                                                                                       |
+| --------------------------------------------------------------- | ---------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `worktree/scaffold-plan-archival-cleanup` (`ose-public`)        | `worktree-to-pr` | `delivered`     | Created `2026-09-04T07:42:00Z` from `origin/main` `a9e6e6af6`. Promotion PR 469 merged at reviewed head `5b48c9aea8663927a4ea48329cd0abd9e52fcaf8`; DU-1 PR 470 merged at reviewed head `c5617afdb8d4cc7b659b30bfb43202d0fbf82e94`; archival PR merged at the head recorded in the plan-execution final report. Worktree and branch removed at the terminal post-merge step |
+| `worktree/scaffold-plan-archival-cleanup` (the private sibling) | `worktree-to-pr` | `delivered`     | Created `2026-09-04T08:09:10Z` from `origin/main`. DU-2 PR 153 merged at reviewed head `9bd7349235d3d2534e6001d276ac3b222c37051e`, merge commit `c55c97e465014c4e069413384ff5ea1fc62bdd1e`. Worktree removed and both refs deleted `2026-09-04`; `git branch -a` shows no residual ref                                                                                      |
 
 Append every plan-created delivery branch before use. A `*-to-pr` entry records its merged PR and
 40-character reviewed-head SHA. Before removal, classify every entry as delivered, unused, or
@@ -52,22 +52,22 @@ retained/escalated; active or unrecorded branches block cleanup.
 - Objective slug: `scaffold-plan-archival-cleanup`
 - Common worktree basename: `scaffold-plan-archival-cleanup`
 
-| Repository    | Worktree route                              | Branch                                    | Provisioning status                |
-| ------------- | ------------------------------------------- | ----------------------------------------- | ---------------------------------- |
-| `ose-public`  | `worktrees/scaffold-plan-archival-cleanup/` | `worktree/scaffold-plan-archival-cleanup` | provisioned `2026-09-04T07:42:00Z` |
-| `ose-private` | `worktrees/scaffold-plan-archival-cleanup/` | `worktree/scaffold-plan-archival-cleanup` | removed `2026-09-04`               |
+| Repository          | Worktree route                              | Branch                                    | Provisioning status                |
+| ------------------- | ------------------------------------------- | ----------------------------------------- | ---------------------------------- |
+| `ose-public`        | `worktrees/scaffold-plan-archival-cleanup/` | `worktree/scaffold-plan-archival-cleanup` | provisioned `2026-09-04T07:42:00Z` |
+| The private sibling | `worktrees/scaffold-plan-archival-cleanup/` | `worktree/scaffold-plan-archival-cleanup` | removed `2026-09-04`               |
 
-Re-verify `ose-private`'s bare-versus-normal topology at Phase 3 rather than assuming it; this
+Re-verify the private sibling's bare-versus-normal topology at Phase 3 rather than assuming it; this
 repository pair has flipped layouts before.
 
 ## Delivery Units
 
-| Unit | Phases | Repository    | Boundary rationale                                                                                 |
-| ---- | ------ | ------------- | -------------------------------------------------------------------------------------------------- |
-| —    | 0      | both          | Baseline only. Opens no PR.                                                                        |
-| DU-1 | 1–2    | `ose-public`  | Template, check, recipe, and mirrors ship together; a check without its recipe is half a delivery. |
-| DU-2 | 3      | `ose-private` | Same semantics restated into the sibling repository's own shard set.                               |
-| —    | 4      | both          | Knowledge Capture. No tracked change, no PR.                                                       |
+| Unit | Phases | Repository          | Boundary rationale                                                                                 |
+| ---- | ------ | ------------------- | -------------------------------------------------------------------------------------------------- |
+| —    | 0      | both                | Baseline only. Opens no PR.                                                                        |
+| DU-1 | 1–2    | `ose-public`        | Template, check, recipe, and mirrors ship together; a check without its recipe is half a delivery. |
+| DU-2 | 3      | The private sibling | Same semantics restated into the sibling repository's own shard set.                               |
+| —    | 4      | both                | Knowledge Capture. No tracked change, no PR.                                                       |
 
 ## Standing Instructions
 
@@ -312,9 +312,9 @@ non-firing conditions.
 - [x] [AI] Ask the user to authorize this change set; do not stage or commit until they do
 
   > **Both-directions verification caught a defect in the check itself.** Running item 7 against
-  > `ose-private`'s live plans at Phase 3 surfaced a plan
+  > the private sibling's live plans at Phase 3 surfaced a plan
   > (`sync-ci-iac-carveout-widening-to-siblings`) that carries all three cleanup steps but files them
-  > under `## Phase 3: ose-private Archival` rather than a `### Plan Archival` heading. Item 7 as
+  > under `## Phase 3: <private-sibling> Archival` rather than a `### Plan Archival` heading. Item 7 as
   > first written named that heading literally, so it would have produced a finding on a
   > substantively compliant plan — a false positive, and exactly the one-directional defect
   > [tech-docs.md §D-3](./tech-docs.md#d-3-verify-the-check-in-both-directions-before-landing) exists
@@ -332,7 +332,7 @@ non-firing conditions.
 > were fixed in Phase 1 before delivery, none deferred. Passes 2 and 3 each reported 0 findings at
 > or above MEDIUM, with mirror byte-identity re-confirmed independently by `cmp -s`.
 >
-> **Passes 4 and 5, after the `ose-private` half landed.** Phase 3 surfaced defects in the rule this
+> **Passes 4 and 5, after the private-sibling half landed.** Phase 3 surfaced defects in the rule this
 > plan had already shipped, so the gate reopened. Pass 4 raised one HIGH and four MEDIUM across both
 > repositories: a live plan that removed its worktree before classifying the inventory — which
 > `worktree-specification.md` forbids, since removal deletes the worktree the classification reads;
@@ -349,7 +349,7 @@ non-firing conditions.
 > was verified directly: the three template checkboxes and the closing prose are byte-identical
 > between repositories, the fixer recipe differs only in line wrapping, and the two rule-10 items
 > are semantically equivalent — differing only in item number (7 here, 9 there) and in
-> `ose-private`'s RP-5 severity-summary eviction, both recorded in `learnings.md` as expected
+> the private sibling's RP-5 severity-summary eviction, both recorded in `learnings.md` as expected
 > divergences. Final status `pass`.
 >
 > **Standing authorization**: the user authorized this change set up front for both plans in this
@@ -364,7 +364,7 @@ non-firing conditions.
 - [x] [AI] **RP-9 PR content** — state, per statement: the statement, its destination, its
       enforcement disposition, and the fact that nothing was superseded (the obligation already
       existed; only its scaffolding is new)
-- [x] [AI] **RP-9 Sibling obligation** — record `sibling-obligation: ose-private` in the PR body and
+- [x] [AI] **RP-9 Sibling obligation** — record `sibling-obligation: <private-sibling>` in the PR body and
       as a durable note, with the parity slug, basename, and branch from RP-1. Phase 3 discharges it
 - [x] [AI] Run every check in [Post-Push Verification](#post-push-verification)
 - [x] [AI] Confirm the `Quality gate` from `.github/workflows/pr-quality-gate.yml` is green for the
@@ -386,53 +386,53 @@ non-firing conditions.
 - [x] [AI] `rtk gh pr view <pr-number> --json state` reports `MERGED` with all checks green
 - [x] [AI] Local `main` in the primary checkout matches `origin/main`
 
-> **Pause Safety**: `ose-public` scaffolds and checks the cleanup steps; `ose-private` does not yet,
+> **Pause Safety**: `ose-public` scaffolds and checks the cleanup steps; the private sibling does not yet,
 > so the two repositories differ. Nothing is broken in either. Safe to stop. To resume:
 > `rtk gh pr list --head worktree/scaffold-plan-archival-cleanup` to confirm nothing is open.
 
-## Phase 3: Rules Propagation — `ose-private` (DU-2)
+## Phase 3: Rules Propagation — the private sibling (DU-2)
 
 **Input**: `ose-public` `main` carrying DU-1, and the sibling obligation recorded at RP-9.
-**Outcome**: `ose-private` scaffolds and checks the same steps.
-**Proof**: AC-5; every `RP-` step ticked against `ose-private` specifically.
+**Outcome**: the private sibling scaffolds and checks the same steps.
+**Proof**: AC-5; every `RP-` step ticked against the private sibling specifically.
 
 A **second, independent** run — one run touches one repository. Nothing here is satisfied by Phase 1
 having happened. `mode: strict`.
 
-- [x] [AI] Re-verify topology before touching it: `rtk git -C <ose-private-root> worktree list` and
-      `rtk git -C <ose-private-root> rev-parse --is-bare-repository`. If bare, use
+- [x] [AI] Re-verify topology before touching it: `rtk git -C <private-sibling-root> worktree list` and
+      `rtk git -C <private-sibling-root> rev-parse --is-bare-repository`. If bare, use
       `-c core.bare=false --work-tree=` for git operations
 - [x] [AI] Provision the sibling worktree:
-      `rtk git -C <ose-private-root> worktree add worktrees/scaffold-plan-archival-cleanup -b worktree/scaffold-plan-archival-cleanup origin/main`
+      `rtk git -C <private-sibling-root> worktree add worktrees/scaffold-plan-archival-cleanup -b worktree/scaffold-plan-archival-cleanup origin/main`
       — a git-mechanical `[AI]` step. Update the parity table's provisioning status and timestamp
 - [x] [AI] At that worktree root: `rtk npm install && rtk npm run doctor -- --fix` — both exit 0
-- [x] [AI] **RP-0 to RP-2** — restate the same two statements against `ose-private`'s own wording in
+- [x] [AI] **RP-0 to RP-2** — restate the same two statements against the private sibling's own wording in
       `local-tmp/rules-propagation/statements-private.md`; confirm the working tree and branch match
       the recorded parity identity with `rtk git rev-parse --abbrev-ref HEAD`; classify subject and
       layer. Do NOT copy `statements-public.md` across repositories — restate
-- [x] [AI] **RP-3 to RP-5** — run the conflict scan against `ose-private`'s own rule corpus, confirm
+- [x] [AI] **RP-3 to RP-5** — run the conflict scan against the private sibling's own rule corpus, confirm
       the placement target in ITS Skill reference tree (shard filenames differ between the two
       repositories), and apply the eviction protocol if that target has no word-budget headroom
 - [x] [AI] Apply the same three template steps, the same presence check, and the same fixer recipe to
-      `ose-private`'s own modules
-- [x] [AI] Verify the check in both directions in `ose-private` too — fires, does not fire, main-mode
+      the private sibling's own modules
+- [x] [AI] Verify the check in both directions in the private sibling too — fires, does not fire, main-mode
       does not fire — recording to `local-tmp/scaffold-plan-archival-cleanup/check-verification-private.md`.
       `ose-public`'s evidence proves nothing here
-- [x] [AI] Run the check against every plan in `ose-private`'s `plans/in-progress/` and
+- [x] [AI] Run the check against every plan in the private sibling's `plans/in-progress/` and
       `plans/backlog/`; fix or record each finding
 - [x] [AI] **RP-6 to RP-7** — tidy and reindex, then record a disposition for both statements in
       `local-tmp/rules-propagation/dispositions-private.md`, none silent
 - [x] [AI] **RP-8** — regenerate mirrors, run the deterministic gates asserting exit codes, run
       `rules-quality-gate` at `mode: strict`, and reconcile the ledger against
-      `rtk git status --short`. Establish `ose-private`'s OWN preexisting-failure baseline
+      `rtk git status --short`. Establish the private sibling's OWN preexisting-failure baseline
 - [x] [AI] Run every check in [Local Quality Gates (Before Push)](#local-quality-gates-before-push)
-      from the `ose-private` worktree root
+      from the private-sibling worktree root
 - [x] [AI] Ask the user to authorize this change set, then commit, push, open, verify, and merge the
       DU-2 PR following the same steps as Phase 2
 - [x] [AI] **RP-9** — the PR body states each statement's destination and disposition, and records
       `sibling-obligation: none — discharged`, naming `ose-public`'s counterpart PR. With both
       repositories landed the parity objective is closed; state it rather than leaving silence
-- [x] [AI] Fast-forward `ose-private`'s local `main` after the merge
+- [x] [AI] Fast-forward the private sibling's local `main` after the merge
 
 ### Phase 3 Gate
 
@@ -442,7 +442,7 @@ having happened. `mode: strict`.
 - [x] [AI] Both repositories' plan-archival templates scaffold the same three steps
 - [x] [AI] `check-verification-private.md` records all three cases
 - [x] [AI] Both runs reached `final-status: landed`; neither is `partial` or `halted`
-- [x] [AI] `ose-private` local `main` matches its `origin/main`
+- [x] [AI] the private sibling local `main` matches its `origin/main`
 
 > **Pause Safety**: both repositories scaffold and check the cleanup steps. Only knowledge routing
 > remains. Safe to stop. To resume: compare the two templates' cleanup steps.
@@ -452,7 +452,7 @@ having happened. `mode: strict`.
 - [x] [AI] Apply the litmus test to every `learnings.md` entry — keep only entries where a durable
       surface would catch this automatically next time; discard the rest with a one-line reason
 - [x] [AI] Apply the **secret/sensitivity gate** — sanitize to `<placeholder>` tokens or discard
-- [x] [AI] Apply the **repo-relevance gate** — infra-private content stays in `ose-private` only;
+- [x] [AI] Apply the **repo-relevance gate** — infra-private content stays in the private sibling only;
       never cross-route private content into a public repo
 - [x] [AI] Route each surviving entry to exactly one durable home, landing a small non-code edit
       inline. Create or update a `plans/ideas/<slug>.md` two-pager only when the user has literally
@@ -520,7 +520,7 @@ having happened. `mode: strict`.
       commit contained in `origin/main`, and `HEAD_REF_DELETED_EVENT` with `delete_branch_on_merge`
       enabled) and use `git branch -D`. Any one proof missing means retain and escalate
 - [x] [AI] Never delete `main` or an environment branch. `ose-public` has `prod-*` / `stag-*`;
-      `ose-private` currently has none. Confirm per repository with `rtk git branch -a`
+      the private sibling currently has none. Confirm per repository with `rtk git branch -a`
 - [x] [AI] Run `rtk git worktree prune` in both repositories. Never `gc` or object-store `prune`
       during cleanup — another process may be writing on this shared machine
 - [x] [AI] Verify the terminal state: `rtk git branch -a` lists no
@@ -548,7 +548,7 @@ having happened. `mode: strict`.
 > once-only phase items. Every phase checkbox is ticked; these three lists were never ticked at any
 > earlier phase gate either.
 >
-> **Inventory classification**: both entries are `delivered`. `ose-private`'s worktree was removed
+> **Inventory classification**: both entries are `delivered`. The private sibling's worktree was removed
 > and both its refs deleted on `2026-09-04`, under all six
 > [pre-removal checks](../../../repo-governance/development/workflow/worktree-and-artifact-cleanup/mandatory-pre-removal-checks.md);
 > `git worktree list` and `git branch -a` there now show no residual reference. `ose-public`'s
@@ -557,11 +557,11 @@ having happened. `mode: strict`.
 > [plan-archival.md](../../../.claude/skills/plan-creating-project-plans/reference/plan-archival.md)
 > requires, since the terminal audit runs against the delivered head before the worktree is cleaned.
 > No environment branch was touched: `ose-public` carries seven `prod-*` and one `stag-*` branch,
-> `ose-private` none.
+> the private sibling none.
 >
 > **Deviation, recorded rather than papered over**: the branch-cleanup step above names only the
 > auto-deletion terminal path (`HEAD_REF_DELETED_EVENT` with `delete_branch_on_merge` enabled).
-> `ose-private` has `delete_branch_on_merge: false`, so its remote ref survived the merge and check 2
+> The private sibling has `delete_branch_on_merge: false`, so its remote ref survived the merge and check 2
 > of the canonical convention took its other documented route — live-ref proof, with
 > `origin/<branch>` and the local branch both equal to the recorded reviewed head
 > `9bd7349235d3d2534e6001d276ac3b222c37051e`, after which canonical cleanup deleted the remote ref

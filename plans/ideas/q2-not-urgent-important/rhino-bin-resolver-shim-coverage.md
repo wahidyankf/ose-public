@@ -69,12 +69,12 @@ script is small enough that covering it properly is a bounded piece of work rath
 - **Prove the tests before trusting them** — each scenario must fail against a deliberately broken
   shim (swap the precedence order, invert the `-x` test) and pass against the unmodified script.
   Coverage written against a passing subject proves only that it was written.
-- **Mirror into `ose-private` by copy, not by re-authoring.** The script is inside the
+- **Mirror into the private sibling by copy, not by re-authoring.** The script is inside the
   `apps/rhino-cli` byte-identity boundary, so the two repos must carry identical coverage.
 
 ## Rough scope & non-goals
 
-In scope: the three resolution tiers and their precedence order, in `ose-public` and `ose-private`.
+In scope: the three resolution tiers and their precedence order, in `ose-public` and the private sibling.
 
 Out of scope:
 

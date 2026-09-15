@@ -10,7 +10,7 @@ verdicts used throughout Phase 1 and Phase 2, and the two repository-specific wr
 ## Delivery Mode: worktree-to-pr
 
 Mandatory in `ose-public` — `main` is branch-protected including for admins, so no direct-push mode
-has an executable path. The same mode is used for `ose-private` in this plan; its narrow
+has an executable path. The same mode is used for the private sibling in this plan; its narrow
 infrastructure-as-code direct-push exception does not apply to a governance change.
 
 ## Worktree
@@ -41,16 +41,16 @@ The plan-execution Step 0 gate enters this worktree by default: it auto-provisio
 
 ### Delivery Branch Inventory
 
-| Branch                                        | Mode             | Lifecycle state           | Proof                                                                                                                                                                                                                                                                                          |
-| --------------------------------------------- | ---------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `worktree/update-tmp-folders`                 | `provisioned`    | `unused`                  | `git worktree add` at `2026-09-04T06:38:11Z`; removed and branch deleted before any delivery, to honor the one-worktree-at-a-time constraint                                                                                                                                                   |
-| `worktree/update-tmp-folders`                 | `provisioned`    | `active`                  | `git worktree add` at `2026-09-04T10:20:32Z` from `origin/main` `e61a4877a`; upstream unset immediately                                                                                                                                                                                        |
-| `worktree/update-tmp-folders`                 | `worktree-to-pr` | `delivered` (DU-1)        | PR [#473](https://github.com/wahidyankf/ose-public/pull/473), squash-merged `2026-09-04T11:14:07Z`; reviewed head `ae04b3dfb6ee99cbf2a8ecdc08fecafb70f18288`, base `e61a4877a2c87490cea1a16f9a739ac9127f4a85`, merge commit `24a6d93a600e5ff6813571f7c0572e03d0a43f21`                         |
-| `worktree/update-tmp-folders`                 | `worktree-to-pr` | `delivered` (DU-2)        | PR [#474](https://github.com/wahidyankf/ose-public/pull/474), squash-merged `2026-09-04T12:06:06Z`; reviewed head `1453a47ae5d85911827ea5074ed60bbcf18cca9f`, base `24a6d93a600e5ff6813571f7c0572e03d0a43f21`, merge commit `02e4dece1c73ae7e146e1f453153b19ee73c2d86`                         |
-| `worktree/update-tmp-folders` (`ose-private`) | `provisioned`    | `active`                  | `git worktree add` at `2026-09-04T12:07:33Z` from `origin/main` `4b466aab5`; upstream unset immediately, set on first push                                                                                                                                                                     |
-| `worktree/update-tmp-folders` (`ose-private`) | `worktree-to-pr` | `delivered` (DU-3)        | PR [#155](https://github.com/wahidyankf/ose-private/pull/155), squash-merged `2026-09-04T13:04:06Z`; reviewed head `ccafc626665b3bda3133ff697e8954fce2ee5958`, base `4b466aab598dbb396b48ed4fe60d8b8131282139`, merge commit `64095ce18e92630e577808812427d3a61b9a030f`                        |
-| `worktree/update-tmp-folders` (`ose-private`) | `worktree-to-pr` | `delivered` (DU-5)        | PR [#156](https://github.com/wahidyankf/ose-private/pull/156), squash-merged `2026-09-04`; reviewed head `0685886bd40dc9567772d20b86e82d46c8682344`, base `64095ce18e92630e577808812427d3a61b9a030f`, merge commit `7105c56e51dc5f07743ce2845658d80e6f804a22`; leak review `pass` at that head |
-| `worktree/update-tmp-folders`                 | `worktree-to-pr` | `delivered` (DU-4 + DU-6) | The archival PR: Knowledge Capture, the `crane-cli` fix the preliminary audit opened, and the plan move. Head, base, PR number, and merge commit are recorded in the plan-execution final report; this row is the branch-cleanup proof anchor                                                  |
+| Branch                                              | Mode             | Lifecycle state           | Proof                                                                                                                                                                                                                                                                  |
+| --------------------------------------------------- | ---------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `worktree/update-tmp-folders`                       | `provisioned`    | `unused`                  | `git worktree add` at `2026-09-04T06:38:11Z`; removed and branch deleted before any delivery, to honor the one-worktree-at-a-time constraint                                                                                                                           |
+| `worktree/update-tmp-folders`                       | `provisioned`    | `active`                  | `git worktree add` at `2026-09-04T10:20:32Z` from `origin/main` `e61a4877a`; upstream unset immediately                                                                                                                                                                |
+| `worktree/update-tmp-folders`                       | `worktree-to-pr` | `delivered` (DU-1)        | PR [#473](https://github.com/wahidyankf/ose-public/pull/473), squash-merged `2026-09-04T11:14:07Z`; reviewed head `ae04b3dfb6ee99cbf2a8ecdc08fecafb70f18288`, base `e61a4877a2c87490cea1a16f9a739ac9127f4a85`, merge commit `24a6d93a600e5ff6813571f7c0572e03d0a43f21` |
+| `worktree/update-tmp-folders`                       | `worktree-to-pr` | `delivered` (DU-2)        | PR [#474](https://github.com/wahidyankf/ose-public/pull/474), squash-merged `2026-09-04T12:06:06Z`; reviewed head `1453a47ae5d85911827ea5074ed60bbcf18cca9f`, base `24a6d93a600e5ff6813571f7c0572e03d0a43f21`, merge commit `02e4dece1c73ae7e146e1f453153b19ee73c2d86` |
+| `worktree/update-tmp-folders` (the private sibling) | `provisioned`    | `active`                  | `git worktree add` at `2026-09-04T12:07:33Z` from `origin/main` `4b466aab5`; upstream unset immediately, set on first push                                                                                                                                             |
+| `worktree/update-tmp-folders` (the private sibling) | `worktree-to-pr` | `delivered` (DU-3)        | PR #155 (private, not linked), squash-merged `2026-09-04T13:04:06Z`; reviewed head `ccafc626665b3bda3133ff697e8954fce2ee5958`, base `4b466aab598dbb396b48ed4fe60d8b8131282139`, merge commit `64095ce18e92630e577808812427d3a61b9a030f`                                |
+| `worktree/update-tmp-folders` (the private sibling) | `worktree-to-pr` | `delivered` (DU-5)        | PR #156 (private, not linked), squash-merged `2026-09-04`; reviewed head `0685886bd40dc9567772d20b86e82d46c8682344`, base `64095ce18e92630e577808812427d3a61b9a030f`, merge commit `7105c56e51dc5f07743ce2845658d80e6f804a22`; leak review `pass` at that head         |
+| `worktree/update-tmp-folders`                       | `worktree-to-pr` | `delivered` (DU-4 + DU-6) | The archival PR: Knowledge Capture, the `crane-cli` fix the preliminary audit opened, and the plan move. Head, base, PR number, and merge commit are recorded in the plan-execution final report; this row is the branch-cleanup proof anchor                          |
 
 The plan must not record an absolute, home, tool-prefix, drive, UNC, or other host-specific path.
 Resolve its declared route only at runtime against the selected repository root; retain any resolved
@@ -66,24 +66,24 @@ branches block cleanup.
 - Objective slug: `update-tmp-folders`
 - Common worktree basename: `update-tmp-folders`
 
-| Repository    | Worktree route                  | Branch                        | Provisioning status                                                                                              |
-| ------------- | ------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `ose-public`  | `worktrees/update-tmp-folders/` | `worktree/update-tmp-folders` | provisioned                                                                                                      |
-| `ose-private` | `worktrees/update-tmp-folders/` | `worktree/update-tmp-folders` | provisioned `2026-09-04T12:07:33Z` from `origin/main` `4b466aab5`; upstream unset immediately, set on first push |
+| Repository          | Worktree route                  | Branch                        | Provisioning status                                                                                              |
+| ------------------- | ------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `ose-public`        | `worktrees/update-tmp-folders/` | `worktree/update-tmp-folders` | provisioned                                                                                                      |
+| The private sibling | `worktrees/update-tmp-folders/` | `worktree/update-tmp-folders` | provisioned `2026-09-04T12:07:33Z` from `origin/main` `4b466aab5`; upstream unset immediately, set on first push |
 
-`ose-private` was a normal (non-bare) checkout on `main` with no worktrees at authoring time.
+The private sibling was a normal (non-bare) checkout on `main` with no worktrees at authoring time.
 Re-verify its topology at Phase 5 rather than assuming it — this repository pair has flipped
 between bare and normal layouts before.
 
 ## Delivery Units
 
-| Unit | Phases | Repository    | Boundary rationale                                                                                         |
-| ---- | ------ | ------------- | ---------------------------------------------------------------------------------------------------------- |
-| —    | 0      | both          | Baseline only. Opens no PR.                                                                                |
-| DU-1 | 1–3    | `ose-public`  | Rule and every consumer of the rule ship together; a rule whose agents disagree with it is not deployable. |
-| DU-2 | 4      | `ose-public`  | Ledger relocation: agent text, F# default, tests, and manifest are one atomic unit.                        |
-| DU-3 | 5      | `ose-private` | Same semantics in the sibling repository, plus the byte-identical `rhino-cli` file.                        |
-| —    | 6–7    | both          | Untracked-file cleanup and Knowledge Capture. No tracked change, no PR.                                    |
+| Unit | Phases | Repository          | Boundary rationale                                                                                         |
+| ---- | ------ | ------------------- | ---------------------------------------------------------------------------------------------------------- |
+| —    | 0      | both                | Baseline only. Opens no PR.                                                                                |
+| DU-1 | 1–3    | `ose-public`        | Rule and every consumer of the rule ship together; a rule whose agents disagree with it is not deployable. |
+| DU-2 | 4      | `ose-public`        | Ledger relocation: agent text, F# default, tests, and manifest are one atomic unit.                        |
+| DU-3 | 5      | The private sibling | Same semantics in the sibling repository, plus the byte-identical `rhino-cli` file.                        |
+| —    | 6–7    | both                | Untracked-file cleanup and Knowledge Capture. No tracked change, no PR.                                    |
 
 ```mermaid
 flowchart TD
@@ -91,7 +91,7 @@ flowchart TD
     P1 --> P2["Phase 2<br/>Agents, skills, mirrors"]
     P2 --> P3["Phase 3<br/>DU-1 PR merged"]
     P3 --> P4["Phase 4<br/>Ledger + F# + DU-2 PR"]
-    P4 --> P5["Phase 5<br/>ose-private DU-3 PR"]
+    P4 --> P5["Phase 5<br/>private sibling DU-3 PR"]
     P5 --> P6["Phase 6<br/>Clear the backlog"]
     P6 --> P7["Phase 7<br/>Knowledge Capture"]
     P7 --> PA["Plan Archival"]
@@ -187,7 +187,7 @@ Phases 3, 4, and 5.
       `local-tmp/update-tmp-folders/baseline-public.txt`:
       `/bin/ls -1a generated-reports | grep -c .` and `/bin/ls -1a local-tmp | grep -c .`, run from
       both the primary checkout and this worktree
-- [x] [AI] Record the `ose-private` baseline the same way to
+- [x] [AI] Record the private-sibling baseline the same way to
       `local-tmp/update-tmp-folders/baseline-private.txt`, and record its topology:
       `rtk git worktree list` and `rtk git rev-parse --is-bare-repository`
 - [x] [AI] Run the `ose-public` baseline gate: `rtk nx affected -t build,test:quick,lint` — exits 0.
@@ -212,7 +212,7 @@ Phases 3, 4, and 5.
 > `merge --ff-only origin/main` already up to date. `npm install` and `doctor --fix` both exit 0
 > (15/16 tools OK, one non-blocking warning). `learnings.md` carries its H1 and lints clean.
 > Baselines recorded: `ose-public` 495 `generated-reports` / 12 `local-tmp` entries in the
-> primary checkout and 5 / 4 in this worktree; `ose-private` 102 / 22, non-bare, single
+> primary checkout and 5 / 4 in this worktree; private sibling 102 / 22, non-bare, single
 > worktree on `main`. The gate row reads "its first line is `# Learnings: update-tmp-folders`"; the
 > H1 is on line 4, under the two scaffold comments the authoring reference prescribes, which is what
 > markdownlint MD041 accepts. The row is ticked against that reading.
@@ -244,7 +244,7 @@ the PR belong to those phases. Run at `mode: strict`.
 - [x] [AI] **RP-1 Working tree** — confirm the run writes in the already-provisioned
       `worktrees/update-tmp-folders/`; `isolation: current`, no second worktree. Record the parity
       objective slug, shared worktree basename, and branch name from
-      [Cross-Repository Parity Identity](#cross-repository-parity-identity) — the `ose-private` run
+      [Cross-Repository Parity Identity](#cross-repository-parity-identity) — the private-sibling run
       in Phase 5 reuses them verbatim
 - [x] [AI] **RP-2 Classification** — assign each of the four statements its subject and governance
       layer, and confirm each is vendor-neutral. Record to
@@ -604,7 +604,7 @@ itself or for another agent` already covers the case, and the neighbouring scrat
       eviction it caused. Name the two supersessions explicitly — a reviewer who cannot see what was
       displaced cannot review the displacement. If RP-5 evicted an `AGENTS.md` entry, say so in its
       own sentence; that is the change most likely to surprise a reader
-- [x] [AI] **RP-9 Sibling obligation** — record `sibling-obligation: ose-private` in the PR body and
+- [x] [AI] **RP-9 Sibling obligation** — record `sibling-obligation: <private-sibling>` in the PR body and
       as a durable note, together with the parity objective slug `update-tmp-folders`, the shared
       worktree basename `update-tmp-folders`, and the branch `worktree/update-tmp-folders` fixed at
       RP-1. This plan discharges that obligation in Phase 5 rather than deferring it; the record
@@ -749,7 +749,7 @@ itself or for another agent` already covers the case, and the neighbouring scrat
 - [x] [AI] The DU-2 PR is merged with green CI, and its number and reviewed-head SHA are recorded in
       the Delivery Branch Inventory
 
-> **Pause Safety**: `ose-public` is fully converted. `ose-private` still carries the old rule and the
+> **Pause Safety**: `ose-public` is fully converted. The private sibling still carries the old rule and the
 > old `RepoGovernance.fs` hash, so the nightly parity audit at 02:00 UTC will report drift until
 > Phase 5 lands. Safe to stop only if Phase 5 will complete before that run; otherwise continue.
 > To resume: `rtk npx rhino parity manifest validate` from the worktree root.
@@ -802,128 +802,128 @@ itself or for another agent` already covers the case, and the neighbouring scrat
 > it back. The repeated `stale info` rejections were a stale local remote-tracking ref, not a lease
 > conflict.
 
-## Phase 5: Rules Propagation — `ose-private` (DU-3)
+## Phase 5: Rules Propagation — the private sibling (DU-3)
 
 **Input**: `ose-public` `main` carrying both delivery units, and the sibling obligation recorded at
 Phase 3's RP-9.
-**Outcome**: `ose-private` states the same rule and carries the byte-identical `RepoGovernance.fs`.
-**Proof**: AC-5; `ose-private`'s parity manifest matches `ose-public`'s canonical manifest; every
-`RP-` step below is ticked against `ose-private` specifically.
+**Outcome**: the private sibling states the same rule and carries the byte-identical `RepoGovernance.fs`.
+**Proof**: AC-5; the private sibling's parity manifest matches `ose-public`'s canonical manifest; every
+`RP-` step below is ticked against the private sibling specifically.
 
 This is a **second, independent** `rules-propagation` run — one run touches one repository. Its
-steps are executed against `ose-private`'s own surfaces and produce their own artifacts; nothing
+steps are executed against the private sibling's own surfaces and produce their own artifacts; nothing
 here is satisfied by Phase 1 having been done. Run at `mode: strict`.
 
-- [x] [AI] Re-verify `ose-private`'s topology before touching it — do not assume the layout recorded
-      in Phase 0 still holds: `rtk git -C <ose-private-root> worktree list` and
-      `rtk git -C <ose-private-root> rev-parse --is-bare-repository`. If it reports bare, use
+- [x] [AI] Re-verify the private sibling's topology before touching it — do not assume the layout recorded
+      in Phase 0 still holds: `rtk git -C <private-sibling-root> worktree list` and
+      `rtk git -C <private-sibling-root> rev-parse --is-bare-repository`. If it reports bare, use
       `-c core.bare=false --work-tree=` for git operations
-- [x] [AI] Provision the sibling worktree: `rtk git -C <ose-private-root> worktree add worktrees/update-tmp-folders -b worktree/update-tmp-folders origin/main`
+- [x] [AI] Provision the sibling worktree: `rtk git -C <private-sibling-root> worktree add worktrees/update-tmp-folders -b worktree/update-tmp-folders origin/main`
       — this is a git-mechanical `[AI]` step. Update the
       [Cross-Repository Parity Identity](#cross-repository-parity-identity) table's provisioning
       status to `provisioned` with the creation timestamp
 - [x] [AI] At that worktree root, run `rtk npm install && rtk npm run doctor -- --fix` — both exit 0
 
-### RP-0 to RP-2 (`ose-private`): Intake, Working Tree, Classification
+### RP-0 to RP-2 (the private sibling): Intake, Working Tree, Classification
 
-- [x] [AI] **RP-0 Intake** — restate the same four falsifiable statements against `ose-private`'s
+- [x] [AI] **RP-0 Intake** — restate the same four falsifiable statements against the private sibling's
       own wording, recording them to `local-tmp/rules-propagation/statements-private.md` inside the
-      `ose-private` worktree. Record each statement's violating observation. Do not copy
+      private sibling worktree. Record each statement's violating observation. Do not copy
       `statements-public.md` across repositories — restate
-- [x] [AI] **RP-1 Working tree** — confirm the run writes in `ose-private`'s
+- [x] [AI] **RP-1 Working tree** — confirm the run writes in the private sibling's
       `worktrees/update-tmp-folders/` on branch `worktree/update-tmp-folders`, matching the identity
       fixed at Phase 1's RP-1. Assert it: `rtk git rev-parse --abbrev-ref HEAD` prints
       `worktree/update-tmp-folders`. If that identity is unavailable, prove an existing identity
       belongs to this same delivery, or select one common alternative across BOTH repositories
       before mutating anything
 - [x] [AI] **RP-2 Classification** — assign subject and governance layer for each statement against
-      `ose-private`'s layer structure and confirm vendor neutrality. Record to
+      the private sibling's layer structure and confirm vendor neutrality. Record to
       `local-tmp/rules-propagation/classification-private.md`
-- [x] [AI] Build the `ose-private` inventory:
+- [x] [AI] Build the private-sibling inventory:
       `rtk grep -rn "generated-reports" --include="*.md" repo-governance/ AGENTS.md CLAUDE.md docs/ .claude/ > local-tmp/update-tmp-folders/inventory-private.txt`
 - [x] [AI] Classify every occurrence into the same four verdicts, recording to
       `local-tmp/update-tmp-folders/verdicts-private.md`
 
-### RP-3 to RP-5 (`ose-private`): Conflict Scan, Placement, Eviction
+### RP-3 to RP-5 (the private sibling): Conflict Scan, Placement, Eviction
 
 - [x] [AI] **RP-3 Conflict scan** — run the semantic-no-op, contradiction, and supersession scan
-      against `ose-private`'s own rule corpus. Its shard set differs, so its supersessions differ:
+      against the private sibling's own rule corpus. Its shard set differs, so its supersessions differ:
       expect `the-rule.md`, `directory-purposes.md`, and
       `mandatory-report-generation-for-checker-agents.md` rather than `ose-public`'s filenames.
       Record each explicitly. Halt and surface on any higher-layer conflict
-- [x] [AI] **RP-4 Placement** — record each statement's canonical home in `ose-private` to
+- [x] [AI] **RP-4 Placement** — record each statement's canonical home in the private sibling to
       `local-tmp/rules-propagation/placement-private.md`. Existing shards only; if a statement finds
       no existing home and a new shard is genuinely required, it needs **two** index links — its
       folder `README.md` and the parent flattened convention — or the readme-index gate fails the
       push as an orphan
-- [x] [AI] **RP-5 Eviction** — record `wc -w` for `ose-private`'s `AGENTS.md` before editing; the
+- [x] [AI] **RP-5 Eviction** — record `wc -w` for the private sibling's `AGENTS.md` before editing; the
       instruction-surface edit must be net-neutral or negative. Never raise a threshold to make
       room. Meaning is preserved verbatim enough to stay unambiguous even where placement changes
-- [x] [AI] Restate the rule into `ose-private`'s own 18 shards under
+- [x] [AI] Restate the rule into the private sibling's own 18 shards under
       `repo-governance/development/infra/temporary-files/` — its shard filenames differ from
       `ose-public`'s (`the-rule.md`, `directory-purposes.md`, `local-tmp.md`,
       `mandatory-report-generation-for-checker-agents.md`, and others). NEVER copy a Markdown file
       between the two repositories; propagate the semantic delta into each repository's own shard
-- [x] [AI] Apply the recorded verdicts across `ose-private`'s `.claude/agents/`, `.claude/skills/`,
+- [x] [AI] Apply the recorded verdicts across the private sibling's `.claude/agents/`, `.claude/skills/`,
       `AGENTS.md`, glossary, and `docs/`
-- [x] [AI] Add `local-tmp/` to `ose-private`'s `.prettierignore` if absent, and confirm its
+- [x] [AI] Add `local-tmp/` to the private sibling's `.prettierignore` if absent, and confirm its
       `.markdownlintignore` already carries it
 - [x] [AI] Apply the byte-identical `RepoGovernance.fs` change: verify the two files match exactly
       after editing with
-      `rtk proxy diff <ose-public-root>/apps/rhino-cli/src/RhinoCli.Application/src/RepoGovernance.fs <ose-private-worktree-root>/apps/rhino-cli/src/RhinoCli.Application/src/RepoGovernance.fs`
+      `rtk proxy diff <ose-public-root>/apps/rhino-cli/src/RhinoCli.Application/src/RepoGovernance.fs <private-sibling-worktree-root>/apps/rhino-cli/src/RhinoCli.Application/src/RepoGovernance.fs`
       — no output. Apply the same test change, then move the ledger file:
       `mv generated-reports/.known-false-positives.md local-tmp/.known-false-positives.md` if it
       exists there
-- [x] [AI] Retarget any `outputs:` block under `ose-private`'s `repo-governance/workflows/` naming
+- [x] [AI] Retarget any `outputs:` block under the private sibling's `repo-governance/workflows/` naming
       `generated-reports/`, matching the Phase 1 change. Discover with
-      `rtk grep -rn "generated-reports" repo-governance/workflows/` from the `ose-private` worktree
+      `rtk grep -rn "generated-reports" repo-governance/workflows/` from the private-sibling worktree
 
-### RP-6 to RP-7 (`ose-private`): Write, Tidy, Enforcement Disposition
+### RP-6 to RP-7 (the private sibling): Write, Tidy, Enforcement Disposition
 
-- [x] [AI] **RP-6 Write and tidy** — confirm no two `ose-private` shards state the destination rule
+- [x] [AI] **RP-6 Write and tidy** — confirm no two the private sibling shards state the destination rule
       in conflicting words, and reindex every folder `README.md` whose child annotations changed
 - [x] [AI] **RP-7 Enforcement disposition** — record one of `covered` / `gated` /
       `unenforced-by-decision` per statement in
       `local-tmp/rules-propagation/dispositions-private.md`, none silent. Expected:
       `unenforced by decision` for all four, with the reason written onto the rule itself in the
-      shard. `ose-private` carries a GPG check `ose-public` does not — confirm no disposition
+      shard. The private sibling carries a GPG check `ose-public` does not — confirm no disposition
       mistakenly cites it as coverage for a rule it does not check
-- [x] [AI] Regenerate `ose-private`'s mirrors and manifest:
+- [x] [AI] Regenerate the private sibling's mirrors and manifest:
       `rtk npm run generate:bindings && rtk npm run validate:sync`, then the manifest command
       recorded in `local-tmp/update-tmp-folders/manifest-command.txt`
 - [x] [AI] Verify the manifest matches `ose-public`'s canonical copy — the same comparison the
       nightly audit performs:
-      `rtk proxy diff <ose-public-root>/apps/rhino-cli/parity-manifest.sha256 <ose-private-worktree-root>/apps/rhino-cli/parity-manifest.sha256`
+      `rtk proxy diff <ose-public-root>/apps/rhino-cli/parity-manifest.sha256 <private-sibling-worktree-root>/apps/rhino-cli/parity-manifest.sha256`
       — no output
 
-### RP-8 to RP-9 (`ose-private`): Verification, Delivery, Terminal Obligation
+### RP-8 to RP-9 (the private sibling): Verification, Delivery, Terminal Obligation
 
-- [x] [AI] **RP-8.1 Regenerate** — every derived surface `ose-private`'s edits affect is regenerated
+- [x] [AI] **RP-8.1 Regenerate** — every derived surface the private sibling's edits affect is regenerated
       and lands in the same commit as its source
 - [x] [AI] **RP-8.2 Deterministic gates** — run `md links validate`, `md heading-hierarchy validate`,
       `md frontmatter validate`, `md naming validate`, `convention emoji validate`, and
-      `repo-config validate` via `apps/rhino-cli/scripts/rhino-bin.sh` from the `ose-private`
+      `repo-config validate` via `apps/rhino-cli/scripts/rhino-bin.sh` from the private-sibling
       worktree, redirecting output to a file and asserting each exit code. Establish
-      `ose-private`'s own preexisting-failure baseline; `ose-public`'s baseline proves nothing here
+      the private sibling's own preexisting-failure baseline; `ose-public`'s baseline proves nothing here
 - [x] [AI] **RP-8.3 Composed quality gate** — run `rules-quality-gate` at `mode: strict` against
-      `ose-private`. Fix findings attributable to this run; report the rest. Route failures per the
+      the private sibling. Fix findings attributable to this run; report the rest. Route failures per the
       workflow table (budget → RP-5, contradiction → RP-3, duplication → RP-6, gate declaration →
-      RP-7), all scoped to `ose-private`
-- [x] [AI] **RP-8.4 Reconcile the ledger** — the `ose-private` file-touch ledger and
+      RP-7), all scoped to the private sibling
+- [x] [AI] **RP-8.4 Reconcile the ledger** — the private-sibling file-touch ledger and
       `rtk git status --short` name the same set of paths. Never `git add -A`; this tree carries
       unrelated uncommitted work
 - [x] [AI] Run every check in [Local Quality Gates (Before Push)](#local-quality-gates-before-push)
-      from the `ose-private` worktree root
+      from the private-sibling worktree root
 - [x] [AI] Commit, push, open, verify, and merge the DU-3 PR under the plan's standing
       authorization, following the same steps as Phase 3
-- [x] [AI] **RP-9 PR content** — `ose-private`'s PR body states, per statement: the statement, its
+- [x] [AI] **RP-9 PR content** — the private sibling's PR body states, per statement: the statement, its
       destination, its enforcement disposition, and any supersession or eviction. Name
-      `ose-private`'s own supersessions, which differ from `ose-public`'s by shard filename
+      the private sibling's own supersessions, which differ from `ose-public`'s by shard filename
 - [x] [AI] **RP-9 Terminal sibling obligation** — record `sibling-obligation: none — discharged`
       in this PR body, naming `ose-public`'s merged PR as the counterpart. With both repositories
       landed, the parity objective `update-tmp-folders` is closed; state that explicitly rather than
       leaving silence, which is indistinguishable from an obligation that was overlooked
-- [x] [AI] Fast-forward `ose-private`'s local `main` after the merge
+- [x] [AI] Fast-forward the private sibling's local `main` after the merge
 
 ### Phase 5 Gate
 
@@ -934,13 +934,13 @@ here is satisfied by Phase 1 having been done. Run at `mode: strict`.
       output
 - [x] [AI] `rtk proxy diff` between the two repositories' `RepoGovernance.fs` files produces no
       output
-- [x] [AI] `ose-private`'s temporary-files shards state the same two-question test and the same
+- [x] [AI] the private sibling's temporary-files shards state the same two-question test and the same
       `local-tmp/<agent-family>/` layout as `ose-public`'s
-- [x] [AI] `ose-private` local `main` is at the same SHA as its `origin/main`
+- [x] [AI] the private sibling local `main` is at the same SHA as its `origin/main`
 - [x] [AI] `local-tmp/rules-propagation/dispositions-private.md` records a disposition for all four
       statements — none silent — each with its reason where unenforced
 - [x] [AI] Both runs reached `final-status: landed`; neither is `partial` or `halted`
-- [x] [AI] The terminal sibling obligation is recorded as discharged in `ose-private`'s PR body,
+- [x] [AI] The terminal sibling obligation is recorded as discharged in the private sibling's PR body,
       naming `ose-public`'s counterpart PR
 
 > **Pause Safety**: both repositories state the same rule and carry the same code. The nightly
@@ -954,23 +954,23 @@ here is satisfied by Phase 1 having been done. Run at `mode: strict`.
 > repository is in `apps/rhino-cli/src/RhinoCli.Application/src/Doctor.fs` (3 occurrences), which
 > verifies the downloaded `dotnet-install.sh` signature. `Doctor.fs` is inside the byte-identity
 > boundary, so both repositories carry it identically; no workflow in either repository references
-> GPG, and `ose-private` has no workflow file `ose-public` lacks. The substantive requirement holds
+> GPG, and the private sibling has no workflow file `ose-public` lacks. The substantive requirement holds
 > anyway — no disposition mentions GPG — and this is recorded rather than silently ticked, because
 > ticking it would imply a difference was found and cleared.
 >
 > **Script names are not symmetric across the repositories.** `ose-public` spells the bindings
-> validator `harness:bindings-validation`; `ose-private` spells the same command
+> validator `harness:bindings-validation`; the private sibling spells the same command
 > `validate:harness-bindings`. Separately, this plan names the Markdown linter `md:lint` in four
 > places; the real script in both repositories is `lint:md`, and `md:lint` exists in neither. Both
 > facts are now recorded durably in `docs/reference/related-repositories.md`.
 >
 > **The take-over-execution family collision resolves differently in each repository, deliberately.**
-> `ose-public` resolved it to `plan-takeover-execution` and `ose-private` to
+> `ose-public` resolved it to `plan-takeover-execution` and the private sibling to
 > `plan-take-over-execution`, each following the same declaration-wins rule against its own
 > declarations. Forcing a match would rename ~50 files for cosmetic symmetry. Recorded in
 > `local-tmp/update-tmp-folders/family-assignments-private.md` and in PR #155's body.
 >
-> **`ose-private` has 18 temporary-files shards, matching the plan's figure**, but the shard names
+> **The private sibling has 18 temporary-files shards, matching the plan's figure**, but the shard names
 > differ from `ose-public`'s as the plan predicted; nothing was copied between repositories.
 >
 > **Word-budget warnings on `plan-execution-checker.md` and `plan-fixer.md` are pre-existing.** Both
@@ -978,7 +978,7 @@ here is satisfied by Phase 1 having been done. Run at `mode: strict`.
 > added 20 words to each. `ose-public`'s counterparts sit higher still (705 and 698), so the two
 > repositories remain in the same state. The gate exits 0 — these are warnings, not failures.
 >
-> **`md links validate` reports 337 pre-existing failures in `ose-private`.** Proven, not asserted:
+> **`md links validate` reports 337 pre-existing failures in the private sibling.** Proven, not asserted:
 > zero of the 97 affected files appear among this delivery unit's 224, the diff removes no heading,
 > and it deletes and renames nothing.
 
@@ -991,7 +991,7 @@ here is satisfied by Phase 1 having been done. Run at `mode: strict`.
 Every path here is untracked and gitignored. Nothing in this phase is committed or pushed.
 
 - [x] [AI] Enumerate every checkout to clean, in both repositories:
-      `rtk git -C <repo-root> worktree list --porcelain` for each of `ose-public` and `ose-private`,
+      `rtk git -C <repo-root> worktree list --porcelain` for each of `ose-public` and the private sibling,
       writing the resolved list to `local-tmp/update-tmp-folders/cleanup-targets.txt`. Note that
       `generated-reports/` is per-checkout — the primary checkout, this plan's worktree, and any
       other live worktree each have their own
@@ -1015,13 +1015,13 @@ Every path here is untracked and gitignored. Nothing in this phase is committed 
       corrupt piped output
 
 > **Phase 6 execution record — the plan's sweep guard is incomplete.** Phase 6 names exactly one
-> file to protect, `.known-false-positives.md`. Listing `ose-private`'s directory showed three
+> file to protect, `.known-false-positives.md`. Listing the private sibling's directory showed three
 > `.execution-chain-*` files in there as well — cross-family state that this plan's own new rule
 > places at the `local-tmp/` root. `ose-public` was swept before that listing was taken, with only
 > an entry count recorded (492), so its chain files were almost certainly deleted and that cannot
 > now be proven either way.
 >
-> The outcome is nonetheless the correct one, and `ose-private` was swept the same way deliberately:
+> The outcome is nonetheless the correct one, and the private sibling was swept the same way deliberately:
 > every rule and skill surface in both repositories now points chains at `local-tmp/`, so a chain
 > file under `generated-reports/` sits at a path nothing reads. Relocating a stale one would let a
 > future report claim parentage from an unrelated finished run; absence is right, because the next
@@ -1041,7 +1041,7 @@ Every path here is untracked and gitignored. Nothing in this phase is committed 
 > because a checkout sitting on `main` must not be left carrying uncommitted deletions; the three
 > files are removed properly through this plan's own PR instead. They are stale `plan`-family audit
 > reports, exactly the artifact class this plan relocates, so removing them is the outcome the
-> convention already asked for. `ose-private` has no tracked file under `generated-reports/`, so its
+> convention already asked for. The private sibling has no tracked file under `generated-reports/`, so its
 > sweep is unaffected. Recorded as L-11; the same rule shard now says to check
 > `git ls-tree -r --name-only origin/main -- generated-reports/` before sweeping.
 
@@ -1066,7 +1066,7 @@ Every path here is untracked and gitignored. Nothing in this phase is committed 
 - [x] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize to
       `<placeholder>` tokens or discard if the entry cannot be sanitized without losing its meaning.
 - [x] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
-      in `ose-private` only; public-governance content may route to `ose-public`; never
+      in the private sibling only; public-governance content may route to `ose-public`; never
       cross-route private content into a public repo.
 - [x] [AI] Route each surviving entry to exactly one durable home. The rubric is open-ended —
       route to whichever surface owns that kind of knowledge (`repo-governance/`, `docs/`,
@@ -1117,7 +1117,7 @@ Every path here is untracked and gitignored. Nothing in this phase is committed 
 > `development/infra/temporary-files/status-exceptions-and-related.md`.
 >
 > **These eight edits are themselves rule changes, so they carry their own sibling obligation.**
-> All eight counterpart shards exist in `ose-private` with word-budget headroom; the semantic delta
+> All eight counterpart shards exist in the private sibling with word-budget headroom; the semantic delta
 > is restated there in that repository's own wording as DU-5, never copied.
 
 ### Phase 7 Gate
@@ -1169,7 +1169,7 @@ Every path here is untracked and gitignored. Nothing in this phase is committed 
 > Both `test:coverage` targets pass at the 99% line threshold. `fantomas --check` clean across all
 > four changed F# trees. No `.execution-chain-*` file and no `local-tmp/pdf-to-md/` directory
 > survives the run — the tests clean up after themselves and run with the test binary's own working
-> directory. `ose-private` carries no `crane-cli` (`git ls-files | grep -c crane` → 0), so this
+> directory. The private sibling carries no `crane-cli` (`git ls-files | grep -c crane` → 0), so this
 > phase has no sibling obligation.
 
 ### Plan Archival
@@ -1184,13 +1184,13 @@ Every path here is untracked and gitignored. Nothing in this phase is committed 
   > **Preliminary audit record (2026-09-04).** Every acceptance criterion was re-traced against the
   > as-built repositories rather than against its checkbox.
   > **AC-1/AC-5**: the intent-based two-question test is stated in
-  > `overview-and-the-rule.md` (`ose-public`) and `the-rule.md` (`ose-private`), and seven
-  > `ose-private` shards carry the `local-tmp/<agent-family>/` layout.
+  > `overview-and-the-rule.md` (`ose-public`) and `the-rule.md` (the private sibling), and seven
+  > the private sibling shards carry the `local-tmp/<agent-family>/` layout.
   > **AC-4**: `grep -rn 'local-tmp", ".known-false-positives.md"'` returns
   > `RepoGovernance.fs:890` in both repositories, identically.
   > **AC-8**: `local-tmp/` appears in all four ignore files (`.prettierignore` and
   > `.markdownlintignore`, both repositories).
-  > **AC-11**: 43 of 44 `ose-public` and 23 of 24 `ose-private` checker/fixer agents declare a report
+  > **AC-11**: 43 of 44 `ose-public` and 23 of 24 the private sibling checker/fixer agents declare a report
   > family; the single omission in each is `pr-review-fixer.md`, which posts GitHub comments and
   > writes no report — by design, and the same file in both repositories.
   > **AC-6 found one survivor.** Classifying every remaining occurrence left three: a
@@ -1241,7 +1241,7 @@ Every path here is untracked and gitignored. Nothing in this phase is committed 
       the file ledger, controls branch cleanup
 - [ ] [AI] Remove both worktrees now that the plan is done using them — git-mechanical steps:
       `rtk git -C <ose-public-root> worktree remove worktrees/update-tmp-folders` and the same for
-      `ose-private`. Non-force command only. Do not run this from inside the worktree being removed;
+      the private sibling. Non-force command only. Do not run this from inside the worktree being removed;
       `cd` to the repository root first
 - [ ] [AI] Complete the canonical
       [branch cleanup](../../../repo-governance/development/workflow/worktree-and-artifact-cleanup/branch-cleanup.md)
@@ -1264,7 +1264,7 @@ Every path here is untracked and gitignored. Nothing in this phase is committed 
       `HEAD_REF_DELETED_EVENT` with `delete_branch_on_merge` enabled — and use `git branch -D`.
       Any one proof missing means retain and escalate, never delete
 - [ ] [AI] Never delete `main` or an environment branch. `ose-public` has `prod-*` / `stag-*`;
-      `ose-private` currently has none. Confirm per repository with `rtk git branch -a`
+      the private sibling currently has none. Confirm per repository with `rtk git branch -a`
 - [ ] [AI] Run `rtk git worktree prune` in both repositories. Never `gc` or object-store `prune`
       during cleanup — another process may be writing on this shared machine
 - [ ] [AI] Verify the terminal state: `rtk git branch -a` in each repository lists no

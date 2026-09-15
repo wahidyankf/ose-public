@@ -14,13 +14,13 @@ primary checkout for main modes; delivery mode also fixes the integration target
 **Per-Repository Delivery Mode Restrictions (HARD RULE)**: the two direct-push modes above are not
 freely selectable in every repo. `main` is branch-protected (including for admins) in `ose-public`,
 so neither direct-push mode has an executable path there — `worktree-to-pr` is
-**mandatory**, not merely the safest default. Only `ose-private` retains a
+**mandatory**, not merely the safest default. Only the private sibling retains a
 narrow surviving exception, and only for a genuinely infrastructure-as-code plan. See [Plans
 Organization Convention §Per-Repository Delivery Mode Restrictions (HARD RULE)](../../../../repo-governance/conventions/structure/plans/per-repository-delivery-mode-restrictions.md#per-repository-delivery-mode-restrictions-hard-rule)
 for the full per-repo table and enforcement detail.
 
 `worktree-to-pr` is mandatory in `ose-public` — it is the safest choice everywhere
-else too, absent a reason to pick another mode in the one repo (`ose-private`) where an alternative
+else too, absent a reason to pick another mode in the one repo (the private sibling) where an alternative
 is actually available.
 
 **Declare it explicitly**: `## Delivery Mode: worktree-to-pr`, placed immediately alongside the

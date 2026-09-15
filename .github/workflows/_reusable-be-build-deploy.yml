@@ -1,7 +1,7 @@
 name: _reusable-be-build-deploy
 
 # Reusable backend container build+publish. Builds the be image and pushes it to
-# GHCR (:latest + :${sha}). The k3s rollout is orchestrated by ose-private
+# GHCR (:latest + :${sha}). The k3s rollout is orchestrated by the private sibling
 # coralpolyp, which consumes the pushed image — out of scope for this repo.
 
 on:

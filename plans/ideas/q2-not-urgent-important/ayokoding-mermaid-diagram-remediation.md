@@ -36,7 +36,7 @@ before the phase started**, failing `Mermaid diagram validation (all .md)` with 
 archived `plans/done/` file — and nobody had seen it. Two reasons compounded. The workflow is
 **schedule**-triggered rather than push-triggered, so it did not run on the merge at all; and the
 local gate scopes mermaid validation to `repo-governance docs`, which cannot reach `plans/done/`.
-`ose-private` has **no** such exposure — both its workflows use an `--exclude`-qualified form and its
+The private sibling has **no** such exposure — both its workflows use an `--exclude`-qualified form and its
 scheduled runs were green.
 
 The generalizable half is worth carrying into this brief's scope: a **repo-wide** CI validator paired
@@ -53,19 +53,19 @@ invoked the same validator with three different flag sets in `.github/workflows/
 | Repo                                | `md mermaid validate` flags                                                                         | `main-ci` on `main` |
 | ----------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------- |
 | `ose-public`                        | `--exclude apps/rhino-cli/tests/fixtures --exclude plans/done --exclude apps/ayokoding-www/content` | green               |
-| `ose-private`                       | `--max-depth=4 --exclude plans/done --exclude apps/rhino-cli/tests/fixtures`                        | green               |
+| The private sibling                 | `--max-depth=4 --exclude plans/done --exclude apps/rhino-cli/tests/fixtures`                        | green               |
 | sibling (now out of the parity set) | `--exclude apps/rhino-cli/tests/fixtures`                                                           | **red**             |
 
 That sibling was the only one missing `--exclude plans/done`. The file it failed on,
 `plans/done/2026-07-03__unify-rhino-cli-sdlc-parity/tech-docs.md`, was **byte-identical** across the
 repos (`diff` of the `origin/main` blobs reported no difference), and
-`ose-private` carries 423 files under `plans/done/` of its own. So identical content passed in two
+the private sibling carries 423 files under `plans/done/` of its own. So identical content passed in two
 repos and failed in the third purely on a flag. `--max-depth=4` is a second divergence, present only
-in `ose-private`.
+in the private sibling.
 
 This reframes the fix. Editing the three violations in an archived plan document treats the symptom
 and leaves the divergence in place; the root-cause fix is deciding which flag set is correct and
-bringing `ose-public` and `ose-private` to it. That is a CI-parity question, not a diagram question —
+bringing `ose-public` and the private sibling to it. That is a CI-parity question, not a diagram question —
 and it is worth asking whether the stricter form is the right one and the `plans/done`
 excludes are the drift, rather than assuming the current shape is correct.
 
@@ -82,7 +82,7 @@ Two of the three trees are not what a "fix 786 violations" item implies:
 - All four `apps/rhino-cli` files sit under `tests/fixtures/state/` and are **negative fixtures** —
   inputs authored to make the validator fail so its own tests can assert that it does. One is
   literally a state named `ThisLabelIsLongerThan30CharsAndFails`. Fixing them would break the suite
-  that proves the gate works, and they are byte-identical with `ose-private` besides, so an edit
+  that proves the gate works, and they are byte-identical with the private sibling besides, so an edit
   would open a cross-repository parity obligation for a change that should never be made.
 - `plans/done` is completed work. Its 32 files want an ignore-list entry, not 32 rewrites of history.
 

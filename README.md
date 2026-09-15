@@ -12,7 +12,7 @@ This is the active OSE product monorepo, not a generic project starter. It holds
 its supporting research, and the governance and automation that carry them.
 
 This repository is one of the **OSE Code Repositories**, the five repositories OSE is built and
-maintained in. The other four have distinct roles: `ose-private` holds authorized operations,
+maintained in. The other four have distinct roles: the private sibling holds authorized operations,
 [RHINO](https://github.com/wahidyankf/rhino) supplies repository hygiene,
 [HIPPO](https://github.com/wahidyankf/hippo) supplies resource coordination, and
 [BeaverNest](https://github.com/wahidyankf/beaver-nest) is an independent family product. Each of

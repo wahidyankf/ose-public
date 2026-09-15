@@ -15,7 +15,7 @@ backend, then moved back into an independent repository and rebuilt around Phoen
 tools that began inside product repositories also became independent: HIPPO for host-resource
 coordination and RHINO for repository-hygiene validation.
 
-The endpoint is five **OSE Code Repositories**: `ose-public`, `ose-private`, `beaver-nest`, `rhino`,
+The endpoint is five **OSE Code Repositories**: `ose-public`, the private sibling, `beaver-nest`, `rhino`,
 and `hippo`. The name helps readers find the complete engineering surface. It does not create a
 parent repository, a five-way parity set, or a shared release train. Each repository versions,
 gates, and releases independently.
@@ -33,7 +33,7 @@ The current repository map gives each boundary a specific purpose:
 | Repository                                               | Current responsibility                                                             |
 | -------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | [`ose-public`](https://github.com/wahidyankf/ose-public) | The public OSE products, libraries, research, documentation, and governance source |
-| `ose-private`                                            | Authorized operations, infrastructure, and private product-support work            |
+| The private sibling                                      | Authorized operations, infrastructure, and private product-support work            |
 | [BeaverNest](https://github.com/wahidyankf/beaver-nest)  | An independent, family-only product and applied learning lab                       |
 | [RHINO](https://github.com/wahidyankf/rhino)             | Generic, configuration-driven repository-hygiene validation                        |
 | [HIPPO](https://github.com/wahidyankf/hippo)             | Generic coordination for resource-sensitive local development work                 |
@@ -51,7 +51,7 @@ accDescr: OSE Public and OSE Private form the only parity pair. HIPPO supplies p
 
     subgraph PRODUCT_REPOS["Product repos"]
         PUBLIC["ose-public<br/>Public platform"]:::public
-        PRIVATE["ose-private<br/>Private ops"]:::private
+        PRIVATE["Private sibling<br/>Private ops"]:::private
         BEAVER["BeaverNest<br/>Family product"]:::family
     end
 
@@ -73,7 +73,7 @@ accDescr: OSE Public and OSE Private form the only parity pair. HIPPO supplies p
 Solid arrows mark the one source-parity relationship. Dashed arrows show pinned consumption or
 selective knowledge transfer; they do not create ownership or automatic propagation.
 
-Only `ose-public` and `ose-private` form a parity pair. Their broader in-tree F# `apps/rhino-cli`
+Only `ose-public` and the private sibling form a parity pair. Their broader in-tree F# `apps/rhino-cli`
 and its shared behavior corpus remain byte-identical. Independent RHINO is a different tool and
 sits outside that boundary. BeaverNest, RHINO, and HIPPO carry no automatic governance or source
 propagation obligation from OSE Public.

@@ -31,7 +31,7 @@ configs, grep the files, run the tools — do not trust docs alone.
   apps/rhino-cli/scripts/rhino-bin.sh parity manifest validate
   ```
 
-  It covers the two-repository parity boundary (`ose-public`, `ose-private`,
+  It covers the two-repository parity boundary (`ose-public`, the private sibling,
   see §Parallel Propagation Shape above) and the tracked
   `apps/rhino-cli` source, tests, and Gherkin behaviour tree. Any failure is drift that MUST become
   its own deviation-matrix row in Step 2 — surface it before grilling, never silently re-sync it.

@@ -83,10 +83,10 @@
 - **Date**: 2026-09-08
 - **Context**: Phase 0's `rtk npm run doctor -- --fix` exits 0 in both worktrees, but `ose-public`
   reports 15/16 tools OK with one warning — npm v11.16.0 installed against a required 11.11.0 —
-  while `ose-private` reports 16/16 with no warning on the very same host and the same installed
+  while the private sibling reports 16/16 with no warning on the very same host and the same installed
   npm.
 - **What happened**: the requirement, not the installation, is what differs. `ose-public`'s
-  `package.json` pins `volta.npm` to `11.11.0`; `ose-private` pins `11.16.0`. One host, one npm,
+  `package.json` pins `volta.npm` to `11.11.0`; the private sibling pins `11.16.0`. One host, one npm,
   two verdicts. Left unbumped: this plan is authorized to initialize an LMS backend, and changing a
   pinned toolchain version is a governance change with workspace-wide CI blast radius and its own
   propagation obligation.

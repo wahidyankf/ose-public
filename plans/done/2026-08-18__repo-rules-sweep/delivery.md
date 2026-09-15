@@ -16,7 +16,7 @@ the existing draft PR #227. Re-verify with `git rev-list --count origin/main..HE
 `git diff origin/main --stat` before trusting these figures, since they will keep moving as Phase 0
 lands its own baseline commit.
 
-**`ose-private`** — `worktrees/repo-rules-sweep/`, provisioned in Phase 5.
+**The private sibling** — `worktrees/repo-rules-sweep/`, provisioned in Phase 5.
 
 One worktree per repository per plan, per
 [Worktree Cap](../../../repo-governance/conventions/structure/plans/worktree-cap.md#worktree-cap--one-worktree-per-repository-per-plan-hard-rule).
@@ -54,19 +54,19 @@ loop**. Everything that workflow would otherwise stop and ask about is pre-resol
 execution reaches a decision this section does not cover, that is a plan defect — surface it rather
 than inventing an answer.
 
-| plan-execution stop                                 | Resolution for this plan                                                                                                                                                                                                                                         |
-| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `[HUMAN]` / `[AI+HUMAN]` checkbox (Iron Rule 2)     | **None exist.** Every checkbox is `[AI]` — verify with `grep -c '^\s*- \[ \] \[HUMAN\]' delivery.md` returning 0, rather than trusting a count that drifts as the plan is edited.                                                                                |
-| Rule-15 three-tester web-UI retest (shard 36)       | **Not applicable — no rendered surface.** This plan changes markdown, `repo-config.yml`, and Rust CLI internals. It ships no route, component, or template. Do not invoke `web-exploratory-tester`, `web-usability-tester`, or `web-design-tester`.              |
-| Rule-16 API retest (shard 37)                       | **Not applicable — no HTTP surface.** No REST, GraphQL, or tRPC endpoint is added or changed. Do not invoke `api-exploratory-tester`.                                                                                                                            |
-| Rule-1 production visual sign-off (shard 36)        | **Not applicable** — same reason as rule-15.                                                                                                                                                                                                                     |
-| Infra-Execution Gate (shard 40)                     | **Not applicable.** No `terraform apply`, no Ansible converge, no state-changing infrastructure operation appears in any phase.                                                                                                                                  |
-| Manual behavioral assertions (Iron Rule 8)          | **Satisfied by gate commands, not by Playwright or curl.** The behavioral assertions for this plan are the acceptance clauses on each checkbox — exit codes and grep counts. There is nothing to click and nothing to `curl`.                                    |
-| `gh pr create` at the delivery boundary (shard 25)  | **`ose-public`: forbidden**, PR #227 exists — use `gh pr ready 227`. **`ose-private`: see the `ose-private` delivery row in the Delivery Boundaries table.**                                                                                                     |
-| PR-Review Maker→Fixer Cycle (shard 39)              | Runs **once per repository at Phase 7**, N = 3 cycles, hard ceiling. An `escalated` exit blocks the merge and is a legitimate stop — surface it.                                                                                                                 |
-| Merge actor (shard 42)                              | **`[AI]`.** Merge once all four done-definition items hold. No `[HUMAN]` merge gate is declared anywhere in this plan.                                                                                                                                           |
-| Worktree cleanup prompt (shards 41, 42)             | **Pre-authorized in writing for both worktrees** — `worktrees/repo-rules-sweep` in `ose-private` and `worktrees/optimize-gov` in `ose-public`. Do not prompt. Safety preconditions (clean tree, HEAD an ancestor of `origin/main`) still apply and still refuse. |
-| "Wait for user commit approval" (shard 02, item 10) | **Superseded by the per-phase gate flow.** Each `### Phase N Gate` commits and pushes under Iron Rules 5 and 7; there is no separate end-of-run approval step for this plan.                                                                                     |
+| plan-execution stop                                 | Resolution for this plan                                                                                                                                                                                                                                               |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `[HUMAN]` / `[AI+HUMAN]` checkbox (Iron Rule 2)     | **None exist.** Every checkbox is `[AI]` — verify with `grep -c '^\s*- \[ \] \[HUMAN\]' delivery.md` returning 0, rather than trusting a count that drifts as the plan is edited.                                                                                      |
+| Rule-15 three-tester web-UI retest (shard 36)       | **Not applicable — no rendered surface.** This plan changes markdown, `repo-config.yml`, and Rust CLI internals. It ships no route, component, or template. Do not invoke `web-exploratory-tester`, `web-usability-tester`, or `web-design-tester`.                    |
+| Rule-16 API retest (shard 37)                       | **Not applicable — no HTTP surface.** No REST, GraphQL, or tRPC endpoint is added or changed. Do not invoke `api-exploratory-tester`.                                                                                                                                  |
+| Rule-1 production visual sign-off (shard 36)        | **Not applicable** — same reason as rule-15.                                                                                                                                                                                                                           |
+| Infra-Execution Gate (shard 40)                     | **Not applicable.** No `terraform apply`, no Ansible converge, no state-changing infrastructure operation appears in any phase.                                                                                                                                        |
+| Manual behavioral assertions (Iron Rule 8)          | **Satisfied by gate commands, not by Playwright or curl.** The behavioral assertions for this plan are the acceptance clauses on each checkbox — exit codes and grep counts. There is nothing to click and nothing to `curl`.                                          |
+| `gh pr create` at the delivery boundary (shard 25)  | **`ose-public`: forbidden**, PR #227 exists — use `gh pr ready 227`. **The private sibling: see the private-sibling delivery row in the Delivery Boundaries table.**                                                                                                   |
+| PR-Review Maker→Fixer Cycle (shard 39)              | Runs **once per repository at Phase 7**, N = 3 cycles, hard ceiling. An `escalated` exit blocks the merge and is a legitimate stop — surface it.                                                                                                                       |
+| Merge actor (shard 42)                              | **`[AI]`.** Merge once all four done-definition items hold. No `[HUMAN]` merge gate is declared anywhere in this plan.                                                                                                                                                 |
+| Worktree cleanup prompt (shards 41, 42)             | **Pre-authorized in writing for both worktrees** — `worktrees/repo-rules-sweep` in the private sibling and `worktrees/optimize-gov` in `ose-public`. Do not prompt. Safety preconditions (clean tree, HEAD an ancestor of `origin/main`) still apply and still refuse. |
+| "Wait for user commit approval" (shard 02, item 10) | **Superseded by the per-phase gate flow.** Each `### Phase N Gate` commits and pushes under Iron Rules 5 and 7; there is no separate end-of-run approval step for this plan.                                                                                           |
 
 **Tie-breakers, so no judgment call needs a human.** These bind Phases 4 and 5:
 
@@ -91,7 +91,7 @@ than inventing an answer.
 **Legitimate stops that remain.** Autonomy is not a mandate to push through a genuine blocker. Stop
 and surface, do not improvise, when: a gate fails for a reason no checkbox anticipated; the PR-Review
 cycle exits `escalated`; a rename decision is genuinely ambiguous under the tie-breakers below and
-the conservative default would lose information; or `ose-private` is unreachable.
+the conservative default would lose information; or the private sibling is unreachable.
 
 ## Workstreams
 
@@ -114,11 +114,11 @@ its requirements into `prd.md`.
 ## Parallelization Model
 
 - **Serial spine**: Phase 1 (convention and machinery) → Phase 2 (index tooling) → Phase 3
-  (realign misfiring rules) → Phase 4 (`ose-public` sweep) → Phase 5 (`ose-private`) → Phase 6
+  (realign misfiring rules) → Phase 4 (`ose-public` sweep) → Phase 5 (the private sibling) → Phase 6
   (Knowledge Capture) → Phase 7 (archival and integration). Each builds what the next reads: the rule
   is what rename decisions are made against, the order-preserving generator is the precondition that
   makes renaming non-lossy, the withdrawal removes files the sweep would otherwise process, and
-  `ose-private` copies a finished `rhino-cli` change.
+  the private sibling copies a finished `rhino-cli` change.
 - **No independent branch.** Every phase writes to `repo-governance/` or `.claude/`, or depends on a
   tooling change, so nothing fans out. This is a genuine serial chain, not a list that happens to be
   ordered.
@@ -133,11 +133,11 @@ its requirements into `prd.md`.
 
 ### Delivery Boundaries
 
-| Phase(s) | Delivery unit                                 | Worktree                                        | Branch                             | PR opens         |
-| -------- | --------------------------------------------- | ----------------------------------------------- | ---------------------------------- | ---------------- |
-| 0        | — (setup and baseline)                        | —                                               | —                                  | no               |
-| 1–4, 6–7 | `ose-public` rules sweep and rule withdrawal  | `worktrees/optimize-gov` (existing)             | `worktree/optimize-gov` (existing) | yes — at Phase 7 |
-| 5, 7     | `ose-private` rules sweep and rule withdrawal | `worktrees/repo-rules-sweep` (in `ose-private`) | `repo-rules-sweep`                 | yes — at Phase 7 |
+| Phase(s) | Delivery unit                                       | Worktree                                              | Branch                             | PR opens         |
+| -------- | --------------------------------------------------- | ----------------------------------------------------- | ---------------------------------- | ---------------- |
+| 0        | — (setup and baseline)                              | —                                                     | —                                  | no               |
+| 1–4, 6–7 | `ose-public` rules sweep and rule withdrawal        | `worktrees/optimize-gov` (existing)                   | `worktree/optimize-gov` (existing) | yes — at Phase 7 |
+| 5, 7     | The private sibling rules sweep and rule withdrawal | `worktrees/repo-rules-sweep` (in the private sibling) | `repo-rules-sweep`                 | yes — at Phase 7 |
 
 ## Phase 0: Baseline
 
@@ -159,19 +159,19 @@ _Suggested executor:_ `repo-setup-manager`
       number is written to that file. Phase 3 asserts this count is unchanged after deleting the
       naming-command fixtures, so the baseline must exist before Phase 3 runs. Verified
       2026-08-18: the count is 6.
-- [x] [AI] Record the same five figures for `ose-private` into
+- [x] [AI] Record the same five figures for the private sibling into
       `local-tmp/repo-rules-sweep/baseline-private.md` — acceptance: recorded; at authoring time
       `repo-governance` was 1704 of 2131 and `.claude` was 217.
-- [x] [AI] Confirm `ose-private` is on a clean `main` — acceptance:
+- [x] [AI] Confirm the private sibling is on a clean `main` — acceptance:
       `git -C ~/ose-projects/<sibling> status --porcelain --untracked-files=no` prints
       nothing. **Tracked files only**: that repository legitimately carries an untracked `local-temp/`
       scratch directory, so a bare `status --short` prints `?? local-temp/` on a perfectly healthy
       tree and would halt Phase 0 on a false negative. Verified 2026-08-18: tracked-clean returns 0
       lines, bare `--short` returns 1.
-- [x] [AI] Confirm `ose-private` topology before relying on plain `git -C` commands — acceptance:
+- [x] [AI] Confirm the private sibling topology before relying on plain `git -C` commands — acceptance:
       `git -C ~/ose-projects/<sibling> rev-parse --is-bare-repository` prints `false`.
       This repository has flipped between bare and normal layouts before; if it prints `true`, switch
-      to the `-c core.bare=false --work-tree=` form for every subsequent `ose-private` command.
+      to the `-c core.bare=false --work-tree=` form for every subsequent the private sibling command.
 
 ### Phase 0 Gate
 
@@ -736,20 +736,20 @@ _Suggested executor:_ `docs-file-manager` for the renames and link repair; `repo
 > its order and annotations, and the mirrors are regenerated. Committed to the branch, not yet pushed
 > or reviewed. Safe to stop. To resume: `rhino md links validate`.
 
-## Phase 5: `ose-private` Sweep
+## Phase 5: the private sibling Sweep
 
 _Suggested executor:_ `docs-file-manager` and `repo-rules-fixer`, same split as Phase 4
 
 **Parity target: the same maintainer experience, not the same bytes.** Every WS-A and WS-C outcome
-lands in both repositories. `ose-private` carries all of them, but its shard structure and its config
-differ, so **derive every path and every list from `ose-private` itself — never copy an `ose-public`
+lands in both repositories. The private sibling carries all of them, but its shard structure and its config
+differ, so **derive every path and every list from the private sibling itself — never copy an `ose-public`
 path or an `ose-public` exclude list**. Audited 2026-08-18: `agent-naming/` holds 3 files there (7
 here), `workflow-naming/` holds 4 (6 here), the evidence-capture rule lives in
 `evidence-capture/01-what-goes-where.md` (not `02-the-rule.md`), and that repo's word-budget exclude
 list carries an extra `infra/on-premise/terraform/.terraform/` entry. Copying this repo's list there
 would publish a wrong list — the exact defect WS-C exists to fix.
 
-- [x] [AI] Re-derive every `ose-private` surface by command before editing anything, and fail loudly
+- [x] [AI] Re-derive every the private sibling surface by command before editing anything, and fail loudly
       if one is missing rather than proceeding on an assumed path — acceptance: each of
       `repo-governance/conventions/structure/{agent-naming,workflow-naming,governance-word-budget,file-naming}.md`,
       the `agent-naming/` and `workflow-naming/` shard directories, the four `apps/rhino-cli/`
@@ -757,15 +757,15 @@ would publish a wrong list — the exact defect WS-C exists to fix.
       the `repo-governance/development/quality/evidence-capture/` shard that states the placement
       rule are each confirmed present with their actual path and file count recorded.
       **Result:** every surface confirmed present, recorded with path and count in
-      `local-tmp/repo-rules-sweep/private-surfaces.md`. `ose-private` is a **normal** (non-bare)
+      `local-tmp/repo-rules-sweep/private-surfaces.md`. The private sibling is a **normal** (non-bare)
       checkout at `884a330f6`, level with `origin/main`. Key derived differences from `ose-public`:
       `agent-naming/` holds 3 files (incl. README), `workflow-naming/` holds 4, the placement shard is
       `evidence-capture/01-what-goes-where.md` (there is no `02-the-rule.md` there), `.gitignore`
       carries **no** `/evidence/` guard, and the word-budget exclude list has **six** prefixes, not
       seven — it alone carries `infra/on-premise/terraform/.terraform/` and it lacks `.fvm/` and
       `.fvm-cache/`. Numbered-markdown baseline: **1961** files.
-- [x] [AI] Provision `worktrees/repo-rules-sweep/` in `ose-private` and branch `repo-rules-sweep`
-      from its `main` — acceptance: `git worktree list` in `ose-private` shows the path.
+- [x] [AI] Provision `worktrees/repo-rules-sweep/` in the private sibling and branch `repo-rules-sweep`
+      from its `main` — acceptance: `git worktree list` in the private sibling shows the path.
       **Result:** `~/ose-projects/<sibling>/worktrees/repo-rules-sweep  884a330f6 [repo-rules-sweep]`.
 - [x] [AI] Apply the Phase 2 and Phase 3 `apps/rhino-cli/` changes byte-identically — acceptance:
       `diff -r` prints nothing for `src/application/governance/`, `src/commands/`, `src/internal/`,
@@ -780,10 +780,10 @@ would publish a wrong list — the exact defect WS-C exists to fix.
       differed between the repos was compared against `ose-public`'s pre-plan baseline
       (`d41ea40c4`, the merge-base with `origin/main`). **All 12** differing files were byte-identical
       to that baseline, proving the entire delta was this branch's own work and none of it was
-      independent `ose-private` divergence. Only then were the branch's 20 added/modified files copied
+      independent the private sibling divergence. Only then were the branch's 20 added/modified files copied
       and its 28 deletions applied. Note the port also carries `src/domain/stdio_blocking.rs` and the
       EAGAIN fix (`7958ae19d`), a mid-plan `rhino-cli` change that is inside the parity boundary.
-- [x] [AI] Regenerate and stage `ose-private`'s parity manifest with `rhino parity manifest generate`
+- [x] [AI] Regenerate and stage the private sibling's parity manifest with `rhino parity manifest generate`
       — acceptance: `rhino parity manifest validate` exits 0 there.
       **Result:** exit 0 there, and exit 0 in `ose-public` too. `generate` refuses while a covered file
       differs from the index, so `apps/rhino-cli/`, `specs/`, and `repo-config.yml` were staged first.
@@ -791,13 +791,13 @@ would publish a wrong list — the exact defect WS-C exists to fix.
       are byte-identical across both repositories.
       **Result:** `diff -rq specs/apps/rhino/behavior` between the two repositories prints nothing.
       Same baseline check as P5.3 first: all 4 changed spec files matched `ose-public`'s pre-plan
-      baseline in `ose-private`, and all 4 deletions were present to delete.
+      baseline in the private sibling, and all 4 deletions were present to delete.
       **Left alone, deliberately:** 4 files outside `behavior/` still differ
       (`product/overview.md`, `system-context/context.md`, `containers/container.md`,
-      `components/cli/component-cli.md`). That is pre-existing divergence — `ose-private` carries a
+      `components/cli/component-cli.md`). That is pre-existing divergence — the private sibling carries a
       stale paragraph calling `rhino-cli` "a Go CLI tool" — not something this plan introduced, and
       converging it would be exactly the blanket convergence the Phase 5 preamble forbids.
-- [x] [AI] Apply the Phase 1 convention and machinery edits, adapted to `ose-private`'s own paths —
+- [x] [AI] Apply the Phase 1 convention and machinery edits, adapted to the private sibling's own paths —
       acceptance: the ordinal-prefix convention exists there and its `file-naming.md` carries the
       same reconciliation.
       **Result:** `repo-governance/conventions/structure/ordinal-filename-prefixes.md` created there
@@ -805,19 +805,19 @@ would publish a wrong list — the exact defect WS-C exists to fix.
       `## Withdrawn Rules` section plus both links to the new convention (487 words, trimmed to fit its
       own budget — its prose was more verbose than `ose-public`'s).
       **Derived, not copied:** the convention's non-vacuity section had to be rewritten. `ose-public`
-      cites 8 live keep-clause instances; `ose-private` has **zero** — every numbered basename under
+      cites 8 live keep-clause instances; the private sibling has **zero** — every numbered basename under
       its `repo-governance/workflows/` fails on a second embedded number. The section now says so
       honestly and carries a re-check script, rather than importing `ose-public`'s claim.
 - [x] [AI] Apply the Phase 3 withdrawal: delete the same two convention trees, the same `rhino-cli`
       commands and shared `naming` modules, and the same gate entries. No new gate is added, in either
-      repository — acceptance: `rhino harness naming validate` exits non-zero in `ose-private` too,
+      repository — acceptance: `rhino harness naming validate` exits non-zero in the private sibling too,
       and `rhino harness bindings validate` still exits 0 there, confirming `.opencode/` and
       `.cursor/` mirror-drift coverage survives without a new gate.
-      **Result:** `harness naming validate` exits **2** in `ose-private`; `harness bindings validate`
+      **Result:** `harness naming validate` exits **2** in the private sibling; `harness bindings validate`
       exits **0** after regenerating mirrors; `repo-config validate` and `gate validate` both exit 0;
       `npm run validate:sync` reports 58/58 passed. Deleted there: `agent-naming.md` + its 3-file shard
       dir, `workflow-naming.md` + its 4-file shard dir, both gate entries in `repo-config.yml`.
-      **Prose sweep, enumerated by command rather than copied from Phase 3's list** — `ose-private`'s
+      **Prose sweep, enumerated by command rather than copied from Phase 3's list** — the private sibling's
       sites differ. 13 Related/Conventions-Implemented bullets naming a deleted convention removed
       across 12 files; `workflows/README.md`'s `## Naming Rule` rewritten to `## Naming`;
       `conventions/structure/README.md` re-indexed; `AGENTS.md` dropped `<domain>-<role>`;
@@ -828,16 +828,16 @@ would publish a wrong list — the exact defect WS-C exists to fix.
       renumbered 6–8 → 4–6. Left alone as a different, still-live rule: every
       `github-actions-workflow-naming` reference. Left alone as historical record: `plans/done/`
       mentions and the `plan-domain-parity-decisions.md` narrative (its dead _link_ was removed).
-- [x] [AI] Run the Phase 4 sweep procedure over `ose-private`'s `repo-governance/` and `.claude/`,
+- [x] [AI] Run the Phase 4 sweep procedure over the private sibling's `repo-governance/` and `.claude/`,
       emitting `renames-private.tsv` — acceptance: the same five gate commands exit 0 in
-      `ose-private`.
+      the private sibling.
       **Result:** all five exit 0 — `md links validate --exclude plans/done`,
       `governance readme-index validate` (gate args), `governance word-budget validate`,
       `npm run validate:sync`, `harness bindings validate`. Full record in
       `local-tmp/repo-rules-sweep/private-sweep-result.md`.
       **The sweep did NOT transfer cleanly, and the outcome differs from `ose-public` on purpose.**
       1905 files and 8 directories renamed; **46** numbered paths remain there against 8 here.
-      (a) `ose-private` also has **numbered directories** — 11 of them; `ose-public` had none.
+      (a) the private sibling also has **numbered directories** — 11 of them; `ose-public` had none.
       (b) 40 files across 18 groups have byte-identical stems truncated to a fixed width, differing
       only by ordinal (`04-anti-pattern-10-…-tha.md` / `05-anti-pattern-10-…-tha.md`). Stripping
       collides. The convention has no answer: they are not steps, yet the ordinal is their only
@@ -848,27 +848,27 @@ would publish a wrong list — the exact defect WS-C exists to fix.
       `main` worktree (baseline: **0** findings), then reverted.
       (d) `rewrite-paths` keys by basename, so it cannot repoint a **directory** segment; the 8
       directory renames needed a separate path-level pass over every tracked `.md`.
-- [x] [AI] Document `ose-private`'s word-budget exclude list in its own
+- [x] [AI] Document the private sibling's word-budget exclude list in its own
       `governance-word-budget.md`, derived from **its** `repo-config.yml` — acceptance:
       `grep -F 'terraform' repo-governance/conventions/structure/governance-word-budget.md` returns a
       match there and does **not** in `ose-public`, proving each repo documents its own list rather
       than a copied one.
-      **Result:** both directions hold — 1 match in `ose-private`, **0** in `ose-public`.
-      The lists are genuinely different, not near-copies: `ose-private` registers **six** prefixes
+      **Result:** both directions hold — 1 match in the private sibling, **0** in `ose-public`.
+      The lists are genuinely different, not near-copies: the private sibling registers **six** prefixes
       including `infra/on-premise/terraform/.terraform/` and no `.fvm`; `ose-public` registers
       **seven** including `.fvm/` and `.fvm-cache/`. Each was re-derived from that repository's own
       `repo-config.yml`, never transcribed from the other. New child shard
       `governance-word-budget/excluded-prefixes.md` (294 words) carries the table and says in prose
       that the list is this repository's own.
-- [x] [AI] State the evidence placement rule in `ose-private`'s evidence-capture convention, in
+- [x] [AI] State the evidence placement rule in the private sibling's evidence-capture convention, in
       whichever shard the re-derivation step identified — acceptance: that shard mentions the
       `.gitignore` anchor and the plan-subfolder rule.
       **Result:** stated in `repo-governance/development/quality/evidence-capture/what-goes-where.md`
       (the shard the P5.1 re-derivation named — post-sweep it lost its `01-` ordinal). Both facts
       present: the plan-subfolder rule (`plans/{backlog,in-progress,done}/<slug>/evidence/`) and the
       root-anchored `.gitignore` backstop with its three stated limits. 420 words, under budget.
-- [x] [AI] Add the root-anchored `/evidence/` guard to `ose-private`'s `.gitignore`, which does not
-      have it — acceptance: in `ose-private`, `git check-ignore -q evidence/probe.png` succeeds and
+- [x] [AI] Add the root-anchored `/evidence/` guard to the private sibling's `.gitignore`, which does not
+      have it — acceptance: in the private sibling, `git check-ignore -q evidence/probe.png` succeeds and
       the same check on a per-plan `evidence/` path fails. Both directions must hold. No repo-root
       `evidence/` directory exists there, so nothing is deleted. Delete the probe files afterwards.
       **Result:** both directions hold — `evidence/probe.png` is ignored, and
@@ -889,7 +889,7 @@ would publish a wrong list — the exact defect WS-C exists to fix.
       an unquoted command string, not a real failure — re-run with proper argv.
 - [x] [AI] Run the `parity-manifest` gate in both repositories — acceptance: both exit 0.
       **Result:** both exit 0.
-- [x] [AI] Run `npx nx run rhino-cli:test` in `ose-private` — acceptance: exits 0.
+- [x] [AI] Run `npx nx run rhino-cli:test` in the private sibling — acceptance: exits 0.
       **Deviation (same as P2.11 here):** `rhino-cli:test` is not a real Nx target in either
       repository. Ran the targets that exist: `test:quick` exit 0, `test:integration` exit 0
       (3 features, 17 scenarios, 64 steps, all passing — this is the target that actually exercises
@@ -900,12 +900,12 @@ would publish a wrong list — the exact defect WS-C exists to fix.
 - [x] [AI] `parity-manifest` exits 0 in both repositories.
       **Result:** exit 0 in both.
 - [x] [AI] `rhino md links validate`, `rhino governance readme-index validate`,
-      `rhino governance word-budget validate`, `npm run validate:sync` — all exit 0 in `ose-private`.
+      `rhino governance word-budget validate`, `npm run validate:sync` — all exit 0 in the private sibling.
       **Result:** all exit 0 there. `md links validate` needs the gate's own `--exclude plans/done`
       to match what CI runs; the bare command reports pre-existing archived-plan breakage this branch
       did not cause. `readme-index validate` likewise runs with the gate's registered
       `--fail-kinds missing,orphan,ghost`.
-- [x] [AI] `npx nx run rhino-cli:test` — exits 0 in `ose-private`.
+- [x] [AI] `npx nx run rhino-cli:test` — exits 0 in the private sibling.
       **Result:** substituted as in P5.14 — `test:quick`, `test:integration`, `lint` all exit 0.
 
 > **Pause Safety**: both repositories are swept and their tooling is byte-identical. Both branches
@@ -933,7 +933,7 @@ _Suggested executor:_ the orchestrator directly — triage is judgment, not dele
       **Result:** both verdicts recorded on all nine. Secret/sensitivity: nine passes, no credential,
       token, hostname, or private IP; nothing needed sanitizing, so nothing was discarded on that
       gate. Repo-relevance: all nine are public-governance tooling content and belong in both
-      repositories. Entry 8 is the only one whose **instances** are `ose-private`-only — the 40
+      repositories. Entry 8 is the only one whose **instances** are private-sibling-only — the 40
       truncated-stem files — and it is scoped so that only the collision _shape_ is described, never
       a private path, with the rule gap itself routed to both repos.
 - [x] [AI] Record what `file-naming.md` still gets wrong, as the specification input for WS-B —
@@ -1041,11 +1041,11 @@ it does not create it.
       Rewriting them would falsify the historical record to satisfy a self-matching grep.
 - [ ] [AI] Push the `ose-public` branch to `origin worktree/optimize-gov` — acceptance:
       `git rev-list --count origin/worktree/optimize-gov..HEAD` returns 0.
-- [ ] [AI] Push the `ose-private` branch to `origin repo-rules-sweep` — acceptance: the branch exists
+- [ ] [AI] Push the private-sibling branch to `origin repo-rules-sweep` — acceptance: the branch exists
       on `origin`.
 - [ ] [AI] Mark PR #227 ready for review with `gh pr ready 227` — acceptance: `gh pr view 227 --json isDraft`
       reports `false`. **Do not run `gh pr create` for `ose-public`**; it would fail.
-- [ ] [AI] Open the `ose-private` PR — acceptance: `gh pr view` in `ose-private` shows an open PR
+- [ ] [AI] Open the private-sibling PR — acceptance: `gh pr view` in the private sibling shows an open PR
       against its `main`.
 - [ ] [AI] Brief `pr-review-scout-maker` to scope the specialists **to the artifacts, not the
       renames**: the `apps/rhino-cli/` diff, the convention text, `repo-config.yml`, and the
@@ -1062,14 +1062,14 @@ it does not create it.
       did not exit `escalated`. An `escalated` exit blocks the merge and is a legitimate stop.
 - [ ] [AI] Merge the `ose-public` PR once `pr-quality-gate.yml` is green — acceptance: `gh pr view 227`
       shows MERGED. `[AI]` merges; no human gate is declared.
-- [ ] [AI] Merge the `ose-private` PR — acceptance: `gh pr view` shows MERGED. **Expect
+- [ ] [AI] Merge the private-sibling PR — acceptance: `gh pr view` shows MERGED. **Expect
       `parity-manifest` to report drift on this PR until it merges**: `apps/rhino-cli` byte-identity
       spans both repositories, so between the two merges the trees genuinely differ. That drift is
       the gate working, not a defect — it clears when the second merge lands. Merge the two as close
       together as the review cycles allow, and assert parity only after both.
 - [ ] [AI] Verify nothing is uncommitted or unpushed in either worktree — acceptance:
       `git status --short` prints nothing in both.
-- [ ] [AI] Remove `worktrees/repo-rules-sweep/` in `ose-private` with non-force
+- [ ] [AI] Remove `worktrees/repo-rules-sweep/` in the private sibling with non-force
       `git worktree remove` — acceptance: `git worktree list` no longer shows it. **The user has
       pre-authorized this removal**; the interactive confirmation that
       [shard 42](../../../repo-governance/workflows/plan/plan-execution/finalization-pr-merge-and-final-status.md)

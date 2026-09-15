@@ -29,7 +29,7 @@ when_to_use: "Use when clarifying an operating nuance not covered elsewhere — 
   after human direction funds more attempts, and it is never a waiver.
 - **Paired-repository sibling PRs are a moving target until the source PR converges**: when a
   plan opens a source PR (e.g. `ose-public`) alongside byte-identical mirror PRs in sibling repos
-  (e.g. `ose-private`), running all repos' review-cycle loops concurrently from the start
+  (e.g. the private sibling), running all repos' review-cycle loops concurrently from the start
   means every fixer commit on the source PR immediately makes the siblings stale again, and each
   sibling's next cycle re-discovers "stale vs. upstream" as its top finding instead of surfacing new
   issues — a self-correcting but wasteful pattern observed to cost an extra cycle per sibling in

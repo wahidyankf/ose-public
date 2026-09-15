@@ -59,10 +59,10 @@ setting, so external verification is required.
 
 The 2026-09-05 parity audit established this baseline:
 
-| Repository    | Active artifacts                                   | Framework-dependent forecast | Cache data       |
-| ------------- | -------------------------------------------------- | ---------------------------- | ---------------- |
-| `ose-private` | 437,396,572 bytes; 11 Rhino handoffs near 39.8 MB  | About 35.1 MB at 13 runs/day | 10,836,110,245 B |
-| `ose-public`  | 962,885,080 B; 24 Rhino handoffs use 954,191,871 B | About 64.8 MB for 24 copies  | About 11.008 GB  |
+| Repository          | Active artifacts                                   | Framework-dependent forecast | Cache data       |
+| ------------------- | -------------------------------------------------- | ---------------------------- | ---------------- |
+| The private sibling | 437,396,572 bytes; 11 Rhino handoffs near 39.8 MB  | About 35.1 MB at 13 runs/day | 10,836,110,245 B |
+| `ose-public`        | 962,885,080 B; 24 Rhino handoffs use 954,191,871 B | About 64.8 MB for 24 copies  | About 11.008 GB  |
 
 Both repositories cap caches at 10 GB for 7 days. The revised workflow restores on non-default
 refs, saves on `main`, and skips cloud writes on persistent self-hosted runners. Neither workflow

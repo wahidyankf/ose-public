@@ -38,7 +38,7 @@ No `## Delivery Mode` field and no invocation argument selected a direct-push mo
 
 ## PASS: Correct behaviour for an eligible private `main-to-origin-main` selection
 
-The `ose-private` plan's `## Delivery Mode` field is `main-to-origin-main`, and its `## Worktree`
+The private-sibling plan's `## Delivery Mode` field is `main-to-origin-main`, and its `## Worktree`
 field is `Not applicable (N/A)`. It changes one stateful Terraform resource and requires the primary
 checkout's real credentials and local state; the change is small, understood, locally gated, and
 safe to integrate immediately.

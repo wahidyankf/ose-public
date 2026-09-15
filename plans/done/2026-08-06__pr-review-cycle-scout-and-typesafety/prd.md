@@ -3,7 +3,7 @@
 ## Product Overview
 
 Three additions to the live PR Review Quality Gate pipeline, landed **identically in all four OSE
-repos** (`ose-public`, `ose-primer`, `ose-private`, `beaver-nest`) as one plan because they touch the
+repos** (`ose-public`, `ose-primer`, the private sibling, `beaver-nest`) as one plan because they touch the
 same small file set in each:
 
 1. A `**Cycle**: N of {total}` field on every Consolidated Review Header.
@@ -42,9 +42,9 @@ same small file set in each:
    algorithm to stay internally consistent after this plan lands — no doc says "eight specialists"
    in one place and "nine" in another, in any of the four repos.
 5. As the maintainer working across all four repos, I want the same three enhancements landed
-   identically in `ose-public`, `ose-primer`, `ose-private`, and `beaver-nest`, so a PR's review
+   identically in `ose-public`, `ose-primer`, the private sibling, and `beaver-nest`, so a PR's review
    experience does not depend on which repo it happens to be in — while still respecting each repo's
-   own pre-existing wording divergences (e.g. `ose-private`'s `AGENTS.md` names disciplines
+   own pre-existing wording divergences (e.g. the private sibling's `AGENTS.md` names disciplines
    explicitly rather than saying "eight") rather than forcing artificial uniformity where none existed
    before.
 
@@ -185,7 +185,7 @@ Feature: Internal consistency after the sweep, independently in each of the four
 ## Product Scope
 
 **In scope**: everything named in [README.md's Scope section](./README.md#scope), applied
-independently in all four repos (`ose-public`, `ose-primer`, `ose-private`, `beaver-nest`).
+independently in all four repos (`ose-public`, `ose-primer`, the private sibling, `beaver-nest`).
 
 **Explicitly out of scope** (a reader might reasonably expect these in scope; they are not):
 
@@ -207,7 +207,7 @@ independently in all four repos (`ose-public`, `ose-primer`, `ose-private`, `bea
 
 - **Doc-drift risk during the sweep, quadrupled**: `pr-review-disciplines.md` (26 "eight"
   occurrences in each repo) and `pr-review-quality-gate.md` (6 occurrences in `ose-public`,
-  `ose-primer`, `beaver-nest`; **5** in `ose-private` — see
+  `ose-primer`, `beaver-nest`; **5** in the private sibling — see
   [brd.md's baseline](./brd.md#current-state-baseline-mechanically-verified-2026-08-05)) are dense,
   heavily cross-linked documents in every repo; a mechanical find-and-replace would misfire on
   occurrences describing an unrelated historical fact (e.g. "the eight discipline specialists"

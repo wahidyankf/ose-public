@@ -25,5 +25,5 @@ See also: [`no-secrets-in-committed-files.md`](../no-secrets-in-committed-files.
 ## Cross-repo doc canonicalization
 
 The cross-repo canonical name for this rule is `no-secrets-in-committed-files.md` (aligned with the
-ose-private sibling). This repository previously used `no-secrets-in-git.md`; the file was renamed by
+private sibling). This repository previously used `no-secrets-in-git.md`; the file was renamed by
 the `standardize-secrets-and-env` plan to match the canonical name.

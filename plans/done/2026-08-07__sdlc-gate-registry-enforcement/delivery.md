@@ -41,18 +41,18 @@ there by the repo-local `WorktreeCreate` hook. Because `ose-public` has four dis
 units, its later units use plan-slug suffixes to preserve strict 1-PR to 1-worktree ownership. The
 same exact plan-slug path may exist independently in different repository roots.
 
-| Phase | Worktree                                                  | Branch                                     | Repo                        |
-| ----- | --------------------------------------------------------- | ------------------------------------------ | --------------------------- |
-| 0     | `worktrees/sdlc-gate-registry-enforcement/`               | `sdlc-gate-registry-enforcement`           | `ose-public`                |
-| 0     | none (primary checkout)                                   | `main`                                     | `ose-primer`, `ose-private` |
-| 0     | `worktrees/gate-baseline-beaver/`                         | `main`                                     | `beaver-nest`               |
-| 1     | `worktrees/sdlc-gate-registry-enforcement/`               | `sdlc-gate-registry-enforcement`           | `ose-public`                |
-| 11    | `worktrees/sdlc-gate-registry-enforcement-defork/`        | `sdlc-gate-registry-enforcement-defork`    | `ose-public`                |
-| 2     | `worktrees/sdlc-gate-registry-enforcement-rewire-public/` | `sdlc-gate-registry-enforcement-rewire`    | `ose-public`                |
-| 3     | `worktrees/sdlc-gate-registry-enforcement/`               | `sdlc-gate-registry-enforcement`           | `ose-primer`                |
-| 4     | `worktrees/sdlc-gate-registry-enforcement/`               | `sdlc-gate-registry-enforcement`           | `ose-private`               |
-| 5     | `worktrees/sdlc-gate-registry-enforcement/`               | `sdlc-gate-registry-enforcement`           | `beaver-nest`               |
-| 6     | `worktrees/sdlc-gate-registry-enforcement-knowledge/`     | `sdlc-gate-registry-enforcement-knowledge` | `ose-public`                |
+| Phase | Worktree                                                  | Branch                                     | Repo                              |
+| ----- | --------------------------------------------------------- | ------------------------------------------ | --------------------------------- |
+| 0     | `worktrees/sdlc-gate-registry-enforcement/`               | `sdlc-gate-registry-enforcement`           | `ose-public`                      |
+| 0     | none (primary checkout)                                   | `main`                                     | `ose-primer`, the private sibling |
+| 0     | `worktrees/gate-baseline-beaver/`                         | `main`                                     | `beaver-nest`                     |
+| 1     | `worktrees/sdlc-gate-registry-enforcement/`               | `sdlc-gate-registry-enforcement`           | `ose-public`                      |
+| 11    | `worktrees/sdlc-gate-registry-enforcement-defork/`        | `sdlc-gate-registry-enforcement-defork`    | `ose-public`                      |
+| 2     | `worktrees/sdlc-gate-registry-enforcement-rewire-public/` | `sdlc-gate-registry-enforcement-rewire`    | `ose-public`                      |
+| 3     | `worktrees/sdlc-gate-registry-enforcement/`               | `sdlc-gate-registry-enforcement`           | `ose-primer`                      |
+| 4     | `worktrees/sdlc-gate-registry-enforcement/`               | `sdlc-gate-registry-enforcement`           | The private sibling               |
+| 5     | `worktrees/sdlc-gate-registry-enforcement/`               | `sdlc-gate-registry-enforcement`           | `beaver-nest`                     |
+| 6     | `worktrees/sdlc-gate-registry-enforcement-knowledge/`     | `sdlc-gate-registry-enforcement-knowledge` | `ose-public`                      |
 
 `ose-public` and `beaver-nest` repository roots are intentionally bare, so commands requiring a
 working tree cannot run there. Phase 0 uses the already-declared attached `ose-public` execution
@@ -101,7 +101,7 @@ Dependency edges:
 ### Scope Amendment (2026-08-07)
 
 **Decision**: the byte-identity enforcement boundary is narrowed from four repos to two —
-`ose-public` (canonical) and `ose-private` — for the remainder of this plan and going forward.
+`ose-public` (canonical) and the private sibling — for the remainder of this plan and going forward.
 
 - **`beaver-nest`** (Phase 5) is **cancelled**, not merely deferred. `beaver-nest` is slated for
   future deprecation and eventual merge into `ose-public`; continuing to build and maintain a
@@ -113,10 +113,10 @@ Dependency edges:
   propagation is not reverted. Going forward, `ose-primer` is **not** part of the continuously
   enforced byte-identity boundary; it is re-synced periodically/manually, best-effort, for cost
   reasons. Ad-hoc post-Phase-3 propagation follow-ups that targeted `ose-primer` are cancelled; the
-  same follow-ups' `ose-public`/`ose-private` legs still apply and still ship.
+  same follow-ups' `ose-public`/the private sibling legs still apply and still ship.
 - The Bounded Byte-Identity Propagation Transaction below, Phase 4 Gate's cross-phase language, the
   Phase 5 section, and Phase 6's verification/audit scope are all amended accordingly: the
-  transaction now closes on **two** merged refs (`ose-public`, `ose-private`), and Phase 6's
+  transaction now closes on **two** merged refs (`ose-public`, the private sibling), and Phase 6's
   checklist verifies those same two repos. Sections for `ose-primer`/`beaver-nest` that already
   executed are left intact as historical record; unexecuted items in their scope are marked
   cancelled with this rationale rather than silently deleted.
@@ -137,16 +137,16 @@ Phase 5 is cancelled (see Scope Amendment above) and Phase 3 already landed as a
 propagation, not an ongoing transaction member. See
 [README.md §Delivery Units](./README.md#delivery-units) for the canonical table.
 
-| Phase | Unit                                                                       | Repo          | Opens PR                    |
-| ----- | -------------------------------------------------------------------------- | ------------- | --------------------------- |
-| 0     | Baseline convergence                                                       | all four      | No (per the Phase-0 rule)   |
-| 1     | Gate engine — registry schema, `gate` commands, specs                      | `ose-public`  | yes                         |
-| 11    | De-fork canonical source + parity manifest                                 | `ose-public`  | yes                         |
-| 2     | Surface rewire + `main-ci.yml` deletion + doc amendments                   | `ose-public`  | yes                         |
-| 3     | Engine propagation + rewire — landed one-time; periodic sync going forward | `ose-primer`  | yes (already merged, PR #3) |
-| 4     | Engine propagation + rewire                                                | `ose-private` | yes                         |
-| 5     | ~~Join the byte-identity boundary + rewire~~ — **CANCELLED 2026-08-07**    | `beaver-nest` | No (cancelled before Land)  |
-| 6     | Knowledge capture (rescoped to `ose-public` + `ose-private`)               | `ose-public`  | yes                         |
+| Phase | Unit                                                                       | Repo                | Opens PR                    |
+| ----- | -------------------------------------------------------------------------- | ------------------- | --------------------------- |
+| 0     | Baseline convergence                                                       | all four            | No (per the Phase-0 rule)   |
+| 1     | Gate engine — registry schema, `gate` commands, specs                      | `ose-public`        | yes                         |
+| 11    | De-fork canonical source + parity manifest                                 | `ose-public`        | yes                         |
+| 2     | Surface rewire + `main-ci.yml` deletion + doc amendments                   | `ose-public`        | yes                         |
+| 3     | Engine propagation + rewire — landed one-time; periodic sync going forward | `ose-primer`        | yes (already merged, PR #3) |
+| 4     | Engine propagation + rewire                                                | The private sibling | yes                         |
+| 5     | ~~Join the byte-identity boundary + rewire~~ — **CANCELLED 2026-08-07**    | `beaver-nest`       | No (cancelled before Land)  |
+| 6     | Knowledge capture (rescoped to `ose-public` + the private sibling)         | `ose-public`        | yes                         |
 
 Phase 4 is the sole remaining node in the enforced transaction after Phase 2. Phase 3 already landed
 independently. Phase 5 is cancelled — see the Phase 5 section below.
@@ -157,7 +157,7 @@ Phase 1's first thematic commit amends `docs/reference/sdlc-gate-standard.md` wi
 the authorization and the first canonical byte change merge together; no unamended interval exists.
 
 **Amended 2026-08-07** (see Scope Amendment above): the transaction's enforced membership narrows
-from four repos to two — `ose-public` and `ose-private`. `ose-primer`'s Phase 3 baseline and landed
+from four repos to two — `ose-public` and the private sibling. `ose-primer`'s Phase 3 baseline and landed
 propagation remain historical record below; `ose-primer` is no longer a transaction member going
 forward and its ref is not part of the closure condition. `beaver-nest`'s Phase 0 baseline is
 likewise historical record only — Phase 5 is cancelled and `beaver-nest` was never a closed member.
@@ -165,7 +165,7 @@ likewise historical record only — Phase 5 is cancelled and `beaver-nest` was n
 - The Phase 0 ledger locked canonical baseline `ose-public` plus downstream baselines
   `ose-primer@0b67746b2befa4cb8cdbd1ab8f22ba20b6251f69` (historical; `ose-primer` left the
   transaction's enforced membership 2026-08-07),
-  `ose-private@346209fc4e9e63a913e6ef62b5823c6ebea271cb` (still enforced), and
+  `<private-sibling>@346209fc4e9e63a913e6ef62b5823c6ebea271cb` (still enforced), and
   `beaver-nest@cd2ec0e4de3375cfaa159847b5dc40f4790b1d53` (historical; Phase 5 cancelled, never
   joined).
 - The transaction opens only when Phase 1 merges the protocol plus canonical change. While open,
@@ -182,8 +182,8 @@ likewise historical record only — Phase 5 is cancelled and `beaver-nest` was n
   the transaction ledger, then continue the earliest incomplete node. Do not begin unrelated
   boundary work or claim restored identity while the transaction remains open.
 - The transaction closes only after manifests and bounded byte diffs are identical at **both**
-  merged `origin/main` refs (`ose-public`, `ose-private`). Phase 6 is blocked until closure. If the
-  `ose-private` integration cannot converge, revert the Phase 1–2 canonical transaction commits
+  merged `origin/main` refs (`ose-public`, the private sibling). Phase 6 is blocked until closure. If the
+  private sibling integration cannot converge, revert the Phase 1–2 canonical transaction commits
   rather than leave a permanent carve-out.
 
 - [ ] [AI] **P1-PROPAGATION-PROTOCOL-RED** (`blocks: P1-PROPAGATION-PROTOCOL-GREEN`) — add a failing
@@ -323,7 +323,7 @@ Markdown, or baseline command. A failure blocks push, review, merge readiness, a
   - Notes: `npx nx run-many --all -t test:quick` exited 0 for the public execution worktree.
 
 - [x] [AI] Confirm every working checkout is clean and level with origin: use the declared attached
-      `ose-public` worktree, the `ose-primer` and `ose-private` primary checkouts, plus the
+      `ose-public` worktree, the `ose-primer` and the private sibling primary checkouts, plus the
       `beaver-nest` baseline worktree. In the public worktree,
       `git status --porcelain -- . ':(exclude)plans/in-progress/sdlc-gate-registry-enforcement/delivery.md'`
       produces no output and `git merge-base --is-ancestor origin/main HEAD` succeeds; this permits
@@ -357,7 +357,7 @@ HEAD...origin/main` reports `0 0` — acceptance: every checkout is clean outsid
   - Files Changed: none (GitHub configuration observation only)
   - Notes: GitHub returned `Branch not protected` (HTTP 404), unchanged from the recorded readiness baseline.
 
-- [x] [AI] Record private branch protection — command: `gh api repos/wahidyankf/ose-private/branches/main/protection --jq '.required_status_checks.contexts'` — acceptance: context list or explicit API result is recorded.
+- [x] [AI] Record private branch protection — command: `gh api repos/wahidyankf/<private-sibling>/branches/main/protection --jq '.required_status_checks.contexts'` — acceptance: context list or explicit API result is recorded.
   - Date: 2026-08-04
   - Status: complete
   - Files Changed: none (GitHub configuration observation only)
@@ -370,7 +370,7 @@ HEAD...origin/main` reports `0 0` — acceptance: every checkout is clean outsid
   - Notes: GitHub returned `Branch not protected` (HTTP 404), unchanged from the recorded readiness baseline.
 
 `[Repo-grounded]` The 2026-08-04 refresh returned `["Quality gate"]` for `ose-public`, 404 for
-`ose-primer` and `beaver-nest`, and 403 for `ose-private`. Phase 6 verifies the configured state is
+`ose-primer` and `beaver-nest`, and 403 for the private sibling. Phase 6 verifies the configured state is
 unchanged; no repository-settings change is expected.
 
 - [x] [AI] Record the byte-identity baseline across all four repos — acceptance: `diff -rq` output
@@ -2160,7 +2160,7 @@ Direction matters: these flow **up** into canonical before any repo copies canon
 - [x] [AI] Adopt `zai-coding-plan/wrong` in `sync_validator.rs`'s
   - Execution note: Updated the model-mismatch fixture to the canonical value and retained the mismatched-model failure regression.
     `validate_agent_equivalence_fails_on_model_mismatch` fixture, matching `ose-primer` and
-    `ose-private` — acceptance:
+    the private sibling — acceptance:
     `diff <(git show HEAD:apps/rhino-cli/src/application/agents/sync_validator.rs) apps/rhino-cli/src/application/agents/sync_validator.rs`
     shows exactly one changed line, and the model-mismatch test still **fails** on a mismatched
     model (verify by temporarily supplying a matching model and observing the test fail to fire).
@@ -2455,7 +2455,7 @@ mandatory before the byte-identity invariant is restored.
       — acceptance: both exit 0 and no non-formatter mutation is emitted.
   - Date: 2026-08-05
   - Status: complete
-  - Files Changed: `apps/rhino-cli/src/application/repo_config/mod.rs`, `apps/rhino-cli/src/commands/repo_config_validate.rs`, `apps/rhino-cli/src/commands/gate/emit.rs`, `repo-config.yml`, `plans/in-progress/sdlc-gate-registry-enforcement/repo-configs/repo-config-beaver-nest.yml`, `plans/in-progress/sdlc-gate-registry-enforcement/repo-configs/repo-config-ose-primer.yml`, `plans/in-progress/sdlc-gate-registry-enforcement/repo-configs/repo-config-ose-private.yml`, `plans/in-progress/sdlc-gate-registry-enforcement/repo-configs/repo-config-ose-public.yml`, `plans/in-progress/sdlc-gate-registry-enforcement/tech-docs.md`, `apps/rhino-cli/tests/gate_specs.rs`, `specs/apps/rhino/behavior/rhino-cli/gherkin/gate/gate-emission.feature`, `plans/in-progress/sdlc-gate-registry-enforcement/delivery.md`
+  - Files Changed: `apps/rhino-cli/src/application/repo_config/mod.rs`, `apps/rhino-cli/src/commands/repo_config_validate.rs`, `apps/rhino-cli/src/commands/gate/emit.rs`, `repo-config.yml`, `plans/in-progress/sdlc-gate-registry-enforcement/repo-configs/repo-config-beaver-nest.yml`, `plans/in-progress/sdlc-gate-registry-enforcement/repo-configs/repo-config-ose-primer.yml`, `plans/in-progress/sdlc-gate-registry-enforcement/repo-configs/repo-config-private-sibling.yml`, `plans/in-progress/sdlc-gate-registry-enforcement/repo-configs/repo-config-ose-public.yml`, `plans/in-progress/sdlc-gate-registry-enforcement/tech-docs.md`, `apps/rhino-cli/tests/gate_specs.rs`, `specs/apps/rhino/behavior/rhino-cli/gherkin/gate/gate-emission.feature`, `plans/in-progress/sdlc-gate-registry-enforcement/delivery.md`
   - Execution note: `lint-staged-shell` is strict-deserialized, restricted to pre-commit affected-file-type scopes, nonblank, and permits no more than one `{{command}}`. The emitter renders a generic Cargo-prefixed Rhino command or an external file-loop wrapper, while non-formatter mutations remain outside the batch. The target configs now use their documented prettier `globs:` lists. Focused emitter and schema suites, `cargo fmt --check`, `repo-config validate`, and the new bound Gherkin scenario all exit 0.
 
 - [x] [AI] **P2-EMIT-CONTRACT-REFACTOR** (`blockedBy: P2-EMIT-CONTRACT-GREEN`;
@@ -4444,12 +4444,12 @@ remains the separately authorized integration action after its preceding Land ta
 
 ---
 
-## Phase 4 — `ose-private` (PR #4)
+## Phase 4 — the private sibling (PR #4)
 
 Blocked by Phase 2; independent of Phases 3 and 5. Converges the legacy tri-repo subset, while
 all-four closure still depends on Phase 5.
 
-- [x] [AI] Create the declared `ose-private` worktree — commands:
+- [x] [AI] Create the declared private-sibling worktree — commands:
       `git -C ~/ose-projects/<sibling> fetch origin main` and
       `git -C ~/ose-projects/<sibling> worktree add -b sdlc-gate-registry-enforcement worktrees/sdlc-gate-registry-enforcement origin/main`
       — acceptance: the worktree is clean and `HEAD...origin/main` reports `0 0`.
@@ -4477,9 +4477,9 @@ all-four closure still depends on Phase 5.
       `parity-manifest.sha256`), and `... -- parity manifest validate` exits 0 without regenerating.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/apps/rhino-cli/**`
+  - Files Changed: `private-sibling/apps/rhino-cli/**`
   - Execution note: Destination was clean before the authorized `rsync --delete`; complete `apps/rhino-cli` diff is byte-identical to merged canonical and destination `parity manifest validate` passes without regeneration. No non-boundary file was changed.
-- [x] [AI] **P4-REGISTRY-AUTHORING** — audit and approve `ose-private`'s prepared `gates:` schema body before installation. It carries entries the others do not — the
+- [x] [AI] **P4-REGISTRY-AUTHORING** — audit and approve the private sibling's prepared `gates:` schema body before installation. It carries entries the others do not — the
       `iac-lint` pair (`./scripts/lint-terraform.sh`, `yamllint`) at pre-commit, pre-push, and CI —
       acceptance: the artifact preserves private config, declares the private-only pair, and the pre-install Terraform selector inverse is false. Positive `repo-config validate` and `gate validate` occur after installation in `P4-CONFIG-COPY`, because both commands only load the installed worktree config.
   - Date: 2026-08-06
@@ -4518,35 +4518,35 @@ infra/on-premise/terraform/`) through a hand-written hook block rather than `lin
       — acceptance: `cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- repo-config validate` exits 0, proving the installed private-specific registry has a valid schema. The documented Nx target does not exist, and full `gate validate` is intentionally deferred to `P4-READY` after the dependent package and hook migration nodes have installed every gate surface.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/repo-config.yml`
+  - Files Changed: `private-sibling/repo-config.yml`
   - Execution note: Installed only the prepared schema body (412 additions, 3 deletions) and direct `repo-config validate` passes. Discovery corrected the stale nonexistent Nx target and early full-gate expectation; `gate validate` correctly waits on the subsequent hook surfaces.
 - [x] [AI] **P4-PACKAGE-COPY** (`blockedBy: P4-CONFIG-COPY`; `blocks: P4-HOOK-COMMIT-MSG`) —
       command: `cp ~/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-rewire-public/plans/in-progress/sdlc-gate-registry-enforcement/package-json/package-<sibling>.json ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/package.json`
       — acceptance: `jq empty ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/package.json` exits 0.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/package.json`
-  - Execution note: Replaced the private package manifest from the corrected `package-ose-private.json` artifact; `jq empty` exits 0 and no unrelated path was modified, staged, or committed.
+  - Files Changed: `private-sibling/package.json`
+  - Execution note: Replaced the private package manifest from the corrected `package-private-sibling.json` artifact; `jq empty` exits 0 and no unrelated path was modified, staged, or committed.
 - [x] [AI] **P4-HOOK-COMMIT-MSG** (`blockedBy: P4-PACKAGE-COPY`; `blocks: P4-HOOK-PRE-COMMIT`) —
       command: `cp ~/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-rewire-public/plans/in-progress/sdlc-gate-registry-enforcement/husky-hooks/commit-msg-<sibling>.sh ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/.husky/commit-msg`
       — acceptance: `sh -n ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/.husky/commit-msg` exits 0.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/.husky/commit-msg`
+  - Files Changed: `private-sibling/.husky/commit-msg`
   - Execution note: Installed the prepared private commit-message hook (9 additions, 1 deletion); syntax validation passes and the executable bit is retained. No unrelated path was staged or changed.
 - [x] [AI] **P4-HOOK-PRE-COMMIT** (`blockedBy: P4-HOOK-COMMIT-MSG`; `blocks: P4-HOOK-PRE-PUSH`) —
       command: `cp ~/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-rewire-public/plans/in-progress/sdlc-gate-registry-enforcement/husky-hooks/pre-commit-<sibling>.sh ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/.husky/pre-commit`
       — acceptance: `sh -n ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/.husky/pre-commit` exits 0.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/.husky/pre-commit`
+  - Files Changed: `private-sibling/.husky/pre-commit`
   - Execution note: Installed the prepared pre-commit hook (10 additions, 45 deletions); `sh -n` and executable-bit verification both pass. No unrelated path was staged or changed.
 - [x] [AI] **P4-HOOK-PRE-PUSH** (`blockedBy: P4-HOOK-PRE-COMMIT`; `blocks: P4-PR-WORKFLOW`) —
       command: `cp ~/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-rewire-public/plans/in-progress/sdlc-gate-registry-enforcement/husky-hooks/pre-push-<sibling>.sh ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/.husky/pre-push`
       — acceptance: `sh -n ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/.husky/pre-push` exits 0.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/.husky/pre-push`
+  - Files Changed: `private-sibling/.husky/pre-push`
   - Execution note: Installed the prepared pre-push hook (10 additions, 72 deletions); `sh -n` and executable-bit verification both pass. No unrelated path was staged or changed.
 - [x] [AI] **P4-PR-WORKFLOW** (`blockedBy: P4-HOOK-PRE-PUSH`; `blocks: P4-DEPS-COPY`) — replace
       the hand-written gate list in the exact destination
@@ -4555,21 +4555,21 @@ infra/on-premise/terraform/`) through a hand-written hook block rather than `lin
       join job — acceptance: `actionlint ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/.github/workflows/pr-quality-gate.yml` exits 0.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/.github/workflows/pr-quality-gate.yml`
+  - Files Changed: `private-sibling/.github/workflows/pr-quality-gate.yml`
   - Execution note: Replaced hand-written tool jobs with registry enumeration and a gate matrix while preserving self-hosted runners, private toolchain setup, required direct Nx jobs, and the `Quality gate` join. Both `actionlint` and `git diff --check` pass; only this workflow changed.
 - [x] [AI] **P4-DEPS-COPY** (`blockedBy: P4-PR-WORKFLOW`; `blocks: P4-DEPS-DELETE`) — command:
       `cp ~/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-rewire-public/.github/workflows/dependency-vulnerability-audit.yml ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/.github/workflows/dependency-vulnerability-audit.yml`
       — acceptance: `actionlint ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/.github/workflows/dependency-vulnerability-audit.yml` exits 0.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/.github/workflows/dependency-vulnerability-audit.yml`
+  - Files Changed: `private-sibling/.github/workflows/dependency-vulnerability-audit.yml`
   - Execution note: Added only the canonical 23-line scheduled/manual dependency-audit workflow through a patch. `actionlint` and scoped diff checks pass; no unrelated file was touched or staged.
 - [x] [AI] **P4-DEPS-DELETE** (`blockedBy: P4-DEPS-COPY`; `blocks: P4-PARITY-WORKFLOW`) — command:
       `git -C ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement rm .github/workflows/deps-audit.yml`
       — acceptance: `test ! -f ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/.github/workflows/deps-audit.yml` exits 0.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/.github/workflows/deps-audit.yml` (staged deletion)
+  - Files Changed: `private-sibling/.github/workflows/deps-audit.yml` (staged deletion)
   - Execution note: Removed the obsolete 22-line workflow through the specified `git rm`; target absence check passes and it is the only path added to the index by this operation.
 - [x] [AI] **P2-PARITY-AUDIT-WORKTREE** (`blocks: P2-PARITY-AUDIT-AUTHOR`) — provision a clean public correction worktree from `origin/main` for the omitted canonical `.github/workflows/rhino-cli-parity-audit.yml` delivery — acceptance: the branch is based on current `origin/main`, has no foreign changes, and is isolated from the already-merged Phase 2 branch.
   - Date: 2026-08-06
@@ -4822,21 +4822,21 @@ infra/on-premise/terraform/`) through a hand-written hook block rather than `lin
       — acceptance: `actionlint ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/.github/workflows/rhino-cli-parity-audit.yml` exits 0.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/.github/workflows/rhino-cli-parity-audit.yml`
+  - Files Changed: `private-sibling/.github/workflows/rhino-cli-parity-audit.yml`
   - Execution note: Patched the merged canonical audit workflow (including credential persistence hardening) into private. Exact source comparison, `actionlint`, and scoped diff checks pass; no unrelated path changed or staged.
 - [x] [AI] **P4-MAIN-CI-DELETE** (`blockedBy: P4-PARITY-WORKFLOW`; `blocks: P4-DOCS`) — command:
       `git -C ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement rm .github/workflows/main-ci.yml`
       — acceptance: `test ! -f ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/.github/workflows/main-ci.yml` exits 0.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/.github/workflows/main-ci.yml` (staged deletion)
+  - Files Changed: `private-sibling/.github/workflows/main-ci.yml` (staged deletion)
   - Execution note: Removed the obsolete 252-line workflow through `git rm`; target absence passes and the deletion is the only new index path from this operation.
 - [x] [AI] Create `repo-governance/development/workflow/git-hook-lifecycle.md`, which this repo lacks
       entirely — acceptance: the canonical lifecycle document exists. Its required README indexing and
       validation are isolated in `P4-DOCS-INDEX`.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/repo-governance/development/workflow/git-hook-lifecycle.md`
+  - Files Changed: `private-sibling/repo-governance/development/workflow/git-hook-lifecycle.md`
   - Execution note: Added only the canonical lifecycle document via patch. The required index validator correctly identified its missing README link; root cause and final validation are isolated in the new dependent P4-DOCS-INDEX node.
 - [x] [AI] **P4-DOCS-INDEX** (`blockedBy: Create git-hook-lifecycle`; `blocks: P4-READY`) — index the
       new private lifecycle document in `repo-governance/development/workflow/README.md` — acceptance:
@@ -4844,14 +4844,14 @@ infra/on-premise/terraform/`) through a hand-written hook block rather than `lin
       exits 0 (the new file must be indexed).
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/repo-governance/development/workflow/README.md`
+  - Files Changed: `private-sibling/repo-governance/development/workflow/README.md`
   - Execution note: Added the lifecycle entry beside the existing workflow conventions (one insertion). The README index validator passes with no orphan or ghost reference; scoped diff check passes.
 - [x] [AI] **P4-PROPAGATION** — Copy the finalized amended SDLC standard — command:
       `cp ~/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-rewire-public/docs/reference/sdlc-gate-standard.md ~/ose-projects/<sibling>/worktrees/sdlc-gate-registry-enforcement/docs/reference/sdlc-gate-standard.md`
       — acceptance: `npm run lint:md` exits 0 from the private worktree.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/docs/reference/sdlc-gate-standard.md`
+  - Files Changed: `private-sibling/docs/reference/sdlc-gate-standard.md`
   - Execution note: Patched only the merged canonical standard into private (`cmp` exits 0). Markdown lint passes across 780 files with zero errors, and scoped diff checks pass.
 
 ### Phase 4 Execution-Ready Gate
@@ -4868,20 +4868,20 @@ infra/on-premise/terraform/`) through a hand-written hook block rather than `lin
 Every non-merge Land checkbox below is `blockedBy: P4-READY`; the untagged protected merge checkbox
 remains the separately authorized integration action after its preceding Land tasks.
 
-- [x] [AI] Commit Phase 4 — command: `git add -- apps/rhino-cli .husky .github package.json repo-config.yml docs repo-governance && git commit -m 'feat(ci): propagate registry gates to ose-private'` — acceptance: commitlint and sync validation exit 0.
+- [x] [AI] Commit Phase 4 — command: `git add -- apps/rhino-cli .husky .github package.json repo-config.yml docs repo-governance && git commit -m 'feat(ci): propagate registry gates to <private-sibling>'` — acceptance: commitlint and sync validation exit 0.
   - Date: 2026-08-06
   - Status: complete
   - Files Changed: Phase 4 ledger scope (69 files)
-  - Execution note: Committed `244785573 feat(ci): propagate registry gates to ose-private` with only ledger-owned declared-scope paths. Initial strict YAML lint exposed document-start, line-wrap, and intentional flow-style configuration issues; corrected all within owned workflow/config paths, then verified yamllint, actionlint, repo-config validation, cached diff checks, and hooks. Worktree is clean.
+  - Execution note: Committed `244785573 feat(ci): propagate registry gates to <private-sibling>` with only ledger-owned declared-scope paths. Initial strict YAML lint exposed document-start, line-wrap, and intentional flow-style configuration issues; corrected all within owned workflow/config paths, then verified yamllint, actionlint, repo-config validation, cached diff checks, and hooks. Worktree is clean.
 - [x] [AI] **P4-IAC-YAMLLINT-REPAIR** (`blocks: P4-IAC-YAMLLINT-VERIFY`) — correct the private `iac-yamllint` registry command so it passes the repository's intended Ansible and workflow paths to `yamllint` rather than invoking a no-argument executable — acceptance: the gate's direct pre-push invocation exits 0.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/repo-config.yml`
+  - Files Changed: `private-sibling/repo-config.yml`
   - Execution note: Repaired `iac-yamllint` to lint `infra/on-premise/ansible/ .github/`, matching former hook/workflow scope. Its exact direct pre-push gate now exits 0; only existing non-fatal style warnings remain.
 - [x] [AI] **P4-GATE-EMIT-RECONCILE** (`blockedBy: P4-IAC-YAMLLINT-REPAIR`; `blocks: P4-IAC-YAMLLINT-VERIFY`) — regenerate private's marker-owned lint-staged block from the repaired registry — command: `gate emit --surface=pre-commit` — acceptance: only the generated `package.json` block changes and `gate validate` no longer reports package drift.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/repo-config.yml`, `ose-private/package.json`
+  - Files Changed: `private-sibling/repo-config.yml`, `private-sibling/package.json`
   - Execution note: Emitted the marker-owned pre-commit lint-staged block from the repaired registry; `gate validate` now passes. Scoped diff and diff-check show only the intended two matching YAML-lint command updates.
 - [x] [AI] **P4-IAC-YAMLLINT-VERIFY** (`blockedBy: P4-GATE-EMIT-RECONCILE`; `blocks: P4-IAC-YAMLLINT-COMMIT`) — validate the repaired registry and run the precise `iac-yamllint` pre-push gate — acceptance: `repo-config validate`, `gate validate`, and `gate run --surface=pre-push --only=iac-yamllint` each exit 0.
   - Date: 2026-08-06
@@ -4891,7 +4891,7 @@ remains the separately authorized integration action after its preceding Land ta
 - [x] [AI] **P4-IAC-YAMLLINT-COMMIT** (`blockedBy: P4-IAC-YAMLLINT-VERIFY`; `blocks: P4-PUSH`) — commit the narrow executable-registry repair — acceptance: the commit contains only its owned configuration repair and hooks pass.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/repo-config.yml`, `ose-private/package.json`
+  - Files Changed: `private-sibling/repo-config.yml`, `private-sibling/package.json`
   - Execution note: Committed `4d2afec42 fix(ci): run private YAML lint on configured paths`. Cached scope was exactly the two one-line matching registry/generated-block repairs, cached diff check and hooks pass, and the worktree is clean.
 - [x] [AI] **P4-REBASE** (`blockedBy: P4-IAC-YAMLLINT-COMMIT`; `blocks: P4-PUSH`) — rebase the clean private delivery branch on current `origin/main` before retrying transport — acceptance: rebase completes without discarding any ledger-owned commit and `origin/main` is an ancestor of HEAD.
   - Date: 2026-08-06
@@ -4901,22 +4901,22 @@ remains the separately authorized integration action after its preceding Land ta
 - [x] [AI] **P4-RHINO-GHERKIN-RESYNC** (`blocks: P4-REVALIDATE`) — resync private's full canonical Rhino Gherkin tree and generated parity manifest, replacing the incomplete prior copy exposed by `specs:behavior:coverage` — acceptance: no canonical `gherkin/gate/` or `gherkin/system/fsharp-tool-invocation.feature` path is missing; the deliberate manifest update is validated only after its separately blocked F# test repropagation.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/specs/apps/rhino/behavior/rhino-cli/gherkin/**`, `ose-private/apps/rhino-cli/parity-manifest.sha256`
+  - Files Changed: `private-sibling/specs/apps/rhino/behavior/rhino-cli/gherkin/**`, `private-sibling/apps/rhino-cli/parity-manifest.sha256`
   - Execution note: Staged exactly the full boundary Gherkin tree and manifest (17 paths). Recursive comparison reports no canonical missing, extra, or different Gherkin path. Manifest validation correctly remains deferred: it now identifies only the separately blocked, not-yet-repropagated F# target-discovery test.
 - [x] [AI] **P4-RHINO-FSHARP-REPROPAGATE** (`blockedBy: P2-FSHARP-TOPOLOGY-MERGE`; `blocks: P4-FINAL-FSHARP-COMMIT`) — apply the final merged public `origin/main` topology-neutral F# lint-target discovery test, aligned Gherkin feature, and parity manifest to private — acceptance: all three files byte-match public `origin/main`, manifest validation exits 0, and the focused invocation test passes in private's valid zero-target topology.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/apps/rhino-cli/tests/fsharp_tool_invocation.rs`, `ose-private/specs/apps/rhino/behavior/rhino-cli/gherkin/system/fsharp-tool-invocation.feature`, `ose-private/apps/rhino-cli/parity-manifest.sha256`
+  - Files Changed: `private-sibling/apps/rhino-cli/tests/fsharp_tool_invocation.rs`, `private-sibling/specs/apps/rhino/behavior/rhino-cli/gherkin/system/fsharp-tool-invocation.feature`, `private-sibling/apps/rhino-cli/parity-manifest.sha256`
   - Execution note: Replaced the earlier source with exactly public `origin/main` at merged PR #142 (`32ed1caba`). All three SHA-256 values match public; private manifest validation, focused zero-target Cucumber execution (six steps), and cached diff checks pass.
 - [x] [AI] **P4-GOFMT-WRAPPER-PROPAGATE** (`blocks: P4-REVALIDATE`) — install canonical `scripts/verify-gofmt.sh` required by the already propagated gate execution scenario — acceptance: destination byte-matches canonical `origin/main`, retains executable mode, and `cargo test --manifest-path apps/rhino-cli/Cargo.toml --test gate_specs` passes its gofmt-wrapper scenario.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/scripts/verify-gofmt.sh`
+  - Files Changed: `private-sibling/scripts/verify-gofmt.sh`
   - Execution note: Staged the only missing canonical wrapper as executable mode `100755`; its staged blob byte-matches public `origin/main`. Private gate specs pass all 59 scenarios and 215 steps, including gofmt verification.
 - [x] [AI] **P4-REPAIR-COMMIT** (`blockedBy: P4-RHINO-GHERKIN-RESYNC, P4-RHINO-FSHARP-REPROPAGATE`; `blocks: P4-REVALIDATE`) — commit the narrowly scoped private Rhino-spec and target-discovery corrections — acceptance: cached scope contains only those repaired app/spec/manifest paths and hooks pass.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/apps/rhino-cli/tests/fsharp_tool_invocation.rs`, `ose-private/apps/rhino-cli/parity-manifest.sha256`, `ose-private/specs/apps/rhino/behavior/rhino-cli/gherkin/**`
+  - Files Changed: `private-sibling/apps/rhino-cli/tests/fsharp_tool_invocation.rs`, `private-sibling/apps/rhino-cli/parity-manifest.sha256`, `private-sibling/specs/apps/rhino/behavior/rhino-cli/gherkin/**`
   - Execution note: Committed `766e8162199f832e56004d4dcec35e425978852f fix(rhino-cli): align F# tool invocation parity`. Cached scope was exactly 18 declared Rhino test/manifest/Gherkin resync paths; all pre-commit and commit-message gates pass and the worktree is clean.
 - [x] [AI] **P4-REBASE-FINAL** (`blockedBy: P4-REPAIR-COMMIT`; `blocks: P4-REVALIDATE`) — fetch current `origin/main` and safely rebase the clean private delivery branch after its final correction commit — acceptance: the current canonical correction is incorporated without dropped ledger-owned commits and `origin/main` is an ancestor of HEAD.
   - Date: 2026-08-06
@@ -4926,12 +4926,12 @@ remains the separately authorized integration action after its preceding Land ta
 - [x] [AI] **P4-FINAL-FSHARP-COMMIT** (`blockedBy: P4-RHINO-FSHARP-REPROPAGATE`; `blocks: P4-REBASE-POST-FSHARP`) — commit the correctly sourced final public F# test/feature/manifest correction — acceptance: cached scope is exactly those three owned paths and hooks pass.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/apps/rhino-cli/tests/fsharp_tool_invocation.rs`, `ose-private/specs/apps/rhino/behavior/rhino-cli/gherkin/system/fsharp-tool-invocation.feature`, `ose-private/apps/rhino-cli/parity-manifest.sha256`
+  - Files Changed: `private-sibling/apps/rhino-cli/tests/fsharp_tool_invocation.rs`, `private-sibling/specs/apps/rhino/behavior/rhino-cli/gherkin/system/fsharp-tool-invocation.feature`, `private-sibling/apps/rhino-cli/parity-manifest.sha256`
   - Execution note: Committed `f1beab5db fix(rhino-cli): propagate final F# lint audit` using `git commit --only`; the commit contains exactly the three correctly sourced public canonical paths. Hooks and commitlint pass; the separately staged wrapper remains outside this commit.
 - [x] [AI] **P4-GOFMT-WRAPPER-COMMIT** (`blockedBy: P4-GOFMT-WRAPPER-PROPAGATE`; `blocks: P4-REBASE-POST-FSHARP`) — commit the independently propagated executable gofmt wrapper — acceptance: cached scope is exactly `scripts/verify-gofmt.sh`, its executable mode is retained, and hooks pass.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/scripts/verify-gofmt.sh`
+  - Files Changed: `private-sibling/scripts/verify-gofmt.sh`
   - Execution note: Committed `f5702762b fix(ci): add private gofmt verifier` with exactly the executable canonical wrapper. Shell formatting/lint, harness generation, and commitlint hooks pass; worktree is clean.
 - [x] [AI] **P4-REBASE-POST-FSHARP** (`blockedBy: P4-FINAL-FSHARP-COMMIT, P4-GOFMT-WRAPPER-COMMIT`; `blocks: P4-REVALIDATE`) — fetch current `origin/main` and safely rebase private's final F# correction commit — acceptance: public canonical source remains byte-identical, no ledger-owned commit is dropped, and `origin/main` is an ancestor of HEAD.
   - Date: 2026-08-06
@@ -4951,7 +4951,7 @@ remains the separately authorized integration action after its preceding Land ta
 - [x] [AI] **P4-MDLINK-GREEN** (`blockedBy: P4-MDLINK-ROOT-CAUSE`; `blocks: P4-MDLINK-VERIFY`) — add the missing `### Worktree-Agnostic Execution` section to Private's SDLC Gate Standard, preserving the existing worktree-agnostic guardrail meaning so the parity-planning workflow reference is valid — acceptance: the documented link resolves and the added section accurately directs readers to the applicable topology safeguards.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/docs/reference/sdlc-gate-standard.md`
+  - Files Changed: `private-sibling/docs/reference/sdlc-gate-standard.md`
   - Execution note: Added the missing exact heading with concise guardrails linked to the authoritative worktree landing, bare-repo landing, and toolchain setup workflows. The existing parity-planning fragment now resolves; `git diff --check` passes and no unrelated file changed.
 - [x] [AI] **P4-MDLINK-VERIFY** (`blockedBy: P4-MDLINK-GREEN`; `blocks: P4-MDLINK-COMMIT`) — run `cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- md links validate` and `git diff --check` in Private — acceptance: both exit 0 with the sole source change limited to `docs/reference/sdlc-gate-standard.md`.
   - Date: 2026-08-06
@@ -4961,7 +4961,7 @@ remains the separately authorized integration action after its preceding Land ta
 - [x] [AI] **P4-MDLINK-COMMIT** (`blockedBy: P4-MDLINK-VERIFY`; `blocks: P4-MDLINK-REBASE`) — commit the narrow Private markdown-anchor repair — acceptance: the commit contains only `docs/reference/sdlc-gate-standard.md` and repository hooks pass.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/docs/reference/sdlc-gate-standard.md`
+  - Files Changed: `private-sibling/docs/reference/sdlc-gate-standard.md`
   - Execution note: Committed `c3a635929 docs(governance): restore worktree anchor`; its committed diff is exactly the standard document. Repository hooks and commitlint pass and the Private delivery worktree is clean.
 - [x] [AI] **P4-MDLINK-REBASE** (`blockedBy: P4-MDLINK-COMMIT`; `blocks: P4-MDLINK-REVALIDATE`) — fetch current Private `origin/main` and safely rebase the clean delivery branch, retaining every ledger-owned Phase 4 commit — acceptance: `origin/main` is an ancestor of HEAD and the anchor repair remains present.
   - Date: 2026-08-06
@@ -4986,7 +4986,7 @@ remains the separately authorized integration action after its preceding Land ta
 - [x] [AI] **P4-CI-DOTNET-GREEN** (`blockedBy: P4-CI-DOTNET-ROOT-CAUSE`; `blocks: P4-CI-DOTNET-VERIFY`) — provision the repository-owned .NET composite action before each private PR-quality-gate doctor invocation — acceptance: `format` and dynamic `gate` jobs install the declared SDK through `.github/actions/setup-dotnet`, so doctor no longer falls back to Snap provisioning.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/.github/workflows/pr-quality-gate.yml`
+  - Files Changed: `private-sibling/.github/workflows/pr-quality-gate.yml`
   - Execution note: Added the existing repository-owned `setup-dotnet` composite action directly before both doctor provisioning steps: PR formatter and dynamic registry-gate jobs. The action supplies the declared SDK through `actions/setup-dotnet@v5`, preventing doctor’s invalid Snap fallback without altering gate definitions.
 - [x] [AI] **P4-CI-DOTNET-VERIFY** (`blockedBy: P4-CI-DOTNET-GREEN`; `blocks: P4-CI-DOTNET-COMMIT`) — run YAML/action validation and inspect the precise workflow diff — acceptance: `actionlint .github/workflows/pr-quality-gate.yml` and `git diff --check` exit 0, with changes limited to the two prerequisite declarations.
   - Date: 2026-08-06
@@ -4996,7 +4996,7 @@ remains the separately authorized integration action after its preceding Land ta
 - [x] [AI] **P4-CI-DOTNET-COMMIT** (`blockedBy: P4-CI-DOTNET-VERIFY`; `blocks: P4-CI-DOTNET-REBASE`) — commit the narrow CI provisioning repair — acceptance: the commit contains only `.github/workflows/pr-quality-gate.yml` and protected hooks pass.
   - Date: 2026-08-06
   - Status: complete
-  - Files Changed: `ose-private/.github/workflows/pr-quality-gate.yml`
+  - Files Changed: `private-sibling/.github/workflows/pr-quality-gate.yml`
   - Execution note: Committed `886d0cf3e fix(ci): provision dotnet before registry gates` after the protected pre-commit registry chain completed. Its committed scope is exactly the two prerequisite declarations in the private PR-quality workflow; no hook was bypassed.
 - [x] [AI] **P4-CI-DOTNET-REBASE** (`blockedBy: P4-CI-DOTNET-COMMIT`; `blocks: P4-CI-DOTNET-PUSH`) — fetch and safely rebase the clean delivery branch onto current private `origin/main` — acceptance: all ledger-owned commits remain and `origin/main` is an ancestor of HEAD.
   - Date: 2026-08-06
@@ -5008,7 +5008,7 @@ remains the separately authorized integration action after its preceding Land ta
   - Date: 2026-08-06
   - Status: complete
   - Files Changed: `apps/rhino-cli/tests/fsharp_tool_invocation.rs` (new, 424 lines), `specs/apps/rhino/behavior/rhino-cli/gherkin/system/fsharp-tool-invocation.feature` (new, 10 lines), generated parity manifest
-  - Execution note: Landed under the `fix(rhino-cli): align F# tool invocation parity` commit inside PR #22's squash merge. Its own commit message records that `tools.rs` itself had no source delta to port — PR #143's two landing commits touched only tests/specs/manifest, confirmed via `git show --stat` at the time. `tools.rs` on ose-private `origin/main` is now byte-identical to ose-public's. Backfilled from `git show -s --format=%B 1addfb94a` — the checklist item was never checked even though the work landed.
+  - Execution note: Landed under the `fix(rhino-cli): align F# tool invocation parity` commit inside PR #22's squash merge. Its own commit message records that `tools.rs` itself had no source delta to port — PR #143's two landing commits touched only tests/specs/manifest, confirmed via `git show --stat` at the time. `tools.rs` on the private sibling `origin/main` is now byte-identical to ose-public's. Backfilled from `git show -s --format=%B 1addfb94a` — the checklist item was never checked even though the work landed.
 - [x] [AI] **P4-RHINO-FSHARP-CWD-COMMIT** (`blockedBy: P4-RHINO-FSHARP-CWD-REPROPAGATE`; `blocks: P4-RHINO-FSHARP-CWD-REBASE`) — commit only the final local-tool-CWD source parity correction — acceptance: the cached scope is exactly its three declared files and hooks pass.
   - Date: 2026-08-06
   - Status: complete
@@ -5028,7 +5028,7 @@ remains the separately authorized integration action after its preceding Land ta
   - Date: 2026-08-06
   - Status: complete
   - Files Changed: none (GitHub PR metadata)
-  - Execution note: Opened Private draft PR [#22](https://github.com/wahidyankf/ose-private/pull/22) at head `c3a635929`; GitHub confirms `isDraft: true` and no review cycle has started.
+  - Execution note: Opened Private draft PR #22 (private, not linked) at head `c3a635929`; GitHub confirms `isDraft: true` and no review cycle has started.
 - [x] [AI] **P4-CYCLE-1-MAKERS** (`blockedBy: P4-CI-DOTNET-PUSH, P4-RHINO-FSHARP-CWD-PUSH`; `blocks: P4-CYCLE-1-SYNTHESIS`) — invoke eight makers — acceptance: eight reports.
   - Status: complete — 8 specialists ran (types omitted by DD-10 oversight, noted by Cycle 2's scout).
 - [x] [AI] Cycle 1 synthesis — invoke synthesis maker — acceptance: one posted review.
@@ -5056,7 +5056,7 @@ remains the separately authorized integration action after its preceding Land ta
 - [x] [AI] Mark ready — command: `gh pr ready` — acceptance: draft false and five preconditions pass.
   - Status: complete.
 - [x] [AI] Merge.
-  - Status: complete — squash-merged as `1addfb94aa357d9a80913e0f842108e54620f658`. No branch protection on `ose-private` (403 "Upgrade to GitHub Pro"), so no admin override needed.
+  - Status: complete — squash-merged as `1addfb94aa357d9a80913e0f842108e54620f658`. No branch protection on the private sibling (403 "Upgrade to GitHub Pro"), so no admin override needed.
 - [x] [AI] Fast-forward local `main` after the merge — command:
       `git fetch origin main && git switch main && git merge --ff-only origin/main` — acceptance:
       `git rev-list --left-right --count HEAD...origin/main` reports `0 0`.
@@ -5066,28 +5066,28 @@ remains the separately authorized integration action after its preceding Land ta
 
 > All checks below must pass before starting Phase 6 (Phase 4 is blocked by Phase 2; Phase 3 already
 > landed independently and Phase 5 is cancelled — see the 2026-08-07 Scope Amendment). A green gate
-> here is what closes the enforced byte-identity window, since `ose-public` + `ose-private` are now
+> here is what closes the enforced byte-identity window, since `ose-public` + the private sibling are now
 > the entire enforced membership.
 
-- [x] [AI] `... -- gate validate` exits 0 in `ose-private`.
+- [x] [AI] `... -- gate validate` exits 0 in the private sibling.
   - Status: complete — exit 0 on landed head `1addfb94a`.
 - [x] [AI] `apps/rhino-cli` byte-identical across all three bound repos (`ose-public`, `ose-primer`,
-      `ose-private`) — acceptance: `diff -r` over the boundary set reports zero differences for every
+      the private sibling) — acceptance: `diff -r` over the boundary set reports zero differences for every
       pair.
   - Status: complete with known, tracked drift — 6 files differ (`doctor/tools.rs`, `parity.rs`,
     `gate/run.rs`, `gate/validate.rs`, `md_validate_frontmatter_dates.rs`,
     `repo_config_validate.rs`), all attributable to PR #22's own just-landed Cycle 2/3 fixes not yet
     propagated to canonical. Tracked by task #231 (new) alongside pre-existing #228-230. Not a silent
     gap — `doctor/tools.rs` additionally carries the pre-existing documented `BOUNDARY_PATHS`
-    structural tension (IaC-specific tooling legitimately unique to `ose-private`).
+    structural tension (IaC-specific tooling legitimately unique to the private sibling).
 - [x] [AI] Confirm the landed ref matches `origin/main` — command:
       `git rev-list --left-right --count HEAD...origin/main` — acceptance: reports `0 0`.
   - Status: complete — reports `0 0`.
 
-> **Pause Safety**: `ose-private`'s hooks and CI derive from the registry; `ose-public` +
-> `ose-private` (the entire enforced membership after the 2026-08-07 amendment) match, modulo the
+> **Pause Safety**: the private sibling's hooks and CI derive from the registry; `ose-public` +
+> the private sibling (the entire enforced membership after the 2026-08-07 amendment) match, modulo the
 > tracked drift above; the merge is on `main`. Safe to stop. To resume: `... -- gate validate` to
-> confirm the merged state still passes, land tasks #230/#231's `ose-public`/`ose-private` legs to
+> confirm the merged state still passes, land tasks #230/#231's `ose-public`/the private sibling legs to
 > close the tracked drift, then start Phase 6 (Phase 3 already merged independently; Phase 5 is
 > cancelled).
 
@@ -5097,7 +5097,7 @@ remains the separately authorized integration action after its preceding Land ta
 
 > **CANCELLED.** See [Scope Amendment (2026-08-07)](#scope-amendment-2026-08-07). `beaver-nest` is
 > slated for future deprecation and merge into `ose-public`; the enforced byte-identity boundary
-> stops at `ose-public` + `ose-private`. The checklist below through **P5-AMAZONQ-REBASE** already
+> stops at `ose-public` + the private sibling. The checklist below through **P5-AMAZONQ-REBASE** already
 > executed and is retained as historical record — real local commits exist in the attached
 > `beaver-nest` worktree (`ce9aeb58a` then `ed4543aa`) but were **never pushed**. Every remaining
 > item, from **P5-AMAZONQ-FINAL-REVALIDATE** through the Phase 5 Gate, is cancelled and will not
@@ -5455,7 +5455,7 @@ cancelled — see the 2026-08-07 Scope Amendment).
 - [ ] [AI] Initialize its toolchain — command:
       `(cd worktrees/sdlc-gate-registry-enforcement-knowledge && npm run doctor -- --fix)` —
       acceptance: exits 0 and a subsequent doctor check reports no missing tool.
-- [ ] [AI] Attach a detached final-verification worktree to `ose-private`'s converged `origin/main`
+- [ ] [AI] Attach a detached final-verification worktree to the private sibling's converged `origin/main`
       (the sole remaining enforced downstream repo — see the 2026-08-07 Scope Amendment; a
       `beaver-nest` verification worktree is no longer created because Phase 5 is cancelled) —
       commands: `git -C ~/ose-projects/<sibling> fetch origin main` and
@@ -5469,7 +5469,7 @@ cancelled — see the 2026-08-07 Scope Amendment).
 ### 6.1 Verification
 
 > **Amended 2026-08-07**: every step below is rescoped from four repos to the two enforced by the
-> narrowed byte-identity boundary — `ose-public` and `ose-private`. `ose-primer` and `beaver-nest`
+> narrowed byte-identity boundary — `ose-public` and the private sibling. `ose-primer` and `beaver-nest`
 > are dropped from every loop, dispatch, and endpoint check; see the Scope Amendment.
 
 - [x] [AI] **P6-END-STATE** (`blocks: P6-COMPOSITION-SETUP`) — validate the two exact working roots and
@@ -5491,11 +5491,11 @@ cancelled — see the 2026-08-07 Scope Amendment).
   Acceptance: every command exits 0 in both roots.
   - Date: 2026-08-07
   - Status: complete, with a confirmed substitution
-  - Execution note: `ose-private`'s primary checkout has ~139 files of the user's own confirmed
+  - Execution note: the private sibling's primary checkout has ~139 files of the user's own confirmed
     in-progress `apps/rhino-cli` refactor uncommitted (`gate validate` doesn't even build a `gate`
     subcommand mid-refactor). The user confirmed it's their own WIP and authorized substituting the
     already-clean, already-created `~/ose-projects/<sibling>/worktrees/gate-final-verification`
-    (detached at `origin/main`) for the `ose-private` leg of every remaining §6.1 step. Both
+    (detached at `origin/main`) for the private-sibling leg of every remaining §6.1 step. Both
     substituted roots pass: `rev-list --left-right --count` is `0 0`, `gate validate` exits 0, and
     neither has `main-ci.yml`.
 
@@ -5577,7 +5577,7 @@ is missing ci`, confirming the composition rule fires correctly.
 
   Acceptance: every pairwise `diff -r` exits 0.
   - Date: 2026-08-07 — Status: complete, with a real drift found and fixed first. Initial `diff -r`
-    found 16 files differing — `ose-private`'s already-merged, already-reviewed PR #22 Cycle-2-review
+    found 16 files differing — the private sibling's already-merged, already-reviewed PR #22 Cycle-2-review
     hardening fixes (Task #231's known-pending propagation) had never landed in canonical:
     `apps/rhino-cli/src/application/doctor/tools.rs`, `apps/rhino-cli/src/application/parity.rs`,
     `apps/rhino-cli/src/commands/gate/{run,validate}.rs`,
@@ -5592,19 +5592,19 @@ is missing ci`, confirming the composition rule fires correctly.
     dispatch step to route the matrix gate id through a shell `env:` variable rather than splicing
     `${{ matrix.gate.id }}` raw into `run:` (a GHA expression-injection hardening from PR #22).
     Canonical's `.github/workflows/pr-quality-gate.yml` still used the raw-splice shape; fixed to
-    match `ose-private`'s already-hardened pattern (`env: GATE_ID: ${{ matrix.gate.id }}` +
+    match the private sibling's already-hardened pattern (`env: GATE_ID: ${{ matrix.gate.id }}` +
     `--only="$GATE_ID"`). `gate validate` now passes clean in canonical. Full `cargo test` for
     `apps/rhino-cli` also run as an extra check: 1355+ tests pass; the pre-existing `golden_master`
     corpus (`apps/rhino-cli/tests/golden-master/*.stdout`) is stale (missing `gate`/`git`/`parity`
     commands added in earlier phases) and its wrap-sensitive entries are non-deterministic in this
     interactive sandbox (clap's terminal-width detection depends on inherited stdin tty-state, which
     fluctuates here but is consistently non-tty in real CI). This staleness is pre-existing and
-    identical in `ose-private` already (confirmed zero-drift before any edits), so fixture changes
+    identical in the private sibling already (confirmed zero-drift before any edits), so fixture changes
     were reverted rather than risking new cross-repo drift; left as a separate, non-blocking follow-up
     (not folded into Task #231's scope).
 
 - [x] [AI] **P6-PARITY-SETUP** (`blockedBy: P6-BYTE-IDENTITY`; `blocks: P6-PARITY-ASSERT`) — create
-      one real drift in the clean detached `ose-private` verification worktree — commands:
+      one real drift in the clean detached the private sibling verification worktree — commands:
 
   ```bash
   P6_ROOT=$HOME/ose-projects/<sibling>/worktrees/gate-final-verification
@@ -5655,7 +5655,7 @@ validate` reports `apps/rhino-cli/parity-manifest.sha256 is current` (exit 0).
   ```bash
   for P6_REPO in \
     wahidyankf/ose-public \
-    wahidyankf/ose-private
+    wahidyankf/<private-sibling>
   do
     gh workflow run rhino-cli-parity-audit.yml --repo "$P6_REPO" --ref main
   done
@@ -5663,7 +5663,7 @@ validate` reports `apps/rhino-cli/parity-manifest.sha256 is current` (exit 0).
 
   Acceptance: both dispatch commands exit 0.
   - Date: 2026-08-07 — Status: complete. Both dispatches exited 0: `ose-public` run `31146508484`,
-    `ose-private` run `31146510056`.
+    the private sibling run `31146510056`.
 
 - [ ] [AI] **P6-AUDIT-ASSERT** (`blockedBy: P6-AUDIT-DISPATCH`; `blocks: P6-AUDIT-INVERSE-SETUP`) —
       after each two-minute scheduled wakeup, identify the exact newest manual run and inspect it —
@@ -5672,7 +5672,7 @@ validate` reports `apps/rhino-cli/parity-manifest.sha256 is current` (exit 0).
   ```bash
   for P6_REPO in \
     wahidyankf/ose-public \
-    wahidyankf/ose-private
+    wahidyankf/<private-sibling>
   do
     P6_RUN_ID=$(gh run list --repo "$P6_REPO" --workflow rhino-cli-parity-audit.yml --branch main --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')
     test -n "$P6_RUN_ID"
@@ -5683,8 +5683,8 @@ validate` reports `apps/rhino-cli/parity-manifest.sha256 is current` (exit 0).
   Acceptance: repeat only this inspection at the prescribed interval until both print `true`; fix
   every real failure before continuing.
   - Date: 2026-08-07 — Status: in progress, real failure found and being fixed per acceptance
-    clause. `ose-public` run `31146508484` completed/success. `ose-private` run `31146510056`
-    completed/**failure** — expected: the audit compares `ose-private`'s current files against
+    clause. `ose-public` run `31146508484` completed/success. The private sibling run `31146510056`
+    completed/**failure** — expected: the audit compares the private sibling's current files against
     canonical (`ose-public origin/main`)'s `parity-manifest.sha256`, and canonical's committed
     manifest doesn't yet reflect the P6-BYTE-IDENTITY fix (16 files + workflow fix), which is still
     staged uncommitted in the knowledge worktree pending Phase 6 Land. Per this step's own acceptance
@@ -5713,16 +5713,16 @@ validate` reports `apps/rhino-cli/parity-manifest.sha256 is current` (exit 0).
 
 - [ ] [AI] **P6-AUDIT-INVERSE-DISPATCH** (`blockedBy: P6-AUDIT-INVERSE-SETUP`; `blocks: P6-AUDIT-INVERSE-ASSERT`) —
       dispatch the audit against the exact scratch ref — command:
-      `gh workflow run rhino-cli-parity-audit.yml --repo wahidyankf/ose-private --ref p6-parity-audit-inverse`
+      `gh workflow run rhino-cli-parity-audit.yml --repo wahidyankf/<private-sibling> --ref p6-parity-audit-inverse`
       — acceptance: exits 0.
 
 - [ ] [AI] **P6-AUDIT-INVERSE-ASSERT** (`blockedBy: P6-AUDIT-INVERSE-DISPATCH`; `blocks: P6-AUDIT-INVERSE-CLEANUP`) —
       after each two-minute scheduled wakeup, identify and inspect the exact scratch run — commands:
 
   ```bash
-  P6_RUN_ID=$(gh run list --repo wahidyankf/ose-private --workflow rhino-cli-parity-audit.yml --branch p6-parity-audit-inverse --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')
+  P6_RUN_ID=$(gh run list --repo wahidyankf/<private-sibling> --workflow rhino-cli-parity-audit.yml --branch p6-parity-audit-inverse --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')
   test -n "$P6_RUN_ID"
-  gh run view "$P6_RUN_ID" --repo wahidyankf/ose-private --json status,conclusion --jq '.status == "completed" and .conclusion == "failure"' | grep -Fx true
+  gh run view "$P6_RUN_ID" --repo wahidyankf/<private-sibling> --json status,conclusion --jq '.status == "completed" and .conclusion == "failure"' | grep -Fx true
   ```
 
   Acceptance: repeat only this inspection at the prescribed interval until it prints `true`.
@@ -5785,7 +5785,7 @@ validate` reports `apps/rhino-cli/parity-manifest.sha256 is current` (exit 0).
   P6_TMP=$HOME/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-knowledge/local-temp
   mkdir -p "$P6_TMP"
   gh api repos/wahidyankf/ose-public/branches/main/protection | jq -e '.required_status_checks.contexts == ["Quality gate"]'
-  for P6_EXPECTATION in ose-private:403
+  for P6_EXPECTATION in <private-sibling>:403
   do
     P6_REPO=${P6_EXPECTATION%%:*}
     P6_STATUS=${P6_EXPECTATION##*:}
@@ -5800,7 +5800,7 @@ validate` reports `apps/rhino-cli/parity-manifest.sha256 is current` (exit 0).
 
   Acceptance: public prints `true`; the private log explicitly prints 403. (`ose-primer` and
   `beaver-nest` dropped from this check — see the 2026-08-07 Scope Amendment.)
-  - Date: 2026-08-07 — Status: complete. `ose-public` printed `true`. `ose-private`'s API call failed
+  - Date: 2026-08-07 — Status: complete. `ose-public` printed `true`. The private sibling's API call failed
     with `HTTP 403` ("Upgrade to GitHub Pro or make this repository public to enable this feature."),
     confirming the Phase 0 observation.
 
@@ -5809,8 +5809,8 @@ validate` reports `apps/rhino-cli/parity-manifest.sha256 is current` (exit 0).
 
   ```bash
   P6_TMP=$HOME/ose-projects/ose-public/worktrees/sdlc-gate-registry-enforcement-knowledge/local-temp
-  rm -f "$P6_TMP/p6-protection-ose-private.log"
-  test ! -e "$P6_TMP/p6-protection-ose-private.log"
+  rm -f "$P6_TMP/p6-protection-<private-sibling>.log"
+  test ! -e "$P6_TMP/p6-protection-<private-sibling>.log"
   ```
 
   Acceptance: the scratch log is absent.
@@ -5836,15 +5836,15 @@ validate` reports `apps/rhino-cli/parity-manifest.sha256 is current` (exit 0).
   - Date: 2026-08-07 — Status: complete. No entry contained a secret, token, or credential; no
     sanitization needed.
 - [x] [AI] Apply the repo-relevance gate to every surviving entry — content sourced from
-      `ose-private` stays in `ose-private` only; never cross-route it into `ose-public`, `ose-primer`,
-      or `beaver-nest`. This gate is load-bearing here, since `ose-private` is one of the two repos
+      the private sibling stays in the private sibling only; never cross-route it into `ose-public`, `ose-primer`,
+      or `beaver-nest`. This gate is load-bearing here, since the private sibling is one of the two repos
       still enforced after the 2026-08-07 Scope Amendment.
-  - Date: 2026-08-07 — Status: complete. 4 entries are `ose-private` (PR #22)-sourced (the two
+  - Date: 2026-08-07 — Status: complete. 4 entries are the private sibling (PR #22)-sourced (the two
     webhook-throttling/still-down outage instances, the generated-file merge-conflict entry, the
     self-hosted-runner-permission entry). Each was generalized before landing in `ose-public` —
     repo name, PR number, and infra specifics (runner label, `/usr/share/dotnet` path,
     branch-protection-tier detail) stripped, keeping only the repo-agnostic process lesson. The
-    PR #20 outage entry is `ose-primer`-sourced, not `ose-private`, so the gate does not restrict it.
+    PR #20 outage entry is `ose-primer`-sourced, not the private sibling, so the gate does not restrict it.
 - [x] [AI] Route each surviving entry to exactly one durable home (`docs/`, `repo-governance/`,
       `.claude/agents/`, `.claude/skills/`, or another durable home), landing small non-code edits
       inline or filing a `plans/backlog/{slug}/` follow-up plan for larger non-code work.
@@ -5902,7 +5902,7 @@ validate` reports `apps/rhino-cli/parity-manifest.sha256 is current` (exit 0).
   - Date: 2026-08-07 — Status: complete. `git rm`'d the file (was at
     `plans/ideas/q1-urgent-important/tri-repo-rhino-cli-byte-identity-gate.md`); removed its entry
     from `plans/ideas/README.md`'s Q1 list; repointed its two remaining inbound links
-    (`cross-repo-port-registry.md`, `ose-private-opencode-ci-monitor-orphan.md`) to the archived
+    (`cross-repo-port-registry.md`, `private-sibling-opencode-ci-monitor-orphan.md`) to the archived
     plan that fulfilled it. `test -f ...` exits non-zero (confirmed); `md links validate --exclude
 plans/done` exits 0.
 
@@ -5962,7 +5962,7 @@ No sibling repo receives an in-progress copy of this plan in Phases 3, 4, or 5, 
 is not applicable. The authoritative plan is archived in `ose-public` inside PR #6.
 
 - [x] [AI] Inventory only the task-owned worktree paths declared in this plan, including
-      `ose-private/worktrees/gate-final-verification` (moved here from `beaver-nest` — see the
+      `private-sibling/worktrees/gate-final-verification` (moved here from `beaver-nest` — see the
       2026-08-07 Scope Amendment) and the abandoned `beaver-nest/worktrees/sdlc-gate-registry-enforcement`
       and `ose-primer/worktrees/sdlc-gate-registry-enforcement-tools-propagate` worktrees, whose
       uncommitted/unpushed content is discarded, not recovered, because their work is cancelled;
@@ -6020,7 +6020,7 @@ knowledge worktree`), which has not run yet — nothing exists to remove.
   - Status: complete — clean worktree, removed without `--force`.
 - [ ] [AI] **CLEAN-PRIVATE-VERIFY** (`blockedBy: HUMAN-CLEANUP-CONFIRM`) — command: `git -C ~/ose-projects/<sibling> worktree remove worktrees/gate-final-verification` — acceptance: exits 0; unrelated worktrees remain.
   - Not yet applicable: this worktree is created later, in §6.1 (`P6: attach detached
-final-verification worktree to ose-private`), which has not run yet — nothing exists to remove.
+final-verification worktree to the private sibling`), which has not run yet — nothing exists to remove.
 - [x] [AI] **CLEAN-BEAVER-ABANDON** (`blockedBy: HUMAN-CLEANUP-CONFIRM`) — discard the cancelled
       Phase 5 attempt (real local commits `ce9aeb58a`/`ed4543aa`, never pushed) and remove its
       worktree and local branch — commands: `git -C ~/ose-projects/beaver-nest worktree remove --force worktrees/sdlc-gate-registry-enforcement` and `git -C ~/ose-projects/beaver-nest branch -D sdlc-gate-registry-enforcement` — acceptance: both exit 0; nothing from Phase 5 is pushed.
@@ -6056,7 +6056,7 @@ final-verification worktree to ose-private`), which has not run yet — nothing 
       pending and no deletion occurred.
 
 > **Pause Safety**: Before integration, the archival branch is execution-ready and safe to stop.
-> After authorized integration, `ose-public` and `ose-private` mains are green and the authoritative
+> After authorized integration, `ose-public` and the private sibling mains are green and the authoritative
 > plan is archived. Resume by re-running this gate; cleanup removes only explicitly confirmed
 > task-owned worktrees.
 

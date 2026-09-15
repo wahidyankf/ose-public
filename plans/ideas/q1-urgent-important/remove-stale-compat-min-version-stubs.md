@@ -83,7 +83,7 @@ confirmed individually.
 
 Out of scope:
 
-- `ose-private`'s equivalent stubs — a separate, independently-scoped sweep in that repo. This class
+- The private sibling's equivalent stubs — a separate, independently-scoped sweep in that repo. This class
   is not inside the `apps/rhino-cli` byte-identity boundary, so the two repos need not move together.
 - Adding `compat:min-version` anywhere it is missing. The convention makes it applicable-only, never
   universally mandatory.

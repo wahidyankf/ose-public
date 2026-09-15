@@ -50,7 +50,7 @@ absolute local path, machine name, account name, or working-copy filename appear
 
 23 paths, every one classified. Nothing under `apps/rhino-cli/` or
 `specs/apps/rhino/behavior/rhino-cli/` is touched (0 hits, with a control proving the check fires),
-and no path in `ose-private`, `ose-primer`, or `beaver-nest` appears at all.
+and no path in the private sibling, `ose-primer`, or `beaver-nest` appears at all.
 
 | Class                                        | Count | Paths                                                                                                                                                                                                                                       |
 | -------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -93,7 +93,7 @@ must carry none.
 | Guard                                        | Result                                                                                                  |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | Identity-boundary path check                 | 0 hits; control fires on a planted path                                                                 |
-| Sibling-repository paths                     | 0 hits across `ose-private`, `ose-primer`, `beaver-nest`                                                |
+| Sibling-repository paths                     | 0 hits across the private sibling, `ose-primer`, `beaver-nest`                                          |
 | `env staged-guard validate`                  | exit 0                                                                                                  |
 | `parity manifest validate`                   | exit 0                                                                                                  |
 | `git diff --check`                           | exit 0                                                                                                  |
@@ -108,28 +108,28 @@ must carry none.
 Run against the staged archival index (tree `4e8dd974b`), 46 paths: 34 Markdown, 12 moved evidence
 files.
 
-| Gate                                               | Result                                                       |
-| -------------------------------------------------- | ------------------------------------------------------------ |
-| `git diff --check` / `git diff --cached --check`   | exit 0 / exit 0                                              |
-| `env validate`                                     | exit 0                                                       |
-| `env staged-guard validate`                        | exit 0                                                       |
-| `md links validate --exclude plans/done`           | exit 0                                                       |
-| `governance readme-index validate`                 | exit 0 (serves both the index and completeness gate entries) |
-| `governance word-budget validate`                  | exit 0                                                       |
-| `harness duplication validate`                     | exit 0                                                       |
-| `repo-governance vendor validate repo-governance/` | exit 0                                                       |
-| `repo-governance vendor validate AGENTS.md`        | exit 0                                                       |
-| `convention license validate`                      | exit 0                                                       |
-| `harness bindings validate`                        | exit 0                                                       |
-| `harness ownership validate`                       | exit 0                                                       |
-| `harness catalog validate`                         | exit 0                                                       |
-| `parity manifest validate`                         | exit 0                                                       |
-| `prettier --check` over the staged Markdown        | exit 0, file count asserted at 34 first                      |
-| `markdownlint-cli2` over the staged Markdown       | 0 errors over 21 files — see the note below                  |
-| Identity-boundary path check                       | 0 hits; control returns 40                                   |
-| Sibling-repository path check                      | 0 hits across `ose-private`, `ose-primer`, `beaver-nest`     |
-| Staged-credential pattern scan                     | 0 hits over 34 Markdown and 12 evidence files; control fires |
-| `commitlint --edit`                                | 0 problems, 0 warnings                                       |
+| Gate                                               | Result                                                         |
+| -------------------------------------------------- | -------------------------------------------------------------- |
+| `git diff --check` / `git diff --cached --check`   | exit 0 / exit 0                                                |
+| `env validate`                                     | exit 0                                                         |
+| `env staged-guard validate`                        | exit 0                                                         |
+| `md links validate --exclude plans/done`           | exit 0                                                         |
+| `governance readme-index validate`                 | exit 0 (serves both the index and completeness gate entries)   |
+| `governance word-budget validate`                  | exit 0                                                         |
+| `harness duplication validate`                     | exit 0                                                         |
+| `repo-governance vendor validate repo-governance/` | exit 0                                                         |
+| `repo-governance vendor validate AGENTS.md`        | exit 0                                                         |
+| `convention license validate`                      | exit 0                                                         |
+| `harness bindings validate`                        | exit 0                                                         |
+| `harness ownership validate`                       | exit 0                                                         |
+| `harness catalog validate`                         | exit 0                                                         |
+| `parity manifest validate`                         | exit 0                                                         |
+| `prettier --check` over the staged Markdown        | exit 0, file count asserted at 34 first                        |
+| `markdownlint-cli2` over the staged Markdown       | 0 errors over 21 files — see the note below                    |
+| Identity-boundary path check                       | 0 hits; control returns 40                                     |
+| Sibling-repository path check                      | 0 hits across the private sibling, `ose-primer`, `beaver-nest` |
+| Staged-credential pattern scan                     | 0 hits over 34 Markdown and 12 evidence files; control fires   |
+| `commitlint --edit`                                | 0 problems, 0 warnings                                         |
 
 ### Independent semantic sensitivity review — CLEAN
 
@@ -160,7 +160,7 @@ and phase-5a pairs, and the merged status of PRs 236–240 — and all four held
 `phase-5b-ose-www-curl.txt` for stating plainly that its images "do NOT evidence Ubuntu-side
 rendering, which the filenames could be read to imply", which is the disclosure `C-74` added.
 
-On the four `ose-private` mentions it did the right check rather than the easy one: it confirmed the
+On the four the private sibling mentions it did the right check rather than the easy one: it confirmed the
 parity boundary those lines describe is defined by `apps/rhino-cli/parity-manifest.sha256` and
 `.github/workflows/rhino-cli-parity-audit.yml`, both tracked in this public repository, so the text
 names a shared boundary's shape and never that repository's internals, access model, or hosts.

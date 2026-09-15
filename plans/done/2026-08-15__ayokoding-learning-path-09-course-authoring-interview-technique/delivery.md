@@ -629,7 +629,7 @@ because its settled prerequisite array is empty.
       tokens or discard if the entry cannot be sanitized without losing its meaning.
 - [x] [AI] Apply the **repo-relevance gate** to every surviving entry — this repo is `ose-public`; a
       public-governance learning may route to `repo-governance/` or `docs/` here, never to
-      `ose-private`.
+      the private sibling.
 - [x] [AI] Route each surviving entry to exactly one durable home (`repo-governance/`, `docs/`, an
       agent, a skill, or a `plans/backlog/` follow-up plan for larger non-code work).
 - [x] [AI] **Code-routing rule**: if a learning's home is `apps/`, `libs/`, or tests, file it as a

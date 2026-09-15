@@ -569,12 +569,12 @@ Amazon Q's JSON today [Repo-grounded].
 
 **Internal**:
 
-- `apps/rhino-cli` byte-identity spans `ose-public` and `ose-private` only [Repo-grounded —
+- `apps/rhino-cli` byte-identity spans `ose-public` and the private sibling only [Repo-grounded —
   `AGENTS.md` §Related Repositories]. Every phase touching `apps/rhino-cli/` obligates a paired twin.
 - `apps/rhino-cli/parity-manifest.sha256` holds 579 entries [Repo-grounded — measured] and must be
   regenerated whenever a manifest-covered file changes. All eight `harness_*.rs` command files are
   covered.
-- `.github/workflows/rhino-cli-parity-audit.yml` runs nightly and diffs `ose-private`'s manifest
+- `.github/workflows/rhino-cli-parity-audit.yml` runs nightly and diffs the private sibling's manifest
   against `ose-public` `main` with a hard `exit 1`. An unpaired merge turns it red.
 
 **Ordering**: Phase 1 → 2 → 3 must be sequential (registry, then removal, then prose). Phases 4-6 must

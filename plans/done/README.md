@@ -2,7 +2,7 @@
 
 Archived plans and completed project planning documents.
 
-> **2026-07-29: Sibling repository renamed from `ose-infra` to `ose-private`.** Archived plan
+> **2026-07-29: Sibling repository renamed from `ose-infra` to the private sibling.** Archived plan
 > bodies below deliberately retain the old `ose-infra` name — they are a historical record of what
 > was true when each plan executed, not live documentation. GitHub's permanent redirect from the
 > old repository name keeps every existing link, clone URL, and bookmark working.
@@ -12,7 +12,7 @@ Archived plans and completed project planning documents.
 - [2026-09-09: lms-init](./2026-09-09__lms-init/README.md) — Taught the monorepo Java, then shipped
   `ose-lms-be` (Java 25 + Spring Boot, health and hello endpoints, Actuator exposed to health only)
   and its `ose-lms-be-e2e` Playwright-BDD suite on that lane. Four delivery units, five PRs:
-  `ose-public#487`, `#491`, `#493`, `#495`, `#503`, plus the parity counterpart `ose-private#167`.
+  `ose-public#487`, `#491`, `#493`, `#495`, `#503`, plus the parity counterpart `<private-sibling>#167`.
   Java was provisioned from nothing, and the work surfaced a general shape worth remembering:
   teaching a validator to _read_ a language is not the same as _enabling_ it, because the
   enforcement machinery encodes closed per-language lists in several other places — a JaCoCo
@@ -28,7 +28,7 @@ Archived plans and completed project planning documents.
 - [2026-09-09: islamic-be-init](./2026-09-09__islamic-be-init/README.md) — Taught the monorepo Go,
   then shipped `islamic-be` (Go 1.26 + Gin, health endpoint) and its `islamic-be-e2e` Playwright-BDD
   suite on that lane. Six delivery units, six PRs: `ose-public#496`–`#501` plus the parity
-  counterpart `ose-private#169`. Both projects were later renamed to `roots-be` and
+  counterpart `<private-sibling>#169`. Both projects were later renamed to `roots-be` and
   `roots-be-e2e`; this record keeps the names in force at the time it was written.
   Go was **half-provisioned** at the start — `Brewfile`, the `gofmt`
   gate pair, and a `TestCoverage.Format.Go` arm had all survived the deletion of the last Go
@@ -51,16 +51,16 @@ Archived plans and completed project planning documents.
 - [2026-09-04: update-tmp-folders](./2026-09-04__update-tmp-folders/README.md) — Re-founded the
   `local-tmp/` vs `generated-reports/` split on **who the artifact is for** rather than **what shape
   it has**, then propagated that definition across every rule, agent, skill, harness mirror, and the
-  one code path that hardcoded a temporary directory, in both `ose-public` and `ose-private`. The
+  one code path that hardcoded a temporary directory, in both `ose-public` and the private sibling. The
   old type-based wording sent every machine-authored audit into the folder a maintainer reads as
-  their outbox: 471 entries in `ose-public` and 96 in `ose-private` at authoring time, against 7 and
+  their outbox: 471 entries in `ose-public` and 96 in the private sibling at authoring time, against 7 and
   22 in the scratch folder. Agent working state now lands in `local-tmp/<agent-family>/`, so 23
-  `ose-private` checker/fixer agents and their `ose-public` counterparts each gained an explicit
+  the private sibling checker/fixer agents and their `ose-public` counterparts each gained an explicit
   report family, and `rhino-cli` now reads its false-positive ledger from
   `local-tmp/.known-false-positives.md`. Four PRs merged — `ose-public#473`, `#474`,
-  `ose-private#155`, `#156`. Three findings are worth carrying forward. A count is not an inventory:
+  `<private-sibling>#155`, `#156`. Three findings are worth carrying forward. A count is not an inventory:
   `ose-public`'s legacy folder was swept with only a total recorded, so whether it held the
-  `.execution-chain-*` files later found in `ose-private` can no longer be established — sweeping
+  `.execution-chain-*` files later found in the private sibling can no longer be established — sweeping
   was still right, because a stale chain carried forward would give a future report false
   parentage. The plan's own premise that every legacy artifact was untracked was false: three
   `generated-reports/plan__*__audit.md` files were tracked on `main` despite being gitignored, and
@@ -75,7 +75,7 @@ Archived plans and completed project planning documents.
   cleanup — in that order, and taught `plan-checker` to flag a worktree-mode plan that omits or
   misorders them, with a matching `plan-fixer` repair recipe. The obligation was never missing; only
   its scaffolding and detection were, so authored plans silently skipped it. Landed in both
-  `ose-public` and `ose-private` from a single-sourced plan folder. Five validation iterations
+  `ose-public` and the private sibling from a single-sourced plan folder. Five validation iterations
   hardened the rule itself: a one-directional heading match, a classification step that dropped the
   `escalated` outcome, an exemption that wrongly excused `main-to-pr` from branch cleanup, and a
   live plan that removed its worktree before classifying the inventory were each found and fixed
@@ -83,23 +83,23 @@ Archived plans and completed project planning documents.
   Started 2026-09-04.
 
 - [2026-09-04: adopt-beavernest-test-automation](./2026-09-04__adopt-beavernest-test-automation/README.md) —
-  Adopted BeaverNest-derived test-contract discipline across `ose-public` and `ose-private`: an
+  Adopted BeaverNest-derived test-contract discipline across `ose-public` and the private sibling: an
   enforced unit/integration/E2E ownership registry, native 99% line-coverage and exact 100%
   Gherkin/BDD coverage gates, a logical `specs/` and C4 structure, direct `project.json` commands
   in place of proxy manifests, and full retirement of the Rhino/OSE DDD engineering-spec tooling
   the prior contract depended on. Twenty-two phases, single-sourced in `ose-public` and delivered
   to both repos from matching worktrees. The terminal end-to-end completeness audit
   (`AC-TEST-09`) found one genuine cross-repo parity gap — `TestContractProject.fs` had drifted
-  184 lines stale in `ose-private` — and it was fully reconciled rather than deferred
-  (`ose-private#150`), overriding this plan's own earlier "port the fix only, don't reconcile
+  184 lines stale in the private sibling — and it was fully reconciled rather than deferred
+  (`<private-sibling>#150`), overriding this plan's own earlier "port the fix only, don't reconcile
   drift" precedent because the terminal audit is precisely the sanctioned place for full
-  reconciliation and the diff carried no `ose-private`-unique logic at risk. Delivery Mode:
+  reconciliation and the diff carried no private-sibling-unique logic at risk. Delivery Mode:
   `worktree-to-pr`, one worktree and one PR per repository per delivery unit. Started 2026-08-31.
 
 - [2026-08-30: rewrite-rhino-cli-to-fsharp](./2026-08-30__rewrite-rhino-cli-to-fsharp/README.md) —
   Replaced the Rust `rhino-cli` with a behavior-equivalent F# implementation across all 13
   namespaces and 525 Gherkin scenarios, namespace by namespace behind a dispatch shim, then retired
-  the Rust crate and tore down the Rust CI surface. Landed in both `ose-public` and `ose-private`
+  the Rust crate and tore down the Rust CI surface. Landed in both `ose-public` and the private sibling
   from a single-sourced plan folder. Thirteen phases, six waves. Started 2026-08-25.
 
 - [2026-08-25: optimize-pr-process](./2026-08-25__optimize-pr-process/README.md) — Improved
@@ -138,19 +138,19 @@ Archived plans and completed project planning documents.
   enumerate `[agents]` entries, and running `codex exec` unattended under
   `filesystem unrestricted · network enabled · approval Never` was judged an unsafe way to satisfy
   a checklist. Delivery Mode: `worktree-to-pr`, one worktree and one PR per repository
-  (`ose-public#232`, `ose-private#56`).
+  (`ose-public#232`, `<private-sibling>#56`).
 
 - [2026-08-18: repo-rules-sweep](./2026-08-18__repo-rules-sweep/README.md) — Settled what a leading
   `NN-` ordinal means in a governed filename: it survives only when the file is a real step in an
   ordered sequence and the ordinal is that step's own number. Stripped the rest — 2092 files across
-  176 numbered directories in `ose-public`, 1905 files and 8 directories in `ose-private` — after
+  176 numbered directories in `ose-public`, 1905 files and 8 directories in the private sibling — after
   making `readme-index generate` order-preserving and adding a `rewrite-paths` mode so no annotated
   index lost its order or its annotations. Withdrew two filename rules that inspected a single
   basename token against a closed vocabulary without ever reading the file (`harness naming validate`,
   `repo-governance workflows naming validate`), with their gate entries, Gherkin, and fixtures.
   Realigned three rules whose enforcement misfired, including publishing the word-budget gate's
   exclude list as part of the rule. The two repositories' outcomes differ on purpose: 46 numbered
-  paths remain in `ose-private` against 8 here, because 40 files there have fixed-width truncated
+  paths remain in the private sibling against 8 here, because 40 files there have fixed-width truncated
   stems whose ordinal is their only disambiguator. Delivery Mode: `worktree-to-pr`, one worktree and
   one PR per repository.
 
@@ -165,7 +165,7 @@ Archived plans and completed project planning documents.
 
 - [2026-08-15: optimize-governance-md](./2026-08-15__optimize-governance-md/README.md) — Capped
   every governance Markdown file at 500 words (900 for README.md) across `ose-public` and
-  `ose-private`, enforced via two new rhino-cli gates (`governance word-budget validate`,
+  the private sibling, enforced via two new rhino-cli gates (`governance word-budget validate`,
   `governance readme-index validate`) armed on `pre-push` and `ci`. Split every oversized file
   under `repo-governance/`, `.claude/agents/`, `.claude/skills/`, and root instruction files into
   progressive-disclosure children with annotated README indexes; flipped `md-frontmatter`'s
@@ -272,7 +272,7 @@ Archived plans and completed project planning documents.
   Cut fixed overhead from the pre-commit, pre-push, and PR-quality-gate lifecycle across the three
   parity repos: a resolver shim and `node_modules/.bin` dispatch removed the per-gate invocation tax,
   a grouped CI matrix replaced 45 serial jobs, a dedicated cargo `gate` profile plus coverage-to-CI
-  cut local build cost, and the same topology propagated to `ose-primer` and `ose-private`. Gate
+  cut local build cost, and the same topology propagated to `ose-primer` and the private sibling. Gate
   coverage held provably invariant throughout — 76 gate ids, byte-identical to the Phase 0 capture on
   all four surfaces. Three of nine metrics met their targets; the six misses are recorded with
   measured shortfalls in [`results.md`](./2026-08-09__optimize-cis/results.md) rather than rescoped.
@@ -281,12 +281,12 @@ Archived plans and completed project planning documents.
   Made the already-ratified Gate Composition Rule (`(pre-commit ∪ pre-push) == PR gate`) mechanically
   enforced via a `gates:` registry in `repo-config.yml` plus `rhino-cli gate list/run/validate`, and
   retired `main-ci.yml` after folding its unique checks into the PR gate. Landed across `ose-public`
-  (Phase 1-2), `ose-primer` (Phase 3, PR #3), and `ose-private` (Phase 4, PR #4). **Scope Amendment
+  (Phase 1-2), `ose-primer` (Phase 3, PR #3), and the private sibling (Phase 4, PR #4). **Scope Amendment
   (2026-08-07)**: the enforced byte-identity boundary narrowed mid-execution from four repos to two
-  (`ose-public` + `ose-private`) — `beaver-nest` (Phase 5) is cancelled, not deferred, and
+  (`ose-public` + the private sibling) — `beaver-nest` (Phase 5) is cancelled, not deferred, and
   `ose-primer` (Phase 3) keeps its already-merged landing but exits continuous enforcement in favor
   of periodic/manual sync. See the plan's own `learnings.md` Scope Amendment entry for the full
-  rationale. Delivery Mode: `worktree-to-pr` (`ose-public`, `ose-primer`, `ose-private` each as
+  rationale. Delivery Mode: `worktree-to-pr` (`ose-public`, `ose-primer`, the private sibling each as
   independent tracks). Completed 2026-08-07. Terminal delivery chain (`ose-public` Phase 6, Knowledge
   Capture/Archive): [PR #152](https://github.com/wahidyankf/ose-public/pull/152).
 - [2026-08-06: pr-review-cycle-scout-and-typesafety](./2026-08-06__pr-review-cycle-scout-and-typesafety/README.md) —
@@ -297,14 +297,14 @@ Archived plans and completed project planning documents.
   pipeline against its own delivering PR across all 3 scheduled review cycles (11 → 6 → 5 findings,
   severity ceiling CRITICAL → HIGH → HIGH, converging cleanly with zero regressions across the
   regression-watch disciplines). Delivery Mode: `worktree-to-pr`, four independent repo tracks
-  (`ose-public`, `ose-primer`, `ose-private`, `beaver-nest`); this entry records `ose-public`'s
+  (`ose-public`, `ose-primer`, the private sibling, `beaver-nest`); this entry records `ose-public`'s
   (Track A) completion per the archival-in-PR hard rule — the other three tracks and the shared
   Knowledge Capture/Finalize phases are tracked separately and land on their own repos' `origin/main`.
   Terminal delivery chain: [PR #139](https://github.com/wahidyankf/ose-public/pull/139).
 - [2026-08-05: plan-ideas-grooming-workflow](./2026-08-05__plan-ideas-grooming-workflow/README.md) —
   Authored the `plan-ideas-grooming.md` workflow (merge/split/group two-pagers, Eisenhower-quadrant
   sorting, cross-repo relocation, rename-via-link-rewrite) plus the new `grooming` workflow-naming
-  type token, and propagated both byte-identically to `ose-primer`, `ose-private`, and
+  type token, and propagated both byte-identically to `ose-primer`, the private sibling, and
   `beaver-nest`. Each repo's own `rhino-cli` fork needed an independent `WORKFLOW_TYPES` fix — the
   four forks have already drifted from AGENTS.md's byte-identity claim; folded into the existing
   `tri-repo-rhino-cli-byte-identity-gate` idea. Delivery Mode: `main-to-origin-main`, direct push,

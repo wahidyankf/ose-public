@@ -8,7 +8,7 @@ when_to_use: Use when creating a short-lived plan branch, or checking whether a 
 Under the repo-wide `worktree-to-pr` default, a short-lived plan branch is the norm for every plan in
 `ose-public` -- direct commit to `main`
 (`worktree-to-origin-main`, `main-to-origin-main`) is not a routine alternative here.
-`ose-private` also prohibits `worktree-to-origin-main`; only explicitly declared
+The private sibling also prohibits `worktree-to-origin-main`; only explicitly declared
 `main-to-origin-main` survives there for named stateful IaC or CI-IaC self-validation circularity -- see
 [Direct-Push Modes Remain Available Where the Topology Supports Them](./why-draft-and-direct-push-modes.md#direct-push-modes-remain-available-where-the-topology-supports-them)
 below.

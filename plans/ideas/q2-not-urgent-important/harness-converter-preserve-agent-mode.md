@@ -8,7 +8,7 @@ frontmatter key on a mirrored agent would be silently dropped the moment that ag
 
 ## Problem / context
 
-`ose-private` carries `.opencode/agents/ci-monitor-subagent.md` with no `.claude/` counterpart, so
+The private sibling carries `.opencode/agents/ci-monitor-subagent.md` with no `.claude/` counterpart, so
 Phase 0 Invariant 4 reports it as an orphan on every run. It declares `mode: subagent`, which is how
 OpenCode distinguishes a subagent from an ordinary agent.
 
@@ -51,7 +51,7 @@ close this orphan without reading why it is open.
 
 ## Prior art / precedents
 
-- **[ose-private-opencode-ci-monitor-orphan](./ose-private-opencode-ci-monitor-orphan.md)** — read
+- **[private-sibling-opencode-ci-monitor-orphan](./private-sibling-opencode-ci-monitor-orphan.md)** — read
   this first; it owns the prior question of where the mirror file came from, and records that
   `list_agent_files` hardcodes a skip for this exact filename. It proposes three outcomes, one of
   which — restore the `.claude/` source and regenerate — the attempt described above **empirically

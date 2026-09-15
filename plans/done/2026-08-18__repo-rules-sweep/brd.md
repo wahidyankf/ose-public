@@ -27,7 +27,7 @@ governs these filenames states the opposite of what the tree does.
   are phases carries both a shard serial and a phase number, disagreeing.
 - **The governing convention contradicts the governed tree.** `file-naming.md` claims "no prefixes …
   or hierarchical encoding" as its rationale, while 2092 of 2494 files under `repo-governance/`
-  carry a prefix — and 1704 of 2131 in `ose-private`.
+  carry a prefix — and 1704 of 2131 in the private sibling.
 - **Continuation shards are held together only by their numbers.** Files titled "rules 1-2", "rule
   3", "rules 4-5" are fragments of one topic whose only cohesion signal is the ordinal.
 - **Two enforced filename rules check one token and nothing else.** `harness naming validate` accepts
@@ -55,7 +55,7 @@ The maintainer wears four hats: **governance author** (writes the rule, reworks 
 and retires two conventions), **Rust developer** (changes the `rhino-cli` index tooling and deletes
 two commands with their shared modules), **rules-machinery owner**
 (updates the `repo-rules-*` triad, their skills, and the quality-gate workflow), and **release
-operator** (lands the matching sweep in `ose-private`). The consuming agents are `repo-rules-maker` /
+operator** (lands the matching sweep in the private sibling). The consuming agents are `repo-rules-maker` /
 `repo-rules-checker` / `repo-rules-fixer`, `repo-workflow-maker`, `docs-file-manager`, and every
 agent whose definition links a renamed path.
 
@@ -64,7 +64,7 @@ agent whose definition links a renamed path.
 1. **Observable fact** — after the sweep,
    `find repo-governance .claude -name '*.md' | grep -E '/[0-9]{2}-'` returns only files that are
    real steps in an ordered sequence, and every returned file's ordinal equals its own step number.
-   Baseline: 2092 + 232 in `ose-public`, 1704 + 217 in `ose-private`, essentially none of which
+   Baseline: 2092 + 232 in `ose-public`, 1704 + 217 in the private sibling, essentially none of which
    qualify.
 2. **Observable fact** — `find . -name '*.md' -not -path './node_modules/*' | grep -E '/[0-9]{2}[a-z]-'`
    returns zero matches in both repositories. Baseline: 7 in `ose-public`.
@@ -116,7 +116,7 @@ validate` without a new gate. Baseline: true today — `harness-bindings` alread
 | A single atomic PR of ~2092 renames plus editorial boundary rework is not reviewable as a whole.                                                                                                | Accepted deliberately at the maintainer's direction and recorded as a stated deviation in `tech-docs.md` §10, so `plan-checker` reads it as a decision rather than a defect. Mechanical correctness is carried by gates (`md links validate`, `readme-index validate`, `word-budget validate`, `validate:sync`) rather than by human diff-reading.                                                   |
 | Boundary rework is editorial judgment across 176 directories and can silently change meaning.                                                                                                   | Rework is confined to merging or re-splitting existing text on topic seams; no rule text is rewritten. Any file whose content would change meaning is left split and merely renamed, with the decision recorded per directory.                                                                                                                                                                       |
 | De-numbering reorders every generated index to alphabetical.                                                                                                                                    | The generator is changed first to be order-preserving, and a rename-aware `rewrite-paths` mode updates link targets without touching entry order. No rename happens before that lands.                                                                                                                                                                                                               |
-| The two repositories fall out of step mid-sweep.                                                                                                                                                | `ose-private` is swept in the same plan, with the `rhino-cli` change byte-identical and the `parity-manifest` gate as its acceptance check.                                                                                                                                                                                                                                                          |
+| The two repositories fall out of step mid-sweep.                                                                                                                                                | The private sibling is swept in the same plan, with the `rhino-cli` change byte-identical and the `parity-manifest` gate as its acceptance check.                                                                                                                                                                                                                                                    |
 | `harness naming validate`'s own mirror-drift check for `.opencode/` (and partially `.amazonq/`) looked like the only gated coverage, risking an undetected gap if deleted without verification. | Re-verified against the live gate registry: the already-declared `harness-bindings` gate independently runs `validate_sync` (`.opencode/`) and `validate_cursor_sync` (`.cursor/`) on `pre-push` and unconditionally in `ci`. Phase 3 proves this by deleting a mirror file in a scratch copy and confirming `harness bindings validate` fails, then passes after restore — no new gate is declared. |
 | Withdrawing a rule leaves future readers unable to find the decision, only the absence.                                                                                                         | The withdrawal is recorded in `file-naming.md` naming both rules and the reason, and in this plan's Knowledge Capture.                                                                                                                                                                                                                                                                               |
 | A prose-only rule decays exactly as `file-naming.md` did.                                                                                                                                       | `repo-rules-checker` carries it as an AI-only validation category and `repo-rules-fixer` carries a rename-and-relink recipe, so drift is surfaced by the same machinery as every other repo rule.                                                                                                                                                                                                    |

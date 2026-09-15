@@ -56,7 +56,7 @@ delivery-mode: worktree-to-pr # worktree-to-origin-main | main-to-origin-main | 
 default `worktree-to-pr`. Never silently coerce an invalid non-empty value; ask instead.
 
 **If a direct-push mode is selected**: `worktree-to-origin-main` remains unavailable.
-`main-to-origin-main` is selectable only for an `ose-private` plan in exactly two categories:
+`main-to-origin-main` is selectable only for a private-sibling plan in exactly two categories:
 stateful IaC needing the primary checkout's real secrets/local state, or CI-IaC changing the
 repository's own pipeline, runner, or toolchain provisioning where PR self-validation is circular.
 State the eligible category and why direct delivery is necessary (see
@@ -64,7 +64,7 @@ State the eligible category and why direct delivery is necessary (see
 
 ```yaml
 delivery-mode: main-to-origin-main
-rationale: "ose-private infrastructure-as-code plan updating a single Terraform resource tag;
+rationale: "<private-sibling> infrastructure-as-code plan updating a single Terraform resource tag;
   needs the primary checkout's local secrets/state access; trivial and well-understood; full gate
   passes locally. Not executable in ose-public (branch-protected main)."
 ```

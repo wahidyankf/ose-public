@@ -7,13 +7,13 @@
 ## Worktree
 
 Worktree path: `worktrees/rewrite-rhino-cli/` — **one per repository**, in both `ose-public` and
-`ose-private`, per [DD-5](./tech-docs.md#dd-5--both-repos-in-the-same-delivery-units).
+the private sibling, per [DD-5](./tech-docs.md#dd-5--both-repos-in-the-same-delivery-units).
 
-> **These plan documents are single-sourced in `ose-public` and exist nowhere else.** `ose-private`
+> **These plan documents are single-sourced in `ose-public` and exist nowhere else.** The private sibling
 > carries **no** copy of this plan folder — deliberately, so the two can never drift. The plan still
 > drives work in both repositories: `apps/rhino-cli/` is byte-identical across them under a 603-entry
 > manifest, so every delivery unit lands in both. What is single is the _document_, not the work.
-> An executor working in `ose-private` reads this file from the `ose-public` checkout and ticks the
+> An executor working in the private sibling reads this file from the `ose-public` checkout and ticks the
 > boxes here.
 
 Provisioned before this plan was written (run from each repo root):
@@ -32,7 +32,7 @@ See [Worktree Path Convention](../../../repo-governance/conventions/structure/wo
 
 ## Delivery Mode: worktree-to-pr
 
-Mandatory in `ose-public` — `main` is branch-protected including for admins. `ose-private` uses the
+Mandatory in `ose-public` — `main` is branch-protected including for admins. The private sibling uses the
 same mode here for symmetry, since this is not an infrastructure-as-code plan.
 
 > **Semantic PR review is not requested for the remainder of this plan's execution.** Every PR
@@ -42,7 +42,7 @@ same mode here for symmetry, since this is not an infrastructure-as-code plan.
 > superseding both the former default five-cycle cap and this plan's earlier "lighter review,
 > cap 2 cycles, override readily" policy. `[AI]` merges directly once CI passes; no review-cycle
 > comment, no override note is required beforehand. PR #309 (`ose-public`) and PR #76
-> (`ose-private`) — mid cycle-1 review when this took effect — stop at cycle 1's already-applied
+> (the private sibling) — mid cycle-1 review when this took effect — stop at cycle 1's already-applied
 > fixes and merge on green CI rather than starting cycle 2 or a specialist fan-out.
 >
 > **RTK execution rule for every still-unchecked step:** every shell invocation an agent executes
@@ -74,14 +74,14 @@ back-to-back, but each still lands before the wave's integration and flip steps 
 ### Delivery Boundaries
 
 Every change-producing phase appears in exactly one row. Both repositories use the same worktree
-name and the same branch per unit; `ose-private` has no plan folder, so its branches carry only the
+name and the same branch per unit; the private sibling has no plan folder, so its branches carry only the
 implementation change.
 
 | Phase(s) | Delivery unit                                                                 | Worktree                      | Branch                       | PR opens                                                                                                               |
 | -------- | ----------------------------------------------------------------------------- | ----------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | —        | Initial plan documents (#305)                                                 | `worktrees/rewrite-rhino-cli` | `worktree/rewrite-rhino-cli` | yes — `ose-public` only, under the recorded rule-4 exclusion                                                           |
 | 0        | — (baseline and "before" benchmark)                                           | `worktrees/rewrite-rhino-cli` | —                            | no — [Phase 0 opens no PR](../../../repo-governance/conventions/structure/plans/phase-0-opens-no-pr.md)                |
-| 1        | `tree-sitter` removal + regenerated manifest                                  | `worktrees/rewrite-rhino-cli` | `worktree/rewrite-rhino-cli` | yes, dedicated PR — `ose-private` (#75) only; `ose-public` folded it into this PR † instead                            |
+| 1        | `tree-sitter` removal + regenerated manifest                                  | `worktrees/rewrite-rhino-cli` | `worktree/rewrite-rhino-cli` | yes, dedicated PR — the private sibling (#75) only; `ose-public` folded it into this PR † instead                      |
 | 2        | Scaffold, dispatch shim, CI wiring                                            | `worktrees/rewrite-rhino-cli` | `rhino-fsharp-scaffold`      | yes — at Phase 2                                                                                                       |
 | 3        | Wave A — `convention`, `parity`                                               | `worktrees/rewrite-rhino-cli` | `rhino-fsharp-wave-a`        | yes — one per feature file, then the flip PR                                                                           |
 | 4        | Wave B — `repo-config`, `env`                                                 | `worktrees/rewrite-rhino-cli` | `rhino-fsharp-wave-b`        | yes — one per feature file, then the flip PR                                                                           |
@@ -94,7 +94,7 @@ implementation change.
 | 11       | Rules propagation (rule-bearing half only — the descriptive half moved to 9e) | `worktrees/rewrite-rhino-cli` | `rhino-fsharp-rules`         | yes — at Phase 11                                                                                                      |
 | 12       | Knowledge capture and archival                                                | `worktrees/rewrite-rhino-cli` | `rhino-fsharp-archive`       | yes — at Phase 12                                                                                                      |
 
-† As planned, `ose-private` opened a dedicated Phase 1 PR (#75), in the same window as this PR; the
+† As planned, the private sibling opened a dedicated Phase 1 PR (#75), in the same window as this PR; the
 publish-mode spike itself carries no reviewable change and folds into Phase 2 in both repos. In
 `ose-public` the Phase 1 reviewable change (`Cargo.toml`, `Cargo.lock`, `parity-manifest.sha256`)
 landed inside this same plan-document PR (#306) instead of a separate one — verified live:
@@ -102,13 +102,13 @@ landed inside this same plan-document PR (#306) instead of a separate one — ve
 is a record-accuracy note, not a re-plan: Phase 0 still opened no PR, and no rule-4 ceiling was
 breached.
 
-## What is different in `ose-private`
+## What is different in the private sibling
 
 Every phase below lands in both repositories. `apps/rhino-cli/` is byte-identical across them —
 603 manifest entries, diffing empty. **Everything around it is not.** These deltas are load-bearing
 and each one has a step of its own below, not an assumption:
 
-| Fact                       | `ose-public`                                                            | `ose-private`                                                                              |
+| Fact                       | `ose-public`                                                            | The private sibling                                                                        |
 | -------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
 | Existing F# projects       | `crane-cli`, two F# backends, two F# libs                               | **none** — this rewrite introduces F# to that repository                                   |
 | `dotnet` CI quality gate   | exists, keyed on `has-dotnet-projects`                                  | **does not exist** — Phase 2 creates it there                                              |
@@ -122,15 +122,15 @@ and each one has a step of its own below, not an assumption:
 | `.rs` outside rhino-cli    | **198** across 8 `Cargo.toml` course-example projects                   | **0** — so its Rust teardown is genuinely full and `ose-public`'s is not                   |
 | Prior Rust migration plan  | `plans/done/2026-05-23__rhino-cli-rust-rewrite/`                        | `plans/done/2026-05-24__rhino-cli-rust-migration/`                                         |
 
-The single most dangerous of these is `ose-private`'s `typescript` job filter. It excludes only
+The single most dangerous of these is the private sibling's `typescript` job filter. It excludes only
 `tag:lang:rust`, so the moment `rhino-cli-fsharp` exists, `nx affected` sweeps it into a job that
 installs Node and Rust but **not** the .NET SDK. Phase 2 fixes this **in the same PR that creates
 the project**, not after CI turns red there.
 
-The second most dangerous is that `ose-private` absorbs strictly more CI work than `ose-public`: a
+The second most dangerous is the private-sibling absorbs strictly more CI work than `ose-public`: a
 new `dotnet` job, a new `has-dotnet-projects` output, a corrected `typescript` filter, and a
 `global.json` — none of which exist there today, all of which `ose-public` already has for free.
-Wherever a step below says "land the same change in the sibling", the `ose-private` diff is expected
+Wherever a step below says "land the same change in the sibling", the private-sibling diff is expected
 to be **larger**, and a step that assumes symmetry is a bug.
 
 > **Governance shard filenames differ between the repos.** Never copy a governance file across;
@@ -477,11 +477,11 @@ per [DD-4](./tech-docs.md#dd-4--namespace-waves-ordered-by-risk-gate-last).
       see `benchmark.md`'s Source size section) excluding comments and blank lines, and record the
       counting command itself so the F# side can be counted identically at Phase 10 — acceptance:
       the count and the exact command are in `benchmark.md`.
-- [x] [AI] Repeat every measurement step above in the `ose-private` worktree at the same paths,
+- [x] [AI] Repeat every measurement step above in the private-sibling worktree at the same paths,
       authored there rather than copied, and record its figures in the single-sourced `benchmark.md`
-      under `ose-public` — `ose-private` carries no copy of this plan folder by design
+      under `ose-public` — the private sibling carries no copy of this plan folder by design
       [Repo-grounded — the two repos share a convention, not files] — acceptance: both repos report a
-      green `rhino-cli:test:quick` and `benchmark.md` carries a second `ose-private` measurements
+      green `rhino-cli:test:quick` and `benchmark.md` carries a second the private sibling measurements
       table with a real "before" figure for every B1-B8 row plus source size.
 
 ### Phase 0 Gate
@@ -490,13 +490,13 @@ per [DD-4](./tech-docs.md#dd-4--namespace-waves-ordered-by-risk-gate-last).
 
 - [x] [AI] `npx nx run rhino-cli:test:quick` exits 0 in both repos.
 - [x] [AI] The single-sourced `benchmark.md` has a non-placeholder "before" value for all eight rows
-      B1-B8 plus source size, in both its `ose-public` and its `ose-private` measurements table —
+      B1-B8 plus source size, in both its `ose-public` and its the private sibling measurements table —
       acceptance: `/usr/bin/grep -o 'TBD' benchmark.md | wc -l` returns **18**, not 0 — the nine
       "after" cells per repo are still `TBD` at this phase, and every "before" cell in both tables
       has been overwritten with a real figure. A `0` here would mean the seeding step never ran;
       anything above 18 means a "before" measurement was skipped. The seeding step wrote 18 (nine rows
       × two columns, `ose-public` only); filling that table's "before" column left 9, and P0.17's
-      second `ose-private` table restored the total to 18 by adding nine filled "before" cells and
+      second the private sibling table restored the total to 18 by adding nine filled "before" cells and
       nine fresh `TBD` "after" cells.
 - [x] [AI] `git status --porcelain` in each worktree shows only `plans/` changes — Phase 0 touches
       no source — acceptance: `git status --porcelain | /usr/bin/grep -cv '^.. plans/'` returns 0.
@@ -508,7 +508,7 @@ per [DD-4](./tech-docs.md#dd-4--namespace-waves-ordered-by-risk-gate-last).
 
 ## Phase 1: Dependency Removal and the Publish-Mode Spike
 
-> In `ose-private`, this phase opens a dedicated PR (#75) — the earliest phase permitted to, per
+> In the private sibling, this phase opens a dedicated PR (#75) — the earliest phase permitted to, per
 > [Phase 0 Opens No PR](../../../repo-governance/conventions/structure/plans/phase-0-opens-no-pr.md)
 > — carrying exactly one reviewable change: the `tree-sitter` removal below, plus Phase 0's
 > `benchmark.md` baseline artifact riding along as that rule directs. In `ose-public`, this plan's
@@ -557,7 +557,7 @@ per [DD-4](./tech-docs.md#dd-4--namespace-waves-ordered-by-risk-gate-last).
       `bash apps/rhino-cli/scripts/rhino-bin.sh parity manifest validate` exits 0 in both
       worktrees, asserted on the exit code. (Bare `rhino-cli` is not on `PATH`; this is the
       resolvable form every husky hook and `lint-staged` entry already calls.)
-- [x] [AI] Author the identical removal in the `ose-private` worktree rather than copying the file
+- [x] [AI] Author the identical removal in the private-sibling worktree rather than copying the file
       across — acceptance: both repos' `apps/rhino-cli/Cargo.toml` and `Cargo.lock` are
       byte-identical, and each repo's PR lands in the same window so the byte-identity obligation
       is never one-sided.
@@ -790,34 +790,34 @@ per [DD-4](./tech-docs.md#dd-4--namespace-waves-ordered-by-risk-gate-last).
       `local-tmp/`, because `AGENTS.md`'s Plans & Temporary Files rule permits sweeping `local-tmp/`
       at any time and the last of this capture's consumers does not run until Phase 8, six phases and
       six separate PRs later. Capture **per repo, into that repo's own tree, and read it back only
-      from that same tree** — never copied or read cross-repo, since `ose-private` carries no copy of
+      from that same tree** — never copied or read cross-repo, since the private sibling carries no copy of
       this plan folder:
       `apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=ci --format=json --by-group > plans/in-progress/rewrite-rhino-cli-to-fsharp/evidence/gate-before-ose-public.json`
       run and committed in the `ose-public` worktree (the plan-folder `evidence/` directory, the
       existing convention for committed testing evidence), and the identical command run in the
-      `ose-private` worktree with its output written and committed to
-      `apps/rhino-cli/evidence/gate-before-ose-private.json` **inside `ose-private`'s own tree** —
+      private sibling worktree with its output written and committed to
+      `apps/rhino-cli/evidence/gate-before-private-sibling.json` **inside the private sibling's own tree** —
       deliberately outside `apps/rhino-cli/parity-manifest.sha256`'s boundary paths (`src/`, `tests/`,
       `Cargo.toml`, `Cargo.lock`, `project.json`, `LICENSE` — see
       [tech-docs §DD-5](./tech-docs.md#dd-5--both-repos-in-the-same-delivery-units) for why that
       boundary must stay byte-identical), so this per-repo-divergent file can never be pulled into
       the byte-identity check — acceptance: `git ls-files --error-unmatch` exits 0 for both paths in
       their respective repos, and both files are non-empty, valid JSON per `jq .`. The
-      `ose-private` path is an app-tree location, not the plan-folder `evidence/` the convention
-      names, because `ose-private` carries no copy of this plan's folder and the Plan Archival
+      private sibling path is an app-tree location, not the plan-folder `evidence/` the convention
+      names, because the private sibling carries no copy of this plan's folder and the Plan Archival
       section forbids creating one — see
-      [tech-docs §DD-9](./tech-docs.md#dd-9--ose-privates-cross-phase-gate-baseline-lives-in-the-app-tree-transiently)
+      [tech-docs §DD-9](./tech-docs.md#dd-9--the-private-siblings-cross-phase-gate-baseline-lives-in-the-app-tree-transiently)
       for the exception's rationale and scope. It is **transient, not permanent**: the Phase 8 Gate
       tears it down once Wave F's check — its last consumer — has run, so nothing survives to
-      `ose-private`'s tree past that phase.
+      the private sibling's tree past that phase.
 - [x] [AI] Edit `apps/rhino-cli/scripts/rhino-bin.sh`: add a `FSHARP_NAMESPACES` array, initially
       empty, and route on `$1` before the existing three-tier resolution — acceptance:
       `apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=ci --format=json --by-group` output
       is byte-identical, per `diff`, to this repo's own capture from the step above, read from that
       same worktree —
       `plans/in-progress/rewrite-rhino-cli-to-fsharp/evidence/gate-before-ose-public.json` when
-      checked in `ose-public`, `apps/rhino-cli/evidence/gate-before-ose-private.json` when checked
-      in `ose-private`.
+      checked in `ose-public`, `apps/rhino-cli/evidence/gate-before-private-sibling.json` when checked
+      in the private sibling.
 - [x] [AI] Add the F#-side resolution tiers to `apps/rhino-cli/scripts/rhino-bin.sh` —
       `RHINO_CLI_FSHARP_BIN`, then `apps/rhino-cli/src-fsharp/dist/`, then `dotnet run` — per
       [tech-docs §Dispatch shim](./tech-docs.md#dispatch-shim-during-migration) — acceptance: with
@@ -854,16 +854,16 @@ per [DD-4](./tech-docs.md#dd-4--namespace-waves-ordered-by-risk-gate-last).
       acceptance: the reasoning is written into `learnings.md` naming each of those five files.
 - [x] [AI] Confirm the `detect` job's `lang:fsharp` → `has-dotnet-projects` mapping — **true as
       assumed in `ose-public`** (`grep -n 'lang:fsharp' .github/workflows/pr-quality-gate.yml`
-      shows the mapping pre-existing, no new line needed there), **false in `ose-private`**: that
+      shows the mapping pre-existing, no new line needed there), **false in the private sibling**: that
       repo's `detect` job had no `has-dotnet-projects` output or `lang:fsharp`/`lang:csharp` case at
       all, so both were added new — acceptance (corrected, per-repo): each repo's `detect` job now
       has exactly one `lang:fsharp | lang:csharp) echo "has-dotnet-projects=true"` case, confirmed
       by `grep -c 'lang:fsharp | lang:csharp' .github/workflows/pr-quality-gate.yml` returning 1 in
       both repos.
-- [x] [AI] Land every Phase 2 change in the `ose-private` worktree, authored there rather than
+- [x] [AI] Land every Phase 2 change in the private-sibling worktree, authored there rather than
       copied — acceptance: the same `dotnet build`, `diff`, and `grep` assertions hold in that repo,
       **and** the break-and-restore `deps:audit` proof above is re-run there too, against
-      `ose-private`'s own `rhino-cli-fsharp` target: record `git rev-parse HEAD` first; temporarily
+      the private sibling's own `rhino-cli-fsharp` target: record `git rev-parse HEAD` first; temporarily
       point its live reference at a known-vulnerable package, **confined to the uncommitted working
       tree — no `git add`/`git commit` while it is broken**; require
       `npx nx run rhino-cli-fsharp:deps:audit` to exit non-zero; restore the real reference; require
@@ -882,7 +882,7 @@ per [DD-4](./tech-docs.md#dd-4--namespace-waves-ordered-by-risk-gate-last).
       matches this repo's own captured baseline byte for byte, in each repo independently, each read
       from that same repo's own tree, never across worktrees —
       `plans/in-progress/rewrite-rhino-cli-to-fsharp/evidence/gate-before-ose-public.json` in
-      `ose-public`, `apps/rhino-cli/evidence/gate-before-ose-private.json` in `ose-private`. The two
+      `ose-public`, `apps/rhino-cli/evidence/gate-before-private-sibling.json` in the private sibling. The two
       baseline files are not expected to match each other: `delivery.md:14946-14950`'s Phase 9 Gate
       documents the two repos' `pr-quality-gate.yml` as independently divergent, so this check is a
       within-repo before/after comparison, never a cross-repo one.
@@ -894,7 +894,7 @@ per [DD-4](./tech-docs.md#dd-4--namespace-waves-ordered-by-risk-gate-last).
       the top of this file has been corrected.
 - [x] [AI] `pr-quality-gate.yml` is green on this phase's PR in both repos, and the `build-rhino`
       job's new duration is written into `benchmark.md` beside its Phase 0 B7 baseline.
-      Verified: `ose-public#309` and `ose-private#76` both merged with 0 failing checks of 18;
+      Verified: `ose-public#309` and `<private-sibling>#76` both merged with 0 failing checks of 18;
       the re-measured durations are recorded as `B7 after Phase 2` in `benchmark.md`.
 
 > **Pause Safety**: F# projects exist but nothing routes to them; every namespace still runs on
@@ -1319,11 +1319,11 @@ Each cycle below binds exactly one Gherkin scenario, copied verbatim from its `.
 - [x] [AI] Verify no CI job builds F# from source: every job executing a flipped namespace has
       `RHINO_CLI_FSHARP_BIN` exported from a downloaded artifact — acceptance: searching this wave's
       CI logs for `dotnet run` and for `dotnet build` outside `build-rhino` returns nothing.
-- [x] [AI] Land every Wave A change in the `ose-private` worktree, authored there rather than
+- [x] [AI] Land every Wave A change in the private-sibling worktree, authored there rather than
       copied — acceptance: `shadow-diff.sh` reports zero differences there, **and**, in that
       worktree, `gate list --surface=ci --format=json --by-group` (namespaces restored) matches
-      `apps/rhino-cli/evidence/gate-before-ose-private.json`, read from that same `ose-private`
-      tree — so `ose-private`'s rollback evidence is not `shadow-diff.sh` alone.
+      `apps/rhino-cli/evidence/gate-before-private-sibling.json`, read from that same the private sibling
+      tree — so the private sibling's rollback evidence is not `shadow-diff.sh` alone.
 
 ### Phase 3 Gate
 
@@ -2845,7 +2845,7 @@ Each cycle below binds exactly one Gherkin scenario, copied verbatim from its `.
 
   ```gherkin
     Scenario: IaC env-validation is preserved in the canonical
-      Given ose-private declares terraform and ansible surfaces in repo-config.yml
+      Given private-sibling declares terraform and ansible surfaces in repo-config.yml
       When env validate runs
       Then validate_terraform and validate_ansible execute and report drift
       And ose-public, which declares no such surfaces, skips validation by data, not by stub
@@ -3062,11 +3062,11 @@ validate` shows `exec .../src-fsharp/dist/rhino-cli-fsharp env validate`, confir
 ${{ github.workspace }}/apps/rhino-cli/src-fsharp/dist/rhino-cli-fsharp`, and all such jobs
       `needs: build-rhino` (directly or transitively via `enumerate`), so the binary those jobs run
       is always `build-rhino`'s uploaded artifact, never a from-source rebuild.
-- [x] [AI] Land every Wave B change in the `ose-private` worktree, authored there rather than
+- [x] [AI] Land every Wave B change in the private-sibling worktree, authored there rather than
       copied — acceptance: `shadow-diff.sh` reports zero differences there, **and**, in that
       worktree, `gate list --surface=ci --format=json --by-group` (namespaces restored) matches
-      `apps/rhino-cli/evidence/gate-before-ose-private.json`, read from that same `ose-private`
-      tree — so `ose-private`'s rollback evidence is not `shadow-diff.sh` alone.
+      `apps/rhino-cli/evidence/gate-before-private-sibling.json`, read from that same the private sibling
+      tree — so the private sibling's rollback evidence is not `shadow-diff.sh` alone.
 
 ### Phase 4 Gate
 
@@ -3077,7 +3077,7 @@ ${{ github.workspace }}/apps/rhino-cli/src-fsharp/dist/rhino-cli-fsharp`, and al
       **Date**: 2026-08-27. **Status**: done (verification only, both repos). **Files Changed**:
       none. `dotnet test apps/rhino-cli/src-fsharp/tests/unit/RhinoCli.UnitTests.fsproj`: `ose-public`
       — `Passed! - Failed: 0, Passed: 494, Skipped: 0, Total: 494` (494 includes the
-      already-merged Wave C PR2 doctor tests ahead of Wave B on that repo's `main`); `ose-private`
+      already-merged Wave C PR2 doctor tests ahead of Wave B on that repo's `main`); the private sibling
       — `Passed! - Failed: 0, Passed: 354, Skipped: 0, Total: 354`. The 62 Wave B scenarios were
       cross-referenced by summing `Scenario:` counts in the 8 Wave B feature files
       (9 + 5 + 21 + 4 + 16 + 3 + 1 + 3 = 62) against the `[<Fact>]` count in each corresponding
@@ -3101,13 +3101,13 @@ ${{ github.workspace }}/apps/rhino-cli/src-fsharp/dist/rhino-cli-fsharp`, and al
       none. Both repos: exit code `0`, output `apps/rhino-cli/parity-manifest.sha256 is current`.
 - [x] [AI] No file under `specs/apps/rhino/` was modified — acceptance:
       `git diff --name-only origin/main -- specs/apps/rhino | wc -l` returns 0.
-      **Date**: 2026-08-27. **Status**: done (`ose-public` only; the `ose-private` half of this
+      **Date**: 2026-08-27. **Status**: done (`ose-public` only; the private-sibling half of this
       check is not asserted here — this PR does not touch that repo). **Files Changed**: none
       (verification only). `git diff --name-only origin/main -- specs/apps/rhino | wc -l` returns
       `0`.
 - [x] [AI] `benchmark.md` has an `after wave B` row for startup and for pre-commit wall time.
       **Date**: 2026-08-27. **Status**: done (`ose-public` only; `benchmark.md` is per-repo and this
-      PR does not touch `ose-private`). **Files Changed**:
+      PR does not touch the private sibling). **Files Changed**:
       `plans/in-progress/rewrite-rhino-cli-to-fsharp/benchmark.md`. `grep -c 'after wave B'
 benchmark.md` returns `1`; that one section contains both the B5 (startup) and B6
       (pre-commit) rows.
@@ -3358,7 +3358,7 @@ Each cycle below binds exactly one Gherkin scenario, copied verbatim from its `.
 
   ```gherkin
     Scenario: the doctor change is byte-identical across the parity repos
-      Given the doctor target-share change is delivered to ose-public and ose-private
+      Given the doctor target-share change is delivered to ose-public and private-sibling
       When the rhino-cli source and its Gherkin specs are diffed pairwise across the parity repos
       Then the diff is empty for every apps/rhino-cli source file and every specs/apps/rhino feature file
   ```
@@ -4563,21 +4563,21 @@ test-coverage` still reports `10 invocation(s) compared, 0 difference(s)` — sh
 ${{ github.workspace }}/apps/rhino-cli/src-fsharp/dist/rhino-cli-fsharp` and `needs:
 build-rhino` (directly or transitively), so `doctor`/`test-coverage` invocations in CI always
       run `build-rhino`'s uploaded artifact, never a from-source rebuild.
-- [x] [AI] Land every Wave C change in the `ose-private` worktree, authored there rather than
+- [x] [AI] Land every Wave C change in the private-sibling worktree, authored there rather than
       copied — acceptance: `shadow-diff.sh` reports zero differences there, **and**, in that
       worktree, `gate list --surface=ci --format=json --by-group` (namespaces restored) matches
-      `apps/rhino-cli/evidence/gate-before-ose-private.json`, read from that same `ose-private`
-      tree — so `ose-private`'s rollback evidence is not `shadow-diff.sh` alone.
+      `apps/rhino-cli/evidence/gate-before-private-sibling.json`, read from that same the private sibling
+      tree — so the private sibling's rollback evidence is not `shadow-diff.sh` alone.
       **Date**: 2026-08-27. **Status**: done. **Files Changed**: none (verification only; the
-      landing itself was already done across `ose-private` PR#90 (`e85fd0f5e4`), PR#91
+      landing itself was already done across the private sibling PR#90 (`e85fd0f5e4`), PR#91
       (`32dcaa070e`), PR#92 (`cf9870d005`), and PR#94 (`c550300115`, the integration flip), all
       authored directly in that worktree rather than copied — this item's two-part acceptance
-      clause had not yet been re-verified there until now). In the `ose-private` worktree, on a
+      clause had not yet been re-verified there until now). In the private-sibling worktree, on a
       fresh branch checked out off `origin/main` at `c550300115`:
       `apps/rhino-cli/scripts/shadow-diff.sh doctor test-coverage` → `shadow-diff: 10 invocation(s)
 compared, 0 difference(s)`, exit 0. `apps/rhino-cli/scripts/rhino-bin.sh gate list
 --surface=ci --format=json --by-group`, run against the shim exactly as shipped (no temporary
-      `FSHARP_NAMESPACES` edit), differs from `apps/rhino-cli/evidence/gate-before-ose-private.json`
+      `FSHARP_NAMESPACES` edit), differs from `apps/rhino-cli/evidence/gate-before-private-sibling.json`
       only in JSON array line-wrapping — the same class of difference the `ose-public` Pause-Safety
       falsification above (`delivery.md:2901-2917`) found against its own baseline, because the
       tracked file predates a later prettier reformatting pass. A Python `json.load` structural
@@ -4600,9 +4600,9 @@ compared, 0 difference(s)`, exit 0. `apps/rhino-cli/scripts/rhino-bin.sh gate li
       (53) against the `[<Fact>]` count in `DoctorSteps.fs` (18) + `DoctorToolCheckSteps.fs` (17) +
       `FsharpToolInvocationSteps.fs` (1) + `TestCoverageSteps.fs` (17) = 53. Full suite:
       `dotnet test apps/rhino-cli/src-fsharp/tests/unit/RhinoCli.UnitTests.fsproj` — `Passed! -
-Failed: 0, Passed: 625, Skipped: 0, Total: 625`. `ose-private` (fresh branch off `origin/main`
+Failed: 0, Passed: 625, Skipped: 0, Total: 625`. The private sibling (fresh branch off `origin/main`
       at `c550300115`): identical full-suite result — `Passed! - Failed: 0, Passed: 625, Skipped: 0,
-Total: 625`. Re-running the `[<Fact>]` cross-reference in `ose-private` today (its four
+Total: 625`. Re-running the `[<Fact>]` cross-reference in the private sibling today (its four
       `Steps/*.fs` files are byte-identical to `ose-public`'s, confirmed via `diff`) actually counts
       `DoctorSteps.fs` (19) + `DoctorToolCheckSteps.fs` (17) + `FsharpToolInvocationSteps.fs` (1) +
       `TestCoverageSteps.fs` (18) = 55 in **both** repos today, not the 53 this annotation
@@ -4616,7 +4616,7 @@ Total: 625`. Re-running the `[<Fact>]` cross-reference in `ose-private` today (i
 - [x] [AI] `apps/rhino-cli/scripts/shadow-diff.sh doctor test-coverage` reports zero differences in both
       repos.
       **Date**: 2026-08-27. **Status**: done (verification only, both repos). **Files Changed**:
-      none. `shadow-diff: 10 invocation(s) compared, 0 difference(s)`, exit code 0. `ose-private`
+      none. `shadow-diff: 10 invocation(s) compared, 0 difference(s)`, exit code 0. The private sibling
       (fresh branch off `origin/main` at `c550300115`): identical result — `shadow-diff: 10
 invocation(s) compared, 0 difference(s)`, exit code 0.
 - [x] [AI] `rtk nx run rhino-cli:test:quick`, `rtk nx run rhino-cli-fsharp:test:quick`, and a full
@@ -4627,7 +4627,7 @@ invocation(s) compared, 0 difference(s)`, exit code 0.
       covered); `rhino-cli-fsharp:test:quick` exit 0 (typecheck clean, fantomas/fsharplint/
       fsharp-analyzers clean, 625 unit tests passed, 17 specs/126 scenarios/541 steps — all
       covered); `.husky/pre-commit` exit 0 against this wave's real staged changes (see the commit
-      this PR carries). `ose-private` (fresh branch off `origin/main` at `c550300115`, cold Nx
+      this PR carries). The private sibling (fresh branch off `origin/main` at `c550300115`, cold Nx
       cache): `rhino-cli:test:quick` exit 0 (same 72 specs, 531 scenarios, 2165 steps);
       `rhino-cli-fsharp:test:quick` exit 0 (same 17 specs, 126 scenarios, 541 steps); `.husky/
 pre-commit` exit 0 with nothing staged (`env-staged-guard` and `harness-bindings-generate`
@@ -4638,13 +4638,13 @@ pre-commit` exit 0 with nothing staged (`env-staged-guard` and `harness-bindings
       asserted on the **exit code**, not on the absence of a `[FAIL]` token.
       **Date**: 2026-08-27. **Status**: done (verification only, both repos). **Files Changed**:
       `apps/rhino-cli/parity-manifest.sha256` (regenerated as its own commit). Exit code `0`, output
-      `apps/rhino-cli/parity-manifest.sha256 is current`. `ose-private` (fresh branch off
+      `apps/rhino-cli/parity-manifest.sha256 is current`. The private sibling (fresh branch off
       `origin/main` at `c550300115`): exit code `0`, output `apps/rhino-cli/parity-manifest.sha256
 is current` — already current, no regeneration needed there.
 - [x] [AI] No file under `specs/apps/rhino/` was modified — acceptance:
       `git diff --name-only origin/main -- specs/apps/rhino | wc -l` returns 0.
       **Date**: 2026-08-27. **Status**: done (verification only, both repos). **Files Changed**:
-      none. `git diff --name-only origin/main -- specs/apps/rhino | wc -l` → `0`. `ose-private`
+      none. `git diff --name-only origin/main -- specs/apps/rhino | wc -l` → `0`. The private sibling
       (fresh branch off `origin/main` at `c550300115`): the same command, redirected to a file
       before counting rather than piped directly into `wc -l` — the RTK proxy's `git diff` filter
       appends a trailer line that inflates a direct pipe's count by one — → `0` bytes, `0` lines;
@@ -8014,11 +8014,11 @@ Each cycle below binds exactly one Gherkin scenario, copied verbatim from its `.
 - [x] [AI] Verify no CI job builds F# from source: every job executing a flipped namespace has
       `RHINO_CLI_FSHARP_BIN` exported from a downloaded artifact — acceptance: searching this wave's
       CI logs for `dotnet run` and for `dotnet build` outside `build-rhino` returns nothing.
-- [x] [AI] Land every Wave D change in the `ose-private` worktree, authored there rather than
+- [x] [AI] Land every Wave D change in the private-sibling worktree, authored there rather than
       copied — acceptance: `shadow-diff.sh` reports zero differences there, **and**, in that
       worktree, `gate list --surface=ci --format=json --by-group` (namespaces restored) matches
-      `apps/rhino-cli/evidence/gate-before-ose-private.json`, read from that same `ose-private`
-      tree — so `ose-private`'s rollback evidence is not `shadow-diff.sh` alone.
+      `apps/rhino-cli/evidence/gate-before-private-sibling.json`, read from that same the private sibling
+      tree — so the private sibling's rollback evidence is not `shadow-diff.sh` alone.
 
 ### Phase 6 Gate
 
@@ -12570,11 +12570,11 @@ Each cycle below binds exactly one Gherkin scenario, copied verbatim from its `.
 - [x] [AI] Verify no CI job builds F# from source: every job executing a flipped namespace has
       `RHINO_CLI_FSHARP_BIN` exported from a downloaded artifact — acceptance: searching this wave's
       CI logs for `dotnet run` and for `dotnet build` outside `build-rhino` returns nothing.
-- [x] [AI] Land every Wave E change in the `ose-private` worktree, authored there rather than
+- [x] [AI] Land every Wave E change in the private-sibling worktree, authored there rather than
       copied — acceptance: `shadow-diff.sh` reports zero differences there, **and**, in that
       worktree, `gate list --surface=ci --format=json --by-group` (namespaces restored) matches
-      `apps/rhino-cli/evidence/gate-before-ose-private.json`, read from that same `ose-private`
-      tree — so `ose-private`'s rollback evidence is not `shadow-diff.sh` alone.
+      `apps/rhino-cli/evidence/gate-before-private-sibling.json`, read from that same the private sibling
+      tree — so the private sibling's rollback evidence is not `shadow-diff.sh` alone.
 
 ### Phase 7 Gate
 
@@ -14909,11 +14909,11 @@ Each cycle below binds exactly one Gherkin scenario, copied verbatim from its `.
       runs `gate list` under CI also exports it alongside `RHINO_CLI_BIN`. Wave F adds no new job
       or step, so no CI change was needed; `grep -n 'dotnet run\|dotnet build' pr-quality-gate.yml`
       returns only comment lines, none inside `build-rhino`.
-- [x] [AI] Land every Wave F change in the `ose-private` worktree, authored there rather than
+- [x] [AI] Land every Wave F change in the private-sibling worktree, authored there rather than
       copied — acceptance: `shadow-diff.sh` reports zero differences there, **and**, in that
       worktree, `gate list --surface=ci --format=json --by-group` (namespaces restored) matches
-      `apps/rhino-cli/evidence/gate-before-ose-private.json`, read from that same `ose-private`
-      tree — so `ose-private`'s rollback evidence is not `shadow-diff.sh` alone.
+      `apps/rhino-cli/evidence/gate-before-private-sibling.json`, read from that same the private sibling
+      tree — so the private sibling's rollback evidence is not `shadow-diff.sh` alone.
       Verified in `~/ose-projects/<sibling>/worktrees/rewrite-rhino-cli`: applied
       ose-public's reviewed Wave F diff (`apps/rhino-cli` + `repo-config.yml`, excluding
       `delivery.md`/`benchmark.md`, which are not carried there), rebuilt, ran the full
@@ -14921,7 +14921,7 @@ Each cycle below binds exactly one Gherkin scenario, copied verbatim from its `.
 all covered`), flipped `gate` into `FSHARP_NAMESPACES`, and regenerated the parity
       manifest — `shadow-diff.sh gate` reported `20 invocation(s) compared, 0 difference(s)`
       both before and after the flip, and `gate list --surface=ci --format=json --by-group`
-      is `SEMANTICALLY EQUAL` to `gate-before-ose-private.json` (Python `json.load` structural
+      is `SEMANTICALLY EQUAL` to `gate-before-private-sibling.json` (Python `json.load` structural
       comparison). Found and fixed ose-public's own parity manifest being stale (Dispatch.fs,
       project.json, and extractors.rs had changed since the last regeneration) as part of
       reconciling the two repos' manifests to match exactly.
@@ -14931,24 +14931,24 @@ all covered`), flipped `gate` into `FSHARP_NAMESPACES`, and regenerated the pari
 > All checks below must pass before starting Phase 9.
 
 - [x] [AI] All 89 Wave F scenarios pass under
-      `dotnet test apps/rhino-cli/src-fsharp/tests/unit` in both repos. Verified: `dotnet test --filter "FullyQualifiedName~Gate"` reports 104 passed, 0 failed in both `ose-public` and `ose-private` (104 reflects Scenario Outline expansion by TickSpec; the underlying feature-file Scenario count across `gate-declaration.feature` (11), `gate-binary-resolution.feature` (4), `gate-execution.feature` (30), `gate-validation.feature` (26), `gate-emission.feature` (5), `gate-enumeration.feature` (8), and `parity-manifest.feature` (5) sums to exactly 89).
+      `dotnet test apps/rhino-cli/src-fsharp/tests/unit` in both repos. Verified: `dotnet test --filter "FullyQualifiedName~Gate"` reports 104 passed, 0 failed in both `ose-public` and the private sibling (104 reflects Scenario Outline expansion by TickSpec; the underlying feature-file Scenario count across `gate-declaration.feature` (11), `gate-binary-resolution.feature` (4), `gate-execution.feature` (30), `gate-validation.feature` (26), `gate-emission.feature` (5), `gate-enumeration.feature` (8), and `parity-manifest.feature` (5) sums to exactly 89).
 - [x] [AI] `apps/rhino-cli/scripts/shadow-diff.sh gate` reports zero differences in both
-      repos. Verified: `shadow-diff: 20 invocation(s) compared, 0 difference(s)` in both `ose-public` and `ose-private`.
+      repos. Verified: `shadow-diff: 20 invocation(s) compared, 0 difference(s)` in both `ose-public` and the private sibling.
 - [x] [AI] `npx nx run rhino-cli:test:quick`, `npx nx run rhino-cli-fsharp:test:quick`, and a full
-      `.husky/pre-commit` run all exit 0 in both repos. Verified: a first `rhino-cli:test:quick` run in `ose-public` failed on a `clippy::single_match_else` violation introduced by this wave's `add_fsharp_step_pattern` escape-fallback fix (a `match Regex::new(&pattern) { Ok(re) => ..., Err(_) => { block } }` construct); fixed by rewriting it as `if let Ok(re) = Regex::new(&pattern) { ... } else { ... }`, re-verified clean via `cargo clippy --all-targets -- -D warnings`, `cargo test --release --lib speccoverage` (85 passed, unchanged), and `specs:behavior:coverage` (70 specs, 525 scenarios, 2140 steps — all covered, unchanged); the same rewrite was then applied to `ose-private`'s byte-identical copy of `extractors.rs` and passed the same three checks there. After the fix, `rhino-cli:test:quick`, `rhino-cli-fsharp:test:quick`, and a full `.husky/pre-commit` (run against a pinned single-file `apps/rhino-cli/bench-probe.md` probe, staged, hook run, then removed and the index reset) each exited 0 in both repos.
+      `.husky/pre-commit` run all exit 0 in both repos. Verified: a first `rhino-cli:test:quick` run in `ose-public` failed on a `clippy::single_match_else` violation introduced by this wave's `add_fsharp_step_pattern` escape-fallback fix (a `match Regex::new(&pattern) { Ok(re) => ..., Err(_) => { block } }` construct); fixed by rewriting it as `if let Ok(re) = Regex::new(&pattern) { ... } else { ... }`, re-verified clean via `cargo clippy --all-targets -- -D warnings`, `cargo test --release --lib speccoverage` (85 passed, unchanged), and `specs:behavior:coverage` (70 specs, 525 scenarios, 2140 steps — all covered, unchanged); the same rewrite was then applied to the private sibling's byte-identical copy of `extractors.rs` and passed the same three checks there. After the fix, `rhino-cli:test:quick`, `rhino-cli-fsharp:test:quick`, and a full `.husky/pre-commit` (run against a pinned single-file `apps/rhino-cli/bench-probe.md` probe, staged, hook run, then removed and the index reset) each exited 0 in both repos.
 - [x] [AI] `apps/rhino-cli/scripts/rhino-bin.sh parity manifest validate` exits 0 in both repos —
-      asserted on the **exit code**, not on the absence of a `[FAIL]` token. Verified: exit 0 in both repos, output `apps/rhino-cli/parity-manifest.sha256 is current` in each. This surfaced a real defect along the way — `ose-public`'s own manifest had gone stale after two earlier commits touched `Dispatch.fs`/`project.json`/`extractors.rs` without regenerating it; caught via a direct hash comparison against `ose-private`, fixed by regenerating and committing `ose-public`'s manifest, then reconfirmed identical between repos via `shasum -a 256` on every affected file.
+      asserted on the **exit code**, not on the absence of a `[FAIL]` token. Verified: exit 0 in both repos, output `apps/rhino-cli/parity-manifest.sha256 is current` in each. This surfaced a real defect along the way — `ose-public`'s own manifest had gone stale after two earlier commits touched `Dispatch.fs`/`project.json`/`extractors.rs` without regenerating it; caught via a direct hash comparison against the private sibling, fixed by regenerating and committing `ose-public`'s manifest, then reconfirmed identical between repos via `shasum -a 256` on every affected file.
 - [x] [AI] No file under `specs/apps/rhino/` was modified — acceptance:
       `git diff --name-only origin/main -- specs/apps/rhino | wc -l` returns 0. Verified: returns 0 in both repos — Wave F's gate feature files already existed from an earlier phase; this wave only added F# step definitions and dispatch wiring, no Gherkin content.
 - [x] [AI] `benchmark.md` has an `after wave F` row for startup and for pre-commit wall time. Verified: the "Interim measurement: after wave F" section above carries both the B5 (46.17 ms) and B6 (4.41 s) rows, `grep -c "after wave F"` returns 1.
-- [x] [AI] Tear down `ose-private`'s transient `apps/rhino-cli/evidence/` directory, committed —
-      per [tech-docs §DD-9](./tech-docs.md#dd-9--ose-privates-cross-phase-gate-baseline-lives-in-the-app-tree-transiently),
-      the "Land every Wave F change in the `ose-private` worktree" check immediately above is
-      `gate-before-ose-private.json`'s last consumer, so nothing later reads it — acceptance:
-      `git rm -r apps/rhino-cli/evidence/` committed in the `ose-private` worktree, and
+- [x] [AI] Tear down the private sibling's transient `apps/rhino-cli/evidence/` directory, committed —
+      per [tech-docs §DD-9](./tech-docs.md#dd-9--the-private-siblings-cross-phase-gate-baseline-lives-in-the-app-tree-transiently),
+      the "Land every Wave F change in the private-sibling worktree" check immediately above is
+      `gate-before-private-sibling.json`'s last consumer, so nothing later reads it — acceptance:
+      `git rm -r apps/rhino-cli/evidence/` committed in the private-sibling worktree, and
       `git ls-files apps/rhino-cli/evidence/` in that repo returns nothing. `ose-public`'s equivalent
       capture is unaffected: it lives in this plan's own `evidence/` folder and travels to
-      `plans/done/` on archival, per the ordinary convention. Verified: `git rm -r apps/rhino-cli/evidence/` committed in `ose-private`, `git ls-files apps/rhino-cli/evidence/` returns nothing.
+      `plans/done/` on archival, per the ordinary convention. Verified: `git rm -r apps/rhino-cli/evidence/` committed in the private sibling, `git ls-files apps/rhino-cli/evidence/` returns nothing.
 
 > **Pause Safety**: the namespaces flipped so far run on F#, the rest still run on Rust, and both
 > binaries build. Reverting is a one-line edit to `FSHARP_NAMESPACES`. Safe to stop. To resume:
@@ -15221,7 +15221,7 @@ rev-parse HEAD` still `754b1ef5`. Full sequence in `learnings.md`.
       [Repo-grounded], and `apps/ose-be/` is a **sibling** of `apps/rhino-cli/`, not an ancestor.
       .NET resolves `global.json` by walking upward from the working directory only, never
       sideways, so a build under `apps/rhino-cli/src-fsharp/` cannot see it. There is no repo-root
-      `global.json` in `ose-public`, and this plan's own delta table records that `ose-private` has
+      `global.json` in `ose-public`, and this plan's own delta table records the private-sibling has
       **no `global.json` at all**. Acceptance: the target is absent from `project.json`, a
       `global.json` pinning the SDK version exists at a path that actually covers
       `apps/rhino-cli/src-fsharp/` **in both repos**, and `test -f` confirms it in each — verified
@@ -15264,14 +15264,14 @@ rev-parse HEAD` still `754b1ef5`. Full sequence in `learnings.md`.
       `tech-docs.md` is this decision's durable home, not `learnings.md`'s copy of it; acceptance:
       `tech-docs.md` no longer contains the literal string `TBD` in that section. **`learnings.md`
       is single-sourced under `ose-public`**, like `benchmark.md`,
-      since `ose-private` carries no copy of this plan folder — but the move (or its deferral) lands
-      in `ose-private`'s own tree too, because `apps/rhino-cli/src` is a byte-identical boundary under
+      since the private sibling carries no copy of this plan folder — but the move (or its deferral) lands
+      in the private sibling's own tree too, because `apps/rhino-cli/src` is a byte-identical boundary under
       `parity-manifest.sha256`, per
       [tech-docs §DD-5](./tech-docs.md#dd-5--both-repos-in-the-same-delivery-units), and cannot
       flatten in one repo without the other. Every downstream reader below that executes
-      in `ose-private` therefore derives `<fsharp-source-root>` by testing its **own** tree — exactly
+      in the private sibling therefore derives `<fsharp-source-root>` by testing its **own** tree — exactly
       one of `test -d apps/rhino-cli/src-fsharp/` or `test -d apps/rhino-cli/src/` passes — rather
-      than reading `ose-public`'s `learnings.md`, which does not exist in `ose-private`.
+      than reading `ose-public`'s `learnings.md`, which does not exist in the private sibling.
       Done: flattened. `git mv apps/rhino-cli/src-fsharp apps/rhino-cli/src` (86 files, all recognized
       renames); `learnings.md` records `fsharp-source-root: apps/rhino-cli/src/`; `tech-docs.md`
       §Target layout's `TBD` replaced with the same path in the same commit.
@@ -15280,7 +15280,7 @@ rev-parse HEAD` still `754b1ef5`. Full sequence in `learnings.md`.
       `apps/rhino-cli/scripts/rhino-bin.sh parity manifest validate` exits 0 in both.
       Done in `ose-public`: `Parity.fs`'s `boundaryPaths` trimmed to the 4 surviving paths
       (`src`, `project.json`, `LICENSE`, the specs dir); regenerated via `rhino-bin.sh parity manifest
-generate`; `validate` exits 0. `ose-private` side pending — recorded as this sub-phase's
+generate`; `validate` exits 0. The private sibling side pending — recorded as this sub-phase's
       cross-repo item, not skipped.
 - [x] [AI] Simplify `apps/rhino-cli/scripts/rhino-bin.sh`: `FSHARP_NAMESPACES` and the Rust
       resolution tiers are both dead once every namespace is F# — acceptance: the script has one
@@ -15308,9 +15308,9 @@ generate`; `validate` exits 0. `ose-private` side pending — recorded as this s
       `Cargo.toml`. Landed as `97641d50a`, `1832a0aee`, `264e32db9`, `4a3c127b3` on
       `rhino-fsharp-wave-e-p7-18`, pushed and confirmed via `git ls-remote`.
 
-- [x] [AI] 9c replicated in ose-private (ose-private carries no copy of this plan doc, so its
+- [x] [AI] 9c replicated in the private sibling (the private sibling carries no copy of this plan doc, so its
       execution record lives here only) — acceptance: same end state as ose-public's 9c above,
-      verified independently in ose-private's own worktree.
+      verified independently in the private sibling's own worktree.
       Done: crate deletion + Nx merge + `src-fsharp`→`src` flatten applied by syncing ose-public's
       final `apps/rhino-cli/src`, `project.json`, `LICENSE`, and gherkin spec tree verbatim (all four
       are the parity-manifest's own byte-identical boundary, so this is satisfying that contract, not
@@ -15322,7 +15322,7 @@ generate`; `validate` exits 0. `ose-private` side pending — recorded as this s
       `dotnet` job's now-dead `setup-rust` step (kept in place; removal deferred to 9d alongside the
       `rust` job, matching ose-public's own asymmetric disposition). The repo-wide cargo→dotnet sweep
       found only 3 live sites here (`package.json`, `libs/ts-ui/project.json`,
-      `libs/ts-ui-tokens/project.json` — ose-private's much smaller consumer surface vs.
+      `libs/ts-ui-tokens/project.json` — the private sibling's much smaller consumer surface vs.
       ose-public's 28) plus the same 13 dead-link docs under
       `docs/explanation/software-engineering/programming-languages/rust/`. `apps/rhino-cli/README.md`
       and `specs/apps/rhino/README.md`'s own stale cargo references were left untouched, matching
@@ -15347,7 +15347,7 @@ generate`; `validate` exits 0. `ose-private` side pending — recorded as this s
       [Repo-grounded — `.github/workflows/pr-quality-gate.yml`, the `quality-gate` job]. Acceptance:
       `actionlint .github/workflows/pr-quality-gate.yml` exits 0 **and** the workflow actually
       dispatches on the PR — a parse pass alone is not proof, because the failure mode is at
-      dispatch time. Do the same in `ose-private`, where the list is that repo's own.
+      dispatch time. Do the same in the private sibling, where the list is that repo's own.
 - [x] [AI] Re-home the Elixir formatter-wrapper coverage: the `rust` job is the only place setting
       `RHINO_REQUIRE_ELIXIR: "1"` and provisioning `erlef/setup-beam`, which is what turns those
       assertions from a quietly-skipping opt-in into real coverage — acceptance: the F# port of
@@ -15403,15 +15403,15 @@ generate`; `validate` exits 0. `ose-private` side pending — recorded as this s
       `setup-dotnet`, both are removed from `quality-gate`'s `needs:` if deleted, and
       `grep -c 'setup-rust' .github/workflows/pr-quality-gate.yml` returns exactly **1** in
       `ose-public` — the `format` job's, retained for the course examples.
-- [x] [AI] Sweep `ose-private`'s **six** in-file uses to zero, because that repo has no course
+- [x] [AI] Sweep the private sibling's **six** in-file uses to zero, because that repo has no course
       examples to protect: `format` (line 65), `build-rhino` (97), `typescript` (178), `rust` (191),
       `compat-min-version` (223), `specs-structure` (234)
-      [Repo-grounded — `ose-private/.github/workflows/pr-quality-gate.yml`, measured 2026-08-25].
+      [Repo-grounded — `private-sibling/.github/workflows/pr-quality-gate.yml`, measured 2026-08-25].
       The four beyond `build-rhino` and `rust` have no step above and would otherwise survive.
       Acceptance: `grep -c 'setup-rust' .github/workflows/pr-quality-gate.yml` returns 0 in
-      `ose-private`, `.github/actions/setup-rust/` is deleted there, and the deletion is paired with
+      the private sibling, `.github/actions/setup-rust/` is deleted there, and the deletion is paired with
       the zero-`.rs` count the delta table already records. **The two repos diverge here by design**
-      — do not converge them. > **Deviation, corrected during the Phase 9 Gate audit**: five of the six were swept to zero in > this sub-phase's own PR, but `format` (line 65) survived unnoticed until the Gate audit > caught it — verified genuinely dead (pre-commit surface's `doctor_tools` list carries no > `rust` entry; 0 tracked `.rs` files repo-wide) and removed in a follow-up PR (ose-private > #127). That PR also surfaced a use this item never anticipated: the `dotnet` job gained its > own `setup-rust` step later (task #64, after this item's 2026-08-25 measurement date) to back > real `cargo-target-share` Doctor-feature test coverage — required for parity with > `ose-public`'s rhino-cli test suite and bound by the plan's own no-skip-tests rule. Final > count is **1**, not 0, and `.github/actions/setup-rust/` survives for that reason — see the > Phase 9 Gate line below and `learnings.md`'s 2026-08-30 "9d gap-fix" entry.
+      — do not converge them. > **Deviation, corrected during the Phase 9 Gate audit**: five of the six were swept to zero in > this sub-phase's own PR, but `format` (line 65) survived unnoticed until the Gate audit > caught it — verified genuinely dead (pre-commit surface's `doctor_tools` list carries no > `rust` entry; 0 tracked `.rs` files repo-wide) and removed in a follow-up PR (the private sibling > #127). That PR also surfaced a use this item never anticipated: the `dotnet` job gained its > own `setup-rust` step later (task #64, after this item's 2026-08-25 measurement date) to back > real `cargo-target-share` Doctor-feature test coverage — required for parity with > `ose-public`'s rhino-cli test suite and bound by the plan's own no-skip-tests rule. Final > count is **1**, not 0, and `.github/actions/setup-rust/` survives for that reason — see the > Phase 9 Gate line below and `learnings.md`'s 2026-08-30 "9d gap-fix" entry.
 - [x] [AI] Decide `setup-rust`'s fate in `validate-env.yml`,
       `dependency-vulnerability-audit.yml`, `_reusable-www-test-local-deploy.yml`, and
       `_reusable-app-test-local-deploy-stag.yml` individually — each installed it only to build
@@ -15437,13 +15437,13 @@ generate`; `validate` exits 0. `ose-private` side pending — recorded as this s
       existing entries' globs do not already reach the `fsharp-source-root` recorded above at 9c —
       `apps/rhino-cli/src-fsharp/` on the deferred branch, `apps/rhino-cli/src/` on the move branch;
       never assume the former — acceptance: a deliberately misformatted `.fs` file turns the
-      `formatting-verify` group red. In `ose-private`, resolve the path per 9c's rule above
+      `formatting-verify` group red. In the private sibling, resolve the path per 9c's rule above
       (`test -d` against that repo's own tree), not by reading `ose-public`'s `learnings.md`.
-- [x] [AI] Land 9a, 9b, 9c, and 9d in the `ose-private` worktree as four matching PRs, authored there
+- [x] [AI] Land 9a, 9b, 9c, and 9d in the private-sibling worktree as four matching PRs, authored there
       rather than copied — and note that repo's teardown is **wider**, because it has **zero** `.rs`
       files outside `apps/rhino-cli/` — acceptance: the difference between the two repos' teardown
       scope is stated in `learnings.md` rather than looking like drift, **and** 9c's break-and-restore
-      `deps:audit` proof is re-run in `ose-private`'s own `rhino-cli` target, in full: record
+      `deps:audit` proof is re-run in the private sibling's own `rhino-cli` target, in full: record
       `git rev-parse HEAD` first; temporarily broken, **confined to the uncommitted working tree —
       no `git add`/`git commit` while it is broken**; required to exit non-zero; restored, and
       required to exit **0** on the post-restore re-run; additionally required to pass
@@ -15454,7 +15454,7 @@ generate`; `validate` exits 0. `ose-private` side pending — recorded as this s
       break and restore, recover with `git checkout --` against the tracked `project.json`, then
       re-run the restore checks.
 
-> **Deviation, recorded rather than silent**: landed as one PR (`ose-private` #125), not four. 9a
+> **Deviation, recorded rather than silent**: landed as one PR (the private sibling #125), not four. 9a
 > ("retire Rust-specific spec coverage"), 9b ("decouple CI from Rust binary"), and 9c ("retire Rust
 > crate, merge Nx project") each appear as their own named sub-commit inside the single squashed
 > Wave E/F completion PR (`git show -s --format=%B c2c7f43bbb`), and the same PR's
@@ -15530,7 +15530,7 @@ generate`; `validate` exits 0. `ose-private` side pending — recorded as this s
 - [x] [AI] Apply the **fix-the-class rule**: after the edits, re-run the enumerating grep and give a
       per-file verdict for every remaining hit, rather than stopping at the files named in this
       checklist — acceptance: the second grep's output is recorded and every hit has a verdict.
-- [x] [AI] Repeat 9e in `ose-private`, authored there rather than copied — acceptance: the same
+- [x] [AI] Repeat 9e in the private sibling, authored there rather than copied — acceptance: the same
       enumerating grep is run in that repo and its own per-file verdicts are recorded; the two repos'
       file lists are expected to differ and that difference is stated, not reconciled.
 
@@ -15549,9 +15549,9 @@ generate`; `validate` exits 0. `ose-private` side pending — recorded as this s
 > both repos at plan close, both return 0/empty as required.
 
 - [x] [AI] `grep -c 'setup-rust' .github/workflows/pr-quality-gate.yml` returns **1** in
-      `ose-private` and exactly **1** in `ose-public`, the `format` job's, retained for the 198
+      the private sibling and exactly **1** in `ose-public`, the `format` job's, retained for the 198
       course examples. Neither number is "0/1 because it was easier", and neither is satisfied by
-      the `build-rhino` + `rust` removals alone. > **Deviation, recorded rather than silent**: the original acceptance text expected **0** in > `ose-private`. Corrected to **1** during this Gate audit — the survivor is the `dotnet` job's > `setup-rust`, added later (task #64, postdating the 9d item's 2026-08-25 measurement) to back > real `cargo-target-share` Doctor-feature test coverage (18 Gherkin scenarios), required for > parity with `ose-public`'s rhino-cli test suite and bound by the plan's no-skip-tests rule. > This is a different survivor, for a different reason, than `ose-public`'s course-example > carve-out — both repos keep exactly one, by two unrelated designs. `ose-private`'s `format` > job's own now-dead `setup-rust` (the item 9d actually left unfinished) was removed in a > follow-up PR (#127) once the Gate audit caught it. See `learnings.md`'s 2026-08-30 "9d > gap-fix" entry.
+      the `build-rhino` + `rust` removals alone. > **Deviation, recorded rather than silent**: the original acceptance text expected **0** in > the private sibling. Corrected to **1** during this Gate audit — the survivor is the `dotnet` job's > `setup-rust`, added later (task #64, postdating the 9d item's 2026-08-25 measurement) to back > real `cargo-target-share` Doctor-feature test coverage (18 Gherkin scenarios), required for > parity with `ose-public`'s rhino-cli test suite and bound by the plan's no-skip-tests rule. > This is a different survivor, for a different reason, than `ose-public`'s course-example > carve-out — both repos keep exactly one, by two unrelated designs. The private sibling's `format` > job's own now-dead `setup-rust` (the item 9d actually left unfinished) was removed in a > follow-up PR (#127) once the Gate audit caught it. See `learnings.md`'s 2026-08-30 "9d > gap-fix" entry.
 - [x] [AI] In `ose-public`, a PR changing one `.rs` file under `apps/ayokoding-www/content/` is
       still auto-formatted by the `format` job and still passes `format-verify-rustfmt`.
 - [x] [AI] The Elixir formatter-wrapper assertions and the coverage threshold both run in the
@@ -15585,7 +15585,7 @@ typecheck,lint,test:quick,specs:behavior:coverage -p rhino-cli` exits 0 in both 
 - [x] [AI] `pr-quality-gate.yml` is green on all **five** Phase 9 PRs (9a, 9b, 9c, 9d, 9e) in both
       repos.
 
-> **Deviation, recorded rather than silent**: same batching fact as the `ose-private` "four
+> **Deviation, recorded rather than silent**: same batching fact as the private-sibling "four
 > matching PRs" item above — 9a/9b/9c/9d landed inside one squashed PR in each repo (`#366` public,
 > `#125` private), not four/five separate ones, with only 9e (`#368`/`#126`) as a genuinely
 > separate PR. Every one of those PRs, plus the gate-audit follow-ups (`#369`, `#370` public;
@@ -15593,7 +15593,7 @@ typecheck,lint,test:quick,specs:behavior:coverage -p rhino-cli` exits 0 in both 
 merged` — so the gate's real intent (nothing Phase-9-related merged red) holds; the PR-count
 > premise does not.
 
-- [x] [AI] `learnings.md` — single-sourced under `ose-public`; `ose-private` carries no copy — carries
+- [x] [AI] `learnings.md` — single-sourced under `ose-public`; the private sibling carries no copy — carries
       **one** `fsharp-source-root` entry, and `test -d` on the directory it names passes **in both
       repos' own trees** (a filesystem check run directly in each worktree, never a cross-repo
       document read — see 9c's rule above) — acceptance: the entry count command from 9c
@@ -15623,7 +15623,7 @@ merged` — so the gate's real intent (nothing Phase-9-related merged red) holds
 - [x] [AI] **A1 — cold build**: `dotnet build <fsharp-source-root>/RhinoCli.Program`, where
       `<fsharp-source-root>` is the path 9c recorded in `learnings.md`
       (`apps/rhino-cli/src-fsharp/` if the flatten was deferred, `apps/rhino-cli/src/` if it moved —
-      never assume the former; in `ose-private`, resolved per 9c's rule by testing that repo's own
+      never assume the former; in the private sibling, resolved per 9c's rule by testing that repo's own
       tree rather than reading `ose-public`'s `learnings.md`), from a cleared `obj/`+`bin/` under
       `/usr/bin/time -p`, asserting exit code 0 — acceptance: `test -d <fsharp-source-root>` passes
       before the build so a stale path fails loudly rather than silently, and elapsed seconds are
@@ -15677,8 +15677,8 @@ merged` — so the gate's real intent (nothing Phase-9-related merged red) holds
 - [x] [AI] Route the comparison to a durable home outside the plan folder, so the next
       language-change proposal starts from data rather than from argument — acceptance: the target
       file is named in `learnings.md` and the content lands there in this PR.
-- [x] [AI] Produce the same measurements in `ose-private` — acceptance: the single-sourced
-      `benchmark.md` has a populated "after" column in its `ose-private` measurements table, and any
+- [x] [AI] Produce the same measurements in the private sibling — acceptance: the single-sourced
+      `benchmark.md` has a populated "after" column in its the private sibling measurements table, and any
       figure that differs materially between the repos is called out rather than averaged.
 
 ### Phase 10 Gate
@@ -15686,7 +15686,7 @@ merged` — so the gate's real intent (nothing Phase-9-related merged red) holds
 > All checks below must pass before starting Phase 11.
 
 - [x] [AI] The single-sourced `benchmark.md` has a non-placeholder "after" value for all eight rows
-      B1-B8 plus source size, in both its `ose-public` and its `ose-private` measurements table —
+      B1-B8 plus source size, in both its `ose-public` and its the private sibling measurements table —
       acceptance: `/usr/bin/grep -o 'TBD' benchmark.md | wc -l` returns **0**, down from the 18 the
       Phase 0 gate asserted — both bounds checked, so neither a never-seeded file nor a
       partially-filled one passes.
@@ -15769,11 +15769,11 @@ merged` — so the gate's real intent (nothing Phase-9-related merged red) holds
       `git status --porcelain` and the ledger agree exactly; an unledgered modified file is either
       added to the ledger with its reason or reverted, and neither outcome is silent.
 - [x] [AI] Run **Step 9 (delivery)** and record the **sibling obligation** explicitly — acceptance:
-      `learnings.md` names `ose-private` and the corresponding landing, or an explicit `none` with
+      `learnings.md` names the private sibling and the corresponding landing, or an explicit `none` with
       its reason.
-- [x] [AI] Repeat 11a in `ose-private`, authored there rather than copied — acceptance: R1-R4 go
+- [x] [AI] Repeat 11a in the private sibling, authored there rather than copied — acceptance: R1-R4 go
       through the same nine-step propagation workflow in that repo and its own manifest is recorded.
-      The descriptive sweep's own `ose-private` repeat already happened at 9e and is not repeated
+      The descriptive sweep's own private-sibling repeat already happened at 9e and is not repeated
       here.
 
 ### Phase 11 Gate
@@ -15802,7 +15802,7 @@ merged` — so the gate's real intent (nothing Phase-9-related merged red) holds
 - [x] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize to
       `<placeholder>` tokens or discard if the entry cannot be sanitized without losing its meaning.
 - [x] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
-      in `ose-private` only; public-governance content may route to `ose-public`; never cross-route
+      in the private sibling only; public-governance content may route to `ose-public`; never cross-route
       private content into a public repo.
 - [x] [AI] Route each surviving entry to exactly one durable home — the benchmark comparison already
       has one from Phase 10, so verify rather than duplicate it. `fsharp-source-root` already has one
@@ -15857,7 +15857,7 @@ covered`). `specs:behavior:coverage` is not itself a registered `pre-push`/`ci` 
 > `repo-config.yml` for this repo (only `test-quick`, whose Nx `dependsOn` chain already runs
 > `typecheck`→`lint` on every push, is); it was instead run explicitly at multiple phases
 > throughout the plan (e.g. 9c-4's scope-widening, the Phase 9a retirement's scenario-count
-> recount) and again here at close. Repeated identically in `ose-private` with the same result.
+> recount) and again here at close. Repeated identically in the private sibling with the same result.
 
 ## Post-Push Verification
 
@@ -15870,7 +15870,7 @@ covered`). `specs:behavior:coverage` is not itself a registered `pre-push`/`ci` 
 - [x] [AI] Run one `pr-leak-review` and verify authenticated `pass` evidence for that exact head
 - [x] [AI] Merge once the hardened preconditions hold, then fast-forward local `main`
 
-> **Verified retrospectively (2026-08-30)**: every one of the 54 `ose-public` and 45 `ose-private`
+> **Verified retrospectively (2026-08-30)**: every one of the 54 `ose-public` and 45 the private sibling
 > merged PRs under the `rhino-fsharp-*` branch prefix shows a green `pr-quality-gate.yml` run at
 > merge time (spot-checked across scaffold, each wave, Phase 9/10/11/12) — this plan's standing
 > "PR review skipped for the rest of this plan" authorization superseded the `pr-leak-review`
@@ -15916,7 +15916,7 @@ covered` — matching the count `learnings.md`'s Phase 9a entry already document
 >   completion commit in both repos (`381035e9e` public / `c2c7f43bbb` private, both containing a
 >   `feat(rhino-cli-fsharp): retire Rust-specific spec coverage (Phase 9a)` sub-commit). Unrelated,
 >   concurrently-landing governance-sync work from other initiatives also touched that path during
->   the plan's multi-day window (3 commits in `ose-public`, 1 squashed PR in `ose-private`,
+>   the plan's multi-day window (3 commits in `ose-public`, 1 squashed PR in the private sibling,
 >   e.g. `77af483c78`) — outside this plan's phases, so AC-3's "no file... was edited by any
 >   **phase**" is not falsified by them, but the checklist's own "every other phase leaves the
 >   tree untouched" is stricter prose than the path itself; the tree, not just the plan's phases,
@@ -15956,18 +15956,18 @@ covered` — matching the count `learnings.md`'s Phase 9a entry already document
 > (`rhino-fsharp-wave-a-pr1`, `rhino-fsharp-11-rules-propagation`, etc.), one delivery unit at a
 > time, which is the actual mechanism that enforces this ordering rather than a shared branch
 > name. `gh pr list --state merged --search "head:rhino-fsharp" --repo <each repo>` sorted by
-> `mergedAt` was used instead: 54 `ose-public` and 45 `ose-private` merged PRs, matching pairs
+> `mergedAt` was used instead: 54 `ose-public` and 45 the private sibling merged PRs, matching pairs
 > (by wave/phase label) merge within seconds to low minutes of each other throughout, and the
 > per-repo `createdAt`-vs-prior-`mergedAt` check shows only three single-digit-minute overlaps —
 > all next-branch creation happening a few minutes before the prior PR's merge fully closed out
 > (automation/CI-wait timing noise), never a case of substantive next-unit work landing before the
 > prior unit merged in both repos. No sibling-wait stall was ever recorded in `learnings.md`
-> because none occurred — every delivery unit's ose-public and ose-private halves merged close
+> because none occurred — every delivery unit's ose-public and the private sibling halves merged close
 > together before the next unit's PR was opened.
 
 ## Plan Archival
 
-> **There is exactly one plan folder for this work, and it lives in `ose-public`.** `ose-private`
+> **There is exactly one plan folder for this work, and it lives in `ose-public`.** The private sibling
 > carries no copy, so there is nothing to archive there and no second index to update. Archiving
 > this folder completes the plan for both repositories.
 
@@ -15981,10 +15981,10 @@ covered` — matching the count `learnings.md`'s Phase 9a entry already document
   > **Deviation, recorded rather than silent (2026-08-30)**: this plan's own registered gates —
   > `typecheck`, `lint`, `test:quick`, `specs:behavior:coverage`, and `parity-manifest:validate`
   > (each repo's own tree, self-consistency) — re-ran clean in both repos immediately before
-  > archival. Investigating CI beyond those also surfaced `ose-private`'s separate, non-blocking,
+  > archival. Investigating CI beyond those also surfaced the private sibling's separate, non-blocking,
   > schedule-only `Rhino CLI Parity Audit` workflow (`.github/workflows/rhino-cli-parity-audit.yml`)
-  > now failing: it does a blunt byte-diff of `ose-private`'s `apps/rhino-cli/parity-manifest.sha256`
-  > against `ose-public` main's, with no exception mechanism, and Phase 11a's `ose-private` repeat
+  > now failing: it does a blunt byte-diff of the private sibling's `apps/rhino-cli/parity-manifest.sha256`
+  > against `ose-public` main's, with no exception mechanism, and Phase 11a's private-sibling repeat
   > deliberately introduced one permanent one-file divergence (`GlossaryDddCoverageUnitTests.fs`,
   > closing a real coverage gap without altering real glossary/registry content — see that same
   > date's Phase 11a entries in `learnings.md`). This workflow never gated any PR or merge in this
@@ -16008,14 +16008,14 @@ covered` — matching the count `learnings.md`'s Phase 9a entry already document
       `grep -c` on the plan name: the promotion-time drain note in that section names the plan as
       history by design and keeps the name in the file, so that count never reaches 0.
 - [x] [AI] Remove the worktree in each repo:
-      `git worktree remove worktrees/rewrite-rhino-cli` — performed in `ose-private` immediately
-      (independent of this PR: `ose-private` never held a copy of the plan folder), and in
+      `git worktree remove worktrees/rewrite-rhino-cli` — performed in the private sibling immediately
+      (independent of this PR: the private sibling never held a copy of the plan folder), and in
       `ose-public` immediately after this archival PR merges to `main` (this worktree is this
       commit's own working directory, so it can only be removed once the branch is pushed and no
       longer needed here).
-- [x] [AI] Confirm `ose-private` still carries **no** copy of this plan folder, so archival here is
+- [x] [AI] Confirm the private sibling still carries **no** copy of this plan folder, so archival here is
       complete rather than half-done — acceptance:
-      `find <ose-private checkout>/plans -maxdepth 2 -name 'rewrite-rhino-cli-to-fsharp*'` returns
+      `find <<private-sibling> checkout>/plans -maxdepth 2 -name 'rewrite-rhino-cli-to-fsharp*'` returns
       nothing. If it returns a path, someone re-created the copy this plan deliberately does not
       have; delete it rather than archiving it.
 - [x] [AI] Commit: `chore(plans): move rewrite-rhino-cli-to-fsharp to done`

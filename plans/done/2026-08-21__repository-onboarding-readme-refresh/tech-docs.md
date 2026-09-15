@@ -45,14 +45,14 @@ flowchart TD
 
 ## Design Decisions
 
-| Decision                                                                            | Why                                                                                                                                                                                                                                      |
-| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Inventory all tracked Markdown, but require every README to receive a reader audit. | This catches directly related non-README docs without turning historical records or educational content into rewrite targets.                                                                                                            |
-| Re-verify the prior audit's findings before acting on them.                         | Findings recorded on 2026-08-06 may already be fixed; acting on a stale finding would manufacture churn.                                                                                                                                 |
-| Leave the whole `rhino-cli` tree untouched, not only its byte-identical subset.     | Most of those paths are byte-identical with `ose-private`, and editing one would create a sibling-repository obligation this single-repository plan excludes. Declining the wider tree keeps the rule simple and fires the guard sooner. |
-| Resolve versions, commands, projects, and ports from live configuration.            | Copied facts drift; commands tied to their owning manifests can be retested.                                                                                                                                                             |
-| Expand the corpus ledger into one executable row per document after inventory.      | Per-file accountability stays granular and reviewable instead of hiding behind a family-level checkbox.                                                                                                                                  |
-| Keep code changes outside this documentation program unless the change blocks it.   | A required code change becomes a separately planned prerequisite — unless it blocks this program, in which case it is delivered under the regression-test mandate.                                                                       |
+| Decision                                                                            | Why                                                                                                                                                                                                                                            |
+| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Inventory all tracked Markdown, but require every README to receive a reader audit. | This catches directly related non-README docs without turning historical records or educational content into rewrite targets.                                                                                                                  |
+| Re-verify the prior audit's findings before acting on them.                         | Findings recorded on 2026-08-06 may already be fixed; acting on a stale finding would manufacture churn.                                                                                                                                       |
+| Leave the whole `rhino-cli` tree untouched, not only its byte-identical subset.     | Most of those paths are byte-identical with the private sibling, and editing one would create a sibling-repository obligation this single-repository plan excludes. Declining the wider tree keeps the rule simple and fires the guard sooner. |
+| Resolve versions, commands, projects, and ports from live configuration.            | Copied facts drift; commands tied to their owning manifests can be retested.                                                                                                                                                                   |
+| Expand the corpus ledger into one executable row per document after inventory.      | Per-file accountability stays granular and reviewable instead of hiding behind a family-level checkbox.                                                                                                                                        |
+| Keep code changes outside this documentation program unless the change blocks it.   | A required code change becomes a separately planned prerequisite — unless it blocks this program, in which case it is delivered under the regression-test mandate.                                                                             |
 
 ## Corpus Discovery and Disposition Algorithm
 
@@ -219,8 +219,8 @@ Rollback captures the prior safe field values in the plan evidence and restores 
 
 Content parity and byte identity are different, and this plan touches neither:
 
-- Generic content parity: `ose-public` → `ose-private`, adapted rather than blindly copied.
-- `rhino-cli` byte identity: `ose-public` = `ose-private`, zero carve-outs, across exactly seven
+- Generic content parity: `ose-public` → the private sibling, adapted rather than blindly copied.
+- `rhino-cli` byte identity: `ose-public` = the private sibling, zero carve-outs, across exactly seven
   pathspecs — `apps/rhino-cli/{src,tests,Cargo.toml,Cargo.lock,project.json,LICENSE}` and
   `specs/apps/rhino/behavior/rhino-cli/gherkin`. Read them from `BOUNDARY_PATHS` in
   `apps/rhino-cli/src/application/parity.rs`, never from memory. This plan's own no-edit scope is

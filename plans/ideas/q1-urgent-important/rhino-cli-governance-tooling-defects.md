@@ -83,7 +83,7 @@ Two of the four have already caused a wrong verdict to be acted on.
 ## Rough scope & non-goals
 
 In scope: `apps/rhino-cli/src/` and `tests/`, companion Gherkin under `specs/apps/rhino/`, and the
-parity checksum manifest — in `ose-public` and `ose-private`, with the four-repo parity obligation.
+parity checksum manifest — in `ose-public` and the private sibling, with the four-repo parity obligation.
 
 Out of scope (for now):
 

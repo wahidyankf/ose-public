@@ -13,13 +13,13 @@ itself and therefore has no consumer once the crate is gone.
 
 ## Personas
 
-| Persona                  | Needs from this change                                                                                                                                                                       |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Contributor              | Hooks stay fast enough not to be noticed. `git commit` and `git push` latency must not visibly regress.                                                                                      |
-| CI maintainer            | `pr-quality-gate.yml` stays green throughout; consumer jobs still `chmod +x` and run downloaded binaries with no toolchain install, both while there are two of them and after there is one. |
-| Tooling maintainer       | Smaller, more navigable source; the same `.feature` files remain the single behavior contract.                                                                                               |
-| `ose-private` maintainer | The same semantic change lands in both repos in the same delivery units, so the parity boundary never diverges by more than one unmerged PR.                                                 |
-| Future decision-maker    | A published before/after record, so the next language-change proposal argues from this repo's own data.                                                                                      |
+| Persona                        | Needs from this change                                                                                                                                                                       |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Contributor                    | Hooks stay fast enough not to be noticed. `git commit` and `git push` latency must not visibly regress.                                                                                      |
+| CI maintainer                  | `pr-quality-gate.yml` stays green throughout; consumer jobs still `chmod +x` and run downloaded binaries with no toolchain install, both while there are two of them and after there is one. |
+| Tooling maintainer             | Smaller, more navigable source; the same `.feature` files remain the single behavior contract.                                                                                               |
+| The private sibling maintainer | The same semantic change lands in both repos in the same delivery units, so the parity boundary never diverges by more than one unmerged PR.                                                 |
+| Future decision-maker          | A published before/after record, so the next language-change proposal argues from this repo's own data.                                                                                      |
 
 ## User stories
 
@@ -34,7 +34,7 @@ itself and therefore has no consumer once the crate is gone.
   Rust binary before its shim entry flips, so no output drift reaches a downstream consumer.
 - **US-5** — As a future decision-maker, I want a nine-row before/after benchmark with a verdict on
   every row, so this rewrite's real cost and benefit are on record rather than argued from memory.
-- **US-6** — As the `ose-private` maintainer, I want every delivery unit of this plan to land in
+- **US-6** — As the private-sibling maintainer, I want every delivery unit of this plan to land in
   both repos before the next one starts, so the parity boundary is never left divergent across a
   merge.
 - **US-7** — As a CI maintainer, I want the F# binary built and published by CI from Phase 2
@@ -148,8 +148,8 @@ Scenario: The comparison outlives the plan folder
 ```gherkin
 Scenario: Both repositories carry the same delivery unit before the next one starts
   Given a delivery unit of this plan has merged into ose-public main
-  When the corresponding delivery unit is prepared for ose-private
-  Then the same semantic change is authored in ose-private rather than file-copied from ose-public
+  When the corresponding delivery unit is prepared for private-sibling
+  Then the same semantic change is authored in private-sibling rather than file-copied from ose-public
   And rhino-cli parity manifest validation exits zero on both main branches
   And no delivery unit starts while the previous one is unmerged in either repository
 ```
@@ -170,7 +170,7 @@ Scenario: The quality gate stays green while CI carries both binaries
 Scenario: The quality gate stays green after the Rust surface is torn down
   Given the Rust crate has been deleted and no project carries tag:lang:rust
   When pr-quality-gate.yml runs on a pull request
-  Then no workflow in ose-private references .github/actions/setup-rust
+  Then no workflow in private-sibling references .github/actions/setup-rust
   And the only ose-public reference left is the format job's, retained for the 198 Rust course
     examples under apps/ayokoding-www/content/
   And the detect job exposes no has-rust output
@@ -202,7 +202,7 @@ Scenario: Rust-specific scenarios are retired with a recorded verdict
 **In scope**: all 13 namespaces, all 525 scenarios, all three output formats, exit codes, the
 dispatch shim, the TickSpec unit and integration projects, the dual-binary CI phase and the Rust CI
 teardown, the parity manifest, the before/after benchmark record, the rules propagation, and the
-`ose-private` landing of every delivery unit.
+private sibling landing of every delivery unit.
 
 **Out of scope**: new behavior of any kind; `apps/crane-cli`; the F# backends. Edits under
 `specs/apps/rhino/` are out of scope everywhere except two sanctioned exceptions: Phase 3, which

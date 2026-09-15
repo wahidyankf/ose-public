@@ -59,7 +59,7 @@ Both uses depend on the captures actually being verbatim, so verify that first â
 ```sh
 # Set this to the directory that contains the authorized OSE checkouts.
 SDLC_REPOS_ROOT=/path/to/ose-checkouts
-for r in ose-public ose-primer ose-private beaver-nest; do
+for r in ose-public ose-primer <private-sibling> beaver-nest; do
   for h in commit-msg pre-commit pre-push; do
     diff -q "$SDLC_REPOS_ROOT/$r/.husky/$h" "current/$h-$r" >/dev/null \
       && printf '%-13s %-11s identical\n' "$r" "$h" \
@@ -77,14 +77,14 @@ formatter rewrote the capture (re-capture, and check what glob matched it).
 
 `[Repo-grounded]` Each cell is `diff` against `ose-public`'s copy of the same hook:
 
-| Hook         | `ose-primer`       | `ose-private`       | `beaver-nest`      |
+| Hook         | `ose-primer`       | The private sibling | `beaver-nest`      |
 | ------------ | ------------------ | ------------------- | ------------------ |
 | `commit-msg` | identical          | identical           | identical          |
 | `pre-commit` | identical          | 27 lines differ     | identical          |
 | `pre-push`   | **4 lines differ** | **56 lines differ** | **2 lines differ** |
 
 `pre-push` is the drift surface: it differs in **all three** downstream repos, and nothing detects
-that today. `ose-private`'s larger delta is partly legitimate (it carries an `iac-lint` pair the
+that today. The private sibling's larger delta is partly legitimate (it carries an `iac-lint` pair the
 others lack) and partly drift â€” the plan does not assume which, it moves every one of those lines
 into `repo-config.yml` where the difference becomes declared data instead of divergent shell.
 
@@ -94,7 +94,7 @@ Reproduce:
 # Note the missing extension: files in current/ mirror the live hook names.
 cd current
 for h in commit-msg pre-commit pre-push; do
-  for r in ose-primer ose-private beaver-nest; do
+  for r in ose-primer <private-sibling> beaver-nest; do
     diff -q "$h-ose-public" "$h-$r" >/dev/null \
       && echo "$h/$r: identical" || echo "$h/$r: differs"
   done
@@ -111,7 +111,7 @@ should be declared.
 ```sh
 # Run from this folder. Should print nothing.
 for h in commit-msg pre-commit pre-push; do
-  for r in ose-primer ose-private beaver-nest; do
+  for r in ose-primer <private-sibling> beaver-nest; do
     diff "$h-ose-public.sh" "$h-$r.sh"
   done
 done

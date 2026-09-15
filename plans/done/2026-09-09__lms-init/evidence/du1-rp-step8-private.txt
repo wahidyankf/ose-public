@@ -1,4 +1,4 @@
-### DU1 Step 8 verification — ose-private — 2026-09-08
+### DU1 Step 8 verification — private-sibling — 2026-09-08
 
 $ npm run validate:config
 

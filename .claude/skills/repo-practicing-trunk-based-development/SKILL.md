@@ -1,13 +1,13 @@
 ---
 name: repo-practicing-trunk-based-development
-description: "Trunk Based Development workflow - all development on main branch with small frequent commits, minimal branching, and continuous integration. Covers when branches are justified (exceptional cases only), commit patterns, feature flag usage for incomplete work, environment branch rules (deployment only), and AI agent default behaviour (the repo-wide default delivery mode is `worktree-to-pr` -- a short-lived plan branch in a disposable worktree pushed to a draft PR; direct push to main has no executable path in ose-public, main is branch-protected including for admins, and only ose-private retains `main-to-origin-main` in exactly two categories: stateful IaC needing the primary checkout's real secrets/local state, or CI-IaC changing its own pipeline, runner, or toolchain provisioning where PR self-validation is circular). Essential for understanding repository git workflow and keeping branches short-lived"
+description: "Trunk Based Development workflow - all development on main branch with small frequent commits, minimal branching, and continuous integration. Covers when branches are justified (exceptional cases only), commit patterns, feature flag usage for incomplete work, environment branch rules (deployment only), and AI agent default behaviour (the repo-wide default delivery mode is `worktree-to-pr` -- a short-lived plan branch in a disposable worktree pushed to a draft PR; direct push to main has no executable path in ose-public, main is branch-protected including for admins, and only the private sibling retains `main-to-origin-main` in exactly two categories: stateful IaC needing the primary checkout's real secrets/local state, or CI-IaC changing its own pipeline, runner, or toolchain provisioning where PR self-validation is circular). Essential for understanding repository git workflow and keeping branches short-lived"
 ---
 
 # Trunk Based Development Skill
 
 ## Purpose
 
-This Skill provides comprehensive guidance on **Trunk Based Development (TBD)** - the git workflow used throughout this repository: small, frequent commits integrated continuously into `main` through short-lived, single-purpose branches. The default delivery mode is `worktree-to-pr`; direct commit to `main` has no executable path in `ose-public` (branch-protected), and only `ose-private` retains `main-to-origin-main` for stateful IaC needing the primary checkout's real secrets/local state or CI-IaC changing its own pipeline, runner, or toolchain provisioning where PR self-validation is circular.
+This Skill provides comprehensive guidance on **Trunk Based Development (TBD)** - the git workflow used throughout this repository: small, frequent commits integrated continuously into `main` through short-lived, single-purpose branches. The default delivery mode is `worktree-to-pr`; direct commit to `main` has no executable path in `ose-public` (branch-protected), and only the private sibling retains `main-to-origin-main` for stateful IaC needing the primary checkout's real secrets/local state or CI-IaC changing its own pipeline, runner, or toolchain provisioning where PR self-validation is circular.
 
 **When to use this Skill:**
 
@@ -28,7 +28,7 @@ See [Core Concepts](./reference/core-concepts.md) for what TBD requires (converg
 
 ## Delivery Modes: How Work Reaches `main`
 
-See [Delivery Modes: Default Behaviour](./reference/delivery-modes-default-behaviour.md) for the standard `worktree-to-pr` workflow, and [Delivery Modes: Direct Push](./reference/delivery-modes-direct-push.md) for the surviving `ose-private` exception.
+See [Delivery Modes: Default Behaviour](./reference/delivery-modes-default-behaviour.md) for the standard `worktree-to-pr` workflow, and [Delivery Modes: Direct Push](./reference/delivery-modes-direct-push.md) for the surviving the private sibling exception.
 
 ## Keeping Branches Short-Lived
 

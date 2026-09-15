@@ -23,7 +23,7 @@ Blocks an active plan or documents a live defect, and carries a cross-repo, secu
 - [mermaid-validator-does-not-check-syntax](./q1-urgent-important/mermaid-validator-does-not-check-syntax.md) — `md mermaid validate` is cited as the Mermaid-correctness gate but never parses syntax; broken diagrams pass clean.
 - [next-image-builds-cannot-resolve-ts-env-loader](./q1-urgent-important/next-image-builds-cannot-resolve-ts-env-loader.md) — all six Next.js images fail to build; four scheduled workflows have reported it twice daily for days, and the `prod-*` deploy path for four sites is dead.
 - [oxlint-upgrade-and-lint-reproducibility](./q1-urgent-important/oxlint-upgrade-and-lint-reproducibility.md) — 22 lint sites fetched `npx oxlint@latest`, so a publish turned a green PR red on an untouched file; the 1.78.0 pin froze a real `set-state-in-effect` defect and left the wider class unenumerated.
-- [reconcile-rhino-cli-parity-audit-exception](./q1-urgent-important/reconcile-rhino-cli-parity-audit-exception.md) — `ose-private`'s nightly `Rhino CLI Parity Audit` workflow now fails permanently, not transiently, because `rewrite-rhino-cli-to-fsharp` Phase 11a deliberately left one test file (`GlossaryDddCoverageUnitTests.fs`) `ose-private`-only to close a real coverage gap.
+- [reconcile-rhino-cli-parity-audit-exception](./q1-urgent-important/reconcile-rhino-cli-parity-audit-exception.md) — the private sibling's nightly `Rhino CLI Parity Audit` workflow now fails permanently, not transiently, because `rewrite-rhino-cli-to-fsharp` Phase 11a deliberately left one test file (`GlossaryDddCoverageUnitTests.fs`) private-sibling-only to close a real coverage gap.
 - [remove-stale-compat-min-version-stubs](./q1-urgent-important/remove-stale-compat-min-version-stubs.md) — every surviving `compat:min-version` target in `ose-public` is a bare echo that checks nothing — 24 of 24, zero real checks left — while the Nx target convention states outright that echo and no-op targets are forbidden.
 - [rhino-cli-governance-tooling-defects](./q1-urgent-important/rhino-cli-governance-tooling-defects.md) — four governance tools that exit 0 while doing less than the caller believes: a mis-paired wrapped code span, a hard-coded `.claude/agents`, basename-keyed rename matching, and an `AUDIT FAILED` line above a green gate.
 
@@ -52,7 +52,7 @@ No active plan waits on these and no live defect is running, but each carries a 
 - [iam-service-module](./q2-not-urgent-important/iam-service-module.md) — a shared IAM (authn/authz) capability; early placeholder, mostly open questions.
 - [mermaid-state-label-render-clipping-warn](./q2-not-urgent-important/mermaid-state-label-render-clipping-warn.md) — a WARN rule for `stateDiagram-v2` edge labels that clip in GitHub's renderer.
 - [opencode-v2-migration](./q2-not-urgent-important/opencode-v2-migration.md) — OpenCode v2 renames eleven configuration keys the generator emits today, including `permission.bash` → `permission.shell`; plan the migration before the beta is promoted.
-- [ose-private-opencode-ci-monitor-orphan](./q2-not-urgent-important/ose-private-opencode-ci-monitor-orphan.md) — an unsourced `.opencode/agents/ci-monitor-subagent.md` mirror survives only via a hardcoded filename skip both parity repos inherit; ose-public solved the sibling case by declaring it vendored.
+- [private-sibling-opencode-ci-monitor-orphan](./q2-not-urgent-important/private-sibling-opencode-ci-monitor-orphan.md) — an unsourced `.opencode/agents/ci-monitor-subagent.md` mirror survives only via a hardcoded filename skip both parity repos inherit; ose-public solved the sibling case by declaring it vendored.
 - [port-registry-lacks-a-validator](./q2-not-urgent-important/port-registry-lacks-a-validator.md) — the cross-repo port registry now exists but is prose no tool reads, so a stale or colliding row still surfaces only when a service fails to bind.
 - [post-cutoff-dependency-migrations](./q2-not-urgent-important/post-cutoff-dependency-migrations.md) — track and promote the deferred dependency bumps as their soak windows clear.
 - [refresh-agent-illustrative-example-paths](./q2-not-urgent-important/refresh-agent-illustrative-example-paths.md) — 4 generic agent definitions still illustrate usage with example paths naming apps this repo deleted.
@@ -61,11 +61,11 @@ No active plan waits on these and no live defect is running, but each carries a 
 - [rhino-cli-env-backup-scripts](./q2-not-urgent-important/rhino-cli-env-backup-scripts.md) — scripted backup/restore of the gitignored rhino-cli `.env*` files.
 - [rhino-cli-git-env-scrub-widening](./q2-not-urgent-important/rhino-cli-git-env-scrub-widening.md) — `find_root_from` scrubs only `GIT_DIR`/`GIT_WORK_TREE` before invoking `git rev-parse`, leaving `GIT_INDEX_FILE`, `GIT_OBJECT_DIRECTORY`, and `GIT_COMMON_DIR` unscrubbed.
 - [rhino-cli-md-links-json-output-scenario-gap](./q2-not-urgent-important/rhino-cli-md-links-json-output-scenario-gap.md) — the retired CLI link checkers' `Scenario: JSON output produces structured results` has no equivalent in `rhino-cli`'s successor feature, though the behaviour is live and unit-tested.
-- [rhino-cli-tools-superset-carveout](./q2-not-urgent-important/rhino-cli-tools-superset-carveout.md) — `doctor/tools.rs`'s "zero carve-outs" byte-identity target collides with `ose-private`'s real, needed IaC tool-provisioning extensions.
+- [rhino-cli-tools-superset-carveout](./q2-not-urgent-important/rhino-cli-tools-superset-carveout.md) — `doctor/tools.rs`'s "zero carve-outs" byte-identity target collides with the private sibling's real, needed IaC tool-provisioning extensions.
 - [rust-crate-structural-checklist-promotion](./q2-not-urgent-important/rust-crate-structural-checklist-promotion.md) — promote the Rust crate structural checklist to governance once a 2nd crate exists.
 - [sdlc-gate-standard-property-bound-lag](./q2-not-urgent-important/sdlc-gate-standard-property-bound-lag.md) — `ose-public`'s SDLC gate standard trails both siblings on two name-bound bareness claims; adopt their wording.
 - [shared-cargo-target-lock-contention](./q2-not-urgent-important/shared-cargo-target-lock-contention.md) — one shared cargo target directory reclaims disk but serializes concurrent worktree builds; a 65 s pure-lock-wait stall was measured.
-- [sibling-main-ci-never-runs-on-merge](./q2-not-urgent-important/sibling-main-ci-never-runs-on-merge.md) — `main-ci` is schedule-triggered in `ose-private`, so a merge to its `main` gets no post-merge CI signal.
+- [sibling-main-ci-never-runs-on-merge](./q2-not-urgent-important/sibling-main-ci-never-runs-on-merge.md) — `main-ci` is schedule-triggered in the private sibling, so a merge to its `main` gets no post-merge CI signal.
 - [source-code-credential-scanning](./q2-not-urgent-important/source-code-credential-scanning.md) — evaluate Betterleaks (gitleaks successor) for pre-commit + CI credential detection in source.
 - [standardize-cis](./q2-not-urgent-important/standardize-cis.md) — audit for any CI-standardization residual left by the toolchain-parity work.
 - [syllabus-conformance-validator](./q2-not-urgent-important/syllabus-conformance-validator.md) — a deterministic `rhino-cli md syllabus validate` for course-file section conformance, deferred until the format settles.
@@ -144,13 +144,13 @@ Swept 120 two-pagers across the coordinated repo set; 79 survive. Every survivin
 - **Relocated in** (9):
   - `coverage-artifact-relative-paths.md` from `beaver-nest` — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
   - `cross-repo-port-registry.md` from `beaver-nest` — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
-  - `ose-public-nx-affected-rhino-cli-gap.md` from `ose-private` — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
+  - `ose-public-nx-affected-rhino-cli-gap.md` from the private sibling — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
   - `refresh-agent-illustrative-example-paths.md` from `beaver-nest` — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
   - `rhino-cli-exclude-dir-shared-steps-gap.md` — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
-  - `rhino-cli-sync-validator-wrong-model-drift.md` from `ose-private` — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
+  - `rhino-cli-sync-validator-wrong-model-drift.md` from the private sibling — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
   - `specs-checker-phantom-nx-targets.md` from `beaver-nest` — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
-  - `dependency-library-updates.md` from `ose-private` — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
-  - `fsl-standards.md` from `ose-private` — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
+  - `dependency-library-updates.md` from the private sibling — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
+  - `fsl-standards.md` from the private sibling — rule R3: generalizable cross-cutting concern; no secret required, present in 2+ repos
 - **Deduplicated out** (1):
   - `demo-apps-standards-recheck.md` — the surviving copy is no longer tracked in the coordinated
     repo set.
@@ -162,9 +162,9 @@ Swept 120 two-pagers across the coordinated repo set; 79 survive. Every survivin
 
 > Last groomed: 2026-08-06
 
-### 2026-08-19 — plan-ideas-grooming (`ose-public` + `ose-private`)
+### 2026-08-19 — plan-ideas-grooming (`ose-public` + the private sibling)
 
-Swept the 75 two-pagers resident here plus 14 in `ose-private`; **80 survive here and 8 there**. The
+Swept the 75 two-pagers resident here plus 14 in the private sibling; **80 survive here and 8 there**. The
 run's repo set is the two repositories under active coordination — `beaver-nest` carries no sync
 obligation and was not swept.
 
@@ -187,10 +187,10 @@ obligation and was not swept.
 - **Relocated in** (3), all rule R3 — generalizable, no secret required, present in both repos:
   `extend-byte-identity-to-claude-hooks.md`, `harness-level-env-file-enforcement-gap.md`, and one
   since deleted.
-- **Deduplicated in** (3) — cross-repo pairs resolved here under R3. Each `ose-private` copy is
+- **Deduplicated in** (3) — cross-repo pairs resolved here under R3. Each private-sibling copy is
   deleted in its own commit after this one lands. Compared line by line; only one carried anything
   this repo lacked:
-  - `markdownlint-ci-gate-lints-zero-files.md` — **content folded in**: that `ose-private`'s own
+  - `markdownlint-ci-gate-lints-zero-files.md` — **content folded in**: the private sibling's own
     `0 file(s)` behaviour is inferred from a byte-identical `rhino-cli`, not observed, because its
     logs were unreadable during the 2026-08-17 GitHub incident.
   - `governance-command-name-reconciliation.md` — nothing to fold; already the superset. (Also
@@ -213,8 +213,8 @@ obligation and was not swept.
   surviving idea including the no-move cases; the remaining 73 were not individually re-adjudicated,
   and this log does not claim they were. Closing that gap needs a per-idea R# record the corpus does
   not yet carry — recorded as a follow-up below.
-  The one ambiguous case was `ose-private-opencode-ci-monitor-orphan.md`: the orphan file it names
-  exists only in `ose-private` (R2), but the `rhino-cli` hardcoded skip keeping it alive is
+  The one ambiguous case was `private-sibling-opencode-ci-monitor-orphan.md`: the orphan file it names
+  exists only in the private sibling (R2), but the `rhino-cli` hardcoded skip keeping it alive is
   byte-identical across both repos and is where a fix would land. Resolved R3, resident here.
 
 **Unresolved follow-ups**:
@@ -253,7 +253,7 @@ obligation and was not swept.
 ### 2026-08-21 — plan-ideas-grooming (`ose-public`)
 
 Swept the 85 two-pagers resident here; **83 survive**. The run's repo set is `ose-public` alone —
-`ose-private` was groomed in the 2026-08-19 run and no cross-repo relocation was in scope, so Step 3
+the private sibling was groomed in the 2026-08-19 run and no cross-repo relocation was in scope, so Step 3
 (cross-repo dedup) and Step 5 (relocation) were both no-ops with nothing to resolve. Trigger: the
 flat idea count exceeded the 60-file threshold.
 

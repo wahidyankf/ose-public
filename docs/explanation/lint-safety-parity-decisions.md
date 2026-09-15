@@ -20,14 +20,14 @@ created: 2026-06-12
 This document records the ose-public decisions in the cross-repo
 `lint-safety-parity` effort (2026-06-12). The effort brings linting strictness
 and unsafe-code posture to an **equal** standard across the sibling
-repositories — ose-public (this repo) and ose-private — so the shared
+repositories — ose-public (this repo) and the private sibling — so the shared
 scaffolding layer stops drifting. The full per-row deviation matrix lives in the
 plan's
 [`tech-docs.md`](../../plans/done/2026-06-12__lint-safety-parity/tech-docs.md).
 
 Sibling plan:
 
-- `ose-private`: `plans/in-progress/lint-safety-parity/` (private repo) — covers
+- The private sibling: `plans/in-progress/lint-safety-parity/` (private repo) — covers
   D1 + D1b, D6/D7/D8, D9 (Terraform + Ansible + yamllint), D10.
 
 ## Background

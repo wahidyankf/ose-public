@@ -205,7 +205,7 @@ env-injection:
   #   compose           — infra/dev/<stack> docker-compose env (local CI), placeholders only
   #   vercel-preview     — Vercel project env, Preview scope (stag-*-app-web branch)
   #   vercel-production  — Vercel project env, Production scope (prod-*-www / prod-*-app-web)
-  #   k3s-coralpolyp     — ose-private coralpolyp secret store (backend k3s rollout)
+  #   k3s-coralpolyp     — private-sibling coralpolyp secret store (backend k3s rollout)
   apps:
     - app: beaver-nest-be
       keys-from: apps/beaver-nest-be/.env.example

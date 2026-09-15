@@ -26,7 +26,7 @@ each workstream adds phases before Knowledge Capture, which stays terminal with 
 ### WS-A — Ordinal filename prefixes
 
 `repo-governance/` prefixes **2092 of 2494** markdown files across **176 numbered directories**;
-`ose-private` prefixes **1704 of 2131**, plus 217 under `.claude/`. That numbering was never an
+the private sibling prefixes **1704 of 2131**, plus 217 under `.claude/`. That numbering was never an
 ordering decision — it is residue from progressive-disclosure sharding under the
 [Governance Word-Budget Convention](../../../repo-governance/conventions/structure/governance-word-budget.md).
 `docs/` (0 of 211) and `specs/` (0 of 290) navigate fine without it: the annotated `README.md` index
@@ -87,7 +87,7 @@ gone — is separate, **specified only after WS-A's Knowledge Capture records wh
 
 ## Scope
 
-**Repositories**: `ose-public` and `ose-private`, both swept, in that order.
+**Repositories**: `ose-public` and the private sibling, both swept, in that order.
 
 **Trees in scope**: `repo-governance/`, `.claude/` (with `.opencode/`, `.cursor/`, `.amazonq/`
 regenerated), `repo-config.yml` for the gate registry, and `apps/rhino-cli` for the index tooling
@@ -120,7 +120,7 @@ judges it as an AI-only category and `repo-rules-fixer` repairs it.
    word-budget exclude list.
 4. **Sweep `ose-public`** — rename every non-qualifying file, rework continuation-shard boundaries
    into self-standing topics, re-split anything that busts the word budget on a topic seam.
-5. **Sweep `ose-private`** the same way, applying the same withdrawal, with the tooling
+5. **Sweep the private sibling** the same way, applying the same withdrawal, with the tooling
    byte-identical.
 
 ## Documents

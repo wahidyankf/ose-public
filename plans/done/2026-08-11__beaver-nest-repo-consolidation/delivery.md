@@ -14,7 +14,7 @@ created: 2026-08-06
 
 This plan ports the BeaverNest product into `ose-public`, sweeps four-repo terminology to three
 across the three surviving repos, and archives `beaver-nest`. Phases 0-4 execute in `ose-public`;
-Phases 6-7 execute in `ose-primer` and `ose-private` respectively; Phase 8 executes against
+Phases 6-7 execute in `ose-primer` and the private sibling respectively; Phase 8 executes against
 `beaver-nest` itself. The plan folder lives only in `ose-public`.
 
 > **Legend** — `[AI]`: an agent performs the step (the default; unmarked steps are `[AI]`).
@@ -32,7 +32,7 @@ being trusted, per the Bucket-3 takeover procedure's "tick only from positive ev
 - **Phase 3 (prove green): functionally landed per `learnings.md`'s extensive fix log.** At the time this Takeover Reconciliation note was first written, its own evidence artifacts (viewport screenshots, readiness/health curl captures) did not yet exist on disk or in git history — `learnings.md`'s "Phase 0-3's evidence/ files never survived" entry documented that gap. **Superseded later this same session**: commit `d7479af7a` stood up a disposable Compose stack, recaptured readiness/health HTTP 200 evidence, and captured genuinely distinct mobile/tablet/desktop screenshots (see `## Manual UI Verification` and the Phase 3/5 Gate checkboxes below, both now ticked "Done — recaptured" with implementation notes). `learnings.md`'s entry is marked superseded rather than deleted, per this repo's Knowledge Capture convention of keeping the original observation as history.
 - **Phase 4 (vision/ideas/app-setup disposition): confirmed live.** `repo-governance/vision/beavernest.md` exists and is registered; `plans/done/2026-08-10__beavernest-app-setup/` exists with `delivered-as-descoped` status; the residual `beaver-nest` grep hits in `plans/ideas/`/`plans/done/` are the documented historical-citation exception (see `learnings.md`'s own entry on this), not drift.
 - **Phase 5 (four→three sweep, `ose-public`): governance/doc sweep landed** (`related-repositories.md`, `sdlc-gate-standard.md`, `AGENTS.md`, `README.md`, workflow docs, `social-linkedin-post-maker.md` — all in the 25-commit history); `parity.rs` already emits the three-repo string (verified live, `parity manifest validate` reports current). **Not yet done**: PR #164 (opened for this unit) is still open with CI red on `formatting-verify`/`Quality gate` — root-caused and fixed in commit `64191410f` (this takeover session), pushed, CI re-running. PR-Review Maker→Fixer Cycle, merge, and local-`main` fast-forward remain outstanding.
-- **Phases 6-10**: not started in any repo — no worktree/branch/PR trace found in `ose-primer`, `ose-private`, or `beaver-nest` (all Bucket 1, fresh start, per this workflow's Phase A/B). `beaver-nest` has no local sibling checkout on this machine (removed 2026-08-10 per this delivery.md's own Phase 10 Cleanup item, already ticked below) — Phase 8's worktree provisioning will need a fresh `git clone` first.
+- **Phases 6-10**: not started in any repo — no worktree/branch/PR trace found in `ose-primer`, the private sibling, or `beaver-nest` (all Bucket 1, fresh start, per this workflow's Phase A/B). `beaver-nest` has no local sibling checkout on this machine (removed 2026-08-10 per this delivery.md's own Phase 10 Cleanup item, already ticked below) — Phase 8's worktree provisioning will need a fresh `git clone` first.
 
 Per-checkbox ticks are deliberately **not** applied wholesale below — the underlying `[ ]` markers
 for Phases 0-4 remain as authored, since re-deriving true per-bullet completion for ~180 historical
@@ -86,13 +86,13 @@ and deleted 2026-08-08 — its scope is absorbed, not dropped.
 
 - [x] [AI] Confirm the parity message's **three-repo** membership claim is still correct and has not
       been conflated with the **two-repo** continuously-enforced boundary. `ose-primer` is named in
-      the message and synced manually on a delay; enforcement covers `ose-public` and `ose-private`
+      the message and synced manually on a delay; enforcement covers `ose-public` and the private sibling
       only, per commit `a0383faed`. Both statements are true simultaneously — acceptance: the
       four→three sweep below changes membership wording only, and touches no enforcement scope
 
       **Date**: 2026-08-10 (takeover session). **Status**: Done. **Files Changed**: none this step
       (verification only — Phase 5's own commits already made the edit). `parity.rs:560` already
-      emits "byte-identical across ose-public, ose-primer, and ose-private" (three-repo membership),
+      emits "byte-identical across ose-public, ose-primer, and the private sibling" (three-repo membership),
       confirmed live and independently corroborated by `learnings.md`'s own "permanently carry a
       literal beaver-nest string by design" entry. No enforcement-scope code was touched by Phase 5 —
       membership wording only, matching the acceptance clause.
@@ -185,7 +185,7 @@ single branch; **Phase 5 is Unit 1's delivery boundary** and opens the one `ose-
 carries the product port, the vision/ideas disposition, and the four→three sweep together (collapsed
 2026-08-10 from three separate `ose-public` PRs to one, at the user's explicit direction, to minimize
 worktree/PR churn — see [tech-docs.md D12](./tech-docs.md#design-decisions)). Phases 6 and 7 each
-close their own single-phase delivery unit in `ose-primer` and `ose-private` respectively and open one
+close their own single-phase delivery unit in `ose-primer` and the private sibling respectively and open one
 PR each. Phase 8 produces changes only in `beaver-nest` — a markdown-only README edit — and opens no
 `ose-public` PR, but per
 [Per-Repository Delivery Mode Restrictions](../../../repo-governance/conventions/structure/plans/per-repository-delivery-mode-restrictions.md#per-repository-delivery-mode-restrictions-hard-rule)
@@ -200,12 +200,12 @@ that unit's delivery boundary — it pushes the branch and opens the plan's seco
 PR, which the archival commit rides inside.
 
 **Total PR count for this plan: 5** (down from the original 7-PR shape) — `ose-public` ×2 (Unit 1:
-Phases 1-5; Unit 2: Phases 9-10), `ose-primer` ×1 (Phase 6), `ose-private` ×1 (Phase 7), `beaver-nest`
+Phases 1-5; Unit 2: Phases 9-10), `ose-primer` ×1 (Phase 6), the private sibling ×1 (Phase 7), `beaver-nest`
 ×1 (Phase 8). Worktree count is unchanged at 4 (one per repo) — the plan already satisfied the
 Worktree Cap before this restructuring; only the PR count inside `ose-public`'s single worktree
 dropped, from four PRs sharing it sequentially to two.
 
-**Archival-in-PR applies to `ose-public` only.** `ose-primer` and `ose-private` carry no `plans/`
+**Archival-in-PR applies to `ose-public` only.** `ose-primer` and the private sibling carry no `plans/`
 entry for this work, so their PRs contain no plan-folder content. This is the ordinary cross-repo
 carve-out from the
 [Archival-in-PR rule](../../../repo-governance/workflows/plan/plan-execution.md#8-finalization-and-archival-sequential).
@@ -241,14 +241,14 @@ collapses the plan's total PR count from 7 to 5, without changing worktree count
 repo) or the DAG's serial ordering — Phases 1-5 still execute strictly in order, they just no longer
 each provision a new branch or open their own PR along the way.
 
-| Phase(s) | Delivery unit                                                            | Worktree / branch                                        | PR opens                                             |
-| -------- | ------------------------------------------------------------------------ | -------------------------------------------------------- | ---------------------------------------------------- |
-| 0        | — (setup and baseline)                                                   | —                                                        | no                                                   |
-| 1-5      | Product ported, narrative disposed, and four→three sweep in `ose-public` | `ose-public` · `beaver-nest-repo-consolidation-unit1`    | yes — at Phase 5, one PR for all of Phases 1-5       |
-| 6        | Four→three sweep, `ose-primer`                                           | `ose-primer` · `beaver-nest-repo-consolidation-sweep`    | yes — at Phase 6                                     |
-| 7        | Four→three sweep, `ose-private`                                          | `ose-private` · `beaver-nest-repo-consolidation-sweep`   | yes — at Phase 7                                     |
-| 8        | Repository retirement                                                    | `beaver-nest` · `beaver-nest-repo-consolidation-retire`  | yes — at Phase 8, then `gh repo archive` after merge |
-| 9-10     | Knowledge Capture and Plan Archival                                      | `ose-public` · `beaver-nest-repo-consolidation-archival` | yes — at Phase 10                                    |
+| Phase(s) | Delivery unit                                                            | Worktree / branch                                            | PR opens                                             |
+| -------- | ------------------------------------------------------------------------ | ------------------------------------------------------------ | ---------------------------------------------------- |
+| 0        | — (setup and baseline)                                                   | —                                                            | no                                                   |
+| 1-5      | Product ported, narrative disposed, and four→three sweep in `ose-public` | `ose-public` · `beaver-nest-repo-consolidation-unit1`        | yes — at Phase 5, one PR for all of Phases 1-5       |
+| 6        | Four→three sweep, `ose-primer`                                           | `ose-primer` · `beaver-nest-repo-consolidation-sweep`        | yes — at Phase 6                                     |
+| 7        | Four→three sweep, the private sibling                                    | The private sibling · `beaver-nest-repo-consolidation-sweep` | yes — at Phase 7                                     |
+| 8        | Repository retirement                                                    | `beaver-nest` · `beaver-nest-repo-consolidation-retire`      | yes — at Phase 8, then `gh repo archive` after merge |
+| 9-10     | Knowledge Capture and Plan Archival                                      | `ose-public` · `beaver-nest-repo-consolidation-archival`     | yes — at Phase 10                                    |
 
 ## Phase 0: Environment Setup and Baseline
 
@@ -715,7 +715,7 @@ carries all of it — see [tech-docs.md D12](./tech-docs.md#design-decisions).
 source-level and Gherkin-level — so there is no outstanding RED/GREEN/REFACTOR cycle here:
 
 - **Source**: `apps/rhino-cli/src/application/parity.rs:560` already emits the three-repo string
-  (`"byte-identical across ose-public, ose-primer, and ose-private"`), and its own unit test
+  (`"byte-identical across ose-public, ose-primer, and <private-sibling>"`), and its own unit test
   (`parity.rs:866-875`) already asserts that phrasing with a negative `beaver-nest` guard.
 - **Gherkin**: `specs/apps/rhino/behavior/rhino-cli/gherkin/gate/parity-manifest.feature:15-20`
   already carries `Scenario: An unannounced edit to byte-identical source fails the gate`, whose
@@ -734,7 +734,7 @@ to close this behavior, since it already shipped via `optimize-cis`.
 
 - [x] [AI] **Confirm (no RED/GREEN/REFACTOR needed — coverage already shipped)**: confirm the Rust
       assertion, the existing Gherkin scenario, and its wiring are all present and passing
-      — command: `grep -n "byte-identical across ose-public, ose-primer, and ose-private" apps/rhino-cli/src/application/parity.rs && grep -n "An unannounced edit to byte-identical source fails the gate" specs/apps/rhino/behavior/rhino-cli/gherkin/gate/parity-manifest.feature && cargo test --manifest-path apps/rhino-cli/Cargo.toml --test gate_specs`
+      — command: `grep -n "byte-identical across ose-public, ose-primer, and <private-sibling>" apps/rhino-cli/src/application/parity.rs && grep -n "An unannounced edit to byte-identical source fails the gate" specs/apps/rhino/behavior/rhino-cli/gherkin/gate/parity-manifest.feature && cargo test --manifest-path apps/rhino-cli/Cargo.toml --test gate_specs`
       — acceptance: both greps match, and `cargo test` passes (already-green — this confirms
       existing coverage rather than exercising a new cycle)
   - _Suggested executor: `swe-rust-dev`_
@@ -871,7 +871,7 @@ to close this behavior, since it already shipped via `optimize-cis`.
 
 > **Pause Safety**: `ose-public` describes a three-repository family and its `rhino-cli` emits the
 > three-repo message. **The byte-identity boundary is now deliberately red** — `ose-primer` and
-> `ose-private` still carry the old string. This is the intended detector, not a defect, and Phases 6
+> the private sibling still carry the old string. This is the intended detector, not a defect, and Phases 6
 > and 7 close it. Do not leave the plan parked here for long.
 > To resume: `cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- parity manifest validate`.
 
@@ -939,11 +939,11 @@ Identical in substance to Phase 5, adapted to this repo's own footprint. `ose-pr
 - [ ] [AI] Run the PR-Review Maker→Fixer Cycle — acceptance: up to 7 cycles, early-exiting once a cycle finds 0 CRITICAL/HIGH/MEDIUM (plan-local deviation — see [tech-docs.md D13](./tech-docs.md#design-decisions)); loop not `escalated`
 - [ ] [AI] `gh pr ready` then merge — acceptance: preconditions (a)-(e) hold; merged by `[AI]`
 
-> **Pause Safety**: two of three repos are swept and byte-identical. `ose-private` still carries the
+> **Pause Safety**: two of three repos are swept and byte-identical. The private sibling still carries the
 > old string, so the boundary remains deliberately red. Safe to stop briefly.
 > To resume: run the parity validate in each of `ose-public` and `ose-primer`.
 
-## Phase 7: Four→Three Sweep in `ose-private` (delivery boundary — PR #3)
+## Phase 7: Four→Three Sweep in the private sibling (delivery boundary — PR #3)
 
 - [ ] [AI] Change into the repo and verify topology — command: `cd ~/ose-projects/<sibling> && git config --file "$(git rev-parse --git-common-dir)/config" core.bare`
       — acceptance: the output (`true`, or empty/`false`) records whether the bare-repo git method applies, per the
@@ -956,7 +956,7 @@ Identical in substance to Phase 5, adapted to this repo's own footprint. `ose-pr
 - [ ] [AI] Apply the identical content for **every** file the Blocking Preconditions'
       cross-repo manifest diff enumerated (`plans/in-progress/beaver-nest-repo-consolidation/evidence/phase-0-parity-divergence-private.txt`), not
       just `parity.rs` and `gate_specs.rs` — same widened-scope reasoning as Phase 6
-      This step runs from **inside `ose-private`** (see the `cd` above), while the evidence file was
+      This step runs from **inside the private sibling** (see the `cd` above), while the evidence file was
       written by Phase 0 inside `ose-public`'s own worktree — a bare relative path here would resolve
       against the wrong repo and the loop would silently iterate zero times, so the evidence file is
       addressed by its absolute path back into `ose-public`
@@ -995,7 +995,7 @@ Identical in substance to Phase 5, adapted to this repo's own footprint. `ose-pr
 > All checks below must pass before starting Phase 8. If any check fails, fix it in Phase 7 before
 > proceeding.
 
-- [ ] [AI] `grep -rn 'beaver-nest' AGENTS.md README.md docs repo-governance .claude apps/rhino-cli/src` in `ose-private` — acceptance: zero matches outside `plans/done/**`
+- [ ] [AI] `grep -rn 'beaver-nest' AGENTS.md README.md docs repo-governance .claude apps/rhino-cli/src` in the private sibling — acceptance: zero matches outside `plans/done/**`
 - [ ] [AI] Verify the byte-identity boundary is closed with a direct cross-repo manifest diff (not
       `parity manifest validate`, which is local-only and cannot detect cross-repo divergence) —
       command: `diff <(git -C ~/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(git -C ~/ose-projects/ose-primer show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) && diff <(git -C ~/ose-projects/ose-public show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort) <(git -C ~/ose-projects/<sibling> show HEAD:apps/rhino-cli/parity-manifest.sha256 | sort)`
@@ -1020,7 +1020,7 @@ regardless of whether its branch protection is confirmed active at execution tim
 reversible via `gh repo unarchive` [Web-cited, GitHub Docs, accessed 2026-08-06].
 
 - [ ] [AI] Verify every prior unit merged — command: `gh pr list --repo wahidyankf/ose-public --state merged --search 'beaver-nest-repo-consolidation' --json number,title`
-      — acceptance: the single `ose-public` PR for Phases 1-5 is listed as merged, and the `ose-primer` / `ose-private` sweep PRs are merged in their own repos
+      — acceptance: the single `ose-public` PR for Phases 1-5 is listed as merged, and the `ose-primer` / the private sibling sweep PRs are merged in their own repos
 - [ ] [AI] Confirm no surviving repo still references the fourth — command: `for r in ose-public ose-primer <sibling>; do grep -rn 'beaver-nest' ~/ose-projects/$r/AGENTS.md ~/ose-projects/$r/README.md ~/ose-projects/$r/docs ~/ose-projects/$r/repo-governance; done`
       — acceptance: zero matches outside `plans/done/**`
 - [ ] [AI] Provision the `beaver-nest` worktree and branch — command: `git -C ~/ose-projects/beaver-nest worktree add worktrees/beaver-nest-repo-consolidation -b beaver-nest-repo-consolidation-retire origin/main`
@@ -1086,7 +1086,7 @@ own — Phase 10 below is this unit's delivery boundary.
       — acceptance: every counted entry has a recorded terminal state, or the explicit escape
       `No generalizable learnings — <reason>` is present
 - [ ] [AI] Apply the secret/sensitivity gate and the repo-relevance gate to every surviving entry
-      — acceptance: no credential, token, or `ose-private` infra detail is routed into this public repo
+      — acceptance: no credential, token, or the private sibling infra detail is routed into this public repo
 - [ ] [AI] Route each small non-code learning inline in this plan's commits; file each large non-code
       learning and **every** code-homed learning as a new `plans/backlog/` plan, never inline
       — acceptance: no learning whose home is `apps/`, `libs/`, or tests was fixed inside this plan

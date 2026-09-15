@@ -17,7 +17,7 @@ README INDEX AUDIT PASSED: no orphan or ghost references found
 $ rhino-cli gate validate
 exit=0
 
-=== ose-private ===
+=== private-sibling ===
 $ rhino-cli governance word-budget validate
 exit=0, FAIL count=0 (WARN-only findings remain, same as ose-public)
 

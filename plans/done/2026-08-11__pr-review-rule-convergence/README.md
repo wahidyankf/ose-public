@@ -35,7 +35,7 @@ The same decision rule applies whether work came from a plan or an ad-hoc task.
   at the documented cadence rather than cancelling work because CI is queued or stalled.
 - Propagate direct post-completion cleanup across all in-scope repositories: remove each exact plan
   worktree immediately after its final delivery is complete, while preserving the root checkout.
-- Propagate governance and agent guidance to `ose-private` immediately after the public source change
+- Propagate governance and agent guidance to the private sibling immediately after the public source change
   merges, then deliver the same applicable policy changes to `ose-primer` through its own companion PR.
 - Regenerate bindings from the canonical `.claude/` source and validate the generated surfaces.
 
@@ -65,7 +65,7 @@ The same decision rule applies whether work came from a plan or an ad-hoc task.
 6. A confirmed secret leak triggers standing authorization to contain and rotate it, rewrite every
    reachable affected ref, delete the contaminated branch, replace any contaminated PR, and request
    provider cache/purge support. The result cannot erase independent external copies.
-7. `ose-public` remains canonical. Its governance PR merges first; a prepared, passing `ose-private`
+7. `ose-public` remains canonical. Its governance PR merges first; a prepared, passing the private sibling
    companion is merged immediately afterward, with any temporary skew recorded. This plan then
    delivers the applicable same-policy OSE Primer companion; it is no longer deferred from this work.
 8. The policy reclassifies every still-open PR at its next review or merge action; no legacy opt-in

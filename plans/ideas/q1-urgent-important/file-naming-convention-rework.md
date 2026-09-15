@@ -36,11 +36,11 @@ what is enforced:
   when it is "that step's own number", then its table keeps the ordinal on
   `02-step-1-and-2-maker-and-checker.md` while that row's own verdict says the two numbering systems
   disagree. The reconciling range clause sits _below_ the table and is never applied to the row.
-- **No verdict exists for name collisions.** `ose-private` holds 18 groups (40 files) whose basenames
+- **No verdict exists for name collisions.** The private sibling holds 18 groups (40 files) whose basenames
   were truncated to a fixed width by an earlier word-budget split, leaving pairs differing **only** by
   ordinal. They are not steps, so the keep-clause does not apply; stripping collides, so the
   strip-clause cannot be applied either. Those 40 kept their ordinals as the sole documented
-  deviation between the two repos' sweeps — 8 numbered paths left in `ose-public`, 46 in `ose-private`.
+  deviation between the two repos' sweeps — 8 numbered paths left in `ose-public`, 46 in the private sibling.
 
 ## Why now
 
@@ -120,6 +120,6 @@ word-budget split cannot emit two names differing only by ordinal; and both repo
 same rule with per-repo facts derived separately.
 
 Promotion signal: the collision verdict is decided. It is a single judgement call that determines
-whether this is a prose-only change or a prose change plus a 40-file corrective sweep in `ose-private`
+whether this is a prose-only change or a prose change plus a 40-file corrective sweep in the private sibling
 — two very different plans. Everything else here is mechanical reconciliation that can be specified
 once that call is made.

@@ -1,7 +1,7 @@
 === ose-public repo-config.yml doctor.extra-tools ===
 174:  extra-tools:
 
-=== ose-private repo-config.yml doctor.extra-tools (origin/main) ===
+=== private-sibling repo-config.yml doctor.extra-tools (origin/main) ===
 272:  extra-tools: []
 
 === top-level key set comparison ===

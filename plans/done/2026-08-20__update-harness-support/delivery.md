@@ -31,7 +31,7 @@ neither direct-push mode has an executable path here.
 PRs. It does not apply here. The entire plan — the purge of the eight dropped harnesses, Codex
 generation parity, the Claude Code and OpenCode reconciliation, the specs and Gherkin updates, the
 catalog-from-structured-data work, the binding-file ownership validator, and Knowledge Capture — lands in **exactly
-one `ose-public` PR** opened from this single worktree, paired with **exactly one `ose-private` PR**
+one `ose-public` PR** opened from this single worktree, paired with **exactly one the private sibling PR**
 carrying the byte-identical `apps/rhino-cli/**` changes. **Two PRs in total across both
 repositories, merged together.**
 
@@ -72,7 +72,7 @@ Consequences that bind every phase below:
 ## Cross-Repo Parity Ritual
 
 Run this **once**, after Phase 11 and before the terminal merge. `apps/rhino-cli` byte-identity spans
-`ose-public` and `ose-private` only. There is one `ose-private` PR, not one per phase.
+`ose-public` and the private sibling only. There is one the private sibling PR, not one per phase.
 
 - [x] [AI] Regenerate the manifest in this worktree:
       `cargo run --release --quiet --manifest-path apps/rhino-cli/Cargo.toml -- parity manifest generate`
@@ -83,11 +83,11 @@ Run this **once**, after Phase 11 and before the terminal merge. `apps/rhino-cli
       bidirectional. Read `apps/rhino-cli/parity-manifest.sha256` in both repositories rather than
       converging one onto the other — acceptance: the boundary file list is recorded in
       `learnings.md`.
-- [x] [AI] Apply byte-identical `apps/rhino-cli/**` changes to a single `ose-private` branch named
+- [x] [AI] Apply byte-identical `apps/rhino-cli/**` changes to a single the private sibling branch named
       `worktree/update-harness-support` — acceptance: `diff -r` over the boundary file set reports no
       differences.
-- [x] [AI] Open the one paired `ose-private` PR and drive it to green — acceptance:
-      `gh pr list --head worktree/update-harness-support` in `ose-private` returns exactly one PR and
+- [x] [AI] Open the one paired private-sibling PR and drive it to green — acceptance:
+      `gh pr list --head worktree/update-harness-support` in the private sibling returns exactly one PR and
       `gh pr checks` reports all required checks passing.
 
 ---
@@ -1636,7 +1636,7 @@ is the worst outcome, so each states the class plainly.
 - [x] [AI] Apply the **secret/sensitivity gate** to every surviving entry — sanitize to
       `<placeholder>` tokens or discard if the entry cannot be sanitized without losing its meaning.
 - [x] [AI] Apply the **repo-relevance gate** to every surviving entry — infra-private content stays
-      in `ose-private` only; public-governance content may route to `ose-public`; never cross-route
+      in the private sibling only; public-governance content may route to `ose-public`; never cross-route
       private content into a public repo.
 - [x] [AI] Route each surviving entry to exactly one durable home. The rubric is open-ended — route
       to whichever surface owns that kind of knowledge (`repo-governance/`, `docs/`,
@@ -1679,14 +1679,14 @@ is the worst outcome, so each states the class plainly.
 ## Terminal Review and Paired Merge
 
 > This is the **only** merge in the plan. Two PRs exist in total — one in `ose-public`, one in
-> `ose-private` — and they merge together.
+> the private sibling — and they merge together.
 
 - [x] [AI] Commit and push the Knowledge-Capture changes to the single branch: `git push`
       — acceptance: `gh pr list --head worktree/update-harness-support` still returns exactly one PR.
 - [x] [AI] Mark the PR ready for review: `gh pr ready` — acceptance: `gh pr view --json isDraft`
       reports `false`, where it reported `true` from Phase 0 onward.
 - [x] [AI] Run the [Cross-Repo Parity Ritual](#cross-repo-parity-ritual) once, in full — acceptance:
-      every item in that section is ticked and exactly one `ose-private` PR exists.
+      every item in that section is ticked and exactly one the private sibling PR exists.
 - [x] [AI] Run the [PR-Review Maker→Fixer Cycle](../../../repo-governance/workflows/pr/pr-review-quality-gate.md)
       as a **single block covering the whole PR** — drive to the earliest clean code M/H/C result
       within the seven-cycle maximum — acceptance: a cycle completes with zero MEDIUM-or-above code
@@ -1699,7 +1699,7 @@ is the worst outcome, so each states the class plainly.
 - [x] [AI] **Merge authority (stated once)**: `[AI]` merges both PRs in the same session once the
       hardened preconditions hold and the review cycle above has completed. No `[HUMAN]` merge gate
       applies to this plan — acceptance: both PRs show `MERGED`, and
-      `.github/workflows/rhino-cli-parity-audit.yml` dispatched on demand in `ose-private` exits 0,
+      `.github/workflows/rhino-cli-parity-audit.yml` dispatched on demand in the private sibling exits 0,
       where merging only `ose-public` would make its `diff -u` step exit 1.
 - [x] [AI] Fast-forward local `main` in both repositories after the merge — acceptance:
       `git status` reports `Your branch is up to date with 'origin/main'` in each. A side-worktree

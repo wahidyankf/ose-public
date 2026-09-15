@@ -276,33 +276,33 @@ a plan-doc fix — an environment/tooling note; consider documenting the `DOCKER
 pattern in a worktree-setup or troubleshooting doc if this sandboxed-Docker-Desktop gap recurs across
 future plan executions.
 
-## Learning: rhino-cli `lockfile.rs` fix opens a cross-repo parity-manifest obligation for ose-primer and ose-private
+## Learning: rhino-cli `lockfile.rs` fix opens a cross-repo parity-manifest obligation for ose-primer and the private sibling
 
 Fixing the `git lockfile sync` positional-args bug (see the fix above) edited
 `apps/rhino-cli/src/commands/git/lockfile.rs`, one of the files under `apps/rhino-cli/parity-manifest.sha256`'s
-byte-identity coverage spanning `ose-public`, `ose-primer`, and `ose-private` (per
+byte-identity coverage spanning `ose-public`, `ose-primer`, and the private sibling (per
 [Related Repositories](../../../docs/reference/related-repositories.md) — `beaver-nest` carries a
 fork and is out of scope). The pre-push `parity-manifest` gate correctly refused to let this land
 silently: `Error: apps/rhino-cli/src/commands/git/lockfile.rs no longer matches
 apps/rhino-cli/parity-manifest.sha256 ... obligates propagating the identical change to the other two
 repos.` Ran `rhino-cli parity manifest generate` to update the manifest for `ose-public` (the only
 scoped-in repo for this Phase 3 execution) so the push gate passes, but did **not** propagate the
-one-line `lockfile.rs` fix to `ose-primer`/`ose-private` — those repos are out of this worktree's
-scope. Routed: this plan's own Phase 6/7 already open worktrees in `ose-primer`/`ose-private` and
+one-line `lockfile.rs` fix to `ose-primer`/the private sibling — those repos are out of this worktree's
+scope. Routed: this plan's own Phase 6/7 already open worktrees in `ose-primer`/the private sibling and
 carry an "apply parity-divergence file content" + "regenerate parity manifest" step each; the
 identical `lockfile.rs` positional-args fix should be folded into those steps (or applied as a small
 standalone parity-sync commit before/alongside them) so all three repos' `git lockfile sync` stays
-byte-identical and functional. Until then, `ose-primer` and `ose-private` will fail the same
+byte-identical and functional. Until then, `ose-primer` and the private sibling will fail the same
 "unexpected argument" error the moment either stages a new `apps/*/package.json`.
 
 **Second file under the same obligation (PR #164 cycle-2 review, added without reopening this
 entry):** the cycle-1 review fix that satisfied GRA-TYPE-ANNOTATE-001 added a CLI-layer test to
 `apps/rhino-cli/src/cli.rs`, which forced a `parity-manifest.sha256` regeneration
 (`apps/rhino-cli/parity-manifest.sha256:95` now carries a new hash for `cli.rs`) — confirming `cli.rs`
-joined the same `ose-public`/`ose-primer`/`ose-private` byte-identity boundary mid-plan. **`cli.rs`
+joined the same `ose-public`/`ose-primer`/the private sibling byte-identity boundary mid-plan. **`cli.rs`
 carries the identical unpropagated obligation `lockfile.rs` does above**: Phase 6/7 must fold in
 `cli.rs`'s test-only change alongside `lockfile.rs`'s positional-args fix when propagating to
-`ose-primer`/`ose-private`, not `lockfile.rs` alone. Phase 6's own next step already fails closed on a
+`ose-primer`/the private sibling, not `lockfile.rs` alone. Phase 6's own next step already fails closed on a
 missed file (its manifest-regeneration acceptance check is a byte-for-byte `diff` against
 `ose-public`'s manifest, so nothing escapes to `main`), but it reports a mismatch, not which file was
 missed — routing both files here up front avoids that re-derivation.
@@ -365,7 +365,7 @@ source-repo copy already occupied (q2 for `first-deploy`, q4 for the other three
 has an independent, differently-named twin in `ose-public`'s own tree, produced by the _same_
 2026-08-06 cross-repo `plan-ideas-grooming` commit running in both repos simultaneously and renaming
 matching content differently in each: `orphaned-harness-binding-artifacts.md` folds into
-`ose-private-opencode-ci-monitor-orphan.md` (same core defect — the `ose-private` orphaned OpenCode
+`private-sibling-opencode-ci-monitor-orphan.md` (same core defect — the private-sibling orphaned OpenCode
 CI-monitor mirror and its hardcoded validator skip; `beaver-nest`'s version also surveyed
 `beaver-nest`'s own `.opencode/skills`/`.opencode/commands` orphans, which becomes moot once
 `beaver-nest` is archived in Phase 8). `unvalidated-cross-repo-citations.md` folds into
@@ -417,7 +417,7 @@ real-database rules, SQLite + DbUp + readiness backend, Vite CSR migration) and 
 Deliberately left every other file's body untouched — including its still-`beaver-nest-*`-named
 Affected Projects list, its now-superseded `plans/ideas/beaver-nest-persistence-layer.md` citation,
 and its own internal phase numbering — following this same `plans/done/README.md`'s own header
-precedent for the `ose-infra`→`ose-private` rename ("Archived plan bodies below deliberately retain
+precedent for the `ose-infra`→the private sibling rename ("Archived plan bodies below deliberately retain
 the old name — they are a historical record of what was true when each plan executed, not live
 documentation"). This is also why the Phase 4 Gate's `grep -rn 'beaver-nest' repo-governance/vision/
 plans/ideas/` command deliberately excludes `plans/done/` — the carried plan's retained `beaver-nest`

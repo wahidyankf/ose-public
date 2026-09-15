@@ -11,7 +11,8 @@ execution checklist.
 
 ## Active Plans
 
-_No plans are currently in progress._
+- [LMS username and password authentication](./lms-user/README.md) — add PostgreSQL-backed
+  registration, JWT access tokens, rotating refresh tokens, logout, and complete test coverage.
 
 ## Instructions
 

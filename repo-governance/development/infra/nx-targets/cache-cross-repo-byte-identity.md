@@ -1,6 +1,6 @@
 ---
-description: The four rules holding apps/rhino-cli to a stricter, byte-identical standard across ose-public and the private sibling.
-when_to_use: Use when changing anything under apps/rhino-cli and verifying cross-repo parity obligations.
+description: The rules holding apps/rhino-cli, and the safety-load-bearing agent guard scripts, to a stricter byte-identical standard.
+when_to_use: Use when changing anything under apps/rhino-cli or .claude/hooks/, and when verifying cross-repo parity obligations.
 ---
 
 # Cross-Repo rhino-cli Byte-Identity Standard
@@ -18,6 +18,27 @@ when_to_use: Use when changing anything under apps/rhino-cli and verifying cross
 3. rhino-cli's own behaviour MUST be cucumber-covered in both repos.
 4. Both `repo-config.yml` files MUST carry an identical key set (the schema-parity gate,
    enforced by `rhino-cli repo-config validate`).
+
+## Safety-load-bearing guard scripts
+
+A guard script under `.claude/hooks/` is **safety-load-bearing** when it is the only technical
+control standing between an agent and an unrecoverable outcome. Two qualify today:
+`block-env-file-access.sh` and `require-hippo-boundary.sh`. Both MUST be byte-identical everywhere
+they are deployed — across repositories, and across the repository and machine-wide layers — under
+the same union-superset rule as `apps/rhino-cli`: one script names the union of all consuming
+ecosystems' verbs and lets the inapplicable arms sit inert, rather than forking into variants.
+
+The superset rule is the enforcement mechanism, not a stylistic preference. Two variants of one
+guard is how drift hides: a hardening fix lands in whichever copy was being edited and is never
+ported, and nothing detects it because both copies still appear to work. A single byte-identical
+file makes parity checkable by checksum.
+
+Harness bindings follow the same rule. A harness MUST reference the canonical script rather than
+hold its own copy, which is why `.codex/hooks.json` points into `.claude/hooks/`. Where a harness
+offers no equivalent mechanism, or covers only part of its tool surface, the resulting gap is
+recorded in
+[Enforcement and Judgment Boundaries](../../practice/resource-aware-development/enforcement-and-judgment-boundaries.md)
+rather than left silently absent.
 
 See [SDLC Gate Standard §rhino-cli Byte-Identity Boundary](../../../../docs/reference/sdlc-gate-standard.md#rhino-cli-byte-identity-boundary)
 for the divergence-policy boundary this standard establishes, and

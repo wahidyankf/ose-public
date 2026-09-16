@@ -208,10 +208,31 @@ does three things:
 
 ### HIPPO local policy and shared coordination
 
-The committed `hippo.local.json.example` is a safe schema-2 reservation example. Copy it to the
-ignored `hippo.local.json` only when this machine needs a local policy; never commit the copy. Keep
-the normal per-user HIPPO root so every checkout shares one CPU/memory ledger. Set `HIPPO_ROOT` only
-for an explicitly isolated test or separately administered domain, not to make one repository
+The committed `hippo.local.json.example` is a safe schema-2 reservation example. **Copy it to the
+ignored `hippo.local.json` as part of setup**; never commit the copy. Without that file HIPPO falls
+back to schema-1 `exclusive`, which counts leases but has no memory dimension at all — a build can
+then be admitted on a host that has no memory left to give it.
+
+Set the three caps from your own machine, not from the example's defaults. Half the host is a
+reasonable starting point, because the other half still has to run an editor, a browser, the window
+server, and the agent processes themselves:
+
+| Field             | Meaning                                                                 |
+| ----------------- | ----------------------------------------------------------------------- |
+| `maxCpu`          | Host-wide CPU ceiling across every repository sharing the ledger         |
+| `maxMemoryMiB`    | Host-wide memory ceiling; must be at least `256`                         |
+| `maxActiveOwners` | How many owners may hold a reservation at once; at most `20`             |
+
+Set them explicitly. A profile's `maxConcurrency` does **not** survive into reservation mode — the
+allocated CPU replaces it — so `extends` alone caps nothing. These fields may only tighten safety;
+a value that would weaken a compiled floor is rejected at load time with exit `78`.
+
+A reservation is an admission promise, not a hard RSS limit: the ledger knows what owners _asked
+for_, not what they go on to allocate. That is why host pressure thresholds stay authoritative after
+a vector fits, and why the caps above are a floor under the problem rather than a solution to it.
+
+Keep the normal per-user HIPPO root so every checkout shares one CPU/memory ledger. Set `HIPPO_ROOT`
+only for an explicitly isolated test or separately administered domain, not to make one repository
 invisible to the others.
 
 HIPPO exit `73` requires safe disk cleanup. Exit `75` is a temporary capacity, FIFO, lease, or

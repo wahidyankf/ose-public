@@ -2343,14 +2343,29 @@ generate` and committed (`779ebf653`) — propagating to the private sibling rem
       `ose-id-web-e2e` 2 features/7 scenarios (e2e+behaviour) — scenario counts match every prior
       phase's own record, so no obligation silently dropped. Evidence:
       `evidence/phase-7/unit-coverage.txt`, `evidence/phase-7/coverage-static.txt`.
+- [x] [AI] Run `repo-governance/workflows/gherkin-implementation-review.md` (`scope=changed`,
+      `owners=ose-id-be,ose-id-web,ose-id-be-e2e,ose-id-web-e2e`) as a semantic proof that static
+      binding coverage cannot establish on its own, ahead of push.
+      **Date**: 2026-09-17. **Status**: Done — **PASS**. 87 rows (22 `id-be` scenarios × 3 applicable
+      adapters + 7 `id-web` scenarios × 3): 86 PASS, 1 valid EXEMPT (`status-shell.feature`'s
+      "Sanitize a status-rendering failure" `@e2e-exempt`, independently re-verified: genuine
+      boundary mismatch, substantive `ose-id-web:test:integration` alternative proof, Unit proof
+      present), 0 FAIL. Every non-exempt row traced Given→When→Then to a real production
+      subject/boundary across 20+ source files (real EF Core migration SQL, real Postgres
+      GRANT/REVOKE enforcement, the real `TestHostFixture` pipeline, real `next.config.ts` wiring) —
+      no no-ops, sentinels, or copied expected values found. Runtime proof: 247 tests passed, 0
+      failures, across `test:unit` ×2, `test:integration` ×2, and real-container `test:e2e` ×2 (all
+      via `rtk ./hippo run`, never through hooks/PR/`test:quick`/`test:coverage:*`). Report:
+      `local-tmp/gherkin-implementation-review/gherkin-implementation-review__c56d1b__2026-09-17--05-40.md`
+      (gitignored, per the `local-tmp/<agent-family>/` convention).
 - [x] [AI] Inspect `rtk git diff --check`, `rtk git status --short`, and the full `origin/main...HEAD` diff. Acceptance: the tree is clean, generated files trace to exact sources, all plan lifecycle changes are present, and account, provider, company, product-token, or deployment remains absent.
       **Date**: 2026-09-17. **Status**: Done. `rtk git diff --check`: exit 0, no output. `rtk git
-  status --short`: clean after discarding two classes of regenerated noise from this phase's own
+status --short`: clean after discarding two classes of regenerated noise from this phase's own
       test runs — `apps/ose-id-web/tsconfig.json` (Next.js `local-stack-runs` auto-append, the
       recurring pattern from earlier phases) and three `apps/ayokoding-www/content/.../_index.md`
       files (the ayokoding e2e build's `AYOKODING_WEB_SHOW_DRAFTS=true` fixture-content
       auto-injection into source `_index.md` files, unrelated to `ose-id`, discarded via `git
-  checkout --`). `origin/main...HEAD`: 372 files changed, 26,516 insertions(+), 769 deletions(-)
+checkout --`). `origin/main...HEAD`: 372 files changed, 26,516 insertions(+), 769 deletions(-)
       — reviewed via `--stat` and targeted `grep` across `apps/ose-id-be/src/` and
       `apps/ose-id-web/src/`'s added lines for `account|provider|company|product.?token|deployment`:
       zero matches in authored source (only the expected plan-prose mentions already reviewed during

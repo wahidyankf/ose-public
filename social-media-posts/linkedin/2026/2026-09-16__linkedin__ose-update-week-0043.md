@@ -35,9 +35,9 @@ BeaverNest adopted the updated RHINO consumer. That is consumer integration, not
 Four priorities:
 
 - Complete the public/private transition from the in-tree F# `rhino-cli` to standalone Rust RHINO.
-- Begin OSE IDs' local foundation; accounts and deployment stay for later.
+- Begin OSE ID's local foundation; accounts and deployment stay for later.
 - Finish separating OSE App into a public-contract API façade and private backend core.
-- Build and harden Baobab as the guarded infrastructure executor, then advance toward the private three-node K3S cluster.
+- Build and harden Baobab as the guarded infrastructure executor, then advance toward the private three-node K3s cluster.
 
 Insha Allah.
 

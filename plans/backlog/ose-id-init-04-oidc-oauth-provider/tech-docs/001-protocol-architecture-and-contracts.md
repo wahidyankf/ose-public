@@ -23,7 +23,7 @@ operations. Persistence and keys remain outbound adapters.
 Future GraphQL or Model Context Protocol adapters do not mint tokens, redeem codes, change consent, or
 select a tenant through a parallel implementation. They may expose separately authorized use cases only
 through the Init 01
-[transport-neutral boundary](../../../in-progress/ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#backend-architecture-pragmatic-hexagonal-ddd).
+[transport-neutral boundary](../../../done/2026-09-17__ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#backend-architecture-pragmatic-hexagonal-ddd).
 OIDC discovery, authorization, token, revocation, and end-session contracts remain OIDC/OAuth HTTP
 protocol surfaces rather than being translated into GraphQL fields or MCP tools. This plan installs no
 GraphQL/MCP runtime.

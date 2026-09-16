@@ -213,19 +213,33 @@ ignored `hippo.local.json` as part of setup**; never commit the copy. Without th
 back to schema-1 `exclusive`, which counts leases but has no memory dimension at all — a build can
 then be admitted on a host that has no memory left to give it.
 
-Set the three caps from your own machine, not from the example's defaults. Half the host is a
-reasonable starting point, because the other half still has to run an editor, a browser, the window
-server, and the agent processes themselves:
+Then add explicit host-wide caps to **your copy only**. They stay out of the committed example on
+purpose: an absolute cap is a statement about one machine, and CI executes the example on runners far
+smaller than a workstation, where a workstation-sized cap defers admission with exit `75`.
 
-| Field             | Meaning                                                                 |
-| ----------------- | ----------------------------------------------------------------------- |
-| `maxCpu`          | Host-wide CPU ceiling across every repository sharing the ledger         |
-| `maxMemoryMiB`    | Host-wide memory ceiling; must be at least `256`                         |
-| `maxActiveOwners` | How many owners may hold a reservation at once; at most `20`             |
+```json
+"coordination": {
+  "mode": "reservation",
+  "maxCpu": 6,
+  "maxMemoryMiB": 16384,
+  "maxActiveOwners": 2
+}
+```
 
-Set them explicitly. A profile's `maxConcurrency` does **not** survive into reservation mode — the
-allocated CPU replaces it — so `extends` alone caps nothing. These fields may only tighten safety;
-a value that would weaken a compiled floor is rejected at load time with exit `78`.
+| Field             | Meaning                                                          |
+| ----------------- | ---------------------------------------------------------------- |
+| `maxCpu`          | Host-wide CPU ceiling across every repository sharing the ledger  |
+| `maxMemoryMiB`    | Host-wide memory ceiling; must be at least `256`                  |
+| `maxActiveOwners` | How many owners may hold a reservation at once; at most `20`      |
+
+Size them from your own machine — roughly half the host is a reasonable start, because the other half
+still has to run an editor, a browser, the window server, and the agent processes themselves. The
+values above suit a 12-core, 32 GiB machine.
+
+Set them explicitly rather than relying on a profile. A profile's `maxConcurrency` does **not**
+survive into reservation mode — the allocated CPU replaces it — so `extends` alone caps nothing.
+These fields may only tighten safety; a value that would weaken a compiled floor is rejected at load
+time with exit `78`.
 
 A reservation is an admission promise, not a hard RSS limit: the ledger knows what owners _asked
 for_, not what they go on to allocate. That is why host pressure thresholds stay authoritative after

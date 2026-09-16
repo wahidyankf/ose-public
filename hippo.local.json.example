@@ -2,9 +2,7 @@
   "schemaVersion": 2,
   "coordination": {
     "mode": "reservation",
-    "maxCpu": 4,
-    "maxMemoryMiB": 8192,
-    "maxActiveOwners": 2,
+    "maxActiveOwners": 20,
     "automaticOwnerShares": {
       "balanced": 4,
       "constrained": 2,

@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Unit adapter. It references the domain, application, and infrastructure rings and
+    deliberately does not reference OseId.Host: the composition root is a process
+    boundary proven by the Integration and E2E adapters, so keeping it out of this
+    project keeps it out of the unit coverage denominator by construction rather
+    than by an exclusion glob.
+  -->
+  <PropertyGroup>
+    <RootNamespace>OseId.Be.Unit</RootNamespace>
+    <AssemblyName>OseId.Be.Unit</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- Generated code-behind belongs in obj/, never beside the specs corpus it reads. -->
+    <ReqnrollUseIntermediateOutputPathForCodeBehind>true</ReqnrollUseIntermediateOutputPathForCodeBehind>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Reqnroll.xunit.v3" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!--
+    The Gherkin corpus is owned by specs/, never copied here. Only the features this
+    adapter binds are linked; a feature whose behaviour a later phase delivers is
+    linked by that phase.
+  -->
+  <ItemGroup>
+    <ReqnrollFeatureFile Include="../../../../specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature" Link="Features/runtime-mode.feature" />
+    <ReqnrollFeatureFile Include="../../../../specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature" Link="Features/disabled-capabilities.feature" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/OseId.Domain/OseId.Domain.csproj" />
+    <ProjectReference Include="../../src/OseId.Application/OseId.Application.csproj" />
+    <ProjectReference Include="../../src/OseId.Infrastructure/OseId.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

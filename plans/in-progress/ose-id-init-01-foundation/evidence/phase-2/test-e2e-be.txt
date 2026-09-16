@@ -1,0 +1,10 @@
+> nx run ose-id-be-e2e:"test:e2e"
+> dotnet test apps/ose-id-be-e2e/OseId.Be.E2E.csproj
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Be.E2E -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be-e2e/bin/Debug/net10.0/OseId.Be.E2E.dll
+Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be-e2e/bin/Debug/net10.0/OseId.Be.E2E.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+Passed!  - Failed:     0, Passed:     9, Skipped:     0, Total:     9, Duration: 1 s - OseId.Be.E2E.dll (net10.0)
+ NX   Successfully ran target test:e2e for project ose-id-be-e2e
+exit=0

@@ -1,0 +1,106 @@
+{
+  "name": "ose-id-be-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/ose-id-be-e2e/steps",
+  "projectType": "application",
+  "targets": {
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet test apps/ose-id-be-e2e/OseId.Be.E2E.csproj"
+      },
+      "cache": false
+    },
+    "test:coverage:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter e2e"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-be-e2e/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-be-e2e/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/OseId.Be.Unit.csproj",
+        "{workspaceRoot}/apps/ose-id-be-e2e/steps/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be-e2e/OseId.Be.E2E.csproj"
+      ]
+    },
+    "test:coverage:behaviour": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter behaviour"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-be-e2e/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-be-e2e/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/OseId.Be.Unit.csproj",
+        "{workspaceRoot}/apps/ose-id-be-e2e/steps/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be-e2e/OseId.Be.E2E.csproj"
+      ]
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ose-id-be-e2e:test:coverage:e2e",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-be-e2e:test:coverage:behaviour",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-be-e2e/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-be-e2e/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/OseId.Be.Unit.csproj",
+        "{workspaceRoot}/apps/ose-id-be-e2e/steps/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be-e2e/OseId.Be.E2E.csproj"
+      ]
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ose-id-be-e2e:test:coverage",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-be-e2e/behaviour-coverage.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature"
+      ]
+    }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature"]
+  },
+  "tags": ["type:e2e", "platform:dotnet", "lang:csharp", "domain:ose"],
+  "implicitDependencies": ["ose-id-be"]
+}

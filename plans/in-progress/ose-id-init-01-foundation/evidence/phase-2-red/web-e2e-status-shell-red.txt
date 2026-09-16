@@ -1,0 +1,77 @@
+
+> nx run ose-id-web-e2e:"test:e2e" --grep Read service status without a mouse
+
+> if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\$?test\.skip\([^,)]*\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && npx bddgen && npx playwright test --grep "Read service status without a mouse"
+
+[2m[WebServer] [22m[33m[1m⚠[22m[39m Warning: Next.js inferred your workspace root, but it may not be correct.
+[2m[WebServer] [22m We detected multiple lockfiles and selected the directory of /Users/wkf/ose-projects/ose-public/package-lock.json as the root directory.
+[2m[WebServer] [22m To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+[2m[WebServer] [22m   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+[2m[WebServer] [22m Detected additional lockfiles: 
+[2m[WebServer] [22m   * /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/package-lock.json
+[2m[WebServer] [22m
+
+[2mRunning [22m1[2m test using [22m1[2m worker[22m
+
+[2m[WebServer] [22m[33m[1m⚠[22m[39m Blocked cross-origin request to Next.js dev resource /_next/webpack-hmr from "127.0.0.1".
+[2m[WebServer] [22mCross-origin access to Next.js dev resources is blocked by default for safety.
+[2m[WebServer] [22m
+[2m[WebServer] [22mTo allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+[2m[WebServer] [22m
+[2m[WebServer] [22m// next.config.js
+[2m[WebServer] [22mmodule.exports = {
+[2m[WebServer] [22m  allowedDevOrigins: ['127.0.0.1'],
+[2m[WebServer] [22m}
+[2m[WebServer] [22m
+[2m[WebServer] [22mRead more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+  [31m✘[39m  [2m1 [22m[31m[chromium] › .features-gen/foundation/status-shell.feature.spec.js:8:5 › OSE ID service status › Service status is accessible without a mouse or color perception › Read service status without a mouse[39m[2m (5.4s)[22m
+
+
+[31m  1) [chromium] › .features-gen/foundation/status-shell.feature.spec.js:8:5 › OSE ID service status › Service status is accessible without a mouse or color perception › Read service status without a mouse › When a keyboard and screen-reader user reviews its status [39m
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByRole('status', { name: 'OSE ID service component status' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('status', { name: 'OSE ID service component status' })[22m
+
+
+    [90m   at [39m../steps/status-shell.steps.ts:36
+
+    [0m [90m 34 |[39m   [90m// required to reveal any status content.[39m
+     [90m 35 |[39m   [36mawait[39m page[33m.[39mkeyboard[33m.[39mpress([32m"Tab"[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 36 |[39m   [36mawait[39m expect(statusRegion(page))[33m.[39mtoBeVisible()[33m;[39m
+     [90m    |[39m                                    [31m[1m^[22m[39m
+     [90m 37 |[39m   [36mconst[39m overflows [33m=[39m [36mawait[39m page[33m.[39mevaluate(() [33m=>[39m document[33m.[39mdocumentElement[33m.[39mscrollWidth [33m>[39m window[33m.[39minnerWidth)[33m;[39m
+     [90m 38 |[39m   expect(overflows[33m,[39m [32m"the status shell must reflow inside a 320 pixel viewport"[39m)[33m.[39mtoBe([36mfalse[39m)[33m;[39m
+     [90m 39 |[39m })[33m;[39m[0m
+    [2m    at Object.<anonymous> (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web-e2e/steps/status-shell.steps.ts:36:36)[22m
+    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
+    [2m    at BddStepInvoker.invoke (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
+    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web-e2e/.features-gen/foundation/status-shell.feature.spec.js:10:7[22m
+
+[2m    attachment #1: [1mscreenshot[2m (image/png) [2m──────────────────────────────────────────────────────────[2m[22m
+[2m    test-results/foundation-status-shell.fe-2a3ec-vice-status-without-a-mouse-chromium/test-failed-1.png[22m
+[2m    [2m────────────────────────────────────────────────────────────────────────────────────────────────[2m[22m
+
+[2m    Error Context: test-results/foundation-status-shell.fe-2a3ec-vice-status-without-a-mouse-chromium/error-context.md[22m
+
+[31m  1 failed[39m
+[31m    [chromium] › .features-gen/foundation/status-shell.feature.spec.js:8:5 › OSE ID service status › Service status is accessible without a mouse or color perception › Read service status without a mouse [39m
+Warning: command "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\$?test\.skip\([^,)]*\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && npx bddgen && npx playwright test --grep "Read service status without a mouse"" exited with non-zero status code
+
+
+ NX   Running target test:e2e for project ose-id-web-e2e failed
+
+Failed tasks:
+
+- ose-id-web-e2e:test:e2e
+
+Hint: run the command with --verbose for more details.
+
+EXIT=1

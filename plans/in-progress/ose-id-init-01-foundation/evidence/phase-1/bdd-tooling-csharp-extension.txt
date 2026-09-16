@@ -1,0 +1,86 @@
+Evidence: Phase 1 plan amendment -- C# (Reqnroll) step-binding extraction in the shared
+behaviour-coverage validator.
+
+Worktree: /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation
+Branch:   ose-id-init-01-foundation-base
+Date:     2026-09-16
+
+Files changed
+-------------
+scripts/behaviour-coverage.test.mjs   csharpBindings() fixture + 4 new C# tests (written first)
+scripts/behaviour-coverage.mjs        extractCsharpBindings/csharpFeatureReferences, .cs in
+                                      BINDING_FILE, .cs dispatch in extractBindings
+docs/explanation/software-engineering/programming-languages/c-sharp/testing-standards.md
+                                      new "Reqnroll Binds the Gherkin Corpus" section + tags
+
+RED (tests only, before the extractor existed)
+----------------------------------------------
+$ npm run test:validators
+  (./hippo run --class ephemeral --disk-path . -- node --test \
+     scripts/behaviour-coverage.test.mjs scripts/dotnet-unit-coverage.test.mjs)
+EXIT=1
+  59 passing, 4 failing -- exactly the 4 new C# tests:
+  X extracts one binding per Reqnroll step attribute
+  X ignores a Reqnroll step attribute inside a C# comment
+  X extracts every attribute of a stacked Reqnroll step method
+  X scopes duplicate Reqnroll bindings to explicit feature literals
+
+  Representative failure (right reason -- .cs fell through to the TypeScript fallback,
+  which records keywordSensitive:false and never loads as a binding file):
+
+    + actual - expected
+    + keywordSensitive: false,
+    - keywordSensitive: true,
+    ...
+    + '.../specs/alpha.feature: Alpha works / shared setup: undefined Unit binding.'
+    - []
+
+  Note: an earlier draft of the comment-masking and stacked-attribute tests passed
+  vacuously through the TypeScript fallback. Both were tightened to assert
+  keywordSensitive === true so all four are discriminating before implementation.
+
+GREEN (after extractCsharpBindings)
+-----------------------------------
+$ npm run test:validators
+EXIT=0
+  63 passing, 0 failing
+  OK extracts one binding per Reqnroll step attribute
+  OK ignores a Reqnroll step attribute inside a C# comment
+  OK extracts every attribute of a stacked Reqnroll step method
+  OK scopes duplicate Reqnroll bindings to explicit feature literals
+
+Documentation gates (changed Markdown file)
+-------------------------------------------
+$ npm exec -- markdownlint-cli2 "docs/.../c-sharp/testing-standards.md"
+  markdownlint-cli2 v0.21.0 (markdownlint v0.40.0); Linting: 1 file(s); Summary: 0 error(s)
+
+$ npm exec -- prettier --check docs/.../c-sharp/testing-standards.md \
+    scripts/behaviour-coverage.mjs scripts/behaviour-coverage.test.mjs
+  All matched files use Prettier code style!
+
+$ ./rhino md internal-link validate      EXIT=0   ([internal-link] checked 12548 links, no findings)
+$ ./rhino md frontmatter validate        EXIT=0
+$ ./rhino md heading-hierarchy validate  EXIT=0
+$ ./rhino metadata validate              EXIT=0
+$ ./rhino convention emoji validate      EXIT=0
+
+Regression spot-checks (BINDING_FILE + dispatch change)
+-------------------------------------------------------
+$ ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-be:test:coverage:behaviour
+EXIT=0   ose-be: 10 features, 15 expanded scenarios, adapters: unit, integration, e2e.
+
+$ ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run rhino-cli:test:coverage:behaviour
+EXIT=0   rhino-cli: 56 features, 479 expanded scenarios, adapters: unit, integration, e2e.
+
+$ ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ayokoding-www:test:coverage:behaviour
+EXIT=0   NX Successfully ran target test:coverage:behaviour for project ayokoding-www
+
+  ayokoding-www is the only project whose tree contains .cs files today
+  (apps/ayokoding-www/content/en/learn/courses/just-enough-csharp/**). Its configured binding
+  roots are tests/unit, tests/integration, and the sibling e2e tests, so widening BINDING_FILE
+  cannot reach that course content. Confirmed by `git ls-files "*.cs"`: every tracked .cs file
+  is under that content path.
+
+Out of scope (deferred to Phase 2, per the task)
+------------------------------------------------
+No Reqnroll / Reqnroll.xUnit NuGet reference was added; no .csproj exists in the repository yet.

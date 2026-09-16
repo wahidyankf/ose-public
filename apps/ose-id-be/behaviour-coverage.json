@@ -1,0 +1,14 @@
+{
+  "project": "ose-id-be",
+  "corpus": ["../../specs/apps/ose/id-be/behaviours"],
+  "adapters": {
+    "unit": {
+      "bindings": ["tests/unit"],
+      "driver": "tests/unit/OseId.Be.Unit.csproj"
+    },
+    "integration": {
+      "bindings": ["tests/integration"],
+      "driver": "tests/integration/OseId.Be.Integration.csproj"
+    }
+  }
+}

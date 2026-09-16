@@ -1,0 +1,59 @@
+=== baseline ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=21.12 diskFreeGiB=95.01 cpu=22.3%
+
+=== build ===
+
+ NX   Running target build for 2 projects:
+
+- ose-id-be
+- ose-id-web
+
+
+
+> nx run ose-id-web:build  [local cache]
+
+> next build
+
+[1m[38;2;173;127;168m▲ Next.js 16.2.6[39m[22m (Turbopack)
+
+[37m[1m [22m[39m Creating an optimized production build ...
+[32m[1m✓[22m[39m Compiled successfully in 1426ms
+[37m[1m [22m[39m Running TypeScript ...
+[37m[1m [22m[39m Finished TypeScript in 2.1s ...
+[37m[1m [22m[39m Collecting page data using 4 workers ...
+[37m[1m [22m[39m Generating static pages using 4 workers (0/2) ...
+[32m[1m✓[22m[39m Generating static pages using 4 workers (2/2) in 175ms
+[37m[1m [22m[39m Finalizing page optimization ...
+
+[4mRoute (app)[24m
+┌ ƒ /
+└ ○ /_not-found
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> nx run ose-id-be:build  [local cache]
+
+> dotnet publish apps/ose-id-be/src/OseId.Host/OseId.Host.csproj -c Release -o apps/ose-id-be/dist
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Release/net10.0/OseId.Domain.dll
+  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Release/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Release/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Release/net10.0/OseId.Host.dll
+  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/dist/
+
+
+
+ NX   Successfully ran target build for 2 projects
+
+Nx read the output from the cache instead of running the command for 2 out of 2 tasks.
+
+exit=0
+=== after ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=21.12 diskFreeGiB=95.02 cpu=27.9%

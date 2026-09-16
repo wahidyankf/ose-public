@@ -1,0 +1,48 @@
+Phase 1 — Adapter Map (behaviour-coverage.json inventory, four projects)
+
+Command (rerun after all four behaviour-coverage.json files existed):
+  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
+Exit code: 1 (expected — see delivery.md's grounding correction on this checkbox; full raw output and
+classification in evidence/phase-1/red-bindings.txt, red-bindings-be.txt, red-bindings-web.txt)
+
+## apps/ose-id-be/behaviour-coverage.json
+  project: ose-id-be
+  corpus: ../../specs/apps/ose/id-be/behaviours (7 feature files)
+  adapters:
+    unit        bindings=tests/unit                driver=tests/unit/OseId.Be.Unit.csproj (absent, Phase 2)
+    integration bindings=tests/integration          driver=tests/integration/OseId.Be.Integration.csproj (absent, Phase 2)
+
+## apps/ose-id-be-e2e/behaviour-coverage.json
+  project: ose-id-be-e2e
+  corpus: ../../specs/apps/ose/id-be/behaviours (same corpus, E2E-layer coverage)
+  adapters:
+    unit (required by validateCoverage's aggregate-behaviour rule) bindings=../ose-id-be/tests/unit driver=../ose-id-be/tests/unit/OseId.Be.Unit.csproj (absent, Phase 2)
+    e2e         bindings=steps                      driver=OseId.Be.E2E.csproj (absent, Phase 2)
+
+## apps/ose-id-web/behaviour-coverage.json
+  project: ose-id-web
+  corpus: ../../specs/apps/ose/id-web/behaviours (2 feature files)
+  adapters:
+    unit        bindings=tests/unit                 driver=vitest.config.ts (absent, Phase 2)
+    integration bindings=tests/integration           driver=vitest.integration.config.ts (absent, Phase 2)
+
+## apps/ose-id-web-e2e/behaviour-coverage.json
+  project: ose-id-web-e2e
+  corpus: ../../specs/apps/ose/id-web/behaviours
+  adapters:
+    unit (required by validateCoverage's aggregate-behaviour rule) bindings=../ose-id-web/tests/unit driver=../ose-id-web/vitest.config.ts (absent, Phase 2)
+    e2e         bindings=steps                       driver=playwright.config.ts (absent, Phase 2)
+
+## Structural closure (achievable now, per the corrected acceptance)
+  - Orphan scenarios (corpus feature with no adapter binding root configured): 0
+  - Duplicate scenario titles: 0 (already verified in evidence/phase-1/specs.txt)
+  - Ambiguous bindings (>1 match): 0
+  - Unused declared bindings: 0 (no binding files exist yet, so nothing to be unused)
+  - project.json target-contract errors (validateProjectTargetContract): 0
+  - Exemptions declared: 0 (none needed — every foundation scenario binds at all applicable layers per
+    tech-docs/005; no boundary-reason exemption is warranted at this stage)
+
+Every non-zero line in the coverage run is exactly one of: "undefined <adapter> binding" (368 total
+across all four projects, one per Gherkin step per applicable adapter, for the 9 authored scenario
+groups) or "<adapter> driver does not exist" (the not-yet-scaffolded Phase 2 test-project paths). Zero
+findings outside those two named-absent classes. PASS per the corrected acceptance criterion.

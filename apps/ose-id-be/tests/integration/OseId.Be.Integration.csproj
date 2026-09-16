@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Integration adapter. It composes the real ASP.NET Core host in process over
+    Microsoft.AspNetCore.TestHost, so the middleware order, route table, headers, and
+    serializer are the delivered ones while no socket is ever bound.
+  -->
+  <PropertyGroup>
+    <RootNamespace>OseId.Be.Integration</RootNamespace>
+    <AssemblyName>OseId.Be.Integration</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- Generated code-behind belongs in obj/, never beside the specs corpus it reads. -->
+    <ReqnrollUseIntermediateOutputPathForCodeBehind>true</ReqnrollUseIntermediateOutputPathForCodeBehind>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Reqnroll.xunit.v3" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ReqnrollFeatureFile Include="../../../../specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature" Link="Features/runtime-mode.feature" />
+    <ReqnrollFeatureFile Include="../../../../specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature" Link="Features/disabled-capabilities.feature" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/OseId.Host/OseId.Host.csproj" />
+  </ItemGroup>
+
+</Project>

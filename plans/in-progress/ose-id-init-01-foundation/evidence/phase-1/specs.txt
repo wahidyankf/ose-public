@@ -1,0 +1,127 @@
+Phase 1 — canonical feature structure (owner: specs-maker)
+Worktree: /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation
+Captured: 2026-09-16
+
+== COMMANDS RUN ==
+
+[1] Requested command (not a routed rhino-cli invocation):
+    ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate
+    stdout/stderr:
+      rhino-cli: unrecognized or not-yet-routed invocation: specs validate
+    exit code: 2
+
+    Routed equivalents are `specs audit` (aggregates structure-validate + validate-links),
+    `specs structure validate`, and `specs counts validate`. All three were run instead.
+
+[2] ./hippo run --class ephemeral --disk-path . --wait-for-admission 10m -- \
+      apps/rhino-cli/scripts/rhino-bin.sh specs audit
+    stdout:
+      specs structure validate: 0 finding(s) for "ayokoding"
+      specs structure validate: 0 finding(s) for "crane"
+      specs structure validate: 0 finding(s) for "organiclever"
+      specs structure validate: 0 finding(s) for "ose"
+      specs structure validate: 0 finding(s) for "rhino"
+      specs structure validate: 0 finding(s) for "roots"
+      All links valid! No broken links found.
+      SPECS AUDIT PASSED: all 2 validators passed
+    exit code: 0
+
+[3] ./hippo run --class ephemeral --disk-path . --wait-for-admission 10m -- \
+      apps/rhino-cli/scripts/rhino-bin.sh specs structure validate
+    stdout: 0 finding(s) for each of ayokoding, crane, organiclever, ose, rhino, roots
+    exit code: 0
+
+[4] ./hippo run --class ephemeral --disk-path . --wait-for-admission 10m -- \
+      apps/rhino-cli/scripts/rhino-bin.sh specs counts validate
+    stdout: (no findings emitted)
+    exit code: 0
+
+[5] Gherkin parser + tag-policy check via scripts/behaviour-coverage.mjs validateFeatureSource
+    over the nine new feature files.
+    stdout:
+      specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: scenarios=1 errors=0
+      specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: scenarios=5 errors=0
+      specs/apps/ose/id-be/behaviours/foundation/health.feature: scenarios=1 errors=0
+      specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: scenarios=1 errors=0
+      specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: scenarios=4 errors=0
+      specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: scenarios=1 errors=0
+      specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: scenarios=1 errors=0
+      specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: scenarios=4 errors=0
+      specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: scenarios=1 errors=0
+    exit code: 0
+    (scenarios = expanded pickles; a Scenario Outline row counts once per Examples row)
+
+[6] ./hippo run --class ephemeral --disk-path . --wait-for-admission 10m -- \
+      apps/rhino-cli/scripts/rhino-bin.sh governance readme-index validate --paths specs/apps/ose
+    stdout:
+      [readme-index] checked 500 directories, no findings
+      README INDEX AUDIT FAILED: 1 finding(s)
+        specs/apps/ose/id-be/architecture/hexagonal-dependency-boundary.md  [high/unannotated]
+          unannotated: specs/apps/ose/id-be/architecture.md links hexagonal-dependency-boundary.md
+          without a derived annotation
+    exit code: 0
+    Note: the single finding belongs to the concurrently-running architecture lane's file, not to
+    the Gherkin corpus scaffolded here. No missing/orphan/ghost finding exists in either new owner.
+
+== FEATURE-FILE INVENTORY ==
+
+path | authored scenarios (expanded) | requirement
+
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature | 1 (1) | AC-FND-01
+specs/apps/ose/id-be/behaviours/foundation/health.feature | 1 (1) | AC-FND-02
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature | 1 (1) | AC-FND-03
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature | 1 outline (4) | AC-FND-04-BE
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature | 1 outline (4) | AC-FND-04-WEB
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature | 1 (1) | AC-FND-05
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature | 1 outline (5) | AC-FND-06
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature | 1 (1) | AC-FND-07
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature | 1 (1) | AC-FND-08
+
+Totals: 9 feature files, 9 authored scenarios, 19 expanded scenarios.
+
+== PLAN-ONLY REQUIREMENT MAPPING ==
+(requirement IDs live here, never inside a .feature file)
+
+AC-FND-01 -> id-be/behaviours/foundation/local-stack.feature
+             "Start OSE ID from a clean checkout"
+AC-FND-02 -> id-be/behaviours/foundation/health.feature
+             "Report PostgreSQL becoming unavailable after startup"
+AC-FND-03 -> id-be/behaviours/foundation/database-privilege.feature
+             "Deny a schema change attempted by the application role"
+AC-FND-04-BE -> id-be/behaviours/foundation/runtime-mode.feature
+             "Reject an unsupported backend runtime mode" (Staging/Production/missing/unknown)
+AC-FND-04-WEB -> id-web/behaviours/foundation/runtime-mode.feature
+             "Reject an unsupported web runtime mode" (Staging/Production/missing/unknown)
+AC-FND-05 -> id-be/behaviours/foundation/stateless-instances.feature
+             "Alternate requests between backend instances"
+AC-FND-06 -> id-be/behaviours/foundation/disabled-capabilities.feature
+             "Reject a disabled identity capability" (5 capability/method/path rows)
+AC-FND-07 -> id-web/behaviours/foundation/status-shell.feature
+             "Read service status without a mouse"
+AC-FND-08 -> id-be/behaviours/persistence/database-audit-and-soft-delete.feature
+             "Reject physical deletion of migration history"
+
+== EXEMPTIONS ==
+
+None. No @integration-exempt or @e2e-exempt tag was added; no scenario required one. No plan ID
+and no positive layer tag appears in any .feature file.
+
+== SUPPORTING SCAFFOLD ==
+
+specs/apps/ose/id-be/README.md                              (new, owner corpus index)
+specs/apps/ose/id-be/behaviours/README.md                   (new, domain index)
+specs/apps/ose/id-be/behaviours/foundation/README.md        (new, domain index)
+specs/apps/ose/id-be/behaviours/persistence/README.md       (new, domain index)
+specs/apps/ose/id-web/README.md                             (new, owner corpus index)
+specs/apps/ose/id-web/behaviours/README.md                  (new, domain index)
+specs/apps/ose/id-web/behaviours/foundation/README.md       (new, domain index)
+specs/apps/ose/README.md                                    (edited, indexes both new owners)
+
+== OPEN ITEMS FOR OTHER LANES ==
+
+1. repo-config.yml `md-readme-index.trees` does not yet list specs/apps/ose/id-be or
+   specs/apps/ose/id-web, so the readme-index gate does not scan them. Governance lane.
+2. contracts/openapi.yaml for id-be is a separate later checklist item and was not created.
+3. The architecture lane's specs/apps/ose/id-be/architecture.md and its architecture/ children
+   were written concurrently; two of its files plus the one unannotated link above remain
+   prettier-unformatted / unannotated and are out of this item's scope.

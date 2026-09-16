@@ -1,0 +1,142 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "ose-id-web-e2e",
+  "sourceRoot": "apps/ose-id-web-e2e/steps",
+  "projectType": "application",
+  "targets": {
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx playwright install --with-deps chromium",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit",
+        "cwd": "{projectRoot}"
+      },
+      "inputs": ["default", "{workspaceRoot}/specs/apps/ose/id-web/behaviours/**/*.feature"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx oxlint .",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["ose-id-web:build"],
+      "options": {
+        "command": "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\\$?test\\.skip\\([^,)]*\\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && npx bddgen && npx playwright test",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:coverage:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-id-web-e2e/behaviour-coverage.json --adapter e2e"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-web-e2e/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-web-e2e/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-web/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-web/tests/unit/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/vitest.config.ts",
+        "{workspaceRoot}/apps/ose-id-web-e2e/steps/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web-e2e/playwright.config.ts"
+      ]
+    },
+    "test:coverage:behaviour": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-id-web-e2e/behaviour-coverage.json --adapter behaviour"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-web-e2e/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-web-e2e/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-web/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-web/tests/unit/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/vitest.config.ts",
+        "{workspaceRoot}/apps/ose-id-web-e2e/steps/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web-e2e/playwright.config.ts"
+      ]
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ose-id-web-e2e:test:coverage:e2e",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-web-e2e:test:coverage:behaviour",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-web-e2e/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-web-e2e/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-web/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-web/tests/unit/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/vitest.config.ts",
+        "{workspaceRoot}/apps/ose-id-web-e2e/steps/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web-e2e/playwright.config.ts"
+      ]
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ose-id-web-e2e:typecheck",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-web-e2e:lint",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-web-e2e:test:coverage",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-web-e2e/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-web-e2e/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-web/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-web/tests/unit/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/vitest.config.ts",
+        "{workspaceRoot}/apps/ose-id-web-e2e/steps/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web-e2e/playwright.config.ts"
+      ]
+    }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/ose/id-web/behaviours/**/*.feature"]
+  },
+  "tags": ["type:e2e", "platform:playwright", "lang:ts", "domain:ose"],
+  "implicitDependencies": ["ose-id-web"]
+}

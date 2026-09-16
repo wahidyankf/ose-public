@@ -1,0 +1,14 @@
+{
+  "project": "ose-id-web",
+  "corpus": ["../../specs/apps/ose/id-web/behaviours"],
+  "adapters": {
+    "unit": {
+      "bindings": ["tests/unit"],
+      "driver": "vitest.config.ts"
+    },
+    "integration": {
+      "bindings": ["tests/integration"],
+      "driver": "vitest.integration.config.ts"
+    }
+  }
+}

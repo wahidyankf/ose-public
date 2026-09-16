@@ -1,0 +1,198 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "ose-id-web",
+  "sourceRoot": "apps/ose-id-web/src",
+  "projectType": "application",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ../../scripts/next-with-port.mjs dev --env OSE_ID_WEB_PORT --default 3500",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "next build",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/.next"]
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ../../scripts/next-with-port.mjs start --env OSE_ID_WEB_PORT --default 3500",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx oxlint --jsx-a11y-plugin . && npx eslint .",
+        "cwd": "{projectRoot}"
+      },
+      "inputs": [
+        "{projectRoot}/src/**/*",
+        "{projectRoot}/oxlint.json",
+        "{projectRoot}/eslint.config.mjs",
+        "{projectRoot}/tsconfig.json"
+      ]
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "{projectRoot}/src/**/*", "{projectRoot}/tests/unit/**/*"],
+      "options": {
+        "command": "if grep -rn -E --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist --exclude-dir=coverage '\\b(it|test|describe)\\.(skip|only|todo)\\(' .; then echo 'ERROR: .skip()/.only()/.todo() found in test files above - remove before merging'; exit 1; fi && npx vitest run --coverage --coverage.thresholds.lines=99",
+        "cwd": "apps/ose-id-web"
+      },
+      "dependsOn": [],
+      "outputs": ["{projectRoot}/coverage"]
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx vitest run --config vitest.integration.config.ts --coverage --coverage.thresholds.lines=99",
+        "cwd": "apps/ose-id-web"
+      }
+    },
+    "test:coverage:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-id-web/behaviour-coverage.json --adapter unit"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-web/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-web/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-web/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-web/tests/unit/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/tests/integration/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/vitest.config.ts",
+        "{workspaceRoot}/apps/ose-id-web/vitest.integration.config.ts"
+      ]
+    },
+    "test:coverage:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-id-web/behaviour-coverage.json --adapter integration"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-web/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-web/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-web/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-web/tests/unit/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/tests/integration/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/vitest.config.ts",
+        "{workspaceRoot}/apps/ose-id-web/vitest.integration.config.ts"
+      ]
+    },
+    "test:coverage:behaviour": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-id-web/behaviour-coverage.json --adapter behaviour"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-web/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-web/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-web/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-web/tests/unit/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/tests/integration/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/vitest.config.ts",
+        "{workspaceRoot}/apps/ose-id-web/vitest.integration.config.ts"
+      ]
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ose-id-web:test:coverage:unit",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-web:test:coverage:integration",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-web:test:coverage:behaviour",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-web/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-web/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-web/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-web/tests/unit/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/tests/integration/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/vitest.config.ts",
+        "{workspaceRoot}/apps/ose-id-web/vitest.integration.config.ts"
+      ]
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ose-id-web:typecheck",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-web:lint",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-web:test:unit",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-web:test:coverage",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-web/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-web/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-web/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-web/tests/unit/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/tests/integration/**/*.{ts,tsx}",
+        "{workspaceRoot}/apps/ose-id-web/vitest.config.ts",
+        "{workspaceRoot}/apps/ose-id-web/vitest.integration.config.ts"
+      ]
+    }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/ose/id-web/behaviours/**/*.feature"]
+  },
+  "tags": ["type:app", "platform:nextjs", "lang:ts", "domain:ose"],
+  "implicitDependencies": ["web-ui", "web-ui-token"]
+}

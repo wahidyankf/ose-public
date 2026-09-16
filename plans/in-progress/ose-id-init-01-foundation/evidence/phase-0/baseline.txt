@@ -1,0 +1,23 @@
+Phase 0 — Mandatory Nx Quality Matrix (predecessor-green baseline)
+
+Command:
+  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD
+
+Context: worktree HEAD equals origin/main HEAD (d9a832b6a49d7f5587dd63061bb45827a6a0b75e) at
+Phase 0 — no implementation has landed yet, so the affected set is empty.
+
+Output:
+  > NX   No tasks were run
+
+Exit code: 0
+
+Supplementary install/doctor evidence:
+  rtk ./hippo run --class ephemeral --disk-path . -- npm install
+    -> exit 0; Doctor summary: 19/19 tools OK, 0 warning, 0 missing
+  rtk npm run doctor -- --fix
+    -> exit 0; "Nothing to fix — all tools are installed."
+  rtk git status --short
+    -> empty (no secret or unexplained generated change)
+
+Acceptance: all commands exit 0; worktree is current with origin/main; no preexisting failure to
+diagnose because zero projects are affected at this baseline point.

@@ -1,0 +1,577 @@
+=== before ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=24.00 diskFreeGiB=88.82 cpu=10.5%
+
+=== command ===
+rtk /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/hippo run --class transactional --disk-path /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
+
+=== output ===
+
+ NX   Running targets typecheck, lint, test:quick for 4 projects:
+
+- ose-id-be
+- ose-id-be-e2e
+- ose-id-web
+- ose-id-web-e2e
+
+
+
+> nx run ose-id-be:typecheck  [existing outputs match the cache, left as is]
+
+> dotnet build apps/ose-id-be/src/OseId.Host/OseId.Host.csproj /p:TreatWarningsAsErrors=true
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.91
+
+> nx run ose-id-be:lint  [existing outputs match the cache, left as is]
+
+> dotnet format apps/ose-id-be/src/OseId.Host/OseId.Host.csproj --verify-no-changes --verbosity diagnostic
+
+The dotnet runtime version is '10.0.8'.
+Formatting code files in workspace '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/OseId.Host.csproj'.
+Loading workspace.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
+Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
+Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
+Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/obj/Debug/net10.0/OseId.Host.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Host is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
+Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
+Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
+Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/obj/Debug/net10.0/OseId.Domain.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Domain is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
+Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
+Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
+Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/obj/Debug/net10.0/OseId.Application.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Application is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
+Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
+Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
+Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/obj/Debug/net10.0/OseId.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Infrastructure is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Complete in 2235ms.
+Determining formattable files.
+Skipping referenced project 'OseId.Domain'.
+Skipping referenced project 'OseId.Application'.
+Skipping referenced project 'OseId.Infrastructure'.
+Complete in 124ms.
+Running formatters.
+Running Code Style analysis.
+Determining diagnostics...
+Required references did not load for OseId.Host or referenced project. Run `dotnet restore` prior to formatting.
+Complete in 331ms.
+Analysis complete in 331ms.
+Running Analyzer Reference analysis.
+Determining diagnostics...
+Required references did not load for OseId.Host or referenced project. Run `dotnet restore` prior to formatting.
+Complete in 31ms.
+Analysis complete in 31ms.
+Complete in 941ms.
+Formatted 0 of 8 files.
+Format complete in 3301ms.
+> dotnet build apps/ose-id-be/src/OseId.Host/OseId.Host.csproj /p:TreatWarningsAsErrors=true /p:RunAnalyzersDuringBuild=true /p:EnforceCodeStyleInBuild=true --no-incremental
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.84
+
+> nx run ose-id-web:lint  [existing outputs match the cache, left as is]
+
+> npx oxlint --jsx-a11y-plugin . && npx eslint .
+
+src/contexts/foundation/presentation/service-status-panel.tsx:39:9: warning jsx-a11y(prefer-tag-over-role): Prefer `output` over `role` attribute `status`. help: Replace HTML elements with `role` attribute `status` to corresponding semantic HTML tag `output`.
+
+> nx run ose-id-web:typecheck  [existing outputs match the cache, left as is]
+
+[2m> [22mtsc --noEmit
+
+
+> nx run ose-id-be-e2e:"test:quick"
+
+> npm exec -- nx run ose-id-be-e2e:test:coverage
+
+
+[2m> [22m[2mnx run[22m ose-id-be-e2e:"test:coverage"
+
+[2m> [22mnpm exec -- nx run ose-id-be-e2e:test:coverage:e2e
+
+
+[2m> [22m[2mnx run[22m ose-id-be-e2e:"test:coverage:e2e"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter e2e
+
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined E2E binding.
+Warning: command "node scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter e2e" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mtest:coverage:e2e[22m for project ose-id-be-e2e failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ose-id-be-e2e:test:coverage:e2e
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ose-id-be-e2e:test:coverage:e2e" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mtest:coverage[22m for project ose-id-be-e2e failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ose-id-be-e2e:test:coverage
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ose-id-be-e2e:test:coverage" exited with non-zero status code(node:56156) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 14 exit listeners added to [process]. MaxListeners is 13. Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> nx run ose-id-web:"test:quick"
+
+> npm exec -- nx run ose-id-web:typecheck
+
+
+[2m> [22m[2mnx run[22m ose-id-web:typecheck  [2m[existing outputs match the cache, left as is][22m
+
+[2m> [22mtsc --noEmit
+
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtypecheck[22m for project ose-id-web[39m
+
+[2mNx read the output from the cache instead of running the command for 1 out of 1 tasks.[22m
+
+> npm exec -- nx run ose-id-web:lint
+
+
+[2m> [22m[2mnx run[22m ose-id-web:lint  [2m[existing outputs match the cache, left as is][22m
+
+> npx oxlint --jsx-a11y-plugin . && npx eslint .
+
+src/contexts/foundation/presentation/service-status-panel.tsx:39:9: warning jsx-a11y(prefer-tag-over-role): Prefer `output` over `role` attribute `status`. help: Replace HTML elements with `role` attribute `status` to corresponding semantic HTML tag `output`.
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mlint[22m for project ose-id-web[39m
+
+[2mNx read the output from the cache instead of running the command for 1 out of 1 tasks.[22m
+
+> npm exec -- nx run ose-id-web:test:unit
+
+
+[2m> [22m[2mnx run[22m ose-id-web:"test:unit"  [2m[existing outputs match the cache, left as is][22m
+
+[2m> [22mif grep -rn -E --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist --exclude-dir=coverage '\b(it|test|describe)\.(skip|only|todo)\(' .; then echo 'ERROR: .skip()/.only()/.todo() found in test files above - remove before merging'; exit 1; fi && npx vitest run --coverage --coverage.thresholds.lines=99
+
+[33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
+
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+
+[2m Test Files [22m [1m[32m4 passed[39m[22m[90m (4)[39m
+[2m      Tests [22m [1m[32m48 passed[39m[22m[90m (48)[39m
+[2m   Start at [22m 09:27:05
+[2m   Duration [22m 1.55s[2m (transform 419ms, setup 349ms, import 995ms, tests 125ms, environment 2.37s)[22m
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+[32;1mAll files         [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m
+[32;1m app              [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m
+[32;1m  metadata.ts     [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m
+[32;1m ...on/application[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m
+[32;1m  ...ice-status.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m
+[32;1m ...ndation/domain[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m
+[32;1m  ...ice-status.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m
+[32;1m ...n/presentation[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m
+[32;1m  ...tus-panel.tsx[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m
+[32;1m shared/runtime   [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m
+[32;1m  ...mode-guard.ts[0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m
+[32;1m  runtime-mode.ts [0m | [32;1m    100[0m | [32;1m     100[0m | [32;1m    100[0m | [32;1m    100[0m | [33;1m                 [0m
+-------------------|---------|----------|---------|---------|-------------------
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:unit[22m for project ose-id-web[39m
+
+[2mNx read the output from the cache instead of running the command for 1 out of 1 tasks.[22m
+
+> npm exec -- nx run ose-id-web:test:coverage
+
+
+[2m> [22m[2mnx run[22m ose-id-web:"test:coverage"  [2m[existing outputs match the cache, left as is][22m
+
+> npm exec -- nx run ose-id-web:test:coverage:unit
+
+
+[2m> [22m[2mnx run[22m ose-id-web:"test:coverage:unit"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-web/behaviour-coverage.json --adapter unit
+
+ose-id-web: 2 features, 7 expanded scenarios, adapters: unit.
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:coverage:unit[22m for project ose-id-web[39m
+
+
+> npm exec -- nx run ose-id-web:test:coverage:integration
+
+
+[2m> [22m[2mnx run[22m ose-id-web:"test:coverage:integration"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-web/behaviour-coverage.json --adapter integration
+
+ose-id-web: 2 features, 7 expanded scenarios, adapters: integration.
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:coverage:integration[22m for project ose-id-web[39m
+
+
+> npm exec -- nx run ose-id-web:test:coverage:behaviour
+
+
+[2m> [22m[2mnx run[22m ose-id-web:"test:coverage:behaviour"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-web/behaviour-coverage.json --adapter behaviour
+
+ose-id-web: 2 features, 7 expanded scenarios, adapters: unit, integration.
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:coverage:behaviour[22m for project ose-id-web[39m
+
+
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:coverage[22m for project ose-id-web[39m
+
+[2mNx read the output from the cache instead of running the command for 1 out of 1 tasks.[22m
+
+
+> nx run ose-id-be:"test:quick"
+
+> npm exec -- nx run ose-id-be:typecheck
+
+
+[2m> [22m[2mnx run[22m ose-id-be:typecheck  [2m[existing outputs match the cache, left as is][22m
+
+> dotnet build apps/ose-id-be/src/OseId.Host/OseId.Host.csproj /p:TreatWarningsAsErrors=true
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.91
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtypecheck[22m for project ose-id-be[39m
+
+[2mNx read the output from the cache instead of running the command for 1 out of 1 tasks.[22m
+
+> npm exec -- nx run ose-id-be:lint
+
+
+[7m[1m[36m NX [39m[22m[27m  [36mRunning target [1mlint[22m for project ose-id-be and [1m1[22m task it depends on:[39m
+
+[2m[36m[39m[22m
+
+[2m> [22m[2mnx run[22m ose-id-be:typecheck  [2m[existing outputs match the cache, left as is][22m
+
+> dotnet build apps/ose-id-be/src/OseId.Host/OseId.Host.csproj /p:TreatWarningsAsErrors=true
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.91
+
+[2m> [22m[2mnx run[22m ose-id-be:lint  [2m[existing outputs match the cache, left as is][22m
+
+> dotnet format apps/ose-id-be/src/OseId.Host/OseId.Host.csproj --verify-no-changes --verbosity diagnostic
+
+The dotnet runtime version is '10.0.8'.
+Formatting code files in workspace '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/OseId.Host.csproj'.
+Loading workspace.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
+Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
+Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
+Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/obj/Debug/net10.0/OseId.Host.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Host is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
+Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
+Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
+Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/obj/Debug/net10.0/OseId.Domain.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Domain is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
+Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
+Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
+Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/obj/Debug/net10.0/OseId.Application.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Application is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
+Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
+Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
+Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/obj/Debug/net10.0/OseId.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Infrastructure is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Complete in 2235ms.
+Determining formattable files.
+Skipping referenced project 'OseId.Domain'.
+Skipping referenced project 'OseId.Application'.
+Skipping referenced project 'OseId.Infrastructure'.
+Complete in 124ms.
+Running formatters.
+Running Code Style analysis.
+Determining diagnostics...
+Required references did not load for OseId.Host or referenced project. Run `dotnet restore` prior to formatting.
+Complete in 331ms.
+Analysis complete in 331ms.
+Running Analyzer Reference analysis.
+Determining diagnostics...
+Required references did not load for OseId.Host or referenced project. Run `dotnet restore` prior to formatting.
+Complete in 31ms.
+Analysis complete in 31ms.
+Complete in 941ms.
+Formatted 0 of 8 files.
+Format complete in 3301ms.
+> dotnet build apps/ose-id-be/src/OseId.Host/OseId.Host.csproj /p:TreatWarningsAsErrors=true /p:RunAnalyzersDuringBuild=true /p:EnforceCodeStyleInBuild=true --no-incremental
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.84
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mlint[22m for project ose-id-be and [1m1[22m task it depends on[39m
+
+[2mNx read the output from the cache instead of running the command for 2 out of 2 tasks.[22m
+
+> npm exec -- nx run ose-id-be:test:coverage
+
+
+[2m> [22m[2mnx run[22m ose-id-be:"test:coverage"
+
+[2m> [22mnpm exec -- nx run ose-id-be:test:coverage:unit
+
+
+[2m> [22m[2mnx run[22m ose-id-be:"test:coverage:unit"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter unit
+
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined Unit binding.
+Warning: command "node scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter unit" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mtest:coverage:unit[22m for project ose-id-be failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ose-id-be:test:coverage:unit
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ose-id-be:test:coverage:unit" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mtest:coverage[22m for project ose-id-be failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ose-id-be:test:coverage
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ose-id-be:test:coverage" exited with non-zero status code
+> nx run ose-id-web-e2e:lint
+
+> npx oxlint .
+
+steps/runtime-mode.steps.ts:84:48: warning eslint(no-empty-pattern): Empty object binding pattern help: Passing `null` or `undefined` will result in runtime error because `null` and `undefined` cannot be destructured.
+
+> nx run ose-id-web-e2e:typecheck
+
+> tsc --noEmit
+
+(node:56156) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 14 SIGINT listeners added to [process]. MaxListeners is 13. Use emitter.setMaxListeners() to increase limit
+(node:56156) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 14 SIGTERM listeners added to [process]. MaxListeners is 13. Use emitter.setMaxListeners() to increase limit
+(node:56156) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 14 SIGHUP listeners added to [process]. MaxListeners is 13. Use emitter.setMaxListeners() to increase limit
+
+> nx run ose-id-web-e2e:"test:quick"
+
+> npm exec -- nx run ose-id-web-e2e:typecheck
+
+
+[2m> [22m[2mnx run[22m ose-id-web-e2e:typecheck
+
+[2m> [22mtsc --noEmit
+
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtypecheck[22m for project ose-id-web-e2e[39m
+
+
+> npm exec -- nx run ose-id-web-e2e:lint
+
+
+[2m> [22m[2mnx run[22m ose-id-web-e2e:lint  [2m[existing outputs match the cache, left as is][22m
+
+> npx oxlint .
+
+steps/runtime-mode.steps.ts:84:48: warning eslint(no-empty-pattern): Empty object binding pattern help: Passing `null` or `undefined` will result in runtime error because `null` and `undefined` cannot be destructured.
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mlint[22m for project ose-id-web-e2e[39m
+
+[2mNx read the output from the cache instead of running the command for 1 out of 1 tasks.[22m
+
+> npm exec -- nx run ose-id-web-e2e:test:coverage
+
+
+[2m> [22m[2mnx run[22m ose-id-web-e2e:"test:coverage"  [2m[existing outputs match the cache, left as is][22m
+
+> npm exec -- nx run ose-id-web-e2e:test:coverage:e2e
+
+
+[2m> [22m[2mnx run[22m ose-id-web-e2e:"test:coverage:e2e"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-web-e2e/behaviour-coverage.json --adapter e2e
+
+ose-id-web-e2e: 2 features, 7 expanded scenarios, adapters: e2e.
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:coverage:e2e[22m for project ose-id-web-e2e[39m
+
+
+> npm exec -- nx run ose-id-web-e2e:test:coverage:behaviour
+
+
+[2m> [22m[2mnx run[22m ose-id-web-e2e:"test:coverage:behaviour"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-web-e2e/behaviour-coverage.json --adapter behaviour
+
+ose-id-web-e2e: 2 features, 7 expanded scenarios, adapters: unit, e2e.
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:coverage:behaviour[22m for project ose-id-web-e2e[39m
+
+
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:coverage[22m for project ose-id-web-e2e[39m
+
+[2mNx read the output from the cache instead of running the command for 1 out of 1 tasks.[22m
+
+
+
+
+ NX   Running targets typecheck, lint, test:quick for 4 projects failed
+
+Failed tasks:
+
+- ose-id-be-e2e:test:quick
+- ose-id-be:test:quick
+
+
+exit=1
+peak_node_procs=86
+
+=== after ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=24.00 diskFreeGiB=88.82 cpu=18.0%

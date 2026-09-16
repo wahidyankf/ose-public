@@ -1,0 +1,14 @@
+> nx run ose-id-be:"test:integration"
+> dotnet test apps/ose-id-be/tests/integration/OseId.Be.Integration.csproj
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+  OseId.Be.Integration -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/integration/bin/Debug/net10.0/OseId.Be.Integration.dll
+Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/integration/bin/Debug/net10.0/OseId.Be.Integration.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+Passed!  - Failed:     0, Passed:    16, Skipped:     0, Total:    16, Duration: 469 ms - OseId.Be.Integration.dll (net10.0)
+ NX   Successfully ran target test:integration for project ose-id-be
+exit=0

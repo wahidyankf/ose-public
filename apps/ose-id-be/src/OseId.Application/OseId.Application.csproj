@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Use-case boundary. It depends on the domain and on nothing else, so no ASP.NET,
+    Entity Framework, Npgsql, SqlKata, OpenIddict, GraphQL, or Model Context
+    Protocol type can appear in a use case or on a port.
+  -->
+  <PropertyGroup>
+    <RootNamespace>OseId.Application</RootNamespace>
+    <AssemblyName>OseId.Application</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../OseId.Domain/OseId.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

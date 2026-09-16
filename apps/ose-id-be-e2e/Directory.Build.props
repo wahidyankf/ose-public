@@ -1,0 +1,11 @@
+<Project>
+
+  <!--
+    The E2E driver is a separate Nx project but the same application, so it inherits
+    one build policy instead of restating it. Keeping a single source of truth is what
+    stops the driver from compiling under weaker nullable or warning settings than the
+    code it verifies.
+  -->
+  <Import Project="../ose-id-be/Directory.Build.props" />
+
+</Project>

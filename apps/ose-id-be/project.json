@@ -1,0 +1,208 @@
+{
+  "name": "ose-id-be",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/ose-id-be/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet publish apps/ose-id-be/src/OseId.Host/OseId.Host.csproj -c Release -o apps/ose-id-be/dist"
+      },
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.cs",
+        "{projectRoot}/src/OseId.Host/OseId.Host.csproj",
+        "{projectRoot}/src/OseId.Application/OseId.Application.csproj",
+        "{projectRoot}/src/OseId.Domain/OseId.Domain.csproj",
+        "{projectRoot}/src/OseId.Infrastructure/OseId.Infrastructure.csproj",
+        "{projectRoot}/Directory.Build.props",
+        "{workspaceRoot}/apps/ose-id-be/Directory.Packages.props"
+      ]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet build apps/ose-id-be/src/OseId.Host/OseId.Host.csproj /p:TreatWarningsAsErrors=true"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.cs",
+        "{projectRoot}/src/OseId.Host/OseId.Host.csproj",
+        "{projectRoot}/src/OseId.Application/OseId.Application.csproj",
+        "{projectRoot}/src/OseId.Domain/OseId.Domain.csproj",
+        "{projectRoot}/src/OseId.Infrastructure/OseId.Infrastructure.csproj",
+        "{projectRoot}/Directory.Build.props",
+        "{workspaceRoot}/apps/ose-id-be/Directory.Packages.props"
+      ]
+    },
+    "lint": {
+      "dependsOn": ["typecheck"],
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "dotnet format apps/ose-id-be/src/OseId.Host/OseId.Host.csproj --verify-no-changes --verbosity diagnostic",
+          "dotnet build apps/ose-id-be/src/OseId.Host/OseId.Host.csproj /p:TreatWarningsAsErrors=true /p:RunAnalyzersDuringBuild=true /p:EnforceCodeStyleInBuild=true --no-incremental"
+        ],
+        "parallel": false
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.cs",
+        "{projectRoot}/src/OseId.Host/OseId.Host.csproj",
+        "{projectRoot}/src/OseId.Application/OseId.Application.csproj",
+        "{projectRoot}/src/OseId.Domain/OseId.Domain.csproj",
+        "{projectRoot}/src/OseId.Infrastructure/OseId.Infrastructure.csproj",
+        "{projectRoot}/.editorconfig",
+        "{projectRoot}/Directory.Build.props",
+        "{workspaceRoot}/apps/ose-id-be/Directory.Packages.props"
+      ]
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "if grep -rn -E --include='*.cs' 'Skip\\s*=\\s*\"' apps/ose-id-be/tests/unit; then echo 'ERROR: xunit Skip= attribute found in test files above'; exit 1; fi && node scripts/dotnet-unit-coverage.mjs --project apps/ose-id-be/tests/unit/OseId.Be.Unit.csproj --results apps/ose-id-be/tests/unit/coverage --line-threshold 99"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/dotnet-unit-coverage.mjs",
+        "{projectRoot}/src/**/*.cs",
+        "{projectRoot}/tests/unit/**/*.cs",
+        "{projectRoot}/tests/unit/OseId.Be.Unit.csproj"
+      ]
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet test apps/ose-id-be/tests/integration/OseId.Be.Integration.csproj"
+      },
+      "cache": false
+    },
+    "test:coverage:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter unit"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-be/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-be/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/OseId.Be.Unit.csproj",
+        "{workspaceRoot}/apps/ose-id-be/tests/integration/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/tests/integration/OseId.Be.Integration.csproj"
+      ]
+    },
+    "test:coverage:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter integration"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-be/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-be/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/OseId.Be.Unit.csproj",
+        "{workspaceRoot}/apps/ose-id-be/tests/integration/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/tests/integration/OseId.Be.Integration.csproj"
+      ]
+    },
+    "test:coverage:behaviour": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter behaviour"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-be/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-be/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/OseId.Be.Unit.csproj",
+        "{workspaceRoot}/apps/ose-id-be/tests/integration/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/tests/integration/OseId.Be.Integration.csproj"
+      ]
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ose-id-be:test:coverage:unit",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-be:test:coverage:integration",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-be:test:coverage:behaviour",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-be/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ose-id-be/project.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/tests/unit/OseId.Be.Unit.csproj",
+        "{workspaceRoot}/apps/ose-id-be/tests/integration/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/tests/integration/OseId.Be.Integration.csproj"
+      ]
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ose-id-be:typecheck",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-be:lint",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-be:test:coverage",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-be:test:unit",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/scripts/dotnet-unit-coverage.mjs",
+        "{workspaceRoot}/apps/ose-id-be/behaviour-coverage.json",
+        "{workspaceRoot}/package-lock.json",
+        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature"
+      ]
+    }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature"]
+  },
+  "tags": ["type:app", "platform:aspnetcore", "lang:csharp", "domain:ose"]
+}

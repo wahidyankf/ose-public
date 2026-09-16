@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    E2E adapter. It owns the public process boundary: it publishes and launches the
+    real ose-id-be executable, supplies its environment, reads its exit code and
+    diagnostic stream, and speaks to it over a loopback socket like any other client.
+  -->
+  <PropertyGroup>
+    <RootNamespace>OseId.Be.E2E</RootNamespace>
+    <AssemblyName>OseId.Be.E2E</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- Generated code-behind belongs in obj/, never beside the specs corpus it reads. -->
+    <ReqnrollUseIntermediateOutputPathForCodeBehind>true</ReqnrollUseIntermediateOutputPathForCodeBehind>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Reqnroll.xunit.v3" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ReqnrollFeatureFile Include="../../specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature" Link="Features/runtime-mode.feature" />
+    <ReqnrollFeatureFile Include="../../specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature" Link="Features/disabled-capabilities.feature" />
+  </ItemGroup>
+
+</Project>

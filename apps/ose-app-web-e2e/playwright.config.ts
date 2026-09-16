@@ -34,10 +34,12 @@ const grepInvert = process.env.PLAYWRIGHT_GREP_INVERT ? new RegExp(process.env.P
 // CI supplies WEB_BASE_URL for an already-running staging or local-stack app.
 // A developer running this E2E target directly gets the same deterministic
 // server lifecycle from Playwright instead of needing a separate terminal.
+// The fixture serves the built artifact, never `dev` — see the Server Fixture
+// Standard in repo-governance/development/infra/ci-conventions/.
 const webServer = process.env.WEB_BASE_URL
   ? undefined
   : {
-      command: "npx nx run ose-app-web:dev",
+      command: "npx nx run ose-app-web:start",
       url: "http://localhost:3300",
       reuseExistingServer: !process.env.CI,
       timeout: 120000,

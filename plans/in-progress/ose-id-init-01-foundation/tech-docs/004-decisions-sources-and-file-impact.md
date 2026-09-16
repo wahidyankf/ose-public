@@ -116,11 +116,13 @@ Phase 0 records live evidence; a conflict stops implementation and amends the pl
 │   │   ├── behaviours/foundation/*.feature [N] — AC-FND backend foundation scenarios
 │   │   ├── behaviours/persistence/database-audit-and-soft-delete.feature [N] — durable audit/soft-delete behaviour
 │   │   ├── contracts/openapi.yaml [N] — health/readiness contract
-│   │   └── architecture/*.md [N] — backend/database/local-stack C4 views
+│   │   ├── architecture.md [N] — canonical as-built C4 zoom-level index (enforced owner-corpus shape)
+│   │   └── architecture/*.md [N] — backend/database/local-stack C4 detail views
 │   └── id-web/
 │       ├── README.md [N] — web owner index
 │       ├── behaviours/foundation/*.feature [N] — AC-FND web scenarios
-│       └── architecture/*.md [N] — web/status-shell C4 views
+│       ├── architecture.md [N] — canonical as-built C4 zoom-level index (enforced owner-corpus shape)
+│       └── architecture/*.md [N] — web/status-shell C4 detail views
 ├── package.json [E] — exact project scripts and dependencies
 ├── package-lock.json [G] — npm-generated lock resolution for package.json
 ├── nx.json [E] — exact verified project/default relationships

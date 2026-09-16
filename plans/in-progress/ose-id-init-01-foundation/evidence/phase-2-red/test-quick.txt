@@ -1,0 +1,137 @@
+$ npm exec nx -- run-many -t test:quick --projects=ose-id-be,ose-id-be-e2e --skip-nx-cache
+
+ NX   Running target test:quick for 2 projects:
+
+- ose-id-be
+- ose-id-be-e2e
+
+
+
+> nx run ose-id-be:"test:quick"
+
+> npm exec -- nx run ose-id-be:test:coverage
+
+
+[2m> [22m[2mnx run[22m ose-id-be:"test:coverage"
+
+[2m> [22mnpm exec -- nx run ose-id-be:test:coverage:unit
+
+
+[2m> [22m[2mnx run[22m ose-id-be:"test:coverage:unit"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter unit
+
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined Unit binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined Unit binding.
+Warning: command "node scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter unit" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mtest:coverage:unit[22m for project ose-id-be failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ose-id-be:test:coverage:unit
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ose-id-be:test:coverage:unit" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mtest:coverage[22m for project ose-id-be failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ose-id-be:test:coverage
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ose-id-be:test:coverage" exited with non-zero status code
+> nx run ose-id-be-e2e:"test:quick"
+
+> npm exec -- nx run ose-id-be-e2e:test:coverage
+
+
+[2m> [22m[2mnx run[22m ose-id-be-e2e:"test:coverage"
+
+[2m> [22mnpm exec -- nx run ose-id-be-e2e:test:coverage:e2e
+
+
+[2m> [22m[2mnx run[22m ose-id-be-e2e:"test:coverage:e2e"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter e2e
+
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined E2E binding.
+/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined E2E binding.
+Warning: command "node scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter e2e" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mtest:coverage:e2e[22m for project ose-id-be-e2e failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ose-id-be-e2e:test:coverage:e2e
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ose-id-be-e2e:test:coverage:e2e" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mtest:coverage[22m for project ose-id-be-e2e failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ose-id-be-e2e:test:coverage
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ose-id-be-e2e:test:coverage" exited with non-zero status code
+
+
+ NX   Running target test:quick for 2 projects failed
+
+Failed tasks:
+
+- ose-id-be:test:quick
+- ose-id-be-e2e:test:quick
+
+EXIT=1

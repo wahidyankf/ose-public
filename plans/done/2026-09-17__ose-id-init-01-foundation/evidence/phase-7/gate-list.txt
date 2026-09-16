@@ -1,0 +1,18 @@
+test-quick	check	test:quick	affected-projects	hand-wired
+compat-min-version	check	compat:min-version	affected-projects	hand-wired
+specs-structure	check	specs:structure-validation	affected-projects	hand-wired
+env-validate	check	env validate	other
+md-links	check	md links validate	all-file-type
+governance-readme-index	check	governance readme-index validate	all-file-type
+harness-duplication	check	harness duplication validate	all-file-type
+parity-manifest	check	parity manifest validate	other
+vendor-independence	check	repo-governance vendor validate repo-governance/	path-gated
+vendor-independence-agents-md	check	repo-governance vendor validate AGENTS.md	path-gated
+test-boundary	check	repo-governance test-boundary validate	path-gated
+convention-license	check	convention license validate	path-gated
+harness-bindings	check	harness bindings validate	path-gated
+harness-claude	check	harness claude validate	path-gated
+harness-ownership	check	harness ownership validate	path-gated
+harness-catalog	check	harness catalog validate	path-gated
+governance-word-budget	check	governance word-budget validate	path-gated
+governance-readme-completeness	check	governance readme-index validate	path-gated

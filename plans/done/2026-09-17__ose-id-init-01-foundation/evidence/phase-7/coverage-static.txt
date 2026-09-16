@@ -1,0 +1,76 @@
+
+ NX   Running targets test:coverage:unit, test:coverage:integration, test:coverage:e2e, test:coverage:behaviour for 4 projects:
+
+- ose-id-be
+- ose-id-web
+- ose-id-be-e2e
+- ose-id-web-e2e
+
+
+
+> nx run ose-id-be:"test:coverage:unit"  [existing outputs match the cache, left as is]
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter unit
+
+ose-id-be: 8 features, 22 expanded scenarios, adapters: unit.
+
+> nx run ose-id-be:"test:coverage:behaviour"  [existing outputs match the cache, left as is]
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter behaviour
+
+ose-id-be: 8 features, 22 expanded scenarios, adapters: unit, integration.
+
+> nx run ose-id-be:"test:coverage:integration"  [existing outputs match the cache, left as is]
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter integration
+
+ose-id-be: 8 features, 22 expanded scenarios, adapters: integration.
+
+> nx run ose-id-web:"test:coverage:unit"  [existing outputs match the cache, left as is]
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-web/behaviour-coverage.json --adapter unit
+
+ose-id-web: 2 features, 7 expanded scenarios, adapters: unit.
+
+> nx run ose-id-web:"test:coverage:behaviour"  [existing outputs match the cache, left as is]
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-web/behaviour-coverage.json --adapter behaviour
+
+ose-id-web: 2 features, 7 expanded scenarios, adapters: unit, integration.
+
+> nx run ose-id-web:"test:coverage:integration"  [existing outputs match the cache, left as is]
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-web/behaviour-coverage.json --adapter integration
+
+ose-id-web: 2 features, 7 expanded scenarios, adapters: integration.
+
+> nx run ose-id-be-e2e:"test:coverage:behaviour"  [existing outputs match the cache, left as is]
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter behaviour
+
+ose-id-be-e2e: 8 features, 22 expanded scenarios, adapters: unit, e2e.
+
+> nx run ose-id-be-e2e:"test:coverage:e2e"  [existing outputs match the cache, left as is]
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter e2e
+
+ose-id-be-e2e: 8 features, 22 expanded scenarios, adapters: e2e.
+
+> nx run ose-id-web-e2e:"test:coverage:e2e"  [existing outputs match the cache, left as is]
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-web-e2e/behaviour-coverage.json --adapter e2e
+
+ose-id-web-e2e: 2 features, 7 expanded scenarios, adapters: e2e.
+
+> nx run ose-id-web-e2e:"test:coverage:behaviour"  [existing outputs match the cache, left as is]
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-web-e2e/behaviour-coverage.json --adapter behaviour
+
+ose-id-web-e2e: 2 features, 7 expanded scenarios, adapters: unit, e2e.
+
+
+
+ NX   Successfully ran targets test:coverage:unit, test:coverage:integration, test:coverage:e2e, test:coverage:behaviour for 4 projects
+
+Nx read the output from the cache instead of running the command for 10 out of 10 tasks.
+

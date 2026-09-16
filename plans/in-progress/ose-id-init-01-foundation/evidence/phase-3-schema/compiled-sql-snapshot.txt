@@ -1,0 +1,21 @@
+=== MigrationHistoryQuery.Compile() — snapshot ===
+
+Compiled SQL:
+SELECT "MigrationId", "ProductVersion", "created_at", "created_by", "updated_at", "updated_by", "deleted_at", "deleted_by" FROM "ose_id"."__EFMigrationsHistory" WHERE "deleted_at" IS NULL
+
+Named bindings: 0 (the active-history read takes no external input)
+Compiler: SqlKata.Compilers.PostgresCompiler
+
+Properties this snapshot proves:
+- every projected column is named explicitly (MigrationId, ProductVersion, created_at, created_by,
+  updated_at, updated_by, deleted_at, deleted_by) — no "*" appears anywhere in the compiled text
+- the tombstone predicate ("deleted_at" IS NULL) is compiled into the SQL itself, not applied by the
+  adapter after the fact
+- the query targets exactly one table, schema-qualified ("ose_id"."__EFMigrationsHistory"), which is
+  the only table the application role is granted SELECT on
+- the compiler is SqlKata's PostgresCompiler, matching the runtime SQL contract in
+  tech-docs/002-runtime-persistence-and-statelessness.md
+
+Regenerate with: read src/OseId.Infrastructure/Persistence/MigrationHistoryQuery.cs, or run
+MigrationHistoryQuery.Compile() from any project referencing OseId.Infrastructure. The query is a
+compiled constant (no request-supplied value participates), so the compiled text is stable.

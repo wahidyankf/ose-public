@@ -53,13 +53,25 @@ by the operation's `QueryFactory` and explicit transaction. Each use-case-shaped
 
 The foundation readiness lookup is a point/set compatibility query with explicit history columns. Its
 contract test snapshots normalized compiled SQL plus parameter names/types, forbids wildcard projection,
-executes against real PostgreSQL, and proves the runtime role reads only the history table. A synthetic
-database with 10,000 synthetic history rows records `EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)` for this
-read-only query: it must use `PK___EFMigrationsHistory`, return no more than the compiled compatible-set
-size, and perform no sequential scan of the history table. Later plans add a query manifest with an exact
-result/fetch bound per operation (point query: at most one row; page query: API limit plus one cursor
-sentinel, never an unbounded materialization). Use `EXPLAIN` without `ANALYZE` for mutations unless the
-operation is safely contained in an always-rolled-back transaction.
+executes against real PostgreSQL, and proves the runtime role reads only the history table. It carries
+no `ORDER BY`: the caller compares the result against the compiled compatible set by membership, never
+by position, so an ordering would buy nothing but an extra sort on every read.
+
+A synthetic database with 10,000 synthetic history rows records `EXPLAIN (ANALYZE, BUFFERS, FORMAT
+JSON)` for this read-only query. Measured evidence corrects an earlier draft of this contract: with the
+table's only index being `PK___EFMigrationsHistory` (on `MigrationId`, unrelated to the `deleted_at`
+filter this query applies) and the table itself only a few hundred KiB even at 10,000 rows, PostgreSQL's
+planner correctly and consistently chooses a sequential scan over an index scan — walking the index
+would touch as many pages while adding random access, so the planner is right to prefer it, and adding
+an index over `deleted_at` to change that would violate the "primary key is the only index" contract
+above. The provable, checked property is therefore not the scan node's name but its cost: the query
+returns no more rows than the compiled compatible-set size, and its buffer/timing profile stays bounded
+and small (double-digit millisecond-scale planning, sub-millisecond execution, low-hundreds of shared
+buffer hits) at 10,000 synthetic rows — a size this table, which records one row per migration ever
+authored, will not approach in the plan family's lifetime. Later plans add a query manifest with an
+exact result/fetch bound per operation (point query: at most one row; page query: API limit plus one
+cursor sentinel, never an unbounded materialization). Use `EXPLAIN` without `ANALYZE` for mutations
+unless the operation is safely contained in an always-rolled-back transaction.
 
 ## Physical Schema Contract
 

@@ -62,9 +62,9 @@ public sealed class DisabledCapabilitySteps
         // The only outbound call a rejection may make is minting a correlation value.
         _correlationIds.CreatedCount.Should().Be(1);
 
-        // And the application boundary declares no port at all beyond minting that value,
-        // so there is nothing through which an identity or authorization record could be
-        // created. A phase that adds a port adds it to this surface deliberately.
+        // And every port the application boundary declares is read-only, so there is nothing
+        // through which an identity or authorization record could be created. A phase that adds a
+        // port adds it to this surface deliberately.
         PortOperationsBeyondTheDeclaredSurface().Should().BeEmpty();
     }
 
@@ -72,7 +72,13 @@ public sealed class DisabledCapabilitySteps
 
     private static List<string> PortOperationsBeyondTheDeclaredSurface()
     {
-        string[] declaredSurface = ["OseId.Application.Foundation.Ports.ICorrelationIdFactory.Create"];
+        string[] declaredSurface =
+        [
+            "OseId.Application.Foundation.Ports.ICorrelationIdFactory.Create",
+            // Reads active migration history for readiness. It returns a projection and exposes no
+            // write, so admitting it here cannot admit a way to create a record.
+            "OseId.Application.Persistence.Ports.IMigrationHistoryReader.ReadActiveAsync",
+        ];
 
         return typeof(RejectDisabledCapability)
             .Assembly.GetTypes()

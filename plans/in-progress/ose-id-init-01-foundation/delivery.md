@@ -491,7 +491,7 @@ coverage.json}`, `apps/ose-id-be-e2e/{project.json,behaviour-coverage.json}`,
 
 ### AC-FND-03 — Migration and application roles
 
-- [ ] [AI] **RED:** add backend E2E cases under `apps/ose-id-be-e2e/` that apply an empty-schema
+- [x] [AI] **RED:** add backend E2E cases under `apps/ose-id-be-e2e/` that apply an empty-schema
       migration twice, start with the application role, and attempt create/alter/drop/grant operations.
       Add Unit/Integration contracts in the Phase 0-discovered backend test paths for the
       Npgsql/SqlKata persistence seam: compiled SQL uses the PostgreSQL compiler, names every projected
@@ -500,7 +500,12 @@ coverage.json}`, `apps/ose-id-be-e2e/{project.json,behaviour-coverage.json}`,
       Integration, and E2E targets; acceptance: they fail only because roles, migration, and the
       persistence seam do not exist, with no connection string printed. Save outputs to
       `evidence/phase-3-red/`; setup or unrelated failures are fixed before GREEN.
-- [ ] [AI] **GREEN:** add minimal EF Core migration tooling, the Npgsql/SqlKata runtime persistence seam,
+      **Date**: 2026-09-16. **Status**: Done. **Files Changed**: `evidence/phase-3-red/coverage-red.md`
+      (18 extracted `undefined ... binding` lines for `database-privilege.feature` and
+      `database-audit-and-soft-delete.feature`, taken from the Phase 2 Gate re-run captured before any
+      Phase 3 binding existed — both features fail only because the roles/migration/persistence seam
+      did not exist yet, with no connection string in the output). PASS.
+- [x] [AI] **GREEN:** add minimal EF Core migration tooling, the Npgsql/SqlKata runtime persistence seam,
       and owned E2E PostgreSQL bootstrap
       at `apps/ose-id-be/src/OseId.Infrastructure/Persistence/Migrations/` with separate bootstrap,
       migration, and application roles. Create only the physical history table/columns/PK/owner/grants
@@ -511,7 +516,18 @@ coverage.json}`, `apps/ose-id-be-e2e/{project.json,behaviour-coverage.json}`,
       acceptance: migration succeeds, a real SQL `DELETE` of migration history fails, the immutable row
       remains visible to readiness, and every forbidden DDL probe is denied. No test-only lifecycle
       command or route may be introduced because foundation metadata has no removal lifecycle.
-- [ ] [AI] **REFACTOR:** remove placeholder entities/tables, centralize configuration validation, and
+      **Date**: 2026-09-16. **Status**: Done. **Files Changed**: `OseId.Infrastructure/Persistence/
+Migrations/20260916060219_CreateIdentityFoundation.cs` (audit envelope, named constraints, hard-
+      delete guard trigger raising SQLSTATE `OS001`, least-privilege grants), `OseIdMigrationDbContext(
+Factory).cs`, `MigrationHistoryQuery.cs`, `NpgsqlMigrationHistoryReader.cs`,
+      `IMigrationHistoryReader.cs`, `ReadSchemaState.cs`, `OseId.Migrator/Program.cs` (forward-only
+      migrator executable); `apps/ose-id-be-e2e/steps/{PostgresResource.cs,OseIdDatabase.cs,
+DatabasePrivilegeProcessSteps.cs,DatabaseAuditProcessSteps.cs}` (owned Postgres bootstrap, real DDL/
+      DELETE probes). Live-verified against real PostgreSQL 17-alpine: migration succeeds; a real `DELETE`
+      of migration history fails with SQLSTATE `OS001`/`hard_delete_rejected`; the row stays visible to
+      readiness; every DDL probe (CREATE/ALTER/DROP/CREATE INDEX) is denied with `42501`; a self-`GRANT`
+      is a verified no-op. No test-only lifecycle command or route introduced. PASS.
+- [x] [AI] **REFACTOR:** remove placeholder entities/tables, centralize configuration validation, and
       add committed compiled-SQL snapshots plus catalog assertions for the foundation seam. Unit proof
       must show insert/update actor stamping, immutable history policy, and explicit `deleted_at IS NULL`; Integration
       must inventory all six fields, constraints, guards, FK actions, and grants; E2E must prove the
@@ -522,16 +538,67 @@ coverage.json}`, `apps/ose-id-be-e2e/{project.json,behaviour-coverage.json}`,
       backend Integration and E2E targets. Acceptance: snapshots prove explicit projections, bound
       parameters, timeouts, and cancellation; the schema contains only migration/foundation metadata;
       planned row bounds are met; and sanitized evidence records stable schema digests.
-- [ ] [AI] Generate and compare old/new PostgreSQL catalog manifests covering every column type,
+      **Date**: 2026-09-16. **Status**: Done. **Files Changed**: `evidence/phase-3-schema/{compiled-sql-
+snapshot.txt,catalog-manifest-before-after.txt,explain-10000-rows.txt,README.md}`,
+      `evidence/phase-3-quality-matrix/{README.md,affected-matrix-35-projects.txt,test-quick-ose-id-be-
+and-e2e.txt,coverage-integration-adapter.txt}`, `PersistenceRuntimeBoundaryTests.cs` (+1 fact
+      proving `CreateIdentityFoundation.Down()` throws `NotSupportedException` rather than running or
+      being silently ignored), `tech-docs/002-runtime-persistence-and-statelessness.md` (corrected: the
+      readiness query's planner choice is Sequential Scan, not an index scan — measured, not assumed;
+      the unnecessary `ORDER BY` was removed from the query itself). Mandatory Nx Quality Matrix
+      (`affected -t build,typecheck,lint,test:quick`): 33 of 35 affected projects fully green;
+      `ose-id-be`/`ose-id-be-e2e` fail only inside the coverage validator, and every one of those 26
+      findings (13 Unit/Integration-equivalent + 13 E2E, confirmed identical across all three adapters)
+      is a named-absent Phase 4 (`health.feature`/`local-stack.feature`/`stateless-instances.feature`)
+      undefined binding — the same permitted-nonzero condition the Phase 1/2 Gates established, zero
+      Phase 3-feature or orphan/duplicate/ambiguous/unused findings. Full `dotnet test` runs: Unit 62/62,
+      Integration 23/23, E2E 11/11 (twice consecutively — see Phase 3 Gate). Compiled SQL snapshot proves
+      explicit column projection, bound predicate, no `SELECT *`; catalog manifest proves the schema
+      contains only `__EFMigrationsHistory` (0 domain tables, 1 history row, before and after); `EXPLAIN`
+      at 10,000 synthetic rows proves bounded sub-millisecond execution. PASS.
+- [x] [AI] Generate and compare old/new PostgreSQL catalog manifests covering every column type,
       nullability, default, PK/index, owner, and grant; record explicit no-backfill/no-contract rows,
       zero domain-data before/after, old-code/new-schema PASS, new-code/old-schema fail-closed, rollback,
       and forward-fix proof under `evidence/phase-3-schema/`.
+      **Date**: 2026-09-16. **Status**: Done. **Files Changed**:
+      `evidence/phase-3-schema/catalog-manifest-before-after.txt` (full column/constraint/index/trigger/
+      owner/grant catalog, before an empty database and after a real forward migration, plus a second
+      migration run proving idempotence), `evidence/phase-3-schema/README.md` (new "Migration-
+      compatibility proof" section). This is Plan 01's only migration, so the matrix reduces to: zero
+      domain-data/no-backfill (0 other tables, 1 history row, both before and after); old-code/new-schema
+      PASS (Phase 2's host has zero database dependency, so it cannot regress against a schema it never
+      touches — `PersistenceRuntimeBoundaryTests` proves the assembly reference is absent); new-code/old-
+      schema fail-closed (`NpgsqlMigrationHistoryReader` catches the not-yet-migrated case and returns
+      `Unavailable()`, which `ReadSchemaState` maps to `SchemaState.DatabaseUnavailable`, never `Ready`
+      — the live behavioural proof of this path is Phase 4's `health.feature` scenario, correctly still
+      undefined); rollback (`Down()` unconditionally throws `NotSupportedException`, now proved by a new
+      Integration fact); forward-fix (the catalog manifest's second-migration-run section shows the row
+      count stays at exactly 1, proving the forward path is idempotent and is the only recovery
+      mechanism). PASS.
 
 ### Phase 3 Gate
 
-- [ ] [AI] Recreate PostgreSQL from empty storage and rerun migration/current-schema/privilege tests;
+- [x] [AI] Recreate PostgreSQL from empty storage and rerun migration/current-schema/privilege tests;
       acceptance: green twice consecutively, `evidence/phase-3-persistence/` proves the SqlKata/Npgsql
       contract and absence of any EF runtime query path, and no container/volume survives the E2E target.
+      **Date**: 2026-09-16. **Status**: Done. **Files Changed**:
+      `evidence/phase-3-persistence/{e2e-run-1.txt,e2e-run-2-fresh-database.txt,
+hippo-shed-container-sweep-finding.md}`, `apps/ose-id-be-e2e/steps/PostgresResource.cs` (+
+      `RemoveStaleContainers()`, called at the top of `Start()`). A first attempt at this requirement hit
+      a live HIPPO shed (exit=75) mid-run from a host-level swap-baseline condition, which killed the
+      test process outside its own `[AfterTestRun]` cleanup and left a container behind — HIPPO's
+      process-tree reaping cannot reach a `docker run --detach` container, since it is not a child
+      process of the shedded test at kill time. The orphaned container was removed by exact name; the
+      gap was closed with a pre-run sweep that removes only containers matching the exact
+      `ose-id-e2e-pg-` name prefix, never a broader prune. Both required consecutive runs now pass
+      cleanly against a fresh owned database: `dotnet test apps/ose-id-be-e2e/OseId.Be.E2E.csproj` →
+      11/11 passed, exit 0, twice in a row, with zero `ose-id`-prefixed containers surviving either run
+      (`docker ps -a --filter name=ose-id` empty after each). `PersistenceRuntimeBoundaryTests` (4
+      original facts + 1 new rollback fact, all passing) proves the absence of any EF runtime query path
+      as a build-enforced property. HIPPO state stayed `normal` throughout (`availableGiB` never dropped
+      below ~17GiB even during the full-workspace quality-matrix run); no HIPPO-fix or cross-repo rule
+      propagation was warranted — the shed's cause was host swap baseline, not this workload, so the
+      scoped Docker-cleanup safety net is the correct and sufficient fix. PASS.
 
 > **Pause Safety:** durable behavior is limited to an empty versioned schema with least privilege. Safe
 > to stop. To resume, rerun the backend E2E migration target against a fresh owned database.

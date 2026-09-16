@@ -1,0 +1,96 @@
+=== BEFORE: catalog manifest on empty database ===
+no ose_id schema, no ose_id table, no ose_id role
+migration_applied
+
+=== AFTER: full catalog manifest ===
+--- columns (type, nullability, default) ---
+ ordinal_position |  column_name   |        data_type         | character_maximum_length | is_nullable |       column_default        
+------------------+----------------+--------------------------+--------------------------+-------------+-----------------------------
+                1 | MigrationId    | character varying        |                      150 | NO          | 
+                2 | ProductVersion | character varying        |                       32 | NO          | 
+                3 | created_at     | timestamp with time zone |                          | NO          | CURRENT_TIMESTAMP
+                4 | created_by     | character varying        |                      255 | NO          | 'system'::character varying
+                5 | updated_at     | timestamp with time zone |                          | NO          | CURRENT_TIMESTAMP
+                6 | updated_by     | character varying        |                      255 | NO          | 'system'::character varying
+                7 | deleted_at     | timestamp with time zone |                          | YES         | 
+                8 | deleted_by     | character varying        |                      255 | YES         | 
+(8 rows)
+
+--- constraints ---
+                  conname                  | contype |                     pg_get_constraintdef                     
+-------------------------------------------+---------+--------------------------------------------------------------
+ PK___EFMigrationsHistory                  | p       | PRIMARY KEY ("MigrationId")
+ ck_ef_migrations_history_delete_time      | c       | CHECK (((deleted_at IS NULL) OR (deleted_at >= created_at)))
+ ck_ef_migrations_history_soft_delete_pair | c       | CHECK (((deleted_at IS NULL) = (deleted_by IS NULL)))
+ ck_ef_migrations_history_update_time      | c       | CHECK ((updated_at >= created_at))
+(4 rows)
+
+--- indexes ---
+        indexname         |                                                   indexdef                                                   
+--------------------------+--------------------------------------------------------------------------------------------------------------
+ PK___EFMigrationsHistory | CREATE UNIQUE INDEX "PK___EFMigrationsHistory" ON ose_id."__EFMigrationsHistory" USING btree ("MigrationId")
+(1 row)
+
+--- triggers ---
+                    tgname                    
+----------------------------------------------
+ trg_ef_migrations_history_reject_hard_delete
+(1 row)
+
+--- owner ---
+   tableowner    
+-----------------
+ ose_id_migrator
+(1 row)
+
+--- grants ---
+     grantee     | privilege_type 
+-----------------+----------------
+ ose_id_app      | SELECT
+ ose_id_migrator | DELETE
+ ose_id_migrator | INSERT
+ ose_id_migrator | REFERENCES
+ ose_id_migrator | SELECT
+ ose_id_migrator | TRIGGER
+ ose_id_migrator | TRUNCATE
+ ose_id_migrator | UPDATE
+(8 rows)
+
+--- schema-level grants ---
+ nspname |     grantee     | has_usage | has_create 
+---------+-----------------+-----------+------------
+ ose_id  | ose_id_migrator | t         | t
+ ose_id  | ose_id_app      | t         | f
+(2 rows)
+
+--- row counts (before/after: 0 domain rows, exactly 1 history row) ---
+ history_rows 
+--------------
+            1
+(1 row)
+
+ other_tables 
+--------------
+            0
+(1 row)
+
+--- stable non-secret digest of the row (excludes timestamps, which vary by run) ---
+            row_digest            
+----------------------------------
+ 1f8be7bb41b59c9568b6cb23c6ac4796
+(1 row)
+
+
+=== EXPLAIN of the readiness query (synthetic empty table; single real row is the only data) ===
+                                QUERY PLAN                                 
+---------------------------------------------------------------------------
+ Seq Scan on "__EFMigrationsHistory"  (cost=0.00..10.40 rows=1 width=1972)
+   Filter: (deleted_at IS NULL)
+(2 rows)
+
+
+=== apply migration a second time (idempotence, no-loss check) ===
+migration_applied
+1
+(row count above must still be 1 after a second migration run)
+container removed

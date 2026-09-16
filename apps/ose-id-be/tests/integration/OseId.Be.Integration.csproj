@@ -29,6 +29,13 @@
   <ItemGroup>
     <ReqnrollFeatureFile Include="../../../../specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature" Link="Features/runtime-mode.feature" />
     <ReqnrollFeatureFile Include="../../../../specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature" Link="Features/disabled-capabilities.feature" />
+    <ReqnrollFeatureFile Include="../../../../specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature" Link="Features/database-privilege.feature" />
+    <ReqnrollFeatureFile Include="../../../../specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature" Link="Features/database-audit-and-soft-delete.feature" />
+  </ItemGroup>
+
+  <!-- Reading the SQL a migration would execute needs the migrations abstraction, not a database. -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The migration stage, as its own executable. It is separate from the serving host because it runs
+    with different credentials: the migration role owns the schema, and the host never holds a role
+    that could alter it. Keeping them apart is what makes that separation observable rather than
+    merely intended.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>OseId.Migrator</RootNamespace>
+    <AssemblyName>OseId.Migrator</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../OseId.Infrastructure/OseId.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+  </ItemGroup>
+
+</Project>

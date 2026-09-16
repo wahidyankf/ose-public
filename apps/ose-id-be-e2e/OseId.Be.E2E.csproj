@@ -23,11 +23,21 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <!-- Speaks to the owned PostgreSQL resource directly, as any external client would. -->
+    <PackageReference Include="Npgsql" />
   </ItemGroup>
 
   <ItemGroup>
     <ReqnrollFeatureFile Include="../../specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature" Link="Features/runtime-mode.feature" />
     <ReqnrollFeatureFile Include="../../specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature" Link="Features/disabled-capabilities.feature" />
+    <ReqnrollFeatureFile Include="../../specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature" Link="Features/database-privilege.feature" />
+    <ReqnrollFeatureFile Include="../../specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature" Link="Features/database-audit-and-soft-delete.feature" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The domain-level schema contract, so assertions read the same constants the migration
+         and the readiness query are built from rather than a second copy of the same facts. -->
+    <ProjectReference Include="../ose-id-be/src/OseId.Domain/OseId.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -21,6 +21,25 @@
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.12" />
   </ItemGroup>
 
+  <!--
+    Persistence. The runtime path is SqlKata compiled for PostgreSQL and executed through Npgsql;
+    Entity Framework is migration-time tooling only and is never registered by serving code.
+  -->
+  <ItemGroup>
+    <PackageVersion Include="Npgsql" Version="10.0.3" />
+    <PackageVersion Include="SqlKata" Version="4.0.1" />
+    <PackageVersion Include="SqlKata.Execution" Version="4.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12" />
+    <!--
+      The Npgsql provider is built against Relational 10.0.4. Without this pin the build unifies
+      downward to 10.0.4 while the rest of EF is 10.0.12, which is a version conflict the
+      warnings-as-errors typecheck rejects — correctly, since a split EF is not a supported shape.
+    -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.12" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+  </ItemGroup>
+
   <!-- Testing -->
   <ItemGroup>
     <PackageVersion Include="coverlet.collector" Version="8.0.1" />

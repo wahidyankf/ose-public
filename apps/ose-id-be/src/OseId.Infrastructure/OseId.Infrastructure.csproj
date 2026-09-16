@@ -15,4 +15,21 @@
     <ProjectReference Include="../OseId.Application/OseId.Application.csproj" />
   </ItemGroup>
 
+  <!--
+    The runtime persistence path is SqlKata compiled for PostgreSQL and executed through Npgsql.
+    Entity Framework is present only to author and apply migrations; serving code registers no
+    DbContext, which the architecture tests hold the Application and Domain rings to.
+  -->
+  <ItemGroup>
+    <PackageReference Include="Npgsql" />
+    <PackageReference Include="SqlKata" />
+    <PackageReference Include="SqlKata.Execution" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>

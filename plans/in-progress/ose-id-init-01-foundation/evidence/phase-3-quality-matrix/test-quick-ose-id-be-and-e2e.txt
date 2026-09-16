@@ -1,0 +1,237 @@
+
+ NX   Running target test:quick for 2 projects:
+
+- ose-id-be
+- ose-id-be-e2e
+
+
+
+> nx run ose-id-be-e2e:"test:quick"
+
+> npm exec -- nx run ose-id-be-e2e:test:coverage
+
+
+[2m> [22m[2mnx run[22m ose-id-be-e2e:"test:coverage"
+
+[2m> [22mnpm exec -- nx run ose-id-be-e2e:test:coverage:e2e
+
+
+[2m> [22m[2mnx run[22m ose-id-be-e2e:"test:coverage:e2e"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter e2e
+
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined E2E binding.
+Warning: command "node scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter e2e" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mtest:coverage:e2e[22m for project ose-id-be-e2e failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ose-id-be-e2e:test:coverage:e2e
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ose-id-be-e2e:test:coverage:e2e" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mtest:coverage[22m for project ose-id-be-e2e failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ose-id-be-e2e:test:coverage
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ose-id-be-e2e:test:coverage" exited with non-zero status code
+> nx run ose-id-be:"test:quick"
+
+> npm exec -- nx run ose-id-be:typecheck
+
+
+[2m> [22m[2mnx run[22m ose-id-be:typecheck  [2m[existing outputs match the cache, left as is][22m
+
+> dotnet build apps/ose-id-be/src/OseId.Host/OseId.Host.csproj /p:TreatWarningsAsErrors=true
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.66
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtypecheck[22m for project ose-id-be[39m
+
+[2mNx read the output from the cache instead of running the command for 1 out of 1 tasks.[22m
+
+> npm exec -- nx run ose-id-be:lint
+
+
+[7m[1m[36m NX [39m[22m[27m  [36mRunning target [1mlint[22m for project ose-id-be and [1m1[22m task it depends on:[39m
+
+[2m[36m[39m[22m
+
+[2m> [22m[2mnx run[22m ose-id-be:typecheck  [2m[existing outputs match the cache, left as is][22m
+
+> dotnet build apps/ose-id-be/src/OseId.Host/OseId.Host.csproj /p:TreatWarningsAsErrors=true
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.66
+
+[2m> [22m[2mnx run[22m ose-id-be:lint  [2m[existing outputs match the cache, left as is][22m
+
+[2m> [22mdotnet format apps/ose-id-be/src/OseId.Host/OseId.Host.csproj --verify-no-changes --verbosity diagnostic
+
+The dotnet runtime version is '10.0.8'.
+Formatting code files in workspace 'apps/ose-id-be/src/OseId.Host/OseId.Host.csproj'.
+Loading workspace.
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+Project OseId.Host is using configuration from './.editorconfig'.
+Project OseId.Host is using configuration from '.editorconfig'.
+Project OseId.Host is using configuration from 'apps/ose-id-be/.editorconfig'.
+Project OseId.Host is using configuration from 'apps/ose-id-be/src/OseId.Host/obj/Debug/net10.0/OseId.Host.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Host is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Domain is using configuration from './.editorconfig'.
+Project OseId.Domain is using configuration from '.editorconfig'.
+Project OseId.Domain is using configuration from 'apps/ose-id-be/.editorconfig'.
+Project OseId.Domain is using configuration from 'apps/ose-id-be/src/OseId.Domain/obj/Debug/net10.0/OseId.Domain.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Domain is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Application is using configuration from './.editorconfig'.
+Project OseId.Application is using configuration from '.editorconfig'.
+Project OseId.Application is using configuration from 'apps/ose-id-be/.editorconfig'.
+Project OseId.Application is using configuration from 'apps/ose-id-be/src/OseId.Application/obj/Debug/net10.0/OseId.Application.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Application is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Infrastructure is using configuration from './.editorconfig'.
+Project OseId.Infrastructure is using configuration from '.editorconfig'.
+Project OseId.Infrastructure is using configuration from 'apps/ose-id-be/.editorconfig'.
+Project OseId.Infrastructure is using configuration from 'apps/ose-id-be/src/OseId.Infrastructure/obj/Debug/net10.0/OseId.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Infrastructure is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Complete in 3325ms.
+Determining formattable files.
+Skipping referenced project 'OseId.Domain'.
+Skipping referenced project 'OseId.Application'.
+Skipping referenced project 'OseId.Infrastructure'.
+Complete in 139ms.
+Running formatters.
+Running Code Style analysis.
+Determining diagnostics...
+Required references did not load for OseId.Host or referenced project. Run `dotnet restore` prior to formatting.
+Complete in 560ms.
+Analysis complete in 560ms.
+Running Analyzer Reference analysis.
+Determining diagnostics...
+Required references did not load for OseId.Host or referenced project. Run `dotnet restore` prior to formatting.
+Complete in 40ms.
+Analysis complete in 40ms.
+Complete in 1376ms.
+Formatted 0 of 8 files.
+Format complete in 4841ms.
+[2m> [22mdotnet build apps/ose-id-be/src/OseId.Host/OseId.Host.csproj /p:TreatWarningsAsErrors=true /p:RunAnalyzersDuringBuild=true /p:EnforceCodeStyleInBuild=true --no-incremental
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:06.04
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mlint[22m for project ose-id-be and [1m1[22m task it depends on[39m
+
+[2mNx read the output from the cache instead of running the command for 2 out of 2 tasks.[22m
+
+> npm exec -- nx run ose-id-be:test:coverage
+
+
+[2m> [22m[2mnx run[22m ose-id-be:"test:coverage"
+
+[2m> [22mnpm exec -- nx run ose-id-be:test:coverage:unit
+
+
+[2m> [22m[2mnx run[22m ose-id-be:"test:coverage:unit"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter unit
+
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Unit binding.
+Warning: command "node scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter unit" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mtest:coverage:unit[22m for project ose-id-be failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ose-id-be:test:coverage:unit
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ose-id-be:test:coverage:unit" exited with non-zero status code
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mtest:coverage[22m for project ose-id-be failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m ose-id-be:test:coverage
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+
+Warning: command "npm exec -- nx run ose-id-be:test:coverage" exited with non-zero status code
+
+
+ NX   Running target test:quick for 2 projects failed
+
+Failed tasks:
+
+- ose-id-be-e2e:test:quick
+- ose-id-be:test:quick
+

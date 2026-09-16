@@ -168,8 +168,8 @@ timeline adds history that the foundation does not own and can be mistaken for a
 
 The selected shell covers loading, fully ready, PostgreSQL unavailable, schema incompatible, backend
 unreachable, unknown/sanitized failure, retry in progress, and restored states. Each state preserves one
-descriptive `h1`, one named live status region, stable row labels, textual status independent of color,
-and a keyboard-operable refresh action. At 320, 375, 768, 1024, 1280, and 1440 CSS pixels and 200% zoom,
+descriptive `h1`, one named live status region, stable row labels, and textual status independent of
+color. At 320, 375, 768, 1024, 1280, and 1440 CSS pixels and 200% zoom,
 content must not clip, overlap, or require horizontal scrolling. Dark mode must retain repository-token
 contrast. Errors may expose only stable component codes and a correlation ID; they never expose a host,
 port, connection string, exception, username, path, or credential.

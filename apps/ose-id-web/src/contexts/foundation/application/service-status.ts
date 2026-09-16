@@ -33,6 +33,7 @@ export function foundationStatusReport(): ServiceStatusReport {
         name: "OSE ID web shell",
         stateLabel: "Running",
         detail: "This page answered, so the shell is serving. It stores nothing and reads no user data.",
+        tone: "positive",
       },
       {
         id: "backend",
@@ -40,12 +41,14 @@ export function foundationStatusReport(): ServiceStatusReport {
         stateLabel: "Not reported",
         detail:
           "Backend readiness reporting is not part of this foundation build, so no backend state is claimed here.",
+        tone: "neutral",
       },
       {
         id: "authentication",
         name: "Authentication",
         stateLabel: "Disabled",
         detail: AUTHENTICATION_DISABLED_NOTICE,
+        tone: "neutral",
       },
     ],
   };
@@ -72,8 +75,32 @@ export function statusResponseEnvelope(read: StatusReadResult): StatusResponseEn
 }
 
 /**
+ * The inline style sheet for {@link sanitizedUnavailableDocument}. Values are copied from the same
+ * OSE design values the rest of the app renders through Tailwind (see
+ * `libs/web-ui-token/src/ose.css`'s `--warm-0`/`--warm-900`/`--warm-500` light values and its
+ * `[data-theme="dark"], .dark` overrides), inlined literally rather than referenced, because this
+ * document is the one surface the architecture note requires to render even when the pipeline that
+ * compiles and serves the app's own CSS bundle is the thing that failed.
+ */
+const SANITIZED_DOCUMENT_STYLE = [
+  ":root{color-scheme:light dark}",
+  "body{margin:0;min-height:100vh;background:oklch(99% 0.004 245);color:oklch(18% 0.016 240);",
+  "font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif}",
+  "main{max-width:42rem;margin:0 auto;padding:2rem 1rem}",
+  "h1{font-size:1.5rem;font-weight:600;margin:0 0 0.5rem}",
+  "p{margin:0;color:oklch(48% 0.016 245)}",
+  "@media (prefers-color-scheme:dark){",
+  "body{background:oklch(18% 0.012 240);color:oklch(96% 0.008 245)}",
+  "p{color:oklch(70% 0.014 245)}",
+  "}",
+].join("");
+
+/**
  * The sanitized failure document. It is assembled from constants only — no interpolated error, no
  * request detail, no configuration — so there is no path by which a machine detail reaches a reader.
+ * Styling is inlined rather than linked so the document never depends on a separate stylesheet
+ * request succeeding, and it carries the same `role="status"` live-region semantics as the rendered
+ * status region so assistive technology announces the failure the same way it announces success.
  */
 export function sanitizedUnavailableDocument(): string {
   return [
@@ -83,9 +110,10 @@ export function sanitizedUnavailableDocument(): string {
     '<meta charset="utf-8">',
     '<meta name="viewport" content="width=device-width, initial-scale=1">',
     `<title>${STATUS_UNAVAILABLE_HEADING}</title>`,
+    `<style>${SANITIZED_DOCUMENT_STYLE}</style>`,
     "</head>",
     "<body>",
-    "<main>",
+    '<main role="status" aria-live="polite">',
     `<h1>${STATUS_UNAVAILABLE_HEADING}</h1>`,
     `<p>${STATUS_UNAVAILABLE_DETAIL}</p>`,
     "</main>",

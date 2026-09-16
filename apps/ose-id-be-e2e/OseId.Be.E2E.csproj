@@ -34,6 +34,7 @@
     <ReqnrollFeatureFile Include="../../specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature" Link="Features/stateless-instances.feature" />
     <ReqnrollFeatureFile Include="../../specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature" Link="Features/disabled-capabilities.feature" />
     <ReqnrollFeatureFile Include="../../specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature" Link="Features/database-privilege.feature" />
+    <ReqnrollFeatureFile Include="../../specs/apps/ose/id-be/behaviours/foundation/route-disclosure.feature" Link="Features/route-disclosure.feature" />
     <ReqnrollFeatureFile Include="../../specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature" Link="Features/database-audit-and-soft-delete.feature" />
   </ItemGroup>
 

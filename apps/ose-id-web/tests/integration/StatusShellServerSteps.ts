@@ -12,8 +12,10 @@ import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
 import {
   AUTHENTICATION_DISABLED_NOTICE,
+  AUTHENTICATION_DISABLED_SUMMARY,
   STATUS_PAGE_HEADING,
   STATUS_PAGE_MEDIA_TYPE,
+  STATUS_PAGE_SUMMARY,
   STATUS_REGION_LABEL,
 } from "../../src/contexts/foundation/domain/service-status";
 import { createStatusMiddleware } from "../../src/contexts/foundation/application/status-middleware";
@@ -36,6 +38,28 @@ function expectHeadingAndNamedStatusRegion(markup: string): void {
   expect(markup).toContain(STATUS_PAGE_HEADING);
   expect(markup).toContain(`role="status"`);
   expect(markup).toContain(`aria-label="${STATUS_REGION_LABEL}"`);
+  // UWT-001 regression: the permanent authentication notice renders with `role="status"`, never
+  // `role="alert"` — both the readiness region and the notice now carry the same calm semantics.
+  expect(markup).not.toContain(`role="alert"`);
+  expect((markup.match(/role="status"/gu) ?? []).length).toBe(2);
+  // DWT-001 regression: the notice renders with the `Alert` primitive's `info` variant, not the
+  // implicit `default` one, so its background/border colours are visually distinct from the
+  // status card beside it.
+  expect(markup).toContain(`data-variant="info"`);
+  expect(markup).not.toContain(`data-variant="default"`);
+  // DWT-002 regression: the header intro paragraph, the Alert's description, and each of the 3
+  // readiness-row descriptions are constrained to a comfortable fixed-pixel reading measure
+  // (`max-w-md`, not the `ch`-based `max-w-prose`, which under-constrains this app's font),
+  // independent of the outer 672px container.
+  const paragraphClass = markup.match(/<p class="([^"]*)">/u)?.[1] ?? "";
+  expect(paragraphClass).toContain("max-w-md");
+  expect(markup).toContain(`<p class="${paragraphClass}">${STATUS_PAGE_SUMMARY}</p>`);
+  const alertDescriptionClass = markup.match(/<div data-slot="alert-description" class="([^"]*)"/u)?.[1] ?? "";
+  expect(alertDescriptionClass).toContain("max-w-md");
+  expect(markup).toContain(
+    `<div data-slot="alert-description" class="${alertDescriptionClass}">${AUTHENTICATION_DISABLED_SUMMARY}</div>`,
+  );
+  expect((markup.match(/<span class="[^"]*max-w-md[^"]*">/gu) ?? []).length).toBe(3);
 }
 
 describeFeature(feature, ({ Rule, defineSteps, AfterEachScenario }) => {
@@ -75,6 +99,11 @@ describeFeature(feature, ({ Rule, defineSteps, AfterEachScenario }) => {
           expect(markup).toContain(stateLabel);
         }
         expect(markup).toContain(AUTHENTICATION_DISABLED_NOTICE);
+        // UWT-002 regression: only the by-design-active row's state value carries the stronger
+        // `font-semibold` weight; the by-design-inactive rows render without it.
+        expect(markup).toMatch(/<span class="[^"]*font-semibold[^"]*">Running<\/span>/u);
+        expect(markup).not.toMatch(/<span class="[^"]*font-semibold[^"]*">Not reported<\/span>/u);
+        expect(markup).not.toMatch(/<span class="[^"]*font-semibold[^"]*">Disabled<\/span>/u);
       });
     });
   });

@@ -1,0 +1,20 @@
+api-exploratory-tester discovery run
+run-id: aet-2ecbb6945fdd
+started (UTC): 2026-09-16T13:07:51Z
+finished (UTC): 2026-09-16T13:18:00Z (approx; see request-response-matrix.md for per-probe timestamps)
+quality-gate-phase: discovery
+output-mode: delivery
+plan-path: plans/in-progress/ose-id-init-01-foundation
+mode: strict
+max-concurrency: 3
+target base URL: http://127.0.0.1:8501
+worktree: ./worktrees/ose-id-init-01-foundation
+worktree HEAD (git rev-parse HEAD): 83b73f6b6b910ffeaf988323a9fd0a7b18e08f17
+worktree branch: ose-id-init-01-foundation-base
+contract: specs/apps/ose/id-be/contracts/openapi.yaml (OpenAPI 3.1.0)
+tech-doc ground truth: plans/in-progress/ose-id-init-01-foundation/tech-docs/006-api-contract-delta.md
+gherkin ground truth:
+  specs/apps/ose/id-be/behaviours/foundation/health.feature
+  specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature
+findings filed: AET-001 (Major), AET-002 (Minor), AET-003 (Trivial)
+spec-gap proposals filed: SG-001

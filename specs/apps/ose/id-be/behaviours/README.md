@@ -12,6 +12,7 @@ Backend scenarios for the OSE ID service, grouped by domain.
 | [foundation/runtime-mode.feature](./foundation/runtime-mode.feature)                                       | foundation  |
 | [foundation/stateless-instances.feature](./foundation/stateless-instances.feature)                         | foundation  |
 | [foundation/disabled-capabilities.feature](./foundation/disabled-capabilities.feature)                     | foundation  |
+| [foundation/route-disclosure.feature](./foundation/route-disclosure.feature)                               | foundation  |
 | [persistence/database-audit-and-soft-delete.feature](./persistence/database-audit-and-soft-delete.feature) | persistence |
 
 - [foundation](./foundation/README.md) — OSE ID BE Gherkin Domain

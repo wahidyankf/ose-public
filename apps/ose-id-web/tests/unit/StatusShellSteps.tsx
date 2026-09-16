@@ -10,9 +10,12 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
 import { expect } from "vitest";
 import {
+  AUTHENTICATION_DISABLED_HEADLINE,
   AUTHENTICATION_DISABLED_NOTICE,
+  AUTHENTICATION_DISABLED_SUMMARY,
   STATUS_PAGE_HEADING,
   STATUS_PAGE_MEDIA_TYPE,
+  STATUS_PAGE_SUMMARY,
   STATUS_REGION_LABEL,
   type ServiceStatusReport,
   type StatusReadResult,
@@ -43,6 +46,22 @@ function expectHeadingAndNamedStatusRegion(): void {
   expect(headings).toHaveLength(1);
   expect(headings[0]).toHaveAccessibleName(STATUS_PAGE_HEADING);
   expect(screen.getByRole("status", { name: STATUS_REGION_LABEL })).toBeInTheDocument();
+  // UWT-001 regression: the permanent, calm authentication notice is exposed with the same
+  // non-interrupting `status` semantics as the readiness region beside it, never `alert`.
+  expect(screen.queryByRole("alert")).toBeNull();
+  const notice = screen.getByText(AUTHENTICATION_DISABLED_HEADLINE).closest('[data-slot="alert"]');
+  expect(notice).toHaveAttribute("role", "status");
+  // DWT-001 regression: the notice uses the `Alert` primitive's `info` variant, not the implicit
+  // `default` one, so its background/border colours are visually distinct from the status card
+  // beside it in both colour schemes, restoring the page's only intended hierarchy cue.
+  expect(notice).toHaveAttribute("data-variant", "info");
+  expect(notice?.className ?? "").toContain("hue-sky");
+  // DWT-002 regression: the header intro paragraph and the Alert's description are each
+  // constrained to a comfortable fixed-pixel reading measure (`max-w-md`, not the `ch`-based
+  // `max-w-prose`, which under-constrains this app's font), independent of the outer 672px
+  // container, so running text stays inside WCAG SC 1.4.8's guideline at every breakpoint.
+  expect(screen.getByText(STATUS_PAGE_SUMMARY).className).toContain("max-w-md");
+  expect(screen.getByText(AUTHENTICATION_DISABLED_SUMMARY).className).toContain("max-w-md");
 }
 
 describeFeature(feature, ({ Rule, defineSteps, AfterEachScenario }) => {
@@ -85,8 +104,21 @@ describeFeature(feature, ({ Rule, defineSteps, AfterEachScenario }) => {
         const region = screen.getByRole("status", { name: STATUS_REGION_LABEL });
         for (const component of report.components) {
           expect(within(region).getByText(component.name)).toBeInTheDocument();
-          expect(within(region).getByText(component.stateLabel)).toBeInTheDocument();
-          expect(within(region).getByText(component.detail)).toBeInTheDocument();
+          const stateNode = within(region).getByText(component.stateLabel);
+          expect(stateNode).toBeInTheDocument();
+          const detailNode = within(region).getByText(component.detail);
+          expect(detailNode).toBeInTheDocument();
+          // DWT-002 regression: each readiness row's description keeps the same fixed-pixel
+          // measure constraint, independent of the Card's own width.
+          expect(detailNode.className).toContain("max-w-md");
+          // UWT-002 regression: a by-design-active row's state value carries a visibly stronger
+          // weight than a by-design-inactive row's, driven by the domain `tone`, never by
+          // string-matching `stateLabel` and never by colour alone.
+          if (component.tone === "positive") {
+            expect(stateNode.className).toContain("font-semibold");
+          } else {
+            expect(stateNode.className).not.toContain("font-semibold");
+          }
         }
         // Every state word is readable text, so removing colour removes no meaning.
         expect(region.textContent ?? "").toContain(AUTHENTICATION_DISABLED_NOTICE);

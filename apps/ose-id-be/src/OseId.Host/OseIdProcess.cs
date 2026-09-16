@@ -42,7 +42,7 @@ public static class OseIdProcess
         OseIdHost.RegisterServices(builder.Services, builder.Configuration);
 
         WebApplication application = builder.Build();
-        OseIdHost.MapInboundRoutes(application);
+        OseIdHost.ComposePipeline(application);
 
         await application.RunAsync().ConfigureAwait(false);
         return 0;

@@ -201,17 +201,29 @@ public sealed partial class PostgresResource : IDisposable
     /// </summary>
     private void Bootstrap(DateTimeOffset deadline)
     {
+        // Each statement below is its own PsqlDuringStartup call, never combined into one
+        // multi-statement script: every call runs with ON_ERROR_STOP=1, so a retry that hits
+        // "already exists" on an earlier statement — because a prior connection-raced attempt
+        // already committed it before dying — aborts the rest of that same invocation right there.
+        // A combined block would then silently skip a later statement such as CREATE DATABASE,
+        // while AlreadyDonePattern's match still reports the whole call as success.
         PsqlDuringStartup(
             "postgres",
             $"""
             CREATE ROLE {MigratorRole} LOGIN PASSWORD '{MigratorPassword}'
               NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
-            CREATE ROLE {ApplicationRole} LOGIN PASSWORD '{ApplicationPassword}'
-              NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
-            CREATE DATABASE {DatabaseName} OWNER {MigratorRole};
             """,
             deadline
         );
+        PsqlDuringStartup(
+            "postgres",
+            $"""
+            CREATE ROLE {ApplicationRole} LOGIN PASSWORD '{ApplicationPassword}'
+              NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
+            """,
+            deadline
+        );
+        PsqlDuringStartup("postgres", $"CREATE DATABASE {DatabaseName} OWNER {MigratorRole};", deadline);
 
         // PUBLIC keeps no create privilege anywhere in the OSE ID database, so a role that is
         // granted nothing can do nothing rather than falling back to a default.

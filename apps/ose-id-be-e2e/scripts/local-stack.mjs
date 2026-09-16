@@ -192,13 +192,32 @@ async function startPostgres(runId, port) {
             );
         }
 
+        // Each statement below is retried and its "already exists" success check applied
+        // independently, never combined into one multi-statement call: execPsql runs with
+        // ON_ERROR_STOP=1, so a retry that hits "already exists" on an earlier statement — because a
+        // prior connection-raced attempt already committed it before dying — aborts the rest of that
+        // same psql invocation right there. A combined block would then silently skip a later
+        // statement such as CREATE DATABASE, while psqlDuringStartup's "already exists" match still
+        // reports the whole call as success.
         await psqlDuringStartup(
             containerName,
             superuserPassword,
             "postgres",
-            `CREATE ROLE ${MIGRATOR_ROLE} LOGIN PASSWORD '${migratorPassword}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
-       CREATE ROLE ${APPLICATION_ROLE} LOGIN PASSWORD '${applicationPassword}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
-       CREATE DATABASE ${DATABASE_NAME} OWNER ${MIGRATOR_ROLE};`,
+            `CREATE ROLE ${MIGRATOR_ROLE} LOGIN PASSWORD '${migratorPassword}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;`,
+            setupDeadline,
+        );
+        await psqlDuringStartup(
+            containerName,
+            superuserPassword,
+            "postgres",
+            `CREATE ROLE ${APPLICATION_ROLE} LOGIN PASSWORD '${applicationPassword}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;`,
+            setupDeadline,
+        );
+        await psqlDuringStartup(
+            containerName,
+            superuserPassword,
+            "postgres",
+            `CREATE DATABASE ${DATABASE_NAME} OWNER ${MIGRATOR_ROLE};`,
             setupDeadline,
         );
         await psqlDuringStartup(

@@ -35,6 +35,15 @@ export const STATUS_UNAVAILABLE_DETAIL =
   "The status shell is serving but could not read the state it reports on. Nothing was stored and no sign-in was attempted.";
 
 /**
+ * Whether a component's reported state is a by-design-active good outcome or a by-design-inactive,
+ * equally fine, neutral one. This never carries meaning on its own — {@link ServiceStatusComponent}
+ * always states its state in `stateLabel` and `detail` text regardless of tone — it only lets the
+ * presentation layer vary typographic emphasis so a first glance can triage the two apart without
+ * reading every sentence.
+ */
+export type ServiceStatusTone = "positive" | "neutral";
+
+/**
  * A component's state, named in words. The label is the text a reader sees; a colour may reinforce
  * it but never carries it, which is why no colour is modelled here at all.
  */
@@ -43,6 +52,7 @@ export interface ServiceStatusComponent {
   readonly name: string;
   readonly stateLabel: string;
   readonly detail: string;
+  readonly tone: ServiceStatusTone;
 }
 
 export interface ServiceStatusReport {

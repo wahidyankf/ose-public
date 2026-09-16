@@ -16,6 +16,31 @@ The suite publishes `apps/ose-id-be/src/OseId.Host/OseId.Host.csproj` to
 `apps/ose-id-be/dist/e2e/` and spawns it directly with `dotnet`; no separate terminal or manually
 started server is needed.
 
+## Local stack (`serve`)
+
+This project also owns a manual-verification local stack — a multi-process orchestrator, not an app
+`dev`/`start` server (see `target-naming-rules.md`'s documented exception for this shape):
+
+```bash
+rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve -- --fixture-profile=foundation-ready
+```
+
+It starts one owned PostgreSQL container, applies migrations, starts one or two `ose-id-be`
+instances, and starts `ose-id-web`, in that dependency order, then blocks until signaled and stops
+everything it started in the exact reverse order. Every owned resource is scoped to this
+invocation's run ID; cleanup never touches another concurrent invocation's resources or a broader
+Docker/process pattern.
+
+Fixture profiles (`--fixture-profile=<name>`, all reach full readiness first, then apply the named
+transition): `foundation-ready` (default, stays ready), `foundation-postgres-down` (stops the owned
+PostgreSQL container after readiness), `foundation-backend-down` (stops the first backend instance
+after readiness). `--instances=1|2` controls backend instance count; `--validate-only` exits after
+readiness without blocking.
+
+Ports resolve `flag > env var > fallback`: `OSE_ID_POSTGRES_PORT` (5438), `OSE_ID_BE_PORT` (8501),
+`OSE_ID_WEB_PORT` (3500) — see [web-sites.md](../../docs/reference/web-sites.md). A concurrent
+invocation supplies its own env vars to avoid colliding with these manual-development defaults.
+
 ## Checks and specs
 
 ```bash

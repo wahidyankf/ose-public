@@ -99,6 +99,11 @@ Flat structure - all apps at the same level, no subdirectories.
 - `organiclever-be-e2e` - Playwright BE E2E tests for organiclever-be
 - `roots-be` - Roots Islamic-practice tooling Go/Gin REST API backend (port 8402)
 - `roots-be-e2e` - Playwright BE E2E tests for roots-be
+- `ose-id-be` - OSE ID C#/ASP.NET Core REST API backend (port 8501)
+- `ose-id-be-e2e` - Reqnroll/xUnit BE E2E tests for ose-id-be (C#, not Playwright — see
+  `nx-targets/mandatory-targets-cli-e2e.md`)
+- `ose-id-web` - OSE ID web shell (Next.js 16 application, port 3500)
+- `ose-id-web-e2e` - Playwright FE E2E tests for ose-id-web
 
 ### App Structure (Next.js Application — ose-www)
 

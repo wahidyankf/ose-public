@@ -25,12 +25,28 @@ dotnet run --project apps/ose-id-be/src/OseId.Host/OseId.Host.csproj
 A `Staging`, `Production`, or missing/unknown `OSE_RUNTIME_MODE` exits non-zero before any listener
 binds — see [Configuration](#configuration).
 
+Run standalone this way, the process needs its own reachable PostgreSQL (see
+[Configuration](#configuration) below) — without it, `/health/ready` reports not-ready rather than
+serving. For a fully owned PostgreSQL plus this backend plus the web shell, with no separate setup,
+use `ose-id-be-e2e`'s [local stack](../ose-id-be-e2e/README.md#local-stack-serve) instead; it starts
+and cleans up every resource itself.
+
 ## What is available today
 
-No health, persistence, or product endpoint exists yet (those land in later phases of this plan). The
-only inbound surface is the closed disabled-capability inventory: each entry answers its exact
-method/path pair with `404 application/problem+json` and a `capability_disabled` code; every other
-path or method receives the framework's ordinary not-found response.
+Two truthful health routes, plus the closed disabled-capability inventory. No account, sign-in,
+OIDC, company, or product endpoint exists yet.
+
+- `GET /health/live` — always `200 application/json`, reads no port; `{"status":"live","service":"ose-id-be"}`.
+- `GET /health/ready` — reads exactly one bounded PostgreSQL schema-compatibility check. Ready is
+  `200 application/json` with `{"status":"ready","components":{"postgresql":"ready","schema":"compatible"}}`.
+  Any failure (PostgreSQL unreachable, schema incompatible) is `application/problem+json` at the
+  matching status with a sanitized `capability_disabled`-shaped problem body — never an exception,
+  connection string, host, or stack trace. Both routes echo `X-Correlation-ID` on every response and
+  send `Cache-Control: no-store`.
+
+Every other route answers its exact method/path pair with `404 application/problem+json` and a
+`capability_disabled` code; every other path or method receives the framework's ordinary not-found
+response.
 
 | Capability                | Method | Path                         |
 | ------------------------- | ------ | ---------------------------- |
@@ -54,6 +70,10 @@ The service reads configuration from process environment variables; see
 - `OSE_ID_BE_PORT` is optional; it defaults to `8501`, the port reserved for `ose-id-be` in
   [`docs/reference/web-sites.md`](../../docs/reference/web-sites.md). The listener always binds the
   loopback address `127.0.0.1`, never a machine-reachable interface.
+- `OSE_ID_CONNECTION` is required for `/health/ready` to report ready: the serving process's
+  read-only `ose_id_app` role connection string. `OSE_ID_MIGRATION_CONNECTION` is the separate,
+  schema-owning `ose_id_migrator` role connection string the standalone migrator reads; the serving
+  process never reads it. The two roles and keys must never collide.
 
 ## How the code is arranged
 

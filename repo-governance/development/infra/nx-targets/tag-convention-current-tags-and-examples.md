@@ -26,6 +26,10 @@ when_to_use: Use when copying an existing project's tag set as a template or che
 | `ose-app-web-e2e`          | `["type:e2e", "platform:playwright", "lang:ts", "domain:ose"]`           |
 | `ose-be`                   | `["type:app", "platform:giraffe", "lang:fsharp", "domain:ose"]`          |
 | `ose-be-e2e`               | `["type:e2e", "platform:playwright", "lang:ts", "domain:ose"]`           |
+| `ose-id-be`                | `["type:app", "platform:aspnetcore", "lang:csharp", "domain:ose"]`       |
+| `ose-id-be-e2e` ‡          | `["type:e2e", "platform:dotnet", "lang:csharp", "domain:ose"]`           |
+| `ose-id-web`               | `["type:app", "platform:nextjs", "lang:ts", "domain:ose"]`               |
+| `ose-id-web-e2e`           | `["type:e2e", "platform:playwright", "lang:ts", "domain:ose"]`           |
 | `ose-www`                  | `["type:app", "platform:nextjs", "lang:ts", "domain:ose"]`               |
 | `ose-www-be-e2e`           | `["type:e2e", "platform:playwright", "lang:ts", "domain:ose"]`           |
 | `ose-www-fe-e2e`           | `["type:e2e", "platform:playwright", "lang:ts", "domain:ose"]`           |
@@ -37,6 +41,9 @@ when_to_use: Use when copying an existing project's tag set as a template or che
 | `web-ui-token`             | `["type:lib", "lang:ts", "domain:ui"]`                                   |
 
 † Landed with the projects in `islamic-be-init` DU2–DU4.
+‡ Uses Reqnroll/xUnit instead of Playwright — `ose-id-be` is the repository's first C# app; see
+`docs/explanation/software-engineering/programming-languages/c-sharp/testing-standards.md` and
+`evidence/phase-1/bdd-tooling-csharp-extension.txt`.
 
 ## Example: Complete Tag Declaration
 

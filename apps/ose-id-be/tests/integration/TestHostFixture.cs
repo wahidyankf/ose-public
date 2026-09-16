@@ -12,7 +12,7 @@ namespace OseId.Be.Integration;
 
 /// <summary>
 /// Composes the delivered host over an in-memory transport. The registration and the
-/// route mapping are the production ones; only the transport is replaced, so the
+/// pipeline composition are the production ones; only the transport is replaced, so the
 /// middleware order, route table, headers, and serializer under test are real while
 /// the test binds no socket and reserves no port.
 /// </summary>
@@ -82,7 +82,7 @@ public sealed class TestHostFixture : IDisposable
         }
 
         WebApplication application = builder.Build();
-        OseIdHost.MapInboundRoutes(application);
+        OseIdHost.ComposePipeline(application);
         application.StartAsync().GetAwaiter().GetResult();
 
         return new TestHostFixture(application);

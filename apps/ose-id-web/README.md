@@ -19,6 +19,10 @@ Visit `http://127.0.0.1:3500/`. A `Staging`, `Production`, or missing/unknown `O
 the process environment makes the proxy return `503` for every request instead of serving a page —
 see [Configuration](#configuration).
 
+Run standalone this way, the page reads its own reachable `ose-id-be`. For a fully owned PostgreSQL
+plus `ose-id-be` plus this web shell, with no separate setup or manual cleanup, use
+`ose-id-be-e2e`'s [local stack](../ose-id-be-e2e/README.md#local-stack-serve) instead.
+
 ## What is available today
 
 | Route   | What it renders                                                                                                                                                      |

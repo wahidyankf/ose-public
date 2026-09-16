@@ -12,6 +12,9 @@ namespace OseId.Host;
 /// exact method and path pairs from the domain inventory and nothing else, so an unknown
 /// path still receives the framework's ordinary not-found answer without a capability
 /// code — which is what lets a test tell a disabled capability from an absent route.
+/// A listed path addressed with an unlisted method is an unknown pair too, and reaches
+/// no handler here at all: <see cref="RouteDisclosureGuard" /> answers it as the absent
+/// route it is, because the dispatcher decides a method mismatch before this adapter runs.
 /// </summary>
 internal static class DisabledCapabilityEndpoints
 {

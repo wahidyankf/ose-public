@@ -1,0 +1,1244 @@
+{
+  "url": "http://127.0.0.1:3500/",
+  "capturedAt": "2026-09-16T17:51:50.600Z",
+  "colorSchemes": {
+    "light": {
+      "consoleMessages": [],
+      "title": "OSE ID service status",
+      "htmlLang": "en",
+      "readingOrder": [
+        {
+          "tag": "main",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "OSE ID service statusOSE ID is running as an inert foundation service. This page reports component state and does nothing else.Authentication is not enabled in this build.No account, credential, provi"
+        },
+        {
+          "tag": "header",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "OSE ID service statusOSE ID is running as an inert foundation service. This page reports component state and does nothing else."
+        },
+        {
+          "tag": "h1",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "OSE ID service status"
+        },
+        {
+          "tag": "p",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "OSE ID is running as an inert foundation service. This page reports component state and does nothing else."
+        },
+        {
+          "tag": "div",
+          "role": "alert",
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "Authentication is not enabled in this build.No account, credential, provider, company, consent, or administration surface exists yet. There is nothing here to sign in to."
+        },
+        {
+          "tag": "div",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "Authentication is not enabled in this build."
+        },
+        {
+          "tag": "div",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "No account, credential, provider, company, consent, or administration surface exists yet. There is nothing here to sign in to."
+        },
+        {
+          "tag": "div",
+          "role": "status",
+          "ariaLive": "polite",
+          "ariaLabel": "OSE ID service component status",
+          "text": "OSE ID web shellRunningThis page answered, so the shell is serving. It stores nothing and reads no user data.OSE ID backendNot reportedBackend readiness reporting is not part of this foundation build,"
+        },
+        {
+          "tag": "dt",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "OSE ID web shell"
+        },
+        {
+          "tag": "span",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "Running"
+        },
+        {
+          "tag": "span",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "This page answered, so the shell is serving. It stores nothing and reads no user data."
+        },
+        {
+          "tag": "dt",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "OSE ID backend"
+        },
+        {
+          "tag": "span",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "Not reported"
+        },
+        {
+          "tag": "span",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "Backend readiness reporting is not part of this foundation build, so no backend state is claimed here."
+        },
+        {
+          "tag": "dt",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "Authentication"
+        },
+        {
+          "tag": "span",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "Disabled"
+        },
+        {
+          "tag": "span",
+          "role": null,
+          "ariaLive": null,
+          "ariaLabel": null,
+          "text": "Authentication is not enabled. OSE ID cannot sign anyone in yet, and this page is not a sign-in form."
+        }
+      ],
+      "headings": [
+        {
+          "tag": "h1",
+          "text": "OSE ID service status"
+        }
+      ],
+      "landmarks": [
+        {
+          "tag": "main",
+          "role": null,
+          "ariaLabel": null,
+          "ariaLive": null
+        },
+        {
+          "tag": "header",
+          "role": null,
+          "ariaLabel": null,
+          "ariaLive": null
+        },
+        {
+          "tag": "div",
+          "role": "alert",
+          "ariaLabel": null,
+          "ariaLive": null
+        },
+        {
+          "tag": "div",
+          "role": "status",
+          "ariaLabel": "OSE ID service component status",
+          "ariaLive": "polite"
+        }
+      ],
+      "focusableCount": 0,
+      "tabTrace": [
+        {
+          "tag": "body",
+          "id": null
+        },
+        {
+          "tag": "body",
+          "id": null
+        },
+        {
+          "tag": "body",
+          "id": null
+        },
+        {
+          "tag": "body",
+          "id": null
+        },
+        {
+          "tag": "body",
+          "id": null
+        },
+        {
+          "tag": "body",
+          "id": null
+        }
+      ],
+      "ariaSnapshot": "- main:\n  - heading \"OSE ID service status\" [level=1]\n  - paragraph: OSE ID is running as an inert foundation service. This page reports component state and does nothing else.\n  - alert: Authentication is not enabled in this build. No account, credential, provider, company, consent, or administration surface exists yet. There is nothing here to sign in to.\n  - status \"OSE ID service component status\":\n    - term: OSE ID web shell\n    - definition: Running This page answered, so the shell is serving. It stores nothing and reads no user data.\n    - term: OSE ID backend\n    - definition: Not reported Backend readiness reporting is not part of this foundation build, so no backend state is claimed here.\n    - term: Authentication\n    - definition: Disabled Authentication is not enabled. OSE ID cannot sign anyone in yet, and this page is not a sign-in form.\n- alert",
+      "innerText": "OSE ID service status\n\nOSE ID is running as an inert foundation service. This page reports component state and does nothing else.\n\nAuthentication is not enabled in this build.\nNo account, credential, provider, company, consent, or administration surface exists yet. There is nothing here to sign in to.\nOSE ID web shell\nRunning\nThis page answered, so the shell is serving. It stores nothing and reads no user data.\nOSE ID backend\nNot reported\nBackend readiness reporting is not part of this foundation build, so no backend state is claimed here.\nAuthentication\nDisabled\nAuthentication is not enabled. OSE ID cannot sign anyone in yet, and this page is not a sign-in form.",
+      "contrastSamples": [
+        {
+          "text": "OSE ID service status",
+          "tag": "h1",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 250,
+            "g": 252,
+            "b": 254,
+            "a": 1
+          },
+          "fontSize": "24px",
+          "fontWeight": "600"
+        },
+        {
+          "text": "OSE ID is running as an inert foundation service. This page ",
+          "tag": "p",
+          "fg": {
+            "r": 86,
+            "g": 95,
+            "b": 102,
+            "a": 1
+          },
+          "bg": {
+            "r": 250,
+            "g": 252,
+            "b": 254,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "text": "Authentication is not enabled in this build.",
+          "tag": "div",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "14px",
+          "fontWeight": "500"
+        },
+        {
+          "text": "No account, credential, provider, company, consent, or admin",
+          "tag": "div",
+          "fg": {
+            "r": 86,
+            "g": 95,
+            "b": 102,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "14px",
+          "fontWeight": "400"
+        },
+        {
+          "text": "OSE ID web shell",
+          "tag": "dt",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "500"
+        },
+        {
+          "text": "Running",
+          "tag": "span",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "600"
+        },
+        {
+          "text": "This page answered, so the shell is serving. It stores nothi",
+          "tag": "span",
+          "fg": {
+            "r": 86,
+            "g": 95,
+            "b": 102,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "text": "OSE ID backend",
+          "tag": "dt",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "500"
+        },
+        {
+          "text": "Not reported",
+          "tag": "span",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "600"
+        },
+        {
+          "text": "Backend readiness reporting is not part of this foundation b",
+          "tag": "span",
+          "fg": {
+            "r": 86,
+            "g": 95,
+            "b": 102,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "text": "Authentication",
+          "tag": "dt",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "500"
+        },
+        {
+          "text": "Disabled",
+          "tag": "span",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "600"
+        },
+        {
+          "text": "Authentication is not enabled. OSE ID cannot sign anyone in ",
+          "tag": "span",
+          "fg": {
+            "r": 86,
+            "g": 95,
+            "b": 102,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400"
+        }
+      ],
+      "contrastFindings": [
+        {
+          "text": "OSE ID service status",
+          "tag": "h1",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 250,
+            "g": 252,
+            "b": 254,
+            "a": 1
+          },
+          "fontSize": "24px",
+          "fontWeight": "600",
+          "ratio": 18.22,
+          "threshold": 3,
+          "isLarge": true,
+          "pass": true
+        },
+        {
+          "text": "OSE ID is running as an inert foundation service. This page ",
+          "tag": "p",
+          "fg": {
+            "r": 86,
+            "g": 95,
+            "b": 102,
+            "a": 1
+          },
+          "bg": {
+            "r": 250,
+            "g": 252,
+            "b": 254,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "ratio": 6.33,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Authentication is not enabled in this build.",
+          "tag": "div",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "ratio": 18.74,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "No account, credential, provider, company, consent, or admin",
+          "tag": "div",
+          "fg": {
+            "r": 86,
+            "g": 95,
+            "b": 102,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "ratio": 6.51,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "OSE ID web shell",
+          "tag": "dt",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "500",
+          "ratio": 18.74,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Running",
+          "tag": "span",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "600",
+          "ratio": 18.74,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "This page answered, so the shell is serving. It stores nothi",
+          "tag": "span",
+          "fg": {
+            "r": 86,
+            "g": 95,
+            "b": 102,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "ratio": 6.51,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "OSE ID backend",
+          "tag": "dt",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "500",
+          "ratio": 18.74,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Not reported",
+          "tag": "span",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "600",
+          "ratio": 18.74,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Backend readiness reporting is not part of this foundation b",
+          "tag": "span",
+          "fg": {
+            "r": 86,
+            "g": 95,
+            "b": 102,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "ratio": 6.51,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Authentication",
+          "tag": "dt",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "500",
+          "ratio": 18.74,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Disabled",
+          "tag": "span",
+          "fg": {
+            "r": 11,
+            "g": 19,
+            "b": 24,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "600",
+          "ratio": 18.74,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Authentication is not enabled. OSE ID cannot sign anyone in ",
+          "tag": "span",
+          "fg": {
+            "r": 86,
+            "g": 95,
+            "b": 102,
+            "a": 1
+          },
+          "bg": {
+            "r": 255,
+            "g": 255,
+            "b": 255,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "ratio": 6.51,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        }
+      ]
+    },
+    "dark": {
+      "consoleMessages": [],
+      "contrastSamples": [
+        {
+          "text": "OSE ID service status",
+          "tag": "h1",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 13,
+            "g": 18,
+            "b": 22,
+            "a": 1
+          },
+          "fontSize": "24px",
+          "fontWeight": "600"
+        },
+        {
+          "text": "OSE ID is running as an inert foundation service. This page ",
+          "tag": "p",
+          "fg": {
+            "r": 151,
+            "g": 160,
+            "b": 167,
+            "a": 1
+          },
+          "bg": {
+            "r": 13,
+            "g": 18,
+            "b": 22,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "text": "Authentication is not enabled in this build.",
+          "tag": "div",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "14px",
+          "fontWeight": "500"
+        },
+        {
+          "text": "No account, credential, provider, company, consent, or admin",
+          "tag": "div",
+          "fg": {
+            "r": 151,
+            "g": 160,
+            "b": 167,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "14px",
+          "fontWeight": "400"
+        },
+        {
+          "text": "OSE ID web shell",
+          "tag": "dt",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "500"
+        },
+        {
+          "text": "Running",
+          "tag": "span",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "600"
+        },
+        {
+          "text": "This page answered, so the shell is serving. It stores nothi",
+          "tag": "span",
+          "fg": {
+            "r": 151,
+            "g": 160,
+            "b": 167,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "text": "OSE ID backend",
+          "tag": "dt",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "500"
+        },
+        {
+          "text": "Not reported",
+          "tag": "span",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "600"
+        },
+        {
+          "text": "Backend readiness reporting is not part of this foundation b",
+          "tag": "span",
+          "fg": {
+            "r": 151,
+            "g": 160,
+            "b": 167,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "text": "Authentication",
+          "tag": "dt",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "500"
+        },
+        {
+          "text": "Disabled",
+          "tag": "span",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "600"
+        },
+        {
+          "text": "Authentication is not enabled. OSE ID cannot sign anyone in ",
+          "tag": "span",
+          "fg": {
+            "r": 151,
+            "g": 160,
+            "b": 167,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400"
+        }
+      ],
+      "contrastFindings": [
+        {
+          "text": "OSE ID service status",
+          "tag": "h1",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 13,
+            "g": 18,
+            "b": 22,
+            "a": 1
+          },
+          "fontSize": "24px",
+          "fontWeight": "600",
+          "ratio": 16.72,
+          "threshold": 3,
+          "isLarge": true,
+          "pass": true
+        },
+        {
+          "text": "OSE ID is running as an inert foundation service. This page ",
+          "tag": "p",
+          "fg": {
+            "r": 151,
+            "g": 160,
+            "b": 167,
+            "a": 1
+          },
+          "bg": {
+            "r": 13,
+            "g": 18,
+            "b": 22,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "ratio": 7.09,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Authentication is not enabled in this build.",
+          "tag": "div",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "14px",
+          "fontWeight": "500",
+          "ratio": 15.28,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "No account, credential, provider, company, consent, or admin",
+          "tag": "div",
+          "fg": {
+            "r": 151,
+            "g": 160,
+            "b": 167,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "ratio": 6.48,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "OSE ID web shell",
+          "tag": "dt",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "500",
+          "ratio": 15.28,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Running",
+          "tag": "span",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "600",
+          "ratio": 15.28,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "This page answered, so the shell is serving. It stores nothi",
+          "tag": "span",
+          "fg": {
+            "r": 151,
+            "g": 160,
+            "b": 167,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "ratio": 6.48,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "OSE ID backend",
+          "tag": "dt",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "500",
+          "ratio": 15.28,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Not reported",
+          "tag": "span",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "600",
+          "ratio": 15.28,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Backend readiness reporting is not part of this foundation b",
+          "tag": "span",
+          "fg": {
+            "r": 151,
+            "g": 160,
+            "b": 167,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "ratio": 6.48,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Authentication",
+          "tag": "dt",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "500",
+          "ratio": 15.28,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Disabled",
+          "tag": "span",
+          "fg": {
+            "r": 237,
+            "g": 242,
+            "b": 247,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "600",
+          "ratio": 15.28,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        },
+        {
+          "text": "Authentication is not enabled. OSE ID cannot sign anyone in ",
+          "tag": "span",
+          "fg": {
+            "r": 151,
+            "g": 160,
+            "b": 167,
+            "a": 1
+          },
+          "bg": {
+            "r": 21,
+            "g": 28,
+            "b": 33,
+            "a": 1
+          },
+          "fontSize": "16px",
+          "fontWeight": "400",
+          "ratio": 6.48,
+          "threshold": 4.5,
+          "isLarge": false,
+          "pass": true
+        }
+      ]
+    }
+  }
+}

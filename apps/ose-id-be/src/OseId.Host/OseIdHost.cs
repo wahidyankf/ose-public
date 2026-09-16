@@ -1,4 +1,5 @@
 using System.Globalization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
@@ -75,10 +76,26 @@ public static class OseIdHost
     }
 
     /// <summary>
+    /// Composes the complete inbound pipeline: the disclosure guard first, so it wraps
+    /// endpoint execution and sees the dispatcher's own answers, then the route table.
+    /// This is the one entry point a host uses, because a caller that mapped routes
+    /// without the guard would serve a route table that discloses itself.
+    /// </summary>
+    public static WebApplication ComposePipeline(WebApplication application)
+    {
+        ArgumentNullException.ThrowIfNull(application);
+
+        RouteDisclosureGuard.Use(application);
+        MapInboundRoutes(application);
+
+        return application;
+    }
+
+    /// <summary>
     /// Maps the complete inbound route table. Nothing else is registered: no account,
     /// token, company, or administration route exists yet.
     /// </summary>
-    public static IEndpointRouteBuilder MapInboundRoutes(IEndpointRouteBuilder routes)
+    internal static IEndpointRouteBuilder MapInboundRoutes(IEndpointRouteBuilder routes)
     {
         ArgumentNullException.ThrowIfNull(routes);
 

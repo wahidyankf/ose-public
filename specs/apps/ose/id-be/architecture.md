@@ -75,8 +75,8 @@ divide it, and every dependency between them points inward:
 | Outbound adapters | SqlKata and Npgsql persistence, clock, and migration-time EF tooling  | Calling inbound adapters or redefining policy     |
 | Host              | Configuration validation, registration, middleware order, lifecycle   | Service location from domain or application code  |
 
-[The hexagonal dependency boundary](./architecture/hexagonal-dependency-boundary.md) draws those
-rings, shows which adapters exist today, and marks the seams reserved for transports that do not.
+The hexagonal dependency boundary, listed above, draws those rings, shows which adapters exist
+today, and marks the seams reserved for transports that do not.
 
 ## Persistence
 

@@ -228,9 +228,9 @@ smaller than a workstation, where a workstation-sized cap defers admission with 
 
 | Field             | Meaning                                                          |
 | ----------------- | ---------------------------------------------------------------- |
-| `maxCpu`          | Host-wide CPU ceiling across every repository sharing the ledger  |
-| `maxMemoryMiB`    | Host-wide memory ceiling; must be at least `256`                  |
-| `maxActiveOwners` | How many owners may hold a reservation at once; at most `20`      |
+| `maxCpu`          | Host-wide CPU ceiling across every repository sharing the ledger |
+| `maxMemoryMiB`    | Host-wide memory ceiling; must be at least `256`                 |
+| `maxActiveOwners` | How many owners may hold a reservation at once; at most `20`     |
 
 Size them from your own machine — roughly half the host is a reasonable start, because the other half
 still has to run an editor, a browser, the window server, and the agent processes themselves. The

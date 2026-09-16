@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net.Sockets;
+using System.Text.RegularExpressions;
 
 namespace OseId.Be.E2E;
 
@@ -16,9 +17,30 @@ namespace OseId.Be.E2E;
 /// two runs can overlap; 5438 remains the manual-development default recorded in the local-stack
 /// contract.
 /// </summary>
-public sealed class PostgresResource : IDisposable
+public sealed partial class PostgresResource : IDisposable
 {
     private const string Image = "postgres:17-alpine";
+
+    // Matches only the connection-establishment failures the official image's temp-instance/
+    // real-instance startup transition produces: the temp instance's socket disappearing,
+    // connections being refused before the real instance is listening, or the temp instance
+    // forcibly closing an already-connected client when it is told to shut down. Never a query or
+    // permission error, so a genuine SQL mistake still fails immediately instead of being retried
+    // away.
+    [GeneratedRegex(
+        "No such file or directory|Connection refused|the database system is (starting up|shutting down)"
+            + "|terminating connection due to administrator command|server closed the connection unexpectedly"
+            + "|connection to server was lost",
+        RegexOptions.IgnoreCase
+    )]
+    private static partial Regex ConnectionRacePattern();
+
+    // A retried startup statement reporting "already exists" is a success, not a conflict: on a
+    // container this run just created, with fixed role/database names, only this same call's own
+    // earlier attempt could have created them already — most likely after committing but before
+    // its result reached the client across the connection the temp/real transition just severed.
+    [GeneratedRegex("already exists", RegexOptions.IgnoreCase)]
+    private static partial Regex AlreadyDonePattern();
 
     /// <summary>
     /// Every container this type creates is named "{NamePrefix}{runId}". A HIPPO shed reaps the
@@ -70,14 +92,18 @@ public sealed class PostgresResource : IDisposable
         );
 
     /// <summary>
-    /// Starts the container, waits for PostgreSQL's own readiness probe, then creates the database
-    /// and the two least-privilege login roles. Waiting on <c>pg_isready</c> observes a state
-    /// transition; it is not a retry of a failed assertion.
+    /// Starts the container, waits for the real PostgreSQL instance to accept the exact connection
+    /// the bootstrap statements depend on, then creates the database and the two least-privilege
+    /// login roles. Waiting on that connection observes a state transition; it is not a retry of a
+    /// failed assertion.
+    ///
+    /// Never sweeps stale containers itself: this test run may already own other instances of this
+    /// resource by the time a later scenario calls this, and a sweep here would remove them by their
+    /// shared name prefix along with anything genuinely stale. <see cref="RemoveStaleContainers" />
+    /// runs exactly once, before the first resource in a test run starts.
     /// </summary>
     public static PostgresResource Start(TimeSpan readinessBudget)
     {
-        RemoveStaleContainers();
-
         string runId = Guid.NewGuid().ToString("N")[..12];
         int port = AllocateEphemeralPort();
         var resource = new PostgresResource(runId, port, $"{NamePrefix}{runId}");
@@ -105,10 +131,15 @@ public sealed class PostgresResource : IDisposable
             throw new InvalidOperationException($"starting the owned PostgreSQL container failed: {output}");
         }
 
+        // Shared across the readiness wait and the bootstrap statements below: a probe that
+        // succeeded against the temp instance moments before the real instance took over must not
+        // reset a fresh budget for what comes next, or the two phases could together run far
+        // longer than the caller asked for.
+        DateTimeOffset deadline = DateTimeOffset.UtcNow + readinessBudget;
         try
         {
-            resource.WaitUntilAcceptingConnections(readinessBudget);
-            resource.Bootstrap();
+            resource.WaitUntilAcceptingConnections(deadline, readinessBudget);
+            resource.Bootstrap(deadline);
             return resource;
         }
         catch
@@ -118,13 +149,36 @@ public sealed class PostgresResource : IDisposable
         }
     }
 
-    private void WaitUntilAcceptingConnections(TimeSpan budget)
+    /// <summary>
+    /// Waits for the real, long-running postgres instance to accept the exact connection the
+    /// bootstrap statements below depend on. <c>pg_isready</c> can observe the official image's
+    /// temporary init-script instance and report ready moments before its socket disappears and
+    /// the real instance takes over; probing with the same connection the next step depends on —
+    /// not a separate, weaker check — is what makes "ready" mean "the next step will work."
+    /// Waiting on a real state transition is not a retry of a failed assertion.
+    /// </summary>
+    private void WaitUntilAcceptingConnections(DateTimeOffset deadline, TimeSpan budget)
     {
-        DateTimeOffset deadline = DateTimeOffset.UtcNow + budget;
         while (DateTimeOffset.UtcNow < deadline)
         {
-            (int exitCode, _) = Docker(
-                ["exec", _containerName, "pg_isready", "--username", "postgres", "--dbname", "postgres"],
+            (int exitCode, _) = DockerWithInput(
+                [
+                    "exec",
+                    "--interactive",
+                    "--env",
+                    $"PGPASSWORD={_superuserPassword}",
+                    _containerName,
+                    "psql",
+                    "--username",
+                    "postgres",
+                    "--dbname",
+                    "postgres",
+                    "--no-psqlrc",
+                    "--quiet",
+                    "--set",
+                    "ON_ERROR_STOP=1",
+                ],
+                "SELECT 1;",
                 TimeSpan.FromSeconds(15)
             );
             if (exitCode == 0)
@@ -145,9 +199,9 @@ public sealed class PostgresResource : IDisposable
     /// contract requires. Neither role may create databases or roles, inherit privileges it was not
     /// granted, or bypass row-level security.
     /// </summary>
-    private void Bootstrap()
+    private void Bootstrap(DateTimeOffset deadline)
     {
-        Psql(
+        PsqlDuringStartup(
             "postgres",
             $"""
             CREATE ROLE {MigratorRole} LOGIN PASSWORD '{MigratorPassword}'
@@ -155,20 +209,74 @@ public sealed class PostgresResource : IDisposable
             CREATE ROLE {ApplicationRole} LOGIN PASSWORD '{ApplicationPassword}'
               NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
             CREATE DATABASE {DatabaseName} OWNER {MigratorRole};
-            """
+            """,
+            deadline
         );
 
         // PUBLIC keeps no create privilege anywhere in the OSE ID database, so a role that is
         // granted nothing can do nothing rather than falling back to a default.
-        Psql(
+        PsqlDuringStartup(
             DatabaseName,
             $"""
             REVOKE ALL ON DATABASE {DatabaseName} FROM PUBLIC;
             REVOKE ALL ON SCHEMA public FROM PUBLIC;
             GRANT CONNECT ON DATABASE {DatabaseName} TO {MigratorRole};
             GRANT CONNECT ON DATABASE {DatabaseName} TO {ApplicationRole};
-            """
+            """,
+            deadline
         );
+    }
+
+    /// <summary>
+    /// Runs one bootstrap statement, retrying only while <paramref name="deadline" /> has not
+    /// passed and the failure matches <see cref="ConnectionRacePattern" /> — the documented
+    /// temp-instance/real-instance transition, never a real SQL mistake. A retried statement that
+    /// reports "already exists" (<see cref="AlreadyDonePattern" />) is treated as success rather
+    /// than a conflict, for the reason recorded on that pattern.
+    /// </summary>
+    private void PsqlDuringStartup(string database, string sql, DateTimeOffset deadline)
+    {
+        for (; ; )
+        {
+            (int exitCode, string output) = DockerWithInput(
+                [
+                    "exec",
+                    "--interactive",
+                    "--env",
+                    $"PGPASSWORD={_superuserPassword}",
+                    _containerName,
+                    "psql",
+                    "--username",
+                    "postgres",
+                    "--dbname",
+                    database,
+                    "--no-psqlrc",
+                    "--quiet",
+                    "--tuples-only",
+                    "--no-align",
+                    "--set",
+                    "ON_ERROR_STOP=1",
+                ],
+                sql,
+                TimeSpan.FromSeconds(15)
+            );
+            if (exitCode == 0)
+            {
+                return;
+            }
+
+            if (AlreadyDonePattern().IsMatch(output))
+            {
+                return;
+            }
+
+            if (DateTimeOffset.UtcNow >= deadline || !ConnectionRacePattern().IsMatch(output))
+            {
+                throw new InvalidOperationException($"psql failed: {Sanitize(output)}");
+            }
+
+            Thread.Sleep(250);
+        }
     }
 
     /// <summary>
@@ -204,6 +312,21 @@ public sealed class PostgresResource : IDisposable
         return exitCode == 0 ? output : throw new InvalidOperationException($"psql failed: {Sanitize(output)}");
     }
 
+    /// <summary>
+    /// Stops the container without removing it, so a scenario can observe its dependency
+    /// becoming unreachable and <see cref="Dispose" /> can still clean up afterward. There
+    /// is no corresponding resume: no scenario in this codebase needs the dependency to
+    /// come back once stopped.
+    /// </summary>
+    public void Stop()
+    {
+        (int exitCode, string output) = Docker(["stop", "--time", "5", _containerName], TimeSpan.FromSeconds(30));
+        if (exitCode != 0)
+        {
+            throw new InvalidOperationException($"stopping the owned PostgreSQL container failed: {Sanitize(output)}");
+        }
+    }
+
     /// <summary>Removes the run's own container by exact name. Never prunes.</summary>
     public void Dispose()
     {
@@ -234,8 +357,12 @@ public sealed class PostgresResource : IDisposable
     /// reaching its own <see cref="Dispose"/>. Matches by exact name prefix only — never a pattern
     /// that could reach a container this type did not create — so a repeated shed cannot accumulate
     /// orphaned containers across runs.
+    ///
+    /// Callers run this exactly once, before the test run's first <see cref="Start" /> call: once
+    /// any resource is owned, its container shares this same prefix and a later sweep could not
+    /// distinguish it from a stale one.
     /// </summary>
-    private static void RemoveStaleContainers()
+    public static void RemoveStaleContainers()
     {
         (int listExitCode, string listOutput) = Docker(
             ["ps", "--all", "--filter", $"name={NamePrefix}", "--format", "{{.Names}}"],

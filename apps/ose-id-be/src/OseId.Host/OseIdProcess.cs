@@ -39,7 +39,7 @@ public static class OseIdProcess
         // No endpoint reads a body, so the host accepts only a small one. A caller that
         // sends more is refused by the server before any handler runs.
         builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = 8 * 1024);
-        OseIdHost.RegisterServices(builder.Services);
+        OseIdHost.RegisterServices(builder.Services, builder.Configuration);
 
         WebApplication application = builder.Build();
         OseIdHost.MapInboundRoutes(application);

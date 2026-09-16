@@ -2,6 +2,7 @@ using System.Reflection;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OseId.Host;
 using OseId.Infrastructure.Persistence;
@@ -21,12 +22,25 @@ namespace OseId.Be.Integration.Tests;
 /// </summary>
 public sealed class PersistenceRuntimeBoundaryTests
 {
+    // Syntactically valid so `NpgsqlDataSourceBuilder.Build()` never throws while these
+    // tests inspect the container's registrations; no test here resolves the data source
+    // or reads from a database, so its unreachability never matters.
+    private static readonly IConfiguration Configuration = new ConfigurationBuilder()
+        .AddInMemoryCollection(
+            new Dictionary<string, string?>
+            {
+                [PersistenceConfiguration.ConnectionKey] =
+                    "Host=127.0.0.1;Port=1;Database=ose_id;Username=ose_id_test;Password=ose_id_test",
+            }
+        )
+        .Build();
+
     [Fact]
     public void RegisterServices_NeverRegistersAnEntityFrameworkDbContext()
     {
         var services = new ServiceCollection();
 
-        OseIdHost.RegisterServices(services);
+        OseIdHost.RegisterServices(services, Configuration);
 
         services
             .Should()
@@ -41,7 +55,7 @@ public sealed class PersistenceRuntimeBoundaryTests
     {
         var services = new ServiceCollection();
 
-        OseIdHost.RegisterServices(services);
+        OseIdHost.RegisterServices(services, Configuration);
 
         services
             .Should()

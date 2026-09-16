@@ -1,9 +1,14 @@
 using System.Globalization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using OseId.Application.Foundation;
 using OseId.Application.Foundation.Ports;
+using OseId.Application.Health;
+using OseId.Application.Persistence;
+using OseId.Application.Persistence.Ports;
 using OseId.Infrastructure.Correlation;
+using OseId.Infrastructure.Persistence;
 
 namespace OseId.Host;
 
@@ -44,22 +49,40 @@ public static class OseIdHost
     }
 
     /// <summary>Registers every port against exactly one adapter.</summary>
-    public static void RegisterServices(IServiceCollection services)
+    /// <param name="services">The container every port is registered against.</param>
+    /// <param name="configuration">
+    /// Read once, here, for the one connection string the serving role opens. A missing
+    /// or malformed value throws out of <see cref="NpgsqlDataSourceBuilder.Build" /> at
+    /// this call — before a <c>WebApplication</c> exists and long before a listener
+    /// binds — rather than becoming a readiness HTTP response.
+    /// </param>
+    public static void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
 
         services.AddSingleton<ICorrelationIdFactory, GuidCorrelationIdFactory>();
         services.AddSingleton<RejectDisabledCapability>();
+
+        NpgsqlDataSource dataSource = new NpgsqlDataSourceBuilder(
+            configuration[PersistenceConfiguration.ConnectionKey]
+        ).Build();
+        services.AddSingleton(dataSource);
+        services.AddSingleton<IMigrationHistoryReader, NpgsqlMigrationHistoryReader>();
+        services.AddSingleton<ReadSchemaState>();
+        services.AddSingleton<ReportLiveness>();
+        services.AddSingleton<ReportReadiness>();
     }
 
     /// <summary>
-    /// Maps the complete inbound route table. Nothing else is registered: no health route
-    /// yet, and no account, token, company, or administration route at all.
+    /// Maps the complete inbound route table. Nothing else is registered: no account,
+    /// token, company, or administration route exists yet.
     /// </summary>
     public static IEndpointRouteBuilder MapInboundRoutes(IEndpointRouteBuilder routes)
     {
         ArgumentNullException.ThrowIfNull(routes);
 
+        HealthEndpoints.Map(routes);
         return DisabledCapabilityEndpoints.Map(routes);
     }
 }

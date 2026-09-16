@@ -1,0 +1,600 @@
+#!/usr/bin/env node
+/**
+ * The one OSE ID foundation local-stack entrypoint. It starts an owned PostgreSQL container,
+ * applies migrations, starts one or two backend instances, and starts the web shell — in that
+ * dependency order — then blocks until signaled and stops everything it started in exactly the
+ * reverse order. Every owned resource carries this invocation's run ID, and cleanup only ever
+ * touches resources this invocation itself started: never a broader Docker/process pattern, and
+ * never another concurrent invocation's resources.
+ *
+ * The stage order and cleanup-reversal rule this script follows are the executable specification
+ * proved in apps/ose-id-be/src/OseId.Domain/LocalStack/LifecyclePlan.cs
+ * (`StoppableStages = ["postgres", "backend", "web"]`). A change to one must change the other.
+ *
+ * Usage:
+ *   node apps/ose-id-be-e2e/scripts/local-stack.mjs [--fixture-profile=<name>] [--instances=1|2] [--validate-only]
+ *
+ * Fixture profiles (all reach full readiness first, then apply the named transition):
+ *   foundation-ready          (default) stay ready; block until signaled.
+ *   foundation-postgres-down  stop the owned PostgreSQL container after readiness, then block.
+ *   foundation-backend-down   stop the first backend instance after readiness, then block.
+ *
+ * Ports resolve through the repo-wide `flag > env var > fallback` contract (see
+ * libs/ts-env-loader/src/port-resolver.ts): OSE_ID_POSTGRES_PORT (default 5438),
+ * OSE_ID_BE_PORT (default 8501), OSE_ID_WEB_PORT (default 3500). A parallel invocation — another
+ * developer, another E2E run — supplies its own env vars to avoid colliding with these documented
+ * manual-development defaults; this script never allocates ports for itself.
+ */
+import { spawn } from "node:child_process";
+import { randomBytes } from "node:crypto";
+import { mkdtemp, rm } from "node:fs/promises";
+import net from "node:net";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { setTimeout as delay } from "node:timers/promises";
+import { fileURLToPath } from "node:url";
+
+import { resolvePort } from "../../../libs/ts-env-loader/src/port-resolver.ts";
+
+const REPO_ROOT = path.resolve(process.cwd());
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+
+const POSTGRES_IMAGE = "postgres:17-alpine";
+const OWNERSHIP_LABEL = "ose-id-local-stack-run";
+const CONTAINER_PREFIX = "ose-id-local-stack-pg-";
+const DATABASE_NAME = "ose_id";
+const MIGRATOR_ROLE = "ose_id_migrator";
+const APPLICATION_ROLE = "ose_id_app";
+
+const STARTUP_BUDGET_MS = {
+    postgres: 120_000,
+    backend: 60_000,
+    web: 60_000,
+};
+
+function option(argv, name, fallback) {
+    const prefix = `--${name}=`;
+    const found = argv.find((arg) => arg.startsWith(prefix));
+    return found === undefined ? fallback : found.slice(prefix.length);
+}
+
+function flag(argv, name) {
+    return argv.includes(`--${name}`);
+}
+
+function log(runId, message) {
+    process.stdout.write(`[local-stack ${runId}] ${message}\n`);
+}
+
+function runCommand(command, args, { input, timeoutMs = 60_000, env = process.env, cwd = REPO_ROOT } = {}) {
+    return new Promise((resolvePromise, rejectPromise) => {
+        const child = spawn(command, args, {
+            stdio: ["pipe", "pipe", "pipe"],
+            env,
+            cwd,
+        });
+
+        let stdout = "";
+        let stderr = "";
+        child.stdout.on("data", (chunk) => {
+            stdout += chunk;
+        });
+        child.stderr.on("data", (chunk) => {
+            stderr += chunk;
+        });
+
+        const timer = setTimeout(() => {
+            child.kill("SIGKILL");
+            rejectPromise(new Error(`${command} ${args.join(" ")} exceeded ${timeoutMs}ms`));
+        }, timeoutMs);
+
+        child.on("error", (error) => {
+            clearTimeout(timer);
+            rejectPromise(error);
+        });
+        child.on("exit", (exitCode) => {
+            clearTimeout(timer);
+            resolvePromise({ exitCode: exitCode ?? -1, stdout, stderr: stdout + stderr });
+        });
+
+        if (input !== undefined) {
+            child.stdin.write(input);
+        }
+        child.stdin.end();
+    });
+}
+
+async function isPortFree(port) {
+    return new Promise((resolvePromise) => {
+        const probe = net.createServer();
+        probe.once("error", () => resolvePromise(false));
+        probe.once("listening", () => probe.close(() => resolvePromise(true)));
+        probe.listen(port, "127.0.0.1");
+    });
+}
+
+async function waitUntil(predicate, budgetMs, intervalMs = 250) {
+    const deadline = Date.now() + budgetMs;
+    // Bounded polling observes a real state transition; it is never a retry of a failed
+    // assertion, and it always fails loudly once the budget is spent rather than looping forever.
+    while (Date.now() < deadline) {
+        if (await predicate()) {
+            return true;
+        }
+        await delay(intervalMs);
+    }
+    return false;
+}
+
+async function httpReady(url) {
+    try {
+        const response = await fetch(url, { signal: AbortSignal.timeout(2000) });
+        return response.status === 200;
+    } catch {
+        return false;
+    }
+}
+
+// ---------------------------------------------------------------------------------------------
+// PostgreSQL
+// ---------------------------------------------------------------------------------------------
+
+async function startPostgres(runId, port) {
+    const containerName = `${CONTAINER_PREFIX}${runId}`;
+    const superuserPassword = randomBytes(16).toString("hex");
+    const migratorPassword = randomBytes(16).toString("hex");
+    const applicationPassword = randomBytes(16).toString("hex");
+
+    const run = await runCommand(
+        "docker",
+        [
+            "run",
+            "--detach",
+            "--name",
+            containerName,
+            "--label",
+            `${OWNERSHIP_LABEL}=${runId}`,
+            "--publish",
+            `127.0.0.1:${port}:5432`,
+            "--env",
+            `POSTGRES_PASSWORD=${superuserPassword}`,
+            "--env",
+            "POSTGRES_DB=postgres",
+            POSTGRES_IMAGE,
+        ],
+        { timeoutMs: 300_000 },
+    );
+    if (run.exitCode !== 0) {
+        throw new Error(`starting the owned PostgreSQL container failed: ${run.stderr.trim()}`);
+    }
+
+    // From this point, a real container exists and must be removed on any failure below: leaving
+    // it behind would make this run's own setup failure someone else's leaked resource to find.
+    try {
+        // The official image's entrypoint runs a temporary postgres instance to apply init scripts,
+        // stops it, then starts the real one. A readiness probe can succeed against the temporary
+        // instance moments before its socket disappears and the real instance takes over — under
+        // concurrent container startups (heavier Docker-daemon load, more jitter) that window can
+        // still fall *after* the probe and land on one of the setup statements below, not just on the
+        // probe itself. Retrying every statement run during startup — not only the first probe — on
+        // the specific "the connection/socket is gone" failure class (never on a real SQL error) is
+        // what closes the gap instead of narrowing it.
+        const setupDeadline = Date.now() + STARTUP_BUDGET_MS.postgres;
+
+        const ready = await waitUntil(
+            async () =>
+                (await execPsql(containerName, superuserPassword, "postgres", "SELECT 1;", 15_000)).exitCode === 0,
+            STARTUP_BUDGET_MS.postgres,
+        );
+        if (!ready) {
+            throw new Error(
+                `the owned PostgreSQL container did not accept connections within ${STARTUP_BUDGET_MS.postgres}ms`,
+            );
+        }
+
+        await psqlDuringStartup(
+            containerName,
+            superuserPassword,
+            "postgres",
+            `CREATE ROLE ${MIGRATOR_ROLE} LOGIN PASSWORD '${migratorPassword}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
+       CREATE ROLE ${APPLICATION_ROLE} LOGIN PASSWORD '${applicationPassword}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
+       CREATE DATABASE ${DATABASE_NAME} OWNER ${MIGRATOR_ROLE};`,
+            setupDeadline,
+        );
+        await psqlDuringStartup(
+            containerName,
+            superuserPassword,
+            DATABASE_NAME,
+            `REVOKE ALL ON DATABASE ${DATABASE_NAME} FROM PUBLIC;
+       REVOKE ALL ON SCHEMA public FROM PUBLIC;
+       GRANT CONNECT ON DATABASE ${DATABASE_NAME} TO ${MIGRATOR_ROLE};
+       GRANT CONNECT ON DATABASE ${DATABASE_NAME} TO ${APPLICATION_ROLE};`,
+            setupDeadline,
+        );
+    } catch (error) {
+        await stopPostgres(containerName).catch(() => {});
+        await removePostgres(containerName).catch(() => {});
+        throw error;
+    }
+
+    return {
+        containerName,
+        migratorConnectionString: connectionString(port, MIGRATOR_ROLE, migratorPassword),
+        applicationConnectionString: connectionString(port, APPLICATION_ROLE, applicationPassword),
+    };
+}
+
+function connectionString(port, user, password) {
+    return `Host=127.0.0.1;Port=${port};Database=${DATABASE_NAME};Username=${user};Password=${password};Timeout=10;Command Timeout=10`;
+}
+
+// Matches only the connection-establishment failures the official image's temp-instance/
+// real-instance startup transition produces: the temp instance's socket disappearing,
+// connections being refused before the real instance is listening, postgres reporting it is
+// mid-transition, or the temp instance forcibly closing an already-connected client when it is
+// told to shut down. Never a query/permission error, so a genuine SQL mistake still fails
+// immediately instead of being retried away.
+const CONNECTION_RACE_PATTERN =
+    /No such file or directory|Connection refused|the database system is (starting up|shutting down)|terminating connection due to administrator command|server closed the connection unexpectedly|connection to server was lost/i;
+
+// A retried startup statement reporting "already exists" is a success, not a conflict: on a
+// container this run just created, with fixed role/database names, only this same call's own
+// earlier attempt could have created them already — most likely after committing but before its
+// result reached the client across the connection the temp/real transition just severed.
+const ALREADY_DONE_PATTERN = /already exists/i;
+
+async function execPsql(containerName, superuserPassword, database, sql, timeoutMs) {
+    return runCommand(
+        "docker",
+        [
+            "exec",
+            "--interactive",
+            "--env",
+            `PGPASSWORD=${superuserPassword}`,
+            containerName,
+            "psql",
+            "--username",
+            "postgres",
+            "--dbname",
+            database,
+            "--no-psqlrc",
+            "--quiet",
+            "--tuples-only",
+            "--no-align",
+            "--set",
+            "ON_ERROR_STOP=1",
+        ],
+        { input: sql, timeoutMs },
+    );
+}
+
+/**
+ * Runs a statement during the postgres startup window, retrying only while `deadline` has not
+ * passed and the failure is the documented temp-instance/real-instance connection race — the same
+ * bounded-wait-for-a-real-state-transition contract `waitUntil` already uses, applied to every
+ * startup statement instead of only the first readiness probe.
+ */
+async function psqlDuringStartup(containerName, superuserPassword, database, sql, deadline) {
+    for (;;) {
+        const result = await execPsql(containerName, superuserPassword, database, sql, 15_000);
+        if (result.exitCode === 0) {
+            return;
+        }
+        const stderr = result.stderr.trim();
+        if (ALREADY_DONE_PATTERN.test(stderr)) {
+            return;
+        }
+        if (Date.now() >= deadline || !CONNECTION_RACE_PATTERN.test(stderr)) {
+            throw new Error(`psql against the owned PostgreSQL container failed: ${stderr}`);
+        }
+        await delay(250);
+    }
+}
+
+async function stopPostgres(containerName) {
+    await runCommand("docker", ["stop", "--time", "5", containerName], { timeoutMs: 30_000 });
+}
+
+async function removePostgres(containerName) {
+    await runCommand("docker", ["rm", "--force", "--volumes", containerName], { timeoutMs: 30_000 });
+}
+
+// ---------------------------------------------------------------------------------------------
+// Migration
+// ---------------------------------------------------------------------------------------------
+
+async function runMigration(migratorConnectionString) {
+    const migratorProject = path.join(REPO_ROOT, "apps", "ose-id-be", "src", "OseId.Migrator", "OseId.Migrator.csproj");
+    const result = await runCommand("dotnet", ["run", "--project", migratorProject], {
+        env: { ...process.env, OSE_ID_MIGRATION_CONNECTION: migratorConnectionString },
+        timeoutMs: 120_000,
+    });
+    if (result.exitCode !== 0) {
+        throw new Error(`the migration stage failed: ${result.stderr.trim()}`);
+    }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Backend
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Publishes into a directory scoped to this run's ID, never the bare `dist/local-stack/`: two
+ * concurrent invocations from the same checkout must never overwrite the executable an already-
+ * running instance is still serving from.
+ */
+function backendPublishDirectory(runId) {
+    return path.join(REPO_ROOT, "apps", "ose-id-be", "dist", "local-stack", runId);
+}
+
+async function publishBackend(runId) {
+    const project = path.join(REPO_ROOT, "apps", "ose-id-be", "src", "OseId.Host", "OseId.Host.csproj");
+    const output = backendPublishDirectory(runId);
+    const result = await runCommand("dotnet", ["publish", project, "-c", "Release", "-o", output], {
+        timeoutMs: 180_000,
+    });
+    if (result.exitCode !== 0) {
+        throw new Error(`publishing ose-id-be failed: ${result.stderr.trim()}`);
+    }
+    return path.join(output, "OseId.Host.dll");
+}
+
+function startBackend(entryPoint, port, applicationConnectionString) {
+    // `inherit`: an unread pipe would eventually back-pressure and hang a long-running
+    // server once its own buffered output exceeded the OS pipe size. Inheriting also
+    // gives a developer running `serve` interactively the backend's live diagnostics.
+    const child = spawn("dotnet", [entryPoint], {
+        stdio: "inherit",
+        env: {
+            ...process.env,
+            OSE_RUNTIME_MODE: "Local",
+            OSE_ID_BE_PORT: String(port),
+            OSE_ID_CONNECTION: applicationConnectionString,
+        },
+    });
+    return { process: child, origin: `http://127.0.0.1:${port}` };
+}
+
+async function waitForBackendReady(origin) {
+    const ready = await waitUntil(() => httpReady(`${origin}/health/ready`), STARTUP_BUDGET_MS.backend);
+    if (!ready) {
+        throw new Error(`ose-id-be at ${origin} did not become ready within ${STARTUP_BUDGET_MS.backend}ms`);
+    }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Web shell
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Next's own build output, scoped to this run's ID and nested inside the already-ignored
+ * `.next/`, never the bare `.next/` every ordinary build uses: two concurrent invocations from
+ * the same checkout must never let one's rebuild overwrite the files another is still serving.
+ */
+function webDistDir(runId) {
+    return path.join(".next", "local-stack-runs", runId);
+}
+
+async function buildWeb(runId) {
+    const result = await runCommand("npx", ["--no", "--", "next", "build"], {
+        timeoutMs: 300_000,
+        cwd: path.join(REPO_ROOT, "apps", "ose-id-web"),
+        env: { ...process.env, OSE_ID_WEB_DIST_DIR: webDistDir(runId) },
+    });
+    if (result.exitCode !== 0) {
+        throw new Error(`building ose-id-web failed: ${result.stderr.trim()}`);
+    }
+}
+
+function startWeb(port, runId) {
+    const wrapper = path.join(REPO_ROOT, "scripts", "next-with-port.mjs");
+    const child = spawn(
+        "node",
+        [wrapper, "start", "--env", "OSE_ID_WEB_PORT", "--default", "3500", "--port", String(port)],
+        {
+            cwd: path.join(REPO_ROOT, "apps", "ose-id-web"),
+            // See startBackend: an unread pipe would eventually hang this long-running server.
+            stdio: "inherit",
+            env: { ...process.env, OSE_RUNTIME_MODE: "Local", OSE_ID_WEB_DIST_DIR: webDistDir(runId) },
+        },
+    );
+    return { process: child, origin: `http://127.0.0.1:${port}` };
+}
+
+async function waitForWebReady(origin) {
+    const ready = await waitUntil(() => httpReady(origin), STARTUP_BUDGET_MS.web);
+    if (!ready) {
+        throw new Error(`ose-id-web at ${origin} did not become ready within ${STARTUP_BUDGET_MS.web}ms`);
+    }
+}
+
+// ---------------------------------------------------------------------------------------------
+// Orchestration
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * Stops an owned process and waits for it to actually exit, escalating to SIGKILL if it
+ * outlives the grace period. "Stopping the runner leaves no owned process" is a claim about
+ * the process table at the moment cleanup finishes, not about a signal having been sent.
+ */
+function stopProcess(handle, graceMs = 10_000) {
+    return new Promise((resolvePromise) => {
+        if (handle === undefined || handle.process.exitCode !== null || handle.process.signalCode !== null) {
+            resolvePromise();
+            return;
+        }
+
+        const child = handle.process;
+        const escalate = setTimeout(() => child.kill("SIGKILL"), graceMs);
+        child.once("exit", () => {
+            clearTimeout(escalate);
+            resolvePromise();
+        });
+        child.kill("SIGTERM");
+    });
+}
+
+async function main() {
+    const argv = process.argv.slice(2);
+    const fixtureProfile = option(argv, "fixture-profile", "foundation-ready");
+    const rawInstanceCount = option(argv, "instances", "1");
+    const instanceCount = Number(rawInstanceCount);
+    const validateOnly = flag(argv, "validate-only");
+    const runId = randomBytes(6).toString("hex");
+    const runDirectory = await mkdtemp(path.join(tmpdir(), "ose-id-local-stack-"));
+
+    const postgresPort = resolvePort({ envVar: "OSE_ID_POSTGRES_PORT", fallback: 5438 });
+    const backendPort = resolvePort({ envVar: "OSE_ID_BE_PORT", fallback: 8501 });
+    const webPort = resolvePort({ envVar: "OSE_ID_WEB_PORT", fallback: 3500 });
+
+    // Step 1: validate tools, ports, and output paths before anything is owned. A collision on a
+    // port this run would bind is refused here, never removed: this run does not own it.
+    if (!Number.isInteger(instanceCount) || instanceCount < 1 || instanceCount > 2) {
+        process.stderr.write(`[local-stack ${runId}] --instances must be 1 or 2, got: ${rawInstanceCount}\n`);
+        await rm(runDirectory, { recursive: true, force: true });
+        process.exitCode = 1;
+        return;
+    }
+
+    for (const tool of ["docker", "dotnet", "npx", "node"]) {
+        const found = await runCommand(process.platform === "win32" ? "where" : "which", [tool], { timeoutMs: 10_000 });
+        if (found.exitCode !== 0) {
+            process.stderr.write(`[local-stack ${runId}] required tool not found on PATH: ${tool}\n`);
+            await rm(runDirectory, { recursive: true, force: true });
+            process.exitCode = 1;
+            return;
+        }
+    }
+
+    // A two-instance run binds a second backend on backendPort + 1; that port is exactly as much
+    // this run's responsibility to validate up front as the three base ports are.
+    const portsToValidate = [
+        ["postgres", postgresPort],
+        ["backend", backendPort],
+        ["web", webPort],
+    ];
+    if (instanceCount === 2) {
+        portsToValidate.push(["backend", backendPort + 1]);
+    }
+    for (const [label, port] of portsToValidate) {
+        if (!(await isPortFree(port))) {
+            process.stderr.write(
+                `[local-stack ${runId}] port collision: ${label} port ${port} is already bound. ` +
+                    "Another local-stack instance, or an unrelated process, owns it; this run refuses to touch it.\n",
+            );
+            await rm(runDirectory, { recursive: true, force: true });
+            process.exitCode = 1;
+            return;
+        }
+    }
+
+    if (validateOnly) {
+        log(runId, `validated: postgres=${postgresPort} backend=${backendPort} web=${webPort}`);
+        await rm(runDirectory, { recursive: true, force: true });
+        return;
+    }
+
+    const owned = { postgres: undefined, backends: [], web: undefined };
+    let reachedStageCount = 0;
+    let signaled = false;
+
+    const cleanup = async () => {
+        // Exactly LifecyclePlan.CleanupOrder(reachedStageCount): reverse of however far
+        // startup actually reached, and nothing this run did not itself start.
+        const stages = ["postgres", "backend", "web"].slice(0, reachedStageCount).reverse();
+        for (const stage of stages) {
+            try {
+                if (stage === "web") {
+                    await stopProcess(owned.web);
+                } else if (stage === "backend") {
+                    await Promise.all(owned.backends.map((backend) => stopProcess(backend)));
+                } else if (stage === "postgres" && owned.postgres !== undefined) {
+                    await stopPostgres(owned.postgres.containerName);
+                    await removePostgres(owned.postgres.containerName);
+                }
+                if (stage === "backend") {
+                    await rm(backendPublishDirectory(runId), { recursive: true, force: true });
+                } else if (stage === "web") {
+                    await rm(path.join(REPO_ROOT, "apps", "ose-id-web", webDistDir(runId)), {
+                        recursive: true,
+                        force: true,
+                    });
+                }
+                log(runId, `${stage} stopped`);
+            } catch (error) {
+                // A cleanup error is reported for its own stage and never replaces or hides the
+                // original failure that triggered cleanup in the first place.
+                process.stderr.write(`[local-stack ${runId}] cleanup of ${stage} failed: ${error.message}\n`);
+            }
+        }
+        await rm(runDirectory, { recursive: true, force: true });
+        log(runId, "cleanup complete");
+    };
+
+    const onSignal = (signal) => {
+        if (signaled) {
+            return;
+        }
+        signaled = true;
+        log(runId, `received ${signal}; stopping`);
+        cleanup()
+            .then(() => process.exit(0))
+            .catch((error) => {
+                process.stderr.write(`[local-stack ${runId}] cleanup failed: ${error.message}\n`);
+                process.exit(1);
+            });
+    };
+    process.on("SIGINT", () => onSignal("SIGINT"));
+    process.on("SIGTERM", () => onSignal("SIGTERM"));
+
+    try {
+        // Step 3: PostgreSQL.
+        owned.postgres = await startPostgres(runId, postgresPort);
+        reachedStageCount = 1;
+        log(runId, "postgres ready");
+
+        // Step 4: migrations, with the migration role, stopping immediately on failure.
+        await runMigration(owned.postgres.migratorConnectionString);
+
+        // Step 5: one or two backend instances, application credentials, poll /health/ready.
+        const entryPoint = await publishBackend(runId);
+        const backendPorts = instanceCount >= 2 ? [backendPort, backendPort + 1] : [backendPort];
+        for (const port of backendPorts) {
+            // Sequential by design: each instance must answer ready before the next starts,
+            // so a second instance's failure never gets confused with the first's.
+            const backend = startBackend(entryPoint, port, owned.postgres.applicationConnectionString);
+            owned.backends.push(backend);
+            await waitForBackendReady(backend.origin);
+        }
+        reachedStageCount = 2;
+        log(runId, `backend ready (${owned.backends.map((backend) => backend.origin).join(", ")})`);
+
+        // Step 6: the web shell.
+        await buildWeb(runId);
+        owned.web = startWeb(webPort, runId);
+        await waitForWebReady(owned.web.origin);
+        reachedStageCount = 3;
+        log(runId, `web ready (${owned.web.origin})`);
+
+        // Fixture profiles apply their transition only after full readiness is observed.
+        if (fixtureProfile === "foundation-postgres-down") {
+            await stopPostgres(owned.postgres.containerName);
+            log(runId, "postgres stopped (fixture profile)");
+        } else if (fixtureProfile === "foundation-backend-down") {
+            await stopProcess(owned.backends[0]);
+            log(runId, "backend stopped (fixture profile)");
+        } else if (fixtureProfile !== "foundation-ready") {
+            throw new Error(`unknown --fixture-profile: ${fixtureProfile}`);
+        }
+    } catch (error) {
+        process.stderr.write(`[local-stack ${runId}] failed: ${error.message}\n`);
+        await cleanup();
+        process.exitCode = 1;
+        return;
+    }
+
+    // Step 7: block until a signal ends the run; the handlers above run cleanup and exit.
+    await new Promise(() => {});
+}
+
+await main();

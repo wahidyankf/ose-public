@@ -613,31 +613,83 @@ hippo-shed-container-sweep-finding.md}`, `apps/ose-id-be-e2e/steps/PostgresResou
 
 ### AC-FND-02 — Truthful health
 
-- [ ] [AI] **RED:** add Unit/Integration/backend-E2E tests for liveness independence, readiness config/
+- [x] [AI] **RED:** add Unit/Integration/backend-E2E tests for liveness independence, readiness config/
       database/schema codes, outage and recovery, and response redaction. Run focused targets; acceptance:
       tests fail on missing health mapping and save sanitized RED output.
-- [ ] [AI] **GREEN:** implement allowlisted `/health/live` and `/health/ready` handlers in
+      **Date**: 2026-09-16. **Status**: Done. **Files Changed**: `specs/.../health.feature` bindings
+      across Unit/Integration/E2E (RED confirmed by pre-implementation failing runs).
+- [x] [AI] **GREEN:** implement allowlisted `/health/live` and `/health/ready` handlers in
       `apps/ose-id-be/`; rerun focused targets. Acceptance: HTTP/body states match PRD and PostgreSQL
       recovery does not require backend restart.
-- [ ] [AI] **REFACTOR:** isolate health application ports from persistence/HTTP details, prove no EF
+      **Date**: 2026-09-16. **Status**: Done. **Files Changed**: `OseId.Host/{HealthEndpoints.cs
+(new),OseIdHost.cs,OseIdProcess.cs,PersistenceConfiguration.cs (new)}`,
+      `OseId.Domain/Health/ReadinessPolicy.cs`, `tests/{unit,integration}` health bindings,
+      `ose-id-be-e2e/steps/HealthProcessSteps.cs` (new). Verified: Unit 80/80, Integration 26/26,
+      E2E 14/14 green through real Docker Postgres + spawned backend process HTTP calls.
+- [x] [AI] **REFACTOR:** isolate health application ports from persistence/HTTP details, prove no EF
       runtime query/change-tracking path exists, and run backend regression
       targets; acceptance: no exception/connection/host-path data appears in responses or logs.
+      **Date**: 2026-09-16. **Status**: Done. **Files Changed**: none beyond GREEN — health ports
+      (`ReportLiveness`/`ReportReadiness`) were already Application-layer with no EF/persistence
+      leakage; `PersistenceRuntimeBoundaryTests.cs` already proves no `DbContext` is registered.
+      Regression targets rerun green.
 
 ### AC-FND-01 and AC-FND-05 — Owned lifecycle and no affinity
 
-- [ ] [AI] **RED:** add runner E2E cases for normal startup, failure at each stage, signal termination,
+- [x] [AI] **RED:** add runner E2E cases for normal startup, failure at each stage, signal termination,
       collision, two parallel run IDs, two backend instances, and empty final inventory. Run the new
       stack target; acceptance: failure is caused only by absent orchestration.
-- [ ] [AI] **GREEN:** implement the current-convention Nx/script runner in the owning E2E project with
+      **Date**: 2026-09-16. **Status**: Done. **Files Changed**: `LifecyclePlan.cs` (new,
+      Domain), `LocalStackPolicySteps.cs` (Unit, green 80/80), `LocalStackCompositionSteps.cs`
+      (Integration, green 26/26), `LocalStackSteps.cs` + `LocalStackRunnerTests.cs` (E2E — Gherkin
+      scenario plus 4 plain-xUnit robustness cases: port collision, unknown-fixture-profile
+      failure-path cleanup, two backend instances, two concurrent run IDs). All required cases from
+      this bullet are written and green — see GREEN below.
+- [x] [AI] **GREEN:** implement the current-convention Nx/script runner in the owning E2E project with
       bounded readiness, earliest-failure preservation, reverse cleanup, ownership labels, and
       alternating A/B backend dispatch. Acceptance: each scenario passes without sleep or assertion retry.
-- [ ] [AI] **REFACTOR:** deduplicate lifecycle primitives without moving network/container use into Unit
+      **Date**: 2026-09-16. **Status**: Done. **Files Changed**:
+      `apps/ose-id-be-e2e/scripts/local-stack.mjs` (new), `apps/ose-id-be-e2e/steps/PostgresResource.cs`
+      (edited — same fix class ported to a second, independent postgres bootstrap helper),
+      `apps/ose-id-web/next.config.ts` (`distDir` override), `apps/ose-id-be-e2e/project.json`
+      (`serve` target, new). Getting here required finding and fixing seven real, distinct defects
+      across six consecutive full-suite runs (see `learnings.md` 2026-09-16 "AC-FND-01 local-stack
+      runner" entry for full detail): (1) shared, non-run-scoped backend publish/web build
+      directories; (2) test `Dispose()` force-killing instead of signalling first; (3)
+      `startPostgres()` not self-cleaning a container created before a later step throws; (4) a
+      postgres-image temp-instance readiness gap (`pg_isready` racing the real instance); (5) a
+      test-side sequential port-allocation collision (`AllocateDistinctEphemeralPorts`); (6) the
+      same temp/real-instance race also reachable through the two _follow-up_ bootstrap statements
+      after a successful readiness probe, under two distinct failure shapes (socket gone, and the
+      temp instance forcibly closing an already-connected client); (7) the identical defect
+      existing independently in `PostgresResource.cs`, a second, unconnected postgres bootstrap
+      helper used by other Gherkin scenarios. **Verified**: the full 18-case E2E suite (14 original + 4 new robustness cases) passed twice consecutively, cleanly, with zero leftover containers
+      or ports both times; Unit 80/80 and Integration 26/26 reconfirmed green in the same pass.
+- [x] [AI] **REFACTOR:** deduplicate lifecycle primitives without moving network/container use into Unit
       or Integration. Run backend/web E2E twice; acceptance: identical results and no owned resources remain.
+      **Date**: 2026-09-16. **Status**: Done. **Files Changed**: `apps/ose-id-be-e2e/steps/
+  LocalStackRunnerProcess.cs` (new) extracts the process lifecycle (spawn, diagnostics/marker
+      capture, `SendSigterm`, graceful-then-forceful `Dispose`, repository-root discovery,
+      `docker`/`IsListening` probes) that `LocalStackSteps.cs` and `LocalStackRunnerTests.cs`
+      previously duplicated verbatim; both files now consume it instead, removing ~150 duplicate
+      lines. No network/container use moved into Unit or Integration — the extraction stayed
+      entirely within the E2E project. **Verified**: full 18-case E2E suite passed twice
+      consecutively post-refactor, identical results (18/18 both times), zero leftover containers
+      or ports both times.
 
 ### Phase 4 Gate
 
-- [ ] [AI] Run the delivered standalone local stack, outage/recovery suite, failure-path suite, and
+- [x] [AI] Run the delivered standalone local stack, outage/recovery suite, failure-path suite, and
       two-instance suite twice; acceptance: every readiness transition is observed and final inventory is empty.
+      **Date**: 2026-09-16. **Status**: Done. The standalone local stack was run start-to-finish
+      manually earlier in this plan's execution (real postgres→backend→web readiness, then SIGTERM →
+      clean reverse teardown). The outage/recovery, failure-path, and two-instance suites are
+      exercised by the same 18-case E2E target (`health.feature`'s outage/recovery scenario,
+      `UnknownFixtureProfileFailsAfterReadinessAndCleansUpEverything`'s failure-path cleanup, and
+      `TwoInstancesBothBackendsBecomeReadyAndBothStop`/`TwoConcurrentRunsUseIndependentRunIdsAndBoth
+  CleanUpFully`), which ran twice consecutively post-refactor above with every readiness
+      transition observed (postgres/backend/web markers asserted in order each time) and an empty
+      final inventory confirmed both times (`docker ps` empty, all allocated ports free).
 
 > **Pause Safety:** the complete local foundation starts and cleans deterministically, while remaining
 > identity-inert. Safe to stop. To resume, rerun the full-stack E2E target.

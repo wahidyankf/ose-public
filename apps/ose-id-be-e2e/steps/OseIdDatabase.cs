@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Reqnroll;
 
 namespace OseId.Be.E2E;
@@ -29,6 +28,10 @@ public static class OseIdDatabase
     [BeforeTestRun]
     public static void StartOwnedDatabase()
     {
+        // The one sweep for the whole test run, before any scenario-scoped resource
+        // (this one included) has started and claimed the shared name prefix.
+        PostgresResource.RemoveStaleContainers();
+
         _resource = PostgresResource.Start(TimeSpan.FromMinutes(2));
 
         // Applied twice on purpose. The runner invokes migration unconditionally, so "already
@@ -54,35 +57,8 @@ public static class OseIdDatabase
 
     private static (int ExitCode, string Output) RunMigrator()
     {
-        var startInfo = new ProcessStartInfo("dotnet")
-        {
-            RedirectStandardError = true,
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-        };
-        startInfo.ArgumentList.Add("run");
-        startInfo.ArgumentList.Add("--project");
-        startInfo.ArgumentList.Add(
-            Path.Combine(
-                BackendProcess.RepositoryRootPath,
-                "apps",
-                "ose-id-be",
-                "src",
-                "OseId.Migrator",
-                "OseId.Migrator.csproj"
-            )
-        );
+        (int exitCode, string output) = MigrationRunner.Run(Instance.MigratorConnectionString);
 
-        // The migration role's credentials reach the migration stage and nothing else; the serving
-        // host is never given them.
-        startInfo.Environment["OSE_ID_MIGRATION_CONNECTION"] = Instance.MigratorConnectionString;
-
-        using Process process =
-            Process.Start(startInfo) ?? throw new InvalidOperationException("the migration stage did not start");
-
-        string output = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
-        process.WaitForExit();
-
-        return (process.ExitCode, Instance.Sanitize(output));
+        return (exitCode, Instance.Sanitize(output));
     }
 }

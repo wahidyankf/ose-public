@@ -57,12 +57,14 @@ public sealed class RuntimeModeHostTests
     }
 
     [Fact]
-    public void MappedRoutes_AreExactlyTheDisabledCapabilityInventory()
+    public void MappedRoutes_AreExactlyTheHealthAndDisabledCapabilityInventory()
     {
         using var host = TestHostFixture.Start();
 
         host.RouteTable.Should()
             .Equal(
+                "GET /health/live",
+                "GET /health/ready",
                 "GET /connect/authorize",
                 "POST /connect/token",
                 "GET /external/google/challenge",

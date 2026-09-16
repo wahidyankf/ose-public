@@ -4,6 +4,13 @@
   "sourceRoot": "apps/ose-id-be-e2e/steps",
   "projectType": "application",
   "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node apps/ose-id-be-e2e/scripts/local-stack.mjs"
+      },
+      "cache": false
+    },
     "test:e2e": {
       "executor": "nx:run-commands",
       "options": {

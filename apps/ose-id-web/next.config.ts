@@ -17,6 +17,11 @@ const workspaceRoot = path.resolve(process.cwd(), "../..");
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: workspaceRoot,
+  // The local-stack runner (apps/ose-id-be-e2e/scripts/local-stack.mjs) may build and serve two
+  // independent runs from this same checkout at once; each sets this to its own run-scoped
+  // subdirectory of the already-ignored .next/ so a later build never overwrites an
+  // already-serving run's files. Absent, this is the ordinary shared .next/ every other build uses.
+  distDir: process.env.OSE_ID_WEB_DIST_DIR ?? ".next",
   turbopack: {
     root: workspaceRoot,
   },

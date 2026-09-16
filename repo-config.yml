@@ -860,7 +860,14 @@ extensions:
     # This list is NEVER a licence to reach an external network or a service the
     # test did not start. That stays forbidden below E2E for every project, listed
     # or not, and `repo-governance test-boundary validate` enforces both halves.
-    integration-loopback: []
+    integration-loopback:
+      - project: ose-id-be
+        reason: >-
+          TestHostFixture composes the delivered host over
+          Microsoft.AspNetCore.TestHost's in-memory transport
+          (WebApplication.CreateSlimBuilder + UseTestServer + GetTestClient);
+          the HttpClient it hands out binds no socket and reserves no port, so
+          Integration proves the real pipeline without reaching any network.
 
     gates:
       # Declared quality-gate registry. Fields per entry:

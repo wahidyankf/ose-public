@@ -502,6 +502,9 @@ extensions:
               reason: Nx tooling config; emitter owns the delimited region only,
             }
           - { path: .codex/ci-monitor-subagent.toml, class: vendored, reason: Nx tooling file config.toml points at }
+          - path: .codex/hooks.json
+            class: source
+            reason: hand-authored pre-tool hook registration; points at the canonical .claude/hooks scripts
           - { path: AGENTS.md, class: source, reason: hand-authored vendor-neutral instruction surface }
           - { path: RTK.md, class: source, reason: upstream Codex RTK instruction surface }
 

@@ -28,3 +28,21 @@ admitted, and wrapping one in an outer `./hippo run` makes each inner call wait 
 ancestor holds. The run then stalls near zero CPU while `./hippo status` still reports `normal`, so
 it reads as a slow build rather than as self-contention. `npm install` and `npm exec` are not
 scripts and do take the outer boundary — that is what the `AGENTS.md` and `README.md` examples show.
+
+## The boundary is not paperwork on a command that would have been fine
+
+Two properties make a single Nx invocation far larger than it reads. A target whose command is
+itself a chain of nested `npm exec -- nx run` calls multiplies under `run-many`: one fan-out over
+four projects and three targets expands into dozens of concurrent Node processes, which surfaces
+only as a raised listener warning. And a target can transitively start a server — an E2E project
+whose Playwright `webServer` runs a dev server pulls a bundler and a browser in behind it.
+
+So for a fan-out or a transitively server-starting target, the boundary is the only thing bounding
+concurrent process count. It is also where the worker mapping above is applied: `NX_PARALLEL` and
+`DOTNET_PROCESSOR_COUNT`, and the MSBuild node-reuse and compiler-server settings that stop a .NET
+run leaving workers resident, are exported by `./hippo run` and by nothing else. Running the same
+command directly does not merely skip admission — it discards the clamp the repository already
+configured, and the tool falls back to host parallelism.
+
+Prefer one outer boundary per compute-bearing node, and prefer sequential per-project runs over a
+`run-many` fan-out whenever each target is itself a nested chain.

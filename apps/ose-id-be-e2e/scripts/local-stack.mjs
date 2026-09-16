@@ -104,6 +104,28 @@ function runCommand(command, args, { input, timeoutMs = 60_000, env = process.en
     });
 }
 
+/**
+ * Volta's "node" shim on PATH does not exec-replace itself with the pinned interpreter; it spawns
+ * the real node as a separate, independently-PID'd process, so a plain `spawn("node", ...)` here
+ * hands back the shim's PID, not the process that will register `SIGTERM`/`SIGINT` handlers.
+ * `stopProcess()`'s `child.kill("SIGTERM")` then signals the shim (which dies with the signal's raw
+ * default disposition) while the real interpreter it launched — and every port/child it owns —
+ * runs on, orphaned. Resolving the pinned interpreter's real path once up front, the same way
+ * `apps/ose-id-be-e2e/steps/LocalStackRunnerProcess.cs` does for its own "node" spawn, makes the
+ * captured PID the one the signal actually needs to reach.
+ */
+async function resolveNodeExecutable() {
+    try {
+        const result = await runCommand("volta", ["which", "node"], { timeoutMs: 5_000 });
+        const resolved = result.stdout.trim();
+        return result.exitCode === 0 && resolved.length > 0 ? resolved : "node";
+    } catch {
+        // No Volta on PATH (e.g. a non-Volta CI image): the plain command name is the interpreter
+        // itself there, so the shim-detachment problem this resolves does not apply.
+        return "node";
+    }
+}
+
 async function isPortFree(port) {
     return new Promise((resolvePromise) => {
         const probe = net.createServer();
@@ -405,19 +427,29 @@ async function buildWeb(runId) {
     }
 }
 
-function startWeb(port, runId) {
+/**
+ * The web child is itself a launch chain (this wrapper -> `node_modules/.bin/next`'s own
+ * `#!/usr/bin/env node` shebang -> Volta's `node` shim again), and a shim anywhere in that chain
+ * can still fork away a grandchild `signalOwned` cannot name directly (see `resolveNodeExecutable`
+ * for the first, directly-spawned link this only partly protects against). `detached: true` makes
+ * this process the leader of a fresh process group instead of joining this script's own, so
+ * `signalOwned` can reach that whole group with one negative-PID signal regardless of how many
+ * shim layers forked underneath it.
+ */
+function startWeb(port, runId, nodeExecutable) {
     const wrapper = path.join(REPO_ROOT, "scripts", "next-with-port.mjs");
     const child = spawn(
-        "node",
+        nodeExecutable,
         [wrapper, "start", "--env", "OSE_ID_WEB_PORT", "--default", "3500", "--port", String(port)],
         {
             cwd: path.join(REPO_ROOT, "apps", "ose-id-web"),
             // See startBackend: an unread pipe would eventually hang this long-running server.
             stdio: "inherit",
             env: { ...process.env, OSE_RUNTIME_MODE: "Local", OSE_ID_WEB_DIST_DIR: webDistDir(runId) },
+            detached: true,
         },
     );
-    return { process: child, origin: `http://127.0.0.1:${port}` };
+    return { process: child, origin: `http://127.0.0.1:${port}`, detached: true };
 }
 
 async function waitForWebReady(origin) {
@@ -432,6 +464,27 @@ async function waitForWebReady(origin) {
 // ---------------------------------------------------------------------------------------------
 
 /**
+ * Signals an owned process. A handle started with `detached: true` is the leader of its own new
+ * process group (its group ID equals its own PID), so signalling the *negative* PID reaches that
+ * whole group — every descendant a shim or wrapper in its launch chain forked away under a PID
+ * this module never captured (see `startWeb`'s own comment), not only the one PID `spawn()`
+ * returned. A handle left attached shares this script's own process group, so it is signalled
+ * directly; `-pid` there would target this script's own group, signalling itself.
+ */
+function signalOwned(handle, signal) {
+    try {
+        if (handle.detached) {
+            process.kill(-handle.process.pid, signal);
+        } else {
+            handle.process.kill(signal);
+        }
+    } catch {
+        // The process (or its whole group) already exited between the liveness check the caller
+        // made and this signal; nothing left to signal is not a failure.
+    }
+}
+
+/**
  * Stops an owned process and waits for it to actually exit, escalating to SIGKILL if it
  * outlives the grace period. "Stopping the runner leaves no owned process" is a claim about
  * the process table at the moment cleanup finishes, not about a signal having been sent.
@@ -443,13 +496,12 @@ function stopProcess(handle, graceMs = 10_000) {
             return;
         }
 
-        const child = handle.process;
-        const escalate = setTimeout(() => child.kill("SIGKILL"), graceMs);
-        child.once("exit", () => {
+        const escalate = setTimeout(() => signalOwned(handle, "SIGKILL"), graceMs);
+        handle.process.once("exit", () => {
             clearTimeout(escalate);
             resolvePromise();
         });
-        child.kill("SIGTERM");
+        signalOwned(handle, "SIGTERM");
     });
 }
 
@@ -484,6 +536,8 @@ async function main() {
             return;
         }
     }
+
+    const nodeExecutable = await resolveNodeExecutable();
 
     // A two-instance run binds a second backend on backendPort + 1; that port is exactly as much
     // this run's responsibility to validate up front as the three base ports are.
@@ -590,7 +644,7 @@ async function main() {
 
         // Step 6: the web shell.
         await buildWeb(runId);
-        owned.web = startWeb(webPort, runId);
+        owned.web = startWeb(webPort, runId, nodeExecutable);
         await waitForWebReady(owned.web.origin);
         reachedStageCount = 3;
         log(runId, `web ready (${owned.web.origin})`);

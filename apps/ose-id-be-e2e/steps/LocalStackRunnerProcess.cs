@@ -20,6 +20,15 @@ internal sealed class LocalStackRunnerProcess : IDisposable
 {
     private static readonly TimeSpan ShutdownBudget = TimeSpan.FromSeconds(30);
 
+    // Volta's "node" shim on PATH does not exec-replace itself with the pinned interpreter; it
+    // spawns the real node as a separate, independently-PID'd process and the shim's own PID can
+    // outlive or detach from it. Signalling the shim's PID (what a bare ProcessStartInfo("node")
+    // would hand back) never reaches the script's SIGTERM handler, so the shim dies with the
+    // signal's raw default disposition (exit 143) while the real interpreter — and everything it
+    // owns — is silently orphaned. Resolving the pinned interpreter's real path up front makes
+    // Process.Id the PID that actually runs the script.
+    private static readonly Lazy<string> NodeExecutablePath = new(ResolveNodeExecutablePath);
+
     private readonly List<string> _markers = [];
     private readonly StringBuilder _diagnostics = new();
     private readonly object _sync = new();
@@ -61,7 +70,7 @@ internal sealed class LocalStackRunnerProcess : IDisposable
         string repositoryRoot = RepositoryRoot();
         string script = Path.Combine(repositoryRoot, "apps", "ose-id-be-e2e", "scripts", "local-stack.mjs");
 
-        var startInfo = new ProcessStartInfo("node")
+        var startInfo = new ProcessStartInfo(NodeExecutablePath.Value)
         {
             RedirectStandardError = true,
             RedirectStandardOutput = true,
@@ -285,5 +294,39 @@ internal sealed class LocalStackRunnerProcess : IDisposable
         }
 
         throw new InvalidOperationException("the repository root containing apps/ose-id-be-e2e was not found");
+    }
+
+    private static string ResolveNodeExecutablePath()
+    {
+        try
+        {
+            var startInfo = new ProcessStartInfo("volta")
+            {
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+            };
+            startInfo.ArgumentList.Add("which");
+            startInfo.ArgumentList.Add("node");
+
+            using Process? volta = Process.Start(startInfo);
+            if (volta is null)
+            {
+                return "node";
+            }
+
+            string output = volta.StandardOutput.ReadToEnd().Trim();
+            volta.StandardError.ReadToEnd();
+            volta.WaitForExit();
+
+            return volta.ExitCode == 0 && File.Exists(output) ? output : "node";
+        }
+        catch (Exception error) when (error is InvalidOperationException or System.ComponentModel.Win32Exception)
+        {
+            // No Volta on PATH (e.g. a non-Volta CI image): the plain command name is the
+            // interpreter itself there, so the shim-detachment problem this resolves does not
+            // apply.
+            return "node";
+        }
     }
 }

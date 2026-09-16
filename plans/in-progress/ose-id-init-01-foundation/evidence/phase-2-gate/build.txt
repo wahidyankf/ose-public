@@ -2,7 +2,7 @@
 state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=24.00 diskFreeGiB=88.83 cpu=10.9%
 
 === command ===
-rtk /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/hippo run --class transactional --disk-path /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web
+rtk hippo run --class transactional --disk-path ./worktrees/ose-id-init-01-foundation -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web
 
 === output ===
 
@@ -45,11 +45,11 @@ rtk /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/hippo
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Release/net10.0/OseId.Domain.dll
-  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Release/net10.0/OseId.Application.dll
-  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Release/net10.0/OseId.Infrastructure.dll
-  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Release/net10.0/OseId.Host.dll
-  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/dist/
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Release/net10.0/OseId.Domain.dll
+  OseId.Application -> apps/ose-id-be/src/OseId.Application/bin/Release/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> apps/ose-id-be/src/OseId.Infrastructure/bin/Release/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> apps/ose-id-be/src/OseId.Host/bin/Release/net10.0/OseId.Host.dll
+  OseId.Host -> apps/ose-id-be/dist/
 
 
 

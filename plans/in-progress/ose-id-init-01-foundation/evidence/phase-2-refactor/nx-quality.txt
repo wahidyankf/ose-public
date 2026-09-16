@@ -16,10 +16,10 @@
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
-  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
-  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
-  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
 
 Build succeeded.
     0 Warning(s)
@@ -66,7 +66,7 @@ src/contexts/foundation/presentation/service-status-panel.tsx:39:9: warning jsx-
 
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90mapps/ose-id-web[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 
@@ -157,29 +157,29 @@ ose-id-web: 2 features, 7 expanded scenarios, adapters: unit, integration.
 > dotnet format apps/ose-id-be/src/OseId.Host/OseId.Host.csproj --verify-no-changes --verbosity diagnostic
 
 The dotnet runtime version is '10.0.8'.
-Formatting code files in workspace '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/OseId.Host.csproj'.
+Formatting code files in workspace 'apps/ose-id-be/src/OseId.Host/OseId.Host.csproj'.
 Loading workspace.
   Determining projects to restore...
   All projects are up-to-date for restore.
-Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
-Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
-Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
-Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/obj/Debug/net10.0/OseId.Host.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Host is using configuration from './.editorconfig'.
+Project OseId.Host is using configuration from '.editorconfig'.
+Project OseId.Host is using configuration from 'apps/ose-id-be/.editorconfig'.
+Project OseId.Host is using configuration from 'apps/ose-id-be/src/OseId.Host/obj/Debug/net10.0/OseId.Host.GeneratedMSBuildEditorConfig.editorconfig'.
 Project OseId.Host is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
-Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
-Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
-Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
-Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/obj/Debug/net10.0/OseId.Domain.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Domain is using configuration from './.editorconfig'.
+Project OseId.Domain is using configuration from '.editorconfig'.
+Project OseId.Domain is using configuration from 'apps/ose-id-be/.editorconfig'.
+Project OseId.Domain is using configuration from 'apps/ose-id-be/src/OseId.Domain/obj/Debug/net10.0/OseId.Domain.GeneratedMSBuildEditorConfig.editorconfig'.
 Project OseId.Domain is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
-Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
-Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
-Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
-Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/obj/Debug/net10.0/OseId.Application.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Application is using configuration from './.editorconfig'.
+Project OseId.Application is using configuration from '.editorconfig'.
+Project OseId.Application is using configuration from 'apps/ose-id-be/.editorconfig'.
+Project OseId.Application is using configuration from 'apps/ose-id-be/src/OseId.Application/obj/Debug/net10.0/OseId.Application.GeneratedMSBuildEditorConfig.editorconfig'.
 Project OseId.Application is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
-Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
-Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
-Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
-Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/obj/Debug/net10.0/OseId.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Infrastructure is using configuration from './.editorconfig'.
+Project OseId.Infrastructure is using configuration from '.editorconfig'.
+Project OseId.Infrastructure is using configuration from 'apps/ose-id-be/.editorconfig'.
+Project OseId.Infrastructure is using configuration from 'apps/ose-id-be/src/OseId.Infrastructure/obj/Debug/net10.0/OseId.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig'.
 Project OseId.Infrastructure is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Complete in 2235ms.
 Determining formattable files.
@@ -205,10 +205,10 @@ Format complete in 3301ms.
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
-  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
-  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
-  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
 
 Build succeeded.
     0 Warning(s)
@@ -323,28 +323,28 @@ steps/runtime-mode.steps.ts:84:48: warning eslint(no-empty-pattern): Empty objec
 
 [2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter e2e
 
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined E2E binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined E2E binding.
 Warning: command "node scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter e2e" exited with non-zero status code
 [2m[31m[39m[22m
 
@@ -379,10 +379,10 @@ Warning: command "npm exec -- nx run ose-id-be-e2e:test:coverage" exited with no
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
-  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
-  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
-  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
 
 Build succeeded.
     0 Warning(s)
@@ -409,10 +409,10 @@ Time Elapsed 00:00:01.91
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
-  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
-  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
-  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
 
 Build succeeded.
     0 Warning(s)
@@ -425,29 +425,29 @@ Time Elapsed 00:00:01.91
 > dotnet format apps/ose-id-be/src/OseId.Host/OseId.Host.csproj --verify-no-changes --verbosity diagnostic
 
 The dotnet runtime version is '10.0.8'.
-Formatting code files in workspace '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/OseId.Host.csproj'.
+Formatting code files in workspace 'apps/ose-id-be/src/OseId.Host/OseId.Host.csproj'.
 Loading workspace.
   Determining projects to restore...
   All projects are up-to-date for restore.
-Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
-Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
-Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
-Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/obj/Debug/net10.0/OseId.Host.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Host is using configuration from './.editorconfig'.
+Project OseId.Host is using configuration from '.editorconfig'.
+Project OseId.Host is using configuration from 'apps/ose-id-be/.editorconfig'.
+Project OseId.Host is using configuration from 'apps/ose-id-be/src/OseId.Host/obj/Debug/net10.0/OseId.Host.GeneratedMSBuildEditorConfig.editorconfig'.
 Project OseId.Host is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
-Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
-Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
-Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
-Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/obj/Debug/net10.0/OseId.Domain.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Domain is using configuration from './.editorconfig'.
+Project OseId.Domain is using configuration from '.editorconfig'.
+Project OseId.Domain is using configuration from 'apps/ose-id-be/.editorconfig'.
+Project OseId.Domain is using configuration from 'apps/ose-id-be/src/OseId.Domain/obj/Debug/net10.0/OseId.Domain.GeneratedMSBuildEditorConfig.editorconfig'.
 Project OseId.Domain is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
-Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
-Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
-Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
-Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/obj/Debug/net10.0/OseId.Application.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Application is using configuration from './.editorconfig'.
+Project OseId.Application is using configuration from '.editorconfig'.
+Project OseId.Application is using configuration from 'apps/ose-id-be/.editorconfig'.
+Project OseId.Application is using configuration from 'apps/ose-id-be/src/OseId.Application/obj/Debug/net10.0/OseId.Application.GeneratedMSBuildEditorConfig.editorconfig'.
 Project OseId.Application is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
-Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
-Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
-Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
-Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/obj/Debug/net10.0/OseId.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Infrastructure is using configuration from './.editorconfig'.
+Project OseId.Infrastructure is using configuration from '.editorconfig'.
+Project OseId.Infrastructure is using configuration from 'apps/ose-id-be/.editorconfig'.
+Project OseId.Infrastructure is using configuration from 'apps/ose-id-be/src/OseId.Infrastructure/obj/Debug/net10.0/OseId.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig'.
 Project OseId.Infrastructure is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Complete in 2235ms.
 Determining formattable files.
@@ -473,10 +473,10 @@ Format complete in 3301ms.
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
-  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
-  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
-  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
 
 Build succeeded.
     0 Warning(s)
@@ -502,28 +502,28 @@ Time Elapsed 00:00:02.84
 
 [2m> [22mnode scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter unit
 
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined Unit binding.
-/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined Unit binding.
 Warning: command "node scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter unit" exited with non-zero status code
 [2m[31m[39m[22m
 

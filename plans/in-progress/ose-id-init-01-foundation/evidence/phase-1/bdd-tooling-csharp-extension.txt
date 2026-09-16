@@ -1,7 +1,7 @@
 Evidence: Phase 1 plan amendment -- C# (Reqnroll) step-binding extraction in the shared
 behaviour-coverage validator.
 
-Worktree: /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation
+Worktree: ./worktrees/ose-id-init-01-foundation
 Branch:   ose-id-init-01-foundation-base
 Date:     2026-09-16
 

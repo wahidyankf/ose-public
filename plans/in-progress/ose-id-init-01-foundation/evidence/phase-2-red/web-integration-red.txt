@@ -5,7 +5,7 @@
 
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90mapps/ose-id-web[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
  [31m❯[39m tests/integration/StatusShellServerSteps.ts [2m([22m[2m0 test[22m[2m)[22m
@@ -14,7 +14,7 @@
 [31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
 
 [41m[1m FAIL [22m[49m tests/integration/RuntimeModeServerSteps.ts[2m [ tests/integration/RuntimeModeServerSteps.ts ][22m
-[31m[1mError[22m: Cannot find module '../../src/shared/runtime/runtime-mode' imported from /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web/tests/integration/RuntimeModeServerSteps.ts[39m
+[31m[1mError[22m: Cannot find module '../../src/shared/runtime/runtime-mode' imported from apps/ose-id-web/tests/integration/RuntimeModeServerSteps.ts[39m
 [36m [2m❯[22m tests/integration/RuntimeModeServerSteps.ts:[2m13:1[22m[39m
     [90m 11|[39m [35mimport[39m { [33mPHASE_PRODUCTION_SERVER[39m } [35mfrom[39m [32m"next/constants"[39m[33m;[39m
     [90m 12|[39m [35mimport[39m { expect[33m,[39m vi } [35mfrom[39m [32m"vitest"[39m[33m;[39m
@@ -26,7 +26,7 @@
 [31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
 
 [41m[1m FAIL [22m[49m tests/integration/StatusShellServerSteps.ts[2m [ tests/integration/StatusShellServerSteps.ts ][22m
-[31m[1mError[22m: Cannot find module '../../src/contexts/foundation/domain/service-status' imported from /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web/tests/integration/StatusShellServerSteps.ts[39m
+[31m[1mError[22m: Cannot find module '../../src/contexts/foundation/domain/service-status' imported from apps/ose-id-web/tests/integration/StatusShellServerSteps.ts[39m
 [36m [2m❯[22m tests/integration/StatusShellServerSteps.ts:[2m13:1[22m[39m
     [90m 11|[39m import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber…
     [90m 12|[39m [35mimport[39m { expect } [35mfrom[39m [32m"vitest"[39m[33m;[39m

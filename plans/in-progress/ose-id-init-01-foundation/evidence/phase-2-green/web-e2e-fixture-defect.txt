@@ -2,7 +2,7 @@
 state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=23.68 diskFreeGiB=88.75 cpu=12.4%
 
 === command ===
-rtk /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/hippo run --class transactional --disk-path /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation -- npm exec nx -- run ose-id-web-e2e:test:e2e
+rtk hippo run --class transactional --disk-path ./worktrees/ose-id-init-01-foundation -- npm exec nx -- run ose-id-web-e2e:test:e2e
 
 === output (MallocStackLogging noise filtered) ===
 
@@ -45,10 +45,10 @@ rtk /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/hippo
      [90m 112 |[39m })[33m;[39m
      [90m 113 |[39m
      [90m 114 |[39m [33mWhen[39m([32m"an anonymous browser requests the OSE ID web root"[39m[33m,[39m [36masync[39m ({ request }) [33m=>[39m {[0m
-    [2m    at Object.<anonymous> (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web-e2e/steps/status-shell.steps.ts:111:30)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
-    [2m    at BddStepInvoker.invoke (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web-e2e/.features-gen/foundation/status-shell.feature.spec.js:30:7[22m
+    [2m    at Object.<anonymous> (apps/ose-id-web-e2e/steps/status-shell.steps.ts:111:30)[22m
+    [2m    at node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
+    [2m    at BddStepInvoker.invoke (node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
+    [2m    at apps/ose-id-web-e2e/.features-gen/foundation/status-shell.feature.spec.js:30:7[22m
 
 [2m    Error Context: test-results/foundation-status-shell.fe-2272c--a-status-rendering-failure-chromium/error-context.md[22m
 

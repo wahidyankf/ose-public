@@ -2,7 +2,7 @@
 state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=24.00 diskFreeGiB=88.82 cpu=16.3%
 
 === command ===
-rtk /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/hippo run --class transactional --disk-path /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation -- npm exec nx -- run ose-id-web-e2e:test:e2e
+rtk hippo run --class transactional --disk-path ./worktrees/ose-id-init-01-foundation -- npm exec nx -- run ose-id-web-e2e:test:e2e
 
 === output ===
 

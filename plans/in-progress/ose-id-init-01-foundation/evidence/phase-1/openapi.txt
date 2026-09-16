@@ -1,5 +1,5 @@
 Phase 1 — foundation OpenAPI and web HTML contract (owner: backend contract lane)
-Worktree: /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation
+Worktree: ./worktrees/ose-id-init-01-foundation
 Captured: 2026-09-16
 
 == FILES ==

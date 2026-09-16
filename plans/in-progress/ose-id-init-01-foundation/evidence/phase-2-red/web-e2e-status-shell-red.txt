@@ -4,11 +4,11 @@
 > if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\$?test\.skip\([^,)]*\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && npx bddgen && npx playwright test --grep "Read service status without a mouse"
 
 [2m[WebServer] [22m[33m[1m⚠[22m[39m Warning: Next.js inferred your workspace root, but it may not be correct.
-[2m[WebServer] [22m We detected multiple lockfiles and selected the directory of /Users/wkf/ose-projects/ose-public/package-lock.json as the root directory.
+[2m[WebServer] [22m We detected multiple lockfiles and selected the directory of ./package-lock.json as the root directory.
 [2m[WebServer] [22m To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
 [2m[WebServer] [22m   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
 [2m[WebServer] [22m Detected additional lockfiles: 
-[2m[WebServer] [22m   * /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/package-lock.json
+[2m[WebServer] [22m   * package-lock.json
 [2m[WebServer] [22m
 
 [2mRunning [22m1[2m test using [22m1[2m worker[22m
@@ -50,10 +50,10 @@
      [90m 37 |[39m   [36mconst[39m overflows [33m=[39m [36mawait[39m page[33m.[39mevaluate(() [33m=>[39m document[33m.[39mdocumentElement[33m.[39mscrollWidth [33m>[39m window[33m.[39minnerWidth)[33m;[39m
      [90m 38 |[39m   expect(overflows[33m,[39m [32m"the status shell must reflow inside a 320 pixel viewport"[39m)[33m.[39mtoBe([36mfalse[39m)[33m;[39m
      [90m 39 |[39m })[33m;[39m[0m
-    [2m    at Object.<anonymous> (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web-e2e/steps/status-shell.steps.ts:36:36)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
-    [2m    at BddStepInvoker.invoke (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web-e2e/.features-gen/foundation/status-shell.feature.spec.js:10:7[22m
+    [2m    at Object.<anonymous> (apps/ose-id-web-e2e/steps/status-shell.steps.ts:36:36)[22m
+    [2m    at node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
+    [2m    at BddStepInvoker.invoke (node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
+    [2m    at apps/ose-id-web-e2e/.features-gen/foundation/status-shell.feature.spec.js:10:7[22m
 
 [2m    attachment #1: [1mscreenshot[2m (image/png) [2m──────────────────────────────────────────────────────────[2m[22m
 [2m    test-results/foundation-status-shell.fe-2a3ec-vice-status-without-a-mouse-chromium/test-failed-1.png[22m

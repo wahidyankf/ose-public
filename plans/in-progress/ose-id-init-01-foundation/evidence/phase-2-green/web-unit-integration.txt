@@ -2,7 +2,7 @@
 state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=24.00 diskFreeGiB=88.83 cpu=11.0%
 
 === command ===
-rtk /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/hippo run --class transactional --disk-path /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation -- npm exec nx -- run-many -t test:unit,test:integration --projects=ose-id-web
+rtk hippo run --class transactional --disk-path ./worktrees/ose-id-init-01-foundation -- npm exec nx -- run-many -t test:unit,test:integration --projects=ose-id-web
 
 === output ===
 
@@ -18,7 +18,7 @@ rtk /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/hippo
 
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90mapps/ose-id-web[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 
@@ -51,7 +51,7 @@ File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90mapps/ose-id-web[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 

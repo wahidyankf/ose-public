@@ -2467,6 +2467,43 @@ HEAD:apps/ose-id-web/tsconfig.json | grep -c local-stack-runs` → 116) and alre
       Fixed in `165fe8621`; head advanced to `165fe8621b319cd5422a9912c260bdeb8ef23616`; CI
       restarted against this head and is being polled to green.
 
+      A third CI-only failure surfaced on the next run (head `57551da075166237e2718e9e21284b0749a4b3e8`):
+      the `.NET quality gate` failed with `error IDE1006: Naming rule violation: Missing prefix:
+      '_'` in `OseId.Host/{HealthEndpoints,DisabledCapabilityEndpoints}.cs`. Root cause: both
+      `apps/ose-id-be/.editorconfig` and `apps/ose-id-be-e2e/.editorconfig` require private
+      const/static/readonly fields to be `_camelCase` at `severity = warning`;
+      `apps/ose-id-be/Directory.Build.props` sets `TreatWarningsAsErrors`, promoting it to a build
+      error; the .NET 10 SDK enforces `.editorconfig`-configured IDE rules at build time even
+      without `EnforceCodeStyleInBuild` set. Undetected before this PR because no prior PR since
+      the old C# demo apps were deleted had touched `.cs` files in its diff. Scanned the whole
+      `ose-id-be`/`ose-id-be-e2e` build graph rather than just the two files CI flagged and renamed
+      all 35 violating private fields across 19 files for consistency. Verified via a full
+      `gate run --surface=pre-push` (`ose-id-be:lint` with `TreatWarningsAsErrors` and
+      `--no-incremental`, clean; `ose-id-be:test:unit`, 96/96 passed) and a standalone
+      `dotnet build` of the e2e project (0 warnings, 0 errors), since it has no `typecheck`/`lint`
+      Nx target of its own. Fixed in `b6b06f5bc`; head advanced to
+      `b6b06f5bc78a4deb27c01fa57c499c7623338181`; CI restarted against this head and is being
+      polled to green.
+
+      While investigating, found a stray background shell left over from an earlier-dispatched
+      investigation into intermittent `apps/ose-id-be-e2e` local-stack E2E failures (a `dotnet test`
+      run holding an open HIPPO reservation anchor, 0% CPU and its log silent for hours) — stopped it
+      to release the reservation, which likely explains some of this session's earlier HIPPO
+      admission contention. That investigation's report (delivered after this session's context was
+      summarized, so its dispatch is not itself recorded here) had already produced two committed
+      fixes (`e3b559a87`, `f3b9cc5de`) and one remaining, undiagnosed-until-then root cause: the
+      shared `scripts/next-with-port.mjs` wrapper (used by six apps) spawned the resolved `next`
+      binary directly, letting the OS resolve its shebang; under Volta that lands on Volta's shim, a
+      second node process with a different PID than the one actually running Next, so the wrapper's
+      `child.kill(signal)` on shutdown signalled the shim instead of Next and orphaned the real
+      server — the cause of two of the four failures in an intermittent E2E run. Fixed by spawning
+      through this process's own `process.execPath` directly on the resolved binary path, bypassing
+      shebang re-resolution (the bare `"next"` PATH-fallback case, with no file path to hand to node
+      directly, is unchanged). Behaviour-preserving for all six consumers (same binary, same args,
+      same signal semantics). Verified via a full `apps/ose-id-be-e2e` `dotnet test` run: 27/27
+      passed. Fixed in `e8dd36429edb8d54e8a1b2035081adce268fdbcd`; head advanced to the same SHA;
+      CI restarted against this head and is being polled to green.
+
 - [ ] [AI] Require the PR's exact current head/base Quality gate, applicable finite API/E2E/schema gates, one authenticated clean current-head `pr-leak-review`, and the repository-required semantic review for identity/security code. Resolve every blocking finding and rerun invalidated proof.
 - [ ] [AI] Merge under default `[AI]` authority only when all hardened checks refer to the same current head/base and the archive move is visible in the PR diff. Record the PR URL, reviewed head, base, merge SHA, and merge timestamp in the workflow final report; make no post-merge plan edit.
 

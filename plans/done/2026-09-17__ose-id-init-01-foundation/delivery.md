@@ -2429,6 +2429,22 @@ HEAD:apps/ose-id-web/tsconfig.json | grep -c local-stack-runs` → 116) and alre
       `plans/done/2026-09-17__ose-id-init-01-foundation/` and the tsconfig-pollution fix). Base:
       `284504b689caf7e77dedd75c529f63a2069665df` (`origin/main`).
 - [ ] [AI] Poll GitHub Actions every two minutes without `gh run watch`. Fix root causes, push authorized repairs, and restart all exact-head gates whenever HEAD changes.
+      **Date**: 2026-09-17. **In progress**. The `governance` and `harness` CI gate-group jobs
+      failed identically on `public-safety reported a finding at ci` — a message CI's log
+      intentionally never details, since this gate's own non-disclosure design keeps a real
+      finding's specifics out of a public log. Root-caused by reproducing the same
+      `OSE_GATE_SURFACE=ci scripts/public-safety/check.sh` scan against the PR's actual merge
+      commit (`7033187db0...`, fetched via `refs/pull/539/merge`) in an isolated detached worktree:
+      410 `maintainer-path` findings, all inside five raw command-output evidence files under
+      `plans/done/2026-09-17__ose-id-init-01-foundation/evidence/` (`phase-2-red/web-unit-red.txt`,
+      `phase-2/test-integration-web.txt`, `phase-7/{nx-quality,pre-push-gate,unit-coverage}.txt`) —
+      ordinary `dotnet build`/`dotnet test` output embeds the absolute build path, which included
+      the maintainer's real home directory. The local pre-push hook never caught this because it
+      scanned an older copy of the tree at push time, not the PR's merge-commit tree CI scans.
+      Fixed in `15d0aca7f` by redacting every occurrence to a `<home>` placeholder, verified clean
+      via the same reproduction scan before pushing. Head advanced to
+      `15d0aca7fc6e037eb2a6b56620307e60f98066c7`; CI restarted against this head and is being
+      polled to green.
 - [ ] [AI] Require the PR's exact current head/base Quality gate, applicable finite API/E2E/schema gates, one authenticated clean current-head `pr-leak-review`, and the repository-required semantic review for identity/security code. Resolve every blocking finding and rerun invalidated proof.
 - [ ] [AI] Merge under default `[AI]` authority only when all hardened checks refer to the same current head/base and the archive move is visible in the PR diff. Record the PR URL, reviewed head, base, merge SHA, and merge timestamp in the workflow final report; make no post-merge plan edit.
 

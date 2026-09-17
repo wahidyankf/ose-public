@@ -27,7 +27,7 @@
  */
 import { spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, open, readFile, rm, writeFile } from "node:fs/promises";
 import net from "node:net";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -416,6 +416,88 @@ function webDistDir(runId) {
     return path.join(".next", "local-stack-runs", runId);
 }
 
+const WEB_TSCONFIG_PATH = path.join(REPO_ROOT, "apps", "ose-id-web", "tsconfig.json");
+const WEB_TSCONFIG_LOCK_PATH = `${WEB_TSCONFIG_PATH}.lock`;
+const TSCONFIG_LOCK_BUDGET_MS = 10_000;
+const TSCONFIG_LOCK_POLL_MS = 50;
+
+/**
+ * apps/ose-id-web/tsconfig.json is a single file every concurrent local-stack invocation shares
+ * (Next's own TypeScript-setup verification appends to it, keyed by distDir). An exclusive-create
+ * lock file (`open(path, "wx")` fails atomically if the file already exists) serializes
+ * read-modify-write access across invocations, so one run's cleanup can never lose or corrupt
+ * another still-live run's own entries to a lost update.
+ */
+async function withWebTsconfigLock(action) {
+    const start = Date.now();
+    for (;;) {
+        let handle;
+        try {
+            handle = await open(WEB_TSCONFIG_LOCK_PATH, "wx");
+        } catch (error) {
+            if (error.code !== "EEXIST") {
+                throw error;
+            }
+            if (Date.now() - start > TSCONFIG_LOCK_BUDGET_MS) {
+                throw new Error(`timed out waiting for the web tsconfig lock at ${WEB_TSCONFIG_LOCK_PATH}`);
+            }
+            await delay(TSCONFIG_LOCK_POLL_MS);
+            continue;
+        }
+        try {
+            return await action();
+        } finally {
+            await handle.close();
+            await rm(WEB_TSCONFIG_LOCK_PATH, { force: true });
+        }
+    }
+}
+
+/**
+ * Next's own TypeScript-setup verification (triggered by the custom `OSE_ID_WEB_DIST_DIR` this
+ * runner sets) permanently appends this run's two `include` entries to the tracked tsconfig.json
+ * and never removes them itself. Strip only THIS run's own two entries — never a broader
+ * `local-stack-runs/` pattern — so a concurrently-running separate invocation's still-active
+ * entries are never touched.
+ *
+ * Next's writer also reformats the whole file into one array element per line, which Prettier
+ * would otherwise collapse onto a single line wherever it fits within the repo's print width.
+ * Reformatting with the repo's own Prettier after the content edit undoes that drive-by
+ * reformatting too, so a build+cleanup cycle leaves this tracked file byte-identical to its
+ * pre-run content, not just equivalent in its `include` entries.
+ */
+async function pruneWebTsconfigEntries(runId) {
+    const distDir = webDistDir(runId).split(path.sep).join("/");
+    const ownEntries = new Set([`${distDir}/types/**/*.ts`, `${distDir}/dev/types/**/*.ts`]);
+    await withWebTsconfigLock(async () => {
+        let raw;
+        try {
+            raw = await readFile(WEB_TSCONFIG_PATH, "utf8");
+        } catch (error) {
+            if (error.code === "ENOENT") {
+                return;
+            }
+            throw error;
+        }
+        const tsconfig = JSON.parse(raw);
+        if (!Array.isArray(tsconfig.include)) {
+            return;
+        }
+        const filtered = tsconfig.include.filter((entry) => !ownEntries.has(entry));
+        if (filtered.length === tsconfig.include.length) {
+            return;
+        }
+        tsconfig.include = filtered;
+        await writeFile(WEB_TSCONFIG_PATH, `${JSON.stringify(tsconfig, null, 2)}\n`, "utf8");
+        const formatted = await runCommand("npx", ["--no", "--", "prettier", "--write", WEB_TSCONFIG_PATH], {
+            timeoutMs: 30_000,
+        });
+        if (formatted.exitCode !== 0) {
+            throw new Error(`formatting tsconfig.json failed: ${formatted.stderr.trim()}`);
+        }
+    });
+}
+
 async function buildWeb(runId) {
     const result = await runCommand("npx", ["--no", "--", "next", "build"], {
         timeoutMs: 300_000,
@@ -569,6 +651,7 @@ async function main() {
 
     const owned = { postgres: undefined, backends: [], web: undefined };
     let reachedStageCount = 0;
+    let webBuilt = false;
     let signaled = false;
 
     const cleanup = async () => {
@@ -598,6 +681,16 @@ async function main() {
                 // A cleanup error is reported for its own stage and never replaces or hides the
                 // original failure that triggered cleanup in the first place.
                 process.stderr.write(`[local-stack ${runId}] cleanup of ${stage} failed: ${error.message}\n`);
+            }
+        }
+        if (webBuilt) {
+            // Gated on the build actually running, not on reachedStageCount: `next build`
+            // already appended this run's tsconfig entries even when the later start/readiness
+            // step is what ends up failing, so the stale entries must still be pruned.
+            try {
+                await pruneWebTsconfigEntries(runId);
+            } catch (error) {
+                process.stderr.write(`[local-stack ${runId}] cleanup of web-tsconfig failed: ${error.message}\n`);
             }
         }
         await rm(runDirectory, { recursive: true, force: true });
@@ -644,6 +737,7 @@ async function main() {
 
         // Step 6: the web shell.
         await buildWeb(runId);
+        webBuilt = true;
         owned.web = startWeb(webPort, runId, nodeExecutable);
         await waitForWebReady(owned.web.origin);
         reachedStageCount = 3;

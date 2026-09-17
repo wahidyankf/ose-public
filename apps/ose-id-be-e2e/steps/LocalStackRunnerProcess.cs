@@ -279,7 +279,7 @@ internal sealed class LocalStackRunnerProcess : IDisposable
         return (process.ExitCode, (output + error).Trim());
     }
 
-    private static string RepositoryRoot()
+    internal static string RepositoryRoot()
     {
         DirectoryInfo? directory = new(AppContext.BaseDirectory);
         while (directory is not null)

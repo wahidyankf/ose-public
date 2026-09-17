@@ -71,6 +71,9 @@ pids/
 *.seed
 *.pid.lock
 
+# local-stack runner's transient tsconfig mutation lock (apps/ose-id-be-e2e/scripts/local-stack.mjs)
+apps/ose-id-web/tsconfig.json.lock
+
 # Logs
 logs/
 *.log

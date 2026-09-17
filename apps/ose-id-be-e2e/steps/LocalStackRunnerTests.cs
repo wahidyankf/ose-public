@@ -214,6 +214,50 @@ public sealed class LocalStackRunnerTests
         LocalStackRunnerProcess.IsListening(secondWebPort).Should().BeFalse();
     }
 
+    [Fact]
+    public async Task CleanupRestoresWebTsconfigToItsPreRunContent()
+    {
+        string tsconfigPath = Path.Combine(
+            LocalStackRunnerProcess.RepositoryRoot(),
+            "apps",
+            "ose-id-web",
+            "tsconfig.json"
+        );
+        string beforeContent = await File.ReadAllTextAsync(tsconfigPath, TestContext.Current.CancellationToken);
+
+        int[] ports = AllocateDistinctEphemeralPorts(3);
+        int postgresPort = ports[0];
+        int backendPort = ports[1];
+        int webPort = ports[2];
+
+        using LocalStackRunnerProcess runner = LocalStackRunnerProcess.Start(
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["OSE_ID_POSTGRES_PORT"] = postgresPort.ToString(CultureInfo.InvariantCulture),
+                ["OSE_ID_BE_PORT"] = backendPort.ToString(CultureInfo.InvariantCulture),
+                ["OSE_ID_WEB_PORT"] = webPort.ToString(CultureInfo.InvariantCulture),
+            }
+        );
+
+        runner.WaitForMarker("web ready", ReadinessBudget);
+
+        // Proves this is a real before/after comparison, not one that would pass even if
+        // cleanup never touched the file: the readiness build itself must have appended this
+        // run's own two entries to the tracked tsconfig.json first.
+        string duringContent = await File.ReadAllTextAsync(tsconfigPath, TestContext.Current.CancellationToken);
+        duringContent.Should().Contain(runner.RunId, "the build that reached readiness appends this run's own entries");
+
+        runner.SendSigterm();
+        bool exited = runner.Process.WaitForExit((int)ShutdownBudget.TotalMilliseconds);
+        exited.Should().BeTrue(runner.Diagnostics);
+        runner.Process.ExitCode.Should().Be(0, runner.Diagnostics);
+
+        string afterContent = await File.ReadAllTextAsync(tsconfigPath, TestContext.Current.CancellationToken);
+        afterContent
+            .Should()
+            .Be(beforeContent, "cleanup must prune this run's own entries back to the pre-run content");
+    }
+
     /// <summary>
     /// Binds <paramref name="count" /> listeners simultaneously so the OS can never hand out the
     /// same ephemeral port twice within one allocation, then releases them all together. A test

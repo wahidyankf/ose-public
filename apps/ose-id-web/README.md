@@ -10,9 +10,9 @@ From the repository root, install workspace dependencies, copy the environment t
 the dev server:
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm install
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm install
 cp apps/ose-id-web/.env.example apps/ose-id-web/.env.local
-./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-web:dev
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:dev
 ```
 
 Visit `http://127.0.0.1:3500/`. A `Staging`, `Production`, or missing/unknown `OSE_RUNTIME_MODE` in
@@ -70,16 +70,16 @@ for the full behaviour.
 
 Run these from the repository root.
 
-| Command                                                                                             | Use it for                                                         |
-| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-web:dev`                    | Run the dev server with file watching.                             |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web:build`            | Produce the production build.                                      |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web:typecheck`        | Run the no-emit strict TypeScript check.                           |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web:lint`             | Run `oxlint` and `eslint`, including accessibility rules.          |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web:test:unit`        | Run component/unit tests (99% line coverage enforced).             |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web:test:integration` | Run the real server-side proxy/page boundary in Node.              |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web:test:quick`       | Run this project's focused quality gate, including specs coverage. |
-| `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`         | Run the separate Playwright browser end-to-end suite.              |
+| Command                                                                                                                      | Use it for                                                         |
+| ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:dev`                    | Run the dev server with file watching.                             |
+| `./hippo run --class transactional --resource-tier heavy --disk-path . -- npm exec nx -- run ose-id-web:build`               | Produce the production build.                                      |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:typecheck`        | Run the no-emit strict TypeScript check.                           |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:lint`             | Run `oxlint` and `eslint`, including accessibility rules.          |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:unit`        | Run component/unit tests (99% line coverage enforced).             |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:integration` | Run the real server-side proxy/page boundary in Node.              |
+| `./hippo run --class transactional --resource-tier heavy --disk-path . -- npm exec nx -- run ose-id-web:test:quick`          | Run this project's focused quality gate, including specs coverage. |
+| `./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`            | Run the separate Playwright browser end-to-end suite.              |
 
 ## BDD and Testing
 

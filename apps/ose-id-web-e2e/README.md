@@ -20,9 +20,9 @@ Running `test:e2e` therefore requires Docker and the .NET SDK, exactly as `ose-i
 ## Run locally
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm install
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:install
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm install
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:install
+./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e
 ```
 
 `test:e2e` starts and stops every environment above itself; no separate terminal is required. It

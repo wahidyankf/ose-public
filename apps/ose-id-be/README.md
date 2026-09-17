@@ -12,7 +12,7 @@ answer `404 capability_disabled` instead of silently 404-ing like an absent path
 From the repository root, install workspace dependencies and confirm the .NET 10 SDK is available:
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm install
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm install
 ```
 
 Then run the service directly:
@@ -94,15 +94,15 @@ for what the host serves.
 
 Run these from the repository root.
 
-| Command                                                                                            | Use it for                                                         |
-| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be:build`            | Publish the release build.                                         |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be:typecheck`        | Compile with warnings as errors.                                   |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be:lint`             | Run `dotnet format --verify-no-changes` and analyzer verification. |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be:test:unit`        | Run the fast in-process unit tests (99% line coverage enforced).   |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be:test:integration` | Run in-process ASP.NET Core `TestHost` tests.                      |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be:test:quick`       | Run this project's focused quality gate, including specs coverage. |
-| `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`         | Run the separate published-process backend end-to-end suite.       |
+| Command                                                                                                                     | Use it for                                                         |
+| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `./hippo run --class transactional --resource-tier heavy --disk-path . -- npm exec nx -- run ose-id-be:build`               | Publish the release build.                                         |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:typecheck`        | Compile with warnings as errors.                                   |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:lint`             | Run `dotnet format --verify-no-changes` and analyzer verification. |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:test:unit`        | Run the fast in-process unit tests (99% line coverage enforced).   |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:test:integration` | Run in-process ASP.NET Core `TestHost` tests.                      |
+| `./hippo run --class transactional --resource-tier heavy --disk-path . -- npm exec nx -- run ose-id-be:test:quick`          | Run this project's focused quality gate, including specs coverage. |
+| `./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`            | Run the separate published-process backend end-to-end suite.       |
 
 ## BDD and Testing
 

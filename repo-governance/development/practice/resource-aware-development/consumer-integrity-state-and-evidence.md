@@ -16,7 +16,8 @@ Use the per-user root so all checkouts share one ledger. Set `HIPPO_ROOT` only f
 a separately administered domain. When HIPPO itself runs inside a container, that container needs
 a reaping init: a PID 1 that leaves orphans unreaped makes retirement wait forever on Linux.
 Guarding a container from the host is unaffected. Evidence may contain capacity and process health, never arguments,
-repository paths/origins, credentials, file contents, or user data.
+repository paths/origins, credentials, file contents, or user data. Raw evidence rolls for seven
+days; compacted daily summaries roll for 30 days under byte caps.
 
 Tests use synthetic releases, isolated cache/state, and fake pressure—never manufactured host
 pressure. Scheduled Linux/macOS smoke verifies identity, schema, mappings, policy, shared-root

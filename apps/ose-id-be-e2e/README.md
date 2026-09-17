@@ -8,8 +8,8 @@ observer can see: the exit code, the diagnostic stream, and whether a loopback l
 ## Run locally
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm install
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm install
+./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e
 ```
 
 The suite publishes `apps/ose-id-be/src/OseId.Host/OseId.Host.csproj` to
@@ -22,7 +22,7 @@ This project also owns a manual-verification local stack — a multi-process orc
 `dev`/`start` server (see `target-naming-rules.md`'s documented exception for this shape):
 
 ```bash
-rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve -- --fixture-profile=foundation-ready
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve -- --fixture-profile=foundation-ready
 ```
 
 It starts one owned PostgreSQL container, applies migrations, starts one or two `ose-id-be`

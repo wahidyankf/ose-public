@@ -1779,6 +1779,10 @@ Rule: Informational notices that are not errors use non-interrupting status sema
     And its assistive-technology urgency matches its calm, permanent visual styling
 ```
 
+      **Disposition**: Deferred to Phase 6 Knowledge Capture triage — see Phase 6's consolidated
+      SG/USS disposition bullet. Not a defect (the behavior it would cover is already correct);
+      optional accessibility regression-guard coverage, low cost/risk.
+
 - [ ] [AI] USS-002: propose that status rows inactive by design in this build are distinguishable
       at a glance from a genuine problem — pairs with **UWT-002**. **Spec-blind caveat**: this agent
       did not read `specs/**`; a spec-aware reviewer must confirm this behaviour is not already covered
@@ -1793,6 +1797,10 @@ Rule: Status rows that are inactive by design are visually distinguishable from 
     Then a lightweight visual or textual cue signals it is inactive by design in this build
     And this cue is visually distinct from the "OSE ID web shell" row's active "Running" state
 ```
+
+      **Disposition**: Deferred to Phase 6 Knowledge Capture triage — see Phase 6's consolidated
+      SG/USS disposition bullet. Not a defect (the behavior it would cover is already correct);
+      optional accessibility regression-guard coverage, low cost/risk.
 
 **Areas not covered**: cross-browser (chromium only, matching the other two testers this session); a
 live screen-reader audio pass (NVDA/VoiceOver) — not available in this environment; relied on the
@@ -2144,6 +2152,22 @@ http://127.0.0.1:8501/health/ready` -> `200` (`{"status":"ready","components":{"
       with three specific out-of-authority items (a shared repo-root file, HIPPO's upstream
       process supervision, and other apps' unaudited E2E runners) routed to the same follow-up
       `rules-propagation` run as the other three.
+- [x] [AI] Triage every `SG-###`/`USS-###` proposal recorded during Phase 5 manual testing
+      (SG-001..005 at `delivery.md:1256,1453,1545,2062,2087`; USS-001/USS-002 above) to an explicit
+      terminal disposition, per the same four-state routing this bullet applies to `learnings.md`
+      entries. Acceptance: no SG/USS proposal is left pointing only at "Phase 6 triage" without
+      Phase 6 having actually acted on it.
+      **Date**: 2026-09-17. **Status**: Done. All 7 proposals (5 SG + 2 USS) are optional,
+      additive regression-guard or accessibility-coverage test suggestions for behavior this plan
+      already independently verified correct — none identifies a defect, and none blocks any
+      Phase 5 Gate acceptance criterion. Terminal disposition: **(4) Discarded, with reason** — no
+      user authorization was sought or given for a `plans/ideas/` two-pager, and filing one for
+      seven small, narrowly-scoped test-coverage suggestions would be disproportionate to their
+      value. Each proposal's own Gherkin/rationale stays recorded inline at its original Phase 5
+      location (cited above) as a discoverable note for whichever plan or session next touches the
+      relevant spec file (`disabled-capabilities.feature` for SG-001; the other SG/USS proposals'
+      own named specs) — consistent with the archival convention's allowance for SG/USS deferral
+      without user permission.
 - [x] [AI] Reconcile any durable documentation/rule edit with the file-impact ledger before continuing. Acceptance: no newly discovered path or rule change remains unplanned.
       **Date**: 2026-09-17. **Status**: Done, corrected twice. No durable documentation/rule
       _prose_ was edited in this plan's delivery unit through the plan's own designated channels
@@ -2205,8 +2229,9 @@ true` + negative-PID `signalOwned()` rather than one captured PID) recorded in
 - [x] [AI] Verify all applicable rule-15 EWT/UWT/DWT and rule-16 AET defects are fixed. A defect deferral requires explicit user permission; SG proposals/suggestions receive an explicit disposition.
       **Date**: 2026-09-17. **Status**: Done. `grep -n "\[ \].*\(AET\|EWT\|UWT\|DWT\)-[0-9]"
 delivery.md` returns zero matches — no unchecked defect remains anywhere in this file. Every
-      `SG-###`/`USS-###` proposal (SG-001..005, USS-001..002) carries an explicit "deferred to
-      Phase 6, non-blocking" disposition, none silently dropped.
+      `SG-###`/`USS-###` proposal (SG-001..005, USS-001..002) carries an explicit terminal
+      disposition — see this phase's own Knowledge Capture triage bullet above, which resolved
+      all 7 to **(4) Discarded, with reason**; none silently dropped.
 
 ### Plan Archival in the Delivering PR
 

@@ -2504,7 +2504,77 @@ HEAD:apps/ose-id-web/tsconfig.json | grep -c local-stack-runs` → 116) and alre
       passed. Fixed in `e8dd36429edb8d54e8a1b2035081adce268fdbcd`; head advanced to the same SHA;
       CI restarted against this head and is being polled to green.
 
-- [ ] [AI] Require the PR's exact current head/base Quality gate, applicable finite API/E2E/schema gates, one authenticated clean current-head `pr-leak-review`, and the repository-required semantic review for identity/security code. Resolve every blocking finding and rerun invalidated proof.
+- [x] [AI] Require the PR's exact current head/base Quality gate, applicable finite API/E2E/schema gates, one authenticated clean current-head `pr-leak-review`, and the repository-required semantic review for identity/security code. Resolve every blocking finding and rerun invalidated proof.
+      **Date**: 2026-09-17. **Status**: Done.
+
+      **`pr-leak-review` first pass** (review-id `5230479866`, head `d89ec62ef144d74f7d7424ce7047cc7de499a9b4`):
+      `findings` — 6 machine-specific-absolute-path occurrences across 5 evidence files under
+      `plans/done/2026-09-17__ose-id-init-01-foundation/evidence/`: a repeated local Homebrew dotnet
+      SDK install-prefix path (4 files, `{phase-2-gate,phase-2-refactor,phase-2}/nx-quality.txt` and
+      `phase-3-quality-matrix/test-quick-ose-id-be-and-e2e.txt`) plus one distinct macOS `$TMPDIR`
+      path in `phase-7/pre-push-gate.txt`. Redacted all 6 to portable placeholders
+      (`<dotnet-sdk-prefix>`, `<tmp>`), matching the `<home>` redaction style from commit `15d0aca7f`;
+      grep-verified zero remaining matches repo-wide for the offending patterns before committing.
+      Fixed in `d72bf5e47`.
+
+      **Semantic review** (single explicit pass per `repo-governance/workflows/pr/pr-review.md`, risk
+      tier `full`, probe class `claim-vs-artifact-truthfulness`): scout → 9 discipline specialists
+      (architecture, docs-quality, governance, instruction-decay, integrity, business-logic,
+      performance, security, type-soundness) ran concurrently, then `pr-review-synthesis-maker`
+      deduplicated, re-verified, and posted one consolidated review (review-id `5230597816`, head
+      `d89ec62ef144d74f7d7424ce7047cc7de499a9b4`): 9 findings after dedup (1 CRITICAL, 1 HIGH, 5
+      MEDIUM, 2 LOW; integrity/security/type-soundness reported clean). All 9 resolved:
+
+      - **CRITICAL** — `apps/ose-id-be-e2e/scripts/local-stack.mjs`'s `cleanup()` decided what to
+        tear down from a success counter (`reachedStageCount`) bumped only after a stage's readiness
+        wait succeeded, while each stage's process was spawned earlier in that same stage; a
+        readiness-wait failure (a budgeted, ordinary outcome) orphaned the just-spawned process and
+        its run-scoped build output, reachable on the plain single-instance default path. Rewritten
+        to derive the teardown list from actual ownership; added a deterministic fixture-profile test
+        seam and two regression tests, proven red without the fix (confirmed orphaned process and
+        leaked directory) and green with it. Fixed in `fd0e4513a`.
+      - **MEDIUM** (same file, related root cause) — `publishBackend()` run-scoped only the publish
+        output, leaving MSBuild intermediate state shared across concurrent invocations. Scoped via
+        `--property:ArtifactsPath` after verifying the initially-suggested `BaseIntermediateOutputPath`
+        actually breaks the multi-project build (propagates to every referenced project, colliding
+        their generated `AssemblyInfo.cs`). Fixed in `fd0e4513a`; full `LocalStackRunnerTests` suite
+        29/29 passing.
+      - **HIGH** — the new `serve` naming exception was not propagated to two genuinely-contradicted
+        surfaces (the `swe-developing-applications-common` skill and
+        `target-naming-canonical-names-e2e-and-utility.md`); two other named surfaces were confirmed
+        already consistent (aliasing-scoped, not contradicted) and left untouched. Fixed in
+        `013e6c15d`.
+      - **MEDIUM** — `apps/ose-id-be/tests/unit/Tests/ArchitectureBoundaryTests.cs`'s exclusivity test
+        didn't actually bound the `ProjectReference` count; added a count assertion and verified the
+        gap was real (temporarily adding a second reference made the suite pass without the fix, fail
+        with it). Fixed in `0fed0f395`.
+      - **MEDIUM** — the archived plan's README still read "In Progress ... execution starts at
+        Phase 0", pointing at the vacated `plans/in-progress/` path. Corrected the two false
+        specifics; deliberately did not flip to "Complete" since Phase 7 was still open at fix time —
+        that update lands with the final report below. Fixed in `013e6c15d`.
+      - **MEDIUM** — `docs/reference/monorepo-structure.md` referenced a target doc via a bare
+        backtick string that did not resolve from the file's location; replaced with a real relative
+        link. Fixed in `013e6c15d`.
+      - **MEDIUM** — `apps/ose-id-web/next.config.ts`'s run-scoped `distDir` also discards Next's
+        persistent build cache every local-stack invocation; documented the tradeoff in-line rather
+        than introducing a shared cache directory, which would reintroduce the concurrent-write hazard
+        `distDir` scoping exists to avoid. Fixed in `013e6c15d`.
+      - **LOW** — `tech-docs/006-api-contract-delta.md` overstated the `X-Correlation-ID` guarantee as
+        blanket; scoped it to documented operations. Fixed in `013e6c15d`.
+      - **LOW** — `mandatory-targets-cli-e2e.md`'s frontmatter and section lead-in still described
+        Playwright only after this PR's own diff added a Dotnet/Reqnroll subsection; widened. Fixed in
+        `013e6c15d`.
+
+      All 9 review threads replied to (citing the fixing commit) and marked resolved via the GitHub
+      Reviews API.
+
+      **`pr-leak-review` second pass** (review-id `5231367941`, head
+      `013e6c15deff332edfe912dbdbdcec65c007db07`): authenticated `pass` — 0/0/0 across all three
+      categories, reviewing the full diff fresh (not a reuse of the first pass).
+
+      Head advanced to `013e6c15deff332edfe912dbdbdcec65c007db07`; CI restarted against this head and
+      is being polled to green.
+
 - [ ] [AI] Merge under default `[AI]` authority only when all hardened checks refer to the same current head/base and the archive move is visible in the PR diff. Record the PR URL, reviewed head, base, merge SHA, and merge timestamp in the workflow final report; make no post-merge plan edit.
 
 ### Phase 7 Gate

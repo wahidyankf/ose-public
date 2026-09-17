@@ -107,6 +107,133 @@ public sealed class LocalStackRunnerTests
         LocalStackRunnerProcess.IsListening(webPort).Should().BeFalse();
     }
 
+    /// <summary>
+    /// The window this proves is between a stage's process being spawned and that stage reporting
+    /// itself ready. The process is already owned there, so a readiness failure must still stop it
+    /// and still remove the run-scoped build output it was started from. Cleanup that decides what
+    /// to tear down from how far startup *succeeded* skips both: the just-spawned backend outlives
+    /// the run holding its port — which the next invocation's port-collision guard then refuses to
+    /// start against — and <c>apps/ose-id-be/dist/local-stack/&lt;runId&gt;/</c> is left behind with
+    /// no sweep anywhere in the repo that would ever remove it.
+    ///
+    /// The window is reached through the runner's fixture-profile seam, which fails this readiness
+    /// wait the instant the instance is spawned, rather than by racing its real minute-long
+    /// readiness budget: the assertions below observe a process table and a filesystem that the
+    /// runner's own exit has already settled, never a timing coincidence.
+    /// </summary>
+    [Fact]
+    public async Task BackendReadinessFailureStillStopsTheSpawnedBackendAndRemovesItsRunOutput()
+    {
+        int[] ports = AllocateDistinctEphemeralPorts(3);
+        int postgresPort = ports[0];
+        int backendPort = ports[1];
+        int webPort = ports[2];
+
+        using LocalStackRunnerProcess runner = LocalStackRunnerProcess.Start(
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["OSE_ID_POSTGRES_PORT"] = postgresPort.ToString(CultureInfo.InvariantCulture),
+                ["OSE_ID_BE_PORT"] = backendPort.ToString(CultureInfo.InvariantCulture),
+                ["OSE_ID_WEB_PORT"] = webPort.ToString(CultureInfo.InvariantCulture),
+            },
+            extraArguments: ["--fixture-profile=foundation-backend-readiness-fails"]
+        );
+
+        // Getting this far is what makes the failure below a *mid-startup* one: the run already
+        // owns a real container, and it publishes and spawns a real backend before failing.
+        runner.WaitForMarker("postgres ready", _readinessBudget);
+
+        bool exited = runner.Process.WaitForExit((int)_readinessBudget.TotalMilliseconds);
+        exited.Should().BeTrue(runner.Diagnostics);
+        runner.Process.ExitCode.Should().Be(1, runner.Diagnostics);
+        runner.RunId.Should().NotBeEmpty(runner.Diagnostics);
+        runner
+            .Diagnostics.Should()
+            .Contain(
+                $"ose-id-be at http://127.0.0.1:{backendPort.ToString(CultureInfo.InvariantCulture)}",
+                runner.Diagnostics
+            )
+            .And.Contain("did not become ready (forced by --fixture-profile)", runner.Diagnostics);
+
+        // That message is raised only after the publish returned an entry point and that entry
+        // point was spawned, so both the listening backend and the run-scoped output directory
+        // below certainly existed moments earlier: their absence now is cleanup's own doing.
+        LocalStackRunnerProcess.IsListening(backendPort).Should().BeFalse(runner.Diagnostics);
+        Directory.Exists(BackendRunDirectory(runner.RunId)).Should().BeFalse(runner.Diagnostics);
+
+        LocalStackRunnerProcess.IsListening(postgresPort).Should().BeFalse(runner.Diagnostics);
+        (int listCode, string listOutput) = await LocalStackRunnerProcess.DockerAsync([
+            "ps",
+            "-a",
+            "--filter",
+            $"name={_containerPrefix}",
+            "--format",
+            "{{.Names}}",
+        ]);
+        listCode.Should().Be(0);
+        listOutput.Should().BeEmpty(runner.Diagnostics);
+    }
+
+    /// <summary>
+    /// The same spawned-but-not-yet-ready window, one stage later: the web process is spawned
+    /// before its readiness wait, and <c>next build</c> writes
+    /// <c>apps/ose-id-web/.next/local-stack-runs/&lt;runId&gt;/</c> before either. A failure there
+    /// must leave neither the process on its port nor that directory — nor the backend stage's own
+    /// output, which the same run still owns.
+    /// </summary>
+    [Fact]
+    public async Task WebReadinessFailureStillStopsTheSpawnedWebProcessAndRemovesBothRunOutputs()
+    {
+        int[] ports = AllocateDistinctEphemeralPorts(3);
+        int postgresPort = ports[0];
+        int backendPort = ports[1];
+        int webPort = ports[2];
+
+        using LocalStackRunnerProcess runner = LocalStackRunnerProcess.Start(
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["OSE_ID_POSTGRES_PORT"] = postgresPort.ToString(CultureInfo.InvariantCulture),
+                ["OSE_ID_BE_PORT"] = backendPort.ToString(CultureInfo.InvariantCulture),
+                ["OSE_ID_WEB_PORT"] = webPort.ToString(CultureInfo.InvariantCulture),
+            },
+            extraArguments: ["--fixture-profile=foundation-web-readiness-fails"]
+        );
+
+        // The backend stage must complete for the web stage to be reached at all; this marker is
+        // what pins the forced failure below to the web stage specifically.
+        runner.WaitForMarker("backend ready", _readinessBudget);
+
+        bool exited = runner.Process.WaitForExit((int)_readinessBudget.TotalMilliseconds);
+        exited.Should().BeTrue(runner.Diagnostics);
+        runner.Process.ExitCode.Should().Be(1, runner.Diagnostics);
+        runner.RunId.Should().NotBeEmpty(runner.Diagnostics);
+        runner
+            .Diagnostics.Should()
+            .Contain(
+                $"ose-id-web at http://127.0.0.1:{webPort.ToString(CultureInfo.InvariantCulture)}",
+                runner.Diagnostics
+            )
+            .And.Contain("did not become ready (forced by --fixture-profile)", runner.Diagnostics);
+
+        LocalStackRunnerProcess.IsListening(webPort).Should().BeFalse(runner.Diagnostics);
+        Directory.Exists(WebDistDirectory(runner.RunId)).Should().BeFalse(runner.Diagnostics);
+
+        LocalStackRunnerProcess.IsListening(backendPort).Should().BeFalse(runner.Diagnostics);
+        Directory.Exists(BackendRunDirectory(runner.RunId)).Should().BeFalse(runner.Diagnostics);
+
+        LocalStackRunnerProcess.IsListening(postgresPort).Should().BeFalse(runner.Diagnostics);
+        (int listCode, string listOutput) = await LocalStackRunnerProcess.DockerAsync([
+            "ps",
+            "-a",
+            "--filter",
+            $"name={_containerPrefix}",
+            "--format",
+            "{{.Names}}",
+        ]);
+        listCode.Should().Be(0);
+        listOutput.Should().BeEmpty(runner.Diagnostics);
+    }
+
     [Fact]
     public async Task TwoInstancesBothBackendsBecomeReadyAndBothStop()
     {
@@ -257,6 +384,25 @@ public sealed class LocalStackRunnerTests
             .Should()
             .Be(beforeContent, "cleanup must prune this run's own entries back to the pre-run content");
     }
+
+    /// <summary>
+    /// Where the runner puts everything the backend stage writes for one run: the published
+    /// executable and the MSBuild intermediate/binary output that produced it, both scoped to the
+    /// run ID so concurrent invocations from this checkout never share either.
+    /// </summary>
+    private static string BackendRunDirectory(string runId) =>
+        Path.Combine(LocalStackRunnerProcess.RepositoryRoot(), "apps", "ose-id-be", "dist", "local-stack", runId);
+
+    /// <summary>The run-scoped Next build output, nested inside the already-ignored .next/.</summary>
+    private static string WebDistDirectory(string runId) =>
+        Path.Combine(
+            LocalStackRunnerProcess.RepositoryRoot(),
+            "apps",
+            "ose-id-web",
+            ".next",
+            "local-stack-runs",
+            runId
+        );
 
     /// <summary>
     /// Binds <paramref name="count" /> listeners simultaneously so the OS can never hand out the

@@ -14,10 +14,17 @@
  * Usage:
  *   node apps/ose-id-be-e2e/scripts/local-stack.mjs [--fixture-profile=<name>] [--instances=1|2] [--validate-only]
  *
- * Fixture profiles (all reach full readiness first, then apply the named transition):
+ * Fixture profiles (these reach full readiness first, then apply the named transition):
  *   foundation-ready          (default) stay ready; block until signaled.
  *   foundation-postgres-down  stop the owned PostgreSQL container after readiness, then block.
  *   foundation-backend-down   stop the first backend instance after readiness, then block.
+ *
+ * Fixture profiles that fail on the way up, so a test can drive the failure paths deterministically
+ * instead of waiting out a real multi-minute readiness budget (see READINESS_FAILURE_STAGE_BY_PROFILE):
+ *   foundation-backend-readiness-fails  fail the first backend's readiness wait the moment that
+ *                                       instance has been spawned, then clean up and exit 1.
+ *   foundation-web-readiness-fails      fail the web readiness wait the moment the web process has
+ *                                       been spawned, then clean up and exit 1.
  *
  * Ports resolve through the repo-wide `flag > env var > fallback` contract (see
  * libs/ts-env-loader/src/port-resolver.ts): OSE_ID_POSTGRES_PORT (default 5438),
@@ -51,6 +58,20 @@ const STARTUP_BUDGET_MS = {
     backend: 60_000,
     web: 60_000,
 };
+
+/**
+ * The testing seam for the failure window between "this stage's process has been spawned" and
+ * "this stage reported itself ready": the named stage's readiness wait fails immediately, with its
+ * process already spawned and owned, exactly as a genuine readiness failure leaves it. A test
+ * proving that window's cleanup must not manufacture it by racing a real STARTUP_BUDGET_MS
+ * (a minute or more per stage, and timing-dependent either way); it names the profile and gets the
+ * same state deterministically. The profiles are inert for every other run: an unlisted name —
+ * including the default — leaves both readiness waits polling for the real transition.
+ */
+const READINESS_FAILURE_STAGE_BY_PROFILE = new Map([
+    ["foundation-backend-readiness-fails", "backend"],
+    ["foundation-web-readiness-fails", "web"],
+]);
 
 function option(argv, name, fallback) {
     const prefix = `--${name}=`;
@@ -360,20 +381,53 @@ async function runMigration(migratorConnectionString) {
 // ---------------------------------------------------------------------------------------------
 
 /**
- * Publishes into a directory scoped to this run's ID, never the bare `dist/local-stack/`: two
- * concurrent invocations from the same checkout must never overwrite the executable an already-
- * running instance is still serving from.
+ * Everything the backend stage writes to disk lives under this one directory scoped to this run's
+ * ID, never a bare shared path: two concurrent invocations from the same checkout must never
+ * overwrite the executable an already-running instance is still serving from, nor each other's
+ * build state. One run-scoped root is also one thing for cleanup to remove.
  */
-function backendPublishDirectory(runId) {
+function backendRunDirectory(runId) {
     return path.join(REPO_ROOT, "apps", "ose-id-be", "dist", "local-stack", runId);
 }
 
+function backendPublishDirectory(runId) {
+    return path.join(backendRunDirectory(runId), "publish");
+}
+
+function backendArtifactsDirectory(runId) {
+    return path.join(backendRunDirectory(runId), "artifacts");
+}
+
+/**
+ * `-o` scopes only the published output. The build that produces it also reads and writes MSBuild's
+ * intermediate and binary output — including the implicit restore's `project.assets.json` — and
+ * those sit at fixed `obj/`/`bin/` paths inside each project directory, shared by every concurrent
+ * invocation from this checkout. `ArtifactsPath` is what run-scopes them: it relocates both, laying
+ * out one `obj/<project>/` and `bin/<project>/` subdirectory per project underneath.
+ *
+ * Not `BaseIntermediateOutputPath`: MSBuild propagates a command-line property to every referenced
+ * project, so a single value there points OseId.Host, OseId.Domain, OseId.Application, and
+ * OseId.Infrastructure at one shared intermediate directory, where their generated `AssemblyInfo.cs`
+ * files and `project.assets.json` collide and the build fails outright (CS0579). `ArtifactsPath`
+ * propagates the same way but keeps each project in its own subdirectory, which is the property
+ * designed for exactly this relocation.
+ */
 async function publishBackend(runId) {
     const project = path.join(REPO_ROOT, "apps", "ose-id-be", "src", "OseId.Host", "OseId.Host.csproj");
     const output = backendPublishDirectory(runId);
-    const result = await runCommand("dotnet", ["publish", project, "-c", "Release", "-o", output], {
-        timeoutMs: 180_000,
-    });
+    const result = await runCommand(
+        "dotnet",
+        [
+            "publish",
+            project,
+            "-c",
+            "Release",
+            "-o",
+            output,
+            `--property:ArtifactsPath=${backendArtifactsDirectory(runId)}`,
+        ],
+        { timeoutMs: 180_000 },
+    );
     if (result.exitCode !== 0) {
         throw new Error(`publishing ose-id-be failed: ${result.stderr.trim()}`);
     }
@@ -396,7 +450,10 @@ function startBackend(entryPoint, port, applicationConnectionString) {
     return { process: child, origin: `http://127.0.0.1:${port}` };
 }
 
-async function waitForBackendReady(origin) {
+async function waitForBackendReady(origin, { failImmediately = false } = {}) {
+    if (failImmediately) {
+        throw new Error(`ose-id-be at ${origin} did not become ready (forced by --fixture-profile)`);
+    }
     const ready = await waitUntil(() => httpReady(`${origin}/health/ready`), STARTUP_BUDGET_MS.backend);
     if (!ready) {
         throw new Error(`ose-id-be at ${origin} did not become ready within ${STARTUP_BUDGET_MS.backend}ms`);
@@ -534,7 +591,10 @@ function startWeb(port, runId, nodeExecutable) {
     return { process: child, origin: `http://127.0.0.1:${port}`, detached: true };
 }
 
-async function waitForWebReady(origin) {
+async function waitForWebReady(origin, { failImmediately = false } = {}) {
+    if (failImmediately) {
+        throw new Error(`ose-id-web at ${origin} did not become ready (forced by --fixture-profile)`);
+    }
     const ready = await waitUntil(() => httpReady(origin), STARTUP_BUDGET_MS.web);
     if (!ready) {
         throw new Error(`ose-id-web at ${origin} did not become ready within ${STARTUP_BUDGET_MS.web}ms`);
@@ -585,6 +645,18 @@ function stopProcess(handle, graceMs = 10_000) {
         });
         signalOwned(handle, "SIGTERM");
     });
+}
+
+/**
+ * Removes one run-scoped build-output directory, reporting a failure the same way a failed stage
+ * teardown is reported: never replacing or hiding the original failure that triggered cleanup.
+ */
+async function removeRunOutput(runId, label, directory) {
+    try {
+        await rm(directory, { recursive: true, force: true });
+    } catch (error) {
+        process.stderr.write(`[local-stack ${runId}] cleanup of ${label} failed: ${error.message}\n`);
+    }
 }
 
 async function main() {
@@ -650,31 +722,40 @@ async function main() {
     }
 
     const owned = { postgres: undefined, backends: [], web: undefined };
-    let reachedStageCount = 0;
-    let webBuilt = false;
+    // Every flag below flips the moment the thing it guards can exist on disk, never after the
+    // step that uses it succeeded. A stage's build output is written before its process starts,
+    // and its process is spawned before its readiness wait returns, so a failure anywhere in that
+    // window leaves real resources behind that a "this stage reached readiness" flag would never
+    // mention — and nothing else in the repo ever removes these run-scoped paths.
+    let backendPublishStarted = false;
+    let webBuildStarted = false;
     let signaled = false;
 
     const cleanup = async () => {
-        // Exactly LifecyclePlan.CleanupOrder(reachedStageCount): reverse of however far
-        // startup actually reached, and nothing this run did not itself start.
-        const stages = ["postgres", "backend", "web"].slice(0, reachedStageCount).reverse();
+        // Cleanup order is still LifecyclePlan.CleanupOrder's: StoppableStages reversed, web before
+        // backend before postgres. What it is restricted to is what this run actually owns, not how
+        // far readiness got: a process spawned moments before its readiness wait threw is owned and
+        // must be stopped, or it outlives this run holding its port against the next invocation's
+        // collision guard. Ownership is prefix-closed (no web without backends, none without
+        // postgres), so the stage list below is exactly CleanupOrder(<stages owned>) — derived from
+        // what exists rather than from a success counter.
+        const stages = [
+            ["postgres", owned.postgres !== undefined],
+            ["backend", owned.backends.length > 0],
+            ["web", owned.web !== undefined],
+        ]
+            .filter(([, isOwned]) => isOwned)
+            .map(([stage]) => stage)
+            .reverse();
         for (const stage of stages) {
             try {
                 if (stage === "web") {
                     await stopProcess(owned.web);
                 } else if (stage === "backend") {
                     await Promise.all(owned.backends.map((backend) => stopProcess(backend)));
-                } else if (stage === "postgres" && owned.postgres !== undefined) {
+                } else {
                     await stopPostgres(owned.postgres.containerName);
                     await removePostgres(owned.postgres.containerName);
-                }
-                if (stage === "backend") {
-                    await rm(backendPublishDirectory(runId), { recursive: true, force: true });
-                } else if (stage === "web") {
-                    await rm(path.join(REPO_ROOT, "apps", "ose-id-web", webDistDir(runId)), {
-                        recursive: true,
-                        force: true,
-                    });
                 }
                 log(runId, `${stage} stopped`);
             } catch (error) {
@@ -683,15 +764,21 @@ async function main() {
                 process.stderr.write(`[local-stack ${runId}] cleanup of ${stage} failed: ${error.message}\n`);
             }
         }
-        if (webBuilt) {
-            // Gated on the build actually running, not on reachedStageCount: `next build`
-            // already appended this run's tsconfig entries even when the later start/readiness
-            // step is what ends up failing, so the stale entries must still be pruned.
+
+        // Build output goes only after every owned process is stopped: an instance still running
+        // is still serving from the directory it was published into.
+        if (webBuildStarted) {
+            await removeRunOutput(runId, "web-dist", path.join(REPO_ROOT, "apps", "ose-id-web", webDistDir(runId)));
+            // `next build` appends this run's tsconfig entries early, so they outlive a build that
+            // fails and a start/readiness step that fails after it; they must still be pruned.
             try {
                 await pruneWebTsconfigEntries(runId);
             } catch (error) {
                 process.stderr.write(`[local-stack ${runId}] cleanup of web-tsconfig failed: ${error.message}\n`);
             }
+        }
+        if (backendPublishStarted) {
+            await removeRunOutput(runId, "backend-output", backendRunDirectory(runId));
         }
         await rm(runDirectory, { recursive: true, force: true });
         log(runId, "cleanup complete");
@@ -713,16 +800,18 @@ async function main() {
     process.on("SIGINT", () => onSignal("SIGINT"));
     process.on("SIGTERM", () => onSignal("SIGTERM"));
 
+    const readinessFailureStage = READINESS_FAILURE_STAGE_BY_PROFILE.get(fixtureProfile);
+
     try {
         // Step 3: PostgreSQL.
         owned.postgres = await startPostgres(runId, postgresPort);
-        reachedStageCount = 1;
         log(runId, "postgres ready");
 
         // Step 4: migrations, with the migration role, stopping immediately on failure.
         await runMigration(owned.postgres.migratorConnectionString);
 
         // Step 5: one or two backend instances, application credentials, poll /health/ready.
+        backendPublishStarted = true;
         const entryPoint = await publishBackend(runId);
         const backendPorts = instanceCount >= 2 ? [backendPort, backendPort + 1] : [backendPort];
         for (const port of backendPorts) {
@@ -730,17 +819,15 @@ async function main() {
             // so a second instance's failure never gets confused with the first's.
             const backend = startBackend(entryPoint, port, owned.postgres.applicationConnectionString);
             owned.backends.push(backend);
-            await waitForBackendReady(backend.origin);
+            await waitForBackendReady(backend.origin, { failImmediately: readinessFailureStage === "backend" });
         }
-        reachedStageCount = 2;
         log(runId, `backend ready (${owned.backends.map((backend) => backend.origin).join(", ")})`);
 
         // Step 6: the web shell.
+        webBuildStarted = true;
         await buildWeb(runId);
-        webBuilt = true;
         owned.web = startWeb(webPort, runId, nodeExecutable);
-        await waitForWebReady(owned.web.origin);
-        reachedStageCount = 3;
+        await waitForWebReady(owned.web.origin, { failImmediately: readinessFailureStage === "web" });
         log(runId, `web ready (${owned.web.origin})`);
 
         // Fixture profiles apply their transition only after full readiness is observed.

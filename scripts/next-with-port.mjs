@@ -117,10 +117,23 @@ if (serverPath !== undefined) {
     passthrough.push(arg);
   }
 
-  const child = spawn(nextBin, [mode, "--port", String(port), ...passthrough], {
-    stdio: "inherit",
-    env: process.env,
-  });
+  // Spawn the resolved local/workspace binary through this process's own node (process.execPath)
+  // rather than letting the OS resolve its `#!/usr/bin/env node` shebang. That resolution re-enters
+  // PATH and, under Volta, lands on Volta's shim — a second node process whose PID differs from the
+  // one actually running Next, so `child.kill(signal)` below signals the shim instead of Next and
+  // the real server is orphaned. Running `node <resolved binary>` directly keeps the child's PID the
+  // one that matters. Only the bare "next" PATH fallback (no local/workspace .bin found) still goes
+  // through shell resolution, since there is no file path to hand to node directly.
+  const child =
+    nextBin === "next"
+      ? spawn(nextBin, [mode, "--port", String(port), ...passthrough], {
+          stdio: "inherit",
+          env: process.env,
+        })
+      : spawn(process.execPath, [nextBin, mode, "--port", String(port), ...passthrough], {
+          stdio: "inherit",
+          env: process.env,
+        });
 
   // Forward the signals a developer (Ctrl-C) or a container runtime (docker stop) actually sends,
   // so the Next server shuts down instead of being orphaned when this wrapper exits.

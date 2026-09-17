@@ -1,6 +1,6 @@
 ---
-description: The run/install targets required on CLI applications and the install/test:e2e/test:e2e:ui/test:e2e:report targets required on *-e2e projects.
-when_to_use: Use when scaffolding a new CLI application or a new *-e2e Playwright runner project.
+description: The run/install targets required on CLI applications, the install/test:e2e/test:e2e:ui/test:e2e:report targets required on Playwright *-e2e projects, and the test:e2e/test:coverage:e2e/test:coverage:behaviour/serve targets required on Dotnet/Reqnroll *-be-e2e projects.
+when_to_use: Use when scaffolding a new CLI application or a new *-e2e project, whether a Playwright runner or a Dotnet/Reqnroll runner.
 ---
 
 # Mandatory Targets — CLI and E2E Test Projects
@@ -16,7 +16,8 @@ Executable CLIs and similar tools:
 
 ## E2E Test Projects
 
-Playwright suites (`*-e2e`):
+Playwright suites (`*-e2e`) — see [Dotnet/Reqnroll E2E Test Projects](#dotnetreqnroll-e2e-test-projects)
+below for the non-Playwright `*-be-e2e` shape:
 
 | Target            | Requirement                  |
 | ----------------- | ---------------------------- |

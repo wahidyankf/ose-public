@@ -36,8 +36,9 @@ or executable behavior names.
 
 - Health and disabled-capability responses require no authentication, authorization, tenant, cookie,
   CSRF token, request body, or caller-controlled redirect.
-- Every response carries a generated or validated `X-Correlation-ID`; no secret, connection string,
-  database host, stack trace, or absolute machine path is returned.
+- Every response from a documented operation carries a generated or validated `X-Correlation-ID`
+  (deliberately absent on the framework's undocumented-route 404/405 fallback); no secret,
+  connection string, database host, stack trace, or absolute machine path is returned.
 - Backend API responses use `Cache-Control: no-store`. The status page may use `no-cache` but cannot be
   served outside Local or Test mode.
 

@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
   // independent runs from this same checkout at once; each sets this to its own run-scoped
   // subdirectory of the already-ignored .next/ so a later build never overwrites an
   // already-serving run's files. Absent, this is the ordinary shared .next/ every other build uses.
+  // Known, accepted cost: Next nests its persistent build cache under distDir (distDir/cache), so
+  // run-scoping it also gives every local-stack invocation a cold cache and a full production
+  // build. Deliberately not worked around: the alternative (a stable, shared cache directory) means
+  // concurrent local-stack runs would share writable build-cache state, the same class of hazard
+  // this file scopes distDir to avoid in the first place. Weighed and accepted, not missed.
   distDir: process.env.OSE_ID_WEB_DIST_DIR ?? ".next",
   turbopack: {
     root: workspaceRoot,

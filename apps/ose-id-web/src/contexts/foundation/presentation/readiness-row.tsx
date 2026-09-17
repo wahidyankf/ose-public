@@ -8,12 +8,18 @@ export interface ReadinessRowProps {
  * The state value's typographic weight per {@link ServiceStatusComponent.tone}. A by-design-active
  * ("positive") row keeps the strong weight a healthy state deserves; a by-design-inactive
  * ("neutral") row uses a visibly lighter, already-established muted token instead, so a first
- * glance can triage the two apart without reading every explanatory sentence — driven entirely by
+ * glance can triage them apart without reading every explanatory sentence — driven entirely by
  * the domain's own `tone` field, never by string-matching `stateLabel` and never by colour alone.
+ *
+ * An "attention" row — a component the backend reports as unable to serve — carries the same strong
+ * weight as a healthy one plus the already-established destructive foreground token. Weight and
+ * colour both only reinforce: the row already says "Unavailable" or "Incompatible" in words, so a
+ * monochrome display and a screen reader lose nothing.
  */
 const STATE_LABEL_CLASS_NAME_BY_TONE: Record<ServiceStatusComponent["tone"], string> = {
   positive: "font-semibold",
   neutral: "font-normal text-muted-foreground",
+  attention: "font-semibold text-destructive",
 };
 
 /**

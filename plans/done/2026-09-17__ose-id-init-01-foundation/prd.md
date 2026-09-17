@@ -125,7 +125,7 @@ Desktop bounded card / mobile full width
 │ Backend       Ready          │
 │ PostgreSQL    Ready          │
 │ Schema        Compatible     │
-│ [ Refresh status ]           │
+│ Reload to re-read; no control│
 └──────────────────────────────┘
 ```
 
@@ -166,13 +166,18 @@ Option A is selected because it exposes the required current state with the shor
 path. Option B remains a rejected finalist: its sequence is useful during startup, but the persistent
 timeline adds history that the foundation does not own and can be mistaken for an operations console.
 
-The selected shell covers loading, fully ready, PostgreSQL unavailable, schema incompatible, backend
-unreachable, unknown/sanitized failure, retry in progress, and restored states. Each state preserves one
-descriptive `h1`, one named live status region, stable row labels, and textual status independent of
-color. At 320, 375, 768, 1024, 1280, and 1440 CSS pixels and 200% zoom,
-content must not clip, overlap, or require horizontal scrolling. Dark mode must retain repository-token
-contrast. Errors may expose only stable component codes and a correlation ID; they never expose a host,
-port, connection string, exception, username, path, or credential.
+The selected shell covers fully ready, PostgreSQL unavailable, schema incompatible, backend unreachable,
+and unknown/sanitized failure. Each state preserves one descriptive `h1`, one named live status region,
+stable row labels, and textual status independent of color. At 320, 375, 768, 1024, 1280, and 1440 CSS
+pixels and 200% zoom, content must not clip, overlap, or require horizontal scrolling. Dark mode must
+retain repository-token contrast. Errors may expose only stable component states in words; they never
+expose a host, port, connection string, exception, username, path, credential, or correlation value.
+
+Option A's refresh control is deliberately not built, and neither are the loading, retry-in-progress,
+and restored states that only a refresh control creates. The page reads the backend server-side while it
+renders and caches nothing, so reloading the page re-reads: a control would add a second way to do what
+the browser already does, and would be the only interactive element on a surface whose whole claim is
+that it has none.
 
 ## State and Failure Contract
 

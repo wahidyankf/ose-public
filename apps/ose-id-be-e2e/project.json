@@ -11,6 +11,48 @@
       },
       "cache": false
     },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet build apps/ose-id-be-e2e/OseId.Be.E2E.csproj /p:TreatWarningsAsErrors=true"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/steps/**/*.cs",
+        "{projectRoot}/OseId.Be.E2E.csproj",
+        "{projectRoot}/Directory.Build.props",
+        "{projectRoot}/Directory.Packages.props",
+        "{projectRoot}/global.json",
+        "{workspaceRoot}/apps/ose-id-be/src/OseId.Domain/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/src/OseId.Domain/OseId.Domain.csproj",
+        "{workspaceRoot}/apps/ose-id-be/Directory.Build.props",
+        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature"
+      ]
+    },
+    "lint": {
+      "dependsOn": ["typecheck"],
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "dotnet format apps/ose-id-be-e2e/OseId.Be.E2E.csproj --verify-no-changes --verbosity diagnostic",
+          "dotnet build apps/ose-id-be-e2e/OseId.Be.E2E.csproj /p:TreatWarningsAsErrors=true /p:RunAnalyzersDuringBuild=true /p:EnforceCodeStyleInBuild=true --no-incremental"
+        ],
+        "parallel": false
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/steps/**/*.cs",
+        "{projectRoot}/OseId.Be.E2E.csproj",
+        "{projectRoot}/.editorconfig",
+        "{projectRoot}/Directory.Build.props",
+        "{projectRoot}/Directory.Packages.props",
+        "{projectRoot}/global.json",
+        "{workspaceRoot}/apps/ose-id-be/src/OseId.Domain/**/*.cs",
+        "{workspaceRoot}/apps/ose-id-be/src/OseId.Domain/OseId.Domain.csproj",
+        "{workspaceRoot}/apps/ose-id-be/Directory.Build.props",
+        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature"
+      ]
+    },
     "test:e2e": {
       "executor": "nx:run-commands",
       "options": {
@@ -88,6 +130,14 @@
       "options": {
         "commands": [
           {
+            "command": "npm exec -- nx run ose-id-be-e2e:typecheck",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-be-e2e:lint",
+            "forwardAllArgs": false
+          },
+          {
             "command": "npm exec -- nx run ose-id-be-e2e:test:coverage",
             "forwardAllArgs": false
           }
@@ -101,7 +151,8 @@
         "{workspaceRoot}/scripts/behaviour-coverage.mjs",
         "{workspaceRoot}/apps/ose-id-be-e2e/behaviour-coverage.json",
         "{workspaceRoot}/package-lock.json",
-        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature"
+        "{workspaceRoot}/specs/apps/ose/id-be/behaviours/**/*.feature",
+        "{workspaceRoot}/apps/ose-id-be/src/OseId.Domain/**/*.cs"
       ]
     }
   },

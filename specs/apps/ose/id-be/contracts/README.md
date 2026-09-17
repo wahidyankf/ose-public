@@ -45,3 +45,5 @@ exactly what they must never produce.
 - [OSE ID BE corpus](../README.md) — the owner index this contract belongs to.
 - [Foundation behaviours](../behaviours/foundation/README.md) — the Gherkin these operations answer to.
 - [OSE BE contract](../../be/contracts/README.md) — the sibling backend contract this one mirrors.
+- [generated](./generated/README.md) — the gitignored bundle output this contract's `bundle`/`docs`
+  targets produce.

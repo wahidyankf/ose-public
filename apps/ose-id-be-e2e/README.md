@@ -44,10 +44,16 @@ invocation supplies its own env vars to avoid colliding with these manual-develo
 ## Checks and specs
 
 ```bash
+npm exec nx -- run ose-id-be-e2e:typecheck
+npm exec nx -- run ose-id-be-e2e:lint
 npm exec nx -- run ose-id-be-e2e:test:e2e
 npm exec nx -- run ose-id-be-e2e:test:coverage
 npm exec nx -- run ose-id-be-e2e:test:quick
 ```
+
+`typecheck` compiles the step assembly with warnings as errors; `lint` adds
+`dotnet format --verify-no-changes` and Roslyn analyzer verification. Both run inside `test:quick`,
+ahead of the static coverage validators, under the same build policy the code they observe uses.
 
 The behaviour source of truth is
 [the OSE ID backend Gherkin suite](../../specs/apps/ose/id-be/behaviours/README.md).
@@ -55,4 +61,6 @@ The behaviour source of truth is
 This dedicated E2E project owns no independent corpus. Its `test:e2e` adapter observes `ose-id-be`
 through the real process and loopback-listener boundary; `test:coverage:e2e`,
 `test:coverage:behaviour`, and aggregate `test:coverage` validate it statically. Unit and Integration
-are omitted because their in-process boundaries belong to `ose-id-be` itself.
+are omitted because their in-process boundaries belong to `ose-id-be` itself. `install`,
+`test:e2e:ui`, and `test:e2e:report` are omitted as Playwright/npm-specific and inapplicable to a
+Reqnroll runner.

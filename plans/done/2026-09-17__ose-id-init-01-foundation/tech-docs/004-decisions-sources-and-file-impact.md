@@ -130,7 +130,7 @@ Phase 0 records live evidence; a conflict stops implementation and amends the pl
 ├── docs/reference/
 │   ├── monorepo-structure.md [E] — four project purposes
 │   └── web-sites.md [E] — fixed 3500, 8501, and 5438 local reservations
-└── repo-governance/development/project-dependency-graph.md [E] — exact project edges
+└── docs/reference/project-dependency-graph.md [E] — exact project edges
 ```
 
 ### More Detail

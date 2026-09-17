@@ -575,7 +575,7 @@ async function buildWeb(runId) {
  * `signalOwned` can reach that whole group with one negative-PID signal regardless of how many
  * shim layers forked underneath it.
  */
-function startWeb(port, runId, nodeExecutable) {
+function startWeb(port, runId, nodeExecutable, backendOrigin) {
     const wrapper = path.join(REPO_ROOT, "scripts", "next-with-port.mjs");
     const child = spawn(
         nodeExecutable,
@@ -584,7 +584,15 @@ function startWeb(port, runId, nodeExecutable) {
             cwd: path.join(REPO_ROOT, "apps", "ose-id-web"),
             // See startBackend: an unread pipe would eventually hang this long-running server.
             stdio: "inherit",
-            env: { ...process.env, OSE_RUNTIME_MODE: "Local", OSE_ID_WEB_DIST_DIR: webDistDir(runId) },
+            // The shell reads backend readiness server-side, so it is told this run's own backend
+            // origin rather than left on its compiled-in default: a parallel invocation moves the
+            // backend port, and a web shell still pointed at 8501 would report a stranger's stack.
+            env: {
+                ...process.env,
+                OSE_RUNTIME_MODE: "Local",
+                OSE_ID_WEB_DIST_DIR: webDistDir(runId),
+                OSE_ID_BE_URL: backendOrigin,
+            },
             detached: true,
         },
     );
@@ -826,7 +834,7 @@ async function main() {
         // Step 6: the web shell.
         webBuildStarted = true;
         await buildWeb(runId);
-        owned.web = startWeb(webPort, runId, nodeExecutable);
+        owned.web = startWeb(webPort, runId, nodeExecutable, owned.backends[0].origin);
         await waitForWebReady(owned.web.origin, { failImmediately: readinessFailureStage === "web" });
         log(runId, `web ready (${owned.web.origin})`);
 

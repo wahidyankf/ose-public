@@ -14,7 +14,9 @@ Archived plans and completed project planning documents.
   `ose-id-web`, `ose-id-web-e2e`), an ASP.NET Core backend, a Next.js web shell, PostgreSQL schema
   ownership via EF Core migrations, health/readiness contracts, and one deterministic local
   multi-instance runner — no account, sign-in, OIDC, company, or product authorization behavior yet.
-  Delivered `worktree-to-pr` across eight phases, with the feature work landing in `b851283d1`. The
+  Delivered `worktree-to-pr` across eight phases; the feature work landed on `main` as the
+  `ose-public#539` squash merge `a585f5b3c`, and the terminal plan-execution audit closed in
+  `ose-public#542` (`e36dfb616`). The
   local-stack runner needed nine separate concurrency/signal-delivery defects found and fixed at
   root cause before it was reliable under repeated real-process starts and stops: eight were
   PostgreSQL container/port races, and the ninth was a deeper platform defect — Volta's `node` shim

@@ -6,11 +6,14 @@ Feature: OSE ID backend runtime mode guard
 
   Rule: Backend serving is disabled outside Local or Test
 
-    Scenario Outline: Reject an unsupported backend runtime mode
+    Scenario Outline: Reject an unsupported service runtime before listener binding
       Given the backend runtime mode is <mode>
       When the backend process starts
       Then startup exits non-zero before serving the application
       And the diagnostic returns the stable runtime-mode-disabled code
+      And no configured listener is bound
+      And no database or identity row is changed
+      And the diagnostic discloses no secret, configuration value, stack trace, or absolute path
 
       Examples:
         | mode       |

@@ -20,11 +20,17 @@ Feature: OSE ID service status
       Then the response is 200 with media type "text/html; charset=utf-8"
       And the response is marked "no-cache" and sets no session cookie
       And the page carries one heading and a named textual status region
+      And the status region states the backend, the database, and the schema as ready
       And no sign-in, provider, company, consent, or administration control is rendered
       And repeated and concurrent reads change nothing the service stores
 
-    # Exemption(e2e): the unreadable-status state has no external trigger a black-box http client can pull — the status source is an in-process call with no network, process, or filesystem boundary between the shell and what it reports, so only an injected source can reach this branch; alternative-proof: ose-id-web:test:integration / Sanitize a status-rendering failure
-    @e2e-exempt
+    Scenario: Report a backend that answers but cannot serve
+      Given the local web shell is running and the backend reports a dependency it cannot serve on
+      When an anonymous browser requests the OSE ID web root
+      Then the response is 200 with media type "text/html; charset=utf-8"
+      And the status region names the unready component and states its condition in words
+      And no backend host, secret, stack trace, absolute path, or user detail is returned or logged
+
     Scenario: Sanitize a status-rendering failure
       Given the local web shell is running and the backend status it reports on is unreachable
       When an anonymous browser requests the OSE ID web root

@@ -2382,6 +2382,41 @@ checkout --`). `origin/main...HEAD`: 372 files changed, 26,516 insertions(+), 76
       plan's scope (see that bullet's evidence); not retried, widened, or skipped — excluded from this
       phase's acceptance criterion on the documented basis that the criterion is the four `ose-id`
       projects' targets, all of which passed.
+- [x] [AI] Root-cause and fix the `apps/ose-id-web/tsconfig.json` local-stack pollution surfaced by
+      a `.gitignore` coverage audit; acceptance: the tracked file returns to its clean baseline, the
+      runner never leaks another run's own entries again, and a regression test proves it.
+      **Date**: 2026-09-17. **Status**: Done. The earlier diff-inspection bullet's "Next.js
+      `local-stack-runs` auto-append" note undersold the defect: those entries were not only
+      transient noise from in-flight test runs but had already accumulated to **116 lines** across
+      roughly 58 historical run IDs baked into committed HEAD (confirmed via `git show
+  HEAD:apps/ose-id-web/tsconfig.json | grep -c local-stack-runs` → 116) and already pushed.
+      Root cause: `apps/ose-id-web/next.config.ts`'s custom `distDir`
+      (`.next/local-stack-runs/<runId>`, set by `apps/ose-id-be-e2e/scripts/local-stack.mjs` so
+      concurrent runs never clobber each other's build output) makes Next's own TypeScript-setup
+      verification permanently append two `include`-array entries per run and never prune them;
+      the runner's existing `cleanup()` already removed the physical run directory but never
+      touched `tsconfig.json`. The user explicitly required `tsconfig.json` itself never be
+      gitignored as a workaround. Fixed in `f3b9cc5de`
+      (`fix(ose-id): stop local-stack runs from leaking tsconfig entries`): (1) `cleanup()`'s "web"
+      stage now strips only the current run's own two entries under an exclusive-create lock file
+      (`tsconfig.json.lock`, itself gitignored) so a concurrently-running separate invocation's
+      still-active entries are never touched, gated on whether `next build` actually ran rather
+      than on `reachedStageCount` so a build-succeeds-but-start-fails run still gets pruned; (2) the
+      prune also reformats via the repo's own Prettier, since Next's writer separately reformats
+      the whole file into one array element per line — undoing that drive-by reformatting too, not
+      just the semantic `include` content; (3) the 116 already-committed stray lines were cleaned
+      back to the clean baseline; (4) a new regression test,
+      `LocalStackRunnerTests.CleanupRestoresWebTsconfigToItsPreRunContent`, proves a full
+      run+cleanup cycle leaves `tsconfig.json` byte-identical to its pre-run content, first
+      asserting an intermediate mid-run state actually contains the run's own entries so the test
+      cannot pass vacuously. Verified: the full `ose-id-be-e2e:test:e2e` target (27/27 passed),
+      `typecheck,lint,test:quick` for `ose-id-be-e2e`/`ose-id-web` (both green, 100% web coverage
+      maintained), and a full `gate run --surface=pre-push` (clean) all ran green against this
+      fix's own working tree before committing and pushing. The broader `.gitignore` audit this fix
+      was prompted by found every other `ose-id` generated-artifact directory (`.next/`, `bin/`,
+      `obj/`, `dist/`, `coverage/`) already correctly covered by each project's own scoped
+      `.gitignore`; only the new `tsconfig.json.lock` transient lock file needed a new entry, added
+      to the repo-root `.gitignore`'s "Runtime data" section.
 
 ### Push and Exact-Head Review
 

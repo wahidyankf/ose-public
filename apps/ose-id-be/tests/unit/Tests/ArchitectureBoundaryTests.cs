@@ -49,6 +49,12 @@ public sealed class ArchitectureBoundaryTests
             .Should()
             .NotContain("<PackageReference", "a use case exposes no ASP.NET, EF, OpenIddict, GraphQL, or MCP type");
         csproj.Should().Contain("""<ProjectReference Include="../OseId.Domain/OseId.Domain.csproj" />""");
+        CountOccurrences(csproj, "<ProjectReference")
+            .Should()
+            .Be(
+                1,
+                "the domain is the only ring the application may name, so a second project reference to any sibling breaks the boundary even when that sibling declares no forbidden package"
+            );
     }
 
     [Fact]
@@ -72,6 +78,19 @@ public sealed class ArchitectureBoundaryTests
                     $"{assembly.GetName().Name} must never reference a {forbiddenPrefix}* assembly"
                 );
         }
+    }
+
+    private static int CountOccurrences(string content, string token)
+    {
+        int count = 0;
+        int index = content.IndexOf(token, StringComparison.Ordinal);
+        while (index >= 0)
+        {
+            count++;
+            index = content.IndexOf(token, index + token.Length, StringComparison.Ordinal);
+        }
+
+        return count;
     }
 
     private static string ReadCsproj(string projectName) =>

@@ -411,7 +411,7 @@ credential_scan() {
 run_canary() {
 	local dir value out detected real_findings scan_rc
 
-	dir=$(mktemp -d "${TMPDIR:-/tmp}/public-safety-canary.XXXXXX") || scan_error "cannot create the canary directory"
+	dir=$(mktemp -d "$WORK/canary.XXXXXX") || scan_error "cannot create the canary directory"
 
 	# Generated here, never committed, and never printed. A real RSA key rather
 	# than a token-shaped string: the token detectors validate a checksum, so a

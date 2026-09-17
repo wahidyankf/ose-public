@@ -44,11 +44,9 @@ No active plan waits on these and no live defect is running, but each carries a 
 - [deploy-targets-registry](./q2-not-urgent-important/deploy-targets-registry.md) — declare `prod-*`/`stag-*` deploy branches in `repo-config.yml` instead of deriving their existence from `git branch -r`.
 - [doc-command-existence-validation](./q2-not-urgent-important/doc-command-existence-validation.md) — a rhino-cli validator catching doc-cited commands that don't exist.
 - [doctor-fix-polyglot-restore](./q2-not-urgent-important/doctor-fix-polyglot-restore.md) — `doctor --fix` verifies toolchain presence but not per-project restore state (NuGet, npm-workspace hoisting), leaving idle checkouts pre-push-red until manually diagnosed.
-- [extend-byte-identity-to-claude-hooks](./q2-not-urgent-important/extend-byte-identity-to-claude-hooks.md) — `.claude/hooks/block-env-file-access.sh` drifted between the parity repos with nothing to catch it but a plan's manual hash check.
 - [governance-command-name-reconciliation](./q2-not-urgent-important/governance-command-name-reconciliation.md) — governance tables, agent files, and npm scripts all name commands that do not exist, including a removed `rhino-cli` subcommand three `sync:*` scripts still invoke.
 - [harness-binding-catalog-drift](./q2-not-urgent-important/harness-binding-catalog-drift.md) — narrowed to one surviving lesson: the 2026-07-20 audit's summary contradicted its own report body, so read the body.
 - [harness-converter-preserve-agent-mode](./q2-not-urgent-important/harness-converter-preserve-agent-mode.md) — the agent converter emits a fixed field set, so OpenCode-only frontmatter like `mode: subagent` is dropped once an agent gains a `.claude/` source.
-- [harness-level-env-file-enforcement-gap](./q2-not-urgent-important/harness-level-env-file-enforcement-gap.md) — OpenCode and Codex have no equivalent of the Claude Code env-file hook, so two of the three supported harnesses have no technical block.
 - [mermaid-state-label-render-clipping-warn](./q2-not-urgent-important/mermaid-state-label-render-clipping-warn.md) — a WARN rule for `stateDiagram-v2` edge labels that clip in GitHub's renderer.
 - [opencode-v2-migration](./q2-not-urgent-important/opencode-v2-migration.md) — OpenCode v2 renames eleven configuration keys the generator emits today, including `permission.bash` → `permission.shell`; plan the migration before the beta is promoted.
 - [private-sibling-opencode-ci-monitor-orphan](./q2-not-urgent-important/private-sibling-opencode-ci-monitor-orphan.md) — an unsourced `.opencode/agents/ci-monitor-subagent.md` mirror survives only via a hardcoded filename skip both parity repos inherit; ose-public solved the sibling case by declaring it vendored.
@@ -358,4 +356,25 @@ five retired backlog folders. All sit in archived plan records, which the `md-li
   apparent `md links validate` blind spot, the deliberately non-literal Step 9 cross-repo link rule,
   and the unbuilt rubric-faithful classifier.
 
-> Last groomed: 2026-08-21
+### 2026-09-16 — two ideas resolved directly, not promoted
+
+An unguarded Nx fan-out exhausted host memory and forced a machine restart. Arming the
+resource-aware boundary rule with `require-hippo-boundary.sh` resolved both of these outright, so
+they were deleted rather than carried:
+
+- **`harness-level-env-file-enforcement-gap`** — the idea's own open question was whether any other
+  harness offers a hook mechanism at all. It does. Codex reads a project-level `.codex/hooks.json`
+  using the same `PreToolUse` schema, the same `tool_name`/`tool_input.command` stdin fields, and the
+  same deny payload as Claude Code; OpenCode resolves a `permission.bash` pattern map
+  last-match-wins. Both are now wired, for `block-env-file-access.sh` as well as the new guard. The
+  residual is narrower and upstream: Codex fires `PreToolUse` for shell calls but not for file-tool
+  calls, so its env-file coverage is the Bash arm only. Recorded in
+  `resource-aware-development/enforcement-and-judgment-boundaries.md` rather than parked here.
+- **`extend-byte-identity-to-claude-hooks`** — resolved by construction plus a written standard. The
+  guard is authored as a union superset of every consuming ecosystem's verbs with the inapplicable
+  arms inert, so it needs no per-repo variant, and its consumer check lets one file serve both the
+  repository and machine-wide layers. `.codex/hooks.json` references the canonical script instead of
+  copying it. The obligation is now stated in `nx-targets/cache-cross-repo-byte-identity.md`
+  alongside the `apps/rhino-cli` rules.
+
+> Last groomed: 2026-09-16

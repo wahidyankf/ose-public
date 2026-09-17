@@ -13,6 +13,9 @@ These bound every action the gate takes.
   to prevent, and "it was not a plan" is not an exemption.
 - **Self-created only.** Delete only what this plan created. Anything else requires positive evidence
   it is idle — not merely the absence of evidence that it is busy.
+- **Bounded cache exception.** An exact ignored, nonshared cache such as `.fvm-cache/` may be scratch even when
+  another task created it, but only after recorded regeneration, non-use, and secret-free evidence. This never makes
+  a shared cache removable.
 - **Verify not in use before deleting.** Check, then delete. When in doubt, leave it. An artifact left
   behind costs disk; an artifact wrongly deleted costs someone else's work.
 - **Never delete a shared cache.** In particular, the **shared cargo `target/` directory** — the
@@ -40,7 +43,7 @@ These bound every action the gate takes.
   provisioned from `origin/main` carries none of them — so a deletion there is unrecoverable. Regenerable build output is the one exception: it is gitignored and rebuildable by a
   documented command, and the ambient sweeper already removes it there. The exception excludes the shared
   cargo `target/` and every other shared cache, and the default branch is never deleted.
-- **Never delete a secret-bearing file.** `.env`, `.env.local`, every other `.env*` file, and any
+- **Never delete a secret-bearing file or directory.** `.env`, `.env.local`, every other `.env*` file, and any
   local credential or infrastructure-state file sit outside every artifact class this gate removes.
   They are gitignored and unregenerable — nothing in the repository reconstructs one — so deleting
   one is permanent loss of the operator's own configuration, not a reclaimed artifact. This holds

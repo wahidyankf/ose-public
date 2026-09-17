@@ -841,6 +841,8 @@ extensions:
           - run
           - --class
           - ephemeral
+          - --resource-tier
+          - heavy
           - --disk-path
           - .
           - --
@@ -864,6 +866,8 @@ extensions:
           - run
           - --class
           - transactional
+          - --resource-tier
+          - standard
           - --disk-path
           - .
           - --

@@ -2389,7 +2389,7 @@ checkout --`). `origin/main...HEAD`: 372 files changed, 26,516 insertions(+), 76
       `local-stack-runs` auto-append" note undersold the defect: those entries were not only
       transient noise from in-flight test runs but had already accumulated to **116 lines** across
       roughly 58 historical run IDs baked into committed HEAD (confirmed via `git show
-  HEAD:apps/ose-id-web/tsconfig.json | grep -c local-stack-runs` → 116) and already pushed.
+HEAD:apps/ose-id-web/tsconfig.json | grep -c local-stack-runs` → 116) and already pushed.
       Root cause: `apps/ose-id-web/next.config.ts`'s custom `distDir`
       (`.next/local-stack-runs/<runId>`, set by `apps/ose-id-be-e2e/scripts/local-stack.mjs` so
       concurrent runs never clobber each other's build output) makes Next's own TypeScript-setup
@@ -2420,7 +2420,14 @@ checkout --`). `origin/main...HEAD`: 372 files changed, 26,516 insertions(+), 76
 
 ### Push and Exact-Head Review
 
-- [ ] [AI] After explicit authorization, push the delivery branch and open or update its draft PR to `main`. Record exact 40-character head/base SHAs; the head must already include the archived plan.
+- [x] [AI] After explicit authorization, push the delivery branch and open or update its draft PR to `main`. Record exact 40-character head/base SHAs; the head must already include the archived plan.
+      **Date**: 2026-09-17. **Status**: Done. User selected "Yes, push and open the PR" in
+      response to the standing push-authorization question. Branch `ose-id-init-01-foundation-base`
+      pushed to `origin`; draft PR opened at
+      <https://github.com/wahidyankf/ose-public/pull/539>. Head:
+      `162d07aa8f2b645c6a0cc014fe5b468a264715d8` (includes the archived plan at
+      `plans/done/2026-09-17__ose-id-init-01-foundation/` and the tsconfig-pollution fix). Base:
+      `284504b689caf7e77dedd75c529f63a2069665df` (`origin/main`).
 - [ ] [AI] Poll GitHub Actions every two minutes without `gh run watch`. Fix root causes, push authorized repairs, and restart all exact-head gates whenever HEAD changes.
 - [ ] [AI] Require the PR's exact current head/base Quality gate, applicable finite API/E2E/schema gates, one authenticated clean current-head `pr-leak-review`, and the repository-required semantic review for identity/security code. Resolve every blocking finding and rerun invalidated proof.
 - [ ] [AI] Merge under default `[AI]` authority only when all hardened checks refer to the same current head/base and the archive move is visible in the PR diff. Record the PR URL, reviewed head, base, merge SHA, and merge timestamp in the workflow final report; make no post-merge plan edit.

@@ -2445,6 +2445,28 @@ HEAD:apps/ose-id-web/tsconfig.json | grep -c local-stack-runs` → 116) and alre
       via the same reproduction scan before pushing. Head advanced to
       `15d0aca7fc6e037eb2a6b56620307e60f98066c7`; CI restarted against this head and is being
       polled to green.
+
+      A second CI-only failure surfaced on the next run (head `824bfb76b8b6a04c122086495d2a7ea3933de645`):
+      the `formatting-verify` group failed with `dotnet-csharpier does not exist`. Root cause: the
+      registry's `format-csharpier`/`format-verify-csharpier` gates were declared as
+      `dotnet csharpier format`/`check` — the `dotnet <tool>` invocation form, which requires a
+      local `.NET` tool manifest restore — but no manifest ever declared `csharpier` and no CI step
+      ever installed it (only Fantomas and fsharplint are provisioned in
+      `.github/actions/setup-dotnet/action.yml`). This never surfaced before because no PR since the
+      old C# demo apps were deleted had touched any `.cs` file in its affected diff, so the gate
+      never actually ran in CI; this plan's own `ose-id-be`/`ose-id-be-e2e` C# code is the first to
+      trigger it. Fixed the same way Fantomas is already handled — pin csharpier's version (`1.3.0`,
+      matching the version already in local use) in `.config/dotnet-tools.json`, install it globally
+      in `setup-dotnet/action.yml`, and switch both the pre-commit lint-staged entry (`package.json`)
+      and the CI gate command (`repo-config.yml`) to the bare `csharpier format`/`check` form (no
+      `dotnet` prefix, avoiding the manifest-restore requirement), matching Fantomas's own documented
+      convention. Verified locally before pushing: `csharpier check` against exactly this PR's 95
+      affected `.cs` files (diff vs. merge-base `d9a832b6a`) — clean; a full local
+      `gate run --surface=ci --group=formatting-verify` — `PASS`; and a full
+      `gate run --surface=pre-push` — clean (`EXITCODE=0`, redirected-and-captured, not piped).
+      Fixed in `165fe8621`; head advanced to `165fe8621b319cd5422a9912c260bdeb8ef23616`; CI
+      restarted against this head and is being polled to green.
+
 - [ ] [AI] Require the PR's exact current head/base Quality gate, applicable finite API/E2E/schema gates, one authenticated clean current-head `pr-leak-review`, and the repository-required semantic review for identity/security code. Resolve every blocking finding and rerun invalidated proof.
 - [ ] [AI] Merge under default `[AI]` authority only when all hardened checks refer to the same current head/base and the archive move is visible in the PR diff. Record the PR URL, reviewed head, base, merge SHA, and merge timestamp in the workflow final report; make no post-merge plan edit.
 

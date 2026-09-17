@@ -16,6 +16,11 @@
       "version": "0.36.0",
       "commands": ["fsharp-analyzers"],
       "rollForward": false
+    },
+    "csharpier": {
+      "version": "1.3.0",
+      "commands": ["csharpier"],
+      "rollForward": false
     }
   }
 }

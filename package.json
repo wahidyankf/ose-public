@@ -120,7 +120,7 @@
       "scripts/format-elixir.sh"
     ],
     "*.cs": [
-      "dotnet csharpier format"
+      "csharpier format"
     ],
     "*.dart": [
       "dart format"

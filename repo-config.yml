@@ -1067,7 +1067,9 @@ extensions:
       - id: format-csharpier
         type: mutation
         category: formatter
-        command: dotnet csharpier format
+        # Bare `csharpier` requires a GLOBAL dotnet tool install; a local manifest
+        # install needs `dotnet csharpier` plus a prior `dotnet tool restore`.
+        command: csharpier format
         kind: external
         restages: true
         surfaces:
@@ -1076,7 +1078,7 @@ extensions:
       - id: format-verify-csharpier
         type: check
         # `check` fails on unformatted files; do not use `--unformatted-as-warnings`.
-        command: dotnet csharpier check
+        command: csharpier check
         kind: external
         ci-group: formatting-verify
         verifies: format-csharpier

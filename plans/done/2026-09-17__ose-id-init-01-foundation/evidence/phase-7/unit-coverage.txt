@@ -12,19 +12,19 @@
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
-  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
-  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
-  OseId.Be.Unit -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/bin/Debug/net10.0/OseId.Be.Unit.dll
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/bin/Debug/net10.0/OseId.Be.Unit.dll (.NETCoreApp,Version=v10.0)
+  OseId.Domain -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Be.Unit -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/bin/Debug/net10.0/OseId.Be.Unit.dll
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/bin/Debug/net10.0/OseId.Be.Unit.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    96, Skipped:     0, Total:    96, Duration: 79 ms - OseId.Be.Unit.dll (net10.0)
 
 Attachments:
-  /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/coverage/collector/bbfdfb63-521e-469c-97b1-a327fcaf2886/coverage.cobertura.xml
+  <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/coverage/collector/bbfdfb63-521e-469c-97b1-a327fcaf2886/coverage.cobertura.xml
 Unit line coverage: 238/239 (99.58%; required: 99.00%)
-Coverage report: /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/coverage/coverage.cobertura.xml
+Coverage report: <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/coverage/coverage.cobertura.xml
 
 > nx run ose-id-web:"test:unit"
 
@@ -32,7 +32,7 @@ Coverage report: /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-fou
 
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 

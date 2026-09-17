@@ -169,7 +169,7 @@ roots-be coverage validators complete
 [2m> [22mnpx vitest run --coverage --coverage.thresholds.lines=99
 
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/ts-env-loader[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/ts-env-loader[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 
@@ -314,7 +314,7 @@ No lint configured for web-ui-token (CSS + minimal TS)
 [2m> [22mnpx vitest run --coverage --coverage.thresholds.lines=99
 
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/web-ui-token[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/web-ui-token[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 
@@ -440,7 +440,7 @@ src/primitives/resizable-panel/resizable-panel.tsx:222:9: warning jsx-a11y(prefe
 [2m> [22mif grep -rn -E --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist --exclude-dir=coverage --exclude-dir=storybook-static '\b(it|test|describe)\.(skip|only|todo)\(' .; then echo 'ERROR: .skip()/.only()/.todo() found in test files above - remove before merging'; exit 1; fi && npx vitest run --coverage --coverage.thresholds.lines=99
 
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/web-ui[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/web-ui[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
@@ -783,17 +783,17 @@ specs structure validate: 0 finding(s) for "roots"
 [33mDownload 7.20.0 ...[39m
 [32mDownloaded 7.20.0[39m
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
 WARNING: Please consider reporting this to the maintainers of class com.github.benmanes.caffeine.cache.UnsafeAccess
 WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
 [main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
-[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
 [main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: fsharp-giraffe-server (server)
 [main] INFO  o.o.codegen.DefaultGenerator - Generator 'fsharp-giraffe-server' is considered beta.
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/HealthResponse.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/ErrorResponse.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/HealthResponse.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/ErrorResponse.fs
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of APIs.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of Webhooks.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of supporting files.
@@ -811,10 +811,10 @@ WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 > dotnet build apps/ose-be/src/OseBe/OseBe.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/fsharp-env-loader.fsproj (in 116 ms).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/OseBe.fsproj (in 117 ms).
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
-  OseBe -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/bin/Debug/net10.0/OseBe.dll
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/fsharp-env-loader.fsproj (in 116 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/OseBe.fsproj (in 117 ms).
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  OseBe -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/bin/Debug/net10.0/OseBe.dll
 
 Build succeeded.
     0 Warning(s)
@@ -845,17 +845,17 @@ Time Elapsed 00:00:03.98
 [33mDownload 7.20.0 ...[39m
 [32mDownloaded 7.20.0[39m
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
 WARNING: Please consider reporting this to the maintainers of class com.github.benmanes.caffeine.cache.UnsafeAccess
 WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
 [main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
-[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
 [main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: fsharp-giraffe-server (server)
 [main] INFO  o.o.codegen.DefaultGenerator - Generator 'fsharp-giraffe-server' is considered beta.
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/HealthResponse.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/ErrorResponse.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/HealthResponse.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/ErrorResponse.fs
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of APIs.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of Webhooks.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of supporting files.
@@ -873,10 +873,10 @@ WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 > dotnet build apps/ose-be/src/OseBe/OseBe.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/fsharp-env-loader.fsproj (in 116 ms).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/OseBe.fsproj (in 117 ms).
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
-  OseBe -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/bin/Debug/net10.0/OseBe.dll
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/fsharp-env-loader.fsproj (in 116 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/OseBe.fsproj (in 117 ms).
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  OseBe -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/bin/Debug/net10.0/OseBe.dll
 
 Build succeeded.
     0 Warning(s)
@@ -897,89 +897,89 @@ Restore was successful.
 
 [2m> [22mdotnet fsharplint lint apps/ose-be/src/OseBe/OseBe.fsproj --lint-config apps/ose-be/fsharplint.json
 
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/obj/Debug/net10.0/OseBe.AssemblyInfo.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/obj/Debug/net10.0/OseBe.AssemblyInfo.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/HealthResponse.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/HealthResponse.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Domain/Readiness.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Domain/Readiness.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/AppDbContext.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/AppDbContext.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/Repositories/RepositoryTypes.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/Repositories/RepositoryTypes.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/Repositories/EfRepositories.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/Repositories/EfRepositories.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/OpenRouterClient.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/OpenRouterClient.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/OpenRouterConnect.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/OpenRouterConnect.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/Database.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/Database.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/NatsClient.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/NatsClient.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/NatsConnect.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Infrastructure/NatsConnect.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Config/Infrastructure/EnvTier.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Config/Infrastructure/EnvTier.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Db/Infrastructure/DbMigrations.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Db/Infrastructure/DbMigrations.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Db/Application/MigrationStatus.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Db/Application/MigrationStatus.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Db/Api/MigrationStatusApi.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Db/Api/MigrationStatusApi.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Health/Domain/HealthDomain.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Health/Domain/HealthDomain.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Health/Application/HealthService.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Health/Application/HealthService.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Health/Infrastructure/HealthInfrastructure.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Health/Infrastructure/HealthInfrastructure.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Health/Api/HealthApi.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Health/Api/HealthApi.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/RegulatorySource/Domain/RegulatorySourceDomain.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/RegulatorySource/Domain/RegulatorySourceDomain.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/RegulatorySource/Application/RegulatorySourceService.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/RegulatorySource/Application/RegulatorySourceService.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/RegulatorySource/Infrastructure/RegulatorySourceInfrastructure.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/RegulatorySource/Infrastructure/RegulatorySourceInfrastructure.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/RegulatorySource/Api/RegulatorySourceApi.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/RegulatorySource/Api/RegulatorySourceApi.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/InternalPolicy/Domain/InternalPolicyDomain.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/InternalPolicy/Domain/InternalPolicyDomain.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/InternalPolicy/Application/InternalPolicyService.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/InternalPolicy/Application/InternalPolicyService.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/InternalPolicy/Infrastructure/InternalPolicyInfrastructure.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/InternalPolicy/Infrastructure/InternalPolicyInfrastructure.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/InternalPolicy/Api/InternalPolicyApi.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/InternalPolicy/Api/InternalPolicyApi.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/GapAnalysis/Domain/GapAnalysisDomain.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/GapAnalysis/Domain/GapAnalysisDomain.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/GapAnalysis/Application/GapAnalysisService.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/GapAnalysis/Application/GapAnalysisService.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/GapAnalysis/Infrastructure/GapAnalysisInfrastructure.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/GapAnalysis/Infrastructure/GapAnalysisInfrastructure.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/GapAnalysis/Api/GapAnalysisApi.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/GapAnalysis/Api/GapAnalysisApi.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/AiOrchestration/Domain/AiOrchestrationDomain.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/AiOrchestration/Domain/AiOrchestrationDomain.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/AiOrchestration/Application/AiOrchestrationService.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/AiOrchestration/Application/AiOrchestrationService.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/AiOrchestration/Infrastructure/AiOrchestrationInfrastructure.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/AiOrchestration/Infrastructure/AiOrchestrationInfrastructure.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/AiOrchestration/Api/AiOrchestrationApi.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/AiOrchestration/Api/AiOrchestrationApi.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Messaging/Domain/MessagingDomain.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Messaging/Domain/MessagingDomain.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Messaging/Application/MessagingStatus.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Messaging/Application/MessagingStatus.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Messaging/Infrastructure/JetStreamDemo.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Messaging/Infrastructure/JetStreamDemo.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Messaging/Api/MessagingApi.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Contexts/Messaging/Api/MessagingApi.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/WebApp.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/WebApp.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Program.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/Program.fs ==========
 ========== Finished: 0 warnings ==========
 ========== Summary: 0 warnings ==========
 [2m> [22mdotnet fsharp-analyzers --project apps/ose-be/src/OseBe/OseBe.fsproj --analyzers-path $(find $(dotnet nuget locals global-packages --list | sed 's/.*: //')g-research.fsharp.analyzers -path '*/analyzers/dotnet/fs' -type d | head -1) --treat-as-error GRA-STRING-001 GRA-STRING-002 GRA-STRING-003 GRA-STRING-004 GRA-UNIONCASE-001 GRA-VIRTUALCALL-001 GRA-JSONOPTS-001 GRA-DISPBEFOREASYNC-001 GRA-IMMUTABLECOLLECTIONEQUALITY-001 GRA-LOGARGFUNCFULLAPP-001 GRA-LOGTEMPLMISSVALS-001 GRA-TYPE-ANNOTATE-001 GRA-INTERPOLATED-001
@@ -1008,17 +1008,17 @@ Restore was successful.
 [33mDownload 7.20.0 ...[39m
 [32mDownloaded 7.20.0[39m
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
 WARNING: Please consider reporting this to the maintainers of class com.github.benmanes.caffeine.cache.UnsafeAccess
 WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
 [main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
-[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
 [main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: fsharp-giraffe-server (server)
 [main] INFO  o.o.codegen.DefaultGenerator - Generator 'fsharp-giraffe-server' is considered beta.
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/HealthResponse.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/ErrorResponse.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/HealthResponse.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/generated-contracts/OpenAPI/src/OseBe.Contracts/ErrorResponse.fs
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of APIs.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of Webhooks.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of supporting files.
@@ -1036,10 +1036,10 @@ WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 > dotnet build apps/ose-be/src/OseBe/OseBe.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/fsharp-env-loader.fsproj (in 116 ms).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/OseBe.fsproj (in 117 ms).
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
-  OseBe -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/bin/Debug/net10.0/OseBe.dll
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/fsharp-env-loader.fsproj (in 116 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/OseBe.fsproj (in 117 ms).
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  OseBe -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/bin/Debug/net10.0/OseBe.dll
 
 Build succeeded.
     0 Warning(s)
@@ -1052,19 +1052,19 @@ Time Elapsed 00:00:03.98
 [2m> [22mif grep -rn -E --include='*.fs' 'Skip\s*=' apps/ose-be/tests/unit; then echo 'ERROR: xunit Skip= attribute found in test files above'; exit 1; fi && dotnet test apps/ose-be/tests/unit/OseBe.UnitTests.fsproj /p:CollectCoverage=true /p:Threshold=99 "/p:Include=[OseBe]*" /p:ThresholdType=line "/p:ExcludeByFile=**/OseBe/Program.fs%2C**/Contexts/Db/Infrastructure/DbMigrations.fs%2C**/Contexts/RegulatorySource/Infrastructure/RegulatorySourceInfrastructure.fs%2C**/Contexts/InternalPolicy/Infrastructure/InternalPolicyInfrastructure.fs%2C**/Infrastructure/Repositories/EfRepositories.fs%2C**/Contexts/Messaging/Infrastructure/JetStreamDemo.fs%2C**/Infrastructure/NatsConnect.fs%2C**/Infrastructure/OpenRouterConnect.fs"
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/unit/OseBe.UnitTests.fsproj (in 250 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/unit/OseBe.UnitTests.fsproj (in 250 ms).
   2 of 3 projects are up-to-date for restore.
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
-  OseBe -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/bin/Debug/net10.0/OseBe.dll
-  OseBe.UnitTests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/unit/bin/Debug/net10.0/OseBe.UnitTests.dll
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  OseBe -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/bin/Debug/net10.0/OseBe.dll
+  OseBe.UnitTests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/unit/bin/Debug/net10.0/OseBe.UnitTests.dll
   [coverlet] _mapping file name: 'CoverletSourceRootsMapping_OseBe.UnitTests'
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/unit/bin/Debug/net10.0/OseBe.UnitTests.dll (.NETCoreApp,Version=v10.0)
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/unit/bin/Debug/net10.0/OseBe.UnitTests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    44, Skipped:     0, Total:    44, Duration: 364 ms - OseBe.UnitTests.dll (net10.0)
   [coverlet] 
   Calculating coverage result...
-   Generating report '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/unit/coverage.json'
+   Generating report '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/unit/coverage.json'
 
 +--------+------+--------+--------+
 | Module | Line | Branch | Method |
@@ -1193,20 +1193,20 @@ ose-be: 10 features, 15 expanded scenarios, adapters: unit, integration, e2e.
 [33mDownload 7.20.0 ...[39m
 [32mDownloaded 7.20.0[39m
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
 WARNING: Please consider reporting this to the maintainers of class com.github.benmanes.caffeine.cache.UnsafeAccess
 WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
 [main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
-[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
 [main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: fsharp-giraffe-server (server)
 [main] INFO  o.o.codegen.DefaultGenerator - Generator 'fsharp-giraffe-server' is considered beta.
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/UpdateJournalEntry.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/NewJournalEntry.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/JournalEntry.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/HealthResponse.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/ErrorResponse.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/UpdateJournalEntry.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/NewJournalEntry.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/JournalEntry.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/HealthResponse.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/ErrorResponse.fs
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of APIs.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of Webhooks.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of supporting files.
@@ -1224,10 +1224,10 @@ WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 > dotnet build apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/fsharp-env-loader.fsproj (in 120 ms).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj (in 134 ms).
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
-  OrganicleverBe -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/bin/Debug/net10.0/OrganicleverBe.dll
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/fsharp-env-loader.fsproj (in 120 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj (in 134 ms).
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  OrganicleverBe -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/bin/Debug/net10.0/OrganicleverBe.dll
 
 Build succeeded.
     0 Warning(s)
@@ -1258,20 +1258,20 @@ Time Elapsed 00:00:04.25
 [33mDownload 7.20.0 ...[39m
 [32mDownloaded 7.20.0[39m
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
 WARNING: Please consider reporting this to the maintainers of class com.github.benmanes.caffeine.cache.UnsafeAccess
 WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
 [main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
-[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
 [main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: fsharp-giraffe-server (server)
 [main] INFO  o.o.codegen.DefaultGenerator - Generator 'fsharp-giraffe-server' is considered beta.
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/UpdateJournalEntry.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/NewJournalEntry.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/JournalEntry.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/HealthResponse.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/ErrorResponse.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/UpdateJournalEntry.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/NewJournalEntry.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/JournalEntry.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/HealthResponse.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/ErrorResponse.fs
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of APIs.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of Webhooks.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of supporting files.
@@ -1289,10 +1289,10 @@ WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 > dotnet build apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/fsharp-env-loader.fsproj (in 120 ms).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj (in 134 ms).
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
-  OrganicleverBe -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/bin/Debug/net10.0/OrganicleverBe.dll
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/fsharp-env-loader.fsproj (in 120 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj (in 134 ms).
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  OrganicleverBe -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/bin/Debug/net10.0/OrganicleverBe.dll
 
 Build succeeded.
     0 Warning(s)
@@ -1313,57 +1313,57 @@ Restore was successful.
 
 > dotnet fsharplint lint apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj --lint-config apps/organiclever-be/fsharplint.json
 
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/obj/Debug/net10.0/OrganicleverBe.AssemblyInfo.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/obj/Debug/net10.0/OrganicleverBe.AssemblyInfo.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/HealthResponse.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/HealthResponse.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Infrastructure/AppDbContext.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Infrastructure/AppDbContext.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Infrastructure/Database.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Infrastructure/Database.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Infrastructure/NatsClient.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Infrastructure/NatsClient.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Infrastructure/NatsConnect.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Infrastructure/NatsConnect.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Env/Infrastructure/EnvTier.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Env/Infrastructure/EnvTier.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Db/Infrastructure/DbMigrations.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Db/Infrastructure/DbMigrations.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Db/Application/MigrationStatus.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Db/Application/MigrationStatus.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Db/Api/MigrationStatusApi.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Db/Api/MigrationStatusApi.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Health/Domain/HealthDomain.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Health/Domain/HealthDomain.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Health/Application/HealthService.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Health/Application/HealthService.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Health/Infrastructure/HealthInfrastructure.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Health/Infrastructure/HealthInfrastructure.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Health/Api/HealthApi.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Health/Api/HealthApi.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Journal/Domain/JournalDomain.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Journal/Domain/JournalDomain.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Journal/Infrastructure/JournalInfrastructure.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Journal/Infrastructure/JournalInfrastructure.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Journal/Application/JournalService.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Journal/Application/JournalService.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Journal/Api/JournalApi.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Journal/Api/JournalApi.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Messaging/Domain/MessagingDomain.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Messaging/Domain/MessagingDomain.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Messaging/Application/MessagingStatus.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Messaging/Application/MessagingStatus.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Messaging/Infrastructure/JetStreamDemo.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Messaging/Infrastructure/JetStreamDemo.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Messaging/Api/MessagingApi.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Contexts/Messaging/Api/MessagingApi.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Handlers/HealthHandler.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Handlers/HealthHandler.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/WebApp.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/WebApp.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Program.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/Program.fs ==========
 ========== Finished: 0 warnings ==========
 ========== Summary: 0 warnings ==========
 > dotnet fsharp-analyzers --project apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj --analyzers-path $(find $(dotnet nuget locals global-packages --list | sed 's/.*: //')g-research.fsharp.analyzers -path '*/analyzers/dotnet/fs' -type d | head -1) --treat-as-error GRA-STRING-001 GRA-STRING-002 GRA-STRING-003 GRA-STRING-004 GRA-UNIONCASE-001 GRA-VIRTUALCALL-001 GRA-JSONOPTS-001 GRA-DISPBEFOREASYNC-001 GRA-IMMUTABLECOLLECTIONEQUALITY-001 GRA-LOGARGFUNCFULLAPP-001 GRA-TYPE-ANNOTATE-001 GRA-INTERPOLATED-001
@@ -1392,20 +1392,20 @@ Restore was successful.
 [33mDownload 7.20.0 ...[39m
 [32mDownloaded 7.20.0[39m
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
 WARNING: Please consider reporting this to the maintainers of class com.github.benmanes.caffeine.cache.UnsafeAccess
 WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
 [main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
-[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
 [main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: fsharp-giraffe-server (server)
 [main] INFO  o.o.codegen.DefaultGenerator - Generator 'fsharp-giraffe-server' is considered beta.
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/UpdateJournalEntry.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/NewJournalEntry.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/JournalEntry.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/HealthResponse.fs
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/ErrorResponse.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/UpdateJournalEntry.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/NewJournalEntry.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/JournalEntry.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/HealthResponse.fs
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/generated-contracts/OpenAPI/src/OrganicleverBe.Contracts/ErrorResponse.fs
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of APIs.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of Webhooks.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of supporting files.
@@ -1423,10 +1423,10 @@ WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 > dotnet build apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/fsharp-env-loader.fsproj (in 120 ms).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj (in 134 ms).
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
-  OrganicleverBe -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/bin/Debug/net10.0/OrganicleverBe.dll
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/fsharp-env-loader.fsproj (in 120 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/OrganicleverBe.fsproj (in 134 ms).
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  OrganicleverBe -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/bin/Debug/net10.0/OrganicleverBe.dll
 
 Build succeeded.
     0 Warning(s)
@@ -1439,19 +1439,19 @@ Time Elapsed 00:00:04.25
 [2m> [22mif grep -rn -E --include='*.fs' 'Skip\s*=' apps/organiclever-be/tests/unit; then echo 'ERROR: xunit Skip= attribute found in test files above'; exit 1; fi && dotnet test apps/organiclever-be/tests/unit/OrganicleverBe.UnitTests.fsproj /p:CollectCoverage=true /p:Threshold=99 "/p:Include=[OrganicleverBe]*" /p:ThresholdType=line "/p:ExcludeByFile=**/OrganicleverBe/Program.fs%2C**/Contexts/Db/Infrastructure/DbMigrations.fs%2C**/Contexts/Journal/Infrastructure/JournalInfrastructure.fs%2C**/Contexts/Messaging/Infrastructure/JetStreamDemo.fs%2C**/Infrastructure/NatsConnect.fs"
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/unit/OrganicleverBe.UnitTests.fsproj (in 171 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/unit/OrganicleverBe.UnitTests.fsproj (in 171 ms).
   2 of 3 projects are up-to-date for restore.
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
-  OrganicleverBe -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/bin/Debug/net10.0/OrganicleverBe.dll
-  OrganicleverBe.UnitTests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/unit/bin/Debug/net10.0/OrganicleverBe.UnitTests.dll
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  OrganicleverBe -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/bin/Debug/net10.0/OrganicleverBe.dll
+  OrganicleverBe.UnitTests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/unit/bin/Debug/net10.0/OrganicleverBe.UnitTests.dll
   [coverlet] _mapping file name: 'CoverletSourceRootsMapping_OrganicleverBe.UnitTests'
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/unit/bin/Debug/net10.0/OrganicleverBe.UnitTests.dll (.NETCoreApp,Version=v10.0)
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/unit/bin/Debug/net10.0/OrganicleverBe.UnitTests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    49, Skipped:     0, Total:    49, Duration: 321 ms - OrganicleverBe.UnitTests.dll (net10.0)
   [coverlet] 
   Calculating coverage result...
-   Generating report '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/unit/coverage.json'
+   Generating report '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/unit/coverage.json'
 
 +----------------+-------+--------+--------+
 | Module         | Line  | Branch | Method |
@@ -1802,7 +1802,7 @@ content/en/learn/courses/advanced-frontend/drilling/code/kata-05-controlled-mode
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 Not implemented: navigation to another Document
@@ -2059,7 +2059,7 @@ Generated src/contexts/journal/infrastructure/migrations/index.generated.ts with
 
 > npx oxlint --jsx-a11y-plugin . && npx eslint .
 
-npm warn config ignoring workspace config at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-app-web/.npmrc
+npm warn config ignoring workspace config at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-app-web/.npmrc
 src/contexts/app-shell/presentation/components/loggers/meal-logger.tsx:89:9: warning jsx-a11y(label-has-associated-control): A form label must be associated with a control. help: Either give the label a `htmlFor` attribute with the id of the associated control, or wrap the label around the control.
 src/contexts/app-shell/presentation/components/loggers/meal-logger.tsx:157:9: warning jsx-a11y(label-has-associated-control): A form label must be associated with a control. help: Either give the label a `htmlFor` attribute with the id of the associated control, or wrap the label around the control.
 src/contexts/app-shell/presentation/components/loggers/learning-logger.tsx:91:9: warning jsx-a11y(label-has-associated-control): A form label must be associated with a control. help: Either give the label a `htmlFor` attribute with the id of the associated control, or wrap the label around the control.
@@ -2090,7 +2090,7 @@ src/contexts/journal/presentation/components/add-entry-sheet.tsx:27:5: warning j
 src/contexts/journal/presentation/components/add-entry-sheet.tsx:27:6: warning jsx-a11y(no-static-element-interactions): Static HTML elements with event handlers require a role. help: Add a role attribute to this element, or use a semantic HTML element instead.
 src/contexts/journal/presentation/components/add-entry-sheet.tsx:119:11: warning jsx-a11y(control-has-associated-label): A control must be associated with a text label. help: Add a text label to the control element. This can be done by adding text content, an `aria-label` attribute, or an `aria-labelledby` attribute.
 src/contexts/routine/presentation/components/edit-routine-screen.tsx:113:7: warning unicorn(no-useless-fallback-in-spread): Empty fallbacks in spreads are unnecessary help: Spreading falsy values in object literals won't add any unexpected properties, so it's unnecessary to add an empty object as fallback.
-npm warn config ignoring workspace config at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-app-web/.npmrc
+npm warn config ignoring workspace config at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-app-web/.npmrc
 
 [2m[32m[39m[22m
 
@@ -2106,10 +2106,10 @@ npm warn config ignoring workspace config at /Users/wkf/ose-projects/ose-public/
 [2m> [22mnode scripts/gen-migrations.mjs && if grep -rn -E --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist --exclude-dir=coverage --exclude-dir=storybook-static '\b(it|test|describe)\.(skip|only|todo)\(' .; then echo 'ERROR: .skip()/.only()/.todo() found in test files above - remove before merging'; exit 1; fi && npx vitest run --coverage --coverage.thresholds.lines=99
 
 Generated src/contexts/journal/infrastructure/migrations/index.generated.ts with 2 migration(s).
-npm warn config ignoring workspace config at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-app-web/.npmrc
+npm warn config ignoring workspace config at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-app-web/.npmrc
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-app-web[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-app-web[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 Not implemented: navigation to another Document
@@ -2356,7 +2356,7 @@ organiclever-app-web: 13 features, 68 expanded scenarios, adapters: unit, e2e.
 
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-www[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-www[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 
@@ -2510,7 +2510,7 @@ organiclever-www: 3 features, 19 expanded scenarios, adapters: unit, e2e.
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-www[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-www[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
@@ -2665,12 +2665,12 @@ ose-www: 11 features, 28 expanded scenarios, adapters: unit, integration, e2e.
 > npx openapi-generator-cli generate -i $(pwd)/specs/apps/ose/lms-be/contracts/generated/openapi-bundled.yaml -g spring -o $(pwd)/apps/ose-lms-be/generated-contracts --model-package com.oseplatform.lms.contracts --global-property=models,modelDocs=false,apiDocs=false --additional-properties=useJakartaEe=true,useBeanValidation=false,performBeanValidation=false,openApiNullable=false,annotationLibrary=none,documentationProvider=none
 
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
 WARNING: Please consider reporting this to the maintainers of class com.github.benmanes.caffeine.cache.UnsafeAccess
 WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
 [main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
-[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
 [main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: spring (server)
 [main] INFO  o.o.codegen.DefaultGenerator - Generator 'spring' is considered stable.
 [main] INFO  o.o.codegen.languages.SpringCodegen - ----------------------------------
@@ -2680,9 +2680,9 @@ WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] INFO  o.o.c.languages.AbstractJavaCodegen - Processing operation getHealth
 [main] INFO  o.o.c.languages.AbstractJavaCodegen - Processing operation getHello
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/ErrorResponse.java
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HealthResponse.java
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HelloResponse.java
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/ErrorResponse.java
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HealthResponse.java
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HelloResponse.java
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of APIs.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of Webhooks.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of supporting files.
@@ -2706,7 +2706,7 @@ Note: Recompile with -Xlint:deprecation for details.
 > Task :classes
 > Task :compileTestJava FROM-CACHE
 
-[Incubating] Problems report is available at: file:///Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/build/reports/problems/problems-report.html
+[Incubating] Problems report is available at: file://<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/build/reports/problems/problems-report.html
 
 BUILD SUCCESSFUL in 6s
 3 actionable tasks: 2 executed, 1 from cache
@@ -2733,12 +2733,12 @@ Consider enabling configuration cache to speed up this build: https://docs.gradl
 > npx openapi-generator-cli generate -i $(pwd)/specs/apps/ose/lms-be/contracts/generated/openapi-bundled.yaml -g spring -o $(pwd)/apps/ose-lms-be/generated-contracts --model-package com.oseplatform.lms.contracts --global-property=models,modelDocs=false,apiDocs=false --additional-properties=useJakartaEe=true,useBeanValidation=false,performBeanValidation=false,openApiNullable=false,annotationLibrary=none,documentationProvider=none
 
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
 WARNING: Please consider reporting this to the maintainers of class com.github.benmanes.caffeine.cache.UnsafeAccess
 WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
 [main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
-[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
 [main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: spring (server)
 [main] INFO  o.o.codegen.DefaultGenerator - Generator 'spring' is considered stable.
 [main] INFO  o.o.codegen.languages.SpringCodegen - ----------------------------------
@@ -2748,9 +2748,9 @@ WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] INFO  o.o.c.languages.AbstractJavaCodegen - Processing operation getHealth
 [main] INFO  o.o.c.languages.AbstractJavaCodegen - Processing operation getHello
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/ErrorResponse.java
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HealthResponse.java
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HelloResponse.java
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/ErrorResponse.java
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HealthResponse.java
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HelloResponse.java
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of APIs.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of Webhooks.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of supporting files.
@@ -2774,7 +2774,7 @@ Note: Recompile with -Xlint:deprecation for details.
 > Task :classes
 > Task :compileTestJava FROM-CACHE
 
-[Incubating] Problems report is available at: file:///Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/build/reports/problems/problems-report.html
+[Incubating] Problems report is available at: file://<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/build/reports/problems/problems-report.html
 
 BUILD SUCCESSFUL in 6s
 3 actionable tasks: 2 executed, 1 from cache
@@ -2813,12 +2813,12 @@ Consider enabling configuration cache to speed up this build: https://docs.gradl
 > npx openapi-generator-cli generate -i $(pwd)/specs/apps/ose/lms-be/contracts/generated/openapi-bundled.yaml -g spring -o $(pwd)/apps/ose-lms-be/generated-contracts --model-package com.oseplatform.lms.contracts --global-property=models,modelDocs=false,apiDocs=false --additional-properties=useJakartaEe=true,useBeanValidation=false,performBeanValidation=false,openApiNullable=false,annotationLibrary=none,documentationProvider=none
 
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
 WARNING: Please consider reporting this to the maintainers of class com.github.benmanes.caffeine.cache.UnsafeAccess
 WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
 [main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
-[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
 [main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: spring (server)
 [main] INFO  o.o.codegen.DefaultGenerator - Generator 'spring' is considered stable.
 [main] INFO  o.o.codegen.languages.SpringCodegen - ----------------------------------
@@ -2828,9 +2828,9 @@ WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] INFO  o.o.c.languages.AbstractJavaCodegen - Processing operation getHealth
 [main] INFO  o.o.c.languages.AbstractJavaCodegen - Processing operation getHello
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/ErrorResponse.java
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HealthResponse.java
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HelloResponse.java
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/ErrorResponse.java
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HealthResponse.java
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HelloResponse.java
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of APIs.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of Webhooks.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of supporting files.
@@ -2854,7 +2854,7 @@ Note: Recompile with -Xlint:deprecation for details.
 > Task :classes
 > Task :compileTestJava FROM-CACHE
 
-[Incubating] Problems report is available at: file:///Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/build/reports/problems/problems-report.html
+[Incubating] Problems report is available at: file://<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/build/reports/problems/problems-report.html
 
 BUILD SUCCESSFUL in 6s
 3 actionable tasks: 2 executed, 1 from cache
@@ -2967,8 +2967,8 @@ ose-lms-be: 4 features, 7 expanded scenarios, adapters: unit, e2e.
 > dotnet build libs/fsharp-crane-core/fsharp-crane-core.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/fsharp-crane-core.fsproj (in 119 ms).
-  fsharp-crane-core -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/fsharp-crane-core.fsproj (in 119 ms).
+  fsharp-crane-core -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
 
 Build succeeded.
     0 Warning(s)
@@ -2994,8 +2994,8 @@ Time Elapsed 00:00:01.67
 > dotnet build libs/fsharp-crane-core/fsharp-crane-core.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/fsharp-crane-core.fsproj (in 119 ms).
-  fsharp-crane-core -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/fsharp-crane-core.fsproj (in 119 ms).
+  fsharp-crane-core -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
 
 Build succeeded.
     0 Warning(s)
@@ -3016,43 +3016,43 @@ Restore was successful.
 
 [2m> [22mdotnet fsharplint lint libs/fsharp-crane-core/fsharp-crane-core.fsproj --lint-config libs/fsharp-crane-core/fsharplint.json
 
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/obj/Debug/net10.0/fsharp-crane-core.AssemblyInfo.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/obj/Debug/net10.0/fsharp-crane-core.AssemblyInfo.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Domain/Finding.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Domain/Finding.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Domain/PdfMetadata.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Domain/PdfMetadata.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Domain/Report.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Domain/Report.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Ports.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Ports.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/TextChecker.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/TextChecker.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/HeadingChecker.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/HeadingChecker.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/NestingChecker.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/NestingChecker.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/TableChecker.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/TableChecker.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/FigureChecker.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/FigureChecker.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/MermaidValidator.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/MermaidValidator.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/OcrAssessor.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/OcrAssessor.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/ReportManager.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/ReportManager.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/SkiplistManager.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/SkiplistManager.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/PdfExtractionCache.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Core/Logic/PdfExtractionCache.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Adapters/Out/PdfAdapter.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Adapters/Out/PdfAdapter.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Adapters/Out/OcrAdapter.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Adapters/Out/OcrAdapter.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Convert.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/src/Convert.fs ==========
 ========== Finished: 0 warnings ==========
 ========== Summary: 0 warnings ==========
 [2m> [22mdotnet fsharp-analyzers --project libs/fsharp-crane-core/fsharp-crane-core.fsproj --analyzers-path $(find $(dotnet nuget locals global-packages --list | sed 's/.*: //')g-research.fsharp.analyzers -path '*/analyzers/dotnet/fs' -type d | head -1) --treat-as-error GRA-STRING-001 GRA-STRING-002 GRA-STRING-003 GRA-STRING-004 GRA-UNIONCASE-001 GRA-VIRTUALCALL-001 GRA-JSONOPTS-001 GRA-DISPBEFOREASYNC-001 GRA-IMMUTABLECOLLECTIONEQUALITY-001 GRA-LOGARGFUNCFULLAPP-001 GRA-LOGTEMPLMISSVALS-001 GRA-TYPE-ANNOTATE-001 GRA-INTERPOLATED-001
@@ -3072,18 +3072,18 @@ Restore was successful.
 [2m> [22mif grep -rn -E --include='*.fs' 'Skip\s*=' libs/fsharp-crane-core/tests/unit; then echo 'ERROR: xunit Skip= attribute found in test files above'; exit 1; fi && dotnet test libs/fsharp-crane-core/tests/unit/fsharp-crane-core-unit-tests.fsproj /p:CollectCoverage=true /p:Threshold=99 /p:ThresholdType=line "/p:ExcludeByFile=**/Adapters/Out/PdfAdapter.fs%2C**/Adapters/Out/OcrAdapter.fs%2C**/Core/Logic/ReportManager.fs%2C**/Core/Logic/SkiplistManager.fs%2C**/Core/Logic/PdfExtractionCache.fs"
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/unit/fsharp-crane-core-unit-tests.fsproj (in 204 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/unit/fsharp-crane-core-unit-tests.fsproj (in 204 ms).
   1 of 2 projects are up-to-date for restore.
-  fsharp-crane-core -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
-  fsharp-crane-core-unit-tests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/unit/bin/Debug/net10.0/fsharp-crane-core-unit-tests.dll
+  fsharp-crane-core -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
+  fsharp-crane-core-unit-tests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/unit/bin/Debug/net10.0/fsharp-crane-core-unit-tests.dll
   [coverlet] _mapping file name: 'CoverletSourceRootsMapping_fsharp-crane-core-unit-tests'
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/unit/bin/Debug/net10.0/fsharp-crane-core-unit-tests.dll (.NETCoreApp,Version=v10.0)
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/unit/bin/Debug/net10.0/fsharp-crane-core-unit-tests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    61, Skipped:     0, Total:    61, Duration: 81 ms - fsharp-crane-core-unit-tests.dll (net10.0)
   [coverlet] 
   Calculating coverage result...
-   Generating report '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/unit/coverage.json'
+   Generating report '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/unit/coverage.json'
 
 +-------------------+------+--------+--------+
 | Module            | Line | Branch | Method |
@@ -3184,10 +3184,10 @@ fsharp-crane-core: 1 features, 2 expanded scenarios, adapters: unit, integration
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
-  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
-  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
-  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+  OseId.Domain -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
 
 Build succeeded.
     0 Warning(s)
@@ -3214,10 +3214,10 @@ Time Elapsed 00:00:01.78
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
-  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
-  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
-  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+  OseId.Domain -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
 
 Build succeeded.
     0 Warning(s)
@@ -3230,29 +3230,29 @@ Time Elapsed 00:00:01.78
 [2m> [22mdotnet format apps/ose-id-be/src/OseId.Host/OseId.Host.csproj --verify-no-changes --verbosity diagnostic
 
 The dotnet runtime version is '10.0.8'.
-Formatting code files in workspace '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/OseId.Host.csproj'.
+Formatting code files in workspace '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/OseId.Host.csproj'.
 Loading workspace.
   Determining projects to restore...
   All projects are up-to-date for restore.
-Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
-Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
-Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
-Project OseId.Host is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/obj/Debug/net10.0/OseId.Host.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Host is using configuration from '<home>/ose-projects/ose-public/.editorconfig'.
+Project OseId.Host is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
+Project OseId.Host is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
+Project OseId.Host is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/obj/Debug/net10.0/OseId.Host.GeneratedMSBuildEditorConfig.editorconfig'.
 Project OseId.Host is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
-Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
-Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
-Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
-Project OseId.Domain is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/obj/Debug/net10.0/OseId.Domain.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Domain is using configuration from '<home>/ose-projects/ose-public/.editorconfig'.
+Project OseId.Domain is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
+Project OseId.Domain is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
+Project OseId.Domain is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/obj/Debug/net10.0/OseId.Domain.GeneratedMSBuildEditorConfig.editorconfig'.
 Project OseId.Domain is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
-Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
-Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
-Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
-Project OseId.Application is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/obj/Debug/net10.0/OseId.Application.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Application is using configuration from '<home>/ose-projects/ose-public/.editorconfig'.
+Project OseId.Application is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
+Project OseId.Application is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
+Project OseId.Application is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/obj/Debug/net10.0/OseId.Application.GeneratedMSBuildEditorConfig.editorconfig'.
 Project OseId.Application is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
-Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/.editorconfig'.
-Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
-Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
-Project OseId.Infrastructure is using configuration from '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/obj/Debug/net10.0/OseId.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig'.
+Project OseId.Infrastructure is using configuration from '<home>/ose-projects/ose-public/.editorconfig'.
+Project OseId.Infrastructure is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
+Project OseId.Infrastructure is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
+Project OseId.Infrastructure is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/obj/Debug/net10.0/OseId.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig'.
 Project OseId.Infrastructure is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Complete in 2614ms.
 Determining formattable files.
@@ -3278,10 +3278,10 @@ Format complete in 3770ms.
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
-  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
-  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
-  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+  OseId.Domain -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
 
 Build succeeded.
     0 Warning(s)
@@ -3358,19 +3358,19 @@ ose-id-be: 8 features, 22 expanded scenarios, adapters: unit, integration.
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
-  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
-  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
-  OseId.Be.Unit -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/bin/Debug/net10.0/OseId.Be.Unit.dll
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/bin/Debug/net10.0/OseId.Be.Unit.dll (.NETCoreApp,Version=v10.0)
+  OseId.Domain -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Be.Unit -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/bin/Debug/net10.0/OseId.Be.Unit.dll
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/bin/Debug/net10.0/OseId.Be.Unit.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    96, Skipped:     0, Total:    96, Duration: 79 ms - OseId.Be.Unit.dll (net10.0)
 
 Attachments:
-  /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/coverage/collector/bbfdfb63-521e-469c-97b1-a327fcaf2886/coverage.cobertura.xml
+  <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/coverage/collector/bbfdfb63-521e-469c-97b1-a327fcaf2886/coverage.cobertura.xml
 Unit line coverage: 238/239 (99.58%; required: 99.00%)
-Coverage report: /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/coverage/coverage.cobertura.xml
+Coverage report: <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/unit/coverage/coverage.cobertura.xml
 
 [2m[32m[39m[22m
 
@@ -3402,8 +3402,8 @@ Coverage report: /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-fou
 
 > npx oxlint --jsx-a11y-plugin . && npx eslint .
 
-npm warn config ignoring workspace config at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-app-web/.npmrc
-npm warn config ignoring workspace config at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-app-web/.npmrc
+npm warn config ignoring workspace config at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-app-web/.npmrc
+npm warn config ignoring workspace config at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-app-web/.npmrc
 
 [2m[32m[39m[22m
 
@@ -3418,10 +3418,10 @@ npm warn config ignoring workspace config at /Users/wkf/ose-projects/ose-public/
 
 [2m> [22mif grep -rn -E --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist --exclude-dir=coverage --exclude-dir=storybook-static '\b(it|test|describe)\.(skip|only|todo)\(' .; then echo 'ERROR: .skip()/.only()/.todo() found in test files above - remove before merging'; exit 1; fi && npx vitest run --coverage --coverage.thresholds.lines=99
 
-npm warn config ignoring workspace config at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-app-web/.npmrc
+npm warn config ignoring workspace config at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-app-web/.npmrc
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-app-web[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-app-web[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 
@@ -3600,7 +3600,7 @@ src/contexts/foundation/presentation/service-status-panel.tsx:63:13: warning jsx
 
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 
@@ -3703,11 +3703,11 @@ roots-be test:quick complete
 
 [2m> [22mdotnet build apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj --no-restore
 
-  RhinoCli.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/bin/Debug/net10.0/RhinoCli.Domain.dll
-  RhinoCli.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/bin/Debug/net10.0/RhinoCli.Infrastructure.dll
-  RhinoCli.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/bin/Debug/net10.0/RhinoCli.Application.dll
-  RhinoCli.Cli -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/bin/Debug/net10.0/RhinoCli.Cli.dll
-  RhinoCli.Program -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/bin/Debug/net10.0/rhino-cli-fsharp.dll
+  RhinoCli.Domain -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/bin/Debug/net10.0/RhinoCli.Domain.dll
+  RhinoCli.Infrastructure -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/bin/Debug/net10.0/RhinoCli.Infrastructure.dll
+  RhinoCli.Application -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/bin/Debug/net10.0/RhinoCli.Application.dll
+  RhinoCli.Cli -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/bin/Debug/net10.0/RhinoCli.Cli.dll
+  RhinoCli.Program -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/bin/Debug/net10.0/rhino-cli-fsharp.dll
 
 Build succeeded.
     0 Warning(s)
@@ -3732,11 +3732,11 @@ Time Elapsed 00:00:08.93
 
 [2m> [22mdotnet build apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj --no-restore
 
-  RhinoCli.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/bin/Debug/net10.0/RhinoCli.Domain.dll
-  RhinoCli.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/bin/Debug/net10.0/RhinoCli.Infrastructure.dll
-  RhinoCli.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/bin/Debug/net10.0/RhinoCli.Application.dll
-  RhinoCli.Cli -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/bin/Debug/net10.0/RhinoCli.Cli.dll
-  RhinoCli.Program -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/bin/Debug/net10.0/rhino-cli-fsharp.dll
+  RhinoCli.Domain -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/bin/Debug/net10.0/RhinoCli.Domain.dll
+  RhinoCli.Infrastructure -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/bin/Debug/net10.0/RhinoCli.Infrastructure.dll
+  RhinoCli.Application -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/bin/Debug/net10.0/RhinoCli.Application.dll
+  RhinoCli.Cli -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/bin/Debug/net10.0/RhinoCli.Cli.dll
+  RhinoCli.Program -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/bin/Debug/net10.0/rhino-cli-fsharp.dll
 
 Build succeeded.
     0 Warning(s)
@@ -3757,83 +3757,83 @@ Restore was successful.
 
 [2m> [22mfor p in RhinoCli.Domain RhinoCli.Infrastructure RhinoCli.Application RhinoCli.Cli RhinoCli.Program; do dotnet fsharplint lint apps/rhino-cli/src/$p/$p.fsproj --lint-config apps/rhino-cli/src/fsharplint.json || exit 1; done
 
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/obj/Debug/net10.0/RhinoCli.Domain.AssemblyInfo.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/obj/Debug/net10.0/RhinoCli.Domain.AssemblyInfo.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/src/Types.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/src/Types.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/src/Finding.fs ==========
-========== Finished: 0 warnings ==========
-========== Summary: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/obj/Debug/net10.0/RhinoCli.Infrastructure.AssemblyInfo.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/src/GitRoot.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/src/RustRhino.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/src/Finding.fs ==========
 ========== Finished: 0 warnings ==========
 ========== Summary: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/obj/Debug/net10.0/RhinoCli.Application.AssemblyInfo.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/obj/Debug/net10.0/RhinoCli.Infrastructure.AssemblyInfo.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Convention.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/src/GitRoot.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Parity.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/RepoConfig.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Env.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/DoctorResource.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Doctor.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/TestCoverage.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Md.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Governance.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Git.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/HarnessPolicy.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/HarnessRuntime.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Specs.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Contracts.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/TestBoundary.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Plan.fs ==========
-========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/RepoGovernance.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/src/RustRhino.fs ==========
 ========== Finished: 0 warnings ==========
 ========== Summary: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/obj/Debug/net10.0/RhinoCli.Cli.AssemblyInfo.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/obj/Debug/net10.0/RhinoCli.Application.AssemblyInfo.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/src/RootArgs.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Convention.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/src/HelpText.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Parity.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/src/Formatters.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/RepoConfig.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/src/Gate.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Env.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/src/Dispatch.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/DoctorResource.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Doctor.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/TestCoverage.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Md.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Governance.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Git.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/HarnessPolicy.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/HarnessRuntime.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Specs.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Contracts.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/TestBoundary.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/Plan.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/src/RepoGovernance.fs ==========
 ========== Finished: 0 warnings ==========
 ========== Summary: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/obj/Debug/net10.0/RhinoCli.Program.AssemblyInfo.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/obj/Debug/net10.0/RhinoCli.Cli.AssemblyInfo.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/src/Program.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/src/RootArgs.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/src/HelpText.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/src/Formatters.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/src/Gate.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/src/Dispatch.fs ==========
+========== Finished: 0 warnings ==========
+========== Summary: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/obj/Debug/net10.0/RhinoCli.Program.AssemblyInfo.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/src/Program.fs ==========
 ========== Finished: 0 warnings ==========
 ========== Summary: 0 warnings ==========
 [2m> [22mANALYZERS_PATH=$(find $(dotnet nuget locals global-packages --list | sed 's/.*: //')g-research.fsharp.analyzers -path '*/analyzers/dotnet/fs' -type d | head -1); for p in RhinoCli.Domain RhinoCli.Infrastructure RhinoCli.Application RhinoCli.Cli RhinoCli.Program; do dotnet fsharp-analyzers --project apps/rhino-cli/src/$p/$p.fsproj --analyzers-path "$ANALYZERS_PATH" --treat-as-error GRA-STRING-001 GRA-STRING-002 GRA-STRING-003 GRA-STRING-004 GRA-UNIONCASE-001 GRA-VIRTUALCALL-001 GRA-JSONOPTS-001 GRA-DISPBEFOREASYNC-001 GRA-IMMUTABLECOLLECTIONEQUALITY-001 GRA-LOGARGFUNCFULLAPP-001 GRA-LOGTEMPLMISSVALS-001 GRA-TYPE-ANNOTATE-001 GRA-INTERPOLATED-001 || exit 1; done
@@ -3853,25 +3853,25 @@ Restore was successful.
 [2m> [22mif grep -rn -E --include='*.fs' 'Skip\s*=\s*"' apps/rhino-cli/tests/unit; then echo 'ERROR: xunit Skip= attribute found in test files above'; exit 1; fi && node scripts/dotnet-unit-coverage.mjs --project apps/rhino-cli/tests/unit/RhinoCli.UnitTests.fsproj --results apps/rhino-cli/tests/unit/coverage --line-threshold 99 --exclude-by-file '**/GitRoot.fs' --exclude-by-file '**/Parity.fs' --exclude-by-file '**/Dispatch.fs' --exclude-by-file '**/HarnessRuntime.fs' --exclude-by-file '**/DoctorResource.fs'
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/RhinoCli.Domain.fsproj (in 1.43 sec).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/RhinoCli.Infrastructure.fsproj (in 1.41 sec).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/RhinoCli.Cli.fsproj (in 1.43 sec).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/RhinoCli.Application.fsproj (in 3 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/RhinoCli.Domain.fsproj (in 1.43 sec).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/RhinoCli.Infrastructure.fsproj (in 1.41 sec).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/RhinoCli.Cli.fsproj (in 1.43 sec).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/RhinoCli.Application.fsproj (in 3 ms).
   1 of 5 projects are up-to-date for restore.
-  RhinoCli.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/bin/Debug/net10.0/RhinoCli.Domain.dll
-  RhinoCli.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/bin/Debug/net10.0/RhinoCli.Infrastructure.dll
-  RhinoCli.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/bin/Debug/net10.0/RhinoCli.Application.dll
-  RhinoCli.Cli -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/bin/Debug/net10.0/RhinoCli.Cli.dll
-  RhinoCli.UnitTests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/unit/bin/Debug/net10.0/RhinoCli.UnitTests.dll
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/unit/bin/Debug/net10.0/RhinoCli.UnitTests.dll (.NETCoreApp,Version=v10.0)
+  RhinoCli.Domain -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/bin/Debug/net10.0/RhinoCli.Domain.dll
+  RhinoCli.Infrastructure -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/bin/Debug/net10.0/RhinoCli.Infrastructure.dll
+  RhinoCli.Application -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/bin/Debug/net10.0/RhinoCli.Application.dll
+  RhinoCli.Cli -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/bin/Debug/net10.0/RhinoCli.Cli.dll
+  RhinoCli.UnitTests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/unit/bin/Debug/net10.0/RhinoCli.UnitTests.dll
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/unit/bin/Debug/net10.0/RhinoCli.UnitTests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:   747, Skipped:     0, Total:   747, Duration: 509 ms - RhinoCli.UnitTests.dll (net10.0)
 
 Attachments:
-  /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/unit/coverage/collector/a030728f-7028-4918-b5f1-515125518010/coverage.cobertura.xml
+  <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/unit/coverage/collector/a030728f-7028-4918-b5f1-515125518010/coverage.cobertura.xml
 Unit line coverage: 7852/7919 (99.15%; required: 99.00%)
-Coverage report: /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/unit/coverage/coverage.cobertura.xml
+Coverage report: <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/unit/coverage/coverage.cobertura.xml
 
 [2m[32m[39m[22m
 
@@ -3984,10 +3984,10 @@ rhino-cli: 56 features, 479 expanded scenarios, adapters: unit, integration, e2e
 > dotnet build apps/crane-cli/crane-cli.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/crane-cli.fsproj (in 133 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/crane-cli.fsproj (in 133 ms).
   1 of 2 projects are up-to-date for restore.
-  fsharp-crane-core -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
-  crane-cli -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/bin/Debug/net10.0/crane.dll
+  fsharp-crane-core -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
+  crane-cli -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/bin/Debug/net10.0/crane.dll
 
 Build succeeded.
     0 Warning(s)
@@ -4016,10 +4016,10 @@ Time Elapsed 00:00:02.15
 > dotnet build apps/crane-cli/crane-cli.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/crane-cli.fsproj (in 133 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/crane-cli.fsproj (in 133 ms).
   1 of 2 projects are up-to-date for restore.
-  fsharp-crane-core -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
-  crane-cli -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/bin/Debug/net10.0/crane.dll
+  fsharp-crane-core -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
+  crane-cli -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/bin/Debug/net10.0/crane.dll
 
 Build succeeded.
     0 Warning(s)
@@ -4040,13 +4040,13 @@ Restore was successful.
 
 [2m> [22mdotnet fsharplint lint apps/crane-cli/crane-cli.fsproj --lint-config apps/crane-cli/fsharplint.json
 
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/obj/Debug/net10.0/crane-cli.AssemblyInfo.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/obj/Debug/net10.0/crane-cli.AssemblyInfo.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/src/Adapters/In/CliAdapter.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/src/Adapters/In/CliAdapter.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/src/Program.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/src/Program.fs ==========
 ========== Finished: 0 warnings ==========
 ========== Summary: 0 warnings ==========
 [2m> [22mdotnet fsharp-analyzers --project apps/crane-cli/crane-cli.fsproj --analyzers-path $(find $(dotnet nuget locals global-packages --list | sed 's/.*: //')g-research.fsharp.analyzers -path '*/analyzers/dotnet/fs' -type d | head -1) --treat-as-error GRA-STRING-001 GRA-STRING-002 GRA-STRING-003 GRA-STRING-004 GRA-UNIONCASE-001 GRA-VIRTUALCALL-001 GRA-JSONOPTS-001 GRA-DISPBEFOREASYNC-001 GRA-IMMUTABLECOLLECTIONEQUALITY-001 GRA-LOGARGFUNCFULLAPP-001 GRA-LOGTEMPLMISSVALS-001 GRA-TYPE-ANNOTATE-001 GRA-INTERPOLATED-001
@@ -4066,19 +4066,19 @@ Restore was successful.
 [2m> [22mif grep -rn -E --include='*.fs' 'Skip\s*=' apps/crane-cli/tests/unit; then echo 'ERROR: xunit Skip= attribute found in test files above'; exit 1; fi && dotnet test apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj /p:CollectCoverage=true /p:Threshold=99 "/p:Include=[crane]*" /p:ThresholdType=line "/p:ExcludeByFile=**/Adapters/In/CliAdapter.fs%2C**/Adapters/Out/PdfAdapter.fs%2C**/Adapters/Out/OcrAdapter.fs%2C**/Program.fs"
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj (in 180 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj (in 180 ms).
   2 of 3 projects are up-to-date for restore.
-  fsharp-crane-core -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
-  crane-cli -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/bin/Debug/net10.0/crane.dll
-  crane-cli-unit-tests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/unit/bin/Debug/net10.0/crane-cli-unit-tests.dll
+  fsharp-crane-core -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
+  crane-cli -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/bin/Debug/net10.0/crane.dll
+  crane-cli-unit-tests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/unit/bin/Debug/net10.0/crane-cli-unit-tests.dll
   [coverlet] _mapping file name: 'CoverletSourceRootsMapping_crane-cli-unit-tests'
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/unit/bin/Debug/net10.0/crane-cli-unit-tests.dll (.NETCoreApp,Version=v10.0)
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/unit/bin/Debug/net10.0/crane-cli-unit-tests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    97, Skipped:     0, Total:    97, Duration: 149 ms - crane-cli-unit-tests.dll (net10.0)
   [coverlet] 
   Calculating coverage result...
-   Generating report '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/unit/coverage.json'
+   Generating report '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/unit/coverage.json'
 
 +--------+------+--------+--------+
 | Module | Line | Branch | Method |
@@ -4184,7 +4184,7 @@ crane-cli: 12 features, 37 expanded scenarios, adapters: unit, e2e.
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
 
 Build succeeded.
     0 Warning(s)
@@ -4211,7 +4211,7 @@ Time Elapsed 00:00:00.48
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
 
 Build succeeded.
     0 Warning(s)
@@ -4232,13 +4232,13 @@ Restore was successful.
 
 > dotnet fsharplint lint libs/fsharp-env-loader/fsharp-env-loader.fsproj --lint-config libs/fsharp-env-loader/fsharplint.json
 
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/obj/Debug/net10.0/fsharp-env-loader.AssemblyInfo.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/obj/Debug/net10.0/fsharp-env-loader.AssemblyInfo.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/src/EnvTier.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/src/EnvTier.fs ==========
 ========== Finished: 0 warnings ==========
-========== Linting /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/src/PortResolver.fs ==========
+========== Linting <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/src/PortResolver.fs ==========
 ========== Finished: 0 warnings ==========
 ========== Summary: 0 warnings ==========
 > dotnet fsharp-analyzers --project libs/fsharp-env-loader/fsharp-env-loader.fsproj --analyzers-path $(find $(dotnet nuget locals global-packages --list | sed 's/.*: //')g-research.fsharp.analyzers -path '*/analyzers/dotnet/fs' -type d | head -1) --treat-as-error GRA-STRING-001 GRA-STRING-002 GRA-STRING-003 GRA-STRING-004 GRA-UNIONCASE-001 GRA-VIRTUALCALL-001 GRA-JSONOPTS-001 GRA-DISPBEFOREASYNC-001 GRA-IMMUTABLECOLLECTIONEQUALITY-001 GRA-LOGARGFUNCFULLAPP-001 GRA-LOGTEMPLMISSVALS-001 GRA-TYPE-ANNOTATE-001 GRA-INTERPOLATED-001
@@ -4258,18 +4258,18 @@ Restore was successful.
 [2m> [22mif grep -rn -E --include='*.fs' 'Skip\s*=' libs/fsharp-env-loader/tests/unit; then echo 'ERROR: xunit Skip= attribute found in test files above'; exit 1; fi && dotnet test libs/fsharp-env-loader/tests/unit/fsharp-env-loader-unit-tests.fsproj /p:CollectCoverage=true /p:Threshold=99 /p:ThresholdType=line
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/unit/fsharp-env-loader-unit-tests.fsproj (in 128 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/unit/fsharp-env-loader-unit-tests.fsproj (in 128 ms).
   1 of 2 projects are up-to-date for restore.
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
-  fsharp-env-loader-unit-tests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/unit/bin/Debug/net10.0/fsharp-env-loader-unit-tests.dll
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  fsharp-env-loader-unit-tests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/unit/bin/Debug/net10.0/fsharp-env-loader-unit-tests.dll
   [coverlet] _mapping file name: 'CoverletSourceRootsMapping_fsharp-env-loader-unit-tests'
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/unit/bin/Debug/net10.0/fsharp-env-loader-unit-tests.dll (.NETCoreApp,Version=v10.0)
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/unit/bin/Debug/net10.0/fsharp-env-loader-unit-tests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    65, Skipped:     0, Total:    65, Duration: 69 ms - fsharp-env-loader-unit-tests.dll (net10.0)
   [coverlet] 
   Calculating coverage result...
-   Generating report '/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/unit/coverage.json'
+   Generating report '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/unit/coverage.json'
 
 +-------------------+------+--------+--------+
 | Module            | Line | Branch | Method |

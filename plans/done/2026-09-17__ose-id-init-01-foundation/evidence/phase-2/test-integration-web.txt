@@ -1,6 +1,6 @@
 > nx run ose-id-web:"test:integration"
 > npx vitest run --config vitest.integration.config.ts --coverage --coverage.thresholds.lines=99
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
       [2mCoverage enabled with [22m[33mv8[39m
 [2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
 [2m      Tests [22m [1m[32m32 passed[39m[22m[90m (32)[39m

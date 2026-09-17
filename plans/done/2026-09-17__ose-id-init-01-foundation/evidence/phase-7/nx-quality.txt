@@ -95,12 +95,12 @@
 > npx openapi-generator-cli generate -i $(pwd)/specs/apps/ose/lms-be/contracts/generated/openapi-bundled.yaml -g spring -o $(pwd)/apps/ose-lms-be/generated-contracts --model-package com.oseplatform.lms.contracts --global-property=models,modelDocs=false,apiDocs=false --additional-properties=useJakartaEe=true,useBeanValidation=false,performBeanValidation=false,openApiNullable=false,annotationLibrary=none,documentationProvider=none
 
 WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
-WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.github.benmanes.caffeine.cache.UnsafeAccess (file:<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/@openapitools/openapi-generator-cli/versions/7.20.0.jar)
 WARNING: Please consider reporting this to the maintainers of class com.github.benmanes.caffeine.cache.UnsafeAccess
 WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
 [main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
-[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
 [main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: spring (server)
 [main] INFO  o.o.codegen.DefaultGenerator - Generator 'spring' is considered stable.
 [main] INFO  o.o.codegen.languages.SpringCodegen - ----------------------------------
@@ -110,9 +110,9 @@ WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
 [main] INFO  o.o.c.languages.AbstractJavaCodegen - Processing operation getHealth
 [main] INFO  o.o.c.languages.AbstractJavaCodegen - Processing operation getHello
 [main] WARN  o.o.codegen.DefaultCodegen - OpenAPI 3.1 support is still in beta. To report an issue related to 3.1 spec, please kindly open an issue in the Github repo: https://github.com/openAPITools/openapi-generator.
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/ErrorResponse.java
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HealthResponse.java
-[main] INFO  o.o.codegen.TemplateManager - writing file /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HelloResponse.java
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/ErrorResponse.java
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HealthResponse.java
+[main] INFO  o.o.codegen.TemplateManager - writing file <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-lms-be/generated-contracts/src/main/java/com/oseplatform/lms/contracts/HelloResponse.java
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of APIs.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of Webhooks.
 [main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of supporting files.
@@ -142,7 +142,7 @@ Consider enabling configuration cache to speed up this build: https://docs.gradl
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  fsharp-crane-core -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
+  fsharp-crane-core -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
 
 Build succeeded.
     0 Warning(s)
@@ -296,17 +296,17 @@ LaTeX-incompatible input and strict mode is set to 'warn': Unrecognized Unicode 
 > dotnet publish apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -c Release --self-contained true --use-current-runtime -o apps/rhino-cli/src/dist
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/RhinoCli.Domain.fsproj (in 1.2 sec).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/RhinoCli.Cli.fsproj (in 1.2 sec).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj (in 1.2 sec).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/RhinoCli.Infrastructure.fsproj (in 3 ms).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/RhinoCli.Application.fsproj (in 4 ms).
-  RhinoCli.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/bin/Release/net10.0/osx-arm64/RhinoCli.Domain.dll
-  RhinoCli.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/bin/Release/net10.0/osx-arm64/RhinoCli.Infrastructure.dll
-  RhinoCli.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/bin/Release/net10.0/osx-arm64/RhinoCli.Application.dll
-  RhinoCli.Cli -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/bin/Release/net10.0/osx-arm64/RhinoCli.Cli.dll
-  RhinoCli.Program -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/bin/Release/net10.0/osx-arm64/rhino-cli-fsharp.dll
-  RhinoCli.Program -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/dist/
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/RhinoCli.Domain.fsproj (in 1.2 sec).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/RhinoCli.Cli.fsproj (in 1.2 sec).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj (in 1.2 sec).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/RhinoCli.Infrastructure.fsproj (in 3 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/RhinoCli.Application.fsproj (in 4 ms).
+  RhinoCli.Domain -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/bin/Release/net10.0/osx-arm64/RhinoCli.Domain.dll
+  RhinoCli.Infrastructure -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/bin/Release/net10.0/osx-arm64/RhinoCli.Infrastructure.dll
+  RhinoCli.Application -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/bin/Release/net10.0/osx-arm64/RhinoCli.Application.dll
+  RhinoCli.Cli -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/bin/Release/net10.0/osx-arm64/RhinoCli.Cli.dll
+  RhinoCli.Program -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Program/bin/Release/net10.0/osx-arm64/rhino-cli-fsharp.dll
+  RhinoCli.Program -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/dist/
 
 > nx run crane-cli:build  [existing outputs match the cache, left as is]
 
@@ -314,9 +314,9 @@ LaTeX-incompatible input and strict mode is set to 'warn': Unrecognized Unicode 
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  fsharp-crane-core -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Release/net10.0/fsharp-crane-core.dll
-  crane-cli -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/bin/Release/net10.0/crane.dll
-  crane-cli -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/dist/
+  fsharp-crane-core -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Release/net10.0/fsharp-crane-core.dll
+  crane-cli -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/bin/Release/net10.0/crane.dll
+  crane-cli -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/dist/
 
 > nx run ts-env-loader:"test:coverage:behaviour"  [existing outputs match the cache, left as is]
 
@@ -335,7 +335,7 @@ web-ui-token: 1 features, 1 expanded scenarios, adapters: unit.
 > npx vitest run --config vitest.integration.config.ts --coverage --coverage.thresholds.lines=99
 
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/ts-env-loader[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/ts-env-loader[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 
@@ -364,7 +364,7 @@ web-ui: 21 features, 118 expanded scenarios, adapters: unit, e2e.
 > npx vitest run --config vitest.e2e.config.ts
 
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/ts-env-loader[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/ts-env-loader[39m
 
 
 [2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
@@ -380,12 +380,12 @@ web-ui: 21 features, 118 expanded scenarios, adapters: unit, e2e.
 > apps/organiclever-be/scripts/run-integration.sh
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/integration/OrganicleverBe.IntegrationTests.fsproj (in 227 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/integration/OrganicleverBe.IntegrationTests.fsproj (in 227 ms).
   2 of 3 projects are up-to-date for restore.
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
-  OrganicleverBe -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/bin/Debug/net10.0/OrganicleverBe.dll
-  OrganicleverBe.IntegrationTests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/integration/bin/Debug/net10.0/OrganicleverBe.IntegrationTests.dll
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/integration/bin/Debug/net10.0/OrganicleverBe.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  OrganicleverBe -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/src/OrganicleverBe/bin/Debug/net10.0/OrganicleverBe.dll
+  OrganicleverBe.IntegrationTests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/integration/bin/Debug/net10.0/OrganicleverBe.IntegrationTests.dll
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/organiclever-be/tests/integration/bin/Debug/net10.0/OrganicleverBe.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 [xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.5+1b188a7b0a (64-bit .NET 10.0.8)
 [xUnit.net 00:00:00.40]   Discovering: OrganicleverBe.IntegrationTests
@@ -419,12 +419,12 @@ ose-be: 10 features, 15 expanded scenarios, adapters: unit, integration, e2e.
 > apps/ose-be/scripts/run-integration.sh
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/integration/OseBe.IntegrationTests.fsproj (in 163 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/integration/OseBe.IntegrationTests.fsproj (in 163 ms).
   2 of 3 projects are up-to-date for restore.
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
-  OseBe -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/bin/Debug/net10.0/OseBe.dll
-  OseBe.IntegrationTests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/integration/bin/Debug/net10.0/OseBe.IntegrationTests.dll
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/integration/bin/Debug/net10.0/OseBe.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  OseBe -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/src/OseBe/bin/Debug/net10.0/OseBe.dll
+  OseBe.IntegrationTests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/integration/bin/Debug/net10.0/OseBe.IntegrationTests.dll
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-be/tests/integration/bin/Debug/net10.0/OseBe.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 [xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.5+1b188a7b0a (64-bit .NET 10.0.8)
 [xUnit.net 00:00:00.57]   Discovering: OseBe.IntegrationTests
@@ -448,7 +448,7 @@ Total tests: 5
 
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-www[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-www[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 
@@ -470,11 +470,11 @@ File              | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 > if grep -rn -E --include='*.fs' 'Skip\s*=' libs/fsharp-crane-core/tests/integration; then echo 'ERROR: xunit Skip= attribute found in test files above'; exit 1; fi && dotnet test libs/fsharp-crane-core/tests/integration/fsharp-crane-core-integration-tests.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/integration/fsharp-crane-core-integration-tests.fsproj (in 345 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/integration/fsharp-crane-core-integration-tests.fsproj (in 345 ms).
   1 of 2 projects are up-to-date for restore.
-  fsharp-crane-core -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
-  fsharp-crane-core-integration-tests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/integration/bin/Debug/net10.0/fsharp-crane-core-integration-tests.dll
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/integration/bin/Debug/net10.0/fsharp-crane-core-integration-tests.dll (.NETCoreApp,Version=v10.0)
+  fsharp-crane-core -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
+  fsharp-crane-core-integration-tests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/integration/bin/Debug/net10.0/fsharp-crane-core-integration-tests.dll
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-crane-core/tests/integration/bin/Debug/net10.0/fsharp-crane-core-integration-tests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    44, Skipped:     0, Total:    44, Duration: 105 ms - fsharp-crane-core-integration-tests.dll (net10.0)
@@ -488,12 +488,12 @@ Passed!  - Failed:     0, Passed:    44, Skipped:     0, Total:    44, Duration:
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
-  OseId.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
-  OseId.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
-  OseId.Host -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
-  OseId.Be.Integration -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/integration/bin/Debug/net10.0/OseId.Be.Integration.dll
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/integration/bin/Debug/net10.0/OseId.Be.Integration.dll (.NETCoreApp,Version=v10.0)
+  OseId.Domain -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+  OseId.Be.Integration -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/integration/bin/Debug/net10.0/OseId.Be.Integration.dll
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/tests/integration/bin/Debug/net10.0/OseId.Be.Integration.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    39, Skipped:     0, Total:    39, Duration: 1 s - OseId.Be.Integration.dll (net10.0)
@@ -504,7 +504,7 @@ Passed!  - Failed:     0, Passed:    39, Skipped:     0, Total:    39, Duration:
 
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www[39m
 
 
 [2m Test Files [22m [1m[32m11 passed[39m[22m[90m (11)[39m
@@ -579,7 +579,7 @@ ose-id-web: 2 features, 7 expanded scenarios, adapters: unit, integration.
 
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
 
@@ -634,9 +634,9 @@ File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 > dotnet test apps/crane-cli/tests/e2e/crane-cli-e2e-tests.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/e2e/crane-cli-e2e-tests.fsproj (in 416 ms).
-  crane-cli-e2e-tests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/e2e/bin/Debug/net10.0/crane-cli-e2e-tests.dll
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/e2e/bin/Debug/net10.0/crane-cli-e2e-tests.dll (.NETCoreApp,Version=v10.0)
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/e2e/crane-cli-e2e-tests.fsproj (in 416 ms).
+  crane-cli-e2e-tests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/e2e/bin/Debug/net10.0/crane-cli-e2e-tests.dll
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/crane-cli/tests/e2e/bin/Debug/net10.0/crane-cli-e2e-tests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    37, Skipped:     0, Total:    37, Duration: 11 s - crane-cli-e2e-tests.dll (net10.0)
@@ -646,11 +646,11 @@ Passed!  - Failed:     0, Passed:    37, Skipped:     0, Total:    37, Duration:
 > if grep -rn -E --include='*.fs' 'Skip\s*=' libs/fsharp-env-loader/tests/integration; then echo 'ERROR: xunit Skip= attribute found in integration tests above'; exit 1; fi && dotnet test libs/fsharp-env-loader/tests/integration/fsharp-env-loader-integration-tests.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/integration/fsharp-env-loader-integration-tests.fsproj (in 155 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/integration/fsharp-env-loader-integration-tests.fsproj (in 155 ms).
   1 of 2 projects are up-to-date for restore.
-  fsharp-env-loader -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
-  fsharp-env-loader-integration-tests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/integration/bin/Debug/net10.0/fsharp-env-loader-integration-tests.dll
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/integration/bin/Debug/net10.0/fsharp-env-loader-integration-tests.dll (.NETCoreApp,Version=v10.0)
+  fsharp-env-loader -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/bin/Debug/net10.0/fsharp-env-loader.dll
+  fsharp-env-loader-integration-tests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/integration/bin/Debug/net10.0/fsharp-env-loader-integration-tests.dll
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/libs/fsharp-env-loader/tests/integration/bin/Debug/net10.0/fsharp-env-loader-integration-tests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    40, Skipped:     0, Total:    40, Duration: 77 ms - fsharp-env-loader-integration-tests.dll (net10.0)
@@ -693,11 +693,11 @@ Warning: command "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --e
 > next build
 
 [33m[1m⚠[22m[39m Warning: Next.js inferred your workspace root, but it may not be correct.
- We detected multiple lockfiles and selected the directory of /Users/wkf/ose-projects/ose-public/package-lock.json as the root directory.
+ We detected multiple lockfiles and selected the directory of <home>/ose-projects/ose-public/package-lock.json as the root directory.
  To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
    See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
  Detected additional lockfiles: 
-   * /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/package-lock.json
+   * <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/package-lock.json
 
 [1m[38;2;173;127;168m▲ Next.js 16.2.6[39m[22m (Turbopack)
 
@@ -725,11 +725,11 @@ Warning: command "if grep -rn -E --include='*.ts' --exclude-dir=node_modules --e
 [2mNx read the output from the cache instead of running the command for 1 out of 1 tasks.[22m
 
 [2m[WebServer] [22m[33m[1m⚠[22m[39m Warning: Next.js inferred your workspace root, but it may not be correct.
-[2m[WebServer] [22m We detected multiple lockfiles and selected the directory of /Users/wkf/ose-projects/ose-public/package-lock.json as the root directory.
+[2m[WebServer] [22m We detected multiple lockfiles and selected the directory of <home>/ose-projects/ose-public/package-lock.json as the root directory.
 [2m[WebServer] [22m To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
 [2m[WebServer] [22m   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
 [2m[WebServer] [22m Detected additional lockfiles: 
-[2m[WebServer] [22m   * /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/package-lock.json
+[2m[WebServer] [22m   * <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/package-lock.json
 [2m[WebServer] [22m
 
 [2mRunning [22m39[2m tests using [22m6[2m workers[22m
@@ -1464,17 +1464,17 @@ LaTeX-incompatible input and strict mode is set to 'warn': Unrecognized Unicode 
 > if grep -rn -E --include='*.fs' 'Skip\s*=\s*"' apps/rhino-cli/tests/integration; then echo 'ERROR: xunit Skip= attribute found in test files above'; exit 1; fi && env -u GIT_DIR -u GIT_WORK_TREE -u GIT_COMMON_DIR dotnet test apps/rhino-cli/tests/integration/RhinoCli.IntegrationTests.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/RhinoCli.Domain.fsproj (in 170 ms).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/RhinoCli.Application.fsproj (in 170 ms).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/integration/RhinoCli.IntegrationTests.fsproj (in 183 ms).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/RhinoCli.Infrastructure.fsproj (in 5 ms).
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/RhinoCli.Cli.fsproj (in 16 ms).
-  RhinoCli.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/bin/Debug/net10.0/RhinoCli.Domain.dll
-  RhinoCli.Infrastructure -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/bin/Debug/net10.0/RhinoCli.Infrastructure.dll
-  RhinoCli.Application -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/bin/Debug/net10.0/RhinoCli.Application.dll
-  RhinoCli.Cli -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/bin/Debug/net10.0/RhinoCli.Cli.dll
-  RhinoCli.IntegrationTests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/integration/bin/Debug/net10.0/RhinoCli.IntegrationTests.dll
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/integration/bin/Debug/net10.0/RhinoCli.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/RhinoCli.Domain.fsproj (in 170 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/RhinoCli.Application.fsproj (in 170 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/integration/RhinoCli.IntegrationTests.fsproj (in 183 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/RhinoCli.Infrastructure.fsproj (in 5 ms).
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/RhinoCli.Cli.fsproj (in 16 ms).
+  RhinoCli.Domain -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Domain/bin/Debug/net10.0/RhinoCli.Domain.dll
+  RhinoCli.Infrastructure -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Infrastructure/bin/Debug/net10.0/RhinoCli.Infrastructure.dll
+  RhinoCli.Application -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Application/bin/Debug/net10.0/RhinoCli.Application.dll
+  RhinoCli.Cli -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/src/RhinoCli.Cli/bin/Debug/net10.0/RhinoCli.Cli.dll
+  RhinoCli.IntegrationTests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/integration/bin/Debug/net10.0/RhinoCli.IntegrationTests.dll
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/integration/bin/Debug/net10.0/RhinoCli.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:  1415, Skipped:     0, Total:  1415, Duration: 1 m 47 s - RhinoCli.IntegrationTests.dll (net10.0)
@@ -1484,9 +1484,9 @@ Passed!  - Failed:     0, Passed:  1415, Skipped:     0, Total:  1415, Duration:
 > if grep -rn -E --include='*.fs' 'Skip\s*=\s*"' apps/rhino-cli/tests/e2e; then echo 'ERROR: xunit Skip= attribute found in test files above'; exit 1; fi && env -u GIT_DIR -u GIT_WORK_TREE -u GIT_COMMON_DIR dotnet test apps/rhino-cli/tests/e2e/RhinoCli.E2ETests.fsproj
 
   Determining projects to restore...
-  Restored /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/e2e/RhinoCli.E2ETests.fsproj (in 152 ms).
-  RhinoCli.E2ETests -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/e2e/bin/Debug/net10.0/RhinoCli.E2ETests.dll
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/e2e/bin/Debug/net10.0/RhinoCli.E2ETests.dll (.NETCoreApp,Version=v10.0)
+  Restored <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/e2e/RhinoCli.E2ETests.fsproj (in 152 ms).
+  RhinoCli.E2ETests -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/e2e/bin/Debug/net10.0/RhinoCli.E2ETests.dll
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/rhino-cli/tests/e2e/bin/Debug/net10.0/RhinoCli.E2ETests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:   353, Skipped:     0, Total:   353, Duration: 2 m 41 s - RhinoCli.E2ETests.dll (net10.0)
@@ -1609,9 +1609,9 @@ ose-app-web-e2e: 1 features, 1 expanded scenarios, adapters: unit, e2e.
 
   Determining projects to restore...
   All projects are up-to-date for restore.
-  OseId.Domain -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
-  OseId.Be.E2E -> /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be-e2e/bin/Debug/net10.0/OseId.Be.E2E.dll
-Test run for /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be-e2e/bin/Debug/net10.0/OseId.Be.E2E.dll (.NETCoreApp,Version=v10.0)
+  OseId.Domain -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Be.E2E -> <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be-e2e/bin/Debug/net10.0/OseId.Be.E2E.dll
+Test run for <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be-e2e/bin/Debug/net10.0/OseId.Be.E2E.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 
 Passed!  - Failed:     0, Passed:    26, Skipped:     0, Total:    26, Duration: 1 m 47 s - OseId.Be.E2E.dll (net10.0)
@@ -2850,10 +2850,10 @@ LaTeX-incompatible input and strict mode is set to 'warn': Unrecognized Unicode 
      [90m 350 |[39m
      [90m 351 |[39m   [36mfor[39m ([36mconst[39m path [36mof[39m paths) {
      [90m 352 |[39m     [36mawait[39m expect(nav[33m.[39mgetByRole([32m"link"[39m[33m,[39m { name[33m:[39m path[33m.[39mtitle }))[33m.[39mtoHaveAttribute([0m
-    [2m    at Object.<anonymous> (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts:349:39)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
-    [2m    at BddStepInvoker.invoke (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/.features-gen/specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature.spec.js:10:5[22m
+    [2m    at Object.<anonymous> (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts:349:39)[22m
+    [2m    at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
+    [2m    at BddStepInvoker.invoke (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
+    [2m    at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/.features-gen/specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature.spec.js:10:5[22m
 
 [2m    attachment #1: [1mscreenshot[2m (image/png) [2m──────────────────────────────────────────────────────────[2m[22m
 [2m    test-results/specs-apps-ayokoding-www-b-65633--renders-the-canonical-view-chromium/test-failed-1.png[22m
@@ -2884,10 +2884,10 @@ LaTeX-incompatible input and strict mode is set to 'warn': Unrecognized Unicode 
      [90m 300 |[39m   }
      [90m 301 |[39m })[33m;[39m
      [90m 302 |[39m[0m
-    [2m    at Object.<anonymous> (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts:299:76)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
-    [2m    at BddStepInvoker.invoke (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/.features-gen/specs/apps/ayokoding/www/behaviours/frontend/course-paths/landing-hero.feature.spec.js:9:5[22m
+    [2m    at Object.<anonymous> (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts:299:76)[22m
+    [2m    at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
+    [2m    at BddStepInvoker.invoke (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
+    [2m    at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/.features-gen/specs/apps/ayokoding/www/behaviours/frontend/course-paths/landing-hero.feature.spec.js:9:5[22m
 
 [2m    attachment #1: [1mscreenshot[2m (image/png) [2m──────────────────────────────────────────────────────────[2m[22m
 [2m    test-results/specs-apps-ayokoding-www-b-adadf-he-four-goal-paths-directly-chromium/test-failed-1.png[22m
@@ -2920,10 +2920,10 @@ LaTeX-incompatible input and strict mode is set to 'warn': Unrecognized Unicode 
      [90m 350 |[39m
      [90m 351 |[39m   [36mfor[39m ([36mconst[39m path [36mof[39m paths) {
      [90m 352 |[39m     [36mawait[39m expect(nav[33m.[39mgetByRole([32m"link"[39m[33m,[39m { name[33m:[39m path[33m.[39mtitle }))[33m.[39mtoHaveAttribute([0m
-    [2m    at Object.<anonymous> (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts:349:39)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
-    [2m    at BddStepInvoker.invoke (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/.features-gen/specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature.spec.js:10:5[22m
+    [2m    at Object.<anonymous> (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts:349:39)[22m
+    [2m    at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
+    [2m    at BddStepInvoker.invoke (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
+    [2m    at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/.features-gen/specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature.spec.js:10:5[22m
 
 [2m    attachment #1: [1mscreenshot[2m (image/png) [2m──────────────────────────────────────────────────────────[2m[22m
 [2m    test-results/specs-apps-ayokoding-www-b-65633--renders-the-canonical-view-firefox/test-failed-1.png[22m
@@ -2954,10 +2954,10 @@ LaTeX-incompatible input and strict mode is set to 'warn': Unrecognized Unicode 
      [90m 300 |[39m   }
      [90m 301 |[39m })[33m;[39m
      [90m 302 |[39m[0m
-    [2m    at Object.<anonymous> (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts:299:76)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
-    [2m    at BddStepInvoker.invoke (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/.features-gen/specs/apps/ayokoding/www/behaviours/frontend/course-paths/landing-hero.feature.spec.js:9:5[22m
+    [2m    at Object.<anonymous> (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts:299:76)[22m
+    [2m    at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
+    [2m    at BddStepInvoker.invoke (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
+    [2m    at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/.features-gen/specs/apps/ayokoding/www/behaviours/frontend/course-paths/landing-hero.feature.spec.js:9:5[22m
 
 [2m    attachment #1: [1mscreenshot[2m (image/png) [2m──────────────────────────────────────────────────────────[2m[22m
 [2m    test-results/specs-apps-ayokoding-www-b-adadf-he-four-goal-paths-directly-firefox/test-failed-1.png[22m
@@ -2990,10 +2990,10 @@ LaTeX-incompatible input and strict mode is set to 'warn': Unrecognized Unicode 
      [90m 350 |[39m
      [90m 351 |[39m   [36mfor[39m ([36mconst[39m path [36mof[39m paths) {
      [90m 352 |[39m     [36mawait[39m expect(nav[33m.[39mgetByRole([32m"link"[39m[33m,[39m { name[33m:[39m path[33m.[39mtitle }))[33m.[39mtoHaveAttribute([0m
-    [2m    at Object.<anonymous> (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts:349:39)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
-    [2m    at BddStepInvoker.invoke (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/.features-gen/specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature.spec.js:10:5[22m
+    [2m    at Object.<anonymous> (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts:349:39)[22m
+    [2m    at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
+    [2m    at BddStepInvoker.invoke (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
+    [2m    at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/.features-gen/specs/apps/ayokoding/www/behaviours/frontend/course-paths/canonical-fallback.feature.spec.js:10:5[22m
 
 [2m    attachment #1: [1mscreenshot[2m (image/png) [2m──────────────────────────────────────────────────────────[2m[22m
 [2m    test-results/specs-apps-ayokoding-www-b-65633--renders-the-canonical-view-webkit/test-failed-1.png[22m
@@ -3024,10 +3024,10 @@ LaTeX-incompatible input and strict mode is set to 'warn': Unrecognized Unicode 
      [90m 300 |[39m   }
      [90m 301 |[39m })[33m;[39m
      [90m 302 |[39m[0m
-    [2m    at Object.<anonymous> (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts:299:76)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
-    [2m    at BddStepInvoker.invoke (/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
-    [2m    at /Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/.features-gen/specs/apps/ayokoding/www/behaviours/frontend/course-paths/landing-hero.feature.spec.js:9:5[22m
+    [2m    at Object.<anonymous> (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/tests/e2e/steps/course-paths.steps.ts:299:76)[22m
+    [2m    at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:59:22[22m
+    [2m    at BddStepInvoker.invoke (<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/node_modules/playwright-bdd/src/runtime/bddStepInvoker.ts:53:5)[22m
+    [2m    at <home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ayokoding-www-fe-e2e/.features-gen/specs/apps/ayokoding/www/behaviours/frontend/course-paths/landing-hero.feature.spec.js:9:5[22m
 
 [2m    attachment #1: [1mscreenshot[2m (image/png) [2m──────────────────────────────────────────────────────────[2m[22m
 [2m    test-results/specs-apps-ayokoding-www-b-adadf-he-four-goal-paths-directly-webkit/test-failed-1.png[22m

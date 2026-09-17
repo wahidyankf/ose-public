@@ -5,7 +5,7 @@
 
 [33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
 
-[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
       [2mCoverage enabled with [22m[33mv8[39m
 
  [31m❯[39m tests/unit/runtime-mode-acceptance.test.ts [2m([22m[2m0 test[22m[2m)[22m
@@ -17,7 +17,7 @@
 [41m[1m FAIL [22m[49m tests/unit/RuntimeModeSteps.ts[2m [ tests/unit/RuntimeModeSteps.ts ][22m
 [31m[1mError[22m: Failed to resolve import "../../src/shared/runtime/runtime-mode" from "tests/unit/RuntimeModeSteps.ts". Does the file exist?[39m
   Plugin: [35mvite:import-analysis[39m
-  File: [36m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web/tests/unit/RuntimeModeSteps.ts[39m:11:85
+  File: [36m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web/tests/unit/RuntimeModeSteps.ts[39m:11:85
 [33m  9  |  import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
   10 |  import { expect } from "vitest";
   11 |  ...BLED_CODE, decideRuntimeMode, runtimeModeDiagnostic } from "../../src/shared/runtime/runtime-mode";
@@ -37,7 +37,7 @@
 [41m[1m FAIL [22m[49m tests/unit/StatusShellSteps.tsx[2m [ tests/unit/StatusShellSteps.tsx ][22m
 [31m[1mError[22m: Failed to resolve import "../../src/contexts/foundation/domain/service-status" from "tests/unit/StatusShellSteps.tsx". Does the file exist?[39m
   Plugin: [35mvite:import-analysis[39m
-  File: [36m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web/tests/unit/StatusShellSteps.tsx[39m:19:7
+  File: [36m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web/tests/unit/StatusShellSteps.tsx[39m:19:7
 [33m  10 |  import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
   11 |  import { expect } from "vitest";
   12 |  ...EADING, STATUS_PAGE_MEDIA_TYPE, STATUS_REGION_LABEL } from "../../src/contexts/foundation/domain/service-status";
@@ -57,7 +57,7 @@
 [41m[1m FAIL [22m[49m tests/unit/runtime-mode-acceptance.test.ts[2m [ tests/unit/runtime-mode-acceptance.test.ts ][22m
 [31m[1mError[22m: Failed to resolve import "../../src/shared/runtime/runtime-mode" from "tests/unit/runtime-mode-acceptance.test.ts". Does the file exist?[39m
   Plugin: [35mvite:import-analysis[39m
-  File: [36m/Users/wkf/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web/tests/unit/runtime-mode-acceptance.test.ts[39m:7:59
+  File: [36m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web/tests/unit/runtime-mode-acceptance.test.ts[39m:7:59
 [33m  5  |  */
   6  |  import { describe, expect, it } from "vitest";
   7  |  import { SUPPORTED_RUNTIME_MODES, decideRuntimeMode } from "../../src/shared/runtime/runtime-mode";

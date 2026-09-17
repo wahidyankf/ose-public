@@ -6,10 +6,11 @@ when_to_use: Use when changing the pin, the local policy example, HIPPO_ROOT, or
 # Consumer Integrity, State, and Evidence
 
 `hippo.lock` pins version, commit, and four archive checksums. The bootstrap validates downloads and
-revalidates cached digest plus embedded identity. `hippo.local.json.example` shows schema 2; any
-machine-specific `hippo.local.json` stays ignored and cannot weaken floors. `maxActiveOwners`
-may only lower the ceiling of twenty; the lowest value among current owners and waiters binds
-every checkout on that root, so never lower it for one checkout.
+revalidates cached digest plus embedded identity. `hippo.local.json.example` shows schema 3; any
+machine-specific `hippo.local.json` stays ignored and cannot weaken floors. The shared machine
+policy owns the two-owner base, evidence-gated third owner, resource tiers, and emergency floor.
+A contained worktree with no local copy uses the primary checkout's ignored policy; `HIPPO_CONFIG`
+and `--config` still take precedence.
 
 Use the per-user root so all checkouts share one ledger. Set `HIPPO_ROOT` only for isolated tests or
 a separately administered domain. When HIPPO itself runs inside a container, that container needs
@@ -20,6 +21,12 @@ repository paths/origins, credentials, file contents, or user data.
 Tests use synthetic releases, isolated cache/state, and fake pressure—never manufactured host
 pressure. Scheduled Linux/macOS smoke verifies identity, schema, mappings, policy, shared-root
 behavior, and cleanup. Ordinary hosted PR CI retains runner-native controls.
+
+`hippo.identity.json` supplies this repository's source and default tags. Hippo discovers it upward
+from nested paths and contained `worktrees/<task>` checkouts. Add privacy-safe
+`--tag checkout=worktree --tag plan=<slug>` values per run; every checkout still uses the shared
+default root. Operators run `./hippo status`, `./hippo watch --source ose-public`, and
+`./hippo history --since 30d --source ose-public` directly, without admission.
 
 BeaverNest's canonical
 [`hippo-bootstrap.feature`](https://github.com/wahidyankf/beaver-nest/blob/main/specs/tools/hippo-consumer/behaviours/hippo-bootstrap.feature)

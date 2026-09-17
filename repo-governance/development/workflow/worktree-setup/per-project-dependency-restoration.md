@@ -18,7 +18,7 @@ worktree:
 
 ```bash
 # F#/.NET — run once per affected src and tests project, e.g. apps/ose-be, apps/organiclever-be
-rtk ./hippo run --class ephemeral --disk-path . -- dotnet restore [project-or-solution]
+rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- dotnet restore [project-or-solution]
 ```
 
 Symptom without this step: `nx affected -t test:quick` fails on F# projects with

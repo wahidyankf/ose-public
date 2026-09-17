@@ -23,15 +23,15 @@ coupled application.
 Use Nx to discover the target names available today:
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- show projects
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- show project <project-name>
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- show projects
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- show project <project-name>
 ```
 
 Then run the target shown by that project, for example:
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build <project-name>
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run <project-name>:test:quick
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build <project-name>
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run <project-name>:test:quick
 ```
 
 For the repository-wide boundaries and naming rules, read the

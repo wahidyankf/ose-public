@@ -761,7 +761,7 @@ The outer runner invokes the exact versioned start target with absolute paths be
 owned temp root:
 
 ```bash
-rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack -- --input-manifest=/absolute/owned/input.json --public-descriptor=/absolute/owned/public.json
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack -- --input-manifest=/absolute/owned/input.json --public-descriptor=/absolute/owned/public.json
 ```
 
 The closed input manifest is at most 256 KiB, mode `0600`, loopback-only, and schema-valid. It includes
@@ -820,7 +820,7 @@ After stopping LMS-owned resources, the outer runner sends the exact private des
 control channel and invokes:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup -- --stack-id=lms-auth-e2e-0001
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup -- --stack-id=lms-auth-e2e-0001
 ```
 
 Cleanup validates stack ID, canonical path, owner/mode, labels, PID executable/start identity, and each

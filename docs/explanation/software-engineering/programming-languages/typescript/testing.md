@@ -331,8 +331,8 @@ Then("the user is redirected to the dashboard", async ({ page }) => {
 ### Nx targets for E2E
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-app-web-e2e:test:e2e
-./hippo run --class service --disk-path . -- npm exec nx -- run organiclever-app-web-e2e:test:e2e:ui
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web-e2e:test:e2e
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web-e2e:test:e2e:ui
 ```
 
 ---

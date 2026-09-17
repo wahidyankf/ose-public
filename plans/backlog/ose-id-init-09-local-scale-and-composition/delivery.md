@@ -64,16 +64,16 @@ Every checkbox and gate inherits its phase row unless it declares a stricter own
 observation, evidence destination, or failure route. Evidence paths are relative to
 `plans/in-progress/ose-id-init-09-local-scale-and-composition/`. No checkbox completes from prose review.
 
-| Phase | Default owner                                                     | Bounded paths                                                                          | Literal verification command                                                                                                                                                                                                                               | Expected result and evidence                                                                                                                                      | Failure route                                                                                                                             |
-| ----- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| 0     | Root integrator                                                   | execution worktree, predecessor diffs, delivered OSE ID app/spec/config paths          | Run the Phase 0 predecessor-green baseline commands from this section, including `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`. | Exit 0; dependency/worktree/topology/resource/license/rule baselines under `evidence/phase-0-*`.                                                                  | Preserve sanitized output and stop; prerequisite drift routes to its owner and unplanned path/rule impact requires amendment/propagation. |
-| 1     | Spec, state-ledger, security, and E2E owners named by each packet | two local-runtime feature files, four behavior maps, bounded OSE ID app/E2E test paths | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration,test:e2e,test:coverage:behaviour -p ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`                                                       | Specs/coverage pass; only named shared-state/runner/no-affinity behaviors remain RED under `evidence/phase-1-*`; HTTP semantic digest shows no delta.             | Reopen the exact contract/threat/RED packet; unexplained API drift or state owner blocks Phase 2.                                         |
-| 2     | C#/web shared-state lanes                                         | bounded state/readiness/key/rate/idempotency/revocation symbols discovered in Phase 1  | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration,test:quick -p ose-id-be,ose-id-web`                                                                                                          | Shared-state RED → GREEN → REFACTOR and divergent-config readiness evidence under `evidence/phase-2-*`.                                                           | Reopen the first failing TDD packet; do not add Redis, affinity, or local authority.                                                      |
-| 3     | Runner/proxy lane                                                 | `apps/ose-id-web-e2e/**` runner, proxy, schemas, project target, and tests only        | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:local-stack`                                                                                                                                                | Runner RED → GREEN → REFACTOR, admission/topology/failure/concurrency, and empty cleanup evidence under `evidence/phase-3-*`.                                     | Reopen the first runner packet; unsafe target/path or residue blocks all later phases.                                                    |
-| 4     | Composition-contract lane                                         | local-stack JSON Schemas/docs plus synthetic consumer under `apps/ose-id-web-e2e/**`   | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:composition-contract`                                                                                                                                       | Composition RED → GREEN → REFACTOR, version/fallback/nested-cleanup evidence under `evidence/phase-4-*`.                                                          | Reopen the first contract packet; private dependency or fallback is a security blocker.                                                   |
-| 5     | E2E integrator and browser/security lanes                         | running owned stack, public descriptors, ignored runner artifacts                      | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:no-affinity`                                                                                                                                                | A→B feature handoffs, dependent-app behavior, unchanged HTTP probes, leak scan, and empty cleanup under `evidence/phase-5-*`.                                     | Route a state failure to Phase 2, lifecycle/residue to Phase 3, composition fallback to Phase 4; rerun the full matrix.                   |
-| 6     | Root integrator and named API/UI/live/review agents               | complete Plan 09 candidate diff/evidence                                               | `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`                                                                                                                                   | Exact-head quality/review/tester/rules/API-no-delta/runner-contract PASS under `evidence/phase-6-*`.                                                              | Any fix changes HEAD and reruns Phase 6 from its first packet; unresolved finding blocks archival.                                        |
-| 7     | Root integrator                                                   | learnings, archive/indexes/LMS handoff, PR branch, declared worktree                   | `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate` followed by `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate plans`                                                                                                                      | Archive-containing reviewed merge, terminal audit PASS, LMS handoff, containment, and non-force cleanup under `evidence/phase-7-*` and the external final report. | Reopen the first unsupported phase; retain branch/worktree on ambiguity or audit failure.                                                 |
+| Phase | Default owner                                                     | Bounded paths                                                                          | Literal verification command                                                                                                                                                                                                                                                        | Expected result and evidence                                                                                                                                      | Failure route                                                                                                                             |
+| ----- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| 0     | Root integrator                                                   | execution worktree, predecessor diffs, delivered OSE ID app/spec/config paths          | Run the Phase 0 predecessor-green baseline commands from this section, including `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`. | Exit 0; dependency/worktree/topology/resource/license/rule baselines under `evidence/phase-0-*`.                                                                  | Preserve sanitized output and stop; prerequisite drift routes to its owner and unplanned path/rule impact requires amendment/propagation. |
+| 1     | Spec, state-ledger, security, and E2E owners named by each packet | two local-runtime feature files, four behavior maps, bounded OSE ID app/E2E test paths | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration,test:e2e,test:coverage:behaviour -p ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`                                                       | Specs/coverage pass; only named shared-state/runner/no-affinity behaviors remain RED under `evidence/phase-1-*`; HTTP semantic digest shows no delta.             | Reopen the exact contract/threat/RED packet; unexplained API drift or state owner blocks Phase 2.                                         |
+| 2     | C#/web shared-state lanes                                         | bounded state/readiness/key/rate/idempotency/revocation symbols discovered in Phase 1  | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration,test:quick -p ose-id-be,ose-id-web`                                                                                                          | Shared-state RED → GREEN → REFACTOR and divergent-config readiness evidence under `evidence/phase-2-*`.                                                           | Reopen the first failing TDD packet; do not add Redis, affinity, or local authority.                                                      |
+| 3     | Runner/proxy lane                                                 | `apps/ose-id-web-e2e/**` runner, proxy, schemas, project target, and tests only        | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:local-stack`                                                                                                                                                | Runner RED → GREEN → REFACTOR, admission/topology/failure/concurrency, and empty cleanup evidence under `evidence/phase-3-*`.                                     | Reopen the first runner packet; unsafe target/path or residue blocks all later phases.                                                    |
+| 4     | Composition-contract lane                                         | local-stack JSON Schemas/docs plus synthetic consumer under `apps/ose-id-web-e2e/**`   | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:composition-contract`                                                                                                                                       | Composition RED → GREEN → REFACTOR, version/fallback/nested-cleanup evidence under `evidence/phase-4-*`.                                                          | Reopen the first contract packet; private dependency or fallback is a security blocker.                                                   |
+| 5     | E2E integrator and browser/security lanes                         | running owned stack, public descriptors, ignored runner artifacts                      | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:no-affinity`                                                                                                                                                | A→B feature handoffs, dependent-app behavior, unchanged HTTP probes, leak scan, and empty cleanup under `evidence/phase-5-*`.                                     | Route a state failure to Phase 2, lifecycle/residue to Phase 3, composition fallback to Phase 4; rerun the full matrix.                   |
+| 6     | Root integrator and named API/UI/live/review agents               | complete Plan 09 candidate diff/evidence                                               | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`                                                                                                                                   | Exact-head quality/review/tester/rules/API-no-delta/runner-contract PASS under `evidence/phase-6-*`.                                                              | Any fix changes HEAD and reruns Phase 6 from its first packet; unresolved finding blocks archival.                                        |
+| 7     | Root integrator                                                   | learnings, archive/indexes/LMS handoff, PR branch, declared worktree                   | `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate` followed by `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate plans`                                                                                                                                               | Archive-containing reviewed merge, terminal audit PASS, LMS handoff, containment, and non-force cleanup under `evidence/phase-7-*` and the external final report. | Reopen the first unsupported phase; retain branch/worktree on ambiguity or audit failure.                                                 |
 
 ### Agent Topology
 
@@ -130,14 +130,14 @@ It is not a Phase 0 or Phase 1 success criterion. Before creating any Plan 09 sc
 test, Phase 0 and Phase 1 each run this exact predecessor-green baseline:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
 ```
 
 Then run the static predecessor behavior baseline:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
 ```
 
 Phase 0 proves every named target is real, not echo, no-op, a success sentinel, or a duplicate alias.
@@ -174,8 +174,8 @@ target/configuration, or unrelated failure blocks Phase 2.
       Worktree section. Record path, branch, 40-character HEAD, creator/session, UTC time, and branch
       inventory at `evidence/phase-0-worktree.md`. Acceptance: one plan worktree starts at current
       `origin/main`; divergence/stale registration follows the documented one-retry recovery then stops.
-- [ ] [AI] Run `rtk ./hippo run --class ephemeral --disk-path . -- npm install` and
-      `rtk ./hippo run --class transactional --disk-path . -- npm run doctor -- --fix`; acceptance: exit
+- [ ] [AI] Run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
+      `rtk npm run doctor -- --fix`; acceptance: exit
       0 with no secret/unrelated mutation.
 - [ ] [AI] **Owner: integrator; delivered topology inventory.** Run
       `rtk rg -n "local-stack|compose|port|runtime|session|correlation|rate.limit|signing|Mailpit|seed|cleanup" apps/ose-id-{be,be-e2e,web,web-e2e} specs/apps/ose/id-{be,web} docs/reference/web-sites.md repo-config.yml`
@@ -193,9 +193,9 @@ target/configuration, or unrelated failure blocks Phase 2.
       rows at `evidence/phase-0-licenses.md`. Unknown, incompatible, unpinned, or missing-notice items block
       the phase and route to dependency review; OSE-authored source remains MIT.
 - [ ] [AI] **Owner: integrator; green baseline.** Run the Phase 0 predecessor-green baseline commands,
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`,
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`,
       the resolved migration/RLS/local-stack smoke and cleanup targets, and
-      `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
       Save command/exit/resource-cleanup evidence at `evidence/phase-0-baseline.md`. Every failure,
       including preexisting affected failure, is fixed at root cause and the full baseline rerun; never
       retry, narrow, skip, quarantine, or continue red.
@@ -209,12 +209,12 @@ target/configuration, or unrelated failure blocks Phase 2.
 ### Phase 0 Gate
 
 - [ ] [AI] Run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick,test:coverage:behaviour --base=origin/main --head=HEAD`
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick,test:coverage:behaviour --base=origin/main --head=HEAD`
       and the canonical pre-push command above; acceptance: both exit 0 and dependencies, worktree,
       paths/targets/ports/state owners, cleanup, licenses, and rule classification are current at one HEAD.
 
 > **Pause Safety:** no scale/runner change exists and the prior stack is green. Safe to stop. To resume:
-> `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD`.
+> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD`.
 
 ---
 
@@ -239,11 +239,11 @@ RUNNER-VERSION-01..02, and actual prior implementation.
       `Fail without publishing a partial public descriptor`,
       `Negotiate the highest mutually supported runner contract minor`, and
       `Reject an unsupported local runner contract before mutation`. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate`
       and save `evidence/phase-1-specs.txt`. Parser, ownership, duplicate-title, plan-language, or layer-tag
       failure returns to this packet before tests are added.
 - [ ] [AI] Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`;
       acceptance: no undefined/duplicate/unused step and every scenario has the required Unit/Integration/E2E owner.
 - [ ] [AI] **Owner: C#/web architecture lanes; state ledger.** Run
       `rtk rg -n "static |Singleton|MemoryCache|ConcurrentDictionary|temp|DataProtection|signing|session|correlation|revocation|idempot|rate" apps/ose-id-be apps/ose-id-web`
@@ -253,29 +253,29 @@ RUNNER-VERSION-01..02, and actual prior implementation.
 - [ ] [AI] **Owner: security reviewer; threat delta.** Update the Plan 09 threat-model section for affinity,
       split-brain keys, stale grants/revocation, replay, proxy/test-control trust, manifest/path/PID
       injection, cross-stack cleanup, stdout/argv secrets, startup races, and fallback. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec prettier -- --check plans/in-progress/ose-id-init-09-local-scale-and-composition` and
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec markdownlint-cli2 -- 'plans/in-progress/ose-id-init-09-local-scale-and-composition/**/*.md'`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec prettier -- --check plans/in-progress/ose-id-init-09-local-scale-and-composition` and
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec markdownlint-cli2 -- 'plans/in-progress/ose-id-init-09-local-scale-and-composition/**/*.md'`
       and store review disposition at `evidence/phase-1-threat-model.md`. Missing mitigation/test/owner or
       unsafe disclosure blocks RED implementation and returns to security review.
 - [ ] [AI] **RED:** add backend/web Unit/Integration tests for shared state/readiness/key divergence and
       forbidden local authority, including compiled-SQL snapshots, explicit projections/bound
       parameters/timeouts/cancellation, transaction boundaries, and bounded query counts/rows; run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-be,ose-id-web`.
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-be,ose-id-web`.
       Acceptance: new assertions fail for missing enforcement while predecessor tests pass; save
       `evidence/phase-1-shared-state-red.txt`.
 - [ ] [AI] **RED:** add lifecycle/contract tests under `ose-id-be-e2e` for validation, manifest, readiness,
       first failure, cleanup, concurrent isolation, descriptors, and synthetic consumer. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:local-stack`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:local-stack`;
       acceptance: named cases fail because the runner/control schemas are absent; save failure output to
       `evidence/phase-1-runner-red.txt`.
 - [ ] [AI] **RED:** add no-affinity browser/backend scenarios under the E2E roots; prove current single-
       instance/local-state behavior cannot satisfy A-stop/B-complete expectations by running
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:no-affinity`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:no-affinity`;
       save `evidence/phase-1-no-affinity-red.txt`.
 - [ ] [AI] **REFACTOR — owner: spec/integration lanes.** Reconcile only the two feature files, four
       project `behaviour-coverage.json` maps, and new focused test names for state, instance, stack
       ownership, and descriptors. Run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour,test:quick -p ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour,test:quick -p ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`
       and save `evidence/phase-1-refactor.txt`. Acceptance: predecessor quick suites pass and only the
       declared new runtime assertions remain RED; any semantic drift or new unrelated failure reopens its
       earlier packet.
@@ -288,11 +288,11 @@ RUNNER-VERSION-01..02, and actual prior implementation.
       unrelated failure blocks Phase 2. Do not require the full green matrix until Phase 2 completes.
 - [ ] [AI] Rerun static behavior coverage and inspect all RED transcripts; acceptance: every criterion
       has U/I/E ownership and a threat owner, each RED fails for its named missing behavior, and
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:quick -p ose-id-be,ose-id-web`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:quick -p ose-id-be,ose-id-web`
       exits 0 for predecessor behavior.
 
 > **Pause Safety:** only new focused tests are red; no runtime change is active. Safe to stop. To resume:
-> `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`.
+> `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`.
 
 ---
 
@@ -305,7 +305,7 @@ RUNNER-VERSION-01..02, and actual prior implementation.
 **Proof:** Unit/Integration and two-process component tests pass; divergent/local configuration fails readiness.
 
 - [ ] [AI] **RED:** rerun shared-state/readiness/key-divergence cases with
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-be,ose-id-web`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-be,ose-id-web`;
       acceptance: named new cases fail only for process-local/missing readiness behavior while predecessor
       cases pass. Save `evidence/phase-2-shared-state-red.txt`.
 
@@ -330,7 +330,7 @@ RUNNER-VERSION-01..02, and actual prior implementation.
       each remains attributed but unusable. No layer exemption or hand-maintained table allowlist is valid.
 - [ ] [AI] **GREEN:** make shared rate-limit/idempotency/revocation behavior atomic enough for consistent
       policy across instances. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`;
       acceptance: simultaneous A/B requests cannot double-consume or exceed policy. Save
       `evidence/phase-2-atomic-policy-green.txt`.
 - [ ] [AI] **GREEN:** add ordinary-production-runtime rejection for all test-only instance markers, proxy
@@ -340,20 +340,20 @@ RUNNER-VERSION-01..02, and actual prior implementation.
 - [ ] [AI] **REFACTOR:** remove stale local-state and EF/Identity persistence code/config/docs, minimize
       shared-store round trips without changing authority, and rerun compiled-SQL/query-count/row-bound
       contracts plus
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration,test:quick -p ose-id-be,ose-id-web`;
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration,test:quick -p ose-id-be,ose-id-web`;
       acceptance: all pass with no authority/cache regression. Save `evidence/phase-2-shared-state-refactor.txt`.
 
 ### Phase 2 Gate
 
 - [ ] [AI] Run the Phase 2 run-many command and
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`;
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`;
       acceptance: no process-local authority remains, shared-state/key tests pass, forbidden configuration
       fails readiness, authored production code reports at least 99% Unit line coverage, and
       `evidence/phase-2-persistence/` proves compiled SQL/catalog/index/safe synthetic plans,
       bounded queries/rows, explicit transactions, and no EF/Identity persistence path.
 
 > **Pause Safety:** single-instance behavior remains green and processes are disposable. Safe to stop.
-> To resume: `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:quick -p ose-id-be,ose-id-web`.
+> To resume: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:quick -p ose-id-be,ose-id-web`.
 
 ---
 
@@ -366,7 +366,7 @@ RUNNER-VERSION-01..02, and actual prior implementation.
 **Proof:** startup/failure/cleanup/concurrency contract tests and two consecutive clean runs pass.
 
 - [ ] [AI] **RED:** run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:local-stack`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:local-stack`;
       acceptance: lifecycle/ownership/readiness cases fail because the owned runner is absent while
       predecessor E2E remains green. Save `evidence/phase-3-runner-red.txt`.
 
@@ -384,7 +384,7 @@ RUNNER-VERSION-01..02, and actual prior implementation.
       fault preserves primary status and leaves no resource. Save `evidence/phase-3-failure-cleanup-green.txt`.
 - [ ] [AI] **GREEN:** register one public Nx OSE ID local-stack/scale target and exact dependencies/cache
       settings following repository target conventions. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- show project ose-id-web-e2e`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- show project ose-id-web-e2e`;
       acceptance: the real targets and inputs/outputs/dependencies are present with no no-op stub. Save
       `evidence/phase-3-target-registration.txt`.
 - [ ] [AI] **GREEN:** run two stacks concurrently with unique ports, clean one, and prove the other stays
@@ -398,7 +398,7 @@ RUNNER-VERSION-01..02, and actual prior implementation.
 ### Phase 3 Gate
 
 - [ ] [AI] Run the exact Phase 3 local-stack test followed by
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup`;
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup`;
       acceptance: AC-STACK-01..04 and RUNNER-READY-01..02 pass for the exact scenario titles Start a
       deterministic complete stack, Fail at the first unready dependency, Clean every exit path,
       Isolate concurrent ownership manifests, Publish one schema-valid ready descriptor, and Fail
@@ -406,7 +406,7 @@ RUNNER-VERSION-01..02, and actual prior implementation.
       output, or owned-resource leak.
 
 > **Pause Safety:** the local topology starts and cleans through one guarded target. Safe to stop. To
-> resume: `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:local-stack`.
+> resume: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:local-stack`.
 
 ---
 
@@ -422,7 +422,7 @@ RUNNER-VERSION-01..02.
 - [ ] [AI] **RED:** add schema contract tests for supported/unsupported version, unknown sensitive field,
       client/resource/context/fixture validation, public/private descriptor separation, and exact cleanup
       handle. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:composition-contract`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:composition-contract`;
       acceptance: named tests fail for the absent contract; save `evidence/phase-4-composition-red.txt`.
 - [ ] [AI] **GREEN:** implement the versioned input manifest and public/private output descriptors in the
       owned runner path. Validate loopback callbacks, audiences/scopes, personal/company context, and
@@ -451,7 +451,7 @@ RUNNER-VERSION-01..02.
       secret-safe contract without LMS implementation here.
 
 > **Pause Safety:** downstream composition is contract-tested and local only. Safe to stop. To resume:
-> `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:composition-contract`.
+> `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:composition-contract`.
 
 ---
 
@@ -469,7 +469,7 @@ Copy-paste start/readiness recipe, using the family defaults: web proxy
 execution for plan amendment.
 
 ```bash
-rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack
 rtk curl -fsS http://127.0.0.1:8501/health/live
 rtk curl -fsS http://127.0.0.1:8501/health/ready
 rtk curl -fsS http://127.0.0.1:8501/.well-known/openid-configuration
@@ -491,18 +491,18 @@ contract, verified literally below.
       and reopens the exact Phase 3 or 4 operation owner before the entire matrix is rerun.
 
   ```bash
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=start --manifest=apps/ose-id-web-e2e/fixtures/local-stack/valid-v1.1.json --evidence=evidence/phase-5-runner-contract/start-success.json
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=start --manifest=apps/ose-id-web-e2e/fixtures/local-stack/unsafe-path-v1.1.json --expect-exit=78 --evidence=evidence/phase-5-runner-contract/start-rejected.json
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=inspect --manifest=apps/ose-id-web-e2e/fixtures/local-stack/valid-v1.1.json --evidence=evidence/phase-5-runner-contract/inspect-success.json
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=inspect --manifest=apps/ose-id-web-e2e/fixtures/local-stack/not-ready-v1.1.json --expect-exit=69 --evidence=evidence/phase-5-runner-contract/inspect-not-ready.json
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=cleanup --manifest=apps/ose-id-web-e2e/fixtures/local-stack/owned-terminal-v1.1.json --evidence=evidence/phase-5-runner-contract/cleanup-success.json
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=cleanup --manifest=apps/ose-id-web-e2e/fixtures/local-stack/unowned-resource-v1.1.json --expect-exit=78 --evidence=evidence/phase-5-runner-contract/cleanup-rejected.json
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=negotiate --manifest=apps/ose-id-web-e2e/fixtures/local-stack/valid-v1.0.json --evidence=evidence/phase-5-runner-contract/version-success.json
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=negotiate --manifest=apps/ose-id-web-e2e/fixtures/local-stack/unsupported-v2.0.json --expect-exit=64 --evidence=evidence/phase-5-runner-contract/version-rejected.json
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=start --manifest=apps/ose-id-web-e2e/fixtures/local-stack/valid-v1.1.json --evidence=evidence/phase-5-runner-contract/start-success.json
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=start --manifest=apps/ose-id-web-e2e/fixtures/local-stack/unsafe-path-v1.1.json --expect-exit=78 --evidence=evidence/phase-5-runner-contract/start-rejected.json
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=inspect --manifest=apps/ose-id-web-e2e/fixtures/local-stack/valid-v1.1.json --evidence=evidence/phase-5-runner-contract/inspect-success.json
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=inspect --manifest=apps/ose-id-web-e2e/fixtures/local-stack/not-ready-v1.1.json --expect-exit=69 --evidence=evidence/phase-5-runner-contract/inspect-not-ready.json
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=cleanup --manifest=apps/ose-id-web-e2e/fixtures/local-stack/owned-terminal-v1.1.json --evidence=evidence/phase-5-runner-contract/cleanup-success.json
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=cleanup --manifest=apps/ose-id-web-e2e/fixtures/local-stack/unowned-resource-v1.1.json --expect-exit=78 --evidence=evidence/phase-5-runner-contract/cleanup-rejected.json
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=negotiate --manifest=apps/ose-id-web-e2e/fixtures/local-stack/valid-v1.0.json --evidence=evidence/phase-5-runner-contract/version-success.json
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-contract -- --operation=negotiate --manifest=apps/ose-id-web-e2e/fixtures/local-stack/unsupported-v2.0.json --expect-exit=64 --evidence=evidence/phase-5-runner-contract/version-rejected.json
   ```
 
 - [ ] [AI] **Owner: contract integrator; HTTP no-delta evidence.** Run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:verify-no-http-contract-delta -- --baseline=evidence/phase-0-http-contract-baseline --current=evidence/phase-5-http-contract-current`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:verify-no-http-contract-delta -- --baseline=evidence/phase-0-http-contract-baseline --current=evidence/phase-5-http-contract-current`.
       Acceptance: bundled backend/web OpenAPI, discovery, JWKS, route manifests, status/media/schema/
       security semantics, and normalized HTML contracts match the frozen baseline with zero unexplained
       add/update/delete; instance marker differences exist only in private test evidence. Store digests,
@@ -531,7 +531,7 @@ them. Wrong instance handoff, URL/status/storage, console error, fallback identi
       proxies are ready. Missing/extra/private descriptor data stops the stack, invokes cleanup, and
       returns to Phase 3 topology ownership.
 - [ ] [AI] **Owner: E2E lane; authorization handoff.** Run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:manual-no-affinity -- --case=authorization-a-stop-b-complete`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:manual-no-affinity -- --case=authorization-a-stop-b-complete`.
       Acceptance: A starts correlation, both A instances stop through owned control, B completes callback/
       token/resource, and exactly one grant/session/result exists. Store sanitized instance/status/count
       evidence at `evidence/phase-5-authorization-handoff.md`; wrong count/instance or residue reopens the
@@ -543,17 +543,17 @@ them. Wrong instance handoff, URL/status/storage, console error, fallback identi
       `evidence/phase-5-feature-handoffs.md`; the first failing feature routes to its exact state-store owner
       and the entire matrix reruns after the fix.
 - [ ] [AI] **Owner: C# security lane; key convergence.** Run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:no-affinity -- --case=key-overlap-and-divergence`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:no-affinity -- --case=key-overlap-and-divergence`.
       Acceptance: both instances publish/validate one current plus allowed overlap set and divergent
       configuration fails readiness. Save public key IDs/status only at `evidence/phase-5-key-convergence.md`;
       any private material or split result blocks delivery and reopens Phase 2.
 - [ ] [AI] **Owner: composition lane; dependent app.** Run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:composition-contract -- --case=personal-company-and-unavailable`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:composition-contract -- --case=personal-company-and-unavailable`.
       Acceptance: personal and Company A journeys pass, then stopping OSE ID yields explicit dependency
       unavailable with no password/header/debug/alternate-issuer fallback. Save safe statuses at
       `evidence/phase-5-dependent-app.md`; a fallback or wrong context is a security blocker routed to Phase 4.
 - [ ] [AI] **Owner: security reviewer; leak inspection.** Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:inspect-local-stack-evidence -- --evidence=plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence`.
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:inspect-local-stack-evidence -- --evidence=plans/in-progress/ose-id-init-09-local-scale-and-composition/evidence`.
       Acceptance: browser storage/cookies/network/console, logs, descriptors, temp files, and evidence
       contain only allowed opaque cookie/public metadata/sanitized instance markers. Save the allowlist
       report at `evidence/phase-5-leak-inspection.md`; any secret or hidden authority stops delivery,
@@ -565,26 +565,26 @@ them. Wrong instance handoff, URL/status/storage, console error, fallback identi
       headers/bodies for readiness/JWKS/revocation/negative cases. Any clipping, focus/status, console,
       network, or redaction failure routes to the owning UI/API phase and requires the full matrix rerun.
 - [ ] [AI] **Owner: lifecycle lane; failure and cleanup.** Run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:local-stack -- --cases=child-crash,test-failure,interrupt,repeated-cleanup,concurrent-isolation`
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:local-stack -- --cases=child-crash,test-failure,interrupt,repeated-cleanup,concurrent-isolation`
       twice from clean state, invoking the cleanup command after each. Store exit/cause/empty-inventory
       evidence at `evidence/phase-5-cleanup.md`. Any retry/sleep, changed primary cause, cross-stack effect,
       or residue reopens Phase 3 and blocks the gate.
 
 Cleanup after every success/failure/interruption: press Ctrl-C in the service terminal, then run
-`rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup`.
+`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup`.
 `curl -sS http://127.0.0.1:8501/health/ready` must fail; verify ports 3500, 8501, 8502, 5438, 1026, 8026
 and every manifest-owned process/container/network/volume/temp secret are absent.
 
 ### Phase 5 Gate
 
 - [ ] [AI] Run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:no-affinity`
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:no-affinity`
       followed by the cleanup command; acceptance: every PRD criterion passes without affinity, leaked
       state, fallback identity, nondeterminism, or residue; `evidence/phase-5-persistence/` proves
       cross-instance query-count/row bounds without N+1, and evidence contains no secret/real data.
 
 > **Pause Safety:** local OSE ID is complete, composable, and production-disabled. Safe to stop. To
-> resume: `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:no-affinity`.
+> resume: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:no-affinity`.
 
 ---
 
@@ -601,7 +601,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
 
 - [ ] [AI] Run the Mandatory Nx Quality Matrix, then run static behavior coverage, all OSE ID
       Unit/Integration/E2E, migration/RLS, runner/cleanup/concurrency, synthetic consumer, format,
-      Markdown/Mermaid, dependency/license, and `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`. Every command exits 0.
+      Markdown/Mermaid, dependency/license, and `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`. Every command exits 0.
       Save exact commands/exits at `evidence/phase-6-nx-quality.txt`; any failure reopens its owning
       implementation packet.
 - [ ] [AI] Enforce at least **99% Unit line coverage for authored production code**.
@@ -675,7 +675,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       test-integrity, performance, rule, license, plan, secret, scope, or cleanup finding.
 
 > **Pause Safety:** candidate is complete and reviewable but unpushed. Safe to stop. To resume:
-> `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
 
 ---
 

@@ -32,9 +32,9 @@ Filenames: lowercase kebab-case.
 ## Build, Test, Lint
 
 ```bash
-rtk ./hippo run --class ephemeral --disk-path . -- npm install
-rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run [project]:test:quick
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build,test:quick,lint
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
+rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run [project]:test:quick
+rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- affected -t build,test:quick,lint
 ```
 
 **See**: [nx-targets.md](./repo-governance/development/infra/nx-targets.md)
@@ -68,6 +68,7 @@ assumptions, ledger, and verification before acting.
 current-head `pr-leak-review`; semantic review runs only when explicitly requested.
 Applicable UI/API surface gates still bind.
 `[AI]` merges by default. At most one worktree per repo per plan; Phase 0 opens none.
+Create it only at `{repository location}/worktrees/<task>`; sibling `*-worktrees/` directories are forbidden.
 
 **See**: [Delivery Mode](./repo-governance/conventions/structure/plans/delivery-mode-the-four-modes.md#delivery-mode)
 

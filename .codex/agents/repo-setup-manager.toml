@@ -29,7 +29,7 @@ Execute the steps below in order; each must pass before the next, so every plan 
 > [Plans Organization Convention §Phase 0 Opens No PR](../../repo-governance/conventions/structure/plans/phase-0-opens-no-pr.md#phase-0-opens-no-pr--the-earliest-pr-is-phase-1-hard-rule).
 
 **Step 1 — Install Dependencies and Hooks**: Run
-`rtk ./hippo run --class ephemeral --disk-path . -- npm install` at the selected worktree root.
+`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` at the selected worktree root.
 Acceptance: exit 0 and Husky `prepare` completed.
 
 **Step 2 — Converge Polyglot Toolchain**: `rtk npm run doctor -- --fix`. Acceptance: exit 0 with no
@@ -38,7 +38,7 @@ more languages than this repo builds: `apps/` and `libs/` ship **TypeScript and 
 language tools format `apps/ayokoding-www/content/**` katas and never block a non-content plan.
 
 **Step 3 — Baseline Test Run**: run the full suite for projects in scope through one outer HIPPO
-boundary (`rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t test:unit`
+boundary (`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:unit`
 for a subset, or replace `affected` with `run-many` for a full baseline). Record pass/fail/skip
 counts and known preexisting failures as user-visible output.
 

@@ -102,17 +102,17 @@ code, observed result, and changed paths. A path discovered during Phase 0 must 
 output, stop the phase gate, fix the root cause without weakening tests or contracts, rerun the same
 command, and append the disposition to that phase's evidence.
 
-| Phase | Owner                                          | Authorized path or bounded pattern                                                                                | Copyable verification command                                                                                                                                                                                                                     | Observable result and evidence                                                                                                                                                   |
-| ----- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0     | Root coordinator                               | repository inventory, predecessor artifacts, and execution worktree only                                          | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be:build` then `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e` | Exit `0`; baseline and resolved paths in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-0-baseline.md`                                                     |
-| 1     | Root coordinator                               | `specs/apps/ose/id-be/**`, `apps/ose-id-be{,-e2e}/**/behaviour-coverage.json`, and this plan's numbered tech docs | Green predecessor baseline, then `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e`                                                                   | Only the recorded missing Plan 04 bindings may be RED; all other mapping checks exit `0` in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-1-contracts.md` |
-| 2     | Agents 1–3 within frozen ownership             | `apps/ose-id-be/**`, `apps/ose-id-be-e2e/**`, and the resolved migration project                                  | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-be`                                                                                                                       | Exit `0`; RED/GREEN/REFACTOR trace and migration proof in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-2-core.md`                                        |
-| 3     | Root coordinator after lane convergence        | same backend/E2E paths plus canonical specs                                                                       | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`                                                                                                                                                | Exit `0`; protocol, replay, and multi-instance results in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-3-protocol.md`                                    |
-| 4     | Root coordinator and named quality-gate agents | frozen delivery ledger only                                                                                       | `rtk ./hippo run --class transactional --disk-path . -- npm run check:pre-push`                                                                                                                                                                   | Exit `0`; delegated gate IDs and reports in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-quality-gates.md`                                             |
-| 5     | Root coordinator                               | this plan's `learnings.md` and bounded durable-doc destinations                                                   | `rtk ./hippo run --class transactional --disk-path . -- npm exec markdownlint-cli2 -- plans/in-progress/ose-id-init-04-oidc-oauth-provider/learnings.md`                                                                                          | Exit `0`; promoted/deferred knowledge in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-5-knowledge.md`                                                    |
-| 6     | Root coordinator                               | this plan directory and annotated plan indexes                                                                    | `rtk ./hippo run --class transactional --disk-path . -- npm run check:pre-push`                                                                                                                                                                   | Exit `0`; archive/index validation in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-6-archive.md`                                                         |
-| 7     | Root coordinator and review agents             | current-head diff only                                                                                            | `rtk ./hippo run --class transactional --disk-path . -- npm run check:pre-push`                                                                                                                                                                   | Exit `0`; current-head/base and review dispositions in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-7-head-review.md`                                    |
-| 8     | Root coordinator                               | execution worktree metadata only                                                                                  | `rtk git -C worktrees/ose-id-init-04-oidc-oauth-provider status --short`                                                                                                                                                                          | Empty output after merge; cleanup record in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-8-cleanup.md`                                                   |
+| Phase | Owner                                          | Authorized path or bounded pattern                                                                                | Copyable verification command                                                                                                                                                                                                                                                                       | Observable result and evidence                                                                                                                                                   |
+| ----- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0     | Root coordinator                               | repository inventory, predecessor artifacts, and execution worktree only                                          | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:build` then `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e` | Exit `0`; baseline and resolved paths in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-0-baseline.md`                                                     |
+| 1     | Root coordinator                               | `specs/apps/ose/id-be/**`, `apps/ose-id-be{,-e2e}/**/behaviour-coverage.json`, and this plan's numbered tech docs | Green predecessor baseline, then `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e`                                                                                            | Only the recorded missing Plan 04 bindings may be RED; all other mapping checks exit `0` in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-1-contracts.md` |
+| 2     | Agents 1–3 within frozen ownership             | `apps/ose-id-be/**`, `apps/ose-id-be-e2e/**`, and the resolved migration project                                  | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-be`                                                                                                                                                | Exit `0`; RED/GREEN/REFACTOR trace and migration proof in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-2-core.md`                                        |
+| 3     | Root coordinator after lane convergence        | same backend/E2E paths plus canonical specs                                                                       | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`                                                                                                                                                                         | Exit `0`; protocol, replay, and multi-instance results in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-3-protocol.md`                                    |
+| 4     | Root coordinator and named quality-gate agents | frozen delivery ledger only                                                                                       | `rtk npm run check:pre-push`                                                                                                                                                                                                                                                                        | Exit `0`; delegated gate IDs and reports in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-quality-gates.md`                                             |
+| 5     | Root coordinator                               | this plan's `learnings.md` and bounded durable-doc destinations                                                   | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec markdownlint-cli2 -- plans/in-progress/ose-id-init-04-oidc-oauth-provider/learnings.md`                                                                                                                   | Exit `0`; promoted/deferred knowledge in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-5-knowledge.md`                                                    |
+| 6     | Root coordinator                               | this plan directory and annotated plan indexes                                                                    | `rtk npm run check:pre-push`                                                                                                                                                                                                                                                                        | Exit `0`; archive/index validation in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-6-archive.md`                                                         |
+| 7     | Root coordinator and review agents             | current-head diff only                                                                                            | `rtk npm run check:pre-push`                                                                                                                                                                                                                                                                        | Exit `0`; current-head/base and review dispositions in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-7-head-review.md`                                    |
+| 8     | Root coordinator                               | execution worktree metadata only                                                                                  | `rtk git -C worktrees/ose-id-init-04-oidc-oauth-provider status --short`                                                                                                                                                                                                                            | Empty output after merge; cleanup record in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-8-cleanup.md`                                                   |
 
 ### PostgreSQL Persistence and OpenIddict Store Contract
 
@@ -140,14 +140,14 @@ post-merge gate. It is not a Phase 0 or Phase 1 success criterion. Before creati
 scenario, binding, or test, Phase 0 and Phase 1 each run this exact predecessor-green baseline:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be:build
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:build
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e
 ```
 
 Then run the static predecessor behavior baseline:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e
 ```
 
 Phase 0 verifies the commands resolve to real targets in `apps/ose-id-be/project.json` and
@@ -188,8 +188,8 @@ a trustworthy clean baseline.
       as-built docs, this numbered OSE ID plan family, C# rules, specs conventions, Nx target rules, and
       worktree-to-PR workflow before editing.
 - [ ] [AI] Initialize tools with
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm install` and
-      `rtk ./hippo run --class transactional --disk-path . -- npm run doctor -- --fix`; acceptance:
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
+      `rtk npm run doctor -- --fix`; acceptance:
       lockfile/tooling converge without hidden host writes.
 - [ ] [AI] Inventory exact `ose-id-be`, `ose-id-be-e2e`, specs, project config, migrations, ports,
       namespaces, target names, generated files, and uncommitted state. Freeze the authorized ledger in
@@ -227,7 +227,7 @@ implementation.
       `tech-docs/004-bdd-spec-delta-and-adapter-map.md` into its exact
       `specs/apps/ose/id-be/behaviours/{authorization,tokens,sessions,keys,runtime,config,providers}/**/*.feature`
       destination. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e`;
       acceptance is valid, unique scenario discovery with only missing implementation adapters RED.
       Save the copied-file list and command output to `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-1-gherkin-red.md`; on any wording,
       action, or destination mismatch, revert only the attempted copy, preserve output, and block Phase 1.
@@ -240,7 +240,7 @@ implementation.
       `tech-docs/005-api-contract-delta.md` in `specs/apps/ose/id-be/contracts/openapi.yaml`, while
       recording discovery/authorize/token/JWKS/revocation/logout as standards endpoints excluded from
       OpenAPI in `specs/apps/ose/id-be/README.md`. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-be:test:integration`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:test:integration`;
       acceptance is exact request/status/header/problem examples and no invented REST representation for
       protocol endpoints. Save output to `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-1-api-contract-red.md`; contract drift blocks
       implementation and requires amending tech doc 005 first.
@@ -248,19 +248,19 @@ implementation.
       excessive-claim, key-exposure, algorithm-confusion, stale-authorization, and malicious-local-config
       rows to `docs/explanation/security/ose-id-threat-model.md`, each with owner, automated/manual proof,
       and residual risk. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec markdownlint-cli2 -- docs/explanation/security/ose-id-threat-model.md`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec markdownlint-cli2 -- docs/explanation/security/ose-id-threat-model.md`;
       acceptance is exit `0` and every threat has a proof owner. Save the row IDs to
       `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-1-threat-map.md`; an unowned threat blocks Phase 1.
 - [ ] [AI] Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour,test:integration --projects=ose-id-be,ose-id-be-e2e`
-      and `rtk ./hippo run --class ephemeral --disk-path . -- npm exec markdownlint-cli2 -- plans/in-progress/ose-id-init-04-oidc-oauth-provider/tech-docs/*.md specs/apps/ose/id-be/README.md`.
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour,test:integration --projects=ose-id-be,ose-id-be-e2e`
+      and `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec markdownlint-cli2 -- plans/in-progress/ose-id-init-04-oidc-oauth-provider/tech-docs/*.md specs/apps/ose/id-be/README.md`.
       Acceptance is valid specs/contracts/links/headings plus an explicit RED ledger containing only
       missing production bindings; save commands, exit codes, and missing symbols to
       `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-1-contract-gate.md`. Any other failure is fixed at source before Phase 2.
 - [ ] [AI] Configure the canonical coverage target in `apps/ose-id-be/project.json` and its discovered
       test settings to enforce at least 99% Unit line coverage for authored production code, retaining
       only repository-approved generated/migration exclusions. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-be:test:unit`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:test:unit`;
       acceptance is an expected RED only for unimplemented Init 04 code and a report that exposes the
       denominator/exclusions. Save it to `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-1-unit-coverage-red.md`; any ad hoc exclusion
       blocks the phase.
@@ -347,7 +347,7 @@ implementation.
       endpoint has been partially enabled.
 
 > **Pause Safety:** internal primitives are complete but externally inert. Safe to stop. To resume,
-> rerun `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-be:test:quick`.
+> rerun `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:test:quick`.
 
 ## Phase 3: OpenIddict Endpoint Integration
 
@@ -373,9 +373,9 @@ implementation.
 ### Manual API Verification
 
 - [ ] [AI] In terminal A, start the exact stack and retain its HIPPO service handle:
-      `OSE_ID_BE_PORT=8501 OSE_ID_POSTGRES_PORT=5438 rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve-local`.
+      `OSE_ID_BE_PORT=8501 OSE_ID_POSTGRES_PORT=5438 rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve-local`.
 - [ ] [AI] Seed a synthetic, disposable protocol state by running
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:seed-manual -- --profile=oidc --output=local-tmp/ose-id-init-04/seed.env`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:seed-manual -- --profile=oidc --output=local-tmp/ose-id-init-04/seed.env`.
       The committed fixture must create distinct success/error sessions, transactions, authorization
       code, access token, PKCE verifier/challenge, CSRF value, and synthetic BFF capability; write only
       opaque/redacted values to the mode-`0600` file, and record the seed row counts (not values) in
@@ -414,7 +414,7 @@ rtk curl --silent --show-error --request POST --header "Authorization: Bearer ${
 rtk curl --silent --show-error --request POST --header "Authorization: Bearer ${OSE_ID_BFF_CAPABILITY}" --cookie "ose_id_session=${OSE_ID_CONTEXT_COOKIE}" --header 'Content-Type: application/json' --data "{\"choiceId\":\"${OSE_ID_CONTEXT_CHOICE}\",\"expectedVersion\":${OSE_ID_CONTEXT_VERSION}}" --dump-header plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-3-api/context-stale.headers --output plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-3-api/context-stale.json "http://127.0.0.1:8501/internal/authorization-transactions/${OSE_ID_CONTEXT_TRANSACTION_ID}/context"
 rtk curl --silent --show-error --request POST --header "Authorization: Bearer ${OSE_ID_BFF_CAPABILITY}" --cookie "ose_id_session=${OSE_ID_DECISION_COOKIE}" --header 'Content-Type: application/json' --data "{\"decision\":\"allow\",\"expectedVersion\":${OSE_ID_DECISION_VERSION}}" --dump-header plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-3-api/decision-ok.headers --output plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-3-api/decision-ok.json "http://127.0.0.1:8501/internal/authorization-transactions/${OSE_ID_DECISION_TRANSACTION_ID}/decision"
 rtk curl --silent --show-error --request POST --header "Authorization: Bearer ${OSE_ID_BFF_CAPABILITY}" --cookie "ose_id_session=${OSE_ID_DECISION_COOKIE}" --header 'Content-Type: application/json' --data "{\"decision\":\"allow\",\"expectedVersion\":${OSE_ID_DECISION_VERSION}}" --dump-header plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-3-api/decision-replay.headers --output plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-3-api/decision-replay.json "http://127.0.0.1:8501/internal/authorization-transactions/${OSE_ID_DECISION_TRANSACTION_ID}/decision"
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:sanitize-manual-api -- --input=local-tmp/ose-id-init-04 --output=plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-3-api-contract.md
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:sanitize-manual-api -- --input=local-tmp/ose-id-init-04 --output=plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-3-api-contract.md
 ```
 
 Required observations are: discovery/JWKS `200` with bounded cache and their documented fields;
@@ -442,14 +442,14 @@ then `409 authorization_transaction_terminal`. Any status/header/body divergence
       `S256`. A legacy `/health` request is not accepted as proof. Any non-200, extra identity/tenant
       field, missing dependency, or discovery mismatch blocks Phase 3 and follows the cleanup route.
 - [ ] [AI] Run the committed synthetic driver exactly as
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:manual-authorization -- --base-url=http://127.0.0.1:8501 --client=ose-lms-app-web-local --user=person.personal@example.test --context=personal --decision=allow`;
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:manual-authorization -- --base-url=http://127.0.0.1:8501 --client=ose-lms-app-web-local --user=person.personal@example.test --context=personal --decision=allow`;
       repeat with `--decision=cancel`, `--context=company:acme-learning`, and
       `--fault=wrong-audience`. Expect one allowed code exchange, protocol-safe cancellation, one
       company only, and denial before domain authorization. Store only redacted summaries at
       `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-3-authorization-runbook.md`; never persist codes, tokens, cookies, verifiers,
       secrets, or private keys.
 - [ ] [AI] On failure, capture sanitized service logs, stop terminal A with `Ctrl-C`, then run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:assert-clean -- --ports=8501,5438`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:assert-clean -- --ports=8501,5438`.
       Fix the root cause and restart from the first command; never retry around a failure.
 
 ### Phase 3 Gate
@@ -499,7 +499,7 @@ are green without merging or archiving yet.
 - [ ] [AI] Reconcile `git diff`, frozen ledger, file-impact tree, generated-file ownership, licenses,
       plan checklist, and evidence. No unowned or deployment file may remain.
 - [ ] [AI] Before every authorized push, run the canonical registry exactly:
-      `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
 
 ### Manual Retests and Trace Reconciliation
 
@@ -512,7 +512,7 @@ are green without merging or archiving yet.
       affected Unit/Integration/E2E checks, and invoke the checker once for scoped verification. Save
       the request, report, fixes, retest, and final status under `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-ui-quality-gate/`.
 - [ ] [AI] Run the built local stack with
-      `OSE_ID_E2E_SEED_PROFILE=logout-ui OSE_ID_BE_PORT=8501 OSE_ID_POSTGRES_PORT=5438 rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve-local`;
+      `OSE_ID_E2E_SEED_PROFILE=logout-ui OSE_ID_BE_PORT=8501 OSE_ID_POSTGRES_PORT=5438 rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve-local`;
       acceptance: its bounded seed output returns a synthetic browser storage-state path and registered
       logout URL without printing cookie/token values. Load that storage state in the browser driver and
       perform the Rule-9 pass at `http://127.0.0.1:8501/connect/logout`. Use `browser_navigate`,
@@ -658,7 +658,7 @@ audit evidence before the exact-head review.
       the fewest build-valid, reviewable Conventional Commits, including
       `chore(plans): move ose-id-init-04-oidc-oauth-provider to done` for the archival slice.
 - [ ] [AI] Run all docs/plan/link gates and the canonical pre-push registry exactly:
-      `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`;
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`;
       push and open or update the PR to `main`.
 
 ### Phase 6 Gate

@@ -5,6 +5,29 @@ repository_root=$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd)
 temporary_root=$(mktemp -d)
 trap 'rm -rf -- "$temporary_root"' EXIT HUP INT TERM
 
+jq -e '.schemaVersion == 3 and (.coordination.tiers | keys) == ["heavy", "light", "standard"]' \
+	"$repository_root/hippo.local.json.example" >/dev/null
+jq -e '.schemaVersion == 1 and .source == "ose-public"' "$repository_root/hippo.identity.json" >/dev/null
+grep -Fxq 'version=v0.6.1' "$repository_root/hippo.lock"
+grep -Fq -- '--path-format=absolute --git-common-dir' "$repository_root/hippo"
+# Keep every tracked active example compatible with schema 3 and prevent the
+# self-contention caused by wrapping an already-guarded package script.
+tier_findings=$(git -C "$repository_root" grep -n -E \
+	'\./hippo run --class (ephemeral|service|transactional)' -- \
+	. ':(exclude)plans/done/**' ':(exclude).github/scripts/test-hippo-bootstrap.sh' |
+	grep -v -- '--resource-tier' || true)
+if [ -n "$tier_findings" ]; then
+	printf '%s\n%s\n' 'HIPPO commands missing --resource-tier:' "$tier_findings" >&2
+	exit 1
+fi
+nested_findings=$(git -C "$repository_root" grep -n -E \
+	'\./hippo run .*-- (rtk )?npm (run|test)( |$)' -- \
+	. ':(exclude)plans/done/**' ':(exclude).github/scripts/test-hippo-bootstrap.sh' || true)
+if [ -n "$nested_findings" ]; then
+	printf '%s\n%s\n' 'HIPPO commands double-guard package scripts:' "$nested_findings" >&2
+	exit 1
+fi
+
 # Build a synthetic tagged asset whose identity and digest are deterministic;
 # the test never depends on GitHub or the machine's real installation cache.
 subject="$temporary_root/consumer/hippo"

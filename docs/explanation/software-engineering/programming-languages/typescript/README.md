@@ -720,25 +720,25 @@ class ZakatCalculator {
 
 ```bash
 # Build specific library
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build ts-zakat-calculator
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ts-zakat-calculator
 
 # Run fast quality gate (pre-push standard)
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ts-zakat-calculator:test:quick
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ts-zakat-calculator:test:quick
 
 # Run isolated unit tests
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ts-zakat-calculator:test:unit
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ts-zakat-calculator:test:unit
 
 # Lint specific library
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- lint ts-zakat-calculator
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- lint ts-zakat-calculator
 
 # Build only affected projects (after git changes)
-./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build
 
 # Run quality gate for affected projects
-./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t test:quick
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:quick
 
 # Visualize dependency graph
-./hippo run --class service --disk-path . -- npm exec nx -- graph
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- graph
 ```
 
 **See**: [Nx Target Standards](../../../../../repo-governance/development/infra/nx-targets.md) for canonical target names.

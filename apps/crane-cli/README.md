@@ -7,11 +7,11 @@ checking extraction quality, headings, tables, figures, OCR, and report inputs i
 ## Start with the command help
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run crane-cli:run -- --help
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run crane-cli:run -- --help
 ```
 
 Run
-`./hippo run --class ephemeral --disk-path . -- npm exec nx -- run crane-cli:run -- <command> --help`
+`./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run crane-cli:run -- <command> --help`
 to explore a specific operation. The main groups are `pdf`, `text`, `heading`, `nesting`, `table`,
 `figure`, `mermaid`, `ocr`, `report`, `skiplist`, and `check-all`.
 

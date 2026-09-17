@@ -19,7 +19,7 @@ cd open-sharia-enterprise
 ## 11.2 Install npm dependencies
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
 ```
 
 This also triggers Husky to install git hooks (pre-commit, commit-msg, pre-push).

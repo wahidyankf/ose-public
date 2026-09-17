@@ -9,10 +9,10 @@ Use `ephemeral` for restartable builds, tests, and reads; `service` for restarta
 development; and `transactional` for authorized indivisible mutations such as destructive resets,
 tool installation, binding generation, or tracked-output writes. Never change class to gain entry.
 
-Under critical pressure HIPPO sheds the newest eligible ephemeral, then the newest service only
-when none is eligible; it never sheds a transaction, and it signals and reaps only that child
-group before release. Interactive children temporarily own the foreground terminal; pipes and
-non-controlling input remain unchanged.
+Under ordinary critical pressure HIPPO sheds the newest eligible ephemeral, then the newest
+service. A transaction becomes eligible last only at the configured emergency memory floor. HIPPO
+signals and reaps only that child group before release. Interactive children temporarily own the
+foreground terminal; pipes and non-controlling input remain unchanged.
 
 A guarded command returns only once its whole process group has retired, so a payload that leaves
 a persistent daemon behind keeps the guard waiting long after the work itself finished. The `run`

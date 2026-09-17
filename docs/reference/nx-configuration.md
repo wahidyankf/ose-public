@@ -661,14 +661,14 @@ Nx wrapper scripts.
 ```json
 {
   "scripts": {
-    "build": "./hippo run --class transactional --disk-path . -- nx run-many -t build",
-    "test": "./hippo run --class transactional --disk-path . -- nx run-many -t test:quick",
-    "lint": "./hippo run --class transactional --disk-path . -- nx run-many -t lint",
-    "affected:build": "./hippo run --class transactional --disk-path . -- nx affected -t build",
-    "affected:test": "./hippo run --class transactional --disk-path . -- nx affected -t test:quick",
-    "affected:lint": "./hippo run --class transactional --disk-path . -- nx affected -t lint",
-    "graph": "./hippo run --class service --disk-path . -- nx graph",
-    "nx": "./hippo run --class transactional --disk-path . -- nx"
+    "build": "./hippo run --class transactional --resource-tier standard --disk-path . -- nx run-many -t build",
+    "test": "./hippo run --class transactional --resource-tier standard --disk-path . -- nx run-many -t test:quick",
+    "lint": "./hippo run --class transactional --resource-tier standard --disk-path . -- nx run-many -t lint",
+    "affected:build": "./hippo run --class transactional --resource-tier standard --disk-path . -- nx affected -t build",
+    "affected:test": "./hippo run --class transactional --resource-tier standard --disk-path . -- nx affected -t test:quick",
+    "affected:lint": "./hippo run --class transactional --resource-tier standard --disk-path . -- nx affected -t lint",
+    "graph": "./hippo run --class service --resource-tier standard --disk-path . -- nx graph",
+    "nx": "./hippo run --class transactional --resource-tier standard --disk-path . -- nx"
   }
 }
 ```
@@ -750,7 +750,7 @@ Skip Nx cache.
 **Usage**:
 
 ```bash
-NX_SKIP_NX_CACHE=true ./hippo run --class transactional --disk-path . -- npm exec nx -- build ose-www
+NX_SKIP_NX_CACHE=true ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- build ose-www
 ```
 
 #### `NX_DAEMON`
@@ -760,7 +760,7 @@ Enable/disable Nx daemon.
 **Usage**:
 
 ```bash
-NX_DAEMON=false ./hippo run --class transactional --disk-path . -- npm exec nx -- build ose-www
+NX_DAEMON=false ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- build ose-www
 ```
 
 ## Related Documentation

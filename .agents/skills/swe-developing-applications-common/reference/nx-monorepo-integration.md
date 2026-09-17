@@ -29,24 +29,24 @@ policy.
 **Development**:
 
 ```bash
-rtk ./hippo run --class service --disk-path . -- npm exec nx -- dev [project-name]
-rtk ./hippo run --class service --disk-path . -- npm exec nx -- start [project-name]
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev [project-name]
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- start [project-name]
 ```
 
 **Building**:
 
 ```bash
-rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- build [project-name]
+rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build [project-name]
 rtk npm run affected:build # Existing guarded root alias
 ```
 
 **Testing**:
 
 ```bash
-rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run [project-name]:test:quick
-rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run [project-name]:test:unit
-rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run [project-name]:test:integration
-rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run [project-name]:test:e2e
+rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run [project-name]:test:quick
+rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run [project-name]:test:unit
+rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run [project-name]:test:integration
+rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run [project-name]:test:e2e
 rtk npm run affected:test # Existing guarded root alias
 ```
 

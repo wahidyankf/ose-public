@@ -36,7 +36,7 @@
 - **Input:** AC-EMAIL-02 and the existing validation API.
 - **Outcome:** the validator accepts and rejects the canonical cases.
 - [ ] [AI] **RED:** add the exact failing cases in `[test path]`; run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ts-utils:test:unit`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ts-utils:test:unit`;
       acceptance: they fail for the missing rule.
 - [ ] [AI] **GREEN:** implement the validator in `[source path/symbol]`; rerun the focused command;
       acceptance: all cases pass.

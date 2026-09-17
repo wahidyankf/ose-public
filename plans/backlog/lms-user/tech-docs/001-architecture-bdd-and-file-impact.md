@@ -106,7 +106,7 @@ execution rather than authorizing a new LMS field.
 The Next.js server uses Kysely + `pg` as a server-only query-builder adapter; no ORM or browser import is
 allowed. A repository-owned TypeScript runner executes immutable numbered SQL under one PostgreSQL
 advisory lock/transaction and records SHA-256 checksums in `lms_web_schema_migrations`. Its exact command
-is `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-lms-app-web:migrate:local`.
+is `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:migrate:local`.
 The migration role runs it before readiness; checksum drift, partial application, or lock failure fails
 closed. Both metadata and session tables obey the repository audit/no-hard-delete rule.
 
@@ -216,7 +216,7 @@ schema repair is a forward migration. No-loss proof records pre/post row counts 
 digests plus session state across web instance A→B; destructive table removal is outside this plan.
 
 The exact bounded cleanup entry point is
-`rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-lms-app-web:session-retention:local`.
+`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:session-retention:local`.
 It selects a fixed batch of terminal, retention-eligible rows with an explicit order and timeout, stamps
 `deleted_at`/`deleted_by`, increments `row_version`, and nulls every remaining secret-bearing field in
 one compare-and-swap transaction. Repeated or concurrent runs are idempotent. It never executes SQL

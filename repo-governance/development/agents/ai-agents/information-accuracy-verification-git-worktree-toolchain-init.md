@@ -7,7 +7,7 @@ when_to_use: Use when an agent has just created a git worktree and needs to conv
 
 1. **Initialize each worktree at its own root — two steps, in order** — After creating with
    `rtk git worktree add` (or another supported creation mechanism),
-   immediately run `rtk ./hippo run --class ephemeral --disk-path . -- npm install` and then
+   immediately run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and then
    `rtk npm run doctor -- --fix` from its root. The guarded install creates its ignored
    `node_modules/` and runs `prepare`, activating Husky hooks; another checkout's install is not a
    substitute. The explicit Doctor call selects transactional admission and converges native

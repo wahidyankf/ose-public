@@ -27,5 +27,5 @@ Keep each manifest small and purposeful. Update or add a behaviour scenario firs
 experience is needed, then run the browser suite from the workspace root:
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ayokoding-www-fe-e2e:test:e2e
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-www-fe-e2e:test:e2e
 ```

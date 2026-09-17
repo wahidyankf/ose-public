@@ -226,15 +226,15 @@ const result = functionName("example");
 
 # Build library
 
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build ts-[name]
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ts-[name]
 
 # Run fast quality gate (pre-push standard)
 
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ts-[name]:test:quick
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ts-[name]:test:quick
 
 # Run isolated unit tests
 
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ts-[name]:test:unit
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ts-[name]:test:unit
 \`\`\`
 
 ## Dependencies
@@ -255,23 +255,23 @@ MIT
 ### Step 8: Install Dependencies
 
 ```bash
-./hippo run --class transactional --disk-path . -- npm install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
 ```
 
 ### Step 9: Test Library
 
 ```bash
 # Build library
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build ts-[name]
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ts-[name]
 
 # Run fast quality gate (pre-push standard)
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ts-[name]:test:quick
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ts-[name]:test:quick
 
 # Run isolated unit tests
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ts-[name]:test:unit
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ts-[name]:test:unit
 
 # View dependency graph
-./hippo run --class service --disk-path . -- npm exec nx -- graph
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- graph
 ```
 
 ### Step 10: Use Library in Apps
@@ -300,9 +300,9 @@ export default function Component() {
 - [ ] `tsconfig.json` and `tsconfig.build.json` created
 - [ ] `package.json` created with library metadata
 - [ ] `README.md` created with API documentation
-- [ ] `./hippo run --class ephemeral --disk-path . -- npm exec nx -- build ts-[name]` builds successfully
-- [ ] `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ts-[name]:test:quick` passes (fast quality gate)
-- [ ] `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ts-[name]:test:unit` runs tests successfully
+- [ ] `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ts-[name]` builds successfully
+- [ ] `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ts-[name]:test:quick` passes (fast quality gate)
+- [ ] `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ts-[name]:test:unit` runs tests successfully
 - [ ] Build creates `dist/` directory with compiled JS
 - [ ] Library can be imported using `@open-sharia-enterprise/ts-[name]`
 
@@ -329,7 +329,7 @@ ts-users imports ts-auth  ❌ CIRCULAR DEPENDENCY
 **Use the guarded Nx graph to monitor dependencies**:
 
 ```bash
-./hippo run --class service --disk-path . -- npm exec nx -- graph # View full dependency graph
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- graph # View full dependency graph
 ```
 
 ### Language Boundaries
@@ -364,7 +364,7 @@ TypeScript libraries can only directly import other TypeScript libraries. To use
 **Solution**: Ensure `tsx` is installed as devDependency:
 
 ```bash
-./hippo run --class transactional --disk-path . -- npm install -D tsx
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm install -D tsx
 ```
 
 ### Issue: Build creates no output

@@ -1,8 +1,18 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "coordination": {
     "mode": "reservation",
-    "maxActiveOwners": 20,
+    "maxCpu": 8,
+    "maxMemoryMiB": 16384,
+    "baseActiveOwners": 2,
+    "maxActiveOwners": 3,
+    "emergencyAvailableMemoryMiB": 6144,
+    "promotion": {"completedRuns": 25, "minimumSources": 3, "minimumAvailableMemoryMiB": 10240, "maximumCpuP95Percent": 75},
+    "tiers": {
+      "light": {"minimumCpu": 1, "maximumCpu": 2, "minimumMemoryMiB": 1024, "maximumMemoryMiB": 2048, "queueDeadline": "30m"},
+      "standard": {"minimumCpu": 2, "maximumCpu": 4, "minimumMemoryMiB": 3072, "maximumMemoryMiB": 6144, "queueDeadline": "90m"},
+      "heavy": {"minimumCpu": 4, "maximumCpu": 8, "minimumMemoryMiB": 8192, "maximumMemoryMiB": 16384, "queueDeadline": "4h"}
+    },
     "automaticOwnerShares": {
       "balanced": 4,
       "constrained": 2,

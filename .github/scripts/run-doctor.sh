@@ -13,5 +13,6 @@ for argument in "$@"; do
 	fi
 done
 
-exec "$repository_root/hippo" run --class "$workload_class" --disk-path "$repository_root" -- \
+exec "$repository_root/hippo" run --class "$workload_class" --resource-tier standard \
+	--disk-path "$repository_root" -- \
 	dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- doctor "$@"

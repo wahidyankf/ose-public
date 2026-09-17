@@ -13,8 +13,8 @@ Developer: I'm implementing a new feature in organiclever-www.
            a failing typecheck due to a stale codegen output.
 
 Action:
-1. Run `./hippo run --class transactional --disk-path . -- npm exec nx -- run organiclever-be:codegen` to regenerate types
-2. Run `./hippo run --class transactional --disk-path . -- npm exec nx -- run organiclever-be:typecheck` to confirm it passes
+1. Run `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:codegen` to regenerate types
+2. Run `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:typecheck` to confirm it passes
 3. Commit: "fix(organiclever-be): regenerate types from updated contract"
 4. Continue with organiclever-www feature work
 ```

@@ -13,7 +13,7 @@ created: 2026-03-22
 # Project Dependency Graph
 
 Complete reference for how projects depend on each other in the Nx monorepo.
-Run `./hippo run --class service --disk-path . -- npm exec nx -- graph` to visualize this
+Run `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- graph` to visualize this
 interactively.
 
 > **Note**: The polyglot demo apps (`a-demo-be-*`, `a-demo-fe-*`, `a-demo-fs-ts-nextjs`) and

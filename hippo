@@ -527,8 +527,19 @@ release_install_guard
 
 # Explicit caller configuration wins; otherwise the ignored repository-local
 # policy is optional and remains consumer-owned.
-HIPPO_DEFAULT_CONFIG=${HIPPO_DEFAULT_CONFIG:-"$tool_dir/hippo.local.json"}
-export HIPPO_DEFAULT_CONFIG
+default_config="$tool_dir/hippo.local.json"
+if [ ! -f "$default_config" ] && command -v git >/dev/null 2>&1; then
+	common_dir=$(git -C "$tool_dir" rev-parse --path-format=absolute --git-common-dir 2>/dev/null || true)
+	case "$common_dir" in
+	*/.git)
+		primary_config=${common_dir%/.git}/hippo.local.json
+		[ ! -f "$primary_config" ] || default_config=$primary_config
+		;;
+	esac
+fi
+HIPPO_DEFAULT_CONFIG=${HIPPO_DEFAULT_CONFIG:-"$default_config"}
+HIPPO_DEFAULT_IDENTITY=${HIPPO_DEFAULT_IDENTITY:-"$tool_dir/hippo.identity.json"}
+export HIPPO_DEFAULT_CONFIG HIPPO_DEFAULT_IDENTITY
 
 # The upstream binary stays ecosystem-neutral. This consumer wrapper maps its
 # resolved concurrency into only the worker controls used by OSE tooling.

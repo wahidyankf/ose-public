@@ -39,7 +39,7 @@ pending`, treat provisioning and identity initialization below as a blocking gat
 
      3. If `rtk git worktree add` fails (e.g., path already exists as a stale entry), run `rtk git worktree prune` and retry once; if it still fails, terminate with status `fail` and emit the error output verbatim.
      4. From the new worktree root, immediately run
-        `rtk ./hippo run --class ephemeral --disk-path . -- npm install`, then
+        `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`, then
         `rtk npm run doctor -- --fix`, to install its dependencies, activate Husky hooks, and
         converge tooling, per
         [Worktree Toolchain Initialization](../../../development/workflow/worktree-setup.md).

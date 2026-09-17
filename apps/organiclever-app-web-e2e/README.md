@@ -8,19 +8,19 @@ repeatable checks. 🌿
 
 ```bash
 # Install the browser support once on this machine
-./hippo run --class transactional --disk-path . -- npm exec nx -- run organiclever-app-web-e2e:install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web-e2e:install
 
 # Start the app for a local run
-./hippo run --class service --disk-path . -- npm exec nx -- run organiclever-app-web:dev
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:dev
 
 # In another terminal, run the scenarios
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-app-web-e2e:test:e2e
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web-e2e:test:e2e
 ```
 
 Use
-`./hippo run --class service --disk-path . -- npm exec nx -- run organiclever-app-web-e2e:test:e2e:ui`
+`./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web-e2e:test:e2e:ui`
 to investigate a scenario visually, or
-`./hippo run --class service --disk-path . -- npm exec nx -- run organiclever-app-web-e2e:test:e2e:report`
+`./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web-e2e:test:e2e:report`
 to open the last HTML report.
 
 ## Target a different environment

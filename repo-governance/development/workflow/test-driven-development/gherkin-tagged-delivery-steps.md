@@ -40,7 +40,7 @@ Exempt: pure refactors, docs/governance-only plans, and non-code delivery steps.
 - [ ] [AI] **GREEN:** [exact implementation symbol/path/command/expected pass].
 - [ ] [AI] **REFACTOR:** [exact pricing-helper cleanup/regression command/invariant].
 - **Proof:** recorded RED failure and
-  `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-app-web:test:unit`
+  `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-app-web:test:unit`
   passes.
 ```
 

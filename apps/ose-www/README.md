@@ -26,8 +26,8 @@ framework or IO work in `shell/`.
 From the repository root, install the workspace dependencies and start the site:
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm install
-./hippo run --class service --disk-path . -- npm exec nx -- run ose-www:dev
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-www:dev
 ```
 
 Open <http://localhost:3100>. The development server uses port 3100 unless `OSE_WWW_PORT` names
@@ -57,19 +57,19 @@ Run these commands from the repository root:
 
 ```bash
 # Create the production build (also regenerates search data)
-./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-www:build
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-www:build
 
 # Run the focused quality gate: typecheck, lint, unit tests, coverage, and spec checks
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-www:test:quick
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-www:test:quick
 
 # Run the unit suite only
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-www:test:unit
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-www:test:unit
 
 # Run the deterministic local-filesystem Integration suite manually
 npm exec nx -- run ose-www:test:integration
 
 # Run the website's companion frontend E2E suite
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-www-fe-e2e:test:e2e
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-www-fe-e2e:test:e2e
 ```
 
 The Unit runtime enforces 99% line coverage. Static `test:coverage:*` targets check the Gherkin

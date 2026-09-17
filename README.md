@@ -94,7 +94,7 @@ macOS or Ubuntu installation commands and recovery steps for a missing tool.
 ```bash
 git clone https://github.com/wahidyankf/ose-public.git
 cd ose-public
-./hippo run --class ephemeral --disk-path . -- npm install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
 ```
 
 `./hippo` verifies the pinned upstream release before `npm install` installs dependencies, Git
@@ -122,7 +122,7 @@ npm run nx:show -- projects
 The list it prints includes `ose-www`, the public website. Start that one:
 
 ```bash
-./hippo run --class service --disk-path . -- npm exec nx -- dev ose-www
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev ose-www
 ```
 
 Open <http://localhost:3100> when the development server reports that it is ready.
@@ -130,7 +130,7 @@ Open <http://localhost:3100> when the development server reports that it is read
 Already using port 3100? Point the site somewhere else instead of guessing which process to stop:
 
 ```bash
-OSE_WWW_PORT=4000 ./hippo run --class service --disk-path . -- npm exec nx -- dev ose-www
+OSE_WWW_PORT=4000 ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev ose-www
 ```
 
 Then open <http://localhost:4000> instead.

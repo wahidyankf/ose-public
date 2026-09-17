@@ -24,7 +24,7 @@ and file counts never define the boundary. See
 
 **Orchestrator action**:
 
-- Run `rtk ./hippo run --class ephemeral --disk-path . -- npm install` **at the selected worktree
+- Run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` **at the selected worktree
   root**, not only the primary checkout. This installs its `node_modules` and activates Husky hooks
   through `prepare`; without it, later Git or Nx work can fail despite another checkout being
   initialized

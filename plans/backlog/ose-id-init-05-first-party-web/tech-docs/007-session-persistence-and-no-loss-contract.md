@@ -39,7 +39,7 @@ erDiagram
 The repository-owned TypeScript migration runner executes immutable numbered SQL files through `pg`
 under one PostgreSQL advisory lock and transaction, then records the filename plus SHA-256 checksum in
 `ose_id_web.schema_migrations`. Its exact Nx entry point is
-`rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web:migrate:local`.
+`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:migrate:local`.
 It runs with the migration role before readiness; the web runtime never applies DDL. A checksum mismatch,
 duplicate version with different bytes, lock failure, or partial application fails closed.
 

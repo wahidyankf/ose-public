@@ -34,41 +34,41 @@ for the governing class, retry, and serialization rules.
 
 ```bash
 # Build a specific project
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build [project-name]
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build [project-name]
 
 # Run the fast pre-push quality gate
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run [project-name]:test:quick
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run [project-name]:test:quick
 
 # Run isolated unit tests
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run [project-name]:test:unit
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run [project-name]:test:unit
 
 # Lint a specific project
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- lint [project-name]
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- lint [project-name]
 
 # Start a development server for an app
-./hippo run --class service --disk-path . -- npm exec nx -- dev [app-name]
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev [app-name]
 
 # Start production server mode for an app
-./hippo run --class service --disk-path . -- npm exec nx -- start [app-name]
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- start [app-name]
 ```
 
 **Examples**:
 
 ```bash
 # Build the library
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build fsharp-env-loader
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build fsharp-env-loader
 
 # Run its fast quality gate
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run fsharp-env-loader:test:quick
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run fsharp-env-loader:test:quick
 
 # Run its isolated unit tests
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run fsharp-env-loader:test:unit
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run fsharp-env-loader:test:unit
 
 # Start the application development server
-./hippo run --class service --disk-path . -- npm exec nx -- dev ose-app-web
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev ose-app-web
 
 # Build the application
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build ose-app-web
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ose-app-web
 ```
 
 ### Run Multiple Projects
@@ -86,7 +86,7 @@ npm test
 npm run lint
 
 # Run every build and lint target through one transactional boundary
-./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t build lint
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t build lint
 ```
 
 The three transactional root scripts above already invoke `./hippo` because their complete project
@@ -97,10 +97,10 @@ adding another wrapper is redundant and nonconforming with OSE's one-outer-bound
 
 ```bash
 # Build specific projects
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t build -p fsharp-env-loader ose-www
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t build -p fsharp-env-loader ose-www
 
 # Run test:quick for specific projects
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:quick -p fsharp-env-loader ose-app-web
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:quick -p fsharp-env-loader ose-app-web
 ```
 
 ## Affected Commands
@@ -122,8 +122,8 @@ npm run affected:test
 npm run affected:lint
 
 # Specify a different base when the root alias does not express it
-./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build --base=abc123
-./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t test:quick --base=origin/main
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build --base=abc123
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:quick --base=origin/main
 ```
 
 ### Affected Graph
@@ -181,10 +181,10 @@ Writing an exported graph is transactional even though inspecting the graph is r
 
 ```bash
 # Export the graph as HTML
-./hippo run --class transactional --disk-path . -- npm exec nx -- graph --file=dependency-graph.html
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- graph --file=dependency-graph.html
 
 # Export the graph as JSON
-./hippo run --class transactional --disk-path . -- npm exec nx -- graph --file=dependency-graph.json
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- graph --file=dependency-graph.json
 ```
 
 ## Caching
@@ -195,11 +195,11 @@ Nx caches task outputs to speed up subsequent runs.
 
 ```bash
 # First build executes the task
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build fsharp-env-loader
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build fsharp-env-loader
 # Output: Compiled successfully
 
 # Second build may use the cache
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build fsharp-env-loader
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build fsharp-env-loader
 # Output: [existing outputs match the cache, left as is]
 ```
 
@@ -215,10 +215,10 @@ npm run nx -- reset
 
 ```bash
 # Skip cache for a single build
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build fsharp-env-loader --skip-nx-cache
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build fsharp-env-loader --skip-nx-cache
 
 # Skip cache for affected builds while protecting possible tracked generators
-./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build --skip-nx-cache
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build --skip-nx-cache
 ```
 
 ## Workspace Commands
@@ -252,10 +252,10 @@ npm run graph -- --focus=fsharp-env-loader
 
 ```bash
 # Show the repository-pinned Nx version
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- --version
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- --version
 
 # Show workspace information
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- report
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- report
 ```
 
 ## Common Workflows
@@ -269,15 +269,15 @@ npm run graph -- --focus=fsharp-env-loader
 git pull origin main
 
 # 2. Start the development server in a dedicated terminal
-./hippo run --class service --disk-path . -- npm exec nx -- dev ose-app-web
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev ose-app-web
 ```
 
 After making changes, use another terminal for restartable checks:
 
 ```bash
 # 3. Test and build the changed surfaces
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run fsharp-env-loader:test:quick
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build ose-app-web
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run fsharp-env-loader:test:quick
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ose-app-web
 
 # 4. Inspect the affected graph interactively
 npm run graph -- --affected
@@ -290,10 +290,10 @@ npm run graph -- --affected
 npm run affected:test
 
 # 2. Run test:quick for a specific project
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run fsharp-env-loader:test:quick
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run fsharp-env-loader:test:quick
 
 # 3. Run isolated unit tests for a specific project
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run fsharp-env-loader:test:unit
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run fsharp-env-loader:test:unit
 
 # 4. Run every test:quick target
 npm test
@@ -306,7 +306,7 @@ npm test
 npm run affected:build
 
 # 2. Build a specific project; Nx honors dependencies within this DAG
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build ose-app-web
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ose-app-web
 
 # 3. Build all projects
 npm run build
@@ -432,7 +432,7 @@ shared-output or correctness serialization.
 
 ```bash
 # Watch mode is a long-running service
-./hippo run --class service --disk-path . -- npm exec nx -- build fsharp-env-loader --watch
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- build fsharp-env-loader --watch
 ```
 
 ## Troubleshooting
@@ -448,7 +448,7 @@ shared-output or correctness serialization.
 npm run nx -- reset
 
 # Rebuild from scratch with a restartable ephemeral command
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build fsharp-env-loader --skip-nx-cache
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build fsharp-env-loader --skip-nx-cache
 ```
 
 ### Dependency Issues
@@ -462,8 +462,8 @@ npm run nx -- reset
 npm run graph -- --focus=ose-app-web
 
 # If manual builds are required, wait for the producer before starting the consumer
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build fsharp-env-loader
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build ose-app-web
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build fsharp-env-loader
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ose-app-web
 ```
 
 The two builds above deliberately remain sequential because the application consumes the library
@@ -481,7 +481,7 @@ git status
 git add [paths]
 
 # Use a specific base for affected detection
-./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build --base=origin/main
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build --base=origin/main
 
 # View the affected graph to debug interactively
 npm run graph -- --affected --base=origin/main
@@ -495,10 +495,10 @@ Set caller environment variables before the HIPPO boundary:
 
 ```bash
 # Set one environment variable for the command
-NODE_ENV=production ./hippo run --class ephemeral --disk-path . -- npm exec nx -- build ose-app-web
+NODE_ENV=production ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ose-app-web
 
 # Set multiple environment variables
-NODE_ENV=production DEBUG=true ./hippo run --class ephemeral --disk-path . -- npm exec nx -- build ose-app-web
+NODE_ENV=production DEBUG=true ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build ose-app-web
 ```
 
 Do not manually raise `NX_PARALLEL`; the wrapper supplies or clamps it to the admitted allocation.
@@ -509,7 +509,7 @@ Classify a custom target by what it does rather than by its name:
 
 ```bash
 # A restartable read-only custom check is ephemeral
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-app-web:custom-check
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-app-web:custom-check
 
 # A generator writes tracked output, so use the transactional root Nx script
 npm run nx -- generate [plugin]:[generator] [name]
@@ -522,7 +522,7 @@ the transactional `npm run nx -- ...` entrypoint. Keep dependent or same-output 
 
 ```bash
 # Exporting the graph writes a report and is transactional
-./hippo run --class transactional --disk-path . -- npm exec nx -- graph --file=graph.json
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- graph --file=graph.json
 
 # Analyze the completed report without another HIPPO admission
 jq '.dependencies' graph.json

@@ -49,7 +49,7 @@ preexisting ...`)
 
 6. **Environment Setup Was Performed**
    - Verify the plan included environment setup steps and they were completed
-   - Check that `rtk ./hippo run --class ephemeral --disk-path . -- npm install` and then
+   - Check that `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and then
      `rtk npm run doctor -- --fix` ran at the selected worktree root before any work; another
      checkout or inferred equivalent does not count
    - Missing setup evidence: MEDIUM finding

@@ -10,7 +10,7 @@ If you already have Homebrew (macOS) or apt (Linux) and Node.js/npm installed:
 ```bash
 git clone https://github.com/wahidyankf/ose-public.git
 cd open-sharia-enterprise
-./hippo run --class ephemeral --disk-path . -- npm install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
 npm run doctor -- --fix          # Auto-install all missing tools
 npm run doctor -- --fix --dry-run  # Preview what would be installed (no changes)
 ```

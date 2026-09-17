@@ -14,7 +14,7 @@ The service requires PostgreSQL. Docker is the quickest way to provide the
 local PostgreSQL and NATS dependencies used by the end-to-end test setup.
 
 ```bash
-./hippo run --class service --disk-path . -- \
+./hippo run --class service --resource-tier standard --disk-path . -- \
   docker compose -f apps/organiclever-be/docker-compose.e2e.yml up
 ```
 
@@ -25,7 +25,7 @@ the service configuration and start the backend:
 export DATABASE_URL="Host=localhost;Port=5432;Database=organiclever;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}"
 export ASPNETCORE_URLS='http://localhost:8202'
 
-./hippo run --class service --disk-path . -- npm exec nx -- run organiclever-be:dev
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:dev
 ```
 
 On startup, the service applies its embedded SQL migrations to `DATABASE_URL`.
@@ -43,7 +43,7 @@ When finished, stop the backend and dependency terminals with <kbd>Ctrl</kbd>+<k
 remove the containers, networks, and volumes transactionally:
 
 ```bash
-./hippo run --class transactional --disk-path . -- \
+./hippo run --class transactional --resource-tier standard --disk-path . -- \
   docker compose -f apps/organiclever-be/docker-compose.e2e.yml down -v
 ```
 
@@ -74,16 +74,16 @@ are the durable references for intended API behaviour.
 
 ## Everyday commands
 
-| Command                                                                                              | Use                                                                            |
-| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `./hippo run --class service --disk-path . -- npm exec nx -- run organiclever-be:dev`                | Run with `dotnet watch`.                                                       |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- build organiclever-be`            | Generate contract types and publish a release build.                           |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run organiclever-be:test:quick`   | Typecheck, lint, unit-test, coverage, and specification checks.                |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run organiclever-be:test:unit`    | Run the TickSpec/xUnit unit suite.                                             |
-| `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-be:test:integration` | Run isolated filesystem/process-environment Integration tests without network. |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run organiclever-be:lint`         | Check Fantomas formatting and strict F# analysis.                              |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run organiclever-be:fmt`          | Apply Fantomas formatting to service source files.                             |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- run organiclever-be:codegen`      | Regenerate F# contract types from the bundled OpenAPI spec.                    |
+| Command                                                                                                                       | Use                                                                            |
+| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:dev`                | Run with `dotnet watch`.                                                       |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- build organiclever-be`            | Generate contract types and publish a release build.                           |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:test:quick`   | Typecheck, lint, unit-test, coverage, and specification checks.                |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:test:unit`    | Run the TickSpec/xUnit unit suite.                                             |
+| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:test:integration` | Run isolated filesystem/process-environment Integration tests without network. |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:lint`         | Check Fantomas formatting and strict F# analysis.                              |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:fmt`          | Apply Fantomas formatting to service source files.                             |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:codegen`      | Regenerate F# contract types from the bundled OpenAPI spec.                    |
 
 The app-level E2E target is omitted. Backend API E2E tests belong to
 [organiclever-be-e2e](../organiclever-be-e2e/README.md).

@@ -184,16 +184,18 @@ fixed_arguments='OSE_HIPPO_PRE_PUSH_ACTIVE=1
 run
 --class
 ephemeral
+--resource-tier
+heavy
 --disk-path
 .
 --'
-[ "$(sed -n '1,8p' "$guard_arguments")" = "$fixed_arguments" ]
-[ -n "$(sed -n '9p' "$guard_arguments")" ]
+[ "$(sed -n '1,10p' "$guard_arguments")" = "$fixed_arguments" ]
+[ -n "$(sed -n '11p' "$guard_arguments")" ]
 tail_arguments='gate
 run
 --surface=pre-push
 --only=env-validate'
-[ "$(sed -n '10,13p' "$guard_arguments")" = "$tail_arguments" ]
-[ "$(wc -l <"$guard_arguments" | tr -d ' ')" -eq 13 ]
+[ "$(sed -n '12,15p' "$guard_arguments")" = "$tail_arguments" ]
+[ "$(wc -l <"$guard_arguments" | tr -d ' ')" -eq 15 ]
 
 echo "hippo consumer contract tests passed"

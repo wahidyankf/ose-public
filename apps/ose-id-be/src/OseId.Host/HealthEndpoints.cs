@@ -16,11 +16,11 @@ namespace OseId.Host;
 /// </summary>
 internal static class HealthEndpoints
 {
-    private const string ProblemMediaType = "application/problem+json";
-    private const string JsonMediaType = "application/json";
-    private const string CorrelationHeader = "X-Correlation-ID";
+    private const string _problemMediaType = "application/problem+json";
+    private const string _jsonMediaType = "application/json";
+    private const string _correlationHeader = "X-Correlation-ID";
 
-    private static readonly JsonSerializerOptions ResponseJson = new(JsonSerializerDefaults.Web)
+    private static readonly JsonSerializerOptions _responseJson = new(JsonSerializerDefaults.Web)
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.Never,
     };
@@ -36,18 +36,18 @@ internal static class HealthEndpoints
     private static Task ReportLivenessAsync(HttpContext context)
     {
         ReportLiveness useCase = context.RequestServices.GetRequiredService<ReportLiveness>();
-        LivenessResult result = useCase.Execute(context.Request.Headers[CorrelationHeader].FirstOrDefault());
+        LivenessResult result = useCase.Execute(context.Request.Headers[_correlationHeader].FirstOrDefault());
 
         context.Response.StatusCode = StatusCodes.Status200OK;
-        context.Response.ContentType = JsonMediaType;
+        context.Response.ContentType = _jsonMediaType;
         context.Response.Headers.CacheControl = "no-store";
-        context.Response.Headers[CorrelationHeader] = result.CorrelationId;
+        context.Response.Headers[_correlationHeader] = result.CorrelationId;
 
         // The correlation value belongs in the header alone here: a liveness success
         // body carries only status and service, never the value that just went out on
         // the header a line above.
         return context.Response.WriteAsync(
-            JsonSerializer.Serialize(new LivenessBody(result.Status, result.Service), ResponseJson),
+            JsonSerializer.Serialize(new LivenessBody(result.Status, result.Service), _responseJson),
             context.RequestAborted
         );
     }
@@ -56,17 +56,17 @@ internal static class HealthEndpoints
     {
         ReportReadiness useCase = context.RequestServices.GetRequiredService<ReportReadiness>();
         ReadinessResult result = await useCase
-            .ExecuteAsync(context.Request.Headers[CorrelationHeader].FirstOrDefault(), context.RequestAborted)
+            .ExecuteAsync(context.Request.Headers[_correlationHeader].FirstOrDefault(), context.RequestAborted)
             .ConfigureAwait(false);
 
         context.Response.Headers.CacheControl = "no-store";
-        context.Response.Headers[CorrelationHeader] = result.CorrelationId;
+        context.Response.Headers[_correlationHeader] = result.CorrelationId;
 
         switch (result)
         {
             case ReadinessResult.Ready:
                 context.Response.StatusCode = StatusCodes.Status200OK;
-                context.Response.ContentType = JsonMediaType;
+                context.Response.ContentType = _jsonMediaType;
                 await context
                     .Response.WriteAsync(
                         JsonSerializer.Serialize(
@@ -77,7 +77,7 @@ internal static class HealthEndpoints
                                     ReadinessPolicy.SchemaComponentCompatible
                                 )
                             ),
-                            ResponseJson
+                            _responseJson
                         ),
                         context.RequestAborted
                     )
@@ -88,9 +88,9 @@ internal static class HealthEndpoints
                 // fields the contract permits, so it is serialized as-is rather than
                 // projected into a second shape.
                 context.Response.StatusCode = problem.Status;
-                context.Response.ContentType = ProblemMediaType;
+                context.Response.ContentType = _problemMediaType;
                 await context
-                    .Response.WriteAsync(JsonSerializer.Serialize(problem, ResponseJson), context.RequestAborted)
+                    .Response.WriteAsync(JsonSerializer.Serialize(problem, _responseJson), context.RequestAborted)
                     .ConfigureAwait(false);
                 break;
             default:

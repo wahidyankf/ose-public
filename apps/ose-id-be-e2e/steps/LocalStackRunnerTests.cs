@@ -20,9 +20,9 @@ namespace OseId.Be.E2E;
 /// </summary>
 public sealed class LocalStackRunnerTests
 {
-    private const string ContainerPrefix = "ose-id-local-stack-pg-";
-    private static readonly TimeSpan ReadinessBudget = TimeSpan.FromMinutes(5);
-    private static readonly TimeSpan ShutdownBudget = TimeSpan.FromSeconds(30);
+    private const string _containerPrefix = "ose-id-local-stack-pg-";
+    private static readonly TimeSpan _readinessBudget = TimeSpan.FromMinutes(5);
+    private static readonly TimeSpan _shutdownBudget = TimeSpan.FromSeconds(30);
 
     [Fact]
     public async Task PortCollisionRefusesWithoutStartingAnything()
@@ -42,7 +42,7 @@ public sealed class LocalStackRunnerTests
             }
         );
 
-        bool exited = runner.Process.WaitForExit((int)ShutdownBudget.TotalMilliseconds);
+        bool exited = runner.Process.WaitForExit((int)_shutdownBudget.TotalMilliseconds);
         exited.Should().BeTrue(runner.Diagnostics);
         runner.Process.ExitCode.Should().Be(1, runner.Diagnostics);
         runner.Diagnostics.Should().Contain("port collision", runner.Diagnostics);
@@ -54,7 +54,7 @@ public sealed class LocalStackRunnerTests
             "ps",
             "-a",
             "--filter",
-            $"name={ContainerPrefix}",
+            $"name={_containerPrefix}",
             "--format",
             "{{.Names}}",
         ]);
@@ -84,9 +84,9 @@ public sealed class LocalStackRunnerTests
         // application throws for an unrecognised name, which must drive the same reverse
         // cleanup the SIGTERM path drives in LocalStackSteps — proving the catch-block cleanup
         // entry point, not just the signal-handler one.
-        runner.WaitForMarker("web ready", ReadinessBudget);
+        runner.WaitForMarker("web ready", _readinessBudget);
 
-        bool exited = runner.Process.WaitForExit((int)ShutdownBudget.TotalMilliseconds);
+        bool exited = runner.Process.WaitForExit((int)_shutdownBudget.TotalMilliseconds);
         exited.Should().BeTrue(runner.Diagnostics);
         runner.Process.ExitCode.Should().Be(1, runner.Diagnostics);
         runner.Diagnostics.Should().Contain("unknown --fixture-profile: bogus-profile", runner.Diagnostics);
@@ -95,7 +95,7 @@ public sealed class LocalStackRunnerTests
             "ps",
             "-a",
             "--filter",
-            $"name={ContainerPrefix}",
+            $"name={_containerPrefix}",
             "--format",
             "{{.Names}}",
         ]);
@@ -125,14 +125,14 @@ public sealed class LocalStackRunnerTests
             extraArguments: ["--instances=2"]
         );
 
-        runner.WaitForMarker("backend ready", ReadinessBudget);
+        runner.WaitForMarker("backend ready", _readinessBudget);
         LocalStackRunnerProcess.IsListening(backendPort).Should().BeTrue(runner.Diagnostics);
         LocalStackRunnerProcess.IsListening(secondBackendPort).Should().BeTrue(runner.Diagnostics);
 
-        runner.WaitForMarker("web ready", ReadinessBudget);
+        runner.WaitForMarker("web ready", _readinessBudget);
 
         runner.SendSigterm();
-        bool exited = runner.Process.WaitForExit((int)ShutdownBudget.TotalMilliseconds);
+        bool exited = runner.Process.WaitForExit((int)_shutdownBudget.TotalMilliseconds);
         exited.Should().BeTrue(runner.Diagnostics);
         runner.Process.ExitCode.Should().Be(0, runner.Diagnostics);
 
@@ -143,7 +143,7 @@ public sealed class LocalStackRunnerTests
             "ps",
             "-a",
             "--filter",
-            $"name={ContainerPrefix}",
+            $"name={_containerPrefix}",
             "--format",
             "{{.Names}}",
         ]);
@@ -181,15 +181,15 @@ public sealed class LocalStackRunnerTests
 
         // Both runs proceed genuinely concurrently: neither WaitForMarker call below starts
         // before both processes already exist, so this proves independence, not sequencing.
-        first.WaitForMarker("web ready", ReadinessBudget);
-        second.WaitForMarker("web ready", ReadinessBudget);
+        first.WaitForMarker("web ready", _readinessBudget);
+        second.WaitForMarker("web ready", _readinessBudget);
 
         first.RunId.Should().NotBe(second.RunId, "two concurrent runs never share an identity");
 
         first.SendSigterm();
         second.SendSigterm();
-        bool firstExited = first.Process.WaitForExit((int)ShutdownBudget.TotalMilliseconds);
-        bool secondExited = second.Process.WaitForExit((int)ShutdownBudget.TotalMilliseconds);
+        bool firstExited = first.Process.WaitForExit((int)_shutdownBudget.TotalMilliseconds);
+        bool secondExited = second.Process.WaitForExit((int)_shutdownBudget.TotalMilliseconds);
         firstExited.Should().BeTrue(first.Diagnostics);
         secondExited.Should().BeTrue(second.Diagnostics);
         first.Process.ExitCode.Should().Be(0, first.Diagnostics);
@@ -199,7 +199,7 @@ public sealed class LocalStackRunnerTests
             "ps",
             "-a",
             "--filter",
-            $"name={ContainerPrefix}",
+            $"name={_containerPrefix}",
             "--format",
             "{{.Names}}",
         ]);
@@ -239,7 +239,7 @@ public sealed class LocalStackRunnerTests
             }
         );
 
-        runner.WaitForMarker("web ready", ReadinessBudget);
+        runner.WaitForMarker("web ready", _readinessBudget);
 
         // Proves this is a real before/after comparison, not one that would pass even if
         // cleanup never touched the file: the readiness build itself must have appended this
@@ -248,7 +248,7 @@ public sealed class LocalStackRunnerTests
         duringContent.Should().Contain(runner.RunId, "the build that reached readiness appends this run's own entries");
 
         runner.SendSigterm();
-        bool exited = runner.Process.WaitForExit((int)ShutdownBudget.TotalMilliseconds);
+        bool exited = runner.Process.WaitForExit((int)_shutdownBudget.TotalMilliseconds);
         exited.Should().BeTrue(runner.Diagnostics);
         runner.Process.ExitCode.Should().Be(0, runner.Diagnostics);
 

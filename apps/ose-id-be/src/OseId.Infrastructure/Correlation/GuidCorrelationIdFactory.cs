@@ -11,9 +11,9 @@ namespace OseId.Infrastructure.Correlation;
 /// </summary>
 public sealed class GuidCorrelationIdFactory : ICorrelationIdFactory
 {
-    private const string Prefix = "corr_";
+    private const string _prefix = "corr_";
 
     /// <inheritdoc />
     public CorrelationId Create() =>
-        CorrelationId.Accept(Prefix + Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture));
+        CorrelationId.Accept(_prefix + Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture));
 }

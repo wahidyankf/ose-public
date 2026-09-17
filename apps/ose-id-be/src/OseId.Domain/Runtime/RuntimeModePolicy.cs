@@ -22,10 +22,10 @@ public static class RuntimeModePolicy
     public const string UnsupportedDiagnosticMessage =
         "OSE ID refused to start: the declared runtime mode is not supported, and only Local and Test are.";
 
-    private static readonly RuntimeMode[] Servable = [RuntimeMode.Local, RuntimeMode.Test];
+    private static readonly RuntimeMode[] _servable = [RuntimeMode.Local, RuntimeMode.Test];
 
     /// <summary>The complete set of modes OSE ID may serve in.</summary>
-    public static IReadOnlyList<RuntimeMode> ServableModes => Servable;
+    public static IReadOnlyList<RuntimeMode> ServableModes => _servable;
 
     /// <summary>
     /// Resolves a declared runtime mode. Matching is exact and ordinal: a value that

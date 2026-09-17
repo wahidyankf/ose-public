@@ -18,7 +18,8 @@ namespace OseId.Be.E2E;
 [Binding]
 public sealed class DatabaseAuditProcessSteps
 {
-    private const string Feature = "specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature";
+    private const string _feature =
+        "specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature";
 
     private string _activeMigrationId = string.Empty;
     private PostgresException? _rejection;
@@ -26,7 +27,7 @@ public sealed class DatabaseAuditProcessSteps
     [Given("the migrated OSE ID database contains an active migration-history record")]
     public void GivenTheMigratedDatabaseContainsAnActiveRecord()
     {
-        OseIdDatabase.FirstMigrationExitCode.Should().Be(0, Feature);
+        OseIdDatabase.FirstMigrationExitCode.Should().Be(0, _feature);
 
         _activeMigrationId = Query(
             OseIdDatabase.Instance.MigratorConnectionString,
@@ -59,7 +60,7 @@ public sealed class DatabaseAuditProcessSteps
     [Then("PostgreSQL rejects the operation")]
     public void ThenPostgreSqlRejectsTheOperation()
     {
-        _rejection.Should().NotBeNull(Feature);
+        _rejection.Should().NotBeNull(_feature);
 
         // The serving role has no DELETE at all, so the request never reaches the guard trigger —
         // both layers of the defense-in-depth are real, and this proves the outer one specifically.

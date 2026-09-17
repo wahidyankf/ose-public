@@ -18,7 +18,7 @@ namespace OseId.Be.E2E;
 /// </summary>
 internal sealed class LocalStackRunnerProcess : IDisposable
 {
-    private static readonly TimeSpan ShutdownBudget = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan _shutdownBudget = TimeSpan.FromSeconds(30);
 
     // Volta's "node" shim on PATH does not exec-replace itself with the pinned interpreter; it
     // spawns the real node as a separate, independently-PID'd process and the shim's own PID can
@@ -27,7 +27,7 @@ internal sealed class LocalStackRunnerProcess : IDisposable
     // signal's raw default disposition (exit 143) while the real interpreter — and everything it
     // owns — is silently orphaned. Resolving the pinned interpreter's real path up front makes
     // Process.Id the PID that actually runs the script.
-    private static readonly Lazy<string> NodeExecutablePath = new(ResolveNodeExecutablePath);
+    private static readonly Lazy<string> _nodeExecutablePath = new(ResolveNodeExecutablePath);
 
     private readonly List<string> _markers = [];
     private readonly StringBuilder _diagnostics = new();
@@ -70,7 +70,7 @@ internal sealed class LocalStackRunnerProcess : IDisposable
         string repositoryRoot = RepositoryRoot();
         string script = Path.Combine(repositoryRoot, "apps", "ose-id-be-e2e", "scripts", "local-stack.mjs");
 
-        var startInfo = new ProcessStartInfo(NodeExecutablePath.Value)
+        var startInfo = new ProcessStartInfo(_nodeExecutablePath.Value)
         {
             RedirectStandardError = true,
             RedirectStandardOutput = true,
@@ -161,7 +161,7 @@ internal sealed class LocalStackRunnerProcess : IDisposable
                 // The graceful attempt is best-effort; the force-kill below is the real guarantee.
             }
 
-            if (!Process.WaitForExit((int)ShutdownBudget.TotalMilliseconds))
+            if (!Process.WaitForExit((int)_shutdownBudget.TotalMilliseconds))
             {
                 Process.Kill(entireProcessTree: true);
                 Process.WaitForExit();

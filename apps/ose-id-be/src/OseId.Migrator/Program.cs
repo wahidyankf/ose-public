@@ -13,9 +13,9 @@ namespace OseId.Migrator;
 /// </summary>
 public static class Program
 {
-    private const int Success = 0;
-    private const int ConfigurationError = 2;
-    private const int MigrationError = 3;
+    private const int _success = 0;
+    private const int _configurationError = 2;
+    private const int _migrationError = 3;
 
     public static async Task<int> Main()
     {
@@ -31,7 +31,7 @@ public static class Program
                     $"migration_configuration_missing: {OseIdMigrationDbContextFactory.ConnectionStringVariable} is not set"
                 )
                 .ConfigureAwait(false);
-            return ConfigurationError;
+            return _configurationError;
         }
 
         try
@@ -60,19 +60,19 @@ public static class Program
             await context.Database.MigrateAsync().ConfigureAwait(false);
 
             Console.WriteLine("migration_applied");
-            return Success;
+            return _success;
         }
         catch (NpgsqlException error)
         {
             await Console
                 .Error.WriteLineAsync($"migration_failed: {error.SqlState ?? "unknown"}")
                 .ConfigureAwait(false);
-            return MigrationError;
+            return _migrationError;
         }
         catch (InvalidOperationException error)
         {
             await Console.Error.WriteLineAsync($"migration_failed: {error.GetType().Name}").ConfigureAwait(false);
-            return MigrationError;
+            return _migrationError;
         }
     }
 

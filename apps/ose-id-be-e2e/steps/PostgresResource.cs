@@ -19,7 +19,7 @@ namespace OseId.Be.E2E;
 /// </summary>
 public sealed partial class PostgresResource : IDisposable
 {
-    private const string Image = "postgres:17-alpine";
+    private const string _image = "postgres:17-alpine";
 
     // Matches only the connection-establishment failures the official image's temp-instance/
     // real-instance startup transition produces: the temp instance's socket disappearing,
@@ -43,12 +43,12 @@ public sealed partial class PostgresResource : IDisposable
     private static partial Regex AlreadyDonePattern();
 
     /// <summary>
-    /// Every container this type creates is named "{NamePrefix}{runId}". A HIPPO shed reaps the
+    /// Every container this type creates is named "{_namePrefix}{runId}". A HIPPO shed reaps the
     /// test process tree but cannot reach a detached container, since it is not a child process of
     /// the shedded test at kill time — so a hard shed can leave one of these behind across runs.
     /// <see cref="RemoveStaleContainers"/> sweeps by this exact prefix only, never a broader match.
     /// </summary>
-    private const string NamePrefix = "ose-id-e2e-pg-";
+    private const string _namePrefix = "ose-id-e2e-pg-";
 
     /// <summary>The bootstrap password. It is generated per run and never leaves the process.</summary>
     private readonly string _superuserPassword = Guid.NewGuid().ToString("N");
@@ -106,7 +106,7 @@ public sealed partial class PostgresResource : IDisposable
     {
         string runId = Guid.NewGuid().ToString("N")[..12];
         int port = AllocateEphemeralPort();
-        var resource = new PostgresResource(runId, port, $"{NamePrefix}{runId}");
+        var resource = new PostgresResource(runId, port, $"{_namePrefix}{runId}");
 
         string[] run =
         [
@@ -122,7 +122,7 @@ public sealed partial class PostgresResource : IDisposable
             // an explicit statement so its owner is unambiguous.
             "--env",
             "POSTGRES_DB=postgres",
-            Image,
+            _image,
         ];
 
         (int exitCode, string output) = Docker(run, TimeSpan.FromMinutes(5));
@@ -377,7 +377,7 @@ public sealed partial class PostgresResource : IDisposable
     public static void RemoveStaleContainers()
     {
         (int listExitCode, string listOutput) = Docker(
-            ["ps", "--all", "--filter", $"name={NamePrefix}", "--format", "{{.Names}}"],
+            ["ps", "--all", "--filter", $"name={_namePrefix}", "--format", "{{.Names}}"],
             TimeSpan.FromSeconds(30)
         );
         if (listExitCode != 0)
@@ -391,7 +391,7 @@ public sealed partial class PostgresResource : IDisposable
         // here so the removal below can never reach a container this type did not create.
         string[] staleNames = listOutput
             .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Where(name => name.StartsWith(NamePrefix, StringComparison.Ordinal))
+            .Where(name => name.StartsWith(_namePrefix, StringComparison.Ordinal))
             .ToArray();
         if (staleNames.Length == 0)
         {

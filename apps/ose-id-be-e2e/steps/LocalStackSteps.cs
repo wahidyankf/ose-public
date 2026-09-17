@@ -18,11 +18,11 @@ namespace OseId.Be.E2E;
 [Binding]
 public sealed class LocalStackSteps : IDisposable
 {
-    private const string Feature = "specs/apps/ose/id-be/behaviours/foundation/local-stack.feature";
-    private const string ContainerPrefix = "ose-id-local-stack-pg-";
+    private const string _feature = "specs/apps/ose/id-be/behaviours/foundation/local-stack.feature";
+    private const string _containerPrefix = "ose-id-local-stack-pg-";
 
-    private static readonly TimeSpan ReadinessBudget = TimeSpan.FromMinutes(5);
-    private static readonly TimeSpan ShutdownBudget = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan _readinessBudget = TimeSpan.FromMinutes(5);
+    private static readonly TimeSpan _shutdownBudget = TimeSpan.FromSeconds(30);
 
     private int _postgresPort;
     private int _backendPort;
@@ -36,9 +36,9 @@ public sealed class LocalStackSteps : IDisposable
         _backendPort = LocalStackRunnerProcess.AllocateEphemeralPort();
         _webPort = LocalStackRunnerProcess.AllocateEphemeralPort();
 
-        LocalStackRunnerProcess.IsListening(_postgresPort).Should().BeFalse(Feature);
-        LocalStackRunnerProcess.IsListening(_backendPort).Should().BeFalse(Feature);
-        LocalStackRunnerProcess.IsListening(_webPort).Should().BeFalse(Feature);
+        LocalStackRunnerProcess.IsListening(_postgresPort).Should().BeFalse(_feature);
+        LocalStackRunnerProcess.IsListening(_backendPort).Should().BeFalse(_feature);
+        LocalStackRunnerProcess.IsListening(_webPort).Should().BeFalse(_feature);
     }
 
     [When("the developer starts OSE ID locally")]
@@ -58,18 +58,18 @@ public sealed class LocalStackSteps : IDisposable
     public void ThenPostgreSqlTheMigratedBackendAndTheWebShellBecomeReadyInDependencyOrder()
     {
         LocalStackRunnerProcess runner = _runner!;
-        runner.WaitForMarker("postgres ready", ReadinessBudget);
-        runner.WaitForMarker("backend ready", ReadinessBudget);
-        runner.WaitForMarker("web ready", ReadinessBudget);
+        runner.WaitForMarker("postgres ready", _readinessBudget);
+        runner.WaitForMarker("backend ready", _readinessBudget);
+        runner.WaitForMarker("web ready", _readinessBudget);
 
         List<string> order = [.. runner.Markers];
         int postgresIndex = order.FindIndex(marker => marker.StartsWith("postgres ready", StringComparison.Ordinal));
         int backendIndex = order.FindIndex(marker => marker.StartsWith("backend ready", StringComparison.Ordinal));
         int webIndex = order.FindIndex(marker => marker.StartsWith("web ready", StringComparison.Ordinal));
 
-        postgresIndex.Should().BeGreaterThanOrEqualTo(0, Feature);
-        backendIndex.Should().BeGreaterThan(postgresIndex, Feature);
-        webIndex.Should().BeGreaterThan(backendIndex, Feature);
+        postgresIndex.Should().BeGreaterThanOrEqualTo(0, _feature);
+        backendIndex.Should().BeGreaterThan(postgresIndex, _feature);
+        webIndex.Should().BeGreaterThan(backendIndex, _feature);
     }
 
     [Then("stopping the runner leaves no owned process, container, network, volume, or port reservation")]
@@ -78,20 +78,20 @@ public sealed class LocalStackSteps : IDisposable
         LocalStackRunnerProcess runner = _runner!;
         runner.SendSigterm();
 
-        bool exited = runner.Process.WaitForExit((int)ShutdownBudget.TotalMilliseconds);
-        exited.Should().BeTrue($"{Feature}: {runner.Diagnostics}");
-        runner.Process.ExitCode.Should().Be(0, $"{Feature}: {runner.Diagnostics}");
+        bool exited = runner.Process.WaitForExit((int)_shutdownBudget.TotalMilliseconds);
+        exited.Should().BeTrue($"{_feature}: {runner.Diagnostics}");
+        runner.Process.ExitCode.Should().Be(0, $"{_feature}: {runner.Diagnostics}");
 
         (int listCode, string listOutput) = LocalStackRunnerProcess.Docker(
-            ["ps", "-a", "--filter", $"name={ContainerPrefix}", "--format", "{{.Names}}"],
+            ["ps", "-a", "--filter", $"name={_containerPrefix}", "--format", "{{.Names}}"],
             TimeSpan.FromSeconds(30)
         );
-        listCode.Should().Be(0, Feature);
-        listOutput.Should().BeEmpty(Feature);
+        listCode.Should().Be(0, _feature);
+        listOutput.Should().BeEmpty(_feature);
 
-        LocalStackRunnerProcess.IsListening(_postgresPort).Should().BeFalse(Feature);
-        LocalStackRunnerProcess.IsListening(_backendPort).Should().BeFalse(Feature);
-        LocalStackRunnerProcess.IsListening(_webPort).Should().BeFalse(Feature);
+        LocalStackRunnerProcess.IsListening(_postgresPort).Should().BeFalse(_feature);
+        LocalStackRunnerProcess.IsListening(_backendPort).Should().BeFalse(_feature);
+        LocalStackRunnerProcess.IsListening(_webPort).Should().BeFalse(_feature);
     }
 
     public void Dispose() => _runner?.Dispose();

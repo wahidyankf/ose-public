@@ -19,10 +19,10 @@ namespace OseId.Be.E2E;
 [Binding]
 public sealed class HealthProcessSteps : IDisposable
 {
-    private const string Feature = "specs/apps/ose/id-be/behaviours/foundation/health.feature";
-    private const string CorrelationHeader = "X-Correlation-ID";
+    private const string _feature = "specs/apps/ose/id-be/behaviours/foundation/health.feature";
+    private const string _correlationHeader = "X-Correlation-ID";
 
-    private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromSeconds(30) };
+    private static readonly HttpClient _client = new() { Timeout = TimeSpan.FromSeconds(30) };
 
     private PostgresResource? _database;
     private BackendProcess? _backend;
@@ -59,11 +59,11 @@ public sealed class HealthProcessSteps : IDisposable
             );
         }
 
-        using HttpResponseMessage response = await Client
+        using HttpResponseMessage response = await _client
             .GetAsync(new Uri(_baseAddress, "/health/ready"))
             .ConfigureAwait(false);
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK, Feature);
+        response.StatusCode.Should().Be(HttpStatusCode.OK, _feature);
     }
 
     [When("its owned PostgreSQL dependency is stopped")]
@@ -72,15 +72,15 @@ public sealed class HealthProcessSteps : IDisposable
     [Then("liveness remains successful")]
     public async Task ThenLivenessRemainsSuccessfulAsync()
     {
-        using HttpResponseMessage response = await Client
+        using HttpResponseMessage response = await _client
             .GetAsync(new Uri(_baseAddress!, "/health/live"))
             .ConfigureAwait(false);
         string body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK, Feature);
+        response.StatusCode.Should().Be(HttpStatusCode.OK, _feature);
         response.Content.Headers.ContentType!.MediaType.Should().Be("application/json");
         response.Headers.CacheControl!.NoStore.Should().BeTrue();
-        response.Headers.GetValues(CorrelationHeader).Should().ContainSingle();
+        response.Headers.GetValues(_correlationHeader).Should().ContainSingle();
 
         using JsonDocument document = JsonDocument.Parse(body);
         document.RootElement.GetProperty("status").GetString().Should().Be("live");
@@ -90,15 +90,15 @@ public sealed class HealthProcessSteps : IDisposable
     [Then("readiness becomes unsuccessful with a stable database component code")]
     public async Task ThenReadinessBecomesUnsuccessfulWithAStableDatabaseComponentCodeAsync()
     {
-        using HttpResponseMessage response = await Client
+        using HttpResponseMessage response = await _client
             .GetAsync(new Uri(_baseAddress!, "/health/ready"))
             .ConfigureAwait(false);
         _readinessBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-        response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable, Feature);
+        response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable, _feature);
         response.Content.Headers.ContentType!.MediaType.Should().Be("application/problem+json");
         response.Headers.CacheControl!.NoStore.Should().BeTrue();
-        response.Headers.GetValues(CorrelationHeader).Should().ContainSingle();
+        response.Headers.GetValues(_correlationHeader).Should().ContainSingle();
 
         using JsonDocument document = JsonDocument.Parse(_readinessBody);
         JsonElement problem = document.RootElement;
@@ -112,7 +112,7 @@ public sealed class HealthProcessSteps : IDisposable
     {
         // The run's own generated passwords are the ground truth for "a secret leaked": if
         // sanitizing them changes nothing, none of them were present to begin with.
-        _database!.Sanitize(_readinessBody).Should().Be(_readinessBody, Feature);
+        _database!.Sanitize(_readinessBody).Should().Be(_readinessBody, _feature);
         _readinessBody.Should().NotContainAny("Host=", "Password=", "Username=", "Port=", "127.0.0.1", "localhost");
     }
 

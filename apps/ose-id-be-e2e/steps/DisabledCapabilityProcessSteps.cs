@@ -14,7 +14,7 @@ namespace OseId.Be.E2E;
 [Binding]
 public sealed class DisabledCapabilityProcessSteps
 {
-    private const string Feature = "specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature";
+    private const string _feature = "specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature";
 
     private string _capability = string.Empty;
     private HttpResponseMessage? _response;
@@ -47,7 +47,7 @@ public sealed class DisabledCapabilityProcessSteps
     [Then("the response status is {int} with the stable capability-disabled problem code")]
     public void ThenTheResponseStatusIsWithTheStableCapabilityDisabledProblemCode(int status)
     {
-        _capability.Should().NotBeEmpty(Feature);
+        _capability.Should().NotBeEmpty(_feature);
         _response.Should().NotBeNull();
         _response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         ((int)_response.StatusCode).Should().Be(status);

@@ -16,7 +16,7 @@ namespace OseId.Be.E2E;
 [Binding]
 public sealed class DatabasePrivilegeProcessSteps
 {
-    private const string Feature = "specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature";
+    private const string _feature = "specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature";
 
     private readonly List<PostgresException> _refusals = [];
     private string? _healthQueryResult;
@@ -24,7 +24,7 @@ public sealed class DatabasePrivilegeProcessSteps
     [Given("the migration role has applied the current empty OSE ID schema")]
     public static void GivenTheMigrationRoleHasAppliedTheCurrentEmptySchema()
     {
-        OseIdDatabase.FirstMigrationExitCode.Should().Be(0, Feature);
+        OseIdDatabase.FirstMigrationExitCode.Should().Be(0, _feature);
 
         // Applying an already-current database is a success, not an error.
         OseIdDatabase.SecondMigrationExitCode.Should().Be(0, "migration must be idempotent");

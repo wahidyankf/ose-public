@@ -16,9 +16,9 @@ namespace OseId.Be.E2E;
 [Binding]
 public sealed class StatelessInstanceProcessSteps : IDisposable
 {
-    private const string Feature = "specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature";
+    private const string _feature = "specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature";
 
-    private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromSeconds(30) };
+    private static readonly HttpClient _client = new() { Timeout = TimeSpan.FromSeconds(30) };
 
     private readonly List<(HttpStatusCode Status, string Body)> _responses = [];
 
@@ -55,8 +55,8 @@ public sealed class StatelessInstanceProcessSteps : IDisposable
     [Then("every response is consistent with the shared dependency state")]
     public void ThenEveryResponseIsConsistentWithTheSharedDependencyState()
     {
-        _responses.Should().HaveCount(4, Feature);
-        _responses.Should().OnlyContain(response => response.Status == HttpStatusCode.OK, Feature);
+        _responses.Should().HaveCount(4, _feature);
+        _responses.Should().OnlyContain(response => response.Status == HttpStatusCode.OK, _feature);
         _responses.Select(response => response.Body).Should().OnlyContain(body => body == _responses[0].Body);
     }
 
@@ -66,11 +66,11 @@ public sealed class StatelessInstanceProcessSteps : IDisposable
         _instanceA!.Dispose();
         _instanceA = null;
 
-        using HttpResponseMessage stillReady = await Client
+        using HttpResponseMessage stillReady = await _client
             .GetAsync(new Uri(_baseAddressB!, "/health/ready"))
             .ConfigureAwait(false);
 
-        stillReady.StatusCode.Should().Be(HttpStatusCode.OK, Feature);
+        stillReady.StatusCode.Should().Be(HttpStatusCode.OK, _feature);
     }
 
     public void Dispose()
@@ -102,17 +102,17 @@ public sealed class StatelessInstanceProcessSteps : IDisposable
             );
         }
 
-        using HttpResponseMessage response = await Client
+        using HttpResponseMessage response = await _client
             .GetAsync(new Uri(baseAddress, "/health/ready"))
             .ConfigureAwait(false);
-        response.StatusCode.Should().Be(HttpStatusCode.OK, Feature);
+        response.StatusCode.Should().Be(HttpStatusCode.OK, _feature);
 
         return (backend, baseAddress);
     }
 
     private async Task RecordReadinessAsync(Uri baseAddress)
     {
-        using HttpResponseMessage response = await Client
+        using HttpResponseMessage response = await _client
             .GetAsync(new Uri(baseAddress, "/health/ready"))
             .ConfigureAwait(false);
         string body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

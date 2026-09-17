@@ -12,11 +12,11 @@ namespace OseId.Be.E2E;
 /// </summary>
 public sealed class BackendProcess : IDisposable
 {
-    private static readonly Lazy<string> PublishedEntryPoint = new(Publish, isThreadSafe: true);
-    private static readonly Lazy<string> RepositoryRootDirectory = new(RepositoryRoot, isThreadSafe: true);
+    private static readonly Lazy<string> _publishedEntryPoint = new(Publish, isThreadSafe: true);
+    private static readonly Lazy<string> _repositoryRootDirectory = new(RepositoryRoot, isThreadSafe: true);
 
     /// <summary>The absolute repository path, so a test can prove it never leaked.</summary>
-    public static string RepositoryRootPath => RepositoryRootDirectory.Value;
+    public static string RepositoryRootPath => _repositoryRootDirectory.Value;
 
     private readonly Process _process;
     private readonly StringBuilder _standardError = new();
@@ -58,7 +58,7 @@ public sealed class BackendProcess : IDisposable
             RedirectStandardOutput = true,
             UseShellExecute = false,
         };
-        startInfo.ArgumentList.Add(PublishedEntryPoint.Value);
+        startInfo.ArgumentList.Add(_publishedEntryPoint.Value);
 
         // A published host must not inherit an ambient mode from the developer shell.
         startInfo.Environment.Remove("OSE_RUNTIME_MODE");

@@ -7,7 +7,7 @@ namespace OseId.Domain.Capabilities;
 /// </summary>
 public static class DisabledCapabilityCatalog
 {
-    private static readonly DisabledCapability[] Inventory =
+    private static readonly DisabledCapability[] _inventory =
     [
         new("OIDC authorization", "GET", "/connect/authorize"),
         new("OAuth token issuance", "POST", "/connect/token"),
@@ -17,7 +17,7 @@ public static class DisabledCapabilityCatalog
     ];
 
     /// <summary>Every disabled capability, in contract order.</summary>
-    public static IReadOnlyList<DisabledCapability> All => Inventory;
+    public static IReadOnlyList<DisabledCapability> All => _inventory;
 
     /// <summary>
     /// The capability addressed by this exact method and path, or <see langword="null" />
@@ -26,7 +26,7 @@ public static class DisabledCapabilityCatalog
     /// </summary>
     public static DisabledCapability? Find(string method, string path) =>
         Array.Find(
-            Inventory,
+            _inventory,
             capability =>
                 string.Equals(capability.Method, method, StringComparison.Ordinal)
                 && string.Equals(capability.Path, path, StringComparison.Ordinal)
@@ -35,6 +35,6 @@ public static class DisabledCapabilityCatalog
     /// <summary>The capability with this name.</summary>
     /// <exception cref="KeyNotFoundException">The name is outside the inventory.</exception>
     public static DisabledCapability ByCapability(string capability) =>
-        Array.Find(Inventory, entry => string.Equals(entry.Capability, capability, StringComparison.Ordinal))
+        Array.Find(_inventory, entry => string.Equals(entry.Capability, capability, StringComparison.Ordinal))
         ?? throw new KeyNotFoundException($"'{capability}' is not a disabled OSE ID capability.");
 }

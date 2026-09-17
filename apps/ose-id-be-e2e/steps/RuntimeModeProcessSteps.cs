@@ -12,12 +12,12 @@ namespace OseId.Be.E2E;
 [Binding]
 public sealed class RuntimeModeProcessSteps : IDisposable
 {
-    private const string Feature = "specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature";
-    private const int ReservedPort = 8501;
+    private const string _feature = "specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature";
+    private const int _reservedPort = 8501;
 
     private readonly Dictionary<string, string> _environment = new(StringComparer.Ordinal)
     {
-        ["OSE_ID_BE_PORT"] = ReservedPort.ToString(System.Globalization.CultureInfo.InvariantCulture),
+        ["OSE_ID_BE_PORT"] = _reservedPort.ToString(System.Globalization.CultureInfo.InvariantCulture),
     };
 
     private BackendProcess? _backend;
@@ -42,7 +42,7 @@ public sealed class RuntimeModeProcessSteps : IDisposable
     [Then("startup exits non-zero before serving the application")]
     public void ThenStartupExitsNonZeroBeforeServingTheApplication()
     {
-        _exited.Should().BeTrue($"{Feature} requires a refused mode to terminate the process");
+        _exited.Should().BeTrue($"{_feature} requires a refused mode to terminate the process");
         _backend!.ExitCode.Should().NotBe(0);
 
         // "Before serving" is proven from the process's own account of itself: a host that
@@ -52,7 +52,7 @@ public sealed class RuntimeModeProcessSteps : IDisposable
         string output = _backend.StandardOutput + _backend.StandardError;
         output.Should().NotContain("Now listening on");
         output.Should().NotContain("Application started");
-        output.Should().NotContain(ReservedPort.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        output.Should().NotContain(_reservedPort.ToString(System.Globalization.CultureInfo.InvariantCulture));
     }
 
     [Then("the diagnostic returns the stable runtime-mode-disabled code")]

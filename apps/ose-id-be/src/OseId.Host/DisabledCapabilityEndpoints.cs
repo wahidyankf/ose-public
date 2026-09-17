@@ -18,10 +18,10 @@ namespace OseId.Host;
 /// </summary>
 internal static class DisabledCapabilityEndpoints
 {
-    private const string ProblemMediaType = "application/problem+json";
-    private const string CorrelationHeader = "X-Correlation-ID";
+    private const string _problemMediaType = "application/problem+json";
+    private const string _correlationHeader = "X-Correlation-ID";
 
-    private static readonly JsonSerializerOptions ProblemJson = new(JsonSerializerDefaults.Web)
+    private static readonly JsonSerializerOptions _problemJson = new(JsonSerializerDefaults.Web)
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.Never,
     };
@@ -41,15 +41,15 @@ internal static class DisabledCapabilityEndpoints
         // The request body is never read and no query value is inspected, so nothing a
         // caller sends reaches a parser, a log line, or the answer.
         RejectDisabledCapability useCase = context.RequestServices.GetRequiredService<RejectDisabledCapability>();
-        CapabilityDisabledResult result = useCase.Reject(context.Request.Headers[CorrelationHeader].FirstOrDefault());
+        CapabilityDisabledResult result = useCase.Reject(context.Request.Headers[_correlationHeader].FirstOrDefault());
 
         context.Response.StatusCode = result.Status;
-        context.Response.ContentType = ProblemMediaType;
+        context.Response.ContentType = _problemMediaType;
         context.Response.Headers.CacheControl = "no-store";
-        context.Response.Headers[CorrelationHeader] = result.CorrelationId;
+        context.Response.Headers[_correlationHeader] = result.CorrelationId;
 
         await context
-            .Response.WriteAsync(JsonSerializer.Serialize(result, ProblemJson), context.RequestAborted)
+            .Response.WriteAsync(JsonSerializer.Serialize(result, _problemJson), context.RequestAborted)
             .ConfigureAwait(false);
     }
 }

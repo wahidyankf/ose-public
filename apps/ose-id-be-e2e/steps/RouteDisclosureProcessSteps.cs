@@ -17,12 +17,12 @@ namespace OseId.Be.E2E;
 [Binding]
 public sealed class RouteDisclosureProcessSteps : IDisposable
 {
-    private const string Feature = "specs/apps/ose/id-be/behaviours/foundation/route-disclosure.feature";
-    private const string AllowHeader = "Allow";
+    private const string _feature = "specs/apps/ose/id-be/behaviours/foundation/route-disclosure.feature";
+    private const string _allowHeader = "Allow";
 
     // A path no route table entry names, and none ever will: it is the baseline every
     // answer under this feature is required to be identical to.
-    private const string UnregisteredPath = "/ose-id-registers-no-such-path";
+    private const string _unregisteredPath = "/ose-id-registers-no-such-path";
 
     private HttpResponseMessage? _answer;
     private HttpResponseMessage? _baseline;
@@ -36,30 +36,30 @@ public sealed class RouteDisclosureProcessSteps : IDisposable
     public void WhenACallerAddressesWithTheUnansweredMethod(string path, string method)
     {
         (_answer, _answerBody) = Send(method, path);
-        (_baseline, _baselineBody) = Send(method, UnregisteredPath);
+        (_baseline, _baselineBody) = Send(method, _unregisteredPath);
     }
 
     [Then("OSE ID answers exactly as it answers an unregistered path")]
     public void ThenOseIdAnswersExactlyAsItAnswersAnUnregisteredPath()
     {
-        _answer.Should().NotBeNull(Feature);
-        _baseline.Should().NotBeNull(Feature);
+        _answer.Should().NotBeNull(_feature);
+        _baseline.Should().NotBeNull(_feature);
 
-        _answer.StatusCode.Should().Be(HttpStatusCode.NotFound, Feature);
-        _answer.StatusCode.Should().Be(_baseline.StatusCode, Feature);
+        _answer.StatusCode.Should().Be(HttpStatusCode.NotFound, _feature);
+        _answer.StatusCode.Should().Be(_baseline.StatusCode, _feature);
 
         // Byte-for-byte: an empty body on both sides, and the same header set with the
         // same values, so nothing survives that a caller could compare.
-        _answerBody.Should().BeEmpty(Feature);
-        _answerBody.Should().Be(_baselineBody, Feature);
-        HeadersOf(_answer).Should().Equal(HeadersOf(_baseline), Feature);
+        _answerBody.Should().BeEmpty(_feature);
+        _answerBody.Should().Be(_baselineBody, _feature);
+        HeadersOf(_answer).Should().Equal(HeadersOf(_baseline), _feature);
     }
 
     [Then("the answer names no method that path would have answered")]
     public void ThenTheAnswerNamesNoMethodThatPathWouldHaveAnswered()
     {
-        Names(_answer!, AllowHeader).Should().BeFalse(Feature);
-        _answer!.Content.Headers.ContentType.Should().BeNull(Feature);
+        Names(_answer!, _allowHeader).Should().BeFalse(_feature);
+        _answer!.Content.Headers.ContentType.Should().BeNull(_feature);
     }
 
     public void Dispose()

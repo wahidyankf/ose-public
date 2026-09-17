@@ -13,8 +13,8 @@ public static class RunningBackend
     /// <summary>The port reserved for ose-id-be in docs/reference/web-sites.md.</summary>
     public const int ReservedPort = 8501;
 
-    private static readonly Lazy<BackendProcess> Instance = new(StartServing, isThreadSafe: true);
-    private static readonly Lazy<HttpClient> SharedClient = new(
+    private static readonly Lazy<BackendProcess> _instance = new(StartServing, isThreadSafe: true);
+    private static readonly Lazy<HttpClient> _sharedClient = new(
         () => new HttpClient { Timeout = TimeSpan.FromSeconds(30) },
         isThreadSafe: true
     );
@@ -22,21 +22,21 @@ public static class RunningBackend
     public static Uri BaseAddress { get; } =
         new($"http://127.0.0.1:{ReservedPort.ToString(CultureInfo.InvariantCulture)}");
 
-    public static HttpClient Client => SharedClient.Value;
+    public static HttpClient Client => _sharedClient.Value;
 
-    public static void EnsureServing() => _ = Instance.Value;
+    public static void EnsureServing() => _ = _instance.Value;
 
     /// <summary>Releases the served instance and its reserved port.</summary>
     public static void Stop()
     {
-        if (Instance.IsValueCreated)
+        if (_instance.IsValueCreated)
         {
-            Instance.Value.Dispose();
+            _instance.Value.Dispose();
         }
 
-        if (SharedClient.IsValueCreated)
+        if (_sharedClient.IsValueCreated)
         {
-            SharedClient.Value.Dispose();
+            _sharedClient.Value.Dispose();
         }
     }
 

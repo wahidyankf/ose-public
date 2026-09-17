@@ -7,7 +7,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
  * entry that guards startup, the environment modules it loads, and the proxy/page composition
  * that answers a request — in a Node environment with controlled configuration and no network.
  *
- * Its coverage denominator is exactly the five boundary files the Unit adapter cannot reach, so
+ * Its coverage denominator is exactly the six boundary files the Unit adapter cannot reach, so
  * every authored line of this app is measured by one adapter or the other.
  */
 export default defineConfig({
@@ -21,6 +21,7 @@ export default defineConfig({
         "src/proxy.ts",
         "src/app/page.tsx",
         "src/contexts/foundation/application/status-middleware.ts",
+        "src/contexts/foundation/application/service-status-source.ts",
       ],
       reporter: ["text", "json-summary", "lcov"],
     },

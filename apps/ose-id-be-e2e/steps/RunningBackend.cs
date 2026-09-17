@@ -47,12 +47,13 @@ public static class RunningBackend
             {
                 ["OSE_RUNTIME_MODE"] = "Test",
                 ["OSE_ID_BE_PORT"] = ReservedPort.ToString(CultureInfo.InvariantCulture),
-                // Syntactically valid so host registration never throws; this shared
-                // instance serves only the disabled-capability and runtime-mode
-                // scenarios, none of which read readiness, so its unreachability never
-                // matters. A real, owned PostgreSQL is HealthProcessSteps's instance.
-                ["OSE_ID_CONNECTION"] =
-                    "Host=127.0.0.1;Port=1;Database=ose_id;Username=ose_id_test;Password=ose_id_test",
+                // The run's own migrated PostgreSQL, reached through the serving role. A
+                // refusal that must be proven to have written no row needs a database a
+                // refusal could in principle have written to; pointing this instance at an
+                // unreachable address would make that proof vacuous. The scenarios that
+                // need a dependency they can break own their own resource instead, because
+                // this one must stay up for the whole assembly.
+                ["OSE_ID_CONNECTION"] = OseIdDatabase.Instance.ApplicationConnectionString,
             }
         );
 

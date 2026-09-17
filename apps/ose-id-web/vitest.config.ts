@@ -16,6 +16,7 @@ export default defineConfig({
         "src/app/page.tsx",
         "src/env.ts",
         "src/contexts/foundation/application/status-middleware.ts",
+        "src/contexts/foundation/application/service-status-source.ts",
         "src/env-loader.ts",
         "src/proxy.ts",
         "src/test/**",

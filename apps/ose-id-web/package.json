@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3500",
+    "dev": "node scripts/guard-runtime-mode.mjs next dev --port 3500",
     "build": "next build",
-    "start": "next start --port 3500"
+    "start": "node scripts/guard-runtime-mode.mjs next start --port 3500"
   },
   "dependencies": {
     "@open-sharia-enterprise/ts-env-loader": "*",

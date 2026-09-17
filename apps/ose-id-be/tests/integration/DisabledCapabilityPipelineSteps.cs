@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using FluentAssertions;
 using OseId.Domain.Capabilities;
+using OseId.Domain.Correlation;
 using Reqnroll;
 
 namespace OseId.Be.Integration;
@@ -18,6 +19,9 @@ public sealed class DisabledCapabilityPipelineSteps : IDisposable
 {
     private const string Feature = "specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature";
     private const string CorrelationHeader = "X-Correlation-ID";
+
+    /// <summary>The only routes OSE ID answers besides the disabled inventory.</summary>
+    private static readonly string[] HealthRoutes = ["GET /health/live", "GET /health/ready"];
 
     private TestHostFixture? _host;
     private DisabledCapability? _expected;
@@ -42,7 +46,13 @@ public sealed class DisabledCapabilityPipelineSteps : IDisposable
     [When("a client requests {word} {word}")]
     public async Task WhenAClientRequestsAsync(string method, string path)
     {
-        using var request = new HttpRequestMessage(new HttpMethod(method), path);
+        // Bounded input the endpoint must never read: a query value and, where the method
+        // admits one, a body. Neither may reach the answer, the headers, or a record.
+        using var request = new HttpRequestMessage(new HttpMethod(method), $"{path}?probe=ose-id-bounded-probe");
+        if (!string.Equals(method, "GET", StringComparison.Ordinal))
+        {
+            request.Content = new StringContent("{\"probe\":\"ose-id-bounded-probe\"}");
+        }
 
         _response = await _host!.Client.SendAsync(request).ConfigureAwait(false);
         _body = await _response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -56,8 +66,6 @@ public sealed class DisabledCapabilityPipelineSteps : IDisposable
         _response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
         _response.Content.Headers.ContentType!.MediaType.Should().Be("application/problem+json");
-        _response.Headers.CacheControl!.NoStore.Should().BeTrue();
-        _response.Headers.GetValues(CorrelationHeader).Should().ContainSingle();
 
         using JsonDocument document = JsonDocument.Parse(_body);
         JsonElement problem = document.RootElement;
@@ -70,29 +78,55 @@ public sealed class DisabledCapabilityPipelineSteps : IDisposable
         problem.GetProperty("status").GetInt32().Should().Be(status);
         problem.GetProperty("code").GetString().Should().Be(DisabledCapabilityPolicy.ProblemCode);
         problem.GetProperty("title").GetString().Should().Be(DisabledCapabilityPolicy.ProblemTitle);
-        problem
-            .GetProperty("correlationId")
-            .GetString()
-            .Should()
-            .Be(_response.Headers.GetValues(CorrelationHeader).Single());
+    }
+
+    [Then("the refusal is uncacheable and carries a correlation value")]
+    public void ThenTheRefusalIsUncacheableAndCarriesACorrelationValue()
+    {
+        _response.Should().NotBeNull(Feature);
+        _response.Headers.CacheControl!.NoStore.Should().BeTrue();
+
+        string correlation = _response.Headers.GetValues(CorrelationHeader).Should().ContainSingle().Subject;
+        CorrelationId.TryAccept(correlation, out _).Should().BeTrue();
+
+        using JsonDocument document = JsonDocument.Parse(_body);
+        document.RootElement.GetProperty("correlationId").GetString().Should().Be(correlation);
+    }
+
+    [Then("no redirect, token, cookie, identity resource, or tenant fact is returned")]
+    public void ThenNoRedirectTokenCookieIdentityResourceOrTenantFactIsReturned()
+    {
+        // Nothing was handed back that a caller could hold on to, redeem, or replay.
+        _response!.Headers.Contains("Set-Cookie").Should().BeFalse();
+        _response.Headers.Location.Should().BeNull();
+        _response.Headers.WwwAuthenticate.Should().BeEmpty();
+        _body.Should().NotContainAny("access_token", "id_token", "Bearer", "tenant", "company");
+
+        // And the caller's own bounded input never came back either, so the refusal states no
+        // fact about what was asked for.
+        _body.Should().NotContain("ose-id-bounded-probe");
+        ResponseShape.Headers(_response).Should().NotContain(header => header.Contains("ose-id-bounded-probe"));
     }
 
     [Then("no identity or authorization record is created")]
     public async Task ThenNoIdentityOrAuthorizationRecordIsCreatedAsync()
     {
-        // Nothing was handed back that a caller could hold on to, redeem, or replay.
-        _response!.Headers.Contains("Set-Cookie").Should().BeFalse();
-        _response.Headers.Location.Should().BeNull();
-        _body.Should().NotContainAny("access_token", "id_token", "Bearer");
+        // Repeated and concurrent refusals are the same closed answer with nothing accumulated
+        // between them: if a first call had created state, a later call could observe it.
+        string[] repeated = await Task.WhenAll(Enumerable.Range(0, 4).Select(_ => RefuseAgainAsync()))
+            .ConfigureAwait(false);
 
-        // And the same request repeats identically, so no first call created state a
-        // second call could observe.
-        using var repeat = new HttpRequestMessage(new HttpMethod(_expected!.Method), _expected.Path);
-        using HttpResponseMessage second = await _host!.Client.SendAsync(repeat).ConfigureAwait(false);
-        string repeatedBody = await second.Content.ReadAsStringAsync().ConfigureAwait(false);
+        repeated.Should().AllBe(WithoutCorrelation(_body), Feature);
 
-        second.StatusCode.Should().Be(_response.StatusCode);
-        repeatedBody.Length.Should().Be(_body.Length);
+        // The delivered host offers no other way in: its whole route table is the closed health
+        // pair plus the disabled inventory, so no registered endpoint could write a record.
+        _host!
+            .RouteTable.Should()
+            .BeEquivalentTo(
+                HealthRoutes.Concat(
+                    DisabledCapabilityCatalog.All.Select(capability => $"{capability.Method} {capability.Path}")
+                )
+            );
     }
 
     public void Dispose()
@@ -105,5 +139,33 @@ public sealed class DisabledCapabilityPipelineSteps : IDisposable
     {
         _expected = DisabledCapabilityCatalog.ByCapability(capability);
         _host = TestHostFixture.Start();
+    }
+
+    private async Task<string> RefuseAgainAsync()
+    {
+        using var request = new HttpRequestMessage(new HttpMethod(_expected!.Method), _expected.Path);
+        using HttpResponseMessage response = await _host!.Client.SendAsync(request).ConfigureAwait(false);
+        string body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+        response.StatusCode.Should().Be(_response!.StatusCode);
+        return WithoutCorrelation(body);
+    }
+
+    /// <summary>
+    /// The refusal minus its per-request correlation value, so two refusals can be compared for
+    /// the thing under test rather than for the one field that is required to differ.
+    /// </summary>
+    private static string WithoutCorrelation(string body)
+    {
+        using JsonDocument document = JsonDocument.Parse(body);
+
+        return string.Join(
+            ';',
+            document
+                .RootElement.EnumerateObject()
+                .Where(property => property.Name != "correlationId")
+                .Select(property => $"{property.Name}={property.Value.GetRawText()}")
+                .Order(StringComparer.Ordinal)
+        );
     }
 }

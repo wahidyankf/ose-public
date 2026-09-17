@@ -12,8 +12,16 @@ namespace OseId.Be.Integration;
 public sealed class FakeMigrationHistoryReader : IMigrationHistoryReader
 {
     private MigrationHistoryReadResult _result;
+    private int _readCount;
 
     private FakeMigrationHistoryReader(MigrationHistoryReadResult result) => _result = result;
+
+    /// <summary>
+    /// How many times the pipeline actually reached this port. A liveness scenario asserts it
+    /// stayed at zero; a readiness scenario asserts every request produced a fresh read rather
+    /// than replaying a cached answer.
+    /// </summary>
+    public int ReadCount => Volatile.Read(ref _readCount);
 
     /// <summary>Behaves as an unreachable database: every read reports unreadable.</summary>
     public static FakeMigrationHistoryReader Unavailable() => new(MigrationHistoryReadResult.Unavailable());
@@ -41,6 +49,9 @@ public sealed class FakeMigrationHistoryReader : IMigrationHistoryReader
     /// </summary>
     public void Stop() => _result = MigrationHistoryReadResult.Unavailable();
 
-    public Task<MigrationHistoryReadResult> ReadActiveAsync(CancellationToken cancellationToken) =>
-        Task.FromResult(_result);
+    public Task<MigrationHistoryReadResult> ReadActiveAsync(CancellationToken cancellationToken)
+    {
+        Interlocked.Increment(ref _readCount);
+        return Task.FromResult(_result);
+    }
 }

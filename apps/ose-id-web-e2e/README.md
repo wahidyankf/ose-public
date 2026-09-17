@@ -7,9 +7,9 @@ and non-color-only status conveyance.
 ## Run locally
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm install
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:install
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm install
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:install
+./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e
 ```
 
 `test:e2e` starts `ose-id-web:dev` itself (`OSE_RUNTIME_MODE=Test`, port `3500`) and reuses it if one

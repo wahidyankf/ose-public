@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The innermost ring. It declares no PackageReference and no ProjectReference at
+    all: the absence of an outward dependency is the boundary, and the focused
+    architecture test in tests/unit fails the build policy if one ever appears.
+  -->
+  <PropertyGroup>
+    <RootNamespace>OseId.Domain</RootNamespace>
+    <AssemblyName>OseId.Domain</AssemblyName>
+  </PropertyGroup>
+
+</Project>

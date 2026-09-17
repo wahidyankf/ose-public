@@ -1,0 +1,34 @@
+api-exploratory-tester verification-mode retest run
+run-id: aet-c4b3191bca34
+retests: AET-001 (Major), AET-002 (Minor), AET-003 (Trivial) from discovery run aet-2ecbb6945fdd
+started (UTC): 2026-09-16T15:47:08Z
+finished (UTC): 2026-09-16T15:55:40Z (approx; see retest-request-response-matrix.md for per-probe timestamps)
+quality-gate-phase: verification (scoped retest, not full discovery)
+output-mode: delivery
+plan-path: plans/in-progress/ose-id-init-01-foundation
+mode: strict
+target base URL: http://127.0.0.1:8501
+worktree: ./worktrees/ose-id-init-01-foundation
+worktree HEAD (git rev-parse HEAD): 83b73f6b6b910ffeaf988323a9fd0a7b18e08f17 (same commit as the
+  discovery run; the fix is present as uncommitted working-tree changes: new
+  apps/ose-id-be/src/OseId.Host/RouteDisclosureGuard.cs, new
+  apps/ose-id-be/src/OseId.Domain/Routing/{RouteDisclosurePolicy.cs,AbsentRouteAnswer.cs}, new
+  specs/apps/ose/id-be/behaviours/foundation/route-disclosure.feature, plus modified
+  DisabledCapabilityEndpoints.cs/OseIdHost.cs/OseIdProcess.cs and their tests)
+worktree branch: ose-id-init-01-foundation-base
+live listener: dotnet PID 10026, 127.0.0.1:8501 (fresh instance vs. the discovery run's PID 84455)
+owned PostgreSQL container: ose-id-local-stack-pg-268400ff4710 (postgres:17-alpine, fresh vs. the
+  discovery run's ose-id-local-stack-pg-4938a4ef13c6)
+contract: specs/apps/ose/id-be/contracts/openapi.yaml (OpenAPI 3.1.0) — unchanged text for the
+  disabled-route wrong-method fallback clause
+new ground truth exercised this pass:
+  specs/apps/ose/id-be/behaviours/foundation/route-disclosure.feature (new spec, not present at
+  discovery time; authoritative statement of the contracted wrong-method answer shape)
+dispositions filed: AET-001 resolved, AET-002 resolved, AET-003 not-applicable (unchanged, still
+  open by design, out of scope)
+new finding filed this pass: AET-004 (Minor) — HEAD requests to any 404 (both the disclosure-guard
+  rewritten path and the pre-existing genuinely-absent-path baseline) omit Content-Length and hang
+  until Kestrel's own idle-connection timeout (~131s) before completing; pre-existing framework
+  behaviour, not introduced by the fix, and does not break AET-001/AET-002 indistinguishability
+  (both sides hang identically) — recorded for the maintainer's awareness, not blocking archival
+  per this retest's own disposition (see retest-tester-report.md).

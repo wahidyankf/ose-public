@@ -1,0 +1,57 @@
+=== inserting 9999 synthetic tombstoned history rows (migrator role; real row stays the only active one) ===
+10000
+^ total rows (9999 synthetic tombstones + 1 real active row = 10000)
+
+=== EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) of the readiness query at 10,000 rows, as ose_id_app ===
+[
+  {
+    "Plan": {
+      "Node Type": "Seq Scan",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Relation Name": "__EFMigrationsHistory",
+      "Alias": "__EFMigrationsHistory",
+      "Startup Cost": 0.00,
+      "Total Cost": 148.72,
+      "Plan Rows": 3,
+      "Plan Width": 1972,
+      "Actual Startup Time": 0.005,
+      "Actual Total Time": 0.537,
+      "Actual Rows": 1,
+      "Actual Loops": 1,
+      "Filter": "(deleted_at IS NULL)",
+      "Rows Removed by Filter": 9999,
+      "Shared Hit Blocks": 143,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0
+    },
+    "Planning": {
+      "Shared Hit Blocks": 67,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0
+    },
+    "Planning Time": 0.239,
+    "Triggers": [
+    ],
+    "Execution Time": 0.552
+  }
+]
+
+=== row count actually returned by the readiness query ===
+1
+^ must be 1 (only the real migration is active; compiled compatible set has exactly 1 entry)
+container removed

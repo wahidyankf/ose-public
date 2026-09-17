@@ -1,0 +1,40 @@
+=== before ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=27.20 diskFreeGiB=90.15 cpu=10.7%
+
+=== command ===
+rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e
+  -> dotnet test apps/ose-id-be-e2e/OseId.Be.E2E.csproj
+
+=== output ===
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Be.E2E -> apps/ose-id-be-e2e/bin/Debug/net10.0/OseId.Be.E2E.dll
+Test run for apps/ose-id-be-e2e/bin/Debug/net10.0/OseId.Be.E2E.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    11, Skipped:     0, Total:    11, Duration: 2 s - OseId.Be.E2E.dll (net10.0)
+
+ NX   Successfully ran target test:e2e for project ose-id-be-e2e
+
+exit=0
+
+=== after ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=27.20 diskFreeGiB=90.15 cpu=13.3%
+
+=== owned containers surviving (docker ps -a --filter name=ose-id) ===
+(none)
+
+=== note: this file previously held a failing run ===
+An earlier attempt at this same "green twice consecutively" requirement hit a live HIPPO shed
+(exit=75, "HIPPO shedding selected service child after swap-critical") triggered by a host-level
+swap baseline condition (`vm.swapusage` at 86% used at the time), not by this workload's own
+resource use. The shed killed the test process outside its own `[AfterTestRun]` cleanup and left an
+orphaned container (`ose-id-e2e-pg-<runId>`) behind, because HIPPO's process-tree reaping cannot
+reach a `docker run --detach` container — it is not a child process of the shedded test at kill
+time. That orphaned container was removed by exact name and the gap was closed with a pre-run
+stale-container sweep (`PostgresResource.RemoveStaleContainers`, called at the top of `Start()`),
+which removes only containers whose name starts with the exact `ose-id-e2e-pg-` prefix before
+starting a new one — never a broader prune or pattern match. This file was regenerated with a
+genuinely passing second consecutive run after that fix; see
+`evidence/phase-3-persistence/hippo-shed-container-sweep-finding.md` for the full writeup.

@@ -1,0 +1,152 @@
+Tool 'dotnet-fsharplint' (version '0.26.10') was restored. Available commands: dotnet-fsharplint
+Tool 'fsharp-analyzers' (version '0.36.0') was restored. Available commands: fsharp-analyzers
+
+Restore was successful.
+[2m> [22mdotnet tool run fantomas --check apps/crane-cli/src
+
+[2m> [22mdotnet fsharplint lint apps/crane-cli/crane-cli.fsproj --lint-config apps/crane-cli/fsharplint.json
+
+========== Linting apps/crane-cli/obj/Debug/net10.0/crane-cli.AssemblyInfo.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting apps/crane-cli/obj/Debug/net10.0/.NETCoreApp,Version=v10.0.AssemblyAttributes.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting apps/crane-cli/src/Adapters/In/CliAdapter.fs ==========
+========== Finished: 0 warnings ==========
+========== Linting apps/crane-cli/src/Program.fs ==========
+========== Finished: 0 warnings ==========
+========== Summary: 0 warnings ==========
+[2m> [22mdotnet fsharp-analyzers --project apps/crane-cli/crane-cli.fsproj --analyzers-path $(find $(dotnet nuget locals global-packages --list | sed 's/.*: //')g-research.fsharp.analyzers -path '*/analyzers/dotnet/fs' -type d | head -1) --treat-as-error GRA-STRING-001 GRA-STRING-002 GRA-STRING-003 GRA-STRING-004 GRA-UNIONCASE-001 GRA-VIRTUALCALL-001 GRA-JSONOPTS-001 GRA-DISPBEFOREASYNC-001 GRA-IMMUTABLECOLLECTIONEQUALITY-001 GRA-LOGARGFUNCFULLAPP-001 GRA-LOGTEMPLMISSVALS-001 GRA-TYPE-ANNOTATE-001 GRA-INTERPOLATED-001
+
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mlint[22m for project crane-cli and [1m2[22m tasks it depends on[39m
+
+[2mNx read the output from the cache instead of running the command for 2 out of 3 tasks.[22m
+
+> npm exec -- nx run crane-cli:test:unit
+
+
+[2m> [22m[2mnx run[22m crane-cli:"test:unit"
+
+[2m> [22mif grep -rn -E --include='*.fs' 'Skip\s*=' apps/crane-cli/tests/unit; then echo 'ERROR: xunit Skip= attribute found in test files above'; exit 1; fi && dotnet test apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj /p:CollectCoverage=true /p:Threshold=99 "/p:Include=[crane]*" /p:ThresholdType=line "/p:ExcludeByFile=**/Adapters/In/CliAdapter.fs%2C**/Adapters/Out/PdfAdapter.fs%2C**/Adapters/Out/OcrAdapter.fs%2C**/Program.fs"
+
+  Determining projects to restore...
+  Restored apps/crane-cli/tests/unit/crane-cli-unit-tests.fsproj (in 180 ms).
+  2 of 3 projects are up-to-date for restore.
+  fsharp-crane-core -> libs/fsharp-crane-core/bin/Debug/net10.0/fsharp-crane-core.dll
+  crane-cli -> apps/crane-cli/bin/Debug/net10.0/crane.dll
+  crane-cli-unit-tests -> apps/crane-cli/tests/unit/bin/Debug/net10.0/crane-cli-unit-tests.dll
+  [coverlet] _mapping file name: 'CoverletSourceRootsMapping_crane-cli-unit-tests'
+Test run for apps/crane-cli/tests/unit/bin/Debug/net10.0/crane-cli-unit-tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    97, Skipped:     0, Total:    97, Duration: 149 ms - crane-cli-unit-tests.dll (net10.0)
+  [coverlet] 
+  Calculating coverage result...
+   Generating report 'apps/crane-cli/tests/unit/coverage.json'
+
++--------+------+--------+--------+
+| Module | Line | Branch | Method |
++--------+------+--------+--------+
+| crane  | 100% | 100%   | 100%   |
++--------+------+--------+--------+
+
++---------+------+--------+--------+
+|         | Line | Branch | Method |
++---------+------+--------+--------+
+| Total   | 100% | 100%   | 100%   |
++---------+------+--------+--------+
+| Average | 100% | 100%   | 100%   |
++---------+------+--------+--------+
+
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:unit[22m for project crane-cli[39m
+
+
+> npm exec -- nx run crane-cli:specs:structure-validation
+
+
+[2m> [22m[2mnx run[22m crane-cli:"specs:structure-validation"
+
+[2m> [22mdotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- specs structure validate
+
+specs structure validate: 0 finding(s) for "ayokoding"
+specs structure validate: 0 finding(s) for "crane"
+specs structure validate: 0 finding(s) for "organiclever"
+specs structure validate: 0 finding(s) for "ose"
+specs structure validate: 0 finding(s) for "rhino"
+specs structure validate: 0 finding(s) for "roots"
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mspecs:structure-validation[22m for project crane-cli[39m
+
+
+> npm exec -- nx run crane-cli:test:coverage
+
+
+[2m> [22m[2mnx run[22m crane-cli:"test:coverage"
+
+[2m> [22mnpm exec -- nx run crane-cli:test:coverage:unit
+
+
+[2m> [22m[2mnx run[22m crane-cli:"test:coverage:unit"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/crane-cli/behaviour-coverage.json --adapter unit
+
+crane-cli: 12 features, 37 expanded scenarios, adapters: unit.
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:coverage:unit[22m for project crane-cli[39m
+
+
+[2m> [22mnpm exec -- nx run crane-cli:test:coverage:e2e
+
+
+[2m> [22m[2mnx run[22m crane-cli:"test:coverage:e2e"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/crane-cli/behaviour-coverage.json --adapter e2e
+
+crane-cli: 12 features, 37 expanded scenarios, adapters: e2e.
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:coverage:e2e[22m for project crane-cli[39m
+
+
+[2m> [22mnpm exec -- nx run crane-cli:test:coverage:behaviour
+
+
+[2m> [22m[2mnx run[22m crane-cli:"test:coverage:behaviour"
+
+[2m> [22mnode scripts/behaviour-coverage.mjs --config apps/crane-cli/behaviour-coverage.json --adapter behaviour
+
+crane-cli: 12 features, 37 expanded scenarios, adapters: unit, e2e.
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:coverage:behaviour[22m for project crane-cli[39m
+
+
+
+[2m[32m[39m[22m
+
+[7m[1m[32m NX [39m[22m[27m  [32mSuccessfully ran target [1mtest:coverage[22m for project crane-cli[39m
+
+
+
+
+
+ NX   Running targets build, typecheck, lint, test:quick for 35 projects and 18 tasks they depend on failed
+
+Failed tasks:
+
+- ose-id-be:test:quick
+- ose-id-be-e2e:test:quick
+
+
+[exited with code 0]

@@ -18,6 +18,20 @@ Each app pairs with dedicated E2E runner projects for end-to-end testing.
 Each product app has its own dedicated E2E runner (`*-be-e2e`, `*-fe-e2e`) scoped to that product's
 scenarios.
 
+## Server Fixture Standard
+
+A Playwright `webServer` fixture must serve a built artifact — the app's `start` target or its
+standalone `server.js` — and must never invoke a `dev` target. The E2E project declares the build it
+needs through `dependsOn`, so the fixture never races an absent or stale output.
+
+Two reasons, either sufficient. A dev server compiles on first request and fans its compiler out
+across workers that no Nx concurrency setting bounds; one such fixture was measured at 417 node
+processes, which exhausted memory and swap and was shed before the fixture's deadline. And E2E
+exists to exercise the artifact that ships, which a dev server is not.
+
+A scenario that genuinely needs dev-only behaviour spawns its own process inside the scenario rather
+than changing the shared fixture.
+
 ## Environment Variable Standard
 
 Every app with runtime configuration must satisfy these requirements:

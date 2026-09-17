@@ -1,0 +1,348 @@
+openapi: 3.1.0
+info:
+  title: OSE ID API
+  description: |
+    REST API contract for the OSE ID backend while its identity capabilities are switched off.
+
+    The service publishes exactly two health operations and five registered-but-disabled identity
+    routes. Every disabled route answers with the same stable problem body, so a caller cannot tell
+    one unbuilt capability from another and cannot reach identity state the service does not own.
+
+    The dispatcher matches only the exact method and path pairs listed here. Any other request —
+    including a different method on one of these paths — falls through to the framework's ordinary
+    not-found behaviour, which carries no capability code and is not part of this contract.
+
+    No operation requires authentication, authorization, tenant context, a cookie, a CSRF token, or
+    a caller-controlled redirect. No response carries a secret, connection string, database host,
+    stack trace, or absolute machine path.
+  version: 1.0.0
+  contact:
+    name: Open Sharia Enterprise
+    url: https://github.com/wahidyankf/ose-public
+
+servers:
+  - url: http://127.0.0.1:8501
+    description: Local development
+
+security: []
+
+tags:
+  - name: Health
+    description: Liveness and readiness probes for a local operator or runner
+  - name: Disabled Capabilities
+    description: Identity routes that are registered and permanently fail closed until built
+
+components:
+  parameters:
+    CorrelationId:
+      name: X-Correlation-ID
+      in: header
+      required: false
+      description: >-
+        Optional caller-supplied correlation value. An invalid value is replaced with a generated
+        one rather than reflected back.
+      schema:
+        type: string
+        maxLength: 128
+
+  headers:
+    CacheControlNoStore:
+      description: Always `no-store`, so no proxy or browser retains a backend response.
+      required: true
+      schema:
+        type: string
+        enum:
+          - no-store
+    CorrelationId:
+      description: The generated or validated correlation value for this exchange.
+      required: true
+      schema:
+        type: string
+
+  schemas:
+    LivenessResponse:
+      type: object
+      description: Process-only liveness result, reported without consulting any dependency.
+      additionalProperties: false
+      required:
+        - status
+        - service
+      properties:
+        status:
+          type: string
+          description: Fixed liveness state of a process that is answering at all.
+          enum:
+            - live
+        service:
+          type: string
+          description: Fixed name of the answering service.
+          enum:
+            - ose-id-be
+
+    ReadinessResponse:
+      type: object
+      description: Readiness result returned only when every dependency is currently usable.
+      additionalProperties: false
+      required:
+        - status
+        - components
+      properties:
+        status:
+          type: string
+          description: Fixed readiness state when all components are usable.
+          enum:
+            - ready
+        components:
+          $ref: "#/components/schemas/ReadinessComponents"
+
+    ReadinessComponents:
+      type: object
+      description: Allowlisted per-dependency states; no connection, host, or migration name appears.
+      additionalProperties: false
+      required:
+        - postgresql
+        - schema
+      properties:
+        postgresql:
+          type: string
+          description: State of the owned PostgreSQL dependency when readiness succeeds.
+          enum:
+            - ready
+        schema:
+          type: string
+          description: State of the applied database schema when readiness succeeds.
+          enum:
+            - compatible
+
+    ProblemResponse:
+      type: object
+      description: >-
+        The only error body this service returns. It carries a numeric status and three strings and
+        nothing else, so no dependency or request detail can leak through an error.
+      additionalProperties: false
+      required:
+        - status
+        - code
+        - title
+        - correlationId
+      properties:
+        status:
+          type: integer
+          description: HTTP status code repeated inside the body.
+        code:
+          type: string
+          description: Stable machine-readable reason a caller may branch on.
+        title:
+          type: string
+          description: Short human-readable summary that names no dependency or caller input.
+        correlationId:
+          type: string
+          description: Opaque correlation value matching the response header.
+
+    CapabilityDisabledProblem:
+      description: The one response every disabled identity capability returns.
+      allOf:
+        - $ref: "#/components/schemas/ProblemResponse"
+        - type: object
+          properties:
+            status:
+              type: integer
+              enum:
+                - 404
+            code:
+              type: string
+              enum:
+                - capability_disabled
+            title:
+              type: string
+              enum:
+                - Capability is not available
+
+    ReadinessProblem:
+      description: Readiness failure naming only which allowlisted dependency is unusable.
+      allOf:
+        - $ref: "#/components/schemas/ProblemResponse"
+        - type: object
+          properties:
+            status:
+              type: integer
+              enum:
+                - 503
+            code:
+              type: string
+              enum:
+                - database_unavailable
+                - schema_incompatible
+
+  responses:
+    CapabilityDisabled:
+      description: >-
+        The capability is not available. Nothing is created, no redirect, token, cookie, identity
+        resource, or tenant fact is returned, and a repeated call answers identically.
+      headers:
+        Cache-Control:
+          $ref: "#/components/headers/CacheControlNoStore"
+        X-Correlation-ID:
+          $ref: "#/components/headers/CorrelationId"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/CapabilityDisabledProblem"
+          example:
+            status: 404
+            code: capability_disabled
+            title: Capability is not available
+            correlationId: corr_synthetic_01
+
+paths:
+  # Health
+  /health/live:
+    get:
+      operationId: getLiveness
+      summary: Report process liveness
+      description: >-
+        Answers from the process alone and never queries PostgreSQL, so losing a dependency cannot
+        redefine liveness. An absent process has no response at all rather than a synthetic one.
+      tags:
+        - Health
+      parameters:
+        - $ref: "#/components/parameters/CorrelationId"
+      responses:
+        "200":
+          description: The process is answering.
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControlNoStore"
+            X-Correlation-ID:
+              $ref: "#/components/headers/CorrelationId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LivenessResponse"
+              example:
+                status: live
+                service: ose-id-be
+
+  /health/ready:
+    get:
+      operationId: getReadiness
+      summary: Report current dependency readiness
+      description: >-
+        Performs a bounded database and schema check on every call and never mutates migration
+        history. Repeated or concurrent calls re-evaluate current state rather than replay a cache.
+      tags:
+        - Health
+      parameters:
+        - $ref: "#/components/parameters/CorrelationId"
+      responses:
+        "200":
+          description: Every dependency is currently usable.
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControlNoStore"
+            X-Correlation-ID:
+              $ref: "#/components/headers/CorrelationId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadinessResponse"
+              example:
+                status: ready
+                components:
+                  postgresql: ready
+                  schema: compatible
+        "503":
+          description: >-
+            A dependency is unusable. The body names only the allowlisted reason, and the response
+            is never stored by a cache.
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControlNoStore"
+            X-Correlation-ID:
+              $ref: "#/components/headers/CorrelationId"
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ReadinessProblem"
+              example:
+                status: 503
+                code: database_unavailable
+                title: Service is not ready
+                correlationId: corr_synthetic_01
+
+  # Disabled identity capabilities
+  /connect/authorize:
+    get:
+      operationId: rejectDisabledOidcAuthorization
+      summary: Reject disabled OIDC authorization
+      description: >-
+        Registered so that OIDC authorization fails closed. Query input is bounded and then ignored;
+        no redirect is issued and no query value is logged.
+      tags:
+        - Disabled Capabilities
+      parameters:
+        - $ref: "#/components/parameters/CorrelationId"
+      responses:
+        "404":
+          $ref: "#/components/responses/CapabilityDisabled"
+
+  /connect/token:
+    post:
+      operationId: rejectDisabledTokenIssuance
+      summary: Reject disabled token issuance
+      description: >-
+        Registered so that token issuance fails closed. A bounded body is drained or rejected
+        without parsing a grant, and no token-shaped field is ever returned or logged.
+      tags:
+        - Disabled Capabilities
+      parameters:
+        - $ref: "#/components/parameters/CorrelationId"
+      responses:
+        "404":
+          $ref: "#/components/responses/CapabilityDisabled"
+
+  /external/google/challenge:
+    get:
+      operationId: rejectDisabledGoogleSignIn
+      summary: Reject disabled Google sign-in
+      description: >-
+        Registered so that external-provider sign-in fails closed. No provider configuration is
+        read, and no location header, state, nonce, or cookie is returned.
+      tags:
+        - Disabled Capabilities
+      parameters:
+        - $ref: "#/components/parameters/CorrelationId"
+      responses:
+        "404":
+          $ref: "#/components/responses/CapabilityDisabled"
+
+  /scim/v2/Users:
+    post:
+      operationId: rejectDisabledScimUserProvisioning
+      summary: Reject disabled SCIM user provisioning
+      description: >-
+        Registered so that SCIM provisioning fails closed. No bearer scheme is enabled, a bounded
+        body is never parsed into a user, and no SCIM resource, error body, or identifier is
+        returned.
+      tags:
+        - Disabled Capabilities
+      parameters:
+        - $ref: "#/components/parameters/CorrelationId"
+      responses:
+        "404":
+          $ref: "#/components/responses/CapabilityDisabled"
+
+  /platform/admin/companies:
+    get:
+      operationId: rejectDisabledPlatformAdministration
+      summary: Reject disabled platform administration
+      description: >-
+        Registered so that platform administration fails closed. No operator scheme is enabled and
+        no company list, count, or identifier is returned, not even an empty collection.
+      tags:
+        - Disabled Capabilities
+      parameters:
+        - $ref: "#/components/parameters/CorrelationId"
+      responses:
+        "404":
+          $ref: "#/components/responses/CapabilityDisabled"

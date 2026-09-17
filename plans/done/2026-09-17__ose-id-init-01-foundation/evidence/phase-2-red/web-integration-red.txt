@@ -1,0 +1,57 @@
+
+> nx run ose-id-web:"test:integration"
+
+> npx vitest run --config vitest.integration.config.ts --coverage --coverage.thresholds.lines=99
+
+[33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
+
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90mapps/ose-id-web[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+ [31m❯[39m tests/integration/StatusShellServerSteps.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/integration/RuntimeModeServerSteps.ts [2m([22m[2m0 test[22m[2m)[22m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/RuntimeModeServerSteps.ts[2m [ tests/integration/RuntimeModeServerSteps.ts ][22m
+[31m[1mError[22m: Cannot find module '../../src/shared/runtime/runtime-mode' imported from apps/ose-id-web/tests/integration/RuntimeModeServerSteps.ts[39m
+[36m [2m❯[22m tests/integration/RuntimeModeServerSteps.ts:[2m13:1[22m[39m
+    [90m 11|[39m [35mimport[39m { [33mPHASE_PRODUCTION_SERVER[39m } [35mfrom[39m [32m"next/constants"[39m[33m;[39m
+    [90m 12|[39m [35mimport[39m { expect[33m,[39m vi } [35mfrom[39m [32m"vitest"[39m[33m;[39m
+    [90m 13|[39m import { RUNTIME_MODE_DISABLED_CODE } from "../../src/shared/runtime/r…
+    [90m   |[39m [31m^[39m
+    [90m 14|[39m
+    [90m 15|[39m [35mconst[39m feature [33m=[39m [35mawait[39m [34mloadFeature[39m(
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/StatusShellServerSteps.ts[2m [ tests/integration/StatusShellServerSteps.ts ][22m
+[31m[1mError[22m: Cannot find module '../../src/contexts/foundation/domain/service-status' imported from apps/ose-id-web/tests/integration/StatusShellServerSteps.ts[39m
+[36m [2m❯[22m tests/integration/StatusShellServerSteps.ts:[2m13:1[22m[39m
+    [90m 11|[39m import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber…
+    [90m 12|[39m [35mimport[39m { expect } [35mfrom[39m [32m"vitest"[39m[33m;[39m
+    [90m 13|[39m [35mimport[39m {
+    [90m   |[39m [31m^[39m
+    [90m 14|[39m   [33mAUTHENTICATION_DISABLED_NOTICE[39m[33m,[39m
+    [90m 15|[39m   [33mSTATUS_PAGE_HEADING[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[90m (2)[39m
+[2m      Tests [22m [2mno tests[22m
+[2m   Start at [22m 08:47:30
+[2m   Duration [22m 445ms[2m (transform 227ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)[22m
+
+Warning: command "npx vitest run --config vitest.integration.config.ts --coverage --coverage.thresholds.lines=99" exited with non-zero status code
+
+
+ NX   Running target test:integration for project ose-id-web failed
+
+Failed tasks:
+
+- ose-id-web:test:integration
+
+Hint: run the command with --verbose for more details.
+
+EXIT=1

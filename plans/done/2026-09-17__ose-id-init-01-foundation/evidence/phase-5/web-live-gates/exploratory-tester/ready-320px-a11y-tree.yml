@@ -1,0 +1,12 @@
+- main:
+    - heading "OSE ID service status" [level=1]
+    - paragraph: OSE ID is running as an inert foundation service. This page reports component state and does nothing else.
+    - alert: Authentication is not enabled in this build. No account, credential, provider, company, consent, or administration surface exists yet. There is nothing here to sign in to.
+    - status "OSE ID service component status":
+        - term: OSE ID web shell
+        - definition: Running This page answered, so the shell is serving. It stores nothing and reads no user data.
+        - term: OSE ID backend
+        - definition: Not reported Backend readiness reporting is not part of this foundation build, so no backend state is claimed here.
+        - term: Authentication
+        - definition: Disabled Authentication is not enabled. OSE ID cannot sign anyone in yet, and this page is not a sign-in form.
+- alert

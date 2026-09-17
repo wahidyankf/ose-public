@@ -1,0 +1,48 @@
+{
+  "light": {
+    "h1 vs page bg": "18.22",
+    "header p (muted) vs page bg": "6.33",
+    "alert title vs alert bg": "18.74",
+    "alert description vs alert bg": "6.51",
+    "rows": [
+      {
+        "dt": "OSE ID web shell",
+        "value vs card bg": "18.74",
+        "description vs card bg": "6.51"
+      },
+      {
+        "dt": "OSE ID backend",
+        "value vs card bg": "6.51",
+        "description vs card bg": "6.51"
+      },
+      {
+        "dt": "Authentication",
+        "value vs card bg": "6.51",
+        "description vs card bg": "6.51"
+      }
+    ]
+  },
+  "dark": {
+    "h1 vs page bg": "16.72",
+    "header p (muted) vs page bg": "7.09",
+    "alert title vs alert bg": "15.28",
+    "alert description vs alert bg": "6.48",
+    "rows": [
+      {
+        "dt": "OSE ID web shell",
+        "value vs card bg": "15.28",
+        "description vs card bg": "6.48"
+      },
+      {
+        "dt": "OSE ID backend",
+        "value vs card bg": "6.48",
+        "description vs card bg": "6.48"
+      },
+      {
+        "dt": "Authentication",
+        "value vs card bg": "6.48",
+        "description vs card bg": "6.48"
+      }
+    ]
+  }
+}

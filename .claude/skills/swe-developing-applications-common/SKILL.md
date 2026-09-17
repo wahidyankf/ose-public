@@ -18,7 +18,7 @@ Standard developer tools: read, write, edit, glob, grep, bash — prefer glob/gr
 
 ## Nx Monorepo Integration
 
-Nx manages the monorepo: apps in `apps/[app-name]` never import other apps; libraries in `libs/[lib-name]` are flat and form a dependency DAG. Use canonical [Nx Target Standards](../../../repo-governance/development/infra/nx-targets.md) names (`dev`, `test:quick`, `start`, never `serve`/`test`) and `nx affected:*` to build/test only what changed. See [Nx Monorepo Integration](./reference/nx-monorepo-integration.md) for structure, commands, and best practices.
+Nx manages the monorepo: apps in `apps/[app-name]` never import other apps; libraries in `libs/[lib-name]` are flat and form a dependency DAG. Use canonical [Nx Target Standards](../../../repo-governance/development/infra/nx-targets.md) names (`dev`, `test:quick`, `start`, never `serve`/`test` as a `dev`/`start` alias — a narrow `serve` exception exists for a no-own-app E2E orchestrator; see [Nx Target Naming Rules](../../../repo-governance/development/infra/nx-targets/target-naming-rules.md)) and `nx affected:*` to build/test only what changed. See [Nx Monorepo Integration](./reference/nx-monorepo-integration.md) for structure, commands, and best practices.
 
 ## Git Workflow
 

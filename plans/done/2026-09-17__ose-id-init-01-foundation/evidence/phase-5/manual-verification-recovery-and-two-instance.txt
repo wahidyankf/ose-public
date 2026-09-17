@@ -1,0 +1,45 @@
+Manual verification — PostgreSQL outage recovery and two-instance statelessness
+Per plans/in-progress/ose-id-init-01-foundation/tech-docs/003-local-stack-and-verification.md
+"Manual Verification" items 3 and 6. Complements evidence/phase-5/manual-http-matrix.txt (items
+1/2/4/7 of that same checklist).
+
+## Two-instance run
+
+Run ID 49813fcf647c, `npm exec nx -- run ose-id-be-e2e:serve -- --instances=2`.
+Backend origins: http://127.0.0.1:8501, http://127.0.0.1:8502 (second instance on an
+auto-allocated adjacent port, no separate configuration needed).
+
+Three alternating rounds of GET /health/live and GET /health/ready against both 8501 and 8502
+returned byte-identical bodies every round:
+  live:  {"status":"live","service":"ose-id-be"}
+  ready: {"status":"ready","components":{"postgresql":"ready","schema":"compatible"}}
+-> confirms no session affinity / no instance-local state (AC-FND-05).
+
+Stopped the 8502 process directly (SIGTERM, external to the runner). 8502 became unreachable
+(curl: connection refused). 8501, never touched, continued returning identical live/ready
+responses immediately afterward -> confirms no cross-instance coupling.
+
+Stopping the runner afterward (SIGTERM to the owning process) still completed its full
+web/backend/postgres reverse-order shutdown and reported "cleanup complete" with zero leftover
+docker containers and zero leftover HIPPO reservations, despite the external interference above
+-> cleanup is resilient to an instance already being gone, not only to its own expected shutdown
+path.
+
+## PostgreSQL outage-and-recovery run
+
+Same two-instance run, using the surviving 8501 instance (never restarted throughout).
+
+1. `docker stop` (not `rm`) the owned postgres container directly, external to the runner.
+2. GET /health/ready -> 503 application/problem+json
+   {"status":503,"code":"database_unavailable","title":"PostgreSQL is not reachable","correlationId":"..."}
+3. `docker start` the same container back.
+4. Polled GET /health/ready on the same never-restarted backend process: recovered to
+   200 {"status":"ready","components":{"postgresql":"ready","schema":"compatible"}} on the very
+   first poll after the container reported accepting connections again (~1s).
+
+-> confirms the serving process's Npgsql connection handling reconnects after a transient
+PostgreSQL outage without needing a backend restart; readiness is a live signal, not cached from
+a single startup-time check.
+
+No environment dump, password, connection string, cookie, token, or absolute machine path is
+recorded above; only status codes, allowlisted body fields, and elapsed-time observations.

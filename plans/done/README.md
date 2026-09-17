@@ -9,6 +9,21 @@ Archived plans and completed project planning documents.
 
 ## Completed Projects
 
+- [2026-09-17: ose-id-init-01-foundation](./2026-09-17__ose-id-init-01-foundation/README.md) —
+  Shipped `ose-id`'s local foundation: four registered Nx projects (`ose-id-be`, `ose-id-be-e2e`,
+  `ose-id-web`, `ose-id-web-e2e`), an ASP.NET Core backend, a Next.js web shell, PostgreSQL schema
+  ownership via EF Core migrations, health/readiness contracts, and one deterministic local
+  multi-instance runner — no account, sign-in, OIDC, company, or product authorization behavior yet.
+  Delivered `worktree-to-pr` across eight phases, with the feature work landing in `b851283d1`. The
+  local-stack runner needed nine separate concurrency/signal-delivery defects found and fixed at
+  root cause before it was reliable under repeated real-process starts and stops: eight were
+  PostgreSQL container/port races, and the ninth was a deeper platform defect — Volta's `node` shim
+  on `PATH` does not exec-replace itself with the pinned interpreter, so a programmatic single-PID
+  `SIGTERM` reached only the shim and silently orphaned the real interpreter and everything it owned;
+  fixed by resolving the pinned interpreter's real path and signalling the process group it leads. A
+  three-agent live-UX-tester triad (design, exploratory, usability) ran against the web shell and
+  filed eight findings, all triaged before delivery.
+
 - [2026-09-09: lms-init](./2026-09-09__lms-init/README.md) — Taught the monorepo Java, then shipped
   `ose-lms-be` (Java 25 + Spring Boot, health and hello endpoints, Actuator exposed to health only)
   and its `ose-lms-be-e2e` Playwright-BDD suite on that lane. Four delivery units, five PRs:

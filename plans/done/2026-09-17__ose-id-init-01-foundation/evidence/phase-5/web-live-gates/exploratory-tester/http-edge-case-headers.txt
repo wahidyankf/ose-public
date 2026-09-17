@@ -1,0 +1,92 @@
+=== GET / ===
+HTTP/1.1 200 OK
+cache-control: no-cache
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+link: </_next/static/media/051742360c26797e-s.p.0f97p8c3305p~.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </_next/static/media/07454f8ad8aaac57-s.p.0tqkxa-w3pk~c.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2"
+X-Powered-By: Next.js
+Content-Type: text/html; charset=utf-8
+Date: Wed, 16 Sep 2026 17:31:43 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+
+=== GET // (double slash) ===
+HTTP/1.1 308 Permanent Redirect
+location: /
+Refresh: 0;url=/
+Date: Wed, 16 Sep 2026 17:31:43 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+
+=== GET /foo (unknown route) ===
+HTTP/1.1 404 Not Found
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+x-nextjs-cache: HIT
+x-nextjs-prerender: 1
+x-nextjs-prerender: 1
+x-nextjs-stale-time: 300
+X-Powered-By: Next.js
+ETag: "tvf0l252y76bv"
+Content-Type: text/html; charset=utf-8
+Content-Length: 8203
+Date: Wed, 16 Sep 2026 17:31:43 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+
+=== GET /favicon.ico ===
+HTTP/1.1 404 Not Found
+Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+x-nextjs-cache: HIT
+x-nextjs-prerender: 1
+x-nextjs-prerender: 1
+x-nextjs-stale-time: 300
+X-Powered-By: Next.js
+ETag: "tvf0l252y76bv"
+Content-Type: text/html; charset=utf-8
+Content-Length: 8203
+Date: Wed, 16 Sep 2026 17:31:43 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+
+=== HEAD / ===
+HTTP/1.1 200 OK
+cache-control: no-cache
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+link: </_next/static/media/051742360c26797e-s.p.0f97p8c3305p~.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </_next/static/media/07454f8ad8aaac57-s.p.0tqkxa-w3pk~c.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2"
+X-Powered-By: Next.js
+Content-Type: text/html; charset=utf-8
+Date: Wed, 16 Sep 2026 17:31:43 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+
+=== OPTIONS / ===
+HTTP/1.1 400 Bad Request
+cache-control: no-cache
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+Date: Wed, 16 Sep 2026 17:31:43 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+
+=== POST / ===
+HTTP/1.1 200 OK
+cache-control: no-cache
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+link: </_next/static/media/051742360c26797e-s.p.0f97p8c3305p~.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2", </_next/static/media/07454f8ad8aaac57-s.p.0tqkxa-w3pk~c.woff2>; rel=preload; as="font"; crossorigin=""; type="font/woff2"
+X-Powered-By: Next.js
+Content-Type: text/html; charset=utf-8
+Date: Wed, 16 Sep 2026 17:31:43 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+

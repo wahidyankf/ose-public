@@ -1,0 +1,16 @@
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Node
+node_modules/
+
+# Coverage
+coverage/
+
+# Environment files
+.env*.local
+
+# Build output
+dist/

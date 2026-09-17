@@ -1,0 +1,14 @@
+{
+  "project": "ose-id-be-e2e",
+  "corpus": ["../../specs/apps/ose/id-be/behaviours"],
+  "adapters": {
+    "unit": {
+      "bindings": ["../ose-id-be/tests/unit"],
+      "driver": "../ose-id-be/tests/unit/OseId.Be.Unit.csproj"
+    },
+    "e2e": {
+      "bindings": ["steps"],
+      "driver": "OseId.Be.E2E.csproj"
+    }
+  }
+}

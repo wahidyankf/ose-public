@@ -1,0 +1,14 @@
+{
+  "project": "ose-id-web-e2e",
+  "corpus": ["../../specs/apps/ose/id-web/behaviours"],
+  "adapters": {
+    "unit": {
+      "bindings": ["../ose-id-web/tests/unit"],
+      "driver": "../ose-id-web/vitest.config.ts"
+    },
+    "e2e": {
+      "bindings": ["steps"],
+      "driver": "playwright.config.ts"
+    }
+  }
+}

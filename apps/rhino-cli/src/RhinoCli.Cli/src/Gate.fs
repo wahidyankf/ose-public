@@ -1124,7 +1124,21 @@ let private runLintStagedBatch
     : Result<unit, string> =
     write "Running lint-staged batch\n"
 
-    if runInherited "npx" [ "--no"; "--"; "lint-staged" ] repoRoot (childEnvironment surface) = 0 then
+    // `--concurrent false`: lint-staged's own default (`true`, unbounded by
+    // glob-group count) runs every matched glob's command chain at once —
+    // e.g. `dotnet csharpier format`, three separate rhino-cli `md ...
+    // validate` invocations, `plan validate`, and `convention emoji
+    // validate` all as concurrent, independent dotnet-hosted processes.
+    // Each `./hippo run` env var this leaf inherits (`DOTNET_PROCESSOR_COUNT`
+    // etc.) only bounds one such process's own thread pool; it does not
+    // bound how many of them exist at once. Serializing them here is what
+    // actually keeps the batch inside the HIPPO admission this leaf ran
+    // under — see the `pre-commit` entry in repo-config.yml's
+    // `gate-surface-guards`.
+    if
+        runInherited "npx" [ "--no"; "--"; "lint-staged"; "--concurrent"; "false" ] repoRoot (childEnvironment surface) =
+            0
+    then
         Ok()
     else
         Error "lint-staged batch failed"

@@ -11,10 +11,7 @@ execution checklist.
 
 ## Active Plans
 
-- [OSE ID Init 01 — Local Foundation](./ose-id-init-01-foundation/README.md) — four registered Nx
-  projects, an ASP.NET Core backend, a Next.js web shell, PostgreSQL schema ownership, health/readiness
-  contracts, and one deterministic local runner; no account, sign-in, OIDC, company, or product
-  authorization behavior.
+_No plans are currently in progress._
 
 ## Instructions
 

@@ -10,7 +10,7 @@ Plan 03's backend remains a pragmatic hexagonal boundary: this UI calls its curr
 tenant policy and use cases remain independent of the BFF. This plan must not add backend GraphQL/MCP
 packages, expose a resolver/tool directly from UI code, or move company authorization into the BFF. A
 future backend adapter follows the Init 01
-[transport extension contract](../../../in-progress/ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#future-graphql-and-model-context-protocol-adapters)
+[transport extension contract](../../../done/2026-09-17__ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#future-graphql-and-model-context-protocol-adapters)
 through a separate plan.
 
 ## Route Model

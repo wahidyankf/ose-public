@@ -58,7 +58,7 @@ collision handling, session rotation, tenant implications, audit, and redaction 
 A future GraphQL resolver or Model Context Protocol tool cannot accept raw Google tokens/claims or link an
 identity by calling the outbound provider port directly. It must invoke the same authorized federation use
 case through the Init 01
-[inbound-adapter boundary](../../../in-progress/ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#one-use-case-multiple-inbound-adapters).
+[inbound-adapter boundary](../../../done/2026-09-17__ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#one-use-case-multiple-inbound-adapters).
 This plan adds Google plus current REST/OIDC callbacks only; no GraphQL/MCP package or endpoint is added.
 
 ## Correlation State

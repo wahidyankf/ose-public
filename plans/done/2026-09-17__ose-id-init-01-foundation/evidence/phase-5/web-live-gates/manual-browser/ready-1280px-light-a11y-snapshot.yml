@@ -1,0 +1,26 @@
+- generic [active] [ref=f7e1]:
+    - main [ref=f7e2]:
+        - generic [ref=f7e3]:
+            - heading "OSE ID service status" [level=1] [ref=f7e4]
+            - paragraph [ref=f7e5]: OSE ID is running as an inert foundation service. This page reports component state and does nothing else.
+        - alert [ref=f7e6]:
+            - generic [ref=f7e7]: Authentication is not enabled in this build.
+            - generic [ref=f7e8]: No account, credential, provider, company, consent, or administration surface exists yet. There is nothing here to sign in to.
+        - status "OSE ID service component status" [ref=f7e9]:
+            - generic [ref=f7e10]:
+                - generic [ref=f7e11]:
+                    - term [ref=f7e12]: OSE ID web shell
+                    - definition [ref=f7e13]:
+                        - generic [ref=f7e14]: Running
+                        - generic [ref=f7e15]: This page answered, so the shell is serving. It stores nothing and reads no user data.
+                - generic [ref=f7e16]:
+                    - term [ref=f7e17]: OSE ID backend
+                    - definition [ref=f7e18]:
+                        - generic [ref=f7e19]: Not reported
+                        - generic [ref=f7e20]: Backend readiness reporting is not part of this foundation build, so no backend state is claimed here.
+                - generic [ref=f7e21]:
+                    - term [ref=f7e22]: Authentication
+                    - definition [ref=f7e23]:
+                        - generic [ref=f7e24]: Disabled
+                        - generic [ref=f7e25]: Authentication is not enabled. OSE ID cannot sign anyone in yet, and this page is not a sign-in form.
+    - alert [ref=f7e26]

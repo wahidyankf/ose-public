@@ -1,0 +1,43 @@
+=== before ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=24.00 diskFreeGiB=88.82 cpu=16.3%
+
+=== command ===
+rtk hippo run --class transactional --disk-path ./worktrees/ose-id-init-01-foundation -- npm exec nx -- run ose-id-web-e2e:test:e2e
+
+=== output ===
+
+ NX   Running target test:e2e for project ose-id-web-e2e and 1 task it depends on:
+
+
+
+> nx run ose-id-web:build  [existing outputs match the cache, left as is]
+
+
+> nx run ose-id-web-e2e:"test:e2e"
+
+> if grep -rn -E --include='*.ts' --exclude-dir=node_modules --exclude-dir=.features-gen --exclude-dir=test-results --exclude-dir=playwright-report '\$?test\.skip\([^,)]*\)' .; then echo 'ERROR: unconditional test.skip() found in test files above - use test.skip(condition, reason) for legitimate environment guards, or remove'; exit 1; fi && npx bddgen && npx playwright test
+
+
+[2mRunning [22m6[2m tests using [22m1[2m worker[22m
+
+  [32m✓[39m  [2m1 [22m[chromium] › .features-gen/foundation/runtime-mode.feature.spec.js:10:7 › OSE ID web runtime mode guard › Web serving is disabled outside Local or Test › Reject an unsupported web runtime mode › Example #1[2m (553ms)[22m
+  [32m✓[39m  [2m2 [22m[chromium] › .features-gen/foundation/runtime-mode.feature.spec.js:17:7 › OSE ID web runtime mode guard › Web serving is disabled outside Local or Test › Reject an unsupported web runtime mode › Example #2[2m (528ms)[22m
+  [32m✓[39m  [2m3 [22m[chromium] › .features-gen/foundation/runtime-mode.feature.spec.js:24:7 › OSE ID web runtime mode guard › Web serving is disabled outside Local or Test › Reject an unsupported web runtime mode › Example #3[2m (536ms)[22m
+  [32m✓[39m  [2m4 [22m[chromium] › .features-gen/foundation/runtime-mode.feature.spec.js:31:7 › OSE ID web runtime mode guard › Web serving is disabled outside Local or Test › Reject an unsupported web runtime mode › Example #4[2m (529ms)[22m
+  [32m✓[39m  [2m5 [22m[chromium] › .features-gen/foundation/status-shell.feature.spec.js:8:5 › OSE ID service status › Service status is accessible without a mouse or color perception › Read service status without a mouse[2m (139ms)[22m
+  [32m✓[39m  [2m6 [22m[chromium] › .features-gen/foundation/status-shell.feature.spec.js:19:5 › OSE ID service status › The status page is a read-only HTML surface that reveals nothing about the stack › Render the service status without identity controls[2m (168ms)[22m
+
+[32m  6 passed[39m[2m (3.9s)[22m
+
+
+
+ NX   Successfully ran target test:e2e for project ose-id-web-e2e and 1 task it depends on
+
+Nx read the output from the cache instead of running the command for 1 out of 2 tasks.
+
+
+exit=0
+peak_node_procs=84
+
+=== after ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=23.68 diskFreeGiB=88.82 cpu=10.8%

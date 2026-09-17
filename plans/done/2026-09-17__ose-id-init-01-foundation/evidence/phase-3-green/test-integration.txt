@@ -1,0 +1,16 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> apps/ose-id-be/src/OseId.Host/bin/Debug/net10.0/OseId.Host.dll
+  OseId.Be.Integration -> apps/ose-id-be/tests/integration/bin/Debug/net10.0/OseId.Be.Integration.dll
+Test run for apps/ose-id-be/tests/integration/bin/Debug/net10.0/OseId.Be.Integration.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    23, Skipped:     0, Total:    23, Duration: 598 ms - OseId.Be.Integration.dll (net10.0)
+
+Note: re-run during REFACTOR after adding
+PersistenceRuntimeBoundaryTests.CreateIdentityFoundation_Down_IsRejectedRatherThanRunOrSilentlyIgnored,
+the migration-compatibility "rollback" proof (Down() throws NotSupportedException rather than
+running or being silently accepted) — 22 -> 23.

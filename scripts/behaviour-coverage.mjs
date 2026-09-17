@@ -17,7 +17,7 @@ const BOUNDARY_REASON =
 const ALTERNATIVE_PROOF = /^[a-z0-9][a-z0-9-]*:test(?::[a-z0-9][a-z0-9-]*)+\s+\/\s+\S(?:.*\S)?$/iu;
 const GHERKIN_DECLARATION = /^(?:Feature|Rule|Background|Scenario(?: Outline| Template)?|Examples?):/iu;
 const SCENARIO_DECLARATION = /^(?:Scenario(?: Outline| Template)?):/iu;
-const BINDING_FILE = /\.(?:ts|tsx|fs|java|go)$/iu;
+const BINDING_FILE = /\.(?:ts|tsx|fs|java|go|cs)$/iu;
 
 function normaliseSource(source) {
   return source.replaceAll("\r\n", "\n").replaceAll("\r", "\n");
@@ -307,7 +307,7 @@ function scenarioAt(scopes, offset) {
   return scenario;
 }
 
-// The four language extractors differ only in which string literals their syntax admits and how
+// The five language extractors differ only in which string literals their syntax admits and how
 // those literals decode, so the specs/*.feature scan itself lives here once rather than as a
 // near-copy per language. Only Go needs a decoder other than the default.
 function featureReferences(source, literalPattern, decode = decodeQuotedLiteral) {
@@ -322,7 +322,8 @@ function featureReferences(source, literalPattern, decode = decodeQuotedLiteral)
   return [...new Set(references)];
 }
 
-// TypeScript admits double, single, and template literals; F# and Java admit double quotes only.
+// TypeScript admits double, single, and template literals; F#, Java, and C# admit double quotes
+// only.
 // Go admits double-quoted (escape-processing) and backtick-delimited raw literals. A raw literal
 // has no escape rule at all, so its body runs to the first backtick -- unlike the TypeScript
 // template literal above, whose body honours a backslash escape.
@@ -459,11 +460,50 @@ function extractGoBindings(resourceName, source) {
   return bindings;
 }
 
+function csharpFeatureReferences(source) {
+  return featureReferences(source, DOUBLE_QUOTED_LITERAL);
+}
+
+function extractCsharpBindings(resourceName, source) {
+  const bindings = [];
+  // C# shares JavaScript comment syntax, so the JavaScript masker applies unchanged and a
+  // commented-out attribute cannot register as a binding. Its one divergence -- treating a
+  // backslash inside a verbatim `@"..."` literal as an escape -- can only mislead it when such a
+  // literal ends in a backslash, which a Reqnroll step pattern has no reason to do.
+  const code = maskJavascriptComments(source);
+  const featureReferences = csharpFeatureReferences(code);
+  // Reqnroll -- the maintained SpecFlow successor -- decorates a method of a [Binding] class with
+  // [Given("...")] / [When("...")] / [Then("...")]. The trailing identifier-then-parenthesis is
+  // asserted through a lookahead rather than consumed, so the attribute still has to sit on a
+  // method, but a method carrying several stacked patterns registers each one: unlike Cucumber-JVM
+  // usage, stacking is idiomatic in Reqnroll, and consuming the method would swallow the attribute
+  // that follows.
+  const pattern =
+    /\[\s*(Given|When|Then)\s*\(\s*("(?:\\.|[^"\\])*")\s*\)\s*\](?=[\s\S]*?\b[A-Za-z_][A-Za-z0-9_]*\s*\()/gu;
+  for (const match of code.matchAll(pattern)) {
+    bindings.push({
+      keyword: match[1],
+      pattern: decodeQuotedLiteral(match[2]),
+      flags: "",
+      // Reqnroll treats the attribute argument as a Cucumber expression, and resolves a step only
+      // against its own keyword -- the same resolution family as Cucumber-JVM.
+      expression: true,
+      resourceName,
+      line: lineAt(source, match.index ?? 0),
+      scenario: undefined,
+      featureReferences,
+      keywordSensitive: true,
+    });
+  }
+  return bindings;
+}
+
 export function extractBindings(resourceName, source) {
   const name = resourceName.toLowerCase();
   if (name.endsWith(".fs")) return extractFsharpBindings(resourceName, source);
   if (name.endsWith(".java")) return extractJavaBindings(resourceName, source);
   if (name.endsWith(".go")) return extractGoBindings(resourceName, source);
+  if (name.endsWith(".cs")) return extractCsharpBindings(resourceName, source);
   return extractTypescriptBindings(resourceName, source);
 }
 

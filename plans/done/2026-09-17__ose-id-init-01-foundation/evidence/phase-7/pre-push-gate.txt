@@ -661,7 +661,7 @@ no-op: target not applicable for this project (OpenAPI contract spec only)
     [33m╚[33m═══════════════════════════════════════════════════════[33m╝[39m
 
 [90mbundling specs/apps/organiclever/be/contracts/openapi.yaml...
-[39m📦 Created a bundle for [34mspecs/apps/organiclever/be/contracts/openapi.yaml[39m at [34m/var/folders/fr/jg3jv_4d39b48cyqlqz18mgr0000gn/T/tmp.lt6mj05rb2.yaml[39m [32m54ms[39m.
+[39m📦 Created a bundle for [34mspecs/apps/organiclever/be/contracts/openapi.yaml[39m at [34m<tmp>/tmp.lt6mj05rb2.yaml[39m [32m54ms[39m.
 No results with a severity of 'error' found!
 
 [2m[32m[39m[22m
@@ -3238,22 +3238,22 @@ Project OseId.Host is using configuration from '<home>/ose-projects/ose-public/.
 Project OseId.Host is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
 Project OseId.Host is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
 Project OseId.Host is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Host/obj/Debug/net10.0/OseId.Host.GeneratedMSBuildEditorConfig.editorconfig'.
-Project OseId.Host is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Host is using configuration from '<dotnet-sdk-prefix>/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Project OseId.Domain is using configuration from '<home>/ose-projects/ose-public/.editorconfig'.
 Project OseId.Domain is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
 Project OseId.Domain is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
 Project OseId.Domain is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Domain/obj/Debug/net10.0/OseId.Domain.GeneratedMSBuildEditorConfig.editorconfig'.
-Project OseId.Domain is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Domain is using configuration from '<dotnet-sdk-prefix>/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Project OseId.Application is using configuration from '<home>/ose-projects/ose-public/.editorconfig'.
 Project OseId.Application is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
 Project OseId.Application is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
 Project OseId.Application is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Application/obj/Debug/net10.0/OseId.Application.GeneratedMSBuildEditorConfig.editorconfig'.
-Project OseId.Application is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Application is using configuration from '<dotnet-sdk-prefix>/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Project OseId.Infrastructure is using configuration from '<home>/ose-projects/ose-public/.editorconfig'.
 Project OseId.Infrastructure is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/.editorconfig'.
 Project OseId.Infrastructure is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/.editorconfig'.
 Project OseId.Infrastructure is using configuration from '<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-be/src/OseId.Infrastructure/obj/Debug/net10.0/OseId.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig'.
-Project OseId.Infrastructure is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Infrastructure is using configuration from '<dotnet-sdk-prefix>/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Complete in 2614ms.
 Determining formattable files.
 Skipping referenced project 'OseId.Domain'.

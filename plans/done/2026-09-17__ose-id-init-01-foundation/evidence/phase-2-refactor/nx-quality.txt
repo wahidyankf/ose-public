@@ -165,22 +165,22 @@ Project OseId.Host is using configuration from './.editorconfig'.
 Project OseId.Host is using configuration from '.editorconfig'.
 Project OseId.Host is using configuration from 'apps/ose-id-be/.editorconfig'.
 Project OseId.Host is using configuration from 'apps/ose-id-be/src/OseId.Host/obj/Debug/net10.0/OseId.Host.GeneratedMSBuildEditorConfig.editorconfig'.
-Project OseId.Host is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Host is using configuration from '<dotnet-sdk-prefix>/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Project OseId.Domain is using configuration from './.editorconfig'.
 Project OseId.Domain is using configuration from '.editorconfig'.
 Project OseId.Domain is using configuration from 'apps/ose-id-be/.editorconfig'.
 Project OseId.Domain is using configuration from 'apps/ose-id-be/src/OseId.Domain/obj/Debug/net10.0/OseId.Domain.GeneratedMSBuildEditorConfig.editorconfig'.
-Project OseId.Domain is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Domain is using configuration from '<dotnet-sdk-prefix>/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Project OseId.Application is using configuration from './.editorconfig'.
 Project OseId.Application is using configuration from '.editorconfig'.
 Project OseId.Application is using configuration from 'apps/ose-id-be/.editorconfig'.
 Project OseId.Application is using configuration from 'apps/ose-id-be/src/OseId.Application/obj/Debug/net10.0/OseId.Application.GeneratedMSBuildEditorConfig.editorconfig'.
-Project OseId.Application is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Application is using configuration from '<dotnet-sdk-prefix>/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Project OseId.Infrastructure is using configuration from './.editorconfig'.
 Project OseId.Infrastructure is using configuration from '.editorconfig'.
 Project OseId.Infrastructure is using configuration from 'apps/ose-id-be/.editorconfig'.
 Project OseId.Infrastructure is using configuration from 'apps/ose-id-be/src/OseId.Infrastructure/obj/Debug/net10.0/OseId.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig'.
-Project OseId.Infrastructure is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Infrastructure is using configuration from '<dotnet-sdk-prefix>/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Complete in 2235ms.
 Determining formattable files.
 Skipping referenced project 'OseId.Domain'.
@@ -433,22 +433,22 @@ Project OseId.Host is using configuration from './.editorconfig'.
 Project OseId.Host is using configuration from '.editorconfig'.
 Project OseId.Host is using configuration from 'apps/ose-id-be/.editorconfig'.
 Project OseId.Host is using configuration from 'apps/ose-id-be/src/OseId.Host/obj/Debug/net10.0/OseId.Host.GeneratedMSBuildEditorConfig.editorconfig'.
-Project OseId.Host is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Host is using configuration from '<dotnet-sdk-prefix>/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Project OseId.Domain is using configuration from './.editorconfig'.
 Project OseId.Domain is using configuration from '.editorconfig'.
 Project OseId.Domain is using configuration from 'apps/ose-id-be/.editorconfig'.
 Project OseId.Domain is using configuration from 'apps/ose-id-be/src/OseId.Domain/obj/Debug/net10.0/OseId.Domain.GeneratedMSBuildEditorConfig.editorconfig'.
-Project OseId.Domain is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Domain is using configuration from '<dotnet-sdk-prefix>/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Project OseId.Application is using configuration from './.editorconfig'.
 Project OseId.Application is using configuration from '.editorconfig'.
 Project OseId.Application is using configuration from 'apps/ose-id-be/.editorconfig'.
 Project OseId.Application is using configuration from 'apps/ose-id-be/src/OseId.Application/obj/Debug/net10.0/OseId.Application.GeneratedMSBuildEditorConfig.editorconfig'.
-Project OseId.Application is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Application is using configuration from '<dotnet-sdk-prefix>/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Project OseId.Infrastructure is using configuration from './.editorconfig'.
 Project OseId.Infrastructure is using configuration from '.editorconfig'.
 Project OseId.Infrastructure is using configuration from 'apps/ose-id-be/.editorconfig'.
 Project OseId.Infrastructure is using configuration from 'apps/ose-id-be/src/OseId.Infrastructure/obj/Debug/net10.0/OseId.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig'.
-Project OseId.Infrastructure is using configuration from '/opt/homebrew/opt/dotnet/libexec/sdk/10.0.300/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
+Project OseId.Infrastructure is using configuration from '<dotnet-sdk-prefix>/Sdks/Microsoft.NET.Sdk/analyzers/build/config/analysislevel_10_recommended.globalconfig'.
 Complete in 2235ms.
 Determining formattable files.
 Skipping referenced project 'OseId.Domain'.

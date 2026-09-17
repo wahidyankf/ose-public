@@ -12,7 +12,7 @@ A developer adds a `GET /api/products/:id` endpoint to `organiclever-be`.
 They:
 
 1. Update `specs/apps/organiclever/be/contracts/` (OpenAPI spec) with the new endpoint definition
-2. Run `./hippo run --class transactional --disk-path . -- npm exec nx -- run organiclever-contracts:codegen` and related codegen targets
+2. Run `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-contracts:codegen` and related codegen targets
 3. Add a Gherkin scenario to `specs/apps/organiclever/be/behaviours/products/get-product.feature`
 4. Update `specs/apps/organiclever/be/architecture.md` if the endpoint belongs to a new component
 5. Implement the endpoint in `apps/organiclever-be/`

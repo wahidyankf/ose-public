@@ -23,7 +23,7 @@ When the plan touches web UI or API code, delivery plans MUST include manual ass
 ### Manual UI Verification (Playwright MCP) — all locales × all breakpoints
 
 - [ ] [AI] Discover supported locales: read `apps/[app]/src/features/i18n/` or `next.config.ts`
-- [ ] [AI] Start dev server: `rtk ./hippo run --class service --disk-path . -- npm exec nx -- dev [project-name]`
+- [ ] [AI] Start dev server: `rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev [project-name]`
 - [ ] [AI] For EACH locale × EACH breakpoint (375 / 768 / 1280 px): navigate to the locale-prefixed
       URL (`/en/...`, `/id/...`) via `browser_navigate` + `browser_resize`
 - [ ] [AI] Inspect DOM via `browser_snapshot` — verify `html[lang]` matches the locale, no untranslated strings
@@ -40,7 +40,7 @@ When the plan touches web UI or API code, delivery plans MUST include manual ass
 ```markdown
 ### Manual API Wire Verification
 
-- [ ] [AI] Start backend server: `rtk ./hippo run --class service --disk-path . -- npm exec nx -- dev [project-name]`
+- [ ] [AI] Start backend server: `rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev [project-name]`
 - [ ] [AI] Verify health endpoint: `rtk curl -sS -D <headers-file> -o <body-file> http://127.0.0.1:<port>/health/ready`; assert the documented status, headers, media type, and body/schema.
 - [ ] [AI] For every changed HTTP-accessible operation, run its fully written `rtk curl` success command and assert the documented response; do not leave method, URL, headers, body, or fixture to discovery.
 - [ ] [AI] For every changed HTTP-accessible operation, run at least one fully written representative failure command and assert its status, headers, media type, body/schema or redirect, and documented transport-native error code.

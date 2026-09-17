@@ -94,7 +94,7 @@ hooks.
 ```bash
 node --version
 npm --version
-./hippo run --class ephemeral --disk-path . -- npm install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
 ```
 
 The first two commands print versions matching the `volta` values in this checkout's
@@ -117,7 +117,7 @@ independently deployable applications, with Nx coordinating the tasks that build
 Start its development target for `ose-www`:
 
 ```bash
-./hippo run --class service --disk-path . -- npm exec nx -- run ose-www:dev
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-www:dev
 ```
 
 Nx starts Next.js on the resolved port — 3100 unless `OSE_WWW_PORT` says otherwise — and keeps the
@@ -160,7 +160,7 @@ process. The development target reads `OSE_WWW_PORT` and falls back to 3100 only
 is unset:
 
 ```bash
-OSE_WWW_PORT=4000 ./hippo run --class service --disk-path . -- \
+OSE_WWW_PORT=4000 ./hippo run --class service --resource-tier standard --disk-path . -- \
   npm exec nx -- run ose-www:dev
 ```
 
@@ -174,8 +174,8 @@ override, under its own variable name — see
 Regenerate the website build through its declared Nx target, then start development again:
 
 ```bash
-./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-www:build
-./hippo run --class service --disk-path . -- npm exec nx -- run ose-www:dev
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-www:build
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-www:dev
 ```
 
 The build target regenerates its search data before creating the local Next.js output.

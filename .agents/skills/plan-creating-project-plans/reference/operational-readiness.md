@@ -9,10 +9,10 @@ Every plan must include steps for running affected quality checks locally before
 ```markdown
 ### Local Quality Gates (Before Push)
 
-- [ ] Run affected typecheck: `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t typecheck`
+- [ ] Run affected typecheck: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t typecheck`
 - [ ] Run affected linting: `rtk npm run affected:lint`
 - [ ] Run affected quick tests: `rtk npm run affected:test`
-- [ ] Run affected spec coverage: `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- affected -t test:coverage:behaviour`
+- [ ] Run affected spec coverage: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:coverage:behaviour`
 - [ ] Fix ALL failures found — including preexisting issues not caused by your changes
 - [ ] Verify all checks pass before pushing
 ```
@@ -43,10 +43,10 @@ Every plan must start with environment setup steps:
 - [ ] Enter the resolved work location: for a worktree mode, provision/enter
       `worktrees/<plan-identifier>/`; for a main mode, use the synced primary checkout
 - [ ] At that repository root, install dependencies and hooks, then converge tooling:
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm install`, then
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`, then
       `rtk npm run doctor -- --fix` (see [Worktree Toolchain Initialization](../../../../repo-governance/development/workflow/worktree-setup.md))
 - [ ] [Add project-specific setup: env vars, DB, Docker, etc.]
-- [ ] Verify dev server starts: `rtk ./hippo run --class service --disk-path . -- npm exec nx -- dev [project-name]`
+- [ ] Verify dev server starts: `rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev [project-name]`
 - [ ] Verify existing tests pass before making changes
 ```
 

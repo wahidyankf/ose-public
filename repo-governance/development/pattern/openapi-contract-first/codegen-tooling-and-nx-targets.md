@@ -36,11 +36,11 @@ Each app that participates in contract-first development exposes these Nx target
 Run codegen for a specific app:
 
 ```bash
-./hippo run --class transactional --disk-path . -- npm exec nx -- run <app>:codegen
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run <app>:codegen
 ```
 
 Validate the spec itself:
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-contracts:lint
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-contracts:lint
 ```

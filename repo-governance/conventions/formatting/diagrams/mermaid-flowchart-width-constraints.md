@@ -24,7 +24,7 @@ The strict gate is scoped to changed files on purpose: the legacy corpus carries
 **Automated enforcement**:
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- \
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
   apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate
 ```
 

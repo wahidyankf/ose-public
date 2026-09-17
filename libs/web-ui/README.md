@@ -50,8 +50,8 @@ nx run web-ui:test:quick       # Unit + static coverage (Unit lines >=99%)
 ## Storybook
 
 ```bash
-./hippo run --class service --disk-path . -- npm exec nx -- storybook web-ui
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build-storybook web-ui
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- storybook web-ui
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build-storybook web-ui
 ```
 
 ## Visual Regression
@@ -59,8 +59,8 @@ nx run web-ui:test:quick       # Unit + static coverage (Unit lines >=99%)
 Playwright-based screenshot tests compare components against committed baselines.
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run web-ui:test:integration
-./hippo run --class transactional --disk-path . -- npm exec nx -- run web-ui:test:integration -- --update-snapshots
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run web-ui:test:integration
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run web-ui:test:integration -- --update-snapshots
 ```
 
 **When to update baselines**: After intentional visual changes to components (new variants, color

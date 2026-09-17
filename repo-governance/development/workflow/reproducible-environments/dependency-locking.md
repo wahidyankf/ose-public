@@ -20,7 +20,7 @@ when_to_use: Use when installing dependencies, wiring CI lockfile checks, or rev
 
 ```bash
 # PASS: Development: Install from lockfile
-./hippo run --class ephemeral --disk-path . -- npm ci
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm ci
 
 # FAIL: Do not substitute npm install; it may update the lockfile.
 ```

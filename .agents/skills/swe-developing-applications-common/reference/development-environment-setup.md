@@ -39,7 +39,7 @@ rtk apps/rhino-cli/scripts/rhino-bin.sh env restore --force --include-config
 ## When to Run Environment Setup
 
 - **Immediately after creating a git worktree** — from that new worktree's root, run BOTH
-  `rtk ./hippo run --class ephemeral --disk-path . -- npm install` (dependencies plus Husky hook
+  `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` (dependencies plus Husky hook
   activation) AND `rtk npm run doctor -- --fix`, in order. Another checkout's setup and
   `postinstall`'s tolerant `doctor || true` are not substitutes. See
   [Worktree Toolchain Initialization](../../../../repo-governance/development/workflow/worktree-setup.md)

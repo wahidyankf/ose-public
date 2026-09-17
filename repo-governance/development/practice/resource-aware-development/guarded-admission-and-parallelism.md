@@ -18,6 +18,11 @@ All `service`, `ephemeral`, and `transactional` owners reserve capacity. Automat
 may be smaller but not below one CPU or 256 MiB. Admission reserves both dimensions under strict
 FIFO; pressure may defer a request even when its vector fits.
 
+Schema 3 chooses capacity through a separate tier: `light` for narrow static checks, `standard` for
+ordinary checks and writers, and `heavy` for full builds, full suites, browser suites, and complete
+gates. One FIFO waiter persists until admission or its tier deadline; the payload launches at most
+once and receives the largest safe vector within the tier.
+
 OSE maps fixed CPU allocation only to `NX_PARALLEL` and `DOTNET_PROCESSOR_COUNT`: missing values
 receive it, lower positive values survive, and higher values are clamped. Inner commands inherit
 the session; never add another outer guard or an unowned ecosystem mapping.

@@ -9,7 +9,7 @@ This project is intentionally simple: it renders static Next.js marketing conten
 From the workspace root, after installing the workspace dependencies:
 
 ```bash
-./hippo run --class service --disk-path . -- npm exec nx -- dev organiclever-www
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev organiclever-www
 ```
 
 Open <http://localhost:3200>. Stop the server with `Ctrl+C`.
@@ -35,17 +35,17 @@ No project-specific environment variables are required. The checked-in [`.env.ex
 
 Run these from the workspace root.
 
-| Command                                                                                         | Purpose                                                                                    |
-| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `./hippo run --class transactional --disk-path . -- npm exec nx -- build organiclever-www`      | Create a production build.                                                                 |
-| `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-www:typecheck`  | Check TypeScript without emitting files.                                                   |
-| `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-www:lint`       | Run the accessibility-aware source lint.                                                   |
-| `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-www:test:unit`  | Run the unit-level Gherkin step tests.                                                     |
-| `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-www:test:quick` | Run the focused quality gate: type check, lint, unit tests, coverage, and spec validation. |
+| Command                                                                                                                  | Purpose                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- build organiclever-www`      | Create a production build.                                                                 |
+| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-www:typecheck`  | Check TypeScript without emitting files.                                                   |
+| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-www:lint`       | Run the accessibility-aware source lint.                                                   |
+| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-www:test:unit`  | Run the unit-level Gherkin step tests.                                                     |
+| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-www:test:quick` | Run the focused quality gate: type check, lint, unit tests, coverage, and spec validation. |
 
 Browser E2E tests belong to the paired
 [`organiclever-www-fe-e2e`](../organiclever-www-fe-e2e/README.md) project. Use
-`./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-www-fe-e2e:test:e2e`
+`./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-www-fe-e2e:test:e2e`
 when a change needs browser-level verification.
 
 ## Related context

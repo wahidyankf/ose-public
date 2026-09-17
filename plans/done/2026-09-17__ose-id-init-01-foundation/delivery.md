@@ -71,17 +71,17 @@ Every checkbox and phase gate below inherits its phase row unless the checkbox s
 owner, path, command, observation, evidence path, or failure route. An executor must not mark a checkbox
 complete from prose review alone.
 
-| Phase | Default owner                                                                                       | Bounded implementation paths                                                                                   | Copyable HIPPO/Nx verification                                                                                                                                                                                                                                                                            | Required observation and evidence                                                                                                                | Failure route                                                                                                                                                         |
-| ----- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0     | Orchestrator                                                                                        | repository root, execution worktree, `local-tmp/ose-id-init-01-*`                                              | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD`                                                                                                                                                        | Exit 0 plus branch, HEAD, ports, dependency, license, and baseline records under `plans/in-progress/ose-id-init-01-foundation/evidence/phase-0/` | Preserve sanitized output and stop in Phase 0; amend the plan for unsupported tooling or port/contract drift.                                                         |
-| 1     | Orchestrator; `specs-maker` for structure                                                           | `specs/apps/ose/id-be/**`, `specs/apps/ose/id-web/**`, four project `behaviour-coverage.json` files            | `rtk ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate` followed by `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`              | Specs pass; only intentionally absent bindings are RED; commands and adapter ledger live under `evidence/phase-1/`.                              | Reopen the first contract/spec checkbox; unrelated or unexplained undefined bindings block Phase 2.                                                                   |
-| 2     | `swe-csharp-dev` for backend; `swe-typescript-dev` for web; orchestrator for generated/shared files | `apps/ose-id-be/**`, `apps/ose-id-be-e2e/**`, `apps/ose-id-web/**`, `apps/ose-id-web-e2e/**`                   | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web` then `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e` | RED identifies only the named absent behavior; GREEN and REFACTOR exit 0; save each cycle under `evidence/phase-2/{red,green,refactor}/`.        | Return to the failing RED/GREEN/REFACTOR checkbox; do not weaken or skip a target.                                                                                    |
-| 3     | `swe-csharp-dev`; orchestrator owns migrations                                                      | `apps/ose-id-be/src/OseId.Infrastructure/Persistence/**`, `apps/ose-id-be-e2e/**`                              | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`                                                                                                                                                                                                        | Fresh/current migration, catalog, role, and forbidden-DDL results pass under `evidence/phase-3/`.                                                | Preserve sanitized database/container logs and reopen the first migration/privilege checkbox.                                                                         |
-| 4     | `swe-csharp-dev` for health; E2E worker for lifecycle                                               | health code under `apps/ose-id-be/**`, runner/tests under `apps/ose-id-be-e2e/**` and `apps/ose-id-web-e2e/**` | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:integration,test:e2e --projects=ose-id-be,ose-id-be-e2e,ose-id-web-e2e`                                                                                                                                           | Health/outage/recovery/two-instance/cleanup pass twice; save run IDs and sanitized matrices under `evidence/phase-4/`.                           | Reopen health for status/body drift or lifecycle for readiness/cleanup/affinity drift.                                                                                |
-| 5     | Orchestrator; named API/UI/live testers own reports                                                 | delivered app/spec/doc/rule paths only                                                                         | `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`                                                                                                                                                                                  | Manual HTTP/browser matrices and API/UI/rules reports are current-candidate PASS under `evidence/phase-5/`.                                      | Route API defects to the API subsection, UI defects to the UI subsection, and rule drift to Automatic Rule-Impact Coverage; reopen the earliest implementation phase. |
-| 6     | Orchestrator                                                                                        | plan evidence, learnings, indexes, archive move                                                                | `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate` followed by `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate plans`                                                                                                                                                                     | Preliminary audit and archive/index/link proof under `evidence/phase-6/`; commit only after user authorization.                                  | Reopen the first unsupported delivery claim; do not archive with missing evidence.                                                                                    |
-| 7     | Orchestrator                                                                                        | complete `origin/main...HEAD` delivery diff                                                                    | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick,test:integration,test:e2e,test:coverage:behaviour --base=origin/main --head=HEAD`                                                                                                      | Exact-head local/CI/leak/semantic-review evidence under `evidence/phase-7/`.                                                                     | Any repair changes HEAD and restarts Phase 7 from its first gate.                                                                                                     |
-| 8     | Orchestrator                                                                                        | merged archive state, delivery branch, declared worktree                                                       | `rtk git merge-base --is-ancestor <merge-sha> origin/main` followed by `rtk git worktree list --porcelain`                                                                                                                                                                                                | Terminal PASS, containment, classification, and non-force cleanup proof in the external final report.                                            | Retain worktree/branch and reopen Phase 7 or the earliest audit failure; never force cleanup.                                                                         |
+| Phase | Default owner                                                                                       | Bounded implementation paths                                                                                   | Copyable HIPPO/Nx verification                                                                                                                                                                                                                                                                                                                              | Required observation and evidence                                                                                                                | Failure route                                                                                                                                                         |
+| ----- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0     | Orchestrator                                                                                        | repository root, execution worktree, `local-tmp/ose-id-init-01-*`                                              | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD`                                                                                                                                                                                 | Exit 0 plus branch, HEAD, ports, dependency, license, and baseline records under `plans/in-progress/ose-id-init-01-foundation/evidence/phase-0/` | Preserve sanitized output and stop in Phase 0; amend the plan for unsupported tooling or port/contract drift.                                                         |
+| 1     | Orchestrator; `specs-maker` for structure                                                           | `specs/apps/ose/id-be/**`, `specs/apps/ose/id-web/**`, four project `behaviour-coverage.json` files            | `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate` followed by `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`              | Specs pass; only intentionally absent bindings are RED; commands and adapter ledger live under `evidence/phase-1/`.                              | Reopen the first contract/spec checkbox; unrelated or unexplained undefined bindings block Phase 2.                                                                   |
+| 2     | `swe-csharp-dev` for backend; `swe-typescript-dev` for web; orchestrator for generated/shared files | `apps/ose-id-be/**`, `apps/ose-id-be-e2e/**`, `apps/ose-id-web/**`, `apps/ose-id-web-e2e/**`                   | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web` then `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e` | RED identifies only the named absent behavior; GREEN and REFACTOR exit 0; save each cycle under `evidence/phase-2/{red,green,refactor}/`.        | Return to the failing RED/GREEN/REFACTOR checkbox; do not weaken or skip a target.                                                                                    |
+| 3     | `swe-csharp-dev`; orchestrator owns migrations                                                      | `apps/ose-id-be/src/OseId.Infrastructure/Persistence/**`, `apps/ose-id-be-e2e/**`                              | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`                                                                                                                                                                                                                                 | Fresh/current migration, catalog, role, and forbidden-DDL results pass under `evidence/phase-3/`.                                                | Preserve sanitized database/container logs and reopen the first migration/privilege checkbox.                                                                         |
+| 4     | `swe-csharp-dev` for health; E2E worker for lifecycle                                               | health code under `apps/ose-id-be/**`, runner/tests under `apps/ose-id-be-e2e/**` and `apps/ose-id-web-e2e/**` | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:integration,test:e2e --projects=ose-id-be,ose-id-be-e2e,ose-id-web-e2e`                                                                                                                                                                    | Health/outage/recovery/two-instance/cleanup pass twice; save run IDs and sanitized matrices under `evidence/phase-4/`.                           | Reopen health for status/body drift or lifecycle for readiness/cleanup/affinity drift.                                                                                |
+| 5     | Orchestrator; named API/UI/live testers own reports                                                 | delivered app/spec/doc/rule paths only                                                                         | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`                                                                                                                                                                                                           | Manual HTTP/browser matrices and API/UI/rules reports are current-candidate PASS under `evidence/phase-5/`.                                      | Route API defects to the API subsection, UI defects to the UI subsection, and rule drift to Automatic Rule-Impact Coverage; reopen the earliest implementation phase. |
+| 6     | Orchestrator                                                                                        | plan evidence, learnings, indexes, archive move                                                                | `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate` followed by `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate plans`                                                                                                                                                                                                                       | Preliminary audit and archive/index/link proof under `evidence/phase-6/`; commit only after user authorization.                                  | Reopen the first unsupported delivery claim; do not archive with missing evidence.                                                                                    |
+| 7     | Orchestrator                                                                                        | complete `origin/main...HEAD` delivery diff                                                                    | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick,test:integration,test:e2e,test:coverage:behaviour --base=origin/main --head=HEAD`                                                                                                                               | Exact-head local/CI/leak/semantic-review evidence under `evidence/phase-7/`.                                                                     | Any repair changes HEAD and restarts Phase 7 from its first gate.                                                                                                     |
+| 8     | Orchestrator                                                                                        | merged archive state, delivery branch, declared worktree                                                       | `rtk git merge-base --is-ancestor <merge-sha> origin/main` followed by `rtk git worktree list --porcelain`                                                                                                                                                                                                                                                  | Terminal PASS, containment, classification, and non-force cleanup proof in the external final report.                                            | Retain worktree/branch and reopen Phase 7 or the earliest audit failure; never force cleanup.                                                                         |
 
 ### PostgreSQL Persistence Contract
 
@@ -109,15 +109,15 @@ test, Phase 0 and Phase 1 each run this exact predecessor-green baseline while t
 not yet exist:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD
 ```
 
 After Phase 2's first completed implementation packet, run production `build` only for the
 compiled/bundled owner applications and run the three real applicable gates for all four projects:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
 ```
 
 The Phase 0 sibling inventory and Phase 2 scaffold must prove these are real targets, never echo,
@@ -169,7 +169,7 @@ blocks the gate.
       provisioned cleanly with `rtk git worktree add -b ose-id-init-01-foundation-base
 worktrees/ose-id-init-01-foundation origin/main`. Branch inventory recorded.
 - [x] [AI] Inside the resolved worktree, run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm install` and
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm install` and
       `rtk npm run doctor -- --fix` (the wrapper admits Doctor transactionally through HIPPO);
       acceptance: both exit 0 and `rtk git status --short` contains no
       secret or unexplained generated change.
@@ -191,7 +191,7 @@ status --short` returned empty — no secret or unexplained generated change.
       Nearest Next.js sibling for `ose-id-web` is `ose-app-web` (same `ose-*-app-web` naming shape).
 - [x] [AI] Inspect `docs/reference/web-sites.md`, `repo-config.yml`, and the Nx graph using
       `rtk rg -n "ose-id|port|environment" docs/reference/web-sites.md repo-config.yml` and
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- graph --file=local-tmp/ose-id-init-01-graph.json`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- graph --file=local-tmp/ose-id-init-01-graph.json`;
       verify `OSE_ID_WEB_PORT=3500`, `OSE_ID_BE_PORT=8501`, and `OSE_ID_POSTGRES_PORT=5438` remain
       unclaimed and store the ignored graph outside evidence. A collision stops execution and amends the
       plan; do not choose a replacement silently.
@@ -212,7 +212,7 @@ status --short` returned empty — no secret or unexplained generated change.
       SqlKata.Execution 4.0.1 (MIT), EF Core 10.0.12 migration-time tooling (MIT), Next.js/React pinned
       to sibling `ose-app-web` versions (MIT). No fee, no copyleft, no incompatible license.
 - [x] [AI] Run the current repository baselines through HIPPO:
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD`
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD`
       plus the nearest C# and Next.js project quick targets discovered above. Diagnose every failure at
       root cause; do not retry, widen, skip, quarantine, or continue with red baseline.
       **Date**: 2026-09-16. **Status**: Done. **Files Changed**: `evidence/phase-0/baseline.txt` (new).
@@ -268,7 +268,7 @@ status --short` returned empty — no secret or unexplained generated change.
       `specs/apps/ose/id-be/` and `specs/apps/ose/id-web/` corpora and add
       indexed `.feature` files for AC-FND-01..08. Use behavior subfolders such as `health/` inside those
       owners when useful; never create a phase-named owner such as `id-foundation/`. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs audit`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs audit`
       (grounding correction: `specs validate` is not a routed rhino-cli verb — exit 2,
       "unrecognized or not-yet-routed invocation"; the actually-routed aggregate is `specs audit`,
       which runs `specs structure validate` + `specs counts validate`/link validation);
@@ -296,7 +296,7 @@ boundary.md`, unannotated link) — not this checkbox's scope, tracked under tha
       `tech-docs/006-api-contract-delta.md` as `specs/apps/ose/id-be/contracts/openapi.yaml`, plus the
       documented web HTML contract in `specs/apps/ose/id-web/behaviours/foundation/status-shell.feature`.
       Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec redocly -- lint specs/apps/ose/id-be/contracts/openapi.yaml`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec redocly -- lint specs/apps/ose/id-be/contracts/openapi.yaml`;
       acceptance: exit 0, all operation IDs are app/domain-scoped, disabled-capability rows match Gherkin,
       and no unlisted API appears. Save the lint transcript and semantic path/method inventory at
       `evidence/phase-1/openapi.txt`; any missing/extra operation or schema error returns to this checkbox.
@@ -324,7 +324,7 @@ boundary.md`, unannotated link) — not this checkbox's scope, tracked under tha
       accessible architecture diagrams plus route/config/health schema documents under
       `specs/apps/ose/id-be/architecture/` and
       `specs/apps/ose/id-web/architecture/`, following the nearest app architecture precedent. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate specs/apps/ose`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate specs/apps/ose`;
       acceptance: exit 0; the backend view maps Domain, Application, inbound adapters, outbound adapters,
       and Host/composition with inward dependencies; Plan 01 REST health is current, Plan 04 OIDC is
       planned next, and GraphQL/Model Context Protocol are future non-delivered seams; every new diagram passes title,
@@ -384,7 +384,7 @@ case")]` binding is detected identically to the Java case, and
       dropped; covered by a dedicated test. No Reqnroll NuGet package added yet (correctly deferred to
       Phase 2, no `.csproj` exists yet).
 - [x] [AI] **Owner: test integrator; initial RED binding ledger.** Run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`
       and save the undefined-binding list as `evidence/phase-1/red-bindings.txt`. Acceptance: only the
       eight new foundation scenario groups are RED; duplicate, unused, ambiguous, and unrelated undefined
       bindings are zero. Any unrelated or structurally invalid finding returns to the owning specs checkbox;
@@ -405,7 +405,7 @@ coverage.json}`, `apps/ose-id-be-e2e/{project.json,behaviour-coverage.json}`,
       `behaviour-coverage.json` files, bind every scenario once at Unit and every boundary-applicable
       Integration/E2E layer, and encode any future exemption only on its exact scenario with a valid
       boundary reason and alternative proof. Rerun
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`;
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`;
       acceptance (grounding correction, reconciled with the Phase 1 Gate's own "do not require the full
       green matrix until Phase 2" clause): the shared coverage validator (`scripts/behaviour-coverage.mjs`)
       returns non-zero for ANY `undefined binding` — including one caused only by Phase 2+ not having
@@ -843,7 +843,7 @@ ports, seeds no domain rows, prints a run ID, waits for the declared state, and 
 on termination. Run each profile in Terminal A through:
 
 ```bash
-rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve -- --fixture-profile=foundation-ready
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve -- --fixture-profile=foundation-ready
 ```
 
 In Terminal B, run the following block from the execution-worktree root. It contains no credential,
@@ -914,7 +914,7 @@ rtk awk 'BEGIN { print "web-success GET status=200 headers=content-type,cache-co
 Stop Terminal A, confirm its cleanup, then run the PostgreSQL-down profile in Terminal A and execute:
 
 ```bash
-rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve -- --fixture-profile=foundation-postgres-down
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve -- --fixture-profile=foundation-postgres-down
 ```
 
 After Terminal A reports the expected state, continue in the same Terminal B shell used above:
@@ -943,7 +943,7 @@ test ! -s local-tmp/ose-id-init-01-http/live-absent.body
 Run `foundation-backend-down` in Terminal A:
 
 ```bash
-rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve -- --fixture-profile=foundation-backend-down
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:serve -- --fixture-profile=foundation-backend-down
 ```
 
 After Terminal A reports the expected state, continue in Terminal B:
@@ -1131,7 +1131,7 @@ if rtk rg -q 'stack trace|connection string|127\.0\.0\.1:8501|/Users/|/home/|C:\
 
 - [x] [AI] Re-run rule gates and the manual runbook from a clean stack; acceptance: docs match observed
       commands, no secret/absolute path is recorded, and propagation has no unresolved finding.
-      **Date**: 2026-09-17. **Status**: Done. `rtk ./hippo run --class transactional --disk-path . --
+      **Date**: 2026-09-17. **Status**: Done. `rtk ./hippo run --class transactional --resource-tier standard --disk-path . --
 apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push` (repo-wide, run `bgnnpoi42`)
       surfaced two real, in-scope gaps, both root-caused and fixed: 1. `ose-id-be-e2e:test:coverage:e2e` failed: `route-disclosure.feature` (the `RouteDisclosureGuard`
       security fix from the API Quality Gate above) was never registered in
@@ -2278,7 +2278,7 @@ runner` (the two source files) and `chore(plans): archive ose-id-init-01-foundat
 ### Local Quality Gates Before Push
 
 - [x] [AI] Run the canonical registry-owned pre-push surface through HIPPO:
-      `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`;
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`;
       acceptance: every live registry gate exits 0. Save sanitized output and the inventory from
       `rtk apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=pre-push --format=text`.
       **Date**: 2026-09-17. **Status**: Done, after fixing 3 preexisting failures at root cause (none
@@ -2300,7 +2300,7 @@ generate` and committed (`779ebf653`) — propagating to the private sibling rem
       `LICENSE` (byte-identical, verified via `diff`). Both fixes landed in `f62bcdca7`. Full clean
       run saved: `evidence/phase-7/pre-push-gate.txt` (gate list: `evidence/phase-7/gate-list.txt`).
 - [x] [AI] Run the Mandatory Nx Quality Matrix, then
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t test:integration,test:e2e,test:coverage:behaviour --base=origin/main --head=HEAD`;
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:integration,test:e2e,test:coverage:behaviour --base=origin/main --head=HEAD`;
       acceptance: both application builds, all four projects' typecheck/lint/quick targets, and every
       applicable higher-layer/static target pass. Save the commands and exits in
       `evidence/phase-7/nx-quality.txt`; any failure reopens its owning phase.

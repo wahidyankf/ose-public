@@ -57,7 +57,7 @@ runtime topology change only; hostname, public port, issuer, routes, and wire se
 From the repository execution worktree:
 
 ```bash
-rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack -- --input-manifest=/absolute/owned/input.json --public-descriptor=/absolute/owned/public.json
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack -- --input-manifest=/absolute/owned/input.json --public-descriptor=/absolute/owned/public.json
 ```
 
 **Caller/auth/context.** A local outer runner or developer with filesystem access to its own workspace.
@@ -225,7 +225,7 @@ content never enter stdout, test reports, screenshots, or Git.
 The same parent invokes:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup -- --stack-id=lms-auth-e2e-0001
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup -- --stack-id=lms-auth-e2e-0001
 ```
 
 Before launch it passes a control FD in `OSE_ID_RUNNER_CONTROL_FD`; the first JSON message on that FD is:

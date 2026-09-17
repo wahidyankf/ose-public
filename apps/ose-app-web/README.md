@@ -21,8 +21,8 @@ experience and architecture to evolve as the application moves beyond pre-alpha.
 From the repository root, install the workspace dependencies and start the web client:
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm install
-./hippo run --class service --disk-path . -- npm exec nx -- dev ose-app-web
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev ose-app-web
 ```
 
 Then open <http://localhost:3300>. The app currently has no application-defined environment
@@ -31,27 +31,27 @@ variables, so no local configuration is required to run this screen.
 To run the web client alongside the OSE API and its development database, use the local stack:
 
 ```bash
-./hippo run --class service --disk-path . -- \
+./hippo run --class service --resource-tier standard --disk-path . -- \
   docker compose -f infra/dev/ose-app/docker-compose.yml up --build
 ```
 
 Keep that terminal open so HIPPO owns the stack for its full lifetime. Stop it with
 <kbd>Ctrl</kbd>+<kbd>C</kbd>, then remove the stopped containers and network with
-`./hippo run --class transactional --disk-path . -- docker compose -f infra/dev/ose-app/docker-compose.yml down`.
+`./hippo run --class transactional --resource-tier standard --disk-path . -- docker compose -f infra/dev/ose-app/docker-compose.yml down`.
 
 ## Useful commands
 
 Run these from the repository root.
 
-| Command                                                                                     | When to use it                                                             |
-| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `./hippo run --class service --disk-path . -- npm exec -- nx run ose-app-web:dev`           | Start the local development server on port 3300.                           |
-| `./hippo run --class ephemeral --disk-path . -- npm exec -- nx run ose-app-web:build`       | Produce a production build.                                                |
-| `./hippo run --class ephemeral --disk-path . -- npm exec -- nx run ose-app-web:test:quick`  | Run type, lint, Unit, static coverage, and specification checks.           |
-| `./hippo run --class ephemeral --disk-path . -- npm exec -- nx run ose-app-web:test:unit`   | Run Unit tests with the 99% line-coverage hard gate.                       |
-| `./hippo run --class ephemeral --disk-path . -- npm exec -- nx run ose-app-web:lint`        | Run accessibility-aware Oxlint and ESLint checks.                          |
-| `./hippo run --class transactional --disk-path . -- npm exec -- nx run ose-app-web:codegen` | Regenerate TypeScript API types from the OSE Application OpenAPI contract. |
-| `./hippo run --class service --disk-path . -- npm exec -- nx run ose-app-web:storybook`     | Explore components locally with Storybook on port 6006.                    |
+| Command                                                                                                              | When to use it                                                             |
+| -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `./hippo run --class service --resource-tier standard --disk-path . -- npm exec -- nx run ose-app-web:dev`           | Start the local development server on port 3300.                           |
+| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec -- nx run ose-app-web:build`       | Produce a production build.                                                |
+| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec -- nx run ose-app-web:test:quick`  | Run type, lint, Unit, static coverage, and specification checks.           |
+| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec -- nx run ose-app-web:test:unit`   | Run Unit tests with the 99% line-coverage hard gate.                       |
+| `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec -- nx run ose-app-web:lint`        | Run accessibility-aware Oxlint and ESLint checks.                          |
+| `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec -- nx run ose-app-web:codegen` | Regenerate TypeScript API types from the OSE Application OpenAPI contract. |
+| `./hippo run --class service --resource-tier standard --disk-path . -- npm exec -- nx run ose-app-web:storybook`     | Explore components locally with Storybook on port 6006.                    |
 
 ## How the pieces fit together
 

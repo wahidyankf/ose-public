@@ -55,11 +55,11 @@ expect "empty payload" '{}' allows
 cmd_allows "empty command string" ""
 
 # --- The boundary itself, in each form it legitimately appears in ------------------------------
-cmd_allows "canonical guarded form" "rtk ./hippo run --class ephemeral --disk-path . -- npm install"
-cmd_allows "guarded without rtk" "./hippo run --class transactional --disk-path . -- npm exec nx -- run app:build"
-cmd_allows "guarded after a cd" "cd apps/ose-id-be && ../../hippo run --class ephemeral --disk-path . -- dotnet build"
-cmd_allows "guarded fan-out" "rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build"
-cmd_allows "hippo on PATH" "hippo run --class ephemeral --disk-path . -- cargo test"
+cmd_allows "canonical guarded form" "rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install"
+cmd_allows "guarded without rtk" "./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run app:build"
+cmd_allows "guarded after a cd" "cd apps/ose-id-be && ../../hippo run --class ephemeral --resource-tier heavy --disk-path . -- dotnet build"
+cmd_allows "guarded fan-out" "rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- affected -t build"
+cmd_allows "hippo on PATH" "hippo run --class ephemeral --resource-tier standard --disk-path . -- cargo test"
 cmd_allows "hippo status is not compute" "rtk ./hippo status"
 
 # --- The carve-out that must NOT be wrapped ----------------------------------------------------

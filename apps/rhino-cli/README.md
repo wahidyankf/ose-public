@@ -23,19 +23,19 @@ this app's tree against its checked-in SHA-256 manifest.
 ## Quick Start
 
 ```bash
-# Build the self-contained release binary (Nx)
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build rhino-cli
+# Build release binary
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build rhino-cli
 
-# Run via dotnet (no prior build required)
-./hippo run --class ephemeral --disk-path . -- \
+# Run via dotnet
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
   dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- --help
 
 # Echo a message
-./hippo run --class ephemeral --disk-path . -- \
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
   dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- --say "hello world"
 
 # Reject invalid output format (exits 1)
-./hippo run --class ephemeral --disk-path . -- \
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
   dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- --output xml --help
 ```
 
@@ -44,7 +44,7 @@ this app's tree against its checked-in SHA-256 manifest.
 Local to this monorepo. To produce a standalone, self-contained binary:
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build rhino-cli
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build rhino-cli
 # Binary at apps/rhino-cli/src/dist/rhino-cli-fsharp
 ```
 

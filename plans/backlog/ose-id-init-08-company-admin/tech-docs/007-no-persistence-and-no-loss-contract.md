@@ -33,8 +33,8 @@ rtk git diff --exit-code -- apps/ose-id-be apps/ose-id-be-e2e specs/apps/ose/id-
 The delivered Plan 03 migration/catalog/RLS suites also run unchanged through:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be:test:integration
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:test:integration
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e
 ```
 
 Both commands must pass against an empty database and a fully seeded predecessor database. Evidence

@@ -9,6 +9,7 @@ on:
     paths:
       - hippo
       - hippo.lock
+      - hippo.identity.json
       - hippo.local.json.example
       - .github/scripts/test-hippo-bootstrap.sh
       - .github/scripts/test-hippo-consumer.sh
@@ -65,7 +66,7 @@ jobs:
           node -e '
           const value = JSON.parse(require("fs").readFileSync(process.env.RUNNER_TEMP + "/hippo-status.json", "utf8"));
           const problems = [];
-          if (value.schemaVersion !== 4) problems.push("status schemaVersion " + value.schemaVersion);
+          if (value.schemaVersion !== 5) problems.push("status schemaVersion " + value.schemaVersion);
           if (!value.configHash) problems.push("missing configHash");
           const profile = value.profile ?? {};
           // resolvedProfile is pressure-dependent by design: the config declares a fallback and
@@ -75,7 +76,7 @@ jobs:
           if (!Array.isArray(profile.fallbackChain) || !profile.fallbackChain.includes(profile.resolvedProfile)) problems.push("resolvedProfile " + profile.resolvedProfile + " is outside its declared chain " + JSON.stringify(profile.fallbackChain));
           const coordination = value.coordination ?? {};
           if (coordination.mode !== "reservation") problems.push("coordination mode " + coordination.mode);
-          if (coordination.schemaVersion !== 4) problems.push("coordination schemaVersion " + coordination.schemaVersion);
+          if (coordination.schemaVersion !== 5) problems.push("coordination schemaVersion " + coordination.schemaVersion);
           for (const field of ["capacity", "allocated", "waiting"]) {
             const vector = coordination[field];
             if (typeof vector?.cpu !== "number" || typeof vector?.memoryBytes !== "number") problems.push(field + " vector " + JSON.stringify(vector));
@@ -90,5 +91,5 @@ jobs:
           HIPPO_ROOT: ${{ runner.temp }}/hippo-state
         run: |
           assertion="test \"\$NX_PARALLEL\" = \"\$HIPPO_CONCURRENCY\" && test \"\$DOTNET_PROCESSOR_COUNT\" = \"\$HIPPO_CONCURRENCY\" && test \"\$HIPPO_ROOT\" = \"\$EXPECTED_HIPPO_ROOT\""
-          EXPECTED_HIPPO_ROOT="$HIPPO_ROOT" ./hippo run --class ephemeral --disk-path . -- sh -c "$assertion"
-          EXPECTED_HIPPO_ROOT="$HIPPO_ROOT" ./hippo run --class ephemeral --cwd docs --disk-path docs -- sh -c "$assertion"
+          EXPECTED_HIPPO_ROOT="$HIPPO_ROOT" ./hippo run --class ephemeral --resource-tier light --disk-path . -- sh -c "$assertion"
+          EXPECTED_HIPPO_ROOT="$HIPPO_ROOT" ./hippo run --class ephemeral --resource-tier light --cwd docs --disk-path docs -- sh -c "$assertion"

@@ -8,18 +8,18 @@ client rather than a browser, so the scenarios stay focused on product behaviour
 
 ```bash
 # Install test dependencies once on this machine
-./hippo run --class transactional --disk-path . -- npm exec nx -- run organiclever-be-e2e:install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be-e2e:install
 
 # Start the backend at http://localhost:8202
-./hippo run --class service --disk-path . -- npm exec nx -- run organiclever-be:dev
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:dev
 
 # In another terminal, run the scenarios
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-be-e2e:test:e2e
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be-e2e:test:e2e
 ```
 
-`./hippo run --class service --disk-path . -- npm exec nx -- run organiclever-be-e2e:test:e2e:ui`
+`./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be-e2e:test:e2e:ui`
 opens Playwright’s UI, and
-`./hippo run --class service --disk-path . -- npm exec nx -- run organiclever-be-e2e:test:e2e:report`
+`./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be-e2e:test:e2e:report`
 opens the latest HTML report.
 
 ## Target a different environment

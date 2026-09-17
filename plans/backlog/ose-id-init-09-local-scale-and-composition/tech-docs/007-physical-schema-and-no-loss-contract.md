@@ -34,9 +34,9 @@ journey, stop instance A at the documented handoff, and complete through B. Afte
 Validate with the Phase 0-resolved migration/RLS targets and the explicit no-affinity command:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be:test:integration
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:test:integration
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e
 ```
 
 Sanitized evidence stores migration IDs, counts, catalog/digest values, instance markers, and ownership

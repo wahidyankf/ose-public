@@ -8,7 +8,7 @@ when_to_use: Use immediately after creating a git worktree, before Git mutations
 After creating a git worktree, initialize dependencies, Git hooks, and the polyglot
 toolchain from the **root directory of that worktree** with a mandatory two-step sequence:
 
-1. Run `rtk ./hippo run --class ephemeral --disk-path . -- npm install` at that worktree root.
+1. Run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` at that worktree root.
    Besides dependencies, `prepare` activates Husky hooks.
 2. Run `rtk npm run doctor -- --fix` at the same worktree root.
 

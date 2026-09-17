@@ -12,7 +12,7 @@ Required for: All E2E tests (`*-e2e` projects)
 ## 12.1 Install Playwright browsers
 
 ```bash
-./hippo run --class transactional --disk-path . -- npm exec playwright -- install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec playwright -- install
 ```
 
 This downloads Chromium, Firefox, and WebKit browsers used by Playwright E2E tests.
@@ -23,4 +23,4 @@ with the install command.
 Playwright as OK (not warning).
 
 **On failure**: On Linux, install system dependencies first:
-`./hippo run --class transactional --disk-path . -- npm exec playwright -- install-deps`
+`./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec playwright -- install-deps`

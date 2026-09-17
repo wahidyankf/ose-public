@@ -13,15 +13,15 @@ Enforcement is automated via `rhino-cli repo-governance vendor validate`.
 
 ```bash
 # Audit the repo-governance/ directory (default)
-./hippo run --class ephemeral --disk-path . -- \
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
   apps/rhino-cli/scripts/rhino-bin.sh repo-governance vendor validate repo-governance/
 
 # Audit the canonical root instruction surface
-./hippo run --class ephemeral --disk-path . -- \
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
   apps/rhino-cli/scripts/rhino-bin.sh repo-governance vendor validate AGENTS.md
 
 # Or via Nx (cached)
-./hippo run --class ephemeral --disk-path . -- \
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
   npm exec nx -- run rhino-cli:governance:vendor-audit-validation
 ```
 

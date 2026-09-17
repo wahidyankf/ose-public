@@ -7,18 +7,18 @@ examples that describe the service, without needing a browser. 🧪
 
 ```bash
 # Install test dependencies once on this machine
-./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-be-e2e:install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-be-e2e:install
 
 # Start the API at http://localhost:8302
-./hippo run --class service --disk-path . -- npm exec nx -- run ose-be:dev
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-be:dev
 
 # In another terminal, run the API scenarios
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-be-e2e:test:e2e
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-be-e2e:test:e2e
 ```
 
-Use `./hippo run --class service --disk-path . -- npm exec nx -- run ose-be-e2e:test:e2e:ui` for
+Use `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-be-e2e:test:e2e:ui` for
 Playwright’s UI or
-`./hippo run --class service --disk-path . -- npm exec nx -- run ose-be-e2e:test:e2e:report` for the
+`./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-be-e2e:test:e2e:report` for the
 most recent report.
 
 ## Target a running environment

@@ -60,7 +60,7 @@ human readability without adding maintenance burden.
 ```markdown
 - [ ] Edit `apps/ose-www/src/server/trpc.ts`: wrap the public router with
       `unstable_cache(..., { revalidate: 300 })`. Verify by running
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-www:test:quick`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-www:test:quick`
       — all tests pass.
 ```
 

@@ -301,7 +301,7 @@ runs are no-ops, avoiding both the Storybook build and the Vercel deployment.
 1. **Start Development**:
 
    ```bash
-   ./hippo run --class service --disk-path . -- npm exec nx -- dev [project-name]
+   ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev [project-name]
    ```
 
 2. **Make Changes**:

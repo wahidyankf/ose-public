@@ -77,8 +77,8 @@ dotnet --version   # Expected: a version line, not "command not found"
 # 5. Clone and bootstrap
 git clone https://github.com/wahidyankf/ose-public.git
 cd ose-public
-./hippo run --class ephemeral --disk-path . -- npm install # Installs deps + git hooks
-./hippo run --class transactional --disk-path . -- npm exec playwright -- install # Installs test browsers
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm install # Installs deps + git hooks
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec playwright -- install # Installs test browsers
 
 # 6. Verify
 npm run doctor
@@ -158,9 +158,9 @@ If the versions don't match, force install by reading the pin rather than copyin
 from this page:
 
 ```bash
-./hippo run --class transactional --disk-path . -- \
+./hippo run --class transactional --resource-tier standard --disk-path . -- \
   volta install node@$(node -p "require('./package.json').volta.node")
-./hippo run --class transactional --disk-path . -- \
+./hippo run --class transactional --resource-tier standard --disk-path . -- \
   volta install npm@$(node -p "require('./package.json').volta.npm")
 ```
 
@@ -195,7 +195,7 @@ rustc --version
 ```bash
 git clone https://github.com/wahidyankf/ose-public.git
 cd ose-public
-./hippo run --class ephemeral --disk-path . -- npm install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
 ```
 
 The root bootstrap verifies the release pin and cached executable identity before `npm install`
@@ -265,7 +265,7 @@ uncommitted.
 ### Step 7: Install Playwright Browsers
 
 ```bash
-./hippo run --class transactional --disk-path . -- npm exec playwright -- install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec playwright -- install
 ```
 
 This downloads Chromium, Firefox, and WebKit (~500 MB total). Required for all `*-e2e`
@@ -274,7 +274,7 @@ projects.
 On Linux, also install system dependencies:
 
 ```bash
-./hippo run --class transactional --disk-path . -- npm exec playwright -- install-deps
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec playwright -- install-deps
 ```
 
 ## Verification
@@ -339,7 +339,7 @@ types/lint, `test:unit`, and every applicable static `test:coverage:*` per proje
 them first:
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- \
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- \
   affected -t test:quick,compat:min-version,specs:structure-validation
 ```
 
@@ -379,7 +379,7 @@ whatever holds it:
 ```bash
 lsof -i :5434
 # If it is another Docker stack, stop that stack:
-./hippo run --class transactional --disk-path . -- \
+./hippo run --class transactional --resource-tier standard --disk-path . -- \
   docker compose -f infra/dev/<other-stack>/docker-compose.yml down
 ```
 
@@ -388,13 +388,13 @@ lsof -i :5434
 Re-install browsers:
 
 ```bash
-./hippo run --class transactional --disk-path . -- npm exec playwright -- install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec playwright -- install
 ```
 
 On Linux, also run:
 
 ```bash
-./hippo run --class transactional --disk-path . -- npm exec playwright -- install-deps
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec playwright -- install-deps
 ```
 
 ## Version Reference

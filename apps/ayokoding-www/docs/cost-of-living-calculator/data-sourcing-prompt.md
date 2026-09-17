@@ -149,9 +149,9 @@ Output one JSON object keyed by level, each = { p25, median, p75, nonSalaryComp 
    `roles.ts` (the `m(...)`, `sp(...)`, `dist(...)` helpers keep the literals terse).
 2. Update the `snapshotDate` / `fxSnapshotDate` at the top of each module.
 3. Run the dataset's own guards:
-   `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ayokoding-www:test:unit` (the
+   `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-www:test:unit` (the
    `*.unit.test.ts` files beside each data module check structural invariants), then
-   `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ayokoding-www:typecheck`.
+   `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-www:typecheck`.
 4. Spot-check a few cities in the running calculator before committing.
 
 ## See also

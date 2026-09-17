@@ -16,7 +16,7 @@ only once that project's `codegen` target runs:
 
 ```bash
 # Run once per project whose generated sources are absent, e.g. roots-be
-rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run <project>:codegen
+rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run <project>:codegen
 ```
 
 The rule: run a project's `codegen` target once in a freshly provisioned worktree before running

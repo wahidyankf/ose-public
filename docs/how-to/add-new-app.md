@@ -46,7 +46,7 @@ cd apps/[app-name]
 #### For Next.js App
 
 ```bash
-../../hippo run --class transactional --disk-path ../.. -- \
+../../hippo run --class transactional --resource-tier standard --disk-path ../.. -- \
   npx create-next-app@latest . --typescript --tailwind --eslint --app --no-src-dir
 ```
 
@@ -61,9 +61,9 @@ This creates:
 #### For Express API
 
 ```bash
-../../hippo run --class transactional --disk-path ../.. -- npm init -y
-../../hippo run --class transactional --disk-path ../.. -- npm install express
-../../hippo run --class transactional --disk-path ../.. -- \
+../../hippo run --class transactional --resource-tier standard --disk-path ../.. -- npm init -y
+../../hippo run --class transactional --resource-tier standard --disk-path ../.. -- npm install express
+../../hippo run --class transactional --resource-tier standard --disk-path ../.. -- \
   npm install -D typescript @types/express @types/node
 ```
 
@@ -231,19 +231,19 @@ Create `apps/[app-name]/README.md`:
 
 # Start development server
 
-./hippo run --class service --disk-path . -- npm exec nx -- dev [app-name]
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev [app-name]
 
 # Build for production
 
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build [app-name]
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build [app-name]
 
 # Run fast quality gate (pre-push standard)
 
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run [app-name]:test:quick
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run [app-name]:test:quick
 
 # Run isolated unit tests
 
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run [app-name]:test:unit
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run [app-name]:test:unit
 \`\`\`
 
 ## Dependencies
@@ -260,20 +260,20 @@ This app imports from the following libraries:
 ### Step 8: Install Dependencies
 
 ```bash
-./hippo run --class transactional --disk-path . -- npm install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
 ```
 
 ### Step 9: Test App
 
 ```bash
 # Test development server
-./hippo run --class service --disk-path . -- npm exec nx -- dev [app-name]
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev [app-name]
 
 # Test build
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- build [app-name]
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build [app-name]
 
 # View dependency graph
-./hippo run --class service --disk-path . -- npm exec nx -- graph
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- graph
 ```
 
 ### Step 10: Import Libraries (If Needed)
@@ -296,9 +296,9 @@ TypeScript path mappings are configured in `tsconfig.base.json`.
 - [ ] `tsconfig.json` extends `../../tsconfig.base.json`
 - [ ] `package.json` created with app dependencies
 - [ ] `README.md` created with app documentation
-- [ ] `./hippo run --class service --disk-path . -- npm exec nx -- dev [app-name]` starts the development server
-- [ ] `./hippo run --class ephemeral --disk-path . -- npm exec nx -- build [app-name]` builds successfully
-- [ ] `./hippo run --class service --disk-path . -- npm exec nx -- graph` shows the app in the dependency graph
+- [ ] `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev [app-name]` starts the development server
+- [ ] `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build [app-name]` builds successfully
+- [ ] `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- graph` shows the app in the dependency graph
 - [ ] Libraries import correctly (if applicable)
 
 ### Additional Checklist for Apps with OpenAPI Contracts
@@ -389,7 +389,7 @@ array — do not inline the raw glob directly into a target's `inputs`:
 ### Issue: Build fails with "command not found"
 
 **Solution**: Ensure the framework is installed in the app's `package.json`, then run
-`./hippo run --class transactional --disk-path . -- npm install`.
+`./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`.
 
 ### Issue: Nx doesn't recognize the app
 

@@ -12,7 +12,7 @@ invocation, or another creation mechanism—run BOTH commands from that new work
 # Set the active worktree root as the command workdir.
 
 # Step 1: Node/Nx workspace dependencies (node_modules/)
-rtk ./hippo run --class ephemeral --disk-path . -- npm install
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
 
 # Step 2: Toolchain convergence (Rust, .NET/F#, TypeScript/Node — all managed by rhino-cli)
 rtk npm run doctor -- --fix

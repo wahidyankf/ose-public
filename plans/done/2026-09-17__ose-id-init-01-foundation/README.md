@@ -1,9 +1,10 @@
 # OSE ID Init 01 — Local Foundation
 
-> **Status:** In Progress — first delivery in the OSE ID initialization chain. The plan has moved to
-> `plans/done/2026-09-17__ose-id-init-01-foundation/` ahead of merge; Phases 0-6 are complete and
-> Phase 7 (final exact-head quality, review, and merge) is underway. See `delivery.md` for the
-> authoritative per-phase checklist.
+> **Status:** Complete — first delivery in the OSE ID initialization chain. Merged to `main` via
+> [PR #539](https://github.com/wahidyankf/ose-public/pull/539) (squash commit `a585f5b3c`), exact
+> head `0fae918c4`. The terminal end-to-end plan-execution audit traced all 8 AC-FND acceptance
+> criteria, schema/rollback/no-loss evidence, CI/leak/semantic review, and Knowledge Capture to
+> proof at the merged head. See `delivery.md` for the authoritative per-phase checklist.
 
 Create the smallest safe OSE ID platform foundation: four registered Nx projects, an ASP.NET Core
 backend, a Next.js web shell, PostgreSQL schema ownership, health/readiness contracts, and one

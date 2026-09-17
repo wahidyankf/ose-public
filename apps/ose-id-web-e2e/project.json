@@ -34,6 +34,20 @@
         "cwd": "{projectRoot}"
       }
     },
+    "test:e2e:ui": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx bddgen && npx playwright test --ui",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test:e2e:report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx playwright show-report",
+        "cwd": "{projectRoot}"
+      }
+    },
     "test:coverage:e2e": {
       "executor": "nx:run-commands",
       "options": {

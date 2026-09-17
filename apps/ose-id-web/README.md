@@ -19,19 +19,22 @@ Visit `http://127.0.0.1:3500/`. A `Staging`, `Production`, or missing/unknown `O
 the process environment makes the proxy return `503` for every request instead of serving a page —
 see [Configuration](#configuration).
 
-Run standalone this way, the page reads its own reachable `ose-id-be`. For a fully owned PostgreSQL
+Run standalone this way, the page reads whatever `ose-id-be` is reachable at `OSE_ID_BE_URL`, and
+states plainly that it could not read one when nothing answers there. For a fully owned PostgreSQL
 plus `ose-id-be` plus this web shell, with no separate setup or manual cleanup, use
 `ose-id-be-e2e`'s [local stack](../ose-id-be-e2e/README.md#local-stack-serve) instead.
 
 ## What is available today
 
-| Route   | What it renders                                                                                                                                                      |
-| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET /` | The service status page: a heading, one named `role="status"` region, and a text-based (never color-only) state for each dependency this plan can currently observe. |
+| Route   | What it renders                                                                                                                                                                         |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /` | The service status page: a heading, one named `role="status"` region, and a text-based (never color-only) state for the shell, the backend, PostgreSQL, the schema, and authentication. |
 
-The page renders server-side on every request (`export const dynamic = "force-dynamic"`), so it is
-never stale and never caches a state the backend no longer has. No form, link, or interactive control
-exists — nothing here can start a session.
+The page renders server-side on every request (`export const dynamic = "force-dynamic"`), reading
+`GET /health/ready` from the backend as it renders, so it is never stale and never caches a state the
+backend no longer has. Reloading the page re-reads; there is no refresh control, and no form, link,
+or interactive control of any kind — nothing here can start a session. When the backend cannot be
+read at all, the root answers a sanitized `503` page that names no host, path, or exception.
 
 ## Configuration
 
@@ -40,6 +43,9 @@ The app reads configuration from process environment variables; see
 
 - `OSE_RUNTIME_MODE` is required. Only the exact values `Local` and `Test` allow the proxy to serve a
   response; anything else returns a sanitized `503` with no host, stack, or path detail.
+- `OSE_ID_BE_URL` is optional; it defaults to `http://127.0.0.1:8501`, the port reserved for
+  `ose-id-be`. It is server-only and must be an absolute loopback origin — the browser never receives
+  it, and a non-loopback origin fails startup.
 - `OSE_ID_WEB_PORT` is optional; it defaults to `3500`, the port reserved for `ose-id-web` in
   [`docs/reference/web-sites.md`](../../docs/reference/web-sites.md).
 
@@ -50,7 +56,8 @@ apps/ose-id-web/src/
 ├── app/                              the one route: layout, page, metadata
 ├── contexts/foundation/
 │   ├── domain/                       status vocabulary and labels
-│   ├── application/                  status source and the HTTP envelope (proxy) policy
+│   ├── application/                  status report assembly, composition root, envelope policy
+│   ├── infrastructure/               the server-side backend readiness client
 │   └── presentation/                 the accessible status panel component
 ├── shared/runtime/                   the runtime-mode guard (mirrors the backend's)
 └── proxy.ts                          composition root: wires the status source to the envelope

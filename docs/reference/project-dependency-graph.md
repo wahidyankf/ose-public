@@ -110,12 +110,51 @@ graph TD
   class OLWWWFEE2E,OLAPPE2E,OLBE2E e2e
 ```
 
+**OSE ID product stack:**
+
+```mermaid
+graph TD
+  accTitle: Visual Dependency Graph 3
+  accDescr: ose-id-web-e2e leads to ose-id-web; ose-id-be-e2e leads to ose-id-be; ose-id-web leads to web-ui; ose-id-web leads to web-ui-token; ose-id-contracts stands alone with no dependent yet.
+  %% E2E tests (top level)
+  OIWE2E[ose-id-<br/>web-e2e]
+  OIBE2E[ose-id-be-e2e]
+
+  %% Apps
+  OIW[ose-id-web]
+  OIB[ose-id-be]
+
+  %% Shared
+  OIC[ose-id-<br/>contracts]
+  WU[web-ui]
+  WUT[web-ui-token]
+
+  %% Edges
+  OIWE2E --> OIW
+  OIBE2E --> OIB
+  OIW --> WU
+  OIW --> WUT
+
+  classDef lib fill:#029E73,stroke:#000000,color:#000000
+  classDef product fill:#CA9161,stroke:#000000,color:#000000
+  classDef e2e fill:#0173B2,stroke:#000000,color:#FFFFFF
+
+  class OIC,WU,WUT lib
+  class OIW,OIB product
+  class OIWE2E,OIBE2E e2e
+```
+
+`ose-id-contracts` carries no edge on purpose. Unlike `ose-contracts` and `ose-lms-contracts`, the
+OSE ID backend does not run an OpenAPI `codegen` target, so nothing declares an
+`implicitDependencies` edge to it yet; the project exists so the contract is Nx-linted. A future
+plan that turns on codegen adds the `ose-id-be --> ose-id-contracts` edge.
+
 **Legend**:
 
 - Green: Libraries
 - Orange: CLI tools
 - Purple: Web sites
-- Brown: OrganicLever product apps
+- Brown: OrganicLever and OSE ID product apps
 - Blue: E2E tests
 
 ## Shared Infrastructure Projects
@@ -154,6 +193,16 @@ validation tasks. Scenario-to-adapter coverage is now owned by each project's st
 | organiclever-app-web-e2e | organiclever-app-web              | organiclever-app-web/\* (typecheck, test:quick) |
 | organiclever-be-e2e      | organiclever-be                   | organiclever-be/\* (typecheck, test:quick)      |
 
+### OSE ID
+
+| Project          | Dependencies         | Spec Inputs                                             |
+| ---------------- | -------------------- | ------------------------------------------------------- |
+| ose-id-contracts | (none)               | (self — project root is spec dir)                       |
+| ose-id-be        | (none)               | ose/id-be/behaviours/\* (test:coverage:\*, test:quick)  |
+| ose-id-web       | web-ui, web-ui-token | ose/id-web/behaviours/\* (test:coverage:\*, test:quick) |
+| ose-id-be-e2e    | ose-id-be            | ose/id-be/behaviours/\* (typecheck, lint, test:quick)   |
+| ose-id-web-e2e   | ose-id-web           | ose/id-web/behaviours/\* (typecheck, test:quick)        |
+
 ### CLI Tools
 
 | Project   | Dependencies            | Spec Inputs                     |
@@ -179,6 +228,8 @@ All Gherkin specs and API contracts live under `specs/` and are consumed via
 | `specs/apps/rhino/`                     | rhino-cli                                      | test:integration                        |
 | `specs/apps/ayokoding/`                 | ayokoding-www                                  | test:integration                        |
 | `specs/apps/ose/`                       | ose-www                                        | test:integration                        |
+| `specs/apps/ose/id-be/behaviours/`      | ose-id-be, ose-id-be-e2e                       | test:coverage:\*, test:quick            |
+| `specs/apps/ose/id-web/behaviours/`     | ose-id-web, ose-id-web-e2e                     | test:coverage:\*, test:quick            |
 
 ## Related Documentation
 

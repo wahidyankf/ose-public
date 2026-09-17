@@ -192,6 +192,10 @@ md-heading-hierarchy:
     - glob: "apps/ose-app-web-e2e/README.md"
     - glob: "apps/ose-be/README.md"
     - glob: "apps/ose-be-e2e/README.md"
+    - glob: "apps/ose-id-be/README.md"
+    - glob: "apps/ose-id-be-e2e/README.md"
+    - glob: "apps/ose-id-web/README.md"
+    - glob: "apps/ose-id-web-e2e/README.md"
     - glob: "apps/ose-lms-be/README.md"
     - glob: "apps/ose-lms-be-e2e/README.md"
     - glob: "apps/ose-www/README.md"
@@ -276,6 +280,8 @@ md-readme-index:
     - path: specs/apps/organiclever
     - path: specs/apps/ose/app-web
     - path: specs/apps/ose/be
+    - path: specs/apps/ose/id-be
+    - path: specs/apps/ose/id-web
     - path: specs/apps/ose/lms-be
     - path: specs/apps/ose/www/behaviours/backend
     - path: specs/apps/ose/www/behaviours/frontend/app-shell
@@ -755,6 +761,19 @@ extensions:
             - OSE_APP_WEB_PORT
             - HOSTNAME
 
+        - root: apps/ose-id-web
+          kind: app
+          lang: typescript
+          allowlist:
+            - PORT # set by scripts/next-with-port.mjs after resolution; not an override source
+            # Resolved by scripts/next-with-port.mjs before the app process starts, so it
+            # is read by the launcher rather than by this app's own source.
+            - OSE_ID_WEB_PORT
+            - HOSTNAME
+        # apps/ose-id-be is deliberately absent: `lang:` admits only rust,
+        # typescript, fsharp, and go, so a C#/ASP.NET Core surface has no scanner.
+        # apps/ose-lms-be (Java) is absent for the same reason.
+
     env-injection:
       # Value-less injection contract (extends env-contract:).
       # Declares, per app, the injection HOME for its env keys at every deploy stage
@@ -871,6 +890,14 @@ extensions:
           (WebApplication.CreateSlimBuilder + UseTestServer + GetTestClient);
           the HttpClient it hands out binds no socket and reserves no port, so
           Integration proves the real pipeline without reaching any network.
+      - project: ose-id-web
+        reason: >-
+          StatusShellServerSteps.ts owns a `node:http` fake-backend server it
+          starts on an ephemeral loopback port and closes at the end of every
+          scenario, plus a second loopback port it binds and immediately
+          releases so a real connection to it is genuinely refused. Both
+          sockets are local resources this test starts and stops itself, not
+          a dependency on an external or shared service.
 
     gates:
       # Declared quality-gate registry. Fields per entry:

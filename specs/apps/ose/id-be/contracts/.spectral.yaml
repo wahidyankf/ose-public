@@ -1,0 +1,17 @@
+extends:
+  - "spectral:oas"
+rules:
+  # Enforce camelCase for all schema properties — zero exceptions
+  oas3-schema-properties-camelCase:
+    severity: error
+    message: "Property {{property}} must be camelCase"
+    given: "$.components.schemas.*.properties.*~"
+    then:
+      function: casing
+      functionOptions:
+        type: camel
+
+  # Disable noisy rules that don't add value for our use case
+  info-contact: off
+  oas3-unused-component: off
+  operation-description: off

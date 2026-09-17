@@ -38,10 +38,13 @@ export const STATUS_UNAVAILABLE_DETAIL =
  * Whether a component's reported state is a by-design-active good outcome or a by-design-inactive,
  * equally fine, neutral one. This never carries meaning on its own — {@link ServiceStatusComponent}
  * always states its state in `stateLabel` and `detail` text regardless of tone — it only lets the
- * presentation layer vary typographic emphasis so a first glance can triage the two apart without
+ * presentation layer vary typographic emphasis so a first glance can triage them apart without
  * reading every sentence.
+ *
+ * `attention` names a component that is reported as unable to serve. It is still only emphasis: the
+ * row says "Unavailable" or "Incompatible" in words whether or not any styling arrives.
  */
-export type ServiceStatusTone = "positive" | "neutral";
+export type ServiceStatusTone = "positive" | "neutral" | "attention";
 
 /**
  * A component's state, named in words. The label is the text a reader sees; a colour may reinforce
@@ -65,4 +68,24 @@ export interface ServiceStatusReport {
  */
 export type StatusReadResult =
   | { readonly readable: true; readonly report: ServiceStatusReport }
+  | { readonly readable: false };
+
+/**
+ * Everything the shell is permitted to learn from the backend's readiness surface: which of three
+ * named conditions the backend reported about itself. The backend's own contract states these as a
+ * closed set — a `200` ready body, or a `503` problem carrying `database_unavailable` or
+ * `schema_incompatible` — and this type is that closed set and nothing wider. No host, port,
+ * correlation value, title, exception, or raw body ever crosses into the shell's model, because
+ * there is no member here able to carry one.
+ */
+export type BackendReadinessState = "ready" | "database-unavailable" | "schema-incompatible";
+
+/**
+ * The outcome of asking the backend how ready it is. `readable: false` means the shell could not
+ * obtain an answer it understands — unreachable, timed out, or an answer outside the closed set
+ * above — and, exactly like {@link StatusReadResult}, it carries no reason: the reason is the kind
+ * of detail the sanitization rule forbids this surface from revealing.
+ */
+export type BackendReadinessResult =
+  | { readonly readable: true; readonly state: BackendReadinessState }
   | { readonly readable: false };

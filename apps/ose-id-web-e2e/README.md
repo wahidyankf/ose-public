@@ -2,7 +2,20 @@
 
 This project tests `ose-id-web` through a real Chromium browser. Playwright-BDD executes the same
 behaviour examples that describe the shell, including keyboard-only navigation, a 320-pixel viewport,
-and non-color-only status conveyance.
+non-color-only status conveyance, and what the shell reports when its backend is ready, unready, or
+unreachable.
+
+It also owns the outer local-stack lifecycle. Because the shell reports what its backend tells it,
+each scenario needs a shell standing beside a backend in a named situation, so the suite establishes
+three environments before the first test runs and stops them all afterwards:
+
+| Environment             | Port   | How it is established                                                                      |
+| ----------------------- | ------ | ------------------------------------------------------------------------------------------ |
+| Ready stack             | `3500` | `ose-id-be-e2e`'s local-stack runner: PostgreSQL, migrations, backend, and this shell      |
+| Backend unreachable     | `3501` | The prebuilt shell pointed at a loopback origin with no listener                           |
+| Backend reports unready | `3502` | A second local-stack run on its own ports whose PostgreSQL is stopped after full readiness |
+
+Running `test:e2e` therefore requires Docker and the .NET SDK, exactly as `ose-id-be-e2e` does.
 
 ## Run locally
 
@@ -12,14 +25,16 @@ and non-color-only status conveyance.
 ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e
 ```
 
-`test:e2e` starts `ose-id-web:dev` itself (`OSE_RUNTIME_MODE=Test`, port `3500`) and reuses it if one
-is already running outside CI; no separate terminal is required.
+`test:e2e` starts and stops every environment above itself; no separate terminal is required. It
+never reuses an already-running listener on those ports — a collision fails the run rather than
+quietly changing what the scenarios observed — so stop any local stack of your own first.
 
 ## Target a running environment
 
-The default base URL is `http://127.0.0.1:3500`. Set `WEB_BASE_URL` to point the suite at a different
-already-running instance instead of letting it manage the server lifecycle itself; never commit
-credentials or real access values.
+The default base URL is `http://127.0.0.1:3500`. Set `WEB_BASE_URL` to point the suite at an
+already-running instance instead of letting it manage any lifecycle itself; in that mode also set
+`WEB_UNREADY_BASE_URL` and `WEB_UNREACHABLE_BASE_URL` to instances already in those situations, since
+nothing will be started for you. Never commit credentials or real access values.
 
 ## Checks and specs
 

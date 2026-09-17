@@ -2600,11 +2600,29 @@ HEAD:apps/ose-id-web/tsconfig.json | grep -c local-stack-runs` → 116) and alre
       Head advanced to `013e6c15deff332edfe912dbdbdcec65c007db07`; CI restarted against this head and
       is being polled to green.
 
+      **2026-09-17 — outcome recorded externally.** This box stays unticked on purpose: the polling
+      run finished after the last plan edit, so its result was never written back here. CI reached
+      green on the reviewed head and `ose-public#539` merged to `main`; the checklist is not
+      retro-ticked because no contemporaneous record supports a tick. The post-merge state is the
+      record instead — see the note under the merge item below.
+
 - [ ] [AI] Merge under default `[AI]` authority only when all hardened checks refer to the same current head/base and the archive move is visible in the PR diff. Record the PR URL, reviewed head, base, merge SHA, and merge timestamp in the workflow final report; make no post-merge plan edit.
+
+      **2026-09-17 — outcome recorded externally.** The item's own instruction forbids a post-merge
+      plan edit, so the merge was recorded in the workflow final report rather than here.
+      `ose-public#539` merged to `main` as the squash commit `a585f5b3c`
+      ("feat(ose-id): local foundation for OSE ID (Plan 01)"), carrying the archived plan at
+      `plans/done/2026-09-17__ose-id-init-01-foundation/`.
 
 ### Phase 7 Gate
 
 - [ ] [AI] Verify `origin/main` contains the merge SHA and `plans/done/<completion-date>__ose-id-init-01-foundation/`, while backlog/in-progress paths are absent. Do not clean the worktree before the terminal audit.
+
+      **2026-09-17 — outcome recorded externally.** Containment holds on `main`: `a585f5b3c` is an
+      ancestor of `origin/main`, the archive is present at
+      `plans/done/2026-09-17__ose-id-init-01-foundation/`, and no `plans/backlog/` or
+      `plans/in-progress/` copy of this plan remains. The verification transcript lives in the
+      workflow final report, not in this frozen archive.
 
 > **Pause Safety:** the delivery is merged and its archived plan is already on `origin/main`; only containment confirmation, terminal audit, and cleanup remain. Safe to stop. To resume, fetch `origin/main` and verify the recorded merge SHA before auditing.
 
@@ -2627,4 +2645,48 @@ HEAD:apps/ose-id-web/tsconfig.json | grep -c local-stack-runs` → 116) and alre
 
 - [ ] [AI] Confirm terminal audit PASS, no retained unexplained branch, declared worktree absent, branch cleanup complete, and `origin/main` still contains the reviewed archive state.
 
+**2026-09-17 — Phase 8 outcome recorded externally.** Every Phase 8 box above stays unticked for the
+same reason the merge box does: the phase runs after the archive is already frozen on `main`, so its
+own instructions route the record to the plan-execution final report rather than to a post-merge plan
+edit. What happened: the terminal plan-execution audit ran against the delivered merge head and its
+findings were closed in `ose-public#542` (`e36dfb616`,
+"docs(plans): close terminal plan-execution audit gaps for ose-id-init-01"). Cleanup completed — the
+delivery worktree and branch are gone and pruned. The audit gaps that remained open after `#542`
+(the missing contracts Nx project, the unregistered `repo-config.yml` surfaces, the `apps/README.md`
+and dependency-graph entries, the stale commit citation in `plans/done/README.md`, and the three
+learnings routed to follow-up) are addressed in the recheck follow-up PR, again without retro-ticking
+anything here.
+
 > **Pause Safety:** delivery, audit, archival, and cleanup are complete. No repository mutation remains for this plan.
+
+---
+
+## Recheck Corrections and Clarifications (2026-09-17)
+
+Added by the post-delivery recheck. These record facts about the delivered code; they change no
+decision and tick no box.
+
+- **Dependency-graph path.** `tech-docs/004-decisions-sources-and-file-impact.md`'s file-impact
+  ledger cited `repo-governance/development/project-dependency-graph.md`. No such file exists; the
+  document is `docs/reference/project-dependency-graph.md`, and that is where the OSE ID nodes,
+  edges, and dependency-table rows were added. The ledger line was corrected in place — a path fix
+  only, no ledger entry added or removed.
+- **Unit-coverage exclusion is scoped, not a blanket waiver.** `ose-id-be:test:coverage:unit` runs at
+  a 99% line threshold and passes `--exclude-by-file '**/Persistence/Migrations/**'` alongside three
+  single-file exclusions. The glob reaches exactly the EF Core-generated migration artifacts —
+  `20260916060219_CreateIdentityFoundation.cs`, its `.Designer.cs`, and
+  `OseIdMigrationDbContextModelSnapshot.cs` — which are scaffolded output, not hand-written logic.
+  Nothing under that path goes unproven: the Integration and E2E database-audit bindings below cover
+  what the migration actually installs.
+- **Why the database-audit proof is split across two layers.** Integration's
+  `apps/ose-id-be/tests/integration/DatabaseAuditPostgresSteps.cs` asserts against the migration's
+  **SQL text** (`MigrationSql.ForCreateIdentityFoundation()`) plus the PostgreSQL-compiled readiness
+  query — it starts no database. That is deliberate: this repository's Integration layer may drive
+  only resources the test itself owns end to end, and `ose-id-be`'s sole
+  `integration-loopback:` licence in `repo-config.yml` covers the in-memory ASP.NET Core `TestHost`
+  transport and nothing else, so the Docker-hosted PostgreSQL the suite needs is out of that layer's
+  reach. The PostgreSQL-level proof is therefore owned by E2E:
+  `apps/ose-id-be-e2e/steps/DatabaseAuditProcessSteps.cs` issues a real `DELETE` through the real
+  serving role against a real container-backed database and asserts the rejection, the surviving row,
+  and its intact audit columns. Read the two together — text-level guard installation at Integration,
+  runtime enforcement at E2E — before changing either.

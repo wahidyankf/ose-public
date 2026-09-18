@@ -55,6 +55,7 @@ scan:
     - generated-contracts
     - .nx
     - .fvm-cache
+    - .playwright-mcp
     - deps
     - _build
     - cover

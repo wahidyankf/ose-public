@@ -14,6 +14,19 @@ step-by-step execution record.
 
 ## Planned Projects
 
+### FERRET initialization series
+
+FERRET (Framework for Evaluation, Regression, Reliability & Experiment Tracking) begins as a local-only,
+backend-optional telemetry system for coding-agent harness lifecycle metadata. The first plan proves safe
+standalone capture; the second adds a protocol-independent local backend and REST synchronization. Neither plan
+adds a frontend or cloud deployment. A later cloud plan belongs in the private sibling and requires separate
+authorization.
+
+| Order | Plan                                                                           | Locally verifiable outcome                                                                                                                   | Depends on |
+| ----: | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+|     1 | [Standalone local CLI](./ferret-init-01-local-cli/README.md)                   | One per-user SQLite store, 30-day retention, local analytics, and fail-open macOS/Linux POSIX harness capture; Windows CLI-local portability | —          |
+|     2 | [Protocol-independent local backend](./ferret-init-02-local-backend/README.md) | FastAPI/PostgreSQL, OpenAPI REST, durable optional sync, and additive GraphQL/MCP adapter seams                                              | 01         |
+
 ### OSE ID initialization series
 
 The original OSE Identity/CIAM idea is split into nine independently reviewable, local-only plans. OSE

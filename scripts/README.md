@@ -24,9 +24,10 @@ belong here.
 ## The public-safety gate
 
 [`public-safety/`](./public-safety/README.md) is not a wrapper. It is the outbound public-safety gate, copied byte
-for byte from a release of the [ose-rules](https://github.com/wahidyankf/ose-rules) catalog, so a change to it
-lands upstream first and arrives here as a new release. Its README says what it screens, what it prohibits, and
-how to run its tests.
+for byte from the [ose-rules](https://github.com/wahidyankf/ose-rules) catalog at published `main` commit
+`0d38b3e387b0d73e4bff3b8ccafabab6bbce8ccd`. A change lands upstream first; this repository then explicitly
+re-adopts the files from a newly resolved full `main` commit. Its README says what it screens, what it prohibits,
+and how to run its tests.
 
 ## Which gates invoke these
 

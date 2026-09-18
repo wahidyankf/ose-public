@@ -268,8 +268,8 @@ empty lookup rather than claiming unrecorded registry ownership. The data home i
   "schemaVersion": "1.0",
   "command": "init",
   "result": "created",
-  "dataHome": "/home/alice/.local/state/ferret",
-  "databasePath": "/home/alice/.local/state/ferret/ferret.sqlite3",
+  "dataHome": "/example-user-home/.local/state/ferret",
+  "databasePath": "/example-user-home/.local/state/ferret/ferret.sqlite3",
   "schemaNumber": 1,
   "installationId": "00000000-0000-4000-8000-000000000002",
   "retentionDays": 30,
@@ -306,8 +306,8 @@ and exit zero. Tests inspect SQLite/evidence fixtures, never process output.
   "schemaVersion": "1.0",
   "command": "status",
   "databaseState": "healthy",
-  "dataHome": "/home/alice/.local/state/ferret",
-  "databasePath": "/home/alice/.local/state/ferret/ferret.sqlite3",
+  "dataHome": "/example-user-home/.local/state/ferret",
+  "databasePath": "/example-user-home/.local/state/ferret/ferret.sqlite3",
   "schemaNumber": 1,
   "integrityState": "ok",
   "permissionsState": "private",
@@ -534,9 +534,9 @@ state or wholly under the new backend-enabled state; a row with mixed/missing de
   "command": "self.install",
   "result": "installed",
   "version": "0.1.0",
-  "artifactPath": "/home/alice/.local/share/ferret/0.1.0/ferret.pyz",
-  "launcherPath": "/home/alice/.local/bin/ferret",
-  "manifestPath": "/home/alice/.local/share/ferret/install.json",
+  "artifactPath": "/example-user-home/.local/share/ferret/0.1.0/ferret.pyz",
+  "launcherPath": "/example-user-home/.local/bin/ferret",
+  "manifestPath": "/example-user-home/.local/share/ferret/install.json",
   "pathAction": "none",
   "replacedOwnedVersion": null
 }
@@ -568,7 +568,11 @@ The complete Windows success shape is:
   "schemaVersion": "1.0",
   "command": "self.uninstall",
   "result": "uninstalled",
-  "removedPaths": ["/home/alice/.local/bin/ferret", "/home/alice/.local/share/ferret/0.1.0/ferret.pyz"],
+  "removedPaths": [
+    "/example-user-home/.local/bin/ferret",
+    "/example-user-home/.local/share/ferret/0.1.0/ferret.pyz",
+    "/example-user-home/.local/share/ferret/install.json"
+  ],
   "pathAction": "none",
   "dataAction": "kept"
 }

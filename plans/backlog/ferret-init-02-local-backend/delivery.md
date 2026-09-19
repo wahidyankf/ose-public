@@ -214,8 +214,8 @@ and green baseline.
 
 ```bash
 rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
-rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm run doctor -- --fix
-rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm run doctor
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply
+rtk npm run doctor
 rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD
 rtk git diff --check
 ```

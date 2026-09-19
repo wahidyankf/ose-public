@@ -22,11 +22,10 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-dotnet
-      - uses: ./.github/actions/setup-rust
       - name: Run complete non-product quick gates serially
         run: >-
           npx nx run-many -t test:quick
-          --projects=crane-cli,fsharp-crane-core,fsharp-env-loader,rhino-cli,ts-env-loader,web-ui,web-ui-token
+          --projects=crane-cli,fsharp-crane-core,fsharp-env-loader,ts-env-loader,web-ui,web-ui-token
           --parallel=1
 
   integration:
@@ -38,11 +37,10 @@ jobs:
       - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-dotnet
-      - uses: ./.github/actions/setup-rust
       - name: Run every applicable non-product Integration target
         run: >-
           npx nx run-many -t test:integration
-          --projects=fsharp-crane-core,fsharp-env-loader,rhino-cli,ts-env-loader
+          --projects=fsharp-crane-core,fsharp-env-loader,ts-env-loader
           --parallel=1
 
   e2e:
@@ -58,5 +56,5 @@ jobs:
       - name: Run every applicable non-product E2E target
         run: >-
           npx nx run-many -t test:e2e
-          --projects=crane-cli,rhino-cli,ts-env-loader,web-ui
+          --projects=crane-cli,ts-env-loader,web-ui
           --parallel=1

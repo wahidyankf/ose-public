@@ -37,7 +37,6 @@ Standard Nx targets for apps and libs, and the naming rules that keep them consi
 
 - [Workspace Defaults, Caching, and Build Output](./nx-targets/workspace-defaults-caching-build-output.md) — targetDefaults, caching table, output dirs. Use when setting cache/output config.
 - [Cache and Inputs Convention — Canonical Inputs](./nx-targets/cache-and-inputs-convention-canonical.md) — Why explicit inputs matter, per language. Use when declaring a target's inputs.
-- [Cross-Repo rhino-cli Byte-Identity Standard](./nx-targets/cache-cross-repo-byte-identity.md) — Rules holding rhino-cli byte-identical cross-repo. Use when changing apps/rhino-cli.
 - [Codegen Dependency Chain](./nx-targets/codegen-dependency-chain.md) — codegen → typecheck/build dependsOn chain. Use when wiring contract codegen.
 
 ## Anti-Patterns and Traceability

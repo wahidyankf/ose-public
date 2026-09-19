@@ -60,14 +60,6 @@
         "{projectRoot}/fsharp-env-loader.fsproj"
       ]
     },
-    "specs:structure-validation": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- specs counts validate specs/libs/fsharp-env-loader"
-      },
-      "cache": true,
-      "inputs": ["{workspaceRoot}/specs/libs/fsharp-env-loader/**/*"]
-    },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
@@ -82,10 +74,6 @@
           },
           {
             "command": "npm exec -- nx run fsharp-env-loader:test:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run fsharp-env-loader:specs:structure-validation",
             "forwardAllArgs": false
           },
           {

@@ -26,7 +26,6 @@ when_to_use: "Read this index to find the right Nx Target Standards child docume
 - [Accessibility Testing](./mandatory-targets-accessibility-testing.md) — The two-level accessibility testing requirement (static a11y linting and runtime axe-core E2E tests) for UI projects.
 - [Workspace Defaults, Caching, and Build Output](./workspace-defaults-caching-build-output.md) — The nx.json targetDefaults block, the per-target caching-rules table, and the build output directory conventions.
 - [Cache and Inputs Convention — Canonical Inputs](./cache-and-inputs-convention-canonical.md) — Why explicit inputs are required for correct cache invalidation, with canonical Rust/Go input examples for CLI apps and API backends.
-- [Cross-Repo rhino-cli Byte-Identity Standard](./cache-cross-repo-byte-identity.md) — The four rules holding apps/rhino-cli to a stricter, byte-identical standard across ose-public and the private sibling.
 - [Codegen Dependency Chain](./codegen-dependency-chain.md) — The codegen -> typecheck / codegen -> build dependency chain for apps with OpenAPI contract specs.
 - [Anti-Pattern — Echo and No-Op Test Targets](./anti-patterns-echo-placeholders.md) — Omit inapplicable boundaries instead of claiming false proof.
 - [Target Anti-Patterns](./target-anti-patterns.md) — The catalog of Nx target anti-patterns to avoid -- non-standard names, omitted mandatory targets, heavy test:quick, and more.

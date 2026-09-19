@@ -10,9 +10,13 @@ inputs:
     required: false
     default: "apps/roots-be/go.sum"
   golangci-lint-version:
-    description: "golangci-lint version (used by the lint-golangci gate)"
+    description: "golangci-lint version used by the Go quality job"
     required: false
     default: "v2.11.3"
+  shfmt-version:
+    description: "shfmt version used by the declared shell formatter"
+    required: false
+    default: "v3.13.1"
 runs:
   using: "composite"
   steps:
@@ -51,3 +55,25 @@ runs:
           go install "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v${want}"
         fi
         "$gobin/golangci-lint" --version
+
+    # `scripts/format-staged` invokes shfmt for any changed shell file. The
+    # GitHub-hosted Ubuntu image does not provide it, so install the declared
+    # formatter through Go's checksum-verified module proxy rather than relying
+    # on an image-specific package.
+    - name: Install shfmt
+      shell: bash
+      env:
+        WANT: ${{ inputs.shfmt-version }}
+      run: |
+        set -euo pipefail
+        gobin="$(go env GOPATH)/bin"
+        echo "$gobin" >> "$GITHUB_PATH"
+        want="${WANT#v}"
+        have=""
+        if [ -x "$gobin/shfmt" ]; then
+          have="$("$gobin/shfmt" --version 2>/dev/null | sed -n '1{s/^v//;p;}')"
+        fi
+        if [ "$have" != "$want" ]; then
+          go install "mvdan.cc/sh/v3/cmd/shfmt@v${want}"
+        fi
+        "$gobin/shfmt" --version

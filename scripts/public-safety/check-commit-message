@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Screen the typed commit-message input without treating Git's local hook file
+# path as outbound material. Rhino owns the message read and reports its
+# product-scoped surface; this adapter selects the corresponding safety leaf.
+set -euo pipefail
+
+if [[ "$#" -ne 1 ]]; then
+  printf '[public-safety] blocked scan-error commit-message adapter needs one typed message\n' >&2
+  exit 2
+fi
+
+case "${RHINO_GATE_SURFACE:-}" in
+commit-msg) leaf_surface=commit ;;
+pull-request) leaf_surface=pull-request ;;
+*)
+  printf '[public-safety] blocked scan-error RHINO_GATE_SURFACE is not a message surface\n' >&2
+  exit 2
+  ;;
+esac
+
+here=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
+exec "$here/outbound-preflight.sh" --surface "$leaf_surface" --text "$1"

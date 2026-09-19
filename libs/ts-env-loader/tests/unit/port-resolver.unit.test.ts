@@ -138,13 +138,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
       fallback = 3100;
     });
 
-    // The literal "<envValue>"/"<flagValue>"/"<expected>" placeholders are replaced by Cucumber
-    // Expressions (`{string}`, `{any}`) rather than kept verbatim: @amiceli/vitest-cucumber matches
-    // a step definition against the outline's own un-substituted step text (so these patterns still
-    // match the raw "<placeholder>" tokens), while the rhino-cli BDD adapter-coverage validator
-    // matches step definitions against each example row's *substituted* step text (so a literal
-    // "<placeholder>" binding would never match a real substituted value, and "<expected>" isn't
-    // quoted so `{string}` cannot match it either — `{any}`'s `.+` matches any non-empty text).
+    // Vitest-Cucumber matches against the outline's un-substituted step text, so the expressions
+    // must match the raw placeholders as well as their substituted values.
     And('the environment sets "OSE_WWW_PORT" to {string}', () => {
       env = { OSE_WWW_PORT: envValue };
     });

@@ -56,22 +56,21 @@ not follow fails to compile.
 
 ## Common commands
 
-| Command                                        | What it does                                     |
-| ---------------------------------------------- | ------------------------------------------------ |
-| `nx run ose-lms-be:codegen`                    | Regenerates the contract models                  |
-| `nx run ose-lms-be:build`                      | Builds the runnable jar                          |
-| `nx run ose-lms-be:typecheck`                  | Compiles main and test sources                   |
-| `nx run ose-lms-be:lint`                       | Spotless with google-java-format                 |
-| `nx run ose-lms-be:dev`                        | Runs the service from source                     |
-| `nx run ose-lms-be:run`                        | Runs the built jar                               |
-| `nx run ose-lms-be:test:unit`                  | Cucumber scenarios plus the 99% coverage floor   |
-| `nx run ose-lms-be:test:quick`                 | Typecheck, lint, unit tests, specs, and coverage |
-| `nx run ose-lms-be:test:coverage:unit`         | Static Unit-adapter binding check                |
-| `nx run ose-lms-be:test:coverage:behaviour`    | Static whole-corpus binding check                |
-| `nx run ose-lms-be:test:coverage`              | Both static coverage checks in order             |
-| `nx run ose-lms-be:deps:audit`                 | Resolves and reports the runtime classpath       |
-| `nx run ose-lms-be:compat:min-version`         | Reports the toolchain floor                      |
-| `nx run ose-lms-be:specs:structure-validation` | Validates the specs corpus structure             |
+| Command                                     | What it does                                   |
+| ------------------------------------------- | ---------------------------------------------- |
+| `nx run ose-lms-be:codegen`                 | Regenerates the contract models                |
+| `nx run ose-lms-be:build`                   | Builds the runnable jar                        |
+| `nx run ose-lms-be:typecheck`               | Compiles main and test sources                 |
+| `nx run ose-lms-be:lint`                    | Spotless with google-java-format               |
+| `nx run ose-lms-be:dev`                     | Runs the service from source                   |
+| `nx run ose-lms-be:run`                     | Runs the built jar                             |
+| `nx run ose-lms-be:test:unit`               | Cucumber scenarios plus the 99% coverage floor |
+| `nx run ose-lms-be:test:quick`              | Typecheck, lint, unit tests, and coverage      |
+| `nx run ose-lms-be:test:coverage:unit`      | Static Unit-adapter binding check              |
+| `nx run ose-lms-be:test:coverage:behaviour` | Static whole-corpus binding check              |
+| `nx run ose-lms-be:test:coverage`           | Both static coverage checks in order           |
+| `nx run ose-lms-be:deps:audit`              | Resolves and reports the runtime classpath     |
+| `nx run ose-lms-be:compat:min-version`      | Reports the toolchain floor                    |
 
 ## BDD and Testing
 

@@ -103,21 +103,12 @@
         "commands": [
           { "command": "npm exec -- nx run roots-be-e2e:typecheck", "forwardAllArgs": false },
           { "command": "npm exec -- nx run roots-be-e2e:lint", "forwardAllArgs": false },
-          { "command": "npm exec -- nx run roots-be-e2e:specs:structure-validation", "forwardAllArgs": false },
           { "command": "npm exec -- nx run roots-be-e2e:test:coverage", "forwardAllArgs": false }
         ],
         "parallel": false,
         "forwardAllArgs": false
       },
       "cache": true
-    },
-    "specs:structure-validation": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- specs structure validate"
-      },
-      "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/!(rhino)/**/*"]
     },
     "deps:audit": {
       "executor": "nx:run-commands",

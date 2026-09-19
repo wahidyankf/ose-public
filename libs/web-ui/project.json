@@ -44,10 +44,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run web-ui:specs:structure-validation",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run web-ui:test:coverage",
             "forwardAllArgs": false
           }
@@ -83,14 +79,6 @@
         "cwd": "libs/web-ui"
       },
       "outputs": ["{projectRoot}/storybook-static"]
-    },
-    "specs:structure-validation": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- specs counts validate specs/libs/web-ui"
-      },
-      "cache": true,
-      "inputs": ["{workspaceRoot}/specs/libs/web-ui/**/*"]
     },
     "deps:audit": {
       "executor": "nx:run-commands",

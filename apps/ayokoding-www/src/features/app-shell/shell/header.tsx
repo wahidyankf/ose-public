@@ -85,10 +85,9 @@ export function Header({ locale, pathData = EMPTY_COURSE_PATH_CLIENT_DATA }: Hea
           <Search className="h-4 w-4" />
           <span className="text-sm">{t(locale as Locale, "search")}</span>
           <kbd className="pointer-events-none ml-2 hidden rounded border bg-muted px-1.5 font-mono text-xs select-none lg:inline-block">
-            {/* Command-key glyph (U+2318, the Mac "place of interest sign") built from its numeric
-                codepoint, not typed as a literal source character — apps/rhino-cli's
-                emoji-in-source-code convention scans raw file bytes and forbids the literal
-                codepoint appearing anywhere in a .ts/.tsx file. */}
+            {/* Command-key glyph (U+2318, the Mac "place of interest sign") is built from its numeric
+                codepoint so the repository's source convention does not encounter the literal
+                character in this .tsx file. */}
             {String.fromCharCode(0x2318)}K
           </kbd>
         </Button>

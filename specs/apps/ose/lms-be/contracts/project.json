@@ -37,10 +37,6 @@
           {
             "command": "npm exec -- nx run ose-lms-contracts:lint",
             "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ose-lms-contracts:specs:structure-validation",
-            "forwardAllArgs": false
           }
         ],
         "parallel": false,
@@ -62,14 +58,6 @@
         "command": "echo 'compat:min-version: no standard min-version floor'"
       },
       "cache": true
-    },
-    "specs:structure-validation": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- specs structure validate"
-      },
-      "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/!(rhino)/**/*"]
     }
   },
   "namedInputs": {

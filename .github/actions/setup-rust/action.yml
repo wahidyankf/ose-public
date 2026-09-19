@@ -1,79 +1,10 @@
 name: "Setup Rust"
-description: "Install Rust toolchain pinned by rust-toolchain.toml, with build cache, cargo-llvm-cov, cargo-deny, and cargo-hack"
-inputs:
-  cargo-llvm-cov-version:
-    description: "cargo-llvm-cov version (used by rhino-cli test:quick coverage gate)"
-    required: false
-    default: "0.8.5"
-  cargo-deny-version:
-    description: "cargo-deny version (used by rhino-cli deps:audit)"
-    required: false
-    default: "0.18.2"
-  cargo-hack-version:
-    description: "cargo-hack version (used by rhino-cli compat:min-version)"
-    required: false
-    default: "0.6.37"
+description: "Install the repository Rust toolchain for retained source formatting and validation"
 runs:
   using: "composite"
   steps:
-    - name: Setup Rust toolchain (rust-toolchain.toml takes precedence)
+    - name: Setup Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@v1
       with:
-        components: clippy,rustfmt,llvm-tools-preview
+        components: rustfmt
         cache: false
-
-    - name: Cargo build cache
-      uses: Swatinem/rust-cache@v2
-      with:
-        workspaces: "apps/rhino-cli -> target"
-        shared-key: "rhino-cli"
-
-    - name: Install cargo-llvm-cov
-      shell: bash
-      run: |
-        if ! command -v cargo-llvm-cov >/dev/null 2>&1; then
-          cargo install --locked --version ${{ inputs.cargo-llvm-cov-version }} cargo-llvm-cov
-        fi
-
-    - name: Install cargo-deny
-      shell: bash
-      run: |
-        if ! command -v cargo-deny >/dev/null 2>&1; then
-          cargo install --locked --version ${{ inputs.cargo-deny-version }} cargo-deny
-        fi
-
-    - name: Install cargo-hack
-      shell: bash
-      run: |
-        if ! command -v cargo-hack >/dev/null 2>&1; then
-          cargo install --locked --version ${{ inputs.cargo-hack-version }} cargo-hack
-        fi
-
-    # No rust-toolchain.toml pins the default toolchain, so it resolves to latest stable — never the
-    # older `rust-version` floor each crate declares. Every `cargo hack check --rust-version` (run in
-    # parallel across projects by `nx run-many`/`nx affected`) therefore races rustup to install the
-    # same missing MSRV toolchain concurrently, corrupting the shared download dir
-    # ("could not rename downloaded file ... No such file or directory"). Pre-install each pinned
-    # rust-version sequentially so the parallel compat:min-version tasks only ever read a toolchain
-    # that is already present.
-    #
-    # Both name forms are installed on purpose: cargo-hack resolves a `rust-version = "X.Y.Z"` floor
-    # to the toolchain name `X.Y` (`rustup toolchain add X.Y`), and rustup stores `X.Y` under a
-    # different directory from `X.Y.Z`. Installing only the declared patch-level string therefore
-    # leaves the `X.Y` download to race exactly as before.
-    #
-    # Extraction uses `sed` rather than `grep -P`: BSD grep (macOS) has no `-P`, and a silent
-    # extraction failure there installs nothing at all while still exiting 0.
-    - name: Pre-install pinned MSRV toolchain(s) (avoids rustup download race under parallel cargo-hack)
-      shell: bash
-      run: |
-        shopt -s nullglob
-        floors=$(sed -n 's/^rust-version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' \
-          apps/*/Cargo.toml libs/*/Cargo.toml 2>/dev/null | sort -u)
-        for v in $floors; do
-          rustup toolchain install "$v" --profile minimal
-          mm=$(printf '%s\n' "$v" | cut -d. -f1,2)
-          if [ "$mm" != "$v" ]; then
-            rustup toolchain install "$mm" --profile minimal
-          fi
-        done

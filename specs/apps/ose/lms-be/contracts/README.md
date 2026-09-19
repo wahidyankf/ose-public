@@ -35,7 +35,7 @@ contracts/
 ├── schemas/              # Data type definitions
 │   ├── health.yaml       # HealthResponse
 │   └── hello.yaml        # HelloResponse
-└── generated/            # Bundle output (gitignored, rebuilt by the bundle target)
+└── generated/            # Bundle output (ignored, rebuilt by the bundle target; README is tracked)
     ├── openapi-bundled.yaml
     ├── openapi-bundled.json
     └── docs/index.html
@@ -48,8 +48,9 @@ contracts/
 3. Run `nx run ose-lms-contracts:bundle` to regenerate the bundled spec
 4. Run codegen for the service: `nx run ose-lms-be:codegen`
 5. Fix any compile errors in the service
-6. Commit the contract changes only. Both generated trees are gitignored: this folder's
-   `generated/` bundle output and the service's `generated-contracts/` model output.
+6. Commit the contract changes only. Both generated trees are ignored: this folder's
+   `generated/` bundle output (apart from its tracked directory README) and the service's
+   `generated-contracts/` model output.
 
 ## Nx Cache Integration
 
@@ -71,3 +72,4 @@ stale green result.
 
 - [paths](./paths/README.md) — one file per endpoint, keyed by the URL path
 - [schemas](./schemas/README.md) — the response payload shapes the endpoints refer to
+- [generated](./generated/README.md) — rebuilt OpenAPI bundles and browsable API documentation

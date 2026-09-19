@@ -39,10 +39,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run organiclever-app-web-e2e:specs:structure-validation",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run organiclever-app-web-e2e:test:coverage",
             "forwardAllArgs": false
           }
@@ -97,14 +93,6 @@
         "command": "echo 'compat:min-version: no standard min-version floor for TypeScript'"
       },
       "cache": true
-    },
-    "specs:structure-validation": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- specs structure validate"
-      },
-      "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/!(rhino)/**/*"]
     },
     "test:coverage:e2e": {
       "executor": "nx:run-commands",

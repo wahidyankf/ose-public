@@ -18,7 +18,6 @@ when_to_use: "Read this index to find the right Code Quality Convention child do
 - [Troubleshooting: Pre-push Hook](./troubleshooting-pre-push-hook.md) — Fixes for a slow or failing pre-push hook. Use when pre-push is slow or a check fails.
 - [Adding New File Types](./adding-new-file-types.md) — How to add a new file type to the pipeline. Use when a new file type needs lint coverage.
 - [Integration with Development Workflow](./integration-with-development-workflow.md) — How quality tooling fits the dev workflow. Use to see how quality tooling fits your workflow.
-- [Rust CLI Linting](./rust-cli-linting.md) — How Rust CLI code (rhino-cli) is linted. Use when configuring or debugging Rust CLI lint gates.
 - [Language-Specific Auto-Formatters](./language-specific-auto-formatters.md) — Auto-formatters used per language across the repository. Use when checking which formatter applies to a given language.
 - [Best Practices](./best-practices.md) — Best practices for working with the code-quality tooling. Use for a quick best-practice reminder on code quality.
 - [Related Documentation and References](./related-documentation-and-references.md) — Related conventions and external references. Use for a related convention or reference.

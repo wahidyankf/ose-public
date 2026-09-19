@@ -75,10 +75,6 @@
             "forwardAllArgs": false
           },
           {
-            "command": "npm exec -- nx run fsharp-crane-core:specs:structure-validation",
-            "forwardAllArgs": false
-          },
-          {
             "command": "npm exec -- nx run fsharp-crane-core:test:coverage",
             "forwardAllArgs": false
           }
@@ -98,14 +94,6 @@
         "{workspaceRoot}/libs/fsharp-crane-core/tests/integration/**/*.{ts,tsx,fs}",
         "{workspaceRoot}/libs/fsharp-crane-core/tests/integration/fsharp-crane-core-integration-tests.fsproj"
       ]
-    },
-    "specs:structure-validation": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- specs counts validate specs/libs/fsharp-crane-core"
-      },
-      "cache": true,
-      "inputs": ["{workspaceRoot}/specs/libs/fsharp-crane-core/**/*"]
     },
     "deps:audit": {
       "executor": "nx:run-commands",

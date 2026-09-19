@@ -150,16 +150,8 @@
       "options": {
         "commands": ["echo 'roots-be test:quick complete'"]
       },
-      "dependsOn": ["typecheck", "lint", "test:unit", "specs:structure-validation", "test:coverage"],
+      "dependsOn": ["typecheck", "lint", "test:unit", "test:coverage"],
       "cache": true
-    },
-    "specs:structure-validation": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- specs structure validate"
-      },
-      "cache": true,
-      "inputs": ["{workspaceRoot}/specs/apps/!(rhino)/**/*"]
     },
     "deps:audit": {
       "executor": "nx:run-commands",

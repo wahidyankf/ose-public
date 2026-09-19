@@ -4,12 +4,13 @@ This repository is published, so everything it emits — file contents, file nam
 release notes — is outbound material. This directory is the gate that screens all of it, and it is the first gate to run
 on every surface that has one.
 
-Two scripts and the set they read, deliberately separate:
+Three scripts and the set they read, deliberately separate:
 
 | File                    | Owns                                                                |
 | ----------------------- | ------------------------------------------------------------------- |
-| `check.sh`              | what is outbound at a given surface                                 |
-| `outbound-preflight.sh` | whether any of it is prohibited                                     |
+| `check.sh`              | what tree/ref content is outbound at a given surface                |
+| `check-commit-message`  | typed hook and pull-request commit-message screening                |
+| `outbound-preflight.sh` | whether any handed input is prohibited                              |
 | `shape-terms.txt`       | the generic private-metadata shapes screened for, alongside secrets |
 
 The split is what lets the leaf be tested with synthetic inputs and no repository at all, and it is why the leaf never
@@ -24,6 +25,10 @@ OSE_GATE_SURFACE=<commit-msg|pre-commit|pre-push|ci> scripts/public-safety/check
 The surface arrives in the environment and nowhere else. A missing or unknown value is a protocol failure, not a
 default. A gate that infers its own surface will eventually infer a weaker one, and that is exactly the case where
 inferring is expensive.
+
+`check-commit-message` instead receives Rhino's typed `commit-message` input. `RHINO_GATE_SURFACE=commit-msg` maps it
+to the leaf's `commit` surface; `RHINO_GATE_SURFACE=pull-request` maps the declared immutable-range messages to the
+leaf's `pull-request` surface. It never screens Git's local message-file path as outbound material.
 
 | Surface      | Outbound at that moment                                           |
 | ------------ | ----------------------------------------------------------------- |
@@ -137,6 +142,7 @@ bash scripts/public-safety/tests/run.sh 080        # one case by name fragment
 | `130-hook-environment-isolation`         | a suite started from a Git hook leaves the hook's own repository untouched     |
 | `140-cidr-network-prefix`                | a CIDR network prefix passes; host forms in every private range still block    |
 | `150-hostname-trailing-underscore`       | an underscore continues a hostname token; real hostnames still block           |
+| `160-typed-commit-message-adapter`       | typed hook/PR messages are screened without publishing a hook path             |
 
 Every probe value is assembled at run time from fragments, so no string this repository's own gate would flag exists in
 any test file — a test that hardcoded one would block the commit that added it. `assert_absent` reports only a length on

@@ -2,7 +2,7 @@
 # Run: brew bundle
 # Note: This covers Homebrew-installable tools only.
 # Tools managed by other installers (Volta, SDKMAN, rustup, asdf, pyenv)
-# are handled by rhino-cli doctor --fix.
+# follow their repository-specific setup instructions.
 
 brew "go"
 brew "jq"

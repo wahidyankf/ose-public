@@ -41,8 +41,8 @@ To validate an agent complies with this convention:
 
 **Agent skills:**
 
-- [`docs-validating-factual-accuracy`](../../../../.claude/skills/docs-validating-factual-accuracy/SKILL.md) — factual-validation methodology
-- [`docs-applying-content-quality`](../../../../.claude/skills/docs-applying-content-quality/SKILL.md) — universal content-quality standards
+- [`docs-validating-factual-accuracy`](../../../../.agents/skills/docs-validating-factual-accuracy/SKILL.md) — factual-validation methodology
+- [`docs-applying-content-quality`](../../../../.agents/skills/docs-applying-content-quality/SKILL.md) — universal content-quality standards
 
 **Workflows:**
 

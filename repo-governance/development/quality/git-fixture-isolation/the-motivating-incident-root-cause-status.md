@@ -6,7 +6,7 @@ when_to_use: "Use for the incident's root-cause status."
 # The Motivating Incident (part 2)
 
 **Root-cause confirmation for this specific fixture is the explicit subject of a dedicated plan**,
-in progress at `plans/in-progress/rhino-cli-git-root-test-fixture-race/` at the time of this
+in progress at `plans/in-progress/Rhino-git-root-test-fixture-race/` at the time of this
 writing (search the `plans/` tree by that slug if this convention is read after the plan archives
 to `plans/done/` -- not hyperlinked directly here because that path moves on archival). As of this
 convention's authoring, direct code inspection already rules out the

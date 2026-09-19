@@ -86,8 +86,8 @@ assert_allow "Bash cat .env.example" \
 assert_allow "Bash bash scripts/setup-env.sh" \
 	'{"tool_name":"Bash","tool_input":{"command":"bash scripts/setup-env.sh"}}'
 
-assert_allow "Bash cargo run apps/rhino-cli" \
-	'{"tool_name":"Bash","tool_input":{"command":"cargo run --manifest-path apps/rhino-cli/Cargo.toml"}}'
+assert_allow "Bash ./rhino repo-config validate" \
+	'{"tool_name":"Bash","tool_input":{"command":"./rhino repo-config validate"}}'
 
 assert_allow "Bash npm run setup:env" \
 	'{"tool_name":"Bash","tool_input":{"command":"npm run setup:env"}}'
@@ -120,10 +120,10 @@ assert_deny "Bash git add .env.prod" \
 # Regression: ALLOW_PATTERN must not let a restricted-tier target under apps/|libs/|scripts/
 # bypass the deny checks — this is the realistic case, since real env files live under apps/.
 assert_deny "Bash redirect apps/-path .env.prod (ALLOW_PATTERN bypass regression)" \
-	'{"tool_name":"Bash","tool_input":{"command":"printf X > apps/rhino-cli/.env.prod"}}'
+	'{"tool_name":"Bash","tool_input":{"command":"printf X > apps/ose-www/.env.prod"}}'
 
 assert_deny "Bash cat apps/-path .env.prod (ALLOW_PATTERN bypass regression)" \
-	'{"tool_name":"Bash","tool_input":{"command":"cat apps/rhino-cli/.env.prod"}}'
+	'{"tool_name":"Bash","tool_input":{"command":"cat apps/ose-www/.env.prod"}}'
 
 assert_deny "Bash git add libs/-path .env.stag (ALLOW_PATTERN bypass regression)" \
 	'{"tool_name":"Bash","tool_input":{"command":"git add libs/x/.env.stag"}}'
@@ -201,7 +201,7 @@ assert_allow "Bash git check-ignore .env.prod (safe metadata query)" \
 	'{"tool_name":"Bash","tool_input":{"command":"git check-ignore .env.prod"}}'
 
 assert_allow "Bash git ls-files .env.stag (safe metadata query)" \
-	'{"tool_name":"Bash","tool_input":{"command":"git ls-files apps/rhino-cli/.env.stag"}}'
+	'{"tool_name":"Bash","tool_input":{"command":"git ls-files apps/ose-www/.env.stag"}}'
 
 assert_allow "Bash git status (safe metadata query, no tier reference)" \
 	'{"tool_name":"Bash","tool_input":{"command":"git status"}}'

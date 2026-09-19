@@ -2,6 +2,6 @@
 set -eu
 
 # Thin lifecycle adapter. Git's ref-update records remain on standard input.
-export OSE_GATE_SURFACE=pre-push
+export RHINO_GATE_SURFACE=pre-push
 exec ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- \
   ./rhino gate run --surface pre-push --push-updates-stdin

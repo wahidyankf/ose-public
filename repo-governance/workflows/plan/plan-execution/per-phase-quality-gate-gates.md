@@ -13,7 +13,7 @@ After completing all items in a delivery phase, verify the phase's authored gate
 1. Run local quality gates:
 
    ```bash
-   apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push
+   ./rhino gate run --surface pre-push
    ```
 
    (the same registry-declared gate set `.husky/pre-push` invokes; includes `nx affected -t test:quick`)

@@ -14,7 +14,7 @@ when_to_use: "Use to trace what runs on git commit."
 1. You run `git commit`
 2. Pre-commit hook triggers (`.husky/pre-commit` — a shim line invoking
    `./rhino gate run --surface pre-commit`, which runs the public-safety screen and then
-   `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-commit`)
+   `./rhino gate run --surface pre-commit`)
 3. `gate run --surface=pre-commit` orchestrates all registry-declared `pre-commit`-surface gates in
    declaration order, failing fast:
 
@@ -34,4 +34,5 @@ when_to_use: "Use to trace what runs on git commit."
 
 1. Commit proceeds if no errors
 
-**Implementation**: `apps/rhino-cli/src/` — all steps call internal Rust functions directly (no subprocess round-trips for rhino-cli-owned logic); external tools are shelled out via `std::process::Command`.
+**Implementation**: the pinned Rhino executable owns its internal steps; declared external tools
+run only through their explicit command vectors.

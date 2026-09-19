@@ -1,5 +1,7 @@
 # Doc command existence validation
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: a `rhino-cli` validator that mechanically detects documentation-cited commands
 that do not exist, the same way the repo already gates links, headings, and file naming.
 
@@ -23,7 +25,7 @@ charitably reinterpreted — an agent runs it, fails, and either stalls or silen
 
 `repository-onboarding-readme-refresh` Phase 0 needed exactly the check this brief proposes, by
 hand, and got it wrong the obvious way. A `rhino-cli` command group requires a subcommand, so
-`rhino-cli md --help` exits `2` with `error: 'rhino-cli md' requires a subcommand but one was not
+`./rhino md --help` exits `2` with `error: './rhino md' requires a subcommand but one was not
 provided`. `rhino-cli help md mermaid` also exits `2` while printing its full help page correctly.
 An existence check written as `cmd --help && echo ok` therefore reports **every real subcommand as
 missing**.

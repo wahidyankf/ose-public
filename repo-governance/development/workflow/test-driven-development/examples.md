@@ -64,7 +64,7 @@ Scenario: 10% discount reduces price
 
 This Gherkin scenario directly becomes the first failing step implementation (Godog for Go,
 Playwright for E2E, Vitest describe/it for TypeScript). See
-[plan-writing-gherkin-criteria skill](../../../../.claude/skills/plan-writing-gherkin-criteria/SKILL.md)
+[plan-writing-gherkin-criteria skill](../../../../.agents/skills/plan-writing-gherkin-criteria/SKILL.md)
 and [Acceptance Criteria Convention](../../infra/acceptance-criteria.md).
 
 The delivery outcome section references the canonical scenario by stable ID or exact title and

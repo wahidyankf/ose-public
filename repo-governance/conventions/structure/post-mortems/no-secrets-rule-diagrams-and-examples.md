@@ -54,7 +54,7 @@ PASS — well-formed action item table:
 | --- | -------------------------------------------------------------------- | ---------- | -------- | --------------------------------- | ------ |
 | 1   | Add generated binding dirs to .prettierignore                        | Maintainer | P0       | plans/backlog/prettierignore-fix/ | Open   |
 | 2   | Add parity-guard smoke test to pre-push hook for .amazonq/ artifacts | Maintainer | P1       | —                                 | Open   |
-| 3   | Evaluate rhino-cli emit-bindings idempotency on re-run               | Maintainer | P2       | —                                 | Open   |
+| 3   | Evaluate Rhino emit-bindings idempotency on re-run                   | Maintainer | P2       | —                                 | Open   |
 ```
 
 FAIL — action item anti-patterns:

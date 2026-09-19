@@ -1,6 +1,6 @@
 ---
 description: Derivation rules for Nx target names, covering the {domain}:{work} scheme for governance and validation targets and the lifecycle naming scheme for build/test targets
-when_to_use: Use when naming a new Nx target or rhino-cli subcommand, or deciding whether a check belongs in lint-staged.
+when_to_use: Use when naming a new Nx target or Rhino subcommand, or deciding whether a check belongs in lint-staged.
 ---
 
 # Nx Target Naming Convention

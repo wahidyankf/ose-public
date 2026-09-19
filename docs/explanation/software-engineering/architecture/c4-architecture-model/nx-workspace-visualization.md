@@ -43,7 +43,6 @@ This document defines **authoritative standards** for visualizing Nx monorepo st
 apps/
 ├── ose-www/        # Next.js 16 fullstack platform
 ├── ayokoding-www/          # Next.js 16 fullstack platform
-├── rhino-cli/              # F# CLI tool
 └── crane-cli/              # F# CLI tool
 ```
 
@@ -56,11 +55,8 @@ graph TD
     OseWeb["OSE Platform Web<br/>[Next.js 16 App<br/>Router]<br/>Landing page"]:::blue
     AyoWeb["AyoKoding Web<br/>[Next.js 16, tRPC]<br/>Educational content"]:::blue
     AyoCLI["AyoKoding CLI<br/>[Container: Rust]<br/>Content link validation"]:::blue
-    RhinoCLI["Rhino CLI<br/>[Container: F#]<br/>Repository management"]:::blue
 
     AyoCLI -->|"Validates links<br/>[File system]"| AyoWeb
-    RhinoCLI -->|"Manages repository<br/>[File system]"| OseWeb
-    RhinoCLI -->|"Manages repository<br/>[File system]"| AyoWeb
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
@@ -113,16 +109,13 @@ If `crane-cli` has an Nx dependency on `fsharp-crane-core` (builds it), show thi
 ```mermaid
 graph LR
     accTitle: Full Platform View
-    accDescr: AyoKoding CLI Container: Rust Content link validation leads to AyoKoding Web Next.js 16, tRPC Educational content; Rhino CLI Container: F Repository management leads to OSE Platform Web Next.js 16 App Router Landing page; and 3 more links.
+    accDescr: AyoKoding CLI Container: Rust Content link validation leads to AyoKoding Web Next.js 16, tRPC Educational content; and 3 more links.
     OseWeb["OSE Platform Web<br/>[Next.js 16 App<br/>Router]<br/>Landing page"]:::blue
     AyoWeb["AyoKoding Web<br/>[Next.js 16, tRPC]<br/>Educational content"]:::blue
     AyoCLI["AyoKoding CLI<br/>[Container: Rust]<br/>Content link validation"]:::blue
-    RhinoCLI["Rhino CLI<br/>[Container: F#]<br/>Repository management"]:::blue
     Vercel["Vercel<br/>[Platform]<br/>Next.js hosting"]:::teal
 
     AyoCLI --> AyoWeb
-    RhinoCLI --> OseWeb
-    RhinoCLI --> AyoWeb
     OseWeb --> Vercel
     AyoWeb --> Vercel
 

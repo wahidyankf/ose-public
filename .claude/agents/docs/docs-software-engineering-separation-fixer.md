@@ -49,10 +49,10 @@ that is out of scope; recommend the relevant `apps-ayokoding-www-*-maker` instea
 
 ## What to Fix and How
 
-See [Fixing Separation Violations — Confidence and Scope](../../skills/docs-validating-software-engineering-separation/reference/fixing-confidence-and-scope.md)
+See [Fixing Separation Violations — Confidence and Scope](../../../.agents/skills/docs-validating-software-engineering-separation/reference/fixing-confidence-and-scope.md)
 for domain-specific confidence examples, the four fix categories (Software Design Reference
 updates, Prerequisites section additions, cross-reference link fixes, and the AyoKoding-content-
-structure scope boundary), and [Fixing Separation Violations — Workflow and Patterns](../../skills/docs-validating-software-engineering-separation/reference/fixing-workflow-and-patterns.md)
+structure scope boundary), and [Fixing Separation Violations — Workflow and Patterns](../../../.agents/skills/docs-validating-software-engineering-separation/reference/fixing-workflow-and-patterns.md)
 for the six-step fixing workflow and the four named re-validation patterns.
 
 ## Convergence Safeguards

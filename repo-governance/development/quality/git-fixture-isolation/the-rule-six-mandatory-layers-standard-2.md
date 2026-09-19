@@ -37,5 +37,4 @@ must be **omitted**:
 
 For plain write sequences (`init`/`add`/`commit`/`config`) with the fixture's CWD already at the
 tempdir root, explicit `GIT_DIR` is sufficient; `GIT_WORK_TREE` adds nothing there either. The
-reference fixtures (`apps/rhino-cli/src/infrastructure/git/root.rs`, `apps/rhino-cli/tests/specs_tree.rs`)
-therefore set `GIT_DIR` but not `GIT_WORK_TREE`.
+the retired in-tree reference fixtures therefore set `GIT_DIR` but not `GIT_WORK_TREE`.

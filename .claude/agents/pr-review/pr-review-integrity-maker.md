@@ -56,7 +56,7 @@ minor test hygiene concern with no gaming risk.
 ## SUPPRESS Block (Never Raise)
 
 During PR quality-gate invocation, first apply the shared
-[lifecycle-owned mechanical suppression](../../skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
+[lifecycle-owned mechanical suppression](../../../.agents/skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
 
 - A legitimate test simplification that still exercises the same behaviour at the same strength.
 - A test refactor improving clarity (renaming, extracting helpers) without weakening assertions.

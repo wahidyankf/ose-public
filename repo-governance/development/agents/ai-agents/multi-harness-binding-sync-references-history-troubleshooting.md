@@ -1,20 +1,20 @@
 ---
 description: "Covers sync automation, documentation references, migration history, best practices, and troubleshooting for multi-harness binding operations."
-when_to_use: Use when an agent or Skill change needs to propagate across the multi-harness bindings, or when troubleshooting a sync failure.
+when_to_use: Use when an agent or Skill change needs to propagate across the multi-harness adapters, or when troubleshooting a sync failure.
 ---
 
 # Multi-Harness Binding Operation — Sync Automation, References, History, Practices, and Troubleshooting
 
 ## Sync Automation
 
-**Generator**: `rhino-cli harness bindings generate` (Rust). No `scripts/sync-agent-configs.sh` /
+**Generator**: `./rhino harness adapters generate` (Rust). No `scripts/sync-agent-configs.sh` /
 `.js` exists in this repository.
 
 **Commands**:
 
 - `npm run generate:bindings` - Full sync, every generated-tier harness
 - `npm run sync:agents` - Agents only
-- `npm run sync:skills` - `.claude/skills/`-native harnesses only (no-op); does NOT touch generated
+- `npm run sync:skills` - `.agents/skills/`-native harnesses only (no-op); does NOT touch generated
   mirrors under `.agents/skills/`
 - `npm run validate:sync` - `.opencode/agents/` and non-vendored mirrors under `.agents/skills/`;
   does **not** cover `.codex/agents/`
@@ -28,7 +28,7 @@ when_to_use: Use when an agent or Skill change needs to propagate across the mul
 - **`.codex/agents/`**: canonical metadata/body → TOML `name`, `description`, and
   `developer_instructions`; tool/model frontmatter is omitted, and the generator also owns the
   delimited agent-table region in `.codex/config.toml`
-- **Agent skills**: one harness reads `.claude/skills/` natively; the other gets non-vendored
+- **Agent skills**: one harness reads `.agents/skills/` natively; the other gets non-vendored
   real-file byte-copy mirrors under `.agents/skills/`; vendored plugin subtrees are preserved
 - **Validation**: three generated sets now, not two — `.opencode/agents/`, `.codex/agents/` (plus
   the generated region in `.codex/config.toml`), and non-vendored mirrors under `.agents/skills/`.
@@ -41,7 +41,7 @@ when_to_use: Use when an agent or Skill change needs to propagate across the mul
   `.codex/`, `class: source` for both (hand-authored, no auto-generated warning)
 - **[Agent catalog](../../../../.claude/agents/README.md)** - authoritative for every binding;
   `.opencode/agents/` and `.codex/agents/` carry no catalog of their own
-- **[Agent skills catalog](../../../../.claude/skills/README.md)** - authoritative source catalog;
+- **[Agent skills catalog](../../../../.agents/skills/README.md)** - authoritative source catalog;
   **[secondary mirror](../../../../.agents/skills/README.md)** is Codex's generated real-file copy
 
 ## Migration History
@@ -69,7 +69,7 @@ when_to_use: Use when an agent or Skill change needs to propagate across the mul
 **Solution**: Check agent frontmatter format in `.claude/agents/`, fix YAML syntax, re-sync
 
 **Problem**: agent skills missing in one directory
-**Solution**: Verify skills exist in `.claude/skills/`, then run `npm run generate:bindings` (not
+**Solution**: Verify skills exist in `.agents/skills/`, then run `npm run generate:bindings` (not
 `npm run sync:skills` — that command only touches the no-op secondary-harness path and never
 writes the other secondary harness's non-vendored mirrors under `.agents/skills/`)
 

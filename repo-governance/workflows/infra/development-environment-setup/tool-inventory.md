@@ -1,35 +1,34 @@
 ---
-description: "Table of the tools rhino-cli doctor checks by default, plus how repo-config.yml adds more."
+description: "Table of the tools ./rhino toolchain validate checks by default, plus how repo-config.yml adds more."
 when_to_use: "Use as a quick reference for which tool version a given config file pins, or which manager installs it."
 ---
 
 # Tool Inventory
 
-The tools `rhino-cli doctor` checks **by default**, in the order it reports them. This is the
+The tools `./rhino toolchain validate` checks **by default**, in the order it reports them. This is the
 built-in inventory, not the whole one — see [Configured extra tools](#configured-extra-tools) below.
 
-| #   | Tool           | Required Version      | Version Source                               | Manager        |
-| --- | -------------- | --------------------- | -------------------------------------------- | -------------- |
-| 1   | git            | Any                   | (no config file)                             | System/Brew    |
-| 2   | volta          | Any                   | (no config file)                             | curl script    |
-| 3   | node           | Exact                 | package.json → volta.node                    | Volta          |
-| 4   | npm            | Exact                 | package.json → volta.npm                     | Volta          |
-| 5   | rust           | Exact                 | apps/rhino-cli/rust-toolchain.toml → channel | rustup         |
-| 6   | cargo-llvm-cov | Any                   | (no config file)                             | cargo install  |
-| 7   | dotnet         | >= global.json major  | repo-config.yml → doctor.dotnet-global-json  | Brew/Script    |
-| 8   | docker         | Any                   | (no config file)                             | Docker Desktop |
-| 9   | jq             | Any                   | (no config file)                             | Brew           |
-| 10  | shellcheck     | Any                   | (no config file)                             | Brew/apt       |
-| 11  | hadolint       | Any                   | (no config file)                             | Brew/binary    |
-| 12  | actionlint     | Any                   | (no config file)                             | Brew/binary    |
-| 13  | playwright     | (matches npm version) | node_modules (npx playwright)                | npx            |
-| 14  | shfmt          | Any                   | (no config file)                             | Brew/apt       |
-| 15  | tofu           | >= pinned floor       | rhino-cli constant (`OPENTOFU_VERSION`)      | Brew/binary    |
-| 16  | clang-format   | Any                   | (no config file)                             | Brew/apt       |
+| #   | Tool           | Required Version      | Version Source                              | Manager        |
+| --- | -------------- | --------------------- | ------------------------------------------- | -------------- |
+| 1   | git            | Any                   | (no config file)                            | System/Brew    |
+| 2   | volta          | Any                   | (no config file)                            | curl script    |
+| 3   | node           | Exact                 | package.json → volta.node                   | Volta          |
+| 4   | npm            | Exact                 | package.json → volta.npm                    | Volta          |
+| 6   | cargo-llvm-cov | Any                   | (no config file)                            | cargo install  |
+| 7   | dotnet         | >= global.json major  | repo-config.yml → doctor.dotnet-global-json | Brew/Script    |
+| 8   | docker         | Any                   | (no config file)                            | Docker Desktop |
+| 9   | jq             | Any                   | (no config file)                            | Brew           |
+| 10  | shellcheck     | Any                   | (no config file)                            | Brew/apt       |
+| 11  | hadolint       | Any                   | (no config file)                            | Brew/binary    |
+| 12  | actionlint     | Any                   | (no config file)                            | Brew/binary    |
+| 13  | playwright     | (matches npm version) | node_modules (npx playwright)               | npx            |
+| 14  | shfmt          | Any                   | (no config file)                            | Brew/apt       |
+| 15  | tofu           | >= pinned floor       | Rhino constant (`OPENTOFU_VERSION`)         | Brew/binary    |
+| 16  | clang-format   | Any                   | (no config file)                            | Brew/apt       |
 
 ## Configured extra tools
 
-A repository may add tools to this inventory without an `apps/rhino-cli` change, by declaring them
+A repository may add tools to this inventory without a Rhino source change, by declaring them
 under `doctor.extra-tools` in `repo-config.yml`. A declared tool is probed, version-compared, and
 reported exactly like a built-in, and `--tools <name>` accepts it. A name in **neither** the table
 above **nor** `doctor.extra-tools` is still rejected before any tool is probed, so the inventory
@@ -42,7 +41,7 @@ reports an installed tool as missing.
 
 A gate's `doctor-tools:` dependency resolves against the same closed set: `repo-config validate`
 rejects a gate naming a tool in neither the built-in table nor `doctor.extra-tools`. So declaring a
-tool here is also what lets a new gate depend on an external binary with no `apps/rhino-cli` change.
+tool here is also what lets a new gate depend on an external binary with no Rhino source change.
 
 This repository declares three: `java` for the LMS backend's JDK, and `go` and `golangci-lint` for
 the Roots backend lane. The table above plus those three is today's complete inventory.

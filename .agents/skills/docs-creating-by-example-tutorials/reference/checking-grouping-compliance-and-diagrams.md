@@ -46,7 +46,7 @@ for the full standard. For each tutorial's `overview.md`:
 6. **Subsection headings** — MUST be `### {Beginner|Intermediate|Advanced|Production} (Examples
 N–M)` (en-dash, not hyphen). Flag LOW for deviations.
 
-If the link checker (`rhino-cli md links validate`) is wired to validate anchors, also flag any
+If the link checker (`./rhino md links validate`) is wired to validate anchors, also flag any
 bullet pointing to a non-existent anchor (CRITICAL).
 
 ## Step-by-Step Validation Order

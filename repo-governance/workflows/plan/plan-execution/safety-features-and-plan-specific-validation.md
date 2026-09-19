@@ -48,7 +48,7 @@ The plan-execution-checker validates:
 - **Testing Requirements**: Tests written and passing as specified in plan
 - **Documentation**: Required documentation created and accurate
 - **Operational Readiness** (CRITICAL): The checker verifies ALL of the following were executed:
-  - **Local quality gates passed**: `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push` (or the equivalent `.husky/pre-push` invocation) was run and passed with zero failures before every push
+  - **Local quality gates passed**: `./rhino gate run --surface pre-push` (or the equivalent `.husky/pre-push` invocation) was run and passed with zero failures before every push
   - **CI/CD fully green**: All GitHub Actions workflows passed after every push — no exceptions
   - **Preexisting issues fixed**: All encountered failures were fixed, including those not caused by the plan's changes (root cause orientation)
   - **Delivery.md updated progressively**: Checkboxes ticked sequentially with implementation notes, not batch-ticked at the end (verified via git history)

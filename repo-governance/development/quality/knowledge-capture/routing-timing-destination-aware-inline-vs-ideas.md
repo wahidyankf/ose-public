@@ -19,7 +19,7 @@ its own delivery record does not create one — the plan being carved out of is 
 gates the carve-out would bypass. A backlog artifact that arrived this way is relocated to
 `plans/ideas/`, not retro-justified.
 
-- **Non-code homes** (`docs/`, `repo-governance/`, `.claude/agents/`, `.claude/skills/`,
+- **Non-code homes** (`docs/`, `repo-governance/`, `.claude/agents/`, `.agents/skills/`,
   `post-mortems/`, and any other non-code home): a **small** edit MAY land **inline** in the current
   plan's own commit/PR. A learning implying **large new work** becomes a tracked
   `plans/ideas/<slug>.md` two-pager only when the user literally authorizes that plan artifact.

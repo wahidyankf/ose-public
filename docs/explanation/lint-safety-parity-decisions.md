@@ -66,7 +66,7 @@ doc-drift, out of this dimension's scope.
 
 **Decision**: Gate all 14 tracked `.sh` files at `--severity=warning` in CI
 (new always-run `shell` job), in `.husky/pre-commit` (staged scripts), and add
-`shellcheck` to the `rhino-cli doctor` converger. Add a root `.shellcheckrc`
+`shellcheck` to the retired in-tree Rhino doctor converger. Add a root `.shellcheckrc`
 (`shell=bash`, `external-sources=true`).
 
 **Rationale**: Shell scripts are not Nx-tagged projects, so the gate runs on every
@@ -143,10 +143,8 @@ projects carry it too (with the narrow nowarn flags above).
 
 ### D1 / D1b — Rust `forbid(unsafe_code)` + `[lints]` standard (reference, not executed)
 
-ose-public is **already compliant** — `apps/rhino-cli/Cargo.toml` sets
-`unsafe_code = "forbid"` with a pedantic `[lints]` table. ose-public's Rust crates
-are the **reference standard** the siblings align to, so D1/D1b are documented
-here rather than executed.
+ose-public's retained Rust crates are the **reference standard** the siblings align to, so
+D1/D1b are documented here rather than executed.
 
 ### D3 (C#) / D4 (Python) / D9 (Terraform + Ansible/YAML) — not applicable
 

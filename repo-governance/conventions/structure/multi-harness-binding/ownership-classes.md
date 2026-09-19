@@ -10,7 +10,7 @@ are three classes, there is no fourth, and there is no unclassified residue.
 
 | Class       | Meaning                                                      | Enforcement                                                             |
 | ----------- | ------------------------------------------------------------ | ----------------------------------------------------------------------- |
-| `generated` | Emitted from canonical source by `harness bindings generate` | must reproduce byte-for-byte; a hand edit fails validation              |
+| `generated` | Emitted from canonical source by `harness adapters generate` | must reproduce byte-for-byte; a hand edit fails validation              |
 | `vendored`  | Third-party payload with no in-repo source                   | no byte guard; must survive regeneration untouched; requires a `reason` |
 | `source`    | Hand-authored canonical input                                | the emitter refuses to write to it                                      |
 
@@ -31,7 +31,7 @@ blank is indistinguishable from an oversight someone silenced. `repo-config vali
 
 ## How it is enforced
 
-`rhino-cli harness ownership validate` enumerates every tracked file under every declared binding
+`./rhino harness adapters validate` enumerates every tracked file under every declared binding
 directory **from the git index** — so a local scratch file is not a failure — and fails naming any it
 cannot classify. The longest matching declaration wins, so a broad tree declaration cannot mask a
 narrower one beneath it.

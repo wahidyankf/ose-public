@@ -29,10 +29,10 @@ stable as the harness matrix grows.
 
 **Canonical example**:
 
-| PASS: Correct                                                          | FAIL: Incorrect                               | Reason for failure                                     |
-| ---------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------ |
-| `"generate:bindings": "rhino-cli harness bindings generate"`           | `"sync:vendor-a-to-vendor-b": "..."`          | Contains vendor names; implies per-harness             |
-| `"harness:bindings-validation": "rhino-cli harness bindings validate"` | `"validate:specific-harness-bindings": "..."` | Names a specific harness rather than the logical check |
+| PASS: Correct                                                        | FAIL: Incorrect                               | Reason for failure                                     |
+| -------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------ |
+| `"generate:bindings": "./rhino harness adapters generate"`           | `"sync:vendor-a-to-vendor-b": "..."`          | Contains vendor names; implies per-harness             |
+| `"harness:bindings-validation": "./rhino harness adapters validate"` | `"validate:specific-harness-bindings": "..."` | Names a specific harness rather than the logical check |
 
 ## Rule 7 — Catalog Requirement
 

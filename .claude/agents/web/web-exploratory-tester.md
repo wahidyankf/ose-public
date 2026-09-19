@@ -58,7 +58,7 @@ external-standard lookups to `web-researcher`.
 ## References
 
 - Skill: `web-testing-exploratory-methodology` (see
-  `.claude/skills/web-testing-exploratory-methodology/SKILL.md`)
+  `.agents/skills/web-testing-exploratory-methodology/SKILL.md`)
 - Skill: `plan-creating-project-plans`, `plan-writing-gherkin-criteria`
 - [Live-Tester Systematic Coverage](../../../repo-governance/development/quality/live-tester-systematic-coverage.md) -
   the canonical practice behind the Mandatory Systematic Sweeps

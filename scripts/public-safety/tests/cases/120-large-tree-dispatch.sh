@@ -32,7 +32,7 @@ run() {
 		return 1
 	}
 
-	out=$(cd "$repo" && OSE_GATE_SURFACE=pre-commit bash scripts/public-safety/check.sh 2>&1)
+	out=$(cd "$repo" && RHINO_GATE_SURFACE=pre-commit bash scripts/public-safety/check.sh 2>&1)
 	rc=$?
 	assert_exit 0 "$rc" "exit code for a clean tree of $count files" || return 1
 	assert_contains "pre-commit: clean" "$out" "summary" || return 1

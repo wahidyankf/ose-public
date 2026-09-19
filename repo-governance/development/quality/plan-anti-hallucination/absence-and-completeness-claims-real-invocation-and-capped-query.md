@@ -8,8 +8,8 @@ when_to_use: "Use before trusting a validator result or count."
 ## Check the real invocation before calling a validator result evidence
 
 A validator run in isolation may be missing the flags that make it meaningful. Running
-`rhino-cli md mermaid validate` bare returns exit 1 on the validator's own deliberately-invalid
-negative fixtures; CI invokes it with `--exclude apps/rhino-cli/tests/fixtures`. Treating the bare
+`./rhino md mermaid validate` bare returns exit 1 on the validator's own deliberately-invalid
+negative fixtures; CI invokes it with its declared exclusions. Treating the bare
 run as a preexisting defect would have manufactured a three-repo parity plan for a non-problem.
 
 Before citing any validator result — pass or fail — read how CI and the git hooks actually invoke

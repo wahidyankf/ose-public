@@ -1,5 +1,7 @@
 # Reconcile the command names governance docs cite against the ones that exist
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: governance tables, agent files, and npm scripts all name commands that do not
 exist — Nx targets that were never implemented, a `rhino-cli` subcommand that was removed — so a
 reader following any of them runs something that exits non-zero.
@@ -15,17 +17,17 @@ Three drifts of one shape, each found while fixing something else:
 **Docs citing absent commands.** Four names appear in the naming-scheme tables of both repos as
 though they were live gates:
 
-- `cross-vendor:parity-validation` — the gate was merged into `harness bindings validate` and the
+- `cross-vendor:parity-validation` — the gate was merged into `harness adapters validate` and the
   backing `validate-cross-vendor-parity.sh` was deleted.
 - `mermaid:validation` — no such npm script or Nx target.
 - `headings:hierarchy-validation` — no such npm script or Nx target.
 - `format:check` — the real script is `format:md:check`.
 
 **Scripts invoking a removed subcommand — in the private sibling only.** There, `npm run sync:agents`,
-`sync:dry-run`, and `sync:skills` shell into `rhino-cli harness sync opencode`. That subcommand no
+`sync:dry-run`, and `sync:skills` shell into `./rhino harness sync opencode`. That subcommand no
 longer exists — `harness sync` offers only `validate` — and all three exit 2 with
 `error: unrecognized subcommand 'opencode'`. **In ose-public the same three script names invoke
-`harness bindings generate --harness opencode` and exit 0.** Identical names, different bodies, one
+`harness adapters generate --harness opencode` and exit 0.** Identical names, different bodies, one
 repo broken.
 
 **Agent files citing phantom Nx targets.** `.claude/agents/specs-checker.md`'s "Drift Detection"

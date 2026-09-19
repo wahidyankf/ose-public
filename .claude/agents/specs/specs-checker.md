@@ -59,7 +59,7 @@ optional `lifecycle-evidence`; omitted delegation means standalone full validati
 See `specs-validating-structure` Skill for the complete nine-category rule set (Structural
 Completeness, Feature File Inventory Accuracy, Gherkin Format Compliance, Cross-Folder Consistency,
 C4 Diagram Consistency, Cross-Reference Integrity, Spec-to-Implementation Alignment, Spec Tree
-Shape Compliance, Adoption Gaps), the current deterministic `rhino-cli`/Nx checks,
+Shape Compliance, Adoption Gaps), the current deterministic `Rhino`/Nx checks,
 the six-step execution pattern, and the full audit report template.
 
 ## Convergence Safeguards

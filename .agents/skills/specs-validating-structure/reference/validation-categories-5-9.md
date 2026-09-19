@@ -12,7 +12,7 @@ context/container/component levels. **LOW**: no `classDef` styling.
 ## Category 6: Cross-Reference Semantics [LLM]
 
 Assess whether references are conceptually appropriate and current. If `md-links` is delegated,
-do not resolve paths/fragments or infer broken-link findings. Without delegation, use `rhino-cli md
+do not resolve paths/fragments or infer broken-link findings. Without delegation, use `./rhino md
 links validate`; do not substitute LLM path arithmetic.
 
 ## Category 7: Spec-to-Implementation Alignment [LLM]
@@ -26,9 +26,9 @@ content must use the owning app/lib's durable domain language. A plan slug, plan
 delivery-unit name, or plan acceptance-criterion identifier in canonical Gherkin is **HIGH**: report
 the exact feature/scenario and require the plan metadata to move to its external traceability map.
 
-## Category 8: Spec Tree Shape Compliance [Deterministic via rhino-cli]
+## Category 8: Spec Tree Shape Compliance [Deterministic via Rhino]
 
-Outside delegated quality-gate runs, shell out to `rhino-cli specs structure validate <app>`, parse
+Outside delegated quality-gate runs, shell out to `the declared spec-structure check`, parse
 JSONL. **HIGH**: top-level folder isn't
 one of the five canonical folders; a flat-root artifact exists (`be/`, `web/`, `cli/`, `c4/`,
 `contracts/` at app root); a BE/web/CLI feature file sits directly under
@@ -37,9 +37,9 @@ one of the five canonical folders; a flat-root artifact exists (`be/`, `web/`, `
 `gherkin/` without a package subdirectory. **MEDIUM**: domain subdirectory not kebab-case. **LOW**:
 domain subdirectory contains only one feature file named differently than the directory.
 
-## Category 9: Adoption Gaps (BDD/Contracts) [Deterministic via rhino-cli]
+## Category 9: Adoption Gaps (BDD/Contracts) [Deterministic via Rhino]
 
-Outside delegated quality-gate runs, use `rhino-cli specs structure validate <app>` for structural
+Outside delegated quality-gate runs, use `the declared spec-structure check` for structural
 adoption evidence, then apply narrative judgment per
 [App README vs Specs Convention](../../../../repo-governance/conventions/structure/app-readme-vs-specs.md)
 Standard 6:

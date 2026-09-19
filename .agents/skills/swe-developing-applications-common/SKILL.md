@@ -38,7 +38,7 @@ common-failure fixes.
 ## Development Environment Setup
 
 Verify the toolchain before implementing anything: `rtk npm run doctor` (add `-- --fix` to
-auto-install). `rhino-cli` manages `.env` files. Right after creating a worktree, run
+auto-install). `Rhino` manages `.env` files. Right after creating a worktree, run
 `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and then
 `rtk npm run doctor -- --fix`; re-entry alone does not trigger setup. See
 [Development Environment Setup](./reference/development-environment-setup.md) for the full command

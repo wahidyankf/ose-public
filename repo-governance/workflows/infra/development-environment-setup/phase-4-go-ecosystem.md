@@ -12,7 +12,7 @@ formatter-only**: no project is written in it, and `stylua` exists solely for th
 The `format-gofmt` / `format-verify-gofmt` and `format-stylua` / `format-verify-stylua` gates in
 `repo-config.yml` enforce the formatting half at pre-commit and in CI.
 
-That difference decides whether you can skip this phase. `rhino-cli doctor` checks Go — it is
+That difference decides whether you can skip this phase. `./rhino toolchain validate` checks Go — it is
 declared under `doctor.extra-tools` with a version floor, so `doctor --fix` installs it, and 4.1
 below is only the manual equivalent. Doctor does **not** check `stylua`, so 4.2 stays a hand
 install you can skip if you never touch course code.

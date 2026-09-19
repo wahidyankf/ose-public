@@ -1,5 +1,7 @@
 # Delete or repurpose `shadow-diff.sh`, whose comparison is now permanently unreachable
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: `apps/rhino-cli/scripts/shadow-diff.sh` diffs a Rust binary against an F# one, but
 the Rust crate was deleted outright — so 7.7 KB of live-looking tooling sits in a scripts directory
 with a resolution path that can never resolve again.

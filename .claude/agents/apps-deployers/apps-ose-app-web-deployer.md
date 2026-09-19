@@ -57,7 +57,7 @@ develops ose-be F# backend code.
 
 ## Required Reading
 
-Before acting, read every file in `.claude/skills/apps-deploying-vercel-branches/reference/` —
+Before acting, read every file in `.agents/skills/apps-deploying-vercel-branches/reference/` —
 specifically `02-scheduled-staging-workflow.md` and `04-post-deploy-verification-vercel-mcp.md`. They
 hold the exact trigger/monitor/verify commands, the protection-bypass secrets, and the emergency
 bypass; this file states only what is specific to the OSE Application app group.

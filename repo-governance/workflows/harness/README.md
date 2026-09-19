@@ -5,7 +5,7 @@ when_to_use: Use when routing to a workflow that validates coding-agent bindings
 
 # Harness Workflows
 
-Use these workflows for periodic or on-demand validation of coding-agent harness bindings,
+Use these workflows for periodic or on-demand validation of coding-agent harness adapters,
 cross-vendor parity, platform-binding catalog accuracy, and upstream convention drift.
 
 Deterministic pre-push and CI binding checks remain gates rather than workflows. General

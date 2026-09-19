@@ -19,7 +19,7 @@ never the boundary of the rule — a surface absent from it does not become exem
   EWT/UWT/DWT triad).
 - **API- or backend-bearing plan** → run [`api/api-quality-gate.md`](../../api/api-quality-gate.md).
 - **Several of these** → run each set.
-- **A reachable surface with no gate listed above** — a CLI such as `apps/rhino-cli/**`, a library
+- **A reachable surface with no gate listed above** — a CLI, a library
   under `libs/`, a git hook, a CI workflow — is **not exempt**. The plan states in its chosen technical form
   how the changed behaviour will be exercised through its own interface (for a CLI: which subcommands
   get invoked and what output is recorded; for a library: which consuming caller exercises it, not

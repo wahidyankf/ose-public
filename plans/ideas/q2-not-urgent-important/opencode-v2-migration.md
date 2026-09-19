@@ -1,5 +1,7 @@
 # OpenCode v2 migration
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: OpenCode v2 renames eleven configuration keys the generator emits today, so plan
 the migration before the beta is promoted rather than after a release breaks the mirrors.
 
@@ -10,7 +12,7 @@ the migration before the beta is promoted rather than after a release breaks the
 
 OpenCode ships **two concurrent majors**. The stable binary is `opencode`, at 1.18.18 at the time of
 writing. The v2 beta ships as a separate binary, `opencode2`, and is opt-in — installing it does not
-replace v1. This repository targets v1 exclusively: `rhino-cli harness bindings generate` emits
+replace v1. This repository targets v1 exclusively: `./rhino harness adapters generate` emits
 `.opencode/agents/*.md` in v1 shape, and `.opencode/opencode.json` is a vendored v1 config.
 
 v2 is not a superset. It renames configuration keys, and every rename below is a key this repository

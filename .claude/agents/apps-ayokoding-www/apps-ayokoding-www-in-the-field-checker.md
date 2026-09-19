@@ -51,7 +51,7 @@ Pattern: `ayokoding-web-in-the-field__{uuid-chain}__{YYYY-MM-DD--HH-MM}__audit.m
 
 ## Validation Scope
 
-See [docs-creating-in-the-field-tutorials/reference/checking-in-the-field-format.md](../../skills/docs-creating-in-the-field-tutorials/reference/checking-in-the-field-format.md)
+See [docs-creating-in-the-field-tutorials/reference/checking-in-the-field-format.md](../../../.agents/skills/docs-creating-in-the-field-tutorials/reference/checking-in-the-field-format.md)
 for the complete checklist and step-by-step validation order: guide count (20-40), annotation
 density (1.0-2.25 ratio), standard library first progression (this format's CRITICAL check),
 production code quality, framework introduction quality, diagram count/palette, and ayokoding-web

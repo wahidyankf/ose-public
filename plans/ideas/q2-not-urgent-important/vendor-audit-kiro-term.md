@@ -1,5 +1,7 @@
 # Vendor-audit: add `Kiro` to the vendor-term list (parity repos)
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: teach the vendor-audit scanner the term `Kiro` (and `.kiro/`) so a Kiro mention
 leaking into vendor-neutral governance prose is caught instead of passing silently.
 
@@ -33,7 +35,7 @@ so it is cheapest to close before the first mention lands, not after.
 ## Proposed direction (sketch)
 
 - Add `\bKiro\b` and the `.kiro/` path prefix to the vendor-term list in `vendor_audit.rs`, with
-  companion Gherkin under `specs/apps/rhino/cli/behaviours/**`.
+  companion Gherkin in the upstream Rhino specification corpus.
 - Update the companion term table in the Governance Vendor-Independence Convention in the same change,
   so the documented list and the scanner agree (editing only the doc would make it lie about the
   tool).

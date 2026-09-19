@@ -65,7 +65,7 @@ that a "N-step" claim matches the number of numbered steps in the thing it descr
   dynamic collections in prose. A numbered procedure is not quite a "collection", but the failure
   mode is identical and the convention is the natural place to extend.
   [dynamic-collection-references](../../../repo-governance/conventions/writing/dynamic-collection-references.md)
-- **`rhino-cli md heading-hierarchy validate`** — precedent for a mechanical markdown-structure
+- **`./rhino md heading-hierarchy validate`** — precedent for a mechanical markdown-structure
   validator in this repo; a "declared step count matches numbered steps" check would live beside it.
 - **Multi-repo parity planning workflow** — the process any three-repo byte-identical correction must
   run through.

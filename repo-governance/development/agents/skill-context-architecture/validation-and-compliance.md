@@ -7,7 +7,7 @@ when_to_use: Use when validating that a new or edited Skill declares the correct
 
 ## Skill Validation Checklist
 
-When creating or reviewing skills in `.claude/skills/`:
+When creating or reviewing skills in `.agents/skills/`:
 
 - [ ] `context` field is omitted (inline default), `inline`, or `fork` (main conversation only)
 - [ ] No `agent` field (only valid with `context: fork`)
@@ -22,7 +22,7 @@ When creating or reviewing skills in `.claude/skills/`:
 **Wrong**:
 
 ```yaml
-# .claude/skills/deep-research/SKILL.md
+# .agents/skills/deep-research/SKILL.md
 ---
 description: Performs deep research on topics
 context: fork
@@ -32,14 +32,14 @@ agent: Explore
 
 **Problem**: Breaks when delegated agents try to use this skill.
 
-**Right**: Keep in `.claude/skills/` but document as main-conversation-only, or use a workflow approach.
+**Right**: Keep in `.agents/skills/` but document as main-conversation-only, or use a workflow approach.
 
 ### ❌ Mistake 2: Inline skill trying to spawn agents
 
 **Wrong**:
 
 ```yaml
-# .claude/skills/analysis/SKILL.md
+# .agents/skills/analysis/SKILL.md
 ---
 description: Analyzes code quality
 ---
@@ -57,7 +57,7 @@ Run the code-checker agent to validate...
 **Wrong**:
 
 ```yaml
-# .claude/skills/hybrid/SKILL.md
+# .agents/skills/hybrid/SKILL.md
 ---
 description: Provides knowledge and delegates tasks
 context: inline

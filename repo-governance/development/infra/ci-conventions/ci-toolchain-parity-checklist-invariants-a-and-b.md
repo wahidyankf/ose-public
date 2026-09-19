@@ -23,7 +23,7 @@ must be recorded here with a justification; undocumented deviations are always b
 | App-tier scheduled workflows use staggered 2× WIB cadence: `*-app-test-local-deploy-stag` at 03:00/15:00, `*-app-test-stag` at 05:30/17:30 (+2.5 h)         | `*-app-test-local-deploy-stag.yml` and `*-app-test-stag-*.yml` CRON |
 | www-tier scheduled workflows run at 06:00/18:00 WIB (23:00/11:00 UTC)                                                                                       | `*-www-test-local-deploy-prod.yml` CRON expressions                 |
 
-Note: the `rhino-cli:naming:workflows-validation` Nx target, which once validated
+Note: the `Rhino:naming:workflows-validation` Nx target, which once validated
 `repo-governance/workflows/*.md` naming, was withdrawn — see
 [repo-governance/workflows/README.md](../../../workflows/README.md) for the withdrawal record. No
 current gate validates `.github/workflows/` filenames either; workflow-file naming is enforced by
@@ -33,8 +33,8 @@ code review only.
 
 Three Husky hooks, each with a fixed shape:
 
-| Hook         | Required steps (in order)                                                                                                                                                                                                                                                                                             |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `commit-msg` | `commitlint --edit "$1"` — enforces Conventional Commits format                                                                                                                                                                                                                                                       |
-| `pre-commit` | `./rhino gate run --surface pre-commit`: the public-safety screen, then the registry (validate configs, format staged, validate links, lint markdown, shellcheck/hadolint/actionlint)                                                                                                                                 |
-| `pre-push`   | `./rhino gate run --surface pre-push` — the public-safety screen, then every registry-declared `pre-push`-surface gate, in declaration order; see [Git Hook Lifecycle](../../workflow/git-hook-lifecycle.md) and discover the live set with `gate list --surface=pre-push --format=text` rather than a hardcoded list |
+| Hook         | Required steps (in order)                                                                                                                                                                                                                                                            |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `commit-msg` | `commitlint --edit "$1"` — enforces Conventional Commits format                                                                                                                                                                                                                      |
+| `pre-commit` | `./rhino gate run --surface pre-commit`: the public-safety screen, then the registry (validate configs, format staged, validate links, lint markdown, shellcheck/hadolint/actionlint)                                                                                                |
+| `pre-push`   | `./rhino gate run --surface pre-push` — the public-safety screen, then every registry-declared `pre-push`-surface gate, in declaration order; see [Git Hook Lifecycle](../../workflow/git-hook-lifecycle.md) and discover the live set with `gate list` rather than a hardcoded list |

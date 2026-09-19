@@ -11,7 +11,7 @@ Required for: formatting only. This repository ships no Elixir application or li
 and `*.exs` files it tracks are AyoKoding course corpora under `apps/ayokoding-www/content/**`,
 and the `format-elixir` / `format-verify-elixir` gates in `repo-config.yml` keep them formatted by
 running `scripts/format-elixir.sh`, which shells out to `mix format` from the nearest `mix.exs`
-ancestor. `rhino-cli doctor` does not check Erlang or Elixir.
+ancestor. `./rhino toolchain validate` does not check Erlang or Elixir.
 
 **No version is pinned.** There is no `.tool-versions` file at the repository root; any Erlang/OTP
 and Elixir pair new enough to run `mix format` will do. The commands below use a known-good pair.

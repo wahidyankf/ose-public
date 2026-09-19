@@ -1,28 +1,9 @@
 ---
-name: plan-checker
-description: Validates project plan quality including requirements completeness, technical documentation clarity, and delivery checklist executability. Use when reviewing plans before execution.
-tools: Read, Glob, Grep, Write, Bash, WebSearch, WebFetch
-model: opus
+description: "Audits a complete plan draft against the plan specification and returns findings with a terminal verdict, without modifying anything it audits."
 effort: high
-color: green
-skills:
-  - docs-applying-content-quality
-  - plan-writing-gherkin-criteria
-  - plan-creating-project-plans
-  - plan-validating-quality
-  - docs-validating-factual-accuracy
-  - repo-generating-validation-reports
-  - repo-assessing-criticality-confidence
-  - repo-applying-maker-checker-fixer
-  - repo-maintaining-task-lists
-  - repo-understanding-shared-vocabulary
+model: opus
+name: plan-checker
+tools: "Read, Glob, Grep, Bash, WebSearch, WebFetch"
 ---
 
-Before acting, read the complete canonical agent definition at the repository-root path .agents/agents/plan-checker.md and
-follow it as authoritative. If it cannot be read, stop and report the missing path.
-
-**Model Selection Justification**: `model: opus` (planning grade) — judging whether a plan is
-complete, sequenced, and executable is open-ended reasoning over a whole delivery, not a checklist
-sweep: the defect is usually a missing step or a wrong order, which is visible only against an
-intent the plan never states. A governance trio sits at planning grade because a wrong call
-reshapes work across the repository rather than one file.
+Before acting, read the complete canonical agent definition at the repository-root path .agents/agents/plan-checker.md and follow it as authoritative. If it cannot be read, stop and report the missing path.

@@ -12,9 +12,9 @@ Agent definitions in their canonical, harness-neutral form, one Markdown file pe
 from a closed vocabulary in fixed order — `repository-read`, `repository-write`, `shell`, `network`, `subagent` — and
 records what it must not do under `constraints`.
 
-The canonical file is the one a human edits. So far only the plan agents are canonical here: their Claude Code sources
-under `.claude/agents/plan/` keep the harness-native keys and route to the files below, and every other agent stays a
-Claude-native source.
+The canonical file is the one a human edits. The three plan agents below are the currently declared
+canonical agents. Platform adapters route to these files; do not treat an adapter as a second source
+of instructions.
 
 ## Directory Map
 

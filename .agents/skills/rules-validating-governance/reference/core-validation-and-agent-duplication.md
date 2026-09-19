@@ -3,12 +3,12 @@
 ## Step 1: Core Repository Validation
 
 **Deterministic-gate annotation**: file naming, frontmatter shape (No-Last-Updated convention),
-and emoji codepoints are enforced by the deterministic `rhino-cli md`/`convention` gates at
+and emoji codepoints are enforced by the deterministic `./rhino md`/`convention` gates at
 pre-commit and markdown CI — not in the `repo-governance audit` preflight envelope. Do not
 AI-re-derive them; re-evaluate only linking correctness and semantic convention compliance not
 caught mechanically.
 
-**Path scope**: `repo-governance/**/*.md`, `.claude/agents/**/*.md`, `.claude/skills/**/*.md`,
+**Path scope**: `repo-governance/**/*.md`, `.claude/agents/**/*.md`, `.agents/skills/**/*.md`,
 `docs/**/*.md`, root instruction surfaces (`AGENTS.md`, `CLAUDE.md`, `README.md`), active plans
 (`plans/in-progress/**/*.md`, `plans/backlog/**/*.md`). **Exempt**: website content
 (`apps/ayokoding-www/`, `apps/ose-www/`, `apps/organiclever-www/`, `apps/wahidyankf-www/`),
@@ -40,7 +40,7 @@ changed files; if not found, run a full scan.
 
 ## Step 2: Agent-to-Agent Duplication Detection
 
-**Deterministic-gate annotation**: verbatim agent/skill duplication is caught by the `rhino-cli
+**Deterministic-gate annotation**: verbatim agent/skill duplication is caught by the `Rhino
 harness` gate — do not AI-re-derive the verbatim-match portion; re-evaluate only paraphrased/
 non-verbatim duplication.
 

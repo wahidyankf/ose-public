@@ -60,7 +60,7 @@ skills: []
    - See "Agent Color Categorization" below for assignment guidelines
 
 6. **`skills`** (required)
-   - List of Skill names the agent references (from `.claude/skills/` (primary))
+   - List of Skill names the agent references (from `.agents/skills/` (primary))
    - Can be empty array `[]` if agent doesn't use agent skills - agent skills auto-load when agent is invoked (if task matches Skill description)
    - Enables composability and explicit knowledge dependencies
    - Example: `skills: [docs-creating-accessible-diagrams, repo-applying-maker-checker-fixer]`

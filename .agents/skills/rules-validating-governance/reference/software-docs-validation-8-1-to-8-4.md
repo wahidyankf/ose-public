@@ -1,7 +1,7 @@
 # Step 8 (8.1-8.4): Software Docs Principle Alignment, Cross-References, Naming, Structure
 
 **Deterministic-gate annotation**: file naming (8.3), frontmatter shape and heading hierarchy
-(8.4), and README index integrity (8.7) are enforced by the deterministic `rhino-cli md` gate
+(8.4), and README index integrity (8.7) are enforced by the deterministic `./rhino md` gate
 (`naming`, `frontmatter`, `heading-hierarchy`, `readme-index` validators) — not in the preflight
 envelope. Re-evaluate only content accuracy, principle-alignment judgement, and cross-doc
 terminology consistency.

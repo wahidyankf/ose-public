@@ -26,7 +26,7 @@ suites. The Flutter Web client is a deliberate no-runtime-environment exception.
 - A working checkout with guarded `./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
   transactional `npm run doctor -- --fix` already run
 - An `apps/<app>/.env.local` file for the app you are configuring (scaffold one with
-  `rhino-cli env init`, or copy `apps/<app>/.env.example`)
+  `./rhino env init`, or copy `apps/<app>/.env.example`)
 
 ## The four tiers
 
@@ -191,14 +191,14 @@ remain agent-readable and agent-editable.
 This is a named-file rule, not a blanket deny on every `.env*` file — only `.env.prod` and
 `.env.stag` are denied. It is also independent of commit policy: commit policy stays deny-all for
 every real `.env*` file (everything except `.env.example`), enforced by
-`rhino-cli env staged-guard validate` in the pre-commit path, regardless of which tier files an
+`the public-safety tree check` in the pre-commit path, regardless of which tier files an
 agent is allowed to read.
 
 ## Related
 
 - [Secrets and Environment-Variable Standards](../../repo-governance/conventions/security/secrets-and-env-standards.md) —
   the authoritative reference for env var naming, `.env.example` layout, startup validation, the
-  `rhino-cli env` toolchain, the tiered injection standard, and the full `guard-env-file-access`
+  `./rhino env` toolchain, the tiered injection standard, and the full `guard-env-file-access`
   policy (§9)
 - [Set up your development environment](./setup-development-environment.md) — install the tools
   needed before configuring an app's `.env.local`

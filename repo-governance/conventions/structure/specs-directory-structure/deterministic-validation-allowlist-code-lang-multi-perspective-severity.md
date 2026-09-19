@@ -1,18 +1,18 @@
 ---
-description: The rhino-cli specs validation commands and their default app selection
-when_to_use: Read this when running or configuring rhino-cli specs validate-* commands.
+description: The the retired spec validation surface validation commands and their default app selection
+when_to_use: Read this when running or configuring the retired spec validation surface validate-* commands.
 ---
 
-# Deterministic Validation (rhino-cli)
+# Deterministic Validation (Rhino)
 
-The following `rhino-cli specs` commands validate the directory structure mechanically:
+The following `the retired spec validation surface` commands validate the directory structure mechanically:
 
-| Command                                    | What it checks                                                             |
-| ------------------------------------------ | -------------------------------------------------------------------------- |
-| `rhino-cli specs validate-tree <app>`      | Top-level folders match the canonical five — no flat-root artifacts remain |
-| `rhino-cli specs validate-counts <folder>` | README count claims match actual `.feature` file counts                    |
-| `rhino-cli specs validate-links <folder>`  | Markdown link integrity within the spec tree                               |
-| `rhino-cli specs validate-adoption <app>`  | BDD/Contracts adoption gaps per surface profile                            |
+| Command                             | What it checks                                                             |
+| ----------------------------------- | -------------------------------------------------------------------------- |
+| `the declared spec-tree check`      | Top-level folders match the canonical five — no flat-root artifacts remain |
+| `the declared spec-count check`     | README count claims match actual `.feature` file counts                    |
+| `./rhino md internal-link validate` | Markdown link integrity within the spec tree                               |
+| `the declared adoption check`       | BDD/Contracts adoption gaps per surface profile                            |
 
 These commands run as part of the `specs-quality-gate` workflow deterministic-offload pass. See [Deterministic Offload](./pre-push-ci-llm-validation-deterministic-offload-and-related-documentation.md#deterministic-offload) in the next section.
 

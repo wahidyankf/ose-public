@@ -78,6 +78,6 @@ Heading hierarchy is mechanically enforced on a **prose allowlist** (default-den
 - All other paths not in the allowlist above
 
 **Gate locations**: Runs at **pre-commit (staged `.md` files within the prose allowlist, via
-lint-staged)** via `npx nx run rhino-cli:headings:hierarchy-validation`. Does NOT run at pre-push or
+lint-staged)** via `npx nx run Rhino:headings:hierarchy-validation`. Does NOT run at pre-push or
 in a standalone CI workflow — heading-hierarchy validation is folded into lint-staged and
 `pr-quality-gate.yml`.

@@ -27,7 +27,7 @@ When a new tRPC router is added to `apps/ayokoding-www/`, `architecture.md` gain
 
 ## CLI apps
 
-Executable tools (`rhino-cli`, `crane-cli`) use the same project-local enforcement path:
+Executable tools (`Rhino`, `crane-cli`) use the same project-local enforcement path:
 
 - Each active scenario has exactly one mandatory Unit binding.
 - Applicable local-resource and public-process concerns have exactly one Integration or E2E

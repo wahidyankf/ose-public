@@ -29,5 +29,5 @@ Two consequences bind any author or checker working on state diagrams:
    `md-mermaid-strict` gate fails at 20 but is scoped to **changed `.md` files**, so it never
    blocks on the untouched corpus — the same objection, answered by scope instead of severity.
 
-A candidate `rhino-cli` WARN-level rule is tracked as a two-pager idea brief at
+A candidate `Rhino` WARN-level rule is tracked as a two-pager idea brief at
 [`plans/ideas/mermaid-state-label-render-clipping-warn.md`](../../../../plans/ideas/q2-not-urgent-important/mermaid-state-label-render-clipping-warn.md).

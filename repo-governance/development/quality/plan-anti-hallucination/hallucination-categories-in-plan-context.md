@@ -18,7 +18,7 @@ Plans drift from reality in predictable ways. Each category maps to a verificati
 | **Command flag**      | `npx nx affected -t typecheck --parallel=cores-1`         | `<cmd> --help` or repo's documented usage in `package.json` scripts                                            |
 | **Test name**         | `RateLimit_RejectsExceedingRequests`                      | If pre-existing, `Grep` test files; if NEW, mark `_New test_`                                                  |
 | **Agent name**        | `swe-typescript-dev`, `web-researcher`                    | `find .claude/agents -name '<name>.md'` and confirm (nested role subfolders, not flat)                         |
-| **Skill name**        | `plan-creating-project-plans`                             | List `.claude/skills/` and confirm                                                                             |
+| **Skill name**        | `plan-creating-project-plans`                             | List `.agents/skills/` and confirm                                                                             |
 | **External standard** | "AGENTS.md spec at agents.md", "Conventional Commits 1.0" | `web-researcher` with cited excerpt + URL + access date                                                        |
 | **Behaviour claim**   | "Next.js serves `app/robots.ts` over `public/robots.txt`" | `web-researcher` with cited official-doc excerpt                                                               |
 | **Numeric KPI**       | "reduces review time by 35%"                              | If no measured baseline exists: FORBIDDEN as fact, allowed only as `_Judgment call:_` or qualitative reasoning |

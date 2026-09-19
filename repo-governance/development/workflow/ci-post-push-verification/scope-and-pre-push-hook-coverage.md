@@ -24,7 +24,7 @@ This convention does not apply to pushes that exclusively touch:
 - `plans/` — planning documents only
 - `generated-reports/` — human-requested artifacts only
 - `social-media-posts/` — social content only
-- `.claude/agents/`, `.claude/skills/` — agent/skill definitions only, no app code impact
+- `.claude/agents/`, `.agents/skills/` — agent/skill definitions only, no app code impact
 
 The pre-push hook runs the registry-defined gates, including affected `test:quick`; quick owns Unit
 runtime and every applicable static `test:coverage:*` validator.

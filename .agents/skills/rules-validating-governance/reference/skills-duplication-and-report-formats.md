@@ -2,10 +2,10 @@
 
 ## Step 3: Agent-Skill Duplication Detection
 
-**Deterministic-gate annotation**: verbatim agent/skill duplication is caught by `rhino-cli
+**Deterministic-gate annotation**: verbatim agent/skill duplication is caught by `Rhino
 harness` — re-evaluate only paraphrased/non-verbatim agent-Skill duplication.
 
-For each agent, extract content blocks and compare against every Skill in `.claude/skills/`,
+For each agent, extract content blocks and compare against every Skill in `.agents/skills/`,
 detecting verbatim/paraphrased/conceptual duplication and assessing criticality identically to
 Step 2's scale. Common patterns to check: UUID generation logic (→
 `repo-generating-validation-reports`), criticality definitions (→

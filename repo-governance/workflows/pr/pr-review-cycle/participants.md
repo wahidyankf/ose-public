@@ -17,7 +17,7 @@ sit idle in this branch; it performs one consolidated generalist pass itself in 
 fan-out and originates findings directly, the single explicit carve-out to its otherwise-
 transform-only charter (see
 [`pr-review-synthesis-maker.md`'s Charter](../../../../.claude/agents/pr-review/pr-review-synthesis-maker.md) and
-[`pr-review-scout-maker.md`'s Trivial-Tier Handoff](../../../../.claude/skills/pr-review-scout-classification/reference/untrusted-input-and-output-contract.md#trivial-tier-handoff-dd-7)).
+[`pr-review-scout-maker.md`'s Trivial-Tier Handoff](../../../../.agents/skills/pr-review-scout-classification/reference/untrusted-input-and-output-contract.md#trivial-tier-handoff-dd-7)).
 
 **Plans-only branch**: the scout records the ordinary tier. Trivial uses the coordinator alone;
 lite/full use the linked five-specialist set. See the
@@ -35,7 +35,7 @@ for its artifact test, primary probe, preserved five concerns, and suppression.
   `pr-review-types-maker` and `pr-review-integrity-maker` from a given cycle when their own declared
   artifact class (typed-language files; test/CI-workflow files, respectively) is verifiably absent
   from that cycle's current diff — see
-  [`pr-review-scout-maker.md`'s Content-Type Applicability Filter](../../../../.claude/skills/pr-review-scout-classification/reference/risk-tier-and-specialist-selection.md#risk-tier-classification--specialist-set-selection-d12).
+  [`pr-review-scout-maker.md`'s Content-Type Applicability Filter](../../../../.agents/skills/pr-review-scout-classification/reference/risk-tier-and-specialist-selection.md#risk-tier-classification--specialist-set-selection-d12).
   Each fanned-out specialist reads the full PR context (diff + originating plan/issue) and emits raw,
   discipline-scoped findings; none posts to GitHub directly — every specialist's findings feed
   `pr-review-synthesis-maker`. Defined at `.claude/agents/pr-review-<discipline>-maker.md`:

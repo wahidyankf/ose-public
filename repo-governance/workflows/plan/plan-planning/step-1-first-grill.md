@@ -9,7 +9,7 @@ Invoke the `grill-me` Skill to resolve all open design decisions before research
 
 **Orchestrator action**:
 
-Invoke the `grill-me` Skill (`.claude/skills/grill-me/SKILL.md`). Present Step 0 findings.
+Invoke the `grill-me` Skill (`.agents/skills/grill-me/SKILL.md`). Present Step 0 findings.
 Every question in this grill MUST follow the
 [Grilling-With-Options Convention](../../../development/workflow/grilling-with-options.md), present
 2-4 concrete, mutually exclusive options with explicit trade-offs, mark exactly one option

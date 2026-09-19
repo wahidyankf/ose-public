@@ -56,6 +56,6 @@ command above, and serves the output directory — no local build is needed befo
 ## Required Reading
 
 Before acting, read every file in
-`.claude/skills/apps-deploying-vercel-branches/reference/` — specifically `01-direct-force-push-workflow.md`
+`.agents/skills/apps-deploying-vercel-branches/reference/` — specifically `01-direct-force-push-workflow.md`
 and `04-post-deploy-verification-vercel-mcp.md`. They hold the exact validate/push/verify commands
 and troubleshooting steps; this file states only what is specific to web-ui Storybook.

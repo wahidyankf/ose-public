@@ -1,5 +1,5 @@
 ---
-description: The runnable grep-based bash loop that reports every course file missing a REQUIRED section, until a deterministic rhino-cli validator exists.
+description: The runnable grep-based bash loop that reports every course file missing a REQUIRED section, until a deterministic Rhino validator exists.
 when_to_use: Read this when you need to check an existing corpus for missing REQUIRED sections without a dedicated CLI validator.
 ---
 
@@ -7,7 +7,7 @@ when_to_use: Read this when you need to check an existing corpus for missing REQ
 
 Part of the [Learning-Plan `syllabus/` Folder Convention](../learning-plan-syllabus.md).
 
-Until a deterministic `rhino-cli` validator exists (deferred, and filed as a two-pager idea brief
+Until a deterministic `Rhino` validator exists (deferred, and filed as a two-pager idea brief
 under `plans/ideas/`), an author or checker can detect a course file missing a REQUIRED section today
 with the loop below. It
 iterates the `*.md` files under a corpus's `syllabus/courses/`, skips `README.md` and `surgery.md`

@@ -11,13 +11,11 @@ than two repos, downstream repos may remain independent DAG nodes, but resource-
 provisioning, toolchain setup, builds, and validation each enter
 [Resource-Aware Development](../../../development/practice/resource-aware-development.md).
 Independent compute may overlap only when HIPPO admits its fixed reservations. Dependency,
-shared-output, byte-identity, transactional, and documented correctness edges remain sequential.
+shared-output, transactional, and documented correctness edges remain sequential.
 The private sibling does not participate in the parity loop for content it does not carry.
 
-The one hard serialization: **`apps/rhino-cli` must stay byte-identical across the parity repos
-— `ose-public` and the private sibling** — so plans touching it propagate one repo at a time
-rather than concurrently
-([AGENTS.md §Related Repositories](../../../../AGENTS.md#related-repositories)).
+An explicitly declared local shared-source boundary is serialized across its named repositories;
+the checksum-pinned Rhino release is consumed independently and is not an OSE source boundary.
 
 ## Delivery Shape Per Repo
 

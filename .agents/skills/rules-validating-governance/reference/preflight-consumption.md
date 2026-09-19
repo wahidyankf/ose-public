@@ -3,14 +3,14 @@
 **Inputs**: `preflight-report` plus, for `rules-quality-gate`, exact `delegated-gate-ids` and the
 lifecycle evidence ledger. The report path points to `local-tmp/repo-governance-audit/repo-governance-audit__*.json`,
 produced by the orchestrating workflow (`repo-governance/workflows/rules/rules-quality-gate.md`)
-running `./apps/rhino-cli/src/dist/rhino-cli-fsharp repo-governance audit -o json`.
+running the declared Rhino governance checks.
 
 **Procedure**:
 
 1. Read the preflight JSON.
-2. Validate envelope: confirm `schema` equals `rhino-cli/repo-governance-audit/v1`. In
-   quality-gate context, missing/different schema is a technical domain failure. Standalone
-   invocation retains the defensive full-scan fallback.
+2. Validate the envelope against the producer's documented schema and recorded Rhino version. In
+   quality-gate context, a missing or incompatible schema is a technical domain failure.
+   Standalone invocation retains the defensive full-scan fallback.
 3. Extract findings: parse `result.categories[]` (`name`, `command`, `passed`, `findings[]`) and
    `result.skipped_false_positives[]`.
 4. Populate the ownership sets. In `rules-quality-gate`, the preflight is already filtered to
@@ -24,7 +24,7 @@ running `./apps/rhino-cli/src/dist/rhino-cli-fsharp repo-governance audit -o jso
 
    **Not in this envelope**: file naming, frontmatter shape, emoji codepoints, heading hierarchy,
    README index integrity, license presence, and agent/skill verbatim duplication run under the
-   sibling `rhino-cli md`, `convention`, and `harness` subcommands (pre-commit/CI gates) — the
+   sibling `./rhino md`, `convention`, and `harness` subcommands (pre-commit/CI gates) — the
    per-step "deterministic-gate annotation" notes say which gate owns each.
 
 5. Embed retained findings under `## Deterministic Domain Findings`; they count at their declared

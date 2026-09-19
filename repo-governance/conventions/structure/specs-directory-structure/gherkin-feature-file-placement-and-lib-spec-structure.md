@@ -25,7 +25,7 @@ Where:
 - **`{feature}`** = feature file name in kebab-case
 
 The owner segment is already inside `specs/apps/<product>/`, so it carries the bare surface name:
-`rhino/cli/`, not `rhino/rhino-cli/`. A backend is always `be`, never `api`.
+`rhino/cli/`, not `rhino/Rhino/`. A backend is always `be`, never `api`.
 
 ### Domain Subdirectory Rules
 
@@ -47,13 +47,13 @@ A domain folder may contain one or many feature files.
 **CLI specs** use the same domain subdirectory rule as BE and web. Group features by command domain (e.g., `system/`, `env/`, `links/`). Single-feature domains are fine when the CLI surface area is small:
 
 ```
-specs/apps/rhino/cli/behaviours/system/doctor.feature
-specs/apps/rhino/cli/behaviours/env/env-backup.feature
-specs/apps/rhino/cli/behaviours/gate/gate-execution.feature
+the upstream Rhino specification corpussystem/doctor.feature
+the upstream Rhino specification corpusenv/env-backup.feature
+the upstream Rhino specification corpusgate/gate-execution.feature
 specs/apps/crane/cli/behaviours/pdf/pdf-commands.feature
 ```
 
-A `behaviours/` tree is recursive, so `rhino-cli specs validate-tree` accepts a feature file at its root; the domain subdirectory is what keeps a growing surface navigable, not what the validator counts.
+A `behaviours/` tree is recursive, so `the declared spec-tree check` accepts a feature file at its root; the domain subdirectory is what keeps a growing surface navigable, not what the validator counts.
 
 ## Lib Spec Structure
 

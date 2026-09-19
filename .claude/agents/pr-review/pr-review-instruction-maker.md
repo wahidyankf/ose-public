@@ -55,7 +55,7 @@ toolchain detail omitted from an otherwise-current doc.
 ## SUPPRESS Block (Never Raise)
 
 During PR quality-gate invocation, first apply the shared
-[lifecycle-owned mechanical suppression](../../skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
+[lifecycle-owned mechanical suppression](../../../.agents/skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
 
 - A toolchain/CI/env-var change already reflected in the docs — verify current state before
   flagging an absence; a stale local read is not evidence of decay.

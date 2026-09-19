@@ -22,7 +22,7 @@ In a quality-gate invocation, the report has three top-level sections in fixed o
 
    **Key**: `<category>|<file>|<short-hash>`
    **Message**: <message>
-   **Source**: `rhino-cli repo-governance <category> validate` (preflight)
+   **Source**: `./rhino governance <category> validate` (preflight)
    ```
 
    Skipped false-positives go under `### [INFO] Skipped (known false positives)`.

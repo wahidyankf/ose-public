@@ -18,10 +18,10 @@ When writing or updating an agent, use this decision tree to determine where con
 ```mermaid
 flowchart TD
     accTitle: Knowledge Classification Decision Tree
-    accDescr: Reusable across 3+ agents? leads to Actionable how-to guidance? via Yes; Actionable how-to guidance? leads to Skill in.claude/skills/ via Yes; Reusable across 3+ agents? leads to Technical spec or standard? via Yes; and 3 more links.
+    accDescr: Reusable across 3+ agents? leads to Actionable how-to guidance? via Yes; Actionable how-to guidance? leads to Skill in.agents/skills/ via Yes; Reusable across 3+ agents? leads to Technical spec or standard? via Yes; and 3 more links.
     Q1{"Reusable across<br/>3+ agents?"}
     Q1 -->|Yes| Q2{"Actionable how-to<br/>guidance?"}
-    Q2 -->|Yes| SK["Skill in<br/>.claude/skills/"]
+    Q2 -->|Yes| SK["Skill in<br/>.agents/skills/"]
     Q1 -->|Yes| Q3{"Technical spec<br/>or standard?"}
     Q3 -->|Yes| CV["Convention in<br/>conventions/"]
     Q1 -->|No| Q4{"Task-specific<br/>workflow?"}

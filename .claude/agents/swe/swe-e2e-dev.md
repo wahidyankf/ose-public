@@ -50,7 +50,7 @@ configuration, best practices, anti-patterns, idioms, and debugging.
 Always use Page Object Model, with consistent test-file structure
 (`tests/e2e/<domain>/<flow>.spec.ts` importing its page object). For the canonical `LoginPage`
 class and worked domain examples, see the Page Object Model and OSE Platform Context sections of
-`.claude/skills/swe-developing-e2e-test-with-playwright/SKILL.md` — the source of truth; do not
+`.agents/skills/swe-developing-e2e-test-with-playwright/SKILL.md` — the source of truth; do not
 re-derive them.
 
 ## Reference Documentation

@@ -1,5 +1,5 @@
 ---
-description: The rhino-cli subcommands and npm scripts that generate and validate platform bindings, and the file-touch-discipline rule for committing generated mirrors alongside their source.
+description: The Rhino subcommands and npm scripts that generate and validate platform bindings, and the file-touch-discipline rule for committing generated mirrors alongside their source.
 when_to_use: Read this when you need the exact command to generate or validate binding artifacts, or when deciding which commit a regenerated mirror file belongs in.
 ---
 
@@ -10,12 +10,12 @@ the commit-discipline rule for their output.
 
 ## Tools and Automation
 
-- **`rhino-cli harness bindings generate`** — generator subcommand; emits all platform-binding
+- **`./rhino harness adapters generate`** — generator subcommand; emits all platform-binding
   artifacts (generated agent mirrors and Tier-2 bridge files) from the primary binding source
   in a single invocation (AD4). Invoked by the `generate:bindings` npm script.
 - **`generate:bindings`** npm script — harness-neutral name for the single binding-generation
-  operation (AD8). Runs `rhino-cli harness bindings generate`; re-run whenever binding sources change.
-- **`rhino-cli harness bindings validate`** — deterministic subcommand (AD7); re-derives each
+  operation (AD8). Runs `./rhino harness adapters generate`; re-run whenever binding sources change.
+- **`./rhino harness adapters validate`** — deterministic subcommand (AD7); re-derives each
   generated binding in memory, asserts byte-equality, asserts catalog completeness, and asserts that
   every file in a generated agent directory still resolves to a source agent. Exits non-zero on
   any mismatch.
@@ -26,7 +26,7 @@ the commit-discipline rule for their output.
   - A file the entry's own `ownership:` list declares `vendored` is exempt: a hand-maintained
     tooling agent living inside a generated directory has no source by design. The exemption is a
     declaration, never an inference — an undeclared file with no source is still an orphan.
-- **`harness:bindings-validation`** npm script — wraps `rhino-cli harness bindings validate`; invoked
+- **`harness:bindings-validation`** npm script — wraps `./rhino harness adapters validate`; invoked
   from the pre-push hook when binding surfaces change (AD8).
 - **`harness-compatibility-checker`** / **`harness-compatibility-fixer`** agents — run on
   demand or on a schedule; use web research to detect external upstream convention drift (distinct

@@ -10,7 +10,7 @@ multi_agent = true
 description = "CI helper for /monitor-ci. Fetches CI status, retrieves fix details, or updates self-healing fixes. Executes one MCP tool call and returns the result."
 config_file = "ci-monitor-subagent.toml"
 
-# >>> rhino-cli generated: codex agents - do not edit inside this region
+# >>> Rhino generated: codex agents - do not edit inside this region
 
 [agents.agent-maker]
 description = "Creates new AI agent files in .claude/agents/ following AI Agents Convention. Changes are then synced to .opencode/agents/ via npm run generate:bindings. Ensures proper structure, skills integration, and documentation."
@@ -185,7 +185,7 @@ description = "Validates cross-vendor parity invariants (Phase 0, deterministic)
 config_file = "agents/harness-compatibility-checker.toml"
 
 [agents.harness-compatibility-fixer]
-description = "Applies validated fixes from a harness-compatibility-checker audit report. Auto-remediates Phase 0 parity sync drift (Invariant 3 via npm run generate:bindings) and Phase 1 catalog/binding updates. Also updates specs/apps/rhino/ when harness changes alter documented CLI behaviour. Flags all other findings for human resolution."
+description = "Applies validated fixes from a harness-compatibility-checker audit report. Regenerates declared adapters, updates catalog bindings, and routes Rhino product behavior changes to the upstream Rhino repository."
 config_file = "agents/harness-compatibility-fixer.toml"
 
 [agents.pdf-to-md-checker]
@@ -367,4 +367,4 @@ config_file = "agents/web-researcher.toml"
 [agents.web-usability-tester]
 description = "Performs spec-blind heuristic usability evaluation of a live website and records findings in local-tmp by default. Judges first-time usability; output-mode plan or delivery must be explicit."
 config_file = "agents/web-usability-tester.toml"
-# <<< rhino-cli generated: codex agents
+# <<< Rhino generated: codex agents

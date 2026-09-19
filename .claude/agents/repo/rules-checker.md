@@ -43,7 +43,7 @@ inconsistencies, traceability, layer coherence, licensing, dependency-bump polic
 Gherkin journey coherence), and Software Documentation Validation (~265 files across eight
 sub-checks). The skill's `reference/07-preflight-consumption.md` and
 `reference/08-execution-sequence-and-report-structure.md` cover consuming the
-deterministic `rhino-cli repo-governance audit` preflight JSON (which pre-populates several steps'
+deterministic `./rhino governance traceability validate` preflight JSON (which pre-populates several steps'
 findings so they are never AI-re-derived), the execution sequence, and the final two-section
 report structure.
 

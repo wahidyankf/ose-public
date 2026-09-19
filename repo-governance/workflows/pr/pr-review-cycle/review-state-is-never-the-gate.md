@@ -7,7 +7,7 @@ when_to_use: "Use when writing or auditing any gate, script, or agent step that 
 
 **HARD — `REQUEST_CHANGES` is structurally unavailable to `pr-review-synthesis-maker`.** The
 mechanics are stated once, in the coordinator's own required module
-[github-reviews-api-mechanics.md](../../../../.claude/skills/pr-review-synthesis-coordination/reference/github-reviews-api-mechanics.md),
+[github-reviews-api-mechanics.md](../../../../.agents/skills/pr-review-synthesis-coordination/reference/github-reviews-api-mechanics.md),
 and are not restated here — that is the copy the posting agent reads, and a second copy drifts from
 it unnoticed. What this layer adds is the consequence for the workflow: `gh`
 authenticates as the PR author under this repo's current identity posture, and GitHub rejects

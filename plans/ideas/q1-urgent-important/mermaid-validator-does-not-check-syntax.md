@@ -1,6 +1,8 @@
 # `md mermaid validate` passes syntactically broken diagrams
 
-One-line summary: `rhino-cli md mermaid validate` is wired into pre-commit, pre-push and CI and is
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
+One-line summary: `./rhino md mermaid validate` is wired into pre-commit, pre-push and CI and is
 routinely cited as the Mermaid-correctness gate — but it does **not** parse diagram syntax, so a
 diagram that no renderer can draw sails through it clean.
 

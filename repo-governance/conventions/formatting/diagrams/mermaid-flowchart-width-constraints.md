@@ -5,7 +5,7 @@ when_to_use: "Use when a Mermaid flowchart risks becoming too wide to render leg
 
 # Flowchart Width Constraints
 
-The `rhino-cli md mermaid validate` command enforces a maximum horizontal width of **4 nodes** on any single rank level. "Horizontal" is direction-aware:
+The `./rhino md mermaid validate` command enforces a maximum horizontal width of **4 nodes** on any single rank level. "Horizontal" is direction-aware:
 
 - **`graph LR` / `graph RL`**: horizontal = **depth** (number of rank columns, i.e., the longest chain)
 - **`graph TD` / `graph TB` / `graph BT`**: horizontal = **span** (maximum nodes at any single rank level)
@@ -25,10 +25,12 @@ The strict gate is scoped to changed files on purpose: the legacy corpus carries
 
 ```bash
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
-  apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate
+  ./rhino md mermaid validate
 ```
 
-Run without flags to perform a repo-wide scan (the Nx target runs with `--exclude apps/rhino-cli/tests/fixtures --exclude plans/done --exclude apps/ayokoding-www/content` plus the standardized noise-skip set) using defaults (MaxWidth=4, unlimited depth). Pass additional `--exclude <prefix>` flags to suppress noise in project-specific runs.
+Run without flags to perform a repo-wide scan (the Nx target excludes `plans/done` and
+`apps/ayokoding-www/content` plus the standardized noise-skip set) using defaults (MaxWidth=4,
+unlimited depth). Pass additional `--exclude <prefix>` flags to suppress noise in project-specific runs.
 
 **Gate location**: Both gates run at **pre-commit (staged `.md` files only)** via lint-staged, and in
 CI via `pr-quality-gate.yml`. Neither runs at pre-push, and neither has a standalone CI workflow.

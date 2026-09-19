@@ -45,9 +45,9 @@ internal implementation, access model, or operational layout.
 ## Repositories outside the parity set
 
 Some public repositories support or inform OSE without sharing parity obligations. **They carry no
-sync obligation in either direction**, sit outside the `rhino-cli` byte-identity boundary, and are
-not propagation targets for governance, agent, skill, or workflow changes. No gate, agent, or
-workflow here may treat one as a parity peer.
+sync obligation in either direction**, sit outside OSE's local source boundaries, and are not
+propagation targets for governance, agent, skill, or workflow changes. No gate, agent, or workflow
+here may treat one as a parity peer.
 
 ### RHINO stays upstream
 
@@ -58,9 +58,7 @@ instruction body kept in parity across every declared coding harness. It holds n
 own — every value it enforces arrives from the inspected repository's own `repo-config.yml` — so it
 is usable far outside OSE and carries no OSE-specific defaults.
 
-**RHINO the repository is not `apps/rhino-cli`.** This repository runs its own in-tree F#
-`apps/rhino-cli`, and that implementation is what the byte-identity boundary covers. The upstream
-RHINO repository sits outside that boundary entirely: naming it here creates navigation, not a
+RHINO is consumed only as a checksum-pinned release. Naming it here creates navigation, not a
 parity peer, and no manifest, gate, or propagation workflow may widen to include it. RHINO source,
 behavior specifications, release automation, and generic tests stay upstream and are never copied,
 vendored, or forked into an OSE repository.
@@ -95,10 +93,7 @@ activities and development with a
 learnings can flow back selectively into `ose-public` and other OSE products; this knowledge
 transfer creates no parity or automatic propagation obligation.
 
-It carries no `rhino-cli` at all, so there is nothing for the byte-identity boundary to cover, and
-`rhino-cli`'s parity gate asserts that the boundary never names it — see
-`apps/rhino-cli/src/RhinoCli.Application/src/Parity.fs` and its tests in
-`apps/rhino-cli/tests/unit/Steps/ParityManifestSteps.fs`.
+It carries no OSE-local Rhino source, so there is no source-boundary relationship to cover.
 
 If you are looking for BeaverNest code, issues, or plans, go to that repository. Anything still
 naming BeaverNest here is a historical record — an archived plan under [`plans/done/`](../../plans/done/README.md)
@@ -109,37 +104,27 @@ family product requires human product judgment.
 
 ## Shared boundaries
 
-The `apps/rhino-cli` source must stay byte-identical across `ose-public` and the private sibling — the
-parity pair this page describes. See the
-[SDLC gate standard](./sdlc-gate-standard.md#rhino-cli-byte-identity-boundary) for the policy.
-
-`parity manifest validate` compares a repo's own committed manifest against that same repo's
-tracked boundary only — it never fetches or compares against the sibling repo. Rolling a `rhino-cli`
-change out to one repo while deferring it in the other therefore produces **silent drift**, not a red
-gate in either repo; each repo's manifest stays internally consistent even while the two diverge
-from each other. Verify parity across the pair by diffing the boundary directly, not by trusting
-a green `parity manifest validate` in either repo.
+The OSE parity pair shares portable governance through explicit sibling obligations. The Rhino
+release is checksum-pinned independently by each repository; there is no local Rhino source
+boundary to compare across the pair.
 
 ### What is deliberately not identical
 
-The byte-identity boundary covers `apps/rhino-cli` and the shared Gherkin tree, and nothing else.
-`package.json` script names in particular have diverged: the harness-bindings validator is
-`harness:bindings-validation` in `ose-public` and `validate:harness-bindings` in the private sibling,
-running the same underlying command. Resolve every command a cross-repo plan invokes against each
-repository's own `package.json` rather than assuming the name carries over.
+`package.json` script names in particular may diverge. Resolve every command a cross-repo plan
+invokes against each repository's own `package.json` rather than assuming the name carries over.
 
 The `volta` toolchain pins in `package.json` have diverged the same way: `ose-public` pins
 `npm` to `11.11.0` and the private sibling to `11.16.0`. Nothing compares them, so on one host with one
-installed npm, `rhino-cli doctor` reports a version warning in `ose-public` and a clean
+installed npm, a repository doctor can report a version warning in `ose-public` and a clean
 16/16 in the private sibling — two verdicts from the same machine. Read a doctor warning about a
 toolchain version as a statement about that repo's pin, not about the host.
 
 ## Sync cadence
 
-Content parity and the `rhino-cli` byte-identity boundary above answer **what** stays identical;
-this answers **how often** the private sibling is brought current with `ose-public`.
+Content parity and explicit sibling obligations answer **what** stays identical; this answers
+**how often** the private sibling is brought current with `ose-public`.
 
-**The private sibling is kept current through recorded sibling obligations.** `rhino-cli` and shared
+**The private sibling is kept current through recorded sibling obligations.** `Rhino` and shared
 `repo-governance/` content (conventions, workflows, agent definitions) propagate from `ose-public`
 through a separate one-repository run, not an unrecorded batch. The repositories need not merge at
 the same time: each ready PR lands when its own hardened prerequisites and merge opportunity permit,
@@ -156,10 +141,9 @@ private-only operational exceptions explicitly.
 - **Elixir/Erlang CI toolchain provisioning.** `ose-public`'s `rust` job in `pr-quality-gate.yml`
   installs Erlang/Elixir via `erlef/setup-beam` and sets `RHINO_REQUIRE_ELIXIR=1`, so the two
   Elixir formatter-wrapper scenarios bound in
-  `apps/rhino-cli/tests/unit/Steps/GateExecutionSteps.fs` run for real on every push. The private sibling
-  carries no Elixir source and provisions no such toolchain, so those same byte-identical tests
-  self-skip there instead — a deliberate, not accidental, divergence: nothing in the private sibling
-  needs the coverage the toolchain would exercise.
+  the upstream Rhino release validation run for real on every push. The private sibling carries no
+  Elixir source and provisions no such toolchain, so its consumer-specific coverage may self-skip —
+  a deliberate, not accidental, divergence: nothing in the private sibling needs that coverage.
 
 ## Contribution and access boundaries
 

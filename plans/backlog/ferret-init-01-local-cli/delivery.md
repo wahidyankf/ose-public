@@ -1,5 +1,7 @@
 # Delivery — FERRET Init 01 Standalone Local CLI
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+>
 > **Legend:** `[AI]` executes repository work. `[HUMAN]` is reserved for unavoidable privileged or
 > out-of-band work. Every command record contains the literal command, exit, relevant test IDs, 40-character
 > HEAD, and UTC timestamp. Never save raw vendor payloads, secrets, telemetry, or absolute host paths.
@@ -166,7 +168,7 @@ exact-head green in Phase 7; no terminal `landed` claim occurs here.
       `.claude/skills/harness-compatibility-protocol/SKILL.md`, `repo-config.yml`,
       `docs/reference/platform-bindings.md`, `scripts/behaviour-coverage.mjs`, and
       `scripts/behaviour-coverage.test.mjs`. Run
-      `rtk apps/rhino-cli/scripts/rhino-bin.sh harness instruction-size validate` before and after placement.
+      `rtk ./rhino harness instruction-size validate` before and after placement.
       Expect zero without raising budgets; save `step-4-5.txt`. Eviction follows the canonical workflow or stops.
 - [ ] [AI] **Step 6 RED:** add failing positive/negative fixtures to `scripts/behaviour-coverage.test.mjs` for
       Python dedicated-E2E targets and pytest-bdd mappings; run
@@ -181,7 +183,7 @@ exact-head green in Phase 7; no terminal `landed` claim occurs here.
       projects. Run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- node --test scripts/behaviour-coverage.test.mjs`
       and
-      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run rhino-cli:test:quick`.
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- ./rhino gate run --surface pre-push`.
       Expect both zero; save `step-6-refactor.txt`.
 - [ ] [AI] **Step 7 — Enforcement:** for every manifest rule record one automated command, an already-mandatory
       named human surface, or an intentional unenforced rationale. Run
@@ -191,10 +193,10 @@ exact-head green in Phase 7; no terminal `landed` claim occurs here.
 
 ```bash
 rtk npm run generate:bindings
-rtk apps/rhino-cli/scripts/rhino-bin.sh harness bindings validate
-rtk apps/rhino-cli/scripts/rhino-bin.sh harness ownership validate
-rtk apps/rhino-cli/scripts/rhino-bin.sh harness catalog validate
-rtk apps/rhino-cli/scripts/rhino-bin.sh harness duplication validate
+rtk ./rhino harness adapters validate
+rtk ./rhino harness adapters validate
+rtk ./rhino harness adapters validate
+rtk ./rhino harness adapters validate
 rtk npm run lint:md
 rtk npm run format:md:check
 ```
@@ -212,7 +214,7 @@ All checks must pass before starting Phase 2.
 - [ ] [AI] Run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- node --test scripts/behaviour-coverage.test.mjs`.
       Expect exit 0; save `gate.txt`.
-- [ ] [AI] Run `rtk apps/rhino-cli/scripts/rhino-bin.sh harness bindings validate`. Expect exit 0 and no drift;
+- [ ] [AI] Run `rtk ./rhino harness adapters validate`. Expect exit 0 and no drift;
       append to `gate.txt`.
 - [ ] [AI] Replace `<resolved-run-id>` with the Step 0 value and run
       `rtk rg -n "^step-[0-8]: complete$|^step-9: pending-same-pr$|^open-enforcement-rows: 0$" local-tmp/rules-propagation/rules-propagation__<resolved-run-id>__manifest.md`.
@@ -222,7 +224,7 @@ All checks must pass before starting Phase 2.
       the owning Step 0–8 action.
 
 > **Pause Safety:** rules/enforcement are coherent but delivery is intentionally pending on DU-01. Resume with
-> `rtk apps/rhino-cli/scripts/rhino-bin.sh harness bindings validate`.
+> `rtk ./rhino harness adapters validate`.
 
 ## Phase 2 — Green Projects, Specifications, and Mandatory Targets
 
@@ -278,7 +280,7 @@ Expect five zero exits and no missing/skipped/fake target; save complete output 
 - [ ] [AI] Create `specs/apps/ferret/{README.md,overview.md}` and
       `specs/apps/ferret/cli/{README.md,architecture.md}` with logical owner, privacy boundary, C4 navigation,
       and the exact six future feature paths. Do not add feature scenarios until their Phase 3/4 RED packet.
-      Run `rtk apps/rhino-cli/scripts/rhino-bin.sh specs validate`; expect zero and save
+      Run `rtk npm exec nx -- run-many -t test:coverage:behaviour --projects=<affected-projects>`; expect zero and save
       `spec-architecture.txt`.
 - [ ] [AI] Add a real package/build smoke proving `ferret --help` from the built artifact; do not add placeholder,
       skipped, xfail, echo, or success-sentinel tests. Run
@@ -645,7 +647,7 @@ All checks must pass before starting Phase 5.
       Expect zero, empty streams, fail-open exit, numeric watchdog/prune bounds, and synchronous terminal commit;
       save `gate-adapters.txt`.
 - [ ] [AI] Run `OWNER-QUICK` and `E2E-QUICK`. Expect zero; save `gate-projects.txt`.
-- [ ] [AI] Run `rtk apps/rhino-cli/scripts/rhino-bin.sh harness bindings validate`. Expect zero and no generated
+- [ ] [AI] Run `rtk ./rhino harness adapters validate`. Expect zero and no generated
       drift; save `gate-bindings.txt`.
 - [ ] [AI] Run this exact local syntax/retention packet and inspect the local composite plus both workflows:
 
@@ -688,10 +690,10 @@ documentation matches measured behavior.
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e`.
       Expect both separately invoked runtime suites to exit 0. Save all four command transcripts in
       `automatic-projects.txt`; failure returns to the owning Phase 3/4 packet.
-- [ ] [AI] Run `rtk apps/rhino-cli/scripts/rhino-bin.sh specs validate`, then harness `bindings`, `ownership`,
+- [ ] [AI] Run `rtk npm exec nx -- run-many -t test:coverage:behaviour --projects=<affected-projects>`, then harness `bindings`, `ownership`,
       and `catalog` validators as literal Phase 1 commands. Expect zero; save `automatic-governance.txt`.
 - [ ] [AI] Run `rtk npm run lint:md`, `rtk npm run format:md:check`,
-      `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate plans/in-progress/ferret-init-01-local-cli`, and
+      `rtk ./rhino md links validate plans/in-progress/ferret-init-01-local-cli`, and
       `rtk git diff --check`. Expect zero; save `automatic-docs.txt`.
 - [ ] [AI] **RED manual evidence:** add
       `apps/ferret-cli/tests/unit/test_manual_evidence.py::{test_isolates_all_user_roots,test_capture_exit_contract,test_query_exit_contract,test_install_ownership_contract,test_summary_contains_only_relative_hashes_and_exits,test_refuses_unowned_existing_root}`.
@@ -817,7 +819,7 @@ Phase 7 replaces it with current-head run/job/artifact proof before merge. Failu
 All checks must pass before starting Phase 6.
 
 - [ ] [AI] Run
-      `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+      `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- ./rhino gate run --surface=pre-push`.
       Expect exit 0; save `gate.txt`.
 - [ ] [AI] Run
       `rtk rg -c "^AC-CLI-(0[1-9]|1[0-2])\\b" plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/trace.txt`;
@@ -827,7 +829,7 @@ All checks must pass before starting Phase 6.
       owning AC packet.
 
 > **Pause Safety:** DU-01 behavior and documentation are complete with reproducible evidence. Resume with
-> `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+> `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- ./rhino gate run --surface=pre-push`.
 
 ## Phase 6 — Knowledge, Preliminary Audit, and Archive Boundary
 
@@ -848,7 +850,7 @@ archive transcript, archive SHA/parent, and gate transcripts in external
       `retained-plan-specific`, `reported-without-plan-authorization`, or `reviewed-none`. After an authorized
       docs/plan promotion run
       `rtk npm run lint:md`,
-      `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate <exact-promoted-destination>`, and
+      `rtk ./rhino md links validate <exact-promoted-destination>`, and
       `rtk git diff --check`; after a rule promotion rerun the exact Phase 1 Step 8 commands and manifest gate;
       after a code/test promotion run
       `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD`.
@@ -970,9 +972,9 @@ candidate checker.
 - [ ] [AI] With the same `FERRET_DONE_PLAN`, run:
 
 ```bash
-rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate
-rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate plans
-rtk apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate "$FERRET_DONE_PLAN"
+rtk ./rhino plan validate
+rtk ./rhino md links validate plans
+rtk ./rhino md mermaid validate "$FERRET_DONE_PLAN"
 rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npx markdownlint-cli2 "${FERRET_DONE_PLAN}/**/*.md"
 rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npx prettier --check "${FERRET_DONE_PLAN}/**/*.md"
 rtk git diff --check
@@ -1009,7 +1011,7 @@ Any substantive product/spec/rule/evidence change after the checker invalidates 
 
 All checks must pass before starting Phase 7.
 
-- [ ] [AI] Run `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate`. Expect exit 0; append the transcript only
+- [ ] [AI] Run `rtk ./rhino plan validate`. Expect exit 0; append the transcript only
       to the external candidate record.
 - [ ] [AI] Run `rtk git diff --check` and `rtk git status --short`. Expect no uncommitted DU-01 change after
       authorized commit and no unrelated file; append the transcript only to the external candidate record.
@@ -1021,7 +1023,7 @@ All checks must pass before starting Phase 7.
       blocks push/PR work and returns to the Phase 1 manifest action. No Phase 6 gate writes a tracked file.
 
 > **Pause Safety:** DU-01's last change-producing boundary is committed locally with archived plan, not yet
-> necessarily pushed. Resume with `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate`.
+> necessarily pushed. Resume with `rtk ./rhino plan validate`.
 
 ## Phase 7 — One Exact-Head PR and Rules Step 9
 
@@ -1042,7 +1044,7 @@ plus PR URL/head/base/check IDs. Phase 7 never writes under the committed done p
 FERRET_PHASE7_EVIDENCE="local-tmp/plan-execution/ferret-init-01-<resolved-run-id>/phase-7"
 FERRET_LOCAL_EVIDENCE="$FERRET_PHASE7_EVIDENCE/local.txt"
 mkdir -p "$FERRET_PHASE7_EVIDENCE"
-rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push
+rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- ./rhino gate run --surface=pre-push
 rtk git fetch origin main
 rtk git diff --stat origin/main...HEAD
 rtk git diff --name-status origin/main...HEAD

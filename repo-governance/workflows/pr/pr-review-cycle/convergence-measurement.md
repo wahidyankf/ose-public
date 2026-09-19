@@ -37,7 +37,7 @@ A cycle whose findings are all `fix-induced` says the change is clean and the fi
 
 ## The Cycle-Three Checkpoint
 
-**The orchestrator** reads both series after cycle three and records the verdict in [the cycle's audit record](../../../../.claude/skills/pr-review-synthesis-coordination/reference/machine-readable-audit-record.md):
+**The orchestrator** reads both series after cycle three and records the verdict in [the cycle's audit record](../../../../.agents/skills/pr-review-synthesis-coordination/reference/machine-readable-audit-record.md):
 
 - **Continue** — original defects are falling and the induced rate is not rising.
 - **Change fix strategy** — the induced rate is high. Attack the mechanism, not the surface — most

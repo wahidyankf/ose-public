@@ -1,6 +1,6 @@
 ---
 name: harness-compatibility-fixer
-description: Applies validated fixes from a harness-compatibility-checker audit report. Auto-remediates Phase 0 parity sync drift (Invariant 3 via npm run generate:bindings) and Phase 1 catalog/binding updates. Also updates specs/apps/rhino/ when harness changes alter documented CLI behaviour. Flags all other findings for human resolution.
+description: Applies validated fixes from a harness-compatibility-checker audit report. Regenerates declared adapters and updates catalog bindings. Routes Rhino product behavior changes to the upstream Rhino repository.
 tools: Read, Edit, Write, Glob, Grep, Bash
 model: opus
 effort: high
@@ -30,8 +30,8 @@ skills:
 
 Read a validated harness compatibility audit report and apply fixes: Phase 0 auto-fixes
 Invariant 3 (binding sync) only, flags Invariants 1/2/4/5 for human resolution; Phase 1 updates
-catalog rows and committed binding files, and updates `specs/apps/rhino/` when a harness change
-alters documented CLI behaviour. This agent does NOT do its own web research — it trusts the
+catalog rows and committed binding files. A harness change that alters Rhino product behavior is
+routed to the upstream Rhino repository. This agent does NOT do its own web research — it trusts the
 checker's cited findings, downgrading confidence and skipping the fix when a cited source is
 `[Needs Verification]` or `[Unverified]`.
 

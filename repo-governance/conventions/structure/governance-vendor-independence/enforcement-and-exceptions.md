@@ -7,22 +7,22 @@ when_to_use: Use when running the vendor-independence audit manually, or checkin
 
 ## Enforcement
 
-Enforcement is automated via `rhino-cli repo-governance vendor validate`.
+Enforcement is automated via `./rhino governance vendor validate`.
 
 ### Running the audit manually
 
 ```bash
 # Audit the repo-governance/ directory (default)
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
-  apps/rhino-cli/scripts/rhino-bin.sh repo-governance vendor validate repo-governance/
+  ./rhino governance vendor validate
 
 # Audit the canonical root instruction surface
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
-  apps/rhino-cli/scripts/rhino-bin.sh repo-governance vendor validate AGENTS.md
+  ./rhino governance vendor validate
 
 # Or via Nx (cached)
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
-  npm exec nx -- run rhino-cli:governance:vendor-audit-validation
+  npm exec nx -- run Rhino:governance:vendor-audit-validation
 ```
 
 The validator takes one path per invocation, so each covered surface is audited separately.

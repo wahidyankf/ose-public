@@ -14,7 +14,7 @@ invocation, or another creation mechanism—run BOTH commands from that new work
 # Step 1: Node/Nx workspace dependencies (node_modules/)
 rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
 
-# Step 2: Toolchain convergence (Rust, .NET/F#, TypeScript/Node — all managed by rhino-cli)
+# Step 2: Toolchain convergence (Rust, .NET/F#, TypeScript/Node — all managed by Rhino)
 rtk npm run doctor -- --fix
 ```
 
@@ -22,7 +22,7 @@ Each worktree needs its own ignored `node_modules/`. The guarded install there a
 repository's `prepare` script, which activates Husky's tracked hooks for Git operations from that
 worktree. A successful install in the primary checkout does not initialize a new worktree.
 
-**Order matters.** Run the guarded install first, because `rhino-cli doctor` is an F#/.NET program
+**Order matters.** Run the guarded install first, because `./rhino toolchain validate` is an F#/.NET program
 invoked through the Node tooling and may need synchronized `node_modules/`. Run
 `rtk npm run doctor -- --fix` second; its argv-aware wrapper selects transactional admission before
 actively converging the native toolchain.

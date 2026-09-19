@@ -16,7 +16,7 @@ not disappear into a generic final cleanup task.
   annotated file-impact tree. A plan is rule-affecting when delivery may add, change, supersede, or
   delete any normative surface—including instructions, governance conventions/workflows,
   repository configuration, enforcement code, targets, hooks, CI, style guides, or generated
-  harness bindings. Do not wait for the user to request propagation by name.
+  harness adapters. Do not wait for the user to request propagation by name.
 - For every affected repository, `delivery.md` MUST include a repository-local rules-propagation
   outcome in the delivery unit that changes the rule. A generic “run rules-propagation” checkbox is
   insufficient. The outcome must enumerate separate, executor-tagged actions to:
@@ -27,7 +27,7 @@ not disappear into a generic final cleanup task.
   5. record one canonical [Step 7 enforcement disposition](../../../workflows/rules/rules-propagation/step-7-enforcement-disposition.md)
      per rule: `Covered`, `Gated`, or `Unenforced by Decision`, with the required gate evidence or
      rationale; an unfalsifiable rule halts at intake, not as a successful delivery disposition;
-  6. generate declared harness bindings instead of hand-editing mirrors;
+  6. generate declared harness adapters instead of hand-editing mirrors;
   7. run the rules-propagation verification commands and `rules-quality-gate`; and
   8. record the repository-specific propagation manifest path, final status, and sibling
      obligation.

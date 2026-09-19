@@ -31,7 +31,7 @@ env-injection:
       environments: [organiclever-app-staging, ose-app-staging]
 ```
 
-`rhino-cli env validate` gains a manifest-consistency pass — not a separate Nx target. The manifest
+`./rhino env validate` gains a manifest-consistency pass — not a separate Nx target. The manifest
 and `.env.example` are the same conceptual surface (the env contract), and `env validate` is already
 wired into `.husky/pre-push` and `validate-env.yml`, so extending it adds the check with no
 new target wiring. The check remains static and value-free. Actual presence of secret values in

@@ -18,7 +18,7 @@ created: 2026-06-10
 
 This document records every cross-repo parity decision from the `standardize-secrets-and-env` plan
 (2026-06-10). The plan ships naming convention, `.env.example` layout, startup validation, the
-`rhino-cli env` toolchain, and the drift guard (`env-contract:` section in `repo-config.yml`) to ose-public. The full
+retired in-tree Rhino env toolchain, and the drift guard (`env-contract:` section in `repo-config.yml`) to ose-public. The full
 technical design lives in
 [`plans/done/2026-06-10__standardize-secrets-and-env/tech-docs.md`](../../plans/done/2026-06-10__standardize-secrets-and-env/tech-docs.md).
 
@@ -93,7 +93,7 @@ multi-repo parity planning workflows.
 one `surfaces:` array, each entry with `root`, `kind`, `lang`, and `allowlist` fields.
 
 **Why**: A single config file at repo root is the simplest discoverable location for
-`rhino-cli env validate`. `serde_norway` (a `serde_yaml` fork maintained by the Rust infra team) is
+the then-current retired in-tree Rhino env validator. `serde_norway` (a `serde_yaml` fork maintained by the Rust infra team) is
 the canonical YAML parser in this codebase.
 
 **Forward scaffold**: Terraform and Ansible surfaces are present as YAML comments — syntactically

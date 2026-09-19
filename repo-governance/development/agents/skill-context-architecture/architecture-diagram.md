@@ -8,9 +8,9 @@ when_to_use: Use when you need a visual reference for how Skill context modes re
 ```mermaid
 graph TD
     accTitle: Architecture Diagram
-    accDescr: Main Conversation leads to Subagent Forked Context via spawns; Main Conversation leads to Inline agent skills.claude/skills/ via uses; Main Conversation leads to Fork agent skills project-specific dir via uses; and 3 more links.
+    accDescr: Main Conversation leads to Subagent Forked Context via spawns; Main Conversation leads to Inline agent skills.agents/skills/ via uses; Main Conversation leads to Fork agent skills project-specific dir via uses; and 3 more links.
     MC[Main Conversation] -->|spawns| SA[Subagent Forked<br/>Context]
-    MC -->|uses| IS[Inline agent skills<br/>.claude/skills/]
+    MC -->|uses| IS[Inline agent skills<br/>.agents/skills/]
     MC -->|uses| FS[Fork agent skills<br/>project-specific dir]
     SA -->|uses| IS
     SA -->|CANNOT use| FS

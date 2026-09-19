@@ -20,7 +20,7 @@ Use normal file-editing tools only on paths that `repo-config.yml` classifies as
 a `generated` path or generated delimited region. Bulk substitution is appropriate only for
 mechanical changes within editable paths.
 
-Canonical agent and skill sources live under `.claude/agents/` and `.claude/skills/`. After editing
+Canonical agent and skill sources live under `.claude/agents/` and `.agents/skills/`. After editing
 them, run `npm run generate:bindings`; every changed mirror MUST land in the **same commit** as its
 source. Verify with `npm run harness:bindings-validation`, which covers all registered harnesses.
 Edit a vendored path in place only when the registry assigns that class; see

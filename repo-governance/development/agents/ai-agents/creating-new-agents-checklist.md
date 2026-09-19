@@ -47,7 +47,7 @@ Before submitting a new agent, verify:
 
 ## File Size Compliance
 
-- [ ] Agent passes the word-budget gate (`rhino-cli governance word-budget validate`)
+- [ ] Agent passes the word-budget gate (`./rhino governance word-budget validate`)
 - [ ] If approaching warning threshold, consider condensation strategies
 - [ ] Verified no duplication with convention docs (link instead)
 

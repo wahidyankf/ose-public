@@ -63,7 +63,7 @@ expect "style guide" '{"tool_name":"Edit","tool_input":{"file_path":"docs/explan
 expect "generated mirror" '{"tool_name":"Edit","tool_input":{"file_path":".opencode/agents/x.md"}}' fires
 
 # Silent: out-of-scope paths, read-shaped tools, and malformed input.
-expect "application source" '{"tool_name":"Edit","tool_input":{"file_path":"apps/rhino-cli/src/lib.rs"}}' silent
+expect "application source" '{"tool_name":"Edit","tool_input":{"file_path":"apps/ose-www/src/main.ts"}}' silent
 expect "product spec" '{"tool_name":"Edit","tool_input":{"file_path":"specs/apps/rhino/x.feature"}}' silent
 expect "plan document" '{"tool_name":"Write","tool_input":{"file_path":"plans/backlog/x/README.md"}}' silent
 expect "ordinary docs" '{"tool_name":"Edit","tool_input":{"file_path":"docs/how-to/add-new-app.md"}}' silent
@@ -81,7 +81,7 @@ expect "bash rm of a rule surface" '{"tool_name":"Bash","tool_input":{"command":
 expect "bash mv into agents" '{"tool_name":"Bash","tool_input":{"command":"mv /tmp/x .claude/skills/y/SKILL.md"}}' fires
 expect "bash read is silent" '{"tool_name":"Bash","tool_input":{"command":"cat AGENTS.md"}}' silent
 expect "bash grep is silent" '{"tool_name":"Bash","tool_input":{"command":"grep -n rule repo-governance/glossary.md"}}' silent
-expect "bash write outside scope" '{"tool_name":"Bash","tool_input":{"command":"echo x > apps/rhino-cli/src/lib.rs"}}' silent
+expect "bash write outside scope" '{"tool_name":"Bash","tool_input":{"command":"echo x > apps/ose-www/src/main.ts"}}' silent
 expect "bash no command" '{"tool_name":"Bash","tool_input":{}}' silent
 
 # REGRESSION: stderr plumbing is not a write verb. `2>/dev/null` contains a `>`, so a naive

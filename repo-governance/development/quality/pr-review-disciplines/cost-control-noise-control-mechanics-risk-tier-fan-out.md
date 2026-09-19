@@ -51,7 +51,7 @@ git-identity rules make this non-negotiable. Recompute and record the tier and r
 files in the diff) — the only two disciplines whose own charter is gated on a specific artifact class
 rather than being applicable to any changed content. The other seven specialists are never skipped by
 file type; see
-[`pr-review-scout-maker.md`'s own filter definition](../../../../.claude/skills/pr-review-scout-classification/reference/risk-tier-and-specialist-selection.md#risk-tier-classification--specialist-set-selection-d12)
+[`pr-review-scout-maker.md`'s own filter definition](../../../../.agents/skills/pr-review-scout-classification/reference/risk-tier-and-specialist-selection.md#risk-tier-classification--specialist-set-selection-d12)
 for the full rule and its fresh-per-cycle re-evaluation requirement.
 
 **Enforcement disposition — covered when invoked.** The optional PR review workflow invokes a fresh

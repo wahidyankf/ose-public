@@ -11,17 +11,17 @@ This practice implements/respects the following core principles:
 
 - **[Simplicity Over Complexity](../../../principles/general/simplicity-over-complexity.md)**: Native package managers (`brew install`, `volta install`, `cargo install`) provide idempotent tool installation without requiring external state files, DSLs, or convergence engines. Adding Terraform, Ansible, or Docker Dev Containers introduces infrastructure complexity that solves fleet management problems this project does not have.
 
-- **[Reproducibility First](../../../principles/software-engineering/reproducibility.md)**: Version pinning via declarative config files (`package.json`, `Cargo.toml`, `.csproj`) combined with `rhino-cli doctor` verification ensures every developer machine converges to the same toolchain state. The check-diff-apply pattern provides the same guarantees as IaC tools without the overhead.
+- **[Reproducibility First](../../../principles/software-engineering/reproducibility.md)**: Version pinning via declarative config files (`package.json`, `Cargo.toml`, `.csproj`) combined with `./rhino toolchain validate` verification ensures every developer machine converges to the same toolchain state. The check-diff-apply pattern provides the same guarantees as IaC tools without the overhead.
 
-- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: `rhino-cli doctor --fix` automates the entire toolchain installation and verification process. Developers run a single command to detect drift and converge to the desired state, eliminating manual setup steps and reducing onboarding friction.
+- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: `npm run doctor -- --fix` automates the entire toolchain installation and verification process. Developers run a single command to detect drift and converge to the desired state, eliminating manual setup steps and reducing onboarding friction.
 
-- **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**: Each tool's required version lives in a language-native config file that developers already understand. `rhino-cli doctor` makes the full toolchain state visible with a single command, producing clear pass/fail output for every required tool.
+- **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**: Each tool's required version lives in a language-native config file that developers already understand. `./rhino toolchain validate` makes the full toolchain state visible with a single command, producing clear pass/fail output for every required tool.
 
 ## Conventions Implemented/Respected
 
 This practice implements/respects the following conventions:
 
-- **[Reproducible Environments](../reproducible-environments.md)**: This decision extends the reproducible environments convention from Node.js/npm (Volta pinning, lockfiles) to the full toolchain stack. `rhino-cli doctor` serves as the unified verification layer across all language ecosystems.
+- **[Reproducible Environments](../reproducible-environments.md)**: This decision extends the reproducible environments convention from Node.js/npm (Volta pinning, lockfiles) to the full toolchain stack. `./rhino toolchain validate` serves as the unified verification layer across all language ecosystems.
 
 ## Context
 
@@ -29,4 +29,4 @@ The monorepo requires developers to install and maintain toolchains for Node.js,
 
 ## Decision
 
-**Use native toolchain management via `rhino-cli doctor` and package managers.** Do NOT use Terraform, Ansible, or Docker Dev Containers for development environment setup.
+**Use native toolchain management via `./rhino toolchain validate` and package managers.** Do NOT use Terraform, Ansible, or Docker Dev Containers for development environment setup.

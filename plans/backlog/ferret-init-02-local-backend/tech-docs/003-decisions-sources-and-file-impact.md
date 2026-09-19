@@ -1,5 +1,7 @@
 # Decisions, Sources, and File Impact
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 Evidence labels are plan-wide: `[Judgment call]` marks an approved design or new artifact, `[Repo-grounded]`
 marks inspected repository fact, `[Web-cited]` marks an authoritative external publication, and `[Unverified]`
 marks a claim requiring delivery-time proof. External sources were accessed 2026-09-18. Unless a narrower label
@@ -17,7 +19,7 @@ FastAPI support already exists.
 | D1 REST/OpenAPI         | `specs/apps/ose/be/contracts/openapi.yaml`; `specs/apps/organiclever/be/contracts/openapi.yaml` | checked-in owner contracts are established; FERRET still owns its v1 schema                     |
 | D2 ports/adapters       | `specs/apps/ose/be/architecture.md`; `specs/apps/organiclever/be/architecture.md`               | app architecture ownership exists; FERRET's Python dependency rule is a new judgment            |
 | D3 realtime deferral    | no FERRET consumer/dashboard found by targeted `apps/`, `libs/`, and `specs/` search            | no current subscription requirement exists                                                      |
-| D4 MCP deferral         | `docs/reference/platform-bindings.md`; `repo-config.yml` harness catalog                        | harness bindings are governed, but no FERRET MCP contract exists                                |
+| D4 MCP deferral         | `docs/reference/platform-bindings.md`; `repo-config.yml` harness catalog                        | harness adapters are governed, but no FERRET MCP contract exists                                |
 | D5 delivery/idempotency | Plan 01 SQLite contract; `apps/ose-be/docker-compose.integration.yml`                           | local persistence and real backend Integration precedents exist; cross-store atomicity does not |
 | D6 token/loopback       | `repo-governance/conventions/security/secrets-and-env-standards.md`; backend Compose files      | secrets stay untracked and local fixtures use explicit configuration                            |
 | D7 explicit prune       | no FERRET/backend retention owner found; Plan 01's requested local boundary                     | backend retention is separately unowned, so automatic deletion is not inferred                  |

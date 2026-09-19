@@ -29,7 +29,7 @@ Declared in `project.json`. When the dependency project changes, `nx affected`
 flags the dependent project for re-testing.
 
 ```json
-"implicitDependencies": ["rhino-cli"]
+"implicitDependencies": ["Rhino"]
 ```
 
 ### 2. `dependsOn` (Task-Level)
@@ -60,7 +60,7 @@ Content sites no longer depend on any CLI — `ayokoding-www` and `ose-www` drop
 graph TD
   accTitle: Visual Dependency Graph
   accDescr: crane-cli leads to fsharp-crane-core.
-  RC[rhino-cli]
+  RC[Rhino]
   CC[crane-cli]
   FCC[fsharp-crane-core]
 
@@ -78,7 +78,7 @@ graph TD
 ```mermaid
 graph TD
   accTitle: Visual Dependency Graph 2
-  accDescr: organiclever-www-fe-e2e leads to organiclever-www; organiclever-app-web-e2e leads to organiclever-app-web; organiclever-be-e2e leads to organiclever-be; organiclever-app-web leads to organiclever-contracts; organiclever-app-web leads to rhino-cli; organiclever-be leads to organiclever-contracts.
+  accDescr: organiclever-www-fe-e2e leads to organiclever-www; organiclever-app-web-e2e leads to organiclever-app-web; organiclever-be-e2e leads to organiclever-be; organiclever-app-web leads to organiclever-contracts; organiclever-app-web leads to Rhino; organiclever-be leads to organiclever-contracts.
   %% E2E tests (top level)
   OLWWWFEE2E[organiclever-<br/>www-fe-e2e]
   OLAPPE2E[organiclever-<br/>app-web-e2e]
@@ -91,7 +91,7 @@ graph TD
 
   %% Shared
   OLC[organiclever-<br/>contracts]
-  RC[rhino-cli]
+  RC[Rhino]
 
   %% Edges
   OLWWWFEE2E --> OLWWW
@@ -159,19 +159,6 @@ plan that turns on codegen adds the `ose-id-be --> ose-id-contracts` edge.
 
 ## Shared Infrastructure Projects
 
-### rhino-cli
-
-**Location**: `apps/rhino-cli/`
-
-Repository management CLI used by projects for structural spec checks and other repository
-validation tasks. Scenario-to-adapter coverage is now owned by each project's static
-`test:coverage:*` targets, not a central Rhino command.
-
-- **Dependents**: CLI tools, libs, content platforms, organiclever-app-web
-- **Mechanism**: `implicitDependencies`
-- **Own dependency**: None (self-contained F# application with only NuGet package dependencies)
-- **Note**: rhino-cli was ported from Go to Rust (2026-05-23), then from Rust to F# (2026-08-30).
-
 ## Project Dependency Table
 
 ### Content Platforms
@@ -183,15 +170,15 @@ validation tasks. Scenario-to-adapter coverage is now owned by each project's st
 
 ### OrganicLever
 
-| Project                  | Dependencies                      | Spec Inputs                                     |
-| ------------------------ | --------------------------------- | ----------------------------------------------- |
-| organiclever-contracts   | (none)                            | (self — project root is spec dir)               |
-| organiclever-www         | rhino-cli                         | organiclever-www/\* (test:integration)          |
-| organiclever-app-web     | rhino-cli, organiclever-contracts | organiclever-app-web/\* (test:integration)      |
-| organiclever-be          | organiclever-contracts            | organiclever-be/\* (test:integration)           |
-| organiclever-www-fe-e2e  | organiclever-www                  | organiclever-www/\* (test:e2e)                  |
-| organiclever-app-web-e2e | organiclever-app-web              | organiclever-app-web/\* (typecheck, test:quick) |
-| organiclever-be-e2e      | organiclever-be                   | organiclever-be/\* (typecheck, test:quick)      |
+| Project                  | Dependencies                  | Spec Inputs                                     |
+| ------------------------ | ----------------------------- | ----------------------------------------------- |
+| organiclever-contracts   | (none)                        | (self — project root is spec dir)               |
+| organiclever-www         | Rhino                         | organiclever-www/\* (test:integration)          |
+| organiclever-app-web     | Rhino, organiclever-contracts | organiclever-app-web/\* (test:integration)      |
+| organiclever-be          | organiclever-contracts        | organiclever-be/\* (test:integration)           |
+| organiclever-www-fe-e2e  | organiclever-www              | organiclever-www/\* (test:e2e)                  |
+| organiclever-app-web-e2e | organiclever-app-web          | organiclever-app-web/\* (typecheck, test:quick) |
+| organiclever-be-e2e      | organiclever-be               | organiclever-be/\* (typecheck, test:quick)      |
 
 ### OSE ID
 
@@ -207,7 +194,7 @@ validation tasks. Scenario-to-adapter coverage is now owned by each project's st
 
 | Project   | Dependencies            | Spec Inputs                     |
 | --------- | ----------------------- | ------------------------------- |
-| rhino-cli | (none — self-contained) | rhino-cli/\* (test:integration) |
+| Rhino     | (none — self-contained) | Rhino/\* (test:integration)     |
 | crane-cli | fsharp-crane-core       | crane-cli/\* (test:integration) |
 
 ### Libraries
@@ -221,15 +208,15 @@ validation tasks. Scenario-to-adapter coverage is now owned by each project's st
 All Gherkin specs and API contracts live under `specs/` and are consumed via
 `{workspaceRoot}` inputs.
 
-| Spec Directory                          | Consumed By                                    | Targets                                 |
-| --------------------------------------- | ---------------------------------------------- | --------------------------------------- |
-| `specs/apps/organiclever/be/contracts/` | organiclever-app-web, organiclever-be          | codegen                                 |
-| `specs/apps/organiclever/`              | organiclever-app-web, organiclever-app-web-e2e | test:integration, typecheck, test:quick |
-| `specs/apps/rhino/`                     | rhino-cli                                      | test:integration                        |
-| `specs/apps/ayokoding/`                 | ayokoding-www                                  | test:integration                        |
-| `specs/apps/ose/`                       | ose-www                                        | test:integration                        |
-| `specs/apps/ose/id-be/behaviours/`      | ose-id-be, ose-id-be-e2e                       | test:coverage:\*, test:quick            |
-| `specs/apps/ose/id-web/behaviours/`     | ose-id-web, ose-id-web-e2e                     | test:coverage:\*, test:quick            |
+| Spec Directory                            | Consumed By                                    | Targets                                 |
+| ----------------------------------------- | ---------------------------------------------- | --------------------------------------- |
+| `specs/apps/organiclever/be/contracts/`   | organiclever-app-web, organiclever-be          | codegen                                 |
+| `specs/apps/organiclever/`                | organiclever-app-web, organiclever-app-web-e2e | test:integration, typecheck, test:quick |
+| `the upstream Rhino specification corpus` | Rhino                                          | test:integration                        |
+| `specs/apps/ayokoding/`                   | ayokoding-www                                  | test:integration                        |
+| `specs/apps/ose/`                         | ose-www                                        | test:integration                        |
+| `specs/apps/ose/id-be/behaviours/`        | ose-id-be, ose-id-be-e2e                       | test:coverage:\*, test:quick            |
+| `specs/apps/ose/id-web/behaviours/`       | ose-id-web, ose-id-web-e2e                     | test:coverage:\*, test:quick            |
 
 ## Related Documentation
 

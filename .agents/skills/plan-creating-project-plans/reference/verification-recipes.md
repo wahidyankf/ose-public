@@ -16,7 +16,7 @@ See [Plan Anti-Hallucination Convention](../../../../repo-governance/development
 | API signature     | Delegate to `web-researcher` with authoritative-doc URL                                                           |
 | Command flag      | `<cmd> --help` OR repo-doc reference                                                                              |
 | Test name         | `Grep` test files; if NEW, mark `_New test_`                                                                      |
-| Agent / skill     | `find .claude/agents -name '<name>.md'` (nested role subfolders) or `Bash test -f .claude/skills/<name>/SKILL.md` |
+| Agent / skill     | `find .claude/agents -name '<name>.md'` (nested role subfolders) or `Bash test -f .agents/skills/<name>/SKILL.md` |
 | External standard | Delegate to `web-researcher`; cite URL + access date + excerpt                                                    |
 | Behaviour claim   | `web-researcher` with cited official-doc excerpt                                                                  |
 | Cross-link target | `Bash test -f` on the resolved relative path                                                                      |

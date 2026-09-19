@@ -188,8 +188,8 @@ baseline, target/configuration, or unrelated failure blocks Phase 2.
       third-party licenses are compatible and documented.
 - [ ] [AI] Run the Phase 0 predecessor-green baseline so `build` executes only for backend/web owners while
       all four projects run real `typecheck`, `lint`, and `test:quick`, then run
-      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`; inventory the registry with
-      `rtk apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=pre-push --format=text`; preserve clean baseline transcripts. Diagnose every failure
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`; inventory the registry with
+      `rtk ./rhino gate list --output text`; preserve clean baseline transcripts. Diagnose every failure
       at root cause; never skip, retry, sleep, quarantine, widen, or weaken a gate.
 - [ ] [AI] Search current OSE ID files for provider abstractions and Google/Facebook references. Reuse a
       proven seam, remove no unrelated user work, and record whether any repository rule/enforcement
@@ -568,7 +568,7 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
 
 - [ ] [AI] Run the Mandatory Nx Quality Matrix, then run behavior coverage, backend Integration/E2E,
       web E2E, format, Markdown, Mermaid, dependency/license, and
-      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`.
       Save exact commands/exits at `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-6-quality-gates.md`; acceptance: every command exits
       0, otherwise reopen the owning implementation packet.
 - [ ] [AI] Enforce at least **99% Unit line coverage for authored production code**.
@@ -640,7 +640,7 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       lifecycle evidence; acceptance: no unchecked finding or unexplained coverage cell remains.
 
 > **Pause Safety:** DU1 is complete and reviewable but not delivered. Safe to stop. To resume:
-> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`.
 
 ---
 

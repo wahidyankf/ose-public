@@ -22,7 +22,7 @@ declares itself in the `integration-loopback:` allowlist of `repo-config.yml` wi
 project outside that list keeps network-free Integration as a product invariant. The layer permits
 loopback; the repository still decides who holds it.
 
-**Enforcement**: the `test-boundary` gate (`rhino-cli repo-governance test-boundary validate`,
+**Enforcement**: the `test-boundary` gate (`./rhino governance test-boundary validate`,
 ci-group `governance`) scans each project's `tests/integration/` sources for network-API constructs
 and fails an unallowlisted use. It also fails an allowlist entry that names an unknown project or
 carries no reason, and warns on an entry no longer backed by any network use.

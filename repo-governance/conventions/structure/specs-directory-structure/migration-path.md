@@ -20,8 +20,8 @@ outside — or restored from an archive — arrives in the retired shape.
 3. Keep what the retired folders really held. A folder carrying a stub that restates the README is
    deleted; a folder carrying 500 words of specification moves into the owner beside
    `architecture.md`.
-4. Verify with `rhino-cli specs validate-tree <product>`,
-   `rhino-cli specs counts validate specs/apps/<product>`, and `rhino-cli md links validate`.
+4. Verify with `the declared spec-tree check`,
+   `the declared spec-count check`, and `./rhino md internal-link validate`.
 
 **Path mapping:**
 
@@ -36,5 +36,5 @@ outside — or restored from an archive — arrives in the retired shape.
 | `specs/libs/<l>/behaviour/gherkin/`               | `specs/libs/<l>/behaviours/`                          |
 
 The atomic commit is mandatory. A product cannot be half in one shape and half in the other —
-`rhino-cli specs validate-tree` reports a retired folder surviving beside a corpus as a HIGH
+`the declared spec-tree check` reports a retired folder surviving beside a corpus as a HIGH
 finding, precisely so a partial move cannot sit unnoticed.

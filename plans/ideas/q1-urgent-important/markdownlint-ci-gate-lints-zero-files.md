@@ -1,5 +1,7 @@
 # The `markdownlint` CI gate lints zero files and has always passed vacuously
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: the `markdownlint` gate declares `ci: { scope: all-file-type }` with no `glob`,
 which the gate runner documents as "no-argument repository-wide mode" — but `markdownlint-cli2`
 needs a positive pattern, so it receives none, lints `0 file(s)`, and reports PASS on every run.

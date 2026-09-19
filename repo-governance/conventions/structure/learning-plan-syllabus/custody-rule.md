@@ -35,7 +35,7 @@ plan's corpus is a **consumer**. Four rules govern the relationship:
 | Yes            | Yes                        | **(b) Custody transfer** — `git mv` the `syllabus/` folder into a named successor plan, update that plan's `**Custodian**` line, and rewrite inbound links |
 
 **Half of this rule is already mechanically enforced.**
-`rhino-cli md links validate --exclude plans/done` runs at pre-push and in CI. The `--exclude
+`./rhino md links validate --exclude plans/done` runs at pre-push and in CI. The `--exclude
 plans/done` flag removes archived files as a **scan source**, not as a link **target** — so a
 still-live consumer plan is scanned, and its link into a corpus that moved without a rewrite fails
 the push. This is the backstop that catches a missed hand-off; it does not replace naming a Custodian

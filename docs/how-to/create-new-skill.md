@@ -1,6 +1,6 @@
 ---
 title: How to Create a New Skill
-description: Guide for creating a new Skill in .claude/skills/ for Claude Code's Skills auto-loading feature
+description: Guide for creating a new Skill in .agents/skills/ for Claude Code's Skills auto-loading feature
 category: how-to
 tags:
   - skills
@@ -11,13 +11,13 @@ created: 2026-02-01
 
 # How to Create a New Skill
 
-This guide explains how to create a new Skill in `.claude/skills/` for Claude Code's Skills auto-loading feature.
+This guide explains how to create a new Skill in `.agents/skills/` for Claude Code's Skills auto-loading feature.
 
 ## Prerequisites
 
 - Familiarity with [AI Agents Convention](../../repo-governance/development/agents/ai-agents.md) (Skills field requirements)
 - Understanding of [Repository Architecture](../../repo-governance/repository-governance-architecture.md) (Skills as Layer 2 delivery infrastructure)
-- Review existing Skills in `.claude/skills/` for reference
+- Review existing Skills in `.agents/skills/` for reference
 
 ## When to Create a Skill
 
@@ -79,14 +79,14 @@ Use when:
 ### Step 1: Copy Template
 
 ```bash
-cp .claude/skills/TEMPLATE.md .claude/skills/your-skill-name.md
+cp .agents/skills/TEMPLATE.md .agents/skills/your-skill-name.md
 ```
 
 Rename `your-skill-name.md` to `SKILL.md` inside a new directory:
 
 ```bash
-mkdir .claude/skills/your-skill-name
-mv .claude/skills/your-skill-name.md .claude/skills/your-skill-name/SKILL.md
+mkdir .agents/skills/your-skill-name
+mv .agents/skills/your-skill-name.md .agents/skills/your-skill-name/SKILL.md
 ```
 
 ### Step 2: Write Frontmatter
@@ -171,7 +171,7 @@ Verify your description triggers auto-loading:
 ### Step 1: Copy Template Directory
 
 ```bash
-cp -r .claude/skills/wow__multi-file-template .claude/skills/domain__your-skill-name
+cp -r .agents/skills/wow__multi-file-template .agents/skills/domain__your-skill-name
 ```
 
 ### Step 2: Update SKILL.md
@@ -223,8 +223,8 @@ Verify navigation links work:
 
 - SKILL.md links to `./reference.md#section-name` for details
 - SKILL.md links to `./examples.md#example-name` for code samples
-- reference.md has navigation footer: `[← Back to SKILL.md](../../.claude/skills/plan-writing-gherkin-criteria/SKILL.md) | [→ See Examples](./examples.md)`
-- examples.md has navigation footer: `[← Back to SKILL.md](../../.claude/skills/plan-writing-gherkin-criteria/SKILL.md) | [← See Reference](./reference.md)`
+- reference.md has navigation footer: `[← Back to SKILL.md](../../.agents/skills/plan-writing-gherkin-criteria/SKILL.md) | [→ See Examples](./examples.md)`
+- examples.md has navigation footer: `[← Back to SKILL.md](../../.agents/skills/plan-writing-gherkin-criteria/SKILL.md) | [← See Reference](./reference.md)`
 
 ### Step 6: Update README.md (Optional)
 
@@ -287,7 +287,7 @@ skills: [domain__your-skill-name] # Add your Skill here
 2. **Validate links**: All references must point to existing convention/development docs
 3. **Check quality**: Apply [Content Quality Principles](../../repo-governance/conventions/writing/quality.md)
 4. **Run wow\_\_rules-checker**: Validates Skills structure, frontmatter, references
-5. **Update Skills index**: Ensure `.claude/skills/README.md` includes your Skill
+5. **Update Skills index**: Ensure `.agents/skills/README.md` includes your Skill
 
 ## Common Mistakes
 

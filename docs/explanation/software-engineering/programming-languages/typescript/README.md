@@ -234,7 +234,7 @@ timeline
 
 **CLI Tools**:
 
-- rhino-cli for repository management and hygiene
+- Rhino for repository management and hygiene
 - Build tools and code generators
 - Database migration scripts
 
@@ -686,7 +686,7 @@ apps/
 ├── ose-www/         # Next.js 16 content platform (TypeScript, tRPC)
 ├── ayokoding-www/            # Next.js 16 fullstack content platform (TypeScript, tRPC)
 ├── organiclever-www/         # Next.js 16 landing website
-└── rhino-cli/                # F# CLI tool (repository management)
+└── Rhino/                # F# CLI tool (repository management)
 
 libs/
 ├── ts-ui/                   # Shared TypeScript UI components
@@ -1209,7 +1209,7 @@ fn calculate_zakat(wealth: f64, nisab: f64) -> Result<f64, ZakatError> {
 **OSE Platform Usage**:
 
 - **TypeScript**: `ose-www`, `ayokoding-www`, `organiclever-www`, `ose-app-web` — all web frontends and tRPC backends
-- **F#**: `organiclever-be` (REST API), `ose-be` (REST API), `rhino-cli` (repo management), `crane-cli` (PDF pipeline)
+- **F#**: `organiclever-be` (REST API), `ose-be` (REST API), `Rhino` (repo management), `crane-cli` (PDF pipeline)
 
 **When to Choose**:
 
@@ -1382,7 +1382,7 @@ record DonationRequest(Guid CampaignId, decimal Amount, string DonorName);
 
 **Choose Rust when**:
 
-- Building performance-critical CLI tools (`rhino-cli`, `crane-cli`)
+- Building performance-critical CLI tools (`Rhino`, `crane-cli`)
 - Single-binary distribution with no runtime dependency
 - Systems-level code where zero-cost abstractions are required
 

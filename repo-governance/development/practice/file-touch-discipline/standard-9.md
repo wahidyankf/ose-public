@@ -7,24 +7,24 @@ when_to_use: Use whenever you edit a file under the primary binding directory, o
 
 ## Standard 9 — Generated Mirrors Belong on the Ledger and in the Same Commit
 
-`.claude/agents/` and `.claude/skills/` are the canonical hand-authored agent and Skill sources.
+`.claude/agents/` and `.agents/skills/` are the canonical hand-authored agent and Skill sources.
 Secondary binding roots mix generated outputs with registry-declared vendored paths;
 `repo-config.yml` is authoritative at path and region level. Editing one canonical definition can
 therefore modify several generated files you never opened — all of those generated changes are
 yours, while unrelated vendored paths are not.
 
-rhino-cli provides the generators, and this repository already automates them:
+Rhino provides the generators, and this repository already automates them:
 
 | Command                                     | npm wrapper                           | What it does                                                    |
 | ------------------------------------------- | ------------------------------------- | --------------------------------------------------------------- |
-| `rhino-cli harness bindings generate`       | `npm run generate:bindings`           | Regenerates every mirror from `.claude/`                        |
+| `./rhino harness adapters generate`         | `npm run generate:bindings`           | Regenerates every mirror from `.claude/`                        |
 | `... generate --harness opencode`           | `npm run sync:agents`, `sync:skills`  | Regenerates one harness only                                    |
 | `... generate --harness opencode --dry-run` | `npm run sync:dry-run`                | Previews without writing                                        |
-| `rhino-cli harness sync validate`           | `npm run validate:sync`               | Fails on mirror drift, and on a stale `.opencode/skill*` mirror |
-| `rhino-cli harness claude validate`         | `npm run validate:claude`             | Validates the `.claude/` sources themselves                     |
-| `rhino-cli harness bindings validate`       | `npm run harness:bindings-validation` | Byte-parity guard against the emitter output                    |
+| `./rhino harness adapters validate`         | `npm run validate:sync`               | Fails on mirror drift, and on a stale `.opencode/skill*` mirror |
+| `./rhino harness adapters validate`         | `npm run validate:claude`             | Validates the `.claude/` sources themselves                     |
+| `./rhino harness adapters validate`         | `npm run harness:bindings-validation` | Byte-parity guard against the emitter output                    |
 
-**Pre-commit Step 3 runs `harness bindings generate` and auto-stages the result**, so in the normal
+**Pre-commit Step 3 runs `harness adapters generate` and auto-stages the result**, so in the normal
 path the mirrors are committed for you. The obligations are therefore about the paths where that
 automation does _not_ protect you:
 

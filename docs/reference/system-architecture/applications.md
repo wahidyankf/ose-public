@@ -55,16 +55,6 @@ The platform consists of the following applications across its technology stacks
 - **Dev Port**: 3200
 - **Location**: `apps/organiclever-www/`
 
-### CLI Tools
-
-#### rhino-cli
-
-- **Purpose**: Repository management and automation
-- **Language**: F# (ported from Rust 2026-08-30)
-- **Build Command**: `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build rhino-cli`
-- **Location**: `apps/rhino-cli/`
-- **Status**: Production
-
 ### OrganicLever Applications
 
 #### organiclever-www
@@ -163,15 +153,15 @@ Shows the high-level technical building blocks (containers) of the system. In C4
 
 **Content sites and Nx orchestration:**
 
-Link validation for every content tree is repository-wide and lives in `rhino-cli`, so no
+Link validation for every content tree is repository-wide and lives in `Rhino`, so no
 content site depends on a per-domain CLI.
 
 ```mermaid
 graph LR
     accTitle: C4 Level 2: Container Diagram
-    accDescr: rhino-cli F CLI leads to Nx Workspace Build Orchestration via Repository automation; Nx Workspace Build Orchestration leads to ose-www Next.js App via Manages; Nx Workspace Build Orchestration leads to ayokoding-www Next.js App via Manages; and 1 more links.
+    accDescr: Rhino F CLI leads to Nx Workspace Build Orchestration via Repository automation; Nx Workspace Build Orchestration leads to ose-www Next.js App via Manages; Nx Workspace Build Orchestration leads to ayokoding-www Next.js App via Manages; and 1 more links.
     subgraph "CLI Tools"
-        RHINO[rhino-cli<br/>F# CLI]
+        RHINO[Rhino<br/>F# CLI]
     end
 
     subgraph "Marketing & Education"
@@ -240,7 +230,7 @@ Marketing & Education Sites:
 
 CLI Tools:
 
-- rhino-cli: Repository management automation, including repository-wide link validation
+- Rhino: Repository management automation, including repository-wide link validation
 
 **Build-Time Dependencies:**
 
@@ -250,6 +240,6 @@ CLI Tools:
 
 **Link Validation Pipeline:**
 
-`rhino-cli md links validate` checks internal Markdown links across the whole repository,
+`./rhino md links validate` checks internal Markdown links across the whole repository,
 including every site's content tree. Content is co-located at `apps/<site>/content/` and
 served by the Next.js application.

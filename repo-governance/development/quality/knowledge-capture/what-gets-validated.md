@@ -5,7 +5,7 @@ when_to_use: "Use to know what the validation gate checks."
 
 # What Gets Validated
 
-Enforcement is by **agent checkers reading prose**, not a `rhino-cli` structural validator —
+Enforcement is by **agent checkers reading prose**, not a `Rhino` structural validator —
 triaging generalizability is a judgment call a deterministic tool cannot make. The relevant agents
 are:
 

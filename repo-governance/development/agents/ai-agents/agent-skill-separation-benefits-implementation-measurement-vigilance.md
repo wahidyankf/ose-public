@@ -45,7 +45,7 @@ When simplifying an agent:
 - 82.7% average reduction (4x better than target)
 - 28,439 lines eliminated
 - 100% tier compliance (all in Simple tier)
-- agent skills created/used to eliminate duplication (at the time: 18; see [agent skills README](../../../../.claude/skills/README.md) for current catalog)
+- agent skills created/used to eliminate duplication (at the time: 18; see [agent skills README](../../../../.agents/skills/README.md) for current catalog)
 
 ## Ongoing Vigilance
 
@@ -59,7 +59,7 @@ When simplifying an agent:
 
 ## Related agent skills
 
-**Current agent skills** (see [agent skills README](../../../../.claude/skills/README.md) for complete catalog):
+**Current agent skills** (see [agent skills README](../../../../.agents/skills/README.md) for complete catalog):
 
 - `repo-generating-validation-reports` - Report generation, UUID chains, timestamps
 - `repo-assessing-criticality-confidence` - Criticality levels, confidence assessment
@@ -73,4 +73,4 @@ When simplifying an agent:
 - `docs-validating-links` - Link validation, caching
 - Plus more in Content Creation, Standards Application, Process Execution categories
 
-See [agent skills README](../../../../.claude/skills/README.md) for complete catalog.
+See [agent skills README](../../../../.agents/skills/README.md) for complete catalog.

@@ -26,7 +26,7 @@ No external state file or convergence engine is needed when the underlying tools
 
 ## 2. State Is the Installed Binaries
 
-`which go` + `go version` IS the state query. Terraform's state file would be a stale cache of something `rhino-cli doctor` can detect in seconds. The filesystem and PATH are the single source of truth for "what is installed," and querying them directly is simpler and more accurate than maintaining a parallel state file.
+`which go` + `go version` IS the state query. Terraform's state file would be a stale cache of something `./rhino toolchain validate` can detect in seconds. The filesystem and PATH are the single source of truth for "what is installed," and querying them directly is simpler and more accurate than maintaining a parallel state file.
 
 ## 3. Single Developer Machine, Not a Fleet
 

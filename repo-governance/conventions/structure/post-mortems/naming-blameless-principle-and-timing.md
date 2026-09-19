@@ -28,11 +28,11 @@ Where:
 
 **Examples**:
 
-| PASS: Correct                                           | FAIL: Incorrect                           | Why                                                            |
-| ------------------------------------------------------- | ----------------------------------------- | -------------------------------------------------------------- |
-| `2026-06-05-github-actions-nx-affected-stall.md`        | `post-mortem-2026-06-05.md`               | Missing system and failure                                     |
-| `2025-11-01-organiclever-www-vercel-outage.md`          | `2025-11-01__organiclever-www__vercel.md` | Double underscore is plans-folder style, not post-mortem style |
-| `2025-09-14-rhino-cli-coverage-threshold-regression.md` | `2025-09-14-Rhino-CLI.md`                 | Uppercase not allowed                                          |
+| PASS: Correct                                       | FAIL: Incorrect                           | Why                                                            |
+| --------------------------------------------------- | ----------------------------------------- | -------------------------------------------------------------- |
+| `2026-06-05-github-actions-nx-affected-stall.md`    | `post-mortem-2026-06-05.md`               | Missing system and failure                                     |
+| `2025-11-01-organiclever-www-vercel-outage.md`      | `2025-11-01__organiclever-www__vercel.md` | Double underscore is plans-folder style, not post-mortem style |
+| `2025-09-14-Rhino-coverage-threshold-regression.md` | `2025-09-14-Rhino.md`                     | Uppercase not allowed                                          |
 
 ## Blameless Principle
 

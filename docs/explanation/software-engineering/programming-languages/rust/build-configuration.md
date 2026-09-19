@@ -227,7 +227,7 @@ target/
 profile, and CI pre-installs each pinned toolchain with exactly that profile. Omitting them lets
 `cargo fmt`/`cargo clippy` fail intermittently under that toolchain, racing whichever lint job
 provisions the missing component first.
-[`rhino-cli doctor`](../../../../how-to/setup-development-environment.md#version-reference) checks
+[`./rhino toolchain validate`](../../../../how-to/setup-development-environment.md#version-reference) checks
 this repo-wide (root plus every `apps/*`/`libs/*` project) and reports an omission as a warning.
 
 ```toml

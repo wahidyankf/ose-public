@@ -34,7 +34,7 @@ in each archived plan folder.
   an unvetted plan (see Phase A).
 
 > **Pre-Execution Requirement**: Before scheduling, invoke the `grill-me` skill
-> (`.claude/skills/grill-me/SKILL.md`) to stress-test any unresolved cross-plan ordering assumptions
+> (`.agents/skills/grill-me/SKILL.md`) to stress-test any unresolved cross-plan ordering assumptions
 > (e.g., "does B really depend on A's shipped behaviour, or only on a file they happen to share?").
 > Every question presents 2–4 concrete options per the
 > [Grilling-With-Options Convention](../../../development/workflow/grilling-with-options.md).

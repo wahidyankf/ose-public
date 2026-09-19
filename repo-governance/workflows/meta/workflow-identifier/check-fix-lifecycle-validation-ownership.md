@@ -13,10 +13,8 @@ retains only repository-unique evidence.
 Query both registry projections; never copy their inventory into workflows or prompts:
 
 ```bash
-for surface in pre-commit pre-push ci; do
-  rtk apps/rhino-cli/scripts/rhino-bin.sh gate list --surface="$surface" --format=text
-  rtk apps/rhino-cli/scripts/rhino-bin.sh gate list --surface="$surface" --format=json
-done
+rtk ./rhino gate list
+rtk ./rhino gate list --output json
 ```
 
 Text supplies every gate ID and scope, including hand-wired gates; JSON adds metadata such as

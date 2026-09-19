@@ -16,7 +16,7 @@ when_to_use: "Read this index to find the right Nx Target Standards child docume
 - [Tag Convention — Tags, Examples, and Anti-Patterns](./tag-convention-current-tags-and-examples.md) — The current per-project tag table, two worked tag-declaration examples, and the tag anti-patterns to avoid.
 - [Mandatory Targets — Summary Matrix](./mandatory-targets-summary-matrix.md) — The per-project-type summary matrix of which mandatory targets are real versus echo, plus backend typecheck examples and CI schedules.
 - [Mandatory and Applicable Nx Targets](./mandatory-targets-all-projects-six-and-required.md) — Real targets required by project role and boundary.
-- [Mandatory Targets — test:quick Composition and Gate-Surface Rule](./mandatory-targets-all-projects-quick-and-gate.md) — The canonical five-step test:quick composition with a worked rhino-cli example, and the gate-surface / scheduled-tier rule.
+- [Mandatory Targets — test:quick Composition and Gate-Surface Rule](./mandatory-targets-all-projects-quick-and-gate.md) — The canonical five-step test:quick composition with a worked Rhino example, and the gate-surface / scheduled-tier rule.
 - [Mandatory Targets — Type, Build, Server, and Unit-Test Requirements](./mandatory-targets-type-build-server-unit.md) — Requirements for typecheck on statically typed projects, build on compiled/bundled projects, dev/start on server apps, and test:unit.
 - [Projects with Integration Tests](./mandatory-targets-integration-tests.md) — Applicability and
   runtime rules for deterministic local-resource tests, including the owned-loopback boundary and

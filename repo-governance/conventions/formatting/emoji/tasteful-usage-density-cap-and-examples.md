@@ -17,8 +17,7 @@ Enforce these soft limits; exceeding them is a governance finding:
 **Known exceptions to the source-code ban** (documented per accepted false positives in
 `local-tmp/.known-false-positives.md`):
 
-- CLI tools using emoji for terminal output formatting (e.g., `apps/rhino-cli/src/`,
-  `apps/rhino-cli/internal/`, `apps/rhino-cli/cmd/` — status indicators ✓ ✗ ✅ ❌)
+- Command-line tools using emoji for terminal output formatting (for example status indicators ✓ ✗ ✅ ❌)
 - Web UI component code where emoji is part of rendered UI content (e.g., React TSX components
   in `apps/*/src/` for ayokoding-www, organiclever-www, ose-www, and `libs/web-ui/src/`)
 

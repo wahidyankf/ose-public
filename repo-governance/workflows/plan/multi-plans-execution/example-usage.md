@@ -9,7 +9,7 @@ when_to_use: Use when you need a concrete invocation pattern to copy for running
 
 ```text
 User: "Run multi-plans-execution for e2e-coverage-rule-feature-skip-fixme-gap
-       rhino-cli-git-root-test-fixture-race rust-cargo-target-dir-sharing"
+       git-root-test-fixture-race rust-cargo-target-dir-sharing"
 ```
 
 The orchestrator loads the three plans, builds the DAG, materializes the union granular Task list, and
@@ -19,15 +19,14 @@ In the real 2026-07-18 run of exactly these three plans, the DAG came out **more
 file-level reading suggests** — a worked illustration of why A5/A6 are re-derived per run rather than
 assumed:
 
-- All four edit **different** files, so they are disjoint on disk. But all four touch
-  `apps/rhino-cli/**`, so all four carry the **byte-identity flag** and serialize at their merge +
-  three-repo propagation nodes (A6.2 / Iron Rule 3) — disjoint-on-disk does **not** imply
-  parallelizable-to-merge.
-- `rust-cargo-target-dir-sharing` had pivoted from a `scripts/*.sh` helper into `rhino-cli doctor`,
-  moving it **inside** the byte-identity boundary. A stale pre-pivot reading would have scheduled it
-  as disjoint. **Re-read each plan's current scope; do not trust a prior run's classification.**
-- A **safety-first ordering edge** was added by inference, not declaration: `rhino-cli-git-root-test-fixture-race`
-  fixes the very bug where parallel `nx affected` rhino-cli test runs corrupt the real repo, so running
+- All four edit **different** files, so their disjoint on-disk footprints were initially
+  parallelizable. An explicit shared-source declaration would still serialize its named steps —
+  disjoint-on-disk does **not** imply parallelizable-to-merge.
+- `rust-cargo-target-dir-sharing` had pivoted from a `scripts/*.sh` helper into a shared toolchain
+  concern. A stale pre-pivot reading would have scheduled it as disjoint. **Re-read each plan's
+  current scope; do not trust a prior run's classification.**
+- A **safety-first ordering edge** was added by inference, not declaration: `git-root-test-fixture-race`
+  fixes the very bug where parallel `nx affected` fixture tests corrupt the real repo, so running
   the other two plans' test suites in parallel _before_ that fix landed could re-trigger the corruption.
   It was therefore scheduled first and fully. **A plan that repairs the execution environment itself is
   a prerequisite of every plan that runs in that environment**, even with zero file overlap.
@@ -70,6 +69,6 @@ User: "…in plan-only mode"      # emit the DAG report and stop for review
 
 ```text
 # In planB/README.md:
-Depends-on: [rhino-cli-source-drift-reconciliation]
+Depends-on: [source-drift-reconciliation]
 # → planB's every node is scheduled only after that plan reaches its terminal state.
 ```

@@ -556,7 +556,7 @@ delivery branch without merge or archival yet.
 - [ ] [AI] Reconcile final diff, frozen ledger, generated ownership, evidence, licenses, assets, and plan
       scope. Verify no provider/deployment/production-secret file exists.
 - [ ] [AI] Before every authorized push run the canonical registry exactly:
-      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`.
 
 ### Manual Retests and Trace Reconciliation
 
@@ -723,7 +723,7 @@ review.
       build-valid, reviewable Conventional Commits, including
       `chore(plans): move ose-id-init-06-passkeys-and-mfa to done` for archival.
 - [ ] [AI] Run docs/plan/link gates and the exact canonical pre-push registry:
-      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`;
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`;
       push and open or update the PR to `main`.
 
 ### Phase 6 Gate

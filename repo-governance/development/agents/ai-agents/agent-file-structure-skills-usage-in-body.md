@@ -30,7 +30,7 @@ when_to_use: Use when writing or reviewing how an agent documents its agent skil
 ```markdown
 ## Knowledge Dependencies (agent skills)
 
-This agent leverages agent skills from `.claude/skills/`:
+This agent leverages agent skills from `.agents/skills/`:
 
 1. **`skill-name`** - what it does
 2. **`other-skill`** - what it does
@@ -93,4 +93,4 @@ skills:
 
 This pattern provides both auto-loaded knowledge (agent skills) and explicit references for specific requirements.
 
-See [agent skills README](../../../../.claude/skills/README.md) for complete details on agent skills creation, structure, and usage patterns.
+See [agent skills README](../../../../.agents/skills/README.md) for complete details on agent skills creation, structure, and usage patterns.

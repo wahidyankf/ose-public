@@ -6,9 +6,9 @@ when_to_use: Use before running any delivery-checklist command that reads from a
 # Absolute Source Paths in Delivery-Checklist Commands (Same-Repo Worktree vs. Primary Checkout)
 
 A related but distinct failure mode: a delivery-checklist command can hardcode a fully-qualified
-**absolute** path to a repo's **primary checkout** (e.g. `/Users/<you>/ose-public/apps/rhino-cli/...`)
+**absolute** path to a repo's **primary checkout** (e.g. `/Users/<you>/ose-public/apps/ose-www/...`)
 when it should point at that same repo's **worktree** copy
-(`/Users/<you>/ose-public/worktrees/<plan-id>/apps/rhino-cli/...`). Unlike the relative-path case
+(`/Users/<you>/ose-public/worktrees/<plan-id>/apps/ose-www/...`). Unlike the relative-path case
 above, this is not a nesting-depth arithmetic error — the path is syntactically valid and resolves
 to a real, existing file, just the stale one on `main` instead of the branch's in-progress copy.
 This makes it dangerous: a `cp`/`diff` command sourcing from the wrong checkout does not error, it

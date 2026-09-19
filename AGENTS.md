@@ -23,7 +23,8 @@ Trunk-Based Dev on `main`. Node.js 24 (Volta), npm.
 
 ## Project Structure
 
-`apps/` (deployable), `libs/` (flat), `.claude/` (primary binding), `.opencode/` (auto-synced).
+`apps/` (deployable), `libs/` (flat), `.agents/` (canonical harness content), and generated
+platform routes under `.claude/`, `.codex/`, and `.opencode/`.
 Filenames: lowercase kebab-case.
 
 **See**: [add-new-app.md](./docs/how-to/add-new-app.md),
@@ -114,9 +115,10 @@ Verify UI/API behaviour manually; investigate CI failures at the root cause, nev
 
 ## AI Agents
 
-[Agent catalog](./.claude/agents/README.md) is authoritative. Agent skills authored at
-`.claude/skills/<name>/SKILL.md` have non-vendored mirrors under `.agents/skills/`. The three plan
-agents' canonical definitions live in [`.agents/agents/`](./.agents/agents/README.md).
+[Canonical agents](./.agents/agents/README.md) and canonical skills under `.agents/skills/` are
+authoritative. The three plan agents have generated routes under `.claude/agents/plan/`,
+`.codex/agents/`, and `.opencode/agents/`; regenerate and validate them through the pinned Rhino
+adapter commands rather than hand-editing a route.
 
 **See**: [ai-agents.md](./repo-governance/development/agents/ai-agents.md)
 

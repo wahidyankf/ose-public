@@ -78,7 +78,7 @@ jobs:
         env:
           RHINO_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
           RHINO_HEAD: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
-          OSE_GATE_SURFACE: ci
+          RHINO_GATE_SURFACE: pull-request
         run: |
           set -euo pipefail
           PATH="node_modules/.bin:$PATH" ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \

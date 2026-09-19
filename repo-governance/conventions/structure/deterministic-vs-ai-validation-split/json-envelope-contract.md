@@ -9,7 +9,7 @@ The deterministic preflight emits a JSON envelope with this canonical key order 
 
 ```json
 {
-  "schema": "rhino-cli/repo-governance-audit/v1",
+  "schema": "Rhino/repo-governance-audit/v1",
   "status": "ok | failed",
   "result": {
     "git_sha": "abc1234",

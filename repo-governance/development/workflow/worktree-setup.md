@@ -14,7 +14,7 @@ toolchain from the **root directory of that worktree** with a mandatory two-step
 
 Both steps are required. The first makes that checkout's hooks and Node/Nx dependencies usable;
 the second uses the Doctor wrapper's transactional class to converge native toolchains managed by
-`rhino-cli doctor`.
+`./rhino toolchain validate`.
 
 In a repository without npm, use its declared root bootstrap only when it installs local
 dependencies and Git hooks; never invent or infer an equivalent command.
@@ -38,7 +38,7 @@ dependencies and Git hooks; never invent or infer an equivalent command.
 
 - [Worktree Path Convention](../../conventions/structure/worktree-path.md) - Repo-root `worktrees/<name>/` override and the WorktreeCreate hook
 - [Reproducible Environments](../workflow/reproducible-environments.md) - Volta pinning and lockfile management
-- [Native-First Toolchain Management](../workflow/native-first-toolchain.md) - Native package managers and `rhino-cli doctor`
+- [Native-First Toolchain Management](../workflow/native-first-toolchain.md) - Native package managers and `./rhino toolchain validate`
 - [AI Agents Convention](../agents/ai-agents.md) - Git Worktree Awareness rules for agents
 - [Trunk Based Development](../workflow/trunk-based-development/default-push-and-worktree-execution.md#default-push-and-worktree-execution) - The repo-wide default delivery mode is `worktree-to-pr`
 - [Git Push Default Convention](../workflow/git-push-default.md) - The PR-branch-as-default push target

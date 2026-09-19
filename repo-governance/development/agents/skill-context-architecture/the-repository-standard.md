@@ -7,7 +7,7 @@ when_to_use: Use when authoring a new Skill and deciding which context mode it d
 
 ## Skill Context Modes in the Primary Binding agent skills Directory
 
-**Standard**: agent skills in `.claude/skills/` support two context modes:
+**Standard**: agent skills in `.agents/skills/` support two context modes:
 
 - **Inline skills** (default): Omit `context` field or set `context: inline`. Work in BOTH main conversation AND delegated agent contexts.
 - **Fork skills** (`context: fork`): Work from MAIN CONVERSATION ONLY (delegated agents cannot spawn delegated agents).

@@ -378,7 +378,7 @@ ENTRYPOINT ["./ZakatService"]
 
 **The self-contained example above sets `-p:PublishTrimmed=true`. Trimming and NativeAOT
 (`-p:PublishAot=true`) share the same reflection-hostile failure mode**, discovered and measured
-during the `rewrite-rhino-cli-to-fsharp` migration's Phase 1 publish-mode spike
+during the `rewrite-Rhino-to-fsharp` migration's Phase 1 publish-mode spike
 (`local-tmp/publish-spike/`, `net10.0`, `osx-arm64`/`linux-x64`). Before enabling either flag on a
 new F# project, verify against these three constructs, in order of how often this repo's F# code
 uses them:
@@ -400,7 +400,7 @@ application`. **Fix**: a source-generated `JsonSerializerContext` per serialized
 
 None of these three is caught by `dotnet build`; they only surface at **publish time** (as
 warnings) or **runtime** (as crashes), so a green `dotnet build` proves nothing about
-trim/AOT-safety. `rewrite-rhino-cli-to-fsharp` selected **self-contained, non-trimmed** publishing for
+trim/AOT-safety. `rewrite-Rhino-to-fsharp` selected **self-contained, non-trimmed** publishing for
 this exact reason — the JSON-serialization mitigation was judged disproportionate scope for that
 migration. A future project may reach a different conclusion once the JSON mitigation is worth
 building, but must re-verify all three constructs (and any other reflection-based library it

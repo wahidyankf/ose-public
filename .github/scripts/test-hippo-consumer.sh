@@ -64,6 +64,21 @@ if (
 if (profile.maxConcurrency !== undefined) process.exit(1);
 '
 
+# The editor schema must identify the same immutable release that the runtime
+# wrapper verifies from rhino.lock. A stale modeline masks an accidental
+# release-pin mismatch from authoring tools while the executable uses new bytes.
+node -e '
+const fs = require("fs");
+const lock = fs.readFileSync("rhino.lock", "utf8");
+const version = /^version=(v[^\n]+)$/m.exec(lock)?.[1];
+const config = fs.readFileSync("repo-config.yml", "utf8");
+const expected = `https://raw.githubusercontent.com/wahidyankf/rhino/${version}/schemas/repo-config/v2.schema.json`;
+if (!version || !config.includes(expected)) {
+  console.error(`repo-config modeline must match rhino.lock version ${version ?? "<missing>"}`);
+  process.exit(1);
+}
+'
+
 # Direct compute leaves carry one outer admission. Composite and lifecycle
 # aliases delegate to those leaves, so they must not add a nested admission.
 # The removed Rhino-CLI package aliases must stay absent rather than acquiring

@@ -220,6 +220,13 @@ if grep -Fq 'lint-golangci' scripts/format-staged; then
 	exit 1
 fi
 
+# Shell files reach the declared staged formatter too. The GitHub-hosted
+# Ubuntu image does not ship shfmt, so the shared Go setup must provision the
+# pinned formatter rather than relying on an image-specific tool.
+grep -F 'shfmt-version:' .github/actions/setup-go/action.yml
+grep -F 'mvdan.cc/sh/v3/cmd/shfmt@v${want}' .github/actions/setup-go/action.yml
+grep -F '"$gobin/shfmt" --version' .github/actions/setup-go/action.yml
+
 # A retained F# path can require Fantomas under the actual Husky environment.
 # Discover its .NET runtime from the installed toolchain; a machine-specific
 # root would make the hook pass only on the authoring workstation.

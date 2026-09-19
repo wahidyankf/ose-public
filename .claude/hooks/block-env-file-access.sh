@@ -3,7 +3,7 @@
 # manipulation of exactly .env.prod / .env.stag (the two restricted-secrets tiers). Every
 # other real .env* file (.env, .env.local, .env.test, .env.example, ...) is agent-readable.
 # Commit policy is unaffected and stays deny-all for every .env* file — see
-# `apps/rhino-cli/src/commands/env_staged_guard.rs`'s `is_offending` (guard-env-file-access).
+# the repository's declared `env-validate` gate (guard-env-file-access).
 set -euo pipefail
 
 # The two restricted tiers, shared by both branches below — adding a tier is a one-line change.

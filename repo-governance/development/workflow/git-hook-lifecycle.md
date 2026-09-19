@@ -14,11 +14,8 @@ scope, order, and CI relationship. Do not copy a command list into a hook or thi
 Use the registry projection for the repository and surface being inspected:
 
 ```sh
-apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=commit-msg --format=text
-apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=pre-commit --format=text
-apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=pre-push --format=text
-apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=ci --format=text
-apps/rhino-cli/scripts/rhino-bin.sh gate validate
+./rhino gate list
+./rhino gate validate
 ```
 
 `gate validate` is the conformance check: it rejects a declared hook surface whose executable shim
@@ -33,7 +30,7 @@ does not delegate to the registry, a stale generated `lint-staged` block, or inv
 | Before push    | `.husky/pre-push`   | `./rhino gate run --surface pre-push`           |
 
 The pinned RHINO binary runs the public-safety screen first, then hands the surface to the registry
-through `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=<surface>`.
+through `./rhino gate run --surface <surface>`.
 
 The dispatcher runs each declared gate in registry order and stops at the first failure. A hook failure
 aborts its Git operation; fix the reported gate and retry.
@@ -75,7 +72,7 @@ Pre-commit runs deterministic staged checks only. Pre-push and PR/main quality g
 for every behaviour owner and all applicable static `test:coverage:*` validators. Neither hook nor
 PR/main may invoke Integration or E2E runtime directly or transitively.
 
-CI derives registry-managed entries from `gate list --surface=ci --format=json`. Jobs needing
+CI derives registry-managed entries from `gate list --output json`. Jobs needing
 language-specific setup remain `wiring: hand-wired`; validation requires each declared command.
 Scheduled/manual full-quality workflows own complete Integration and E2E execution.
 

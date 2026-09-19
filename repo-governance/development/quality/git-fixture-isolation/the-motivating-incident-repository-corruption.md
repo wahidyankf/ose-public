@@ -5,10 +5,9 @@ when_to_use: "Use for the incident that motivated this convention."
 
 # The Motivating Incident (part 1)
 
-A Rust test fixture in `apps/rhino-cli`
-(`find_root_from_worktree_returns_worktree_path`, in
-`apps/rhino-cli/src/infrastructure/git/root.rs`) builds a throwaway git repository and a linked
-worktree to exercise repository-root resolution. Under parallel `nx affected`/`nx run-many`
+A retired in-tree test fixture (`find_root_from_worktree_returns_worktree_path`) built a throwaway
+git repository and a linked worktree to exercise repository-root resolution. Under parallel
+`nx affected`/`nx run-many`
 invocations (`test:quick` fanning out across roughly two dozen projects), this fixture has
 repeatedly corrupted the **real** repository it runs inside rather than staying isolated to its
 throwaway sandbox: an unexpected `"init"` commit -- authored by the fixture's hardcoded

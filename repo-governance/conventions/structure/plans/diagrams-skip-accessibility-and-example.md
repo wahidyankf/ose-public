@@ -30,7 +30,7 @@ This convention does **not** redefine those rules in full — consult the author
 
 - **Palette and WCAG AA rules** — [Color Accessibility Convention](../../formatting/color-accessibility.md) — authoritative source for the verified palette, hex codes, contrast ratios, and color-blindness coverage
 - **Diagram syntax and orientation** — [Diagram and Schema Convention](../../formatting/diagrams.md) for full Mermaid syntax, ASCII fallback rules, LR orientation default, and width constraints
-- **Palette and accessibility Skill** — [`docs-creating-accessible-diagrams`](../../../../.claude/skills/docs-creating-accessible-diagrams/SKILL.md) for the verified WCAG-compliant hex codes, dos and don'ts, and agent-usable reference
+- **Palette and accessibility Skill** — [`docs-creating-accessible-diagrams`](../../../../.agents/skills/docs-creating-accessible-diagrams/SKILL.md) for the verified WCAG-compliant hex codes, dos and don'ts, and agent-usable reference
 
 ## Example: Plan-Appropriate Flowchart
 

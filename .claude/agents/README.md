@@ -5,11 +5,12 @@ description: "Grouped catalog of the AI agents that help maintain Open Sharia En
 
 # Agents
 
-This directory is the canonical catalog of the AI agents that help maintain Open Sharia
-Enterprise. Agents are grouped into role subfolders below; open a group's own `README.md` for
-its member agents. Start with [AGENTS.md](../../AGENTS.md) for repository rules and
-[the skills catalog](../skills/README.md) for reusable guidance — agents execute work, skills
-provide the focused knowledge they use.
+This is the retained native Claude-agent catalog. The stable v0.4 canonical definitions are under
+`.agents/agents/`; generated plan-agent routes are the only declared adapter family here. Agents
+are grouped into role subfolders below; open a group's own `README.md` for its member agents.
+Start with [AGENTS.md](../../AGENTS.md) for repository rules and
+[the canonical skills catalog](../../.agents/skills/README.md) for reusable guidance — agents
+execute work, skills provide the focused knowledge they use.
 
 - [AyoKoding-Web Content](./apps-ayokoding-www/README.md) — Agents that create, validate, and fix ayokoding-web tutorial and content surfaces (By Example, Primer, Annotated-concept, In-the-Field, facts, links, deploy).
 - [App Deployers](./apps-deployers/README.md) — Deployer agents that push each app to its staging or production environment branch after validation.
@@ -17,7 +18,7 @@ provide the focused knowledge they use.
 - [Docs](./docs/README.md) — Agents that create, check, fix, and manage docs/ documentation, tutorials, and file organization.
 - [General](./general/README.md) — Cross-cutting agents scoped to no single app or domain: agent scaffolding, API exploratory testing, CI standards, and social posts.
 - [PDF to Markdown](./pdf-to-md/README.md) — Agents that convert PDF sources to verbatim Markdown and validate or fix the conversion.
-- [Plan](./plan/README.md) — Agents that create, check, and validate execution of project plans.
+- [Plan](../../.agents/agents/README.md) — Canonical agents that create, check, and validate execution of project plans.
 - [PR Review](./pr-review/README.md) — The PR-review pipeline: risk-tier scout, nine discipline specialists, a synthesis coordinator, and a fixer.
 - [README Tooling](./readme-agents/README.md) — Agents that create, check, and fix README.md content quality.
 - [Repo Governance](./repo/README.md) — Repository-wide agents: rules and workflow governance, harness-compatibility parity, and plan Phase-0 setup.

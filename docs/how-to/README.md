@@ -31,7 +31,7 @@ teach a journey, while how-to guides help you solve one specific problem.
 
 - [Configure app environments](./configure-app-environments.md) — select the right `APP_ENV` tier
 - [How to Add a Programming Language](./add-programming-language.md) — Step-by-step guide for adding programming languages to ayokoding-www following the Programming Language Content Standard
-- [How to Create a New Skill](./create-new-skill.md) — Guide for creating a new Skill in .claude/skills/ for Claude Code's Skills auto-loading feature
+- [How to Create a New Skill](./create-new-skill.md) — Guide for creating a new Skill in .agents/skills/ for Claude Code's Skills auto-loading feature
   and load the correct `.env.<tier>` file for local, test, staging, and production runs.
 
 External contribution intake is closed. These guides describe work in an authorized repository

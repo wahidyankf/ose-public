@@ -9,7 +9,7 @@ when_to_use: Use when a Skill needs to run in an isolated context outside the cu
 
 **Option 1: Create fork skills in the primary binding skills directory (recommended)**
 
-Fork skills in `.claude/skills/` work from main conversation:
+Fork skills in `.agents/skills/` work from main conversation:
 
 ```
 .claude/

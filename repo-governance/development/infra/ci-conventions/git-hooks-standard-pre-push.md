@@ -6,7 +6,7 @@ when_to_use: "Use when debugging or changing the pre-push test gate."
 # Git Hooks Standard — Pre-Push
 
 The pre-push hook runs affected `test:quick` targets serially with the pushed local commit as head
-and `origin/main` as base. Deleted refs do not participate. Use `gate list --surface=pre-push` to
+and `origin/main` as base. Deleted refs do not participate. Use `./rhino gate list --output text` to
 discover any additional repository-validation entries and `gate validate` to verify registry/shim
 conformance.
 

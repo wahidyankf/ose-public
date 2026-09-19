@@ -18,7 +18,7 @@ target: specs/apps/wahidyankf
 surface-profile: web-only
 
 # Create a CLI-only app spec area
-target: specs/apps/rhino
+target: upstream Rhino product specifications
 surface-profile: cli-only
 
 # Create a missing README in an existing directory

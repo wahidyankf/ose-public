@@ -1,13 +1,15 @@
 # AyoKoding mermaid diagram remediation
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: 636 mermaid violations across 241 `apps/ayokoding-www/content` tutorial files
 became visible when a validator bug was fixed; remediate them and drop the temporary CI exclude.
 
-> Surfaced 2026-07-21 while fixing the `detect_kind` leading-comment bug in `rhino-cli md mermaid validate`.
+> Surfaced 2026-07-21 while fixing the `detect_kind` leading-comment bug in `./rhino md mermaid validate`.
 
 ## Problem / context
 
-`rhino-cli md mermaid validate` silently skipped **any** mermaid block whose first line inside the
+`./rhino md mermaid validate` silently skipped **any** mermaid block whose first line inside the
 fence was a `%%` comment. `detect_kind` skipped blank lines but treated a comment as an unrecognised
 diagram type, returned `DiagramKind::Other`, and `validate_one_block` then returned early — bypassing
 every label-length, width, depth, and subgraph rule for that block.

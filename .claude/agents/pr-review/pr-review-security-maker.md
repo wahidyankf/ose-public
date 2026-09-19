@@ -56,7 +56,7 @@ safety check; `MEDIUM` = an untrusted-input-handling gap with no demonstrated ex
 ## SUPPRESS Block (Never Raise)
 
 When a caller supplies lifecycle delegation, first apply the shared
-[lifecycle-owned mechanical suppression](../../skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
+[lifecycle-owned mechanical suppression](../../../.agents/skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
 
 - Defense-in-depth suggestions where primary defenses are already adequate (e.g. "also validate
   here" when the input is already validated upstream).

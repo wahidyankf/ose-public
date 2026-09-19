@@ -144,7 +144,7 @@ graph LR
 
 **Steps:**
 
-1. Enumerate matrix-wired CI gates with `rhino-cli gate list --surface=ci --format=json`.
+1. Enumerate matrix-wired CI gates with `./rhino gate list`.
 2. Run one `gate run --surface=ci --only=<id>` matrix job per declared entry.
 3. Keep language-specific `test:quick`, compatibility, and structural-spec jobs hand-wired where
    their toolchain setup is required.

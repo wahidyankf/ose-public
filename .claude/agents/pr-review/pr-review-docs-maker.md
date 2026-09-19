@@ -55,7 +55,7 @@ gap that would confuse but not actively mislead; `LOW` = minor polish with no ma
 ## SUPPRESS Block (Never Raise)
 
 During PR quality-gate invocation, first apply the shared
-[lifecycle-owned mechanical suppression](../../skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
+[lifecycle-owned mechanical suppression](../../../.agents/skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
 
 - Stylistic wording preferences with no substantive clarity or completeness impact.
 - Suggesting content that already exists elsewhere in the diff/document — verify absence first.

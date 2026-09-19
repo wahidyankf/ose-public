@@ -58,5 +58,5 @@ its tRPC backend; `behaviours/` nests them rather than splitting the site in two
    five legacy folders. A product cannot be half in one shape and half in the other.
 3. In the same commit: update Nx `project.json` `inputs`, `repo-config.yml` corpus globs, step-file
    `@covers` references, MSBuild feature-file globs, and governance cross-links.
-4. Run `rhino-cli specs validate-tree <product>` and `rhino-cli specs counts validate specs/apps/<product>`
+4. Run `the declared spec-tree check` and `the declared spec-count check`
    to verify.

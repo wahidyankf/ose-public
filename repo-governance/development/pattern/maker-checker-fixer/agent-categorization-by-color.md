@@ -15,4 +15,4 @@ The maker-checker-fixer pattern aligns with the agent color categorization syste
 
 **Note**: Purple (🟪 Implementors) agents execute plans and use all tools, falling outside the maker-checker-fixer pattern.
 
-See [AI Agents Convention - Agent Color Categorization](../../agents/ai-agents/agent-color-categorization.md#agent-color-categorization) for complete details, including the [Platform Binding Color Translation](../../agents/ai-agents/agent-color-categorization.md#platform-binding-color-translation) subsection that documents how named colors map to platform binding color tokens via `rhino-cli harness bindings generate`.
+See [AI Agents Convention - Agent Color Categorization](../../agents/ai-agents/agent-color-categorization.md#agent-color-categorization) for complete details, including the [Platform Binding Color Translation](../../agents/ai-agents/agent-color-categorization.md#platform-binding-color-translation) subsection that documents how named colors map to platform binding color tokens via `./rhino harness adapters generate`.

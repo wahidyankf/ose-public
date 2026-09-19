@@ -30,21 +30,21 @@ This also triggers Husky to install git hooks (pre-commit, commit-msg, pre-push)
 ## 11.3 Restore environment files
 
 `.env` files are gitignored but required by many apps. If you have a previous backup
-(from `rhino-cli env backup`), restore them now:
+(from `./rhino env backup`), restore them now:
 
 ```bash
 # Restore .env files from default backup location (~/ose-public-env-backup)
-apps/rhino-cli/scripts/rhino-bin.sh env restore --force
+./rhino env restore --dir local-tmp/env-backup --apply --force
 
 # Include uncommitted config files (AI tool settings, Docker overrides, direnv, etc.)
-apps/rhino-cli/scripts/rhino-bin.sh env restore --force --include-config
+./rhino env restore --dir local-tmp/env-backup --apply --force
 ```
 
 **Condition**: Skip if this is a brand-new setup with no previous backup. Instead, use
 `env init` to bootstrap `.env` files from `.env.example` templates:
 
 ```bash
-apps/rhino-cli/scripts/rhino-bin.sh env init
+./rhino env init --apply
 ```
 
 This creates `.env` files from all `.env.example` templates in `infra/dev/`. Use `--force`

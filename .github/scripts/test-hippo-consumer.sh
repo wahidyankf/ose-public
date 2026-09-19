@@ -211,9 +211,9 @@ if (inventory.surfaces?.some((entry) => entry.gates?.includes("public-safety")))
 
 # The adapters own their public-safety vocabulary. Rhino provides only its
 # product-scoped surface marker to declared children.
-grep -Fx 'export OSE_GATE_SURFACE=pre-commit' .husky/pre-commit
-grep -Fx 'export OSE_GATE_SURFACE=pre-push' .husky/pre-push
-grep -Fx '          OSE_GATE_SURFACE: ci' .github/workflows/pr-quality-gate.yml
+grep -Fx 'export RHINO_GATE_SURFACE=pre-commit' .husky/pre-commit
+grep -Fx 'export RHINO_GATE_SURFACE=pre-push' .husky/pre-push
+grep -Fx '          RHINO_GATE_SURFACE: pull-request' .github/workflows/pr-quality-gate.yml
 test -x scripts/public-safety/check-commit-message
 
 # The pull-request formatter runs in Rhino's disposable snapshot but resolves

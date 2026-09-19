@@ -28,7 +28,7 @@ Since skills with `context: fork` spawn delegated agents:
 1. **Main conversation** can use fork skills ✅ (spawns delegated agent successfully)
 2. **Delegated agents** cannot use fork skills ❌ (would require spawning nested delegated agent)
 
-If `.claude/skills/` contains fork skills:
+If `.agents/skills/` contains fork skills:
 
 - ✅ Work in main conversation
 - ❌ Break when used by delegated agents

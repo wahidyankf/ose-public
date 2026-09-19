@@ -44,7 +44,7 @@ expected to reference this convention are:
 ## Tools and Automation
 
 - **`grill-me` skill** — The canonical implementation of this convention. The
-  [grill-me Skill](../../../../.claude/skills/grill-me/SKILL.md) provides the grilling
+  [grill-me Skill](../../../../.agents/skills/grill-me/SKILL.md) provides the grilling
   service used by `plan-planning` and `plan-maker`. This convention governs
   the format and mechanism that `grill-me` MUST use. Platform-specific tool invocations
   live in the [Platform Binding Examples](./platform-binding-examples-claude-code-and-opencode.md) sections.

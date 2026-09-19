@@ -18,8 +18,7 @@ independent. This preserves every per-plan Iron Rule (TDD, one-`in_progress`-per
 **A5. Compute each node's resource-set (conservative).** From named paths and the plan's File-Impact
 Analysis, derive file/glob, Nx-project, target-repo, and work-location resources. Every `main-to-*`
 node takes the shared `primary-checkout:<repo>` lock; each `worktree-to-*` plan takes its own lock.
-Add a **byte-identity flag** for paths under the `apps/rhino-cli/**`
-[boundary](../../../../docs/reference/sdlc-gate-standard.md#rhino-cli-byte-identity-boundary).
+Add a shared-source flag only when a plan explicitly declares a still-local byte-identity boundary.
 An ambiguous footprint touches the whole declared impact set: uncertain nodes conflict.
 
 **A6. Add inter-plan edges (Hybrid ordering).**
@@ -30,11 +29,9 @@ An ambiguous footprint touches the whole declared impact set: uncertain nodes co
    inference.
 2. **Inference fills the gaps.** For any pair of plans with no explicit relationship, infer edges
    from **resource overlap**: two nodes whose resource-sets intersect (same file/glob, same Nx
-   project, or both carry the byte-identity flag on `apps/rhino-cli/**`) **conflict** and must not run
-   concurrently — the scheduler serializes them (the later-scheduled one waits). Nodes with disjoint
-   resource-sets are **parallelizable**. Two plans that both touch `apps/rhino-cli/**` are always
-   serialized at least at their overlapping nodes, because byte-identical propagation across
-   `ose-public`/the private sibling cannot tolerate two concurrent divergent edits.
+   project, or an explicitly declared shared-source flag) **conflict** and must not run concurrently
+   — the scheduler serializes them (the later-scheduled one waits). Nodes with disjoint
+   resource-sets are **parallelizable**.
 3. **Cycle check.** If explicit `Depends-on` declarations form a cycle, stop and report — a cyclic
    plan graph is a planning error, not something to schedule around.
 
@@ -55,7 +52,7 @@ flowchart TD
   A0[planA P0 setup] --> A1[planA P1 RED]:::seq
   A1 --> A2[planA P1 GREEN]:::seq
   B0[planB P0 setup]:::par --> B1[planB P1 impl]:::par
-  A2 -->|shares rhino-cli| C1[planC rhino step<br/>waits]:::seq
+  A2 -->|shares source| C1[planC source step<br/>waits]:::seq
   classDef seq fill:#0173B2,stroke:#000000,color:#FFFFFF
   classDef par fill:#029E73,stroke:#000000,color:#000000
 ```

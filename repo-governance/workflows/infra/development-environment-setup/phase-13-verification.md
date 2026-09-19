@@ -27,12 +27,12 @@ git checkout README.md
 
 ```bash
 # Run the registry gate set .husky/pre-push runs, with each gate's output
-apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push
+./rhino gate run --surface pre-push
 ```
 
 **Success criteria**: Every declared gate passes. This also warms the Nx cache (via the
 `test:quick` affected-projects gate) so subsequent pushes are fast. Discover the live gate set
-with `apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=pre-push --format=text`.
+with `./rhino gate list`.
 
 ## 13.3 Verify Integration tests (one backend)
 

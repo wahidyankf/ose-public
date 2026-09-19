@@ -37,9 +37,8 @@ Run [plan-execution](../plan-execution.md) in full for each ready node, schedule
 [multi-plans-execution](../multi-plans-execution.md) schedules a DAG, within `max-concurrency` and HIPPO admission. Each
 repository resolves its own `## Delivery Mode`. The edges in
 [Propagation, Delivery Shape, and Shared-Machine Safety](./propagation-delivery-and-machine-safety.md) hold:
-`apps/rhino-cli` byte identity propagates one repository at a time, and a node writing what another reads precedes it.
-Regenerating this repository's parity manifest clears its own pre-push gate but does not discharge propagation to the
-other repository. Under stop-on-failure, freeze new admissions, let indivisible work settle, and end `partial`.
+an explicitly declared local shared-source boundary propagates one repository at a time, and a node writing what
+another reads precedes it. Under stop-on-failure, freeze new admissions, let indivisible work settle, and end `partial`.
 
 ## 4. Cross-Repository Finalization
 

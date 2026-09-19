@@ -12,7 +12,7 @@ when_to_use: Use when you need to justify a secrets/env-handling rule in terms o
   env var is declared by name, class, and type in `.env.example`; startup validators fail fast when a
   required var is absent.
 - **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: The
-  `rhino-cli env` toolchain (backup, restore, init, validate) and the `env-contract:` section in
+  `./rhino env` toolchain (backup, restore, init, validate) and the `env-contract:` section in
   `repo-config.yml` eliminate manual cross-checking between templates and code.
 - **[Root Cause Orientation](../../../principles/general/root-cause-orientation.md)**: The drift guard
   (`env validate`) catches mismatches at the source, not in production. The hard no-secrets rule

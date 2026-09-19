@@ -13,7 +13,7 @@ within editable paths.
 **Applies to**:
 
 - Creating or updating canonical agents in `.claude/agents/`
-- Creating or updating canonical skills and references in `.claude/skills/`
+- Creating or updating canonical skills and references in `.agents/skills/`
 - Updating source-owned indexes
 - Maintaining an exact registry-declared vendored path in place
 

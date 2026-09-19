@@ -7,9 +7,8 @@ when_to_use: "Use for a concrete example of a properly isolated git fixture."
 
 ## FAIL: The fixture at the center of the motivating incident
 
-`apps/rhino-cli/src/infrastructure/git/root.rs`'s
-`find_root_from_worktree_returns_worktree_path` test builds a throwaway repository and a linked
-worktree using raw `git` invocations with none of the six layers applied:
+The retired in-tree fixture `find_root_from_worktree_returns_worktree_path` built a throwaway
+repository and a linked worktree using raw `git` invocations with none of the six layers applied:
 
 ```rust
 // Excerpt as of this convention's authoring -- none of the six layers applied

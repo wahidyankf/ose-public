@@ -10,7 +10,7 @@ when_to_use: "Use when you want the full label-constraint rules summarized in on
 | Node label line (between `<br/>` tags) | Yes                | 20 chars   | Yes (node labels render HTML) |
 | Edge label `\|"text"\|`                | No                 | 20 chars   | No (`.` breaks parser)        |
 
-**Automated enforcement**: Run `rhino-cli md mermaid validate` to check these rules
+**Automated enforcement**: Run `./rhino md mermaid validate` to check these rules
 mechanically instead of counting characters manually. Pass `--max-label-len 20` to check the
 20-character limit above; the bare default is 30, matching Mermaid's `wrappingWidth` baseline. The
 `md-mermaid-strict` gate applies the 20 automatically to every changed `.md` file. The tool also

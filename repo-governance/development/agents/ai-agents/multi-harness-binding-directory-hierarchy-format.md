@@ -32,13 +32,13 @@ generator changes only paths or delimited regions declared as generated.
 
 ## Source of Truth Hierarchy
 
-`.claude/agents/` and `.claude/skills/` are the canonical sources for their generated mirrors.
+`.claude/agents/` and `.agents/skills/` are the canonical sources for their generated mirrors.
 `repo-config.yml` is authoritative for path-level ownership; a more-specific vendored declaration
 overrides a generated parent. Vendored configuration and plugin paths are maintained in place.
 
 **Making Changes**:
 
-1. Edit an agent in `.claude/agents/` or a mirrored skill in `.claude/skills/`.
+1. Edit an agent in `.claude/agents/` or a mirrored skill in `.agents/skills/`.
 2. Run `npm run generate:bindings`.
 3. Commit every changed generated mirror in the same commit as its source.
 4. Edit a vendored path directly only when `repo-config.yml` classifies that exact path or a
@@ -120,6 +120,6 @@ Content...
 **Optional fields**: `context` (inline or fork)
 
 Agent skills need no format conversion when a registry-declared binding reads
-`.claude/skills/{name}/SKILL.md` natively. The binding generator also mirrors canonical
-`.claude/skills/` content byte-for-byte to registry-declared generated skill directories while
+`.agents/skills/{name}/SKILL.md` natively. The binding generator also mirrors canonical
+`.agents/skills/` content byte-for-byte to registry-declared generated skill directories while
 preserving directories that `repo-config.yml` explicitly classifies as vendored.

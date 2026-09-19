@@ -26,18 +26,15 @@ for portable governance, agent, skill, workflow, and Rhino changes; private rece
 through an explicit sibling obligation in its own delivery. Private-only operations, licensing
 exceptions, and CI constraints remain local and must be recorded as divergences.
 
-The `apps/rhino-cli` implementation and shared Rhino Gherkin boundary stay byte-identical across the
-pair. Each repository's parity manifest proves only its own tracked boundary, so convergence also
-requires a direct byte comparison between repositories. A green local manifest never proves sibling
-equality by itself.
+The OSE pair shares portable policy through explicit sibling obligations. Each repository validates
+its own declaration; Rhino source identity belongs to the upstream checksum-pinned release.
 
 ## Independent repositories
 
 [RHINO](https://github.com/wahidyankf/rhino) is an independent MIT-licensed repository-hygiene
 validator that holds no OSE-specific values: every budget, tree, palette, and harness roster it
-enforces is declared by the repository under inspection. It is not this repository's in-tree
-`apps/rhino-cli`, which is the parity-bound implementation the byte-identity boundary covers.
-Naming the upstream repository never widens that boundary to it.
+enforces is declared by the repository under inspection. Naming the upstream repository never
+widens this repository's local policy boundary to it.
 
 [HIPPO](https://github.com/wahidyankf/hippo) is an independent MIT-licensed upstream tool. OSE may
 consume a checksum-pinned HIPPO release and maintain consumer-specific configuration, mappings, and

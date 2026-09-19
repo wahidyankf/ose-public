@@ -1,5 +1,7 @@
 # An unsourced `ci-monitor-subagent.md` mirror survives only by a hardcoded filename skip
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: the private sibling carries `.opencode/agents/ci-monitor-subagent.md` with no
 `.claude/agents/` source, and the mirror-drift validator stays quiet about it only because
 `rhino-cli` hardcodes a skip for that exact filename — a carve-out that both parity repos inherit
@@ -14,7 +16,7 @@ through the byte-identity boundary.
 ## Problem / context
 
 This repo's binding model is unambiguous: `.claude/` is the only hand-authored surface, and
-`.opencode/`, `.codex/`, and `.agents/` are emitted by `rhino-cli harness bindings generate`. A
+`.opencode/`, `.codex/`, and `.agents/` are emitted by `./rhino harness adapters generate`. A
 file sitting in a generated mirror directory with no source is therefore drift by construction — no
 regeneration will ever update it, and no source edit will ever reach it. The private sibling has exactly
 one such file: `.opencode/agents/ci-monitor-subagent.md`, present in the mirror and absent from

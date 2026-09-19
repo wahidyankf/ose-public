@@ -16,7 +16,7 @@ when_to_use: Use when navigating from plan-establishment to plan-quality-gate, p
 - [Grilling-With-Options Convention](../../../development/workflow/grilling-with-options.md) — format
   and mechanism for Steps 1 and 3 grill sessions
 - [Governance Vendor-Independence Convention](../../../conventions/structure/governance-vendor-independence.md)
-- [grill-me Skill](../../../../.claude/skills/grill-me/SKILL.md) — Steps 1 and 3
+- [grill-me Skill](../../../../.agents/skills/grill-me/SKILL.md) — Steps 1 and 3
 - [plan-maker Agent](../../../../.claude/agents/plan/plan-maker.md) — Step 4
 - [web-researcher Agent](../../../../.claude/agents/web/web-researcher.md) — Step 2
 - [repo-setup-manager Agent](../../../../.claude/agents/repo/repo-setup-manager.md) — Phase 0 of plans

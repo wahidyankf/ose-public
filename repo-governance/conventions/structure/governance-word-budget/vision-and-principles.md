@@ -34,7 +34,7 @@ surfaces:
   the validator's Unicode whitespace splitting. Only the validator's number determines the gate
   result, so quote that one when a margin is tight.
 
-Run `rhino-cli governance word-budget validate` rather than `wc -w` whenever the answer decides
+Run `./rhino governance word-budget validate` rather than `wc -w` whenever the answer decides
 whether a file lands.
 
 ## Related Conventions

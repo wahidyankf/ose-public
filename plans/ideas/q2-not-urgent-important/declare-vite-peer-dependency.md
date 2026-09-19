@@ -1,5 +1,7 @@
 # Declare the `vite` every vitest config already imports, and gate the class
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: ten workspace packages run their tests through a `vite*.config.*` that imports a
 `vite` none of them declares — it resolves only because npm auto-installs `vitest`'s peer and hoists
 it to the root — so the manifests misdescribe their own packages and no gate would notice an eleventh.
@@ -91,7 +93,7 @@ Out of scope (for now):
 ## Risks & open questions
 
 - **Is a bespoke `rhino-cli` gate the right build-vs-buy call?** It carries a TDD cycle, companion
-  Gherkin under `specs/apps/rhino/`, `repo-config.yml` registration, and the four-repo parity-manifest
+  Gherkin under `specs/apps/rhino`, `repo-config.yml` registration, and the four-repo parity-manifest
   obligation. `depcheck` may cover enough of it for a fraction of that. Uncosted. (open)
 - **Does the 7-vs-8 split deserve its own plan?** Recording it as intentional is not the same as
   deciding it is fine. (open)

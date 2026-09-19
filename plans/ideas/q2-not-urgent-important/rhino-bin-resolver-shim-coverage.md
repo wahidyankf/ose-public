@@ -1,5 +1,7 @@
 # Restore scenario coverage for `rhino-bin.sh`, the resolver every gate invocation goes through
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: the shim every hook, Nx target, and CI job uses to reach `rhino-cli` has three
 resolution tiers and zero scenario-level tests — its Rust-era feature file was correctly deleted when
 the mechanism changed, and the replacement was deferred to a phase that never picked it up.
@@ -12,15 +14,15 @@ the mechanism changed, and the replacement was deferred to a phase that never pi
 
 ## Problem / context
 
-`apps/rhino-cli/scripts/rhino-bin.sh` resolves the binary in three ordered tiers, per its own header
+`./rhino` resolves the binary in three ordered tiers, per its own header
 comment and its single `if/elif/else`:
 
 1. `RHINO_CLI_FSHARP_BIN` — used directly when set **and** the path is both a file and executable.
 2. `apps/rhino-cli/src/dist/rhino-cli-fsharp` — the published self-contained binary, when executable.
-3. `dotnet run --project …/RhinoCli.Program.fsproj` — last resort, and the only tier needing the SDK.
+3. `dotnet run --project …/Rhino.Program.fsproj` — last resort, and the only tier needing the SDK.
 
 The Rust-era shim had the analogous three tiers and
-`specs/apps/rhino/cli/behaviours/gate/gate-binary-resolution.feature` carried four scenarios over
+the upstream Rhino `gate-binary-resolution.feature` carried four scenarios over
 them. Phase 9a retired that file — correctly, because Phase 9c's crate deletion made every scenario
 describe a mechanism that would cease to exist. Phase 9a's own verdict table flagged the gap in the
 same breath ("may still warrant fresh, F#-only-tier scenarios"), and Phase 9c declined to author it
@@ -54,7 +56,7 @@ script is small enough that covering it properly is a bounded piece of work rath
   script branching on env vars and file modes.
 - **`bats`** and **shellspec** — the ecosystem-standard answers to "test a bash script", worth one
   paragraph of build-vs-buy before committing to a TickSpec or xunit harness.
-- [`rhino-cli-md-links-json-output-scenario-gap`](./rhino-cli-md-links-json-output-scenario-gap.md) —
+- [`rhino-md-links-json-output-scenario-gap`](./rhino-md-links-json-output-scenario-gap.md) —
   the sibling case: live behaviour whose scenario coverage was lost in a migration and never restored.
 
 ## Proposed direction (sketch)
@@ -100,7 +102,7 @@ Out of scope:
 ## What success looks like + promotion signal
 
 Success: a scenario exists for each tier and for the precedence between them; each demonstrably fails
-against a deliberately broken shim and passes against the real one; `rhino-cli:test:coverage` reports
+against a deliberately broken shim and passes against the real one; `the stable Rhino coverage contract` reports
 the new adapters covered statically and stays runtime-free; and both parity repos carry byte-identical
 coverage with the manifest reporting no divergence.
 

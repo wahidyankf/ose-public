@@ -14,7 +14,7 @@ confirmed satisfied.
    `No generalizable learnings — <reason>` escape if the file is absent or empty). Each surviving
    entry MUST record exactly one of:
    - **Routed inline** (non-code homes only — `docs/`, `repo-governance/`, `.claude/agents/`,
-     `.claude/skills/`, post-mortems, or any other non-code durable home) — confirm the referenced
+     `.agents/skills/`, post-mortems, or any other non-code durable home) — confirm the referenced
      commit or file edit actually landed in this plan's own history.
    - **Filed as a `plans/ideas/<slug>.md` two-pager** — valid only with literal plan-artifact
      authorization after the mandatory overlap scan. Confirm the scan evidence and that the file

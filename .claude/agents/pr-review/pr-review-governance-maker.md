@@ -51,14 +51,14 @@ scenario completeness inside a spec file → `pr-review-logic-maker`; whether th
 staleness **of** them.
 
 **Severity definitions**: `CRITICAL` = a violation that corrupts a mechanically-enforced
-invariant (e.g. the rhino-cli byte-identity boundary, a naming regex); `HIGH` = a HARD RULE
+invariant (e.g. the Rhino byte-identity boundary, a naming regex); `HIGH` = a HARD RULE
 convention violation or a missing required spec file; `MEDIUM` = a documented-but-soft convention
 deviation; `LOW` = a cosmetic preference with no enforceable rule behind it.
 
 ## SUPPRESS Block (Never Raise)
 
 During PR quality-gate invocation, first apply the shared
-[lifecycle-owned mechanical suppression](../../skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
+[lifecycle-owned mechanical suppression](../../../.agents/skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
 
 - Whether a new governance rule should exist (architecture's territory).
 - Domain-scenario completeness inside a spec file (logic's territory).

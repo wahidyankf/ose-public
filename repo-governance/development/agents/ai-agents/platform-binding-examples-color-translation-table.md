@@ -5,11 +5,11 @@ when_to_use: Use when looking up which color an agent role maps to, or translati
 
 # Platform Binding Examples — Color Translation Table
 
-The content below is platform-specific. It documents the concrete translation applied by `rhino-cli harness bindings generate` and is intentionally vendor-specific.
+The content below is platform-specific. It documents the concrete translation applied by `./rhino harness adapters generate` and is intentionally vendor-specific.
 
 ## Color Translation Table
 
-**Translation table** (mirrors `claude_to_opencode_color()` in `apps/rhino-cli/src/internal/agents/converter.rs`):
+**Translation table**: the portable native adapter profile owns this mapping.
 
 | Claude color | OpenCode value | Role hint                         |
 | ------------ | -------------- | --------------------------------- |
@@ -22,7 +22,8 @@ The content below is platform-specific. It documents the concrete translation ap
 | `pink`       | `accent`       | Reserved future role              |
 | `cyan`       | `info`         | Reserved future role              |
 
-**Single source of truth**: `apps/rhino-cli/src/internal/agents/converter.rs` — `claude_to_opencode_color()` function. Any change to the mapping MUST update both the function and this table in the same commit.
+**Single source of truth**: the declared Rhino harness profile. Any mapping change MUST update
+the profile and this table in the same commit.
 
 **Escape hatch**: If you write a hex code (e.g., `#3B82F6`) or a valid OpenCode theme token (e.g., `primary`) directly in `.claude/agents/*.md`, the converter passes it through unchanged.
 

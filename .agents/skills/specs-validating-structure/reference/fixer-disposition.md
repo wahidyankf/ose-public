@@ -27,7 +27,7 @@ generatable, content needs human review); Category 4 cross-folder coverage gaps,
 Background step inconsistency (may change test behaviour); Category 9 adoption gaps — always
 flagged and documented, **never auto-fixed**, adoption is a team decision; Category 8 tree-shape
 migrations at the subtree level — flagged and documented, **never auto-fixed**, migration is a
-plan-level operation requiring an atomic commit across rhino-cli path constants, Nx cache inputs,
+plan-level operation requiring an atomic commit across Rhino path constants, Nx cache inputs,
 and step definitions; drift-detection re-introduction (routes/endpoints/contracts) — flags only,
 requires a new dedicated plan.
 

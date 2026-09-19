@@ -48,7 +48,7 @@ dedicated E2E project link to its owner's corpus instead of growing a parallel t
 
 ## Enforcement
 
-**Enforcement disposition — enforced.** `rhino-cli specs structure validate` reports a missing
+**Enforcement disposition — enforced.** `the declared spec-structure check` reports a missing
 `README.md`, `architecture.md`, or `behaviours/` entry, an empty `behaviours/` tree, a missing
 `behaviours/README.md`, and any surviving legacy folder beside a corpus. The command runs in
 each owner's `test:coverage:behaviour`, which pre-push reaches through `test:quick`.

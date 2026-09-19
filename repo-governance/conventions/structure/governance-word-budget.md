@@ -1,5 +1,5 @@
 ---
-description: Per-surface word thresholds for auto-loaded instruction files, enforced by rhino-cli and git hooks
+description: Per-surface word thresholds for auto-loaded instruction files, enforced by Rhino and git hooks
 when_to_use: Use when a governance or instruction file may be approaching or over its word-count threshold.
 ---
 
@@ -13,7 +13,7 @@ is a raw whole-file `split_whitespace()` word count, not bytes, with no in-file 
 ## Monitored Surfaces
 
 Configured in the `governance-word-budget:` section of `repo-config.yml`; enforced by
-`rhino-cli governance word-budget validate`.
+`./rhino governance word-budget validate`.
 
 | Surface                                                             | Budget class  |
 | ------------------------------------------------------------------- | ------------- |
@@ -63,7 +63,7 @@ Threshold changes are class-wide policy recalibrations, never remediation for on
 evidence that the existing signal is broadly non-actionable or that harness capacity or repository
 policy changed; preserve minimal sufficiency, record the rationale as a YAML comment, edit the
 `governance-word-budget:` section of `repo-config.yml`, and run
-`./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run rhino-cli:governance-word-budget:validation`.
+`./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run Rhino:governance-word-budget:validation`.
 Never adjust a threshold to paper over a bloated file or a specific change.
 
 ## Children

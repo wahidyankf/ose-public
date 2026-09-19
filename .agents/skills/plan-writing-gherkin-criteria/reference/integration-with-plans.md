@@ -20,7 +20,7 @@ Plans use Gherkin for phase-level acceptance criteria. Keep the Markdown heading
 Scenario: Required skills are discoverable
   Given the repository requires reusable agent skills
   When the agent bindings are generated
-  Then .claude/skills/ directory should exist with README and TEMPLATE
+  Then .agents/skills/ directory should exist with README and TEMPLATE
   And the required skills should be present
   And the AI Agents Convention should document the skills frontmatter field
   And each required skill should load for its declared task

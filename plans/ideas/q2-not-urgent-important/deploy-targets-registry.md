@@ -1,5 +1,7 @@
 # Declare deploy-target branches in a registry instead of deriving them from `git branch -r`
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: `AGENTS.md` states "`git branch -r` is authoritative" for environment branches, so
 whether a deploy target exists is answered by whichever refs happen to be on `origin` today — which
 let two phantom `stag-beaver-nest-*` branches sit on `origin` for a day while four separate committed
@@ -32,7 +34,7 @@ follow from that design, independent of any single incident:
 
 `repo-config.yml` already centralizes several other categories of cross-cutting truth as top-level
 keys — `harness`, `coverage`, `specs`, `instruction-size`, `env-contract`, `env-injection` — each
-validated by `rhino-cli repo-config validate` against a canonical schema. Deploy targets are the one
+validated by `./rhino repo-config validate` against a canonical schema. Deploy targets are the one
 category in this list still governed by convention prose pointing at live git state instead of by a
 declared, validated key.
 
@@ -70,7 +72,7 @@ and the current design has no mechanism — human or automated — to flag the m
 - Add a `deploy-targets:` top-level key to `repo-config.yml`, one entry per declared environment
   branch, naming the app, the branch (`prod-*`/`stag-*`), and a status (`provisioned` |
   `planned` | `retired`).
-- `rhino-cli repo-config validate` gains the key-set/schema check for free, matching every other
+- `./rhino repo-config validate` gains the key-set/schema check for free, matching every other
   category in the file.
 - A new, narrower validator — a `repo-config` subcommand or a leaf under an existing domain — compares
   the registry against live `git branch -r` output and flags exactly two mismatch shapes: a ref marked
@@ -117,7 +119,7 @@ Out of scope:
 ## What success looks like + promotion signal
 
 Success is narrow: `repo-config.yml` names every `prod-*`/`stag-*` branch the four repos intend to
-have, `rhino-cli repo-config validate` rejects a malformed entry the same way it does for every other
+have, `./rhino repo-config validate` rejects a malformed entry the same way it does for every other
 top-level key, and a single command reports any mismatch between the registry and live `git branch -r`
 output — in either direction — rather than that mismatch being discoverable only by a human noticing a
 contradiction across four unrelated documents, as happened here.

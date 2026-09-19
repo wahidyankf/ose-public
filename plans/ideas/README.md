@@ -1,5 +1,7 @@
 # Idea Briefs (Two-Pagers)
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 This folder holds **two-pagers**: shortened, promotable idea briefs that are richer than a one-line
 todo but deliberately **not** full six-document plans. Each idea is one `<slug>.md` file. `ideas/`
 is the first stage of the plan lifecycle:
@@ -23,9 +25,9 @@ Blocks an active plan or documents a live defect, and carries a cross-repo, secu
 - [mermaid-validator-does-not-check-syntax](./q1-urgent-important/mermaid-validator-does-not-check-syntax.md) — `md mermaid validate` is cited as the Mermaid-correctness gate but never parses syntax; broken diagrams pass clean.
 - [next-image-builds-cannot-resolve-ts-env-loader](./q1-urgent-important/next-image-builds-cannot-resolve-ts-env-loader.md) — all six Next.js images fail to build; four scheduled workflows have reported it twice daily for days, and the `prod-*` deploy path for four sites is dead.
 - [oxlint-upgrade-and-lint-reproducibility](./q1-urgent-important/oxlint-upgrade-and-lint-reproducibility.md) — 22 lint sites fetched `npx oxlint@latest`, so a publish turned a green PR red on an untouched file; the 1.78.0 pin froze a real `set-state-in-effect` defect and left the wider class unenumerated.
-- [reconcile-rhino-cli-parity-audit-exception](./q1-urgent-important/reconcile-rhino-cli-parity-audit-exception.md) — the private sibling's nightly `Rhino CLI Parity Audit` workflow now fails permanently, not transiently, because `rewrite-rhino-cli-to-fsharp` Phase 11a deliberately left one test file (`GlossaryDddCoverageUnitTests.fs`) private-sibling-only to close a real coverage gap.
+- [reconcile-rhino-parity-audit-exception](./q1-urgent-important/reconcile-rhino-parity-audit-exception.md) — the private sibling's nightly `Rhino CLI Parity Audit` workflow now fails permanently, not transiently, because `rewrite-rhino-cli-to-fsharp` Phase 11a deliberately left one test file (`GlossaryDddCoverageUnitTests.fs`) private-sibling-only to close a real coverage gap.
 - [remove-stale-compat-min-version-stubs](./q1-urgent-important/remove-stale-compat-min-version-stubs.md) — every surviving `compat:min-version` target in `ose-public` is a bare echo that checks nothing — 24 of 24, zero real checks left — while the Nx target convention states outright that echo and no-op targets are forbidden.
-- [rhino-cli-governance-tooling-defects](./q1-urgent-important/rhino-cli-governance-tooling-defects.md) — four governance tools that exit 0 while doing less than the caller believes: a mis-paired wrapped code span, a hard-coded `.claude/agents`, basename-keyed rename matching, and an `AUDIT FAILED` line above a green gate.
+- [rhino-governance-tooling-defects](./q1-urgent-important/rhino-governance-tooling-defects.md) — four governance tools that exit 0 while doing less than the caller believes: a mis-paired wrapped code span, a hard-coded `.claude/agents`, basename-keyed rename matching, and an `AUDIT FAILED` line above a green gate.
 
 ### Q2 — Important, Not Urgent
 
@@ -58,17 +60,17 @@ No active plan waits on these and no live defect is running, but each carries a 
 - [refresh-agent-illustrative-example-paths](./q2-not-urgent-important/refresh-agent-illustrative-example-paths.md) — 4 generic agent definitions still illustrate usage with example paths naming apps this repo deleted.
 - [remove-dead-shadow-diff-script](./q2-not-urgent-important/remove-dead-shadow-diff-script.md) — `shadow-diff.sh` diffs a Rust binary against an F# one, but the Rust crate was deleted outright, so its resolution path can never resolve again.
 - [rhino-bin-resolver-shim-coverage](./q2-not-urgent-important/rhino-bin-resolver-shim-coverage.md) — the resolver shim every hook, Nx target, and CI job reaches `rhino-cli` through has three tiers and zero scenario coverage since its Rust-era feature file was retired.
-- [rhino-cli-env-backup-scripts](./q2-not-urgent-important/rhino-cli-env-backup-scripts.md) — scripted backup/restore of the gitignored rhino-cli `.env*` files.
-- [rhino-cli-git-env-scrub-widening](./q2-not-urgent-important/rhino-cli-git-env-scrub-widening.md) — `find_root_from` scrubs only `GIT_DIR`/`GIT_WORK_TREE` before invoking `git rev-parse`, leaving `GIT_INDEX_FILE`, `GIT_OBJECT_DIRECTORY`, and `GIT_COMMON_DIR` unscrubbed.
-- [rhino-cli-md-links-json-output-scenario-gap](./q2-not-urgent-important/rhino-cli-md-links-json-output-scenario-gap.md) — the retired CLI link checkers' `Scenario: JSON output produces structured results` has no equivalent in `rhino-cli`'s successor feature, though the behaviour is live and unit-tested.
-- [rhino-cli-tools-superset-carveout](./q2-not-urgent-important/rhino-cli-tools-superset-carveout.md) — `doctor/tools.rs`'s "zero carve-outs" byte-identity target collides with the private sibling's real, needed IaC tool-provisioning extensions.
+- [rhino-env-backup-scripts](./q2-not-urgent-important/rhino-env-backup-scripts.md) — scripted backup/restore of the gitignored rhino-cli `.env*` files.
+- [rhino-git-env-scrub-widening](./q2-not-urgent-important/rhino-git-env-scrub-widening.md) — `find_root_from` scrubs only `GIT_DIR`/`GIT_WORK_TREE` before invoking `git rev-parse`, leaving `GIT_INDEX_FILE`, `GIT_OBJECT_DIRECTORY`, and `GIT_COMMON_DIR` unscrubbed.
+- [rhino-md-links-json-output-scenario-gap](./q2-not-urgent-important/rhino-md-links-json-output-scenario-gap.md) — the retired CLI link checkers' `Scenario: JSON output produces structured results` has no equivalent in `rhino-cli`'s successor feature, though the behaviour is live and unit-tested.
+- [rhino-tools-superset-carveout](./q2-not-urgent-important/rhino-tools-superset-carveout.md) — `doctor/tools.rs`'s "zero carve-outs" byte-identity target collides with the private sibling's real, needed IaC tool-provisioning extensions.
 - [rust-crate-structural-checklist-promotion](./q2-not-urgent-important/rust-crate-structural-checklist-promotion.md) — promote the Rust crate structural checklist to governance once a 2nd crate exists.
 - [sdlc-gate-standard-property-bound-lag](./q2-not-urgent-important/sdlc-gate-standard-property-bound-lag.md) — `ose-public`'s SDLC gate standard trails both siblings on two name-bound bareness claims; adopt their wording.
 - [shared-cargo-target-lock-contention](./q2-not-urgent-important/shared-cargo-target-lock-contention.md) — one shared cargo target directory reclaims disk but serializes concurrent worktree builds; a 65 s pure-lock-wait stall was measured.
 - [sibling-main-ci-never-runs-on-merge](./q2-not-urgent-important/sibling-main-ci-never-runs-on-merge.md) — `main-ci` is schedule-triggered in the private sibling, so a merge to its `main` gets no post-merge CI signal.
 - [source-code-credential-scanning](./q2-not-urgent-important/source-code-credential-scanning.md) — evaluate Betterleaks (gitleaks successor) for pre-commit + CI credential detection in source.
 - [standardize-cis](./q2-not-urgent-important/standardize-cis.md) — audit for any CI-standardization residual left by the toolchain-parity work.
-- [syllabus-conformance-validator](./q2-not-urgent-important/syllabus-conformance-validator.md) — a deterministic `rhino-cli md syllabus validate` for course-file section conformance, deferred until the format settles.
+- [syllabus-conformance-validator](./q2-not-urgent-important/syllabus-conformance-validator.md) — a deterministic `./rhino md syllabus validate` for course-file section conformance, deferred until the format settles.
 - [vendor-audit-kiro-term](./q2-not-urgent-important/vendor-audit-kiro-term.md) — add `Kiro` to the vendor-audit denylist before it leaks into governance prose.
 - [vendor-neutral-canonical-source](./q2-not-urgent-important/vendor-neutral-canonical-source.md) — move the canonical agent and skill source out of `.claude/` so no harness is privileged and every harness, Claude Code included, becomes a generated mirror.
 - [vitest-glob-coverage-guard](./q2-not-urgent-important/vitest-glob-coverage-guard.md) — a regression test that matched no Vitest project's include glob ran zero times and passed green; guard the class.
@@ -262,7 +264,7 @@ flat idea count exceeded the 60-file threshold.
   workflow never writes under `plans/backlog/`, so the demotion is a separate act that happened to
   precede the run. Each full backlog plan collapsed into one two-pager carrying a
   `> Provenance: demoted from the full backlog/ plan ...` line:
-  `oxlint-upgrade-and-lint-reproducibility` (Q1), `rhino-cli-governance-tooling-defects` (Q1),
+  `oxlint-upgrade-and-lint-reproducibility` (Q1), `rhino-governance-tooling-defects` (Q1),
   `file-naming-convention-rework` (Q1), `harness-mirror-and-test-isolation-defects` (Q1), and
   `declare-vite-peer-dependency` (Q2). `plans/backlog/` is now empty and its README says so.
   One stale reference outside `plans/ideas/**` was repointed as part of that demotion, not by this
@@ -336,7 +338,7 @@ declines are recorded, not just the merges):
   the corpus. Declined as a family, with the two substantive pairs inside them adjudicated
   individually above.
 
-**Split candidates considered and declined** (1 pair): `rhino-cli-governance-tooling-defects` names
+**Split candidates considered and declined** (1 pair): `rhino-governance-tooling-defects` names
 four defects and `harness-mirror-and-test-isolation-defects` names three. Neither is a split
 candidate under Step 2's "two or more genuinely unrelated concerns" test — each brief argues one
 shape (a tool whose report and behaviour disagree; a tree treated as uniform when it is not), and
@@ -348,7 +350,7 @@ as a stated open item, which is the right place for it.
 - **Two Rust doc comments cite the retired backlog folder** and were deliberately left untouched:
   `apps/rhino-cli/src/commands/governance_rewrite_readme_index_paths.rs` (line 30) and
   `apps/rhino-cli/src/application/governance/readme_index.rs` (line 2103) both name
-  `plans/backlog/rhino-cli-governance-tooling-defects/`. Beyond this workflow's write scope, and
+  `plans/backlog/rhino-governance-tooling-defects/`. Beyond this workflow's write scope, and
   editing either would open the four-repo `apps/rhino-cli` parity-manifest obligation for a comment
   change. Fold into whichever plan next touches those files.
 - **Stale references in `plans/done/**`** to the two renamed and two merged-away idea files, plus the

@@ -55,7 +55,7 @@ identifier (e.g. `organiclever`, `ayokoding`, `ose`).
 **Alternatives rejected**:
 
 - _Keep bare slugs_: Rejected because it preserves ambiguity and makes the allowlist
-  validator (`rhino-cli validate:specs-tree`) unable to enforce family isolation.
+  retired in-tree Rhino validator unable to enforce family isolation.
 - _Nest under a product directory inside behavior_: e.g.
   `behavior/organiclever/be/gherkin/`. Rejected because it adds a third level of
   indirection without enabling the self-identifying property at the behaviour-surface
@@ -82,9 +82,8 @@ identifier (e.g. `organiclever`, `ayokoding`, `ose`).
 - **Reduce index clutter**: `specs/README.md` previously listed `ose-app` and
   `ose-platform` as separate rows. Merging them to a single `ose` row matches how the
   domain appears in every other index (AGENTS.md, project dependency graph, nx-targets).
-- **`allowlist.rs` simplification**: The `AppsWithDDD` allowlist in
-  `apps/rhino-cli/src/internal/allowlist.rs` previously tracked `ose-app` as the DDD
-  entry. After the merge it tracks `ose`, matching the unified tree name.
+- **Allowlist simplification**: The retired in-tree allowlist previously tracked `ose-app` as the
+  DDD entry. After the merge it tracked `ose`, matching the unified tree name.
 
 **Surface sub-naming rationale** (why `app-be`, not `ose-app-be`):
 
@@ -142,8 +141,8 @@ to `ayokoding-be/gherkin/`.
 
 ## Allowlist Impact
 
-The `AppsWithDDD` allowlist in `apps/rhino-cli/src/internal/allowlist.rs` controls
-which spec families are checked for bounded-context artifacts. After this plan:
+The retired in-tree `AppsWithDDD` allowlist controlled which spec families were checked for
+bounded-context artifacts. After this plan it contained:
 
 ```rust
 pub fn apps_with_ddd() -> &'static [&'static str] {

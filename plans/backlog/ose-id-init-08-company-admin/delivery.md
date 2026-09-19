@@ -93,8 +93,8 @@ observation, evidence destination, or failure route. Evidence paths are relative
 | 3     | Member UI lane                                      | `apps/ose-id-web/src/app/(company-admin)/admin/company/**`, `apps/ose-id-web/src/features/company-admin/components/**`, `apps/ose-id-web-e2e/src/company-admin/**`      | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:e2e -p ose-id-web,ose-id-web-e2e`                                                                                                                        | Member RED → GREEN → REFACTOR, accessibility, locale, and width evidence under `evidence/phase-3-*`.                                                       | Reopen the first failing member packet; tenant leak or backend change returns to Phase 2/file boundary.                           |
 | 4     | Invitation/entitlement UI lane                      | the same bounded company-admin component/BFF/E2E paths                                                                                                                  | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration,test:e2e -p ose-id-web,ose-id-web-e2e`                                                                                                       | Invitation/entitlement RED → GREEN → REFACTOR and Mailpit-safe evidence under `evidence/phase-4-*`.                                                        | Reopen the first failing operation/UI packet; capability disclosure blocks the phase.                                             |
 | 5     | Root integrator and browser lane                    | running local stack and ignored `local-tmp/ose-id-init-08-*` only                                                                                                       | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`                                                                                                                                                        | Twelve-operation curl matrix, browser matrix, and empty cleanup inventory under `evidence/phase-5-*`.                                                      | Wrong status/schema/header/tenant/browser state reopens its owning phase; cleanup residue reopens the runner dependency.          |
-| 6     | Root integrator and named API/UI/live/review agents | complete Plan 08 candidate diff/evidence                                                                                                                                | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`                                                                                                                                   | Exact-head gate/review/tester lifecycle PASS under `evidence/phase-6-*`.                                                                                   | Any fix changes HEAD and reruns Phase 6 from its first packet; unresolved finding blocks archival.                                |
-| 7     | Root integrator                                     | learnings, archive/indexes, PR branch, declared worktree                                                                                                                | `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate` followed by `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate plans`                                                                                                                                               | Archive-containing reviewed merge, terminal audit PASS, containment, and non-force cleanup proof under `evidence/phase-7-*` and the external final report. | Reopen the first unsupported phase; retain branch/worktree on any ambiguity or audit failure.                                     |
+| 6     | Root integrator and named API/UI/live/review agents | complete Plan 08 candidate diff/evidence                                                                                                                                | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`                                                                                                                                                               | Exact-head gate/review/tester lifecycle PASS under `evidence/phase-6-*`.                                                                                   | Any fix changes HEAD and reruns Phase 6 from its first packet; unresolved finding blocks archival.                                |
+| 7     | Root integrator                                     | learnings, archive/indexes, PR branch, declared worktree                                                                                                                | `rtk ./rhino plan validate` followed by `rtk ./rhino md links validate plans`                                                                                                                                                                                                       | Archive-containing reviewed merge, terminal audit PASS, containment, and non-force cleanup proof under `evidence/phase-7-*` and the external final report. | Reopen the first unsupported phase; retain branch/worktree on any ambiguity or audit failure.                                     |
 
 ### Agent Topology
 
@@ -219,7 +219,7 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
 
 - [ ] [AI] Rerun
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick,test:coverage:behaviour --base=origin/main --head=HEAD`
-      and `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`;
+      and `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`;
       acceptance: both exit 0 and dependency, exact API/view-model mapping, worktree, ports, license, and
       baseline evidence are current at the same HEAD.
 
@@ -237,7 +237,7 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
 - [ ] [AI] **Owner: `specs-maker`; scenario map.** Map every AC-ADMIN scenario to Unit, Integration, and E2E adapters under
       `specs/apps/ose/id-web/behaviours/company-admin/company-admin.feature`; any per-scenario adapter exemption names its boundary
       reason, is indexed in behavior-coverage config, and passes static validation. Run
-      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=<affected-projects>`
       and save `evidence/phase-1-specs.txt`. No blanket exemption; any parse/ownership/coverage failure
       returns to this packet.
 - [ ] [AI] **Owner: BFF contract lane; closed projections.** Specify only `CompanyAdminContextView`, `CompanyMemberListItemView`,
@@ -628,7 +628,7 @@ process/container/network/volume/temp-secret inventories are empty.
 
 - [ ] [AI] Run the Mandatory Nx Quality Matrix, then run behavior coverage, web Integration/E2E, axe,
       format, Markdown/Mermaid, dependency/license checks, and
-      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`. Fix root causes—never retry,
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`. Fix root causes—never retry,
       sleep, widen, loosen, skip, or quarantine. Save exact commands/exits at
       `evidence/phase-6-nx-quality.txt`; any failure reopens its owning implementation packet.
 - [ ] [AI] Enforce at least **99% Unit line coverage for authored production code**.
@@ -688,7 +688,7 @@ process/container/network/volume/temp-secret inventories are empty.
       lifecycle evidence; acceptance: no unchecked finding remains and the backend/schema diff is empty.
 
 > **Pause Safety:** the candidate is complete and reviewable but not delivered. Safe to stop. To resume:
-> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`.
 
 ## Phase 7: Knowledge Capture, Archive-in-PR, Delivery, and Cleanup
 

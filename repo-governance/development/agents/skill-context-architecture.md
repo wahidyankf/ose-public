@@ -1,11 +1,11 @@
 ---
-description: "Architectural guidance on skill context modes in `.claude/skills/`. Inline skills work universally; fork skills work from main conversation only."
+description: "Architectural guidance on skill context modes in `.agents/skills/`. Inline skills work universally; fork skills work from main conversation only."
 when_to_use: Use when authoring a Skill and deciding its context mode, or when a Skill needs to spawn or delegate work.
 ---
 
 # Skill Context Architecture
 
-This document defines the architectural constraint governing skill context modes in `.claude/skills/`. Inline skills work universally; fork skills work from main conversation only. Both modes are supported in `.claude/skills/`.
+This document defines the architectural constraint governing skill context modes in `.agents/skills/`. Inline skills work universally; fork skills work from main conversation only. Both modes are supported in `.agents/skills/`.
 
 ## Contents
 
@@ -33,7 +33,7 @@ This convention respects the following core principles:
 
 ## Purpose
 
-This architectural decision establishes that all skills stored in the `.claude/skills/` directory must remain compatible with both main conversation agents and delegated agents. Since delegated agents cannot spawn other delegated agents (architectural constraint of AI coding agents), skills with `context: fork` would be unusable in delegated agent contexts.
+This architectural decision establishes that all skills stored in the `.agents/skills/` directory must remain compatible with both main conversation agents and delegated agents. Since delegated agents cannot spawn other delegated agents (architectural constraint of AI coding agents), skills with `context: fork` would be unusable in delegated agent contexts.
 
 **Target Audience**:
 
@@ -50,7 +50,7 @@ This architectural decision establishes that all skills stored in the `.claude/s
 
 ### Agent skills Documentation
 
-- **[Primary binding skills catalog](../../../.claude/skills/README.md)** - Skill modes (inline vs fork) and organization
+- **[Primary binding skills catalog](../../../.agents/skills/README.md)** - Skill modes (inline vs fork) and organization
 - **[How to Create a New Skill](../../../docs/how-to/create-new-skill.md)** - Step-by-step skill creation guide
 
 ### Related Conventions

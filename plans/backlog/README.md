@@ -1,5 +1,7 @@
 # Backlog Plans
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 Full, ready-to-execute plans waiting to start. A plan lands here **only** by promotion from a
 two-pager in [`../ideas/`](../ideas/README.md) — when its open questions have shrunk to ones that
 genuinely need a full plan's depth to answer.
@@ -60,7 +62,7 @@ Three waves emptied this queue:
   [`repo-rules-sweep`](../done/2026-08-18__repo-rules-sweep/README.md) and
   [`update-harness-support`](../done/2026-08-20__update-harness-support/README.md):
   [oxlint-upgrade-and-lint-reproducibility](../ideas/q1-urgent-important/oxlint-upgrade-and-lint-reproducibility.md),
-  [rhino-cli-governance-tooling-defects](../ideas/q1-urgent-important/rhino-cli-governance-tooling-defects.md),
+  [rhino-governance-tooling-defects](../ideas/q1-urgent-important/rhino-governance-tooling-defects.md),
   [file-naming-convention-rework](../ideas/q1-urgent-important/file-naming-convention-rework.md),
   [harness-mirror-and-test-isolation-defects](../ideas/q1-urgent-important/harness-mirror-and-test-isolation-defects.md),
   and

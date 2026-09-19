@@ -8,7 +8,7 @@ entirely missing, since plans lacking them are incomplete regardless of other qu
 **What to validate**:
 
 1. **Local Quality Gates Before Push** — steps run affected tests/checks locally before pushing,
-   referencing `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push` (the registry-declared
+   referencing `./rhino gate run --surface pre-push` (the registry-declared
    gate set `.husky/pre-push` runs after its public-safety screen, including `nx affected -t test:quick`); mentions blast radius
    (affected projects only); specifies unit/integration/e2e as applicable; includes lint and typecheck.
 2. **Post-Push CI/CD Verification** — steps manually verify related GitHub Actions pass after push,

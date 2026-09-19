@@ -26,7 +26,7 @@ horizontal width (4 nodes per rank), single diagram per fenced block, and valid 
 types covered: `flowchart`/`graph` (all directions) and `stateDiagram-v2`/`stateDiagram` (v1) —
 state node count contributes to width.
 
-**Registry exclusions**: `apps/rhino-cli/tests/fixtures`, `plans/done`,
+**Registry exclusions**: `plans/done`,
 `apps/ayokoding-www/content`. The `--exclude` flag is repeatable; pass extra prefixes to suppress
 noise in project-specific runs.
 

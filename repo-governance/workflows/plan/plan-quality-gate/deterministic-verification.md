@@ -11,13 +11,13 @@ exit code but the last.
 
 ```sh
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
-  apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=ci --group=governance
+  ./rhino gate run --surface pull-request --base "$BASE_SHA" --head "$HEAD_SHA"
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
-  apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=ci --group=markdown
+  ./rhino gate run --surface pull-request --base "$BASE_SHA" --head "$HEAD_SHA"
 ```
 
 Together these own word budgets, README annotated indexes, Markdown links, Mermaid accessibility
-and legibility, heading hierarchy, file naming, frontmatter, harness bindings and parity, vendor
+and legibility, heading hierarchy, file naming, frontmatter, harness adapters and parity, vendor
 independence, emoji and licence conventions, environment contracts, and `repo-config.yml` schema
 parity. A governance gate never re-checks any of them by reading files itself.
 

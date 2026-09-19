@@ -47,7 +47,7 @@ The TDD actions remain one cohesive delivered behaviour, but they are independen
 and harness tasks. Outcome cohesion does not erase execution detail.
 
 Acceptance criteria in `prd.md` are written as Gherkin scenarios (per the
-[plan-writing-gherkin-criteria skill](../../../../.claude/skills/plan-writing-gherkin-criteria/SKILL.md)).
+[plan-writing-gherkin-criteria skill](../../../../.agents/skills/plan-writing-gherkin-criteria/SKILL.md)).
 Those Gherkin scenarios are the natural source of the first failing tests. The chain:
 
 ```

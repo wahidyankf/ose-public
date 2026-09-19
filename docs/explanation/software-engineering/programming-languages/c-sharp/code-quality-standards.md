@@ -305,7 +305,7 @@ SonarAnalyzer.CSharp provides additional rules beyond the built-in Roslyn analyz
 - **dotnet format** - Auto-formats code (pre-commit hook)
 - **Roslyn analyzers** - Compile-time static analysis
 - **TreatWarningsAsErrors** - CI build fails on any analyzer warning
-- **Coverlet + rhino-cli** - Coverage threshold enforcement
+- **Coverlet + Rhino** - Coverage threshold enforcement
 
 **Pre-commit checklist**:
 

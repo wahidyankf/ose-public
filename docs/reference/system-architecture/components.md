@@ -26,11 +26,11 @@ Shows the internal components within each container. Components are groupings of
 - **Source Directory**: App source at `apps/ose-www/src/`
 - **Static Assets**: Images and public assets at `apps/ose-www/public/`
 
-### rhino-cli Components (F# CLI Tool)
+### Rhino Components (F# CLI Tool)
 
 ```mermaid
 graph TB
-    accTitle: rhino-cli Components F CLI Tool
+    accTitle: Rhino Components F CLI Tool
     accDescr: Root Command Repository automation leads to Automation Module Extensible automation; Root Command Repository automation leads to Flags Parser Command-line arguments; Automation Module Extensible automation leads to Config Loader Configuration; and 1 more links.
     subgraph "CLI Interface"
         RHINO_ROOT[Root Command<br/>Repository<br/>automation]
@@ -74,10 +74,10 @@ graph TB
 
 ## C4 Level 4: Code Architecture
 
-Shows implementation details for critical components. Focus on rhino-cli's F# package structure and key implementation patterns.
+Shows implementation details for critical components. Focus on Rhino's F# package structure and key implementation patterns.
 
-### rhino-cli Package Structure (F#)
+### Rhino Package Structure (F#)
 
-`rhino-cli` is the repository's F# CLI tool (other F# projects are backend services and shared
+`Rhino` is the repository's F# CLI tool (other F# projects are backend services and shared
 libraries, not CLIs). Its `md links validate` command validates internal Markdown links across the
 whole repository, including both content trees.

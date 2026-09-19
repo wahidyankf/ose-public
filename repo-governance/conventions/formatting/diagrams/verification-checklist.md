@@ -22,7 +22,7 @@ Before committing documentation with diagrams:
 - [ ] **No style commands in sequence diagrams** (use `box` syntax or switch to flowchart)
 - [ ] **No `\n` in any label** (`\n` renders as literal characters in node labels and edge labels — use `<br/>` for multi-line labels or shorten to single-line)
 - [ ] **No `<br/>` in edge labels** (edge labels do not support HTML — use plain text only)
-- [ ] **Node label lines**: validator enforces ≤ 30 raw chars per line (run `rhino-cli md mermaid validate`); renderers visually clip at ~20 chars — keep displayed text ≤ 20 when possible
+- [ ] **Node label lines**: validator enforces ≤ 30 raw chars per line (run `./rhino md mermaid validate`); renderers visually clip at ~20 chars — keep displayed text ≤ 20 when possible
 - [ ] **Edge label strings ≤20 characters** (text inside `|"..."|` must not exceed 20 characters)
 - [ ] **No URL paths or dot-prefixed tokens in edge labels** (leading `.` is parsed as a CSS class selector — describe the action in plain words instead)
 - [ ] Mermaid diagrams tested in GitHub preview or a markdown viewer

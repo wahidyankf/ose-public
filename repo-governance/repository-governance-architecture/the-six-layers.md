@@ -39,4 +39,4 @@ workflows are when multi-step processes run.
 | **4** | `.claude/agents/`            | WHO enforces rules                                          | Often           | Who enforces rules?       |
 | **5** | repo-governance/workflows/   | WHEN orchestrate agents, procedures, and/or other workflows | As needed       | When run which steps?     |
 
-**Agent skills**: `.claude/skills/` - Delivery infrastructure serving agents (inline knowledge injection or fork-based delegation)
+**Agent skills**: `.agents/skills/` - Delivery infrastructure serving agents (inline knowledge injection or fork-based delegation)

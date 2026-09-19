@@ -46,7 +46,7 @@ Each directory's index file is named `README.md`, because GitHub renders it as t
 
 ### Skill definition files
 
-Skill definition files under `.claude/skills/*/` are named `SKILL.md` — uppercase for immediate visual distinction, and the canonical name referenced throughout governance.
+Skill definition files under `.agents/skills/*/` are named `SKILL.md` — uppercase for immediate visual distinction, and the canonical name referenced throughout governance.
 
 ### Operational metadata
 

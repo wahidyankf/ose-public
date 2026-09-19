@@ -57,7 +57,7 @@ less than that.
   every item above; entries 6-8 of its `learnings.md` are the specification source.
 - [Iron Rule 3](../../../repo-governance/workflows/plan/plan-execution/iron-rules-1-5.md) — fix the
   class, not the sites a finding names; the propagation discipline any prose change here inherits.
-- [rhino-cli-governance-tooling-defects](./rhino-cli-governance-tooling-defects.md) — the sibling
+- [rhino-governance-tooling-defects](./rhino-governance-tooling-defects.md) — the sibling
   family, where the tool under-reports rather than the document.
 - **Rule reach** — the same underlying question one level up: which paths a governance rule actually
   reaches.

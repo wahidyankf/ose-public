@@ -1,5 +1,7 @@
 # Decide whether one shared cargo target directory is still the right trade
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: `doctor --fix` points every worktree's `apps/<crate>/target` at one physical
 directory, which reclaims real disk but serializes concurrent builds behind cargo's exclusive
 build-directory lock — a 65 s stall was observed, and both effects scale with the same parameter.

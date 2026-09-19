@@ -24,7 +24,7 @@ when_to_use: Use when looking up which tool enforces a specific part of this pol
 
 - [Reproducible Environments Convention](../reproducible-environments.md) — Runtime pinning and lockfile discipline that this policy extends
 - [Trunk Based Development Convention](../trunk-based-development.md) — Bumps follow the same delivery-mode rules as any other change (`worktree-to-pr` by default)
-- [Native-First Toolchain Management](../native-first-toolchain.md) — Toolchain version management via `rhino-cli doctor`
+- [Native-First Toolchain Management](../native-first-toolchain.md) — Toolchain version management via `./rhino toolchain validate`
 - [CI Blocker Resolution Convention](../../quality/ci-blocker-resolution.md) — CVE-related CI failures are resolved per root-cause discipline, not suppressed
 
 **Related Principles:**

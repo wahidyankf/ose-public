@@ -8,7 +8,7 @@ when_to_use: Read this when adding a Gherkin feature file, onboarding a new app'
 ## Adding a Feature File to an Existing Project
 
 1. Identify the correct `<product>-<surface>` slug (e.g., `organiclever-be`, `ayokoding-www`,
-   `rhino-cli`). For ayokoding build-time features, use `ayokoding-build-tools`
+   `Rhino`). For ayokoding build-time features, use `ayokoding-build-tools`
 2. Place the file in the appropriate domain subdirectory under
    `<owner>/behaviours/<domain>/`, creating the domain folder if it does not exist
 3. For CLI: choose a domain that matches the command group (e.g., `system/`, `env/`, `links/`); single-feature domains are permitted
@@ -21,7 +21,7 @@ when_to_use: Read this when adding a Gherkin feature file, onboarding a new app'
 3. Determine the surface profile (full-stack, web-only, CLI-only, multi-CLI)
 4. Create only the folders the project needs — see per-surface variant table
 5. Create `README.md` index files at each folder level
-6. Run `rhino-cli specs validate-tree <app>` to verify the layout
+6. Run `the declared spec-tree check` to verify the layout
 
 ## Adding Specs for a New Lib
 

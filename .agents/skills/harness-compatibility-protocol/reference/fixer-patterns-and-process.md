@@ -15,7 +15,7 @@ blocker; do not mark the fix complete until sync succeeds.
 **Post-fix verification**: after every Edit, `grep -q "new-value" path/to/file.md || echo "WARNING: edit did not match — fix NOT applied to path/to/file.md"`.
 If verification fails, log the fix as **FAILED (not applied)** and continue to the next finding.
 
-**Spec updates (`specs/apps/rhino/`)**: when a harness convention change alters rhino-cli
+**Rhino product updates (upstream repository)**: when a harness convention change alters Rhino
 behaviour that specs document (Gherkin features, container descriptions, README claims), Edit the
 affected spec files to stay consistent — update the changed scenario(s), keep Given-When-Then
 structure intact, record each touched file in the fix summary.

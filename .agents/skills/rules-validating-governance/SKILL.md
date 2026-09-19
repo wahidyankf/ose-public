@@ -26,7 +26,7 @@ governance layers, agent/Skill duplication, and software-engineering documentati
    cross-references, naming, structure, templates, diagrams, README index, version docs).
 4. [preflight-consumption.md](reference/preflight-consumption.md) and
    [execution-sequence-and-report-structure.md](reference/execution-sequence-and-report-structure.md) —
-   consuming the deterministic `rhino-cli repo-governance audit` preflight JSON, the execution
+   consuming the deterministic `./rhino governance traceability validate` preflight JSON, the execution
    step sequence, and the final two-section report structure.
 
 ## Core Principles

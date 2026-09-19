@@ -11,7 +11,7 @@ when_to_use: Use when deciding whether to mechanize a duplicated rule or leave i
 Observation: A CI matrix's gate list is currently copy-pasted into both the workflow YAML
 and a governance doc's example table. They already drifted once.
 
-Action: Make the workflow YAML derive its matrix from `rhino-cli gate list --surface=ci
+Action: Make the workflow YAML derive its matrix from `./rhino gate list
 --format=json` (a single generator invocation) instead of a hand-maintained list; point the
 governance doc's example at "run `gate list` for the current set" instead of embedding a table
 that can go stale.

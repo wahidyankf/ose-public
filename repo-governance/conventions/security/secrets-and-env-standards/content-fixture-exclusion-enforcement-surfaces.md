@@ -11,7 +11,7 @@ when_to_use: Use when adding or auditing a new agent-harness surface to confirm 
 | `.claude/settings.json`                  | `Read`/`Edit` allow for `apps/*/content/**/*.env`; deny globs were dotfile-shaped already |
 | `.opencode/opencode.json`                | `apps/*/content/**/*.env: allow` in the read and edit permission maps                     |
 | `~/.codex/config.toml` (untracked)       | deny globs written `**/.env*`, **never** `**/*.env*`                                      |
-| `rhino-cli env staged-guard validate`    | no change — already keys on a dotfile `.env*` basename                                    |
+| `the public-safety tree check`           | no change — already keys on a dotfile `.env*` basename                                    |
 
 **The Codex surface is the one that bites.** Its deny globs were originally `**/*.env`; the leading
 `*` matched `kata.env` and blocked the whole course. Adding a narrower `apps/<app>/content/** =

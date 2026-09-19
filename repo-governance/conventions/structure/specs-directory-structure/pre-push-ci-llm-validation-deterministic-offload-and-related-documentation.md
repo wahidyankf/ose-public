@@ -25,7 +25,7 @@ part of the active lifecycle. Semantic binding substance belongs to the Gherkin 
 
 ## Deterministic Offload
 
-The reasoning split between deterministic and LLM checks follows the principle that counting, path comparison, and file-system walking belong in Rust/deterministic tooling, not in LLM context. Categories tagged `[Deterministic]` in `specs-checker` shell out to `rhino-cli`; categories tagged `[LLM]` keep LLM-driven reasoning.
+The reasoning split between deterministic and LLM checks follows the principle that counting, path comparison, and file-system walking belong in Rust/deterministic tooling, not in LLM context. Categories tagged `[Deterministic]` in `specs-checker` shell out to `Rhino`; categories tagged `[LLM]` keep LLM-driven reasoning.
 
 ## Manual Verification Checklist
 

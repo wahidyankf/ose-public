@@ -10,7 +10,7 @@ findings: **internal cross-vendor parity** (five deterministic invariants keepin
 its generated mirrors consistent) and **external harness conformance** (web-research-backed checks that
 the platform-bindings catalog and binding files match each harness's upstream conventions).
 
-**Distinct from the pre-push guard**: `harness bindings validate` checks byte-drift; this
+**Distinct from the pre-push guard**: `harness adapters validate` checks byte-drift; this
 workflow's Phase 0 checks parity semantically, Phase 1 checks drift via web research.
 
 **When to use**: after modifying agents/governance prose/binding-sync logic, after a harness

@@ -9,17 +9,17 @@ when_to_use: Use when verifying or testing this workflow's escalation and iterat
 
 ```gherkin
 Scenario: Fixer updates rhino specs when a harness change alters documented CLI behaviour
-  Given the audit contains a HIGH-confidence finding that a harness changed a convention rhino-cli emits
-  And specs/apps/rhino/ documents the old behaviour in a Gherkin scenario
+  Given the audit contains a HIGH-confidence finding that a harness changed a convention Rhino emits
+  And the upstream Rhino specification corpus documents the old behaviour in a Gherkin scenario
   When harness-compatibility-fixer applies the catalog and binding updates
-  Then it edits the affected specs/apps/rhino/ files to match the new behaviour
+  Then it edits the affected the upstream Rhino specification corpus files to match the new behaviour
   And it preserves the Given-When-Then scenario structure
   And it records each touched spec file in the fix report
 
-Scenario: rhino-cli generator-logic change is surfaced for human resolution
+Scenario: Rhino generator-logic change is surfaced for human resolution
   Given the audit contains a finding that requires changing a binding translation rule
   When harness-compatibility-fixer encounters it
-  Then it flags the change as out-of-scope code authorship for apps/rhino-cli/ (Rust)
+  Then it flags the change as out-of-scope authorship of the pinned Rhino product
   And the workflow surfaces it for human or swe-rust-dev agent resolution
 
 Scenario: Out-of-scope findings escalate to human without looping

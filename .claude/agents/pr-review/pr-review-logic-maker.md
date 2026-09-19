@@ -56,7 +56,7 @@ ambiguity with no material behavioural consequence.
 ## SUPPRESS Block (Never Raise)
 
 During PR quality-gate invocation, first apply the shared
-[lifecycle-owned mechanical suppression](../../skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
+[lifecycle-owned mechanical suppression](../../../.agents/skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
 
 - Nitpicks about code style with no behavioural consequence.
 - A structural module-boundary question dressed up as "correctness" (architecture's territory).

@@ -5,7 +5,7 @@ when_to_use: Use when translating a model grade to a concrete model ID for a spe
 
 # Platform Binding Examples
 
-Agents in the primary binding directory are auto-synced to every generated binding by rhino-cli
+Agents in the primary binding directory are auto-synced to every generated binding by Rhino
 (`npm run generate:bindings`). The sync translates the primary binding's grade alias into whatever
 each harness expects. Never hand-edit a generated binding — change the grade in `.claude/` and
 regenerate.

@@ -14,7 +14,7 @@ when_to_use: "Use when pre-push is slow or a check fails."
 
 ```bash
 # Run the full pre-push gate set first (this warms the cache)
-apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push
+./rhino gate run --surface pre-push
 
 # Now push — the hook replays from cache (near-instant)
 git push
@@ -25,7 +25,7 @@ cacheable Nx target (`cache: true` in `nx.json`). Running it manually stores res
 Nx cache. When the pre-push hook runs the same target, Nx replays from cache instead of
 re-executing — making the hook near-instant regardless of how many projects are affected. The
 `.claude/hooks/warm-cache-before-push.sh` coding-agent hook automates this same warm-up on every
-`git push` invocation, deriving its target list from `gate list --surface=pre-push --format=text`
+`git push` invocation, deriving its target list from `gate list`
 rather than a hardcoded list.
 
 ## Tests Fail on Pre-push
@@ -47,8 +47,8 @@ rather than a hardcoded list.
 **Solutions**:
 
 1. Identify which step failed:
-   - Primary binding directory validation: Fix source files in `.claude/agents/` or `.claude/skills/`
-   - Sync: Check rhino-cli output, may be a bug
+   - Primary binding directory validation: Fix source files in `.claude/agents/` or `.agents/skills/`
+   - Sync: Check Rhino output, may be a bug
    - Secondary binding directory validation: Re-run `npm run generate:bindings`
 
 2. Run validation manually to debug:
@@ -63,7 +63,7 @@ rather than a hardcoded list.
    - Invalid tool name: Must be Read, Write, Edit, Glob, Grep, Bash, TodoWrite, WebFetch, WebSearch
    - Missing description: All agents/skills need description field
    - Invalid model: Must be empty, or a recognized model identifier (`sonnet`, `opus`, `haiku`)
-   - Skill not found: Ensure skill exists in the platform binding skill directory (`.claude/skills/`)
+   - Skill not found: Ensure skill exists in the platform binding skill directory (`.agents/skills/`)
 
 4. Bypass hook temporarily (emergency only):
 

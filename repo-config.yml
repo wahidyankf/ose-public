@@ -35,6 +35,119 @@ scan:
     - raw
     - done
 
+harness:
+  canonical:
+    agents:
+      name: name
+      description: description
+      tier: tier
+      grants: capabilities
+      denials: denies
+      constraints: constraints
+    skills:
+      name: name
+      description: description
+  requirements:
+    capabilities:
+      - repository-read
+      - repository-write
+      - shell
+      - network
+    constraints:
+      - read-only
+    routes:
+      - canonical-import
+    identities:
+      - description
+  profiles:
+    - id: claude
+      supports:
+        capabilities:
+          - repository-read
+          - repository-write
+          - shell
+          - network
+        constraints:
+          - read-only
+        routes:
+          - canonical-import
+        identities:
+          - description
+      instruction-adapter:
+        path: CLAUDE.md
+        route: "@{path}"
+      agent-adapter:
+        path: ".claude/agents/plan/{name}.md"
+        format: front-matter
+        route-field: body
+        route: "Before acting, read the complete canonical agent definition at the repository-root path {path} and follow it as authoritative. If it cannot be read, stop and report the missing path."
+        identity: { name: name, description: description }
+        tier-fields: { model: model, effort: effort }
+        translations:
+          - { when: always, field: tools, members: [Read] }
+          - { when: requires, capability: repository-read, field: tools, members: [Glob, Grep] }
+          - { when: requires, capability: repository-write, field: tools, members: [Write, Edit] }
+          - { when: requires, capability: shell, field: tools, members: [Bash] }
+          - { when: requires, capability: network, field: tools, members: [WebSearch, WebFetch] }
+          - { when: denies, capability: repository-write, field: tools, absent-members: [Write, Edit] }
+          - { when: denies, capability: shell, field: tools, absent-members: [Bash, PowerShell] }
+      skill-adapter:
+        path: ".claude/skills/{name}/SKILL.md"
+        format: front-matter
+        route-field: body
+        route: "Read {path} completely, resolve every relative resource from that skill directory, and follow it as authoritative before acting."
+        identity: { name: name, description: description }
+      tiers:
+        plan: { model: opus, effort: high }
+    - id: codex
+      supports:
+        capabilities:
+          - repository-read
+          - repository-write
+          - shell
+          - network
+        constraints:
+          - read-only
+        routes:
+          - canonical-import
+        identities:
+          - description
+      agent-adapter:
+        path: ".codex/agents/{name}.toml"
+        format: toml
+        route-field: developer_instructions
+        route: "Before acting, read the complete canonical agent definition at the repository-root path {path} and follow it as authoritative. If it cannot be read, stop and report the missing path."
+        identity: { name: name, description: description }
+        absent: [model, effort]
+    - id: opencode
+      supports:
+        capabilities:
+          - repository-read
+          - repository-write
+          - shell
+          - network
+        constraints:
+          - read-only
+        routes:
+          - canonical-import
+        identities:
+          - description
+      agent-adapter:
+        path: ".opencode/agents/{name}.md"
+        format: front-matter
+        route-field: body
+        route: "Before acting, read the complete canonical agent definition at the repository-root path {path} and follow it as authoritative. If it cannot be read, stop and report the missing path."
+        identity: { description: description }
+        fixed: { mode: subagent }
+        translations:
+          - { when: always, field: permission, entries: { read: allow } }
+          - { when: requires, capability: repository-read, field: permission, entries: { glob: allow, grep: allow } }
+          - { when: requires, capability: repository-write, field: permission, entries: { edit: allow } }
+          - { when: requires, capability: shell, field: permission, entries: { bash: allow } }
+          - { when: requires, capability: network, field: permission, entries: { webfetch: allow, websearch: allow } }
+          - { when: denies, capability: repository-write, field: permission, entries: { edit: deny } }
+          - { when: denies, capability: shell, field: permission, entries: { bash: deny } }
+
 policies:
   markdown:
     metadata:

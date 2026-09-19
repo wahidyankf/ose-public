@@ -1,5 +1,7 @@
 # AGENTS.md progressive-disclosure refactor
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: move detail out of `AGENTS.md` behind `See`-links and pattern-based rules to
 restore working headroom under its size budget — without deleting a rule or pointing at an incomplete
 target.
@@ -80,7 +82,7 @@ environment-branch rule are trimmed last and only via a complete target.
 
 ## What success looks like + promotion signal
 
-Success: `nx run rhino-cli:instruction-size:validation` exits 0 with `AGENTS.md` at or under its
+Success: `./rhino governance word-budget validate` exits 0 with `AGENTS.md` at or under its
 target threshold and no warn-level message for either `AGENTS.md` or the resolved tree, while every
 removed rule still traces to a reachable canonical home and every safety guardrail remains inline and
 complete. Ready to re-promote once a section-by-section audit confirms enough proven-complete link

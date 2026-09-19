@@ -3,7 +3,7 @@
 ## Step 6: Governance Word Budget — Delegated
 
 Word budgets for `AGENTS.md`, `CLAUDE.md`, and every other auto-loaded instruction surface are
-owned by the deterministic `rhino-cli governance word-budget validate` gate (wired at pre-push, CI,
+owned by the deterministic `./rhino governance word-budget validate` gate (wired at pre-push, CI,
 and as `governance-word-budget` in the `repo-governance audit` preflight, once armed). Thresholds
 live only in the `governance-word-budget:` section of `repo-config.yml` — never restate them here,
 since a second copy drifts from config and produces contradictory verdicts.
@@ -31,7 +31,7 @@ alignment because those remain domain judgement.
 
 **Scope**: all governance layers (`vision/`, `principles/`, `conventions/`, `development/`,
 `workflows/`, `.claude/agents/**/*.md` content/cross-layer consistency only — frontmatter
-shape/naming/mirror parity belong to `rhino-cli harness` and `harness-compatibility-checker`),
+shape/naming/mirror parity belong to `Rhino harness` and `harness-compatibility-checker`),
 `repository-governance-architecture.md`, `repo-governance/README.md`, `docs/explanation/README.md`.
 
 1. **Contradictions**: cross-reference principle definitions against implementations, check

@@ -37,7 +37,7 @@ when_to_use: Use to check whether a file type (docs, agents, config, README) may
 
 6. **Root configuration and skill files** - CLAUDE.md, primary binding skill files
    - CLAUDE.md - Project guidance document for coding agent sessions, human-readable
-   - Primary binding skill files (`.claude/skills/*.md`) - Skill files providing knowledge and execution services to agents
+   - Primary binding skill files (`.agents/skills/*.md`) - Skill files providing knowledge and execution services to agents
    - Emojis support scannability of guidance and knowledge content read by developers
 
 **FAIL: DO NOT use emojis in these files:**
@@ -72,7 +72,7 @@ when_to_use: Use to check whether a file type (docs, agents, config, README) may
 PASS: **Clear rule:**
 
 ```
-Emojis for humans: docs/, repo-governance/, plans/, README.md files, CLAUDE.md, .claude/skills/*.md
+Emojis for humans: docs/, repo-governance/, plans/, README.md files, CLAUDE.md, .agents/skills/*.md
 Emojis for agents: AGENTS.md, .claude/agents/*.md, .opencode/agents/*.md
 No emojis for machines: config files (*.json, *.yaml, *.toml)
 ```

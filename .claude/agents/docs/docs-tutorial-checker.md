@@ -50,7 +50,7 @@ tutorial types, coverage-percentage depth indicators, no time estimates ever).
 
 ## Validation Workflow
 
-See [docs-applying-diataxis-framework/reference/validating-tutorial-quality.md](../../skills/docs-applying-diataxis-framework/reference/validating-tutorial-quality.md)
+See [docs-applying-diataxis-framework/reference/validating-tutorial-quality.md](../../../.agents/skills/docs-applying-diataxis-framework/reference/validating-tutorial-quality.md)
 for the complete six-step execution procedure (read/understand → structural validation →
 narrative analysis → visual completeness incl. color-accessibility and diagram-splitting checks →
 hands-on assessment → finalize), the critical LaTeX delimiter check, the report structure

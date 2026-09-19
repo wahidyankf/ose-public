@@ -2,10 +2,6 @@
 node_modules/
 **/node_modules/
 
-# rhino-cli golden-master fixture: inside the `apps/rhino-cli/**` byte-identity boundary, so
-# reformatting it here would break `parity manifest validate` in the sibling repository
-apps/rhino-cli/tests/golden-master/manifest.json
-
 # Shared plan-structure corpus: byte-identical with the ose-rules catalog and pinned by digest, so
 # reformatting it breaks every implementation that verifies that digest
 specs/fixtures/plan-structure/
@@ -24,6 +20,13 @@ generated-reports/
 local-tmp/
 graph.html
 **/.features-gen/
+
+# Rhino v0.4 owns these adapter routes byte-for-byte. Format canonical `.agents/` sources, then
+# regenerate; formatting a route directly would create a false adapter divergence.
+.claude/agents/plan/
+.claude/skills/
+.codex/agents/
+.opencode/agents/
 
 # Language-specific build artifacts
 libs/*/deps/

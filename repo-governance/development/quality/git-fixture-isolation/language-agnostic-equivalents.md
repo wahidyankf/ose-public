@@ -11,7 +11,7 @@ API's environment-variable and working-directory controls.
 
 | Language / stack  | Env-var injection API                                                  | Notes                                                                                                                   |
 | ----------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Rust              | `std::process::Command::env(...)`                                      | Pattern used throughout this document; matches `rhino-cli`                                                              |
+| Rust              | `std::process::Command::env(...)`                                      | Pattern used throughout this document; matches `Rhino`                                                                  |
 | Go                | `exec.Cmd.Env` (append to `os.Environ()`, do not replace it wholesale) | Must append, not overwrite -- a fully replaced `Env` drops `PATH`, breaking `git` resolution                            |
 | TypeScript / Node | `child_process.spawn(cmd, args, { env: { ...process.env, ... } })`     | Same append-not-replace rule as Go                                                                                      |
 | Python            | `subprocess.run([...], env={**os.environ, ...})`                       | Same append-not-replace rule                                                                                            |

@@ -1,5 +1,7 @@
 # Refresh Agent Illustrative Example Paths
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: several generic, reusable agent definitions still illustrate their usage with
 example paths naming apps this repo deleted during the BeaverNest repo reset.
 
@@ -51,8 +53,8 @@ In scope: `.claude/agents/specs-checker.md`, `specs-maker.md`, `specs-fixer.md`,
 (source files only — mirrors regenerate).
 
 Out of scope: `docs/explanation/software-engineering/**` (explicitly excluded per
-`baseerah-repo-reset/tech-docs.md` Decision 12); `apps/rhino-cli/**` test fixtures and
-`specs/apps/rhino/**` (legitimate, mirror rhino-cli's own test/spec structure); real identity mentions
+`baseerah-repo-reset/tech-docs.md` Decision 12); retired product test fixtures and their upstream
+specification corpus; real identity mentions
 (`wahidyankf`); the AGENTS.md Web Sites table (already tracked separately).
 
 ## Risks & open questions

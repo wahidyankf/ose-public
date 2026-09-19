@@ -23,10 +23,10 @@ when_to_use: "Use when checking whether a test or fixture is in scope."
 - **Read-only git commands against the real repository in tests** (e.g. a unit test that calls
   `git rev-parse --show-toplevel` against the actual repo to verify repository-root resolution,
   with nothing written). There is nothing to mutate, so there is no escape to guard against. See
-  `find_root_returns_repo_root` in `apps/rhino-cli/src/infrastructure/git/root.rs` for an example
-  of an in-scope-adjacent, out-of-scope-by-mutation-boundary test.
-- **Production code paths that intentionally operate on the real repository** (e.g. `rhino-cli git
-pre-commit`, or any git hook logic that is _supposed_ to read/write the checkout it runs in).
+  a retired in-tree root-resolution test for an example of an in-scope-adjacent,
+  out-of-scope-by-mutation-boundary test.
+- **Production code paths that intentionally operate on the real repository** (e.g. `./rhino gate
+run`, or any git hook logic that is _supposed_ to read/write the checkout it runs in).
   This convention governs test fixtures building **throwaway** repositories, not application code
   whose job is to touch the real one.
 - **Which test level a git-fixture test belongs to** (unit vs. integration) -- that classification

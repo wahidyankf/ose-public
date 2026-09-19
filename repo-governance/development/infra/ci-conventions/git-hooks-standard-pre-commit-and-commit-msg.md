@@ -5,21 +5,21 @@ when_to_use: Use when debugging the pre-commit hook or commit format.
 
 # Git Hooks Standard — Pre-Commit and Commit-msg
 
-All developer machines run three Husky hooks. Hook logic is implemented via `rhino-cli` subcommands
+All developer machines run three Husky hooks. Hook logic is implemented via `Rhino` subcommands
 to keep the raw hook files thin and testable.
 
 ## pre-commit
 
 The pre-commit hook delegates entirely to `./rhino gate run --surface pre-commit`, which runs the
-public-safety screen and then `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-commit`.
-`repo-config.yml`'s `extensions.rhino-cli.gates` is the live inventory, including ordering, scope, blocking behaviour, mutations, and restaging. Query
+public-safety screen and then `./rhino gate run --surface pre-commit`.
+`repo-config.yml`'s `extensions.Rhino.gates` is the live inventory, including ordering, scope, blocking behaviour, mutations, and restaging. Query
 that registry instead of maintaining a second list here:
 
 ```bash
-rtk apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=pre-commit --format=text
+rtk ./rhino gate list
 ```
 
-Use `rtk apps/rhino-cli/scripts/rhino-bin.sh gate validate` to check that the hook and registry
+Use `rtk ./rhino gate validate` to check that the hook and registry
 remain conformant. Language formatter and file-selection details belong to the corresponding
 registry entries and project targets, not this overview.
 

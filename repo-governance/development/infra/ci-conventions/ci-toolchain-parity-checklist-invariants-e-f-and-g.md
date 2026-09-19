@@ -28,12 +28,12 @@ rename or command-surface change, update:
 
 1. `repo-governance/development/infra/ci-conventions.md` (this file) — pre-push section + checklist
 2. `repo-governance/development/infra/nx-targets.md` — target name tables + `{domain}:{work}` naming section
-3. `AGENTS.md` — Cross-Language Lint Gates section + rhino-cli command surface
-4. `apps/rhino-cli/README.md` — command surface table + hexagonal layout diagram
+3. `AGENTS.md` — Cross-Language Lint Gates section + Rhino command surface
+4. The pinned Rhino release documentation — command surface table + architecture notes
 5. Any index READMEs that reference renamed targets
 
 Stale `validate:*` or `spec-coverage` references in any of the above are bugs caught by
-`rhino-cli:links:validation` fragment checks and by the Parity Checklist gate in the plan delivery
+`Rhino:links:validation` fragment checks and by the Parity Checklist gate in the plan delivery
 process.
 
 ## Invariant G — Mermaid State Diagram Validation
@@ -46,5 +46,5 @@ as flowchart diagrams:
 - **Label length**: State display names and transition edge labels are limited to 30 characters.
   Use abbreviations or split composite states when labels exceed this limit.
 
-Both rules are enforced by `rhino-cli:mermaid:validation`, which scans the entire repo (excluding
+Both rules are enforced by `Rhino:mermaid:validation`, which scans the entire repo (excluding
 `plans/done/`, `apps/ayokoding-www/content/`, and the standard noise-skip set).

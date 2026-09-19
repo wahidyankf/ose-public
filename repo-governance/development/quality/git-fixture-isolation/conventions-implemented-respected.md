@@ -16,7 +16,7 @@ This convention implements/respects the following conventions:
   one of the six required layers, not replaced.
 
 - **[Behaviour-Driven Development](../../behaviour-driven-development.md)**: CLI apps in this monorepo
-  (`rhino-cli`, `crane-cli`) run integration tests against real `/tmp` filesystem
+  (`Rhino`, `crane-cli`) run integration tests against real `/tmp` filesystem
   fixtures per that standard's "CLI App Implementation Pattern." Any such fixture that also shells
   out to `git` (to build a throwaway repository as test data) is squarely inside this convention's
   scope -- the isolation boundary the Three-Level Testing Standard draws around the filesystem must

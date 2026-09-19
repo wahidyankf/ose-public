@@ -19,7 +19,7 @@ repo-file-quoting code fence. Bare unlabeled claims default to `[Unverified]`: *
 - **AP-5** numeric KPI presented as measured fact with no baseline: **HIGH**
 - **AP-6** test name cited that doesn't exist and isn't marked `_New test_`: **HIGH**
 - **AP-7** agent/skill name cited that doesn't resolve via `find .claude/agents -name '<name>.md'`
-  (nested role subfolders) or `.claude/skills/<name>/SKILL.md`: **HIGH**
+  (nested role subfolders) or `.agents/skills/<name>/SKILL.md`: **HIGH**
 - **AP-8** CLI flag cited without `<cmd> --help` evidence or repo-doc reference: **MEDIUM**
 - **AP-9** behaviour claim cited without a source: **MEDIUM**
 - **AP-10** cross-link target resolving to a non-existent file: **HIGH**

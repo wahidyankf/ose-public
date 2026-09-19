@@ -54,8 +54,6 @@ docs/**/*.excalidraw.md
 
 # Testing
 coverage/
-!apps/rhino-cli/internal/coverage/
-!apps/rhino-cli/tests/unit/Fixtures/TestContract/Coverage/
 coverage.json
 .nyc_output/
 jest.config.js.bak
@@ -137,8 +135,7 @@ target/
 # so every Gradle root re-includes its own.
 !apps/*/gradle/wrapper/gradle-wrapper.jar
 
-# Rust build artifacts + shared-cache `target` symlinks created by
-# `rhino-cli doctor --fix` (the `target/` rule above matches directories only,
+# Rust build artifacts + shared-cache `target` symlinks (the `target/` rule above matches directories only,
 # not the symlink form, so the symlinked `target` entries need their own rule)
 target
 

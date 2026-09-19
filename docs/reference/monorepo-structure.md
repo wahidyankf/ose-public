@@ -89,7 +89,7 @@ Flat structure - all apps at the same level, no subdirectories.
 - `ayokoding-www` - AyoKoding educational platform (Next.js 16 fullstack content platform, port 3101)
 - `ayokoding-www-be-e2e` - Playwright BE E2E tests for ayokoding-www tRPC API
 - `ayokoding-www-fe-e2e` - Playwright FE E2E tests for ayokoding-www UI
-- `rhino-cli` - Repository management CLI (F# application). Ported from Go to Rust 2026-05-23, then from Rust to F# 2026-08-30 (both predecessor sources recoverable from git history).
+- `Rhino` - Repository management CLI (F# application). Ported from Go to Rust 2026-05-23, then from Rust to F# 2026-08-30 (both predecessor sources recoverable from git history).
 - `crane-cli` - PDF-to-Markdown pipeline CLI (F# application)
 - `organiclever-www` - OrganicLever marketing website (Next.js 16, port 3200)
 - `organiclever-www-fe-e2e` - Playwright FE E2E tests for organiclever-www
@@ -115,25 +115,6 @@ apps/ose-www/
 ├── project.json               # Nx project configuration
 ├── vercel.json                # Deployment configuration
 └── README.md                  # App documentation
-```
-
-### App Structure (F# CLI Application)
-
-```
-apps/rhino-cli/
-├── src/                        # Source code (5 F# projects)
-│   ├── RhinoCli.Domain/        # Shared types
-│   ├── RhinoCli.Infrastructure/# Adapters (I/O, git)
-│   ├── RhinoCli.Application/   # Application services
-│   ├── RhinoCli.Cli/           # CLI dispatch and argument parsing
-│   ├── RhinoCli.Program/       # Entry point
-│   ├── tests/                  # unit/ (TickSpec + xunit), integration/
-│   └── dist/                   # Published self-contained binary (gitignored)
-├── scripts/                    # rhino-bin.sh resolver shim, shadow-diff.sh, dotnet-deps-audit.sh
-├── global.json                 # Pinned .NET SDK version
-├── project.json                # Nx project configuration
-├── LICENSE
-└── README.md                   # App documentation
 ```
 
 ### App Structure (Next.js Application)
@@ -439,17 +420,6 @@ All projects use a standard four-dimension tag scheme:
 - Project-specific options only
 
 ### App Configuration Files
-
-**F# Apps** use `.fsproj` files (one per project) for dependency management:
-
-```xml
-<!-- apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -->
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-  </PropertyGroup>
-</Project>
-```
 
 **TypeScript/Next.js Apps** use `package.json`:
 

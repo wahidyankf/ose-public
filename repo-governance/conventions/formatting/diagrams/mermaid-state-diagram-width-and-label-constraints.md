@@ -6,7 +6,7 @@ when_to_use: "Use when authoring or fixing a Mermaid state diagram that has wide
 # State Diagram Width and Label Constraints
 
 `stateDiagram-v2` and `stateDiagram` (v1) diagrams are subject to the same width and label rules
-as flowcharts and are enforced by the same `rhino-cli md mermaid validate` command.
+as flowcharts and are enforced by the same `./rhino md mermaid validate` command.
 
 **Width rule**: The validator counts the number of distinct state nodes at each depth level
 (depth = number of transition steps from the initial pseudostate `[*]`). If any depth level has

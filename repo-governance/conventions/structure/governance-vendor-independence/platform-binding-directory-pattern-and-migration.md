@@ -28,7 +28,7 @@ See [`docs/reference/platform-bindings.md`](../../../../docs/reference/platform-
 
 To refactor an existing governance file:
 
-1. **Scan**: prefer `rhino-cli repo-governance vendor validate <path>` (it respects all allowlist regions). For ad-hoc grep, use `grep -n -E "Claude Code|OpenCode|Cursor|Windsurf|Codeium|Copilot|Aider|Cline|Devin|Junie|JetBrains|Amazon Q|Antigravity|Pi Coding Agent|pi\.dev|Earendil|Anthropic|OpenAI|xAI|Sonnet|Opus|Haiku|GPT|Gemini|DeepSeek|Qwen|Llama|Mistral|Grok|Skills|\.claude/|\.opencode/|\.cursor/|\.windsurf/|\.continue/|\.clinerules/|\.junie/|\.amazonq/|\.pi/|\.gemini/|\.agent/|\.agents/" <file>` to find all matches.
+1. **Scan**: prefer `./rhino governance vendor validate <path>` (it respects all allowlist regions). For ad-hoc grep, use `grep -n -E "Claude Code|OpenCode|Cursor|Windsurf|Codeium|Copilot|Aider|Cline|Devin|Junie|JetBrains|Amazon Q|Antigravity|Pi Coding Agent|pi\.dev|Earendil|Anthropic|OpenAI|xAI|Sonnet|Opus|Haiku|GPT|Gemini|DeepSeek|Qwen|Llama|Mistral|Grok|Skills|\.claude/|\.opencode/|\.cursor/|\.windsurf/|\.continue/|\.clinerules/|\.junie/|\.amazonq/|\.pi/|\.gemini/|\.agent/|\.agents/" <file>` to find all matches.
 2. **Classify each match**:
    - Load-bearing prose → rewrite using the Vocabulary Map above.
    - Cross-reference link → rewrite anchor text and link target to neutral equivalent.

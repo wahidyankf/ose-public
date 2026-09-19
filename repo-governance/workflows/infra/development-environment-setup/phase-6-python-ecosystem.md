@@ -10,7 +10,7 @@ when_to_use: "Use when setting up Python under full scope."
 Required for: formatting only. This repository ships no Python application or library. The `*.py`
 files it tracks are AyoKoding course corpora under `apps/ayokoding-www/content/**` plus a few
 harness helper scripts, and the `format-ruff` / `format-verify-ruff` gates in `repo-config.yml`
-keep them formatted. `rhino-cli doctor` does not check Python or ruff.
+keep them formatted. `./rhino toolchain validate` does not check Python or ruff.
 
 ## 6.1 Install Python 3.13+
 

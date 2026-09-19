@@ -14,9 +14,9 @@ execute all `[AI]` items → validation via `plan-execution-checker` → iterate
 → merge or `[HUMAN]` handoff per the plan's Delivery Mode → archival to `plans/done/`. Multi-plan
 scheduling changes _when_ these steps run relative to other plans, never _whether_ they run.
 
-**D2. Byte-identity plans propagate as a unit.** A plan whose changes fall under the `apps/rhino-cli`
-byte-identity boundary lands byte-identically across `ose-public`/the private sibling. Two such
-plans are always serialized (A6.2) so their propagations never race.
+**D2. Shared-source plans propagate as a unit.** A plan that declares a local byte-identity
+boundary lands that boundary consistently across its named targets. Two such plans are always
+serialized (A6.2) so their propagations never race.
 
 **D3. Failure isolation (quarantine).** If a node fails and cannot be fixed (per Iron Rule 3, fix ALL
 issues including preexisting first — only a genuine hard blocker counts as failure): mark that plan

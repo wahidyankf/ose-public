@@ -46,7 +46,7 @@ The survey (empirical, 2026-06-06) established these facts before any decisions:
 - `plan-multi-repo-parity-planning.md` exists only in ose-public.
 - The grilling convention exists as `grilling-with-options.md` in ose-public and
   `grilling.md` (different name, broader wording) in the private sibling.
-- The OpenCode emitter in rhino-cli still emits the deprecated boolean `tools`
+- The OpenCode emitter in the retired in-tree Rhino still emits the deprecated boolean `tools`
   flags format (e.g., `tools: { read: true }`).
 - The `.codex/agents/` directory is not an official OpenAI Codex CLI convention —
   the official path is `config.toml` `agents.<name>` sub-tables.
@@ -208,7 +208,7 @@ that the triple-harness compatibility goal requires to be closed.
 
 ### Row 18 — OpenCode Emitter Format
 
-**Decision**: modernize the rhino-cli OpenCode emitter in ose-public from the
+**Decision**: modernize the retired in-tree Rhino OpenCode emitter in ose-public from the
 deprecated boolean `tools` flags format to the `permission` object format
 (`allow`/`ask`/`deny` per tool). After the code change, regenerate all 70
 `.opencode/agents/*.md` mirrors.
@@ -238,7 +238,7 @@ Source: <https://developers.openai.com/codex/config-reference> (accessed
 
 #### ose-public Nuance (Design Decision D5)
 
-ose-public's `rhino-cli` **never emitted** `.codex/agents/`. The
+ose-public's retired in-tree Rhino **never emitted** `.codex/agents/`. The
 `emit_bindings` function in `bindings.rs` writes exactly two Amazon Q files;
 no code path references a Codex emission directory. The matrix row's
 "stop emitting `.codex/agents/`" therefore translates in ose-public to two
@@ -259,16 +259,16 @@ distinct actions:
    sibling repos handle their own emitter realities in their own plans.
 
 This distinction between "guard, not emitter change" is recorded so contributors
-reading this doc do not expect a Codex emission-path removal in the rhino-cli
+reading this doc do not expect a Codex emission-path removal in the retired in-tree Rhino
 source that was never there.
 
 ### Row 20 — generate:bindings Invocation Alignment
 
-**Decision**: align both repos to invoke the rhino-cli binary directly via
+**Decision**: align both repos to invoke the retired in-tree Rhino binary directly via
 `cargo run --manifest-path <path-to-Cargo.toml>`.
 
 **Rationale**: uniform invocation simplifies cross-repo maintenance. The accepted
-trade-off is losing the Nx build-cache wrapper around the rhino-cli compilation
+trade-off is losing the Nx build-cache wrapper around the retired in-tree Rhino compilation
 step for infra.
 
 ### Row 24 — Rationale Doc Location
@@ -312,7 +312,7 @@ All web research performed by web-researcher on 2026-06-05 to 2026-06-06:
 
 - **OpenCode agents format** (boolean `tools` → `permission` object, rows 18 and
   17): <https://opencode.ai/docs/agents/> (accessed 2026-06-05)
-- **OpenCode skills** (`.claude/skills/<name>/SKILL.md` natively, no mirror
+- **OpenCode skills** (`.agents/skills/<name>/SKILL.md` natively, no mirror
   needed): <https://opencode.ai/docs/skills/> (accessed 2026-06-05)
 - **Amazon Q Developer CLI** (`.amazonq/rules/` + `.amazonq/cli-agents/*.json`;
   does not read AGENTS.md natively; bridge mechanism correct): row 17 validation.

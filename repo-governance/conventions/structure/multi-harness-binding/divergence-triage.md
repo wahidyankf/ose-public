@@ -1,12 +1,12 @@
 ---
 description: Rule 9 — generation stays one-way by default, divergence is detected by content and never by timestamp, and promoting a mirror edit back into canonical source is a human-reviewed patch rather than an automatic write.
-when_to_use: Read this when a hand edit made inside a generated mirror needs keeping, or when `harness bindings validate` fails and you are deciding which side to change.
+when_to_use: Read this when a hand edit made inside a generated mirror needs keeping, or when `harness adapters validate` fails and you are deciding which side to change.
 ---
 
 # Rule 9 — Divergence Triage and Reviewed Promotion
 
 **Generation is one-way by default.** A hand edit inside a generated mirror fails
-`harness bindings validate`, exactly as it did before triage existed. Triage explains the failure;
+`harness adapters validate`, exactly as it did before triage existed. Triage explains the failure;
 promotion proposes a patch. Neither writes canonical source.
 
 ## Detection is by content, never by timestamp

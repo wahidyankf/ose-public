@@ -38,7 +38,7 @@ Multiple domain-focused standards files covering specific areas (testing, securi
 | ---------------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | REST API backend                         | F#/Giraffe           | See the F# guidance and the relevant app README                                                                        |
 | Frontend web application                 | TypeScript           | [TypeScript Standards](./typescript/README.md) — TypeScript development for frontend applications and Node.js services |
-| CLI tool for repository automation       | F#                   | See rhino-cli (F#)                                                                                                     |
+| CLI tool for repository automation       | F#                   | See Rhino (F#)                                                                                                         |
 | Infrastructure tooling                   | F#                   | See existing CLI tools                                                                                                 |
 | Real-time updates and WebSocket handling | TypeScript           | [TypeScript Standards](./typescript/README.md) — TypeScript development for frontend applications and Node.js services |
 | Complex domain logic with DDD            | F#                   | See language-specific README files                                                                                     |
@@ -48,8 +48,8 @@ Multiple domain-focused standards files covering specific areas (testing, securi
 **Platform Guidance**:
 
 - **TypeScript**: Active for frontend applications, including Next.js sites
-- **F#**: Active for REST API backends (organiclever-be, ose-be) and CLI tooling (rhino-cli, crane-cli — Content Retrieval And Normalization Engine)
-- **Rust**: Retained for the AyoKoding Rust course content standards only; no active platform app (rhino-cli was ported to F# 2026-08-30)
+- **F#**: Active for REST API backends (organiclever-be, ose-be) and CLI tooling (Rhino, crane-cli — Content Retrieval And Normalization Engine)
+- **Rust**: Retained for the AyoKoding Rust course content standards only; no active platform app (Rhino was ported to F# 2026-08-30)
 - **C#**: Retained for potential .NET interop with F#
 - **Java**: Active for the LMS backend (ose-lms-be) only — not the default for new backends, which remain F#
 
@@ -180,7 +180,7 @@ Java is active for exactly one project — `ose-lms-be`, the Learning Management
 
 **Rust development with ownership-based memory safety, zero-cost abstractions, and Axum**
 
-Rust guarantees memory safety and fearless concurrency without a garbage collector, making it ideal for high-performance, security-critical systems. No platform app currently uses Rust — rhino-cli, its last user, was ported to F# 2026-08-30 — but these standards remain active for the AyoKoding Rust course content under `apps/ayokoding-www/content/`.
+Rust guarantees memory safety and fearless concurrency without a garbage collector, making it ideal for high-performance, security-critical systems. No platform app currently uses Rust — Rhino, its last user, was ported to F# 2026-08-30 — but these standards remain active for the AyoKoding Rust course content under `apps/ayokoding-www/content/`.
 
 **Use Rust when you need:**
 
@@ -205,7 +205,7 @@ TypeScript is used for frontend web applications (Next.js) and tRPC backends. Ty
 ### Language Selection Criteria
 
 Before proposing a language change for an existing component, read
-[rhino-cli: Rust to F# Rewrite — Measured Outcome](./rhino-cli-rust-to-fsharp-benchmark.md) — the
+[Rhino: Rust to F# Rewrite — Measured Outcome](./retired-in-tree-rhino-rust-to-fsharp-benchmark.md) — the
 durable, measured comparison record from the one rewrite this platform has actually carried through
 end to end, including the regressions it found.
 
@@ -234,13 +234,13 @@ Languages in this documentation are chosen based on:
 
 ### Current Language Usage
 
-| Language       | Primary Use Cases                              | Status                                                          |
-| -------------- | ---------------------------------------------- | --------------------------------------------------------------- |
-| **C#**         | Enterprise APIs, .NET interop with F#          | 📋 Retained — .NET interop                                      |
-| **F#**         | REST API backends, CLI tools, content pipeline | ✅ Active — organiclever-be, ose-be, rhino-cli, crane-cli       |
-| **Java**       | LMS backend (Spring Boot)                      | ✅ Active — ose-lms-be only; not the default for new backends   |
-| **Rust**       | AyoKoding course content standards             | 📋 Retained — no active app (rhino-cli ported to F# 2026-08-30) |
-| **TypeScript** | Frontend applications, tRPC backends           | ✅ Active — all Next.js apps                                    |
+| Language       | Primary Use Cases                              | Status                                                        |
+| -------------- | ---------------------------------------------- | ------------------------------------------------------------- |
+| **C#**         | Enterprise APIs, .NET interop with F#          | 📋 Retained — .NET interop                                    |
+| **F#**         | REST API backends, CLI tools, content pipeline | ✅ Active — organiclever-be, ose-be, Rhino, crane-cli         |
+| **Java**       | LMS backend (Spring Boot)                      | ✅ Active — ose-lms-be only; not the default for new backends |
+| **Rust**       | AyoKoding course content standards             | 📋 Retained — no active app (Rhino ported to F# 2026-08-30)   |
+| **TypeScript** | Frontend applications, tRPC backends           | ✅ Active — all Next.js apps                                  |
 
 **Legend**: ✅ Active (in use in ose-public) | 📋 Retained (standards documented; not yet used in active apps)
 

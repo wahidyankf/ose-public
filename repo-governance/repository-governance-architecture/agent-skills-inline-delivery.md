@@ -9,9 +9,9 @@ when_to_use: Use when explaining inline skill delivery.
 
 **Purpose**: Package and deliver knowledge/capabilities to agents in two distinct modes.
 
-**Location**: `.claude/skills/`
+**Location**: `.agents/skills/`
 
-**Documentation**: See [`.claude/skills/README.md`](../../.claude/skills/README.md) for skills catalog, or [AGENTS.md](../../AGENTS.md) for root instruction file including skills integration overview
+**Documentation**: See [`.agents/skills/README.md`](../../.agents/skills/README.md) for skills catalog, or [AGENTS.md](../../AGENTS.md) for root instruction file including skills integration overview
 
 **Two Delivery Modes**:
 

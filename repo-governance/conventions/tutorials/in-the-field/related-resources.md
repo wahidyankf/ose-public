@@ -27,4 +27,4 @@ when_to_use: Use when looking for the agent, workflow, or skill that creates or 
 
 ## Related agent skills
 
-- [docs-creating-in-the-field-tutorials](../../../../.claude/skills/docs-creating-in-the-field-tutorials/SKILL.md) — Comprehensive in-the-field tutorial creation guidance
+- [docs-creating-in-the-field-tutorials](../../../../.agents/skills/docs-creating-in-the-field-tutorials/SKILL.md) — Comprehensive in-the-field tutorial creation guidance

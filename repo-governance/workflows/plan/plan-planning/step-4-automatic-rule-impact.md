@@ -7,7 +7,7 @@ when_to_use: Use while assembling the plan-maker handoff whenever planned behavi
 
 Classify the intended behaviour and annotated file-impact tree against the repository's full
 normative surface. This includes instructions, governance conventions/workflows, repository
-configuration, enforcement code, targets, hooks, CI, style guides, and generated harness bindings.
+configuration, enforcement code, targets, hooks, CI, style guides, and generated harness adapters.
 Do not wait for a user to name rules-propagation.
 
 For every affected repository, instruct `plan-maker` to add a repository-local outcome to
@@ -19,7 +19,7 @@ bootcamp-executable actions:
 3. decide canonical placement and any instruction-surface eviction;
 4. update canonical rules, indexes, configuration, and enforcement machinery;
 5. record the three-way enforcement disposition;
-6. generate declared harness bindings;
+6. generate declared harness adapters;
 7. run propagation's own verification, which never invokes `rules-quality-gate`; and
 8. record the repository-specific manifest, final status, and sibling obligation.
 

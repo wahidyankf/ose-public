@@ -1,5 +1,7 @@
 # Remove the 24 `compat:min-version` echo stubs the Nx target convention already forbids
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: every surviving `compat:min-version` target in `ose-public` is a bare `echo` that
 checks nothing — 24 of 24, with zero real checks left — while the Nx target convention states in
 terms that echo and no-op targets "are forbidden because they falsely claim a quality boundary
@@ -93,7 +95,7 @@ Out of scope:
 ## Risks & open questions
 
 - **Should this land as a validator instead of a sweep?** A one-time deletion fixes 24 files; a gate
-  fixes the class. The gate carries a TDD cycle, companion Gherkin under `specs/apps/rhino/`,
+  fixes the class. The gate carries a TDD cycle, companion Gherkin under `specs/apps/rhino`,
   `repo-config.yml` registration, and the four-repo parity obligation — uncosted here. (open)
 - **Why did the count move 26 → 27 → 24?** Some projects were removed or restructured between
   measurements, but that is inferred, not verified. Any sweep should reconcile the delta rather than

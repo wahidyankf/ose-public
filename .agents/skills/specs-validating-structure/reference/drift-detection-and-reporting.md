@@ -3,10 +3,10 @@
 ## Drift Detection
 
 Outside a lifecycle-filtered quality gate, validate listed `specs/apps/<app-family>/` folders with
-`rhino-cli specs structure validate --apps <csv>` (or Nx target
-`rhino-cli:specs:structure-validation`). It aggregates adoption, tree, and app-tree counts. Use
-`rhino-cli specs counts validate <folder>` only for non-app trees that the aggregator cannot reach.
-Use `rhino-cli md links validate` for Markdown paths/fragments and
+`the declared spec-structure check` (or Nx target
+`Rhino:specs:structure-validation`). It aggregates adoption, tree, and app-tree counts. Use
+`the declared spec-count check` only for non-app trees that the aggregator cannot reach.
+Use `./rhino md internal-link validate` for Markdown paths/fragments and
 the project `test:coverage:behaviour` target for explicit When/Then and corpus structure.
 
 In a quality-gate invocation, skip a command and any LLM substitute when its exact gate ID is in
@@ -76,7 +76,7 @@ plan, not a stub.
 #### [HIGH] Structure gate — missing folder
 
 **App**: `wahidyankf`
-**Command**: `rhino-cli specs structure validate --apps wahidyankf`
+**Command**: `the declared spec-structure check`
 **Evidence**: `specs/apps/wahidyankf/containers: HIGH: missing required folder: containers`
 **Expected**: Add the canonical `containers/` folder with at least one spec .md file
 **Confidence**: HIGH

@@ -5,7 +5,7 @@ Run the full standalone inventory before Phase 1. Quality-gate filtering is defi
 
 ## Invariant 1 — Governance prose vendor-neutrality
 
-- **Tool**: `apps/rhino-cli/scripts/rhino-bin.sh repo-governance vendor validate repo-governance/`
+- **Tool**: `./rhino governance vendor validate`
 - **Pass**: exits 0 with `GOVERNANCE VENDOR AUDIT PASSED: no violations found`
 - **Fail**: any non-zero exit; report each violation (file, line, term, replacement — all in the
   tool output)
@@ -15,8 +15,8 @@ Run the full standalone inventory before Phase 1. Quality-gate filtering is defi
 
 ## Invariant 2 — Root instruction surface vendor-neutrality
 
-- **Tool**: `apps/rhino-cli/scripts/rhino-bin.sh repo-governance vendor validate AGENTS.md` and
-  same for `CLAUDE.md`
+- **Tool**: `./rhino governance vendor validate`; its declared roots include the root instruction
+  pair.
 - **Pass**: both exit 0, no violations outside `binding-example` fences and "Platform Binding
   Examples" headings
 - **Fail**: any violation in load-bearing prose

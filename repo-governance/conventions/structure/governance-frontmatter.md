@@ -15,7 +15,7 @@ when_to_use: Use when <the situation that should send a reader here>.
 ```
 
 Both are required and non-empty. **Any other key is a validation failure** — this is an allow-list,
-not a minimum. `rhino-cli md frontmatter validate` enforces it, and `lint-staged` runs that
+not a minimum. `./rhino md frontmatter validate` enforces it, and `lint-staged` runs that
 validator on every staged `*.md`.
 
 ## Why an Allow-List
@@ -51,7 +51,7 @@ unaffected.
 ## Consequences Worth Knowing
 
 - **`description` and `when_to_use` are load-bearing.** Both are Blocking in the validator, and
-  both are read by `rhino-cli governance readme-index generate` to build a README index entry's
+  both are read by `./rhino governance directory-map validate` to build a README index entry's
   annotation. A vague `description` produces a vague index.
 - **Quoting still matters.** Both values are prose that regularly contains a colon, so the
   [YAML syntax requirements](../../workflows/meta/workflow-identifier/yaml-syntax-requirements.md)

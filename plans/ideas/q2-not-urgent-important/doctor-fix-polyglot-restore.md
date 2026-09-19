@@ -1,5 +1,7 @@
 # Extend `doctor --fix` to restore polyglot project dependencies
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: `npm run doctor -- --fix` verifies toolchain presence but does not restore
 per-project polyglot dependencies (NuGet, Cargo), leaving a fresh or long-idle checkout pre-push-red
 until an agent manually diagnoses and runs the missing restore.

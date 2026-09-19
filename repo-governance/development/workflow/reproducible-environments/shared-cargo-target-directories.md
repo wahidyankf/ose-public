@@ -9,7 +9,7 @@ when_to_use: Use when investigating the shared cargo target-directory symlink me
 
 ## Symlink Mechanism and Cache Root
 
-For each Rust crate, `rhino-cli doctor --fix` creates a `target/` symlink that points into a shared cache instead of leaving `target/` as an ordinary crate-local directory. The symlink target follows this layout:
+For each Rust crate, `npm run doctor -- --fix` creates a `target/` symlink that points into a shared cache instead of leaving `target/` as an ordinary crate-local directory. The symlink target follows this layout:
 
 ```text
 <cache_root>/<repo_name>/<crate_leaf>
@@ -27,7 +27,7 @@ Under CI (detected via the `CI` or `GITHUB_ACTIONS` environment variable), the d
 
 ## Worktree-Aware Pruning (`doctor --prune-cargo-cache`)
 
-`rhino-cli doctor --prune-cargo-cache` is a worktree-aware garbage collector for the shared cache. It deletes shared-cache entries that no live worktree or checkout of the repo references any more. Use `--dry-run` to preview candidate deletions without deleting anything. Like the target-share step, pruning is a no-op under CI.
+`the documented shared-target maintenance command` is a worktree-aware garbage collector for the shared cache. It deletes shared-cache entries that no live worktree or checkout of the repo references any more. Use `--dry-run` to preview candidate deletions without deleting anything. Like the target-share step, pruning is a no-op under CI.
 
 **Anti-pattern — no per-worktree delete hook.** Removing a git worktree (`git worktree remove`) deliberately does NOT delete that worktree's shared-cache entry. The shared cache is keyed by crate, not by worktree, so other worktrees may still reference the same entry after one worktree is removed. Reclaiming shared-cache space happens exclusively through the explicit, worktree-aware `doctor --prune-cargo-cache` GC — never as a side effect of worktree removal.
 

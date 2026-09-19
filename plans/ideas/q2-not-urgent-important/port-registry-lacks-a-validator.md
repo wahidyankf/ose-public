@@ -1,5 +1,7 @@
 # The port registry is hand-maintained with nothing checking it
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: the cross-repo port registry now exists and answers where allocations are
 recorded, but it is prose that no tool reads — so a colliding or stale entry still surfaces only when
 two services fail to bind.
@@ -46,7 +48,7 @@ difference between fixing the problem and relocating it.
 - **IANA service name and port registry** — the canonical example of a port registry with a formal
   allocation procedure rather than an editable table.
   [iana ports](https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml)
-- **`rhino-cli env validate`** — the existing declared-versus-read drift checker in this repo; the
+- **`./rhino env validate`** — the existing declared-versus-read drift checker in this repo; the
   closest working model for "compare a declaration against what the code really does", and a
   candidate home for the same treatment applied to ports.
 

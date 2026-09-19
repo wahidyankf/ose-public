@@ -1,8 +1,10 @@
 # A deterministic `rhino-cli` validator for syllabus course-file conformance
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: the [Learning-Plan Syllabus Convention](../../../repo-governance/conventions/structure/learning-plan-syllabus.md)
 now specifies a per-course file shape and ships a runnable `grep` **conformance recipe**, but nothing
-in the toolchain enforces it — a deterministic `rhino-cli md syllabus validate` subcommand should
+in the toolchain enforces it — a deterministic `./rhino md syllabus validate` subcommand should
 follow the now-settled format.
 
 > Filed 2026-07-22 as the deferred half of the `learning-plan-syllabus-folder-convention` plan, which
@@ -43,15 +45,15 @@ build is a deliberate trigger rather than a rediscovery.
   plan — this brief is its deferred deterministic-validator half, and the convention + recipe are its
   shipped output.
 - [`mermaid-validator-does-not-check-syntax`](../q1-urgent-important/mermaid-validator-does-not-check-syntax.md) — a cautionary
-  precedent: a `rhino-cli md` validator whose green result is trusted for a property it does not test.
+  precedent: a `./rhino md` validator whose green result is trusted for a property it does not test.
   A syllabus validator must actually parse the section shape, not merely count files.
-- The existing `rhino-cli md` family (`links validate`, `readme-index validate`, `heading-hierarchy
+- The existing `./rhino md` family (`links validate`, `readme-index validate`, `heading-hierarchy
 validate`) — the established pattern a `md syllabus validate` subcommand would join, including its
   pre-commit / pre-push / CI wiring and its byte-identity requirement across both parity repos.
 
 ## Proposed direction (sketch)
 
-A `rhino-cli md syllabus validate [--corpus <path>]` subcommand that:
+A `./rhino md syllabus validate [--corpus <path>]` subcommand that:
 
 - discovers each `syllabus/courses/` corpus (or takes an explicit `--corpus` path), skipping
   `README.md` and `surgery.md`;
@@ -62,8 +64,8 @@ A `rhino-cli md syllabus validate [--corpus <path>]` subcommand that:
   two never disagree.
 
 Wire it into the same pre-commit / pre-push / CI positions as the other `md` validators, and add its
-Gherkin behaviour tree under `specs/apps/rhino/cli/behaviours/**` per the byte-identity
-boundary.
+Gherkin behaviour tree in the upstream Rhino specification corpus, under the retired
+byte-identity boundary.
 
 ## Rough scope & non-goals
 
@@ -95,7 +97,7 @@ section presence); replacing `plan-checker` Step 5n (which gates the plan docs, 
 - the census tiering stabilizes across at least one added corpus (no tier crosses a threshold), proving
   the format has settled.
 
-**Success**: a green `rhino-cli md syllabus validate` in pre-commit / pre-push / CI means every course
+**Success**: a green `./rhino md syllabus validate` in pre-commit / pre-push / CI means every course
 file in every corpus carries its REQUIRED sections (capstone/grandfathered variants excepted), the
 documented recipe and the validator never disagree, and the check is byte-identical across all three
 repos.

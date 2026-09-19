@@ -57,7 +57,7 @@ style preference with no measurable consequence.
 ## SUPPRESS Block (Never Raise)
 
 During PR quality-gate invocation, first apply the shared
-[lifecycle-owned mechanical suppression](../../skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
+[lifecycle-owned mechanical suppression](../../../.agents/skills/pr-review-specialist-protocol/reference/lifecycle-owned-mechanical-suppression.md).
 
 - Nitpicks with no material blast-radius, reversibility, or quality-attribute consequence.
 - Speculative "consider a different architecture for X" when the PR's declared scope doesn't

@@ -52,4 +52,4 @@ when_to_use: "Read when you need to confirm whether a topic falls inside this co
 
 ## Related agent skills
 
-- [docs-creating-by-example-tutorials](../../../../.claude/skills/docs-creating-by-example-tutorials/SKILL.md) — Skill package for creating by-example tutorials
+- [docs-creating-by-example-tutorials](../../../../.agents/skills/docs-creating-by-example-tutorials/SKILL.md) — Skill package for creating by-example tutorials

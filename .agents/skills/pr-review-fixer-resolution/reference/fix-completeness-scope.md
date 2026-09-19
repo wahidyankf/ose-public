@@ -27,7 +27,7 @@ A file already near its ceiling does not accept a one-sentence fix: the remedy i
 disclosure, so the fix becomes a new shard, two index entries, and a regenerated mirror set. That
 is new surface, and the next cycle reviews it.
 
-Use `wc -w` only as a pre-write estimate, then run `rhino-cli governance word-budget validate` and
+Use `wc -w` only as a pre-write estimate, then run `./rhino governance word-budget validate` and
 treat its count as authoritative. When a fix would cross the ceiling, choose the structure first —
 which shard the rule belongs in, or which existing paragraph should move out to make room. A split
 forced by the validator lands wherever the text happened to be longest, which is how a coherent

@@ -24,7 +24,7 @@ When adding emojis to existing documentation:
 - Update convention documents in `repo-governance/conventions/`
 - Update README.md files (root and `.opencode/agents/README.md`)
 - Update AGENTS.md and agent files (`.claude/agents/*.md`, `.opencode/agents/*.md`) per Rule 7 item 5 (emojis enhance scannability for criticality definitions and section headers)
-- Update CLAUDE.md and `.claude/skills/*.md` per Rule 7 item 6 (emojis support scannability of guidance and knowledge content)
+- Update CLAUDE.md and `.agents/skills/*.md` per Rule 7 item 6 (emojis support scannability of guidance and knowledge content)
 
 **Phase 2: Explanation Docs** (Next)
 
@@ -55,7 +55,7 @@ When reviewing emoji usage, verify:
 - [ ] No emojis in frontmatter or metadata
 - [ ] Emojis ARE used in AGENTS.md (human-readable navigation)
 - [ ] Emojis ARE used in agent files `.claude/agents/*.md` and `.opencode/agents/*.md` (including README.md)
-- [ ] Emojis ARE used in CLAUDE.md and `.claude/skills/*.md` (root config and skill files)
+- [ ] Emojis ARE used in CLAUDE.md and `.agents/skills/*.md` (root config and skill files)
 - [ ] Emojis ARE used in README.md files (human-oriented indices)
 - [ ] Emojis ARE used in docs/, plans/, and repo-governance/ (human documentation)
 - [ ] Headings still make sense without emoji (accessibility)

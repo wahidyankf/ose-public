@@ -1,4 +1,4 @@
-# Claude Code skills
+# Canonical skills
 
 Skills are short, reusable guides that give an AI agent the right context at
 the right moment: an agent loads the relevant skill instead of carrying every
@@ -22,10 +22,11 @@ skill-name/
 
 ## Source and platform behaviour
 
-`.claude/skills/` is the hand-authored source for these skill packages.
-OpenCode reads compatible skills here; it needs no copied directory. Never
-create or hand-edit `.opencode/skills/` mirrors. After a skill changes, verify
-with `npm run validate:sync`.
+`.agents/skills/` is the hand-authored canonical source for these skill packages.
+The declared Claude adapter routes to this tree; no platform receives a copied
+skill body. Never create or hand-edit `.opencode/skills/` mirrors. After a
+skill changes, regenerate and verify with `./rhino harness adapters generate`
+and `./rhino harness adapters validate`.
 See [Platform bindings](../../docs/reference/platform-bindings.md).
 
 ## Keep a new skill useful

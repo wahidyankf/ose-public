@@ -29,7 +29,7 @@ when_to_use: Use when checking whether a model name or vendor-branded concept te
 | ---------------------------------------------- | --------------------------------------------------------- |
 | `\bSkills\b` (capitalized, as branded concept) | Vendor-branded term; use lowercase "agent skills" instead |
 
-Combined audit regex used by `rhino-cli repo-governance vendor validate`:
+Combined audit regex used by `./rhino governance vendor validate`:
 
 ```
 Claude Code|OpenCode|\bCursor\b|\bWindsurf\b|\bCodeium\b|\bCopilot\b|\bAider\b|\bCline\b|\bDevin\b|\.claude/|\.opencode/|\.cursor/|\.windsurf/|\.continue/|\.clinerules/|Anthropic|\bOpenAI\b|\bxAI\b|\bSonnet\b|\bOpus\b|\bHaiku\b|\bGPT\b|\bGemini\b|\bDeepSeek\b|\bQwen\b|\bLlama\b|\bMistral\b|\bGrok\b|\bSkills\b|\bJunie\b|\bJetBrains\b|\bAmazon Q\b|\bAntigravity\b|Pi Coding Agent|pi\.dev|\bEarendil\b|\.junie/|\.amazonq/|\.pi/|\.gemini/|\.agent/|\.agents/

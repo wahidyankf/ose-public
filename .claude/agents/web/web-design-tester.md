@@ -54,7 +54,7 @@ design-principle lookups to `web-researcher`.
 
 ## References
 
-- Skill: `web-testing-design-fidelity` (see `.claude/skills/web-testing-design-fidelity/SKILL.md`)
+- Skill: `web-testing-design-fidelity` (see `.agents/skills/web-testing-design-fidelity/SKILL.md`)
 - Skill: `plan-creating-project-plans`, `plan-writing-gherkin-criteria`
 - [Live-Tester Systematic Coverage](../../../repo-governance/development/quality/live-tester-systematic-coverage.md) -
   the canonical practice behind the Mandatory Systematic Checks

@@ -42,7 +42,7 @@ This agent MUST use `docs/metadata/external-links-status.yaml` as its ONLY cache
 its `lastFullScan` timestamp on every run (even if zero links changed), and MUST generate an audit
 report in `local-tmp/docs-link/` every run — regardless of how it is invoked (direct, spawned by
 another agent, or automated). See
-[docs-validating-links/reference/cache-and-workflow.md](../../skills/docs-validating-links/reference/cache-and-workflow.md)
+[docs-validating-links/reference/cache-and-workflow.md](../../../.agents/skills/docs-validating-links/reference/cache-and-workflow.md)
 for the complete cache contract (fields, per-link 6-month expiry, pruning, two-output pattern),
 discovery/extraction patterns, the validation workflow, common issues, and the manual-fix
 procedure (no automated fixer exists for this agent).

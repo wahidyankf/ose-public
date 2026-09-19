@@ -1,5 +1,5 @@
 ---
-description: Why Docker Dev Containers are incompatible with git worktree isolation, how rhino-cli doctor mirrors the IaC check-diff-apply pattern, and guidance for future toolchain decisions.
+description: Why Docker Dev Containers are incompatible with git worktree isolation, how ./rhino toolchain validate mirrors the IaC check-diff-apply pattern, and guidance for future toolchain decisions.
 when_to_use: Use when justifying the doctor-based check-diff-apply pattern, or when deciding whether a new tool fits native-first management.
 ---
 
@@ -9,11 +9,11 @@ when_to_use: Use when justifying the doctor-based check-diff-apply pattern, or w
 
 The repository uses git worktrees for AI agent isolation (`.claude/worktrees/`). Worktrees are host-level filesystem constructs that do not map cleanly to Docker volumes. Each worktree would require its own container, multiplying the resource cost and eliminating the lightweight isolation that worktrees provide.
 
-## 6. `rhino-cli doctor` Already Provides the Check-Diff-Apply Pattern
+## 6. `./rhino toolchain validate` Already Provides the Check-Diff-Apply Pattern
 
 The `doctor` command maps directly to familiar IaC concepts:
 
-| `rhino-cli` Command      | IaC Equivalent                   | Purpose                         |
+| `Rhino` Command          | IaC Equivalent                   | Purpose                         |
 | ------------------------ | -------------------------------- | ------------------------------- |
 | `doctor`                 | `terraform plan`                 | Detect drift from desired state |
 | `doctor --fix`           | `terraform apply`                | Converge to desired state       |
@@ -29,7 +29,7 @@ Config files serve as the desired state declarations:
 
 ### DO
 
-- Use `rhino-cli doctor` for toolchain verification and auto-install
+- Use `./rhino toolchain validate` for toolchain verification and auto-install
 - Use version managers (Volta, rustup, dotnet-install) for language version pinning
 - Use `Brewfile` for declarative Homebrew dependencies
 - Use Docker for networked E2E stacks and CI pipelines; keep Integration on local resources it

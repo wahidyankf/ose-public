@@ -26,7 +26,7 @@ lifecycle-evidence: {current-lifecycle-evidence}`
 - Stale verification dates in the catalog (bumps to current date when content unchanged)
 - Mechanical binding file updates (frontmatter field additions/renames, file relocations
   within the dotdir, permission schema updates where the new schema is unambiguous)
-- Spec updates in `specs/apps/rhino/` where a harness convention change alters rhino-cli
+- Spec updates in `the upstream Rhino specification corpus` where a harness convention change alters Rhino
   behaviour the specs document (Gherkin scenarios under `behaviour/`, container/component
   descriptions, README claims) — the fixer edits the affected spec files to stay consistent
   with the catalog and binding changes
@@ -47,9 +47,9 @@ lifecycle-evidence: {current-lifecycle-evidence}`
 - Higher-precedence filename discoveries (AD3 implications require human judgment per the
   [Multi-Harness Binding Convention](../../../conventions/structure/multi-harness-binding.md))
 - New harness additions (full onboarding involves catalog row, binding directory decision,
-  and rhino-cli implementation)
-- rhino-cli **generator-logic** changes (a translation rule, not just regenerated data): only
-  `apps/rhino-cli/` (Rust) is active and validated — surfaced as a human or `swe-rust-dev`
+  and Rhino implementation)
+- Rhino **generator-logic** changes (a translation rule, not just regenerated data): only
+  the checksum-pinned Rhino release is active and validated — surfaced as a human or an upstream-maintainer task
   agent authorship task
 
 **On out-of-scope findings**: Surface with full context in the orchestrator's user-visible

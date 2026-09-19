@@ -6,7 +6,7 @@ when_to_use: "Read this index to find the right Development Environment Setup Wo
 # Development Environment Setup Workflow
 
 - [Execution Mode](./execution-mode.md) — States that this workflow is developer-guided manual orchestration because it involves system-level installs requiring human confirmation and shell access. Use when deciding how this workflow is executed (there is no agent-delegation mode).
-- [Tool Inventory](./tool-inventory.md) — Table of the tools rhino-cli doctor checks by default, plus how repo-config.yml adds more. Use as a quick reference for which tool version a given config file pins, or which manager installs it.
+- [Tool Inventory](./tool-inventory.md) — Table of the tools ./rhino toolchain validate checks by default, plus how repo-config.yml adds more. Use as a quick reference for which tool version a given config file pins, or which manager installs it.
 - [Quick Start: `doctor --fix`](./quick-start-doctor-fix.md) — The fast path: clone, run the checksum-pinned HIPPO-guarded install, then run transactional doctor --fix to install every missing tool for your platform. Use when you already have Homebrew/apt and Node.js/npm and want the short setup instead of manual phases.
 - [Phase 1: System Package Manager (Sequential)](./phase-1-system-package-manager.md) — Phase 1: install and update Homebrew (macOS) or apt (Linux), including the Brewfile shortcut for Homebrew-managed dependencies. Use when bootstrapping the system package manager on a fresh machine.
 - [Phase 2: Core Tools (Sequential)](./phase-2-core-tools.md) — Phase 2: install Git, Docker Desktop, and jq — the foundational tools required before anything else. Use when installing the core tools a fresh environment needs before language ecosystems.

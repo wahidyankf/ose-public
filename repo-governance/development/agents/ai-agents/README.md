@@ -61,4 +61,4 @@ when_to_use: "Read this index to find the right AI Agents Convention child docum
 - [Benefits, Implementation, Measurement, and Vigilance](./agent-skill-separation-benefits-implementation-measurement-vigilance.md) — Implementing an agent-skill separation, and measuring whether it worked.
 - [Related Documentation](./related-documentation.md) — Looking for further reading on agent-skill separation.
 - [Directory Structure and Format Differences](./multi-harness-binding-directory-hierarchy-format.md) — The multi-harness directory structure and source-of-truth hierarchy.
-- [Sync Automation, References, History, Practices, and Troubleshooting](./multi-harness-binding-sync-references-history-troubleshooting.md) — Sync automation and troubleshooting for multi-harness bindings.
+- [Sync Automation, References, History, Practices, and Troubleshooting](./multi-harness-binding-sync-references-history-troubleshooting.md) — Sync automation and troubleshooting for multi-harness adapters.

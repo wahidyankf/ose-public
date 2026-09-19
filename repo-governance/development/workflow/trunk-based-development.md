@@ -13,13 +13,13 @@ when_to_use: Use when deciding how a change reaches main, choosing a delivery mo
   3. .claude/agents/plan/plan-maker.md (context for plan creation — hand-authored source;
      registry-declared generated agent mirrors under .opencode/ and .codex/ are never hand-edited)
   4. repo-governance/workflows/plan/plan-execution.md (context for plan execution — orchestrated by the calling context)
-  5. .claude/skills/repo-practicing-trunk-based-development/SKILL.md (operator-facing invocable
+  5. .agents/skills/repo-practicing-trunk-based-development/SKILL.md (operator-facing invocable
      entry point)
-  6. .claude/skills/plan-creating-project-plans/SKILL.md (plan-authoring skill's own Delivery Mode
+  6. .agents/skills/plan-creating-project-plans/SKILL.md (plan-authoring skill's own Delivery Mode
      summary)
-  7. .claude/skills/plan-grooming-idea-briefs/SKILL.md (plan-ideas-grooming workflow's invocable
+  7. .agents/skills/plan-grooming-idea-briefs/SKILL.md (plan-ideas-grooming workflow's invocable
      entry point)
-  Skill sources remain in .claude/skills/: OpenCode reads them natively, while the binding
+  Skill sources remain in .agents/skills/: OpenCode reads them natively, while the binding
   generator mirrors them to non-vendored paths under .agents/skills/ for Codex. Never hand-edit a
   generated mirror; registry-declared vendored plugin subtrees remain hand-maintained.
   When updating, synchronize all seven locations.

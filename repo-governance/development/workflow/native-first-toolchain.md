@@ -1,11 +1,11 @@
 ---
-description: Architectural decision to use native package managers and rhino-cli doctor instead of Terraform, Ansible, or Dev Containers.
+description: Architectural decision to use native package managers and ./rhino toolchain validate instead of Terraform, Ansible, or Dev Containers.
 when_to_use: Use when deciding how to install or verify a toolchain, or evaluating Terraform, Ansible, or Docker Dev Containers.
 ---
 
 # Native-First Toolchain Management
 
-This document records the architectural decision to use native toolchain management (`rhino-cli doctor` and package managers) instead of infrastructure-as-code tools (Terraform, Ansible, Docker Dev Containers) for development environment setup. The open-sharia-enterprise monorepo spans multiple toolchains (Node.js, Rust, .NET/F#), making toolchain management a significant architectural concern.
+This document records the architectural decision to use native toolchain management (`./rhino toolchain validate` and package managers) instead of infrastructure-as-code tools (Terraform, Ansible, Docker Dev Containers) for development environment setup. The open-sharia-enterprise monorepo spans multiple toolchains (Node.js, Rust, .NET/F#), making toolchain management a significant architectural concern.
 
 ## Contents
 
@@ -27,7 +27,7 @@ Revisit this architectural decision if any of the following conditions change:
 - **Team scale**: The team grows to 5+ developers with frequent onboarding, making the setup friction cost significant enough to justify containerization overhead
 - **Docker performance**: macOS Docker bind-mount performance reaches native parity, eliminating the primary objection to Dev Containers
 - **Cloud development**: A cloud development environment (GitHub Codespaces) becomes necessary for external contributors who cannot install toolchains locally
-- **Toolchain count**: The toolchain count exceeds what `rhino-cli doctor` can reasonably manage as a flat list of checks
+- **Toolchain count**: The toolchain count exceeds what `./rhino toolchain validate` can reasonably manage as a flat list of checks
 
 ## Implementation Notes
 

@@ -16,6 +16,18 @@ agent to this repository. Governance prose lives in `repo-governance/` (vendor-n
 bindings live in their own directories and are explicitly excluded from the
 [Governance Vendor-Independence Convention](../../repo-governance/conventions/structure/governance-vendor-independence.md).
 
+## Current stable v0.4 contract
+
+The checksum-pinned v0.4 Rhino configuration is authoritative. Canonical content is `AGENTS.md`,
+`.agents/agents/*.md`, and `.agents/skills/*/SKILL.md`. The current profiles generate only the
+three declared plan-agent routes: Claude receives `CLAUDE.md`, `.claude/agents/plan/`, and
+`.agents/skills/`; Codex receives `.codex/agents/`; and OpenCode receives `.opencode/agents/`.
+Run `./rhino harness adapters generate` followed by `./rhino harness adapters validate`; do not
+hand-edit those generated routes.
+
+The catalog and migration discussion below record the predecessor binding model. They are retained
+for provenance, not as instructions for the v0.4 adapter layout.
+
 ## Platform Binding Directories
 
 The table below catalogs the three supported coding-agent harnesses — exactly the entries declared
@@ -23,17 +35,17 @@ in `repo-config.yml` `harness:`. Columns record every surface each harness expos
 know which files to create or extend. Harnesses absent from the registry are not supported; adding
 one starts with a registry entry, not a row here.
 
-<!-- >>> rhino-cli generated: harness catalog - do not edit inside this region -->
+<!-- >>> Rhino generated: historical harness catalog - do not edit inside this region -->
 
 **Verified 2026-08-26.**
 
 | Platform         | Reads root `AGENTS.md` natively?           | Tool-specific instruction surface                                                     | Project MCP config                         | Custom-agent surface                                                                                    | Skills surface                                    | Status                     |
 | ---------------- | ------------------------------------------ | ------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------------------------- |
-| Claude Code      | No — reads `CLAUDE.md` (shim `@AGENTS.md`) | `CLAUDE.md`, `.claude/`                                                               | `.mcp.json`                                | `.claude/agents/*.md`                                                                                   | `.claude/skills/*/SKILL.md`                       | Active                     |
-| OpenCode         | Yes                                        | `.opencode/agents/` (auto-synced); reads `.claude/skills/` natively                   | `opencode.json`                            | `.opencode/agents/*.md`                                                                                 | reads `.claude/skills/` **and** `.agents/skills/` | Active                     |
+| Claude Code      | No — reads `CLAUDE.md` (shim `@AGENTS.md`) | `CLAUDE.md`, `.claude/`                                                               | `.mcp.json`                                | `.claude/agents/*.md`                                                                                   | `.agents/skills/*/SKILL.md`                       | Active                     |
+| OpenCode         | Yes                                        | `.opencode/agents/` (auto-synced); reads `.agents/skills/` natively                   | `opencode.json`                            | `.opencode/agents/*.md`                                                                                 | reads `.agents/skills/` **and** `.agents/skills/` | Active                     |
 | OpenAI Codex CLI | Yes (since Apr 2025)                       | `AGENTS.md`, `RTK.md`, `AGENTS.override.md` (overrides), `.codex/config.toml`[^trust] | `.codex/config.toml` `[mcp_servers]`[^mcp] | `.codex/agents/<name>.toml` standalone files **and** `[agents.<name>]` tables in `config.toml`[^agents] | `.agents/skills/`[^skills]                        | Partial (`.codex/` exists) |
 
-<!-- <<< rhino-cli generated: harness catalog -->
+<!-- <<< Rhino generated: harness catalog -->
 
 [^mcp]:
     The MCP key is `mcp_servers` in **snake_case**. The camelCase `mcpServers` form other harnesses
@@ -43,7 +55,7 @@ one starts with a registry entry, not a row here.
     Both mechanisms are official. An `[agents.<name>]` table carries `description` plus an optional
     `config_file` pointing at a TOML layer (e.g. `.codex/<name>.toml`); a standalone
     `.codex/agents/<name>.toml` file needs no entry in `config.toml`. `.codex/agents/<name>.md` is
-    not a convention and `rhino-cli harness bindings validate` rejects it.
+    not a convention and `./rhino harness adapters validate` rejects it.
     The `[profiles.<name>]` tables that once served this purpose were **removed as of 0.134.0**, in
     favour of standalone `$CODEX_HOME/<name>.config.toml` files.
     The global `[agents]` table accepts `enabled`, `max_concurrent_threads_per_session`,
@@ -61,7 +73,7 @@ one starts with a registry entry, not a row here.
     for them. Verified 2026-08-19 against codex-cli 0.146.0.
 
 [^skills]:
-    Codex reads the vendor-neutral `.agents/skills/` tree. It does **not** read `.claude/skills/`.
+    Codex reads the vendor-neutral `.agents/skills/` tree. It does **not** read `.agents/skills/`.
     The older `~/.codex/prompts/` custom-prompt mechanism is officially deprecated in favour of
     Skills.
 
@@ -69,7 +81,7 @@ one starts with a registry entry, not a row here.
 
 Every path in this catalog carries exactly one declared ownership class, recorded in the
 `harness[].ownership` list in `repo-config.yml`. There is no fourth class and no unclassified
-residue: `rhino-cli harness ownership validate` enumerates every tracked file under every binding
+residue: `./rhino harness adapters validate` enumerates every tracked file under every binding
 directory and fails naming any file it cannot classify.
 
 | Class       | What it means                                                               | Paths here                                                                                                                         |
@@ -111,7 +123,7 @@ must never carry content that diverges from `AGENTS.md`. See the
 
 ### Provenance of pre-existing partial bindings
 
-One binding-adjacent directory exists in the repository but was **not produced by `rhino-cli agents
+One binding-adjacent directory exists in the repository but was **not produced by `Rhino agents
 sync`**:
 
 - **`.codex/config.toml`** — Provided by the OpenAI Codex CLI tooling. It configures the
@@ -127,7 +139,7 @@ sync`**:
   2. `[agents.<name>]` tables in `.codex/config.toml`.
 
   What never was a convention is `.codex/agents/<name>.md` — Codex reads instruction prose from
-  `AGENTS.md`, not from a per-agent Markdown file. `rhino-cli harness bindings validate` therefore
+  `AGENTS.md`, not from a per-agent Markdown file. `./rhino harness adapters validate` therefore
   permits the directory and fails only on a file whose extension is not `.toml`, naming the
   offending file.
 
@@ -147,7 +159,7 @@ capability and do not affect the canonical `AGENTS.md` instruction surface.
 ### Generated bindings
 
 Every generated-tier harness in `repo-config.yml` receives its binding mechanically from
-`rhino-cli harness bindings generate` — never by hand:
+`./rhino harness adapters generate` — never by hand:
 
 - **`.opencode/agents/*.md`** — mirrors of `.claude/agents/**/*.md`, flattened to one level, with
   color, model, and tool frontmatter translated (see Translation Artifacts below).
@@ -157,18 +169,18 @@ Every generated-tier harness in `repo-config.yml` receives its binding mechanica
   full config layer, so a `model` set there takes precedence over the session model; a grade with no
   Codex counterpart (`inherit`, a pinned vendor ID) omits the key and raises a conversion warning
   rather than guessing.
-- **`.codex/config.toml`** — only the region between the `rhino-cli generated` markers is
+- **`.codex/config.toml`** — only the region between the `Rhino generated` markers is
   generator-owned. The hand-maintained `mcp_servers`, `features`, and vendored agent tables outside
   that region are preserved across regeneration.
-- **`.agents/skills/`** — a real-file mirror of the whole `.claude/skills/` tree, never symlinks, because the
+- **`.agents/skills/`** — a real-file mirror of the whole `.agents/skills/` tree, never symlinks, because the
   mirror is committed and a symlink would not survive `git archive`, a Windows checkout, or a
   container `COPY`. Codex discovers skills only under `.agents/skills/`, whereas Claude Code and
-  OpenCode read `.claude/skills/<name>/SKILL.md` natively and need no copy. The registry's
+  OpenCode read `.agents/skills/<name>/SKILL.md` natively and need no copy. The registry's
   `vendored:` list names the directories the emitter must never write, delete, or regenerate;
   ownership there is declared, never inferred from "this directory has no source counterpart".
 
 These files are deterministic and idempotent — never hand-edit them. The companion guard
-`rhino-cli harness bindings validate` enforces byte-for-byte parity against the generator and runs in
+`./rhino harness adapters validate` enforces byte-for-byte parity against the generator and runs in
 the pre-push pipeline. The same guard asserts that every present binding directory under `.claude`,
 `.opencode`, `.codex`, `.agents`, and `.github` is referenced in this catalog.
 
@@ -222,15 +234,15 @@ exception, and its `CLAUDE.md` shim is a pure `@AGENTS.md` import.
 **Decision: the repo ships no optional thin pointer files** by default. Rationale: each would be
 either redundant (the native `AGENTS.md` read already applies) or a drift/shadowing risk. If a thin
 pointer is added later, it must be a pure `AGENTS.md` pointer emitted by
-`rhino-cli harness bindings generate` and covered by `rhino-cli harness bindings validate`.
+`./rhino harness adapters generate` and covered by `./rhino harness adapters validate`.
 
 **Why the generator flattens `.claude/agents/` mirrors:** Claude Code scans `.claude/agents/`
 recursively and derives agent identity from the `name` frontmatter key, not the path
 ([docs](https://code.claude.com/docs/en/sub-agents)). OpenCode does **not** — its maintainers closed
 the subdirectory feature request as _not planned_
 ([opencode#6635](https://github.com/anomalyco/opencode/issues/6635)). Any future reorganization of
-`.claude/agents/` into subfolders is safe only because `rhino-cli harness bindings generate` flattens
-every generated mirror; a mirror consumer that assumed the source shape would break silently.
+`.claude/agents/` into subfolders is safe only when the declared native adapter owns the resulting
+mirror family; a mirror consumer that assumed the source shape would break silently.
 
 **Why the directory is `.opencode/agents/` and not `.opencode/agent/`:** the plural form is correct.
 The singular name was an OpenCode CLI bug, since fixed. `.opencode/commands/` — also plural — was
@@ -245,8 +257,8 @@ migration is outstanding.
 
 ## Translation Artifacts
 
-Mechanical translations that platform bindings apply when generating output from upstream sources.
-All translations are performed by `rhino-cli harness bindings generate` (`npm run generate:bindings`).
+Mechanical translations that declared platform profiles apply when generating output from canonical
+sources. All translations are performed by `./rhino harness adapters generate`.
 
 ### Color Translation (Claude Code → OpenCode)
 
@@ -254,7 +266,7 @@ The Claude Code binding uses named color strings (`blue`, `green`, `yellow`, `pu
 agent frontmatter. OpenCode uses theme tokens (`primary`, `success`, `warning`, `secondary`, etc.).
 
 - **Source**: `.claude/agents/<name>.md` frontmatter `color:` field
-- **Transform**: `convert_color` in `apps/rhino-cli/src/application/agents/converter.rs`
+- **Transform**: the declared Rhino adapter profile
 - **Sink**: `.opencode/agents/<name>.md` frontmatter `color:` field
 - **Policy**: [Platform Binding Color Translation](../../repo-governance/development/agents/ai-agents/agent-color-categorization.md#platform-binding-color-translation)
   ("Platform Binding Color Translation" subsection)
@@ -280,9 +292,8 @@ to the model of the primary that invoked it. OpenCode has no `inherit` sentinel 
 is the only way to express inheritance.
 
 - **Source**: `.claude/agents/<name>.md` frontmatter `model:` field
-- **Transform**: the `opencode` entry in `repo-config.yml` declares no `model-map:`, so
-  `claudeAgentFieldPolicy` in `apps/rhino-cli/src/RhinoCli.Application/src/HarnessRuntime.fs` drops
-  the field
+- **Transform**: the declared `opencode` profile omits a model projection, so the native adapter
+  drops the field
 - **Sink**: `.opencode/agents/<name>.md` — no `model:` key is written
 - **Policy**: [Model Selection Convention](../../repo-governance/development/agents/model-selection.md)
   ("Platform Binding Examples" section)
@@ -305,7 +316,7 @@ wins**, which makes declaration order significant. This repository's generated m
 `permission`; `tools` appears only in the vendored `opencode.json`, never in an emitted agent file.
 
 - **Source**: `.claude/agents/<name>.md` frontmatter `tools:` array
-- **Transform**: `convert_permission` in `apps/rhino-cli/src/application/agents/converter.rs`
+- **Transform**: the declared Rhino adapter profile
 - **Sink**: `.opencode/agents/<name>.md` frontmatter `permission:` map (`read: allow`, `write: allow`, etc.)
 
 ## Adding a New Platform Binding
@@ -313,18 +324,13 @@ wins**, which makes declaration order significant. This repository's generated m
 To add a new generated binding:
 
 1. Add a `harness:` entry to `repo-config.yml` (tier, agent-dir, mirrors, instruction surfaces, shadow globs, and `skills-dir` / `skills-mirrors` / `vendored:` if the harness needs a skills mirror). Add a `model-map:` giving that harness's model ID for each grade named in the top-level `model-grades:` block only if the harness pins a model per agent; omit it — as the `opencode` entry does — and the mirror emits no `model` key. Also add an `ownership:` list classifying every binding path this entry claims as `generated`, `vendored`, or `source` — `harness ownership validate` is a pre-push gate and fails on any tracked binding file with no declared class.
-2. Add a `catalog:` block to that registry entry, then run `rhino-cli harness catalog generate` — never hand-edit the table above, which is machine-owned inside its generated region.
-3. Implement the converter in `apps/rhino-cli/src/RhinoCli.Application/src/Harness.fs` and wire it into `harness bindings generate`.
-4. Add TickSpec step definitions and Gherkin scenarios under `specs/apps/rhino/cli/behaviours/`.
+2. Add the profile's native representation and validate that each required capability is representable.
+3. Implement product behavior upstream; consumers only declare profile data and never add a local converter.
+4. Add the appropriate consumer proof and upstream product scenarios.
 5. Update this document's Translation Artifacts section.
-6. `git add` every path touched by steps 1-5, **then** run `rhino-cli parity manifest generate`
-   and stage the regenerated `apps/rhino-cli/parity-manifest.sha256`. The staging order is
-   load-bearing: the manifest hashes the **git index**, not the working tree, so regenerating
-   before `git add` produces a stale manifest. `parity manifest validate` is `scope: other` on
-   both `pre-push` and `ci` — unconditional, not path-gated — so it fires on every push regardless
-   of what changed, and unlike `harness-bindings-generate` it has no pre-commit auto-regeneration.
-   Land the equivalent binding change in the paired private-sibling PR too; the two repos' binding
-   surfaces are byte-identical.
+6. Stage the explicit source and generated paths, then run `./rhino harness adapters validate`.
+   The generated adapter directories are one recoverable transaction; never hand-edit their
+   mirrors. Record any portable sibling obligation in the separate sibling delivery.
 
 ## Related
 

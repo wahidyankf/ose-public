@@ -101,7 +101,7 @@ after Phase 2 closes those bindings.
 
 - [ ] [AI] **Owner: root integrator; OSE ID dependency audit.** Run
       `rtk rg -n "ose-id-init-0[1-9]" plans/done/README.md`,
-      `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate`, and
+      `rtk ./rhino plan validate`, and
       `rtk git log --first-parent --format='%H %s' origin/main -- plans/done`; resolve exactly one archived
       directory and merge commit for each Plan 01–09, then read every terminal audit and full merge diff.
       Write archive path, 40-character merge SHA, `origin/main` ancestry, terminal PASS, production-disabled
@@ -169,7 +169,7 @@ after Phase 2 closes those bindings.
 ### Phase 0 Gate
 
 - [ ] [AI] **Owner: root integrator; Phase 0 gate.** Run
-      `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate`,
+      `rtk ./rhino plan validate`,
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:quick`,
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:quick -p ose-id-be,ose-id-web,ose-id-be-e2e,ose-id-web-e2e`, and
       `rtk git status --short`; write the eight evidence links, current HEAD, and exit codes to
@@ -205,7 +205,7 @@ changing validation scope.
       `plans/in-progress/lms-user/evidence/phase-1/obsolete-contract-diff.md`. Acceptance: every ledger row has a remove/replace
       disposition and no compatibility endpoint or migration is invented. Any implemented storage/API
       match stops execution for plan amendment. Run
-      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=<affected-projects>`
       and save `plans/in-progress/lms-user/evidence/phase-1/obsolete-specs-validate.txt`; a nonzero result returns to this packet.
 - [ ] [AI] **Owner: `specs-maker`; canonical RED Gherkin.** Create/update exactly
       `specs/apps/ose/lms-be/behaviours/hello/hello.feature`,
@@ -217,7 +217,7 @@ changing validation scope.
       `authentication/context-switch.feature`, `authentication/logout.feature`, and
       `session/session-retirement.feature`, and `local-stack/composition.feature` from technical
       document 001. Run
-      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=<affected-projects>`
       and save `plans/in-progress/lms-user/evidence/phase-1/specs-validate.txt`. Acceptance: app-scoped Gherkin parses, contains no
       plan metadata or positive layer tag, and covers the exact scenarios in the API mapping. A parser,
       ownership, duplicate-title, or language failure returns to this packet before contracts continue.
@@ -244,7 +244,7 @@ changing validation scope.
       architecture indexes and diagrams under `specs/apps/ose/lms-be/` and
       `specs/apps/ose/lms-app-web/` to show issuer, resource API, BFF, shared session store, context, and
       runner ownership. Run
-      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate specs/apps/ose/lms-be specs/apps/ose/lms-app-web`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- ./rhino md mermaid validate specs/apps/ose/lms-be specs/apps/ose/lms-app-web`
       and save `plans/in-progress/lms-user/evidence/phase-1/mermaid-validate.txt`. Acceptance: the command exits 0 and every diagram
       labels ownership and accessible boundaries without clipped text. Any accessibility, link, or
       boundary mismatch returns to this packet.
@@ -270,12 +270,12 @@ changing validation scope.
   ```bash
   rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:build
   rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint --projects=ose-lms-be,ose-lms-be-e2e
-  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=<affected-projects>
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-contracts:lint
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-contracts:bundle
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-contracts:lint
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:codegen
-  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate specs/apps/ose/lms-be specs/apps/ose/lms-app-web
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- ./rhino md mermaid validate specs/apps/ose/lms-be specs/apps/ose/lms-app-web
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour -p ose-lms-be,ose-lms-be-e2e
   ```
 
@@ -732,7 +732,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       authenticated versus app-only startup, principal/context/role split, Mailpit, logout/freshness,
       troubleshooting, and cleanup; remove stale local password/JWT/Flyway-auth claims. Run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec prettier -- --check apps/ose-lms-be/README.md apps/ose-lms-be-e2e/README.md apps/ose-lms-app-web/README.md apps/ose-lms-app-web-e2e/README.md specs/apps/ose/lms-be/README.md specs/apps/ose/lms-app-web/README.md docs/reference/web-sites.md` and
-      `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate apps/ose-lms-be apps/ose-lms-be-e2e apps/ose-lms-app-web apps/ose-lms-app-web-e2e specs/apps/ose/lms-be specs/apps/ose/lms-app-web docs/reference/web-sites.md`.
+      `rtk ./rhino md links validate apps/ose-lms-be apps/ose-lms-be-e2e apps/ose-lms-app-web apps/ose-lms-app-web-e2e specs/apps/ose/lms-be specs/apps/ose/lms-app-web docs/reference/web-sites.md`.
       Save exits plus a claim/source table at `plans/in-progress/lms-user/evidence/phase-5/01-documentation.md`. Acceptance: both
       commands exit 0 and every operational claim points to a delivered target/config; any stale or
       unsupported statement returns to this packet.
@@ -960,7 +960,7 @@ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- 
 rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick,test:coverage:behaviour --projects=ose-lms-be,ose-lms-be-e2e,ose-lms-app-web,ose-lms-app-web-e2e,ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
 rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:integration,test:e2e -p ose-lms-be,ose-lms-be-e2e,ose-lms-app-web,ose-lms-app-web-e2e
 rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:unit -p ose-lms-be,ose-lms-app-web
-rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push
 ```
 
 Acceptance: exit 0 and the Unit report is at least 99% authored production-line coverage for each
@@ -984,7 +984,7 @@ requires this complete block at the new HEAD.
 ### Phase 5 Gate
 
 - [ ] [AI] **Owner: root integrator; Phase 5 gate.** Run
-      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`,
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`,
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-clean`,
       and `rtk git rev-parse --verify HEAD`; write all API/UI/live/security/audit lifecycle links and exact
       HEAD to `plans/in-progress/lms-user/evidence/phase-5/gate-summary.md`. Acceptance: commands exit 0 and no unresolved behavior,
@@ -1021,9 +1021,9 @@ partial, failing, or unverified artifact blocks the Phase 6 gate and keeps the p
       `completion_date="$(rtk date +%F)"`, then
       `rtk mv plans/in-progress/lms-user "plans/done/${completion_date}__lms-user"`; update only
       `plans/in-progress/README.md`, `plans/done/README.md`, and links that the move breaks. From the
-      archived path run `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate`,
-      `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate plans`, and
-      `rtk apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate "plans/done/${completion_date}__lms-user"`.
+      archived path run `rtk ./rhino plan validate`,
+      `rtk ./rhino md links validate plans`, and
+      `rtk ./rhino md mermaid validate "plans/done/${completion_date}__lms-user"`.
       Record date, changed paths, commands, exits, and archive path at
       `plans/in-progress/lms-user/evidence/phase-6/knowledge-and-archive/archive.md` before the move and in the PR body afterward.
       Acceptance: one dated archive exists, no in-progress copy remains, and all commands exit 0; any

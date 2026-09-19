@@ -27,7 +27,7 @@ Part of the [Learning-Plan `syllabus/` Folder Convention](../learning-plan-sylla
 
 - **The body content of any course or path manifest** — what a course teaches is a subject-matter
   decision made by the authoring plan, not a documentation-organization rule
-- **A deterministic validator** — no `rhino-cli` subcommand enforces this convention today; a
+- **A deterministic validator** — no `Rhino` subcommand enforces this convention today; a
   documented, runnable `grep` recipe stands in until one exists (tracked as a two-pager idea, not
   built here)
 - **`docs/`, `apps/`, or `libs/` content** — this convention governs `plans/` artifacts only; shipped

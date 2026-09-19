@@ -14,7 +14,7 @@ when_to_use: "Use when adding a new lint gate, deciding its failure threshold, o
   when the tool is not yet installed, so a fresh checkout can still commit before
   `npm run doctor -- --fix` runs.
 - **Toolchain convergence**: every gate's binary is registered in the
-  `rhino-cli doctor` converger, so `npm run doctor -- --fix` installs it.
+  `./rhino toolchain validate` converger, so `npm run doctor -- --fix` installs it.
 - **Clean-then-gate**: a gate is wired ON only after its existing violation
   backlog is cleaned, so the first CI/hook run never breaks on pre-existing
   findings.

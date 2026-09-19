@@ -33,7 +33,7 @@ when_to_use: Use when copying an existing project's tag set as a template or che
 | `ose-www`                  | `["type:app", "platform:nextjs", "lang:ts", "domain:ose"]`               |
 | `ose-www-be-e2e`           | `["type:e2e", "platform:playwright", "lang:ts", "domain:ose"]`           |
 | `ose-www-fe-e2e`           | `["type:e2e", "platform:playwright", "lang:ts", "domain:ose"]`           |
-| `rhino-cli`                | `["type:app", "platform:cli", "lang:fsharp", "domain:tooling"]`          |
+| `Rhino`                    | `["type:app", "platform:cli", "lang:fsharp", "domain:tooling"]`          |
 | `fsharp-crane-core`        | `["type:lib", "lang:fsharp", "domain:crane"]`                            |
 | `fsharp-env-loader`        | `["type:lib", "lang:fsharp", "domain:config"]`                           |
 | `ts-env-loader`            | `["type:lib", "lang:ts", "domain:config"]`                               |

@@ -43,7 +43,7 @@ fixes iteratively until all issues are resolved.
 
 - [Lifecycle validation ownership](../meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md) — shared Step 0.
 - [Execution Mode and Scope](./specs-quality-gate/execution-mode-and-scope.md) — agent delegation, how to invoke, and what this workflow does/doesn't validate.
-- [Validation Dimensions](./specs-quality-gate/validation-dimensions.md) — the nine categories and deterministic rhino-cli offload.
+- [Validation Dimensions](./specs-quality-gate/validation-dimensions.md) — the nine categories and deterministic Rhino offload.
 - [Steps — Initial Validation and Fixes](./specs-quality-gate/steps-initial-validation-and-fixes.md) — steps 1-3 of the check-fix loop.
 - [Steps — Re-validate Through Termination](./specs-quality-gate/steps-revalidate-through-termination.md) — steps 4-6 and termination criteria.
 - [Example and Iteration Usage](./specs-quality-gate/example-and-iteration-usage.md) — worked usage examples and a traced iteration.

@@ -25,7 +25,7 @@ Git, verification, and reproducible environments.
 - [Grilling-With-Options Convention](./grilling-with-options.md) — Agents must resolve design decisions via structured multiple-choice questions. Use when resolving an open design decision with the user.
 - [Implementation Workflow](./implementation.md) — Three-stage workflow: make it work, right, then fast. Use when planning or reviewing any code change.
 - [Integration Diff Review Convention](./integration-diff-review.md) — Read the full incoming diff after a rebase/merge before continuing work. Use immediately after a rebase, pull, merge, or cherry-pick.
-- [Native-First Toolchain Management](./native-first-toolchain.md) — Use native package managers and rhino-cli doctor, not Terraform/Docker. Use when deciding how to install or verify a toolchain.
+- [Native-First Toolchain Management](./native-first-toolchain.md) — Use native package managers and ./rhino toolchain validate, not Terraform/Docker. Use when deciding how to install or verify a toolchain.
 - [No Destructive Git Operations Convention](./no-destructive-git-operations.md) — Forbids local destructive git operations; prescribes the safe equivalent. Use before any git operation that could discard uncommitted work.
 - [PR Merge Protocol](./pr-merge-protocol.md) — Merge authority granted by hardened preconditions, not a prompt. Use whenever a pull request is about to be merged.
 - [Reproducible Environments](./reproducible-environments.md) — Practices for consistent, reproducible development and build environments. Use when setting up or troubleshooting toolchain pinning.

@@ -10,7 +10,7 @@ protocols. These are CRITICAL findings if missing.
 1. **Local Quality Gates Were Executed**
    - Check git log for evidence that quality gates were run before each push
    - Verify no lint, typecheck, or test failures remain in the affected projects
-   - Run `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push` (the same registry-declared
+   - Run `./rhino gate run --surface pre-push` (the same registry-declared
      gate set `.husky/pre-push` runs after its public-safety screen; includes `nx affected -t test:quick`) and confirm zero
      failures
    - If ANY failure exists, report as CRITICAL finding

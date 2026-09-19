@@ -10,7 +10,7 @@ Three mechanisms operate at different cadences over different failure classes.
 
 | Mechanism                    | Cadence               | Catches                                                                     |
 | ---------------------------- | --------------------- | --------------------------------------------------------------------------- |
-| `harness bindings validate`  | pre-push and CI       | byte-drift between a generated mirror and what the emitter would write now  |
+| `harness adapters validate`  | pre-push and CI       | byte-drift between a generated mirror and what the emitter would write now  |
 | `harness ownership validate` | pre-push and CI       | a tracked binding file with no declared SOURCE / GENERATED / VENDORED class |
 | This workflow                | on demand / scheduled | upstream harness conventions changing out from under the catalog            |
 

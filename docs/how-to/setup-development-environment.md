@@ -24,7 +24,7 @@ tests relevant to the project you are changing.
 ## Overview
 
 The monorepo contains projects in TypeScript and F#, plus Rust course-example content under
-`apps/ayokoding-www/content/` (no Rust app or lib remains — `rhino-cli`, the last one, was ported
+`apps/ayokoding-www/content/` (no Rust app or lib remains — `Rhino`, the last one, was ported
 to F# 2026-08-30). Each language has its own runtime, but they all share the same Nx build system
 and git hooks.
 
@@ -32,12 +32,12 @@ and git hooks.
 
 - **Minimal** — Node.js + .NET SDK + Docker + jq. Covers git hooks, TypeScript projects, and
   basic end-to-end (E2E) tests. .NET is here rather than in Full because the tool checker
-  (`rhino-cli doctor`) is itself an F#/.NET program: `npm install` runs it but discards its exit
+  (`./rhino toolchain validate`) is itself an F#/.NET program: `npm install` runs it but discards its exit
   code, so without the .NET SDK the check fails while the install still reports success. The Quick
   Start's final `npm run doctor` keeps that exit code, and so do the Git hooks the install sets up
   — the first `git commit` stops outright.
 - **Full** — All tools checked by doctor. Required for working on F# backend apps
-  (`organiclever-be`, `ose-be`) or the F# CLI apps (`rhino-cli`, `crane-cli`) themselves. Install
+  (`organiclever-be`, `ose-be`) or the F# CLI apps (`Rhino`, `crane-cli`) themselves. Install
   Rust separately, and only if you are editing a `.rs` file under `apps/ayokoding-www/content/` —
   that is its one remaining local use, formatted by the pre-commit `rustfmt` step.
 - **Automated** — Run `npm run doctor -- --fix` to auto-install missing tools. The Doctor wrapper
@@ -85,8 +85,7 @@ npm run doctor
 ```
 
 If doctor shows all green, you are ready. To run the push hook's registry gates and see their output,
-use `apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`. The hook itself runs
-`./rhino gate run --surface pre-push`, which screens the push for public safety first.
+use `./rhino gate run --surface pre-push`, which screens the push for public safety first.
 
 ## Full Setup
 
@@ -166,7 +165,7 @@ from this page:
 
 ### Step 4: .NET SDK
 
-Required for `rhino-cli` (an F# CLI) and the F# backends (`organiclever-be`, `ose-be`). The pinned
+Required for `Rhino` (an F# CLI) and the F# backends (`organiclever-be`, `ose-be`). The pinned
 SDK version lives in `apps/ose-be/global.json` — `repo-config.yml`'s `doctor.dotnet-global-json`
 names that file as the source of truth `doctor` reads from.
 
@@ -181,7 +180,7 @@ dotnet --version
 ```
 
 **Editing AyoKoding's Rust course content?** Install Rust separately — it is no longer needed for
-`rhino-cli` or any other app/lib, only for the pre-commit `rustfmt` step over `.rs` files under
+`Rhino` or any other app/lib, only for the pre-commit `rustfmt` step over `.rs` files under
 `apps/ayokoding-www/content/`:
 
 ```bash
@@ -294,22 +293,22 @@ step above.
 
 ```bash
 # Run the staged-file gate without creating a throwaway commit
-apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-commit
+./rhino gate run --surface pre-commit
 ```
 
 **Pre-push** (delegates to the same gate registry as pre-commit):
 
 ```bash
 # Run the pre-push gate set without creating a push
-apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push
+./rhino gate run --surface pre-push
 ```
 
 `repo-config.yml` is the source of truth for what that surface carries — a few Nx targets plus a
-dozen-odd repository-wide `rhino-cli` checks that `nx affected` never sees. List them rather than
+dozen-odd repository-wide `Rhino` checks that `nx affected` never sees. List them rather than
 copying a set from this page:
 
 ```bash
-apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=pre-push
+./rhino gate list
 ```
 
 ### Test Integration tests

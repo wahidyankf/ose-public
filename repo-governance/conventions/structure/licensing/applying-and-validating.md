@@ -28,8 +28,8 @@ When adding a new library to `libs/`:
 
 E2E test suites do NOT require a per-directory LICENSE file — they inherit the root MIT license by
 default, and `apps/*-e2e/` are the only directories that still do. Internal CLI tools once shared
-that exemption; both (`apps/crane-cli/`, `apps/rhino-cli/`) now carry their own LICENSE file, so a
-new CLI tool takes one too.
+that exemption; `apps/crane-cli/` carries its own LICENSE file, so a new in-repository CLI tool
+takes one too.
 
 ## Examples
 

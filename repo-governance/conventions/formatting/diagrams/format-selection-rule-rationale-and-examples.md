@@ -11,7 +11,7 @@ ASCII art and Mermaid solve different representational problems.
 
 **File and folder trees** are a direct mirror of filesystem reality. When a reader sees `├── apps/`, they recognize immediately what `ls -la` or `tree` would show. Every markdown renderer — including raw terminal `cat`, GitHub web, offline static sites, and plain-text email — displays ASCII trees identically. No validator, no parser, no width constraint applies.
 
-**Relationship and flow diagrams** encode structure that has no natural text-linear representation. A sequence diagram describes temporal ordering. A dependency-direction diagram encodes which module knows about which. An ER diagram expresses cardinality. ASCII art can approximate these, but it encodes spatial relationships by character-position accident: changing one node forces manual re-alignment of every surrounding character. Mermaid encodes the relationship explicitly in its source, renders the spatial layout automatically, can be validated by `rhino-cli md mermaid validate`, and exposes its structure to screen readers.
+**Relationship and flow diagrams** encode structure that has no natural text-linear representation. A sequence diagram describes temporal ordering. A dependency-direction diagram encodes which module knows about which. An ER diagram expresses cardinality. ASCII art can approximate these, but it encodes spatial relationships by character-position accident: changing one node forces manual re-alignment of every surrounding character. Mermaid encodes the relationship explicitly in its source, renders the spatial layout automatically, can be validated by `./rhino md mermaid validate`, and exposes its structure to screen readers.
 
 ## Examples
 

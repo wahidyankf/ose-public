@@ -1,5 +1,5 @@
 ---
-description: Empirically surveys every target repo's current state, including the rhino-cli byte-identity check and the survey-freshness re-run rule.
+description: Empirically surveys every target repo's current state, including source-boundary checks and the survey-freshness re-run rule.
 when_to_use: Use when starting a parity run, to build the per-repo state inventory the deviation matrix is built from.
 ---
 
@@ -24,17 +24,9 @@ configs, grep the files, run the tools — do not trust docs alone.
 - Governance docs (conventions, development practices) the objective would affect
 - Repo-specific constraints: CI runner type (self-hosted vs GitHub-hosted), private vs public
   visibility, language stack, existing toolchain, dual-CLI parity guards
-- **rhino-cli byte-identity check** (whenever the objective touches `apps/rhino-cli` or its Gherkin
-  behaviour tree): run the canonical manifest validator in each bound repository:
-
-  ```bash
-  apps/rhino-cli/scripts/rhino-bin.sh parity manifest validate
-  ```
-
-  It covers the two-repository parity boundary (`ose-public`, the private sibling,
-  see §Parallel Propagation Shape above) and the tracked
-  `apps/rhino-cli` source, tests, and Gherkin behaviour tree. Any failure is drift that MUST become
-  its own deviation-matrix row in Step 2 — surface it before grilling, never silently re-sync it.
+- **Declared shared-source check** (whenever the objective names a local byte-identity boundary):
+  run its documented validator in each bound repository. Any failure is drift that MUST become its
+  own deviation-matrix row in Step 2 — surface it before grilling, never silently re-sync it.
 
 **Survey freshness**: a clean survey is a point-in-time result, not a standing fact. If execution of a
 phase that carries copy-ready artifacts (a file to be propagated verbatim, a cross-repository

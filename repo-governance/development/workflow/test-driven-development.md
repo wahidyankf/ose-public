@@ -28,7 +28,7 @@ when_to_use: Use when writing any delivery checklist step that ships code, or wh
 - [Implementation Workflow Convention](../workflow/implementation.md) - Three-stage workflow that TDD operates inside
 - [Behaviour-Driven Development](../behaviour-driven-development.md) - Canonical scenario, adapter, boundary, exemption, and coverage contract
 - [Acceptance Criteria Convention](../infra/acceptance-criteria.md) - Gherkin criteria as the source of first failing tests
-- [plan-writing-gherkin-criteria skill](../../../.claude/skills/plan-writing-gherkin-criteria/SKILL.md) - Writing Gherkin scenarios that map to first failing tests
+- [plan-writing-gherkin-criteria skill](../../../.agents/skills/plan-writing-gherkin-criteria/SKILL.md) - Writing Gherkin scenarios that map to first failing tests
 - [Gherkin Implementation Review](../../workflows/gherkin-implementation-review.md) - Semantic proof beyond static binding coverage
 - [Code Quality Convention](../quality/code.md) - Pre-push hooks that run the test suite TDD produces
 - [User-Facing Delivery Hardening Convention](../quality/user-facing-delivery-hardening.md) - Rules on UI-calculation test assertions

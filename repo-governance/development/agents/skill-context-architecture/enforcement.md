@@ -7,7 +7,7 @@ when_to_use: Use when reviewing a PR that adds or edits a Skill for context-arch
 
 ## Code Review Checklist
 
-When reviewing PRs that add or modify skills in `.claude/skills/`:
+When reviewing PRs that add or modify skills in `.agents/skills/`:
 
 1. Verify `context` field is omitted or set to `inline`
 2. Confirm no `agent` field exists
@@ -20,11 +20,11 @@ When reviewing PRs that add or modify skills in `.claude/skills/`:
 Potential automated checks:
 
 ```bash
-# Check for fork context in .claude/skills/
-grep -r "context: fork" .claude/skills/
+# Check for fork context in .agents/skills/
+grep -r "context: fork" .agents/skills/
 
-# Check for agent field in .claude/skills/
-grep -r "^agent:" .claude/skills/
+# Check for agent field in .agents/skills/
+grep -r "^agent:" .agents/skills/
 ```
 
 Exit code 0 (no matches) = compliant, >0 = violations found.

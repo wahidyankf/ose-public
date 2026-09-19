@@ -14,7 +14,7 @@ touches only application code and tests. Skipping this check when in scope is **
    creation of `.opencode/agents/` files. Hand-written secondary binding: **HIGH**.
 3. **Skill body is plain markdown** — `SKILL.md` files contain no Claude-Code tool invocations or
    OpenCode-specific YAML beyond skill metadata. Harness-specific syntax in skill body: **HIGH**.
-4. **No manual OpenCode skill mirror** — OpenCode reads `.claude/skills/<name>/SKILL.md` natively; no
+4. **No manual OpenCode skill mirror** — OpenCode reads `.agents/skills/<name>/SKILL.md` natively; no
    `.opencode/skill/` or `.opencode/skills/<name>/` mirror should exist. Manual mirror: **HIGH**.
 5. **Governance doc changes outside "Platform Binding Examples" heading** — proposed
    `repo-governance/` content changes live outside any `## Platform Binding Examples` heading unless

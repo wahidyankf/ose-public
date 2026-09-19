@@ -20,7 +20,7 @@ when_to_use: Use when checking whether a completed run's status is correctly det
 **Failure** (`fail`):
 
 - Technical errors during check or fix (e.g., `web-researcher` unreachable, binding
-  file unreadable, `rhino-cli` build failure)
+  file unreadable, `Rhino` build failure)
 
 **Note**: Below-threshold findings are reported in the final audit but do not prevent
 success status. Success requires two consecutive zero-finding validations (consecutive pass

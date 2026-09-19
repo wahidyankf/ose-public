@@ -5,7 +5,7 @@ when_to_use: Use when you need a one-paragraph recap of the Skill context archit
 
 # Summary
 
-**The Rule**: agent skills in `.claude/skills/` support both inline and fork modes.
+**The Rule**: agent skills in `.agents/skills/` support both inline and fork modes.
 
 **The Reason**: Delegated agents cannot spawn other delegated agents (architectural constraint).
 

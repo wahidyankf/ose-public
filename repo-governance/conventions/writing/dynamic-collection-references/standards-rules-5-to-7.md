@@ -27,7 +27,7 @@ If a count is needed anywhere, the index document for that collection is the sin
 | Collection       | Authoritative Index                                    |
 | ---------------- | ------------------------------------------------------ |
 | AI Agents        | `.claude/agents/README.md`                             |
-| agent skills     | `.claude/skills/README.md`                             |
+| agent skills     | `.agents/skills/README.md`                             |
 | Conventions      | `repo-governance/conventions/README.md`                |
 | Principles       | `repo-governance/principles/README.md`                 |
 | Dev Practices    | `repo-governance/development/README.md`                |

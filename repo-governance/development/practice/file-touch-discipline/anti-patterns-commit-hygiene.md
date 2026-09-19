@@ -34,7 +34,7 @@ together; do not defeat it by committing narrowly and reconciling later.
 
 **Problem**: The agent needs a change in `.opencode/agents/foo.md` and edits that file directly.
 
-**Why it fails**: The next `harness bindings generate` — which pre-commit runs automatically —
+**Why it fails**: The next `harness adapters generate` — which pre-commit runs automatically —
 overwrites it silently. The change disappears with no error, and the time is spent twice.
 
 **Fix**: Standard 9 — `.claude/` is the only hand-authored _canonical source_ surface for generated

@@ -18,22 +18,19 @@ rtk npm run doctor -- --fix --dry-run
 rtk npm run doctor -- --scope minimal
 ```
 
-## Environment File Management (rhino-cli)
+## Environment File Management (Rhino)
 
-The repository uses `rhino-cli` for environment file management:
+The repository uses Rhino for environment file management:
 
 ```bash
 # Initialize .env files from .env.example templates
-rtk apps/rhino-cli/scripts/rhino-bin.sh env init
+rtk ./rhino env init --apply
 
 # Backup current .env files
-rtk apps/rhino-cli/scripts/rhino-bin.sh env backup
+rtk ./rhino env backup --dir local-tmp/env-backup --apply
 
 # Restore .env files from backup
-rtk apps/rhino-cli/scripts/rhino-bin.sh env restore --force
-
-# Restore including config files (AI tool settings, Docker overrides, etc.)
-rtk apps/rhino-cli/scripts/rhino-bin.sh env restore --force --include-config
+rtk ./rhino env restore --dir local-tmp/env-backup --apply --force
 ```
 
 ## When to Run Environment Setup

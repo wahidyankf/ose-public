@@ -38,8 +38,8 @@ when_to_use: "Use to locate the automated enforcement."
 
 **Agent skills:**
 
-- [`plan-creating-project-plans`](../../../../.claude/skills/plan-creating-project-plans/SKILL.md) — authoring guide that consumes this convention.
-- [`docs-validating-factual-accuracy`](../../../../.claude/skills/docs-validating-factual-accuracy/SKILL.md) — universal factual-validation methodology.
+- [`plan-creating-project-plans`](../../../../.agents/skills/plan-creating-project-plans/SKILL.md) — authoring guide that consumes this convention.
+- [`docs-validating-factual-accuracy`](../../../../.agents/skills/docs-validating-factual-accuracy/SKILL.md) — universal factual-validation methodology.
 
 **Repository Architecture:**
 

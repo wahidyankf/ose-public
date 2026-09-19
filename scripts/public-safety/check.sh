@@ -2,12 +2,12 @@
 # ==============================================================================
 # check.sh — this repository's public-safety gate
 # ==============================================================================
-# Usage: OSE_GATE_SURFACE=<surface> scripts/public-safety/check.sh [hook args]
+# Usage: RHINO_GATE_SURFACE=<surface> scripts/public-safety/check.sh [hook args]
 #
 #   commit-msg   $1 is the file holding the message being written
 #   pre-commit   no arguments; the staged tree is the subject
 #   pre-push     ref updates arrive on stdin, as Git supplies them
-#   ci           no arguments; the checked-out tree is the subject
+#   pull-request no arguments; the checked-out range snapshot is the subject
 #
 # The surface arrives in the environment and nowhere else. It is never inferred
 # from an argument's filename, from which hook happens to be running, or from
@@ -35,15 +35,15 @@ leaf="$here/outbound-preflight.sh"
 	exit 2
 }
 
-surface="${OSE_GATE_SURFACE:-}"
+surface="${RHINO_GATE_SURFACE:-}"
 case "$surface" in
-commit-msg | pre-commit | pre-push | ci) ;;
+commit-msg | pre-commit | pre-push | pull-request) ;;
 "")
-	printf '[public-safety] blocked scan-error OSE_GATE_SURFACE is unset\n' >&2
+	printf '[public-safety] blocked scan-error RHINO_GATE_SURFACE is unset\n' >&2
 	exit 2
 	;;
 *)
-	printf '[public-safety] blocked scan-error OSE_GATE_SURFACE is not a known surface\n' >&2
+	printf '[public-safety] blocked scan-error RHINO_GATE_SURFACE is not a known surface\n' >&2
 	exit 2
 	;;
 esac
@@ -173,7 +173,7 @@ pre-push)
 	run_leaf baseline || exit $?
 	;;
 
-ci)
+pull-request)
 	args+=(--text "$(current_ref)" --text "$(git log -1 --format=%B HEAD)")
 	run_leaf ref || exit $?
 	add_tracked_tree

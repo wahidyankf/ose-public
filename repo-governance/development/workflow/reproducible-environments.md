@@ -39,7 +39,7 @@ Practices for creating consistent, reproducible development and build environmen
 ## Environment Configuration
 
 > **Stub.** The full env/secrets standards — naming convention, annotation format, `.env.example`
-> layout, startup validation, `rhino-cli env` toolchain, and drift guard — live in
+> layout, startup validation, `./rhino env` toolchain, and drift guard — live in
 > [`secrets-and-env-standards.md`](../../conventions/security/secrets-and-env-standards.md).
 
 ### .env Files (summary)
@@ -50,8 +50,8 @@ Practices for creating consistent, reproducible development and build environmen
 placeholders only. See:
 [`secrets-and-env-standards.md` § 1](../../conventions/security/secrets-and-env-standards/hard-iron-rule-no-secrets-in-committed-files.md#hard-iron-rule--no-secrets-in-committed-files).
 
-**Backup and restore**: Use `rhino-cli env backup / restore`. See:
-[`secrets-and-env-standards.md` § 6](../../conventions/security/secrets-and-env-standards/rhino-cli-env-toolchain.md#rhino-cli-env-toolchain).
+**Backup and restore**: Use `./rhino env backup / restore`. See:
+[`secrets-and-env-standards.md` § 6](../../conventions/security/secrets-and-env-standards/Rhino-env-toolchain.md#Rhino-env-toolchain).
 
 ## Monorepo Considerations
 

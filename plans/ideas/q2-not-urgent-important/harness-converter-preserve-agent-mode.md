@@ -1,5 +1,7 @@
 # Let the agent converter preserve frontmatter fields it does not own
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: the Claude→OpenCode agent converter emits a fixed field set, so an OpenCode-only
 frontmatter key on a mirrored agent would be silently dropped the moment that agent gained a
 `.claude/` source — which is one of two reasons a needed mirror currently cannot have one.

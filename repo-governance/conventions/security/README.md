@@ -16,7 +16,7 @@ the safe path explicit.
 
 - [Secrets and Environment-Variable Standards](./secrets-and-env-standards.md) — The authoritative
   hub for how this repository handles secrets and environment variables — naming convention, layout,
-  annotation format, startup validation, tooling (rhino-cli env family), tiered injection standard
+  annotation format, startup validation, tooling (./rhino env family), tiered injection standard
   (env-injection section in repo-config.yml), storage tiers, and the env-contract drift guard. Use
   when you need any rule about handling secrets or environment variables in this repository —
   naming, storage, injection, or agent access.

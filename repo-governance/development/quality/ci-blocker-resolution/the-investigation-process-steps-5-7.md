@@ -28,7 +28,7 @@ target directly, or the full local pre-push gate set via the same shim `.husky/p
 ```bash
 ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t test:quick
 # or, to run every registry-declared pre-push gate the hook runs, with each gate's output:
-apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push
+./rhino gate run --surface pre-push
 ```
 
 ## Step 7: When a mitigation already exists and the symptom persists, audit the mitigation

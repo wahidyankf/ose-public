@@ -41,12 +41,6 @@
             "type": "command",
             "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-env-file-access.sh",
             "statusMessage": "Checking env-file access guard..."
-          },
-          {
-            "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/warm-cache-before-push.sh",
-            "timeout": 900,
-            "statusMessage": "Warming Nx cache before push..."
           }
         ]
       },

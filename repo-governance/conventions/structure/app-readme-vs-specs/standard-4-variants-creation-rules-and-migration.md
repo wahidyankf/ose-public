@@ -36,8 +36,8 @@ Full procedure and path mapping:
 2. In one atomic commit: move each `gherkin/` tree to its owner's `behaviours/`, move any
    `containers/contracts/` into the owner that serves it, write each `README.md` and
    `architecture.md`, delete the retired folders, and update every path reference.
-3. Verify with `rhino-cli specs validate-tree <product>` and
-   `rhino-cli specs counts validate specs/apps/<product>`.
+3. Verify with `the declared spec-tree check` and
+   `the declared spec-count check`.
 
 The commit MUST be atomic. A retired folder surviving beside a corpus is itself a HIGH finding, so
 a half-finished move cannot sit unnoticed.

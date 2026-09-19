@@ -1,6 +1,8 @@
 # Mermaid state-diagram label render-clipping WARN rule
 
-One-line summary: add a WARN-level heuristic to `rhino-cli md mermaid validate` that flags
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
+One-line summary: add a WARN-level heuristic to `./rhino md mermaid validate` that flags
 `stateDiagram-v2` edge labels at risk of clipping in GitHub's renderer, using a threshold derived by
 measurement rather than assumption.
 
@@ -38,7 +40,7 @@ construction.
 - Derive the threshold empirically: render a calibration sweep of `stateDiagram-v2` labels, observe
   which clip in GitHub's renderer, and characterize the real predictor (likely rendered glyph width,
   not character count).
-- Add the rule to `rhino-cli md mermaid validate` at WARN severity only — message emitted, exit 0.
+- Add the rule to `./rhino md mermaid validate` at WARN severity only — message emitted, exit 0.
 - Record the derivation method and calibration data in the plan's `tech-docs.md` so a future
   maintainer can re-derive when the renderer changes, and point
   `diagrams.md` §Render-Fidelity Caveat at the shipped rule.

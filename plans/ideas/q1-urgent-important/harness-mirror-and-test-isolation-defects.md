@@ -1,5 +1,7 @@
 # Three trees treated as uniform when they are not
 
+> **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
+
 One-line summary: OpenCode loads `.opencode/agents/README.md` as an agent named `README`,
 `rhino-cli`'s generate smoke tests share one process working directory so adding a test flakes a
 sibling, and 47 dangling anchors across 22 skill files sat unmeasured because a link exemption was
@@ -62,7 +64,7 @@ adds a test to that binary, which makes it cheapest to fix before any workstream
 - [`update-harness-support`](../../done/2026-08-20__update-harness-support/README.md) — where all
   three were observed; its Phase 5 and Phase 6 notes and `evidence/opencode-agent-list.txt` are the
   reproduction record.
-- [rhino-cli-governance-tooling-defects](./rhino-cli-governance-tooling-defects.md) — the sibling
+- [rhino-governance-tooling-defects](./rhino-governance-tooling-defects.md) — the sibling
   family of `rhino-cli` tools that report success while under-running.
 - [harness-binding-catalog-drift](../q2-not-urgent-important/harness-binding-catalog-drift.md) — the
   same emitter surface, drifting in a different dimension.
@@ -78,7 +80,7 @@ adds a test to that binary, which makes it cheapest to fix before any workstream
 - **Declare globbed-ness per harness, then enforce it.** Record in `repo-config.yml` whether a
   harness's agent directory is globbed by its vendor tool (Codex is not — it reads
   `.codex/agents/*.toml`, so a `.md` index there is inert). For a globbed directory, discharge the
-  index requirement from the parent instead, and have `harness bindings validate` fail on any tracked
+  index requirement from the parent instead, and have `harness adapters validate` fail on any tracked
   file inside a globbed agent directory that lacks agent frontmatter. The point is an explicit
   reconciliation of the two rules, not a special case for one filename.
 - **Give the command an explicit root parameter**, with the binary's entry point passing the
@@ -90,7 +92,7 @@ adds a test to that binary, which makes it cheapest to fix before any workstream
 ## Rough scope & non-goals
 
 In scope: `apps/rhino-cli/src/application/agents/`, `src/commands/`, `tests/`, the companion Gherkin
-under `specs/apps/rhino/`, and `.claude/skills/`. The first two workstreams touch the parity boundary
+under `specs/apps/rhino`, and `.claude/skills/`. The first two workstreams touch the parity boundary
 and must land in `ose-public` and the private sibling as a paired merge with the manifest regenerated on
 both sides; the anchor repair is `ose-public` content only and carries no parity obligation.
 
@@ -123,7 +125,7 @@ Out of scope (for now):
 
 Success, each stated in both directions so it can fail before the change: `opencode agent list` names
 no agent called `README` (one such entry among 94 today); a non-agent file under a globbed agent
-directory fails `harness bindings validate` naming the file (exits 0 today); the two generate smoke
+directory fails `harness adapters validate` naming the file (exits 0 today); the two generate smoke
 tests coexist with `harness_unknown_name_is_error` across three consecutive parallel runs (a sibling
 fails today); `md links validate` over `.claude/skills` with the exemption lifted reports zero
 dangling anchors (47 across 22 files today); and the repo-wide broken-link count with registered

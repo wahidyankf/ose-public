@@ -13,7 +13,7 @@
 ❌ FAIL: [[file-naming]] ← Wiki-link syntax (GitHub does not render these)
 ❌ FAIL: [file-naming.md](../meta/file-naming.md) ← Using filename as link text
 
-**Note**: Both `apps/ayokoding-www/` and `apps/ose-www/` have migrated to Next.js 16. Their content links are validated repository-wide by `rhino-cli md links validate`, not by this Skill's link validation rules.
+**Note**: Both `apps/ayokoding-www/` and `apps/ose-www/` have migrated to Next.js 16. Their content links are validated repository-wide by `./rhino md links validate`, not by this Skill's link validation rules.
 
 ## Validation Methodology
 

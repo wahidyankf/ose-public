@@ -72,8 +72,8 @@ observation, evidence destination, or failure route. Evidence paths are relative
 | 3     | Runner/proxy lane                                                 | `apps/ose-id-web-e2e/**` runner, proxy, schemas, project target, and tests only        | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:local-stack`                                                                                                                                                | Runner RED → GREEN → REFACTOR, admission/topology/failure/concurrency, and empty cleanup evidence under `evidence/phase-3-*`.                                     | Reopen the first runner packet; unsafe target/path or residue blocks all later phases.                                                    |
 | 4     | Composition-contract lane                                         | local-stack JSON Schemas/docs plus synthetic consumer under `apps/ose-id-web-e2e/**`   | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:composition-contract`                                                                                                                                       | Composition RED → GREEN → REFACTOR, version/fallback/nested-cleanup evidence under `evidence/phase-4-*`.                                                          | Reopen the first contract packet; private dependency or fallback is a security blocker.                                                   |
 | 5     | E2E integrator and browser/security lanes                         | running owned stack, public descriptors, ignored runner artifacts                      | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:no-affinity`                                                                                                                                                | A→B feature handoffs, dependent-app behavior, unchanged HTTP probes, leak scan, and empty cleanup under `evidence/phase-5-*`.                                     | Route a state failure to Phase 2, lifecycle/residue to Phase 3, composition fallback to Phase 4; rerun the full matrix.                   |
-| 6     | Root integrator and named API/UI/live/review agents               | complete Plan 09 candidate diff/evidence                                               | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`                                                                                                                                   | Exact-head quality/review/tester/rules/API-no-delta/runner-contract PASS under `evidence/phase-6-*`.                                                              | Any fix changes HEAD and reruns Phase 6 from its first packet; unresolved finding blocks archival.                                        |
-| 7     | Root integrator                                                   | learnings, archive/indexes/LMS handoff, PR branch, declared worktree                   | `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate` followed by `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate plans`                                                                                                                                               | Archive-containing reviewed merge, terminal audit PASS, LMS handoff, containment, and non-force cleanup under `evidence/phase-7-*` and the external final report. | Reopen the first unsupported phase; retain branch/worktree on ambiguity or audit failure.                                                 |
+| 6     | Root integrator and named API/UI/live/review agents               | complete Plan 09 candidate diff/evidence                                               | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`                                                                                                                                                               | Exact-head quality/review/tester/rules/API-no-delta/runner-contract PASS under `evidence/phase-6-*`.                                                              | Any fix changes HEAD and reruns Phase 6 from its first packet; unresolved finding blocks archival.                                        |
+| 7     | Root integrator                                                   | learnings, archive/indexes/LMS handoff, PR branch, declared worktree                   | `rtk ./rhino plan validate` followed by `rtk ./rhino md links validate plans`                                                                                                                                                                                                       | Archive-containing reviewed merge, terminal audit PASS, LMS handoff, containment, and non-force cleanup under `evidence/phase-7-*` and the external final report. | Reopen the first unsupported phase; retain branch/worktree on ambiguity or audit failure.                                                 |
 
 ### Agent Topology
 
@@ -195,7 +195,7 @@ target/configuration, or unrelated failure blocks Phase 2.
 - [ ] [AI] **Owner: integrator; green baseline.** Run the Phase 0 predecessor-green baseline commands,
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`,
       the resolved migration/RLS/local-stack smoke and cleanup targets, and
-      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`.
       Save command/exit/resource-cleanup evidence at `evidence/phase-0-baseline.md`. Every failure,
       including preexisting affected failure, is fixed at root cause and the full baseline rerun; never
       retry, narrow, skip, quarantine, or continue red.
@@ -239,7 +239,7 @@ RUNNER-VERSION-01..02, and actual prior implementation.
       `Fail without publishing a partial public descriptor`,
       `Negotiate the highest mutually supported runner contract minor`, and
       `Reject an unsupported local runner contract before mutation`. Run
-      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=<affected-projects>`
       and save `evidence/phase-1-specs.txt`. Parser, ownership, duplicate-title, plan-language, or layer-tag
       failure returns to this packet before tests are added.
 - [ ] [AI] Run
@@ -601,7 +601,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
 
 - [ ] [AI] Run the Mandatory Nx Quality Matrix, then run static behavior coverage, all OSE ID
       Unit/Integration/E2E, migration/RLS, runner/cleanup/concurrency, synthetic consumer, format,
-      Markdown/Mermaid, dependency/license, and `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`. Every command exits 0.
+      Markdown/Mermaid, dependency/license, and `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`. Every command exits 0.
       Save exact commands/exits at `evidence/phase-6-nx-quality.txt`; any failure reopens its owning
       implementation packet.
 - [ ] [AI] Enforce at least **99% Unit line coverage for authored production code**.
@@ -675,7 +675,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       test-integrity, performance, rule, license, plan, secret, scope, or cleanup finding.
 
 > **Pause Safety:** candidate is complete and reviewable but unpushed. Safe to stop. To resume:
-> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino gate run --surface=pre-push`.
 
 ---
 

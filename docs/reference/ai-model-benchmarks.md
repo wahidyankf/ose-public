@@ -681,7 +681,7 @@ for the current agent frontmatter aliases.
 thinking and execution tiers both map to `glm-5.2` — an explicit, intentional collapse (Decision 1,
 `upgrade-opencode-go-models` plan `tech-docs.md`): no roster model separately clears Claude Opus
 4.8's tier. The fast tier maps to `minimax-m3`, superseding the retired `glm-5` (unsuffixed) mapping.
-This reflects the 3-branch structure encoded in `apps/rhino-cli/src/application/agents/converter.rs`
+This reflects the 3-branch structure encoded in `the upstream Rhino repository/src/application/agents/converter.rs`
 at time of last sync. As the OpenCode Go roster evolves, the converter may be updated to point to
 higher-capability models. See `model-selection.md` for the authoritative mapping rationale.
 

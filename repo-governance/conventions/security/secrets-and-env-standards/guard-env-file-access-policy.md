@@ -18,7 +18,7 @@ always-allowed committed template `.env.example`.
 access to `.env.local`, `.env.test`, and the other permitted names is a deliberate trade for task
 throughput; it does **not** loosen what may be committed. **Commit policy is unchanged and stays
 deny-all for every real `.env*` file** (everything except `.env.example`), enforced independently by
-`rhino-cli env staged-guard validate` in the pre-commit path (`env_staged_guard.rs`'s
+`the public-safety tree check` in the pre-commit path (`env_staged_guard.rs`'s
 `is_offending` predicate). An agent may open `.env.local`; it may never commit it.
 
 Exceptions: project scripts under `apps/`, `libs/`, and `scripts/` are exempt (they are part of the

@@ -38,7 +38,7 @@ new conventions and any shards a split produces per
 a shard is not a step, so it takes a plain name and the parent index carries order. For a
 gate-surface rule change, update the registry-managed documentation to use `gate list`, verify the
 registry with `gate validate`, update affected workflow and hook documentation plus their indexes,
-then regenerate harness bindings from the canonical `.claude/` source.
+then regenerate harness adapters from the canonical `.claude/` source.
 
 During rules-propagation Step 6, inventory every rule and discoverability surface in the classified
 subject. Record keep, amend, merge, delete, relocate, or supersede plus the surviving canonical

@@ -10,7 +10,7 @@ Governance, validation, lint, and format targets use the `{domain}:{work}` schem
 operation. This distinguishes governance targets from language-level lifecycle targets
 (`test:quick`, `build`, etc.) and makes the Nx target list self-describing.
 
-**Canonical governance and validation targets** (defined on `rhino-cli`):
+**Canonical governance and validation targets** (defined on `Rhino`):
 
 | Target                               | What it validates                                                                          |
 | ------------------------------------ | ------------------------------------------------------------------------------------------ |

@@ -52,8 +52,8 @@ heading depth and order, nesting, tables, OCR, and figure representation.
 
 ## Validation Workflow
 
-See [checking-fidelity-criticality-and-format.md](../../skills/docs-converting-pdf-to-markdown/reference/checking-fidelity-criticality-and-format.md)
-and [checking-fidelity-workflow.md](../../skills/docs-converting-pdf-to-markdown/reference/checking-fidelity-workflow.md)
+See [checking-fidelity-criticality-and-format.md](../../../.agents/skills/docs-converting-pdf-to-markdown/reference/checking-fidelity-criticality-and-format.md)
+and [checking-fidelity-workflow.md](../../../.agents/skills/docs-converting-pdf-to-markdown/reference/checking-fidelity-workflow.md)
 for the complete criticality table, the ten-step workflow (report init through finalization), the
 `crane check-*` command reference (including the single-pass `check-all` aggregator, per-dimension
 fallbacks, and the large-PDF timeout protocol), and the audit report format.

@@ -1,0 +1,26 @@
+=== before ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=27.20 diskFreeGiB=90.41 cpu=24.5%
+
+=== command ===
+rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e
+  -> dotnet test apps/ose-id-be-e2e/OseId.Be.E2E.csproj
+
+=== output ===
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Be.E2E -> apps/ose-id-be-e2e/bin/Debug/net10.0/OseId.Be.E2E.dll
+Test run for apps/ose-id-be-e2e/bin/Debug/net10.0/OseId.Be.E2E.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    11, Skipped:     0, Total:    11, Duration: 2 s - OseId.Be.E2E.dll (net10.0)
+
+ NX   Successfully ran target test:e2e for project ose-id-be-e2e
+
+exit=0
+
+=== after ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=27.20 diskFreeGiB=90.15 cpu=10.7%
+
+=== owned containers surviving (docker ps -a --filter name=ose-id) ===
+(none)

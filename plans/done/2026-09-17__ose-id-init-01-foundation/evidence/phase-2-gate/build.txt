@@ -1,0 +1,65 @@
+=== before ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=24.00 diskFreeGiB=88.83 cpu=10.9%
+
+=== command ===
+rtk hippo run --class transactional --disk-path ./worktrees/ose-id-init-01-foundation -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web
+
+=== output ===
+
+ NX   Running target build for 2 projects:
+
+- ose-id-be
+- ose-id-web
+
+
+
+> nx run ose-id-web:build  [local cache]
+
+> next build
+
+[1m[38;2;173;127;168m▲ Next.js 16.2.6[39m[22m (Turbopack)
+
+[37m[1m [22m[39m Creating an optimized production build ...
+[32m[1m✓[22m[39m Compiled successfully in 1426ms
+[37m[1m [22m[39m Running TypeScript ...
+[37m[1m [22m[39m Finished TypeScript in 2.1s ...
+[37m[1m [22m[39m Collecting page data using 4 workers ...
+[37m[1m [22m[39m Generating static pages using 4 workers (0/2) ...
+[32m[1m✓[22m[39m Generating static pages using 4 workers (2/2) in 175ms
+[37m[1m [22m[39m Finalizing page optimization ...
+
+[4mRoute (app)[24m
+┌ ƒ /
+└ ○ /_not-found
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> nx run ose-id-be:build  [existing outputs match the cache, left as is]
+
+> dotnet publish apps/ose-id-be/src/OseId.Host/OseId.Host.csproj -c Release -o apps/ose-id-be/dist
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Release/net10.0/OseId.Domain.dll
+  OseId.Application -> apps/ose-id-be/src/OseId.Application/bin/Release/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> apps/ose-id-be/src/OseId.Infrastructure/bin/Release/net10.0/OseId.Infrastructure.dll
+  OseId.Host -> apps/ose-id-be/src/OseId.Host/bin/Release/net10.0/OseId.Host.dll
+  OseId.Host -> apps/ose-id-be/dist/
+
+
+
+ NX   Successfully ran target build for 2 projects
+
+Nx read the output from the cache instead of running the command for 2 out of 2 tasks.
+
+
+exit=0
+peak_node_procs=84
+
+=== after ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=24.00 diskFreeGiB=88.82 cpu=15.0%

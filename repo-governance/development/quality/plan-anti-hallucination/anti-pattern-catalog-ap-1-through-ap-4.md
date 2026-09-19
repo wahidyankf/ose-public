@@ -26,7 +26,7 @@ Cache file may or may not exist at that path. `Glob` or `test -f` first. If NEW,
 > "Run `nx run ose-www:integration-test`..."
 
 Nx targets vary per project. Read `project.json` or run
-`./hippo run --class ephemeral --disk-path . -- npm exec nx -- show project ose-www` to enumerate
+`./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- show project ose-www` to enumerate
 real targets. The actual target is `test:integration`, not `integration-test`.
 
 ### AP-4: Inventing a function or method name

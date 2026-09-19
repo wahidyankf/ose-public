@@ -1,0 +1,55 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using OseId.Application.Foundation;
+using OseId.Domain.Capabilities;
+
+namespace OseId.Host;
+
+/// <summary>
+/// The inbound adapter for every capability OSE ID registers and refuses. It maps the
+/// exact method and path pairs from the domain inventory and nothing else, so an unknown
+/// path still receives the framework's ordinary not-found answer without a capability
+/// code — which is what lets a test tell a disabled capability from an absent route.
+/// A listed path addressed with an unlisted method is an unknown pair too, and reaches
+/// no handler here at all: <see cref="RouteDisclosureGuard" /> answers it as the absent
+/// route it is, because the dispatcher decides a method mismatch before this adapter runs.
+/// </summary>
+internal static class DisabledCapabilityEndpoints
+{
+    private const string _problemMediaType = "application/problem+json";
+    private const string _correlationHeader = "X-Correlation-ID";
+
+    private static readonly JsonSerializerOptions _problemJson = new(JsonSerializerDefaults.Web)
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+    };
+
+    internal static IEndpointRouteBuilder Map(IEndpointRouteBuilder routes)
+    {
+        foreach (DisabledCapability capability in DisabledCapabilityCatalog.All)
+        {
+            routes.MapMethods(capability.Path, [capability.Method], RefuseAsync);
+        }
+
+        return routes;
+    }
+
+    private static async Task RefuseAsync(HttpContext context)
+    {
+        // The request body is never read and no query value is inspected, so nothing a
+        // caller sends reaches a parser, a log line, or the answer.
+        RejectDisabledCapability useCase = context.RequestServices.GetRequiredService<RejectDisabledCapability>();
+        CapabilityDisabledResult result = useCase.Reject(context.Request.Headers[_correlationHeader].FirstOrDefault());
+
+        context.Response.StatusCode = result.Status;
+        context.Response.ContentType = _problemMediaType;
+        context.Response.Headers.CacheControl = "no-store";
+        context.Response.Headers[_correlationHeader] = result.CorrelationId;
+
+        await context
+            .Response.WriteAsync(JsonSerializer.Serialize(result, _problemJson), context.RequestAborted)
+            .ConfigureAwait(false);
+    }
+}

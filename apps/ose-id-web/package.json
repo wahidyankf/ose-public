@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "ose-id-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/guard-runtime-mode.mjs next dev --port 3500",
+    "build": "next build",
+    "start": "node scripts/guard-runtime-mode.mjs next start --port 3500"
+  },
+  "dependencies": {
+    "@open-sharia-enterprise/ts-env-loader": "*",
+    "@open-sharia-enterprise/web-ui": "*",
+    "@open-sharia-enterprise/web-ui-token": "*",
+    "@t3-oss/env-nextjs": "0.13.11",
+    "next": "16.2.6",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@amiceli/vitest-cucumber": "6.3.0",
+    "@tailwindcss/postcss": "4.2.1",
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@types/node": "22.19.15",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@typescript-eslint/parser": "8.57.0",
+    "@vitejs/plugin-react": "^5.1.4",
+    "@vitest/coverage-v8": "4.1.0",
+    "eslint": "9.39.4",
+    "eslint-import-resolver-typescript": "4.4.4",
+    "eslint-plugin-boundaries": "5.4.0",
+    "eslint-plugin-import": "2.32.0",
+    "jsdom": "29.0.0",
+    "postcss": "8.5.10",
+    "tailwindcss": "4.2.1",
+    "typescript": "5.8.3",
+    "vite-tsconfig-paths": "6.1.1",
+    "vitest": "4.1.0"
+  }
+}

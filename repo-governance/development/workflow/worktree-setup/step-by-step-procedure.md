@@ -19,7 +19,7 @@ when_to_use: Use as a walkthrough when creating a worktree and running its toolc
 
    ```bash
    # Set the active worktree root as the command workdir.
-   rtk ./hippo run --class ephemeral --disk-path . -- npm install
+   rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
    ```
 
 4. Converge the toolchain from the same directory:

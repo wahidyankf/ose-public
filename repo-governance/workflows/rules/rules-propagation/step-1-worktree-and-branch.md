@@ -19,7 +19,7 @@ isolation buys.
 Both modes end at a PR.
 
 `dedicated` mode MUST initialize the new worktree root immediately after creation and before
-mutation: `rtk ./hippo run --class ephemeral --disk-path . -- npm install`, then
+mutation: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`, then
 `rtk npm run doctor -- --fix`. `current` mode does not create a worktree, so it relies on the
 caller's existing setup; merely entering an existing worktree never triggers this sequence. Setup
 in another checkout does not initialize a newly created worktree because the install activates

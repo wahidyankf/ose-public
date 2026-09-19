@@ -1,0 +1,321 @@
+{
+  "desktop-light-1280": {
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "colorScheme": "light",
+    "dom": {
+      "interactiveCount": 0,
+      "interactiveTags": [],
+      "h1Count": 1,
+      "h1Text": ["OSE ID service status"],
+      "statusRegions": [
+        {
+          "ariaLabel": "OSE ID service component status",
+          "ariaLive": "polite"
+        }
+      ],
+      "bodyBackground": "lab(98.8418 -0.553876 -1.38257)",
+      "bodyColor": "lab(5.27439 -1.67941 -4.46628)",
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "hasHorizontalOverflow": false,
+      "htmlLang": "en",
+      "mainRole": null
+    },
+    "activeAfterTab": "BODY",
+    "consoleMsgs": [],
+    "pageErrors": [],
+    "timing": {
+      "domContentLoaded": 9.700000002980232,
+      "loadEvent": 41.399999998509884,
+      "responseEnd": 5,
+      "transferSize": 4672,
+      "paints": [
+        {
+          "name": "first-paint",
+          "startTime": 60
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 60
+        }
+      ]
+    }
+  },
+  "desktop-dark-1280": {
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "colorScheme": "dark",
+    "dom": {
+      "interactiveCount": 0,
+      "interactiveTags": [],
+      "h1Count": 1,
+      "h1Text": ["OSE ID service status"],
+      "statusRegions": [
+        {
+          "ariaLabel": "OSE ID service component status",
+          "ariaLive": "polite"
+        }
+      ],
+      "bodyBackground": "lab(5.27552 -1.32231 -3.26218)",
+      "bodyColor": "lab(95.3631 -1.09836 -2.75983)",
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "hasHorizontalOverflow": false,
+      "htmlLang": "en",
+      "mainRole": null
+    },
+    "activeAfterTab": "BODY",
+    "consoleMsgs": [],
+    "pageErrors": [],
+    "timing": {
+      "domContentLoaded": 8.800000004470348,
+      "loadEvent": 38.80000000447035,
+      "responseEnd": 4.4000000059604645,
+      "transferSize": 4672,
+      "paints": [
+        {
+          "name": "first-paint",
+          "startTime": 20
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 20
+        }
+      ]
+    }
+  },
+  "mobile-320-light": {
+    "viewport": {
+      "width": 320,
+      "height": 700
+    },
+    "colorScheme": "light",
+    "dom": {
+      "interactiveCount": 0,
+      "interactiveTags": [],
+      "h1Count": 1,
+      "h1Text": ["OSE ID service status"],
+      "statusRegions": [
+        {
+          "ariaLabel": "OSE ID service component status",
+          "ariaLive": "polite"
+        }
+      ],
+      "bodyBackground": "lab(98.8418 -0.553876 -1.38257)",
+      "bodyColor": "lab(5.27439 -1.67941 -4.46628)",
+      "scrollWidth": 320,
+      "clientWidth": 320,
+      "hasHorizontalOverflow": false,
+      "htmlLang": "en",
+      "mainRole": null
+    },
+    "activeAfterTab": "BODY",
+    "consoleMsgs": [],
+    "pageErrors": [],
+    "timing": {
+      "domContentLoaded": 8.200000002980232,
+      "loadEvent": 35.70000000298023,
+      "responseEnd": 4.4000000059604645,
+      "transferSize": 4672,
+      "paints": [
+        {
+          "name": "first-paint",
+          "startTime": 36
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 36
+        }
+      ]
+    }
+  },
+  "forced-colors-light-1280": {
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "colorScheme": "light",
+    "forcedColors": "active",
+    "dom": {
+      "interactiveCount": 0,
+      "interactiveTags": [],
+      "h1Count": 1,
+      "h1Text": ["OSE ID service status"],
+      "statusRegions": [
+        {
+          "ariaLabel": "OSE ID service component status",
+          "ariaLive": "polite"
+        }
+      ],
+      "bodyBackground": "rgb(255, 255, 255)",
+      "bodyColor": "rgb(0, 0, 0)",
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "hasHorizontalOverflow": false,
+      "htmlLang": "en",
+      "mainRole": null
+    },
+    "activeAfterTab": "BODY",
+    "consoleMsgs": [],
+    "pageErrors": [],
+    "timing": {
+      "domContentLoaded": 10,
+      "loadEvent": 39.099999994039536,
+      "responseEnd": 4.5999999940395355,
+      "transferSize": 4672,
+      "paints": [
+        {
+          "name": "first-paint",
+          "startTime": 40
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 40
+        }
+      ]
+    }
+  },
+  "forced-colors-dark-1280": {
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "colorScheme": "dark",
+    "forcedColors": "active",
+    "dom": {
+      "interactiveCount": 0,
+      "interactiveTags": [],
+      "h1Count": 1,
+      "h1Text": ["OSE ID service status"],
+      "statusRegions": [
+        {
+          "ariaLabel": "OSE ID service component status",
+          "ariaLive": "polite"
+        }
+      ],
+      "bodyBackground": "rgb(0, 0, 0)",
+      "bodyColor": "rgb(255, 255, 255)",
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "hasHorizontalOverflow": false,
+      "htmlLang": "en",
+      "mainRole": null
+    },
+    "activeAfterTab": "BODY",
+    "consoleMsgs": [],
+    "pageErrors": [],
+    "timing": {
+      "domContentLoaded": 10.899999998509884,
+      "loadEvent": 39.399999998509884,
+      "responseEnd": 5.799999997019768,
+      "transferSize": 4672,
+      "paints": [
+        {
+          "name": "first-paint",
+          "startTime": 40
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 40
+        }
+      ]
+    }
+  },
+  "reduced-motion-1280": {
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "colorScheme": "light",
+    "reducedMotion": "reduce",
+    "dom": {
+      "interactiveCount": 0,
+      "interactiveTags": [],
+      "h1Count": 1,
+      "h1Text": ["OSE ID service status"],
+      "statusRegions": [
+        {
+          "ariaLabel": "OSE ID service component status",
+          "ariaLive": "polite"
+        }
+      ],
+      "bodyBackground": "lab(98.8418 -0.553876 -1.38257)",
+      "bodyColor": "lab(5.27439 -1.67941 -4.46628)",
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "hasHorizontalOverflow": false,
+      "htmlLang": "en",
+      "mainRole": null
+    },
+    "activeAfterTab": "BODY",
+    "consoleMsgs": [],
+    "pageErrors": [],
+    "timing": {
+      "domContentLoaded": 9.300000004470348,
+      "loadEvent": 39,
+      "responseEnd": 4.399999998509884,
+      "transferSize": 4672,
+      "paints": [
+        {
+          "name": "first-paint",
+          "startTime": 40
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 40
+        }
+      ]
+    }
+  },
+  "high-contrast-more-1280": {
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "colorScheme": "light",
+    "contrast": "more",
+    "dom": {
+      "interactiveCount": 0,
+      "interactiveTags": [],
+      "h1Count": 1,
+      "h1Text": ["OSE ID service status"],
+      "statusRegions": [
+        {
+          "ariaLabel": "OSE ID service component status",
+          "ariaLive": "polite"
+        }
+      ],
+      "bodyBackground": "lab(98.8418 -0.553876 -1.38257)",
+      "bodyColor": "lab(5.27439 -1.67941 -4.46628)",
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "hasHorizontalOverflow": false,
+      "htmlLang": "en",
+      "mainRole": null
+    },
+    "activeAfterTab": "BODY",
+    "consoleMsgs": [],
+    "pageErrors": [],
+    "timing": {
+      "domContentLoaded": 15.700000002980232,
+      "loadEvent": 37.30000000447035,
+      "responseEnd": 4.899999998509884,
+      "transferSize": 4672,
+      "paints": [
+        {
+          "name": "first-paint",
+          "startTime": 20
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 20
+        }
+      ]
+    }
+  }
+}

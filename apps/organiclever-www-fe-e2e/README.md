@@ -8,16 +8,16 @@ point of view. 🌱
 
 ```bash
 # Install Chromium once on this machine
-./hippo run --class transactional --disk-path . -- npm exec nx -- run organiclever-www-fe-e2e:install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-www-fe-e2e:install
 
 # Run all browser scenarios; the test target starts the site it needs
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-www-fe-e2e:test:e2e
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-www-fe-e2e:test:e2e
 ```
 
 For an interactive investigation, use
-`./hippo run --class service --disk-path . -- npm exec nx -- run organiclever-www-fe-e2e:test:e2e:ui`.
+`./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-www-fe-e2e:test:e2e:ui`.
 To open the last report, use
-`./hippo run --class service --disk-path . -- npm exec nx -- run organiclever-www-fe-e2e:test:e2e:report`.
+`./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-www-fe-e2e:test:e2e:report`.
 
 ## Checks and specs
 

@@ -71,7 +71,7 @@ reports `could not import .../generated-contracts` against correct source. Nx ta
 tree directly. Materialize it once, then restart the Go language server:
 
 ```bash
-rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run roots-be:codegen
+rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run roots-be:codegen
 ```
 
 See [Per-Project Generated Sources](../../repo-governance/development/workflow/worktree-setup/per-project-generated-sources.md).

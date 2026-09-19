@@ -76,6 +76,27 @@ ${then}${extra}}
 `;
 }
 
+function csharpBindings({ omitThen = false, extra = "" } = {}) {
+  const then = omitThen
+    ? ""
+    : '    [Then("independent evidence is observed")]\n    public void IndependentEvidenceIsObserved() { }\n';
+  return `namespace Example;
+
+using Reqnroll;
+
+[Binding]
+public sealed class Steps
+{
+    [Given("a configured subject")]
+    public void AConfiguredSubject() { }
+
+    [When("the subject is exercised")]
+    public void TheSubjectIsExercised() { }
+
+${then}${extra}}
+`;
+}
+
 test("accepts independently documented Integration and E2E exemptions", () => {
   const source = validFeature.replace(
     "  Scenario: A covered behaviour",
@@ -582,6 +603,138 @@ func InitializeBeta(ctx *godog.ScenarioContext) {
 
   // `shared setup` is registered twice. Without the feature-literal scan each registration would
   // match both features and report an ambiguous binding; the scan confines each file to its own.
+  assert.deepEqual(result.errors, []);
+});
+
+test("extracts one binding per Reqnroll step attribute", () => {
+  const bindings = extractBindings("Steps.cs", csharpBindings());
+
+  assert.equal(bindings.length, 3);
+  assert.deepEqual(
+    bindings.map(({ keyword }) => keyword),
+    ["Given", "When", "Then"],
+  );
+  assert.deepEqual(
+    bindings.map(({ pattern }) => pattern),
+    ["a configured subject", "the subject is exercised", "independent evidence is observed"],
+  );
+  // Reqnroll is the same resolution family as Cucumber-JVM: the attribute argument is a Cucumber
+  // expression and a step resolves only against its own keyword. Comparing the whole shape against
+  // the Java equivalent is what distinguishes a real C# extractor from the TypeScript fallback
+  // happening to match `Given("...")` inside the `[Given("...")]` attribute, because the fallback
+  // records keywordSensitive:false.
+  const shape = (extracted) =>
+    extracted.map(({ keyword, pattern, flags, expression, scenario, featureReferences, keywordSensitive }) => ({
+      keyword,
+      pattern,
+      flags,
+      expression,
+      scenario,
+      featureReferences,
+      keywordSensitive,
+    }));
+  assert.deepEqual(shape(bindings), shape(extractBindings("Steps.java", javaBindings())));
+});
+
+test("ignores a Reqnroll step attribute inside a C# comment", () => {
+  const source = `namespace Example;
+
+using Reqnroll;
+
+[Binding]
+public sealed class Steps
+{
+    // [Given("a commented-out subject")]
+    /* [When("a block-commented subject")]
+       public void ABlockCommentedSubject() { } */
+    [Then("independent evidence is observed")]
+    public void IndependentEvidenceIsObserved() { }
+}
+`;
+
+  const bindings = extractBindings("Steps.cs", source);
+
+  // C# shares Java's comment syntax, so the shared masker must give the same parity here that the
+  // Java extractor already has: a disabled attribute is not a binding. keywordSensitive pins the
+  // survivor to the C# extractor, since the TypeScript fallback also masks comments but records
+  // keywordSensitive:false.
+  assert.deepEqual(
+    bindings.map(({ keyword, pattern, keywordSensitive }) => ({ keyword, pattern, keywordSensitive })),
+    [{ keyword: "Then", pattern: "independent evidence is observed", keywordSensitive: true }],
+  );
+});
+
+test("extracts every attribute of a stacked Reqnroll step method", () => {
+  const source = `namespace Example;
+
+using Reqnroll;
+
+[Binding]
+public sealed class Steps
+{
+    [Given("a configured subject")]
+    [Given("a second configured subject")]
+    public void AConfiguredSubject() { }
+}
+`;
+
+  const bindings = extractBindings("Steps.cs", source);
+
+  // Reqnroll routinely stacks several patterns onto one method. The attribute-to-method link is
+  // asserted without consuming the method, so the second attribute still starts its own match.
+  assert.deepEqual(
+    bindings.map(({ pattern }) => pattern),
+    ["a configured subject", "a second configured subject"],
+  );
+  assert.ok(bindings.every(({ keywordSensitive }) => keywordSensitive === true));
+});
+
+test("scopes duplicate Reqnroll bindings to explicit feature literals", async () => {
+  const feature = (name, action, outcome) => `Feature: ${name}
+
+  Scenario: ${name} works
+    Given shared setup
+    When ${action}
+    Then ${outcome}
+`;
+  const steps = (name, action, outcome, featurePath) => `namespace Example;
+
+using Reqnroll;
+
+[Binding]
+public sealed class ${name}Steps
+{
+    private const string FeaturePath = "${featurePath}";
+
+    [Given("shared setup")]
+    public void SharedSetup() { }
+
+    [When("${action}")]
+    public void ${name}Runs() { }
+
+    [Then("${outcome}")]
+    public void ${name}IsObserved() { }
+}
+`;
+  const root = await fixture({
+    "specs/alpha.feature": feature("Alpha", "alpha runs", "alpha is observed"),
+    "specs/beta.feature": feature("Beta", "beta runs", "beta is observed"),
+    "unit/AlphaSteps.cs": steps("Alpha", "alpha runs", "alpha is observed", "specs/alpha.feature"),
+    "unit/BetaSteps.cs": steps("Beta", "beta runs", "beta is observed", "specs\\\\beta.feature"),
+    "unit/driver.csproj": "<Project />",
+  });
+
+  const result = await validateCoverage({
+    project: "example",
+    corpusRoots: [path.join(root, "specs")],
+    adapter: "unit",
+    bindingRoots: [path.join(root, "unit")],
+    driver: path.join(root, "unit/driver.csproj"),
+  });
+
+  // Two proofs in one: .cs files have to load as binding files at all, and the double-quoted
+  // specs/*.feature literal has to confine each file to its own feature -- otherwise the duplicate
+  // `shared setup` registration reports as ambiguous.
   assert.deepEqual(result.errors, []);
 });
 

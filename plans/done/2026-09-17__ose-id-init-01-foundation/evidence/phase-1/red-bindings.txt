@@ -1,0 +1,433 @@
+Phase 1 — Initial RED Binding Ledger (merged, all four projects)
+
+Command:
+  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
+Exit code: 1 (expected — see classification below)
+
+Per-project detail transcripts: red-bindings-be.txt (ose-id-be, ose-id-be-e2e),
+red-bindings-web.txt (ose-id-web, ose-id-web-e2e). This file is the combined four-project rerun.
+
+Classification of all 368 error lines (368 = 236 backend + 132 web, exactly matching the two
+per-project transcripts):
+  - "undefined Unit/Integration/E2E binding." — expected: zero .cs/.ts/.tsx step-binding files exist
+    yet (Phase 2+ implements them).
+  - "<adapter> driver does not exist: ..." — expected: zero .csproj/vitest.config.ts/
+    playwright.config.ts exist yet (Phase 2 scaffolds them).
+  - 0 ambiguous bindings, 0 unused bindings, 0 project.json target-contract errors, 0 corpus/orphan/
+    Gherkin-parse errors — verified by grep excluding the two expected classes above plus Nx chrome:
+    zero unclassified lines remain.
+
+Acceptance (per this plan's Phase 1 Gate, which supersedes this checkbox's literal "acceptance: exit 0"
+— see delivery.md correction note): only the named-absent Plan 01 behavior (undefined bindings, absent
+drivers) is nonzero; no configuration, ambiguity, unused-binding, or corpus defect exists. PASS.
+
+Raw output follows:
+
+ NX   Running target test:coverage:behaviour for 4 projects:
+
+- ose-id-be
+- ose-id-be-e2e
+- ose-id-web
+- ose-id-web-e2e
+
+
+
+> nx run ose-id-web:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ose-id-web/behaviour-coverage.json --adapter behaviour
+
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is Production: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is Production: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is Staging: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is Staging: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is missing: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is missing: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is unknown: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is unknown: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / a keyboard and screen-reader user reviews its status: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / a keyboard and screen-reader user reviews its status: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / status is conveyed by text rather than color alone: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / status is conveyed by text rather than color alone: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / the OSE ID web shell is running at a 320 pixel viewport: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / the OSE ID web shell is running at a 320 pixel viewport: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / the page has one descriptive heading and named status region: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / the page has one descriptive heading and named status region: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / an anonymous browser requests the OSE ID web root without user or tenant context: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / an anonymous browser requests the OSE ID web root without user or tenant context: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / no sign-in, provider, company, consent, or administration control is rendered: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / no sign-in, provider, company, consent, or administration control is rendered: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / repeated and concurrent reads change nothing the service stores: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / repeated and concurrent reads change nothing the service stores: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the local web and backend services are ready: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the local web and backend services are ready: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the page carries one heading and a named textual status region: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the page carries one heading and a named textual status region: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the response is 200 with media type "text/html; charset=utf-8": undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the response is 200 with media type "text/html; charset=utf-8": undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the response is marked "no-cache" and sets no session cookie: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the response is marked "no-cache" and sets no session cookie: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / an anonymous browser requests the OSE ID web root: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / an anonymous browser requests the OSE ID web root: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / no backend host, secret, stack trace, absolute path, or user detail is returned or logged: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / no backend host, secret, stack trace, absolute path, or user detail is returned or logged: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / the local web shell is running and the backend status it reports on is unreachable: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / the local web shell is running and the backend status it reports on is unreachable: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / the response is a sanitized 503 status page with media type "text/html; charset=utf-8": undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / the response is a sanitized 503 status page with media type "text/html; charset=utf-8": undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / the response is marked "no-cache" and sets no session cookie: undefined Integration binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / the response is marked "no-cache" and sets no session cookie: undefined Unit binding.
+Integration driver does not exist: apps/ose-id-web/vitest.integration.config.ts
+Unit driver does not exist: apps/ose-id-web/vitest.config.ts
+Warning: command "node scripts/behaviour-coverage.mjs --config apps/ose-id-web/behaviour-coverage.json --adapter behaviour" exited with non-zero status code
+> nx run ose-id-web-e2e:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ose-id-web-e2e/behaviour-coverage.json --adapter behaviour
+
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web process starts: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is Production: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is Production: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is Staging: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is Staging: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is missing: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is missing: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is unknown: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/runtime-mode.feature: Reject an unsupported web runtime mode / the web runtime mode is unknown: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / a keyboard and screen-reader user reviews its status: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / a keyboard and screen-reader user reviews its status: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / status is conveyed by text rather than color alone: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / status is conveyed by text rather than color alone: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / the OSE ID web shell is running at a 320 pixel viewport: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / the OSE ID web shell is running at a 320 pixel viewport: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / the page has one descriptive heading and named status region: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Read service status without a mouse / the page has one descriptive heading and named status region: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / an anonymous browser requests the OSE ID web root without user or tenant context: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / an anonymous browser requests the OSE ID web root without user or tenant context: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / no sign-in, provider, company, consent, or administration control is rendered: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / no sign-in, provider, company, consent, or administration control is rendered: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / repeated and concurrent reads change nothing the service stores: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / repeated and concurrent reads change nothing the service stores: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the local web and backend services are ready: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the local web and backend services are ready: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the page carries one heading and a named textual status region: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the page carries one heading and a named textual status region: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the response is 200 with media type "text/html; charset=utf-8": undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the response is 200 with media type "text/html; charset=utf-8": undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the response is marked "no-cache" and sets no session cookie: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Render the service status without identity controls / the response is marked "no-cache" and sets no session cookie: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / an anonymous browser requests the OSE ID web root: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / an anonymous browser requests the OSE ID web root: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / no backend host, secret, stack trace, absolute path, or user detail is returned or logged: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / no backend host, secret, stack trace, absolute path, or user detail is returned or logged: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / the local web shell is running and the backend status it reports on is unreachable: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / the local web shell is running and the backend status it reports on is unreachable: undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / the response is a sanitized 503 status page with media type "text/html; charset=utf-8": undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / the response is a sanitized 503 status page with media type "text/html; charset=utf-8": undefined Unit binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / the response is marked "no-cache" and sets no session cookie: undefined E2E binding.
+specs/apps/ose/id-web/behaviours/foundation/status-shell.feature: Sanitize a status-rendering failure / the response is marked "no-cache" and sets no session cookie: undefined Unit binding.
+E2E driver does not exist: apps/ose-id-web-e2e/playwright.config.ts
+Unit driver does not exist: apps/ose-id-web/vitest.config.ts
+Warning: command "node scripts/behaviour-coverage.mjs --config apps/ose-id-web-e2e/behaviour-coverage.json --adapter behaviour" exited with non-zero status code
+> nx run ose-id-be-e2e:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter behaviour
+
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with OAuth token issuance disabled: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with OAuth token issuance disabled: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with OIDC authorization disabled: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with OIDC authorization disabled: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with SCIM user provisioning disabled: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with SCIM user provisioning disabled: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with external-provider sign-in disabled: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with external-provider sign-in disabled: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with platform administration disabled: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with platform administration disabled: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests GET /connect/authorize: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests GET /connect/authorize: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests GET /external/google/challenge: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests GET /external/google/challenge: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests GET /platform/admin/companies: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests GET /platform/admin/companies: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests POST /connect/token: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests POST /connect/token: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests POST /scim/v2/Users: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests POST /scim/v2/Users: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is Production: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is Production: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is Staging: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is Staging: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is missing: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is missing: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is unknown: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is unknown: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined Unit binding.
+E2E driver does not exist: apps/ose-id-be-e2e/OseId.Be.E2E.csproj
+Unit driver does not exist: apps/ose-id-be/tests/unit/OseId.Be.Unit.csproj
+Warning: command "node scripts/behaviour-coverage.mjs --config apps/ose-id-be-e2e/behaviour-coverage.json --adapter behaviour" exited with non-zero status code
+> nx run ose-id-be:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter behaviour
+
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with OAuth token issuance disabled: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with OAuth token issuance disabled: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with OIDC authorization disabled: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with OIDC authorization disabled: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with SCIM user provisioning disabled: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with SCIM user provisioning disabled: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with external-provider sign-in disabled: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with external-provider sign-in disabled: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with platform administration disabled: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / OSE ID is ready with platform administration disabled: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests GET /connect/authorize: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests GET /connect/authorize: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests GET /external/google/challenge: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests GET /external/google/challenge: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests GET /platform/admin/companies: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests GET /platform/admin/companies: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests POST /connect/token: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests POST /connect/token: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests POST /scim/v2/Users: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / a client requests POST /scim/v2/Users: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / no identity or authorization record is created: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/disabled-capabilities.feature: Reject a disabled identity capability / the response status is 404 with the stable capability-disabled problem code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / startup exits non-zero before serving the application: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend process starts: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is Production: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is Production: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is Staging: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is Staging: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is missing: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is missing: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is unknown: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the backend runtime mode is unknown: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/runtime-mode.feature: Reject an unsupported backend runtime mode / the diagnostic returns the stable runtime-mode-disabled code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined Unit binding.
+Integration driver does not exist: apps/ose-id-be/tests/integration/OseId.Be.Integration.csproj
+Unit driver does not exist: apps/ose-id-be/tests/unit/OseId.Be.Unit.csproj
+Warning: command "node scripts/behaviour-coverage.mjs --config apps/ose-id-be/behaviour-coverage.json --adapter behaviour" exited with non-zero status code
+
+
+ NX   Running target test:coverage:behaviour for 4 projects failed
+
+Failed tasks:
+
+- ose-id-web:test:coverage:behaviour
+- ose-id-web-e2e:test:coverage:behaviour
+- ose-id-be-e2e:test:coverage:behaviour
+- ose-id-be:test:coverage:behaviour
+

@@ -18,7 +18,7 @@ Standard developer tools: read, write, edit, glob, grep, bash — prefer glob/gr
 
 ## Nx Monorepo Integration
 
-Nx manages the monorepo: apps in `apps/[app-name]` never import other apps; libraries in `libs/[lib-name]` are flat and form a dependency DAG. Use canonical [Nx Target Standards](../../../repo-governance/development/infra/nx-targets.md) names (`dev`, `test:quick`, `start`, never `serve`/`test`) and `nx affected:*` to build/test only what changed. See [Nx Monorepo Integration](./reference/nx-monorepo-integration.md) for structure, commands, and best practices.
+Nx manages the monorepo: apps in `apps/[app-name]` never import other apps; libraries in `libs/[lib-name]` are flat and form a dependency DAG. Use canonical [Nx Target Standards](../../../repo-governance/development/infra/nx-targets.md) names (`dev`, `test:quick`, `start`, never `serve`/`test` as a `dev`/`start` alias — a narrow `serve` exception exists for a no-own-app E2E orchestrator; see [Nx Target Naming Rules](../../../repo-governance/development/infra/nx-targets/target-naming-rules.md)) and `nx affected:*` to build/test only what changed. See [Nx Monorepo Integration](./reference/nx-monorepo-integration.md) for structure, commands, and best practices.
 
 ## Git Workflow
 
@@ -39,7 +39,7 @@ common-failure fixes.
 
 Verify the toolchain before implementing anything: `rtk npm run doctor` (add `-- --fix` to
 auto-install). `rhino-cli` manages `.env` files. Right after creating a worktree, run
-`rtk ./hippo run --class ephemeral --disk-path . -- npm install` and then
+`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and then
 `rtk npm run doctor -- --fix`; re-entry alone does not trigger setup. See
 [Development Environment Setup](./reference/development-environment-setup.md) for the full command
 reference and when-to-run guidance.

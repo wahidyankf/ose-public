@@ -88,6 +88,7 @@ worktrees/
 PASS: worktrees/feature-auth/
 PASS: worktrees/bugfix-session-timeout/
 PASS: worktrees/experiment-new-api/
+FAIL: ../myapp-worktrees/feature-auth/   # Sibling worktree locations are forbidden
 ```
 
 ### Bad Worktree Path

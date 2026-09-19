@@ -7,7 +7,9 @@ when_to_use: Use when checking whether an E2E, server, or utility target name al
 
 Continued from
 [Canonical Target Reference (Lifecycle Targets)](./target-naming-canonical-names.md).
-Aliases (`serve`, `start:dev`, `unit-test`) are anti-patterns.
+Aliases (`serve` as a `dev`/`start` stand-in, `start:dev`, `unit-test`) are anti-patterns. The sole
+exception is `serve` on a no-own-app E2E orchestrator project — see
+[Nx Target Naming Rules](./target-naming-rules.md).
 
 | Target            | Purpose                                                              | When Required                     |
 | ----------------- | -------------------------------------------------------------------- | --------------------------------- |

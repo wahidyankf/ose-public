@@ -1,0 +1,31 @@
+live-success GET status=200 headers=content-type,cache-control,x-correlation-id body=validated
+ready-success GET status=200 headers=content-type,cache-control,x-correlation-id body=validated
+oidc-disabled GET status=404 headers=content-type,cache-control,x-correlation-id body=validated
+oidc-method-error POST status=404 body=ordinary-route-not-found
+token-disabled POST status=404 headers=content-type,cache-control,x-correlation-id body=validated
+token-method-error GET status=404 body=ordinary-route-not-found
+google-disabled GET status=404 headers=content-type,cache-control,x-correlation-id body=validated
+google-method-error POST status=404 body=ordinary-route-not-found
+scim-disabled POST status=404 headers=content-type,cache-control,x-correlation-id body=validated
+scim-method-error GET status=404 body=ordinary-route-not-found
+platform-admin-disabled GET status=404 headers=content-type,cache-control,x-correlation-id body=validated
+platform-admin-method-error POST status=404 body=ordinary-route-not-found
+web-success GET status=200 headers=content-type,cache-control body=status-shell (web-shell Running, backend Ready, PostgreSQL Ready, Schema Compatible, Authentication Disabled)
+live-postgres-down GET status=200 headers=content-type,cache-control,x-correlation-id body=validated
+ready-error GET status=503 headers=content-type,cache-control,x-correlation-id body=database_unavailable
+live-absent GET status=000 body=absent (no fabricated HTTP response after full shutdown)
+web-backend-unready GET status=200 headers=content-type,cache-control body=status-shell (backend Not ready, PostgreSQL Unavailable, Schema Not reported; no set-cookie, no host/stack/path leak)
+web-error GET status=503 headers=content-type,cache-control body=sanitized (no stack/connection-string/path leak)
+
+Runner run IDs (each profile stopped cleanly: postgres/backend/web reverse-order shutdown,
+zero leftover docker containers, zero leftover HIPPO service reservation):
+foundation-ready           6d894340e316
+foundation-postgres-down   005c9fd05ac5
+foundation-backend-down    bef590b34e99
+
+Web-line re-verification after the shell began reading backend readiness server-side (same
+cleanliness checks; the two later profiles ran on 5439/8502/3502 so they could stand beside the
+ready stack):
+foundation-ready           a573a87da75c   web-success
+foundation-postgres-down   95e49cd7be9c   web-backend-unready
+foundation-backend-down    f329132c56ce   web-error

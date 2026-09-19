@@ -34,7 +34,7 @@ workflow starts, provision one for each target repo:
 # Per repo: from repo root
 git worktree add worktrees/<objective-slug> main
 cd worktrees/<objective-slug>
-./hippo run --class ephemeral --disk-path . -- npm install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
 npm run doctor -- --fix
 ```
 

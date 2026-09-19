@@ -1,0 +1,18 @@
+> nx run ose-id-be:"test:unit"  [existing outputs match the cache, left as is]
+> if grep -rn -E --include='*.cs' 'Skip\s*=\s*"' apps/ose-id-be/tests/unit; then echo 'ERROR: xunit Skip= attribute found in test files above'; exit 1; fi && node scripts/dotnet-unit-coverage.mjs --project apps/ose-id-be/tests/unit/OseId.Be.Unit.csproj --results apps/ose-id-be/tests/unit/coverage --line-threshold 99
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Application -> apps/ose-id-be/src/OseId.Application/bin/Debug/net10.0/OseId.Application.dll
+  OseId.Infrastructure -> apps/ose-id-be/src/OseId.Infrastructure/bin/Debug/net10.0/OseId.Infrastructure.dll
+  OseId.Be.Unit -> apps/ose-id-be/tests/unit/bin/Debug/net10.0/OseId.Be.Unit.dll
+Test run for apps/ose-id-be/tests/unit/bin/Debug/net10.0/OseId.Be.Unit.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+Passed!  - Failed:     0, Passed:    60, Skipped:     0, Total:    60, Duration: 47 ms - OseId.Be.Unit.dll (net10.0)
+Attachments:
+  apps/ose-id-be/tests/unit/coverage/collector/01950025-ce07-4a72-a423-ffcb72614e24/coverage.cobertura.xml
+Unit line coverage: 87/87 (100.00%; required: 99.00%)
+Coverage report: apps/ose-id-be/tests/unit/coverage/coverage.cobertura.xml
+ NX   Successfully ran target test:unit for project ose-id-be
+Nx read the output from the cache instead of running the command for 1 out of 1 tasks.
+exit=0

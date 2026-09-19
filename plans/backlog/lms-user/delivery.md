@@ -69,15 +69,15 @@ named missing bindings must be nonzero; it does not run `test:quick` after intro
 bindings. While the new LMS web projects do not yet exist, green gates through Phase 2 run:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-lms-be:build
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-lms-be,ose-lms-be-e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:build
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-lms-be,ose-lms-be-e2e
 ```
 
 After Phase 3 creates the web owner and its dedicated E2E project, Phases 3–6 run:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t build --projects=ose-lms-be,ose-lms-app-web
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-lms-be,ose-lms-be-e2e,ose-lms-app-web,ose-lms-app-web-e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t build --projects=ose-lms-be,ose-lms-app-web
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-lms-be,ose-lms-be-e2e,ose-lms-app-web,ose-lms-app-web-e2e
 ```
 
 Phase 0 records the existing Java backend/E2E target definitions. Phase 3 must prove the new Next.js
@@ -124,7 +124,7 @@ after Phase 2 closes those bindings.
       otherwise stop, preserve the transcript, and fix initialization before contract discovery.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm install
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
   rtk npm run doctor -- --fix
   ```
 
@@ -155,8 +155,8 @@ after Phase 2 closes those bindings.
       at its root cause; never skip, loosen, retry, quarantine, or narrow a gate.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:quick
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:quick -p ose-id-be,ose-id-web,ose-id-be-e2e,ose-id-web-e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:quick
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:quick -p ose-id-be,ose-id-web,ose-id-be-e2e,ose-id-web-e2e
   ```
 
 - [ ] [AI] **Owner: security integrator; credential-authority inventory.** Run
@@ -170,8 +170,8 @@ after Phase 2 closes those bindings.
 
 - [ ] [AI] **Owner: root integrator; Phase 0 gate.** Run
       `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate`,
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:quick`,
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:quick -p ose-id-be,ose-id-web,ose-id-be-e2e,ose-id-web-e2e`, and
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:quick`,
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:quick -p ose-id-be,ose-id-web,ose-id-be-e2e,ose-id-web-e2e`, and
       `rtk git status --short`; write the eight evidence links, current HEAD, and exit codes to
       `plans/in-progress/lms-user/evidence/phase-0/gate-summary.md`. Acceptance: plan and baselines exit 0, evidence agrees at one
       HEAD, dependency/worktree/contract/registration/project/credential rows all pass, and no hidden LMS
@@ -205,7 +205,7 @@ changing validation scope.
       `plans/in-progress/lms-user/evidence/phase-1/obsolete-contract-diff.md`. Acceptance: every ledger row has a remove/replace
       disposition and no compatibility endpoint or migration is invented. Any implemented storage/API
       match stops execution for plan amendment. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate`
       and save `plans/in-progress/lms-user/evidence/phase-1/obsolete-specs-validate.txt`; a nonzero result returns to this packet.
 - [ ] [AI] **Owner: `specs-maker`; canonical RED Gherkin.** Create/update exactly
       `specs/apps/ose/lms-be/behaviours/hello/hello.feature`,
@@ -217,7 +217,7 @@ changing validation scope.
       `authentication/context-switch.feature`, `authentication/logout.feature`, and
       `session/session-retirement.feature`, and `local-stack/composition.feature` from technical
       document 001. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate`
       and save `plans/in-progress/lms-user/evidence/phase-1/specs-validate.txt`. Acceptance: app-scoped Gherkin parses, contains no
       plan metadata or positive layer tag, and covers the exact scenarios in the API mapping. A parser,
       ownership, duplicate-title, or language failure returns to this packet before contracts continue.
@@ -234,17 +234,17 @@ changing validation scope.
       this owner; do not hand-edit generated output.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-contracts:lint
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-contracts:bundle
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-contracts:lint
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:codegen
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-contracts:lint
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-contracts:bundle
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-contracts:lint
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:codegen
   ```
 
 - [ ] [AI] **Owner: architecture/spec lane; rendered documentation.** Update the exact LMS API/web
       architecture indexes and diagrams under `specs/apps/ose/lms-be/` and
       `specs/apps/ose/lms-app-web/` to show issuer, resource API, BFF, shared session store, context, and
       runner ownership. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate specs/apps/ose/lms-be specs/apps/ose/lms-app-web`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate specs/apps/ose/lms-be specs/apps/ose/lms-app-web`
       and save `plans/in-progress/lms-user/evidence/phase-1/mermaid-validate.txt`. Acceptance: the command exits 0 and every diagram
       labels ownership and accessible boundaries without clipped text. Any accessibility, link, or
       boundary mismatch returns to this packet.
@@ -253,7 +253,7 @@ changing validation scope.
       and `apps/ose-lms-be-e2e/behaviour-coverage.json`. Unit is mandatory; Integration/E2E are required
       for every crossed boundary. An inapplicable higher layer uses only the exact per-scenario exemption
       tag/comment and alternative proof from technical document 001—never a blanket exemption. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour -p ose-lms-be,ose-lms-be-e2e`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour -p ose-lms-be,ose-lms-be-e2e`
       and store `plans/in-progress/lms-user/evidence/phase-1/behaviour-red.txt`. Acceptance: nonzero RED lists only the deliberately
       absent new adapters; orphan, duplicate, positive-tag, invalid-exemption, or unrelated undefined
       results route back to the spec/adapter owner immediately.
@@ -268,15 +268,15 @@ changing validation scope.
       roles from ID claims. Any unexpected result reopens its owning Phase 1 packet.
 
   ```bash
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-lms-be:build
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t typecheck,lint --projects=ose-lms-be,ose-lms-be-e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-contracts:lint
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-contracts:bundle
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-contracts:lint
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:codegen
-  rtk ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate specs/apps/ose/lms-be specs/apps/ose/lms-app-web
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour -p ose-lms-be,ose-lms-be-e2e
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:build
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint --projects=ose-lms-be,ose-lms-be-e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-contracts:lint
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-contracts:bundle
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-contracts:lint
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:codegen
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate specs/apps/ose/lms-be specs/apps/ose/lms-app-web
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour -p ose-lms-be,ose-lms-be-e2e
   ```
 
 > **Pause Safety:** contracts are coherent and intentionally RED through absent implementation only.
@@ -306,8 +306,8 @@ principal plus a valid personal or company context before LMS-local authorizatio
       code until the intended assertions execute.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
   ```
 
 - [ ] [AI] **Owner: `swe-java-dev`; GREEN — resource-token boundary.** Implement only the failing seam
@@ -320,9 +320,9 @@ principal plus a valid personal or company context before LMS-local authorizatio
       packet; do not weaken a RED assertion or add a fallback issuer.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:build
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:build
   ```
 
 - [ ] [AI] **Owner: `swe-java-dev`; RED — profile and product authorization.** Add Unit and Integration
@@ -334,8 +334,8 @@ principal plus a valid personal or company context before LMS-local authorizatio
       failure returns to this RED owner before production changes.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
   ```
 
 - [ ] [AI] **Owner: `swe-java-dev`; GREEN — profile and product authorization.** Implement the failing
@@ -349,8 +349,8 @@ principal plus a valid personal or company context before LMS-local authorizatio
       packet; do not consume role-like identity claims.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
   ```
 
 - [ ] [AI] **Owner: `swe-java-dev`; RED — metadata/key lifecycle.** Add deterministic Unit and
@@ -361,8 +361,8 @@ principal plus a valid personal or company context before LMS-local authorizatio
       or unrelated failures return to this RED packet and must be made deterministic.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
   ```
 
 - [ ] [AI] **Owner: `swe-java-dev`; GREEN — metadata/key lifecycle.** Implement only the bounded cache,
@@ -373,8 +373,8 @@ principal plus a valid personal or company context before LMS-local authorizatio
       to anonymous/debug/header identity. Any deviation returns to this GREEN packet.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
   ```
 
 - [ ] [AI] **Owner: `swe-java-dev`; REFACTOR and coverage.** Separate protocol validation, principal
@@ -385,12 +385,12 @@ principal plus a valid personal or company context before LMS-local authorizatio
       assertions, and higher-layer substitutions are forbidden.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:quick
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:coverage:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:coverage:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:coverage:behaviour
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:lint
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:quick
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:coverage:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:coverage:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:coverage:behaviour
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:lint
   ```
 
 - [ ] [AI] **Owner: security integration owner; observable credential-authority absence.** Bind scenario
@@ -408,9 +408,9 @@ principal plus a valid personal or company context before LMS-local authorizatio
 
   ```bash
   rtk rg -n -i "password.?hash|verification.?token|reset.?token|provider.?token|signing.?private|shared.?secret|refresh.?family|local.?issuer|debug.?principal|trusted.?header|unsigned" apps/ose-lms-be specs/apps/ose/lms-be
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:coverage:behaviour
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:coverage:behaviour
   ```
 
 ### Phase 2 Gate
@@ -422,13 +422,13 @@ principal plus a valid personal or company context before LMS-local authorizatio
       reopens the earliest owning RED/GREEN/REFACTOR packet.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:quick
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be-e2e:test:e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:coverage:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be:test:coverage:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-be-e2e:test:coverage:e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour -p ose-lms-be,ose-lms-be-e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:quick
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be-e2e:test:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:coverage:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:coverage:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be-e2e:test:coverage:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour -p ose-lms-be,ose-lms-be-e2e
   ```
 
 > **Pause Safety:** LMS API is a complete resource server; browser login/session is still disabled.
@@ -464,11 +464,11 @@ principal plus a valid personal or company context before LMS-local authorizatio
       this packet; do not rename/fold the web app.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- show project ose-lms-app-web
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- show project ose-lms-app-web-e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:build
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t typecheck,lint --projects=ose-lms-app-web,ose-lms-app-web-e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-lms-app-web,ose-lms-app-web-e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- show project ose-lms-app-web
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- show project ose-lms-app-web-e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:build
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint --projects=ose-lms-app-web,ose-lms-app-web-e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-lms-app-web,ose-lms-app-web-e2e
   ```
 
 - [ ] [AI] **Owner: `swe-typescript-dev`; RED — OIDC transaction and session protocol.** Add Unit and
@@ -481,8 +481,8 @@ principal plus a valid personal or company context before LMS-local authorizatio
       return to this RED packet; production code must not be added first.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
   ```
 
 - [ ] [AI] **Owner: `swe-typescript-dev`; RED — shared persistence prerequisite.** Add Unit contracts
@@ -497,9 +497,9 @@ principal plus a valid personal or company context before LMS-local authorizatio
       its command is absent. A fixture failure returns to this RED packet.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:session-retention:local
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:session-retention:local
   ```
 
 - [ ] [AI] **Owner: `swe-typescript-dev`; GREEN — shared persistence prerequisite.** Apply both exact
@@ -514,10 +514,10 @@ principal plus a valid personal or company context before LMS-local authorizatio
       tables pass catalog/grant/real-delete probes; and no in-memory affinity is introduced.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-lms-app-web:session-retention:local
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:build
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:session-retention:local
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:build
   ```
 
 - [ ] [AI] **Owner: `swe-typescript-dev`; GREEN — OIDC transaction and session protocol.** Implement only
@@ -530,9 +530,9 @@ principal plus a valid personal or company context before LMS-local authorizatio
       token or open redirect is tolerated.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:build
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:build
   ```
 
 - [ ] [AI] **Owner: `swe-typescript-dev`; RED — user-facing auth/context/logout.** Add component Unit and
@@ -545,9 +545,9 @@ principal plus a valid personal or company context before LMS-local authorizatio
       packet.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
   ```
 
 - [ ] [AI] **Owner: `swe-typescript-dev`; GREEN — user-facing auth/context/logout.** Implement only the
@@ -559,9 +559,9 @@ principal plus a valid personal or company context before LMS-local authorizatio
       Any behavior/accessibility mismatch returns to this GREEN packet.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
   ```
 
 - [ ] [AI] **Owner: web integration owner; AC-LMS-SESSION-01 audit gate.** Run Unit command-shape tests;
@@ -583,15 +583,15 @@ principal plus a valid personal or company context before LMS-local authorizatio
       proof. A failure reopens its earliest RED/GREEN packet; exclusions or weakened tests are forbidden.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:build
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t typecheck,lint --projects=ose-lms-app-web,ose-lms-app-web-e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:coverage:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:coverage:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:coverage:e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour -p ose-lms-app-web,ose-lms-app-web-e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:build
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint --projects=ose-lms-app-web,ose-lms-app-web-e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:coverage:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:coverage:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:coverage:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour -p ose-lms-app-web,ose-lms-app-web-e2e
   ```
 
 ### Phase 3 Gate
@@ -604,15 +604,15 @@ principal plus a valid personal or company context before LMS-local authorizatio
       Any failure reopens the earliest owning packet.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:build
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t typecheck,lint --projects=ose-lms-app-web,ose-lms-app-web-e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:coverage:unit
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web:test:coverage:integration
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:coverage:e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour -p ose-lms-app-web,ose-lms-app-web-e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:build
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint --projects=ose-lms-app-web,ose-lms-app-web-e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:coverage:unit
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:coverage:integration
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:coverage:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour -p ose-lms-app-web,ose-lms-app-web-e2e
   ```
 
 > **Pause Safety:** application behavior is complete against an already-running OSE ID stack.
@@ -637,7 +637,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       infrastructure or unrelated failure returns to this RED packet.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
   ```
 
 - [ ] [AI] **Owner: `swe-e2e-dev`; GREEN — composed lifecycle.** Implement the outer runner and owned
@@ -650,9 +650,9 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       this GREEN packet.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack-cleanup
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-clean
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack-cleanup
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-clean
   ```
 
 - [ ] [AI] **Owner: `swe-e2e-dev`; RED — built-process journeys.** Add Playwright/Cucumber adapters under
@@ -664,7 +664,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       remain green. A scenario ownership or unrelated failure returns to this RED packet.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
   ```
 
 - [ ] [AI] **Owner: `swe-e2e-dev`; GREEN — built-process journeys.** Implement only missing synthetic
@@ -675,8 +675,8 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       returns to this GREEN packet.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:coverage:behaviour
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:coverage:behaviour
   ```
 
 - [ ] [AI] **Owner: `swe-e2e-dev`; REFACTOR and resilience proof.** Remove copied OSE ID fixture/config/
@@ -688,13 +688,13 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       packet; these are independent proofs, not retries.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack-cleanup
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack-cleanup
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e -- --case=child-readiness-failure
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack-cleanup
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-clean
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack-cleanup
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack-cleanup
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e -- --case=child-readiness-failure
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack-cleanup
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-clean
   ```
 
 ### Phase 4 Gate
@@ -706,10 +706,10 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       earliest runner/journey packet.
 
   ```bash
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:coverage:behaviour
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack-cleanup
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-clean
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:coverage:behaviour
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack-cleanup
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-clean
   ```
 
 > **Pause Safety:** DU1 is locally complete and reproducible; documentation/manual hardening remains.
@@ -731,13 +731,13 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       `docs/reference/web-sites.md`. Document the OSE ID dependency, issuer/client/resource/env/targets,
       authenticated versus app-only startup, principal/context/role split, Mailpit, logout/freshness,
       troubleshooting, and cleanup; remove stale local password/JWT/Flyway-auth claims. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec prettier -- --check apps/ose-lms-be/README.md apps/ose-lms-be-e2e/README.md apps/ose-lms-app-web/README.md apps/ose-lms-app-web-e2e/README.md specs/apps/ose/lms-be/README.md specs/apps/ose/lms-app-web/README.md docs/reference/web-sites.md` and
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec prettier -- --check apps/ose-lms-be/README.md apps/ose-lms-be-e2e/README.md apps/ose-lms-app-web/README.md apps/ose-lms-app-web-e2e/README.md specs/apps/ose/lms-be/README.md specs/apps/ose/lms-app-web/README.md docs/reference/web-sites.md` and
       `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate apps/ose-lms-be apps/ose-lms-be-e2e apps/ose-lms-app-web apps/ose-lms-app-web-e2e specs/apps/ose/lms-be specs/apps/ose/lms-app-web docs/reference/web-sites.md`.
       Save exits plus a claim/source table at `plans/in-progress/lms-user/evidence/phase-5/01-documentation.md`. Acceptance: both
       commands exit 0 and every operational claim points to a delivered target/config; any stale or
       unsupported statement returns to this packet.
 - [ ] [AI] **Owner: E2E integration owner; complete-stack start.** Start the complete built stack with
-      `rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack`
+      `rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack`
       and wait for its readiness output: LMS web `http://127.0.0.1:3400`, LMS API
       `http://127.0.0.1:8303`, LMS session PostgreSQL `127.0.0.1:5439`, OSE ID web
       `http://127.0.0.1:3500`, OSE ID backend `http://127.0.0.1:8501`, OSE ID PostgreSQL
@@ -745,7 +745,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       `http://127.0.0.1:8502`. On any readiness
       failure, save sanitized per-service readiness and owner manifest at
       `plans/in-progress/lms-user/evidence/phase-5/02-stack-readiness.md`, invoke
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack-cleanup`,
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:local-stack-cleanup`,
       and stop; never continue with a partial stack. Acceptance: every named endpoint is explicitly ready,
       the public descriptor is schema-valid, and no undeclared process/port exists.
 - [ ] [AI] **Owner: browser verification lane; personal sign-in.** Using the repository browser tool, call `browser_navigate` to
@@ -791,29 +791,29 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
 
   ```bash
   rtk mkdir -p plans/in-progress/lms-user/evidence/phase-5/http local-tmp/lms-user/curl
-  trap 'rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-cleanup -- --root=local-tmp/lms-user/curl' EXIT INT TERM
+  trap 'rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-cleanup -- --root=local-tmp/lms-user/curl' EXIT INT TERM
   rtk curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/discovery.headers --output plans/in-progress/lms-user/evidence/phase-5/http/discovery.json --write-out '%{http_code}\n' http://127.0.0.1:8501/.well-known/openid-configuration
   rtk curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/jwks.headers --output plans/in-progress/lms-user/evidence/phase-5/http/jwks.json --write-out '%{http_code}\n' http://127.0.0.1:8501/connect/jwks
   rtk curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/auth-start.headers --output plans/in-progress/lms-user/evidence/phase-5/http/auth-start.body --write-out '%{http_code}\n' 'http://127.0.0.1:3400/auth/oidc/start?returnPath=%2Flearning'
 
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=callback-success --output=local-tmp/lms-user/curl/callback-success.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=callback-success --output=local-tmp/lms-user/curl/callback-success.curl
   rtk curl --config local-tmp/lms-user/curl/callback-success.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/callback.headers --output plans/in-progress/lms-user/evidence/phase-5/http/callback.body --write-out '%{http_code}\n'
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=session-company-a --output=local-tmp/lms-user/curl/session.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=session-company-a --output=local-tmp/lms-user/curl/session.curl
   rtk curl --config local-tmp/lms-user/curl/session.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/session.headers --output plans/in-progress/lms-user/evidence/phase-5/http/session.json --write-out '%{http_code}\n' http://127.0.0.1:3400/api/bff/auth/session
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=context-switch-company-a --output=local-tmp/lms-user/curl/context-switch.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=context-switch-company-a --output=local-tmp/lms-user/curl/context-switch.curl
   rtk curl --config local-tmp/lms-user/curl/context-switch.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/context-switch.headers --output plans/in-progress/lms-user/evidence/phase-5/http/context-switch.body --write-out '%{http_code}\n' http://127.0.0.1:3400/api/bff/auth/context-switch
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=logout-lms-only --output=local-tmp/lms-user/curl/logout-lms-only.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=logout-lms-only --output=local-tmp/lms-user/curl/logout-lms-only.curl
   rtk curl --config local-tmp/lms-user/curl/logout-lms-only.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/logout-lms-only.headers --output plans/in-progress/lms-user/evidence/phase-5/http/logout-lms-only.json --write-out '%{http_code}\n' http://127.0.0.1:3400/api/bff/auth/logout
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=logout-lms-and-ose-id --output=local-tmp/lms-user/curl/logout-lms-and-ose-id.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=logout-lms-and-ose-id --output=local-tmp/lms-user/curl/logout-lms-and-ose-id.curl
   rtk curl --config local-tmp/lms-user/curl/logout-lms-and-ose-id.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/logout-lms-and-ose-id.headers --output plans/in-progress/lms-user/evidence/phase-5/http/logout-lms-and-ose-id.json --write-out '%{http_code}\n' http://127.0.0.1:3400/api/bff/auth/logout
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=learning-company-a --output=local-tmp/lms-user/curl/learning.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=learning-company-a --output=local-tmp/lms-user/curl/learning.curl
   rtk curl --config local-tmp/lms-user/curl/learning.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/learning.headers --output plans/in-progress/lms-user/evidence/phase-5/http/learning.html --write-out '%{http_code}\n' http://127.0.0.1:3400/learning
   rtk curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/learning-signed-out.headers --output plans/in-progress/lms-user/evidence/phase-5/http/learning-signed-out.body --write-out '%{http_code}\n' http://127.0.0.1:3400/learning
 
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=lms-api-valid-personal --output=local-tmp/lms-user/curl/lms-api-valid.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=lms-api-valid-personal --output=local-tmp/lms-user/curl/lms-api-valid.curl
   rtk curl --config local-tmp/lms-user/curl/lms-api-valid.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/lms-api-valid.headers --output plans/in-progress/lms-user/evidence/phase-5/http/lms-api-valid.json --write-out '%{http_code}\n' http://127.0.0.1:8303/api/v1/hello
   rtk curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/lms-api-no-token.headers --output plans/in-progress/lms-user/evidence/phase-5/http/lms-api-no-token.json --write-out '%{http_code}\n' http://127.0.0.1:8303/api/v1/hello
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=lms-api-insufficient-entitlement --output=local-tmp/lms-user/curl/lms-api-insufficient.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=lms-api-insufficient-entitlement --output=local-tmp/lms-user/curl/lms-api-insufficient.curl
   rtk curl --config local-tmp/lms-user/curl/lms-api-insufficient.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/lms-api-insufficient.headers --output plans/in-progress/lms-user/evidence/phase-5/http/lms-api-insufficient.json --write-out '%{http_code}\n' http://127.0.0.1:8303/api/v1/hello
   ```
 
@@ -828,18 +828,18 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
 
   ```bash
   rtk mkdir -p plans/in-progress/lms-user/evidence/phase-5/http/errors local-tmp/lms-user/curl
-  trap 'rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-cleanup -- --root=local-tmp/lms-user/curl' EXIT INT TERM
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=auth-start-unsafe-return --output=local-tmp/lms-user/curl/auth-start-unsafe.curl
+  trap 'rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-cleanup -- --root=local-tmp/lms-user/curl' EXIT INT TERM
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=auth-start-unsafe-return --output=local-tmp/lms-user/curl/auth-start-unsafe.curl
   rtk curl --config local-tmp/lms-user/curl/auth-start-unsafe.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/errors/auth-start-unsafe.headers --output plans/in-progress/lms-user/evidence/phase-5/http/errors/auth-start-unsafe.json --write-out '%{http_code}\n' 'http://127.0.0.1:3400/auth/oidc/start?returnPath=https%3A%2F%2Fevil.example'
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=callback-cancelled --output=local-tmp/lms-user/curl/callback-cancelled.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=callback-cancelled --output=local-tmp/lms-user/curl/callback-cancelled.curl
   rtk curl --config local-tmp/lms-user/curl/callback-cancelled.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/errors/callback-cancelled.headers --output plans/in-progress/lms-user/evidence/phase-5/http/errors/callback-cancelled.body --write-out '%{http_code}\n'
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=callback-replay --output=local-tmp/lms-user/curl/callback-replay.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=callback-replay --output=local-tmp/lms-user/curl/callback-replay.curl
   rtk curl --config local-tmp/lms-user/curl/callback-replay.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/errors/callback-replay.headers --output plans/in-progress/lms-user/evidence/phase-5/http/errors/callback-replay.body --write-out '%{http_code}\n'
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=session-signed-out --output=local-tmp/lms-user/curl/session-signed-out.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=session-signed-out --output=local-tmp/lms-user/curl/session-signed-out.curl
   rtk curl --config local-tmp/lms-user/curl/session-signed-out.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/errors/session-signed-out.headers --output plans/in-progress/lms-user/evidence/phase-5/http/errors/session-signed-out.json --write-out '%{http_code}\n' http://127.0.0.1:3400/api/bff/auth/session
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=context-switch-missing-csrf --output=local-tmp/lms-user/curl/context-switch-missing-csrf.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=context-switch-missing-csrf --output=local-tmp/lms-user/curl/context-switch-missing-csrf.curl
   rtk curl --config local-tmp/lms-user/curl/context-switch-missing-csrf.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/errors/context-switch-missing-csrf.headers --output plans/in-progress/lms-user/evidence/phase-5/http/errors/context-switch-missing-csrf.json --write-out '%{http_code}\n' http://127.0.0.1:3400/api/bff/auth/context-switch
-  rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=logout-missing-csrf --output=local-tmp/lms-user/curl/logout-missing-csrf.curl
+  rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:fixture-curl-config --case=logout-missing-csrf --output=local-tmp/lms-user/curl/logout-missing-csrf.curl
   rtk curl --config local-tmp/lms-user/curl/logout-missing-csrf.curl --silent --show-error --dump-header plans/in-progress/lms-user/evidence/phase-5/http/errors/logout-missing-csrf.headers --output plans/in-progress/lms-user/evidence/phase-5/http/errors/logout-missing-csrf.json --write-out '%{http_code}\n' http://127.0.0.1:3400/api/bff/auth/logout
   ```
 
@@ -862,7 +862,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       `/auth/oidc/start?returnPath=%2Flearning` location. Run:
 
   ```bash
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-http-capture-matrix -- --manifest=apps/ose-lms-app-web-e2e/fixtures/http/manual-wire-expectations.json --capture-root=plans/in-progress/lms-user/evidence/phase-5/http --output=plans/in-progress/lms-user/evidence/phase-5/http/assertion-summary.json --cleanup-root=local-tmp/lms-user/curl
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-http-capture-matrix -- --manifest=apps/ose-lms-app-web-e2e/fixtures/http/manual-wire-expectations.json --capture-root=plans/in-progress/lms-user/evidence/phase-5/http --output=plans/in-progress/lms-user/evidence/phase-5/http/assertion-summary.json --cleanup-root=local-tmp/lms-user/curl
   ```
 
   Acceptance: exit 0; exactly 19 unique rows report `pass` for status, headers, media/empty body,
@@ -887,7 +887,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       writing a sanitized row result and cleaning token files in `finally`. Run:
 
   ```bash
-  rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:verify-token-negative-matrix -- --manifest=apps/ose-lms-app-web-e2e/fixtures/resource-server/token-negative-cases.json --base-url=http://127.0.0.1:8303 --output=plans/in-progress/lms-user/evidence/phase-5/http/errors/token-negative-matrix.json
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:verify-token-negative-matrix -- --manifest=apps/ose-lms-app-web-e2e/fixtures/resource-server/token-negative-cases.json --base-url=http://127.0.0.1:8303 --output=plans/in-progress/lms-user/evidence/phase-5/http/errors/token-negative-matrix.json
   ```
 
   Acceptance: exit 0, exactly 12 uniquely named rows each report the expected request mutation and all
@@ -956,11 +956,11 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       command, exit, report path, and candidate HEAD at `plans/in-progress/lms-user/evidence/phase-5/quality-gate.txt`:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t build --projects=ose-lms-be,ose-lms-app-web,ose-id-be,ose-id-web
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick,test:coverage:behaviour --projects=ose-lms-be,ose-lms-be-e2e,ose-lms-app-web,ose-lms-app-web-e2e,ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:integration,test:e2e -p ose-lms-be,ose-lms-be-e2e,ose-lms-app-web,ose-lms-app-web-e2e
-rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:unit -p ose-lms-be,ose-lms-app-web
-rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t build --projects=ose-lms-be,ose-lms-app-web,ose-id-be,ose-id-web
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick,test:coverage:behaviour --projects=ose-lms-be,ose-lms-be-e2e,ose-lms-app-web,ose-lms-app-web-e2e,ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:integration,test:e2e -p ose-lms-be,ose-lms-be-e2e,ose-lms-app-web,ose-lms-app-web-e2e
+rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:unit -p ose-lms-be,ose-lms-app-web
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push
 ```
 
 Acceptance: exit 0 and the Unit report is at least 99% authored production-line coverage for each
@@ -984,8 +984,8 @@ requires this complete block at the new HEAD.
 ### Phase 5 Gate
 
 - [ ] [AI] **Owner: root integrator; Phase 5 gate.** Run
-      `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`,
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-clean`,
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`,
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-clean`,
       and `rtk git rev-parse --verify HEAD`; write all API/UI/live/security/audit lifecycle links and exact
       HEAD to `plans/in-progress/lms-user/evidence/phase-5/gate-summary.md`. Acceptance: commands exit 0 and no unresolved behavior,
       security, tenant, API/UI, documentation, test, cleanup, dependency, or plan finding remains. A stale
@@ -1013,7 +1013,7 @@ partial, failing, or unverified artifact blocks the Phase 6 gate and keeps the p
       `plans/in-progress/lms-user/learnings.md`, classify every entry through durability, sensitivity, and
       public-repository relevance, and write destination/reported/discarded plus rationale beside each
       entry. Run `rtk rg -n "pending|TODO|TBD" plans/in-progress/lms-user/learnings.md` and
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec prettier -- --check plans/in-progress/lms-user/learnings.md`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec prettier -- --check plans/in-progress/lms-user/learnings.md`;
       save exits and destination links at `plans/in-progress/lms-user/evidence/phase-6/knowledge-and-archive/learnings.md`.
       Acceptance: formatting exits 0 and the search has no unresolved entry; a durable item without one
       canonical destination blocks archival and returns to this packet.
@@ -1067,7 +1067,7 @@ partial, failing, or unverified artifact blocks the Phase 6 gate and keeps the p
 
 - [ ] [AI] **Owner: root integrator; Phase 6 terminal gate.** Run `rtk git fetch origin`,
       `rtk git worktree list --porcelain`, `rtk git branch --list`,
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-clean`
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-clean`
       from a retained repository checkout, and verify the delivered terminal-audit report. Store command
       exits, merge containment, archive/index path, audit status, and absence inventories at
       `plans/in-progress/lms-user/evidence/phase-6/cleanup/terminal-gate.md`. Acceptance: LMS OIDC integration and archived plan are

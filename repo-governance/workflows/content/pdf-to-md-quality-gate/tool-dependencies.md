@@ -8,7 +8,7 @@ when_to_use: "Use when setting up the toolchain for this workflow or diagnosing 
 Build crane-cli and add to PATH:
 
 ```bash
-./hippo run --class ephemeral --disk-path . -- npm exec nx -- run crane-cli:build
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run crane-cli:build
 export PATH="$PWD/apps/crane-cli/bin/Release/net10.0:$PATH"
 crane --version                                      # prints assembly version, exits 0
 crane --help                                         # lists every subcommand

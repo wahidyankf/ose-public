@@ -32,13 +32,32 @@ git check-ignore --quiet hippo.local.json
 node -e '
 const fs = require("fs");
 const config = JSON.parse(fs.readFileSync("hippo.local.json.example", "utf8"));
-if (config.schemaVersion !== 2 || config.defaultProfile !== "local-constrained") process.exit(1);
+if (config.schemaVersion !== 3 || config.defaultProfile !== "local-constrained") process.exit(1);
 const coordination = config.coordination;
-if (coordination?.mode !== "reservation" || typeof coordination.maxActiveOwners !== "number") process.exit(1);
+if (
+  coordination?.mode !== "reservation" || coordination.maxCpu !== 8 ||
+  coordination.maxMemoryMiB !== 16384 || coordination.baseActiveOwners !== 2 ||
+  coordination.maxActiveOwners !== 3 || coordination.emergencyAvailableMemoryMiB !== 6144
+) process.exit(1);
 const shares = coordination.automaticOwnerShares;
-if (!shares || !shares.balanced || !shares.constrained || !shares.minimal) process.exit(1);
+if (shares?.balanced !== 4 || shares?.constrained !== 2 || shares?.minimal !== 1) process.exit(1);
+const tiers = coordination.tiers;
+if (
+  tiers?.light?.minimumCpu !== 1 || tiers.light.maximumCpu !== 2 ||
+  tiers?.standard?.minimumCpu !== 2 || tiers.standard.maximumCpu !== 4 ||
+  tiers?.heavy?.minimumCpu !== 4 || tiers.heavy.maximumCpu !== 8 ||
+  tiers.heavy.minimumMemoryMiB !== 8192 || tiers.heavy.maximumMemoryMiB !== 16384
+) process.exit(1);
+const promotion = coordination.promotion;
+if (
+  promotion?.completedRuns !== 25 || promotion.minimumSources !== 3 ||
+  promotion.minimumAvailableMemoryMiB !== 10240 || promotion.maximumCpuP95Percent !== 75
+) process.exit(1);
 const profile = config.profiles?.[config.defaultProfile];
-if (!profile || profile.strict !== false || profile.fallback !== "minimal") process.exit(1);
+if (
+  !profile || profile.strict !== false || profile.fallback !== "minimal" ||
+  profile.maxCpuUtilizationPercent !== 90
+) process.exit(1);
 // A reservation share is what bounds this consumer now. A fixed profile
 // concurrency cap would pin every run to one worker and defeat the adaptive
 // parallelism the reservation vector exists to provide.
@@ -67,7 +86,7 @@ for (const name of ["prepare", "postinstall", "organiclever:dev:restart", "valid
 if (!scripts.nx.includes("--class transactional")) process.exit(1);
 if (!scripts["nx:show"].includes("--class ephemeral")) process.exit(1);
 for (const name of ["build", "test", "lint", "affected:build", "affected:test", "affected:lint"]) {
-  if (!scripts[name].includes("--class transactional")) process.exit(1);
+  if (!scripts[name].includes("--class ephemeral")) process.exit(1);
 }
 if (!scripts["organiclever:dev:reset"].includes("--class transactional")) process.exit(1);
 if (!scripts["organiclever:dev"].includes("--class service")) process.exit(1);
@@ -132,9 +151,11 @@ chmod 755 "$doctor_fixture/hippo"
 doctor_arguments="$temporary_root/doctor-arguments"
 HIPPO_TEST_DOCTOR_ARGUMENTS="$doctor_arguments" "$doctor_fixture/.github/scripts/run-doctor.sh" --verbose
 [ "$(sed -n '3p' "$doctor_arguments")" = ephemeral ]
+[ "$(sed -n '5p' "$doctor_arguments")" = standard ]
 [ "$(tail -n 1 "$doctor_arguments")" = --verbose ]
 HIPPO_TEST_DOCTOR_ARGUMENTS="$doctor_arguments" "$doctor_fixture/.github/scripts/run-doctor.sh" --fix --dry-run
 [ "$(sed -n '3p' "$doctor_arguments")" = transactional ]
+[ "$(sed -n '5p' "$doctor_arguments")" = standard ]
 [ "$(tail -n 2 "$doctor_arguments")" = '--fix
 --dry-run' ]
 
@@ -163,16 +184,18 @@ fixed_arguments='OSE_HIPPO_PRE_PUSH_ACTIVE=1
 run
 --class
 ephemeral
+--resource-tier
+heavy
 --disk-path
 .
 --'
-[ "$(sed -n '1,8p' "$guard_arguments")" = "$fixed_arguments" ]
-[ -n "$(sed -n '9p' "$guard_arguments")" ]
+[ "$(sed -n '1,10p' "$guard_arguments")" = "$fixed_arguments" ]
+[ -n "$(sed -n '11p' "$guard_arguments")" ]
 tail_arguments='gate
 run
 --surface=pre-push
 --only=env-validate'
-[ "$(sed -n '10,13p' "$guard_arguments")" = "$tail_arguments" ]
-[ "$(wc -l <"$guard_arguments" | tr -d ' ')" -eq 13 ]
+[ "$(sed -n '12,15p' "$guard_arguments")" = "$tail_arguments" ]
+[ "$(wc -l <"$guard_arguments" | tr -d ' ')" -eq 15 ]
 
 echo "hippo consumer contract tests passed"

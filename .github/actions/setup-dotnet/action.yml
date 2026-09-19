@@ -1,5 +1,5 @@
 name: "Setup .NET"
-description: "Install .NET SDK, Fantomas, and fsharplint with NuGet cache"
+description: "Install .NET SDK, Fantomas, fsharplint, and CSharpier with NuGet cache"
 inputs:
   dotnet-version:
     description: ".NET SDK version"
@@ -79,6 +79,16 @@ runs:
     - name: Install fsharplint
       shell: bash
       run: dotnet tool install -g dotnet-fsharplint || dotnet tool update -g dotnet-fsharplint
+
+    - name: Install CSharpier
+      shell: bash
+      # Same reasoning as the Fantomas install above: the repository manifest is the
+      # version authority, and an existing global install is updated rather than
+      # left to float to latest.
+      run: |
+        version="$(jq -er '.tools.csharpier.version' .config/dotnet-tools.json)"
+        dotnet tool install -g csharpier --version "$version" ||
+          dotnet tool update -g csharpier --version "$version"
 
     - name: Add dotnet tools to PATH
       shell: bash

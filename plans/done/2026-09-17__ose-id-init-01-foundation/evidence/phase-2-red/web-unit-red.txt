@@ -1,0 +1,94 @@
+
+> nx run ose-id-web:"test:unit"
+
+> if grep -rn -E --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist --exclude-dir=coverage '\b(it|test|describe)\.(skip|only|todo)\(' .; then echo 'ERROR: .skip()/.only()/.todo() found in test files above - remove before merging'; exit 1; fi && npx vitest run --coverage --coverage.thresholds.lines=99
+
+[33mThe plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the [1mresolve.tsconfigPaths[22m option. You can remove the plugin and set [1mresolve.tsconfigPaths: true[22m in your Vite config instead.[39m
+
+[1m[46m RUN [49m[22m [36mv4.1.0 [39m[90m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+ [31m❯[39m tests/unit/runtime-mode-acceptance.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/unit/StatusShellSteps.tsx [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/unit/RuntimeModeSteps.ts [2m([22m[2m0 test[22m[2m)[22m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/RuntimeModeSteps.ts[2m [ tests/unit/RuntimeModeSteps.ts ][22m
+[31m[1mError[22m: Failed to resolve import "../../src/shared/runtime/runtime-mode" from "tests/unit/RuntimeModeSteps.ts". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web/tests/unit/RuntimeModeSteps.ts[39m:11:85
+[33m  9  |  import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
+  10 |  import { expect } from "vitest";
+  11 |  ...BLED_CODE, decideRuntimeMode, runtimeModeDiagnostic } from "../../src/shared/runtime/runtime-mode";
+     |                                                                 ^
+  12 |  import { enforceRuntimeMode } from "../../src/shared/runtime/runtime-mode-guard";
+  13 |  const feature = await loadFeature(path.resolve(process.cwd(), "../../specs/apps/ose/id-web/behaviours/foundation/runt...[39m
+[90m [2m❯[22m TransformPluginContext._formatLog ../../node_modules/vite/dist/node/chunks/node.js:[2m30486:39[22m[39m
+[90m [2m❯[22m TransformPluginContext.error ../../node_modules/vite/dist/node/chunks/node.js:[2m30483:14[22m[39m
+[90m [2m❯[22m normalizeUrl ../../node_modules/vite/dist/node/chunks/node.js:[2m27725:18[22m[39m
+[90m [2m❯[22m ../../node_modules/vite/dist/node/chunks/node.js:[2m27788:30[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m27756:4[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30271:14[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m24532:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/StatusShellSteps.tsx[2m [ tests/unit/StatusShellSteps.tsx ][22m
+[31m[1mError[22m: Failed to resolve import "../../src/contexts/foundation/domain/service-status" from "tests/unit/StatusShellSteps.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web/tests/unit/StatusShellSteps.tsx[39m:19:7
+[33m  10 |  import { describeFeature, loadFeature } from "@amiceli/vitest-cucumber";
+  11 |  import { expect } from "vitest";
+  12 |  ...EADING, STATUS_PAGE_MEDIA_TYPE, STATUS_REGION_LABEL } from "../../src/contexts/foundation/domain/service-status";
+     |                                                                 ^
+  13 |  import { foundationStatusReport, readServiceStatus, sanitizedUnavailableDocument, statusResponseEnvelope } from "../....
+  14 |  import { ServiceStatusPanel } from "../../src/contexts/foundation/presentation/service-status-panel";[39m
+[90m [2m❯[22m TransformPluginContext._formatLog ../../node_modules/vite/dist/node/chunks/node.js:[2m30486:39[22m[39m
+[90m [2m❯[22m TransformPluginContext.error ../../node_modules/vite/dist/node/chunks/node.js:[2m30483:14[22m[39m
+[90m [2m❯[22m normalizeUrl ../../node_modules/vite/dist/node/chunks/node.js:[2m27725:18[22m[39m
+[90m [2m❯[22m ../../node_modules/vite/dist/node/chunks/node.js:[2m27788:30[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m27756:4[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30271:14[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m24532:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/runtime-mode-acceptance.test.ts[2m [ tests/unit/runtime-mode-acceptance.test.ts ][22m
+[31m[1mError[22m: Failed to resolve import "../../src/shared/runtime/runtime-mode" from "tests/unit/runtime-mode-acceptance.test.ts". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36m<home>/ose-projects/ose-public/worktrees/ose-id-init-01-foundation/apps/ose-id-web/tests/unit/runtime-mode-acceptance.test.ts[39m:7:59
+[33m  5  |  */
+  6  |  import { describe, expect, it } from "vitest";
+  7  |  import { SUPPORTED_RUNTIME_MODES, decideRuntimeMode } from "../../src/shared/runtime/runtime-mode";
+     |                                                              ^
+  8  |  import { enforceRuntimeMode, processRuntimeModeHost } from "../../src/shared/runtime/runtime-mode-guard";
+  9  |  describe("runtime mode acceptance", () => {[39m
+[90m [2m❯[22m TransformPluginContext._formatLog ../../node_modules/vite/dist/node/chunks/node.js:[2m30486:39[22m[39m
+[90m [2m❯[22m TransformPluginContext.error ../../node_modules/vite/dist/node/chunks/node.js:[2m30483:14[22m[39m
+[90m [2m❯[22m normalizeUrl ../../node_modules/vite/dist/node/chunks/node.js:[2m27725:18[22m[39m
+[90m [2m❯[22m ../../node_modules/vite/dist/node/chunks/node.js:[2m27788:30[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m27756:4[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30271:14[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m24532:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m3 failed[39m[22m[90m (3)[39m
+[2m      Tests [22m [2mno tests[22m
+[2m   Start at [22m 08:47:01
+[2m   Duration [22m 954ms[2m (transform 28ms, setup 254ms, import 0ms, tests 0ms, environment 1.96s)[22m
+
+Warning: command "if grep -rn -E --include='*.ts' --include='*.tsx' --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=dist --exclude-dir=coverage '\b(it|test|describe)\.(skip|only|todo)\(' .; then echo 'ERROR: .skip()/.only()/.todo() found in test files above - remove before merging'; exit 1; fi && npx vitest run --coverage --coverage.thresholds.lines=99" exited with non-zero status code
+
+
+ NX   Running target test:unit for project ose-id-web failed
+
+Failed tasks:
+
+- ose-id-web:test:unit
+
+Hint: run the command with --verbose for more details.
+
+EXIT=1

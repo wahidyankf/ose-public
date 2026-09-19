@@ -89,7 +89,7 @@ also adds a **new default behaviour**: plans are authored inside a
 dedicated worktree (`worktrees/<identifier>/`), provisioned if absent via
 `git worktree add -b <identifier> worktrees/<identifier> main` followed by
 the repository-standard guarded install and transactional Doctor convergence:
-`rtk ./hippo run --class ephemeral --disk-path . -- npm install`, then
+`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`, then
 `rtk npm run doctor -- --fix`. After delivery the worktree is
 removed with `git worktree remove`.
 

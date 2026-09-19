@@ -39,7 +39,7 @@ erDiagram
 The repository-owned TypeScript migration runner executes immutable numbered SQL files through `pg`
 under one PostgreSQL advisory lock and transaction, then records the filename plus SHA-256 checksum in
 `ose_id_web.schema_migrations`. Its exact Nx entry point is
-`rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web:migrate:local`.
+`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:migrate:local`.
 It runs with the migration role before readiness; the web runtime never applies DDL. A checksum mismatch,
 duplicate version with different bytes, lock failure, or partial application fails closed.
 
@@ -111,7 +111,7 @@ CREATE TABLE ose_id_web.web_session (
 Global uniqueness of migration version/checksum and `handle_digest` prevents reuse after soft delete.
 The migration installs `trg_schema_migrations_reject_hard_delete` and
 `trg_web_session_reject_hard_delete` as `BEFORE DELETE` guards and applies the inherited
-[audit/soft-delete profile](../../../in-progress/ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md).
+[audit/soft-delete profile](../../../done/2026-09-17__ose-id-init-01-foundation/tech-docs/007-database-audit-and-soft-delete-contract.md).
 Every request/worker mutation supplies a safe actor; the `system` default is migration/bootstrap only.
 
 The cookie contains a random 256-bit handle. Only its keyed digest is stored. `transaction_cipher`

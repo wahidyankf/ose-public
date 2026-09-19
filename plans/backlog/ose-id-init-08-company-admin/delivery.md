@@ -85,16 +85,16 @@ Every checkbox and gate inherits its phase row unless it declares a stricter own
 observation, evidence destination, or failure route. Evidence paths are relative to
 `plans/in-progress/ose-id-init-08-company-admin/`. No checkbox completes from review alone.
 
-| Phase | Default owner                                       | Bounded paths                                                                                                                                                           | Literal verification command                                                                                                                                                                                                                               | Expected result and evidence                                                                                                                               | Failure route                                                                                                                     |
-| ----- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| 0     | Root integrator                                     | execution worktree, predecessor diffs, declared Plan 08 file boundary                                                                                                   | Run the Phase 0 predecessor-green baseline commands from this section, including `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`. | Exit 0; dependency/worktree/port/license/baseline records under `evidence/phase-0-*`.                                                                      | Preserve sanitized output and stop in Phase 0; prerequisite drift routes to its owner and file-boundary drift requires amendment. |
-| 1     | Spec/BFF/test owners named by each packet           | `specs/apps/ose/id-web/behaviours/company-admin/**`, `specs/apps/ose/id-web/contracts/company-admin.openapi.yaml`, Plan 08 test paths under `apps/ose-id-web{,-e2e}/**` | `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration,test:e2e,test:coverage:behaviour -p ose-id-web,ose-id-web-e2e`                                                                                   | Specs/coverage pass and only named absent company-admin behaviors are RED under `evidence/phase-1-*`.                                                      | Return to the exact spec or RED packet; any backend/spec-backend diff blocks Phase 2.                                             |
-| 2     | BFF contract lane                                   | `apps/ose-id-web/src/features/company-admin/api/**`, `apps/ose-id-web/src/features/company-admin/models/**`                                                             | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-web`                                                                                                                               | BFF RED → GREEN → REFACTOR transcripts and empty backend diff under `evidence/phase-2-*`.                                                                  | Reopen the first failing TDD packet; generated-client/backend need stops for amendment.                                           |
-| 3     | Member UI lane                                      | `apps/ose-id-web/src/app/(company-admin)/admin/company/**`, `apps/ose-id-web/src/features/company-admin/components/**`, `apps/ose-id-web-e2e/src/company-admin/**`      | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:unit,test:e2e -p ose-id-web,ose-id-web-e2e`                                                                                                                        | Member RED → GREEN → REFACTOR, accessibility, locale, and width evidence under `evidence/phase-3-*`.                                                       | Reopen the first failing member packet; tenant leak or backend change returns to Phase 2/file boundary.                           |
-| 4     | Invitation/entitlement UI lane                      | the same bounded company-admin component/BFF/E2E paths                                                                                                                  | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration,test:e2e -p ose-id-web,ose-id-web-e2e`                                                                                                       | Invitation/entitlement RED → GREEN → REFACTOR and Mailpit-safe evidence under `evidence/phase-4-*`.                                                        | Reopen the first failing operation/UI packet; capability disclosure blocks the phase.                                             |
-| 5     | Root integrator and browser lane                    | running local stack and ignored `local-tmp/ose-id-init-08-*` only                                                                                                       | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`                                                                                                                                                        | Twelve-operation curl matrix, browser matrix, and empty cleanup inventory under `evidence/phase-5-*`.                                                      | Wrong status/schema/header/tenant/browser state reopens its owning phase; cleanup residue reopens the runner dependency.          |
-| 6     | Root integrator and named API/UI/live/review agents | complete Plan 08 candidate diff/evidence                                                                                                                                | `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`                                                                                                                                   | Exact-head gate/review/tester lifecycle PASS under `evidence/phase-6-*`.                                                                                   | Any fix changes HEAD and reruns Phase 6 from its first packet; unresolved finding blocks archival.                                |
-| 7     | Root integrator                                     | learnings, archive/indexes, PR branch, declared worktree                                                                                                                | `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate` followed by `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate plans`                                                                                                                      | Archive-containing reviewed merge, terminal audit PASS, containment, and non-force cleanup proof under `evidence/phase-7-*` and the external final report. | Reopen the first unsupported phase; retain branch/worktree on any ambiguity or audit failure.                                     |
+| Phase | Default owner                                       | Bounded paths                                                                                                                                                           | Literal verification command                                                                                                                                                                                                                                                        | Expected result and evidence                                                                                                                               | Failure route                                                                                                                     |
+| ----- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 0     | Root integrator                                     | execution worktree, predecessor diffs, declared Plan 08 file boundary                                                                                                   | Run the Phase 0 predecessor-green baseline commands from this section, including `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`. | Exit 0; dependency/worktree/port/license/baseline records under `evidence/phase-0-*`.                                                                      | Preserve sanitized output and stop in Phase 0; prerequisite drift routes to its owner and file-boundary drift requires amendment. |
+| 1     | Spec/BFF/test owners named by each packet           | `specs/apps/ose/id-web/behaviours/company-admin/**`, `specs/apps/ose/id-web/contracts/company-admin.openapi.yaml`, Plan 08 test paths under `apps/ose-id-web{,-e2e}/**` | `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration,test:e2e,test:coverage:behaviour -p ose-id-web,ose-id-web-e2e`                                                                                   | Specs/coverage pass and only named absent company-admin behaviors are RED under `evidence/phase-1-*`.                                                      | Return to the exact spec or RED packet; any backend/spec-backend diff blocks Phase 2.                                             |
+| 2     | BFF contract lane                                   | `apps/ose-id-web/src/features/company-admin/api/**`, `apps/ose-id-web/src/features/company-admin/models/**`                                                             | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-web`                                                                                                                               | BFF RED → GREEN → REFACTOR transcripts and empty backend diff under `evidence/phase-2-*`.                                                                  | Reopen the first failing TDD packet; generated-client/backend need stops for amendment.                                           |
+| 3     | Member UI lane                                      | `apps/ose-id-web/src/app/(company-admin)/admin/company/**`, `apps/ose-id-web/src/features/company-admin/components/**`, `apps/ose-id-web-e2e/src/company-admin/**`      | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:e2e -p ose-id-web,ose-id-web-e2e`                                                                                                                        | Member RED → GREEN → REFACTOR, accessibility, locale, and width evidence under `evidence/phase-3-*`.                                                       | Reopen the first failing member packet; tenant leak or backend change returns to Phase 2/file boundary.                           |
+| 4     | Invitation/entitlement UI lane                      | the same bounded company-admin component/BFF/E2E paths                                                                                                                  | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration,test:e2e -p ose-id-web,ose-id-web-e2e`                                                                                                       | Invitation/entitlement RED → GREEN → REFACTOR and Mailpit-safe evidence under `evidence/phase-4-*`.                                                        | Reopen the first failing operation/UI packet; capability disclosure blocks the phase.                                             |
+| 5     | Root integrator and browser lane                    | running local stack and ignored `local-tmp/ose-id-init-08-*` only                                                                                                       | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`                                                                                                                                                        | Twelve-operation curl matrix, browser matrix, and empty cleanup inventory under `evidence/phase-5-*`.                                                      | Wrong status/schema/header/tenant/browser state reopens its owning phase; cleanup residue reopens the runner dependency.          |
+| 6     | Root integrator and named API/UI/live/review agents | complete Plan 08 candidate diff/evidence                                                                                                                                | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`                                                                                                                                   | Exact-head gate/review/tester lifecycle PASS under `evidence/phase-6-*`.                                                                                   | Any fix changes HEAD and reruns Phase 6 from its first packet; unresolved finding blocks archival.                                |
+| 7     | Root integrator                                     | learnings, archive/indexes, PR branch, declared worktree                                                                                                                | `rtk apps/rhino-cli/scripts/rhino-bin.sh plan validate` followed by `rtk apps/rhino-cli/scripts/rhino-bin.sh md links validate plans`                                                                                                                                               | Archive-containing reviewed merge, terminal audit PASS, containment, and non-force cleanup proof under `evidence/phase-7-*` and the external final report. | Reopen the first unsupported phase; retain branch/worktree on any ambiguity or audit failure.                                     |
 
 ### Agent Topology
 
@@ -150,14 +150,14 @@ It is not a Phase 0 or Phase 1 success criterion. Before creating any Plan 08 sc
 test, Phase 0 and Phase 1 each run this exact predecessor-green baseline:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
 ```
 
 Then run the static predecessor behavior baseline:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
 ```
 
 Phase 0 verifies the commands resolve to real targets in all four OSE ID `project.json` files, not
@@ -196,8 +196,8 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       section command. Save path, branch, 40-character HEAD, creator/session, UTC time, and inventory at
       `evidence/phase-0-worktree.md`. Divergence from current `origin/main` or second worktree stops under
       the documented recovery procedure.
-- [ ] [AI] Run `rtk ./hippo run --class ephemeral --disk-path . -- npm install` and
-      `rtk ./hippo run --class transactional --disk-path . -- npm run doctor -- --fix`; inspect the diff
+- [ ] [AI] Run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
+      `rtk npm run doctor -- --fix`; inspect the diff
       and reject secrets or unrelated mutation.
 - [ ] [AI] **Owner: web lane; route/component/port inventory.** Run
       `rtk rg -n "api/bff|Card|Table|Dialog|Alert|3500|8501|5438|1026|8026" apps/ose-id-web libs/web-ui libs/web-ui-token docs/reference/web-sites.md repo-config.yml`
@@ -209,8 +209,8 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       audit target; record package/version/license/source/disposition at `evidence/phase-0-licenses.md`.
       Unknown/incompatible/missing-notice dependencies block the phase; OSE-authored source remains MIT.
 - [ ] [AI] **Owner: integrator; baseline.** Run the Phase 0 predecessor-green baseline commands,
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`,
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`,
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`,
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`,
       and the canonical pre-push registry command already shown. Store exits and cleanup inventory at
       `evidence/phase-0-baseline.md`. Every failure is fixed at root cause and the full baseline rerun;
       never narrow, retry, skip, quarantine, or continue red.
@@ -218,13 +218,13 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
 ### Phase 0 Gate
 
 - [ ] [AI] Rerun
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick,test:coverage:behaviour --base=origin/main --head=HEAD`
-      and `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`;
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick,test:coverage:behaviour --base=origin/main --head=HEAD`
+      and `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`;
       acceptance: both exit 0 and dependency, exact API/view-model mapping, worktree, ports, license, and
       baseline evidence are current at the same HEAD.
 
 > **Pause Safety:** no runtime/schema change exists. Safe to stop. To resume:
-> `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD`.
+> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD`.
 
 ## Phase 1: UI/BFF Specs and RED
 
@@ -237,7 +237,7 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
 - [ ] [AI] **Owner: `specs-maker`; scenario map.** Map every AC-ADMIN scenario to Unit, Integration, and E2E adapters under
       `specs/apps/ose/id-web/behaviours/company-admin/company-admin.feature`; any per-scenario adapter exemption names its boundary
       reason, is indexed in behavior-coverage config, and passes static validation. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate`
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs validate`
       and save `evidence/phase-1-specs.txt`. No blanket exemption; any parse/ownership/coverage failure
       returns to this packet.
 - [ ] [AI] **Owner: BFF contract lane; closed projections.** Specify only `CompanyAdminContextView`, `CompanyMemberListItemView`,
@@ -248,14 +248,14 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       backend contract change blocks RED and routes to this owner.
 - [ ] [AI] **RED — BFF contract:** add handler, runtime-schema, safe-projection, auth/context, status/
       problem-mapping, CSRF, pagination, idempotency, concurrency, and redaction Unit/Integration tests.
-      Run `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:unit`
-      and `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:integration`.
+      Run `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:unit`
+      and `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:integration`.
       Acceptance: the new BFF tests fail only because the company-admin handlers/projections are absent;
       save sanitized output in `evidence/phase-1-bff-red.txt`.
 - [ ] [AI] **RED — member UI:** add component and Playwright tests for member list/detail, tenant-safe
       verified-email-prefix filtering with query-bound pagination, loading/empty/error/denied, stale/last-admin conflict, keyboard/focus, zoom, and
       all required widths/locales. Run the Unit command above and
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`.
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`.
       Acceptance: only missing member presentation fails; save `evidence/phase-1-members-red.txt`.
 - [ ] [AI] **RED — invitation/entitlement UI:** add component/BFF/Playwright tests for list/create/
       resend/revoke, Mailpit-visible delivery, status, entitlement grant/revoke, recent-auth, and safe
@@ -274,13 +274,13 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       RED ledger: only named absent Plan 08 behavior may be nonzero; a baseline, target/configuration, or
       unrelated failure blocks Phase 2. Do not require the full green matrix until Phase 2 completes.
 - [ ] [AI] Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-web,ose-id-web-e2e`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-web,ose-id-web-e2e`;
       acceptance: static BDD coverage passes, every scenario maps to Unit/Integration/E2E, all intended
       tests have recorded expected RED output, and `rtk git diff --exit-code -- apps/ose-id-be apps/ose-id-be-e2e specs/apps/ose/id-be`
       exits 0.
 
 > **Pause Safety:** only new web tests are red and production behavior is inert. Safe to stop. To resume:
-> `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-web,ose-id-web-e2e`.
+> `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-web,ose-id-web-e2e`.
 
 ## Phase 2: Typed BFF Projections
 
@@ -291,16 +291,16 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
 **Proof:** RED, GREEN, and REFACTOR transcripts in `evidence/phase-2-bff-*.txt` plus an empty backend diff.
 
 - [ ] [AI] **RED:** rerun the BFF handler/projection cases with
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:unit` and
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:integration`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:unit` and
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:integration`;
       acceptance: the named company-admin cases fail only because adapters/view models are absent while
       predecessor cases pass. Save `evidence/phase-2-bff-red.txt`.
 
 - [ ] [AI] **GREEN:** implement the exact allowlisted view models and server-only adapters. Use the Plan 05
       session; never accept browser company identity as authority, cache authorization, or pass upstream
       bodies/errors through. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:unit` and
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:integration`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:unit` and
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:integration`;
       acceptance: the Phase 1 BFF RED set is green and all predecessor tests remain green. Save
       `evidence/phase-2-bff-green.txt`.
 - [ ] [AI] Map success, validation, denied/not-found, stale version, recent-auth, and last-admin responses.
@@ -323,7 +323,7 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       OpenAPI validation passes, and the backend/spec diff is empty.
 
 > **Pause Safety:** routes remain guarded and presentation-independent. Safe to stop. To resume:
-> `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:integration`.
+> `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:integration`.
 
 ## Phase 3: Member Roster and Detail UI
 
@@ -334,15 +334,15 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
 **Proof:** RED/GREEN/REFACTOR transcripts plus locale/breakpoint evidence under `evidence/phase-3-*`.
 
 - [ ] [AI] **RED:** run the new member component and browser cases with
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:unit` and
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:unit` and
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`;
       acceptance: named member cases fail for absent roster/detail presentation while BFF and predecessor
       cases pass. Save `evidence/phase-3-members-red.txt`.
 
 - [ ] [AI] **GREEN:** implement the selected semantic roster/detail drawer, labeled mobile cards, loading,
       empty, pagination/filter, denied, stale, and last-admin conflict states using shared primitives.
-      Run `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:unit`
-      and `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`;
+      Run `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:unit`
+      and `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`;
       acceptance: the Phase 1 member RED set is green at every supported locale/width. Save
       `evidence/phase-3-members-green.txt`.
 - [ ] [AI] Implement keyboard/focus/status behavior, 200% zoom, 320 px safety, and table headers/card labels.
@@ -361,7 +361,7 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       focus loss, or horizontal page scroll.
 
 > **Pause Safety:** the local-guarded route renders authoritative API results only. Safe to stop. To resume:
-> `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`.
+> `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`.
 
 ## Phase 4: Invitation and Entitlement UI
 
@@ -372,18 +372,18 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
 **Proof:** RED/GREEN/REFACTOR transcripts and sanitized Mailpit/browser evidence under `evidence/phase-4-*`.
 
 - [ ] [AI] **RED:** run invitation/entitlement component, BFF, and browser cases with
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:unit`,
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:integration`, and
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:unit`,
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:integration`, and
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`;
       acceptance: named cases fail only for absent UI/BFF presentation and the backend remains unchanged.
       Save `evidence/phase-4-invitations-entitlements-red.txt`.
 
 - [ ] [AI] **GREEN:** implement invitation list/create/resend/revoke/status and entitlement grant/revoke
       screens by invoking existing Plan 03 commands. Render Mailpit-delivered flow; never create, store,
       parse, log, or expose a capability. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:unit`,
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web:test:integration`,
-      and `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:unit`,
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web:test:integration`,
+      and `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`;
       acceptance: the Phase 1 invitation/entitlement RED set is green and Mailpit assertions contain only
       synthetic data. Save `evidence/phase-4-invitations-entitlements-green.txt`.
 - [ ] [AI] Rerun retained `AC-TEN-12` through backend Unit, Integration, and built E2E after the BFF
@@ -406,7 +406,7 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       contract exactly without backend/schema/RLS diff.
 
 > **Pause Safety:** backend rules remain unchanged and every route is local/test guarded. Safe to stop.
-> To resume: `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`.
+> To resume: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`.
 
 ## Phase 5: Copy-Paste Manual Browser/API Recipe
 
@@ -419,7 +419,7 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
 Start the deterministic predecessor stack in one terminal:
 
 ```bash
-rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack
 ```
 
 Phase 0 verifies this Plan 05 target name. Seed only supported setup APIs with Company A `Acme Test
@@ -434,7 +434,7 @@ rtk curl -fsS http://127.0.0.1:8026/
 
 - [ ] [AI] **Owner: API verification lane; 12-operation curl matrix.** Create ignored, mode-0700
       `local-tmp/ose-id-init-08-company-admin-curl/`, then run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-web-e2e:prepare-manual-company-admin -- --output=local-tmp/ose-id-init-08-company-admin-curl`.
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:prepare-manual-company-admin -- --output=local-tmp/ose-id-init-08-company-admin-curl`.
       Acceptance: the helper writes mode-0600 `admin-read.conf`, `admin-mutate.conf`, and
       `personal-read.conf`; closed synthetic JSON bodies; current/stale membership IDs; pending/terminal/
       revocable invitation IDs; and active/revoked product keys. Secrets stay in ignored files, never
@@ -460,7 +460,7 @@ rtk curl -fsS http://127.0.0.1:8026/
     rtk curl --silent --show-error --config "$config" --request "$method" \
       --dump-header "$RUN/$label.headers" --output "$RUN/$label.body" \
       --write-out '%{http_code}' "$@" "$url" >"$RUN/$label.status"
-    rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run \
+    rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run \
       ose-id-web-e2e:assert-http-capture -- \
       --contract="$CONTRACT" --method="$method" --path-template="$path_template" \
       --expected-status="$status" --expected-media="$media" --expected-code="$code" \
@@ -573,7 +573,7 @@ rtk curl -fsS http://127.0.0.1:8026/
 
   The fixture helper exports only the six synthetic identifiers above to this shell; it must not export
   cookie, CSRF, invitation capability, or provider values. After the matrix, run
-  `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:cleanup-manual-company-admin -- --input=local-tmp/ose-id-init-08-company-admin-curl`.
+  `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:cleanup-manual-company-admin -- --input=local-tmp/ose-id-init-08-company-admin-curl`.
   Acceptance: 24 assertion rows exist—one success and one representative stable error for each indexed
   operation—and the ignored directory is absent. A missing row or cleanup residue fails Phase 5.
 
@@ -601,7 +601,7 @@ a fresh stack. Cleanup is mandatory:
 
 ```bash
 # Press Ctrl-C in the service terminal, then run:
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup
 rtk curl -sS http://127.0.0.1:8501/health/ready
 ```
 
@@ -611,12 +611,12 @@ process/container/network/volume/temp-secret inventories are empty.
 ### Phase 5 Gate
 
 - [ ] [AI] Run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`
       followed by the cleanup command above; acceptance: every scenario passes, all locale/breakpoint
       evidence is sanitized, and the final readiness request fails because all owned resources stopped.
 
 > **Pause Safety:** cleanup is complete. Safe to stop. To resume:
-> `rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack`.
+> `rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack`.
 
 ## Phase 6: Quality, Review, and Execution Audit
 
@@ -628,7 +628,7 @@ process/container/network/volume/temp-secret inventories are empty.
 
 - [ ] [AI] Run the Mandatory Nx Quality Matrix, then run behavior coverage, web Integration/E2E, axe,
       format, Markdown/Mermaid, dependency/license checks, and
-      `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`. Fix root causes—never retry,
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`. Fix root causes—never retry,
       sleep, widen, loosen, skip, or quarantine. Save exact commands/exits at
       `evidence/phase-6-nx-quality.txt`; any failure reopens its owning implementation packet.
 - [ ] [AI] Enforce at least **99% Unit line coverage for authored production code**.
@@ -688,7 +688,7 @@ process/container/network/volume/temp-secret inventories are empty.
       lifecycle evidence; acceptance: no unchecked finding remains and the backend/schema diff is empty.
 
 > **Pause Safety:** the candidate is complete and reviewable but not delivered. Safe to stop. To resume:
-> `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
 
 ## Phase 7: Knowledge Capture, Archive-in-PR, Delivery, and Cleanup
 

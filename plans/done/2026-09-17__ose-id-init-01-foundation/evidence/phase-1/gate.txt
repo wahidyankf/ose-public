@@ -1,0 +1,42 @@
+Phase 1 Gate — Combined Record
+
+Predecessor green baseline (from evidence/phase-0/baseline.txt): confirmed present, exit 0, HEAD
+matched origin/main at Phase 0. Reconfirmed unaffected by Phase 1's specs-only/config-only changes
+(no app/library source touched).
+
+Rerun of all four Phase 1 lane commands (fresh, immediately before this gate record):
+
+1. specs audit
+   $ rtk ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh specs audit
+   -> SPECS AUDIT PASSED: all 2 validators passed (0 findings ose/ayokoding/crane/organiclever/rhino/roots; all links valid)
+   EXIT 0
+
+2. redocly lint (OpenAPI contract)
+   $ rtk ./hippo run --class ephemeral --disk-path . -- npm exec redocly -- lint specs/apps/ose/id-be/contracts/openapi.yaml
+   -> "Woohoo! Your API description is valid." 0 errors, 8 expected warnings (info-license,
+      operation-4xx-response x2, operation-2xx-response x5 — all intentional per evidence/phase-1/openapi.txt)
+   EXIT 0
+
+3. Mermaid architecture diagrams
+   $ rtk ./hippo run --class ephemeral --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate specs/apps/ose
+   -> [mermaid] checked 19 diagrams, no findings. 0 violations, 0 warnings, 11 files, 19 blocks.
+   EXIT 0
+
+4. Four-project static behavior coverage (RED ledger + adapter map)
+   $ rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
+   -> EXIT 1 (expected per this checklist's corrected acceptance — see delivery.md Phase 1 "adapter maps"
+      checkbox note). 368 error lines, 100% classified as "undefined <adapter> binding" or "<adapter>
+      driver does not exist" (named-absent Plan 01 behavior, Phase 2+ scope). 0 orphan/duplicate/
+      ambiguous/unused/config-contract findings.
+
+OpenAPI path/method inventory cross-check (evidence/phase-1/openapi.txt) matches
+tech-docs/006-api-contract-delta.md's operation index exactly: 7 backend operations
+(getLiveness, getReadiness, and the 5 rejectDisabled* operations); the web GET / contract lives in
+Gherkin per tech-docs/006's own instruction; UPDATE/DELETE/RETAIN rows: none (matches the doc).
+
+Evidence files present and current: specs.txt, openapi.txt, architecture.txt, red-bindings.txt (merged)
++ red-bindings-be.txt + red-bindings-web.txt, adapter-map.txt, bdd-tooling-csharp-extension.txt (the
+Phase 1 plan-amendment's own evidence). All eight Phase 1 checkboxes ticked in delivery.md with dated
+implementation notes.
+
+Verdict: PASS. Proceeding to Phase 2.

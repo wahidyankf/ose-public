@@ -55,6 +55,8 @@ scan:
     - generated-contracts
     - .nx
     - .fvm-cache
+    - .playwright-mcp
+    - .memsearch
     - deps
     - _build
     - cover
@@ -192,6 +194,10 @@ md-heading-hierarchy:
     - glob: "apps/ose-app-web-e2e/README.md"
     - glob: "apps/ose-be/README.md"
     - glob: "apps/ose-be-e2e/README.md"
+    - glob: "apps/ose-id-be/README.md"
+    - glob: "apps/ose-id-be-e2e/README.md"
+    - glob: "apps/ose-id-web/README.md"
+    - glob: "apps/ose-id-web-e2e/README.md"
     - glob: "apps/ose-lms-be/README.md"
     - glob: "apps/ose-lms-be-e2e/README.md"
     - glob: "apps/ose-www/README.md"
@@ -276,6 +282,8 @@ md-readme-index:
     - path: specs/apps/organiclever
     - path: specs/apps/ose/app-web
     - path: specs/apps/ose/be
+    - path: specs/apps/ose/id-be
+    - path: specs/apps/ose/id-web
     - path: specs/apps/ose/lms-be
     - path: specs/apps/ose/www/behaviours/backend
     - path: specs/apps/ose/www/behaviours/frontend/app-shell
@@ -755,6 +763,19 @@ extensions:
             - OSE_APP_WEB_PORT
             - HOSTNAME
 
+        - root: apps/ose-id-web
+          kind: app
+          lang: typescript
+          allowlist:
+            - PORT # set by scripts/next-with-port.mjs after resolution; not an override source
+            # Resolved by scripts/next-with-port.mjs before the app process starts, so it
+            # is read by the launcher rather than by this app's own source.
+            - OSE_ID_WEB_PORT
+            - HOSTNAME
+        # apps/ose-id-be is deliberately absent: `lang:` admits only rust,
+        # typescript, fsharp, and go, so a C#/ASP.NET Core surface has no scanner.
+        # apps/ose-lms-be (Java) is absent for the same reason.
+
     env-injection:
       # Value-less injection contract (extends env-contract:).
       # Declares, per app, the injection HOME for its env keys at every deploy stage
@@ -809,10 +830,11 @@ extensions:
           class: literal
           environments: []
 
-    # The generated pre-push shim stays tool-neutral. Rhino re-executes the whole
-    # surface once through this outer HIPPO admission and the marker prevents the
-    # child gate run from admitting a second time.
+    # Whole-surface HIPPO admission wrappers. Rhino re-executes the entire
+    # surface once through the configured guard and the `active-env` marker
+    # prevents the re-executed child `gate run` from wrapping a second time.
     gate-surface-guards:
+      # The generated pre-push shim stays tool-neutral.
       pre-push:
         command: env
         args:
@@ -821,10 +843,37 @@ extensions:
           - run
           - --class
           - ephemeral
+          - --resource-tier
+          - heavy
           - --disk-path
           - .
           - --
         active-env: OSE_HIPPO_PRE_PUSH_ACTIVE
+
+      # The pre-commit registry batches every formatter and validator
+      # (csharpier, fantomas, the rhino-cli binary for md/emoji/plan checks)
+      # into one `npx lint-staged` process, none of it previously
+      # HIPPO-admitted or resource-capped. Each spawns its own uncapped .NET
+      # runtime, and under this host's chronic swap pressure the aggregate
+      # reproducibly crashed lint-staged with spurious file I/O errors and
+      # SIGKILLs — never a HIPPO shed, since `hippo status` stayed `normal`
+      # throughout: none of this ran as a HIPPO-tracked child. `transactional`,
+      # not pre-push's `ephemeral`: the formatter gates mutate and restage
+      # tracked files, an indivisible write HIPPO must never shed mid-way.
+      pre-commit:
+        command: env
+        args:
+          - OSE_HIPPO_PRE_COMMIT_ACTIVE=1
+          - ./hippo
+          - run
+          - --class
+          - transactional
+          - --resource-tier
+          - standard
+          - --disk-path
+          - .
+          - --
+        active-env: OSE_HIPPO_PRE_COMMIT_ACTIVE
 
     # Projects permitted to bind a loopback socket inside `test:integration`.
     #
@@ -839,7 +888,22 @@ extensions:
     # This list is NEVER a licence to reach an external network or a service the
     # test did not start. That stays forbidden below E2E for every project, listed
     # or not, and `repo-governance test-boundary validate` enforces both halves.
-    integration-loopback: []
+    integration-loopback:
+      - project: ose-id-be
+        reason: >-
+          TestHostFixture composes the delivered host over
+          Microsoft.AspNetCore.TestHost's in-memory transport
+          (WebApplication.CreateSlimBuilder + UseTestServer + GetTestClient);
+          the HttpClient it hands out binds no socket and reserves no port, so
+          Integration proves the real pipeline without reaching any network.
+      - project: ose-id-web
+        reason: >-
+          StatusShellServerSteps.ts owns a `node:http` fake-backend server it
+          starts on an ephemeral loopback port and closes at the end of every
+          scenario, plus a second loopback port it binds and immediately
+          releases so a real connection to it is genuinely refused. Both
+          sockets are local resources this test starts and stops itself, not
+          a dependency on an external or shared service.
 
     gates:
       # Declared quality-gate registry. Fields per entry:
@@ -1039,7 +1103,9 @@ extensions:
       - id: format-csharpier
         type: mutation
         category: formatter
-        command: dotnet csharpier format
+        # Bare `csharpier` requires a GLOBAL dotnet tool install; a local manifest
+        # install needs `dotnet csharpier` plus a prior `dotnet tool restore`.
+        command: csharpier format
         kind: external
         restages: true
         surfaces:
@@ -1048,7 +1114,7 @@ extensions:
       - id: format-verify-csharpier
         type: check
         # `check` fails on unformatted files; do not use `--unformatted-as-warnings`.
-        command: dotnet csharpier check
+        command: csharpier check
         kind: external
         ci-group: formatting-verify
         verifies: format-csharpier

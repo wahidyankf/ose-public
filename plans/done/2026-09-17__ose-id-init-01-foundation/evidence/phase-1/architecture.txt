@@ -1,0 +1,201 @@
+Phase 1 — Architecture lane evidence
+Plan: ose-id-init-01-foundation
+Checkbox: "Owner: architecture lane; C4, hexagonal dependency, and route/config/health views"
+Worktree: worktrees/ose-id-init-01-foundation
+Captured: 2026-09-16
+
+================================================================================
+1. REQUIRED VERIFICATION COMMAND AND TRANSCRIPT
+================================================================================
+
+$ rtk ./hippo run --class ephemeral --disk-path . -- \
+    apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate specs/apps/ose
+
+HIPPO admitting ephemeral child under stable macOS warning pressure with concurrency 1.
+[mermaid] checked 19 diagrams, no findings
+Found 0 violation(s) and 0 warning(s) in 11 file(s) (19 block(s) scanned).
+
+EXIT CODE: 0
+
+Findings inside specs/apps/ose/id-be/architecture* and specs/apps/ose/id-web/architecture*: none.
+Findings elsewhere under specs/apps/ose: none.
+
+================================================================================
+2. SUPPORTING VERIFICATION (same lane, run after the required command)
+================================================================================
+
+The registry carries a second Mermaid gate, `md-mermaid-strict`, which runs the same
+command at `--max-label-len 20` over changed .md files. A green `md-mermaid` run alone
+does not prove Rule 3 label compliance, so the strict threshold was run as well.
+
+$ rtk ./hippo run --class ephemeral --disk-path . -- \
+    apps/rhino-cli/scripts/rhino-bin.sh md mermaid validate --max-label-len 20 specs/apps/ose
+
+HIPPO admitting ephemeral child under stable macOS warning pressure with concurrency 1.
+[mermaid] checked 19 diagrams, no findings
+Found 0 violation(s) and 0 warning(s) in 11 file(s) (19 block(s) scanned).
+
+EXIT CODE: 0
+
+$ rtk ./hippo run --class ephemeral --disk-path . -- \
+    apps/rhino-cli/scripts/rhino-bin.sh specs structure validate --app ose
+
+HIPPO admitting ephemeral child under stable macOS warning pressure with concurrency 1.
+specs structure validate: 0 finding(s) for "ose"
+
+EXIT CODE: 0
+
+$ rtk ./hippo run --class ephemeral --disk-path . -- \
+    apps/rhino-cli/scripts/rhino-bin.sh md links validate specs/apps/ose
+
+HIPPO admitting ephemeral child under stable macOS warning pressure with concurrency 1.
+[internal-link] checked 12575 links, no findings
+All links valid! No broken links found.
+
+EXIT CODE: 0
+
+md heading-hierarchy validate, md naming validate, md frontmatter validate: repo-wide runs,
+zero findings naming any id-be or id-web path.
+
+prettier --write applied to the five prose files; prettier --check is now clean for all seven.
+
+================================================================================
+3. ARCHITECTURE-FILE INVENTORY
+================================================================================
+
+specs/apps/ose/id-be/architecture.md
+  Purpose: canonical as-built C4 document for the ose-id-be logical owner corpus —
+           scope, system context, containers, the five-ring component summary,
+           persistence and privilege split, and the binding constraints.
+  Documents: tech-docs/001 system boundaries, project topology, and backend rings;
+             tech-docs/002 statelessness, persistence roles, and physical schema;
+             AC-FND-03 (privilege separation), AC-FND-04 (production disabled),
+             AC-FND-05 (stateless instances).
+  Diagram: "OSE ID backend system context" (flowchart LR, 5 nodes, max rank width 3).
+
+specs/apps/ose/id-be/architecture/README.md
+  Purpose: index for the backend architecture companion documents.
+  Documents: navigation only; no requirement.
+
+specs/apps/ose/id-be/architecture/hexagonal-dependency-boundary.md
+  Purpose: the inward-only dependency rule, inbound adapters with delivery status,
+           outbound adapters and their forbidden boundaries, the host composition
+           root, and how the direction is enforced by test rather than asserted.
+  Documents: FND-DD-08 (pragmatic hexagonal DDD), FND-DD-09 (SqlKata runtime path),
+             tech-docs/001 "Backend Architecture: Pragmatic Hexagonal DDD",
+             "One use case, multiple inbound adapters", and "Future GraphQL and
+             Model Context Protocol adapters"; tech-docs/004 backend trade-off table.
+  Delivery status encoded: REST health = delivered now (Plan 01, blue, solid arrow);
+             OIDC = planned next (Plan 04, orange, solid arrow); GraphQL and Model
+             Context Protocol = reserved seams (grey, dashed arrow, explicitly stated
+             as having no schema, runtime, resolver, server, tool, or package).
+  Diagrams: "Inbound adapter dependency direction" (flowchart TD, 6 nodes, max rank
+            width 4); "Outbound adapter dependency direction" (flowchart TD, 6 nodes,
+            max rank width 4); "Host composition root wiring" (flowchart TD, 6 nodes,
+            max rank width 3).
+
+specs/apps/ose/id-be/architecture/routes-configuration-and-health.md
+  Purpose: the exhaustive route inventory (two health routes plus five
+           disabled-capability routes and nothing else), the startup configuration
+           surface, and the liveness/readiness state model with its stable codes.
+  Documents: AC-FND-02 (health states are truthful) as its primary target;
+             AC-FND-04 (runtime mode gate) and AC-FND-06 (disabled capabilities);
+             tech-docs/001 "Health Contract", "Production-Disabled Feature Gate",
+             "API Surface Inventory"; tech-docs/002 "Configuration" and
+             "Failure and Recovery"; tech-docs/006 health API and disabled-capability
+             matrices and the contract-wide response rules.
+  Diagram: "Backend health state model" (flowchart TD, 7 nodes, max rank width 3).
+
+specs/apps/ose/id-web/architecture.md
+  Purpose: canonical as-built C4 document for the ose-id-web logical owner corpus —
+           the status-shell boundary, its container and port, its feature-local
+           components, and the constraints that keep it inert.
+  Documents: tech-docs/001 ose-id-web responsibilities; prd.md status-shell UI design
+             funnel (ServiceStatusPanel / ReadinessRow, reuse of libs/web-ui);
+             AC-FND-07 (read service status without a mouse).
+  Diagrams: "OSE ID web system context" (flowchart LR, 3 nodes, max rank width 1);
+            "OSE ID web status shell components" (flowchart TD, 5 nodes, max rank
+            width 2).
+
+specs/apps/ose/id-web/architecture/README.md
+  Purpose: index for the web architecture companion document.
+  Documents: navigation only; no requirement.
+
+specs/apps/ose/id-web/architecture/runtime-guard-and-status-reporting.md
+  Purpose: the shell's own runtime-mode guard, its request path, and the exact
+           reporting boundary — server-side read, not a health proxy, own
+           availability distinguished from the backend's.
+  Documents: AC-FND-04-WEB (web startup guard) and AC-FND-07 (status presentation);
+             tech-docs/001 ose-id-web server-side backend-health adapter and non-local
+             startup guard; tech-docs/002 configuration (OSE_ID_WEB_PORT=3500, public
+             backend URL http://127.0.0.1:8501); tech-docs/006 web status operation
+             packet (200 / sanitized 503 / sanitized 500).
+  Diagram: "Web status shell request path" (flowchart TD, 8 nodes, max rank width 2).
+
+================================================================================
+4. ACCESSIBILITY PROPERTIES OF EVERY NEW DIAGRAM
+================================================================================
+
+All 8 new diagrams carry:
+  - a descriptive accTitle naming the specific view, not the diagram type;
+  - a full-sentence accDescr stating the actors and the direction of every relationship;
+  - fills drawn only from the verified palette (#0173B2, #DE8F05, #029E73, #CC78BC,
+    #808080), each with stroke #000000 and stroke-width 2px;
+  - text colour chosen for contrast against its own fill: #FFFFFF on blue (8.59:1),
+    #000000 on orange, teal, purple, and grey (all >= 4.5:1);
+  - status carried by text in every node label, never by fill colour alone, so the
+    delivered / planned / reserved distinction survives monochrome rendering;
+  - a maximum rank width of 4 or less against the validator's max-width of 4;
+  - every node label segment at or under 20 characters, split on <br/> where needed,
+    which is the md-mermaid-strict Rule 3 threshold rather than the 30-character
+    md-mermaid backstop;
+  - no slash, dot-prefixed token, or HTML tag inside any edge label.
+
+================================================================================
+5. STRUCTURAL DEVIATION FROM THE CHECKBOX WORDING (deliberate, flagged)
+================================================================================
+
+The checkbox and tech-docs/004's file-impact tree both name
+`specs/apps/ose/id-be/architecture/*.md` and `specs/apps/ose/id-web/architecture/*.md`.
+The enforced repository convention places the canonical document at the owner root as
+`<owner>/architecture.md`, not in an `architecture/` directory:
+
+  - repo-governance/conventions/structure/specs-directory-structure/logical-owner-corpus.md
+    requires exactly three owner entries: README.md, architecture.md, behaviours/.
+  - canonical-app-spec-tree.md states the C4 zoom levels are sections of one document
+    rather than folders.
+  - apps/rhino-cli/src/RhinoCli.Application/src/Specs.fs literally tests
+    `treeHasFile tree (ownerRel + "/architecture.md")` to detect a corpus, and
+    `specs/apps/ose/be`, `lms-be`, and `app-web` all follow that shape.
+
+Both were satisfied rather than one being chosen: the canonical `architecture.md` sits at
+each owner root, and the detail views live in the `architecture/` companion directory the
+checkbox names, indexed from the parent. This mirrors the repository's existing
+progressive-disclosure pattern (`X.md` beside an `X/` companion directory, as used
+throughout repo-governance). `specs structure validate --app ose` returns 0 findings,
+which it would not if the canonical file were missing.
+
+Recommended plan amendment: tech-docs/004's file-impact rows for both owners should read
+`architecture.md [N]` plus `architecture/*.md [N]` rather than `architecture/*.md` alone.
+
+================================================================================
+6. CORRECTION TO A STATED PREMISE ABOUT THE WEB SHELL
+================================================================================
+
+The task framing asserted that ose-id-web "independently reports its own health/availability
+state (it does NOT proxy the backend's health)". Verified against tech-docs/001 and
+tech-docs/006, the accurate statement is narrower:
+
+  - tech-docs/001 line 55: ose-id-web "Owns a Next.js shell, OSE design tokens/components,
+    a SERVER-SIDE BACKEND-HEALTH ADAPTER, accessible status presentation, configuration
+    validation, and non-local startup guard."
+  - tech-docs/002 requires the public backend URL http://127.0.0.1:8501 in web configuration.
+  - tech-docs/006 web status packet: backend-status unavailability returns a sanitized 503
+    status page; prd.md renders Backend / PostgreSQL / Schema rows.
+
+So the shell DOES read the backend's readiness, on its own server side. What it does not do
+is proxy: it exposes no health route of its own, forwards no backend response body, mirrors
+no backend status code onto an API surface, and never reveals the backend origin to the
+browser. Its own availability (that the page answered at all) stays distinguishable from the
+backend rows it renders. The web architecture documents state exactly that, and do not claim
+the shell is health-independent.

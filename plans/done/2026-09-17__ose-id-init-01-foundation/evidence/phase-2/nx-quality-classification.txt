@@ -1,0 +1,182 @@
+# Phase 2 gate — isolated classification of ose-id-be / ose-id-be-e2e test:coverage failures
+# Per the delivery.md 'Grounding correction — phased behaviour coverage' amendment.
+
+## apps/ose-id-be/behaviour-coverage.json --adapter unit
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined Unit binding.
+exit=1
+
+## apps/ose-id-be/behaviour-coverage.json --adapter integration
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined Integration binding.
+exit=1
+
+## apps/ose-id-be/behaviour-coverage.json --adapter behaviour
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined Integration binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined Unit binding.
+exit=1
+
+## apps/ose-id-be-e2e/behaviour-coverage.json --adapter e2e
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined E2E binding.
+exit=1
+
+## apps/ose-id-be-e2e/behaviour-coverage.json --adapter behaviour
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / PostgreSQL denies the operation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role attempts to create or alter a table: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the application role can execute only the granted runtime health query: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/database-privilege.feature: Deny a schema change attempted by the application role / the migration role has applied the current empty OSE ID schema: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / its owned PostgreSQL dependency is stopped: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / liveness remains successful: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / no secret or connection detail is returned: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / readiness becomes unsuccessful with a stable database component code: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/health.feature: Report PostgreSQL becoming unavailable after startup / the local backend is live and ready: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / PostgreSQL, the migrated backend, and the web shell become ready in dependency order: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / stopping the runner leaves no owned process, container, network, volume, or port reservation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the developer starts OSE ID locally: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/local-stack.feature: Start OSE ID from a clean checkout / the documented local prerequisites are available and no OSE ID resources are running: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / every response is consistent with the shared dependency state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / health and database-backed diagnostic requests alternate between the instances: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / stopping either instance does not change the surviving instance's correctness: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/foundation/stateless-instances.feature: Alternate requests between backend instances / two backend instances share the same PostgreSQL schema and immutable configuration: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / PostgreSQL rejects the operation: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / an ordinary readiness check still sees the active migration state: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the migrated OSE ID database contains an active migration-history record: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the record remains stored with all six audit columns: undefined Unit binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined E2E binding.
+specs/apps/ose/id-be/behaviours/persistence/database-audit-and-soft-delete.feature: Reject physical deletion of migration history / the serving role attempts to physically delete that record: undefined Unit binding.
+exit=1
+
+## Classification
+Every non-zero line above matches the pattern 'undefined (Unit|Integration|E2E) binding.'
+and names a scenario from one of these not-yet-opened-phase feature files:
+  - behaviours/foundation/database-privilege.feature (Phase 3)
+  - behaviours/persistence/database-audit-and-soft-delete.feature (Phase 3)
+  - behaviours/foundation/health.feature (Phase 4)
+  - behaviours/foundation/local-stack.feature (Phase 4)
+  - behaviours/foundation/stateless-instances.feature (Phase 4)
+Zero orphan, duplicate, ambiguous, unused, or target-configuration finding exists.
+No AC-FND-04/06/07 (Phase 2-owned) scenario appears in any list above.

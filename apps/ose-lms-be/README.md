@@ -9,7 +9,7 @@ Built with Java 25, Spring Boot 4.1.1, and Gradle 9.7.1 (via the checked-in wrap
 ## Start it locally
 
 ```bash
-./hippo run --class service --disk-path . -- npm exec nx -- run ose-lms-be:dev
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:dev
 ```
 
 The service listens on <http://localhost:8303>. Two endpoints answer:

@@ -16,7 +16,7 @@ correspondingly no `git diff --exit-code` drift job in CI.
 Regenerate explicitly when a language server needs the output, which does not go through Nx:
 
 ```bash
-./hippo run --class transactional --disk-path . -- npm exec nx -- run <app>:codegen
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run <app>:codegen
 ```
 
 See [Per-Project Generated Sources](../../workflow/worktree-setup/per-project-generated-sources.md)

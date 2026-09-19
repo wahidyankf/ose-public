@@ -59,7 +59,7 @@ Identity password hashing/validation, Mailpit/SMTP, clock, and capability storag
 adapter concerns. EF is migration-time tooling only in this slice.
 
 This preserves the Init 01
-[transport extension seam](../../../in-progress/ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#one-use-case-multiple-inbound-adapters):
+[transport extension seam](../../../done/2026-09-17__ose-id-init-01-foundation/tech-docs/001-system-boundaries-and-project-topology.md#one-use-case-multiple-inbound-adapters):
 a future GraphQL resolver or Model Context Protocol tool may invoke the same account use case, but cannot
 reuse REST DTOs, bypass enumeration/privacy policy, or receive password/capability material in a generic
 result. This plan adds only REST operations and their OpenAPI contract; it adds no GraphQL or MCP surface.

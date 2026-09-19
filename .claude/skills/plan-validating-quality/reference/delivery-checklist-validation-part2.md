@@ -72,5 +72,5 @@
   enabled and disabled path tests and recorded rollout, rollback, and removal. Missing any of this
   delivery evidence is **HIGH**.
 - Phase transitions have explicit verification steps (e.g. "Verify
-  `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run app:typecheck` passes").
+  `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run app:typecheck` passes").
 - Input/Outcome/Proof prose is not a task; every action checkbox is an independent harness task.

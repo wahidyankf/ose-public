@@ -22,13 +22,13 @@
 
 ```bash
 # Start development server (http://localhost:3200)
-rtk ./hippo run --class service --disk-path . -- npm exec nx -- dev organiclever-www
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev organiclever-www
 
 # Build for production (local verification)
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- build organiclever-www
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- build organiclever-www
 
 # Type checking
-rtk ./hippo run --class ephemeral --disk-path . -- npm exec tsc -- \
+rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec tsc -- \
   --noEmit --project apps/organiclever-www/tsconfig.json
 ```
 
@@ -39,11 +39,11 @@ frontend, or want an environment closer to CI.
 
 ```bash
 # From repository root — starts organiclever-www in Docker
-rtk ./hippo run --class service --disk-path . -- \
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- \
   docker compose -f infra/dev/organiclever-www/docker-compose.yml up --build
 
 # Or start the frontend container only
-rtk ./hippo run --class service --disk-path . -- \
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- \
   docker compose -f infra/dev/organiclever-www/docker-compose.yml up organiclever-www
 ```
 

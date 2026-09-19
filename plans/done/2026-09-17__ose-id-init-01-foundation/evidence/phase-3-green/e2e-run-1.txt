@@ -1,0 +1,23 @@
+=== before ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=24.00 diskFreeGiB=88.88 cpu=12.1%
+
+=== command ===
+dotnet test apps/ose-id-be-e2e/OseId.Be.E2E.csproj
+
+=== output ===
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  OseId.Domain -> apps/ose-id-be/src/OseId.Domain/bin/Debug/net10.0/OseId.Domain.dll
+  OseId.Be.E2E -> apps/ose-id-be-e2e/bin/Debug/net10.0/OseId.Be.E2E.dll
+Test run for apps/ose-id-be-e2e/bin/Debug/net10.0/OseId.Be.E2E.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    11, Skipped:     0, Total:    11, Duration: 2 s - OseId.Be.E2E.dll (net10.0)
+
+exit=0
+
+=== after ===
+state=normal reason=normal profile=local-constrained concurrency=2 swap=active availableGiB=24.00 diskFreeGiB=88.88 cpu=6.8%
+
+=== owned containers surviving ===
+(none)

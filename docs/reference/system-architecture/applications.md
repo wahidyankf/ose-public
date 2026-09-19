@@ -25,8 +25,8 @@ The platform consists of the following applications across its technology stacks
 - **URL**: <https://oseplatform.com>
 - **Technology**: Next.js 16 (App Router) + TypeScript + tRPC
 - **Deployment**: Vercel (via `prod-ose-www` branch)
-- **Build Command**: `./hippo run --class transactional --disk-path . -- npm exec nx -- build ose-www`
-- **Dev Command**: `./hippo run --class service --disk-path . -- npm exec nx -- dev ose-www`
+- **Build Command**: `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- build ose-www`
+- **Dev Command**: `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev ose-www`
 - **Dev Port**: 3100
 - **Location**: `apps/ose-www/`
 
@@ -37,9 +37,9 @@ The platform consists of the following applications across its technology stacks
 - **Technology**: Next.js 16 (App Router) + TypeScript + tRPC
 - **Languages**: Bilingual (default English)
 - **Deployment**: Vercel (via `prod-ayokoding-www` branch)
-- **Build Command**: `./hippo run --class transactional --disk-path . -- npm exec nx -- build ayokoding-www`
-- **Dev Preflight**: `./hippo run --class transactional --disk-path . -- npm exec nx -- run ayokoding-www:generate-indexes`
-- **Dev Command**: `./hippo run --class service --disk-path . --cwd apps/ayokoding-www -- node ../../scripts/next-with-port.mjs dev --env AYOKODING_WWW_PORT --default 3101`
+- **Build Command**: `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- build ayokoding-www`
+- **Dev Preflight**: `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-www:generate-indexes`
+- **Dev Command**: `./hippo run --class service --resource-tier standard --disk-path . --cwd apps/ayokoding-www -- node ../../scripts/next-with-port.mjs dev --env AYOKODING_WWW_PORT --default 3101`
 - **Dev Port**: 3101
 - **Location**: `apps/ayokoding-www/`
 - **Content**: Co-located at `apps/ayokoding-www/content/`
@@ -50,8 +50,8 @@ The platform consists of the following applications across its technology stacks
 - **URL**: <https://www.organiclever.com>
 - **Technology**: Next.js 16 (App Router) + TypeScript
 - **Deployment**: Vercel (via `prod-organiclever-www` branch)
-- **Build Command**: `./hippo run --class transactional --disk-path . -- npm exec nx -- build organiclever-www`
-- **Dev Command**: `./hippo run --class service --disk-path . -- npm exec nx -- dev organiclever-www`
+- **Build Command**: `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- build organiclever-www`
+- **Dev Command**: `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev organiclever-www`
 - **Dev Port**: 3200
 - **Location**: `apps/organiclever-www/`
 
@@ -61,7 +61,7 @@ The platform consists of the following applications across its technology stacks
 
 - **Purpose**: Repository management and automation
 - **Language**: F# (ported from Rust 2026-08-30)
-- **Build Command**: `./hippo run --class ephemeral --disk-path . -- npm exec nx -- build rhino-cli`
+- **Build Command**: `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- build rhino-cli`
 - **Location**: `apps/rhino-cli/`
 - **Status**: Production
 
@@ -77,8 +77,8 @@ The platform consists of the following applications across its technology stacks
   branch). Production continuous delivery is **deferred** to a separate plan — no
   production-CD workflow exists yet; the gated `organiclever-app-test-stag.yml`
   runs the FE E2E gate against staging and stops on pass without promoting.
-- **Build Command**: `./hippo run --class transactional --disk-path . -- npm exec nx -- build organiclever-www`
-- **Dev Command**: `./hippo run --class service --disk-path . -- npm exec nx -- dev organiclever-www`
+- **Build Command**: `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- build organiclever-www`
+- **Dev Command**: `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev organiclever-www`
 - **Location**: `apps/organiclever-www/`
 - **Features**:
   - Static landing page at `/` (no network dependency)
@@ -93,8 +93,8 @@ The platform consists of the following applications across its technology stacks
 
 - **Purpose**: REST API backend for OrganicLever (F#/Giraffe/ASP.NET 10 implementation)
 - **Technology**: F# + Giraffe + ASP.NET 10 + EF Core + DbUp
-- **Build Command**: `./hippo run --class transactional --disk-path . -- npm exec nx -- build organiclever-be`
-- **Dev Command**: `./hippo run --class service --disk-path . -- npm exec nx -- dev organiclever-be`
+- **Build Command**: `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- build organiclever-be`
+- **Dev Command**: `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev organiclever-be`
 - **Location**: `apps/organiclever-be/`
 - **Features**:
   - Coverlet Unit line coverage enforcement (>=99%)
@@ -105,8 +105,8 @@ The platform consists of the following applications across its technology stacks
 
 - **Purpose**: REST API backend for OSE Application platform (api.oseplatform.com)
 - **Technology**: F# + Giraffe + ASP.NET 10 + EF Core + DbUp
-- **Build Command**: `./hippo run --class transactional --disk-path . -- npm exec nx -- build ose-be`
-- **Dev Command**: `./hippo run --class service --disk-path . -- npm exec nx -- dev ose-be`
+- **Build Command**: `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- build ose-be`
+- **Dev Command**: `./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev ose-be`
 - **Location**: `apps/ose-be/`
 - **Features**:
   - Coverlet Unit line coverage enforcement (>=99%)
@@ -119,42 +119,42 @@ The platform consists of the following applications across its technology stacks
 
 - **Purpose**: Frontend E2E tests for ose-www UI
 - **Technology**: Playwright
-- **Run Command**: `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-www-fe-e2e:test:e2e`
+- **Run Command**: `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-www-fe-e2e:test:e2e`
 - **Location**: `apps/ose-www-fe-e2e/`
 
 #### ose-www-be-e2e
 
 - **Purpose**: Backend E2E tests for ose-www tRPC API
 - **Technology**: Playwright
-- **Run Command**: `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-www-be-e2e:test:e2e`
+- **Run Command**: `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-www-be-e2e:test:e2e`
 - **Location**: `apps/ose-www-be-e2e/`
 
 #### ayokoding-www-fe-e2e
 
 - **Purpose**: Frontend E2E tests for ayokoding-www UI
 - **Technology**: Playwright
-- **Run Command**: `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ayokoding-www-fe-e2e:test:e2e`
+- **Run Command**: `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-www-fe-e2e:test:e2e`
 - **Location**: `apps/ayokoding-www-fe-e2e/`
 
 #### ayokoding-www-be-e2e
 
 - **Purpose**: Backend E2E tests for ayokoding-www tRPC API
 - **Technology**: Playwright
-- **Run Command**: `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ayokoding-www-be-e2e:test:e2e`
+- **Run Command**: `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ayokoding-www-be-e2e:test:e2e`
 - **Location**: `apps/ayokoding-www-be-e2e/`
 
 #### organiclever-www-fe-e2e
 
 - **Purpose**: Frontend E2E tests for organiclever-www UI
 - **Technology**: Playwright
-- **Run Command**: `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-www-fe-e2e:test:e2e`
+- **Run Command**: `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-www-fe-e2e:test:e2e`
 - **Location**: `apps/organiclever-www-fe-e2e/`
 
 #### organiclever-be-e2e
 
 - **Purpose**: End-to-end tests for organiclever-be REST API
 - **Technology**: Playwright
-- **Run Command**: `./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-be-e2e:test:e2e`
+- **Run Command**: `./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be-e2e:test:e2e`
 - **Location**: `apps/organiclever-be-e2e/`
 
 ## C4 Level 2: Container Diagram

@@ -1,0 +1,105 @@
+Second-turn `web-exploratory-tester` pass (same session, resumed after a context compaction that
+interrupted the first turn between drafting EWT-001/EWT-002/SG-002 and running an HTTP
+method/edge-case sweep). Target: http://127.0.0.1:3500/ (foundation-ready stack, run 343df6ee39d1).
+Tooling: curl 8.7.1, nc (raw socket probe), Playwright 1.60.0 chromium (media-emulation sweep).
+
+=== A. HTTP method matrix against `/` ===
+GET     -> 200, full status-shell HTML (12050 bytes gzip-negotiated, ungzipped baseline)
+HEAD    -> 200, same headers as GET, no body (as expected)
+POST    -> 200, byte-identical full status-shell HTML to GET (verified: page body diff empty except
+           React Server Components hydration id, which also varies request-to-request on GET)
+PUT     -> 200, same as POST
+DELETE  -> 200, same as POST
+PATCH   -> 200, same as POST
+OPTIONS -> 400 Bad Request, empty body, no `Allow` header, no `Content-Type`, no `X-Powered-By`.
+           Matches a documented Next.js App Router framework limitation for any route with a
+           `page.tsx` and no sibling `route.ts` OPTIONS handler (vercel/next.js#75633,
+           "All OPTIONS requests return 400 bad request") -- reproduced upstream in the framework
+           default, not introduced by this app's own code.
+TRACE   -> 500 Internal Server Error, Content-Type: text/plain, Content-Length: 21, body literally
+           "Internal Server Error" -- no stack trace, path, header, or backend detail leaked. This
+           reproduces architecture.md's own "Constraints" promise ("Nothing infrastructural is
+           shown... A failed read produces a sanitized page, never a stack trace...") for a trigger
+           the spec never anticipated (an unusual HTTP method, not the internal unreadable-status
+           branch) -- see SG-003 proposal in delivery.md.
+
+=== B. Query string / path edge cases ===
+/?                              -> 200 (empty query, same content)
+/?a=1&a=2                       -> 200 (repeated param, ignored by rendered UI)
+/?a=%20%20                      -> 200 (whitespace-only value, ignored)
+/?x=<5000 char value>           -> 200 (very long query string, no truncation/error)
+/?name=<CJK + emoji percent-enc> -> 200 (Unicode/emoji query value, no crash)
+/?probe=%22%3E%3Cb%3EMARK...    -> 200; the raw encoded query string IS echoed into the inline
+                                    React Server Components flight-data JSON (`"q":"..."`) but is
+                                    correctly Unicode-escaped there (`><b>...`) --
+                                    no unescaped `<`/`>`/`"` reaches the script context. No visible
+                                    UI change; not a reflected-XSS vector. Confirmed clean.
+//                              -> 308 Permanent Redirect -> `/` (standard trailing-slash
+                                    normalization)
+/index.html, /STATUS, /status   -> 404 (no such route; case-sensitive; no leak in body)
+/.. , /../ , /%2e%2e , /%2e%2e/ , /./ , /%2e  (sent literally via `curl --path-as-is`)
+                                 -> all 200 (Next's router collapses dot-segments to `/`; this is
+                                    ordinary path normalization, not a path-traversal issue -- no
+                                    filesystem path is ever exposed through this route)
+/some-unknown-path-xyz          -> 404, Next's standard static 404 page, cached
+                                    (`x-nextjs-cache: HIT`), no stack/path/leak markers in body
+
+=== C. Headers, cookies, concurrency, protocol boundaries ===
+- 20 fully concurrent `GET /` (xargs -P 20): 20/20 return 200, identical Content-Length (12050),
+  MD5-identical bodies (1 unique hash across all 20) -- reconfirms, at higher concurrency than the
+  first turn's 10x pass, the `status-shell.feature` invariant "repeated and concurrent reads change
+  nothing the service stores."
+- Cookie reflection: sent `Cookie: session=arbitrary-probe-value-123`; response has no `Set-Cookie`
+  header and the probe value does not appear anywhere in the response body (0 occurrences).
+- Oversized request header (90000-byte `X-Test-Big` value): server correctly rejects with
+  `431 Request Header Fields Too Large` and resets the connection (Node's built-in `http` server
+  boundary, not app-specific).
+- Missing `Host` header on a raw HTTP/1.1 request (via `nc`, bypassing curl's automatic Host
+  injection): server correctly rejects with `400 Bad Request` (HTTP/1.1 mandates `Host`; Node's
+  http server enforces this).
+- Malformed/mismatched `Host: evil.example.com` header: accepted (200) -- the page does not use the
+  request's `Host` header for any rendered link, redirect, or asset URL, so this has no observable
+  effect; not exploitable for this content-free page.
+- `Accept-Encoding: gzip, br, deflate` -> `Content-Encoding: gzip` applied correctly.
+- `Range: bytes=0-100` -> ignored, full `200` response returned (expected for a dynamically
+  rendered HTML document, not a static byte-range-servable resource).
+- No `robots.txt`, `sitemap.xml`, or `manifest.json` file exists (all `404`); the page's own
+  `<meta name="robots" content="noindex, nofollow">` is the only crawler-facing signal. No spec
+  requires a physical `robots.txt`; not filed as a finding.
+- No dev-mode markers found: `/_next/static/development/_buildManifest.js`,
+  `/_next/webpack-hmr`, and `/__nextjs_original-stack-frame` all `404`; no HMR script, dev overlay
+  marker, or "development" path segment anywhere in the served bundle -- confirms Rule-9's "against
+  the built shell, not a dev-server substitute" requirement holds.
+
+=== D. Accessibility media-feature sweep (Playwright `emulateMedia`, 1280px unless noted) ===
+- `forced-colors: active`, light and dark base palette: renders correctly under the OS forced-colors
+  palette (pure black-on-white / white-on-black); all borders (Card, Alert, row dividers) remain
+  visible because they are real `border` declarations, not background-color-only tricks; all text
+  legible; 0 interactive elements; no overflow. Screenshots: `forced-colors-light-1280.png`,
+  `forced-colors-dark-1280.png`.
+- `prefers-reduced-motion: reduce`: renders identically to the unmodified light theme (no animation
+  exists to reduce). Screenshot: `reduced-motion-1280.png`.
+- `prefers-contrast: more`: renders identically to the unmodified light theme -- the token system
+  has no dedicated high-contrast palette. Not filed as a finding (WCAG 2.2 AA does not require a
+  `prefers-contrast: more` theme; the page's default contrast and the `forced-colors` behaviour above
+  already satisfy 1.4.11/1.4.3). Screenshot: `high-contrast-more-1280.png`.
+- 320px / 1280px structural re-confirmation (independent of the first turn's 12-cell matrix):
+  0 interactive elements, 1 `h1`, 1 named `[role=status]` region, `html[lang]="en"`, no horizontal
+  overflow, 0 console messages, 0 page errors, in every context above plus the two default-media
+  desktop captures.
+- Lightweight navigation timing (Lighthouse unavailable offline; not installed, and installing it
+  would require a network fetch outside resource-aware-development discipline): first paint /
+  first-contentful-paint consistently 20-60ms, `domContentLoaded` under 16ms, in every context probed
+  -- no performance concern on this local, asset-light page.
+
+=== E. Sanitized-failure-document reconstruction (source-level, not a live probe) ===
+`sanitizedUnavailableDocument()` in `apps/ose-id-web/src/contexts/foundation/application/
+service-status.ts` is a pure function of module-level constants (no live branch reaches it in this
+foundation slice; see EWT-001/the `@e2e-exempt` tag on `status-shell.feature`'s "Sanitize a
+status-rendering failure" scenario). Its exact literal output was reconstructed by hand from the
+read source (not executed against the live server) and rendered via Playwright to confirm the
+architecture doc's specific promises about this never-yet-seen page: single `role="status"
+aria-live="polite"` region, one `h1`, inlined `<style>` (no external stylesheet dependency, so it
+can render even if the app's own CSS bundle failed to build/serve), correct `prefers-color-scheme`
+dark-mode CSS, no horizontal overflow at 320px. All confirmed. Screenshots:
+`sanitized-503-{light,dark}-{320,1280}px.png`.

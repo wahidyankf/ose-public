@@ -63,7 +63,7 @@ Threshold changes are class-wide policy recalibrations, never remediation for on
 evidence that the existing signal is broadly non-actionable or that harness capacity or repository
 policy changed; preserve minimal sufficiency, record the rationale as a YAML comment, edit the
 `governance-word-budget:` section of `repo-config.yml`, and run
-`./hippo run --class ephemeral --disk-path . -- npm exec nx -- run rhino-cli:governance-word-budget:validation`.
+`./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run rhino-cli:governance-word-budget:validation`.
 Never adjust a threshold to paper over a bloated file or a specific change.
 
 ## Children

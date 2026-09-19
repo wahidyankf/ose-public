@@ -71,6 +71,9 @@ pids/
 *.seed
 *.pid.lock
 
+# local-stack runner's transient tsconfig mutation lock (apps/ose-id-be-e2e/scripts/local-stack.mjs)
+apps/ose-id-web/tsconfig.json.lock
+
 # Logs
 logs/
 *.log
@@ -178,9 +181,13 @@ coverage.xml
 # Bundled OpenAPI spec + docs
 specs/apps/a-demo/contracts/generated/
 specs/apps/ose/lms-be/contracts/generated/
-# The roots contract keeps a hand-written README in its generated/ folder, so the folder
-# itself is ignored by glob and the README negated back in. The two siblings above ignore
-# the whole directory instead; theirs hold nothing but build output.
+# The roots and OSE ID contracts keep a hand-written README in their generated/ folder, so the
+# folder itself is ignored by glob and the README negated back in — required because both trees are
+# declared in `md-readme-index.trees`, whose gate walks the working tree and does not read
+# .gitignore. The two siblings above ignore the whole directory instead; theirs hold nothing but
+# build output.
+specs/apps/ose/id-be/contracts/generated/*
+!specs/apps/ose/id-be/contracts/generated/README.md
 specs/apps/roots/be/contracts/generated/*
 !specs/apps/roots/be/contracts/generated/README.md
 

@@ -10,7 +10,7 @@ Before committing changes:
 - [ ] Images use Next.js `<Image>` component (not `<img>`)
 - [ ] Links use Next.js `<Link>` component (not `<a>` for internal links)
 - [ ] All interactive elements are keyboard accessible
-- [ ] `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run organiclever-www:lint`
+- [ ] `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-www:lint`
       exits 0 (0 boundary errors)
 
 ## Common Mistakes

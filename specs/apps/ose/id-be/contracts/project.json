@@ -1,0 +1,79 @@
+{
+  "name": "ose-id-contracts",
+  "root": "specs/apps/ose/id-be/contracts",
+  "tags": ["type:lib", "domain:ose"],
+  "targets": {
+    "lint": {
+      "command": "mkdir -p specs/apps/ose/id-be/contracts/generated && npx @redocly/cli bundle specs/apps/ose/id-be/contracts/openapi.yaml -o specs/apps/ose/id-be/contracts/generated/openapi-bundled.yaml && npx @redocly/cli bundle specs/apps/ose/id-be/contracts/openapi.yaml -o specs/apps/ose/id-be/contracts/generated/openapi-bundled.json && npx @stoplight/spectral-cli lint specs/apps/ose/id-be/contracts/generated/openapi-bundled.yaml --ruleset specs/apps/ose/id-be/contracts/.spectral.yaml",
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*.yaml", "!{projectRoot}/generated/**", "!{projectRoot}/examples/**"]
+    },
+    "bundle": {
+      "command": "mkdir -p specs/apps/ose/id-be/contracts/generated && npx @redocly/cli bundle specs/apps/ose/id-be/contracts/openapi.yaml -o specs/apps/ose/id-be/contracts/generated/openapi-bundled.yaml && npx @redocly/cli bundle specs/apps/ose/id-be/contracts/openapi.yaml -o specs/apps/ose/id-be/contracts/generated/openapi-bundled.json",
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*.yaml", "!{projectRoot}/generated/**", "!{projectRoot}/examples/**"],
+      "outputs": ["{projectRoot}/generated/openapi-bundled.yaml", "{projectRoot}/generated/openapi-bundled.json"]
+    },
+    "docs": {
+      "command": "mkdir -p specs/apps/ose/id-be/contracts/generated/docs && npx @redocly/cli bundle specs/apps/ose/id-be/contracts/openapi.yaml --remove-unused-components -o specs/apps/ose/id-be/contracts/generated/openapi-docs.yaml && npx @redocly/cli build-docs specs/apps/ose/id-be/contracts/generated/openapi-docs.yaml -o specs/apps/ose/id-be/contracts/generated/docs/index.html",
+      "dependsOn": ["bundle"],
+      "cache": true,
+      "inputs": ["{projectRoot}/generated/openapi-bundled.yaml"],
+      "outputs": ["{projectRoot}/generated/docs/"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'no-op: target not applicable for this project (OpenAPI contract spec only)'"
+      }
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ose-id-contracts:typecheck",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-contracts:lint",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ose-id-contracts:specs:structure-validation",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": ["default"]
+    },
+    "deps:audit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'deps:audit: no package dependencies to audit'"
+      },
+      "cache": false
+    },
+    "compat:min-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "echo 'compat:min-version: no standard min-version floor'"
+      },
+      "cache": true
+    },
+    "specs:structure-validation": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- specs structure validate"
+      },
+      "cache": true,
+      "inputs": ["{workspaceRoot}/specs/apps/!(rhino)/**/*"]
+    }
+  },
+  "namedInputs": {
+    "specs": ["{workspaceRoot}/specs/apps/ose/id-be/contracts/**"]
+  }
+}

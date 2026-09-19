@@ -23,7 +23,7 @@ any other file's content.
 | `*.py`                                            | `ruff format`                                                   |
 | `*.dart`                                          | `dart format`                                                   |
 | `*.clj`                                           | `cljfmt fix` (native binary)                                    |
-| `*.cs`                                            | `dotnet csharpier format`                                       |
+| `*.cs`                                            | `csharpier format`                                              |
 | `*.{ex,exs}`                                      | `scripts/format-elixir.sh` (CWD-aware wrapper for `mix format`) |
 | `*.java`                                          | `scripts/format-java.sh` (Gradle-root wrapper for Spotless)     |
 

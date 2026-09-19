@@ -102,16 +102,16 @@ code, observed result, and changed paths. A path discovered during Phase 0 must 
 output, stop the phase gate, fix the root cause without weakening tests or contracts, rerun the same
 command, and append the disposition to that phase's evidence.
 
-| Phase | Owner                                          | Authorized path or bounded pattern                                                                                                                                  | Copyable verification command                                                                                                                                                                             | Observable result and evidence                                                                                                                                             |
-| ----- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0     | Root coordinator                               | repository inventory, predecessor artifacts, and execution worktree only                                                                                            | Run the Phase 0 predecessor-green baseline commands from this section.                                                                                                                                    | Exit `0`; baseline and resolved paths in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-0-baseline.md`                                                 |
-| 1     | Root coordinator                               | `specs/apps/ose/id-be/**`, `specs/apps/ose/id-web/**`, all four OSE ID `behaviour-coverage.json` files, this plan's numbered tech docs, and federation UI contracts | Green predecessor baseline, then `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e` | Only recorded missing Plan 07 bindings may be RED; all other mapping checks exit `0` in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-1-contracts.md` |
-| 2     | Backend owner                                  | `apps/ose-id-be/**`, backend E2E fixtures, and resolved migration paths                                                                                             | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-be`                                                                               | Exit `0`; ordered RED/GREEN/REFACTOR trace in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-2-backend.md`                                             |
-| 3     | Fake-provider owner                            | bounded fake-provider and federation E2E paths discovered in Phase 0                                                                                                | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:integration`                                                                                                | Exit `0`; deterministic provider/fault proof in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-3-fake-provider.md`                                     |
-| 4     | Web/UI owner                                   | `apps/ose-id-web/**`, `apps/ose-id-web-e2e/**`, and approved shared UI paths                                                                                        | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-web`                                                                              | Exit `0`; UI/BFF RED/GREEN/REFACTOR trace in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-4-web.md`                                                  |
-| 5     | Root coordinator after lane convergence        | backend, web, E2E, and canonical spec paths in the frozen ledger                                                                                                    | `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`                                                                                                       | Exit `0`; API/browser/replay evidence in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-federation.md`                                               |
-| 6     | Root coordinator and named quality-gate agents | frozen delivery ledger only                                                                                                                                         | `rtk ./hippo run --class transactional --disk-path . -- npm run check:pre-push`                                                                                                                           | Exit `0`; API, UI, accessibility, usability, and security reports in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-6-quality-gates.md`                |
-| 7     | Root coordinator and review agents             | this plan, current-head diff, and annotated plan indexes                                                                                                            | `rtk ./hippo run --class transactional --disk-path . -- npm run check:pre-push`                                                                                                                           | Exit `0`; archive, current-head review, and cleanup disposition in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-7-closure.md`                        |
+| Phase | Owner                                          | Authorized path or bounded pattern                                                                                                                                  | Copyable verification command                                                                                                                                                                                                      | Observable result and evidence                                                                                                                                             |
+| ----- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0     | Root coordinator                               | repository inventory, predecessor artifacts, and execution worktree only                                                                                            | Run the Phase 0 predecessor-green baseline commands from this section.                                                                                                                                                             | Exit `0`; baseline and resolved paths in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-0-baseline.md`                                                 |
+| 1     | Root coordinator                               | `specs/apps/ose/id-be/**`, `specs/apps/ose/id-web/**`, all four OSE ID `behaviour-coverage.json` files, this plan's numbered tech docs, and federation UI contracts | Green predecessor baseline, then `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e` | Only recorded missing Plan 07 bindings may be RED; all other mapping checks exit `0` in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-1-contracts.md` |
+| 2     | Backend owner                                  | `apps/ose-id-be/**`, backend E2E fixtures, and resolved migration paths                                                                                             | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-be`                                                                               | Exit `0`; ordered RED/GREEN/REFACTOR trace in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-2-backend.md`                                             |
+| 3     | Fake-provider owner                            | bounded fake-provider and federation E2E paths discovered in Phase 0                                                                                                | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:integration`                                                                                                | Exit `0`; deterministic provider/fault proof in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-3-fake-provider.md`                                     |
+| 4     | Web/UI owner                                   | `apps/ose-id-web/**`, `apps/ose-id-web-e2e/**`, and approved shared UI paths                                                                                        | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-web`                                                                              | Exit `0`; UI/BFF RED/GREEN/REFACTOR trace in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-4-web.md`                                                  |
+| 5     | Root coordinator after lane convergence        | backend, web, E2E, and canonical spec paths in the frozen ledger                                                                                                    | `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`                                                                                                       | Exit `0`; API/browser/replay evidence in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-federation.md`                                               |
+| 6     | Root coordinator and named quality-gate agents | frozen delivery ledger only                                                                                                                                         | `rtk npm run check:pre-push`                                                                                                                                                                                                       | Exit `0`; API, UI, accessibility, usability, and security reports in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-6-quality-gates.md`                |
+| 7     | Root coordinator and review agents             | this plan, current-head diff, and annotated plan indexes                                                                                                            | `rtk npm run check:pre-push`                                                                                                                                                                                                       | Exit `0`; archive, current-head review, and cleanup disposition in `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-7-closure.md`                        |
 
 ### PostgreSQL Persistence Contract
 
@@ -138,14 +138,14 @@ It is not a Phase 0 or Phase 1 success criterion. Before creating any Plan 07 sc
 test, Phase 0 and Phase 1 each run this exact predecessor-green baseline:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t build --projects=ose-id-be,ose-id-web
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t typecheck,lint,test:quick --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
 ```
 
 Then run the static predecessor behavior baseline:
 
 ```bash
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e
 ```
 
 Phase 0 proves every named target is real, not echo, no-op, a success sentinel, or a duplicate alias.
@@ -176,8 +176,8 @@ baseline, target/configuration, or unrelated failure blocks Phase 2.
       non-destructively with current `origin/main`, and record route/branch/HEAD/reflog evidence plus a
       branch-inventory row.
 - [ ] [AI] Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm install` and
-      `rtk ./hippo run --class transactional --disk-path . -- npm run doctor -- --fix`; acceptance: both
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
+      `rtk npm run doctor -- --fix`; acceptance: both
       exit 0 and no secret or unrelated mutation appears.
 - [ ] [AI] Read `apps/ose-id-be/project.json`, `apps/ose-id-be-e2e/project.json`,
       `apps/ose-id-web/project.json`, and `apps/ose-id-web-e2e/project.json`; record actual source roots,
@@ -188,7 +188,7 @@ baseline, target/configuration, or unrelated failure blocks Phase 2.
       third-party licenses are compatible and documented.
 - [ ] [AI] Run the Phase 0 predecessor-green baseline so `build` executes only for backend/web owners while
       all four projects run real `typecheck`, `lint`, and `test:quick`, then run
-      `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`; inventory the registry with
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`; inventory the registry with
       `rtk apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=pre-push --format=text`; preserve clean baseline transcripts. Diagnose every failure
       at root cause; never skip, retry, sleep, quarantine, widen, or weaken a gate.
 - [ ] [AI] Search current OSE ID files for provider abstractions and Google/Facebook references. Reuse a
@@ -200,12 +200,12 @@ baseline, target/configuration, or unrelated failure blocks Phase 2.
 > All checks below must pass before Phase 1.
 
 - [ ] [AI] Run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick,test:coverage:behaviour --base=origin/main --head=HEAD`
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick,test:coverage:behaviour --base=origin/main --head=HEAD`
       and the canonical pre-push command above; acceptance: both exit 0 and dependency, worktree,
       path/target, license, baseline, and rule-impact evidence are current at one HEAD.
 
 > **Pause Safety:** no Google behavior/migration exists and the baseline is reproducible. Safe to stop.
-> To resume: `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD`.
+> To resume: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD`.
 
 ---
 
@@ -222,7 +222,7 @@ baseline, target/configuration, or unrelated failure blocks Phase 2.
       `specs/apps/ose/id-be/behaviours/federation/google-federation.feature` and
       `specs/apps/ose/id-web/behaviours/federation/google-federation.feature`, then add named U/I/E
       entries to all four OSE ID `behaviour-coverage.json` files. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`;
       acceptance is zero duplicate/undefined/unowned scenarios and missing implementations only RED.
       Save exact paths, mappings, exit code, and RED symbols to `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-1-gherkin-red.md`; any
       wording/path drift or exemption request blocks Phase 1.
@@ -230,7 +230,7 @@ baseline, target/configuration, or unrelated failure blocks Phase 2.
       subject-collision, outage, token-leakage, fake-runtime-escape, and instance-handoff rows to
       `docs/explanation/security/ose-id-threat-model.md`, each with owner, U/I/E or manual proof, and
       residual risk. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec markdownlint-cli2 -- docs/explanation/security/ose-id-threat-model.md`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec markdownlint-cli2 -- docs/explanation/security/ose-id-threat-model.md`;
       acceptance is exit `0` and no unowned threat. Save row IDs to `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-1-threat-map.md`;
       unresolved ownership blocks Phase 1.
 
@@ -238,11 +238,11 @@ baseline, target/configuration, or unrelated failure blocks Phase 2.
 
 Execute each row independently and in the displayed order; never batch GREEN across rows before its
 own RED is captured. Backend rows use
-`rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-be`
+`rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-be`
 for RED/GREEN,
-`rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t lint,typecheck,test:unit,test:integration -p ose-id-be`
+`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t lint,typecheck,test:unit,test:integration -p ose-id-be`
 for REFACTOR, then
-`rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t openapi:validate,client:generate -p ose-id-be`
+`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t openapi:validate,client:generate -p ose-id-be`
 for publication. Web rows use the same commands with `ose-id-web`. Every stage writes command, exit,
 named tests, changed paths, and observed result to
 `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-{2-backend|4-web}-<operation>-{red|green|refactor|publish}.txt`. RED must fail only for
@@ -266,12 +266,12 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
 - [ ] [AI] Freeze the ten schedule rows before implementation by resolving every bounded test/source
       pattern against the Phase 0 inventory and recording forty future evidence destinations in
       `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-1-operation-schedule.md`. Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec markdownlint-cli2 -- plans/in-progress/ose-id-init-07-google-federation/delivery.md`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec markdownlint-cli2 -- plans/in-progress/ose-id-init-07-google-federation/delivery.md`;
       acceptance is exit `0`, exact paths for every row, and RED as the only executed stage. A missing
       operation/stage/path or any premature GREEN blocks Phase 2.
 - [ ] [AI] **RED:** create provider-port and account-policy Unit cases under the Phase 0-discovered
       `ose-id-be` test source for AC-GOOGLE-01..06; run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-be:test:unit`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:test:unit`;
       acceptance: the new cases fail because the provider contract and policies do not exist, while old
       tests remain green. Save sanitized output to `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-1-backend-red.txt`.
 - [ ] [AI] **RED:** create web component/server-boundary cases under the discovered `ose-id-web` test
@@ -288,12 +288,12 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
       RED ledger: only named absent Plan 07 behavior may be nonzero; a baseline, target/configuration, or
       unrelated failure blocks Phase 2. Do not require the full green matrix until Phase 2 completes.
 - [ ] [AI] Run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`;
       acceptance: all scenarios have U/I/E ownership, threat owners, and named RED evidence while no
       implementation or speculative provider artifact has landed.
 
 > **Pause Safety:** contracts are reviewable and only new focused tests are red. Safe to stop. To resume:
-> `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`.
+> `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-id-be,ose-id-be-e2e,ose-id-web,ose-id-web-e2e`.
 
 ---
 
@@ -318,7 +318,7 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
 - [ ] [AI] **Cross-operation backend reconciliation after rows 1–4.** Rerun the complete provider-port,
       callback/account-policy, persistence, OpenAPI, runtime-guard, and compiled-SQL/explicit-projection/
       bound-parameter/timeout/cancellation/query-bound suite with
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-be`.
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:unit,test:integration -p ose-id-be`.
       Inspect the combined implementation for one provider port, one normalized error vocabulary, one
       account-link policy, explicit Npgsql transactions, and no provider/SDK/framework type in Domain or
       Application. Acceptance: every operation-specific GREEN/REFACTOR artifact already exists, this
@@ -334,21 +334,21 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
       ordinary reads, and observes retained sanitized attribution. No layer exemption is permitted.
 - [ ] [AI] **Backend slice quality closure.** Rerun backend build/typecheck/lint/Unit/Integration and
       migration validation with
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t build,typecheck,lint,test:unit,test:integration -p ose-id-be`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t build,typecheck,lint,test:unit,test:integration -p ose-id-be`.
       Acceptance: no raw provider token escapes the adapter and no aggregate cleanup changed an already
       accepted operation contract; save `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-2-google-backend-quality.txt`.
 
 ### Phase 2 Gate
 
 - [ ] [AI] Run the Phase 2 run-many command and
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`;
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`;
       acceptance: backend criteria, migration/no-loss, stateless correlation, runtime guards, and at least
       99% authored production-code Unit line coverage pass; `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-2-persistence/` proves
       compiled SQL, unique-index/catalog and safe synthetic plans, bounded queries/rows, and no
       EF/Identity persistence path.
 
 > **Pause Safety:** Google remains disabled by default and schema is forward-safe. Safe to stop. To
-> resume: `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-be:test:quick`.
+> resume: `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be:test:quick`.
 
 ---
 
@@ -362,7 +362,7 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
 
 - [ ] [AI] **RED:** add backend E2E cases under `apps/ose-id-be-e2e/` for every matrix row in technical
       doc 003; run
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`;
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`;
       acceptance: tests fail because the fake lifecycle/control
       surface is absent. Save `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-3-fake-red.txt`.
 - [ ] [AI] **GREEN:** add the minimal discovery, authorization, token, JWKS, and optional UserInfo fake
@@ -382,12 +382,12 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
 ### Phase 3 Gate
 
 - [ ] [AI] Run the exact Phase 3 E2E command followed by
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup`;
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup`;
       acceptance: the complete fake matrix passes with no real credential/network call, secret evidence,
       sleep/retry, or leftover resource.
 
 > **Pause Safety:** backend and fake form a complete local seam; ordinary startup stays disabled. Safe to
-> stop. To resume: `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`.
+> stop. To resume: `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-be-e2e:test:e2e`.
 
 ---
 
@@ -412,8 +412,8 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
       recent-auth link, safe unlink/last-method denial, and protected return. Consolidate only repeated
       presentation behind current OSE UI primitives; do not create another TDD cycle or a provider
       catalog. Rerun
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run-many -t lint,typecheck,test:unit -p ose-id-web`
-      and `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t lint,typecheck,test:unit -p ose-id-web`
+      and `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`.
       Acceptance: all operation-specific GREEN/REFACTOR evidence predates this check; Google remains the
       only provider UI; no provider detail reaches client components; focus, keyboard, live-status, and
       semantic order stay stable at 320, 375, 768, 1024, 1280, and 1440 CSS px for every supported
@@ -427,7 +427,7 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
       DOM, storage, URL history, console, trace, or screenshot evidence.
 
 > **Pause Safety:** the Google slice works locally behind its disabled guard. Safe to stop. To resume:
-> `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`.
+> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`.
 
 ---
 
@@ -443,14 +443,14 @@ Copy-paste start and readiness recipe (Phase 0 verifies the target and fixed fam
 on collision it stops and amends the plan rather than selecting arbitrary ports):
 
 ```bash
-rtk ./hippo run --class service --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack
+rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack
 rtk curl -fsS http://127.0.0.1:8501/health/live
 rtk curl -fsS http://127.0.0.1:8501/health/ready
 rtk curl -fsS http://127.0.0.1:8502/.well-known/openid-configuration
 ```
 
 - [ ] [AI] Seed isolated fake-Google and OSE state with
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:seed-manual -- --profile=google-federation --output=local-tmp/ose-id-init-07/seed.env --requests=local-tmp/ose-id-init-07/requests`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:seed-manual -- --profile=google-federation --output=local-tmp/ose-id-init-07/seed.env --requests=local-tmp/ose-id-init-07/requests`.
       The committed fixture must create distinct sign-in/link/unlink success and error sessions,
       provider subjects, one-use state/code pairs, provider-link versions, CSRF values, and synthetic
       callback/request files. It writes mode-`0600` local-only values and emits only fixture labels and
@@ -487,7 +487,7 @@ rtk curl -sS -D plans/in-progress/ose-id-init-07-google-federation/evidence/phas
 rtk curl -sS -D plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-api/sign-in-update-error.headers -o plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-api/sign-in-update-error.body -X DELETE http://127.0.0.1:3500/sign-in
 rtk curl -sS -D plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-api/security-update-ok.headers -o plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-api/security-update-ok.html -b "ose_id_session=${OSE_ID_SECURITY_PAGE_COOKIE}" http://127.0.0.1:3500/account/security
 rtk curl -sS -D plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-api/security-update-error.headers -o plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-api/security-update-error.body http://127.0.0.1:3500/account/security
-rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:sanitize-manual-api -- --input=local-tmp/ose-id-init-07 --output=plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-api-contract.md
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:sanitize-manual-api -- --input=local-tmp/ose-id-init-07 --output=plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-api-contract.md
 ```
 
 Required outcomes in operation order are: backend challenge `201` with `Location` versus `400
@@ -538,20 +538,20 @@ unsafe storage, raw error, console error, or unreachable dependency fails the ph
       completion, and no secret/raw response may enter evidence.
 
 Cleanup after success, failure, or interruption: press Ctrl-C in the service terminal, then run
-`rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup`.
+`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:local-stack-cleanup`.
 `curl -sS http://127.0.0.1:8501/health/ready` must fail; verify ports 3500, 8501, 8502, 5438, 1026, and
 8026 and owned process/container/network/volume/temp-secret inventories are empty.
 
 ### Phase 5 Gate
 
 - [ ] [AI] Run
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`
       followed by the documented cleanup command; acceptance: every branch passes, evidence is sanitized,
       `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-5-persistence/` proves link/correlation/session query-count and transaction bounds,
       and the final readiness request fails because all owned resources stopped.
 
 > **Pause Safety:** provider behavior is locally proven and disabled by default. Safe to stop. To resume:
-> `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`.
+> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ose-id-web-e2e:test:e2e`.
 
 ---
 
@@ -568,7 +568,7 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
 
 - [ ] [AI] Run the Mandatory Nx Quality Matrix, then run behavior coverage, backend Integration/E2E,
       web E2E, format, Markdown, Mermaid, dependency/license, and
-      `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
       Save exact commands/exits at `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-6-quality-gates.md`; acceptance: every command exits
       0, otherwise reopen the owning implementation packet.
 - [ ] [AI] Enforce at least **99% Unit line coverage for authored production code**.
@@ -640,7 +640,7 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       lifecycle evidence; acceptance: no unchecked finding or unexplained coverage cell remains.
 
 > **Pause Safety:** DU1 is complete and reviewable but not delivered. Safe to stop. To resume:
-> `rtk ./hippo run --class transactional --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
+> `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=pre-push`.
 
 ---
 

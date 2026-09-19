@@ -10,6 +10,8 @@ tags:
   - moq
   - fluentassertions
   - testcontainers
+  - reqnroll
+  - bdd
 principles:
   - automation-over-manual
   - explicit-over-implicit
@@ -108,6 +110,28 @@ public static class ZakatTestData
     public static ZakatTransaction Generate() => _faker.Generate();
 }
 ```
+
+## Reqnroll Binds the Gherkin Corpus
+
+C# projects are bound by the repository-wide [BDD contract](../../../../../repo-governance/development/behaviour-driven-development.md) unchanged: the scenario is written in the owning `specs/` corpus first, and every scenario is bound in the Unit adapter whatever else binds it.
+
+**MUST** bind `specs/**/*.feature` scenarios with Reqnroll (`Reqnroll.xUnit`, the MIT-licensed SpecFlow successor) in every C#-owned adapter: Unit, Integration, and E2E. A binding class carries `[Binding]`, and each step method carries `[Given]`, `[When]`, or `[Then]` holding a double-quoted Cucumber expression.
+
+```csharp
+[Binding]
+public sealed class HealthSteps
+{
+    [Given("a running service")]
+    public void ARunningService() { }
+
+    [Then("the response status is {int}")]
+    public void TheResponseStatusIs(int status) { }
+}
+```
+
+Reqnroll resolves a step only against its own keyword, so a `[When]` and a `[Then]` may share identical text without colliding — as in the Java adapter, and unlike the TypeScript one.
+
+**MUST NOT** hide a scenario from the static validator. `scripts/behaviour-coverage.mjs` reads `.cs` step attributes directly, so an unbound scenario or an unused binding fails `test:quick`. A step file that owns one feature **SHOULD** name it in a `specs/...feature` string literal, which confines its bindings to that feature and keeps a step shared across files from reading as ambiguous.
 
 ## xUnit Patterns
 

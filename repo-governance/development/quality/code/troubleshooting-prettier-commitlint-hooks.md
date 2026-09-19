@@ -13,7 +13,7 @@ when_to_use: "Use when Prettier, commitlint, or a hook misbehaves."
 
 1. Check if the file has syntax errors (Prettier can't format invalid code)
 2. Run Prettier manually to see detailed error:
-   `rtk ./hippo run --class transactional --disk-path . -- npm exec prettier -- --write [file]`
+   `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec prettier -- --write [file]`
 3. Fix syntax errors, then commit again
 
 ## Commitlint Rejects Valid Message
@@ -33,7 +33,7 @@ when_to_use: "Use when Prettier, commitlint, or a hook misbehaves."
 
 **Solutions**:
 
-1. Run `./hippo run --class ephemeral --disk-path . -- npm install` to ensure Husky is set up
+1. Run `./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` to ensure Husky is set up
 2. Check `.husky/` directory exists with hook files
 3. Verify hook files are executable: `ls -la .husky/`
 4. If needed, make executable: `chmod +x .husky/pre-commit .husky/commit-msg .husky/pre-push`

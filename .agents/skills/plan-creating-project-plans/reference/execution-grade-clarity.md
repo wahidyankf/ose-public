@@ -10,7 +10,7 @@ with no professional work experience and no repository or stack context.**
 
 - **Explicit file path(s)** when the action touches a known file. When the path cannot be determined at authoring time, give the maximum-possible-detail target: parent directory + naming pattern + sibling reference (e.g., "new file under `apps/organiclever-www/src/lib/` following the pattern of sibling `auth.ts`").
 - **Explicit shell command(s)** verbatim when applicable (e.g.,
-  `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-web:test:quick`), not
+  `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-web:test:quick`), not
   "run the lint".
 - **Prerequisites, expected failure/pass state, failure handling, and evidence destination** for
   each action; never assume professional experience supplies a missing step.
@@ -46,7 +46,7 @@ Do not duplicate that exception here.
 ```markdown
 - [ ] Edit `apps/ose-www/src/server/trpc.ts`: wrap the public router with
       `unstable_cache(..., { revalidate: 300 })`. Verify by running
-      `rtk ./hippo run --class ephemeral --disk-path . -- npm exec nx -- run ose-web:test:quick` — all tests pass.
+      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-web:test:quick` — all tests pass.
 ```
 
 **Bad**:
@@ -60,7 +60,7 @@ Do not duplicate that exception here.
 ```markdown
 - [ ] Create `apps/organiclever-be/src/Middleware/RateLimit.fs` (siblings: `Auth.fs`, `Cors.fs`)
       implementing token-bucket rate limiting per `tech-docs.md §Rate Limiting`. Verify by running
-      `rtk ./hippo run --class transactional --disk-path . -- npm exec nx -- run organiclever-be:test:unit` — new test `RateLimit_RejectsExceedingRequests` passes.
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:test:unit` — new test `RateLimit_RejectsExceedingRequests` passes.
 ```
 
 **Bad**:

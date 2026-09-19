@@ -8,10 +8,10 @@ browser involved. 🧪
 
 ```bash
 # Install test dependencies once on this machine
-./hippo run --class transactional --disk-path . -- npm exec nx -- run roots-be-e2e:install
+./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run roots-be-e2e:install
 
 # Build the service and run the scenarios against a real process
-./hippo run --class service --disk-path . -- npm exec nx -- run roots-be-e2e:test:e2e
+./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- run roots-be-e2e:test:e2e
 ```
 
 `test:e2e` runs [`apps/roots-be/scripts/run-e2e.sh`](../roots-be/scripts/run-e2e.sh), which

@@ -10,9 +10,9 @@ of each; a validator that emits no failure token still fails, and a piped invoca
 exit code but the last.
 
 ```sh
-./hippo run --class ephemeral --disk-path . -- \
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
   apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=ci --group=governance
-./hippo run --class ephemeral --disk-path . -- \
+./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
   apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=ci --group=markdown
 ```
 

@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/wahidyankf/rhino/v0.4.0-rc.10/schemas/repo-config/v2.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/wahidyankf/rhino/v0.4.0/schemas/repo-config/v2.schema.json
 # Repository-owned policy for the checksum-pinned Rhino candidate.
 #
 # The grouped document contains no legacy compatibility section. Each retained

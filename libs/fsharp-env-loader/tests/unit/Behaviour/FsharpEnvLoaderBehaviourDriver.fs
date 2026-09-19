@@ -5,15 +5,12 @@
 /// — to `FsharpEnvLoader.EnvTier` and `FsharpEnvLoader.PortResolver`. This is
 /// the Unit behaviour driver for `fsharp-env-loader`.
 ///
-/// One instance-mutable-field step class (the pattern established by
-/// `apps/rhino-cli/tests/unit/Steps/EnvSteps.fs`), consumed by a
-/// `[<Theory>][<MemberData>]` runner per feature file (the pattern
-/// established by `libs/fsharp-crane-core/tests/unit/Tests/
-/// PdfToMarkdownRoutingFeatureRunner.fs`) so `Scenario Outline` `Examples`
-/// tables expand naturally through TickSpec itself rather than a hand-rolled
-/// per-title slice. Env-tier effects are routed through deterministic in-memory
-/// ports, keeping this Unit driver independent of the real filesystem and
-/// process environment.
+/// One instance-mutable-field step class is consumed by a
+/// `[<Theory>][<MemberData>]` runner per feature file so `Scenario Outline`
+/// `Examples` tables expand naturally through TickSpec rather than a
+/// hand-rolled per-title slice. Env-tier effects are routed through
+/// deterministic in-memory ports, keeping this Unit driver independent of the
+/// real filesystem and process environment.
 module FsharpEnvLoader.Tests.Unit.Behaviour.FsharpEnvLoaderBehaviourDriver
 
 open System

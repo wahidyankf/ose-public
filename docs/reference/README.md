@@ -33,8 +33,6 @@ platform, the Nx workspace, and the engineering systems that support an early pr
   workspace projects.
 - [SDLC Gate Standard](./sdlc-gate-standard.md) — understand the target gate sequence and permitted
   differences across the OSE repositories.
-- [rhino-cli Command Triage](./rhino-cli-command-triage.md) — find each CLI command’s automation
-  status, invocation sites, and intended role.
 
 ## Security and agent infrastructure
 
@@ -44,8 +42,7 @@ platform, the Nx workspace, and the engineering systems that support an early pr
   approved dependency-security exceptions and functional holds.
 - [Platform Bindings](./platform-bindings.md) — locate the AI coding-agent bindings, root
   instructions, and generated translation artifacts. Its Platform Binding Directories table and
-  verification stamp are generated from `repo-config.yml` — edit the registry, then run
-  `rhino-cli harness catalog generate`, never the table.
+  verification stamp are maintained with the declared harness ownership; do not hand-edit generated adapter output.
 - [AI Model Benchmarks](./ai-model-benchmarks.md) — review the sourced benchmark and pricing data
   behind agent model-tier decisions.
 

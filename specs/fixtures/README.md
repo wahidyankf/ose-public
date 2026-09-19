@@ -4,10 +4,8 @@ Shared fixtures this repository verifies against rather than authors.
 
 ## Corpora
 
-- [plan-structure/](plan-structure/README.md) — the plan-structure corpus. RHINO and `rhino-cli`
-  both validate plan structure, and the claim that they agree only means something if they read the
-  same bytes. This copy is byte-identical to the `ose-rules` catalog, pinned by `CORPUS-DIGEST`, and
-  regenerated nowhere.
+- [plan-structure/](plan-structure/README.md) — the plan-structure corpus. This copy is
+  byte-identical to the `ose-rules` catalog, pinned by `CORPUS-DIGEST`, and regenerated nowhere.
 
 ## Verifying
 

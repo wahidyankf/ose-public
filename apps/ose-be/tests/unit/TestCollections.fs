@@ -9,8 +9,6 @@ open Xunit
 // same variable concurrently is a genuine data race (observed: an
 // OpenRouterClientTests mutation of OSE_BE_OPENROUTER_API_KEY intermittently
 // leaked into a concurrently-running AiOrchestrationTests assertion). Mirrors
-// the same fix already applied elsewhere for the identical reason — see
-// apps/organiclever-be/tests/integration/TestCollections.fs (integration) and
-// apps/rhino-cli/tests/unit/Steps/GitRootUnitTests.fs (unit).
+// the same fix already applied in apps/organiclever-be/tests/integration/TestCollections.fs.
 [<assembly: CollectionBehavior(DisableTestParallelization = true)>]
 do ()

@@ -16,7 +16,6 @@ concurrency:
 env:
   NX_BASE: ${{ github.event_name == 'push' && github.event.before || format('origin/{0}', github.base_ref) }}
   NX_HEAD: ${{ github.sha }}
-  GATE_CHANGED_BASE: ${{ github.event_name == 'push' && github.event.before || format('origin/{0}', github.base_ref) }}
 
 jobs:
   detect:
@@ -28,76 +27,27 @@ jobs:
       has-dart: ${{ steps.detect.outputs.has-dart }}
       has-java: ${{ steps.detect.outputs.has-java }}
       has-go: ${{ steps.detect.outputs.has-go }}
-      has-markdown: ${{ steps.detect.outputs.has-markdown }}
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - id: detect
+        shell: bash
         run: |
-          # has-dotnet-projects (like has-ts) answers "which nx
-          # projects does the affected-graph mark as touched", via each
-          # project's `lang:*` tag — the same question the merge-blocking
-          # `dotnet` job's own `nx affected` invocation answers. That is a
-          # DIFFERENT question from "did a file literally change": a
-          # project.json/global.json/*.sln/repo-config.yml edit marks an
-          # F#/C# project affected via nx's default namedInputs without
-          # touching a .fs/.cs file, so a file-glob predicate here would be
-          # narrower than what the `dotnet` job's own targets need and could
-          # silently skip that merge-blocking gate. The `format` job installs
-          # .NET unconditionally because it executes the framework-dependent
-          # gate-profile apphost, so it does not consume this output.
-          DETECT_FAILED=false
-
-          # A real git-diff error (bad ref, corrupted repo, etc.) is NOT the
-          # same outcome as "no files changed" — swallowing it into an empty
-          # CHANGED_FILES would silently disable has-markdown detection.
-          # Fail safe below instead of fail open.
-          if ! CHANGED_FILES=$(git diff --name-only "$NX_BASE"...HEAD); then
-            echo "::warning::git diff --name-only $NX_BASE...HEAD failed (a real error, not simply \"no changes\") — failing safe below instead of silently disabling quality gates" >&2
-            CHANGED_FILES=""
-            DETECT_FAILED=true
-          fi
-
-          if ! AFFECTED=$(npx nx show projects --affected); then
-            echo "::warning::nx show projects --affected failed — failing safe below instead of silently disabling quality gates" >&2
-            AFFECTED=""
-            DETECT_FAILED=true
-          fi
-
-          if [ "$DETECT_FAILED" = "true" ]; then
-            # Conservative fallback (fail closed, not open): when detection
-            # itself errors, run every language's quality gate rather than
-            # silently skip a merge-blocking check. Deliberately does NOT
-            # fail this job outright — a hard `detect` failure would make
-            # `typescript`/`dotnet`/`go` report "skipped" (failed
-            # dependency), not "failure", which `quality-gate`'s
-            # `contains(needs.*.result, 'failure')` check would not catch.
-            {
-              echo "has-ts=true"
-              echo "has-dotnet-projects=true"
-              echo "has-dart=true"
-              echo "has-java=true"
-              echo "has-go=true"
-              echo "has-markdown=true"
-            } >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Check language tags for affected projects
+          set -euo pipefail
           {
             echo "has-ts=false"
             echo "has-dotnet-projects=false"
             echo "has-dart=false"
             echo "has-java=false"
             echo "has-go=false"
-            echo "has-markdown=false"
           } >> "$GITHUB_OUTPUT"
 
-          for project in $AFFECTED; do
-            TAGS=$(npx nx show project "$project" --json 2>/dev/null | jq -r '.tags[]' 2>/dev/null || echo "")
-            for tag in $TAGS; do
+          affected=$(npx nx show projects --affected)
+          for project in $affected; do
+            tags=$(npx nx show project "$project" --json | jq -r '.tags[]?')
+            for tag in $tags; do
               case "$tag" in
                 lang:ts) echo "has-ts=true" >> "$GITHUB_OUTPUT" ;;
                 lang:fsharp | lang:csharp) echo "has-dotnet-projects=true" >> "$GITHUB_OUTPUT" ;;
@@ -108,242 +58,31 @@ jobs:
             done
           done
 
-          if echo "$CHANGED_FILES" | grep -q '\.md$'; then
-            echo "has-markdown=true" >> "$GITHUB_OUTPUT"
-          fi
-
-  format:
-    name: Auto-format affected (lint-staged)
-    needs: build-rhino
+  repository-policy:
+    name: Repository policy
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    env:
-      # Every rhino-bin.sh call in this job — including the ones inside
-      # lint-staged's own `repo-config.yml`/`*.md`/`*.feature` commands —
-      # resolves this prebuilt `--profile gate` artifact at tier 1 instead
-      # of falling back to a from-source `cargo build`/`cargo run` compile.
-      #
-      # Provenance trade-off (accepted, not an oversight): `build-rhino`
-      # checks out with no `ref:` override, so on `pull_request` events it
-      # compiles this binary from GitHub's synthetic base+head merge commit,
-      # while this job checks out head-only content (see `ref:` below).
-      # Every rhino-bin.sh call in this job therefore applies merge-commit
-      # gate logic to head-only content. All affected commands are
-      # read-only validators — none rewrite files — so the worst outcome is
-      # a wrong pass/fail verdict, never rhino-derived content written back
-      # to the branch, and it self-corrects on rebase against a current
-      # `main`. A second, head-sha-pinned artifact built solely for this job
-      # was judged not worth the extra CI job for that bound; revisit if a
-      # validator invoked here ever gains file-mutating behaviour.
-      RHINO_CLI_FSHARP_BIN: ${{ github.workspace }}/apps/rhino-cli/src/dist/rhino-cli-fsharp
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-dotnet
       - uses: ./.github/actions/setup-rust
-      # lint-staged invokes the bare `dart format` command for changed Dart
-      # files, so the formatter must be available before it runs.
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version-file: .fvmrc
-      # lint-staged runs scripts/format-java.sh for changed Java files, and that wrapper
-      # drives the same Spotless formatter as the verify half. It is installed unconditionally
-      # for the same reason Rust and Flutter are: this job has no per-language routing.
       - uses: ./.github/actions/setup-java
-      # The downloaded gate-profile apphost is framework-dependent, so every
-      # consumer provisions its pinned .NET runtime before executing it. This
-      # action also installs Fantomas for the formatting surface.
-      - uses: ./.github/actions/setup-dotnet
-      - uses: actions/download-artifact@v4
-        with:
-          name: rhino-cli-gate-binary
-          path: apps/rhino-cli/src/dist
-      - run: chmod +x apps/rhino-cli/src/dist/rhino-cli-fsharp
-      - name: Provision registry-declared pre-commit tools
-        run: |
-          tools=$(apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=pre-commit --format=json |
-            jq -r '[.[] | .doctor_tools[]] | unique | join(",")')
-          if [ -n "$tools" ]; then
-            apps/rhino-cli/scripts/rhino-bin.sh doctor --fix --tools "$tools"
-          fi
-      - name: Format affected files with the project formatters (lint-staged)
-        if: github.event_name == 'pull_request'
-        run: |
-          git fetch --no-tags origin "$GITHUB_BASE_REF"
-          CHANGED=$(git diff --name-only --diff-filter=ACMR "origin/$GITHUB_BASE_REF...HEAD")
-          if [ -n "$CHANGED" ]; then
-            printf '%s' "$CHANGED" | tr '\n' '\0' | xargs -0 -r git add -f --
-            npx lint-staged --no-stash
-          fi
-      - name: Commit formatting to the PR branch
-        if: github.event_name == 'pull_request'
-        run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -am "style: auto-format affected files (lint-staged)"
-            git push origin "HEAD:$GITHUB_HEAD_REF"
-          fi
-
-      # The push-only verify below runs the whole formatting-verify group, whose
-      # format-verify-ruff gate invokes a bare binary for changed Python files.
-      # Ruff is not yet a rhino doctor-managed tool, so it is installed here with
-      # the same pin as the gate matrix's formatting-verify job.
-      - name: Install Ruff
-        if: github.event_name == 'push'
-        run: pipx install ruff==0.15.9
-      - name: Verify affected formatting on main
-        if: github.event_name == 'push'
-        # Runs every formatting-verify gate as a single --group dispatch
-        # instead of the pre-optimization one-at-a-time --only loop, mirroring
-        # every other CI surface's group-based invocation. The pinned RHINO
-        # binary runs the public-safety screen first and drops each gate's own
-        # output, so a failure is rerun below through the repository CLI.
-        run: ./rhino gate run --surface ci -- --group=formatting-verify
-      - name: Show the failing formatting-verify output
-        if: failure() && github.event_name == 'push'
-        run: apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=ci --group=formatting-verify
-
-  build-rhino:
-    name: Build rhino-cli (gate profile)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      # The general Nx build remains self-contained by default. This
-      # intra-workflow gate artifact is framework-dependent because every
-      # consumer provisions the pinned .NET runtime; excluding that runtime
-      # from every upload keeps transient Actions storage within budget.
-      - uses: ./.github/actions/setup-node
-      - uses: ./.github/actions/setup-dotnet
-      - run: npx nx run rhino-cli:build --rid="-r linux-x64" --selfContained=false
-      - uses: actions/upload-artifact@v4
-        with:
-          name: rhino-cli-gate-binary
-          path: apps/rhino-cli/src/dist
-          # Intra-run scratch: every downstream gate job consumes this within
-          # the same run, so it is dead the moment the run ends. 1 is the
-          # shortest window GitHub accepts; a long inherited default would
-          # multiply this by the PR rate into gigabytes of Actions storage.
-          retention-days: 1
-
-  enumerate:
-    name: Enumerate registry CI gate groups
-    needs: build-rhino
-    runs-on: ubuntu-latest
-    outputs:
-      groups: ${{ steps.list.outputs.groups }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup-node
-        with:
-          # `enumerate` only lists gate groups via the shim; the `list` step
-          # later in this job sets RHINO_CLI_FSHARP_BIN inline for that one
-          # invocation so rhino-bin.sh resolves the artifact downloaded by
-          # the `download-artifact` step (also later in this job) instead of
-          # falling back to `dotnet run`/node. jq is runner-provided; no
-          # npm-managed tool is needed here.
-          run-npm-ci: false
-      - uses: ./.github/actions/setup-dotnet
-      - uses: actions/download-artifact@v4
-        with:
-          name: rhino-cli-gate-binary
-          path: apps/rhino-cli/src/dist
-      - run: chmod +x apps/rhino-cli/src/dist/rhino-cli-fsharp
-      - id: list
-        run: |
-          groups=$(RHINO_CLI_FSHARP_BIN="$PWD/apps/rhino-cli/src/dist/rhino-cli-fsharp" apps/rhino-cli/scripts/rhino-bin.sh gate list --surface=ci --format=json --by-group | jq -c .)
-          echo "groups=$groups" >> "$GITHUB_OUTPUT"
-
-  gate:
-    needs: [build-rhino, enumerate]
-    name: ${{ matrix.group.group }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        group: ${{ fromJson(needs.enumerate.outputs.groups) }}
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      # The lint group additionally needs node_modules for the generated-source step below --
-      # Nx resolves the codegen graph and Redocly bundles the contract, both npm-managed.
-      - uses: ./.github/actions/setup-node
-        with:
-          run-npm-ci: ${{ contains(matrix.group.doctor_tools, 'npm') || matrix.group.group == 'lint' }}
-      # Every matrix member executes the downloaded framework-dependent
-      # gate-profile apphost. The composite also installs Fantomas for the
-      # formatting-verify group.
-      - uses: ./.github/actions/setup-dotnet
-      # format-verify-dart invokes bare `dart format`, and runs only in this
-      # group alongside the similarly scoped Fantomas setup above.
-      - uses: subosito/flutter-action@v2
-        if: matrix.group.group == 'formatting-verify'
-        with:
-          channel: stable
-          flutter-version-file: .fvmrc
-      # format-verify-ruff invokes a bare binary for changed Python files. Ruff
-      # is not yet a rhino doctor-managed tool, so this scoped install keeps the
-      # formatting group provisioned without adding Python setup to other jobs.
-      - name: Install Ruff
-        if: matrix.group.group == 'formatting-verify'
-        run: pipx install ruff==0.15.9
-      # format-verify-java drives Spotless through the ose-lms-be Gradle wrapper, and
-      # google-java-format reaches into javac internals that the runner image's default JDK 17
-      # does not expose, so it fails reflectively there. This group provisions the same pinned
-      # JDK the Java quality gate uses, exactly as it already does for Dart and Ruff.
-      - uses: ./.github/actions/setup-java
-        if: matrix.group.group == 'formatting-verify'
-      # lint-golangci needs the toolchain go.mod pins plus a 2.x golangci-lint -- Debian ships 1.x,
-      # and a 1.x binary cannot read the `version: "2"` config the 2.x schema requires. The setup-go
-      # composite installs both from the module proxy (checksum-verified against GOSUMDB) and puts
-      # GOPATH/bin on PATH, which the provisioning step below probes by PATH lookup. Scoped to the
-      # one group whose gate needs it, the same shape as the Ruff and Java installs above.
       - uses: ./.github/actions/setup-go
-        if: matrix.group.group == 'lint'
-      # golangci-lint typechecks, so a Go module that imports its own generated contract types
-      # cannot be linted from a clean checkout: generated-contracts/ is gitignored, and this job
-      # runs the gate binary directly with no Nx graph to resolve `lint`'s dependsOn: [codegen].
-      # A developer's pre-commit run does not hit this because their working tree already holds
-      # the generated output. Materialize it here for affected Go projects only -- the exclude
-      # list keeps another language's codegen (dotnet, Java) out of a job that provisions neither,
-      # while `codegen`'s own dependsOn still pulls in the contract bundle it needs. Serial, for
-      # the same shared-module-cache reason the Go quality gate runs --parallel=1.
-      - name: Materialize generated Go sources
-        if: matrix.group.group == 'lint'
-        run: npx nx affected -t codegen --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java' --parallel=1
-      - uses: actions/download-artifact@v4
-        with:
-          name: rhino-cli-gate-binary
-          path: apps/rhino-cli/src/dist
-      - run: chmod +x apps/rhino-cli/src/dist/rhino-cli-fsharp
-      - name: Provision registry-declared tools
+      - name: Verify the declared lifecycle surface
+        env:
+          RHINO_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          RHINO_HEAD: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          OSE_GATE_SURFACE: ci
         run: |
-          tools="$DOCTOR_TOOLS"
-          if [ -n "$tools" ]; then
-            apps/rhino-cli/scripts/rhino-bin.sh doctor --fix --tools "$tools"
-          fi
-        env:
-          DOCTOR_TOOLS: ${{ join(matrix.group.doctor_tools, ',') }}
-          RHINO_CLI_FSHARP_BIN: ${{ github.workspace }}/apps/rhino-cli/src/dist/rhino-cli-fsharp
-      # The pinned RHINO binary runs the public-safety screen first, then this
-      # group through the repository registry. It drops each gate's own output
-      # by design, so the step after it reruns a failing group through the
-      # repository CLI to put that output in the job log.
-      - run: ./rhino gate run --surface ci -- --group="$GROUP_ID"
-        env:
-          RHINO_CLI_FSHARP_BIN: ${{ github.workspace }}/apps/rhino-cli/src/dist/rhino-cli-fsharp
-          GROUP_ID: ${{ matrix.group.group }}
-      - name: Show the failing group's gate output
-        if: failure()
-        run: apps/rhino-cli/scripts/rhino-bin.sh gate run --surface=ci --group="$GROUP_ID"
-        env:
-          RHINO_CLI_FSHARP_BIN: ${{ github.workspace }}/apps/rhino-cli/src/dist/rhino-cli-fsharp
-          GROUP_ID: ${{ matrix.group.group }}
+          set -euo pipefail
+          PATH="node_modules/.bin:$PATH" ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
+            ./rhino gate run --surface pull-request --base "$RHINO_BASE" --head "$RHINO_HEAD"
 
   typescript:
     name: TypeScript quality gate
@@ -355,43 +94,33 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
-      # --parallel=2 bounds peak memory when many TS projects are affected at once (e.g. a
-      # shared-lib change).
-      # test:quick owns Unit runtime plus every applicable static test:coverage:*
-      # validator. Integration and E2E remain manual/scheduled-only.
-      - run: npx nx affected -t typecheck lint test:quick compat:min-version --exclude='tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java,tag:lang:go' --parallel=2
+      - run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t typecheck,lint,test:quick,compat:min-version
+          --exclude='tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java,tag:lang:go'
+          --parallel=2
 
   dotnet:
     name: .NET quality gate
     needs: detect
     if: needs.detect.outputs.has-dotnet-projects == 'true'
     runs-on: ubuntu-latest
-    # `rhino-cli`'s Elixir formatter-wrapper tests assert real `mix format`
-    # behaviour — Phase 9c ported the crate to F#, so this job (not the former
-    # `rust` job, deleted in Phase 9d) is now the only place `rhino-cli`'s
-    # test:quick runs, and therefore the only place that can provision the
-    # toolchain these assertions need. RHINO_REQUIRE_ELIXIR/erlef/setup-beam
-    # are re-homed here unchanged from the former `rust` job.
-    env:
-      RHINO_REQUIRE_ELIXIR: "1"
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-dotnet
-      - uses: erlef/setup-beam@v1
-        with:
-          otp-version: "27"
-          elixir-version: "1.18"
-      # typecheck's `dotnet build --no-restore` requires a prior project-level restore —
-      # the NuGet package cache above only warms `~/.nuget/packages`, it does not generate
-      # each project's `obj/project.assets.json`. Every dotnet-tagged project's `install`
-      # target runs `dotnet restore`, so run it explicitly before typecheck.
-      - run: npx nx affected -t install --exclude='tag:lang:ts,tag:lang:dart,tag:lang:java,tag:lang:go' --parallel=1
-      # Both affected F# backends invoke OpenAPI Generator during codegen. It initializes a shared
-      # downloaded JAR, so serial execution prevents a first-run download race.
-      - run: npx nx affected -t typecheck lint test:quick compat:min-version --exclude='tag:lang:ts,tag:lang:dart,tag:lang:java,tag:lang:go' --parallel=1
+      - run: >-
+          ./hippo run --class transactional --resource-tier standard --disk-path . --
+          npx nx affected -t install
+          --exclude='tag:lang:ts,tag:lang:dart,tag:lang:java,tag:lang:go'
+          --parallel=1
+      - run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t typecheck,lint,test:quick,compat:min-version
+          --exclude='tag:lang:ts,tag:lang:dart,tag:lang:java,tag:lang:go'
+          --parallel=1
 
   flutter:
     name: Flutter quality gate
@@ -403,8 +132,6 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
-      # The action provides the bare `dart` binary. FVM then installs and
-      # selects the Flutter SDK pinned by the repository's .fvmrc.
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -413,9 +140,12 @@ jobs:
         run: |
           dart pub global activate fvm 4.0.5
           echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
-      - name: Install the repository Flutter SDK
-        run: fvm install
-      - run: npx nx affected -t typecheck lint test:quick --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:java,tag:lang:go' --parallel=1
+      - run: fvm install
+      - run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t typecheck,lint,test:quick
+          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:java,tag:lang:go'
+          --parallel=1
 
   java:
     name: Java quality gate
@@ -428,9 +158,11 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-java
-      # Java projects invoke OpenAPI Generator during codegen, which initializes a shared
-      # downloaded JAR; serial execution prevents a first-run download race, matching `dotnet`.
-      - run: npx nx affected -t typecheck lint test:quick compat:min-version --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:go' --parallel=1
+      - run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t typecheck,lint,test:quick,compat:min-version
+          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
+          --parallel=1
 
   go:
     name: Go quality gate
@@ -443,42 +175,22 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-go
-      # Go projects invoke oapi-codegen during codegen against a shared module cache; serial
-      # execution prevents a first-run download race, matching `java` and `dotnet`.
-      - run: npx nx affected -t typecheck lint test:quick compat:min-version --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java' --parallel=1
-
-  specs-structure:
-    name: Specs structure validation (all affected)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-      - uses: ./.github/actions/setup-node
-      - uses: ./.github/actions/setup-dotnet
-      # Every `specs:structure-validation` target shells into the SAME rhino-cli
-      # project with `dotnet run`, which restores and builds implicitly. Fanned
-      # out in parallel from a cold checkout, the first wave restores that one
-      # project concurrently and collides on its `obj/`:
-      # "The file '.../RhinoCli.Program/obj/project.assets.json' already exists".
-      # Serial execution keeps two dotnet processes off the same project, which
-      # is the same remedy -- and the same reason -- the `dotnet` job above
-      # records for its own `--parallel=1`. Only the first target pays the build
-      # cost; the rest find it warm.
-      - run: npx nx affected -t specs:structure-validation --parallel=1
+      - run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t typecheck,lint,test:quick,compat:min-version
+          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java'
+          --parallel=1
 
   quality-gate:
     name: Quality gate
-    needs: [build-rhino, format, enumerate, gate, typescript, dotnet, flutter, java, go, specs-structure]
+    needs: [repository-policy, typescript, dotnet, flutter, java, go]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Check all gates
         run: |
-          echo "Checking quality gate results..."
-          # A skipped job is OK (language not affected). Only an actual failure blocks.
           if [ "${{ contains(needs.*.result, 'failure') }}" = "true" ]; then
-            echo "One or more quality gate jobs failed"
+            echo "One or more quality gate jobs failed" >&2
             exit 1
           fi
           echo "All quality gates passed"

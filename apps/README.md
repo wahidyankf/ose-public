@@ -17,10 +17,9 @@
 
 ## Tools
 
-| Tool                               | Purpose                                         |
-| ---------------------------------- | ----------------------------------------------- |
-| [rhino-cli](./rhino-cli/README.md) | Repository hygiene, validation, and automation. |
-| [crane-cli](./crane-cli/README.md) | Deterministic PDF-to-Markdown processing.       |
+| Tool                               | Purpose                                   |
+| ---------------------------------- | ----------------------------------------- |
+| [crane-cli](./crane-cli/README.md) | Deterministic PDF-to-Markdown processing. |
 
 ## End-to-end tests
 

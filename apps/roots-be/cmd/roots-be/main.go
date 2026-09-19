@@ -18,11 +18,8 @@ import (
 )
 
 func main() {
-	// ROOTS_BE_PORT is spelled out here rather than held in a constant so the
-	// env-contract scanner can see it. `rhino-cli env validate` matches the key
-	// literal beside the reader it is passed with, mirroring how ose-be's
-	// Program.fs passes "OSE_BE_PORT" beside readEnvironment; a constant would
-	// hide a read that genuinely happens and report the key as unread.
+	// Keep ROOTS_BE_PORT beside its environment read so the declared environment
+	// contract can verify that the public key has a real consumer.
 	portFlag := flag.String("port", "", "listener port; overrides ROOTS_BE_PORT")
 	flag.Parse()
 

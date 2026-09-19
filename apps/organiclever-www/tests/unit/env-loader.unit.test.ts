@@ -117,12 +117,8 @@ describeFeature(feature, ({ Scenario, ScenarioOutline }) => {
       let port: TierEnvPort = inMemoryTierEnv({});
       let thrown: unknown;
 
-      // The literal "<file>" placeholder in the Gherkin outline is replaced by the Cucumber
-      // Expression `{string}` rather than kept verbatim: @amiceli/vitest-cucumber matches this step
-      // definition against the outline's own un-substituted step text (so `{string}`'s `"[^"]*"`
-      // pattern still matches the raw "<file>" token), while the rhino-cli BDD adapter-coverage
-      // validator matches step definitions against each example row's *substituted* step text (so a
-      // literal "<file>" binding would never match a real file name). `{string}` satisfies both.
+      // Vitest-Cucumber matches this definition against the outline's un-substituted step text, so
+      // `{string}` must match the raw "<file>" token as well as a substituted file name.
       Given("a stray {string} sits beside the app's tier file", () => {
         port = inMemoryTierEnv({
           [path.join(appDir, ".env.stag")]: "VAR=value\n",

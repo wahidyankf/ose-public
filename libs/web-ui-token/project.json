@@ -37,14 +37,6 @@
       "inputs": ["{projectRoot}/src/**/*", "{projectRoot}/tests/unit/**/*"],
       "outputs": ["{projectRoot}/coverage"]
     },
-    "specs:structure-validation": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- specs counts validate specs/libs/web-ui-token"
-      },
-      "cache": true,
-      "inputs": ["{workspaceRoot}/specs/libs/web-ui-token/**/*"]
-    },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
@@ -59,10 +51,6 @@
           },
           {
             "command": "npm exec -- nx run web-ui-token:test:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run web-ui-token:specs:structure-validation",
             "forwardAllArgs": false
           },
           {

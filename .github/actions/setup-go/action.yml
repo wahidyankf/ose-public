@@ -10,7 +10,7 @@ inputs:
     required: false
     default: "apps/roots-be/go.sum"
   golangci-lint-version:
-    description: "golangci-lint version (used by the lint-golangci gate)"
+    description: "golangci-lint version used by the Go quality job"
     required: false
     default: "v2.11.3"
 runs:

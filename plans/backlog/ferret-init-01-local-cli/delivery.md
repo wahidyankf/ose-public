@@ -64,8 +64,8 @@ and green pre-change baseline.
 
 ```bash
 rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
-rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm run doctor -- --fix
-rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm run doctor
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply
+rtk npm run doctor
 ```
 
 Expect zero exits and no unexplained lockfile/config diff. Save `dependencies.txt`; resolve failures at root

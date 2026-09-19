@@ -54,10 +54,12 @@ lock_value() {
 }
 
 # Pin both release identity and source commit so a correctly checksummed asset
-# still cannot impersonate a different build.
+# still cannot impersonate a different build. A candidate is a valid immutable
+# release tag; the executable itself reports the stable product version without
+# that tag suffix.
 version=$(lock_value version)
 commit=$(lock_value commit)
-if ! printf '%s\n' "$version" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+if ! printf '%s\n' "$version" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z][0-9A-Za-z.]*)?$'; then
 	echo "rhino lock has an invalid version" >&2
 	exit 78
 fi
@@ -71,7 +73,7 @@ if [ "${#commit}" -ne 40 ]; then
 	echo "rhino lock has an invalid commit" >&2
 	exit 78
 fi
-expected_identity="{\"schemaVersion\":1,\"version\":\"$version\",\"commit\":\"$commit\"}"
+expected_identity="{\"schemaVersion\":1,\"version\":\"${version%%-*}\",\"commit\":\"$commit\"}"
 
 # Normalize only the platform matrix published by the upstream release job. A
 # host outside it has no asset to fetch, so it is refused here rather than by a

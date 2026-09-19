@@ -300,6 +300,7 @@ The caller'"'"'s argument vector reaches the release unchanged
 Tampered warm-cache payload never executes
 A downloaded archive whose digest misses the pin never executes
 Non-exact stable release version is rejected
+Exact candidate tag uses stable release identity
 Release identity envelope must match exactly
 Unsupported platform is refused before any transport
 Matching live install-lock owner remains protected
@@ -487,7 +488,7 @@ run_non_exact_stable_version() {
 	# is one level above the suite's own temporary root -- so that, and not a
 	# path inside the sandbox, is where a traversal would land.
 	escape_parent=$(dirname -- "$temporary_root")
-	for invalid_version in v1x.2.3 v1.2.3-rc1 'v1.2.3/../../../escape'; do
+	for invalid_version in v1x.2.3 v1.2.3- 'v1.2.3-rc.1/../../../escape' 'v1.2.3/../../../escape'; do
 		write_lock "$invalid_version" "$checksum"
 		set +e
 		PATH="$test_path" RHINO_INSTALL_CACHE="$cache_root" "$subject" probe >/dev/null 2>&1
@@ -500,6 +501,22 @@ run_non_exact_stable_version() {
 	[ ! -e "$temporary_root/escape" ]
 	[ ! -e "$cache_root" ]
 	write_lock "$test_version" "$checksum"
+}
+
+run_exact_candidate_tag_uses_stable_product_identity() {
+	candidate_version=v9.8.7-rc.5
+	stable_product_version=v9.8.7
+	rm -rf -- "$cache_root"
+	write_lock "$candidate_version" "$checksum"
+	downloads_before=$(download_count)
+	result=$(PATH="$test_path" RHINO_INSTALL_CACHE="$cache_root" RHINO_TEST_ARCHIVE="$temporary_root/release.tar.gz" RHINO_TEST_CURL_COUNT="$curl_count" \
+		RHINO_TEST_IDENTITY="{\"schemaVersion\":1,\"version\":\"$stable_product_version\",\"commit\":\"$test_commit\"}" "$subject" probe)
+	[ "$result" = probe-ok ]
+	[ "$(download_count)" -eq "$((downloads_before + 1))" ]
+	[ -x "$cache_root/$candidate_version/$host_platform/rhino" ]
+	[ -f "$cache_root/$candidate_version/$host_platform/rhino.sha256" ]
+	write_lock "$test_version" "$checksum"
+	rm -rf -- "$cache_root"
 }
 
 run_non_exact_identity_envelope() {
@@ -1215,6 +1232,7 @@ while IFS= read -r scenario; do
 	'Tampered warm-cache payload never executes') run_tampered_warm_cache ;;
 	'A downloaded archive whose digest misses the pin never executes') run_download_digest_mismatch ;;
 	'Non-exact stable release version is rejected') run_non_exact_stable_version ;;
+	'Exact candidate tag uses stable release identity') run_exact_candidate_tag_uses_stable_product_identity ;;
 	'Release identity envelope must match exactly') run_non_exact_identity_envelope ;;
 	'Unsupported platform is refused before any transport') run_unsupported_platform_refused ;;
 	'Matching live install-lock owner remains protected') run_matching_live_owner ;;

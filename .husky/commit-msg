@@ -1,10 +1,6 @@
 #!/usr/bin/env sh
-set -e
+set -eu
 
-# Generated shim — do not add checks here. The pinned RHINO binary runs the
-# core gates repo-config.yml declares for the `commit-msg` surface: the
-# public-safety screen first, then this repository's registry, whose gates live
-# under `extensions.rhino-cli.gates` and run in declaration order. Both read the
-# message file passed after `--`. `rhino-cli gate validate` fails if this file
-# and the registry disagree.
-exec ./rhino gate run --surface commit-msg -- "$1"
+# Thin lifecycle adapter. The typed registry owns every quality entry.
+exec ./hippo run --class ephemeral --resource-tier light --disk-path . -- \
+  ./rhino gate run --surface commit-msg --message-file "$1"

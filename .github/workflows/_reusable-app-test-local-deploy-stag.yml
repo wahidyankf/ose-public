@@ -175,19 +175,9 @@ jobs:
         if: always()
         run: docker compose -f ${{ inputs.compose-dir }}/docker-compose.yml -f ${{ inputs.compose-dir }}/docker-compose.ci.yml down -v
 
-  specs-gate:
-    name: Specs gate (BDD+DDD validators)
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup-node
-      - uses: ./.github/actions/setup-dotnet
-      - run: npx nx run-many -t specs:structure-validation --projects=rhino-cli
-
   deploy:
     name: Deploy to staging (force-push web + be branches)
-    needs: [specs-coverage, quick, fe-lint, be-integration, e2e, specs-gate]
+    needs: [specs-coverage, quick, fe-lint, be-integration, e2e]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

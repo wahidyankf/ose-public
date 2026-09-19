@@ -2,17 +2,14 @@
 set -eu
 
 repository_root=$(CDPATH='' cd -- "$(dirname -- "$0")/../.." && pwd)
-workload_class=ephemeral
 
-# Doctor is normally a read-only check. Its --fix mode installs tools and
-# replaces managed directories, so that invocation needs transactional
-# admission even when callers append the flag through npm.
-for argument in "$@"; do
-	if [ "$argument" = --fix ]; then
-		workload_class=transactional
-	fi
-done
+# The in-tree Doctor route is retired. Keep this package-script adapter only
+# for the read-only validation callers that still invoke `npm run doctor`;
+# arguments must use an explicit v0.4 toolchain command instead of translation.
+if [ "$#" -ne 0 ]; then
+	echo "doctor arguments are retired; invoke ./rhino toolchain directly" >&2
+	exit 2
+fi
 
-exec "$repository_root/hippo" run --class "$workload_class" --resource-tier standard \
-	--disk-path "$repository_root" -- \
-	dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- doctor "$@"
+cd "$repository_root"
+exec ./hippo run --class ephemeral --resource-tier light --disk-path . -- ./rhino toolchain validate

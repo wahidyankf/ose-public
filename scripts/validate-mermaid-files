@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Validate only Markdown paths selected by Rhino's typed lifecycle input. The
+# full policy remains declared in repo-config.yml; historical content outside a
+# commit's scope is not an implicit pre-commit input.
+set -euo pipefail
+
+arguments=()
+for path in "$@"; do
+  [[ -f "$path" && "$path" == *.md ]] || continue
+  arguments+=(--file "$path")
+done
+
+(( ${#arguments[@]} == 0 )) || ./rhino md mermaid validate "${arguments[@]}"

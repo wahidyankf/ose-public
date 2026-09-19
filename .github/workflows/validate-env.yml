@@ -24,11 +24,5 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node
-        uses: ./.github/actions/setup-node
-
-      - name: Setup .NET
-        uses: ./.github/actions/setup-dotnet
-
       - name: Validate env contract
-        run: npx nx run rhino-cli:env:validation
+        run: ./hippo run --class ephemeral --resource-tier light --disk-path . -- ./rhino env validate

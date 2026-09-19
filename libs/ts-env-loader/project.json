@@ -66,14 +66,6 @@
         "{projectRoot}/vitest.e2e.config.ts"
       ]
     },
-    "specs:structure-validation": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "dotnet run --project apps/rhino-cli/src/RhinoCli.Program/RhinoCli.Program.fsproj -- specs counts validate specs/libs/ts-env-loader"
-      },
-      "cache": true,
-      "inputs": ["{workspaceRoot}/specs/libs/ts-env-loader/**/*"]
-    },
     "test:quick": {
       "executor": "nx:run-commands",
       "options": {
@@ -88,10 +80,6 @@
           },
           {
             "command": "npm exec -- nx run ts-env-loader:test:unit",
-            "forwardAllArgs": false
-          },
-          {
-            "command": "npm exec -- nx run ts-env-loader:specs:structure-validation",
             "forwardAllArgs": false
           },
           {

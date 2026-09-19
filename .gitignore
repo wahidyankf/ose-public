@@ -180,12 +180,13 @@ coverage.xml
 **/generated_contracts/
 # Bundled OpenAPI spec + docs
 specs/apps/a-demo/contracts/generated/
-specs/apps/ose/lms-be/contracts/generated/
-# The roots and OSE ID contracts keep a hand-written README in their generated/ folder, so the
-# folder itself is ignored by glob and the README negated back in — required because both trees are
-# declared in `md-readme-index.trees`, whose gate walks the working tree and does not read
-# .gitignore. The two siblings above ignore the whole directory instead; theirs hold nothing but
-# build output.
+# The OSE LMS, OSE ID, and Roots contracts keep a hand-written README in their generated/ folder,
+# so the folder contents are ignored by glob and the README negated back in — required because
+# those trees are declared in `md-readme-index.trees`, whose gate walks the working tree and does
+# not read `.gitignore`. The a-demo sibling ignores the whole directory because it holds only build
+# output.
+specs/apps/ose/lms-be/contracts/generated/*
+!specs/apps/ose/lms-be/contracts/generated/README.md
 specs/apps/ose/id-be/contracts/generated/*
 !specs/apps/ose/id-be/contracts/generated/README.md
 specs/apps/roots/be/contracts/generated/*

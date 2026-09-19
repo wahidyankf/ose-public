@@ -135,9 +135,9 @@ Stage/commit only when explicitly instructed. License MIT — see
 ## Related Repositories
 
 The five **OSE Code Repositories** are a routing set — never a parent repo, parity group, or
-shared release. Parity sibling: a private repository, not linked from this public tree;
-`apps/rhino-cli` byte-identical. Independent: [RHINO](https://github.com/wahidyankf/rhino)
-repository hygiene, upstream of the in-tree `apps/rhino-cli`;
+shared release. The private sibling is independently managed and not linked from this public
+tree. [RHINO](https://github.com/wahidyankf/rhino) supplies this repository's pinned
+repository-hygiene executable;
 [HIPPO](https://github.com/wahidyankf/hippo) resource coordination;
 [BeaverNest](https://github.com/wahidyankf/beaver-nest) its own product.
 

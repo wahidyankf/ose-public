@@ -7,17 +7,17 @@ when_to_use: Read this when checking which CI surfaces gate specs/ changes, what
 
 ## Pre-push + CI gating surfaces
 
-Specs structure validation remains registry-declared. Per-project BDD coverage runs through every
-affected `test:quick`; repeated primary keywords are valid for a continuous journey.
+The retired F# CLI owned the former registry structural-validation targets. Per-project BDD coverage
+runs through every affected `test:quick`; repeated primary keywords are valid for a continuous journey.
 
 - `.husky/pre-push` — `./rhino gate run --surface pre-push` hands the surface to the registry, which
   reads them
-- `.github/workflows/pr-quality-gate.yml` — the `specs-structure` job in `quality-gate.needs:`
+- `.github/workflows/pr-quality-gate.yml` — the grouped lifecycle surface validates the immutable PR range
 - `_reusable-www-test-local-deploy.yml` and `_reusable-app-test-local-deploy-stag.yml` — the
-  `specs-gate` job in `deploy.needs:`, called by the www and app cron deploys
+  `specs-coverage` job remains in deployment prerequisites, called by the www and app cron deploys
 
-The retired Rhino testing-contract and keyword-cardinality commands are not part of this structural
-gate. Semantic binding substance belongs to the Gherkin implementation review.
+The retired Rhino testing-contract, keyword-cardinality, and structural-validation commands are not
+part of the active lifecycle. Semantic binding substance belongs to the Gherkin implementation review.
 
 ## LLM Semantic Validation (specs-checker)
 

@@ -125,7 +125,7 @@ jobs:
 
   deploy:
     name: Deploy to production
-    needs: [lint, unit, specs-coverage, e2e, detect-changes, specs-gate]
+    needs: [lint, unit, specs-coverage, e2e, detect-changes]
     if: needs.detect-changes.outputs.has-changes == 'true'
     runs-on: ubuntu-latest
     steps:

@@ -206,6 +206,13 @@ test -x scripts/public-safety/check-commit-message
 # prefix. An absolute source-root prefix would widen the snapshot boundary.
 grep -F 'PATH="node_modules/.bin:$PATH"' .github/workflows/pr-quality-gate.yml
 
+# The retired F# CLI owned the former reusable-workflow job. Leaving its name in
+# any `needs` list makes GitHub reject the whole workflow before it starts.
+if grep -R -Fq 'specs-gate' .github/workflows; then
+	echo "retired specs-gate remains in a workflow dependency" >&2
+	exit 1
+fi
+
 # A snapshot mutation may format a changed Go file, but Go type-aware linting
 # belongs to the dedicated quality job after its ignored contracts are generated.
 if grep -Fq 'lint-golangci' scripts/format-staged; then

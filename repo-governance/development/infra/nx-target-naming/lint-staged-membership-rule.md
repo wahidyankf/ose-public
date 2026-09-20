@@ -32,11 +32,11 @@ The following checks satisfy both criteria and belong in `lint-staged`:
 
 Checks that fail one or both criteria stay outside `lint-staged`:
 
-| Check                             | Fails because                                                                                           | Placement                                            |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| `md links validate`               | Not per-file isolated — adding, deleting, or renaming any `.md` file can break links in untouched files | Repo-wide `rhino-bin.sh` gate (pre-push / PR / main) |
-| `harness:bindings-generate`       | Not file-type-based — regenerates all binding trees from the whole `.claude/` tree                      | Dedicated `rhino-bin.sh` step (pre-commit step 3)    |
-| `test:quick`, `typecheck`, `lint` | Not file-type-based — project-scoped compile / test                                                     | Nx target (pre-push onward)                          |
+| Check                             | Fails because                                                                                           | Placement                                       |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `md links validate`               | Not per-file isolated — adding, deleting, or renaming any `.md` file can break links in untouched files | Repo-wide `./rhino` gate (pre-push / PR / main) |
+| `harness:bindings-generate`       | Not file-type-based — regenerates all binding trees from the whole `.claude/` tree                      | Dedicated `./rhino` step (pre-commit step 3)    |
+| `test:quick`, `typecheck`, `lint` | Not file-type-based — project-scoped compile / test                                                     | Nx target (pre-push onward)                     |
 
 ## Consequences for the Nx Target Set
 
@@ -51,7 +51,7 @@ Applying this rule removes several Nx targets from `project.json` files:
 
 `env staged-guard validate` satisfies both criteria (file-type-based on `*.env*` globs;
 per-file isolated because rejection is decided from the path alone). Despite satisfying the
-rule, it remains a **dedicated first pre-commit step** (direct `rhino-bin.sh`, never a
+rule, it remains a **dedicated first pre-commit step** (direct `./rhino`, never a
 lint-staged entry) for three reasons:
 
 1. **Order guarantee**: the guard must run before any formatter can stage `.env` file

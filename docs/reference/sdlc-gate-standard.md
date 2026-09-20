@@ -300,7 +300,7 @@ The following must converge — this is the work of the standardization plan:
 - The **placement** of env validation (standalone workflow vs. folded into the PR gate).
 - The **Nx target names** invoked by hooks/CI, and the Rhino target set itself: `fmt`/`format:check`
   targets (removed — formatting via lint-staged), shell/docker/actions tool-lint (folded into
-  lint-staged, not Nx targets), the env/governance/binding validators run as direct `rhino-bin.sh` calls
+  lint-staged, not Nx targets), the env/governance/binding validators run as direct `./rhino` calls
   in gates (not `nx run Rhino:` targets).
 
 ## Parity Status
@@ -357,8 +357,8 @@ AC-15 in `plans/done/2026-08-09__optimize-cis/delivery.md`).
 `Rhino` was ported from Rust to F# (`rewrite-Rhino-to-fsharp` plan), so the `cargo run`
 dispatch above and the `env staged-guard validate` "Rust command" phrasing in the "Hook/gate step
 order" row both describe a mechanism that no longer exists — both now run the F# binary via the
-`rhino-bin.sh` shim described in the dispatch-mechanism note above. As with that note, the table
-itself is left as the historical 2026-07-01 snapshot rather than rewritten in place.
+then-current resolver described in the dispatch-mechanism note above. The present resolver is
+`./rhino`; the table itself is left as the historical 2026-07-01 snapshot rather than rewritten in place.
 
 **Schema-rename note (2026-08-13, not part of the 2026-07-01 verification pass above)**: the
 `repo-config.yml` `instruction-size:` top-level section cited by the "`repo-config.yml` section

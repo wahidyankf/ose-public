@@ -1,6 +1,6 @@
 # FERRET Init 01 — Standalone Local CLI
 
-> **Status:** In Progress — first delivery in the FERRET initialization chain.
+> **Status:** Complete — first delivery in the FERRET initialization chain.
 
 Build a fail-open, local-first telemetry client for Claude Code, Codex, and OpenCode. The client records
 strict lifecycle metadata in one per-user SQLite database, remains useful without any server, and exposes

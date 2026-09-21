@@ -9,6 +9,27 @@ Archived plans and completed project planning documents.
 
 ## Completed Projects
 
+- [2026-09-21: ferret-init-01-local-cli](./2026-09-21__ferret-init-01-local-cli/README.md) —
+  Shipped FERRET's standalone local CLI: a standard-library-only Python 3.14 zipapp with twelve
+  commands over a private per-user SQLite store, plus a dedicated E2E project, six feature files
+  and 38 scenarios, and hand-authored lifecycle registrations for Claude Code, Codex, and
+  OpenCode. Metadata only — no prompt, response, tool argument, transcript, or environment value
+  is stored, workspace and session identifiers are HMAC-derived, and the capture hook writes
+  nothing and always exits 0 so a harness is never disturbed. Delivered `worktree-to-pr`: Phases 0 to 6 in
+  this commit, with Phases 7 and 8 recorded in the closure pull request that follows the merge.
+  Iron Rule 3 turned up five pre-existing defects on `main`, each fixed at its root
+  in its own commit ahead of the feature commit; the last of them blocked every commit that
+  staged a Python file, because the pre-commit formatter mutator wrote a `ruff` cache outside the
+  paths it had been given. The candidate commit was rebuilt repeatedly, each
+  time because something independent found a defect rather than because the delivery changed its
+  mind: an audit found six mount-table literals in a unit fixture matching the public-safety gate's
+  maintainer-path and internal-hostname shapes, which the Phase 5 gate had missed only because those
+  files were still untracked when it ran; CI found two defects in this repository's own quality-gate
+  lanes; a leak review found a per-user temporary-directory root left in four captured transcripts;
+  and two further audits found defects in the delivery record itself, from a missing worktree
+  declaration to an orphaned product-requirements fragment. The external candidate record carries
+  every round with its cause.
+
 - [2026-09-17: ose-id-init-01-foundation](./2026-09-17__ose-id-init-01-foundation/README.md) —
   Shipped `ose-id`'s local foundation: four registered Nx projects (`ose-id-be`, `ose-id-be-e2e`,
   `ose-id-web`, `ose-id-web-e2e`), an ASP.NET Core backend, a Next.js web shell, PostgreSQL schema

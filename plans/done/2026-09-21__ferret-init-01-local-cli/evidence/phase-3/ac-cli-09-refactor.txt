@@ -1,0 +1,184 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick --skip-nx-cache
+
+> nx run ferret-cli:"test:quick"
+
+> npm exec -- nx run ferret-cli:lint
+
+
+> nx run ferret-cli:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+80 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:typecheck
+
+
+> nx run ferret-cli:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:unit
+
+
+> nx run ferret-cli:"test:unit"
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 781 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .    [  0%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  0%]
+tests/unit/steps/test_local_query_and_export_steps.py ......             [  1%]
+tests/unit/steps/test_metadata_envelope_steps.py .......                 [  2%]
+tests/unit/steps/test_retention_and_space_steps.py .                     [  2%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  2%]
+tests/unit/test_analytics.py ........................................... [  7%]
+...................                                                      [ 10%]
+tests/unit/test_canonical.py ..........                                  [ 11%]
+tests/unit/test_capabilities.py ........................................ [ 16%]
+........................................................................ [ 25%]
+.........                                                                [ 27%]
+tests/unit/test_capture.py .........................                     [ 30%]
+tests/unit/test_cli_contract.py ........................................ [ 35%]
+.................................................                        [ 41%]
+tests/unit/test_commands.py .........                                    [ 42%]
+tests/unit/test_data_home_locality.py ...........                        [ 44%]
+tests/unit/test_event_contract.py ............................           [ 47%]
+tests/unit/test_event_identity.py ....                                   [ 48%]
+tests/unit/test_initialization.py ...................................... [ 53%]
+....................                                                     [ 55%]
+tests/unit/test_maintenance.py ................................          [ 59%]
+tests/unit/test_privacy.py ............................................. [ 65%]
+........................................................................ [ 74%]
+............................                                             [ 78%]
+tests/unit/test_queries.py ............................................. [ 84%]
+........................................................................ [ 93%]
+......                                                                   [ 94%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/analytics.py           97      0   100%
+src/ferret/application/capabilities.py        23      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/initialization.py      65      0   100%
+src/ferret/application/maintenance.py         16      0   100%
+src/ferret/application/ports.py               67      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/queries.py             46      0   100%
+src/ferret/application/store.py               20      0   100%
+src/ferret/cli.py                            176      0   100%
+src/ferret/commands.py                        39      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/capability.py               69      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   110      0   100%
+src/ferret/domain/fields.py                   47      0   100%
+src/ferret/domain/identity.py                 10      0   100%
+src/ferret/domain/query.py                   123      0   100%
+src/ferret/domain/retention.py                14      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               37      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       43      0   100%
+------------------------------------------------------------------------
+TOTAL                                       1171      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================= 781 passed in 0.94s ==============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage
+
+
+> nx run ferret-cli:"test:coverage"
+
+> npm exec -- nx run ferret-cli:test:coverage:unit
+
+
+> nx run ferret-cli:"test:coverage:unit"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter unit
+
+ferret-cli: 6 features, 18 expanded scenarios, adapters: unit.
+
+
+
+ NX   Successfully ran target test:coverage:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:integration
+
+
+> nx run ferret-cli:"test:coverage:integration"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter integration
+
+ferret-cli: 6 features, 18 expanded scenarios, adapters: integration.
+
+
+
+ NX   Successfully ran target test:coverage:integration for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:behaviour
+
+
+> nx run ferret-cli:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter behaviour
+
+ferret-cli: 6 features, 18 expanded scenarios, adapters: unit, integration.
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli
+note=OWNER-QUICK after the ports reorder
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T07:27:49Z

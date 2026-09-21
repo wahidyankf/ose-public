@@ -1,0 +1,62 @@
+$ ./rhino governance word-budget validate
+[word-budget] checked 3175 files, no findings
+[evrun] dropped 3175 output lines matching /^\[word-budget\] scanned /
+note=baseline before placement; plan command rhino harness instruction-size validate mapped to governance word-budget validate per amendment A2
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:22:21Z
+
+$ ./rhino governance word-budget validate
+[word-budget] checked 3175 files, no findings
+[evrun] dropped 3175 output lines matching /^\[word-budget\] scanned /
+note=after placement (nine plan surfaces plus the four amendment-A6 surfaces written); amendment A2 mapping of rhino harness instruction-size validate
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T02:37:03Z
+
+$ ./rhino repo-config validate
+[repo-config] checked 1 configuration file, no findings
+note=repo-config.yml scan.exclude-directories gained .venv, __pycache__, .pytest_cache, .ruff_cache
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T02:37:05Z
+
+
+## Placement and admission decisions (Steps 4 and 5)
+
+Admission test for the instruction surface (necessity first, then room):
+- Necessity FAILS for PYR-1..PYR-7. Each is reached through the activity it governs (scaffolding a Python project's targets,
+  writing bindings, tagging a project, registering a harness hook), so a governance layer or the skill reaches the contributor at
+  no budget cost. None is admitted to AGENTS.md or CLAUDE.md, so neither file is edited and Step 5 (eviction) has nothing to
+  evict. The threshold was not consulted for these rules: room is never weighed for a rule that fails necessity.
+- The vendor-neutral rules (PYR-1..PYR-5) are not written to any binding shim; the vendor-specific rules (PYR-6, PYR-7) land on
+  the skill and on the binding-examples catalog, which is the allowlisted surface for harness names.
+- No threshold, waiver, exemption, or ignore entry was added or raised. `git diff -U0 repo-config.yml` shows only the four
+  `scan.exclude-directories` additions below; the `policies.governance.word-budget` block is untouched.
+
+Destinations (routes are only the nine plan surfaces plus the four amendment-A6 surfaces recorded in step-3.txt):
+
+| Obligation | Destination file and section                                                                                                  |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| PYR-1      | repo-governance/development/infra/nx-targets/mandatory-targets-cli-e2e.md, new "Python CLI Owners" table                       |
+| PYR-2      | same file, new "Python CLI E2E Test Projects" table                                                                            |
+| PYR-3      | repo-governance/development/infra/nx-targets/mandatory-targets-behaviour-coverage.md, "Python (pytest-bdd)" paragraph          |
+| PYR-4      | same paragraph (owner `test:unit` names both `--cov` and `--cov-fail-under`, at least 99)                                      |
+| PYR-5      | tag-convention-four-dimension-scheme.md (vocabulary `lang:python`, `domain:ferret`, special rule) and tag-convention-current-tags-and-examples.md (two rows, one example) |
+| PYR-6      | .agents/skills/harness-compatibility-protocol/SKILL.md "Lifecycle Capture Registrations" rules 1-3; docs/reference/platform-bindings.md "FERRET lifecycle registrations" |
+| PYR-7      | same skill rule 4; platform-bindings.md corrected route paragraph                                                              |
+| discoverability | development-environment-setup/{phase-6-python-ecosystem,tool-inventory,minimal-scope-quick-reference}.md; repo-config.yml scan excludes (`.venv`, `__pycache__`, `.pytest_cache`, `.ruff_cache`, needed before any Python environment exists because `apps/**/README.md` and `**/*.md` scans would otherwise traverse installed packages); .agents/skills/harness-compatibility-protocol/reference/phase0-invariant-6-config-parity.md (`.opencode/plugins/`) |
+
+Writes done in this step in place of Step 6 GREEN's doc updates (documented order): the rule text is written first so the RED
+fixtures in Step 6 encode the stated rule; Step 6 GREEN then implements the enforcement and reconciles wording only if the
+implementation forces it. The scripts (`scripts/behaviour-coverage.mjs` and `.test.mjs`) are the enforcement placements and are
+written at Step 6.
+
+Word budget arithmetic (measured directly, whitespace-separated, fail threshold 750): mandatory-targets-cli-e2e.md 725;
+tag-convention-current-tags-and-examples.md 582; tag-convention-four-dimension-scheme.md 382; tool-inventory.md 662;
+harness-compatibility-protocol SKILL.md 504; the other touched governance files are well below. The whole-tree run above
+reports 3175 files with no findings.
+
+## Result
+Steps 4-5 complete: placement recorded for all seven obligations, no instruction-surface admission and therefore no eviction,
+word budget clean before and after with no threshold raised.

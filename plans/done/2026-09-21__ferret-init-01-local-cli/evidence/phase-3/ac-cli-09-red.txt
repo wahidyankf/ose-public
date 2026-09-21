@@ -1,0 +1,255 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --args='tests/unit/steps/test_retention_and_space_steps.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/steps/test_retention_and_space_steps.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/steps/test_retention_and_space_steps.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 333 items / 13 errors
+
+==================================== ERRORS ====================================
+_ ERROR collecting tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py _
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py:10: in <module>
+    from support.fakes import FIXED_NOW
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_ ERROR collecting tests/unit/steps/test_initialization_and_concurrency_steps.py _
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_initialization_and_concurrency_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_initialization_and_concurrency_steps.py:20: in <module>
+    from support.fakes import FAKE_DATA_HOME, FIXED_NOW, FakeInput, World, make_world
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+____ ERROR collecting tests/unit/steps/test_local_query_and_export_steps.py ____
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_local_query_and_export_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_local_query_and_export_steps.py:10: in <module>
+    from support.fakes import FIXED_NOW, World
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+______ ERROR collecting tests/unit/steps/test_metadata_envelope_steps.py _______
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_metadata_envelope_steps.py:15: in <module>
+    from support.fakes import World, make_world
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_____ ERROR collecting tests/unit/steps/test_retention_and_space_steps.py ______
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_retention_and_space_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_retention_and_space_steps.py:13: in <module>
+    from ferret.domain.retention import PRUNE_ROW_LIMIT
+E   ModuleNotFoundError: No module named 'ferret.domain.retention'
+______ ERROR collecting tests/unit/steps/test_usage_and_outcomes_steps.py ______
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_usage_and_outcomes_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_usage_and_outcomes_steps.py:11: in <module>
+    from support.fakes import FIXED_NOW, World
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+________________ ERROR collecting tests/unit/test_analytics.py _________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_analytics.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_analytics.py:25: in <module>
+    from support.invoke import run_cli
+tests/support/invoke.py:9: in <module>
+    from support.fakes import World
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_______________ ERROR collecting tests/unit/test_capabilities.py _______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_capabilities.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_capabilities.py:19: in <module>
+    from support.fakes import FIXED_NOW, World, make_world
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_________________ ERROR collecting tests/unit/test_capture.py __________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_capture.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_capture.py:16: in <module>
+    from support.fakes import Entry, World, make_world
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_________________ ERROR collecting tests/unit/test_commands.py _________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_commands.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_commands.py:13: in <module>
+    from support.fakes import FAKE_DATA_HOME, INSTALLATION_ID, World, make_world
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+______________ ERROR collecting tests/unit/test_initialization.py ______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_initialization.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_initialization.py:12: in <module>
+    from support.fakes import (
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_______________ ERROR collecting tests/unit/test_maintenance.py ________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_maintenance.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_maintenance.py:10: in <module>
+    from ferret.application.maintenance import prune_due
+E   ModuleNotFoundError: No module named 'ferret.application.maintenance'
+_________________ ERROR collecting tests/unit/test_queries.py __________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_queries.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_queries.py:28: in <module>
+    from support.fakes import FIXED_NOW
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+=========================== short test summary info ============================
+ERROR tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+ERROR tests/unit/steps/test_initialization_and_concurrency_steps.py
+ERROR tests/unit/steps/test_local_query_and_export_steps.py
+ERROR tests/unit/steps/test_metadata_envelope_steps.py
+ERROR tests/unit/steps/test_retention_and_space_steps.py
+ERROR tests/unit/steps/test_usage_and_outcomes_steps.py
+ERROR tests/unit/test_analytics.py
+ERROR tests/unit/test_capabilities.py
+ERROR tests/unit/test_capture.py
+ERROR tests/unit/test_commands.py
+ERROR tests/unit/test_initialization.py
+ERROR tests/unit/test_maintenance.py
+ERROR tests/unit/test_queries.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 13 errors during collection !!!!!!!!!!!!!!!!!!!
+============================== 13 errors in 0.24s ==============================
+
+
+
+ NX   Running target test:unit for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:unit
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/steps/test_retention_and_space_steps.py" exited with non-zero status code
+note=C09-UNIT: RED as designed
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T07:13:43Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:integration --args='tests/integration/test_retention.py'
+
+> nx run ferret-cli:"test:integration" --args=tests/integration/test_retention.py
+
+> uv run --no-sync pytest tests/integration tests/integration/test_retention.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 71 items / 6 errors
+
+==================================== ERRORS ====================================
+_ ERROR collecting tests/integration/steps/test_local_query_and_export_steps.py _
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/integration/steps/test_local_query_and_export_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/integration/steps/test_local_query_and_export_steps.py:15: in <module>
+    from support.invoke import Ran
+tests/support/invoke.py:9: in <module>
+    from support.fakes import World
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+__ ERROR collecting tests/integration/steps/test_retention_and_space_steps.py __
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/integration/steps/test_retention_and_space_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/integration/steps/test_retention_and_space_steps.py:14: in <module>
+    from ferret.domain.retention import PRUNE_ROW_LIMIT
+E   ModuleNotFoundError: No module named 'ferret.domain.retention'
+__ ERROR collecting tests/integration/steps/test_usage_and_outcomes_steps.py ___
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/integration/steps/test_usage_and_outcomes_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/integration/steps/test_usage_and_outcomes_steps.py:13: in <module>
+    from support.invoke import Ran
+tests/support/invoke.py:9: in <module>
+    from support.fakes import World
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_____________ ERROR collecting tests/integration/test_analytics.py _____________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/integration/test_analytics.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/integration/test_analytics.py:14: in <module>
+    from support.machine import Machine, make_machine
+tests/support/machine.py:14: in <module>
+    from ferret.application.ports import Clock, Monotonic, Runtime
+E   ImportError: cannot import name 'Monotonic' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+______________ ERROR collecting tests/integration/test_queries.py ______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/integration/test_queries.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/integration/test_queries.py:17: in <module>
+    from support.fakes import FakeEvents
+tests/support/fakes.py:10: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Budget' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_____________ ERROR collecting tests/integration/test_retention.py _____________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/integration/test_retention.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/integration/test_retention.py:13: in <module>
+    from ferret.application.maintenance import prune_due
+E   ModuleNotFoundError: No module named 'ferret.application.maintenance'
+=========================== short test summary info ============================
+ERROR tests/integration/steps/test_local_query_and_export_steps.py
+ERROR tests/integration/steps/test_retention_and_space_steps.py
+ERROR tests/integration/steps/test_usage_and_outcomes_steps.py
+ERROR tests/integration/test_analytics.py
+ERROR tests/integration/test_queries.py
+ERROR tests/integration/test_retention.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!!
+============================== 6 errors in 0.17s ===============================
+
+
+
+ NX   Running target test:integration for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:integration
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pytest tests/integration tests/integration/test_retention.py" exited with non-zero status code
+note=C09-INTEGRATION: RED as designed
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T07:13:52Z

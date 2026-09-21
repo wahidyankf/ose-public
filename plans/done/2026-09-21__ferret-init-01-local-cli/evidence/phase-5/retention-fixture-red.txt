@@ -1,0 +1,821 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --skip-nx-cache --args='tests/unit/test_manual_retention_fixture.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_manual_retention_fixture.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_manual_retention_fixture.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 1224 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .... [  0%]
+..........                                                               [  1%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  1%]
+tests/unit/steps/test_local_query_and_export_steps.py ...........        [  2%]
+tests/unit/steps/test_metadata_envelope_steps.py ........                [  2%]
+tests/unit/steps/test_retention_and_space_steps.py ..                    [  3%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  3%]
+tests/unit/test_analytics.py ........................................... [  6%]
+...................                                                      [  8%]
+tests/unit/test_canonical.py ..........                                  [  8%]
+tests/unit/test_capabilities.py ........................................ [ 12%]
+........................................................................ [ 18%]
+.........                                                                [ 18%]
+tests/unit/test_capture.py .........................                     [ 20%]
+tests/unit/test_capture_hook.py ........................................ [ 24%]
+.................                                                        [ 25%]
+tests/unit/test_cli_contract.py ........................................ [ 28%]
+.................................................                        [ 32%]
+tests/unit/test_commands.py .........                                    [ 33%]
+tests/unit/test_data_home_locality.py ...........                        [ 34%]
+tests/unit/test_event_contract.py ............................           [ 36%]
+tests/unit/test_event_identity.py ....                                   [ 37%]
+tests/unit/test_hook_mappers.py ........................................ [ 40%]
+........................................................................ [ 46%]
+................                                                         [ 47%]
+tests/unit/test_identifier_derivation.py ............                    [ 48%]
+tests/unit/test_initialization.py ...................................... [ 51%]
+....................                                                     [ 53%]
+tests/unit/test_install.py ............................................. [ 56%]
+...........                                                              [ 57%]
+tests/unit/test_install_domain.py ...................................... [ 60%]
+............................                                             [ 63%]
+tests/unit/test_maintenance.py ................................          [ 65%]
+tests/unit/test_maintenance_command.py ......................            [ 67%]
+tests/unit/test_manual_evidence.py ...........                           [ 68%]
+tests/unit/test_manual_retention_fixture.py FFFFFFFFFFFFFFFFFFF          [ 70%]
+tests/unit/test_network_denial.py ......                                 [ 70%]
+tests/unit/test_privacy.py ............................................. [ 74%]
+........................................................................ [ 80%]
+............................                                             [ 82%]
+tests/unit/test_queries.py ............................................. [ 86%]
+........................................................................ [ 91%]
+......                                                                   [ 92%]
+tests/unit/test_space.py ........................                        [ 94%]
+tests/unit/test_status.py ......................                         [ 96%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_seed_relative_boundary __________________________
+
+database = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_seed_relative_boundary0/ferret.sqlite3')
+
+    def test_seed_relative_boundary(database: Path) -> None:
+>       helper = load_helper()
+                 ^^^^^^^^^^^^^
+
+tests/unit/test_manual_retention_fixture.py:112:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+tests/unit/test_manual_retention_fixture.py:54: AssertionError
+______________ test_seed_refuses_a_store_that_already_holds_rows _______________
+
+database = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_seed_refuses_a_store_that0/ferret.sqlite3')
+
+    def test_seed_refuses_a_store_that_already_holds_rows(database: Path) -> None:
+>       helper = load_helper()
+                 ^^^^^^^^^^^^^
+
+tests/unit/test_manual_retention_fixture.py:144:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+tests/unit/test_manual_retention_fixture.py:54: AssertionError
+_________________________ test_lock_handshake_timeout __________________________
+
+database = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_lock_handshake_timeout0/ferret.sqlite3')
+tmp_path = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_lock_handshake_timeout0')
+
+    def test_lock_handshake_timeout(database: Path, tmp_path: Path) -> None:
+>       helper = load_helper()
+                 ^^^^^^^^^^^^^
+
+tests/unit/test_manual_retention_fixture.py:154:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+tests/unit/test_manual_retention_fixture.py:54: AssertionError
+_______________ test_lock_is_held_until_the_release_file_appears _______________
+
+database = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_lock_is_held_until_the_re0/ferret.sqlite3')
+tmp_path = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_lock_is_held_until_the_re0')
+
+    def test_lock_is_held_until_the_release_file_appears(database: Path, tmp_path: Path) -> None:
+>       helper = load_helper()
+                 ^^^^^^^^^^^^^
+
+tests/unit/test_manual_retention_fixture.py:174:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+tests/unit/test_manual_retention_fixture.py:54: AssertionError
+______________________ test_run_matrix_sanitizes_summary _______________________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_sanitizes_summ0')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+
+    def test_run_matrix_sanitizes_summary(repository: Path, artifact: Path) -> None:
+>       assert run_matrix(artifact) == 0
+               ^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:230:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+_____________________ test_run_matrix_rejects_unowned_root _____________________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_unowne0')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+
+    def test_run_matrix_rejects_unowned_root(repository: Path, artifact: Path) -> None:
+        root = repository / RAW_ROOT
+        root.mkdir(parents=True)
+        (root / "keep.txt").write_text("not the helper's\n")
+
+>       assert run_matrix(artifact) == 2
+               ^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:255:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+_____________ test_run_matrix_rejects_a_root_that_another_run_owns _____________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_a_root0')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+
+    def test_run_matrix_rejects_a_root_that_another_run_owns(repository: Path, artifact: Path) -> None:
+        root = repository / "local-tmp" / "ferret-plan01" / "first-run"
+        root.mkdir(parents=True)
+        (root / ".ferret-plan01-run").write_text("first-run\n")
+
+>       assert run_matrix(artifact, run_id="second-run", raw_root="local-tmp/ferret-plan01/first-run") == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:267:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+_ test_run_matrix_rejects_a_raw_root_that_is_not_the_run_directory[/tmp/ferret-plan01/unit-run] _
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_a_raw_0')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+raw_root = '/tmp/ferret-plan01/unit-run'
+
+    @pytest.mark.parametrize(
+        "raw_root",
+        [
+            "/tmp/ferret-plan01/unit-run",
+            "../ferret-plan01/unit-run",
+            "local-tmp/elsewhere/unit-run",
+            "local-tmp/ferret-plan01",
+        ],
+    )
+    def test_run_matrix_rejects_a_raw_root_that_is_not_the_run_directory(
+        repository: Path, artifact: Path, raw_root: str
+    ) -> None:
+>       assert run_matrix(artifact, raw_root=raw_root) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:285:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+_ test_run_matrix_rejects_a_raw_root_that_is_not_the_run_directory[../ferret-plan01/unit-run] _
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_a_raw_1')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+raw_root = '../ferret-plan01/unit-run'
+
+    @pytest.mark.parametrize(
+        "raw_root",
+        [
+            "/tmp/ferret-plan01/unit-run",
+            "../ferret-plan01/unit-run",
+            "local-tmp/elsewhere/unit-run",
+            "local-tmp/ferret-plan01",
+        ],
+    )
+    def test_run_matrix_rejects_a_raw_root_that_is_not_the_run_directory(
+        repository: Path, artifact: Path, raw_root: str
+    ) -> None:
+>       assert run_matrix(artifact, raw_root=raw_root) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:285:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+_ test_run_matrix_rejects_a_raw_root_that_is_not_the_run_directory[local-tmp/elsewhere/unit-run] _
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_a_raw_2')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+raw_root = 'local-tmp/elsewhere/unit-run'
+
+    @pytest.mark.parametrize(
+        "raw_root",
+        [
+            "/tmp/ferret-plan01/unit-run",
+            "../ferret-plan01/unit-run",
+            "local-tmp/elsewhere/unit-run",
+            "local-tmp/ferret-plan01",
+        ],
+    )
+    def test_run_matrix_rejects_a_raw_root_that_is_not_the_run_directory(
+        repository: Path, artifact: Path, raw_root: str
+    ) -> None:
+>       assert run_matrix(artifact, raw_root=raw_root) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:285:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+_ test_run_matrix_rejects_a_raw_root_that_is_not_the_run_directory[local-tmp/ferret-plan01] _
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_a_raw_3')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+raw_root = 'local-tmp/ferret-plan01'
+
+    @pytest.mark.parametrize(
+        "raw_root",
+        [
+            "/tmp/ferret-plan01/unit-run",
+            "../ferret-plan01/unit-run",
+            "local-tmp/elsewhere/unit-run",
+            "local-tmp/ferret-plan01",
+        ],
+    )
+    def test_run_matrix_rejects_a_raw_root_that_is_not_the_run_directory(
+        repository: Path, artifact: Path, raw_root: str
+    ) -> None:
+>       assert run_matrix(artifact, raw_root=raw_root) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:285:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+________ test_run_matrix_rejects_arguments_it_cannot_honor[arguments0] _________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_argume0')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+arguments = {'reference_now': '2026-09-21T10:00:00Z'}
+
+    @pytest.mark.parametrize(
+        "arguments",
+        [
+            {"reference_now": "2026-09-21T10:00:00Z"},
+            {"reference_now": "not-a-time"},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) + timedelta(hours=1))},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) - timedelta(hours=2))},
+            {"expired_events": 100, "expired_snapshots": 0},
+            {"expired_events": 0},
+            {"retained_events": 0},
+            {"retained_events": 101},
+        ],
+    )
+    def test_run_matrix_rejects_arguments_it_cannot_honor(
+        repository: Path, artifact: Path, arguments: dict[str, Any]
+    ) -> None:
+>       assert run_matrix(artifact, **arguments) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+________ test_run_matrix_rejects_arguments_it_cannot_honor[arguments1] _________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_argume1')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+arguments = {'reference_now': 'not-a-time'}
+
+    @pytest.mark.parametrize(
+        "arguments",
+        [
+            {"reference_now": "2026-09-21T10:00:00Z"},
+            {"reference_now": "not-a-time"},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) + timedelta(hours=1))},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) - timedelta(hours=2))},
+            {"expired_events": 100, "expired_snapshots": 0},
+            {"expired_events": 0},
+            {"retained_events": 0},
+            {"retained_events": 101},
+        ],
+    )
+    def test_run_matrix_rejects_arguments_it_cannot_honor(
+        repository: Path, artifact: Path, arguments: dict[str, Any]
+    ) -> None:
+>       assert run_matrix(artifact, **arguments) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+________ test_run_matrix_rejects_arguments_it_cannot_honor[arguments2] _________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_argume2')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+arguments = {'reference_now': '2026-09-21T13:47:30.000Z'}
+
+    @pytest.mark.parametrize(
+        "arguments",
+        [
+            {"reference_now": "2026-09-21T10:00:00Z"},
+            {"reference_now": "not-a-time"},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) + timedelta(hours=1))},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) - timedelta(hours=2))},
+            {"expired_events": 100, "expired_snapshots": 0},
+            {"expired_events": 0},
+            {"retained_events": 0},
+            {"retained_events": 101},
+        ],
+    )
+    def test_run_matrix_rejects_arguments_it_cannot_honor(
+        repository: Path, artifact: Path, arguments: dict[str, Any]
+    ) -> None:
+>       assert run_matrix(artifact, **arguments) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+________ test_run_matrix_rejects_arguments_it_cannot_honor[arguments3] _________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_argume3')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+arguments = {'reference_now': '2026-09-21T10:47:30.000Z'}
+
+    @pytest.mark.parametrize(
+        "arguments",
+        [
+            {"reference_now": "2026-09-21T10:00:00Z"},
+            {"reference_now": "not-a-time"},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) + timedelta(hours=1))},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) - timedelta(hours=2))},
+            {"expired_events": 100, "expired_snapshots": 0},
+            {"expired_events": 0},
+            {"retained_events": 0},
+            {"retained_events": 101},
+        ],
+    )
+    def test_run_matrix_rejects_arguments_it_cannot_honor(
+        repository: Path, artifact: Path, arguments: dict[str, Any]
+    ) -> None:
+>       assert run_matrix(artifact, **arguments) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+________ test_run_matrix_rejects_arguments_it_cannot_honor[arguments4] _________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_argume4')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+arguments = {'expired_events': 100, 'expired_snapshots': 0}
+
+    @pytest.mark.parametrize(
+        "arguments",
+        [
+            {"reference_now": "2026-09-21T10:00:00Z"},
+            {"reference_now": "not-a-time"},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) + timedelta(hours=1))},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) - timedelta(hours=2))},
+            {"expired_events": 100, "expired_snapshots": 0},
+            {"expired_events": 0},
+            {"retained_events": 0},
+            {"retained_events": 101},
+        ],
+    )
+    def test_run_matrix_rejects_arguments_it_cannot_honor(
+        repository: Path, artifact: Path, arguments: dict[str, Any]
+    ) -> None:
+>       assert run_matrix(artifact, **arguments) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+________ test_run_matrix_rejects_arguments_it_cannot_honor[arguments5] _________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_argume5')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+arguments = {'expired_events': 0}
+
+    @pytest.mark.parametrize(
+        "arguments",
+        [
+            {"reference_now": "2026-09-21T10:00:00Z"},
+            {"reference_now": "not-a-time"},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) + timedelta(hours=1))},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) - timedelta(hours=2))},
+            {"expired_events": 100, "expired_snapshots": 0},
+            {"expired_events": 0},
+            {"retained_events": 0},
+            {"retained_events": 101},
+        ],
+    )
+    def test_run_matrix_rejects_arguments_it_cannot_honor(
+        repository: Path, artifact: Path, arguments: dict[str, Any]
+    ) -> None:
+>       assert run_matrix(artifact, **arguments) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+________ test_run_matrix_rejects_arguments_it_cannot_honor[arguments6] _________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_argume6')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+arguments = {'retained_events': 0}
+
+    @pytest.mark.parametrize(
+        "arguments",
+        [
+            {"reference_now": "2026-09-21T10:00:00Z"},
+            {"reference_now": "not-a-time"},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) + timedelta(hours=1))},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) - timedelta(hours=2))},
+            {"expired_events": 100, "expired_snapshots": 0},
+            {"expired_events": 0},
+            {"retained_events": 0},
+            {"retained_events": 101},
+        ],
+    )
+    def test_run_matrix_rejects_arguments_it_cannot_honor(
+        repository: Path, artifact: Path, arguments: dict[str, Any]
+    ) -> None:
+>       assert run_matrix(artifact, **arguments) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+________ test_run_matrix_rejects_arguments_it_cannot_honor[arguments7] _________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/test_run_matrix_rejects_argume7')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-96/artifact0/ferret.pyz')
+arguments = {'retained_events': 101}
+
+    @pytest.mark.parametrize(
+        "arguments",
+        [
+            {"reference_now": "2026-09-21T10:00:00Z"},
+            {"reference_now": "not-a-time"},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) + timedelta(hours=1))},
+            {"reference_now": stamp(datetime.now(UTC).replace(microsecond=0) - timedelta(hours=2))},
+            {"expired_events": 100, "expired_snapshots": 0},
+            {"expired_events": 0},
+            {"retained_events": 0},
+            {"retained_events": 101},
+        ],
+    )
+    def test_run_matrix_rejects_arguments_it_cannot_honor(
+        repository: Path, artifact: Path, arguments: dict[str, Any]
+    ) -> None:
+>       assert run_matrix(artifact, **arguments) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:305:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:206: in run_matrix
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), (
+            "missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py"
+        )
+E       AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/support/manual_retention_fixture.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_retention_fixture.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_retention_fixture.py:54: AssertionError
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/analytics.py           97      0   100%
+src/ferret/application/capabilities.py        23      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/capture_hook.py        27      0   100%
+src/ferret/application/initialization.py      43      0   100%
+src/ferret/application/install.py             99      0   100%
+src/ferret/application/maintenance.py         71      0   100%
+src/ferret/application/ports.py              111      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/queries.py             46      0   100%
+src/ferret/application/status.py              32      0   100%
+src/ferret/application/store.py               47      0   100%
+src/ferret/cli.py                            176      0   100%
+src/ferret/commands.py                        63      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/capability.py               69      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   110      0   100%
+src/ferret/domain/fields.py                   47      0   100%
+src/ferret/domain/hook.py                    113      0   100%
+src/ferret/domain/identity.py                 17      0   100%
+src/ferret/domain/install.py                  94      0   100%
+src/ferret/domain/query.py                   123      0   100%
+src/ferret/domain/retention.py                16      0   100%
+src/ferret/domain/space.py                    42      0   100%
+src/ferret/domain/status.py                   13      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               37      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       74      0   100%
+------------------------------------------------------------------------
+TOTAL                                       1759      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+=========================== short test summary info ============================
+FAILED tests/unit/test_manual_retention_fixture.py::test_seed_relative_boundary - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_seed_refuses_a_store_that_already_holds_rows - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_lock_handshake_timeout - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_lock_is_held_until_the_release_file_appears - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_sanitizes_summary - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_unowned_root - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_a_root_that_another_run_owns - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_a_raw_root_that_is_not_the_run_directory[/tmp/ferret-plan01/unit-run] - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_a_raw_root_that_is_not_the_run_directory[../ferret-plan01/unit-run] - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_a_raw_root_that_is_not_the_run_directory[local-tmp/elsewhere/unit-run] - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_a_raw_root_that_is_not_the_run_directory[local-tmp/ferret-plan01] - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_arguments_it_cannot_honor[arguments0] - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_arguments_it_cannot_honor[arguments1] - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_arguments_it_cannot_honor[arguments2] - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_arguments_it_cannot_honor[arguments3] - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_arguments_it_cannot_honor[arguments4] - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_arguments_it_cannot_honor[arguments5] - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_arguments_it_cannot_honor[arguments6] - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+FAILED tests/unit/test_manual_retention_fixture.py::test_run_matrix_rejects_arguments_it_cannot_honor[arguments7] - AssertionError: missing manual_retention_fixture: apps/ferret-cli/tests/sup...
+======================= 19 failed, 1205 passed in 7.48s ========================
+
+
+
+ NX   Running target test:unit for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:unit
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_manual_retention_fixture.py" exited with non-zero status code
+note=PHASE 5 RED retention fixture: the focused test before manual_retention_fixture exists; every failure must be the assertion naming the missing helper
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:47:26Z

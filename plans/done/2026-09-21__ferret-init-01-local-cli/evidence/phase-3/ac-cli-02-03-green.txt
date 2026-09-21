@@ -1,0 +1,95 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --args='tests/unit/test_event_contract.py tests/unit/test_privacy.py tests/unit/steps/test_metadata_envelope_steps.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_event_contract.py tests/unit/test_privacy.py tests/unit/steps/test_metadata_envelope_steps.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_event_contract.py tests/unit/test_privacy.py tests/unit/steps/test_metadata_envelope_steps.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 388 items
+
+tests/unit/steps/test_initialization_and_concurrency_steps.py .          [  0%]
+tests/unit/steps/test_metadata_envelope_steps.py .......                 [  2%]
+tests/unit/test_canonical.py ..........                                  [  4%]
+tests/unit/test_capture.py ........................                      [ 10%]
+tests/unit/test_cli_contract.py ........................................ [ 21%]
+...............................................                          [ 33%]
+tests/unit/test_commands.py .........                                    [ 35%]
+tests/unit/test_data_home_locality.py ...........                        [ 38%]
+tests/unit/test_event_contract.py ............................           [ 45%]
+tests/unit/test_initialization.py ...................................... [ 55%]
+....................                                                     [ 60%]
+tests/unit/test_privacy.py ............................................. [ 72%]
+........................................................................ [ 90%]
+................                                                         [ 94%]
+tests/unit/test_timestamps.py ....................                       [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/initialization.py      65      0   100%
+src/ferret/application/ports.py               34      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/store.py               20      0   100%
+src/ferret/cli.py                            168      0   100%
+src/ferret/commands.py                        19      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   149      3    98%   218, 234, 252
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               16      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       16      0   100%
+------------------------------------------------------------------------
+TOTAL                                        656      3    99%
+Required test coverage of 99% reached. Total coverage: 99.54%
+============================= 388 passed in 0.44s ==============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+note=C02-03-UNIT GREEN: exit 0; the fixed vector reproduces the pinned bytes and hash 199aa6c2..., the forbidden-field matrix names only the category, and Unit line coverage stays above the 99% gate
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T05:24:03Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:integration --args='tests/integration/test_sqlite_repository.py tests/integration/test_privacy.py'
+
+> nx run ferret-cli:"test:integration" --args=tests/integration/test_sqlite_repository.py tests/integration/test_privacy.py
+
+> uv run --no-sync pytest tests/integration tests/integration/test_sqlite_repository.py tests/integration/test_privacy.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 49 items
+
+tests/integration/steps/test_initialization_and_concurrency_steps.py .   [  2%]
+tests/integration/steps/test_metadata_envelope_steps.py .......          [ 16%]
+tests/integration/test_initialization.py ...........                     [ 38%]
+tests/integration/test_package_build.py .........                        [ 57%]
+tests/integration/test_privacy.py .............                          [ 83%]
+tests/integration/test_sqlite_repository.py ........                     [100%]
+
+============================== 49 passed in 1.52s ==============================
+
+
+
+ NX   Successfully ran target test:integration for project ferret-cli
+note=C02-03-INTEGRATION GREEN: exit 0; the fixed vector round-trips into exactly one row with expires_at thirty days after capture, one workspace row is shared, and twelve rejected payloads leave no row, no workspace, no canary byte, and every data-home byte unchanged
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T05:24:47Z

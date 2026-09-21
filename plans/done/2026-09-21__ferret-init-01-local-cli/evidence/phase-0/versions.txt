@@ -1,0 +1,86 @@
+$ rtk node --version
+v24.16.0
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:00:41Z
+
+$ rtk npm --version
+11.11.0
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:00:41Z
+
+$ rtk python3 --version
+Python 3.13.12
+note=default python3 on PATH is the pyenv 3.13 shim; the FERRET interpreter is uv-managed 3.14.7, recorded below
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:00:41Z
+
+$ rtk uv --version
+uv 0.12.16 (761ff1379 2026-09-17 aarch64-apple-darwin)
+note=upgraded from 0.11.1 to the plan pin 0.12.16 with uv self update; 0.11.1 could not see cpython 3.14.7
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:00:42Z
+
+$ rtk sqlite3 --version
+3.43.2 2023-10-10 13:08:14 1b37c146ee9ebb7acd0160c0ab1fd11017a419fa8a3187386ed8cb32b709aapl (64-bit)
+note=system CLI only; the runtime SQLite is the one bundled with the interpreter, recorded below
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:00:42Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier light --disk-path . -- npm exec nx -- --version
+Nx Version:
+- Local: v22.5.4
+- Global: Not found
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:00:44Z
+
+$ rtk uv python list 3.14 --only-installed
+cpython-3.14.7-macos-aarch64-none    <home>/.local/bin/python3.14 -> <home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/bin/python3.14
+cpython-3.14.7-macos-aarch64-none    <home>/.local/share/uv/python/cpython-3.14-macos-aarch64-none/bin/python3.14
+cpython-3.14.3-macos-aarch64-none    <brew-prefix>/bin/python3.14 -> <brew-prefix>/Cellar/python@3.14/3.14.3_1/bin/python3.14
+cpython-3.14.3-macos-aarch64-none    <brew-prefix>/bin/python3 -> <brew-prefix>/Cellar/python@3.14/3.14.3_1/bin/python3
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:00:48Z
+
+$ rtk uv run --python 3.14.7 --no-project python -c "import sys, sqlite3; print(sys.version.split()[0], sqlite3.sqlite_version)"
+3.14.7 3.53.1
+note=interpreter version and bundled runtime SQLite version
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:00:48Z
+
+## Python dev-tool versions from the resolved lock (throwaway probe; the real per-project uv.lock is created in Phase 2)
+
+$ uv lock   (scratch project outside the repository: requires-python ">=3.14,<3.15", .python-version 3.14.7,
+             dependency group dev = pytest, pytest-bdd, coverage, pyright, ruff)
+Using CPython 3.14.7
+Resolved 19 packages
+coverage    7.16.1
+pyright     1.1.414
+pytest      9.1.1
+pytest-bdd  8.1.0
+ruff        0.16.8
+Nx          22.5.4 (from the repository npm lock, see the nx --version record above)
+exit=0
+utc=2026-09-21T02:14:00Z
+
+## Environment convergence performed for Python 3.14.7 (user-level tools, nothing in the repository)
+
+- `uv self update 0.12.16` upgraded the standalone uv from 0.11.1 to the plan-pinned 0.12.16. Reason: 0.11.1 only knew
+  cpython 3.14.3 and could not provision the pinned 3.14.7.
+- `uv python install 3.14.7` installed cpython-3.14.7 (uv also linked it as python3.14 in the per-user bin directory).
+- Official availability: python.org release page for 3.14.7 (release date Aug. 5, 2026, accessed 2026-09-21);
+  uv release 0.12.16 (published 2026-09-18, not a prerelease). A newer uv 0.12.17 exists and is intentionally not
+  adopted: the plan pins 0.12.16 exactly.
+
+## Assertions
+- Python 3.14 compatibility: PASS. uv resolves the whole dev set for >=3.14,<3.15 on CPython 3.14.7 and the runtime
+  SQLite bundled with that interpreter is 3.53.1.
+- Repository default python3 remains the pyenv 3.13 shim; every FERRET command runs under the uv-managed 3.14.7 selected by
+  each project's .python-version, so no global interpreter change is required.

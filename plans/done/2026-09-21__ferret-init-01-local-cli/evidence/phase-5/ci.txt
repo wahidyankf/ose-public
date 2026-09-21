@@ -1,0 +1,34 @@
+$ rtk rg -n "has-python|lang:python|python:|ferret-cli|ferret-cli-e2e" .github/workflows/pr-quality-gate.yml .github/workflows/non-product-full-quality.yml .github/actions/setup-python
+.github/workflows/non-product-full-quality.yml:36:          --projects=ferret-cli,ferret-cli-e2e
+.github/workflows/non-product-full-quality.yml:41:          --projects=crane-cli,fsharp-crane-core,fsharp-env-loader,ts-env-loader,web-ui,web-ui-token,ferret-cli,ferret-cli-e2e
+.github/workflows/non-product-full-quality.yml:57:          --projects=ferret-cli
+.github/workflows/non-product-full-quality.yml:62:          --projects=fsharp-crane-core,fsharp-env-loader,ts-env-loader,ferret-cli
+.github/workflows/non-product-full-quality.yml:79:          --projects=ferret-cli,ferret-cli-e2e
+.github/workflows/non-product-full-quality.yml:84:          --projects=crane-cli,ts-env-loader,web-ui,ferret-cli-e2e
+.github/workflows/pr-quality-gate.yml:30:      has-python: ${{ steps.detect.outputs.has-python }}
+.github/workflows/pr-quality-gate.yml:46:            echo "has-python=false"
+.github/workflows/pr-quality-gate.yml:51:          trap 'echo "has-python=true" >> "$GITHUB_OUTPUT"' ERR
+.github/workflows/pr-quality-gate.yml:63:                lang:python) echo "has-python=true" >> "$GITHUB_OUTPUT" ;;
+.github/workflows/pr-quality-gate.yml:191:  python:
+.github/workflows/pr-quality-gate.yml:197:    if: ${{ !cancelled() && (needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true') }}
+.github/actions/setup-python/action.yml:7:    # apps/ferret-cli/.python-version and apps/ferret-cli-e2e/.python-version.
+.github/actions/setup-python/action.yml:26:          apps/ferret-cli/uv.lock
+.github/actions/setup-python/action.yml:27:          apps/ferret-cli-e2e/uv.lock
+note=PHASE 5 ci 1/3: the plan's rg over the two workflows and the composite; fail-closed Python PR admission and the FERRET projects in the scheduled lists must be visible
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:05:19Z
+
+$ rtk actionlint .github/workflows/pr-quality-gate.yml .github/workflows/non-product-full-quality.yml
+(no output)
+note=PHASE 5 ci 2/3: the Phase 4 actionlint command; exit 0 required
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:05:27Z
+
+$ rtk scripts/verify-artifact-retention.sh .github/workflows/pr-quality-gate.yml .github/workflows/non-product-full-quality.yml
+(no output)
+note=PHASE 5 ci 3/3: the Phase 4 artifact-retention command; exit 0 required
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:05:27Z

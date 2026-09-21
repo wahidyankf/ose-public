@@ -67,5 +67,5 @@ FastAPI, SQLAlchemy, GraphQL, and MCP, so later protocol adapters attach through
 - [Technical design](tech-docs/README.md)
 - [Execution checklist](delivery.md)
 - [Execution learnings](learnings.md)
-- Prerequisite plan identifier: `ferret-init-01-local-cli`. Plan 02 execution remains blocked until Plan 01 is
-  archived; Plan 01's archive boundary replaces this marker with its dated done-plan link.
+- Prerequisite plan: [2026-09-21: ferret-init-01-local-cli](../../done/2026-09-21__ferret-init-01-local-cli/README.md). Plan 01 is archived, so Plan 02 is
+  no longer blocked on it.

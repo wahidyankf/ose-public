@@ -1,0 +1,492 @@
+$ FERRET_BIN="$PWD/local-tmp/claude/smoke/ferret" FERRET_DATA_HOME="$PWD/local-tmp/claude/smoke/data" claude -p "Read README.md and return one word"
+Sharia
+note=SMOKE claude_code 2.1.278: the project hooks call the wrapper; FERRET_BIN and FERRET_DATA_HOME point at a throw-away store so the real one is untouched
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:38:26Z
+
+$ FERRET_DATA_HOME="$PWD/local-tmp/claude/smoke/data" local-tmp/claude/smoke/ferret events list --harness claude_code
+occurredAt	eventId	harness	workspaceId	eventType	agentName	skillName	toolName	outcome	subjectVisibility	outcomeVisibility	durationVisibility
+2026-09-21T11:38:34.750Z	39b1aaee-4130-464c-a9c2-66461039d60d	claude_code	ws_070663e1ebd8967276355ddff34a0696	session.ended	-	-	-	unknown	not_applicable	unknown	unknown
+2026-09-21T11:38:33.068Z	c8315ae1-0210-427b-aaae-b79218bb4447	claude_code	ws_070663e1ebd8967276355ddff34a0696	tool.completed	-	-	Bash	success	observed	observed	observed
+2026-09-21T11:38:31.170Z	9779629b-01db-4b73-aa9a-60c72399a56c	claude_code	ws_070663e1ebd8967276355ddff34a0696	tool.started	-	-	Bash	not_applicable	observed	not_applicable	not_applicable
+2026-09-21T11:38:26.943Z	90082592-24ec-49e1-b378-00c8060c5801	claude_code	ws_070663e1ebd8967276355ddff34a0696	session.started	-	-	-	not_applicable	not_applicable	not_applicable	not_applicable
+note=SMOKE claude_code rows: metadata only (types, tool name, outcome, duration, opaque identifiers)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:38:57Z
+
+$ python3 -c "import os, pathlib; blob = b''.join(p.read_bytes() for p in sorted(pathlib.Path('local-tmp/claude/smoke/data').iterdir()) if p.is_file()); print({name: needle.encode() in blob for name, needle in {'worktree path': os.getcwd(), 'README': 'README', 'the reply': 'Sharia', 'a home directory': '/Users/'}.items()})"
+{'worktree path': False, 'README': False, 'the reply': False, 'a home directory': False}
+note=SMOKE claude_code leak check: every byte of the data home searched for the repository path, the file read, the reply, and any home directory (all must be False)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:38:57Z
+
+$ FERRET_BIN="$PWD/local-tmp/claude/smoke/ferret" FERRET_DATA_HOME="$PWD/local-tmp/claude/smoke/data" codex exec "Read README.md and return one word" 2>local-tmp/claude/smoke/codex-default.err
+OSE
+note=SMOKE codex 0.155.1, default trust: only the final answer is recorded here because the transcript on stderr carries a raw vendor session identifier and the file it read
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:40:08Z
+
+$ FERRET_DATA_HOME="$PWD/local-tmp/claude/smoke/data" local-tmp/claude/smoke/ferret events list --harness codex
+No rows.
+note=SMOKE codex default trust: rows the run stored (project hooks are not trusted, so none are expected)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:40:31Z
+
+$ python3 local-tmp/claude/smoke/codex-real.py
+override hooks.PreToolUse: "$(git rev-parse --show-toplevel)"/.claude/hooks/ferret-capture.sh codex tool.started
+override hooks.SessionStart: "$(git rev-parse --show-toplevel)"/.claude/hooks/ferret-capture.sh codex session.started
+override hooks.SessionEnd: "$(git rev-parse --show-toplevel)"/.claude/hooks/ferret-capture.sh codex session.ended
+override hooks.SubagentStart: "$(git rev-parse --show-toplevel)"/.claude/hooks/ferret-capture.sh codex agent.started
+override hooks.SubagentStop: "$(git rev-parse --show-toplevel)"/.claude/hooks/ferret-capture.sh codex agent.ended
+override hooks.PostToolUse: "$(git rev-parse --show-toplevel)"/.claude/hooks/ferret-capture.sh codex tool.completed
+Trustworthy
+note=SMOKE codex 0.155.1, shipped hook commands: the ferret-capture entries of .codex/hooks.json loaded verbatim through per-invocation -c overrides plus --dangerously-bypass-hook-trust, because this worktree's project layer is not loaded by codex exec; transcript kept out (raw session id)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:47:29Z
+
+$ FERRET_DATA_HOME="$PWD/local-tmp/claude/smoke/data" local-tmp/claude/smoke/ferret events list --harness codex
+occurredAt	eventId	harness	workspaceId	eventType	agentName	skillName	toolName	outcome	subjectVisibility	outcomeVisibility	durationVisibility
+2026-09-21T11:47:51.359Z	47719c0d-7cfe-4b8a-a1d1-83b90f444371	codex	ws_070663e1ebd8967276355ddff34a0696	session.ended	-	-	-	unknown	not_applicable	unknown	unknown
+2026-09-21T11:47:48.351Z	a01db016-3355-46d5-a9e7-3df5787022f4	codex	ws_070663e1ebd8967276355ddff34a0696	tool.completed	-	-	Bash	success	observed	derived	unknown
+2026-09-21T11:47:47.764Z	b2c853a4-938d-4d71-b6e4-5d3ec2d4d145	codex	ws_070663e1ebd8967276355ddff34a0696	tool.started	-	-	Bash	not_applicable	observed	not_applicable	not_applicable
+2026-09-21T11:47:34.716Z	e985e292-a946-42eb-80bb-2b0cde8c0d40	codex	ws_070663e1ebd8967276355ddff34a0696	session.started	-	-	-	not_applicable	not_applicable	not_applicable	not_applicable
+note=SMOKE codex rows stored by the shipped hook commands: metadata only (types, tool name, outcome, duration, opaque identifiers)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:48:00Z
+
+$ python3 local-tmp/claude/leak-check.py local-tmp/claude/smoke/data local-tmp/claude/smoke/codex-real.err Trustworthy OSE Sharia
+{'worktree path': False, 'README': False, 'a home directory': False, 'reply 1': False, 'reply 2': False, 'reply 3': False, 'raw vendor session id 1': False}
+note=SMOKE codex leak check: every byte of the data home searched for the repository path, the file read, each reply seen so far, any home directory and the raw vendor session id read from the transcript (all must be False)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:48:17Z
+
+$ RTK_DISABLED=1 git diff -- .github
+diff --git a/.github/actions/README.md b/.github/actions/README.md
+index fbd12cb16..c2ed81078 100644
+--- a/.github/actions/README.md
++++ b/.github/actions/README.md
+@@ -7,20 +7,27 @@ to run locally. For a local first success, start from the
+
+ ## What each action prepares
+
+-| Action               | What it prepares                                         | Used when                                    |
+-| -------------------- | -------------------------------------------------------- | -------------------------------------------- |
+-| `setup-node`         | The pinned Node.js toolchain, dependencies, and Nx cache | A workflow runs workspace tasks              |
+-| `setup-dotnet`       | .NET tooling and its cache                               | A workflow validates F# work                 |
+-| `setup-java`         | The pinned Temurin JDK and the Gradle dependency cache   | A workflow validates Java work               |
+-| `setup-rust`         | The pinned Rust toolchain and Rust quality tools         | A workflow validates Rust work               |
+-| `setup-go`           | The pinned Go toolchain, its caches, and golangci-lint   | A workflow validates Go work                 |
+-| `setup-playwright`   | Browsers and operating-system dependencies               | A workflow runs browser E2E checks           |
+-| `setup-docker-cache` | Docker Buildx and its layer cache                        | A workflow needs an integration or E2E stack |
++| Action               | What it prepares                                          | Used when                                    |
++| -------------------- | --------------------------------------------------------- | -------------------------------------------- |
++| `setup-node`         | The pinned Node.js toolchain, dependencies, and Nx cache  | A workflow runs workspace tasks              |
++| `setup-dotnet`       | .NET tooling and its cache                                | A workflow validates F# work                 |
++| `setup-java`         | The pinned Temurin JDK and the Gradle dependency cache    | A workflow validates Java work               |
++| `setup-rust`         | The pinned Rust toolchain and Rust quality tools          | A workflow validates Rust work               |
++| `setup-go`           | The pinned Go toolchain, its caches, and golangci-lint    | A workflow validates Go work                 |
++| `setup-python`       | The pinned Python, checksum-verified uv, and the uv cache | A workflow validates Python work             |
++| `setup-playwright`   | Browsers and operating-system dependencies                | A workflow runs browser E2E checks           |
++| `setup-docker-cache` | Docker Buildx and its layer cache                         | A workflow needs an integration or E2E stack |
+
+ Workflows reference an action with `uses: ./.github/actions/<name>`. Keep
+ setup behaviour in the relevant `action.yml`; this README explains intent so a
+ reader can choose the right place to investigate.
+
++`setup-python` declares no inputs. Its Python patch version, uv version, and
++uv checksum are literals inside the action, so they cannot drift from the
++FERRET `.python-version` files and `uv.lock` files it mirrors. It installs the
++toolchain only; a workflow syncs the locked dependencies through each
++project's `install` target.
++
+ ## Safe maintenance boundary
+
+ - Keep versions and installation logic in the action definition, not in a
+diff --git a/.github/workflows/non-product-full-quality.yml b/.github/workflows/non-product-full-quality.yml
+index 362562d98..40e0b7651 100644
+--- a/.github/workflows/non-product-full-quality.yml
++++ b/.github/workflows/non-product-full-quality.yml
+@@ -1,10 +1,17 @@
+ name: non-product-full-quality
+
++run-name: non-product-full-quality-${{ inputs.evidence_nonce || 'scheduled' }}
++
+ on:
+   schedule:
+     - cron: "0 1 * * *"
+     - cron: "0 13 * * *"
+   workflow_dispatch:
++    inputs:
++      evidence_nonce:
++        description: "Unique token that names this manual run, so its evidence is findable"
++        required: true
++        type: string
+
+ permissions:
+   contents: read
+@@ -22,10 +29,16 @@ jobs:
+       - uses: actions/checkout@v6
+       - uses: ./.github/actions/setup-node
+       - uses: ./.github/actions/setup-dotnet
++      - uses: ./.github/actions/setup-python
++      - name: Install locked Python dependencies
++        run: >-
++          npx nx run-many -t install
++          --projects=ferret-cli,ferret-cli-e2e
++          --parallel=1
+       - name: Run complete non-product quick gates serially
+         run: >-
+           npx nx run-many -t test:quick
+-          --projects=crane-cli,fsharp-crane-core,fsharp-env-loader,ts-env-loader,web-ui,web-ui-token
++          --projects=crane-cli,fsharp-crane-core,fsharp-env-loader,ts-env-loader,web-ui,web-ui-token,ferret-cli,ferret-cli-e2e
+           --parallel=1
+
+   integration:
+@@ -37,10 +50,16 @@ jobs:
+       - uses: actions/checkout@v6
+       - uses: ./.github/actions/setup-node
+       - uses: ./.github/actions/setup-dotnet
++      - uses: ./.github/actions/setup-python
++      - name: Install locked Python dependencies
++        run: >-
++          npx nx run-many -t install
++          --projects=ferret-cli
++          --parallel=1
+       - name: Run every applicable non-product Integration target
+         run: >-
+           npx nx run-many -t test:integration
+-          --projects=fsharp-crane-core,fsharp-env-loader,ts-env-loader
++          --projects=fsharp-crane-core,fsharp-env-loader,ts-env-loader,ferret-cli
+           --parallel=1
+
+   e2e:
+@@ -53,8 +72,14 @@ jobs:
+       - uses: ./.github/actions/setup-node
+       - uses: ./.github/actions/setup-dotnet
+       - uses: ./.github/actions/setup-playwright
++      - uses: ./.github/actions/setup-python
++      - name: Install locked Python dependencies
++        run: >-
++          npx nx run-many -t install
++          --projects=ferret-cli,ferret-cli-e2e
++          --parallel=1
+       - name: Run every applicable non-product E2E target
+         run: >-
+           npx nx run-many -t test:e2e
+-          --projects=crane-cli,ts-env-loader,web-ui
++          --projects=crane-cli,ts-env-loader,web-ui,ferret-cli-e2e
+           --parallel=1
+diff --git a/.github/workflows/pr-quality-gate.yml b/.github/workflows/pr-quality-gate.yml
+index f893684d7..a1bd54d14 100644
+--- a/.github/workflows/pr-quality-gate.yml
++++ b/.github/workflows/pr-quality-gate.yml
+@@ -27,6 +27,7 @@ jobs:
+       has-dart: ${{ steps.detect.outputs.has-dart }}
+       has-java: ${{ steps.detect.outputs.has-java }}
+       has-go: ${{ steps.detect.outputs.has-go }}
++      has-python: ${{ steps.detect.outputs.has-python }}
+     steps:
+       - uses: actions/checkout@v6
+         with:
+@@ -42,8 +43,13 @@ jobs:
+             echo "has-dart=false"
+             echo "has-java=false"
+             echo "has-go=false"
++            echo "has-python=false"
+           } >> "$GITHUB_OUTPUT"
+
++          # Fail closed for Python only: when the affected set cannot be determined, the Python gate
++          # must still run. set -e keeps the step failing, so every other language behaves as before.
++          trap 'echo "has-python=true" >> "$GITHUB_OUTPUT"' ERR
++
+           affected=$(npx nx show projects --affected)
+           for project in $affected; do
+             tags=$(npx nx show project "$project" --json | jq -r '.tags[]?')
+@@ -54,6 +60,7 @@ jobs:
+                 lang:dart) echo "has-dart=true" >> "$GITHUB_OUTPUT" ;;
+                 lang:java) echo "has-java=true" >> "$GITHUB_OUTPUT" ;;
+                 lang:go) echo "has-go=true" >> "$GITHUB_OUTPUT" ;;
++                lang:python) echo "has-python=true" >> "$GITHUB_OUTPUT" ;;
+               esac
+             done
+           done
+@@ -181,9 +188,35 @@ jobs:
+           --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java'
+           --parallel=1
+
++  python:
++    name: Python quality gate
++    needs: detect
++    # Fail closed: run when Python is affected, and also whenever detect did not succeed, because an
++    # undeterminable change set must never skip this gate. !cancelled() (not always()) keeps a
++    # superseded run from starting it. The expression form is required: a plain `!` would be a YAML tag.
++    if: ${{ !cancelled() && (needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true') }}
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v6
++        with:
++          fetch-depth: 0
++      - uses: ./.github/actions/setup-node
++      - uses: ./.github/actions/setup-python
++      - name: Install locked Python dependencies
++        run: >-
++          ./hippo run --class transactional --resource-tier standard --disk-path . --
++          npx nx affected -t install
++          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java,tag:lang:go'
++          --parallel=1
++      - run: >-
++          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
++          npx nx affected -t typecheck lint test:quick
++          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java,tag:lang:go'
++          --parallel=1
++
+   quality-gate:
+     name: Quality gate
+-    needs: [repository-policy, typescript, dotnet, flutter, java, go]
++    needs: [repository-policy, typescript, dotnet, flutter, java, go, python]
+     if: always()
+     runs-on: ubuntu-latest
+     steps:
+note=WORKFLOW DIFF (tracked files): PR gate detection with fail-closed has-python and a python job, scheduled quick/Integration/E2E lists with the FERRET projects and a required evidence_nonce, and the setup-python catalog row
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:55:00Z
+
+$ cat .github/actions/setup-python/action.yml
+name: "Setup Python"
+description: "Install the exact Python and the checksum-pinned uv used by the FERRET projects, with the uv cache keyed on their lockfiles"
+runs:
+  using: "composite"
+  steps:
+    # The patch version is a literal so CI runs the interpreter the projects pin. It must equal
+    # apps/ferret-cli/.python-version and apps/ferret-cli-e2e/.python-version.
+    - name: Setup Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.14.7"
+
+    # setup-uv is pinned by commit (tag v10.1.0) and installs one uv release whose archive digest is
+    # verified. The checksum is the official uv 0.12.16 Linux x86-64 GNU archive digest, which is the
+    # only hosted platform in use; a runner of another OS or architecture needs its own release digest.
+    # The cache is restored everywhere but saved only on main, and the FERRET lockfiles key it.
+    - name: Setup uv
+      uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+      with:
+        version: 0.12.16
+        checksum: 8e5c6e5523dffc2dcf615bd995554c84c9feb4e577808a3fb8698a639d3f8d9c
+        enable-cache: true
+        restore-cache: true
+        save-cache: ${{ github.ref == 'refs/heads/main' }}
+        cache-dependency-glob: |
+          apps/ferret-cli/uv.lock
+          apps/ferret-cli-e2e/uv.lock
+        cache-suffix: ${{ runner.os }}
+note=WORKFLOW DIFF (new file): the setup-python composite is untracked, so its full text stands in for its diff
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:55:02Z
+
+$ RTK_DISABLED=1 git diff -- .github/actions/README.md
+diff --git a/.github/actions/README.md b/.github/actions/README.md
+index fbd12cb16..e2a78c1d6 100644
+--- a/.github/actions/README.md
++++ b/.github/actions/README.md
+@@ -7,20 +7,27 @@ to run locally. For a local first success, start from the
+
+ ## What each action prepares
+
+-| Action               | What it prepares                                         | Used when                                    |
+-| -------------------- | -------------------------------------------------------- | -------------------------------------------- |
+-| `setup-node`         | The pinned Node.js toolchain, dependencies, and Nx cache | A workflow runs workspace tasks              |
+-| `setup-dotnet`       | .NET tooling and its cache                               | A workflow validates F# work                 |
+-| `setup-java`         | The pinned Temurin JDK and the Gradle dependency cache   | A workflow validates Java work               |
+-| `setup-rust`         | The pinned Rust toolchain and Rust quality tools         | A workflow validates Rust work               |
+-| `setup-go`           | The pinned Go toolchain, its caches, and golangci-lint   | A workflow validates Go work                 |
+-| `setup-playwright`   | Browsers and operating-system dependencies               | A workflow runs browser E2E checks           |
+-| `setup-docker-cache` | Docker Buildx and its layer cache                        | A workflow needs an integration or E2E stack |
++| Action               | What it prepares                                          | Used when                                    |
++| -------------------- | --------------------------------------------------------- | -------------------------------------------- |
++| `setup-node`         | The pinned Node.js toolchain, dependencies, and Nx cache  | A workflow runs workspace tasks              |
++| `setup-dotnet`       | .NET tooling and its cache                                | A workflow validates F# work                 |
++| `setup-java`         | The pinned Temurin JDK and the Gradle dependency cache    | A workflow validates Java work               |
++| `setup-rust`         | The pinned Rust toolchain and Rust quality tools          | A workflow validates Rust work               |
++| `setup-go`           | The pinned Go toolchain, its caches, and golangci-lint    | A workflow validates Go work                 |
++| `setup-python`       | The pinned Python, checksum-verified uv, and the uv cache | A workflow validates Python work             |
++| `setup-playwright`   | Browsers and operating-system dependencies                | A workflow runs browser E2E checks           |
++| `setup-docker-cache` | Docker Buildx and its layer cache                         | A workflow needs an integration or E2E stack |
+
+ Workflows reference an action with `uses: ./.github/actions/<name>`. Keep
+ setup behaviour in the relevant `action.yml`; this README explains intent so a
+ reader can choose the right place to investigate.
+
++`setup-python` declares no inputs. Its Python patch version, uv version, and
++uv checksum are literals inside the action. The patch version must equal the
++FERRET `.python-version` files, so change them together. It installs the
++toolchain only; a workflow syncs the locked dependencies through each
++project's `install` target.
++
+ ## Safe maintenance boundary
+
+ - Keep versions and installation logic in the action definition, not in a
+note=WORKFLOW DIFF (correction after review): the setup-python paragraph no longer claims its literals cannot drift, because no check ties them to the .python-version files; it now says they must be changed together. This supersedes the README part of the first workflow diff above
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:55:43Z
+
+$ python3 local-tmp/claude/smoke/opencode-real.py opencode-go/minimax-m2.7 200
+model: opencode-go/minimax-m2.7; timeout: 200s
+answer: README.md does not exist in the workspace root.
+note=SMOKE opencode: a first run on the default model opencode-go/glm-5.2 got no model response for about 17 minutes and was stopped by hand (its plugin still stored session.started); this rerun names the recently used opencode-go/minimax-m2.7. Transcript kept out; only the answer is recorded
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:56:27Z
+
+$ python3 local-tmp/claude/smoke/opencode-real.py opencode-go/glm-5 200
+model: opencode-go/glm-5; timeout: 200s
+answer: (none)
+note=SMOKE opencode: second rerun on opencode-go/glm-5, because the minimax run answered without calling any tool and so produced no tool rows
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:56:50Z
+
+$ python3 local-tmp/claude/smoke/opencode-real.py opencode-go/kimi-k2.7-code 200
+model: opencode-go/kimi-k2.7-code; timeout: 200s
+answer: Open
+note=SMOKE opencode: glm-5 answered with a provider server error (no answer, exit 1) and minimax answered without calling a tool, so this third rerun uses opencode-go/kimi-k2.7-code, a code model that calls tools
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:57:09Z
+
+$ FERRET_DATA_HOME="$PWD/local-tmp/claude/smoke/data" local-tmp/claude/smoke/ferret events list --harness opencode
+occurredAt	eventId	harness	workspaceId	eventType	agentName	skillName	toolName	outcome	subjectVisibility	outcomeVisibility	durationVisibility
+2026-09-21T11:57:19.785Z	4633474d-0909-43b3-bd21-1ca08d52cb26	opencode	ws_070663e1ebd8967276355ddff34a0696	tool.completed	-	-	read	success	observed	derived	unknown
+2026-09-21T11:57:19.683Z	6d69b69d-6979-49e1-b912-a745cd2e441e	opencode	ws_070663e1ebd8967276355ddff34a0696	tool.started	-	-	read	not_applicable	observed	not_applicable	not_applicable
+2026-09-21T11:57:10.485Z	86f3a33c-6071-4089-9406-9e15fb9d39cc	opencode	ws_070663e1ebd8967276355ddff34a0696	session.started	-	-	-	not_applicable	not_applicable	not_applicable	not_applicable
+2026-09-21T11:56:51.482Z	9e7cfd6b-71e3-4976-96c6-4558ba0a2c7d	opencode	ws_070663e1ebd8967276355ddff34a0696	session.started	-	-	-	not_applicable	not_applicable	not_applicable	not_applicable
+2026-09-21T11:56:29.541Z	4785a76e-1d83-4096-90bf-1c2349a8ca30	opencode	ws_070663e1ebd8967276355ddff34a0696	session.started	-	-	-	not_applicable	not_applicable	not_applicable	not_applicable
+2026-09-21T11:48:36.468Z	a608fc6f-f444-41cc-a70d-0ee72ece45af	opencode	ws_070663e1ebd8967276355ddff34a0696	session.started	-	-	-	not_applicable	not_applicable	not_applicable	not_applicable
+note=SMOKE opencode rows stored by the shipped plugin across all attempts (four session.started rows come from the four runs that reached a session, including the stalled one; the kimi run adds the tool rows): metadata only
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:57:30Z
+
+$ python3 local-tmp/claude/leak-check.py local-tmp/claude/smoke/data local-tmp/claude/smoke/opencode.err Open Trustworthy OSE Sharia
+{'worktree path': False, 'README': False, 'a home directory': False, 'reply 1': False, 'reply 2': False, 'reply 3': False, 'reply 4': False}
+note=SMOKE opencode and final leak check: every byte of the data home searched for the repository path, the file read, every reply seen in the three harnesses and any home directory (all must be False). The opencode transcript has no raw session id line, so no id is searched for
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:57:41Z
+
+$ FERRET_BIN="$PWD/local-tmp/claude/smoke/ferret" FERRET_DATA_HOME="$PWD/local-tmp/claude/smoke/data" claude -p "Use the Skill tool to load the skill named ci-standards, then reply with the single word done" --settings local-tmp/claude/smoke/skill-probe-settings.json --allowedTools Skill
+done
+note=SKILL PROBE claude_code: a temporary --settings PreToolUse hook (matcher Skill) writes the raw payload to scratch so only its key names are recorded; nothing persistent is edited
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:58:17Z
+
+$ python3 local-tmp/claude/smoke/skill-probe-check.py ci-standards
+top-level keys: ['cwd', 'effort', 'hook_event_name', 'permission_mode', 'prompt_id', 'session_id', 'tool_input', 'tool_name', 'tool_use_id', 'transcript_path']
+hook_event_name: PreToolUse; tool_name: Skill
+tool_input keys: ['skill']
+tool_input keys whose value is exactly the requested skill name: ['skill']
+note=SKILL PROBE claude_code result: the captured Skill payload shape (key names only; the raw payload stays in scratch)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:58:33Z
+
+$ python3 local-tmp/claude/smoke/opencode-real.py opencode-go/kimi-k2.7-code 200 Use the skill tool to load the skill named ci-standards, then reply with the single word done
+model: opencode-go/kimi-k2.7-code; timeout: 200s
+answer: done
+note=SKILL PROBE opencode: asks the model to call OpenCode's skill tool so the plugin's skill.invoked forwarding is seen against a real payload (the literal one-word prompt never calls it)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:59:56Z
+
+$ FERRET_DATA_HOME="$PWD/local-tmp/claude/smoke/data" local-tmp/claude/smoke/ferret events list --harness opencode --event-type skill.invoked
+occurredAt	eventId	harness	workspaceId	eventType	agentName	skillName	toolName	outcome	subjectVisibility	outcomeVisibility	durationVisibility
+2026-09-21T12:00:07.636Z	1f847f2a-99df-4eef-8139-d736aaefea9a	opencode	ws_070663e1ebd8967276355ddff34a0696	skill.invoked	-	ci-standards	-	not_applicable	observed	not_applicable	not_applicable
+note=SKILL PROBE opencode result: skill.invoked rows (an unfiltered listing would also hold the tool rows)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:00:17Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier light --disk-path . -- uv run --no-sync --project apps/ferret-cli pytest apps/ferret-cli/tests/integration/test_hook_registrations.py apps/ferret-cli/tests/unit/test_hook_mappers.py apps/ferret-cli/tests/unit/test_capture_hook.py apps/ferret-cli/tests/integration/test_capture_hook.py -q --tb=line --color=no -p no:cacheprovider -rf --no-cov
+F....F.................................................................. [ 32%]
+........................................................................ [ 65%]
+........................................................................ [ 97%]
+.....                                                                    [100%]
+=================================== FAILURES ===================================
+E   AssertionError: claude_code skill.invoked
+    assert [] == ['Skill']
+
+      Right contains one more item: 'Skill'
+      Use -v to get more diff
+<worktree>/apps/ferret-cli/tests/integration/test_hook_registrations.py:70: AssertionError: claude_code skill.invoked
+E   AssertionError: assert {('claude_cod...failed'), ...} == {('claude_cod...pleted'), ...}
+
+      Extra items in the right set:
+      ('claude_code', 'skill.invoked')
+      Use -v to get more diff
+<worktree>/apps/ferret-cli/tests/integration/test_hook_registrations.py:97: AssertionError: assert {('claude_cod...failed'), ...} == {('claude_cod...pleted'), ...}
+=========================== short test summary info ============================
+FAILED apps/ferret-cli/tests/integration/test_hook_registrations.py::test_each_shell_harness_registers_the_wrapper_once_for_every_event_it_can_report[claude_code]
+FAILED apps/ferret-cli/tests/integration/test_hook_registrations.py::test_every_registered_command_names_a_harness_and_an_event_the_mapper_knows
+2 failed, 219 passed in 1.66s
+note=SKILL REGISTRATION RED: the two verified skill registrations (Claude Code Skill tool, OpenCode skill tool) are added to the shared registration table and the registration test now expects a Skill-matched PreToolUse entry, before .claude/settings.json carries it
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:02:11Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier light --disk-path . -- uv run --no-sync --project apps/ferret-cli pytest apps/ferret-cli/tests/integration/test_hook_registrations.py apps/ferret-cli/tests/unit/test_hook_mappers.py apps/ferret-cli/tests/unit/test_capture_hook.py apps/ferret-cli/tests/integration/test_capture_hook.py -q --tb=line --color=no -p no:cacheprovider -rf --no-cov
+........................................................................ [ 32%]
+........................................................................ [ 65%]
+........................................................................ [ 97%]
+.....                                                                    [100%]
+221 passed in 1.26s
+note=SKILL REGISTRATION GREEN: .claude/settings.json now registers a Skill-matched PreToolUse entry that runs the wrapper for skill.invoked; the same four files that failed twice above pass
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:02:31Z
+
+$ FERRET_BIN="$PWD/local-tmp/claude/smoke/ferret" FERRET_DATA_HOME="$PWD/local-tmp/claude/smoke/data" claude -p "Use the Skill tool to load the skill named ci-standards, then reply with the single word done" --allowedTools Skill
+done
+note=SKILL LIVE claude_code: the shipped project settings (no --settings override) with the new Skill-matched registration
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:02:45Z
+
+$ FERRET_DATA_HOME="$PWD/local-tmp/claude/smoke/data" local-tmp/claude/smoke/ferret events list --harness claude_code --event-type skill.invoked
+occurredAt	eventId	harness	workspaceId	eventType	agentName	skillName	toolName	outcome	subjectVisibility	outcomeVisibility	durationVisibility
+2026-09-21T12:02:49.560Z	47e6da37-3a6c-4360-b992-d3876a7db348	claude_code	ws_070663e1ebd8967276355ddff34a0696	skill.invoked	-	ci-standards	-	not_applicable	observed	not_applicable	not_applicable
+note=SKILL LIVE claude_code result: the skill.invoked row the shipped registration stored (subject observed; a Skill call also stores its tool.started row)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:03:00Z
+
+$ python3 local-tmp/claude/leak-check.py local-tmp/claude/smoke/data local-tmp/claude/smoke/codex-real.err Trustworthy Open "Skill tool to load"
+{'worktree path': False, 'README': False, 'a home directory': False, 'reply 1': False, 'reply 2': False, 'reply 3': False, 'raw vendor session id 1': False}
+note=SKILL LIVE final leak check after every smoke run: repository path, README, home directory, the replies, the skill prompt text and the raw Codex session id must all be absent from every byte of the data home (all False)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:03:09Z
+
+$ cat local-tmp/claude/smoke/verdict.txt
+SMOKE VERDICT (author summary of the records above; each line names the record that backs it)
+claude_code 2.1.278   verified: the shipped project hooks stored session.started, tool.started, tool.completed (observed outcome and duration), session.ended; the shipped Skill-matched registration stored skill.invoked with the skill observed; harness output unchanged.
+codex 0.155.1         verified for the shipped hook commands: stored session.started, tool.started, tool.completed (derived outcome, duration unknown), session.ended; harness output unchanged.
+codex 0.155.1         UNVERIFIED: the project .codex/hooks.json layer itself loading in an untouched `codex exec`. It was not loaded in this worktree even with a per-invocation trust override and --dangerously-bypass-hook-trust, so the verified run above loaded the same commands through per-invocation -c hooks.<Event> overrides. The default-trust run stored no rows.
+opencode 1.18.7       verified: the shipped plugin stored session.started, tool.started and tool.completed for a read tool call and skill.invoked with the skill observed. Two of the four model choices gave no usable run (glm-5.2 stalled and was stopped, glm-5 returned a provider server error) and minimax answered without a tool call; the kimi-k2.7-code runs are the ones that reached tools.
+privacy               verified: after every run, no byte of the throw-away data home holds the repository path, the file read, any reply, the skill prompt text, a home directory, or the raw Codex session identifier.
+registrations         verified live: Claude Code skill.invoked (tool_input.skill) and OpenCode skill.invoked (output.args.name); Codex skill stays unknown by design.
+note=SMOKE VERDICT: explicit verified and unverified status per harness, as the plan requires
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:03:34Z

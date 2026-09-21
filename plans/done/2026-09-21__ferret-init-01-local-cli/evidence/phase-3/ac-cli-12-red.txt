@@ -1,0 +1,1304 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --skip-nx-cache --args='tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 363 items / 17 errors
+
+==================================== ERRORS ====================================
+_ ERROR collecting tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py _
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py:12: in <module>
+    from ferret.domain.install import ARTIFACT_MODE, DIRECTORY_MODE, MANIFEST_MODE
+E   ModuleNotFoundError: No module named 'ferret.domain.install'
+_ ERROR collecting tests/unit/steps/test_initialization_and_concurrency_steps.py _
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_initialization_and_concurrency_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_initialization_and_concurrency_steps.py:20: in <module>
+    from support.fakes import FAKE_DATA_HOME, FIXED_NOW, FakeInput, World, make_world
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+____ ERROR collecting tests/unit/steps/test_local_query_and_export_steps.py ____
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_local_query_and_export_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_local_query_and_export_steps.py:13: in <module>
+    from support.fakes import FIXED_NOW, World
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+______ ERROR collecting tests/unit/steps/test_metadata_envelope_steps.py _______
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_metadata_envelope_steps.py:15: in <module>
+    from support.fakes import World, make_world
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_____ ERROR collecting tests/unit/steps/test_retention_and_space_steps.py ______
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_retention_and_space_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_retention_and_space_steps.py:16: in <module>
+    from support.fakes import FIXED_NOW, World
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+______ ERROR collecting tests/unit/steps/test_usage_and_outcomes_steps.py ______
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_usage_and_outcomes_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_usage_and_outcomes_steps.py:11: in <module>
+    from support.fakes import FIXED_NOW, World
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+________________ ERROR collecting tests/unit/test_analytics.py _________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_analytics.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_analytics.py:25: in <module>
+    from support.invoke import run_cli
+tests/support/invoke.py:9: in <module>
+    from support.fakes import World
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_______________ ERROR collecting tests/unit/test_capabilities.py _______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_capabilities.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_capabilities.py:19: in <module>
+    from support.fakes import FIXED_NOW, World, make_world
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_________________ ERROR collecting tests/unit/test_capture.py __________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_capture.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_capture.py:16: in <module>
+    from support.fakes import Entry, World, make_world
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_________________ ERROR collecting tests/unit/test_commands.py _________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_commands.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_commands.py:13: in <module>
+    from support.fakes import FAKE_DATA_HOME, INSTALLATION_ID, World, make_world
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+______________ ERROR collecting tests/unit/test_initialization.py ______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_initialization.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_initialization.py:12: in <module>
+    from support.fakes import (
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_________________ ERROR collecting tests/unit/test_install.py __________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_install.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_install.py:11: in <module>
+    from ferret.application.install import InstallOutcome, UninstallOutcome, install_user, uninstall_user
+E   ModuleNotFoundError: No module named 'ferret.application.install'
+______________ ERROR collecting tests/unit/test_install_domain.py ______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_install_domain.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_install_domain.py:9: in <module>
+    from ferret.domain.install import (
+E   ModuleNotFoundError: No module named 'ferret.domain.install'
+_______________ ERROR collecting tests/unit/test_maintenance.py ________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_maintenance.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_maintenance.py:16: in <module>
+    from support.fakes import FIXED_NOW, FakeMonotonic
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+___________ ERROR collecting tests/unit/test_maintenance_command.py ____________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_maintenance_command.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_maintenance_command.py:14: in <module>
+    from support.fakes import FIXED_NOW, World
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_________________ ERROR collecting tests/unit/test_queries.py __________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_queries.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_queries.py:28: in <module>
+    from support.fakes import FIXED_NOW
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+__________________ ERROR collecting tests/unit/test_status.py __________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_status.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_status.py:15: in <module>
+    from support.fakes import FAKE_DATA_HOME, FIXED_NOW, World
+tests/support/fakes.py:12: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'InstalledFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+=========================== short test summary info ============================
+ERROR tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+ERROR tests/unit/steps/test_initialization_and_concurrency_steps.py
+ERROR tests/unit/steps/test_local_query_and_export_steps.py
+ERROR tests/unit/steps/test_metadata_envelope_steps.py
+ERROR tests/unit/steps/test_retention_and_space_steps.py
+ERROR tests/unit/steps/test_usage_and_outcomes_steps.py
+ERROR tests/unit/test_analytics.py
+ERROR tests/unit/test_capabilities.py
+ERROR tests/unit/test_capture.py
+ERROR tests/unit/test_commands.py
+ERROR tests/unit/test_initialization.py
+ERROR tests/unit/test_install.py
+ERROR tests/unit/test_install_domain.py
+ERROR tests/unit/test_maintenance.py
+ERROR tests/unit/test_maintenance_command.py
+ERROR tests/unit/test_queries.py
+ERROR tests/unit/test_status.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 17 errors during collection !!!!!!!!!!!!!!!!!!!
+============================== 17 errors in 0.38s ==============================
+
+
+
+ NX   Running target test:unit for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:unit
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py" exited with non-zero status code
+note=RED: the install steps import ferret.domain.install, which does not exist yet
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T09:16:51Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e --skip-nx-cache --args='tests/test_user_install.py'
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+> nx run ferret-cli-e2e:"test:e2e" --args=tests/test_user_install.py
+
+> uv run --no-sync pytest tests tests/test_user_install.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli-e2e
+configfile: pyproject.toml
+plugins: bdd-8.1.0
+collected 89 items
+
+tests/steps/test_fail_open_capabilities_and_platforms_steps.py .FFF      [  4%]
+tests/steps/test_initialization_and_concurrency_steps.py ..              [  6%]
+tests/steps/test_local_query_and_export_steps.py ........FF.             [ 19%]
+tests/steps/test_metadata_envelope_steps.py .......                      [ 26%]
+tests/steps/test_retention_and_space_steps.py ..                         [ 29%]
+tests/steps/test_usage_and_outcomes_steps.py .                           [ 30%]
+tests/test_package_smoke.py ................                             [ 48%]
+tests/test_query_export.py .......                                       [ 56%]
+tests/test_standalone.py ..                                              [ 58%]
+tests/test_storage_benchmark.py ...........                              [ 70%]
+tests/test_user_install.py FFFFFFEEEEEFFFFFFFFFFFFFFF                    [100%]
+
+==================================== ERRORS ====================================
+_ ERROR at setup of test_crash_a_before_the_artifact_replace_leaves_the_old_install_whole_and_the_next_install_finishes _
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+older = PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_crash_a_before_the_artifa0/older/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_crash_a_before_the_artifa0/home'))
+version = '0.1.0'
+
+    @pytest.fixture
+    def crash(artifact: Path, older: Path, layout: Layout, version: str) -> Crash:
+        """An installed older version, and the means to leave the update to ``version`` half done."""
+>       install(older, layout.home)
+
+tests/test_user_install.py:284:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+_ ERROR at setup of test_crash_b_after_the_artifact_before_the_launcher_keeps_the_old_manifest_authoritative _
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+older = PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_crash_b_after_the_artifac0/older/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_crash_b_after_the_artifac0/home'))
+version = '0.1.0'
+
+    @pytest.fixture
+    def crash(artifact: Path, older: Path, layout: Layout, version: str) -> Crash:
+        """An installed older version, and the means to leave the update to ``version`` half done."""
+>       install(older, layout.home)
+
+tests/test_user_install.py:284:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+_ ERROR at setup of test_crash_b_then_removal_takes_only_what_the_old_manifest_owns _
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+older = PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_crash_b_then_removal_take0/older/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_crash_b_then_removal_take0/home'))
+version = '0.1.0'
+
+    @pytest.fixture
+    def crash(artifact: Path, older: Path, layout: Layout, version: str) -> Crash:
+        """An installed older version, and the means to leave the update to ``version`` half done."""
+>       install(older, layout.home)
+
+tests/test_user_install.py:284:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+_ ERROR at setup of test_crash_c_after_the_launcher_before_the_manifest_refuses_removal_and_the_next_install_finishes _
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+older = PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_crash_c_after_the_launche0/older/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_crash_c_after_the_launche0/home'))
+version = '0.1.0'
+
+    @pytest.fixture
+    def crash(artifact: Path, older: Path, layout: Layout, version: str) -> Crash:
+        """An installed older version, and the means to leave the update to ``version`` half done."""
+>       install(older, layout.home)
+
+tests/test_user_install.py:284:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+_ ERROR at setup of test_crash_d_after_the_manifest_makes_the_new_install_authoritative_and_leaves_the_old_artifact_unowned _
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+older = PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_crash_d_after_the_manifes0/older/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_crash_d_after_the_manifes0/home'))
+version = '0.1.0'
+
+    @pytest.fixture
+    def crash(artifact: Path, older: Path, layout: Layout, version: str) -> Crash:
+        """An installed older version, and the means to leave the update to ``version`` half done."""
+>       install(older, layout.home)
+
+tests/test_user_install.py:284:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+=================================== FAILURES ===================================
+_ test_install_privately_for_the_current_user[the user bin directory is already on PATH-none] _
+
+fixturefunc = <function then_objects_are_owner_only at 0x108051640>
+request = <FixtureRequest for <Function test_install_privately_for_the_current_user[the user bin directory is already on PATH-none]>>
+kwargs = {'session': Session(artifact=PosixPath('<worktree>/apps/fer...ers={'.zshrc': b'export EDITOR=vi\n', '.bashrc': b'# bash startup\n', '.profile': b'# login shell\n'}, data_before={})}
+
+    def call_fixture_func(
+        fixturefunc: _FixtureFunc[FixtureValue], request: FixtureRequest, kwargs
+    ) -> FixtureValue:
+        if inspect.isgeneratorfunction(fixturefunc):
+            fixturefunc = cast(Callable[..., Generator[FixtureValue]], fixturefunc)
+            generator = fixturefunc(**kwargs)
+            try:
+                fixture_result = next(generator)
+            except StopIteration:
+                raise ValueError(f"{request.fixturename} did not yield a value") from None
+            finalizer = functools.partial(_teardown_yield_fixture, fixturefunc, generator)
+            request.addfinalizer(finalizer)
+        else:
+            fixturefunc = cast(Callable[..., FixtureValue], fixturefunc)
+>           fixture_result = fixturefunc(**kwargs)
+                             ^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.14/site-packages/_pytest/fixtures.py:1005:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+session = Session(artifact=PosixPath('<worktree>/apps/ferret-cli/dist...ders={'.zshrc': b'export EDITOR=vi\n', '.bashrc': b'# bash startup\n', '.profile': b'# login shell\n'}, data_before={})
+
+    @then("the artifact, launcher, and manifest are created with owner-only access")
+    def then_objects_are_owner_only(session: Session) -> None:
+        assert session.ran is not None
+>       assert (session.ran.returncode, session.ran.stderr) == (0, b"")
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/steps/test_fail_open_capabilities_and_platforms_steps.py:183: AssertionError
+_ test_install_privately_for_the_current_user[the user bin directory is absent from PATH-add_home_local_bin] _
+
+fixturefunc = <function then_objects_are_owner_only at 0x108051640>
+request = <FixtureRequest for <Function test_install_privately_for_the_current_user[the user bin directory is absent from PATH-add_home_local_bin]>>
+kwargs = {'session': Session(artifact=PosixPath('<worktree>/apps/fer...ers={'.zshrc': b'export EDITOR=vi\n', '.bashrc': b'# bash startup\n', '.profile': b'# login shell\n'}, data_before={})}
+
+    def call_fixture_func(
+        fixturefunc: _FixtureFunc[FixtureValue], request: FixtureRequest, kwargs
+    ) -> FixtureValue:
+        if inspect.isgeneratorfunction(fixturefunc):
+            fixturefunc = cast(Callable[..., Generator[FixtureValue]], fixturefunc)
+            generator = fixturefunc(**kwargs)
+            try:
+                fixture_result = next(generator)
+            except StopIteration:
+                raise ValueError(f"{request.fixturename} did not yield a value") from None
+            finalizer = functools.partial(_teardown_yield_fixture, fixturefunc, generator)
+            request.addfinalizer(finalizer)
+        else:
+            fixturefunc = cast(Callable[..., FixtureValue], fixturefunc)
+>           fixture_result = fixturefunc(**kwargs)
+                             ^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.14/site-packages/_pytest/fixtures.py:1005:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+session = Session(artifact=PosixPath('<worktree>/apps/ferret-cli/dist...ders={'.zshrc': b'export EDITOR=vi\n', '.bashrc': b'# bash startup\n', '.profile': b'# login shell\n'}, data_before={})
+
+    @then("the artifact, launcher, and manifest are created with owner-only access")
+    def then_objects_are_owner_only(session: Session) -> None:
+        assert session.ran is not None
+>       assert (session.ran.returncode, session.ran.stderr) == (0, b"")
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/steps/test_fail_open_capabilities_and_platforms_steps.py:183: AssertionError
+____________ test_remove_ferret_without_changing_harness_behaviour _____________
+
+fixturefunc = <function given_harness_adapters_call_ferret at 0x108052140>
+request = <FixtureRequest for <Function test_remove_ferret_without_changing_harness_behaviour>>
+kwargs = {'session': Session(artifact=PosixPath('<worktree>/apps/fer...pytest-of-<user>/pytest-49/test_remove_ferret_without_cha0/home/.local/bin:/usr/bin:/bin', bystanders={}, data_before={})}
+
+    def call_fixture_func(
+        fixturefunc: _FixtureFunc[FixtureValue], request: FixtureRequest, kwargs
+    ) -> FixtureValue:
+        if inspect.isgeneratorfunction(fixturefunc):
+            fixturefunc = cast(Callable[..., Generator[FixtureValue]], fixturefunc)
+            generator = fixturefunc(**kwargs)
+            try:
+                fixture_result = next(generator)
+            except StopIteration:
+                raise ValueError(f"{request.fixturename} did not yield a value") from None
+            finalizer = functools.partial(_teardown_yield_fixture, fixturefunc, generator)
+            request.addfinalizer(finalizer)
+        else:
+            fixturefunc = cast(Callable[..., FixtureValue], fixturefunc)
+>           fixture_result = fixturefunc(**kwargs)
+                             ^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.14/site-packages/_pytest/fixtures.py:1005:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+session = Session(artifact=PosixPath('<worktree>/apps/ferret-cli/dist.../pytest-of-<user>/pytest-49/test_remove_ferret_without_cha0/home/.local/bin:/usr/bin:/bin', bystanders={}, data_before={})
+
+    @given("supported harness adapters are configured to call FERRET")
+    def given_harness_adapters_call_ferret(session: Session) -> None:
+        layout = Layout(session.home)
+        session.path = f"{layout.bin}:{PATH_WITHOUT_USER_BIN}"
+        capture_documents(
+            session.artifact, session.home, [numbered_event(1, now=datetime.now(UTC), ago=timedelta(minutes=1))]
+        )
+        installed = run_self(session, ["self", "install", "--target", "user", "--json"])
+>       assert (installed.returncode, installed.stderr) == (0, b"")
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/steps/test_fail_open_capabilities_and_platforms_steps.py:242: AssertionError
+_______ test_emit_a_stable_machine_readable_command_result[self install] _______
+
+fixturefunc = <function then_stdout_is_one_json_object at 0x1083235e0>
+request = <FixtureRequest for <Function test_emit_a_stable_machine_readable_command_result[self install]>>
+kwargs = {'session': Session(artifact=PosixPath('<worktree>/apps/fer...e=3, stdout=b'', stderr=b'FERRET error [storage_unavailable]: storage is unavailable\n'), environment={}, commands={})}
+
+    def call_fixture_func(
+        fixturefunc: _FixtureFunc[FixtureValue], request: FixtureRequest, kwargs
+    ) -> FixtureValue:
+        if inspect.isgeneratorfunction(fixturefunc):
+            fixturefunc = cast(Callable[..., Generator[FixtureValue]], fixturefunc)
+            generator = fixturefunc(**kwargs)
+            try:
+                fixture_result = next(generator)
+            except StopIteration:
+                raise ValueError(f"{request.fixturename} did not yield a value") from None
+            finalizer = functools.partial(_teardown_yield_fixture, fixturefunc, generator)
+            request.addfinalizer(finalizer)
+        else:
+            fixturefunc = cast(Callable[..., FixtureValue], fixturefunc)
+>           fixture_result = fixturefunc(**kwargs)
+                             ^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.14/site-packages/_pytest/fixtures.py:1005:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+session = Session(artifact=PosixPath('<worktree>/apps/ferret-cli/dist...de=3, stdout=b'', stderr=b'FERRET error [storage_unavailable]: storage is unavailable\n'), environment={}, commands={})
+
+    @then("stdout is one JSON object carrying schemaVersion and command")
+    def then_stdout_is_one_json_object(session: Session) -> None:
+        assert session.machine is not None
+        if session.command == "events export":
+            # The one stream command: stdout is the data itself, so it refuses a JSON wrapper rather than mixing them.
+            assert (session.machine.returncode, session.machine.stdout) == (2, b"")
+            assert json.loads(session.machine.stderr)["error"]["code"] == "invalid_arguments"
+            return
+>       assert (session.machine.returncode, session.machine.stderr) == (0, b"")
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/steps/test_local_query_and_export_steps.py:230: AssertionError
+______ test_emit_a_stable_machine_readable_command_result[self uninstall] ______
+
+fixturefunc = <function then_stdout_is_one_json_object at 0x1083235e0>
+request = <FixtureRequest for <Function test_emit_a_stable_machine_readable_command_result[self uninstall]>>
+kwargs = {'session': Session(artifact=PosixPath('<worktree>/apps/fer...e=3, stdout=b'', stderr=b'FERRET error [storage_unavailable]: storage is unavailable\n'), environment={}, commands={})}
+
+    def call_fixture_func(
+        fixturefunc: _FixtureFunc[FixtureValue], request: FixtureRequest, kwargs
+    ) -> FixtureValue:
+        if inspect.isgeneratorfunction(fixturefunc):
+            fixturefunc = cast(Callable[..., Generator[FixtureValue]], fixturefunc)
+            generator = fixturefunc(**kwargs)
+            try:
+                fixture_result = next(generator)
+            except StopIteration:
+                raise ValueError(f"{request.fixturename} did not yield a value") from None
+            finalizer = functools.partial(_teardown_yield_fixture, fixturefunc, generator)
+            request.addfinalizer(finalizer)
+        else:
+            fixturefunc = cast(Callable[..., FixtureValue], fixturefunc)
+>           fixture_result = fixturefunc(**kwargs)
+                             ^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.14/site-packages/_pytest/fixtures.py:1005:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+session = Session(artifact=PosixPath('<worktree>/apps/ferret-cli/dist...de=3, stdout=b'', stderr=b'FERRET error [storage_unavailable]: storage is unavailable\n'), environment={}, commands={})
+
+    @then("stdout is one JSON object carrying schemaVersion and command")
+    def then_stdout_is_one_json_object(session: Session) -> None:
+        assert session.machine is not None
+        if session.command == "events export":
+            # The one stream command: stdout is the data itself, so it refuses a JSON wrapper rather than mixing them.
+            assert (session.machine.returncode, session.machine.stdout) == (2, b"")
+            assert json.loads(session.machine.stderr)["error"]["code"] == "invalid_arguments"
+            return
+>       assert (session.machine.returncode, session.machine.stderr) == (0, b"")
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/steps/test_local_query_and_export_steps.py:230: AssertionError
+______________________ test_user_install_update_uninstall ______________________
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+older = PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_user_install_update_unins0/older/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_user_install_update_unins0/home'))
+version = '0.1.0'
+
+    def test_user_install_update_uninstall(artifact: Path, older: Path, layout: Layout, version: str) -> None:
+        current, previous = artifact.read_bytes(), older.read_bytes()
+
+>       first = install(older, layout.home)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_user_install.py:133:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+___________ test_the_installed_launcher_removes_its_own_installation ___________
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_the_installed_launcher_re0/home'))
+version = '0.1.0'
+
+    def test_the_installed_launcher_removes_its_own_installation(artifact: Path, layout: Layout, version: str) -> None:
+>       install(artifact, layout.home, path=f"{layout.bin}:{PATH_WITHOUT_USER_BIN}")
+
+tests/test_user_install.py:181:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+_______________ test_owner_only_modes_do_not_depend_on_the_umask _______________
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_owner_only_modes_do_not_d0/home'))
+version = '0.1.0'
+
+    def test_owner_only_modes_do_not_depend_on_the_umask(artifact: Path, layout: Layout, version: str) -> None:
+        previous = os.umask(0)
+        try:
+>           install(artifact, layout.home)
+
+tests/test_user_install.py:195:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+_____ test_directories_that_already_exist_keep_their_mode_and_their_files ______
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_directories_that_already_0/home'))
+version = '0.1.0'
+
+    def test_directories_that_already_exist_keep_their_mode_and_their_files(
+        artifact: Path, layout: Layout, version: str
+    ) -> None:
+        other = layout.bin / "other-tool"
+        place(other, b"#!/bin/sh\n", 0o755)
+        for directory in (layout.home / ".local", layout.bin):
+            directory.chmod(0o755)
+
+>       install(artifact, layout.home)
+
+tests/test_user_install.py:210:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+__________________ test_a_shell_startup_file_is_never_written __________________
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_a_shell_startup_file_is_n0/home'))
+
+    def test_a_shell_startup_file_is_never_written(artifact: Path, layout: Layout) -> None:
+        startup = {".zshrc": b"export EDITOR=vi\n", ".bashrc": b"# bash\n", ".profile": b"# login\n"}
+        for name, content in startup.items():
+            place(layout.home / name, content, 0o644)
+
+>       install(artifact, layout.home)
+
+tests/test_user_install.py:230:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+______________ test_the_path_action_follows_the_environment_path _______________
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_the_path_action_follows_t0/home'))
+
+    def test_the_path_action_follows_the_environment_path(artifact: Path, layout: Layout) -> None:
+>       absent = install(artifact, layout.home, path=PATH_WITHOUT_USER_BIN)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_user_install.py:238:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+_ test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes[launcher_is_a_regular_file] _
+
+arrange = <function launcher_is_a_regular_file at 0x1081f6140>
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_a_file_that_is_not_ours_i0/home'))
+version = '0.1.0'
+
+    @pytest.mark.parametrize("arrange", COLLISIONS, ids=lambda arrange: arrange.__name__)
+    def test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes(
+        arrange: Callable[[Layout, str], None], artifact: Path, layout: Layout, version: str
+    ) -> None:
+        arrange(layout, version)
+        before = tree(layout.home)
+
+>       refused(run(artifact, layout.home, INSTALL), "install_collision", 3)
+
+tests/test_user_install.py:443:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+code = 'install_collision', exit_code = 3
+
+    def refused(ran: Completed, code: str, exit_code: int) -> None:
+        assert (ran.returncode, ran.stdout) == (exit_code, b""), ran
+        envelope: dict[str, Any] = json.loads(ran.stderr)
+        assert envelope["exitCode"] == exit_code
+>       assert envelope["error"] == {"code": code, "field": None, "retryable": False}
+E       AssertionError: assert {'code': 'sto...yable': False} == {'code': 'ins...yable': False}
+E
+E         Omitting 2 identical items, use -vv to show
+E         Differing items:
+E         {'code': 'storage_unavailable'} != {'code': 'install_collision'}
+E         Use -v to get more diff
+
+tests/test_user_install.py:75: AssertionError
+_ test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes[launcher_is_a_foreign_link] _
+
+arrange = <function launcher_is_a_foreign_link at 0x1081f62a0>
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_a_file_that_is_not_ours_i1/home'))
+version = '0.1.0'
+
+    @pytest.mark.parametrize("arrange", COLLISIONS, ids=lambda arrange: arrange.__name__)
+    def test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes(
+        arrange: Callable[[Layout, str], None], artifact: Path, layout: Layout, version: str
+    ) -> None:
+        arrange(layout, version)
+        before = tree(layout.home)
+
+>       refused(run(artifact, layout.home, INSTALL), "install_collision", 3)
+
+tests/test_user_install.py:443:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+code = 'install_collision', exit_code = 3
+
+    def refused(ran: Completed, code: str, exit_code: int) -> None:
+        assert (ran.returncode, ran.stdout) == (exit_code, b""), ran
+        envelope: dict[str, Any] = json.loads(ran.stderr)
+        assert envelope["exitCode"] == exit_code
+>       assert envelope["error"] == {"code": code, "field": None, "retryable": False}
+E       AssertionError: assert {'code': 'sto...yable': False} == {'code': 'ins...yable': False}
+E
+E         Omitting 2 identical items, use -vv to show
+E         Differing items:
+E         {'code': 'storage_unavailable'} != {'code': 'install_collision'}
+E         Use -v to get more diff
+
+tests/test_user_install.py:75: AssertionError
+_ test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes[launcher_is_a_directory] _
+
+arrange = <function launcher_is_a_directory at 0x1081f6400>
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_a_file_that_is_not_ours_i2/home'))
+version = '0.1.0'
+
+    @pytest.mark.parametrize("arrange", COLLISIONS, ids=lambda arrange: arrange.__name__)
+    def test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes(
+        arrange: Callable[[Layout, str], None], artifact: Path, layout: Layout, version: str
+    ) -> None:
+        arrange(layout, version)
+        before = tree(layout.home)
+
+>       refused(run(artifact, layout.home, INSTALL), "install_collision", 3)
+
+tests/test_user_install.py:443:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+code = 'install_collision', exit_code = 3
+
+    def refused(ran: Completed, code: str, exit_code: int) -> None:
+        assert (ran.returncode, ran.stdout) == (exit_code, b""), ran
+        envelope: dict[str, Any] = json.loads(ran.stderr)
+        assert envelope["exitCode"] == exit_code
+>       assert envelope["error"] == {"code": code, "field": None, "retryable": False}
+E       AssertionError: assert {'code': 'sto...yable': False} == {'code': 'ins...yable': False}
+E
+E         Omitting 2 identical items, use -vv to show
+E         Differing items:
+E         {'code': 'storage_unavailable'} != {'code': 'install_collision'}
+E         Use -v to get more diff
+
+tests/test_user_install.py:75: AssertionError
+_ test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes[artifact_is_someone_elses_file] _
+
+arrange = <function artifact_is_someone_elses_file at 0x1081f6560>
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_a_file_that_is_not_ours_i3/home'))
+version = '0.1.0'
+
+    @pytest.mark.parametrize("arrange", COLLISIONS, ids=lambda arrange: arrange.__name__)
+    def test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes(
+        arrange: Callable[[Layout, str], None], artifact: Path, layout: Layout, version: str
+    ) -> None:
+        arrange(layout, version)
+        before = tree(layout.home)
+
+>       refused(run(artifact, layout.home, INSTALL), "install_collision", 3)
+
+tests/test_user_install.py:443:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+code = 'install_collision', exit_code = 3
+
+    def refused(ran: Completed, code: str, exit_code: int) -> None:
+        assert (ran.returncode, ran.stdout) == (exit_code, b""), ran
+        envelope: dict[str, Any] = json.loads(ran.stderr)
+        assert envelope["exitCode"] == exit_code
+>       assert envelope["error"] == {"code": code, "field": None, "retryable": False}
+E       AssertionError: assert {'code': 'sto...yable': False} == {'code': 'ins...yable': False}
+E
+E         Omitting 2 identical items, use -vv to show
+E         Differing items:
+E         {'code': 'storage_unavailable'} != {'code': 'install_collision'}
+E         Use -v to get more diff
+
+tests/test_user_install.py:75: AssertionError
+_ test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes[manifest_is_not_a_manifest] _
+
+arrange = <function manifest_is_not_a_manifest at 0x1081f66c0>
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_a_file_that_is_not_ours_i4/home'))
+version = '0.1.0'
+
+    @pytest.mark.parametrize("arrange", COLLISIONS, ids=lambda arrange: arrange.__name__)
+    def test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes(
+        arrange: Callable[[Layout, str], None], artifact: Path, layout: Layout, version: str
+    ) -> None:
+        arrange(layout, version)
+        before = tree(layout.home)
+
+>       refused(run(artifact, layout.home, INSTALL), "install_collision", 3)
+
+tests/test_user_install.py:443:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+code = 'install_collision', exit_code = 3
+
+    def refused(ran: Completed, code: str, exit_code: int) -> None:
+        assert (ran.returncode, ran.stdout) == (exit_code, b""), ran
+        envelope: dict[str, Any] = json.loads(ran.stderr)
+        assert envelope["exitCode"] == exit_code
+>       assert envelope["error"] == {"code": code, "field": None, "retryable": False}
+E       AssertionError: assert {'code': 'sto...yable': False} == {'code': 'ins...yable': False}
+E
+E         Omitting 2 identical items, use -vv to show
+E         Differing items:
+E         {'code': 'storage_unavailable'} != {'code': 'install_collision'}
+E         Use -v to get more diff
+
+tests/test_user_install.py:75: AssertionError
+_ test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved[artifact_was_edited] _
+
+change = <function artifact_was_edited at 0x1081f6a30>
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_removal_refuses_and_delet0/home'))
+version = '0.1.0'
+
+    @pytest.mark.parametrize("change", MISMATCHES, ids=lambda change: change.__name__)
+    def test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved(
+        change: Callable[[Layout, str], None], artifact: Path, layout: Layout, version: str
+    ) -> None:
+>       install(artifact, layout.home)
+
+tests/test_user_install.py:483:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+_ test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved[launcher_points_elsewhere] _
+
+change = <function launcher_points_elsewhere at 0x1081f6b90>
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_removal_refuses_and_delet1/home'))
+version = '0.1.0'
+
+    @pytest.mark.parametrize("change", MISMATCHES, ids=lambda change: change.__name__)
+    def test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved(
+        change: Callable[[Layout, str], None], artifact: Path, layout: Layout, version: str
+    ) -> None:
+>       install(artifact, layout.home)
+
+tests/test_user_install.py:483:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+_ test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved[launcher_became_a_file] _
+
+change = <function launcher_became_a_file at 0x1081f6cf0>
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_removal_refuses_and_delet2/home'))
+version = '0.1.0'
+
+    @pytest.mark.parametrize("change", MISMATCHES, ids=lambda change: change.__name__)
+    def test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved(
+        change: Callable[[Layout, str], None], artifact: Path, layout: Layout, version: str
+    ) -> None:
+>       install(artifact, layout.home)
+
+tests/test_user_install.py:483:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+_ test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved[manifest_lost_its_content] _
+
+change = <function manifest_lost_its_content at 0x1081f6e50>
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_removal_refuses_and_delet3/home'))
+version = '0.1.0'
+
+    @pytest.mark.parametrize("change", MISMATCHES, ids=lambda change: change.__name__)
+    def test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved(
+        change: Callable[[Layout, str], None], artifact: Path, layout: Layout, version: str
+    ) -> None:
+>       install(artifact, layout.home)
+
+tests/test_user_install.py:483:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+_ test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved[manifest_became_readable_by_others] _
+
+change = <function manifest_became_readable_by_others at 0x1081f6fb0>
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_removal_refuses_and_delet4/home'))
+version = '0.1.0'
+
+    @pytest.mark.parametrize("change", MISMATCHES, ids=lambda change: change.__name__)
+    def test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved(
+        change: Callable[[Layout, str], None], artifact: Path, layout: Layout, version: str
+    ) -> None:
+>       install(artifact, layout.home)
+
+tests/test_user_install.py:483:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+____________ test_purging_data_without_confirmation_changes_nothing ____________
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_purging_data_without_conf0/home'))
+
+    def test_purging_data_without_confirmation_changes_nothing(artifact: Path, layout: Layout) -> None:
+>       install(artifact, layout.home)
+
+tests/test_user_install.py:493:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+__________ test_confirmed_purge_removes_the_install_and_then_the_data __________
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_confirmed_purge_removes_t0/home'))
+version = '0.1.0'
+
+    def test_confirmed_purge_removes_the_install_and_then_the_data(artifact: Path, layout: Layout, version: str) -> None:
+>       install(artifact, layout.home)
+
+tests/test_user_install.py:503:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+____________________ test_confirmation_alone_purges_nothing ____________________
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_confirmation_alone_purges0/home'))
+
+    def test_confirmation_alone_purges_nothing(artifact: Path, layout: Layout) -> None:
+>       install(artifact, layout.home)
+
+tests/test_user_install.py:516:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+___________ test_a_confirmed_purge_needs_no_installation_and_no_data ___________
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_a_confirmed_purge_needs_n0/home'))
+
+    def test_a_confirmed_purge_needs_no_installation_and_no_data(artifact: Path, layout: Layout) -> None:
+>       removed = uninstall(artifact, layout.home, "--purge-data", "--yes")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_user_install.py:527:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:83: in uninstall
+    return succeeded(run(artifact, home, [*UNINSTALL, *options]))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.uninstall","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.uninstall","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+__ test_installed_files_record_the_digest_of_the_artifact_that_was_installed ___
+
+artifact = PosixPath('<worktree>/apps/ferret-cli/dist/ferret.pyz')
+layout = Layout(home=PosixPath('<tmpdir>/pytest-of-<user>/pytest-49/test_installed_files_record_th0/home'))
+version = '0.1.0'
+
+    def test_installed_files_record_the_digest_of_the_artifact_that_was_installed(
+        artifact: Path, layout: Layout, version: str
+    ) -> None:
+>       install(artifact, layout.home)
+
+tests/test_user_install.py:536:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/test_user_install.py:79: in install
+    return succeeded(run(artifact, home, INSTALL, path=path))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+ran = Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}\n')
+
+    def succeeded(ran: Completed) -> dict[str, Any]:
+>       assert (ran.returncode, ran.stderr) == (0, b""), ran
+E       AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersion":1,"command":"self.install","exitCode":3,"error":{"code":"storage_unavailable","field":null,"retryable":false}}
+E         ')
+E       assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E
+E         At index 0 diff: 3 != 0
+E         Use -v to get more diff
+
+tests/test_user_install.py:65: AssertionError
+=========================== short test summary info ============================
+ERROR tests/test_user_install.py::test_crash_a_before_the_artifact_replace_leaves_the_old_install_whole_and_the_next_install_finishes - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+ERROR tests/test_user_install.py::test_crash_b_after_the_artifact_before_the_launcher_keeps_the_old_manifest_authoritative - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+ERROR tests/test_user_install.py::test_crash_b_then_removal_takes_only_what_the_old_manifest_owns - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+ERROR tests/test_user_install.py::test_crash_c_after_the_launcher_before_the_manifest_refuses_removal_and_the_next_install_finishes - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+ERROR tests/test_user_install.py::test_crash_d_after_the_manifest_makes_the_new_install_authoritative_and_leaves_the_old_artifact_unowned - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_install_privately_for_the_current_user[the user bin directory is already on PATH-none] - assert (3, b'{"schem...e":false}}\n') == (0, b'')
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_install_privately_for_the_current_user[the user bin directory is absent from PATH-add_home_local_bin] - assert (3, b'{"schem...e":false}}\n') == (0, b'')
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_remove_ferret_without_changing_harness_behaviour - assert (3, b'{"schem...e":false}}\n') == (0, b'')
+FAILED tests/steps/test_local_query_and_export_steps.py::test_emit_a_stable_machine_readable_command_result[self install] - assert (3, b'{"schem...e":false}}\n') == (0, b'')
+FAILED tests/steps/test_local_query_and_export_steps.py::test_emit_a_stable_machine_readable_command_result[self uninstall] - assert (3, b'{"schem...e":false}}\n') == (0, b'')
+FAILED tests/test_user_install.py::test_user_install_update_uninstall - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_the_installed_launcher_removes_its_own_installation - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_owner_only_modes_do_not_depend_on_the_umask - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_directories_that_already_exist_keep_their_mode_and_their_files - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_a_shell_startup_file_is_never_written - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_the_path_action_follows_the_environment_path - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes[launcher_is_a_regular_file] - AssertionError: assert {'code': 'sto...yable': False} == {'code': 'ins...ya...
+FAILED tests/test_user_install.py::test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes[launcher_is_a_foreign_link] - AssertionError: assert {'code': 'sto...yable': False} == {'code': 'ins...ya...
+FAILED tests/test_user_install.py::test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes[launcher_is_a_directory] - AssertionError: assert {'code': 'sto...yable': False} == {'code': 'ins...ya...
+FAILED tests/test_user_install.py::test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes[artifact_is_someone_elses_file] - AssertionError: assert {'code': 'sto...yable': False} == {'code': 'ins...ya...
+FAILED tests/test_user_install.py::test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes[manifest_is_not_a_manifest] - AssertionError: assert {'code': 'sto...yable': False} == {'code': 'ins...ya...
+FAILED tests/test_user_install.py::test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved[artifact_was_edited] - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved[launcher_points_elsewhere] - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved[launcher_became_a_file] - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved[manifest_lost_its_content] - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved[manifest_became_readable_by_others] - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_purging_data_without_confirmation_changes_nothing - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_confirmed_purge_removes_the_install_and_then_the_data - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_confirmation_alone_purges_nothing - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_a_confirmed_purge_needs_no_installation_and_no_data - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+FAILED tests/test_user_install.py::test_installed_files_record_the_digest_of_the_artifact_that_was_installed - AssertionError: Completed(returncode=3, stdout=b'', stderr=b'{"schemaVersio...
+=================== 26 failed, 58 passed, 5 errors in 51.29s ===================
+
+
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on failed
+
+Failed tasks:
+
+- ferret-cli-e2e:test:e2e
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pytest tests tests/test_user_install.py" exited with non-zero status code
+note=RED: self install and self uninstall are not registered, so every install behaviour answers storage_unavailable
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T09:17:04Z

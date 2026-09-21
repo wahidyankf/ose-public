@@ -1,0 +1,45 @@
+$ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
+
+> open-sharia-enterprise@1.0.0 postinstall
+> npm run doctor || true
+
+
+> open-sharia-enterprise@1.0.0 doctor
+> .github/scripts/run-doctor.sh
+
+[toolchain-validate] checked 10 declared toolchains, no findings
+
+> open-sharia-enterprise@1.0.0 prepare
+> husky
+
+
+up to date, audited 1565 packages in 8s
+
+427 packages are looking for funding
+  run `npm fund` for details
+
+63 vulnerabilities (2 low, 30 moderate, 26 high, 5 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T01:56:36Z
+
+$ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply
+[toolchain-provision] completed 0 declared toolchains
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T01:56:47Z
+
+$ rtk npm run doctor
+> .github/scripts/run-doctor.sh
+[toolchain-validate] checked 10 declared toolchains, no findings
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T01:56:50Z

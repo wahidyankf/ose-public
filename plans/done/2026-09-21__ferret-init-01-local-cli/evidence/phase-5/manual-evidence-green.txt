@@ -1,0 +1,112 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --skip-nx-cache --args='tests/unit/test_manual_evidence.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_manual_evidence.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_manual_evidence.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 1205 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .... [  0%]
+..........                                                               [  1%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  1%]
+tests/unit/steps/test_local_query_and_export_steps.py ...........        [  2%]
+tests/unit/steps/test_metadata_envelope_steps.py ........                [  2%]
+tests/unit/steps/test_retention_and_space_steps.py ..                    [  3%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  3%]
+tests/unit/test_analytics.py ........................................... [  6%]
+...................                                                      [  8%]
+tests/unit/test_canonical.py ..........                                  [  9%]
+tests/unit/test_capabilities.py ........................................ [ 12%]
+........................................................................ [ 18%]
+.........                                                                [ 19%]
+tests/unit/test_capture.py .........................                     [ 21%]
+tests/unit/test_capture_hook.py ........................................ [ 24%]
+.................                                                        [ 25%]
+tests/unit/test_cli_contract.py ........................................ [ 29%]
+.................................................                        [ 33%]
+tests/unit/test_commands.py .........                                    [ 34%]
+tests/unit/test_data_home_locality.py ...........                        [ 35%]
+tests/unit/test_event_contract.py ............................           [ 37%]
+tests/unit/test_event_identity.py ....                                   [ 37%]
+tests/unit/test_hook_mappers.py ........................................ [ 40%]
+........................................................................ [ 46%]
+................                                                         [ 48%]
+tests/unit/test_identifier_derivation.py ............                    [ 49%]
+tests/unit/test_initialization.py ...................................... [ 52%]
+....................                                                     [ 54%]
+tests/unit/test_install.py ............................................. [ 57%]
+...........                                                              [ 58%]
+tests/unit/test_install_domain.py ...................................... [ 61%]
+............................                                             [ 64%]
+tests/unit/test_maintenance.py ................................          [ 66%]
+tests/unit/test_maintenance_command.py ......................            [ 68%]
+tests/unit/test_manual_evidence.py ...........                           [ 69%]
+tests/unit/test_network_denial.py ......                                 [ 70%]
+tests/unit/test_privacy.py ............................................. [ 73%]
+........................................................................ [ 79%]
+............................                                             [ 82%]
+tests/unit/test_queries.py ............................................. [ 85%]
+........................................................................ [ 91%]
+......                                                                   [ 92%]
+tests/unit/test_space.py ........................                        [ 94%]
+tests/unit/test_status.py ......................                         [ 96%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/analytics.py           97      0   100%
+src/ferret/application/capabilities.py        23      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/capture_hook.py        27      0   100%
+src/ferret/application/initialization.py      43      0   100%
+src/ferret/application/install.py             99      0   100%
+src/ferret/application/maintenance.py         71      0   100%
+src/ferret/application/ports.py              111      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/queries.py             46      0   100%
+src/ferret/application/status.py              32      0   100%
+src/ferret/application/store.py               47      0   100%
+src/ferret/cli.py                            176      0   100%
+src/ferret/commands.py                        63      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/capability.py               69      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   110      0   100%
+src/ferret/domain/fields.py                   47      0   100%
+src/ferret/domain/hook.py                    113      0   100%
+src/ferret/domain/identity.py                 17      0   100%
+src/ferret/domain/install.py                  94      0   100%
+src/ferret/domain/query.py                   123      0   100%
+src/ferret/domain/retention.py                16      0   100%
+src/ferret/domain/space.py                    42      0   100%
+src/ferret/domain/status.py                   13      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               37      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       74      0   100%
+------------------------------------------------------------------------
+TOTAL                                       1759      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================= 1205 passed in 7.11s =============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+note=PHASE 5 GREEN manual evidence: apps/ferret-cli/tests/support/manual_evidence.py implements the closed capture, query, and install cases; the focused tests (and the whole Unit suite with its 99% coverage floor) must exit 0
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:32:25Z

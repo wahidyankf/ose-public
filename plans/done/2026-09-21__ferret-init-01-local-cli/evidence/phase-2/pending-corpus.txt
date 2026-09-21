@@ -1,0 +1,80 @@
+Amendment A9 evidence: the corpus-pending state in the static behaviour validator.
+Why: Phase 2 requires the static validators green while no scenario exists; the validator rejected a corpus with no feature.
+RED baseline = the real validator with its five pending edits reversed (scratch copy beside a copy of the tests).
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- node --test local-tmp/claude/red/behaviour-coverage.test.mjs
+✖ accepts a pending corpus that holds no feature and registers no binding (1.295125ms)
+✖ rejects a pending corpus that now holds a feature (1.605ms)
+✖ keeps an empty corpus an error when it is not marked pending (0.8255ms)
+✖ reads pending from a project-local config and rejects a non-boolean marker (0.89475ms)
+✖ reports a pending corpus in the CLI summary (1.372042ms)
+ℹ tests 95
+ℹ suites 0
+ℹ pass 90
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 170.275041
+✖ failing tests:
+test at local-tmp/claude/red/behaviour-coverage.test.mjs:2317:1
+✖ accepts a pending corpus that holds no feature and registers no binding (1.295125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  + [
+  +   'example: no .feature files found in the configured corpus.'
+  + ]
+  - []
+  }
+test at local-tmp/claude/red/behaviour-coverage.test.mjs:2328:1
+✖ rejects a pending corpus that now holds a feature (1.605ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  + []
+  - [
+  -   'example: the corpus holds a feature, so remove pending from the configuration.'
+  - ]
+  }
+test at local-tmp/claude/red/behaviour-coverage.test.mjs:2356:1
+✖ keeps an empty corpus an error when it is not marked pending (0.8255ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  + undefined
+  - false
+  }
+test at local-tmp/claude/red/behaviour-coverage.test.mjs:2365:1
+✖ reads pending from a project-local config and rejects a non-boolean marker (0.89475ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  + undefined
+  - true
+  }
+test at local-tmp/claude/red/behaviour-coverage.test.mjs:2394:1
+✖ reports a pending corpus in the CLI summary (1.372042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  + [
+  +   'example: no .feature files found in the configured corpus.'
+  + ]
+  - []
+  }
+[evrun] dropped 152 output lines matching /^(✔|▶|  ✔)|^\s+at |^\s+(generatedMessage|code|actual|expected|operator|diff|name):|^\s*$/
+note=RED: five of the seven new tests fail against the pre-change validator; the other two guard invariants that already held
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:41:26Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- node --test scripts/behaviour-coverage.test.mjs
+ℹ tests 95
+ℹ suites 0
+ℹ pass 95
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 161.355667
+[evrun] dropped 96 output lines matching /^\s*✔|^\s*$/
+note=GREEN: all 95 tests pass (88 before this change plus 7); the passing per-test lines are dropped, the summary is kept
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:41:34Z

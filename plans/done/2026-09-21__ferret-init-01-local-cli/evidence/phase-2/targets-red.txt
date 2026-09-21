@@ -1,0 +1,108 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- node --test scripts/behaviour-coverage.test.mjs
+✖ the FERRET owner project satisfies the closed target contract with its real adapters (1.191042ms)
+✖ the FERRET owner runs the built artifact and enforces 99% Unit line coverage with pytest-cov (0.385917ms)
+ℹ tests 104
+ℹ pass 102
+ℹ fail 2
+
+✖ failing tests:
+
+test at scripts/behaviour-coverage.test.mjs:2445:1
+✖ the FERRET owner project satisfies the closed target contract with its real adapters (1.191042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+
+
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '<worktree>/apps/ferret-cli/project.json: owner test:unit line coverage threshold 98% is below the 99% minimum.' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+
+test at scripts/behaviour-coverage.test.mjs:2507:1
+✖ the FERRET owner runs the built artifact and enforces 99% Unit line coverage with pytest-cov (0.385917ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+
+
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=98' ],
+    expected: [ 'uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+[evrun] dropped 125 output lines matching /^(✔|ℹ (suites|cancelled|skipped|todo|duration_ms)|▶|\s+at |\s+\+\s|\s+-\s|\s*\}|\s*\[|\s*\])/
+note=RED 1 of 3: scratch mutation of apps/ferret-cli/project.json (test:unit --cov-fail-under=99 -> 98); restored byte for byte afterwards
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:10:28Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- node --test scripts/behaviour-coverage.test.mjs
+✖ the FERRET E2E runtime target runs pytest against the built owner artifact (1.05125ms)
+ℹ tests 104
+ℹ pass 103
+ℹ fail 1
+
+✖ failing tests:
+
+test at scripts/behaviour-coverage.test.mjs:2519:1
+✖ the FERRET E2E runtime target runs pytest against the built owner artifact (1.05125ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+
+
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: [ 'ferret-cli:build' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+[evrun] dropped 117 output lines matching /^(✔|ℹ (suites|cancelled|skipped|todo|duration_ms)|▶|\s+at |\s+\+\s|\s+-\s|\s*\}|\s*\[|\s*\])/
+note=RED 2 of 3: scratch mutation of apps/ferret-cli-e2e/project.json (test:e2e loses dependsOn ferret-cli:build); restored byte for byte afterwards
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:10:45Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- node --test scripts/behaviour-coverage.test.mjs
+✖ the FERRET E2E project satisfies the closed target contract with its real adapters (1.0335ms)
+✖ the FERRET E2E project declares exactly the mandatory target matrix and owns no Unit or Integration target (0.699042ms)
+ℹ tests 104
+ℹ pass 102
+ℹ fail 2
+
+✖ failing tests:
+
+test at scripts/behaviour-coverage.test.mjs:2452:1
+✖ the FERRET E2E project satisfies the closed target contract with its real adapters (1.0335ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+
+
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '<worktree>/apps/ferret-cli-e2e/project.json: a dedicated E2E project must not own test:unit.' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+
+test at scripts/behaviour-coverage.test.mjs:2479:1
+✖ the FERRET E2E project declares exactly the mandatory target matrix and owns no Unit or Integration target (0.699042ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  ... Skipped lines
+
+      'install',
+      'lint',
+      'test:coverage',
+      'test:coverage:behaviour',
+  ...
+      'test:quick',
+      'typecheck'
+
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'install', 'lint', 'test:coverage', 'test:coverage:behaviour', 'test:coverage:e2e', 'test:e2e', 'test:quick', 'test:unit', 'typecheck' ],
+    expected: [ 'install', 'lint', 'test:coverage', 'test:coverage:behaviour', 'test:coverage:e2e', 'test:e2e', 'test:quick', 'typecheck' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+[evrun] dropped 124 output lines matching /^(✔|ℹ (suites|cancelled|skipped|todo|duration_ms)|▶|\s+at |\s+\+\s|\s+-\s|\s*\}|\s*\[|\s*\])/
+note=RED 3 of 3: scratch mutation of apps/ferret-cli-e2e/project.json (the dedicated E2E project gains a test:unit target); restored byte for byte afterwards
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:10:59Z

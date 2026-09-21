@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 
 import {
   extractBindings,
@@ -1618,4 +1619,957 @@ test("rejects a Go coverage gate whose declared minimum is below 99", async () =
 
   const errors = await validateProjectTargetContract(path.join(root, "project.json"), "example", { unit: {} });
   assert.ok(errors.some((error) => error.includes("line coverage")));
+});
+
+function pythonBindings({ omitThen = false, extra = "" } = {}) {
+  const then = omitThen
+    ? ""
+    : '\n\n@then("independent evidence is observed")\ndef independent_evidence_is_observed():\n    pass\n';
+  return `from pytest_bdd import given, then, when
+
+
+@given("a configured subject")
+def a_configured_subject():
+    pass
+
+
+@when("the subject is exercised")
+def the_subject_is_exercised():
+    pass
+${then}${extra}`;
+}
+
+async function validatePython(files) {
+  const root = await fixture({
+    "behaviours/example.feature": validFeature,
+    "unit/conftest.py": "",
+    ...files,
+  });
+  return validateCoverage({
+    project: "example",
+    corpusRoots: [path.join(root, "behaviours")],
+    adapter: "unit",
+    bindingRoots: [path.join(root, "unit")],
+    driver: path.join(root, "unit/conftest.py"),
+  });
+}
+
+test("extracts one binding per pytest-bdd step definition", () => {
+  const source = `from pytest_bdd import given, parsers, then, when
+
+
+@given("a configured subject")
+def a_configured_subject():
+    pass
+
+
+@when(parsers.parse('the subject is exercised {count} times'), target_fixture="outcome")
+def the_subject_is_exercised(count):
+    return count
+
+
+@then(parsers.re(r"independent evidence is (?P<state>observed|recorded)"))
+def independent_evidence(state):
+    pass
+`;
+
+  const bindings = extractBindings("test_steps.py", source);
+
+  assert.deepEqual(
+    bindings.map(({ keyword }) => keyword),
+    ["Given", "When", "Then"],
+  );
+  // pytest-bdd resolves a step only against its own decorator keyword, like Cucumber-JVM.
+  assert.ok(bindings.every(({ keywordSensitive }) => keywordSensitive === true));
+  assert.ok(bindings.every(({ expression }) => expression === false));
+  // A plain string is an exact match, a parse placeholder is unconstrained, and a Python named
+  // group is rewritten to the JavaScript spelling so the same pattern can be evaluated here.
+  assert.deepEqual(
+    bindings.map(({ pattern }) => pattern),
+    [
+      "a configured subject",
+      "the subject is exercised .+? times",
+      "independent evidence is (?<state>observed|recorded)",
+    ],
+  );
+});
+
+test("treats a pytest-bdd cfparse registration like a parse registration", () => {
+  const source = `from pytest_bdd import given, parsers
+
+
+@given(parsers.cfparse("a subject named {name} exists"))
+def named_subject(name):
+    pass
+`;
+
+  const [binding] = extractBindings("test_steps.py", source);
+
+  assert.equal(binding.pattern, "a subject named .+? exists");
+});
+
+test("escapes regex metacharacters in a plain pytest-bdd step string and a parse template", () => {
+  const source = `from pytest_bdd import given, parsers
+
+
+@given("the output (stdout) is empty")
+def stdout_is_empty():
+    pass
+
+
+@given(parsers.parse("the mapping {{key}} holds {value}"))
+def mapping_holds(value):
+    pass
+`;
+
+  // A plain string is an exact match, so its parentheses are literal; a parse template doubles a
+  // brace to write a literal one.
+  assert.deepEqual(
+    extractBindings("test_steps.py", source).map(({ pattern }) => pattern),
+    ["the output \\(stdout\\) is empty", "the mapping \\{key\\} holds .+?"],
+  );
+});
+
+test("treats a pytest-bdd step registration as keyword-agnostic", () => {
+  const source = `from pytest_bdd import step
+
+
+@step("a configured subject")
+def a_configured_subject():
+    pass
+`;
+
+  const [binding] = extractBindings("test_steps.py", source);
+
+  assert.equal(binding.keyword, "Step");
+  // A generic @step applies to a step of ANY keyword; recording it keyword-sensitive would report
+  // a correctly-bound Then step as undefined.
+  assert.equal(binding.keywordSensitive, false);
+});
+
+test("ignores a pytest-bdd registration inside a Python comment or docstring", () => {
+  const source = `"""Module docstring that quotes a registration.
+
+@given("a documented subject")
+def documented():
+    pass
+"""
+from pytest_bdd import given
+
+# @given("a commented subject")
+# def commented():
+#     pass
+
+
+@given("issue #1 is open")
+def issue_is_open():
+    """@given("an inner docstring subject")
+    def inner():
+        pass
+    """
+`;
+
+  // A hash inside a string literal is not a comment, so the pattern keeps its own hash.
+  assert.deepEqual(
+    extractBindings("test_steps.py", source).map(({ pattern }) => pattern),
+    ["issue #1 is open"],
+  );
+});
+
+test("reads feature references from Python string literals", () => {
+  const source = `from pytest_bdd import given, scenarios
+
+scenarios("../../../specs/apps/example/cli/behaviours/alpha.feature")
+
+
+@given("a configured subject")
+def a_configured_subject():
+    pass
+`;
+
+  const [binding] = extractBindings("test_steps.py", source);
+
+  assert.deepEqual(binding.featureReferences, ["specs/apps/example/cli/behaviours/alpha.feature"]);
+});
+
+test("reports an undefined Unit binding when a pytest-bdd step definition is missing", async () => {
+  // Without .py in BINDING_FILE no binding loads at all, so every step reads as undefined and
+  // the complete half fails; that is what makes the pair discriminating rather than trivial.
+  const complete = await validatePython({ "unit/test_steps.py": pythonBindings() });
+  assert.deepEqual(
+    complete.errors.filter((error) => error.includes("undefined Unit binding")),
+    [],
+  );
+
+  const missingThen = await validatePython({ "unit/test_steps.py": pythonBindings({ omitThen: true }) });
+  assert.ok(missingThen.errors.some((error) => error.includes("undefined Unit binding")));
+});
+
+test("reports an unused Unit binding when a pytest-bdd step definition matches no step", async () => {
+  const result = await validatePython({
+    "unit/test_steps.py": pythonBindings({
+      extra: '\n\n@given("an unused boundary")\ndef an_unused_boundary():\n    pass\n',
+    }),
+  });
+
+  assert.ok(result.errors.some((error) => error.includes("unused Unit binding")));
+});
+
+test("reports an ambiguous Unit binding when two pytest-bdd definitions match one step", async () => {
+  const result = await validatePython({
+    "unit/test_steps.py": pythonBindings(),
+    "unit/test_more_steps.py": '@given("a configured subject")\ndef duplicate():\n    pass\n',
+  });
+
+  assert.ok(result.errors.some((error) => error.includes("ambiguous Unit binding")));
+});
+
+test("matches a pytest-bdd parse placeholder and a regex group against the step text", async () => {
+  const result = await validatePython({
+    "unit/test_steps.py": `from pytest_bdd import given, parsers, then, when
+
+
+@given(parsers.parse("a {kind} subject"))
+def a_subject(kind):
+    pass
+
+
+@when(parsers.re(r"the (?P<what>subject) is exercised"))
+def exercised(what):
+    pass
+
+
+@then("independent evidence is observed")
+def observed():
+    pass
+`,
+  });
+
+  assert.deepEqual(result.errors, []);
+});
+
+test("scopes duplicate pytest-bdd bindings to explicit feature literals", async () => {
+  const feature = (name, action) => `Feature: ${name}
+
+  Scenario: ${name} works
+    Given shared setup
+    When ${action}
+    Then ${name.toLowerCase()} is observed
+`;
+  const root = await fixture({
+    "specs/alpha.feature": feature("Alpha", "alpha runs"),
+    "specs/beta.feature": feature("Beta", "beta runs"),
+    "unit/test_alpha_steps.py": `from pytest_bdd import given, scenarios, then, when
+
+scenarios("../specs/alpha.feature")
+
+
+@given("shared setup")
+def shared():
+    pass
+
+
+@when("alpha runs")
+def alpha_runs():
+    pass
+
+
+@then("alpha is observed")
+def alpha_observed():
+    pass
+`,
+    "unit/test_beta_steps.py": `from pytest_bdd import given, scenarios, then, when
+
+scenarios("../specs/beta.feature")
+
+
+@given("shared setup")
+def shared():
+    pass
+
+
+@when("beta runs")
+def beta_runs():
+    pass
+
+
+@then("beta is observed")
+def beta_observed():
+    pass
+`,
+    "unit/conftest.py": "",
+  });
+
+  const result = await validateCoverage({
+    project: "example",
+    corpusRoots: [path.join(root, "specs")],
+    adapter: "unit",
+    bindingRoots: [path.join(root, "unit")],
+    driver: path.join(root, "unit/conftest.py"),
+  });
+
+  assert.deepEqual(result.errors, []);
+});
+
+// A conforming Python CLI owner: every mandatory non-test target is present and does real work, so a
+// test passes `edit` to remove or corrupt exactly one thing and the rejection can only be that thing.
+const pythonOwnerProject = (
+  unitCommand,
+  {
+    tags = ["type:app", "platform:cli", "lang:python", "domain:ferret"],
+    coverageCommand = "node scripts/behaviour-coverage.mjs --adapter unit",
+    edit = () => {},
+  } = {},
+) => {
+  const targets = {
+    install: { options: { command: "uv sync --locked" } },
+    build: { options: { command: "uv run python -m zipapp src -o dist/example.pyz" } },
+    run: { options: { command: "python dist/example.pyz --help" } },
+    lint: { options: { command: "uv run ruff check ." } },
+    typecheck: { options: { command: "uv run pyright" } },
+    "test:unit": { options: { command: unitCommand } },
+    "test:coverage:unit": { options: { command: coverageCommand } },
+    "test:coverage:behaviour": {
+      options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+    },
+    "test:coverage": {
+      options: {
+        commands: ["npx nx run example:test:coverage:unit", "npx nx run example:test:coverage:behaviour"],
+        parallel: false,
+      },
+    },
+    "test:quick": {
+      options: {
+        commands: ["npx nx run example:test:unit", "npx nx run example:test:coverage"],
+        parallel: false,
+      },
+    },
+  };
+  edit(targets);
+  return JSON.stringify({ name: "example", tags, targets });
+};
+
+test("accepts a 99% pytest-cov Unit line coverage hard gate", async () => {
+  const root = await fixture({
+    "project.json": pythonOwnerProject(
+      "uv run pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99",
+    ),
+  });
+
+  assert.deepEqual(await validateProjectTargetContract(path.join(root, "project.json"), "example", { unit: {} }), []);
+});
+
+test("rejects a pytest-cov threshold below the 99% hard minimum", async () => {
+  const root = await fixture({
+    "project.json": pythonOwnerProject("uv run pytest tests/unit --cov=ferret --cov-fail-under=98"),
+  });
+
+  const errors = await validateProjectTargetContract(path.join(root, "project.json"), "example", { unit: {} });
+  assert.ok(errors.some((error) => error.includes("98% is below the 99% minimum")));
+});
+
+test("rejects a pytest-cov threshold that names no coverage source", async () => {
+  const root = await fixture({
+    "project.json": pythonOwnerProject("uv run pytest tests/unit --cov-fail-under=99"),
+  });
+
+  // pytest-cov collects nothing without a --cov source, so a bare threshold enforces nothing.
+  const errors = await validateProjectTargetContract(path.join(root, "project.json"), "example", { unit: {} });
+  assert.ok(errors.some((error) => error.includes("must enforce at least 99% line coverage")));
+});
+
+test("rejects a pytest-cov source selection that declares no threshold", async () => {
+  const root = await fixture({
+    "project.json": pythonOwnerProject("uv run pytest tests/unit --cov=ferret --cov-report=term-missing"),
+  });
+
+  const errors = await validateProjectTargetContract(path.join(root, "project.json"), "example", { unit: {} });
+  assert.ok(errors.some((error) => error.includes("must enforce at least 99% line coverage")));
+});
+
+test("rejects a pytest-driven project that omits the lang:python tag", async () => {
+  const root = await fixture({
+    "project.json": pythonOwnerProject("uv run pytest tests/unit --cov=ferret --cov-fail-under=99", {
+      tags: ["type:app", "platform:cli", "domain:ferret"],
+    }),
+  });
+
+  const errors = await validateProjectTargetContract(path.join(root, "project.json"), "example", { unit: {} });
+  assert.ok(errors.some((error) => error.includes("must declare the lang:python tag")));
+});
+
+test("rejects a static coverage target that runs pytest", async () => {
+  const root = await fixture({
+    "project.json": pythonOwnerProject("uv run pytest --cov=ferret --cov-fail-under=99", {
+      coverageCommand: "uv run pytest --collect-only tests/unit",
+    }),
+  });
+
+  const errors = await validateProjectTargetContract(path.join(root, "project.json"), "example", { unit: {} });
+  assert.ok(errors.some((error) => error.includes("test:coverage:unit must be static")));
+});
+
+const pythonE2eProject = ({
+  coverageCommand = "node scripts/behaviour-coverage.mjs --adapter e2e",
+  tags,
+  edit = () => {},
+} = {}) => {
+  const targets = {
+    install: { options: { command: "uv sync --locked" } },
+    lint: { options: { command: "uv run ruff check ." } },
+    typecheck: { options: { command: "uv run pyright" } },
+    "test:e2e": { options: { command: "uv run pytest tests" } },
+    "test:coverage:e2e": { options: { command: coverageCommand } },
+    "test:coverage:behaviour": {
+      options: { command: "node scripts/behaviour-coverage.mjs --adapter behaviour" },
+    },
+    "test:coverage": {
+      options: {
+        commands: ["npx nx run example-e2e:test:coverage:e2e", "npx nx run example-e2e:test:coverage:behaviour"],
+        parallel: false,
+      },
+    },
+    "test:quick": {
+      options: {
+        commands: [
+          "npx nx run example-e2e:lint",
+          "npx nx run example-e2e:typecheck",
+          "npx nx run example-e2e:test:coverage",
+        ],
+        parallel: false,
+      },
+    },
+  };
+  edit(targets);
+  return JSON.stringify({
+    name: "example-e2e",
+    tags: tags ?? ["type:e2e", "platform:cli", "lang:python", "domain:ferret"],
+    targets,
+  });
+};
+
+test("accepts a dedicated Python E2E project with static coverage and a pytest E2E runner", async () => {
+  const root = await fixture({ "project.json": pythonE2eProject() });
+
+  assert.deepEqual(
+    await validateProjectTargetContract(path.join(root, "project.json"), "example-e2e", { unit: {}, e2e: {} }),
+    [],
+  );
+});
+
+test("rejects a dedicated Python E2E coverage target that runs pytest", async () => {
+  const root = await fixture({
+    "project.json": pythonE2eProject({ coverageCommand: "uv run pytest --collect-only tests" }),
+  });
+
+  const errors = await validateProjectTargetContract(path.join(root, "project.json"), "example-e2e", {
+    unit: {},
+    e2e: {},
+  });
+  assert.ok(errors.some((error) => error.includes("test:coverage:e2e must be static")));
+});
+
+test("rejects a dedicated Python E2E project that omits the lang:python tag", async () => {
+  const root = await fixture({
+    "project.json": pythonE2eProject({ tags: ["type:e2e", "platform:cli", "domain:ferret"] }),
+  });
+
+  const errors = await validateProjectTargetContract(path.join(root, "project.json"), "example-e2e", {
+    unit: {},
+    e2e: {},
+  });
+  assert.ok(errors.some((error) => error.includes("must declare the lang:python tag")));
+});
+
+test("recognises a module-qualified decorator and an explicit string parser", () => {
+  const source = `import pytest_bdd
+from pytest_bdd import parsers
+
+
+@pytest_bdd.given(parsers.string("a qualified subject"))
+def qualified_subject():
+    pass
+`;
+
+  const bindings = extractBindings("test_steps.py", source);
+
+  assert.deepEqual(
+    bindings.map(({ keyword, pattern }) => [keyword, pattern]),
+    [["Given", "a qualified subject"]],
+  );
+});
+
+test("matches a parse template case-insensitively but a plain string exactly", async () => {
+  const stepModule = (givenRegistration) => `from pytest_bdd import given, parsers, then, when
+
+
+${givenRegistration}
+def a_configured_subject():
+    pass
+
+
+@when("the subject is exercised")
+def the_subject_is_exercised():
+    pass
+
+
+@then("independent evidence is observed")
+def independent_evidence_is_observed():
+    pass
+`;
+
+  // The parse library ignores case unless told otherwise; a plain string is compared exactly.
+  const parsed = await validatePython({
+    "unit/test_steps.py": stepModule('@given(parsers.parse("A Configured Subject"))'),
+  });
+  assert.deepEqual(parsed.errors, []);
+
+  const plain = await validatePython({ "unit/test_steps.py": stepModule('@given("A Configured Subject")') });
+  assert.ok(plain.errors.some((error) => error.includes("undefined Unit binding")));
+});
+
+test("rejects pytest-cov flags on a command that does not run pytest", async () => {
+  const root = await fixture({
+    "project.json": pythonOwnerProject("uv run python -m unittest --cov=ferret --cov-fail-under=99"),
+  });
+
+  // The flags only mean something to pytest-cov, so they enforce nothing on another runner.
+  const errors = await validateProjectTargetContract(path.join(root, "project.json"), "example", { unit: {} });
+  assert.ok(errors.some((error) => error.includes("must enforce at least 99% line coverage")));
+});
+
+const PYTHON_UNIT_GATE = "uv run pytest tests/unit --cov=ferret --cov-fail-under=99";
+
+async function pythonTargetErrors(projectJson, project = "example") {
+  const root = await fixture({ "project.json": projectJson });
+  return validateProjectTargetContract(path.join(root, "project.json"), project, { unit: {} });
+}
+
+test("rejects a Python CLI owner that omits a mandatory non-test target", async () => {
+  for (const name of ["install", "build", "run", "lint", "typecheck"]) {
+    const errors = await pythonTargetErrors(
+      pythonOwnerProject(PYTHON_UNIT_GATE, {
+        edit: (targets) => {
+          delete targets[name];
+        },
+      }),
+    );
+
+    assert.ok(
+      errors.some((error) => error.includes(`Python project requires ${name}.`)),
+      name,
+    );
+  }
+});
+
+test("asks a Python project that is not a CLI for install, lint, and typecheck only", async () => {
+  const errors = await pythonTargetErrors(
+    pythonOwnerProject(PYTHON_UNIT_GATE, {
+      tags: ["type:lib", "lang:python", "domain:ferret"],
+      edit: (targets) => {
+        delete targets.build;
+        delete targets.run;
+      },
+    }),
+  );
+
+  assert.deepEqual(errors, []);
+});
+
+test("rejects a Python target whose every command is a placeholder", async () => {
+  for (const command of ['echo "typecheck ok"', "true", "exit 0", ": nothing to do"]) {
+    const errors = await pythonTargetErrors(
+      pythonOwnerProject(PYTHON_UNIT_GATE, {
+        edit: (targets) => {
+          targets.typecheck.options.command = command;
+        },
+      }),
+    );
+
+    assert.ok(
+      errors.some((error) => error.includes("typecheck must run real work, not a placeholder command.")),
+      command,
+    );
+  }
+
+  const composed = await pythonTargetErrors(
+    pythonOwnerProject(PYTHON_UNIT_GATE, {
+      edit: (targets) => {
+        targets.lint = { options: { commands: ["true", "echo done"], parallel: false } };
+      },
+    }),
+  );
+  assert.ok(composed.some((error) => error.includes("lint must run real work, not a placeholder command.")));
+});
+
+test("accepts a Python target that reports after doing real work", async () => {
+  const errors = await pythonTargetErrors(
+    pythonOwnerProject(PYTHON_UNIT_GATE, {
+      edit: (targets) => {
+        targets.lint = { options: { commands: ["uv run ruff check .", "echo linted"], parallel: false } };
+      },
+    }),
+  );
+
+  assert.deepEqual(errors, []);
+});
+
+test("rejects a Python install target that does not sync a locked resolution", async () => {
+  for (const command of ["uv sync", "uv pip install ."]) {
+    const errors = await pythonTargetErrors(
+      pythonOwnerProject(PYTHON_UNIT_GATE, {
+        edit: (targets) => {
+          targets.install.options.command = command;
+        },
+      }),
+    );
+
+    assert.ok(
+      errors.some((error) => error.includes("install must run uv sync --locked.")),
+      command,
+    );
+  }
+});
+
+test("rejects a dedicated Python E2E project that omits a mandatory non-test target", async () => {
+  for (const name of ["install", "lint", "typecheck"]) {
+    const errors = await pythonTargetErrors(
+      pythonE2eProject({
+        edit: (targets) => {
+          delete targets[name];
+        },
+      }),
+      "example-e2e",
+    );
+
+    assert.ok(
+      errors.some((error) => error.includes(`Python project requires ${name}.`)),
+      name,
+    );
+  }
+});
+
+test("rejects a dedicated Python E2E project that owns a Unit or Integration target", async () => {
+  for (const name of ["test:unit", "test:integration"]) {
+    const errors = await pythonTargetErrors(
+      pythonE2eProject({
+        edit: (targets) => {
+          targets[name] = { options: { command: "uv run pytest tests/other" } };
+        },
+      }),
+      "example-e2e",
+    );
+
+    assert.ok(
+      errors.some((error) => error.includes(`a dedicated E2E project must not own ${name}.`)),
+      name,
+    );
+  }
+});
+
+test("reads an object-shaped Nx command when judging a Python target", async () => {
+  const errors = await pythonTargetErrors(
+    pythonOwnerProject(PYTHON_UNIT_GATE, {
+      edit: (targets) => {
+        targets.lint = { options: { commands: [{ command: "true" }], parallel: false } };
+      },
+    }),
+  );
+
+  assert.ok(errors.some((error) => error.includes("lint must run real work, not a placeholder command.")));
+});
+
+test("rejects a Python project that omits a tag dimension its type requires", async () => {
+  const cases = [
+    ["type:", ["platform:cli", "lang:python", "domain:ferret"]],
+    ["domain:", ["type:app", "platform:cli", "lang:python"]],
+    ["platform:", ["type:app", "lang:python", "domain:ferret"]],
+  ];
+  for (const [dimension, tags] of cases) {
+    const errors = await pythonTargetErrors(pythonOwnerProject(PYTHON_UNIT_GATE, { tags }));
+
+    assert.ok(
+      errors.some((error) => error.includes(`Python project requires a ${dimension} tag.`)),
+      dimension,
+    );
+  }
+
+  const e2e = await pythonTargetErrors(
+    pythonE2eProject({ tags: ["type:e2e", "lang:python", "domain:ferret"] }),
+    "example-e2e",
+  );
+  assert.ok(e2e.some((error) => error.includes("Python project requires a platform: tag.")));
+});
+
+// A corpus that has not received its first feature yet is declared `pending` in the project's
+// behaviour-coverage.json. It is a state, not an escape hatch: it holds only while the corpus has no
+// feature and no step registration, and it is rejected the moment either exists.
+const pendingOptions = (root, overrides = {}) => ({
+  project: "example",
+  pending: true,
+  corpusRoots: [path.join(root, "behaviours")],
+  adapter: "behaviour",
+  adapters: {
+    unit: { bindingRoots: [path.join(root, "unit")], driver: path.join(root, "unit/driver.py") },
+  },
+  ...overrides,
+});
+
+test("accepts a pending corpus that holds no feature and registers no binding", async () => {
+  const root = await fixture({ "unit/driver.py": "# driver\n" });
+
+  const result = await validateCoverage(pendingOptions(root));
+
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.stats.features, 0);
+  assert.equal(result.stats.scenarios, 0);
+  assert.equal(result.stats.pending, true);
+});
+
+test("rejects a pending corpus that now holds a feature", async () => {
+  const root = await fixture({
+    "behaviours/example.feature": validFeature,
+    "unit/driver.py": "# driver\n",
+    "unit/steps.py": pythonBindings(),
+  });
+
+  const result = await validateCoverage(pendingOptions(root));
+
+  assert.deepEqual(result.errors, ["example: the corpus holds a feature, so remove pending from the configuration."]);
+});
+
+test("rejects a step registered while the corpus is pending", async () => {
+  const root = await fixture({ "unit/driver.py": "# driver\n", "unit/steps.py": pythonBindings() });
+
+  const result = await validateCoverage(pendingOptions(root));
+
+  assert.ok(result.errors.some((error) => error.includes("unused Unit binding")));
+});
+
+test("still requires an existing driver while the corpus is pending", async () => {
+  const root = await fixture({ "unit/README.md": "no driver here" });
+
+  const result = await validateCoverage(pendingOptions(root));
+
+  assert.ok(result.errors.some((error) => error.includes("driver does not exist")));
+});
+
+test("keeps an empty corpus an error when it is not marked pending", async () => {
+  const root = await fixture({ "unit/driver.py": "# driver\n" });
+
+  const result = await validateCoverage(pendingOptions(root, { pending: false }));
+
+  assert.ok(result.errors.some((error) => error.includes("no .feature files")));
+  assert.equal(result.stats.pending, false);
+});
+
+test("reads pending from a project-local config and rejects a non-boolean marker", async () => {
+  const config = (pending) =>
+    JSON.stringify({
+      project: "example",
+      corpus: ["behaviours"],
+      pending,
+      adapters: { unit: { bindings: ["unit"], driver: "unit/driver.py" } },
+    });
+  const root = await fixture({
+    "good/behaviour-coverage.json": config(true),
+    "bad/behaviour-coverage.json": config("yes"),
+    "plain/behaviour-coverage.json": JSON.stringify({
+      project: "example",
+      corpus: ["behaviours"],
+      adapters: { unit: { bindings: ["unit"], driver: "unit/driver.py" } },
+    }),
+  });
+
+  const good = await parseCliOptions(["--config", "good/behaviour-coverage.json"], root);
+  const plain = await parseCliOptions(["--config", "plain/behaviour-coverage.json"], root);
+
+  assert.equal(good.pending, true);
+  assert.equal(plain.pending, false);
+  await assert.rejects(
+    parseCliOptions(["--config", "bad/behaviour-coverage.json"], root),
+    /config\.pending must be a boolean/u,
+  );
+});
+
+test("reports a pending corpus in the CLI summary", async () => {
+  const root = await fixture({
+    "project.json": pythonOwnerProject(
+      "uv run pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99",
+    ),
+    "behaviour-coverage.json": JSON.stringify({
+      project: "example",
+      corpus: ["behaviours"],
+      pending: true,
+      adapters: { unit: { bindings: ["tests/unit"], driver: "pyproject.toml" } },
+    }),
+    "pyproject.toml": "[project]\nname = 'example'\n",
+    "tests/unit/conftest.py": "",
+  });
+  const output = { logs: [], errors: [] };
+  const io = {
+    log: (message) => output.logs.push(message),
+    error: (message) => output.errors.push(message),
+  };
+
+  const code = await runCli(["--config", path.join(root, "behaviour-coverage.json")], io);
+
+  assert.deepEqual(output.errors, []);
+  assert.equal(code, 0);
+  assert.equal(output.logs[0], "example: 0 features, 0 expanded scenarios, adapters: unit (corpus pending).");
+});
+
+// The FERRET projects are validated as they exist in the repository, not through a fixture, so the
+// closed mandatory-target matrix cannot drift from the files that Nx and CI actually read.
+const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+async function realFerretProject(name) {
+  const projectFile = path.join(repositoryRoot, "apps", name, "project.json");
+  const configuration = JSON.parse(await readFile(path.join(repositoryRoot, "apps", name, "behaviour-coverage.json")));
+  return {
+    projectFile,
+    project: JSON.parse(await readFile(projectFile, "utf8")),
+    adapters: configuration.adapters,
+  };
+}
+
+const commandsOf = (target) =>
+  [target.options.command, ...(target.options.commands ?? [])]
+    .filter((entry) => entry !== undefined)
+    .map((entry) => (typeof entry === "string" ? entry : entry.command));
+
+// The Nx targets a composed target runs, in order: `npm exec -- nx run ferret-cli:lint` -> `lint`.
+const composedTargets = (target, projectName) =>
+  commandsOf(target).map((command) => command.replace(`npm exec -- nx run ${projectName}:`, ""));
+
+test("the FERRET owner project satisfies the closed target contract with its real adapters", async () => {
+  const { projectFile, adapters } = await realFerretProject("ferret-cli");
+
+  assert.deepEqual(Object.keys(adapters), ["unit", "integration"]);
+  assert.deepEqual(await validateProjectTargetContract(projectFile, "ferret-cli", adapters), []);
+});
+
+test("the FERRET E2E project satisfies the closed target contract with its real adapters", async () => {
+  const { projectFile, adapters } = await realFerretProject("ferret-cli-e2e");
+
+  assert.deepEqual(Object.keys(adapters), ["unit", "e2e"]);
+  assert.deepEqual(await validateProjectTargetContract(projectFile, "ferret-cli-e2e", adapters), []);
+});
+
+test("the FERRET owner declares exactly the mandatory target matrix and its tags", async () => {
+  const { project } = await realFerretProject("ferret-cli");
+
+  assert.deepEqual(Object.keys(project.targets).toSorted(), [
+    "build",
+    "install",
+    "lint",
+    "run",
+    "test:coverage",
+    "test:coverage:behaviour",
+    "test:coverage:integration",
+    "test:coverage:unit",
+    "test:integration",
+    "test:quick",
+    "test:unit",
+    "typecheck",
+  ]);
+  assert.deepEqual(project.tags, ["type:app", "platform:cli", "lang:python", "domain:ferret"]);
+});
+
+test("the FERRET E2E project declares exactly the mandatory target matrix and owns no Unit or Integration target", async () => {
+  const { project } = await realFerretProject("ferret-cli-e2e");
+
+  assert.deepEqual(Object.keys(project.targets).toSorted(), [
+    "install",
+    "lint",
+    "test:coverage",
+    "test:coverage:behaviour",
+    "test:coverage:e2e",
+    "test:e2e",
+    "test:quick",
+    "typecheck",
+  ]);
+  assert.deepEqual(project.tags, ["type:e2e", "platform:cli", "lang:python", "domain:ferret"]);
+  assert.deepEqual(project.implicitDependencies, ["ferret-cli"]);
+});
+
+test("the FERRET dependency targets only synchronize the lockfile and are never cached", async () => {
+  for (const name of ["ferret-cli", "ferret-cli-e2e"]) {
+    const { project } = await realFerretProject(name);
+    const install = project.targets.install;
+
+    assert.deepEqual(commandsOf(install), ["uv sync --locked"]);
+    assert.equal(install.options.cwd, `apps/${name}`);
+    assert.equal(install.cache, false);
+  }
+});
+
+test("the FERRET owner runs the built artifact and enforces 99% Unit line coverage with pytest-cov", async () => {
+  const { project } = await realFerretProject("ferret-cli");
+
+  assert.deepEqual(project.targets.build.outputs, ["{projectRoot}/dist"]);
+  assert.deepEqual(project.targets.run.dependsOn, ["build"]);
+  assert.deepEqual(commandsOf(project.targets.run), ["uv run --no-sync python dist/ferret.pyz"]);
+  assert.deepEqual(commandsOf(project.targets["test:unit"]), [
+    "uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99",
+  ]);
+  assert.deepEqual(commandsOf(project.targets["test:integration"]), ["uv run --no-sync pytest tests/integration"]);
+});
+
+test("the FERRET E2E runtime target runs pytest against the built owner artifact", async () => {
+  const { project } = await realFerretProject("ferret-cli-e2e");
+
+  assert.deepEqual(commandsOf(project.targets["test:e2e"]), ["uv run --no-sync pytest tests"]);
+  assert.deepEqual(project.targets["test:e2e"].dependsOn, ["ferret-cli:build"]);
+  assert.equal(project.targets["test:e2e"].cache, false);
+});
+
+test("the FERRET quick and coverage aggregates compose exactly the applicable targets in order", async () => {
+  const owner = (await realFerretProject("ferret-cli")).project;
+  const e2e = (await realFerretProject("ferret-cli-e2e")).project;
+
+  assert.deepEqual(composedTargets(owner.targets["test:quick"], "ferret-cli"), [
+    "lint",
+    "typecheck",
+    "test:unit",
+    "test:coverage",
+  ]);
+  assert.deepEqual(composedTargets(owner.targets["test:coverage"], "ferret-cli"), [
+    "test:coverage:unit",
+    "test:coverage:integration",
+    "test:coverage:behaviour",
+  ]);
+  assert.deepEqual(composedTargets(e2e.targets["test:quick"], "ferret-cli-e2e"), [
+    "lint",
+    "typecheck",
+    "test:coverage",
+  ]);
+  assert.deepEqual(composedTargets(e2e.targets["test:coverage"], "ferret-cli-e2e"), [
+    "test:coverage:e2e",
+    "test:coverage:behaviour",
+  ]);
+  for (const project of [owner, e2e]) {
+    assert.equal(project.targets["test:quick"].options.parallel, false);
+    assert.equal(project.targets["test:coverage"].options.parallel, false);
+  }
+});
+
+test("every FERRET static coverage target runs only the project-local validator and no test runner", async () => {
+  for (const name of ["ferret-cli", "ferret-cli-e2e"]) {
+    const { project } = await realFerretProject(name);
+    const statics = Object.entries(project.targets).filter(
+      ([target]) => target.startsWith("test:coverage:") && target !== "test:coverage",
+    );
+
+    assert.notEqual(statics.length, 0);
+    for (const [target, definition] of statics) {
+      const [command, ...rest] = commandsOf(definition);
+      assert.equal(rest.length, 0, `${name}:${target} must run exactly one command`);
+      assert.match(
+        command,
+        new RegExp(`^node scripts/behaviour-coverage\\.mjs --config apps/${name}/behaviour-coverage\\.json --adapter `),
+      );
+      assert.doesNotMatch(command, /pytest|uv run/u, `${name}:${target} must stay static`);
+    }
+  }
 });

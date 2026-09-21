@@ -1,0 +1,207 @@
+{
+  "budgets": {
+    "normalP95Ms": 150.0,
+    "hardMaxMs": 1250.0
+  },
+  "warmupCalls": 2,
+  "hostBefore": {
+    "cpuCount": 12,
+    "loadAverage": [4.25, 3.48, 3.82]
+  },
+  "hostAfter": {
+    "cpuCount": 12,
+    "loadAverage": [2.62, 3.23, 3.66]
+  },
+  "nodeBaseline": {
+    "count": 100,
+    "minMs": 50.5,
+    "p50Ms": 58.3,
+    "p95Ms": 62.5,
+    "maxMs": 68.1,
+    "meanMs": 58.5
+  },
+  "rows": [
+    {
+      "harness": "claude_code",
+      "condition": "normal",
+      "count": 100,
+      "minMs": 68.8,
+      "p50Ms": 80.7,
+      "p95Ms": 88.6,
+      "maxMs": 93.7,
+      "meanMs": 80.7
+    },
+    {
+      "harness": "claude_code",
+      "condition": "missing",
+      "count": 100,
+      "minMs": 5.0,
+      "p50Ms": 6.2,
+      "p95Ms": 7.4,
+      "maxMs": 11.1,
+      "meanMs": 6.3
+    },
+    {
+      "harness": "claude_code",
+      "condition": "invalid",
+      "count": 100,
+      "minMs": 66.0,
+      "p50Ms": 77.7,
+      "p95Ms": 84.7,
+      "maxMs": 94.1,
+      "meanMs": 77.8
+    },
+    {
+      "harness": "claude_code",
+      "condition": "busy",
+      "count": 8,
+      "minMs": 650.9,
+      "p50Ms": 835.2,
+      "p95Ms": 879.3,
+      "maxMs": 879.3,
+      "meanMs": 809.6
+    },
+    {
+      "harness": "claude_code",
+      "condition": "timeout",
+      "count": 8,
+      "minMs": 908.9,
+      "p50Ms": 986.8,
+      "p95Ms": 1003.9,
+      "maxMs": 1003.9,
+      "meanMs": 969.3
+    },
+    {
+      "harness": "claude_code",
+      "condition": "kill",
+      "count": 8,
+      "minMs": 1086.6,
+      "p50Ms": 1103.6,
+      "p95Ms": 1168.5,
+      "maxMs": 1168.5,
+      "meanMs": 1126.7
+    },
+    {
+      "harness": "codex",
+      "condition": "normal",
+      "count": 100,
+      "minMs": 69.8,
+      "p50Ms": 80.8,
+      "p95Ms": 88.6,
+      "maxMs": 97.7,
+      "meanMs": 80.7
+    },
+    {
+      "harness": "codex",
+      "condition": "missing",
+      "count": 100,
+      "minMs": 5.3,
+      "p50Ms": 6.1,
+      "p95Ms": 6.6,
+      "maxMs": 8.5,
+      "meanMs": 6.1
+    },
+    {
+      "harness": "codex",
+      "condition": "invalid",
+      "count": 100,
+      "minMs": 65.5,
+      "p50Ms": 76.8,
+      "p95Ms": 84.4,
+      "maxMs": 119.8,
+      "meanMs": 76.7
+    },
+    {
+      "harness": "codex",
+      "condition": "busy",
+      "count": 8,
+      "minMs": 706.3,
+      "p50Ms": 773.7,
+      "p95Ms": 929.7,
+      "maxMs": 929.7,
+      "meanMs": 818.0
+    },
+    {
+      "harness": "codex",
+      "condition": "timeout",
+      "count": 8,
+      "minMs": 912.8,
+      "p50Ms": 964.7,
+      "p95Ms": 1002.8,
+      "maxMs": 1002.8,
+      "meanMs": 965.6
+    },
+    {
+      "harness": "codex",
+      "condition": "kill",
+      "count": 8,
+      "minMs": 1074.8,
+      "p50Ms": 1122.9,
+      "p95Ms": 1170.6,
+      "maxMs": 1170.6,
+      "meanMs": 1133.6
+    },
+    {
+      "harness": "opencode",
+      "condition": "normal",
+      "count": 100,
+      "minMs": 117.3,
+      "p50Ms": 135.6,
+      "p95Ms": 142.8,
+      "maxMs": 145.9,
+      "meanMs": 133.9
+    },
+    {
+      "harness": "opencode",
+      "condition": "missing",
+      "count": 100,
+      "minMs": 51.0,
+      "p50Ms": 58.7,
+      "p95Ms": 64.8,
+      "maxMs": 73.4,
+      "meanMs": 58.7
+    },
+    {
+      "harness": "opencode",
+      "condition": "invalid",
+      "count": 100,
+      "minMs": 112.7,
+      "p50Ms": 132.3,
+      "p95Ms": 140.3,
+      "maxMs": 150.4,
+      "meanMs": 130.9
+    },
+    {
+      "harness": "opencode",
+      "condition": "busy",
+      "count": 8,
+      "minMs": 767.0,
+      "p50Ms": 826.6,
+      "p95Ms": 882.1,
+      "maxMs": 882.1,
+      "meanMs": 833.5
+    },
+    {
+      "harness": "opencode",
+      "condition": "timeout",
+      "count": 8,
+      "minMs": 959.6,
+      "p50Ms": 965.4,
+      "p95Ms": 969.4,
+      "maxMs": 969.4,
+      "meanMs": 965.4
+    },
+    {
+      "harness": "opencode",
+      "condition": "kill",
+      "count": 8,
+      "minMs": 1056.8,
+      "p50Ms": 1063.2,
+      "p95Ms": 1070.4,
+      "maxMs": 1070.4,
+      "meanMs": 1064.9
+    }
+  ],
+  "problems": [],
+  "verdict": "within_budgets"
+}

@@ -1,0 +1,18 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli-e2e python apps/ferret-cli-e2e/src/storage_benchmark.py --events 100000 --seed 20260918 --output plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/storage.json
+FERRET storage benchmark: events=100000 seed=20260918 expired=50000
+Empty schema: database=81920 wal=0
+Loaded before checkpoint: database=81920 wal=338383872
+Loaded after checkpoint: database=91951104 wal=0 table=41103360 index=50847744
+Per event: bytes=919.5 marginal=918.7 index-share=0.553
+Capture single: n=40 p50=190.1ms p95=225.4ms max=246.3ms
+Capture concurrent: writers=4 n=40 p50=256.2ms p95=672.3ms max=694.5ms
+Expired half deleted: events=50000 database=92037120 wal=0 freelist=43642880
+Maintenance: pruned=50000 seconds=7.58 database-before=91951104 database-after=43692032 wal=0 freelist=0 high-water=135899176 observed-peak=135899176
+Projection 5000/day x 30 days: steady=137885696 compaction-peak=275771392
+Projection 20000/day x 30 days: steady=551297024 compaction-peak=1102594048
+Projection 100000/day x 30 days: steady=2756157440 compaction-peak=5512314880
+Acceptance: within_envelope
+note=Phase 3 gate: the 100000-event storage benchmark with complete labelled measurements
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T09:44:25Z

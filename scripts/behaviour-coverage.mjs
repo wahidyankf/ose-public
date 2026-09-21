@@ -17,7 +17,7 @@ const BOUNDARY_REASON =
 const ALTERNATIVE_PROOF = /^[a-z0-9][a-z0-9-]*:test(?::[a-z0-9][a-z0-9-]*)+\s+\/\s+\S(?:.*\S)?$/iu;
 const GHERKIN_DECLARATION = /^(?:Feature|Rule|Background|Scenario(?: Outline| Template)?|Examples?):/iu;
 const SCENARIO_DECLARATION = /^(?:Scenario(?: Outline| Template)?):/iu;
-const BINDING_FILE = /\.(?:ts|tsx|fs|java|go|cs)$/iu;
+const BINDING_FILE = /\.(?:ts|tsx|fs|java|go|cs|py)$/iu;
 
 function normaliseSource(source) {
   return source.replaceAll("\r\n", "\n").replaceAll("\r", "\n");
@@ -307,7 +307,7 @@ function scenarioAt(scopes, offset) {
   return scenario;
 }
 
-// The five language extractors differ only in which string literals their syntax admits and how
+// The six language extractors differ only in which string literals their syntax admits and how
 // those literals decode, so the specs/*.feature scan itself lives here once rather than as a
 // near-copy per language. Only Go needs a decoder other than the default.
 function featureReferences(source, literalPattern, decode = decodeQuotedLiteral) {
@@ -330,6 +330,9 @@ function featureReferences(source, literalPattern, decode = decodeQuotedLiteral)
 const TYPESCRIPT_LITERAL = /"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`/gu;
 const DOUBLE_QUOTED_LITERAL = /"(?:\\.|[^"\\])*"/gu;
 const GO_LITERAL = /"(?:\\.|[^"\\])*"|`[^`]*`/gu;
+// Python admits single- and double-quoted literals on one line; a triple-quoted literal is blanked
+// by maskPythonComments before this pattern runs.
+const PYTHON_LITERAL = /"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'/gu;
 
 function typescriptFeatureReferences(source) {
   return featureReferences(source, TYPESCRIPT_LITERAL);
@@ -498,12 +501,149 @@ function extractCsharpBindings(resourceName, source) {
   return bindings;
 }
 
+function pythonFeatureReferences(source) {
+  return featureReferences(source, PYTHON_LITERAL, decodePythonLiteral);
+}
+
+// Python's `#` comment and triple-quoted docstring are the two places a decorator can appear
+// without registering a step. A hash inside a single-line string is not a comment, so strings are
+// walked, not searched: only a `#` reached in code state opens a comment. Triple-quoted strings
+// are blanked whole because no step pattern or feature path is ever written as one. Length is
+// preserved unit for unit so line numbers computed on the masked text stay true.
+function maskPythonComments(source) {
+  const characters = source.split("");
+  const blank = (from, to) => {
+    for (let index = from; index < to; index += 1) {
+      if (characters[index] !== "\n") characters[index] = " ";
+    }
+  };
+  let index = 0;
+  while (index < characters.length) {
+    const character = characters[index];
+    if (character === "#") {
+      let end = index;
+      while (end < characters.length && characters[end] !== "\n") end += 1;
+      blank(index, end);
+      index = end;
+    } else if (character === '"' || character === "'") {
+      const triple = characters[index + 1] === character && characters[index + 2] === character;
+      let end = index + (triple ? 3 : 1);
+      // A backslash escapes the next character in raw and cooked strings alike, so `r"\""`
+      // still ends at its final quote; an unterminated single-line string ends at the newline.
+      while (end < characters.length) {
+        if (characters[end] === "\\") end += 2;
+        else if (triple && characters.slice(end, end + 3).join("") === character.repeat(3)) break;
+        else if (!triple && (characters[end] === character || characters[end] === "\n")) break;
+        else end += 1;
+      }
+      if (triple) {
+        end = Math.min(end + 3, characters.length);
+        blank(index, end);
+      } else {
+        end = Math.min(end + 1, characters.length);
+      }
+      index = end;
+    } else {
+      index += 1;
+    }
+  }
+  return characters.join("");
+}
+
+// A cooked Python literal decodes the common escapes and leaves an unknown one as written, which
+// is what the interpreter does; a raw literal is verbatim.
+function decodePythonLiteral(literal, raw = false) {
+  const body = literal.slice(1, -1);
+  if (raw) return body;
+  return body.replace(/\\(.)/gsu, (whole, escaped) => {
+    switch (escaped) {
+      case "n":
+        return "\n";
+      case "t":
+        return "\t";
+      case "\\":
+      case '"':
+      case "'":
+        return escaped;
+      default:
+        return whole;
+    }
+  });
+}
+
+// parse-style templates (`parsers.parse`, `parsers.cfparse`) write a field as `{name}` or
+// `{name:spec}` and a literal brace by doubling it. Every field is unconstrained here whatever its
+// type spec, because this validator only needs to know which step text a definition can claim.
+function pythonParseTemplateRegex(template) {
+  let source = "";
+  let index = 0;
+  while (index < template.length) {
+    const pair = template.slice(index, index + 2);
+    if (pair === "{{" || pair === "}}") {
+      source += escapeRegex(pair[0]);
+      index += 2;
+    } else if (template[index] === "{" && template.indexOf("}", index) > 0) {
+      source += ".+?";
+      index = template.indexOf("}", index) + 1;
+    } else {
+      source += escapeRegex(template[index]);
+      index += 1;
+    }
+  }
+  return source;
+}
+
+// `parsers.re` takes a Python regular expression; the only spellings JavaScript lacks are the
+// named group `(?P<n>...)` and its backreference `(?P=n)`.
+function pythonRegexToJavascript(pattern) {
+  return pattern.replaceAll("(?P<", "(?<").replace(/\(\?P=([A-Za-z_][A-Za-z0-9_]*)\)/gu, "\\k<$1>");
+}
+
+function extractPythonBindings(resourceName, source) {
+  const bindings = [];
+  const code = maskPythonComments(source);
+  const featureReferences = pythonFeatureReferences(code);
+  // pytest-bdd registers a step with `@given`/`@when`/`@then`, or `@step` for a step of any
+  // keyword. The first argument is a plain string (exact match) or a parser: `parsers.parse` and
+  // `parsers.cfparse` (a parse template) or `parsers.re` (a regular expression). The decorator may
+  // be module-qualified. Another spelling -- an aliased import, a non-literal argument -- does not
+  // register, so the step reads as undefined and the gate fails closed rather than passing blind.
+  const pattern =
+    /@\s*(?:[A-Za-z_][A-Za-z0-9_]*\s*\.\s*)*(given|when|then|step)\s*\(\s*(?:parsers\s*\.\s*(parse|cfparse|re|string)\s*\(\s*)?([rRuU]?)("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')/gu;
+  for (const match of code.matchAll(pattern)) {
+    const keyword = match[1];
+    const parser = match[2] ?? "string";
+    const value = decodePythonLiteral(match[4], /[rR]/u.test(match[3]));
+    let regex;
+    if (parser === "re") regex = pythonRegexToJavascript(value);
+    else if (parser === "string") regex = escapeRegex(value);
+    else regex = pythonParseTemplateRegex(value);
+    bindings.push({
+      keyword: `${keyword[0].toUpperCase()}${keyword.slice(1)}`,
+      pattern: regex,
+      // The parse library compiles case-insensitively unless told otherwise, and pytest-bdd does
+      // not tell it otherwise; `parsers.re` and a plain string are case-sensitive.
+      flags: parser === "parse" || parser === "cfparse" ? "i" : "",
+      expression: false,
+      resourceName,
+      line: lineAt(source, match.index ?? 0),
+      scenario: undefined,
+      featureReferences,
+      // @given/@when/@then resolve only against their own keyword; @step applies to a step of any
+      // keyword, so recording it as sensitive would report a bound step as undefined.
+      keywordSensitive: keyword !== "step",
+    });
+  }
+  return bindings;
+}
+
 export function extractBindings(resourceName, source) {
   const name = resourceName.toLowerCase();
   if (name.endsWith(".fs")) return extractFsharpBindings(resourceName, source);
   if (name.endsWith(".java")) return extractJavaBindings(resourceName, source);
   if (name.endsWith(".go")) return extractGoBindings(resourceName, source);
   if (name.endsWith(".cs")) return extractCsharpBindings(resourceName, source);
+  if (name.endsWith(".py")) return extractPythonBindings(resourceName, source);
   return extractTypescriptBindings(resourceName, source);
 }
 
@@ -643,6 +783,18 @@ const JACOCO_LINE_THRESHOLD = /-Pcoverage\.line\.minimum(?:=|\s+)(\d+(?:\.\d+)?)
 // body that this validator cannot see.
 const GO_COVERAGE_GATE = /\bcoverage-gate\.sh\b/u;
 const GO_LINE_THRESHOLD = /\bCOVERAGE_MINIMUM(?:=|\s+)(\d+(?:\.\d+)?)/iu;
+// pytest-cov is Python's build-tool-integrated gate, so it needs both halves like the JaCoCo arm:
+// pytest as the runner, and `--cov` naming a measured source. pytest-cov applies
+// `--cov-fail-under` only to the source it measures, so a bare threshold enforces nothing. A bare
+// `--cov` or `--cov=` selects no source and does not count.
+const PYTEST_RUNNER = /\bpytest\b/u;
+const PYTEST_COV_SOURCE = /--cov(?:=|\s+)(?![\s-])[^\s"]+/u;
+const PYTEST_COV_THRESHOLD = /--cov-fail-under(?:=|\s+)(\d+(?:\.\d+)?)/iu;
+// A Python project's non-test targets never reach the behaviour arms, and `nx affected -t lint,typecheck`
+// silently skips a project that lacks one, so a missing or hollow target goes unnoticed. A target is
+// hollow when every command it runs is a placeholder form; a reporting `echo` after real work is not.
+const PYTHON_PLACEHOLDER_COMMAND = /^(?:echo|printf|true|:|exit\s+0)(?=[\s;&|]|$)/u;
+const UV_LOCKED_SYNC = /\buv\s+sync\b[^"&;|]*--locked\b/u;
 
 function unitLineCoverageThreshold(target) {
   const surface = commandSurface(target);
@@ -656,7 +808,46 @@ function unitLineCoverageThreshold(target) {
   if (jacoco !== null && JACOCO_VERIFY_TASK.test(surface)) return Number(jacoco[1]);
   const go = GO_LINE_THRESHOLD.exec(surface);
   if (go !== null && GO_COVERAGE_GATE.test(surface)) return Number(go[1]);
+  const pytest = PYTEST_COV_THRESHOLD.exec(surface);
+  if (pytest !== null && PYTEST_RUNNER.test(surface) && PYTEST_COV_SOURCE.test(surface)) return Number(pytest[1]);
   return undefined;
+}
+
+function targetCommands(target) {
+  const commands = [target?.options?.command, ...(target?.options?.commands ?? [])];
+  return commands
+    .map((entry) => (typeof entry === "string" ? entry : entry?.command))
+    .filter((c) => typeof c === "string");
+}
+
+function pythonTargetSetErrors(projectFile, targets, tags, dedicatedE2e) {
+  const errors = [];
+  const cli = tags.includes("platform:cli");
+  // The tag scheme requires type and domain always, and platform for apps and E2E projects.
+  const needsPlatform = tags.includes("type:app") || tags.includes("type:e2e");
+  for (const prefix of ["type:", "domain:", ...(needsPlatform ? ["platform:"] : [])]) {
+    if (!tags.some((tag) => tag.startsWith(prefix)))
+      errors.push(`${projectFile}: Python project requires a ${prefix} tag.`);
+  }
+  const required = ["install", "lint", "typecheck", ...(cli && !dedicatedE2e ? ["build", "run"] : [])];
+  for (const name of required) {
+    if (targets[name] === undefined) errors.push(`${projectFile}: Python project requires ${name}.`);
+  }
+  for (const [name, target] of Object.entries(targets)) {
+    const commands = targetCommands(target);
+    if (commands.length > 0 && commands.every((command) => PYTHON_PLACEHOLDER_COMMAND.test(command.trim()))) {
+      errors.push(`${projectFile}: ${name} must run real work, not a placeholder command.`);
+    }
+  }
+  if (targets.install !== undefined && !UV_LOCKED_SYNC.test(commandSurface(targets.install))) {
+    errors.push(`${projectFile}: install must run uv sync --locked.`);
+  }
+  if (dedicatedE2e) {
+    for (const name of ["test:unit", "test:integration"]) {
+      if (targets[name] !== undefined) errors.push(`${projectFile}: a dedicated E2E project must not own ${name}.`);
+    }
+  }
+  return errors;
 }
 
 export async function validateProjectTargetContract(projectFile, configuredProject, configuredAdapters) {
@@ -674,7 +865,19 @@ export async function validateProjectTargetContract(projectFile, configuredProje
     errors.push(`${projectFile}: behaviour coverage project '${configuredProject}' does not match '${project.name}'.`);
   }
   const targets = project.targets ?? {};
+  // CI language detection and `nx affected` scoping key off lang:*, so a pytest-driven project
+  // without lang:python would silently skip its own gates.
+  const tags = Array.isArray(project.tags) ? project.tags : [];
+  if (
+    Object.values(targets).some((target) => PYTEST_RUNNER.test(commandSurface(target))) &&
+    !tags.includes("lang:python")
+  ) {
+    errors.push(`${projectFile}: a project whose targets run pytest must declare the lang:python tag.`);
+  }
   const dedicatedE2e = configuredProject.endsWith("-e2e");
+  if (tags.includes("lang:python")) {
+    errors.push(...pythonTargetSetErrors(projectFile, targets, tags, dedicatedE2e));
+  }
   const ownedAdapters = dedicatedE2e ? ["e2e"] : Object.keys(configuredAdapters ?? {});
 
   if (!dedicatedE2e) {
@@ -710,6 +913,7 @@ export async function validateProjectTargetContract(projectFile, configuredProje
     const surface = commandSurface(target);
     if (
       RUNTIME_RUNNER.test(surface) ||
+      PYTEST_RUNNER.test(surface) ||
       referencesTarget(surface, "test:unit") ||
       referencesTarget(surface, "test:integration") ||
       referencesTarget(surface, "test:e2e")
@@ -845,7 +1049,12 @@ export async function validateCoverage(options) {
     errors.push(`${options.project}: at least one corpus root is required.`);
   }
   const corpus = await loadCorpus(options.corpusRoots ?? []);
-  if (corpus.featureFiles.length === 0) {
+  const pending = options.pending === true;
+  if (pending) {
+    if (corpus.featureFiles.length > 0) {
+      errors.push(`${options.project}: the corpus holds a feature, so remove pending from the configuration.`);
+    }
+  } else if (corpus.featureFiles.length === 0) {
     errors.push(`${options.project}: no .feature files found in the configured corpus.`);
   }
   errors.push(...corpus.parsed.flatMap(({ result }) => result.errors));
@@ -875,6 +1084,7 @@ export async function validateCoverage(options) {
       project: options.project,
       features: corpus.featureFiles.length,
       scenarios: corpus.parsed.reduce((count, { result }) => count + result.pickles.length, 0),
+      pending,
       adapters,
       adapterStats,
     },
@@ -916,6 +1126,9 @@ function normaliseConfig(config, base, selectedAdapter) {
   if (!Array.isArray(config.corpus) || config.corpus.length === 0) {
     throw new Error("config.corpus must be a non-empty array");
   }
+  if (config.pending !== undefined && typeof config.pending !== "boolean") {
+    throw new Error("config.pending must be a boolean");
+  }
   const adapters = Object.fromEntries(
     Object.entries(config.adapters ?? {}).map(([adapter, value]) => [
       adapter,
@@ -929,6 +1142,7 @@ function normaliseConfig(config, base, selectedAdapter) {
     project: config.project,
     projectFile: path.join(base, "project.json"),
     corpusRoots: resolvePaths(base, config.corpus),
+    pending: config.pending === true,
     adapter: selectedAdapter,
   };
   if (selectedAdapter === "behaviour") return { ...common, adapters };
@@ -973,8 +1187,9 @@ export async function runCli(argv, io = console) {
       result.errors.forEach((error) => io.error(error));
       return 1;
     }
+    const pendingNote = result.stats.pending ? " (corpus pending)" : "";
     io.log(
-      `${result.stats.project}: ${result.stats.features} features, ${result.stats.scenarios} expanded scenarios, adapters: ${result.stats.adapters.join(", ")}.`,
+      `${result.stats.project}: ${result.stats.features} features, ${result.stats.scenarios} expanded scenarios, adapters: ${result.stats.adapters.join(", ")}${pendingNote}.`,
     );
     return 0;
   } catch (error) {

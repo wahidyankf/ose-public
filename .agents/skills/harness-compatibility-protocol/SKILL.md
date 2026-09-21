@@ -46,6 +46,26 @@ detects; the fixer remediates what's safely mechanical and flags the rest for hu
 4. **Conservative drift threshold** — flag substantive changes only (a different filename, a
    renamed directory, a removed required field), never minor wording differences.
 
+## Lifecycle Capture Registrations
+
+Hand-authored registrations that forward harness lifecycle events to FERRET (`.claude/settings.json`,
+`.codex/hooks.json`, `.opencode/plugins/ferret.ts`) follow these rules; a violation is a parity defect.
+
+1. **Verified events only.** Register an event only when current official documentation for that harness
+   names it, and record the URL and accessed date in the delivery evidence. A capability the harness does not
+   expose stays `unknown` and is never inferred (Codex skill invocation is `unknown`).
+2. **Raw forwarding through one wrapper.** Claude Code and Codex register `.claude/hooks/ferret-capture.sh`. It
+   forwards stdin byte-for-byte to `ferret capture-hook --harness <slug> --event <event>` with static
+   arguments, never parses or interpolates payload text, always exits 0, writes nothing to stdout, and kills
+   its child by 1,000 ms (TERM at 900 ms). The OpenCode plugin forwards its raw bounded payload to the same
+   command under the same deadline and swallows every exception.
+3. **Parity.** The three harnesses register together; a change to one carries to the others or records why
+   not (Multi-Harness Binding Rule 10).
+4. **Canonical source, declared mirrors.** This skill's canonical source is
+   `.agents/skills/harness-compatibility-protocol/SKILL.md`. `./rhino harness adapters generate` writes only the
+   routes `repo-config.yml` declares: the claude-profile pointer `.claude/skills/harness-compatibility-protocol/SKILL.md`.
+   No `.opencode/skills` or `.codex` mirror exists for it, and a generated route is never hand-edited.
+
 ## Related Agents
 
 `harness-compatibility-checker`, `harness-compatibility-fixer`, `web-researcher`

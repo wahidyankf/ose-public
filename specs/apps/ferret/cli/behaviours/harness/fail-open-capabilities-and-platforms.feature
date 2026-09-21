@@ -1,0 +1,58 @@
+Feature: Fail open and report harness capabilities honestly
+  As a developer who runs several coding-agent harnesses
+  I want FERRET to say what it can and cannot observe about each one
+  So that a gap in what a harness exposes is shown as unknown rather than as zero usage
+
+  Scenario Outline: Keep a harness fail-open after a local failure
+    Given a harness invokes the FERRET adapter
+    And FERRET is <condition>
+    When the adapter handles a lifecycle event
+    Then the adapter returns exit code zero within 1000 milliseconds
+    And it writes no output into the harness conversation
+
+    Examples:
+      | condition                                         |
+      | not installed                                     |
+      | given invalid metadata                            |
+      | unable to open SQLite                             |
+      | blocked by a concurrent writer beyond the timeout |
+
+  Scenario: Mark an unobservable capability unknown
+    Given the selected harness exposes tool events but no stable skill lifecycle event
+    When the user requests usage grouped by skill for that harness
+    Then the result marks skill subject visibility as unknown
+    And the result does not report zero skill invocations as an observed fact
+
+  Scenario: Remove FERRET without changing harness behaviour
+    Given supported harness adapters are configured to call FERRET
+    When the ferret executable and local integration are removed
+    Then every harness continues to run normally
+    And the repository contains no newly generated telemetry data
+    And the existing user database remains recoverable or removable by an explicit user action
+
+  Scenario Outline: Install privately for the current user
+    Given a supported environment with no FERRET artifact installed where <situation>
+    When the user runs self install --target user
+    Then the artifact, launcher, and manifest are created with owner-only access
+    And the command reports path action <path_action>
+    And no shell startup file and no machine-wide PATH are modified
+
+    Examples:
+      | situation                                  | path_action        |
+      | the user bin directory is already on PATH  | none               |
+      | the user bin directory is absent from PATH | add_home_local_bin |
+
+  Scenario Outline: Keep one POSIX adapter fail-open at the wrapper boundary
+    Given a <harness> binding invokes the shared wrapper
+    When <condition>
+    Then the wrapper exits zero and writes nothing to either stream
+    And any surviving child is terminated by TERM at 900 milliseconds and KILL at 1000 milliseconds
+
+    Examples:
+      | harness     | condition                                              |
+      | claude_code | stdin is forwarded byte-for-byte for a supported event |
+      | claude_code | the event is not one FERRET registers                  |
+      | codex       | the payload carries raw content fields                 |
+      | codex       | the ferret executable is missing                       |
+      | opencode    | the plugin forwards an invalid payload                 |
+      | opencode    | the child process hangs past the deadline              |

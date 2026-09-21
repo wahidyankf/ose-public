@@ -24,10 +24,10 @@ standalone capture; the second adds a protocol-independent local backend and RES
 adds a frontend or cloud deployment. A later cloud plan belongs in the private sibling and requires separate
 authorization.
 
-| Order | Plan                                                                                    | Locally verifiable outcome                                                                                                                   | Depends on |
-| ----: | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-|     1 | [Standalone local CLI](../in-progress/ferret-init-01-local-cli/README.md) (in progress) | One per-user SQLite store, 30-day retention, local analytics, and fail-open macOS/Linux POSIX harness capture; Windows CLI-local portability | —          |
-|     2 | [Protocol-independent local backend](./ferret-init-02-local-backend/README.md)          | FastAPI/PostgreSQL, OpenAPI REST, durable optional sync, and additive GraphQL/MCP adapter seams                                              | 01         |
+| Order | Plan                                                                                  | Locally verifiable outcome                                                                                                                   | Depends on |
+| ----: | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+|     1 | [Standalone local CLI](../done/2026-09-21__ferret-init-01-local-cli/README.md) (done) | One per-user SQLite store, 30-day retention, local analytics, and fail-open macOS/Linux POSIX harness capture; Windows CLI-local portability | —          |
+|     2 | [Protocol-independent local backend](./ferret-init-02-local-backend/README.md)        | FastAPI/PostgreSQL, OpenAPI REST, durable optional sync, and additive GraphQL/MCP adapter seams                                              | 01         |
 
 ### OSE ID initialization series
 

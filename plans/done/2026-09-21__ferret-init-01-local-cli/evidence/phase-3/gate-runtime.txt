@@ -1,0 +1,87 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:integration --skip-nx-cache
+
+> nx run ferret-cli:"test:integration"
+
+> uv run --no-sync pytest tests/integration
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 260 items
+
+tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py . [  0%]
+...                                                                      [  1%]
+tests/integration/steps/test_initialization_and_concurrency_steps.py ..  [  2%]
+tests/integration/steps/test_local_query_and_export_steps.py ........... [  6%]
+                                                                         [  6%]
+tests/integration/steps/test_metadata_envelope_steps.py .......          [  9%]
+tests/integration/steps/test_retention_and_space_steps.py ..             [ 10%]
+tests/integration/steps/test_usage_and_outcomes_steps.py .               [ 10%]
+tests/integration/test_analytics.py ................                     [ 16%]
+tests/integration/test_capability_repository.py ...............          [ 22%]
+tests/integration/test_initialization.py ...........                     [ 26%]
+tests/integration/test_install.py ..............................         [ 38%]
+tests/integration/test_package_build.py .........                        [ 41%]
+tests/integration/test_privacy.py .............                          [ 46%]
+tests/integration/test_queries.py ...................................... [ 61%]
+.....................................................                    [ 81%]
+tests/integration/test_retention.py ......................               [ 90%]
+tests/integration/test_space.py .............                            [ 95%]
+tests/integration/test_sqlite_repository.py .............                [100%]
+
+============================= 260 passed in 28.71s =============================
+
+
+
+ NX   Successfully ran target test:integration for project ferret-cli
+note=Phase 3 gate: the Integration runtime suite, local platform
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T09:42:20Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e --skip-nx-cache
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+> nx run ferret-cli-e2e:"test:e2e"
+
+> uv run --no-sync pytest tests
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli-e2e
+configfile: pyproject.toml
+plugins: bdd-8.1.0
+collected 89 items
+
+tests/steps/test_fail_open_capabilities_and_platforms_steps.py ....      [  4%]
+tests/steps/test_initialization_and_concurrency_steps.py ..              [  6%]
+tests/steps/test_local_query_and_export_steps.py ...........             [ 19%]
+tests/steps/test_metadata_envelope_steps.py .......                      [ 26%]
+tests/steps/test_retention_and_space_steps.py ..                         [ 29%]
+tests/steps/test_usage_and_outcomes_steps.py .                           [ 30%]
+tests/test_package_smoke.py ................                             [ 48%]
+tests/test_query_export.py .......                                       [ 56%]
+tests/test_standalone.py ..                                              [ 58%]
+tests/test_storage_benchmark.py ...........                              [ 70%]
+tests/test_user_install.py ..........................                    [100%]
+
+======================== 89 passed in 80.52s (0:01:20) =========================
+
+
+
+ NX   Successfully ran target test:e2e for project ferret-cli-e2e and 1 task it depends on
+[evrun] dropped 1 output lines matching /^HIPPO queued/
+note=Phase 3 gate: the E2E runtime suite, local platform, run after the Integration suite finished because both write the artifact and the temporary homes
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T09:42:53Z

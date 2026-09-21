@@ -1,0 +1,466 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --skip-nx-cache --args='tests/unit/test_manual_evidence.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_manual_evidence.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_manual_evidence.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 1205 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .... [  0%]
+..........                                                               [  1%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  1%]
+tests/unit/steps/test_local_query_and_export_steps.py ...........        [  2%]
+tests/unit/steps/test_metadata_envelope_steps.py ........                [  2%]
+tests/unit/steps/test_retention_and_space_steps.py ..                    [  3%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  3%]
+tests/unit/test_analytics.py ........................................... [  6%]
+...................                                                      [  8%]
+tests/unit/test_canonical.py ..........                                  [  9%]
+tests/unit/test_capabilities.py ........................................ [ 12%]
+........................................................................ [ 18%]
+.........                                                                [ 19%]
+tests/unit/test_capture.py .........................                     [ 21%]
+tests/unit/test_capture_hook.py ........................................ [ 24%]
+.................                                                        [ 25%]
+tests/unit/test_cli_contract.py ........................................ [ 29%]
+.................................................                        [ 33%]
+tests/unit/test_commands.py .........                                    [ 34%]
+tests/unit/test_data_home_locality.py ...........                        [ 35%]
+tests/unit/test_event_contract.py ............................           [ 37%]
+tests/unit/test_event_identity.py ....                                   [ 37%]
+tests/unit/test_hook_mappers.py ........................................ [ 40%]
+........................................................................ [ 46%]
+................                                                         [ 48%]
+tests/unit/test_identifier_derivation.py ............                    [ 49%]
+tests/unit/test_initialization.py ...................................... [ 52%]
+....................                                                     [ 54%]
+tests/unit/test_install.py ............................................. [ 57%]
+...........                                                              [ 58%]
+tests/unit/test_install_domain.py ...................................... [ 61%]
+............................                                             [ 64%]
+tests/unit/test_maintenance.py ................................          [ 66%]
+tests/unit/test_maintenance_command.py ......................            [ 68%]
+tests/unit/test_manual_evidence.py FFFFFFFFFFF                           [ 69%]
+tests/unit/test_network_denial.py ......                                 [ 70%]
+tests/unit/test_privacy.py ............................................. [ 73%]
+........................................................................ [ 79%]
+............................                                             [ 82%]
+tests/unit/test_queries.py ............................................. [ 85%]
+........................................................................ [ 91%]
+......                                                                   [ 92%]
+tests/unit/test_space.py ........................                        [ 94%]
+tests/unit/test_status.py ......................                         [ 96%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_isolates_all_user_roots _________________________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/test_isolates_all_user_roots0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x113b219a0>
+tmp_path = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/test_isolates_all_user_roots0')
+
+    def test_isolates_all_user_roots(repository: Path, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+        callers_home = tmp_path / "callers-home"
+        callers_home.mkdir()
+        monkeypatch.setenv("HOME", str(callers_home))
+        monkeypatch.setenv("XDG_DATA_HOME", str(callers_home / "xdg"))
+        monkeypatch.setenv("FERRET_DATA_HOME", str(callers_home / "ferret-data"))
+        monkeypatch.setenv("FERRET_BIN", "/nonexistent/ferret")
+        log = tmp_path / "environments.jsonl"
+        recorder = tmp_path / "recorder.py"
+        recorder.write_text(
+            "import json, os\n"
+            f"with open({str(log)!r}, 'a') as handle:\n"
+            "    handle.write(json.dumps(dict(os.environ)) + '\\n')\n"
+        )
+
+>       run_case("capture", recorder)
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:87:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:51: in run_case
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), "missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py"
+E       AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_evidence.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:25: AssertionError
+__________________________ test_capture_exit_contract __________________________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/test_capture_exit_contract0')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/artifact0/ferret.pyz')
+
+    def test_capture_exit_contract(repository: Path, artifact: Path) -> None:
+>       assert run_case("capture", artifact) == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:100:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:51: in run_case
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), "missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py"
+E       AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_evidence.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:25: AssertionError
+___________________________ test_query_exit_contract ___________________________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/test_query_exit_contract0')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/artifact0/ferret.pyz')
+
+    def test_query_exit_contract(repository: Path, artifact: Path) -> None:
+>       assert run_case("query", artifact) == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:116:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:51: in run_case
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), "missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py"
+E       AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_evidence.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:25: AssertionError
+_______________________ test_install_ownership_contract ________________________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/test_install_ownership_contrac0')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/artifact0/ferret.pyz')
+
+    def test_install_ownership_contract(repository: Path, artifact: Path) -> None:
+>       assert run_case("install", artifact) == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:128:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:51: in run_case
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), "missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py"
+E       AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_evidence.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:25: AssertionError
+_____________ test_summary_contains_only_relative_hashes_and_exits _____________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/test_summary_contains_only_rel0')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/artifact0/ferret.pyz')
+
+    def test_summary_contains_only_relative_hashes_and_exits(repository: Path, artifact: Path) -> None:
+>       assert run_case("capture", artifact) == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:141:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:51: in run_case
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), "missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py"
+E       AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_evidence.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:25: AssertionError
+______________________ test_refuses_unowned_existing_root ______________________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/test_refuses_unowned_existing_0')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/artifact0/ferret.pyz')
+
+    def test_refuses_unowned_existing_root(repository: Path, artifact: Path) -> None:
+        root = repository / RAW_ROOT
+        root.mkdir(parents=True)
+        (root / "keep.txt").write_text("not the helper's\n")
+
+>       assert run_case("capture", artifact) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:159:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:51: in run_case
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), "missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py"
+E       AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_evidence.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:25: AssertionError
+__________________ test_refuses_a_root_that_another_run_owns ___________________
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/test_refuses_a_root_that_anoth0')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/artifact0/ferret.pyz')
+
+    def test_refuses_a_root_that_another_run_owns(repository: Path, artifact: Path) -> None:
+>       assert run_case("capture", artifact, run_id="first-run", raw_root="local-tmp/ferret-plan01/first-run") == 0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:167:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:51: in run_case
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), "missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py"
+E       AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_evidence.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:25: AssertionError
+_ test_refuses_a_raw_root_that_is_not_the_run_directory[/tmp/ferret-plan01/unit-run] _
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/test_refuses_a_raw_root_that_i0')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/artifact0/ferret.pyz')
+raw_root = '/tmp/ferret-plan01/unit-run'
+
+    @pytest.mark.parametrize(
+        "raw_root",
+        [
+            "/tmp/ferret-plan01/unit-run",
+            "../ferret-plan01/unit-run",
+            "local-tmp/elsewhere/unit-run",
+            "local-tmp/ferret-plan01",
+        ],
+    )
+    def test_refuses_a_raw_root_that_is_not_the_run_directory(repository: Path, artifact: Path, raw_root: str) -> None:
+>       assert run_case("capture", artifact, raw_root=raw_root) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:187:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:51: in run_case
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), "missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py"
+E       AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_evidence.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:25: AssertionError
+_ test_refuses_a_raw_root_that_is_not_the_run_directory[../ferret-plan01/unit-run] _
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/test_refuses_a_raw_root_that_i1')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/artifact0/ferret.pyz')
+raw_root = '../ferret-plan01/unit-run'
+
+    @pytest.mark.parametrize(
+        "raw_root",
+        [
+            "/tmp/ferret-plan01/unit-run",
+            "../ferret-plan01/unit-run",
+            "local-tmp/elsewhere/unit-run",
+            "local-tmp/ferret-plan01",
+        ],
+    )
+    def test_refuses_a_raw_root_that_is_not_the_run_directory(repository: Path, artifact: Path, raw_root: str) -> None:
+>       assert run_case("capture", artifact, raw_root=raw_root) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:187:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:51: in run_case
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), "missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py"
+E       AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_evidence.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:25: AssertionError
+_ test_refuses_a_raw_root_that_is_not_the_run_directory[local-tmp/elsewhere/unit-run] _
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/test_refuses_a_raw_root_that_i2')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/artifact0/ferret.pyz')
+raw_root = 'local-tmp/elsewhere/unit-run'
+
+    @pytest.mark.parametrize(
+        "raw_root",
+        [
+            "/tmp/ferret-plan01/unit-run",
+            "../ferret-plan01/unit-run",
+            "local-tmp/elsewhere/unit-run",
+            "local-tmp/ferret-plan01",
+        ],
+    )
+    def test_refuses_a_raw_root_that_is_not_the_run_directory(repository: Path, artifact: Path, raw_root: str) -> None:
+>       assert run_case("capture", artifact, raw_root=raw_root) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:187:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:51: in run_case
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), "missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py"
+E       AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_evidence.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:25: AssertionError
+_ test_refuses_a_raw_root_that_is_not_the_run_directory[local-tmp/ferret-plan01] _
+
+repository = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/test_refuses_a_raw_root_that_i3')
+artifact = PosixPath('<tmpdir>/pytest-of-<user>/pytest-90/artifact0/ferret.pyz')
+raw_root = 'local-tmp/ferret-plan01'
+
+    @pytest.mark.parametrize(
+        "raw_root",
+        [
+            "/tmp/ferret-plan01/unit-run",
+            "../ferret-plan01/unit-run",
+            "local-tmp/elsewhere/unit-run",
+            "local-tmp/ferret-plan01",
+        ],
+    )
+    def test_refuses_a_raw_root_that_is_not_the_run_directory(repository: Path, artifact: Path, raw_root: str) -> None:
+>       assert run_case("capture", artifact, raw_root=raw_root) == 2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:187:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:51: in run_case
+    return load_helper().main(
+           ^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+    def load_helper() -> ModuleType:
+        """The helper module, or an assertion failure that names it when it does not exist yet."""
+>       assert HELPER.is_file(), "missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py"
+E       AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('<worktree>/apps/ferret-cli/tests/support/manual_evidence.py').is_file
+
+<worktree>/apps/ferret-cli/tests/unit/test_manual_evidence.py:25: AssertionError
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/analytics.py           97      0   100%
+src/ferret/application/capabilities.py        23      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/capture_hook.py        27      0   100%
+src/ferret/application/initialization.py      43      0   100%
+src/ferret/application/install.py             99      0   100%
+src/ferret/application/maintenance.py         71      0   100%
+src/ferret/application/ports.py              111      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/queries.py             46      0   100%
+src/ferret/application/status.py              32      0   100%
+src/ferret/application/store.py               47      0   100%
+src/ferret/cli.py                            176      0   100%
+src/ferret/commands.py                        63      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/capability.py               69      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   110      0   100%
+src/ferret/domain/fields.py                   47      0   100%
+src/ferret/domain/hook.py                    113      0   100%
+src/ferret/domain/identity.py                 17      0   100%
+src/ferret/domain/install.py                  94      0   100%
+src/ferret/domain/query.py                   123      0   100%
+src/ferret/domain/retention.py                16      0   100%
+src/ferret/domain/space.py                    42      0   100%
+src/ferret/domain/status.py                   13      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               37      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       74      0   100%
+------------------------------------------------------------------------
+TOTAL                                       1759      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+=========================== short test summary info ============================
+FAILED tests/unit/test_manual_evidence.py::test_isolates_all_user_roots - AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manu...
+FAILED tests/unit/test_manual_evidence.py::test_capture_exit_contract - AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manu...
+FAILED tests/unit/test_manual_evidence.py::test_query_exit_contract - AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manu...
+FAILED tests/unit/test_manual_evidence.py::test_install_ownership_contract - AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manu...
+FAILED tests/unit/test_manual_evidence.py::test_summary_contains_only_relative_hashes_and_exits - AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manu...
+FAILED tests/unit/test_manual_evidence.py::test_refuses_unowned_existing_root - AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manu...
+FAILED tests/unit/test_manual_evidence.py::test_refuses_a_root_that_another_run_owns - AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manu...
+FAILED tests/unit/test_manual_evidence.py::test_refuses_a_raw_root_that_is_not_the_run_directory[/tmp/ferret-plan01/unit-run] - AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manu...
+FAILED tests/unit/test_manual_evidence.py::test_refuses_a_raw_root_that_is_not_the_run_directory[../ferret-plan01/unit-run] - AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manu...
+FAILED tests/unit/test_manual_evidence.py::test_refuses_a_raw_root_that_is_not_the_run_directory[local-tmp/elsewhere/unit-run] - AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manu...
+FAILED tests/unit/test_manual_evidence.py::test_refuses_a_raw_root_that_is_not_the_run_directory[local-tmp/ferret-plan01] - AssertionError: missing manual_evidence: apps/ferret-cli/tests/support/manu...
+======================= 11 failed, 1194 passed in 7.20s ========================
+
+
+
+ NX   Running target test:unit for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:unit
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_manual_evidence.py" exited with non-zero status code
+note=PHASE 5 RED manual evidence: the helper apps/ferret-cli/tests/support/manual_evidence.py does not exist yet, so every new test must fail with an assertion that names the missing manual_evidence, not an import or environment error
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:28:16Z

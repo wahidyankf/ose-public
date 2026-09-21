@@ -1,0 +1,131 @@
+FERRET Init 01 - Phase 2 spec architecture: the spec tree, the static behaviour validators, and the Markdown gates.
+Repository-relative paths only.
+Amendment A11: the pinned Rhino v0.4.0 has no `--directory` flag; `md internal-link validate` checks the whole repository and
+`md mermaid validate` scopes with `--file`.
+Amendment A12: the whole-repository validators exposed four defects (one in this plan, three pre-existing on main); each is fixed.
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ferret-cli,ferret-cli-e2e
+
+ NX   Running target test:coverage:behaviour for 2 projects:
+
+- ferret-cli
+- ferret-cli-e2e
+
+
+
+> nx run ferret-cli:"test:coverage:behaviour"  [existing outputs match the cache, left as is]
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter behaviour
+
+ferret-cli: 0 features, 0 expanded scenarios, adapters: unit, integration (corpus pending).
+
+> nx run ferret-cli-e2e:"test:coverage:behaviour"  [existing outputs match the cache, left as is]
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter behaviour
+
+ferret-cli-e2e: 0 features, 0 expanded scenarios, adapters: unit, e2e (corpus pending).
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for 2 projects
+
+Nx read the output from the cache instead of running the command for 2 out of 2 tasks.
+note=the item-3 command; both projects report a pending corpus (amendment A9) and exit 0
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:14:20Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ferret-cli,ferret-cli-e2e --skip-nx-cache
+
+ NX   Running target test:coverage:behaviour for 2 projects:
+
+- ferret-cli
+- ferret-cli-e2e
+
+
+
+> nx run ferret-cli:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter behaviour
+
+ferret-cli: 0 features, 0 expanded scenarios, adapters: unit, integration (corpus pending).
+
+> nx run ferret-cli-e2e:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter behaviour
+
+ferret-cli-e2e: 0 features, 0 expanded scenarios, adapters: unit, e2e (corpus pending).
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for 2 projects
+note=uncached rerun of the item-3 command (the run above replayed Nx cache)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:14:30Z
+
+$ ./rhino md readme-index validate
+[readme-index] checked 20 directories, no findings
+[evrun] dropped 20 output lines matching /\[readme-index\] scanned/
+note=after amendment A12 (.claude/skills tree -> .agents/skills); specs/apps/ferret is a declared tree
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:14:40Z
+
+$ ./rhino md internal-link validate
+[internal-link] checked 12073 links, no findings
+note=whole repository (amendment A11); clean after amendment A12
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:14:43Z
+
+$ ./rhino md mermaid validate --file specs/apps/ferret/cli/architecture.md
+[mermaid] checked 2 diagrams, no findings
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:14:49Z
+
+$ ./rhino md heading-hierarchy validate
+[heading-hierarchy] checked 3033 files, no findings
+[evrun] dropped 3033 output lines matching /\] scanned/
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:14:55Z
+
+$ ./rhino md frontmatter validate
+[frontmatter] checked 2948 files, no findings
+[evrun] dropped 2948 output lines matching /\] scanned/
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:15:03Z
+
+$ ./rhino md naming validate
+[naming] checked 5471 files, no findings
+[evrun] dropped 5471 output lines matching /\] scanned/
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:15:07Z
+
+$ ./rhino convention emoji validate
+[emoji] checked 7891 files, no findings
+[evrun] dropped 7891 output lines matching /\] scanned/
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:15:12Z
+
+$ ./rhino governance word-budget validate
+[word-budget] checked 3177 files, no findings
+[evrun] dropped 3177 output lines matching /\] scanned/
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:15:16Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier light --disk-path . -- npx markdownlint-cli2 specs/apps/ferret/README.md specs/apps/ferret/overview.md specs/apps/ferret/cli/README.md specs/apps/ferret/cli/architecture.md apps/ferret-cli/README.md apps/ferret-cli-e2e/README.md apps/README.md specs/README.md specs/apps/README.md docs/reference/monorepo-structure.md repo-governance/development/practice/resource-aware-development/README.md specs/apps/ose/lms-be/contracts/generated/README.md plans/in-progress/ferret-init-01-local-cli/delivery.md repo-governance/development/infra/nx-targets/mandatory-targets-behaviour-coverage.md
+markdownlint-cli2 v0.21.0 (markdownlint v0.40.0)
+Finding: specs/apps/ferret/README.md specs/apps/ferret/overview.md specs/apps/ferret/cli/README.md specs/apps/ferret/cli/architecture.md apps/ferret-cli/README.md apps/ferret-cli-e2e/README.md apps/README.md specs/README.md specs/apps/README.md docs/reference/monorepo-structure.md repo-governance/development/practice/resource-aware-development/README.md specs/apps/ose/lms-be/contracts/generated/README.md plans/in-progress/ferret-init-01-local-cli/delivery.md repo-governance/development/infra/nx-targets/mandatory-targets-behaviour-coverage.md !node_modules/** !**/node_modules/** !libs/*/deps/** !libs/*/_build/** !apps/*/deps/** !apps/*/_build/** !dist/** !build/** !**/build/** !**/target/** !.next/** !**/.next/** !.nx/** !apps/*/public/** !generated-reports/** !**/.dart_tool/** !.vscode/** !.idea/** !apps/*/playwright-report/** !apps/*/test-results/** !apps/*/.venv/** !**/.venv/** !apps/*/tests/**/bin/** !apps/*/tests/**/obj/** !.claude/worktrees/** !worktrees/** !local-tmp/** !.memsearch/** !docs/reference/security/frameworks/nist-sp-800-53-rev5.md !plans/done/** !archived/**
+Linting: 14 file(s)
+Summary: 0 error(s)
+note=the pre-commit and pull-request markdownlint gate, scoped to every Markdown file this phase adds or edits
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:15:30Z

@@ -1,0 +1,232 @@
+$ rtk ./hippo run --class ephemeral --resource-tier light --disk-path . -- sh local-tmp/claude/retention-matrix.sh 7d7e3e plans/in-progress/ferret-init-01-local-cli/evidence/phase-5
+helper exit: 0
+1:case=retention
+2:command=init
+3:exit=0
+4:bytes=stdout:467 stderr:0
+5:sha256=2b3e6e54617487a16a3614c8f9c359bc43adabd3681bc32d3495df271a07e796 retention/raw/01-init.stdout
+6:assertion=init reports the created contract shape: pass
+7:assertion=the data home and database are inside the case directory: pass
+8:assertion=the data home and database are private: pass
+9:assertion=the seeded store holds every expired and retained row and counts no expiry: pass
+10:command=status-seeded
+11:exit=0
+12:bytes=stdout:1578 stderr:0
+13:sha256=da543d1ca34daa37a6596c18e0607b7fdd00c56b96fd52cc28c893a00e161da5 retention/raw/02-status-seeded.stdout
+14:assertion=status sees the retained rows as live and every expired row as logically expired: pass
+15:assertion=the lock holder took the write lock inside the handshake window: pass
+16:command=events-list-locked
+17:exit=0
+18:bytes=stdout:786 stderr:0
+19:sha256=b8a3e87ff103281034f764fb32a7696de655a53fc06da9cc65ed474c3ca59bba retention/raw/03-events-list-locked.stdout
+20:assertion=reads expose no expired row while the lock is held: pass
+21:command=status-locked
+22:exit=0
+23:bytes=stdout:1578 stderr:0
+24:sha256=da543d1ca34daa37a6596c18e0607b7fdd00c56b96fd52cc28c893a00e161da5 retention/raw/04-status-locked.stdout
+25:assertion=the locked attempt changed no row, counter, or marker: pass
+26:command=hold-lock
+27:exit=0
+28:bytes=stdout:0 stderr:0
+29:sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 retention/raw/05-hold-lock.stdout
+30:assertion=the lock holder was released and exited zero inside the handshake window: pass
+31:command=events-list-unlocked
+32:exit=0
+33:bytes=stdout:786 stderr:0
+34:sha256=b8a3e87ff103281034f764fb32a7696de655a53fc06da9cc65ed474c3ca59bba retention/raw/06-events-list-unlocked.stdout
+35:assertion=reads expose no expired row after the first unlocked operation: pass
+36:assertion=the first unlocked operation removed at most 100 expired rows and left the rest: pass
+37:assertion=a partial prune leaves the maintenance marker unchanged: pass
+38:command=status-partial
+39:exit=0
+40:bytes=stdout:1583 stderr:0
+41:sha256=9f45c597af0fd4b25761eb302de946b780fb04f3639e6efcfba48a52f281f798 retention/raw/07-status-partial.stdout
+42:assertion=status agrees with the store after the partial prune: pass
+43:command=maintenance
+44:exit=0
+45:bytes=stdout:338 stderr:0
+46:sha256=9447fc742b32cba1102daa705fe034df67ec5975ce8165c8b1149141ffd6c8c2 retention/raw/08-maintenance.stdout
+47:assertion=explicit maintenance removed the remainder: pass
+48:assertion=the expired workspace went with its last event: pass
+49:command=maintenance-repeat
+50:exit=0
+51:bytes=stdout:338 stderr:0
+52:sha256=4364e1c44d42a04215fc830243f3f112a8a540fda9785ab5600054b3eb1f45b6 retention/raw/09-maintenance-repeat.stdout
+53:assertion=repeating maintenance removed nothing more: pass
+54:command=status-final
+55:exit=0
+56:bytes=stdout:1606 stderr:0
+57:sha256=34c4d5483b4c87de4964d81858389c89274d96e5b4969fd07980cdd55201fad3 retention/raw/10-status-final.stdout
+58:assertion=expiredLocalTotal counts every expired row once and expiredBeforeAckTotal is zero: pass
+59:command=events-list-final
+60:exit=0
+61:bytes=stdout:786 stderr:0
+62:sha256=b8a3e87ff103281034f764fb32a7696de655a53fc06da9cc65ed474c3ca59bba retention/raw/11-events-list-final.stdout
+63:assertion=the retained rows survived every prune: pass
+64:assertion=every recorded assertion held: pass
+leak scan: no match in retention.txt
+note=PHASE 5 REFACTOR/retention 1/3: the plan's self-contained retention run (run id 7d7e3e, 101 expired events, 1 expired snapshot, 1 retained event, reference instant computed by the script); writes retention.txt and retention.sha256, runs the leak scan
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:53:51Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:integration --skip-nx-cache --args='tests/integration/test_retention.py'
+
+> nx run ferret-cli:"test:integration" --args=tests/integration/test_retention.py
+
+> uv run --no-sync pytest tests/integration tests/integration/test_retention.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 331 items
+
+tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py . [  0%]
+.............                                                            [  4%]
+tests/integration/steps/test_initialization_and_concurrency_steps.py ..  [  4%]
+tests/integration/steps/test_local_query_and_export_steps.py ........... [  8%]
+                                                                         [  8%]
+tests/integration/steps/test_metadata_envelope_steps.py ........         [ 10%]
+tests/integration/steps/test_retention_and_space_steps.py ..             [ 11%]
+tests/integration/steps/test_usage_and_outcomes_steps.py .               [ 11%]
+tests/integration/test_analytics.py ................                     [ 16%]
+tests/integration/test_capability_repository.py ...............          [ 20%]
+tests/integration/test_capture_hook.py .............................     [ 29%]
+tests/integration/test_capture_wrapper.py ...........                    [ 32%]
+tests/integration/test_hook_registrations.py .......                     [ 35%]
+tests/integration/test_initialization.py ...........                     [ 38%]
+tests/integration/test_install.py ..............................         [ 47%]
+tests/integration/test_package_build.py .............                    [ 51%]
+tests/integration/test_privacy.py .............                          [ 55%]
+tests/integration/test_queries.py ...................................... [ 66%]
+.....................................................                    [ 82%]
+tests/integration/test_retention.py ......................               [ 89%]
+tests/integration/test_space.py .............                            [ 93%]
+tests/integration/test_sqlite_repository.py .............                [ 97%]
+tests/integration/test_workspace_roots.py .........                      [100%]
+
+============================= 331 passed in 27.37s =============================
+
+
+
+ NX   Successfully ran target test:integration for project ferret-cli
+note=PHASE 5 REFACTOR/retention 2/3: C09-INTEGRATION; exit 0 required (target may run the whole integration suite, A20)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:54:01Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --skip-nx-cache --args='tests/unit/test_manual_retention_fixture.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_manual_retention_fixture.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_manual_retention_fixture.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 1224 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .... [  0%]
+..........                                                               [  1%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  1%]
+tests/unit/steps/test_local_query_and_export_steps.py ...........        [  2%]
+tests/unit/steps/test_metadata_envelope_steps.py ........                [  2%]
+tests/unit/steps/test_retention_and_space_steps.py ..                    [  3%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  3%]
+tests/unit/test_analytics.py ........................................... [  6%]
+...................                                                      [  8%]
+tests/unit/test_canonical.py ..........                                  [  8%]
+tests/unit/test_capabilities.py ........................................ [ 12%]
+........................................................................ [ 18%]
+.........                                                                [ 18%]
+tests/unit/test_capture.py .........................                     [ 20%]
+tests/unit/test_capture_hook.py ........................................ [ 24%]
+.................                                                        [ 25%]
+tests/unit/test_cli_contract.py ........................................ [ 28%]
+.................................................                        [ 32%]
+tests/unit/test_commands.py .........                                    [ 33%]
+tests/unit/test_data_home_locality.py ...........                        [ 34%]
+tests/unit/test_event_contract.py ............................           [ 36%]
+tests/unit/test_event_identity.py ....                                   [ 37%]
+tests/unit/test_hook_mappers.py ........................................ [ 40%]
+........................................................................ [ 46%]
+................                                                         [ 47%]
+tests/unit/test_identifier_derivation.py ............                    [ 48%]
+tests/unit/test_initialization.py ...................................... [ 51%]
+....................                                                     [ 53%]
+tests/unit/test_install.py ............................................. [ 56%]
+...........                                                              [ 57%]
+tests/unit/test_install_domain.py ...................................... [ 60%]
+............................                                             [ 63%]
+tests/unit/test_maintenance.py ................................          [ 65%]
+tests/unit/test_maintenance_command.py ......................            [ 67%]
+tests/unit/test_manual_evidence.py ...........                           [ 68%]
+tests/unit/test_manual_retention_fixture.py ...................          [ 70%]
+tests/unit/test_network_denial.py ......                                 [ 70%]
+tests/unit/test_privacy.py ............................................. [ 74%]
+........................................................................ [ 80%]
+............................                                             [ 82%]
+tests/unit/test_queries.py ............................................. [ 86%]
+........................................................................ [ 91%]
+......                                                                   [ 92%]
+tests/unit/test_space.py ........................                        [ 94%]
+tests/unit/test_status.py ......................                         [ 96%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/analytics.py           97      0   100%
+src/ferret/application/capabilities.py        23      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/capture_hook.py        27      0   100%
+src/ferret/application/initialization.py      43      0   100%
+src/ferret/application/install.py             99      0   100%
+src/ferret/application/maintenance.py         71      0   100%
+src/ferret/application/ports.py              111      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/queries.py             46      0   100%
+src/ferret/application/status.py              32      0   100%
+src/ferret/application/store.py               47      0   100%
+src/ferret/cli.py                            176      0   100%
+src/ferret/commands.py                        63      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/capability.py               69      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   110      0   100%
+src/ferret/domain/fields.py                   47      0   100%
+src/ferret/domain/hook.py                    113      0   100%
+src/ferret/domain/identity.py                 17      0   100%
+src/ferret/domain/install.py                  94      0   100%
+src/ferret/domain/query.py                   123      0   100%
+src/ferret/domain/retention.py                16      0   100%
+src/ferret/domain/space.py                    42      0   100%
+src/ferret/domain/status.py                   13      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               37      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       74      0   100%
+------------------------------------------------------------------------
+TOTAL                                       1759      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================= 1224 passed in 9.04s =============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+note=PHASE 5 REFACTOR/retention 3/3: the focused retention fixture test again (whole Unit suite runs, A20); zero failures required
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:54:36Z

@@ -1,0 +1,219 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --args='tests/unit/test_status.py tests/unit/steps/test_retention_and_space_steps.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_status.py tests/unit/steps/test_retention_and_space_steps.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_status.py tests/unit/steps/test_retention_and_space_steps.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 333 items / 16 errors
+
+==================================== ERRORS ====================================
+_ ERROR collecting tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py _
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py:10: in <module>
+    from support.fakes import FIXED_NOW
+tests/support/fakes.py:11: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Compaction' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_ ERROR collecting tests/unit/steps/test_initialization_and_concurrency_steps.py _
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_initialization_and_concurrency_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_initialization_and_concurrency_steps.py:20: in <module>
+    from support.fakes import FAKE_DATA_HOME, FIXED_NOW, FakeInput, World, make_world
+tests/support/fakes.py:11: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Compaction' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+____ ERROR collecting tests/unit/steps/test_local_query_and_export_steps.py ____
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_local_query_and_export_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_local_query_and_export_steps.py:10: in <module>
+    from support.fakes import FIXED_NOW, World
+tests/support/fakes.py:11: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Compaction' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+______ ERROR collecting tests/unit/steps/test_metadata_envelope_steps.py _______
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_metadata_envelope_steps.py:15: in <module>
+    from support.fakes import World, make_world
+tests/support/fakes.py:11: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Compaction' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_____ ERROR collecting tests/unit/steps/test_retention_and_space_steps.py ______
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_retention_and_space_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_retention_and_space_steps.py:15: in <module>
+    from ferret.domain.space import KIB, MIB, StorageFacts, size_report
+E   ModuleNotFoundError: No module named 'ferret.domain.space'
+______ ERROR collecting tests/unit/steps/test_usage_and_outcomes_steps.py ______
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_usage_and_outcomes_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_usage_and_outcomes_steps.py:11: in <module>
+    from support.fakes import FIXED_NOW, World
+tests/support/fakes.py:11: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Compaction' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+________________ ERROR collecting tests/unit/test_analytics.py _________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_analytics.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_analytics.py:25: in <module>
+    from support.invoke import run_cli
+tests/support/invoke.py:9: in <module>
+    from support.fakes import World
+tests/support/fakes.py:11: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Compaction' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_______________ ERROR collecting tests/unit/test_capabilities.py _______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_capabilities.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_capabilities.py:19: in <module>
+    from support.fakes import FIXED_NOW, World, make_world
+tests/support/fakes.py:11: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Compaction' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_________________ ERROR collecting tests/unit/test_capture.py __________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_capture.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_capture.py:16: in <module>
+    from support.fakes import Entry, World, make_world
+tests/support/fakes.py:11: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Compaction' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_________________ ERROR collecting tests/unit/test_commands.py _________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_commands.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_commands.py:13: in <module>
+    from support.fakes import FAKE_DATA_HOME, INSTALLATION_ID, World, make_world
+tests/support/fakes.py:11: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Compaction' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+______________ ERROR collecting tests/unit/test_initialization.py ______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_initialization.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_initialization.py:12: in <module>
+    from support.fakes import (
+tests/support/fakes.py:11: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Compaction' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_______________ ERROR collecting tests/unit/test_maintenance.py ________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_maintenance.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_maintenance.py:15: in <module>
+    from support.fakes import FIXED_NOW, FakeMonotonic
+tests/support/fakes.py:11: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Compaction' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+___________ ERROR collecting tests/unit/test_maintenance_command.py ____________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_maintenance_command.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_maintenance_command.py:9: in <module>
+    from ferret.application.maintenance import Reclamation, measure_storage, reclaim_space
+E   ImportError: cannot import name 'Reclamation' from 'ferret.application.maintenance' (<worktree>/apps/ferret-cli/src/ferret/application/maintenance.py)
+_________________ ERROR collecting tests/unit/test_queries.py __________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_queries.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_queries.py:28: in <module>
+    from support.fakes import FIXED_NOW
+tests/support/fakes.py:11: in <module>
+    from ferret.application.ports import (
+E   ImportError: cannot import name 'Compaction' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+__________________ ERROR collecting tests/unit/test_space.py ___________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_space.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_space.py:5: in <module>
+    from ferret.domain.space import (
+E   ModuleNotFoundError: No module named 'ferret.domain.space'
+__________________ ERROR collecting tests/unit/test_status.py __________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_status.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_status.py:11: in <module>
+    from ferret.application.ports import InterpreterFacts
+E   ImportError: cannot import name 'InterpreterFacts' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+=========================== short test summary info ============================
+ERROR tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+ERROR tests/unit/steps/test_initialization_and_concurrency_steps.py
+ERROR tests/unit/steps/test_local_query_and_export_steps.py
+ERROR tests/unit/steps/test_metadata_envelope_steps.py
+ERROR tests/unit/steps/test_retention_and_space_steps.py
+ERROR tests/unit/steps/test_usage_and_outcomes_steps.py
+ERROR tests/unit/test_analytics.py
+ERROR tests/unit/test_capabilities.py
+ERROR tests/unit/test_capture.py
+ERROR tests/unit/test_commands.py
+ERROR tests/unit/test_initialization.py
+ERROR tests/unit/test_maintenance.py
+ERROR tests/unit/test_maintenance_command.py
+ERROR tests/unit/test_queries.py
+ERROR tests/unit/test_space.py
+ERROR tests/unit/test_status.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 16 errors during collection !!!!!!!!!!!!!!!!!!!
+============================== 16 errors in 0.36s ==============================
+
+
+
+ NX   Running target test:unit for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:unit
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_status.py tests/unit/steps/test_retention_and_space_steps.py" exited with non-zero status code
+note=C10-UNIT: expected RED, the physical-space measurement, status, and maintenance modules do not exist yet
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:05:09Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli-e2e pytest apps/ferret-cli-e2e/tests/steps/test_retention_and_space_steps.py apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py -q --tb=line --color=no -p no:cacheprovider -rf
+FF......FF                                                               [100%]
+=================================== FAILURES ===================================
+E   assert 1 <= 0
+     +  where 0 = Session(artifact=PosixPath('<worktree>/apps/ferret-cli/dist...lity":"observed"}],"nextCursor":null}\n', stderr=b''), removed=0, maintenance=None, status=None, benchmark_output=None).removed
+<worktree>/apps/ferret-cli-e2e/tests/steps/test_retention_and_space_steps.py:125: assert 1 <= 0
+E   assert (3, b'{"schem...e":false}}\n') == (0, b'')
+
+      At index 0 diff: 3 != 0
+      Use -v to get more diff
+<worktree>/apps/ferret-cli-e2e/tests/steps/test_retention_and_space_steps.py:71: assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E   assert (3, b'{"schem...e":false}}\n') == (0, b'')
+
+      At index 0 diff: 3 != 0
+      Use -v to get more diff
+<worktree>/apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py:218: assert (3, b'{"schem...e":false}}\n') == (0, b'')
+E   assert (3, b'{"schem...e":false}}\n') == (0, b'')
+
+      At index 0 diff: 3 != 0
+      Use -v to get more diff
+<worktree>/apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py:218: assert (3, b'{"schem...e":false}}\n') == (0, b'')
+=========================== short test summary info ============================
+FAILED apps/ferret-cli-e2e/tests/steps/test_retention_and_space_steps.py::test_hide_then_prune_every_expired_usage_derived_record
+FAILED apps/ferret-cli-e2e/tests/steps/test_retention_and_space_steps.py::test_measure_storage_before_and_after_retention
+FAILED apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py::test_emit_a_stable_machine_readable_command_result[status]
+FAILED apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py::test_emit_a_stable_machine_readable_command_result[maintenance]
+4 failed, 6 passed in 6.77s
+note=E2E adapter against the artifact built before AC-CLI-10: expected RED, the artifact has no status or maintenance command
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:05:36Z

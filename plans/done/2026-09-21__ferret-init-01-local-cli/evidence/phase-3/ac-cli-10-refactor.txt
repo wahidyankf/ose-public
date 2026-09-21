@@ -1,0 +1,388 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick --skip-nx-cache
+
+> nx run ferret-cli:"test:quick"
+
+> npm exec -- nx run ferret-cli:lint
+
+
+> nx run ferret-cli:lint
+
+> uv run --no-sync ruff check .
+
+SIM300 [*] Yoda condition detected
+  --> tests/unit/test_maintenance.py:34:12
+   |
+32 |     assert PRUNE_ROW_LIMIT == 100
+33 |     assert PRUNE_BUDGET_MS == 100
+34 |     assert MAINTENANCE_INTERVAL == timedelta(seconds=MAINTENANCE_INTERVAL_SECONDS)
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+35 |     assert MAINTENANCE_INTERVAL == timedelta(hours=1)
+   |
+   |
+33 |     assert PRUNE_BUDGET_MS == 100
+   -     assert MAINTENANCE_INTERVAL == timedelta(seconds=MAINTENANCE_INTERVAL_SECONDS)
+34 +     assert timedelta(seconds=MAINTENANCE_INTERVAL_SECONDS) == MAINTENANCE_INTERVAL
+35 |     assert MAINTENANCE_INTERVAL == timedelta(hours=1)
+   |
+
+SIM300 [*] Yoda condition detected
+  --> tests/unit/test_maintenance.py:35:12
+   |
+33 |     assert PRUNE_BUDGET_MS == 100
+34 |     assert MAINTENANCE_INTERVAL == timedelta(seconds=MAINTENANCE_INTERVAL_SECONDS)
+35 |     assert MAINTENANCE_INTERVAL == timedelta(hours=1)
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: Rewrite as `timedelta(hours=1) == MAINTENANCE_INTERVAL`
+   |
+34 |     assert MAINTENANCE_INTERVAL == timedelta(seconds=MAINTENANCE_INTERVAL_SECONDS)
+   -     assert MAINTENANCE_INTERVAL == timedelta(hours=1)
+35 +     assert timedelta(hours=1) == MAINTENANCE_INTERVAL
+36 |
+   |
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.
+
+
+
+ NX   Running target lint for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:lint
+
+Hint: run the command with --verbose for more details.
+
+
+
+
+ NX   Running target test:quick for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:quick
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync ruff check ." exited with non-zero status codeWarning: command "npm exec -- nx run ferret-cli:lint" exited with non-zero status code
+note=OWNER-QUICK after the refactor pass
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:24:49Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick --skip-nx-cache
+
+> nx run ferret-cli:"test:quick"
+
+> npm exec -- nx run ferret-cli:lint
+
+
+> nx run ferret-cli:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+89 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:typecheck
+
+
+> nx run ferret-cli:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:unit
+
+
+> nx run ferret-cli:"test:unit"
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 852 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .    [  0%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  0%]
+tests/unit/steps/test_local_query_and_export_steps.py ........           [  1%]
+tests/unit/steps/test_metadata_envelope_steps.py .......                 [  2%]
+tests/unit/steps/test_retention_and_space_steps.py ..                    [  2%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  2%]
+tests/unit/test_analytics.py ........................................... [  7%]
+...................                                                      [  9%]
+tests/unit/test_canonical.py ..........                                  [ 10%]
+tests/unit/test_capabilities.py ........................................ [ 15%]
+........................................................................ [ 24%]
+.........                                                                [ 25%]
+tests/unit/test_capture.py .........................                     [ 28%]
+tests/unit/test_cli_contract.py ........................................ [ 32%]
+.................................................                        [ 38%]
+tests/unit/test_commands.py .........                                    [ 39%]
+tests/unit/test_data_home_locality.py ...........                        [ 40%]
+tests/unit/test_event_contract.py ............................           [ 44%]
+tests/unit/test_event_identity.py ....                                   [ 44%]
+tests/unit/test_initialization.py ...................................... [ 49%]
+....................                                                     [ 51%]
+tests/unit/test_maintenance.py ................................          [ 55%]
+tests/unit/test_maintenance_command.py ......................            [ 57%]
+tests/unit/test_privacy.py ............................................. [ 63%]
+........................................................................ [ 71%]
+............................                                             [ 74%]
+tests/unit/test_queries.py ............................................. [ 80%]
+........................................................................ [ 88%]
+......                                                                   [ 89%]
+tests/unit/test_space.py ........................                        [ 92%]
+tests/unit/test_status.py ......................                         [ 94%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/analytics.py           97      0   100%
+src/ferret/application/capabilities.py        23      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/initialization.py      65      0   100%
+src/ferret/application/maintenance.py         71      0   100%
+src/ferret/application/ports.py               80      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/queries.py             46      0   100%
+src/ferret/application/status.py              32      0   100%
+src/ferret/application/store.py               20      0   100%
+src/ferret/cli.py                            176      0   100%
+src/ferret/commands.py                        48      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/capability.py               69      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   110      0   100%
+src/ferret/domain/fields.py                   47      0   100%
+src/ferret/domain/identity.py                 10      0   100%
+src/ferret/domain/query.py                   123      0   100%
+src/ferret/domain/retention.py                16      0   100%
+src/ferret/domain/space.py                    42      0   100%
+src/ferret/domain/status.py                   13      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               37      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       64      0   100%
+------------------------------------------------------------------------
+TOTAL                                       1358      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================= 852 passed in 1.75s ==============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage
+
+
+> nx run ferret-cli:"test:coverage"
+
+> npm exec -- nx run ferret-cli:test:coverage:unit
+
+
+> nx run ferret-cli:"test:coverage:unit"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter unit
+
+ferret-cli: 6 features, 21 expanded scenarios, adapters: unit.
+
+
+
+ NX   Successfully ran target test:coverage:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:integration
+
+
+> nx run ferret-cli:"test:coverage:integration"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter integration
+
+ferret-cli: 6 features, 21 expanded scenarios, adapters: integration.
+
+
+
+ NX   Successfully ran target test:coverage:integration for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:behaviour
+
+
+> nx run ferret-cli:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter behaviour
+
+ferret-cli: 6 features, 21 expanded scenarios, adapters: unit, integration.
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli
+note=OWNER-QUICK after the two SIM300 findings above were fixed
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:25:13Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:integration --args='tests/integration/test_retention.py::test_failed_compaction_preserves_readable_original'
+
+> nx run ferret-cli:"test:integration" --args=tests/integration/test_retention.py::test_failed_compaction_preserves_readable_original
+
+> uv run --no-sync pytest tests/integration tests/integration/test_retention.py::test_failed_compaction_preserves_readable_original
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 224 items
+
+tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py . [  0%]
+                                                                         [  0%]
+tests/integration/steps/test_initialization_and_concurrency_steps.py ..  [  1%]
+tests/integration/steps/test_local_query_and_export_steps.py ........    [  4%]
+tests/integration/steps/test_metadata_envelope_steps.py .......          [  8%]
+tests/integration/steps/test_retention_and_space_steps.py ..             [  8%]
+tests/integration/steps/test_usage_and_outcomes_steps.py .               [  9%]
+tests/integration/test_analytics.py ................                     [ 16%]
+tests/integration/test_capability_repository.py ...............          [ 23%]
+tests/integration/test_initialization.py ...........                     [ 28%]
+tests/integration/test_package_build.py .........                        [ 32%]
+tests/integration/test_privacy.py .............                          [ 37%]
+tests/integration/test_queries.py ...................................... [ 54%]
+.....................................................                    [ 78%]
+tests/integration/test_retention.py ......................               [ 88%]
+tests/integration/test_space.py .............                            [ 94%]
+tests/integration/test_sqlite_repository.py .............                [100%]
+
+============================= 224 passed in 26.39s =============================
+
+
+
+ NX   Successfully ran target test:integration for project ferret-cli
+[evrun] dropped 1 output lines matching /^HIPPO queued/
+note=injected compaction failure: the readable source data stays byte-identical
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:25:33Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:quick --skip-nx-cache
+
+> nx run ferret-cli-e2e:"test:quick"
+
+> npm exec -- nx run ferret-cli-e2e:lint
+
+
+> nx run ferret-cli-e2e:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+15 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:typecheck
+
+
+> nx run ferret-cli-e2e:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage
+
+
+> nx run ferret-cli-e2e:"test:coverage"
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage:e2e
+
+
+> nx run ferret-cli-e2e:"test:coverage:e2e"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter e2e
+
+ferret-cli-e2e: 6 features, 21 expanded scenarios, adapters: e2e.
+
+
+
+ NX   Successfully ran target test:coverage:e2e for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage:behaviour
+
+
+> nx run ferret-cli-e2e:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter behaviour
+
+ferret-cli-e2e: 6 features, 21 expanded scenarios, adapters: unit, e2e.
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli-e2e
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli-e2e
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli-e2e
+[evrun] dropped 1 output lines matching /^HIPPO queued/
+note=E2E-QUICK: A16 stated it was red only for the unbound retention scenario; it is now zero
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:26:13Z

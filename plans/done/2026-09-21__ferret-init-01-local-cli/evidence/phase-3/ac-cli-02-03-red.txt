@@ -1,0 +1,97 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --args='tests/unit/test_event_contract.py tests/unit/test_privacy.py tests/unit/steps/test_metadata_envelope_steps.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_event_contract.py tests/unit/test_privacy.py tests/unit/steps/test_metadata_envelope_steps.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_event_contract.py tests/unit/test_privacy.py tests/unit/steps/test_metadata_envelope_steps.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 116 items / 7 errors
+
+==================================== ERRORS ====================================
+_ ERROR collecting tests/unit/steps/test_initialization_and_concurrency_steps.py _
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_initialization_and_concurrency_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_initialization_and_concurrency_steps.py:10: in <module>
+    from support.fakes import FAKE_DATA_HOME, World, make_world
+tests/support/fakes.py:9: in <module>
+    from ferret.application.ports import CaptureResult, FileFacts, Kind, Runtime, SchemaState
+E   ImportError: cannot import name 'CaptureResult' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+______ ERROR collecting tests/unit/steps/test_metadata_envelope_steps.py _______
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_metadata_envelope_steps.py:15: in <module>
+    from support.fakes import World, make_world
+tests/support/fakes.py:9: in <module>
+    from ferret.application.ports import CaptureResult, FileFacts, Kind, Runtime, SchemaState
+E   ImportError: cannot import name 'CaptureResult' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_________________ ERROR collecting tests/unit/test_capture.py __________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_capture.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_capture.py:10: in <module>
+    from ferret.application.capture import capture_event
+E   ModuleNotFoundError: No module named 'ferret.application.capture'
+_________________ ERROR collecting tests/unit/test_commands.py _________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_commands.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_commands.py:13: in <module>
+    from support.fakes import FAKE_DATA_HOME, INSTALLATION_ID, World, make_world
+tests/support/fakes.py:9: in <module>
+    from ferret.application.ports import CaptureResult, FileFacts, Kind, Runtime, SchemaState
+E   ImportError: cannot import name 'CaptureResult' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+______________ ERROR collecting tests/unit/test_event_contract.py ______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_event_contract.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_event_contract.py:11: in <module>
+    from ferret.domain.event import Event, canonical_event_bytes, event_from_document, event_hash
+E   ModuleNotFoundError: No module named 'ferret.domain.event'
+______________ ERROR collecting tests/unit/test_initialization.py ______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_initialization.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_initialization.py:12: in <module>
+    from support.fakes import (
+tests/support/fakes.py:9: in <module>
+    from ferret.application.ports import CaptureResult, FileFacts, Kind, Runtime, SchemaState
+E   ImportError: cannot import name 'CaptureResult' from 'ferret.application.ports' (<worktree>/apps/ferret-cli/src/ferret/application/ports.py)
+_________________ ERROR collecting tests/unit/test_privacy.py __________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_privacy.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_privacy.py:9: in <module>
+    from ferret.application.privacy import CANONICAL_LIMIT_BYTES, RAW_LIMIT_BYTES, project_hook_payload, validate_capture
+E   ModuleNotFoundError: No module named 'ferret.application.privacy'
+=========================== short test summary info ============================
+ERROR tests/unit/steps/test_initialization_and_concurrency_steps.py
+ERROR tests/unit/steps/test_metadata_envelope_steps.py
+ERROR tests/unit/test_capture.py
+ERROR tests/unit/test_commands.py
+ERROR tests/unit/test_event_contract.py
+ERROR tests/unit/test_initialization.py
+ERROR tests/unit/test_privacy.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 7 errors during collection !!!!!!!!!!!!!!!!!!!!
+============================== 7 errors in 0.16s ===============================
+
+
+
+ NX   Running target test:unit for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:unit
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_event_contract.py tests/unit/test_privacy.py tests/unit/steps/test_metadata_envelope_steps.py" exited with non-zero status code
+note=C02-03-UNIT RED: the new unit modules fail at collection naming only the missing ferret.domain.event (Event, canonical_event_bytes, event_hash, event_from_document), ferret.application.privacy (validate_capture, project_hook_payload) and ferret.application.capture modules and the CaptureResult/Input/EventRepository ports they need; no unrelated failure
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T05:09:50Z

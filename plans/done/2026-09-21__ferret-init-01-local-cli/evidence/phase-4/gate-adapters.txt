@@ -1,0 +1,28 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e --skip-nx-cache --args='-q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py'
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+> nx run ferret-cli-e2e:"test:e2e" --args=-q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py
+
+> uv run --no-sync pytest tests -q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py
+
+........................................................................ [ 48%]
+........................................................................ [ 96%]
+......                                                                   [100%]
+150 passed in 122.15s (0:02:02)
+
+
+
+ NX   Successfully ran target test:e2e for project ferret-cli-e2e and 1 task it depends on
+[evrun] dropped 15 output lines matching /^HIPPO queued/
+note=PHASE 4 GATE adapters: the adapter E2E file through the real wrapper (Claude Code, Codex) and the real plugin under Node (OpenCode); the target appends tests, so the whole E2E suite runs, a superset of the literal selection (A20). Expect exit 0, empty streams, fail-open exit, numeric TERM/KILL and prune bounds, synchronous terminal commit
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:14:57Z

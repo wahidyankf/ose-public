@@ -1,0 +1,28 @@
+name: "Setup Python"
+description: "Install the exact Python and the checksum-pinned uv used by the FERRET projects, with the uv cache keyed on their lockfiles"
+runs:
+  using: "composite"
+  steps:
+    # The patch version is a literal so CI runs the interpreter the projects pin. It must equal
+    # apps/ferret-cli/.python-version and apps/ferret-cli-e2e/.python-version.
+    - name: Setup Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.14.7"
+
+    # setup-uv is pinned by commit (tag v10.1.0) and installs one uv release whose archive digest is
+    # verified. The checksum is the official uv 0.12.16 Linux x86-64 GNU archive digest, which is the
+    # only hosted platform in use; a runner of another OS or architecture needs its own release digest.
+    # The cache is restored everywhere but saved only on main, and the FERRET lockfiles key it.
+    - name: Setup uv
+      uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+      with:
+        version: 0.12.16
+        checksum: 8e5c6e5523dffc2dcf615bd995554c84c9feb4e577808a3fb8698a639d3f8d9c
+        enable-cache: true
+        restore-cache: true
+        save-cache: ${{ github.ref == 'refs/heads/main' }}
+        cache-dependency-glob: |
+          apps/ferret-cli/uv.lock
+          apps/ferret-cli-e2e/uv.lock
+        cache-suffix: ${{ runner.os }}

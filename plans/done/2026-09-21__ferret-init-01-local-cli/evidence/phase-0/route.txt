@@ -1,0 +1,58 @@
+FERRET Init 01 — Phase 0 route evidence
+Host paths are replaced by <primary> (primary checkout root) and <worktree> (this execution worktree).
+
+$ claude --worktree ferret-init-01-local-cli
+note=worktree pre-existing at session start; created by the WorktreeCreate hook (worktrees/<name>, branch worktree/<name>)
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T01:54:45Z
+
+$ rtk git rev-parse --show-toplevel
+<primary>/worktrees/ferret-init-01-local-cli
+exit=0
+
+$ rtk git branch --show-current
+worktree/ferret-init-01-local-cli
+exit=0
+
+$ rtk git rev-parse HEAD
+071c99929b1bb2471009ad49a3f594da599c819b
+exit=0
+
+$ rtk git rev-parse origin/main
+071c99929b1bb2471009ad49a3f594da599c819b
+exit=0
+
+$ rtk git worktree list --porcelain
+worktree <primary>
+HEAD 071c99929b1bb2471009ad49a3f594da599c819b
+branch refs/heads/main
+
+worktree <primary>/worktrees/ferret-init-01-local-cli
+HEAD 071c99929b1bb2471009ad49a3f594da599c819b
+branch refs/heads/worktree/ferret-init-01-local-cli
+exit=0
+
+$ rtk git status --short
+(no output)
+exit=0
+
+assertions
+- declared path worktrees/ferret-init-01-local-cli: PASS
+- exactly one plan worktree (plus the primary checkout): PASS
+- clean unexplained state: PASS
+- HEAD equals origin/main (current base): PASS
+
+command-execution-note
+- The session runs behind a worktree-isolation guard. The user-level `rtk hook claude` PreToolUse hook rewrites every
+  `git ...` command to `rtk git ...`, and the guard refuses any `rtk` invocation that mentions git because it cannot
+  prove where the wrapped command runs. Every git command in this plan was therefore executed as the plain command
+  `RTK_DISABLED=1 git ...` from this worktree (the documented per-command rtk opt-out), which the guard accepts. The
+  command text recorded in this plan keeps its literal `rtk git ...` form; only the invocation differs.
+
+branch-reconciliation
+- The WorktreeCreate hook names the local branch `worktree/ferret-init-01-local-cli`. Delivery Boundaries (DU-01) and
+  Phase 7/8 name the unit branch `ferret-init-01-local-cli` for both the local and the remote ref, and Phase 7 pushes
+  `$FERRET_BRANCH` verbatim. To keep every later packet verbatim, the local branch is renamed with
+  `git branch -m worktree/ferret-init-01-local-cli ferret-init-01-local-cli`. Same commit, no history change; the
+  rename is recorded again in the file-ledger.

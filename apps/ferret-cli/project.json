@@ -1,0 +1,218 @@
+{
+  "name": "ferret-cli",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/ferret-cli/src",
+  "targets": {
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv sync --locked",
+        "cwd": "apps/ferret-cli"
+      },
+      "cache": false
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run --no-sync python scripts/build_zipapp.py",
+        "cwd": "apps/ferret-cli"
+      },
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.py",
+        "{projectRoot}/scripts/build_zipapp.py",
+        "{projectRoot}/pyproject.toml",
+        "{projectRoot}/uv.lock",
+        "{projectRoot}/.python-version"
+      ]
+    },
+    "run": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run --no-sync python dist/ferret.pyz",
+        "cwd": "apps/ferret-cli"
+      },
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "uv run --no-sync ruff check .",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "uv run --no-sync ruff format --check .",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false,
+        "cwd": "apps/ferret-cli"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.py",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/scripts/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{projectRoot}/uv.lock",
+        "{projectRoot}/.python-version"
+      ]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run --no-sync pyright",
+        "cwd": "apps/ferret-cli"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.py",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/scripts/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{projectRoot}/uv.lock",
+        "{projectRoot}/.python-version"
+      ]
+    },
+    "test:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99",
+        "cwd": "apps/ferret-cli"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.py",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/scripts/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{projectRoot}/uv.lock",
+        "{projectRoot}/.python-version",
+        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run --no-sync pytest tests/integration",
+        "cwd": "apps/ferret-cli"
+      },
+      "cache": false
+    },
+    "test:coverage:unit": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter unit"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ferret-cli/behaviour-coverage.json",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:coverage:integration": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter integration"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ferret-cli/behaviour-coverage.json",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:coverage:behaviour": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter behaviour"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ferret-cli/behaviour-coverage.json",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ferret-cli:test:coverage:unit",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ferret-cli:test:coverage:integration",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ferret-cli:test:coverage:behaviour",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ferret-cli/behaviour-coverage.json",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ferret-cli:lint",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ferret-cli:typecheck",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ferret-cli:test:unit",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ferret-cli:test:coverage",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ferret-cli/behaviour-coverage.json",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature",
+        "{projectRoot}/src/**/*.py",
+        "{projectRoot}/scripts/**/*.py",
+        "{projectRoot}/uv.lock",
+        "{projectRoot}/.python-version"
+      ]
+    }
+  },
+  "tags": ["type:app", "platform:cli", "lang:python", "domain:ferret"]
+}

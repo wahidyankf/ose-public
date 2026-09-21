@@ -20,10 +20,11 @@ bindings live in their own directories and are explicitly excluded from the
 
 The checksum-pinned v0.4 Rhino configuration is authoritative. Canonical content is `AGENTS.md`,
 `.agents/agents/*.md`, and `.agents/skills/*/SKILL.md`. The current profiles generate only the
-three declared plan-agent routes: Claude receives `CLAUDE.md`, `.claude/agents/plan/`, and
-`.agents/skills/`; Codex receives `.codex/agents/`; and OpenCode receives `.opencode/agents/`.
-Run `./rhino harness adapters generate` followed by `./rhino harness adapters validate`; do not
-hand-edit those generated routes.
+declared routes: Claude receives `CLAUDE.md`, `.claude/agents/plan/` for the three plan agents, and
+one pointer `.claude/skills/{name}/SKILL.md` per canonical skill; Codex receives `.codex/agents/`;
+and OpenCode receives `.opencode/agents/` and reads `.agents/skills/` natively. No other mirror of a
+canonical skill exists. Run `./rhino harness adapters generate` followed by
+`./rhino harness adapters validate`; do not hand-edit those generated routes.
 
 The catalog and migration discussion below record the predecessor binding model. They are retained
 for provenance, not as instructions for the v0.4 adapter layout.
@@ -120,6 +121,30 @@ must never carry content that diverges from `AGENTS.md`. See the
   `vendored` paths only, and regenerate `generated` paths.
 - Skills load only from trusted sources. Every skill in this repository is maintained by the
   project team.
+
+### FERRET lifecycle registrations
+
+FERRET (`apps/ferret-cli`) receives harness lifecycle metadata through hand-authored `source` registrations, one per
+supported harness. Each forwards the raw hook payload to `ferret capture-hook` and never reads the result. The rules
+live in the
+[Harness Compatibility Protocol](../../.agents/skills/harness-compatibility-protocol/SKILL.md). Documentation and
+installed CLIs were verified 2026-09-21 against Claude Code 2.1.278, Codex 0.155.1, and OpenCode 1.18.7.
+
+| Harness     | Registration source                                           | Documented lifecycle events available to register                                                             | Trust and timing                                                                                                                                                                                   |
+| ----------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Claude Code | `.claude/settings.json` to `.claude/hooks/ferret-capture.sh`  | SessionStart, SessionEnd, SubagentStart, SubagentStop, PreToolUse, PostToolUse, PostToolUseFailure            | An interactive session holds hooks until the workspace trust dialog is accepted; `claude -p` runs them and kills async hooks still running at teardown; SessionEnd hooks share a 1.5 s budget      |
+| Codex       | `.codex/hooks.json` to `.claude/hooks/ferret-capture.sh`      | SessionStart, SessionEnd, SubagentStart, SubagentStop, PreToolUse, PostToolUse                                | The project `.codex/` layer must be trusted and each hook's exact hash reviewed in `/hooks`, so editing `hooks.json` re-prompts; SessionEnd defaults to 1 s and takes an explicit larger `timeout` |
+| OpenCode    | `.opencode/plugins/ferret.ts` (auto-loaded, plural directory) | session.created, session.deleted, session.idle, tool.execute.before, tool.execute.after, message.part.updated | No trust step is documented for project plugins; hooks run in sequence with no documented timeout, so the plugin never awaits the child on frequent events and swallows every exception            |
+
+Capabilities a harness does not expose stay `unknown` rather than inferred. FERRET registers eight Claude Code
+events (the tool start, completion, and failure events and a `Skill`-matched `PreToolUse` for skill invocation, which
+names the skill in `tool_input.skill`), six Codex events, and four OpenCode events (session created, tool start, tool
+completion, and a `skill` tool start). Codex `PostToolUse` also fires after a Bash command exits non-zero, so a
+completed Codex tool is recorded with a derived `success` outcome and an unknown duration, and Codex skill invocation
+and tool failure stay unknown. OpenCode session end, tool failure, duration, and parent/child relation stay unknown
+because the plugin does not register `message.part.updated` and a session-end payload has not been captured live.
+Evidence for every row is `evidence/phase-0/harness-probe.txt` and `evidence/phase-4/smoke.txt` in the archived FERRET
+Init 01 plan.
 
 ### Provenance of pre-existing partial bindings
 

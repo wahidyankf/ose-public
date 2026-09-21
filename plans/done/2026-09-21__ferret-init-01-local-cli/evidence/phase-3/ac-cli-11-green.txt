@@ -1,0 +1,50 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e --args='tests/test_standalone.py' --skip-nx-cache
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+> nx run ferret-cli-e2e:"test:e2e" --args=tests/test_standalone.py
+
+> uv run --no-sync pytest tests tests/test_standalone.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli-e2e
+configfile: pyproject.toml
+plugins: bdd-8.1.0
+collected 58 items
+
+tests/steps/test_fail_open_capabilities_and_platforms_steps.py .         [  1%]
+tests/steps/test_initialization_and_concurrency_steps.py ..              [  5%]
+tests/steps/test_local_query_and_export_steps.py .........               [ 20%]
+tests/steps/test_metadata_envelope_steps.py .......                      [ 32%]
+tests/steps/test_retention_and_space_steps.py ..                         [ 36%]
+tests/steps/test_usage_and_outcomes_steps.py .                           [ 37%]
+tests/test_package_smoke.py ................                             [ 65%]
+tests/test_query_export.py .......                                       [ 77%]
+tests/test_standalone.py ..                                              [ 81%]
+tests/test_storage_benchmark.py ...........                              [100%]
+
+============================= 58 passed in 45.13s ==============================
+
+
+
+ NX   Successfully ran target test:e2e for project ferret-cli-e2e and 1 task it depends on
+note=C11-E2E: GREEN, every command completes from the built artifact with every socket denied and no attempt recorded
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:41:58Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli pytest apps/ferret-cli/tests/unit/steps/test_local_query_and_export_steps.py apps/ferret-cli/tests/integration/steps/test_local_query_and_export_steps.py apps/ferret-cli/tests/unit/test_network_denial.py -q --tb=short --color=no -p no:cacheprovider -rf --no-cov
+........................                                                 [100%]
+24 passed in 0.30s
+note=C11-UNIT/C11-INTEGRATION bindings: GREEN, the scenario holds over the fakes and over the real home and SQLite with every network event refused
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:42:57Z

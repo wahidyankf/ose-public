@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "events": 100000,
+  "seed": 20260918,
+  "expiredEvents": 50000,
+  "pageSizeBytes": 4096,
+  "envelope": {
+    "minBytesPerEvent": 716.8,
+    "maxBytesPerEvent": 1536.0,
+    "peakAllowanceBytes": 8388608
+  },
+  "emptySchema": {
+    "databaseBytes": 81920,
+    "walBytes": 0
+  },
+  "insertion": {
+    "beforeCheckpoint": {
+      "databaseBytes": 81920,
+      "walBytes": 338383872
+    },
+    "afterCheckpoint": {
+      "databaseBytes": 91951104,
+      "walBytes": 0
+    }
+  },
+  "space": {
+    "tableBytes": 41103360,
+    "indexBytes": 50847744,
+    "freelistBytes": 0
+  },
+  "perEvent": {
+    "bytesPerEvent": 919.5,
+    "marginalBytesPerEvent": 918.7,
+    "indexShare": 0.553
+  },
+  "capture": {
+    "single": {
+      "count": 40,
+      "minMs": 125.4,
+      "p50Ms": 135.1,
+      "p95Ms": 156.9,
+      "maxMs": 217.5,
+      "meanMs": 140.0
+    },
+    "concurrent": {
+      "writers": 4,
+      "count": 40,
+      "minMs": 105.7,
+      "p50Ms": 240.2,
+      "p95Ms": 528.8,
+      "maxMs": 578.7,
+      "meanMs": 258.7
+    }
+  },
+  "expiry": {
+    "expiredEvents": 50000,
+    "afterExpiry": {
+      "databaseBytes": 92037120,
+      "walBytes": 0,
+      "freelistBytes": 43642880
+    }
+  },
+  "reclamation": {
+    "elapsedSeconds": 7.38,
+    "expiredEventCount": 50000,
+    "databaseBytesBefore": 91951104,
+    "databaseBytesAfter": 43692032,
+    "walBytesAfter": 0,
+    "freelistBytesAfter": 0,
+    "reportedHighWaterBytes": 135899176,
+    "observedPeakBytes": 135899176
+  },
+  "projection": [
+    {
+      "eventsPerDay": 5000,
+      "retentionDays": 30,
+      "events": 150000,
+      "steadyStateBytes": 137885696,
+      "compactionPeakBytes": 275771392
+    },
+    {
+      "eventsPerDay": 20000,
+      "retentionDays": 30,
+      "events": 600000,
+      "steadyStateBytes": 551297024,
+      "compactionPeakBytes": 1102594048
+    },
+    {
+      "eventsPerDay": 100000,
+      "retentionDays": 30,
+      "events": 3000000,
+      "steadyStateBytes": 2756157440,
+      "compactionPeakBytes": 5512314880
+    }
+  ],
+  "acceptance": {
+    "state": "within_envelope",
+    "problems": [],
+    "explanation": null
+  }
+}

@@ -1,0 +1,451 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick --skip-nx-cache
+
+> nx run ferret-cli:"test:quick"
+
+> npm exec -- nx run ferret-cli:lint
+
+
+> nx run ferret-cli:lint
+
+> uv run --no-sync ruff check .
+
+PT018 Assertion should be broken down into multiple parts
+  --> tests/unit/test_manual_evidence.py:27:5
+   |
+25 |     assert HELPER.is_file(), "missing manual_evidence: apps/ferret-cli/tests/support/manual_evidence.py"
+26 |     spec = importlib.util.spec_from_file_location("manual_evidence", HELPER)
+27 |     assert spec is not None and spec.loader is not None
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+28 |     module = importlib.util.module_from_spec(spec)
+29 |     sys.modules["manual_evidence"] = module
+   |
+help: Break down assertion into multiple parts
+
+E501 Line too long (123 > 120)
+   --> tests/unit/test_manual_evidence.py:104:121
+    |
+102 |     assert failed_assertions(lines) == []
+103 |     assert exits(lines) == [0, 0, 0, 2, 0, 0]
+104 |     assert commands(lines) == ["init", "capture-stored", "capture-duplicate", "capture-conflict", "capture-hook", "status"]
+    |                                                                                                                         ^^^
+
+E501 Line too long (121 > 120)
+   --> tests/unit/test_manual_evidence.py:164:121
+    |
+163 |     assert code == 2
+164 |     assert (repository / "local-tmp" / "ferret-plan01" / "first-run" / ".ferret-plan01-run").read_text() == "first-run\n"
+    |                                                                                                                         ^
+
+E501 Line too long (124 > 120)
+   --> tests/unit/test_manual_evidence.py:169:121
+    |
+167 | @pytest.mark.parametrize(
+168 |     "raw_root",
+169 |     ["/tmp/ferret-plan01/unit-run", "../ferret-plan01/unit-run", "local-tmp/elsewhere/unit-run", "local-tmp/ferret-plan01"],
+    |                                                                                                                         ^^^^
+170 | )
+171 | def test_refuses_a_raw_root_that_is_not_the_run_directory(repository: Path, artifact: Path, raw_root: str) -> None:
+    |
+
+Found 4 errors.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+
+
+
+ NX   Running target lint for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:lint
+
+Hint: run the command with --verbose for more details.
+
+
+
+
+ NX   Running target test:quick for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:quick
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync ruff check ." exited with non-zero status codeWarning: command "npm exec -- nx run ferret-cli:lint" exited with non-zero status code
+note=PHASE 4 GATE projects 1/2: OWNER-QUICK (exit 0 required)
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:24:43Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:quick --skip-nx-cache
+
+> nx run ferret-cli-e2e:"test:quick"
+
+> npm exec -- nx run ferret-cli-e2e:lint
+
+
+> nx run ferret-cli-e2e:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+28 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:typecheck
+
+
+> nx run ferret-cli-e2e:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage
+
+
+> nx run ferret-cli-e2e:"test:coverage"
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage:e2e
+
+
+> nx run ferret-cli-e2e:"test:coverage:e2e"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter e2e
+
+ferret-cli-e2e: 6 features, 38 expanded scenarios, adapters: e2e.
+
+
+
+ NX   Successfully ran target test:coverage:e2e for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage:behaviour
+
+
+> nx run ferret-cli-e2e:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter behaviour
+
+ferret-cli-e2e: 6 features, 38 expanded scenarios, adapters: unit, e2e.
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli-e2e
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli-e2e
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli-e2e
+note=PHASE 4 GATE projects 2/2: E2E-QUICK (exit 0 required)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:24:50Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick --skip-nx-cache
+
+> nx run ferret-cli:"test:quick"
+
+> npm exec -- nx run ferret-cli:lint
+
+
+> nx run ferret-cli:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+110 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:typecheck
+
+
+> nx run ferret-cli:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:unit
+
+
+> nx run ferret-cli:"test:unit"
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 1194 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .... [  0%]
+..........                                                               [  1%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  1%]
+tests/unit/steps/test_local_query_and_export_steps.py ...........        [  2%]
+tests/unit/steps/test_metadata_envelope_steps.py ........                [  2%]
+tests/unit/steps/test_retention_and_space_steps.py ..                    [  3%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  3%]
+tests/unit/test_analytics.py ........................................... [  6%]
+...................                                                      [  8%]
+tests/unit/test_canonical.py ..........                                  [  9%]
+tests/unit/test_capabilities.py ........................................ [ 12%]
+........................................................................ [ 18%]
+.........                                                                [ 19%]
+tests/unit/test_capture.py .........................                     [ 21%]
+tests/unit/test_capture_hook.py ........................................ [ 24%]
+.................                                                        [ 26%]
+tests/unit/test_cli_contract.py ........................................ [ 29%]
+.................................................                        [ 33%]
+tests/unit/test_commands.py .........                                    [ 34%]
+tests/unit/test_data_home_locality.py ...........                        [ 35%]
+tests/unit/test_event_contract.py ............................           [ 37%]
+tests/unit/test_event_identity.py ....                                   [ 38%]
+tests/unit/test_hook_mappers.py ........................................ [ 41%]
+........................................................................ [ 47%]
+................                                                         [ 48%]
+tests/unit/test_identifier_derivation.py ............                    [ 49%]
+tests/unit/test_initialization.py ...................................... [ 52%]
+....................                                                     [ 54%]
+tests/unit/test_install.py ............................................. [ 58%]
+...........                                                              [ 59%]
+tests/unit/test_install_domain.py ...................................... [ 62%]
+............................                                             [ 64%]
+tests/unit/test_maintenance.py ................................          [ 67%]
+tests/unit/test_maintenance_command.py ......................            [ 69%]
+tests/unit/test_network_denial.py ......                                 [ 69%]
+tests/unit/test_privacy.py ............................................. [ 73%]
+........................................................................ [ 79%]
+............................                                             [ 81%]
+tests/unit/test_queries.py ............................................. [ 85%]
+........................................................................ [ 91%]
+......                                                                   [ 92%]
+tests/unit/test_space.py ........................                        [ 94%]
+tests/unit/test_status.py ......................                         [ 96%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/analytics.py           97      0   100%
+src/ferret/application/capabilities.py        23      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/capture_hook.py        27      0   100%
+src/ferret/application/initialization.py      43      0   100%
+src/ferret/application/install.py             99      0   100%
+src/ferret/application/maintenance.py         71      0   100%
+src/ferret/application/ports.py              111      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/queries.py             46      0   100%
+src/ferret/application/status.py              32      0   100%
+src/ferret/application/store.py               47      0   100%
+src/ferret/cli.py                            176      0   100%
+src/ferret/commands.py                        63      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/capability.py               69      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   110      0   100%
+src/ferret/domain/fields.py                   47      0   100%
+src/ferret/domain/hook.py                    113      0   100%
+src/ferret/domain/identity.py                 17      0   100%
+src/ferret/domain/install.py                  94      0   100%
+src/ferret/domain/query.py                   123      0   100%
+src/ferret/domain/retention.py                16      0   100%
+src/ferret/domain/space.py                    42      0   100%
+src/ferret/domain/status.py                   13      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               37      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       74      0   100%
+------------------------------------------------------------------------
+TOTAL                                       1759      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================= 1194 passed in 5.53s =============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage
+
+
+> nx run ferret-cli:"test:coverage"
+
+> npm exec -- nx run ferret-cli:test:coverage:unit
+
+
+> nx run ferret-cli:"test:coverage:unit"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter unit
+
+ferret-cli: 6 features, 38 expanded scenarios, adapters: unit.
+
+
+
+ NX   Successfully ran target test:coverage:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:integration
+
+
+> nx run ferret-cli:"test:coverage:integration"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter integration
+
+ferret-cli: 6 features, 38 expanded scenarios, adapters: integration.
+
+
+
+ NX   Successfully ran target test:coverage:integration for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:behaviour
+
+
+> nx run ferret-cli:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter behaviour
+
+ferret-cli: 6 features, 38 expanded scenarios, adapters: unit, integration.
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli
+note=PHASE 4 GATE projects rerun 1/2 OWNER-QUICK: the first attempt above failed only because an unfinished Phase 5 test file (its lint findings and its intentionally missing helper) was already in the tree; it was moved out of the tree and every Phase 4 gate command is run again on the Phase 4 tree (exit 0 required)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:25:34Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:quick --skip-nx-cache
+
+> nx run ferret-cli-e2e:"test:quick"
+
+> npm exec -- nx run ferret-cli-e2e:lint
+
+
+> nx run ferret-cli-e2e:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+28 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:typecheck
+
+
+> nx run ferret-cli-e2e:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage
+
+
+> nx run ferret-cli-e2e:"test:coverage"
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage:e2e
+
+
+> nx run ferret-cli-e2e:"test:coverage:e2e"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter e2e
+
+ferret-cli-e2e: 6 features, 38 expanded scenarios, adapters: e2e.
+
+
+
+ NX   Successfully ran target test:coverage:e2e for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage:behaviour
+
+
+> nx run ferret-cli-e2e:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter behaviour
+
+ferret-cli-e2e: 6 features, 38 expanded scenarios, adapters: unit, e2e.
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli-e2e
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli-e2e
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli-e2e
+note=PHASE 4 GATE projects rerun 2/2 E2E-QUICK on the same Phase 4 tree (exit 0 required)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:26:04Z

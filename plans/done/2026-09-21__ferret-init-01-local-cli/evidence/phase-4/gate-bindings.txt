@@ -1,0 +1,6 @@
+$ rtk ./rhino harness adapters validate
+[harness-adapters] canonical adapter validation is clean
+note=PHASE 4 GATE bindings: the pinned Rhino adapter validation over the generated bindings after the .claude/settings.json edit (exit 0 and no generated drift required)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:26:32Z

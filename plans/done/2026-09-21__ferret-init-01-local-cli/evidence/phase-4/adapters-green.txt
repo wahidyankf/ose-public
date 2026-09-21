@@ -1,0 +1,68 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli pytest apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py -q --tb=line --color=no -p no:cacheprovider -rf --no-cov
+......................                                                   [100%]
+22 passed in 2.79s
+note=GREEN shell/config Unit rows: the harness fail-open and metadata-envelope step bindings, driven through the capture_hook use case
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T10:57:59Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli pytest apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py apps/ferret-cli/tests/integration/steps/test_metadata_envelope_steps.py -q --tb=line --color=no -p no:cacheprovider -rf --no-cov
+......................                                                   [100%]
+22 passed in 4.82s
+note=GREEN shell/config Integration rows: the same step bindings against a real store, the real wrapper, and the in-tree ferret
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T10:58:05Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e --skip-nx-cache --args='-q --tb=line -p no:cacheprovider -rf -k "claude_code or codex" tests/test_harness_adapters.py'
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+> nx run ferret-cli-e2e:"test:e2e" --args=-q --tb=line -p no:cacheprovider -rf -k "claude_code or codex" tests/test_harness_adapters.py
+
+> uv run --no-sync pytest tests -q --tb=line -p no:cacheprovider -rf -k "claude_code or codex" tests/test_harness_adapters.py
+
+........................                                                 [100%]
+24 passed, 112 deselected in 16.25s
+
+
+
+ NX   Successfully ran target test:e2e for project ferret-cli-e2e and 1 task it depends on
+note=GREEN shell/config E2E rows: the Claude Code and Codex halves of the fail-open matrix through the real wrapper and the built zipapp
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T10:58:19Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e --skip-nx-cache --args='-q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py tests/steps/test_fail_open_capabilities_and_platforms_steps.py tests/steps/test_metadata_envelope_steps.py'
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+> nx run ferret-cli-e2e:"test:e2e" --args=-q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py tests/steps/test_fail_open_capabilities_and_platforms_steps.py tests/steps/test_metadata_envelope_steps.py
+
+> uv run --no-sync pytest tests -q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py tests/steps/test_fail_open_capabilities_and_platforms_steps.py tests/steps/test_metadata_envelope_steps.py
+
+........................................................................ [ 52%]
+................................................................         [100%]
+136 passed in 78.82s (0:01:18)
+
+
+
+ NX   Successfully ran target test:e2e for project ferret-cli-e2e and 1 task it depends on
+note=GREEN OpenCode E2E rows: every harness, including the OpenCode plugin driven by Node, plus the feature step bindings
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T10:58:48Z

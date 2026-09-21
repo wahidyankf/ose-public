@@ -14,6 +14,10 @@ on:
       - .github/scripts/test-hippo-bootstrap.sh
       - .github/scripts/test-hippo-consumer.sh
       - .github/workflows/hippo-consumer-smoke.yml
+      # The consumer contract asserts against these two files, so a change to
+      # either can break it while touching nothing in the list above. One did.
+      - .github/workflows/pr-quality-gate.yml
+      - .github/actions/setup-go/action.yml
   schedule:
     - cron: "0 6,18 * * *"
   workflow_dispatch:

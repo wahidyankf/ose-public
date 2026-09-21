@@ -294,7 +294,7 @@ policies:
     readme-index:
       trees:
         - path: .claude/agents
-        - path: .claude/skills
+        - path: .agents/skills
         - path: docs/explanation
         - path: docs/how-to
         - path: docs/reference

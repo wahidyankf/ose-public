@@ -1,8 +1,10 @@
-"""What a blocked writer may wait: the busy timeout the repository configures, never the wall clock it takes.
+"""What a blocked writer may wait: a short busy timeout per attempt, under a budget measured on a monotonic clock.
 
-SQLite honours the busy timeout by sleeping in short steps and counting the nominal length of each, so on a host whose
-timers stretch every sleep a 250 ms timeout really lasts far longer. A wall-clock bound in a test therefore measures the
-machine. The plan fixes the timeout at 250 ms, and the one-second hook deadline is enforced by the wrapper watchdog.
+SQLite's busy timeout bounds each of the sequential lock waits a ``BEGIN IMMEDIATE`` makes, not the acquisition, so one
+attempt costs a multiple of it and a budget expressed as a busy timeout overruns several-fold. The repository therefore
+retries with a short attempt timeout and stops when the caller's budget is spent. These helpers observe both halves:
+the timeout every attempt is opened with, and the clock the acquisition reads. Neither measures the host, because the
+clock is injectable, so the bound is asserted deterministically rather than by timing the machine.
 """
 
 import sqlite3
@@ -14,6 +16,29 @@ from ferret.adapters import sqlite_repository
 from ferret.adapters.sqlite_schema import connect
 
 PLANNED_BUSY_TIMEOUT_MS = 250
+PLANNED_ATTEMPT_TIMEOUT_MS = 20
+
+
+class SteppingClock:
+    """A monotonic clock that advances a fixed step each reading, so a budget is spent after a known number of them."""
+
+    def __init__(self, step_seconds: float) -> None:
+        self._step = step_seconds
+        self._now = 0.0
+        self.readings = 0
+
+    def monotonic(self) -> float:
+        self.readings += 1
+        now = self._now
+        self._now += self._step
+        return now
+
+
+def stepping_clock(monkeypatch: pytest.MonkeyPatch, step_seconds: float) -> SteppingClock:
+    """Make the repository read ``clock`` instead of the host's, leaving every other use of ``time`` alone."""
+    clock = SteppingClock(step_seconds)
+    monkeypatch.setattr(sqlite_repository.time, "monotonic", clock.monotonic, raising=True)
+    return clock
 
 
 def record_busy_timeouts(monkeypatch: pytest.MonkeyPatch) -> list[int]:

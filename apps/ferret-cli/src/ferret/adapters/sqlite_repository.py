@@ -1,13 +1,20 @@
 """The SQLite repositories: one short write transaction per stored event, capability snapshot, or bounded prune."""
 
 import sqlite3
+import time
 from collections.abc import Generator, Mapping, Sequence
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal
 
-from ferret.adapters.sqlite_schema import BUSY_TIMEOUT_MS, connect, translate_error
+from ferret.adapters.sqlite_schema import (
+    BUSY_TIMEOUT_MS,
+    LOCK_ATTEMPT_TIMEOUT_MS,
+    WRITE_LOCK_BUDGET_MS,
+    connect,
+    translate_error,
+)
 from ferret.application.ports import Budget, CaptureResult, Compaction, ExpiryCounters, PruneResult, StoreCounts
 from ferret.domain.capability import Capability, CapabilitySnapshot
 from ferret.domain.errors import FerretError
@@ -169,17 +176,43 @@ def _file_sizes(database_path: Path) -> tuple[int, int]:
     return _size(database_path), _size(Path(f"{database_path}-wal"))
 
 
+def _acquire(database_path: Path, *, budget_ms: int) -> sqlite3.Connection:
+    """One verified connection holding the write lock, taken inside a real wall-clock budget.
+
+    SQLite's busy timeout is not a bound on how long ``BEGIN IMMEDIATE`` takes: a contended acquisition runs several
+    sequential lock waits and each one is given the whole timeout, so a single attempt costs a multiple of it. A
+    budget expressed only as a busy timeout therefore overruns, which is what pushed the capture hook past the
+    deadline its acceptance criterion states. Each attempt here gets a short busy timeout instead, so SQLite's own
+    handler still does the waiting and a writer contending with a burst is not starved by a bare retry loop, while
+    the caller's budget bounds the acquisition. Once the lock is held the connection gets the ordinary busy timeout
+    back, so a statement inside the transaction still waits for a checkpointer rather than failing on it.
+    """
+    deadline = time.monotonic() + budget_ms / 1000
+    attempt_ms = min(LOCK_ATTEMPT_TIMEOUT_MS, budget_ms)
+    while True:
+        connection = connect(database_path, busy_timeout_ms=attempt_ms)
+        try:
+            connection.execute("BEGIN IMMEDIATE")
+        except sqlite3.Error as error:
+            connection.close()
+            failure = translate_error(error)
+            if not failure.retryable or time.monotonic() >= deadline:
+                raise failure from None
+        else:
+            connection.execute(f"PRAGMA busy_timeout = {int(BUSY_TIMEOUT_MS)}")
+            return connection
+
+
 @contextmanager
-def _write_transaction(database_path: Path, *, busy_timeout_ms: int = BUSY_TIMEOUT_MS) -> Generator[sqlite3.Connection]:
+def _write_transaction(database_path: Path, *, budget_ms: int = WRITE_LOCK_BUDGET_MS) -> Generator[sqlite3.Connection]:
     """One verified connection inside one ``BEGIN IMMEDIATE`` transaction.
 
     The transaction commits when the block finishes and rolls back on any failure, and the connection is closed on
     every path. A SQLite failure is translated onto the closed failure contract without carrying its message.
-    ``busy_timeout_ms`` is how long the wait for the write lock may last.
+    ``budget_ms`` is how long the wait for the write lock may last, measured on the monotonic clock.
     """
-    connection = connect(database_path, busy_timeout_ms=busy_timeout_ms)
+    connection = _acquire(database_path, budget_ms=budget_ms)
     try:
-        connection.execute("BEGIN IMMEDIATE")
         try:
             yield connection
             connection.execute("COMMIT")
@@ -204,8 +237,9 @@ class SQLiteEventRepository:
     def __init__(self, database_path: Path) -> None:
         self._database_path = database_path
 
-    def capture(self, event: Event) -> CaptureResult:
-        with _write_transaction(self._database_path) as connection:
+    def capture(self, event: Event, *, budget: Budget | None = None) -> CaptureResult:
+        budget_ms = WRITE_LOCK_BUDGET_MS if budget is None else budget.remaining_ms()
+        with _write_transaction(self._database_path, budget_ms=budget_ms) as connection:
             return self._capture(connection, event)
 
     def read(
@@ -387,7 +421,7 @@ class SQLiteTelemetryRepository:
         if remaining_ms == 0:
             return PruneResult("skipped")
         try:
-            with _write_transaction(self._database_path, busy_timeout_ms=remaining_ms) as connection:
+            with _write_transaction(self._database_path, budget_ms=remaining_ms) as connection:
                 return self._prune(connection, format_timestamp(now), limit, budget)
         except FerretError as error:
             # A lock that could not be taken in time, or a transaction that lost it, changed nothing: skip.

@@ -123,8 +123,12 @@ class Input(Protocol):
 
 
 class EventRepository(Protocol):
-    def capture(self, event: Event) -> CaptureResult:
-        """Durably store one validated event, or report that the same event is already stored."""
+    def capture(self, event: Event, *, budget: Budget | None = None) -> CaptureResult:
+        """Durably store one validated event, or report that the same event is already stored.
+
+        ``budget`` is how long the wait for the write lock may last, for a caller that has a deadline of its own;
+        ``None`` means the durable default, which waits rather than dropping an event.
+        """
         ...
 
     def read(

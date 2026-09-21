@@ -9,7 +9,7 @@ import pytest
 
 from ferret.application.capture_hook import capture_hook
 from ferret.application.initialization import initialize_store
-from ferret.application.ports import CaptureResult
+from ferret.application.ports import Budget, CaptureResult
 from ferret.application.privacy import RAW_LIMIT_BYTES
 from ferret.domain.errors import FerretError
 from ferret.domain.event import Event
@@ -227,9 +227,9 @@ def test_the_bounded_prune_runs_before_the_event_is_stored(monkeypatch: pytest.M
     original = FakeEvents.capture
     pruned_before_capture: list[int] = []
 
-    def observe(self: FakeEvents, event: Event) -> CaptureResult:
+    def observe(self: FakeEvents, event: Event, *, budget: Budget | None = None) -> CaptureResult:
         pruned_before_capture.append(len(world.telemetry.prunes))
-        return original(self, event)
+        return original(self, event, budget=budget)
 
     monkeypatch.setattr(FakeEvents, "capture", observe)
 

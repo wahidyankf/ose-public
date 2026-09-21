@@ -21,12 +21,12 @@ from typing import Any
 
 from adapter_cases import HARNESSES, INVALID, VALID
 from hook_bench import Bench
-from hook_wrapper import DEADLINE_SECONDS, TAIL_SECONDS, HookRun, run_plugin, stand_in
+from hook_wrapper import DEADLINE_SECONDS, REAP_TAIL_SECONDS, HookRun, run_plugin, stand_in
 from storage_benchmark import distribution
 from vendor_payloads import OPENCODE, WORKSPACE
 
 NORMAL_P95_BUDGET_MS = 150.0
-HARD_MAX_BUDGET_MS = (DEADLINE_SECONDS + TAIL_SECONDS) * 1000
+HARD_MAX_BUDGET_MS = (DEADLINE_SECONDS + REAP_TAIL_SECONDS) * 1000
 WARMUP_CALLS = 2
 DEFAULT_SAMPLES = 100
 DEFAULT_SLOW_SAMPLES = 8
@@ -46,8 +46,9 @@ def milliseconds(ran: HookRun) -> float:
 def judge(rows: Sequence[Row], baseline_ms: float) -> list[str]:
     """Every budget the measured rows break; an empty list means the adapters are as fast and as bounded as promised.
 
-    The normal-capture 95th percentile must be within its budget, and no row may take longer than the deadline plus the
-    reap tail. The plugin's normal row is judged net of the Node start-up the driver adds around it.
+    The normal-capture 95th percentile must be within its budget, and no row may take longer than the deadline plus
+    the reap tail the `kill` row needs. The plugin's normal row is judged net of the Node start-up the driver adds
+    around it.
     """
     problems: list[str] = []
     for row in rows:

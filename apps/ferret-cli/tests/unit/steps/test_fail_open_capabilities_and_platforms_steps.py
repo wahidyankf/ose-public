@@ -9,7 +9,7 @@ import pytest
 from pytest_bdd import given, parsers, scenario, then, when
 
 from ferret.application.capabilities import DimensionReport, report_dimension
-from ferret.application.ports import CaptureResult, Runtime
+from ferret.application.ports import Budget, CaptureResult, Runtime
 from ferret.domain.capability import CapabilitySnapshot, snapshot_from_document
 from ferret.domain.errors import FerretError
 from ferret.domain.event import Event
@@ -237,7 +237,7 @@ class BrokenEvents(FakeEvents):
     failure: FerretError = field(default_factory=lambda: FerretError("storage_unavailable"))
     attempts: int = 0
 
-    def capture(self, event: Event) -> CaptureResult:
+    def capture(self, event: Event, *, budget: Budget | None = None) -> CaptureResult:
         self.attempts += 1
         raise self.failure
 

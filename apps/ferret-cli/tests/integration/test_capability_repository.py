@@ -14,7 +14,7 @@ from ferret.adapters.sqlite_schema import SQLiteSchema, connect
 from ferret.adapters.system import SystemClock
 from ferret.domain.capability import Capability, CapabilitySnapshot, snapshot_from_document
 from ferret.domain.errors import FerretError
-from support.busy import PLANNED_BUSY_TIMEOUT_MS, record_busy_timeouts
+from support.busy import PLANNED_ATTEMPT_TIMEOUT_MS, record_busy_timeouts
 from support.snapshots import VECTOR_DOCUMENT, VECTOR_HASH, capability, snapshot_document
 
 NOW = datetime(2026, 9, 18, 8, 0, 0, tzinfo=UTC)
@@ -233,7 +233,10 @@ def test_a_writer_blocked_beyond_the_busy_timeout_fails_retryably_and_leaves_no_
         blocker.close()
 
     assert (caught.value.code, caught.value.retryable) == ("storage_unavailable", True)
-    assert budgets == [PLANNED_BUSY_TIMEOUT_MS]
+    # Every attempt is opened with the short attempt timeout, never with the budget: a budget handed to
+    # SQLite as a busy timeout is not a bound, which is the defect this asserts against.
+    assert budgets != []
+    assert set(budgets) == {PLANNED_ATTEMPT_TIMEOUT_MS}
     assert rows(database, "capability_snapshot") == []
     assert SQLiteCapabilityRepository(database).store_snapshot(make_snapshot()) == "stored"
 

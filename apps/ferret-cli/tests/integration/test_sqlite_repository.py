@@ -12,11 +12,13 @@ import pytest
 from ferret.adapters.sqlite_repository import SQLiteEventRepository
 from ferret.adapters.sqlite_schema import SQLiteSchema
 from ferret.adapters.system import SystemClock
+from ferret.application.ports import Budget
 from ferret.domain.errors import FerretError
 from ferret.domain.event import Event, event_from_document
 from support.burst import expected_rows, integrity_check, run_burst, stored_rows
-from support.busy import PLANNED_BUSY_TIMEOUT_MS, record_busy_timeouts
+from support.busy import PLANNED_ATTEMPT_TIMEOUT_MS, record_busy_timeouts, stepping_clock
 from support.events import VECTOR_DOCUMENT, VECTOR_HASH, event_document
+from support.fakes import FakeMonotonic
 
 NOW = datetime(2026, 9, 18, 8, 15, 31, tzinfo=UTC)
 LATER = datetime(2030, 1, 1, tzinfo=UTC)
@@ -180,7 +182,10 @@ def test_a_writer_blocked_beyond_the_busy_timeout_fails_retryably_and_leaves_no_
         blocker.close()
 
     assert (caught.value.code, caught.value.retryable) == ("storage_unavailable", True)
-    assert budgets == [PLANNED_BUSY_TIMEOUT_MS]
+    # Every attempt is opened with the short attempt timeout, never with the budget: a budget handed to
+    # SQLite as a busy timeout is not a bound, which is the defect this asserts against.
+    assert budgets != []
+    assert set(budgets) == {PLANNED_ATTEMPT_TIMEOUT_MS}
     assert rows(database, "event") == []
     assert SQLiteEventRepository(database).capture(make_event()) == "stored"
 
@@ -194,3 +199,31 @@ def test_three_repository_burst(database: Path) -> None:
     assert stored_rows(database) == expected_rows()
     assert integrity_check(database) == [("ok",)]
     assert len(rows(database, "workspace")) == len(bursts)
+
+
+def test_a_blocked_writer_stops_when_its_budget_is_spent_however_long_the_busy_timeout_runs(
+    database: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The regression for the defect that let a harness call overrun its deadline.
+
+    SQLite's busy timeout bounds each of the sequential lock waits a ``BEGIN IMMEDIATE`` makes, not the acquisition, so
+    the delivered code waited five to seven times the budget it thought it had. The acquisition now reads a monotonic
+    clock and stops once the budget is spent, which this asserts with an injected clock so it measures the rule and
+    not the host.
+    """
+    budget = Budget.start(FakeMonotonic(), 250)
+    clock = stepping_clock(monkeypatch, step_seconds=0.1)
+    blocker = sqlite3.connect(database, autocommit=True)
+    blocker.execute("BEGIN IMMEDIATE")
+    try:
+        with pytest.raises(FerretError) as caught:
+            SQLiteEventRepository(database).capture(make_event(), budget=budget)
+    finally:
+        blocker.execute("ROLLBACK")
+        blocker.close()
+
+    assert (caught.value.code, caught.value.retryable) == ("storage_unavailable", True)
+    # One reading fixes the deadline and each later one ends an attempt, so a 250 ms budget at 100 ms a reading gives
+    # up on the third: the acquisition is bounded by the clock, never by however long SQLite chose to wait.
+    assert clock.readings == 4
+    assert rows(database, "event") == []

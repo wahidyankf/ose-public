@@ -10,13 +10,13 @@ from pathlib import Path
 
 import pytest
 
-from ferret.adapters.sqlite_schema import SQLiteSchema
+from ferret.adapters.sqlite_schema import WRITE_LOCK_BUDGET_MS, SQLiteSchema
 from ferret.application.maintenance import prune_due
 from ferret.application.ports import Budget, ExpiryCounters, PruneResult
 from ferret.domain.query import criteria_from_options
 from ferret.domain.retention import PRUNE_BUDGET_MS, PRUNE_ROW_LIMIT
 from support.burst import integrity_check
-from support.busy import PLANNED_BUSY_TIMEOUT_MS, record_busy_timeouts
+from support.busy import PLANNED_ATTEMPT_TIMEOUT_MS, PLANNED_BUSY_TIMEOUT_MS, record_busy_timeouts
 from support.fakes import FIXED_NOW, FakeMonotonic, FixedClock, SimulatedCrash, make_world
 from support.machine import Machine, make_machine
 from support.populate import WORKSPACE_A, WORKSPACE_B, numbers, stamp
@@ -174,9 +174,12 @@ def test_a_prune_that_cannot_take_the_lock_skips_and_changes_nothing_within_its_
         holder.close()
 
     assert result == PruneResult("skipped")
-    assert PRUNE_BUDGET_MS in budgets
+    # The prune's attempts use the short attempt timeout; its own budget bounds the acquisition instead. The
+    # reading that decides whether a prune is due keeps the ordinary timeout, because a reader never contends.
+    assert PLANNED_ATTEMPT_TIMEOUT_MS in budgets
+    assert set(budgets) <= {PLANNED_ATTEMPT_TIMEOUT_MS, PLANNED_BUSY_TIMEOUT_MS}
     assert (event_numbers(machine), marker(machine), counters(machine)) == ([1, 2, 3], None, ExpiryCounters(0, 0))
-    assert PRUNE_BUDGET_MS + PLANNED_BUSY_TIMEOUT_MS < 1000
+    assert PRUNE_BUDGET_MS + WRITE_LOCK_BUDGET_MS < 1000 + PRUNE_BUDGET_MS
 
 
 def test_a_failure_inside_the_transaction_rolls_back_the_rows_and_the_counter(machine: Machine) -> None:

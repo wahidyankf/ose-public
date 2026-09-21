@@ -232,7 +232,7 @@ class FakeEvents:
     reads: int = 0
     lock: threading.Lock = field(default_factory=threading.Lock)
 
-    def capture(self, event: Event) -> CaptureResult:
+    def capture(self, event: Event, *, budget: Budget | None = None) -> CaptureResult:
         with self.lock:
             self.captures += 1
             existing = next((held for held in self.stored if held.event_id == event.event_id), None)

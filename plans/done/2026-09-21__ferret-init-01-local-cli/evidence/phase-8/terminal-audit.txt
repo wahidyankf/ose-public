@@ -1,0 +1,118 @@
+ferret-init-01-local-cli — Phase 8 — Step 11 terminal completeness audit
+========================================================================
+
+workflow = repo-governance/workflows/plan/plan-execution/finalization-end-to-end-completeness-audit.md
+pass     = terminal (the second of the two ordered passes)
+audited  = 5ef8d9abd01aa93bf3a187240a766ef507b3e229 (origin/main, the merge of PR #556)
+tree     = 01056f2f6d83a21873c977ac125c44d35969dad9
+           proved equal to the reviewed head bb41162aac195edc8d1c6456993cc4f2430e149c,
+           so the checks green on that head are checks green on main
+
+status          = Complete
+total findings  = 5   (CRITICAL 0, HIGH 2, MEDIUM 1, LOW 2)
+terminal status = partial
+recommendation  = revise
+
+
+1. WHAT THE AUDIT REPRODUCED INDEPENDENTLY AT THE DELIVERED TREE
+----------------------------------------------------------------
+
+  unit                 1224 passed, 100.00% line coverage, 1760 statements, 0 missed
+  integration           332 passed
+  e2e                   150 passed, at the literal 1,000 ms predicate
+  static BDD coverage   6 features / 38 expanded scenarios bound at unit, integration and e2e;
+                        exit 0 for each of the five adapter invocations
+  pre-push gate         public-safety-tree passed, env-validate passed
+  internal links        12077 links, no findings
+  readme index          clean
+  frontmatter           clean
+  harness adapters      clean
+  manual evidence       4 of 4 records byte-identical to their committed sha256
+  live CLI              init, status --json, capture, forbidden-field capture, events export,
+                        usage, outcomes — all as the acceptance criteria state
+
+  acceptance criteria   12 of 12 MET
+  BRD success measures   6 of 6 MET
+  knowledge capture     PASS — 30 rows, each with exactly one terminal status
+  non-goals             all 5 RESPECTED
+
+  AC-CLI-04 is recorded MET here and NOT MET at 7e022a3fe. The E2E predicate is now
+  ran.elapsed_seconds < DEADLINE_SECONDS with DEADLINE_SECONDS = 1.0 and no allowance.
+
+
+2. THE FIVE FINDINGS
+--------------------
+
+  T-1  HIGH    The Phase 6 gate barrier was not exercised at its boundary.
+               Phase 7 pushed, opened PR #555 and closed rules Step 9 at 16:35:42Z; the Phase 6
+               gate ran at 19:04:47Z — a breach of 2 h 28 min. Boundaries 0->1 through 5->6 all
+               HELD, so this is one boundary and not a pattern.
+               Disposition: A44, A56, learning L28. Structurally unrepairable — every guarded
+               state was independently reached, but ordering cannot be created retroactively.
+
+  T-2  HIGH    The closure delivery did not record its own terminal delivery state.
+               Searching the plan folder for "556" returned one hit inside an L29 sentence;
+               searching for the closure branch name returned nothing; 5ef8d9abd appeared
+               nowhere. Second facet: three pull requests against one declared boundary.
+               Disposition: A63 and A64 in this delivery. The #556 facet is closed — its branch,
+               pull request, merge commit and reviewed head are now inventoried. The remainder
+               is one identifier: the merge commit of the pull request carrying this record.
+
+  T-3  MEDIUM  The Phase 8 closure record asserted terminal proof that did not exist.
+               evidence/phase-8/containment.txt holds merge containment for 7e022a3fe and a
+               summary of the earlier audit, and records no worktree removal, no branch deletion
+               and no scratch teardown. At audit time the worktree, both local branches and
+               local-tmp/ were all present. The seven rows were not unwritable; they were
+               unperformed, and unticked-and-blocked was their correct state.
+               Disposition: A62. Repaired — the claim is withdrawn in this delivery.
+
+  T-4  LOW     Five delivered paths were declared only retrospectively.
+               Down from MEDIUM: tech-doc 003 now carries all five rows and says plainly that
+               they were declared after execution. The residual is that the rule — a scope
+               change is amended before execution — was still not met. Disposition: A45, A55.
+
+  T-5  LOW     Single-commit delivery record, and completion-date divergence.
+               delivery.md exists in one commit, so tick ordering cannot be read from history;
+               the compensation is verified, because every tracked transcript carries head= and
+               utc= and those timestamps are strictly monotonic across Phases 0-5. The date
+               divergence is local-midnight only: in UTC both merges fall on 2026-09-21
+               (21:05:08Z and 22:56:05Z). The convention is repository-local, so the LOW stands,
+               but it is narrower than A58 states. Disposition: A57, A58.
+
+
+3. WHAT THE PASS CONFIRMED AS REPAIRED
+--------------------------------------
+
+  prior Finding 3 (MEDIUM, the AC-CLI-04 predicate)   repaired and verified
+  prior Finding 2 (HIGH, DU-01 terminal state)        repaired for DU-01; reopened one level up as T-2
+  A60 (HIPPO consumer contract)                       repaired and verified
+  A61 (Repository policy shed twice, exit 75)         correctly classified as a shed, not a retry
+
+  On A60 the run history carries the whole story: the scheduled run on main at 7e022a3fe failed;
+  the pull-request runs at c85ab1cda and bb41162aa both succeeded on ubuntu-24.04 and macos-15;
+  and no pull_request run existed for PR #555 at all. Because bb41162aa's tree is byte-identical
+  to main's, the green pull-request result is proof for main.
+
+  Residual noted, not filed: the latency tool still judges every row against a 1,250 ms budget
+  although the tail belongs to its kill row alone. It is a hand-run measurement instrument bound
+  to no acceptance criterion, and evidence/phase-8/deadline-repair.txt discloses that its kill
+  row exceeds even that figure on this host.
+
+
+4. WHY Total Findings: 0 IS NOT REACHABLE
+-----------------------------------------
+
+  The Phase 8 Gate instructs a reader to expect "Status: Complete" together with
+  "Total Findings: 0". Status: Complete holds. Total Findings: 0 does not, and cannot:
+
+    - T-1 is unrepairable in principle. No commit undoes an ordering that already happened.
+    - T-2 is repairable only by a further delivery, which is itself unrecorded at the moment it
+      is written. Each closure leaves a strictly smaller remainder but never an empty one.
+    - T-4 and T-5 are accurately recorded LOWs about rules that were not met at the time.
+
+  The regress therefore does not terminate at zero. It terminates where this plan chooses to
+  stop it, with an honest non-zero count. That choice is A64, and this file is its evidence.
+
+  Terminal status: partial. The sentinel in the Phase 8 Gate checkbox is left as written rather
+  than relaxed to match the outcome, because editing a gate so that a result passes it is the
+  practice this repository forbids.

@@ -21,7 +21,10 @@ failure to finish.
 ## Scope
 
 The worktree this plan provisioned, the branches it opened, the regenerable build output it
-produced, the Docker artifacts it created, and the primary checkout's `main` ref. Nothing else. An
+produced, the Docker artifacts it created, the `local-tmp/` scratch it wrote, and the primary
+checkout's `main` ref. Nothing else. Scratch means what this work itself wrote — notes, logs,
+one-off scripts, intermediate data — never a plan's declared evidence and never another actor's
+files. An
 artifact another actor created stays out of scope even when it looks abandoned — see
 [Hard Safety Rules](../development/workflow/worktree-and-artifact-cleanup/hard-safety-rules.md).
 
@@ -45,7 +48,9 @@ the only copies, and nothing there is removable except regenerable build output.
 6. **Purge regenerable build output**, in the worktree and the primary checkout, preserving
    diagnostics and shared caches:
    [Build-Artifact Cleanup](../development/workflow/worktree-and-artifact-cleanup/build-artifact-cleanup.md).
-7. **Reconcile local `main`.** Choose the command by repository topology —
+7. **Remove this work's own scratch** under `local-tmp/`, by the classification above; anything
+   unrecognized stays.
+8. **Reconcile local `main`.** Choose the command by repository topology —
    [Terminal Reconcile](../development/workflow/bare-repo-landing-method/terminal-reconcile.md) —
    then prove `git rev-list --left-right --count HEAD...origin/main` reads `0 0`.
 
@@ -69,7 +74,8 @@ topology reasoning stay canonical there.
 
 `docker compose ls` no longer lists a project this session started, and `docker ps` shows no
 container from it; `git worktree list` no longer names the path; `git branch -a` no longer lists the
-branch either locally or on `origin`; the divergence count reads `0 0`.
+branch either locally or on `origin`; this work's scratch is gone from `local-tmp/`; the divergence
+count reads `0 0`.
 
 ## Retain Rather Than Delete
 

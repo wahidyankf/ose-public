@@ -80,7 +80,7 @@ canonical Gherkin under `specs/apps/ferret/`; ten ship as tests only, per the bo
 ### Corpus Boundary
 
 Not every scenario below belongs in `specs/apps/ferret/`. The
-[BDD contract](../../../repo-governance/development/behaviour-driven-development.md) scopes the canonical corpus
+[BDD contract](../../../../repo-governance/development/behaviour-driven-development.md) scopes the canonical corpus
 to **observable behaviour** in the owner's durable domain language, and forbids plan-specific identifiers there.
 Ten scenarios fail one of those tests and ship as ordinary parametrized unit or integration tests instead,
 marked **tests only** in the tables. They still carry mandatory Unit proof and still count toward the 99%

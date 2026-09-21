@@ -10,6 +10,14 @@ from ferret.domain.errors import FerretError
 from ferret.domain.timestamps import format_timestamp
 
 BUSY_TIMEOUT_MS = 250
+# One attempt at the write lock gets this busy timeout, and the acquisition as a whole is capped by the caller's
+# budget. SQLite's handler still does the waiting, because a bare retry loop starves a writer that keeps losing a
+# burst; what it may not do is set the bound, since it applies to each of the sequential lock waits a
+# BEGIN IMMEDIATE makes rather than to the acquisition, so one attempt costs a multiple of it.
+LOCK_ATTEMPT_TIMEOUT_MS = 20
+# How long taking the write lock may take when no caller states its own budget. A durable capture waits this long
+# rather than dropping an event, and it stays under the one second every adapter call promises.
+WRITE_LOCK_BUDGET_MS = 900
 _SYNCHRONOUS_FULL = 2
 
 _CLOSED_EVENT_TYPES = (

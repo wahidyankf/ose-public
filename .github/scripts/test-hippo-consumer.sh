@@ -217,9 +217,36 @@ grep -Fx '          RHINO_GATE_SURFACE: pull-request' .github/workflows/pr-quali
 test -x scripts/public-safety/check-commit-message
 
 # The pull-request formatter runs in Rhino's disposable snapshot but resolves
-# the installed project formatter through the caller's relative Husky-style
+# the installed project formatters through the caller's relative Husky-style
 # prefix. An absolute source-root prefix would widen the snapshot boundary.
-grep -F 'PATH="node_modules/.bin:$PATH"' .github/workflows/pr-quality-gate.yml
+# The entry list grows with the languages this repository ships, so the property
+# is asserted rather than one literal prefix: the node prefix stays, every entry
+# is relative, and the caller's own PATH is still appended last.
+formatter_path=$(grep -o 'PATH="[^"]*"' .github/workflows/pr-quality-gate.yml | head -1 | sed 's/^PATH="//; s/"$//')
+if [ -z "$formatter_path" ]; then
+	echo "the pull-request formatter PATH prefix is missing" >&2
+	exit 1
+fi
+case ":$formatter_path:" in
+*:node_modules/.bin:*) ;;
+*)
+	echo "the pull-request formatter PATH must keep the node_modules/.bin prefix" >&2
+	exit 1
+	;;
+esac
+case ":$formatter_path" in
+*:/*)
+	echo "the pull-request formatter PATH must carry no absolute prefix: $formatter_path" >&2
+	exit 1
+	;;
+esac
+case "$formatter_path" in
+*:'$PATH') ;;
+*)
+	echo "the pull-request formatter PATH must append the caller's own PATH last" >&2
+	exit 1
+	;;
+esac
 
 # The retired F# CLI owned the former reusable-workflow job. Leaving its name in
 # any `needs` list makes GitHub reject the whole workflow before it starts.

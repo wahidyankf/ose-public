@@ -430,6 +430,11 @@ plan/spec documentation inherit the repository MIT license; third-party packages
 │   ├── behaviour-coverage.mjs [E] — Python pytest-bdd/coverage adapter recognition
 │   └── behaviour-coverage.test.mjs [E] — positive/negative Python project fixtures
 ├── repo-config.yml [E] — project tags, ownership, gate/binding inventory
+├── package.json [E] — the workspace's Python convenience scripts for the new projects
+├── apps/README.md [E] — annotated index row for each new application
+├── specs/README.md [E] — annotated index row for the new product corpus
+├── specs/apps/README.md [E] — annotated index row for the new application corpus
+├── docs/reference/monorepo-structure.md [E] — the new applications in the structure reference
 └── plans/
     ├── backlog/ferret-init-02-local-backend/README.md [E] — stable prerequisite marker becomes dated done link
     ├── in-progress/ferret-init-01-local-cli/** [E→D] — execution evidence then lifecycle move
@@ -437,6 +442,11 @@ plan/spec documentation inherit the repository MIT license; third-party packages
     ├── in-progress/README.md [E] — active-plan index during execution
     └── done/README.md [E] — completion index at archival
 ```
+
+The five rows above `plans/` — `package.json`, the three README indexes, and the structure reference — were
+declared after execution rather than before it, and amendment A45 records that. They are here so the declared set and
+the delivered set agree: each is forced by a repository gate the moment the new project and spec trees exist, which is
+why execution found them rather than analysis.
 
 ### More Detail
 

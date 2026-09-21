@@ -9,7 +9,7 @@ that fronts this, because a hook must never disturb the harness that called it.
 from dataclasses import replace
 
 from ferret.application.maintenance import prune_due
-from ferret.application.ports import CaptureResult, Runtime
+from ferret.application.ports import Budget, CaptureResult, Runtime
 from ferret.application.privacy import RAW_LIMIT_BYTES, project_hook_payload
 from ferret.application.store import installation_id_from, read_key, require_initialized
 from ferret.domain.event import EVENT_SCHEMA_VERSION, Event, event_from_document, event_hash
@@ -19,6 +19,10 @@ from ferret.domain.storage import IDENTITY_FILE
 from ferret.domain.timestamps import format_timestamp
 
 _UNSEALED_HASH = "0" * 64
+# A harness call must return inside the deadline AC-CLI-04 states, whatever the store is doing, so the wait for
+# the write lock is bounded here rather than left to the durable default. The prune before it carries its own
+# budget, and the two together leave the rest of the second to the interpreter and the mapping.
+HOOK_CAPTURE_BUDGET_MS = 250
 
 
 def capture_hook(runtime: Runtime, *, harness: str, event: str) -> CaptureResult | None:
@@ -66,4 +70,4 @@ def capture_hook(runtime: Runtime, *, harness: str, event: str) -> CaptureResult
     )
     sealed = event_from_document(replace(draft, event_hash=event_hash(draft)).to_document(), now=now)
     prune_due(runtime)
-    return runtime.events.capture(sealed)
+    return runtime.events.capture(sealed, budget=Budget.start(runtime.monotonic, HOOK_CAPTURE_BUDGET_MS))

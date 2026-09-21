@@ -21,10 +21,10 @@ DRIVER = Path(__file__).with_name("opencode_driver.mjs")
 TERM_SECONDS = 0.9
 KILL_SECONDS = 1.0
 DEADLINE_SECONDS = 1.0
-# A call that needed KILL returns just after the deadline, because the wrapper reaps the child and exits after sending
-# it, and a lock wait can use the whole budget when the host's timers run late. This tail is how much later than the
-# deadline still counts as meeting it; a call that is hung, rather than late, is bounded by HUNG_SECONDS below.
-TAIL_SECONDS = 0.25
+# A call that needed KILL returns just after the deadline, because the wrapper reaps the child and exits after
+# sending it. This tail belongs to that row alone: it is a measurement budget for the latency tool's `kill`
+# condition, never an allowance on the deadline an acceptance criterion states.
+REAP_TAIL_SECONDS = 0.25
 # A harness call that has not returned by now is hung, whatever the machine's load; the lower bounds prove the timers.
 HUNG_SECONDS = 4.0
 CLEAN_PATH = "/usr/bin:/bin"
@@ -43,8 +43,12 @@ class HookRun:
 
 
 def within_deadline(ran: HookRun) -> bool:
-    """Whether an adapter call returned by its 1,000 ms deadline, allowing for the reap after a KILL."""
-    return ran.elapsed_seconds < DEADLINE_SECONDS + TAIL_SECONDS
+    """Whether an adapter call returned by the 1,000 ms deadline the acceptance criterion states, with no allowance.
+
+    Every call site is a condition whose child dies at TERM, so the deadline is the literal one. A call that needs
+    KILL returns just after it, and the two rows that provoke one assert their own bounds rather than this predicate.
+    """
+    return ran.elapsed_seconds < DEADLINE_SECONDS
 
 
 def _script(directory: Path, name: str, body: str) -> Path:

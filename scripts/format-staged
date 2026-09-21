@@ -88,7 +88,9 @@ if (( ${#fsharp_paths[@]} > 0 )); then
   prepare_fantomas_runtime
   fantomas "${fsharp_paths[@]}"
 fi
-(( ${#python_paths[@]} == 0 )) || ruff format "${python_paths[@]}"
+# --no-cache keeps ruff from writing .ruff_cache next to the snapshot: Rhino rejects a mutator that
+# touches anything outside the index paths it selected, and a formatter run needs no cache.
+(( ${#python_paths[@]} == 0 )) || ruff format --no-cache "${python_paths[@]}"
 (( ${#go_paths[@]} == 0 )) || gofmt -w "${go_paths[@]}"
 (( ${#elixir_paths[@]} == 0 )) || scripts/format-elixir.sh "${elixir_paths[@]}"
 (( ${#csharp_paths[@]} == 0 )) || csharpier format "${csharp_paths[@]}"

@@ -1,0 +1,51 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli pytest apps/ferret-cli/tests/unit/steps/test_local_query_and_export_steps.py apps/ferret-cli/tests/integration/steps/test_local_query_and_export_steps.py -q --tb=line --color=no -p no:cacheprovider -rf --no-cov
+........F........F                                                       [100%]
+=================================== FAILURES ===================================
+file <worktree>/apps/ferret-cli/.venv/lib/python3.14/site-packages/pytest_bdd/scenario.py, line 296
+          def scenario_wrapper(request: FixtureRequest, _pytest_bdd_example: dict[str, str]) -> Any:
+E       fixture 'network_attempts' not found
+>       available fixtures: _pytest_bdd_example, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, cov, doctest_namespace, keep_broken_pipe_disposition, monkeypatch, no_cover, pytestbdd_stepdef_given_FERRET is initialized, pytestbdd_stepdef_given_no backend URL, token, or process exists, pytestbdd_stepdef_given_the database contains events from two workspaces and two harnesses, pytestbdd_stepdef_given_trace, pytestbdd_stepdef_then_JSON Lines export contains one canonical event object per line, pytestbdd_stepdef_then_a failure instead emits a closed error code exposing no path beyond the resolved data home, pytestbdd_stepdef_then_diagnostics do not contaminate standard output, pytestbdd_stepdef_then_every command completes using only the local data home, pytestbdd_stepdef_then_no network connection is attempted, pytestbdd_stepdef_then_only matching events are returned in stable timestamp and event-ID order, pytestbdd_stepdef_then_status identifies backend synchronization as unavailable by design, pytestbdd_stepdef_then_stdout is one JSON object carrying schemaVersion and command, pytestbdd_stepdef_then_the human output of the same command derives from that same result, pytestbdd_stepdef_then_trace, pytestbdd_stepdef_when_the user captures, lists, exports, summarizes, and maintains local events, pytestbdd_stepdef_when_the user filters by UTC interval, harness, workspace, event type, and outcome, pytestbdd_stepdef_when_the user runs {command} with --json, pytestbdd_stepdef_when_trace, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+<worktree>/apps/ferret-cli/.venv/lib/python3.14/site-packages/pytest_bdd/scenario.py:296
+file <primary>/worktrees/
+file <worktree>/apps/ferret-cli/.venv/lib/python3.14/site-packages/pytest_bdd/scenario.py, line 296
+          def scenario_wrapper(request: FixtureRequest, _pytest_bdd_example: dict[str, str]) -> Any:
+E       fixture 'network_attempts' not found
+>       available fixtures: _pytest_bdd_example, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, cov, doctest_namespace, keep_broken_pipe_disposition, monkeypatch, no_cover, pytestbdd_stepdef_given_FERRET is initialized, pytestbdd_stepdef_given_no backend URL, token, or process exists, pytestbdd_stepdef_given_the database contains events from two workspaces and two harnesses, pytestbdd_stepdef_given_trace, pytestbdd_stepdef_then_JSON Lines export contains one canonical event object per line, pytestbdd_stepdef_then_a failure instead emits a closed error code exposing no path beyond the resolved data home, pytestbdd_stepdef_then_diagnostics do not contaminate standard output, pytestbdd_stepdef_then_every command completes using only the local data home, pytestbdd_stepdef_then_no network connection is attempted, pytestbdd_stepdef_then_only matching events are returned in stable timestamp and event-ID order, pytestbdd_stepdef_then_status identifies backend synchronization as unavailable by design, pytestbdd_stepdef_then_stdout is one JSON object carrying schemaVersion and command, pytestbdd_stepdef_then_the human output of the same command derives from that same result, pytestbdd_stepdef_then_trace, pytestbdd_stepdef_when_the user captures, lists, exports, summarizes, and maintains local events, pytestbdd_stepdef_when_the user filters by UTC interval, harness, workspace, event type, and outcome, pytestbdd_stepdef_when_the user runs {command} with --json, pytestbdd_stepdef_when_trace, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+<worktree>/apps/ferret-cli/.venv/lib/python3.14/site-packages/pytest_bdd/scenario.py:296
+file <primary>/worktrees/
+=========================== short test summary info ============================
+FAILED apps/ferret-cli/tests/unit/steps/test_local_query_and_export_steps.py::test_use_ferret_without_a_backend
+FAILED apps/ferret-cli/tests/integration/steps/test_local_query_and_export_steps.py::test_use_ferret_without_a_backend
+2 failed, 16 passed in 0.35s
+note=C11-UNIT/C11-INTEGRATION: expected RED, the scenario is bound but the network-denial fixture and the machine stdin support do not exist yet
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:38:42Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli-e2e pytest apps/ferret-cli-e2e/tests/test_standalone.py apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py -q --tb=line --color=no -p no:cacheprovider -rf
+
+==================================== ERRORS ====================================
+__________________ ERROR collecting tests/test_standalone.py ___________________
+ImportError while importing test module '<worktree>/apps/ferret-cli-e2e/tests/test_standalone.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+apps/ferret-cli-e2e/tests/test_standalone.py:5: in <module>
+    from denied_sockets import attempted, denied_socket_environment
+E   ModuleNotFoundError: No module named 'denied_sockets'
+______ ERROR collecting tests/steps/test_local_query_and_export_steps.py _______
+ImportError while importing test module '<worktree>/apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py:15: in <module>
+    from denied_sockets import LOG_VARIABLE, attempted, denied_socket_environment
+E   ModuleNotFoundError: No module named 'denied_sockets'
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+2 errors in 0.09s
+note=C11-E2E: expected RED, the socket-denial support and the shared local-command runner do not exist yet
+exit=2
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:38:52Z

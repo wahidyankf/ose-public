@@ -31,6 +31,10 @@ scan:
     - deps
     - _build
     - cover
+    - .venv
+    - __pycache__
+    - .pytest_cache
+    - .ruff_cache
     - fixtures
     - raw
     - done
@@ -302,6 +306,7 @@ policies:
         - path: repo-governance
         - path: specs/apps/ayokoding
         - path: specs/apps/crane
+        - path: specs/apps/ferret
         - path: specs/apps/organiclever
         - path: specs/apps/ose/app-web
         - path: specs/apps/ose/be

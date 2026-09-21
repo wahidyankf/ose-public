@@ -466,7 +466,7 @@ and exit zero. Tests inspect SQLite/evidence fixtures, never process output.
   "databaseBytes": 65536,
   "walBytes": 0,
   "freelistBytes": 4096,
-  "highWaterBytes": 69632,
+  "highWaterBytes": 65536,
   "expiredLocalTotal": 7,
   "expiredBeforeAckTotal": 0,
   "lastMaintenanceAt": "2026-09-18T07:00:00.000Z",

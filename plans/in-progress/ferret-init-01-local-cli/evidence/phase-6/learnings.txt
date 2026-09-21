@@ -1,0 +1,370 @@
+$ sh local-tmp/claude/p6-learnings-tracked.sh
+plans/in-progress/ferret-init-01-local-cli/learnings.md
+note=PHASE 6 learnings: the existing top-level learnings file is a tracked path (the plan's tracked-file check, run from a script file because the worktree guard refuses git text in the shell)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:37:16Z
+
+$ python3 local-tmp/claude/learnings-checks.py
+rows=20 distinct_ids=20 file_sha_lines=32
+sensitivity gate over the whole file: no secret, credential, address, or machine path found
+relevance gate over the whole file: every row names only this public repository and its upstream tools
+L01 status=retained-plan-specific
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: None: the guard is a user-level hook outside this repository's authority (A28).
+    authority: no edit: the row stays in this plan's own record
+    evidence: `evidence/phase-0/route.txt`, `delivery.md#execution-amendments`
+L02 status=retained-plan-specific
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: Amendments A27, A28, and A29 in this plan's delivery record; the plan folder is archived with them.
+    authority: no edit: the row stays in this plan's own record
+    evidence: `delivery.md#execution-amendments`
+L03 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: The upstream Rhino repository and the documents that use the `=` shorthand (A2, A11, A30).
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `evidence/phase-5/gate.txt`, `delivery.md#execution-amendments`
+L04 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: The upstream Rhino repository, as application work.
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `evidence/phase-1/step-7.txt`, `evidence/phase-1/step-8.txt`
+L05 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: The rules-propagation workflow, in its own delivery (A2).
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `evidence/phase-1/step-8.txt`, `delivery.md#execution-amendments`
+L06 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: repo-governance/development/infra/nx-targets/tag-convention-four-dimension-scheme.md, repo-governance/workflows/infra/development-environment-setup/tool-inventory.md, repo-governance/workflows/infra/development-environment-setup/minimal-scope-quick-reference.md, .agents/skills/harness-compatibility-protocol/reference/phase0-invariant-6-config-parity.md
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `evidence/phase-1/step-3.txt`, `delivery.md#execution-amendments`
+L07 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: docs/reference/platform-bindings.md
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `evidence/phase-0/harness-probe.txt`, `evidence/phase-4/smoke.txt`
+L08 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: .claude/settings.json, docs/reference/platform-bindings.md
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `evidence/phase-4/smoke.txt`
+L09 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: docs/reference/platform-bindings.md
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `evidence/phase-4/smoke.txt`
+L10 status=retained-plan-specific
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: None: model availability at run time has no durable owner in this repository.
+    authority: no edit: the row stays in this plan's own record
+    evidence: `evidence/phase-4/smoke.txt`
+L11 status=retained-plan-specific
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: The helper design in A23; no Python testing standard exists to host it.
+    authority: no edit: the row stays in this plan's own record
+    evidence: `evidence/phase-4/adapters-refactor.txt`, `delivery.md#execution-amendments`
+L12 status=retained-plan-specific
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about FERRET; no infra-private content
+    destination: The `ferret-cli:build` target rebuilds on every change (A24).
+    authority: no edit: the row stays in this plan's own record
+    evidence: `evidence/phase-4/adapters-refactor.txt`, `delivery.md#execution-amendments`
+L13 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about FERRET; no infra-private content
+    destination: A CI validator change belongs in a separate authorized delivery (A26).
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `evidence/phase-4/ci-evidence-refactor.txt`, `delivery.md#execution-amendments`
+L14 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: apps/ferret-cli/README.md
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `evidence/phase-5/manual-query.txt`, `delivery.md#execution-amendments`
+L15 status=linked
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature, evidence/phase-5/storage.txt
+    authority: no edit: an existing owner already states it
+    evidence: `evidence/phase-5/storage.txt`, `evidence/phase-5/storage.json`
+L16 status=retained-plan-specific
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: Decision D12 in this plan; a Linux CI run of the same test is a Phase 7 item.
+    authority: no edit: the row stays in this plan's own record
+    evidence: `evidence/phase-3/ac-cli-12-green.txt`, `delivery.md#execution-amendments`
+L17 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about FERRET; no infra-private content
+    destination: A separate investigation; no test, assertion, or retry was changed because of it.
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `evidence/phase-2/projects.txt`
+L18 status=linked
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: apps/ferret-cli/tests/support/manual_evidence.py, apps/ferret-cli/tests/support/manual_retention_fixture.py
+    authority: no edit: an existing owner already states it
+    evidence: `evidence/phase-5/manual-refactor.txt`, `evidence/phase-5/retention.txt`
+L19 status=reviewed-none
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: HIPPO is an independent repository, and the wait changed no result.
+    authority: no edit: nothing durable would change behaviour
+    evidence: `delivery.md`
+L20 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: apps/ferret-cli/README.md
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `evidence/phase-4/adapters-refactor.txt`, `delivery.md#execution-amendments`
+statuses: linked=2, promoted=6, reported-without-plan-authorization=5, retained-plan-specific=6, reviewed-none=1
+reported-without-plan-authorization rows (handoff: the Phase 6 status message to the user): L03, L04, L05, L13, L17
+result: no open row, no placeholder, every status terminal
+note=PHASE 6 learnings: every row of learnings.md inspected; sensitivity, relevance, destination, and authority checks and exactly one terminal status per row (the check reads learnings.md itself)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:37:19Z
+
+$ rtk npm run lint:md
+> ./hippo run --class ephemeral --resource-tier light --disk-path . -- markdownlint-cli2 "**/*.md"
+markdownlint-cli2 v0.21.0 (markdownlint v0.40.0)
+Finding: **/*.md !node_modules/** !**/node_modules/** !libs/*/deps/** !libs/*/_build/** !apps/*/deps/** !apps/*/_build/** !dist/** !build/** !**/build/** !**/target/** !.next/** !**/.next/** !.nx/** !apps/*/public/** !generated-reports/** !**/.dart_tool/** !.vscode/** !.idea/** !apps/*/playwright-report/** !apps/*/test-results/** !apps/*/.venv/** !**/.venv/** !apps/*/tests/**/bin/** !apps/*/tests/**/obj/** !.claude/worktrees/** !worktrees/** !local-tmp/** !.memsearch/** !docs/reference/security/frameworks/nist-sp-800-53-rev5.md !plans/done/** !archived/**
+Linting: 7384 file(s)
+Summary: 0 error(s)
+note=PHASE 6 learnings destination: docs promotion check over every Markdown file, after the learnings rows and the README sentence landed
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:37:33Z
+
+$ rtk npm run format:md:check
+> ./hippo run --class ephemeral --resource-tier light --disk-path . -- prettier --check "**/*.md"
+Checking formatting...
+All matched files use Prettier code style!
+note=PHASE 6 learnings destination: Markdown formatting check over every Markdown file
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:38:34Z
+
+$ rtk ./rhino md internal-link validate
+[internal-link] checked 12093 links, no findings
+note=PHASE 6 learnings destination: internal links over the whole repository (the pinned Rhino has no per-path link command, A11), which covers every promoted destination and the new audit
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:48:59Z
+
+$ sh local-tmp/claude/docs-diffcheck.sh
+diff --check: no whitespace problem in tracked changes
+note=PHASE 6 learnings destination: the whitespace check over tracked changes (run from a script file because the worktree guard refuses git text in the shell)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:49:06Z
+
+$ rtk ./rhino harness adapters generate
+[harness-adapters] canonical adapter generation is current
+note=PHASE 6 learnings destination, rule promotion (L06): the Phase 1 Step 8 generation command as A2 maps it (the plan's npm script does not exist); the routes must already be current
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:49:17Z
+
+$ rtk ./rhino harness adapters validate
+[harness-adapters] canonical adapter validation is clean
+note=PHASE 6 learnings destination, rule promotion (L06): the four Phase 1 Step 8 validation runs are the one pinned command (A2); exit 0 and no drift
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:49:30Z
+
+$ rtk rg -n "^step-[0-8]: complete$|^step-9: pending-same-pr$|^open-enforcement-rows: 0$" local-tmp/rules-propagation/rules-propagation__7d7e3e__2026-09-21--09-20__manifest.md
+66:step-0: complete
+67:step-1: complete
+68:step-2: complete
+69:step-3: complete
+70:step-4: complete
+71:step-5: complete
+72:step-6: complete
+73:step-7: complete
+75:open-enforcement-rows: 0
+77:step-8: complete
+78:step-9: pending-same-pr
+note=PHASE 6 learnings destination, rule promotion (L06): the rules-propagation manifest gate (Steps 0-8 complete, Step 9 pending in the same pull request, zero open enforcement rows: eleven lines)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:49:41Z
+
+
+destination summary: promoted rows L06 (rule surfaces), L07, L08, L09, L14, L20 (docs, settings, README) were checked by the docs commands and, for L06, the rule commands and manifest gate above. No row promotes code or a test, so the affected build, typecheck, lint, and quick-test command does not apply (L15 and L18 are links to owners that already exist and were not edited). Every listed command exited 0 and every row holds one terminal status; no placeholder, open row, or missing authority remains.
+$ python3 local-tmp/claude/p6r-learnings-recheck.py
+rows=25 distinct_ids=25 file_sha_lines=37
+sensitivity gate over the whole file: no unadjudicated secret, credential, address, or machine path found
+    adjudicated match '/Users/' x1: L21 quotes the `maintainer-path` gate shape `/Users/<name>/`; the segment is the literal placeholder `<name>`, not an account
+    adjudicated match '/home/' x1: L21 quotes the same gate's second shape `/home/<name>/`, likewise placeholder-terminated
+relevance gate over the whole file: every row names only this public repository and its upstream tools
+placeholder gate over the whole file: 1 bracketed tokens, all adjudicated — the bracketed tokens are redaction placeholders quoted from the sanitized evidence (`<name>`, `<user>`, `<tmpdir>`, `<brew-prefix>`), not unfilled plan fields
+L01 status=retained-plan-specific
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: None: the guard is a user-level hook outside this repository's authority (A28).
+    authority: no edit: the row stays in this plan's own record
+    evidence: `evidence/phase-0/route.txt`, `delivery.md#execution-amendments`
+L02 status=retained-plan-specific
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: Amendments A27, A28, and A29 in this plan's delivery record; the plan folder is archived with them.
+    authority: no edit: the row stays in this plan's own record
+    evidence: `delivery.md#execution-amendments`
+L03 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: The upstream Rhino repository for the missing commands, and this repository for the documents that write the surface option with an equals sign (A2, A11, A30).
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `evidence/phase-5/gate.txt`, `delivery.md#execution-amendments`
+L04 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: The upstream Rhino repository, as application work on its parity checks.
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `evidence/phase-1/step-7.txt`, `evidence/phase-1/step-8.txt`
+L05 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: This repository, in the rules-propagation workflow's own delivery (A2).
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `evidence/phase-1/step-8.txt`, `delivery.md#execution-amendments`
+L06 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: repo-governance/development/infra/nx-targets/tag-convention-four-dimension-scheme.md, repo-governance/workflows/infra/development-environment-setup/tool-inventory.md, repo-governance/workflows/infra/development-environment-setup/minimal-scope-quick-reference.md, .agents/skills/harness-compatibility-protocol/reference/phase0-invariant-6-config-parity.md
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `evidence/phase-1/step-3.txt`, `delivery.md#execution-amendments`
+L07 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: docs/reference/platform-bindings.md
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `evidence/phase-0/harness-probe.txt`, `evidence/phase-4/smoke.txt`
+L08 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: .claude/settings.json, docs/reference/platform-bindings.md
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `evidence/phase-4/smoke.txt`
+L09 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: docs/reference/platform-bindings.md
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `evidence/phase-4/smoke.txt`
+L10 status=retained-plan-specific
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: None: model availability at run time has no durable owner in this repository.
+    authority: no edit: the row stays in this plan's own record
+    evidence: `evidence/phase-4/smoke.txt`
+L11 status=retained-plan-specific
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: The helper design in A23; no Python testing standard exists to host it.
+    authority: no edit: the row stays in this plan's own record
+    evidence: `evidence/phase-4/adapters-refactor.txt`, `delivery.md#execution-amendments`
+L12 status=retained-plan-specific
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about FERRET; no infra-private content
+    destination: The `ferret-cli:build` target rebuilds on every change (A24).
+    authority: no edit: the row stays in this plan's own record
+    evidence: `evidence/phase-4/adapters-refactor.txt`, `delivery.md#execution-amendments`
+L13 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about FERRET; no infra-private content
+    destination: This repository; a CI validator change belongs in a separate authorized delivery (A26).
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `evidence/phase-4/ci-evidence-refactor.txt`, `delivery.md#execution-amendments`
+L14 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: apps/ferret-cli/README.md
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `evidence/phase-5/manual-query.txt`, `delivery.md#execution-amendments`
+L15 status=linked
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature, evidence/phase-5/storage.txt
+    authority: no edit: an existing owner already states it
+    evidence: `evidence/phase-5/storage.txt`, `evidence/phase-5/storage.json`
+L16 status=retained-plan-specific
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: Decision D12 in this plan; a Linux CI run of the same test is a Phase 7 item.
+    authority: no edit: the row stays in this plan's own record
+    evidence: `evidence/phase-3/ac-cli-12-green.txt`, `delivery.md#execution-amendments`
+L17 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about FERRET; no infra-private content
+    destination: This repository, as a separate investigation; no test, assertion, or retry was changed because of it.
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `evidence/phase-2/projects.txt`
+L18 status=linked
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: apps/ferret-cli/tests/support/manual_evidence.py, apps/ferret-cli/tests/support/manual_retention_fixture.py
+    authority: no edit: an existing owner already states it
+    evidence: `evidence/phase-5/manual-refactor.txt`, `evidence/phase-5/retention.txt`
+L19 status=reviewed-none
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: HIPPO is an independent repository, and the wait changed no result.
+    authority: no edit: nothing durable would change behaviour
+    evidence: `delivery.md`
+L20 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: apps/ferret-cli/README.md
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `evidence/phase-4/adapters-refactor.txt`, `delivery.md#execution-amendments`
+L21 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: scripts/public-safety/shape-terms.txt
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `delivery.md#execution-amendments` (A38), `evidence/phase-7/ci-lane-repair.txt`
+L22 status=promoted
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: scripts/workflow-language-lanes.test.mjs
+    authority: the destination is inside this delivery's change set, authorised by the session goal
+    evidence: `delivery.md#execution-amendments` (A37), `evidence/phase-7/ci-lane-repair.txt`
+L23 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: scripts/format-staged
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `delivery.md#execution-amendments` (A41), `evidence/phase-7/ci-lane-repair.txt`
+L24 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: repo-governance/workflows/pr/pr-leak-review/evidence-and-outcomes.md
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `delivery.md#execution-amendments` (A43), `evidence/phase-7/ci-lane-repair.txt`
+L25 status=reported-without-plan-authorization
+    sensitivity: clean (no secret, credential, private address, or machine path)
+    relevance: public-tree learning about the delivery process; no infra-private content
+    destination: The [RHINO](https://github.com/wahidyankf/rhino) repository, which owns the pinned validator; excluding ignored paths from a working-tree scan is a change to that product and belongs in its own authorized delivery. Reported in the closure pull request.
+    authority: no plan or idea artifact is created (no literal authorization); reported to the user
+    evidence: `delivery.md#execution-amendments` (A50), `evidence/phase-6/gate.txt`
+statuses: linked=2, promoted=7, reported-without-plan-authorization=9, retained-plan-specific=6, reviewed-none=1
+reported-without-plan-authorization rows (handoff: the Phase 6 status message to the user for L03, L04, L05, L13, L17; the Phase 7 status messages and the closure pull request for the rest): L03, L04, L05, L13, L17, L21, L23, L24, L25
+result: no open row, no placeholder, every status terminal
+note=PHASE 7 re-check: the Phase 6 run covered 20 rows; L21 to L25 were added during the Phase 7 repairs, so every row is re-checked here and this record supersedes the counts above
+exit=0
+head=45f9c6630aa36b2f6866e41d5dc28a8233415303
+utc=2026-09-21T19:14:43Z

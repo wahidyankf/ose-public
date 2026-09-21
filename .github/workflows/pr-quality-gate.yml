@@ -27,6 +27,7 @@ jobs:
       has-dart: ${{ steps.detect.outputs.has-dart }}
       has-java: ${{ steps.detect.outputs.has-java }}
       has-go: ${{ steps.detect.outputs.has-go }}
+      has-python: ${{ steps.detect.outputs.has-python }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -42,7 +43,12 @@ jobs:
             echo "has-dart=false"
             echo "has-java=false"
             echo "has-go=false"
+            echo "has-python=false"
           } >> "$GITHUB_OUTPUT"
+
+          # Fail closed for Python only: when the affected set cannot be determined, the Python gate
+          # must still run. set -e keeps the step failing, so every other language behaves as before.
+          trap 'echo "has-python=true" >> "$GITHUB_OUTPUT"' ERR
 
           affected=$(npx nx show projects --affected)
           for project in $affected; do
@@ -54,6 +60,7 @@ jobs:
                 lang:dart) echo "has-dart=true" >> "$GITHUB_OUTPUT" ;;
                 lang:java) echo "has-java=true" >> "$GITHUB_OUTPUT" ;;
                 lang:go) echo "has-go=true" >> "$GITHUB_OUTPUT" ;;
+                lang:python) echo "has-python=true" >> "$GITHUB_OUTPUT" ;;
               esac
             done
           done
@@ -74,6 +81,14 @@ jobs:
           flutter-version-file: .fvmrc
       - uses: ./.github/actions/setup-java
       - uses: ./.github/actions/setup-go
+      - uses: ./.github/actions/setup-python
+      # ruff is installed into the project's virtual environment, not onto PATH, exactly as prettier
+      # is installed into node_modules. The pull-request surface formats every changed path, so the
+      # formatter it calls has to be the version the projects pin rather than whatever a machine has.
+      - name: Install the pinned Python formatter
+        run: >-
+          ./hippo run --class transactional --resource-tier standard --disk-path . --
+          npx nx run ferret-cli:install
       - name: Verify the declared lifecycle surface
         env:
           RHINO_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
@@ -81,7 +96,7 @@ jobs:
           RHINO_GATE_SURFACE: pull-request
         run: |
           set -euo pipefail
-          PATH="node_modules/.bin:$PATH" ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
+          PATH="node_modules/.bin:apps/ferret-cli/.venv/bin:$PATH" ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
             ./rhino gate run --surface pull-request --base "$RHINO_BASE" --head "$RHINO_HEAD"
 
   typescript:
@@ -97,7 +112,7 @@ jobs:
       - run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick,compat:min-version
-          --exclude='tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java,tag:lang:go'
+          --exclude='tag:lang:python,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java,tag:lang:go'
           --parallel=2
 
   dotnet:
@@ -114,12 +129,12 @@ jobs:
       - run: >-
           ./hippo run --class transactional --resource-tier standard --disk-path . --
           npx nx affected -t install
-          --exclude='tag:lang:ts,tag:lang:dart,tag:lang:java,tag:lang:go'
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:dart,tag:lang:java,tag:lang:go'
           --parallel=1
       - run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick,compat:min-version
-          --exclude='tag:lang:ts,tag:lang:dart,tag:lang:java,tag:lang:go'
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:dart,tag:lang:java,tag:lang:go'
           --parallel=1
 
   flutter:
@@ -144,7 +159,7 @@ jobs:
       - run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick
-          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:java,tag:lang:go'
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:java,tag:lang:go'
           --parallel=1
 
   java:
@@ -161,7 +176,7 @@ jobs:
       - run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick,compat:min-version
-          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:go'
           --parallel=1
 
   go:
@@ -178,12 +193,38 @@ jobs:
       - run: >-
           ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
           npx nx affected -t typecheck,lint,test:quick,compat:min-version
-          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java'
+          --exclude='tag:lang:python,tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java'
+          --parallel=1
+
+  python:
+    name: Python quality gate
+    needs: detect
+    # Fail closed: run when Python is affected, and also whenever detect did not succeed, because an
+    # undeterminable change set must never skip this gate. !cancelled() (not always()) keeps a
+    # superseded run from starting it. The expression form is required: a plain `!` would be a YAML tag.
+    if: ${{ !cancelled() && (needs.detect.result != 'success' || needs.detect.outputs.has-python == 'true') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-python
+      - name: Install locked Python dependencies
+        run: >-
+          ./hippo run --class transactional --resource-tier standard --disk-path . --
+          npx nx affected -t install
+          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java,tag:lang:go'
+          --parallel=1
+      - run: >-
+          ./hippo run --class ephemeral --resource-tier heavy --disk-path . --
+          npx nx affected -t typecheck lint test:quick
+          --exclude='tag:lang:ts,tag:lang:fsharp,tag:lang:csharp,tag:lang:rust,tag:lang:dart,tag:lang:java,tag:lang:go'
           --parallel=1
 
   quality-gate:
     name: Quality gate
-    needs: [repository-policy, typescript, dotnet, flutter, java, go]
+    needs: [repository-policy, typescript, dotnet, flutter, java, go, python]
     if: always()
     runs-on: ubuntu-latest
     steps:

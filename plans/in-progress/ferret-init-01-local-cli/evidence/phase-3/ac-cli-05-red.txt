@@ -1,0 +1,91 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --args='tests/unit/steps/test_initialization_and_concurrency_steps.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/steps/test_initialization_and_concurrency_steps.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/steps/test_initialization_and_concurrency_steps.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 301 items / 6 errors
+
+==================================== ERRORS ====================================
+_ ERROR collecting tests/unit/steps/test_initialization_and_concurrency_steps.py _
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_initialization_and_concurrency_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_initialization_and_concurrency_steps.py:20: in <module>
+    from support.fakes import FAKE_DATA_HOME, FIXED_NOW, FakeInput, World, make_world
+tests/support/fakes.py:11: in <module>
+    from ferret.domain.event import Event, resolve_identity
+E   ImportError: cannot import name 'resolve_identity' from 'ferret.domain.event' (<worktree>/apps/ferret-cli/src/ferret/domain/event.py)
+______ ERROR collecting tests/unit/steps/test_metadata_envelope_steps.py _______
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_metadata_envelope_steps.py:15: in <module>
+    from support.fakes import World, make_world
+tests/support/fakes.py:11: in <module>
+    from ferret.domain.event import Event, resolve_identity
+E   ImportError: cannot import name 'resolve_identity' from 'ferret.domain.event' (<worktree>/apps/ferret-cli/src/ferret/domain/event.py)
+_________________ ERROR collecting tests/unit/test_capture.py __________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_capture.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_capture.py:16: in <module>
+    from support.fakes import Entry, World, make_world
+tests/support/fakes.py:11: in <module>
+    from ferret.domain.event import Event, resolve_identity
+E   ImportError: cannot import name 'resolve_identity' from 'ferret.domain.event' (<worktree>/apps/ferret-cli/src/ferret/domain/event.py)
+_________________ ERROR collecting tests/unit/test_commands.py _________________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_commands.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_commands.py:13: in <module>
+    from support.fakes import FAKE_DATA_HOME, INSTALLATION_ID, World, make_world
+tests/support/fakes.py:11: in <module>
+    from ferret.domain.event import Event, resolve_identity
+E   ImportError: cannot import name 'resolve_identity' from 'ferret.domain.event' (<worktree>/apps/ferret-cli/src/ferret/domain/event.py)
+______________ ERROR collecting tests/unit/test_event_identity.py ______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_event_identity.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_event_identity.py:6: in <module>
+    from ferret.domain.event import resolve_identity
+E   ImportError: cannot import name 'resolve_identity' from 'ferret.domain.event' (<worktree>/apps/ferret-cli/src/ferret/domain/event.py)
+______________ ERROR collecting tests/unit/test_initialization.py ______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_initialization.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_initialization.py:12: in <module>
+    from support.fakes import (
+tests/support/fakes.py:11: in <module>
+    from ferret.domain.event import Event, resolve_identity
+E   ImportError: cannot import name 'resolve_identity' from 'ferret.domain.event' (<worktree>/apps/ferret-cli/src/ferret/domain/event.py)
+=========================== short test summary info ============================
+ERROR tests/unit/steps/test_initialization_and_concurrency_steps.py
+ERROR tests/unit/steps/test_metadata_envelope_steps.py
+ERROR tests/unit/test_capture.py
+ERROR tests/unit/test_commands.py
+ERROR tests/unit/test_event_identity.py
+ERROR tests/unit/test_initialization.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 6 errors during collection !!!!!!!!!!!!!!!!!!!!
+============================== 6 errors in 0.16s ===============================
+
+
+
+ NX   Running target test:unit for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:unit
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/steps/test_initialization_and_concurrency_steps.py" exited with non-zero status code
+note=C05 RED: the shared fake repository and the new identity tests fail at collection naming only the missing capture identity policy (ferret.domain.event.resolve_identity); nothing else fails
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T05:33:33Z

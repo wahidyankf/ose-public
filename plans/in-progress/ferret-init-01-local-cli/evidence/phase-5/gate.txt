@@ -1,0 +1,28 @@
+$ rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- ./rhino gate run --surface=pre-push
+rhino: unrecognized option `--surface=pre-push`
+note=PHASE 5 GATE pre-push: the pinned Rhino pre-push surface over the working tree, one heavy HIPPO admission
+exit=2
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:19:52Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- ./rhino gate run --surface pre-push
+[gate] public-safety-tree passed
+[gate] env-validate passed
+note=PHASE 5 GATE pre-push, accepted spelling (the pinned Rhino v0.4.0 parses the option and its value as two words, see amendment A30): the pre-push surface over the working tree, one heavy HIPPO admission
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:20:20Z
+
+$ rtk rg -c "^AC-CLI-(0[1-9]|1[0-2])\\b" plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/trace.txt
+12
+note=PHASE 5 GATE trace count: exactly twelve lines start with an AC-CLI identifier (expected output 12)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:23:24Z
+
+$ rtk rg -n "missing|assumed|skipped|unverified" plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/trace.txt
+(no output)
+note=PHASE 5 GATE trace absence: no line of the trace holds a flagged word (expected exit 1 and no output)
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:23:27Z

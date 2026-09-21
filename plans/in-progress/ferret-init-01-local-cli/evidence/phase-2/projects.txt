@@ -1,0 +1,435 @@
+FERRET Init 01 - Phase 2 projects: dependency install, build, run, quick gates, and the built-artifact smoke.
+Repository-relative paths only.
+Amendment A10: the owner's locked development group holds pytest-cov (the `--cov` flags belong to it; coverage.py is its engine).
+
+$ shasum -a 256 apps/ferret-cli/uv.lock apps/ferret-cli-e2e/uv.lock
+e463e7b0843becba6e40ff01ff368f2c3e3997787b5bf2887873a33e93591615  apps/ferret-cli/uv.lock
+2c2838ee6bb45f0514011f82ab0e6e156c869607e70e890e2b11b4727e4a1fa2  apps/ferret-cli-e2e/uv.lock
+note=lockfile digests before the install runs
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:12:24Z
+
+$ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:install
+
+> nx run ferret-cli:install
+
+> uv sync --locked
+
+
+
+
+ NX   Successfully ran target install for project ferret-cli
+
+
+Resolved 20 packages in 11ms
+Checked 18 packages in 4ms
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:12:26Z
+
+$ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:install
+
+> nx run ferret-cli-e2e:install
+
+> uv sync --locked
+
+
+
+
+ NX   Successfully ran target install for project ferret-cli-e2e
+
+
+Resolved 18 packages in 3ms
+Checked 16 packages in 2ms
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:12:32Z
+
+$ shasum -a 256 apps/ferret-cli/uv.lock apps/ferret-cli-e2e/uv.lock
+e463e7b0843becba6e40ff01ff368f2c3e3997787b5bf2887873a33e93591615  apps/ferret-cli/uv.lock
+2c2838ee6bb45f0514011f82ab0e6e156c869607e70e890e2b11b4727e4a1fa2  apps/ferret-cli-e2e/uv.lock
+note=lockfile digests after the install runs: identical to the digests before, so the locked sync changed no lockfile
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:12:42Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:build
+
+> nx run ferret-cli:build  [existing outputs match the cache, left as is]
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+
+
+ NX   Successfully ran target build for project ferret-cli
+
+Nx read the output from the cache instead of running the command for 1 out of 1 tasks.
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:12:44Z
+
+$ shasum -a 256 apps/ferret-cli/dist/ferret.pyz
+7ecf6d7f756beb08e8a28d54e18e72898c596adf2e6370e88da426f190c2d453  apps/ferret-cli/dist/ferret.pyz
+note=artifact digest from the cached build above
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:12:55Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:build --skip-nx-cache
+
+> nx run ferret-cli:build
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+
+
+ NX   Successfully ran target build for project ferret-cli
+note=uncached rebuild of the same target
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:12:57Z
+
+$ shasum -a 256 apps/ferret-cli/dist/ferret.pyz
+7ecf6d7f756beb08e8a28d54e18e72898c596adf2e6370e88da426f190c2d453  apps/ferret-cli/dist/ferret.pyz
+note=artifact digest after the uncached rebuild: byte-identical, so the build is reproducible
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:13:03Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:run -- --help
+
+ NX   Running target run for project ferret-cli and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build  [existing outputs match the cache, left as is]
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+> nx run ferret-cli:run --help
+
+> uv run --no-sync python dist/ferret.pyz --help
+
+usage: ferret <command> [options]
+
+Local-first telemetry for coding-agent harnesses. Metadata only: never prompts,
+responses, tool arguments, transcripts, or environment values.
+
+commands:
+  init                create the private data home, identity, and schema
+  capture             store one canonical event read from stdin
+  capture-hook        map one raw harness payload; always fails open
+  status              report paths, runtime, storage, health, and adapters
+  events list         list retained events, newest first
+  events export       write retained events to stdout as JSON Lines
+  usage               count observed activity by dimension
+  outcomes            summarise operational outcomes by dimension
+  maintenance         apply retention, checkpoint, and measure space
+  self install        install the artifact for the current user
+  self uninstall      remove the artifact; data is kept unless purged
+
+  version             print the version and exit
+
+options:
+  -h, --help          show this help and exit
+  -V, --version       show the version and exit
+  --output <text|json>
+                      render the result as text or JSON; defaults to text
+  --json              shorthand for --output json
+
+Telemetry older than 30 days is never returned. Scripts should use --json.
+Run 'ferret <command> --help' for a command's options.
+
+
+
+ NX   Successfully ran target run for project ferret-cli and 1 task it depends on
+
+Nx read the output from the cache instead of running the command for 1 out of 2 tasks.
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:13:09Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick
+
+> nx run ferret-cli:"test:quick"
+
+> npm exec -- nx run ferret-cli:lint
+
+
+> nx run ferret-cli:lint  [existing outputs match the cache, left as is]
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+7 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli
+
+Nx read the output from the cache instead of running the command for 1 out of 1 tasks.
+
+> npm exec -- nx run ferret-cli:typecheck
+
+
+> nx run ferret-cli:typecheck  [existing outputs match the cache, left as is]
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli
+
+Nx read the output from the cache instead of running the command for 1 out of 1 tasks.
+
+> npm exec -- nx run ferret-cli:test:unit
+
+
+> nx run ferret-cli:"test:unit"
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 87 items
+
+tests/unit/test_cli_contract.py ........................................ [ 45%]
+...............................................                          [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                      Stmts   Miss  Cover   Missing
+-------------------------------------------------------
+src/ferret/__init__.py        1      0   100%
+src/ferret/cli.py           166      0   100%
+src/ferret/help_text.py       3      0   100%
+-------------------------------------------------------
+TOTAL                       170      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================== 87 passed in 0.23s ==============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage
+
+
+> nx run ferret-cli:"test:coverage"
+
+> npm exec -- nx run ferret-cli:test:coverage:unit
+
+
+> nx run ferret-cli:"test:coverage:unit"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter unit
+
+ferret-cli: 0 features, 0 expanded scenarios, adapters: unit (corpus pending).
+
+
+
+ NX   Successfully ran target test:coverage:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:integration
+
+
+> nx run ferret-cli:"test:coverage:integration"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter integration
+
+ferret-cli: 0 features, 0 expanded scenarios, adapters: integration (corpus pending).
+
+
+
+ NX   Successfully ran target test:coverage:integration for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:behaviour
+
+
+> nx run ferret-cli:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter behaviour
+
+ferret-cli: 0 features, 0 expanded scenarios, adapters: unit, integration (corpus pending).
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:13:17Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:quick
+
+> nx run ferret-cli-e2e:"test:quick"
+
+> npm exec -- nx run ferret-cli-e2e:lint
+
+
+> nx run ferret-cli-e2e:lint  [existing outputs match the cache, left as is]
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+4 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli-e2e
+
+Nx read the output from the cache instead of running the command for 1 out of 1 tasks.
+
+> npm exec -- nx run ferret-cli-e2e:typecheck
+
+
+> nx run ferret-cli-e2e:typecheck  [existing outputs match the cache, left as is]
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli-e2e
+
+Nx read the output from the cache instead of running the command for 1 out of 1 tasks.
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage
+
+
+> nx run ferret-cli-e2e:"test:coverage"
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage:e2e
+
+
+> nx run ferret-cli-e2e:"test:coverage:e2e"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter e2e
+
+ferret-cli-e2e: 0 features, 0 expanded scenarios, adapters: e2e (corpus pending).
+
+
+
+ NX   Successfully ran target test:coverage:e2e for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage:behaviour
+
+
+> nx run ferret-cli-e2e:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter behaviour
+
+ferret-cli-e2e: 0 features, 0 expanded scenarios, adapters: unit, e2e (corpus pending).
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli-e2e
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli-e2e
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli-e2e
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:13:30Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:integration
+
+> nx run ferret-cli:"test:integration"
+
+> uv run --no-sync pytest tests/integration
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 9 items
+
+tests/integration/test_package_build.py .........                        [100%]
+
+============================== 9 passed in 0.08s ===============================
+
+
+
+ NX   Successfully ran target test:integration for project ferret-cli
+note=extra proof (not in the literal Phase 2 command list): the package-build integration suite runs and passes
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:13:44Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build  [existing outputs match the cache, left as is]
+
+
+> nx run ferret-cli-e2e:"test:e2e"
+
+> uv run --no-sync pytest tests
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli-e2e
+configfile: pyproject.toml
+plugins: bdd-8.1.0
+collected 16 items
+
+tests/test_package_smoke.py ................                             [100%]
+
+============================== 16 passed in 1.52s ==============================
+
+
+
+ NX   Successfully ran target test:e2e for project ferret-cli-e2e and 1 task it depends on
+
+Nx read the output from the cache instead of running the command for 1 out of 2 tasks.
+note=extra proof (not in the literal Phase 2 command list): the built-artifact help and version smoke runs and passes
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:13:50Z
+
+observation: the first-ever run of ferret-cli-e2e:test:e2e (an earlier session window) ended with `NX Error: write EPIPE` raised by the
+  Nx daemon client after the pytest run had passed 16 of 16 and Nx had recorded the task run; the daemon log shows the run recorded
+  before the EPIPE. The immediate rerun and every later run above are clean. The root cause is not identified; it is carried as an
+  open learning (no test, assertion, or retry was changed because of it).

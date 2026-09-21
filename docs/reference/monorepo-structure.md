@@ -91,6 +91,9 @@ Flat structure - all apps at the same level, no subdirectories.
 - `ayokoding-www-fe-e2e` - Playwright FE E2E tests for ayokoding-www UI
 - `Rhino` - Repository management CLI (F# application). Ported from Go to Rust 2026-05-23, then from Rust to F# 2026-08-30 (both predecessor sources recoverable from git history).
 - `crane-cli` - PDF-to-Markdown pipeline CLI (F# application)
+- `ferret-cli` - Local metadata-only telemetry CLI for coding-agent harnesses (Python 3.14 zipapp, no runtime
+  dependencies)
+- `ferret-cli-e2e` - Process-level E2E tests for the built `ferret-cli` artifact (Python, pytest)
 - `organiclever-www` - OrganicLever marketing website (Next.js 16, port 3200)
 - `organiclever-www-fe-e2e` - Playwright FE E2E tests for organiclever-www
 - `organiclever-app-web` - OrganicLever app frontend (Next.js 16 application, port 3202)

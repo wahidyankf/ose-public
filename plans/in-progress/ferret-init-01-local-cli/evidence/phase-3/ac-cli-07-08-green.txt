@@ -1,0 +1,163 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --args='tests/unit/test_cli_contract.py tests/unit/test_analytics.py tests/unit/steps/test_local_query_and_export_steps.py tests/unit/steps/test_usage_and_outcomes_steps.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_cli_contract.py tests/unit/test_analytics.py tests/unit/steps/test_local_query_and_export_steps.py tests/unit/steps/test_usage_and_outcomes_steps.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_cli_contract.py tests/unit/test_analytics.py tests/unit/steps/test_local_query_and_export_steps.py tests/unit/steps/test_usage_and_outcomes_steps.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 748 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .    [  0%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  0%]
+tests/unit/steps/test_local_query_and_export_steps.py ......             [  1%]
+tests/unit/steps/test_metadata_envelope_steps.py .......                 [  2%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  2%]
+tests/unit/test_analytics.py ........................................... [  8%]
+...................                                                      [ 10%]
+tests/unit/test_canonical.py ..........                                  [ 11%]
+tests/unit/test_capabilities.py ........................................ [ 17%]
+........................................................................ [ 26%]
+.........                                                                [ 28%]
+tests/unit/test_capture.py .........................                     [ 31%]
+tests/unit/test_cli_contract.py ........................................ [ 36%]
+.................................................                        [ 43%]
+tests/unit/test_commands.py .........                                    [ 44%]
+tests/unit/test_data_home_locality.py ...........                        [ 45%]
+tests/unit/test_event_contract.py ............................           [ 49%]
+tests/unit/test_event_identity.py ....                                   [ 50%]
+tests/unit/test_initialization.py ...................................... [ 55%]
+....................                                                     [ 58%]
+tests/unit/test_privacy.py ............................................. [ 64%]
+........................................................................ [ 73%]
+............................                                             [ 77%]
+tests/unit/test_queries.py ............................................. [ 83%]
+........................................................................ [ 93%]
+......                                                                   [ 93%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/analytics.py           97      0   100%
+src/ferret/application/capabilities.py        23      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/initialization.py      65      0   100%
+src/ferret/application/ports.py               41      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/queries.py             46      0   100%
+src/ferret/application/store.py               20      0   100%
+src/ferret/cli.py                            176      0   100%
+src/ferret/commands.py                        39      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/capability.py               69      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   110      0   100%
+src/ferret/domain/fields.py                   47      0   100%
+src/ferret/domain/identity.py                 10      0   100%
+src/ferret/domain/query.py                   123      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               37      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       43      0   100%
+------------------------------------------------------------------------
+TOTAL                                       1115      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================= 748 passed in 0.76s ==============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+note=C07-08-UNIT: GREEN; the nx target runs the whole unit suite plus the four named modules under the 99% gate
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T06:58:04Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:integration --args='tests/integration/test_queries.py tests/integration/test_analytics.py'
+
+> nx run ferret-cli:"test:integration" --args=tests/integration/test_queries.py tests/integration/test_analytics.py
+
+> uv run --no-sync pytest tests/integration tests/integration/test_queries.py tests/integration/test_analytics.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 185 items
+
+tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py . [  0%]
+                                                                         [  0%]
+tests/integration/steps/test_initialization_and_concurrency_steps.py ..  [  1%]
+tests/integration/steps/test_local_query_and_export_steps.py ......      [  4%]
+tests/integration/steps/test_metadata_envelope_steps.py .......          [  8%]
+tests/integration/steps/test_usage_and_outcomes_steps.py .               [  9%]
+tests/integration/test_analytics.py ................                     [ 17%]
+tests/integration/test_capability_repository.py ...............          [ 25%]
+tests/integration/test_initialization.py ...........                     [ 31%]
+tests/integration/test_package_build.py .........                        [ 36%]
+tests/integration/test_privacy.py .............                          [ 43%]
+tests/integration/test_queries.py ...................................... [ 64%]
+.....................................................                    [ 92%]
+tests/integration/test_sqlite_repository.py .............                [100%]
+
+============================= 185 passed in 10.69s =============================
+
+
+
+ NX   Successfully ran target test:integration for project ferret-cli
+note=C07-08-INTEGRATION: GREEN; real SQLite versus the fake, independent SQL recount, and EXPLAIN QUERY PLAN with no temp b-tree. Run alone: the target rebuilds dist/, which the E2E target also uses. On this host time.sleep(0.025) averaged about 154 ms, so SQLite's 250 ms busy timeout really took 1.0 to 1.5 s and the two preexisting elapsed-under-1.0 assertions on a blocked writer failed; they now assert the configured 250 ms budget instead of the wall clock.
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T06:58:14Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e --args='tests/test_query_export.py'
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build  [existing outputs match the cache, left as is]
+
+
+> nx run ferret-cli-e2e:"test:e2e" --args=tests/test_query_export.py
+
+> uv run --no-sync pytest tests tests/test_query_export.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli-e2e
+configfile: pyproject.toml
+plugins: bdd-8.1.0
+collected 40 items
+
+tests/steps/test_fail_open_capabilities_and_platforms_steps.py .         [  2%]
+tests/steps/test_initialization_and_concurrency_steps.py ..              [  7%]
+tests/steps/test_local_query_and_export_steps.py ......                  [ 22%]
+tests/steps/test_metadata_envelope_steps.py .......                      [ 40%]
+tests/steps/test_usage_and_outcomes_steps.py .                           [ 42%]
+tests/test_package_smoke.py ................                             [ 82%]
+tests/test_query_export.py .......                                       [100%]
+
+============================= 40 passed in 16.68s ==============================
+
+
+
+ NX   Successfully ran target test:e2e for project ferret-cli-e2e and 1 task it depends on
+
+Nx read the output from the cache instead of running the command for 1 out of 2 tasks.
+note=C07-E2E: GREEN; built artifact, cursor journey, byte-stable export, closed-pipe SIGPIPE, locale/TZ independence, uninitialized reads
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T06:58:34Z

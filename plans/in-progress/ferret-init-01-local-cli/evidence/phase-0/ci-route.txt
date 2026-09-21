@@ -1,0 +1,76 @@
+$ rtk proxy rg -n "schedule:|workflow_dispatch:|concurrency:|integration:|actions/checkout@v6|actions/setup-node" .github/workflows/non-product-full-quality.yml .github/actions
+.github/workflows/non-product-full-quality.yml:4:  schedule:
+.github/workflows/non-product-full-quality.yml:7:  workflow_dispatch:
+.github/workflows/non-product-full-quality.yml:12:concurrency:
+.github/workflows/non-product-full-quality.yml:22:      - uses: actions/checkout@v6
+.github/workflows/non-product-full-quality.yml:23:      - uses: ./.github/actions/setup-node
+.github/workflows/non-product-full-quality.yml:31:  integration:
+.github/workflows/non-product-full-quality.yml:37:      - uses: actions/checkout@v6
+.github/workflows/non-product-full-quality.yml:38:      - uses: ./.github/actions/setup-node
+.github/workflows/non-product-full-quality.yml:52:      - uses: actions/checkout@v6
+.github/workflows/non-product-full-quality.yml:53:      - uses: ./.github/actions/setup-node
+note=plan literal is `rtk rg -n ...`; run via rtk proxy so the raw match list is not summarized
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:06:33Z
+
+$ rtk gh api repos/astral-sh/setup-uv/git/ref/tags/v10.1.0 --jq '.object.type + " " + .object.sha'
+commit bec219d24cd3e171d82865faccec33120bb574f4
+note=accessed 2026-09-21; source https://github.com/astral-sh/setup-uv/releases/tag/v10.1.0
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:06:47Z
+
+$ rtk curl -fsSL https://github.com/astral-sh/uv/releases/download/0.12.16/uv-x86_64-unknown-linux-gnu.tar.gz.sha256
+8e5c6e5523dffc2dcf615bd995554c84c9feb4e577808a3fb8698a639d3f8d9c  uv-x86_64-unknown-linux-gnu.tar.gz
+note=accessed 2026-09-21; source https://github.com/astral-sh/uv/releases/tag/0.12.16
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:06:48Z
+
+## Verified pins and platform facts (accessed 2026-09-21)
+
+- setup-uv v10.1.0 resolves to commit bec219d24cd3e171d82865faccec33120bb574f4 (record above). The action.yml at that
+  exact commit defines the literal inputs version, checksum, enable-cache, restore-cache, save-cache,
+  cache-dependency-glob, and cache-suffix (checked by reading the file at that ref).
+- uv 0.12.16 Linux x86-64 GNU tarball sha256 is 8e5c6e5523dffc2dcf615bd995554c84c9feb4e577808a3fb8698a639d3f8d9c
+  (record above); it equals the value fixed in tech-doc 003. Newer uv 0.12.17 exists and is intentionally not adopted.
+- actions/setup-python@v6 resolves to commit ece7cb06caefa5fff74198d8649806c4678c61a1, identical to tag v6.3.0. A floating
+  major tag is the repository convention for first-party actions (actions/checkout@v6). v7.0.0 exists and is not adopted
+  because the plan pins v6.
+- actions/python-versions lists CPython 3.14.7 as stable with a Linux x64 build for ubuntu-24.04, the ubuntu-latest image.
+- Repository permissions: admin, maintain, push. pr-quality-gate and non-product-full-quality are both active, and the
+  latter already declares workflow_dispatch, so it can be edited and manually dispatched.
+
+## Route: how the workflows change (implemented in Phase 4; nothing is edited in Phase 0)
+
+non-product-full-quality.yml today: two cron schedules plus workflow_dispatch; concurrency group per ref with no
+cancellation; jobs unit-and-static, integration, e2e in that needs-order on ubuntu-latest. Every job runs checkout@v6,
+setup-node, setup-dotnet (e2e also setup-playwright), then one serial `npx nx run-many -t <target> --projects=... --parallel=1`.
+Edits: keep the schedule and concurrency; give workflow_dispatch a required string input evidence_nonce and set
+run-name to non-product-full-quality-${{ inputs.evidence_nonce || 'scheduled' }}; add the setup-python composite to all
+three jobs; append ferret-cli and ferret-cli-e2e to the unit-and-static test:quick project list, ferret-cli to the
+integration test:integration list, and ferret-cli-e2e to the e2e test:e2e list. Order quick, Integration, E2E is unchanged.
+No FERRET-specific job is added.
+
+pr-quality-gate.yml today: detect (outputs has-ts, has-dotnet-projects, has-dart, has-java, has-go; walks affected
+projects and maps lang:* tags), repository-policy, one job per language, and the aggregate quality-gate job (needs list,
+if always()). FINDING: the detect step has no fail-closed fallback today. If `nx show projects --affected` fails, the step
+exits non-zero, the language jobs are skipped, and quality-gate, which does not list detect in needs, still passes.
+Edits: expose has-python initialised false and set true for affected lang:python projects; add a python job (checkout with
+full history, setup-node, setup-python, then `npx nx affected -t typecheck lint test:quick` excluding every other
+language tag with --parallel=1) that runs when has-python is true OR detect did not succeed, which is the fail-closed
+fallback for Python: an undeterminable change set still runs the Python gate; add python to quality-gate.needs. The other
+languages' existing behaviour is unchanged.
+
+New composite: .github/actions/setup-python/action.yml uses actions/setup-python@v6 with python-version 3.14.7, then one
+astral-sh/setup-uv step pinned to bec219d24cd3e171d82865faccec33120bb574f4 with literal version 0.12.16, the checksum
+above, enable-cache true, restore-cache true, save-cache ${{ github.ref == 'refs/heads/main' }}, the FERRET uv.lock files
+as cache-dependency-glob, and cache-suffix ${{ runner.os }}. A catalog row is added to .github/actions/README.md.
+
+Platforms: hosted CI is Linux (ubuntu-latest) only. macOS is exercised by the local gates on the developer machine that
+runs this plan. No hosted macOS or Windows job is added (D12).
+
+## Assertions
+- Route provable and editable: PASS (permissions admin/push, both workflows active, dispatch present).
+- Pins reproduced from official data without drift: PASS.

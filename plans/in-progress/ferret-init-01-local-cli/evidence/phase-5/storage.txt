@@ -1,0 +1,38 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli-e2e python apps/ferret-cli-e2e/src/storage_benchmark.py --events 100000 --seed 20260918 --output plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/storage.json
+FERRET storage benchmark: events=100000 seed=20260918 expired=50000
+Empty schema: database=81920 wal=0
+Loaded before checkpoint: database=81920 wal=338383872
+Loaded after checkpoint: database=91951104 wal=0 table=41103360 index=50847744
+Per event: bytes=919.5 marginal=918.7 index-share=0.553
+Capture single: n=40 p50=70.2ms p95=76.4ms max=96.1ms
+Capture concurrent: writers=4 n=40 p50=71.0ms p95=100.9ms max=109.5ms
+Expired half deleted: events=50000 database=92037120 wal=0 freelist=43642880
+Maintenance: pruned=50000 seconds=5.25 database-before=91951104 database-after=43692032 wal=0 freelist=0 high-water=135899176 observed-peak=135899176
+Projection 5000/day x 30 days: steady=137885696 compaction-peak=275771392
+Projection 20000/day x 30 days: steady=551297024 compaction-peak=1102594048
+Projection 100000/day x 30 days: steady=2756157440 compaction-peak=5512314880
+Acceptance: within_envelope
+note=PHASE 5 storage: the exact Phase 3 storage-benchmark command (100000 events, seed 20260918) rerun from a clean store; the JSON goes to phase-5 so the Phase 3 gate evidence stays intact (A29)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:00:58Z
+
+$ python3 local-tmp/claude/storage-reconcile.py
+bytes/event 919.5 = 0.898 KiB; BRD envelope 0.7-1.5 KiB -> inside
+marginal bytes/event 918.7; index share 0.553
+after checkpoint: database 91951104 = table 41103360 + index 50847744 (+ schema pages), wal 0
+5000/day x 30 days = 150000 events: steady 131.5 MiB vs BRD 100-220 MiB -> inside; compaction peak 263.0 MiB (twice steady: the old file plus its rewritten copy; the BRD excludes transient marks)
+20000/day x 30 days = 600000 events: steady 525.8 MiB vs BRD 410-880 MiB -> inside; compaction peak 1.03 GiB (twice steady: the old file plus its rewritten copy; the BRD excludes transient marks)
+100000/day x 30 days = 3000000 events: steady 2.57 GiB vs BRD 2048-4403.2 MiB -> inside; compaction peak 5.13 GiB (twice steady: the old file plus its rewritten copy; the BRD excludes transient marks)
+reclamation: database 91951104 -> 43692032 (0.48x), wal 0, freelist 0, expired removed 50000
+high-water: reported 135899176 = observed peak 135899176 (129.6 MiB, the old file plus the log of the rewrite)
+WAL high-water while loading: 338383872 bytes (322.7 MiB): the benchmark loads 100000 rows in 1,000-row transactions with wal_autocheckpoint = 0, so the log keeps every page until its one final checkpoint; a real capture is one small transaction on a connection with the default checkpointing
+acceptance: within_envelope, problems=[]
+against the Phase 3 run of the same command: byte figures identical in ['emptySchema', 'insertion', 'space', 'perEvent', 'expiry', 'projection', 'acceptance', 'envelope']; different in []
+reclamation bytes identical: True
+wall clock (host load, not contractual): capture single p95 76.4 ms now vs 225.4 ms; concurrent p95 100.9 ms vs 672.3 ms; maintenance 5.25 s vs 7.58 s; the hook deadline is 1000 ms
+reconciliation: no unexplained deviation
+note=PHASE 5 storage reconcile: the benchmark JSON against the BRD envelope and the Phase 3 run of the same command; exit 0 means no unexplained deviation
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:02:43Z

@@ -1,0 +1,406 @@
+$ RHINO_GATE_SURFACE=pre-push bash scripts/public-safety/check.sh
+[public-safety] ref: clean
+[public-safety] commit: clean
+[public-safety] finding internal-hostname apps/ferret-cli/tests/unit/test_data_home_locality.py:20
+[public-safety] finding maintainer-path apps/ferret-cli/tests/unit/test_data_home_locality.py:13
+[public-safety] finding maintainer-path apps/ferret-cli/tests/unit/test_data_home_locality.py:32
+[public-safety] finding maintainer-path apps/ferret-cli/tests/unit/test_data_home_locality.py:49
+[public-safety] finding maintainer-path apps/ferret-cli/tests/unit/test_data_home_locality.py:54
+[public-safety] finding maintainer-path apps/ferret-cli/tests/unit/test_data_home_locality.py:65
+[public-safety] baseline: blocked, 6 finding(s); publication must not proceed
+note=PHASE 6 fixture repair, RED: the candidate tree blocks the public-safety gate on six literals in one test fixture. This record is the transcript captured before the repair, against the candidate head; the repaired tree no longer reproduces it. check.sh builds its baseline from tracked paths only, so the Phase 5 pass covered a tree in which every FERRET file was still untracked
+exit=1
+head=4e72f5f953e37710c014b0c3152e1d5c522cf50c
+utc=2026-09-21T15:31:10Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --skip-nx-cache
+
+> nx run ferret-cli:"test:unit"
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 1224 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .... [  0%]
+..........                                                               [  1%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  1%]
+tests/unit/steps/test_local_query_and_export_steps.py ...........        [  2%]
+tests/unit/steps/test_metadata_envelope_steps.py ........                [  2%]
+tests/unit/steps/test_retention_and_space_steps.py ..                    [  3%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  3%]
+tests/unit/test_analytics.py ........................................... [  6%]
+...................                                                      [  8%]
+tests/unit/test_canonical.py ..........                                  [  8%]
+tests/unit/test_capabilities.py ........................................ [ 12%]
+........................................................................ [ 18%]
+.........                                                                [ 18%]
+tests/unit/test_capture.py .........................                     [ 20%]
+tests/unit/test_capture_hook.py ........................................ [ 24%]
+.................                                                        [ 25%]
+tests/unit/test_cli_contract.py ........................................ [ 28%]
+.................................................                        [ 32%]
+tests/unit/test_commands.py .........                                    [ 33%]
+tests/unit/test_data_home_locality.py ...........                        [ 34%]
+tests/unit/test_event_contract.py ............................           [ 36%]
+tests/unit/test_event_identity.py ....                                   [ 37%]
+tests/unit/test_hook_mappers.py ........................................ [ 40%]
+........................................................................ [ 46%]
+................                                                         [ 47%]
+tests/unit/test_identifier_derivation.py ............                    [ 48%]
+tests/unit/test_initialization.py ...................................... [ 51%]
+....................                                                     [ 53%]
+tests/unit/test_install.py ............................................. [ 56%]
+...........                                                              [ 57%]
+tests/unit/test_install_domain.py ...................................... [ 60%]
+............................                                             [ 63%]
+tests/unit/test_maintenance.py ................................          [ 65%]
+tests/unit/test_maintenance_command.py ......................            [ 67%]
+tests/unit/test_manual_evidence.py ...........                           [ 68%]
+tests/unit/test_manual_retention_fixture.py ...................          [ 70%]
+tests/unit/test_network_denial.py ......                                 [ 70%]
+tests/unit/test_privacy.py ............................................. [ 74%]
+........................................................................ [ 80%]
+............................                                             [ 82%]
+tests/unit/test_queries.py ............................................. [ 86%]
+........................................................................ [ 91%]
+......                                                                   [ 92%]
+tests/unit/test_space.py ........................                        [ 94%]
+tests/unit/test_status.py ......................                         [ 96%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+TOTAL                                       1759      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================ 1224 passed in 22.54s =============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+[evrun] dropped 38 output lines matching /^(src/ferret|Name |-----|apps/ferret)/
+note=PHASE 6 fixture repair, GREEN: the owning unit target still passes with the placeholders, at the same count and the same total coverage as the candidate commit
+exit=0
+head=4e72f5f953e37710c014b0c3152e1d5c522cf50c
+utc=2026-09-21T15:36:37Z
+
+$ RHINO_GATE_SURFACE=pre-push bash scripts/public-safety/check.sh
+[public-safety] ref: clean
+[public-safety] commit: clean
+[public-safety] baseline: clean
+[public-safety] pre-push: clean
+note=PHASE 6 fixture repair, GREEN: the same command on the repaired tree reports a clean baseline and a clean pre-push surface with no finding. The head row is the candidate this repair replaces, because the run happened before the replacing commit
+exit=0
+head=4e72f5f953e37710c014b0c3152e1d5c522cf50c
+utc=2026-09-21T15:32:13Z
+$ sh local-tmp/claude/p6-amend-run.sh
+[ferret-init-01-local-cli 12074186a] feat(ferret): add standalone local cli
+ Date: Mon Sep 21 21:32:45 2026 +0700
+ 304 files changed, 50573 insertions(+), 155 deletions(-)
+ create mode 100755 .claude/hooks/ferret-capture.sh
+ create mode 100644 .github/actions/setup-python/action.yml
+ create mode 100644 .opencode/plugins/ferret.ts
+ create mode 100644 apps/ferret-cli-e2e/.python-version
+ create mode 100644 apps/ferret-cli-e2e/LICENSE
+ create mode 100644 apps/ferret-cli-e2e/README.md
+ create mode 100644 apps/ferret-cli-e2e/behaviour-coverage.json
+ create mode 100644 apps/ferret-cli-e2e/project.json
+ create mode 100644 apps/ferret-cli-e2e/pyproject.toml
+ create mode 100644 apps/ferret-cli-e2e/src/adapter_cases.py
+ create mode 100644 apps/ferret-cli-e2e/src/adapter_latency.py
+ create mode 100644 apps/ferret-cli-e2e/src/denied_sockets.py
+ create mode 100644 apps/ferret-cli-e2e/src/event_documents.py
+ create mode 100644 apps/ferret-cli-e2e/src/ferret_process.py
+ create mode 100644 apps/ferret-cli-e2e/src/hook_bench.py
+ create mode 100644 apps/ferret-cli-e2e/src/hook_wrapper.py
+ create mode 100644 apps/ferret-cli-e2e/src/install_area.py
+ create mode 100644 apps/ferret-cli-e2e/src/local_commands.py
+ create mode 100644 apps/ferret-cli-e2e/src/opencode_driver.mjs
+ create mode 100644 apps/ferret-cli-e2e/src/socket_denial/sitecustomize.py
+ create mode 100644 apps/ferret-cli-e2e/src/storage_benchmark.py
+ create mode 100644 apps/ferret-cli-e2e/src/synthetic_store.py
+ create mode 100644 apps/ferret-cli-e2e/src/vendor_payloads.py
+ create mode 100644 apps/ferret-cli-e2e/tests/conftest.py
+ create mode 100644 apps/ferret-cli-e2e/tests/steps/test_fail_open_capabilities_and_platforms_steps.py
+ create mode 100644 apps/ferret-cli-e2e/tests/steps/test_initialization_and_concurrency_steps.py
+ create mode 100644 apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py
+ create mode 100644 apps/ferret-cli-e2e/tests/steps/test_metadata_envelope_steps.py
+ create mode 100644 apps/ferret-cli-e2e/tests/steps/test_retention_and_space_steps.py
+ create mode 100644 apps/ferret-cli-e2e/tests/steps/test_usage_and_outcomes_steps.py
+ create mode 100644 apps/ferret-cli-e2e/tests/test_adapter_latency.py
+ create mode 100644 apps/ferret-cli-e2e/tests/test_harness_adapters.py
+ create mode 100644 apps/ferret-cli-e2e/tests/test_package_smoke.py
+ create mode 100644 apps/ferret-cli-e2e/tests/test_query_export.py
+ create mode 100644 apps/ferret-cli-e2e/tests/test_standalone.py
+ create mode 100644 apps/ferret-cli-e2e/tests/test_storage_benchmark.py
+ create mode 100644 apps/ferret-cli-e2e/tests/test_user_install.py
+ create mode 100644 apps/ferret-cli-e2e/uv.lock
+ create mode 100644 apps/ferret-cli/.python-version
+ create mode 100644 apps/ferret-cli/LICENSE
+ create mode 100644 apps/ferret-cli/README.md
+ create mode 100644 apps/ferret-cli/behaviour-coverage.json
+ create mode 100644 apps/ferret-cli/project.json
+ create mode 100644 apps/ferret-cli/pyproject.toml
+ create mode 100644 apps/ferret-cli/scripts/build_zipapp.py
+ create mode 100644 apps/ferret-cli/src/ferret/__init__.py
+ create mode 100644 apps/ferret-cli/src/ferret/adapters/__init__.py
+ create mode 100644 apps/ferret-cli/src/ferret/adapters/filesystem.py
+ create mode 100644 apps/ferret-cli/src/ferret/adapters/posix_install.py
+ create mode 100644 apps/ferret-cli/src/ferret/adapters/posix_storage.py
+ create mode 100644 apps/ferret-cli/src/ferret/adapters/posix_workspace.py
+ create mode 100644 apps/ferret-cli/src/ferret/adapters/sqlite_repository.py
+ create mode 100644 apps/ferret-cli/src/ferret/adapters/sqlite_schema.py
+ create mode 100644 apps/ferret-cli/src/ferret/adapters/system.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/__init__.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/analytics.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/capabilities.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/capture.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/capture_hook.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/initialization.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/install.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/maintenance.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/ports.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/privacy.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/queries.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/status.py
+ create mode 100644 apps/ferret-cli/src/ferret/application/store.py
+ create mode 100644 apps/ferret-cli/src/ferret/cli.py
+ create mode 100644 apps/ferret-cli/src/ferret/commands.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/__init__.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/canonical.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/capability.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/errors.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/event.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/fields.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/hook.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/identity.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/install.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/query.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/retention.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/space.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/status.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/storage.py
+ create mode 100644 apps/ferret-cli/src/ferret/domain/timestamps.py
+ create mode 100644 apps/ferret-cli/src/ferret/help_text.py
+ create mode 100644 apps/ferret-cli/src/ferret/rendering.py
+ create mode 100644 apps/ferret-cli/tests/conftest.py
+ create mode 100644 apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py
+ create mode 100644 apps/ferret-cli/tests/integration/steps/test_initialization_and_concurrency_steps.py
+ create mode 100644 apps/ferret-cli/tests/integration/steps/test_local_query_and_export_steps.py
+ create mode 100644 apps/ferret-cli/tests/integration/steps/test_metadata_envelope_steps.py
+ create mode 100644 apps/ferret-cli/tests/integration/steps/test_retention_and_space_steps.py
+ create mode 100644 apps/ferret-cli/tests/integration/steps/test_usage_and_outcomes_steps.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_analytics.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_capability_repository.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_capture_hook.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_capture_wrapper.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_hook_registrations.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_initialization.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_install.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_package_build.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_privacy.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_queries.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_retention.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_space.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_sqlite_repository.py
+ create mode 100644 apps/ferret-cli/tests/integration/test_workspace_roots.py
+ create mode 100644 apps/ferret-cli/tests/support/__init__.py
+ create mode 100644 apps/ferret-cli/tests/support/artifacts.py
+ create mode 100644 apps/ferret-cli/tests/support/bulk.py
+ create mode 100644 apps/ferret-cli/tests/support/burst.py
+ create mode 100644 apps/ferret-cli/tests/support/busy.py
+ create mode 100644 apps/ferret-cli/tests/support/events.py
+ create mode 100644 apps/ferret-cli/tests/support/fakes.py
+ create mode 100644 apps/ferret-cli/tests/support/hook_payloads.py
+ create mode 100644 apps/ferret-cli/tests/support/invoke.py
+ create mode 100644 apps/ferret-cli/tests/support/machine.py
+ create mode 100644 apps/ferret-cli/tests/support/manual_evidence.py
+ create mode 100644 apps/ferret-cli/tests/support/manual_retention_fixture.py
+ create mode 100644 apps/ferret-cli/tests/support/network.py
+ create mode 100644 apps/ferret-cli/tests/support/populate.py
+ create mode 100644 apps/ferret-cli/tests/support/retention.py
+ create mode 100644 apps/ferret-cli/tests/support/scenarios.py
+ create mode 100644 apps/ferret-cli/tests/support/snapshots.py
+ create mode 100644 apps/ferret-cli/tests/support/vacuum.py
+ create mode 100644 apps/ferret-cli/tests/support/wrapper.py
+ create mode 100644 apps/ferret-cli/tests/unit/conftest.py
+ create mode 100644 apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+ create mode 100644 apps/ferret-cli/tests/unit/steps/test_initialization_and_concurrency_steps.py
+ create mode 100644 apps/ferret-cli/tests/unit/steps/test_local_query_and_export_steps.py
+ create mode 100644 apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py
+ create mode 100644 apps/ferret-cli/tests/unit/steps/test_retention_and_space_steps.py
+ create mode 100644 apps/ferret-cli/tests/unit/steps/test_usage_and_outcomes_steps.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_analytics.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_canonical.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_capabilities.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_capture.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_capture_hook.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_cli_contract.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_commands.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_data_home_locality.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_event_contract.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_event_identity.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_hook_mappers.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_identifier_derivation.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_initialization.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_install.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_install_domain.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_maintenance.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_maintenance_command.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_manual_evidence.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_manual_retention_fixture.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_network_denial.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_privacy.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_queries.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_space.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_status.py
+ create mode 100644 apps/ferret-cli/tests/unit/test_timestamps.py
+ create mode 100644 apps/ferret-cli/uv.lock
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-0/ci-route.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-0/dependencies.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-0/file-ledger.pathspec
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-0/file-ledger.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-0/gate.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-0/harness-probe.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-0/route.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-0/versions.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-1/gate.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-1/step-0.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-1/step-1.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-1/step-2.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-1/step-3.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-1/step-4-5.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-1/step-6-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-1/step-6-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-1/step-6-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-1/step-7.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-1/step-8.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-2/gate-e2e.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-2/gate-install.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-2/gate-owner.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-2/pending-corpus.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-2/projects.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-2/spec-architecture.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-2/targets-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-2/targets.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-01-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-01-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-01-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-02-03-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-02-03-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-02-03-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-05-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-05-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-05-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-06-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-06-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-06-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-07-08-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-07-08-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-07-08-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-09-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-09-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-09-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-10-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-10-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-10-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-11-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-11-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-11-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-12-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-12-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-12-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/gate-e2e.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/gate-owner.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/gate-runtime.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/gate-storage.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/storage-100000.json
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/storage-20000.json
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/storage-5000.json
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/storage.json
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/adapter-latency.json
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/adapters-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/adapters-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/adapters-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/ci-evidence-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/gate-adapters.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/gate-bindings.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/gate-ci.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/gate-projects.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/smoke.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/automatic-docs.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/automatic-governance.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/automatic-projects.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/ci.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/gate.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-evidence-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-evidence-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-summaries.sha256
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/retention-fixture-green.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/retention-fixture-red.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/retention-fixture-refactor.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/retention.sha256
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/retention.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/storage.json
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/storage.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/trace.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-6/learnings.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-6/preliminary-audit.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/phase-6/public-safety-fixture.txt
+ create mode 100644 plans/in-progress/ferret-init-01-local-cli/evidence/preliminary-delivery-audit.md
+ create mode 100644 specs/apps/ferret/README.md
+ create mode 100644 specs/apps/ferret/cli/README.md
+ create mode 100644 specs/apps/ferret/cli/architecture.md
+ create mode 100644 specs/apps/ferret/cli/behaviours/README.md
+ create mode 100644 specs/apps/ferret/cli/behaviours/analytics/README.md
+ create mode 100644 specs/apps/ferret/cli/behaviours/analytics/usage-and-outcomes.feature
+ create mode 100644 specs/apps/ferret/cli/behaviours/harness/README.md
+ create mode 100644 specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature
+ create mode 100644 specs/apps/ferret/cli/behaviours/privacy/README.md
+ create mode 100644 specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature
+ create mode 100644 specs/apps/ferret/cli/behaviours/queries/README.md
+ create mode 100644 specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature
+ create mode 100644 specs/apps/ferret/cli/behaviours/storage/README.md
+ create mode 100644 specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature
+ create mode 100644 specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature
+ create mode 100644 specs/apps/ferret/overview.md
+--- new candidate:
+12074186ae423d0ef685c8fc8625adf8e5b22035
+405c1f357a456542569fd6d86a1939c57c878f95
+--- status (empty means clean):
+--- files in the commit:
+ 304 files changed, 50573 insertions(+), 155 deletions(-)
+[gate] public-safety-tree passed
+[gate] format-staged changed plans/in-progress/ferret-init-01-local-cli/delivery.md
+[gate] format-staged changed plans/in-progress/ferret-init-01-local-cli/learnings.md
+[gate] format-staged passed
+[gate] repo-config passed
+[gate] env-validate passed
+[gate] markdownlint passed
+[gate] md-mermaid passed
+[gate] md-heading-hierarchy passed
+[gate] md-naming passed
+[gate] md-frontmatter passed
+[gate] convention-emoji passed
+[gate] public-safety-commit-message passed
+note=PHASE 6 fixture repair: the candidate commit is replaced. The pre-commit surface, public-safety-tree included, runs on the amend and passes, so the identity the checker validates now carries a fixture the gate accepts. The head row is the commit this run produced; folding this record into it replaces it once more, and the identity the checker validates is the one in the external candidate record
+exit=0
+head=12074186ae423d0ef685c8fc8625adf8e5b22035
+utc=2026-09-21T15:39:00Z
+$ rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- ./rhino gate run --surface pre-push
+[gate] public-safety-tree passed
+[gate] env-validate passed
+note=PHASE 6 fixture repair: the whole pre-push surface on the replacement candidate. A34 promised the unit target and this surface; both pass
+exit=0
+head=778e0d109a4c9c66b279f7727f180d7e3e6ac7ab
+utc=2026-09-21T15:42:41Z

@@ -1,0 +1,96 @@
+FERRET Init 01 - Phase 1 Step 0 (Intake), rules-propagation workflow
+Workflow: repo-governance/workflows/rules/rules-propagation.md (Steps 0-9). Repository-relative paths only.
+utc=2026-09-21T02:25:00Z
+
+## Invocation (literal inputs)
+isolation=current
+dry-run=false
+max-concurrency=3
+rules (verbatim, as carried by the plan):
+  "Python CLI owners and dedicated Python CLI E2E projects use real mandatory Nx targets, pytest-bdd static
+   mapping, owner Unit runtime coverage >=99%, explicit tags, and raw-forwarded fail-open harness capture whose
+   canonical skill source generates only catalog-declared mirrors."
+
+## Workflow-generated manifest (literal run identity)
+run-id: 7d7e3e
+manifest: local-tmp/rules-propagation/rules-propagation__7d7e3e__2026-09-21--09-20__manifest.md
+(uuid6 from a fresh uuid4; stamp is the UTC+7 filename form from the timestamp convention. local-tmp is gitignored, so the
+manifest is working state; its terminal facts are copied into evidence/phase-1 and the PR body.)
+Every later <run-id> / <resolved-run-id> token in Phase 1 is replaced with 7d7e3e.
+
+## Bundled input split into falsifiable obligations
+The input bundles seven obligations in one sentence; Step 0 requires each to be propagated, placed, and dispositioned
+separately. Each is normalized to one imperative sentence with its Why held apart, and carries a passing and a
+violating observation. A violating observation is always a positive failure produced by a check aimed at the right
+thing, never an empty result (false-zero guard).
+
+PYR-1  Owner target set
+  Statement: A Python CLI owner project declares real `install`, `build`, `run`, `lint`, `typecheck`, `test:unit`,
+    `test:integration` (its owned local boundary), `test:coverage:unit`, `test:coverage:integration`,
+    `test:coverage:behaviour`, aggregate `test:coverage`, and `test:quick` targets; `install` only synchronizes locked
+    dependencies, `run` executes the built artifact, and no echo/no-op/success-sentinel target exists.
+  Why: placeholder targets claim a quality boundary that does not exist.
+  Pass: the static behaviour validator accepts a fixture owner with exactly this set (exit 0).
+  Violation: the validator exits 1 naming the missing owner target on a fixture that omits one.
+
+PYR-2  Dedicated E2E target set
+  Statement: A dedicated Python CLI E2E project declares real `install`, `lint`, `typecheck`, `test:e2e`,
+    `test:coverage:e2e`, `test:coverage:behaviour`, aggregate `test:coverage`, and `test:quick` targets, owns no Unit or
+    Integration target, and its `test:quick` composes only lint, typecheck, and static coverage (never `test:e2e`).
+  Why: the E2E project proves the public process boundary of its owner's corpus and nothing else.
+  Pass: the validator accepts a fixture whose `-e2e` project meets this set (exit 0).
+  Violation: the validator exits 1 when a fixture `test:quick` executes the E2E runtime, or a required target is missing.
+
+PYR-3  Static pytest-bdd mapping
+  Statement: The static validator maps every expanded canonical scenario step of a Python project to exactly one
+    pytest-bdd step definition per applicable layer, reading `@given`, `@when`, `@then`, and `@step` registrations that use a
+    plain string, `parsers.parse`, `parsers.cfparse`, or `parsers.re` in `.py` binding files, and rejects undefined,
+    ambiguous, and unused bindings; a registration inside a comment or docstring never counts.
+  Why: Python bindings must be as statically provable as every other language adapter.
+  Pass: exit 0 for a corpus whose every step has exactly one Python binding.
+  Violation: exit 1 reporting `undefined`, `ambiguous`, or `unused` for fixtures that lack, duplicate, or orphan a binding;
+    a commented-out registration leaves its step undefined.
+
+PYR-4  Owner Unit line coverage
+  Statement: A Python behaviour owner's `test:unit` command enforces at least 99% line coverage with both halves on the
+    command surface: a `--cov` source selection and a `--cov-fail-under` threshold of 99 or more.
+  Why: a threshold without a collected source silently enforces nothing, exactly as a JaCoCo verify task without a
+    minimum does.
+  Pass: the validator accepts `--cov=<package> ... --cov-fail-under=99`.
+  Violation: exit 1 when the threshold is below 99, is absent, or `--cov-fail-under` appears without `--cov`.
+
+PYR-5  Explicit tags
+  Statement: Every Python project declares `type:`, `platform:`, `lang:python`, and `domain:` tags from the controlled
+    vocabulary in `project.json`, and a project whose targets execute pytest must carry `lang:python`; `lang:python` and
+    `domain:ferret` join the vocabulary in the same change.
+  Why: CI language detection and `nx affected` scoping key off `lang:*`; an untagged Python project silently skips its gate.
+  Pass: the validator accepts a pytest-driven fixture tagged `lang:python`.
+  Violation: exit 1 when a pytest-driven fixture omits `lang:python`.
+
+PYR-6  Raw-forwarded fail-open harness capture
+  Statement: Each FERRET harness registration forwards the vendor's raw hook payload byte-for-byte on stdin to
+    `ferret capture-hook --harness <slug> --event <event>` through the one canonical wrapper, which always exits 0, writes
+    nothing to stdout, and kills its child at 1,000 ms (TERM 900 ms); only events verified against current official
+    documentation are registered, and an unobservable capability stays `unknown`.
+  Why: telemetry must never alter or delay a coding session, and a wrapper that parses payload text can leak it.
+  Pass: the built-artifact E2E fail-open matrix shows byte-identical forwarding, exit 0, empty stdout, and termination
+    within the deadline for a hung child.
+  Violation: the same matrix fails when a wrapper mutates the payload, exits non-zero, prints, or overruns the deadline.
+  Delivery note: the executable enforcement is authored in Phase 4; Step 7 records it as `gated` with the named command.
+
+PYR-7  Canonical skill generates only catalog-declared mirrors
+  Statement: The canonical `harness-compatibility-protocol` skill source under `.agents/skills/` generates only the
+    mirrors the harness catalog declares (the claude-profile pointer route), no other mirror exists for it, and a generated
+    route is never hand-edited.
+  Why: an undeclared mirror is invisible to the parity checks and drifts silently.
+  Pass: `./rhino harness adapters validate` exits 0 with no drift.
+  Violation: the same command exits non-zero when a scratch undeclared mirror exists or a generated route is hand-edited
+    (verified in both directions during Step 7).
+
+## Falsifiability and halt
+All seven obligations state a checkable passing observation and a checkable violating observation. No obligation is
+unfalsifiable, so none halts. No grilling question is needed: every ambiguity resolved from the plan's own text
+(tech-docs 001, 003, 004) or the repository.
+
+## Result
+Step 0 complete: 7 normalized obligations (PYR-1..PYR-7), manifest opened at the literal path above.

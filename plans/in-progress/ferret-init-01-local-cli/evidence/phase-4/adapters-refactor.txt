@@ -1,0 +1,508 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli-e2e python apps/ferret-cli-e2e/src/adapter_latency.py --output plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/adapter-latency.json
+Node baseline p50=61.0 ms (deducted from the OpenCode rows)
+harness     condition    n      p50      p95      max
+claude_code normal      30    147.9    229.7    232.1
+claude_code missing     30      4.3      4.6      4.7
+claude_code invalid     30    160.5    235.5    267.7
+claude_code busy         8    990.3   1073.8   1073.8
+claude_code timeout      8   1007.1   1126.5   1126.5
+claude_code kill         8   1154.0   1230.2   1230.2
+codex       normal      30    169.7    270.1    282.2
+codex       missing     30      4.1      4.9      6.0
+codex       invalid     30    161.7    220.9    224.8
+codex       busy         8    851.1   1074.3   1074.3
+codex       timeout      8    958.7   1050.3   1050.3
+codex       kill         8   1153.0   1281.6   1281.6
+opencode    normal      30    183.4    199.1    224.5
+opencode    missing     30     59.5     65.0     82.4
+opencode    invalid     30    181.2    190.0    195.3
+opencode    busy         8    917.5    961.7    961.7
+opencode    timeout      8    962.6    976.2    976.2
+opencode    kill         8   1063.7   1066.0   1066.0
+Verdict: over_budget
+  claude_code normal: p95 229.7 ms (net 229.7) exceeds the budget
+  codex normal: p95 270.1 ms (net 270.1) exceeds the budget
+  codex kill: max 1281.6 ms exceeds 1250 ms
+note=REFACTOR measurement: 30 warm calls per fast condition and 8 per bounded-wait condition, per harness, against the built artifact
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:05:25Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli-e2e python apps/ferret-cli-e2e/src/adapter_latency.py --output plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/adapter-latency.json
+Node baseline p50=57.1 ms (deducted from the OpenCode rows)
+harness     condition    n      p50      p95      max
+claude_code normal      30    121.1    147.1    178.3
+claude_code missing     30      4.7      5.4      5.5
+claude_code invalid     30    112.0    172.8    232.1
+claude_code busy         8    815.8    853.5    853.5
+claude_code timeout      8   1000.5   1072.2   1072.2
+claude_code kill         8   1164.5   1238.7   1238.7
+codex       normal      30    146.5    208.2    209.7
+codex       missing     30      5.6      6.3      6.7
+codex       invalid     30    124.1    153.4    185.0
+codex       busy         8    894.9    966.6    966.6
+codex       timeout      8   1075.5   1110.9   1110.9
+codex       kill         8   1212.5   1251.7   1251.7
+opencode    normal      30    136.5    185.7    230.2
+opencode    missing     30     57.4     65.6     67.7
+opencode    invalid     30    131.6    142.5    149.1
+opencode    busy         8    890.9    972.0    972.0
+opencode    timeout      8    964.3    977.7    977.7
+opencode    kill         8   1060.6   1077.8   1077.8
+Verdict: over_budget
+  codex normal: p95 208.2 ms (net 208.2) exceeds the budget
+  codex kill: max 1251.7 ms exceeds 1250 ms
+[evrun] dropped 1 output lines matching /^HIPPO queued/
+note=REFACTOR measurement after the zipapp carries unchecked-hash bytecode: same 30 warm and 8 bounded-wait calls per harness (Python starts the archive without recompiling every module)
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:11:38Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli-e2e python apps/ferret-cli-e2e/src/adapter_latency.py --output plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/adapter-latency.json
+Node baseline p50=60.1 ms (deducted from the OpenCode rows)
+Host: 12 CPUs, load [3.87, 3.9, 4.16] before and [2.91, 3.75, 4.05] after
+harness     condition    n      p50      p95      max
+claude_code normal     100    128.6    170.3    193.2
+claude_code missing    100      6.4      8.0     15.9
+claude_code invalid    100    119.6    148.0    195.0
+claude_code busy         8    885.9   1011.7   1011.7
+claude_code timeout      8   1061.6   1186.2   1186.2
+claude_code kill         8   1194.9   1242.9   1242.9
+codex       normal     100    126.3    174.5    188.3
+codex       missing    100      6.4      8.4     15.1
+codex       invalid    100    118.8    175.3    221.6
+codex       busy         8    866.5   1004.3   1004.3
+codex       timeout      8    984.3   1088.8   1088.8
+codex       kill         8   1196.3   1285.4   1285.4
+opencode    normal     100    136.0    150.5    194.5
+opencode    missing    100     59.3     63.0     78.4
+opencode    invalid    100    132.7    164.6    195.9
+opencode    busy         8    891.4    943.3    943.3
+opencode    timeout      8    962.6    968.1    968.1
+opencode    kill         8   1063.9   1083.4   1083.4
+Verdict: over_budget
+  claude_code normal: p95 170.3 ms (net 170.3) exceeds the budget
+  codex normal: p95 174.5 ms (net 174.5) exceeds the budget
+  codex kill: max 1285.4 ms exceeds 1250 ms
+note=REFACTOR measurement with the round-robin tool: 100 warm calls per fast condition and 8 per bounded-wait condition, per harness, load recorded
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:17:20Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli-e2e python apps/ferret-cli-e2e/src/adapter_latency.py --output plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/adapter-latency.json
+Node baseline p50=58.3 ms (deducted from the OpenCode rows)
+Host: 12 CPUs, load [4.25, 3.48, 3.82] before and [2.62, 3.23, 3.66] after
+harness     condition    n      p50      p95      max
+claude_code normal     100     80.7     88.6     93.7
+claude_code missing    100      6.2      7.4     11.1
+claude_code invalid    100     77.7     84.7     94.1
+claude_code busy         8    835.2    879.3    879.3
+claude_code timeout      8    986.8   1003.9   1003.9
+claude_code kill         8   1103.6   1168.5   1168.5
+codex       normal     100     80.8     88.6     97.7
+codex       missing    100      6.1      6.6      8.5
+codex       invalid    100     76.8     84.4    119.8
+codex       busy         8    773.7    929.7    929.7
+codex       timeout      8    964.7   1002.8   1002.8
+codex       kill         8   1122.9   1170.6   1170.6
+opencode    normal     100    135.6    142.8    145.9
+opencode    missing    100     58.7     64.8     73.4
+opencode    invalid    100    132.3    140.3    150.4
+opencode    busy         8    826.6    882.1    882.1
+opencode    timeout      8    965.4    969.4    969.4
+opencode    kill         8   1063.2   1070.4   1070.4
+Verdict: within_budgets
+note=REFACTOR measurement with exact timing: the runs above were inflated by subprocess.run(timeout=) polling, which adds up to 50 ms per call; the timer-based helper waits without polling
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:25:24Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e --skip-nx-cache --args='-q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py tests/steps/test_fail_open_capabilities_and_platforms_steps.py tests/steps/test_metadata_envelope_steps.py'
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+> nx run ferret-cli-e2e:"test:e2e" --args=-q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py tests/steps/test_fail_open_capabilities_and_platforms_steps.py tests/steps/test_metadata_envelope_steps.py
+
+> uv run --no-sync pytest tests -q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py tests/steps/test_fail_open_capabilities_and_platforms_steps.py tests/steps/test_metadata_envelope_steps.py
+
+........................................................................ [ 48%]
+........................................................................ [ 96%]
+......                                                                   [100%]
+150 passed in 54.34s
+
+
+
+ NX   Successfully ran target test:e2e for project ferret-cli-e2e and 1 task it depends on
+note=REFACTOR: the adapter E2E command after the bytecode and exact-timing changes (nx appends the whole E2E suite: adapters, install, benchmark rules, latency rules)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:34:34Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick --skip-nx-cache
+
+> nx run ferret-cli:"test:quick"
+
+> npm exec -- nx run ferret-cli:lint
+
+
+> nx run ferret-cli:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+110 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:typecheck
+
+
+> nx run ferret-cli:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:unit
+
+
+> nx run ferret-cli:"test:unit"
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 1186 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .... [  0%]
+..........                                                               [  1%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  1%]
+tests/unit/steps/test_local_query_and_export_steps.py ...........        [  2%]
+tests/unit/steps/test_metadata_envelope_steps.py ........                [  2%]
+tests/unit/steps/test_retention_and_space_steps.py ..                    [  3%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  3%]
+tests/unit/test_analytics.py ........................................... [  6%]
+...................                                                      [  8%]
+tests/unit/test_canonical.py ..........                                  [  9%]
+tests/unit/test_capabilities.py ........................................ [ 12%]
+........................................................................ [ 18%]
+.........                                                                [ 19%]
+tests/unit/test_capture.py .........................                     [ 21%]
+tests/unit/test_capture_hook.py ........................................ [ 24%]
+.............                                                            [ 26%]
+tests/unit/test_cli_contract.py ........................................ [ 29%]
+.................................................                        [ 33%]
+tests/unit/test_commands.py .........                                    [ 34%]
+tests/unit/test_data_home_locality.py ...........                        [ 35%]
+tests/unit/test_event_contract.py ............................           [ 37%]
+tests/unit/test_event_identity.py ....                                   [ 37%]
+tests/unit/test_hook_mappers.py ........................................ [ 41%]
+........................................................................ [ 47%]
+............                                                             [ 48%]
+tests/unit/test_identifier_derivation.py ............                    [ 49%]
+tests/unit/test_initialization.py ...................................... [ 52%]
+....................                                                     [ 54%]
+tests/unit/test_install.py ............................................. [ 58%]
+...........                                                              [ 59%]
+tests/unit/test_install_domain.py ...................................... [ 62%]
+............................                                             [ 64%]
+tests/unit/test_maintenance.py ................................          [ 67%]
+tests/unit/test_maintenance_command.py ......................            [ 69%]
+tests/unit/test_network_denial.py ......                                 [ 69%]
+tests/unit/test_privacy.py ............................................. [ 73%]
+........................................................................ [ 79%]
+............................                                             [ 81%]
+tests/unit/test_queries.py ............................................. [ 85%]
+........................................................................ [ 91%]
+......                                                                   [ 92%]
+tests/unit/test_space.py ........................                        [ 94%]
+tests/unit/test_status.py ......................                         [ 96%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/analytics.py           97      0   100%
+src/ferret/application/capabilities.py        23      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/capture_hook.py        27      0   100%
+src/ferret/application/initialization.py      43      0   100%
+src/ferret/application/install.py             99      0   100%
+src/ferret/application/maintenance.py         71      0   100%
+src/ferret/application/ports.py              111      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/queries.py             46      0   100%
+src/ferret/application/status.py              32      0   100%
+src/ferret/application/store.py               47      0   100%
+src/ferret/cli.py                            176      0   100%
+src/ferret/commands.py                        63      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/capability.py               69      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   110      0   100%
+src/ferret/domain/fields.py                   47      0   100%
+src/ferret/domain/hook.py                    113      0   100%
+src/ferret/domain/identity.py                 17      0   100%
+src/ferret/domain/install.py                  94      0   100%
+src/ferret/domain/query.py                   123      0   100%
+src/ferret/domain/retention.py                16      0   100%
+src/ferret/domain/space.py                    42      0   100%
+src/ferret/domain/status.py                   13      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               37      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       74      0   100%
+------------------------------------------------------------------------
+TOTAL                                       1759      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================= 1186 passed in 3.93s =============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage
+
+
+> nx run ferret-cli:"test:coverage"
+
+> npm exec -- nx run ferret-cli:test:coverage:unit
+
+
+> nx run ferret-cli:"test:coverage:unit"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter unit
+
+ferret-cli: 6 features, 38 expanded scenarios, adapters: unit.
+
+
+
+ NX   Successfully ran target test:coverage:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:integration
+
+
+> nx run ferret-cli:"test:coverage:integration"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter integration
+
+ferret-cli: 6 features, 38 expanded scenarios, adapters: integration.
+
+
+
+ NX   Successfully ran target test:coverage:integration for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:behaviour
+
+
+> nx run ferret-cli:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter behaviour
+
+ferret-cli: 6 features, 38 expanded scenarios, adapters: unit, integration.
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli
+note=REFACTOR: OWNER-QUICK (lint, strict Pyright, Unit with the 99% gate, behaviour coverage)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:35:40Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:quick --skip-nx-cache
+
+> nx run ferret-cli-e2e:"test:quick"
+
+> npm exec -- nx run ferret-cli-e2e:lint
+
+
+> nx run ferret-cli-e2e:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+28 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:typecheck
+
+
+> nx run ferret-cli-e2e:typecheck
+
+> uv run --no-sync pyright
+
+<worktree>/apps/ferret-cli-e2e/tests/test_adapter_latency.py
+  <worktree>/apps/ferret-cli-e2e/tests/test_adapter_latency.py:129:5 - error: Type of "report" is partially unknown
+    Type of "report" is "dict[str, dict[str, float] | dict[str, int | list[float]] | str | list[Unknown]]" (reportUnknownVariableType)
+  <worktree>/apps/ferret-cli-e2e/tests/test_adapter_latency.py:138:100 - error: Argument type is partially unknown
+    Argument corresponds to parameter "report" in function "summary_lines"
+    Argument type is "dict[str, dict[str, float] | dict[str, int | list[float]] | str | list[Unknown]]" (reportUnknownArgumentType)
+<worktree>/apps/ferret-cli-e2e/tests/test_harness_adapters.py
+  <worktree>/apps/ferret-cli-e2e/tests/test_harness_adapters.py:152:1 - error: Type of "MALFORMED_PLUGIN_CALLS" is partially unknown
+    Type of "MALFORMED_PLUGIN_CALLS" is "dict[str, dict[str, str | list[Unknown]] | dict[str, str | list[None]] | dict[str, str | list[dict[str, int | dict[Unknown, Unknown] | list[Unknown]] | str]] | dict[str, str | list[dict[Unknown, Unknown]]] | dict[str, str | list[dict[str, dict[str, str]]]]]" (reportUnknownVariableType)
+  <worktree>/apps/ferret-cli-e2e/tests/test_harness_adapters.py:167:39 - error: Argument type is partially unknown
+    Argument corresponds to parameter "iterable" in function "__init__"
+    Argument type is "dict[str, dict[str, str | list[Unknown]] | dict[str, str | list[None]] | dict[str, str | list[dict[str, int | dict[Unknown, Unknown] | list[Unknown]] | str]] | dict[str, str | list[dict[Unknown, Unknown]]] | dict[str, str | list[dict[str, dict[str, str]]]]]" (reportUnknownArgumentType)
+  <worktree>/apps/ferret-cli-e2e/tests/test_harness_adapters.py:170:51 - error: Argument type is partially unknown
+    Argument corresponds to parameter "document" in function "forward"
+    Argument type is "dict[str, str | list[Unknown]] | dict[str, str | list[None]] | dict[str, str | list[dict[str, int | dict[Unknown, Unknown] | list[Unknown]] | str]] | dict[str, str | list[dict[Unknown, Unknown]]] | dict[str, str | list[dict[str, dict[str, str]]]]" (reportUnknownArgumentType)
+5 errors, 0 warnings, 0 informations
+
+
+
+ NX   Running target typecheck for project ferret-cli-e2e failed
+
+Failed tasks:
+
+- ferret-cli-e2e:typecheck
+
+Hint: run the command with --verbose for more details.
+
+
+
+
+ NX   Running target test:quick for project ferret-cli-e2e failed
+
+Failed tasks:
+
+- ferret-cli-e2e:test:quick
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pyright" exited with non-zero status codeWarning: command "npm exec -- nx run ferret-cli-e2e:typecheck" exited with non-zero status code
+note=REFACTOR: E2E-QUICK (lint, strict Pyright, benchmark and latency rules, static behaviour coverage)
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:35:53Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:quick --skip-nx-cache
+
+> nx run ferret-cli-e2e:"test:quick"
+
+> npm exec -- nx run ferret-cli-e2e:lint
+
+
+> nx run ferret-cli-e2e:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+28 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:typecheck
+
+
+> nx run ferret-cli-e2e:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage
+
+
+> nx run ferret-cli-e2e:"test:coverage"
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage:e2e
+
+
+> nx run ferret-cli-e2e:"test:coverage:e2e"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter e2e
+
+ferret-cli-e2e: 6 features, 38 expanded scenarios, adapters: e2e.
+
+
+
+ NX   Successfully ran target test:coverage:e2e for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage:behaviour
+
+
+> nx run ferret-cli-e2e:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter behaviour
+
+ferret-cli-e2e: 6 features, 38 expanded scenarios, adapters: unit, e2e.
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli-e2e
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli-e2e
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli-e2e
+note=REFACTOR: E2E-QUICK again after the strict-Pyright annotations (MALFORMED_PLUGIN_CALLS and the report fixtures) that the run above rejected
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T11:36:42Z

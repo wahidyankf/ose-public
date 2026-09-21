@@ -1,0 +1,117 @@
+$ rtk npm run generate:bindings
+npm error Missing script: "generate:bindings"
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: <home>/.npm/_logs/2026-09-21T03_14_27_341Z-debug-0.log
+note=literal plan command; the script does not exist in package.json (amendment A2 maps it to the pinned Rhino adapter command below)
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:14:27Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier light --disk-path . -- ./rhino harness adapters generate
+[harness-adapters] canonical adapter generation is current
+note=A2 mapping of generate:bindings; idempotent after the Step 7 regeneration
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:14:29Z
+
+$ rtk ./rhino harness adapters validate
+[harness-adapters] canonical adapter validation is clean
+note=validate run 1 of 4
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:14:42Z
+
+$ rtk ./rhino harness adapters validate
+[harness-adapters] canonical adapter validation is clean
+note=validate run 2 of 4
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:14:44Z
+
+$ rtk ./rhino harness adapters validate
+[harness-adapters] canonical adapter validation is clean
+note=validate run 3 of 4
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:14:47Z
+
+$ rtk ./rhino harness adapters validate
+[harness-adapters] canonical adapter validation is clean
+note=validate run 4 of 4
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:14:50Z
+
+$ rtk npm run lint:md
+> ./hippo run --class ephemeral --resource-tier light --disk-path . -- markdownlint-cli2 "**/*.md"
+markdownlint-cli2 v0.21.0 (markdownlint v0.40.0)
+Finding: **/*.md !node_modules/** !**/node_modules/** !libs/*/deps/** !libs/*/_build/** !apps/*/deps/** !apps/*/_build/** !dist/** !build/** !**/build/** !**/target/** !.next/** !**/.next/** !.nx/** !apps/*/public/** !generated-reports/** !**/.dart_tool/** !.vscode/** !.idea/** !apps/*/playwright-report/** !apps/*/test-results/** !apps/*/.venv/** !**/.venv/** !apps/*/tests/**/bin/** !apps/*/tests/**/obj/** !.claude/worktrees/** !worktrees/** !local-tmp/** !.memsearch/** !docs/reference/security/frameworks/nist-sp-800-53-rev5.md !plans/done/** !archived/**
+Linting: 7369 file(s)
+Summary: 0 error(s)
+note=markdownlint over every Markdown file
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:14:58Z
+
+$ rtk npm run format:md:check
+> ./hippo run --class ephemeral --resource-tier light --disk-path . -- prettier --check "**/*.md"
+Checking formatting...
+[warn] .agents/skills/harness-compatibility-protocol/reference/phase0-invariant-6-config-parity.md
+[warn] docs/reference/platform-bindings.md
+[warn] plans/in-progress/ferret-init-01-local-cli/delivery.md
+[warn] repo-governance/development/infra/nx-targets/mandatory-targets-cli-e2e.md
+[warn] repo-governance/development/infra/nx-targets/tag-convention-four-dimension-scheme.md
+[warn] Code style issues found in 5 files. Run Prettier with --write to fix.
+note=prettier check over every Markdown file; Steps 4-7 edited tables and the delivery amendments row, so a nonzero here is expected first
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:15:33Z
+
+$ rtk npm run format:md:check
+> ./hippo run --class ephemeral --resource-tier light --disk-path . -- prettier --check "**/*.md"
+Checking formatting...
+All matched files use Prettier code style!
+note=after prettier --write on the five flagged files (table realignment only)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:17:54Z
+
+$ rtk npm run lint:md
+> ./hippo run --class ephemeral --resource-tier light --disk-path . -- markdownlint-cli2 "**/*.md"
+markdownlint-cli2 v0.21.0 (markdownlint v0.40.0)
+Finding: **/*.md !node_modules/** !**/node_modules/** !libs/*/deps/** !libs/*/_build/** !apps/*/deps/** !apps/*/_build/** !dist/** !build/** !**/build/** !**/target/** !.next/** !**/.next/** !.nx/** !apps/*/public/** !generated-reports/** !**/.dart_tool/** !.vscode/** !.idea/** !apps/*/playwright-report/** !apps/*/test-results/** !apps/*/.venv/** !**/.venv/** !apps/*/tests/**/bin/** !apps/*/tests/**/obj/** !.claude/worktrees/** !worktrees/** !local-tmp/** !.memsearch/** !docs/reference/security/frameworks/nist-sp-800-53-rev5.md !plans/done/** !archived/**
+Linting: 7369 file(s)
+Summary: 0 error(s)
+note=markdownlint re-run on the final Markdown state
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:19:52Z
+
+$ python3 local-tmp/claude/ledger-check.py
+ledger_paths=98 changed_paths=40
+changed_not_in_ledger=0
+ledger_not_yet_changed=77 (later-phase paths)
+note=file-ledger reconciled with the working tree: 12 hand-authored/generated paths and the Step 4-8 additions appended to file-ledger.txt and file-ledger.pathspec; the plan directory is ledgered as one [E] entry; ledger paths not yet changed belong to Phases 2-6
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:22:22Z
+
+$ test ! -e .opencode/skills && test ! -e .opencode/plugins/ferret.ts && test ! -e .codex/skills && echo absent
+absent
+note=plan expectation: no .opencode/skills or skill mirror exists; .opencode/plugins/ferret.ts is Phase 4 hand-authored product code and does not exist yet
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:22:23Z
+
+## Sibling propagation obligation (recorded, not executed)
+
+Repository: ose-private, the independently managed private sibling. It is not linked from this public tree and this delivery
+creates or mutates no sibling worktree, branch, or file.
+Objective / worktree / branch identity: ferret-python-harness-governance
+Obligation: carry PYR-1 to PYR-7 to whichever of the sibling's own surfaces state the same subject (nx-targets mandatory-target
+and tag-convention docs, the development-environment Python phase, the harness-compatibility-protocol skill, the platform-bindings
+catalog, its behaviour-coverage validator), and hand the Rhino gap found in Step 7 (an undeclared skill mirror passes
+`harness adapters validate`) to the upstream Rhino repository as application work.
+Per-rule sibling-obligation: PYR-1..PYR-7 pending. No rule records `none`: none has evidence that it is public-tree-specific.

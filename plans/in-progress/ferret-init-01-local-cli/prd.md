@@ -21,14 +21,12 @@ usage or operational outcome summaries without any backend.
 - As a maintainer, I want observed usage and visibility gaps separated so that I do not treat unobservable
   skills as unused. Proof: “Mark an unobservable capability unknown” and “Summarize outcomes with incomplete visibility.”
 - As a macOS/Linux developer, I want fail-open lifecycle capture so that telemetry never changes my harness
-  result or terminal output. Proof: “A capture adapter encounters a local failure” and “Capture events
+  result or terminal output. Proof: “Keep a harness fail-open after a local failure” and “Capture
   concurrently across repositories.”
-  imported FERRET events while lifecycle adapters remain explicitly unsupported. Proof: “Initialize FERRET from
-  two repositories,” “Filter and export local events,” and platform matrix tests.
 - As a privacy reviewer, I want a closed event schema and ephemeral raw-hook projection so that prompts,
   responses, tool payloads, paths, and secrets cannot persist. Proof: “Reject a forbidden capture field.”
 - As a local analyst, I want deterministic JSON/JSONL contracts so that scripts can process records without
-  parsing human output. Proof: “Filter and export local events” and the CLI contract proof map.
+  parsing human output. Proof: “Filter and export deterministic local events” and the CLI contract proof map.
 - As a developer with no backend, I want all local capabilities to remain complete so that FERRET is useful
   before Plan 02. Proof: “Use FERRET without a backend.”
 

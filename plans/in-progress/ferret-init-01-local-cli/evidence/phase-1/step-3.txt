@@ -1,0 +1,108 @@
+FERRET Init 01 - Phase 1 Step 3 (Semantic sufficiency and conflict scan), rules-propagation workflow
+Repository-relative paths only.
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T02:44:00Z
+
+## Method
+Three passes per the workflow, because a rule restated in other words defeats a single-term search, plus whole-item accumulation
+because a wrapped list item defeats a line-oriented one:
+1. Subject terms: python, pytest, pytest-bdd, .pyz, zipapp, uv, `lang:` vocabulary, `cli-e2e`, harness-compatibility-protocol,
+   generated skills routes.
+2. Obligation verbs/nouns: mandatory target, install, static coverage, line coverage threshold, tag, register, mirror, generate.
+3. Named surfaces: the Step 2 hits compared exactly with AGENTS.md, CLAUDE.md, repo-governance/development/infra/nx-targets/,
+   docs/reference/platform-bindings.md, plus the surfaces those pointed to.
+Whole-item accumulation: `rg -U` multi-line searches for "no Python", "Python application/app/project/library",
+"Python (ruff)/only", and ".py ... format/corpora" so a statement wrapped across lines is not missed. The Step 2 hit list
+(289 lines, 109 files) was read by area rather than sampled: nx-targets, behaviour-driven-development, ci-conventions,
+harness workflows, quality/, and the two skills.
+
+## Semantic sufficiency gate (before placement)
+No obligation is a semantic no-op: no existing effective rule states any Python-specific target shape, pytest-bdd recognition, a
+`--cov`/`--cov-fail-under` command-surface requirement, the `lang:python`/`domain:ferret` vocabulary, or the FERRET capture
+contract. PYR-7 is the closest case: repo-config.yml already declares the claude skill-adapter as the only skill route, so the
+mechanism exists; what is missing is the stated rule and a two-directional proof, and the catalog paragraph describing the route is
+inaccurate (F10). It is therefore not suppressed; Step 7 verifies the mechanism in both directions.
+
+## Findings
+Columns: id | statement or gap (path) | kind | layer of existing vs new | outcome.
+
+F1  "This repository ships no Python application or library." (development-environment-setup/phase-6-python-ecosystem.md:10)
+    CONFLICT with the delivery. Same layer (workflows), so the new statement supersedes; the old sentence is retired at Step 6 and
+    its replacement lives in the same file.
+F2  "No `.python-version` file exists at the repository root; pin one alongside any Python project you add." (same file:30)
+    COMPATIBLE: stays true (the pins live in each project). Keep; the new text points at the FERRET pins.
+F3  "toolchains that exist only to format the AyoKoding course corpora - Lua, Python (ruff), and Elixir" (same directory,
+    tool-inventory.md:51-52)
+    PARTIAL CONFLICT (Python is no longer only a formatter dependency). Same layer: amend. Surface is outside the plan's nine-path
+    list but is a discoverability surface of the same subject: recorded as amendment A6-b (see below).
+F4  "Phase 6 (Python) ... exist only to format the AyoKoding course corpora" (same directory, minimal-scope-quick-reference.md:21)
+    PARTIAL CONFLICT, same class as F3: amend, recorded under A6-b.
+F5  "`install` and `test:e2e:ui`/`test:e2e:report` are Playwright/npm-specific and inapplicable here" (nx-targets/mandatory-targets-
+    cli-e2e.md, Dotnet paragraph)
+    OVERLAP, not a conflict: the sentence is scoped to the Dotnet/Reqnroll shape; a Python dedicated E2E project has an applicable
+    `install` (`uv sync --locked`). Handled by adding a separate Python shape section; the Dotnet text is kept unchanged.
+F6  mandatory-targets-behaviour-coverage.md and the language-neutral rule set (summary-matrix, all-projects-six-and-required,
+    execution-model, target-naming-*, ci-conventions/*, three-level-testing-standard, coverage-exemptions-and-execution,
+    workspace-defaults-caching-build-output, ci-standards skill): all say static `test:coverage:*` targets never execute tests,
+    every owner `test:unit` fails below 99% line coverage, dedicated E2E has no Unit target, quick omits Integration/E2E.
+    COMPATIBLE and language-neutral; PYR-1..PYR-4 are Python instances of them. No conflict, no duplicate to merge. The
+    adapter-specific statement (which command shapes count as the threshold gate) exists only in scripts/behaviour-coverage.mjs and
+    lacks Python: that is the enforcement gap Step 6 closes.
+F7  Controlled `lang:` and `domain:` vocabulary (nx-targets/tag-convention-four-dimension-scheme.md) lacks `python` and `ferret`
+    and says "Add new values only by updating this convention." GAP with a hard dependency: PYR-5 cannot land without editing
+    this file, which the plan's nine-path list omits. Recorded as amendment A6-a.
+F8  tag-convention-current-tags-and-examples.md lists no Python project. GAP: two rows and one worked example added at Step 6.
+    Pre-existing drift observed and NOT touched: the vocabulary lists `dotnet` while `ose-id-be` carries `lang:csharp`, and
+    `platform:aspnetcore`/`platform:dotnet` are used but not in the vocabulary. Not caused by this run.
+F9  docs/reference/monorepo-structure.md:362 and docs/reference/nx-configuration.md:407 restate a subset of the tag vocabulary
+    (`lang:` = rust, ts, dotnet; `domain:` omits config, crane, roots, ui). REDUNDANT and already stale before this run (they omit
+    fsharp, go, java, csharp as well). Verdict Keep with rationale: pre-existing illustrative subsets, not caused by this rule, and
+    fixing them broadens the ledger beyond the subject; the canonical vocabulary is the nx-targets convention. Follow-up to
+    learnings, not this delivery.
+F10 docs/reference/platform-bindings.md "Current stable v0.4 contract" says Claude receives `.agents/skills/`, but repo-config.yml
+    declares `.agents/skills` as canonical and a claude skill-adapter route `.claude/skills/{name}/SKILL.md`, and the tracked
+    `.claude/skills/harness-compatibility-protocol/SKILL.md` is that 383-byte pointer. The catalog says the checksum-pinned v0.4
+    Rhino configuration is authoritative, and a machine declaration ranks above a reference paragraph, so this is an incoherence
+    of the lower layer: amend the paragraph to the declared routes (part of PYR-7 placement). Not a higher-layer conflict.
+F11 .agents/skills/harness-compatibility-protocol/reference/phase0-invariant-6-config-parity.md names the OpenCode hook surface
+    `.opencode/plugin/` (singular). The Phase 0 probe (evidence/phase-0/harness-probe.txt, section 5) confirms the documented
+    location is `.opencode/plugins/` and singular is kept only for compatibility. Amend to the plural so the reference does not
+    contradict the first plugin this delivery adds. Same canonical skill tree (`harness-compatibility-protocol/**`), same layer.
+F12 docs/reference/monorepo-structure.md app list has no FERRET projects. Discoverability gap, closed in Phase 2 together with the
+    projects (annotated indexes), recorded then as an addition to the ledger.
+F13 docs/reference/sdlc-gate-standard.md:278 lists a `python` PR-gate job among per-language jobs "for languages present".
+    COMPATIBLE with the plan's `python` job. Keep.
+F14 scripts/format-staged runs the system `ruff format` (0.15.9 on this machine) on every staged `*.py`, while FERRET locks
+    Ruff 0.16.8 for `ruff format --check`. ADJACENT RISK, not a rule conflict: the two formatters must agree on FERRET files or the
+    Phase 6 commit hook and the project lint gate will disagree. Carried to Phase 2 (verify with both versions before the first
+    commit) and to learnings.
+F15 The CI `detect` job has no fail-closed fallback and every existing language job excludes the other languages by tag
+    (`--exclude='tag:lang:...'`), so adding `lang:python` requires adding `tag:lang:python` to every existing exclusion list.
+    Phase 4 obligation, recorded in evidence/phase-0/ci-route.txt and carried forward here.
+F16 Higher layers (principles, conventions, vision, AGENTS.md, CLAUDE.md): searched for an approved-language list or a rule
+    forbidding another language. None exists (only "TypeScript is primary language" in an ADR example and the tutorial
+    corpora, which describe teaching content, not repository code). Multi-Harness Binding Rule 10 (config parity) is satisfied
+    because all three harnesses are registered together in Phase 4, so no recorded absence is needed.
+    NO HIGHER-LAYER CONFLICT: the workflow does not halt.
+
+## Precedence outcome
+Every genuine contradiction (F1, F3, F4) is same-layer or lower and resolved by supersession/amendment at Step 6; F10 and F11 are
+lower-layer incoherences amended to the higher machine declaration or to verified evidence. No rule edits a higher layer.
+No principle, convention, vision, AGENTS.md, or CLAUDE.md statement is edited.
+
+## Supersession record
+- Retired: phase-6-python-ecosystem.md sentence "This repository ships no Python application or library." Replacement: the
+  rewritten Phase 6 body in the same file describing FERRET's uv/CPython 3.14.7 requirement alongside the formatting-only role.
+- Retired: platform-bindings.md sentence "Claude receives ... `.agents/skills/`" (incoherent). Replacement: the corrected
+  route sentence in the same paragraph.
+- Retired: `.opencode/plugin/` (singular) in phase0-invariant-6-config-parity.md. Replacement: `.opencode/plugins/`.
+
+## Amendments to the plan's surface list (recorded in delivery.md Execution Amendments)
+A6-a  Also edit repo-governance/development/infra/nx-targets/tag-convention-four-dimension-scheme.md (vocabulary).
+A6-b  Also edit repo-governance/workflows/infra/development-environment-setup/{tool-inventory,minimal-scope-quick-reference}.md
+      and .agents/skills/harness-compatibility-protocol/reference/phase0-invariant-6-config-parity.md, because Step 6 requires the
+      whole subject to be brought into agreement rather than only the sites a search named.
+
+## Result
+Step 3 complete: no higher-layer conflict, three same-layer supersessions, two lower-layer incoherences, two vocabulary gaps,
+seven keep/carry verdicts, all recorded above; the run continues.

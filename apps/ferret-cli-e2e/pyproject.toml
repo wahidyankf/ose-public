@@ -1,0 +1,40 @@
+[project]
+name = "ferret-cli-e2e"
+version = "0.1.0"
+description = "Public-process end-to-end tests for the FERRET CLI artifact."
+license = "MIT"
+requires-python = ">=3.14,<3.15"
+dependencies = []
+
+[dependency-groups]
+dev = [
+  "pyright>=1.1.414",
+  "pytest>=9.1",
+  "pytest-bdd>=8.1",
+  "ruff>=0.16.8",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+minversion = "9.0"
+pythonpath = ["src"]
+addopts = ["--import-mode=importlib", "--strict-config", "--strict-markers", "-ra"]
+xfail_strict = true
+
+[tool.ruff]
+line-length = 120
+target-version = "py314"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "UP", "B", "C4", "SIM", "PT", "RUF"]
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.14"
+typeCheckingMode = "strict"
+extraPaths = ["src"]
+venvPath = "."
+venv = ".venv"

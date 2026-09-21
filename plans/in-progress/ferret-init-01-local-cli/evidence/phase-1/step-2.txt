@@ -1,0 +1,163 @@
+FERRET Init 01 - Phase 1 Step 2 (Classify), rules-propagation workflow
+Repository-relative paths only.
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T02:31:00Z
+
+## Discovery command (literal, plan Step 2)
+$ rtk rg -n "cli-e2e|pytest-bdd|test:coverage|harness-compatibility|generated.*skills|project tags" repo-governance .claude .agents repo-config.yml scripts apps/rhino-cli
+note=run through `rtk proxy rg` so rtk does not summarize the listing. The last path apps/rhino-cli is retired (upstream Rhino
+  v0.4.0 holds the product; the in-tree implementation was removed, see amendment A2) and no longer exists, so rg reports
+  "apps/rhino-cli: No such file or directory" and exits 2 for that path alone while listing every hit from the five existing paths.
+exit=2 (missing path only; the other five paths were searched completely)
+hits: 289 lines in 109 files. Per-file hit counts (path only; lines omitted because generated catalog JSON lines are very long):
+    59  scripts/behaviour-coverage.test.mjs
+    20  repo-governance/workflows/harness/harness-compatibility-quality-gate.md
+    11  .claude/agents/repo/harness-compatibility-fixer.md
+    10  scripts/behaviour-coverage.mjs
+    10  .claude/agents/repo/harness-compatibility-checker.md
+     7  repo-governance/development/infra/nx-targets/workspace-defaults-caching-build-output.md
+     5  repo-governance/workflows/harness/harness-compatibility-quality-gate/execution-mode.md
+     5  repo-governance/development/infra/nx-targets/mandatory-targets-all-projects-six-and-required.md
+     5  .agents/skills/ci-standards/SKILL.md
+     4  repo-governance/workflows/harness/harness-compatibility-quality-gate/success-criteria-gherkin.md
+     4  repo-governance/development/infra/nx-targets/mandatory-targets-summary-matrix.md
+     4  repo-governance/development/infra/nx-targets/mandatory-targets-cli-e2e.md
+     4  repo-governance/development/infra/nx-targets/mandatory-targets-behaviour-coverage.md
+     4  repo-governance/development/behaviour-driven-development/coverage-exemptions-and-execution.md
+     4  repo-governance/development/agents/ai-agents/tool-access-patterns-report-generating-agents.md
+     4  .agents/skills/plan-validating-quality/reference/rules16-specs-gherkin-and-regression-test.md
+     3  repo-governance/workflows/harness/harness-compatibility-quality-gate/success-criteria-gherkin-escalation-scenarios.md
+     3  repo-governance/workflows/harness/harness-compatibility-quality-gate/related-agents.md
+     3  repo-governance/workflows/harness/harness-compatibility-quality-gate/README.md
+     3  repo-governance/development/workflow/pr-merge-protocol/examples.md
+     3  repo-governance/development/quality/feature-change-completeness/tools-and-automation.md
+     3  repo-governance/development/infra/nx-targets/target-naming-rules.md
+     3  repo-governance/development/infra/nx-targets/target-naming-canonical-names.md
+     3  repo-governance/development/infra/nx-targets/execution-model.md
+     3  repo-governance/development/infra/nx-target-naming/principles-conventions-and-lifecycle-targets.md
+     3  .claude/agents/repo/README.md
+     3  .agents/skills/harness-compatibility-protocol/SKILL.md
+     2  repo-governance/workflows/harness/harness-compatibility-quality-gate/step-4-re-validate.md
+     2  repo-governance/workflows/harness/harness-compatibility-quality-gate/step-1-initial-validation.md
+     2  repo-governance/workflows/harness/harness-compatibility-quality-gate/example-usage.md
+     2  repo-governance/development/quality/specs-application-sync/tools-and-automation.md
+     2  repo-governance/development/quality/feature-change-completeness/what-must-be-updated.md
+     2  repo-governance/development/quality/feature-change-completeness/two-paths-with-a-plan-and-without-a-plan.md
+     2  repo-governance/development/quality/feature-change-completeness/principles-and-conventions-implemented-respected.md
+     2  repo-governance/development/quality/ci-blocker-resolution/the-investigation-process-steps-1-4.md
+     2  repo-governance/development/infra/nx-targets/mandatory-targets-all-projects-quick-and-gate.md
+     2  repo-governance/development/infra/nx-targets.md
+     2  repo-governance/development/infra/ci-conventions/nx-target-naming-and-three-level-testing-definitions.md
+     2  repo-governance/development/infra/ci-conventions/coverage-threshold-rationale.md
+     2  .claude/skills/harness-compatibility-protocol/SKILL.md
+     2  .agents/skills/swe-developing-applications-common/reference/checker-tdd-and-specs-completeness.md
+     1  repo-governance/workflows/specs/specs-quality-gate/validation-dimensions.md
+     1  repo-governance/workflows/rules/rules-propagation/related-workflows.md
+     1  repo-governance/workflows/plan/plan-multi-repo-parity-planning/example-usage.md
+     1  repo-governance/workflows/harness/README.md
+     1  repo-governance/workflows/harness/harness-compatibility-quality-gate/step-3-apply-fixes.md
+     1  repo-governance/workflows/gherkin-implementation-review.md
+     1  repo-governance/workflows/dependencies/dependency-bump-planning/phase-5-backlog-plan-establishment.md
+     1  repo-governance/development/workflow/trunk-based-development/default-delivery-mode-worktree-to-pr.md
+     1  repo-governance/development/workflow/pr-merge-protocol/principles-and-conventions-implemented.md
+     1  repo-governance/development/workflow/git-hook-lifecycle.md
+     1  repo-governance/development/workflow/dependency-bump-policy/application-workflow.md
+     1  repo-governance/development/workflow/ci-post-push-verification/scope-and-pre-push-hook-coverage.md
+     1  repo-governance/development/workflow/bare-repo-landing-method/the-method-as-numbered-steps.md
+     1  repo-governance/development/quality/three-level-testing-standard.md
+     1  repo-governance/development/quality/specs-application-sync/when-to-check-synchronization.md
+     1  repo-governance/development/quality/specs-application-sync/principles-and-conventions-implemented-respected.md
+     1  repo-governance/development/quality/specs-application-sync/existing-patterns-to-follow.md
+     1  repo-governance/development/quality/regression-test-mandate/completeness-checklist.md
+     1  repo-governance/development/quality/feature-change-completeness/examples.md
+     1  repo-governance/development/quality/code/git-hook-workflow-commit-msg-and-pre-push-hooks.md
+     1  repo-governance/development/quality/ci-blocker-resolution/scope.md
+     1  repo-governance/development/quality/ci-blocker-resolution/principles-and-conventions-implemented-respected.md
+     1  repo-governance/development/quality/best-practices/best-practices-4-6.md
+     1  repo-governance/development/infra/temporary-files/fixer-reports-universal-pattern.md
+     1  repo-governance/development/infra/nx-targets/target-anti-patterns.md
+     1  repo-governance/development/infra/nx-targets/README.md
+     1  repo-governance/development/infra/nx-targets/principles-and-conventions.md
+     1  repo-governance/development/infra/nx-targets/mandatory-targets-integration-tests.md
+     1  repo-governance/development/infra/nx-targets/domain-work-naming-for-governance-targets.md
+     1  repo-governance/development/infra/nx-targets/cache-and-inputs-convention-canonical.md
+     1  repo-governance/development/infra/nx-target-naming/domain-work-scheme.md
+     1  repo-governance/development/infra/nx-target-naming/domain-work-scheme-examples-and-anti-patterns.md
+     1  repo-governance/development/infra/github-actions-workflow-naming/filename-grammar-and-vocabulary.md
+     1  repo-governance/development/infra/ci-conventions/git-hooks-standard-pre-push.md
+     1  repo-governance/development/infra/ci-conventions/ci-toolchain-parity-checklist-invariants-e-f-and-g.md
+     1  repo-governance/development/infra/ci-conventions/ci-toolchain-parity-checklist-invariants-b2-c-and-d.md
+     1  repo-governance/development/infra/ci-conventions/ci-toolchain-parity-checklist-invariants-a-and-b.md
+     1  repo-governance/development/infra/acceptance-criteria/integration-with-test-automation.md
+     1  repo-governance/development/agents/ai-agents/multi-harness-binding-sync-references-history-troubleshooting.md
+     1  repo-governance/conventions/structure/specs-directory-structure/logical-owner-corpus.md
+     1  repo-governance/conventions/structure/specs-directory-structure/deterministic-validation-orphan-checks-combined-scopes-relationship-symmetry-drift.md
+     1  repo-governance/conventions/structure/multi-harness-binding/tools-and-automation.md
+     1  repo-governance/conventions/structure/multi-harness-binding/scope.md
+     1  repo-governance/conventions/structure/multi-harness-binding/rules-4-to-5.md
+     1  repo-governance/conventions/structure/multi-harness-binding/related.md
+     1  repo-governance/conventions/structure/multi-harness-binding/platform-binding-examples.md
+     1  repo-governance/conventions/structure/multi-harness-binding/config-parity.md
+     1  repo-governance/conventions/structure/governance-vendor-independence/platform-binding-directory-pattern-and-migration.md
+     1  .claude/skills/provenance.json
+     1  .claude/skills/catalog.json
+     1  .claude/agents/specs/specs-checker.md
+     1  .claude/agents/README.md
+     1  .claude/agents/pr-review/pr-review-instruction-maker.md
+     1  .claude/agents/plan/provenance.json
+     1  .claude/agents/plan/catalog.json
+     1  .claude/agents/general/ci-fixer.md
+     1  .claude/agents/general/ci-checker.md
+     1  .agents/skills/swe-developing-applications-common/reference/checker-validation-steps.md
+     1  .agents/skills/specs-validating-structure/reference/drift-detection-and-reporting.md
+     1  .agents/skills/rules-validating-governance/reference/word-budget-and-rules-governance-core.md
+     1  .agents/skills/rules-validating-governance/reference/rules-governance-licensing-and-dependency-policy.md
+     1  .agents/skills/README.md
+     1  .agents/skills/plan-validating-quality/SKILL.md
+     1  .agents/skills/plan-validating-quality/reference/delivery-checklist-validation-part1.md
+     1  .agents/skills/plan-creating-project-plans/reference/operational-readiness.md
+     1  .agents/skills/harness-compatibility-protocol/reference/phase0-quality-gate-filter.md
+     1  .agents/skills/harness-compatibility-protocol/reference/fixer-patterns-and-process.md
+     1  .agents/agents/plan-checker.md
+
+## Classification (four facts per obligation)
+
+Audience rows follow Step 2's table. "Governance layer" = read when the contributor reaches the activity, so the activity
+itself leads them to the rule at no instruction-surface cost. Vendor neutrality: a rule is vendor-specific only when it cannot be
+stated without naming a harness, vendor tool, or vendor path. Naming a language toolchain (uv, pytest, Ruff) is not vendor-specific
+in this sense: the existing development-layer docs already name Vitest, Playwright, Reqnroll, Godog, Coverlet, and JaCoCo.
+
+| ID    | Subject (narrowest noun)                                         | Audience and consequence                                                   | Neutrality                                 | Layer                          |
+| ----- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------ |
+| PYR-1 | a Python CLI owner project's mandatory Nx targets                | reached when scaffolding/reviewing project.json: governance layer          | neutral                                    | development (how to develop)   |
+| PYR-2 | a dedicated Python CLI E2E project's mandatory Nx targets        | same activity: governance layer                                            | neutral                                    | development                    |
+| PYR-3 | static pytest-bdd binding recognition                            | reached when writing bindings/adding an adapter: governance layer; also a machine check | neutral                       | development + application (validator) |
+| PYR-4 | owner `test:unit` line-coverage threshold shape                  | reached when authoring `test:unit`: governance layer; also a machine check | neutral                                    | development + application      |
+| PYR-5 | project tags for a Python project                                | reached when tagging a project: governance layer; vocabulary is a declaration | neutral                                 | development                    |
+| PYR-6 | FERRET lifecycle capture registrations (wrapper/plugin)          | harness maintainers, when they touch a binding: one agent skill + catalog  | **vendor-specific** (names three harnesses) | skill surface + binding-examples catalog (`docs/reference/platform-bindings.md`) |
+| PYR-7 | the generated route for the canonical harness-compatibility skill | a machine only: declaration + validator; prose only as pointer             | vendor-specific (names the Claude profile route) | skill surface + binding-examples catalog |
+
+Placement is therefore a consequence of these facts, not a parallel judgement (Step 4 spends them):
+- Instruction-surface candidacy: none. No obligation changes behaviour before a file is opened; each is reached through its
+  activity. AGENTS.md (715 words, fail threshold 750) and CLAUDE.md are not touched; the vendor-neutral canonical file is the only
+  instruction file that could have been a candidate and no shim is a candidate for a neutral rule.
+- Fallback layers recorded for Step 4: PYR-1/2 -> development/infra/nx-targets; PYR-3/4 -> development/infra/nx-targets (behaviour
+  coverage) plus the static validator; PYR-5 -> development/infra/nx-targets tag convention; the setup workflow that ships Python
+  (`repo-governance/workflows/infra/development-environment-setup`) is a discoverability surface whose current sentence
+  "This repository ships no Python application or library" becomes false when this delivery lands; PYR-6/7 -> the
+  harness-compatibility-protocol skill (canonical under `.agents/skills/`, amendment A1) and the platform-bindings catalog.
+
+## Membership verdicts per touched surface (recorded now; final verdicts are written in the manifest at Step 6)
+- repo-governance/development/infra/nx-targets/mandatory-targets-cli-e2e.md: candidate for PYR-1/PYR-2 (amend).
+- repo-governance/development/infra/nx-targets/mandatory-targets-behaviour-coverage.md: candidate for PYR-3/PYR-4 (amend).
+- repo-governance/development/infra/nx-targets/tag-convention-current-tags-and-examples.md: candidate for PYR-5 rows (amend).
+- repo-governance/development/infra/nx-targets/tag-convention-four-dimension-scheme.md: NOT in the plan's nine-path list, but the
+  controlled vocabulary lives here and says "Add new values only by updating this convention"; PYR-5 cannot land without it.
+  Recorded as amendment A6 (see Step 3).
+- repo-governance/workflows/infra/development-environment-setup/phase-6-python-ecosystem.md: candidate (amend, discoverability).
+- .agents/skills/harness-compatibility-protocol/SKILL.md (canonical, A1): candidate for PYR-6/PYR-7.
+- docs/reference/platform-bindings.md and repo-config.yml: candidates for PYR-6/PYR-7 and Python scan/heading surfaces.
+- scripts/behaviour-coverage.mjs and .test.mjs: machine enforcement for PYR-1..PYR-5.
+
+## Result
+Step 2 complete: every obligation has subject, audience, neutrality, layer, and a governance-layer or skill home recorded.

@@ -1,0 +1,29 @@
+$ rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD
+
+
+ NX   No tasks were run
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:09:09Z
+
+
+$ rtk git diff --check
+(no output)
+note=run as the plain command `RTK_DISABLED=1 git diff --check` (see route.txt command-execution-note)
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:09:32Z
+
+## Assertions
+- affected build/typecheck/lint/test:quick baseline: exit 0 ("No tasks were run": HEAD equals origin/main, so no project is affected).
+- diff-check: exit 0 with no output.
+- No FERRET product, spec, or rule file has changed; only this plan's delivery.md and its evidence folder.
+
+## Re-run after the final Phase 0 edits (harness-probe.txt added, delivery.md ticks and notes)
+
+$ rtk git diff --check
+(no output)
+note=run as the plain command `RTK_DISABLED=1 git diff --check`; tracked-file diff only (evidence files are untracked until Phase 6)
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:15:25Z

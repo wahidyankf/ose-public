@@ -1,0 +1,49 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --args='tests/unit/test_initialization.py tests/unit/steps/test_initialization_and_concurrency_steps.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_initialization.py tests/unit/steps/test_initialization_and_concurrency_steps.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_initialization.py tests/unit/steps/test_initialization_and_concurrency_steps.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 87 items / 2 errors
+
+==================================== ERRORS ====================================
+_ ERROR collecting tests/unit/steps/test_initialization_and_concurrency_steps.py _
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_initialization_and_concurrency_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_initialization_and_concurrency_steps.py:9: in <module>
+    from ferret.application.initialization import InitResult, initialize_store
+E   ModuleNotFoundError: No module named 'ferret.application'
+______________ ERROR collecting tests/unit/test_initialization.py ______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_initialization.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_initialization.py:9: in <module>
+    from ferret.adapters.filesystem import resolve_data_home
+E   ModuleNotFoundError: No module named 'ferret.adapters'
+=========================== short test summary info ============================
+ERROR tests/unit/steps/test_initialization_and_concurrency_steps.py
+ERROR tests/unit/test_initialization.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+============================== 2 errors in 0.11s ===============================
+
+
+
+ NX   Running target test:unit for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:unit
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_initialization.py tests/unit/steps/test_initialization_and_concurrency_steps.py" exited with non-zero status code
+note=C01-UNIT RED: the two new test modules fail at collection naming only the missing resolve_data_home (ferret.adapters.filesystem) and initialize_store (ferret.application.initialization); nothing else fails
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:44:42Z

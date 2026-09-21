@@ -13,6 +13,8 @@ when_to_use: Use when copying an existing project's tag set as a template or che
 | `ayokoding-www-be-e2e`     | `["type:e2e", "platform:playwright", "lang:ts", "domain:ayokoding"]`     |
 | `ayokoding-www-fe-e2e`     | `["type:e2e", "platform:playwright", "lang:ts", "domain:ayokoding"]`     |
 | `crane-cli`                | `["type:app", "platform:cli", "lang:fsharp", "domain:crane"]`            |
+| `ferret-cli`               | `["type:app", "platform:cli", "lang:python", "domain:ferret"]`           |
+| `ferret-cli-e2e`           | `["type:e2e", "platform:cli", "lang:python", "domain:ferret"]`           |
 | `roots-be` †               | `["type:app", "platform:gin", "lang:go", "domain:roots"]`                |
 | `roots-be-e2e` †           | `["type:e2e", "platform:playwright", "lang:ts", "domain:roots"]`         |
 | `roots-contracts` †        | `["type:lib", "domain:roots"]`                                           |
@@ -53,6 +55,15 @@ An F#/Giraffe backend app declares all four dimensions:
 {
   "name": "organiclever-be",
   "tags": ["type:app", "platform:giraffe", "lang:fsharp", "domain:organiclever"]
+}
+```
+
+A Python CLI owner follows the same four-dimension shape; its dedicated E2E project shares `lang:python` and the owner's domain:
+
+```json
+{
+  "name": "ferret-cli",
+  "tags": ["type:app", "platform:cli", "lang:python", "domain:ferret"]
 }
 ```
 

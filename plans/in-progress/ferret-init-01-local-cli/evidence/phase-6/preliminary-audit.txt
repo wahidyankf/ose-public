@@ -1,0 +1,22 @@
+$ rtk rg -n "FAIL|OPEN|MISSING|ASSUMED" plans/in-progress/ferret-init-01-local-cli/evidence/preliminary-delivery-audit.md
+(no output)
+note=PHASE 6 preliminary audit: no blocking row in evidence/preliminary-delivery-audit.md (expected exit 1 and no output)
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:50:13Z
+
+$ rtk rg -n "^## " plans/in-progress/ferret-init-01-local-cli/evidence/preliminary-delivery-audit.md
+10:## 1. Acceptance criteria
+34:## 2. Contract, hash, and snapshots
+43:## 3. Counters and numeric prune
+53:## 4. Install manifest and rollback
+62:## 5. Rules propagation Steps 0 to 8
+70:## 6. Storage
+77:## 7. Automatic and manual proof
+89:## 8. File ledger
+97:## 9. Deviations, learnings, and the boundary
+106:## 10. Verdict
+note=PHASE 6 preliminary audit: the ten sections trace the acceptance criteria, contract and hash and snapshots, counters and numeric prune, install manifest and rollback, rules Steps 0-8, storage, automatic and manual proof, the file ledger, deviations, and the verdict
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:50:23Z

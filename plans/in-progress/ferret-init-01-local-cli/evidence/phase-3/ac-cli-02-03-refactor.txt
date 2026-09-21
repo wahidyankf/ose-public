@@ -1,0 +1,325 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick --skip-nx-cache
+
+> nx run ferret-cli:"test:quick"
+
+> npm exec -- nx run ferret-cli:lint
+
+
+> nx run ferret-cli:lint
+
+> uv run --no-sync ruff check .
+
+E501 Line too long (121 > 120)
+   --> src/ferret/adapters/system.py:103:121
+    |
+102 | def system_runtime(environment: Mapping[str, str] | None = None, *, stdin: BinaryIO | None = None) -> Runtime:
+103 |     """Wire the real ports for one process. The environment and input are injectable so tests never read the caller's."""
+    |                                                                                                                         ^
+104 |     env = os.environ if environment is None else environment
+105 |     data_home = resolve_data_home(env, home_directory(env))
+    |
+
+RUF001 String contains ambiguous `２` (FULLWIDTH DIGIT TWO). Did you mean `2` (DIGIT TWO)?
+  --> tests/unit/test_timestamps.py:52:10
+   |
+50 |         "2026-09-18T24:00:00.000Z",
+51 |         "2026-09-18T08:15:30.123Z ",
+52 |         "２０２６-09-18T08:15:30.123Z",
+   |          ^^
+53 |         "2026-09-18T08:15:30.١٢٣Z",
+54 |     ],
+   |
+
+RUF001 String contains ambiguous `０` (FULLWIDTH DIGIT ZERO). Did you mean `0` (DIGIT ZERO)?
+  --> tests/unit/test_timestamps.py:52:11
+   |
+50 |         "2026-09-18T24:00:00.000Z",
+51 |         "2026-09-18T08:15:30.123Z ",
+52 |         "２０２６-09-18T08:15:30.123Z",
+   |            ^^
+53 |         "2026-09-18T08:15:30.١٢٣Z",
+54 |     ],
+   |
+
+RUF001 String contains ambiguous `２` (FULLWIDTH DIGIT TWO). Did you mean `2` (DIGIT TWO)?
+  --> tests/unit/test_timestamps.py:52:12
+   |
+50 |         "2026-09-18T24:00:00.000Z",
+51 |         "2026-09-18T08:15:30.123Z ",
+52 |         "２０２６-09-18T08:15:30.123Z",
+   |              ^^
+53 |         "2026-09-18T08:15:30.١٢٣Z",
+54 |     ],
+   |
+
+RUF001 String contains ambiguous `６` (FULLWIDTH DIGIT SIX). Did you mean `6` (DIGIT SIX)?
+  --> tests/unit/test_timestamps.py:52:13
+   |
+50 |         "2026-09-18T24:00:00.000Z",
+51 |         "2026-09-18T08:15:30.123Z ",
+52 |         "２０２６-09-18T08:15:30.123Z",
+   |                ^^
+53 |         "2026-09-18T08:15:30.١٢٣Z",
+54 |     ],
+   |
+
+RUF001 String contains ambiguous `١` (ARABIC-INDIC DIGIT ONE). Did you mean `l` (LATIN SMALL LETTER L)?
+  --> tests/unit/test_timestamps.py:53:30
+   |
+51 |         "2026-09-18T08:15:30.123Z ",
+52 |         "２０２６-09-18T08:15:30.123Z",
+53 |         "2026-09-18T08:15:30.١٢٣Z",
+   |                              ^
+54 |     ],
+55 |     ids=[
+   |
+
+Found 6 errors.
+
+
+
+ NX   Running target lint for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:lint
+
+Hint: run the command with --verbose for more details.
+
+
+
+
+ NX   Running target test:quick for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:quick
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync ruff check ." exited with non-zero status codeWarning: command "npm exec -- nx run ferret-cli:lint" exited with non-zero status code
+note=OWNER-QUICK
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T05:25:44Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick --skip-nx-cache
+
+> nx run ferret-cli:"test:quick"
+
+> npm exec -- nx run ferret-cli:lint
+
+
+> nx run ferret-cli:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+45 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:typecheck
+
+
+> nx run ferret-cli:typecheck
+
+> uv run --no-sync pyright
+
+<worktree>/apps/ferret-cli/src/ferret/domain/canonical.py
+  <worktree>/apps/ferret-cli/src/ferret/domain/canonical.py:12:13 - error: Type of "item" is unknown (reportUnknownVariableType)
+  <worktree>/apps/ferret-cli/src/ferret/domain/canonical.py:15:13 - error: Type of "item" is unknown (reportUnknownVariableType)
+2 errors, 0 warnings, 0 informations
+
+
+
+ NX   Running target typecheck for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:typecheck
+
+Hint: run the command with --verbose for more details.
+
+
+
+
+ NX   Running target test:quick for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:quick
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pyright" exited with non-zero status codeWarning: command "npm exec -- nx run ferret-cli:typecheck" exited with non-zero status code
+note=OWNER-QUICK rerun after the lint repair (RUF001 ambiguous Unicode literals in the new timestamp cases became escapes; one E501 docstring shortened): exit 0
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T05:26:21Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick --skip-nx-cache
+
+> nx run ferret-cli:"test:quick"
+
+> npm exec -- nx run ferret-cli:lint
+
+
+> nx run ferret-cli:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+45 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:typecheck
+
+
+> nx run ferret-cli:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:unit
+
+
+> nx run ferret-cli:"test:unit"
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 400 items
+
+tests/unit/steps/test_initialization_and_concurrency_steps.py .          [  0%]
+tests/unit/steps/test_metadata_envelope_steps.py .......                 [  2%]
+tests/unit/test_canonical.py ..........                                  [  4%]
+tests/unit/test_capture.py ........................                      [ 10%]
+tests/unit/test_cli_contract.py ........................................ [ 20%]
+...............................................                          [ 32%]
+tests/unit/test_commands.py .........                                    [ 34%]
+tests/unit/test_data_home_locality.py ...........                        [ 37%]
+tests/unit/test_event_contract.py ............................           [ 44%]
+tests/unit/test_initialization.py ...................................... [ 53%]
+....................                                                     [ 58%]
+tests/unit/test_privacy.py ............................................. [ 70%]
+........................................................................ [ 88%]
+............................                                             [ 95%]
+tests/unit/test_timestamps.py ....................                       [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/initialization.py      65      0   100%
+src/ferret/application/ports.py               34      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/store.py               20      0   100%
+src/ferret/cli.py                            168      0   100%
+src/ferret/commands.py                        19      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   149      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               16      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       16      0   100%
+------------------------------------------------------------------------
+TOTAL                                        656      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================= 400 passed in 0.55s ==============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage
+
+
+> nx run ferret-cli:"test:coverage"
+
+> npm exec -- nx run ferret-cli:test:coverage:unit
+
+
+> nx run ferret-cli:"test:coverage:unit"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter unit
+
+ferret-cli: 2 features, 8 expanded scenarios, adapters: unit.
+
+
+
+ NX   Successfully ran target test:coverage:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:integration
+
+
+> nx run ferret-cli:"test:coverage:integration"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter integration
+
+ferret-cli: 2 features, 8 expanded scenarios, adapters: integration.
+
+
+
+ NX   Successfully ran target test:coverage:integration for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:behaviour
+
+
+> nx run ferret-cli:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter behaviour
+
+ferret-cli: 2 features, 8 expanded scenarios, adapters: unit, integration.
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli
+note=OWNER-QUICK rerun after the strict-Pyright repair (typed the canonical number walk with casts): exit 0
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T05:26:44Z

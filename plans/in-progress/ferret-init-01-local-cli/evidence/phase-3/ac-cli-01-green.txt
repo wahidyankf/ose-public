@@ -1,0 +1,79 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --args='tests/unit/test_initialization.py tests/unit/steps/test_initialization_and_concurrency_steps.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_initialization.py tests/unit/steps/test_initialization_and_concurrency_steps.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_initialization.py tests/unit/steps/test_initialization_and_concurrency_steps.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 166 items
+
+tests/unit/steps/test_initialization_and_concurrency_steps.py .          [  0%]
+tests/unit/test_cli_contract.py ........................................ [ 24%]
+...............................................                          [ 53%]
+tests/unit/test_commands.py .........                                    [ 58%]
+tests/unit/test_data_home_locality.py ...........                        [ 65%]
+tests/unit/test_initialization.py ...................................... [ 87%]
+....................                                                     [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/initialization.py      72      0   100%
+src/ferret/application/ports.py               28      0   100%
+src/ferret/cli.py                            168      0   100%
+src/ferret/commands.py                        15      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               16      2    88%   12, 27
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       11      0   100%
+------------------------------------------------------------------------
+TOTAL                                        399      2    99%
+Required test coverage of 99% reached. Total coverage: 99.50%
+============================= 166 passed in 0.49s ==============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+note=C01-UNIT GREEN: exit 0; every test passes and Unit line coverage stays above the 99% gate
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:53:21Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:integration --args='tests/integration/test_initialization.py'
+
+> nx run ferret-cli:"test:integration" --args=tests/integration/test_initialization.py
+
+> uv run --no-sync pytest tests/integration tests/integration/test_initialization.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 21 items
+
+tests/integration/steps/test_initialization_and_concurrency_steps.py .   [  4%]
+tests/integration/test_initialization.py ...........                     [ 57%]
+tests/integration/test_package_build.py .........                        [100%]
+
+============================== 21 passed in 0.33s ==============================
+
+
+
+ NX   Successfully ran target test:integration for project ferret-cli
+note=C01-INTEGRATION GREEN: exit 0; two repositories converge on one private store, one identity, one schema migration row, six concurrent processes converge on one created result
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:53:46Z

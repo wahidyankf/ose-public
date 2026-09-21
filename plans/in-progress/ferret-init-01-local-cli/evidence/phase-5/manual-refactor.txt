@@ -1,0 +1,321 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:build --skip-nx-cache
+
+> nx run ferret-cli:build
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+
+
+ NX   Successfully ran target build for project ferret-cli
+note=PHASE 5 REFACTOR/manual 1/4: rebuild the artifact the matrix runs (the build is reproducible, so identical sources give identical bytes)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:33:49Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier light --disk-path . -- sh local-tmp/claude/manual-matrix.sh
+helper exit (capture): 0
+helper exit (query): 0
+helper exit (install): 0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:1:case=install
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:2:command=init
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:3:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:4:bytes=stdout:463 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:5:sha256=20158872f2b6b59111a846bf48c58656455cfa388cfd4913e8d608229c2959c6 install/raw/01-init.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:6:assertion=init reports the created contract shape: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:7:assertion=the data home and database are inside the case directory: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:8:assertion=the data home and database are private: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:9:command=install
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:10:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:11:bytes=stdout:640 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:12:sha256=6c972522b62872aa2267fe25a1f5d41dcdbe3c742d31c3241299b1f62955379d install/raw/02-install.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:13:assertion=install reports installed with its contract shape and only paths inside the case home: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:14:assertion=the installed artifact is the built artifact, private, with a launcher link and a private manifest: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:15:command=install-again
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:16:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:17:bytes=stdout:648 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:18:sha256=ebe2f1642380a37fbb172fde9a3c0b0b1a23804da257f4886c3463562f675dd8 install/raw/03-install-again.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:19:assertion=a second install reports already_installed and rewrites nothing: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:20:command=uninstall-keep-data
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:21:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:22:bytes=stdout:576 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:23:sha256=ac3d55e616a0d00f812966fba1852cf757fa5295f67d85a84b4720145cf8213f install/raw/04-uninstall-keep-data.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:24:assertion=uninstall removes exactly the three owned paths, sorted, and keeps the data: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:25:assertion=nothing FERRET did not install was removed after the first uninstall: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:26:command=uninstall-purge-data
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:27:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:28:bytes=stdout:146 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:29:sha256=ae93a6910d9a5b287538af2b198633e74b7fc9124b52beae4a14400ddae9cc24 install/raw/05-uninstall-purge-data.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:30:assertion=uninstall with purge and confirmation deletes the data home and reports nothing left to remove: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:31:assertion=nothing FERRET did not install was removed after the purge: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:32:assertion=install-states installed already_installed kept purged: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt:33:assertion=every recorded assertion held: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:1:case=capture
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:2:command=init
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:3:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:4:bytes=stdout:463 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:5:sha256=7fe591e0eba9600da6d72a7e7fa2de87ef24c6a8642e5a116d077f5739d46714 capture/raw/01-init.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:6:assertion=init reports the created contract shape: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:7:assertion=the data home and database are inside the case directory: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:8:assertion=the data home and database are private: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:9:command=capture-stored
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:10:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:11:bytes=stdout:199 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:12:sha256=b239624c4a247e78967ac25ec90b7256b97c566e23742f957555b4eff02e7be6 capture/raw/02-capture-stored.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:13:assertion=capture-stored reports stored with the independently computed hash: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:14:command=capture-duplicate
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:15:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:16:bytes=stdout:202 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:17:sha256=241fdd840e53d5be7340074215dee16eba94127bfa09ebaf6ee3de195eda663c capture/raw/03-capture-duplicate.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:18:assertion=capture-duplicate reports duplicate with the independently computed hash: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:19:command=capture-conflict
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:20:exit=2
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:21:bytes=stdout:0 stderr:124
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:22:sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 capture/raw/04-capture-conflict.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:23:sha256=cc58d151b4016734dfb9ad0cffa6b0e266f2c5820a86edef9de65c9076030c67 capture/raw/04-capture-conflict.stderr
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:24:assertion=the same id with different content is refused as a safe idempotency conflict: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:25:command=capture-hook
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:26:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:27:bytes=stdout:0 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:28:sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 capture/raw/05-capture-hook.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:29:assertion=capture-hook writes zero bytes to either stream and exits zero: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:30:command=status
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:31:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:32:bytes=stdout:1593 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:33:sha256=61126e7f4463b9e2fa572f7e0120dbd94dbedaa72af4d3cb7fa9f3c6f0399bf6 capture/raw/06-status.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:34:assertion=status counts the captured event and the hook event and reports a healthy private store: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:35:assertion=no payload content or path reached any byte of the data home: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt:36:assertion=every recorded assertion held: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:1:case=query
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:2:command=init
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:3:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:4:bytes=stdout:459 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:5:sha256=b4f2b580ed2dd191c937bae4ea30aecc72b3b03c93d9354308e9886c15eaaf23 query/raw/01-init.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:6:assertion=init reports the created contract shape: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:7:assertion=the data home and database are inside the case directory: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:8:assertion=the data home and database are private: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:9:command=seed-read-completed
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:10:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:11:bytes=stdout:199 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:12:sha256=34539e5b4914f961a1ea34a8e709bc771a45d8a86cb647e6a75ac8dd23b8e938 query/raw/02-seed-read-completed.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:13:assertion=seed-read-completed reports stored with the independently computed hash: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:14:command=seed-bash-failed
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:15:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:16:bytes=stdout:199 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:17:sha256=343c687fef5725a0db959c0b4a2b0a1396dd72c47f21ef2ede847d47111d1ebd query/raw/03-seed-bash-failed.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:18:assertion=seed-bash-failed reports stored with the independently computed hash: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:19:command=seed-skill
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:20:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:21:bytes=stdout:199 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:22:sha256=76739552afe402fe4bf91ebdbc181102e5ceeb4fa789918a827551a2aa904974 query/raw/04-seed-skill.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:23:assertion=seed-skill reports stored with the independently computed hash: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:24:command=seed-codex-agent
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:25:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:26:bytes=stdout:199 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:27:sha256=79a33cde9b5ced9909a53527a29215328ab23fd7e56a89705b7a4b05e4f36136 query/raw/05-seed-codex-agent.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:28:assertion=seed-codex-agent reports stored with the independently computed hash: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:29:command=seed-codex-bash-completed
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:30:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:31:bytes=stdout:199 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:32:sha256=78878bc5ebfe2848bf1255071c7998049461de92eed80dec82b2b77cd41ace92 query/raw/06-seed-codex-bash-completed.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:33:assertion=seed-codex-bash-completed reports stored with the independently computed hash: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:34:command=seed-session
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:35:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:36:bytes=stdout:199 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:37:sha256=3778a7b137e5408add3fb6ed915646e73525b042bf458c0bfd3baaaa8045cb2c query/raw/07-seed-session.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:38:assertion=seed-session reports stored with the independently computed hash: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:39:command=status
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:40:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:41:bytes=stdout:1589 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:42:sha256=85af373f548914ffb28cd4d9cf3763b2ce679fe6e6dd052356ab1d67177395bf query/raw/08-status.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:43:assertion=the prerequisite database holds exactly the seeded events: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:44:command=events-list-page-1
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:45:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:46:bytes=stdout:1699 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:47:sha256=8dd1f42cb0899821323cecfbd6a1cb4d9dbfdb430fe54dbe0be0ffe9177c81d1 query/raw/09-events-list-page-1.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:48:command=events-list-page-2
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:49:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:50:bytes=stdout:1723 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:51:sha256=9754d635afffb259463f3a0895526a8b5cc1f9220ad948b2e2220d01a48c1da5 query/raw/10-events-list-page-2.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:52:command=events-list-page-3
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:53:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:54:bytes=stdout:1432 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:55:sha256=32d0d8a044a40138b2bbb26b300bc01ec4ef91ba09776d024b16b326d20e24d5 query/raw/11-events-list-page-3.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:56:assertion=every list page is a canonical, hash-verified page of at most two events: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:57:assertion=paging visits every event once, newest first: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:58:assertion=a full first page carries a cursor: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:59:command=invalid-cursor
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:60:exit=2
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:61:bytes=stdout:0 stderr:122
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:62:sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 query/raw/12-invalid-cursor.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:63:sha256=4e53d1cc0e03e89209c101c71c12a9d09494b073a0c40cda09e72744a7c56a37 query/raw/12-invalid-cursor.stderr
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:64:assertion=a cursor from another limit is refused as a safe invalid cursor: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:65:command=events-export
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:66:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:67:bytes=stdout:4111 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:68:sha256=aa1c0908aa22a0e7c5632adb073432ad7e7c1d78cb2e7cdd859e3178646e5f0a query/raw/13-events-export.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:69:assertion=export writes every event oldest first as canonical hash-verified lines and nothing else: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:70:command=usage-by-skill
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:71:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:72:bytes=stdout:449 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:73:sha256=22b285c9f0e88f936e8305874ccafd79242dbe8f9d9b4c9afca637328b017175 query/raw/14-usage-by-skill.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:74:assertion=usage keeps its contract shape, counts every event once, sorts null last, and states its disclaimer: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:75:command=outcomes-by-tool
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:76:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:77:bytes=stdout:1003 stderr:0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:78:sha256=3bedd27f2417f3742a39830d12e99590aabdaf9dd8432234df2880357526d21b query/raw/15-outcomes-by-tool.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:79:assertion=outcomes keep their contract shape, never count not-applicable outcomes, and state their disclaimer: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:80:command=events-list-empty
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:81:exit=0
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:82:bytes=stdout:0 stderr:9
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:83:sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 query/raw/16-events-list-empty.stdout
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:84:sha256=75e8e3c0de7ed6a7b3746af9746d24c7ba2c028124e2e7e19da5839497626ae1 query/raw/16-events-list-empty.stderr
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:85:assertion=an empty human result writes nothing to stdout and the fixed line to stderr: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:86:assertion=no output of the case holds a terminal escape: pass
+plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt:87:assertion=every recorded assertion held: pass
+leak scan: no match in the three summaries
+note=PHASE 5 REFACTOR/manual 2/4: the complete isolated matrix (run id 7d7e3e, the plan's only run literal; artifact at apps/ferret-cli/dist/ferret.pyz) from one self-contained shell. Expect helper exit 0 for capture, query and install, the plan's exit sequences, and no leak-scan match
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:33:53Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e --skip-nx-cache --args='-q --tb=line -p no:cacheprovider -rf tests/test_user_install.py'
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+> nx run ferret-cli-e2e:"test:e2e" --args=-q --tb=line -p no:cacheprovider -rf tests/test_user_install.py
+
+> uv run --no-sync pytest tests -q --tb=line -p no:cacheprovider -rf tests/test_user_install.py
+
+........................................................................ [ 48%]
+........................................................................ [ 96%]
+......                                                                   [100%]
+150 passed in 55.59s
+
+
+
+ NX   Successfully ran target test:e2e for project ferret-cli-e2e and 1 task it depends on
+note=PHASE 5 REFACTOR/manual 3/4: C12-E2E again (the target appends tests, so the whole E2E suite runs, A20); exit 0 required
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:34:06Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --skip-nx-cache --args='tests/unit/test_manual_evidence.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_manual_evidence.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_manual_evidence.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 1205 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .... [  0%]
+..........                                                               [  1%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  1%]
+tests/unit/steps/test_local_query_and_export_steps.py ...........        [  2%]
+tests/unit/steps/test_metadata_envelope_steps.py ........                [  2%]
+tests/unit/steps/test_retention_and_space_steps.py ..                    [  3%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  3%]
+tests/unit/test_analytics.py ........................................... [  6%]
+...................                                                      [  8%]
+tests/unit/test_canonical.py ..........                                  [  9%]
+tests/unit/test_capabilities.py ........................................ [ 12%]
+........................................................................ [ 18%]
+.........                                                                [ 19%]
+tests/unit/test_capture.py .........................                     [ 21%]
+tests/unit/test_capture_hook.py ........................................ [ 24%]
+.................                                                        [ 25%]
+tests/unit/test_cli_contract.py ........................................ [ 29%]
+.................................................                        [ 33%]
+tests/unit/test_commands.py .........                                    [ 34%]
+tests/unit/test_data_home_locality.py ...........                        [ 35%]
+tests/unit/test_event_contract.py ............................           [ 37%]
+tests/unit/test_event_identity.py ....                                   [ 37%]
+tests/unit/test_hook_mappers.py ........................................ [ 40%]
+........................................................................ [ 46%]
+................                                                         [ 48%]
+tests/unit/test_identifier_derivation.py ............                    [ 49%]
+tests/unit/test_initialization.py ...................................... [ 52%]
+....................                                                     [ 54%]
+tests/unit/test_install.py ............................................. [ 57%]
+...........                                                              [ 58%]
+tests/unit/test_install_domain.py ...................................... [ 61%]
+............................                                             [ 64%]
+tests/unit/test_maintenance.py ................................          [ 66%]
+tests/unit/test_maintenance_command.py ......................            [ 68%]
+tests/unit/test_manual_evidence.py ...........                           [ 69%]
+tests/unit/test_network_denial.py ......                                 [ 70%]
+tests/unit/test_privacy.py ............................................. [ 73%]
+........................................................................ [ 79%]
+............................                                             [ 82%]
+tests/unit/test_queries.py ............................................. [ 85%]
+........................................................................ [ 91%]
+......                                                                   [ 92%]
+tests/unit/test_space.py ........................                        [ 94%]
+tests/unit/test_status.py ......................                         [ 96%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/analytics.py           97      0   100%
+src/ferret/application/capabilities.py        23      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/capture_hook.py        27      0   100%
+src/ferret/application/initialization.py      43      0   100%
+src/ferret/application/install.py             99      0   100%
+src/ferret/application/maintenance.py         71      0   100%
+src/ferret/application/ports.py              111      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/queries.py             46      0   100%
+src/ferret/application/status.py              32      0   100%
+src/ferret/application/store.py               47      0   100%
+src/ferret/cli.py                            176      0   100%
+src/ferret/commands.py                        63      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/capability.py               69      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   110      0   100%
+src/ferret/domain/fields.py                   47      0   100%
+src/ferret/domain/hook.py                    113      0   100%
+src/ferret/domain/identity.py                 17      0   100%
+src/ferret/domain/install.py                  94      0   100%
+src/ferret/domain/query.py                   123      0   100%
+src/ferret/domain/retention.py                16      0   100%
+src/ferret/domain/space.py                    42      0   100%
+src/ferret/domain/status.py                   13      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               37      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       74      0   100%
+------------------------------------------------------------------------
+TOTAL                                       1759      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================= 1205 passed in 7.44s =============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+note=PHASE 5 REFACTOR/manual 4/4: the focused manual helper test again; exit 0 required
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T12:37:10Z

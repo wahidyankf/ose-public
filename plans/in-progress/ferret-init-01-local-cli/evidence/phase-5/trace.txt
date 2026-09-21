@@ -1,0 +1,292 @@
+FERRET Init 01: acceptance and scope trace (Phase 5)
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:11:24Z
+Sources: the six feature files, the pytest-bdd step files of the three adapters, and the evidence directory.
+Every named file was checked to exist when this file was generated; test counts are `def test_` functions.
+
+== Acceptance criteria ==
+AC-CLI-01 - Initialize one private machine store
+  scenario: behaviours/storage/initialization-and-concurrency.feature :: Initialize one private store from multiple repositories
+    bound unit: apps/ferret-cli/tests/unit/steps/test_initialization_and_concurrency_steps.py::test_initialize_one_private_store_from_multiple_repositories
+    bound integration: apps/ferret-cli/tests/integration/steps/test_initialization_and_concurrency_steps.py::test_initialize_one_private_store_from_multiple_repositories
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_initialization_and_concurrency_steps.py::test_initialize_one_private_store_from_multiple_repositories
+  unit: apps/ferret-cli/tests/unit/test_initialization.py (13 tests)
+  integration: apps/ferret-cli/tests/integration/test_initialization.py (8 tests)
+  integration: apps/ferret-cli/tests/integration/test_workspace_roots.py (9 tests)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt : init reports the created contract shape; data home and database are private and inside the isolated home
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt : the same init contract in a second, separate case
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt : the same init contract in a third case, before install
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-01-red.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-01-green.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-01-refactor.txt
+AC-CLI-02 - Capture strict metadata
+  scenario: behaviours/privacy/metadata-envelope.feature :: Capture a valid lifecycle event
+    bound unit: apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py::test_capture_a_valid_lifecycle_event
+    bound integration: apps/ferret-cli/tests/integration/steps/test_metadata_envelope_steps.py::test_capture_a_valid_lifecycle_event
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_metadata_envelope_steps.py::test_capture_a_valid_lifecycle_event
+  scenario: behaviours/privacy/metadata-envelope.feature :: Project raw hook JSON without retaining content
+    bound unit: apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py::test_project_raw_hook_json_without_retaining_content
+    bound integration: apps/ferret-cli/tests/integration/steps/test_metadata_envelope_steps.py::test_project_raw_hook_json_without_retaining_content
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_metadata_envelope_steps.py::test_project_raw_hook_json_without_retaining_content
+  unit: apps/ferret-cli/tests/unit/test_event_contract.py (10 tests)
+  unit: apps/ferret-cli/tests/unit/test_canonical.py (5 tests)
+  unit: apps/ferret-cli/tests/unit/test_event_identity.py (4 tests)
+  unit: apps/ferret-cli/tests/unit/test_identifier_derivation.py (10 tests)
+  unit: apps/ferret-cli/tests/unit/test_capture.py (13 tests)
+  unit: apps/ferret-cli/tests/unit/test_hook_mappers.py (31 tests)
+  integration: apps/ferret-cli/tests/integration/test_sqlite_repository.py (10 tests)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt : a stored event and its duplicate report the independently computed canonical hash
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-02-03-red.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-02-03-green.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-02-03-refactor.txt
+AC-CLI-03 - Reject content and unknown fields
+  scenario: behaviours/privacy/metadata-envelope.feature :: Reject a forbidden capture field
+    bound unit: apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py::test_reject_a_forbidden_capture_field
+    bound integration: apps/ferret-cli/tests/integration/steps/test_metadata_envelope_steps.py::test_reject_a_forbidden_capture_field
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_metadata_envelope_steps.py::test_reject_a_forbidden_capture_field
+  unit: apps/ferret-cli/tests/unit/test_privacy.py (18 tests)
+  unit: apps/ferret-cli/tests/unit/test_event_contract.py (10 tests)
+  integration: apps/ferret-cli/tests/integration/test_privacy.py (2 tests)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt : same id with different content is refused as a safe idempotency conflict and no payload content reaches the data home
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/smoke.txt : byte-level leak checks of live Claude Code, Codex and OpenCode stores hold no prompt, argument, path or session id
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-02-03-red.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-02-03-green.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-02-03-refactor.txt
+AC-CLI-04 - Keep the harness fail-open
+  scenario: behaviours/harness/fail-open-capabilities-and-platforms.feature :: Keep a harness fail-open after a local failure
+    bound unit: apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure
+    bound integration: apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure
+  scenario: behaviours/harness/fail-open-capabilities-and-platforms.feature :: Keep one POSIX adapter fail-open at the wrapper boundary
+    bound unit: apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary
+    bound integration: apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary
+  unit: apps/ferret-cli/tests/unit/test_capture_hook.py (21 tests)
+  unit: apps/ferret-cli/tests/unit/test_hook_mappers.py (31 tests)
+  integration: apps/ferret-cli/tests/integration/test_capture_hook.py (9 tests)
+  integration: apps/ferret-cli/tests/integration/test_capture_wrapper.py (9 tests)
+  integration: apps/ferret-cli/tests/integration/test_hook_registrations.py (5 tests)
+  e2e: apps/ferret-cli-e2e/tests/test_harness_adapters.py (3 tests)
+  e2e: apps/ferret-cli-e2e/tests/test_adapter_latency.py (12 tests)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/smoke.txt : live harness runs: output unchanged and only metadata rows stored; Codex project-layer loading was exercised through inline overrides only (A25)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt : capture-hook writes zero bytes to either stream and exits zero
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/gate-adapters.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/gate-bindings.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/gate-projects.txt
+AC-CLI-05 - Preserve concurrent local capture
+  scenario: behaviours/storage/initialization-and-concurrency.feature :: Capture concurrently across repositories
+    bound unit: apps/ferret-cli/tests/unit/steps/test_initialization_and_concurrency_steps.py::test_capture_concurrently_across_repositories
+    bound integration: apps/ferret-cli/tests/integration/steps/test_initialization_and_concurrency_steps.py::test_capture_concurrently_across_repositories
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_initialization_and_concurrency_steps.py::test_capture_concurrently_across_repositories
+  unit: apps/ferret-cli/tests/unit/test_capture.py (13 tests)
+  integration: apps/ferret-cli/tests/integration/test_sqlite_repository.py (10 tests)
+  e2e: apps/ferret-cli-e2e/tests/test_adapter_latency.py (12 tests)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/storage.txt : four concurrent capture writers against one store, every capture far inside the one-second hook deadline
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/retention.txt : reads finish and the prune attempt gives way while a second process holds the write lock
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-05-red.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-05-green.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-05-refactor.txt
+AC-CLI-06 - Show unknown instead of zero
+  scenario: behaviours/harness/fail-open-capabilities-and-platforms.feature :: Mark an unobservable capability unknown
+    bound unit: apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_mark_an_unobservable_capability_unknown
+    bound integration: apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_mark_an_unobservable_capability_unknown
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_mark_an_unobservable_capability_unknown
+  unit: apps/ferret-cli/tests/unit/test_capabilities.py (24 tests)
+  unit: apps/ferret-cli/tests/unit/test_analytics.py (29 tests)
+  integration: apps/ferret-cli/tests/integration/test_capability_repository.py (13 tests)
+  integration: apps/ferret-cli/tests/integration/test_analytics.py (6 tests)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt : usage keeps its contract shape and counts every event once; events with no observable skill form a null bucket that sorts last, never a zero count
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/smoke.txt : Claude Code and OpenCode skill.invoked observed live; Codex skill stays unknown
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-06-red.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-06-green.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-06-refactor.txt
+AC-CLI-07 - Query and export deterministic events
+  scenario: behaviours/queries/local-query-and-export.feature :: Filter and export deterministic local events
+    bound unit: apps/ferret-cli/tests/unit/steps/test_local_query_and_export_steps.py::test_filter_and_export_deterministic_local_events
+    bound integration: apps/ferret-cli/tests/integration/steps/test_local_query_and_export_steps.py::test_filter_and_export_deterministic_local_events
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py::test_filter_and_export_deterministic_local_events
+  scenario: behaviours/queries/local-query-and-export.feature :: Emit a stable machine-readable command result
+    bound unit: apps/ferret-cli/tests/unit/steps/test_local_query_and_export_steps.py::test_emit_a_stable_machine_readable_command_result
+    bound integration: apps/ferret-cli/tests/integration/steps/test_local_query_and_export_steps.py::test_emit_a_stable_machine_readable_command_result
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py::test_emit_a_stable_machine_readable_command_result
+  unit: apps/ferret-cli/tests/unit/test_cli_contract.py (29 tests)
+  unit: apps/ferret-cli/tests/unit/test_queries.py (41 tests)
+  unit: apps/ferret-cli/tests/unit/test_commands.py (8 tests)
+  integration: apps/ferret-cli/tests/integration/test_queries.py (14 tests)
+  e2e: apps/ferret-cli-e2e/tests/test_query_export.py (7 tests)
+  e2e: apps/ferret-cli-e2e/tests/test_package_smoke.py (10 tests)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt : hash-verified list pages newest first, a refused foreign-limit cursor, and oldest-first JSON Lines export with nothing else on stdout
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-07-08-red.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-07-08-green.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-07-08-refactor.txt
+AC-CLI-08 - Report operational proxies honestly
+  scenario: behaviours/analytics/usage-and-outcomes.feature :: Summarize outcomes with incomplete visibility
+    bound unit: apps/ferret-cli/tests/unit/steps/test_usage_and_outcomes_steps.py::test_summarize_outcomes_with_incomplete_visibility
+    bound integration: apps/ferret-cli/tests/integration/steps/test_usage_and_outcomes_steps.py::test_summarize_outcomes_with_incomplete_visibility
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_usage_and_outcomes_steps.py::test_summarize_outcomes_with_incomplete_visibility
+  unit: apps/ferret-cli/tests/unit/test_analytics.py (29 tests)
+  integration: apps/ferret-cli/tests/integration/test_analytics.py (6 tests)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt : outcomes keep their contract shape, never count not-applicable outcomes, and state the operational-proxy disclaimer
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-07-08-red.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-07-08-green.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-07-08-refactor.txt
+AC-CLI-09 - Enforce thirty-day retention
+  scenario: behaviours/storage/retention-and-space.feature :: Hide then prune every expired usage-derived record
+    bound unit: apps/ferret-cli/tests/unit/steps/test_retention_and_space_steps.py::test_hide_then_prune_every_expired_usage_derived_record
+    bound integration: apps/ferret-cli/tests/integration/steps/test_retention_and_space_steps.py::test_hide_then_prune_every_expired_usage_derived_record
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_retention_and_space_steps.py::test_hide_then_prune_every_expired_usage_derived_record
+  unit: apps/ferret-cli/tests/unit/test_maintenance.py (19 tests)
+  integration: apps/ferret-cli/tests/integration/test_retention.py (15 tests)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/retention.txt : reads hide expired rows, a locked attempt changes nothing, the first unlocked operation removes 100 rows, maintenance removes the remainder once, expiredLocalTotal 102 and expiredBeforeAckTotal 0
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/retention-fixture-refactor.txt : the transcripts of the retention run, C09-INTEGRATION and the focused fixture test
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-09-red.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-09-green.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-09-refactor.txt
+AC-CLI-10 - Diagnose space without hiding high-water usage
+  scenario: behaviours/storage/retention-and-space.feature :: Measure storage before and after retention
+    bound unit: apps/ferret-cli/tests/unit/steps/test_retention_and_space_steps.py::test_measure_storage_before_and_after_retention
+    bound integration: apps/ferret-cli/tests/integration/steps/test_retention_and_space_steps.py::test_measure_storage_before_and_after_retention
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_retention_and_space_steps.py::test_measure_storage_before_and_after_retention
+  unit: apps/ferret-cli/tests/unit/test_status.py (16 tests)
+  unit: apps/ferret-cli/tests/unit/test_space.py (13 tests)
+  unit: apps/ferret-cli/tests/unit/test_maintenance_command.py (19 tests)
+  integration: apps/ferret-cli/tests/integration/test_space.py (13 tests)
+  e2e: apps/ferret-cli-e2e/tests/test_storage_benchmark.py (8 tests)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/storage.txt : the 100,000-event benchmark rerun and its reconciliation with the BRD envelope
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/storage.json : the sanitized aggregate results of that rerun
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/storage.json : the Phase 3 result of the same command, identical in every byte figure
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-10-red.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-10-green.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-10-refactor.txt
+AC-CLI-11 - Remain fully standalone
+  scenario: behaviours/queries/local-query-and-export.feature :: Use FERRET without a backend
+    bound unit: apps/ferret-cli/tests/unit/steps/test_local_query_and_export_steps.py::test_use_ferret_without_a_backend
+    bound integration: apps/ferret-cli/tests/integration/steps/test_local_query_and_export_steps.py::test_use_ferret_without_a_backend
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py::test_use_ferret_without_a_backend
+  unit: apps/ferret-cli/tests/unit/test_network_denial.py (6 tests)
+  unit: apps/ferret-cli/tests/unit/test_data_home_locality.py (5 tests)
+  e2e: apps/ferret-cli-e2e/tests/test_standalone.py (2 tests)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-capture.txt : capture, hook and status run from the isolated data home; status reports the backend as not available in this version
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-query.txt : list, export, usage and outcomes run with nothing but the local data home
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-11-red.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-11-green.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-11-refactor.txt
+AC-CLI-12 - Preserve install and removal boundaries
+  scenario: behaviours/harness/fail-open-capabilities-and-platforms.feature :: Remove FERRET without changing harness behaviour
+    bound unit: apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_remove_ferret_without_changing_harness_behaviour
+    bound integration: apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_remove_ferret_without_changing_harness_behaviour
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_remove_ferret_without_changing_harness_behaviour
+  scenario: behaviours/harness/fail-open-capabilities-and-platforms.feature :: Install privately for the current user
+    bound unit: apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_install_privately_for_the_current_user
+    bound integration: apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_install_privately_for_the_current_user
+    bound e2e: apps/ferret-cli-e2e/tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_install_privately_for_the_current_user
+  unit: apps/ferret-cli/tests/unit/test_install.py (36 tests)
+  unit: apps/ferret-cli/tests/unit/test_install_domain.py (14 tests)
+  integration: apps/ferret-cli/tests/integration/test_install.py (25 tests)
+  integration: apps/ferret-cli/tests/integration/test_package_build.py (13 tests)
+  e2e: apps/ferret-cli-e2e/tests/test_user_install.py (18 tests)
+  manual and measured evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/manual-install.txt : install, already_installed, uninstall keeping data and purge, with unowned files untouched throughout
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-12-red.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-12-green.txt
+  packet evidence: plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/ac-cli-12-refactor.txt
+
+== Scenario titles ==
+scenario: Summarize outcomes with incomplete visibility | analytics/usage-and-outcomes.feature | owner AC-CLI-08 | bound in unit, integration, e2e
+scenario: Keep a harness fail-open after a local failure | harness/fail-open-capabilities-and-platforms.feature | owner AC-CLI-04 | bound in unit, integration, e2e
+scenario: Mark an unobservable capability unknown | harness/fail-open-capabilities-and-platforms.feature | owner AC-CLI-06 | bound in unit, integration, e2e
+scenario: Remove FERRET without changing harness behaviour | harness/fail-open-capabilities-and-platforms.feature | owner AC-CLI-12 | bound in unit, integration, e2e
+scenario: Install privately for the current user | harness/fail-open-capabilities-and-platforms.feature | owner AC-CLI-12 | bound in unit, integration, e2e
+scenario: Keep one POSIX adapter fail-open at the wrapper boundary | harness/fail-open-capabilities-and-platforms.feature | owner AC-CLI-04 | bound in unit, integration, e2e
+scenario: Capture a valid lifecycle event | privacy/metadata-envelope.feature | owner AC-CLI-02 | bound in unit, integration, e2e
+scenario: Project raw hook JSON without retaining content | privacy/metadata-envelope.feature | owner AC-CLI-02 | bound in unit, integration, e2e
+scenario: Reject a forbidden capture field | privacy/metadata-envelope.feature | owner AC-CLI-03 | bound in unit, integration, e2e
+scenario: Filter and export deterministic local events | queries/local-query-and-export.feature | owner AC-CLI-07 | bound in unit, integration, e2e
+scenario: Emit a stable machine-readable command result | queries/local-query-and-export.feature | owner AC-CLI-07 | bound in unit, integration, e2e
+scenario: Use FERRET without a backend | queries/local-query-and-export.feature | owner AC-CLI-11 | bound in unit, integration, e2e
+scenario: Initialize one private store from multiple repositories | storage/initialization-and-concurrency.feature | owner AC-CLI-01 | bound in unit, integration, e2e
+scenario: Capture concurrently across repositories | storage/initialization-and-concurrency.feature | owner AC-CLI-05 | bound in unit, integration, e2e
+scenario: Hide then prune every expired usage-derived record | storage/retention-and-space.feature | owner AC-CLI-09 | bound in unit, integration, e2e
+scenario: Measure storage before and after retention | storage/retention-and-space.feature | owner AC-CLI-10 | bound in unit, integration, e2e
+
+== Adapter-level proof beyond the corpus ==
+vendor payload and fail-open fixtures of the three adapters: apps/ferret-cli-e2e/tests/test_harness_adapters.py (3 tests)
+hook registration proof against the real static configuration: apps/ferret-cli/tests/integration/test_hook_registrations.py
+live harness runs with byte-level leak checks: plans/in-progress/ferret-init-01-local-cli/evidence/phase-4/smoke.txt
+
+== Exploratory testing not applicable ==
+web-exploratory-tester: not applicable, FERRET has no browser surface or live site
+web-design-tester: not applicable, FERRET has no visual design or UI
+web-usability-tester: not applicable, FERRET has no page a first-time user navigates
+api-exploratory-tester: not applicable, FERRET serves no HTTP or GraphQL route
+A new route or API would stop for plan amendment; the route check below found none.
+
+== Public interface: the root help lists every command ==
+command: python apps/ferret-cli/dist/ferret.pyz --help (exit=0)
+  usage: ferret <command> [options]
+  Local-first telemetry for coding-agent harnesses. Metadata only: never prompts,
+  responses, tool arguments, transcripts, or environment values.
+  commands:
+    init                create the private data home, identity, and schema
+    capture             store one canonical event read from stdin
+    capture-hook        map one raw harness payload; always fails open
+    status              report paths, runtime, storage, health, and adapters
+    events list         list retained events, newest first
+    events export       write retained events to stdout as JSON Lines
+    usage               count observed activity by dimension
+    outcomes            summarise operational outcomes by dimension
+    maintenance         apply retention, checkpoint, and measure space
+    self install        install the artifact for the current user
+    self uninstall      remove the artifact; data is kept unless purged
+    version             print the version and exit
+  options:
+    -h, --help          show this help and exit
+    -V, --version       show the version and exit
+    --output <text|json>
+                        render the result as text or JSON; defaults to text
+    --json              shorthand for --output json
+  Telemetry older than 30 days is never returned. Scripts should use --json.
+  Run 'ferret <command> --help' for a command's options.
+
+== Non-goals: every absence check was run and must exit 1 with no output ==
+non-goal: no ferret-be, PostgreSQL, HTTP, OpenAPI, GraphQL, MCP, remote delivery, server, or dashboard code
+  command: rg -n -i 'graphql|openapi|swagger|\bmcp\b|postgres|psycopg|ferret-be|dashboard|frontend|flask|fastapi|django|starlette|uvicorn|wsgi|asgi|http\.server|BaseHTTPRequestHandler|serve_forever' apps/ferret-cli/src .claude/hooks/ferret-capture.sh .opencode/plugins/ferret.ts
+  exit=1 matches=0 result=absent
+  meaning: the shipped package and the three adapters name none of them
+non-goal: no network client, so no HTTP request, remote delivery, or network connection is attempted
+  command: rg -n -i 'urllib|http\.client|httpx|requests|aiohttp|websocket|socket|\bssl\b|smtplib|ftplib|grpc|urlopen|\bfetch\(' apps/ferret-cli/src .claude/hooks/ferret-capture.sh .opencode/plugins/ferret.ts
+  exit=1 matches=0 result=absent
+  meaning: no module that could open a connection is imported or named; the denied-socket E2E run proves the same at runtime
+non-goal: no authentication, bearer token, or credential handling
+  command: rg -n -i 'bearer|authorization|api[_-]?key|password|credential|oauth' apps/ferret-cli/src .claude/hooks/ferret-capture.sh .opencode/plugins/ferret.ts
+  exit=1 matches=0 result=absent
+  meaning: nothing authenticates; the only secret is the installation's own HMAC key used to derive opaque identifiers
+non-goal: no frontend or dashboard files
+  command: rg --files -g '*.html' -g '*.css' -g '*.tsx' -g '*.jsx' -g '*.vue' -g '*.svelte' -g '!.venv' -g '!node_modules' apps/ferret-cli apps/ferret-cli-e2e
+  exit=1 matches=0 result=absent
+  meaning: neither FERRET project holds a page, stylesheet, or component
+non-goal: no content collection: the store's schema has no prompt, response, transcript, argument, result, or environment column
+  command: rg -n -i 'prompt|response|transcript|argument|tool_input|tool_output|environment|\benv\b|secret' apps/ferret-cli/src/ferret/adapters/sqlite_schema.py
+  exit=1 matches=0 result=absent
+  meaning: the closed schema stores identifiers, names, outcomes, durations, timestamps, and visibility markers only
+non-goal: no human rating, semantic grading, experiment orchestration, or benchmark suite in the shipped package
+  command: rg -n -i '\brating\b|\bratings\b|grading|experiment|benchmark' apps/ferret-cli/src
+  exit=1 matches=0 result=absent
+  meaning: the only measuring tool is the storage benchmark under `ferret-cli-e2e`, a test-side size measurement
+non-goal: no cloud deployment resource in the shipped package
+  command: rg -n -i '\baws\b|\bgcp\b|azure|boto3|terraform|kubernetes|vercel|docker' apps/ferret-cli/src
+  exit=1 matches=0 result=absent
+  meaning: the package names no cloud provider, orchestrator, or deployment tool
+non-goal: no CI policy enforcement: no workflow calls a ferret command or gates on captured data
+  command: rg -n 'ferret (status|usage|outcomes|capture|maintenance|events|init)' .github/workflows .github/actions
+  exit=1 matches=0 result=absent
+  meaning: the workflow changes only run the FERRET Nx targets for the projects' own tests
+non-goal: no platform code for anything but macOS and Linux
+  command: rg -n -i 'msvcrt|win32|winreg|ntpath|windows|powershell|cmd\.exe' apps/ferret-cli/src .claude/hooks/ferret-capture.sh .opencode/plugins/ferret.ts
+  exit=1 matches=0 result=absent
+  meaning: no Windows-specific module, path, or shell is used; the adapters are POSIX shell and Node
+non-goal: no route, endpoint, or API registration that a live-site or API tester could exercise
+  command: rg -n -i '@app\.route|add_route|APIRouter|createServer|\.listen\(|bind\(' apps/ferret-cli/src .opencode/plugins/ferret.ts
+  exit=1 matches=0 result=absent
+  meaning: the public interface is the command line only
+
+trace summary: 12 acceptance criteria, 16 scenario titles, 10 absence checks, problems=0

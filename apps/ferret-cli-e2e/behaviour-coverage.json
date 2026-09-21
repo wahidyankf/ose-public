@@ -1,0 +1,14 @@
+{
+  "project": "ferret-cli-e2e",
+  "corpus": ["../../specs/apps/ferret/cli/behaviours"],
+  "adapters": {
+    "unit": {
+      "bindings": ["../ferret-cli/tests/unit"],
+      "driver": "../ferret-cli/pyproject.toml"
+    },
+    "e2e": {
+      "bindings": ["tests"],
+      "driver": "pyproject.toml"
+    }
+  }
+}

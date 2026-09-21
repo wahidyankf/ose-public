@@ -1,0 +1,158 @@
+{
+  "name": "ferret-cli-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/ferret-cli-e2e/src",
+  "targets": {
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv sync --locked",
+        "cwd": "apps/ferret-cli-e2e"
+      },
+      "cache": false
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "uv run --no-sync ruff check .",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "uv run --no-sync ruff format --check .",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false,
+        "cwd": "apps/ferret-cli-e2e"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.py",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{projectRoot}/uv.lock",
+        "{projectRoot}/.python-version"
+      ]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run --no-sync pyright",
+        "cwd": "apps/ferret-cli-e2e"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*.py",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{projectRoot}/uv.lock",
+        "{projectRoot}/.python-version"
+      ]
+    },
+    "test:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "uv run --no-sync pytest tests",
+        "cwd": "apps/ferret-cli-e2e"
+      },
+      "dependsOn": ["ferret-cli:build"],
+      "cache": false
+    },
+    "test:coverage:e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter e2e"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ferret-cli-e2e/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ferret-cli/tests/unit/**/*.py",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:coverage:behaviour": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter behaviour"
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ferret-cli-e2e/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ferret-cli/tests/unit/**/*.py",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ferret-cli-e2e:test:coverage:e2e",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ferret-cli-e2e:test:coverage:behaviour",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ferret-cli-e2e/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ferret-cli/tests/unit/**/*.py",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature"
+      ]
+    },
+    "test:quick": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npm exec -- nx run ferret-cli-e2e:lint",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ferret-cli-e2e:typecheck",
+            "forwardAllArgs": false
+          },
+          {
+            "command": "npm exec -- nx run ferret-cli-e2e:test:coverage",
+            "forwardAllArgs": false
+          }
+        ],
+        "parallel": false,
+        "forwardAllArgs": false
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/scripts/behaviour-coverage.mjs",
+        "{workspaceRoot}/apps/ferret-cli-e2e/behaviour-coverage.json",
+        "{workspaceRoot}/apps/ferret-cli/tests/unit/**/*.py",
+        "{projectRoot}/tests/**/*.py",
+        "{projectRoot}/pyproject.toml",
+        "{workspaceRoot}/specs/apps/ferret/cli/behaviours/**/*.feature",
+        "{projectRoot}/src/**/*.py",
+        "{projectRoot}/uv.lock",
+        "{projectRoot}/.python-version"
+      ]
+    }
+  },
+  "tags": ["type:e2e", "platform:cli", "lang:python", "domain:ferret"],
+  "implicitDependencies": ["ferret-cli"]
+}

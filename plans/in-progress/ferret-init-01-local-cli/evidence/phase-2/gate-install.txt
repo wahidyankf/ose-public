@@ -1,0 +1,29 @@
+$ rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run-many -t install --projects=ferret-cli,ferret-cli-e2e
+
+ NX   Running target install for 2 projects:
+
+- ferret-cli
+- ferret-cli-e2e
+
+
+
+> nx run ferret-cli:install
+
+> uv sync --locked
+
+Resolved 20 packages in 9ms
+Checked 18 packages in 7ms
+
+> nx run ferret-cli-e2e:install
+
+> uv sync --locked
+
+Resolved 18 packages in 9ms
+Checked 16 packages in 7ms
+
+
+
+ NX   Successfully ran target install for 2 projects
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:18:24Z

@@ -1,0 +1,271 @@
+$ rtk proxy rg --files apps specs .claude .agents .codex .opencode .github repo-governance scripts docs | rtk proxy rg "(ferret|cli-e2e|behaviour-coverage|platform-bindings|harness-compatibility|pr-quality-gate|non-product-full-quality|setup-python)"
+scripts/behaviour-coverage.mjs
+scripts/behaviour-coverage.test.mjs
+docs/reference/platform-bindings.md
+.github/workflows/non-product-full-quality.yml
+.github/workflows/pr-quality-gate.yml
+repo-governance/workflows/harness/harness-compatibility-quality-gate.md
+apps/ose-www-be-e2e/behaviour-coverage.json
+.agents/skills/harness-compatibility-protocol/reference/checker-workflow.md
+.agents/skills/harness-compatibility-protocol/reference/fixer-report-format.md
+.agents/skills/harness-compatibility-protocol/reference/fixer-patterns-and-process.md
+.agents/skills/harness-compatibility-protocol/reference/README.md
+.agents/skills/harness-compatibility-protocol/reference/phase1-drift-dimensions-d1-d3.md
+.agents/skills/harness-compatibility-protocol/reference/phase0-parity-invariants.md
+.agents/skills/harness-compatibility-protocol/reference/fixer-confidence-and-scope.md
+.agents/skills/harness-compatibility-protocol/reference/checker-finding-format.md
+.agents/skills/harness-compatibility-protocol/reference/phase0-invariant-6-config-parity.md
+.agents/skills/harness-compatibility-protocol/reference/phase1-drift-dimensions-d4-d7.md
+.agents/skills/harness-compatibility-protocol/reference/phase0-quality-gate-filter.md
+.agents/skills/harness-compatibility-protocol/SKILL.md
+.agents/skills/harness-compatibility-protocol/README.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/complementary-anti-drift-gates.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/success-criteria-gherkin.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/notes.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/step-3-apply-fixes.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/execution-mode.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/README.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/principles-implemented-respected.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/related-agents.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/research-delegation.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/step-6-finalization.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/step-4-re-validate.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/iteration-example.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/termination-criteria.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/related-workflows.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/example-usage.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/success-criteria-gherkin-escalation-scenarios.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/conventions-implemented-respected.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/step-5-iteration-control.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/safety-features.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/step-2-check-for-findings.md
+repo-governance/workflows/harness/harness-compatibility-quality-gate/step-1-initial-validation.md
+.claude/skills/harness-compatibility-protocol/SKILL.md
+.claude/agents/repo/harness-compatibility-fixer.md
+.claude/agents/repo/harness-compatibility-checker.md
+apps/ose-id-be-e2e/behaviour-coverage.json
+apps/ayokoding-www-be-e2e/behaviour-coverage.json
+apps/ayokoding-www-fe-e2e/behaviour-coverage.json
+apps/ose-lms-be/behaviour-coverage.json
+apps/ose-id-web-e2e/behaviour-coverage.json
+apps/crane-cli/tests/e2e/crane-cli-e2e-tests.fsproj
+apps/crane-cli/behaviour-coverage.json
+apps/ose-id-be/behaviour-coverage.json
+apps/organiclever-be/behaviour-coverage.json
+apps/ayokoding-www/behaviour-coverage.json
+apps/organiclever-app-web/behaviour-coverage.json
+apps/ose-be-e2e/behaviour-coverage.json
+apps/ose-www/behaviour-coverage.json
+apps/ose-app-web-e2e/behaviour-coverage.json
+apps/organiclever-be-e2e/behaviour-coverage.json
+apps/ose-lms-be-e2e/behaviour-coverage.json
+apps/organiclever-www-fe-e2e/behaviour-coverage.json
+repo-governance/development/infra/nx-targets/mandatory-targets-cli-e2e.md
+repo-governance/development/infra/nx-targets/mandatory-targets-behaviour-coverage.md
+apps/organiclever-www/behaviour-coverage.json
+apps/roots-be-e2e/behaviour-coverage.json
+apps/ose-be/behaviour-coverage.json
+apps/organiclever-app-web-e2e/behaviour-coverage.json
+apps/ose-app-web/behaviour-coverage.json
+apps/ose-id-web/behaviour-coverage.json
+apps/roots-be/behaviour-coverage.json
+apps/ose-www-fe-e2e/behaviour-coverage.json
+note=plan literal is `rtk rg --files ... | rtk rg "(...)"`; run via rtk proxy so the raw list is not summarized by rtk
+exit=0
+head=071c99929b1bb2471009ad49a3f594da599c819b
+utc=2026-09-21T02:02:04Z
+
+## Ledger — File-Impact Analysis resolved to exact paths (ownership reconciled 2026-09-21)
+
+Labels: [N] new, hand-authored | [E] existing, hand-edited | [G] generated, never hand-edited (regenerate with
+`./rhino harness adapters generate`) | [D] moved at archival.
+This ledger is append-only. Every later create/modify/delete/move is appended under "Ledger additions" with its date.
+`file-ledger.pathspec` is regenerated from the finished ledger at Phase 6 and must equal the staged inventory.
+
+### apps/ferret-cli  (owner: FERRET CLI project; standard-library-only runtime, Python >=3.14,<3.15)
+[N] apps/ferret-cli/README.md
+[N] apps/ferret-cli/LICENSE
+[N] apps/ferret-cli/project.json
+[N] apps/ferret-cli/.python-version
+[N] apps/ferret-cli/pyproject.toml
+[N] apps/ferret-cli/uv.lock
+[N] apps/ferret-cli/behaviour-coverage.json
+[N] apps/ferret-cli/src/ferret/cli.py
+[N] apps/ferret-cli/src/ferret/domain/event.py
+[N] apps/ferret-cli/src/ferret/domain/capability.py
+[N] apps/ferret-cli/src/ferret/application/initialization.py
+[N] apps/ferret-cli/src/ferret/application/privacy.py
+[N] apps/ferret-cli/src/ferret/application/queries.py
+[N] apps/ferret-cli/src/ferret/application/analytics.py
+[N] apps/ferret-cli/src/ferret/application/maintenance.py
+[N] apps/ferret-cli/src/ferret/application/install.py
+[N] apps/ferret-cli/src/ferret/application/capture_hook.py
+[N] apps/ferret-cli/src/ferret/adapters/filesystem.py
+[N] apps/ferret-cli/src/ferret/adapters/sqlite_repository.py
+[N] apps/ferret-cli/src/ferret/adapters/posix_install.py
+[N] apps/ferret-cli/tests/unit/test_initialization.py
+[N] apps/ferret-cli/tests/unit/test_event_contract.py
+[N] apps/ferret-cli/tests/unit/test_privacy.py
+[N] apps/ferret-cli/tests/unit/test_capabilities.py
+[N] apps/ferret-cli/tests/unit/test_cli_contract.py
+[N] apps/ferret-cli/tests/unit/test_analytics.py
+[N] apps/ferret-cli/tests/unit/test_status.py
+[N] apps/ferret-cli/tests/unit/test_manual_evidence.py
+[N] apps/ferret-cli/tests/unit/test_manual_retention_fixture.py
+[N] apps/ferret-cli/tests/unit/steps/test_initialization_and_concurrency_steps.py
+[N] apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py
+[N] apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+[N] apps/ferret-cli/tests/unit/steps/test_local_query_and_export_steps.py
+[N] apps/ferret-cli/tests/unit/steps/test_usage_and_outcomes_steps.py
+[N] apps/ferret-cli/tests/unit/steps/test_retention_and_space_steps.py
+[N] apps/ferret-cli/tests/integration/test_initialization.py
+[N] apps/ferret-cli/tests/integration/test_sqlite_repository.py
+[N] apps/ferret-cli/tests/integration/test_privacy.py
+[N] apps/ferret-cli/tests/integration/test_capability_repository.py
+[N] apps/ferret-cli/tests/integration/test_queries.py
+[N] apps/ferret-cli/tests/integration/test_analytics.py
+[N] apps/ferret-cli/tests/integration/test_retention.py
+[N] apps/ferret-cli/tests/support/manual_evidence.py
+[N] apps/ferret-cli/tests/support/manual_retention_fixture.py
+(bounded family: package markers, the zipapp build entry, packaged SQL migrations, conftest/fixture modules and any
+ further module are appended under "Ledger additions" at creation; build output dist/ferret.pyz, .venv, coverage and
+ pytest caches are gitignored regenerable output and are never ledger paths)
+
+### apps/ferret-cli-e2e  (owner: FERRET CLI E2E project; consumes the CLI owner's Gherkin corpus)
+[N] apps/ferret-cli-e2e/README.md
+[N] apps/ferret-cli-e2e/LICENSE
+[N] apps/ferret-cli-e2e/project.json
+[N] apps/ferret-cli-e2e/.python-version
+[N] apps/ferret-cli-e2e/pyproject.toml
+[N] apps/ferret-cli-e2e/uv.lock
+[N] apps/ferret-cli-e2e/behaviour-coverage.json
+[N] apps/ferret-cli-e2e/src/storage_benchmark.py
+[N] apps/ferret-cli-e2e/tests/test_query_export.py
+[N] apps/ferret-cli-e2e/tests/test_standalone.py
+[N] apps/ferret-cli-e2e/tests/test_user_install.py
+[N] apps/ferret-cli-e2e/tests/test_harness_adapters.py
+
+### specs/apps/ferret  (canonical Gherkin corpus; owner: CLI owner project)
+[N] specs/apps/ferret/README.md
+[N] specs/apps/ferret/overview.md
+[N] specs/apps/ferret/cli/README.md
+[N] specs/apps/ferret/cli/architecture.md
+[N] specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature
+[N] specs/apps/ferret/cli/behaviours/storage/retention-and-space.feature
+[N] specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature
+[N] specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature
+[N] specs/apps/ferret/cli/behaviours/analytics/usage-and-outcomes.feature
+[N] specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature
+
+### Harness bindings (hand-authored source registrations and product code)
+[N] .claude/hooks/ferret-capture.sh            hand-authored canonical fail-open wrapper
+[E] .claude/settings.json                       hand-authored Claude registrations (verified events only)
+[E] .codex/hooks.json                           hand-authored Codex registrations (verified events only)
+[N] .opencode/plugins/ferret.ts                 hand-authored OpenCode plugin (product code, not a generated binding)
+
+### Rules, enforcement, and catalog
+[E] .agents/skills/harness-compatibility-protocol/SKILL.md   CANONICAL skill source (see amendment A1)
+[G] .claude/skills/harness-compatibility-protocol/SKILL.md   generated Claude route; regenerated only, never hand-edited
+[E] docs/reference/platform-bindings.md
+[E] repo-config.yml
+[E] scripts/behaviour-coverage.mjs
+[E] scripts/behaviour-coverage.test.mjs
+[E] repo-governance/development/infra/nx-targets/mandatory-targets-cli-e2e.md
+[E] repo-governance/development/infra/nx-targets/mandatory-targets-behaviour-coverage.md
+[E] repo-governance/development/infra/nx-targets/tag-convention-current-tags-and-examples.md
+[E] repo-governance/workflows/infra/development-environment-setup/phase-6-python-ecosystem.md
+
+### CI
+[N] .github/actions/setup-python/action.yml
+[E] .github/actions/README.md
+[E] .github/workflows/pr-quality-gate.yml
+[E] .github/workflows/non-product-full-quality.yml
+
+### Plans (lifecycle)
+[E] plans/in-progress/ferret-init-01-local-cli/**      execution evidence, ticks, notes (pre-archive commit)
+[D] plans/in-progress/ferret-init-01-local-cli/**  ->  plans/done/<completion-date>__ferret-init-01-local-cli/**
+[E] plans/backlog/ferret-init-02-local-backend/README.md   stable prerequisite marker becomes a dated done-plan link
+[E] plans/in-progress/README.md
+[E] plans/done/README.md
+
+### Confirmed non-impact
+- nx.json needs no edit: project-local inputs/outputs cover both projects (tech-doc 003, verified by Phase 2 targets).
+- No .opencode/skills, .opencode/agents, .codex/agents, or .claude/agents path is touched by this plan.
+- No path under apps/rhino-cli exists (retired); no product change belongs in that location.
+
+## Drift findings and amendments (Phase 0 verifies drift; a contradiction amends the plan rather than selecting new scope)
+
+A1 Canonical skill direction is inverted relative to the plan text.
+   Plan: .claude/skills/harness-compatibility-protocol/** canonical, .agents/skills/... generated mirror.
+   Repository: repo-config.yml harness.canonical.skills declares .agents/skills as canonical and the claude profile
+   skill-adapter generates .claude/skills/{name}/SKILL.md as a pointer route ("Read {path} completely ...").
+   The .claude copy is 383 bytes; the .agents copy carries the content and reference/ modules.
+   Amendment: every plan step that edits ".claude/skills/harness-compatibility-protocol/SKILL.md" edits
+   ".agents/skills/harness-compatibility-protocol/SKILL.md" instead; the .claude route is regenerated, never edited.
+   Phase 1 Step 8's "only .agents/... generated" expectation becomes "only the .claude route may regenerate".
+
+A2 Plan commands that do not exist in the pinned Rhino v0.4.0 (retired in-tree implementation), mapped to the current
+   stable command per the plan's own "Stable v0.4 routing" banner:
+     ./rhino harness instruction-size validate      -> ./rhino governance word-budget validate
+     npm run generate:bindings                      -> ./rhino harness adapters generate
+     ./rhino md links validate <path>               -> ./rhino md internal-link validate --directory <path>
+     ./rhino plan validate                          -> ./rhino md readme-index validate  +
+                                                       ./rhino md internal-link validate --directory plans  +
+                                                       ./rhino md naming validate   (plan structure itself is judged
+                                                       by the plan-execution-checker agent)
+     harness bindings/ownership/catalog validators  -> ./rhino harness adapters validate (the plan already lists four
+                                                       identical adapters-validate runs in Phase 1 Step 8)
+     ./rhino md mermaid validate <dir>              -> ./rhino md mermaid validate --directory <dir>
+   Unchanged and present: ./rhino gate run --surface pre-push, harness adapters validate, toolchain validate/provision.
+
+A3 The pre-push gate set is now `public-safety-tree, env-validate` (rhino gate list). The plan's Iron Rule 5 text that the
+   gate "includes nx affected -t test:quick" is stale; the per-phase gates that name nx targets stay authoritative and are
+   run explicitly. `./rhino gate run --surface pre-push` is still run before every push.
+
+A4 Branch name: the WorktreeCreate hook created worktree/ferret-init-01-local-cli; renamed to ferret-init-01-local-cli so the
+   Phase 7/8 packets (local and remote ref) run verbatim. Same commit; recorded in route.txt.
+
+A5 Environment: local uv 0.11.1 could not provision cpython 3.14.7; uv self update 0.12.16 (the plan pin) and
+   uv python install 3.14.7 were run at user level. Recorded in versions.txt. No repository file changed.
+
+## Ledger additions (append-only)
+2026-09-21  [N] plans/in-progress/ferret-init-01-local-cli/evidence/phase-0/{route,dependencies,versions,file-ledger}.txt
+2026-09-21  [N] plans/in-progress/ferret-init-01-local-cli/evidence/phase-0/file-ledger.pathspec
+2026-09-21  [E] plans/in-progress/ferret-init-01-local-cli/delivery.md   ticks and notes
+2026-09-21  [N] plans/in-progress/ferret-init-01-local-cli/evidence/phase-0/harness-probe.txt
+2026-09-21  [N] plans/in-progress/ferret-init-01-local-cli/evidence/phase-0/gate.txt
+2026-09-21  [E] repo-governance/development/infra/nx-targets/tag-convention-four-dimension-scheme.md   python and ferret vocabulary, lang:python rule (A6)
+2026-09-21  [E] repo-governance/workflows/infra/development-environment-setup/tool-inventory.md   Python is no longer formatter-only (A6)
+2026-09-21  [E] repo-governance/workflows/infra/development-environment-setup/minimal-scope-quick-reference.md   Python is no longer formatter-only (A6)
+2026-09-21  [E] .agents/skills/harness-compatibility-protocol/reference/phase0-invariant-6-config-parity.md   .opencode/plugins/ path (A6)
+2026-09-21  [E] scripts/behaviour-coverage.mjs, scripts/behaviour-coverage.test.mjs   Python arm plus pythonTargetSetErrors (A7)
+2026-09-21  [G] .claude/agents/plan/{catalog,provenance}.json, .claude/skills/{catalog,provenance}.json, .codex/agents/{catalog,provenance}.json, .opencode/agents/{catalog,provenance}.json   regenerated by ./rhino harness adapters generate in Step 7; only the harness-compatibility-protocol digest changed (A8)
+2026-09-21  [N] plans/in-progress/ferret-init-01-local-cli/evidence/phase-1/step-{0,1,2,3,4-5,6-red,6-green,6-refactor,7,8}.txt
+2026-09-21  [N] apps/ferret-cli/src/ferret/__init__.py, apps/ferret-cli/src/ferret/help_text.py   package version and the frozen help text (Phase 2)
+2026-09-21  [N] apps/ferret-cli/scripts/build_zipapp.py   reproducible zipapp builder (Phase 2)
+2026-09-21  [N] apps/ferret-cli/tests/integration/test_package_build.py   build reproducibility integration proof (Phase 2)
+2026-09-21  [N] apps/ferret-cli-e2e/src/ferret_process.py, apps/ferret-cli-e2e/tests/conftest.py, apps/ferret-cli-e2e/tests/test_package_smoke.py   built-artifact process runner and help/version smoke (Phase 2)
+2026-09-21  [E] apps/README.md, specs/README.md, specs/apps/README.md, docs/reference/monorepo-structure.md   index rows for ferret-cli, ferret-cli-e2e, and the Ferret spec tree (Phase 2)
+2026-09-21  [E] scripts/behaviour-coverage.mjs, scripts/behaviour-coverage.test.mjs   corpus-pending marker (A9) and the real-repo FERRET target-contract tests (Phase 2)
+2026-09-21  [E] repo-governance/development/practice/resource-aware-development/README.md   pre-existing fix (A12): removes the dead index row for a document that never landed; separate commit
+2026-09-21  [N] specs/apps/ose/lms-be/contracts/generated/README.md   pre-existing fix (A12): the tracked directory README that .gitignore negates and contracts/README.md links; separate commit
+2026-09-21  [E] repo-config.yml   the readme-index tree .claude/skills -> .agents/skills hunk is the pre-existing fix (A12); it lands in the separate pre-existing-fix commit, the ferret tree and scan-exclude hunks in the feature commit
+2026-09-21  [N] plans/in-progress/ferret-init-01-local-cli/evidence/phase-2/{pending-corpus,projects,targets,targets-red,spec-architecture,gate-install,gate-owner,gate-e2e}.txt
+2026-09-21  [N] 12 paths: apps/ferret-cli/src/ferret/domain/__init__.py, apps/ferret-cli/src/ferret/domain/canonical.py, apps/ferret-cli/src/ferret/domain/errors.py, apps/ferret-cli/src/ferret/domain/fields.py, apps/ferret-cli/src/ferret/domain/identity.py, apps/ferret-cli/src/ferret/domain/install.py, apps/ferret-cli/src/ferret/domain/query.py, apps/ferret-cli/src/ferret/domain/retention.py, apps/ferret-cli/src/ferret/domain/space.py, apps/ferret-cli/src/ferret/domain/status.py, apps/ferret-cli/src/ferret/domain/storage.py, apps/ferret-cli/src/ferret/domain/timestamps.py   domain rules: canonical JSON, closed errors, fields, identity, query, retention, space, status, storage layout, timestamps, and the install layout/manifest (AC-CLI-01..12) (Phase 3)
+2026-09-21  [N] 6 paths: apps/ferret-cli/src/ferret/application/__init__.py, apps/ferret-cli/src/ferret/application/capabilities.py, apps/ferret-cli/src/ferret/application/capture.py, apps/ferret-cli/src/ferret/application/ports.py, apps/ferret-cli/src/ferret/application/status.py, apps/ferret-cli/src/ferret/application/store.py   use cases and ports: capabilities, capture, status, store, and the port protocols (AC-CLI-01..12) (Phase 3)
+2026-09-21  [N] 4 paths: apps/ferret-cli/src/ferret/adapters/__init__.py, apps/ferret-cli/src/ferret/adapters/posix_storage.py, apps/ferret-cli/src/ferret/adapters/sqlite_schema.py, apps/ferret-cli/src/ferret/adapters/system.py   boundary adapters: POSIX data home, SQLite schema, system runtime (AC-CLI-01..11) (Phase 3)
+2026-09-21  [N] 2 paths: apps/ferret-cli/src/ferret/commands.py, apps/ferret-cli/src/ferret/rendering.py   command registry and rendering (AC-CLI-01..12) (Phase 3)
+2026-09-21  [N] 29 paths: apps/ferret-cli/tests/conftest.py, apps/ferret-cli/tests/support/__init__.py, apps/ferret-cli/tests/support/artifacts.py, apps/ferret-cli/tests/support/bulk.py, apps/ferret-cli/tests/support/burst.py, apps/ferret-cli/tests/support/busy.py, apps/ferret-cli/tests/support/events.py, apps/ferret-cli/tests/support/fakes.py, apps/ferret-cli/tests/support/invoke.py, apps/ferret-cli/tests/support/machine.py, apps/ferret-cli/tests/support/network.py, apps/ferret-cli/tests/support/populate.py, apps/ferret-cli/tests/support/retention.py, apps/ferret-cli/tests/support/scenarios.py, apps/ferret-cli/tests/support/snapshots.py, apps/ferret-cli/tests/support/vacuum.py, apps/ferret-cli/tests/unit/test_canonical.py, apps/ferret-cli/tests/unit/test_capture.py, apps/ferret-cli/tests/unit/test_commands.py, apps/ferret-cli/tests/unit/test_data_home_locality.py, apps/ferret-cli/tests/unit/test_event_identity.py, apps/ferret-cli/tests/unit/test_install.py, apps/ferret-cli/tests/unit/test_install_domain.py, apps/ferret-cli/tests/unit/test_maintenance.py, apps/ferret-cli/tests/unit/test_maintenance_command.py, apps/ferret-cli/tests/unit/test_network_denial.py, apps/ferret-cli/tests/unit/test_queries.py, apps/ferret-cli/tests/unit/test_space.py, apps/ferret-cli/tests/unit/test_timestamps.py   owner test support, conftest, and Unit tests (AC-CLI-01..12) (Phase 3)
+2026-09-21  [N] 8 paths: apps/ferret-cli/tests/integration/test_install.py, apps/ferret-cli/tests/integration/test_space.py, apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py, apps/ferret-cli/tests/integration/steps/test_initialization_and_concurrency_steps.py, apps/ferret-cli/tests/integration/steps/test_local_query_and_export_steps.py, apps/ferret-cli/tests/integration/steps/test_metadata_envelope_steps.py, apps/ferret-cli/tests/integration/steps/test_retention_and_space_steps.py, apps/ferret-cli/tests/integration/steps/test_usage_and_outcomes_steps.py   Integration scenario bindings and repository/adapter integration tests (AC-CLI-01..12) (Phase 3)
+2026-09-21  [N] 13 paths: apps/ferret-cli-e2e/src/denied_sockets.py, apps/ferret-cli-e2e/src/event_documents.py, apps/ferret-cli-e2e/src/install_area.py, apps/ferret-cli-e2e/src/local_commands.py, apps/ferret-cli-e2e/src/socket_denial/sitecustomize.py, apps/ferret-cli-e2e/src/synthetic_store.py, apps/ferret-cli-e2e/tests/steps/test_fail_open_capabilities_and_platforms_steps.py, apps/ferret-cli-e2e/tests/steps/test_initialization_and_concurrency_steps.py, apps/ferret-cli-e2e/tests/steps/test_local_query_and_export_steps.py, apps/ferret-cli-e2e/tests/steps/test_metadata_envelope_steps.py, apps/ferret-cli-e2e/tests/steps/test_retention_and_space_steps.py, apps/ferret-cli-e2e/tests/steps/test_usage_and_outcomes_steps.py, apps/ferret-cli-e2e/tests/test_storage_benchmark.py   E2E support modules and step bindings: synthetic store, denied sockets, install area (AC-CLI-01..12) (Phase 3)
+2026-09-21  [N] 6 paths: specs/apps/ferret/cli/behaviours/README.md, specs/apps/ferret/cli/behaviours/analytics/README.md, specs/apps/ferret/cli/behaviours/harness/README.md, specs/apps/ferret/cli/behaviours/privacy/README.md, specs/apps/ferret/cli/behaviours/queries/README.md, specs/apps/ferret/cli/behaviours/storage/README.md   spec folder READMEs for the behaviour tree (annotated index) (Phase 3)
+2026-09-21  [N] 2 paths: apps/ferret-cli/src/ferret/domain/hook.py, apps/ferret-cli/src/ferret/adapters/posix_workspace.py   raw-hook capture: the per-harness mapper, the workspace-root adapter (AC-CLI-04, AC-CLI-06) (Phase 4)
+2026-09-21  [N] 5 paths: apps/ferret-cli/tests/support/hook_payloads.py, apps/ferret-cli/tests/support/wrapper.py, apps/ferret-cli/tests/unit/test_capture_hook.py, apps/ferret-cli/tests/unit/test_hook_mappers.py, apps/ferret-cli/tests/unit/test_identifier_derivation.py   owner Unit tests and shared payload/wrapper support for the adapters (AC-CLI-04) (Phase 4)
+2026-09-21  [N] 4 paths: apps/ferret-cli/tests/integration/test_capture_hook.py, apps/ferret-cli/tests/integration/test_capture_wrapper.py, apps/ferret-cli/tests/integration/test_hook_registrations.py, apps/ferret-cli/tests/integration/test_workspace_roots.py   owner Integration tests: real-store capture, the real wrapper, the static registrations, workspace roots (Phase 4)
+2026-09-21  [N] 5 paths: apps/ferret-cli-e2e/src/adapter_cases.py, apps/ferret-cli-e2e/src/hook_bench.py, apps/ferret-cli-e2e/src/hook_wrapper.py, apps/ferret-cli-e2e/src/opencode_driver.mjs, apps/ferret-cli-e2e/src/vendor_payloads.py   E2E adapter support: vendor payloads, the shared cases, the hook bench, the wrapper runner, the OpenCode driver (Phase 4)
+2026-09-21  [N] 2 paths: apps/ferret-cli-e2e/src/adapter_latency.py, apps/ferret-cli-e2e/tests/test_adapter_latency.py   adapter latency measurement tool and its rule tests (Phase 4 REFACTOR, A24)
+2026-09-21  [N] 1 paths: apps/ferret-cli/tests/unit/conftest.py   Phase 5: shared unit-test fixtures (zipapp build and repository chdir) for the manual-evidence and retention-fixture tests
+2026-09-21  [E/N] 98 exact plan-folder files added to the pathspec at the Phase 6 reconcile: 3 edited (delivery record, learnings, tech-doc 005) and 95 new (sanitized evidence for Phases 0 to 6 and the preliminary audit); the wildcard row above names them, and the stage command needs exact files (A32)
+2026-09-21  [N] 1 paths: plans/in-progress/ferret-init-01-local-cli/evidence/phase-6/public-safety-fixture.txt   Phase 6 fixture repair: the public-safety packet for the six mount-table literals (A34)
+2026-09-21  [N/E] 3 paths: plans/in-progress/ferret-init-01-local-cli/evidence/phase-7/ci-lane-repair.txt, scripts/workflow-language-lanes.test.mjs, package.json   Phase 7 CI-lane repair: the language-lane validator, its suite entry, and the repair packet (A37)
+2026-09-22  [N/E] 6 paths: plans/in-progress/ferret-init-01-local-cli/evidence/phase-6/gate.txt, delivery.md, prd.md, learnings.md, evidence/phase-6/learnings.txt, evidence/preliminary-delivery-audit.md   Plan-execution audit repairs: the Phase 6 Gate record, the Worktree section and identity, the corrected counts and identifiers, the PRD story repair, the 24-row knowledge re-check, and the as-of audit note (A43 to A49)

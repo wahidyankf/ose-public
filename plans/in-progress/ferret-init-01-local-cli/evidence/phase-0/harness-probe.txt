@@ -1,0 +1,349 @@
+FERRET Init 01 - Phase 0 harness probe (checklist item 4)
+Repo-relative paths only. No vendor payload samples are reproduced; only field names, event names, and documented bounds.
+Accessed date for every URL below: 2026-09-21
+utc=2026-09-21T02:10:11Z
+head=071c99929b1bb2471009ad49a3f594da599c819b (copied from route.txt; git was not run for this item)
+Label set used in tables: observed | derived | unknown | probe-gated | unverified
+  observed = an official documented lifecycle event supplies the value
+  derived  = documented deterministic mapping from another official signal
+  unknown  = no verified signal exposed
+  probe-gated = plan keeps it gated until a runtime probe; unverified = docs prose silent / not fetched
+
+======================================================================
+0. RESULT
+======================================================================
+CONTRADICTIONS: none
+
+Reasoning: no event name, file location, or documented semantic asserted by the plan text is contradicted by an
+official surface. Every event the plan expects to register exists under the expected name and location. The
+plural OpenCode project plugin directory `.opencode/plugins/` is confirmed and auto-loaded. Codex skill stays
+`unknown`; OpenCode session-end and parent/child stay `probe-gated`.
+
+Cell-level downgrades that the plan already anticipates (tech-doc 001, "Capability matrix" says "Expected observed"
+and "Failure Semantics" says an unsupported lifecycle "remains `unknown`"). These are listed so the plan owner can
+confirm they need no amendment; they do not stop Phase 0 by themselves:
+  D1. Codex tool FAILURE is not `observed`. Codex has no PostToolUseFailure event. PostToolUse also fires after a
+      non-zero Bash exit, but the outcome lives only inside the tool-specific `tool_response`, whose shape is not
+      documented. Record Codex tool failure as `unknown`. Start and completion are `observed`.
+      Plan text touched: tech-doc 001, Capability matrix, row "Tool start/completion/failure", Codex cell.
+  D2. Codex outcome/duration: no payload field supplies a duration or exit status (see section 4). `unknown`.
+      Plan cell already reads "Observed when terminal payload supplies it; otherwise derived/unknown".
+  D3. OpenCode tool failure and duration are not in `tool.execute.after` (its output is title/output/metadata).
+      They are derivable from `message.part.updated` tool-part state (status completed|error, time.start/end).
+      Record `derived` for failure/duration; start and completion are `observed`.
+  D4. None of the Claude Code or Codex hook payloads carries an event timestamp; adapter receipt time is the only
+      clock for those two harnesses.
+
+======================================================================
+1. REPOSITORY PROBE (literal checklist command)
+======================================================================
+$ rtk rg -n "hook|plugin|skill|session|subagent|tool" .claude/settings.json .codex/hooks.json .opencode repo-config.yml docs/reference/platform-bindings.md
+exit=0
+114 matching lines in 10 files (rtk truncates the listing; per-file counts from `rg -c` with the same pattern):
+  docs/reference/platform-bindings.md 50 | repo-config.yml 30 | .claude/settings.json 23 | .codex/hooks.json 4
+  .opencode/opencode.json 2 | .opencode/agents/{catalog.json,provenance.json,plan-checker.md,plan-maker.md,
+  plan-execution-checker.md} 1 each
+
+What the repository registers today, per harness:
+  Claude Code (.claude/settings.json)
+    PreToolUse  matcher "Read|Write|Edit|MultiEdit|Grep|Glob" -> .claude/hooks/block-env-file-access.sh
+    PreToolUse  matcher "Bash" -> .claude/hooks/require-hippo-boundary.sh, then .claude/hooks/block-env-file-access.sh
+    PreToolUse  matcher "Write|Edit|MultiEdit|Bash" -> .claude/hooks/remind-rules-propagation.sh
+    PostToolUse matcher "Edit|Write|MultiEdit" -> .claude/hooks/format-lint-markdown.sh
+    All are type "command", synchronous (no "async", no "timeout"), addressed through CLAUDE_PROJECT_DIR.
+    No SessionStart, SessionEnd, SubagentStart, SubagentStop, PostToolUseFailure or UserPromptExpansion entry.
+    `enabledPlugins` lists 12 marketplace plugins; `extraKnownMarketplaces` declares nx-claude-plugins.
+    .claude/hooks/ferret-capture.sh does not exist yet (Phase 4 creates it).
+  Codex (.codex/hooks.json)
+    PreToolUse matcher "Bash" -> require-hippo-boundary.sh and block-env-file-access.sh (both timeout 30),
+    resolved from the git top level. Nothing else: no SessionStart/SessionEnd/Subagent*/PostToolUse.
+  OpenCode (.opencode/)
+    No .opencode/plugins/ directory. .opencode/opencode.json (vendored) has a `tools` block and
+    `permission.skill: allow` and no `plugin` array. .opencode/agents/ holds three generated plan agents
+    (mode: subagent) plus catalog.json and provenance.json.
+  repo-config.yml (rhino/repo-config/v2)
+    `harness:` declares profiles claude, codex, opencode with agent adapters (.claude/agents/plan/{name}.md,
+    .codex/agents/{name}.toml, .opencode/agents/{name}.md) and a Claude skill adapter. It declares no hooks.json,
+    settings.json hook, or .opencode/plugins/ surface, so Phase 4 must add those declarations as the plan says.
+  docs/reference/platform-bindings.md
+    Catalog dated 2026-08-26; Codex trust footnote "Verified 2026-08-19 against codex-cli 0.146.0"; describes the
+    Claude PostToolUse markdown hook. Repo-doc text defect noticed, out of scope and NOT edited: the skills
+    sentences read ".agents/skills/ ... does not read .agents/skills/" (self-contradictory duplicate path).
+
+======================================================================
+2. INSTALLED VERSIONS
+======================================================================
+$ claude --version   -> 2.1.278 (Claude Code)             (npm @anthropic-ai/claude-code latest: 2.1.278)
+$ codex --version    -> codex-cli 0.155.1                 (npm @openai/codex latest: 0.155.1)
+$ opencode --version -> 1.18.7                            (npm opencode-ai latest: 1.18.31, npm @opencode-ai/plugin latest: 1.18.31)
+All three are installed. OpenCode is 24 patch releases behind the npm latest; docs and types were therefore read
+at the git tag matching the installed version (v1.18.7) and the three key files (plugins.mdx, plugin/src/index.ts,
+sdk/js/src/gen/types.gen.ts) are byte-count-identical to the dev branch copies.
+$ codex features list -> hooks: stable, enabled (true); plugin_hooks: removed
+$ codex --help / codex exec --help -> both list --dangerously-bypass-hook-trust (matches the official doc)
+$ opencode --help -> lists `opencode run [message..]` and --pure ("run without external plugins")
+
+======================================================================
+3. CLAUDE CODE (installed 2.1.278)
+======================================================================
+Sources
+  C1  https://code.claude.com/docs/en/hooks  (rendered fetch; also read in full as https://code.claude.com/docs/en/hooks.md)
+  C2  https://code.claude.com/docs/en/permissions  (read as .md; sections "Project allow rules and workspace trust",
+      "What runs before you trust a folder")
+  C3  https://code.claude.com/docs/en/tools-reference  (read as .md; `Skill` and `Agent` tool rows)
+
+Event names (C1 lifecycle table): SessionStart, Setup, UserPromptSubmit, UserPromptExpansion, PreToolUse,
+  PermissionRequest, PermissionDenied, PostToolUse, PostToolUseFailure, PostToolBatch, Notification, MessageDisplay,
+  SubagentStart, SubagentStop, TaskCreated, TaskCompleted, Stop, StopFailure, TeammateIdle, InstructionsLoaded,
+  ConfigChange, CwdChanged, DirectoryAdded, FileChanged, WorktreeCreate, WorktreeRemove, PreCompact, PostCompact,
+  PreModelSwitch, PostModelSwitch, Elicitation, ElicitationResult, SessionEnd.
+Relevant to FERRET:
+  session start/end        SessionStart, SessionEnd
+  agent/subagent start/end SubagentStart, SubagentStop
+  tool start/done/failure  PreToolUse, PostToolUse (success only), PostToolUseFailure
+  skill invocation         PreToolUse/PostToolUse whose tool_name is `Skill` (Claude-initiated calls only) and
+                           UserPromptExpansion (user-typed /skill; covers the path PreToolUse does not)
+
+Input delivery: command hooks receive one JSON object on stdin (C1 "Hook input and output").
+Common fields: session_id, prompt_id (v2.1.196+), transcript_path, cwd, scratchpad_dir (v2.1.257+),
+  permission_mode, effort.level, hook_event_name. Inside a subagent or `--agent`: agent_id, agent_type.
+Metadata per event (field names only):
+  SessionStart      source (startup|resume|clear|compact|fork), optional model, agent_type, session_title;
+                    resume/fork add seconds_since_last_response, context_tokens, prompt_cache_likely_expired,
+                    estimated_cache_write_usd (v2.1.251+)
+  SessionEnd        reason (clear|resume|logout|prompt_input_exit|other)
+  SubagentStart     agent_id, agent_type            (cannot block subagent creation)
+  SubagentStop      agent_id, agent_type, agent_transcript_path, stop_hook_active, last_assistant_message,
+                    background_tasks, session_crons
+  PreToolUse        tool_name, tool_input, tool_use_id (matches any tool except EndConversation, incl. Agent, Workflow, MCP)
+  PostToolUse       tool_name, tool_input, tool_response, tool_use_id, duration_ms (optional; excludes permission
+                    prompts and PreToolUse hooks). Foreground Agent-tool tool_response also has totalDurationMs.
+  PostToolUseFailure tool_name, tool_input, tool_use_id, error (string, tool-specific text), is_interrupt (optional),
+                    duration_ms (optional). Not fired for pre-execution rejections (unknown tool, invalid input,
+                    permission denial) and not fired when a running tool is cancelled.
+  UserPromptExpansion expansion_type (slash_command|mcp_prompt), command_name, command_args, command_source, prompt
+                    (contains user text: the mapper must keep only command_name)
+Parent/child: hook events inside a subagent carry the main session_id plus agent_id/agent_type.
+Payload bounds: NO stdin/payload size limit is documented. Documented caps are on hook OUTPUT: additionalContext,
+  systemMessage, initialUserMessage and plain stdout are capped at 10,000 characters (spilled to a file with a
+  2,000-character preview); PostToolUseFailure `error` is middle-truncated by Claude Code.
+Timeouts: `timeout` is in seconds; default 600 for command hooks (30 for UserPromptSubmit and model-switch events,
+  10 for MessageDisplay). SessionEnd hooks share a 1.5-second default budget (applies on exit, /clear, and interactive
+  /resume); a longer per-hook `timeout` raises the budget up to 60 s; env CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS
+  overrides it. SessionEnd cannot block termination and its JSON output is discarded.
+Async vs sync: hooks block Claude by default. `async: true` (command hooks only) runs in the background, cannot
+  block or control Claude, and `timeout` is NOT enforced on it (the adapter's own watchdog must bound it). Each firing
+  is a separate process with no deduplication. In `claude -p` (non-interactive) mode Claude Code kills any async hook
+  still running at teardown and records outcome `cancelled`. Exit code 0 = success; only exit 2 blocks (on events that
+  can block); other non-zero codes are non-blocking notices. Command hooks run in their own session with no
+  controlling terminal. CLAUDE_PROJECT_DIR is exported to the hook process.
+Trust (C1 "Workspace trust"; C2 "What runs before you trust a folder"):
+  Interactive session: hooks from EVERY settings file (including .claude/settings.json) are held back until the user
+  accepts the workspace trust dialog for the folder (or a parent whose trust extends to it).
+  `claude -p` / SDK: no dialog is shown; the folder is treated as trusted and settings-file hooks RUN.
+  Project subagent frontmatter hooks are stricter (not used in a never-trusted folder). `/hooks` is a read-only
+  browser. `disableAllHooks` and managed `allowManagedHooksOnly` can switch hooks off. Settings edits are picked up
+  by a file watcher during a session.
+Skill detail: the `Skill` tool is listed in C3 ("Executes a skill within the main conversation"). The hooks page
+  documents tool_input tables for Bash, PowerShell, Write, Edit, Read, Glob, Grep, WebFetch, WebSearch, Agent,
+  AskUserQuestion, ExitPlanMode but NOT for `Skill`, so the field that carries the skill name inside a `Skill`
+  tool_input is unverified; the UserPromptExpansion `command_name` field is documented.
+
+======================================================================
+4. CODEX (installed codex-cli 0.155.1)
+======================================================================
+Sources
+  X1  https://developers.openai.com/codex/hooks  (HTTP 308 to https://learn.chatgpt.com/docs/hooks; the markdown
+      variant https://developers.openai.com/codex/hooks.md was read in full; the page says it is the release
+      behaviour reference)
+  X2  https://developers.openai.com/codex/config-reference  (read as .md; keys hooks.*, features.hooks,
+      projects.<path>.trust_level)
+  X3  https://developers.openai.com/codex/skills  (read as .md)
+  X4  https://github.com/openai/codex/tree/main/codex-rs/hooks/schema/generated  (directory listing via the GitHub
+      contents API; raw JSON schemas for post-tool-use, subagent-start and session-end read. The doc warns `main`
+      may be ahead of the current release.)
+
+Event names (X1): SessionStart, SessionEnd, SubagentStart, SubagentStop, PreToolUse, PermissionRequest, PostToolUse,
+  PreCompact, PostCompact, UserPromptSubmit, Stop, Interrupt. There is NO PostToolUseFailure event and NO skill
+  event; the X4 schema directory contains exactly these twelve events (session-end has an input schema only).
+  session start/end        SessionStart, SessionEnd (main thread only; SessionEnd never runs for subagents)
+  agent/subagent start/end SubagentStart, SubagentStop
+  tool start/completion    PreToolUse, PostToolUse (Bash, apply_patch, MCP, other local function tools; PostToolUse
+                           also runs after Bash commands that exit non-zero)
+  tool failure             no event (D1)
+  skill invocation         no event, no field: skills are invoked explicitly ($skill or /skills) or implicitly when
+                           the model matches the description (X3). Stays `unknown`; no implicit-skill inference.
+
+Input delivery: one JSON object on stdin. Common fields: session_id ("Subagent hooks use the parent session id"),
+  transcript_path (string or null), cwd, hook_event_name, model; turn-scoped hooks add turn_id; permission_mode on
+  SessionStart, tool, prompt, subagent, Stop and Interrupt events.
+Metadata per event (field names only):
+  SessionStart   source (startup|resume|clear|compact)
+  SessionEnd     reason (currently always `other`); fires when a main thread is archived/deleted while open, when Codex
+                 closes normally, or after 30 minutes idle with no connected client
+  SubagentStart  turn_id, agent_id, agent_type, permission_mode
+  SubagentStop   turn_id, agent_id, agent_type, agent_transcript_path, stop_hook_active, last_assistant_message
+  PreToolUse     turn_id, tool_name, tool_use_id, tool_input
+  PostToolUse    turn_id, tool_name, tool_use_id, tool_input, tool_response (tool-specific). The generated schema is
+                 additionalProperties=false and has NO duration, exit-status, or error field (D2). The `main` schema
+                 also lists optional agent_id/agent_type on PostToolUse (may be ahead of the release).
+  Coverage limits: hosted tools such as WebSearch do not use the hook path; "Some specialized tool paths can opt out
+  ... Treat tool hooks as a useful guardrail, not a complete enforcement boundary."
+Payload bounds: NO stdin size limit documented. The only documented bound is model-visible hook OUTPUT (about 2,500
+  tokens per message, spilled to disk with a head/tail preview; additionalContextLimit overrides it).
+Timeouts: `timeout` in seconds; default 600 for most hooks; SessionEnd and Interrupt default to 1 second and accept
+  1 to 3 seconds.
+Async vs sync: hooks are synchronous by default. `async: true` runs a command hook in the background; background
+  hooks cannot block, approve, rewrite or control the operation; at most eight run concurrently per session (extras
+  wait); when the session ends Codex cancels unfinished background hooks and discards undelivered output.
+  SessionEnd hooks ALWAYS run synchronously even if async is true, are advisory, and a timeout/error is reported as a
+  hook failure. Matching hooks from all files run concurrently.
+Discovery (X1): ~/.codex/hooks.json, ~/.codex/config.toml, <repo>/.codex/hooks.json, <repo>/.codex/config.toml, plus
+  plugin-bundled hooks. All sources load; higher layers do not replace lower ones. Hooks are enabled by default
+  ([features] hooks; codex_hooks is a deprecated alias) and local `codex features list` reports hooks stable/true.
+Trust (X1, X2):
+  - Project-local hooks load only when the project `.codex/` layer is trusted; untrusted projects skip project
+    `.codex/` layers including config, hooks and rules (X2 projects.<path>.trust_level).
+  - Before a non-managed hook can run Codex requires the user to review and trust the exact definition; trust is
+    recorded against the hook's current hash, so new or changed hooks are marked for review and skipped until
+    trusted. `/hooks` reviews/trusts/disables; a startup warning points to it.
+  - `--dangerously-bypass-hook-trust` runs enabled hooks without persisted trust for one invocation (present in the
+    installed 0.155.1 for `codex` and `codex exec`). Plugin-bundled hooks need the same review. Managed hooks are
+    trusted by policy.
+  - The exact TOML state key `[hooks.state."<path>:<event>:<i>:<j>"] trusted_hash` quoted in
+    docs/reference/platform-bindings.md is NOT published in the official pages fetched: `unverified` (repo catalog
+    verified it only against 0.146.0; installed is 0.155.1).
+  - Whether `codex exec` honours or skips untrusted hooks is not stated in the fetched pages: `unverified`.
+
+======================================================================
+5. OPENCODE (installed 1.18.7)
+======================================================================
+Sources
+  O1  https://opencode.ai/docs/plugins  (rendered page fetched; source MDX also read at tag v1.18.7 and dev:
+      https://raw.githubusercontent.com/anomalyco/opencode/v1.18.7/packages/web/src/content/docs/plugins.mdx)
+  O2  https://raw.githubusercontent.com/anomalyco/opencode/dev/packages/web/src/content/docs/config.mdx
+      (published as https://opencode.ai/docs/config; MDX source read, rendered page not fetched)
+  O3  https://raw.githubusercontent.com/anomalyco/opencode/dev/packages/web/src/content/docs/skills.mdx
+      (published as https://opencode.ai/docs/skills; MDX source read)
+  O4  https://raw.githubusercontent.com/anomalyco/opencode/dev/packages/web/src/content/docs/agents.mdx
+      (published as https://opencode.ai/docs/agents; MDX source read)
+  O5  https://raw.githubusercontent.com/anomalyco/opencode/dev/packages/web/src/content/docs/sdk.mdx and
+      https://raw.githubusercontent.com/anomalyco/opencode/dev/packages/web/src/content/docs/cli.mdx
+      (published as https://opencode.ai/docs/sdk and https://opencode.ai/docs/cli; MDX source read)
+  O6  https://raw.githubusercontent.com/anomalyco/opencode/v1.18.7/packages/plugin/src/index.ts  (Hooks/Plugin types)
+  O7  https://raw.githubusercontent.com/anomalyco/opencode/v1.18.7/packages/sdk/js/src/gen/types.gen.ts  (Event,
+      Session, ToolPart types; https://raw.githubusercontent.com/anomalyco/opencode/v1.18.7/packages/sdk/js/src/v2/gen/types.gen.ts
+      was also read)
+  Repository read: anomalyco/opencode. sst/opencode was not fetched separately.
+
+Plugin location (O1, O2): project plugins live in `.opencode/plugins/` (PLURAL) and global ones in
+  ~/.config/opencode/plugins/; "Files in these directories are automatically loaded at startup." npm plugins use the
+  `plugin` array in opencode.json. O2: ".opencode and ~/.config/opencode directories use plural names for
+  subdirectories: agents/, commands/, modes/, plugins/, skills/, tools/, themes/. Singular names are also supported
+  for backwards compatibility." Load order: global config, project config, global plugin dir, project plugin dir.
+  => the plan's `.opencode/plugins/ferret.ts` location is CONFIRMED against the installed-version docs.
+Plugin shape (O1, O6): `async ({ project, client, $, directory, worktree }) => hooks`; TypeScript type `Plugin` from
+  @opencode-ai/plugin. Hooks interface includes event, tool.execute.before, tool.execute.after, shell.env,
+  chat.message, permission.ask, tool.definition, dispose and experimental.* hooks.
+Event names (O1 list): command.executed; file.edited, file.watcher.updated; installation.updated;
+  lsp.client.diagnostics, lsp.updated; message.part.removed, message.part.updated, message.removed, message.updated;
+  permission.asked, permission.replied; server.connected; session.created, session.compacted, session.deleted,
+  session.diff, session.error, session.idle, session.status, session.updated; todo.updated; shell.env;
+  tool.execute.after, tool.execute.before; tui.prompt.append, tui.command.execute, tui.toast.show.
+  There is NO session-end / exit event in the list.
+Arguments (O6 types; the prose docs name only `input.tool` and `output.args`):
+  tool.execute.before  input {tool, sessionID, callID}, output {args}
+  tool.execute.after   input {tool, sessionID, callID, args}, output {title, output, metadata}   (no error, no duration)
+  event                {event} with the SDK `Event` union (O7). session.created/updated/deleted carry `info: Session`
+                       (id, projectID, directory, optional parentID, title, version, time.created/updated).
+                       message.part.updated carries a Part; a tool part has callID, tool, and state with status
+                       pending|running|completed|error and time.start/end (error state carries `error`).
+  The v2 SDK types at the same tag add session.next.tool.called/success/failed events with timestamps; which shape a
+  plugin `event` hook receives at 1.18.7 is not stated in the prose docs: `probe-gated` (Phase 4 fixtures capture it).
+Payload bounds / timeouts: NONE documented. O1 says plugins load "from all sources and all hooks run in sequence", so
+  an awaited slow hook delays the operation. Documented error handling is only the example of `throw` in
+  tool.execute.before blocking a call.
+Async vs sync: no async-registration concept is documented; hooks are async functions run in sequence. Fire-and-forget
+  (not awaiting the child) is the plugin author's responsibility.
+Terminal semantics: `session.idle` marks turn/session completion (O1 example comment "session completion") and
+  `session.deleted` marks deletion; neither is a documented process/session termination guarantee. The Hooks type also
+  has `dispose` and O7 has `server.instance.disposed`; neither is described in the prose docs. => session end stays
+  `probe-gated`.
+Parent/child: O4 says subagents "create child sessions" (session_child_first / session_parent navigation), and O5 lists
+  `session.children`; O7 types give `Session.parentID?`. The plugin page O1 states nothing about parent linkage in
+  plugin events => stays `probe-gated`. O4 also mentions invoking subagents "via the Task tool".
+Skill (O3): skills load through the native `skill` tool: `skill({ name: "git-release" })`; project skills are read from
+  .opencode/skills, .claude/skills and .agents/skills, so the canonical mirror is read natively. A plugin sees this as
+  tool.execute.before/after with input.tool of the skill tool; the literal `input.tool` string is not spelled out in
+  the plugin docs => `derived`, runtime value unverified.
+Trust: NO trust or approval mechanism is documented for project plugins; `.opencode/plugins/` files load
+  automatically at startup. `--pure` ("Run without external plugins", O5) is the only documented off switch and its
+  effect on the project plugin directory is not described (`unverified`).
+
+======================================================================
+6. CONTRADICTIONS
+======================================================================
+CONTRADICTIONS: none
+(See section 0 for cell-level downgrades D1-D4. Recorded, not silently fixed; plan text is unchanged.)
+
+======================================================================
+7. CAPABILITY MATRIX MAPPING (plan tech-doc 001, "Capability matrix")
+======================================================================
+Evidence keys: C1..C3 (section 3), X1..X4 (section 4), O1..O7 (section 5).
+
+| Capability                 | Claude Code                          | Codex                                   | OpenCode                                     |
+| -------------------------- | ------------------------------------ | --------------------------------------- | -------------------------------------------- |
+| Session start              | observed  [C1]                       | observed  [X1]                          | observed (event named, payload unprobed) [O1,O7] |
+| Session end                | observed  [C1]                       | observed  [X1]                          | probe-gated (no end event) [O1,O6,O7]        |
+| Agent/subagent start/end   | observed  [C1]                       | observed  [X1,X4]                       | probe-gated (parent/child) [O1,O4,O5,O7]     |
+| Tool start                 | observed  [C1]                       | observed  [X1]                          | observed  [O1,O6]                            |
+| Tool completion            | observed  [C1]                       | observed  [X1]                          | observed  [O1,O6]                            |
+| Tool failure               | observed  [C1]                       | unknown   [X1,X4] (D1)                  | derived   [O7] (D3)                          |
+| Skill invocation           | observed (signal) [C1,C3];           | unknown   [X1,X3] (plan cell confirmed) | derived   [O3,O6] (runtime tool id           |
+|                            | unverified (skill-name field)        |                                         | unverified)                                  |
+| Outcome                    | observed  [C1] (event choice, error) | unknown   [X4] (D2)                     | derived   [O7] (tool-part status)            |
+| Duration                   | observed (tool duration_ms, optional)| unknown   [X4] (D2)                     | derived   [O7] (tool-part time.start/end)    |
+|                            | [C1]; session/subagent: unknown      |                                         |                                              |
+
+Evidence URLs per cell (repeated in full so a reader needs no key):
+  Claude session/subagent/tool/duration:  https://code.claude.com/docs/en/hooks
+  Claude skill signals and tool list:     https://code.claude.com/docs/en/hooks , https://code.claude.com/docs/en/tools-reference
+  Claude trust:                           https://code.claude.com/docs/en/permissions
+  Codex events, payloads, trust, async:   https://developers.openai.com/codex/hooks (redirects to https://learn.chatgpt.com/docs/hooks)
+  Codex schema (no duration/failure):     https://github.com/openai/codex/tree/main/codex-rs/hooks/schema/generated
+  Codex skills (unknown confirmed):       https://developers.openai.com/codex/skills
+  Codex project trust:                    https://developers.openai.com/codex/config-reference
+  OpenCode plugins, locations, events:    https://opencode.ai/docs/plugins
+  OpenCode skill tool, agents, SDK, CLI:  https://opencode.ai/docs/skills , https://opencode.ai/docs/agents ,
+                                          https://opencode.ai/docs/sdk , https://opencode.ai/docs/cli
+  OpenCode types (Hooks, Session, ToolPart): https://raw.githubusercontent.com/anomalyco/opencode/v1.18.7/packages/plugin/src/index.ts ,
+                                          https://raw.githubusercontent.com/anomalyco/opencode/v1.18.7/packages/sdk/js/src/gen/types.gen.ts
+
+======================================================================
+8. NOTES FOR LATER PHASES (observations only; no file was edited for them)
+======================================================================
+N1. Claude `-p` smoke: settings-file hooks run without a trust dialog, but async hooks still running at teardown are
+    killed (outcome `cancelled`), so async-registered rows can be missing; synchronous SessionStart/SessionEnd rows are
+    not affected. Missing rows are recorded `unverified`, per the plan.
+N2. Codex `codex exec` smoke: the project `.codex/` layer must be trusted and the exact hooks.json hash reviewed
+    (`/hooks`), otherwise the hook is skipped; `--dangerously-bypass-hook-trust` exists for automation. Any edit to
+    `.codex/hooks.json` changes the hash and requires re-trust on every machine.
+N3. Codex SessionEnd default timeout is exactly 1 s (max 3 s), equal to FERRET's 1,000 ms cap: register it with an
+    explicit larger `timeout` so the wrapper's own TERM 900 ms / KILL 1,000 ms watchdog binds first. Claude SessionEnd
+    shares a 1.5 s budget across all SessionEnd hooks, leaving about 500 ms margin.
+N4. OpenCode plugin hooks run in sequence with no documented timeout, and a thrown error in tool.execute.before blocks
+    the tool: the plugin must not await the child for frequent events and must swallow every exception.
+N5. Privacy allowlist inputs: Claude UserPromptExpansion carries `prompt`/`command_args`; Claude/Codex PostToolUse carry
+    tool_input/tool_response and Claude PostToolUseFailure carries `error`; OpenCode carries output.args/output.output.
+    Only event name, ids, tool/agent/skill names, outcome and duration are metadata.
+N6. Claude and Codex subagent events share the main session_id; the child identity is agent_id.
+N7. Cloud/other-platform behaviour was not probed; macOS and Linux are the only supported targets in the plan.
+
+======================================================================
+9. LIMITS OF THIS EVIDENCE
+======================================================================
+- Documentation and installed CLI help/feature flags only. No harness was launched with a model, no hook or plugin
+  was registered, and no live payload was captured; payload evidence for probe-gated cells belongs to Phase 4.
+- Rendered fetches for Claude hooks and OpenCode plugins were summarised by the fetch tool; every specific field and
+  timeout quoted above was re-verified against full markdown/MDX/source copies read locally.
+- OpenCode docs other than /docs/plugins were read as MDX source in the official repository, not as rendered pages.

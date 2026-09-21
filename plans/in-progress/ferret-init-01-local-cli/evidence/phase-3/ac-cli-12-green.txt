@@ -1,0 +1,224 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --skip-nx-cache --args='tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 986 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .... [  0%]
+                                                                         [  0%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  0%]
+tests/unit/steps/test_local_query_and_export_steps.py ...........        [  1%]
+tests/unit/steps/test_metadata_envelope_steps.py .......                 [  2%]
+tests/unit/steps/test_retention_and_space_steps.py ..                    [  2%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  2%]
+tests/unit/test_analytics.py ........................................... [  7%]
+...................                                                      [  9%]
+tests/unit/test_canonical.py ..........                                  [ 10%]
+tests/unit/test_capabilities.py ........................................ [ 14%]
+........................................................................ [ 21%]
+.........                                                                [ 22%]
+tests/unit/test_capture.py .........................                     [ 24%]
+tests/unit/test_cli_contract.py ........................................ [ 28%]
+.................................................                        [ 33%]
+tests/unit/test_commands.py .........                                    [ 34%]
+tests/unit/test_data_home_locality.py ...........                        [ 35%]
+tests/unit/test_event_contract.py ............................           [ 38%]
+tests/unit/test_event_identity.py ....                                   [ 39%]
+tests/unit/test_initialization.py ...................................... [ 43%]
+....................                                                     [ 45%]
+tests/unit/test_install.py ............................................. [ 49%]
+...........                                                              [ 50%]
+tests/unit/test_install_domain.py ...................................... [ 54%]
+............................                                             [ 57%]
+tests/unit/test_maintenance.py ................................          [ 60%]
+tests/unit/test_maintenance_command.py ......................            [ 62%]
+tests/unit/test_network_denial.py ......                                 [ 63%]
+tests/unit/test_privacy.py ............................................. [ 68%]
+........................................................................ [ 75%]
+............................                                             [ 78%]
+tests/unit/test_queries.py ............................................. [ 82%]
+........................................................................ [ 90%]
+......                                                                   [ 90%]
+tests/unit/test_space.py ........................                        [ 93%]
+tests/unit/test_status.py ......................                         [ 95%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/analytics.py           97      0   100%
+src/ferret/application/capabilities.py        23      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/initialization.py      65      0   100%
+src/ferret/application/install.py             99      0   100%
+src/ferret/application/maintenance.py         71      0   100%
+src/ferret/application/ports.py              109      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/queries.py             46      0   100%
+src/ferret/application/status.py              32      0   100%
+src/ferret/application/store.py               20      0   100%
+src/ferret/cli.py                            176      0   100%
+src/ferret/commands.py                        56      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/capability.py               69      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   110      0   100%
+src/ferret/domain/fields.py                   47      0   100%
+src/ferret/domain/identity.py                 10      0   100%
+src/ferret/domain/install.py                  94      0   100%
+src/ferret/domain/query.py                   123      0   100%
+src/ferret/domain/retention.py                16      0   100%
+src/ferret/domain/space.py                    42      0   100%
+src/ferret/domain/status.py                   13      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               37      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       74      0   100%
+------------------------------------------------------------------------
+TOTAL                                       1598      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================= 986 passed in 1.22s ==============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+note=GREEN (Unit): the install steps and the two self-command rows bind over the in-memory install area
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T09:35:40Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:integration --skip-nx-cache
+
+> nx run ferret-cli:"test:integration"
+
+> uv run --no-sync pytest tests/integration
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 260 items
+
+tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py . [  0%]
+...                                                                      [  1%]
+tests/integration/steps/test_initialization_and_concurrency_steps.py ..  [  2%]
+tests/integration/steps/test_local_query_and_export_steps.py ........... [  6%]
+                                                                         [  6%]
+tests/integration/steps/test_metadata_envelope_steps.py .......          [  9%]
+tests/integration/steps/test_retention_and_space_steps.py ..             [ 10%]
+tests/integration/steps/test_usage_and_outcomes_steps.py .               [ 10%]
+tests/integration/test_analytics.py ................                     [ 16%]
+tests/integration/test_capability_repository.py ...............          [ 22%]
+tests/integration/test_initialization.py ...........                     [ 26%]
+tests/integration/test_install.py ..............................         [ 38%]
+tests/integration/test_package_build.py .........                        [ 41%]
+tests/integration/test_privacy.py .............                          [ 46%]
+tests/integration/test_queries.py ...................................... [ 61%]
+.....................................................                    [ 81%]
+tests/integration/test_retention.py ......................               [ 90%]
+tests/integration/test_space.py .............                            [ 95%]
+tests/integration/test_sqlite_repository.py .............                [100%]
+
+============================= 260 passed in 17.73s =============================
+
+
+
+ NX   Successfully ran target test:integration for project ferret-cli
+note=GREEN (Integration): the real install adapter on a real filesystem, crash injected before each mutating step
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T09:35:53Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e --skip-nx-cache --args='tests/test_user_install.py'
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+> nx run ferret-cli-e2e:"test:e2e" --args=tests/test_user_install.py
+
+> uv run --no-sync pytest tests tests/test_user_install.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli-e2e
+configfile: pyproject.toml
+plugins: bdd-8.1.0
+collected 89 items
+
+tests/steps/test_fail_open_capabilities_and_platforms_steps.py ....      [  4%]
+tests/steps/test_initialization_and_concurrency_steps.py ..              [  6%]
+tests/steps/test_local_query_and_export_steps.py ...........             [ 19%]
+tests/steps/test_metadata_envelope_steps.py .......                      [ 26%]
+tests/steps/test_retention_and_space_steps.py ..                         [ 29%]
+tests/steps/test_usage_and_outcomes_steps.py .                           [ 30%]
+tests/test_package_smoke.py ................                             [ 48%]
+tests/test_query_export.py .......                                       [ 56%]
+tests/test_standalone.py ..                                              [ 58%]
+tests/test_storage_benchmark.py ...........                              [ 70%]
+tests/test_user_install.py ..........................                    [100%]
+
+============================= 89 passed in 46.83s ==============================
+
+
+
+ NX   Successfully ran target test:e2e for project ferret-cli-e2e and 1 task it depends on
+note=GREEN (E2E, macOS): the built artifact installs, updates, recovers each arranged crash state, refuses collisions and mismatches, and removes only what it owns
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T09:36:20Z
+
+$ sh local-tmp/claude/linux-e2e.sh tests
+Linux 7.0.12-linuxkit
+Python 3.14.7
+........................................................................ [ 80%]
+.................                                                        [100%]
+89 passed in 40.28s
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+note=GREEN (E2E, Linux): the same 89 E2E tests, including tests/test_user_install.py, against the artifact built on the host, run in a python:3.14-slim container on Linux
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T09:38:27Z
+
+$ cat local-tmp/claude/linux-e2e.sh
+#!/bin/sh
+# Run the FERRET E2E suite on Linux against the artifact built on the host (the build is reproducible).
+# The worktree is mounted read-only and copied into the container, so the host tree is never written to.
+set -eu
+docker run --rm -v "$PWD:/host:ro" python:3.14-slim sh -c '
+  set -eu
+  mkdir -p /work/apps/ferret-cli/dist
+  cd /host
+  tar --exclude=.venv --exclude=__pycache__ -cf - apps/ferret-cli-e2e specs | tar -xf - -C /work
+  cp apps/ferret-cli/dist/ferret.pyz /work/apps/ferret-cli/dist/ferret.pyz
+  pip install --quiet --disable-pip-version-check pytest pytest-bdd
+  cd /work/apps/ferret-cli-e2e
+  uname -sr
+  python --version
+  python -m pytest '"$*"' -p no:cacheprovider -q --color=no
+'
+note=the Linux procedure above, kept so the run can be repeated after the scratch file is swept
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T09:39:20Z

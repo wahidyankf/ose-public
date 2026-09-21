@@ -1,0 +1,132 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- node --test scripts/behaviour-coverage.test.mjs
+✔ accepts independently documented Integration and E2E exemptions (4.309167ms)
+✔ requires each exemption on its own tag line with its own adjacent comment (0.511167ms)
+✔ rejects difficulty, runtime, flakiness, cost, and unfinished-work reasons (0.65075ms)
+✔ requires boundary language and a canonical alternative proof (0.149916ms)
+✔ rejects forbidden exemption, WIP, no-layer, and positive selection tags (0.302916ms)
+✔ does not interpret doc-string content as tags (0.900875ms)
+✔ rejects malformed and empty features and scenarios without explicit When and Then (0.363208ms)
+✔ expands every Scenario Outline example row (0.71625ms)
+✔ extracts TypeScript, TSX, and F# TickSpec bindings (0.790916ms)
+✔ ignores commented-out TypeScript and F# bindings (0.175417ms)
+✔ extracts one binding per Java Cucumber annotation (0.267958ms)
+✔ reports an undefined Unit binding when a Java step definition is missing (8.12575ms)
+✔ reports an unused Unit binding when a Java step definition matches no step (1.388583ms)
+✔ extracts one binding per Godog registration (0.447708ms)
+✔ treats a Godog ctx.Step registration as keyword-agnostic (0.068625ms)
+✔ accepts an interpreted Go string literal as a Godog pattern (0.055875ms)
+✔ ignores a Godog registration inside a Go comment (0.086375ms)
+✔ does not mask a comment marker that is inside a Go raw-string pattern (0.097334ms)
+✔ extracts a Godog registration wrapped in regexp.MustCompile (0.11625ms)
+✔ ignores Go regex and backtick literals that are not Godog registrations (0.072916ms)
+✔ reports an undefined Unit binding when a Godog step definition is missing (3.780833ms)
+✔ reports an unused Unit binding when a Godog step definition matches no step (1.157666ms)
+✔ scopes duplicate Godog bindings to explicit feature literals (1.462125ms)
+✔ extracts one binding per Reqnroll step attribute (0.376ms)
+✔ ignores a Reqnroll step attribute inside a C# comment (0.065625ms)
+✔ extracts every attribute of a stacked Reqnroll step method (0.059625ms)
+✔ scopes duplicate Reqnroll bindings to explicit feature literals (1.606833ms)
+✔ scopes duplicate F# TickSpec bindings to explicit feature literals (1.338542ms)
+✔ keeps duplicate F# TickSpec bindings ambiguous without explicit feature ownership (1.214458ms)
+✔ matches standard and custom Cucumber expression parameters (1.361333ms)
+✔ matches vitest-cucumber Scenario Outline placeholders after pickle expansion (1.277458ms)
+✔ matches escaped literal Cucumber metacharacters in Playwright-BDD strings (1.053125ms)
+✔ treats TypeScript Cucumber registration keywords as matching synonyms (1.960625ms)
+✔ requires Unit coverage even when both higher layers are exempt (1.183041ms)
+✔ exempts only the named adapter (1.690625ms)
+✔ reports ambiguous and unused bindings (1.199167ms)
+✔ validates scoped vitest-cucumber scenarios without cross-scenario ambiguity (1.262083ms)
+✔ scopes duplicate TypeScript Background bindings to their loaded feature (1.537667ms)
+✔ does not report feature-scoped bindings outside a manifest corpus as unused (1.0215ms)
+✔ requires a non-empty recursive corpus and an existing driver (0.877208ms)
+✔ aggregate behaviour mode checks every configured adapter without executing tests (0.988084ms)
+✔ loads a project-local aggregate config with paths relative to that config (1.08275ms)
+✔ CLI is deterministic and never invokes a configured runtime (2.591334ms)
+✔ accepts the closed project target contract (1.608625ms)
+✔ rejects runtime coverage, incomplete quick composition, and missing adapter pairs (0.924708ms)
+✔ rejects a Unit line coverage threshold below the 99% hard minimum (0.485792ms)
+✔ accepts a 99% Coverlet Unit line coverage hard gate (0.600041ms)
+✔ accepts a 99% XPlat collector Unit line coverage hard gate (0.57625ms)
+✔ rejects a bare line-threshold argument without the XPlat hard-gate helper (0.616417ms)
+✔ dedicated E2E projects do not need to own the Unit runtime (0.455416ms)
+✔ accepts a 99% JaCoCo Unit line coverage hard gate (0.554541ms)
+✔ rejects a JaCoCo verification task that declares no line minimum (0.489959ms)
+✔ rejects a coverage target that executes the Gradle test task (0.546ms)
+✔ accepts a 99% Go Unit line coverage hard gate (0.529292ms)
+✔ rejects a Go coverage gate that declares no line minimum (0.5615ms)
+✔ rejects a Go coverage gate whose declared minimum is below 99 (0.556792ms)
+✔ extracts one binding per pytest-bdd step definition (0.609709ms)
+✔ treats a pytest-bdd cfparse registration like a parse registration (0.069458ms)
+✔ escapes regex metacharacters in a plain pytest-bdd step string and a parse template (0.063959ms)
+✔ treats a pytest-bdd step registration as keyword-agnostic (0.038709ms)
+✔ ignores a pytest-bdd registration inside a Python comment or docstring (0.101708ms)
+✔ reads feature references from Python string literals (0.055708ms)
+✔ reports an undefined Unit binding when a pytest-bdd step definition is missing (2.710334ms)
+✔ reports an unused Unit binding when a pytest-bdd step definition matches no step (1.060083ms)
+✔ reports an ambiguous Unit binding when two pytest-bdd definitions match one step (1.097167ms)
+✔ matches a pytest-bdd parse placeholder and a regex group against the step text (1.967542ms)
+✔ scopes duplicate pytest-bdd bindings to explicit feature literals (1.331458ms)
+✔ accepts a 99% pytest-cov Unit line coverage hard gate (0.803292ms)
+✔ rejects a pytest-cov threshold below the 99% hard minimum (0.558166ms)
+✔ rejects a pytest-cov threshold that names no coverage source (0.474583ms)
+✔ rejects a pytest-cov source selection that declares no threshold (0.441209ms)
+✔ rejects a pytest-driven project that omits the lang:python tag (0.46475ms)
+✔ rejects a static coverage target that runs pytest (0.470333ms)
+✔ accepts a dedicated Python E2E project with static coverage and a pytest E2E runner (0.472334ms)
+✔ rejects a dedicated Python E2E coverage target that runs pytest (0.511584ms)
+✔ rejects a dedicated Python E2E project that omits the lang:python tag (0.513ms)
+✔ recognises a module-qualified decorator and an explicit string parser (0.070542ms)
+✔ matches a parse template case-insensitively but a plain string exactly (1.979791ms)
+✔ rejects pytest-cov flags on a command that does not run pytest (0.53225ms)
+✔ rejects a Python CLI owner that omits a mandatory non-test target (2.280167ms)
+✔ asks a Python project that is not a CLI for install, lint, and typecheck only (0.485375ms)
+✔ rejects a Python target whose every command is a placeholder (2.239375ms)
+✔ accepts a Python target that reports after doing real work (0.474791ms)
+✔ rejects a Python install target that does not sync a locked resolution (0.885792ms)
+✔ rejects a dedicated Python E2E project that omits a mandatory non-test target (2.346417ms)
+✔ rejects a dedicated Python E2E project that owns a Unit or Integration target (0.8695ms)
+✔ reads an object-shaped Nx command when judging a Python target (0.534875ms)
+✔ rejects a Python project that omits a tag dimension its type requires (1.532083ms)
+ℹ tests 88
+ℹ suites 0
+ℹ pass 88
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 159.068625
+note=Phase 1 Gate 1: expect exit 0
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:23:06Z
+
+$ rtk ./rhino harness adapters validate
+[harness-adapters] canonical adapter validation is clean
+note=Phase 1 Gate 2: expect exit 0 and no drift
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:23:09Z
+
+$ rtk rg -n "^step-[0-8]: complete$|^step-9: pending-same-pr$|^open-enforcement-rows: 0$" local-tmp/rules-propagation/rules-propagation__7d7e3e__2026-09-21--09-20__manifest.md
+58:step-0: complete
+59:step-1: complete
+60:step-2: complete
+61:step-3: complete
+62:step-4: complete
+63:step-5: complete
+64:step-6: complete
+65:step-7: complete
+66:open-enforcement-rows: 0
+68:step-8: complete
+69:step-9: pending-same-pr
+note=Phase 1 Gate 3a: expect exactly eleven matches (Steps 0-8, Step 9, the zero-open-row record)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:23:19Z
+
+$ rtk rg -n "^final-status: (landed|halted)$|^pr-url:" local-tmp/rules-propagation/rules-propagation__7d7e3e__2026-09-21--09-20__manifest.md
+(no output)
+note=Phase 1 Gate 3b: expect exit 1 and no output (no terminal status before Phase 7)
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T03:23:19Z

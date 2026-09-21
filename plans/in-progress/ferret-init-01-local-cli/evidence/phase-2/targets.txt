@@ -1,0 +1,98 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- node --test scripts/behaviour-coverage.test.mjs
+ℹ tests 104
+ℹ suites 0
+ℹ pass 104
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 252.609459
+[evrun] dropped 104 output lines matching /^(✔|▶)/
+note=104 tests: 95 earlier plus 9 real-repo FERRET target-contract tests; verbose per-test pass lines dropped
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:11:26Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:lint
+
+> nx run ferret-cli:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+7 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:11:35Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:typecheck
+
+> nx run ferret-cli:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:11:42Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:lint
+
+> nx run ferret-cli-e2e:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+4 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli-e2e
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:11:52Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:typecheck
+
+> nx run ferret-cli-e2e:typecheck  [existing outputs match the cache, left as is]
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli-e2e
+
+Nx read the output from the cache instead of running the command for 1 out of 1 tasks.
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:11:57Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:typecheck --skip-nx-cache
+
+> nx run ferret-cli-e2e:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli-e2e
+note=the run above replayed a cached result (identical task hash); this uncached rerun of the same target proves the tool itself
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:12:08Z

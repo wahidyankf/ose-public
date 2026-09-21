@@ -31,9 +31,9 @@ later declares an exact gate ID (or `verifies` relationship) for it.
 
 ## Known Outstanding Gaps
 
-| Setting                              | claude-code                 | opencode                                                   | codex                                                                 |
-| ------------------------------------ | --------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------- |
-| Pre-write rules-propagation reminder | Present — `PreToolUse` hook | **Gap** — expressible as a `.opencode/plugin/` module hook | **Gap** — expressible via `config.toml` hooks, opt-in and Bash-scoped |
+| Setting                              | claude-code                 | opencode                                                    | codex                                                                 |
+| ------------------------------------ | --------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------- |
+| Pre-write rules-propagation reminder | Present — `PreToolUse` hook | **Gap** — expressible as a `.opencode/plugins/` module hook | **Gap** — expressible via `config.toml` hooks, opt-in and Bash-scoped |
 
 Both are gaps, not exceptions: each harness can express the behaviour, and neither implementation
 has been written or verified.

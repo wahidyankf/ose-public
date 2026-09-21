@@ -1,0 +1,49 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --args='tests/unit/test_capabilities.py tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_capabilities.py tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_capabilities.py tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 406 items / 2 errors
+
+==================================== ERRORS ====================================
+_ ERROR collecting tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py _
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py:8: in <module>
+    from ferret.application.capabilities import DimensionReport, report_dimension
+E   ModuleNotFoundError: No module named 'ferret.application.capabilities'
+_______________ ERROR collecting tests/unit/test_capabilities.py _______________
+ImportError while importing test module '<worktree>/apps/ferret-cli/tests/unit/test_capabilities.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+tests/unit/test_capabilities.py:9: in <module>
+    from ferret.application.capabilities import DimensionReport, dimension_visibility, record_snapshot, report_dimension
+E   ModuleNotFoundError: No module named 'ferret.application.capabilities'
+=========================== short test summary info ============================
+ERROR tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py
+ERROR tests/unit/test_capabilities.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+============================== 2 errors in 0.14s ===============================
+
+
+
+ NX   Running target test:unit for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:unit
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_capabilities.py tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py" exited with non-zero status code
+note=RED: the new unit modules cannot import the missing capability snapshot domain and use case (ferret.domain.capability, ferret.application.capabilities); nothing else in the unit suite changed
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T05:52:37Z

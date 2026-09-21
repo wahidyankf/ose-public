@@ -1,0 +1,157 @@
+$ gh pr checks 555
+pass	Detect affected languages
+pass	Python quality gate
+pass	Validate env-contract surfaces (no drift)
+fail	.NET quality gate
+fail	Go quality gate
+fail	Java quality gate
+fail	Quality gate
+fail	Repository policy
+fail	TypeScript quality gate
+skipping	Flutter quality gate
+note=PHASE 7 CI-lane repair, RED: the first run of the delivering PR. The Python lane passes, and every other language lane fails. Quoted from the run against the pre-repair head; the repaired tree does not reproduce it
+exit=1
+head=9f78233a5b088d3bbea4fd9f8541de2493c10b56
+utc=2026-09-21T16:36:30Z
+
+$ gh api repos/<owner>/<repo>/actions/jobs/<java-job>/logs
+/bin/sh: 1: uv: not found
+Warning: command "uv run --no-sync ruff check ." exited with non-zero status code
+ NX   Running target lint for project ferret-cli failed
+Failed tasks:
+- ferret-cli:lint
+note=PHASE 7 CI-lane repair, RED cause: the Java lane ran a FERRET target. Its nx affected excludes every language tag except lang:python, and only the Python lane installs uv
+exit=1
+head=9f78233a5b088d3bbea4fd9f8541de2493c10b56
+utc=2026-09-21T16:35:42Z
+
+$ gh api repos/<owner>/<repo>/actions/jobs/<repository-policy-job>/logs
+RHINO_GATE_SURFACE: pull-request
+[gate] format-staged reported a finding at pull-request
+[gate] public-safety-tree passed
+[gate] public-safety-commit-message passed
+[gate] format-staged failed
+note=PHASE 7 CI-lane repair, RED cause: the repository-policy job sets up node, dotnet, rust, flutter, java and go but not python, so the pull-request formatter could not run ruff over the delivery's own .py files. The same surface passes on this machine, where ruff is already on PATH
+exit=1
+head=9f78233a5b088d3bbea4fd9f8541de2493c10b56
+utc=2026-09-21T16:36:30Z
+
+$ node --test scripts/workflow-language-lanes.test.mjs
+AssertionError: .github/workflows/pr-quality-gate.yml: the typescript lane does not exclude lang:python, so it would run those projects without their toolchain
+AssertionError: .github/workflows/pr-quality-gate.yml: the repository-policy job has no setup-python step, so the pull-request surface cannot run the python formatter that scripts/format-staged invokes
+note=PHASE 7 CI-lane repair, RED: the new validator against the pre-repair workflow. Two cases, two failures, each naming its own defect
+exit=1
+head=9f78233a5b088d3bbea4fd9f8541de2493c10b56
+utc=2026-09-21T17:02:11Z
+
+$ node --test scripts/workflow-language-lanes.test.mjs
+✔ every language lane excludes every language but its own (18.720208ms)
+✔ the repository policy job sets up every language the staged formatter formats (27.379458ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 87.446541
+note=PHASE 7 CI-lane repair, GREEN: both cases pass against the repaired workflow
+exit=0
+head=9f78233a5b088d3bbea4fd9f8541de2493c10b56
+utc=2026-09-21T16:52:30Z
+
+$ npm run test:validators 2>&1 | tail -10; actionlint .github/workflows/pr-quality-gate.yml && echo 'actionlint: clean'
+✔ every language lane excludes every language but its own (78.885917ms)
+✔ the repository policy job sets up every language the staged formatter formats (69.088958ms)
+ℹ tests 116
+ℹ suites 0
+ℹ pass 116
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 298.228834
+actionlint: clean
+note=PHASE 7 CI-lane repair, GREEN: the whole validator suite and the workflow linter
+exit=0
+head=9f78233a5b088d3bbea4fd9f8541de2493c10b56
+utc=2026-09-21T16:52:37Z
+
+$ rg -n '<tool-prefix patterns>' plans/in-progress/ferret-init-01-local-cli apps/ferret-cli apps/ferret-cli-e2e .github specs/apps/ferret | rg -v '<brew-prefix>'
+(no output)
+note=PHASE 7 leak repair, GREEN: the one finding of the current-head leak review is gone. No tool-prefix path remains anywhere in the delivery (expected exit 1 and no output)
+exit=1
+head=9f78233a5b088d3bbea4fd9f8541de2493c10b56
+utc=2026-09-21T16:52:49Z
+$ rg -c '^\| L[0-9]+ \|' plans/in-progress/ferret-init-01-local-cli/learnings.md; rg -o 'promoted|linked|retained-plan-specific|reported-without-plan-authorization|reviewed-none' plans/in-progress/ferret-init-01-local-cli/learnings.md | sort | uniq -c
+22
+   3 linked
+   8 promoted
+   7 reported-without-plan-authorization
+   7 retained-plan-specific
+   2 reviewed-none
+note=PHASE 7 knowledge triage: the two Phase 7 learnings now carry a status and a destination. 22 rows; a per-row check reports no row without exactly one of the five terminal statuses. The counts above include the five names in the legend paragraph as well as the rows
+exit=0
+head=bf7ba7591e32518b784fd2073d2c23ff8462016c
+utc=2026-09-21T17:29:21Z
+$ gh pr checks 555 --json name,bucket | jq -r '.[] | "\(.bucket)\t\(.name)"' | sort
+fail	Repository policy
+pass	Detect affected languages
+pass	Go quality gate
+pass	Java quality gate
+pass	Python quality gate
+pass	Validate env-contract surfaces (no drift)
+pending	.NET quality gate
+pending	TypeScript quality gate
+skipping	Flutter quality gate
+note=PHASE 7 CI-lane repair, round 2: the lane exclusions hold on CI. Every language gate is green at the rebuilt head and repository-policy is the only failure left, because the policy job had the interpreter and uv but not the project's formatter
+exit=0
+head=71dd8ed408f45dbd47d7211e02dc1328ed0cf9ad
+utc=2026-09-21T17:41:03Z
+
+$ node --test scripts/workflow-language-lanes.test.mjs 2>&1 | tail -8; actionlint .github/workflows/pr-quality-gate.yml && echo 'actionlint: clean'; apps/ferret-cli/.venv/bin/ruff --version; apps/ferret-cli/.venv/bin/ruff format --no-cache --check apps/ferret-cli apps/ferret-cli-e2e
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 90.696375
+actionlint: clean
+ruff 0.16.8
+143 files already formatted
+note=PHASE 7 CI-lane repair, round 2 GREEN: the validator's third case, the whole suite, actionlint, and the pinned formatter over every delivered Python file
+exit=0
+head=71dd8ed408f45dbd47d7211e02dc1328ed0cf9ad
+utc=2026-09-21T17:41:12Z
+$ sh local-tmp/claude/p7-leak-sweep2.sh 2>&1 | rg -v '^plans/done'
+files in the range: 325
+probe: the list reaches rg (155 files mention ferret)
+--- home-rooted absolute paths:
+apps/ferret-cli/tests/unit/test_privacy.py:152:        ({"toolName": "C:/Users/example"}, "toolName"),
+plans/in-progress/ferret-init-01-local-cli/delivery.md:105:| A42 | A38 repairs the one machine path the leak review found, and the Phase 7 packet self-checks the pushed range for machine paths, credentials, and protected values before the review runs. | Four RED transcripts — `evidence/phase-1/step-6-red.txt`, `evidence/phase-3/ac-cli-12-red.txt`, `evidence/phase-5/manual-evidence-red.txt`, and `evidence/phase-5/retention-fixture-red.txt` — replace the captured per-user temporary-directory root with `<tmpdir>` in all 116 places. The self-check is rewritten to feed its file list on standard input and to refuse to run unless a probe proves the list reaches the scanner. | The second current-head leak review filed one finding, and it was right. The transcripts recorded a temporary root whose two path segments identify the machine and the account, left in place while the `pytest-of-<user>` segment on the very same lines had been redacted — the same sanitizer gap L21 already records, in a second shape. The repository's own convention names exactly this case: a captured transcript carrying an absolute path nobody typed by hand. The reason it reached a review at all is worse than the finding: the Phase 7 self-check ran `xargs -a <file>`, and this platform's `xargs` has no `-a` flag, so every invocation failed, the error went to `/dev/null`, and each category printed its no-findings fallback. The check reported a clean range while scanning nothing, through two pushes. It now probes itself first and exits non-zero if the list stops arriving. Run again, it finds the four transcripts, and after the repair it finds nothing but placeholders, a synthetic `C:/Users/example` fixture, and `.env.local` filenames. |
+--- tool-installation prefixes:
+--- per-user temporary directory roots:
+--- other absolute temporary roots:
+--- local network addresses:
+--- internal hostnames:
+repo-config.yml:369:    - { source: apps/ayokoding-www/.env.example, target: apps/ayokoding-www/.env.local }
+repo-config.yml:370:    - { source: apps/organiclever-app-web/.env.example, target: apps/organiclever-app-web/.env.local }
+repo-config.yml:371:    - { source: apps/organiclever-be/.env.example, target: apps/organiclever-be/.env.local }
+repo-config.yml:372:    - { source: apps/organiclever-www/.env.example, target: apps/organiclever-www/.env.local }
+repo-config.yml:373:    - { source: apps/ose-app-web/.env.example, target: apps/ose-app-web/.env.local }
+repo-config.yml:374:    - { source: apps/ose-be/.env.example, target: apps/ose-be/.env.local }
+repo-config.yml:375:    - { source: apps/ose-id-be/.env.example, target: apps/ose-id-be/.env.local }
+repo-config.yml:376:    - { source: apps/ose-id-web/.env.example, target: apps/ose-id-web/.env.local }
+repo-config.yml:377:    - { source: apps/ose-lms-be/.env.example, target: apps/ose-lms-be/.env.local }
+repo-config.yml:378:    - { source: apps/ose-www/.env.example, target: apps/ose-www/.env.local }
+repo-config.yml:379:    - { source: apps/roots-be/.env.example, target: apps/roots-be/.env.local }
+plans/in-progress/ferret-init-01-local-cli/delivery.md:105:| A42 | A38 repairs the one machine path the leak review found, and the Phase 7 packet self-checks the pushed range for machine paths, credentials, and protected values before the review runs. | Four RED transcripts — `evidence/phase-1/step-6-red.txt`, `evidence/phase-3/ac-cli-12-red.txt`, `evidence/phase-5/manual-evidence-red.txt`, and `evidence/phase-5/retention-fixture-red.txt` — replace the captured per-user temporary-directory root with `<tmpdir>` in all 116 places. The self-check is rewritten to feed its file list on standard input and to refuse to run unless a probe proves the list reaches the scanner. | The second current-head leak review filed one finding, and it was right. The transcripts recorded a temporary root whose two path segments identify the machine and the account, left in place while the `pytest-of-<user>` segment on the very same lines had been redacted — the same sanitizer gap L21 already records, in a second shape. The repository's own convention names exactly this case: a captured transcript carrying an absolute path nobody typed by hand. The reason it reached a review at all is worse than the finding: the Phase 7 self-check ran `xargs -a <file>`, and this platform's `xargs` has no `-a` flag, so every invocation failed, the error went to `/dev/null`, and each category printed its no-findings fallback. The check reported a clean range while scanning nothing, through two pushes. It now probes itself first and exits non-zero if the list stops arriving. Run again, it finds the four transcripts, and after the repair it finds nothing but placeholders, a synthetic `C:/Users/example` fixture, and `.env.local` filenames. |
+--- credential-shaped strings:
+--- protected environment values:
+--- the account name outside a placeholder:
+note=PHASE 7 leak repair round 2: the corrected sweep over the pushed range. The probe proves the file list reaches the scanner, and every category is clean apart from a synthetic Windows fixture, the brew-prefix placeholders, and .env.local filenames
+exit=0
+head=23d66ac9136636ceba809fdb798e292c355191eb
+utc=2026-09-21T18:10:21Z

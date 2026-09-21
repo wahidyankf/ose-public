@@ -1,0 +1,82 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:quick --skip-nx-cache
+
+> nx run ferret-cli-e2e:"test:quick"
+
+> npm exec -- nx run ferret-cli-e2e:lint
+
+
+> nx run ferret-cli-e2e:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+21 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:typecheck
+
+
+> nx run ferret-cli-e2e:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage
+
+
+> nx run ferret-cli-e2e:"test:coverage"
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage:e2e
+
+
+> nx run ferret-cli-e2e:"test:coverage:e2e"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter e2e
+
+ferret-cli-e2e: 6 features, 27 expanded scenarios, adapters: e2e.
+
+
+
+ NX   Successfully ran target test:coverage:e2e for project ferret-cli-e2e
+
+
+> npm exec -- nx run ferret-cli-e2e:test:coverage:behaviour
+
+
+> nx run ferret-cli-e2e:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli-e2e/behaviour-coverage.json --adapter behaviour
+
+ferret-cli-e2e: 6 features, 27 expanded scenarios, adapters: unit, e2e.
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli-e2e
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli-e2e
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli-e2e
+note=Phase 3 gate: E2E-QUICK exits 0 for lint, typecheck, and static validators only
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T09:41:59Z

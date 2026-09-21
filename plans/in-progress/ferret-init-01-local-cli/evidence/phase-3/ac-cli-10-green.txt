@@ -1,0 +1,195 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli-e2e python apps/ferret-cli-e2e/src/storage_benchmark.py --events 5000 --seed 20260918 --output plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/storage-5000.json
+FERRET storage benchmark: events=5000 seed=20260918 expired=2500
+Empty schema: database=81920 wal=0
+Loaded before checkpoint: database=81920 wal=6637352
+Loaded after checkpoint: database=4698112 wal=0 table=2080768 index=2617344
+Per event: bytes=939.6 marginal=923.2 index-share=0.557
+Capture single: n=40 p50=184.2ms p95=328.0ms max=393.6ms
+Capture concurrent: writers=4 n=40 p50=477.5ms p95=887.5ms max=908.4ms
+Expired half deleted: events=2500 database=4775936 wal=0 freelist=2142208
+Maintenance: pruned=2500 seconds=0.54 database-before=4698112 database-after=4698112 wal=0 freelist=2138112 high-water=4698112 observed-peak=5204904
+Projection 5000/day x 30 days: steady=138567680 compaction-peak=277135360
+Projection 20000/day x 30 days: steady=554024960 compaction-peak=1108049920
+Projection 100000/day x 30 days: steady=2769797120 compaction-peak=5539594240
+Acceptance: within_envelope
+note=benchmark at 5,000 events (the plan text says python; the project's own interpreter is used so the artifact and the benchmark share Python 3.14)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:18:19Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli-e2e python apps/ferret-cli-e2e/src/storage_benchmark.py --events 20000 --seed 20260918 --output plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/storage-20000.json
+FERRET storage benchmark: events=20000 seed=20260918 expired=10000
+Empty schema: database=81920 wal=0
+Loaded before checkpoint: database=81920 wal=36400232
+Loaded after checkpoint: database=18440192 wal=0 table=8249344 index=10190848
+Per event: bytes=922.0 marginal=917.9 index-share=0.553
+Capture single: n=40 p50=178.6ms p95=238.3ms max=253.8ms
+Capture concurrent: writers=4 n=40 p50=346.0ms p95=772.6ms max=963.6ms
+Expired half deleted: events=10000 database=18522112 wal=0 freelist=8683520
+Maintenance: pruned=10000 seconds=1.49 database-before=18440192 database-after=18440192 wal=0 freelist=8675328 high-water=18440192 observed-peak=19132384
+Projection 5000/day x 30 days: steady=137768960 compaction-peak=275537920
+Projection 20000/day x 30 days: steady=550830080 compaction-peak=1101660160
+Projection 100000/day x 30 days: steady=2753822720 compaction-peak=5507645440
+Acceptance: within_envelope
+note=benchmark at 20,000 events
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:18:44Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli-e2e python apps/ferret-cli-e2e/src/storage_benchmark.py --events 100000 --seed 20260918 --output plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/storage-100000.json
+FERRET storage benchmark: events=100000 seed=20260918 expired=50000
+Empty schema: database=81920 wal=0
+Loaded before checkpoint: database=81920 wal=338383872
+Loaded after checkpoint: database=91951104 wal=0 table=41103360 index=50847744
+Per event: bytes=919.5 marginal=918.7 index-share=0.553
+Capture single: n=40 p50=154.4ms p95=182.0ms max=183.5ms
+Capture concurrent: writers=4 n=40 p50=266.2ms p95=527.1ms max=527.7ms
+Expired half deleted: events=50000 database=92037120 wal=0 freelist=43642880
+Maintenance: pruned=50000 seconds=7.49 database-before=91951104 database-after=43692032 wal=0 freelist=0 high-water=91951104 observed-peak=135899176
+Projection 5000/day x 30 days: steady=137885696 compaction-peak=275771392
+Projection 20000/day x 30 days: steady=551297024 compaction-peak=1102594048
+Projection 100000/day x 30 days: steady=2756157440 compaction-peak=5512314880
+Acceptance: unexplained
+  the footprint reached 135899176 bytes, beyond the reported high-water mark of 91951104 plus the 8388608 byte allowance
+note=benchmark at 100,000 events
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:19:09Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli pytest apps/ferret-cli/tests/integration/test_space.py::test_maintenance_compacts_a_large_free_list_and_keeps_every_live_row -q --tb=short --color=no -p no:cacheprovider -rf
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_maintenance_compacts_a_large_free_list_and_keeps_every_live_row _____
+apps/ferret-cli/tests/integration/test_space.py:255: in test_maintenance_compacts_a_large_free_list_and_keeps_every_live_row
+    assert report["highWaterBytes"] >= report["databaseBytesBefore"] + report["databaseBytesAfter"]
+E   assert 77287424 >= (77287424 + 26087424)
+=========================== short test summary info ============================
+FAILED apps/ferret-cli/tests/integration/test_space.py::test_maintenance_compacts_a_large_free_list_and_keeps_every_live_row
+1 failed in 3.26s
+note=regression test for the defect the 100,000-event benchmark exposed: run against the unfixed compaction, expected RED because a rewrite's peak (old file plus the log) was not measured
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:20:21Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli pytest apps/ferret-cli/tests/integration/test_space.py apps/ferret-cli/tests/integration/test_retention.py -q --tb=short --color=no -p no:cacheprovider -rf
+...................................                                      [100%]
+35 passed in 7.57s
+note=same regression test after the fix (the compaction connection no longer checkpoints on its own), with the rest of the space and retention integration tests
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:20:38Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli-e2e python apps/ferret-cli-e2e/src/storage_benchmark.py --events 100000 --seed 20260918 --output plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/storage-100000.json
+FERRET storage benchmark: events=100000 seed=20260918 expired=50000
+Empty schema: database=81920 wal=0
+Loaded before checkpoint: database=81920 wal=338383872
+Loaded after checkpoint: database=91951104 wal=0 table=41103360 index=50847744
+Per event: bytes=919.5 marginal=918.7 index-share=0.553
+Capture single: n=40 p50=135.1ms p95=156.9ms max=217.5ms
+Capture concurrent: writers=4 n=40 p50=240.2ms p95=528.8ms max=578.7ms
+Expired half deleted: events=50000 database=92037120 wal=0 freelist=43642880
+Maintenance: pruned=50000 seconds=7.38 database-before=91951104 database-after=43692032 wal=0 freelist=0 high-water=135899176 observed-peak=135899176
+Projection 5000/day x 30 days: steady=137885696 compaction-peak=275771392
+Projection 20000/day x 30 days: steady=551297024 compaction-peak=1102594048
+Projection 100000/day x 30 days: steady=2756157440 compaction-peak=5512314880
+Acceptance: within_envelope
+note=benchmark at 100,000 events on the rebuilt artifact after the compaction-peak fix
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:21:02Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --args='tests/unit/test_status.py tests/unit/steps/test_retention_and_space_steps.py'
+
+> nx run ferret-cli:"test:unit" --args=tests/unit/test_status.py tests/unit/steps/test_retention_and_space_steps.py
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99 tests/unit/test_status.py tests/unit/steps/test_retention_and_space_steps.py
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 852 items
+
+tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py .    [  0%]
+tests/unit/steps/test_initialization_and_concurrency_steps.py ..         [  0%]
+tests/unit/steps/test_local_query_and_export_steps.py ........           [  1%]
+tests/unit/steps/test_metadata_envelope_steps.py .......                 [  2%]
+tests/unit/steps/test_retention_and_space_steps.py ..                    [  2%]
+tests/unit/steps/test_usage_and_outcomes_steps.py .                      [  2%]
+tests/unit/test_analytics.py ........................................... [  7%]
+...................                                                      [  9%]
+tests/unit/test_canonical.py ..........                                  [ 10%]
+tests/unit/test_capabilities.py ........................................ [ 15%]
+........................................................................ [ 24%]
+.........                                                                [ 25%]
+tests/unit/test_capture.py .........................                     [ 28%]
+tests/unit/test_cli_contract.py ........................................ [ 32%]
+.................................................                        [ 38%]
+tests/unit/test_commands.py .........                                    [ 39%]
+tests/unit/test_data_home_locality.py ...........                        [ 40%]
+tests/unit/test_event_contract.py ............................           [ 44%]
+tests/unit/test_event_identity.py ....                                   [ 44%]
+tests/unit/test_initialization.py ...................................... [ 49%]
+....................                                                     [ 51%]
+tests/unit/test_maintenance.py ................................          [ 55%]
+tests/unit/test_maintenance_command.py ......................            [ 57%]
+tests/unit/test_privacy.py ............................................. [ 63%]
+........................................................................ [ 71%]
+............................                                             [ 74%]
+tests/unit/test_queries.py ............................................. [ 80%]
+........................................................................ [ 88%]
+......                                                                   [ 89%]
+tests/unit/test_space.py ........................                        [ 92%]
+tests/unit/test_status.py ......................                         [ 94%]
+tests/unit/test_timestamps.py .......................................... [ 99%]
+....                                                                     [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/analytics.py           97      0   100%
+src/ferret/application/capabilities.py        23      0   100%
+src/ferret/application/capture.py             11      0   100%
+src/ferret/application/initialization.py      65      0   100%
+src/ferret/application/maintenance.py         71      0   100%
+src/ferret/application/ports.py               80      0   100%
+src/ferret/application/privacy.py             55      0   100%
+src/ferret/application/queries.py             46      0   100%
+src/ferret/application/status.py              32      0   100%
+src/ferret/application/store.py               20      0   100%
+src/ferret/cli.py                            176      0   100%
+src/ferret/commands.py                        48      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/canonical.py                14      0   100%
+src/ferret/domain/capability.py               69      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/event.py                   110      0   100%
+src/ferret/domain/fields.py                   47      0   100%
+src/ferret/domain/identity.py                 10      0   100%
+src/ferret/domain/query.py                   123      0   100%
+src/ferret/domain/retention.py                15      0   100%
+src/ferret/domain/space.py                    42      0   100%
+src/ferret/domain/status.py                   13      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               37      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       64      0   100%
+------------------------------------------------------------------------
+TOTAL                                       1357      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================= 852 passed in 1.30s ==============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+note=C10-UNIT rerun: GREEN, with the whole unit suite and its coverage gate
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T08:21:42Z

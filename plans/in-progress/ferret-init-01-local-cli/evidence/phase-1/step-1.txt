@@ -1,0 +1,67 @@
+FERRET Init 01 - Phase 1 Step 1 (Tree), rules-propagation workflow
+Repository-relative and placeholder paths only (<worktree>, <primary>).
+
+note=every git command below ran as the plain command `RTK_DISABLED=1 git ...` because the worktree-isolation guard refuses an
+rtk-wrapped git invocation (see evidence/phase-0/route.txt command-execution-note); the output is byte-identical.
+
+## Base reconciliation performed before this step
+Between Phase 0 and Step 1 a doc-only commit landed on origin/main: 6771f87752a932261d568fefcc4c9ec639f7cb89
+"docs(task-list-discipline): make delivery.md the only written progress record (#553)". Its full diff was read: one file,
+repo-governance/development/practice/task-list-discipline/for-ai-agents-and-related-documentation.md, +2 lines, adding the rule
+that local-tmp/ holds scripts/assets/logs/intermediate data/the touched-file ledger and never a copy of the checklist, its ticks,
+or its status. Reconciliation: (1) no plan, task, assumption, ledger, or verification statement in this delivery conflicts;
+(2) transient note/status copies previously staged in local-tmp were deleted and are no longer kept, delivery.md stays the sole
+written progress record; (3) the branch had no commits, so `git merge --ff-only origin/main` advanced it cleanly from
+071c99929b1bb2471009ad49a3f594da599c819b to 6771f87752a932261d568fefcc4c9ec639f7cb89. The Phase 0 evidence keeps its historical
+head=071c999... records; every record from here on shows head=6771f87... . No Phase 0 conclusion changes: the merged commit
+touches none of the surfaces Phase 0 measured.
+
+$ rtk git rev-parse --show-toplevel
+<worktree>
+exit=0
+
+$ rtk git status --short
+ M plans/in-progress/ferret-init-01-local-cli/delivery.md
+?? plans/in-progress/ferret-init-01-local-cli/evidence/
+exit=0
+
+$ rtk git worktree list --porcelain
+worktree <primary>
+HEAD 6771f87752a932261d568fefcc4c9ec639f7cb89
+branch refs/heads/main
+
+worktree <worktree>
+HEAD 6771f87752a932261d568fefcc4c9ec639f7cb89
+branch refs/heads/ferret-init-01-local-cli
+
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T02:27:20Z
+
+## Assertions
+- The top level is the Phase 0 execution worktree `ferret-init-01-local-cli`; branch `ferret-init-01-local-cli`.
+- Exactly two worktrees exist: the primary checkout on `main` and this one. No nested rules worktree exists and none was created
+  (isolation=current). An open-PR search for a rules-propagation or ferret-python-harness-governance PR returned 0.
+- Dirt is only this plan's own delivery.md and its evidence folder: expected, no unexpected route.
+
+## Portable-rule parity identity (recorded before the first rule mutation)
+The propagated rules are portable governance guidance (nx-target and behaviour-coverage rules, the tag vocabulary, the Python
+environment workflow, harness lifecycle skill rules), so the sibling repository is owed a corresponding propagation. Per
+repo-governance/development/workflow/cross-repository-parity-identity.md the identity is recorded now and reused by the sibling
+obligation; this run records it and does not create or mutate a sibling worktree, branch, or file.
+
+- Parity objective slug: `ferret-python-harness-governance`
+- Sibling repository: `ose-private`
+- Shared future worktree basename: `ferret-python-harness-governance` (under the sibling's own `worktrees/` directory)
+
+| Repository   | Corresponding short-lived branch                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------------- |
+| `ose-private` | `ferret-python-harness-governance`                                                                             |
+| `ose-public` | `not applicable` (this run uses isolation=current inside the existing FERRET delivery worktree and branch)     |
+
+Reason for the public-side `not applicable`: this rules run creates no worktree and no branch of its own. It rides the enclosing
+plan's delivery unit (worktree `ferret-init-01-local-cli`, branch `ferret-init-01-local-cli`, mandated verbatim by the Phase 7 and
+Phase 8 packets). The identity that Step 9's final assertion compares against is therefore
+{worktree basename `ferret-init-01-local-cli`, branch `ferret-init-01-local-cli`} for this repository and the sibling names above
+for the future counterpart. The deliberate divergence is recorded here and is not silent; no foreign worktree or branch was
+touched, and no availability probe of the sibling was needed because nothing in it is mutated by this delivery.

@@ -1,0 +1,34 @@
+$ rtk npm run lint:md
+> ./hippo run --class ephemeral --resource-tier light --disk-path . -- markdownlint-cli2 "**/*.md"
+markdownlint-cli2 v0.21.0 (markdownlint v0.40.0)
+Finding: **/*.md !node_modules/** !**/node_modules/** !libs/*/deps/** !libs/*/_build/** !apps/*/deps/** !apps/*/_build/** !dist/** !build/** !**/build/** !**/target/** !.next/** !**/.next/** !.nx/** !apps/*/public/** !generated-reports/** !**/.dart_tool/** !.vscode/** !.idea/** !apps/*/playwright-report/** !apps/*/test-results/** !apps/*/.venv/** !**/.venv/** !apps/*/tests/**/bin/** !apps/*/tests/**/obj/** !.claude/worktrees/** !worktrees/** !local-tmp/** !.memsearch/** !docs/reference/security/frameworks/nist-sp-800-53-rev5.md !plans/done/** !archived/**
+Linting: 7384 file(s)
+Summary: 0 error(s)
+note=PHASE 5 docs 1/4: markdownlint over the repository; exit 0 required
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:11:47Z
+
+$ rtk npm run format:md:check
+> ./hippo run --class ephemeral --resource-tier light --disk-path . -- prettier --check "**/*.md"
+Checking formatting...
+All matched files use Prettier code style!
+HIPPO queued run=6856cc94dbc5ae94e1f4477c775e38f5 position=1 remaining=30m0s.
+note=PHASE 5 docs 2/4: Prettier check over Markdown; exit 0 required
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:12:21Z
+
+$ rtk ./rhino md internal-link validate
+[internal-link] checked 12093 links, no findings
+note=PHASE 5 docs 3/4: local link validation over the whole repository (A11: the pinned Rhino has no --directory flag and no md links command, A2); exit 0 required
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:14:39Z
+
+$ sh local-tmp/claude/docs-diffcheck.sh
+diff --check: no whitespace problem in tracked changes
+note=PHASE 5 docs 4/4: the plan's diff --check over tracked changes (run from a script file because the worktree guard refuses git text in this shell; untracked new files are covered by the Markdown and lint runs)
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T13:14:53Z

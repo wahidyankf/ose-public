@@ -1,0 +1,279 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli pytest apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py -q --tb=line --color=no -p no:cacheprovider -rf --no-cov
+....FFFFFFFFFF.......F                                                   [100%]
+=================================== FAILURES ===================================
+E   AssertionError: assert 3 == 0
+     +  where 3 = Ran(code=3, stdout='', stderr='FERRET error [storage_unavailable]: storage is unavailable\n').code
+     +    where Ran(code=3, stdout='', stderr='FERRET error [storage_unavailable]: storage is unavailable\n') = Adapter(world=World(files=FakeDataHome(directory=None, files={}, creates=[], lock_depth=0, lock_count=0, crash_after_c...dout='', stderr='FERRET error [storage_unavailable]: storage is unavailable\n'), elapsed_seconds=0.0011951250053243712).ran
+<worktree>/apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py:299: AssertionError: assert 3 == 0
+E   AssertionError: assert 3 == 0
+     +  where 3 = Ran(code=3, stdout='', stderr='FERRET error [storage_unavailable]: storage is unavailable\n').code
+     +    where Ran(code=3, stdout='', stderr='FERRET error [storage_unavailable]: storage is unavailable\n') = Adapter(world=World(files=FakeDataHome(directory=Entry(kind='directory', content=b'', mode=448, owned=True, links=1), ...dout='', stderr='FERRET error [storage_unavailable]: storage is unavailable\n'), elapsed_seconds=0.0015085000050021335).ran
+<worktree>/apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py:299: AssertionError: assert 3 == 0
+E   AssertionError: assert 3 == 0
+     +  where 3 = Ran(code=3, stdout='', stderr='FERRET error [storage_unavailable]: storage is unavailable\n').code
+     +    where Ran(code=3, stdout='', stderr='FERRET error [storage_unavailable]: storage is unavailable\n') = Adapter(world=World(files=FakeDataHome(directory=Entry(kind='directory', content=b'', mode=448, owned=True, links=1), ...stdout='', stderr='FERRET error [storage_unavailable]: storage is unavailable\n'), elapsed_seconds=0.00116787500155624).ran
+<worktree>/apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py:299: AssertionError: assert 3 == 0
+E   AssertionError: assert 3 == 0
+     +  where 3 = Ran(code=3, stdout='', stderr='FERRET error [storage_unavailable]: storage is unavailable\n').code
+     +    where Ran(code=3, stdout='', stderr='FERRET error [storage_unavailable]: storage is unavailable\n') = Adapter(world=World(files=FakeDataHome(directory=Entry(kind='directory', content=b'', mode=448, owned=True, links=1), ... stdout='', stderr='FERRET error [storage_unavailable]: storage is unavailable\n'), elapsed_seconds=0.0011463749979157).ran
+<worktree>/apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py:299: AssertionError: assert 3 == 0
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   ValueError: not enough values to unpack (expected 1, got 0)
+<worktree>/apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py:162: ValueError: not enough values to unpack (expected 1, got 0)
+=========================== short test summary info ============================
+FAILED apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure[not installed]
+FAILED apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure[given invalid metadata]
+FAILED apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure[unable to open SQLite]
+FAILED apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure[blocked by a concurrent writer beyond the timeout]
+FAILED apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[claude_code-stdin is forwarded byte-for-byte for a supported event]
+FAILED apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[claude_code-the event is not one FERRET registers]
+FAILED apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[codex-the payload carries raw content fields]
+FAILED apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[codex-the ferret executable is missing]
+FAILED apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[opencode-the plugin forwards an invalid payload]
+FAILED apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[opencode-the child process hangs past the deadline]
+FAILED apps/ferret-cli/tests/unit/steps/test_metadata_envelope_steps.py::test_project_raw_hook_json_without_retaining_content
+11 failed, 11 passed in 0.38s
+note=Unit RED: the AC-04 outline, the wrapper-boundary outline, and the raw-hook scenario fail because capture-hook has no handler (exit 3) and the shared wrapper does not exist
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T10:20:40Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- uv run --no-sync --project apps/ferret-cli pytest apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py apps/ferret-cli/tests/integration/steps/test_metadata_envelope_steps.py -q --tb=line --color=no -p no:cacheprovider -rf --no-cov
+....FFFFFFFFFF.......F                                                   [100%]
+=================================== FAILURES ===================================
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   assert 0 == 1
+     +  where 0 = len([])
+<worktree>/apps/ferret-cli/tests/integration/steps/test_metadata_envelope_steps.py:209: assert 0 == 1
+=========================== short test summary info ============================
+FAILED apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure[not installed]
+FAILED apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure[given invalid metadata]
+FAILED apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure[unable to open SQLite]
+FAILED apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure[blocked by a concurrent writer beyond the timeout]
+FAILED apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[claude_code-stdin is forwarded byte-for-byte for a supported event]
+FAILED apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[claude_code-the event is not one FERRET registers]
+FAILED apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[codex-the payload carries raw content fields]
+FAILED apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[codex-the ferret executable is missing]
+FAILED apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[opencode-the plugin forwards an invalid payload]
+FAILED apps/ferret-cli/tests/integration/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[opencode-the child process hangs past the deadline]
+FAILED apps/ferret-cli/tests/integration/steps/test_metadata_envelope_steps.py::test_project_raw_hook_json_without_retaining_content
+11 failed, 11 passed in 1.27s
+note=Integration RED: the same three scenarios against a real store and process fail for the same reasons (no capture-hook handler, no wrapper)
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T10:20:49Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e --skip-nx-cache --args='-q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py tests/steps/test_fail_open_capabilities_and_platforms_steps.py tests/steps/test_metadata_envelope_steps.py'
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on:
+
+
+
+> nx run ferret-cli:build
+
+> uv run --no-sync python scripts/build_zipapp.py
+
+
+> nx run ferret-cli-e2e:"test:e2e" --args=-q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py tests/steps/test_fail_open_capabilities_and_platforms_steps.py tests/steps/test_metadata_envelope_steps.py
+
+> uv run --no-sync pytest tests -q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py tests/steps/test_fail_open_capabilities_and_platforms_steps.py tests/steps/test_metadata_envelope_steps.py
+
+....FFFFFFFFFF....................F...FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF [ 52%]
+FF..............................................................         [100%]
+=================================== FAILURES ===================================
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   assert (1, b'', b"no...s v24.16.0\n") == (0, b'', b'')
+
+      At index 0 diff: 1 != 0
+      Use -v to get more diff
+<worktree>/apps/ferret-cli-e2e/tests/steps/test_fail_open_capabilities_and_platforms_steps.py:436: assert (1, b'', b"no...s v24.16.0\n") == (0, b'', b'')
+E   assert (1, b'', b"no...s v24.16.0\n") == (0, b'', b'')
+
+      At index 0 diff: 1 != 0
+      Use -v to get more diff
+<worktree>/apps/ferret-cli-e2e/tests/steps/test_fail_open_capabilities_and_platforms_steps.py:436: assert (1, b'', b"no...s v24.16.0\n") == (0, b'', b'')
+E   assert 0 == 1
+     +  where 0 = len([])
+<worktree>/apps/ferret-cli-e2e/tests/steps/test_metadata_envelope_steps.py:197: assert 0 == 1
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   assert None is not None
+<worktree>/apps/ferret-cli-e2e/tests/test_harness_adapters.py:79: assert None is not None
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   assert None is not None
+<worktree>/apps/ferret-cli-e2e/tests/test_harness_adapters.py:79: assert None is not None
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   AssertionError
+<worktree>/apps/ferret-cli-e2e/src/adapter_cases.py:100: AssertionError
+E   FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+<home>/.local/share/uv/python/cpython-3.14.7-macos-aarch64-none/lib/python3.14/subprocess.py:1990: FileNotFoundError: [Errno 2] No such file or directory: '<worktree>/.claude/hooks/ferret-capture.sh'
+=========================== short test summary info ============================
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure[not installed] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure[given invalid metadata] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure[unable to open SQLite] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_a_harness_fail_open_after_a_local_failure[blocked by a concurrent writer beyond the timeout] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[claude_code-stdin is forwarded byte-for-byte for a supported event] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[claude_code-the event is not one FERRET registers] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[codex-the payload carries raw content fields] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[codex-the ferret executable is missing] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[opencode-the plugin forwards an invalid payload] - assert (1, b'', b"no...s v24.16.0\n") == (0, b'', b'')
+FAILED tests/steps/test_fail_open_capabilities_and_platforms_steps.py::test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary[opencode-the child process hangs past the deadline] - assert (1, b'', b"no...s v24.16.0\n") == (0, b'', b'')
+FAILED tests/steps/test_metadata_envelope_steps.py::test_project_raw_hook_json_without_retaining_content - assert 0 == 1
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[raw forwarding and synchronous commit-claude_code] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[raw forwarding and synchronous commit-codex] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[raw forwarding and synchronous commit-opencode] - AssertionError
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[content discard-claude_code] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[content discard-codex] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[content discard-opencode] - AssertionError
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[missing cli-claude_code] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[missing cli-codex] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[missing cli-opencode] - AssertionError
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[invalid json-claude_code] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[invalid json-codex] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[invalid json-opencode] - AssertionError
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[lock-claude_code] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[lock-codex] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[lock-opencode] - AssertionError
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[disk error-claude_code] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[disk error-codex] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[disk error-opencode] - AssertionError
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[term at 900 ms-claude_code] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[term at 900 ms-codex] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[term at 900 ms-opencode] - assert None is not None
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[kill at 1000 ms-claude_code] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[kill at 1000 ms-codex] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[kill at 1000 ms-opencode] - assert None is not None
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[prune row limit-claude_code] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[prune row limit-codex] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[prune row limit-opencode] - AssertionError
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[prune lock-claude_code] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[prune lock-codex] - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+FAILED tests/test_harness_adapters.py::test_fail_open_matrix[prune lock-opencode] - AssertionError
+FAILED tests/test_harness_adapters.py::test_plugin_survives_malformed_hook_calls[no arguments] - AssertionError
+FAILED tests/test_harness_adapters.py::test_plugin_survives_malformed_hook_calls[null arguments] - AssertionError
+FAILED tests/test_harness_adapters.py::test_plugin_survives_malformed_hook_calls[wrong types] - AssertionError
+FAILED tests/test_harness_adapters.py::test_plugin_survives_malformed_hook_calls[an empty event] - AssertionError
+FAILED tests/test_harness_adapters.py::test_plugin_survives_malformed_hook_calls[an event with no properties] - AssertionError
+FAILED tests/test_harness_adapters.py::test_the_three_adapters_share_one_workspace_identifier - FileNotFoundError: [Errno 2] No such file or directory: '<home>/ose-pro...
+47 failed, 89 passed in 89.06s (0:01:29)
+
+
+
+ NX   Running target test:e2e for project ferret-cli-e2e and 1 task it depends on failed
+
+Failed tasks:
+
+- ferret-cli-e2e:test:e2e
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync pytest tests -q --tb=line -p no:cacheprovider -rf tests/test_harness_adapters.py tests/steps/test_fail_open_capabilities_and_platforms_steps.py tests/steps/test_metadata_envelope_steps.py" exited with non-zero status code
+note=E2E RED: the adapter matrix and the three bound scenarios fail against the built artifact because capture-hook, .claude/hooks/ferret-capture.sh, and .opencode/plugins/ferret.ts do not exist; every other E2E test still passes
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T10:22:46Z

@@ -1,0 +1,14 @@
+{
+  "project": "ferret-cli",
+  "corpus": ["../../specs/apps/ferret/cli/behaviours"],
+  "adapters": {
+    "unit": {
+      "bindings": ["tests/unit"],
+      "driver": "pyproject.toml"
+    },
+    "integration": {
+      "bindings": ["tests/integration"],
+      "driver": "pyproject.toml"
+    }
+  }
+}

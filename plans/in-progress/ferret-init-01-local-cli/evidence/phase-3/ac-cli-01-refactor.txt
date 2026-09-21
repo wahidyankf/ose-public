@@ -1,0 +1,215 @@
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick --skip-nx-cache
+
+> nx run ferret-cli:"test:quick"
+
+> npm exec -- nx run ferret-cli:lint
+
+
+> nx run ferret-cli:lint
+
+> uv run --no-sync ruff check .
+
+RUF100 [*] Unused `noqa` directive (non-enabled: `DTZ001`)
+  --> tests/unit/test_timestamps.py:29:61
+   |
+27 | def test_a_naive_moment_is_refused() -> None:
+28 |     with pytest.raises(ValueError, match="time zone"):
+29 |         format_timestamp(datetime(2026, 9, 18, 8, 15, 30))  # noqa: DTZ001 - the naive value is the case under test
+   |                                                             ^^^^^^^^^^^^^^
+help: Remove unused `noqa` directive
+   |
+28 |     with pytest.raises(ValueError, match="time zone"):
+   -         format_timestamp(datetime(2026, 9, 18, 8, 15, 30))  # noqa: DTZ001 - the naive value is the case under test
+29 +         format_timestamp(datetime(2026, 9, 18, 8, 15, 30))
+30 |
+   |
+
+RUF043 Pattern passed to `match=` contains metacharacters but is neither escaped nor raw
+  --> tests/unit/test_timestamps.py:55:42
+   |
+53 | )
+54 | def test_any_other_spelling_is_refused(text: str) -> None:
+55 |     with pytest.raises(ValueError, match="canonical|day|month|hour"):
+   |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+56 |         parse_timestamp(text)
+   |
+help: Use a raw string or `re.escape()` to make the intention explicit
+
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.
+
+
+
+ NX   Running target lint for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:lint
+
+Hint: run the command with --verbose for more details.
+
+
+
+
+ NX   Running target test:quick for project ferret-cli failed
+
+Failed tasks:
+
+- ferret-cli:test:quick
+
+Hint: run the command with --verbose for more details.
+
+Warning: command "uv run --no-sync ruff check ." exited with non-zero status codeWarning: command "npm exec -- nx run ferret-cli:lint" exited with non-zero status code
+note=OWNER-QUICK: exit 0 with Unit line coverage at or above the 99% gate; the first feature now resolves once in the Unit and Integration adapters
+exit=1
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:54:00Z
+
+$ rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick --skip-nx-cache
+
+> nx run ferret-cli:"test:quick"
+
+> npm exec -- nx run ferret-cli:lint
+
+
+> nx run ferret-cli:lint
+
+> uv run --no-sync ruff check .
+
+All checks passed!
+> uv run --no-sync ruff format --check .
+
+30 files already formatted
+
+
+
+ NX   Successfully ran target lint for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:typecheck
+
+
+> nx run ferret-cli:typecheck
+
+> uv run --no-sync pyright
+
+0 errors, 0 warnings, 0 informations
+
+
+
+ NX   Successfully ran target typecheck for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:unit
+
+
+> nx run ferret-cli:"test:unit"
+
+> uv run --no-sync pytest tests/unit --cov=ferret --cov-report=term-missing --cov-fail-under=99
+
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: <worktree>/apps/ferret-cli
+configfile: pyproject.toml
+plugins: cov-7.1.0, bdd-8.1.0
+collected 184 items
+
+tests/unit/steps/test_initialization_and_concurrency_steps.py .          [  0%]
+tests/unit/test_cli_contract.py ........................................ [ 22%]
+...............................................                          [ 47%]
+tests/unit/test_commands.py .........                                    [ 52%]
+tests/unit/test_data_home_locality.py ...........                        [ 58%]
+tests/unit/test_initialization.py ...................................... [ 79%]
+....................                                                     [ 90%]
+tests/unit/test_timestamps.py ..................                         [100%]
+
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.14.7-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src/ferret/__init__.py                         1      0   100%
+src/ferret/adapters/__init__.py                0      0   100%
+src/ferret/adapters/filesystem.py             51      0   100%
+src/ferret/application/__init__.py             0      0   100%
+src/ferret/application/initialization.py      72      0   100%
+src/ferret/application/ports.py               28      0   100%
+src/ferret/cli.py                            168      0   100%
+src/ferret/commands.py                        15      0   100%
+src/ferret/domain/__init__.py                  0      0   100%
+src/ferret/domain/errors.py                   17      0   100%
+src/ferret/domain/storage.py                  17      0   100%
+src/ferret/domain/timestamps.py               16      0   100%
+src/ferret/help_text.py                        3      0   100%
+src/ferret/rendering.py                       11      0   100%
+------------------------------------------------------------------------
+TOTAL                                        399      0   100%
+Required test coverage of 99% reached. Total coverage: 100.00%
+============================= 184 passed in 0.36s ==============================
+
+
+
+ NX   Successfully ran target test:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage
+
+
+> nx run ferret-cli:"test:coverage"
+
+> npm exec -- nx run ferret-cli:test:coverage:unit
+
+
+> nx run ferret-cli:"test:coverage:unit"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter unit
+
+ferret-cli: 1 features, 1 expanded scenarios, adapters: unit.
+
+
+
+ NX   Successfully ran target test:coverage:unit for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:integration
+
+
+> nx run ferret-cli:"test:coverage:integration"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter integration
+
+ferret-cli: 1 features, 1 expanded scenarios, adapters: integration.
+
+
+
+ NX   Successfully ran target test:coverage:integration for project ferret-cli
+
+
+> npm exec -- nx run ferret-cli:test:coverage:behaviour
+
+
+> nx run ferret-cli:"test:coverage:behaviour"
+
+> node scripts/behaviour-coverage.mjs --config apps/ferret-cli/behaviour-coverage.json --adapter behaviour
+
+ferret-cli: 1 features, 1 expanded scenarios, adapters: unit, integration.
+
+
+
+ NX   Successfully ran target test:coverage:behaviour for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:coverage for project ferret-cli
+
+
+
+
+
+ NX   Successfully ran target test:quick for project ferret-cli
+note=OWNER-QUICK rerun after fixing the two ruff findings (unused noqa, unescaped match pattern) that the first run above reported; exit 0 with Unit coverage at or above the 99% gate
+exit=0
+head=6771f87752a932261d568fefcc4c9ec639f7cb89
+utc=2026-09-21T04:54:17Z

@@ -21,6 +21,8 @@ Every agent — main thread and delegated alike — must follow this practice fo
 
 The [Plans Convention](../../../conventions/structure/plans.md) governs the delivery checklist inside plan documents (`delivery.md`). That checklist is the authoritative progress record for plan-mediated work. This practice governs the live working task list for everyday multi-step execution outside a plan document — and for the in-session tracking state during plan execution itself. Both require continuous sync. Neither exempts the other.
 
+That checklist is also the only written progress record. `local-tmp/` holds what an execution needs and then discards — scripts, assets, logs, intermediate data, the touched-file ledger — and never a copy of the checklist, its ticks, or its status, because two written records drift apart and nothing decides which one was true. Outside plan-mediated work there is no `delivery.md`, and a scratch file may carry working notes that have to survive a context boundary.
+
 ## Related Documentation
 
 - [File-Touch Discipline](../file-touch-discipline.md) - The structural sibling: the same append-only, survives-compaction shape applied to files already touched rather than work still intended. An agent that keeps one and not the other is only half-recoverable — the task list says what it meant to do, the ledger says what it actually changed

@@ -1,0 +1,38 @@
+Phase 8 merge containment and terminal audit, written by the closure pull request.
+
+--- containment, three zero exits
+$ git fetch origin main                                                       exit=0
+$ git merge-base --is-ancestor 7e022a3fe1f2c236efe0251ceb7a7d1efdce9d65 origin/main   exit=0
+$ git cat-file -e origin/main:<done-plan>/delivery.md                          exit=0
+
+merge-sha:     7e022a3fe1f2c236efe0251ceb7a7d1efdce9d65
+reviewed-head: 509917bceb37370186f498a8e95efc8ad473f62a
+origin/main:   7e022a3fe1f2c236efe0251ceb7a7d1efdce9d65
+reviewed-head ancestry after a squash merge: not tested, by design
+archived plan files on origin/main: 109
+the active path plans/in-progress/ferret-init-01-local-cli is absent from origin/main
+
+--- Step 11 terminal completeness audit against the delivered ref
+delivered-ref:    7e022a3fe1f2c236efe0251ceb7a7d1efdce9d65
+reviewed-pr-head: 509917bceb37370186f498a8e95efc8ad473f62a
+tree equality:    7e022a3fe^{tree} == 509917bce^{tree} == 400b544c850619d6502795a43b692db91bedb340
+Status: Complete
+Total Findings: 6 — CRITICAL 0, HIGH 2, MEDIUM 2, LOW 2
+
+Re-verified independently against the delivered bytes:
+  ferret-cli:test:unit          1224 passed, 100% line coverage (1759 statements, 0 missed)
+  ferret-cli:test:integration    331 passed
+  ferret-cli-e2e:test:e2e        150 passed
+  ./rhino gate run --surface pre-push   exit=0
+  md internal-link validate      12077 links, no findings
+  manual evidence matrix         42 assertions pass, exit codes 0,0,0,2,0,0 reproduced
+  retention fixture matrix       19 assertions pass
+  Knowledge Capture              25 rows, one terminal status each: 7 promoted, 2 linked,
+                                 6 retained-plan-specific, 9 reported-without-plan-authorization,
+                                 1 reviewed-none
+  Delivery mode                  one PR, one unit, exact-head gate green, one authenticated leak
+                                 review, zero review threads
+
+The six findings and their disposition are recorded as amendments A53 to A58. Two of them are
+repaired by this closure pull request in code (A54) and in the declared file set (A55); the rest are
+recorded because no retroactive repair exists.

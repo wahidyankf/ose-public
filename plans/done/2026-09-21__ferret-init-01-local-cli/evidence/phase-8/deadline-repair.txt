@@ -1,0 +1,63 @@
+AC-CLI-04 deadline repair, found by the Step 11 terminal audit and fixed by the closure pull request.
+
+--- what the audit found
+The E2E predicate bound to the step "the adapter returns exit code zero within 1000 milliseconds"
+allowed 1,250 ms: DEADLINE_SECONDS + TAIL_SECONDS. So the gate was 25% looser than the criterion it
+names.
+
+--- what tightening it to the literal criterion revealed
+Two E2E cases went RED at once, both the "blocked by a concurrent writer beyond the timeout"
+condition, at 1,060 ms. The tolerance had not been slack; it had been covering a real overrun.
+
+--- root cause, measured
+Under a held write lock, one BEGIN IMMEDIATE overshoots its configured busy timeout several-fold,
+because the timeout bounds each of the sequential lock waits the statement makes rather than the
+acquisition as a whole:
+
+    busy_timeout   25 ms  ->  BEGIN IMMEDIATE    156 ms
+    busy_timeout   99 ms  ->  BEGIN IMMEDIATE    720 ms
+    busy_timeout  250 ms  ->  BEGIN IMMEDIATE  1,251 ms
+    busy_timeout  250 ms  ->  BEGIN IMMEDIATE  1,309 ms
+
+A budget expressed only as a busy timeout therefore is not a budget. The capture hook spent
+1,948 ms in the store: a prune given 99 ms took 703 ms, and a capture given 250 ms took 1,243 ms.
+The wrapper's watchdog was the only thing holding the harness-visible call near one second, by
+sending TERM at 900 ms and KILL at 1,000 ms.
+
+--- the repair
+The write-lock acquisition is bounded by a monotonic clock instead. Each attempt gets a short busy
+timeout, so SQLite's own handler still does the waiting and a writer contending with a burst is not
+starved by a bare retry loop, and the caller's budget ends the acquisition. Once the lock is held
+the connection gets the ordinary busy timeout back, so a statement inside the transaction still
+waits for a checkpointer rather than failing on it. The capture hook now states its own budget, and
+a durable direct capture keeps a longer default rather than dropping an event.
+
+A first cut polled with no busy timeout at all. It bounded the wait correctly but starved writers in
+the three-adapter burst, so the durability scenario went RED. That is why the attempt keeps a short
+busy timeout rather than none.
+
+--- measured after the repair
+capture hook in the store: 1,948 ms -> 408 ms (prune 112 ms, capture 293 ms)
+
+adapter latency, the "busy" condition, max over four samples per harness:
+    claude_code  1,069 ms -> 479 ms
+    codex        1,074 ms -> 446 ms
+    opencode       975 ms -> 520 ms
+
+suites after the repair:
+    ferret-cli:test:unit          1224 passed, 100% line coverage
+    ferret-cli:test:integration    332 passed (one new regression case)
+    ferret-cli-e2e:test:e2e        150 passed, at the literal 1,000 ms criterion
+
+--- regression
+tests/integration/test_sqlite_repository.py::
+  test_a_blocked_writer_stops_when_its_budget_is_spent_however_long_the_busy_timeout_runs
+It injects a monotonic clock, so it asserts the rule and not the host. RED against the pre-repair
+adapter, which never consults a clock, and GREEN after.
+
+--- not repaired, recorded
+The latency tool's "kill" row exceeds its own 1,250 ms hard-max measurement budget on this host
+(1,284 to 1,317 ms). It did so before this repair as well, so it is pre-existing and not a
+regression. That row is the stubborn-child stand-in, which is not one of AC-CLI-04's four Examples,
+and no acceptance criterion binds it. The budget is left as it is rather than widened to make the
+number pass.

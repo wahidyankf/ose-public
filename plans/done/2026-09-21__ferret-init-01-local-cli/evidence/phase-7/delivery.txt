@@ -1,0 +1,55 @@
+Phase 7 delivery record, written by the closure pull request.
+Phase 7 itself never writes under the committed done plan, so these facts are copied here from the
+external execution record once the merge made them final.
+
+pr-url: https://github.com/wahidyankf/ose-public/pull/555
+pr-title: feat(ferret): add standalone local cli
+base-ref: main
+base-sha: b13b8aa9ab19e38db6651ce6c7182f2464bd2752
+reviewed-head: 509917bceb37370186f498a8e95efc8ad473f62a
+candidate-sha: ab095f184afe6dd968a58d973e13b901e0f34e39
+archive-parent-equals-candidate: yes
+archive-delta: 4 modified index owners, 109 renames, no other tracked write
+
+--- local-head packet (external record, phase-7/local.txt)
+./rhino gate run --surface pre-push                 exit=0  (public-safety-tree, env-validate)
+git diff --check origin/main...HEAD                 exit=0  (no whitespace problem)
+git status --short                                  exit=0  (empty: clean tree)
+range: 326 files changed, 278 A / 2 D / 37 M / 9 R
+scope: 0 paths in another app or library tree
+generated mirrors in range: declared mirrors only (12 paths under .claude, .codex, .opencode)
+
+--- required checks at the reviewed head
+Quality gate: pass
+Detect affected languages: pass      Repository policy: pass
+Python quality gate: pass            TypeScript quality gate: pass
+Go quality gate: pass                Java quality gate: pass
+.NET quality gate: pass              Validate env-contract surfaces (no drift): pass
+Flutter quality gate: skipping
+
+--- pr-leak-review at the reviewed head
+review-id: 5271771753
+review-author: wahidyankf
+commit_id: 509917bceb37370186f498a8e95efc8ad473f62a
+final-status: pass
+secret_or_private_value: 0
+protected_environment_property: 0
+machine_specific_absolute_path: 0
+coverage: 326 of 326 changed files; a --no-renames diff was scanned as well, so the moved plan files
+were read in full rather than collapsed into rename headers.
+unresolved review conversations: 0
+
+--- rules-propagation Step 9
+manifest terminal rows: exactly one final-status, one pr-url, one head-sha
+final-status: landed
+the manifest's pr-url and head-sha match the PR evidence byte for byte
+sibling obligation: ose-private, objective ferret-python-harness-governance, shared future worktree
+basename and short-lived branch of that same name; recorded, not executed. This repository's own side
+of the parity identity is `not applicable`.
+
+--- merge
+state: MERGED
+mergedAt: 2026-09-21T21:05:08Z
+merge-commit: 7e022a3fe1f2c236efe0251ceb7a7d1efdce9d65
+method: squash
+the reviewed head is unchanged by the merge

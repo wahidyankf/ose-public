@@ -7,6 +7,13 @@ new artifact]** unless labelled otherwise. Dependency/image versions are **[Unve
 > **Legend:** `[AI]` executes repository work. `[HUMAN]` is only for unavoidable privileged/out-of-band work.
 > `[AI+HUMAN]` prepares exact evidence for a human action. This local-only delivery expects no human-only
 > implementation step; git mutations still follow explicit repository authority.
+>
+> **Progress lives here, not in `local-tmp/`.** The checkboxes in this file are the single record of what is
+> done; an executor ticks them as it goes and never keeps a parallel progress journal, status file, or summary
+> elsewhere. `local-tmp/` holds only regenerable working material — raw command output, scratch scripts,
+> fixtures, downloaded artefacts, and the run manifests named below — and any file there may be deleted at any
+> time without losing progress. Durable evidence belongs under this plan's `evidence/phase-<n>/`, except where
+> a phase runs after the plan folder is archived and this file says otherwise.
 
 ## Lifecycle and Dependency Prerequisites
 
@@ -23,13 +30,12 @@ Worktree path: `worktrees/ferret-init-02-local-backend/`. This declaration follo
 [Worktree Path Convention](../../../repo-governance/conventions/structure/worktree-path.md) and the
 [plan Worktree Specification](../../../repo-governance/conventions/structure/plans/worktree-specification.md).
 
-Provisioning status: pending under the narrow Authoring-Worktree Exception. The user explicitly confirmed that
-this plan-authoring session must continue in the active `worktrees/oseval-plan-init/` worktree. The Plan 01/Plan
-02 backlog artifacts there are unlanded, so a second execution worktree cannot truthfully start from
-`origin/main` with these plan contracts yet. The exception authorizes plan authoring only. After both plans land
-and Plan 01 completes, Phase 0 provisions/enters the matching execution worktree from current `origin/main`;
-implementation in the authoring worktree is forbidden. Execution identity and branch inventory are recorded
-immediately after provisioning.
+Provisioning status: pending. This plan stays in `plans/backlog/` until Plan 01 is delivered, because its
+contracts extend the Plan 01 event, schema, CLI, project, and harness surfaces that Plan 01 creates. Phase 0
+first moves this plan to `plans/in-progress/ferret-init-02-local-backend/`, then provisions and enters the
+declared execution worktree from current `origin/main`. Authoring happened in `worktrees/ferret-start/` under
+the narrow Authoring-Worktree Exception, which permits plan authoring there and forbids implementation.
+Execution identity and branch inventory are recorded immediately after provisioning.
 
 At Phase 0, run from the primary repository root through the canonical worktree entrypoint:
 
@@ -57,13 +63,13 @@ schema/migration files stay serial.
 
 ## Delivery Boundaries
 
-| Phase(s) | Natural seam                             | Branch                              | Delivery opportunity          | Resulting safe state and rollback                                                                                                                      |
-| -------- | ---------------------------------------- | ----------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 0        | Predecessor/setup baseline               | `ferret-init-02-local-backend-base` | none                          | No product change; verified Plan 01 baseline only.                                                                                                     |
-| 1–5      | Complete local backend and optional sync | same                                | one PR after Phase 6          | Backend is Local/Test loopback only; CLI sync defaults disabled and standalone behavior remains. Disable sync before reverting backend; preserve data. |
-| 6        | Knowledge capture/archive                | same                                | included in implementation PR | Archived plan and implementation share one reviewed head.                                                                                              |
-| 7        | Exact-head review, readiness, and merge  | same                                | mandatory squash merge        | Contract, migrations, implementation, tests, evidence, and archive share one reviewed head; the merge commit is contained on `origin/main`.            |
-| 8        | Terminal audit and canonical cleanup     | none                                | mandatory terminal node       | Workflow-owned terminal PASS precedes non-force cleanup; primary `main` ends equal to `origin/main`.                                                   |
+| Phase(s) | Natural seam                             | Branch                              | Delivery opportunity          | Resulting safe state and rollback                                                                                                                       |
+| -------- | ---------------------------------------- | ----------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0        | Predecessor/setup baseline               | `ferret-init-02-local-backend-base` | none                          | No product change; verified Plan 01 baseline only.                                                                                                      |
+| 1–5      | Complete local backend and optional sync | same                                | one PR after Phase 6          | Backend is Local/Test loopback only; CLI sync defaults disabled and standalone behaviour remains. Disable sync before reverting backend; preserve data. |
+| 6        | Knowledge capture/archive                | same                                | included in implementation PR | Archived plan and implementation share one reviewed head.                                                                                               |
+| 7        | Exact-head review, readiness, and merge  | same                                | mandatory squash merge        | Contract, migrations, implementation, tests, evidence, and archive share one reviewed head; the merge commit is contained on `origin/main`.             |
+| 8        | Terminal audit and canonical cleanup     | none                                | mandatory terminal node       | Workflow-owned terminal PASS precedes non-force cleanup; primary `main` ends equal to `origin/main`.                                                    |
 
 One seam is necessary because enabling CLI delivery without the idempotent API loses correctness, while exposing
 the API without auth/migrations/query proof is unsafe. No temporary feature flag is needed: backend sync is
@@ -80,9 +86,9 @@ No unresolved operation, validator, target, or path placeholder remains.
 For every packet below, perform and record exactly three steps:
 
 1. **RED:** create only the named test/scenario, run its exact focused command, and require an assertion failure
-   naming the missing behavior—not import/configuration/infrastructure failure.
+   naming the missing behaviour—not import/configuration/infrastructure failure.
 2. **GREEN:** implement only the named production symbol, rerun the same command, and require zero exit.
-3. **REFACTOR:** improve names/structure without behavior growth, then run the exact regression command and
+3. **REFACTOR:** improve names/structure without behaviour growth, then run the exact regression command and
    require zero exit.
 
 Each run records command, exit, test IDs, 40-character HEAD, timestamp, and diff reference at
@@ -162,7 +168,7 @@ This is the single reproducible gate entrypoint, not a substitute for RED/GREEN/
 | Gate | Single literal resume command                                                                                                                                                                                                          | Expected observation                                                                                                                                      |
 | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | G-0  | `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- ./rhino gate run --surface=pre-push`                                                                                                                         | zero exit after the explicit Phase 0 predecessor/port/dependency checks; Plan 01 remains terminal and green                                               |
-| G-1  | `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-be:verify:delivery --args='--phase=1'`                                                                                          | `ferret-contracts` lint/bundle/quick and specs pass; only named production-behavior REDs remain                                                           |
+| G-1  | `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-be:verify:delivery --args='--phase=1'`                                                                                          | `ferret-contracts` lint/bundle/quick and specs pass; only named production-behaviour REDs remain                                                          |
 | G-2  | `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ferret-be:verify:delivery --args='--phase=2'`                                                                                             | all BE-U/BE-I packets, migrations/races/hashes, coverage ≥99%, and measured storage pass                                                                  |
 | G-3  | `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ferret-be:verify:delivery --args='--phase=3'`                                                                                             | BE-R01..08, OpenAPI drift, M1–M7 twice from clean state, and cleanup pass                                                                                 |
 | G-4  | `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- run ferret-be:verify:delivery --args='--phase=4'`                                                                                             | CLI-S01..05, four-project matrix, cross-store reconciliation, and standalone compatibility pass                                                           |
@@ -228,7 +234,7 @@ rtk git diff --check
       pytest stack, PostgreSQL 18 image digest, and licenses using official sources. The contract toolchain is
       already resolved from repository precedent as Redocly bundle plus Spectral lint behind
       `ferret-contracts:{lint,bundle,test:quick}`. CLI runtime dependencies must remain empty.
-- [ ] [AI] Reverify OpenAPI 3.1/FastAPI schema behavior and current GraphQL/MCP official guidance only to confirm
+- [ ] [AI] Reverify OpenAPI 3.1/FastAPI schema behaviour and current GraphQL/MCP official guidance only to confirm
       deferral/adapter boundaries. Do not add GraphQL/MCP dependencies or freeze a future protocol version.
 - [ ] [AI] Run the delivered Plan 01 full matrix twice plus repository pre-push/docs/spec/rules/secret baselines.
       Fix failures at root cause. Create the exact file-impact ledger and generated-source map.
@@ -247,7 +253,7 @@ rtk git diff --check
 ## Phase 1: Specs, OpenAPI, Architecture, and Projects (RED)
 
 **Input:** AC-BE-01..12 and exact predecessor/tooling evidence.
-**Outcome:** canonical CLI/BE behavior, contract-first OpenAPI, C4/hexagonal contracts, project skeletons, and
+**Outcome:** canonical CLI/BE behaviour, contract-first OpenAPI, C4/hexagonal contracts, project skeletons, and
 isolated RED adapters precede production code.
 **Proof:** OpenAPI/spec validation, operation/scenario map, import-rule RED, and target RED in `evidence/phase-1/`.
 
@@ -282,7 +288,7 @@ test:quick}`, project install/typecheck/lint, and BE-C01..05 evidence pass; rema
 ## Phase 2: Framework-Free Core and PostgreSQL Adapter (RED → GREEN → REFACTOR)
 
 **Input:** valid contracts and RED use-case/persistence tests.
-**Outcome:** protocol-independent application/domain behavior and PostgreSQL adapter implement ingestion,
+**Outcome:** protocol-independent application/domain behaviour and PostgreSQL adapter implement ingestion,
 queries, analytics, capabilities, pruning, migrations, and post-commit notices.
 **Proof:** ordered TDD outputs, migration matrices, query plans, and storage measurements in `evidence/phase-2/`.
 
@@ -402,7 +408,7 @@ paths preserve the 30-day local boundary.
 
 - [ ] [AI] Run the single G-4 command. Acceptance: both owners meet 99% Unit line coverage, CLI-S01..05 pass,
       cross-store reconciliation proves no lost accepted record or duplicate PostgreSQL row within the 30-day
-      limitation, and standalone behavior remains green. Route failure to its packet and rerun G-4.
+      limitation, and standalone behaviour remains green. Route failure to its packet and rerun G-4.
 
 > **Pause Safety:** complete optional synchronization is green and defaults disabled. Safe to stop. To resume,
 > run the single G-4 command.
@@ -412,7 +418,7 @@ paths preserve the 30-day local boundary.
 ## Phase 5: Rules, Documentation, API Quality, and Full Verification
 
 **Input:** complete implementation/contracts and rule-impact manifest.
-**Outcome:** lasting rules are propagated, C4/docs agree, every API/behavior passes automated and exploratory
+**Outcome:** lasting rules are propagated, C4/docs agree, every API/behaviour passes automated and exploratory
 proof, and GraphQL/MCP remain genuinely deferred.
 **Proof:** rules manifest, API Quality Gate, Rule-16 retest, storage report, and reconciled matrix in
 `evidence/phase-5/`.
@@ -431,7 +437,7 @@ proof, and GraphQL/MCP remain genuinely deferred.
 - [ ] [AI] **Inventory:** enumerate every changed rule/enforcement surface across governance, instruction files,
       canonical/generated skills, `repo-config.yml`, CI/hooks, scripts, setup/style guides, API/schema rules, and
       project tags. Separate declarations from product enforcement.
-- [ ] [AI] **Conflict/precedence:** compare Python backend/mixed E2E/local API/port/migration behavior against
+- [ ] [AI] **Conflict/precedence:** compare Python backend/mixed E2E/local API/port/migration behaviour against
       repository hierarchy and Plan 01 rules. Resolve at the narrow owner; stop on contradiction.
 - [ ] [AI] **Placement/eviction:** add only missing durable rules; remove/redirect duplicates and stale "no Python
       apps" statements. Do not make this product plan the permanent rule owner.
@@ -499,7 +505,7 @@ candidate-fingerprint-file: local-tmp/ferret-api/candidate.json
       evidence, every AET fixed/ticked, M1–M7, AC-BE-01..12, every API scenario,
       bindings/Markdown/links/rules/C4/file impact, and all non-goals to pass before Phase 6.
 
-> **Pause Safety:** local backend/sync behavior is complete and reproducible. Safe to stop. To resume, rerun the
+> **Pause Safety:** local backend/sync behaviour is complete and reproducible. Safe to stop. To resume, rerun the
 > single G-5 command; if it reports a stale API candidate, recompute the fingerprint and rerun the exact Rule-16
 > packet first.
 

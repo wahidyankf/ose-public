@@ -12,12 +12,59 @@ column headings and values for people, but scripts must use `--json`. JSON failu
 plus LF to stderr and nothing to stdout. JSON Lines export is the one exception: it writes zero or more compact
 Event objects to stdout, each followed by LF.
 
+## POSIX and Pipeline Behaviour
+
+`ferret` is an ordinary POSIX filter and composes with other tools without special cases.
+
+**Supported platforms.** macOS and Linux only. WSL is a Linux environment and needs no separate treatment. No
+other platform is claimed, tested, or shipped; see D12.
+
+**Streams.** stdout carries data, stderr carries diagnostics, and the two never mix. A command that succeeds
+writes nothing to stderr; a command that fails writes nothing to stdout. Human-mode empty results print
+`No rows.` to stderr so a piped stdout stays byte-empty, matching `events export`, whose empty result is zero
+bytes.
+
+**Broken pipes.** Every command restores the default `SIGPIPE` disposition before writing. `ferret events export
+--format jsonl | head -5` therefore terminates the way any POSIX filter does: silently, at the write that fails,
+with no traceback, no partial JSON object, and no `BrokenPipeError` on stderr. A broken pipe never leaves a
+write transaction open.
+
+**Streaming.** `events export` writes each Event object as it is read, flushing per line, and holds no unbounded
+buffer. A consumer sees the first record before the last is queried, and peak memory does not grow with result
+size. `events list` is paginated and bounded by construction.
+
+**No terminal dependence.** Output bytes are identical whether or not stdout is a terminal. No command emits
+ANSI escapes, colour, spinners, progress, or width-dependent padding, and none inspects `isatty`. Human tables
+are tab-separated so `cut`, `awk`, and `column` work unchanged.
+
+**Locale and encoding.** Output is UTF-8 and locale-independent. `LC_ALL`, `LANG`, and `TZ` never change bytes,
+ordering, number formatting, or timestamps; all times are UTC RFC 3339.
+
+**stdin.** `capture` and `capture-hook` read one object from stdin until EOF and work identically from a pipe, a
+heredoc, a here-string, or a file redirect. Neither requires a terminal, and neither prompts.
+
+**Non-interactive by default.** No command prompts unless it is destructive, and the one destructive route has
+an explicit non-interactive path: `self uninstall --purge-data --yes`. Without `--yes` it fails with
+`confirmation_required` rather than blocking a pipeline on a read from stdin.
+
+**Argument conventions.** `--` terminates option parsing so a value beginning with `-` can be passed. Unknown
+options fail with `invalid_arguments` and exit 2 rather than being ignored. Requested help and version go to
+stdout with exit 0; a usage mistake goes to stderr with exit 2.
+
+**Signals.** `SIGINT` and `SIGTERM` during a write roll the transaction back and leave no partial row. The
+process then dies from the signal rather than converting it into an exit code of its own.
+
+**Exit status.** `0` success, `2` caller error, `3` environment or storage error, `4` integrity failure, as the
+closed failure contract below fixes. An empty result set is success, not an error.
+
 ## Closed Command Grammar
 
 ```text
+ferret [-h | --help] [-V | --version]
+ferret version
 ferret init [--json]
 ferret capture [--json]
-ferret capture-hook --harness {claude_code,codex,opencode} --event <registered-event>
+ferret capture-hook --harness <harness-slug> --event <registered-event>
 ferret status [--json]
 ferret events list [filters] [--limit 1..200] [--cursor <opaque>] [--json]
 ferret events export [filters] --format jsonl
@@ -27,6 +74,13 @@ ferret maintenance [--if-due] [--json]
 ferret self install --target user [--json]
 ferret self uninstall [--purge-data] [--yes] [--json]
 ```
+
+Every command additionally accepts `-h` / `--help`; see [Help and Version](#help-and-version).
+
+Machine output is selected by `--output <text|json>`, defaulting to `text`. `--json` is exactly a shorthand for
+`--output json`, so the two are interchangeable everywhere `[--json]` appears above. Commands with no machine
+form — `capture-hook`, which is silent, and `events export`, whose stdout is already the data stream — reject
+both. This mirrors Rhino so one habit carries across the repository's tools; see D17.
 
 Shared filters are `--from` inclusive, `--to` exclusive, `--all-time`, `--harness`, `--workspace`,
 `--event-type`, `--agent`, `--skill`, `--tool`, and `--outcome`. Each scalar filter occurs at most once.
@@ -41,6 +95,89 @@ from `harness,event_type,agent,skill,tool,outcome,outcome_visibility`. Group ord
 the corresponding dimension values with null after strings. Counts never substitute zero for unknown data.
 The `capture-hook --event` value uses the closed Event `eventType` set below; unsupported vendor events are not
 registered and a direct unsupported value is silently discarded by the fail-open command.
+
+## Help and Version
+
+`-h` / `--help` is the canonical form and is accepted on the root command and on every subcommand. There is no
+`help` subcommand: `ferret help` is `invalid_arguments`, exactly as `rhino help` is. Version is the mirror
+image — `ferret version` is a subcommand, matching `rhino version`, and `--version` / `-V` are accepted as well
+because rejecting the most frequently typed form buys nothing. All three print the same line.
+
+Requested help is a successful result: it is written to **stdout** and exits **0**, so `ferret --help | less`
+works. A usage mistake is a failure: argparse's message goes to **stderr** and exits **2** as
+`invalid_arguments`. Bare `ferret` with no command writes the short usage to stderr and exits 2, because doing
+nothing is not a success. Help and version output is human text only and has no `--json` form.
+
+`ferret version`, `ferret --version`, and `ferret -V` all write exactly one line and exit 0:
+
+```text
+ferret 0.1.0
+```
+
+The interpreter behind that version is reported by `status`, not here, because `--version` must stay one line.
+
+Root help is exactly:
+
+```text
+usage: ferret <command> [options]
+
+Local-first telemetry for coding-agent harnesses. Metadata only: never prompts,
+responses, tool arguments, transcripts, or environment values.
+
+commands:
+  init                create the private data home, identity, and schema
+  capture             store one canonical event read from stdin
+  capture-hook        map one raw harness payload; always fails open
+  status              report paths, runtime, storage, health, and adapters
+  events list         list retained events, newest first
+  events export       write retained events to stdout as JSON Lines
+  usage               count observed activity by dimension
+  outcomes            summarise operational outcomes by dimension
+  maintenance         apply retention, checkpoint, and measure space
+  self install        install the artifact for the current user
+  self uninstall      remove the artifact; data is kept unless purged
+
+  version             print the version and exit
+
+options:
+  -h, --help          show this help and exit
+  -V, --version       show the version and exit
+  --output <text|json>
+                      render the result as text or JSON; defaults to text
+  --json              shorthand for --output json
+
+Telemetry older than 30 days is never returned. Scripts should use --json.
+Run 'ferret <command> --help' for a command's options.
+```
+
+Every subcommand follows the same shape. `ferret events export --help` is exactly:
+
+```text
+usage: ferret events export [filters] --format jsonl
+
+Write retained events to stdout as JSON Lines, oldest first by (occurredAt,
+eventId). An empty result is zero bytes.
+
+options:
+  -h, --help           show this help and exit
+  --format jsonl       output format; jsonl is the only accepted value
+                       (--output and --json are rejected; stdout is the data)
+  --from <timestamp>   inclusive RFC 3339 UTC lower bound
+  --to <timestamp>     exclusive RFC 3339 UTC upper bound
+  --all-time           ignore the default seven-day window
+  --harness <slug>     filter by harness
+  --workspace <id>     filter by opaque workspace ID
+  --event-type <type>  filter by event type
+  --agent <name>       filter by agent name
+  --skill <name>       filter by skill name
+  --tool <name>        filter by tool name
+  --outcome <outcome>  filter by outcome
+```
+
+Help text is a tested surface, not incidental output: the built-artifact smoke check asserts that
+`ferret --help` exits 0 on stdout, that `ferret help` exits 2 as `invalid_arguments`, that `ferret` alone exits
+2 on stderr, that `ferret version`, `--version`, and `-V` print the same single line, and that every command in
+the root listing resolves.
 
 ## Canonical Event Object
 
@@ -71,9 +208,13 @@ Every property is present. The property order is normative.
 }
 ```
 
+`harness` is an open bounded vocabulary: any value matching `^[a-z][a-z0-9_]{0,31}$`. Plan 01 registers
+`claude_code`, `codex`, and `opencode`; a further harness is added by registering a new slug and its adapter,
+without an event-schema version change. The value is supplied by the static registration argument in a binding
+file and is never read from a harness payload.
+
 Closed values are:
 
-- `harness`: `claude_code`, `codex`, `opencode`.
 - `eventType`: `session.started`, `session.ended`, `agent.started`, `agent.ended`, `skill.invoked`,
   `tool.started`, `tool.completed`, `tool.failed`.
 - `outcome`: `success`, `failure`, `cancelled`, `unknown`, `not_applicable`.
@@ -199,9 +340,11 @@ nothing.
 
 ## Configuration, Identity, Privacy, and Installation
 
-Default data home is `$XDG_STATE_HOME/ferret` when set, otherwise `$HOME/.local/state/ferret` on Linux;
-`$HOME/Library/Application Support/Ferret` on macOS; and `%LOCALAPPDATA%\Ferret` on Windows. A
-`FERRET_DATA_HOME` override must be absolute, local, non-symlinked, non-network, and owned by the current user.
+The data home is `$HOME/.ferret` on macOS and Linux alike; WSL resolves as Linux. One literal path on every
+supported platform keeps documentation, fixtures, and diagnostics free of a platform branch, and keeps the
+store somewhere a developer can open with `sqlite3 ~/.ferret/ferret.sqlite3` without consulting `status`. A
+`FERRET_DATA_HOME` override must be absolute, local, non-symlinked, non-network, and owned by the current user;
+it is the single supported way to relocate the store.
 
 ```text
 <FERRET_DATA_HOME>/
@@ -212,10 +355,9 @@ Default data home is `$XDG_STATE_HOME/ferret` when set, otherwise `$HOME/.local/
 └── ferret.lock
 ```
 
-POSIX creates the directory `0700` and files `0600` with symlink-safe exclusive creation. Windows creates the
-directory/files with a protected DACL granting only the current user and `SYSTEM` full control; inheritance
-from broader parent principals is disabled. Existing objects with unsafe owner, symlink/reparse-point, mode,
-or ACL fail with `unsafe_storage`. FERRET never weakens permissions automatically.
+The directory is created `0700` and files `0600` with symlink-safe exclusive creation. An existing object with
+an unsafe owner, mode, symlink, or hard link fails with `unsafe_storage`. FERRET never weakens permissions
+automatically.
 
 `config.json` is exactly:
 
@@ -229,34 +371,30 @@ restored installation without the original key cannot derive compatible new IDs.
 
 The user install contract is:
 
-| Platform    | Artifact, launcher, and manifest                                                                                                                                      | PATH and ownership                                                                                                               |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Linux/macOS | `$HOME/.local/share/ferret/<version>/ferret.pyz`, `$HOME/.local/bin/ferret` symlink, and `$HOME/.local/share/ferret/install.json`                                     | Never edits shell files; reports `pathAction=add_home_local_bin` when absent.                                                    |
-| Windows     | `%LOCALAPPDATA%\Programs\Ferret\versions\<version>\ferret.pyz`, stable `%LOCALAPPDATA%\Programs\Ferret\ferret.cmd`, and `%LOCALAPPDATA%\Programs\Ferret\install.json` | Adds exactly `%LOCALAPPDATA%\Programs\Ferret` to the current-user `HKCU\Environment\Path` when absent; never edits machine PATH. |
-
-The Windows launcher contains exactly `@py -3.14 "%~dp0versions\<version>\ferret.pyz" %*` followed by CRLF.
-The install directory, every version directory/file, launcher, staged file, and manifest have a protected DACL
-granting full control only to the current user and `SYSTEM`. The Windows manifest is strict JSON with no unknown
-members and this normative property order/schema:
+The artifact is `$HOME/.local/share/ferret/<version>/ferret.pyz`, the launcher is a `$HOME/.local/bin/ferret`
+symlink, and the manifest is `$HOME/.local/share/ferret/install.json`. Installation never edits a shell startup
+file and never alters `PATH`; it reports `pathAction=add_home_local_bin` when `$HOME/.local/bin` is absent from
+`PATH` so the user can add it themselves. Every installed object is created `0700`/`0600` and owned by the
+current user. The manifest is strict JSON with no unknown members and this normative property order:
 
 ```json
 {
   "schemaVersion": "1.0",
   "version": "0.1.0",
-  "artifactPath": "C:\\Users\\alice\\AppData\\Local\\Programs\\Ferret\\versions\\0.1.0\\ferret.pyz",
+  "artifactPath": "/example-user-home/.local/share/ferret/0.1.0/ferret.pyz",
   "artifactSha256": "5af9c9b721982f278c9c61c8f402055711b17621f63b25f671bda1eff9db0eb3",
-  "launcherPath": "C:\\Users\\alice\\AppData\\Local\\Programs\\Ferret\\ferret.cmd",
+  "launcherPath": "/example-user-home/.local/bin/ferret",
   "installedAt": "2026-09-18T08:00:00.000Z"
 }
 ```
 
 Installation stages the version artifact, launcher, and manifest beside their final paths, applies/verifies
-their DACLs and artifact digest, flushes file contents, then atomically replaces artifact, launcher, and finally
+their modes and artifact digest, flushes file contents, then atomically replaces artifact, launcher, and finally
 manifest. The manifest is the ownership commit point. A non-FERRET collision returns `install_collision`.
-Uninstall reads the manifest, validates its closed schema/DACL, verifies the current artifact digest and exact
+Uninstall reads the manifest, validates its closed schema and mode, verifies the current artifact digest and exact
 launcher target, then removes only those owned files and the manifest; mismatch returns
-`install_ownership_mismatch` and removes nothing. It leaves the exact user PATH entry in place as a harmless
-empty lookup rather than claiming unrecorded registry ownership. The data home is preserved by default;
+`install_ownership_mismatch` and removes nothing. Because installation never edited `PATH`, uninstall has no
+PATH entry to reclaim. The data home is preserved by default;
 `--purge-data --yes` is the only noninteractive deletion route. Hooks/tests never purge data.
 
 ## Machine-readable Success Contracts
@@ -265,11 +403,12 @@ empty lookup rather than claiming unrecorded registry ownership. The data home i
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": 1,
   "command": "init",
+  "exitCode": 0,
   "result": "created",
-  "dataHome": "/example-user-home/.local/state/ferret",
-  "databasePath": "/example-user-home/.local/state/ferret/ferret.sqlite3",
+  "dataHome": "/example-user-home/.ferret",
+  "databasePath": "/example-user-home/.ferret/ferret.sqlite3",
   "schemaNumber": 1,
   "installationId": "00000000-0000-4000-8000-000000000002",
   "retentionDays": 30,
@@ -283,8 +422,9 @@ empty lookup rather than claiming unrecorded registry ownership. The data home i
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": 1,
   "command": "capture",
+  "exitCode": 0,
   "result": "stored",
   "eventId": "00000000-0000-4000-8000-000000000001",
   "eventHash": "199aa6c2a595c64fe8603f860e4480d71a7888cd4f54c49c5f4fbc79fb060a3c"
@@ -303,11 +443,18 @@ and exit zero. Tests inspect SQLite/evidence fixtures, never process output.
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": 1,
   "command": "status",
+  "exitCode": 0,
+  "runtime": {
+    "ferretVersion": "0.1.0",
+    "interpreterPath": "/example-user-home/.local/bin/python3.14",
+    "interpreterVersion": "3.14.7",
+    "interpreterState": "supported"
+  },
   "databaseState": "healthy",
-  "dataHome": "/example-user-home/.local/state/ferret",
-  "databasePath": "/example-user-home/.local/state/ferret/ferret.sqlite3",
+  "dataHome": "/example-user-home/.ferret",
+  "databasePath": "/example-user-home/.ferret/ferret.sqlite3",
   "schemaNumber": 1,
   "integrityState": "ok",
   "permissionsState": "private",
@@ -360,31 +507,24 @@ and exit zero. Tests inspect SQLite/evidence fixtures, never process output.
 }
 ```
 
+`runtime.interpreterState` is `supported`, `unsupported_version`, or `unresolved`. FERRET ships as a zipapp and
+therefore depends on a Python interpreter the host provides. A missing or wrong interpreter makes every adapter
+fail open, which loses telemetry silently, so `status` always reports the interpreter it actually resolved and
+its version. `unresolved` and `unsupported_version` are reported states, never zero usage; the same rule that
+forbids synthesizing a zero-invocation row forbids presenting a runtime gap as an empty result.
+
 `databaseState` is `healthy`, `uninitialized`, or `unavailable`; `integrityState` is `ok` or `failed`;
 `platformSupport` is `supported`, `probe_required`, or `unsupported_platform`; `configurationState` is
-`configured`, `not_configured`, or `not_applicable`. Windows returns `unsupported_platform` and
-`not_applicable` for all lifecycle adapters.
-
-The exact Windows adapter-item fragment for each harness (substituting its harness name) is:
-
-```json
-{
-  "harness": "claude_code",
-  "platformSupport": "unsupported_platform",
-  "configurationState": "not_applicable",
-  "latestSnapshotId": null,
-  "latestSnapshotHash": null,
-  "snapshotCapturedAt": null,
-  "capabilities": []
-}
-```
+`configured`, `not_configured`, or `not_applicable`. Every supported platform reports `supported` or
+`probe_required`; `unsupported_platform` is reserved for a platform this plan ships no adapter for.
 
 ### `events list --json`
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": 1,
   "command": "events.list",
+  "exitCode": 0,
   "items": [],
   "nextCursor": null
 }
@@ -426,8 +566,9 @@ state. Normal completion is exit 0; because stdout is the data stream there is n
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": 1,
   "command": "usage",
+  "exitCode": 0,
   "groupBy": ["harness", "skill"],
   "rows": [
     {
@@ -451,8 +592,9 @@ Plan 01 owns this standalone shape; Plan 02 must preserve it.
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": 1,
   "command": "outcomes",
+  "exitCode": 0,
   "groupBy": ["harness", "tool"],
   "rows": [
     {
@@ -484,8 +626,9 @@ All duration values are null when `durationSampleCount=0`. Only observed/derived
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": 1,
   "command": "maintenance",
+  "exitCode": 0,
   "result": "completed",
   "expiredEventCount": 4,
   "expiredWorkspaceCount": 1,
@@ -530,8 +673,9 @@ state or wholly under the new backend-enabled state; a row with mixed/missing de
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": 1,
   "command": "self.install",
+  "exitCode": 0,
   "result": "installed",
   "version": "0.1.0",
   "artifactPath": "/example-user-home/.local/share/ferret/0.1.0/ferret.pyz",
@@ -542,31 +686,16 @@ state or wholly under the new backend-enabled state; a row with mixed/missing de
 }
 ```
 
-`result` is `installed` or `already_installed`; `pathAction` is `none`, `add_home_local_bin`, or
-`added_windows_user_path`. Windows returns Windows absolute paths. `replacedOwnedVersion` is null or a version.
-
-The complete Windows success shape is:
-
-```json
-{
-  "schemaVersion": "1.0",
-  "command": "self.install",
-  "result": "installed",
-  "version": "0.1.0",
-  "artifactPath": "C:\\Users\\alice\\AppData\\Local\\Programs\\Ferret\\versions\\0.1.0\\ferret.pyz",
-  "launcherPath": "C:\\Users\\alice\\AppData\\Local\\Programs\\Ferret\\ferret.cmd",
-  "manifestPath": "C:\\Users\\alice\\AppData\\Local\\Programs\\Ferret\\install.json",
-  "pathAction": "added_windows_user_path",
-  "replacedOwnedVersion": null
-}
-```
+`result` is `installed` or `already_installed`; `pathAction` is `none` or `add_home_local_bin`.
+`replacedOwnedVersion` is null or a version.
 
 ### `self uninstall --json`
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": 1,
   "command": "self.uninstall",
+  "exitCode": 0,
   "result": "uninstalled",
   "removedPaths": [
     "/example-user-home/.local/bin/ferret",
@@ -582,23 +711,6 @@ The complete Windows success shape is:
 manifest-owned files and does not claim unrecorded PATH ownership. `dataAction` is `kept` unless the explicit
 `--purge-data --yes` route succeeds, when it is `deleted`. `removedPaths` are sorted absolute paths and include
 the owned manifest.
-
-The complete Windows uninstall success shape is:
-
-```json
-{
-  "schemaVersion": "1.0",
-  "command": "self.uninstall",
-  "result": "uninstalled",
-  "removedPaths": [
-    "C:\\Users\\alice\\AppData\\Local\\Programs\\Ferret\\ferret.cmd",
-    "C:\\Users\\alice\\AppData\\Local\\Programs\\Ferret\\install.json",
-    "C:\\Users\\alice\\AppData\\Local\\Programs\\Ferret\\versions\\0.1.0\\ferret.pyz"
-  ],
-  "pathAction": "none",
-  "dataAction": "kept"
-}
-```
 
 ## Human Output Contract
 
@@ -619,6 +731,8 @@ Event: <eventId>
 Hash: <eventHash>
 
 FERRET status: <databaseState>
+Version: <runtime.ferretVersion>
+Interpreter: <runtime.interpreterState> <runtime.interpreterVersion> <runtime.interpreterPath>
 Data home: <dataHome>
 Database: <databasePath>
 Schema: <schemaNumber>
@@ -659,8 +773,9 @@ Data action: <dataAction>
 
 `events list` uses a tab-separated header
 `occurredAt eventId harness workspaceId eventType agentName skillName toolName outcome subjectVisibility outcomeVisibility durationVisibility`
-and one row per Event; an empty page prints `No rows.`. `usage` and `outcomes` use caller-ordered dimension
-names followed by their JSON row metric names, also tab-separated; empty results print `No rows.`. Export stays
+and one row per Event; an empty page prints `No rows.` to stderr and leaves stdout empty. `usage` and `outcomes` use caller-ordered dimension
+names followed by their JSON row metric names, also tab-separated; empty results print `No rows.` to
+stderr and leave stdout empty. Export stays
 JSON Lines and has no human variant. `capture-hook` stays empty. Human failures are exactly
 `FERRET error [<code>]: <safe message>` on stderr with no rejected/raw value.
 
@@ -668,10 +783,10 @@ JSON Lines and has no human variant. `capture-hook` stays empty. Human failures 
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": 1,
   "command": "capture",
-  "error": { "code": "invalid_event", "field": "toolName", "retryable": false },
-  "exitCode": 2
+  "exitCode": 2,
+  "error": { "code": "invalid_event", "field": "toolName", "retryable": false }
 }
 ```
 
@@ -703,7 +818,7 @@ streams and exit zero for every internal result.
 | Grammar, JSON/text, closed errors | parser and golden serializers    | temp env/std streams                          | every built zipapp command            |
 | Event fields/provenance/hash      | fixed and negative vectors       | lossless SQLite round-trip                    | canonical stdin/export                |
 | Raw privacy boundary              | three mapper fixture suites      | bounded stdin/no raw persistence              | POSIX wrapper and OpenCode simulation |
-| Identity/permissions/install      | resolver/ACL policy              | real POSIX and Windows temp objects           | macOS/Linux/Windows user journeys     |
+| Identity/permissions/install      | resolver and mode policy         | real POSIX temp objects                       | macOS and Linux user journeys         |
 | Cursor/filter/grouping            | digest and aggregation functions | indexed keyset queries                        | multipage and invalid-cursor journeys |
 | Capability snapshots              | schema/composite identity        | multi-snapshot round-trip/duplicate rejection | status and adapter capture            |
 | Retention/counters                | fixed-clock policy               | logical exclusion then 100-row/100-ms prune   | inactive-clock and migration fixture  |

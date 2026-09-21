@@ -160,7 +160,7 @@ the server never invents provenance or silently rewrites one snapshot into anoth
   to that total. A deferred constraint trigger verifies the two child-row counts, contiguous ordinals, and stored
   response counts before commit, so replay can never reconstruct a partial result.
 - `ingested_at`: server clock; never supplied by client.
-- Foreign keys use explicit deletion behavior. Batch-item IDs/hashes are intentionally not event/snapshot
+- Foreign keys use explicit deletion behaviour. Batch-item IDs/hashes are intentionally not event/snapshot
   foreign keys and Plan 02 pruning retains batch replay rows plus `stored_response`; an identical replay after
   prune returns the historical stored acknowledgement and does not resurrect telemetry. Storage measurements
   report replay-audit bytes separately. Deleting replay history needs a future explicit retention contract.

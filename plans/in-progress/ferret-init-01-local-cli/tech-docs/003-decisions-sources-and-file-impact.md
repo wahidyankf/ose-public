@@ -126,10 +126,14 @@ changes; Events reference no mutable capability row.
 **Selected [Judgment call]:** keep exactly 32 random bytes at
 `<FERRET_DATA_HOME>/identity.key`, outside SQLite.
 
-- Need: copied/exported databases must not reveal raw workspace/session values or the derivation key.
+- Need: workspace roots and harness session identifiers are low-entropy, enumerable inputs, so an unkeyed digest
+  of them is reversible by guessing candidates and comparing; derivation must therefore be keyed, and a copied
+  or exported database must reveal neither the raw values nor the key.
 - Alternative 1: key in SQLite. It simplifies backup but defeats database-copy separation. Alternative 2: OS
   keychain. It improves hardware-backed storage on some hosts but breaks standard-library-only portability and
-  headless reproducibility.
+  headless reproducibility. Alternative 3: unkeyed SHA-256 over the raw value. It needs no key file at all but
+  leaves a dictionary attack over common home-directory and repository paths, so the stored identifier would be
+  effectively the path it replaces.
 - Prior art: repository secret rules keep secrets outside committed/config data; Python's
   [secrets module](https://docs.python.org/3.14/library/secrets.html) supplies OS randomness.
 - Consequence/revisit: database-only restore cannot derive identifiers compatible with the old installation.
@@ -162,37 +166,198 @@ streams, and return zero; successful capture returns only after commit.
 - Consequence/revisit: timed-out events may be lost and are never retried by hooks. Revisit if measured p95
   cannot stay below 150 ms or a harness offers a durable, bounded telemetry callback.
 
-### D12 — POSIX hooks and portable local CLI
+### D12 — macOS and Linux only
 
-**Selected [User decision]:** macOS/Linux POSIX receive lifecycle adapters/E2E; Windows receives CLI-local
-init, capture, query, analytics, retention, private ACL, install, and uninstall proof only. Plan 01 extends the
-existing `.github/workflows/non-product-full-quality.yml` with job `ferret-cli-windows` as the executable
-GitHub-hosted `windows-2025` proof route.
+**Selected [User decision]:** macOS and Linux are the only supported platforms, and WSL is treated as Linux.
+Both receive the full surface: CLI, storage, queries, analytics, retention, lifecycle adapters, install, and
+E2E. No other platform is claimed, tested, or shipped.
 
-- Need: Windows harness launch/deadline surfaces are not proven, while the new bounded CI job can prove the
-  portable CLI contract without claiming Windows lifecycle-hook support.
-- Alternative 1: claim parity through an untested PowerShell wrapper. It creates a false safety guarantee.
-  Alternative 2: drop Windows entirely. It needlessly excludes portable SQLite/query and manual capture.
-- Prior art: `docs/reference/platform-bindings.md` treats harness capabilities explicitly; Windows protected
-  DACLs follow Microsoft's [access-control model](https://learn.microsoft.com/windows/win32/secauthz/access-control).
-- Consequence/revisit: Windows status says `unsupported_platform`, never zero usage. The PR workflow gains
-  fail-closed Python affected detection and a merge-blocking Python quick job. The existing scheduled/dispatch
-  workflow adds FERRET to its POSIX quick/Integration/E2E lists and gains a 30-minute job named
-  `FERRET CLI Windows local proof`, after `integration`, using checkout v6 without persisted credentials, the
-  existing Node setup, exact Python 3.14.7, pinned setup-uv SHA
-  `bec219d24cd3e171d82865faccec33120bb574f4` (`v10.1.0`), uv 0.12.16 checksums
-  `8e5c6e5523dffc2dcf615bd995554c84c9feb4e577808a3fb8698a639d3f8d9c` (Linux x86-64 GNU tarball) and
-  `f730454bf09019754e5e5abd71a8aa18683cb739cba0d9c720bac2e7c901160f` (Windows x86-64 MSVC zip),
-  selected by mutually exclusive `runner.os` steps with literal `version`/`checksum` inputs and fail-closed
-  rejection of other operating systems, plus restore-all/save-main-only
-  OS-qualified cache policy capped at two 500 MiB entries, direct Nx, and privacy-scanned JUnit/forecast
-  evidence uploaded only after the sanitizer succeeds by
-  `actions/upload-artifact@v7`. The literal artifact retains seven days, fails on missing files, is capped at
-  1 MiB compressed/run, and budgets 21 MiB at two scheduled plus one execution dispatch daily; owner-wide use
-  must remain at most 500 MB. HIPPO/RTK are local-compute guards and are deliberately absent; the workflow's
-  existing concurrency plus the bounded job are CI admission.
-  Revisit hooks only when a stable supported Windows lifecycle surface can prove privacy/no-output/TERM-
-  equivalent deadlines.
+- Need: the team can only honestly test on hardware it owns. A platform that cannot be exercised locally either
+  ships unproven or forces a hosted CI runner to stand in for a developer machine it does not resemble.
+- Alternative 1: ship a portable CLI on Windows with no lifecycle adapters, proven by a hosted `windows-2025`
+  job. It widens reach, but it buys a partial product with a permanent `unsupported_platform` reporting path, a
+  second permission model (protected DACLs, reparse points, registry `PATH`), a second launcher, a second
+  install and uninstall contract, a CI job with its own pinned toolchain and checksums, and an evidence
+  sanitizer for host usernames — all to serve a configuration nobody on the team runs.
+- Alternative 2: claim Windows parity through an untested launcher. It creates a false safety guarantee.
+- Prior art: this repository's own pinned consumers already scope themselves the same way. `hippo.lock` and
+  `rhino.lock` publish checksums for exactly `darwin-amd64`, `darwin-arm64`, `linux-amd64`, and `linux-arm64`,
+  and their POSIX `sh` shims resolve platforms by `uname`. Neither ships a Windows artifact.
+- Consequence/revisit: FERRET reports no unsupported-platform state because no unsupported platform is
+  enumerated, which removes a whole status surface, a Gherkin scenario, a CI job, and a sanitizer from the plan.
+  A Windows user runs FERRET under WSL like any other Linux user. Revisit only when the team runs the platform
+  day to day and a repository CI runner can prove equivalent fail-open, no-output, deadline, and privacy
+  behaviour — not merely that the CLI starts.
+
+### D13 — Repository-scoped harness registration
+
+**Selected [Judgment call]:** every lifecycle registration lives in the repository tree; Plan 01 writes nothing to a
+per-user harness configuration. The data home stays machine-global per D2.
+
+- Need: a registration must be visible in a diff, provable by this repository's gates, and removable by the documented
+  rollback route, while one machine still keeps one coherent evidence store.
+- Alternative 1: register in per-user harness configuration (`~/.claude/settings.json` and vendor equivalents). One
+  wiring would cover every repository, but it fires in repositories this plan has no authority over, has no PR or CI
+  route, cannot be reverted by the rollback below, and converts a vendor schema change into silent data loss instead
+  of a failing gate.
+- Alternative 2: per-user registration filtered by a repository allowlist in the data home. It keeps opt-in explicit
+  with a single wiring, but adds configuration precedence, allowlist drift against moved or renamed checkouts, and an
+  untested resolution surface before the event contract is stable.
+- Prior art: `docs/reference/platform-bindings.md` already treats harness registration as hand-authored in-tree
+  configuration under repository ownership rather than machine state.
+- Consequence/revisit: capture coverage is opt-in per repository, so a machine's store reflects only wired
+  repositories and never the machine's full harness usage. That boundary is a visibility gap, not zero usage, and
+  `status` reports it under the D8 capability snapshot rather than synthesizing absent rows. Plan 01 delivers bindings
+  for this repository only; another repository needs its own four binding surfaces plus the same per-user installed
+  artifact. Revisit when the event contract is stable and a tested route exists for per-user registration; Alternative
+  2 is the successor shape, and unconditional per-user registration is not.
+
+**[Repo-grounded]** `repo-config.yml` declares harness ownership, parity, and generated-binding inventory;
+`.claude/settings.json` and `.codex/hooks.json` are existing hand-authored in-tree registration sources. The Rollback
+and Removal section below requires reverting hook and plugin registrations before application files, which presumes
+those registrations are version-controlled.
+
+### D14 — One inspectable data home at `~/.ferret`
+
+**Selected [User decision]:** one data home at `$HOME/.ferret` on every supported platform holds `config.json`,
+`identity.json`, `identity.key`, `ferret.sqlite3`, and `ferret.lock`. Plan 01 creates nothing under
+`$XDG_CONFIG_HOME`, `$XDG_STATE_HOME`, or `~/Library/Application Support`.
+
+- Need: `init` must create configuration, identity, key, and schema under one permission boundary inside one
+  exclusive transaction; an explicit purge must remove exactly one directory; and a developer must be able to
+  open the store by hand without first running `status` to find it.
+- Alternative 1: XDG and platform-native locations — `${XDG_STATE_HOME:-~/.local/state}/ferret` on Linux and
+  `~/Library/Application Support/Ferret` on macOS. It is what the conventions prescribe, but it yields two
+  literal paths for two supported platforms, so every document, fixture, diagnostic, and error message carries a
+  platform branch. The macOS path also contains a space and sits five levels deep, which makes the routine act
+  of inspecting a telemetry store needlessly awkward. FERRET is a developer's own instrument on a developer's
+  own machine; that inspection cost is paid daily while the tidiness benefit is abstract.
+- Alternative 2: split user-editable configuration into `$XDG_CONFIG_HOME/ferret/`. Plan 01's `config.json` is
+  generated by `init` and carries no user-authored value, so the split would place derived state in the
+  directory reserved for user configuration. It also adds a second owner, mode, and symlink validation path, a
+  second `unsafe_storage` route, separates configuration from the `ferret.lock` that serialises initialisation,
+  and leaves an orphan directory after purge.
+- Alternative 3: store configuration inside SQLite. It removes one file but couples reconfiguration to schema
+  migration and weakens the database-copy separation D9 establishes for the adjacent key.
+- Prior art: the XDG Base Directory Specification exists to stop `$HOME` becoming a junk drawer, and this
+  decision knowingly spends one dotted directory against that intent to buy a single cross-platform path. The
+  trade is bounded because D12 supports only macOS and Linux, so `~/.ferret` resolves identically on both, and
+  because `FERRET_DATA_HOME` remains the one supported relocation for anyone who wants the XDG layout.
+- Consequence/revisit: this changes the location, not the structure — there is still exactly one directory, one
+  `0700` boundary, one atomic `init`, and one purge target. `status` still prints the resolved data home,
+  because `FERRET_DATA_HOME` can move it. Co-locating `identity.key` with `ferret.sqlite3` makes the
+  directory the correct backup unit: D9 states that a database-only restore cannot derive identifiers
+  compatible with the old installation, so a restorable backup must carry the key, and copying `~/.ferret`
+  whole is now exactly that operation. The corollary is that such a backup is as sensitive as the key it
+  contains and must stay on trusted storage — never a dotfiles repository, a shared drive, or anything that
+  globs `~/.*` into somewhere public. Moving data for analysis or sharing uses `events export`, which emits
+  pseudonymised rows and never the key; the two operations are not interchangeable and the documentation states
+  which is which. The install artefact deliberately stays outside this directory at
+  `$HOME/.local/share/ferret/`, because `self uninstall` removes the artefact while keeping data, and that split
+  would be lost if both lived here. Plan 02's `backend-api.token` joins this directory. Two triggers reopen
+  this decision. A supported platform whose conventions make one literal path untenable reopens the location.
+  Plan 02's `ferret backend configure --url` introduces the first user-authored field and reopens Alternative
+  2's configuration split; that plan's D10 answers the trigger and records why it defers, and its successor
+  shape keeps `identity.key` and `backend-api.token` here regardless of where configuration lands.
+
+### D15 — Open bounded harness vocabulary
+
+**Selected [User decision]:** `harness` is a bounded lowercase slug, not a closed enum. Vocabularies FERRET owns
+— `eventType`, `outcome`, the three visibility fields, and `schemaVersion` — stay closed.
+
+- Need: supporting a further coding-agent harness must not require an event-schema version, a SQLite migration,
+  an OpenAPI enum change, and a backend that rejects events it is otherwise able to store.
+- Alternative 1: keep the closed enum and raise the schema version per harness. Validation stays exhaustive, but
+  every vendor addition becomes a breaking contract change across the CLI, the database, and Plan 02's REST
+  surface, and an older backend rejects a newer CLI's events outright.
+- Alternative 2: unbounded free text. It removes all friction but admits unnormalized spellings such as
+  `Claude Code`, `claude-code`, and `claude_code` that silently fragment every grouped report, and widens what
+  may enter an indexed column.
+- Prior art: this plan already models vendor- and user-owned values — `agentName`, `skillName`, `toolName`, and
+  `harnessVersion` — as bounded normalized text rather than enums. `harness` was the only third-party-owned
+  value modelled as a closed set.
+- Consequence/revisit: validation can no longer reject an unrecognized harness, so `status` enumerates the
+  documented harness registry instead of deriving support from the schema, and an unknown `--harness` filter
+  returns an empty result rather than a usage error. The value arrives as the static registration argument in a
+  binding file and is never read from a harness payload, so the open vocabulary does not widen the payload
+  surface. Plan 02 must render `harness` in `openapi.yaml` as a patterned string; an `enum` there would reinstate
+  the closed set at the API boundary and cancel this decision. Revisit only if slug drift is observed in practice
+  and a normalization table proves necessary.
+
+**[Repo-grounded]** `tech-docs/002-sqlite-schema-privacy-and-retention.md` already constrains `agent_name`,
+`skill_name`, and `tool_name` as bounded normalized text with an explicit character allowlist, and
+`tech-docs/005-cli-and-shared-data-contract.md` takes `--harness` as a registration argument supplied by the
+hand-authored binding files D13 keeps in the repository tree.
+
+### D16 — Tagged release now, shim consumption later
+
+**Selected [User decision]:** FERRET adopts the HIPPO and Rhino release shape — an annotated git tag, a GitHub
+release, and a published `checksums.txt` — using the monorepo-qualified tag `ferret-cli/vX.Y.Z`. It does not
+adopt their consumer shape (a committed shim plus a `*.lock` pin) in Plan 01.
+
+- Need: the artifact `self install` places must be identifiable and verifiable after the fact, and the scheme
+  must not have to change once a second repository consumes FERRET.
+- Alternative 1: adopt the shim and lock file now, matching `./hippo` and `./rhino` exactly. It is the eventual
+  destination, but HIPPO and Rhino are products in independent repositories consumed from outside, while Plan 01
+  builds FERRET in-tree and installs it through `self install`. With no external consumer yet, a shim and a lock
+  file add a resolution layer, a cache, and a verification path that nothing exercises.
+- Alternative 2: ship untagged builds from `main`. It removes ceremony but leaves no identity to pin later and
+  no digest to compare an installed artifact against.
+- Prior art: `hippo.lock` pins `version=v0.7.2` with a commit and per-platform SHA-256 values; `rhino.lock` pins
+  `version=v0.4.0` the same way. Release `v0.7.2` publishes `checksums.txt` beside
+  `hippo_v0.7.2_{darwin,linux}_{amd64,arm64}.tar.gz`, and both consumers are POSIX `sh` shims that resolve the
+  platform by `uname`. Neither publishes a Windows artifact, which is the same boundary D12 sets.
+- Consequence/revisit: two deliberate divergences follow from the artifact being a Python zipapp rather than a
+  compiled binary.
+  - **One artifact, not four.** `ferret-cli_vX.Y.Z.pyz` is platform-independent, so the release carries a single
+    digest where HIPPO carries four. A future lock file has one checksum line, not a platform matrix.
+  - **A host runtime dependency HIPPO and Rhino do not have.** Their binaries are self-contained; the zipapp
+    needs Python 3.14 on the host. A missing or wrong interpreter makes every adapter fail open, which loses
+    telemetry silently — precisely the failure this product exists to make visible. D1 keeps the zipapp, so
+    `status` closes the gap instead: it reports `runtime.interpreterPath`, `runtime.interpreterVersion`, and
+    `runtime.interpreterState` of `supported`, `unsupported_version`, or `unresolved`. A runtime gap is a
+    reported state, never an empty result.
+
+  Revisit the consumer shape when a second repository needs FERRET, which D13 makes a question of when rather
+  than whether. At that point the successor is exactly the HIPPO shape: a committed POSIX `sh` shim, a
+  `ferret.lock` carrying `version`, `commit`, and the single artifact digest, and `uname`-based resolution that
+  covers only the platforms D12 supports.
+
+**[Repo-grounded]** `hippo.lock`, `rhino.lock`, and the `./hippo` consumer in this repository establish the tag,
+checksum, cache, and `uname` resolution pattern this decision adopts and defers.
+
+### D17 — Rhino-aligned interaction surface, independent command structure
+
+**Selected [User decision]:** FERRET matches Rhino wherever a person's habit crosses tools — help, version,
+output selection, and response envelope — and diverges wherever the domains genuinely differ.
+
+- Need: a developer who uses `rhino` and `ferret` in the same repository should not have to remember which one
+  takes `--output json` and which one hides version behind a subcommand.
+- Aligned: `-h` / `--help` on root and every subcommand with no `help` subcommand; `ferret version` as a
+  subcommand; `--output <text|json>` with `--json` as its shorthand; a response envelope carrying
+  `schemaVersion`, `command`, and `exitCode` in that order, including on success; bare invocation writing usage
+  to stderr and exiting 2.
+- Deliberately not aligned: **command structure**, because Rhino spans 27 commands across `governance`, `md`,
+  `env`, `toolchain`, and `convention` and needs the depth, while FERRET has eleven in one domain — `ferret
+storage events list` would add a word without adding clarity. **Exit-code semantics**, because Rhino's `1`
+  means a policy violation and FERRET enforces no policy; FERRET keeps `0`/`2`/`3`/`4` for success, caller
+  error, environment error, and integrity failure. **Error prefix**, because `FERRET error [<code>]: <message>`
+  carries a closed machine-triageable code that `rhino: <message>` does not.
+- One superset: Rhino rejects `--version`. FERRET accepts `ferret version`, `--version`, and `-V`, all printing
+  the same line, because refusing the most frequently typed form buys nothing. Rhino gaining `--version` would
+  close the gap from the other side and belongs upstream, not here.
+- Consequence/revisit: two `schemaVersion` fields now differ deliberately and must not be conflated. The
+  **command-response** envelope uses integer `1`, matching Rhino. The **Event and capability-snapshot**
+  envelopes keep the string `"1.0"`, because `schemaVersion` is the first field of the canonical hash input and
+  the fixed vector `199aa6c2a595c64fe8603f860e4480d71a7888cd4f54c49c5f4fbc79fb060a3c` depends on it; changing it
+  would break Plan 02's cross-language digest agreement for no user-visible gain. `config.json`, `identity.json`,
+  and the install manifest are stored file formats rather than command output and also keep `"1.0"`. Revisit
+  only if Rhino changes its own interaction surface.
+
+**[Repo-grounded]** Probed against the pinned `./rhino` consumer at `v0.4.0`: `rhino version` prints `v0.4.0`,
+`rhino --version` and `rhino help` are rejected, bare `rhino` exits 2 with `rhino: no command given; try
+`rhino --help``on stderr and empty stdout,`--json`is documented as shorthand for`--output json`, and
+`rhino repo-config validate --output json`returns`{"schemaVersion":1,"command":"repo-config","exitCode":0,...}`.
 
 ## Verified External Prior Art
 
@@ -210,8 +375,7 @@ GitHub-hosted `windows-2025` proof route.
   `restore-cache`, `save-cache`, `cache-dependency-glob`, and `cache-suffix` inputs.
 - **[Web-cited]** [uv 0.12.16 release assets](https://github.com/astral-sh/uv/releases/tag/0.12.16)
   (accessed 2026-09-18) publish per-asset SHA-256 files. The official Linux x86-64 GNU value is
-  `8e5c6e5523dffc2dcf615bd995554c84c9feb4e577808a3fb8698a639d3f8d9c`; the Windows x86-64 MSVC value is
-  `f730454bf09019754e5e5abd71a8aa18683cb739cba0d9c720bac2e7c901160f`.
+  `8e5c6e5523dffc2dcf615bd995554c84c9feb4e577808a3fb8698a639d3f8d9c`.
 - Harness lifecycle event names and payloads are version-sensitive. Phase 0 must use current official Claude
   Code, Codex, and OpenCode documentation and record exact versions rather than treating this plan as the
   authority.
@@ -251,9 +415,9 @@ plan/spec documentation inherit the repository MIT license; third-party packages
 ├── .github/
 │   ├── actions/
 │   │   ├── README.md [E] — composite-action catalog entry and inputs
-│   │   └── setup-python/action.yml [N] — composite exact Python/uv setup shared by Linux and Windows CI
+│   │   └── setup-python/action.yml [N] — composite exact Python/uv setup for macOS and Linux CI
 │   └── workflows/
-│       ├── non-product-full-quality.yml [E] — scheduled POSIX coverage and hosted Windows CLI-local proof
+│       ├── non-product-full-quality.yml [E] — scheduled macOS and Linux coverage
 │       └── pr-quality-gate.yml [E] — fail-closed Python detection and merge-blocking Python quick job
 ├── docs/reference/platform-bindings.md [E] — catalog and trust/capability notes
 ├── repo-governance/development/infra/nx-targets/

@@ -19,11 +19,10 @@ usage or operational outcome summaries without any backend.
 ## User Stories
 
 - As a maintainer, I want observed usage and visibility gaps separated so that I do not treat unobservable
-  skills as unused. Proof: “Report a harness capability gap” and “Summarize outcomes with incomplete visibility.”
+  skills as unused. Proof: “Mark an unobservable capability unknown” and “Summarize outcomes with incomplete visibility.”
 - As a macOS/Linux developer, I want fail-open lifecycle capture so that telemetry never changes my harness
   result or terminal output. Proof: “A capture adapter encounters a local failure” and “Capture events
   concurrently across repositories.”
-- As a Windows developer, I want the same local storage/query/export contract so that I can inspect manually
   imported FERRET events while lifecycle adapters remain explicitly unsupported. Proof: “Initialize FERRET from
   two repositories,” “Filter and export local events,” and platform matrix tests.
 - As a privacy reviewer, I want a closed event schema and ephemeral raw-hook projection so that prompts,
@@ -35,14 +34,14 @@ usage or operational outcome summaries without any backend.
 
 ## Product Scope
 
-**In scope:** standard-library Python CLI on macOS, Linux, and Windows; SQLite data home; strict canonical
+**In scope:** standard-library Python CLI on macOS and Linux, WSL included as Linux; SQLite data home; strict canonical
 event/capability schemas; local queries/exports/analytics/retention; macOS/Linux POSIX Claude Code, Codex, and
 OpenCode adapters; user artifact install/removal; machine-readable contracts.
 
-**Out of scope:** Windows lifecycle adapters/E2E, backend/sync/network/authentication, frontend/cloud,
-content capture, semantic grading, human ratings, experiments, and CI enforcement. Windows adapters are
-reconsidered only when both a stable supported harness surface and a Windows CI runner can prove equivalent
-deadline/privacy behavior.
+**Out of scope:** every platform other than macOS and Linux, backend/sync/network/authentication, frontend/cloud,
+content capture, semantic grading, human ratings, experiments, and CI enforcement. Another platform is
+reconsidered only when both a stable supported harness surface and a repository CI runner can prove equivalent
+deadline/privacy behaviour.
 
 ## Product Risks
 
@@ -50,7 +49,6 @@ deadline/privacy behavior.
 | ------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
 | Raw hook JSON crosses the privacy boundary | Dumb wrapper plus Python allowlist mapper; raw input never opens SQLite/log/spool; negative payload tests |
 | Hook adds visible latency                  | 50 ms async return target, 1,000 ms absolute child deadline, 250 ms SQLite busy timeout, measured matrix  |
-| Windows users infer hook support           | Explicit CLI-only status and unsupported-platform capability; no Windows binding files                    |
 | Scripts depend on unstable output          | Versioned strict JSON/JSONL schemas and fixed hash/output vectors                                         |
 | Thirty-day physical deletion waits for use | Every read expires logically; next prune stops at 100 rows/100 monotonic ms; status distinguishes bytes   |
 
@@ -77,14 +75,11 @@ both streams and always return zero.
 
 FERRET uses one data home per OS user:
 
-- macOS: `~/Library/Application Support/Ferret`
-- Linux: `${XDG_STATE_HOME:-~/.local/state}/ferret`
-- Windows: `%LOCALAPPDATA%/Ferret`
+- macOS and Linux: `~/.ferret`
 - override: absolute local path in `FERRET_DATA_HOME`
 
-On POSIX, directories are mode `0700` and files mode `0600`. On Windows, a protected DACL grants only the
-current user and `SYSTEM`; unsafe ownership, mode, ACL, symlink, or reparse points stop the command rather than
-being weakened automatically. Tests always set an isolated temporary `FERRET_DATA_HOME`; a test-mode guard refuses the real user store. Workspace and harness-native session IDs
+Directories are mode `0700` and files mode `0600`. Unsafe ownership, mode, symlink, or hard link stops the
+command rather than being weakened automatically. Tests always set an isolated temporary `FERRET_DATA_HOME`; a test-mode guard refuses the real user store. Workspace and harness-native session IDs
 are converted to stable HMAC-SHA-256 opaque IDs using the private installation secret. Raw values are never
 stored or exported.
 
@@ -125,8 +120,8 @@ The installed integration is intentionally asymmetric:
   map, pseudonymize, canonicalize, hash, or open SQLite. Python records a skill observation only when the
   payload identifies it unambiguously.
 
-Lifecycle capture support in this plan is macOS/Linux POSIX only. Windows supports the local CLI commands and
-data home above, but reports harness adapters `unsupported_platform`; it never reports zero usage from that gap.
+FERRET targets macOS and Linux only; WSL is a Linux environment and needs no separate treatment. No other
+platform is claimed, tested, or shipped, so the plan carries no unsupported-platform surface to maintain.
 
 Phase 0 re-verifies current official lifecycle names and payloads before authoring bindings. Unsupported or
 changed lifecycle surfaces reduce FERRET coverage, never block harness execution.
@@ -136,12 +131,12 @@ changed lifecycle surfaces reduce FERRET coverage, never block harness execution
 ### AC-CLI-01 — Initialize one private machine store
 
 ```gherkin
-Scenario: Initialize FERRET from two repositories
+Scenario: Initialize one private store from multiple repositories
   Given FERRET has not been initialized for the current operating-system user
   When the user runs ferret init from two different repositories
   Then both commands resolve the same private data home and SQLite database
   And exactly one installation identity and current schema exist
-  And POSIX modes or the Windows protected user-and-SYSTEM ACL make every artifact private
+  And POSIX modes make every artifact private
   And no repository-local telemetry database is created
 ```
 
@@ -178,7 +173,7 @@ Examples:
 ### AC-CLI-04 — Keep the harness fail-open
 
 ```gherkin
-Scenario Outline: A capture adapter encounters a local failure
+Scenario Outline: Keep a harness fail-open after a local failure
   Given a harness invokes the FERRET adapter
   And FERRET is <condition>
   When the adapter handles a lifecycle event
@@ -196,7 +191,7 @@ Examples:
 ### AC-CLI-05 — Preserve concurrent local capture
 
 ```gherkin
-Scenario: Capture events concurrently across repositories
+Scenario: Capture concurrently across repositories
   Given three repositories and three harness adapters use the same initialized data home
   When each adapter submits a bounded burst of unique events concurrently
   Then every successful direct capture has exactly one durable row
@@ -207,7 +202,7 @@ Scenario: Capture events concurrently across repositories
 ### AC-CLI-06 — Show unknown instead of zero
 
 ```gherkin
-Scenario: Report a harness capability gap
+Scenario: Mark an unobservable capability unknown
   Given the selected harness exposes tool events but no stable skill lifecycle event
   When the user requests usage grouped by skill for that harness
   Then the result marks skill subject visibility as unknown
@@ -217,7 +212,7 @@ Scenario: Report a harness capability gap
 ### AC-CLI-07 — Query and export deterministic events
 
 ```gherkin
-Scenario: Filter and export local events
+Scenario: Filter and export deterministic local events
   Given the database contains events from two workspaces and two harnesses
   When the user filters by UTC interval, harness, workspace, event type, and outcome
   Then only matching events are returned in stable timestamp and event-ID order
@@ -239,7 +234,7 @@ Scenario: Summarize outcomes with incomplete visibility
 ### AC-CLI-09 — Enforce thirty-day retention
 
 ```gherkin
-Scenario: Hide then prune expired local events
+Scenario: Hide then prune every expired usage-derived record
   Given the database contains rows captured before and after the thirty-day cutoff
   When a read runs before physical pruning and then the next FERRET operation runs with a fixed clock
   Then no row at or beyond the cutoff is returned by the read
@@ -274,7 +269,7 @@ Scenario: Use FERRET without a backend
 ### AC-CLI-12 — Preserve install and removal boundaries
 
 ```gherkin
-Scenario: Remove FERRET from a configured repository
+Scenario: Remove FERRET without changing harness behaviour
   Given supported harness adapters are configured to call FERRET
   When the ferret executable and local integration are removed
   Then every harness continues to run normally

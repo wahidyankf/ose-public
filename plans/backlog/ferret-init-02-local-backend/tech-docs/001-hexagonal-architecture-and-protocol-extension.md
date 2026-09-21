@@ -6,7 +6,7 @@
 ## Context and Dependency Rule
 
 FERRET needs a simple REST path now and may need GraphQL dashboard queries/subscriptions and MCP tools/resources
-later. The stable product behavior is ingestion, querying, analytics, capability interpretation, authorization,
+later. The stable product behaviour is ingestion, querying, analytics, capability interpretation, authorization,
 and retention—not any transport. Protocols are inbound adapters; PostgreSQL and change publication are outbound
 adapters.
 
@@ -91,7 +91,7 @@ Use `typing.Protocol` interfaces:
 - `ChangePublisher`: publish a tuple of typed notices only after commit.
 
 The SQLAlchemy adapter implements repository/unit-of-work ports with explicit projections, bound values,
-finite timeouts, and transactions. Core tests use in-memory fakes, not SQLite; PostgreSQL behavior belongs to
+finite timeouts, and transactions. Core tests use in-memory fakes, not SQLite; PostgreSQL behaviour belongs to
 Integration tests.
 
 ## Commit and Change Publication

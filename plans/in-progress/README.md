@@ -11,7 +11,9 @@ execution checklist.
 
 ## Active Plans
 
-_No plans are currently in progress._
+| Plan                                                                          | Outcome                                                                                                                                                  |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [FERRET Init 01 — Standalone local CLI](./ferret-init-01-local-cli/README.md) | One per-user SQLite store at `~/.ferret`, 30-day retention, local analytics, and fail-open Claude Code, Codex, and OpenCode adapters on macOS and Linux. |
 
 ## Instructions
 

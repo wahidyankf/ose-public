@@ -23,7 +23,7 @@ not solve.
 3. Local scripts can retrieve filtered raw events and usage/outcome/capability aggregates over REST.
 4. REST, future GraphQL, and future MCP adapters share one application policy and persistence implementation.
 5. Protocol-specific schemas and errors stay at adapters; the core does not import transport/framework types.
-6. PostgreSQL growth, indexes, WAL, prune impact, and recovery behavior are measured before completion.
+6. PostgreSQL growth, indexes, WAL, prune impact, and recovery behaviour are measured before completion.
 
 ## Affected Roles
 

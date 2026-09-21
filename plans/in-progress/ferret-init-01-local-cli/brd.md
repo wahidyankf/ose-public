@@ -31,7 +31,7 @@ backend outage part of the harness critical path.
 | Local developer        | Private, fast, inspectable telemetry that does not depend on another process.       |
 | Harness integrator     | A small fail-open adapter with explicit capability gaps per harness.                |
 | Privacy reviewer       | A closed metadata schema and negative proof that content and secrets are rejected.  |
-| Later backend executor | A stable versioned event model and measured local storage behavior.                 |
+| Later backend executor | A stable versioned event model and measured local storage behaviour.                |
 
 ## Success Measures
 

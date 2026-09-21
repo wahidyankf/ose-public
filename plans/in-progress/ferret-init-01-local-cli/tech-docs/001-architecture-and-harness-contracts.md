@@ -54,7 +54,7 @@ The executable name is `ferret`. The build produces `dist/ferret.pyz`. Canonical
 `python dist/ferret.pyz self install --target user` places the launcher/artifact in the per-user executable
 directory. Installation/removal never edits shell startup files automatically.
 
-### Command behavior
+### Command behaviour
 
 - `init` is idempotent. It creates private directories, an installation UUIDv4, a 32-byte secret, config,
   and the current schema inside one exclusive initialization transaction.
@@ -123,7 +123,7 @@ child still has a one-second total lifetime. Session-end/terminal events wait fo
 1,000 ms, reaps both child/watchdog, suppresses streams, and exits zero. OpenCode uses an equivalent
 `AbortController`/child TERM→KILL policy. Missing-binary resolution must finish within 50 ms. Normal-operation
 p95 target is 150 ms; all paths have 1,000 ms absolute maximum. Timeout can lose telemetry and never retries in
-the hook. Windows has no lifecycle adapter in v1.
+the hook.
 
 ### Capability matrix
 
@@ -144,13 +144,16 @@ surfaces in `status`. It never stores a synthetic "zero invocations" row.
 
 ### Platform support
 
-macOS and Linux POSIX own lifecycle adapter/E2E support. Windows owns only Python CLI-local init, SQLite,
-query/export/analytics, retention, and JSON contracts. Windows hook/plugin launchers, deadline semantics, and
-harness E2E are out of scope. Revisit when a supported Windows harness lifecycle surface and repository Windows
-CI runner can prove equivalent fail-open/no-output/deadline/privacy behavior; until then status reports adapter
-state `unsupported_platform`, not zero usage.
+macOS and Linux are the only supported platforms, and WSL is treated as Linux. Both own the full surface:
+CLI, SQLite, query/export/analytics, retention, JSON contracts, lifecycle adapters, and E2E. No other platform
+is claimed, tested, or shipped, so no unsupported-platform reporting path exists. Adding one requires a
+repository CI runner that can prove equivalent fail-open, no-output, deadline, and privacy behaviour first.
 
 ### Exact binding surfaces
+
+Every surface below is a repository file by decision. D13 in
+[the decisions companion](003-decisions-sources-and-file-impact.md) records why Plan 01 registers nothing in
+per-user harness configuration and what would have to change before it could.
 
 - `.claude/settings.json`: hand-authored source registrations for verified events.
 - `.codex/hooks.json`: hand-authored source registrations pointing to the canonical wrapper.

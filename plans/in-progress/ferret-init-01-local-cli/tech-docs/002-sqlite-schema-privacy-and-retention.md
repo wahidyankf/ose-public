@@ -85,7 +85,7 @@ expiry as before-ack expiry.
 | `occurred_at`         | RFC 3339 UTC with millisecond precision     | Harness event time; no local timezone               | Immutable                       |
 | `captured_at`         | RFC 3339 UTC with millisecond precision     | CLI receipt time                                    | Immutable                       |
 | `expires_at`          | `captured_at + 30 days`                     | Logical retention boundary                          | Immutable                       |
-| `harness`             | enum `claude_code`, `codex`, `opencode`     | Source product, not a user identity                 | Immutable                       |
+| `harness`             | text slug matching `^[a-z][a-z0-9_]{0,31}$` | Source product, not a user identity                 | Immutable                       |
 | `harness_version`     | nullable text, 1–64 safe characters         | Version only when exposed                           | Immutable                       |
 | `installation_id`     | opaque UUIDv4 text matching `identity.json` | FERRET installation, not OS username                | Immutable                       |
 | `workspace_id`        | `ws_` + 32 lowercase hex                    | HMAC of normalized root; raw path never persists    | Immutable                       |
@@ -104,7 +104,10 @@ expiry as before-ack expiry.
 Names allow Unicode letters/numbers plus `-`, `_`, `.`, `:`, `/` only when `/` is part of a logical tool
 identifier; reject absolute paths, `..` segments, control characters, line breaks, shell metacharacters, and
 URI credentials. The event-type-specific validator requires only relevant name fields and requires all
-irrelevant subject fields null. Additional JSON properties are forbidden at every object level. The exact
+irrelevant subject fields null. `harness` is an open bounded vocabulary rather than a closed enum:
+storage and validation accept any conforming slug, while the documented harness registry governs which
+adapters exist, what the capability matrix covers, and what `status` enumerates. The value always arrives as a
+static registration argument from a binding file and is never read from a harness payload. Additional JSON properties are forbidden at every object level. The exact
 event/capability schemas and canonical hash algorithm are in
 [the shared data contract](005-cli-and-shared-data-contract.md).
 
@@ -139,7 +142,7 @@ PRAGMA busy_timeout = 250;
 **[Web-cited]** SQLite WAL permits concurrent readers but serializes writers, so capture transactions remain
 short. The official [WAL documentation](https://sqlite.org/wal.html) (accessed 2026-09-18) states that all
 processes must be on the same host and WAL does not work over a network filesystem.
-The override validator rejects relative paths, URL-like paths, Windows UNC paths, and mount types the platform
+The override validator rejects relative paths, URL-like paths, and mount types the platform
 probe identifies as remote. If the platform cannot establish a local filesystem, initialization refuses the
 override and tells the user to choose the default or a verified local path.
 

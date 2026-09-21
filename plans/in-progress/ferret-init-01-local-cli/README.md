@@ -1,6 +1,6 @@
 # FERRET Init 01 — Standalone Local CLI
 
-> **Status:** Backlog — first delivery in the FERRET initialization chain.
+> **Status:** In Progress — first delivery in the FERRET initialization chain.
 
 Build a fail-open, local-first telemetry client for Claude Code, Codex, and OpenCode. The client records
 strict lifecycle metadata in one per-user SQLite database, remains useful without any server, and exposes
@@ -34,8 +34,7 @@ flowchart LR
 - Strict metadata-only lifecycle envelope and privacy validation.
 - Local status, filtering, JSON Lines export, usage summaries, and operational outcome summaries.
 - Best-available fail-open capture adapters for Claude Code, Codex, and OpenCode on macOS/Linux POSIX.
-- Windows-portable local initialization, storage, queries, exports, analytics, and maintenance; Windows harness
-  adapters are deferred until a supported harness exposes/test infrastructure proves an equivalent launcher.
+- macOS and Linux only, WSL included as Linux; no other platform is claimed, tested, or shipped.
 - Thirty-day logical retention, opportunity-based physical reclamation, storage measurement, and explicit
   field-level visibility gaps.
 - Python/Nx, BDD coverage, harness-binding, and rules-governance updates required by these projects.
@@ -53,7 +52,7 @@ flowchart LR
 Developers can install `ferret`, capture lifecycle metadata from supported harness surfaces, inspect and
 export the last 30 days locally, and remove FERRET without affecting harness execution. Backend state is
 neither required nor assumed. The later backend plan consumes this stable event contract and preserves all
-standalone behavior.
+standalone behaviour.
 
 ## Navigation
 
@@ -62,4 +61,4 @@ standalone behavior.
 - [Technical design](tech-docs/README.md)
 - [Execution checklist](delivery.md)
 - [Execution learnings](learnings.md)
-- [Next plan](../ferret-init-02-local-backend/README.md)
+- [Next plan](../../backlog/ferret-init-02-local-backend/README.md)

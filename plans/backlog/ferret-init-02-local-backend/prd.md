@@ -26,7 +26,7 @@ application use cases designed for later GraphQL and MCP adapters.
   unacknowledged record can synchronize later without blocking my harness.
 - As an analysis consumer, I want stable authenticated REST resources so that I can distinguish unknown
   visibility from zero use.
-- As a maintainer, I want a pinned reproducible stack so that schema, retention, storage, and failure behavior
+- As a maintainer, I want a pinned reproducible stack so that schema, retention, storage, and failure behaviour
   can be verified locally.
 - As a future adapter engineer, I want framework-free application ports so that GraphQL or MCP can be added
   without importing REST or PostgreSQL models into the core.
@@ -36,8 +36,7 @@ application use cases designed for later GraphQL and MCP adapters.
 In scope: a loopback FastAPI service, PostgreSQL persistence, OpenAPI 3.1 contract, CLI backend configuration,
 durable event and capability-snapshot synchronization, authenticated raw/aggregate APIs, explicit pruning, and
 local BDD/E2E proof. Out of scope: frontend/dashboard, GraphQL endpoint/subscription, MCP endpoint, remote/cloud
-deployment, multi-user identity, OAuth, durable realtime publication, automatic backend retention, and Windows
-lifecycle adapters. Windows remains supported for standalone CLI storage/query only.
+deployment, multi-user identity, OAuth, durable realtime publication, and automatic backend retention.
 
 ## Product Risks
 
@@ -58,8 +57,7 @@ lifecycle adapters. Windows remains supported for standalone CLI storage/query o
   verifies availability and stops on a collision instead of silently changing the contract. Tests use isolated
   runner-assigned ports.
 - `ferret-be token init` creates exactly 32 random bytes at
-  `<FERRET_DATA_HOME>/backend-api.token` using atomic create and mode `0600` on POSIX (owner-only ACL on
-  Windows CLI-local environments) and never prints the value. BE requires `FERRET_API_TOKEN_FILE` to resolve to
+  `<FERRET_DATA_HOME>/backend-api.token` using atomic create and mode `0600` and never prints the value. BE requires `FERRET_API_TOKEN_FILE` to resolve to
   that absolute file; CLI config records the absolute token-file path, not token value. The file is never
   stored in SQLite/PostgreSQL, copied into a container image, or included in backup/evidence fixtures.
 - `ferret-be token write-curl-config --output <ignored-path>` writes a mode-`0600` curl config for manual local
@@ -102,7 +100,7 @@ SQLAlchemy, GraphQL, or MCP packages.
 After a successful commit, the application emits minimal typed notices such as `events.accepted` and
 `analytics.invalidated` through a `ChangePublisher` port. Plan 02 uses a no-op production adapter and in-memory
 test adapter. Future GraphQL subscriptions or MCP notifications may consume that port only after separate plans
-choose transport, reconnect, backpressure, authentication, and pub/sub behavior.
+choose transport, reconnect, backpressure, authentication, and pub/sub behaviour.
 
 ## Synchronization Semantics
 
@@ -133,7 +131,7 @@ Scenario: Use FERRET with backend synchronization disabled
   Given the Plan 01 local database contains events
   And no backend is configured or running
   When the user captures, queries, exports, summarizes, and maintains local data
-  Then every standalone command keeps its Plan 01 behavior
+  Then every standalone command keeps its Plan 01 behaviour
   And capture makes no network request
   And no event changes delivery state merely because the backend is absent
 ```

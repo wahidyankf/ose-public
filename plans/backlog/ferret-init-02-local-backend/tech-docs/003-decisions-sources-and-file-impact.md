@@ -51,7 +51,7 @@ language-agnostic description for HTTP APIs).
 **Selected [Judgment call — user-approved]:** framework-free domain/application packages, inbound protocol adapters, outbound persistence and
 change ports.
 
-- Need: user-approved future REST, GraphQL, and MCP surfaces must share behavior without handler reuse.
+- Need: user-approved future REST, GraphQL, and MCP surfaces must share behaviour without handler reuse.
 - Alternative 1: conventional FastAPI routes calling SQLAlchemy services. It is smaller initially but exposes
   framework/storage types as the reusable boundary.
 - Alternative 2: separate services per protocol. It isolates protocols but duplicates policy, analytics,
@@ -81,7 +81,7 @@ this plan's engineering judgment, not a quotation.
 
 - Need: MCP may make analytics available to agents, but automatic telemetry cannot depend on voluntary tool use.
 - Alternative 1: expose ingestion/query tools now. It broadens access but creates a second contract/auth/test
-  matrix before core REST behavior is proven.
+  matrix before core REST behaviour is proven.
 - Alternative 2: treat MCP as JSON-over-REST. It avoids an SDK but violates MCP capability negotiation,
   JSON-RPC, tools/resources, and transport semantics.
 - Consequence: future plan selects then-current spec/version and stdio/Streamable HTTP. Revisit when one
@@ -106,7 +106,7 @@ specification; this release post is evidence for direction, not a pinned wire co
 
 **Selected [Judgment call]:** 256-bit token file, constant-time comparison, loopback Local/Test only.
 
-- Need: local APIs still expose behavioral metadata and must not be unauthenticated to arbitrary processes or a
+- Need: local APIs still expose behavioural metadata and must not be unauthenticated to arbitrary processes or a
   misbound network interface.
 - Alternative 1: no authentication on loopback. It is simpler but any local process can read/write.
 - Alternative 2: full OAuth/OIDC. It supports remote/multi-user access but belongs to cloud deployment/security
@@ -132,7 +132,7 @@ is due.
 - Need: recent events should move without requiring an always-running client process, while capture remains
   independent of network work.
 - Alternative 1: permanent per-user daemon/service. It provides predictable scheduling but adds OS-specific
-  installation, lifecycle, upgrade, resource, and recovery behavior before the backend is deployed.
+  installation, lifecycle, upgrade, resource, and recovery behaviour before the backend is deployed.
 - Alternative 2: manual synchronization only. It is simplest but silently leaves data local unless the user
   remembers to run it.
 - Consequence: sync timing is best effort when no harness activity occurs; users run `sync --once` for immediate
@@ -152,6 +152,30 @@ project/contract/manual commands declared in `delivery.md` and verifies their ev
 - Consequence: the dispatcher has a closed phase map, no secret handling, and Unit tests for commands/evidence/
   no-op failure. It remains useful after delivery as reproducible release verification; revisit and simplify it
   when canonical Nx targets can express external evidence predicates without a project script.
+
+### D10 — Configuration stays in the data home
+
+**Selected [Judgment call]:** `ferret backend configure` writes the backend URL and token-file path to
+`<FERRET_DATA_HOME>/config.json`. This plan creates nothing under `$XDG_CONFIG_HOME`.
+
+- Need: `--url` is the first field a person authors by hand, which is exactly the trigger Plan 01's D14 names for
+  moving configuration out of the data home; that trigger must be answered here rather than left implicit.
+- Alternative 1: split user-editable configuration into `$XDG_CONFIG_HOME/ferret/` now. It matches where users
+  look and makes configuration version-controllable, but reconfiguration atomically replaces the complete
+  configuration while holding the same `ferret.lock` that serializes capture, and that lock lives in the data
+  home. A second directory would add a second owner/mode/ACL validation path and put the single permission
+  boundary and the atomic swap at risk for one field.
+- Alternative 2: store backend configuration in SQLite. It keeps one file fewer but couples reconfiguration to
+  schema migration and makes the settings unreadable without opening the database.
+- Consequence/revisit: a reader who looks in `~/.config/ferret` still finds nothing, so `status` remains the way
+  to discover the resolved location. Revisit when configuration gains a field a user genuinely wants under
+  version control, or a second machine-portable field arrives; the split then follows D14's successor shape.
+  `backend-api.token` and `identity.key` stay in the data home in every case, so a configuration directory that
+  is later symlinked into a dotfiles repository cannot publish a bearer token or the derivation key.
+
+**[Repo-grounded]** Plan 01 `tech-docs/005-cli-and-shared-data-contract.md` requires this plan's backend
+enable/reconfigure operation to use the same configuration lock as capture and to replace the complete
+configuration atomically; that lock and the existing `config.json` are both data-home objects.
 
 ## Dependencies and Licenses
 

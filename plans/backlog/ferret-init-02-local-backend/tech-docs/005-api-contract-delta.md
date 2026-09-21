@@ -8,13 +8,17 @@
 ## Contract Authority
 
 Delivery adds `specs/apps/ferret/be/contracts/openapi.yaml` as the canonical OpenAPI 3.1 REST contract. This
-plan fixes the required operations and behavior; the checked-in OpenAPI document owns exact machine-readable
+plan fixes the required operations and behaviour; the checked-in OpenAPI document owns exact machine-readable
 schemas after implementation. FastAPI-generated OpenAPI and CLI fixtures must conform to it. No generated
 runtime client or model is committed.
 
 Base URL is `http://127.0.0.1:8601`. Every response includes `X-Request-ID` as a UUID and
 `Cache-Control: no-store`. JSON uses UTF-8, camelCase wire names, RFC 3339 UTC timestamps with millisecond
-precision, lowercase UUID strings, and closed enums. Unknown properties are rejected. `/api/v1/**` requires
+precision, lowercase UUID strings, and closed enums for every FERRET-owned vocabulary. `harness` is the one
+exception: Plan 01's D15 makes it an open bounded slug, so `openapi.yaml` declares it as a `string` with
+pattern `^[a-z][a-z0-9_]{0,31}$` and never as an `enum`, in the event envelope and in the `harness` query
+parameter alike. An unrecognized but conforming slug is stored and returned, never rejected. Unknown
+properties are rejected. `/api/v1/**` requires
 `Authorization: Bearer <token>` with constant-time comparison; health operations are unauthenticated and expose
 no data or secret detail.
 
@@ -500,7 +504,7 @@ persistence; removing it does not alter event ingestion. **Scenarios:**
 
 ## Detailed API Scenario Catalog
 
-Each scenario below is copied verbatim in behavior (allowing only repository language/style normalization) to
+Each scenario below is copied verbatim in behaviour (allowing only repository language/style normalization) to
 the named owner feature and receives the layer dispositions stated in its operation packet.
 
 ### Scenarios API-LIVE
@@ -767,7 +771,7 @@ row/ACK effects, redaction, and cursor/interpretation semantics with repository-
 
 - live 200 and ready 200/503;
 - batch accepted, duplicate, `batch_id_conflict`, mixed item results, missing/wrong token, malformed request ID,
-  invalid schema, 413, and backend unavailable behavior from the CLI;
+  invalid schema, 413, and backend unavailable behaviour from the CLI;
 - raw events first/next/final page, every filter family, empty set, tampered/filter-mismatch cursor, 401;
 - usage/outcomes valid groupings, invalid grouping/range/cursor, unknown handling, interpretation text, 401;
 - capabilities observed/derived/unknown, empty filter, cursor, and 401.

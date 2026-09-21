@@ -5,14 +5,21 @@
 > **Legend:** `[AI]` executes repository work. `[HUMAN]` is reserved for unavoidable privileged or
 > out-of-band work. Every command record contains the literal command, exit, relevant test IDs, 40-character
 > HEAD, and UTC timestamp. Never save raw vendor payloads, secrets, telemetry, or absolute host paths.
+>
+> **Progress lives here, not in `local-tmp/`.** The checkboxes in this file are the single record of what is
+> done; an executor ticks them as it goes and never keeps a parallel progress journal, status file, or summary
+> elsewhere. `local-tmp/` holds only regenerable working material — raw command output, scratch scripts,
+> fixtures, downloaded artefacts, and the run manifests named below — and any file there may be deleted at any
+> time without losing progress. Durable evidence belongs under this plan's `evidence/phase-<n>/`, except where
+> a phase runs after the plan folder is archived and this file says otherwise.
 
 ## Lifecycle, Worktree, and Delivery Mode
 
-Do not implement from backlog. First land a pure move to `plans/in-progress/ferret-init-01-local-cli/` plus its
-index changes. The user explicitly confirmed that this plan-authoring session must continue in the active
-`worktrees/oseval-plan-init/` worktree. The plan artifacts there are an unlanded plan-authoring delivery; that
-constraint is the sole reason the future execution identity is pending. The Authoring-Worktree Exception
-authorizes plan authoring only, and implementation there is forbidden.
+This plan already lives at `plans/in-progress/ferret-init-01-local-cli/`; the move from `plans/backlog/` and
+both index updates landed with the authoring PR, so execution starts at Phase 0 and performs no lifecycle move.
+Authoring happened in `worktrees/ferret-start/`, which is an authoring worktree only: the Authoring-Worktree
+Exception permits plan authoring there and forbids implementation. Execution therefore begins by creating its
+own worktree below.
 
 From the primary repository root, create the one execution worktree through the required harness route:
 
@@ -53,7 +60,7 @@ allowed.
 **Outcome:** exactly one execution worktree, converged toolchain, current harness evidence, exact file ledger,
 and green pre-change baseline.
 
-**Proof:** `evidence/phase-0/{route,dependencies,versions,harness-probe,windows-route,file-ledger,gate}.txt`.
+**Proof:** `evidence/phase-0/{route,dependencies,versions,harness-probe,ci-route,file-ledger,gate}.txt`.
 
 **Canonical ACs:** prerequisite for AC-CLI-01..12; no product scenario is implemented here.
 
@@ -80,40 +87,33 @@ cause. Future `ferret-cli:install` targets are not called in this baseline.
       `rtk rg -n "hook|plugin|skill|session|subagent|tool" .claude/settings.json .codex/hooks.json .opencode repo-config.yml docs/reference/platform-bindings.md`.
       Compare the result with current official Claude Code, Codex, and OpenCode lifecycle documentation and
       record URLs, accessed date, installed versions, event names, payload bounds, async/terminal semantics, and
-      trust behavior in `harness-probe.txt`. Codex skill remains `unknown`; OpenCode session-end/parent-child
+      trust behaviour in `harness-probe.txt`. Codex skill remains `unknown`; OpenCode session-end/parent-child
       remains probe-gated. A contradictory official surface stops for plan amendment.
 - [ ] [AI] Run
       `rtk rg --files apps specs .claude .agents .codex .opencode .github repo-governance scripts docs | rtk rg "(ferret|cli-e2e|behaviour-coverage|platform-bindings|harness-compatibility|pr-quality-gate|non-product-full-quality|setup-python)"`.
       Resolve the File-Impact Analysis to exact paths and label canonical/generated/hand-authored ownership in
       `file-ledger.txt`; also write those exact repository-relative paths one per line to
       `file-ledger.pathspec`. Unexpected overlap stops for ownership reconciliation.
-- [ ] [AI] Prove the Windows route before implementation. Run
-      `rtk rg -n "schedule:|workflow_dispatch:|concurrency:|integration:|windows-2025|actions/checkout@v6|actions/setup-node" .github/workflows/non-product-full-quality.yml .github/actions`.
+- [ ] [AI] Prove the CI route before implementation. Run
+      `rtk rg -n "schedule:|workflow_dispatch:|concurrency:|integration:|actions/checkout@v6|actions/setup-node" .github/workflows/non-product-full-quality.yml .github/actions`.
       Record how `.github/workflows/pr-quality-gate.yml` will gain fail-closed `has-python` detection plus a
-      merge-blocking `python` job, and how the existing scheduled/dispatch workflow will gain job
-      `ferret-cli-windows`, display name
-      `FERRET CLI Windows local proof`, `needs: integration`, `runs-on: windows-2025`, and `timeout-minutes: 30`,
-      plus new `.github/actions/setup-python/action.yml` and its `.github/actions/README.md` catalog entry. The job must use checkout v6
-      with `persist-credentials: false`, existing Node 24 setup, setup-python v6 exact 3.14.7, setup-uv commit
-      `bec219d24cd3e171d82865faccec33120bb574f4` (`v10.1.0`), uv 0.12.16 with the official Linux/Windows
-      checksums recorded in tech-doc 003, direct Nx, and
-      upload-artifact v7. The scheduled workflow's existing `unit-and-static`, `integration`, and `e2e` jobs
-      must also add Python setup and the applicable FERRET projects. HIPPO/RTK are local-compute guards and must
-      not appear inside the hosted Windows job; existing workflow concurrency plus this bounded job is CI
-      admission. Save `windows-route.txt`; stop and amend if
-      repository permissions cannot edit/manually dispatch this existing workflow or retain its artifacts.
+      merge-blocking `python` job, and how the existing scheduled/dispatch workflow's `unit-and-static`,
+      `integration`, and `e2e` jobs will add Python setup and the applicable FERRET projects, plus new
+      `.github/actions/setup-python/action.yml` and its `.github/actions/README.md` catalog entry. The composite
+      action must use setup-python v6 exact 3.14.7 and setup-uv commit
+      `bec219d24cd3e171d82865faccec33120bb574f4` (`v10.1.0`) with uv 0.12.16 and the official Linux checksum
+      recorded in tech-doc 003. No FERRET-specific job is added; macOS and Linux are the only targets. Save
+      `ci-route.txt`; stop and amend if repository permissions cannot edit or manually dispatch this workflow.
 - [ ] [AI] Reproduce the pins from official GitHub data before accepting the route:
 
 ```bash
 rtk gh api repos/astral-sh/setup-uv/git/ref/tags/v10.1.0 --jq '.object.type + " " + .object.sha'
 rtk curl -fsSL https://github.com/astral-sh/uv/releases/download/0.12.16/uv-x86_64-unknown-linux-gnu.tar.gz.sha256
-rtk curl -fsSL https://github.com/astral-sh/uv/releases/download/0.12.16/uv-x86_64-pc-windows-msvc.zip.sha256
 ```
 
-Require respectively `commit bec219d24cd3e171d82865faccec33120bb574f4`, the Linux checksum
-`8e5c6e5523dffc2dcf615bd995554c84c9feb4e577808a3fb8698a639d3f8d9c`, and the Windows checksum
-`f730454bf09019754e5e5abd71a8aa18683cb739cba0d9c720bac2e7c901160f`; save URLs, accessed date, and full
-outputs in `windows-route.txt`. Any drift stops for plan amendment rather than silently updating a pin.
+Require respectively `commit bec219d24cd3e171d82865faccec33120bb574f4` and the Linux checksum
+`8e5c6e5523dffc2dcf615bd995554c84c9feb4e577808a3fb8698a639d3f8d9c`; save URLs, accessed date, and full
+outputs in `ci-route.txt`. Any drift stops for plan amendment rather than silently updating a pin.
 
 ### Phase 0 Gate
 
@@ -173,7 +173,7 @@ exact-head green in Phase 7; no terminal `landed` claim occurs here.
 - [ ] [AI] **Step 6 RED:** add failing positive/negative fixtures to `scripts/behaviour-coverage.test.mjs` for
       Python dedicated-E2E targets and pytest-bdd mappings; run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- node --test scripts/behaviour-coverage.test.mjs`.
-      Expect nonzero naming only unsupported target/mapping behavior; save `step-6-red.txt`.
+      Expect nonzero naming only unsupported target/mapping behaviour; save `step-6-red.txt`.
 - [ ] [AI] **Step 6 GREEN:** update `scripts/behaviour-coverage.mjs` bounded symbols
       `validateProjectTargetContract` and `extractBindings`, the four exact governance/setup paths from Steps
       4–5, `.claude/skills/harness-compatibility-protocol/SKILL.md`,
@@ -233,13 +233,14 @@ All checks must pass before starting Phase 2.
 **Outcome:** two valid Python projects, owner/spec architecture, locked dependencies, and every real mandatory
 target green. No lifecycle binding is registered and no unbound Gherkin scenario exists.
 
-**Proof:** `evidence/phase-2/{projects,targets,spec-architecture,gate}.txt`.
+**Proof:** `evidence/phase-2/{projects,targets,spec-architecture}.txt` and
+`evidence/phase-2/gate-{owner,e2e,install}.txt`.
 
 **Canonical ACs:** structural prerequisite for AC-CLI-01..12.
 
 ### Mandatory target contract
 
-| Project          | Target                                                                       | Real behavior                                                                             |
+| Project          | Target                                                                       | Real behaviour                                                                            |
 | ---------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `ferret-cli`     | `install`                                                                    | dependency synchronization only: `uv sync --locked`; invoked through transactional HIPPO  |
 | `ferret-cli`     | `build` / `run`                                                              | reproducible `dist/ferret.pyz`; execute that built artifact                               |
@@ -282,8 +283,12 @@ Expect five zero exits and no missing/skipped/fake target; save complete output 
       and the exact six future feature paths. Do not add feature scenarios until their Phase 3/4 RED packet.
       Run `rtk npm exec nx -- run-many -t test:coverage:behaviour --projects=<affected-projects>`; expect zero and save
       `spec-architecture.txt`.
-- [ ] [AI] Add a real package/build smoke proving `ferret --help` from the built artifact; do not add placeholder,
-      skipped, xfail, echo, or success-sentinel tests. Run
+- [ ] [AI] Add a real package/build smoke proving the help and version surface from the built artifact: assert
+      `ferret --help` exits 0 writing to stdout with stderr empty, `ferret version`, `ferret --version`, and
+      `ferret -V` print the same single `ferret <version>` line, bare `ferret` exits 2 writing usage to stderr with
+      stdout empty, `ferret help` exits 2 as `invalid_arguments`, `--json` and `--output json` produce
+      byte-identical output, and every command listed in root help resolves under `<command> --help`. Do
+      not add placeholder, skipped, xfail, echo, or success-sentinel tests. Run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:build`,
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:run -- --help`,
       and the two literal Phase 2 quick commands below. Expect zero and save `projects.txt`.
@@ -308,20 +313,21 @@ All checks must pass before starting Phase 3.
 **Input:** green projects and the frozen CLI/data/schema contracts.
 
 **Outcome:** standalone init, canonical capture, privacy, concurrency, snapshots, queries, analytics, retention,
-storage, no-backend behavior, and per-user install/uninstall are complete; adapters are not registered yet.
+storage, no-backend behaviour, and per-user install/uninstall are complete; adapters are not registered yet.
 
-**Proof:** `evidence/phase-3/ac-cli-<nn>-{red,green,refactor}.txt`, `storage.json`, and phase gates.
+**Proof:** `evidence/phase-3/ac-cli-<nn>-{red,green,refactor}.txt`, `evidence/phase-3/storage.json`, and
+`evidence/phase-3/gate-{owner,e2e,storage}.txt`.
 
 **Canonical ACs:** AC-CLI-01..03, AC-CLI-05..12. AC-CLI-04 completes in Phase 4.
 
 For each packet, add its exact durable scenario to the feature path, then its pytest-bdd binding. RED must fail
-only for the named missing symbol/behavior. GREEN reruns RED plus the named boundary test. REFACTOR runs
+only for the named missing symbol/behaviour. GREEN reruns RED plus the named boundary test. REFACTOR runs
 `ferret-cli:test:quick`. Unexpected RED, failed GREEN, or failed refactor returns to that packet.
 
 ### Phase 3 command packets
 
 These named packets are literal and reusable in Phases 3–5. `OWNER-QUICK` expects exit 0 and Unit runtime
-coverage ≥99%; `E2E-QUICK` expects exit 0. A focused RED initially expects only its named missing behavior; the
+coverage ≥99%; `E2E-QUICK` expects exit 0. A focused RED initially expects only its named missing behaviour; the
 same command must exit 0 after GREEN. Save output to the evidence filename named by the invoking checkbox.
 
 | Packet               | Literal command                                                                                                                                                                                                                                                                                     |
@@ -356,8 +362,8 @@ same command must exit 0 after GREEN. Save output to the evidence filename named
       `C01-UNIT`; expect RED naming only missing `resolve_data_home`/`initialize_store`. Save
       `ac-cli-01-red.txt`.
 - [ ] [AI] Implement `apps/ferret-cli/src/ferret/adapters/filesystem.py::resolve_data_home` and
-      `apps/ferret-cli/src/ferret/application/initialization.py::initialize_store`, POSIX `0700/0600`, Windows
-      current-user+SYSTEM protected DACL, symlink/reparse refusal, and idempotent lock; run `C01-UNIT` and
+      `apps/ferret-cli/src/ferret/application/initialization.py::initialize_store`, POSIX `0700/0600`,
+      symlink and hard-link refusal, and idempotent lock; run `C01-UNIT` and
       `C01-INTEGRATION`. Expect one
       identity/database; save `ac-cli-01-green.txt`.
 - [ ] [AI] Run `OWNER-QUICK`; expect zero/≥99%; save `ac-cli-01-refactor.txt`.
@@ -388,7 +394,7 @@ same command must exit 0 after GREEN. Save output to the evidence filename named
       `apps/ferret-cli/tests/unit/steps/test_initialization_and_concurrency_steps.py::test_capture_concurrently_across_repositories`,
       and add `tests/integration/test_sqlite_repository.py::test_three_repository_burst`. Run
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --args='tests/unit/steps/test_initialization_and_concurrency_steps.py'`;
-      expect RED naming missing capture transaction behavior. Save `ac-cli-05-red.txt`.
+      expect RED naming missing capture transaction behaviour. Save `ac-cli-05-red.txt`.
 - [ ] [AI] Implement `apps/ferret-cli/src/ferret/adapters/sqlite_repository.py::SQLiteEventRepository.capture`
       with WAL/FULL/foreign-keys/250 ms busy timeout, short `BEGIN IMMEDIATE`, idempotency, rollback, and closure.
       Rerun the RED command plus `C05-INTEGRATION`; expect one durable row per successful event and no duplicate/
@@ -403,7 +409,7 @@ same command must exit 0 after GREEN. Save output to the evidence filename named
       `apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::{test_mark_an_unobservable_capability_unknown,test_round_trip_the_same_capability_through_two_snapshots,test_reject_a_conflicting_capability_snapshot}`;
       add `apps/ferret-cli/tests/unit/test_capabilities.py::test_capability_snapshot_matrix` and
       `apps/ferret-cli/tests/integration/test_capability_repository.py::test_snapshot_idempotency_and_composite_items`.
-      Run `C06-UNIT`; expect RED naming only missing immutable snapshot/composite-key/idempotency behavior. Save
+      Run `C06-UNIT`; expect RED naming only missing immutable snapshot/composite-key/idempotency behaviour. Save
       `ac-cli-06-red.txt`.
 - [ ] [AI] Implement `apps/ferret-cli/src/ferret/domain/capability.py::CapabilitySnapshot` and
       `apps/ferret-cli/src/ferret/adapters/sqlite_repository.py::SQLiteCapabilityRepository.store_snapshot`,
@@ -487,23 +493,21 @@ Expect three zero exits and labelled schema/index/WAL/prune/compaction bytes; ex
 
 ### AC-CLI-12 — Exact per-user install/uninstall
 
-- [ ] [AI] Add “Remove FERRET without changing harness behavior” to
+- [ ] [AI] Add “Remove FERRET without changing harness behaviour” to
       `specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature`, bind it at
-      `apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_remove_ferret_without_changing_harness_behavior`,
+      `apps/ferret-cli/tests/unit/steps/test_fail_open_capabilities_and_platforms_steps.py::test_remove_ferret_without_changing_harness_behaviour`,
       and add `apps/ferret-cli-e2e/tests/test_user_install.py::test_user_install_update_uninstall`. Run
-      `C12-UNIT` and `C12-E2E`; expect RED naming missing manifest/launcher/ownership behavior. Save
+      `C12-UNIT` and `C12-E2E`; expect RED naming missing manifest/launcher/ownership behaviour. Save
       `ac-cli-12-red.txt`.
-- [ ] [AI] Implement POSIX paths plus Windows artifact
-      `%LOCALAPPDATA%\Programs\Ferret\versions\<version>\ferret.pyz`, stable launcher
-      `%LOCALAPPDATA%\Programs\Ferret\ferret.cmd`, strict protected-DACL manifest
-      `%LOCALAPPDATA%\Programs\Ferret\install.json`, exact current-user PATH parent, staged flush/atomic replace
-      with manifest last in `apps/ferret-cli/src/ferret/application/install.py::{install_user,uninstall_user}`
-      and `adapters/windows_install.py::{stage_install,recover_install}`. Inject crashes (a) before artifact
+- [ ] [AI] Implement `$HOME/.local/share/ferret/<version>/ferret.pyz`, the `$HOME/.local/bin/ferret` symlink,
+      the owner-only manifest `$HOME/.local/share/ferret/install.json`, and staged flush with atomic replace and
+      manifest last in `apps/ferret-cli/src/ferret/application/install.py::{install_user,uninstall_user}`
+      and `adapters/posix_install.py::{stage_install,recover_install}`. Inject crashes (a) before artifact
       replace: old manifest/launcher/artifact remain; (b) after artifact before launcher: old manifest remains and
       recovery removes/ignores unowned staged version; (c) after launcher before manifest: old manifest remains,
       ownership mismatch prevents deletion and recovery restores old launcher or completes new manifest; (d)
-      after manifest replace: new manifest/launcher/digest are authoritative. Run `C12-E2E` on Linux/macOS/
-      Windows; expect exact pre/post-manifest recovery states, bytes/paths, and no Windows adapter. Save
+      after manifest replace: new manifest/launcher/digest are authoritative. Run `C12-E2E` on macOS and Linux;
+      expect exact pre/post-manifest recovery states, bytes, and paths. Save
       `ac-cli-12-green.txt`.
 - [ ] [AI] Run `OWNER-QUICK` and `E2E-QUICK`; expect zero; save `ac-cli-12-refactor.txt`.
 
@@ -523,7 +527,7 @@ All checks must pass before starting Phase 4.
       `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- python apps/ferret-cli-e2e/src/storage_benchmark.py --events 100000 --seed 20260918 --output plans/in-progress/ferret-init-01-local-cli/evidence/phase-3/storage.json`.
       Expect zero and complete labelled measurements; save `gate-storage.txt`.
 
-> **Pause Safety:** standalone CLI behavior is green and no repository harness calls it. Resume with
+> **Pause Safety:** standalone CLI behaviour is green and no repository harness calls it. Resume with
 > `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:quick`.
 
 ## Phase 4 — POSIX Harness Adapters
@@ -531,9 +535,10 @@ All checks must pass before starting Phase 4.
 **Input:** green standalone CLI and Phase 0 verified lifecycle registrations.
 
 **Outcome:** Claude Code, Codex, and OpenCode POSIX adapters pass raw payloads through one Python privacy
-boundary and cannot disturb the harness. Windows remains CLI-local.
+boundary and cannot disturb the harness.
 
-**Proof:** `evidence/phase-4/{adapters-red,adapters-green,adapters-refactor,smoke,gate}.txt`.
+**Proof:** `evidence/phase-4/{adapters-red,adapters-green,adapters-refactor,ci-evidence-refactor,smoke}.txt`
+and `evidence/phase-4/gate-{adapters,projects,bindings,ci}.txt`.
 
 **Canonical ACs:** AC-CLI-04, AC-CLI-06, and AC-CLI-12; supplements AC-CLI-02/03 privacy.
 
@@ -566,12 +571,6 @@ boundary and cannot disturb the harness. Windows remains CLI-local.
       `codex exec "Read README.md and return one word"`, and
       `opencode run "Read README.md and return one word"` where available. Expect unchanged harness output,
       metadata-only rows, and explicit `unverified` rather than pass when unavailable. Save `smoke.txt`.
-- [ ] [AI] **RED CI evidence:** add
-      `apps/ferret-cli/tests/unit/test_ci_evidence_tools.py::{test_rejects_each_private_windows_value,test_accepts_sanitized_windows_files,test_computes_artifact_and_cache_budgets,test_lists_only_owned_expired_artifacts}`.
-      Run
-      `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:test:unit --args='tests/unit/test_ci_evidence_tools.py'`;
-      require assertion failure naming missing `verify_windows_evidence`/`github_storage_budget`, never import or
-      environment failure. Save `ci-evidence-red.txt`.
 - [ ] [AI] **GREEN CI evidence:** add `.github/actions/setup-python/action.yml` plus its `.github/actions/README.md`
       catalog entry, then edit `.github/workflows/pr-quality-gate.yml` and
       `.github/workflows/non-product-full-quality.yml`. In the PR workflow, expose `has-python`, initialize it
@@ -583,60 +582,17 @@ boundary and cannot disturb the harness. Windows remains CLI-local.
       `evidence_nonce` to `workflow_dispatch`, and set
       `run-name: non-product-full-quality-${{ inputs.evidence_nonce || 'scheduled' }}`. Add Python setup and
       `ferret-cli,ferret-cli-e2e` to `unit-and-static`, Python setup and `ferret-cli` to `integration`, and Python
-      setup plus `ferret-cli-e2e` to Ubuntu `e2e`, preserving quick → Integration → E2E ordering. Add job
-      `ferret-cli-windows`, display name
-      `FERRET CLI Windows local proof`, `needs: integration`, `runs-on: windows-2025`, and timeout 30 minutes.
-      Use `actions/checkout@v6` with `persist-credentials: false`, existing Node 24 setup,
-      `actions/setup-python@v6` exact 3.14.7, and setup-uv commit
-      `bec219d24cd3e171d82865faccec33120bb574f4` (`v10.1.0`) with uv 0.12.16 and the two official release-asset
-      SHA-256 values recorded in tech-doc 003. Configure setup-uv's literal `enable-cache: true`,
-      `restore-cache: true`, `save-cache: ${{ github.ref == 'refs/heads/main' }}`, FERRET `uv.lock`
-      `cache-dependency-glob`, and `cache-suffix: ${{ runner.os }}`. The composite uses two mutually exclusive
-      setup-uv steps: `if: runner.os == 'Linux'` with literal `version: 0.12.16` and
-      `checksum: 8e5c6e5523dffc2dcf615bd995554c84c9feb4e577808a3fb8698a639d3f8d9c`, and
-      `if: runner.os == 'Windows'` with literal `version: 0.12.16` and
-      `checksum: f730454bf09019754e5e5abd71a8aa18683cb739cba0d9c720bac2e7c901160f`; a first step rejects every other
-      `runner.os`. Forecast two at-most-500 MiB
-      entries (Ubuntu and Windows) across the single cache-writing `main` ref, or at most 1,000 MiB, below the
-      repository 10 GiB/7-day cache limits. Before install, run `python --version`, `py -3.14 --version`, and
-      `uv --version`; require exact Python 3.14.7 and uv 0.12.16. After `npm ci`, run these commands verbatim in
-      PowerShell, unfiltered:
+      setup plus `ferret-cli-e2e` to `e2e`, preserving quick → Integration → E2E ordering. The composite action
+      uses one setup-uv step with literal `version: 0.12.16` and
+      `checksum: 8e5c6e5523dffc2dcf615bd995554c84c9feb4e577808a3fb8698a639d3f8d9c`, plus setup-uv's literal
+      `enable-cache: true`, `restore-cache: true`, `save-cache: ${{ github.ref == 'refs/heads/main' }}`, the
+      FERRET `uv.lock` `cache-dependency-glob`, and `cache-suffix: ${{ runner.os }}`. No FERRET-specific job and
+      no artifact upload are added, so the plan carries no evidence sanitizer and no Actions storage budget.
+      Save the workflow diff in `smoke.txt`.
 
-```powershell
-npx nx run-many -t install --projects=ferret-cli,ferret-cli-e2e --parallel=1
-npx nx run ferret-cli:build
-npx nx run ferret-cli:test:integration
-npx nx run ferret-cli-e2e:test:e2e
-```
-
-Expect locked installs, build, all Integration tests, and all E2E tests green, including CLI-local installer
-recovery and every lifecycle adapter `unsupported_platform` assertion. Normalize JUnit and emit a redacted
-`windows-proof.json` containing command exits, exact versions, ACL/path assertions, and 5k/20k/100k local
-storage forecast. Before upload, scan every evidence file and fail on a Windows username, absolute host path,
-raw vendor fixture marker, environment secret/value, SQLite header/database bytes, or unredacted captured
-payload. Implement that closed check at `apps/ferret-cli/tests/support/verify_windows_evidence.py::main`, cover every
-forbidden class in `apps/ferret-cli/tests/unit/test_ci_evidence_tools.py`, and run
-`py -3.14 apps/ferret-cli/tests/support/verify_windows_evidence.py --junit artifacts/windows/junit.xml --proof artifacts/windows/windows-proof.json --max-compressed-bytes 1048576`
-as an ID'd `verify-windows-evidence` step with `if: always()` before upload. Enforce an aggregate compressed
-upload ceiling of 1 MiB per run. At the workflow's budgeted maximum of
-two scheduled runs plus one execution-evidence dispatch per day and seven days, this adds at most
-`1 MiB × 3 × 7 = 21 MiB`; Phase 5 must remeasure owner-wide Actions use and block merge unless existing use plus
-21 MiB is at most 500 MB. Upload only the sanitized JUnit and JSON with `actions/upload-artifact@v7`,
-`if: ${{ always() && steps.verify-windows-evidence.outcome == 'success' }}`, literal
-`if-no-files-found: error`, literal `retention-days: 7`, and literal name
-`ferret-cli-windows-evidence-${{ github.run_id }}-${{ github.run_attempt }}`. HIPPO/RTK are deliberately absent
-because they guard local compute. Save the workflow diff in `smoke.txt`.
-Implement `apps/ferret-cli/tests/support/github_storage_budget.py::main` in the same packet. It uses only
-authenticated `gh api` JSON, inventories every owner repository's Actions artifacts plus every visible
-owner package version, reads this repository's Actions cache usage, performs byte arithmetic, and emits
-only repository/package names, IDs, timestamps, and sizes. Its expiry mode selects only artifacts whose
-literal name starts `ferret-cli-windows-evidence-` and whose creation time is older than seven days; it is
-dry-run by default and requires both `--apply` and explicit IDs from the dry-run file before deletion.
-
-- [ ] [AI] **REFACTOR CI evidence:** rerun the focused RED command and require zero, then run `OWNER-QUICK`,
-      `E2E-QUICK`, the Phase 4 local workflow/composite validation commands, and
-      `rtk python apps/ferret-cli/tests/support/github_storage_budget.py --help`; require zero throughout. Save
-      `ci-evidence-refactor.txt`; any failure returns to this RED/GREEN packet.
+- [ ] [AI] **REFACTOR CI evidence:** run `OWNER-QUICK`,
+      `E2E-QUICK`, and the Phase 4 local workflow/composite validation commands; require zero throughout. Save
+      `ci-evidence-refactor.txt`; any failure returns to this GREEN packet.
 
 ### Phase 4 Gate
 
@@ -657,20 +613,12 @@ rtk scripts/verify-artifact-retention.sh .github/workflows/pr-quality-gate.yml .
 ```
 
 Then run
-`{ rtk awk '/^  ferret-cli-windows:/{found=1} found{print}' .github/workflows/non-product-full-quality.yml; rtk sed -n '1,$p' .github/actions/setup-python/action.yml apps/ferret-cli/project.json apps/ferret-cli-e2e/project.json apps/ferret-cli/tests/support/verify_windows_evidence.py; } | rtk rg -ni '\b(hippo|rtk)\b'`
-and require exit 1/no output across the job, invoked local Python action, and invoked project targets. Expect
-local YAML/action syntax, retention, Python PR admission, scheduled project lists, OS-qualified
-restore-all/save-main-only cache policy with measured total at most 10 GiB/7 days, exact artifact contract, and
-hosted execution-path negative scan to pass; save `gate-windows.txt`. Runtime proof is the Phase 7 manual
-dispatch after push. A missing or unavailable route blocks Phase 5.
+`rtk rg -n "has-python|lang:python|ferret-cli|ferret-cli-e2e|setup-python" .github/workflows/pr-quality-gate.yml .github/workflows/non-product-full-quality.yml .github/actions/setup-python/action.yml`.
+Expect exit 0 from both commands above, fail-closed Python PR admission, the FERRET projects present in the
+scheduled quick, Integration, and E2E lists, and the composite action resolved; save `gate-ci.txt`. A missing or
+unavailable route blocks Phase 5.
 
-- [ ] [AI] Run
-      `rtk rg -n "runner.os == 'Linux'|runner.os == 'Windows'|version: 0.12.16|checksum: 8e5c6e5523dffc2dcf615bd995554c84c9feb4e577808a3fb8698a639d3f8d9c|checksum: f730454bf09019754e5e5abd71a8aa18683cb739cba0d9c720bac2e7c901160f|Unsupported runner.os" .github/actions/setup-python/action.yml`.
-      Require both mutually exclusive mappings, exactly two version rows, one occurrence of each checksum, and
-      the fail-closed unsupported-OS branch; append counts/output to `gate-windows.txt`.
-
-> **Pause Safety:** supported POSIX capture is complete and harmless when FERRET is absent; Windows has no
-> adapter. Resume with
+> **Pause Safety:** supported POSIX capture is complete and harmless when FERRET is absent. Resume with
 > `rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli-e2e:test:e2e --args='tests/test_harness_adapters.py'`.
 
 ## Phase 5 — Full Verification and Documentation
@@ -678,9 +626,11 @@ dispatch after push. A missing or unavailable route blocks Phase 5.
 **Input:** complete CLI, adapters, specs, enforcement, and generated bindings.
 
 **Outcome:** automatic/manual/platform/storage proof covers every command, AC, privacy boundary, and estimate;
-documentation matches measured behavior.
+documentation matches measured behaviour.
 
-**Proof:** `evidence/phase-5/{automatic,manual,retention,windows,storage,trace,gate}.txt`.
+**Proof:** `evidence/phase-5/{automatic-docs,automatic-governance,manual-capture,manual-query,manual-install,
+retention,retention-fixture-red,retention-fixture-green,retention-fixture-refactor,ci,storage,trace,gate}.txt`
+plus `evidence/phase-5/{manual-summaries,retention}.sha256`.
 
 **Canonical ACs:** AC-CLI-01..12 and all CLI-contract scenarios.
 
@@ -703,8 +653,8 @@ documentation matches measured behavior.
       `manual-evidence-red.txt`.
 - [ ] [AI] **GREEN manual evidence:** implement `apps/ferret-cli/tests/support/manual_evidence.py::main`. Its closed
       `capture`, `query`, and `install` cases create an owned run marker under the required repository-relative
-      `local-tmp/ferret-plan01/<run-id>/`, set `HOME`, `XDG_DATA_HOME`, `XDG_CONFIG_HOME`, `APPDATA`,
-      `LOCALAPPDATA`, and `FERRET_DATA_HOME` beneath that root for every child, and refuse any pre-existing root
+      `local-tmp/ferret-plan01/<run-id>/`, set `HOME`, `XDG_DATA_HOME`, and `FERRET_DATA_HOME`
+      beneath that root for every child, and refuse any pre-existing root
       without the same run marker. Raw stdout/stderr/JSON/database/install paths stay only in `local-tmp`; the
       requested tracked summary contains only case/command labels, numeric exits, byte counts, relative
       filenames, SHA-256 values, and assertions—never raw payload/output, environment values, usernames, or
@@ -770,41 +720,10 @@ and `expiredBeforeAckTotal=0`. Run `C09-INTEGRATION` plus the focused helper tes
 reason to widen/retry. Save `retention-fixture-refactor.txt`.
 
 - [ ] [AI] Inspect `.github/workflows/pr-quality-gate.yml`, `.github/workflows/non-product-full-quality.yml`,
-      `.github/actions/setup-python/action.yml`, Windows fixtures, and redacted evidence serializer. Verify that
-      the later isolated job will inspect artifact/launcher/manifest bytes, protected DACL, HKCU PATH parent,
-      atomic recovery, mismatch refusal, owned-files-only uninstall, data preservation/purge, absent adapters,
-      normalized JUnit, privacy scan, and storage forecast. Run
-      `rtk rg -n "has-python|lang:python|python:|ferret-cli-windows|FERRET CLI Windows local proof|windows-2025|timeout-minutes: 30|upload-artifact@v7|if-no-files-found: error|retention-days: 7|ferret-cli-windows-evidence|windows-proof.json" .github/workflows/pr-quality-gate.yml .github/workflows/non-product-full-quality.yml .github/actions/setup-python apps/ferret-cli-e2e`,
-      the Phase 4 `actionlint`/retention commands, and its hosted-job negative HIPPO/RTK scan. Then run:
-
-```bash
-FERRET_RUN_ID="<resolved-phase-0-run-id>"
-FERRET_OWNER="$(rtk gh repo view --json owner --jq '.owner.login')"
-FERRET_REPO="$(rtk gh repo view --json name --jq '.name')"
-FERRET_STORAGE_RAW="local-tmp/ferret-plan01/${FERRET_RUN_ID}/github-storage"
-FERRET_STORAGE_SUMMARY="plans/in-progress/ferret-init-01-local-cli/evidence/phase-5/windows-storage.txt"
-mkdir -p "$FERRET_STORAGE_RAW"
-rtk python apps/ferret-cli/tests/support/github_storage_budget.py inventory --owner "$FERRET_OWNER" --repo "$FERRET_REPO" --artifact-prefix ferret-cli-windows-evidence- --artifact-max-bytes 1048576 --runs-per-day 3 --retention-days 7 --cache-entry-max-bytes 524288000 --cache-writers 2 --raw-output "$FERRET_STORAGE_RAW/inventory.json" --summary "$FERRET_STORAGE_SUMMARY"
-rtk rg -n '^(actions_artifact_bytes|visible_package_bytes|ferret_forecast_bytes|owner_total_with_ferret_bytes|cache_usage_bytes|cache_forecast_bytes|assertion)=' "$FERRET_STORAGE_SUMMARY"
-rtk python apps/ferret-cli/tests/support/github_storage_budget.py expire-owned --owner "$FERRET_OWNER" --repo "$FERRET_REPO" --artifact-prefix ferret-cli-windows-evidence- --older-than-days 7 --dry-run --ids-output "$FERRET_STORAGE_RAW/owned-expiry-candidates.json"
-if rtk rg -n '(/Users/|/home/|[A-Za-z]:\\Users\\|token|secret)' "$FERRET_STORAGE_SUMMARY"; then exit 1; fi
-```
-
-Replace the run ID. The inventory paginates every owner repository's Actions artifacts and every visible owner
-package version, performs exact integer byte sums, adds the 21 MiB FERRET forecast, reads repository cache
-usage, and requires owner artifact/package total at most 500 MB plus cache actual/forecast at most 10 GiB/7
-days. If over budget, retain the dry-run list and stop. Only after separate explicit deletion authority may
-execution run the same `expire-owned` command with
-`--apply --ids-input "$FERRET_STORAGE_RAW/owned-expiry-candidates.json"`; it must reject any ID/name outside the
-exact FERRET prefix/age predicate, then rerun `inventory`. Never delete unowned artifacts or packages. Expect
-all contract markers and budgets; save the sanitized summary as `windows-storage.txt` and the remaining static
-inspection as `windows.txt`.
-The hosted job's exact commands are
-`npx nx run-many -t install --projects=ferret-cli,ferret-cli-e2e --parallel=1`,
-`npx nx run ferret-cli:build`, `npx nx run ferret-cli:test:integration`, and
-`npx nx run ferret-cli-e2e:test:e2e`. Record `pending-phase-7-windows-dispatch` (not pass) in `trace.txt`;
-Phase 7 replaces it with current-head run/job/artifact proof before merge. Failure returns to AC-CLI-01/12.
-
+      and `.github/actions/setup-python/action.yml`. Run
+      `rtk rg -n "has-python|lang:python|python:|ferret-cli|ferret-cli-e2e" .github/workflows/pr-quality-gate.yml .github/workflows/non-product-full-quality.yml .github/actions/setup-python`
+      plus the Phase 4 `actionlint` and retention commands. Expect fail-closed Python PR admission and the
+      FERRET projects present in the scheduled quick, Integration, and E2E lists. Save `ci.txt`.
 - [ ] [AI] Rerun the 100,000-event benchmark from a clean store; reconcile SQLite/index/WAL/freelist/high-water
       measurements and 5k/20k/100k projections with the BRD envelope. Save `storage.txt`; unexplained deviation
       blocks delivery. Use the exact Phase 3 storage-benchmark command and save `storage.txt`.
@@ -828,7 +747,7 @@ All checks must pass before starting Phase 6.
       expect exit 1 and no output. Append both transcripts to `gate.txt`; a count mismatch or match reopens the
       owning AC packet.
 
-> **Pause Safety:** DU-01 behavior and documentation are complete with reproducible evidence. Resume with
+> **Pause Safety:** DU-01 behaviour and documentation are complete with reproducible evidence. Resume with
 > `rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- ./rhino gate run --surface=pre-push`.
 
 ## Phase 6 — Knowledge, Preliminary Audit, and Archive Boundary
@@ -857,7 +776,7 @@ archive transcript, archive SHA/parent, and gate transcripts in external
       Expect every applicable destination command exit 0 and record the resolved command/path in
       `learnings.txt`; a placeholder, open row, or missing authority blocks archive.
 - [ ] [AI] Create `evidence/preliminary-delivery-audit.md` tracing ACs, contract/hash/snapshots, counters,
-      numeric prune, Windows manifest, rules Steps 0–8, storage, rollback, automatic/manual proof, and file ledger.
+      numeric prune, install manifest, rules Steps 0–8, storage, rollback, automatic/manual proof, and file ledger.
       Run `rtk rg -n "FAIL|OPEN|MISSING|ASSUMED" evidence/preliminary-delivery-audit.md`; expect no blocking row.
       Save `preliminary-audit.txt`; reopen the earliest owning phase otherwise.
 - [ ] [AI] Reconcile `evidence/phase-0/file-ledger.pathspec` against `rtk git status --short`, rejecting unrelated
@@ -887,7 +806,7 @@ status. Never stage by directory or `-A`; never push or create a separate rules 
 
 ```text
 Validate completed implementation for plan-path=plans/in-progress/ferret-init-01-local-cli/ at candidate-ref=<FERRET_CANDIDATE_SHA> and candidate-tree=<FERRET_CANDIDATE_TREE>.
-Check every BRD outcome, PRD AC-CLI-01..12, delivery checkbox/evidence path, File-Impact path, Windows hosted proof route, rules manifest, privacy/hash/retention contract, and automatic/manual gate.
+Check every BRD outcome, PRD AC-CLI-01..12, delivery checkbox/evidence path, File-Impact path, CI route, rules manifest, privacy/hash/retention contract, and automatic/manual gate.
 Write the normal report under local-tmp/plan-execution/. Return Status Complete and Total Findings 0 only when no required proof is missing.
 ```
 
@@ -1064,7 +983,7 @@ mirrors. Any repair returns to its Phase 1–6 owner and repeats the Phase 6 bou
 FERRET_BRANCH="ferret-init-01-local-cli"
 FERRET_PHASE7_EVIDENCE="local-tmp/plan-execution/ferret-init-01-<resolved-run-id>/phase-7"
 FERRET_PR_TITLE="feat(ferret): add standalone local cli"
-FERRET_PR_BODY="Deliver FERRET Plan 01: standalone local Python CLI, SQLite retention, POSIX fail-open adapters, Windows CLI-only proof, Gherkin, and governance. New-code cost: local storage and harness integration. Benefit: durable privacy-bounded usage evidence."
+FERRET_PR_BODY="Deliver FERRET Plan 01: standalone local Python CLI, SQLite retention, POSIX fail-open adapters, Gherkin, and governance. New-code cost: local storage and harness integration. Benefit: durable privacy-bounded usage evidence."
 rtk git branch --show-current
 rtk git push -u origin "$FERRET_BRANCH"
 rtk gh pr list --state open --base main --head "$FERRET_BRANCH" --json number,url,headRefOid,baseRefOid,isDraft
@@ -1081,52 +1000,6 @@ and its `headRefOid` equal local HEAD. Save exact output and 40-character head/b
 `$FERRET_PHASE7_EVIDENCE/pr.txt`; a second PR,
 wrong base, or mismatched head blocks.
 
-- [ ] [AI] Manually dispatch the existing full-quality workflow for the exact pushed branch:
-
-```bash
-FERRET_BRANCH="ferret-init-01-local-cli"
-FERRET_PHASE7_EVIDENCE="local-tmp/plan-execution/ferret-init-01-<resolved-run-id>/phase-7"
-FERRET_WINDOWS_EVIDENCE="local-tmp/ferret-plan01-windows"
-FERRET_PR_HEAD="$(rtk gh pr view "$FERRET_BRANCH" --json headRefOid --jq '.headRefOid')"
-FERRET_DISPATCH_NONCE="ferret-${FERRET_PR_HEAD}-$(rtk date -u +%Y%m%dT%H%M%SZ)"
-FERRET_DISPATCH_TITLE="non-product-full-quality-${FERRET_DISPATCH_NONCE}"
-FERRET_PRE_DISPATCH_RUNS="$FERRET_WINDOWS_EVIDENCE/pre-dispatch-runs.json"
-mkdir -p "$FERRET_WINDOWS_EVIDENCE"
-rtk gh run list --workflow=non-product-full-quality.yml --branch="$FERRET_BRANCH" --event=workflow_dispatch --limit=100 --json databaseId,displayTitle,headSha,createdAt >"$FERRET_PRE_DISPATCH_RUNS"
-rtk gh workflow run non-product-full-quality.yml --ref "$FERRET_BRANCH" -f "evidence_nonce=$FERRET_DISPATCH_NONCE"
-```
-
-After two minutes, resolve the dispatched run with this exact set-difference packet:
-
-```bash
-FERRET_POST_DISPATCH_RUNS="$FERRET_WINDOWS_EVIDENCE/post-dispatch-runs.json"
-rtk gh run list --workflow=non-product-full-quality.yml --branch="$FERRET_BRANCH" --event=workflow_dispatch --limit=100 --json databaseId,displayTitle,headSha,createdAt,event >"$FERRET_POST_DISPATCH_RUNS"
-FERRET_WINDOWS_RUN="$(rtk jq -er --arg title "$FERRET_DISPATCH_TITLE" --arg head "$FERRET_PR_HEAD" --slurpfile before "$FERRET_PRE_DISPATCH_RUNS" '
-  [.[] | select(.displayTitle == $title and .headSha == $head and .event == "workflow_dispatch") |
-   select(.databaseId as $id | ($before[0] | map(.databaseId) | index($id) | not))] |
-  if length == 1 then .[0].databaseId else error("expected exactly one attributable dispatch") end
-' "$FERRET_POST_DISPATCH_RUNS")"
-rtk gh run view "$FERRET_WINDOWS_RUN" --json headSha,event,displayTitle,status,conclusion,url,jobs
-```
-
-Require exactly one new database ID; zero, more than one, a title mismatch, or a head mismatch blocks instead
-of falling back to a historical “latest” run. Poll
-`rtk gh run view "$FERRET_WINDOWS_RUN" --json headSha,event,displayTitle,status,conclusion,url,jobs` every two
-minutes; do not use `gh run watch`. Only after terminal workflow conclusion `success` and job
-`FERRET CLI Windows local proof` success, resolve
-
-```bash
-FERRET_WINDOWS_ATTEMPT="$(rtk gh api "repos/{owner}/{repo}/actions/runs/$FERRET_WINDOWS_RUN" --jq '.run_attempt')"
-rtk gh run download "$FERRET_WINDOWS_RUN" --name "ferret-cli-windows-evidence-${FERRET_WINDOWS_RUN}-${FERRET_WINDOWS_ATTEMPT}" --dir "$FERRET_WINDOWS_EVIDENCE/${FERRET_WINDOWS_RUN}-${FERRET_WINDOWS_ATTEMPT}"
-rtk python apps/ferret-cli/tests/support/verify_windows_evidence.py --junit "$FERRET_WINDOWS_EVIDENCE/${FERRET_WINDOWS_RUN}-${FERRET_WINDOWS_ATTEMPT}/junit.xml" --proof "$FERRET_WINDOWS_EVIDENCE/${FERRET_WINDOWS_RUN}-${FERRET_WINDOWS_ATTEMPT}/windows-proof.json" --max-compressed-bytes 1048576
-```
-
-Require `headSha` still equals the
-current PR `headRefOid`, and privacy-scan the downloaded normalized JUnit/`windows-proof.json` with no host
-username/path, secret, SQLite bytes, or raw payload. If `headRefOid` or `baseRefOid` changes, redispatch and
-replace the evidence with the new current-head/base run. Save nonce, pre/post run inventories, run/job/artifact
-IDs, byte sizes, privacy scan, and hashes in `$FERRET_PHASE7_EVIDENCE/checks.txt`.
-
 - [ ] [AI] Poll CI every two minutes without `gh run watch`. Run `rtk gh pr checks --required`; require
       exact-head/base `pr-quality-gate.yml`, applicable finite CLI/spec/rule/binding gates, and one authenticated
       clean current-head `pr-leak-review`. For the leak proof, call the `pr-review-security-maker` Agent in
@@ -1137,7 +1010,7 @@ IDs, byte sizes, privacy scan, and hashes in `$FERRET_PHASE7_EVIDENCE/checks.txt
       numeric `review-id`, `review-author`, `reviewed-head`, `base-ref`, `base-sha`, `final-status`, and typed counts
       in `$FERRET_PHASE7_EVIDENCE/leak-review-output.json`; record other check IDs/conclusions in
       `$FERRET_PHASE7_EVIDENCE/checks.txt`. A missing/ambiguous review ID, nonzero count, fix, or stale head/base
-      restarts Phase 7, including the Windows dispatch.
+      restarts Phase 7.
 - [ ] [AI] Only after those checks are green, complete rules-propagation Step 9 against this same PR, record PR
       URL/head/base and the recorded `ose-private` obligation (`ferret-python-harness-governance` objective,
       worktree basename, and branch; not executed), and set manifest terminal `final-status: landed`. Run
@@ -1194,7 +1067,7 @@ rtk jq -e --arg repository "$FERRET_OWNER/$FERRET_REPO" --argjson pull_request "
 ' "$FERRET_PHASE7_EVIDENCE/typed-leak-review.json"
 rtk gh api graphql -F owner="$FERRET_OWNER" -F name="$FERRET_REPO" -F number="$FERRET_PR_NUMBER" -f query='query($owner:String!,$name:String!,$number:Int!){repository(owner:$owner,name:$name){pullRequest(number:$number){reviewThreads(first:100){nodes{isResolved} pageInfo{hasNextPage}}}}}' >"$FERRET_PHASE7_EVIDENCE/review-threads.json"
 rtk jq -e '.data.repository.pullRequest.reviewThreads.pageInfo.hasNextPage == false and ([.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved == false)] | length == 0)' "$FERRET_PHASE7_EVIDENCE/review-threads.json"
-printf '%s\n' 'surface-gate=not-applicable:no-browser-ui-or-http-api; CLI-process, POSIX-adapter, and Windows-local gates passed' >"$FERRET_PHASE7_EVIDENCE/surface-gate.txt"
+printf '%s\n' 'surface-gate=not-applicable:no-browser-ui-or-http-api; CLI-process and POSIX-adapter gates passed' >"$FERRET_PHASE7_EVIDENCE/surface-gate.txt"
 test "$(rtk git rev-parse HEAD)" = "$FERRET_REVIEWED_HEAD"
 test -z "$(rtk git status --short)"
 rtk gh pr merge "$FERRET_BRANCH" --squash
@@ -1219,9 +1092,8 @@ All checks must pass after the mandatory merge and before mandatory Phase 8.
 
 - [ ] [AI] Run `rtk gh pr checks --required`. Expect every required check green for the recorded head/base; save
       `$FERRET_PHASE7_EVIDENCE/gate.txt`.
-- [ ] [AI] Run `rtk gh run view "$FERRET_WINDOWS_RUN" --json headSha,conclusion,jobs` and
-      `rtk gh pr view "$FERRET_BRANCH" --json state,mergedAt,mergeCommit,headRefOid`; expect the Windows workflow/
-      job green for the reviewed head and the PR merged. Run
+- [ ] [AI] Run `rtk gh pr view "$FERRET_BRANCH" --json state,mergedAt,mergeCommit,headRefOid`; expect the PR
+      merged for the reviewed head. Run
       `rtk git merge-base --is-ancestor "$FERRET_MERGE_SHA" origin/main`; expect zero. Append to
       `$FERRET_PHASE7_EVIDENCE/gate.txt`.
 - [ ] [AI] Replace `<resolved-run-id>` with the Phase 1 value and run
@@ -1239,7 +1111,7 @@ All checks must pass after the mandatory merge and before mandatory Phase 8.
       scope-pathspec sorted inventories, require the same zero diff and both stored pathspec hashes as Phase 6,
       and require only the audited plan rename/index/backlink/activation delta.
       Any other tracked write—including changed plan content under `plans/done/`—invalidates the checker,
-      commit, push, Windows run, CI, leak review, and Phase 7.
+      commit, push, CI, leak review, and Phase 7.
 
 > **Pause Safety:** the exact reviewed PR head and its squash merge commit are recorded and verified. Resume with
 > `rtk git merge-base --is-ancestor "$FERRET_MERGE_SHA" origin/main`.

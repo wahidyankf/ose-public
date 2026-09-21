@@ -4,7 +4,7 @@ This directory is the reader-led technical form for Plan 01. Read it in order be
 `delivery.md`.
 
 1. [Architecture and harness contracts](001-architecture-and-harness-contracts.md) — process boundaries,
-   command behavior, fail-open adapters, and concurrency.
+   command behaviour, fail-open adapters, and concurrency.
 2. [SQLite schema, privacy, and retention](002-sqlite-schema-privacy-and-retention.md) — physical data model,
    field meanings, lifecycle, migration, and storage measurement.
 3. [Decisions, sources, and file impact](003-decisions-sources-and-file-impact.md) — alternatives, verified

@@ -1,0 +1,140 @@
+Decision D16 executed: the release surface, its rule, and its tests.
+Written by the terminal closure delivery. See A65 for why this arrives after archival.
+
+--- what was missing
+git tag --list                      one tag, parked/churn-2026-07-19; no ferret-cli/v*
+gh release list                     empty for the whole repository
+.github/workflows/                  no release workflow
+ferret version                      0.1.0, matching no tag
+grep -rn D16 over the plan          exactly one hit: D16's own heading
+
+--- what this delivery adds
+.github/workflows/ferret-cli-release.yml            tag-triggered build and publish
+apps/ferret-cli/tests/unit/test_release_contract.py  the tag round trip, as a property
+repo-governance/.../filename-grammar-and-vocabulary.md  the `release` verb, unenforced by decision
+repo-governance/.../target-file-set.md               the new filename, unenforced by decision
+.github/workflows/README.md                          one family row
+apps/ferret-cli/README.md                            the install-from-release path
+plans/.../tech-docs/003-...md                         execution status recorded on D16 itself
+
+The workflow checks five things the tag alone does not: the tag object is annotated rather than
+lightweight; the tag carries the ferret-cli/vX.Y.Z form; its version equals the version declared in
+src/ferret/__init__.py; the build reproduces byte for byte across two runs; and the built artifact's own
+`version` output equals the tagged version. It writes no branch, so the release is a tag-and-artifact
+operation and not a deploy.
+
+The annotated-tag check was added after the terminal audit, as its finding 15: `gh release create
+--verify-tag` only checks that the tag exists, so a lightweight tag would have published a release that
+does not match the decision the workflow cites in its own comment. A73 records it.
+
+--- RED proof for the new tests, six mutations, each reverted
+M1 to M5 ran before the terminal audit; M6 ran after it, for the annotated-tag check.
+
+--- baseline, unmutated
+exit=0  release contract, expect 0
+exit=0  command contract, expect 0
+
+--- M1: tag glob prefix no longer matches the strip prefix
+exit=1  expect non-zero
+
+--- M2: workflow reads the version from a different file
+exit=1  expect non-zero
+
+--- M3: workflow gains a branch write
+exit=1  expect non-zero
+
+--- M4: the release workflow is absent
+exit=1  expect non-zero
+
+--- M5: pyproject version disagrees with the package version
+exit=1  expect non-zero
+
+--- M6: the annotated-tag comparison always passes (`if [ "$KIND" != "tag" ]` -> `if false`)
+exit=1  expect non-zero
+  FAILED tests/unit/test_release_contract.py::test_the_release_workflow_requires_an_annotated_tag
+  1 failed, 7 passed
+
+--- restored
+exit=0  expect 0
+exit=0  expect 0
+ M repo-governance/development/infra/github-actions-workflow-naming/filename-grammar-and-vocabulary.md
+ M repo-governance/development/infra/github-actions-workflow-naming/target-file-set.md
+?? .github/workflows/ferret-cli-release.yml
+?? apps/ferret-cli/tests/unit/test_release_contract.py
+
+The first mutation breaks the tag round trip, the second points the workflow at a file that is not the
+version source, the third gives the workflow a branch write, the fourth removes the workflow, the fifth
+makes pyproject.toml disagree with the package, and the sixth disables the annotated-tag comparison.
+Each turned its suite RED; the restored tree is GREEN and carries no unintended change.
+
+The annotated-tag case reads only the workflow's non-comment lines. The first draft of an earlier case
+matched comment prose describing the rule, which is L30's defect: asserting a string where a property is
+meant. `effective_lines()` strips comments so the prose can neither satisfy nor break a check of the rule
+it describes.
+
+--- suites at this delivery's candidate
+  All checks passed!
+  All checks passed!
+  TOTAL                                       1760      0   100%
+  Required test coverage of 99% reached. Total coverage: 100.00%
+  ============================ 1231 passed in 11.70s =============================
+  QUICK_EXIT=0
+  ============================= 332 passed in 31.23s =============================
+  INTEGRATION_EXIT=0
+  ======================== 150 passed in 61.11s (0:01:01) ========================
+  E2E_EXIT=0
+
+The unit count moves from 1224 to 1231: the seven new release-contract cases. Line coverage stays at
+100.00% over 1760 statements, because the new file is a test and adds no production code.
+
+--- after the terminal audit's repairs, re-run uncached on the final tree
+  TOTAL                                       1760      0   100%
+  Required test coverage of 99% reached. Total coverage: 100.00%
+  ============================ 1232 passed in 18.88s =============================
+  ferret-cli:test:quick                    exit=0  (6 features, 38 expanded scenarios, unit+integration)
+  rhino md internal-link validate          exit=0  (12077 links, no findings)
+
+1231 becomes 1232: the eighth release-contract case, the annotated-tag check. Statement count and
+coverage are unchanged for the same reason as above. The integration and e2e suites were not re-run
+after the repairs, because every change since the audited candidate is Markdown plus the workflow file
+and its unit case, and neither suite reads any of them; the e2e figures above are the audit's own and
+carry its finding 10.
+
+--- gates
+  rhino governance word-budget validate    exit=0
+
+head=7f4affb6ab3762ec31d0a1536e3c121c43d2614f
+utc=2026-09-22T01:43:49Z
+
+Second write, after the terminal audit's repairs. The head above is `origin/main`, unchanged; the
+sections above marked "after the terminal audit's repairs" and mutation M6 were added at:
+utc=2026-09-22T03:10:41Z
+word-budget re-run at the second write  exit=0
+
+--- third write: how the workflow invokes nx (A74)
+utc=2026-09-22T03:31:50Z
+
+The workflow wrapped all three of its nx calls in the local HIPPO consumer. It was the only workflow
+in .github/workflows/ to do so; pr-quality-gate.yml runs `npx nx run ferret-cli:install` directly and proves
+that form on a runner. The consumer's local policy file is gitignored and absent on a runner, and
+hippo-consumer-smoke.yml sets three environment variables to invoke the consumer there at all. The
+governance rule is explicit: "Ordinary hosted PR CI retains runner-native controls".
+
+A ninth unit case now binds it. Unlike M1-M6 this one needed no mutation: the pre-fix workflow itself
+was the RED state, which is stronger evidence than a synthetic one.
+
+  before the fix  1 failed, 8 passed   the case names the three consumer invocations it found
+  after the fix   9 passed             no non-comment line invokes the consumer
+
+Full quick suite re-run uncached after the fix:
+
+  TOTAL                                       1760      0   100%
+  Required test coverage of 99% reached. Total coverage: 100.00%
+  ============================ 1233 passed in 10.40s =============================
+  ferret-cli:test:quick                    exit=0
+
+1232 becomes 1233: the ninth release-contract case. Statements and coverage unchanged again.
+
+setup-python pins 3.14.7 through actions/setup-python@v6, so the `python3 dist/ferret.pyz version`
+step runs the pinned interpreter and not the runner default. The reproducibility step forces the
+second build with --skip-nx-cache, so a cache replay cannot make the two digests trivially equal.

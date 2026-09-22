@@ -326,6 +326,27 @@ adopt their consumer shape (a committed shim plus a `*.lock` pin) in Plan 01.
 **[Repo-grounded]** `hippo.lock`, `rhino.lock`, and the `./hippo` consumer in this repository establish the tag,
 checksum, cache, and `uname` resolution pattern this decision adopts and defers.
 
+**Execution status (A65, 2026-09-22).** D16 was decided and never wired into the delivery checklist. A
+repository-wide search for `D16` across this plan returned exactly one hit — the heading above. No checkbox,
+acceptance criterion, file-impact row, or evidence file referenced it, so no gate could catch its absence, and
+the Phase 6 preliminary audit and the Phase 8 terminal audit both missed it because both audit the checklist
+and the acceptance criteria. At the terminal close the repository held one tag, `parked/churn-2026-07-19`, no
+GitHub release at all, and no release workflow.
+
+The release **capability** is delivered by the terminal closure delivery, and the first tagged release
+follows its merge: `.github/workflows/ferret-cli-release.yml` builds the zipapp for a `ferret-cli/vX.Y.Z`
+tag, asserts the tag object is annotated, proves the build reproduces byte for byte, checks the tag against
+the declared version and the artifact's own `version` output, and publishes one `ferret-cli_vX.Y.Z.pyz`
+with `checksums.txt`. None of D16's three artifacts exists while that file is being merged, because a tag
+cannot trigger a workflow that is not yet on `main`; the terminal audit scored the earlier wording, which
+said the release half was executed, as an overstatement, and A71 carries the correction.
+`apps/ferret-cli/tests/unit/test_release_contract.py` binds the tag round trip as a property rather than a
+literal, per L30. The verb that names the workflow is propagated as
+a rule in the same delivery.
+
+The consumer half stands as written: no `./ferret` shim and no `ferret.lock` exist, and neither is due until a
+second repository consumes FERRET. That deferral was correct; only the release half was overdue.
+
 ### D17 — Rhino-aligned interaction surface, independent command structure
 
 **Selected [User decision]:** FERRET matches Rhino wherever a person's habit crosses tools — help, version,
@@ -417,9 +438,14 @@ plan/spec documentation inherit the repository MIT license; third-party packages
 │   │   ├── README.md [E] — composite-action catalog entry and inputs
 │   │   └── setup-python/action.yml [N] — composite exact Python/uv setup for macOS and Linux CI
 │   └── workflows/
+│       ├── README.md [E] — workflow-family map row for tagged releases
+│       ├── ferret-cli-release.yml [N] — tag-triggered build, reproducibility proof, and release publish
 │       ├── non-product-full-quality.yml [E] — scheduled macOS and Linux coverage
 │       └── pr-quality-gate.yml [E] — fail-closed Python detection and merge-blocking Python quick job
 ├── docs/reference/platform-bindings.md [E] — catalog and trust/capability notes
+├── repo-governance/development/infra/github-actions-workflow-naming/
+│   ├── filename-grammar-and-vocabulary.md [E] — the `release` verb and its enforcement disposition
+│   └── target-file-set.md [E] — the new workflow filename and its disposition
 ├── repo-governance/development/infra/nx-targets/
 │   ├── mandatory-targets-cli-e2e.md [E] — Python dedicated E2E install/test applicability
 │   ├── mandatory-targets-behaviour-coverage.md [E] — pytest-bdd static adapter contract
@@ -442,6 +468,13 @@ plan/spec documentation inherit the repository MIT license; third-party packages
     ├── in-progress/README.md [E] — active-plan index during execution
     └── done/README.md [E] — completion index at archival
 ```
+
+The four rows under `.github/workflows/` and
+`repo-governance/development/infra/github-actions-workflow-naming/` were added by the terminal closure
+delivery rather than before execution, because decision D16 was never scheduled and its files therefore
+had no place in the pre-execution set. The terminal audit scored the omission and A65's failure to repair
+it; A70 carries the repair. Stating when a row arrived is the point — a declared set that silently grows
+to match whatever was delivered proves nothing.
 
 The five rows above `plans/` — `package.json`, the three README indexes, and the structure reference — were
 declared after execution rather than before it, and amendment A45 records that. They are here so the declared set and

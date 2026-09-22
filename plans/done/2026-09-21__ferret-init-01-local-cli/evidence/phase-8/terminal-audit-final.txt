@@ -1,0 +1,193 @@
+ferret-init-01-local-cli — terminal completeness audit, fourth delivery
+=======================================================================
+
+workflow  = repo-governance/workflows/plan/plan-execution/finalization-end-to-end-completeness-audit.md
+pass      = terminal
+audited   = a117b28eef8ff0dbf64dfc023bd8b4d4d98ff5ff  (branch ferret-init-01-local-cli-release, PR #558)
+base      = origin/main at 7f4affb6ab3762ec31d0a1536e3c121c43d2614f
+
+status          = Complete
+total findings  = 16   (CRITICAL 0, HIGH 5, MEDIUM 7, LOW 4)
+terminal status = partial
+recommendation  = REVISE
+
+This file is the audit's own result, written after it returned. The delivery record originally named
+this file as proof before the audit had run and pre-stated its verdict; A70 withdraws that claim, and
+the sentence that made it is gone. Recording the verdict is not the same as passing it.
+
+
+1. WHAT THE AUDIT REPRODUCED INDEPENDENTLY
+------------------------------------------
+
+  unit                  1231 passed, 100.00% line coverage, 1760 statements, 0 missed
+  integration            332 passed
+  e2e                    150 passed in one run; 2 of 4 full-suite runs FAILED (finding 10)
+  ferret-cli:test:quick  exit 0, including 6 features / 38 expanded scenarios at unit and integration
+  e2e coverage:behaviour exit 0, 6 features / 38 expanded scenarios at unit and e2e
+  word-budget            exit 0
+  internal links         exit 0, 12077 links, no findings
+  readme-index,
+  frontmatter, naming,
+  heading-hierarchy      exit 0 each
+  repo-config            exit 0
+  PR #558 CI             pr-quality-gate success and validate-env success at the candidate; base green
+  leak sweep             all 482 added lines clean. Only secrets.GITHUB_TOKEN, masked, passed through
+                         env: and never echoed, plus the public owner name in a release URL
+  product source         byte-identical to 5ef8d9abd across apps/ferret-cli/src, apps/ferret-cli/scripts,
+                         .claude/hooks, .opencode/plugins, .codex, specs/apps/ferret
+  acceptance criteria    12 of 12 MET, AC-CLI-04 with the finding-10 caveat
+  BRD success measures   6 of 6 MET, measure 2 with the finding-10 caveat
+  non-goals              5 of 5 RESPECTED, with finding 16
+  knowledge capture      36 rows, one status each, but finding 12 fails this blocking gate
+
+  Checkbox honesty, checked at the ref rather than the working tree: only the two Phase 8 Gate rows
+  are newly ticked. Correctly left unticked are the Step 11 row, all three cleanup rows, and the
+  first Phase 8 Gate row. The unreachable Total Findings: 0 sentinel is left exactly as written.
+  evidence/phase-8/cleanup.txt does not overstate its nature — the audit reproduced its worktree
+  absence, branch absence, ls-remote exit 2, three-way merge containment, delete_branch_on_merge,
+  and the absent plans/in-progress/ path.
+
+  The audit's own summary of this: the A62/L31 defect did not recur as a false tick. It recurred as
+  false prose, three times, plus once in a learnings status.
+
+
+2. THE SIXTEEN FINDINGS, AND WHAT THIS DELIVERY DID WITH EACH
+-------------------------------------------------------------
+
+  Repairs are recorded as made, not as verified by a further audit. No re-audit ran.
+
+  Every repair below lands in the same commit that carries this file — the second commit of branch
+  `ferret-init-01-local-cli-release` — so a reader can verify each one at that ref rather than take
+  the word `REPAIRED` for it. Nothing below describes a commit that already existed when the audit
+  ran; the audited ref `a117b28ee` is the first commit and carries none of these repairs. Finding 11
+  is the one exception and says so in its own entry.
+
+  1  HIGH    delivery.md named this file as existing proof and pre-stated its verdict, before the
+             audit had run. A62/L31 verbatim.
+             REPAIRED — the claim is withdrawn, this file exists and carries the real verdict. A70.
+
+  2  HIGH    A68 stated the inventory carries a fourth row; at the audited ref it carried three, and
+             the record row still read `delivering` while the same file named its merge commit.
+             REPAIRED — the fourth row is written and the record row reads `delivered` with merge
+             `7f4affb6a`. A70.
+
+  3  HIGH    The Pause Safety note declared a release that does not exist as part of the terminal
+             state, so a reader following the plan's own re-verification route gets a failure.
+             REPAIRED — the release is stated as the pending post-merge action it is, with the
+             command that verifies it once the tag is pushed. A71.
+
+  4  HIGH    T-1 carried: the Phase 6 gate barrier was not exercised at its boundary, 2 h 28 min.
+             NOT REPAIRABLE — no commit undoes an ordering. A44, A56, L28.
+
+  5  HIGH    T-2 carried: a delivery cannot record the merge commit of the pull request carrying it.
+             Now applies to PR #558.
+             IRREDUCIBLE — A64, A68, L32. See section 4.
+
+  6  MEDIUM  T-4 worsened: four delivered paths absent from the File-Impact Analysis, and A65 names
+             exactly that defect while not adding the rows.
+             REPAIRED — the four rows and a note are added to tech-doc 003. A70.
+
+  7  MEDIUM  D16 was recorded as executed when only the capability exists; none of its three
+             artifacts existed, and the workflow had never run.
+             REPAIRED — reworded to capability-delivered with the first tagged release pending. A71.
+
+  8  MEDIUM  apps/ferret-cli/README.md publishes an install path that 404s until the release exists.
+             REPAIRED IN SEQUENCE, NOT IN TEXT — the tag is pushed immediately after this merge and
+             the release verified before the delivery is reported complete. A71 records that the
+             section is true from the tag push onward and that the window is deliberate, because the
+             workflow must be on main before a tag can trigger it.
+
+  9  MEDIUM  A67 claimed the ticked gate rows ran "exactly the commands they name"; the gate's
+             literal `git show-ref --verify` exits 128, and only `--quiet` exits 1, which is what
+             the evidence actually ran.
+             REPAIRED — cleanup.txt records both exit codes and which command produced which, and
+             A67's claim is narrowed to the observation rather than the exit code. A70.
+
+  10 MEDIUM  ferret-cli-e2e:test:e2e is load-sensitive: 2 of 4 full-suite runs failed, both at
+             AC-CLI-04's own 1,000 ms predicate, measured at 1.236 s under load. The -k lock subset
+             passes in isolation, so the trigger is whole-suite plus host load. Product source is
+             byte-identical to 5ef8d9abd, so this is PRE-EXISTING ON MAIN and not introduced here.
+             NOT REPAIRED — recorded as A72 and L37. AC-CLI-04 is therefore MET under the measured
+             conditions of PR #556 and NOT deterministically certified under load. This is a real
+             open defect against the repository's own rule that a flaky test is fixed at its root
+             cause, and it needs product work this delivery is not carrying.
+
+  11 MEDIUM  The mandatory current-head pr-leak-review had not run for PR #558.
+             NOT RUN WHEN THIS FILE WAS WRITTEN, AND DELIBERATELY SO — the gate binds the current
+             head, and this file's own commit changes the head, so a review run before it would be
+             void. It runs on the final head, after this commit and before the merge, on the
+             unfiltered patch per L29. It blocks the merge, not this commit. A70 records the
+             obligation; the run itself is recorded on the pull request, which is where the gate
+             reads it.
+
+  12 MEDIUM  L33 and L34 were marked `promoted` while their own evidence states nothing was written
+             into repo-governance. Blocking Knowledge Capture gate.
+             REPAIRED — both relabelled reported-without-plan-authorization, matching L31, L32, L35,
+             and learnings-terminal.txt updated to agree. A70.
+
+  13 LOW     T-5 carried: single-commit delivery record and local-midnight date divergence.
+             UNCHANGED — A57, A58.
+
+  14 LOW     The audited ref was superseded by uncommitted work in the same worktree while the audit
+             ran: the sha256sum switch and the staged fourth inventory row.
+             REPAIRED — both land in this commit. The audit's verdict stands against the ref it
+             names, and this section states every change made after it. A70.
+
+  15 LOW     The release workflow never verified that the tag is annotated, although D16, the new
+             `release` verb row, and the workflow's own comment all specify one.
+             REPAIRED — the workflow now fetches the tag object and asserts its type is `tag`. A73.
+
+  16 LOW     The release surface carries no Gherkin scenario and no acceptance criterion, and the
+             PRD's cloud-resource exclusion was not reconciled in writing.
+             PARTLY REPAIRED — the reconciliation sentence is added to the PRD's exclusions. No
+             acceptance criterion is added: writing a new AC into an archived PRD after the fact
+             would reshape the requirements the delivery was judged against, which is a worse defect
+             than the one it fixes. A73 records that choice.
+
+
+3. WHAT THE AUDIT CONFIRMED ABOUT THE RELEASE SURFACE
+-----------------------------------------------------
+
+  writes no branch      confirmed by reading and by the two unit cases that forbid `git push` and
+                        `refs/heads/` in non-comment lines and require a tag-only trigger
+  refuses a bad tag     strips the prefix and compares against __version__, then compares the built
+                        artifact's own version output, then proves the build reproduces byte for byte
+  permissions           contents: write at workflow level, the minimum for gh release create; no
+                        packages, id-token, or actions scope
+  no secret leak        GH_TOKEN passed through env: and never echoed; only digests are printed
+  conventions           ubuntu-latest and actions/checkout@v6 match the repository's 34 other
+                        checkouts; both composite actions exist; both nx targets exist
+  the release rule      on the narrowest surface that binds a workflow filename verb, with an
+                        explicit unenforced-by-decision disposition and its reason, on both surfaces
+  A69's table repair    verified by parsing: header and separator carry 4 cells, 52 rows carry 4,
+                        and exactly A1 to A19 carry 3 and render an empty Finding cell, as A69 states
+
+  What this section did NOT establish, recorded after the fact: every check above reads the workflow
+  for correctness and convention, and none of them asks whether the commands can execute on a hosted
+  runner. They cannot, as written at the audited ref. All three nx calls were wrapped in the local
+  HIPPO consumer, which no other workflow in this repository uses in CI and which the governance rule
+  excludes from hosted CI outright. A74 carries the finding and the fix. It was found before any tag
+  was pushed, so nothing published wrongly, but the audit passed a file whose release path would have
+  failed on first use, and the reason is that "the conventions match" and "it would run" are
+  different questions.
+
+
+4. WHY Total Findings: 0 IS NOT REACHABLE, AND WHERE THE PLAN WAS WRONG ABOUT IT
+--------------------------------------------------------------------------------
+
+  The audit's judgement, which this record accepts rather than softens:
+
+  Zero is unreachable for exactly two reasons. Finding 4 is an ordering that already happened, and
+  finding 5 is a self-recording artifact's inability to name its own merge commit. That floor is 2.
+
+  A64 and the previous terminal audit asserted the residue had shrunk to one 40-character
+  identifier. At the audited candidate that was false. Fourteen of the sixteen findings were
+  ordinary repairable defects, and four of them — 1, 2, 3 and 12 — were the same defect the plan
+  names as its own worst historical failure, committed again in the delivery whose stated purpose
+  was to close that record honestly.
+
+  So the plan had not reached its irreducible floor; it had stopped short of it and described
+  stopping as the floor. The sentinel stays exactly as written, because editing a gate so a result
+  passes it is the practice this repository forbids. The claim that the non-zero count was forced by
+  construction is withdrawn: most of it was not forced, and this delivery repaired it. What remains
+  after the repairs is findings 4, 5, 10, 13, and the unrepaired half of 16.

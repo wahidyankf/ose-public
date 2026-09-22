@@ -1,0 +1,50 @@
+Phase 8 cleanup and containment, observed at the terminal close.
+Written by the terminal closure delivery. head=7f4affb6ab3762ec31d0a1536e3c121c43d2614f utc=2026-09-22T01:34:26Z
+
+WHAT THIS FILE IS, AND IS NOT
+It records the post-state each Phase 8 cleanup step requires, observed directly.
+It does NOT record those steps running. The DU-01 worktree and both merged branches were
+already gone when this delivery opened, and the run directory under local-tmp/ was swept,
+so no transcript of the removal exists and none is invented here. A62 and L31 are exactly
+the defect of claiming otherwise.
+
+--- merge containment, three commands, exits recorded
+$ git fetch origin main                                                  exit=0
+$ git merge-base --is-ancestor 7e022a3fe origin/main  (PR #555)          exit=0
+$ git merge-base --is-ancestor 5ef8d9abd origin/main  (PR #556)          exit=0
+$ git merge-base --is-ancestor 7f4affb6a origin/main  (PR #557)          exit=0
+$ git cat-file -e origin/main:<done-plan>/delivery.md                    exit=0
+
+--- the active path is absent from origin/main
+$ git cat-file -e origin/main:plans/in-progress/.../delivery.md          exit=128 (128 = the path
+  does not exist in origin/main, which is the required absence; git reports a missing path this way,
+  not with 2)
+
+--- worktrees: the DU-01 route is absent; only the primary and this closure route exist
+worktree <primary>                                              (the primary checkout)
+worktree <primary>/worktrees/ferret-init-01-local-cli-release   (this closure delivery's own route)
+ferret-init-01-local-cli worktree present: 0
+
+--- local branches of this plan
+The Phase 8 Gate names `git show-ref --verify "refs/heads/$FERRET_BRANCH"` and expects exit 1. The bare
+command exits 128 on a missing ref, printing `fatal: ... not a valid ref`; only `--quiet` exits 1, and
+`--quiet` is what the loop below runs. Both were measured on git 2.39.5 for all four names:
+  bare=128  --quiet=1, for each of the four refs.
+The gate's expectation is wrong about the code, not about the absence. Found by the terminal audit; the
+gate text is left as written and this is the correction, because editing a gate so a result matches it is
+the practice this repository forbids.
+  refs/heads/ferret-init-01-local-cli  show-ref exit=1 (1 = absent, as required)
+  refs/heads/ferret-init-01-local-cli-closure  show-ref exit=1 (1 = absent, as required)
+  refs/heads/ferret-init-01-local-cli-record  show-ref exit=1 (1 = absent, as required)
+  refs/heads/worktree/ferret-init-01-local-cli  show-ref exit=1 (1 = absent, as required)
+  reflog files under .git/logs/refs/heads matching ferret: 1, and it is
+  ferret-init-01-local-cli-release, this closure delivery's own branch. No reflog of the three merged
+  branches survives, which is what deleting a branch does to its reflog.
+
+--- remote branches of this plan
+  origin/ferret-init-01-local-cli  ls-remote exit=2 (2 = absent, as required)
+  origin/ferret-init-01-local-cli-closure  ls-remote exit=2 (2 = absent, as required)
+  origin/ferret-init-01-local-cli-record  ls-remote exit=2 (2 = absent, as required)
+
+--- auto-delete-on-merge is enabled, which is how the remote branches went
+  delete_branch_on_merge = true

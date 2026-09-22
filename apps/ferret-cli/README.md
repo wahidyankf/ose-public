@@ -31,6 +31,18 @@ disturbed. A payload over 256 KiB is refused, so a very large tool result loses 
 can and cannot report is in
 [Platform Bindings](../../docs/reference/platform-bindings.md#ferret-lifecycle-registrations).
 
+## Install a published release
+
+Every `ferret-cli/vX.Y.Z` tag publishes one platform-independent zipapp and its digest.
+
+```bash
+BASE=https://github.com/wahidyankf/ose-public/releases/download/ferret-cli/v0.1.0
+curl -fLO "$BASE/ferret-cli_v0.1.0.pyz" && curl -fLO "$BASE/checksums.txt"
+shasum -a 256 -c checksums.txt
+```
+
+Verify before running it with Python 3.14.
+
 ## Where the data lives, and how long
 
 The data home is `$HOME/.ferret`; `FERRET_DATA_HOME` relocates it (an absolute, normalized path on a local disk). It
@@ -65,8 +77,8 @@ FERRET supports macOS and Linux only.
 ```
 
 `install` runs `uv sync --locked`, so it fails rather than change `uv.lock`. `build` writes the reproducible artifact
-`dist/ferret.pyz`: every archive entry has a fixed timestamp, mode, and order and nothing is compressed, so the same
-sources always produce the same bytes. `test:quick` runs Ruff, strict Pyright, the Unit suite with a 99% line-coverage
+`dist/ferret.pyz`: fixed entry timestamps, modes, and order plus no compression mean the same sources always
+produce the same bytes. `test:quick` runs Ruff, strict Pyright, the Unit suite with a 99% line-coverage
 floor, and the static behaviour validators. `test:integration` exercises the real filesystem, SQLite, and process
 boundary. The process-level tests against the built artifact live in
 [`ferret-cli-e2e`](../ferret-cli-e2e/README.md).

@@ -1,0 +1,77 @@
+Knowledge-capture checks for the six learnings added by the terminal closure delivery.
+Same four gates the Phase 6 capture applied: sensitivity, relevance, destination, authority.
+
+L37 was added after the terminal audit returned, for its finding 10, and L38 after a CI shed on
+this pull request's third head. The other four predate the audit.
+
+head-at-capture written below; utc written below.
+
+rows=6  distinct_ids=6  ids=L33,L34,L35,L36,L37,L38
+sensitivity gate over the six rows: no secret, credential, private address, or machine path
+relevance gate over the six rows: every row names only this public repository and its own plan
+
+L33 status=reported-without-plan-authorization
+    sensitivity: clean
+    relevance: public-tree learning about how a plan schedules its own decisions
+    destination: the plans convention. A decision no executing surface references is an unscheduled
+      decision; the closing check belongs beside the existing plan-execution audit rules.
+    authority: this repository owns the plans convention, so the promotion is in authority. Filed as a
+      learning rather than written into the convention here, because editing the plans convention is
+      rule work with its own propagation run and this delivery is not authorized to open one for it.
+
+L34 status=reported-without-plan-authorization
+    sensitivity: clean
+    relevance: public-tree learning about terminal gates
+    destination: the plans convention, beside the Phase N Gate rules that L28 already reached.
+    authority: same as L33 — owned here, filed as a learning, not written into the convention by this
+      delivery.
+
+L35 status=reported-without-plan-authorization
+    sensitivity: clean
+    relevance: public-tree learning about the Markdown gates
+    destination: a table-shape check alongside the existing Markdown validators. That is product work
+      in the pinned Rhino repository, not here.
+    authority: NOT in authority. Rhino is an independent upstream repository; this plan cannot add a
+      validator to it, and no plan authorizes the work. Reported only.
+
+L37 status=reported-without-plan-authorization
+    sensitivity: clean
+    relevance: public-tree learning about timing assertions in an e2e suite
+    destination: the flaky-tests-are-defects rule, which already forbids retrying, sleeping, widening,
+      loosening, skipping, and quarantining, and which does not yet name the wall-clock predicate as a
+      shape that produces the flake in the first place.
+    authority: this repository owns that rule, so the destination is in authority. Not written there:
+      the rule text is a governance surface with its own propagation run, and the defect itself is
+      unrepaired product work on `main`, so writing a rule about it while leaving it open would be the
+      A62 shape again. A72 records the open defect.
+
+L38 status=reported-without-plan-authorization
+    sensitivity: clean
+    relevance: public-tree learning about reading a CI job's result
+    destination: the CI blocker rule. It already says a shed is resolved at its stated cause and never
+      by bypassing the guard; what it does not give the reader is the test that identifies one, which
+      is whether the job emitted any gate line before it died.
+    authority: this repository owns that rule, so the destination is in authority. Not written there:
+      a governance surface takes its own propagation run, and this delivery is authorized to propagate
+      only the release verb.
+
+L36 status=linked
+    sensitivity: clean
+    relevance: public-tree learning about proof versus post-state
+    destination: L31, which already carries the same rule from A62. No new owner is created for a
+      second instance of one rule.
+    authority: in authority; the link is inside this plan's own learnings file.
+
+Note on scope, corrected after the terminal audit: L33 and L34 were first written as `promoted`, which
+in this plan's own usage means the destination was updated — L30 is `promoted` and the files it names
+were in fact changed. Nothing was written into `repo-governance/` for either row, and the paragraph
+below already said so, so the status contradicted its own evidence. Both now carry
+`reported-without-plan-authorization`, the status L31, L32 and L35 carry for the same shape.
+
+Writing them into `repo-governance/` is rule work that runs through the rules-propagation workflow, and
+the only rule this delivery was authorized to propagate is the `release` workflow verb that decision
+D16 needs. Recording a promotion this plan did not execute would be the A62 defect in a new place,
+which is exactly what the first labelling did, and the terminal audit caught it as a blocking
+Knowledge Capture failure.
+head=7f4affb6ab3762ec31d0a1536e3c121c43d2614f
+utc=2026-09-22T01:43:24Z

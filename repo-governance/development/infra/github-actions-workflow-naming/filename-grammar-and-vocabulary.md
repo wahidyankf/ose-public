@@ -36,3 +36,8 @@ execute:
 | `validate`          | A repo-wide validation job (markdown, links, heading hierarchy, Mermaid).                                                                                                                         |
 | `env-validate`      | Validate `.env.example` contracts and the `env-injection:` manifest (in `repo-config.yml`) for internal consistency.                                                                              |
 | `audit`             | Run a dependency-vulnerability audit outside the PR and registry gate surfaces.                                                                                                                   |
+| `release`           | Build the artifact for an annotated `{domain}/vX.Y.Z` tag and publish it as a GitHub release with its `checksums.txt`. Force-pushes nothing and touches no branch.                                |
+
+`release` carries no mechanical gate. Deciding whether a workflow publishes a tagged artifact release
+means reading its job graph, and this repository holds no check that classifies a workflow by purpose,
+so the verb is **unenforced by decision** rather than left silently unchecked.

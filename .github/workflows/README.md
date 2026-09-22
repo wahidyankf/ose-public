@@ -20,6 +20,7 @@ development path.
 | Application delivery            | Tests a paired web/backend application before its managed staging path                               | `*-app-test-local-deploy-stag.yml`, `*-app-test-stag.yml`, and reusable counterparts                                |
 | Backend images and UI artifacts | Builds publishable backend images or the web UI artifact when their inputs change                    | `_reusable-be-build-deploy.yml`, `*-be-build-deploy-stag.yml`, `publish-images.yml`, `web-ui-build-deploy-prod.yml` |
 | Pinned local tools              | Proves the pinned HIPPO and RHINO consumer contracts on Linux and macOS before merge and twice daily | `hippo-consumer-smoke.yml`, `rhino-consumer-smoke.yml`                                                              |
+| Tagged releases                 | Publishes one pinned artifact and its checksums when a version tag is pushed                         | `ferret-cli-release.yml`                                                                                            |
 
 The workflow filenames are the authoritative inventory. This map names stable
 families rather than maintaining a fragile duplicate list.

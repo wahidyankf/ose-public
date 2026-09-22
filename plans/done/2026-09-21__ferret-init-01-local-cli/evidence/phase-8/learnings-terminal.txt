@@ -1,13 +1,14 @@
-Knowledge-capture checks for the five learnings added by the terminal closure delivery.
+Knowledge-capture checks for the six learnings added by the terminal closure delivery.
 Same four gates the Phase 6 capture applied: sensitivity, relevance, destination, authority.
 
-L37 was added after the terminal audit returned, for its finding 10. The other four predate it.
+L37 was added after the terminal audit returned, for its finding 10, and L38 after a CI shed on
+this pull request's third head. The other four predate the audit.
 
 head-at-capture written below; utc written below.
 
-rows=5  distinct_ids=5  ids=L33,L34,L35,L36,L37
-sensitivity gate over the five rows: no secret, credential, private address, or machine path
-relevance gate over the five rows: every row names only this public repository and its own plan
+rows=6  distinct_ids=6  ids=L33,L34,L35,L36,L37,L38
+sensitivity gate over the six rows: no secret, credential, private address, or machine path
+relevance gate over the six rows: every row names only this public repository and its own plan
 
 L33 status=reported-without-plan-authorization
     sensitivity: clean
@@ -43,6 +44,16 @@ L37 status=reported-without-plan-authorization
       the rule text is a governance surface with its own propagation run, and the defect itself is
       unrepaired product work on `main`, so writing a rule about it while leaving it open would be the
       A62 shape again. A72 records the open defect.
+
+L38 status=reported-without-plan-authorization
+    sensitivity: clean
+    relevance: public-tree learning about reading a CI job's result
+    destination: the CI blocker rule. It already says a shed is resolved at its stated cause and never
+      by bypassing the guard; what it does not give the reader is the test that identifies one, which
+      is whether the job emitted any gate line before it died.
+    authority: this repository owns that rule, so the destination is in authority. Not written there:
+      a governance surface takes its own propagation run, and this delivery is authorized to propagate
+      only the release verb.
 
 L36 status=linked
     sensitivity: clean

@@ -235,7 +235,7 @@ TRUNCATED_METADATA = b'{"session_id":"native-session-0001","hook_event_name":'
 class BrokenEvents(FakeEvents):
     """An event repository whose every capture fails the way a real storage fault does."""
 
-    failure: FerretError = field(default_factory=lambda: FerretError("storage_unavailable"))
+    failure: FerretError = field(default_factory=lambda: FerretError("ferret.storage.unavailable"))
     attempts: int = 0
 
     def capture(self, event: Event, *, budget: Budget | None = None) -> CaptureResult:
@@ -281,10 +281,10 @@ def given_ferret_is_in_a_condition(adapter: Adapter, condition: str) -> None:
     elif condition == "given invalid metadata":
         adapter.world.input.data = TRUNCATED_METADATA
     elif condition == "unable to open SQLite":
-        adapter.broken = BrokenEvents(failure=FerretError("storage_unavailable"))
+        adapter.broken = BrokenEvents(failure=FerretError("ferret.storage.unavailable"))
     else:
         assert condition == "blocked by a concurrent writer beyond the timeout", condition
-        adapter.broken = BrokenEvents(failure=FerretError("storage_unavailable", retryable=True))
+        adapter.broken = BrokenEvents(failure=FerretError("ferret.storage.unavailable", retryable=True))
 
 
 @when("the adapter handles a lifecycle event")

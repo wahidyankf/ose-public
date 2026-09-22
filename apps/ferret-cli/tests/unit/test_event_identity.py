@@ -22,7 +22,12 @@ def test_the_same_event_id_with_a_different_hash_is_a_conflict_that_carries_no_h
         resolve_identity(HASH, OTHER_HASH)
 
     error = caught.value
-    assert (error.code, error.exit_code, error.field, error.retryable) == ("idempotency_conflict", 2, None, False)
+    assert (error.code, error.exit_code, error.field, error.retryable) == (
+        "ferret.event.idempotency-conflict",
+        2,
+        None,
+        False,
+    )
     assert HASH not in str(error)
     assert OTHER_HASH not in str(error)
 
@@ -31,4 +36,4 @@ def test_a_hash_differing_only_in_its_last_character_still_conflicts() -> None:
     with pytest.raises(FerretError) as caught:
         resolve_identity("a" * 63 + "b", "a" * 63 + "c")
 
-    assert caught.value.code == "idempotency_conflict"
+    assert caught.value.code == "ferret.event.idempotency-conflict"

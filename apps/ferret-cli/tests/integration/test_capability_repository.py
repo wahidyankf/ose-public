@@ -80,7 +80,7 @@ def test_snapshot_idempotency_and_composite_items(database: Path) -> None:
     with pytest.raises(FerretError) as caught:
         repository.store_snapshot(make_snapshot(harnessVersion="9.9.9"))
 
-    assert caught.value.code == "idempotency_conflict"
+    assert caught.value.code == "ferret.event.idempotency-conflict"
     assert rows(database, "capability_snapshot") == [VECTOR_ROW]
     assert rows(database, "capability_item") == VECTOR_ITEMS
 
@@ -194,7 +194,7 @@ def test_a_snapshot_with_the_same_name_twice_stores_neither_the_snapshot_nor_any
     with pytest.raises(FerretError) as caught:
         SQLiteCapabilityRepository(database).store_snapshot(doubled)
 
-    assert caught.value.code == "integrity_failure"
+    assert caught.value.code == "ferret.storage.integrity-failure"
     assert (rows(database, "capability_snapshot"), rows(database, "capability_item")) == ([], [])
 
 
@@ -204,7 +204,7 @@ def test_a_constraint_failure_after_the_snapshot_row_rolls_the_whole_snapshot_ba
     with pytest.raises(FerretError) as caught:
         SQLiteCapabilityRepository(database).store_snapshot(exploded)
 
-    assert caught.value.code == "integrity_failure"
+    assert caught.value.code == "ferret.storage.integrity-failure"
     assert (rows(database, "capability_snapshot"), rows(database, "capability_item")) == ([], [])
 
 
@@ -215,7 +215,7 @@ def test_a_failed_insert_leaves_no_snapshot_row(database: Path) -> None:
     with pytest.raises(FerretError) as caught:
         SQLiteCapabilityRepository(database).store_snapshot(make_snapshot())
 
-    assert caught.value.code == "storage_unavailable"
+    assert caught.value.code == "ferret.storage.unavailable"
     assert rows(database, "capability_snapshot") == []
 
 
@@ -232,7 +232,7 @@ def test_a_writer_blocked_beyond_the_busy_timeout_fails_retryably_and_leaves_no_
         blocker.execute("ROLLBACK")
         blocker.close()
 
-    assert (caught.value.code, caught.value.retryable) == ("storage_unavailable", True)
+    assert (caught.value.code, caught.value.retryable) == ("ferret.storage.unavailable", True)
     # Every attempt is opened with the short attempt timeout, never with the budget: a budget handed to
     # SQLite as a busy timeout is not a bound, which is the defect this asserts against.
     assert budgets != []

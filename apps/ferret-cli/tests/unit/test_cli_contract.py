@@ -37,6 +37,7 @@ commands:
   self uninstall      remove the artifact; data is kept unless purged
 
   version             print the version and exit
+  help                show this help and exit
 
 options:
   -h, --help          show this help and exit
@@ -44,6 +45,14 @@ options:
   --output <text|json>
                       render the result as text or JSON; defaults to text
   --json              shorthand for --output json
+
+exit codes:
+  0                   the command ran and the answer was affirmative
+  1                   the command ran and a query matched nothing
+  2                   FERRET could not run: the invocation, the environment,
+                      or the stored data was unusable; see error.code
+  126                 an interpreter was found and could not be started
+  128+N               ended by signal N; 130 is an interrupt, 141 a closed pipe
 
 Telemetry older than 30 days is never returned. Scripts should use --json.
 Run 'ferret <command> --help' for a command's options.
@@ -73,7 +82,7 @@ options:
 
 BARE_USAGE = "usage: ferret <command> [options]\nRun 'ferret --help' for the commands and options.\n"
 INVALID_ARGUMENTS_TEXT = (
-    "FERRET error [invalid_arguments]: unrecognized or incomplete arguments; run 'ferret --help' for usage\n"
+    "FERRET error [ferret.args.invalid]: unrecognized or incomplete arguments; run 'ferret --help' for usage\n"
 )
 LEAK_CANARY = "canary-value-that-must-never-be-echoed"
 
@@ -174,8 +183,11 @@ def test_bare_invocation_writes_the_short_usage_to_stderr_and_fails() -> None:
     assert run([]) == Result(2, "", BARE_USAGE)
 
 
-def test_the_help_subcommand_does_not_exist() -> None:
-    assert run(["help"]) == Result(2, "", INVALID_ARGUMENTS_TEXT)
+def test_the_help_subcommand_answers_for_the_root_and_for_every_path() -> None:
+    assert run(["help"]) == Result(0, GOLDEN_ROOT_HELP, "")
+    assert run(["help", "events", "export"]) == Result(0, GOLDEN_EXPORT_HELP, "")
+    # A path that is not a command is not help; it gets the usage error the same spelling would get.
+    assert run(["help", "nonsense"]) == Result(2, "", INVALID_ARGUMENTS_TEXT)
 
 
 @pytest.mark.parametrize(
@@ -188,8 +200,6 @@ def test_the_help_subcommand_does_not_exist() -> None:
         ["events"],
         ["events", "nope"],
         ["self"],
-        ["capture-hook"],
-        ["capture-hook", "--harness", "claude_code"],
         ["events", "export"],
         ["events", "export", "--format", "csv"],
         ["self", "install"],
@@ -204,6 +214,16 @@ def test_the_help_subcommand_does_not_exist() -> None:
 )
 def test_a_usage_mistake_is_invalid_arguments_on_stderr_with_exit_two(argv: list[str]) -> None:
     assert run(argv) == Result(2, "", INVALID_ARGUMENTS_TEXT)
+
+
+@pytest.mark.parametrize("argv", [["capture-hook"], ["capture-hook", "--harness", "claude_code"]])
+def test_a_usage_mistake_in_the_exempt_callback_is_silent(argv: list[str]) -> None:
+    """The one command that must never speak, including when the caller got its arguments wrong.
+
+    A harness runs this for every event. A diagnostic on stderr and an exit 2 land in the conversation, which is
+    the one thing this command exists not to do -- so a usage mistake is recorded, not reported.
+    """
+    assert run(argv) == Result(0, "", "")
 
 
 @pytest.mark.parametrize(
@@ -253,7 +273,6 @@ def test_json_shorthand_and_output_json_are_byte_identical(shorthand: list[str],
         (["--output=json", "nope"], None),
         (["--json"], None),
         (["--json", "version"], "version"),
-        (["capture-hook", "--json", "--harness", "h", "--event", "e"], "capture-hook"),
         (["events", "export", "--json", "--format", "jsonl"], "events.export"),
     ],
 )
@@ -268,9 +287,16 @@ def test_a_json_usage_failure_is_one_compact_envelope_on_stderr(argv: list[str],
         "schemaVersion": 1,
         "command": command,
         "exitCode": 2,
-        "error": {"code": "invalid_arguments", "field": None, "retryable": False},
+        "error": {
+            "code": "ferret.args.invalid",
+            "message": "unrecognized or incomplete arguments; run 'ferret --help' for usage",
+            "field": None,
+            "retryable": False,
+        },
     }
-    assert " " not in result.stderr.rstrip("\n")
+    # Compact: the separators carry no padding. Checked by round-trip rather than by looking for a space,
+    # because a message is a sentence and sentences have spaces in them.
+    assert result.stderr == json.dumps(json.loads(result.stderr), separators=(",", ":")) + "\n"
 
 
 def test_a_later_output_choice_wins_and_text_is_the_default() -> None:
@@ -341,6 +367,11 @@ def test_every_machine_command_accepts_json_and_every_other_command_rejects_it()
 
         if spec.machine_output:
             assert cli.parse_arguments(arguments).output == "json", spec.path
+        elif spec.path == ("capture-hook",):
+            # The exempt callback never speaks, so it rejects the flag by ignoring it rather than by saying so.
+            assert run(arguments) == Result(0, "", ""), spec.path
+            with pytest.raises(cli.UsageError):
+                cli.parse_arguments(arguments)
         else:
             assert run(arguments).code == 2, spec.path
 
@@ -390,7 +421,7 @@ def test_an_unknown_internal_failure_is_storage_unavailable_without_its_detail(o
 
     result = run(["init", *output], {("init",): explode})
 
-    assert result.code == 3
+    assert result.code == 2
     assert result.stdout == ""
     assert LEAK_CANARY not in result.stderr
     assert "Traceback" not in result.stderr
@@ -398,11 +429,16 @@ def test_an_unknown_internal_failure_is_storage_unavailable_without_its_detail(o
         assert json.loads(result.stderr) == {
             "schemaVersion": 1,
             "command": "init",
-            "exitCode": 3,
-            "error": {"code": "storage_unavailable", "field": None, "retryable": False},
+            "exitCode": 2,
+            "error": {
+                "code": "ferret.storage.unavailable",
+                "message": "storage is unavailable",
+                "field": None,
+                "retryable": False,
+            },
         }
     else:
-        assert result.stderr == "FERRET error [storage_unavailable]: storage is unavailable\n"
+        assert result.stderr == "FERRET error [ferret.storage.unavailable]: storage is unavailable\n"
 
 
 def test_a_handler_owns_its_streams_and_exit_code() -> None:
@@ -422,7 +458,7 @@ def test_the_process_streams_and_arguments_are_the_defaults(
     assert cli.main() == 0
     assert capsys.readouterr().out == f"ferret {__version__}\n"
 
-    assert cli.main(["help"]) == 2
+    assert cli.main(["help", "nonsense"]) == 2
     captured = capsys.readouterr()
     assert captured.out == ""
     assert captured.err == INVALID_ARGUMENTS_TEXT

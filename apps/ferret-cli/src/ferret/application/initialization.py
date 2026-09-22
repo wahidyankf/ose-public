@@ -49,7 +49,7 @@ def _compact(document: dict[str, Any]) -> bytes:
 
 def _verify_config(content: bytes) -> None:
     if _compact(read_document(content)) != _compact(_CONFIG):
-        raise FerretError("storage_unavailable")
+        raise FerretError("ferret.storage.unavailable")
 
 
 def initialize_store(runtime: Runtime) -> InitResult:
@@ -68,7 +68,7 @@ def initialize_store(runtime: Runtime) -> InitResult:
         # The database is created last, so a database without its companions cannot come from an interrupted
         # initialization: refuse it rather than mint a second identity for stored telemetry.
         if present[DATABASE_FILE].kind != "missing" and any(present[name].kind == "missing" for name in _COMPANIONS):
-            raise FerretError("storage_unavailable")
+            raise FerretError("ferret.storage.unavailable")
 
         if present[KEY_FILE].kind == "missing":
             files.create_file(KEY_FILE, runtime.randomness.token_bytes(KEY_BYTES), PRIVATE_FILE_MODE)

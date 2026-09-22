@@ -132,14 +132,14 @@ class PosixUserInstall:
     def source(self) -> SourceArtifact:
         path = running_artifact() if self._artifact is None else self._artifact
         if path is None:
-            raise FerretError("storage_unavailable")
+            raise FerretError("ferret.storage.unavailable")
         try:
             with path.open("rb") as stream:
                 content = stream.read(MAX_ARTIFACT_BYTES + 1)
         except OSError:
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
         if len(content) > MAX_ARTIFACT_BYTES:
-            raise FerretError("storage_unavailable")
+            raise FerretError("ferret.storage.unavailable")
         # Staging copies these very bytes, so the digest reported here is the digest of what gets installed.
         self._content = content
         return SourceArtifact(path=path, sha256=hashlib.sha256(content).hexdigest())
@@ -150,7 +150,7 @@ class PosixUserInstall:
         except _GONE:
             return InstalledFacts(kind="missing")
         except OSError:
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
         kind = kind_of(info.st_mode)
         owned = info.st_uid == os.geteuid()
         mode = stat.S_IMODE(info.st_mode)
@@ -161,7 +161,7 @@ class PosixUserInstall:
             try:
                 target = os.readlink(path)
             except OSError:
-                raise FerretError("storage_unavailable") from None
+                raise FerretError("ferret.storage.unavailable") from None
             return InstalledFacts(kind=kind, mode=mode, owned_by_current_user=owned, target=target)
         return InstalledFacts(kind=kind, mode=mode, owned_by_current_user=owned)
 
@@ -185,11 +185,11 @@ class PosixUserInstall:
         except OSError as error:
             if tolerate_link and error.errno in (errno.ELOOP, errno.EMLINK):
                 return None
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
         try:
             return os.read(descriptor, limit + 1)
         except OSError:
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
         finally:
             os.close(descriptor)
 
@@ -209,7 +209,7 @@ class PosixUserInstall:
                     if is_stage_name(name, final):
                         self._unlink_leftover(directory / name)
         except OSError:
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
 
     @staticmethod
     def _unlink_leftover(path: Path) -> None:
@@ -224,7 +224,7 @@ class PosixUserInstall:
     def stage(self, plan: StagePlan) -> StagedInstall:
         content = self._content
         if content is None:
-            raise FerretError("storage_unavailable")
+            raise FerretError("ferret.storage.unavailable")
         paths = self._paths
         version_directory = paths.version_directory(plan.version)
         self._create_directories(paths.share, version_directory, paths.bin)
@@ -242,7 +242,7 @@ class PosixUserInstall:
             self._verify(staged, content, plan.launcher)
         except OSError:
             _unlink_quietly(staged.artifact, staged.launcher, staged.manifest)
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
         except FerretError:
             _unlink_quietly(staged.artifact, staged.launcher, staged.manifest)
             raise
@@ -254,9 +254,9 @@ class PosixUserInstall:
         current = directory
         while not os.path.isdir(current):
             if os.path.lexists(current):
-                raise FerretError("install_collision")
+                raise FerretError("ferret.install.collision")
             if current == self._paths.home or current == current.parent:
-                raise FerretError("storage_unavailable")
+                raise FerretError("ferret.storage.unavailable")
             missing.append(current)
             current = current.parent
         return missing
@@ -274,7 +274,7 @@ class PosixUserInstall:
             except FileExistsError:
                 continue
             except OSError:
-                raise FerretError("storage_unavailable") from None
+                raise FerretError("ferret.storage.unavailable") from None
 
     def _verify(self, staged: StagedInstall, content: bytes, launcher: bytes) -> None:
         """Read all three staged files back: every mode and owner, the artifact's digest, the launcher's bytes."""
@@ -282,11 +282,11 @@ class PosixUserInstall:
         for path, mode in modes:
             info = os.lstat(path)
             if not stat.S_ISREG(info.st_mode) or stat.S_IMODE(info.st_mode) != mode or info.st_uid != os.geteuid():
-                raise FerretError("storage_unavailable")
+                raise FerretError("ferret.storage.unavailable")
         if _sha256_of(staged.artifact) != hashlib.sha256(content).hexdigest():
-            raise FerretError("storage_unavailable")
+            raise FerretError("ferret.storage.unavailable")
         if self._read_small(staged.launcher, MAX_LAUNCHER_BYTES, tolerate_link=False) != launcher:
-            raise FerretError("storage_unavailable")
+            raise FerretError("ferret.storage.unavailable")
 
     def replace_artifact(self, staged: StagedInstall) -> None:
         self._replace(staged.artifact, self._paths.artifact(staged.version))
@@ -303,7 +303,7 @@ class PosixUserInstall:
             os.replace(staged, final)
             _sync_directory(final.parent)
         except OSError:
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
 
     def remove(self, path: Path) -> None:
         try:
@@ -311,7 +311,7 @@ class PosixUserInstall:
         except FileNotFoundError:
             return
         except OSError:
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
 
     def remove_empty_directory(self, path: Path) -> None:
         try:
@@ -322,4 +322,4 @@ class PosixUserInstall:
             # A directory that still holds anything, or is not a plain directory, is someone's and stays.
             if error.errno in _KEPT:
                 return
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None

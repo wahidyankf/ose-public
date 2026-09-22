@@ -52,12 +52,12 @@ def capture(home: Path, harness: str, event: str, document: dict[str, Any]) -> s
 
 
 def rows(home: Path, sql: str) -> list[tuple[Any, ...]]:
-    with closing(sqlite3.connect(home / ".ferret" / "ferret.sqlite3")) as connection:
+    with closing(sqlite3.connect(home / ".local" / "share" / "ferret" / "ferret.sqlite3")) as connection:
         return connection.execute(sql).fetchall()
 
 
 def everything_on_disk(home: Path) -> bytes:
-    return b"".join(path.read_bytes() for path in sorted((home / ".ferret").iterdir()))
+    return b"".join(path.read_bytes() for path in sorted((home / ".local" / "share" / "ferret").iterdir()))
 
 
 @pytest.mark.parametrize(("harness", "event", "document"), REGISTRATIONS, ids=REGISTRATION_IDS)
@@ -78,7 +78,7 @@ def test_every_registration_stores_one_row_and_no_content(
 def test_the_stored_identifiers_are_derived_from_the_repository_root_and_the_installation_key(tmp_path: Path) -> None:
     home = make_home(tmp_path)
     root = repository(tmp_path)
-    key = (home / ".ferret" / "identity.key").read_bytes()
+    key = (home / ".local" / "share" / "ferret" / "identity.key").read_bytes()
 
     capture(home, CLAUDE_CODE, "tool.started", claude_tool("PreToolUse", cwd=str(root / "src")))
 
@@ -117,7 +117,7 @@ def test_a_writer_blocked_beyond_the_busy_timeout_stores_nothing_and_fails_retry
 ) -> None:
     home = make_home(tmp_path)
     record_busy_timeouts(monkeypatch)
-    blocker = sqlite3.connect(home / ".ferret" / "ferret.sqlite3", autocommit=True)
+    blocker = sqlite3.connect(home / ".local" / "share" / "ferret" / "ferret.sqlite3", autocommit=True)
     blocker.execute("BEGIN IMMEDIATE")
     try:
         with pytest.raises(FerretError) as caught:
@@ -126,7 +126,7 @@ def test_a_writer_blocked_beyond_the_busy_timeout_stores_nothing_and_fails_retry
         blocker.execute("ROLLBACK")
         blocker.close()
 
-    assert (caught.value.code, caught.value.retryable) == ("storage_unavailable", True)
+    assert (caught.value.code, caught.value.retryable) == ("ferret.storage.unavailable", True)
     assert rows(home, "SELECT COUNT(*) FROM event") == [(0,)]
 
 
@@ -165,12 +165,12 @@ def test_the_command_on_an_uninitialized_home_is_silent_and_creates_nothing(tmp_
     outcome = run_command(home, encode(claude_tool("PreToolUse")))
 
     assert outcome == (0, "", "")
-    assert not (home / ".ferret").exists()
+    assert not (home / ".local" / "share" / "ferret").exists()
 
 
 def test_the_command_on_an_unsafe_data_home_is_silent_and_changes_nothing(tmp_path: Path) -> None:
     home = make_home(tmp_path)
-    key = home / ".ferret" / "identity.key"
+    key = home / ".local" / "share" / "ferret" / "identity.key"
     key.chmod(0o644)
     before = everything_on_disk(home)
 

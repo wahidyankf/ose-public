@@ -33,12 +33,12 @@ def capture(home: Path, payload: bytes) -> subprocess.CompletedProcess[bytes]:
 
 
 def count(home: Path, table: str) -> int:
-    with closing(sqlite3.connect(home / ".ferret" / "ferret.sqlite3")) as connection:
+    with closing(sqlite3.connect(home / ".local" / "share" / "ferret" / "ferret.sqlite3")) as connection:
         return int(connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0])
 
 
 def everything_on_disk(home: Path) -> bytes:
-    return b"".join(path.read_bytes() for path in sorted((home / ".ferret").iterdir()))
+    return b"".join(path.read_bytes() for path in sorted((home / ".local" / "share" / "ferret").iterdir()))
 
 
 @pytest.mark.parametrize(
@@ -82,7 +82,12 @@ def test_rejected_payload_writes_no_row(tmp_path: Path, payload: bytes, field: s
 
     assert completed.returncode == 2
     assert completed.stdout == b""
-    assert json.loads(completed.stderr)["error"] == {"code": "invalid_event", "field": field, "retryable": False}
+    assert json.loads(completed.stderr)["error"] == {
+        "code": "ferret.event.invalid",
+        "message": "the event is not a valid FERRET event",
+        "field": field,
+        "retryable": False,
+    }
     assert CANARY.encode() not in completed.stderr
     assert (count(home, "event"), count(home, "workspace")) == (0, 0)
     assert CANARY.encode() not in everything_on_disk(home)
@@ -95,6 +100,6 @@ def test_a_valid_payload_on_an_uninitialized_home_is_refused_without_creating_a_
 
     completed = capture(home, encode(VECTOR_DOCUMENT))
 
-    assert completed.returncode == 3
-    assert json.loads(completed.stderr)["error"]["code"] == "uninitialized"
-    assert not (home / ".ferret").exists()
+    assert completed.returncode == 2
+    assert json.loads(completed.stderr)["error"]["code"] == "ferret.storage.uninitialized"
+    assert not (home / ".local" / "share" / "ferret").exists()

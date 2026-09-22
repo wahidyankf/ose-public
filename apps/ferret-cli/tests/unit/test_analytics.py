@@ -244,7 +244,7 @@ def test_group_by_is_a_comma_separated_list_kept_in_caller_order(raw: str, expec
 def test_a_malformed_group_by_is_invalid_arguments_for_usage(options: Options) -> None:
     error = refusal(parse_group_by, options, USAGE_DIMENSIONS)
 
-    assert (error.code, error.exit_code, error.field, error.retryable) == ("invalid_arguments", 2, None, False)
+    assert (error.code, error.exit_code, error.field, error.retryable) == ("ferret.args.invalid", 2, None, False)
 
 
 def test_the_two_commands_accept_exactly_their_own_closed_dimension_sets() -> None:
@@ -263,7 +263,7 @@ def test_the_two_commands_accept_exactly_their_own_closed_dimension_sets() -> No
         "outcome_visibility",
     )
     assert refusal(parse_group_by, {"--group-by": ("subject_visibility",)}, OUTCOME_DIMENSIONS).code == (
-        "invalid_arguments"
+        "ferret.args.invalid"
     )
 
 
@@ -444,12 +444,12 @@ def test_a_summary_reads_every_batch_of_the_stream(monkeypatch: pytest.MonkeyPat
 def test_summaries_are_validated_before_storage_is_touched_and_need_an_initialized_store() -> None:
     world = world_with(initialized=False)
 
-    assert refusal(summarize_usage, world.runtime, {"--group-by": ("nope",)}).code == "invalid_arguments"
+    assert refusal(summarize_usage, world.runtime, {"--group-by": ("nope",)}).code == "ferret.args.invalid"
     assert refusal(summarize_outcomes, world.runtime, {"--group-by": ("harness",), "--harness": ("Bad",)}).code == (
-        "invalid_filter"
+        "ferret.filter.invalid"
     )
     assert world.files.touched == []
-    assert refusal(summarize_usage, world.runtime, {"--group-by": ("harness",)}).code == "uninitialized"
+    assert refusal(summarize_usage, world.runtime, {"--group-by": ("harness",)}).code == "ferret.storage.uninitialized"
     assert world.events.reads == 0
 
 
@@ -529,10 +529,10 @@ def test_outcomes_text_uses_the_json_metric_names_and_dashes_for_null() -> None:
 def test_an_empty_result_is_empty_rows_in_json_and_no_rows_on_stderr_in_text(command: str) -> None:
     world = world_with()
 
-    assert run_cli(world, [command, "--group-by", "harness"]) == (0, "", "No rows.\n")
+    assert run_cli(world, [command, "--group-by", "harness"]) == (1, "", "No rows.\n")
     code, out, err = run_cli(world, [command, "--group-by", "harness", "--json"])
 
-    assert (code, err, json.loads(out)["rows"]) == (0, "", [])
+    assert (code, err, json.loads(out)["rows"]) == (1, "", [])
 
 
 @pytest.mark.parametrize("command", ["usage", "outcomes"])
@@ -545,12 +545,17 @@ def test_an_invalid_group_by_or_filter_writes_only_a_closed_error(command: str) 
         "schemaVersion": 1,
         "command": command,
         "exitCode": 2,
-        "error": {"code": "invalid_arguments", "field": None, "retryable": False},
+        "error": {
+            "code": "ferret.args.invalid",
+            "message": "unrecognized or incomplete arguments; run 'ferret --help' for usage",
+            "field": None,
+            "retryable": False,
+        },
     }
     assert run_cli(world, [command, "--group-by", "harness", "--harness", "Bad"]) == (
         2,
         "",
-        "FERRET error [invalid_filter]: a filter value is not valid\n",
+        "FERRET error [ferret.filter.invalid]: a filter value is not valid\n",
     )
 
 

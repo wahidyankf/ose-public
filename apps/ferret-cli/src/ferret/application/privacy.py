@@ -63,15 +63,15 @@ def parse_object(raw: bytes, limit: int) -> dict[str, Any]:
     non-finite numbers, runaway nesting, and any root other than an object are all refused.
     """
     if len(raw) > limit or raw.startswith(_BYTE_ORDER_MARK):
-        raise FerretError("invalid_event")
+        raise FerretError("ferret.event.invalid")
     try:
         document: object = json.loads(
             raw.decode("utf-8"), object_pairs_hook=_reject_duplicates, parse_constant=_reject_constant
         )
     except ValueError, RecursionError:
-        raise FerretError("invalid_event") from None
+        raise FerretError("ferret.event.invalid") from None
     if not isinstance(document, dict):
-        raise FerretError("invalid_event")
+        raise FerretError("ferret.event.invalid")
     return cast(dict[str, Any], document)
 
 
@@ -95,7 +95,7 @@ def validate_capture(raw: bytes, *, now: datetime) -> Event:
     document = parse_object(raw, CANONICAL_LIMIT_BYTES)
     category = forbidden_category(document)
     if category is not None:
-        raise FerretError("invalid_event", field=category)
+        raise FerretError("ferret.event.invalid", field=category)
     return event_from_document(document, now=now)
 
 

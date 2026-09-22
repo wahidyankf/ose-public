@@ -65,13 +65,13 @@ def single_value(options: Options, name: str, *, refusal: ErrorCode) -> str | No
 
 
 def _timestamp_bound(options: Options, name: str) -> datetime | None:
-    raw = single_value(options, name, refusal="invalid_filter")
+    raw = single_value(options, name, refusal="ferret.filter.invalid")
     if raw is None:
         return None
     try:
         return parse_rfc3339(raw)
     except ValueError:
-        raise FerretError("invalid_filter") from None
+        raise FerretError("ferret.filter.invalid") from None
 
 
 def _interval(options: Options, now: datetime) -> tuple[str | None, str | None]:
@@ -79,12 +79,12 @@ def _interval(options: Options, now: datetime) -> tuple[str | None, str | None]:
     lower, upper = _timestamp_bound(options, "--from"), _timestamp_bound(options, "--to")
     if "--all-time" in options:
         if lower is not None or upper is not None:
-            raise FerretError("invalid_filter")
+            raise FerretError("ferret.filter.invalid")
         return None, None
     end = upper if upper is not None else now
     start = lower if lower is not None else end - DEFAULT_WINDOW
     if format_timestamp(start) >= format_timestamp(end):
-        raise FerretError("invalid_filter")
+        raise FerretError("ferret.filter.invalid")
     return format_timestamp(start), format_timestamp(end)
 
 
@@ -93,12 +93,12 @@ def _closed(allowed: frozenset[str]) -> Callable[[str], bool]:
 
 
 def _name_filter(options: Options, name: str, accepts: Callable[[str], bool]) -> str | None:
-    raw = single_value(options, name, refusal="invalid_filter")
+    raw = single_value(options, name, refusal="ferret.filter.invalid")
     if raw is None:
         return None
     value = unicodedata.normalize("NFC", raw)
     if not accepts(value):
-        raise FerretError("invalid_filter")
+        raise FerretError("ferret.filter.invalid")
     return value
 
 
@@ -125,14 +125,14 @@ def criteria_from_options(options: Options, *, now: datetime) -> EventCriteria:
 
 def parse_limit(options: Options) -> int:
     """The page size: one through ``MAX_LIMIT`` written in ASCII digits, or ``DEFAULT_LIMIT`` when absent."""
-    raw = single_value(options, "--limit", refusal="invalid_arguments")
+    raw = single_value(options, "--limit", refusal="ferret.args.invalid")
     if raw is None:
         return DEFAULT_LIMIT
     if _LIMIT_DIGITS.fullmatch(raw) is None or len(raw.lstrip("0")) > _LIMIT_WIDTH:
-        raise FerretError("invalid_arguments")
+        raise FerretError("ferret.args.invalid")
     limit = int(raw)
     if not 1 <= limit <= MAX_LIMIT:
-        raise FerretError("invalid_arguments")
+        raise FerretError("ferret.args.invalid")
     return limit
 
 
@@ -165,7 +165,7 @@ def encode_cursor(position: Position, digest: str) -> str:
 
 
 def _invalid_cursor() -> FerretError:
-    return FerretError("invalid_cursor")
+    return FerretError("ferret.cursor.invalid")
 
 
 def _cursor_document(token: str) -> dict[str, Any]:

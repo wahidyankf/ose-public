@@ -42,6 +42,8 @@ TOP_LEVEL_KEYS = [
     "highWaterBytes",
     "expiredLocalTotal",
     "expiredBeforeAckTotal",
+    "hookFailureCount",
+    "lastHookFailureAt",
     "lastMaintenanceAt",
     "maintenanceDue",
     "backend",
@@ -139,6 +141,8 @@ def test_status_reports_the_store_as_it_stands() -> None:
         "highWaterBytes": 65536,
         "expiredLocalTotal": 7,
         "expiredBeforeAckTotal": 0,
+        "hookFailureCount": 0,
+        "lastHookFailureAt": None,
         "lastMaintenanceAt": stamp(NOW - RECENT),
         "maintenanceDue": False,
         "backend": {"state": "not_available_in_this_version"},
@@ -279,7 +283,7 @@ def test_an_uninitialized_store_is_a_closed_failure_that_touches_no_telemetry() 
     ran = run_cli(world, ["status", "--json"])
 
     envelope = error_of(ran)
-    assert (ran.code, envelope["command"], envelope["error"]["code"]) == (3, "status", "uninitialized")
+    assert (ran.code, envelope["command"], envelope["error"]["code"]) == (2, "status", "ferret.storage.uninitialized")
     assert (world.telemetry.integrity_checks, world.telemetry.prunes) == ([], [])
 
 
@@ -290,7 +294,7 @@ def test_a_data_home_open_to_others_is_refused_as_unsafe_storage() -> None:
 
     ran = run_cli(world, ["status", "--json"])
 
-    assert (ran.code, error_of(ran)["error"]["code"]) == (3, "unsafe_storage")
+    assert (ran.code, error_of(ran)["error"]["code"]) == (2, "ferret.storage.unsafe")
 
 
 def test_a_failed_integrity_check_is_the_integrity_failure_exit() -> None:
@@ -299,14 +303,17 @@ def test_a_failed_integrity_check_is_the_integrity_failure_exit() -> None:
 
     ran = run_cli(world, ["status", "--json"])
 
-    assert (ran.code, error_of(ran)["error"]["code"]) == (FAILURES["integrity_failure"][0], "integrity_failure")
+    assert (ran.code, error_of(ran)["error"]["code"]) == (
+        FAILURES["ferret.storage.integrity-failure"][0],
+        "ferret.storage.integrity-failure",
+    )
 
 
 def test_a_store_that_cannot_be_read_is_unavailable_and_says_it_may_be_retried() -> None:
     world = world_with()
-    world.telemetry.broken = FerretError("storage_unavailable", retryable=True)
+    world.telemetry.broken = FerretError("ferret.storage.unavailable", retryable=True)
 
     ran = run_cli(world, ["status", "--json"])
 
     error = error_of(ran)["error"]
-    assert (ran.code, error["code"], error["retryable"]) == (3, "storage_unavailable", True)
+    assert (ran.code, error["code"], error["retryable"]) == (2, "ferret.storage.unavailable", True)

@@ -226,6 +226,7 @@ def expected_lines(command: str, document: dict[str, Any]) -> list[str]:
         f"Expired local: {document['expiredLocalTotal']}",
         f"Expired before ACK: {document['expiredBeforeAckTotal']}",
         f"Maintenance: last={scalar(document['lastMaintenanceAt'])} due={scalar(document['maintenanceDue'])}",
+        f"Hook failures: count={document['hookFailureCount']} last={scalar(document['lastHookFailureAt'])}",
         f"Backend: {document['backend']['state']}",
         *(
             f"Adapter {adapter['harness']}: {adapter['platformSupport']}/{adapter['configurationState']}"

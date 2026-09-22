@@ -289,6 +289,7 @@ policies:
         - "**/CLAUDE.md"
         - "**/_index.md"
         - "**/CONTRIBUTING.md"
+        - "**/CHANGELOG.md"
         - "**/LICENSING-NOTICE.md"
         - "**/ROADMAP.md"
         - "**/SECURITY.md"

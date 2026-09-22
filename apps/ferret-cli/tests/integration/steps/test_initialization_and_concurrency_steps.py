@@ -34,7 +34,7 @@ class Session:
 
     @property
     def data_home(self) -> Path:
-        return self.home / ".ferret"
+        return self.home / ".local" / "share" / "ferret"
 
 
 @pytest.fixture

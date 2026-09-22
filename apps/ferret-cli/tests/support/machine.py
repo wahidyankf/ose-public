@@ -33,7 +33,7 @@ class Machine:
 
     @property
     def data_home(self) -> Path:
-        return self.home / ".ferret"
+        return self.home / ".local" / "share" / "ferret"
 
     @property
     def database(self) -> Path:

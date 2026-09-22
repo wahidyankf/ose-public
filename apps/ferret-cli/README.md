@@ -11,10 +11,24 @@ zipapp.
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ferret-cli:run -- --help
 ```
 
-Run `ferret <command> --help` for one command. The commands are `init`, `capture`, `capture-hook`, `status`,
-`events list`, `events export`, `usage`, `outcomes`, `maintenance`, `self install`, `self uninstall`, and `version`.
-Commands with a machine form accept `--json` (shorthand for `--output json`); scripts should always use it. Requested
-help and version go to stdout with exit 0, and a usage mistake goes to stderr with exit 2.
+Run `ferret <command> --help`, or `ferret help <command>`, for one command. The commands are `init`, `capture`,
+`capture-hook`, `status`, `events list`, `events export`, `usage`, `outcomes`, `maintenance`, `self install`,
+`self uninstall`, `help`, and `version`. Commands with a machine form accept `--json` (shorthand for
+`--output json`); scripts should always use it.
+
+Every exit status FERRET returns is one of these, and `ferret --help` publishes the same list:
+
+| Status  | Meaning                                                                                |
+| ------- | -------------------------------------------------------------------------------------- |
+| `0`     | the command ran and the answer was affirmative                                         |
+| `1`     | the command ran and a query matched nothing                                            |
+| `2`     | FERRET could not run: the invocation, the environment, or the stored data was unusable |
+| `126`   | an interpreter was found and could not be started                                      |
+| `128+N` | ended by signal N; `130` is an interrupt and `141` a closed pipe                       |
+
+A failure names its precise reason in the machine-readable body's `error.code`, a namespaced `ferret.area.reason`
+value, alongside an `error.message` for a person. Requested help and version go to stdout with exit `0`; a usage
+mistake goes to stderr with exit `2` and leaves stdout empty.
 
 ## Use it
 
@@ -36,10 +50,10 @@ can and cannot report is in
 Every `ferret-cli/vX.Y.Z` tag publishes one platform-independent zipapp and its digest.
 
 ```bash
-BASE=https://github.com/wahidyankf/ose-public/releases/download/ferret-cli/v0.1.1
-curl -fLO "$BASE/ferret-cli_v0.1.1.pyz" && curl -fLO "$BASE/checksums.txt"
+BASE=https://github.com/wahidyankf/ose-public/releases/download/ferret-cli/v0.2.0
+curl -fLO "$BASE/ferret-cli_v0.2.0.pyz" && curl -fLO "$BASE/checksums.txt"
 shasum -a 256 -c checksums.txt
-python3 ferret-cli_v0.1.1.pyz self install --target user
+python3 ferret-cli_v0.2.0.pyz self install --target user
 ```
 
 Verify the digest before running it.
@@ -49,12 +63,15 @@ find the right one: the artifact looks for a `python3.14` or newer on `PATH` and
 and restarts itself there. `self install` then pins whichever interpreter it ended up on into
 `~/.local/bin/ferret`, so later runs and every harness hook start on it directly with no second interpreter.
 
-If no suitable interpreter can be found, FERRET writes one line to standard error and exits 3 rather than a
-traceback; set `FERRET_PYTHON` to an absolute path and it uses that one outright.
+If no suitable interpreter can be found, FERRET writes one line to standard error and exits `2` rather than a
+traceback; an interpreter that is found but cannot be started is `126`. Set `FERRET_PYTHON` to an absolute path and
+it uses that one outright.
 
 ## Where the data lives, and how long
 
-The data home is `$HOME/.ferret`; `FERRET_DATA_HOME` relocates it (an absolute, normalized path on a local disk). It
+The data home is `$XDG_DATA_HOME/ferret`, and `$HOME/.local/share/ferret` when that variable is unset or empty;
+`FERRET_DATA_HOME` relocates it outright (an absolute, normalized path on a local disk). An earlier `$HOME/.ferret`
+from a release before `v0.2.0` is moved into the new location once, on the first run that finds it. The data home
 holds the installation key, identity, config, and `ferret.sqlite3`, all private to the user.
 
 - Anything older than 30 days is never returned by any command. The next operation after maintenance becomes due

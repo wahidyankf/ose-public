@@ -22,6 +22,7 @@ commands:
   self uninstall      remove the artifact; data is kept unless purged
 
   version             print the version and exit
+  help                show this help and exit
 
 options:
   -h, --help          show this help and exit
@@ -29,6 +30,14 @@ options:
   --output <text|json>
                       render the result as text or JSON; defaults to text
   --json              shorthand for --output json
+
+exit codes:
+  0                   the command ran and the answer was affirmative
+  1                   the command ran and a query matched nothing
+  2                   FERRET could not run: the invocation, the environment,
+                      or the stored data was unusable; see error.code
+  126                 an interpreter was found and could not be started
+  128+N               ended by signal N; 130 is an interrupt, 141 a closed pipe
 
 Telemetry older than 30 days is never returned. Scripts should use --json.
 Run 'ferret <command> --help' for a command's options.

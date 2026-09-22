@@ -12,7 +12,7 @@ statements and no unparenthesized ``except`` groups. The unit suite holds that l
 the old grammar, so the guard can never be broken by the very thing it guards against.
 
 Nothing here imports from the rest of ``ferret``. That includes the exit status below, which repeats
-``EXIT_ENVIRONMENT_ERROR`` rather than importing it; a unit test asserts the two stay equal.
+``EXIT_CALLER_ERROR`` rather than importing it; a unit test asserts the two stay equal.
 """
 
 from __future__ import annotations
@@ -24,8 +24,12 @@ from collections.abc import Callable, Mapping, Sequence
 
 #: The lowest interpreter the rest of the package parses on. Keep equal to ``requires-python`` in pyproject.toml.
 REQUIRED = (3, 14)
-#: Repeats ``ferret.domain.errors.EXIT_ENVIRONMENT_ERROR``: an unusable host interpreter is an environment fault.
-EXIT_ENVIRONMENT_ERROR = 3
+#: Repeats ``ferret.domain.errors.EXIT_CALLER_ERROR``: an unusable host interpreter means FERRET never ran.
+EXIT_CALLER_ERROR = 2
+#: What a shell reports for a program it found and could not execute. An interpreter this module chose by name
+#: and then failed to start is exactly that, so it is reported the same way rather than as a traceback on the
+#: interpreter this guard exists to keep FERRET off.
+EXIT_NOT_EXECUTABLE = 126
 #: Names an interpreter to use outright, for a host where no suitable one can be found by name.
 OVERRIDE_VARIABLE = "FERRET_PYTHON"
 #: Set on the interpreter this module starts, so one that is still too old diagnoses instead of restarting forever.
@@ -126,6 +130,15 @@ def diagnosis(version: Sequence[int], required: Sequence[int] = REQUIRED) -> str
     )
 
 
+def unstartable(interpreter: str) -> str:
+    """Why a chosen interpreter could not be started.
+
+    It names the interpreter, which this module chose itself from ``PATH`` or a documented fallback directory,
+    and nothing else. No argument and no payload reaches it.
+    """
+    return f"ferret: found {interpreter} and could not start it; set {OVERRIDE_VARIABLE} to a suitable interpreter"
+
+
 def relaunch(
     archive: str,
     argv: Sequence[str],
@@ -151,10 +164,17 @@ def relaunch(
         if interpreter is not None:
             child = dict(environ)
             child[SENTINEL_VARIABLE] = "1"
-            (execute or os.execve)(interpreter, [interpreter, archive, *argv], child)
+            try:
+                (execute or os.execve)(interpreter, [interpreter, archive, *argv], child)
+            except OSError:
+                # An interpreter that was found and cannot be started. Without this the OSError becomes a
+                # traceback on the very interpreter the guard exists to protect -- the one that cannot parse
+                # the package -- and under a harness hook that traceback is discarded.
+                (report or _to_stderr)(unstartable(interpreter))
+                return EXIT_NOT_EXECUTABLE
             return None
     (report or _to_stderr)(diagnosis(version, required))
-    return EXIT_ENVIRONMENT_ERROR
+    return EXIT_CALLER_ERROR
 
 
 def _to_stderr(line: str) -> None:

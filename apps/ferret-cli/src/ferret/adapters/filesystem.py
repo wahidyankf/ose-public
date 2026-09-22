@@ -6,7 +6,13 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ferret.domain.errors import FerretError
-from ferret.domain.storage import DATA_HOME_VARIABLE, DEFAULT_DATA_HOME_NAME
+from ferret.domain.storage import (
+    DATA_HOME_NAME,
+    DATA_HOME_VARIABLE,
+    LEGACY_DATA_HOME_NAME,
+    XDG_DATA_HOME_DEFAULT,
+    XDG_DATA_HOME_VARIABLE,
+)
 
 _URL_LIKE = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*:")
 _LINUX_MIN_FIELDS = 10
@@ -47,23 +53,55 @@ class Mount:
     fstype: str
 
 
+def adopt_legacy_data_home(home: Path, data_home: Path) -> Path:
+    """Move a pre-specification ``<home>/.ferret`` to where FERRET now keeps its data, and say where that is.
+
+    Only when the old directory exists and the new one does not, so it happens once and never overwrites. The
+    move is one rename, which is atomic within a filesystem; when it cannot be done -- a different filesystem,
+    a permission the user does not hold -- the old directory is used where it stands rather than the user losing
+    sight of their own data over a tidying step.
+    """
+    legacy = home / LEGACY_DATA_HOME_NAME
+    if data_home.exists() or not legacy.is_dir():
+        return data_home
+    try:
+        data_home.parent.mkdir(parents=True, exist_ok=True)
+        legacy.rename(data_home)
+    except OSError:
+        return legacy
+    return data_home
+
+
 def resolve_data_home(environment: Mapping[str, str], home: Path) -> Path:
     """The absolute data-home path for this user, or ``unsafe_storage`` if the override cannot be trusted.
 
-    The default is ``<home>/.ferret``. ``FERRET_DATA_HOME`` relocates it and must be an absolute, normalized,
-    non-URL path; an empty value counts as unset. Whether the path is local, unlinked, and owned by the user is
-    checked against the real filesystem when the store is opened, not here.
+    Precedence, highest first:
+
+    1. ``FERRET_DATA_HOME``, which must be an absolute, normalized, non-URL path.
+    2. ``XDG_DATA_HOME``, which must be absolute, joined with ``ferret``.
+    3. ``<home>/.local/share/ferret``, the base directory specification's own default.
+
+    An empty value counts as unset at every level, which the specification requires and which matters because a
+    shell that exports a variable it never assigned hands it on as the empty string. An ``XDG_DATA_HOME`` that
+    is set and relative is treated the same way, for the same reason the specification gives: a relative base
+    directory means a different place depending on where the process happened to start.
+
+    Whether the path is local, unlinked, and owned by the user is checked against the real filesystem when the
+    store is opened, not here.
     """
     override = environment.get(DATA_HOME_VARIABLE, "")
     if not override:
+        base = environment.get(XDG_DATA_HOME_VARIABLE, "")
+        if base and Path(base).is_absolute() and "\x00" not in base and ".." not in Path(base).parts:
+            return Path(base) / DATA_HOME_NAME
         if not home.is_absolute():
-            raise FerretError("unsafe_storage")
-        return home / DEFAULT_DATA_HOME_NAME
+            raise FerretError("ferret.storage.unsafe")
+        return home / XDG_DATA_HOME_DEFAULT / DATA_HOME_NAME
     if "\x00" in override or _URL_LIKE.match(override) is not None:
-        raise FerretError("unsafe_storage")
+        raise FerretError("ferret.storage.unsafe")
     path = Path(override)
     if not path.is_absolute() or ".." in path.parts or len(path.parts) < 2:
-        raise FerretError("unsafe_storage")
+        raise FerretError("ferret.storage.unsafe")
     return path
 
 

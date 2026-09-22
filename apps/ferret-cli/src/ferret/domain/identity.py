@@ -38,4 +38,4 @@ def resolve_identity(existing_hash: str | None, incoming_hash: str) -> IdentityD
         return "insert"
     if hmac.compare_digest(existing_hash.encode("utf-8"), incoming_hash.encode("utf-8")):
         return "duplicate"
-    raise FerretError("idempotency_conflict")
+    raise FerretError("ferret.event.idempotency-conflict")

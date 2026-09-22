@@ -13,7 +13,7 @@ import pytest
 
 from ferret import _bootstrap
 from ferret._bootstrap import (
-    EXIT_ENVIRONMENT_ERROR,
+    EXIT_CALLER_ERROR,
     OVERRIDE_VARIABLE,
     REQUIRED,
     SENTINEL_VARIABLE,
@@ -25,7 +25,7 @@ from ferret._bootstrap import (
     search_directories,
     supports,
 )
-from ferret.domain.errors import EXIT_ENVIRONMENT_ERROR as CLOSED_CONTRACT_EXIT
+from ferret.domain.errors import EXIT_CALLER_ERROR as CLOSED_CONTRACT_EXIT
 
 
 @pytest.fixture
@@ -43,7 +43,7 @@ def executable(directory: Path, name: str) -> Path:
 
 def test_the_repeated_exit_status_equals_the_closed_failure_contract() -> None:
     # _bootstrap may not import the rest of the package, so this is the only thing keeping the two in step.
-    assert EXIT_ENVIRONMENT_ERROR == CLOSED_CONTRACT_EXIT
+    assert EXIT_CALLER_ERROR == CLOSED_CONTRACT_EXIT
 
 
 @pytest.mark.parametrize(
@@ -207,7 +207,7 @@ def test_an_old_interpreter_with_nothing_to_restart_on_reports_and_gives_the_exi
         execute=never_executes,
         report=reported.append,
     )
-    assert outcome == EXIT_ENVIRONMENT_ERROR
+    assert outcome == EXIT_CALLER_ERROR
     assert reported == [diagnosis((3, 13, 12))]
 
 
@@ -225,7 +225,7 @@ def test_a_second_old_interpreter_diagnoses_rather_than_restarting_again(
         execute=never_executes,
         report=reported.append,
     )
-    assert outcome == EXIT_ENVIRONMENT_ERROR
+    assert outcome == EXIT_CALLER_ERROR
     assert reported == [diagnosis((3, 13, 12))]
 
 
@@ -235,7 +235,7 @@ def test_the_default_reporter_writes_one_line_to_standard_error(
     # Reached through relaunch rather than by name, so the default really is the one a caller gets.
     monkeypatch.setattr(_bootstrap.sys, "version_info", (3, 13, 12))
     monkeypatch.setattr(_bootstrap, "FALLBACK_DIRECTORIES", ())
-    assert relaunch("/archive.pyz", [], {"PATH": "/nowhere", SENTINEL_VARIABLE: "1"}) == EXIT_ENVIRONMENT_ERROR
+    assert relaunch("/archive.pyz", [], {"PATH": "/nowhere", SENTINEL_VARIABLE: "1"}) == EXIT_CALLER_ERROR
     captured = capsys.readouterr()
     assert (captured.out, captured.err) == ("", diagnosis((3, 13, 12)) + "\n")
 

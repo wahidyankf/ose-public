@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import ClassVar, Literal
 
 from ferret import __version__
+from ferret.adapters.hook_failures import read_hook_failures
 from ferret.application.ports import ExpiryCounters, InterpreterFacts, Runtime, StoreCounts
 from ferret.application.store import require_initialized
 from ferret.domain.capability import CapabilitySnapshot
@@ -67,6 +68,9 @@ class StatusReport:
     counters: ExpiryCounters
     last_maintenance_at: str | None
     maintenance_due: bool
+    #: What the fail-open callback lost, since it can say nothing itself.
+    hook_failure_count: int
+    last_hook_failure_at: str | None
     adapters: tuple[AdapterStatus, ...]
 
 
@@ -80,9 +84,10 @@ def report_status(runtime: Runtime) -> StatusReport:
     telemetry = runtime.telemetry
     facts = telemetry.storage_facts()
     if not telemetry.check_integrity(thorough=False):
-        raise FerretError("integrity_failure")
+        raise FerretError("ferret.storage.integrity-failure")
     now = runtime.clock.now()
     last_maintenance_at = telemetry.last_completed_at()
+    hook_failure_count, last_hook_failure_at = read_hook_failures(runtime.data_home)
     return StatusReport(
         ferret_version=__version__,
         interpreter=runtime.interpreter,
@@ -95,6 +100,8 @@ def report_status(runtime: Runtime) -> StatusReport:
         counters=telemetry.expiry_counters(),
         last_maintenance_at=last_maintenance_at,
         maintenance_due=is_due(last_maintenance_at, now),
+        hook_failure_count=hook_failure_count,
+        last_hook_failure_at=last_hook_failure_at,
         adapters=tuple(
             AdapterStatus(harness, support, runtime.capabilities.latest_snapshot(harness, now=now))
             for harness, support in ADAPTERS

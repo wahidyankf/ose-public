@@ -132,7 +132,12 @@ def then_rejects_without_a_row(session: Session) -> None:
 def then_names_the_category_only(session: Session) -> None:
     assert session.outcome is not None
     error = json.loads(session.outcome.stderr)["error"]
-    assert error == {"code": "invalid_event", "field": session.category, "retryable": False}
+    assert error == {
+        "code": "ferret.event.invalid",
+        "message": "the event is not a valid FERRET event",
+        "field": session.category,
+        "retryable": False,
+    }
     assert CANARY not in session.outcome.stderr
 
 

@@ -93,8 +93,8 @@ def when_any_command_runs(start: Start, artifact: Path) -> None:
 def then_ferret(start: Start, outcome: str) -> None:
     ran = start.ran
     assert ran is not None
-    if outcome == "exits 3 naming the version it requires":
-        assert (ran.returncode, ran.stdout) == (3, "")
+    if outcome == "exits 2 naming the version it requires":
+        assert (ran.returncode, ran.stdout) == (2, "")
         assert ran.stderr.splitlines() == [diagnosis(OLD)]
         return
     assert outcome in ("runs the command on that interpreter", "restarts itself on the supported interpreter")

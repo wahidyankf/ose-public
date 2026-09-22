@@ -23,19 +23,30 @@ SHEBANG = b"#!/usr/bin/env python3\n"
 # process on a suitable interpreter before importing anything that needs one. Both modules it touches on that path
 # stay inside the old grammar; ``from ferret.cli import main`` is reached only once the interpreter can parse it,
 # which is why it is not at the top of the file.
+# The whole body is guarded, and the guard is written in the old grammar for the same reason the two modules
+# it touches are: it has to hold during the window before a suitable interpreter has been chosen, when a fault
+# here would otherwise print a traceback on an interpreter that cannot even parse the package. `2` is what
+# every other "FERRET could not run" reports, and a traceback is not a diagnostic: it carries paths and values
+# the closed failure contract keeps out, and it exits `1`, the status reserved for a result.
 ENTRY_POINT = (
     "import os\n"
     "import sys\n"
     "\n"
-    "from ferret._bootstrap import relaunch\n"
+    "try:\n"
+    "    from ferret._bootstrap import relaunch\n"
     "\n"
-    "status = relaunch(sys.path[0], sys.argv[1:], os.environ)\n"
-    "if status is not None:\n"
-    "    sys.exit(status)\n"
+    "    status = relaunch(sys.path[0], sys.argv[1:], os.environ)\n"
+    "    if status is not None:\n"
+    "        sys.exit(status)\n"
     "\n"
-    "from ferret.cli import main\n"
+    "    from ferret.cli import run\n"
     "\n"
-    "sys.exit(main())\n"
+    "    sys.exit(run())\n"
+    "except SystemExit:\n"
+    "    raise\n"
+    "except Exception:\n"
+    "    sys.stderr.write('FERRET error [ferret.internal.failure]: FERRET failed internally\\n')\n"
+    "    sys.exit(2)\n"
 )
 FIXED_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 FILE_MODE = 0o644

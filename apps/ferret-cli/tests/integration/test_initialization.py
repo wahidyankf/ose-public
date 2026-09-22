@@ -47,7 +47,7 @@ def test_two_repository_init_converges(tmp_path: Path, monkeypatch: pytest.Monke
         monkeypatch.chdir(repository)
         results.append(initialize(home))
     first, second = results
-    data_home = home / ".ferret"
+    data_home = home / ".local" / "share" / "ferret"
 
     assert first.data_home == second.data_home == data_home
     assert first.database_path == second.database_path == data_home / "ferret.sqlite3"
@@ -71,7 +71,7 @@ def test_a_permissive_umask_never_widens_a_created_artifact(tmp_path: Path) -> N
         initialize(home)
     finally:
         os.umask(previous)
-    data_home = home / ".ferret"
+    data_home = home / ".local" / "share" / "ferret"
 
     assert mode_of(data_home) == 0o700
     assert {path.name: mode_of(path) for path in data_home.iterdir()} == dict.fromkeys(ARTIFACTS, 0o600)
@@ -85,7 +85,7 @@ def test_the_data_home_override_relocates_the_store(tmp_path: Path) -> None:
 
     assert result.data_home == relocated
     assert sorted(path.name for path in relocated.iterdir()) == ARTIFACTS
-    assert not (home / ".ferret").exists()
+    assert not (home / ".local" / "share" / "ferret").exists()
 
 
 def test_concurrent_initializations_converge_on_one_identity(tmp_path: Path) -> None:
@@ -109,7 +109,7 @@ def test_concurrent_initializations_converge_on_one_identity(tmp_path: Path) -> 
         "created"
     ]
     assert len({document["installationId"] for document in documents}) == 1
-    data_home = home / ".ferret"
+    data_home = home / ".local" / "share" / "ferret"
     identity = json.loads((data_home / "identity.json").read_text(encoding="utf-8"))
     assert identity["installationId"] == documents[0]["installationId"]
     with sqlite3.connect(data_home / "ferret.sqlite3") as connection:
@@ -120,25 +120,27 @@ def test_a_symlinked_data_home_is_refused(tmp_path: Path) -> None:
     home = make_home(tmp_path)
     elsewhere = tmp_path / "elsewhere"
     elsewhere.mkdir(mode=0o700)
-    (home / ".ferret").symlink_to(elsewhere)
+    (home / ".local" / "share").mkdir(parents=True, mode=0o700)
+    (home / ".local" / "share" / "ferret").symlink_to(elsewhere)
 
     with pytest.raises(FerretError) as caught:
         initialize(home)
 
-    assert caught.value.code == "unsafe_storage"
+    assert caught.value.code == "ferret.storage.unsafe"
     assert list(elsewhere.iterdir()) == []
 
 
 def test_a_group_readable_data_home_is_refused_and_left_unchanged(tmp_path: Path) -> None:
     home = make_home(tmp_path)
-    data_home = home / ".ferret"
+    data_home = home / ".local" / "share" / "ferret"
+    data_home.parent.mkdir(parents=True, mode=0o700)
     data_home.mkdir(mode=0o750)
     data_home.chmod(0o750)
 
     with pytest.raises(FerretError) as caught:
         initialize(home)
 
-    assert caught.value.code == "unsafe_storage"
+    assert caught.value.code == "ferret.storage.unsafe"
     assert mode_of(data_home) == 0o750
     assert list(data_home.iterdir()) == []
 
@@ -147,7 +149,7 @@ def test_a_group_readable_data_home_is_refused_and_left_unchanged(tmp_path: Path
 def test_an_existing_widened_or_linked_artifact_is_refused_and_not_repaired(tmp_path: Path, victim: str) -> None:
     home = make_home(tmp_path)
     initialize(home)
-    target = home / ".ferret" / victim
+    target = home / ".local" / "share" / "ferret" / victim
     target.chmod(0o644)
 
     with pytest.raises(FerretError) as widened:
@@ -157,13 +159,14 @@ def test_an_existing_widened_or_linked_artifact_is_refused_and_not_repaired(tmp_
     with pytest.raises(FerretError) as linked:
         initialize(home)
 
-    assert widened.value.code == linked.value.code == "unsafe_storage"
+    assert widened.value.code == linked.value.code == "ferret.storage.unsafe"
     assert mode_of(target) == 0o600
 
 
 def test_a_lock_file_replaced_by_a_symlink_is_refused(tmp_path: Path) -> None:
     home = make_home(tmp_path)
-    data_home = home / ".ferret"
+    data_home = home / ".local" / "share" / "ferret"
+    data_home.parent.mkdir(parents=True, mode=0o700)
     data_home.mkdir(mode=0o700)
     victim = tmp_path / "victim"
     victim.write_text("keep", encoding="utf-8")
@@ -172,5 +175,5 @@ def test_a_lock_file_replaced_by_a_symlink_is_refused(tmp_path: Path) -> None:
     with pytest.raises(FerretError) as caught:
         initialize(home)
 
-    assert caught.value.code == "unsafe_storage"
+    assert caught.value.code == "ferret.storage.unsafe"
     assert victim.read_text(encoding="utf-8") == "keep"

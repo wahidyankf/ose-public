@@ -131,7 +131,7 @@ def test_a_failed_insert_leaves_neither_an_event_nor_a_workspace_row(database: P
     with pytest.raises(FerretError) as caught:
         SQLiteEventRepository(database).capture(make_event())
 
-    assert caught.value.code == "storage_unavailable"
+    assert caught.value.code == "ferret.storage.unavailable"
     assert rows(database, "workspace") == []
 
 
@@ -154,7 +154,7 @@ def test_the_same_id_with_different_content_conflicts_and_changes_nothing(databa
     with pytest.raises(FerretError) as caught:
         repository.capture(make_event(toolName="Write"))
 
-    assert caught.value.code == "idempotency_conflict"
+    assert caught.value.code == "ferret.event.idempotency-conflict"
     assert (rows(database, "event"), rows(database, "workspace")) == before
 
 
@@ -164,7 +164,7 @@ def test_a_constraint_failure_after_the_workspace_upsert_rolls_the_whole_capture
     with pytest.raises(FerretError) as caught:
         SQLiteEventRepository(database).capture(unchecked)
 
-    assert caught.value.code == "integrity_failure"
+    assert caught.value.code == "ferret.storage.integrity-failure"
     assert (rows(database, "event"), rows(database, "workspace")) == ([], [])
 
 
@@ -181,7 +181,7 @@ def test_a_writer_blocked_beyond_the_busy_timeout_fails_retryably_and_leaves_no_
         blocker.execute("ROLLBACK")
         blocker.close()
 
-    assert (caught.value.code, caught.value.retryable) == ("storage_unavailable", True)
+    assert (caught.value.code, caught.value.retryable) == ("ferret.storage.unavailable", True)
     # Every attempt is opened with the short attempt timeout, never with the budget: a budget handed to
     # SQLite as a busy timeout is not a bound, which is the defect this asserts against.
     assert budgets != []
@@ -222,7 +222,7 @@ def test_a_blocked_writer_stops_when_its_budget_is_spent_however_long_the_busy_t
         blocker.execute("ROLLBACK")
         blocker.close()
 
-    assert (caught.value.code, caught.value.retryable) == ("storage_unavailable", True)
+    assert (caught.value.code, caught.value.retryable) == ("ferret.storage.unavailable", True)
     # One reading fixes the deadline and each later one ends an attempt, so a 250 ms budget at 100 ms a reading gives
     # up on the third: the acquisition is bounded by the clock, never by however long SQLite chose to wait.
     assert clock.readings == 4

@@ -50,7 +50,7 @@ class Session:
 
     @property
     def data_home(self) -> Path:
-        return self.home / ".ferret"
+        return self.home / ".local" / "share" / "ferret"
 
     @property
     def database(self) -> Path:
@@ -162,7 +162,12 @@ def then_rejects_without_a_row(session: Session) -> None:
 def then_names_the_category_only(session: Session) -> None:
     assert session.completed is not None
     error = json.loads(session.completed.stderr)["error"]
-    assert error == {"code": "invalid_event", "field": session.category, "retryable": False}
+    assert error == {
+        "code": "ferret.event.invalid",
+        "message": "the event is not a valid FERRET event",
+        "field": session.category,
+        "retryable": False,
+    }
     assert CANARY.encode() not in session.completed.stderr
     assert CANARY.encode() not in data_home_bytes(session)
 
@@ -220,7 +225,7 @@ def then_the_raw_bytes_are_never_written(session: Session) -> None:
     written = b"".join(everything.values())
     assert not any(canary.encode() in written for canary in CANARIES)
     # Nothing but the store's own files exists: no spool, log, or scratch file beside them.
-    assert {name.split("/")[1] for name in everything if name.startswith("home/")} == {".ferret"}
+    assert {name.split("/")[1] for name in everything if name.startswith("home/")} == {".local"}
     assert {name.split("/")[-1] for name in everything if "/.ferret/" in name} <= {
         "config.json",
         "ferret.lock",

@@ -94,8 +94,9 @@ def then_diagnostics_stay_off_standard_output(session: Session) -> None:
     quiet = run_cli(session.world, ["events", "list", "--harness", "opencode"])
     refused = run_cli(session.world, ["events", "export", "--format", "jsonl", "--harness", "Bad"])
 
-    assert quiet == (0, "", "No rows.\n")
-    assert refused == (2, "", "FERRET error [invalid_filter]: a filter value is not valid\n")
+    # `1`: the query ran and matched nothing, which is a result and not a failure.
+    assert quiet == (1, "", "No rows.\n")
+    assert refused == (2, "", "FERRET error [ferret.filter.invalid]: a filter value is not valid\n")
 
 
 @scenario(FEATURE, "Emit a stable machine-readable command result")
@@ -129,7 +130,7 @@ def then_stdout_is_one_json_object(session: Session) -> None:
     if session.command == "events export":
         # The one stream command: stdout is the data itself, so it refuses a JSON wrapper rather than mixing them.
         assert (code, out) == (2, "")
-        assert json.loads(err)["error"]["code"] == "invalid_arguments"
+        assert json.loads(err)["error"]["code"] == "ferret.args.invalid"
         return
     document = json.loads(out)
     assert (code, err, out.count("\n")) == (0, "", 1)
@@ -177,7 +178,7 @@ def then_a_failure_is_a_closed_error_without_a_path(session: Session) -> None:
     assert list(envelope) == ["schemaVersion", "command", "exitCode", "error"]
     assert envelope["command"] == name
     assert code == envelope["exitCode"] == FAILURES[envelope["error"]["code"]][0]
-    assert set(envelope["error"]) == {"code", "field", "retryable"}
+    assert set(envelope["error"]) == {"code", "message", "field", "retryable"}
     assert "/" not in err
 
 

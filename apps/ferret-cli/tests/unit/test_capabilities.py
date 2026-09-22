@@ -247,7 +247,7 @@ INVALID = [
 def test_capability_snapshot_matrix(document: dict[str, Any], field: str | None) -> None:
     error = refusal(document)
 
-    assert (error.code, error.exit_code, error.field, error.retryable) == ("invalid_event", 2, field, False)
+    assert (error.code, error.exit_code, error.field, error.retryable) == ("ferret.event.invalid", 2, field, False)
 
 
 def test_a_rejected_snapshot_never_echoes_its_content() -> None:
@@ -331,7 +331,12 @@ def test_reject_a_conflicting_capability_snapshot(changes: dict[str, Any]) -> No
 
     error = refused_recording(world, conflicting)
 
-    assert (error.code, error.exit_code, error.field, error.retryable) == ("idempotency_conflict", 2, None, False)
+    assert (error.code, error.exit_code, error.field, error.retryable) == (
+        "ferret.event.idempotency-conflict",
+        2,
+        None,
+        False,
+    )
     assert VECTOR_HASH not in str(error)
     assert [held.snapshot_hash for held in world.capabilities.stored] == [VECTOR_HASH]
 
@@ -341,7 +346,7 @@ def test_a_snapshot_is_validated_before_storage_is_touched() -> None:
 
     error = refused_recording(world, replaced(harness="Codex"))
 
-    assert (error.code, error.field) == ("invalid_event", "harness")
+    assert (error.code, error.field) == ("ferret.event.invalid", "harness")
     assert world.files.touched == []
     assert world.capabilities.stored == []
 
@@ -351,7 +356,7 @@ def test_a_valid_snapshot_needs_an_initialized_store() -> None:
 
     error = refused_recording(world, VECTOR_DOCUMENT)
 
-    assert error.code == "uninitialized"
+    assert error.code == "ferret.storage.uninitialized"
     assert world.capabilities.stored == []
 
 

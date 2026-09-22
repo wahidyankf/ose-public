@@ -119,8 +119,8 @@ def test_an_unsafe_override_is_refused_without_echoing_it(override: str) -> None
     with pytest.raises(FerretError) as caught:
         resolve_data_home({"FERRET_DATA_HOME": override}, FAKE_HOME)
 
-    assert caught.value.code == "unsafe_storage"
-    assert caught.value.exit_code == 3
+    assert caught.value.code == "ferret.storage.unsafe"
+    assert caught.value.exit_code == 2
     assert override not in str(caught.value)
 
 
@@ -128,7 +128,7 @@ def test_a_relative_home_is_refused() -> None:
     with pytest.raises(FerretError) as caught:
         resolve_data_home({}, Path("relative/home"))
 
-    assert caught.value.code == "unsafe_storage"
+    assert caught.value.code == "ferret.storage.unsafe"
 
 
 @pytest.mark.parametrize(
@@ -165,8 +165,8 @@ def test_an_existing_unsafe_object_is_refused_and_nothing_is_changed(
     with pytest.raises(FerretError) as caught:
         initialize_store(world.runtime)
 
-    assert caught.value.code == "unsafe_storage"
-    assert caught.value.exit_code == 3
+    assert caught.value.code == "ferret.storage.unsafe"
+    assert caught.value.exit_code == 2
     assert str(FAKE_HOME) not in str(caught.value)
     assert world.files.creates == creates_before
 
@@ -239,8 +239,8 @@ def test_an_existing_database_without_its_companions_is_refused(missing: str) ->
     with pytest.raises(FerretError) as caught:
         initialize_store(world.runtime)
 
-    assert caught.value.code == "storage_unavailable"
-    assert caught.value.exit_code == 3
+    assert caught.value.code == "ferret.storage.unavailable"
+    assert caught.value.exit_code == 2
     assert world.files.creates == creates_before
 
 
@@ -268,7 +268,7 @@ def test_an_invalid_identity_document_is_refused(content: bytes) -> None:
     with pytest.raises(FerretError) as caught:
         initialize_store(world.runtime)
 
-    assert caught.value.code == "storage_unavailable"
+    assert caught.value.code == "ferret.storage.unavailable"
 
 
 @pytest.mark.parametrize("key", [b"", b"short", bytes(31), bytes(33)])
@@ -279,7 +279,7 @@ def test_an_identity_key_of_the_wrong_length_is_refused(key: bytes) -> None:
     with pytest.raises(FerretError) as caught:
         initialize_store(world.runtime)
 
-    assert caught.value.code == "storage_unavailable"
+    assert caught.value.code == "ferret.storage.unavailable"
 
 
 @pytest.mark.parametrize(
@@ -298,4 +298,4 @@ def test_a_configuration_other_than_the_supported_one_is_refused(content: bytes)
     with pytest.raises(FerretError) as caught:
         initialize_store(world.runtime)
 
-    assert caught.value.code == "storage_unavailable"
+    assert caught.value.code == "ferret.storage.unavailable"

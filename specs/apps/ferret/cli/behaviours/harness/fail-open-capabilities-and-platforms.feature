@@ -52,7 +52,7 @@ Feature: Fail open and report harness capabilities honestly
       | interpreter                                             | outcome                                            |
       | an interpreter FERRET supports                          | runs the command on that interpreter               |
       | an older interpreter while a supported one is reachable | restarts itself on the supported interpreter       |
-      | an older interpreter with no supported one reachable    | exits 3 naming the version it requires             |
+      | an older interpreter with no supported one reachable    | exits 2 naming the version it requires             |
 
   Scenario Outline: Keep one POSIX adapter fail-open at the wrapper boundary
     Given a <harness> binding invokes the shared wrapper

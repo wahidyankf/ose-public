@@ -218,7 +218,7 @@ def test_a_prune_that_cannot_take_the_lock_is_skipped_and_the_operation_still_su
 
 @pytest.mark.parametrize(
     "failure",
-    [FerretError("storage_unavailable", retryable=True), FerretError("integrity_failure")],
+    [FerretError("ferret.storage.unavailable", retryable=True), FerretError("ferret.storage.integrity-failure")],
     ids=["unavailable", "integrity"],
 )
 def test_a_prune_failure_never_reaches_the_operation(failure: FerretError) -> None:
@@ -227,7 +227,8 @@ def test_a_prune_failure_never_reaches_the_operation(failure: FerretError) -> No
 
     ran = run_cli(world, [*READS["events list"], "--json"])
 
-    assert (ran.code, json.loads(ran.stdout)["items"]) == (0, [])
+    # `1` because the store is empty, not because the prune failed: the prune's failure never reaches the caller.
+    assert (ran.code, json.loads(ran.stdout)["items"]) == (1, [])
 
 
 @pytest.mark.parametrize("operation", [*READS, "capture"])
@@ -241,7 +242,9 @@ def test_every_operation_attempts_the_prune_when_maintenance_is_due(operation: s
 
     ran = run_cli(world, argv)
 
-    assert ran.code == 0
+    # Every event in this world is expired, so a read finds nothing and says so with `1`; `capture` stores one
+    # and succeeds. Either way the prune ran, which is what this measures.
+    assert ran.code == (0 if operation == "capture" else 1)
     assert [result.events for result in world.telemetry.prunes] == [5]
     assert not any(101 <= number <= 105 for number in numbers(tuple(world.events.stored)))
 
@@ -271,5 +274,5 @@ def test_an_uninitialized_store_is_refused_before_any_prune(operation: str) -> N
 
     ran = run_cli(world, READS[operation])
 
-    assert ran.code == 3
+    assert ran.code == 2
     assert world.telemetry.prunes == []

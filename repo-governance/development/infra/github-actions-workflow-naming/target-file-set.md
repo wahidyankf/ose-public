@@ -54,3 +54,17 @@ canonical set, organized by tier:
 | `dependency-vulnerability-audit.yml` | `dependency` | Scheduled dependency-vulnerability audit, outside registry gate surfaces       |
 | `pr-quality-gate.yml`                | `pr`         | PR gate: typecheck, lint, and test:quick, which owns Unit plus static coverage |
 | `validate-env.yml`                   | `validate`   | `.env.example` contract + `env-injection:` manifest check                      |
+
+## Added after the establishing plan
+
+The set above is the one that plan established. A workflow added later is recorded here before it
+merges, so the table stays the lookup for whether a filename already exists. This entry is
+**unenforced by decision**: the README-completeness gate checks annotated indexes under the
+documentation trees, not this table, and no check reads `.github/workflows/` against it.
+
+| Filename                 | Domain       | Purpose                                                                       |
+| ------------------------ | ------------ | ----------------------------------------------------------------------------- |
+| `ferret-cli-release.yml` | `ferret-cli` | Tag-triggered: build the zipapp and publish the GitHub release with checksums |
+
+Workflows predating this section that the set above omits are a separate backlog item; adding one
+here is not a licence to backfill them in an unrelated change.

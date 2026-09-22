@@ -326,6 +326,23 @@ adopt their consumer shape (a committed shim plus a `*.lock` pin) in Plan 01.
 **[Repo-grounded]** `hippo.lock`, `rhino.lock`, and the `./hippo` consumer in this repository establish the tag,
 checksum, cache, and `uname` resolution pattern this decision adopts and defers.
 
+**Execution status (A65, 2026-09-22).** D16 was decided and never wired into the delivery checklist. A
+repository-wide search for `D16` across this plan returned exactly one hit — the heading above. No checkbox,
+acceptance criterion, file-impact row, or evidence file referenced it, so no gate could catch its absence, and
+the Phase 6 preliminary audit and the Phase 8 terminal audit both missed it because both audit the checklist
+and the acceptance criteria. At the terminal close the repository held one tag, `parked/churn-2026-07-19`, no
+GitHub release at all, and no release workflow.
+
+The release half is executed by the terminal closure delivery: `.github/workflows/ferret-cli-release.yml`
+builds the zipapp for a `ferret-cli/vX.Y.Z` tag, proves the build reproduces byte for byte, checks the tag
+against the declared version and the artifact's own `version` output, and publishes one
+`ferret-cli_vX.Y.Z.pyz` with `checksums.txt`. `apps/ferret-cli/tests/unit/test_release_contract.py` binds the
+tag round trip as a property rather than a literal, per L30. The verb that names the workflow is propagated as
+a rule in the same delivery.
+
+The consumer half stands as written: no `./ferret` shim and no `ferret.lock` exist, and neither is due until a
+second repository consumes FERRET. That deferral was correct; only the release half was overdue.
+
 ### D17 — Rhino-aligned interaction surface, independent command structure
 
 **Selected [User decision]:** FERRET matches Rhino wherever a person's habit crosses tools — help, version,

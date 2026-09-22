@@ -1,0 +1,108 @@
+name: ferret-cli-release
+
+# Publishes one FERRET release for an annotated `ferret-cli/vX.Y.Z` tag, per decision D16 of the
+# FERRET Init 01 plan: an annotated tag, a GitHub release, and a published `checksums.txt`. The
+# zipapp is platform-independent, so the release carries a single artifact and a single digest
+# rather than HIPPO's four-platform matrix.
+#
+# This workflow force-pushes nothing and touches no branch. It only reads the tagged commit.
+
+on:
+  push:
+    tags:
+      - "ferret-cli/v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ferret-cli-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build and publish the tagged artifact
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-python
+
+      - name: Install locked Python dependencies
+        run: >-
+          ./hippo run --class transactional --resource-tier standard --disk-path . --
+          npx nx run ferret-cli:install
+
+      # The tag is the release identity, so it must agree with the version the artifact reports.
+      # Nothing else compares them: `pyproject.toml` and `ferret.__version__` are separate literals
+      # and the tag is a third. The Unit suite binds the first pair; this step binds the tag to both.
+      - name: Resolve the tag version and fail on disagreement
+        id: version
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          TAG_VERSION="${TAG#ferret-cli/v}"
+          if [ "$TAG_VERSION" = "$TAG" ]; then
+            echo "Tag '$TAG' does not carry the ferret-cli/vX.Y.Z form" >&2
+            exit 1
+          fi
+          DECLARED=$(sed -n 's/^__version__ = "\(.*\)"$/\1/p' apps/ferret-cli/src/ferret/__init__.py)
+          if [ "$TAG_VERSION" != "$DECLARED" ]; then
+            echo "Tag version '$TAG_VERSION' does not match the declared version '$DECLARED'" >&2
+            exit 1
+          fi
+          echo "version=$TAG_VERSION" >> "$GITHUB_OUTPUT"
+          echo "artifact=ferret-cli_v${TAG_VERSION}.pyz" >> "$GITHUB_OUTPUT"
+
+      - name: Build the zipapp
+        run: >-
+          ./hippo run --class ephemeral --resource-tier standard --disk-path . --
+          npx nx run ferret-cli:build
+
+      # The build declares itself byte-reproducible: fixed entry timestamp, mode, order, and no
+      # compression. A published digest that a rebuild cannot reproduce is not verifiable after the
+      # fact, which is the whole point of publishing it, so the claim is checked rather than trusted.
+      - name: Prove the build reproduces byte for byte
+        run: |
+          set -euo pipefail
+          FIRST=$(shasum -a 256 apps/ferret-cli/dist/ferret.pyz | cut -d' ' -f1)
+          rm -f apps/ferret-cli/dist/ferret.pyz
+          ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
+            npx nx run ferret-cli:build --skip-nx-cache
+          SECOND=$(shasum -a 256 apps/ferret-cli/dist/ferret.pyz | cut -d' ' -f1)
+          if [ "$FIRST" != "$SECOND" ]; then
+            echo "Rebuild digest $SECOND does not match $FIRST; the artifact is not reproducible" >&2
+            exit 1
+          fi
+          echo "Reproducible: $FIRST"
+
+      - name: Check the artifact reports the tagged version
+        run: |
+          set -euo pipefail
+          REPORTED=$(python3 apps/ferret-cli/dist/ferret.pyz version)
+          EXPECTED="ferret ${{ steps.version.outputs.version }}"
+          if [ "$REPORTED" != "$EXPECTED" ]; then
+            echo "Artifact reports '$REPORTED', expected '$EXPECTED'" >&2
+            exit 1
+          fi
+
+      - name: Assemble the release directory
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          cp apps/ferret-cli/dist/ferret.pyz "release/${{ steps.version.outputs.artifact }}"
+          cd release
+          shasum -a 256 "${{ steps.version.outputs.artifact }}" > checksums.txt
+          cat checksums.txt
+
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >-
+          gh release create "${GITHUB_REF_NAME}"
+          "release/${{ steps.version.outputs.artifact }}"
+          release/checksums.txt
+          --title "${GITHUB_REF_NAME}"
+          --notes "FERRET CLI ${{ steps.version.outputs.version }}. One platform-independent zipapp; verify it against \`checksums.txt\`. Needs Python 3.14 on the host. macOS and Linux only."
+          --verify-tag

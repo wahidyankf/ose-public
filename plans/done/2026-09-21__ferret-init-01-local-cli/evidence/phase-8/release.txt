@@ -1,0 +1,78 @@
+Decision D16 executed: the release surface, its rule, and its tests.
+Written by the terminal closure delivery. See A65 for why this arrives after archival.
+
+--- what was missing
+git tag --list                      one tag, parked/churn-2026-07-19; no ferret-cli/v*
+gh release list                     empty for the whole repository
+.github/workflows/                  no release workflow
+ferret version                      0.1.0, matching no tag
+grep -rn D16 over the plan          exactly one hit: D16's own heading
+
+--- what this delivery adds
+.github/workflows/ferret-cli-release.yml            tag-triggered build and publish
+apps/ferret-cli/tests/unit/test_release_contract.py  the tag round trip, as a property
+repo-governance/.../filename-grammar-and-vocabulary.md  the `release` verb, unenforced by decision
+repo-governance/.../target-file-set.md               the new filename, unenforced by decision
+.github/workflows/README.md                          one family row
+apps/ferret-cli/README.md                            the install-from-release path
+plans/.../tech-docs/003-...md                         execution status recorded on D16 itself
+
+The workflow checks four things the tag alone does not: the tag carries the ferret-cli/vX.Y.Z form;
+its version equals the version declared in src/ferret/__init__.py; the build reproduces byte for byte
+across two runs; and the built artifact's own `version` output equals the tagged version. It writes no
+branch, so the release is a tag-and-artifact operation and not a deploy.
+
+--- RED proof for the new tests, five mutations, each reverted
+
+--- baseline, unmutated
+exit=0  release contract, expect 0
+exit=0  command contract, expect 0
+
+--- M1: tag glob prefix no longer matches the strip prefix
+exit=1  expect non-zero
+
+--- M2: workflow reads the version from a different file
+exit=1  expect non-zero
+
+--- M3: workflow gains a branch write
+exit=1  expect non-zero
+
+--- M4: the release workflow is absent
+exit=1  expect non-zero
+
+--- M5: pyproject version disagrees with the package version
+exit=1  expect non-zero
+
+--- restored
+exit=0  expect 0
+exit=0  expect 0
+ M repo-governance/development/infra/github-actions-workflow-naming/filename-grammar-and-vocabulary.md
+ M repo-governance/development/infra/github-actions-workflow-naming/target-file-set.md
+?? .github/workflows/ferret-cli-release.yml
+?? apps/ferret-cli/tests/unit/test_release_contract.py
+
+The first mutation breaks the tag round trip, the second points the workflow at a file that is not the
+version source, the third gives the workflow a branch write, the fourth removes the workflow, and the
+fifth makes pyproject.toml disagree with the package. Each turned its suite RED; the restored tree is
+GREEN and carries no unintended change.
+
+--- suites at this delivery's candidate
+  All checks passed!
+  All checks passed!
+  TOTAL                                       1760      0   100%
+  Required test coverage of 99% reached. Total coverage: 100.00%
+  ============================ 1231 passed in 11.70s =============================
+  QUICK_EXIT=0
+  ============================= 332 passed in 31.23s =============================
+  INTEGRATION_EXIT=0
+  ======================== 150 passed in 61.11s (0:01:01) ========================
+  E2E_EXIT=0
+
+The unit count moves from 1224 to 1231: the seven new release-contract cases. Line coverage stays at
+100.00% over 1760 statements, because the new file is a test and adds no production code.
+
+--- gates
+  rhino governance word-budget validate    exit=0
+
+head=7f4affb6ab3762ec31d0a1536e3c121c43d2614f
+utc=2026-09-22T01:43:49Z

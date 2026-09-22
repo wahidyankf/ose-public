@@ -93,7 +93,7 @@ def test_an_invalid_payload_is_rejected_before_any_storage_is_touched(payload: b
 
     error = refused(world)
 
-    assert error.code == "invalid_event"
+    assert error.code == "ferret.event.invalid"
     assert world.files.touched == []
     assert world.events.captures == 0
 
@@ -103,8 +103,8 @@ def test_a_valid_event_needs_an_initialized_store() -> None:
 
     error = refused(world)
 
-    assert error.code == "uninitialized"
-    assert error.exit_code == 3
+    assert error.code == "ferret.storage.uninitialized"
+    assert error.exit_code == 2
     assert world.events.captures == 0
 
 
@@ -113,7 +113,7 @@ def test_a_store_missing_any_artifact_is_uninitialized(missing: str) -> None:
     world = initialized_world(encode(VECTOR_DOCUMENT))
     del world.files.files[missing]
 
-    assert refused(world).code == "uninitialized"
+    assert refused(world).code == "ferret.storage.uninitialized"
     assert world.events.captures == 0
 
 
@@ -145,7 +145,7 @@ def test_an_unsafe_store_is_refused_without_being_repaired(target: str | None, e
     else:
         world.files.files[target] = replace(entry, content=world.files.files[target].content)
 
-    assert refused(world).code == "unsafe_storage"
+    assert refused(world).code == "ferret.storage.unsafe"
     assert world.events.captures == 0
 
 
@@ -184,7 +184,9 @@ def test_the_same_id_with_different_content_is_an_idempotency_conflict() -> None
         2,
         "",
         '{"schemaVersion":1,"command":"capture","exitCode":2,'
-        '"error":{"code":"idempotency_conflict","field":null,"retryable":false}}\n',
+        '"error":{"code":"ferret.event.idempotency-conflict",'
+        '"message":"an event with this ID already exists with different content",'
+        '"field":null,"retryable":false}}\n',
     )
     assert [event.tool_name for event in world.events.stored] == ["Read"]
 
@@ -198,7 +200,8 @@ def test_a_rejected_capture_json_failure_names_the_field_and_no_value() -> None:
         2,
         "",
         '{"schemaVersion":1,"command":"capture","exitCode":2,'
-        '"error":{"code":"invalid_event","field":"toolName","retryable":false}}\n',
+        '"error":{"code":"ferret.event.invalid","message":"the event is not a valid FERRET event",'
+        '"field":"toolName","retryable":false}}\n',
     )
     assert "/etc/passwd" not in outcome.stderr
 
@@ -206,4 +209,4 @@ def test_a_rejected_capture_json_failure_names_the_field_and_no_value() -> None:
 def test_a_rejected_capture_text_failure_is_the_frozen_literal() -> None:
     outcome = run(["capture"], initialized_world(encode({**VECTOR_DOCUMENT, "prompt": "canary"})))
 
-    assert outcome == Outcome(2, "", "FERRET error [invalid_event]: the event is not a valid FERRET event\n")
+    assert outcome == Outcome(2, "", "FERRET error [ferret.event.invalid]: the event is not a valid FERRET event\n")

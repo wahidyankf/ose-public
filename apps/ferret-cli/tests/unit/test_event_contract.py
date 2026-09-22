@@ -139,5 +139,5 @@ def test_a_declared_hash_that_does_not_match_the_fields_is_refused() -> None:
     with pytest.raises(FerretError) as caught:
         event_from_document({**VECTOR_DOCUMENT, "eventHash": "0" * 64}, now=NOW)
 
-    assert caught.value.code == "invalid_event"
+    assert caught.value.code == "ferret.event.invalid"
     assert caught.value.field == "eventHash"

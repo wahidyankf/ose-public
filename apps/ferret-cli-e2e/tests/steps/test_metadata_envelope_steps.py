@@ -43,7 +43,7 @@ class Session:
 
     @property
     def data_home(self) -> Path:
-        return self.home / ".ferret"
+        return self.home / ".local" / "share" / "ferret"
 
     @property
     def database(self) -> Path:
@@ -149,7 +149,9 @@ def then_rejects_without_a_row(session: Session) -> None:
 def then_names_the_category_only(session: Session) -> None:
     assert session.completed is not None
     error = json.loads(session.completed.stderr)["error"]
-    assert error == {"code": "invalid_event", "field": session.category, "retryable": False}
+    assert list(error) == ["code", "message", "field", "retryable"]
+    assert (error["code"], error["field"], error["retryable"]) == ("ferret.event.invalid", session.category, False)
+    assert error["message"] == "the event is not a valid FERRET event"
     assert CANARY.encode() not in session.completed.stderr
     assert CANARY.encode() not in data_home_bytes(session)
 

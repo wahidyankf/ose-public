@@ -182,27 +182,27 @@ def test_an_event_the_payload_does_not_describe_stores_nothing() -> None:
 def test_a_payload_that_is_not_a_json_object_is_refused_before_storage() -> None:
     world = world_for(b"{not json")
 
-    assert refused(world).code == "invalid_event"
+    assert refused(world).code == "ferret.event.invalid"
     assert world.events.captures == 0
 
 
 def test_one_byte_past_the_raw_limit_is_read_and_the_payload_refused() -> None:
     world = world_for(b"{" + b" " * RAW_LIMIT_BYTES + b"}")
 
-    assert refused(world).code == "invalid_event"
+    assert refused(world).code == "ferret.event.invalid"
     assert world.input.reads == [RAW_LIMIT_BYTES + 1]
 
 
 def test_a_payload_with_a_duplicate_key_is_refused() -> None:
     world = world_for(b'{"session_id":"a","session_id":"b","cwd":"/work","hook_event_name":"PreToolUse"}')
 
-    assert refused(world).code == "invalid_event"
+    assert refused(world).code == "ferret.event.invalid"
 
 
 def test_an_uninitialized_store_is_refused_and_nothing_is_created() -> None:
     world = make_world(input_data=encode(claude_tool("PreToolUse")))
 
-    assert refused(world).code == "uninitialized"
+    assert refused(world).code == "ferret.storage.uninitialized"
     assert world.files.creates == []
 
 
@@ -211,7 +211,7 @@ def test_an_installation_key_of_the_wrong_length_makes_the_store_unusable(length
     world = world_for(claude_tool("PreToolUse"))
     world.files.files["identity.key"] = Entry(content=b"k" * length)
 
-    assert refused(world).code == "storage_unavailable"
+    assert refused(world).code == "ferret.storage.unavailable"
     assert world.events.captures == 0
 
 
@@ -219,7 +219,7 @@ def test_an_unreadable_identity_document_makes_the_store_unusable() -> None:
     world = world_for(claude_tool("PreToolUse"))
     world.files.files["identity.json"] = Entry(content=b"[]")
 
-    assert refused(world).code == "storage_unavailable"
+    assert refused(world).code == "ferret.storage.unavailable"
 
 
 def test_the_bounded_prune_runs_before_the_event_is_stored(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -262,5 +262,5 @@ def test_a_mapper_mistake_can_never_store_an_invalid_row(monkeypatch: pytest.Mon
 
     monkeypatch.setattr("ferret.application.capture_hook.replace", broken)
 
-    assert refused(world).code == "invalid_event"
+    assert refused(world).code == "ferret.event.invalid"
     assert world.events.captures == 0

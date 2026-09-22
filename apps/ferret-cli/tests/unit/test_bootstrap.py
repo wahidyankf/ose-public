@@ -13,7 +13,8 @@ import pytest
 
 from ferret import _bootstrap
 from ferret._bootstrap import (
-    EXIT_ENVIRONMENT_ERROR,
+    EXIT_CALLER_ERROR,
+    EXIT_NOT_EXECUTABLE,
     OVERRIDE_VARIABLE,
     REQUIRED,
     SENTINEL_VARIABLE,
@@ -24,8 +25,9 @@ from ferret._bootstrap import (
     running_version,
     search_directories,
     supports,
+    unstartable,
 )
-from ferret.domain.errors import EXIT_ENVIRONMENT_ERROR as CLOSED_CONTRACT_EXIT
+from ferret.domain.errors import EXIT_CALLER_ERROR as CLOSED_CONTRACT_EXIT
 
 
 @pytest.fixture
@@ -43,7 +45,7 @@ def executable(directory: Path, name: str) -> Path:
 
 def test_the_repeated_exit_status_equals_the_closed_failure_contract() -> None:
     # _bootstrap may not import the rest of the package, so this is the only thing keeping the two in step.
-    assert EXIT_ENVIRONMENT_ERROR == CLOSED_CONTRACT_EXIT
+    assert EXIT_CALLER_ERROR == CLOSED_CONTRACT_EXIT
 
 
 @pytest.mark.parametrize(
@@ -207,8 +209,34 @@ def test_an_old_interpreter_with_nothing_to_restart_on_reports_and_gives_the_exi
         execute=never_executes,
         report=reported.append,
     )
-    assert outcome == EXIT_ENVIRONMENT_ERROR
+    assert outcome == EXIT_CALLER_ERROR
     assert reported == [diagnosis((3, 13, 12))]
+
+
+def test_an_interpreter_that_cannot_be_started_is_its_own_status_and_never_a_traceback(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, only_path: None
+) -> None:
+    # The guard exists because this interpreter cannot parse the package, so an OSError escaping here would become
+    # a traceback on the one interpreter that cannot produce a useful one -- and under a hook, no output at all.
+    monkeypatch.setattr(_bootstrap.sys, "version_info", (3, 13, 12))
+    wanted = executable(tmp_path, "python3.14")
+
+    def refuses(path: str, argv: list[str], environ: Mapping[str, str]) -> None:
+        raise OSError(8, "Exec format error")
+
+    reported: list[str] = []
+    outcome = relaunch("/archive.pyz", [], {"PATH": str(tmp_path)}, execute=refuses, report=reported.append)
+
+    assert outcome == EXIT_NOT_EXECUTABLE == 126
+    assert reported == [unstartable(str(wanted))]
+
+
+def test_the_unstartable_line_names_the_interpreter_and_the_override_and_nothing_else(tmp_path: Path) -> None:
+    line = unstartable("/opt/python3.14")
+
+    assert "/opt/python3.14" in line
+    assert OVERRIDE_VARIABLE in line
+    assert "\n" not in line
 
 
 def test_a_second_old_interpreter_diagnoses_rather_than_restarting_again(
@@ -225,7 +253,7 @@ def test_a_second_old_interpreter_diagnoses_rather_than_restarting_again(
         execute=never_executes,
         report=reported.append,
     )
-    assert outcome == EXIT_ENVIRONMENT_ERROR
+    assert outcome == EXIT_CALLER_ERROR
     assert reported == [diagnosis((3, 13, 12))]
 
 
@@ -235,7 +263,7 @@ def test_the_default_reporter_writes_one_line_to_standard_error(
     # Reached through relaunch rather than by name, so the default really is the one a caller gets.
     monkeypatch.setattr(_bootstrap.sys, "version_info", (3, 13, 12))
     monkeypatch.setattr(_bootstrap, "FALLBACK_DIRECTORIES", ())
-    assert relaunch("/archive.pyz", [], {"PATH": "/nowhere", SENTINEL_VARIABLE: "1"}) == EXIT_ENVIRONMENT_ERROR
+    assert relaunch("/archive.pyz", [], {"PATH": "/nowhere", SENTINEL_VARIABLE: "1"}) == EXIT_CALLER_ERROR
     captured = capsys.readouterr()
     assert (captured.out, captured.err) == ("", diagnosis((3, 13, 12)) + "\n")
 

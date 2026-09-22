@@ -25,7 +25,7 @@ _LOGICAL_NAME: Final = re.compile(r"[\w.:\-]+(?:/[\w.:\-]+)*")
 
 
 def invalid(field: str | None) -> FerretError:
-    return FerretError("invalid_event", field=field)
+    return FerretError("ferret.event.invalid", field=field)
 
 
 def text(value: object, field: str) -> str:

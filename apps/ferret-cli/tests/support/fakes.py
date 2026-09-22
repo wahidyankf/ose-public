@@ -52,7 +52,7 @@ from ferret.domain.timestamps import format_timestamp
 FAKE_HOME = Path("/users/example")
 #: The interpreter a faked install pins, standing in for the one the real adapter reads from ``sys.executable``.
 FAKE_INTERPRETER = Path("/usr/bin/python3.14")
-FAKE_DATA_HOME = FAKE_HOME / ".ferret"
+FAKE_DATA_HOME = FAKE_HOME / ".local" / "share" / "ferret"
 FIXED_NOW = datetime(2026, 9, 18, 8, 0, 0, tzinfo=UTC)
 INSTALLATION_ID = "00000000-0000-4000-8000-000000000002"
 
@@ -517,7 +517,7 @@ class FakeInstall:
 
     def source(self) -> SourceArtifact:
         if self.source_fails:
-            raise FerretError("storage_unavailable")
+            raise FerretError("ferret.storage.unavailable")
         return SourceArtifact(path=SOURCE_PATH, sha256=hashlib.sha256(self.artifact).hexdigest())
 
     def facts(self, path: Path) -> InstalledFacts:
@@ -553,7 +553,7 @@ class FakeInstall:
     def stage(self, plan: StagePlan) -> StagedInstall:
         self._step("stage")
         if self.stage_fails:
-            raise FerretError("storage_unavailable")
+            raise FerretError("ferret.storage.unavailable")
         self._stages += 1
         nonce = f"{self._stages:032x}"
         paths = self.paths

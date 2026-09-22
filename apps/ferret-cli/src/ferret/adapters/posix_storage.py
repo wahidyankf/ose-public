@@ -36,8 +36,8 @@ def kind_of(mode: int) -> Kind:
 def _open_failure(error: OSError) -> FerretError:
     """A refused symlink or planted object is unsafe storage; anything else is unavailable storage."""
     if error.errno in {errno.ELOOP, errno.EEXIST}:
-        return FerretError("unsafe_storage")
-    return FerretError("storage_unavailable")
+        return FerretError("ferret.storage.unsafe")
+    return FerretError("ferret.storage.unavailable")
 
 
 class PosixDataHome:
@@ -54,7 +54,7 @@ class PosixDataHome:
         except FileNotFoundError:
             return FileFacts(kind="missing")
         except OSError:
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
         return FileFacts(
             kind=kind_of(info.st_mode),
             mode=stat.S_IMODE(info.st_mode),
@@ -64,11 +64,16 @@ class PosixDataHome:
 
     def ensure_directory(self, mode: int) -> None:
         try:
+            # The parents are ordinary base directories -- `~/.local/share` and the like -- so they are created
+            # at the user's own umask. Only the leaf, which is FERRET's, is forced private: a data home is
+            # private by policy, but forcing 0700 on a directory shared with every other application would be
+            # this tool deciding something that is not its to decide.
+            self._path.parent.mkdir(parents=True, exist_ok=True)
             os.mkdir(self._path, mode)
         except FileExistsError:
             return
         except OSError:
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
 
     def create_file(self, name: str, content: bytes, mode: int) -> None:
         target = self._path / name
@@ -89,7 +94,7 @@ class PosixDataHome:
         except OSError:
             # A half-written file would poison the next initialization, so it never survives a failed write.
             target.unlink(missing_ok=True)
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
 
     def read_file(self, name: str) -> bytes:
         try:
@@ -99,11 +104,11 @@ class PosixDataHome:
         try:
             content = os.read(descriptor, MAX_FILE_BYTES + 1)
         except OSError:
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
         finally:
             os.close(descriptor)
         if len(content) > MAX_FILE_BYTES:
-            raise FerretError("storage_unavailable")
+            raise FerretError("ferret.storage.unavailable")
         return content
 
     def purge(self) -> None:
@@ -112,7 +117,7 @@ class PosixDataHome:
         except FileNotFoundError:
             return
         except OSError:
-            raise FerretError("storage_unavailable") from None
+            raise FerretError("ferret.storage.unavailable") from None
 
     @contextmanager
     def lock(self) -> Generator[None]:
@@ -139,7 +144,7 @@ class PosixDataHome:
             or not is_private_mode(stat.S_IMODE(info.st_mode))
         ):
             os.close(descriptor)
-            raise FerretError("unsafe_storage")
+            raise FerretError("ferret.storage.unsafe")
         return descriptor
 
     def _acquire(self, descriptor: int) -> None:
@@ -149,7 +154,7 @@ class PosixDataHome:
                 fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
                 if time.monotonic() >= deadline:
-                    raise FerretError("storage_unavailable", retryable=True) from None
+                    raise FerretError("ferret.storage.unavailable", retryable=True) from None
                 time.sleep(LOCK_POLL_SECONDS)
             else:
                 return

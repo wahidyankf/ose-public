@@ -208,7 +208,7 @@ def event_from_document(document: Mapping[str, Any], *, now: datetime) -> Event:
     event-type invariants, and last the declared hash against the one recomputed from the normalized fields.
     """
     if any(key not in _PROPERTIES for key in document):
-        raise FerretError("invalid_event")
+        raise FerretError("ferret.event.invalid")
     for name, _ in DOCUMENT_FIELDS:
         if name not in document:
             raise fields.invalid(name)

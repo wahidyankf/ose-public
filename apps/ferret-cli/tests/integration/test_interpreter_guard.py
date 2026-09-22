@@ -71,7 +71,7 @@ def test_an_older_interpreter_restarts_the_artifact_and_the_command_still_succee
     assert ran.stderr == ""
 
 
-def test_an_older_interpreter_with_nothing_to_restart_on_exits_three_with_one_line_and_no_traceback(
+def test_an_older_interpreter_with_nothing_to_restart_on_exits_two_with_one_line_and_no_traceback(
     artifact: Path, tmp_path: Path
 ) -> None:
     empty = tmp_path / "empty"
@@ -83,7 +83,7 @@ def test_an_older_interpreter_with_nothing_to_restart_on_exits_three_with_one_li
         environment={"PATH": str(empty), SENTINEL_VARIABLE: "1", "HOME": str(tmp_path)},
         version=(3, 13, 12),
     )
-    assert ran.returncode == 3
+    assert ran.returncode == 2
     assert ran.stdout == ""
     assert ran.stderr.splitlines() == [
         f"ferret: requires Python 3.14 or newer, running 3.13; set {OVERRIDE_VARIABLE} to a suitable interpreter"
@@ -107,8 +107,8 @@ def test_the_restarted_command_still_reaches_the_store_and_reports_it_is_uniniti
         version=(3, 13, 12),
     )
     # A failing command reports on standard error, so this also shows the guard left both streams to the command.
-    assert ran.returncode == 3
-    assert '"code":"uninitialized"' in ran.stderr
+    assert ran.returncode == 2
+    assert '"code":"ferret.storage.uninitialized"' in ran.stderr
     assert ran.stdout == ""
 
 

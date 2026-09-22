@@ -129,7 +129,7 @@ def test_a_damaged_database_is_never_rewritten() -> None:
 
     code, error = failure_of(world)
 
-    assert (code, error["code"]) == (4, "integrity_failure")
+    assert (code, error["code"]) == (2, "ferret.storage.integrity-failure")
     assert (world.telemetry.compactions, world.telemetry.facts) == ([], WORTH_COMPACTING)
 
 
@@ -173,18 +173,18 @@ def test_maintenance_that_cannot_take_the_write_lock_is_reported_and_never_claim
 
     code, error = failure_of(world)
 
-    assert (code, error["code"], error["retryable"]) == (3, "storage_unavailable", True)
+    assert (code, error["code"], error["retryable"]) == (2, "ferret.storage.unavailable", True)
     assert (world.telemetry.marker, len(world.events.stored)) == (None, 3)
     assert (world.telemetry.checkpoints, world.telemetry.compactions) == ([], [])
 
 
 def test_a_store_that_cannot_be_read_is_unavailable() -> None:
     world = world_with()
-    world.telemetry.broken = FerretError("storage_unavailable", retryable=True)
+    world.telemetry.broken = FerretError("ferret.storage.unavailable", retryable=True)
 
     code, error = failure_of(world)
 
-    assert (code, error["code"]) == (3, "storage_unavailable")
+    assert (code, error["code"]) == (2, "ferret.storage.unavailable")
 
 
 def test_an_uninitialized_store_is_refused_before_anything_is_measured_or_pruned() -> None:
@@ -192,7 +192,7 @@ def test_an_uninitialized_store_is_refused_before_anything_is_measured_or_pruned
 
     code, error = failure_of(world)
 
-    assert (code, error["code"]) == (3, "uninitialized")
+    assert (code, error["code"]) == (2, "ferret.storage.uninitialized")
     assert (world.telemetry.prunes, world.telemetry.checkpoints, world.telemetry.integrity_checks) == ([], [], [])
 
 

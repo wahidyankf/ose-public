@@ -91,39 +91,17 @@ TOOL = Subject(
         }
     ),
     classes=frozenset(),
-    known_gaps={
-        "cli.exit.negative-result-is-one": "a query that legitimately returns nothing exits 0, so a caller cannot"
-        " distinguish an empty answer from a satisfied one",
-        "cli.exit.vocabulary-is-closed": "3 and 4 are returned for an unusable environment and a failed integrity"
-        " check, both outside the closed vocabulary",
-        "cli.exit.every-status-is-published": "--help carries no block naming the statuses this artifact returns",
-        "cli.output.error-body-required-fields": "the error body carries code, field, and retryable but no"
-        " error.message, so a caller that cannot read the code has nothing to show a person",
-        "cli.output.error-codes-are-namespaced": "error codes are unnamespaced snake_case (invalid_arguments) rather"
-        " than ferret.area.reason",
-        "cli.args.help-subcommand-when-a-tree-exists": "help is not a command; only -h and --help reach the usage text",
-        "cli.config.xdg-defaults-when-unset": "the data home is <home>/.ferret rather than the base directory"
-        " specification's $XDG_DATA_HOME, defaulting to $HOME/.local/share",
-        "cli.config.xdg-empty-falls-back": "the data home does not consult the base directory variables at all, so"
-        " there is no empty-value fallback to get right",
-    },
+    known_gaps={},
 )
 
-#: Silent and always zero, which is the first half of the exemption. The second half is not satisfied, and that is the
-#: finding: the convention grants the exemption on four conditions together, not on silence alone.
+#: Silent, always zero, and keeping its own record of what it lost, which is the whole exemption: the convention
+#: grants it on four conditions together, not on silence alone.
 CALLBACK = Subject(
     name="ferret capture-hook",
     prefix=("capture-hook",),
     capabilities=frozenset(),
     classes=frozenset({"harness-callback"}),
-    known_gaps={
-        "cli.exempt.harness-callback-is-silent": "a missing or misspelled option is rejected by argument parsing"
-        " before the fail-open handler is reached, so the one callback that must never speak exits 2 with a"
-        " diagnostic on stderr",
-        "cli.exempt.harness-callback-records-its-failures": "every failure after argument parsing is swallowed by a"
-        " bare suppress(Exception) and recorded nowhere, so a maintainer has no way to learn the callback is losing"
-        " events",
-    },
+    known_gaps={},
 )
 
 SUBJECTS = (TOOL, CALLBACK)
@@ -225,7 +203,7 @@ class Runner:
 
         Idempotent: several probes need an initialized store and none of them may depend on running first.
         """
-        if not (self._home / ".ferret").exists():
+        if not (self._home / ".local" / "share" / "ferret").exists():
             assert self.run("init", "--json").status == 0
 
 
@@ -513,8 +491,8 @@ def probe_exemption(runner: Runner, subject: Subject, identifier: str) -> Outcom
             for arguments, stdin in (
                 ((), b""),
                 (("--harness", "nope", "--event", "nope"), b"{}"),
-                (("--harness", "claude-code", "--event", "session-start"), b'{"bad"'),
-                (("--harness", "claude-code", "--event", "session-start"), b"{}"),
+                (("--harness", "claude_code", "--event", "session-start"), b'{"bad"'),
+                (("--harness", "claude_code", "--event", "session-start"), b"{}"),
             ):
                 observed = runner.run(*subject.prefix, *arguments, stdin=stdin)
                 if observed.status != 0 or observed.stdout or observed.stderr:
@@ -529,7 +507,7 @@ def probe_exemption(runner: Runner, subject: Subject, identifier: str) -> Outcom
         case "cli.exempt.harness-callback-records-its-failures":
             runner.initialize()
             before = runner.run("status", "--output", "json")
-            runner.run(*subject.prefix, "--harness", "claude-code", "--event", "session-start", stdin=b'{"bad"')
+            runner.run(*subject.prefix, "--harness", "claude_code", "--event", "session-start", stdin=b'{"bad"')
             after = runner.run("status", "--output", "json")
             if before.stdout == after.stdout:
                 return failed(

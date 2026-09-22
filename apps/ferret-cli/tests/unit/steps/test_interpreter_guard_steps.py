@@ -13,7 +13,7 @@ import pytest
 from pytest_bdd import given, parsers, scenario, then, when
 
 from ferret import _bootstrap
-from ferret._bootstrap import EXIT_ENVIRONMENT_ERROR, OVERRIDE_VARIABLE, diagnosis, relaunch
+from ferret._bootstrap import EXIT_CALLER_ERROR, OVERRIDE_VARIABLE, diagnosis, relaunch
 
 FEATURE = "../../../../../specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature"
 
@@ -93,8 +93,8 @@ def then_ferret(start: Start, outcome: str) -> None:
         assert start.restarted == [(wanted, [wanted, ARCHIVE, "version"], {**start.environment, SENTINEL: "1"})]
         assert start.reported == []
         return
-    assert outcome == "exits 3 naming the version it requires", outcome
-    assert (start.status, start.restarted) == (EXIT_ENVIRONMENT_ERROR, [])
+    assert outcome == "exits 2 naming the version it requires", outcome
+    assert (start.status, start.restarted) == (EXIT_CALLER_ERROR, [])
     assert start.reported == [diagnosis(OLD)]
 
 

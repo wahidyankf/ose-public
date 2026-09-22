@@ -179,8 +179,8 @@ def test_a_page_of_the_database_overwritten_with_noise_is_an_integrity_failure(m
 
     ran = machine.run(["status", "--json"])
 
-    assert (ran.code, ran.stdout) == (4, "")
-    assert json.loads(ran.stderr)["error"]["code"] == "integrity_failure"
+    assert (ran.code, ran.stdout) == (2, "")
+    assert json.loads(ran.stderr)["error"]["code"] == "ferret.storage.integrity-failure"
     assert str(machine.home) not in ran.stderr
 
 
@@ -189,7 +189,7 @@ def test_a_file_that_is_not_a_database_is_an_integrity_failure_for_status_and_ma
 
     codes = [machine.run([command, "--json"]).code for command in ("status", "maintenance")]
 
-    assert codes == [4, 4]
+    assert codes == [2, 2]
 
 
 def test_maintenance_that_cannot_take_the_write_lock_is_unavailable_and_changes_nothing(machine: Machine) -> None:
@@ -203,7 +203,7 @@ def test_maintenance_that_cannot_take_the_write_lock_is_unavailable_and_changes_
         holder.close()
 
     error = json.loads(ran.stderr)["error"]
-    assert (ran.code, ran.stdout, error["code"], error["retryable"]) == (3, "", "storage_unavailable", True)
+    assert (ran.code, ran.stdout, error["code"], error["retryable"]) == (2, "", "ferret.storage.unavailable", True)
     assert machine.sql("SELECT count(*) FROM event") == [(3,)]
     assert machine.sql("SELECT last_completed_at FROM maintenance_state") == [(None,)]
 

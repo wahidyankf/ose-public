@@ -15,6 +15,7 @@ from typing import BinaryIO
 
 from ferret.adapters.filesystem import (
     Mount,
+    adopt_legacy_data_home,
     is_local_filesystem,
     parse_linux_mounts,
     parse_macos_mounts,
@@ -78,7 +79,7 @@ def home_directory(environment: Mapping[str, str]) -> Path:
     try:
         return Path(pwd.getpwuid(os.getuid()).pw_dir)
     except KeyError:
-        raise FerretError("storage_unavailable") from None
+        raise FerretError("ferret.storage.unavailable") from None
 
 
 def mount_table() -> list[Mount]:
@@ -109,7 +110,7 @@ def resolve_physical(path: Path) -> Path:
 def require_local(data_home: Path) -> None:
     """Refuse a data home the platform cannot establish as a local filesystem: WAL does not work over a network."""
     if not is_local_filesystem(resolve_physical(data_home), mount_table()):
-        raise FerretError("unsafe_storage")
+        raise FerretError("ferret.storage.unsafe")
 
 
 def system_runtime(
@@ -128,6 +129,9 @@ def system_runtime(
     data_home = resolve_data_home(env, home)
     if env.get(DATA_HOME_VARIABLE):
         require_local(data_home)
+    else:
+        # Only when FERRET chose the location itself. A caller who named one is not asking to be moved.
+        data_home = adopt_legacy_data_home(home, data_home)
     clock = SystemClock()
     return Runtime(
         data_home=data_home,

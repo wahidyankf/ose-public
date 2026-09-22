@@ -20,7 +20,7 @@ from event_documents import numbered_event
 from ferret_process import Completed, capture_documents, run_artifact
 from hook_bench import Bench, derived
 from hook_wrapper import HUNG_SECONDS, KILL_SECONDS, HookRun, alive, recorded_pid, stand_in, within_deadline
-from install_area import LAUNCHER_MODE, Layout, Tree, digest, empty_tree, launcher_starts, tree
+from install_area import LAUNCHER_MODE, Layout, Tree, digest, empty_tree, launcher_starts, store
 from vendor_payloads import CLAUDE_CODE
 
 FEATURE = "../../../../specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature"
@@ -176,7 +176,10 @@ def given_no_artifact_installed(session: Session, situation: str) -> None:
     for name, content in STARTUP_FILES.items():
         (session.home / name).write_bytes(content)
     session.bystanders = user_files(session, STARTUP_FILES)
-    assert not os.path.lexists(session.home / ".local")
+    # The data home shares `.local/share/ferret` with the install area and the store is already there, so what
+    # makes this "not installed" is that no launcher and no manifest exist.
+    assert not os.path.lexists(layout.launcher)
+    assert not os.path.lexists(layout.manifest)
 
 
 @when("the user runs self install --target user")
@@ -228,7 +231,7 @@ def then_the_path_action_is_reported(session: Session, path_action: str) -> None
 def then_no_startup_file_or_path_is_modified(session: Session) -> None:
     layout = Layout(session.home)
     assert user_files(session, STARTUP_FILES) == session.bystanders
-    assert {path.name for path in session.home.iterdir()} == {".ferret", ".local", *STARTUP_FILES}
+    assert {path.name for path in session.home.iterdir()} == {".local", *STARTUP_FILES}
     assert {path.name for path in (session.home / ".local").iterdir()} == {"bin", "share"}
     assert {path.name for path in layout.bin.iterdir()} == {"ferret"}
     assert list(session.repository.iterdir()) == []
@@ -253,7 +256,7 @@ def given_harness_adapters_call_ferret(session: Session) -> None:
         (session.home / name).write_bytes(content)
     session.hook.write_text(HOOK, encoding="utf-8")
     session.bystanders = user_files(session, HARNESS_FILES)
-    session.data_before = tree(session.home / ".ferret")
+    session.data_before = store(Layout(session.home))
     hooked = run_hook(session)
     assert (hooked.returncode, hooked.stdout, hooked.stderr) == (0, b"", b"")
     assert session.log.read_text(encoding="utf-8").splitlines() == ["resolved"]
@@ -282,13 +285,13 @@ def then_the_repository_holds_no_new_telemetry(session: Session) -> None:
 
 @then("the existing user database remains recoverable or removable by an explicit user action")
 def then_the_database_is_recoverable_or_removable(session: Session) -> None:
-    assert tree(session.home / ".ferret") == session.data_before
+    assert store(Layout(session.home)) == session.data_before
     listing = run_self(session, ["events", "list", "--json"])
     assert (listing.returncode, listing.stderr) == (0, b"")
     assert len(json.loads(listing.stdout)["items"]) == 1
     purged = run_self(session, ["self", "uninstall", "--purge-data", "--yes", "--json"])
     assert (purged.returncode, purged.stderr, json.loads(purged.stdout)["dataAction"]) == (0, b"", "deleted")
-    assert not os.path.lexists(session.home / ".ferret")
+    assert not os.path.lexists(session.home / ".local" / "share" / "ferret")
 
 
 # Keep a harness fail-open after a local failure, and at the wrapper boundary: the real adapters (the shared wrapper

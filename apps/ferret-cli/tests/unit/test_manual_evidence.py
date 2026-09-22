@@ -101,8 +101,12 @@ def test_query_exit_contract(repository: Path, artifact: Path) -> None:
     assert failed_assertions(lines) == []
     labels = commands(lines)
     codes = exits(lines)
-    assert [label for label, code in zip(labels, codes, strict=True) if code != 0] == ["invalid-cursor"]
+    assert [label for label, code in zip(labels, codes, strict=True) if code != 0] == [
+        "invalid-cursor",
+        "events-list-empty",
+    ]
     assert codes.count(2) == 1
+    assert codes.count(1) == 1
     assert {"events-list-page-1", "events-export", "usage-by-skill", "outcomes-by-tool", "status"} <= set(labels)
 
 

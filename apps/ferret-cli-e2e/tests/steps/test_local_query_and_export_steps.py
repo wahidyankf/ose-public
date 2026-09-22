@@ -21,7 +21,12 @@ FEATURE = "../../../../specs/apps/ferret/cli/behaviours/queries/local-query-and-
 WORKSPACE_A = "ws_00000000000000000000000000000001"
 WORKSPACE_B = "ws_00000000000000000000000000000002"
 MATCHING = (3, 4, 5)
-FAILURE_CODES = {"invalid_arguments": 2, "unsafe_storage": 3, "install_collision": 3, "confirmation_required": 2}
+FAILURE_CODES = {
+    "ferret.args.invalid": 2,
+    "ferret.storage.unsafe": 2,
+    "ferret.install.collision": 2,
+    "ferret.args.confirmation-required": 2,
+}
 
 INVOCATIONS: dict[str, tuple[list[str], str]] = {
     "init": (["init"], "init"),
@@ -72,7 +77,7 @@ class Session:
 
     @property
     def data_home(self) -> Path:
-        return self.home / ".ferret"
+        return self.home / ".local" / "share" / "ferret"
 
 
 @pytest.fixture
@@ -181,8 +186,9 @@ def then_diagnostics_stay_off_standard_output(session: Session) -> None:
     quiet = session.run(["events", "list", "--harness", "opencode"])
     refused = session.run(["events", "export", "--format", "jsonl", "--harness", "Bad"])
 
-    assert quiet == Completed(0, b"", b"No rows.\n")
-    assert refused == Completed(2, b"", b"FERRET error [invalid_filter]: a filter value is not valid\n")
+    # `1` because the query matched nothing, and the line saying so is on stderr, not stdout.
+    assert quiet == Completed(1, b"", b"No rows.\n")
+    assert refused == Completed(2, b"", b"FERRET error [ferret.filter.invalid]: a filter value is not valid\n")
 
 
 @scenario(FEATURE, "Emit a stable machine-readable command result")
@@ -225,7 +231,7 @@ def then_stdout_is_one_json_object(session: Session) -> None:
     if session.command == "events export":
         # The one stream command: stdout is the data itself, so it refuses a JSON wrapper rather than mixing them.
         assert (session.machine.returncode, session.machine.stdout) == (2, b"")
-        assert json.loads(session.machine.stderr)["error"]["code"] == "invalid_arguments"
+        assert json.loads(session.machine.stderr)["error"]["code"] == "ferret.args.invalid"
         return
     assert (session.machine.returncode, session.machine.stderr) == (0, b"")
     assert session.machine.stdout.count(b"\n") == 1
@@ -291,6 +297,7 @@ def expected_lines(command: str, document: dict[str, Any]) -> list[str]:
         f"Expired local: {document['expiredLocalTotal']}",
         f"Expired before ACK: {document['expiredBeforeAckTotal']}",
         f"Maintenance: last={scalar(document['lastMaintenanceAt'])} due={scalar(document['maintenanceDue'])}",
+        f"Hook failures: count={document['hookFailureCount']} last={scalar(document['lastHookFailureAt'])}",
         f"Backend: {document['backend']['state']}",
         *(
             f"Adapter {adapter['harness']}: {adapter['platformSupport']}/{adapter['configurationState']}"
@@ -365,7 +372,7 @@ def then_a_failure_is_a_closed_error_without_a_path(session: Session) -> None:
     assert list(envelope) == ["schemaVersion", "command", "exitCode", "error"]
     assert envelope["command"] == name
     assert failed.returncode == envelope["exitCode"] == FAILURE_CODES[envelope["error"]["code"]]
-    assert set(envelope["error"]) == {"code", "field", "retryable"}
+    assert set(envelope["error"]) == {"code", "message", "field", "retryable"}
     assert str(session.home).encode() not in failed.stderr
 
 
@@ -406,7 +413,7 @@ def then_every_command_completes_from_the_data_home(session: Session, workdir: P
         assert sum(row["eventCount"] for row in json.loads(session.commands[summary].stdout)["rows"]) == 1
     assert json.loads(session.commands["maintenance"].stdout)["result"] == "completed"
     # Nothing was written outside the data home: not beside it in HOME and not in the directory the commands ran from.
-    assert {path.name for path in session.home.iterdir()} == {".ferret"}
+    assert {path.name for path in session.home.iterdir()} == {".local"}
     assert list(workdir.iterdir()) == []
 
 

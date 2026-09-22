@@ -207,7 +207,7 @@ def test_the_time_window_follows_the_default_and_bound_rules(
 def test_a_malformed_filter_is_invalid_filter_without_echoing_its_value(options: Options) -> None:
     error = refusal(criteria_from_options, options, now=VECTOR_NOW)
 
-    assert (error.code, error.exit_code, error.field, error.retryable) == ("invalid_filter", 2, None, False)
+    assert (error.code, error.exit_code, error.field, error.retryable) == ("ferret.filter.invalid", 2, None, False)
     assert all(value not in str(error) for values in options.values() for value in values if value)
 
 
@@ -249,11 +249,11 @@ def test_the_page_size_defaults_to_one_hundred_and_accepts_one_through_two_hundr
 def test_a_page_size_outside_the_range_is_invalid_arguments(value: str) -> None:
     error = refusal(parse_limit, {"--limit": (value,)})
 
-    assert (error.code, error.exit_code, error.field) == ("invalid_arguments", 2, None)
+    assert (error.code, error.exit_code, error.field) == ("ferret.args.invalid", 2, None)
 
 
 def test_a_repeated_page_size_is_invalid_arguments() -> None:
-    assert refusal(parse_limit, {"--limit": ("5", "6")}).code == "invalid_arguments"
+    assert refusal(parse_limit, {"--limit": ("5", "6")}).code == "ferret.args.invalid"
 
 
 @pytest.mark.parametrize(
@@ -274,7 +274,7 @@ def test_a_repeated_page_size_is_invalid_arguments() -> None:
 def test_a_cursor_that_does_not_decode_is_invalid_cursor(cursor: str) -> None:
     error = refusal(decode_cursor, cursor, VECTOR_DIGEST)
 
-    assert (error.code, error.exit_code, error.field, error.retryable) == ("invalid_cursor", 2, None, False)
+    assert (error.code, error.exit_code, error.field, error.retryable) == ("ferret.cursor.invalid", 2, None, False)
     assert cursor not in str(error) or cursor == ""
 
 
@@ -317,13 +317,13 @@ CURSOR_PARTS = (
     ],
 )
 def test_a_cursor_whose_document_is_not_the_exact_shape_is_invalid_cursor(document: str) -> None:
-    assert refusal(decode_cursor, encoded(document), VECTOR_DIGEST).code == "invalid_cursor"
+    assert refusal(decode_cursor, encoded(document), VECTOR_DIGEST).code == "ferret.cursor.invalid"
 
 
 def test_the_cursor_of_one_query_is_refused_by_a_query_with_other_filters() -> None:
     other = filter_digest(criteria_from_options({"--harness": ("codex",)}, now=VECTOR_NOW), DEFAULT_LIMIT)
 
-    assert refusal(decode_cursor, VECTOR_CURSOR, other).code == "invalid_cursor"
+    assert refusal(decode_cursor, VECTOR_CURSOR, other).code == "ferret.cursor.invalid"
 
 
 def test_events_list_returns_the_newest_first_with_the_event_id_breaking_ties_downward() -> None:
@@ -487,7 +487,7 @@ def test_a_cursor_is_refused_when_the_filters_or_the_limit_differ() -> None:
         {"--limit": ("2",), "--cursor": (cursor,), "--harness": ("claude_code",)},
         {"--limit": ("2",), "--cursor": (cursor,), "--all-time": ()},
     ):
-        assert refusal(list_events, world.runtime, options).code == "invalid_cursor"
+        assert refusal(list_events, world.runtime, options).code == "ferret.cursor.invalid"
 
 
 def test_a_cursor_is_refused_once_its_referenced_row_has_expired_or_vanished() -> None:
@@ -496,12 +496,12 @@ def test_a_cursor_is_refused_once_its_referenced_row_has_expired_or_vanished() -
     cursor = list_events(world.runtime, options).next_cursor or ""
     world.clock.advance(timedelta(days=1))
 
-    assert refusal(list_events, world.runtime, {**options, "--cursor": (cursor,)}).code == "invalid_cursor"
+    assert refusal(list_events, world.runtime, {**options, "--cursor": (cursor,)}).code == "ferret.cursor.invalid"
 
     fresh = world_with(*[make_event(number, ago=timedelta(minutes=number)) for number in range(1, 5)])
     kept = list_events(fresh.runtime, {"--limit": ("2",)}).next_cursor or ""
     fresh.events.stored.clear()
-    assert refusal(list_events, fresh.runtime, {"--limit": ("2",), "--cursor": (kept,)}).code == "invalid_cursor"
+    assert refusal(list_events, fresh.runtime, {"--limit": ("2",), "--cursor": (kept,)}).code == "ferret.cursor.invalid"
 
 
 def test_a_cursor_whose_position_disagrees_with_its_row_is_refused() -> None:
@@ -511,13 +511,17 @@ def test_a_cursor_whose_position_disagrees_with_its_row_is_refused() -> None:
         Position("2026-09-18T07:00:00.000Z", world.events.stored[0].event_id), filter_digest(criteria, 2)
     )
 
-    assert refusal(list_events, world.runtime, {"--limit": ("2",), "--cursor": (forged,)}).code == "invalid_cursor"
+    assert (
+        refusal(list_events, world.runtime, {"--limit": ("2",), "--cursor": (forged,)}).code == "ferret.cursor.invalid"
+    )
 
 
 def test_a_repeated_cursor_option_is_invalid_arguments() -> None:
     world = world_with(make_event(1))
 
-    assert refusal(list_events, world.runtime, {"--cursor": (VECTOR_CURSOR, VECTOR_CURSOR)}).code == "invalid_arguments"
+    assert (
+        refusal(list_events, world.runtime, {"--cursor": (VECTOR_CURSOR, VECTOR_CURSOR)}).code == "ferret.args.invalid"
+    )
 
 
 def test_a_bad_filter_or_cursor_is_refused_before_storage_is_touched() -> None:
@@ -525,19 +529,19 @@ def test_a_bad_filter_or_cursor_is_refused_before_storage_is_touched() -> None:
 
     for options in ({"--harness": ("Bad",)}, {"--cursor": ("!",)}, {"--limit": ("0",)}):
         assert refusal(list_events, world.runtime, options).code in {
-            "invalid_filter",
-            "invalid_cursor",
-            "invalid_arguments",
+            "ferret.filter.invalid",
+            "ferret.cursor.invalid",
+            "ferret.args.invalid",
         }
-    assert refusal(export_events, world.runtime, {"--harness": ("Bad",)}).code == "invalid_filter"
+    assert refusal(export_events, world.runtime, {"--harness": ("Bad",)}).code == "ferret.filter.invalid"
     assert world.files.touched == []
 
 
 def test_a_valid_query_needs_an_initialized_store() -> None:
     world = world_with(initialized=False)
 
-    assert refusal(list_events, world.runtime, {}).code == "uninitialized"
-    assert refusal(export_events, world.runtime, {}).code == "uninitialized"
+    assert refusal(list_events, world.runtime, {}).code == "ferret.storage.uninitialized"
+    assert refusal(export_events, world.runtime, {}).code == "ferret.storage.uninitialized"
     assert world.events.reads == 0
 
 
@@ -594,8 +598,10 @@ def test_events_list_json_is_one_compact_object_of_canonical_events_and_a_cursor
 def test_events_list_json_with_no_rows_is_an_empty_array_and_a_null_cursor() -> None:
     code, out, err = run_cli(world_with(), ["events", "list", "--json"])
 
-    assert (code, err) == (0, "")
-    assert out == '{"schemaVersion":1,"command":"events.list","exitCode":0,"items":[],"nextCursor":null}\n'
+    # `1`, not `0`: the query ran and matched nothing, which a caller must be able to tell from a match
+    # without parsing the payload. `exitCode` in the envelope says the same number.
+    assert (code, err) == (1, "")
+    assert out == '{"schemaVersion":1,"command":"events.list","exitCode":1,"items":[],"nextCursor":null}\n'
 
 
 def test_events_list_text_is_a_tab_separated_table_with_dashes_for_null() -> None:
@@ -615,7 +621,7 @@ def test_events_list_text_is_a_tab_separated_table_with_dashes_for_null() -> Non
 
 
 def test_an_empty_text_page_prints_no_rows_to_stderr_and_leaves_stdout_empty() -> None:
-    assert run_cli(world_with(), ["events", "list"]) == (0, "", "No rows.\n")
+    assert run_cli(world_with(), ["events", "list"]) == (1, "", "No rows.\n")
 
 
 def test_events_export_writes_one_canonical_event_per_line_and_flushes_each() -> None:
@@ -642,20 +648,20 @@ def test_events_export_writes_one_canonical_event_per_line_and_flushes_each() ->
 
 
 def test_events_export_of_an_empty_result_is_zero_bytes() -> None:
-    assert run_cli(world_with(), ["events", "export", "--format", "jsonl"]) == (0, "", "")
+    assert run_cli(world_with(), ["events", "export", "--format", "jsonl"]) == (1, "", "")
 
 
 def test_export_rejects_a_machine_output_request_and_writes_nothing_to_stdout() -> None:
     code, out, err = run_cli(world_with(), ["events", "export", "--format", "jsonl", "--json"])
 
     assert (code, out) == (2, "")
-    assert json.loads(err)["error"]["code"] == "invalid_arguments"
+    assert json.loads(err)["error"]["code"] == "ferret.args.invalid"
 
 
 def test_a_failed_export_reports_its_closed_error_on_stderr_only() -> None:
     code, out, err = run_cli(world_with(), ["events", "export", "--format", "jsonl", "--harness", "Bad"])
 
-    assert (code, out, err) == (2, "", "FERRET error [invalid_filter]: a filter value is not valid\n")
+    assert (code, out, err) == (2, "", "FERRET error [ferret.filter.invalid]: a filter value is not valid\n")
 
 
 def test_a_failed_list_names_its_command_in_the_json_error() -> None:
@@ -666,5 +672,10 @@ def test_a_failed_list_names_its_command_in_the_json_error() -> None:
         "schemaVersion": 1,
         "command": "events.list",
         "exitCode": 2,
-        "error": {"code": "invalid_cursor", "field": None, "retryable": False},
+        "error": {
+            "code": "ferret.cursor.invalid",
+            "message": "the cursor is not valid for this query",
+            "field": None,
+            "retryable": False,
+        },
     }

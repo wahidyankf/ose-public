@@ -168,7 +168,7 @@ def _size(path: Path) -> int:
     except FileNotFoundError:
         return 0
     except OSError:
-        raise FerretError("storage_unavailable") from None
+        raise FerretError("ferret.storage.unavailable") from None
 
 
 def _file_sizes(database_path: Path) -> tuple[int, int]:

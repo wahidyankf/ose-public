@@ -111,12 +111,12 @@ def translate_error(error: sqlite3.Error) -> FerretError:
     """Map a SQLite failure onto the closed failure contract without carrying its message."""
     text = str(error).lower()
     if isinstance(error, sqlite3.OperationalError) and ("locked" in text or "busy" in text):
-        return FerretError("storage_unavailable", retryable=True)
+        return FerretError("ferret.storage.unavailable", retryable=True)
     if isinstance(error, sqlite3.DatabaseError) and not isinstance(error, sqlite3.OperationalError):
-        return FerretError("integrity_failure")
+        return FerretError("ferret.storage.integrity-failure")
     if "malformed" in text or "not a database" in text or "corrupt" in text:
-        return FerretError("integrity_failure")
-    return FerretError("storage_unavailable")
+        return FerretError("ferret.storage.integrity-failure")
+    return FerretError("ferret.storage.unavailable")
 
 
 def connect(path: Path, *, busy_timeout_ms: int = BUSY_TIMEOUT_MS) -> sqlite3.Connection:
@@ -140,7 +140,7 @@ def connect(path: Path, *, busy_timeout_ms: int = BUSY_TIMEOUT_MS) -> sqlite3.Co
         raise translate_error(error) from None
     if not all(verified):
         connection.close()
-        raise FerretError("storage_unavailable")
+        raise FerretError("ferret.storage.unavailable")
     return connection
 
 
@@ -178,12 +178,12 @@ class SQLiteSchema:
             }
         # A schema newer than this build is refused before anything is written.
         if applied and max(applied) > LATEST_SCHEMA:
-            raise FerretError("storage_unavailable")
+            raise FerretError("ferret.storage.unavailable")
         applied_now = False
         for migration in MIGRATIONS:
             if migration.version in applied:
                 if applied[migration.version] != migration.checksum:
-                    raise FerretError("integrity_failure")
+                    raise FerretError("ferret.storage.integrity-failure")
                 continue
             for statement in migration.statements:
                 connection.execute(statement)

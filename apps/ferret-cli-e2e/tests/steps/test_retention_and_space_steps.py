@@ -53,7 +53,7 @@ class Session:
 
     @property
     def database(self) -> Path:
-        return self.home / ".ferret" / "ferret.sqlite3"
+        return self.home / ".local" / "share" / "ferret" / "ferret.sqlite3"
 
     def sql(self, statement: str, parameters: tuple[object, ...] = ()) -> list[tuple[Any, ...]]:
         with closing(sqlite3.connect(self.database, autocommit=True)) as connection:

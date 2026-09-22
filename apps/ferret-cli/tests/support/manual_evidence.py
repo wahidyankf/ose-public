@@ -258,7 +258,7 @@ def failure_shape(result: Result, command: str, code: str, exit_code: int) -> bo
         and document["command"] == command
         and document["exitCode"] == exit_code
         and error is not None
-        and list(error) == ["code", "field", "retryable"]
+        and list(error) == ["code", "message", "field", "retryable"]
         and error["code"] == code
         and error["retryable"] is False
     )
@@ -395,7 +395,7 @@ def run_capture(session: Session) -> None:
     conflict = session.run("capture-conflict", ["capture", "--json"], stdin=encode(conflicting))
     session.check(
         "the same id with different content is refused as a safe idempotency conflict",
-        failure_shape(conflict, "capture", "idempotency_conflict", 2)
+        failure_shape(conflict, "capture", "ferret.event.idempotency-conflict", 2)
         and b"Write" not in conflict.stderr
         and b"Read" not in conflict.stderr,
     )
@@ -512,7 +512,8 @@ def list_pages(session: Session) -> tuple[list[dict[str, Any]], str | None, bool
         items = None if reply is None else reply.get("items")
         held = (
             held
-            and result.code == 0
+            # The last page of a walk can be empty, which is `1`: the query ran and matched nothing.
+            and result.code in (0, 1)
             and not result.stderr
             and reply is not None
             and list(reply) == ["schemaVersion", "command", "exitCode", "items", "nextCursor"]
@@ -580,7 +581,7 @@ def run_query(session: Session) -> None:
     )
     session.check(
         "a cursor from another limit is refused as a safe invalid cursor",
-        failure_shape(mismatched, "events.list", "invalid_cursor", 2),
+        failure_shape(mismatched, "events.list", "ferret.cursor.invalid", 2),
     )
 
     export = session.run("events-export", ["events", "export", "--format", "jsonl"])
@@ -635,8 +636,8 @@ def run_query(session: Session) -> None:
 
     empty = session.run("events-list-empty", ["events", "list", "--harness", "opencode"])
     session.check(
-        "an empty human result writes nothing to stdout and the fixed line to stderr",
-        empty.code == 0 and not empty.stdout and empty.stderr.decode() == NO_ROWS,
+        "an empty human result exits 1, writes nothing to stdout, and writes the fixed line to stderr",
+        empty.code == 1 and not empty.stdout and empty.stderr.decode() == NO_ROWS,
     )
     session.check(
         "no output of the case holds a terminal escape",

@@ -290,7 +290,7 @@ def test_a_cursor_stops_working_when_its_row_is_deleted_underneath_it(tmp_path: 
     outcome = machine.run(["events", "list", "--json", "--limit", "2", "--all-time", "--cursor", cursor])
 
     assert (outcome.code, outcome.stdout) == (2, "")
-    assert json.loads(outcome.stderr)["error"]["code"] == "invalid_cursor"
+    assert json.loads(outcome.stderr)["error"]["code"] == "ferret.cursor.invalid"
 
 
 def test_a_database_that_is_not_a_database_is_a_closed_integrity_failure_without_a_path(tmp_path: Path) -> None:
@@ -300,10 +300,12 @@ def test_a_database_that_is_not_a_database_is_a_closed_integrity_failure_without
     listing = machine.run(["events", "list", "--json"])
     exported = machine.run(["events", "export", "--format", "jsonl"])
 
-    assert (listing.code, listing.stdout) == (4, "")
-    assert json.loads(listing.stderr)["error"]["code"] == "integrity_failure"
-    assert (exported.code, exported.stdout) == (4, "")
-    assert exported.stderr == "FERRET error [integrity_failure]: the database failed its integrity check\n"
+    assert (listing.code, listing.stdout) == (2, "")
+    assert json.loads(listing.stderr)["error"]["code"] == "ferret.storage.integrity-failure"
+    assert (exported.code, exported.stdout) == (2, "")
+    assert (
+        exported.stderr == "FERRET error [ferret.storage.integrity-failure]: the database failed its integrity check\n"
+    )
     assert str(machine.home) not in listing.stderr + exported.stderr
 
 
@@ -312,6 +314,6 @@ def test_a_machine_without_a_store_reports_uninitialized_for_every_read(tmp_path
 
     for argv in (["events", "list"], ["events", "export", "--format", "jsonl"]):
         outcome = machine.run(argv)
-        assert (outcome.code, outcome.stdout) == (3, "")
-        assert "uninitialized" in outcome.stderr
+        assert (outcome.code, outcome.stdout) == (2, "")
+        assert "ferret.storage.uninitialized" in outcome.stderr
     assert not machine.data_home.exists()

@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from typing import Any, Literal, NoReturn, Protocol, TextIO, cast
 
 from ferret import __version__
-from ferret.domain.errors import EXIT_CALLER_ERROR, EXIT_ENVIRONMENT_ERROR, EXIT_SUCCESS, FAILURES, FerretError
+from ferret.domain.errors import EXIT_CALLER_ERROR, EXIT_SUCCESS, FAILURES, FerretError
 from ferret.help_text import COMMAND_HELP, ROOT_HELP, ROOT_USAGE
 
 type CommandPath = tuple[str, ...]
@@ -18,8 +18,9 @@ type OutputMode = Literal["text", "json"]
 VERSION_LINE = f"ferret {__version__}"
 
 # No message carries a rejected value: a caller's raw input never reaches a diagnostic.
-INVALID_ARGUMENTS_MESSAGE = FAILURES["invalid_arguments"][1]
-STORAGE_UNAVAILABLE_MESSAGE = FAILURES["storage_unavailable"][1]
+INVALID_ARGUMENTS_MESSAGE = FAILURES["ferret.args.invalid"][1]
+STORAGE_UNAVAILABLE_MESSAGE = FAILURES["ferret.storage.unavailable"][1]
+INTERNAL_FAILURE_MESSAGE = FAILURES["ferret.internal.failure"][1]
 BARE_INVOCATION_HINT = "Run 'ferret --help' for the commands and options.\n"
 
 GROUPS = ("events", "self")
@@ -306,7 +307,9 @@ def fail(
             "schemaVersion": 1,
             "command": command_name(command),
             "exitCode": exit_code,
-            "error": {"code": code, "field": field, "retryable": retryable},
+            # The message travels with the code. A caller that does not recognize the code still has one
+            # sentence to show a person, which is the whole reason a failure is reported rather than logged.
+            "error": {"code": code, "message": message, "field": field, "retryable": retryable},
         }
         stderr.write(json.dumps(envelope, separators=(",", ":"), ensure_ascii=False) + "\n")
     else:
@@ -334,6 +337,42 @@ def _prepare_process_stdout() -> None:
         reconfigure(encoding="utf-8")
 
 
+def _asks_for_help(arguments: Sequence[str]) -> bool:
+    """Whether this invocation asked for help, whatever else it said."""
+    return any(argument in ("-h", "--help") for argument in arguments)
+
+
+def _record_callback_failure(code: str) -> None:
+    """Write down a callback failure that happened before a runtime existed. Never raises."""
+    try:
+        import os
+
+        from ferret.adapters.filesystem import resolve_data_home
+        from ferret.adapters.hook_failures import record_hook_failure
+        from ferret.adapters.system import home_directory
+
+        record_hook_failure(resolve_data_home(os.environ, home_directory(os.environ)), code)
+    except Exception:
+        return
+
+
+def help_for(arguments: Sequence[str]) -> str | None:
+    """The help text a ``help`` command asks for, or ``None`` when this invocation is not one.
+
+    ``help`` is a command as well as a flag because a caller who has just met a subcommand tree tries the word
+    before the flag, and a tool that answers only one of them makes them read documentation to learn which.
+    An unknown path is not help: it falls through to the usage error the same spelling would get as a command.
+    A help flag inside a help command is dropped rather than refused, so ``ferret help --help`` answers with the
+    text that documents ``help`` instead of refusing the one spelling nobody could have meant as anything else.
+    """
+    if not arguments or arguments[0] != "help":
+        return None
+    path: CommandPath = tuple(argument for argument in arguments[1:] if argument not in ("-h", "--help"))
+    if path == ():
+        return ROOT_HELP
+    return COMMAND_HELP.get(path)
+
+
 def main(
     argv: Sequence[str] | None = None,
     *,
@@ -358,6 +397,34 @@ def main(
     if not arguments:
         err.write(ROOT_USAGE + BARE_INVOCATION_HINT)
         return EXIT_CALLER_ERROR
+    if arguments[0] == "capture-hook" and not _asks_for_help(arguments):
+        # The one callback that must never speak. Argument parsing runs before the handler, so a missing or
+        # misspelled option used to reach a caller as a diagnostic on stderr and exit 2 -- which, for a hook a
+        # harness runs on every event, is the one thing this command exists not to do. `--help` is still
+        # answered, because a person asking for it is not a harness.
+        try:
+            request = parse_arguments(arguments)
+        except Exception:
+            _record_callback_failure("ferret.args.invalid")
+            return EXIT_SUCCESS
+        try:
+            return registry[request.command](request, out, err)
+        except Exception:
+            _record_callback_failure("ferret.internal.failure")
+            return EXIT_SUCCESS
+    if arguments[0] == "help":
+        requested_help = help_for(arguments)
+        if requested_help is None:
+            return fail(
+                err,
+                command=(),
+                output=requested_output(arguments),
+                code="ferret.args.invalid",
+                exit_code=EXIT_CALLER_ERROR,
+                message=INVALID_ARGUMENTS_MESSAGE,
+            )
+        out.write(requested_help)
+        return EXIT_SUCCESS
     try:
         request = parse_arguments(arguments)
     except HelpRequested as requested:
@@ -371,7 +438,7 @@ def main(
             err,
             command=resolved_path(arguments),
             output=requested_output(arguments),
-            code="invalid_arguments",
+            code="ferret.args.invalid",
             exit_code=EXIT_CALLER_ERROR,
             message=INVALID_ARGUMENTS_MESSAGE,
         )
@@ -396,7 +463,31 @@ def main(
             err,
             command=request.command,
             output=request.output,
-            code="storage_unavailable",
-            exit_code=EXIT_ENVIRONMENT_ERROR,
+            code="ferret.storage.unavailable",
+            exit_code=EXIT_CALLER_ERROR,
             message=STORAGE_UNAVAILABLE_MESSAGE,
         )
+
+
+def run(
+    argv: Sequence[str] | None = None,
+    *,
+    stdout: TextIO | None = None,
+    stderr: TextIO | None = None,
+    handlers: Mapping[CommandPath, Handler] | None = None,
+) -> int:
+    """``main`` with nothing able to escape it as a traceback.
+
+    ``main`` already answers for every failure it can name. This answers for the ones it cannot: a fault in
+    argument parsing, in help, in stream setup, or in this module itself. Without it such a fault reaches the
+    interpreter's default handler, which prints a traceback -- carrying paths and values the closed failure
+    contract exists to keep out of a diagnostic -- and exits ``1``, the status reserved for a result.
+
+    ``BaseException`` is deliberately not caught: an interrupt must end the process the way the signal says to.
+    """
+    try:
+        return main(argv, stdout=stdout, stderr=stderr, handlers=handlers)
+    except Exception:
+        stream = sys.stderr if stderr is None else stderr
+        stream.write(f"FERRET error [ferret.internal.failure]: {INTERNAL_FAILURE_MESSAGE}\n")
+        return EXIT_CALLER_ERROR

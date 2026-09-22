@@ -40,7 +40,7 @@ def _require_live(runtime: Runtime, position: Position, now: datetime) -> None:
     """
     referenced = runtime.events.find(position.event_id, now=now)
     if referenced is None or (referenced.occurred_at, referenced.event_id) != (position.occurred_at, position.event_id):
-        raise FerretError("invalid_cursor")
+        raise FerretError("ferret.cursor.invalid")
 
 
 def list_events(runtime: Runtime, options: Options) -> EventPage:
@@ -53,7 +53,7 @@ def list_events(runtime: Runtime, options: Options) -> EventPage:
     criteria = criteria_from_options(options, now=now)
     limit = parse_limit(options)
     digest = filter_digest(criteria, limit)
-    cursor = single_value(options, "--cursor", refusal="invalid_arguments")
+    cursor = single_value(options, "--cursor", refusal="ferret.args.invalid")
     after = None if cursor is None else decode_cursor(cursor, digest)
     open_store(runtime)
     if after is not None:

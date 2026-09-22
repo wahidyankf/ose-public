@@ -1,6 +1,7 @@
 """The help and version surface of the built artifact, proven through its public process boundary."""
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -27,6 +28,7 @@ commands:
   self uninstall      remove the artifact; data is kept unless purged
 
   version             print the version and exit
+  help                show this help and exit
 
 options:
   -h, --help          show this help and exit
@@ -34,6 +36,14 @@ options:
   --output <text|json>
                       render the result as text or JSON; defaults to text
   --json              shorthand for --output json
+
+exit codes:
+  0                   the command ran and the answer was affirmative
+  1                   the command ran and a query matched nothing
+  2                   FERRET could not run: the invocation, the environment,
+                      or the stored data was unusable; see error.code
+  126                 an interpreter was found and could not be started
+  128+N               ended by signal N; 130 is an interrupt, 141 a closed pipe
 
 Telemetry older than 30 days is never returned. Scripts should use --json.
 Run 'ferret <command> --help' for a command's options.
@@ -61,10 +71,16 @@ options:
   --outcome <outcome>  filter by outcome
 """
 
-VERSION_LINE = "ferret 0.1.1\n"
+#: Read from the source of truth rather than copied, so a release bump is one edit rather than two.
+DECLARED_VERSION = re.search(
+    r'__version__ = "([^"]+)"',
+    (Path(__file__).resolve().parents[2] / "ferret-cli" / "src" / "ferret" / "__init__.py").read_text(),
+)
+assert DECLARED_VERSION is not None, "ferret declares no __version__"
+VERSION_LINE = f"ferret {DECLARED_VERSION.group(1)}\n"
 BARE_USAGE = "usage: ferret <command> [options]\nRun 'ferret --help' for the commands and options.\n"
 INVALID_ARGUMENTS_TEXT = (
-    "FERRET error [invalid_arguments]: unrecognized or incomplete arguments; run 'ferret --help' for usage\n"
+    "FERRET error [ferret.args.invalid]: unrecognized or incomplete arguments; run 'ferret --help' for usage\n"
 )
 LISTED_COMMANDS = [
     "init",
@@ -79,6 +95,7 @@ LISTED_COMMANDS = [
     "self install",
     "self uninstall",
     "version",
+    "help",
 ]
 
 
@@ -126,8 +143,18 @@ def test_a_bare_invocation_writes_the_short_usage_to_stderr_and_exits_two(artifa
     assert result.stderr.decode("utf-8") == BARE_USAGE
 
 
-def test_the_help_subcommand_is_rejected_as_invalid_arguments(artifact: Path, home: Path) -> None:
-    result = run(artifact, home, "help")
+def test_the_help_subcommand_answers_for_the_root_and_for_a_path(artifact: Path, home: Path) -> None:
+    # A caller who has just met a subcommand tree tries the word before the flag.
+    assert run(artifact, home, "help").stdout.decode("utf-8") == GOLDEN_ROOT_HELP
+    assert run(artifact, home, "help", "events", "export").stdout.decode("utf-8") == GOLDEN_EXPORT_HELP
+    assert [run(artifact, home, *arguments).returncode for arguments in (("help",), ("help", "events", "export"))] == [
+        0,
+        0,
+    ]
+
+
+def test_a_help_path_that_is_not_a_command_is_the_usage_error(artifact: Path, home: Path) -> None:
+    result = run(artifact, home, "help", "nonsense")
 
     assert result.returncode == 2
     assert result.stdout == b""
@@ -145,7 +172,12 @@ def test_json_shorthand_and_output_json_produce_byte_identical_failures(
     assert shorthand.returncode == 2
     assert shorthand.stdout == b""
     envelope = json.loads(shorthand.stderr)
-    assert envelope["error"] == {"code": "invalid_arguments", "field": None, "retryable": False}
+    assert envelope["error"] == {
+        "code": "ferret.args.invalid",
+        "message": "unrecognized or incomplete arguments; run 'ferret --help' for usage",
+        "field": None,
+        "retryable": False,
+    }
     assert shorthand.stderr == json.dumps(envelope, separators=(",", ":")).encode("utf-8") + b"\n"
 
 
@@ -162,7 +194,10 @@ def test_every_command_listed_in_root_help_resolves_under_help(artifact: Path, h
         result = run(artifact, home, *name.split(), "--help")
 
         assert result.returncode == 0, name
-        assert result.stdout.decode("utf-8").startswith(f"usage: ferret {name}"), name
+        # `help` documents itself in the root help, which is the text it prints, so it is the one command whose
+        # own help does not open with its own name.
+        wanted = "usage: ferret <command>" if name == "help" else f"usage: ferret {name}"
+        assert result.stdout.decode("utf-8").startswith(wanted), name
         assert result.stderr == b"", name
 
 

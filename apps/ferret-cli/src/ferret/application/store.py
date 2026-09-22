@@ -26,9 +26,9 @@ def require_safe(facts: FileFacts, expected: Literal["file", "directory"]) -> No
     if facts.kind == "missing":
         return
     if facts.kind != expected or not facts.owned_by_current_user or not is_private_mode(facts.mode):
-        raise FerretError("unsafe_storage")
+        raise FerretError("ferret.storage.unsafe")
     if expected == "file" and facts.link_count != 1:
-        raise FerretError("unsafe_storage")
+        raise FerretError("ferret.storage.unsafe")
 
 
 def require_initialized(files: DataHomeFiles) -> None:
@@ -43,7 +43,7 @@ def require_initialized(files: DataHomeFiles) -> None:
     for facts in present.values():
         require_safe(facts, "file")
     if directory.kind == "missing" or any(facts.kind == "missing" for facts in present.values()):
-        raise FerretError("uninitialized")
+        raise FerretError("ferret.storage.uninitialized")
 
 
 def read_document(content: bytes) -> dict[str, Any]:
@@ -51,9 +51,9 @@ def read_document(content: bytes) -> dict[str, Any]:
     try:
         document: object = json.loads(content)
     except ValueError:
-        raise FerretError("storage_unavailable") from None
+        raise FerretError("ferret.storage.unavailable") from None
     if not isinstance(document, dict):
-        raise FerretError("storage_unavailable")
+        raise FerretError("ferret.storage.unavailable")
     return cast(dict[str, Any], document)
 
 
@@ -67,11 +67,11 @@ def installation_id_from(content: bytes) -> str:
         or not isinstance(installation_id, str)
         or UUID_V4.fullmatch(installation_id) is None
     ):
-        raise FerretError("storage_unavailable")
+        raise FerretError("ferret.storage.unavailable")
     try:
         parse_timestamp(str(document["createdAt"]))
     except ValueError:
-        raise FerretError("storage_unavailable") from None
+        raise FerretError("ferret.storage.unavailable") from None
     return installation_id
 
 
@@ -79,5 +79,5 @@ def read_key(files: DataHomeFiles) -> bytes:
     """The installation's HMAC key, which is exactly ``KEY_BYTES`` long or the store cannot be used."""
     key = files.read_file(KEY_FILE)
     if len(key) != KEY_BYTES:
-        raise FerretError("storage_unavailable")
+        raise FerretError("ferret.storage.unavailable")
     return key

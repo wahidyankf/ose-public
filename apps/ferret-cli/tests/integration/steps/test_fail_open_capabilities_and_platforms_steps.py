@@ -184,7 +184,9 @@ def given_no_artifact_installed(installation: Installation, situation: str) -> N
     for name, content in STARTUP_FILES.items():
         (home / name).write_bytes(content)
     installation.startup = user_files(installation, STARTUP_FILES)
-    assert not (home / ".local").exists()
+    # `.local` itself now also holds the data home, so the precondition is about the install tree inside it.
+    assert not (home / ".local" / "bin").exists()
+    assert not (home / ".local" / "share" / "ferret-cli").exists()
 
 
 @when("the user runs self install --target user")
@@ -228,7 +230,7 @@ def then_the_path_action_is_reported(installation: Installation, path_action: st
 def then_no_startup_file_or_path_is_modified(installation: Installation) -> None:
     home = installation.machine.home
     assert user_files(installation, STARTUP_FILES) == installation.startup
-    assert home_names(installation) == {".ferret", ".local", *STARTUP_FILES}
+    assert home_names(installation) == {".local", *STARTUP_FILES}
     assert {path.name for path in (home / ".local").iterdir()} == {"bin", "share"}
     assert {path.name for path in (home / ".local" / "bin").iterdir()} == {"ferret"}
 

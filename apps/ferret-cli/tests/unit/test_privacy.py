@@ -18,7 +18,7 @@ def rejected(raw: bytes) -> FerretError:
     with pytest.raises(FerretError) as caught:
         validate_capture(raw, now=NOW)
     error = caught.value
-    assert error.code == "invalid_event"
+    assert error.code == "ferret.event.invalid"
     assert error.exit_code == 2
     assert CANARY not in str(error)
     assert CANARY not in repr(error)
@@ -386,7 +386,7 @@ def test_hook_projection_rejects_malformed_or_oversized_raw_input(raw: bytes) ->
     with pytest.raises(FerretError) as caught:
         project_hook_payload(raw, [("a",)])
 
-    assert caught.value.code == "invalid_event"
+    assert caught.value.code == "ferret.event.invalid"
     assert caught.value.field is None
 
 

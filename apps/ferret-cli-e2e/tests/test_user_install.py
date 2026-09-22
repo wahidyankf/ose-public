@@ -34,6 +34,7 @@ from install_area import (
     manifest_bytes,
     older_artifact,
     pinned_launcher,
+    store,
     tree,
 )
 
@@ -75,7 +76,12 @@ def refused(ran: Completed, code: str, exit_code: int) -> None:
     assert (ran.returncode, ran.stdout) == (exit_code, b""), ran
     envelope: dict[str, Any] = json.loads(ran.stderr)
     assert envelope["exitCode"] == exit_code
-    assert envelope["error"] == {"code": code, "field": None, "retryable": False}
+    error: dict[str, Any] = envelope["error"]
+    assert list(error) == ["code", "message", "field", "retryable"]
+    # The message is a fixed sentence per code and carries no value, so this asserts its shape, not its wording.
+    assert (error["code"], error["field"], error["retryable"]) == (code, None, False)
+    assert isinstance(error["message"], str)
+    assert error["message"]
 
 
 def install(artifact: Path, home: Path, *, path: str = PATH_WITHOUT_USER_BIN) -> dict[str, Any]:
@@ -160,19 +166,21 @@ def test_user_install_update_uninstall(artifact: Path, older: Path, layout: Layo
 
     assert succeeded(run(artifact, layout.home, ["init", "--json"]))["result"] == "created"
     capture_documents(artifact, layout.home, [numbered_event(1, now=datetime.now(UTC), ago=timedelta(minutes=1))])
-    data = tree(layout.home / ".ferret")
+    data = store(layout)
 
     removed = uninstall(artifact, layout.home)
 
     assert removed == uninstall_report(
         result="uninstalled", removed=[layout.launcher, layout.artifact(version), layout.manifest]
     )
+    # The data directory survives because the store is in it; nothing the install owned is left there.
     assert area(layout) == {
         ".local": ("directory", DIRECTORY_MODE, None),
         ".local/bin": ("directory", DIRECTORY_MODE, None),
         ".local/share": ("directory", DIRECTORY_MODE, None),
+        ".local/share/ferret": ("directory", DIRECTORY_MODE, None),
     }
-    assert tree(layout.home / ".ferret") == data
+    assert store(layout) == data
 
     again = uninstall(artifact, layout.home)
 
@@ -367,7 +375,7 @@ def test_crash_c_after_the_launcher_before_the_manifest_refuses_removal_and_the_
     assert launcher_starts(layout) == layout.artifact(version)
     assert json.loads(layout.manifest.read_bytes())["version"] == OLDER_VERSION
 
-    refused(run(artifact, layout.home, UNINSTALL), "install_ownership_mismatch", 3)
+    refused(run(artifact, layout.home, UNINSTALL), "ferret.install.ownership-mismatch", 2)
 
     assert tree(layout.home) == crashed
 
@@ -443,7 +451,7 @@ def test_a_file_that_is_not_ours_in_the_way_is_a_collision_and_nothing_changes(
     arrange(layout, version)
     before = tree(layout.home)
 
-    refused(run(artifact, layout.home, INSTALL), "install_collision", 3)
+    refused(run(artifact, layout.home, INSTALL), "ferret.install.collision", 2)
 
     assert tree(layout.home) == before
 
@@ -487,7 +495,7 @@ def test_removal_refuses_and_deletes_nothing_when_ownership_cannot_be_proved(
     change(layout, version)
     before = tree(layout.home)
 
-    refused(run(artifact, layout.home, UNINSTALL), "install_ownership_mismatch", 3)
+    refused(run(artifact, layout.home, UNINSTALL), "ferret.install.ownership-mismatch", 2)
 
     assert tree(layout.home) == before
 
@@ -497,7 +505,7 @@ def test_purging_data_without_confirmation_changes_nothing(artifact: Path, layou
     assert succeeded(run(artifact, layout.home, ["init", "--json"]))["result"] == "created"
     before = tree(layout.home)
 
-    refused(run(artifact, layout.home, [*UNINSTALL, "--purge-data"]), "confirmation_required", 2)
+    refused(run(artifact, layout.home, [*UNINSTALL, "--purge-data"]), "ferret.args.confirmation-required", 2)
 
     assert tree(layout.home) == before
 
@@ -511,19 +519,19 @@ def test_confirmed_purge_removes_the_install_and_then_the_data(artifact: Path, l
     assert removed == uninstall_report(
         result="uninstalled", removed=[layout.launcher, layout.artifact(version), layout.manifest], data="deleted"
     )
-    assert not os.path.lexists(layout.home / ".ferret")
+    assert not os.path.lexists(layout.home / ".local" / "share" / "ferret")
     assert not os.path.lexists(layout.launcher)
 
 
 def test_confirmation_alone_purges_nothing(artifact: Path, layout: Layout) -> None:
     install(artifact, layout.home)
     assert succeeded(run(artifact, layout.home, ["init", "--json"]))["result"] == "created"
-    data: Tree = tree(layout.home / ".ferret")
+    data: Tree = store(layout)
 
     removed = uninstall(artifact, layout.home, "--yes")
 
     assert removed["dataAction"] == "kept"
-    assert tree(layout.home / ".ferret") == data
+    assert store(layout) == data
 
 
 def test_a_confirmed_purge_needs_no_installation_and_no_data(artifact: Path, layout: Layout) -> None:

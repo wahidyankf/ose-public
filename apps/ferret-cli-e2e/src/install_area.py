@@ -20,6 +20,22 @@ INSTALLED_LONG_AGO = "2026-09-01T00:00:00.000Z"
 STAGE_NONCE = "0123456789abcdef0123456789abcdef"
 OLDER_VERSION = "0.0.9"
 LAUNCHER_MODE = 0o700
+#: The store's own files. Since the data home moved onto the base directory specification it is
+#: `$XDG_DATA_HOME/ferret`, the same directory an install writes its manifest and versions into -- both are this
+#: application's data, and the specification gives it one directory for them. `area` is about what an install
+#: owns, so the store is filtered out of it and asserted separately.
+STORE_ENTRIES = frozenset(
+    {
+        "identity.key",
+        "identity.json",
+        "config.json",
+        "ferret.sqlite3",
+        "ferret.sqlite3-wal",
+        "ferret.sqlite3-shm",
+        "ferret.lock",
+        "hook-failures.log",
+    }
+)
 #: Written from the contract, like everything else here, so a change in the product cannot move the expectation.
 LAUNCHER_NOTICE = "# Written by 'ferret self install'. Reinstall to change the interpreter or the version."
 
@@ -149,8 +165,21 @@ def tree(root: Path) -> Tree:
 
 
 def area(layout: Layout) -> Tree:
-    """The install area: everything under HOME's ``.local``, keyed relative to HOME."""
-    return {key: value for key, value in tree(layout.home).items() if key == ".local" or key.startswith(".local/")}
+    """The install area: everything an install owns under HOME's ``.local``, keyed relative to HOME.
+
+    The store shares the install's directory, so its files are excluded here and compared on their own.
+    """
+    share = str(layout.share.relative_to(layout.home))
+    return {
+        key: value
+        for key, value in tree(layout.home).items()
+        if (key == ".local" or key.startswith(".local/")) and key not in {f"{share}/{name}" for name in STORE_ENTRIES}
+    }
+
+
+def store(layout: Layout) -> Tree:
+    """Only the store's own files inside the shared data directory, which is what an uninstall must leave alone."""
+    return {key: value for key, value in tree(layout.share).items() if key in STORE_ENTRIES}
 
 
 def completed(layout: Layout, version: str, artifact: bytes, installed_at: str = INSTALLED_LONG_AGO) -> Tree:

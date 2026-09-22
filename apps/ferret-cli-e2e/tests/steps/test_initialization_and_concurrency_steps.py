@@ -35,7 +35,7 @@ class Session:
 
     @property
     def data_home(self) -> Path:
-        return self.home / ".ferret"
+        return self.home / ".local" / "share" / "ferret"
 
 
 @pytest.fixture
@@ -119,7 +119,7 @@ class BurstSession:
 
     @property
     def database(self) -> Path:
-        return self.home / ".ferret" / "ferret.sqlite3"
+        return self.home / ".local" / "share" / "ferret" / "ferret.sqlite3"
 
 
 def burst_event_id(adapter: int, sequence: int) -> str:

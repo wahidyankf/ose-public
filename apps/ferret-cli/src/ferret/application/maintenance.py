@@ -97,7 +97,7 @@ def reclaim_space(runtime: Runtime) -> Reclamation:
     if not should_compact(settled):
         return Reclamation(checkpoint, "not_needed", tuple(measurements))
     if not telemetry.check_integrity(thorough=True):
-        raise FerretError("integrity_failure")
+        raise FerretError("ferret.storage.integrity-failure")
     compaction = telemetry.compact()
     measurements.append(compaction.measured)
     if compaction.outcome == "failed":
@@ -119,7 +119,7 @@ def prune_to_exhaustion(runtime: Runtime) -> Pruned:
         budget = Budget.start(runtime.monotonic, PRUNE_BUDGET_MS)
         result = runtime.telemetry.prune_batch(now=now, limit=PRUNE_ROW_LIMIT, budget=budget)
         if result.state == "skipped":
-            raise FerretError("storage_unavailable", retryable=True)
+            raise FerretError("ferret.storage.unavailable", retryable=True)
         events += result.events
         workspaces += result.workspaces
         snapshots += result.snapshots

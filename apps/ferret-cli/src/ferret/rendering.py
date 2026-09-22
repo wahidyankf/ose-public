@@ -1,7 +1,7 @@
 """Serializers: every command's JSON object and its human text derive from the same result."""
 
 import json
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Mapping, Sized
 from typing import Any, Final
 
 from ferret.application.analytics import Dimension, OutcomeRow, Summary, UsageRow
@@ -12,6 +12,7 @@ from ferret.application.maintenance import MaintenanceReport
 from ferret.application.queries import EventPage
 from ferret.application.status import StatusReport
 from ferret.cli import OutputMode
+from ferret.domain.errors import EXIT_NEGATIVE_RESULT, EXIT_SUCCESS
 from ferret.domain.event import Event
 from ferret.domain.space import high_water_bytes
 
@@ -31,6 +32,15 @@ LIST_COLUMNS: Final = (
     "durationVisibility",
 )
 NO_ROWS: Final = "No rows.\n"
+
+
+def result_status(rows: Sized) -> int:
+    """``0`` when a query matched something, ``1`` when it legitimately matched nothing.
+
+    One decision in one place. A caller reading the status and a caller reading ``exitCode`` in the envelope are
+    reading the same number, and a query that found nothing is not reported as one that found something.
+    """
+    return EXIT_SUCCESS if len(rows) else EXIT_NEGATIVE_RESULT
 
 
 def json_line(document: Mapping[str, Any]) -> str:
@@ -93,7 +103,7 @@ def render_events(page: EventPage, output: OutputMode) -> str:
             {
                 "schemaVersion": 1,
                 "command": "events.list",
-                "exitCode": 0,
+                "exitCode": result_status(documents),
                 "items": documents,
                 "nextCursor": page.next_cursor,
             }
@@ -121,7 +131,7 @@ def _render_summary(
             {
                 "schemaVersion": 1,
                 "command": command,
-                "exitCode": 0,
+                "exitCode": result_status(measured),
                 "groupBy": list(summary.group_by),
                 "rows": [
                     {"dimensions": [{"name": name, "value": value} for name, value in dimensions], **metrics}
@@ -226,6 +236,8 @@ def render_status(report: StatusReport, output: OutputMode) -> str:
                 "highWaterBytes": high_water,
                 "expiredLocalTotal": counters.local_total,
                 "expiredBeforeAckTotal": counters.before_ack_total,
+                "hookFailureCount": report.hook_failure_count,
+                "lastHookFailureAt": report.last_hook_failure_at,
                 "lastMaintenanceAt": report.last_maintenance_at,
                 "maintenanceDue": report.maintenance_due,
                 "backend": {"state": report.BACKEND_STATE},
@@ -264,6 +276,7 @@ def render_status(report: StatusReport, output: OutputMode) -> str:
         f"Expired local: {counters.local_total}",
         f"Expired before ACK: {counters.before_ack_total}",
         f"Maintenance: last={_scalar(report.last_maintenance_at)} due={_scalar(report.maintenance_due)}",
+        f"Hook failures: count={report.hook_failure_count} last={_scalar(report.last_hook_failure_at)}",
         f"Backend: {report.BACKEND_STATE}",
         *(
             f"Adapter {adapter.harness}: {adapter.platform_support}/{adapter.configuration_state}"

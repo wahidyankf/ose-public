@@ -70,7 +70,7 @@ def _read_manifest(installer: UserInstall, failure: ErrorCode) -> Manifest | Non
 
 def _require_directory_or_nothing(facts: InstalledFacts) -> None:
     if facts.kind not in ("missing", "directory"):
-        raise FerretError("install_collision")
+        raise FerretError("ferret.install.collision")
 
 
 def _is_our_launcher(facts: InstalledFacts, installer: UserInstall) -> bool:
@@ -100,12 +100,12 @@ def install_user(runtime: Runtime) -> InstallOutcome:
     paths = installer.paths
     installer.recover()
     source = installer.source()
-    previous = _read_manifest(installer, "install_collision")
+    previous = _read_manifest(installer, "ferret.install.collision")
     _require_directory_or_nothing(installer.facts(paths.share))
     _require_directory_or_nothing(installer.facts(paths.version_directory(__version__)))
     launcher = installer.facts(paths.launcher)
     if launcher.kind != "missing" and not _is_our_launcher(launcher, installer):
-        raise FerretError("install_collision")
+        raise FerretError("ferret.install.collision")
     target = paths.artifact(__version__)
     artifact = installer.facts(target)
     if artifact.kind != "missing":
@@ -114,13 +114,13 @@ def install_user(runtime: Runtime) -> InstallOutcome:
         if previous is not None and previous.artifact_path == target:
             ours.add(previous.artifact_sha256)
         if not (artifact.kind == "file" and artifact.owned_by_current_user and artifact.sha256 in ours):
-            raise FerretError("install_collision")
+            raise FerretError("ferret.install.collision")
     action = path_action(installer.path_variable, paths.bin)
     try:
         script = launcher_script(installer.interpreter, target)
     except ValueError:
         # A home or interpreter path the launcher cannot quote exactly; writing an approximate one is worse.
-        raise FerretError("storage_unavailable") from None
+        raise FerretError("ferret.storage.unavailable") from None
     if (
         previous is not None
         and previous.version == __version__
@@ -181,12 +181,12 @@ def _verify_owned(installer: UserInstall, manifest: Manifest) -> tuple[bool, boo
     """Whether the launcher and artifact still stand, refusing unless each present one is exactly what was recorded."""
     launcher = installer.facts(manifest.launcher_path)
     if launcher.kind != "missing" and not _launcher_starts(installer, launcher, manifest.artifact_path):
-        raise FerretError("install_ownership_mismatch")
+        raise FerretError("ferret.install.ownership-mismatch")
     artifact = installer.facts(manifest.artifact_path)
     if artifact.kind != "missing" and not (
         artifact.kind == "file" and artifact.owned_by_current_user and artifact.sha256 == manifest.artifact_sha256
     ):
-        raise FerretError("install_ownership_mismatch")
+        raise FerretError("ferret.install.ownership-mismatch")
     return launcher.kind != "missing", artifact.kind != "missing"
 
 
@@ -197,12 +197,12 @@ def uninstall_user(runtime: Runtime, *, purge_data: bool, confirmed: bool) -> Un
     that no longer matches the manifest all stop the command with nothing removed.
     """
     if purge_data and not confirmed:
-        raise FerretError("confirmation_required")
+        raise FerretError("ferret.args.confirmation-required")
     if purge_data:
         require_safe(runtime.files.facts(None), "directory")
     installer = runtime.installer
     paths = installer.paths
-    manifest = _read_manifest(installer, "install_ownership_mismatch")
+    manifest = _read_manifest(installer, "ferret.install.ownership-mismatch")
     removed: list[Path] = []
     if manifest is not None:
         launcher_stands, artifact_stands = _verify_owned(installer, manifest)

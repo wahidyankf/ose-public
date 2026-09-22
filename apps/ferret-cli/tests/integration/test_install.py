@@ -379,7 +379,7 @@ def test_the_manifest_is_read_back_without_following_a_link(area: Area) -> None:
 
     area.paths.manifest.unlink()
     os.symlink("/etc/hosts", area.paths.manifest)
-    assert failure(install.read_manifest) == "storage_unavailable"
+    assert failure(install.read_manifest) == "ferret.storage.unavailable"
 
 
 def test_the_source_is_the_artifact_it_was_given_and_its_digest(area: Area) -> None:
@@ -389,14 +389,14 @@ def test_the_source_is_the_artifact_it_was_given_and_its_digest(area: Area) -> N
 
 
 def test_a_source_that_cannot_be_read_is_unavailable(area: Area, monkeypatch: pytest.MonkeyPatch) -> None:
-    assert failure(area.install(area.home / "absent").source) == "storage_unavailable"
+    assert failure(area.install(area.home / "absent").source) == "ferret.storage.unavailable"
     monkeypatch.setattr("ferret.adapters.posix_install.MAX_ARTIFACT_BYTES", 3)
-    assert failure(area.install(area.current).source) == "storage_unavailable"
+    assert failure(area.install(area.current).source) == "ferret.storage.unavailable"
 
 
 def test_a_source_tree_is_not_an_artifact_to_install(area: Area) -> None:
     assert running_artifact() is None
-    assert failure(area.install().source) == "storage_unavailable"
+    assert failure(area.install().source) == "ferret.storage.unavailable"
 
 
 def test_the_running_artifact_is_the_archive_the_package_was_imported_from(
@@ -437,7 +437,7 @@ def test_staging_writes_three_verified_files_and_touches_no_final_name(area: Are
 
 
 def test_staging_needs_a_source_first(area: Area) -> None:
-    assert failure(lambda: area.install(area.current).stage(ANY_PLAN)) == "storage_unavailable"
+    assert failure(lambda: area.install(area.current).stage(ANY_PLAN)) == "ferret.storage.unavailable"
 
 
 def refuse(*arguments: object) -> None:
@@ -465,7 +465,7 @@ def test_a_failed_stage_leaves_none_of_its_files_behind(area: Area, monkeypatch:
 
     monkeypatch.setattr("ferret.adapters.posix_install.os.open", refuse_the_launcher)
 
-    assert failure(lambda: install.stage(ANY_PLAN)) == "storage_unavailable"
+    assert failure(lambda: install.stage(ANY_PLAN)) == "ferret.storage.unavailable"
 
     monkeypatch.undo()
     assert [key for key, (kind, _, _) in tree(area.home).items() if kind != "directory"] == []
@@ -478,7 +478,7 @@ def test_a_staged_artifact_that_does_not_read_back_is_refused_and_removed(
     install.source()
     monkeypatch.setattr("ferret.adapters.posix_install._sha256_of", wrong_digest)
 
-    assert failure(lambda: install.stage(ANY_PLAN)) == "storage_unavailable"
+    assert failure(lambda: install.stage(ANY_PLAN)) == "ferret.storage.unavailable"
 
     monkeypatch.undo()
     assert [key for key, (kind, _, _) in tree(area.home).items() if kind != "directory"] == []
@@ -489,7 +489,7 @@ def test_a_file_where_a_directory_must_go_is_a_collision_and_nothing_is_written(
     (area.home / ".local" / "share").write_bytes(b"a file")
     before = tree(area.home)
 
-    assert failure(lambda: install_user(runtime_for(area, area.current))) == "install_collision"
+    assert failure(lambda: install_user(runtime_for(area, area.current))) == "ferret.install.collision"
 
     assert tree(area.home) == before
 
@@ -499,7 +499,7 @@ def test_a_dangling_link_where_the_user_bin_directory_must_go_is_a_collision(are
     os.symlink("/nowhere/at/all", area.paths.bin)
     before = tree(area.home)
 
-    assert failure(lambda: install_user(runtime_for(area, area.current))) == "install_collision"
+    assert failure(lambda: install_user(runtime_for(area, area.current))) == "ferret.install.collision"
 
     assert tree(area.home) == before
 
@@ -507,7 +507,7 @@ def test_a_dangling_link_where_the_user_bin_directory_must_go_is_a_collision(are
 def test_a_missing_home_directory_is_unavailable_storage(area: Area) -> None:
     absent = Area(home=area.home / "absent", current=area.current, older=area.older)
 
-    assert failure(lambda: install_user(runtime_for(absent, area.current))) == "storage_unavailable"
+    assert failure(lambda: install_user(runtime_for(absent, area.current))) == "ferret.storage.unavailable"
 
 
 @pytest.mark.parametrize("step", ["replace_artifact", "replace_launcher", "replace_manifest"])
@@ -521,7 +521,7 @@ def test_a_failed_replace_is_unavailable_storage_and_replaces_nothing(
     monkeypatch.setattr("ferret.adapters.posix_install.os.replace", refuse)
     replace_step: Callable[[StagedInstall], None] = getattr(install, step)
 
-    assert failure(lambda: replace_step(staged)) == "storage_unavailable"
+    assert failure(lambda: replace_step(staged)) == "ferret.storage.unavailable"
 
     monkeypatch.undo()
     assert tree(area.home) == staged_tree
@@ -536,7 +536,7 @@ def test_removing_forgives_a_file_that_is_already_gone_and_refuses_a_directory(a
     install.remove(file)
 
     assert not os.path.lexists(file)
-    assert failure(lambda: install.remove(area.home)) == "storage_unavailable"
+    assert failure(lambda: install.remove(area.home)) == "ferret.storage.unavailable"
 
 
 def test_only_an_empty_plain_directory_is_removed(area: Area, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -553,7 +553,7 @@ def test_only_an_empty_plain_directory_is_removed(area: Area, monkeypatch: pytes
 
     assert (empty.exists(), (full / "keeper").exists(), link.is_symlink(), target.is_dir()) == (False, True, True, True)
     monkeypatch.setattr("ferret.adapters.posix_install.os.rmdir", busy)
-    assert failure(lambda: install.remove_empty_directory(target)) == "storage_unavailable"
+    assert failure(lambda: install.remove_empty_directory(target)) == "ferret.storage.unavailable"
 
 
 def test_purging_deletes_the_data_home_and_everything_in_it(tmp_path: Path) -> None:
@@ -571,8 +571,9 @@ def test_purging_a_symlinked_data_home_is_refused_and_the_target_is_kept(tmp_pat
     target = tmp_path / "elsewhere"
     target.mkdir()
     (target / "keeper").write_bytes(b"mine")
+    machine.data_home.parent.mkdir(parents=True, exist_ok=True)
     os.symlink(target, machine.data_home)
 
-    assert failure(machine.runtime().files.purge) == "storage_unavailable"
+    assert failure(machine.runtime().files.purge) == "ferret.storage.unavailable"
 
     assert (target / "keeper").read_bytes() == b"mine"

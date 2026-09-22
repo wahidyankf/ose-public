@@ -1,0 +1,606 @@
+{
+  "schemaVersion": "1",
+  "corpus": "cli-conformance",
+  "describes": "repo-governance/conventions/structure/command-line-interface.md",
+  "capabilities": [
+    "starts-child-processes",
+    "reads-standard-input",
+    "machine-readable-output",
+    "colour-output",
+    "prompts",
+    "reads-configuration",
+    "has-subcommand-tree"
+  ],
+  "classes": ["harness-callback"],
+  "assertions": [
+    {
+      "id": "cli.exit.affirmative-is-zero",
+      "tier": "floor",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "case": "work completes with an affirmative result" },
+      "expect": { "exit": 0 },
+      "source": "posix.utility-conventions",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.negative-result-is-one",
+      "tier": "floor",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "case": "work completes and the result is negative" },
+      "expect": { "exit": 1 },
+      "source": "exemplars.grep-rg-jq",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.usage-mistake-is-two",
+      "tier": "floor",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "args": ["--no-such-flag"] },
+      "expect": { "exit": 2, "stdout": "empty" },
+      "source": "framework-defaults.clap-usage-code",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.internal-crash-is-two",
+      "tier": "floor",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "case": "an internal failure reaches the top level" },
+      "expect": {
+        "exit": 2,
+        "stdout": "empty",
+        "stderr_contains_stack_trace": false
+      },
+      "source": "runtime-documentation.crash-defaults",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.crash-trace-behind-a-switch",
+      "tier": "floor",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": {
+        "case": "an internal failure reaches the top level",
+        "with_documented_trace_switch": true
+      },
+      "expect": { "exit": 2, "stderr_contains_stack_trace": true },
+      "source": "runtime-documentation.crash-defaults",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.closed-pipe-is-one-four-one",
+      "tier": "floor",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "case": "a downstream reader closes standard output early" },
+      "expect": {
+        "exit": 141,
+        "exit_not_in": [1, 101, 134],
+        "stderr": "empty"
+      },
+      "source": "runtime-documentation.sigpipe",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.interrupt-is-one-three-zero",
+      "tier": "floor",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "case": "the process is interrupted" },
+      "expect": { "exit": 130, "exit_not_in": [1] },
+      "source": "posix.signal-status",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.timeout-is-one-two-four",
+      "tier": "supervisor",
+      "applies_to": {
+        "requires_capabilities": ["starts-child-processes"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "a bounded wait elapses before the work finishes" },
+      "expect": { "exit": 124 },
+      "source": "exemplars.timeout-utility",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.refusal-before-launch-is-one-two-five",
+      "tier": "supervisor",
+      "applies_to": {
+        "requires_capabilities": ["starts-child-processes"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "a precondition fails and no child is started" },
+      "expect": { "exit": 125 },
+      "source": "exemplars.env-utility",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.child-not-executable-is-one-two-six",
+      "tier": "supervisor",
+      "applies_to": {
+        "requires_capabilities": ["starts-child-processes"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "a child exists but cannot be executed" },
+      "expect": { "exit": 126 },
+      "source": "posix.shell-exit-status",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.child-not-found-is-one-two-seven",
+      "tier": "supervisor",
+      "applies_to": {
+        "requires_capabilities": ["starts-child-processes"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "a child is not found" },
+      "expect": { "exit": 127 },
+      "source": "posix.shell-exit-status",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.child-status-passes-through",
+      "tier": "supervisor",
+      "applies_to": {
+        "requires_capabilities": ["starts-child-processes"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "a child runs and exits with its own status" },
+      "expect": { "exit": "the child's own status, unchanged" },
+      "source": "posix.shell-exit-status",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.vocabulary-is-closed",
+      "tier": "floor",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "case": "every documented failure path in turn" },
+      "expect": {
+        "exit_in": [0, 1, 2, 124, 125, 126, 127],
+        "or_signal_status": true
+      },
+      "source": "convention.command-line-interface",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exit.every-status-is-published",
+      "tier": "full",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "args": ["--help"] },
+      "expect": { "stdout_documents_every_returnable_status": true },
+      "source": "gnu.coding-standards-help",
+      "status": "verified"
+    },
+    {
+      "id": "cli.streams.payload-on-stdout",
+      "tier": "floor",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "case": "work completes with a payload" },
+      "expect": { "stdout": "the payload only" },
+      "source": "posix.stdout-stderr",
+      "status": "verified"
+    },
+    {
+      "id": "cli.streams.diagnostics-on-stderr",
+      "tier": "floor",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "case": "the run emits a warning or progress indicator" },
+      "expect": { "stdout_unaffected": true, "stderr": "the diagnostic" },
+      "source": "posix.stdout-stderr",
+      "status": "verified"
+    },
+    {
+      "id": "cli.streams.requested-help-on-stdout",
+      "tier": "full",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "args": ["--help"] },
+      "expect": { "exit": 0, "stdout": "usage text", "stderr": "empty" },
+      "source": "gnu.coding-standards-help",
+      "status": "verified"
+    },
+    {
+      "id": "cli.streams.requested-version-on-stdout",
+      "tier": "full",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "args": ["--version"] },
+      "expect": { "exit": 0, "stdout": "name and version", "stderr": "empty" },
+      "source": "gnu.coding-standards-version",
+      "status": "verified"
+    },
+    {
+      "id": "cli.streams.usage-mistake-leaves-stdout-clean",
+      "tier": "floor",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "args": ["--no-such-flag"] },
+      "expect": { "exit": 2, "stdout": "empty", "stderr": "the diagnostic" },
+      "source": "framework-defaults.cobra-usage-writer",
+      "status": "verified"
+    },
+    {
+      "id": "cli.streams.help-suppresses-normal-function",
+      "tier": "full",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "args": ["--help"], "plus_other_arguments": true },
+      "expect": { "exit": 0, "performed_work": false },
+      "source": "gnu.coding-standards-help",
+      "status": "verified"
+    },
+    {
+      "id": "cli.streams.error-body-on-stderr",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["machine-readable-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "args": ["--output", "json"], "case": "the run fails" },
+      "expect": {
+        "exit_not": 0,
+        "stdout": "empty",
+        "stderr_parses_as_the_declared_format": true
+      },
+      "source": "exemplars.rg-jq-gh",
+      "status": "verified"
+    },
+    {
+      "id": "cli.streams.incremental-flush",
+      "tier": "full",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "case": "output is read incrementally by a slow reader" },
+      "expect": { "first_record_arrives_before_the_run_ends": true },
+      "source": "convention.command-line-interface",
+      "status": "verified"
+    },
+    {
+      "id": "cli.stdin.not-read-unless-selected",
+      "tier": "floor",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "case": "no argument selects standard input", "stdin": "a terminal" },
+      "expect": { "blocks_on_stdin": false },
+      "source": "clig.dev",
+      "status": "verified"
+    },
+    {
+      "id": "cli.stdin.lone-dash-selects-stdin",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["reads-standard-input"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "args": ["-"], "stdin": "a document" },
+      "expect": { "reads_stdin_in_place_of_a_file": true },
+      "source": "posix.utility-conventions",
+      "status": "verified"
+    },
+    {
+      "id": "cli.stdin.read-failure-is-not-empty-input",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["reads-standard-input"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "args": ["-"], "stdin": "a stream that fails mid-read" },
+      "expect": { "exit": 2, "reports_empty_input": false },
+      "source": "convention.command-line-interface",
+      "status": "verified"
+    },
+    {
+      "id": "cli.stdin.prompt-refuses-without-a-terminal",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["prompts"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "a command that would prompt", "stdin": "not a terminal" },
+      "expect": {
+        "exit_not": 0,
+        "stderr_names_the_confirming_flag": true,
+        "mutated": false
+      },
+      "source": "clig.dev",
+      "status": "verified"
+    },
+    {
+      "id": "cli.stdin.no-input-never-assumes-yes",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["prompts"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "args": ["--no-input"], "case": "a command that would prompt" },
+      "expect": { "prompted": false, "mutated": false },
+      "source": "clig.dev",
+      "status": "verified"
+    },
+    {
+      "id": "cli.output.mode-is-explicit",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["machine-readable-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "stdout is a pipe and no output flag was given" },
+      "expect": { "emits_machine_readable_output": false },
+      "source": "convention.command-line-interface",
+      "status": "verified"
+    },
+    {
+      "id": "cli.output.carries-a-schema-version",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["machine-readable-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "args": ["--output", "json"] },
+      "expect": { "document_has_field": "schemaVersion" },
+      "source": "exemplars.ferret-envelope",
+      "status": "verified"
+    },
+    {
+      "id": "cli.output.error-body-required-fields",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["machine-readable-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "args": ["--output", "json"], "case": "the run fails" },
+      "expect": {
+        "required_fields": ["schemaVersion", "error.code", "error.message"],
+        "optional_fields": ["error.field", "error.retryable"]
+      },
+      "source": "convention.command-line-interface",
+      "status": "verified"
+    },
+    {
+      "id": "cli.output.error-codes-are-namespaced",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["machine-readable-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "every documented failure path in turn" },
+      "expect": { "error_code_matches": "tool.area.reason" },
+      "source": "convention.command-line-interface",
+      "status": "verified"
+    },
+    {
+      "id": "cli.output.error-code-vocabulary-is-closed",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["machine-readable-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "every documented failure path in turn" },
+      "expect": { "every_code_appears_in_the_published_vocabulary": true },
+      "source": "exemplars.ferret-error-vocabulary",
+      "status": "verified"
+    },
+    {
+      "id": "cli.output.machine-readable-is-escape-free",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["machine-readable-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "args": ["--output", "json", "--color", "always"] },
+      "expect": { "stdout_contains_escape_bytes": false },
+      "source": "exemplars.rg-colour-suppression",
+      "status": "verified"
+    },
+    {
+      "id": "cli.args.double-dash-ends-options",
+      "tier": "full",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "args": ["--", "-not-an-option"] },
+      "expect": { "treats_later_arguments_as_operands": true },
+      "source": "posix.utility-syntax-guideline-10",
+      "status": "verified"
+    },
+    {
+      "id": "cli.args.option-and-value-may-be-separate",
+      "tier": "full",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "case": "an option and its value given as two arguments" },
+      "expect": { "accepted": true },
+      "source": "posix.utility-syntax-guideline-6",
+      "status": "verified"
+    },
+    {
+      "id": "cli.args.short-help-on-every-subcommand",
+      "tier": "full",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "args": ["<any-subcommand>", "-h"] },
+      "expect": { "exit": 0, "stdout": "usage text for that subcommand" },
+      "source": "clig.dev",
+      "status": "verified"
+    },
+    {
+      "id": "cli.args.bare-invocation-is-a-usage-mistake",
+      "tier": "floor",
+      "applies_to": {
+        "requires_capabilities": ["has-subcommand-tree"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "args": [] },
+      "expect": {
+        "exit": 2,
+        "exit_not": 0,
+        "stdout": "empty",
+        "stderr": "the diagnostic, and any help text"
+      },
+      "source": "convention.command-line-interface",
+      "status": "verified"
+    },
+    {
+      "id": "cli.args.help-subcommand-when-a-tree-exists",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["has-subcommand-tree"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "args": ["help"] },
+      "expect": { "exit": 0, "stdout": "usage text" },
+      "source": "convention.command-line-interface",
+      "status": "verified"
+    },
+    {
+      "id": "cli.config.xdg-defaults-when-unset",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["reads-configuration"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "each base directory variable unset in turn" },
+      "expect": {
+        "XDG_CONFIG_HOME": "$HOME/.config",
+        "XDG_DATA_HOME": "$HOME/.local/share",
+        "XDG_STATE_HOME": "$HOME/.local/state",
+        "XDG_CACHE_HOME": "$HOME/.cache"
+      },
+      "source": "xdg.base-directory-specification",
+      "status": "verified"
+    },
+    {
+      "id": "cli.config.xdg-empty-falls-back",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["reads-configuration"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "each base directory variable set to the empty string" },
+      "expect": { "uses_the_default_rather_than_the_empty_value": true },
+      "source": "xdg.base-directory-specification",
+      "status": "verified"
+    },
+    {
+      "id": "cli.config.precedence-order",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["reads-configuration"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "the same setting supplied by flag, variable, and file" },
+      "expect": { "order": ["flag", "environment", "file", "default"] },
+      "source": "unreachable.twelve-factor-cli-essay",
+      "status": "unverified"
+    },
+    {
+      "id": "cli.config.precedence-is-published",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["reads-configuration"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "the tool's own documentation is read" },
+      "expect": { "states_its_configuration_precedence": true },
+      "source": "convention.command-line-interface",
+      "status": "verified"
+    },
+    {
+      "id": "cli.diagnostics.name-the-tool-first",
+      "tier": "full",
+      "applies_to": { "excludes_classes": ["harness-callback"] },
+      "invoke": { "case": "any diagnostic is emitted" },
+      "expect": {
+        "stderr_matches_one_of": ["program: message", "program:file:line: message", "program:file:line:column: message"]
+      },
+      "source": "gnu.coding-standards-errors",
+      "status": "verified"
+    },
+    {
+      "id": "cli.diagnostics.carry-no-secret",
+      "tier": "floor",
+      "applies_to": {},
+      "invoke": { "case": "a failure path that had access to a credential" },
+      "expect": { "stderr_contains_the_credential": false },
+      "source": "convention.command-line-interface",
+      "status": "verified"
+    },
+    {
+      "id": "cli.terminal.no-escapes-in-a-pipe",
+      "tier": "floor",
+      "applies_to": {
+        "requires_capabilities": ["colour-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "stdout is a pipe" },
+      "expect": { "stdout_contains_escape_bytes": false },
+      "source": "exemplars.rg-bat-tty-behaviour",
+      "status": "verified"
+    },
+    {
+      "id": "cli.terminal.no-color-set-and-non-empty-suppresses",
+      "tier": "floor",
+      "applies_to": {
+        "requires_capabilities": ["colour-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "stdout is a terminal", "env": { "NO_COLOR": ["1", "0"] } },
+      "expect": { "stdout_contains_escape_bytes": false },
+      "source": "no-color.specification",
+      "status": "verified"
+    },
+    {
+      "id": "cli.terminal.no-color-empty-does-not-suppress",
+      "tier": "floor",
+      "applies_to": {
+        "requires_capabilities": ["colour-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "stdout is a terminal", "env": { "NO_COLOR": "" } },
+      "expect": { "stdout_contains_escape_bytes": true },
+      "source": "no-color.specification",
+      "status": "verified"
+    },
+    {
+      "id": "cli.terminal.dumb-term-suppresses",
+      "tier": "floor",
+      "applies_to": {
+        "requires_capabilities": ["colour-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "case": "stdout is a terminal", "env": { "TERM": "dumb" } },
+      "expect": { "stdout_contains_escape_bytes": false },
+      "source": "exemplars.rg-colour-suppression",
+      "status": "verified"
+    },
+    {
+      "id": "cli.terminal.colour-is-tri-state",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["colour-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "args": ["--color", "<auto|always|never>"] },
+      "expect": { "accepts_all_three": true, "default": "auto" },
+      "source": "framework-defaults.clap-color-choice",
+      "status": "verified"
+    },
+    {
+      "id": "cli.terminal.one-switch-for-every-escape",
+      "tier": "full",
+      "applies_to": {
+        "requires_capabilities": ["colour-output"],
+        "excludes_classes": ["harness-callback"]
+      },
+      "invoke": { "args": ["--color", "never"] },
+      "expect": { "stdout_contains_escape_bytes": false, "covers_hyperlinks_and_styling": true },
+      "source": "exemplars.rg-colour-suppression",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exempt.harness-callback-is-silent",
+      "tier": "floor",
+      "applies_to": { "requires_classes": ["harness-callback"] },
+      "invoke": { "case": "every path including every failure path" },
+      "expect": { "exit": 0, "stdout": "empty", "stderr": "empty" },
+      "source": "convention.command-line-interface",
+      "status": "verified"
+    },
+    {
+      "id": "cli.exempt.harness-callback-records-its-failures",
+      "tier": "floor",
+      "applies_to": { "requires_classes": ["harness-callback"] },
+      "invoke": { "case": "a failure path" },
+      "expect": { "records_the_failure_where_a_maintainer_can_find_it": true },
+      "source": "convention.command-line-interface",
+      "status": "verified"
+    }
+  ]
+}

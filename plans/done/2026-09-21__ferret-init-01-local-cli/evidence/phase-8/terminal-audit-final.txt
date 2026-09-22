@@ -162,6 +162,15 @@ the sentence that made it is gone. Recording the verdict is not the same as pass
   A69's table repair    verified by parsing: header and separator carry 4 cells, 52 rows carry 4,
                         and exactly A1 to A19 carry 3 and render an empty Finding cell, as A69 states
 
+  What this section did NOT establish, recorded after the fact: every check above reads the workflow
+  for correctness and convention, and none of them asks whether the commands can execute on a hosted
+  runner. They cannot, as written at the audited ref. All three nx calls were wrapped in the local
+  HIPPO consumer, which no other workflow in this repository uses in CI and which the governance rule
+  excludes from hosted CI outright. A74 carries the finding and the fix. It was found before any tag
+  was pushed, so nothing published wrongly, but the audit passed a file whose release path would have
+  failed on first use, and the reason is that "the conventions match" and "it would run" are
+  different questions.
+
 
 4. WHY Total Findings: 0 IS NOT REACHABLE, AND WHERE THE PLAN WAS WRONG ABOUT IT
 --------------------------------------------------------------------------------

@@ -110,3 +110,31 @@ Second write, after the terminal audit's repairs. The head above is `origin/main
 sections above marked "after the terminal audit's repairs" and mutation M6 were added at:
 utc=2026-09-22T03:10:41Z
 word-budget re-run at the second write  exit=0
+
+--- third write: how the workflow invokes nx (A74)
+utc=2026-09-22T03:31:50Z
+
+The workflow wrapped all three of its nx calls in the local HIPPO consumer. It was the only workflow
+in .github/workflows/ to do so; pr-quality-gate.yml runs `npx nx run ferret-cli:install` directly and proves
+that form on a runner. The consumer's local policy file is gitignored and absent on a runner, and
+hippo-consumer-smoke.yml sets three environment variables to invoke the consumer there at all. The
+governance rule is explicit: "Ordinary hosted PR CI retains runner-native controls".
+
+A ninth unit case now binds it. Unlike M1-M6 this one needed no mutation: the pre-fix workflow itself
+was the RED state, which is stronger evidence than a synthetic one.
+
+  before the fix  1 failed, 8 passed   the case names the three consumer invocations it found
+  after the fix   9 passed             no non-comment line invokes the consumer
+
+Full quick suite re-run uncached after the fix:
+
+  TOTAL                                       1760      0   100%
+  Required test coverage of 99% reached. Total coverage: 100.00%
+  ============================ 1233 passed in 10.40s =============================
+  ferret-cli:test:quick                    exit=0
+
+1232 becomes 1233: the ninth release-contract case. Statements and coverage unchanged again.
+
+setup-python pins 3.14.7 through actions/setup-python@v6, so the `python3 dist/ferret.pyz version`
+step runs the pinned interpreter and not the runner default. The reproducibility step forces the
+second build with --skip-nx-cache, so a cache replay cannot make the two digests trivially equal.

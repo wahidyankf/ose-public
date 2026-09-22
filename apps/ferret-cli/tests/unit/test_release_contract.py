@@ -90,3 +90,18 @@ def test_the_release_workflow_fires_on_a_tag_and_never_on_a_branch() -> None:
 
     assert any(line.strip() == "tags:" for line in lines)
     assert not any(line.strip().startswith("branches:") for line in lines)
+
+
+def test_the_release_workflow_runs_nx_the_way_the_repository_runs_it_in_ci() -> None:
+    """HIPPO is the *local* compute admission boundary; a runner is one job on a fresh single-tenant VM.
+
+    Every other workflow in `.github/workflows/` calls `npx nx` directly, and `hippo.local.json` is
+    gitignored, so a bare `./hippo` on a runner is an untested path. This workflow only fires on a tag, so
+    an untested path here fails first at the release itself.
+    """
+    lines = effective_lines()
+    hippo = [line for line in lines if "./hippo" in line]
+    nx = [line for line in lines if "nx run ferret-cli:" in line]
+
+    assert hippo == [], "the release workflow wraps a command in the local HIPPO consumer"
+    assert nx, "the release workflow never invokes an nx target"

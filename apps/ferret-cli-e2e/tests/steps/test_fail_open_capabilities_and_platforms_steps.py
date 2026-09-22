@@ -20,7 +20,7 @@ from event_documents import numbered_event
 from ferret_process import Completed, capture_documents, run_artifact
 from hook_bench import Bench, derived
 from hook_wrapper import HUNG_SECONDS, KILL_SECONDS, HookRun, alive, recorded_pid, stand_in, within_deadline
-from install_area import Layout, Tree, digest, empty_tree, tree
+from install_area import LAUNCHER_MODE, Layout, Tree, digest, empty_tree, launcher_starts, tree
 from vendor_payloads import CLAUDE_CODE
 
 FEATURE = "../../../../specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature"
@@ -209,7 +209,8 @@ def then_objects_are_owner_only(session: Session) -> None:
         artifact: 0o700,
         layout.manifest: 0o600,
     }
-    assert (layout.launcher.is_symlink(), os.readlink(layout.launcher)) == (True, str(artifact))
+    assert (layout.launcher.is_symlink(), stat.S_IMODE(os.lstat(layout.launcher).st_mode)) == (False, LAUNCHER_MODE)
+    assert launcher_starts(layout) == artifact
     assert artifact.read_bytes() == session.artifact.read_bytes()
     owners = {os.lstat(path).st_uid for path in (layout.share, artifact, layout.launcher, layout.manifest)}
     assert owners == {os.geteuid()}

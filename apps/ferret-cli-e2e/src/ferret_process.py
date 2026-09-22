@@ -50,6 +50,30 @@ def run_artifact(
     return Completed(completed.returncode, completed.stdout, completed.stderr)
 
 
+def run_installed(
+    launcher: Path,
+    arguments: Sequence[str],
+    *,
+    home: Path,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+) -> Completed:
+    """Invoke the installed launcher the way a user does: by its own name, with no interpreter named for it.
+
+    ``run_artifact`` names the interpreter itself, which is right for the raw zipapp and wrong here: the whole
+    point of the launcher is that it knows which interpreter to start, so a test that supplied one would never
+    find out whether it does.
+    """
+    completed = subprocess.run(
+        [str(launcher), *arguments],
+        input=b"",
+        capture_output=True,
+        env={"HOME": str(home), "PATH": "/usr/bin:/bin"},
+        timeout=timeout,
+        check=False,
+    )
+    return Completed(completed.returncode, completed.stdout, completed.stderr)
+
+
 def capture_documents(artifact: Path, home: Path, documents: Iterable[dict[str, Any]]) -> None:
     """Store each canonical event through the artifact's own ``capture`` command, failing loudly on any refusal."""
     for document in documents:

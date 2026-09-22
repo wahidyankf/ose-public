@@ -18,7 +18,25 @@ from collections.abc import Sequence
 from pathlib import Path
 
 SHEBANG = b"#!/usr/bin/env python3\n"
-ENTRY_POINT = "import sys\n\nfrom ferret.cli import main\n\nsys.exit(main())\n"
+# The shebang names ``python3`` because that is the only name every POSIX host is sure to have, and on most hosts
+# it is older than the 3.14 this package is written in. So the entry point asks ``ferret._bootstrap`` to put the
+# process on a suitable interpreter before importing anything that needs one. Both modules it touches on that path
+# stay inside the old grammar; ``from ferret.cli import main`` is reached only once the interpreter can parse it,
+# which is why it is not at the top of the file.
+ENTRY_POINT = (
+    "import os\n"
+    "import sys\n"
+    "\n"
+    "from ferret._bootstrap import relaunch\n"
+    "\n"
+    "status = relaunch(sys.path[0], sys.argv[1:], os.environ)\n"
+    "if status is not None:\n"
+    "    sys.exit(status)\n"
+    "\n"
+    "from ferret.cli import main\n"
+    "\n"
+    "sys.exit(main())\n"
+)
 FIXED_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 FILE_MODE = 0o644
 ARTIFACT_MODE = 0o755

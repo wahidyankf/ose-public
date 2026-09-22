@@ -21,6 +21,7 @@ from ferret.adapters.sqlite_schema import SQLiteSchema
 from ferret.adapters.system import SystemClock
 from ferret.application.capabilities import DimensionReport, report_dimension
 from ferret.domain.capability import snapshot_from_document
+from ferret.domain.install import LAUNCHER_MODE, InstallPaths, launcher_artifact
 from support.artifacts import write_test_artifact
 from support.hook_payloads import CANARIES, claude_tool, codex_tool
 from support.hook_payloads import encode as encode_payload
@@ -209,7 +210,8 @@ def then_objects_are_owner_only(installation: Installation) -> None:
     modes = {path.name: stat.S_IMODE(os.lstat(path).st_mode) for path in (share, artifact.parent, artifact, manifest)}
     assert modes == {"ferret": 0o700, document["version"]: 0o700, "ferret.pyz": 0o700, "install.json": 0o600}
     assert stat.S_IMODE(os.lstat(launcher.parent).st_mode) == 0o700
-    assert (launcher.is_symlink(), os.readlink(launcher)) == (True, str(artifact))
+    assert (launcher.is_symlink(), stat.S_IMODE(os.lstat(launcher).st_mode)) == (False, LAUNCHER_MODE)
+    assert launcher_artifact(launcher.read_bytes(), InstallPaths(home)) == artifact
     assert artifact.read_bytes() == installation.source.read_bytes()
     assert {os.lstat(path).st_uid for path in (share, artifact, launcher, manifest)} == {os.geteuid()}
     recorded = json.loads(manifest.read_text(encoding="utf-8"))

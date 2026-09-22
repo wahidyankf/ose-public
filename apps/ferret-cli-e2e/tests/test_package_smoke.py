@@ -61,7 +61,7 @@ options:
   --outcome <outcome>  filter by outcome
 """
 
-VERSION_LINE = "ferret 0.1.0\n"
+VERSION_LINE = "ferret 0.1.1\n"
 BARE_USAGE = "usage: ferret <command> [options]\nRun 'ferret --help' for the commands and options.\n"
 INVALID_ARGUMENTS_TEXT = (
     "FERRET error [invalid_arguments]: unrecognized or incomplete arguments; run 'ferret --help' for usage\n"

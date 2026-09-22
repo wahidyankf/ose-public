@@ -10,6 +10,7 @@ import hashlib
 import os
 import secrets
 import stat
+import sys
 import zipfile
 from pathlib import Path
 
@@ -22,6 +23,7 @@ from ferret.domain.install import (
     ARTIFACT_MODE,
     DIRECTORY_MODE,
     LAUNCHER_FILE,
+    LAUNCHER_MODE,
     MANIFEST_FILE,
     MANIFEST_MODE,
     InstallPaths,
@@ -32,6 +34,7 @@ from ferret.domain.install import (
 
 MAX_ARTIFACT_BYTES = 64 * 1024 * 1024
 MAX_MANIFEST_BYTES = 4096
+MAX_LAUNCHER_BYTES = 4096
 _CREATE = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW | os.O_CLOEXEC
 _READ = os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC
 _GONE = (FileNotFoundError, NotADirectoryError)
@@ -120,6 +123,12 @@ class PosixUserInstall:
     def path_variable(self) -> str:
         return self._path_variable
 
+    @property
+    def interpreter(self) -> Path:
+        # The process reached here on an interpreter that can run FERRET, whether the shebang chose it or the
+        # bootstrap guard restarted the archive on it. Pinning that one is what spares the next call the restart.
+        return Path(sys.executable)
+
     def source(self) -> SourceArtifact:
         path = running_artifact() if self._artifact is None else self._artifact
         if path is None:
@@ -157,14 +166,28 @@ class PosixUserInstall:
         return InstalledFacts(kind=kind, mode=mode, owned_by_current_user=owned)
 
     def read_manifest(self) -> bytes | None:
+        # A symlinked manifest is a fault, not an absent one: the manifest is the ownership commit point, so
+        # anything standing where it belongs that FERRET did not write must stop the command.
+        return self._read_small(self._paths.manifest, MAX_MANIFEST_BYTES, tolerate_link=False)
+
+    def read_launcher(self) -> bytes | None:
+        # A link here is the shape installs had before the launcher became a script, so it reads as no script
+        # rather than as a fault; the caller recognizes the link separately through ``facts``.
+        return self._read_small(self._paths.launcher, MAX_LAUNCHER_BYTES, tolerate_link=True)
+
+    @staticmethod
+    def _read_small(path: Path, limit: int, *, tolerate_link: bool) -> bytes | None:
+        """One small file's bytes without following a symlink; an absent file reads as ``None``."""
         try:
-            descriptor = os.open(self._paths.manifest, _READ)
+            descriptor = os.open(path, _READ)
         except _GONE:
             return None
-        except OSError:
+        except OSError as error:
+            if tolerate_link and error.errno in (errno.ELOOP, errno.EMLINK):
+                return None
             raise FerretError("storage_unavailable") from None
         try:
-            return os.read(descriptor, MAX_MANIFEST_BYTES + 1)
+            return os.read(descriptor, limit + 1)
         except OSError:
             raise FerretError("storage_unavailable") from None
         finally:
@@ -215,8 +238,8 @@ class PosixUserInstall:
         try:
             _write_new(staged.artifact, content, ARTIFACT_MODE)
             _write_new(staged.manifest, plan.manifest, MANIFEST_MODE)
-            os.symlink(paths.artifact(plan.version), staged.launcher)
-            self._verify(staged, content)
+            _write_new(staged.launcher, plan.launcher, LAUNCHER_MODE)
+            self._verify(staged, content, plan.launcher)
         except OSError:
             _unlink_quietly(staged.artifact, staged.launcher, staged.manifest)
             raise FerretError("storage_unavailable") from None
@@ -253,16 +276,16 @@ class PosixUserInstall:
             except OSError:
                 raise FerretError("storage_unavailable") from None
 
-    def _verify(self, staged: StagedInstall, content: bytes) -> None:
-        """Read the staged files back: the artifact's digest, all three modes and owners, and where the link points."""
-        for path, mode in ((staged.artifact, ARTIFACT_MODE), (staged.manifest, MANIFEST_MODE)):
+    def _verify(self, staged: StagedInstall, content: bytes, launcher: bytes) -> None:
+        """Read all three staged files back: every mode and owner, the artifact's digest, the launcher's bytes."""
+        modes = ((staged.artifact, ARTIFACT_MODE), (staged.manifest, MANIFEST_MODE), (staged.launcher, LAUNCHER_MODE))
+        for path, mode in modes:
             info = os.lstat(path)
             if not stat.S_ISREG(info.st_mode) or stat.S_IMODE(info.st_mode) != mode or info.st_uid != os.geteuid():
                 raise FerretError("storage_unavailable")
         if _sha256_of(staged.artifact) != hashlib.sha256(content).hexdigest():
             raise FerretError("storage_unavailable")
-        info = os.lstat(staged.launcher)
-        if not stat.S_ISLNK(info.st_mode) or os.readlink(staged.launcher) != str(self._paths.artifact(staged.version)):
+        if self._read_small(staged.launcher, MAX_LAUNCHER_BYTES, tolerate_link=False) != launcher:
             raise FerretError("storage_unavailable")
 
     def replace_artifact(self, staged: StagedInstall) -> None:

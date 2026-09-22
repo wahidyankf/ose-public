@@ -16,6 +16,7 @@ MANIFEST_FILE: Final = "install.json"
 
 DIRECTORY_MODE: Final = 0o700
 ARTIFACT_MODE: Final = 0o700
+LAUNCHER_MODE: Final = 0o700
 MANIFEST_MODE: Final = 0o600
 
 # The normative property order of the manifest: the closed set, and no other member.
@@ -35,6 +36,12 @@ _IDENTIFIERS = r"[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*"
 _VERSION = re.compile(rf"{_NUMBER}\.{_NUMBER}\.{_NUMBER}(?:-{_IDENTIFIERS})?(?:\+{_IDENTIFIERS})?")
 _SHA256 = re.compile(r"[0-9a-f]{64}")
 _NONCE = r"[0-9a-f]{32}"
+
+# The launcher is a script rather than a link so it can name the interpreter the install resolved. A link would
+# leave the archive's ``#!/usr/bin/env python3`` in charge, and on a host whose ``python3`` is older than FERRET
+# requires that costs a second interpreter start on every hook call, which is the one path that must stay cheap.
+LAUNCHER_NOTICE: Final = "# Written by 'ferret self install'. Reinstall to change the interpreter or the version."
+_LAUNCHER = re.compile(r"#!/bin/sh\n" + re.escape(LAUNCHER_NOTICE) + r'\nexec "([^"\n]+)" "([^"\n]+)" "\$@"\n\Z')
 
 
 @dataclass(frozen=True, slots=True)
@@ -167,6 +174,39 @@ def stage_name(final: str, nonce: str) -> str:
 def is_stage_name(name: str, final: str) -> bool:
     """True only for a name ``stage_name`` can produce for ``final``, so recovery never touches anything else."""
     return re.fullmatch(rf"\.{re.escape(final)}\.stage-{_NONCE}", name) is not None
+
+
+def is_quotable(path: str) -> bool:
+    """Whether a path can appear inside the launcher's double quotes without changing what the shell runs."""
+    return '"' not in path and "\\" not in path and "\n" not in path and "$" not in path and "`" not in path
+
+
+def launcher_script(interpreter: Path, artifact: Path) -> bytes:
+    """The launcher that starts ``artifact`` on ``interpreter``, passing every argument through unchanged.
+
+    ``exec`` replaces the shell, so the launcher costs no process of its own and the caller waits on FERRET
+    itself. A path the shell would not read back literally is refused rather than escaped, because an install
+    that cannot write an exact launcher must fail visibly instead of writing an approximate one.
+    """
+    if not (is_quotable(str(interpreter)) and is_quotable(str(artifact))):
+        raise ValueError("a path the launcher cannot quote")
+    return f'#!/bin/sh\n{LAUNCHER_NOTICE}\nexec "{interpreter}" "{artifact}" "$@"\n'.encode()
+
+
+def launcher_artifact(content: bytes, paths: InstallPaths) -> Path | None:
+    """The artifact a launcher this user wrote starts, or ``None`` when the bytes are not one FERRET made.
+
+    Recognition is by exact shape, so nothing hand-edited or merely similar is ever mistaken for ours and
+    replaced. The interpreter it names is deliberately not checked: an install may legitimately have pinned one
+    that has since moved, and that is a reason to rewrite the launcher, not to refuse the install.
+    """
+    try:
+        matched = _LAUNCHER.fullmatch(content.decode("utf-8"))
+    except UnicodeDecodeError:
+        return None
+    if matched is None or not is_ferret_artifact_path(matched.group(2), paths):
+        return None
+    return Path(matched.group(2))
 
 
 def is_ferret_artifact_path(target: str, paths: InstallPaths) -> bool:

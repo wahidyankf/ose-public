@@ -16,10 +16,13 @@ from ferret.application.store import require_safe
 from ferret.domain.errors import ErrorCode, FerretError
 from ferret.domain.install import (
     ARTIFACT_MODE,
+    LAUNCHER_MODE,
     MANIFEST_MODE,
     Manifest,
     PathAction,
     is_ferret_artifact_path,
+    launcher_artifact,
+    launcher_script,
     parse_manifest,
     path_action,
 )
@@ -71,13 +74,20 @@ def _require_directory_or_nothing(facts: InstalledFacts) -> None:
 
 
 def _is_our_launcher(facts: InstalledFacts, installer: UserInstall) -> bool:
-    """A link this user made to where some version's artifact lives: ours, or an update that was cut short."""
-    return (
-        facts.kind == "symlink"
-        and facts.owned_by_current_user
-        and facts.target is not None
-        and is_ferret_artifact_path(facts.target, installer.paths)
-    )
+    """Whether this user made the launcher in the way: ours, or an update that was cut short.
+
+    Two shapes count. The current one is a script naming where some version's artifact lives, recognized by its
+    exact bytes. The one before it was a symbolic link to the same place, and it is still accepted so an install
+    made by an earlier release can be upgraded and removed rather than reported as a collision.
+    """
+    if not facts.owned_by_current_user:
+        return False
+    if facts.kind == "symlink":
+        return facts.target is not None and is_ferret_artifact_path(facts.target, installer.paths)
+    if facts.kind != "file":
+        return False
+    content = installer.read_launcher()
+    return content is not None and launcher_artifact(content, installer.paths) is not None
 
 
 def install_user(runtime: Runtime) -> InstallOutcome:
@@ -106,6 +116,11 @@ def install_user(runtime: Runtime) -> InstallOutcome:
         if not (artifact.kind == "file" and artifact.owned_by_current_user and artifact.sha256 in ours):
             raise FerretError("install_collision")
     action = path_action(installer.path_variable, paths.bin)
+    try:
+        script = launcher_script(installer.interpreter, target)
+    except ValueError:
+        # A home or interpreter path the launcher cannot quote exactly; writing an approximate one is worse.
+        raise FerretError("storage_unavailable") from None
     if (
         previous is not None
         and previous.version == __version__
@@ -113,8 +128,9 @@ def install_user(runtime: Runtime) -> InstallOutcome:
         and artifact.kind == "file"
         and artifact.mode == ARTIFACT_MODE
         and artifact.sha256 == source.sha256
-        and launcher.kind == "symlink"
-        and launcher.target == str(target)
+        and launcher.kind == "file"
+        and launcher.mode == LAUNCHER_MODE
+        and installer.read_launcher() == script
     ):
         return InstallOutcome("already_installed", __version__, target, paths.launcher, paths.manifest, action, None)
     manifest = Manifest(
@@ -124,7 +140,7 @@ def install_user(runtime: Runtime) -> InstallOutcome:
         launcher_path=paths.launcher,
         installed_at=format_timestamp(runtime.clock.now()),
     )
-    staged = installer.stage(StagePlan(version=__version__, manifest=manifest.to_bytes()))
+    staged = installer.stage(StagePlan(version=__version__, launcher=script, manifest=manifest.to_bytes()))
     installer.replace_artifact(staged)
     installer.replace_launcher(staged)
     installer.replace_manifest(staged)
@@ -149,12 +165,22 @@ def _discard(installer: UserInstall, previous: Manifest) -> None:
         installer.remove_empty_directory(installer.paths.version_directory(previous.version))
 
 
+def _launcher_starts(installer: UserInstall, facts: InstalledFacts, artifact: Path) -> bool:
+    """Whether the launcher in place is one FERRET wrote for exactly ``artifact``, in either shape it has had."""
+    if not facts.owned_by_current_user:
+        return False
+    if facts.kind == "symlink":
+        return facts.target == str(artifact)
+    if facts.kind != "file":
+        return False
+    content = installer.read_launcher()
+    return content is not None and launcher_artifact(content, installer.paths) == artifact
+
+
 def _verify_owned(installer: UserInstall, manifest: Manifest) -> tuple[bool, bool]:
     """Whether the launcher and artifact still stand, refusing unless each present one is exactly what was recorded."""
     launcher = installer.facts(manifest.launcher_path)
-    if launcher.kind != "missing" and not (
-        launcher.kind == "symlink" and launcher.owned_by_current_user and launcher.target == str(manifest.artifact_path)
-    ):
+    if launcher.kind != "missing" and not _launcher_starts(installer, launcher, manifest.artifact_path):
         raise FerretError("install_ownership_mismatch")
     artifact = installer.facts(manifest.artifact_path)
     if artifact.kind != "missing" and not (

@@ -18,10 +18,11 @@ from typing import Any
 import pytest
 
 from event_documents import numbered_event
-from ferret_process import Completed, capture_documents, run_artifact
+from ferret_process import Completed, capture_documents, run_artifact, run_installed
 from install_area import (
     ARTIFACT_MODE,
     DIRECTORY_MODE,
+    LAUNCHER_MODE,
     MANIFEST_MODE,
     OLDER_VERSION,
     STAGE_NONCE,
@@ -29,8 +30,10 @@ from install_area import (
     Tree,
     area,
     completed,
+    launcher_starts,
     manifest_bytes,
     older_artifact,
+    pinned_launcher,
     tree,
 )
 
@@ -144,7 +147,7 @@ def test_user_install_update_uninstall(artifact: Path, older: Path, layout: Layo
         layout, version, result="installed", replaced=OLDER_VERSION, path_action="add_home_local_bin"
     )
     assert area(layout) == completed(layout, version, current, recorded_time(layout))
-    launched = run(layout.launcher, layout.home, ["version"])
+    launched = run_installed(layout.launcher, ["version"], home=layout.home)
     assert launched == Completed(0, f"ferret {version}\n".encode(), b"")
 
     before = area(layout)
@@ -180,7 +183,7 @@ def test_user_install_update_uninstall(artifact: Path, older: Path, layout: Layo
 def test_the_installed_launcher_removes_its_own_installation(artifact: Path, layout: Layout, version: str) -> None:
     install(artifact, layout.home, path=f"{layout.bin}:{PATH_WITHOUT_USER_BIN}")
 
-    removed = succeeded(run(layout.launcher, layout.home, UNINSTALL))
+    removed = succeeded(run_installed(layout.launcher, UNINSTALL, home=layout.home))
 
     assert removed == uninstall_report(
         result="uninstalled", removed=[layout.launcher, layout.artifact(version), layout.manifest]
@@ -265,7 +268,7 @@ class Crash:
         """Everything is written beside its final name and nothing has replaced anything yet."""
         self.layout.version_directory(self.version).mkdir(mode=DIRECTORY_MODE, exist_ok=True)
         place(self.staged_artifact, self.artifact, ARTIFACT_MODE)
-        os.symlink(self.layout.artifact(self.version), self.staged_launcher)
+        place(self.staged_launcher, pinned_launcher(self.layout, self.version), LAUNCHER_MODE)
         place(self.staged_manifest, manifest_bytes(self.layout, self.version, self.artifact), MANIFEST_MODE)
 
     def replaced_artifact(self) -> None:
@@ -303,7 +306,7 @@ def test_crash_a_before_the_artifact_replace_leaves_the_old_install_whole_and_th
             crash.staged_manifest,
         )
     )
-    assert os.readlink(layout.launcher) == str(layout.artifact(OLDER_VERSION))
+    assert launcher_starts(layout) == layout.artifact(OLDER_VERSION)
 
     finished = install(artifact, layout.home)
 
@@ -319,7 +322,7 @@ def test_crash_b_after_the_artifact_before_the_launcher_keeps_the_old_manifest_a
     crash.staged()
     crash.replaced_artifact()
 
-    assert os.readlink(layout.launcher) == str(layout.artifact(OLDER_VERSION))
+    assert launcher_starts(layout) == layout.artifact(OLDER_VERSION)
     assert json.loads(layout.manifest.read_bytes())["version"] == OLDER_VERSION
 
     finished = install(artifact, layout.home)
@@ -361,7 +364,7 @@ def test_crash_c_after_the_launcher_before_the_manifest_refuses_removal_and_the_
     crash.replaced_artifact()
     crash.replaced_launcher()
     crashed = tree(layout.home)
-    assert os.readlink(layout.launcher) == str(layout.artifact(version))
+    assert launcher_starts(layout) == layout.artifact(version)
     assert json.loads(layout.manifest.read_bytes())["version"] == OLDER_VERSION
 
     refused(run(artifact, layout.home, UNINSTALL), "install_ownership_mismatch", 3)

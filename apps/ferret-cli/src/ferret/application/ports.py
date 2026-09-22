@@ -304,9 +304,10 @@ class InstalledFacts:
 
 @dataclass(frozen=True, slots=True)
 class StagePlan:
-    """What an install is about to write: the version it installs and the manifest bytes that will record it."""
+    """What an install is about to write: the version, the launcher that starts it, and the manifest bytes."""
 
     version: str
+    launcher: bytes
     manifest: bytes
 
 
@@ -333,6 +334,11 @@ class UserInstall(Protocol):
         """The ``PATH`` value the process was started with."""
         ...
 
+    @property
+    def interpreter(self) -> Path:
+        """The interpreter running this process, which an install pins into the launcher it writes."""
+        ...
+
     def source(self) -> SourceArtifact:
         """The running artifact and its digest, or ``storage_unavailable`` when it cannot be read as a file."""
         ...
@@ -343,6 +349,10 @@ class UserInstall(Protocol):
 
     def read_manifest(self) -> bytes | None:
         """The manifest file's bytes without following a symlink, or ``None`` when there is none."""
+        ...
+
+    def read_launcher(self) -> bytes | None:
+        """The launcher file's bytes without following a symlink, or ``None`` when there is no readable file."""
         ...
 
     def recover(self) -> None:
@@ -361,7 +371,7 @@ class UserInstall(Protocol):
         ...
 
     def replace_launcher(self, staged: StagedInstall) -> None:
-        """Atomically replace the launcher with its staged link and flush the directory."""
+        """Atomically replace the launcher with its staged script and flush the directory."""
         ...
 
     def replace_manifest(self, staged: StagedInstall) -> None:

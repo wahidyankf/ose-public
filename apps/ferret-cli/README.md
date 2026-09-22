@@ -36,12 +36,21 @@ can and cannot report is in
 Every `ferret-cli/vX.Y.Z` tag publishes one platform-independent zipapp and its digest.
 
 ```bash
-BASE=https://github.com/wahidyankf/ose-public/releases/download/ferret-cli/v0.1.0
-curl -fLO "$BASE/ferret-cli_v0.1.0.pyz" && curl -fLO "$BASE/checksums.txt"
+BASE=https://github.com/wahidyankf/ose-public/releases/download/ferret-cli/v0.1.1
+curl -fLO "$BASE/ferret-cli_v0.1.1.pyz" && curl -fLO "$BASE/checksums.txt"
 shasum -a 256 -c checksums.txt
+python3 ferret-cli_v0.1.1.pyz self install --target user
 ```
 
-Verify before running it with Python 3.14.
+Verify the digest before running it.
+
+FERRET needs Python 3.14 or newer, and most hosts still answer `python3` with something older. You do not have to
+find the right one: the artifact looks for a `python3.14` or newer on `PATH` and in the usual install locations,
+and restarts itself there. `self install` then pins whichever interpreter it ended up on into
+`~/.local/bin/ferret`, so later runs and every harness hook start on it directly with no second interpreter.
+
+If no suitable interpreter can be found, FERRET writes one line to standard error and exits 3 rather than a
+traceback; set `FERRET_PYTHON` to an absolute path and it uses that one outright.
 
 ## Where the data lives, and how long
 

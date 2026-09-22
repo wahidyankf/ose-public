@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import stat
+import sys
 import zipfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,6 +19,34 @@ MANIFEST_MODE = 0o600
 INSTALLED_LONG_AGO = "2026-09-01T00:00:00.000Z"
 STAGE_NONCE = "0123456789abcdef0123456789abcdef"
 OLDER_VERSION = "0.0.9"
+LAUNCHER_MODE = 0o700
+#: Written from the contract, like everything else here, so a change in the product cannot move the expectation.
+LAUNCHER_NOTICE = "# Written by 'ferret self install'. Reinstall to change the interpreter or the version."
+
+
+def launcher_script(interpreter: str, artifact: Path) -> bytes:
+    """The launcher a finished install leaves: a script that execs ``artifact`` on the interpreter it pinned."""
+    return f'#!/bin/sh\n{LAUNCHER_NOTICE}\nexec "{interpreter}" "{artifact}" "$@"\n'.encode()
+
+
+def pinned_launcher(layout: Layout, version: str) -> bytes:
+    """That script for this layout, pinned to the interpreter these tests start the artifact with."""
+    return launcher_script(sys.executable, layout.artifact(version))
+
+
+def launcher_starts(layout: Layout) -> Path | None:
+    """The artifact the installed launcher execs, or ``None`` when it is not a script FERRET wrote."""
+    try:
+        content = layout.launcher.read_text(encoding="utf-8")
+    except OSError, UnicodeDecodeError:
+        return None
+    prefix = f'#!/bin/sh\n{LAUNCHER_NOTICE}\nexec "'
+    if not content.startswith(prefix) or not content.endswith('" "$@"\n'):
+        return None
+    quoted = content[len(prefix) : -len('" "$@"\n')]
+    interpreter, _, artifact = quoted.partition('" "')
+    return Path(artifact) if interpreter and artifact else None
+
 
 type Tree = dict[str, tuple[str, int, bytes | str | None]]
 
@@ -135,7 +164,7 @@ def completed(layout: Layout, version: str, artifact: bytes, installed_at: str =
     )
     found: Tree = {str(path.relative_to(layout.home)): ("directory", DIRECTORY_MODE, None) for path in directories}
     found[str(layout.artifact(version).relative_to(layout.home))] = ("file", ARTIFACT_MODE, artifact)
-    found[str(layout.launcher.relative_to(layout.home))] = ("symlink", 0, str(layout.artifact(version)))
+    found[str(layout.launcher.relative_to(layout.home))] = ("file", LAUNCHER_MODE, pinned_launcher(layout, version))
     found[str(layout.manifest.relative_to(layout.home))] = (
         "file",
         MANIFEST_MODE,

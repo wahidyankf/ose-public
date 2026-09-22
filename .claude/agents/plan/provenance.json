@@ -53,6 +53,11 @@
       "digest": "310b4f2a7c496d37e1fbf7c2e9f522cc88fcd8aa8923baa77058bfa3006508ad"
     },
     {
+      "id": "skill/building-command-line-interfaces",
+      "path": ".agents/skills/building-command-line-interfaces/SKILL.md",
+      "digest": "9fa8cb7895d24c5ec0e6702bd2bef9f28009cf03fb429effe8e4590a1ed2c0de"
+    },
+    {
       "id": "skill/ci-standards",
       "path": ".agents/skills/ci-standards/SKILL.md",
       "digest": "69a73c45afe094dee948cabccb3a8e2902c4f1d05f673bbef2f674c6f6c6eb23"

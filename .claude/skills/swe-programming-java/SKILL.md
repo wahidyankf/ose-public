@@ -1,5 +1,6 @@
 ---
-description: "Java coding standards from authoritative docs/explanation/software-engineering/programming-languages/java/ documentation"
+description: |-
+  Java coding standards from authoritative docs/explanation/software-engineering/programming-languages/java/ documentation
 name: swe-programming-java
 ---
 

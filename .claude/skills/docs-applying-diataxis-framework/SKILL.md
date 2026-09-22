@@ -1,5 +1,6 @@
 ---
-description: "Diátaxis documentation framework for organizing content into four categories - tutorials (learning-oriented), how-to guides (problem-solving), reference (technical specifications), and explanation (conceptual understanding). Essential for creating and organizing documentation in docs/ directory."
+description: |-
+  Diátaxis documentation framework for organizing content into four categories - tutorials (learning-oriented), how-to guides (problem-solving), reference (technical specifications), and explanation (conceptual understanding). Essential for creating and organizing documentation in docs/ directory.
 name: docs-applying-diataxis-framework
 ---
 

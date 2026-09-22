@@ -1,5 +1,6 @@
 ---
-description: "Mechanics for specs-maker — the four surface-profile directory trees, README/feature-file/C4-diagram content generation, and the PM-readability/placement/structure conventions every scaffolded file follows."
+description: |-
+  Mechanics for specs-maker — the four surface-profile directory trees, README/feature-file/C4-diagram content generation, and the PM-readability/placement/structure conventions every scaffolded file follows.
 name: specs-scaffolding
 ---
 

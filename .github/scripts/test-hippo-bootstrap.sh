@@ -12,11 +12,11 @@ grep -Eq '^version=v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$' "$reposi
 grep -Eq '^commit=[0-9a-f]{40}$' "$repository_root/hippo.lock"
 grep -Fq -- '--path-format=absolute --git-common-dir' "$repository_root/hippo"
 resource_rule="$repository_root/repo-governance/development/practice/resource-aware-development/recovery-and-safe-retry.md"
-grep -Fqi 'exit `75`' "$resource_rule"
+grep -Fqi 'exit `124`' "$resource_rule"
 grep -Fq 'never-started' "$resource_rule"
-grep -Fqi 'exit `76`' "$resource_rule"
-grep -Fq 'never retry' "$resource_rule"
-grep -Fq 'legacy client without distinct exit `76`' "$resource_rule"
+grep -Fqi 'exit `125`' "$resource_rule"
+grep -Fq 'never retried' "$resource_rule"
+grep -Fq 'protocol-mismatch' "$resource_rule"
 grep -Fq 'repository at the commit in `hippo.lock`' "$resource_rule"
 evidence_rule="$repository_root/repo-governance/development/practice/resource-aware-development/consumer-integrity-state-and-evidence.md"
 grep -Fq '30 days' "$evidence_rule"
@@ -67,7 +67,7 @@ Darwin) host_goos=darwin ;;
 Linux) host_goos=linux ;;
 *)
 	echo "unsupported host operating system for the bootstrap suite" >&2
-	exit 78
+	exit 125
 	;;
 esac
 case "$(uname -m)" in
@@ -75,7 +75,7 @@ x86_64 | amd64) host_goarch=amd64 ;;
 arm64 | aarch64) host_goarch=arm64 ;;
 *)
 	echo "unsupported host architecture for the bootstrap suite" >&2
-	exit 78
+	exit 125
 	;;
 esac
 host_platform="$host_goos-$host_goarch"
@@ -371,7 +371,7 @@ run_non_exact_stable_version() {
 		PATH="$test_path" HIPPO_INSTALL_CACHE="$cache_root" "$subject" probe >/dev/null 2>&1
 		status=$?
 		set -e
-		[ "$status" -eq 78 ]
+		[ "$status" -eq 125 ]
 	done
 	[ "$(download_count)" -eq "$downloads_before" ]
 	[ ! -e "$temporary_root/escape" ]
@@ -387,7 +387,7 @@ run_non_exact_identity_envelope() {
 		"$subject" probe >/dev/null 2>&1
 	status=$?
 	set -e
-	[ "$status" -eq 78 ]
+	[ "$status" -eq 125 ]
 	[ "$(download_count)" -eq "$((downloads_before + 1))" ]
 	[ ! -e "$cache_root/$test_version/$host_platform/hippo" ]
 	[ ! -e "$cache_root/$test_version/$host_platform/hippo.sha256" ]
@@ -711,7 +711,7 @@ set +e
 PATH="$test_path" HIPPO_INSTALL_CACHE="$cache_root" HIPPO_TEST_ARCHIVE="$temporary_root/release.tar.gz" HIPPO_TEST_CURL_COUNT="$curl_count" "$subject" probe >/dev/null 2>&1
 status=$?
 set -e
-[ "$status" -eq 78 ]
+[ "$status" -eq 125 ]
 
 # Version values must be exact release identifiers. Reject malformed and
 # path-shaped values before constructing or creating cache paths.
@@ -721,7 +721,7 @@ for invalid_version in v1x.2.3 v1.2.3-rc1 'v1.2.3/../../../escape'; do
 	PATH="$test_path" HIPPO_INSTALL_CACHE="$cache_root" "$subject" probe >/dev/null 2>&1
 	status=$?
 	set -e
-	[ "$status" -eq 78 ]
+	[ "$status" -eq 125 ]
 done
 [ ! -e "$temporary_root/escape" ]
 
@@ -730,6 +730,6 @@ set +e
 PATH="$test_path" HIPPO_TEST_UNAME_S=Plan9 "$subject" probe >/dev/null 2>&1
 status=$?
 set -e
-[ "$status" -eq 78 ]
+[ "$status" -eq 125 ]
 
 echo "hippo bootstrap tests passed"

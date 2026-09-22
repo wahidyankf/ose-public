@@ -1,5 +1,6 @@
 ---
-description: "PDF-to-Markdown conversion fidelity — the crane CLI, criticality levels, and workflow steps shared by the pdf-to-md maker/checker/fixer family"
+description: |-
+  PDF-to-Markdown conversion fidelity — the crane CLI, criticality levels, and workflow steps shared by the pdf-to-md maker/checker/fixer family
 name: docs-converting-pdf-to-markdown
 ---
 

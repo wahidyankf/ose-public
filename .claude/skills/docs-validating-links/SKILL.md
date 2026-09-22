@@ -1,5 +1,6 @@
 ---
-description: "Link validation methodology for markdown links including format requirements, path validation, broken link detection, external link verification, and checker implementation patterns"
+description: |-
+  Link validation methodology for markdown links including format requirements, path validation, broken link detection, external link verification, and checker implementation patterns
 name: docs-validating-links
 ---
 

@@ -1,5 +1,6 @@
 ---
-description: "Project planning standards for authorized plans/ artifacts, including lifecycle naming, fixed mature core, bootcamp-graduate readability, alternatives and prior art, Gherkin criteria, granular delivery checklists, and evidence-first grilling."
+description: |-
+  Project planning standards for authorized plans/ artifacts, including lifecycle naming, fixed mature core, bootcamp-graduate readability, alternatives and prior art, Gherkin criteria, granular delivery checklists, and evidence-first grilling.
 name: plan-creating-project-plans
 ---
 

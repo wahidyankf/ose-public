@@ -1,5 +1,6 @@
 ---
-description: "How pr-review-scout-maker selects one pass's risk tier and specialist set, assembles shared context, and reads authenticated prior state."
+description: |-
+  How pr-review-scout-maker selects one pass's risk tier and specialist set, assembles shared context, and reads authenticated prior state.
 name: pr-review-scout-classification
 ---
 

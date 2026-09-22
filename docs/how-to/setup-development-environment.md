@@ -214,7 +214,7 @@ then be admitted on a host that has no memory left to give it.
 
 Then add explicit host-wide caps to **your copy only**. They stay out of the committed example on
 purpose: an absolute cap is a statement about one machine, and CI executes the example on runners far
-smaller than a workstation, where a workstation-sized cap defers admission with exit `75`.
+smaller than a workstation, where a workstation-sized cap defers admission with exit `124`.
 
 ```json
 "coordination": {
@@ -238,7 +238,7 @@ values above suit a 12-core, 32 GiB machine.
 Set them explicitly rather than relying on a profile. A profile's `maxConcurrency` does **not**
 survive into reservation mode — the allocated CPU replaces it — so `extends` alone caps nothing.
 These fields may only tighten safety; a value that would weaken a compiled floor is rejected at load
-time with exit `78`.
+time with exit `125`.
 
 A reservation is an admission promise, not a hard RSS limit: the ledger knows what owners _asked
 for_, not what they go on to allocate. That is why host pressure thresholds stay authoritative after
@@ -248,9 +248,10 @@ Keep the normal per-user HIPPO root so every checkout shares one CPU/memory ledg
 only for an explicitly isolated test or separately administered domain, not to make one repository
 invisible to the others.
 
-HIPPO exit `73` requires safe disk cleanup. Exit `75` is a temporary capacity, FIFO, lease, or
-rollout-coordination deferral: let that attempt exit before retrying it, and never start duplicate
-retries. Exit `78` requires configuration or reservation replanning. Do not bypass the guard,
+HIPPO exit `124` means a limit stopped the work; the reason on stderr says which one. A storage
+block requires safe disk cleanup, while a capacity, FIFO, lease, or rollout-coordination deferral
+means letting that attempt exit before retrying it, and never starting duplicate retries. Exit `125`
+means HIPPO started nothing, and requires configuration or reservation replanning. Do not bypass the guard,
 change workload class to gain admission, or delete state whose owner may still be live. See
 [Resource-Aware Development](../../repo-governance/development/practice/resource-aware-development.md).
 

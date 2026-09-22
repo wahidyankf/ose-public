@@ -1,5 +1,6 @@
 ---
-description: "Playwright E2E testing standards from authoritative docs/explanation/software-engineering/automation-testing/tools/playwright/ documentation"
+description: |-
+  Playwright E2E testing standards from authoritative docs/explanation/software-engineering/automation-testing/tools/playwright/ documentation
 name: swe-developing-e2e-test-with-playwright
 ---
 

@@ -104,7 +104,7 @@ class Store:
 
     @property
     def database(self) -> Path:
-        return self.home / ".ferret" / "ferret.sqlite3"
+        return self.home / ".local" / "share" / "ferret" / "ferret.sqlite3"
 
     def run(self, *arguments: str) -> dict[str, Any]:
         """A command's ``--json`` result, or a ``BenchmarkError`` naming the closed error it failed with."""

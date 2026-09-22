@@ -23,8 +23,8 @@ def test_all_commands_with_denied_sockets(artifact: Path, home: Path, workdir: P
     assert [(done.returncode, done.stderr) for done in (initialized, *ran.values(), status)] == [(0, b"")] * 8
     assert json.loads(status.stdout)["backend"] == {"state": "not_available_in_this_version"}
     assert attempted(socket_log) == []
-    assert {path.name for path in home.iterdir()} == {".ferret"}
-    assert {path.name for path in (home / ".ferret").iterdir()} <= LOCAL_FILES | {
+    assert {path.name for path in home.iterdir()} == {".local"}
+    assert {path.name for path in (home / ".local" / "share" / "ferret").iterdir()} <= LOCAL_FILES | {
         "ferret.sqlite3-wal",
         "ferret.sqlite3-shm",
     }

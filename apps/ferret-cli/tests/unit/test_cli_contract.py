@@ -197,6 +197,9 @@ def test_only_the_word_help_is_the_help_command() -> None:
     assert cli.help_for(["status"]) is None
     assert cli.help_for(["--help"]) is None
     assert cli.help_for(["help"]) == ROOT_HELP
+    # A help flag inside the help command is the one spelling nobody could have meant as a path.
+    assert cli.help_for(["help", "--help"]) == ROOT_HELP
+    assert cli.help_for(["help", "status", "-h"]) == COMMAND_HELP[("status",)]
 
 
 def test_a_fault_in_the_callbacks_own_handler_is_still_silent_and_still_zero() -> None:

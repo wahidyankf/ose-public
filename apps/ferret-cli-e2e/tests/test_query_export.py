@@ -59,7 +59,12 @@ def test_a_cursor_is_refused_for_another_query_and_for_garbage(artifact: Path, h
             "schemaVersion": 1,
             "command": "events.list",
             "exitCode": 2,
-            "error": {"code": "invalid_cursor", "field": None, "retryable": False},
+            "error": {
+                "code": "ferret.cursor.invalid",
+                "message": "the cursor is not valid for this query",
+                "field": None,
+                "retryable": False,
+            },
         }
 
 
@@ -81,7 +86,8 @@ def test_export_is_jsonl_oldest_first_and_repeatable_byte_for_byte(
 def test_an_export_with_no_events_is_zero_bytes(artifact: Path, home: Path) -> None:
     run_artifact(artifact, ["init", "--json"], home=home)
 
-    assert run_artifact(artifact, ["events", "export", "--format", "jsonl"], home=home) == Completed(0, b"", b"")
+    # Zero bytes on stdout, and `1` because the query matched nothing: an empty export is an answer, not a failure.
+    assert run_artifact(artifact, ["events", "export", "--format", "jsonl"], home=home) == Completed(1, b"", b"")
 
 
 @pytest.mark.usefixtures("seeded")
@@ -132,10 +138,10 @@ def test_every_read_of_an_uninitialized_home_is_a_closed_failure_that_creates_no
         ["outcomes", "--group-by", "harness", "--json"],
     ):
         failed = run_artifact(artifact, arguments, home=home)
-        assert (failed.returncode, failed.stdout) == (3, b"")
-        assert json.loads(failed.stderr)["error"]["code"] == "uninitialized"
+        assert (failed.returncode, failed.stdout) == (2, b"")
+        assert json.loads(failed.stderr)["error"]["code"] == "ferret.storage.uninitialized"
     # An export has no machine-readable mode, so its failure is the text form and stdout stays empty.
     exported = run_artifact(artifact, ["events", "export", "--format", "jsonl"], home=home)
-    assert (exported.returncode, exported.stdout) == (3, b"")
-    assert exported.stderr.startswith(b"FERRET error [uninitialized]: ")
-    assert not (home / ".ferret").exists()
+    assert (exported.returncode, exported.stdout) == (2, b"")
+    assert exported.stderr.startswith(b"FERRET error [ferret.storage.uninitialized]: ")
+    assert not (home / ".local" / "share" / "ferret").exists()

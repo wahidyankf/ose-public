@@ -362,10 +362,12 @@ def help_for(arguments: Sequence[str]) -> str | None:
     ``help`` is a command as well as a flag because a caller who has just met a subcommand tree tries the word
     before the flag, and a tool that answers only one of them makes them read documentation to learn which.
     An unknown path is not help: it falls through to the usage error the same spelling would get as a command.
+    A help flag inside a help command is dropped rather than refused, so ``ferret help --help`` answers with the
+    text that documents ``help`` instead of refusing the one spelling nobody could have meant as anything else.
     """
     if not arguments or arguments[0] != "help":
         return None
-    path: CommandPath = tuple(arguments[1:])
+    path: CommandPath = tuple(argument for argument in arguments[1:] if argument not in ("-h", "--help"))
     if path == ():
         return ROOT_HELP
     return COMMAND_HELP.get(path)

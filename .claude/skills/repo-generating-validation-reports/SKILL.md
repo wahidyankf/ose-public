@@ -1,5 +1,6 @@
 ---
-description: "Guidelines for generating validation/audit reports with UUID chains, progressive writing, and UTC+7 timestamps"
+description: |-
+  Guidelines for generating validation/audit reports with UUID chains, progressive writing, and UTC+7 timestamps
 name: repo-generating-validation-reports
 ---
 

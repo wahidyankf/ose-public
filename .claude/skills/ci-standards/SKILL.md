@@ -1,5 +1,6 @@
 ---
-description: "CI/CD standards knowledge for project-role targets, static BDD coverage, runtime boundaries, hooks, and scheduled tests"
+description: |-
+  CI/CD standards knowledge for project-role targets, static BDD coverage, runtime boundaries, hooks, and scheduled tests
 name: ci-standards
 ---
 

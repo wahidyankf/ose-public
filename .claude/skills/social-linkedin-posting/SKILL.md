@@ -1,5 +1,6 @@
 ---
-description: "Mechanics for social-linkedin-post-maker — the LinkedIn character-limit measurement rule, the no-vanity-metrics rule, the post file format, and the establish-window/gather/draft/measure/write workflow."
+description: |-
+  Mechanics for social-linkedin-post-maker — the LinkedIn character-limit measurement rule, the no-vanity-metrics rule, the post file format, and the establish-window/gather/draft/measure/write workflow.
 name: social-linkedin-posting
 ---
 

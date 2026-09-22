@@ -1,5 +1,6 @@
 ---
-description: "Rust coding standards from authoritative docs/explanation/software-engineering/programming-languages/rust/ documentation"
+description: |-
+  Rust coding standards from authoritative docs/explanation/software-engineering/programming-languages/rust/ documentation
 name: swe-programming-rust
 ---
 

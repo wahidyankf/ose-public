@@ -45,7 +45,7 @@ Darwin) host_system=apple-darwin ;;
 Linux) host_system=unknown-linux-gnu ;;
 *)
 	echo "unsupported host operating system for the bootstrap suite" >&2
-	exit 78
+	exit 125
 	;;
 esac
 case "$(uname -m)" in
@@ -53,7 +53,7 @@ x86_64 | amd64) host_architecture=x86_64 ;;
 arm64 | aarch64) host_architecture=aarch64 ;;
 *)
 	echo "unsupported host architecture for the bootstrap suite" >&2
-	exit 78
+	exit 125
 	;;
 esac
 # A Rust target triple, because that is what the release assets are named for.
@@ -472,7 +472,7 @@ run_download_digest_mismatch() {
 		"$subject" probe >"$mismatch_output" 2>/dev/null
 	status=$?
 	set -e
-	[ "$status" -eq 78 ]
+	[ "$status" -eq 125 ]
 	# The archive was fetched and then refused: nothing of it reached the cache
 	# and the payload never spoke.
 	[ "$(download_count)" -eq "$((downloads_before + 1))" ]
@@ -494,7 +494,7 @@ run_non_exact_stable_version() {
 		PATH="$test_path" RHINO_INSTALL_CACHE="$cache_root" "$subject" probe >/dev/null 2>&1
 		status=$?
 		set -e
-		[ "$status" -eq 78 ]
+		[ "$status" -eq 125 ]
 	done
 	[ "$(download_count)" -eq "$downloads_before" ]
 	[ ! -e "$escape_parent/escape" ]
@@ -529,7 +529,7 @@ run_non_exact_identity_envelope() {
 		"$subject" probe >/dev/null 2>&1
 	status=$?
 	set -e
-	[ "$status" -eq 78 ]
+	[ "$status" -eq 125 ]
 	[ "$(download_count)" -eq "$((downloads_before + 1))" ]
 	[ ! -e "$cache_root/$test_version/$host_platform/rhino" ]
 	[ ! -e "$cache_root/$test_version/$host_platform/rhino.sha256" ]
@@ -539,7 +539,7 @@ run_non_exact_identity_envelope() {
 # has no asset to fetch, so the refusal has to come before the transport rather
 # than from a download that fails to find one: a 404 read as a network problem
 # is the kind of error a caller retries forever. The refusal is attributed by
-# its message, because exit 78 is also what an unreadable lock produces -- and
+# its message, because exit 125 is also what an unreadable lock produces -- and
 # the platform branch runs before the lock's per-target checksum is ever read.
 run_unsupported_platform_refused() {
 	write_lock "$test_version" "$checksum"
@@ -552,7 +552,7 @@ run_unsupported_platform_refused() {
 		RHINO_TEST_UNAME_S=Plan9 "$subject" probe >/dev/null 2>"$refusal"
 	status=$?
 	set -e
-	[ "$status" -eq 78 ]
+	[ "$status" -eq 125 ]
 	grep -q 'does not support this operating system' "$refusal"
 
 	# An architecture RHINO does not build for is refused on the same terms as
@@ -562,7 +562,7 @@ run_unsupported_platform_refused() {
 		RHINO_TEST_UNAME_M=riscv64 "$subject" probe >/dev/null 2>"$refusal"
 	status=$?
 	set -e
-	[ "$status" -eq 78 ]
+	[ "$status" -eq 125 ]
 	grep -q 'does not support this architecture' "$refusal"
 
 	[ "$(download_count)" -eq "$downloads_before" ]

@@ -1,5 +1,6 @@
 ---
-description: "How pr-review-fixer enumerates unresolved GitHub PR review threads, triages each into fix/reject/defer/clarify, applies the outcome, and resolves only what was genuinely addressed. Use when resolving threads posted by pr-review-synthesis-maker's consolidated review."
+description: |-
+  How pr-review-fixer enumerates unresolved GitHub PR review threads, triages each into fix/reject/defer/clarify, applies the outcome, and resolves only what was genuinely addressed. Use when resolving threads posted by pr-review-synthesis-maker's consolidated review.
 name: pr-review-fixer-resolution
 ---
 

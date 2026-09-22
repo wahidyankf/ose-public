@@ -47,7 +47,7 @@ lock_value() {
 	'' | *'
 '*)
 		echo "rhino lock has missing or duplicate $key" >&2
-		exit 78
+		exit 125
 		;;
 	esac
 	printf '%s\n' "$value"
@@ -61,17 +61,17 @@ version=$(lock_value version)
 commit=$(lock_value commit)
 if ! printf '%s\n' "$version" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z][0-9A-Za-z.]*)?$'; then
 	echo "rhino lock has an invalid version" >&2
-	exit 78
+	exit 125
 fi
 case "$commit" in
 *[!0-9a-f]* | '')
 	echo "rhino lock has an invalid commit" >&2
-	exit 78
+	exit 125
 	;;
 esac
 if [ "${#commit}" -ne 40 ]; then
 	echo "rhino lock has an invalid commit" >&2
-	exit 78
+	exit 125
 fi
 expected_identity="{\"schemaVersion\":1,\"version\":\"${version%%-*}\",\"commit\":\"$commit\"}"
 
@@ -83,7 +83,7 @@ Darwin) target_system=apple-darwin ;;
 Linux) target_system=unknown-linux-gnu ;;
 *)
 	echo "rhino does not support this operating system" >&2
-	exit 78
+	exit 125
 	;;
 esac
 case "$(uname -m)" in
@@ -91,7 +91,7 @@ x86_64 | amd64) target_machine=x86_64 ;;
 arm64 | aarch64) target_machine=aarch64 ;;
 *)
 	echo "rhino does not support this architecture" >&2
-	exit 78
+	exit 125
 	;;
 esac
 # A Rust target triple: the name the release asset is published under, and the
@@ -102,12 +102,12 @@ checksum=$(lock_value "$target")
 case "$checksum" in
 *[!0-9a-f]* | '')
 	echo "rhino lock has an invalid checksum" >&2
-	exit 78
+	exit 125
 	;;
 esac
 if [ "${#checksum}" -ne 64 ]; then
 	echo "rhino lock has an invalid checksum" >&2
-	exit 78
+	exit 125
 fi
 
 # Keep downloaded binaries outside the repository by default. Tests may point
@@ -207,7 +207,7 @@ publish_release_claim() {
 	claim_identity=$(process_identity "$claim_pid" || true)
 	if [ -z "$claim_identity" ]; then
 		echo "rhino bootstrap cannot establish its release claim identity" >&2
-		exit 78
+		exit 125
 	fi
 	release_claim_record=$(mktemp "$cache_root/$version/.release-claim.$claim_pid.$claim_identity.XXXXXX")
 	chmod 600 "$release_claim_record"
@@ -253,7 +253,7 @@ acquire_install_guard() {
 	if [ "$target_system" = apple-darwin ]; then
 		if ! command -v lockf >/dev/null 2>&1; then
 			echo "rhino bootstrap requires lockf on Darwin" >&2
-			exit 78
+			exit 125
 		fi
 		if lockf -t 300 9; then
 			return 0
@@ -261,15 +261,15 @@ acquire_install_guard() {
 	else
 		if ! command -v flock >/dev/null 2>&1; then
 			echo "rhino bootstrap requires flock on Linux" >&2
-			exit 78
+			exit 125
 		fi
-		if flock -E 75 -w 300 9; then
+		if flock -E 124 -w 300 9; then
 			return 0
 		fi
 	fi
 
 	echo "rhino bootstrap timed out waiting for its install guard" >&2
-	exit 75
+	exit 124
 }
 
 release_install_guard() {
@@ -419,7 +419,7 @@ acquire_install_lock() {
 	install_owner_identity=$(process_identity "$install_owner_pid" || true)
 	if [ -z "$install_owner_identity" ]; then
 		echo "rhino bootstrap cannot establish its install-lock identity" >&2
-		exit 78
+		exit 125
 	fi
 
 	install_owner_record=$(mktemp "$cache_root/$version/.install-owner.$install_owner_pid.$install_owner_identity.XXXXXX")
@@ -448,7 +448,7 @@ acquire_install_lock() {
 			if [ "$published_identity" != "$install_owner_file_identity" ] ||
 				[ "$published_digest" != "$install_owner_record_digest" ]; then
 				echo "rhino bootstrap could not publish its install-lock identity" >&2
-				exit 78
+				exit 125
 			fi
 			install_owner_published=1
 			return 0
@@ -457,7 +457,7 @@ acquire_install_lock() {
 		attempts=$((attempts + 1))
 		if [ "$attempts" -ge 300 ]; then
 			echo "rhino bootstrap timed out waiting for its install lock" >&2
-			exit 75
+			exit 124
 		fi
 		sleep 1
 	done
@@ -540,17 +540,17 @@ if ! cached_binary_is_valid; then
 		curl --fail --location --silent --show-error --retry 3 --output "$archive" "$base_url/$asset"
 		if [ "$(hash_file "$archive")" != "$checksum" ]; then
 			echo "rhino release checksum mismatch" >&2
-			exit 78
+			exit 125
 		fi
 		if [ "$(tar -tzf "$archive")" != rhino ]; then
 			echo "rhino release archive has an invalid inventory" >&2
-			exit 78
+			exit 125
 		fi
 		tar -xzf "$archive" -C "$temporary_dir" rhino
 		chmod 700 "$temporary_dir/rhino"
 		if ! binary_identity_is_valid "$temporary_dir/rhino"; then
 			echo "rhino release identity does not match its lock" >&2
-			exit 78
+			exit 125
 		fi
 		hash_file "$temporary_dir/rhino" >"$temporary_dir/rhino.sha256"
 		mkdir -p "$binary_dir"

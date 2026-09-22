@@ -1,5 +1,6 @@
 ---
-description: "C# coding standards from authoritative docs/explanation/software-engineering/programming-languages/c-sharp/ documentation"
+description: |-
+  C# coding standards from authoritative docs/explanation/software-engineering/programming-languages/c-sharp/ documentation
 name: swe-programming-csharp
 ---
 

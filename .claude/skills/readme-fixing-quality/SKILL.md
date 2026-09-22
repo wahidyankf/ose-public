@@ -1,5 +1,6 @@
 ---
-description: "How readme-fixer re-validates readme-checker findings, assesses HIGH/MEDIUM/FALSE_POSITIVE confidence for README-specific issues, and applies fixes only for objective/verifiable problems. Use when re-validating or applying README quality fixes."
+description: |-
+  How readme-fixer re-validates readme-checker findings, assesses HIGH/MEDIUM/FALSE_POSITIVE confidence for README-specific issues, and applies fixes only for objective/verifiable problems. Use when re-validating or applying README quality fixes.
 name: readme-fixing-quality
 ---
 

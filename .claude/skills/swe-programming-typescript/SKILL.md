@@ -1,5 +1,6 @@
 ---
-description: "TypeScript coding standards from authoritative docs/explanation/software-engineering/programming-languages/typescript/ documentation"
+description: |-
+  TypeScript coding standards from authoritative docs/explanation/software-engineering/programming-languages/typescript/ documentation
 name: swe-programming-typescript
 ---
 

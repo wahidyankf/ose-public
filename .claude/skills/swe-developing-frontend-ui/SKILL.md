@@ -1,5 +1,6 @@
 ---
-description: "UI development skill covering design token usage, shadcn/ui + Radix composition patterns, accessibility requirements, anti-patterns catalog, and brand context for OrganicLever and OSE Platform. Auto-loads when working on TSX components, CSS, or UI design tasks."
+description: |-
+  UI development skill covering design token usage, shadcn/ui + Radix composition patterns, accessibility requirements, anti-patterns catalog, and brand context for OrganicLever and OSE Platform. Auto-loads when working on TSX components, CSS, or UI design tasks.
 name: swe-developing-frontend-ui
 ---
 

@@ -1,5 +1,6 @@
 ---
-description: "Post-execution verification methodology for plan-execution-checker: confirms a completed implementation did what the plan said, checking the rule domains of plan-validating-quality against the post-execution repository state."
+description: |-
+  Post-execution verification methodology for plan-execution-checker: confirms a completed implementation did what the plan said, checking the rule domains of plan-validating-quality against the post-execution repository state.
 name: plan-verifying-execution
 ---
 

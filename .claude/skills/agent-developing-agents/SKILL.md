@@ -1,5 +1,6 @@
 ---
-description: "AI agent development standards including frontmatter structure, naming conventions, tool access patterns, model selection, and reference documentation structure"
+description: |-
+  AI agent development standards including frontmatter structure, naming conventions, tool access patterns, model selection, and reference documentation structure
 name: agent-developing-agents
 ---
 

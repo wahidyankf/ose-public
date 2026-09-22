@@ -1,5 +1,6 @@
 ---
-description: "F# coding standards from authoritative docs/explanation/software-engineering/programming-languages/f-sharp/ documentation"
+description: |-
+  F# coding standards from authoritative docs/explanation/software-engineering/programming-languages/f-sharp/ documentation
 name: swe-programming-fsharp
 ---
 

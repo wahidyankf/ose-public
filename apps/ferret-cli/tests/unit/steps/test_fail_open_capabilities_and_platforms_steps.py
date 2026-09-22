@@ -13,7 +13,7 @@ from ferret.application.ports import Budget, CaptureResult, Runtime
 from ferret.domain.capability import CapabilitySnapshot, snapshot_from_document
 from ferret.domain.errors import FerretError
 from ferret.domain.event import Event
-from ferret.domain.install import ARTIFACT_MODE, DIRECTORY_MODE, MANIFEST_MODE
+from ferret.domain.install import ARTIFACT_MODE, DIRECTORY_MODE, LAUNCHER_MODE, MANIFEST_MODE, launcher_artifact
 from support.fakes import FAKE_HOME, FIXED_NOW, FakeEvents, World
 from support.hook_payloads import claude_tool, codex_tool
 from support.hook_payloads import encode as encode_payload
@@ -152,7 +152,8 @@ def then_objects_are_owner_only(session: Session) -> None:
     assert (facts["share"].mode, facts["version"].mode) == (DIRECTORY_MODE, DIRECTORY_MODE)
     assert (facts["artifact"].kind, facts["artifact"].mode) == ("file", ARTIFACT_MODE)
     assert (facts["manifest"].kind, facts["manifest"].mode) == ("file", MANIFEST_MODE)
-    assert (facts["launcher"].kind, facts["launcher"].target) == ("symlink", str(paths.artifact(document["version"])))
+    assert (facts["launcher"].kind, facts["launcher"].mode) == ("file", LAUNCHER_MODE)
+    assert launcher_artifact(installer.read_launcher() or b"", paths) == paths.artifact(document["version"])
     assert all(fact.owned_by_current_user for fact in facts.values())
 
 
@@ -188,7 +189,7 @@ def given_harness_adapters_call_ferret(session: Session) -> None:
     installer.put_file(REPOSITORY / "src" / "main.py", b"print('hello')\n", 0o644)
     session.bystanders = objects_by_name(session, HARNESS_FILES)
     session.data_before = {name: entry.content for name, entry in session.world.files.files.items()}
-    assert installer.facts(installer.paths.launcher).kind == "symlink"
+    assert installer.facts(installer.paths.launcher).kind == "file"
 
 
 @when("the ferret executable and local integration are removed")

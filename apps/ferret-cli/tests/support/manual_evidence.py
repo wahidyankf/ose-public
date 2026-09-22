@@ -18,7 +18,6 @@ arguments or the raw root were refused, 3 the host cannot run FERRET.
 import argparse
 import hashlib
 import json
-import os
 import re
 import shutil
 import stat
@@ -36,6 +35,9 @@ RAW_PARENT = Path("local-tmp") / "ferret-plan01"
 RUN_ID = re.compile(r"[a-z0-9][a-z0-9-]{0,63}")
 CHILD_TIMEOUT_SECONDS = 30
 MINIMUM_PYTHON = (3, 14)
+# This tool drives the built artifact as a black box and imports nothing from the package, so it recognizes the
+# launcher by shape here rather than through ``ferret.domain.install``.
+LAUNCHER_EXEC = re.compile(r'^exec "(?P<interpreter>[^"\n]+)" "(?P<artifact>[^"\n]+)" "\$@"$', re.MULTILINE)
 
 UUID = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")
 HASHED_ORDER = (
@@ -264,6 +266,12 @@ def failure_shape(result: Result, command: str, code: str, exit_code: int) -> bo
 
 def within(path: object, root: Path) -> bool:
     return isinstance(path, str) and Path(path).is_relative_to(root)
+
+
+def starts_the_artifact(launcher: Path, artifact: Path | None) -> bool:
+    """Whether the installed launcher is a script that execs ``artifact`` on an interpreter it names outright."""
+    matched = LAUNCHER_EXEC.search(launcher.read_text(encoding="utf-8", errors="replace"))
+    return artifact is not None and matched is not None and Path(matched.group("artifact")) == artifact
 
 
 def mode(path: Path) -> int:
@@ -695,13 +703,15 @@ def run_install(session: Session) -> None:
         and Path(reply["launcherPath"]) == launcher,
     )
     session.check(
-        "the installed artifact is the built artifact, private, with a launcher link and a private manifest",
+        "the installed artifact is the built artifact, private, with a pinned launcher and a private manifest",
         installed_artifact is not None
         and installed_artifact.is_file()
         and sha256(installed_artifact.read_bytes()) == artifact_digest
         and mode(installed_artifact) == 0o700
-        and launcher.is_symlink()
-        and Path(os.readlink(launcher)) == installed_artifact
+        and launcher.is_file()
+        and not launcher.is_symlink()
+        and mode(launcher) == 0o700
+        and starts_the_artifact(launcher, installed_artifact)
         and manifest.is_file()
         and mode(manifest) == 0o600,
     )

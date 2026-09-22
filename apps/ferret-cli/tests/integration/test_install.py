@@ -6,6 +6,7 @@ import json
 import os
 import re
 import stat
+import sys
 import zipfile
 from collections.abc import Callable
 from dataclasses import dataclass, replace
@@ -26,10 +27,13 @@ from ferret.domain.install import (
     ARTIFACT_MODE,
     DIRECTORY_MODE,
     LAUNCHER_FILE,
+    LAUNCHER_MODE,
     MANIFEST_FILE,
     MANIFEST_MODE,
     InstallPaths,
     Manifest,
+    is_stage_name,
+    launcher_script,
     parse_manifest,
     stage_name,
 )
@@ -38,6 +42,8 @@ from support.fakes import SimulatedCrash
 from support.machine import make_machine
 
 OLDER = "0.0.9"
+#: A stage plan for the cases that only care that staging fails; the launcher bytes are never read back.
+ANY_PLAN = StagePlan(version=__version__, launcher=b"#!/bin/sh\nexec nothing\n", manifest=b"m")
 STAGE_MASK = re.compile(r"\.stage-[0-9a-f]{32}")
 NONCE = "0123456789abcdef0123456789abcdef"
 Entry = tuple[str, int, bytes | str | None]
@@ -102,6 +108,11 @@ def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def launcher_for(area: Area, version: str) -> Entry:
+    """The launcher a real install writes here: a script pinned to the interpreter these tests run on."""
+    return ("file", LAUNCHER_MODE, launcher_script(Path(sys.executable), area.paths.artifact(version)))
+
+
 def finished_manifest(area: Area, version: str, source: Path, installed_at: str) -> bytes:
     paths = area.paths
     return Manifest(
@@ -122,7 +133,7 @@ def completed(area: Area, version: str, source: Path, installed_at: str) -> Tree
         f".local/share/ferret/{version}": DIRECTORY,
         ".local/bin": DIRECTORY,
         f".local/share/ferret/{version}/ferret.pyz": ("file", ARTIFACT_MODE, source.read_bytes()),
-        ".local/bin/ferret": ("symlink", 0, str(area.paths.artifact(version))),
+        ".local/bin/ferret": launcher_for(area, version),
         ".local/share/ferret/install.json": (
             "file",
             MANIFEST_MODE,
@@ -212,7 +223,7 @@ def test_a_crash_before_each_step_leaves_a_readable_state_and_the_next_install_r
     old = tree(area.home)
     version_directory = f".local/share/ferret/{__version__}"
     artifact: Entry = ("file", ARTIFACT_MODE, area.current.read_bytes())
-    launcher: Entry = ("symlink", 0, str(area.paths.artifact(__version__)))
+    launcher: Entry = launcher_for(area, __version__)
 
     with pytest.raises(SimulatedCrash):
         install_user(dying_before(runtime_for(area, area.current), step))
@@ -403,7 +414,8 @@ def test_staging_writes_three_verified_files_and_touches_no_final_name(area: Are
     install = area.install(area.current)
     install.source()
 
-    staged = install.stage(StagePlan(version=__version__, manifest=b"the manifest\n"))
+    wanted = launcher_for(area, __version__)
+    staged = install.stage(StagePlan(version=__version__, launcher=cast(bytes, wanted[2]), manifest=b"the manifest\n"))
 
     paths = area.paths
     assert tree(area.home) == {
@@ -414,7 +426,7 @@ def test_staging_writes_three_verified_files_and_touches_no_final_name(area: Are
         ".local/bin": DIRECTORY,
         str(staged.artifact.relative_to(area.home)): ("file", ARTIFACT_MODE, area.current.read_bytes()),
         str(staged.manifest.relative_to(area.home)): ("file", MANIFEST_MODE, b"the manifest\n"),
-        str(staged.launcher.relative_to(area.home)): ("symlink", 0, str(paths.artifact(__version__))),
+        str(staged.launcher.relative_to(area.home)): wanted,
     }
     assert (staged.version, staged.artifact.parent, staged.launcher.parent, staged.manifest.parent) == (
         __version__,
@@ -425,9 +437,7 @@ def test_staging_writes_three_verified_files_and_touches_no_final_name(area: Are
 
 
 def test_staging_needs_a_source_first(area: Area) -> None:
-    assert failure(lambda: area.install(area.current).stage(StagePlan(version=__version__, manifest=b"m"))) == (
-        "storage_unavailable"
-    )
+    assert failure(lambda: area.install(area.current).stage(ANY_PLAN)) == "storage_unavailable"
 
 
 def refuse(*arguments: object) -> None:
@@ -445,9 +455,17 @@ def wrong_digest(path: Path) -> str:
 def test_a_failed_stage_leaves_none_of_its_files_behind(area: Area, monkeypatch: pytest.MonkeyPatch) -> None:
     install = area.install(area.current)
     install.source()
-    monkeypatch.setattr("ferret.adapters.posix_install.os.symlink", refuse)
+    opened = os.open
 
-    assert failure(lambda: install.stage(StagePlan(version=__version__, manifest=b"m"))) == "storage_unavailable"
+    def refuse_the_launcher(path: object, flags: int, mode: int = 0o777) -> int:
+        # The launcher is written last, so this is the stage that already has the other two files on disk.
+        if is_stage_name(Path(cast(str, path)).name, LAUNCHER_FILE):
+            raise OSError(errno.EIO, "injected failure")
+        return opened(cast(str, path), flags, mode)
+
+    monkeypatch.setattr("ferret.adapters.posix_install.os.open", refuse_the_launcher)
+
+    assert failure(lambda: install.stage(ANY_PLAN)) == "storage_unavailable"
 
     monkeypatch.undo()
     assert [key for key, (kind, _, _) in tree(area.home).items() if kind != "directory"] == []
@@ -460,7 +478,7 @@ def test_a_staged_artifact_that_does_not_read_back_is_refused_and_removed(
     install.source()
     monkeypatch.setattr("ferret.adapters.posix_install._sha256_of", wrong_digest)
 
-    assert failure(lambda: install.stage(StagePlan(version=__version__, manifest=b"m"))) == "storage_unavailable"
+    assert failure(lambda: install.stage(ANY_PLAN)) == "storage_unavailable"
 
     monkeypatch.undo()
     assert [key for key, (kind, _, _) in tree(area.home).items() if kind != "directory"] == []
@@ -498,7 +516,7 @@ def test_a_failed_replace_is_unavailable_storage_and_replaces_nothing(
 ) -> None:
     install = area.install(area.current)
     install.source()
-    staged = install.stage(StagePlan(version=__version__, manifest=b"m"))
+    staged = install.stage(ANY_PLAN)
     staged_tree = tree(area.home)
     monkeypatch.setattr("ferret.adapters.posix_install.os.replace", refuse)
     replace_step: Callable[[StagedInstall], None] = getattr(install, step)

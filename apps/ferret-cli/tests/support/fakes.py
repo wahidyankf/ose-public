@@ -35,11 +35,13 @@ from ferret.domain.install import (
     ARTIFACT_MODE,
     DIRECTORY_MODE,
     LAUNCHER_FILE,
+    LAUNCHER_MODE,
     MANIFEST_FILE,
     MANIFEST_MODE,
     InstallPaths,
     Manifest,
     is_stage_name,
+    launcher_script,
     stage_name,
 )
 from ferret.domain.query import EventCriteria, Position
@@ -48,6 +50,8 @@ from ferret.domain.storage import PRIVATE_FILE_MODE
 from ferret.domain.timestamps import format_timestamp
 
 FAKE_HOME = Path("/users/example")
+#: The interpreter a faked install pins, standing in for the one the real adapter reads from ``sys.executable``.
+FAKE_INTERPRETER = Path("/usr/bin/python3.14")
 FAKE_DATA_HOME = FAKE_HOME / ".ferret"
 FIXED_NOW = datetime(2026, 9, 18, 8, 0, 0, tzinfo=UTC)
 INSTALLATION_ID = "00000000-0000-4000-8000-000000000002"
@@ -464,6 +468,7 @@ class FakeInstall:
     def __init__(self, home: Path = FAKE_HOME, *, artifact: bytes = ARTIFACT_BYTES, path_variable: str = "") -> None:
         self.paths = InstallPaths(home)
         self.path_variable = path_variable
+        self.interpreter = FAKE_INTERPRETER
         self.artifact = artifact
         self.nodes: dict[Path, Node] = {}
         self.steps: list[str] = []
@@ -487,7 +492,7 @@ class FakeInstall:
         for directory in (paths.share, paths.version_directory(version), paths.bin):
             self.put_directory(directory)
         self.put_file(paths.artifact(version), artifact, ARTIFACT_MODE)
-        self.put_symlink(paths.launcher, str(paths.artifact(version)))
+        self.put_file(paths.launcher, launcher_script(FAKE_INTERPRETER, paths.artifact(version)), LAUNCHER_MODE)
         manifest = Manifest(
             version=version,
             artifact_path=paths.artifact(version),
@@ -528,6 +533,11 @@ class FakeInstall:
         node = self.nodes.get(self.paths.manifest)
         return None if node is None else node.content
 
+    def read_launcher(self) -> bytes | None:
+        node = self.nodes.get(self.paths.launcher)
+        # A link reads as nothing here, exactly as O_NOFOLLOW makes it on a real filesystem.
+        return None if node is None or node.kind != "file" else node.content
+
     def recover(self) -> None:
         self._step("recover")
         stray = [
@@ -556,7 +566,7 @@ class FakeInstall:
             manifest=paths.share / stage_name(MANIFEST_FILE, nonce),
         )
         self.put_file(staged.artifact, self.artifact, ARTIFACT_MODE)
-        self.put_symlink(staged.launcher, str(paths.artifact(plan.version)))
+        self.put_file(staged.launcher, plan.launcher, LAUNCHER_MODE)
         self.put_file(staged.manifest, plan.manifest, MANIFEST_MODE)
         return staged
 

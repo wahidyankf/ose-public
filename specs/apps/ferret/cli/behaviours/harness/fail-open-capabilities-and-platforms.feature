@@ -42,6 +42,18 @@ Feature: Fail open and report harness capabilities honestly
       | the user bin directory is already on PATH  | none               |
       | the user bin directory is absent from PATH | add_home_local_bin |
 
+  Scenario Outline: Run on a host whose default interpreter is older than FERRET requires
+    Given the artifact is started by <interpreter>
+    When the user runs any FERRET command
+    Then FERRET <outcome>
+    And no Python traceback and no syntax error reaches the caller
+
+    Examples:
+      | interpreter                                             | outcome                                            |
+      | an interpreter FERRET supports                          | runs the command on that interpreter               |
+      | an older interpreter while a supported one is reachable | restarts itself on the supported interpreter       |
+      | an older interpreter with no supported one reachable    | exits 3 naming the version it requires             |
+
   Scenario Outline: Keep one POSIX adapter fail-open at the wrapper boundary
     Given a <harness> binding invokes the shared wrapper
     When <condition>

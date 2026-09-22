@@ -10,11 +10,12 @@ import pytest
 from ferret import __version__
 from ferret.application.install import InstallOutcome, UninstallOutcome, install_user, uninstall_user
 from ferret.domain.errors import FerretError
-from ferret.domain.install import InstallPaths, Manifest
+from ferret.domain.install import LAUNCHER_MODE, InstallPaths, Manifest, launcher_script
 from support.fakes import (
     AN_OLDER_VERSION,
     ARTIFACT_BYTES,
     FAKE_HOME,
+    FAKE_INTERPRETER,
     FIXED_NOW,
     FakeInstall,
     SimulatedCrash,
@@ -32,6 +33,11 @@ def digest(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
 
 
+def installed_launcher(version: str) -> tuple[str, int, bytes]:
+    """The launcher a faked install leaves: a script pinned to the fake interpreter, naming that version."""
+    return ("file", LAUNCHER_MODE, launcher_script(FAKE_INTERPRETER, PATHS.artifact(version)))
+
+
 def completed_tree(*, version: str = __version__, artifact: bytes = ARTIFACT_BYTES, installed_at: str = "") -> Snapshot:
     """Exactly what a finished install leaves: three private directories, the artifact, the launcher, the manifest."""
     manifest = Manifest(
@@ -46,7 +52,7 @@ def completed_tree(*, version: str = __version__, artifact: bytes = ARTIFACT_BYT
         str(PATHS.version_directory(version)): ("directory", 0o700, None),
         str(PATHS.bin): ("directory", 0o700, None),
         str(PATHS.artifact(version)): ("file", 0o700, artifact),
-        str(PATHS.launcher): ("symlink", 0, str(PATHS.artifact(version))),
+        str(PATHS.launcher): installed_launcher(version),
         str(PATHS.manifest): ("file", 0o600, manifest.to_bytes()),
     }
 
@@ -329,7 +335,7 @@ def test_crash_b_after_the_artifact_before_the_launcher_leaves_the_old_manifest_
     after = world.installer.snapshot()
     assert {key: after[key] for key in old} == old
     assert after[str(PATHS.artifact(__version__))] == ("file", 0o700, ARTIFACT_BYTES)
-    assert after[str(PATHS.launcher)] == ("symlink", 0, str(PATHS.artifact(AN_OLDER_VERSION)))
+    assert after[str(PATHS.launcher)] == installed_launcher(AN_OLDER_VERSION)
     world.installer.crash_before = None
     assert install(world).replaced_owned_version == AN_OLDER_VERSION
     assert world.installer.snapshot() == completed_tree()
@@ -358,7 +364,7 @@ def test_crash_c_after_the_launcher_before_the_manifest_makes_removal_refuse_and
         install(world)
     world.installer.crash_before = None
     crashed = world.installer.snapshot()
-    assert crashed[str(PATHS.launcher)] == ("symlink", 0, str(PATHS.artifact(__version__)))
+    assert crashed[str(PATHS.launcher)] == installed_launcher(__version__)
 
     assert failure(lambda: uninstall(world)) == "install_ownership_mismatch"
 
@@ -392,7 +398,7 @@ def test_crash_c_across_versions_is_repaired_by_the_next_install_of_another_vers
     outcome = install(world)
 
     assert (outcome.result, outcome.version, outcome.replaced_owned_version) == ("installed", "9.9.9", AN_OLDER_VERSION)
-    assert world.installer.snapshot()[str(PATHS.launcher)] == ("symlink", 0, str(PATHS.artifact("9.9.9")))
+    assert world.installer.snapshot()[str(PATHS.launcher)] == installed_launcher("9.9.9")
     assert world.installer.snapshot()[str(PATHS.artifact(__version__))] == ("file", 0o700, ARTIFACT_BYTES)
 
 

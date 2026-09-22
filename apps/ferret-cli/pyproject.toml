@@ -1,6 +1,6 @@
 [project]
 name = "ferret-cli"
-version = "0.1.0"
+version = "0.1.1"
 description = "FERRET: local-first, metadata-only telemetry for coding-agent harnesses."
 license = "MIT"
 requires-python = ">=3.14,<3.15"

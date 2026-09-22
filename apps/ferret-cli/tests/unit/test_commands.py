@@ -2,14 +2,17 @@
 
 import io
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from pathlib import Path
 
 import pytest
 
 from ferret import __version__, cli
+from ferret.adapters.hook_failures import read_hook_failures
 from ferret.application.ports import Runtime
 from ferret.commands import build_handlers, default_handlers
 from ferret.domain.errors import FerretError
+from ferret.domain.storage import HOOK_FAILURE_FILE
 from support.fakes import FAKE_DATA_HOME, INSTALLATION_ID, World, make_world
 
 INIT_JSON_CREATED = (
@@ -149,3 +152,43 @@ def test_the_default_registry_wires_the_implemented_commands() -> None:
         ("self", "install"),
         ("self", "uninstall"),
     }
+
+
+def test_the_callback_swallows_a_fault_that_is_not_a_closed_failure_and_still_exits_zero(tmp_path: Path) -> None:
+    # A bug in FERRET itself, on the one command a harness runs for every event: it may not speak and it may not
+    # take a status a harness would read as trouble, so all that is left is the record -- and here even that
+    # cannot be written, because what broke is the runtime the recorder would need.
+    def broken() -> Runtime:
+        raise RuntimeError("a fault the closed contract does not name")
+
+    stdout, stderr = io.StringIO(), io.StringIO()
+    code = cli.main(
+        ["capture-hook", "--harness", "claude_code", "--event", "session-start"],
+        stdout=stdout,
+        stderr=stderr,
+        handlers=build_handlers(broken),
+    )
+
+    assert (code, stdout.getvalue(), stderr.getvalue()) == (0, "", "")
+
+
+def test_the_callback_records_the_closed_failure_it_swallowed(tmp_path: Path) -> None:
+    data_home = tmp_path / "ferret"
+    data_home.mkdir(mode=0o700)
+    # A payload the mapper cannot read, which is a lost event and the kind of loss the callback may not report
+    # any other way.
+    world = make_world()
+    world.runtime = replace(world.runtime, data_home=data_home)
+
+    stdout, stderr = io.StringIO(), io.StringIO()
+    code = cli.main(
+        ["capture-hook", "--harness", "claude_code", "--event", "session-start"],
+        stdout=stdout,
+        stderr=stderr,
+        handlers=build_handlers(lambda: world.runtime),
+    )
+
+    assert (code, stdout.getvalue(), stderr.getvalue()) == (0, "", "")
+    count, last = read_hook_failures(data_home)
+    moment, recorded = (data_home / HOOK_FAILURE_FILE).read_text().rstrip("\n").split("\t")
+    assert (count, last, recorded) == (1, moment, "ferret.event.invalid")

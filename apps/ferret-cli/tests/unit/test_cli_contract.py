@@ -190,6 +190,61 @@ def test_the_help_subcommand_answers_for_the_root_and_for_every_path() -> None:
     assert run(["help", "nonsense"]) == Result(2, "", INVALID_ARGUMENTS_TEXT)
 
 
+def test_only_the_word_help_is_the_help_command() -> None:
+    # `help_for` is asked about every invocation; everything that is not the command must fall through to the
+    # grammar rather than be answered with usage text.
+    assert cli.help_for([]) is None
+    assert cli.help_for(["status"]) is None
+    assert cli.help_for(["--help"]) is None
+    assert cli.help_for(["help"]) == ROOT_HELP
+
+
+def test_a_fault_in_the_callbacks_own_handler_is_still_silent_and_still_zero() -> None:
+    # The handler is where a bug in FERRET would surface. On this one command it may not reach the conversation.
+    def breaks(request: Request, stdout: TextIO, stderr: TextIO) -> int:
+        raise RuntimeError("a fault inside the callback")
+
+    assert run(
+        ["capture-hook", "--harness", "claude_code", "--event", "session-start"], {("capture-hook",): breaks}
+    ) == Result(0, "", "")
+
+
+def test_a_callback_that_cannot_even_record_its_failure_is_still_silent_and_still_zero(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Recording is best-effort: an environment that makes the data home unresolvable must not turn the one
+    # command that may never speak into one that raises.
+    monkeypatch.setenv("FERRET_DATA_HOME", "relative/not-absolute")
+
+    assert run(["capture-hook"]) == Result(0, "", "")
+
+
+def test_a_fault_outside_everything_main_answers_for_is_one_value_free_line_and_two(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # `main` answers for every failure it can name. This is the last resort for the ones it cannot -- a fault in
+    # argument parsing, in help, or in this module itself -- which would otherwise be a traceback and exit `1`.
+    def breaks(argv: object) -> Request:
+        raise RuntimeError(LEAK_CANARY)
+
+    monkeypatch.setattr(cli, "parse_arguments", breaks)
+    stdout, stderr = io.StringIO(), io.StringIO()
+
+    code = cli.run(["status"], stdout=stdout, stderr=stderr, handlers={})
+
+    assert (code, stdout.getvalue()) == (2, "")
+    assert stderr.getvalue() == f"FERRET error [ferret.internal.failure]: {cli.INTERNAL_FAILURE_MESSAGE}\n"
+    assert LEAK_CANARY not in stderr.getvalue()
+
+
+def test_run_is_main_when_nothing_escapes() -> None:
+    stdout, stderr = io.StringIO(), io.StringIO()
+
+    code = cli.run(["--help"], stdout=stdout, stderr=stderr, handlers={})
+
+    assert (code, stdout.getvalue(), stderr.getvalue()) == (0, GOLDEN_ROOT_HELP, "")
+
+
 @pytest.mark.parametrize(
     "argv",
     [

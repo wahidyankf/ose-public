@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 
-from ferret.adapters.filesystem import resolve_data_home
+from ferret.adapters.filesystem import adopt_legacy_data_home, resolve_data_home
 from ferret.application.initialization import initialize_store
 from ferret.domain.errors import FerretError
 from support.fakes import (
@@ -90,15 +90,67 @@ def test_initialization_holds_the_exclusive_lock_around_every_write() -> None:
 @pytest.mark.parametrize(
     ("environment", "expected"),
     [
-        ({}, FAKE_DATA_HOME),
-        ({"FERRET_DATA_HOME": ""}, FAKE_DATA_HOME),
-        ({"FERRET_DATA_HOME": "/srv/ferret-data"}, Path("/srv/ferret-data")),
-        ({"FERRET_DATA_HOME": "/srv//ferret-data/"}, Path("/srv/ferret-data")),
-        ({"FERRET_DATA_HOME": "/srv/./ferret-data"}, Path("/srv/ferret-data")),
+        pytest.param({}, FAKE_DATA_HOME, id="neither-variable-set"),
+        pytest.param({"FERRET_DATA_HOME": ""}, FAKE_DATA_HOME, id="an-empty-override-counts-as-unset"),
+        pytest.param({"XDG_DATA_HOME": ""}, FAKE_DATA_HOME, id="an-empty-base-falls-back-to-the-default"),
+        pytest.param({"XDG_DATA_HOME": "share"}, FAKE_DATA_HOME, id="a-relative-base-is-not-a-base-directory"),
+        pytest.param({"XDG_DATA_HOME": "/srv/share"}, Path("/srv/share/ferret"), id="the-base-directory"),
+        pytest.param({"XDG_DATA_HOME": "/srv/../share"}, FAKE_DATA_HOME, id="a-base-that-climbs-is-refused"),
+        pytest.param(
+            {"XDG_DATA_HOME": "/srv/share", "FERRET_DATA_HOME": "/srv/ferret-data"},
+            Path("/srv/ferret-data"),
+            id="the-override-outranks-the-base",
+        ),
+        pytest.param({"FERRET_DATA_HOME": "/srv/ferret-data"}, Path("/srv/ferret-data"), id="an-override"),
+        pytest.param({"FERRET_DATA_HOME": "/srv//ferret-data/"}, Path("/srv/ferret-data"), id="normalized"),
+        pytest.param({"FERRET_DATA_HOME": "/srv/./ferret-data"}, Path("/srv/ferret-data"), id="a-dot-segment"),
     ],
 )
-def test_the_data_home_is_dot_ferret_under_home_unless_overridden(environment: dict[str, str], expected: Path) -> None:
+def test_the_data_home_follows_the_base_directory_specification_unless_overridden(
+    environment: dict[str, str], expected: Path
+) -> None:
     assert resolve_data_home(environment, FAKE_HOME) == expected
+
+
+def test_a_pre_specification_data_home_is_moved_once_into_the_new_location(tmp_path: Path) -> None:
+    home = tmp_path / "home"
+    legacy = home / ".ferret"
+    legacy.mkdir(parents=True)
+    (legacy / "identity.json").write_text("{}")
+    data_home = home / ".local" / "share" / "ferret"
+
+    assert adopt_legacy_data_home(home, data_home) == data_home
+    assert (data_home / "identity.json").read_text() == "{}"
+    assert not legacy.exists()
+
+    # Once: a directory that reappears under the old name is left alone, because the new one now exists.
+    legacy.mkdir()
+    assert adopt_legacy_data_home(home, data_home) == data_home
+    assert legacy.is_dir()
+
+
+def test_nothing_is_adopted_when_there_is_no_old_data_home(tmp_path: Path) -> None:
+    home = tmp_path / "home"
+    home.mkdir()
+    data_home = home / ".local" / "share" / "ferret"
+
+    assert adopt_legacy_data_home(home, data_home) == data_home
+    assert not data_home.exists()
+
+
+def test_a_move_that_cannot_be_done_leaves_the_data_where_the_user_can_still_find_it(tmp_path: Path) -> None:
+    # Losing sight of a user's own history is worse than an untidy path, so a refused rename keeps the old home.
+    home = tmp_path / "home"
+    legacy = home / ".ferret"
+    legacy.mkdir(parents=True)
+    share = home / ".local" / "share"
+    share.mkdir(parents=True)
+    share.chmod(0o500)
+    try:
+        assert adopt_legacy_data_home(home, share / "ferret") == legacy
+    finally:
+        share.chmod(0o700)
+    assert legacy.is_dir()
 
 
 @pytest.mark.parametrize(

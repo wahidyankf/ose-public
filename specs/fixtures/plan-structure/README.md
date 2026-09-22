@@ -11,26 +11,24 @@ accepted/<NNN>-<slug>/plans/...      a tree a validator must accept
 rejected/<NNN>-<slug>/plans/...      a tree a validator must reject
 manifest.tsv                         case, expected exit, expected rule identifiers, note
 SHA256SUMS                           per-file digests over every corpus file
-CORPUS-DIGEST                        one digest over SHA256SUMS
-README.md                            this file; excluded from the digests, like SHA256SUMS and CORPUS-DIGEST
+README.md                            this file; excluded from the digests, like SHA256SUMS
 ```
 
-## Byte Identity
+## The Bytes Are the Fixture
 
-More than one implementation validates plan structure, and they are required to agree. Agreement is only meaningful if
-they read the same bytes, so this corpus is the shared boundary and its digest is what other repositories verify.
+More than one implementation validates plan structure, and a comparison between them is only meaningful over the same
+bytes. That is why this corpus is excluded from the repository's formatter and Markdown linter: a reformat here is not
+a cosmetic change, it silently alters what the suite tests.
 
-That is why it is excluded from the repository's formatter and Markdown linter. A reformat here is not a cosmetic
-change; it breaks every digest recorded elsewhere and makes two implementations disagree for a reason that has nothing
-to do with either.
+This copy is owned here. Nothing pins it to `ose-rules`, and nothing obliges this repository to notice that the
+catalog moved.
 
 ## Changing the Corpus
 
 Adding a case is normal. Editing one is not, unless the rule it encodes changed.
 
-Any change regenerates `SHA256SUMS` and `CORPUS-DIGEST` and is announced to every implementation that pins the digest,
-in the same change. A corpus that drifts silently is worse than no shared corpus, because both implementations still
-report agreement.
+Any change regenerates `SHA256SUMS` in the same change, so the integrity check keeps describing what is actually
+here.
 
 ## One Rule Per Rejected Case
 

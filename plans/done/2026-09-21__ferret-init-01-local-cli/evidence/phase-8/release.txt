@@ -17,12 +17,18 @@ repo-governance/.../target-file-set.md               the new filename, unenforce
 apps/ferret-cli/README.md                            the install-from-release path
 plans/.../tech-docs/003-...md                         execution status recorded on D16 itself
 
-The workflow checks four things the tag alone does not: the tag carries the ferret-cli/vX.Y.Z form;
-its version equals the version declared in src/ferret/__init__.py; the build reproduces byte for byte
-across two runs; and the built artifact's own `version` output equals the tagged version. It writes no
-branch, so the release is a tag-and-artifact operation and not a deploy.
+The workflow checks five things the tag alone does not: the tag object is annotated rather than
+lightweight; the tag carries the ferret-cli/vX.Y.Z form; its version equals the version declared in
+src/ferret/__init__.py; the build reproduces byte for byte across two runs; and the built artifact's own
+`version` output equals the tagged version. It writes no branch, so the release is a tag-and-artifact
+operation and not a deploy.
 
---- RED proof for the new tests, five mutations, each reverted
+The annotated-tag check was added after the terminal audit, as its finding 15: `gh release create
+--verify-tag` only checks that the tag exists, so a lightweight tag would have published a release that
+does not match the decision the workflow cites in its own comment. A73 records it.
+
+--- RED proof for the new tests, six mutations, each reverted
+M1 to M5 ran before the terminal audit; M6 ran after it, for the annotated-tag check.
 
 --- baseline, unmutated
 exit=0  release contract, expect 0
@@ -43,6 +49,11 @@ exit=1  expect non-zero
 --- M5: pyproject version disagrees with the package version
 exit=1  expect non-zero
 
+--- M6: the annotated-tag comparison always passes (`if [ "$KIND" != "tag" ]` -> `if false`)
+exit=1  expect non-zero
+  FAILED tests/unit/test_release_contract.py::test_the_release_workflow_requires_an_annotated_tag
+  1 failed, 7 passed
+
 --- restored
 exit=0  expect 0
 exit=0  expect 0
@@ -52,9 +63,14 @@ exit=0  expect 0
 ?? apps/ferret-cli/tests/unit/test_release_contract.py
 
 The first mutation breaks the tag round trip, the second points the workflow at a file that is not the
-version source, the third gives the workflow a branch write, the fourth removes the workflow, and the
-fifth makes pyproject.toml disagree with the package. Each turned its suite RED; the restored tree is
-GREEN and carries no unintended change.
+version source, the third gives the workflow a branch write, the fourth removes the workflow, the fifth
+makes pyproject.toml disagree with the package, and the sixth disables the annotated-tag comparison.
+Each turned its suite RED; the restored tree is GREEN and carries no unintended change.
+
+The annotated-tag case reads only the workflow's non-comment lines. The first draft of an earlier case
+matched comment prose describing the rule, which is L30's defect: asserting a string where a property is
+meant. `effective_lines()` strips comments so the prose can neither satisfy nor break a check of the rule
+it describes.
 
 --- suites at this delivery's candidate
   All checks passed!
@@ -71,8 +87,26 @@ GREEN and carries no unintended change.
 The unit count moves from 1224 to 1231: the seven new release-contract cases. Line coverage stays at
 100.00% over 1760 statements, because the new file is a test and adds no production code.
 
+--- after the terminal audit's repairs, re-run uncached on the final tree
+  TOTAL                                       1760      0   100%
+  Required test coverage of 99% reached. Total coverage: 100.00%
+  ============================ 1232 passed in 18.88s =============================
+  ferret-cli:test:quick                    exit=0  (6 features, 38 expanded scenarios, unit+integration)
+  rhino md internal-link validate          exit=0  (12077 links, no findings)
+
+1231 becomes 1232: the eighth release-contract case, the annotated-tag check. Statement count and
+coverage are unchanged for the same reason as above. The integration and e2e suites were not re-run
+after the repairs, because every change since the audited candidate is Markdown plus the workflow file
+and its unit case, and neither suite reads any of them; the e2e figures above are the audit's own and
+carry its finding 10.
+
 --- gates
   rhino governance word-budget validate    exit=0
 
 head=7f4affb6ab3762ec31d0a1536e3c121c43d2614f
 utc=2026-09-22T01:43:49Z
+
+Second write, after the terminal audit's repairs. The head above is `origin/main`, unchanged; the
+sections above marked "after the terminal audit's repairs" and mutation M6 were added at:
+utc=2026-09-22T03:10:41Z
+word-budget re-run at the second write  exit=0

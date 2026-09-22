@@ -279,3 +279,15 @@ Scenario: Remove FERRET without changing harness behaviour
 
 No backend configuration command, sync state, bearer token, server health, HTTP request, GraphQL schema,
 MCP server, dashboard, prompt inspection, automatic human rating, or cloud resource belongs to this plan.
+
+**Reconciliation added by the terminal closure delivery.** Decision D16 authorizes an annotated tag, a
+GitHub release, and a published `checksums.txt`, and the release delivered against it publishes assets to
+GitHub. The terminal audit asked whether that contradicts the cloud-resource exclusion above, and judged
+that it does not: the exclusion names running infrastructure this plan would have to operate — a backend,
+a database, a dashboard, a deployed environment — while a release asset is a published artifact with
+nothing to run, no endpoint, no state, and no cost after publication. The release workflow adds no backend,
+no network client in product code, no frontend, and writes no branch. This paragraph says so explicitly
+rather than leaving a reader to derive it, which is what the audit actually faulted. No acceptance
+criterion is added for the release: writing a new one into an archived PRD after execution would reshape
+the requirements the delivery was judged against, and the release is bound instead by the eight unit cases
+in `apps/ferret-cli/tests/unit/test_release_contract.py`.

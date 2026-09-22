@@ -75,6 +75,16 @@ def test_the_release_workflow_writes_no_branch(forbidden: str) -> None:
     assert offenders == []
 
 
+def test_the_release_workflow_requires_an_annotated_tag() -> None:
+    """D16 selects an annotated tag, and `gh release create --verify-tag` would accept a lightweight one."""
+    lines = effective_lines()
+    reads_the_tag_object = [line for line in lines if "cat-file -t" in line and "refs/tags/" in line]
+    rejects_other_kinds = [line for line in lines if '!= "tag"' in line]
+
+    assert reads_the_tag_object, "the workflow never reads the tag object's type"
+    assert rejects_other_kinds, "the workflow reads the tag object's type and does not act on it"
+
+
 def test_the_release_workflow_fires_on_a_tag_and_never_on_a_branch() -> None:
     lines = effective_lines()
 

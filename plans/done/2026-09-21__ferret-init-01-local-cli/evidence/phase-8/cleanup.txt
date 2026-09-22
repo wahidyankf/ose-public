@@ -26,6 +26,13 @@ worktree <primary>/worktrees/ferret-init-01-local-cli-release   (this closure de
 ferret-init-01-local-cli worktree present: 0
 
 --- local branches of this plan
+The Phase 8 Gate names `git show-ref --verify "refs/heads/$FERRET_BRANCH"` and expects exit 1. The bare
+command exits 128 on a missing ref, printing `fatal: ... not a valid ref`; only `--quiet` exits 1, and
+`--quiet` is what the loop below runs. Both were measured on git 2.39.5 for all four names:
+  bare=128  --quiet=1, for each of the four refs.
+The gate's expectation is wrong about the code, not about the absence. Found by the terminal audit; the
+gate text is left as written and this is the correction, because editing a gate so a result matches it is
+the practice this repository forbids.
   refs/heads/ferret-init-01-local-cli  show-ref exit=1 (1 = absent, as required)
   refs/heads/ferret-init-01-local-cli-closure  show-ref exit=1 (1 = absent, as required)
   refs/heads/ferret-init-01-local-cli-record  show-ref exit=1 (1 = absent, as required)

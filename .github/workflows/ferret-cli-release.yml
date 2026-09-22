@@ -25,6 +25,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          # The tag object itself, not just the commit it points at, because the annotated-tag check
+          # below reads its type. A shallow checkout of a tag ref does not guarantee the object.
+          fetch-tags: true
+          fetch-depth: 0
+
+      # D16 selects an *annotated* tag, and `gh release create --verify-tag` only checks that the tag
+      # exists. A lightweight tag would otherwise publish a release that does not match the decision.
+      - name: Require an annotated tag
+        run: |
+          set -euo pipefail
+          KIND=$(git cat-file -t "refs/tags/${GITHUB_REF_NAME}")
+          if [ "$KIND" != "tag" ]; then
+            echo "Tag '${GITHUB_REF_NAME}' is $KIND, not an annotated tag object" >&2
+            exit 1
+          fi
 
       - uses: ./.github/actions/setup-node
       - uses: ./.github/actions/setup-python
@@ -66,11 +82,11 @@ jobs:
       - name: Prove the build reproduces byte for byte
         run: |
           set -euo pipefail
-          FIRST=$(shasum -a 256 apps/ferret-cli/dist/ferret.pyz | cut -d' ' -f1)
+          FIRST=$(sha256sum apps/ferret-cli/dist/ferret.pyz | cut -d' ' -f1)
           rm -f apps/ferret-cli/dist/ferret.pyz
           ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
             npx nx run ferret-cli:build --skip-nx-cache
-          SECOND=$(shasum -a 256 apps/ferret-cli/dist/ferret.pyz | cut -d' ' -f1)
+          SECOND=$(sha256sum apps/ferret-cli/dist/ferret.pyz | cut -d' ' -f1)
           if [ "$FIRST" != "$SECOND" ]; then
             echo "Rebuild digest $SECOND does not match $FIRST; the artifact is not reproducible" >&2
             exit 1
@@ -93,7 +109,9 @@ jobs:
           mkdir -p release
           cp apps/ferret-cli/dist/ferret.pyz "release/${{ steps.version.outputs.artifact }}"
           cd release
-          shasum -a 256 "${{ steps.version.outputs.artifact }}" > checksums.txt
+          # sha256sum, not shasum: coreutils is guaranteed on the runner. Its output format is the
+          # one the README tells a macOS reader to check the download against.
+          sha256sum "${{ steps.version.outputs.artifact }}" > checksums.txt
           cat checksums.txt
 
       - name: Publish the GitHub release

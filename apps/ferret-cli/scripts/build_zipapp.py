@@ -28,6 +28,12 @@ SHEBANG = b"#!/usr/bin/env python3\n"
 # here would otherwise print a traceback on an interpreter that cannot even parse the package. `2` is what
 # every other "FERRET could not run" reports, and a traceback is not a diagnostic: it carries paths and values
 # the closed failure contract keeps out, and it exits `1`, the status reserved for a result.
+#
+# `KeyboardInterrupt` needs its own clause. It descends from `BaseException` rather than `Exception`, so the
+# handler below never saw it, and an interrupt delivered while a command blocked on stdin printed the very
+# traceback this entry point exists to prevent. Re-raising the signal against a default handler keeps the process
+# genuinely signal-terminated, so `128+N` stays true and a supervisor's `WIFSIGNALED` still reports what happened;
+# exiting `130` normally would look the same to a shell and lie to everything else.
 ENTRY_POINT = (
     "import os\n"
     "import sys\n"
@@ -44,6 +50,10 @@ ENTRY_POINT = (
     "    sys.exit(run())\n"
     "except SystemExit:\n"
     "    raise\n"
+    "except KeyboardInterrupt:\n"
+    "    import signal\n"
+    "    signal.signal(signal.SIGINT, signal.SIG_DFL)\n"
+    "    os.kill(os.getpid(), signal.SIGINT)\n"
     "except Exception:\n"
     "    sys.stderr.write('FERRET error [ferret.internal.failure]: FERRET failed internally\\n')\n"
     "    sys.exit(2)\n"

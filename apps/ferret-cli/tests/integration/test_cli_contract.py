@@ -12,8 +12,11 @@ zipapp with ``subprocess``, so nothing here enters the shipped artifact.
 """
 
 import json
+import os
+import signal
 import subprocess
 import sys
+import time
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -198,6 +201,40 @@ class Runner:
         code = process.wait()
         return Observed(status=code if code >= 0 else 128 - code, stdout="", stderr=stderr)
 
+    def run_and_interrupt(self, *arguments: str) -> Observed:
+        """Interrupt the artifact while it is certainly still running.
+
+        A command that finishes before the signal lands measures the runner's timing, not the artifact, which is why
+        this drives `capture`: it blocks reading standard input, and a pipe nobody ever writes to keeps it blocked for
+        as long as the probe needs. The write end stays open in this process so the read never sees end-of-file and
+        returns early.
+        """
+        read_fd, write_fd = os.pipe()
+        try:
+            # the interpreter is the one running these tests; the artifact is this test's own
+            process = subprocess.Popen(
+                [sys.executable, str(self._artifact), *arguments],
+                stdin=read_fd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                env=self.environment(),
+            )
+            os.close(read_fd)
+            read_fd = -1
+            time.sleep(1.0)
+            process.send_signal(signal.SIGINT)
+            stdout, stderr = process.communicate(timeout=30)
+        finally:
+            if read_fd != -1:
+                os.close(read_fd)
+            os.close(write_fd)
+        code = process.returncode
+        return Observed(
+            status=code if code >= 0 else 128 - code,
+            stdout=stdout.decode(errors="replace"),
+            stderr=stderr.decode(errors="replace"),
+        )
+
     def initialize(self) -> None:
         """Create the store, so a command that needs one is measured rather than refused for being uninitialized.
 
@@ -250,7 +287,13 @@ def probe_exit(runner: Runner, subject: Subject, identifier: str) -> Outcome | N
             )
 
         case "cli.exit.interrupt-is-one-three-zero":
-            return unmeasured("the artifact exits faster than a delivered signal can be observed reliably")
+            observed = runner.run_and_interrupt("capture")
+            if observed.status == 130 and not observed.stderr:
+                return PASSED
+            return failed(
+                f"expected exit 130 and a silent stderr, observed exit {observed.status}"
+                f" and {first_line(observed.stderr)!r}"
+            )
 
         case "cli.exit.vocabulary-is-closed":
             return expect_closed_vocabulary(runner)

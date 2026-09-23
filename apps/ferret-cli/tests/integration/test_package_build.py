@@ -4,9 +4,11 @@ import hashlib
 import marshal
 import os
 import shutil
+import signal
 import stat
 import subprocess
 import sys
+import time
 import zipfile
 from pathlib import Path
 
@@ -192,3 +194,42 @@ def test_the_artifact_loads_its_modules_from_bytecode(tmp_path: Path) -> None:
 
     assert completed.returncode == 0
     assert completed.stdout.strip().endswith("ferret.pyz/ferret/cli.pyc")
+
+
+def test_an_interrupt_while_a_command_blocks_exits_one_three_zero_without_a_traceback(tmp_path: Path) -> None:
+    """`KeyboardInterrupt` descends from `BaseException`, so the entry point needs its own clause for it.
+
+    Without one, an interrupt delivered while `capture` blocks on stdin printed a full traceback carrying
+    absolute paths — the disclosure the closed failure contract exists to prevent — even though the status
+    was already `130`. This drives the artifact through a pipe nobody writes to, so the read genuinely blocks.
+    """
+    target = tmp_path / "ferret.pyz"
+    build_zipapp.build(SOURCE, target)
+
+    read_fd, write_fd = os.pipe()
+    try:
+        process = subprocess.Popen(  # the interpreter is the one running these tests; the artifact is this test's own
+            [sys.executable, str(target), "capture"],
+            stdin=read_fd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            env={"PATH": "/usr/bin:/bin", "HOME": str(tmp_path)},
+        )
+        os.close(read_fd)
+        read_fd = -1
+        time.sleep(1.0)  # long enough that the process is certainly inside the blocking read
+        process.send_signal(signal.SIGINT)
+        _, errors = process.communicate(timeout=30)
+    finally:
+        if read_fd != -1:
+            os.close(read_fd)
+        os.close(write_fd)
+
+    # A shell renders "died by SIGINT" as 130, which is what `128+N` names. Keeping the process
+    # genuinely signal-terminated is why this asserts the negative return code rather than 130:
+    # exiting 130 normally would satisfy a shell and lie to anything reading `WIFSIGNALED`.
+    assert process.returncode == -signal.SIGINT
+    assert "Traceback" not in errors
+    assert "KeyboardInterrupt" not in errors
+    assert errors == ""

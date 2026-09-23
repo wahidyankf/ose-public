@@ -1,6 +1,7 @@
 """E2E bindings for the query and export feature: the built artifact, seeded only through its own commands."""
 
 import json
+import re
 import sqlite3
 from collections.abc import Mapping
 from contextlib import closing
@@ -20,7 +21,8 @@ from local_commands import LOCAL_COMMANDS, backend_traces, run_local_commands
 FEATURE = "../../../../specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature"
 WORKSPACE_A = "ws_00000000000000000000000000000001"
 WORKSPACE_B = "ws_00000000000000000000000000000002"
-MATCHING = (3, 4, 5)
+# An absolute path as it could appear in a diagnostic: a slash that starts a word, up to the next space or quote.
+ABSOLUTE_PATH = re.compile(rb"(?<![\w.])/[^\s\"']+")
 FAILURE_CODES = {
     "ferret.args.invalid": 2,
     "ferret.storage.unsafe": 2,
@@ -31,7 +33,6 @@ FAILURE_CODES = {
 INVOCATIONS: dict[str, tuple[list[str], str]] = {
     "init": (["init"], "init"),
     "events list": (["events", "list"], "events.list"),
-    "events export": (["events", "export", "--format", "jsonl"], "events.export"),
     "usage": (["usage", "--group-by", "harness,tool"], "usage"),
     "outcomes": (["outcomes", "--group-by", "harness,tool"], "outcomes"),
     "status": (["status"], "status"),
@@ -66,6 +67,8 @@ class Session:
     listing: Completed | None = None
     repeat: Completed | None = None
     export: Completed | None = None
+    quiet: Completed | None = None
+    refused: Completed | None = None
     command: str = ""
     machine: Completed | None = None
     human: Completed | None = None
@@ -156,39 +159,47 @@ def given_two_workspaces_and_two_harnesses(session: Session) -> None:
     assert stored_values(session, "harness") == {"codex", "claude_code"}
 
 
+def with_harness(filters: list[str], harness: str) -> list[str]:
+    """The same filters with the harness value replaced."""
+    position = filters.index("--harness") + 1
+    return [*filters[:position], harness, *filters[position + 1 :]]
+
+
 @when("the user filters by UTC interval, harness, workspace, event type, and outcome")
 def when_filtered(session: Session) -> None:
     filters = filter_arguments(session.now)
     session.listing = session.run(["events", "list", "--json", *filters])
     session.repeat = session.run(["events", "list", "--json", *filters])
     session.export = session.run(["events", "export", "--format", "jsonl", *filters])
+    # The same filters once for a harness with no events, whose human listing has a diagnostic to write, and once with
+    # a malformed harness, which is refused.
+    session.quiet = session.run(["events", "list", *with_harness(filters, "opencode")])
+    session.refused = session.run(["events", "export", "--format", "jsonl", *with_harness(filters, "Bad")])
 
 
-@then("only matching events are returned in stable timestamp and event-ID order")
-def then_only_matching_events_in_stable_order(session: Session) -> None:
+@then("only matching events are listed, newest first by timestamp and then event ID")
+def then_only_matching_events_newest_first(session: Session) -> None:
     assert session.listing is not None
     assert (session.listing.returncode, session.listing.stderr) == (0, b"")
     items = json.loads(session.listing.stdout)["items"]
-    assert [int(item["eventId"][-12:]) for item in items] == sorted(MATCHING, reverse=True)
+    # Events 4 and 5 share a timestamp, so the event ID breaks the tie in the same newest-first direction.
+    assert [int(item["eventId"][-12:]) for item in items] == [5, 4, 3]
     assert session.repeat == session.listing
 
 
-@then("JSON Lines export contains one canonical event object per line")
-def then_export_is_one_canonical_object_per_line(session: Session) -> None:
+@then("the JSON Lines export holds one canonical event object per line, oldest first by timestamp and then event ID")
+def then_export_is_one_canonical_object_per_line_oldest_first(session: Session) -> None:
     assert session.export is not None
     assert (session.export.returncode, session.export.stderr) == (0, b"")
     stored = {int(document["eventId"][-12:]): document for document in session.population}
-    assert session.export.stdout.splitlines(keepends=True) == [line_of(stored[number]) for number in MATCHING]
+    assert session.export.stdout.splitlines(keepends=True) == [line_of(stored[number]) for number in (3, 4, 5)]
 
 
 @then("diagnostics do not contaminate standard output")
 def then_diagnostics_stay_off_standard_output(session: Session) -> None:
-    quiet = session.run(["events", "list", "--harness", "opencode"])
-    refused = session.run(["events", "export", "--format", "jsonl", "--harness", "Bad"])
-
     # `1` because the query matched nothing, and the line saying so is on stderr, not stdout.
-    assert quiet == Completed(1, b"", b"No rows.\n")
-    assert refused == Completed(2, b"", b"ferret: [ferret.filter.invalid] a filter value is not valid\n")
+    assert session.quiet == Completed(1, b"", b"No rows.\n")
+    assert session.refused == Completed(2, b"", b"ferret: [ferret.filter.invalid] a filter value is not valid\n")
 
 
 @scenario(FEATURE, "Emit a stable machine-readable command result")
@@ -228,11 +239,6 @@ def when_run_with_json(session: Session, command: str) -> None:
 @then("stdout is one JSON object carrying schemaVersion and command")
 def then_stdout_is_one_json_object(session: Session) -> None:
     assert session.machine is not None
-    if session.command == "events export":
-        # The one stream command: stdout is the data itself, so it refuses a JSON wrapper rather than mixing them.
-        assert (session.machine.returncode, session.machine.stdout) == (2, b"")
-        assert json.loads(session.machine.stderr)["error"]["code"] == "ferret.args.invalid"
-        return
     assert (session.machine.returncode, session.machine.stderr) == (0, b"")
     assert session.machine.stdout.count(b"\n") == 1
     document = json.loads(session.machine.stdout)
@@ -333,10 +339,6 @@ def then_human_output_derives_from_the_same_result(session: Session) -> None:
     assert session.machine is not None
     assert session.human is not None
     assert (session.human.returncode, session.human.stderr) == (0, b"")
-    if session.command == "events export":
-        ordered = sorted(session.population, key=lambda document: (document["occurredAt"], document["eventId"]))
-        assert session.human.stdout.splitlines(keepends=True) == [line_of(document) for document in ordered]
-        return
     document = json.loads(session.machine.stdout)
     text = session.human.stdout.decode()
     if session.command in ("status", "maintenance", "self install", "self uninstall"):
@@ -374,6 +376,51 @@ def then_a_failure_is_a_closed_error_without_a_path(session: Session) -> None:
     assert failed.returncode == envelope["exitCode"] == FAILURE_CODES[envelope["error"]["code"]]
     assert set(envelope["error"]) == {"code", "message", "field", "retryable"}
     assert str(session.home).encode() not in failed.stderr
+    # Any absolute path the diagnostic does carry lies inside the resolved data home.
+    homes = {str(session.data_home).encode(), str(session.data_home.resolve()).encode()}
+    outside = [
+        path
+        for path in ABSOLUTE_PATH.findall(failed.stderr)
+        if not any(path == home or path.startswith(home + b"/") for home in homes)
+    ]
+    assert outside == []
+
+
+@scenario(FEATURE, "Keep the export a raw stream when JSON is requested")
+def test_keep_the_export_a_raw_stream_when_json_is_requested() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+@when("the user exports events once with --json and once without it")
+def when_export_with_and_without_json(session: Session) -> None:
+    arguments = ["events", "export", "--format", "jsonl"]
+    session.machine = session.run([*arguments, "--json"])
+    session.human = session.run(arguments)
+
+
+@then("the export with --json exits 2 with the closed ferret.args.invalid error on stderr and nothing on stdout")
+def then_the_json_export_is_refused(session: Session) -> None:
+    assert session.machine is not None
+    assert (session.machine.returncode, session.machine.stdout, session.machine.stderr.count(b"\n")) == (2, b"", 1)
+    assert json.loads(session.machine.stderr) == {
+        "schemaVersion": 1,
+        "command": "events.export",
+        "exitCode": 2,
+        "error": {
+            "code": "ferret.args.invalid",
+            "message": "unrecognized or incomplete arguments",
+            "field": None,
+            "retryable": False,
+        },
+    }
+
+
+@then("the export without --json writes one canonical event object per line")
+def then_the_plain_export_is_json_lines(session: Session) -> None:
+    assert session.human is not None
+    assert (session.human.returncode, session.human.stderr) == (0, b"")
+    stored = {int(document["eventId"][-12:]): document for document in session.population}
+    assert session.human.stdout.splitlines(keepends=True) == [line_of(stored[number]) for number in (1, 2, 3)]
 
 
 @scenario(FEATURE, "Use FERRET without a backend")

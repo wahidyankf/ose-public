@@ -4,10 +4,11 @@ The unit tests decide every branch of the guard from pure inputs. What they cann
 generated ``__main__.py`` really reaches the guard before importing the command line, that the guard really
 replaces the process, and that the archive really runs to completion on the interpreter it picked.
 
-These run the real artifact in a real subprocess. Only one thing is injected — the version the guard reads —
-because a second Python release cannot be conjured on every host, and making the suite depend on one would trade
-this defect for a host-dependent gate. The driver patches ``sys.version_info`` and nothing else, so every path it
-exercises below that line is the shipped one.
+These run the real artifact in a real subprocess. Two things are injected. The version the guard reads, because
+a second Python release cannot be conjured on every host, and making the suite depend on one would trade this
+defect for a host-dependent gate. And an empty list of fallback directories, so the interpreters the guard can
+find are exactly those on the ``PATH`` each test gives, not whatever this machine has installed. The driver
+patches those two values and nothing else, so every path it exercises below them is the shipped one.
 """
 
 import subprocess
@@ -18,7 +19,7 @@ import pytest
 
 import build_zipapp
 from ferret import __version__
-from ferret._bootstrap import OVERRIDE_VARIABLE, SENTINEL_VARIABLE
+from ferret._bootstrap import OVERRIDE_VARIABLE
 
 SOURCE = Path(__file__).resolve().parents[2] / "src"
 
@@ -27,6 +28,10 @@ DRIVER = """import sys
 sys.version_info = {version}
 sys.argv = [{archive!r}] + {arguments!r}
 sys.path.insert(0, {archive!r})
+
+import ferret._bootstrap
+
+ferret._bootstrap.FALLBACK_DIRECTORIES = ()
 
 import runpy
 
@@ -45,7 +50,7 @@ def artifact(tmp_path_factory: pytest.TempPathFactory) -> Path:
 def as_if_old(
     artifact: Path, arguments: list[str], *, environment: dict[str, str], version: tuple[int, int, int]
 ) -> subprocess.CompletedProcess[str]:
-    """Run the artifact's own entry point with the guard told it is on ``version``."""
+    """Run the artifact's own entry point with the guard told it is on ``version`` and searching ``PATH`` only."""
     driver = DRIVER.format(version=version, archive=str(artifact), arguments=arguments)
     return subprocess.run([sys.executable, "-c", driver], capture_output=True, text=True, check=False, env=environment)
 
@@ -79,8 +84,8 @@ def test_an_older_interpreter_with_nothing_to_restart_on_exits_two_with_one_line
     ran = as_if_old(
         artifact,
         ["version"],
-        # The sentinel stands in for the one case a test cannot build: every search directory examined, none usable.
-        environment={"PATH": str(empty), SENTINEL_VARIABLE: "1", "HOME": str(tmp_path)},
+        # Nothing on PATH and no fallback directory: the search really runs and really finds nothing.
+        environment={"PATH": str(empty), "HOME": str(tmp_path)},
         version=(3, 13, 12),
     )
     assert ran.returncode == 2

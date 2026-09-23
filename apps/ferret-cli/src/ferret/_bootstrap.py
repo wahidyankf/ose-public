@@ -74,10 +74,16 @@ def search_directories(environ: Mapping[str, str]) -> list[str]:
 
 
 def _executable(path: str) -> bool:
+    """The real probe: a regular file the current user may execute."""
     return os.path.isfile(path) and os.access(path, os.X_OK)
 
 
-def candidates(environ: Mapping[str, str], required: Sequence[int] = REQUIRED) -> list[str]:
+def candidates(
+    environ: Mapping[str, str],
+    required: Sequence[int] = REQUIRED,
+    listdir: Callable[[str], Sequence[str]] | None = None,
+    is_executable: Callable[[str], bool] | None = None,
+) -> list[str]:
     """Every ``python<major>.<minor>`` in the search path that claims to satisfy ``required``.
 
     The version comes from the file's name, not from running it: asking each one costs a process, and this runs
@@ -86,11 +92,14 @@ def candidates(environ: Mapping[str, str], required: Sequence[int] = REQUIRED) -
 
     The result is ordered by version, highest first, so a host that later gains 3.15 uses it without a new
     release; ties keep search-path order, so the first directory on ``PATH`` still wins.
+
+    ``listdir`` and ``is_executable`` are the only filesystem this reads; both default to the real one, and a
+    unit test passes an in-memory host instead.
     """
     found: list[tuple[tuple[int, int], int, str]] = []
     for position, directory in enumerate(search_directories(environ)):
         try:
-            names = sorted(os.listdir(directory))
+            names = sorted((listdir or os.listdir)(directory))
         except OSError:
             continue
         for name in names:
@@ -99,22 +108,27 @@ def candidates(environ: Mapping[str, str], required: Sequence[int] = REQUIRED) -
                 continue
             version = (int(matched.group(1)), int(matched.group(2)))
             path = os.path.join(directory, name)
-            if supports(version, required) and _executable(path):
+            if supports(version, required) and (is_executable or _executable)(path):
                 found.append((version, position, path))
     found.sort(key=lambda row: (-row[0][0], -row[0][1], row[1]))
     return [row[2] for row in found]
 
 
-def choose(environ: Mapping[str, str], required: Sequence[int] = REQUIRED) -> str | None:
+def choose(
+    environ: Mapping[str, str],
+    required: Sequence[int] = REQUIRED,
+    listdir: Callable[[str], Sequence[str]] | None = None,
+    is_executable: Callable[[str], bool] | None = None,
+) -> str | None:
     """The interpreter to hand control to, or ``None`` when no suitable one can be found.
 
     ``FERRET_PYTHON`` wins whenever it names an executable, so a host with an unusual layout can be fixed
     without waiting for a release; it is trusted as given and not version-checked by name.
     """
     override = environ.get(OVERRIDE_VARIABLE, "")
-    if override and _executable(override):
+    if override and (is_executable or _executable)(override):
         return override
-    available = candidates(environ, required)
+    available = candidates(environ, required, listdir, is_executable)
     return available[0] if available else None
 
 
@@ -146,6 +160,8 @@ def relaunch(
     required: Sequence[int] = REQUIRED,
     execute: Callable[[str, list[str], Mapping[str, str]], None] | None = None,
     report: Callable[[str], None] | None = None,
+    listdir: Callable[[str], Sequence[str]] | None = None,
+    is_executable: Callable[[str], bool] | None = None,
 ) -> int | None:
     """Restart this archive on a suitable interpreter, or report why it cannot, and say whether to carry on.
 
@@ -155,12 +171,15 @@ def relaunch(
 
     The sentinel is set on the child rather than checked on the parent alone, so a name that claims a version it
     does not have costs exactly one extra process and then produces the diagnostic.
+
+    ``execute``, ``report``, ``listdir`` and ``is_executable`` default to the real process and filesystem; they
+    exist so the whole decision can be driven in-process.
     """
     version = running_version()
     if supports(version, required):
         return None
     if environ.get(SENTINEL_VARIABLE) != "1":
-        interpreter = choose(environ, required)
+        interpreter = choose(environ, required, listdir, is_executable)
         if interpreter is not None:
             child = dict(environ)
             child[SENTINEL_VARIABLE] = "1"

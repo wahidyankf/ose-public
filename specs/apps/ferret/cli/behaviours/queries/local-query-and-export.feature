@@ -6,8 +6,8 @@ Feature: Query and export local telemetry deterministically
   Scenario: Filter and export deterministic local events
     Given the database contains events from two workspaces and two harnesses
     When the user filters by UTC interval, harness, workspace, event type, and outcome
-    Then only matching events are returned in stable timestamp and event-ID order
-    And JSON Lines export contains one canonical event object per line
+    Then only matching events are listed, newest first by timestamp and then event ID
+    And the JSON Lines export holds one canonical event object per line, oldest first by timestamp and then event ID
     And diagnostics do not contaminate standard output
 
   Scenario Outline: Emit a stable machine-readable command result
@@ -21,13 +21,18 @@ Feature: Query and export local telemetry deterministically
       | command        |
       | init           |
       | events list    |
-      | events export  |
       | usage          |
       | outcomes       |
       | status         |
       | maintenance    |
       | self install   |
       | self uninstall |
+
+  Scenario: Keep the export a raw stream when JSON is requested
+    Given FERRET is initialized
+    When the user exports events once with --json and once without it
+    Then the export with --json exits 2 with the closed ferret.args.invalid error on stderr and nothing on stdout
+    And the export without --json writes one canonical event object per line
 
   Scenario: Use FERRET without a backend
     Given no backend URL, token, or process exists

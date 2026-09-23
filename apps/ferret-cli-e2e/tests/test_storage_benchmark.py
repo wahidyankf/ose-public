@@ -1,6 +1,16 @@
-"""The benchmark's own rules: percentiles, projections, the acceptance gate, and the rows it seeds."""
+"""The benchmark's own rules, and what it measures of a real store built by the artifact.
 
+The pure rules (percentiles, projections, the acceptance gate, and the rows it seeds) are checked directly. The
+measured figures are checked by running the benchmark as a separate process against the built artifact: bytes per
+event and index share come from real stores, and the planning-envelope gate judges a size that was really measured.
+"""
+
+import json
+import subprocess
+import sys
 from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -18,6 +28,13 @@ from storage_benchmark import (
 )
 from synthetic_store import RETENTION, WORKSPACES, synthetic_rows
 
+BENCHMARK = Path(__file__).resolve().parents[1] / "src" / "storage_benchmark.py"
+SEED = 20260918
+CAPTURE_SAMPLES = "3"
+REPRESENTATIVE_EVENTS = 1000
+# Two events cannot outweigh the schema's fixed pages, so the measured size per event lies far above the envelope.
+TOO_FEW_FOR_THE_ENVELOPE = 2
+EXPLANATION = "the fixed schema pages dominate a two-event fixture"
 NOW = datetime(2026, 9, 18, 8, 15, 30, tzinfo=UTC)
 INSIDE = 1000.0
 ENOUGH = 10 * 1024 * 1024
@@ -107,3 +124,80 @@ def test_the_seeded_rows_split_exactly_at_the_retention_cutoff() -> None:
     assert [str(row[3]) for row in rows] == sorted(str(row[3]) for row in rows)
     assert len({row[0] for row in rows}) == 200
     assert {row[8] for row in rows} <= set(WORKSPACES)
+
+
+def run_benchmark(
+    artifact: Path, scratch: Path, events: int, *extra: str
+) -> tuple[subprocess.CompletedProcess[str], dict[str, Any]]:
+    """The benchmark as a separate process against ``artifact``, and the aggregate result it wrote."""
+    output = scratch / f"storage-{events}-{len(extra)}.json"
+    ran = subprocess.run(  # the interpreter is the one running these tests; the benchmark is this project's own
+        [
+            sys.executable,
+            str(BENCHMARK),
+            "--events",
+            str(events),
+            "--seed",
+            str(SEED),
+            "--output",
+            str(output),
+            "--artifact",
+            str(artifact),
+            "--capture-samples",
+            CAPTURE_SAMPLES,
+            *extra,
+        ],
+        capture_output=True,
+        text=True,
+        env={"PATH": "/usr/bin:/bin"},
+        timeout=300,
+        check=False,
+    )
+    report: dict[str, Any] = json.loads(output.read_text())
+    return ran, report
+
+
+def test_the_benchmark_reports_bytes_per_event_and_index_share_of_a_measured_store(
+    artifact: Path, tmp_path: Path
+) -> None:
+    ran, report = run_benchmark(artifact, tmp_path, REPRESENTATIVE_EVENTS)
+
+    assert (ran.returncode, ran.stderr) == (0, "")
+    database_bytes = report["insertion"]["afterCheckpoint"]["databaseBytes"]
+    assert report["perEvent"]["bytesPerEvent"] == round(database_bytes / REPRESENTATIVE_EVENTS, 1)
+    assert report["perEvent"]["indexShare"] == round(report["space"]["indexBytes"] / database_bytes, 3)
+    assert 0 < report["perEvent"]["indexShare"] < 1
+    assert ENVELOPE_MIN_BYTES_PER_EVENT <= report["perEvent"]["bytesPerEvent"] <= ENVELOPE_MAX_BYTES_PER_EVENT
+    assert report["acceptance"] == {"state": "within_envelope", "problems": [], "explanation": None}
+    assert report["reclamation"]["expiredEventCount"] == REPRESENTATIVE_EVENTS // 2
+    assert report["reclamation"]["observedPeakBytes"] <= (
+        report["reclamation"]["reportedHighWaterBytes"] + PEAK_ALLOWANCE_BYTES
+    )
+    labels = [line.split(":")[0] for line in ran.stdout.splitlines()]
+    assert labels[:5] == [
+        "FERRET storage benchmark",
+        "Empty schema",
+        "Loaded before checkpoint",
+        "Loaded after checkpoint",
+        "Per event",
+    ]
+    assert "Maintenance" in labels
+
+
+def test_a_measured_size_outside_the_planning_envelope_fails_the_gate_until_it_is_explained(
+    artifact: Path, tmp_path: Path
+) -> None:
+    refused, unexplained = run_benchmark(artifact, tmp_path, TOO_FEW_FOR_THE_ENVELOPE)
+    accepted, explained = run_benchmark(artifact, tmp_path, TOO_FEW_FOR_THE_ENVELOPE, "--explanation", EXPLANATION)
+
+    database_bytes = unexplained["insertion"]["afterCheckpoint"]["databaseBytes"]
+    assert unexplained["perEvent"]["bytesPerEvent"] == round(database_bytes / TOO_FEW_FOR_THE_ENVELOPE, 1)
+    assert unexplained["perEvent"]["bytesPerEvent"] > ENVELOPE_MAX_BYTES_PER_EVENT
+    assert refused.returncode == 1
+    assert unexplained["acceptance"]["state"] == "unexplained"
+    assert any("planning envelope" in problem for problem in unexplained["acceptance"]["problems"])
+    assert "Acceptance: unexplained" in refused.stdout.splitlines()
+    assert (accepted.returncode, accepted.stderr) == (0, "")
+    assert explained["acceptance"]["state"] == "explained"
+    assert explained["acceptance"]["explanation"] == EXPLANATION
+    assert explained["perEvent"] == unexplained["perEvent"]

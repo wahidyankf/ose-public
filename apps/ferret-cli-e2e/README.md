@@ -14,7 +14,7 @@ private `HOME`, and real stdin, stdout, stderr, and exit codes.
 | `tests/test_user_install.py`      | user install, in-place update, interrupted-install recovery, and an uninstall that removes only what FERRET owns    |
 | `tests/test_harness_adapters.py`  | vendor fixtures for the shared POSIX wrapper (Claude Code, Codex) and the OpenCode plugin: forwarded, stored, quiet |
 | `tests/test_adapter_latency.py`   | the adapter latency tool's own rules; no process is timed                                                           |
-| `tests/test_storage_benchmark.py` | the storage benchmark tool's own rules: percentiles, projections, acceptance, and the rows it seeds                 |
+| `tests/test_storage_benchmark.py` | the storage benchmark's rules, and its bytes-per-event, index-share, and envelope verdicts on real measured stores  |
 | `tests/steps/`                    | the pytest-bdd step definitions that bind the six feature files of the corpus for this adapter                      |
 
 ## Measuring tools

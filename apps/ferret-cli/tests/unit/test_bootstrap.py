@@ -1,12 +1,14 @@
 """The interpreter guard: which interpreter FERRET runs on, and what a host without a suitable one is told.
 
-Every case here is pure. The one thing that cannot be faked — that this module and its neighbours parse under an
-interpreter older than the package requires — is held by the grammar cases at the end.
+Every case here is pure: the host an interpreter is searched for on is an in-memory ``Host`` handed to the
+production functions through their filesystem probes, and the defaults those probes fall back to are proven by
+standing in for the ``os`` functions themselves. The one thing that cannot be faked — that this module and its
+neighbours parse under an interpreter older than the package requires — is held by the grammar cases at the end.
 """
 
 import ast
 import os
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 
 import pytest
@@ -36,11 +38,20 @@ def only_path(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(_bootstrap, "FALLBACK_DIRECTORIES", ())
 
 
-def executable(directory: Path, name: str) -> Path:
-    path = directory / name
-    path.write_text("#!/bin/sh\nexit 0\n")
-    path.chmod(0o755)
-    return path
+class Host:
+    """An in-memory filesystem: what each directory lists, and which of the listed paths may be executed."""
+
+    def __init__(self, directories: Mapping[str, Sequence[str]], executables: Sequence[str] = ()) -> None:
+        self.directories = {directory: list(names) for directory, names in directories.items()}
+        self.executables = set(executables)
+
+    def listdir(self, directory: str) -> list[str]:
+        if directory not in self.directories:
+            raise FileNotFoundError(directory)
+        return list(self.directories[directory])
+
+    def is_executable(self, path: str) -> bool:
+        return path in self.executables
 
 
 def test_the_repeated_exit_status_equals_the_closed_failure_contract() -> None:
@@ -86,65 +97,100 @@ def test_a_missing_path_variable_still_searches_the_usual_locations() -> None:
     assert os.path.expanduser("~/.local/bin") in search_directories({})
 
 
-def test_candidates_reads_the_version_from_the_name_and_ignores_one_too_old(tmp_path: Path, only_path: None) -> None:
-    executable(tmp_path, "python3.13")
-    wanted = executable(tmp_path, "python3.14")
-    executable(tmp_path, "python3")
-    executable(tmp_path, "pythonesque")
-    assert candidates({"PATH": str(tmp_path)}) == [str(wanted)]
+def test_candidates_reads_the_version_from_the_name_and_ignores_one_too_old(only_path: None) -> None:
+    names = ["python3.13", "python3.14", "python3", "pythonesque"]
+    host = Host({"/bin": names}, [f"/bin/{name}" for name in names])
+    assert candidates({"PATH": "/bin"}, listdir=host.listdir, is_executable=host.is_executable) == ["/bin/python3.14"]
 
 
-def test_candidates_prefers_the_highest_version_wherever_it_is_found(tmp_path: Path, only_path: None) -> None:
-    early, late = tmp_path / "early", tmp_path / "late"
-    early.mkdir()
-    late.mkdir()
-    lower = executable(early, "python3.14")
-    higher = executable(late, "python3.15")
-    assert candidates({"PATH": f"{early}{os.pathsep}{late}"}) == [str(higher), str(lower)]
+def test_candidates_prefers_the_highest_version_wherever_it_is_found(only_path: None) -> None:
+    host = Host({"/early": ["python3.14"], "/late": ["python3.15"]}, ["/early/python3.14", "/late/python3.15"])
+    found = candidates({"PATH": "/early:/late"}, listdir=host.listdir, is_executable=host.is_executable)
+    assert found == ["/late/python3.15", "/early/python3.14"]
 
 
-def test_candidates_break_a_version_tie_by_search_path_order(tmp_path: Path, only_path: None) -> None:
-    early, late = tmp_path / "early", tmp_path / "late"
-    early.mkdir()
-    late.mkdir()
-    first = executable(early, "python3.14")
-    second = executable(late, "python3.14")
-    assert candidates({"PATH": f"{early}{os.pathsep}{late}"}) == [str(first), str(second)]
+def test_candidates_break_a_version_tie_by_search_path_order(only_path: None) -> None:
+    host = Host({"/early": ["python3.14"], "/late": ["python3.14"]}, ["/early/python3.14", "/late/python3.14"])
+    found = candidates({"PATH": "/early:/late"}, listdir=host.listdir, is_executable=host.is_executable)
+    assert found == ["/early/python3.14", "/late/python3.14"]
 
 
-def test_candidates_skip_a_name_that_is_not_executable_and_a_directory(tmp_path: Path, only_path: None) -> None:
-    (tmp_path / "python3.14").write_text("not executable\n")
-    (tmp_path / "python3.16").mkdir()
-    assert candidates({"PATH": str(tmp_path)}) == []
+def test_candidates_skip_a_name_that_is_not_executable(only_path: None) -> None:
+    # A plain file and a directory both list under a versioned name; neither is something the guard can start.
+    host = Host({"/bin": ["python3.14", "python3.16"]})
+    assert candidates({"PATH": "/bin"}, listdir=host.listdir, is_executable=host.is_executable) == []
 
 
-def test_candidates_skip_a_directory_that_cannot_be_listed(tmp_path: Path, only_path: None) -> None:
-    assert candidates({"PATH": str(tmp_path / "absent")}) == []
+def test_candidates_skip_a_directory_that_cannot_be_listed(only_path: None) -> None:
+    host = Host({"/bin": ["python3.14"]}, ["/bin/python3.14"])
+    found = candidates({"PATH": "/absent:/bin"}, listdir=host.listdir, is_executable=host.is_executable)
+    assert found == ["/bin/python3.14"]
 
 
 def test_a_bare_environment_still_finds_an_interpreter_through_the_fallback_directories(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     # The hook path is exactly this: a harness may hand the wrapper a PATH with no interpreter on it at all.
-    wanted = executable(tmp_path, "python3.14")
-    monkeypatch.setattr(_bootstrap, "FALLBACK_DIRECTORIES", (str(tmp_path),))
-    assert choose({"PATH": "/nowhere"}) == str(wanted)
+    monkeypatch.setattr(_bootstrap, "FALLBACK_DIRECTORIES", ("/opt/fallback",))
+    host = Host({"/nowhere": [], "/opt/fallback": ["python3.14"]}, ["/opt/fallback/python3.14"])
+    assert choose({"PATH": "/nowhere"}, listdir=host.listdir, is_executable=host.is_executable) == (
+        "/opt/fallback/python3.14"
+    )
 
 
-def test_the_override_wins_over_every_discovered_candidate(tmp_path: Path, only_path: None) -> None:
-    executable(tmp_path, "python3.14")
-    pinned = executable(tmp_path, "pinned")
-    assert choose({"PATH": str(tmp_path), OVERRIDE_VARIABLE: str(pinned)}) == str(pinned)
+def test_the_override_wins_over_every_discovered_candidate(only_path: None) -> None:
+    host = Host({"/bin": ["python3.14", "pinned"]}, ["/bin/python3.14", "/bin/pinned"])
+    environment = {"PATH": "/bin", OVERRIDE_VARIABLE: "/bin/pinned"}
+    assert choose(environment, listdir=host.listdir, is_executable=host.is_executable) == "/bin/pinned"
 
 
-def test_an_override_that_names_nothing_executable_is_ignored(tmp_path: Path, only_path: None) -> None:
-    wanted = executable(tmp_path, "python3.14")
-    assert choose({"PATH": str(tmp_path), OVERRIDE_VARIABLE: str(tmp_path / "absent")}) == str(wanted)
+def test_an_override_that_names_nothing_executable_is_ignored(only_path: None) -> None:
+    host = Host({"/bin": ["python3.14"]}, ["/bin/python3.14"])
+    environment = {"PATH": "/bin", OVERRIDE_VARIABLE: "/bin/absent"}
+    assert choose(environment, listdir=host.listdir, is_executable=host.is_executable) == "/bin/python3.14"
 
 
-def test_choose_returns_nothing_when_the_host_has_no_suitable_interpreter(tmp_path: Path, only_path: None) -> None:
-    executable(tmp_path, "python3.13")
-    assert choose({"PATH": str(tmp_path)}) is None
+def test_choose_returns_nothing_when_the_host_has_no_suitable_interpreter(only_path: None) -> None:
+    host = Host({"/bin": ["python3.13"]}, ["/bin/python3.13"])
+    assert choose({"PATH": "/bin"}, listdir=host.listdir, is_executable=host.is_executable) is None
+
+
+def test_by_default_the_search_reads_the_real_directory_listing_and_wants_a_regular_executable_file(
+    monkeypatch: pytest.MonkeyPatch, only_path: None
+) -> None:
+    # No probe is passed, so this is the wiring every real start gets. The os functions themselves are stood in for,
+    # for the fake host's paths only, so nothing on disk is read and pytest's own use of them is left alone.
+    real_listdir, real_isfile, real_access = os.listdir, os.path.isfile, os.access
+    asked: list[tuple[str, str]] = []
+
+    def listdir(directory: str) -> list[str]:
+        if not directory.startswith("/fake-host"):
+            return real_listdir(directory)
+        asked.append(("listdir", directory))
+        return ["python3.14"]
+
+    def isfile(path: str) -> bool:
+        if not path.startswith("/fake-host"):
+            return real_isfile(path)
+        asked.append(("isfile", path))
+        return True
+
+    def access(path: str, mode: int) -> bool:
+        if not path.startswith("/fake-host"):
+            return real_access(path, mode)
+        asked.append(("access", path))
+        return mode == os.X_OK
+
+    monkeypatch.setattr(_bootstrap.os, "listdir", listdir)
+    monkeypatch.setattr(_bootstrap.os.path, "isfile", isfile)
+    monkeypatch.setattr(_bootstrap.os, "access", access)
+
+    assert choose({"PATH": "/fake-host/bin"}) == "/fake-host/bin/python3.14"
+    assert asked == [
+        ("listdir", "/fake-host/bin"),
+        ("isfile", "/fake-host/bin/python3.14"),
+        ("access", "/fake-host/bin/python3.14"),
+    ]
 
 
 def test_the_diagnosis_names_both_versions_and_the_override_but_no_path() -> None:
@@ -175,63 +221,80 @@ def test_the_running_version_reads_the_interpreter_executing_the_module(monkeypa
 
 
 def test_an_old_interpreter_restarts_the_archive_on_the_one_it_found(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, only_path: None
+    monkeypatch: pytest.MonkeyPatch, only_path: None
 ) -> None:
     monkeypatch.setattr(_bootstrap.sys, "version_info", (3, 13, 12))
-    wanted = executable(tmp_path, "python3.14")
+    host = Host({"/bin": ["python3.14"]}, ["/bin/python3.14"])
     seen: list[tuple[str, list[str], dict[str, str]]] = []
 
     def record(path: str, argv: list[str], environ: Mapping[str, str]) -> None:
         seen.append((path, argv, dict(environ)))
 
     outcome = relaunch(
-        "/archive.pyz", ["events", "list"], {"PATH": str(tmp_path)}, execute=record, report=never_reports
+        "/archive.pyz",
+        ["events", "list"],
+        {"PATH": "/bin"},
+        execute=record,
+        report=never_reports,
+        listdir=host.listdir,
+        is_executable=host.is_executable,
     )
     assert outcome is None
     assert seen == [
         (
-            str(wanted),
-            [str(wanted), "/archive.pyz", "events", "list"],
-            {"PATH": str(tmp_path), SENTINEL_VARIABLE: "1"},
+            "/bin/python3.14",
+            ["/bin/python3.14", "/archive.pyz", "events", "list"],
+            {"PATH": "/bin", SENTINEL_VARIABLE: "1"},
         )
     ]
 
 
 def test_an_old_interpreter_with_nothing_to_restart_on_reports_and_gives_the_exit_status(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, only_path: None
+    monkeypatch: pytest.MonkeyPatch, only_path: None
 ) -> None:
     monkeypatch.setattr(_bootstrap.sys, "version_info", (3, 13, 12))
+    host = Host({"/bin": ["python3", "python3.13"]}, ["/bin/python3", "/bin/python3.13"])
     reported: list[str] = []
     outcome = relaunch(
         "/archive.pyz",
         [],
-        {"PATH": str(tmp_path)},
+        {"PATH": "/bin"},
         execute=never_executes,
         report=reported.append,
+        listdir=host.listdir,
+        is_executable=host.is_executable,
     )
     assert outcome == EXIT_CALLER_ERROR
     assert reported == [diagnosis((3, 13, 12))]
 
 
 def test_an_interpreter_that_cannot_be_started_is_its_own_status_and_never_a_traceback(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, only_path: None
+    monkeypatch: pytest.MonkeyPatch, only_path: None
 ) -> None:
     # The guard exists because this interpreter cannot parse the package, so an OSError escaping here would become
     # a traceback on the one interpreter that cannot produce a useful one -- and under a hook, no output at all.
     monkeypatch.setattr(_bootstrap.sys, "version_info", (3, 13, 12))
-    wanted = executable(tmp_path, "python3.14")
+    host = Host({"/bin": ["python3.14"]}, ["/bin/python3.14"])
 
     def refuses(path: str, argv: list[str], environ: Mapping[str, str]) -> None:
         raise OSError(8, "Exec format error")
 
     reported: list[str] = []
-    outcome = relaunch("/archive.pyz", [], {"PATH": str(tmp_path)}, execute=refuses, report=reported.append)
+    outcome = relaunch(
+        "/archive.pyz",
+        [],
+        {"PATH": "/bin"},
+        execute=refuses,
+        report=reported.append,
+        listdir=host.listdir,
+        is_executable=host.is_executable,
+    )
 
     assert outcome == EXIT_NOT_EXECUTABLE == 126
-    assert reported == [unstartable(str(wanted))]
+    assert reported == [unstartable("/bin/python3.14")]
 
 
-def test_the_unstartable_line_names_the_interpreter_and_the_override_and_nothing_else(tmp_path: Path) -> None:
+def test_the_unstartable_line_names_the_interpreter_and_the_override_and_nothing_else() -> None:
     line = unstartable("/opt/python3.14")
 
     assert "/opt/python3.14" in line
@@ -240,18 +303,20 @@ def test_the_unstartable_line_names_the_interpreter_and_the_override_and_nothing
 
 
 def test_a_second_old_interpreter_diagnoses_rather_than_restarting_again(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, only_path: None
+    monkeypatch: pytest.MonkeyPatch, only_path: None
 ) -> None:
     # The name claimed 3.14 and the interpreter behind it is not; without the sentinel this would restart forever.
     monkeypatch.setattr(_bootstrap.sys, "version_info", (3, 13, 12))
-    executable(tmp_path, "python3.14")
+    host = Host({"/bin": ["python3.14"]}, ["/bin/python3.14"])
     reported: list[str] = []
     outcome = relaunch(
         "/archive.pyz",
         [],
-        {"PATH": str(tmp_path), SENTINEL_VARIABLE: "1"},
+        {"PATH": "/bin", SENTINEL_VARIABLE: "1"},
         execute=never_executes,
         report=reported.append,
+        listdir=host.listdir,
+        is_executable=host.is_executable,
     )
     assert outcome == EXIT_CALLER_ERROR
     assert reported == [diagnosis((3, 13, 12))]

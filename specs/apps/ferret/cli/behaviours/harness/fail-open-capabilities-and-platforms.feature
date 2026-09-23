@@ -17,16 +17,18 @@ Feature: Fail open and report harness capabilities honestly
       | unable to open SQLite                             |
       | blocked by a concurrent writer beyond the timeout |
 
-  Scenario: Mark an unobservable capability unknown
-    Given the selected harness exposes tool events but no stable skill lifecycle event
+  Scenario: Count skill invocations the harness could not name as unknown, not as zero usage
+    Given a harness recorded skill invocations, some of which it could not name
     When the user requests usage grouped by skill for that harness
-    Then the result marks skill subject visibility as unknown
-    And the result does not report zero skill invocations as an observed fact
+    Then each named skill is counted as observed usage
+    And the unnamed invocations are counted as unknown subjects in a group of their own
+    And no skill the harness never invoked is reported with a zero count
+    And the result states that unknown subject visibility is not zero usage
 
   Scenario: Remove FERRET without changing harness behaviour
     Given supported harness adapters are configured to call FERRET
-    When the ferret executable and local integration are removed
-    Then every harness continues to run normally
+    When the user runs self uninstall
+    Then every harness adapter still exits zero without writing to either stream or capturing an event
     And the repository contains no newly generated telemetry data
     And the existing user database remains recoverable or removable by an explicit user action
 
@@ -46,7 +48,7 @@ Feature: Fail open and report harness capabilities honestly
     Given the artifact is started by <interpreter>
     When the user runs any FERRET command
     Then FERRET <outcome>
-    And no Python traceback and no syntax error reaches the caller
+    And no Python traceback reaches the caller
 
     Examples:
       | interpreter                                             | outcome                                            |
@@ -55,7 +57,7 @@ Feature: Fail open and report harness capabilities honestly
       | an older interpreter with no supported one reachable    | exits 2 naming the version it requires             |
 
   Scenario Outline: Keep one POSIX adapter fail-open at the wrapper boundary
-    Given a <harness> binding invokes the shared wrapper
+    Given the <harness> hook runs the shared POSIX wrapper
     When <condition>
     Then the wrapper exits zero and writes nothing to either stream
     And any surviving child is terminated by TERM at 900 milliseconds and KILL at 1000 milliseconds
@@ -66,5 +68,15 @@ Feature: Fail open and report harness capabilities honestly
       | claude_code | the event is not one FERRET registers                  |
       | codex       | the payload carries raw content fields                 |
       | codex       | the ferret executable is missing                       |
-      | opencode    | the plugin forwards an invalid payload                 |
-      | opencode    | the child process hangs past the deadline              |
+      | claude_code | the child process hangs past the deadline              |
+
+  Scenario Outline: Keep the OpenCode plugin fail-open at its process boundary
+    Given OpenCode runs the FERRET plugin for a lifecycle hook
+    When <condition>
+    Then the plugin completes the hook without an error and writes nothing to either stream
+    And any surviving child is terminated by TERM at 900 milliseconds and KILL at 1000 milliseconds
+
+    Examples:
+      | condition                                 |
+      | the plugin forwards an invalid payload    |
+      | the child process hangs past the deadline |

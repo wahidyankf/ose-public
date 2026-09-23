@@ -428,6 +428,23 @@ toolchains:
     - { id: java, executable: java, probe: [--version], required: true }
     - { id: docker, executable: docker, probe: [--version], required: true }
     - { id: jq, executable: jq, probe: [--version], required: true }
+    # Native binaries the declared gates below invoke from PATH: `bash` runs every gate script,
+    # `curl` fetches the pinned ./rhino, ./hippo, and public-safety scanner releases on a cold
+    # cache, and the rest are the formatters `scripts/format-staged` calls per staged extension.
+    # Deliberately undeclared, per the cross-language lint-strictness policy: npm-lockfile tools
+    # (prettier, markdownlint-cli2, stylua, buildifier), `gofmt` and `npx` (shipped with go and
+    # npm), Gradle (projects run their own wrapper), the digest-pinned scanner, base utilities.
+    - { id: bash, executable: bash, probe: [--version], required: true }
+    - { id: curl, executable: curl, probe: [--version], required: true }
+    - { id: rustfmt, executable: rustfmt, probe: [--version], required: true }
+    - { id: fantomas, executable: fantomas, probe: [--version], required: true }
+    - { id: csharpier, executable: csharpier, probe: [--version], required: true }
+    - { id: ruff, executable: ruff, probe: [--version], required: true }
+    - { id: mix, executable: mix, probe: [--version], required: true }
+    - { id: dart, executable: dart, probe: [--version], required: true }
+    - { id: shfmt, executable: shfmt, probe: [--version], required: true }
+    - { id: tofu, executable: tofu, probe: [--version], required: true }
+    - { id: clang-format, executable: clang-format, probe: [--version], required: true }
 
 gates:
   composition:

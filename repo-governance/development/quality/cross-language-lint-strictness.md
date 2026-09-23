@@ -12,8 +12,8 @@ cross-language lint gates and the policy that binds them.
 
 ## Documents
 
-- [Policy](./cross-language-lint-strictness/policy.md) — The warning-and-above threshold, two enforcement points, toolchain convergence, clean-then-gate rollout, and documented-waivers-only rule for every cross-language lint gate. Use when adding a new lint gate, deciding its failure threshold, or documenting a lint-rule waiver.
-- [Gated standards](./cross-language-lint-strictness/gated-standards.md) — The table of every currently-gated artifact type, its linter, threshold/config, and CI job. Use when checking which linter and CI job gates a given artifact type (shell, Dockerfile, GitHub Actions YAML, F#, Markdown, formatting).
+- [Policy](./cross-language-lint-strictness/policy.md) — The warning-and-above threshold, two enforcement points, toolchain convergence and its exemptions, clean-then-gate rollout, and documented-waivers-only rule for every cross-language lint gate. Use when adding a new lint gate, deciding its failure threshold, declaring a gate's binary under toolchains, or documenting a lint-rule waiver.
+- [Gated standards](./cross-language-lint-strictness/gated-standards.md) — The table of every currently-gated artifact type, its tool, threshold/config, and enforcement point, plus the lint tools that currently have no gate. Use when checking which tool and CI job gate a given artifact type (Markdown, formatting, F#), or whether shell, Dockerfile, or GitHub Actions YAML lint is gated.
 
 **See also**: [markdown.md](../quality/markdown.md), [repository-validation.md](../quality/repository-validation.md).
 
@@ -34,13 +34,16 @@ cross-language lint gates and the policy that binds them.
 
 ## Configuration files
 
+`.shellcheckrc` and `.hadolint.yaml` are retained for a re-admitted gate; neither tool is gated
+today (see [Gated standards](./cross-language-lint-strictness/gated-standards.md)).
+
 - `.shellcheckrc` — `shell=bash`, `external-sources=true`; no repo-wide disables.
 - `.hadolint.yaml` — `failure-threshold: warning`; `trustedRegistries`
   (`docker.io`, `mcr.microsoft.com`, `ghcr.io`); `ignored: [DL3008, DL3018]`
   (OS-package version-pinning is brittle — reproducibility comes from the pinned
   base-image tag, not per-package pins).
-- `.config/dotnet-tools.json` — pins `fantomas`, `dotnet-fsharplint`, and
-  `fsharp-analyzers` for `dotnet tool restore`.
+- `.config/dotnet-tools.json` — pins `fantomas`, `dotnet-fsharplint`, `fsharp-analyzers`, and
+  `csharpier` for `dotnet tool restore`.
 
 ## Rationale and history
 

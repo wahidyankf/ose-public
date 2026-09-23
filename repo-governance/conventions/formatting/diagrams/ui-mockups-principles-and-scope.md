@@ -9,7 +9,7 @@ This section governs how draft UI screens are represented inside plan documents 
 `plans/`). It is part of the diagrams convention because plan UI mockups are a third visualization
 category alongside Mermaid diagrams and ASCII art, and keeping them here avoids convention sprawl.
 
-Originating plan: [`plans/done/2026-06-16__plan-doc-ui-mockup-convention/`](../../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/)
+Originating plan: `plans/done/2026-06-16__plan-doc-ui-mockup-convention/`
 
 ## Principles in Practice (UI Mockups)
 

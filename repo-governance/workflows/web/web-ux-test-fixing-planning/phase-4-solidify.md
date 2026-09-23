@@ -31,7 +31,7 @@ component under `apps/`/`libs/`, the plan is **UI-bearing** and MUST carry an `a
 the both-tiers mockups required by the
 [UI Mockups in Plan Docs convention](../../../conventions/formatting/diagrams/ui-mockups-principles-and-scope.md#ui-mockups-in-plan-docs-principles-in-practice-and-scope),
 exactly as the originating
-[salary-savings-calculator plan](../../../../plans/done/2026-06-19__ayokoding-www-salary-savings-calculator/assets)
+salary-savings-calculator plan
 does:
 
 - **Tier 1 (low-fidelity)** — ASCII/Unicode wireframes inline, plus a `ui-<screen>-low-fi-alternatives.md`

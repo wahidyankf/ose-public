@@ -20,7 +20,7 @@ This document records every decision in the cross-repo deviation matrix for the
 HARD Gherkin convention rule — one primary `Given`, one `When`, one `Then` per
 `Scenario` — across the sibling repositories: ose-public (this repo) and
 the private sibling. The full matrix lives in
-[`plans/done/2026-06-07__gherkin-step-keyword-cardinality/tech-docs.md`](../../plans/done/2026-06-07__gherkin-step-keyword-cardinality/tech-docs.md).
+`plans/done/2026-06-07__gherkin-step-keyword-cardinality/tech-docs.md`.
 
 Sibling plan:
 
@@ -167,5 +167,5 @@ reason.
 - [Acceptance Criteria Convention](../../repo-governance/development/infra/acceptance-criteria.md) — canonical rule text
 - [Behaviour-Driven Development](../../repo-governance/development/behaviour-driven-development.md) — how specs are consumed
 - [Plan Domain Parity — Design Decisions (2026-06-06)](./plan-domain-parity-decisions.md) — precedent doc this follows
-- [Plan Delivery Checklist](../../plans/done/2026-06-07__gherkin-step-keyword-cardinality/delivery.md) — full phased execution plan
-- [Technical Documentation](../../plans/done/2026-06-07__gherkin-step-keyword-cardinality/tech-docs.md) — deviation matrix source
+- Plan Delivery Checklist — full phased execution plan
+- Technical Documentation — deviation matrix source

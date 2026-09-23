@@ -16,7 +16,7 @@ when_to_use: "Use when you need a link to a related convention or an external mi
 
 **Project Plans:**
 
-- [Auth Register/Login Tech Docs](../../../../plans/done/2026-04-22__auth-register-login/tech-docs.md) - Reference implementation of the `users` table applying this pattern
+- Auth Register/Login Tech Docs - Reference implementation of the `users` table applying this pattern
 
 **External (F# / DbUp / EF Core):**
 

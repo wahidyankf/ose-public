@@ -9,7 +9,7 @@ when_to_use: "Use when choosing a mockup format and need to confirm it will rend
 
 The following rendering-support matrix summarises the candidate formats evaluated during the
 research that produced this section (research in
-[tech-docs.md](../../../../plans/done/2026-06-16__plan-doc-ui-mockup-convention/tech-docs.md)):
+tech-docs.md):
 
 | Format                           | VSCode built-in | VSCode + extension      | GitHub.com              | Diffable      | Lint-safe |
 | -------------------------------- | --------------- | ----------------------- | ----------------------- | ------------- | --------- |

@@ -51,10 +51,10 @@ event. What each harness can and cannot report is in
 Every `ferret-cli/vX.Y.Z` tag publishes one platform-independent zipapp and its digest.
 
 ```bash
-BASE=https://github.com/wahidyankf/ose-public/releases/download/ferret-cli/v0.3.1
-curl -fLO "$BASE/ferret-cli_v0.3.1.pyz" && curl -fLO "$BASE/checksums.txt"
+BASE=https://github.com/wahidyankf/ose-public/releases/download/ferret-cli/v0.3.2
+curl -fLO "$BASE/ferret-cli_v0.3.2.pyz" && curl -fLO "$BASE/checksums.txt"
 shasum -a 256 -c checksums.txt
-python3 ferret-cli_v0.3.1.pyz self install --target user
+python3 ferret-cli_v0.3.2.pyz self install --target user
 ```
 
 Verify the digest before running it.

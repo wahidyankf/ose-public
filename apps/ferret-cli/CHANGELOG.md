@@ -8,6 +8,19 @@ Entries describe what a consumer can observe: commands, flags, exit codes, error
 They are not a commit list. For the commits behind any release, see its
 [comparison on GitHub](https://github.com/wahidyankf/ose-public/releases).
 
+## [v0.3.2] — 2026-09-23
+
+Nothing a caller can observe changed. The artifact is rebuilt because two internal seams moved, and the version moves
+in the patch position so the published digest names exactly the sources it was built from.
+
+### Changed
+
+- The fail-open callback and `ferret status` reach the hook-failure record through the runtime rather than the
+  filesystem directly. The record's location, format, bound, and the refusal to write into an unsafe data home are
+  unchanged.
+- The interpreter search behind the start-up guard reads the filesystem through two probes that default to the real
+  one. Which interpreter is chosen, the restart, and the diagnostic when none is found are unchanged.
+
 ## [v0.3.1] — 2026-09-23
 
 A tool call whose result is an image is now recorded when it completes. The version moves in the patch position:

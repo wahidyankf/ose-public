@@ -55,7 +55,7 @@ ENTRY_POINT = (
     "    signal.signal(signal.SIGINT, signal.SIG_DFL)\n"
     "    os.kill(os.getpid(), signal.SIGINT)\n"
     "except Exception:\n"
-    "    sys.stderr.write('FERRET error [ferret.internal.failure]: FERRET failed internally\\n')\n"
+    "    sys.stderr.write('ferret: [ferret.internal.failure] FERRET failed internally\\n')\n"
     "    sys.exit(2)\n"
 )
 FIXED_TIMESTAMP = (1980, 1, 1, 0, 0, 0)

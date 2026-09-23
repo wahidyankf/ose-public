@@ -188,7 +188,7 @@ def then_diagnostics_stay_off_standard_output(session: Session) -> None:
 
     # `1` because the query matched nothing, and the line saying so is on stderr, not stdout.
     assert quiet == Completed(1, b"", b"No rows.\n")
-    assert refused == Completed(2, b"", b"FERRET error [ferret.filter.invalid]: a filter value is not valid\n")
+    assert refused == Completed(2, b"", b"ferret: [ferret.filter.invalid] a filter value is not valid\n")
 
 
 @scenario(FEATURE, "Emit a stable machine-readable command result")

@@ -303,9 +303,7 @@ def test_a_database_that_is_not_a_database_is_a_closed_integrity_failure_without
     assert (listing.code, listing.stdout) == (2, "")
     assert json.loads(listing.stderr)["error"]["code"] == "ferret.storage.integrity-failure"
     assert (exported.code, exported.stdout) == (2, "")
-    assert (
-        exported.stderr == "FERRET error [ferret.storage.integrity-failure]: the database failed its integrity check\n"
-    )
+    assert exported.stderr == "ferret: [ferret.storage.integrity-failure] the database failed its integrity check\n"
     assert str(machine.home) not in listing.stderr + exported.stderr
 
 

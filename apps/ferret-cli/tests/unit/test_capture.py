@@ -209,4 +209,4 @@ def test_a_rejected_capture_json_failure_names_the_field_and_no_value() -> None:
 def test_a_rejected_capture_text_failure_is_the_frozen_literal() -> None:
     outcome = run(["capture"], initialized_world(encode({**VECTOR_DOCUMENT, "prompt": "canary"})))
 
-    assert outcome == Outcome(2, "", "FERRET error [ferret.event.invalid]: the event is not a valid FERRET event\n")
+    assert outcome == Outcome(2, "", "ferret: [ferret.event.invalid] the event is not a valid FERRET event\n")

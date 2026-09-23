@@ -89,9 +89,7 @@ def test_a_closed_failure_keeps_its_code_and_exit_status_and_carries_no_value(ou
             },
         }
     else:
-        assert (
-            outcome.stderr == "FERRET error [ferret.storage.unsafe]: the data home is not private to the current user\n"
-        )
+        assert outcome.stderr == "ferret: [ferret.storage.unsafe] the data home is not private to the current user\n"
 
 
 def test_a_retryable_failure_says_so() -> None:

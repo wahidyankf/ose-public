@@ -513,7 +513,7 @@ def probe_arguments_and_configuration(runner: Runner, subject: Subject, identifi
 
         case "cli.diagnostics.name-the-tool-first":
             observed = runner.run("--no-such-flag")
-            if observed.stderr.startswith(("ferret:", "FERRET error")):
+            if observed.stderr.startswith("ferret:"):
                 return PASSED
             return failed(f"the diagnostic does not name the tool first: {first_line(observed.stderr)!r}")
 

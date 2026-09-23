@@ -547,7 +547,7 @@ def test_an_invalid_group_by_or_filter_writes_only_a_closed_error(command: str) 
         "exitCode": 2,
         "error": {
             "code": "ferret.args.invalid",
-            "message": "unrecognized or incomplete arguments; run 'ferret --help' for usage",
+            "message": "unrecognized or incomplete arguments",
             "field": None,
             "retryable": False,
         },
@@ -555,7 +555,7 @@ def test_an_invalid_group_by_or_filter_writes_only_a_closed_error(command: str) 
     assert run_cli(world, [command, "--group-by", "harness", "--harness", "Bad"]) == (
         2,
         "",
-        "FERRET error [ferret.filter.invalid]: a filter value is not valid\n",
+        "ferret: [ferret.filter.invalid] a filter value is not valid\n",
     )
 
 

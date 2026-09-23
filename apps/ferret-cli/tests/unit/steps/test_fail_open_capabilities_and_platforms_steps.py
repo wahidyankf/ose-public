@@ -1,7 +1,10 @@
 """Unit bindings for the harness capabilities feature, in process with every OS dependency faked.
 
-The two adapter outlines are the exception: their subjects are a POSIX shell script and a TypeScript plugin with no
-in-process seam, so their bindings here run the real wrapper, and the real plugin under Node, against stand-ins.
+The harness adapters themselves are script subjects: a POSIX shell script and a TypeScript plugin this Python runner
+cannot load in process. Where a scenario's subject is one of them -- the two adapter outlines, FERRET not installed,
+and the adapters after an uninstall -- the binding runs the real wrapper, or the real plugin under Node, as the
+repository's Script-Subject Unit Proof allows: every ``ferret`` it can reach is a stand-in, its home and search path
+are private (see ``support.wrapper.isolate``), nothing opens a network or a store, and each run has a deadline.
 """
 
 import hashlib
@@ -34,14 +37,20 @@ from support.populate import NO_OUTCOME, make_event, world_with
 from support.wrapper import (
     DEADLINE_SECONDS,
     Behaviour,
+    Isolation,
     WrapperRun,
     alive,
     assert_term_then_kill,
+    call_logger,
+    isolate,
+    logged_calls,
     recorded_pid,
     run_plugin,
     run_wrapper,
+    spawn_instants,
     stand_in,
     term_recorder,
+    warm,
 )
 
 FEATURE = "../../../../../specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature"
@@ -86,6 +95,7 @@ class Session:
 
     world: World
     installer: RecordingInstall
+    directory: Path
     ran: Ran | None = None
     bystanders: dict[str, tuple[str, int, bytes | str | None]] = field(
         default_factory=lambda: dict[str, tuple[str, int, bytes | str | None]]()
@@ -96,9 +106,9 @@ class Session:
 
 
 @pytest.fixture
-def session() -> Session:
+def session(tmp_path: Path) -> Session:
     world, installer = recording_world(make_event(1))
-    return Session(world=world, installer=installer)
+    return Session(world=world, installer=installer, directory=tmp_path)
 
 
 # Count skill invocations the harness could not name: the real ``usage`` command over events a harness adapter can
@@ -288,6 +298,67 @@ def then_no_startup_file_or_path_is_modified(session: Session) -> None:
     )
 
 
+# Remove FERRET: uninstall runs in process over the fake install area, and the adapters are script subjects, so each
+# moment's layout is written onto a private home with a stand-in ``ferret`` wherever a launcher stands. Before the
+# uninstall every real adapter finds that launcher and calls it once; after it, none can find one.
+ADAPTER_EVENTS = {"claude_code": "tool.completed", "codex": "tool.completed", "opencode": "tool.started"}
+EXPECTED_CALLS = [f"capture-hook --harness {harness} --event {event}" for harness, event in ADAPTER_EVENTS.items()]
+
+
+def run_every_adapter(isolation: Isolation) -> dict[str, WrapperRun]:
+    """Each real harness adapter, run as its harness runs it with no FERRET_BIN, in the isolation's home and path."""
+    home, path = isolation.home, isolation.path
+    payloads = {
+        "claude_code": encode_payload(claude_tool("PostToolUse", duration_ms=5)),
+        "codex": encode_payload(codex_tool("PostToolUse")),
+    }
+    ran = {
+        harness: run_wrapper(harness, ADAPTER_EVENTS[harness], payload, home=home, binary=None, path=path, cwd=home)
+        for harness, payload in payloads.items()
+    }
+    ran["opencode"] = run_plugin(
+        [opencode_call("tool.execute.before")], home=home, binary=None, directory=Path(WORKSPACE), path=path, cwd=home
+    )
+    return ran
+
+
+def assert_silent_in_time(ran: dict[str, WrapperRun]) -> None:
+    """Every adapter exited zero, wrote to neither stream, and returned by the 1,000 ms deadline."""
+    assert set(ran) == set(ADAPTER_EVENTS)
+    for harness, run in ran.items():
+        assert (run.code, run.stdout, run.stderr) == (0, b"", b""), harness
+        assert run.elapsed_seconds < DEADLINE_SECONDS, (harness, run)
+
+
+def home_tree(home: Path) -> dict[str, bytes | None]:
+    """Every path below ``home``, with a file's bytes; directories map to ``None``."""
+    return {
+        str(path.relative_to(home)): None if path.is_dir() else path.read_bytes() for path in sorted(home.rglob("*"))
+    }
+
+
+def materialize(installer: RecordingInstall, home: Path, launcher: bytes) -> None:
+    """Write the fake install area's current objects onto ``home``, with ``launcher`` in place of the launcher's text.
+
+    The launcher the application wrote would start the real artifact; a Unit binding may start only a stand-in.
+    """
+    for path, node in sorted(installer.nodes.items()):
+        assert path.is_relative_to(FAKE_HOME), path
+        target = home / path.relative_to(FAKE_HOME)
+        target.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        if node.kind == "directory":
+            target.mkdir(exist_ok=True)
+        elif node.kind == "symlink":
+            assert node.target is not None
+            target.symlink_to(node.target)
+            continue
+        else:
+            target.write_bytes(launcher if path == installer.paths.launcher else node.content)
+        target.chmod(node.mode)
+    if installer.facts(installer.paths.launcher).kind == "file":
+        warm(home / installer.paths.launcher.relative_to(FAKE_HOME))
+
+
 @scenario(FEATURE, "Remove FERRET without changing harness behaviour")
 def test_remove_ferret_without_changing_harness_behaviour() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
@@ -305,6 +376,10 @@ def given_harness_adapters_call_ferret(session: Session) -> None:
     session.creates_before = len(world.files.creates)
     session.captures_before = world.events.captures
     assert installer.facts(installer.paths.launcher).kind == "file"
+    installed = isolate(session.directory / "installed")
+    materialize(installer, installed.home, call_logger(session.directory / "calls"))
+    assert_silent_in_time(run_every_adapter(installed))
+    assert logged_calls(session.directory / "calls") == EXPECTED_CALLS
 
 
 @when("the user runs self uninstall")
@@ -319,11 +394,16 @@ def then_every_adapter_still_exits_zero(session: Session) -> None:
     document = json.loads(session.ran.stdout)
     installer = session.installer
     assert (session.ran.code, session.ran.stderr, document["result"]) == (0, "", "uninstalled")
-    # In process, the adapters themselves cannot run: this layer proves what uninstall leaves them. Their
-    # configuration is byte-identical, and the launcher each one falls back to is gone, so the next call resolves no
-    # FERRET and takes its exit-zero, silent path; nothing was captured on the way.
     assert objects_by_name(session, HARNESS_FILES) == session.bystanders
-    assert installer.facts(installer.paths.launcher).kind == "missing"
+    # The layout uninstall left, run by the same real adapters: each still exits zero in time and silently, and none
+    # calls a ferret, because no launcher is left to stand one in for.
+    uninstalled = isolate(session.directory / "uninstalled")
+    materialize(installer, uninstalled.home, call_logger(session.directory / "calls"))
+    layout = home_tree(uninstalled.home)
+    assert_silent_in_time(run_every_adapter(uninstalled))
+    assert logged_calls(session.directory / "calls") == EXPECTED_CALLS
+    assert home_tree(uninstalled.home) == layout
+    assert uninstalled.reaches_no_ferret()
     assert session.world.events.captures == session.captures_before
 
 
@@ -373,13 +453,20 @@ class BrokenEvents(FakeEvents):
 
 @dataclass(slots=True)
 class Adapter:
-    """The fake machine an adapter call runs on, the runtime it is given, and what the call produced."""
+    """The fake machine an adapter call runs on, the runtime it is given, and what the call produced.
 
+    With no FERRET installed there is no command to run in process: the subject is then each real harness adapter,
+    run in ``isolation``, and ``processes`` holds what each did.
+    """
+
+    directory: Path
     world: World = field(default_factory=lambda: world_with())
     broken: BrokenEvents | None = None
     expected_codes: list[str] = field(default_factory=lambda: list[str]())
     ran: Ran | None = None
     elapsed_ms: float = 0.0
+    isolation: Isolation | None = None
+    processes: dict[str, WrapperRun] = field(default_factory=lambda: dict[str, WrapperRun]())
 
     @property
     def runtime(self) -> Runtime:
@@ -387,8 +474,8 @@ class Adapter:
 
 
 @pytest.fixture
-def adapter() -> Adapter:
-    return Adapter()
+def adapter(tmp_path: Path) -> Adapter:
+    return Adapter(directory=tmp_path)
 
 
 @scenario(FEATURE, "Keep a harness fail-open after a local failure")
@@ -403,12 +490,9 @@ def given_a_harness_invokes_the_adapter(adapter: Adapter) -> None:
 
 @given(parsers.parse("FERRET is {condition}"))
 def given_ferret_is_in_a_condition(adapter: Adapter, condition: str) -> None:
-    payload = adapter.world.input.data
     if condition == "not installed":
-        # In process there is no executable to be missing; the nearest state is a machine with no data home at all.
-        adapter.world = world_with(initialized=False)
-        adapter.world.input.data = payload
-        adapter.expected_codes = ["ferret.storage.uninitialized"]
+        # No FERRET_BIN, an empty private home, and a search path holding no ferret: the executable is truly missing.
+        adapter.isolation = isolate(adapter.directory)
     elif condition == "given invalid metadata":
         adapter.world.input.data = TRUNCATED_METADATA
         adapter.expected_codes = ["ferret.event.invalid"]
@@ -426,6 +510,9 @@ def given_ferret_is_in_a_condition(adapter: Adapter, condition: str) -> None:
 
 @when("the adapter handles a lifecycle event")
 def when_the_adapter_handles_an_event(adapter: Adapter) -> None:
+    if adapter.isolation is not None:
+        adapter.processes = run_every_adapter(adapter.isolation)
+        return
     monotonic = adapter.world.monotonic
     started = monotonic.now_ns()
     adapter.ran = run_runtime(adapter.runtime, ADAPTER_ARGUMENTS)
@@ -434,6 +521,11 @@ def when_the_adapter_handles_an_event(adapter: Adapter) -> None:
 
 @then("the adapter returns exit code zero within 1000 milliseconds")
 def then_the_adapter_returns_zero_in_time(adapter: Adapter) -> None:
+    if adapter.isolation is not None:
+        # Real processes, so real time: each adapter gave up on the missing executable well inside its deadline.
+        assert set(adapter.processes) == set(ADAPTER_EVENTS)
+        assert all(run.code == 0 and run.elapsed_seconds < DEADLINE_SECONDS for run in adapter.processes.values())
+        return
     assert adapter.ran is not None
     assert adapter.ran.code == 0
     # Time here is the fake monotonic clock: only a wait production itself makes can move it.
@@ -448,6 +540,12 @@ def then_the_adapter_returns_zero_in_time(adapter: Adapter) -> None:
 
 @then("it writes no output into the harness conversation")
 def then_the_adapter_writes_no_output(adapter: Adapter) -> None:
+    if adapter.isolation is not None:
+        assert all((run.stdout, run.stderr) == (b"", b"") for run in adapter.processes.values())
+        # Nothing was created in the home either: no data home, no failure record, no launcher.
+        assert home_tree(adapter.isolation.home) == {}
+        assert adapter.isolation.reaches_no_ferret()
+        return
     assert adapter.ran is not None
     assert (adapter.ran.stdout, adapter.ran.stderr) == ("", "")
     assert adapter.world.events.stored == []
@@ -461,7 +559,7 @@ def then_the_adapter_writes_no_output(adapter: Adapter) -> None:
 
 
 # Keep one POSIX adapter fail-open at the wrapper boundary, and the OpenCode plugin at its own: each real adapter in
-# front of a stand-in ferret that records what it was given.
+# front of a stand-in ferret that records what it was given, inside an isolation whose home stays empty.
 CONTENT_PAYLOAD = encode_payload(
     codex_tool("PostToolUse", tool_response={"output": "raw output the wrapper never reads"})
 )
@@ -472,7 +570,7 @@ RAW_BYTES = b'{"hook_event_name":"PostToolUse","note":"caf\xc3\xa9\r\n\t"}\x00\x
 class Wrapping:
     """One adapter invocation: the harness, the stand-in behind it, and what the adapter did."""
 
-    directory: Path
+    isolation: Isolation
     plugin: bool = False
     harness: str = ""
     event: str = "tool.completed"
@@ -482,24 +580,44 @@ class Wrapping:
     hangs: bool = False
     ran: WrapperRun | None = None
 
+    @property
+    def fakes(self) -> Path:
+        return self.isolation.fakes
+
+    @property
+    def spawn_log(self) -> Path:
+        """Where the plugin driver notes each instant the plugin spawned a child."""
+        return self.fakes / "spawned"
+
     def invoke(self) -> None:
         if self.hangs:
-            binary: Path | None = term_recorder(self.directory)
+            binary: Path | None = term_recorder(self.fakes)
         else:
-            binary = None if self.behaviour is None else stand_in(self.directory, self.behaviour)
+            binary = None if self.behaviour is None else stand_in(self.fakes, self.behaviour)
+        home, path = self.isolation.home, self.isolation.path
         if self.plugin:
-            self.ran = run_plugin([self.call], home=self.directory, binary=binary, directory=Path(WORKSPACE))
+            self.ran = run_plugin(
+                [self.call],
+                home=home,
+                binary=binary,
+                directory=Path(WORKSPACE),
+                path=path,
+                cwd=home,
+                spawn_log=self.spawn_log,
+            )
         else:
-            self.ran = run_wrapper(self.harness, self.event, self.payload, home=self.directory, binary=binary)
+            self.ran = run_wrapper(
+                self.harness, self.event, self.payload, home=home, binary=binary, path=path, cwd=home
+            )
 
     def received(self) -> tuple[list[str], bytes]:
         """The arguments and standard input the stand-in was started with."""
-        return (self.directory / "argv").read_text().split("\n")[:-1], (self.directory / "stdin").read_bytes()
+        return (self.fakes / "argv").read_text().split("\n")[:-1], (self.fakes / "stdin").read_bytes()
 
 
 @pytest.fixture
 def wrapping(tmp_path: Path) -> Wrapping:
-    return Wrapping(directory=tmp_path)
+    return Wrapping(isolation=isolate(tmp_path))
 
 
 @scenario(FEATURE, "Keep one POSIX adapter fail-open at the wrapper boundary")
@@ -565,7 +683,12 @@ def when_the_child_hangs(wrapping: Wrapping) -> None:
 def then_the_wrapper_is_silent(wrapping: Wrapping) -> None:
     assert wrapping.ran is not None
     assert (wrapping.ran.code, wrapping.ran.stdout, wrapping.ran.stderr) == (0, b"", b"")
-    if wrapping.behaviour is not None:
+    assert home_tree(wrapping.isolation.home) == {}
+    if wrapping.behaviour is None:
+        # With no executable anywhere it could look, the wrapper started nothing.
+        assert wrapping.isolation.reaches_no_ferret()
+        assert recorded_pid(wrapping.fakes) is None
+    else:
         # Whatever the wrapper was given reached the child untouched, under the two static registration arguments.
         arguments, stdin = wrapping.received()
         assert stdin == wrapping.payload
@@ -576,6 +699,7 @@ def then_the_wrapper_is_silent(wrapping: Wrapping) -> None:
 def then_the_plugin_is_silent(wrapping: Wrapping) -> None:
     assert wrapping.ran is not None
     assert (wrapping.ran.code, wrapping.ran.stdout, wrapping.ran.stderr) == (0, b"", b"")
+    assert home_tree(wrapping.isolation.home) == {}
     # The plugin forwarded the hook as one JSON document, whatever it held, under its static registration arguments.
     arguments, stdin = wrapping.received()
     assert arguments == ["capture-hook", "--harness", "opencode", "--event", "tool.started"]
@@ -591,11 +715,13 @@ def then_the_plugin_is_silent(wrapping: Wrapping) -> None:
 @then("any surviving child is terminated by TERM at 900 milliseconds and KILL at 1000 milliseconds")
 def then_a_surviving_child_is_terminated(wrapping: Wrapping) -> None:
     assert wrapping.ran is not None
-    pid = recorded_pid(wrapping.directory)
+    pid = recorded_pid(wrapping.fakes)
     if pid is not None:
         assert not alive(pid)
     if not wrapping.hangs:
         # No child outlived its own work, so nothing needed either signal.
         assert wrapping.ran.elapsed_seconds < DEADLINE_SECONDS
         return
-    assert_term_then_kill(wrapping.ran, wrapping.directory, from_call=not wrapping.plugin)
+    spawned = spawn_instants(wrapping.spawn_log) if wrapping.plugin else [None]
+    assert len(spawned) == 1, spawned
+    assert_term_then_kill(wrapping.ran, wrapping.fakes, spawned=spawned[0])

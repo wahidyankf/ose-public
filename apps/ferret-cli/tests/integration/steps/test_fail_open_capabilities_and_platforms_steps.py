@@ -39,6 +39,7 @@ from support.wrapper import (
     recorded_pid,
     run_plugin,
     run_wrapper,
+    spawn_instants,
     stand_in,
     term_recorder,
 )
@@ -424,11 +425,11 @@ def adapter(tmp_path: Path) -> Iterator[Adapter]:
         binding.writer.close()
 
 
-def invoke(adapter: Adapter, binary: Path | None = None) -> WrapperRun:
+def invoke(adapter: Adapter, binary: Path | None = None, spawn_log: Path | None = None) -> WrapperRun:
     chosen = adapter.binary if binary is None else binary
     home = adapter.machine.home
     if adapter.plugin:
-        return run_plugin([adapter.call], home=home, binary=chosen, directory=Path(WORKSPACE))
+        return run_plugin([adapter.call], home=home, binary=chosen, directory=Path(WORKSPACE), spawn_log=spawn_log)
     return run_wrapper(adapter.harness, adapter.event, adapter.payload, home=home, binary=chosen)
 
 
@@ -579,7 +580,7 @@ def when_the_child_hangs(adapter: Adapter) -> None:
     adapter.binary = term_recorder(hung)
     adapter.hangs = True
     adapter.expected_rows = 0
-    adapter.ran = invoke(adapter)
+    adapter.ran = invoke(adapter, spawn_log=hung / "spawned" if adapter.plugin else None)
     adapter.received = ((hung / "argv").read_text().split("\n")[:-1], (hung / "stdin").read_bytes())
 
 
@@ -638,7 +639,9 @@ def then_a_surviving_child_is_terminated(adapter: Adapter) -> None:
     pid = recorded_pid(hung)
     assert pid is not None
     assert not alive(pid)
-    assert_term_then_kill(adapter.ran, hung, from_call=not adapter.plugin)
+    spawned = spawn_instants(hung / "spawned") if adapter.plugin else [None]
+    assert len(spawned) == 1, spawned
+    assert_term_then_kill(adapter.ran, hung, spawned=spawned[0])
 
 
 def derived(key: bytes, kind: str, *parts: str) -> str:

@@ -17,5 +17,8 @@ A complete cleanup covers all four. Stopping after the first is the common failu
    excluding pulled base images, named data volumes, and any stack another session owns. See
    [Docker-Artifact Cleanup](./docker-artifact-cleanup.md).
 
+Alongside them, remove the scratch this plan wrote under `local-tmp/`, never another actor's; see
+[`local-tmp/`](../../infra/temporary-files/local-tmp-directory.md).
+
 Class 4 comes down **first** in execution order, because a running dev stack bind-mounts the
 worktree that class 1 removes.

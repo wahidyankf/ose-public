@@ -15,7 +15,7 @@ from typing import Any
 import pytest
 
 from adapter_cases import HARNESSES, VALID, assert_quiet, expected_row, send_invalid, send_valid, stored_rows
-from hook_bench import Bench
+from hook_bench import Bench, derived
 from hook_wrapper import (
     HUNG_SECONDS,
     KILL_SECONDS,
@@ -28,7 +28,18 @@ from hook_wrapper import (
     within_deadline,
 )
 from synthetic_store import insert_events, synthetic_rows
-from vendor_payloads import CLAUDE_CODE, CODEX, OPENCODE
+from vendor_payloads import (
+    CLAUDE_CODE,
+    CODEX,
+    IMAGE_CANARY,
+    OPENCODE,
+    SESSION,
+    WORKSPACE,
+    claude_tool,
+    codex_view_image,
+    image_data_url,
+    opencode_call,
+)
 
 NOW = datetime(2026, 9, 18, 8, 0, 0, tzinfo=UTC)
 BACKLOG = 250
@@ -157,6 +168,66 @@ MALFORMED_PLUGIN_CALLS: dict[str, dict[str, Any]] = {
     "an empty event": {"hook": "event", "args": [{}]},
     "an event with no properties": {"hook": "event", "args": [{"event": {"type": "session.created"}}]},
 }
+
+
+def opencode_image_completion() -> dict[str, Any]:
+    call = opencode_call("tool.execute.after")
+    call["args"][1]["output"] = image_data_url()
+    return call
+
+
+# A completion whose result is an image, as each harness sends it: the image itself, base64-encoded, so the payload
+# runs to a megabyte and more. Each maps to the same metadata a small result would.
+LARGE_RESULTS: dict[str, tuple[dict[str, Any], dict[str, Any]]] = {
+    CLAUDE_CODE: (
+        claude_tool(
+            "PostToolUse",
+            duration_ms=27,
+            tool_response={"type": "image", "file": {"base64": image_data_url(), "type": "image/png"}},
+        ),
+        {"tool_name": "Read", "outcome_visibility": "observed", "duration_ms": 27, "duration_visibility": "observed"},
+    ),
+    CODEX: (
+        codex_view_image(),
+        {
+            "tool_name": "view_image",
+            "outcome_visibility": "derived",
+            "duration_ms": None,
+            "duration_visibility": "unknown",
+        },
+    ),
+    OPENCODE: (
+        opencode_image_completion(),
+        {"tool_name": "read", "outcome_visibility": "derived", "duration_ms": None, "duration_visibility": "unknown"},
+    ),
+}
+
+
+@pytest.mark.parametrize("harness", HARNESSES)
+def test_a_completion_whose_result_is_a_large_image_is_stored_within_the_deadline(
+    artifact: Path, home: Path, harness: str
+) -> None:
+    """Regression: a result over 256 KiB lost its completion, so no Codex ``view_image`` completion was recorded."""
+    bench = Bench.create(artifact, home, home.parent)
+    document, row = LARGE_RESULTS[harness]
+
+    ran = bench.forward(harness, "tool.completed", document)
+
+    assert_quiet(ran)
+    assert stored_rows(bench) == [
+        {
+            "event_type": "tool.completed",
+            "outcome": "success",
+            "subject_visibility": "observed",
+            **row,
+            "harness": harness,
+            "workspace_id": derived(bench.key(), "ws", WORKSPACE),
+            "session_id": derived(bench.key(), "ss", harness, SESSION),
+        }
+    ]
+    assert IMAGE_CANARY.encode() not in bench.written()
+    assert bench.leaks() == []
+    assert within_deadline(ran)
 
 
 @pytest.mark.parametrize("harness", HARNESSES)

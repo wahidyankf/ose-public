@@ -10,10 +10,11 @@ from pytest_bdd import given, parsers, scenario, then, when
 
 from ferret import cli
 from ferret.application.initialization import initialize_store
+from ferret.application.privacy import RAW_LIMIT_BYTES
 from ferret.commands import build_handlers
 from support.events import VECTOR_DOCUMENT, VECTOR_HASH, encode
 from support.fakes import World, make_world
-from support.hook_payloads import CANARIES, claude_tool
+from support.hook_payloads import CANARIES, IMAGE_CANARY, claude_tool, codex_view_image
 from support.hook_payloads import encode as encode_payload
 
 FEATURE = "../../../../../specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature"
@@ -44,6 +45,7 @@ class Session:
     world: World
     outcome: Outcome | None = None
     category: str | None = None
+    harness: str = "claude_code"
 
 
 @pytest.fixture
@@ -157,7 +159,7 @@ def given_a_raw_payload_with_content(session: Session) -> None:
 def when_capture_hook_maps_the_payload(session: Session) -> None:
     stdout, stderr = io.StringIO(), io.StringIO()
     handlers = build_handlers(lambda: session.world.runtime)
-    argv = ["capture-hook", "--harness", "claude_code", "--event", "tool.completed"]
+    argv = ["capture-hook", "--harness", session.harness, "--event", "tool.completed"]
     code = cli.main(argv, stdout=stdout, stderr=stderr, handlers=handlers)
     session.outcome = Outcome(code, stdout.getvalue(), stderr.getvalue())
 
@@ -182,7 +184,7 @@ def then_the_raw_bytes_are_never_written(session: Session) -> None:
     world = session.world
     written = b"".join(entry.content for entry in world.files.files.values())
     assert not any(canary.encode() in written for canary in CANARIES)
-    assert world.input.reads == [256 * 1024 + 1]
+    assert world.input.reads == [RAW_LIMIT_BYTES + 1]
     assert [event for event in world.events.stored if any(c in json.dumps(event.to_document()) for c in CANARIES)] == []
 
 
@@ -190,3 +192,39 @@ def then_the_raw_bytes_are_never_written(session: Session) -> None:
 def then_no_diagnostic_names_a_value(session: Session) -> None:
     assert session.outcome is not None
     assert (session.outcome.code, session.outcome.stdout, session.outcome.stderr) == (0, "", "")
+
+
+@scenario(FEATURE, "Record a tool completion whose result is a large image")
+def test_record_a_tool_completion_whose_result_is_a_large_image() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+@given("a raw Codex view_image completion whose result is a 1 MiB base64 image")
+def given_a_codex_view_image_completion(session: Session) -> None:
+    session.harness = "codex"
+    session.world.input.data = encode_payload(codex_view_image())
+    assert len(session.world.input.data) > 1024 * 1024
+
+
+@then("one tool-completed event naming view_image is stored")
+def then_one_view_image_completion_is_stored(session: Session) -> None:
+    [event] = session.world.events.stored
+    document = event.to_document()
+    assert (document["harness"], document["eventType"], document["toolName"]) == (
+        "codex",
+        "tool.completed",
+        "view_image",
+    )
+    assert (document["outcome"], document["outcomeVisibility"]) == ("success", "derived")
+    assert (document["durationMs"], document["durationVisibility"]) == (None, "unknown")
+
+
+@then("no part of the image or of the other content reaches the store")
+def then_no_image_or_content_is_stored(session: Session) -> None:
+    world = session.world
+    stored = json.dumps([event.to_document() for event in world.events.stored])
+    written = b"".join(entry.content for entry in world.files.files.values())
+    for canary in (IMAGE_CANARY, *CANARIES):
+        assert canary not in stored
+        assert canary.encode() not in written
+    assert world.input.reads == [RAW_LIMIT_BYTES + 1]

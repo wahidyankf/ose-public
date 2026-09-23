@@ -82,6 +82,29 @@ def codex_tool(hook: str, tool: str = "Bash", **fields: Any) -> dict[str, Any]:
     )
 
 
+# A tool whose result is an image returns the image itself, base64-encoded, so its completion runs to megabytes: every
+# Codex ``view_image`` completion seen in a live session carried 0.4 to 1.4 MB of it. The canary uses only base64
+# characters, so it sits in the data URL the way real image bytes would.
+IMAGE_CANARY = "CanaryImageData9e61"
+IMAGE_BYTES = 1024 * 1024
+
+
+def image_data_url(size: int = IMAGE_BYTES) -> str:
+    """A ``data:`` URL of ``size`` characters whose body is the image canary repeated."""
+    prefix = "data:image/png;base64,"
+    body = IMAGE_CANARY * ((size - len(prefix)) // len(IMAGE_CANARY) + 1)
+    return prefix + body[: size - len(prefix)]
+
+
+def codex_view_image(hook: str = "PostToolUse", size: int = IMAGE_BYTES) -> dict[str, Any]:
+    """Codex's ``view_image`` call; its completion's result is the ``image_url`` and ``detail`` the tool returns."""
+    document = codex_tool(hook, tool="view_image")
+    document["tool_input"] = {"path": ARGUMENT_CANARY, "detail": "original"}
+    if hook == "PostToolUse":
+        document["tool_response"] = {"image_url": image_data_url(size), "detail": "original"}
+    return document
+
+
 def opencode_tool(hook: str, tool: str = "read", **fields: Any) -> dict[str, Any]:
     call = {"tool": tool, "sessionID": SESSION, "callID": "call_0001"}
     if hook == "tool.execute.before":

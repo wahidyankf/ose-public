@@ -392,4 +392,4 @@ def test_hook_projection_rejects_malformed_or_oversized_raw_input(raw: bytes) ->
 
 def test_the_raw_hook_limit_is_larger_than_the_canonical_limit() -> None:
     assert CANONICAL_LIMIT_BYTES == 16 * 1024
-    assert RAW_LIMIT_BYTES == 256 * 1024
+    assert RAW_LIMIT_BYTES == 64 * 1024 * 1024

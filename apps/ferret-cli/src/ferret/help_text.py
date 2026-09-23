@@ -106,7 +106,7 @@ options:
     ("capture-hook",): """\
 usage: ferret capture-hook --harness <harness-slug> --event <registered-event>
 
-Map one raw harness JSON object read from stdin (at most 256 KiB) to a metadata-only
+Map one raw harness JSON object read from stdin (at most 64 MiB) to a metadata-only
 event and store it. Always fails open: it writes nothing to stdout or stderr and exits 0
 whatever happens, so it can never block a harness. It has no --output or --json form.
 

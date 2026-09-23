@@ -17,6 +17,13 @@ Feature: Capture strict metadata
     And the raw bytes stay in memory and are never spooled, logged, or written to SQLite
     And any diagnostic about the payload names no value taken from it
 
+  Scenario: Record a tool completion whose result is a large image
+    Given a raw Codex view_image completion whose result is a 1 MiB base64 image
+    When capture-hook maps it through that harness's allowlist mapper
+    Then one tool-completed event naming view_image is stored
+    And no part of the image or of the other content reaches the store
+    And any diagnostic about the payload names no value taken from it
+
   Scenario Outline: Reject a forbidden capture field
     Given FERRET is initialized with an empty local database
     When an adapter submits an otherwise valid event containing <field>

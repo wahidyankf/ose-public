@@ -13,7 +13,7 @@ from pytest_bdd import given, parsers, scenario, then, when
 
 from event_documents import VECTOR_HASH, encode_document, sealed_event
 from ferret_process import Completed, run_artifact
-from vendor_payloads import CANARIES, claude_tool
+from vendor_payloads import CANARIES, IMAGE_CANARY, claude_tool, codex_view_image
 from vendor_payloads import encode as encode_payload
 
 FEATURE = "../../../../specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature"
@@ -40,6 +40,7 @@ class Session:
     completed: Completed | None = None
     category: str | None = None
     raw: bytes = b""
+    harness: str = "claude_code"
 
     @property
     def data_home(self) -> Path:
@@ -184,7 +185,7 @@ def given_a_raw_payload_with_content(session: Session) -> None:
 def when_capture_hook_maps_the_payload(session: Session) -> None:
     session.completed = run_artifact(
         session.artifact,
-        ["capture-hook", "--harness", "claude_code", "--event", "tool.completed"],
+        ["capture-hook", "--harness", session.harness, "--event", "tool.completed"],
         home=session.home,
         stdin=session.raw,
     )
@@ -218,3 +219,38 @@ def then_the_raw_bytes_are_never_written(session: Session) -> None:
 def then_no_diagnostic_names_a_value(session: Session) -> None:
     assert session.completed is not None
     assert (session.completed.returncode, session.completed.stdout, session.completed.stderr) == (0, b"", b"")
+
+
+# Record a tool completion whose result is a large image: the same command, fed Codex's view_image completion.
+@scenario(FEATURE, "Record a tool completion whose result is a large image")
+def test_record_a_tool_completion_whose_result_is_a_large_image() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+@given("a raw Codex view_image completion whose result is a 1 MiB base64 image")
+def given_a_codex_view_image_completion(session: Session) -> None:
+    initialized = run_artifact(session.artifact, ["init", "--json"], home=session.home)
+    assert (initialized.returncode, initialized.stderr) == (0, b"")
+    session.harness = "codex"
+    session.raw = encode_payload(codex_view_image())
+    assert len(session.raw) > 1024 * 1024
+
+
+@then("one tool-completed event naming view_image is stored")
+def then_one_view_image_completion_is_stored(session: Session) -> None:
+    with closing(sqlite3.connect(session.database)) as connection:
+        rows = connection.execute(
+            "SELECT harness, event_type, tool_name, outcome, outcome_visibility, duration_ms, duration_visibility "
+            "FROM event"
+        ).fetchall()
+    assert rows == [("codex", "tool.completed", "view_image", "success", "derived", None, "unknown")]
+
+
+@then("no part of the image or of the other content reaches the store")
+def then_no_image_or_content_is_stored(session: Session) -> None:
+    everything = {path: path.read_bytes() for path in session.home.parent.rglob("*") if path.is_file()}
+    written = b"".join(everything.values())
+    for canary in (IMAGE_CANARY, *CANARIES):
+        assert canary.encode() not in written
+    # A refused payload would leave its failure record beside the store; an accepted one leaves none.
+    assert {path.name for path in everything} <= STORE_FILES

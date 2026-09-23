@@ -44,7 +44,9 @@ inputs, injected ports, and in-memory collaborators.
 not define the layer.
 
 **Boundary rule**: No real filesystem, process environment, child process, standard stream, network,
-database service, live clock, or uncontrolled randomness. Inject or freeze each such dependency.
+database service, live clock, or uncontrolled randomness. Inject or freeze each such dependency. A
+shell script or harness plugin subject that the Unit runner cannot load in process follows
+[Script-Subject Unit Proof](../../../../../repo-governance/development/behaviour-driven-development/script-subject-unit-proof.md) instead: it runs directly with every collaborator faked.
 
 **Speed**: Milliseconds per test. Hundreds run in seconds.
 

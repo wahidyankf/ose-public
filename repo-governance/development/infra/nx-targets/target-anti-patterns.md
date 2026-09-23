@@ -9,7 +9,9 @@ when_to_use: "Use when reviewing project.json target definitions."
   `specs:behaviour:coverage`.
 - Echo/no-op/success-sentinel targets or runtime aliases used to claim an inapplicable layer.
 - Unit tests whose setup, subject, or assertions touch real filesystem, database, environment,
-  clock, randomness, process, network, or other OS-facing dependencies.
+  clock, randomness, process, network, or other OS-facing dependencies, beyond what
+  [Script-Subject Unit Proof](../../behaviour-driven-development/script-subject-unit-proof.md)
+  permits for a shell script or harness plugin subject.
 - Integration tests that use mocks instead of an owned local boundary, reach an external network or
   a service the test did not start, or use loopback without a `repo-config.yml` allowlist entry.
 - E2E tests that permit network use but do not observe a public boundary.

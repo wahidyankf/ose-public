@@ -122,7 +122,8 @@ mod tests {
 ## Boundary Contract
 
 - **Unit**: mandatory in-process production behaviour with filesystem, environment, process,
-  network, clock, and randomness replaced by deterministic injected ports.
+  network, clock, and randomness replaced by deterministic injected ports; a shell script or harness
+  plugin subject follows [Script-Subject Unit Proof](../../../../../repo-governance/development/behaviour-driven-development/script-subject-unit-proof.md) instead.
 - **Integration**: at least one real isolated same-machine resource, optionally an allowlisted
   loopback socket the test owns, and zero external network. In-memory repositories and intercepted
   HTTP remain Unit proof.

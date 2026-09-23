@@ -8,9 +8,12 @@ when_to_use: Use when an agent creates a worktree or discovers missing dependenc
 Agents that create worktrees via `rtk git worktree add`, the `EnterWorktree` tool, or an
 `isolation: "worktree"` configuration MUST immediately run BOTH
 `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` AND
-`rtk npm run doctor -- --fix` from that worktree's root, in order. The install activates Husky hooks
-as well as dependencies; Doctor fix selects transactional admission. Doing only one step is a rule
-violation.
+`rtk npm run doctor` from that worktree's root, in order. The install activates Husky hooks
+as well as dependencies; Doctor is a read-only validation that already carries its own HIPPO guard.
+Only when it reports drift, run
+`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
+and then `rtk npm run doctor` again. Doing only one step is a rule violation, and the retired
+`npm run doctor -- --fix` form exits 2.
 
 Merely entering an existing worktree does not trigger the sequence again.
 

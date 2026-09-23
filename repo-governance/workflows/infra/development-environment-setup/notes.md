@@ -15,6 +15,6 @@ when_to_use: "Use when you need background on why this workflow behaves the way 
 - **No Windows support**: Windows is not a supported development platform for this repository.
 - **CI parity**: CI uses Docker containers with all tools pre-installed. This workflow ensures
   your local environment matches CI capabilities.
-- **Git worktree compatible**: All commands (`doctor`, `doctor --fix`, `env init`) work
-  correctly from git worktrees. `findGitRoot()` handles both `.git` directories and worktree
-  `.git` files.
+- **Git worktree compatible**: `npm run doctor`, `./rhino toolchain provision --apply`, and
+  `./rhino env init` inspect the repository at the working directory, so they work the same from
+  a worktree root as from the primary checkout.

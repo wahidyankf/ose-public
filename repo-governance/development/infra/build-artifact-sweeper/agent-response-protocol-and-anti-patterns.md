@@ -10,8 +10,9 @@ when_to_use: Use when a build, test, or tooling command fails because an artifac
 When a build, test, lint, or tooling command fails because an artifact is absent:
 
 1. **Do not** file a finding, open a plan, raise a CI blocker, or report a failure to the user.
-2. **Regenerate, then retry the failed step.** `nx build <project>` for build output, `npm install`
-   for dependencies, `npm run doctor -- --fix` for a swept toolchain. A first `cargo`-backed command
+2. **Regenerate, then retry the failed step.** `nx build <project>` for build output, the guarded
+   `npm install` for dependencies, and for a swept toolchain `npm run doctor` followed, only on
+   reported drift, by the transactionally guarded `./rhino toolchain provision --apply`. A first `cargo`-backed command
    after a sweep rebuilds from cold — slow is not broken.
 3. **If regeneration itself fails with a filesystem error inside the artifact directory** — for
    example `No such file or directory` writing a compiled object mid-build, `couldn't create a temp

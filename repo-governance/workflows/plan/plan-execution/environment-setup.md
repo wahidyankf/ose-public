@@ -9,7 +9,7 @@ Before implementing anything, ensure the development environment is ready.
 
 **Note**: The first phase of every delivery checklist must be **Phase 0: Environment Setup and
 Baseline**, executed by the `repo-setup-manager` agent. Phase 0 covers guarded `npm install`,
-transactional `rtk npm run doctor -- --fix`, a baseline test run, and preexisting failure
+read-only `rtk npm run doctor` (provisioning only on reported drift), a baseline test run, and preexisting failure
 resolution. If the delivery checklist contains a Phase 0, delegate it to `repo-setup-manager` before
 proceeding to Step 2. The steps below are the orchestrator-level mirror of Phase 0 — they describe
 what must be true before any plan work begins.
@@ -28,7 +28,9 @@ and file counts never define the boundary. See
   root**, not only the primary checkout. This installs its `node_modules` and activates Husky hooks
   through `prepare`; without it, later Git or Nx work can fail despite another checkout being
   initialized
-- Run `rtk npm run doctor -- --fix` to converge all tooling
+- Run `rtk npm run doctor` to validate all tooling; only when it reports drift, run
+  `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
+  and then `rtk npm run doctor` again
 - Set up project-specific requirements (env vars, DB, Docker, etc.) as specified in the plan
 - Verify dev server starts for affected projects
 - Run existing quality gates to establish a baseline: `./rhino gate run --surface pre-push` (includes `nx affected -t test:quick`)

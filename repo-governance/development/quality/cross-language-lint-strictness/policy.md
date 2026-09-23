@@ -12,9 +12,10 @@ when_to_use: "Use when adding a new lint gate, deciding its failure threshold, o
   **and** in the local Husky hooks (`.husky/pre-commit`). CI is the hard gate;
   the local hook gives fast feedback and degrades gracefully (skips with a hint)
   when the tool is not yet installed, so a fresh checkout can still commit before
-  `npm run doctor -- --fix` runs.
-- **Toolchain convergence**: every gate's binary is registered in the
-  `./rhino toolchain validate` converger, so `npm run doctor -- --fix` installs it.
+  its toolchain is provisioned.
+- **Toolchain convergence**: every gate's binary belongs in the `repo-config.yml` `toolchains`
+  declaration, so `npm run doctor` reports it when missing and `./rhino toolchain provision --apply`
+  provisions it from the entry's declared provisioning.
 - **Clean-then-gate**: a gate is wired ON only after its existing violation
   backlog is cleaned, so the first CI/hook run never breaks on pre-existing
   findings.

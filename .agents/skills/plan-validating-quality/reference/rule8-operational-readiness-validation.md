@@ -17,7 +17,9 @@ entirely missing, since plans lacking them are incomplete regardless of other qu
    specifies which workflows to monitor; instructs watching for and fixing failures.
 3. **Development Environment Setup** — before any work in every selected worktree, new or existing,
    steps run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` at its root and then
-   `rtk npm run doctor -- --fix`; only then cover env vars, database, and guarded dev-server setup.
+   `rtk npm run doctor`, provisioning with `./rhino toolchain provision --apply` only on reported
+   drift; only then cover env vars, database, and guarded dev-server setup. A step that still
+   instructs the retired `npm run doctor -- --fix` is a finding.
    Instructions are specific enough for a newcomer.
 4. **Fix-All-Issues Instruction** — instructs fixing ALL issues found during quality gates, even
    unrelated to current changes (root-cause orientation), explicitly: "Fix all failures, not just

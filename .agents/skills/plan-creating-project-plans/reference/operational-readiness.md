@@ -42,9 +42,11 @@ Every plan must start with environment setup steps:
 
 - [ ] Enter the resolved work location: for a worktree mode, provision/enter
       `worktrees/<plan-identifier>/`; for a main mode, use the synced primary checkout
-- [ ] At that repository root, install dependencies and hooks, then converge tooling:
+- [ ] At that repository root, install dependencies and hooks, then validate tooling:
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`, then
-      `rtk npm run doctor -- --fix` (see [Worktree Toolchain Initialization](../../../../repo-governance/development/workflow/worktree-setup.md))
+      `rtk npm run doctor`; only if it reports drift, run
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
+      and `rtk npm run doctor` again (see [Worktree Toolchain Initialization](../../../../repo-governance/development/workflow/worktree-setup.md))
 - [ ] [Add project-specific setup: env vars, DB, Docker, etc.]
 - [ ] Verify dev server starts: `rtk ./hippo run --class service --resource-tier standard --disk-path . -- npm exec nx -- dev [project-name]`
 - [ ] Verify existing tests pass before making changes

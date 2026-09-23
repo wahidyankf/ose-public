@@ -1,6 +1,6 @@
 ---
 description: Practices for creating consistent, reproducible development and build environments
-when_to_use: Use when setting up, documenting, or troubleshooting Node.js/npm pinning, lockfiles, container-based local services, or the shared cargo target-directory cache.
+when_to_use: Use when setting up, documenting, or troubleshooting Node.js/npm pinning, lockfiles, container-based local services, or a leftover shared cargo target-directory cache.
 ---
 
 # Reproducible Environments
@@ -12,7 +12,7 @@ Practices for creating consistent, reproducible development and build environmen
 - [Principles, Conventions, and Overview](./reproducible-environments/principles-conventions-and-overview.md) — Why this practice exists, and the five areas it covers.
 - [Runtime Version Management with Volta](./reproducible-environments/runtime-version-management-with-volta.md) — Pinning, installing, updating, and CI integration.
 - [Dependency Locking](./reproducible-environments/dependency-locking.md) — `npm ci`, lockfile freshness, and PR review.
-- [Shared Cargo Target Directories](./reproducible-environments/shared-cargo-target-directories.md) — The `doctor --fix` symlink cache and its pruning.
+- [Shared Cargo Target Directories](./reproducible-environments/shared-cargo-target-directories.md) — The retired shared symlink cache and how to reclaim it.
 - [Containerization for Complex Environments](./reproducible-environments/containerization-for-complex-environments.md) — Docker Compose and a development Dockerfile.
 - [Documentation](./reproducible-environments/documentation.md) — README setup-instruction and common-tasks templates.
 - [Testing Reproducibility](./reproducible-environments/testing-reproducibility.md) — A CI-runnable environment-verification script.
@@ -23,7 +23,7 @@ Practices for creating consistent, reproducible development and build environmen
 ## Related Documentation
 
 - [Reproducibility First](../../principles/software-engineering/reproducibility.md) — WHY reproducibility matters.
-- [Worktree Toolchain Initialization](../workflow/worktree-setup.md) — the `doctor -- --fix` invocation.
+- [Worktree Toolchain Initialization](../workflow/worktree-setup.md) — the guarded install and read-only `npm run doctor` sequence.
 - [Native-First Toolchain Management](../workflow/native-first-toolchain.md) — native package managers over IaC tools.
 - [Code Quality Convention](../quality/code.md) — automated quality in reproducible environments.
 - [No Machine-Specific Information in Commits](../quality/no-machine-specific-commits.md) — no machine-specific paths/credentials.

@@ -27,8 +27,8 @@ This is the correct behaviour in all of the following situations, absent an expl
 - Any other change not explicitly assigned a direct-push mode.
 
 **The one exception inside a plan: Phase 0 pushes nothing and opens no PR.** A plan's Phase 0 is
-Environment Setup and Baseline — guarded `npm install`, transactional `npm run doctor -- --fix`, a
-recorded baseline, and preexisting-failure resolution. It produces no reviewable change, so it has no integration target at
+Environment Setup and Baseline — guarded `npm install`, read-only `npm run doctor` (provisioning
+only on reported drift), a recorded baseline, and preexisting-failure resolution. It produces no reviewable change, so it has no integration target at
 all: no `git push origin <plan-id>`, no `gh pr create`, no PR CI or semantic review, no merge. The sequence above
 begins at **Phase 1**, which is the earliest phase that may open a PR under `*-to-pr`; any evidence
 file Phase 0 wrote lands through the first change-producing unit's mode-specific integration. This

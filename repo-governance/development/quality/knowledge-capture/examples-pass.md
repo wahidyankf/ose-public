@@ -11,7 +11,7 @@ when_to_use: "Use for a correct knowledge-capture example."
 ## Learning: worktree-setup doc omitted a step
 
 - **Context**: Provisioning the worktree for this plan required an undocumented
-  `npm run doctor -- --fix` re-run after a stale toolchain cache.
+  `npm run doctor` re-run after a stale toolchain cache.
 - **Observation**: `repo-governance/development/workflow/worktree-setup.md` did not mention this
   re-run step.
 - **Why it might generalize**: the next plan author will hit the same stale-cache surprise.
@@ -25,7 +25,7 @@ INLINE, landed in commit `abc1234` of this plan.
 ```markdown
 ## Learning: a toolchain doctor command silently swallows a missing-tool exit code
 
-- **Context**: Noticed while running `npm run doctor -- --fix` during Phase 0.
+- **Context**: Noticed while running `./rhino toolchain provision --apply` during Phase 0.
 - **Observation**: a missing tool that fails to install still reports "0 warnings" in the summary
   line.
 - **Why it might generalize**: a future contributor could believe their toolchain is healthy when

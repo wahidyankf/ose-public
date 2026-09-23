@@ -7,8 +7,8 @@ when_to_use: Use when verifying what protections this workflow provides, or navi
 
 **Worktree isolation** (default mode): plan authoring happens in a dedicated worktree per repo,
 keeping `main` clean until delivery. The worktree is provisioned fresh and initialized with the
-full two-step toolchain sequence (guarded `npm install` + transactional
-`npm run doctor -- --fix`) per the
+full two-step toolchain sequence (guarded `npm install` + read-only `npm run doctor`, provisioning
+only on reported drift) per the
 [Worktree Toolchain Initialization](../../../development/workflow/worktree-setup.md)
 practice.
 

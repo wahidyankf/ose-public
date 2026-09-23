@@ -22,15 +22,19 @@ when_to_use: Use as a walkthrough when creating a worktree and running its toolc
    rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
    ```
 
-4. Converge the toolchain from the same directory:
+4. Validate the toolchain from the same directory:
 
    ```bash
-   rtk npm run doctor -- --fix
+   rtk npm run doctor
    ```
 
-   The Doctor wrapper detects `--fix` and selects transactional admission. The command is
-   idempotent — when the toolchain is already healthy it is a no-op pass; when drifted it actively
-   converges. To preview changes without applying them, use
-   `rtk npm run doctor -- --fix --dry-run`.
+   The package script runs the read-only `./rhino toolchain validate` under its own HIPPO guard, so
+   never wrap it again or pass it arguments. Only when it reports a missing or drifted toolchain,
+   provision and validate again:
+
+   ```bash
+   rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply
+   rtk npm run doctor
+   ```
 
 5. Confirm both steps completed without errors before Git commits or Nx commands in the worktree.

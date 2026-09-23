@@ -11,13 +11,12 @@ The repository uses git worktrees for AI agent isolation (`.claude/worktrees/`).
 
 ## 6. `./rhino toolchain validate` Already Provides the Check-Diff-Apply Pattern
 
-The `doctor` command maps directly to familiar IaC concepts:
+The `./rhino toolchain` commands map directly to familiar IaC concepts:
 
-| `Rhino` Command          | IaC Equivalent                   | Purpose                         |
-| ------------------------ | -------------------------------- | ------------------------------- |
-| `doctor`                 | `terraform plan`                 | Detect drift from desired state |
-| `doctor --fix`           | `terraform apply`                | Converge to desired state       |
-| `doctor --fix --dry-run` | `terraform plan` (without apply) | Preview changes before applying |
+| Command                                                           | IaC Equivalent    | Purpose                         |
+| ----------------------------------------------------------------- | ----------------- | ------------------------------- |
+| `npm run doctor` (runs `./rhino toolchain validate`)              | `terraform plan`  | Detect drift from desired state |
+| `./rhino toolchain provision --apply` (transactional HIPPO guard) | `terraform apply` | Provision the declared state    |
 
 Config files serve as the desired state declarations:
 
@@ -29,7 +28,8 @@ Config files serve as the desired state declarations:
 
 ### DO
 
-- Use `./rhino toolchain validate` for toolchain verification and auto-install
+- Use `./rhino toolchain validate` for toolchain verification, and `./rhino toolchain provision --apply`
+  only after it reports drift
 - Use version managers (Volta, rustup, dotnet-install) for language version pinning
 - Use `Brewfile` for declarative Homebrew dependencies
 - Use Docker for networked E2E stacks and CI pipelines; keep Integration on local resources it

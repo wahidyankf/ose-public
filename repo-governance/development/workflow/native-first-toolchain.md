@@ -18,7 +18,7 @@ This document records the architectural decision to use native toolchain managem
 
 - [Reproducible Environments](../workflow/reproducible-environments.md) — broader reproducibility practices (Volta, lockfiles, Docker for services).
 - [Development Environment Setup](../../workflows/infra/development-environment-setup.md) — workflow for setting up a development environment.
-- Native Dev Setup Improvements Plan — completed plan that implemented `doctor --fix` and related improvements.
+- Native Dev Setup Improvements Plan — completed plan that implemented the retired in-tree Doctor's `--fix` mode; `./rhino toolchain provision --apply` now provisions declared toolchains.
 
 ## When to Revisit This Decision
 
@@ -46,10 +46,10 @@ source "$HOME/.sdkman/bin/sdkman-init.sh"
 source "$HOME/.cargo/env"
 ```
 
-### `--dry-run` Mode
+### Validate Before Provisioning
 
-`doctor --fix --dry-run` prints what would be installed without executing. This preview capability gives developers confidence before applying changes, equivalent to reviewing a Terraform plan before applying.
+`npm run doctor` runs the read-only `./rhino toolchain validate`, which reports drift without installing anything — the equivalent of reviewing a Terraform plan before applying. Only when it reports drift does `./rhino toolchain provision --apply`, under a transactional HIPPO guard, provision the declared toolchains; `--apply` is the explicit authorization.
 
 ### Idempotency Contract
 
-When implementing `doctor --fix`, each install command must be non-interactive and idempotent. The table in the Rationale section documents the re-run behaviour of each package manager. Pay particular attention to `rustup`, which requires the `-y` flag for non-interactive mode, and Flutter, which requires `brew install --cask flutter` rather than `brew install flutter`.
+Every provisioning command a toolchain entry declares must be non-interactive and idempotent. The table in the Rationale section documents the re-run behaviour of each package manager. Pay particular attention to `rustup`, which requires the `-y` flag for non-interactive mode, and Flutter, which requires `brew install --cask flutter` rather than `brew install flutter`.

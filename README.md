@@ -99,12 +99,13 @@ cd ose-public
 
 `./hippo` verifies the pinned upstream release before `npm install` installs dependencies, Git
 hooks, and repository tooling. Follow the onboarding tutorial's focused check; install optional
-tools only when your chosen work needs them. The normal Doctor check is ephemeral; `--fix` is
-detected by its wrapper and uses a transactional reservation because it can install tools or
-replace managed directories. To repair a required tool, run:
+tools only when your chosen work needs them. `npm run doctor` is a read-only check of every
+declared toolchain and accepts no arguments. Only when it reports a missing or drifted toolchain,
+provision the declared toolchains under a transactional reservation, then check again:
 
 ```bash
-npm run doctor -- --fix
+./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply
+npm run doctor
 ```
 
 When the focused check is green, run the public website. If Cargo, Volta, or another tool it names

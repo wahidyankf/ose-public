@@ -1,34 +1,46 @@
 ---
-description: The mandatory guarded-install and transactional-Doctor sequence, run order, the --fix flag, and the shared cargo target-directory symlink it provisions.
+description: The mandatory guarded-install and read-only Doctor sequence, run order, and the drift-only transactional provisioning branch.
 when_to_use: Use as the exact commands to run, in order, right after creating a worktree.
 ---
 
 # The Rule
 
 **After every operation that creates a worktree—whether `rtk git worktree add`, an `EnterWorktree`
-invocation, or another creation mechanism—run BOTH commands from that new worktree's root, in order:**
+invocation, or another creation mechanism—run BOTH steps from that new worktree's root, in order:**
 
 ```bash
 # Set the active worktree root as the command workdir.
 
-# Step 1: Node/Nx workspace dependencies (node_modules/)
+# Step 1: Node/Nx workspace dependencies (node_modules/) and Husky hooks
 rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
 
-# Step 2: Toolchain convergence (Rust, .NET/F#, TypeScript/Node — all managed by Rhino)
-rtk npm run doctor -- --fix
+# Step 2: Validate the declared native toolchains (read-only)
+rtk npm run doctor
+
+# Only when step 2 reports a missing or drifted toolchain: provision, then validate again
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply
+rtk npm run doctor
 ```
 
 Each worktree needs its own ignored `node_modules/`. The guarded install there also runs the
 repository's `prepare` script, which activates Husky's tracked hooks for Git operations from that
 worktree. A successful install in the primary checkout does not initialize a new worktree.
 
-**Order matters.** Run the guarded install first, because `./rhino toolchain validate` is an F#/.NET program
-invoked through the Node tooling and may need synchronized `node_modules/`. Run
-`rtk npm run doctor -- --fix` second; its argv-aware wrapper selects transactional admission before
-actively converging the native toolchain.
+**Order matters.** Run the guarded install first so the hooks and Node tooling exist before any
+Git mutation. Run `rtk npm run doctor` second: its package script already runs
+`./rhino toolchain validate` under an ephemeral HIPPO guard, so never wrap it in a second guard.
 
-**Use `--fix`, not plain `doctor`.** Plain `rtk npm run doctor` only detects drift and requires a second human action. `rtk npm run doctor -- --fix` actively converges to the declared toolchain state in a single step. For a preview, use `rtk npm run doctor -- --fix --dry-run`.
+**Validate first; provision only on reported drift.** `npm run doctor` never installs anything and
+rejects every argument with exit 2, so the retired `npm run doctor -- --fix` form fails. When it
+reports a missing or drifted toolchain, `./rhino toolchain provision --apply` provisions the
+toolchains `repo-config.yml` declares; `--apply` is the explicit authorization, and the
+transactional HIPPO class admits that mutation. Then re-run `rtk npm run doctor` and continue only
+when it is clean. Install a tool that has no declared provisioning through the
+[Development Environment Setup](../../../workflows/infra/development-environment-setup.md) phases.
 
-## Shared Cargo Target Directories (Local-Dev Only)
+## Shared Cargo Target Directories
 
-`rtk npm run doctor -- --fix` also creates per-crate `target/` symlinks pointing into a shared cargo build-artifact cache, so multiple worktrees of the same repo reuse build artifacts instead of recompiling the same crates independently. This step is **local-dev only** — it is a no-op under CI. See [Reproducible Environments §Shared Cargo Target Directories](../reproducible-environments/shared-cargo-target-directories.md#shared-cargo-target-directories) for the full mechanism, including the cache root, the `OSE_CARGO_TARGET_CACHE` override, and the worktree-aware `doctor --prune-cargo-cache` garbage collector.
+The per-crate shared cargo `target/` symlinks were created by the retired in-tree Doctor.
+`./rhino toolchain provision --apply` does not create them. See
+[Reproducible Environments §Shared Cargo Target Directories](../reproducible-environments/shared-cargo-target-directories.md#shared-cargo-target-directories)
+for their status and removal.

@@ -56,6 +56,7 @@ A tool that starts other programs additionally owes the supervisor statuses. One
 6. [Errors and Diagnostics](command-line-interface/006-errors-and-diagnostics.md)
 7. [Terminal and Environment](command-line-interface/007-terminal-and-environment.md)
 8. [Help and Discovery](command-line-interface/008-help-and-discovery.md)
+9. [Tiers Here](command-line-interface/009-tiers-here.md)
 
 ## What This Convention Does Not Decide
 
@@ -69,17 +70,5 @@ Each module names the defaults it has to correct.
 
 ## Tiers Here
 
-The convention asks each adopter to record which of its own tools sits at which tier. Several command-line products are
-built here, and they meet the full bar; everything that merely runs from a shell is at the floor:
-
-| Surface                                               | Tier     | Why                                                  |
-| ----------------------------------------------------- | -------- | ---------------------------------------------------- |
-| `ferret-cli`, `crane-cli`, `ose-cli`, `ayokoding-cli` | Full bar | Product surfaces a person and a script call directly |
-| `./hippo` and `./rhino`                               | Floor    | Wrappers; each `exec`s the tool it installs          |
-| `.husky/commit-msg`, `pre-commit`, `pre-push`         | Floor    | Git invokes them and branches on what they return    |
-| `scripts/*.sh` and `.github/scripts/*.sh`             | Floor    | Shipped scripts a gate, a hook, or a workflow calls  |
-
-There is no `./ferret` here by decision, not by omission: FERRET is built in this repository, so pinning a released
-copy of it would run a different build than the one under change. The same holds for the other products above.
-
-The wrappers start the tool they install and return `125` when they refuse.
+This repository's own tier record, and how FERRET capture reaches it, is in
+[Tiers Here](command-line-interface/009-tiers-here.md).

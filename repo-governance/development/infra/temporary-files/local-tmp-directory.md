@@ -55,13 +55,17 @@ local-tmp/draft-convention.md
 local-tmp/scratch-notes.txt
 ```
 
+**Teardown**: a task removes the scratch it wrote itself once its work lands, under
+[Worktree and Artifact Cleanup](../../workflow/worktree-and-artifact-cleanup.md) — never another
+actor's, and never anything a diagnosis still needs. Everything else waits for retention.
+
 **Retention**: entries are reclaimable **after 7 days without modification**, and reclaiming them is
 a deliberate act — never automatic. The
 [build-artifact sweeper](../build-artifact-sweeper.md) does **not** touch `local-tmp/` and must not
 be extended to; the directory exists precisely to hold things no ambient process is allowed to
 remove.
 
-Before deleting anything here, confirm every one of the following. Each is machine-checkable, and a
+Before reclaiming anything else here by age, confirm every one of the following. Each is machine-checkable, and a
 path failing any single one stays:
 
 1. It is regenerable build output — a directory named `.next`, `dist`, `out`, `build`, `target`, or

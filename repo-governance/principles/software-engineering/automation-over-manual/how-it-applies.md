@@ -11,11 +11,14 @@ when_to_use: Use when implementing or reviewing a pre-commit hook or commit mess
 
 **Automation**: `.husky/pre-commit` hook
 
-```bash
+```sh
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+set -eu
 
-npx lint-staged
+# Thin lifecycle adapter. Rhino applies declared mutations to the Git index.
+export RHINO_GATE_SURFACE=pre-commit
+exec ./hippo run --class transactional --resource-tier standard --disk-path . -- \
+  ./rhino gate run --surface pre-commit
 ```
 
 **What it automates**:

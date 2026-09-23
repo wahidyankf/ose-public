@@ -270,7 +270,7 @@
     {
       "id": "skill/swe-developing-applications-common",
       "path": ".agents/skills/swe-developing-applications-common/SKILL.md",
-      "digest": "ec6e389daff1b76033304802d9546c67cf3333059400daccf541b715e769e373"
+      "digest": "7c496b434184f3515fbff20e721f385086eebd972c0036df2acf74a42784ca4c"
     },
     {
       "id": "skill/swe-developing-e2e-test-with-playwright",

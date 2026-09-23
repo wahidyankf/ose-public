@@ -15,7 +15,7 @@ Standard Nx targets for apps and libs, and the naming rules that keep them consi
 - [Canonical Target Reference (E2E and Utility Targets)](./nx-targets/target-naming-canonical-names-e2e-and-utility.md) — test:e2e:ui–clean reference table. Use before adding an E2E/utility target.
 - [Naming Rules](./nx-targets/target-naming-rules.md) — dev/start/test:\* naming rules. Use when naming a target.
 - [`{domain}:{work}` Naming for Governance and Validation Targets](./nx-targets/domain-work-naming-for-governance-targets.md) — Naming scheme for governance targets. Use when adding one.
-- [Formatting and File-Type Linting (lint-staged, not Nx targets)](./nx-targets/formatting-and-file-type-linting.md) — Why these are lint-staged, not targets. Use when adding a file check.
+- [Formatting and File-Type Linting (Registry Gates, Not Nx Targets)](./nx-targets/formatting-and-file-type-linting.md) — Why these are staged-path gates, not targets. Use when adding a file check.
 
 ## Tag Convention
 

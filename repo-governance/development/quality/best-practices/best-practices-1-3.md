@@ -11,14 +11,10 @@ when_to_use: "Use when applying these three quality best practices."
 
 **Good Example:**
 
-```json
-// package.json
-{
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": ["prettier --write", "eslint --fix"],
-    "*.md": ["prettier --write", "markdownlint-cli2 --fix"]
-  }
-}
+```sh
+# .husky/pre-commit — a thin shim; repo-config.yml declares every gate it runs
+exec ./hippo run --class transactional --resource-tier standard --disk-path . -- \
+  ./rhino gate run --surface pre-commit
 ```
 
 **Bad Example:**

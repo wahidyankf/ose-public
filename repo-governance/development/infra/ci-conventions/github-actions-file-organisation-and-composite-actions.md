@@ -23,8 +23,8 @@ app test-stag-deploy-prod, 2 be-build-deploy-stag, and 2 cross-cutting workflows
 `pr-quality-gate.yml`, `commons-env-validate.yml`, `validate-markdown.yml`,
 `test-and-deploy-*.yml`, `test-*-web-staging.yml`, `deploy-*-to-production.yml`,
 `publish-images.yml`, and `test-crane-cli-integration.yml` are removed by this plan. Markdown
-validation is folded into lint-staged (per-file validators) and the `md-links` job in
-`pr-quality-gate.yml` — no standalone `markdown-validate.yml` workflow.
+validation runs as `pre-commit` and `pull-request` registry gates, the latter in
+`pr-quality-gate.yml`'s `Repository policy` job — no standalone `markdown-validate.yml` workflow.
 
 The underscore prefix on reusable workflows (`_reusable-*.yml`) visually separates shared
 infrastructure from top-level entry-point workflows in the GitHub Actions UI.

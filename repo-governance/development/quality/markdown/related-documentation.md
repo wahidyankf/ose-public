@@ -14,6 +14,7 @@ when_to_use: "Use when you need the rationale behind a specific markdown quality
   validation gate location (pre-commit + CI; not pre-push)
 - [Repository Validation Methodology Convention](.././repository-validation.md) — canonical
   reference for all three Markdown Quality Gates (mermaid:validation, links:validation,
-  headings:hierarchy-validation), their commands, exclusions, and gate locations (per-file
-  validators run via lint-staged; the repo-wide `md-links` gate runs in `pr-quality-gate.yml`)
+  headings:hierarchy-validation), their commands, exclusions, and gate locations (Markdown
+  validators run as `pre-commit` and `pull-request` registry gates; internal-link validation is a
+  repo-wide `./rhino` command with no declared gate)
 - [Code Quality Convention](.././code.md)

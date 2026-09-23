@@ -11,11 +11,12 @@ wrong — it can be pure divergence from unrelated concurrent activity on the ta
 resolvable by a normal rebase or merge.
 
 When the conflicting hunk falls inside a **marker-owned or generated file** (a block regenerated
-by a registry/codegen command — e.g. `package.json`'s `lint-staged` block emitted from
-`repo-config.yml` via `gate emit`, or any other file a `validate`/`sync` command checks for drift),
+by a registry/codegen command — e.g. a harness adapter emitted by `./rhino harness adapters
+generate` from the canonical `.agents/` source, or any other file a `validate`/`sync` command checks
+for drift),
 resolve the conflict at the **source** the generator reads from, then regenerate — never hand-resolve
 directly in the generated artifact. A hand-resolution can satisfy `git` while still drifting from
-what the generator would actually produce, and the repo's own drift-detection command (`gate validate`
-or the equivalent) exists specifically to catch that class of silent divergence. Re-run the generator,
+what the generator would actually produce, and the repo's own drift-detection command
+(`harness adapters validate` or the equivalent) exists specifically to catch that class of silent divergence. Re-run the generator,
 confirm the regenerated file is byte-identical to the hand-resolution (or replaces it), then re-run
 the drift check before proceeding.

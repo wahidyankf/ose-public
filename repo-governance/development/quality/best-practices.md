@@ -11,7 +11,7 @@ when_to_use: "Use when looking for a proven practice to apply during quality-foc
 
 - [Best Practices 1-3](./best-practices/best-practices-1-3.md) — Automate quality checks in git hooks, use criticality for prioritization, assess fixer confidence. Use when applying these three quality best practices.
 - [Best Practices 4-6](./best-practices/best-practices-4-6.md) — Preserve content during refactoring, run affected tests only, use standardized validation patterns. Use when applying these three quality best practices.
-- [Best Practices 7-9](./best-practices/best-practices-7-9.md) — Combine criticality and confidence, enable lint-staged, document validation rules. Use when applying these three quality best practices.
+- [Best Practices 7-9](./best-practices/best-practices-7-9.md) — Combine criticality and confidence, enable staged-path gates, document validation rules. Use when applying these three quality best practices.
 - [Best Practices 10](./best-practices/best-practices-10.md) — Fail the build on quality violations in CI. Use when wiring a quality gate to fail CI on violation.
 
 ## Overview and Purpose
@@ -66,7 +66,7 @@ Following these best practices ensures:
 5. Run affected tests only in pre-push
 6. Use standardized validation patterns
 7. Combine criticality and confidence for priority
-8. Enable lint-staged for incremental quality
+8. Enable staged-path gates for incremental quality
 9. Document validation rules and rationale
 10. Fail build on quality violations in CI
 

@@ -16,5 +16,5 @@ when_to_use: "Use for a quick-reference summary of all anti-patterns."
 | **Ignoring Criticality**  | Random fix order                     | Priority-based execution          |
 | **No CI Quality Gates**   | Bad code merges                      | Fail build on violations          |
 | **Undocumented Rules**    | Unclear purpose                      | Document rules and rationale      |
-| **Format All Files**      | Slow, unintended changes             | Lint-staged for staged files only |
+| **Format All Files**      | Slow, unintended changes             | Staged-path gate for staged files |
 | **Mixing Test Levels**    | HTTP in integration; real DB in unit | Follow three-level boundaries     |

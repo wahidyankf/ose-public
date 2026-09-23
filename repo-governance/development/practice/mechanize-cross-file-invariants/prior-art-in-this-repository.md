@@ -1,5 +1,5 @@
 ---
-description: Four cross-cutting invariants this repository already governs via generate-and-validate - harness adapters, repo-config.yml schema parity, git hooks, and lint-staged config
+description: Four cross-cutting invariants this repository already governs via generate-and-validate - harness adapters, repo-config.yml schema parity, git hooks, and formatter replay
 when_to_use: Use when looking for an existing example of this pattern to model a new generate-and-validate pipeline on.
 ---
 
@@ -18,8 +18,7 @@ validate` enforces an identical key set at parse time, so no repo can silently a
 - **Git hooks** (`.husky/pre-commit`, `.husky/commit-msg`, `.husky/pre-push`) — thin shims that read
   `repo-config.yml`'s `gate:` surface at runtime via `./rhino gate list`/`gate run`, rather than
   hand-maintained command lists per hook.
-- **`package.json`'s `lint-staged` block** — emitted from `repo-config.yml`'s per-formatter `command:`
-  field via `./rhino gate emit --surface=pre-commit`; hand-editing it directly drifts from what the
-  registry would produce the next time `gate emit` runs. See
-  [PR Merge Protocol § Resolving Merge Conflicts in Generated Files](../../workflow/pr-merge-protocol.md)
-  for what this means when such a file has a merge conflict.
+- **Formatting** — the `format-staged` registry gate generates formatted bytes into the index at
+  pre-commit and, on the pull-request surface, replays the same formatters over the changed paths
+  and fails on any difference, so a hand-formatted file cannot drift from what the formatter would
+  produce. (It replaced `package.json`'s generated `lint-staged` block, retired 2026-09-19.)

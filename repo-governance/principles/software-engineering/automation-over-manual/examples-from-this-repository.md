@@ -41,7 +41,7 @@ when_to_use: Use to find an existing automation to reuse or extend.
 
 ## Prettier Configuration
 
-**Location**: `package.json` (lint-staged)
+**Location**: `.prettierrc.json`, run by the `format-staged` gate in `repo-config.yml`
 
 **What it automates**:
 

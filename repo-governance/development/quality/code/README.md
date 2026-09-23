@@ -1,5 +1,5 @@
 ---
-description: "Automated code quality tools (Prettier, Husky, lint-staged, Commitlint) and git hooks for consistent formatting and commit message standards"
+description: "Automated code quality tools (Prettier, Husky, the Rhino gate registry, Commitlint) and git hooks for consistent formatting and commit message standards"
 when_to_use: "Read this index to find the right Code Quality Convention child document."
 ---
 
@@ -9,7 +9,7 @@ when_to_use: "Read this index to find the right Code Quality Convention child do
 - [Overview](./overview.md) — Overview of the automated code-quality tooling. Use when orienting to the code-quality toolchain.
 - [Prettier - Code Formatting](./prettier-code-formatting.md) — How Prettier formats code in this repository. Use when configuring or debugging Prettier formatting.
 - [Husky - Git Hooks](./husky-git-hooks.md) — How Husky wires git hooks in this repository. Use when configuring or debugging a Husky git hook.
-- [Lint-staged](./lint-staged.md) — How lint-staged runs formatters/linters on staged files. Use when configuring or debugging lint-staged.
+- [Staged Formatting Gate](./staged-formatting-gate.md) — How the format-staged registry gate formats staged files and verifies pull requests. Use when configuring or debugging staged-file formatting.
 - [Git Hook Workflow: Pre-commit Hook (Execution Order)](./git-hook-workflow-pre-commit-execution-order.md) — The pre-commit hook's location and gate steps. Use to trace what runs on git commit.
 - [Git Hook Workflow: Pre-commit Hook (What It Validates)](./git-hook-workflow-pre-commit-what-it-validates.md) — What the pre-commit hook validates. Use when debugging a pre-commit check failure.
 - [Git Hook Workflow: Commit-msg and Pre-push Hooks](./git-hook-workflow-commit-msg-and-pre-push-hooks.md) — What the commit-msg and pre-push hooks validate. Use when debugging a commit-msg or pre-push hook.

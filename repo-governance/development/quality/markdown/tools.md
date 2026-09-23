@@ -22,7 +22,7 @@ when_to_use: "Use when checking which config or script controls markdown formatt
 
 **When it runs**:
 
-- Pre-commit hook (via lint-staged)
+- Pre-commit hook (the `format-staged` registry gate, on staged files)
 - coding agent hook (PostToolUse)
 - Manual: `npm run format:md`
 
@@ -36,6 +36,6 @@ when_to_use: "Use when checking which config or script controls markdown formatt
 
 **When it runs**:
 
-- Pre-push hook (blocks push if violations detected)
+- Pre-commit hook and PR quality gate (the `markdownlint` registry gate blocks on violations)
 - coding agent hook (PostToolUse)
 - Manual: `npm run lint:md`

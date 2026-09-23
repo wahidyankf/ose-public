@@ -27,12 +27,17 @@ FAIL: Git hooks: Don't run deep validation pre-commit (too slow)
 
 **Only process changed files**:
 
-```json
-{
-  "lint-staged": {
-    "*.ts": "prettier --write"
-  }
-}
+```yaml
+# repo-config.yml — a gate whose files input is bound to the staged index
+- id: format-staged
+  inputs:
+    staged:
+      kind: files
+  run-on:
+    pre-commit:
+      bind:
+        staged:
+          source: git-index
 ```
 
 **Not** entire codebase:
@@ -91,7 +96,7 @@ The project enforces code quality through automated git hooks:
 
 ### Pre-commit Hook
 
-1. Lint-staged selects staged files
+1. Rhino hands the staged paths to the `format-staged` gate
 2. Prettier formats matching files
 3. Formatted files automatically staged
 4. Commit blocked if issues found

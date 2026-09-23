@@ -1,5 +1,5 @@
 ---
-description: "Combine criticality and confidence, enable lint-staged, document validation rules."
+description: "Combine criticality and confidence, enable staged-path gates, document validation rules."
 when_to_use: "Use when applying these three quality best practices."
 ---
 
@@ -41,30 +41,43 @@ done
 - Clear escalation path
 - Business impact aligned
 
-## Practice 8: Enable Lint-Staged for Incremental Quality
+## Practice 8: Enable Staged-Path Gates for Incremental Quality
 
-**Principle**: Format and lint only staged files in pre-commit. For languages that require project
-context (e.g. Rust, .NET), use dedicated hook steps rather than lint-staged.
+**Principle**: Format and lint only staged files in pre-commit, through registry gates that take a
+`files` input. For formatters that need a project root (Elixir's formatter, Spotless), route the
+staged paths through a wrapper script rather than formatting the whole project.
 
 **Good Example:**
 
-```json
-// package.json — lint-staged for JS/TS/JSON/YAML/CSS/MD
-{
-  "lint-staged": {
-    "*.md": ["prettier --write", "markdownlint-cli2 --fix"]
-  }
-}
+```yaml
+# repo-config.yml — the format-staged gate receives the staged paths only
+- id: format-staged
+  type: mutation
+  inputs:
+    staged:
+      kind: files
+  mutation:
+    local: apply-index # write formatted bytes back to the index
+    ci: verify-clean # on pull requests, fail if formatting would change a byte
+  command:
+    executable: ./scripts/format-staged
+    args:
+      - input: staged.paths
+        expand: repeat
+  run-on:
+    pre-commit:
+      bind:
+        staged:
+          source: git-index
 ```
 
-```sh
-# .husky/pre-commit — dedicated step for language-native formatters
-
-# gofmt: no project context required, safe in lint-staged or hook
-gofmt -w staged_go_files
-
-# rustfmt: safe in lint-staged (no project context required)
-rustfmt staged_rs_files
+```bash
+# scripts/format-staged — one formatter per extension, over the handed paths only
+case "$path" in
+  *.md | *.ts | *.json) prettier_paths+=("$path") ;;
+  *.rs) rust_paths+=("$path") ;;
+  *.go) go_paths+=("$path") ;;
+esac
 ```
 
 **Bad Example:**

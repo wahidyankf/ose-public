@@ -13,8 +13,9 @@ model. Measure the path that actually runs in production before hard-gating a ph
 Worked example: `prettier` and `markdownlint-cli2` were benchmarked as standalone
 `npx --no -- <tool>` invocations (622 ms / 441 ms), yielding a projected ~250 ms per-tool saving and
 a `≤ 900 ms` acceptance clause. The real pre-commit path never paid that cost: the registry's
-commands were always bare, and the outer batch runner spawns `npx --no -- lint-staged` **once** for
-the whole batch, with both tools running as its children on a `node_modules/.bin`-inclusive `PATH`.
+commands were always bare, and the outer batch runner of the time spawned
+`npx --no -- lint-staged` (retired 2026-09-19) **once** for the whole batch, with both tools running
+as its children on a `node_modules/.bin`-inclusive `PATH`.
 The `npx` tax the benchmark measured was never being paid twice. Actual measured saving: −138 ms
 (−5.4 %), against a projection of ~500 ms — roughly 4× overstated.
 

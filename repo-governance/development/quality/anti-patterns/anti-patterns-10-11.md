@@ -19,13 +19,26 @@ git add .           # Stages unintended changes!
 
 **Solution:**
 
-```json
-// package.json
-{
-  "lint-staged": {
-    "*.md": ["prettier --write"]
-  }
-}
+```yaml
+# repo-config.yml — the format-staged gate receives the staged paths only
+- id: format-staged
+  type: mutation
+  inputs:
+    staged:
+      kind: files
+  mutation:
+    local: apply-index # write formatted bytes back to the index
+    ci: verify-clean # on pull requests, fail if formatting would change a byte
+  command:
+    executable: ./scripts/format-staged
+    args:
+      - input: staged.paths
+        expand: repeat
+  run-on:
+    pre-commit:
+      bind:
+        staged:
+          source: git-index
 ```
 
 **Rationale:**

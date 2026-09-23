@@ -7,21 +7,23 @@ when_to_use: "Use when a markdown git hook misbehaves or you need its config loc
 
 ## Pre-Commit Hook
 
-Runs Prettier on staged markdown files via lint-staged.
+Formats staged markdown files with Prettier through the `format-staged` registry gate, then runs
+the Markdown gates.
 
-**Location**: `.husky/pre-commit` (configured in `package.json` lint-staged)
+**Location**: `.husky/pre-commit`, which runs `./rhino gate run --surface pre-commit` over the
+gates declared in `repo-config.yml`
 
-**Action**: Automatically formats staged markdown files
+**Action**: Applies Prettier formatting to staged `.md` files in the index, then blocks the commit
+on any `markdownlint`, `md-mermaid`, `md-heading-hierarchy`, `md-naming`, or `md-frontmatter`
+failure. The same gates run on the pull-request surface in CI.
 
 ## Pre-Push Hook
 
-Runs markdownlint on all markdown files before pushing.
+Runs no Markdown gate; markdownlint runs at pre-commit and in the PR quality gate.
 
 **Location**: `.husky/pre-push`
 
-**Action**: Blocks push if any markdown violations detected
-
-**To fix violations before push**:
+**To fix markdownlint violations**:
 
 ```bash
 npm run lint:md:fix

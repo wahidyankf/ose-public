@@ -12,27 +12,28 @@ when_to_use: "Use to trace what runs on git commit."
 **Execution Order**:
 
 1. You run `git commit`
-2. Pre-commit hook triggers (`.husky/pre-commit` — a shim line invoking
-   `./rhino gate run --surface pre-commit`, which runs the public-safety screen and then
-   `./rhino gate run --surface pre-commit`)
-3. `gate run --surface=pre-commit` orchestrates all registry-declared `pre-commit`-surface gates in
-   declaration order, failing fast:
+2. Pre-commit hook triggers (`.husky/pre-commit` — a thin shim that sets
+   `RHINO_GATE_SURFACE=pre-commit` and runs `./rhino gate run --surface pre-commit` inside a
+   `./hippo run` boundary)
+3. `gate run --surface pre-commit` runs every registry-declared `pre-commit` gate in declaration
+   order, failing fast. The gate set is registry-driven — discover it rather than trusting a copy:
 
-| Step | Trigger                                | Action                                                                       | On failure |
-| ---- | -------------------------------------- | ---------------------------------------------------------------------------- | ---------- |
-| 1    | `.claude/` or `.opencode/` staged      | Validate → Sync → Validate-sync                                              | exit 1     |
-| 2    | `docker-compose.ya?ml` staged          | `docker compose -f <file> config` per file                                   | exit 1     |
-| 3    | always                                 | `nx affected -t run-pre-commit --skip-nx-cache`                              | warn only  |
-| 4    | always                                 | `git add apps/ayokoding-www/content/`                                        | ignored    |
-| 5    | always                                 | `npx lint-staged`                                                            | exit 1     |
-| 5b   | `apps/<app>/package.json` staged       | Regenerate + stage `apps/<app>/package-lock.json`                            | exit 1     |
-| 6    | `docs/` staged                         | Validate + auto-fix naming, then `git add docs/ repo-governance/ .claude/`   | exit 1     |
-| 6m   | staged `.md` files (skip 3 exclusions) | `mermaid:validation` — diagram width, label length, syntax (staged-only)     | exit 1     |
-| 6h   | staged `.md` in prose allowlist        | `headings:hierarchy-validation` — single H1, no skipped levels (staged-only) | exit 1     |
-| 7    | always                                 | Validate markdown links + `#fragment` anchors (staged only)                  | exit 1     |
-| 8    | always                                 | `npm run lint:md`                                                            | exit 1     |
+   ```bash
+   ./rhino gate list
+   ```
 
-1. Commit proceeds if no errors
+   The declaration order puts the public-safety tree screen first, then the `format-staged`
+   formatter mutation, then deterministic checks covering repository configuration, environment
+   policy, Markdown lint and validators, the emoji convention, and the shell, Dockerfile, and
+   workflow linters.
+   Gates with a `files` input receive only the staged paths; the rest check their whole declared
+   surface.
 
-**Implementation**: the pinned Rhino executable owns its internal steps; declared external tools
-run only through their explicit command vectors.
+4. Commit proceeds if no gate fails
+
+Pre-commit never runs `test:quick`, Unit, Integration, or E2E runtime. See
+[Git Hook Lifecycle](../../workflow/git-hook-lifecycle.md) for the shared mechanism and
+[Staged Formatting Gate](./staged-formatting-gate.md) for how formatting reaches the index.
+
+**Implementation**: the pinned Rhino executable owns dispatch; each declared gate runs only through
+its explicit command vector in `repo-config.yml`.

@@ -62,19 +62,16 @@ Continues [How It Applies](./how-it-applies.md).
 
 **Context**: Consistent code style.
 
-**Automation**: Prettier via lint-staged
+**Automation**: Prettier via the `format-staged` registry gate
 
-**Configuration** (`package.json`):
+**Configuration** (`scripts/format-staged`, called by the `format-staged` gate):
 
-```json
-{
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,cjs}": "prettier --write",
-    "*.json": "prettier --write",
-    "*.md": "prettier --write",
-    "*.{yml,yaml}": "prettier --write"
-  }
-}
+```bash
+case "$path" in
+  *.md | *.js | *.jsx | *.ts | *.tsx | *.mjs | *.cjs | *.json | *.yml | *.yaml)
+    prettier_paths+=("$path")
+    ;;
+esac
 ```
 
 **What it automates**:

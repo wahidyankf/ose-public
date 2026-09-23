@@ -2,24 +2,33 @@
 
 ## Automated Quality Gates
 
-When code files are modified, **Husky + lint-staged** automatically run:
+Each Husky hook runs one surface of the `repo-config.yml` gate registry through
+`./rhino gate run --surface <surface>`. List the live gates with `./rhino gate list`.
 
-**Pre-commit Hooks**:
+**Pre-commit Hook**:
 
-1. **Format with Prettier**: Automatically formats staged files
-2. **Lint markdown**: Validates markdown files with markdownlint
-3. **Validate links**: Checks markdown links aren't broken
-4. **Auto-stage changes**: Automatically stages formatting fixes
+1. **Public-safety screen**: Blocks outbound-unsafe staged content
+2. **Format staged files**: The `format-staged` gate runs Prettier and each language's formatter on
+   staged files and stages the result
+3. **Lint and validate**: markdownlint, Mermaid, heading hierarchy, naming, front matter, emoji,
+   repository configuration, environment policy, and `shellcheck`/`hadolint`/`actionlint`
 
 **Commit-msg Hook**:
 
-- **Validate commit format**: Ensures Conventional Commits compliance
-- **Blocks invalid commits**: Prevents commit if format wrong
+- **Public-safety message screen**: Blocks a commit message carrying outbound-unsafe content
+- **Blocks the commit** on any declared `commit-msg` gate failure
 
 **Pre-push Hook**:
 
-- **Run `test:quick` for affected projects**: Executes the fast quality gate (`nx affected -t test:quick`) — this is the canonical pre-push check. Every project must expose a `test:quick` target.
-- **Markdown linting**: Final markdown quality check
+- **Declared pre-push gates**: The public-safety tree screen and environment-policy validation
+- No `test:quick` or Markdown lint runs here
+
+**PR Quality Gate** (`pr-quality-gate.yml`):
+
+- **The whole `pull-request` surface**: Every pre-commit and commit-msg gate over the changed range;
+  formatting must replay with no diff
+- **Run `test:quick` for affected projects**: Language jobs run affected `typecheck`, `lint`, and
+  `test:quick` — every project must expose a `test:quick` target
 
 > **Note**: `test:integration` and `test:e2e` do NOT run in pre-commit, pre-push, or PR/main gates.
 > Select only impacted targets manually during development/review; scheduled GitHub Actions
@@ -34,8 +43,9 @@ When code files are modified, **Husky + lint-staged** automatically run:
 
 - Don't manually format code (Prettier handles it)
 - Don't worry about markdown formatting (automated)
-- Don't manually check links (automation validates)
-- Trust that tests will run before push
+- Run `./rhino md internal-link validate` when you add, move, or rename a Markdown file (no gate
+  checks links)
+- Trust that affected tests run in the PR quality gate
 
 **If Pre-commit Hook Fails**:
 
@@ -47,6 +57,7 @@ When code files are modified, **Husky + lint-staged** automatically run:
 **Common Failures**:
 
 - **Markdown linting**: Run `npm run lint:md:fix` to auto-fix
-- **Test failures**: Fix the failing test, re-commit
-- **Link validation**: Fix broken links, re-commit
+- **Formatting replay on a PR**: Commit through the pre-commit hook so `format-staged` formats the
+  file, or run `./rhino gate run --surface pre-commit` on the staged change
+- **Test failures (PR quality gate)**: Fix the failing test, commit, push again
 - **Commit message format**: Rewrite commit message following Conventional Commits

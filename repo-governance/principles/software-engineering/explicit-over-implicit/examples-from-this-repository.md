@@ -9,34 +9,34 @@ when_to_use: Use to find an existing explicit configuration to reuse or extend.
 
 **Location**: `.husky/pre-commit`
 
-```bash
+```sh
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+set -eu
 
-npx lint-staged
+# Thin lifecycle adapter. Rhino applies declared mutations to the Git index.
+export RHINO_GATE_SURFACE=pre-commit
+exec ./hippo run --class transactional --resource-tier standard --disk-path . -- \
+  ./rhino gate run --surface pre-commit
 ```
 
 **Explicit behaviour**:
 
 - Hook triggers on pre-commit
-- Runs `npx lint-staged` command
+- Runs one declared surface, `pre-commit`, of the `repo-config.yml` gate registry
 - No hidden magic
-- Behaviour visible in file
+- Every gate it runs is listed by `./rhino gate list`
 
-## Prettier Configuration
+## Formatter Configuration
 
-**Location**: `package.json` (lint-staged)
+**Location**: `scripts/format-staged`, invoked by the `format-staged` gate in `repo-config.yml`
 
-```json
-{
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,mjs,cjs}": "prettier --write",
-    "*.json": "prettier --write",
-    "*.md": "prettier --write",
-    "*.{yml,yaml}": "prettier --write",
-    "*.{css,scss}": "prettier --write"
-  }
-}
+```bash
+case "$path" in
+  *.md | *.js | *.jsx | *.ts | *.tsx | *.mjs | *.cjs | *.json | *.yml | *.yaml | *.css | *.scss)
+    prettier_paths+=("$path")
+    ;;
+  *.rs) rust_paths+=("$path") ;;
+esac
 ```
 
 **Explicit behaviour**:

@@ -18,19 +18,21 @@ Use the registry projection for the repository and surface being inspected:
 ./rhino gate validate
 ```
 
-`gate validate` is the conformance check: it rejects a declared hook surface whose executable shim
-does not delegate to the registry, a stale generated `lint-staged` block, or invalid CI wiring.
+`gate validate` is the conformance check: it validates each gate's lifecycle membership and the
+pull-request surface's composition. Nothing is generated from the registry into `package.json`; the
+legacy `lint-staged` block was retired on 2026-09-19.
 
 ## Hook shims
 
-| Git event      | Shim                | Delegation                                      |
-| -------------- | ------------------- | ----------------------------------------------- |
-| Commit message | `.husky/commit-msg` | `./rhino gate run --surface commit-msg -- "$1"` |
-| Before commit  | `.husky/pre-commit` | `./rhino gate run --surface pre-commit`         |
-| Before push    | `.husky/pre-push`   | `./rhino gate run --surface pre-push`           |
+| Git event      | Shim                | Delegation                                                  |
+| -------------- | ------------------- | ----------------------------------------------------------- |
+| Commit message | `.husky/commit-msg` | `./rhino gate run --surface commit-msg --message-file "$1"` |
+| Before commit  | `.husky/pre-commit` | `./rhino gate run --surface pre-commit`                     |
+| Before push    | `.husky/pre-push`   | `./rhino gate run --surface pre-push --push-updates-stdin`  |
 
-The pinned RHINO binary runs the public-safety screen first, then hands the surface to the registry
-through `./rhino gate run --surface <surface>`.
+Each shim runs its one command inside a `./hippo run` boundary. The public-safety screens are not
+built into the shims: they are ordinary registry entries, declared ahead of every other gate on each
+surface they join.
 
 The dispatcher runs each declared gate in registry order and stops at the first failure. A hook failure
 aborts its Git operation; fix the reported gate and retry.
@@ -46,7 +48,7 @@ flowchart LR
     Message --> Registry["registry gates"]
     PreCommit --> Registry
     PrePush --> Registry
-    Registry --> CI["CI matrix jobs"]
+    Registry --> CI["PR quality gate"]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef tone fill:#029E73,stroke:#000000,color:#000000
@@ -56,28 +58,28 @@ flowchart LR
     class CI orange
 ```
 
-## Pre-commit generation boundary
+## Staged paths and formatting
 
-The pre-commit dispatcher has one declaration-positioned `lint-staged` batch for eligible
-file-scoped formatters and checks. `gate emit --surface=pre-commit` regenerates its
-`package.json` block from the registry. Direct mutations (platform-binding generation, lockfile
-sync) stay declared registry entries, run in order after the batch.
+A gate that declares a `files` input receives paths, not the whole tree. At `pre-commit` it binds
+the staged index (`source: git-index`); on the `pull-request` surface it binds the pull request's
+changed range (`source: explicit-range`). Each gate's command selects the file types it owns from
+those paths, so one declaration serves both surfaces.
 
-Do not hand-edit the generated block; regenerate, then `gate validate`.
+Formatting is one `mutation` gate, `format-staged`, which calls `scripts/format-staged` to pick each
+path's formatter by extension. Locally (`mutation.local: apply-index`) Rhino applies the formatted
+bytes to the index; on the pull-request surface (`mutation.ci: verify-clean`) it replays the
+formatter and fails if any byte would change. CI never commits formatter fixes.
 
 ## CI relationship
 
-Pre-commit runs deterministic staged checks only. Pre-push and PR/main quality gates run affected
-`test:quick` targets serially plus their declared repository validation. Quick includes Unit runtime
-for every behaviour owner and all applicable static `test:coverage:*` validators. Neither hook nor
-PR/main may invoke Integration or E2E runtime directly or transitively.
-
-CI derives registry-managed entries from `gate list --output json`. Jobs needing
-language-specific setup remain `wiring: hand-wired`; validation requires each declared command.
-Scheduled/manual full-quality workflows own complete Integration and E2E execution.
-
-Formatting mutations run locally and the PR formatter can commit fixes. Every formatter also has one
-CI-only `format-verify-*` check linked by `verifies`, so pushed code is independently verified.
+Pre-commit runs deterministic checks only. Pre-push runs only its declared gates; neither hook
+runs `test:quick`. The `pr-quality-gate.yml` workflow, on every pull request and push to `main`,
+runs the `pull-request` surface in its `Repository policy` job through
+`./rhino gate run --surface pull-request --base <sha> --head <sha>`, and runs affected
+`typecheck`, `lint`, and `test:quick` in its language-detected jobs. Quick includes Unit runtime
+for every behaviour owner and all applicable static `test:coverage:*` validators. Neither a hook
+nor PR/main may invoke Integration or E2E runtime directly or transitively; scheduled/manual
+full-quality workflows own complete Integration and E2E execution.
 
 ## Bypass policy
 

@@ -2,17 +2,24 @@
 
 > **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
 
-One-line summary: `doctor --fix` points every worktree's `apps/<crate>/target` at one physical
-directory, which reclaims real disk but serializes concurrent builds behind cargo's exclusive
-build-directory lock — a 65 s stall was observed, and both effects scale with the same parameter.
+One-line summary: the retired in-tree Doctor's `--fix` mode pointed every worktree's
+`apps/<crate>/target` at one physical directory, which reclaimed real disk but serialized concurrent
+builds behind cargo's exclusive build-directory lock — a 65 s stall was observed, and both effects
+scale with the same parameter.
+
+**Status after the in-tree Doctor retired:** `./rhino toolchain provision --apply` creates no
+shared target directory, so new worktrees build into crate-local `target/` directories and the
+contention below no longer arises. This idea matters again only if upstream Rhino reintroduces a
+shared target or cache; see
+[Shared Cargo Target Directories](../../../repo-governance/development/workflow/reproducible-environments/shared-cargo-target-directories.md).
 
 > Surfaced 2026-08-06 during `optimize-cis` execution.
 
 ## Problem / context
 
-`doctor --fix` symlinks each worktree's per-crate `target/` into a single shared
+The retired Doctor fix mode symlinked each worktree's per-crate `target/` into a single shared
 `~/.cache/ose-cargo-target/<repo>/<crate>`. Phase 9 of `optimize-cis` widened this so one
-`doctor --fix` covers every worktree rather than only the checkout it was invoked from, reclaiming
+fix-mode run covered every worktree rather than only the checkout it was invoked from, reclaiming
 221 MB immediately because the main checkout's `apps/rhino-cli/target` was still an unshared 221 MB
 directory.
 
@@ -28,7 +35,7 @@ The two effects scale together, which is what makes this a design question rathe
 knob. Disk saving scales with worktree count (N copies collapse to 1); contention scales with the
 same N (N builders queue on 1 lock). **There is no N at which one wins and the other stops
 mattering.** Widening the sharing widened the contention: before Phase 9 only worktrees that had
-individually run `doctor --fix` contended; after it, every worktree does.
+individually run the fix mode contended; after it, every worktree did.
 
 This sits directly against two standing repo assumptions: `worktree-to-pr` is the mandatory delivery
 mode, and the environment assumes concurrent agents on one disk. Shared mutable build state under
@@ -118,6 +125,7 @@ Success: a stated, measured decision — either "shared target directory retaine
 at X and accepted" or "moved to per-worktree targets plus `sccache`, contention eliminated, disk
 held flat" — with the 65 s stall documented either way so nobody diagnoses it as a hang again.
 
-**Promotion signal**: the Step 0 lock-wait distribution. If waits are rare, this closes as an
+**Promotion signal**: first, a shared target or cache returning through upstream Rhino; only then
+the Step 0 lock-wait distribution. If waits are rare, this closes as an
 accepted trade plus a documentation line and never becomes a plan. If they are common, the `sccache`
 evaluation is a real design exercise worth promoting to `backlog/`.

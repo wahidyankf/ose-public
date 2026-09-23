@@ -12,7 +12,8 @@ touching **N** repositories therefore provisions **at most N worktrees total**, 
 mode works in the primary checkout and provisions no worktree.
 
 This caps a genuinely scarce shared resource: each worktree is a full checkout plus a converged
-polyglot toolchain (guarded `npm install`, then transactional `npm run doctor -- --fix`), and on the
+polyglot toolchain (guarded `npm install`, then read-only `npm run doctor`, provisioning only on
+reported drift), and on the
 same-machine assumption
 (other agents, engineers, and CI runners sharing this disk concurrently — see the
 [Agent Workflow Orchestration Convention](../../../development/agents/agent-workflow-orchestration/operating-budgets-parallelism-budget.md))

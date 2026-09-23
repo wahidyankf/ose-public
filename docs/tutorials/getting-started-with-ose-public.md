@@ -101,14 +101,15 @@ The first two commands print versions matching the `volta` values in this checko
 `package.json`. The installation can take a while and ends after npm has installed the workspace
 dependencies.
 
-Run the focused tool check used by this website path:
+Run the read-only tool check:
 
 ```bash
-npm run doctor -- --fix --tools git,volta,node,npm
+npm run doctor
 ```
 
-The check reports the selected tools and completes without missing-tool errors. It reads required
-Node.js and npm versions from `package.json`, rather than asking you to maintain a separate list.
+The check probes every toolchain the repository declares and installs nothing. This website path
+needs only Git, Volta, Node.js, and npm, so a report that names only other toolchains, such as
+Docker, Go, or Java, does not block this tutorial.
 
 ## Run the public website
 
@@ -140,10 +141,10 @@ matching version command. If it is still missing, rerun the relevant installer f
 
 Docker is not needed to run `ose-www`, so you can continue with this tutorial. Other repository
 targets may require it. When you need one, install Docker Desktop on macOS or Docker Engine on
-Ubuntu, then run:
+Ubuntu, then confirm the check finds it:
 
 ```bash
-npm run doctor -- --fix --tools docker
+npm run doctor
 ```
 
 For the complete, multi-language environment and Docker guidance, see

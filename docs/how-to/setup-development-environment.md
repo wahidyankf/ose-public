@@ -40,9 +40,10 @@ and git hooks.
   (`organiclever-be`, `ose-be`) or the F# CLI apps (`Rhino`, `crane-cli`) themselves. Install
   Rust separately, and only if you are editing a `.rs` file under `apps/ayokoding-www/content/` —
   that is its one remaining local use, formatted by the pre-commit `rustfmt` step.
-- **Automated** — Run `npm run doctor -- --fix` to auto-install missing tools. The Doctor wrapper
-  detects `--fix` and requests a transactional reservation; checks without that flag remain
-  ephemeral. Use `npm run doctor -- --fix --dry-run` to preview what would be installed.
+- **Automated** — When the read-only `npm run doctor` reports a missing or drifted toolchain, run
+  `./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
+  to provision the toolchains `repo-config.yml` declares, then `npm run doctor` again. Doctor
+  accepts no arguments; the retired `--fix` and `--dry-run` forms exit 2.
 
 ## Prerequisites
 
@@ -70,8 +71,7 @@ curl https://get.volta.sh | bash
 source ~/.zshrc   # or source ~/.bashrc on Ubuntu
 
 # 4. Install the .NET SDK — required by step 6 and by the Git hooks
-brew install dotnet   # Linux: see https://dotnet.microsoft.com/download, or run
-                       # `npm run doctor -- --fix` after step 5 to auto-install it
+brew install dotnet   # Linux: see https://dotnet.microsoft.com/download
 dotnet --version   # Expected: a version line, not "command not found"
 
 # 5. Clone and bootstrap
@@ -173,8 +173,7 @@ names that file as the source of truth `doctor` reads from.
 # macOS
 brew install dotnet
 
-# Linux — run `npm run doctor -- --fix` after step 5 instead of a manual install; it runs the
-# official GPG-verified dotnet-install.sh script for you
+# Linux — follow https://dotnet.microsoft.com/download
 
 dotnet --version
 ```

@@ -10,11 +10,15 @@ toolchain from the **root directory of that worktree** with a mandatory two-step
 
 1. Run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` at that worktree root.
    Besides dependencies, `prepare` activates Husky hooks.
-2. Run `rtk npm run doctor -- --fix` at the same worktree root.
+2. Run `rtk npm run doctor` at the same worktree root. It is a read-only
+   `./rhino toolchain validate` that carries its own HIPPO guard; never wrap it or pass it arguments.
+   Only when it reports a missing or drifted toolchain, run
+   `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`,
+   then `rtk npm run doctor` again.
 
 Both steps are required. The first makes that checkout's hooks and Node/Nx dependencies usable;
-the second uses the Doctor wrapper's transactional class to converge native toolchains managed by
-`./rhino toolchain validate`.
+the second proves the declared native toolchains are present and provisions them only on reported
+drift. The retired `npm run doctor -- --fix` form now exits 2.
 
 In a repository without npm, use its declared root bootstrap only when it installs local
 dependencies and Git hooks; never invent or infer an equivalent command.
@@ -22,7 +26,7 @@ dependencies and Git hooks; never invent or infer an equivalent command.
 ## Contents
 
 - [Principles and Conventions Implemented](./worktree-setup/principles-and-conventions-implemented.md) — Why this practice exists.
-- [The Rule](./worktree-setup/the-rule.md) — The exact two-step command sequence, and the shared cargo cache it provisions.
+- [The Rule](./worktree-setup/the-rule.md) — The exact two-step command sequence and its drift-only provisioning branch.
 - [Independent Drift Layers and the `postinstall` Hook](./worktree-setup/independent-drift-layers-and-the-postinstall-hook.md) — Why both steps are independently required.
 - [Dependency Isolation, Language Breadth, and Idempotency](./worktree-setup/dependency-isolation-language-breadth-and-idempotency.md) — Why every new worktree needs the init.
 - [What Goes Wrong Without Both Steps](./worktree-setup/what-goes-wrong-and-nx-node-modules-dependency.md) — Build/test/lint/cache failure modes.

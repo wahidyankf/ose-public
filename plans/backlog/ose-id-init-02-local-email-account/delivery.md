@@ -137,8 +137,10 @@ target/configuration, or unrelated failure blocks Phase 2.
       from current `origin/main`; record exact worktree/branch identity. Stop if Plan 01 is incomplete or
       another Plan 02 worktree exists.
 - [ ] [AI] Run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
-      `rtk npm run doctor -- --fix` (the wrapper admits Doctor transactionally through HIPPO); inspect
-      `rtk git status --short`; acceptance: tools converge without
+      `rtk npm run doctor` (read-only; only if it reports drift, run
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
+      and repeat Doctor); inspect
+      `rtk git status --short`; acceptance: a final clean Doctor without
       secrets or unexplained changes.
 - [ ] [AI] Inspect current Identity, migration, API/spec, session/cookie, rate-limit, SMTP, and E2E
       conventions using `rtk rg` under `apps/`, `specs/`, `docs/`, and `repo-governance/`. Resolve exact

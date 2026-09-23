@@ -175,8 +175,10 @@ target/configuration, or unrelated failure blocks Phase 2.
       inventory at `evidence/phase-0-worktree.md`. Acceptance: one plan worktree starts at current
       `origin/main`; divergence/stale registration follows the documented one-retry recovery then stops.
 - [ ] [AI] Run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
-      `rtk npm run doctor -- --fix`; acceptance: exit
-      0 with no secret/unrelated mutation.
+      `rtk npm run doctor` (read-only; only if it reports drift, run
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
+      and repeat Doctor); acceptance: the
+      final Doctor exits 0 with no secret/unrelated mutation.
 - [ ] [AI] **Owner: integrator; delivered topology inventory.** Run
       `rtk rg -n "local-stack|compose|port|runtime|session|correlation|rate.limit|signing|Mailpit|seed|cleanup" apps/ose-id-{be,be-e2e,web,web-e2e} specs/apps/ose/id-{be,web} docs/reference/web-sites.md repo-config.yml`
       and `rtk npm exec nx -- show projects --with-target test:coverage:behaviour`. Store the exact

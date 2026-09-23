@@ -26,7 +26,7 @@ Merging a pull request requires a set of hardened preconditions to hold — not 
 - [Plans Organization Convention §Delivery Mode](../../conventions/structure/plans/delivery-mode-the-four-modes.md#delivery-mode) -- Establishes `[AI]` merge as the default and `[HUMAN]` as the explicit per-plan opt-in this protocol implements
 - [Code Quality Convention](../quality/code.md) -- Quality gates enforced by git hooks
 - [Trunk Based Development Convention](../workflow/trunk-based-development.md) -- The `worktree-to-pr` default delivery mode and how it relates to TBD
-- [Worktree Toolchain Initialization](../workflow/worktree-setup.md) -- Mandatory guarded install plus transactional Doctor convergence after creating a worktree
+- [Worktree Toolchain Initialization](../workflow/worktree-setup.md) -- Mandatory guarded install plus read-only Doctor validation after creating a worktree
 - [Nx Target Standards](../infra/nx-targets.md) -- Canonical target names for quality gates
 - [Git Push Default Convention](../workflow/git-push-default.md) -- Governs the default `worktree-to-pr` push target and the explicit direct-push modes; this convention governs what happens once a PR exists
 - [`pr-review`](../../workflows/pr/pr-review.md) and [`pr-review-cycle`](../../workflows/pr/pr-review-cycle.md) -- Optional semantic-review workflows, invoked only on explicit user request

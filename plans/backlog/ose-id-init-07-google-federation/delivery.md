@@ -177,8 +177,10 @@ baseline, target/configuration, or unrelated failure blocks Phase 2.
       branch-inventory row.
 - [ ] [AI] Run
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
-      `rtk npm run doctor -- --fix`; acceptance: both
-      exit 0 and no secret or unrelated mutation appears.
+      `rtk npm run doctor` (read-only; only if it reports drift, run
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
+      and repeat Doctor); acceptance: the
+      install and the final Doctor exit 0 and no secret or unrelated mutation appears.
 - [ ] [AI] Read `apps/ose-id-be/project.json`, `apps/ose-id-be-e2e/project.json`,
       `apps/ose-id-web/project.json`, and `apps/ose-id-web-e2e/project.json`; record actual source roots,
       target names, runtime guards, migration ownership, and test commands. Update planned paths/commands

@@ -88,9 +88,11 @@ research runs.
 also adds a **new default behaviour**: plans are authored inside a
 dedicated worktree (`worktrees/<identifier>/`), provisioned if absent via
 `git worktree add -b <identifier> worktrees/<identifier> main` followed by
-the repository-standard guarded install and transactional Doctor convergence:
+the repository-standard guarded install and Doctor validation:
 `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`, then
-`rtk npm run doctor -- --fix`. After delivery the worktree is
+`rtk npm run doctor` (the retired `-- --fix` form originally recorded here now exits 2; toolchains
+are provisioned with `./rhino toolchain provision --apply` only on reported drift). After delivery
+the worktree is
 removed with `git worktree remove`.
 
 **Rationale**: the invoker directed both the worktree default and the push

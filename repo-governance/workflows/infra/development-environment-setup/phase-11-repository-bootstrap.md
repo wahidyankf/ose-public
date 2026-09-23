@@ -62,7 +62,8 @@ work on and fill in the required values.
 npm run doctor
 ```
 
-**Success criteria**: All tools show `ok` status. No `missing` entries.
+**Success criteria**: it exits 0 and prints `checked <n> declared toolchains, no findings`.
 
-**On failure**: Review doctor output. Each missing tool maps to one of the phases above.
-Install the missing tool and re-run doctor.
+**On failure**: each finding names a toolchain id and a rule (`unavailable` or `probe-failed`).
+The [Tool Inventory](./tool-inventory.md) maps every id to its phase or manager. Install it, then
+re-run doctor.

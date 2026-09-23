@@ -11,7 +11,9 @@ Required for: the FERRET Python projects (`apps/ferret-cli`, `apps/ferret-cli-e2
 needs CPython 3.14.7 and uv 0.12.16, pinned by each project's `.python-version` and `uv.lock`; its Nx `install`
 targets run `uv sync --locked`. The other `*.py` files are AyoKoding course corpora under
 `apps/ayokoding-www/content/**` plus a few harness helper scripts, formatted by `ruff format` through
-`scripts/format-staged` at pre-commit. `./rhino toolchain validate` does not check Python, uv, or ruff.
+`scripts/format-staged` at pre-commit. `./rhino toolchain validate` checks `ruff` on `PATH`, the binary
+that pre-commit formatting calls; it does not check Python or uv. CI puts the FERRET venv's locked `ruff`
+first on `PATH` instead.
 
 ## 6.1 Install Python 3.13+
 

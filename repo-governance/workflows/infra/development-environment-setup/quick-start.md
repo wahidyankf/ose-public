@@ -24,7 +24,8 @@ again:
 npm run doctor
 ```
 
-`--apply` is the explicit authorization for that mutation. A tool whose `repo-config.yml` entry
-declares no provisioning is installed by hand through the matching phase below.
+`--apply` is the explicit authorization for that mutation. It runs only the provision vectors
+`repo-config.yml` entries declare, and today none declares one, so it installs nothing: install a
+reported tool by hand through the phase the [Tool Inventory](./tool-inventory.md) names.
 
 For manual step-by-step installation, follow the phases below.

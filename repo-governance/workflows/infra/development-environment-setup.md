@@ -20,23 +20,23 @@ toolchain, or verifying an environment after adding a new project language.
 
 **Goal**: Set up a complete local development environment with all toolchains required for pre-commit, pre-push, integration tests, and E2E tests across all projects
 
-**Termination**: npm run doctor reports all tools OK and nx affected -t test:quick passes for all projects
+**Termination**: npm run doctor reports no findings for the declared toolchains and nx affected -t test:quick passes for all projects
 
 ## Inputs
 
 - **`platform`** (enum: macos, linux, optional, default `macos`) — Target operating system
-- **`scope`** (enum: full, minimal, optional, default `full`) — full: all 19 tools for all projects; minimal: core tools only (Node.js, Go, Docker, jq)
+- **`scope`** (enum: full, minimal, optional, default `full`) — full: every phase, covering all 21 declared toolchains; minimal: core phases only (Git, Docker, jq, Volta, Node.js, npm). Doctor has no scope: it always probes every declared toolchain
 
 ## Outputs
 
-- **`doctor-status`** (enum: all-ok, warnings, missing) — Result of npm run doctor after setup
+- **`doctor-status`** (enum: clean, findings) — Result of npm run doctor after setup
 - **`tools-installed`** (number) — Count of tools successfully installed and verified
 
 ## Contents
 
 - [Execution Mode](./development-environment-setup/execution-mode.md) — manual orchestration.
-- [Tool Inventory](./development-environment-setup/tool-inventory.md) — the 16 built-in tools, plus
-  how `doctor.extra-tools` adds more.
+- [Tool Inventory](./development-environment-setup/tool-inventory.md) — the 21 toolchains declared
+  under `repo-config.yml` `toolchains`, and what is deliberately undeclared.
 - [Quick Start](./development-environment-setup/quick-start.md) — install, validate, provision only on drift.
 
 ### Phases

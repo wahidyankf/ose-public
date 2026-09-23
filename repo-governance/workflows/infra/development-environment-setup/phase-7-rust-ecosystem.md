@@ -1,13 +1,16 @@
 ---
-description: "Phase 7 (full scope only): install Rust and cargo-llvm-cov for full Doctor and Rust-content gates."
-when_to_use: "Use when satisfying the full Doctor inventory or formatting Rust course content."
+description: "Phase 7 (full scope only): install Rust through rustup so rustfmt can format the Rust course content."
+when_to_use: "Use when doctor reports rustfmt missing or when formatting Rust course content."
 ---
 
 # Phase 7: Rust Ecosystem (Sequential)
 
 **Condition**: `{input.scope} == full`
 
-Required for: full-scope Doctor verification and Rust course-content formatting gates
+Required for: `rustfmt`, which `scripts/format-staged` runs on staged `*.rs` files. No Nx project in
+this workspace is a Rust project today; the tracked Rust sources are AyoKoding course content.
+`rustfmt` is declared under `toolchains` in `repo-config.yml`, so `npm run doctor` reports it when
+missing.
 
 This phase runs before the repository bootstrap makes the pinned `./hippo` consumer available. Its
 system-level installers therefore remain native and sequential; subsequent repository-local work
@@ -18,14 +21,7 @@ uses HIPPO admission.
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 source "$HOME/.cargo/env"
+rustup component add rustfmt
 ```
 
-**Success criteria**: `rustc --version` returns a version string.
-
-## 7.2 Install cargo-llvm-cov (coverage tool)
-
-```bash
-cargo install cargo-llvm-cov
-```
-
-**Success criteria**: `cargo llvm-cov --version` returns a version string.
+**Success criteria**: `rustc --version` and `rustfmt --version` return version strings.

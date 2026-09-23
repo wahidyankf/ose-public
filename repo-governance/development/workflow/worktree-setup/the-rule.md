@@ -32,11 +32,11 @@ Git mutation. Run `rtk npm run doctor` second: its package script already runs
 
 **Validate first; provision only on reported drift.** `npm run doctor` never installs anything and
 rejects every argument with exit 2, so the retired `npm run doctor -- --fix` form fails. When it
-reports a missing or drifted toolchain, `./rhino toolchain provision --apply` provisions the
-toolchains `repo-config.yml` declares; `--apply` is the explicit authorization, and the
+reports a missing or drifted toolchain, `./rhino toolchain provision --apply` runs the provision
+vectors the `repo-config.yml` toolchain entries declare; `--apply` is the explicit authorization, and the
 transactional HIPPO class admits that mutation. Then re-run `rtk npm run doctor` and continue only
-when it is clean. Install a tool that has no declared provisioning through the
-[Development Environment Setup](../../../workflows/infra/development-environment-setup.md) phases.
+when it is clean. Install a tool whose entry declares no provision vector through the phase the
+[Tool Inventory](../../../workflows/infra/development-environment-setup/tool-inventory.md) names.
 
 ## Shared Cargo Target Directories
 

@@ -9,9 +9,10 @@ when_to_use: "Use when setting up Elixir/Erlang under full scope."
 
 Required for: formatting only. This repository ships no Elixir application or library. The `*.ex`
 and `*.exs` files it tracks are AyoKoding course corpora under `apps/ayokoding-www/content/**`,
-and the `format-elixir` / `format-verify-elixir` gates in `repo-config.yml` keep them formatted by
-running `scripts/format-elixir.sh`, which shells out to `mix format` from the nearest `mix.exs`
-ancestor. `./rhino toolchain validate` does not check Erlang or Elixir.
+and the `format-staged` gate in `repo-config.yml` keeps them formatted through
+`scripts/format-elixir.sh`, which shells out to `mix format` from the nearest `mix.exs` ancestor.
+`./rhino toolchain validate` checks `mix` (its probe needs a working Erlang), so doctor reports a
+missing Elixir install.
 
 **No version is pinned.** There is no `.tool-versions` file at the repository root; any Erlang/OTP
 and Elixir pair new enough to run `mix format` will do. The commands below use a known-good pair.

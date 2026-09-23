@@ -41,8 +41,9 @@ ferret usage --group-by skill --json
 
 The harness registrations in this repository forward every hook payload to `ferret capture-hook`, which reduces it to
 a closed set of metadata fields, writes nothing to stdout or stderr, and always exits 0 so a harness is never
-disturbed. A payload over 256 KiB is refused, so a very large tool result loses its completion event. What each harness
-can and cannot report is in
+disturbed. A payload carries the whole tool result, so an image a tool returns arrives as megabytes of base64; FERRET
+reads up to 64 MiB and keeps none of it. Only a payload over 64 MiB is refused, and that one call loses its completion
+event. What each harness can and cannot report is in
 [Platform Bindings](../../docs/reference/platform-bindings.md#ferret-lifecycle-registrations).
 
 ## Install a published release
@@ -50,10 +51,10 @@ can and cannot report is in
 Every `ferret-cli/vX.Y.Z` tag publishes one platform-independent zipapp and its digest.
 
 ```bash
-BASE=https://github.com/wahidyankf/ose-public/releases/download/ferret-cli/v0.3.0
-curl -fLO "$BASE/ferret-cli_v0.3.0.pyz" && curl -fLO "$BASE/checksums.txt"
+BASE=https://github.com/wahidyankf/ose-public/releases/download/ferret-cli/v0.3.1
+curl -fLO "$BASE/ferret-cli_v0.3.1.pyz" && curl -fLO "$BASE/checksums.txt"
 shasum -a 256 -c checksums.txt
-python3 ferret-cli_v0.3.0.pyz self install --target user
+python3 ferret-cli_v0.3.1.pyz self install --target user
 ```
 
 Verify the digest before running it.

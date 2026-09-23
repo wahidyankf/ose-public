@@ -29,12 +29,15 @@ from support.hook_payloads import (
     CANARIES,
     CLAUDE_CODE,
     CODEX,
+    IMAGE_BYTES,
+    IMAGE_CANARY,
     OPENCODE,
     REGISTRATIONS,
     SESSION,
     WORKSPACE,
     claude_code,
     claude_tool,
+    codex_view_image,
     encode,
     opencode_session_created,
 )
@@ -190,6 +193,33 @@ def test_one_byte_past_the_raw_limit_is_read_and_the_payload_refused() -> None:
     world = world_for(b"{" + b" " * RAW_LIMIT_BYTES + b"}")
 
     assert refused(world).code == "ferret.event.invalid"
+    assert world.input.reads == [RAW_LIMIT_BYTES + 1]
+
+
+@pytest.mark.parametrize("size", [300 * 1024, IMAGE_BYTES, 16 * IMAGE_BYTES], ids=["300KiB", "1MiB", "16MiB"])
+def test_a_codex_view_image_completion_is_stored_however_large_its_image(size: int) -> None:
+    """Regression: every ``view_image`` completion was refused, because the image it returns outran a 256 KiB limit."""
+    world = world_for(codex_view_image(size=size))
+
+    assert capture_hook(world.runtime, harness=CODEX, event="tool.completed") == "stored"
+
+    stored = only_event(world)
+    assert (stored.event_type, stored.tool_name, stored.outcome, stored.outcome_visibility) == (
+        "tool.completed",
+        "view_image",
+        "success",
+        "derived",
+    )
+    document = json.dumps(stored.to_document())
+    assert IMAGE_CANARY not in document
+    assert [canary for canary in CANARIES if canary in document] == []
+
+
+def test_a_payload_of_exactly_the_raw_limit_is_accepted() -> None:
+    payload = encode(codex_view_image())
+    world = world_for(payload + b" " * (RAW_LIMIT_BYTES - len(payload)))
+
+    assert capture_hook(world.runtime, harness=CODEX, event="tool.completed") == "stored"
     assert world.input.reads == [RAW_LIMIT_BYTES + 1]
 
 

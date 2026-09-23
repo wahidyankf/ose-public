@@ -5,10 +5,10 @@ from pathlib import Path
 
 import pytest
 
+from ferret.application.privacy import RAW_LIMIT_BYTES
 from support.wrapper import WRAPPER, Behaviour, run_wrapper, stand_in
 
 PAYLOAD = b'{"session_id":"s1","cwd":"/work","hook_event_name":"PreToolUse","tool_name":"Read"}'
-LIMIT_BYTES = 256 * 1024
 
 
 def recorded(directory: Path, name: str) -> bytes | None:
@@ -112,7 +112,7 @@ def test_the_command_receives_exactly_the_two_static_arguments_the_hook_register
     assert recorded(override.parent, "argv") == b"capture-hook\n--harness\ncodex\n--event\nagent.ended\n"
 
 
-@pytest.mark.parametrize("size", [0, 1, LIMIT_BYTES])
+@pytest.mark.parametrize("size", [0, 1, RAW_LIMIT_BYTES])
 def test_standard_input_is_forwarded_byte_for_byte_up_to_the_raw_limit(tmp_path: Path, size: int) -> None:
     override = candidate(tmp_path, "override")
     payload = (b'{"a":"\r\n\xc3\xa9\t"}\n' * (size // 16 + 1))[:size]

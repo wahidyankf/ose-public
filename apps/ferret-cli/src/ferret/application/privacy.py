@@ -14,7 +14,12 @@ from ferret.domain.errors import FerretError
 from ferret.domain.event import Event, event_from_document
 
 CANONICAL_LIMIT_BYTES: Final = 16 * 1024
-RAW_LIMIT_BYTES: Final = 256 * 1024
+# A raw hook payload carries the whole tool result, and a tool whose result is an image carries the image itself as
+# base64: a Codex ``view_image`` completion runs to 0.4-1.4 MB, so an earlier 256 KiB limit refused every one. The
+# limit bounds one call's memory and time, not what a result may be; only the allowlisted scalars survive projection.
+# Measured on a developer machine, a whole capture at the limit takes about 0.15 s and 220 MiB of memory, well inside
+# the adapter's 900 ms deadline; a 1 MiB image takes 0.07 s and 35 MiB.
+RAW_LIMIT_BYTES: Final = 64 * 1024 * 1024
 _BYTE_ORDER_MARK: Final = b"\xef\xbb\xbf"
 
 type Scalar = str | int | float | bool | None

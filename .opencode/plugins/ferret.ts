@@ -11,8 +11,9 @@ import { join } from "node:path";
 
 const TERM_MILLISECONDS = 900;
 const KILL_MILLISECONDS = 1000;
-// The Python command reads at most this much, so a larger document could only be refused; it is not sent.
-const MAX_DOCUMENT_BYTES = 256 * 1024;
+// The Python command reads at most this much, so a larger document could only be refused; it is not sent. It matches
+// the command's raw limit, which leaves room for a tool result that is an image carried as base64.
+const MAX_DOCUMENT_BYTES = 64 * 1024 * 1024;
 // Captures run one at a time so a burst of tool calls does not fight itself for the write lock; beyond this many
 // waiting, further ones are dropped rather than queued without bound.
 const MAX_PENDING = 64;

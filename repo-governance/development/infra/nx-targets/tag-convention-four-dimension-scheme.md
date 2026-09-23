@@ -28,4 +28,4 @@ Every project declares tags along four dimensions. Each dimension uses a fixed p
 
 **Use `domain:roots` for generic Sharia-compliance tooling**: Services and libraries that implement Islamic-finance or Sharia-compliance capability for any consumer use `domain:roots`. Use `domain:ose` only for projects belonging exclusively to the OSE product surface.
 
-**Use `domain:tooling` for general-purpose utilities**: Projects that are not tied to a specific product domain (e.g., `Rhino`) use `domain:tooling`. Use a product domain tag only when the project belongs exclusively to that product.
+**Use `domain:tooling` for general-purpose utilities**: Projects that are not tied to a specific product domain use `domain:tooling` (no current project carries it; RHINO is an external executable, not an Nx project). Use a product domain tag only when the project belongs exclusively to that product.

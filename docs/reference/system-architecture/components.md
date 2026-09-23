@@ -26,42 +26,39 @@ Shows the internal components within each container. Components are groupings of
 - **Source Directory**: App source at `apps/ose-www/src/`
 - **Static Assets**: Images and public assets at `apps/ose-www/public/`
 
-### Rhino Components (F# CLI Tool)
+### RHINO (Pinned External Executable)
+
+RHINO is not an in-tree application or Nx project. It is released independently from
+[its upstream repository](https://github.com/wahidyankf/rhino); this repository carries only the
+`./rhino` bootstrap wrapper and the `rhino.lock` pin.
 
 ```mermaid
-graph TB
-    accTitle: Rhino Components F CLI Tool
-    accDescr: Root Command Repository automation leads to Automation Module Extensible automation; Root Command Repository automation leads to Flags Parser Command-line arguments; Automation Module Extensible automation leads to Config Loader Configuration; and 1 more links.
-    subgraph "CLI Interface"
-        RHINO_ROOT[Root Command<br/>Repository<br/>automation]
-        RHINO_FLAGS[Flags Parser<br/>Command-line<br/>arguments]
-    end
+graph LR
+    accTitle: RHINO bootstrap components
+    accDescr: The ./rhino wrapper reads the rhino.lock pin, then installs, verifies, and runs the RHINO release executable, which reads repo-config.yml.
+    WRAP[./rhino<br/>bootstrap wrapper]
+    LOCK[rhino.lock<br/>version and digests]
+    EXE[RHINO<br/>release executable]
+    CFG[repo-config.yml<br/>declared policy]
 
-    subgraph "Automation Modules"
-        AUTO_MODULE[Automation Module<br/>Extensible<br/>automation]
-    end
-
-    subgraph "Infrastructure"
-        RHINO_CONFIG[Config Loader<br/>Configuration]
-        RHINO_LOGGER[Logger<br/>Logging]
-    end
-
-    RHINO_ROOT --> AUTO_MODULE
-    RHINO_ROOT --> RHINO_FLAGS
-    AUTO_MODULE --> RHINO_CONFIG
-    AUTO_MODULE --> RHINO_LOGGER
+    WRAP -->|Reads pin| LOCK
+    WRAP -->|Installs, verifies, runs| EXE
+    EXE -->|Reads| CFG
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef teal fill:#029E73,stroke:#000000,color:#000000
-    class RHINO_ROOT blue
-    class AUTO_MODULE teal
+    class WRAP blue
+    class EXE teal
 ```
 
 **Component Responsibilities:**
 
-- **Root Command**: CLI entry point for repository automation tasks
-- **Automation Module**: Extensible module system for automation workflows
-- **Config Loader**: Load butler-specific configuration
+- **`./rhino`**: POSIX-sh wrapper that installs the pinned release into a shared cache, verifies its
+  SHA-256 digest, and forwards every argument unchanged
+- **`rhino.lock`**: Pins the release version and a digest per platform
+- **RHINO executable**: Runs the repository's validators and gates (for example,
+  `./rhino md internal-link validate`)
+- **`repo-config.yml`**: Declares every value RHINO enforces
 
 ### ayokoding-www Components (Next.js Fullstack Platform)
 
@@ -74,10 +71,6 @@ graph TB
 
 ## C4 Level 4: Code Architecture
 
-Shows implementation details for critical components. Focus on Rhino's F# package structure and key implementation patterns.
-
-### Rhino Package Structure (F#)
-
-`Rhino` is the repository's F# CLI tool (other F# projects are backend services and shared
-libraries, not CLIs). Its `md links validate` command validates internal Markdown links across the
-whole repository, including both content trees.
+This page records no Level 4 code architecture: RHINO's source lives upstream, not in this
+repository. For the in-tree F# CLI (`crane-cli` with its `fsharp-crane-core` library), see
+[Hexagonal Architecture — CLI Apps: Directory Layout](../../../repo-governance/development/pattern/hexagonal-architecture-cli/overview-and-directory-layout.md).

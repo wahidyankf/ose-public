@@ -23,27 +23,30 @@ tests relevant to the project you are changing.
 
 ## Overview
 
-The monorepo contains projects in TypeScript and F#, plus Rust course-example content under
-`apps/ayokoding-www/content/` (no Rust app or lib remains — `Rhino`, the last one, was ported
-to F# 2026-08-30). Each language has its own runtime, but they all share the same Nx build system
-and git hooks.
+The monorepo contains projects in TypeScript, F#, C#, Java, Go, and Python, plus course-example
+content in several more languages under `apps/ayokoding-www/content/` (Rust, Elixir, Dart, Lua, C,
+shell, and OpenTofu among them). Each language has its own runtime, but they all share the same Nx
+build system and git hooks. Repository tooling is not an in-tree project: `./rhino` and `./hippo`
+are wrappers that install and verify independently released executables pinned in `rhino.lock`
+and `hippo.lock`.
 
 **Three setup paths**. These name what _you_ install by hand.
 
-- **Minimal** — Node.js + .NET SDK + Docker + jq. Covers git hooks, TypeScript projects, and
-  basic end-to-end (E2E) tests. .NET is here rather than in Full because the tool checker
-  (`./rhino toolchain validate`) is itself an F#/.NET program: `npm install` runs it but discards its exit
-  code, so without the .NET SDK the check fails while the install still reports success. The Quick
-  Start's final `npm run doctor` keeps that exit code, and so do the Git hooks the install sets up
-  — the first `git commit` stops outright.
-- **Full** — All tools checked by doctor. Required for working on F# backend apps
-  (`organiclever-be`, `ose-be`) or the F# CLI apps (`Rhino`, `crane-cli`) themselves. Install
-  Rust separately, and only if you are editing a `.rs` file under `apps/ayokoding-www/content/` —
-  that is its one remaining local use, formatted by the pre-commit `rustfmt` step.
+- **Minimal** — Node.js + Docker + jq. Covers git hooks for TypeScript and Markdown changes,
+  TypeScript projects, and basic end-to-end (E2E) tests. `npm run doctor` (the read-only
+  `./rhino toolchain validate`) probes every toolchain `repo-config.yml` declares, so on this path
+  it reports the ones you skipped; that is expected. A commit that stages a file whose formatter
+  you skipped (an `.fs`, `.py`, or `.sh` file, say) fails the pre-commit `format-staged` gate.
+- **Full** — Every toolchain declared under `toolchains` in `repo-config.yml`, so `npm run doctor`
+  reports no findings. Required for the .NET projects (`organiclever-be`, `ose-be`, `ose-id-be`,
+  `crane-cli`), the Go and Java backends, FERRET, and course content in other languages. The
+  [tool inventory](../../repo-governance/workflows/infra/development-environment-setup/tool-inventory.md)
+  lists each toolchain and where to install it.
 - **Automated** — When the read-only `npm run doctor` reports a missing or drifted toolchain, run
   `./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
-  to provision the toolchains `repo-config.yml` declares, then `npm run doctor` again. Doctor
-  accepts no arguments; the retired `--fix` and `--dry-run` forms exit 2.
+  and then `npm run doctor` again. It runs only the provision vectors `repo-config.yml` entries
+  declare; an entry without one is installed through the tool inventory. Doctor accepts no
+  arguments; the retired `--fix` and `--dry-run` forms exit 2.
 
 ## Prerequisites
 
@@ -54,9 +57,7 @@ and git hooks.
 
 ## Quick Start (Minimal Setup)
 
-If you only work on TypeScript projects, this is all you need. The .NET SDK still appears below,
-for the reason the Minimal path gives above — the verify step at the end of this block will not
-pass without it:
+If you only work on TypeScript projects, this is all you need:
 
 ```bash
 # 1. Install Homebrew (macOS — skip if already installed)
@@ -70,21 +71,18 @@ brew install jq
 curl https://get.volta.sh | bash
 source ~/.zshrc   # or source ~/.bashrc on Ubuntu
 
-# 4. Install the .NET SDK — required by step 6 and by the Git hooks
-brew install dotnet   # Linux: see https://dotnet.microsoft.com/download
-dotnet --version   # Expected: a version line, not "command not found"
-
-# 5. Clone and bootstrap
+# 4. Clone and bootstrap
 git clone https://github.com/wahidyankf/ose-public.git
 cd ose-public
 ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install # Installs deps + git hooks
 ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec playwright -- install # Installs test browsers
 
-# 6. Verify
+# 5. Verify
 npm run doctor
 ```
 
-If doctor shows all green, you are ready. To run the push hook's registry gates and see their output,
+Doctor lists any declared toolchain this minimal path skipped; `git`, `volta`, `node`, `npm`,
+`docker`, `jq`, `bash`, and `curl` must not be among them. Then you are ready. To run the push hook's registry gates and see their output,
 use `./rhino gate run --surface pre-push`, which screens the push for public safety first.
 
 ## Full Setup
@@ -165,9 +163,12 @@ from this page:
 
 ### Step 4: .NET SDK
 
-Required for `Rhino` (an F# CLI) and the F# backends (`organiclever-be`, `ose-be`). The pinned
-SDK version lives in `apps/ose-be/global.json` — `repo-config.yml`'s `doctor.dotnet-global-json`
-names that file as the source of truth `doctor` reads from.
+Required for the F# projects (`organiclever-be`, `ose-be`, `crane-cli`, and the `fsharp-*`
+libraries) and the C# project `ose-id-be`. Each pins its SDK in its own `global.json` (for example
+`apps/ose-be/global.json`); doctor proves only that `dotnet --version` runs, so install that major
+version. The pre-commit formatter also needs the `fantomas` and `csharpier` global tools at the
+versions `.config/dotnet-tools.json` pins — see
+[Phase 9](../../repo-governance/workflows/infra/development-environment-setup/phase-9-dotnet-ecosystem.md).
 
 ```bash
 # macOS
@@ -178,9 +179,9 @@ brew install dotnet
 dotnet --version
 ```
 
-**Editing AyoKoding's Rust course content?** Install Rust separately — it is no longer needed for
-`Rhino` or any other app/lib, only for the pre-commit `rustfmt` step over `.rs` files under
-`apps/ayokoding-www/content/`:
+**Editing AyoKoding's Rust course content?** Install Rust separately — no app or lib needs it;
+the pre-commit `rustfmt` step over `.rs` files under `apps/ayokoding-www/content/` does, and
+doctor reports `rustfmt` when it is missing:
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -284,8 +285,9 @@ On Linux, also install system dependencies:
 npm run doctor
 ```
 
-Expected output: all tools show `ok` status. If any show `missing`, revisit the corresponding
-step above.
+Expected output: `checked <n> declared toolchains, no findings`. Each finding names a toolchain
+and `unavailable` or `probe-failed`; install it from the step above or the
+[tool inventory](../../repo-governance/workflows/infra/development-environment-setup/tool-inventory.md).
 
 ### Test git hooks
 
@@ -326,9 +328,10 @@ app's E2E stack instead of `test:integration`.
 
 ### Doctor reports a tool as "missing"
 
-The doctor command shows exactly which tool is missing, its expected version, and where the
-version requirement comes from (e.g., `package.json → volta.node`). Reinstall the tool using
-the matching step above.
+Doctor prints one line per finding, `[toolchain-validate] <id>: unavailable` or `probe-failed`.
+It reports presence only, not versions. Install the tool through the phase the
+[tool inventory](../../repo-governance/workflows/infra/development-environment-setup/tool-inventory.md)
+names, then run `npm run doctor` again.
 
 ### Pre-push hook times out
 
@@ -398,23 +401,24 @@ On Linux, also run:
 
 ## Version Reference
 
-All version requirements are auto-detected by `npm run doctor` from these config files:
+Versions are pinned in these config files. `npm run doctor` checks only that each declared tool
+runs; the version manager or project build enforces the pin:
 
-| Tool       | Version Source                                                                                        |
-| ---------- | ----------------------------------------------------------------------------------------------------- |
-| Node.js    | `package.json` → `volta.node`                                                                         |
-| npm        | `package.json` → `volta.npm`                                                                          |
-| .NET       | `repo-config.yml` → `doctor.dotnet-global-json` → `sdk.version` (currently `apps/ose-be/global.json`) |
-| Docker, jq | Any (no pinned version)                                                                               |
+| Tool       | Version Source                                    |
+| ---------- | ------------------------------------------------- |
+| Node.js    | `package.json` → `volta.node`                     |
+| npm        | `package.json` → `volta.npm`                      |
+| .NET       | each .NET project's `global.json` → `sdk.version` |
+| Go         | `apps/roots-be/go.mod` → `go` directive           |
+| Docker, jq | Any (no pinned version)                           |
 
 Never hardcode version numbers in scripts — always read from these source-of-truth files.
 
 ## Related Documentation
 
 - [Development Environment Setup Workflow](../../repo-governance/workflows/infra/development-environment-setup.md) —
-  Granular workflow with phases and success criteria. Its `scope: minimal` parameter is a different
-  thing from the Minimal path above: it selects which already-installed tools the checker inspects,
-  and its tool set is not the same one
+  Granular workflow with phases and success criteria. Its `scope: minimal` parameter selects
+  which phases you run; the checker has no scope and always inspects every declared toolchain
 - [Reproducible Environments](../../repo-governance/development/workflow/reproducible-environments.md) —
   Volta, npm, Docker reproducibility practices
 - [Code Quality Convention](../../repo-governance/development/quality/code.md) — Git hooks and

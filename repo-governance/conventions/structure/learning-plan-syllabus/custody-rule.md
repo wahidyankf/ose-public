@@ -34,9 +34,9 @@ plan's corpus is a **consumer**. Four rules govern the relationship:
 | Yes            | No                         | **(a) Link rewrite (default)** — rewrite every inbound link to the corpus's new `plans/done/YYYY-MM-DD__<id>/syllabus/…` location                          |
 | Yes            | Yes                        | **(b) Custody transfer** — `git mv` the `syllabus/` folder into a named successor plan, update that plan's `**Custodian**` line, and rewrite inbound links |
 
-**Half of this rule is already mechanically enforced.**
-`./rhino md links validate --exclude plans/done` runs at pre-push and in CI. The `--exclude
-plans/done` flag removes archived files as a **scan source**, not as a link **target** — so a
-still-live consumer plan is scanned, and its link into a corpus that moved without a rewrite fails
-the push. This is the backstop that catches a missed hand-off; it does not replace naming a Custodian
+**Half of this rule is mechanically checkable.**
+`./rhino md internal-link validate` skips `plans/done/**` as a **scan source** (through
+`policies.markdown.internal-link.exclude-sources` in `repo-config.yml`), not as a link **target** —
+so a still-live consumer plan is scanned, and its link into a corpus that moved without a rewrite
+fails the check. It is not a declared gate today, so run it before pushing a hand-off. This is the backstop that catches a missed hand-off; it does not replace naming a Custodian
 or choosing the correct branch above.

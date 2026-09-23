@@ -1,5 +1,5 @@
 ---
-description: "Table mapping scope=minimal to the specific phases/steps and tools it installs (core TypeScript development only)."
+description: "Table mapping scope=minimal to the specific phases/steps and tools it installs (core TypeScript development only), and what doctor reports afterwards."
 when_to_use: "Use when you only need a minimal environment for TypeScript work, not the full polyglot toolchain."
 ---
 
@@ -18,7 +18,10 @@ For `scope: minimal` (core development only — TypeScript projects, git hooks, 
 
 This covers: pre-commit hooks, pre-push hooks, TypeScript unit tests, and basic E2E tests.
 
-Phase 4 (Go/Lua), Phase 6 (Python), and Phase 8 (Elixir/Erlang) are **not** in minimal scope —
-Phases 4 and 8 exist only to format the AyoKoding course corpora, and Phase 6 also provisions the
-Python toolchain the FERRET projects need. Add them if you edit course code (or, for Phase 6, FERRET),
-or the matching `format-*` gate will fail at pre-commit on a machine that lacks the formatter.
+`npm run doctor` has no minimal mode. It probes every toolchain declared in `repo-config.yml`, so
+after a minimal setup it reports the language toolchains this scope skips (Go, .NET, Java, and the
+formatters in Phases 2.4 and 4 through 10). Treat those findings as expected, not as setup failure.
+
+The skipped formatters matter only when you stage a file they own: `scripts/format-staged` fails
+pre-commit on a machine that lacks the formatter for a staged file's extension. Add the matching
+phase if you edit course code, or Phase 6 for FERRET.

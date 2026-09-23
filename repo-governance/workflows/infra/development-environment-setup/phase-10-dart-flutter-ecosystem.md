@@ -7,10 +7,10 @@ when_to_use: "Use when setting up Dart/Flutter under full scope."
 
 **Condition**: `{input.scope} == full`
 
-Required for: the `format-dart` and `format-verify-dart` gates, which run `dart format` over the
-tracked `*.dart` files. No Nx project in this workspace is a Dart project today — the Dart sources
-are AyoKoding course corpora under `apps/ayokoding-www/content/`. `./rhino toolchain validate` still checks
-`flutter` at full scope, so the tool must be present for a clean doctor run.
+Required for: the `format-staged` gate, which runs `dart format` over staged `*.dart` files. No Nx
+project in this workspace is a Dart project today — the Dart sources are AyoKoding course corpora
+under `apps/ayokoding-www/content/`. `./rhino toolchain validate` checks `dart`, so it must be on
+`PATH` for a clean doctor run.
 
 ## 10.1 Install Flutter (includes Dart)
 

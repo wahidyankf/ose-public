@@ -84,6 +84,6 @@ substance.
 
 Reclaim by **moving** to a dated quarantine (`local-tmp/.reclaim-quarantine-YYYY-MM-DD/`) first,
 then proving nothing load-bearing moved (`npm run doctor`,
-`./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run Rhino:test:quick`, and
+`./rhino repo-config validate`, and
 `./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- affected -t build` all exit 0), and
 only then deleting. Until that proof passes, the whole operation is one `mv` from undone.

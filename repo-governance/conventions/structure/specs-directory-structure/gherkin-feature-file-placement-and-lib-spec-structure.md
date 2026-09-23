@@ -25,7 +25,7 @@ Where:
 - **`{feature}`** = feature file name in kebab-case
 
 The owner segment is already inside `specs/apps/<product>/`, so it carries the bare surface name:
-`rhino/cli/`, not `rhino/Rhino/`. A backend is always `be`, never `api`.
+`crane/cli/`, not `crane/crane-cli/`. A backend is always `be`, never `api`.
 
 ### Domain Subdirectory Rules
 
@@ -44,12 +44,11 @@ they belong to the site they build.
 
 A domain folder may contain one or many feature files.
 
-**CLI specs** use the same domain subdirectory rule as BE and web. Group features by command domain (e.g., `system/`, `env/`, `links/`). Single-feature domains are fine when the CLI surface area is small:
+**CLI specs** use the same domain subdirectory rule as BE and web. Group features by command domain (e.g., `system/`, `media/`, `pdf/`). Single-feature domains are fine when the CLI surface area is small:
 
 ```
-the upstream Rhino specification corpussystem/doctor.feature
-the upstream Rhino specification corpusenv/env-backup.feature
-the upstream Rhino specification corpusgate/gate-execution.feature
+specs/apps/crane/cli/behaviours/system/version.feature
+specs/apps/crane/cli/behaviours/media/figure-check.feature
 specs/apps/crane/cli/behaviours/pdf/pdf-commands.feature
 ```
 

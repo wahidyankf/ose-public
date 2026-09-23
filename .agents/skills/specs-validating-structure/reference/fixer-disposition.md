@@ -16,7 +16,7 @@ broken cross-references (fix relative paths from actual file locations); Categor
 structure violations (move feature files to correct nesting via `git mv`, per
 [Specs Directory Structure Convention](../../../../repo-governance/conventions/structure/specs-directory-structure.md));
 non-delegated `specs structure validate` findings (create missing folder + `README.md` + placeholder
-spec) and non-delegated `md links validate` findings (repair or remove a broken link).
+spec) and non-delegated `md internal-link validate` findings (repair or remove a broken link).
 
 When the corresponding gate ID is delegated, these findings never enter the audit and the fixer
 must not reconstruct them.

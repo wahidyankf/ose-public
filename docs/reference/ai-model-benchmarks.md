@@ -668,8 +668,9 @@ per 1M tokens — [Alibaba Cloud Model Studio Pricing](https://www.alibabacloud.
 ## Model Selection Mapping
 
 Cross-reference with [AI Agent Model Selection Convention](../../repo-governance/development/agents/model-selection.md)
-tier assignments. The Claude-to-OpenCode mapping reflects what `npm run generate:bindings` produces
-for the current agent frontmatter aliases.
+tier assignments. The Claude-to-OpenCode mapping records what the former in-tree binding generator
+produced; the current generator (`./rhino harness adapters generate`, configured by `repo-config.yml`
+`harness:`) writes OpenCode agent adapters with no `model` field.
 
 | Claude Alias              | Claude Model (2026)         | Pricing (in/out MTok) | SWE-bench Verified | OpenCode Go ID           |
 | ------------------------- | --------------------------- | --------------------- | ------------------ | ------------------------ |
@@ -681,8 +682,8 @@ for the current agent frontmatter aliases.
 thinking and execution tiers both map to `glm-5.2` — an explicit, intentional collapse (Decision 1,
 `upgrade-opencode-go-models` plan `tech-docs.md`): no roster model separately clears Claude Opus
 4.8's tier. The fast tier maps to `minimax-m3`, superseding the retired `glm-5` (unsuffixed) mapping.
-This reflects the 3-branch structure encoded in `the upstream Rhino repository/src/application/agents/converter.rs`
-at time of last sync. As the OpenCode Go roster evolves, the converter may be updated to point to
+This reflects the 3-branch structure encoded in the retired in-tree Rhino's `converter.rs` at time
+of last sync. As the OpenCode Go roster evolves, the converter may be updated to point to
 higher-capability models. See `model-selection.md` for the authoritative mapping rationale.
 
 **`opus` anchor vs. `opus` alias — a deliberate distinction**: the dataset's `opus` anchor for the

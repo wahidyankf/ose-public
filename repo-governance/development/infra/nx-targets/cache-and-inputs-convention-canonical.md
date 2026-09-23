@@ -22,22 +22,21 @@ path points to the project's logical owner tree under `specs/apps/` or `specs/li
 | Executable tool | Implementation, test adapters, and build metadata    | Tool owner corpus                                          |
 | Dedicated E2E   | E2E adapters and runner configuration                | The owning application's corpus and required test fixtures |
 
-The F# `Rhino` executable consumes its corpus from mandatory Unit adapters and applicable
+The F# `crane-cli` executable consumes its corpus from mandatory Unit adapters and applicable
 higher-layer adapters. Its runtime and static coverage targets include the CLI's own spec files:
 
-| CLI App | Gherkin specs input                                                   |
-| ------- | --------------------------------------------------------------------- |
-| `Rhino` | `{workspaceRoot}/the upstream Rhino specification corpus**/*.feature` |
+| CLI App     | Gherkin specs input                                            |
+| ----------- | -------------------------------------------------------------- |
+| `crane-cli` | `{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature` |
 
-Example for an executable's `test:unit` inputs:
+Example for an executable's `test:unit` inputs (from `apps/crane-cli/project.json`):
 
 ```json
 "inputs": [
   "{projectRoot}/src/**/*.fs",
   "{projectRoot}/tests/unit/**/*.fs",
-  "{projectRoot}/src/**/*.fsproj",
-  "{projectRoot}/tests/unit/**/*.fsproj",
-  "{workspaceRoot}/the upstream Rhino specification corpusbehaviours/**/*.feature"
+  "{projectRoot}/crane-cli.fsproj",
+  "{workspaceRoot}/specs/apps/crane/cli/behaviours/**/*.feature"
 ]
 ```
 

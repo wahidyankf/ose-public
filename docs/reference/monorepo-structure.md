@@ -36,13 +36,13 @@ open-sharia-enterprise/
 │   └── k8s/                  # Kubernetes deployments
 ├── specs/                     # Gherkin acceptance specs, C4 diagrams, and OpenAPI contracts
 │   ├── apps/                  # Per-app specs (one logical owner corpus per surface)
-│   │   └── [product]/        # e.g. organiclever/, rhino/
+│   │   └── [product]/        # e.g. organiclever/, crane/
 │   │       ├── overview.md   # optional PM-first framing shared by the owners
 │   │       └── [owner]/      # one per deployed surface (be/, www/, app-web/, cli/)
 │   │           ├── architecture.md # C4 context → containers → components, one document
 │   │           ├── contracts/      # OpenAPI, in the owner that serves it
 │   │           └── behaviours/      # Gherkin feature files
-│   │               └── [domain]/   # e.g. rhino/cli/behaviours/system/
+│   │               └── [domain]/   # e.g. crane/cli/behaviours/system/
 │   └── libs/                  # Per-library specs (the same three entries at the library root)
 ├── .husky/                    # Git hooks
 ├── .nx/                       # Nx cache (gitignored)
@@ -89,7 +89,6 @@ Flat structure - all apps at the same level, no subdirectories.
 - `ayokoding-www` - AyoKoding educational platform (Next.js 16 fullstack content platform, port 3101)
 - `ayokoding-www-be-e2e` - Playwright BE E2E tests for ayokoding-www tRPC API
 - `ayokoding-www-fe-e2e` - Playwright FE E2E tests for ayokoding-www UI
-- `Rhino` - Repository management CLI (F# application). Ported from Go to Rust 2026-05-23, then from Rust to F# 2026-08-30 (both predecessor sources recoverable from git history).
 - `crane-cli` - PDF-to-Markdown pipeline CLI (F# application)
 - `ferret-cli` - Local metadata-only telemetry CLI for coding-agent harnesses (Python 3.14 zipapp, no runtime
   dependencies)

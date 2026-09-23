@@ -11,7 +11,7 @@ application layers know nothing about flags, subcommands, or exit codes.
 
 ## Contents
 
-- [Overview and Directory Layout](./hexagonal-architecture-cli/overview-and-directory-layout.md) — How CLI argument parsing maps to the inbound adapter, plus the canonical directory layout across all four CLI apps. Use when scaffolding a new CLI app or command and need the canonical directory layout.
+- [Overview and Directory Layout](./hexagonal-architecture-cli/overview-and-directory-layout.md) — How CLI argument parsing maps to the inbound adapter, plus the canonical directory layout, with crane-cli as the in-tree example. Use when scaffolding a new CLI app or command and need the canonical directory layout.
 - [Forbidden Imports, Examples, and Related](./hexagonal-architecture-cli/forbidden-imports-examples-and-related.md) — The forbidden-imports table, a worked Rust example of a command delegating to the application layer, and related pattern documentation. Use when checking whether a CLI layer imports something forbidden, or want a worked example of the commands/ to application/ handoff.
 
 ## Principles and Conventions

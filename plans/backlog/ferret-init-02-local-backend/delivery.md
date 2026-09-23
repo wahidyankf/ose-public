@@ -214,12 +214,15 @@ and green baseline.
       `git ls-remote --exit-code --heads origin refs/heads/ferret-init-01-local-cli` to exit 2. Stop on an
       incomplete predecessor or amend this plan for drift.
 - [ ] [AI] Provision/enter the declared worktree, record repository-relative identity/branch inventory, run
-      transactional dependency convergence and Doctor, and keep unrelated/user edits untouched.
+      transactional dependency convergence and read-only Doctor (provisioning only on reported drift), and keep
+      unrelated/user edits untouched.
 - [ ] [AI] Run and retain this exact setup/baseline packet; resolve every failure, including unrelated
       pre-existing failures, before Phase 1:
 
 ```bash
 rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
+rtk npm run doctor
+# Only if doctor reports drift: provision, then validate again
 rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply
 rtk npm run doctor
 rtk ./hippo run --class ephemeral --resource-tier heavy --disk-path . -- npm exec nx -- affected -t build,typecheck,lint,test:quick --base=origin/main --head=HEAD

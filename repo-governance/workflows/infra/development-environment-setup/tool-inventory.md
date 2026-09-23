@@ -1,63 +1,59 @@
 ---
-description: "Table of the tools ./rhino toolchain validate checks by default, plus how repo-config.yml adds more."
-when_to_use: "Use as a quick reference for which tool version a given config file pins, or which manager installs it."
+description: "Table of every toolchain ./rhino toolchain validate probes, as declared under repo-config.yml toolchains, with the phase or manager that installs each."
+when_to_use: "Use as a quick reference for which tools npm run doctor checks, where a version is pinned, or which manager installs a reported tool."
 ---
 
 # Tool Inventory
 
-The tools `./rhino toolchain validate` checks **by default**, in the order it reports them. This is the
-built-in inventory, not the whole one — see [Configured extra tools](#configured-extra-tools) below.
+`npm run doctor` runs `./rhino toolchain validate`, which probes exactly the entries under
+`toolchains.entries` in `repo-config.yml`, in declaration order. There is no built-in inventory and
+no scope flag: the declaration is the whole set, and every entry is `required`, so a tool that is
+missing or whose probe fails is a finding. No entry declares a `version` constraint, so doctor
+proves presence only; the pins below are enforced by the named manager or project, not by doctor.
+No entry declares a provision vector either, so `./rhino toolchain provision --apply` installs
+nothing here — install a reported tool through the phase or manager listed, then run doctor again.
 
-| #   | Tool           | Required Version      | Version Source                              | Manager        |
-| --- | -------------- | --------------------- | ------------------------------------------- | -------------- |
-| 1   | git            | Any                   | (no config file)                            | System/Brew    |
-| 2   | volta          | Any                   | (no config file)                            | curl script    |
-| 3   | node           | Exact                 | package.json → volta.node                   | Volta          |
-| 4   | npm            | Exact                 | package.json → volta.npm                    | Volta          |
-| 6   | cargo-llvm-cov | Any                   | (no config file)                            | cargo install  |
-| 7   | dotnet         | >= global.json major  | repo-config.yml → doctor.dotnet-global-json | Brew/Script    |
-| 8   | docker         | Any                   | (no config file)                            | Docker Desktop |
-| 9   | jq             | Any                   | (no config file)                            | Brew           |
-| 10  | shellcheck     | Any                   | (no config file)                            | Brew/apt       |
-| 11  | hadolint       | Any                   | (no config file)                            | Brew/binary    |
-| 12  | actionlint     | Any                   | (no config file)                            | Brew/binary    |
-| 13  | playwright     | (matches npm version) | node_modules (npx playwright)               | npx            |
-| 14  | shfmt          | Any                   | (no config file)                            | Brew/apt       |
-| 15  | tofu           | >= pinned floor       | Rhino constant (`OPENTOFU_VERSION`)         | Brew/binary    |
-| 16  | clang-format   | Any                   | (no config file)                            | Brew/apt       |
+| #   | Tool          | Needed by                                       | Pinned by                           | Install                     |
+| --- | ------------- | ----------------------------------------------- | ----------------------------------- | --------------------------- |
+| 1   | git           | everything                                      | —                                   | Phase 2                     |
+| 2   | volta         | Node.js pinning                                 | —                                   | Phase 3                     |
+| 3   | node          | Nx, hooks, TypeScript projects                  | `package.json` → `volta.node`       | Phase 3                     |
+| 4   | npm           | dependency install, `npx`                       | `package.json` → `volta.npm`        | Phase 3                     |
+| 5   | dotnet        | .NET projects, `format-staged` (F#)             | each .NET project's `global.json`   | Phase 9                     |
+| 6   | go            | `roots-be`, `gofmt` in `format-staged`          | `apps/roots-be/go.mod`              | Phase 4                     |
+| 7   | golangci-lint | `roots-be` lint                                 | CI `setup-go` input                 | Phase 4                     |
+| 8   | java          | `ose-lms-be`                                    | the project's Gradle toolchain      | SDKMAN or a JDK 25 package  |
+| 9   | docker        | dev stacks, E2E                                 | —                                   | Phase 2                     |
+| 10  | jq            | hooks, CI scripts                               | —                                   | Phase 2                     |
+| 11  | bash          | every gate script                               | —                                   | Phase 2 (ships with the OS) |
+| 12  | curl          | cold-cache `./rhino`, `./hippo`, safety scanner | —                                   | Phase 2 (ships with the OS) |
+| 13  | rustfmt       | `format-staged` (`*.rs`)                        | —                                   | Phase 7                     |
+| 14  | fantomas      | `format-staged` (`*.fs`)                        | `.config/dotnet-tools.json`         | Phase 9                     |
+| 15  | csharpier     | `format-staged` (`*.cs`)                        | `.config/dotnet-tools.json`         | Phase 9                     |
+| 16  | ruff          | `format-staged` (`*.py`)                        | FERRET `uv.lock` (CI uses its venv) | Phase 6                     |
+| 17  | mix           | `format-staged` (`*.ex`, `*.exs`)               | —                                   | Phase 8                     |
+| 18  | dart          | `format-staged` (`*.dart`)                      | `.fvmrc`                            | Phase 10                    |
+| 19  | shfmt         | `format-staged` (`*.sh`)                        | CI `setup-go` input                 | Phase 2                     |
+| 20  | tofu          | `format-staged` (`*.tf`)                        | —                                   | Phase 2                     |
+| 21  | clang-format  | `format-staged` (`*.c`, `*.h`)                  | —                                   | Phase 2                     |
 
-## Configured extra tools
+## Deliberately not declared
 
-A repository may add tools to this inventory without a Rhino source change, by declaring them
-under `doctor.extra-tools` in `repo-config.yml`. A declared tool is probed, version-compared, and
-reported exactly like a built-in, and `--tools <name>` accepts it. A name in **neither** the table
-above **nor** `doctor.extra-tools` is still rejected before any tool is probed, so the inventory
-stays a closed set — it is just no longer a set fixed at compile time.
+The [cross-language lint-strictness policy](../../../development/quality/cross-language-lint-strictness/policy.md)
+exempts some binaries the gates call, and `repo-config.yml` records the same list beside the
+declaration: `prettier`, `markdownlint-cli2`, `stylua`, and `buildifier` come from the npm lockfile
+through the guarded `npm install`; `gofmt` and `npx` ship with `go` and `npm`; Java formatting runs
+Spotless through the owning project's `gradlew`; the public-safety scanner downloads and verifies
+its own pinned release; and base utilities (`awk`, `sed`, `tar`, `shasum`) are assumed.
 
-`repo-config.yml`'s `doctor.extra-tools` block is the schema's canonical home and documents each
-field. The one worth knowing here is `version-stream`: a tool whose version banner goes to stderr
-rather than stdout (`java -version` does) must say so, or the probe reads an empty string and
-reports an installed tool as missing.
+`shellcheck`, `hadolint`, and `actionlint` are absent because no declared gate runs them today —
+see [Gated standards](../../../development/quality/cross-language-lint-strictness/gated-standards.md).
+Playwright browsers are installed by Phase 12 and are not a doctor probe.
 
-A gate's `doctor-tools:` dependency resolves against the same closed set: `repo-config validate`
-rejects a gate naming a tool in neither the built-in table nor `doctor.extra-tools`. So declaring a
-tool here is also what lets a new gate depend on an external binary with no Rhino source change.
+## Adding a tool
 
-This repository declares three: `java` for the LMS backend's JDK, and `go` and `golangci-lint` for
-the Roots backend lane. The table above plus those three is today's complete inventory.
-
-## Not checked by doctor
-
-The toolchains that exist to format the AyoKoding course corpora — Lua (`stylua`), Python
-(`ruff`), and Elixir (`mix format`). They are installed by hand in Phases 4, 6, and 8, and enforced
-by their own `format-*` gates in `repo-config.yml`. `./rhino toolchain provision --apply` will not install them. They are
-absent from `doctor.extra-tools` deliberately: `doctor` reports on the toolchain a contributor
-needs to build and test, and Lua and Elixir are needed only to format one content corpus.
-
-Python is the exception to "only formatting": the FERRET projects also need `uv` and CPython 3.14.7,
-installed in Phase 6 and synchronized by the projects' own `install` targets rather than checked by `doctor`.
-
-Go used to be on that list. Once `apps/roots-be` shipped it became a build-and-test toolchain
-rather than a formatter-only one, and moved into `doctor.extra-tools` with a `required-version`
-floor. A language crosses that line when the first project is written in it, not when its formatter
-gate is added.
+Declare it in the same change that adds the gate or project needing it, as an entry with `id`,
+`executable`, a non-empty `probe` argv that exits 0, and `required: true`; `./rhino repo-config
+validate` checks the shape. Add a `provision` vector only when a non-interactive, idempotent install
+command exists for each platform, because `provision --apply` refuses when any entry that declares
+provisioning lacks a vector for the current platform.

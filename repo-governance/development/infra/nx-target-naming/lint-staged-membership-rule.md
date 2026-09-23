@@ -32,11 +32,11 @@ The following checks satisfy both criteria and belong in `lint-staged`:
 
 Checks that fail one or both criteria stay outside `lint-staged`:
 
-| Check                             | Fails because                                                                                           | Placement                                       |
-| --------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| `md links validate`               | Not per-file isolated — adding, deleting, or renaming any `.md` file can break links in untouched files | Repo-wide `./rhino` gate (pre-push / PR / main) |
-| `harness:bindings-generate`       | Not file-type-based — regenerates all binding trees from the whole `.claude/` tree                      | Dedicated `./rhino` step (pre-commit step 3)    |
-| `test:quick`, `typecheck`, `lint` | Not file-type-based — project-scoped compile / test                                                     | Nx target (pre-push onward)                     |
+| Check                             | Fails because                                                                                           | Placement                                      |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `md internal-link validate`       | Not per-file isolated — adding, deleting, or renaming any `.md` file can break links in untouched files | Repo-wide `./rhino` command (no declared gate) |
+| `harness:bindings-generate`       | Not file-type-based — regenerates all binding trees from the whole `.claude/` tree                      | Dedicated `./rhino` step (pre-commit step 3)   |
+| `test:quick`, `typecheck`, `lint` | Not file-type-based — project-scoped compile / test                                                     | Nx target (pre-push onward)                    |
 
 ## Consequences for the Nx Target Set
 

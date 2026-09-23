@@ -153,9 +153,11 @@ graph LR
 **Purpose**: Full quality gate on every PR and push to `main`. The registry is the check-set source
 of truth; `gate validate` rejects a stale matrix or missing retained job.
 
-**Note**: The standalone `markdown-validate.yml` workflow has been deleted. Per-file markdown
-validators (mermaid, heading-hierarchy, markdownlint) now run via lint-staged at commit time; the
-repo-wide `md links validate` check runs as the `md-links` job in this workflow.
+**Note**: The standalone `markdown-validate.yml` workflow has been deleted. Per-file Markdown
+validators (markdownlint, mermaid, heading hierarchy, naming, front matter) run as declared
+`pre-commit` and `pull-request` gates; this workflow's Repository policy job runs the
+`pull-request` surface through `./rhino gate run`. The repo-wide
+`./rhino md internal-link validate` check is not currently a declared gate (see `./rhino gate list`).
 
 ### Registry-derived CI matrix
 

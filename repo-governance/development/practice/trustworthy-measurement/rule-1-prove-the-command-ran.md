@@ -13,7 +13,7 @@ A timing harness reports elapsed time whether or not the thing being timed execu
 The failure is silent and reads as success. A `zsh` loop of the form
 
 ```bash
-for c in "md links validate" "md mermaid validate"; do "$BIN" $c; done
+for c in "md internal-link validate" "md mermaid validate"; do "$BIN" $c; done
 ```
 
 does **not** word-split `$c` under `zsh` — the whole string arrives as one argument, every

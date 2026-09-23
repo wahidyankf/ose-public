@@ -5,73 +5,48 @@ when_to_use: "Use when locating a markdown quality gate's command or exclusions.
 
 # Markdown Quality Gates
 
-Eight gates carry `ci-group: markdown` in `repo-config.yml`: `markdownlint`, `md-mermaid`,
-`md-mermaid-strict`, `md-heading-hierarchy`, `md-naming`, `md-frontmatter`, `md-links`, and
-`governance-readme-index`.
-The registry is the source of truth for every command, argument, and surface below — read
-`repo-config.yml` when this page and the registry disagree.
+Five Markdown gates are declared in `repo-config.yml` `gates.entries`: `markdownlint`, `md-mermaid`,
+`md-heading-hierarchy`, `md-naming`, and `md-frontmatter`. The registry is the source of truth for
+every command, argument, and surface below — read `repo-config.yml` when this page and the registry
+disagree, and run `./rhino gate list` to see the current surfaces.
 
-Nothing invokes these by hand. The registry's `gate run --surface=pre-commit` and `--surface=pre-push`,
-which the hooks reach through `./rhino gate run`, and the CI matrix derived from `ci-group` execute them; the commands below are what those surfaces run.
+Nothing invokes these by hand. Each runs on the `pre-commit` and `pull-request` surfaces, which the
+hooks and `pr-quality-gate.yml` reach through `./rhino gate run`. Every `./rhino` command below runs
+the pinned external RHINO executable, which reads its policy from `repo-config.yml`
+`policies.markdown`.
 
 ## 1. Mermaid Diagram Validation
 
-**Command**: `md mermaid validate`
+**Command**: `./rhino md mermaid validate --file <path>` (gate `md-mermaid`)
 
-A split command. F# selects the Markdown files in scope that hold a Mermaid block and hands each to
-the pinned RHINO as `--file`; RHINO applies the `md-mermaid` section of `repo-config.yml`:
-`accTitle` and `accDescr` on every diagram, node and edge labels of at most 30 graphemes, and the
-colour palette. When no selected file holds a diagram, RHINO is not started. F# then checks maximum
-horizontal width (4 nodes per rank), single diagram per fenced block, and valid syntax. Diagram
-types covered: `flowchart`/`graph` (all directions) and `stateDiagram-v2`/`stateDiagram` (v1) —
-state node count contributes to width.
-
-**Registry exclusions**: `plans/done`,
-`apps/ayokoding-www/content`. The `--exclude` flag is repeatable; pass extra prefixes to suppress
-noise in project-specific runs.
-
-**Surfaces**: pre-commit (staged `.md` files) and CI (all `.md` files).
-
-## 1a. Mermaid Label Length, Strict
-
-**Command**: `md mermaid validate --max-label-len 20` (gate `md-mermaid-strict`)
-
-`md-mermaid` above leaves labels to RHINO's limit of 30 — Mermaid's `wrappingWidth` baseline, a
-backstop. The binding limit is 20 (see
-[Rule 3](../../../conventions/formatting/diagrams/common-syntax-errors-label-constraints-rule-3-line-length.md));
-this gate closes that gap: with an explicit `--max-label-len`, F# checks node labels, state display
-names and transition edge labels too. Same command, same exclusions, same surfaces — but scoped to **changed**
-`.md` files on both, so it ratchets new and edited diagrams to 20 without failing on the untouched
-legacy corpus.
+`scripts/validate-mermaid-files` receives the staged (pre-commit) or changed (pull-request) paths,
+keeps the `.md` files, and hands each to RHINO as `--file`. RHINO applies
+`policies.markdown.mermaid`: `accTitle` and `accDescr` on every diagram, node and edge labels of at
+most 30 graphemes, and the declared colour palette. The binding authoring limit is stricter — see
+[Rule 3](../../../conventions/formatting/diagrams/common-syntax-errors-label-constraints-rule-3-line-length.md).
 
 ## 2. Markdown Link Validation
 
-**Command**: `md links validate`
+**Command**: `./rhino md internal-link validate`
 
-Full-repo link scan. Validates all relative `[text](path.md)` links resolve to existing files. Also
-validates `#fragment` anchor references using the GitHub slug algorithm — underscores and Unicode
-letters/digits are kept, spaces map to hyphens, duplicates receive `-1`, `-2`, … suffixes (verified
-against the `github-slugger` v2 reference implementation). A fragment with no matching heading
-emits a `broken-anchor` finding.
+Full-repo link scan. Validates that every local Markdown link's target path resolves inside the
+repository; it does not check `#fragment` anchors. Sources matching `policies.markdown.internal-link.exclude-sources`
+(`plans/done/**`, the published content trees, and the skill trees) are skipped.
 
-**Registry exclusions**: `plans/done`.
-
-**Surfaces**: pre-push (all `.md` files) and CI (all `.md` files). Deliberately **not** at
-pre-commit — a repo-wide link scan is too slow for every commit.
+**Surfaces**: none today — it is not a declared gate, so run it directly before pushing link
+changes. A repo-wide scan belongs outside pre-commit because adding, deleting, or renaming any
+file can break links in untouched files.
 
 ## 3. Heading Hierarchy Validation
 
-**Command**: `md heading-hierarchy validate`
+**Command**: `./rhino md heading-hierarchy validate` (gate `md-heading-hierarchy`)
 
-Validates heading nesting on a prose allowlist (default-deny): `docs/`, `repo-governance/`,
-`plans/` (excluding `plans/done/`), `specs/`, root `*.md`, `apps/*/README.md`, `libs/*/README.md`,
-`apps/*/docs/**`, `libs/*/docs/**`. All other paths (including `.claude/**`,
-`apps/ayokoding-www/content/`, `apps/ose-www/content/`, `plans/done/`) are skipped.
-
-**Surfaces**: pre-commit (staged `.md` files) and CI (all `.md` files).
+Checks heading nesting on the surfaces declared under `policies.markdown.heading-hierarchy`
+(single H1, at most one level per jump). Paths outside those surfaces, including the published
+content trees, are skipped.
 
 ## CI Enforcement
 
-There is no standalone `markdown-validate.yml` workflow. Every markdown gate runs in the
-`markdown` matrix job of `pr-quality-gate.yml`, which derives its members from `ci-group` at
-runtime — adding a gate with `ci-group: markdown` puts it in that job with no workflow edit.
+There is no standalone `markdown-validate.yml` workflow. The Repository policy job of
+`pr-quality-gate.yml` runs `./rhino gate run --surface pull-request`, which executes every gate
+declared for that surface.

@@ -36,7 +36,7 @@ type ErrorCode = Literal[
 # One row per closed code: (exit status, message). No message carries a rejected value, so a caller's raw
 # input, a path, or a payload can never reach a diagnostic.
 FAILURES: Mapping[ErrorCode, tuple[int, str]] = {
-    "ferret.args.invalid": (EXIT_CALLER_ERROR, "unrecognized or incomplete arguments; run 'ferret --help' for usage"),
+    "ferret.args.invalid": (EXIT_CALLER_ERROR, "unrecognized or incomplete arguments"),
     "ferret.args.confirmation-required": (EXIT_CALLER_ERROR, "purging data requires --yes"),
     "ferret.filter.invalid": (EXIT_CALLER_ERROR, "a filter value is not valid"),
     "ferret.cursor.invalid": (EXIT_CALLER_ERROR, "the cursor is not valid for this query"),
@@ -45,7 +45,7 @@ FAILURES: Mapping[ErrorCode, tuple[int, str]] = {
         EXIT_CALLER_ERROR,
         "an event with this ID already exists with different content",
     ),
-    "ferret.storage.uninitialized": (EXIT_CALLER_ERROR, "FERRET is not initialized; run 'ferret init'"),
+    "ferret.storage.uninitialized": (EXIT_CALLER_ERROR, "FERRET is not initialized"),
     "ferret.storage.unsafe": (EXIT_CALLER_ERROR, "the data home is not private to the current user"),
     "ferret.storage.unavailable": (EXIT_CALLER_ERROR, "storage is unavailable"),
     "ferret.storage.integrity-failure": (EXIT_CALLER_ERROR, "the database failed its integrity check"),
@@ -55,6 +55,13 @@ FAILURES: Mapping[ErrorCode, tuple[int, str]] = {
         "the installed files no longer match the FERRET manifest",
     ),
     "ferret.internal.failure": (EXIT_CALLER_ERROR, "FERRET failed internally"),
+}
+
+# Advice is kept out of the message on purpose. A diagnostic states what is wrong; what to do about it goes
+# on a following line, so a caller matching on the message is never matching on a suggestion that may change.
+ADVICE: Mapping[ErrorCode, str] = {
+    "ferret.args.invalid": "try 'ferret --help' for usage",
+    "ferret.storage.uninitialized": "try 'ferret init'",
 }
 
 

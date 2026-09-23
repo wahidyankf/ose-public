@@ -8,6 +8,30 @@ Entries describe what a consumer can observe: commands, flags, exit codes, error
 They are not a commit list. For the commits behind any release, see its
 [comparison on GitHub](https://github.com/wahidyankf/ose-public/releases).
 
+## [v0.3.0] — 2026-09-23
+
+FERRET's diagnostics now take the form the coding standards for command-line programs fix, and an interrupt ends the
+process without a traceback. The version moves in the minor position because the text of every diagnostic changed, and
+in `0.x` that is where a breaking change goes.
+
+### Changed — breaking
+
+- A diagnostic is `ferret: [<code>] <message>`, not `FERRET error [<code>]: <message>`. The established form is
+  `program: message`, and the tool's name comes first so a line lifted out of a log, a hook, or a wrapped invocation is
+  attributable without knowing what ran. A caller matching the old prefix must be updated; a caller reading
+  `error.code` from the machine-readable body is unaffected, and that body did not change.
+- Advice has moved out of the message and onto a following line of its own. `ferret.args.invalid` reads
+  `unrecognized or incomplete arguments`, followed by `ferret: try 'ferret --help' for usage`; `ferret.storage.uninitialized`
+  reads `FERRET is not initialized`, followed by `ferret: try 'ferret init'`. A diagnostic states what is wrong; what to
+  do about it is separate, so a caller matching on the message is never matching on a suggestion. `error.message` in the
+  machine-readable body now carries the diagnosis alone, without the advice.
+
+### Fixed
+
+- An interrupt during a blocking read no longer prints a `KeyboardInterrupt` traceback from the zipapp. The entry point
+  restores the default disposition and re-raises the signal, so the process dies of `SIGINT` as it always reported it
+  did — `128+2`, with nothing on stderr.
+
 ## [v0.2.0] — 2026-09-22
 
 FERRET now reports from one closed status vocabulary and one closed, namespaced error-code vocabulary, and stores its

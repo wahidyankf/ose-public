@@ -661,7 +661,7 @@ def test_export_rejects_a_machine_output_request_and_writes_nothing_to_stdout() 
 def test_a_failed_export_reports_its_closed_error_on_stderr_only() -> None:
     code, out, err = run_cli(world_with(), ["events", "export", "--format", "jsonl", "--harness", "Bad"])
 
-    assert (code, out, err) == (2, "", "FERRET error [ferret.filter.invalid]: a filter value is not valid\n")
+    assert (code, out, err) == (2, "", "ferret: [ferret.filter.invalid] a filter value is not valid\n")
 
 
 def test_a_failed_list_names_its_command_in_the_json_error() -> None:

@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from typing import Any, Literal, NoReturn, Protocol, TextIO, cast
 
 from ferret import __version__
-from ferret.domain.errors import EXIT_CALLER_ERROR, EXIT_SUCCESS, FAILURES, FerretError
+from ferret.domain.errors import ADVICE, EXIT_CALLER_ERROR, EXIT_SUCCESS, FAILURES, ErrorCode, FerretError
 from ferret.help_text import COMMAND_HELP, ROOT_HELP, ROOT_USAGE
 
 type CommandPath = tuple[str, ...]
@@ -295,7 +295,7 @@ def fail(
     *,
     command: CommandPath,
     output: OutputMode,
-    code: str,
+    code: ErrorCode,
     exit_code: int,
     message: str,
     retryable: bool = False,
@@ -313,7 +313,11 @@ def fail(
         }
         stderr.write(json.dumps(envelope, separators=(",", ":"), ensure_ascii=False) + "\n")
     else:
-        stderr.write(f"FERRET error [{code}]: {message}\n")
+        stderr.write(f"ferret: [{code}] {message}\n")
+        advice = ADVICE.get(code)
+        if advice is not None:
+            # Still prefixed, so a line lifted out of a log is still attributable to this tool.
+            stderr.write(f"ferret: {advice}\n")
     return exit_code
 
 
@@ -489,5 +493,5 @@ def run(
         return main(argv, stdout=stdout, stderr=stderr, handlers=handlers)
     except Exception:
         stream = sys.stderr if stderr is None else stderr
-        stream.write(f"FERRET error [ferret.internal.failure]: {INTERNAL_FAILURE_MESSAGE}\n")
+        stream.write(f"ferret: [ferret.internal.failure] {INTERNAL_FAILURE_MESSAGE}\n")
         return EXIT_CALLER_ERROR

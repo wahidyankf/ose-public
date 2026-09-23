@@ -80,7 +80,8 @@ assert DECLARED_VERSION is not None, "ferret declares no __version__"
 VERSION_LINE = f"ferret {DECLARED_VERSION.group(1)}\n"
 BARE_USAGE = "usage: ferret <command> [options]\nRun 'ferret --help' for the commands and options.\n"
 INVALID_ARGUMENTS_TEXT = (
-    "FERRET error [ferret.args.invalid]: unrecognized or incomplete arguments; run 'ferret --help' for usage\n"
+    "ferret: [ferret.args.invalid] unrecognized or incomplete arguments\n"
+    "ferret: try 'ferret --help' for usage\n"
 )
 LISTED_COMMANDS = [
     "init",
@@ -174,7 +175,7 @@ def test_json_shorthand_and_output_json_produce_byte_identical_failures(
     envelope = json.loads(shorthand.stderr)
     assert envelope["error"] == {
         "code": "ferret.args.invalid",
-        "message": "unrecognized or incomplete arguments; run 'ferret --help' for usage",
+        "message": "unrecognized or incomplete arguments",
         "field": None,
         "retryable": False,
     }

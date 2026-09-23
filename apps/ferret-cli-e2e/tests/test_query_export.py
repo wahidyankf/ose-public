@@ -143,5 +143,5 @@ def test_every_read_of_an_uninitialized_home_is_a_closed_failure_that_creates_no
     # An export has no machine-readable mode, so its failure is the text form and stdout stays empty.
     exported = run_artifact(artifact, ["events", "export", "--format", "jsonl"], home=home)
     assert (exported.returncode, exported.stdout) == (2, b"")
-    assert exported.stderr.startswith(b"FERRET error [ferret.storage.uninitialized]: ")
+    assert exported.stderr.startswith(b"ferret: [ferret.storage.uninitialized] ")
     assert not (home / ".local" / "share" / "ferret").exists()

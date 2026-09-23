@@ -82,7 +82,7 @@ options:
 
 BARE_USAGE = "usage: ferret <command> [options]\nRun 'ferret --help' for the commands and options.\n"
 INVALID_ARGUMENTS_TEXT = (
-    "FERRET error [ferret.args.invalid]: unrecognized or incomplete arguments; run 'ferret --help' for usage\n"
+    "ferret: [ferret.args.invalid] unrecognized or incomplete arguments\nferret: try 'ferret --help' for usage\n"
 )
 LEAK_CANARY = "canary-value-that-must-never-be-echoed"
 
@@ -236,7 +236,7 @@ def test_a_fault_outside_everything_main_answers_for_is_one_value_free_line_and_
     code = cli.run(["status"], stdout=stdout, stderr=stderr, handlers={})
 
     assert (code, stdout.getvalue()) == (2, "")
-    assert stderr.getvalue() == f"FERRET error [ferret.internal.failure]: {cli.INTERNAL_FAILURE_MESSAGE}\n"
+    assert stderr.getvalue() == f"ferret: [ferret.internal.failure] {cli.INTERNAL_FAILURE_MESSAGE}\n"
     assert LEAK_CANARY not in stderr.getvalue()
 
 
@@ -347,7 +347,7 @@ def test_a_json_usage_failure_is_one_compact_envelope_on_stderr(argv: list[str],
         "exitCode": 2,
         "error": {
             "code": "ferret.args.invalid",
-            "message": "unrecognized or incomplete arguments; run 'ferret --help' for usage",
+            "message": "unrecognized or incomplete arguments",
             "field": None,
             "retryable": False,
         },
@@ -496,7 +496,7 @@ def test_an_unknown_internal_failure_is_storage_unavailable_without_its_detail(o
             },
         }
     else:
-        assert result.stderr == "FERRET error [ferret.storage.unavailable]: storage is unavailable\n"
+        assert result.stderr == "ferret: [ferret.storage.unavailable] storage is unavailable\n"
 
 
 def test_a_handler_owns_its_streams_and_exit_code() -> None:

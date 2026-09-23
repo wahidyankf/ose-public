@@ -60,4 +60,6 @@ running tests. Integration and E2E runtime never run in hooks or PR CI.
 - Changing architectural boundaries (C4 diagrams in specs/)
 - Adding or removing dependencies that affect setup instructions
 
-**Manual enforcement**: Documentation updates require human judgment about what is relevant. AI agents should identify documentation that references the changed feature and update it proactively.
+**Manual enforcement**: Documentation updates require human judgment about what is relevant. Run
+[Docs Propagation](../../../workflows/docs/docs-propagation.md), which finds every document that
+references the changed feature and updates or removes it in the same commit.

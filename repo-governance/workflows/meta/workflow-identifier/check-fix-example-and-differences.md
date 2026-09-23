@@ -7,9 +7,9 @@ when_to_use: Use when comparing a proposed workflow against the *-check-fix patt
 
 ## Example Implementation
 
-See [Documentation Quality Gate](../../docs/docs-quality-gate.md) for a canonical implementation.
-`rules-quality-gate` is no longer an example of this pattern — it is a
-[governance gate](./governance-gate-class.md).
+See [AyoKoding General Quality Gate](../../ayokoding-web/ayokoding-web-general-quality-gate.md) for a
+canonical implementation. `rules-quality-gate` and `docs-quality-gate` are no longer examples of this
+pattern — they are [governance gates](./governance-gate-class.md).
 
 ## Key Differences from Basic Validation Workflow
 

@@ -10,7 +10,7 @@ Workflows are first-class composable units. A workflow step can be another workf
 ```markdown
 ### 2. Run Validation Workflow (Nested)
 
-**Workflow**: `docs/docs-quality-gate`
+**Workflow**: `docs/docs-software-engineering-separation-quality-gate`
 
 - **Args**: `scope: {input.scope}`
 - **Output**: `{validation-status}`
@@ -28,7 +28,7 @@ Run `rtk ./hippo run --class transactional --resource-tier standard --disk-path 
 
 ### 2. Validate Docs (Nested Workflow)
 
-**Workflow**: `docs/docs-quality-gate`
+**Workflow**: `docs/docs-software-engineering-separation-quality-gate`
 
 - **Args**: `scope: all, mode: strict`
 - **Output**: `{docs-status}`

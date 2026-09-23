@@ -1,27 +1,8 @@
 ---
-description: "Validates all docs/ content (factual accuracy, pedagogical structure, link validity) and applies fixes iteratively via Maker-Checker-Fixer."
-when_to_use: "Read this index to find the right Documentation Quality Gate Workflow child document."
+description: "Child documents of the docs-quality-gate governance gate"
+when_to_use: "Read this index to find the right docs-quality-gate child document."
 ---
 
-# Documentation Quality Gate Workflow
+# Docs Quality Gate
 
-- [Execution Mode](./execution-mode.md) — Describes Agent Delegation (preferred, invoking docs-checker/docs-tutorial-checker/docs-link-checker/docs-fixer/docs-tutorial-fixer) versus Manual Orchestration (fallback), and how a user invokes each. Use when deciding whether to run this workflow via delegated agents or manual tool orchestration.
-- [Workflow Overview](./workflow-overview.md) — Mermaid flow diagram summarizing the parallel-checker, aggregate, sequential-fixer, iterate loop. Use when you need a visual summary of the workflow's control flow before reading the detailed steps.
-- [Research Delegation](./research-delegation.md) — Explains that docs-checker and docs-tutorial-checker delegate multi-page web research to web-researcher to keep audit contexts lean. Use when investigating why a checker is or isn't calling WebSearch/WebFetch directly for a given claim.
-- [1. Parallel Validation (Parallel)](./step-1-parallel-validation.md) — Step 1: runs docs-checker, docs-tutorial-checker, and docs-link-checker concurrently, each writing an independent audit report. Use when implementing or debugging the parallel-validation step of the quality gate.
-- [2. Aggregate Findings (Sequential)](./step-2-aggregate-findings.md) — Step 2: counts findings across all three reports by mode threshold and decides whether to proceed to fixing or a confirmation re-check. Use when implementing or debugging the findings-aggregation and threshold decision step.
-- [3. Apply Factual Fixes (Sequential, Conditional)](./step-3-apply-factual-fixes.md) — Step 3: invokes docs-fixer to fix factual errors, outdated information, technical inaccuracies, and contradictions by mode. Use when implementing or debugging the factual-fix application step.
-- [4. Apply Pedagogical Fixes (Sequential, Conditional)](./step-4-apply-pedagogical-fixes.md) — Step 4: invokes docs-tutorial-fixer, sequenced after docs-fixer, to fix pedagogical/tutorial-structure issues. Use when implementing or debugging the pedagogical-fix application step.
-- [5. Iteration Control (Sequential)](./step-5-iteration-control.md) — Step 5: re-runs all checkers and applies the consecutive-zero-count loop logic to decide continue vs. finalize. Use when implementing or debugging the loop/termination decision logic between checkers and fixers.
-- [6. Finalization (Sequential)](./step-6-finalization.md) — Step 6: reports the final status (pass/partial/fail), iteration count, and summary across all three validation dimensions. Use when implementing or debugging the workflow's final reporting step.
-- [Termination Criteria](./termination-criteria.md) — Defines pass, partial, and fail termination criteria per quality mode, requiring zero findings across all three validators on two consecutive checks. Use when determining what condition ends the workflow, or when choosing a quality mode.
-- [Example Usage](./example-usage.md) — Worked example invocations covering standard, lax, strict, ocd modes, scoped validation, and iteration bounds. Use when looking for a concrete invocation pattern to copy for a specific scenario.
-- [Iteration Example](./iteration-example.md) — A worked trace showing a partial result from unfixable broken links, followed by success after manual link fixes. Use when you need to see a realistic multi-iteration run, including the broken-links partial-result case.
-- [Safety Features](./safety-features.md) — Documents infinite-loop prevention, convergence safeguards, false-positive protection, mode-based progressive improvement, and error recovery. Use when verifying the workflow's safety guarantees or diagnosing a stuck/non-converging run.
-- [Validation Dimensions](./validation-dimensions.md) — Details what each of the three validators checks: factual accuracy, pedagogical quality, and link validity (including the no-auto-fix link limitation). Use when you need to know exactly what a given validator dimension checks for.
-- [Edge Cases](./edge-cases.md) — Five worked edge cases: tutorial-only findings, broken-links blocking success, below-threshold-only findings, non-converging fixes, and tutorial-checker on non-tutorial content. Use when diagnosing an unexpected workflow outcome against a known edge-case pattern.
-- [Related Workflows](./related-workflows.md) — Lists workflows this one composes with: rules-quality-gate, deployment, content-creation, and migration workflows. Use when looking for a workflow to run before or after this one.
-- [Success Metrics](./success-metrics.md) — Metrics to track across executions: average iterations, success rate, findings by dimension, fix success rate, and broken-link frequency. Use when instrumenting or reviewing this workflow's operational health over time.
-- [Notes](./notes.md) — Summary notes: three-dimensional and parallel validation, sequential fixing order, mode-based flexibility, idempotency, and the link-fix limitation. Use for a quick-reference summary of the workflow's key operating characteristics.
-- [Principles Implemented/Respected](./principles-implemented-respected.md) — Lists the governance principles this workflow implements (explicit over implicit, automation, simplicity, accessibility, progressive disclosure, no time estimates). Use when auditing this workflow against repository-wide governance principles.
-- [Conventions Implemented/Respected](./conventions-implemented-respected.md) — Lists the file-naming, linking, and content-quality conventions this workflow follows. Use when auditing this workflow against repository-wide structural conventions.
+- [Audit Sequence](./audit-sequence.md) — The six steps of one read-only audit: freezing the snapshot, bounding the scope, the six decisions made about each document, the finite ledger and its admission test, leaving machine checks to their tools, and returning the verdict. Use while running the gate.

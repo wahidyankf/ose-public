@@ -1,71 +1,75 @@
 ---
-description: "Validates all docs/ content (factual accuracy, pedagogical structure, link validity) and applies fixes iteratively via Maker-Checker-Fixer."
-when_to_use: "Use after creating/updating documentation, before releases, periodically, or after bulk restructuring."
+description: "Audits human-facing documents on explicit request and returns a verdict with a finite ledger of stale, obsolete, misplaced, and unreadable documents, handing every finding to Docs Propagation instead of editing."
+when_to_use: "Use when someone explicitly asks for a documentation review, before a release, or to sweep a whole repository."
 ---
 
-# Documentation Quality Gate Workflow
+# Docs Quality Gate
 
-**Purpose**: Comprehensively validate all documentation content (factual accuracy, pedagogical
-structure, link validity), apply fixes iteratively until all issues are resolved.
+**Purpose**: Judge whether documents are still true, still needed, and still readable, and hand
+every finding to [Docs Propagation](./docs-propagation.md), the sole writer.
 
-**When to use**: after creating or updating documentation, before major releases, periodically for
-quality assurance, after bulk documentation changes, or when migrating/refactoring documentation.
+A [governance gate](../meta/workflow-identifier/governance-gate-class.md), not a `*-check-fix`
+workflow: it never edits a document and never starts another gate run.
 
-This workflow implements the **Maker-Checker-Fixer pattern** across three validation dimensions.
+## Authorization
+
+Someone explicitly names this gate or directs its audit, or a release process runs it with scope
+`all` before publishing. A change or a propagation run never authorizes it alone; propagation
+already refreshes each change.
 
 ## Goal and Termination
 
-**Goal**: Validate all docs/ content quality (factual accuracy, pedagogical structure, link validity), apply fixes iteratively until zero findings achieved
+**Goal**: One read-only verdict with a finite ledger for the documents in scope
 
-**Termination**: Zero findings across all validators on two consecutive validations (max-iterations defaults to 7, escalation warning at 5)
+**Termination**: `pass`, `needs-propagation`, or `input-changed`; the gate never repairs or reruns itself
 
 ## Inputs
 
-- **`scope`** (string, optional, default `all`) — Documentation to validate (e.g., "all", "docs/tutorials/", "specific-file.md")
-- **`mode`** (enum: lax, normal, strict, ocd, optional, default `strict`) — Quality threshold (lax: CRITICAL only, normal: CRITICAL/HIGH, strict: +MEDIUM, ocd: all levels)
-- **`min-iterations`** (number, optional) — Minimum check-fix cycles before allowing zero-finding termination (prevents premature success)
-- **`max-iterations`** (number, optional, default `7`) — Maximum check-fix cycles to prevent infinite loops
-- **`max-concurrency`** (number, optional, default `3`) — N+1 background-agent cap. Raise only for independent work with capacity and budget; lower under pressure; never self-promote.
+- **`scope`** (enum: change, all, required) — The documents one change affects, or the whole document set Docs Propagation defines
+- **`change`** (string, optional) — The revision range or working-tree change; required when `scope` is `change`
 
 ## Outputs
 
-- **`final-status`** (enum: pass, partial, fail) — Final validation status
-- **`lifecycle-status`** (enum: verified, pending, not-applicable) — Lifecycle evidence state, separate from final-status
-- **`iterations-completed`** (number) — Number of check-fix cycles executed
-- **`docs-report`** (file, pattern `local-tmp/docs/docs__*__audit.md`) — Final factual accuracy validation report
-- **`tutorial-report`** (file, pattern `local-tmp/docs-tutorial/docs-tutorial__*__audit.md`) — Final pedagogical quality validation report
-- **`links-report`** (file, pattern `local-tmp/docs-link/docs-link__*__audit.md`) — Final link validity validation report
-- **`execution-scope`** (string) — Scope identifier for UUID chain tracking (default "docs")
+- **`verdict`** (enum: pass, needs-propagation, input-changed) — The gate's single result
+- **`ledger`** (file, pattern `local-tmp/docs/docs-quality-gate__*__ledger.md`) — The frozen finding ledger handed to propagation
 
 ## Contents
 
-- [Lifecycle validation ownership](../meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md) — shared Step 0.
-- [Execution Mode](./docs-quality-gate/execution-mode.md) — delegation vs. manual mode.
-- [Workflow Overview](./docs-quality-gate/workflow-overview.md) — flow diagram.
-- [Research Delegation](./docs-quality-gate/research-delegation.md) — web-researcher hand-off.
+- [Audit Sequence](./docs-quality-gate/audit-sequence.md) — the six steps, the six decisions per
+  document, and the ledger's admission test.
 
-### Steps
+## Terminal Contract
 
-- [Step 1: Parallel Validation](./docs-quality-gate/step-1-parallel-validation.md) — three checkers.
-- [Step 2: Aggregate Findings](./docs-quality-gate/step-2-aggregate-findings.md) — threshold decision.
-- [Step 3: Apply Factual Fixes](./docs-quality-gate/step-3-apply-factual-fixes.md) — docs-fixer.
-- [Step 4: Apply Pedagogical Fixes](./docs-quality-gate/step-4-apply-pedagogical-fixes.md) — docs-tutorial-fixer.
-- [Step 5: Iteration Control](./docs-quality-gate/step-5-iteration-control.md) — loop logic.
-- [Step 6: Finalization](./docs-quality-gate/step-6-finalization.md) — final status.
+`needs-propagation` is a handoff, not a blocked result: the caller runs
+[Docs Propagation](./docs-propagation.md) with the ledger without another request. Partial outcome:
+an input change ends the audit with its ledger kept. A verdict authorizes no commit or push.
 
-### Criteria and Examples
+## Recorded Decision: After a Finding
 
-- [Termination Criteria](./docs-quality-gate/termination-criteria.md) — pass/partial/fail rules.
-- [Example Usage](./docs-quality-gate/example-usage.md) — invocation scenarios.
-- [Iteration Example](./docs-quality-gate/iteration-example.md) — worked trace with broken links.
+| Option                  | What happens                                                                          | Trade-off                                                    |
+| ----------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| verdict only            | the caller reports propagation's result, and the gate does not run again              | one audit per request; a second audit needs a second request |
+| repair to zero findings | propagation repairs, then the gate audits again while open findings strictly decrease | ends on a clean audit; costs repeated audits and a ceiling   |
 
-### Reference
+This repository records **verdict only**, matching the terminal contract of
+[Rules Quality Gate](../rules/rules-quality-gate.md). Either way the gate never edits a document.
 
-- [Safety Features](./docs-quality-gate/safety-features.md) — convergence safeguards.
-- [Validation Dimensions](./docs-quality-gate/validation-dimensions.md) — what each validator checks.
-- [Edge Cases](./docs-quality-gate/edge-cases.md) — five worked edge cases.
-- [Related Workflows](./docs-quality-gate/related-workflows.md) — composable workflows.
-- [Success Metrics](./docs-quality-gate/success-metrics.md) — operational tracking.
-- [Notes](./docs-quality-gate/notes.md) — key operating characteristics.
-- [Principles Respected](./docs-quality-gate/principles-implemented-respected.md) — governance.
-- [Conventions Respected](./docs-quality-gate/conventions-implemented-respected.md) — governance.
+## Example Usage
+
+```text
+Run docs-quality-gate with scope all.
+Run docs-quality-gate with scope change for the current branch.
+```
+
+## Related Workflows
+
+- [Docs Propagation](./docs-propagation.md) repairs every finding, removals included.
+- [Software Engineering Documentation Separation Quality Gate](./docs-software-engineering-separation-quality-gate.md)
+  keeps its own domain check.
+
+## Why It Runs on Request
+
+Judging whether a document is still true, still needed, and still readable is a reading task. Wired
+into every change, it produces noise nobody reads or a pass nobody earned; propagation already
+refreshes each change. See the
+[Minimal Sufficiency Test](../../principles/general/simplicity-over-complexity/minimal-sufficiency-test.md).

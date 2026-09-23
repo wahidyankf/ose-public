@@ -49,7 +49,7 @@ Every convention is fully documented:
 **Examples**:
 
 - [Maker-Checker-Fixer Pattern](../../../development/pattern/maker-checker-fixer.md) - Three-stage pattern, agents, execution
-- [Documentation Quality Gate Workflow](../../../workflows/docs/docs-quality-gate.md) - Validation before commits
+- [Docs Propagation Workflow](../../../workflows/docs/docs-propagation.md) - Carries each change into every document it affects before commit
 
 **Why this works**: Anyone can execute workflows consistently without prior knowledge or asking questions.
 

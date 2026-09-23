@@ -38,7 +38,8 @@ when_to_use: "Use when checking the convergence safeguards behind this workflow,
 
 - [Repository Rules Validation](../../rules/rules-quality-gate.md) — Validates
   governance layer consistency (principles, conventions, development practices)
-- [Docs Quality Gate](../../docs/docs-quality-gate.md) — Validates documentation quality
+- [Docs Propagation](../../docs/docs-propagation.md) — Keeps the documents that cite these
+  specifications true to them
 - [Plan Quality Gate](../../plan/plan-quality-gate.md) — Validates plan completeness
 
 ## Notes

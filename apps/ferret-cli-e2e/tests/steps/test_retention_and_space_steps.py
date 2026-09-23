@@ -27,6 +27,11 @@ LIST_ALL = ["events", "list", "--all-time", "--limit", "200", "--json"]
 # runs within that minute, so the first is at or beyond the cutoff and the second is not.
 JUST_EXPIRED = timedelta(seconds=-1)
 EXPIRING_SOON = timedelta(seconds=60)
+# The same read, with no prune due, run this many times: the fastest is what the operation costs without pruning.
+BASELINE_RUNS = 3
+# How much faster than that fastest baseline an operation's non-pruning work may still run.
+BASELINE_TOLERANCE_SECONDS = 0.02
+PRUNE_BUDGET_SECONDS = 0.1
 
 
 @dataclass(slots=True)
@@ -45,6 +50,7 @@ class Session:
     removed: list[int] = field(default_factory=lambda: list[int]())
     available: list[int] = field(default_factory=lambda: list[int]())
     elapsed: list[float] = field(default_factory=lambda: list[float]())
+    baseline: float = 0.0
     still_expired: int = 0
     status_before: dict[str, Any] | None = None
     maintenance: dict[str, Any] | None = None
@@ -123,7 +129,12 @@ def given_rows_around_the_cutoff(session: Session) -> None:
 
 @when("a read runs before physical pruning and then the next two FERRET operations run")
 def when_a_read_then_the_next_operations_run(session: Session) -> None:
-    session.read = session.run(LIST_ALL)
+    baselines: list[float] = []
+    for _ in range(BASELINE_RUNS):
+        started = time.monotonic()
+        session.read = session.run(LIST_ALL)
+        baselines.append(time.monotonic() - started)
+    session.baseline = min(baselines)
     before = session.expired_held()
     session.sql("UPDATE maintenance_state SET last_completed_at = NULL WHERE singleton_id = 1")
     for _ in range(2):
@@ -157,9 +168,16 @@ def then_each_prune_stops_at_its_first_limit(session: Session) -> None:
     assert 1 <= second <= 100
     assert first + second + session.still_expired == BEYOND_CUTOFF + 1
     # An operation that pruned fewer rows than both the row limit and what was left can only have stopped at the time
-    # limit, and a prune that ran for 100 ms kept its whole process running at least that long.
+    # limit. Its prune then ran for 100 ms on top of the work the same read does when no prune is due, whose fastest
+    # run is the baseline, so the operation must have taken at least that much longer.
     for removed, available, elapsed in zip(session.removed, session.available, session.elapsed, strict=True):
-        assert removed == min(100, available) or elapsed >= 0.1, (removed, available, elapsed)
+        pruning = elapsed - session.baseline
+        assert removed == min(100, available) or pruning >= PRUNE_BUDGET_SECONDS - BASELINE_TOLERANCE_SECONDS, (
+            removed,
+            available,
+            elapsed,
+            session.baseline,
+        )
 
 
 @then("every newer row remains queryable")

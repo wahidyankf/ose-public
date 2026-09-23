@@ -29,4 +29,6 @@ The three lint gates receive the staged or changed paths and select their own fi
 `ksh` shebang; `scripts/lint-dockerfiles` takes `Dockerfile`, `Dockerfile.*`, and `*.Dockerfile`;
 `scripts/lint-workflows` lints every workflow whenever a workflow or a local composite action
 changes, because a caller can break against a file that did not change. CI installs the pinned,
-digest-verified releases through `.github/actions/setup-lint-tools`.
+digest-verified releases through `.github/actions/setup-lint-tools`. `./rhino gate run` names only
+the failing gate, not the tool's findings; run its wrapper on the reported paths, for example
+`scripts/lint-shell path/to/script.sh`, to read them.

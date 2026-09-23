@@ -2,17 +2,15 @@
 
 import io
 import json
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
 
 from ferret import __version__, cli
-from ferret.adapters.hook_failures import read_hook_failures
 from ferret.application.ports import Runtime
 from ferret.commands import build_handlers, default_handlers
 from ferret.domain.errors import FerretError
-from ferret.domain.storage import HOOK_FAILURE_FILE
 from support.fakes import FAKE_DATA_HOME, INSTALLATION_ID, World, make_world
 
 INIT_JSON_CREATED = (
@@ -170,13 +168,10 @@ def test_the_callback_swallows_a_fault_that_is_not_a_closed_failure_and_still_ex
     assert (code, stdout.getvalue(), stderr.getvalue()) == (0, "", "")
 
 
-def test_the_callback_records_the_closed_failure_it_swallowed(tmp_path: Path) -> None:
-    data_home = tmp_path / "ferret"
-    data_home.mkdir(mode=0o700)
+def test_the_callback_records_the_closed_failure_it_swallowed() -> None:
     # A payload the mapper cannot read, which is a lost event and the kind of loss the callback may not report
     # any other way.
     world = make_world()
-    world.runtime = replace(world.runtime, data_home=data_home)
 
     stdout, stderr = io.StringIO(), io.StringIO()
     code = cli.main(
@@ -187,6 +182,4 @@ def test_the_callback_records_the_closed_failure_it_swallowed(tmp_path: Path) ->
     )
 
     assert (code, stdout.getvalue(), stderr.getvalue()) == (0, "", "")
-    count, last = read_hook_failures(data_home)
-    moment, recorded = (data_home / HOOK_FAILURE_FILE).read_text().rstrip("\n").split("\t")
-    assert (count, last, recorded) == (1, moment, "ferret.event.invalid")
+    assert world.hook_failures.records == [("2026-09-18T08:00:00Z", "ferret.event.invalid")]

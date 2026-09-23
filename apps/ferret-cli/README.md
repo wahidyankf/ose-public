@@ -132,6 +132,11 @@ pytest-bdd step definitions, the Integration adapter binds the scenarios that ne
 `test:coverage:unit`, `test:coverage:integration`, and `test:coverage:behaviour` targets check that every scenario is
 bound exactly once per applicable layer.
 
+Every Unit and Integration test runs with a private, empty `HOME` and with `FERRET_DATA_HOME` and `XDG_DATA_HOME`
+cleared, set by an autouse fixture in `tests/conftest.py`. The CLI honours those variables, so without it a shell that
+exports them to a real store would have a test that calls the CLI in process, or a child that inherits the
+environment, write into that store. A test that needs a particular data home sets the variables itself.
+
 ## Manual evidence helpers
 
 Two non-production helpers drive the built artifact for hand-run evidence. Both accept only the raw root

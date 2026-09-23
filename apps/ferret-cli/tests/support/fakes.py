@@ -607,6 +607,23 @@ class FakeWorkspaces:
 
 
 @dataclass(slots=True)
+class FakeHookFailures:
+    """The hook-failure record held in memory: each record is the clock's reading and the closed code."""
+
+    clock: FixedClock
+    records: list[tuple[str, str]] = field(default_factory=lambda: list[tuple[str, str]]())
+
+    def record(self, code: str) -> None:
+        self.records.append((self.clock.now().strftime("%Y-%m-%dT%H:%M:%SZ"), code))
+
+    def read(self) -> tuple[int, str | None]:
+        return (len(self.records), self.records[-1][0] if self.records else None)
+
+    def codes(self) -> list[str]:
+        return [code for _, code in self.records]
+
+
+@dataclass(slots=True)
 class World:
     """One fake machine: the ports plus the runtime that wires them together."""
 
@@ -621,6 +638,7 @@ class World:
     telemetry: FakeTelemetry
     installer: FakeInstall
     workspaces: FakeWorkspaces
+    hook_failures: FakeHookFailures
     runtime: Runtime
 
 
@@ -644,6 +662,7 @@ def make_world(
     telemetry = FakeTelemetry(events, capabilities)
     install = FakeInstall() if installer is None else installer
     roots = FakeWorkspaces() if workspaces is None else workspaces
+    failures = FakeHookFailures(clock)
     runtime = Runtime(
         data_home=FAKE_DATA_HOME,
         files=home,
@@ -658,6 +677,7 @@ def make_world(
         interpreter=InterpreterFacts(path="/usr/local/bin/python3.14", version="3.14.7"),
         installer=install,
         workspaces=roots,
+        hook_failures=failures,
     )
     return World(
         files=home,
@@ -671,5 +691,6 @@ def make_world(
         telemetry=telemetry,
         installer=install,
         workspaces=roots,
+        hook_failures=failures,
         runtime=runtime,
     )

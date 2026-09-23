@@ -43,8 +43,9 @@ artifact other than `../ferret-cli/dist/ferret.pyz`.
 ## How a test runs the artifact
 
 `src/ferret_process.py` runs the artifact with the interpreter that runs the tests, so a shell's `python3` never
-decides the result. Each test gets an empty environment plus `HOME` pointing at a temporary directory, so no test can
-touch a developer's real `~/.ferret`.
+decides the result. Each test gets an empty environment plus `HOME` pointing at a temporary directory. The test
+process itself also runs with a private `HOME` and with `FERRET_DATA_HOME` and `XDG_DATA_HOME` cleared (an autouse
+fixture in `tests/conftest.py`), so no child that inherits its environment can touch a developer's real data home.
 
 ## BDD and testing
 

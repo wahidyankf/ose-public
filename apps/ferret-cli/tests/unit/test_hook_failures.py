@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from ferret.adapters.hook_failures import read_hook_failures, record_hook_failure
+from ferret.adapters.hook_failures import PosixHookFailureLog, read_hook_failures, record_hook_failure
 from ferret.domain.storage import HOOK_FAILURE_FILE, HOOK_FAILURE_LIMIT
 
 TIMESTAMP = len("2026-09-22T00:00:00Z")
@@ -53,6 +53,16 @@ def test_the_file_is_bounded_so_a_broken_callback_cannot_fill_the_disk(data_home
         record_hook_failure(data_home, "ferret.internal.failure")
 
     assert read_hook_failures(data_home) == (HOOK_FAILURE_LIMIT, records(data_home)[-1].split("\t")[0])
+
+
+def test_the_port_records_into_and_reads_from_its_own_data_home(data_home: Path) -> None:
+    log = PosixHookFailureLog(data_home)
+
+    log.record("ferret.storage.unavailable")
+
+    (line,) = records(data_home)
+    assert line.endswith("\tferret.storage.unavailable")
+    assert log.read() == (1, line.split("\t")[0])
 
 
 def test_no_record_is_no_failure_rather_than_an_error(tmp_path: Path) -> None:

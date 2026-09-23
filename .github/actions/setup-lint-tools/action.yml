@@ -1,0 +1,79 @@
+name: "Setup lint tools"
+description: "Install the pinned shellcheck, hadolint, and actionlint release binaries the declared lint gates invoke"
+inputs:
+  shellcheck-version:
+    description: "shellcheck release used by the shellcheck gate and by actionlint's run-block checks"
+    required: false
+    default: "v0.11.0"
+  shellcheck-sha256:
+    description: "SHA-256 of that release's linux.x86_64.tar.xz asset"
+    required: false
+    default: "8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198"
+  hadolint-version:
+    description: "hadolint release used by the hadolint gate"
+    required: false
+    default: "v2.15.1"
+  hadolint-sha256:
+    description: "SHA-256 of that release's hadolint-linux-x86_64 asset"
+    required: false
+    default: "c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507"
+  actionlint-version:
+    description: "actionlint release used by the actionlint gate"
+    required: false
+    default: "v1.7.12"
+  actionlint-sha256:
+    description: "SHA-256 of that release's linux_amd64.tar.gz asset"
+    required: false
+    default: "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
+runs:
+  using: "composite"
+  steps:
+    # The hosted Ubuntu image ships an older apt shellcheck and no hadolint or actionlint, so a
+    # finding could differ from the one a developer sees. Each tool is fetched as its upstream
+    # release asset and refused unless it matches the pinned digest, then put ahead of the image's
+    # own copies on PATH. The version is asserted after install so a mismatched pin fails here.
+    - name: Install shellcheck, hadolint, and actionlint
+      shell: bash
+      env:
+        SHELLCHECK_VERSION: ${{ inputs.shellcheck-version }}
+        SHELLCHECK_SHA256: ${{ inputs.shellcheck-sha256 }}
+        HADOLINT_VERSION: ${{ inputs.hadolint-version }}
+        HADOLINT_SHA256: ${{ inputs.hadolint-sha256 }}
+        ACTIONLINT_VERSION: ${{ inputs.actionlint-version }}
+        ACTIONLINT_SHA256: ${{ inputs.actionlint-sha256 }}
+      run: |
+        set -euo pipefail
+        if [ "$(uname -s)-$(uname -m)" != "Linux-x86_64" ]; then
+          echo "setup-lint-tools pins Linux x86_64 assets only; this runner is $(uname -s)-$(uname -m)" >&2
+          exit 1
+        fi
+        bin="$RUNNER_TEMP/lint-tools/bin"
+        work="$RUNNER_TEMP/lint-tools/download"
+        mkdir -p "$bin" "$work"
+
+        fetch() {
+          local url=$1 sha=$2 out=$3
+          curl -fsSL --retry 3 -o "$out" "$url"
+          echo "$sha  $out" | sha256sum -c -
+        }
+
+        fetch "https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_VERSION}/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" \
+          "$SHELLCHECK_SHA256" "$work/shellcheck.tar.xz"
+        tar -xJf "$work/shellcheck.tar.xz" -C "$work"
+        install -m 0755 "$work/shellcheck-${SHELLCHECK_VERSION}/shellcheck" "$bin/shellcheck"
+
+        fetch "https://github.com/hadolint/hadolint/releases/download/${HADOLINT_VERSION}/hadolint-linux-x86_64" \
+          "$HADOLINT_SHA256" "$work/hadolint"
+        install -m 0755 "$work/hadolint" "$bin/hadolint"
+
+        fetch "https://github.com/rhysd/actionlint/releases/download/${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION#v}_linux_amd64.tar.gz" \
+          "$ACTIONLINT_SHA256" "$work/actionlint.tar.gz"
+        tar -xzf "$work/actionlint.tar.gz" -C "$work" actionlint
+        install -m 0755 "$work/actionlint" "$bin/actionlint"
+
+        rm -rf "$work"
+        echo "$bin" >> "$GITHUB_PATH"
+
+        "$bin/shellcheck" --version | grep -Fx "version: ${SHELLCHECK_VERSION#v}"
+        "$bin/hadolint" --version | grep -F " ${HADOLINT_VERSION#v}"
+        "$bin/actionlint" --version | grep -Fx "${ACTIONLINT_VERSION#v}"

@@ -34,14 +34,15 @@ root that resolves `.formatter.exs`; Spotless is a whole-project Gradle task, so
 each staged file back to its owning Gradle root and runs the task once per root. Every other
 formatter accepts bare file-path arguments and is invoked directly.
 
-**Tool linting** — also lint-staged file-type entries, **not** Nx targets:
+**Tool linting** — file-scoped registry gates in `repo-config.yml`, **not** Nx targets:
 
-| Glob                             | Tool                                   |
-| -------------------------------- | -------------------------------------- |
-| `*.sh`                           | `shellcheck --severity=warning`        |
-| `Dockerfile`, `*.Dockerfile`     | `hadolint --failure-threshold warning` |
-| `.github/workflows/*.{yml,yaml}` | `actionlint`                           |
+| Gate         | Selected paths                                                         | Tool                                   |
+| ------------ | ---------------------------------------------------------------------- | -------------------------------------- |
+| `shellcheck` | `*.sh`, `*.bash`, extensionless files with a shell shebang             | `shellcheck --severity=warning`        |
+| `hadolint`   | `Dockerfile`, `Dockerfile.*`, `*.Dockerfile`                           | `hadolint --failure-threshold warning` |
+| `actionlint` | every workflow, when a workflow or local composite action path changes | `actionlint`                           |
 
 These are **not** Nx targets. Targets such as `shell:lint`, `dockerfiles:lint`, and `actions:lint`
-**must not exist** as Nx targets — they are lint-staged entries that run over the changed file set
-at pre-commit.
+**must not exist** as Nx targets — the gates run over the staged paths at pre-commit and the
+changed paths on the pull-request surface, through `scripts/lint-shell`,
+`scripts/lint-dockerfiles`, and `scripts/lint-workflows`.

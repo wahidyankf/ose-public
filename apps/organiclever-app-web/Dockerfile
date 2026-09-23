@@ -51,6 +51,6 @@ USER app
 EXPOSE 3202
 ENV ORGANICLEVER_APP_WEB_PORT=3202 HOSTNAME="0.0.0.0" NODE_ENV=production NEXT_TELEMETRY_DISABLED=1
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:${ORGANICLEVER_APP_WEB_PORT}/ || exit 1
+  CMD ["sh", "-c", "wget --no-verbose --tries=1 --spider http://localhost:${ORGANICLEVER_APP_WEB_PORT}/ || exit 1"]
 
 CMD ["node", "scripts/next-with-port.mjs", "--env", "ORGANICLEVER_APP_WEB_PORT", "--default", "3202", "--server", "server.js"]

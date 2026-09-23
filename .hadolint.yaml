@@ -1,8 +1,9 @@
 # hadolint configuration for ose-public
 # Applied repo-wide: hadolint auto-discovers .hadolint.yaml from the working
-# directory, and CI's `dockerfile` job + the Husky hook both run from repo root.
+# directory, and the `hadolint` gate (scripts/lint-dockerfiles) runs from the
+# repository root at pre-commit and on the pull-request surface.
 
-# Gate at warning-and-above (matches the CI/hook `--failure-threshold warning`).
+# Gate at warning-and-above (matches the wrapper's `--failure-threshold warning`).
 failure-threshold: warning
 
 # Registries our images are allowed to build FROM:

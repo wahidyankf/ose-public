@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 # Example 65: Structured JSON Logging. (co-14)
 #
 # Unstructured logs ("started thing") are easy to read and hard to query.

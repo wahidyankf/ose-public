@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Run hadolint at the warning threshold over the Dockerfiles among the paths
+# Rhino selected. Rhino hands every staged or changed path, so this wrapper owns
+# the selection: `Dockerfile`, `Dockerfile.<variant>`, and `<name>.Dockerfile`,
+# never a `.dockerignore`. hadolint reads the root .hadolint.yaml from the
+# working directory for its ignored rules and trusted registries.
+set -euo pipefail
+
+dockerfiles=()
+for path in "$@"; do
+  # Deleted paths are intentional in a change set and have no bytes to lint.
+  [[ -f "$path" ]] || continue
+
+  name=${path##*/}
+  case "$name" in
+    *.dockerignore) ;;
+    Dockerfile | Dockerfile.* | *.Dockerfile) dockerfiles+=("$path") ;;
+  esac
+done
+
+(( ${#dockerfiles[@]} == 0 )) || hadolint --failure-threshold warning "${dockerfiles[@]}"

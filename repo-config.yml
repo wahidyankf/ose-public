@@ -430,7 +430,9 @@ toolchains:
     - { id: jq, executable: jq, probe: [--version], required: true }
     # Native binaries the declared gates below invoke from PATH: `bash` runs every gate script,
     # `curl` fetches the pinned ./rhino, ./hippo, and public-safety scanner releases on a cold
-    # cache, and the rest are the formatters `scripts/format-staged` calls per staged extension.
+    # cache, the formatters are those `scripts/format-staged` calls per staged extension, and
+    # `shellcheck`, `hadolint`, and `actionlint` back the three lint gates (`actionlint` also runs
+    # `shellcheck` over every workflow `run:` block).
     # Deliberately undeclared, per the cross-language lint-strictness policy: npm-lockfile tools
     # (prettier, markdownlint-cli2, stylua, buildifier), `gofmt` and `npx` (shipped with go and
     # npm), Gradle (projects run their own wrapper), the digest-pinned scanner, base utilities.
@@ -445,6 +447,9 @@ toolchains:
     - { id: shfmt, executable: shfmt, probe: [--version], required: true }
     - { id: tofu, executable: tofu, probe: [--version], required: true }
     - { id: clang-format, executable: clang-format, probe: [--version], required: true }
+    - { id: shellcheck, executable: shellcheck, probe: [--version], required: true }
+    - { id: hadolint, executable: hadolint, probe: [--version], required: true }
+    - { id: actionlint, executable: actionlint, probe: [--version], required: true }
 
 gates:
   composition:
@@ -543,6 +548,66 @@ gates:
           kind: files
       command:
         executable: ./scripts/validate-mermaid-files
+        args:
+          - input: staged.paths
+            expand: repeat
+      run-on:
+        pre-commit:
+          bind:
+            staged:
+              source: git-index
+        pull-request:
+          bind:
+            staged:
+              source: explicit-range
+              range: explicit
+    - id: shellcheck
+      type: check
+      inputs:
+        staged:
+          kind: files
+      command:
+        executable: ./scripts/lint-shell
+        args:
+          - input: staged.paths
+            expand: repeat
+      run-on:
+        pre-commit:
+          bind:
+            staged:
+              source: git-index
+        pull-request:
+          bind:
+            staged:
+              source: explicit-range
+              range: explicit
+    - id: hadolint
+      type: check
+      inputs:
+        staged:
+          kind: files
+      command:
+        executable: ./scripts/lint-dockerfiles
+        args:
+          - input: staged.paths
+            expand: repeat
+      run-on:
+        pre-commit:
+          bind:
+            staged:
+              source: git-index
+        pull-request:
+          bind:
+            staged:
+              source: explicit-range
+              range: explicit
+    - id: actionlint
+      type: check
+      inputs:
+        staged:
+          kind: files
+      command:
+        executable: ./scripts/lint-workflows
         args:
           - input: staged.paths
             expand: repeat

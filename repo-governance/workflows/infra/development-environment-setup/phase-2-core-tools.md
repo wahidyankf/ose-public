@@ -71,3 +71,23 @@ sudo apt-get install -y shfmt clang-format
 
 **Success criteria**: `shfmt --version`, `tofu --version`, and `clang-format --version` return
 version strings. `bash` and `curl`, also declared, ship with macOS and Ubuntu.
+
+## 2.5 Install the shell, Dockerfile, and workflow linters
+
+**Condition**: `{input.scope} == full`
+
+The `shellcheck`, `hadolint`, and `actionlint` gates run these binaries on staged shell scripts,
+Dockerfiles, and GitHub Actions workflows; all three are declared under `toolchains`.
+
+```bash
+# macOS
+brew install shellcheck hadolint actionlint
+
+# Linux
+sudo apt-get install -y shellcheck
+# hadolint — https://github.com/hadolint/hadolint/releases
+# actionlint — https://github.com/rhysd/actionlint/releases
+```
+
+**Success criteria**: `shellcheck --version`, `hadolint --version`, and `actionlint --version`
+return version strings. CI pins the versions in `.github/actions/setup-lint-tools`.

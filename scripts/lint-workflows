@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Run actionlint over every GitHub Actions workflow whenever the paths Rhino
+# selected touch a workflow or a local composite action. The whole workflow set
+# is linted, not only the changed files, because actionlint checks each caller
+# against the reusable workflows and local actions it uses: a change to one file
+# can break another that did not change. actionlint also runs the shellcheck on
+# PATH over every `run:` block.
+set -euo pipefail
+
+triggered=false
+for path in "$@"; do
+  case "$path" in
+    .github/workflows/*.yml | .github/workflows/*.yaml | .github/actions/*)
+      triggered=true
+      break
+      ;;
+  esac
+done
+[[ "$triggered" == true ]] || exit 0
+
+shopt -s nullglob
+workflows=(.github/workflows/*.yml .github/workflows/*.yaml)
+(( ${#workflows[@]} == 0 )) || actionlint "${workflows[@]}"

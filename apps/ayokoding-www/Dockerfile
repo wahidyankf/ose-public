@@ -57,6 +57,6 @@ EXPOSE 3101
 
 # server.js is at apps/ayokoding-www/server.js in standalone output
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:${AYOKODING_WWW_PORT}/ || exit 1
+  CMD ["sh", "-c", "wget --no-verbose --tries=1 --spider http://localhost:${AYOKODING_WWW_PORT}/ || exit 1"]
 
 CMD ["node", "scripts/next-with-port.mjs", "--env", "AYOKODING_WWW_PORT", "--default", "3101", "--server", "apps/ayokoding-www/server.js"]

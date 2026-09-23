@@ -13,7 +13,7 @@ cross-language lint gates and the policy that binds them.
 ## Documents
 
 - [Policy](./cross-language-lint-strictness/policy.md) — The warning-and-above threshold, two enforcement points, toolchain convergence and its exemptions, clean-then-gate rollout, and documented-waivers-only rule for every cross-language lint gate. Use when adding a new lint gate, deciding its failure threshold, declaring a gate's binary under toolchains, or documenting a lint-rule waiver.
-- [Gated standards](./cross-language-lint-strictness/gated-standards.md) — The table of every currently-gated artifact type, its tool, threshold/config, and enforcement point, plus the lint tools that currently have no gate. Use when checking which tool and CI job gate a given artifact type (Markdown, formatting, F#), or whether shell, Dockerfile, or GitHub Actions YAML lint is gated.
+- [Gated standards](./cross-language-lint-strictness/gated-standards.md) — The table of every currently-gated artifact type, its tool, threshold/config, and enforcement point, and how the three lint gates select their files. Use when checking which tool and CI job gate a given artifact type (Markdown, formatting, F#, shell, Dockerfile, or GitHub Actions YAML).
 
 **See also**: [markdown.md](../quality/markdown.md), [repository-validation.md](../quality/repository-validation.md).
 
@@ -34,8 +34,9 @@ cross-language lint gates and the policy that binds them.
 
 ## Configuration files
 
-`.shellcheckrc` and `.hadolint.yaml` are retained for a re-admitted gate; neither tool is gated
-today (see [Gated standards](./cross-language-lint-strictness/gated-standards.md)).
+`.shellcheckrc` and `.hadolint.yaml` configure the `shellcheck` and `hadolint` gates (see
+[Gated standards](./cross-language-lint-strictness/gated-standards.md)); `actionlint` needs no
+configuration file.
 
 - `.shellcheckrc` — `shell=bash`, `external-sources=true`; no repo-wide disables.
 - `.hadolint.yaml` — `failure-threshold: warning`; `trustedRegistries`

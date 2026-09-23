@@ -8,8 +8,9 @@ shell=bash
 # Allow ShellCheck to follow `source`/`.`-included files for cross-file checks.
 external-sources=true
 
-# Severity gating is applied at the call site (CI job + Husky hook both run
-# `shellcheck --severity=warning`); it is not an .shellcheckrc directive.
+# Severity gating is applied at the call site: the `shellcheck` gate's wrapper,
+# scripts/lint-shell, runs `shellcheck --severity=warning` at pre-commit and on
+# the pull-request surface; it is not an .shellcheckrc directive.
 #
 # No repo-wide rule disables are configured: the tracked script set is already
 # clean at the warning-and-above threshold. Add any future disable here with an

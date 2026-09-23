@@ -22,3 +22,4 @@ indexes.
 - [006 Errors and Diagnostics](006-errors-and-diagnostics.md)
 - [007 Terminal and Environment](007-terminal-and-environment.md)
 - [008 Help and Discovery](008-help-and-discovery.md)
+- [009 Tiers Here](009-tiers-here.md)

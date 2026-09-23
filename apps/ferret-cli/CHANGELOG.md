@@ -8,6 +8,20 @@ Entries describe what a consumer can observe: commands, flags, exit codes, error
 They are not a commit list. For the commits behind any release, see its
 [comparison on GitHub](https://github.com/wahidyankf/ose-public/releases).
 
+## [v0.3.1] — 2026-09-23
+
+A tool call whose result is an image is now recorded when it completes. The version moves in the patch position:
+nothing a caller relies on changed, and FERRET now accepts input it used to refuse.
+
+### Fixed
+
+- `ferret capture-hook` records the completion of a tool that returns an image. A hook payload carries the whole tool
+  result, and an image arrives as base64 inside it: every Codex `view_image` completion runs to 0.4-1.4 MB, so the
+  256 KiB raw limit refused each one as `ferret.event.invalid` and only its `tool.started` event was ever stored. The
+  raw limit is now 64 MiB, which bounds one call's memory and time rather than the size of a result, and the image is
+  still discarded with the rest of the payload: only the allowlisted metadata is kept. `capture-hook --help` states
+  the new limit, and the OpenCode plugin forwards a document up to the same size instead of dropping one over 256 KiB.
+
 ## [v0.3.0] — 2026-09-23
 
 FERRET's diagnostics now take the form the coding standards for command-line programs fix, and an interrupt ends the

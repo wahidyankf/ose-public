@@ -1,6 +1,10 @@
 // Replays OpenCode plugin hook calls against the repository's FERRET plugin the way OpenCode itself would.
 //
-// usage: node opencode_driver.mjs <plugin-path> '<{"directory": "...", "calls": [{"hook": "...", "args": [...]}]}>'
+// usage: node opencode_driver.mjs <plugin-path>, with {"directory": "...", "calls": [{"hook": "...", "args": [...]}]}
+// on standard input
+//
+// The request arrives on standard input rather than as an argument, because a call can carry a tool result of
+// megabytes and an argument list has a host limit far below that.
 //
 // The plugin is TypeScript in a package whose type is CommonJS, so its types are stripped and it is imported as a
 // module from memory; it uses only Node built-ins. Each exported plugin is built with a minimal context, then the
@@ -9,8 +13,8 @@
 import { readFileSync } from "node:fs";
 import { stripTypeScriptTypes } from "node:module";
 
-const [, , pluginPath, request] = process.argv;
-const { directory, calls } = JSON.parse(request);
+const [, , pluginPath] = process.argv;
+const { directory, calls } = JSON.parse(readFileSync(0, "utf8"));
 const source = stripTypeScriptTypes(readFileSync(pluginPath, "utf8"));
 const exported = await import(`data:text/javascript;base64,${Buffer.from(source).toString("base64")}`);
 

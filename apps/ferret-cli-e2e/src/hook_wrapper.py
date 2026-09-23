@@ -131,9 +131,9 @@ def run_plugin(
     node = node_executable()
     assert node is not None, "Node is required to replay the OpenCode plugin"
     environment = {"HOME": str(home), "PATH": path, **({"FERRET_BIN": str(binary)} if binary else {}), **(extra or {})}
-    request = json.dumps({"directory": str(directory), "calls": list(calls)})
-    command = [node, "--no-warnings", str(DRIVER), str(PLUGIN), request]
-    return run_timed(command, payload=b"", environment=environment)
+    request = json.dumps({"directory": str(directory), "calls": list(calls)}).encode("utf-8")
+    command = [node, "--no-warnings", str(DRIVER), str(PLUGIN)]
+    return run_timed(command, payload=request, environment=environment)
 
 
 def alive(pid: int) -> bool:

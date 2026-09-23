@@ -51,6 +51,10 @@ manifest/final status, and sibling obligation into granular bootcamp-executable 
 per affected repository; a link, generic invocation, or reusable checkbox template is insufficient
 because every concrete repository/action pair must map to its own execution task.
 
+A delivery unit that changes what a README, documentation page, or specification describes also carries a
+[Docs Propagation](../../../repo-governance/workflows/docs/docs-propagation.md) item, landing in the same commit
+as the change.
+
 ## Primary Junior-Readable Surfaces
 
 Write the selected technical form and `delivery.md` for a junior engineer fresh from bootcamp with

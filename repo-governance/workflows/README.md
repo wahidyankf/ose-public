@@ -42,7 +42,7 @@ Workflows support two execution modes and standard inputs (`mode`, `max-concurre
 - [CI Workflows](ci/README.md) — Workflows for checking that repository CI setup follows its documented standards. Use when routing to a workflow that validates or fixes CI/CD standards compliance.
 - [Content Workflows](content/README.md) — Workflows for creating, converting, and validating content in various formats. Use when routing to a workflow that converts a source document to Markdown or validates conversion fidelity.
 - [Dependency Workflows](dependencies/README.md) — Workflows for dependency inventory, security and compatibility clearance, and upgrade planning. Use when routing to a workflow that surveys or plans dependency changes across the monorepo.
-- [Documentation Workflows](docs/README.md) — Workflows for checking that reader-facing documentation remains accurate and navigable. Use when routing to a workflow that validates docs/ content quality or its style-guide separation.
+- [Documentation Workflows](docs/README.md) — Workflows for keeping reader-facing documentation true, reachable, and readable, and for auditing it on request. Use when routing to the workflow that carries a change into the documents it affects, audits documentation, or validates style-guide separation.
 - [Harness Workflows](harness/README.md) — Workflows for coding-agent harness compatibility, binding parity, and upstream conformance. Use when routing to a workflow that validates coding-agent bindings or current harness conventions.
 - [Infrastructure Workflows](infra/README.md) — Workflows for development environment and infrastructure setup. Use when routing to a workflow that sets up or verifies a development environment's toolchains.
 - [Workflow Meta Documentation](meta/README.md) — Reference material for designing workflows that are understandable and reusable. Use when routing to reference material about how workflows are structured or executed.
@@ -53,7 +53,9 @@ Workflows support two execution modes and standard inputs (`mode`, `max-concurre
 - [UI Workflows](ui/README.md) — Orchestrated processes for UI component quality validation and remediation. Use when routing to a workflow that audits or fixes UI component quality.
 - [Web Workflows](web/README.md) — Orchestrated workflows that test a live running website and turn the findings into a fix plan. Use when routing to a workflow that tests a live running site and turns findings into a fix plan.
 
-All `*-quality-gate` workflows follow the check-fix pattern and its
+All `*-quality-gate` workflows except the
+[governance gates](meta/workflow-identifier/governance-gate-class.md) follow the check-fix pattern
+and its
 [lifecycle validation ownership](meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md)
 Step 0, which delegates registry-owned checks before domain validation.
 

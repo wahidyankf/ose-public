@@ -1,6 +1,6 @@
 ---
-description: Defines how plan authoring detects rule impact and requires a complete repository-local rules-propagation outcome in delivery.md.
-when_to_use: Use while assembling the plan-maker handoff whenever planned behaviour or file impacts may change repo rules or enforcement.
+description: Defines how plan authoring detects rule impact and documentation impact, requiring a complete repository-local rules-propagation outcome and a docs-propagation item in delivery.md.
+when_to_use: Use while assembling the plan-maker handoff whenever planned behaviour or file impacts may change repo rules, enforcement, or what a document describes.
 ---
 
 # Step 4 — Automatic Rule-Impact Handoff
@@ -29,3 +29,10 @@ repository. A workflow link, one generic “run propagation” checkbox, or anot
 evidence does not satisfy this handoff. Neither does a reusable checkbox template plus a generic
 per-repository invocation: every concrete repository/action pair must be an action checkbox for the
 plan-execution 1:1 task mirror.
+
+## Documentation Impact
+
+In the same classification, decide whether each delivery unit changes what a README, documentation
+page, or specification describes. When it does, instruct `plan-maker` to add a
+[Docs Propagation](../../docs/docs-propagation.md) action to that delivery unit, landing in the same
+commit as the change. Do not wait for a user to name it.

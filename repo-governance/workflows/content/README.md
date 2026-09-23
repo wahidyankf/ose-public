@@ -37,4 +37,4 @@ docs/reference/security/frameworks/nist-sp-800-53-rev5.md  ← output
 
 ## Related Workflows
 
-- [docs-quality-gate](../docs/docs-quality-gate.md) — Validate documentation quality after Markdown is created
+- [docs-propagation](../docs/docs-propagation.md) — Carry newly created Markdown into every index and document that should cite it

@@ -42,7 +42,7 @@ pushed to the confirmed target.
 - [Step 2 — Web Research](./plan-planning/step-2-web-research.md) — conditional delegation to web-researcher.
 - [Step 3 — Second Grill: Post-Research Validation](./plan-planning/step-3-second-grill.md) — confirm direction.
 - [Step 4 — Plan Creation](./plan-planning/step-4-plan-creation.md) — plan-maker handoff and envelope loop.
-- [Step 4 — Automatic Rule-Impact Handoff](./plan-planning/step-4-automatic-rule-impact.md) — per-repository propagation coverage for rule-affecting plans.
+- [Step 4 — Automatic Rule-Impact Handoff](./plan-planning/step-4-automatic-rule-impact.md) — per-repository rules and docs propagation coverage.
 - [Step 5 — Plan Review](./plan-planning/step-5-plan-review.md) — eleven structural checks.
 - [Step 6 — Quality Gate](./plan-planning/step-6-quality-gate.md) — the gate's sole named pre-authorization.
 - [Step 7 — Push and Verify](./plan-planning/step-7-push-and-verify.md) — commit, push, CI, and complete three-class cleanup.

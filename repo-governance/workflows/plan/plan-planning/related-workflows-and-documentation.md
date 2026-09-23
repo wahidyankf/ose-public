@@ -9,6 +9,8 @@ when_to_use: Use when navigating from plan-establishment to plan-quality-gate, p
 
 - [Plan Quality Gate](../plan-quality-gate.md) — called in Step 6
 - [Plan Execution](../plan-execution.md) — next workflow after plan-establishment
+- [Docs Propagation](../../docs/docs-propagation.md) — added in Step 4 to each delivery unit that
+  changes what a document describes
 
 ## Related Documentation
 

@@ -80,8 +80,7 @@ assert DECLARED_VERSION is not None, "ferret declares no __version__"
 VERSION_LINE = f"ferret {DECLARED_VERSION.group(1)}\n"
 BARE_USAGE = "usage: ferret <command> [options]\nRun 'ferret --help' for the commands and options.\n"
 INVALID_ARGUMENTS_TEXT = (
-    "ferret: [ferret.args.invalid] unrecognized or incomplete arguments\n"
-    "ferret: try 'ferret --help' for usage\n"
+    "ferret: [ferret.args.invalid] unrecognized or incomplete arguments\nferret: try 'ferret --help' for usage\n"
 )
 LISTED_COMMANDS = [
     "init",

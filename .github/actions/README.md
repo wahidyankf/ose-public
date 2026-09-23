@@ -15,6 +15,7 @@ to run locally. For a local first success, start from the
 | `setup-rust`         | The pinned Rust toolchain and Rust quality tools          | A workflow validates Rust work               |
 | `setup-go`           | The pinned Go toolchain, its caches, and golangci-lint    | A workflow validates Go work                 |
 | `setup-python`       | The pinned Python, checksum-verified uv, and the uv cache | A workflow validates Python work             |
+| `setup-lint-tools`   | Digest-verified shellcheck, hadolint, and actionlint      | A workflow runs the three lint gates         |
 | `setup-playwright`   | Browsers and operating-system dependencies                | A workflow runs browser E2E checks           |
 | `setup-docker-cache` | Docker Buildx and its layer cache                         | A workflow needs an integration or E2E stack |
 

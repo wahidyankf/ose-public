@@ -21,8 +21,9 @@ The following checks satisfy both criteria and belong in `lint-staged`:
 - **Formatters**: `prettier`, `rustfmt`, `fantomas`, `gofmt`, `ruff format`, `dart format`,
   `cljfmt`, `csharpier`, and — each via a wrapper, because it is invoked from a project root
   rather than on bare file paths — `mix format` and Spotless (`*.java`).
-- **File-type linters**: `shellcheck` (`*.sh`), `hadolint` (`Dockerfile`/`*.Dockerfile`),
-  `actionlint` (`.github/workflows/*.{yml,yaml}`).
+- **File-type linters**: `shellcheck` (shell scripts), `hadolint` (`Dockerfile`/`*.Dockerfile`),
+  `actionlint` (`.github/workflows/*.{yml,yaml}`) — each now a file-scoped registry gate; see
+  [Gated standards](../../quality/cross-language-lint-strictness/gated-standards.md).
 - **Per-file markdown validators**: `markdownlint-cli2`, `md mermaid validate`,
   `md heading-hierarchy validate`.
 - **Gherkin formatting**: deterministic staged-file formatting only; corpus/adapter validation runs
@@ -45,7 +46,7 @@ Applying this rule removes several Nx targets from `project.json` files:
 - **No per-project `format` or `format:check` Nx target** — formatting runs as lint-staged
   file-type entries, not as per-project targets.
 - **No `shell:lint`, `dockerfiles:lint`, or `actions:lint` Nx targets** — `shellcheck`,
-  `hadolint`, and `actionlint` run as lint-staged file-type entries.
+  `hadolint`, and `actionlint` run as file-scoped registry gates over staged and changed paths.
 
 ## Deliberate Carve-Out: `env staged-guard validate`
 

@@ -36,6 +36,9 @@ nothing here — install a reported tool through the phase or manager listed, th
 | 19  | shfmt         | `format-staged` (`*.sh`)                        | CI `setup-go` input                 | Phase 2                     |
 | 20  | tofu          | `format-staged` (`*.tf`)                        | —                                   | Phase 2                     |
 | 21  | clang-format  | `format-staged` (`*.c`, `*.h`)                  | —                                   | Phase 2                     |
+| 22  | shellcheck    | `shellcheck` gate; `actionlint` `run:` checks   | CI `setup-lint-tools` input         | Phase 2                     |
+| 23  | hadolint      | `hadolint` gate                                 | CI `setup-lint-tools` input         | Phase 2                     |
+| 24  | actionlint    | `actionlint` gate                               | CI `setup-lint-tools` input         | Phase 2                     |
 
 ## Deliberately not declared
 
@@ -46,8 +49,6 @@ through the guarded `npm install`; `gofmt` and `npx` ship with `go` and `npm`; J
 Spotless through the owning project's `gradlew`; the public-safety scanner downloads and verifies
 its own pinned release; and base utilities (`awk`, `sed`, `tar`, `shasum`) are assumed.
 
-`shellcheck`, `hadolint`, and `actionlint` are absent because no declared gate runs them today —
-see [Gated standards](../../../development/quality/cross-language-lint-strictness/gated-standards.md).
 Playwright browsers are installed by Phase 12 and are not a doctor probe.
 
 ## Adding a tool

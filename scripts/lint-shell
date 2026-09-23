@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Run shellcheck at the warning threshold over the shell scripts among the paths
+# Rhino selected. Rhino hands every staged or changed path, so this wrapper owns
+# the selection: *.sh and *.bash files, plus extensionless files whose shebang
+# names a shell shellcheck understands. The root .shellcheckrc supplies dialect
+# and source-following settings; severity is set here, at the call site.
+set -euo pipefail
+
+# Print the interpreter a shebang line names, looking through `env` and its options.
+shebang_interpreter() {
+  local line=$1 word
+  local -a words
+  [[ "$line" == '#!'* ]] || return 0
+  read -r -a words <<<"${line#\#!}"
+  for word in "${words[@]}"; do
+    case "$word" in
+      */env | env | -*) continue ;;
+      *) printf '%s\n' "${word##*/}" ; return 0 ;;
+    esac
+  done
+}
+
+scripts=()
+for path in "$@"; do
+  # Deleted paths are intentional in a change set and have no bytes to lint.
+  [[ -f "$path" ]] || continue
+
+  case "$path" in
+    *.sh | *.bash)
+      scripts+=("$path")
+      continue
+      ;;
+  esac
+
+  # Only an extensionless file can be a shell script by shebang alone; any other
+  # extension already names its own language.
+  name=${path##*/}
+  [[ "$name" == *.* ]] && continue
+  first_line=$(head -n 1 -- "$path" 2>/dev/null || true)
+  case "$(shebang_interpreter "$first_line")" in
+    sh | bash | dash | ksh) scripts+=("$path") ;;
+  esac
+done
+
+(( ${#scripts[@]} == 0 )) || shellcheck --severity=warning -- "${scripts[@]}"

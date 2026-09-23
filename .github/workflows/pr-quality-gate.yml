@@ -82,6 +82,9 @@ jobs:
       - uses: ./.github/actions/setup-java
       - uses: ./.github/actions/setup-go
       - uses: ./.github/actions/setup-python
+      # The shellcheck, hadolint, and actionlint gates call their binaries from PATH, and a missing
+      # gate binary fails rather than skips, so the pinned releases are installed before the surface.
+      - uses: ./.github/actions/setup-lint-tools
       # ruff is installed into the project's virtual environment, not onto PATH, exactly as prettier
       # is installed into node_modules. The pull-request surface formats every changed path, so the
       # formatter it calls has to be the version the projects pin rather than whatever a machine has.

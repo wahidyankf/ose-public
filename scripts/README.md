@@ -21,6 +21,22 @@ belong here.
   unformatted path but still exits 0, so its output has to be converted into a non-zero exit
   code.
 
+## The lint gate wrappers
+
+Rhino hands a lint gate every staged or changed path, so each wrapper selects its own file type
+before calling the tool; the tool itself cannot be pointed at an arbitrary path list.
+
+- [`lint-shell`](./lint-shell) — Runs `shellcheck --severity=warning` over `*.sh`, `*.bash`, and
+  extensionless files whose shebang names `sh`, `bash`, `dash`, or `ksh`. Use when tracing the
+  `shellcheck` gate.
+- [`lint-dockerfiles`](./lint-dockerfiles) — Runs `hadolint --failure-threshold warning` over
+  `Dockerfile`, `Dockerfile.*`, and `*.Dockerfile` paths. Use when tracing the `hadolint` gate.
+- [`lint-workflows`](./lint-workflows) — Runs `actionlint` over every workflow when any workflow
+  or local composite action path changed, because a caller can break against an unchanged file.
+  Use when tracing the `actionlint` gate.
+
+`lint-gates.test.mjs` proves each selector in both directions and runs in `npm run test:validators`.
+
 ## The public-safety gate
 
 [`public-safety/`](./public-safety/README.md) is not a wrapper. It is the outbound public-safety gate, copied byte

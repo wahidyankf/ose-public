@@ -387,6 +387,18 @@ class UserInstall(Protocol):
         ...
 
 
+class HookFailureLog(Protocol):
+    """Where the fail-open callback writes down the events it lost, and where ``status`` reads that record back."""
+
+    def record(self, code: str) -> None:
+        """Append one value-free record of ``code``; never raises, and never creates or writes an unsafe data home."""
+        ...
+
+    def read(self) -> tuple[int, str | None]:
+        """How many failures are on record and when the last one was, or ``(0, None)`` when there is none."""
+        ...
+
+
 class WorkspaceRoots(Protocol):
     """Where a harness's reported working directory belongs: the repository root that holds it."""
 
@@ -416,3 +428,4 @@ class Runtime:
     interpreter: InterpreterFacts
     installer: UserInstall
     workspaces: WorkspaceRoots
+    hook_failures: HookFailureLog

@@ -164,3 +164,17 @@ REGISTRATIONS: tuple[tuple[str, str, dict[str, Any]], ...] = (
     (OPENCODE, "skill.invoked", opencode_skill()),
     (OPENCODE, "tool.completed", opencode_tool("tool.execute.after")),
 )
+
+
+def opencode_call(hook: str, tool: str = "read") -> dict[str, Any]:
+    """The arguments OpenCode hands one plugin hook, as the plugin driver replays them: ``{"hook", "args"}``."""
+    call: dict[str, Any] = {"tool": tool, "sessionID": SESSION, "callID": "call_0001"}
+    if hook == "tool.execute.before":
+        return {"hook": hook, "args": [call, {"args": {"filePath": ARGUMENT_CANARY}}]}
+    assert hook == "tool.execute.after", hook
+    result = {"title": tool, "output": RESULT_CANARY, "metadata": {"note": PROMPT_CANARY}}
+    return {"hook": hook, "args": [{**call, "args": {"filePath": ARGUMENT_CANARY}}, result]}
+
+
+# A plugin call that carries no usable data: OpenCode's hook arguments with every field missing.
+OPENCODE_EMPTY_CALL: dict[str, Any] = {"hook": "tool.execute.before", "args": [{}, {}]}

@@ -1,22 +1,23 @@
 """Unit bindings for the query and export feature, in process with every OS dependency faked."""
 
 import json
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field, fields, replace
+from datetime import datetime
 
 import pytest
 from pytest_bdd import given, parsers, scenario, then, when
 
-from ferret.application.ports import Runtime
+from ferret.application.ports import Budget, CaptureResult, Runtime
 from ferret.domain.errors import FAILURES
 from ferret.domain.event import Event
+from ferret.domain.query import EventCriteria, Position
 from support.events import encode
-from support.fakes import FIXED_NOW, World
-from support.invoke import Ran, run_cli
+from support.fakes import FIXED_NOW, FakeEvents, World
+from support.invoke import Ran, run_cli, run_runtime
 from support.populate import WORKSPACE_A, WORKSPACE_B, make_event, world_with
 from support.scenarios import (
     INVOCATIONS,
     LOCAL_COMMANDS,
-    MATCHING,
     backend_traces,
     canonical_line,
     command_result_events,
@@ -28,6 +29,51 @@ from support.scenarios import (
 )
 
 FEATURE = "../../../../../specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature"
+# What the deterministic-export filters must reach the repository as, spelled out from the contract: the interval runs
+# from three hours to one hour before the fixed clock, half open, in canonical millisecond UTC stamps.
+FILTERED = EventCriteria(
+    start="2026-09-18T05:00:00.000Z",
+    end="2026-09-18T07:00:00.000Z",
+    harness="codex",
+    workspace="ws_00000000000000000000000000000002",
+    event_type="agent.ended",
+    outcome="failure",
+)
+
+
+@dataclass(slots=True)
+class ReadSpy:
+    """The fake repository with every read recorded, so a test sees exactly what production asked the store for.
+
+    Matching and ordering stay the fake's; what this proves is the criteria and direction production chose, while the
+    real SQL's matching and ordering are proved by the Integration adapter.
+    """
+
+    inner: FakeEvents
+    reads: list[tuple[EventCriteria, bool]] = field(default_factory=lambda: list[tuple[EventCriteria, bool]]())
+
+    def capture(self, event: Event, *, budget: Budget | None = None) -> CaptureResult:
+        return self.inner.capture(event, budget=budget)
+
+    def read(
+        self,
+        criteria: EventCriteria,
+        *,
+        now: datetime,
+        newest_first: bool,
+        after: Position | None,
+        limit: int,
+    ) -> tuple[Event, ...]:
+        self.reads.append((criteria, newest_first))
+        return self.inner.read(criteria, now=now, newest_first=newest_first, after=after, limit=limit)
+
+    def find(self, event_id: str, *, now: datetime) -> Event | None:
+        return self.inner.find(event_id, now=now)
+
+    def taken(self) -> list[tuple[EventCriteria, bool]]:
+        """The reads recorded since the last call, which are then forgotten."""
+        recorded, self.reads = self.reads, []
+        return recorded
 
 
 @dataclass(slots=True)
@@ -38,6 +84,12 @@ class Session:
     listing: Ran | None = None
     repeat: Ran | None = None
     export: Ran | None = None
+    quiet: Ran | None = None
+    refused: Ran | None = None
+    reads: dict[str, list[tuple[EventCriteria, bool]]] = field(
+        default_factory=lambda: dict[str, list[tuple[EventCriteria, bool]]]()
+    )
+    refused_store_reads: int = -1
     command: str = ""
     machine: Ran | None = None
     human: Ran | None = None
@@ -64,39 +116,61 @@ def given_two_workspaces_and_two_harnesses(session: Session) -> None:
     assert {event.harness for event in stored} == {"codex", "claude_code"}
 
 
+def with_harness(filters: list[str], harness: str) -> list[str]:
+    """The same filters with the harness value replaced."""
+    position = filters.index("--harness") + 1
+    return [*filters[:position], harness, *filters[position + 1 :]]
+
+
 @when("the user filters by UTC interval, harness, workspace, event type, and outcome")
 def when_filtered(session: Session) -> None:
     filters = filter_arguments(FIXED_NOW)
-    session.listing = run_cli(session.world, ["events", "list", "--json", *filters])
-    session.repeat = run_cli(session.world, ["events", "list", "--json", *filters])
-    session.export = run_cli(session.world, ["events", "export", "--format", "jsonl", *filters])
+    spy = ReadSpy(session.world.events)
+    runtime = replace(session.world.runtime, events=spy)
+    session.listing = run_runtime(runtime, ["events", "list", "--json", *filters])
+    session.reads["listing"] = spy.taken()
+    session.repeat = run_runtime(runtime, ["events", "list", "--json", *filters])
+    session.reads["repeat"] = spy.taken()
+    session.export = run_runtime(runtime, ["events", "export", "--format", "jsonl", *filters])
+    session.reads["export"] = spy.taken()
+    # The same filters once for a harness with no events, whose human listing has a diagnostic to write, and once with
+    # a malformed harness, which is refused.
+    session.quiet = run_runtime(runtime, ["events", "list", *with_harness(filters, "opencode")])
+    session.reads["quiet"] = spy.taken()
+    session.refused = run_runtime(runtime, ["events", "export", "--format", "jsonl", *with_harness(filters, "Bad")])
+    session.reads["refused"] = spy.taken()
 
 
-@then("only matching events are returned in stable timestamp and event-ID order")
-def then_only_matching_events_in_stable_order(session: Session) -> None:
+@then("only matching events are listed, newest first by timestamp and then event ID")
+def then_only_matching_events_newest_first(session: Session) -> None:
+    # Production asks the store for exactly these filters, newest first, once per listing.
+    assert session.reads["listing"] == [(FILTERED, True)]
+    assert session.reads["repeat"] == [(FILTERED, True)]
     assert session.listing is not None
     assert (session.listing.code, session.listing.stderr) == (0, "")
     items = json.loads(session.listing.stdout)["items"]
-    assert [int(item["eventId"][-12:]) for item in items] == sorted(MATCHING, reverse=True)
+    # Events 4 and 5 share a timestamp, so the event ID breaks the tie in the same newest-first direction.
+    assert [int(item["eventId"][-12:]) for item in items] == [5, 4, 3]
     assert session.repeat == session.listing
 
 
-@then("JSON Lines export contains one canonical event object per line")
-def then_export_is_one_canonical_object_per_line(session: Session) -> None:
+@then("the JSON Lines export holds one canonical event object per line, oldest first by timestamp and then event ID")
+def then_export_is_one_canonical_object_per_line_oldest_first(session: Session) -> None:
+    # The export asks for the same filters in the opposite direction: oldest first.
+    assert session.reads["export"] == [(FILTERED, False)]
     assert session.export is not None
     assert (session.export.code, session.export.stderr) == (0, "")
     stored = {int(event.event_id[-12:]): event for event in session.world.events.stored}
-    assert session.export.stdout.splitlines(keepends=True) == [canonical_line(stored[number]) for number in MATCHING]
+    assert session.export.stdout.splitlines(keepends=True) == [canonical_line(stored[number]) for number in (3, 4, 5)]
 
 
 @then("diagnostics do not contaminate standard output")
 def then_diagnostics_stay_off_standard_output(session: Session) -> None:
-    quiet = run_cli(session.world, ["events", "list", "--harness", "opencode"])
-    refused = run_cli(session.world, ["events", "export", "--format", "jsonl", "--harness", "Bad"])
-
     # `1`: the query ran and matched nothing, which is a result and not a failure.
-    assert quiet == (1, "", "No rows.\n")
-    assert refused == (2, "", "ferret: [ferret.filter.invalid] a filter value is not valid\n")
+    assert session.quiet == (1, "", "No rows.\n")
+    assert session.refused == (2, "", "ferret: [ferret.filter.invalid] a filter value is not valid\n")
+    # The malformed filter was refused before the store was read at all.
+    assert session.reads["refused"] == []
 
 
 @scenario(FEATURE, "Emit a stable machine-readable command result")
@@ -127,11 +201,6 @@ def when_run_with_json(session: Session, command: str) -> None:
 def then_stdout_is_one_json_object(session: Session) -> None:
     assert session.machine is not None
     code, out, err = session.machine
-    if session.command == "events export":
-        # The one stream command: stdout is the data itself, so it refuses a JSON wrapper rather than mixing them.
-        assert (code, out) == (2, "")
-        assert json.loads(err)["error"]["code"] == "ferret.args.invalid"
-        return
     document = json.loads(out)
     assert (code, err, out.count("\n")) == (0, "", 1)
     assert (document["schemaVersion"], document["command"]) == (1, INVOCATIONS[session.command][1])
@@ -142,10 +211,6 @@ def then_human_output_derives_from_the_same_result(session: Session) -> None:
     assert session.machine is not None
     assert session.human is not None
     assert (session.human.code, session.human.stderr) == (0, "")
-    if session.command == "events export":
-        stored = sorted(session.world.events.stored, key=lambda event: (event.occurred_at, event.event_id))
-        assert session.human.stdout.splitlines(keepends=True) == [canonical_line(event) for event in stored]
-        return
     document = json.loads(session.machine.stdout)
     if session.command in ("status", "maintenance", "self install", "self uninstall"):
         assert session.human.stdout.splitlines() == expected_lines(session.command, document)
@@ -180,6 +245,47 @@ def then_a_failure_is_a_closed_error_without_a_path(session: Session) -> None:
     assert code == envelope["exitCode"] == FAILURES[envelope["error"]["code"]][0]
     assert set(envelope["error"]) == {"code", "message", "field", "retryable"}
     assert "/" not in err
+
+
+@scenario(FEATURE, "Keep the export a raw stream when JSON is requested")
+def test_keep_the_export_a_raw_stream_when_json_is_requested() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+@when("the user exports events once with --json and once without it")
+def when_export_with_and_without_json(session: Session) -> None:
+    arguments = ["events", "export", "--format", "jsonl"]
+    session.machine = run_cli(session.world, [*arguments, "--json"])
+    session.refused_store_reads = session.world.events.reads
+    session.human = run_cli(session.world, arguments)
+
+
+@then("the export with --json exits 2 with the closed ferret.args.invalid error on stderr and nothing on stdout")
+def then_the_json_export_is_refused(session: Session) -> None:
+    assert session.machine is not None
+    code, out, err = session.machine
+    assert (code, out, err.count("\n")) == (2, "", 1)
+    assert json.loads(err) == {
+        "schemaVersion": 1,
+        "command": "events.export",
+        "exitCode": 2,
+        "error": {
+            "code": "ferret.args.invalid",
+            "message": "unrecognized or incomplete arguments",
+            "field": None,
+            "retryable": False,
+        },
+    }
+    # The request was refused as arguments, before any event was read.
+    assert session.refused_store_reads == 0
+
+
+@then("the export without --json writes one canonical event object per line")
+def then_the_plain_export_is_json_lines(session: Session) -> None:
+    assert session.human is not None
+    assert (session.human.code, session.human.stderr) == (0, "")
+    stored = {int(event.event_id[-12:]): event for event in session.world.events.stored}
+    assert session.human.stdout.splitlines(keepends=True) == [canonical_line(stored[number]) for number in (1, 2, 3)]
 
 
 @scenario(FEATURE, "Use FERRET without a backend")

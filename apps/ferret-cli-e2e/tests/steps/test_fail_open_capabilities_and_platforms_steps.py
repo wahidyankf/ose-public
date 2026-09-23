@@ -5,7 +5,7 @@ import json
 import os
 import sqlite3
 import stat
-import subprocess
+from collections import Counter
 from collections.abc import Iterator
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
@@ -19,9 +19,22 @@ from adapter_cases import HARNESSES, INVALID, VALID, stored_rows
 from event_documents import numbered_event
 from ferret_process import Completed, capture_documents, run_artifact
 from hook_bench import Bench, derived
-from hook_wrapper import HUNG_SECONDS, KILL_SECONDS, HookRun, alive, recorded_pid, stand_in, within_deadline
+from hook_wrapper import (
+    DEADLINE_SECONDS,
+    HookRun,
+    alive,
+    assert_term_then_kill,
+    received,
+    recorded_pid,
+    recorder,
+    run_plugin,
+    run_wrapper,
+    term_recorder,
+    within_deadline,
+)
 from install_area import LAUNCHER_MODE, Layout, Tree, digest, empty_tree, launcher_starts, store
-from vendor_payloads import CLAUDE_CODE
+from machine_path import machine_path_snapshot
+from vendor_payloads import CLAUDE_CODE, CODEX, OPENCODE, WORKSPACE, claude_tool, codex_tool, encode, opencode_call
 
 FEATURE = "../../../../specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature"
 NO_OUTCOME: dict[str, Any] = {
@@ -34,19 +47,10 @@ USAGE_INTERPRETATION = "Operational usage only; unknown subject visibility is no
 PATH_WITHOUT_USER_BIN = "/usr/bin:/bin"
 STARTUP_FILES = {".zshrc": b"export EDITOR=vi\n", ".bashrc": b"# bash startup\n", ".profile": b"# login shell\n"}
 HARNESS_FILES = {
-    ".claude/settings.json": b'{"hooks":{"PostToolUse":[{"command":"hook.sh"}]}}\n',
-    ".codex/hooks.json": b'{"hooks":{"PostToolUse":[{"command":"hook.sh"}]}}\n',
+    ".claude/settings.json": b'{"hooks":{"PostToolUse":[{"command":".claude/hooks/ferret-capture.sh"}]}}\n',
+    ".codex/hooks.json": b'{"hooks":{"PostToolUse":[{"command":".claude/hooks/ferret-capture.sh"}]}}\n',
     ".config/opencode/plugins/ferret.ts": b"export const Ferret = async () => ({})\n",
 }
-HOOK = """#!/bin/sh
-# Stands in for a harness hook: it looks for ferret, notes what it found, and never lets a failure reach the harness.
-if command -v ferret >/dev/null 2>&1; then
-  printf 'resolved\\n' >> "$FERRET_HOOK_LOG"
-else
-  printf 'missing\\n' >> "$FERRET_HOOK_LOG"
-fi
-exit 0
-"""
 
 
 @dataclass(slots=True)
@@ -56,13 +60,14 @@ class Session:
     artifact: Path
     home: Path
     repository: Path
-    hook: Path
-    log: Path
     usage: Completed | None = None
     ran: Completed | None = None
     path: str = PATH_WITHOUT_USER_BIN
     bystanders: dict[str, bytes] = field(default_factory=lambda: dict[str, bytes]())
     data_before: Tree = field(default_factory=empty_tree)
+    rows_before: int = 0
+    adapters: dict[str, HookRun] = field(default_factory=lambda: dict[str, HookRun]())
+    machine_path: dict[str, bytes | None] = field(default_factory=lambda: dict[str, bytes | None]())
 
     def document(self) -> dict[str, Any]:
         assert self.usage is not None
@@ -71,73 +76,98 @@ class Session:
 
 
 @pytest.fixture
-def session(artifact: Path, home: Path, workdir: Path, tmp_path: Path) -> Session:
+def session(artifact: Path, home: Path, workdir: Path) -> Session:
     initialized = run_artifact(artifact, ["init", "--json"], home=home)
     assert (initialized.returncode, initialized.stderr) == (0, b"")
-    return Session(
-        artifact=artifact, home=home, repository=workdir, hook=tmp_path / "hook.sh", log=tmp_path / "hook.log"
-    )
+    return Session(artifact=artifact, home=home, repository=workdir)
 
 
 def dimension(row: dict[str, Any], name: str) -> Any:
     return {item["name"]: item["value"] for item in row["dimensions"]}[name]
 
 
-@scenario(FEATURE, "Mark an unobservable capability unknown")
-def test_mark_an_unobservable_capability_unknown() -> None:
+# Count skill invocations the harness could not name: skill events as the Claude Code adapter stores them, a ``Skill``
+# call whose input named no valid skill keeping an unknown subject, captured through the artifact's own ``capture``.
+HARNESS = CLAUDE_CODE
+SKILL_CALLS: tuple[tuple[str, str | None], ...] = (
+    (HARNESS, "tdd"),
+    (HARNESS, None),
+    (HARNESS, "tdd"),
+    (HARNESS, "review"),
+    (HARNESS, None),
+    ("opencode", "deploy"),
+)
+
+
+def usage_rows(session: Session) -> dict[str | None, dict[str, Any]]:
+    rows = session.document()["rows"]
+    by_skill = {dimension(row, "skill"): row for row in rows}
+    assert len(by_skill) == len(rows)
+    return by_skill
+
+
+@scenario(FEATURE, "Count skill invocations the harness could not name as unknown, not as zero usage")
+def test_count_unnamed_skill_invocations_as_unknown() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
 
 
-@given("the selected harness exposes tool events but no stable skill lifecycle event")
-def given_tool_events_without_a_skill_lifecycle(session: Session) -> None:
+@given("a harness recorded skill invocations, some of which it could not name")
+def given_skill_invocations_some_unnamed(session: Session) -> None:
     now = datetime.now(UTC)
-    tools = [
-        numbered_event(number, now=now, ago=timedelta(minutes=10 - number), harness="codex") for number in (1, 2, 3)
-    ]
-    # The adapter cannot name a skill, so the gap is stored as skill events whose subject is unknown.
-    gaps = [
+    events = [
         numbered_event(
             number,
             now=now,
-            ago=timedelta(minutes=10 - number),
-            harness="codex",
+            ago=timedelta(minutes=number),
+            harness=harness,
             eventType="skill.invoked",
-            skillName=None,
+            skillName=skill,
             toolName=None,
-            subjectVisibility="unknown",
+            subjectVisibility="observed" if skill is not None else "unknown",
             **NO_OUTCOME,
         )
-        for number in (4, 5)
+        for number, (harness, skill) in enumerate(SKILL_CALLS, start=1)
     ]
-    capture_documents(session.artifact, session.home, [*tools, *gaps])
+    capture_documents(session.artifact, session.home, events)
 
 
 @when("the user requests usage grouped by skill for that harness")
 def when_usage_is_grouped_by_skill(session: Session) -> None:
     session.usage = run_artifact(
         session.artifact,
-        ["usage", "--group-by", "skill,subject_visibility", "--harness", "codex", "--all-time", "--json"],
+        ["usage", "--group-by", "skill", "--harness", HARNESS, "--all-time", "--json"],
         home=session.home,
     )
 
 
-@then("the result marks skill subject visibility as unknown")
-def then_skill_visibility_is_unknown(session: Session) -> None:
-    rows = session.document()["rows"]
-
-    [unknown] = [row for row in rows if dimension(row, "subject_visibility") == "unknown"]
-
-    assert dimension(unknown, "skill") is None
-    assert (unknown["eventCount"], unknown["unknownSubjectCount"]) == (2, 2)
-    assert (unknown["observedSubjectCount"], unknown["derivedSubjectCount"]) == (0, 0)
+@then("each named skill is counted as observed usage")
+def then_named_skills_are_observed(session: Session) -> None:
+    named = Counter(skill for harness, skill in SKILL_CALLS if harness == HARNESS and skill is not None)
+    rows = usage_rows(session)
+    for skill, count in named.items():
+        row = rows[skill]
+        assert (row["eventCount"], row["observedSubjectCount"], row["unknownSubjectCount"]) == (count, count, 0)
 
 
-@then("the result does not report zero skill invocations as an observed fact")
-def then_zero_is_not_reported_as_a_fact(session: Session) -> None:
-    document = session.document()
+@then("the unnamed invocations are counted as unknown subjects in a group of their own")
+def then_unnamed_invocations_are_unknown(session: Session) -> None:
+    unnamed = sum(1 for harness, skill in SKILL_CALLS if harness == HARNESS and skill is None)
+    row = usage_rows(session)[None]
+    assert (row["eventCount"], row["unknownSubjectCount"]) == (unnamed, unnamed)
+    assert (row["observedSubjectCount"], row["derivedSubjectCount"]) == (0, 0)
 
-    assert [row for row in document["rows"] if dimension(row, "skill") is not None] == []
-    assert document["interpretation"] == USAGE_INTERPRETATION
+
+@then("no skill the harness never invoked is reported with a zero count")
+def then_no_zero_is_fabricated(session: Session) -> None:
+    rows = usage_rows(session)
+    assert set(rows) == {skill for harness, skill in SKILL_CALLS if harness == HARNESS}
+    assert "deploy" not in rows
+    assert all(row["eventCount"] > 0 for row in rows.values())
+
+
+@then("the result states that unknown subject visibility is not zero usage")
+def then_the_result_states_unknown_is_not_zero(session: Session) -> None:
+    assert session.document()["interpretation"] == USAGE_INTERPRETATION
 
 
 def run_self(session: Session, arguments: list[str]) -> Completed:
@@ -154,14 +184,39 @@ def user_files(session: Session, names: dict[str, bytes]) -> dict[str, bytes]:
     return {name: (session.home / name).read_bytes() for name in names}
 
 
-def run_hook(session: Session) -> subprocess.CompletedProcess[bytes]:
-    return subprocess.run(
-        ["/bin/sh", str(session.hook)],
-        env={"HOME": str(session.home), "PATH": session.path, "FERRET_HOOK_LOG": str(session.log)},
-        cwd=session.repository,
-        capture_output=True,
-        check=False,
+def run_every_adapter(session: Session) -> dict[str, HookRun]:
+    """Each harness's real adapter, run the way its harness runs it: no FERRET_BIN, the user's bin on PATH."""
+    cwd = session.repository
+    ran = {
+        harness: run_wrapper(
+            harness,
+            "tool.completed",
+            encode(payload),
+            home=session.home,
+            binary=None,
+            path=session.path,
+            cwd=cwd,
+        )
+        for harness, payload in {
+            CLAUDE_CODE: claude_tool("PostToolUse", duration_ms=5, cwd=str(cwd)),
+            CODEX: codex_tool("PostToolUse", cwd=str(cwd)),
+        }.items()
+    }
+    ran[OPENCODE] = run_plugin(
+        [opencode_call("tool.execute.before")],
+        home=session.home,
+        binary=None,
+        directory=cwd,
+        path=session.path,
+        cwd=cwd,
     )
+    return ran
+
+
+def stored_harnesses(session: Session) -> list[str]:
+    listing = run_self(session, ["events", "list", "--json"])
+    assert (listing.returncode, listing.stderr) == (0, b"")
+    return sorted(item["harness"] for item in json.loads(listing.stdout)["items"])
 
 
 @scenario(FEATURE, "Install privately for the current user")
@@ -176,6 +231,7 @@ def given_no_artifact_installed(session: Session, situation: str) -> None:
     for name, content in STARTUP_FILES.items():
         (session.home / name).write_bytes(content)
     session.bystanders = user_files(session, STARTUP_FILES)
+    session.machine_path = machine_path_snapshot()
     # The data home shares `.local/share/ferret` with the install area and the store is already there, so what
     # makes this "not installed" is that no launcher and no manifest exist.
     assert not os.path.lexists(layout.launcher)
@@ -235,6 +291,7 @@ def then_no_startup_file_or_path_is_modified(session: Session) -> None:
     assert {path.name for path in (session.home / ".local").iterdir()} == {"bin", "share"}
     assert {path.name for path in layout.bin.iterdir()} == {"ferret"}
     assert list(session.repository.iterdir()) == []
+    assert machine_path_snapshot() == session.machine_path
 
 
 @scenario(FEATURE, "Remove FERRET without changing harness behaviour")
@@ -254,41 +311,49 @@ def given_harness_adapters_call_ferret(session: Session) -> None:
     for name, content in HARNESS_FILES.items():
         (session.home / name).parent.mkdir(parents=True, exist_ok=True)
         (session.home / name).write_bytes(content)
-    session.hook.write_text(HOOK, encoding="utf-8")
     session.bystanders = user_files(session, HARNESS_FILES)
+    # Each real adapter finds the installed launcher through PATH, as its harness would, and captures one event.
+    captured = run_every_adapter(session)
+    assert {harness: (ran.code, ran.stdout, ran.stderr) for harness, ran in captured.items()} == {
+        CLAUDE_CODE: (0, b"", b""),
+        CODEX: (0, b"", b""),
+        OPENCODE: (0, b"", b""),
+    }
+    assert stored_harnesses(session) == [CLAUDE_CODE, CLAUDE_CODE, CODEX, OPENCODE]
+    session.rows_before = 4
     session.data_before = store(Layout(session.home))
-    hooked = run_hook(session)
-    assert (hooked.returncode, hooked.stdout, hooked.stderr) == (0, b"", b"")
-    assert session.log.read_text(encoding="utf-8").splitlines() == ["resolved"]
+    assert list(session.repository.iterdir()) == []
 
 
-@when("the ferret executable and local integration are removed")
+@when("the user runs self uninstall")
 def when_ferret_is_removed(session: Session) -> None:
     session.ran = run_self(session, ["self", "uninstall", "--json"])
 
 
-@then("every harness continues to run normally")
-def then_every_harness_continues_to_run(session: Session) -> None:
+@then("every harness adapter still exits zero without writing to either stream or capturing an event")
+def then_every_adapter_still_exits_zero(session: Session) -> None:
     assert session.ran is not None
     assert (session.ran.returncode, session.ran.stderr) == (0, b"")
     assert json.loads(session.ran.stdout)["result"] == "uninstalled"
-    hooked = run_hook(session)
-    assert (hooked.returncode, hooked.stdout, hooked.stderr) == (0, b"", b"")
-    assert session.log.read_text(encoding="utf-8").splitlines() == ["resolved", "missing"]
+    session.adapters = run_every_adapter(session)
+    for harness, ran in session.adapters.items():
+        assert (ran.code, ran.stdout, ran.stderr) == (0, b"", b""), harness
+        assert ran.elapsed_seconds < DEADLINE_SECONDS, harness
+    # Nothing reached the store: its files, the hook-failure record included, are exactly as the uninstall left them.
+    assert store(Layout(session.home)) == session.data_before
     assert user_files(session, HARNESS_FILES) == session.bystanders
 
 
 @then("the repository contains no newly generated telemetry data")
 def then_the_repository_holds_no_new_telemetry(session: Session) -> None:
+    assert set(session.adapters) == {CLAUDE_CODE, CODEX, OPENCODE}
     assert list(session.repository.iterdir()) == []
 
 
 @then("the existing user database remains recoverable or removable by an explicit user action")
 def then_the_database_is_recoverable_or_removable(session: Session) -> None:
     assert store(Layout(session.home)) == session.data_before
-    listing = run_self(session, ["events", "list", "--json"])
-    assert (listing.returncode, listing.stderr) == (0, b"")
-    assert len(json.loads(listing.stdout)["items"]) == 1
+    assert len(stored_harnesses(session)) == session.rows_before
     purged = run_self(session, ["self", "uninstall", "--purge-data", "--yes", "--json"])
     assert (purged.returncode, purged.stderr, json.loads(purged.stdout)["dataAction"]) == (0, b"", "deleted")
     assert not os.path.lexists(session.home / ".local" / "share" / "ferret")
@@ -314,6 +379,9 @@ class Adapters:
     stuck: bool = False
     writer: sqlite3.Connection | None = None
     ran: dict[str, HookRun] = field(default_factory=lambda: dict[str, HookRun]())
+    call: dict[str, Any] | bytes | None = None
+    forwarded: bytes | None = None
+    received: tuple[list[str], bytes] | None = None
 
 
 @pytest.fixture
@@ -384,9 +452,19 @@ def test_keep_one_posix_adapter_fail_open_at_the_wrapper_boundary() -> None:
     """Bound to the feature outline; each example expands independently."""
 
 
-@given(parsers.parse("a {harness} binding invokes the shared wrapper"))
-def given_a_binding_invokes_the_wrapper(adapters: Adapters, harness: str) -> None:
+@scenario(FEATURE, "Keep the OpenCode plugin fail-open at its process boundary")
+def test_keep_the_opencode_plugin_fail_open_at_its_process_boundary() -> None:
+    """Bound to the feature outline; each example expands independently."""
+
+
+@given(parsers.parse("the {harness} hook runs the shared POSIX wrapper"))
+def given_a_hook_runs_the_wrapper(adapters: Adapters, harness: str) -> None:
     adapters.harness = harness
+
+
+@given("OpenCode runs the FERRET plugin for a lifecycle hook")
+def given_opencode_runs_the_plugin(adapters: Adapters) -> None:
+    adapters.harness = OPENCODE
 
 
 def send(adapters: Adapters, document: dict[str, Any] | bytes, *, event: str | None = None) -> None:
@@ -395,10 +473,21 @@ def send(adapters: Adapters, document: dict[str, Any] | bytes, *, event: str | N
     )
 
 
+def record_forwarding(adapters: Adapters, document: dict[str, Any] | bytes) -> None:
+    """Send ``document`` once more, to a stand-in that keeps exactly the arguments and bytes the adapter handed it."""
+    recording = adapters.bench.directory / "recording"
+    recording.mkdir()
+    ran = adapters.bench.forward(adapters.harness, VALID[adapters.harness].event, document, binary=recorder(recording))
+    assert (ran.code, ran.stdout, ran.stderr) == (0, b"", b"")
+    adapters.received = received(recording)
+
+
 @when("stdin is forwarded byte-for-byte for a supported event")
 def when_stdin_is_forwarded(adapters: Adapters) -> None:
     # Valid JSON with CRLF line ends, tabs, and non-ASCII text: any re-encoding of these bytes changes the derived IDs.
     send(adapters, WRAPPER_BYTES)
+    record_forwarding(adapters, WRAPPER_BYTES)
+    adapters.forwarded = WRAPPER_BYTES
 
 
 @when("the event is not one FERRET registers")
@@ -422,15 +511,21 @@ def when_the_executable_is_missing(adapters: Adapters) -> None:
 @when("the plugin forwards an invalid payload")
 def when_the_plugin_forwards_an_invalid_payload(adapters: Adapters) -> None:
     adapters.expected_rows = 0
-    send(adapters, INVALID[adapters.harness])
+    adapters.call = INVALID[OPENCODE]
+    send(adapters, adapters.call)
+    record_forwarding(adapters, adapters.call)
 
 
 @when("the child process hangs past the deadline")
 def when_the_child_hangs(adapters: Adapters) -> None:
-    adapters.binary = stand_in(adapters.bench.directory, "stubborn")
+    hung = adapters.bench.directory / "hung"
+    hung.mkdir()
+    adapters.binary = term_recorder(hung)
     adapters.stuck = True
     adapters.expected_rows = 0
-    send(adapters, VALID[adapters.harness].document)
+    adapters.call = VALID[adapters.harness].document
+    send(adapters, adapters.call)
+    adapters.received = received(hung)
 
 
 @then("the wrapper exits zero and writes nothing to either stream")
@@ -438,6 +533,12 @@ def then_the_wrapper_is_silent(adapters: Adapters) -> None:
     ran = adapters.ran[adapters.harness]
     assert (ran.code, ran.stdout, ran.stderr) == (0, b"", b"")
     assert adapters.bench.stored() == adapters.expected_rows
+    if adapters.forwarded is not None:
+        # The child got the payload's exact bytes under the two static registration arguments.
+        assert adapters.received == (
+            ["capture-hook", "--harness", adapters.harness, "--event", VALID[adapters.harness].event],
+            adapters.forwarded,
+        )
     if adapters.expected_rows:
         [row] = stored_rows(adapters.bench)
         key = adapters.bench.key()
@@ -448,13 +549,34 @@ def then_the_wrapper_is_silent(adapters: Adapters) -> None:
         assert adapters.bench.leaks() == []
 
 
+@then("the plugin completes the hook without an error and writes nothing to either stream")
+def then_the_plugin_is_silent(adapters: Adapters) -> None:
+    ran = adapters.ran[OPENCODE]
+    assert (ran.code, ran.stdout, ran.stderr) == (0, b"", b"")
+    assert adapters.bench.stored() == adapters.expected_rows
+    # The plugin forwarded the hook as one JSON document, whatever it held, under its static registration arguments.
+    assert adapters.received is not None
+    arguments, stdin = adapters.received
+    assert arguments == ["capture-hook", "--harness", OPENCODE, "--event", "tool.started"]
+    assert isinstance(adapters.call, dict)
+    given_input, given_output = adapters.call["args"]
+    assert json.loads(stdin) == {
+        "hook": "tool.execute.before",
+        "directory": WORKSPACE,
+        "input": given_input,
+        "output": given_output,
+    }
+
+
 @then("any surviving child is terminated by TERM at 900 milliseconds and KILL at 1000 milliseconds")
 def then_a_surviving_child_is_terminated(adapters: Adapters) -> None:
     ran = adapters.ran[adapters.harness]
-    minimum = 0.0
-    if adapters.stuck:
-        pid = recorded_pid(adapters.bench.directory)
-        assert pid is not None
-        assert not alive(pid)
-        minimum = KILL_SECONDS - 0.05
-    assert minimum <= ran.elapsed_seconds < HUNG_SECONDS
+    if not adapters.stuck:
+        # No child outlived its own work, so nothing needed either signal.
+        assert ran.elapsed_seconds < DEADLINE_SECONDS
+        return
+    hung = adapters.bench.directory / "hung"
+    pid = recorded_pid(hung)
+    assert pid is not None
+    assert not alive(pid)
+    assert_term_then_kill(ran, hung, from_call=adapters.harness != OPENCODE)

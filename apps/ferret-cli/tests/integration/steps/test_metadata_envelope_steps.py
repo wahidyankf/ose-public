@@ -15,7 +15,7 @@ from pytest_bdd import given, parsers, scenario, then, when
 
 from ferret.adapters.system import system_runtime
 from ferret.application.initialization import initialize_store
-from support.events import VECTOR_DOCUMENT, VECTOR_HASH, encode
+from support.events import VECTOR_DOCUMENT, VECTOR_HASH, encode, event_document
 from support.hook_payloads import CANARIES, IMAGE_CANARY, claude_tool, codex_view_image
 from support.hook_payloads import encode as encode_payload
 from support.wrapper import in_tree
@@ -27,15 +27,28 @@ RUNNER = (
     "raise SystemExit(main(['capture', '--json']))"
 )
 CANARY = "canary-value-that-must-never-be-echoed"
-RAW_WORKSPACE = "/users/example/work/repo-a"
-RAW_SESSION = "raw-harness-session-123"
-FORBIDDEN_KEYS = {
-    "prompt": ("prompt", "prompt"),
-    "response": ("response", "response"),
-    "tool_arguments": ("tool_arguments", "tool_arguments"),
-    "transcript_path": ("transcript_path", "transcript_path"),
-    "environment": ("environment", "environment"),
-    "an unknown arbitrary field": ("unexpected_arbitrary_field", None),
+# The capture process runs in a workspace directory with a native harness session in its environment, the raw values an
+# adapter's context carries; neither may reach the data home.
+RAW_WORKSPACE_NAME = "canary-raw-workspace-3e71"
+RAW_SESSION = "canary-raw-harness-session-5a02"
+# The raw values an adapter might wrongly pass where an opaque identifier belongs, by the kind the scenario names.
+RAW_VALUES = {
+    "workspace path": "/users/example/work/canary-raw-workspace-3e71",
+    "harness session value": RAW_SESSION,
+}
+# A property the closed schema does not define: its name and its value are both canaries, so neither may be echoed.
+UNKNOWN_KEY = "canary_unknown_property_4d7e"
+UNKNOWN_VALUE = "canary-unknown-value-a19f"
+# Everything the store may hold; any other file beside it would be a spool, a log, or a scratch copy.
+STORE = "home/.local/share/ferret/"
+STORE_FILES = {
+    "config.json",
+    "ferret.lock",
+    "ferret.sqlite3",
+    "ferret.sqlite3-shm",
+    "ferret.sqlite3-wal",
+    "identity.json",
+    "identity.key",
 }
 
 
@@ -47,6 +60,7 @@ class Session:
     completed: subprocess.CompletedProcess[bytes] | None = None
     category: str | None = None
     raw: bytes = b""
+    raw_value: str = ""
     harness: str = "claude_code"
 
     @property
@@ -56,6 +70,16 @@ class Session:
     @property
     def database(self) -> Path:
         return self.data_home / "ferret.sqlite3"
+
+    @property
+    def workspace(self) -> Path:
+        """The directory the capture process runs in, named with a canary so any copy of it can be found."""
+        return self.home.parent / "work" / RAW_WORKSPACE_NAME
+
+    @property
+    def temporary(self) -> Path:
+        """The child's TMPDIR, inside the test's own directory, so a file spooled to temporary storage is seen."""
+        return self.home.parent / "tmp"
 
 
 @pytest.fixture
@@ -67,13 +91,26 @@ def session(tmp_path: Path) -> Session:
 
 
 def submit(session: Session, document: dict[str, Any]) -> None:
+    session.workspace.mkdir(parents=True, exist_ok=True)
     session.completed = subprocess.run(
         [sys.executable, "-c", RUNNER, str(SOURCE)],
         input=encode(document),
-        env={"HOME": str(session.home), "PATH": "/usr/bin:/bin"},
+        env={
+            "HOME": str(session.home),
+            "PATH": "/usr/bin:/bin",
+            "PWD": str(session.workspace),
+            "CLAUDE_SESSION_ID": RAW_SESSION,
+            "CODEX_SESSION_ID": RAW_SESSION,
+        },
+        cwd=session.workspace,
         capture_output=True,
         check=False,
     )
+
+
+def sqlite_rows(session: Session, statement: str) -> list[tuple[Any, ...]]:
+    with closing(sqlite3.connect(session.database)) as connection:
+        return connection.execute(statement).fetchall()
 
 
 def count(session: Session, table: str) -> int:
@@ -82,7 +119,8 @@ def count(session: Session, table: str) -> int:
 
 
 def data_home_bytes(session: Session) -> bytes:
-    return b"".join(path.read_bytes() for path in sorted(session.data_home.iterdir()))
+    """Every byte of every file below the data home, however deep, so nothing written there can go unread."""
+    return b"".join(path.read_bytes() for path in sorted(session.data_home.rglob("*")) if path.is_file())
 
 
 @scenario(FEATURE, "Capture a valid lifecycle event")
@@ -90,9 +128,19 @@ def test_capture_a_valid_lifecycle_event() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
 
 
+@scenario(FEATURE, "Refuse a raw value in place of an opaque identifier")
+def test_refuse_a_raw_value_in_place_of_an_opaque_identifier() -> None:
+    """Bound to the feature outline; each example expands independently."""
+
+
 @scenario(FEATURE, "Reject a forbidden capture field")
 def test_reject_a_forbidden_capture_field() -> None:
     """Bound to the feature outline; each example expands independently."""
+
+
+@scenario(FEATURE, "Reject an unknown capture field")
+def test_reject_an_unknown_capture_field() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
 
 
 @given("FERRET is initialized with an empty local database")
@@ -109,8 +157,21 @@ def when_submit_valid_event(session: Session) -> None:
 
 @when(parsers.parse("an adapter submits an otherwise valid event containing {field}"))
 def when_submit_event_with_forbidden_field(session: Session, field: str) -> None:
-    key, session.category = FORBIDDEN_KEYS[field]
-    submit(session, {**VECTOR_DOCUMENT, key: CANARY})
+    # The example names the property itself, and the contract spells each of these categories the same way.
+    session.category = field
+    submit(session, {**VECTOR_DOCUMENT, field: CANARY})
+
+
+@when(parsers.parse("an adapter submits an otherwise valid event whose {field} is a raw {value}"))
+def when_submit_event_with_raw_identifier(session: Session, field: str, value: str) -> None:
+    session.raw_value = RAW_VALUES[value]
+    # Resealed, so the raw value is the only thing wrong with the event.
+    submit(session, event_document(**{field: session.raw_value}))
+
+
+@when("an adapter submits an otherwise valid event with a property the schema does not define")
+def when_submit_event_with_unknown_property(session: Session) -> None:
+    submit(session, {**VECTOR_DOCUMENT, UNKNOWN_KEY: UNKNOWN_VALUE})
 
 
 @then("the CLI stores one event with its canonical hash and opaque identifiers")
@@ -129,12 +190,16 @@ def then_stores_one_event(session: Session) -> None:
     assert re.fullmatch(r"ss_[0-9a-f]{32}", rows[0][2])
 
 
-@then("the stored record contains no raw workspace or harness session value")
-def then_no_raw_values(session: Session) -> None:
+@then("the stored record holds only the opaque workspace and session identifiers it was given")
+def then_only_the_given_opaque_identifiers(session: Session) -> None:
+    rows = sqlite_rows(session, "SELECT workspace_id, session_id, parent_session_id FROM event")
+    assert rows == [("ws_327b250d010590da40f0f76d18da910a", "ss_d0de260ca18a8379984031556b2d43ac", None)]
+    assert sqlite_rows(session, "SELECT workspace_id FROM workspace") == [("ws_327b250d010590da40f0f76d18da910a",)]
+    # The directory the capture ran in and the session its environment named were at hand; none of their bytes stayed.
     stored = data_home_bytes(session)
-    assert RAW_WORKSPACE.encode() not in stored
+    assert RAW_WORKSPACE_NAME.encode() not in stored
+    assert str(session.workspace).encode() not in stored
     assert RAW_SESSION.encode() not in stored
-    assert count(session, "workspace") == 1
 
 
 @then("the direct capture command reports success")
@@ -159,28 +224,51 @@ def then_rejects_without_a_row(session: Session) -> None:
     assert count(session, "workspace") == 0
 
 
-@then("the diagnostic names the field category without echoing its value")
-def then_names_the_category_only(session: Session) -> None:
+def diagnostic(session: Session) -> dict[str, Any]:
+    """The error object of the rejected capture's closed failure envelope."""
     assert session.completed is not None
-    error = json.loads(session.completed.stderr)["error"]
-    assert error == {
+    envelope = json.loads(session.completed.stderr)
+    assert (envelope["schemaVersion"], envelope["command"], envelope["exitCode"]) == (1, "capture", 2)
+    return envelope["error"]
+
+
+def closed_error(field: str | None) -> dict[str, Any]:
+    return {
         "code": "ferret.event.invalid",
         "message": "the event is not a valid FERRET event",
-        "field": session.category,
+        "field": field,
         "retryable": False,
     }
+
+
+@then("the diagnostic names the field category without echoing its value")
+def then_names_the_category_only(session: Session) -> None:
+    assert diagnostic(session) == closed_error(session.category)
+    assert session.completed is not None
     assert CANARY.encode() not in session.completed.stderr
     assert CANARY.encode() not in data_home_bytes(session)
+
+
+@then(parsers.parse("the diagnostic names the {field} field without echoing its value"))
+def then_names_the_identifier_field_only(session: Session, field: str) -> None:
+    assert diagnostic(session) == closed_error(field)
+    assert session.completed is not None
+    assert session.raw_value.encode() not in session.completed.stderr
+    assert session.raw_value.encode() not in data_home_bytes(session)
+
+
+@then("the diagnostic names no field and echoes neither the unknown property name nor its value")
+def then_names_no_field(session: Session) -> None:
+    assert diagnostic(session) == closed_error(None)
+    assert session.completed is not None
+    for canary in (UNKNOWN_KEY, UNKNOWN_VALUE):
+        assert canary.encode() not in session.completed.stderr
+        assert canary.encode() not in data_home_bytes(session)
 
 
 @scenario(FEATURE, "Project raw hook JSON without retaining content")
 def test_project_raw_hook_json_without_retaining_content() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
-
-
-def sqlite_rows(session: Session, statement: str) -> list[tuple[Any, ...]]:
-    with closing(sqlite3.connect(session.database)) as connection:
-        return connection.execute(statement).fetchall()
 
 
 def files_under(root: Path) -> dict[str, bytes]:
@@ -196,10 +284,11 @@ def given_a_raw_payload_with_content(session: Session) -> None:
 @when("capture-hook maps it through that harness's allowlist mapper")
 def when_capture_hook_maps_the_payload(session: Session) -> None:
     launcher = in_tree(session.home.parent)
+    session.temporary.mkdir()
     session.completed = subprocess.run(
         [str(launcher), "capture-hook", "--harness", session.harness, "--event", "tool.completed"],
         input=session.raw,
-        env={"HOME": str(session.home), "PATH": "/usr/bin:/bin"},
+        env={"HOME": str(session.home), "PATH": "/usr/bin:/bin", "TMPDIR": str(session.temporary)},
         cwd=session.home.parent,
         capture_output=True,
         check=False,
@@ -225,17 +314,11 @@ def then_the_raw_bytes_are_never_written(session: Session) -> None:
     everything = files_under(session.home.parent)
     written = b"".join(everything.values())
     assert not any(canary.encode() in written for canary in CANARIES)
-    # Nothing but the store's own files exists: no spool, log, or scratch file beside them.
-    assert {name.split("/")[1] for name in everything if name.startswith("home/")} == {".local"}
-    assert {name.split("/")[-1] for name in everything if "/.ferret/" in name} <= {
-        "config.json",
-        "ferret.lock",
-        "ferret.sqlite3",
-        "ferret.sqlite3-shm",
-        "ferret.sqlite3-wal",
-        "identity.json",
-        "identity.key",
-    }
+    # Nothing but the launcher and the store's own files exists: no spool, log, or scratch file anywhere the run could
+    # write, the child's temporary directory included.
+    assert {name for name in everything if not name.startswith(STORE)} == {"ferret-in-tree"}
+    assert {name.removeprefix(STORE) for name in everything if name.startswith(STORE)} <= STORE_FILES
+    assert list(session.temporary.iterdir()) == []
 
 
 @then("any diagnostic about the payload names no value taken from it")
@@ -272,5 +355,7 @@ def then_no_image_or_content_is_stored(session: Session) -> None:
     written = b"".join(everything.values())
     for canary in (IMAGE_CANARY, *CANARIES):
         assert canary.encode() not in written
-    # A refused payload would leave its failure record beside the store; an accepted one leaves none.
-    assert "hook-failures.log" not in {name.split("/")[-1] for name in everything}
+    # A refused payload would leave its failure record beside the store, and a spooled one a file in the child's
+    # temporary directory; an accepted, unspooled one leaves neither.
+    assert {name.removeprefix(STORE) for name in everything if name.startswith(STORE)} <= STORE_FILES
+    assert list(session.temporary.iterdir()) == []

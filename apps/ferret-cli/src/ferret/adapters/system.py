@@ -21,6 +21,7 @@ from ferret.adapters.filesystem import (
     parse_macos_mounts,
     resolve_data_home,
 )
+from ferret.adapters.hook_failures import PosixHookFailureLog
 from ferret.adapters.posix_install import PosixUserInstall
 from ferret.adapters.posix_storage import PosixDataHome
 from ferret.adapters.posix_workspace import PosixWorkspaceRoots
@@ -147,4 +148,5 @@ def system_runtime(
         interpreter=InterpreterFacts(path=sys.executable, version=platform.python_version()),
         installer=PosixUserInstall(home, path_variable=env.get("PATH", ""), artifact=artifact),
         workspaces=PosixWorkspaceRoots(),
+        hook_failures=PosixHookFailureLog(data_home),
     )

@@ -32,6 +32,19 @@ from ferret.domain.storage import (
 ARTIFACTS = (KEY_FILE, IDENTITY_FILE, CONFIG_FILE, DATABASE_FILE)
 
 
+class PosixHookFailureLog:
+    """The hook-failure record of one data home, as the ``HookFailureLog`` port."""
+
+    def __init__(self, data_home: Path) -> None:
+        self._data_home = data_home
+
+    def record(self, code: str) -> None:
+        record_hook_failure(self._data_home, code)
+
+    def read(self) -> tuple[int, str | None]:
+        return read_hook_failures(self._data_home)
+
+
 def record_hook_failure(data_home: Path, code: str) -> None:
     """Append one record, keeping the file to the most recent ``HOOK_FAILURE_LIMIT``. Never raises.
 

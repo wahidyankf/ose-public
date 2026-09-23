@@ -100,12 +100,16 @@ def when_outcome_analytics_are_requested(session: Session) -> None:
     session.summary = run_artifact(session.artifact, ["outcomes", "--group-by", "harness", "--json"], home=session.home)
 
 
-@then("observed success, failure, cancellation, and duration values are aggregated separately")
-def then_values_are_aggregated_separately(session: Session) -> None:
+@then("outcomes and known durations are aggregated, with observed and derived outcomes counted separately")
+def then_outcomes_and_known_durations_are_aggregated(session: Session) -> None:
     row = session.row()
 
+    # The outcome counts take every terminal outcome, whatever its provenance: the cancellation here is derived.
     assert (row["successCount"], row["failureCount"], row["cancelledCount"]) == (2, 1, 1)
+    # Provenance is where observed and derived part: three observed outcomes and the one derived cancellation.
     assert (row["observedOutcomeCount"], row["derivedOutcomeCount"]) == (3, 1)
+    # The duration statistics cover every known duration, the observed 10 and 27 ms and the derived 5 ms alike, and
+    # skip the failure and the session end whose durations are unknown.
     assert (row["durationSampleCount"], row["durationTotalMs"], row["durationMinMs"], row["durationMaxMs"]) == (
         3,
         42,

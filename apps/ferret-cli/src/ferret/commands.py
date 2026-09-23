@@ -4,7 +4,6 @@ from collections.abc import Callable, Mapping, Sized
 from contextlib import suppress
 from typing import TextIO
 
-from ferret.adapters.hook_failures import record_hook_failure
 from ferret.adapters.system import system_runtime
 from ferret.application.analytics import summarize_outcomes, summarize_usage
 from ferret.application.capture import capture_event
@@ -38,7 +37,7 @@ type RuntimeFactory = Callable[[], Runtime]
 def _record_failure(runtime_factory: RuntimeFactory, code: str) -> None:
     """Write down one lost event, or give up quietly when even that cannot be done."""
     with suppress(Exception):
-        record_hook_failure(runtime_factory().data_home, code)
+        runtime_factory().hook_failures.record(code)
 
 
 def _emit(text: str, stdout: TextIO, stderr: TextIO, rows: Sized) -> int:

@@ -14,7 +14,7 @@ private `HOME`, and real stdin, stdout, stderr, and exit codes.
 | `tests/test_user_install.py`      | user install, in-place update, interrupted-install recovery, and an uninstall that removes only what FERRET owns    |
 | `tests/test_harness_adapters.py`  | vendor fixtures for the shared POSIX wrapper (Claude Code, Codex) and the OpenCode plugin: forwarded, stored, quiet |
 | `tests/test_adapter_latency.py`   | the adapter latency tool's own rules; no process is timed                                                           |
-| `tests/test_storage_benchmark.py` | the storage benchmark tool's own rules: percentiles, projections, acceptance, and the rows it seeds                 |
+| `tests/test_storage_benchmark.py` | the storage benchmark's rules, and its bytes-per-event, index-share, and envelope verdicts on real measured stores  |
 | `tests/steps/`                    | the pytest-bdd step definitions that bind the six feature files of the corpus for this adapter                      |
 
 ## Measuring tools
@@ -38,13 +38,16 @@ against their budgets. Both run against the built artifact in an isolated home:
 ```
 
 `install` runs `uv sync --locked` for this project's own locked development tools. Set `FERRET_ARTIFACT` to test an
-artifact other than `../ferret-cli/dist/ferret.pyz`.
+artifact other than `../ferret-cli/dist/ferret.pyz`. The interpreter-guard scenarios start the artifact with the
+host's own `python3` from `/usr/bin`, which predates 3.14 on every supported host; a host without one fails those
+examples rather than skipping them.
 
 ## How a test runs the artifact
 
 `src/ferret_process.py` runs the artifact with the interpreter that runs the tests, so a shell's `python3` never
-decides the result. Each test gets an empty environment plus `HOME` pointing at a temporary directory, so no test can
-touch a developer's real `~/.ferret`.
+decides the result. Each test gets an empty environment plus `HOME` pointing at a temporary directory. The test
+process itself also runs with a private `HOME` and with `FERRET_DATA_HOME` and `XDG_DATA_HOME` cleared (an autouse
+fixture in `tests/conftest.py`), so no child that inherits its environment can touch a developer's real data home.
 
 ## BDD and testing
 

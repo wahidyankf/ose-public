@@ -7,8 +7,19 @@ Feature: Capture strict metadata
     Given FERRET is initialized with an empty local database
     When an adapter submits one schema-version-1.0 tool-completed event
     Then the CLI stores one event with its canonical hash and opaque identifiers
-    And the stored record contains no raw workspace or harness session value
+    And the stored record holds only the opaque workspace and session identifiers it was given
     And the direct capture command reports success
+
+  Scenario Outline: Refuse a raw value in place of an opaque identifier
+    Given FERRET is initialized with an empty local database
+    When an adapter submits an otherwise valid event whose <field> is a raw <value>
+    Then capture rejects the complete event without storing a partial row
+    And the diagnostic names the <field> field without echoing its value
+
+    Examples:
+      | field       | value                 |
+      | workspaceId | workspace path        |
+      | sessionId   | harness session value |
 
   Scenario: Project raw hook JSON without retaining content
     Given a raw harness payload carrying prompt text, tool arguments, and environment values
@@ -31,10 +42,15 @@ Feature: Capture strict metadata
     And the diagnostic names the field category without echoing its value
 
     Examples:
-      | field                      |
-      | prompt                     |
-      | response                   |
-      | tool_arguments             |
-      | transcript_path            |
-      | environment                |
-      | an unknown arbitrary field |
+      | field           |
+      | prompt          |
+      | response        |
+      | tool_arguments  |
+      | transcript_path |
+      | environment     |
+
+  Scenario: Reject an unknown capture field
+    Given FERRET is initialized with an empty local database
+    When an adapter submits an otherwise valid event with a property the schema does not define
+    Then capture rejects the complete event without storing a partial row
+    And the diagnostic names no field and echoes neither the unknown property name nor its value

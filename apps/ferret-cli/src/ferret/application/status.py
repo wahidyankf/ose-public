@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import ClassVar, Literal
 
 from ferret import __version__
-from ferret.adapters.hook_failures import read_hook_failures
 from ferret.application.ports import ExpiryCounters, InterpreterFacts, Runtime, StoreCounts
 from ferret.application.store import require_initialized
 from ferret.domain.capability import CapabilitySnapshot
@@ -87,7 +86,7 @@ def report_status(runtime: Runtime) -> StatusReport:
         raise FerretError("ferret.storage.integrity-failure")
     now = runtime.clock.now()
     last_maintenance_at = telemetry.last_completed_at()
-    hook_failure_count, last_hook_failure_at = read_hook_failures(runtime.data_home)
+    hook_failure_count, last_hook_failure_at = runtime.hook_failures.read()
     return StatusReport(
         ferret_version=__version__,
         interpreter=runtime.interpreter,

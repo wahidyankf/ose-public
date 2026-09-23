@@ -18,6 +18,21 @@ def artifact() -> Path:
     return path
 
 
+@pytest.fixture(autouse=True)
+def isolated_environment_home(tmp_path_factory: pytest.TempPathFactory, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """Point this process's HOME at a private scratch directory and clear both data-home overrides.
+
+    ``run_artifact`` already hands the artifact an empty environment. This covers every other child, which inherits
+    this process's environment and would otherwise resolve the developer's real data home from it.
+    """
+    directory = tmp_path_factory.mktemp("isolated") / "home"
+    directory.mkdir(mode=0o700)
+    monkeypatch.setenv("HOME", str(directory))
+    monkeypatch.delenv("FERRET_DATA_HOME", raising=False)
+    monkeypatch.delenv("XDG_DATA_HOME", raising=False)
+    return directory
+
+
 @pytest.fixture
 def home(tmp_path: Path) -> Path:
     """A private HOME so no test can read or write the developer's real FERRET data home."""

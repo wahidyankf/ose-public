@@ -51,10 +51,10 @@ event. What each harness can and cannot report is in
 Every `ferret-cli/vX.Y.Z` tag publishes one platform-independent zipapp and its digest.
 
 ```bash
-BASE=https://github.com/wahidyankf/ose-public/releases/download/ferret-cli/v0.3.1
-curl -fLO "$BASE/ferret-cli_v0.3.1.pyz" && curl -fLO "$BASE/checksums.txt"
+BASE=https://github.com/wahidyankf/ose-public/releases/download/ferret-cli/v0.3.2
+curl -fLO "$BASE/ferret-cli_v0.3.2.pyz" && curl -fLO "$BASE/checksums.txt"
 shasum -a 256 -c checksums.txt
-python3 ferret-cli_v0.3.1.pyz self install --target user
+python3 ferret-cli_v0.3.2.pyz self install --target user
 ```
 
 Verify the digest before running it.
@@ -131,6 +131,11 @@ feature files across storage, privacy, queries, analytics, and harness concerns.
 pytest-bdd step definitions, the Integration adapter binds the scenarios that need real resources, and the static
 `test:coverage:unit`, `test:coverage:integration`, and `test:coverage:behaviour` targets check that every scenario is
 bound exactly once per applicable layer.
+
+Every Unit and Integration test runs with a private, empty `HOME` and with `FERRET_DATA_HOME` and `XDG_DATA_HOME`
+cleared, set by an autouse fixture in `tests/conftest.py`. The CLI honours those variables, so without it a shell that
+exports them to a real store would have a test that calls the CLI in process, or a child that inherits the
+environment, write into that store. A test that needs a particular data home sets the variables itself.
 
 ## Manual evidence helpers
 

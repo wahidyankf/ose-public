@@ -20,7 +20,8 @@ from ferret_process import run_artifact
 FEATURE = "../../../../specs/apps/ferret/cli/behaviours/storage/initialization-and-concurrency.feature"
 
 
-ADAPTERS = 3
+HARNESSES = ("claude_code", "codex", "opencode")
+ADAPTERS = len(HARNESSES)
 BURST_SIZE = 6
 
 
@@ -126,18 +127,24 @@ def burst_event_id(adapter: int, sequence: int) -> str:
     return f"00000000-0000-4000-8000-{adapter:04x}{sequence:08x}"
 
 
+def workspace_of(adapter: int) -> str:
+    return f"ws_{adapter + 1:032x}"
+
+
+def burst_document(adapter: int, sequence: int, stamp: str) -> dict[str, Any]:
+    """One adapter's event: its own harness, its own repository's workspace, and an ID no other adapter uses."""
+    return sealed_event(
+        eventId=burst_event_id(adapter, sequence),
+        harness=HARNESSES[adapter],
+        workspaceId=workspace_of(adapter),
+        occurredAt=stamp,
+        capturedAt=stamp,
+    )
+
+
 def burst_documents(stamp: str) -> list[dict[str, Any]]:
     return sorted(
-        (
-            sealed_event(
-                eventId=burst_event_id(adapter, sequence),
-                workspaceId=f"ws_{adapter + 1:032x}",
-                occurredAt=stamp,
-                capturedAt=stamp,
-            )
-            for adapter in range(ADAPTERS)
-            for sequence in range(BURST_SIZE)
-        ),
+        (burst_document(adapter, sequence, stamp) for adapter in range(ADAPTERS) for sequence in range(BURST_SIZE)),
         key=lambda document: document["eventId"],
     )
 
@@ -145,13 +152,16 @@ def burst_documents(stamp: str) -> list[dict[str, Any]]:
 def stored_rows(session: BurstSession) -> list[dict[str, str]]:
     with closing(sqlite3.connect(session.database)) as connection:
         connection.row_factory = sqlite3.Row
-        cursor = connection.execute("SELECT event_id, event_hash, workspace_id FROM event ORDER BY event_id")
+        cursor = connection.execute(
+            "SELECT event_id, event_hash, harness, workspace_id, occurred_at, session_id, tool_name"
+            " FROM event ORDER BY event_id"
+        )
         return [dict(row) for row in cursor]
 
 
 @pytest.fixture
 def burst_session(artifact: Path, home: Path, tmp_path: Path) -> BurstSession:
-    repositories = tuple(tmp_path / "work" / f"repo-{adapter}" for adapter in range(ADAPTERS))
+    repositories = tuple(tmp_path / "work" / f"repo-{harness}" for harness in HARNESSES)
     for repository in repositories:
         repository.mkdir(parents=True)
     return BurstSession(artifact=artifact, home=home, repositories=repositories)
@@ -160,12 +170,7 @@ def burst_session(artifact: Path, home: Path, tmp_path: Path) -> BurstSession:
 def submit_burst(session: BurstSession, adapter: int, stamp: str) -> list[Attempt]:
     attempts: list[Attempt] = []
     for sequence in range(BURST_SIZE):
-        document = sealed_event(
-            eventId=burst_event_id(adapter, sequence),
-            workspaceId=f"ws_{adapter + 1:032x}",
-            occurredAt=stamp,
-            capturedAt=stamp,
-        )
+        document = burst_document(adapter, sequence, stamp)
         started = time.perf_counter()
         completed = run_artifact(
             session.artifact,
@@ -210,15 +215,28 @@ def then_every_capture_has_one_row(burst_session: BurstSession) -> None:
     assert [(attempt.code, attempt.stderr, attempt.result) for attempt in attempts] == [(0, b"", "stored")] * len(
         attempts
     )
-    assert [row["event_id"] for row in stored_rows(burst_session)] == [
+    rows = stored_rows(burst_session)
+    assert [row["event_id"] for row in rows] == [
         document["eventId"] for document in burst_documents(burst_session.stamp)
     ]
+    for adapter, harness in enumerate(HARNESSES):
+        held = [row for row in rows if row["harness"] == harness]
+        assert len(held) == BURST_SIZE
+        assert {row["workspace_id"] for row in held} == {workspace_of(adapter)}
 
 
-@then("no row is partially written or duplicated")
-def then_no_row_is_partial_or_duplicated(burst_session: BurstSession) -> None:
+@then("every stored row matches its submitted event exactly and none is duplicated")
+def then_every_row_matches_and_none_is_duplicated(burst_session: BurstSession) -> None:
     expected = [
-        {"event_id": document["eventId"], "event_hash": document["eventHash"], "workspace_id": document["workspaceId"]}
+        {
+            "event_id": document["eventId"],
+            "event_hash": document["eventHash"],
+            "harness": document["harness"],
+            "workspace_id": document["workspaceId"],
+            "occurred_at": document["occurredAt"],
+            "session_id": document["sessionId"],
+            "tool_name": document["toolName"],
+        }
         for document in burst_documents(burst_session.stamp)
     ]
     assert stored_rows(burst_session) == expected

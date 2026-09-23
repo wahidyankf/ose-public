@@ -15,5 +15,5 @@ Feature: Initialize and share one local store
     Given three repositories and three harness adapters use the same initialized data home
     When each adapter submits a bounded burst of unique events concurrently
     Then every successful direct capture has exactly one durable row
-    And no row is partially written or duplicated
+    And every stored row matches its submitted event exactly and none is duplicated
     And every adapter returns within 1000 milliseconds

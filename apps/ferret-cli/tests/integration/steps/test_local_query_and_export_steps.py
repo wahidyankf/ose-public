@@ -1,6 +1,7 @@
 """Integration bindings for the query and export feature, against a real temporary home and SQLite database."""
 
 import json
+import re
 import sqlite3
 from contextlib import closing
 from dataclasses import dataclass, field, fields
@@ -21,7 +22,6 @@ from support.populate import WORKSPACE_A, WORKSPACE_B, make_event
 from support.scenarios import (
     INVOCATIONS,
     LOCAL_COMMANDS,
-    MATCHING,
     backend_traces,
     canonical_line,
     command_result_events,
@@ -33,6 +33,8 @@ from support.scenarios import (
 )
 
 FEATURE = "../../../../../specs/apps/ferret/cli/behaviours/queries/local-query-and-export.feature"
+# An absolute path as it could appear in a diagnostic: a slash that starts a word, up to the next space or quote.
+ABSOLUTE_PATH = re.compile(r"(?<![\w.])/[^\s\"']+")
 
 
 @dataclass(slots=True)
@@ -45,6 +47,8 @@ class Session:
     listing: Ran | None = None
     repeat: Ran | None = None
     export: Ran | None = None
+    quiet: Ran | None = None
+    refused: Ran | None = None
     command: str = ""
     machine_output: Ran | None = None
     human: Ran | None = None
@@ -78,39 +82,47 @@ def given_two_workspaces_and_two_harnesses(session: Session) -> None:
     assert distinct(session, "harness") == {"codex", "claude_code"}
 
 
+def with_harness(filters: list[str], harness: str) -> list[str]:
+    """The same filters with the harness value replaced."""
+    position = filters.index("--harness") + 1
+    return [*filters[:position], harness, *filters[position + 1 :]]
+
+
 @when("the user filters by UTC interval, harness, workspace, event type, and outcome")
 def when_filtered(session: Session) -> None:
     filters = filter_arguments(session.now)
     session.listing = session.machine.run(["events", "list", "--json", *filters])
     session.repeat = session.machine.run(["events", "list", "--json", *filters])
     session.export = session.machine.run(["events", "export", "--format", "jsonl", *filters])
+    # The same filters once for a harness with no events, whose human listing has a diagnostic to write, and once with
+    # a malformed harness, which is refused.
+    session.quiet = session.machine.run(["events", "list", *with_harness(filters, "opencode")])
+    session.refused = session.machine.run(["events", "export", "--format", "jsonl", *with_harness(filters, "Bad")])
 
 
-@then("only matching events are returned in stable timestamp and event-ID order")
-def then_only_matching_events_in_stable_order(session: Session) -> None:
+@then("only matching events are listed, newest first by timestamp and then event ID")
+def then_only_matching_events_newest_first(session: Session) -> None:
     assert session.listing is not None
     assert (session.listing.code, session.listing.stderr) == (0, "")
     items = json.loads(session.listing.stdout)["items"]
-    assert [int(item["eventId"][-12:]) for item in items] == sorted(MATCHING, reverse=True)
+    # Events 4 and 5 share a timestamp, so the event ID breaks the tie in the same newest-first direction.
+    assert [int(item["eventId"][-12:]) for item in items] == [5, 4, 3]
     assert session.repeat == session.listing
 
 
-@then("JSON Lines export contains one canonical event object per line")
-def then_export_is_one_canonical_object_per_line(session: Session) -> None:
+@then("the JSON Lines export holds one canonical event object per line, oldest first by timestamp and then event ID")
+def then_export_is_one_canonical_object_per_line_oldest_first(session: Session) -> None:
     assert session.export is not None
     assert (session.export.code, session.export.stderr) == (0, "")
     stored = {int(event.event_id[-12:]): event for event in session.population}
-    assert session.export.stdout.splitlines(keepends=True) == [canonical_line(stored[number]) for number in MATCHING]
+    assert session.export.stdout.splitlines(keepends=True) == [canonical_line(stored[number]) for number in (3, 4, 5)]
 
 
 @then("diagnostics do not contaminate standard output")
 def then_diagnostics_stay_off_standard_output(session: Session) -> None:
-    quiet = session.machine.run(["events", "list", "--harness", "opencode"])
-    refused = session.machine.run(["events", "export", "--format", "jsonl", "--harness", "Bad"])
-
     # `1`: the query ran and matched nothing, which is a result and not a failure.
-    assert quiet == (1, "", "No rows.\n")
-    assert refused == (2, "", "ferret: [ferret.filter.invalid] a filter value is not valid\n")
+    assert session.quiet == (1, "", "No rows.\n")
+    assert session.refused == (2, "", "ferret: [ferret.filter.invalid] a filter value is not valid\n")
 
 
 @scenario(FEATURE, "Emit a stable machine-readable command result")
@@ -145,11 +157,6 @@ def when_run_with_json(session: Session, command: str) -> None:
 def then_stdout_is_one_json_object(session: Session) -> None:
     assert session.machine_output is not None
     code, out, err = session.machine_output
-    if session.command == "events export":
-        # The one stream command: stdout is the data itself, so it refuses a JSON wrapper rather than mixing them.
-        assert (code, out) == (2, "")
-        assert json.loads(err)["error"]["code"] == "ferret.args.invalid"
-        return
     document = json.loads(out)
     assert (code, err, out.count("\n")) == (0, "", 1)
     assert (document["schemaVersion"], document["command"]) == (1, INVOCATIONS[session.command][1])
@@ -160,10 +167,6 @@ def then_human_output_derives_from_the_same_result(session: Session) -> None:
     assert session.machine_output is not None
     assert session.human is not None
     assert (session.human.code, session.human.stderr) == (0, "")
-    if session.command == "events export":
-        ordered = sorted(session.population, key=lambda event: (event.occurred_at, event.event_id))
-        assert session.human.stdout.splitlines(keepends=True) == [canonical_line(event) for event in ordered]
-        return
     document = json.loads(session.machine_output.stdout)
     if session.command in ("status", "maintenance", "self install", "self uninstall"):
         assert session.human.stdout.splitlines() == expected_lines(session.command, document)
@@ -198,6 +201,49 @@ def then_a_failure_is_a_closed_error_without_a_path(session: Session) -> None:
     assert code == envelope["exitCode"] == FAILURES[envelope["error"]["code"]][0]
     assert set(envelope["error"]) == {"code", "message", "field", "retryable"}
     assert str(session.machine.home) not in err
+    # Any absolute path the diagnostic does carry lies inside the resolved data home.
+    homes = {str(session.machine.data_home), str(session.machine.data_home.resolve())}
+    assert [
+        path for path in ABSOLUTE_PATH.findall(err) if not any(path == h or path.startswith(f"{h}/") for h in homes)
+    ] == []
+
+
+@scenario(FEATURE, "Keep the export a raw stream when JSON is requested")
+def test_keep_the_export_a_raw_stream_when_json_is_requested() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
+
+
+@when("the user exports events once with --json and once without it")
+def when_export_with_and_without_json(session: Session) -> None:
+    arguments = ["events", "export", "--format", "jsonl"]
+    session.machine_output = session.machine.run([*arguments, "--json"])
+    session.human = session.machine.run(arguments)
+
+
+@then("the export with --json exits 2 with the closed ferret.args.invalid error on stderr and nothing on stdout")
+def then_the_json_export_is_refused(session: Session) -> None:
+    assert session.machine_output is not None
+    code, out, err = session.machine_output
+    assert (code, out, err.count("\n")) == (2, "", 1)
+    assert json.loads(err) == {
+        "schemaVersion": 1,
+        "command": "events.export",
+        "exitCode": 2,
+        "error": {
+            "code": "ferret.args.invalid",
+            "message": "unrecognized or incomplete arguments",
+            "field": None,
+            "retryable": False,
+        },
+    }
+
+
+@then("the export without --json writes one canonical event object per line")
+def then_the_plain_export_is_json_lines(session: Session) -> None:
+    assert session.human is not None
+    assert (session.human.code, session.human.stderr) == (0, "")
+    stored = {int(event.event_id[-12:]): event for event in session.population}
+    assert session.human.stdout.splitlines(keepends=True) == [canonical_line(stored[number]) for number in (1, 2, 3)]
 
 
 def data_home_files(session: Session) -> frozenset[str]:

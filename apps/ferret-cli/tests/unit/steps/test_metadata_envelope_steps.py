@@ -12,23 +12,21 @@ from ferret import cli
 from ferret.application.initialization import initialize_store
 from ferret.application.privacy import RAW_LIMIT_BYTES
 from ferret.commands import build_handlers
-from support.events import VECTOR_DOCUMENT, VECTOR_HASH, encode
+from support.events import VECTOR_DOCUMENT, VECTOR_HASH, encode, event_document
 from support.fakes import World, make_world
 from support.hook_payloads import CANARIES, IMAGE_CANARY, claude_tool, codex_view_image
 from support.hook_payloads import encode as encode_payload
 
 FEATURE = "../../../../../specs/apps/ferret/cli/behaviours/privacy/metadata-envelope.feature"
 CANARY = "canary-value-that-must-never-be-echoed"
-RAW_WORKSPACE = "/users/example/work/repo-a"
-RAW_SESSION = "raw-harness-session-123"
-FORBIDDEN_KEYS = {
-    "prompt": ("prompt", "prompt"),
-    "response": ("response", "response"),
-    "tool_arguments": ("tool_arguments", "tool_arguments"),
-    "transcript_path": ("transcript_path", "transcript_path"),
-    "environment": ("environment", "environment"),
-    "an unknown arbitrary field": ("unexpected_arbitrary_field", None),
+# The raw values an adapter might wrongly pass where an opaque identifier belongs, by the kind the scenario names.
+RAW_VALUES = {
+    "workspace path": "/users/example/work/canary-raw-workspace-3e71",
+    "harness session value": "canary-raw-harness-session-5a02",
 }
+# A property the closed schema does not define: its name and its value are both canaries, so neither may be echoed.
+UNKNOWN_KEY = "canary_unknown_property_4d7e"
+UNKNOWN_VALUE = "canary-unknown-value-a19f"
 
 
 @dataclass(slots=True)
@@ -45,6 +43,7 @@ class Session:
     world: World
     outcome: Outcome | None = None
     category: str | None = None
+    raw: str = ""
     harness: str = "claude_code"
 
 
@@ -68,9 +67,19 @@ def test_capture_a_valid_lifecycle_event() -> None:
     """Bound to the feature scenario; the steps below carry the assertions."""
 
 
+@scenario(FEATURE, "Refuse a raw value in place of an opaque identifier")
+def test_refuse_a_raw_value_in_place_of_an_opaque_identifier() -> None:
+    """Bound to the feature outline; each example expands independently."""
+
+
 @scenario(FEATURE, "Reject a forbidden capture field")
 def test_reject_a_forbidden_capture_field() -> None:
     """Bound to the feature outline; each example expands independently."""
+
+
+@scenario(FEATURE, "Reject an unknown capture field")
+def test_reject_an_unknown_capture_field() -> None:
+    """Bound to the feature scenario; the steps below carry the assertions."""
 
 
 @given("FERRET is initialized with an empty local database")
@@ -86,8 +95,21 @@ def when_submit_valid_event(session: Session) -> None:
 
 @when(parsers.parse("an adapter submits an otherwise valid event containing {field}"))
 def when_submit_event_with_forbidden_field(session: Session, field: str) -> None:
-    key, session.category = FORBIDDEN_KEYS[field]
-    submit(session, {**VECTOR_DOCUMENT, key: CANARY})
+    # The example names the property itself, and the contract spells each of these categories the same way.
+    session.category = field
+    submit(session, {**VECTOR_DOCUMENT, field: CANARY})
+
+
+@when(parsers.parse("an adapter submits an otherwise valid event whose {field} is a raw {value}"))
+def when_submit_event_with_raw_identifier(session: Session, field: str, value: str) -> None:
+    session.raw = RAW_VALUES[value]
+    # Resealed, so the raw value is the only thing wrong with the event.
+    submit(session, event_document(**{field: session.raw}))
+
+
+@when("an adapter submits an otherwise valid event with a property the schema does not define")
+def when_submit_event_with_unknown_property(session: Session) -> None:
+    submit(session, {**VECTOR_DOCUMENT, UNKNOWN_KEY: UNKNOWN_VALUE})
 
 
 @then("the CLI stores one event with its canonical hash and opaque identifiers")
@@ -99,13 +121,20 @@ def then_stores_one_event(session: Session) -> None:
     assert re.fullmatch(r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}", event.installation_id)
 
 
-@then("the stored record contains no raw workspace or harness session value")
-def then_no_raw_values(session: Session) -> None:
+@then("the stored record holds only the opaque workspace and session identifiers it was given")
+def then_only_the_given_opaque_identifiers(session: Session) -> None:
     [event] = session.world.events.stored
-    stored = json.dumps(event.to_document())
-    assert RAW_WORKSPACE not in stored
-    assert RAW_SESSION not in stored
-    assert set(event.to_document()) == set(VECTOR_DOCUMENT)
+    document = event.to_document()
+    assert (document["workspaceId"], document["sessionId"], document["parentSessionId"]) == (
+        "ws_327b250d010590da40f0f76d18da910a",
+        "ss_d0de260ca18a8379984031556b2d43ac",
+        None,
+    )
+    assert set(document) == set(VECTOR_DOCUMENT)
+    # No stored value is a path, so no directory the capture ran in can have been kept under another name.
+    assert [name for name, value in document.items() if isinstance(value, str) and "/" in value] == []
+    # Direct capture takes its identifiers as given: it never resolves a workspace from a directory of its own.
+    assert session.world.workspaces.asked == []
 
 
 @then("the direct capture command reports success")
@@ -130,17 +159,49 @@ def then_rejects_without_a_row(session: Session) -> None:
     assert session.world.events.stored == []
 
 
+def diagnostic(session: Session) -> dict[str, object]:
+    """The error object of the rejected capture's closed failure envelope."""
+    assert session.outcome is not None
+    envelope = json.loads(session.outcome.stderr)
+    assert (envelope["schemaVersion"], envelope["command"], envelope["exitCode"]) == (1, "capture", 2)
+    return envelope["error"]
+
+
 @then("the diagnostic names the field category without echoing its value")
 def then_names_the_category_only(session: Session) -> None:
-    assert session.outcome is not None
-    error = json.loads(session.outcome.stderr)["error"]
-    assert error == {
+    assert diagnostic(session) == {
         "code": "ferret.event.invalid",
         "message": "the event is not a valid FERRET event",
         "field": session.category,
         "retryable": False,
     }
+    assert session.outcome is not None
     assert CANARY not in session.outcome.stderr
+
+
+@then(parsers.parse("the diagnostic names the {field} field without echoing its value"))
+def then_names_the_identifier_field_only(session: Session, field: str) -> None:
+    assert diagnostic(session) == {
+        "code": "ferret.event.invalid",
+        "message": "the event is not a valid FERRET event",
+        "field": field,
+        "retryable": False,
+    }
+    assert session.outcome is not None
+    assert session.raw not in session.outcome.stderr
+
+
+@then("the diagnostic names no field and echoes neither the unknown property name nor its value")
+def then_names_no_field(session: Session) -> None:
+    assert diagnostic(session) == {
+        "code": "ferret.event.invalid",
+        "message": "the event is not a valid FERRET event",
+        "field": None,
+        "retryable": False,
+    }
+    assert session.outcome is not None
+    assert UNKNOWN_KEY not in session.outcome.stderr
+    assert UNKNOWN_VALUE not in session.outcome.stderr
 
 
 @scenario(FEATURE, "Project raw hook JSON without retaining content")

@@ -46,6 +46,6 @@ COPY --chown=nextjs:nodejs libs/ts-env-loader/src/port-resolver.ts libs/ts-env-l
 USER nextjs
 EXPOSE 3100
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:${OSE_WWW_PORT}/ || exit 1
+  CMD ["sh", "-c", "wget --no-verbose --tries=1 --spider http://localhost:${OSE_WWW_PORT}/ || exit 1"]
 
 CMD ["node", "scripts/next-with-port.mjs", "--env", "OSE_WWW_PORT", "--default", "3100", "--server", "apps/ose-www/server.js"]

@@ -40,7 +40,7 @@ USER appuser
 
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD wget -qO- http://localhost:3000/health || exit 1
+  CMD ["sh", "-c", "wget -qO- http://localhost:3000/health || exit 1"]
 
 CMD ["node", "dist/main.js"]
 ```
@@ -52,7 +52,9 @@ CMD ["node", "dist/main.js"]
   code so Docker layer cache survives code-only changes.
 - **Non-root user**: All containers run as a non-root system user.
 - **HEALTHCHECK with `wget`**: Use `wget` for health checks — never `curl`. Many minimal base
-  images (Alpine, distroless) include `wget` but not `curl`.
+  images (Alpine, distroless) include `wget` but not `curl`. Write its `CMD` in JSON (exec) form,
+  as the `hadolint` gate requires; wrap it in `sh -c` when the probe needs variable expansion or
+  the `|| exit 1` mapping.
 - **OCI LABEL**: Every production image must carry `org.opencontainers.image.source` and
   `org.opencontainers.image.description` labels.
 

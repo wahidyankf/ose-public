@@ -1,9 +1,12 @@
 """Run the shared POSIX capture wrapper, or the OpenCode plugin under Node, against a stand-in or in-tree ``ferret``
 and measure what it did."""
 
+import contextlib
+import functools
 import json
 import os
 import shutil
+import signal
 import stat
 import subprocess
 import sys
@@ -51,6 +54,45 @@ class WrapperRun:
         return self.started + self.elapsed_seconds
 
 
+#: The only programs a Unit binding's search path offers: the wrapper sleeps, and the stand-ins read their input.
+SYSTEM_UTILITIES = ("cat", "sleep")
+SYSTEM_DIRECTORIES = "/usr/bin:/bin"
+
+
+@dataclass(frozen=True, slots=True)
+class Isolation:
+    """Where a Unit binding runs a script subject: a private home, a directory of fakes, and a private search path.
+
+    Everything lives in one owner-only directory the test created, and the search path holds links to the named
+    system utilities and nothing else, so no installed ``ferret`` can be found and nothing outside is written.
+    """
+
+    home: Path
+    fakes: Path
+    path: str
+
+    def reaches_no_ferret(self) -> bool:
+        """Whether the subject, left to itself, could resolve no ``ferret`` through its search path or its home."""
+        launcher = self.home / ".local" / "bin" / "ferret"
+        return shutil.which("ferret", path=self.path) is None and not launcher.exists()
+
+
+def isolate(directory: Path) -> Isolation:
+    """An :class:`Isolation` inside ``directory``, whose home is empty and whose search path offers no ``ferret``."""
+    directory.mkdir(mode=0o700, exist_ok=True)
+    directory.chmod(0o700)
+    home, fakes, programs = (directory / name for name in ("home", "fakes", "programs"))
+    for created in (home, fakes, programs):
+        created.mkdir(mode=0o700)
+    for name in SYSTEM_UTILITIES:
+        found = shutil.which(name, path=SYSTEM_DIRECTORIES)
+        assert found is not None, f"{name} is required in {SYSTEM_DIRECTORIES}"
+        (programs / name).symlink_to(found)
+    isolation = Isolation(home=home, fakes=fakes, path=str(programs))
+    assert isolation.reaches_no_ferret()
+    return isolation
+
+
 def within_deadline(ran: WrapperRun) -> bool:
     """Whether a wrapper call returned by its 1,000 ms deadline, allowing for the reap after a KILL."""
     return ran.elapsed_seconds < DEADLINE_SECONDS + TAIL_SECONDS
@@ -64,17 +106,29 @@ def _script(directory: Path, name: str, body: str) -> Path:
 
 
 WARM_UP = "--warm-up"
+#: The first line of every stand-in's body: started with :data:`WARM_UP`, it exits at once and does nothing else.
+WARM_UP_GUARD = f'[ "${{1:-}}" = "{WARM_UP}" ] && exit 0\n'
+
+
+def warm(path: Path) -> None:
+    """Start a newly written stand-in once, with nothing to do, before any test times it.
+
+    macOS checks a newly written executable the first time it is started, which can add a few hundred milliseconds to
+    that one start, and far more on a loaded host. A measured call must time the adapter, not that check -- a stand-in
+    still being checked when the adapter's 900 ms TERM arrives would be stopped before it recorded anything -- so the
+    script is started once first, with an argument no caller passes, and exits at once. It runs beside the script
+    with only the system search path, and a deadline.
+    """
+    environment = {"PATH": SYSTEM_DIRECTORIES}
+    subprocess.run(
+        [str(path), WARM_UP], check=True, capture_output=True, env=environment, cwd=path.parent, timeout=HUNG_SECONDS
+    )
 
 
 def _warmed(directory: Path, name: str, body: str) -> Path:
-    """A script run once, with nothing to do, before any test times it.
-
-    macOS checks a newly written executable the first time it is started, which can add a few hundred milliseconds to
-    that one start. A measured call must time the adapter, not that check, so the script is started once first, with
-    an argument no caller passes, and exits at once.
-    """
-    path = _script(directory, name, f'[ "${{1:-}}" = "{WARM_UP}" ] && exit 0\n' + body)
-    subprocess.run([str(path), WARM_UP], check=True, capture_output=True)
+    """A script whose body starts with :data:`WARM_UP_GUARD`, already started once by :func:`warm`."""
+    path = _script(directory, name, WARM_UP_GUARD + body)
+    warm(path)
     return path
 
 
@@ -83,6 +137,7 @@ def stand_in(directory: Path, behaviour: Behaviour) -> Path:
 
     ``record`` succeeds quietly, ``noisy`` writes to both streams and fails, ``hang`` sleeps until it is terminated, and
     ``stubborn`` ignores TERM so only KILL can stop it. The sleeps are ``exec``ed, so the recorded ID is the sleeper's.
+    It is warmed before it is returned, so the adapter's timers never race the host's first-start check of it.
     """
     record = f'echo $$ > "{directory}/pid"\nprintf "%s\\n" "$@" > "{directory}/argv"\ncat > "{directory}/stdin"\n'
     tails = {
@@ -91,7 +146,20 @@ def stand_in(directory: Path, behaviour: Behaviour) -> Path:
         "hang": "exec sleep 30\n",
         "stubborn": "trap '' TERM\nexec sleep 30\n",
     }
-    return _script(directory, f"ferret-{behaviour}", record + tails[behaviour])
+    return _warmed(directory, f"ferret-{behaviour}", record + tails[behaviour])
+
+
+def call_logger(log: Path) -> bytes:
+    """The text of a ``ferret`` that appends each call's arguments as one line to ``log``, then drains its input.
+
+    Whoever writes it out must :func:`warm` it before an adapter is timed against it.
+    """
+    return f'#!/bin/sh\n{WARM_UP_GUARD}printf "%s\\n" "$*" >> "{log}"\ncat > /dev/null\nexit 0\n'.encode()
+
+
+def logged_calls(log: Path) -> list[str]:
+    """The calls a :func:`call_logger` wrote down, one argument line each; none when it never ran."""
+    return log.read_text().splitlines() if log.exists() else []
 
 
 def term_recorder(directory: Path) -> Path:
@@ -99,7 +167,8 @@ def term_recorder(directory: Path) -> Path:
 
     It also records its process ID, arguments, and standard input like ``stand_in``, then sleeps until KILL. It is a
     Python program, because a shell cannot read a clock finer than a second; the handler is installed before anything
-    else, so a TERM can never arrive before it is ready to be noted.
+    else, so a TERM can never arrive before it is ready to be noted. Should KILL never come, it exits by itself once
+    ``HUNG_SECONDS`` have passed, so it cannot outlive the test that started it.
     """
     program = directory / "term_recorder.py"
     program.write_text(
@@ -112,8 +181,9 @@ def term_recorder(directory: Path) -> Path:
         "(HERE / 'started').write_text(repr(STARTED))\n"
         "(HERE / 'argv').write_text(''.join(argument + '\\n' for argument in sys.argv[1:]))\n"
         "(HERE / 'stdin').write_bytes(sys.stdin.buffer.read())\n"
-        "while True:\n"
-        "    time.sleep(30)\n"
+        f"DEADLINE = STARTED + {HUNG_SECONDS!r}\n"
+        "while (left := DEADLINE - time.monotonic()) > 0:\n"
+        "    time.sleep(left)\n"
     )
     return _warmed(directory, "ferret-term-recorder", f'exec "{sys.executable}" -IS "{program}" "$@"\n')
 
@@ -171,11 +241,22 @@ def run_wrapper(
     return _run_timed([str(WRAPPER), harness, event], payload, environment, timeout=timeout, cwd=cwd)
 
 
+@functools.cache
 def node_executable() -> str:
-    """The real Node binary, found through the caller's own environment so a version manager's shim can resolve it."""
+    """The real Node binary.
+
+    Run through the project's targets, npm names the Node running it in ``npm_node_execpath``, so nothing is started to
+    find it. A direct run asks the ``node`` on the caller's search path once, with a deadline, so a version manager's
+    shim can resolve its pinned binary.
+    """
+    named = os.environ.get("npm_node_execpath", "")  # noqa: SIM112 - npm names this variable in lower case
+    if os.path.isabs(named) and os.access(named, os.X_OK):
+        return named
     found = shutil.which("node")
     assert found is not None, "Node is required to run the OpenCode plugin"
-    completed = subprocess.run([found, "-p", "process.execPath"], capture_output=True, text=True, check=True)
+    completed = subprocess.run(
+        [found, "-p", "process.execPath"], capture_output=True, text=True, check=True, timeout=HUNG_SECONDS
+    )
     return completed.stdout.strip()
 
 
@@ -187,13 +268,18 @@ def run_plugin(
     directory: Path,
     path: str = "/usr/bin:/bin",
     cwd: Path | None = None,
+    spawn_log: Path | None = None,
 ) -> WrapperRun:
     """Replay OpenCode hook calls against the real plugin under Node; the process ends when every child it started has.
 
-    Each call is ``{"hook": <hook name>, "args": [...]}``, exactly the arguments OpenCode hands that hook.
+    Each call is ``{"hook": <hook name>, "args": [...]}``, exactly the arguments OpenCode hands that hook. With
+    ``spawn_log``, the driver notes there when it spawned each child; :func:`spawn_instants` reads it back.
     """
     environment = {"HOME": str(home), "PATH": path, **({"FERRET_BIN": str(binary)} if binary else {})}
-    request = json.dumps({"directory": str(directory), "calls": list(calls)}).encode("utf-8")
+    document: dict[str, Any] = {"directory": str(directory), "calls": list(calls)}
+    if spawn_log is not None:
+        document["spawnLog"] = str(spawn_log)
+    request = json.dumps(document).encode("utf-8")
     command = [node_executable(), "--no-warnings", str(DRIVER), str(PLUGIN)]
     return _run_timed(command, request, environment, timeout=HUNG_SECONDS + 6, cwd=cwd)
 
@@ -202,7 +288,8 @@ def _run_timed(
     command: Sequence[str], payload: bytes, environment: Mapping[str, str], *, timeout: float, cwd: Path | None
 ) -> WrapperRun:
     # ``subprocess.run(timeout=...)`` waits for the exit by polling with sleeps that grow to 50 ms, which would be added
-    # to every measured call; a timer that kills a hung process leaves the wait blocking and exact.
+    # to every measured call; a timer that kills a hung process leaves the wait blocking and exact. The process leads a
+    # session of its own, so the timer kills everything it started too, not only the process itself.
     started = time.monotonic()
     with subprocess.Popen(
         list(command),
@@ -211,8 +298,9 @@ def _run_timed(
         stderr=subprocess.PIPE,
         env=dict(environment),
         cwd=cwd,
+        start_new_session=True,
     ) as process:
-        guard = threading.Timer(timeout, process.kill)
+        guard = threading.Timer(timeout, _kill_group, (process.pid,))
         guard.start()
         try:
             stdout, stderr = process.communicate(payload)
@@ -220,6 +308,17 @@ def _run_timed(
             guard.cancel()
         elapsed = time.monotonic() - started
     return WrapperRun(process.returncode, stdout, stderr, elapsed, started)
+
+
+def _kill_group(leader: int) -> None:
+    """KILL every process in the group ``leader`` leads; one already gone is not an error."""
+    with contextlib.suppress(ProcessLookupError):
+        os.killpg(leader, signal.SIGKILL)
+
+
+def spawn_instants(spawn_log: Path) -> list[float]:
+    """When the plugin driver spawned each child, in seconds on the monotonic clock ``time.monotonic`` reads."""
+    return [int(line) / 1_000_000_000 for line in spawn_log.read_text().splitlines()]
 
 
 def alive(pid: int) -> bool:
@@ -239,19 +338,30 @@ def recorded_pid(directory: Path) -> int | None:
     return int(marker.read_text()) if marker.exists() else None
 
 
-def assert_term_then_kill(ran: WrapperRun, directory: Path, *, from_call: bool) -> None:
+def assert_term_then_kill(ran: WrapperRun, directory: Path, *, spawned: float | None = None) -> None:
     """A child that ignores TERM, written by ``term_recorder``, got TERM about 900 ms in and the call ended at KILL.
 
-    Every reading is on the one system-wide monotonic clock. TERM is timed from the child's own start and, when
-    ``from_call`` says the adapter starts the child at once (the wrapper, not Node), from the harness call too. The call
-    cannot end before KILL, 100 ms after TERM, and must end within the reap tail after it.
+    Every reading is on the one system-wide monotonic clock, and they happen in one order: the call starts, the child
+    is spawned and starts, TERM reaches it, the call ends. Each bound is taken from an instant the adapter's own timers
+    cannot precede, so a loaded host's delay in starting a process is never charged to the adapter:
+
+    - The plugin arms its timers right after spawning the child, so with ``spawned`` -- that instant, as the driver
+      noted it -- TERM must fall in the documented 800-1,000 ms window from it.
+    - The wrapper arms its watchdog as it starts the child, at once, so TERM cannot come before that window measured
+      from the harness call, nor more than 1,000 ms after the child began to run.
+
+    The call cannot end before KILL, 100 ms after TERM, and must end within the reap tail after it.
     """
     times = term_times(directory)
     assert times.term is not None, "TERM never reached the child"
+    assert ran.started <= times.started < times.term < ran.ended, (times, ran)
     term, kill = TERM_MILLISECONDS / 1000, KILL_MILLISECONDS / 1000
-    assert term - 0.1 <= times.term - times.started <= kill, times
-    if from_call:
-        assert term - 0.05 <= times.term - ran.started <= kill, (times, ran)
+    if spawned is not None:
+        assert ran.started <= spawned <= times.started, (spawned, times, ran)
+        assert term - 0.1 <= times.term - spawned <= kill, (spawned, times)
+    else:
+        assert term - 0.05 <= times.term - ran.started, (times, ran)
+        assert times.term - times.started <= kill, times
         assert ran.elapsed_seconds < kill + TAIL_SECONDS, ran
     assert kill - term - 0.05 <= ran.ended - times.term <= kill - term + TAIL_SECONDS, (times, ran)
     assert ran.ended - times.started < kill + TAIL_SECONDS, (times, ran)

@@ -27,7 +27,7 @@ This convention implements the following core principles:
 ## Conventions Implemented/Respected
 
 - **[Behaviour-Driven Development](../../behaviour-driven-development.md)**: TDD always starts with
-  in-process Unit proof and adds Integration/E2E proof where the changed behaviour owns those real
+  Unit proof and adds Integration/E2E proof where the changed behaviour owns those real
   boundaries. Each test is written at the boundary it actually exercises.
 - **[Acceptance Criteria Convention](../../infra/acceptance-criteria.md)**: Gherkin acceptance
   criteria in plans are the natural starting material for the first failing tests in a feature.

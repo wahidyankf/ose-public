@@ -66,7 +66,8 @@ symmetry.
 - **Unit** runs in-process. Replace filesystem, database, environment, clock, randomness, child
   process, network, and every other OS-facing dependency with injected mocks, fakes, or stubs.
   Setup and assertions must not access those real resources. The owner enforces a hard minimum of
-  99% line coverage during `test:unit`.
+  99% line coverage during `test:unit`. A qualifying shell script or harness plugin subject follows
+  [Script-Subject Unit Proof](./behaviour-driven-development/script-subject-unit-proof.md) instead.
 - **Integration** may use isolated local files, embedded databases, environment state, child
   processes, standard streams, and an
   [allowlisted loopback socket](./infra/nx-targets/mandatory-targets-integration-tests.md) it owns.
@@ -86,7 +87,8 @@ when they express one continuous user journey; do not split an existing journey 
 keyword uniformity. Each expanded Scenario Outline example counts separately. Each non-exempt scenario
 resolves exactly once in every applicable adapter; every step has one binding, and every binding is used.
 
-- [BDD Coverage, Exemptions, and Execution](./behaviour-driven-development/coverage-exemptions-and-execution.md) — Static coverage targets, higher-layer exemptions, test:quick composition, and runtime execution surfaces. Use when defining BDD coverage targets, documenting an Integration/E2E exemption, or selecting a runtime execution surface.
+- [BDD Coverage, Exemptions, and Execution](./behaviour-driven-development/coverage-exemptions-and-execution.md) — static
+  coverage targets, higher-layer exemptions, `test:quick` composition, and execution surfaces.
 
 Run the [Gherkin implementation review](../workflows/gherkin-implementation-review.md) after adding
 or materially changing a feature, adapter, exemption, or coverage mechanism. Static binding

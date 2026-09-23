@@ -53,6 +53,12 @@ invocation. Fixtures and cleanup must remain synthetic, isolated, and fail-close
 Mark `FAIL` for no-op steps, success sentinels, expected-outcome lookup tables, copied expected
 values, unrelated assertions, fake operations, or production-data fallback.
 
+A Unit row whose subject is a shell script or harness plugin file passes only under
+[Script-Subject Unit Proof](../development/behaviour-driven-development/script-subject-unit-proof.md).
+Record the fake behind each collaborator, the private home, the deadline, and the contract the Then
+observes. Mark it `FAIL` when any of the five conditions is unmet, when the subject's runner could
+load it in process, or when the subject is missing from `test:unit` inputs.
+
 **Success criteria**: Every non-exempt row shows production invocation and independent boundary
 evidence. Never convert implementation debt into an exemption.
 

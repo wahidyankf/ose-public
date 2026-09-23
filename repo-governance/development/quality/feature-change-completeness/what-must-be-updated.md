@@ -38,8 +38,10 @@ so stale specs invalidate test and static-validation caches.
 
 **Update when:**
 
-- **Unit tests**: Every active scenario requires substantive in-process Unit proof. Unit has no
-  exemption, and runtime line coverage must meet the repository's 99% floor.
+- **Unit tests**: Every active scenario requires substantive in-process Unit proof, or, for a shell
+  script or harness plugin subject,
+  [Script-Subject Unit Proof](../../behaviour-driven-development/script-subject-unit-proof.md). Unit
+  has no exemption, and runtime line coverage must meet the repository's 99% floor.
 - **Integration tests**: Local deterministic resource boundaries such as filesystems, databases,
   queues, and subprocesses require Integration proof with no external network reach.
 - **E2E tests**: Public browser, HTTP, API, or executable-process boundaries require E2E proof with

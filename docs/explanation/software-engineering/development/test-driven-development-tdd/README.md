@@ -104,7 +104,7 @@ TDD standards in OSE Platform align with core software engineering principles:
 
 **[Three-Tier Testing Model](./three-tier-testing.md) — Authoritative OSE Platform definition of unit, integration, and E2E test tiers**
 
-- REQUIRED: Unit tests remain in-process and use no real filesystem, environment, process, network, clock, or random boundary
+- REQUIRED: Unit tests remain in-process and use no real filesystem, environment, process, network, clock, or random boundary; a shell script or harness plugin subject follows [Script-Subject Unit Proof](../../../../../repo-governance/development/behaviour-driven-development/script-subject-unit-proof.md) instead
 - REQUIRED: Integration tests may use deterministic local resources, processes, and an allowlisted loopback socket the test owns, but no external network
 - REQUIRED: E2E tests exercise a public browser, HTTP/API, or process boundary with isolated synthetic data
 - REQUIRED: Separate unit, integration, and E2E tests by directory

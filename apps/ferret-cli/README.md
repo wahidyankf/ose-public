@@ -117,7 +117,8 @@ boundary. The process-level tests against the built artifact live in
 - `src/ferret/domain/`, `src/ferret/application/`, `src/ferret/adapters/` — the rules, the use cases and their ports,
   and the SQLite, filesystem, POSIX install, and clock adapters
 - `scripts/build_zipapp.py` — the reproducible zipapp build
-- `tests/unit/` — in-process tests, including the pytest-bdd step definitions for the Gherkin corpus
+- `tests/unit/` — in-process tests and the pytest-bdd step definitions; the wrapper and plugin bindings run those
+  [script subjects](../../repo-governance/development/behaviour-driven-development/script-subject-unit-proof.md) directly
 - `tests/integration/` — real-resource tests
 - `tests/support/` — shared fixtures and two manual-evidence helpers (below)
 

@@ -38,6 +38,15 @@ set -eu
 tool_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 lock_file="$tool_dir/rhino.lock"
 
+# A readable pin is the precondition for everything below. Without this the first
+# `awk` runs against a file that is not there, and the caller gets awk's own error --
+# carrying the absolute path -- under a status that says a usage mistake rather than
+# a bootstrap that could not run.
+if [ ! -r "$lock_file" ]; then
+	echo "rhino has no pin at rhino.lock, and an unpinned gate is not a gate" >&2
+	exit 125
+fi
+
 # Every lock key must resolve exactly once. Ambiguous pins fail as invalid
 # configuration before any network or cache operation occurs.
 lock_value() {

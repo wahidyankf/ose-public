@@ -13,8 +13,9 @@ The `format-gofmt` / `format-verify-gofmt` and `format-stylua` / `format-verify-
 `repo-config.yml` enforce the formatting half at pre-commit and in CI.
 
 That difference decides whether you can skip this phase. `./rhino toolchain validate` checks Go — it is
-declared under `doctor.extra-tools` with a version floor, so `doctor --fix` installs it, and 4.1
-below is only the manual equivalent. Doctor does **not** check `stylua`, so 4.2 stays a hand
+declared under `toolchains` in `repo-config.yml`, so `npm run doctor` reports it when missing and
+`./rhino toolchain provision --apply` provisions it only when its entry declares provisioning;
+otherwise 4.1 below is the install. Doctor does **not** check `stylua`, so 4.2 stays a hand
 install you can skip if you never touch course code.
 
 ## 4.1 Install Go

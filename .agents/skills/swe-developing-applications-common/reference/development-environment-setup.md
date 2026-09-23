@@ -5,18 +5,16 @@ Before implementing any changes, ensure the development environment is ready. Th
 ## Quick Verification
 
 ```bash
-# Verify all tools are installed and at correct versions
+# Verify every declared toolchain (read-only; accepts no arguments)
 rtk npm run doctor
 
-# If tools are missing, auto-install them
-rtk npm run doctor -- --fix
-
-# Preview what would be installed (dry run)
-rtk npm run doctor -- --fix --dry-run
-
-# Check only core tools (git, volta, node, npm, go, docker, jq)
-rtk npm run doctor -- --scope minimal
+# Only if doctor reports a missing or drifted toolchain: provision, then verify again
+rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply
+rtk npm run doctor
 ```
+
+`npm run doctor` already carries its own HIPPO guard; never wrap it again. It rejects every
+argument with exit 2, so the retired `--fix`, `--dry-run`, and `--scope` forms no longer work.
 
 ## Environment File Management (Rhino)
 
@@ -37,7 +35,8 @@ rtk ./rhino env restore --dir local-tmp/env-backup --apply --force
 
 - **Immediately after creating a git worktree** — from that new worktree's root, run BOTH
   `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` (dependencies plus Husky hook
-  activation) AND `rtk npm run doctor -- --fix`, in order. Another checkout's setup and
+  activation) AND `rtk npm run doctor`, in order, provisioning only on reported drift. Another
+  checkout's setup and
   `postinstall`'s tolerant `doctor || true` are not substitutes. See
   [Worktree Toolchain Initialization](../../../../repo-governance/development/workflow/worktree-setup.md)
 - **Not merely after re-entering an existing worktree** — rerun setup only when missing or drifted

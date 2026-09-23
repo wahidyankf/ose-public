@@ -50,8 +50,9 @@ preexisting ...`)
 6. **Environment Setup Was Performed**
    - Verify the plan included environment setup steps and they were completed
    - Check that `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and then
-     `rtk npm run doctor -- --fix` ran at the selected worktree root before any work; another
-     checkout or inferred equivalent does not count
+     `rtk npm run doctor` ran at the selected worktree root before any work, with
+     `./rhino toolchain provision --apply` and a repeat `rtk npm run doctor` wherever it reported
+     drift; another checkout or inferred equivalent does not count
    - Missing setup evidence: MEDIUM finding
 
 7. **Cross-Repository Resource Schedule Was Followed**

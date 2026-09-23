@@ -125,7 +125,10 @@ after Phase 2 closes those bindings.
 
   ```bash
   rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
-  rtk npm run doctor -- --fix
+  rtk npm run doctor
+  # Only if doctor reports drift: provision, then validate again
+  rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply
+  rtk npm run doctor
   ```
 
 - [ ] [AI] **Owner: OIDC integration owner; delivered-contract inventory.** Run

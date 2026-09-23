@@ -189,8 +189,10 @@ a trustworthy clean baseline.
       worktree-to-PR workflow before editing.
 - [ ] [AI] Initialize tools with
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
-      `rtk npm run doctor -- --fix`; acceptance:
-      lockfile/tooling converge without hidden host writes.
+      `rtk npm run doctor` (read-only; only if it reports drift, run
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
+      and repeat Doctor); acceptance:
+      lockfile/tooling are clean without hidden host writes.
 - [ ] [AI] Inventory exact `ose-id-be`, `ose-id-be-e2e`, specs, project config, migrations, ports,
       namespaces, target names, generated files, and uncommitted state. Freeze the authorized ledger in
       the plan execution record; stop on unexpected overlap.

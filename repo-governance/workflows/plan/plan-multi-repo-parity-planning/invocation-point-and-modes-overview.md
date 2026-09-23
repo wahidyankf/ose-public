@@ -35,7 +35,10 @@ workflow starts, provision one for each target repo:
 git worktree add worktrees/<objective-slug> main
 cd worktrees/<objective-slug>
 ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
-npm run doctor -- --fix
+npm run doctor
+# Only when doctor reports drift: provision, then validate again
+./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply
+npm run doctor
 ```
 
 Use the same `<objective-slug>` basename in every target repository. Before creation, probe all
@@ -45,7 +48,8 @@ is unavailable. Follow
 
 Worktrees land at `worktrees/<objective-slug>/` per the
 [Worktree Path Convention](../../../conventions/structure/worktree-path.md). The two-step toolchain
-initialization (guarded `npm install`, then transactional `npm run doctor -- --fix`) is required per
+initialization (guarded `npm install`, then read-only `npm run doctor`, provisioning only on
+reported drift) is required per
 the
 [Worktree Toolchain Initialization](../../../development/workflow/worktree-setup.md)
 practice. Commit in the worktree branch, push to `origin main` of each repo, then remove the

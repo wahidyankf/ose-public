@@ -22,7 +22,10 @@ git fetch origin
 git worktree add -b <identifier> worktrees/<identifier> origin/main
 cd worktrees/<identifier>
 ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install
-npm run doctor -- --fix
+npm run doctor
+# Only when doctor reports drift: provision, then validate again
+./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply
+npm run doctor
 ```
 
 All subsequent file operations — including the plan files written by `plan-maker` — are relative

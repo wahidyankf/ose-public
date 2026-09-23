@@ -50,7 +50,7 @@ the Roots backend lane. The table above plus those three is today's complete inv
 
 The toolchains that exist to format the AyoKoding course corpora — Lua (`stylua`), Python
 (`ruff`), and Elixir (`mix format`). They are installed by hand in Phases 4, 6, and 8, and enforced
-by their own `format-*` gates in `repo-config.yml`. `doctor --fix` will not install them. They are
+by their own `format-*` gates in `repo-config.yml`. `./rhino toolchain provision --apply` will not install them. They are
 absent from `doctor.extra-tools` deliberately: `doctor` reports on the toolchain a contributor
 needs to build and test, and Lua and Elixir are needed only to format one content corpus.
 

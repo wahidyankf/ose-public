@@ -37,8 +37,11 @@ Execute the steps below in order; each must pass before the next, so every plan 
 `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` at the selected worktree root.
 Acceptance: exit 0 and Husky `prepare` completed.
 
-**Step 2 — Converge Polyglot Toolchain**: `rtk npm run doctor -- --fix`. Acceptance: exit 0 with no
-unresolved drift; otherwise report unfixable tools and stop. Doctor spans
+**Step 2 — Validate Polyglot Toolchain**: `rtk npm run doctor` (read-only; never wrap it or pass
+arguments). Only on reported drift, run
+`rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`,
+then `rtk npm run doctor` again. Acceptance: a final Doctor exit 0; otherwise report the tools still
+missing and stop. Doctor spans
 more languages than this repo builds: `apps/` and `libs/` ship **TypeScript and F#**; the remaining
 language tools format `apps/ayokoding-www/content/**` katas and never block a non-content plan.
 

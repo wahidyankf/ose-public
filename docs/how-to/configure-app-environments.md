@@ -23,8 +23,8 @@ suites. The Flutter Web client is a deliberate no-runtime-environment exception.
 
 ## Prerequisites
 
-- A working checkout with guarded `./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
-  transactional `npm run doctor -- --fix` already run
+- A working checkout with guarded `./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`
+  already run and a clean `npm run doctor`
 - An `apps/<app>/.env.local` file for the app you are configuring (scaffold one with
   `./rhino env init`, or copy `apps/<app>/.env.example`)
 

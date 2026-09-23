@@ -197,7 +197,9 @@ cause. Never skip, loosen, retry, quarantine, or narrow a gate to make this deli
       `evidence/phase-0-worktree.md`. Divergence from current `origin/main` or second worktree stops under
       the documented recovery procedure.
 - [ ] [AI] Run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
-      `rtk npm run doctor -- --fix`; inspect the diff
+      `rtk npm run doctor` (read-only; only if it reports drift, run
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
+      and repeat Doctor); inspect the diff
       and reject secrets or unrelated mutation.
 - [ ] [AI] **Owner: web lane; route/component/port inventory.** Run
       `rtk rg -n "api/bff|Card|Table|Dialog|Alert|3500|8501|5438|1026|8026" apps/ose-id-web libs/web-ui libs/web-ui-token docs/reference/web-sites.md repo-config.yml`

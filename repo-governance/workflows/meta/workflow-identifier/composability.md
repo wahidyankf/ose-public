@@ -24,7 +24,7 @@ Mixed composition example — agents, procedures, and nested workflows in one wo
 ### 1. Prepare Environment (Procedure)
 
 Run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install`, then
-`rtk npm run doctor -- --fix`.
+`rtk npm run doctor`; provision with `./rhino toolchain provision --apply` only if it reports drift.
 
 ### 2. Validate Docs (Nested Workflow)
 

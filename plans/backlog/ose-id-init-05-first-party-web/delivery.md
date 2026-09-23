@@ -174,8 +174,10 @@ where safe, and baseline outputs under `plans/in-progress/ose-id-init-05-first-p
 - [ ] [AI] Read root/nested instructions, RTK, predecessor as-built docs at its resolved archived path,
       plan/spec/UI/accessibility/i18n/TDD rules, Next.js precedent, and worktree-to-PR workflow.
 - [ ] [AI] Initialize with `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
-      `rtk npm run doctor -- --fix`; record clean
-      convergence.
+      `rtk npm run doctor` (read-only; only if it reports drift, run
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
+      and repeat Doctor); record the
+      final clean Doctor.
 - [ ] [AI] Inventory exact `ose-id-web`, `ose-id-web-e2e`, backend contract, generated client, session
       mechanism, specs, project configuration, port, env prefix, locale set, `libs/web-ui`, OSE tokens,
       Storybook, sibling identity/form patterns, and generated ownership. Freeze the file ledger.

@@ -31,5 +31,5 @@ This procedure implements/respects the following conventions:
   worktree-removal step feeds directly into that convention's mandatory post-merge cleanup gate; this
   document does not restate the five pre-removal checks there, it precedes them.
 - **[Worktree Toolchain Initialization](../worktree-setup.md)**: the worktree this method creates needs
-  the same two-step checksum-pinned HIPPO-guarded install followed by transactional Doctor convergence
+  the same two-step checksum-pinned HIPPO-guarded install followed by read-only Doctor validation
   as any other worktree in this repository.

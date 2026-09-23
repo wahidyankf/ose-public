@@ -138,7 +138,9 @@ SqlKata/Npgsql runtime behavior, green baseline.
       Provision/enter `worktrees/ose-id-init-03-company-tenancy-core/`; record exact branch/worktree
       identity only now. Stop on incomplete predecessor proof or a second worktree.
 - [ ] [AI] Run `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
-      `rtk npm run doctor -- --fix` (the wrapper admits Doctor transactionally through HIPPO); inspect status;
+      `rtk npm run doctor` (read-only; only if it reports drift, run
+      `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- ./rhino toolchain provision --apply`
+      and repeat Doctor); inspect status;
       acceptance: clean tooling without secrets/unexplained generation.
 - [ ] [AI] Inspect current PostgreSQL, EF migration tooling, Npgsql/SqlKata runtime persistence,
       audit-column, RLS, connection-pool, API/spec, and tenant

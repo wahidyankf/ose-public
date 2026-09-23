@@ -27,6 +27,7 @@ from support.hook_payloads import CANARIES, OPENCODE_EMPTY_CALL, WORKSPACE, clau
 from support.hook_payloads import encode as encode_payload
 from support.invoke import Ran
 from support.machine import Machine, make_machine
+from support.machine_path import machine_path_snapshot
 from support.populate import NO_OUTCOME, make_event
 from support.wrapper import (
     DEADLINE_SECONDS,
@@ -181,6 +182,8 @@ class Installation:
     repository: Path
     ran: Ran | None = None
     startup: dict[str, bytes] = field(default_factory=lambda: dict[str, bytes]())
+    machine_path: dict[str, bytes | None] = field(default_factory=lambda: dict[str, bytes | None]())
+    process_path: str | None = None
     database_before: bytes = b""
     data_before: dict[str, bytes] = field(default_factory=lambda: dict[str, bytes]())
     rows_before: int = 0
@@ -222,6 +225,9 @@ def given_no_artifact_installed(installation: Installation, situation: str) -> N
     for name, content in STARTUP_FILES.items():
         (home / name).write_bytes(content)
     installation.startup = user_files(installation, STARTUP_FILES)
+    installation.machine_path = machine_path_snapshot()
+    # The install runs in this process, so a PATH it exported would show here.
+    installation.process_path = os.environ.get("PATH")
     # The data home and the install area share `.local/share/ferret`, and the store is already there, so what makes
     # this "not installed" is that no launcher, no manifest, and no version directory exist.
     paths = InstallPaths(home)
@@ -274,6 +280,8 @@ def then_no_startup_file_or_path_is_modified(installation: Installation) -> None
     assert home_names(installation) == {".local", *STARTUP_FILES}
     assert {path.name for path in (home / ".local").iterdir()} == {"bin", "share"}
     assert {path.name for path in (home / ".local" / "bin").iterdir()} == {"ferret"}
+    assert machine_path_snapshot() == installation.machine_path
+    assert os.environ.get("PATH") == installation.process_path
 
 
 # Remove FERRET: the installed artifact is a working FERRET over this working tree, so before the uninstall each real

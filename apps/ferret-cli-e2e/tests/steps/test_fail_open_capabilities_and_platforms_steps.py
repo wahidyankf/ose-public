@@ -33,6 +33,7 @@ from hook_wrapper import (
     within_deadline,
 )
 from install_area import LAUNCHER_MODE, Layout, Tree, digest, empty_tree, launcher_starts, store
+from machine_path import machine_path_snapshot
 from vendor_payloads import CLAUDE_CODE, CODEX, OPENCODE, WORKSPACE, claude_tool, codex_tool, encode, opencode_call
 
 FEATURE = "../../../../specs/apps/ferret/cli/behaviours/harness/fail-open-capabilities-and-platforms.feature"
@@ -66,6 +67,7 @@ class Session:
     data_before: Tree = field(default_factory=empty_tree)
     rows_before: int = 0
     adapters: dict[str, HookRun] = field(default_factory=lambda: dict[str, HookRun]())
+    machine_path: dict[str, bytes | None] = field(default_factory=lambda: dict[str, bytes | None]())
 
     def document(self) -> dict[str, Any]:
         assert self.usage is not None
@@ -229,6 +231,7 @@ def given_no_artifact_installed(session: Session, situation: str) -> None:
     for name, content in STARTUP_FILES.items():
         (session.home / name).write_bytes(content)
     session.bystanders = user_files(session, STARTUP_FILES)
+    session.machine_path = machine_path_snapshot()
     # The data home shares `.local/share/ferret` with the install area and the store is already there, so what
     # makes this "not installed" is that no launcher and no manifest exist.
     assert not os.path.lexists(layout.launcher)
@@ -288,6 +291,7 @@ def then_no_startup_file_or_path_is_modified(session: Session) -> None:
     assert {path.name for path in (session.home / ".local").iterdir()} == {"bin", "share"}
     assert {path.name for path in layout.bin.iterdir()} == {"ferret"}
     assert list(session.repository.iterdir()) == []
+    assert machine_path_snapshot() == session.machine_path
 
 
 @scenario(FEATURE, "Remove FERRET without changing harness behaviour")

@@ -145,9 +145,10 @@ def then_no_expired_row_is_returned(session: Session) -> None:
 @then("each of those operations stops physical pruning at the first of 100 rows or 100 monotonic milliseconds")
 def then_each_prune_stops_at_its_first_limit(session: Session) -> None:
     # A real clock decides which limit comes first, so either may stop an operation; neither may take more than 100.
+    # The first leaves at least 31 of the 131 expired rows behind, so the second has rows to prune and must prune some.
     first, second = session.removed
     assert 1 <= first <= 100
-    assert 0 <= second <= 100
+    assert 1 <= second <= 100
     assert first + second + session.still_expired == BEYOND_CUTOFF + 1
 
 

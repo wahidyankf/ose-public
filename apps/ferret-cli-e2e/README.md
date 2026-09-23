@@ -38,7 +38,9 @@ against their budgets. Both run against the built artifact in an isolated home:
 ```
 
 `install` runs `uv sync --locked` for this project's own locked development tools. Set `FERRET_ARTIFACT` to test an
-artifact other than `../ferret-cli/dist/ferret.pyz`.
+artifact other than `../ferret-cli/dist/ferret.pyz`. The interpreter-guard scenarios start the artifact with the
+host's own `python3` from `/usr/bin`, which predates 3.14 on every supported host; a host without one fails those
+examples rather than skipping them.
 
 ## How a test runs the artifact
 

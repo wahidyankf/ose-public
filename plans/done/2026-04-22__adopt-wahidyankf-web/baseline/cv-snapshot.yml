@@ -1,8 +1,0 @@
-- generic [active] [ref=e1]:
-    - generic [ref=e2]:
-        - button "Switch to light theme" [ref=e4] [cursor=pointer]:
-            - img [ref=e5]
-        - main [ref=e11]:
-            - navigation [ref=e12]
-            - generic [ref=e33]
-    - alert [ref=e1376]

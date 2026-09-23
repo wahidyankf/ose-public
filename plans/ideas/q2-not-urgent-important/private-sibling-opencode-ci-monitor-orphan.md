@@ -78,7 +78,7 @@ carries the carve-out forward into both parity repos, so the cost of leaving it 
   the plan that fulfilled and retired the `tri-repo-rhino-cli-byte-identity-gate` idea, landing the
   standing byte-identity boundary that turns a one-line validator change into a coordinated
   multi-repo landing. Any fix here is constrained by it.
-- **[multi-harness-compatibility](../../done/2026-05-24__multi-harness-compatibility/README.md)** — the
+- **multi-harness-compatibility** — the
   original binding-parity effort; whatever it did or did not normalize about mirror completeness is
   where the skip most likely originated.
 

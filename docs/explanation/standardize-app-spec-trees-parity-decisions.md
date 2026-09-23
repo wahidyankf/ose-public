@@ -158,4 +158,4 @@ this plan corrected both the code and the convention doc.
 
 - [Specs Directory Structure Convention](../../repo-governance/conventions/structure/specs-directory-structure.md)
 - [App README vs Specs Convention](../../repo-governance/conventions/structure/app-readme-vs-specs.md)
-- [Plan: standardize-app-spec-trees](../../plans/done/2026-06-11__standardize-app-spec-trees/prd.md)
+- Plan: standardize-app-spec-trees

@@ -50,7 +50,7 @@ that is green because nothing looked, not because something passed.
 - **[ci-post-push-verification](../../../repo-governance/development/workflow/ci-post-push-verification.md)**
   — the repo's existing rule that pushed app/lib code must have CI triggered and verified; this brief
   is that rule's unenforced case.
-- **[standardize-repo-toolchain-parity](../../done/2026-06-13__standardize-repo-toolchain-parity/README.md)**
+- **standardize-repo-toolchain-parity**
   — the prior cross-repo CI-standardization effort;
   whatever it did or did not normalize about triggers is the first thing to read.
 - **[ci-setup-rust-toolchain-retry](./ci-setup-rust-toolchain-retry.md)** — an already-filed

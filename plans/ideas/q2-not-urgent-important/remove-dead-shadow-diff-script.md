@@ -15,7 +15,7 @@ with a resolution path that can never resolve again.
 ## Problem / context
 
 The script was written during the Go→Rust rewrite
-([`2026-05-23__rhino-cli-rust-rewrite`](../../done/2026-05-23__rhino-cli-rust-rewrite/README.md)) to
+(`2026-05-23__rhino-cli-rust-rewrite`) to
 diff a Go binary against a Rust one, then repurposed during `rewrite-rhino-cli-to-fsharp` Phase 2 to
 diff Rust against the F# port wave by wave. It earned its keep there: a stale `target/gate` binary
 comparison and two Wave-D-only formatting bugs were caught only because its output was treated as a
@@ -42,7 +42,7 @@ self-resolves, while the fix is one `git rm` in each of two repos.
 
 ## Prior art / precedents
 
-- [`2026-05-23__rhino-cli-rust-rewrite`](../../done/2026-05-23__rhino-cli-rust-rewrite/README.md) —
+- `2026-05-23__rhino-cli-rust-rewrite` —
   where the script was born, against a Go binary that also no longer exists.
 - [`2026-08-30__rewrite-rhino-cli-to-fsharp`](../../done/2026-08-30__rewrite-rhino-cli-to-fsharp/README.md)
   — Phase 2 repurposed it, Phase 9c orphaned it, Phase 11a carved it out by name.

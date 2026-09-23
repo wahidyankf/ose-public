@@ -18,7 +18,7 @@ This document records the architectural decision to use native toolchain managem
 
 - [Reproducible Environments](../workflow/reproducible-environments.md) — broader reproducibility practices (Volta, lockfiles, Docker for services).
 - [Development Environment Setup](../../workflows/infra/development-environment-setup.md) — workflow for setting up a development environment.
-- [Native Dev Setup Improvements Plan](../../../plans/done/2026-04-04__native-dev-setup-improvements/README.md) — completed plan that implemented `doctor --fix` and related improvements.
+- Native Dev Setup Improvements Plan — completed plan that implemented `doctor --fix` and related improvements.
 
 ## When to Revisit This Decision
 

@@ -18,8 +18,8 @@ A new deterministic category MUST:
 - Have a dedicated subcommand under the CLI orchestrator (e.g., `repo-governance <category-name>`).
 - Emit findings in the canonical envelope shape with a stable composite key.
 - Have ≥99% Unit line coverage on the implementation files.
-- Have a Gherkin feature file under `the upstream Rhino specification corpus<domain>/` with both happy-path and failure-path scenarios.
-- Have unit tests (mocked I/O) AND integration tests (`//go:build integration`, real `t.TempDir()` fixtures).
+- Have a Gherkin feature file in the upstream RHINO repository's specification corpus with both happy-path and failure-path scenarios.
+- Have unit tests (mocked I/O) AND integration tests against real temporary-directory fixtures.
 - Be byte-deterministic given a fixed clock.
 
 ## AI-checker owner — implementation contract

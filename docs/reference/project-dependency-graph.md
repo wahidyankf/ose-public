@@ -29,7 +29,7 @@ Declared in `project.json`. When the dependency project changes, `nx affected`
 flags the dependent project for re-testing.
 
 ```json
-"implicitDependencies": ["Rhino"]
+"implicitDependencies": ["fsharp-crane-core"]
 ```
 
 ### 2. `dependsOn` (Task-Level)
@@ -54,13 +54,13 @@ invalidated and `nx affected` flags the project.
 **CLI ecosystem:**
 
 Content sites no longer depend on any CLI — `ayokoding-www` and `ose-www` dropped their
-`implicitDependencies` when the per-domain link-checkers were retired.
+`implicitDependencies` when the per-domain link-checkers were retired. RHINO, the repository
+validator behind `./rhino`, is a pinned external executable, not an Nx project, so it has no node here.
 
 ```mermaid
 graph TD
   accTitle: Visual Dependency Graph
   accDescr: crane-cli leads to fsharp-crane-core.
-  RC[Rhino]
   CC[crane-cli]
   FCC[fsharp-crane-core]
 
@@ -70,7 +70,7 @@ graph TD
   classDef cli fill:#DE8F05,stroke:#000000,color:#000000
 
   class FCC lib
-  class RC,CC cli
+  class CC cli
 ```
 
 **OrganicLever product stack:**
@@ -78,7 +78,7 @@ graph TD
 ```mermaid
 graph TD
   accTitle: Visual Dependency Graph 2
-  accDescr: organiclever-www-fe-e2e leads to organiclever-www; organiclever-app-web-e2e leads to organiclever-app-web; organiclever-be-e2e leads to organiclever-be; organiclever-app-web leads to organiclever-contracts; organiclever-app-web leads to Rhino; organiclever-be leads to organiclever-contracts.
+  accDescr: organiclever-www-fe-e2e leads to organiclever-www; organiclever-app-web-e2e leads to organiclever-app-web and organiclever-be; organiclever-be-e2e leads to organiclever-be; organiclever-www leads to web-ui and web-ui-token; organiclever-app-web leads to organiclever-contracts and web-ui; organiclever-be leads to organiclever-contracts.
   %% E2E tests (top level)
   OLWWWFEE2E[organiclever-<br/>www-fe-e2e]
   OLAPPE2E[organiclever-<br/>app-web-e2e]
@@ -91,21 +91,25 @@ graph TD
 
   %% Shared
   OLC[organiclever-<br/>contracts]
-  RC[Rhino]
+  WU[web-ui]
+  WUT[web-ui-token]
 
   %% Edges
   OLWWWFEE2E --> OLWWW
   OLAPPE2E --> OLAPP
+  OLAPPE2E --> OLB
   OLBE2E --> OLB
+  OLWWW --> WU
+  OLWWW --> WUT
   OLAPP --> OLC
-  OLAPP --> RC
+  OLAPP --> WU
   OLB --> OLC
 
-  classDef cli fill:#DE8F05,stroke:#000000,color:#000000
+  classDef lib fill:#029E73,stroke:#000000,color:#000000
   classDef product fill:#CA9161,stroke:#000000,color:#000000
   classDef e2e fill:#0173B2,stroke:#000000,color:#FFFFFF
 
-  class RC cli
+  class WU,WUT lib
   class OLWWW,OLAPP,OLB,OLC product
   class OLWWWFEE2E,OLAPPE2E,OLBE2E e2e
 ```
@@ -170,15 +174,15 @@ plan that turns on codegen adds the `ose-id-be --> ose-id-contracts` edge.
 
 ### OrganicLever
 
-| Project                  | Dependencies                  | Spec Inputs                                     |
-| ------------------------ | ----------------------------- | ----------------------------------------------- |
-| organiclever-contracts   | (none)                        | (self — project root is spec dir)               |
-| organiclever-www         | Rhino                         | organiclever-www/\* (test:integration)          |
-| organiclever-app-web     | Rhino, organiclever-contracts | organiclever-app-web/\* (test:integration)      |
-| organiclever-be          | organiclever-contracts        | organiclever-be/\* (test:integration)           |
-| organiclever-www-fe-e2e  | organiclever-www              | organiclever-www/\* (test:e2e)                  |
-| organiclever-app-web-e2e | organiclever-app-web          | organiclever-app-web/\* (typecheck, test:quick) |
-| organiclever-be-e2e      | organiclever-be               | organiclever-be/\* (typecheck, test:quick)      |
+| Project                  | Dependencies                          | Spec Inputs                                     |
+| ------------------------ | ------------------------------------- | ----------------------------------------------- |
+| organiclever-contracts   | (none)                                | (self — project root is spec dir)               |
+| organiclever-www         | web-ui, web-ui-token                  | organiclever-www/\* (test:integration)          |
+| organiclever-app-web     | organiclever-contracts, web-ui        | organiclever-app-web/\* (test:integration)      |
+| organiclever-be          | organiclever-contracts                | organiclever-be/\* (test:integration)           |
+| organiclever-www-fe-e2e  | organiclever-www                      | organiclever-www/\* (test:e2e)                  |
+| organiclever-app-web-e2e | organiclever-app-web, organiclever-be | organiclever-app-web/\* (typecheck, test:quick) |
+| organiclever-be-e2e      | organiclever-be                       | organiclever-be/\* (typecheck, test:quick)      |
 
 ### OSE ID
 
@@ -192,10 +196,9 @@ plan that turns on codegen adds the `ose-id-be --> ose-id-contracts` edge.
 
 ### CLI Tools
 
-| Project   | Dependencies            | Spec Inputs                     |
-| --------- | ----------------------- | ------------------------------- |
-| Rhino     | (none — self-contained) | Rhino/\* (test:integration)     |
-| crane-cli | fsharp-crane-core       | crane-cli/\* (test:integration) |
+| Project   | Dependencies      | Spec Inputs                     |
+| --------- | ----------------- | ------------------------------- |
+| crane-cli | fsharp-crane-core | crane-cli/\* (test:integration) |
 
 ### Libraries
 
@@ -208,15 +211,14 @@ plan that turns on codegen adds the `ose-id-be --> ose-id-contracts` edge.
 All Gherkin specs and API contracts live under `specs/` and are consumed via
 `{workspaceRoot}` inputs.
 
-| Spec Directory                            | Consumed By                                    | Targets                                 |
-| ----------------------------------------- | ---------------------------------------------- | --------------------------------------- |
-| `specs/apps/organiclever/be/contracts/`   | organiclever-app-web, organiclever-be          | codegen                                 |
-| `specs/apps/organiclever/`                | organiclever-app-web, organiclever-app-web-e2e | test:integration, typecheck, test:quick |
-| `the upstream Rhino specification corpus` | Rhino                                          | test:integration                        |
-| `specs/apps/ayokoding/`                   | ayokoding-www                                  | test:integration                        |
-| `specs/apps/ose/`                         | ose-www                                        | test:integration                        |
-| `specs/apps/ose/id-be/behaviours/`        | ose-id-be, ose-id-be-e2e                       | test:coverage:\*, test:quick            |
-| `specs/apps/ose/id-web/behaviours/`       | ose-id-web, ose-id-web-e2e                     | test:coverage:\*, test:quick            |
+| Spec Directory                          | Consumed By                                    | Targets                                 |
+| --------------------------------------- | ---------------------------------------------- | --------------------------------------- |
+| `specs/apps/organiclever/be/contracts/` | organiclever-app-web, organiclever-be          | codegen                                 |
+| `specs/apps/organiclever/`              | organiclever-app-web, organiclever-app-web-e2e | test:integration, typecheck, test:quick |
+| `specs/apps/ayokoding/`                 | ayokoding-www                                  | test:integration                        |
+| `specs/apps/ose/`                       | ose-www                                        | test:integration                        |
+| `specs/apps/ose/id-be/behaviours/`      | ose-id-be, ose-id-be-e2e                       | test:coverage:\*, test:quick            |
+| `specs/apps/ose/id-web/behaviours/`     | ose-id-web, ose-id-web-e2e                     | test:coverage:\*, test:quick            |
 
 ## Related Documentation
 

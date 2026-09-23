@@ -153,17 +153,15 @@ Shows the high-level technical building blocks (containers) of the system. In C4
 
 **Content sites and Nx orchestration:**
 
-Link validation for every content tree is repository-wide and lives in `Rhino`, so no
-content site depends on a per-domain CLI.
+Internal-link validation is repository-wide and runs through `./rhino`, the wrapper for the
+pinned external RHINO executable, so no content site depends on a per-domain CLI. RHINO is
+repository tooling, not a container of the system or an Nx project: `rhino.lock` pins its release
+and per-platform digests.
 
 ```mermaid
 graph LR
     accTitle: C4 Level 2: Container Diagram
-    accDescr: Rhino F CLI leads to Nx Workspace Build Orchestration via Repository automation; Nx Workspace Build Orchestration leads to ose-www Next.js App via Manages; Nx Workspace Build Orchestration leads to ayokoding-www Next.js App via Manages; and 1 more links.
-    subgraph "CLI Tools"
-        RHINO[Rhino<br/>F# CLI]
-    end
-
+    accDescr: The Nx Workspace build orchestration manages the ose-www and ayokoding-www Next.js apps.
     subgraph "Marketing & Education"
         OSE[ose-www<br/>Next.js App]
         AYO[ayokoding-www<br/>Next.js App]
@@ -173,16 +171,12 @@ graph LR
         NX[Nx Workspace<br/>Build Orchestration]
     end
 
-    RHINO -->|Repository automation| NX
     NX -.->|Manages| OSE
     NX -.->|Manages| AYO
-    NX -.->|Manages| RHINO
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
-    classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
     class OSE,AYO blue
-    class RHINO teal
     class NX purple
 ```
 
@@ -228,18 +222,19 @@ Marketing & Education Sites:
 - ose-www: Next.js 16 content platform
 - ayokoding-www: Next.js fullstack content platform
 
-CLI Tools:
+Repository Tooling:
 
-- Rhino: Repository management automation, including repository-wide link validation
+- RHINO: Pinned external executable, run through `./rhino`, for repository automation, including
+  repository-wide link validation
 
 **Build-Time Dependencies:**
 
 - All applications managed by Nx workspace
-- CLI tools executed during build processes
+- Repository tooling executed during validation gates
 - Shared libraries may be imported at build time via `@open-sharia-enterprise/[lib-name]`
 
 **Link Validation Pipeline:**
 
-`./rhino md links validate` checks internal Markdown links across the whole repository,
-including every site's content tree. Content is co-located at `apps/<site>/content/` and
-served by the Next.js application.
+`./rhino md internal-link validate` checks internal Markdown links across the whole repository.
+`repo-config.yml` excludes the `ose-www` and `ayokoding-www` content trees from its sources; that
+content is co-located at `apps/<site>/content/` and served by the Next.js application.

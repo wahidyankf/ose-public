@@ -42,8 +42,12 @@ Technology stack summary, quality tools, and future architecture considerations 
 - **Language**: F# (.NET 10)
 - **Build**: dotnet via Nx
 - **Distribution**: Local binaries
-- **Applications**: Rhino (Repository Hygiene & INtegration Orchestrator, ported from Rust
-  2026-08-30), crane-cli (Content Retrieval And Normalization Engine)
+- **Applications**: crane-cli (Content Retrieval And Normalization Engine)
+
+**Repository Tooling**:
+
+- **RHINO** (Repository Hygiene & INtegration Orchestrator): an independently released executable,
+  not an Nx project, pinned by `rhino.lock` and run through the `./rhino` bootstrap wrapper
 
 ### Infrastructure
 
@@ -58,7 +62,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 
 - **Formatting**: Prettier 3.6.2
 - **Markdown Linting**: markdownlint-cli2 0.21.0
-- **Link Validation**: ./rhino md links validate (F#)
+- **Link Validation**: `./rhino md internal-link validate` (pinned RHINO executable)
 - **Commit Linting**: Commitlint + Conventional Commits
 - **Git Hooks**: Husky + lint-staged
 - **Testing**: Nx test orchestration

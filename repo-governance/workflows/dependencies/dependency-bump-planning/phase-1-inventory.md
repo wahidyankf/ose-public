@@ -10,13 +10,14 @@ governed by the policy (intersected with `scope-filter`/`ecosystems`):
 
 - **npm**: workspace-root `package.json` (`volta` block = Node/npm language pins; `dependencies`,
   `devDependencies`, `optionalDependencies`), `apps/*/package.json`, and `libs/*/package.json`.
-- **Cargo**: `apps/*/Cargo.toml` and `libs/*/Cargo.toml` `[dependencies]` (`Rhino` is the
-  only Rust project today), plus per-project `rust-toolchain.toml` compiler-channel pins.
+- **Cargo**: no in-tree Rust project exists today; treat Cargo as empty unless a `Cargo.toml`
+  appears. RHINO is an external executable pinned by version and per-platform digest in
+  `rhino.lock`, not a Cargo dependency.
 - **.NET**: `apps/*/*.fsproj`/`*.csproj` `<PackageReference>` (e.g. `crane-cli`), plus the per-app
-  `global.json` SDK pins (`apps/organiclever-be`, `apps/ose-be`). The
-  `.github/actions/setup-dotnet` composite-action default pins the SDK CI installs; bump the two
-  together. `repo-config.yml` → `doctor.dotnet-global-json` names the `global.json` that
-  `./rhino toolchain validate` reads.
+  `global.json` SDK pins (`apps/organiclever-be`, `apps/ose-be`, `apps/ose-id-be`,
+  `apps/ose-id-be-e2e`). The `.github/actions/setup-dotnet` composite-action default pins the SDK CI
+  installs; bump them together. `./rhino toolchain validate` only probes that `dotnet` runs; it
+  reads no `global.json`.
 - **Go**: no Go module exists in the active tree — the tracked `*.go` files are AyoKoding course
   corpora with no `go.mod`. Treat Go as empty unless a `go.mod` appears.
 - **Docker**: `FROM` base-image tags in **all** Dockerfiles (`apps/*/Dockerfile*` including

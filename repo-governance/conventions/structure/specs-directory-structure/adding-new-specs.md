@@ -8,10 +8,10 @@ when_to_use: Read this when adding a Gherkin feature file, onboarding a new app'
 ## Adding a Feature File to an Existing Project
 
 1. Identify the correct `<product>-<surface>` slug (e.g., `organiclever-be`, `ayokoding-www`,
-   `Rhino`). For ayokoding build-time features, use `ayokoding-build-tools`
+   `crane-cli`). For ayokoding build-time features, use the `ayokoding-www` `build-tools/` domain
 2. Place the file in the appropriate domain subdirectory under
    `<owner>/behaviours/<domain>/`, creating the domain folder if it does not exist
-3. For CLI: choose a domain that matches the command group (e.g., `system/`, `env/`, `links/`); single-feature domains are permitted
+3. For CLI: choose a domain that matches the command group (e.g., `system/`, `media/`, `pdf/`); single-feature domains are permitted
 4. Update the relevant `README.md` index file
 
 ## Adding Specs for a New Project

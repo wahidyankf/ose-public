@@ -9,7 +9,7 @@ when_to_use: "Use when you need the rationale behind a specific markdown quality
   enforcement (prose allowlist + gate locations)
 - [Indentation Convention](../../../conventions/formatting/indentation.md)
 - [Linking Convention](../../../conventions/formatting/linking.md) — anchor (`#fragment`)
-  validation via `./rhino md links validate`
+  rules and link-path validation via `./rhino md internal-link validate`
 - [Diagram and Schema Convention](../../../conventions/formatting/diagrams.md) — Mermaid
   validation gate location (pre-commit + CI; not pre-push)
 - [Repository Validation Methodology Convention](.././repository-validation.md) — canonical

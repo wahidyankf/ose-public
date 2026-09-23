@@ -349,8 +349,10 @@ def materialize(installer: RecordingInstall, home: Path, launcher: bytes) -> Non
         if node.kind == "directory":
             target.mkdir(exist_ok=True)
         elif node.kind == "symlink":
+            # A link into the fake home points into the private one instead, so it resolves as it would have.
             assert node.target is not None
-            target.symlink_to(node.target)
+            pointed = Path(node.target)
+            target.symlink_to(home / pointed.relative_to(FAKE_HOME) if pointed.is_relative_to(FAKE_HOME) else pointed)
             continue
         else:
             target.write_bytes(launcher if path == installer.paths.launcher else node.content)
@@ -576,7 +578,9 @@ class Wrapping:
     event: str = "tool.completed"
     payload: bytes = b""
     call: dict[str, Any] = field(default_factory=lambda: dict[str, Any]())
-    behaviour: Behaviour | None = "record"
+    # A stand-in that records what it was given, then writes to both streams and fails: whatever the adapter shows or
+    # returns is its own doing, not a quiet child's.
+    behaviour: Behaviour | None = "noisy"
     hangs: bool = False
     ran: WrapperRun | None = None
 

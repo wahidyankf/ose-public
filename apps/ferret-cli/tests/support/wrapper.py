@@ -1,9 +1,12 @@
 """Run the shared POSIX capture wrapper, or the OpenCode plugin under Node, against a stand-in or in-tree ``ferret``
 and measure what it did."""
 
+import contextlib
+import functools
 import json
 import os
 import shutil
+import signal
 import stat
 import subprocess
 import sys
@@ -113,9 +116,13 @@ def warm(path: Path) -> None:
     macOS checks a newly written executable the first time it is started, which can add a few hundred milliseconds to
     that one start, and far more on a loaded host. A measured call must time the adapter, not that check -- a stand-in
     still being checked when the adapter's 900 ms TERM arrives would be stopped before it recorded anything -- so the
-    script is started once first, with an argument no caller passes, and exits at once.
+    script is started once first, with an argument no caller passes, and exits at once. It runs beside the script
+    with only the system search path, and a deadline.
     """
-    subprocess.run([str(path), WARM_UP], check=True, capture_output=True)
+    environment = {"PATH": SYSTEM_DIRECTORIES}
+    subprocess.run(
+        [str(path), WARM_UP], check=True, capture_output=True, env=environment, cwd=path.parent, timeout=HUNG_SECONDS
+    )
 
 
 def _warmed(directory: Path, name: str, body: str) -> Path:
@@ -160,7 +167,8 @@ def term_recorder(directory: Path) -> Path:
 
     It also records its process ID, arguments, and standard input like ``stand_in``, then sleeps until KILL. It is a
     Python program, because a shell cannot read a clock finer than a second; the handler is installed before anything
-    else, so a TERM can never arrive before it is ready to be noted.
+    else, so a TERM can never arrive before it is ready to be noted. Should KILL never come, it exits by itself once
+    ``HUNG_SECONDS`` have passed, so it cannot outlive the test that started it.
     """
     program = directory / "term_recorder.py"
     program.write_text(
@@ -173,8 +181,9 @@ def term_recorder(directory: Path) -> Path:
         "(HERE / 'started').write_text(repr(STARTED))\n"
         "(HERE / 'argv').write_text(''.join(argument + '\\n' for argument in sys.argv[1:]))\n"
         "(HERE / 'stdin').write_bytes(sys.stdin.buffer.read())\n"
-        "while True:\n"
-        "    time.sleep(30)\n"
+        f"DEADLINE = STARTED + {HUNG_SECONDS!r}\n"
+        "while (left := DEADLINE - time.monotonic()) > 0:\n"
+        "    time.sleep(left)\n"
     )
     return _warmed(directory, "ferret-term-recorder", f'exec "{sys.executable}" -IS "{program}" "$@"\n')
 
@@ -232,11 +241,22 @@ def run_wrapper(
     return _run_timed([str(WRAPPER), harness, event], payload, environment, timeout=timeout, cwd=cwd)
 
 
+@functools.cache
 def node_executable() -> str:
-    """The real Node binary, found through the caller's own environment so a version manager's shim can resolve it."""
+    """The real Node binary.
+
+    Run through the project's targets, npm names the Node running it in ``npm_node_execpath``, so nothing is started to
+    find it. A direct run asks the ``node`` on the caller's search path once, with a deadline, so a version manager's
+    shim can resolve its pinned binary.
+    """
+    named = os.environ.get("npm_node_execpath", "")  # noqa: SIM112 - npm names this variable in lower case
+    if os.path.isabs(named) and os.access(named, os.X_OK):
+        return named
     found = shutil.which("node")
     assert found is not None, "Node is required to run the OpenCode plugin"
-    completed = subprocess.run([found, "-p", "process.execPath"], capture_output=True, text=True, check=True)
+    completed = subprocess.run(
+        [found, "-p", "process.execPath"], capture_output=True, text=True, check=True, timeout=HUNG_SECONDS
+    )
     return completed.stdout.strip()
 
 
@@ -268,7 +288,8 @@ def _run_timed(
     command: Sequence[str], payload: bytes, environment: Mapping[str, str], *, timeout: float, cwd: Path | None
 ) -> WrapperRun:
     # ``subprocess.run(timeout=...)`` waits for the exit by polling with sleeps that grow to 50 ms, which would be added
-    # to every measured call; a timer that kills a hung process leaves the wait blocking and exact.
+    # to every measured call; a timer that kills a hung process leaves the wait blocking and exact. The process leads a
+    # session of its own, so the timer kills everything it started too, not only the process itself.
     started = time.monotonic()
     with subprocess.Popen(
         list(command),
@@ -277,8 +298,9 @@ def _run_timed(
         stderr=subprocess.PIPE,
         env=dict(environment),
         cwd=cwd,
+        start_new_session=True,
     ) as process:
-        guard = threading.Timer(timeout, process.kill)
+        guard = threading.Timer(timeout, _kill_group, (process.pid,))
         guard.start()
         try:
             stdout, stderr = process.communicate(payload)
@@ -286,6 +308,12 @@ def _run_timed(
             guard.cancel()
         elapsed = time.monotonic() - started
     return WrapperRun(process.returncode, stdout, stderr, elapsed, started)
+
+
+def _kill_group(leader: int) -> None:
+    """KILL every process in the group ``leader`` leads; one already gone is not an error."""
+    with contextlib.suppress(ProcessLookupError):
+        os.killpg(leader, signal.SIGKILL)
 
 
 def spawn_instants(spawn_log: Path) -> list[float]:

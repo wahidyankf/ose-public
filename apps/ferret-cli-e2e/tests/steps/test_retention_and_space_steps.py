@@ -2,6 +2,7 @@
 
 import json
 import sqlite3
+import time
 from collections.abc import Iterator
 from contextlib import closing
 from dataclasses import dataclass, field
@@ -42,6 +43,8 @@ class Session:
     read: Completed | None = None
     operations: list[Completed] = field(default_factory=lambda: list[Completed]())
     removed: list[int] = field(default_factory=lambda: list[int]())
+    available: list[int] = field(default_factory=lambda: list[int]())
+    elapsed: list[float] = field(default_factory=lambda: list[float]())
     still_expired: int = 0
     status_before: dict[str, Any] | None = None
     maintenance: dict[str, Any] | None = None
@@ -124,7 +127,10 @@ def when_a_read_then_the_next_operations_run(session: Session) -> None:
     before = session.expired_held()
     session.sql("UPDATE maintenance_state SET last_completed_at = NULL WHERE singleton_id = 1")
     for _ in range(2):
+        session.available.append(before)
+        started = time.monotonic()
         session.operations.append(session.run(LIST_ALL))
+        session.elapsed.append(time.monotonic() - started)
         after = session.expired_held()
         session.removed.append(before - after)
         before = after
@@ -150,6 +156,10 @@ def then_each_prune_stops_at_its_first_limit(session: Session) -> None:
     assert 1 <= first <= 100
     assert 1 <= second <= 100
     assert first + second + session.still_expired == BEYOND_CUTOFF + 1
+    # An operation that pruned fewer rows than both the row limit and what was left can only have stopped at the time
+    # limit, and a prune that ran for 100 ms kept its whole process running at least that long.
+    for removed, available, elapsed in zip(session.removed, session.available, session.elapsed, strict=True):
+        assert removed == min(100, available) or elapsed >= 0.1, (removed, available, elapsed)
 
 
 @then("every newer row remains queryable")

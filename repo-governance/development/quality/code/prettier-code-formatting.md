@@ -14,10 +14,15 @@ when_to_use: "Use when configuring or debugging Prettier formatting."
 - Markdown: `*.md`
 - YAML: `*.{yml,yaml}`
 - CSS/SCSS: `*.{css,scss}`
+- HTML: `*.html`
+- SQL: `*.sql`
 
 **When It Runs**: Automatically on staged files before each commit via the pre-commit hook.
 
-**Configuration**: Prettier uses default settings (no custom configuration file). This ensures maximum compatibility and reduces configuration overhead.
+**Configuration**: [`.prettierrc.json`](../../../../.prettierrc.json) sets `printWidth: 120` and
+`proseWrap: "preserve"`, loads `prettier-plugin-sql` and `prettier-plugin-tailwindcss`, and points
+the Tailwind plugin at its stylesheet; every other option is Prettier's default.
+[`.prettierignore`](../../../../.prettierignore) excludes paths from formatting.
 
 **Manual Formatting**: You can manually format files with:
 

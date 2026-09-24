@@ -15,14 +15,12 @@ yours, while unrelated vendored paths are not.
 
 Rhino provides the generators, and this repository already automates them:
 
-| Command                                     | npm wrapper                           | What it does                                                    |
-| ------------------------------------------- | ------------------------------------- | --------------------------------------------------------------- |
-| `./rhino harness adapters generate`         | `npm run generate:bindings`           | Regenerates every mirror from `.claude/`                        |
-| `... generate --harness opencode`           | `npm run sync:agents`, `sync:skills`  | Regenerates one harness only                                    |
-| `... generate --harness opencode --dry-run` | `npm run sync:dry-run`                | Previews without writing                                        |
-| `./rhino harness adapters validate`         | `npm run validate:sync`               | Fails on mirror drift, and on a stale `.opencode/skill*` mirror |
-| `./rhino harness adapters validate`         | `npm run validate:claude`             | Validates the `.claude/` sources themselves                     |
-| `./rhino harness adapters validate`         | `npm run harness:bindings-validation` | Byte-parity guard against the emitter output                    |
+| Command                             | What it does                                                       |
+| ----------------------------------- | ------------------------------------------------------------------ |
+| `./rhino harness adapters generate` | Regenerates every generated mirror in one declared transaction     |
+| `./rhino harness adapters validate` | Byte-parity guard against the emitter output, across every harness |
+
+Neither command has an npm script wrapper.
 
 **Pre-commit Step 3 runs `harness adapters generate` and auto-stages the result**, so in the normal
 path the mirrors are committed for you. The obligations are therefore about the paths where that
@@ -36,8 +34,8 @@ automation does _not_ protect you:
 3. **Never bypass the hook that generates them.** `--no-verify` skips Step 3, producing that broken
    state — forbidden by the
    [No Destructive Git Operations Convention](../../workflow/no-destructive-git-operations.md).
-4. **Verify rather than assume.** `npm run harness:bindings-validation` is the all-harness check;
-   `validate:sync` skips `.codex/`. Run it after any `.claude/` edit not committed through the hook.
+4. **Verify rather than assume.** `./rhino harness adapters validate` is the all-harness check. Run
+   it after any `.claude/` edit not committed through the hook.
 5. **Never hand-edit a generated mirror.** A direct edit to a registry-declared `class: generated`
    path or generated delimited region is overwritten by the next generate. A registry-declared
    `class: vendored` path is maintained in place and covers two structurally different subclasses;

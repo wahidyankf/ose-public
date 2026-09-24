@@ -23,11 +23,6 @@ belong here.
 - [`format-java.sh`](./format-java.sh) — Runs Spotless once per owning Gradle root. Use when
   formatting or checking `*.java`; Spotless is a whole-project Gradle task, so each path is mapped
   back to its project root. Pass `--check` for the non-mutating form.
-- [`verify-gofmt.sh`](./verify-gofmt.sh) — Reports unformatted Go files as a failure. Use
-  when verifying `*.go` formatting without rewriting anything; `gofmt -l` prints each
-  unformatted path but still exits 0, so its output has to be converted into a non-zero exit
-  code. No registry gate calls it; the `format-staged` replay verifies Go formatting on pull
-  requests.
 
 ## The lint gate wrappers
 

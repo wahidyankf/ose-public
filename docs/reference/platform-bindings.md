@@ -325,7 +325,7 @@ is the only way to express inheritance.
 
 Pinning an ID here would override every developer's own model choice and would need re-verifying
 against the vendor roster on each roster change. To reverse the decision, add a `model-map:` to the
-`opencode` registry entry and re-run `npm run generate:bindings`; no code change is involved.
+`opencode` registry entry and re-run `./rhino harness adapters generate`; no code change is involved.
 
 ### Tool Translation (Claude Code → OpenCode)
 
@@ -370,4 +370,4 @@ To add a new generated binding:
 - `AGENTS.md` at repo root — canonical root instruction file read by most platforms
 - `CLAUDE.md` at repo root — Claude Code shim importing `AGENTS.md`
 
-Those regenerated mirrors are part of your change: they belong on your touched-file ledger and MUST land in the **same commit** as the `.claude/` source that produced them, never a follow-up sync commit. Verify with `npm run harness:bindings-validation`, which covers every harness including `.codex/`; `npm run validate:sync` checks only the OpenCode mirror and the skills mirror, not `.codex/agents/`. Every generated mirror MUST NOT be hand-edited — except a path an entry's `ownership:` list in `repo-config.yml` declares `vendored`, which is hand-maintained by design. See [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md).
+Those regenerated mirrors are part of your change: they belong on your touched-file ledger and MUST land in the **same commit** as the `.claude/` source that produced them, never a follow-up sync commit. Verify with `./rhino harness adapters validate`, which covers every harness including `.codex/`. Every generated mirror MUST NOT be hand-edited — except a path an entry's `ownership:` list in `repo-config.yml` declares `vendored`, which is hand-maintained by design. See [File-Touch Discipline](../../repo-governance/development/practice/file-touch-discipline.md).

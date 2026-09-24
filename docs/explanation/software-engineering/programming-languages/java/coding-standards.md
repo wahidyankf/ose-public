@@ -36,8 +36,8 @@ These are the conventions a reviewer will hold Java code in this repository to. 
 
 **Spotless with google-java-format is mandatory.** Formatting is never discussed in review, because no human decides it.
 
-- `format-java` runs on commit and rewrites staged `.java` files.
-- `format-verify-java` runs in CI and fails on any file the formatter would change.
+- The `format-staged` gate runs on commit and rewrites staged `.java` files through `scripts/format-java.sh` (Spotless `spotlessApply`).
+- On a pull request the same `format-staged` gate replays the formatter over the changed files and fails on any file it would change.
 
 Do not add per-file formatter suppressions, and do not reformat a file "while you are in there" — a formatting-only diff inside a behavioural change hides the behavioural change.
 

@@ -12,14 +12,12 @@ when_to_use: Use when an agent or Skill change needs to propagate across the mul
 
 **Commands**:
 
-- `npm run generate:bindings` - Full sync, every generated-tier harness
-- `npm run sync:agents` - Agents only
-- `npm run sync:skills` - `.agents/skills/`-native harnesses only (no-op); does NOT touch generated
-  mirrors under `.agents/skills/`
-- `npm run validate:sync` - `.opencode/agents/` and non-vendored mirrors under `.agents/skills/`;
-  does **not** cover `.codex/agents/`
-- `npm run harness:bindings-validation` - every generated-tier binding including `.codex/`; this is
-  what the pre-push gate runs
+- `./rhino harness adapters generate` - Full sync, every generated-tier harness, in one declared
+  transaction
+- `./rhino harness adapters validate` - every generated-tier binding including `.codex/`; no
+  lifecycle gate runs it, so run it after any binding change
+
+Neither command has an npm script wrapper.
 
 **Conversion Logic**:
 
@@ -32,7 +30,7 @@ when_to_use: Use when an agent or Skill change needs to propagate across the mul
   real-file byte-copy mirrors under `.agents/skills/`; vendored plugin subtrees are preserved
 - **Validation**: three generated sets now, not two — `.opencode/agents/`, `.codex/agents/` (plus
   the generated region in `.codex/config.toml`), and non-vendored mirrors under `.agents/skills/`.
-  `harness:bindings-validation` checks all three; `validate:sync` checks only the first and third.
+  `./rhino harness adapters validate` checks all three.
 
 ## Documentation References
 
@@ -63,15 +61,13 @@ when_to_use: Use when an agent or Skill change needs to propagate across the mul
 ## Troubleshooting
 
 **Problem**: `.opencode/` agents out of sync with `.claude/`
-**Solution**: Run `npm run generate:bindings` to regenerate
+**Solution**: Run `./rhino harness adapters generate` to regenerate
 
 **Problem**: Conversion errors during sync
 **Solution**: Check agent frontmatter format in `.claude/agents/`, fix YAML syntax, re-sync
 
 **Problem**: agent skills missing in one directory
-**Solution**: Verify skills exist in `.agents/skills/`, then run `npm run generate:bindings` (not
-`npm run sync:skills` — that command only touches the no-op secondary-harness path and never
-writes the other secondary harness's non-vendored mirrors under `.agents/skills/`)
+**Solution**: Verify skills exist in `.agents/skills/`, then run `./rhino harness adapters generate`
 
 ---
 

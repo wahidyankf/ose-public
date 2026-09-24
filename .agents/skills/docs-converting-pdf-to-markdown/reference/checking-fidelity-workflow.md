@@ -4,7 +4,7 @@
 
 **Lifecycle filter**: When exact ID `md-mermaid` is delegated, do not run `crane check-all` or
 Step 7 because both execute the owned syntax predicate; use the non-Mermaid per-dimension commands.
-For delegated `markdownlint`, `format-verify-prettier`, `md-heading-hierarchy`, `md-frontmatter`,
+For delegated `markdownlint`, `format-staged`, `md-heading-hierarchy`, `md-frontmatter`,
 `md-links`, or `md-naming`, omit only generic Markdown mechanics. Retain all source-comparison
 checks, including PDF-corresponding heading depth/order and figure representation. Omitted
 `delegated-gate-ids` means standalone full validation.

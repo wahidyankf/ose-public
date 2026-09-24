@@ -9,7 +9,7 @@ Both node label lines (each segment between `<br/>` tags) and edge label strings
 
 Count every character including spaces, colons, slashes, and Unicode.
 
-**Enforcement**: two registry gates cover this rule. `md-mermaid` runs repo-wide at the validator's `--max-label-len` default of **30** — Mermaid's `wrappingWidth` baseline, a backstop rather than this rule. `md-mermaid-strict` runs at **20** over changed `.md` files only, so every new or edited diagram meets Rule 3 while the legacy corpus ratchets in as it is touched. A green `md-mermaid` run alone does not prove Rule 3 compliance.
+**Enforcement**: none — Rule 3 is a convention that no gate enforces; authors count and reviewers check. The `md-mermaid` registry gate fails only on labels longer than the **30**-grapheme limit declared in `repo-config.yml` `policies.markdown.mermaid` (`node-label-graphemes`, `edge-label-graphemes`) — a backstop rather than this rule — and `./rhino md mermaid validate` has no option to lower that limit. A green `md-mermaid` run does not prove Rule 3 compliance.
 
 **Safe examples (≤20 chars):**
 

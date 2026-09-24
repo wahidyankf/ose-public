@@ -5,7 +5,7 @@ when_to_use: "Use when an existing Mermaid diagram fails a width check and needs
 
 # Width Violation Fix Strategy Guide
 
-When `./rhino md mermaid validate` reports a `width_exceeded` violation, select the simplest fix strategy that works:
+When a diagram exceeds the width limit (no validator reports this; count by hand), select the simplest fix strategy that works:
 
 **Selection decision tree**:
 

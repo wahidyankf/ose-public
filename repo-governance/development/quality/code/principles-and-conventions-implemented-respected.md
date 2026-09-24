@@ -11,7 +11,7 @@ This practice respects the following core principles:
 
 - **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Git hooks (Husky) automatically run Prettier and Commitlint before commits. Humans write code, machines enforce formatting and standards. No manual formatting or message validation required.
 
-- **[Simplicity Over Complexity](../../../principles/general/simplicity-over-complexity.md)**: Prettier uses default settings - no custom configuration file. Commitlint uses standard Conventional Commits spec. Minimal tooling configuration reduces complexity.
+- **[Simplicity Over Complexity](../../../principles/general/simplicity-over-complexity.md)**: Prettier keeps its defaults except for the few options `.prettierrc.json` sets (print width, prose wrap, and two plugins). Commitlint uses standard Conventional Commits spec. Minimal tooling configuration reduces complexity.
 
 ## Conventions Implemented/Respected
 

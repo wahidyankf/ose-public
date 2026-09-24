@@ -46,17 +46,15 @@ rather than a hardcoded list.
 
 **Solutions**:
 
-1. Identify which step failed:
-   - Primary binding directory validation: Fix source files in `.claude/agents/` or `.agents/skills/`
-   - Sync: Check Rhino output, may be a bug
-   - Secondary binding directory validation: Re-run `npm run generate:bindings`
+1. Identify which gate failed — Rhino prints each gate id. The configuration gate is
+   `repo-config`, which checks `repo-config.yml`. No pre-commit gate validates harness bindings.
 
 2. Run validation manually to debug:
 
    ```bash
-   npm run validate:claude      # Check .claude/ format
-   npm run generate:bindings  # Sync to .opencode/
-   npm run validate:opencode    # Check .opencode/ output
+   ./rhino repo-config validate        # Check repo-config.yml
+   ./rhino harness adapters validate   # Check every generated harness binding
+   ./rhino harness adapters generate   # Regenerate the bindings from their canonical sources
    ```
 
 3. Common validation errors:

@@ -46,7 +46,7 @@ and technical validity (Mermaid syntax, OCR quality).
 Follow [Lifecycle Validation Ownership](../../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
 When `md-mermaid` is delegated, do not run Mermaid syntax validation or `crane check-all` (which
 includes it); use non-delegated per-dimension checks. Delegated `markdownlint`,
-`format-verify-prettier`, `md-heading-hierarchy`, `md-frontmatter`, `md-links`, or `md-naming`
+`format-staged`, `md-heading-hierarchy`, `md-frontmatter`, `md-links`, or `md-naming`
 remove only generic Markdown mechanics. Always retain PDF/source text fidelity, source-corresponding
 heading depth and order, nesting, tables, OCR, and figure representation.
 

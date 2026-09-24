@@ -20,8 +20,8 @@ when_to_use: Use as a quick-reference checklist before and during any session th
 9. **Count generated mirrors as yours** — a canonical `.claude/` agent or Skill edit produces
    registry-declared generated changes under `.opencode/`, `.codex/`, and `.agents/` that belong on
    your ledger and in the same commit; regenerate with
-   `npm run generate:bindings`, verify with `npm run harness:bindings-validation` (all-harness;
-   `validate:sync` does not cover `.codex/`), and never hand-edit a `class: generated` mirror — a
+   `./rhino harness adapters generate`, verify with `./rhino harness adapters validate`
+   (all-harness), and never hand-edit a `class: generated` mirror — a
    `class: vendored` path is the exception, covering two structurally different subclasses; see
    [the two vendored
    subclasses](../../../glossary/vendored-exception-subclasses.md)

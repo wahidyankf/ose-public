@@ -8,8 +8,9 @@ affected row cell.
 **Frontmatter field removal (D6)**: read the agent file first, Edit to remove the deprecated
 field line, verify with Grep that it no longer appears.
 
-**Post-edit sync (D4 Claude Code agent changes)**: after any edit to `.claude/agents/` files,
-run `npm run generate:bindings` — this keeps `.opencode/agents/` aligned. Failure here is a
+**Post-edit sync (D4 Claude Code agent changes)**: after any edit to a canonical agent in
+`.agents/agents/`, run `./rhino harness adapters generate` — this keeps `.claude/agents/plan/`,
+`.codex/agents/`, and `.opencode/agents/` aligned. Failure here is a
 blocker; do not mark the fix complete until sync succeeds.
 
 **Post-fix verification**: after every Edit, `grep -q "new-value" path/to/file.md || echo "WARNING: edit did not match — fix NOT applied to path/to/file.md"`.
@@ -29,8 +30,8 @@ structure intact, record each touched file in the fix summary.
 3. For each finding, in criticality × confidence priority order (P0 first): re-read the target
    file to verify drift still exists, check the source confidence tag, apply (HIGH confidence
    only) or skip with reason, verify the fix was applied, write the result progressively.
-4. Standalone only: after Invariant 3 fixes, confirm `rtk npm run generate:bindings` is idempotent.
-5. After `.claude/agents/` edits, run `rtk npm run generate:bindings` as the required mutation.
+4. Standalone only: after Invariant 3 fixes, confirm `rtk ./rhino harness adapters generate` is idempotent.
+5. After canonical agent edits in `.agents/agents/`, run `rtk ./rhino harness adapters generate` as the required mutation.
 6. Standalone only: re-run binding and vendor validation. In quality-gate context, never rerun
    these delegated predicates.
 7. Capture changed files with `rtk git diff --name-only HEAD`. In quality-gate context, intersect

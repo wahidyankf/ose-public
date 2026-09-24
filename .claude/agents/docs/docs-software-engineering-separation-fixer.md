@@ -35,8 +35,9 @@ findings — always re-verify before editing.
 
 ## Input Parameters
 
-- `delegated-gate-ids` (optional) — exact lifecycle gate IDs. When it contains `md-links`, do not
-  re-validate or fix internal path/fragment findings. Omitted preserves standalone full behaviour.
+- `delegated-gate-ids` (optional) — exact lifecycle gate IDs. No gate validates internal links, so
+  internal path/fragment findings stay in scope for re-validation and fixing. Omitted preserves
+  standalone full behaviour.
 - `lifecycle-evidence` (optional) — Step 0 evidence ledger. After edits, intersect changed files
   with delegated scopes and return `updated-lifecycle-evidence`, invalidating only affected entries.
 

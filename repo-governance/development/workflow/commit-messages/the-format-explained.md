@@ -23,7 +23,7 @@ when_to_use: Use when writing a commit message and needing the exact rules for t
 - `(<scope>)` is optional but recommended for clarity
 - `<description>` must be in imperative mood (e.g., "add" not "added" or "adds")
 - No period at the end of the description
-- Aim for a total header length of 50 characters or less; commitlint rejects anything over 100
+- Aim for a total header length of 50 characters or less; Commitlint, when you run it, rejects anything over 100
 
 ## Body (Optional)
 

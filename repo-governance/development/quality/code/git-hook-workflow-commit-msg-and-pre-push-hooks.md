@@ -12,29 +12,28 @@ when_to_use: "Use when debugging a commit-msg or pre-push hook."
 **Execution Order**:
 
 1. Pre-commit hook completes successfully
-2. Commit-msg hook triggers
-3. Commitlint validates commit message format
-4. Commit proceeds if message is valid
+2. Commit-msg hook triggers (`./rhino gate run --surface commit-msg --message-file "$1"`)
+3. The only declared `commit-msg` gate, `public-safety-commit-message`, screens the message
+4. Commit proceeds if the screen is clean
 
 **What It Validates**:
 
-- Commit message follows [Conventional Commits](https://www.conventionalcommits.org/)
-- See [Commit Message Convention](../../workflow/commit-messages.md) for complete rules
+- The message contains none of the public-safety shapes this public repository must never publish
+- It does **not** check [Conventional Commits](https://www.conventionalcommits.org/) format. Review
+  checks that, and Commitlint can check it on demand — see
+  [Commit Message Convention](../../workflow/commit-messages.md) for complete rules
 
 **What Happens on Failure**:
 
 - Commit is blocked
-- Error message shows what's wrong with the commit message
-- Fix the message and try again
+- The screen names a detector and line, never the matched value
+- Remove the flagged value from the message and try again
 
 **Example**:
 
-```bash
-$ git commit -m "added new feature"
-⧗   input: added new feature
-   subject may not be empty [subject-empty]
-   type may not be empty [type-empty]
-   found 2 problems, 0 warnings
+```text
+[public-safety] finding maintainer-path <commit-text-1>:1
+[public-safety] commit: blocked, 1 finding(s); publication must not proceed
 ```
 
 ## Pre-push Hook

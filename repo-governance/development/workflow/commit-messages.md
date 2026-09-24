@@ -1,6 +1,6 @@
 ---
 description: Understanding Conventional Commits and why we use them in open-sharia-enterprise
-when_to_use: Use when writing a commit message, choosing its type/scope, or troubleshooting a Commitlint rejection.
+when_to_use: Use when writing a commit message, choosing its type/scope, or checking one against Commitlint on demand.
 ---
 
 # Commit Message Convention
@@ -13,7 +13,7 @@ when_to_use: Use when writing a commit message, choosing its type/scope, or trou
   When updating, synchronize both locations.
 -->
 
-This document explains the commit message convention used in the open-sharia-enterprise project, why we use it, and how it's enforced. Understanding commit messages helps maintain a clean, navigable project history that benefits all contributors.
+This document explains the commit message convention used in the open-sharia-enterprise project, why we use it, and how it's checked. Understanding commit messages helps maintain a clean, navigable project history that benefits all contributors.
 
 ## Contents
 
@@ -24,8 +24,8 @@ This document explains the commit message convention used in the open-sharia-ent
 - [Scope Examples](./commit-messages/scope-examples.md) — Common scope names and usage.
 - [Real-World Examples](./commit-messages/real-world-examples.md) — Good and bad commit messages.
 - [Why We Use This Convention](./commit-messages/why-we-use-this-convention.md) — Benefits for developers, teams, project, users.
-- [How It's Enforced](./commit-messages/how-its-enforced.md) — Commitlint, the Husky hook, and the workflow.
-- [Common Errors and Fixes](./commit-messages/common-errors-and-fixes.md) — Fixing the most common Commitlint rejections.
+- [How It's Checked](./commit-messages/how-its-enforced.md) — Review, the on-demand Commitlint config, and what the commit-msg hook actually runs.
+- [Common Errors and Fixes](./commit-messages/common-errors-and-fixes.md) — Fixing the most common errors an on-demand Commitlint run reports.
 - [Best Practices](./commit-messages/best-practices.md) — Habits beyond the mechanical format rules.
 - [Thematic Commit Composition and Boundaries](./commit-messages/commit-granularity-and-when-to-split-commits.md) — Authorization and the fewest build-valid, reviewable, revertible boundaries.
 - [What Belongs in One Commit](./commit-messages/when-to-combine-commits.md) — Required completion artifacts stay with one coherent purpose.
@@ -44,9 +44,13 @@ This document explains the commit message convention used in the open-sharia-ent
 
 ## Enforcement Disposition
 
-**Unenforced by decision.** Commitlint validates message syntax, not whether a commit is semantically
-cohesive, independently revertible, or the fewest valid partition of an authorized change set.
-Reviewers assess composition against the thematic boundary test.
+**Unenforced by decision; checked by review.** No hook or CI step checks commit-message format: the
+`commit-msg` surface runs only the `public-safety-commit-message` gate, and the `pull-request`
+surface runs that same public-safety screen over the PR's commits. Reviewers check the Conventional
+Commits format, and assess composition against the thematic boundary test. Commitlint
+(`commitlint.config.js`) can check the format on demand, but it validates message syntax, not
+whether a commit is semantically cohesive, independently revertible, or the fewest valid partition
+of an authorized change set.
 
 ## External Resources
 

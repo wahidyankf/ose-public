@@ -55,7 +55,7 @@ git push origin <plan-branch>
 
 ## Conventional Commits
 
-This repository enforces Conventional Commits format:
+This repository uses Conventional Commits format, checked by review (no hook or CI step enforces it):
 
 ```
 <type>(<scope>): <description>

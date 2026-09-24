@@ -25,9 +25,13 @@ Use this Skill when:
 
 Quality-gate invocations may pass `delegated-gate-ids` from
 [Lifecycle Validation Ownership](../../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
-Match exact IDs only. If `md-links` is present, do not resolve, re-check, fix, or AI-rederive
-internal paths and fragments. Continue external HTTP reachability and cache maintenance. If the
-parameter is omitted, preserve standalone full validation.
+Match exact IDs only. No lifecycle gate validates internal links (`./rhino gate list` declares
+none), so internal paths and fragments are never delegated and always stay in scope here.
+`./rhino md internal-link validate` runs on demand only: it reports links whose target file is
+missing, skips links in code spans and fenced blocks and the sources `repo-config.yml` excludes, and
+does not check `#fragment` anchors, so verify anchors yourself. Continue external HTTP
+reachability and cache maintenance. If the parameter is omitted, preserve standalone full
+validation.
 
 Also accept `lifecycle-evidence`: checkers preserve it unchanged; fixers scope-intersect changed
 files and return `updated-lifecycle-evidence`, invalidating only affected entries.

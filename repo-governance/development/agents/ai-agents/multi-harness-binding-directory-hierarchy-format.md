@@ -39,7 +39,7 @@ overrides a generated parent. Vendored configuration and plugin paths are mainta
 **Making Changes**:
 
 1. Edit an agent in `.claude/agents/` or a mirrored skill in `.agents/skills/`.
-2. Run `npm run generate:bindings`.
+2. Run `./rhino harness adapters generate`, then `./rhino harness adapters validate`.
 3. Commit every changed generated mirror in the same commit as its source.
 4. Edit a vendored path directly only when `repo-config.yml` classifies that exact path or a
    more-specific ancestor as vendored.

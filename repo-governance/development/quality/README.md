@@ -19,7 +19,7 @@ level systems, content preservation, quality gate standards.
 
 ## Documents
 
-- [Code Quality Convention](./code.md) — Automated code quality tools (Prettier, Husky, the Rhino gate registry, Commitlint) and git hooks. Use when configuring, debugging, or bypassing a code-quality git hook or formatter.
+- [Code Quality Convention](./code.md) — Code quality tools (Prettier, Husky, the Rhino gate registry, and an on-demand Commitlint config) and git hooks. Use when configuring, debugging, or bypassing a code-quality git hook or formatter.
 - [Markdown Quality Standards](./markdown.md) — Automated markdown linting and formatting standards using Prettier and markdownlint-cli2. Use when checking markdown linting/formatting config, fixing a violation, or troubleshooting a gate.
 - [Cross-Language Lint Strictness](./cross-language-lint-strictness.md) — Uniform warning-and-above lint threshold across every language and artifact type. Use when adding, changing, or auditing a lint gate.
 - [Behaviour-Driven Development](../behaviour-driven-development.md) — Defines mandatory Unit proof, boundary-applicable Integration/E2E, static coverage, and exemptions. Use when scoping, writing, or reviewing automated behaviour proof.

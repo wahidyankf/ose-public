@@ -100,7 +100,7 @@ itself, which behaved correctly throughout.
 
 ## What success looks like + promotion signal
 
-An agent can carry a harness-native key that survives `generate:bindings`, or the field is confirmed
+An agent can carry a harness-native key that survives `./rhino harness adapters generate`, or the field is confirmed
 unnecessary and that is written down. Promotion signal: someone confirms OpenCode's real behaviour
 for an agent lacking `mode` and for one with a partial `permission` map — those two answers decide
 whether this is a bug fix or a documentation note.

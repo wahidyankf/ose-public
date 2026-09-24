@@ -11,9 +11,10 @@ context/container/component levels. **LOW**: no `classDef` styling.
 
 ## Category 6: Cross-Reference Semantics [LLM]
 
-Assess whether references are conceptually appropriate and current. If `md-links` is delegated,
-do not resolve paths/fragments or infer broken-link findings. Without delegation, use `./rhino md
-links validate`; do not substitute LLM path arithmetic.
+Assess whether references are conceptually appropriate and current. No gate owns internal links,
+so use `./rhino md internal-link validate` for missing link targets; do not substitute LLM path
+arithmetic. It does not check `#fragment` anchors, so confirm each anchor against its target
+heading.
 
 ## Category 7: Spec-to-Implementation Alignment [LLM]
 

@@ -25,12 +25,12 @@ Run the full standalone inventory before Phase 1. Quality-gate filtering is defi
 
 ## Invariant 3 — Binding sync no-op
 
-- **Tool**: `npm run generate:bindings && git diff --quiet .opencode/ .codex/ .agents/`
+- **Tool**: `./rhino harness adapters generate && git diff --quiet .claude/ .opencode/ .codex/`
 - **Pass**: sync exits 0 AND `git diff --quiet` exits 0 (no changes produced)
 - **Fail**: sync produced drift in `.opencode/` — report the changed files
 - **Default criticality**: MEDIUM (drift means upstream `.claude/` edits were not synced).
   **Confidence**: HIGH
-- **Fix scope**: **auto-fixable** — re-run `npm run generate:bindings`, stage the `.opencode/`
+- **Fix scope**: **auto-fixable** — re-run `./rhino harness adapters generate`, stage the `.opencode/`
   changes, re-run to confirm idempotence, hand them back for commit
   (`chore(opencode): re-sync agents from .claude/`)
 

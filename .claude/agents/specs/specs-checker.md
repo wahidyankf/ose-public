@@ -47,10 +47,11 @@ are ignored even if referenced by listed folders.
 In a quality-gate invocation, neither run nor AI-rederive these `delegated-gate-ids`:
 
 - `governance-readme-index`: README existence/index membership
-- `md-links`: internal path and fragment resolution
 - `test:coverage:behaviour`: canonical corpus structure and explicit When/Then
 - `specs-structure`: adoption, tree shape, and registered counts
 
+No gate validates internal links, so path and fragment resolution always stays here (use
+`./rhino md internal-link validate` for missing targets; it does not check `#fragment` anchors).
 Retain narrative/domain, README, cross-folder, diagram, and implementation judgment. Preserve
 optional `lifecycle-evidence`; omitted delegation means standalone full validation.
 

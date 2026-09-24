@@ -10,6 +10,7 @@ This project enforces code quality through automated tools that run during the d
 - **Prettier** - Automatic code formatting
 - **Husky** - Git hooks management
 - **Rhino gate registry** - `repo-config.yml` gates the hooks run; `format-staged` formats staged files only
-- **Commitlint** - Commit message validation (see [Commit Message Convention](../../workflow/commit-messages.md))
+- **Commitlint** - Conventional Commits check you run on demand; no hook or CI step runs it (see [Commit Message Convention](../../workflow/commit-messages.md))
 
-These tools work together to ensure code consistency and quality without manual intervention.
+The hooks run the registry gates automatically. Commit-message format is the exception: review
+checks it.

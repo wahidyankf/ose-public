@@ -5,7 +5,7 @@ description: "Cross-cutting agents scoped to no single app or domain: agent scaf
 
 # General
 
-- [Agent Maker](./agent-maker.md) — Creates new AI agent files in .claude/agents/ following AI Agents Convention. Changes are then synced to .opencode/agents/ via npm run generate:bindings. Ensures proper structure, skills integration, and documentation.
+- [Agent Maker](./agent-maker.md) — Creates new AI agent files in .claude/agents/ following AI Agents Convention. Canonical agents in .agents/agents/ are then routed to every harness via ./rhino harness adapters generate. Ensures proper structure, skills integration, and documentation.
 - [Api Exploratory Tester](./api-exploratory-tester.md) — Performs spec-aware, contract-aware session-based exploratory testing of a live API — REST or GraphQL — given an endpoint/base-URL and a testing goal. Hunts edge cases and compares responses with contracts and Gherkin. Never drives a browser. Writes to `local-tmp` by default; plan or delivery output requires explicit mode.
 - [Ci Checker](./ci-checker.md) — Validates all projects against CI/CD standards including mandatory Nx targets, coverage thresholds, Docker setup, Gherkin consumption, workflow files, E2E pairing, and env variable compliance
 - [Ci Fixer](./ci-fixer.md) — Applies validated fixes from ci-checker audit reports. Re-validates findings before applying to prevent false positives.

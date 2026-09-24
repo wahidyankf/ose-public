@@ -10,11 +10,12 @@ when_to_use: "Use when you want the full label-constraint rules summarized in on
 | Node label line (between `<br/>` tags) | Yes                | 20 chars   | Yes (node labels render HTML) |
 | Edge label `\|"text"\|`                | No                 | 20 chars   | No (`.` breaks parser)        |
 
-**Automated enforcement**: Run `./rhino md mermaid validate` to check these rules
-mechanically instead of counting characters manually. Pass `--max-label-len 20` to check the
-20-character limit above; the bare default is 30, matching Mermaid's `wrappingWidth` baseline. The
-`md-mermaid-strict` gate applies the 20 automatically to every changed `.md` file. The tool also
-checks parallel rank width (Rule 2 above) and single-diagram-per-block.
+**Automated check**: No gate enforces the 20-character limit above; it is a convention that
+authors meet and reviewers check. The `md-mermaid` gate runs `./rhino md mermaid validate`, which
+measures node and edge labels only against the 30-grapheme limit declared in `repo-config.yml`
+`policies.markdown.mermaid`, and the command has no option to lower it. The validator also checks
+`accTitle`/`accDescr` and the declared colour palette; it does not parse syntax or measure rank
+width.
 
 **Real-World Context**: All five rules were verified when fixing C4 architecture diagrams in the monorepo. Failures observed:
 

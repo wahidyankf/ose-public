@@ -6,12 +6,13 @@ Outside a lifecycle-filtered quality gate, validate listed `specs/apps/<app-fami
 `the declared spec-structure check` (or Nx target
 `Rhino:specs:structure-validation`). It aggregates adoption, tree, and app-tree counts. Use
 `the declared spec-count check` only for non-app trees that the aggregator cannot reach.
-Use `./rhino md internal-link validate` for Markdown paths/fragments and
+Use `./rhino md internal-link validate` for missing Markdown link targets (it does not check
+`#fragment` anchors) and
 the project `test:coverage:behaviour` target for explicit When/Then and corpus structure.
 
 In a quality-gate invocation, skip a command and any LLM substitute when its exact gate ID is in
-`delegated-gate-ids`: `specs-structure`, `md-links`, or
-`governance-readme-index`. Preserve the supplied lifecycle evidence instead.
+`delegated-gate-ids`: `specs-structure` or `governance-readme-index`. No gate owns internal links,
+so the link command above always runs. Preserve the supplied lifecycle evidence instead.
 
 Route-level drift (endpoints, contracts) is not currently implemented — the placeholder command
 files were removed in the BDD+DDD tooling gap-fill plan; re-introduction needs a new dedicated

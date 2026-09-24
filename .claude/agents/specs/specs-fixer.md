@@ -39,7 +39,8 @@ Generates fix reports tracking what was changed.
 `approved: all` or specific finding IDs, and optional exact `delegated-gate-ids`.
 
 In a quality-gate invocation, do not re-validate or fix predicates owned by delegated
-`governance-readme-index`, `md-links`, or `specs-structure`. Such
+`governance-readme-index` or `specs-structure`; no gate owns internal links, so link findings stay
+in scope. Such
 findings should not enter the audit. Omitted delegation preserves standalone full fixer behaviour.
 Accept optional `lifecycle-evidence`; after edits, scope-intersect changed files and return
 `updated-lifecycle-evidence`, invalidating only affected entries.

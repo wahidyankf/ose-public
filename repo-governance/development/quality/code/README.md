@@ -1,5 +1,5 @@
 ---
-description: "Automated code quality tools (Prettier, Husky, the Rhino gate registry, Commitlint) and git hooks for consistent formatting and commit message standards"
+description: "Code quality tools (Prettier, Husky, the Rhino gate registry, and an on-demand Commitlint config) and git hooks for consistent formatting and commit message standards"
 when_to_use: "Read this index to find the right Code Quality Convention child document."
 ---
 

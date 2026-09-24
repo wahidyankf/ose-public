@@ -7,35 +7,37 @@ when_to_use: Use whenever you edit a file under the primary binding directory, o
 
 ## Standard 9 — Generated Mirrors Belong on the Ledger and in the Same Commit
 
-`.claude/agents/` and `.agents/skills/` are the canonical hand-authored agent and Skill sources.
-Secondary binding roots mix generated outputs with registry-declared vendored paths;
-`repo-config.yml` is authoritative at path and region level. Editing one canonical definition can
-therefore modify several generated files you never opened — all of those generated changes are
-yours, while unrelated vendored paths are not.
+`.agents/agents/` and `.agents/skills/` are the canonical hand-authored agent and Skill sources the
+adapter generator reads; `repo-config.yml` `harness:` declares which routes it emits
+(`.claude/agents/plan/`, `.claude/skills/`, `.codex/agents/`, and `.opencode/agents/`, each with
+its `catalog.json` and `provenance.json`). Secondary binding roots also hold hand-maintained paths
+the generator does not own. Editing one canonical definition can therefore modify several
+generated files you never opened — all of those generated changes are yours, while unrelated
+hand-maintained paths are not.
 
-Rhino provides the generators, and this repository already automates them:
+Rhino provides the generators; nothing runs them for you:
 
 | Command                             | What it does                                                       |
 | ----------------------------------- | ------------------------------------------------------------------ |
 | `./rhino harness adapters generate` | Regenerates every generated mirror in one declared transaction     |
 | `./rhino harness adapters validate` | Byte-parity guard against the emitter output, across every harness |
 
-Neither command has an npm script wrapper.
+Neither command has an npm script wrapper, and no hook, registry gate, or CI workflow runs
+either one — not at pre-commit, pre-push, or pull-request (`./rhino gate list` declares no adapter
+gate). A stale adapter is caught only when someone runs `validate`. The obligations follow from
+that:
 
-**Pre-commit Step 3 runs `harness adapters generate` and auto-stages the result**, so in the normal
-path the mirrors are committed for you. The obligations are therefore about the paths where that
-automation does _not_ protect you:
-
-1. **Put the mirrors on your ledger.** Auto-staged is not unaccounted-for. Editing
-   `.claude/agents/foo.md` puts three mirror paths in your commit; Standard 6's reconcile must
-   expect them.
+1. **Put the mirrors on your ledger.** Generated is not unaccounted-for. Editing
+   `.agents/agents/plan-maker.md` rewrites its source digest in the `catalog.json` and
+   `provenance.json` of every generated root, and a description or tier change also rewrites its
+   route files; Standard 6's reconcile must expect them.
 2. **Source and mirror land in the same commit — always.** A commit where they disagree is a broken
    tree for whoever checks it out, and fails the byte-parity guard for unrelated reasons.
-3. **Never bypass the hook that generates them.** `--no-verify` skips Step 3, producing that broken
-   state — forbidden by the
-   [No Destructive Git Operations Convention](../../workflow/no-destructive-git-operations.md).
+3. **Regenerate before you commit.** No hook does it for you. After editing a canonical source, run
+   `./rhino harness adapters generate` and stage its output with that source, so the adapters are
+   current in the commit that changes them.
 4. **Verify rather than assume.** `./rhino harness adapters validate` is the all-harness check. Run
-   it after any `.claude/` edit not committed through the hook.
+   it after every canonical-source edit, before committing; no gate runs it for you.
 5. **Never hand-edit a generated mirror.** A direct edit to a registry-declared `class: generated`
    path or generated delimited region is overwritten by the next generate. A registry-declared
    `class: vendored` path is maintained in place and covers two structurally different subclasses;

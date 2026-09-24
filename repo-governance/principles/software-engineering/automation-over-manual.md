@@ -20,7 +20,7 @@ when_to_use: Use when deciding whether a repetitive task should be automated, or
 
 - [Code Quality Convention](../../development/quality/code.md) - Git hooks and Prettier
 - [AI Agents Convention](../../development/agents/ai-agents.md) - Validation agents
-- [Commit Message Convention](../../development/workflow/commit-messages.md) - Automated validation
+- [Commit Message Convention](../../development/workflow/commit-messages.md) - Format checked by review; Commitlint on demand
 - [Repository Validation](../../development/quality/repository-validation.md) - Standard validation patterns
 
 ## Relationship to Other Principles

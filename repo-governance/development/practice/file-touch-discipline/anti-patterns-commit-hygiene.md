@@ -18,15 +18,16 @@ path mine?_ A ledger that does not resolve to paths is decoration.
 
 ## The Orphan Sync Commit
 
-**Problem**: The agent commits its `.claude/` edit, notices the regenerated mirrors afterwards, and
+**Problem**: The agent commits its canonical-source edit, regenerates the mirrors afterwards, and
 commits them separately as "chore: sync bindings".
 
 **Why it fails**: The intermediate commit is a tree where a source and its generated mirror disagree.
 Anyone who checks out that SHA — a bisect, a CI job, a colleague — gets an inconsistent harness
 configuration, and the byte-parity guard fails there for reasons unrelated to their own work.
 
-**Fix**: Standard 9 — source and mirror in one commit. The pre-commit hook already stages them
-together; do not defeat it by committing narrowly and reconciling later.
+**Fix**: Standard 9 — source and mirror in one commit. No hook regenerates them, so run
+`./rhino harness adapters generate` before committing and stage its output with the source; do not
+commit narrowly and reconcile later.
 
 ---
 
@@ -34,11 +35,11 @@ together; do not defeat it by committing narrowly and reconciling later.
 
 **Problem**: The agent needs a change in `.opencode/agents/foo.md` and edits that file directly.
 
-**Why it fails**: The next `harness adapters generate` — which pre-commit runs automatically —
-overwrites it silently. The change disappears with no error, and the time is spent twice.
+**Why it fails**: The next `./rhino harness adapters generate` overwrites it silently, and
+`validate` fails until then. The change disappears with no error, and the time is spent twice.
 
-**Fix**: Standard 9 — `.claude/` is the only hand-authored _canonical source_ surface for generated
-mirrors. Edit the source, regenerate, and let `class: generated` mirrors follow. A `class: vendored`
+**Fix**: Standard 9 — `.agents/agents/` and `.agents/skills/` are the hand-authored _canonical
+source_ surfaces for generated mirrors. Edit the source, regenerate, and let `class: generated` mirrors follow. A `class: vendored`
 path (declared in the `harness:` registry's `ownership:` list) is the one exception, and it covers
 two structurally different subclasses — see [the two vendored
 subclasses](../../../glossary/vendored-exception-subclasses.md)

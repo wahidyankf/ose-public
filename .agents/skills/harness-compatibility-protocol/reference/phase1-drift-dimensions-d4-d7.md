@@ -6,8 +6,8 @@
 harness docs. **Drift indicator**: harness changed the directory path, YAML/frontmatter schema,
 or discovery mechanism. **Default criticality**: HIGH — incorrect surface means agents are
 silently ignored. **Fix**: update catalog row; for each committed agent file flagged in D6,
-add/remove/rename frontmatter fields per the new schema; run `npm run generate:bindings` after
-editing `.claude/agents/`. **Confidence**: HIGH for catalog-only; MEDIUM for schema migration of
+add/remove/rename frontmatter fields per the new schema; run `./rhino harness adapters generate` after
+editing a canonical agent in `.agents/agents/`. **Confidence**: HIGH for catalog-only; MEDIUM for schema migration of
 committed files (each must be re-validated individually).
 
 ## D5 — Skills surface

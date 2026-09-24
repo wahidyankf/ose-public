@@ -252,9 +252,9 @@ refactor(utils): simplify date formatting logic
 - Type and description are required
 - Scope is optional but recommended
 
-Type, case, mood, and length are **enforced by commitlint** on every commit — but its header limit
-is 100 characters, not 50. Treat 50 as the target you write to and 100 as the line the hook stops
-you at. For complete details, see [Commit Message Convention](./repo-governance/development/workflow/commit-messages.md).
+No hook or CI step checks this format; reviewers do. `commitlint.config.js` lets you check a message
+on demand, and its header limit is 100 characters, not 50. Treat 50 as the target you write to and
+100 as the hard ceiling. For complete details, see [Commit Message Convention](./repo-governance/development/workflow/commit-messages.md).
 
 ### Commit Granularity
 

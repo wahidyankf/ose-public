@@ -319,7 +319,7 @@ runs are no-ops, avoiding both the Storybook build and the Vercel deployment.
      - Formats code with Prettier
      - Processes ayokoding-www content if affected
      - Validates links
-   - Commit-msg hook validates format
+   - Commit-msg hook runs the public-safety screen on the message (format is checked by review)
    - Commit created
 
 4. **Push to Remote** — target follows the declared Delivery Mode:
@@ -360,14 +360,13 @@ runs are no-ops, avoiding both the Storybook build and the Vercel deployment.
 ```mermaid
 graph TB
     accTitle: Quality Assurance Layers
-    accDescr: Code Changes leads to Prettier Auto-fix; Prettier Auto-fix leads to Content Processing Auto-fix; Content Processing Auto-fix leads to Link Validation Block; Link Validation Block leads to Commitlint Block; Commitlint Block leads to Tests Block; and 6 more links.
+    accDescr: Code Changes leads to Prettier Auto-fix; Prettier Auto-fix leads to Content Processing Auto-fix; Content Processing Auto-fix leads to Link Validation Block; Link Validation Block leads to Tests Block; and 6 more links.
     CODE[Code Changes]
 
     subgraph "Layer 1: Local Hooks"
         L1_FORMAT[Prettier<br/>Auto-fix]
         L1_CONTENT[Content Processing<br/>Auto-fix]
         L1_LINKS[Link Validation<br/>Block]
-        L1_COMMIT[Commitlint<br/>Block]
         L1_TEST[Tests<br/>Block]
         L1_MD[Markdown Lint<br/>Block]
     end
@@ -387,8 +386,7 @@ graph TB
     CODE --> L1_FORMAT
     L1_FORMAT --> L1_CONTENT
     L1_CONTENT --> L1_LINKS
-    L1_LINKS --> L1_COMMIT
-    L1_COMMIT --> L1_TEST
+    L1_LINKS --> L1_TEST
     L1_TEST --> L1_MD
 
     L1_MD --> L2_FORMAT
@@ -405,7 +403,7 @@ graph TB
     classDef brown fill:#CA9161,stroke:#000000,color:#000000
     class CODE blue
     class L1_FORMAT,L1_CONTENT,DEPLOY teal
-    class L1_LINKS,L1_COMMIT,L1_TEST,L1_MD,L2_LINKS orange
+    class L1_LINKS,L1_TEST,L1_MD,L2_LINKS orange
     class L2_FORMAT purple
     class L3_BUILD,L3_CACHE brown
 ```
@@ -421,6 +419,5 @@ graph TB
 **Blocking Gates** (Must pass to proceed):
 
 - Link validation (pre-commit, PR)
-- Commitlint format check
 - Affected tests (pre-push)
 - Markdown linting (pre-push)

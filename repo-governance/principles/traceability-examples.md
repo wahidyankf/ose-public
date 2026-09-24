@@ -69,12 +69,12 @@ tools: Read, Glob, Grep
 
 - Automated formatting via Prettier
 - Automated validation via git hooks
-- Automated commit message checking
+- Automated commit message screening for public-safety shapes
 
 **Implementation**: Multiple systems enforce this
 
 - **Husky + Rhino gate registry**: Pre-commit hook runs the `format-staged` gate, which formats staged code automatically
-- **Commitlint**: Commit-msg hook validates message format
+- **Public-safety screen**: Commit-msg hook runs the `public-safety-commit-message` gate on every message; Conventional Commits format is checked by review, not a hook
 - **Various checker agents**: Automated quality validation (docs-checker, rules-checker, etc.)
 
 **Result**: Code quality maintained automatically without manual intervention

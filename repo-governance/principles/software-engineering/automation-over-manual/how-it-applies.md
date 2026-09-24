@@ -40,30 +40,24 @@ exec ./hippo run --class transactional --resource-tier standard --disk-path . --
 
 ## Commit Message Validation
 
-**Context**: Ensuring commit messages follow convention.
+**Context**: Keeping commit messages safe to publish and in the agreed format.
 
-**Automation**: `.husky/commit-msg` hook + Commitlint
+**Automation**: `.husky/commit-msg` hook + the `public-safety-commit-message` gate
 
-```bash
+```sh
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+set -eu
 
-npx commitlint --edit $1
+# Thin lifecycle adapter. The typed registry owns every quality entry.
+exec ./hippo run --class ephemeral --resource-tier light --disk-path . -- \
+  ./rhino gate run --surface commit-msg --message-file "$1"
 ```
 
 **What it automates**:
 
-- Validates commit message format
-- Enforces Conventional Commits standard
-- Provides helpful error messages
-- Blocks invalid commits
+- Screens every commit message for public-safety shapes
+- Blocks the commit on a finding
 
-**Manual alternative** (what we avoid):
-
-```bash
-# FAIL: Manual review - inconsistent
-# 1. Developer writes commit message
-# 2. Reviewer checks format (maybe)
-# 3. Format inconsistencies slip through
-# 4. Git history becomes messy
-```
+**What it does not automate**: the Conventional Commits format. `commitlint.config.js` is kept so a
+message can be checked on demand, but no hook or CI step runs it, so review catches format drift
+today — the manual path this principle would otherwise avoid.

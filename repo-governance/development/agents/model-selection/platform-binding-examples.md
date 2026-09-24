@@ -6,7 +6,7 @@ when_to_use: Use when translating a model grade to a concrete model ID for a spe
 # Platform Binding Examples
 
 Agents in the primary binding directory are auto-synced to every generated binding by Rhino
-(`npm run generate:bindings`). The sync translates the primary binding's grade alias into whatever
+(`./rhino harness adapters generate`). The sync translates the primary binding's grade alias into whatever
 each harness expects. Never hand-edit a generated binding — change the grade in `.claude/` and
 regenerate.
 
@@ -23,7 +23,7 @@ regenerate.
 Every column is read from `repo-config.yml` at generate time: `model-grades:` names the four
 grades, and each `harness:` entry's `model-map:` gives its ID per grade. An entry declaring no
 `model-map:` emits no `model` key. Changing an ID is a registry edit plus
-`npm run generate:bindings` — never a code change.
+`./rhino harness adapters generate` — never a code change.
 
 The Codex column pairs each grade with the model the vendor's own catalog positions at that level:
 its top-of-lineup model for ultra, its most capable current-generation model for planning, its

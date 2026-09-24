@@ -9,9 +9,9 @@ when_to_use: "Use to trace this convention's rationale."
 
 This practice respects the following core principles:
 
-- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Git hooks (Husky) automatically run Prettier and Commitlint before commits. Humans write code, machines enforce formatting and standards. No manual formatting or message validation required.
+- **[Automation Over Manual](../../../principles/software-engineering/automation-over-manual.md)**: Git hooks (Husky) automatically run the registry gates, including staged formatting, before commits. Humans write code, machines enforce formatting. Commit-message format is the exception: no hook runs Commitlint, so review checks it.
 
-- **[Simplicity Over Complexity](../../../principles/general/simplicity-over-complexity.md)**: Prettier keeps its defaults except for the few options `.prettierrc.json` sets (print width, prose wrap, and two plugins). Commitlint uses standard Conventional Commits spec. Minimal tooling configuration reduces complexity.
+- **[Simplicity Over Complexity](../../../principles/general/simplicity-over-complexity.md)**: Prettier keeps its defaults except for the few options `.prettierrc.json` sets (print width, prose wrap, and two plugins). The retained Commitlint config extends the standard Conventional Commits preset. Minimal tooling configuration reduces complexity.
 
 ## Conventions Implemented/Respected
 
@@ -19,7 +19,7 @@ This practice respects the following core principles:
 
 This practice implements/respects the following conventions:
 
-- **[Commit Message Convention](../../workflow/commit-messages.md)**: Git hooks enforce Conventional Commits format through Commitlint, validating commit message structure before commits are created.
+- **[Commit Message Convention](../../workflow/commit-messages.md)**: Reviewers check the Conventional Commits format; the commit-msg hook runs only the public-safety screen, and Commitlint can check a message on demand.
 
 - **[Indentation Convention](../../../conventions/formatting/indentation.md)**: Prettier enforces consistent indentation (2 spaces for YAML frontmatter) across all formatted file types.
 

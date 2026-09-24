@@ -20,7 +20,7 @@
     {
       "id": "skill/agent-developing-agents",
       "path": ".agents/skills/agent-developing-agents/SKILL.md",
-      "digest": "00e66f8767b20ce051d26f546492f203ab3ef2674846be095e8368a97315a633"
+      "digest": "890c5b78e6263b2cc8702a6777664a9798d7537dec68c5098b7696e60ae23d7d"
     },
     {
       "id": "skill/api-testing-exploratory-methodology",
@@ -130,12 +130,12 @@
     {
       "id": "skill/docs-validating-links",
       "path": ".agents/skills/docs-validating-links/SKILL.md",
-      "digest": "b83b7c05c4a75c063f452ec53fabfd3df10e5a4f93ff853f3c17eb16539a47f3"
+      "digest": "4d1a3aea708ae764e5094de539dac5ee14a7285f01b641e44328c89261c40aa6"
     },
     {
       "id": "skill/docs-validating-software-engineering-separation",
       "path": ".agents/skills/docs-validating-software-engineering-separation/SKILL.md",
-      "digest": "5755b234a9a8498f7b85f378953ec6f4d3638cfd476e883fabc8c02b0b3c34b2"
+      "digest": "0e04d4b5d18d135759cafcb7a55b1788ddd410a28271316cc82ec4177cfe60db"
     },
     {
       "id": "skill/grill-me",
@@ -265,7 +265,7 @@
     {
       "id": "skill/specs-validating-structure",
       "path": ".agents/skills/specs-validating-structure/SKILL.md",
-      "digest": "b8dea352f84ed61f15285ecf63e9a3fc21cb86cabad598e67a3c499090cc63ce"
+      "digest": "497ed0e73f14fd7544de75caf8a44329e1e305c2904a8b0f69d9f7d74be35944"
     },
     {
       "id": "skill/swe-developing-applications-common",

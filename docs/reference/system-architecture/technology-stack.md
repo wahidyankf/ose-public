@@ -63,7 +63,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 - **Formatting**: Prettier 3.6.2
 - **Markdown Linting**: markdownlint-cli2 0.21.0
 - **Link Validation**: `./rhino md internal-link validate` (pinned RHINO executable)
-- **Commit Linting**: Commitlint + Conventional Commits
+- **Commit Linting**: Commitlint config for Conventional Commits, run on demand (no hook or CI step runs it)
 - **Git Hooks**: Husky shims running the `repo-config.yml` gate registry through `./rhino gate run`
 - **Testing**: Nx test orchestration
 

@@ -36,8 +36,8 @@ lifecycle-evidence: {step0.outputs.lifecycle-evidence}`
   structure; nested bullets and numbered lists carry the correct level into Markdown
 - **Table integrity** — all tables present with correct data
 - **Figure coverage** — every figure has Mermaid or placeholder
-- **Mermaid fidelity** — Mermaid figures remain complete and faithful; syntax is delegated when
-  `md-mermaid` appears in `delegated-gate-ids`
+- **Mermaid fidelity** — Mermaid figures remain complete, faithful, and syntactically valid; the
+  `md-mermaid` gate does not parse syntax, so its delegation never removes this check
 - **OCR quality** — image-only pages have acceptable error rate (<10%)
 - **Structural order** — sections appear in PDF reading order
 

@@ -249,7 +249,7 @@ generated binding whose canonical source actually changes. `docs/reference/web-s
 product-reference registry update: it remains in file impact and documentation verification, but stays outside
 the propagation manifest. Project-local inputs own the new projects. Execution creates
 `local-tmp/rules-propagation/rules-propagation__<run-id>__manifest.md`, records declaration/enforcement/mirror/
-test disposition for each normative sentence, and runs `npm run generate:bindings` only if a canonical binding
+test disposition for each normative sentence, and runs `./rhino harness adapters generate` only if a canonical binding
 source changes. This product plan does not invoke `rules-quality-gate`; that workflow remains available only
 through a separate user-named invocation or an authorized rules-grooming Step 8.
 

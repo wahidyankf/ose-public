@@ -17,6 +17,6 @@ within editable paths.
 - Updating source-owned indexes
 - Maintaining an exact registry-declared vendored path in place
 
-**Sync requirement**: After editing `.claude/` sources, run `npm run generate:bindings` and commit
+**Sync requirement**: After editing canonical sources, run `./rhino harness adapters generate` and commit
 every changed generated mirror with its source. The generator preserves registry-declared vendored
 paths.

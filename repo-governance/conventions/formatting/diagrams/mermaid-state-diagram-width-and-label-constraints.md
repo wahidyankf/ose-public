@@ -33,5 +33,5 @@ or label counts.
 Guide apply (see above). Direction flip does not apply to state diagrams (they have no `LR`/`TD`
 directive); use Diagram Splitting or Sequential Chaining when width is exceeded.
 
-**Automated enforcement**: Same Nx target and gate location as flowcharts — `mermaid:validation`
-runs at pre-commit (staged `.md` files, via lint-staged) and is folded into `pr-quality-gate.yml`.
+**Automated enforcement**: Same gate and location as flowcharts — the `md-mermaid` registry gate
+runs at pre-commit (staged `.md` files) and on the pull-request surface in `pr-quality-gate.yml`.

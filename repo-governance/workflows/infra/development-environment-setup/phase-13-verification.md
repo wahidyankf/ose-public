@@ -15,13 +15,14 @@ echo "# test" >> /tmp/test-precommit.md
 cp /tmp/test-precommit.md README.md
 git add README.md
 git commit -m "test: verify pre-commit hook"
-# Pre-commit hook should run Prettier, markdownlint, and lint-staged
+# Pre-commit hook should run the declared pre-commit gates (./rhino gate list)
 # Then abort: git reset HEAD~1 && git checkout README.md
 git reset HEAD~1
 git checkout README.md
 ```
 
-**Success criteria**: Pre-commit hook runs without errors (Prettier, markdownlint).
+**Success criteria**: Pre-commit hook runs every declared `pre-commit` gate without errors
+(including `format-staged` and `markdownlint`).
 
 ## 13.2 Verify pre-push targets (cache warm)
 

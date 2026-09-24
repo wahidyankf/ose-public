@@ -198,8 +198,8 @@ Running `black` (or an equivalent formatter) before committing is a habit, not a
 _ex-05 &middot; exercises co-03_
 
 `ruff` lints for errors and smells -- unused imports, undefined names, and dozens of other rules --
-far faster than older Python linters, and is the linter this repository's own `lint-staged` pipeline
-does not yet run on `.py` content, though `ruff format` does. This example's file has a genuine unused
+far faster than older Python linters, and is the linter this repository's own pre-commit gates
+do not yet run on `.py` content, though `ruff format` does. This example's file has a genuine unused
 import.
 
 **`learning/code/ex-05-lint-with-ruff/bad.py`**

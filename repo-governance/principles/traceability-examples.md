@@ -73,7 +73,7 @@ tools: Read, Glob, Grep
 
 **Implementation**: Multiple systems enforce this
 
-- **Husky + lint-staged**: Pre-commit hook formats code automatically
+- **Husky + Rhino gate registry**: Pre-commit hook runs the `format-staged` gate, which formats staged code automatically
 - **Commitlint**: Commit-msg hook validates message format
 - **Various checker agents**: Automated quality validation (docs-checker, rules-checker, etc.)
 

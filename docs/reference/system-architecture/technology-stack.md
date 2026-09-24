@@ -64,7 +64,7 @@ Technology stack summary, quality tools, and future architecture considerations 
 - **Markdown Linting**: markdownlint-cli2 0.21.0
 - **Link Validation**: `./rhino md internal-link validate` (pinned RHINO executable)
 - **Commit Linting**: Commitlint + Conventional Commits
-- **Git Hooks**: Husky + lint-staged
+- **Git Hooks**: Husky shims running the `repo-config.yml` gate registry through `./rhino gate run`
 - **Testing**: Nx test orchestration
 
 ## Future Architecture Considerations

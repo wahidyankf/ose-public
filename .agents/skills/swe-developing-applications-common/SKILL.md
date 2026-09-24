@@ -29,9 +29,11 @@ fewest build-valid, independently reviewable/revertible thematic commits. See
 
 ## Pre-commit Automation
 
-Husky + lint-staged auto-run Prettier, markdown lint, and link validation on commit; commit-msg
-validates Conventional Commits; pre-push runs `nx affected -t test:quick`. Integration and E2E
-remain manual-and-impacted during development/review and scheduled-and-complete in CI. See
+Husky shims run the `repo-config.yml` gate registry: pre-commit formats staged files
+(`format-staged`) and runs the Markdown, configuration, and file-type lint gates; commit-msg and
+pre-push run their declared public-safety and environment gates; the PR quality gate runs affected
+`typecheck`, `lint`, and `test:quick`. Integration and E2E remain manual-and-impacted during
+development/review and scheduled-and-complete in CI. See
 [Pre-commit Automation](./reference/pre-commit-automation.md) for the full hook list and
 common-failure fixes.
 

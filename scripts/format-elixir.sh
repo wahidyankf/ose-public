@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Wrapper for mix format in monorepo context.
-# lint-staged passes absolute file paths; mix format needs to run from the Elixir project root.
+# scripts/format-staged passes repository-relative file paths; mix format needs to run from the
+# Elixir project root.
 # `--check` keeps verification non-mutating by using mix's failing check mode.
 set -euo pipefail
 

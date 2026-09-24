@@ -32,5 +32,6 @@ Run without flags to perform a repo-wide scan (the Nx target excludes `plans/don
 `apps/ayokoding-www/content` plus the standardized noise-skip set) using defaults (MaxWidth=4,
 unlimited depth). Pass additional `--exclude <prefix>` flags to suppress noise in project-specific runs.
 
-**Gate location**: Both gates run at **pre-commit (staged `.md` files only)** via lint-staged, and in
-CI via `pr-quality-gate.yml`. Neither runs at pre-push, and neither has a standalone CI workflow.
+**Gate location**: the declared `md-mermaid` registry gate runs at **pre-commit (staged `.md` files
+only)** and on the pull-request surface in `pr-quality-gate.yml` (changed `.md` files), through
+`scripts/validate-mermaid-files`. It does not run at pre-push and has no standalone CI workflow.

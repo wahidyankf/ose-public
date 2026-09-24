@@ -291,7 +291,7 @@ and `unavailable` or `probe-failed`; install it from the step above or the
 
 ### Test git hooks
 
-**Pre-commit** (runs on every commit — Prettier, markdownlint, lint-staged):
+**Pre-commit** (runs on every commit — the declared pre-commit gates, including `format-staged` and `markdownlint`):
 
 ```bash
 # Run the staged-file gate without creating a throwaway commit
@@ -305,8 +305,7 @@ and `unavailable` or `probe-failed`; install it from the step above or the
 ./rhino gate run --surface pre-push
 ```
 
-`repo-config.yml` is the source of truth for what that surface carries — a few Nx targets plus a
-dozen-odd repository-wide `Rhino` checks that `nx affected` never sees. List them rather than
+`repo-config.yml` is the source of truth for what each surface carries. List them rather than
 copying a set from this page:
 
 ```bash

@@ -344,36 +344,29 @@ export default tseslint.config(
 
 ## Pre-commit Hooks
 
-### Husky Setup
-
-```bash
-# Install
-npm install -D husky lint-staged
-
-# Initialize
-npx husky install
-npm pkg set scripts.prepare="husky install"
-```
-
-### Configure Hooks
+In this repository, TypeScript files are formatted at commit time by a registry gate, not by a
+per-project hook or a `lint-staged` configuration. `.husky/pre-commit` is a thin shim that runs
+every gate `repo-config.yml` declares on the `pre-commit` surface:
 
 ```bash
 # .husky/pre-commit
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-npx lint-staged
+export RHINO_GATE_SURFACE=pre-commit
+exec ./hippo run --class transactional --resource-tier standard --disk-path . -- \
+  ./rhino gate run --surface pre-commit
 ```
 
-### Lint-staged Configuration
+### Formatting Staged Files
 
-```javascript
-// lint-staged.config.js
-export default {
-  "*.ts": ["eslint --fix", "prettier --write", () => "tsc --noEmit"],
-  "*.{json,md,yml}": "prettier --write",
-};
-```
+The `format-staged` gate hands the staged paths to `scripts/format-staged`, which runs
+`prettier --write` on `*.{ts,tsx,js,jsx,mjs,cjs}` and the other Prettier-owned extensions, then
+applies the result to the index. On a pull request the same gate replays Prettier over the changed
+paths and fails if any byte would change.
+
+### Where Linting and Type Checks Run
+
+ESLint and `tsc` are project-scoped, so they are Nx targets (`lint`, `typecheck`), not pre-commit
+gates. The PR quality gate's TypeScript job runs them for affected projects together with
+`test:quick`.
 
 ### Example Workflow
 
@@ -381,15 +374,12 @@ export default {
 # Stage files
 git add src/donation-service.ts
 
-# Commit triggers hooks
+# Commit triggers the pre-commit gates:
+# 1. The public-safety screen checks the staged tree
+# 2. format-staged formats the staged TypeScript with Prettier and re-stages it
+# 3. The remaining declared checks run
+# 4. The commit proceeds if every gate passes
 git commit -m "feat: add donation validation"
-
-# Hooks run:
-# 1. ESLint fixes issues
-# 2. Prettier formats code
-# 3. TypeScript checks types
-# 4. Auto-stages changes
-# 5. Commits if all pass
 ```
 
 ## Related Documentation
@@ -400,7 +390,7 @@ git commit -m "feat: add donation validation"
 ---
 
 **TypeScript Version**: 5.0+ (baseline), 5.4+ (milestone), 5.6+ (stable), 5.9.3+ (latest stable)
-**Tools**: ESLint 9.39.0/10.0.0, Prettier 3.8.0, Husky 9.x, lint-staged 15.x
+**Tools**: ESLint 9.39.0/10.0.0, Prettier 3.8.0, Husky 9.x
 **Maintainers**: OSE Documentation Team
 
 ## TypeScript Quality Tools

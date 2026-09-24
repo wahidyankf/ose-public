@@ -14,7 +14,6 @@ when_to_use: Use to find further reading behind a claim in this document.
 **Git Hooks**:
 
 - [Husky Documentation](https://typicode.github.io/husky/) - Git hooks made easy
-- [lint-staged Documentation](https://github.com/lint-staged/lint-staged) - Run linters on staged files
 - [Commitlint](https://commitlint.js.org/) - Lint commit messages
 
 **Code Quality**:

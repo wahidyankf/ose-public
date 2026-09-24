@@ -26,8 +26,8 @@ longest runs 170 characters — for example, in `learning/capstone/code/wal.py`:
         for record in self.log:  # => co-19: O(n) -- scans the WHOLE log for this txn's records (never truncated here); a real WAL indexes open txns instead of rescanning
 ```
 
-The repo's pre-commit hook formats staged Python in place — `package.json` lint-staged maps
-`"*.py": "ruff format"` — and there is no repo-root Ruff config, so Ruff falls back to its default
+The repo's pre-commit hook formats staged Python in place — the `format-staged` registry gate's
+`scripts/format-staged` runs `ruff format --no-cache` on `*.py` — and there is no repo-root Ruff config, so Ruff falls back to its default
 line length of 88. When a long annotated line is _splittable_, that default rewrites it. Reproduced
 in a scratch directory with the installed Ruff 0.15.9, a single 149-character annotated assignment
 became three physical lines with the annotation stranded on the closing-paren line, adding two
@@ -68,9 +68,10 @@ because the damage lands quietly inside a pre-commit hook rather than at a faili
   `learning/code`, `learning/capstone/code`, `drilling/code`). Precedent that per-course tool config
   at this exact path is normal and resolves correctly.
   [database-internals pyrightconfig.json](../../../apps/ayokoding-www/content/en/learn/courses/database-internals-and-storage-engines/pyrightconfig.json)
-- **The lint-staged formatter table** — the governance record of `ruff format` as the repo's Python
+- **The staged-formatter table** — the governance record of `ruff format` as the repo's Python
   formatter hook, alongside every other language's in-place formatter.
-  [nx-targets](../../../repo-governance/development/infra/nx-targets.md), [package.json](../../../package.json)
+  [Formatting and File-Type Linting](../../../repo-governance/development/infra/nx-targets/formatting-and-file-type-linting.md),
+  [format-staged](../../../scripts/format-staged)
 - **`ayokoding-learning-path-04-course-authoring`** — the completed authoring plan this work was
   filed alongside and then explicitly decoupled from, as a code-adjacent configuration repair rather
   than a content change.

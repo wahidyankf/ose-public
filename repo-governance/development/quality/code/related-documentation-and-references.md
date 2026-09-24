@@ -7,6 +7,7 @@ when_to_use: "Use for a related convention or reference."
 
 ## Related Documentation
 
+- [Git Hook Lifecycle](../../workflow/git-hook-lifecycle.md) - Registry-backed Husky shims and their CI relationship
 - [Commit Message Convention](../../workflow/commit-messages.md) - Detailed commit message rules
 - [No Machine-Specific Information in Commits](.././no-machine-specific-commits.md) - Practice prohibiting machine-specific paths and credentials from committed code
 - [Trunk Based Development](../../workflow/trunk-based-development.md) - Git workflow and branching strategy
@@ -19,5 +20,4 @@ when_to_use: "Use for a related convention or reference."
 
 - [Prettier Documentation](https://prettier.io/docs/en/)
 - [Husky Documentation](https://typicode.github.io/husky/)
-- [lint-staged Documentation](https://github.com/lint-staged/lint-staged)
 - [Conventional Commits](https://www.conventionalcommits.org/)

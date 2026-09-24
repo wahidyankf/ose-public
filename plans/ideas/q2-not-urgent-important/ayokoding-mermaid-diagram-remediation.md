@@ -95,10 +95,14 @@ defect.**
 
 ## Why now
 
-A temporary `--exclude apps/ayokoding-www/content` is in place in `.github/workflows/main-ci.yml` and
-the `package.json` lint-staged `*.md` chain so the parser fix could land green. That exclude is a
+A temporary `--exclude apps/ayokoding-www/content` was put in `.github/workflows/main-ci.yml` and
+the `package.json` lint-staged `*.md` chain so the parser fix could land green. That exclude was a
 coverage hole in the **reader-facing** site — precisely where the convention's mobile-rendering
 rationale matters most. It should not become permanent by default.
+
+Update (2026-09-24): that workflow and the lint-staged chain are both retired. The `md-mermaid`
+registry gate now validates staged `.md` files at pre-commit and changed `.md` files on pull
+requests with no exclude, so an edited course page must pass; untouched pages are never re-checked.
 
 ## Prior art / precedents
 
@@ -150,7 +154,8 @@ content trees differ.
 ## What success looks like + promotion signal
 
 Success: `md mermaid validate` runs with **no** `apps/ayokoding-www/content` exclude and reports zero
-violations, in CI and in the lint-staged chain, with no diagram having lost a node or an edge.
+violations, on both the pre-commit and pull-request surfaces, with no diagram having lost a node or
+an edge.
 
 Promotion signal: ready once the threshold question above is settled — if the thresholds stand, this is
 a large but mechanical remediation plan; if they do not, it becomes a much smaller convention change

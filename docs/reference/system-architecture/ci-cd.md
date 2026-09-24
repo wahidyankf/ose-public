@@ -42,25 +42,25 @@ graph LR
     class HOOKS,VALIDATED teal
 ```
 
-**Pre-commit quality gates (run in parallel):**
+**Pre-commit registry gates (declaration order, fail fast):**
 
 ```mermaid
 graph LR
     accTitle: CI/CD Pipeline Overview 2
-    accDescr: Pre-commit Hook leads to AyoKoding Update; Pre-commit Hook leads to Prettier Format; Pre-commit Hook leads to Link Validator.
+    accDescr: Pre-commit Hook leads to Public Safety; Public Safety leads to Format Staged; Format Staged leads to Declared Checks.
     PRE_COMMIT[Pre-commit Hook]
-    AYOKODING[AyoKoding Update]
-    PRETTIER[Prettier Format]
-    LINK_VAL[Link Validator]
+    SAFETY[Public Safety]
+    FORMAT[Format Staged]
+    CHECKS[Declared Checks]
 
-    PRE_COMMIT --> AYOKODING
-    PRE_COMMIT --> PRETTIER
-    PRE_COMMIT --> LINK_VAL
+    PRE_COMMIT --> SAFETY
+    SAFETY --> FORMAT
+    FORMAT --> CHECKS
 
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef brown fill:#CA9161,stroke:#000000,color:#000000
     class PRE_COMMIT teal
-    class PRETTIER,AYOKODING,LINK_VAL brown
+    class SAFETY,FORMAT,CHECKS brown
 ```
 
 **Pre-push and remote CI flow:**
@@ -90,49 +90,45 @@ graph LR
 
 ## Git Hooks (Local Quality Gates)
 
+Each Husky hook is a thin shim that runs one surface of the `repo-config.yml` gate registry through
+`./rhino gate run --surface <surface>` inside a `./hippo run` boundary. The registry, not this page,
+owns every gate's command and order; list them with `./rhino gate list`. See
+[Git Hook Lifecycle](../../../repo-governance/development/workflow/git-hook-lifecycle.md).
+
 ### Pre-commit Hook
 
-**Location**: `.husky/pre-commit`
+**Location**: `.husky/pre-commit` (`./rhino gate run --surface pre-commit`)
 
-**Execution Order:**
+**Execution Order:** declared gates in registry order, stopping at the first failure:
 
-1. **AyoKoding Content Processing** (if affected):
-   - Validate links in ayokoding-www content
-2. **Prettier Formatting** (via lint-staged):
-   - Format all staged files
-   - Auto-stage formatted changes
-3. **Link Validation**:
-   - Validate markdown links in staged files only
-   - Exit with error if validation fails
+1. **Public-safety tree screen**: blocks outbound-unsafe staged content
+2. **Formatting** (the `format-staged` mutation gate):
+   - Formats staged files by extension (Prettier and each language's formatter)
+   - Applies the formatted bytes to the index
+3. **Deterministic checks**: repository configuration, environment policy, Markdown lint and
+   validators, the emoji convention, and `shellcheck`/`hadolint`/`actionlint` over staged paths
 
-**Impact**: Ensures all committed code is formatted and content is processed
+**Impact**: Ensures committed files are formatted and pass the declared file checks
 
 ### Commit-msg Hook
 
-**Location**: `.husky/commit-msg`
+**Location**: `.husky/commit-msg` (`./rhino gate run --surface commit-msg --message-file "$1"`)
 
-**Validation**: Conventional Commits format via Commitlint
+**Validation**: the declared `commit-msg` gates — today the public-safety commit-message screen
 
-**Format**: `<type>(<scope>): <description>`
+**Format**: `<type>(<scope>): <description>` per the
+[Commit Message Convention](../../../repo-governance/development/workflow/commit-messages.md)
 
-**Valid Types**: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test
-
-**Impact**: Ensures consistent commit message format
+**Impact**: Blocks a commit message that fails a declared gate
 
 ### Pre-push Hook
 
-**Location**: `.husky/pre-push`
+**Location**: `.husky/pre-push` (`./rhino gate run --surface pre-push --push-updates-stdin`)
 
-**Execution Order:**
+**Execution Order:** the declared `pre-push` gates — today the public-safety tree screen and
+environment-policy validation. Pre-push runs no `test:quick` and no Markdown lint.
 
-1. **Nx Affected Tests**:
-   - Run `test:quick` target for all affected projects
-   - Only tests projects changed since last push
-2. **Markdown Linting**:
-   - Run markdownlint-cli2 on all markdown files
-   - Exit with error if linting fails
-
-**Impact**: Prevents pushing code that fails tests or has markdown violations
+**Impact**: Blocks a push that fails a declared gate; tests run in the PR quality gate
 
 ## GitHub Actions Workflows
 
@@ -144,14 +140,16 @@ graph LR
 
 **Steps:**
 
-1. Enumerate matrix-wired CI gates with `./rhino gate list`.
-2. Run one `gate run --surface=ci --only=<id>` matrix job per declared entry.
-3. Keep language-specific `test:quick`, compatibility, and structural-spec jobs hand-wired where
-   their toolchain setup is required.
-4. Make the stable `Quality gate` join depend on the matrix and every retained job.
+1. `Detect affected languages` reads the tags of `nx affected` projects.
+2. `Repository policy` runs the whole `pull-request` surface with
+   `./rhino gate run --surface pull-request --base <sha> --head <sha>`; `format-staged` replays the
+   formatters over the changed paths and fails on any difference.
+3. One job per detected language (TypeScript, .NET, Flutter, Java, Go, Python) runs affected
+   `typecheck`, `lint`, and `test:quick` (plus `compat:min-version` where declared).
+4. The stable `Quality gate` join fails if any of those jobs failed.
 
 **Purpose**: Full quality gate on every PR and push to `main`. The registry is the check-set source
-of truth; `gate validate` rejects a stale matrix or missing retained job.
+of truth for the `pull-request` surface; `gate validate` checks its composition.
 
 **Note**: The standalone `markdown-validate.yml` workflow has been deleted. Per-file Markdown
 validators (markdownlint, mermaid, heading hierarchy, naming, front matter) run as declared

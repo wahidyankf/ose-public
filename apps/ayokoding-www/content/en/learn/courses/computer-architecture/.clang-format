@@ -4,7 +4,7 @@
 # Why this file exists: every example in this topic carries a dense trailing `// => ...`
 # educational annotation on nearly every code line (the by-example convention's annotation-density
 # requirement). The repo has no root-level .clang-format config, so `clang-format -i` (run by the
-# pre-commit lint-staged hook) falls back to LLVM's default style, which wraps long annotated
+# pre-commit format-staged gate) falls back to LLVM's default style, which wraps long annotated
 # lines/macros across multiple physical lines and reorders #include directives alphabetically --
 # both silently drift the on-disk .c files out of byte-identity with the markdown pages' embedded
 # code blocks. See `../computer-science-foundations/ruff.toml` for the same fix applied to an

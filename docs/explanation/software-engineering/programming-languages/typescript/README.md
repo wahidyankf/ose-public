@@ -1509,7 +1509,6 @@ async function processDonation(data: DonationInput): Promise<Result<Donation, Er
 - **ESLint**: 9.39.0 / 10.0.0 (flat config)
 - **Prettier**: 3.8.0 (formatting)
 - **Husky**: 9.x (Git hooks)
-- **lint-staged**: 15.x (pre-commit)
 
 ### Web Frameworks
 

@@ -2,7 +2,7 @@ root = true
 
 # Scoped to this By Example topic's runnable shell scripts (learning/code/**).
 #
-# Why this file exists: the repo's lint-staged hook runs `shfmt -w` with no
+# Why this file exists: the repo's format-staged gate runs `shfmt -w` with no
 # `-i` flag, so shfmt falls back to its own default indent style -- a hard
 # tab -- for wrapped continuation lines (e.g. a `curl ... \` command whose
 # second line is indented). That tab is fine in a plain .sh file, but this

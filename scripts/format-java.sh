@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Wrapper for Spotless in monorepo context.
-# lint-staged passes absolute file paths; Gradle must run from the project root that owns them.
+# scripts/format-staged passes repository-relative file paths; Gradle must run from the project
+# root that owns them.
 # `--check` keeps verification non-mutating by using Spotless's failing check task.
 set -euo pipefail
 

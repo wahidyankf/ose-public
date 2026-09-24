@@ -4,7 +4,7 @@
 # Why this file exists: every example in this topic carries a dense trailing
 # `# => ...` educational annotation on nearly every code line (the by-example
 # convention's annotation-density requirement). The repo has no root-level
-# ruff config, so `ruff format` (run by the pre-commit lint-staged hook) uses
+# ruff config, so `ruff format` (run by the pre-commit format-staged gate) uses
 # its default line-length of 88, which wraps many of these single-line
 # statements across 2-5 physical lines -- once wrapped, the extra unannotated
 # physical lines silently pull annotation density below the required

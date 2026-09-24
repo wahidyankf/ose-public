@@ -295,7 +295,7 @@ graph LR
 - MUST use `dotnet build`, `dotnet test`, `dotnet publish` as primary build commands
 - SHOULD use FAKE build scripts for complex multi-step pipelines
 - MUST integrate Nx project targets for monorepo cross-project dependency tracking
-- SHOULD use pre-commit hooks for Fantomas formatting (Husky + lint-staged)
+- SHOULD use pre-commit hooks for Fantomas formatting (this repository's `format-staged` registry gate)
 
 **See**: [Automation Over Manual](../../../../../repo-governance/principles/software-engineering/automation-over-manual.md), [Reproducibility First](../../../../../repo-governance/principles/software-engineering/reproducibility.md)
 

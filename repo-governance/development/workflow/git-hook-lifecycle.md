@@ -66,9 +66,10 @@ changed range (`source: explicit-range`). Each gate's command selects the file t
 those paths, so one declaration serves both surfaces.
 
 Formatting is one `mutation` gate, `format-staged`, which calls `scripts/format-staged` to pick each
-path's formatter by extension. Locally (`mutation.local: apply-index`) Rhino applies the formatted
-bytes to the index; on the pull-request surface (`mutation.ci: verify-clean`) it replays the
-formatter and fails if any byte would change. CI never commits formatter fixes.
+path's formatter by extension. Its `mutation` block declares both modes: locally
+(`local: apply-index`) Rhino applies the formatted bytes to the index; on the pull-request surface
+(`ci: verify-clean`) it replays the formatter and fails if any byte would change. CI never commits
+formatter fixes.
 
 ## CI relationship
 

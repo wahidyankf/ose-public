@@ -19,11 +19,11 @@ for the table. The legacy `package.json` `lint-staged` block was retired on 2026
 1. `git commit` runs `.husky/pre-commit`, which calls `./rhino gate run --surface pre-commit`
 2. Rhino hands `format-staged` the staged paths from an index snapshot
 3. The script runs the matching formatter on each path and skips deleted paths
-4. Rhino applies the formatted bytes to the index (`mutation.local: apply-index`)
+4. Rhino applies the formatted bytes to the index (its `mutation` block sets `local: apply-index`)
 5. The commit proceeds if every later gate also passes
 
 On the pull-request surface the same gate replays the formatter over the changed paths
-(`mutation.ci: verify-clean`) and fails if any byte would change; CI never commits a fix.
+(`ci: verify-clean`) and fails if any byte would change; CI never commits a fix.
 
 **Benefits**:
 

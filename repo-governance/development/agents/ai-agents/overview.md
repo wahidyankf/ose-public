@@ -47,7 +47,7 @@ This repository maintains **multi-harness compatibility** across multiple AI cod
 agent mirrors are generated, while registry-declared configuration and plugin paths remain vendored.
 
 - **Primary (Source of Truth)**: The platform binding directory — edit agents here first
-- **Secondary mirrors (Generated)**: Synced from the primary using `npm run generate:bindings`
+- **Secondary mirrors (Generated)**: Synced from the canonical sources using `./rhino harness adapters generate`
 - **Secondary exceptions (Vendored)**: Maintained in place as declared by `repo-config.yml`
 
 **Workflow**: For a generated mirror, edit its declared source and run the binding generator. For a

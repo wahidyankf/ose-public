@@ -12,9 +12,8 @@ the commit-discipline rule for their output.
 
 - **`./rhino harness adapters generate`** — generator subcommand; emits all platform-binding
   artifacts (generated agent mirrors and Tier-2 bridge files) from the primary binding source
-  in a single invocation (AD4). Invoked by the `generate:bindings` npm script.
-- **`generate:bindings`** npm script — harness-neutral name for the single binding-generation
-  operation (AD8). Runs `./rhino harness adapters generate`; re-run whenever binding sources change.
+  in a single invocation (AD4). Run it directly whenever binding sources change; there is no npm
+  script wrapper.
 - **`./rhino harness adapters validate`** — deterministic subcommand (AD7); re-derives each
   generated binding in memory, asserts byte-equality, asserts catalog completeness, and asserts that
   every file in a generated agent directory still resolves to a source agent. Exits non-zero on
@@ -26,8 +25,8 @@ the commit-discipline rule for their output.
   - A file the entry's own `ownership:` list declares `vendored` is exempt: a hand-maintained
     tooling agent living inside a generated directory has no source by design. The exemption is a
     declaration, never an inference — an undeclared file with no source is still an orphan.
-- **`harness:bindings-validation`** npm script — wraps `./rhino harness adapters validate`; invoked
-  from the pre-push hook when binding surfaces change (AD8).
+- Neither command runs automatically: no hook, registry gate, or CI workflow invokes either one, so
+  run `validate` yourself before committing a binding change.
 - **`harness-compatibility-checker`** / **`harness-compatibility-fixer`** agents — run on
   demand or on a schedule; use web research to detect external upstream convention drift (distinct
   from the deterministic parity guard above).

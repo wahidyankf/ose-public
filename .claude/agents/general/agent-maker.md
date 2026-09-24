@@ -1,6 +1,6 @@
 ---
 name: agent-maker
-description: Creates new AI agent files in .claude/agents/ following AI Agents Convention. Changes are then synced to .opencode/agents/ via npm run generate:bindings. Ensures proper structure, skills integration, and documentation.
+description: Creates new AI agent files in .claude/agents/ following AI Agents Convention. Canonical agents in .agents/agents/ are then routed to every harness via ./rhino harness adapters generate. Ensures proper structure, skills integration, and documentation.
 tools: Read, Write, Glob, Grep, Bash
 model: sonnet
 effort: xhigh
@@ -38,8 +38,8 @@ Create new AI agent files following AI Agents Convention.
 3. Document core responsibility
 4. Define workflow
 5. Reference conventions and Skills
-6. Regenerate secondary agent bindings with `npm run generate:bindings`; never hand-edit a
-   generated mirror
+6. If the agent is canonical in `.agents/agents/`, regenerate its routes with
+   `./rhino harness adapters generate`; never hand-edit a generated mirror
 
 ## Reference Documentation
 

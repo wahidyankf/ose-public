@@ -38,9 +38,10 @@ PR review) are single-purpose pipelines instead.
 Every agent file's `name:` frontmatter is its identity — Claude Code discovers agents recursively
 by that field, not by file path, so grouping into subfolders does not break discovery. `name`
 must stay globally unique across the whole tree. OpenCode has no subfolder discovery, so
-`npm run generate:bindings` flattens generated agent files into `.opencode/agents/`; the same run
-emits Codex agent files under `.codex/agents/` and mirrors Skills to non-vendored paths under
-`.agents/skills/`. Generated filenames derive from `name`.
+`./rhino harness adapters generate` emits flat agent files into `.opencode/agents/` for the
+canonical agents in `.agents/agents/`; the same run emits Codex agent files under `.codex/agents/`,
+the Claude routes under `.claude/agents/plan/`, and one pointer per canonical skill under
+`.claude/skills/`. Generated filenames derive from `name`.
 
 ## Source and generated bindings
 

@@ -44,7 +44,7 @@ that was only ever illustrative.
 - Replace the illustrative example paths in the 4 source `.claude/agents/*.md` files with either
   (a) the repo's own surviving app (`rhino-cli`) where the example's shape allows it, or (b) a clearly
   fictional placeholder (e.g. `example-app`) that can't be mistaken for a real path.
-- Regenerate bindings (`npm run generate:bindings`) so the `.opencode/`, `.codex/`, and `.agents/`
+- Regenerate bindings (`./rhino harness adapters generate`) so the `.opencode/`, `.codex/`, and `.agents/`
   mirrors stay in sync rather than hand-editing them separately.
 
 ## Rough scope & non-goals

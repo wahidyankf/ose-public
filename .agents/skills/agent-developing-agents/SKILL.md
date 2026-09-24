@@ -20,9 +20,11 @@ Use normal file-editing tools only on paths that `repo-config.yml` classifies as
 a `generated` path or generated delimited region. Bulk substitution is appropriate only for
 mechanical changes within editable paths.
 
-Canonical agent and skill sources live under `.claude/agents/` and `.agents/skills/`. After editing
-them, run `npm run generate:bindings`; every changed mirror MUST land in the **same commit** as its
-source. Verify with `npm run harness:bindings-validation`, which covers all registered harnesses.
+Canonical agent and skill sources live under `.agents/agents/` and `.agents/skills/`; other
+`.claude/agents/` files are hand-authored and have no generated mirror. After editing a canonical
+source, run `./rhino harness adapters generate`; every changed mirror MUST land in the **same
+commit** as its source. Verify with `./rhino harness adapters validate`, which covers all registered
+harnesses. No hook or CI gate runs either command for you.
 Edit a vendored path in place only when the registry assigns that class; see
 [the two vendored subclasses](../../../repo-governance/glossary/vendored-exception-subclasses.md).
 See also [File-Touch Discipline](../../../repo-governance/development/practice/file-touch-discipline.md).

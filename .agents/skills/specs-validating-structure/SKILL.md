@@ -19,8 +19,9 @@ single folder. Subfolders are always included automatically.
 Quality-gate invocations may pass exact `delegated-gate-ids` under
 [Lifecycle Validation Ownership](../../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
 Do not run, re-derive, report, or fix the matching predicates: `governance-readme-index` owns
-README existence/index membership; `md-links` owns internal path/fragment resolution;
-`specs-structure` owns adoption, tree shape, and registered counts. Keep Gherkin journey coherence,
+README existence/index membership; `specs-structure` owns adoption, tree shape, and registered
+counts. No gate owns internal links: run `./rhino md internal-link validate` for missing targets and
+check `#fragment` anchors yourself, because it does not. Keep Gherkin journey coherence,
 semantic, and cross-folder judgment. Omitted delegation
 preserves standalone full behaviour. Accept `lifecycle-evidence`: checkers preserve it; fixers
 scope-intersect changed files and return `updated-lifecycle-evidence`.

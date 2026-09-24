@@ -35,8 +35,9 @@ properly references foundational learning material as prerequisites, and never d
 
 ## Input Parameters
 
-- Optional `delegated-gate-ids`/`lifecycle-evidence`: preserve evidence; with `md-links`, skip path
-  resolution but retain semantic prerequisite/separation checks. Omission means full validation.
+- Optional `delegated-gate-ids`/`lifecycle-evidence`: preserve evidence. No gate validates internal
+  links, so path resolution stays here with the semantic prerequisite/separation checks. Omission
+  means full validation.
 
 ## Core Responsibility
 

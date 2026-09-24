@@ -51,8 +51,8 @@ procedure (no automated fixer exists for this agent).
 
 Find all `docs/` markdown files, extract external and internal links, validate each (external via
 cached WebFetch, internal via filesystem existence), prune orphaned cache entries, update the cache
-and `lastFullScan`, generate the audit report, and recommend fixes for broken links. With
-`md-links` delegated, skip internal path/fragment checks; retain external/cache work and lifecycle
+and `lastFullScan`, generate the audit report, and recommend fixes for broken links. No
+lifecycle gate validates internal links, so internal checks always run here; preserve lifecycle
 evidence. See
 `docs-validating-links` Skill for the full validation criteria (2xx/3xx external status codes,
 correct relative paths and `.md` extensions per the

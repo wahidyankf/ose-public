@@ -34,9 +34,10 @@ comes from `repo-assessing-criticality-confidence`.
 
 ## Input Parameters
 
-- `delegated-gate-ids` (optional) — exact lifecycle gate IDs. When it contains `md-links`, skip
-  internal path and fragment resolution without AI re-derivation, but continue external HTTP/cache
-  validation. Omitted means standalone full link validation.
+- `delegated-gate-ids` (optional) — exact lifecycle gate IDs. No lifecycle gate validates internal
+  links, and `./rhino md internal-link validate` skips `apps/ayokoding-www/content/**`, so internal
+  path and fragment checks always run here alongside external HTTP/cache validation. Omitted means
+  standalone full link validation.
 - `lifecycle-evidence` (optional) — Step 0 evidence ledger; preserve it in the audit unchanged.
 
 ## Web Research Delegation

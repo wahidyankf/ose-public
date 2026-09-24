@@ -44,10 +44,11 @@ and technical validity (Mermaid syntax, OCR quality).
 ## Lifecycle Delegation
 
 Follow [Lifecycle Validation Ownership](../../../repo-governance/workflows/meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md).
-When `md-mermaid` is delegated, do not run Mermaid syntax validation or `crane check-all` (which
-includes it); use non-delegated per-dimension checks. Delegated `markdownlint`,
-`format-staged`, `md-heading-hierarchy`, `md-frontmatter`, `md-links`, or `md-naming`
-remove only generic Markdown mechanics. Always retain PDF/source text fidelity, source-corresponding
+The `md-mermaid` gate checks accessibility, the colour palette, and label length, not Mermaid
+syntax, so its delegation never removes Mermaid syntax validation or `crane check-all`. Delegated
+`markdownlint`, `format-staged`, `md-heading-hierarchy`, `md-frontmatter`, or `md-naming`
+remove only generic Markdown mechanics. No lifecycle gate validates internal links, so link checks
+are never delegated. Always retain PDF/source text fidelity, source-corresponding
 heading depth and order, nesting, tables, OCR, and figure representation.
 
 ## Validation Workflow

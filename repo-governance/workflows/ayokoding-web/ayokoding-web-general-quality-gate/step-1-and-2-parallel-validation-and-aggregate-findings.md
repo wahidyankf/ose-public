@@ -10,8 +10,8 @@ when_to_use: Use when running or interpreting the first two steps of the general
 Apply [Lifecycle Validation Ownership](../../meta/workflow-identifier/check-fix-lifecycle-validation-ownership.md)
 before composing checker prompts. Pass Step 0's `delegated-gate-ids` and `lifecycle-evidence` to
 every checker and fixer; exact delegated predicates cannot become findings or enter the fix loop.
-Link checking keeps external HTTP/cache validation while `md-links` owns internal path and
-fragment resolution.
+No lifecycle gate owns internal links, so link checking keeps internal path and fragment resolution
+as well as external HTTP/cache validation.
 
 ## 1. Parallel Validation (Parallel)
 

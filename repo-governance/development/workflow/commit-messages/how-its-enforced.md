@@ -1,15 +1,36 @@
 ---
-description: The Commitlint tool, the Husky commit-msg hook that runs it, and the overall commit workflow.
-when_to_use: Use when understanding what automatically rejects a malformed commit message, and why.
+description: How commit messages are checked today — review, the on-demand Commitlint configuration, and the public-safety screen the commit-msg hook runs.
+when_to_use: Use when you need to know what checks a commit message, or how to lint one against Conventional Commits yourself.
 ---
 
-# How It's Enforced
+# How It's Checked
 
-The project uses automated tools to ensure all commits follow the convention:
+No hook or CI step enforces the Conventional Commits format. Reviewers check it. A Commitlint
+configuration is kept so you can check a message yourself before committing.
 
-## Commitlint
+## What the Hooks Run
 
-**Tool**: [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint)
+**Hook**: `.husky/commit-msg`, which runs
+`./rhino gate run --surface commit-msg --message-file "$1"` under the `./hippo` guard.
+
+**What it runs**: the only gate declared on the `commit-msg` surface, `public-safety-commit-message`.
+It screens the message for the public-safety shapes this public repository must never publish, such
+as absolute home paths and private addresses. It does not check type, scope, case, or length.
+
+The `pull-request` surface in `pr-quality-gate.yml` runs the same gate over the PR's commit range.
+List the live gate set with `./rhino gate list` rather than trusting this page.
+
+**Example block** (the screen names a detector and a line, never the matched value):
+
+```text
+[public-safety] finding maintainer-path <commit-text-1>:1
+[public-safety] commit: blocked, 1 finding(s); publication must not proceed
+```
+
+## Commitlint (On Demand)
+
+**Tool**: [@commitlint/config-conventional](https://github.com/conventional-changelog/commitlint).
+`@commitlint/cli` and `@commitlint/config-conventional` are pinned devDependencies in `package.json`.
 
 **Configuration**: `commitlint.config.js`
 
@@ -24,25 +45,19 @@ module.exports = {
 - Project has `package.json` (this project uses npm workspaces )
 - Or rename config to `commitlint.config.mjs` if using ES6 modules
 
+**Run it yourself** against a message file; it exits 1 on a violation:
+
+```bash
+./hippo run --class ephemeral --resource-tier light --disk-path . -- \
+  npm exec -- commitlint --edit <message-file>
+```
+
 **Validates:**
 
 - Commit message format
 - Valid types
 - Description presence
 - Character limits
-
-## Husky Git Hook
-
-**Hook**: `.husky/commit-msg`
-
-**When it runs**: After you write a commit message, before the commit is created
-
-**What it does:**
-
-1. Intercepts the commit message
-2. Runs `commitlint` to validate format
-3. Rejects the commit if validation fails
-4. Provides helpful error message
 
 **Example error:**
 
@@ -59,16 +74,17 @@ module.exports = {
 
 ```mermaid
 flowchart TD
-    accTitle: Workflow
-    accDescr: Developer writes code leads to Stage changes: git add; Stage changes: git add leads to Pre-commit runs Prettier; Pre-commit runs Prettier leads to Write commit message; Write commit message leads to Commitlint: message valid?; and 4 more links.
+    accTitle: Commit message checks
+    accDescr: Developer writes code leads to Stage changes; Stage changes leads to Pre-commit gates; Pre-commit gates leads to Write commit message; Write commit message leads to Public-safety screen; the screen blocks a leak or lets the commit succeed; Review checks the format.
     W["Developer<br/>writes code"] --> S["Stage changes:<br/>git add"]
-    S --> P["Pre-commit runs<br/>Prettier"]
+    S --> P["Pre-commit<br/>registry gates"]
     P --> M["Write commit<br/>message"]
-    M --> H{"Commitlint:<br/>message valid?"}
-    H -->|Valid| OK["Commit succeeds"]
-    H -->|Invalid| R["Rejected with<br/>error message"]
-    R --> FX["Fix message,<br/>try again"]
-    FX --> H
+    M --> H{"Public-safety<br/>screen clean?"}
+    H -->|Clean| OK["Commit succeeds"]
+    H -->|Finding| R["Blocked"]
+    OK --> RV["Review checks<br/>format"]
 ```
 
-The pre-commit hook formats files with Prettier, and the commit-msg hook runs Commitlint on the message.
+The pre-commit hook runs the registry gates, including staged formatting, and the commit-msg hook
+runs the public-safety screen on the message. Conventional Commits format is left to review, with
+Commitlint available on demand.

@@ -28,7 +28,10 @@ Pre-commit may run only deterministic staged-file checks. It must not invoke `te
 
 ## commit-msg
 
-The commit-msg hook runs `commitlint` to enforce the [Conventional Commits](https://www.conventionalcommits.org/) format.
+The commit-msg hook runs `./rhino gate run --surface commit-msg --message-file "$1"`. Its only
+declared gate, `public-safety-commit-message`, screens the message for public-safety shapes. No hook
+or CI step checks the [Conventional Commits](https://www.conventionalcommits.org/) format below;
+review does, and Commitlint (`commitlint.config.js`) can check a message on demand.
 
 **Required format**: `<type>(<scope>): <description>`
 

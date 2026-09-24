@@ -1,11 +1,11 @@
 ---
-description: Automated code quality tools (Prettier, Husky, the Rhino gate registry, Commitlint) and git hooks for consistent formatting and commit message standards
+description: Code quality tools (Prettier, Husky, the Rhino gate registry, and an on-demand Commitlint config) and git hooks for consistent formatting and commit message standards
 when_to_use: "Use when configuring, debugging, or bypassing a code-quality git hook or formatter."
 ---
 
 # Code Quality Convention
 
-This convention documents the automated code-quality toolchain -- Prettier, Husky, the Rhino gate registry, and Commitlint -- and the git hooks that enforce formatting and commit-message standards.
+This convention documents the automated code-quality toolchain -- Prettier, Husky, and the Rhino gate registry -- and the git hooks it runs, plus the Commitlint configuration kept for on-demand commit-message checks. No hook or CI step runs Commitlint.
 
 ## Documents
 

@@ -37,6 +37,6 @@ does not change whether approval is required.
 - [Code Quality Convention](../quality/code.md) — Git hooks that `--no-verify` bypasses.
 - [Trunk Based Development Convention](../workflow/trunk-based-development.md) — CI-managed
   force-push in environment branches.
-- [Commit Message Convention](../workflow/commit-messages.md) — Conventional Commits enforced by the commit-msg hook.
+- [Commit Message Convention](../workflow/commit-messages.md) — Conventional Commits format, checked by review.
 - [Reproducible Environments Convention](../workflow/reproducible-environments.md) — Deterministic operations across the team.
 - [Git Push Default Convention](../workflow/git-push-default.md) — The default integration target this convention complements.

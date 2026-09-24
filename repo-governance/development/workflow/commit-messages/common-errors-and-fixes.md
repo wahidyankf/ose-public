@@ -1,9 +1,12 @@
 ---
-description: The most common Commitlint rejection errors and how to fix each one.
-when_to_use: Use when a commit is rejected by Commitlint and you need to fix the specific error shown.
+description: The most common errors an on-demand Commitlint run reports, and how to fix each one.
+when_to_use: Use when an on-demand Commitlint run or a reviewer flags a malformed message and you need to fix the specific error.
 ---
 
 # Common Errors and Fixes
+
+No hook runs Commitlint; these are the errors it reports when you run it yourself, as described in
+[How It's Checked](./how-its-enforced.md). Reviewers flag the same problems.
 
 ## Error: "type may not be empty"
 
@@ -35,8 +38,8 @@ PASS: feat: add login functionality
 
 ## Error: "header must not be longer than 100 characters"
 
-**Problem**: Header line too long. The enforced limit is 100; the 50-character figure elsewhere in
-these docs is a readability target, not what the hook rejects.
+**Problem**: Header line too long. Commitlint's limit is 100; the 50-character figure elsewhere in
+these docs is a readability target, not what Commitlint rejects.
 
 ```bash
 FAIL: feat(auth): add multi-provider authentication covering OAuth 2.0, SAML, API keys, and session refresh

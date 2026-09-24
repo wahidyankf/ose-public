@@ -12,7 +12,7 @@ when_to_use: Use to find an existing automation to reuse or extend.
 **Files**:
 
 - `pre-commit` - Format code with Prettier
-- `commit-msg` - Validate commit message with Commitlint
+- `commit-msg` - Screen the commit message with the public-safety check (Conventional Commits format is checked by review, not a hook)
 
 **Automation benefits**:
 

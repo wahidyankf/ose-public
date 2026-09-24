@@ -54,7 +54,7 @@ open-sharia-enterprise/
 ├── .dockerignore              # Docker build context exclusions (web app)
 ├── .nxignore                  # Files to exclude from Nx processing
 ├── .gitignore                 # Git ignore rules
-├── commitlint.config.js       # Commit message validation
+├── commitlint.config.js       # Commitlint config (on demand; no hook runs it)
 ├── CLAUDE.md                  # Claude Code guidance
 └── README.md                  # Project README
 ```

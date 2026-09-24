@@ -16,9 +16,21 @@ when_to_use: "Use when Prettier, commitlint, or a hook misbehaves."
    `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec prettier -- --write [file]`
 3. Fix syntax errors, then commit again
 
-## Commitlint Rejects Valid Message
+## Commit-msg Hook Blocks a Commit
 
-**Symptom**: Commit-msg hook fails but message looks correct
+**Symptom**: Commit-msg hook fails but the message follows Conventional Commits
+
+**Cause**: The hook runs only the `public-safety-commit-message` gate, not Commitlint, so a failure
+means the screen found a public-safety shape in the message.
+
+**Solutions**:
+
+1. Read the detector and line the screen reports
+2. Remove the flagged value from the message and commit again
+
+## Commitlint Rejects a Message You Checked
+
+**Symptom**: An on-demand Commitlint run exits 1 (no hook runs Commitlint)
 
 **Solutions**:
 

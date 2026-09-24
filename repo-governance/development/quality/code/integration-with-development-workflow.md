@@ -19,7 +19,7 @@ git commit -m "feat(api): add new endpoint"
 
 # Hooks execute:
 #  Prettier formats src/index.ts
-#  Commitlint validates message
+#  Public-safety screen checks message
 #  Commit succeeds
 
 # 4. Push to remote (pre-push hook runs)

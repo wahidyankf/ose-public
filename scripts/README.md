@@ -42,11 +42,10 @@ before calling the tool; the tool itself cannot be pointed at an arbitrary path 
 
 ## The public-safety gate
 
-[`public-safety/`](./public-safety/README.md) is not a wrapper. It is the outbound public-safety gate, copied byte
-for byte from the [ose-rules](https://github.com/wahidyankf/ose-rules) catalog at published `main` commit
-`0d38b3e387b0d73e4bff3b8ccafabab6bbce8ccd`. A change lands upstream first; this repository then explicitly
-re-adopts the files from a newly resolved full `main` commit. Its README says what it screens, what it prohibits,
-and how to run its tests.
+[`public-safety/`](./public-safety/README.md) is not a wrapper. It is the outbound public-safety gate, copied byte for
+byte from the [ose-rules](https://github.com/wahidyankf/ose-rules) catalog at published `main` commit
+`0d38b3e387b0d73e4bff3b8ccafabab6bbce8ccd`. This repository owns the copy and takes a later version only by explicit
+copy from a resolved full `main` commit. Its README says what it screens, what it prohibits, and how to run its tests.
 
 ## Which gates invoke these
 

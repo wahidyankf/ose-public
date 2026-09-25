@@ -14,5 +14,5 @@ cd specs/fixtures/plan-structure
 shasum -a 256 -c SHA256SUMS
 ```
 
-A mismatch means the corpus moved. The fix is upstream in the catalog, then a fresh copy and a new
-digest — never a local edit to make the check pass.
+A mismatch means the local corpus changed. Restore the adopted bytes, or adopt a newer catalog copy explicitly together
+with its `SHA256SUMS` — never a local edit to make the check pass.

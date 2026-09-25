@@ -520,8 +520,8 @@ friction.
 - [ ] [AI] Append all `AET-###` findings and save distinct sanitized matrices/transcripts at
       `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-api-quality-gate-backend.md` and
       `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-api-quality-gate-bff.md`. For each run, clean discovery records `pass` and skips
-      fixing. Otherwise invoke `swe-csharp-dev` for
-      backend findings or `swe-typescript-dev` for
+      fixing. Otherwise invoke `swe-code-maker` with `programming-csharp` for
+      backend findings or with `programming-typescript` for
       BFF findings once, with a failing regression before the root-cause fix.
 - [ ] [AI] Rebuild/restart the affected service once and invoke that scope's tester once in
       `quality-gate-phase: verification` with original IDs/reproduction and affected operations. Both

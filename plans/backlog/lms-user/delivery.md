@@ -296,7 +296,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
 **Proof:** ordered Unit/Integration RED→GREEN→REFACTOR transcripts and absence scans under
 `plans/in-progress/lms-user/evidence/phase-2/`.
 
-- [ ] [AI] **Owner: `swe-java-dev`; RED — resource-token boundary.** Add Unit and Integration adapters
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-java`; RED — resource-token boundary.** Add Unit and Integration adapters
       under `apps/ose-lms-be/src/test/java/com/oseplatform/lms/security/{oidc,context}/**` for valid
       personal/company tokens; wrong issuer/audience/algorithm/key/signature; expired/not-yet-valid time;
       malformed/missing subject; unknown/mismatched context; missing/multiple company; company on a
@@ -313,7 +313,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
   ```
 
-- [ ] [AI] **Owner: `swe-java-dev`; GREEN — resource-token boundary.** Implement only the failing seam
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-java`; GREEN — resource-token boundary.** Implement only the failing seam
       under `apps/ose-lms-be/src/main/java/com/oseplatform/lms/security/{oidc,context}/**`,
       `apps/ose-lms-be/src/main/resources/application.yaml`, and
       `apps/ose-lms-be/build.gradle.kts`: exact issuer/JWKS/algorithm/audience validation and typed
@@ -328,7 +328,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:build
   ```
 
-- [ ] [AI] **Owner: `swe-java-dev`; RED — profile and product authorization.** Add Unit and Integration
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-java`; RED — profile and product authorization.** Add Unit and Integration
       tests under `apps/ose-lms-be/src/test/java/com/oseplatform/lms/security/{principal,authorization}/**`
       for unknown subject, email/name change without principal change, revoked/stale context, role-like
       upstream claims, absent LMS-local permission, and attempted company override through headers or
@@ -341,7 +341,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
   ```
 
-- [ ] [AI] **Owner: `swe-java-dev`; GREEN — profile and product authorization.** Implement the failing
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-java`; GREEN — profile and product authorization.** Implement the failing
       seam under `apps/ose-lms-be/src/main/java/com/oseplatform/lms/security/{principal,authorization}/**`
       and wire it into protected controllers under
       `apps/ose-lms-be/src/main/java/com/oseplatform/lms/**`. Derive immutable identity only from
@@ -356,7 +356,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
   ```
 
-- [ ] [AI] **Owner: `swe-java-dev`; RED — metadata/key lifecycle.** Add deterministic Unit and
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-java`; RED — metadata/key lifecycle.** Add deterministic Unit and
       Integration tests under `apps/ose-lms-be/src/test/java/com/oseplatform/lms/security/oidc/**` for
       discovery outage, stale cache, unknown `kid`, one controlled refresh, key rotation, and fail-closed
       dependency behavior. Run the commands below and save `plans/in-progress/lms-user/evidence/phase-2/05-jwks-red.txt`.
@@ -368,7 +368,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
   ```
 
-- [ ] [AI] **Owner: `swe-java-dev`; GREEN — metadata/key lifecycle.** Implement only the bounded cache,
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-java`; GREEN — metadata/key lifecycle.** Implement only the bounded cache,
       rotation, and one-refresh behavior under
       `apps/ose-lms-be/src/main/java/com/oseplatform/lms/security/oidc/**` and its exact configuration in
       `apps/ose-lms-be/src/main/resources/application.yaml`. Run the commands below and save
@@ -380,7 +380,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-be:test:integration
   ```
 
-- [ ] [AI] **Owner: `swe-java-dev`; REFACTOR and coverage.** Separate protocol validation, principal
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-java`; REFACTOR and coverage.** Separate protocol validation, principal
       mapping, context, and domain authorization within the bounded `security/**` paths without changing
       observable behavior. Run the exact commands below and save `plans/in-progress/lms-user/evidence/phase-2/07-refactor.txt` plus
       the coverage report. Acceptance: all commands exit 0 and authored production-line Unit coverage is
@@ -447,7 +447,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
 **Proof:** ordered client/session/UI/persistence RED→GREEN→REFACTOR transcripts under
 `plans/in-progress/lms-user/evidence/phase-3/`.
 
-- [ ] [AI] **Owner: `swe-typescript-dev`; project scaffold.** Create the repository-standard Next.js and
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-typescript`; project scaffold.** Create the repository-standard Next.js and
       Playwright projects only under `apps/ose-lms-app-web/**` and `apps/ose-lms-app-web-e2e/**`, using
       the delivered `apps/ose-id-web/{project.json,next.config.*,tsconfig*.json}` and
       `apps/ose-id-web-e2e/{project.json,playwright.config.*,tsconfig*.json}` only as structural prior art;
@@ -474,7 +474,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run-many -t test:coverage:behaviour --projects=ose-lms-app-web,ose-lms-app-web-e2e
   ```
 
-- [ ] [AI] **Owner: `swe-typescript-dev`; RED — OIDC transaction and session protocol.** Add Unit and
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-typescript`; RED — OIDC transaction and session protocol.** Add Unit and
       Next-server Integration tests under
       `apps/ose-lms-app-web/{src,tests}/**/{oidc,session,csrf}*.{spec,test}.ts` for state/nonce/PKCE S256,
       exact callback/return path, code/ID-token validation, opaque cookie attributes/rotation/expiry,
@@ -488,7 +488,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:test:integration
   ```
 
-- [ ] [AI] **Owner: `swe-typescript-dev`; RED — shared persistence prerequisite.** Add Unit contracts
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-typescript`; RED — shared persistence prerequisite.** Add Unit contracts
       for bounded/idempotent retention commands and absence of hard-delete SQL; add migration,
       constraint, audit-column/time/pair/guard/grant, hard-delete denial, soft-delete, restart,
       multi-instance, checksum-drift, and key-absence Integration tests under
@@ -505,7 +505,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:session-retention:local
   ```
 
-- [ ] [AI] **Owner: `swe-typescript-dev`; GREEN — shared persistence prerequisite.** Apply both exact
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-typescript`; GREEN — shared persistence prerequisite.** Apply both exact
       physical schemas from technical document 001 under
       `apps/ose-lms-app-web/src/server/session/{migrations,repository}/**` with owned local PostgreSQL
       configuration under `infra/dev/ose-lms/**`; implement server-only Kysely + `pg`, the advisory-lock/
@@ -523,7 +523,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:build
   ```
 
-- [ ] [AI] **Owner: `swe-typescript-dev`; GREEN — OIDC transaction and session protocol.** Implement only
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-typescript`; GREEN — OIDC transaction and session protocol.** Implement only
       the failing server seam under `apps/ose-lms-app-web/src/server/{oidc,session,csrf}/**` and route
       handlers under `apps/ose-lms-app-web/src/app/{auth/oidc,api/bff/auth}/**`; wire exact delivered
       issuer/client/resource configuration through the app's env schema and `project.json`. Browser state
@@ -538,7 +538,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web:build
   ```
 
-- [ ] [AI] **Owner: `swe-typescript-dev`; RED — user-facing auth/context/logout.** Add component Unit and
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-typescript`; RED — user-facing auth/context/logout.** Add component Unit and
       Next-server Integration tests under `apps/ose-lms-app-web/{src,tests}/**/*.{spec,test}.{ts,tsx}` for
       sign-in entry; callback/cancel/error; personal/company label; switch reauthorization; both logout
       modes; protected learning; focus/keyboard/status semantics; and 320/768/1280 CSS-pixel layouts.
@@ -553,7 +553,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
   ```
 
-- [ ] [AI] **Owner: `swe-typescript-dev`; GREEN — user-facing auth/context/logout.** Implement only the
+- [ ] [AI] **Owner: `swe-code-maker` with `programming-typescript`; GREEN — user-facing auth/context/logout.** Implement only the
       failing views/components under `apps/ose-lms-app-web/src/{app,features}/**`: safe sign-in and result
       states, protected `/learning`, context switch, and both logout choices. Switching revokes the old
       context-bound LMS session before fresh authorization; logout revokes local state before upstream
@@ -631,7 +631,7 @@ principal plus a valid personal or company context before LMS-local authorizatio
 **Proof:** ordered runner/journey RED→GREEN→REFACTOR evidence, two clean real-process runs, one injected
 failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase-4/`.
 
-- [ ] [AI] **Owner: `swe-e2e-dev`; RED — composed lifecycle.** Add lifecycle tests under
+- [ ] [AI] **Owner: `swe-code-maker` with `writing-browser-e2e-tests`; RED — composed lifecycle.** Add lifecycle tests under
       `apps/ose-lms-app-web-e2e/steps/local-stack/**` for start/readiness/child failure/interrupt/finally/
       cleanup across LMS web/API/session PostgreSQL and the delivered OSE ID web/API/PostgreSQL/Mailpit/
       fake-Google runner. Require collision-safe explicit ports and no sleep/retry/server reuse. Run the
@@ -643,7 +643,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
   ```
 
-- [ ] [AI] **Owner: `swe-e2e-dev`; GREEN — composed lifecycle.** Implement the outer runner and owned
+- [ ] [AI] **Owner: `swe-code-maker` with `writing-browser-e2e-tests`; GREEN — composed lifecycle.** Implement the outer runner and owned
       fixture/cleanup code only under `apps/ose-lms-app-web-e2e/{src,steps,fixtures}/local-stack/**`, its
       `project.json`, and `infra/dev/ose-lms/**`. Invoke OSE ID's public start/ready/version/cleanup
       contract, then LMS; preserve the primary exit code and use a bounded outer `finally`, never broad
@@ -658,7 +658,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:assert-clean
   ```
 
-- [ ] [AI] **Owner: `swe-e2e-dev`; RED — built-process journeys.** Add Playwright/Cucumber adapters under
+- [ ] [AI] **Owner: `swe-code-maker` with `writing-browser-e2e-tests`; RED — built-process journeys.** Add Playwright/Cucumber adapters under
       `apps/ose-lms-app-web-e2e/steps/{authentication,resource-server,absence}/**` for login, cancel/error,
       token-negative matrix, personal context, none/one/many companies, switch, entitlement/membership
       removal, email change, local roles, both logout modes, issuer outage, and credential-authority
@@ -670,7 +670,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:e2e
   ```
 
-- [ ] [AI] **Owner: `swe-e2e-dev`; GREEN — built-process journeys.** Implement only missing synthetic
+- [ ] [AI] **Owner: `swe-code-maker` with `writing-browser-e2e-tests`; GREEN — built-process journeys.** Implement only missing synthetic
       fixtures and steps under `apps/ose-lms-app-web-e2e/{fixtures,steps}/**`, including deterministic
       personal/Company A/Company B identities and LMS-local role policy. Run the commands below and save
       `plans/in-progress/lms-user/evidence/phase-4/04-journeys-green.txt`. Acceptance: E2E and static behaviour coverage exit 0 with
@@ -682,7 +682,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
   rtk ./hippo run --class ephemeral --resource-tier standard --disk-path . -- npm exec nx -- run ose-lms-app-web-e2e:test:coverage:behaviour
   ```
 
-- [ ] [AI] **Owner: `swe-e2e-dev`; REFACTOR and resilience proof.** Remove copied OSE ID fixture/config/
+- [ ] [AI] **Owner: `swe-code-maker` with `writing-browser-e2e-tests`; REFACTOR and resilience proof.** Remove copied OSE ID fixture/config/
       lifecycle logic from the bounded LMS E2E paths, then run the unfiltered E2E target twice from
       independently clean state and one explicit child-readiness-failure case. Run the commands below
       in order and save `plans/in-progress/lms-user/evidence/phase-4/05-refactor-run-{1,2,failure,cleanup}.txt`. Acceptance: the two
@@ -915,8 +915,8 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       report with exact base URL/contract/Gherkin/fixture inputs and no destructive success call; missing
       readiness, incomplete coverage, or `partial`/`fail` stops and routes to the owning Phase 2/3 packet.
 - [ ] [AI] **Owner: API gate integrator; bounded finding lifecycle.** For each API run, perform exactly one full discovery, triage original `AET-###` findings at
-      the strict threshold, and append each as an unchecked task. Use `swe-java-dev` for LMS backend or
-      `swe-typescript-dev` for LMS BFF fixes, once per bounded run, with a reproducing regression test;
+      the strict threshold, and append each as an unchecked task. Use `swe-code-maker` with `programming-java` for LMS backend or
+      with `programming-typescript` for LMS BFF fixes, once per bounded run, with a reproducing regression test;
       rebuild/restart once and run one scoped verification of original IDs plus affected operations.
       Record base URL, contract/spec/fixture inputs, AET IDs, commands, sanitized evidence,
       `final-status`, and `lifecycle-status`. `partial`, `fail`, pending lifecycle evidence, contract

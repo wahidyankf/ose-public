@@ -371,7 +371,7 @@ fix the root cause without weakening its contract/test, and rerun the failed sta
       endpoints plus loopback-only per-test scenario control. Use synthetic `.test` identities and unique
       stack IDs; run the Phase 3 backend E2E command. Acceptance: success and all trust-failure cases
       reach the Google adapter. Save `plans/in-progress/ose-id-init-07-google-federation/evidence/phase-3-fake-protocol-green.txt`.
-  - _Suggested executor: `swe-csharp-dev`._
+  - _Suggested executor: `swe-code-maker` with `programming-csharp`._
 - [ ] [AI] **GREEN:** implement readiness, child-failure propagation, bounded event-driven waiting, and
       unconditional cleanup in the E2E lifecycle. Deliberately fail a test and crash the provider;
       run the Phase 3 backend E2E command; acceptance: primary status is preserved and no owned port/
@@ -595,7 +595,7 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       idempotency, replay, rate limit, or privacy rule.
 - [ ] [AI] For each API run, perform exactly one full discovery, triage the original `AET-###` findings
       at the strict threshold, and append each finding as a new unchecked delivery task. If findings are
-      in threshold, use `swe-csharp-dev` for backend fixes and `swe-typescript-dev` for BFF fixes, each
+      in threshold, use `swe-code-maker` with `programming-csharp` for backend fixes and with `programming-typescript` for BFF fixes, each
       with a reproducing regression test; rebuild/restart once, then run one scoped tester verification
       of original IDs and affected operations. Record contract/base URL, synthetic context, AET IDs,
       affected operations, commands, sanitized evidence path, `final-status`, and `lifecycle-status`.

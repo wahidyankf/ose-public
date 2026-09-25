@@ -318,7 +318,7 @@ RUNNER-VERSION-01..02, and actual prior implementation.
       non-authoritative or remove them; do not add Redis. After each slice run the Phase 2 run-many
       command; acceptance: its named RED cases turn green without a predecessor regression. Save
       `evidence/phase-2-state-store-green.txt`.
-  - _Suggested executor: `swe-csharp-dev` for backend and `swe-typescript-dev` for web._
+  - _Suggested executor: `swe-code-maker` with `programming-csharp` for backend and with `programming-typescript` for web._
 - [ ] [AI] **GREEN:** make web session/data protection and backend signing/encryption/key metadata
       instance-independent. Add readiness checks that compare store access and current key generation;
       run the Phase 2 run-many command; acceptance: A/B interchange passes and divergent/unavailable key

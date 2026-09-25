@@ -646,7 +646,7 @@ process/container/network/volume/temp-secret inventories are empty.
       idempotency, concurrency, rate-limit, and privacy rule. The tester does not perform successful
       destructive member/invitation/entitlement changes; isolated Integration/E2E owns those rows.
 - [ ] [AI] Perform one API discovery, triage original `AET-###` findings at the strict threshold, and
-      append each finding as a new unchecked delivery task. If needed, run `swe-typescript-dev` once for
+      append each finding as a new unchecked delivery task. If needed, run `swe-code-maker` with `programming-typescript` once for
       validated fixes with reproducing regression tests, rebuild/restart once, then run one scoped tester
       verification of original IDs and affected operations. Record base URL, contract/spec inputs,
       contexts, AET IDs, commands, sanitized evidence, `final-status`, and `lifecycle-status`.

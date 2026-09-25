@@ -27,7 +27,7 @@ The governance model has six layers. Each answers a different question and gives
 | 1. Principles  | Why do we value this approach?                    | [Principles](./principles/README.md) — foundational principles that guide all conventions and practices                |
 | 2. Conventions | What rules shape our documentation?               | [Conventions](./conventions/README.md) — documentation conventions and standards                                       |
 | 3. Development | How do we build and maintain software?            | [Development](./development/README.md) — internal development guidance for delivery work                               |
-| 4. AI Agents   | Who carries out defined checks and tasks?         | [Agent catalog](../.claude/agents/README.md) — catalog of automated agent roles and the governance checks they enforce |
+| 4. AI Agents   | Who carries out defined checks and tasks?         | [Agent catalog](../.agents/agents/README.md) — catalog of automated agent roles and the governance checks they enforce |
 | 5. Workflows   | When do we use a coordinated, multi-step process? | [Workflows](./workflows/README.md) — composes agents and procedures toward a goal                                      |
 
 The layers flow from enduring intent to day-to-day execution:
@@ -64,6 +64,6 @@ For example, the [Accessibility First principle](./principles/content/accessibil
 - **New to the repository:** read the [Vision](./vision/README.md) — the foundational purpose and change we seek, then the [Principles](./principles/README.md) — foundational principles that guide all conventions and practices, followed by the [Repository Governance Architecture](./repository-governance-architecture.md) — a six-layer governance hierarchy defining how rules, conventions, and practices are organized.
 - **Writing documentation:** start with [Conventions](./conventions/README.md) — documentation conventions and standards, especially its formatting, linking, and writing guidance.
 - **Changing code or delivery practices:** start with [Development](./development/README.md) — internal development guidance for delivery work, then use the relevant [Workflows](./workflows/README.md) — composes agents and procedures toward a goal.
-- **Working with automated agents:** use the [Agent catalog](../.claude/agents/README.md) to understand available roles and the governance documents they enforce.
+- **Working with automated agents:** use the [Agent catalog](../.agents/agents/README.md) to understand available roles and the governance documents they enforce.
 
 This structure keeps the repository's decisions discoverable: begin with the question at hand, use the matching layer, and follow links only as far as the work requires.

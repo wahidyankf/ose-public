@@ -7,10 +7,10 @@ when_to_use: "Use when tracing which agent or convention backs a specific behavi
 
 ## Related Documents
 
-- [web-exploratory-tester Agent](../../../../.claude/agents/web/web-exploratory-tester.md) — Phase 1 spec-aware pass.
-- [web-usability-tester Agent](../../../../.claude/agents/web/web-usability-tester.md) — Phase 2 spec-blind pass.
-- [web-design-tester Agent](../../../../.claude/agents/web/web-design-tester.md) — Phase 3 design-aware pass.
-- [plan-maker Agent](../../../../.claude/agents/plan/plan-maker.md) — Phase 4 solidification + tech-docs/delivery/UI-assets authoring.
+- [web-exploratory-tester Agent](../../../../.agents/agents/web-exploratory-tester.md) — Phase 1 spec-aware pass.
+- [web-usability-tester Agent](../../../../.agents/agents/web-usability-tester.md) — Phase 2 spec-blind pass.
+- [web-design-tester Agent](../../../../.agents/agents/web-design-tester.md) — Phase 3 design-aware pass.
+- [plan-maker Agent](../../../../.agents/agents/plan-maker.md) — Phase 4 solidification + tech-docs/delivery/UI-assets authoring.
 - [Plan Quality Gate workflow](../../plan/plan-quality-gate.md) — Phase 4 nested gate.
 - [Plan Execution workflow](../../plan/plan-execution.md) — runs the plan later, after human review.
 - [UI Mockups in Plan Docs](../../../conventions/formatting/diagrams/ui-mockups-principles-and-scope.md#ui-mockups-in-plan-docs-principles-in-practice-and-scope) — the both-tiers `assets/` mockup rule a UI-bearing plan must honour.

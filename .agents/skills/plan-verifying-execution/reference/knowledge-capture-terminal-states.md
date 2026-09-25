@@ -13,7 +13,7 @@ confirmed satisfied.
 1. **Every entry reached a terminal state** — read `learnings.md` (or confirm the explicit
    `No generalizable learnings — <reason>` escape if the file is absent or empty). Each surviving
    entry MUST record exactly one of:
-   - **Routed inline** (non-code homes only — `docs/`, `repo-governance/`, `.claude/agents/`,
+   - **Routed inline** (non-code homes only — `docs/`, `repo-governance/`, `.agents/agents/`,
      `.agents/skills/`, post-mortems, or any other non-code durable home) — confirm the referenced
      commit or file edit actually landed in this plan's own history.
    - **Filed as a `plans/ideas/<slug>.md` two-pager** — valid only with literal plan-artifact

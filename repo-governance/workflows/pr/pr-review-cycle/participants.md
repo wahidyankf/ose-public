@@ -16,7 +16,7 @@ specialist's full charter, owned scope, and routing rules.
 sit idle in this branch; it performs one consolidated generalist pass itself in place of the
 fan-out and originates findings directly, the single explicit carve-out to its otherwise-
 transform-only charter (see
-[`pr-review-synthesis-maker.md`'s Charter](../../../../.claude/agents/pr-review/pr-review-synthesis-maker.md) and
+[`pr-review-synthesis-maker.md`'s Charter](../../../../.agents/agents/pr-review-synthesis-maker.md) and
 [`pr-review-scout-maker.md`'s Trivial-Tier Handoff](../../../../.agents/skills/pr-review-scout-classification/reference/untrusted-input-and-output-contract.md#trivial-tier-handoff-dd-7)).
 
 **Plans-only branch**: the scout records the ordinary tier. Trivial uses the coordinator alone;
@@ -27,7 +27,7 @@ for its artifact test, primary probe, preserved five concerns, and suppression.
 - **`pr-review-scout-maker`** — pipeline stage 0, runs once at the start of each pass before the
   specialist fan-out. Owns risk-tier classification and specialist-set selection (D12) and
   shared-context assembly (D13), and reads the prior cycle's thread-resolution/dismissal state so the
-  fan-out does not re-litigate a settled thread. Defined at `.claude/agents/pr-review/pr-review-scout-maker.md`.
+  fan-out does not re-litigate a settled thread. Defined at `.agents/agents/pr-review-scout-maker.md`.
 - **Nine discipline specialists** — execution/sonnet-tier agents, one per discipline, run
   **concurrently** within a cycle's route-selected fan-out. Plans-only lite/full selects five;
   plans-only trivial selects none. **Even under the standard `full` route, fan-out is not always
@@ -38,7 +38,7 @@ for its artifact test, primary probe, preserved five concerns, and suppression.
   [`pr-review-scout-maker.md`'s Content-Type Applicability Filter](../../../../.agents/skills/pr-review-scout-classification/reference/risk-tier-and-specialist-selection.md#risk-tier-classification--specialist-set-selection-d12).
   Each fanned-out specialist reads the full PR context (diff + originating plan/issue) and emits raw,
   discipline-scoped findings; none posts to GitHub directly — every specialist's findings feed
-  `pr-review-synthesis-maker`. Defined at `.claude/agents/pr-review-<discipline>-maker.md`:
+  `pr-review-synthesis-maker`. Defined at `.agents/agents/pr-review-<discipline>-maker.md`:
   - `pr-review-architecture-maker` — new tradeoffs, module boundaries, reversibility, blast radius
   - `pr-review-logic-maker` — behaviour vs. domain intent, Gherkin acceptance-criteria conformance
   - `pr-review-governance-maker` — mechanical conformance to documented `repo-governance/` conventions
@@ -51,9 +51,9 @@ for its artifact test, primary probe, preserved five concerns, and suppression.
 - **`pr-review-synthesis-maker`** — planning/opus-tier coordinator, the eleventh pipeline agent.
   Deduplicates, re-categorizes, reasonableness-filters, and tool-verifies the specialists' raw
   findings before posting exactly ONE consolidated, numeric-confidence, cited, line-anchored review
-  via the GitHub Reviews API. Defined at `.claude/agents/pr-review/pr-review-synthesis-maker.md`.
+  via the GitHub Reviews API. Defined at `.agents/agents/pr-review-synthesis-maker.md`.
 - **`pr-review-fixer`** — cycle-only execution/sonnet-tier agent; it never runs in `pr-review`.
   Lists unresolved review threads from the consolidated review, triages each, applies fixes, pushes,
-  replies, and resolves threads. Defined at `.claude/agents/pr-review/pr-review-fixer.md`.
+  replies, and resolves threads. Defined at `.agents/agents/pr-review-fixer.md`.
 
 See [Pipeline Diagrams](./pipeline-diagrams.md) for the participants flowchart.

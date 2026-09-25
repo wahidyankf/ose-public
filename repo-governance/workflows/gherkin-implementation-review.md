@@ -28,7 +28,7 @@ material feature, adapter, exemption, or behaviour-coverage change. Use `full` f
 
 ### 1. Build the review matrix (Sequential)
 
-**Agent**: [`swe-code-checker`](../../.claude/agents/swe/swe-code-checker.md)
+**Agent**: [`swe-code-checker`](../../.agents/agents/swe-code-checker.md)
 
 Recursively discover each owner's canonical corpus and expand every Scenario Outline example. Apply
 the project-role matrix from the
@@ -43,7 +43,7 @@ applicable adapters, with no row subtracted for exemptions.
 
 ### 2. Inspect implementation substance (Sequential)
 
-**Agent**: [`swe-code-checker`](../../.claude/agents/swe/swe-code-checker.md)
+**Agent**: [`swe-code-checker`](../../.agents/agents/swe-code-checker.md)
 
 Trace each non-exempt path end to end. Given must establish the stated precondition through a
 boundary-valid fixture or injected double. When must invoke the production subject or public
@@ -64,7 +64,7 @@ evidence. Never convert implementation debt into an exemption.
 
 ### 3. Validate exemptions independently (Sequential)
 
-**Agent**: [`swe-code-checker`](../../.claude/agents/swe/swe-code-checker.md)
+**Agent**: [`swe-code-checker`](../../.agents/agents/swe-code-checker.md)
 
 For each exemption, verify scenario-level placement and its own immediately preceding
 `# Exemption(layer): <boundary mismatch>; alternative-proof: <Nx target> / <scenario>` comment.
@@ -76,7 +76,7 @@ implementation, or unfinished work cannot justify exemption.
 
 ### 4. Execute impacted runtime proof (Sequential)
 
-**Agent**: [`swe-code-checker`](../../.claude/agents/swe/swe-code-checker.md)
+**Agent**: [`swe-code-checker`](../../.agents/agents/swe-code-checker.md)
 
 Run affected `test:unit`, then manually select impacted `test:integration` and `test:e2e` scenarios.
 For `full`, run complete applicable suites. Never route Integration/E2E through hooks, PR,
@@ -87,7 +87,7 @@ command and result.
 
 ### 5. Finalize evidence (Sequential)
 
-**Agent**: [`swe-code-checker`](../../.claude/agents/swe/swe-code-checker.md)
+**Agent**: [`swe-code-checker`](../../.agents/agents/swe-code-checker.md)
 
 Store the report under `local-tmp/`. Record totals, every row, findings, exemptions, commands,
 results, and final status. PR evidence may summarize but not replace this ledger.

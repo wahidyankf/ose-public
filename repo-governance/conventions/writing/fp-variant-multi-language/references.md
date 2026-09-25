@@ -15,9 +15,9 @@ when_to_use: Use when looking up related conventions, the agents implementing th
 
 **Agents:**
 
-- [`apps-ayokoding-www-by-example-maker`](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-by-example-maker.md) — creates FP-variant by-example content following this convention
-- [`apps-ayokoding-www-by-example-checker`](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-by-example-checker.md) — validates compliance
-- [`apps-ayokoding-www-by-example-fixer`](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-by-example-fixer.md) — fixes violations
+- [`apps-ayokoding-www-by-example-maker`](../../../../.agents/agents/apps-ayokoding-www-by-example-maker.md) — creates FP-variant by-example content following this convention
+- [`apps-ayokoding-www-by-example-checker`](../../../../.agents/agents/apps-ayokoding-www-by-example-checker.md) — validates compliance
+- [`apps-ayokoding-www-by-example-fixer`](../../../../.agents/agents/apps-ayokoding-www-by-example-fixer.md) — fixes violations
 
 **In-FP-by-example overview pages:**
 

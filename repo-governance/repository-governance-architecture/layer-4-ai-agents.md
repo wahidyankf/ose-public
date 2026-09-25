@@ -7,9 +7,9 @@ when_to_use: Use for Layer 4's scope and agent requirements.
 
 **Purpose**: Automated implementers enforcing conventions and development practices. Answers WHO enforces rules and automates tasks.
 
-**Location**: `.claude/agents/`
+**Location**: `.agents/agents/`
 
-**Key Document**: [Agents Index](../../.claude/agents/README.md)
+**Key Document**: [Agents Index](../../.agents/agents/README.md)
 
 **Agent Families by Color**:
 

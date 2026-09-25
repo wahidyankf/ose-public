@@ -14,7 +14,7 @@ claims as MEDIUM (may be correct but unconfirmed).
 
 **Delegate multi-page research to `web-researcher`**: per the
 [Web Research Delegation Convention](../../../../repo-governance/conventions/writing/web-research-delegation.md),
-invoke [`web-researcher`](../../../../.claude/agents/web/web-researcher.md) for multi-page research
+invoke [`web-researcher`](../../../../.agents/agents/web-researcher.md) for multi-page research
 (threshold: 2+ `WebSearch` calls or 3+ `WebFetch` calls for one claim) — keeps the plan-audit context
 lean and returns a cited, synthesised summary. Use in-context `WebSearch`/`WebFetch` only for
 single-shot verification against a known authoritative URL.

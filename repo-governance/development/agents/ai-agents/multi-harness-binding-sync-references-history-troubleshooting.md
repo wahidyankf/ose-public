@@ -37,7 +37,7 @@ Neither command has an npm script wrapper.
 - **[CLAUDE.md](../../../../CLAUDE.md)** - the coding agent's shim, `class: source` (hand-authored)
 - **[AGENTS.md](../../../../AGENTS.md)** - vendor-neutral root file read by `.opencode/` and
   `.codex/`, `class: source` for both (hand-authored, no auto-generated warning)
-- **[Agent catalog](../../../../.claude/agents/README.md)** - authoritative for every binding;
+- **[Agent catalog](../../../../.agents/agents/README.md)** - authoritative for every binding;
   `.opencode/agents/` and `.codex/agents/` carry no catalog of their own
 - **[Agent skills catalog](../../../../.agents/skills/README.md)** - authoritative source catalog;
   **[secondary mirror](../../../../.agents/skills/README.md)** is Codex's generated real-file copy
@@ -60,11 +60,11 @@ Neither command has an npm script wrapper.
 
 ## Troubleshooting
 
-**Problem**: `.opencode/` agents out of sync with `.claude/`
+**Problem**: generated agent routes out of sync with `.agents/agents/`
 **Solution**: Run `./rhino harness adapters generate` to regenerate
 
 **Problem**: Conversion errors during sync
-**Solution**: Check agent frontmatter format in `.claude/agents/`, fix YAML syntax, re-sync
+**Solution**: Check canonical metadata in `.agents/agents/` with `./rhino metadata validate`, fix it, re-sync
 
 **Problem**: agent skills missing in one directory
 **Solution**: Verify skills exist in `.agents/skills/`, then run `./rhino harness adapters generate`

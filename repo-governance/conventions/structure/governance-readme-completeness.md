@@ -25,11 +25,11 @@ Structural enforcement covers every content tree. Annotation enforcement stays s
 can satisfy it: `docs/` indexes are partly hand-designed tables and `specs/` targets carry no
 frontmatter, so no annotation is derivable. Raising those two is tracked separately.
 
-Registry-declared generated binding paths carry no hand-authored-index obligation. `.opencode/` and
-`.agents/` are absent from the current gate scopes; the completeness gate lists `.codex/`, whose
-generated agent TOML files are not Markdown index targets. A source- or vendored-owned Markdown path
-inside a scanned root remains subject to the gate. `.claude/`, the canonical agent and Skill source,
-is scanned directly.
+Registry-declared generated binding paths carry no hand-authored-index obligation. `.opencode/` is
+absent from the current gate scopes; the completeness gate lists `.codex/`, whose generated agent TOML
+files are not Markdown index targets. A source- or vendored-owned Markdown path inside a scanned root
+remains subject to the gate. `.agents/agents/`, the canonical agent source, is a declared README-index
+tree; `.claude/` holds generated routes only.
 
 ## Finding Kinds
 

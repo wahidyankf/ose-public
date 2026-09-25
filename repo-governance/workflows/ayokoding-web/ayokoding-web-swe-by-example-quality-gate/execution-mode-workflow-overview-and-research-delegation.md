@@ -73,7 +73,7 @@ graph TB
 
 The `apps-ayokoding-www-by-example-maker` and `apps-ayokoding-www-facts-checker` agents invoked
 by this workflow delegate multi-page web research to the
-[`web-researcher`](../../../../.claude/agents/web/web-researcher.md) delegated agent when composing or
+[`web-researcher`](../../../../.agents/agents/web-researcher.md) delegated agent when composing or
 verifying claims about library versions, API signatures, or best practices requires more than
 one or two searches, or more than two fetches. In-context `WebSearch`/`WebFetch` remain available
 for single-shot verification against known authoritative URLs. This keeps each agent's context

@@ -5,9 +5,9 @@ when_to_use: Use when deciding whether an agent should reference a Skill via fro
 
 # Agent File Structure — Agent skills References
 
-**REQUIRED FIELD**: All agents MUST include a `skills:` frontmatter field for composability and consistency.
+**EXPECTED FIELD**: Every agent that uses agent skills MUST list them in its `skills:` field; an agent that uses none omits the field.
 
-**Purpose:** The `skills:` field declares which agent skills (knowledge packages in the platform binding skills directory) the agent leverages. This enables:
+**Purpose:** The `skills:` field declares which agent skills (knowledge packages in `.agents/skills/`) the agent leverages. This enables:
 
 - **Composability**: Explicit declarations of knowledge dependencies
 - **Consistency**: All agents follow same structure (no special cases)
@@ -19,10 +19,10 @@ when_to_use: Use when deciding whether an agent should reference a Skill via fro
 The `skills` field (already defined as field 6 in Required Frontmatter above) has the following detailed characteristics:
 
 - **Format**: YAML array of strings
-- **Required**: Yes (can be empty `[]`)
-- **Values**: Skill names matching folder names in the platform binding skills directory
-- **Auto-loading**: agent skills load when agent invoked AND task matches Skill description
-- **Validation**: Referenced agent skills must exist in the platform binding skills directory
+- **Required**: When the agent uses any skill; omit the field rather than writing an empty list
+- **Values**: Skill names matching folder names in `.agents/skills/`
+- **Preloading**: the generated Claude route projects the list as its `skills` field, so Claude Code preloads those skills when the agent starts
+- **Validation**: Referenced agent skills must exist in `.agents/skills/`
 - **Example**: `skills: [docs-creating-accessible-diagrams, repo-applying-maker-checker-fixer]`
 
 ## When to Reference agent skills vs. Inline Knowledge
@@ -50,9 +50,12 @@ The `skills` field (already defined as field 6 in Required Frontmatter above) ha
 ---
 name: docs-maker
 description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
-tools: Read, Write, Edit, Glob, Grep
-model: sonnet
-color: blue
+when_to_use: >-
+  Use when [scenario].
+tier: execution
+capabilities:
+  - repository-read
+  - repository-write
 skills:
   - docs-creating-accessible-diagrams
   - docs-applying-content-quality
@@ -66,10 +69,11 @@ skills:
 ---
 name: simple-helper
 description: Simple helper agent for basic tasks.
-tools: Read
-model: haiku
-color: green
-skills: []
+when_to_use: >-
+  Use when [scenario].
+tier: fast
+capabilities:
+  - repository-read
 ---
 ```
 
@@ -81,9 +85,12 @@ Agents can reference multiple agent skills that work together:
 ---
 name: apps-ayokoding-www-general-maker
 description: Expert at creating general Next.js content for ayokoding-www. Use when creating or updating general content pages for the AyoKoding website.
-tools: Read, Write, Edit, Glob, Grep
-model: sonnet
-color: blue
+when_to_use: >-
+  Use when [scenario].
+tier: execution
+capabilities:
+  - repository-read
+  - repository-write
 skills:
   - apps-ayokoding-www-developing-content
   - docs-creating-accessible-diagrams

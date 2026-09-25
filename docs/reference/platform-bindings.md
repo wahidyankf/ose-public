@@ -20,10 +20,13 @@ bindings live in their own directories and are explicitly excluded from the
 
 The checksum-pinned v0.4 Rhino configuration is authoritative. Canonical content is `AGENTS.md`,
 `.agents/agents/*.md`, and `.agents/skills/*/SKILL.md`. The current profiles generate only the
-declared routes: Claude receives `CLAUDE.md`, `.claude/agents/plan/` for the three plan agents, and
-one pointer `.claude/skills/{name}/SKILL.md` per canonical skill; Codex receives `.codex/agents/`;
-and OpenCode receives `.opencode/agents/` and reads `.agents/skills/` natively. No other mirror of a
-canonical skill exists. Run `./rhino harness adapters generate` followed by
+declared routes: Claude receives `CLAUDE.md`, one route `.claude/agents/{name}.md` per canonical
+agent, and one pointer `.claude/skills/{name}/SKILL.md` per canonical skill; Codex receives
+`.codex/agents/` and OpenCode receives `.opencode/agents/` for only the three plan agents their
+profiles' `agents` lists name, and OpenCode reads `.agents/skills/` natively. Each Claude agent route
+carries `tools` from the agent's `capabilities` and `constraints`, `model` and `effort` from its
+`tier`, and its `skills` list; no route carries a color. No other mirror of a canonical skill
+exists. Run `./rhino harness adapters generate` followed by
 `./rhino harness adapters validate`; do not hand-edit those generated routes.
 
 The catalog and migration discussion below record the predecessor binding model. They are retained
@@ -290,7 +293,7 @@ sources. All translations are performed by `./rhino harness adapters generate`.
 The Claude Code binding uses named color strings (`blue`, `green`, `yellow`, `purple`, etc.) in
 agent frontmatter. OpenCode uses theme tokens (`primary`, `success`, `warning`, `secondary`, etc.).
 
-- **Source**: `.claude/agents/<name>.md` frontmatter `color:` field
+- **Source**: formerly `.claude/agents/<name>.md` frontmatter `color:`; canonical agents carry no color today
 - **Transform**: the declared Rhino adapter profile
 - **Sink**: `.opencode/agents/<name>.md` frontmatter `color:` field
 - **Policy**: [Platform Binding Color Translation](../../repo-governance/development/agents/ai-agents/agent-color-categorization.md#platform-binding-color-translation)
@@ -316,7 +319,7 @@ configuration decides: a primary agent falls back to the globally configured mod
 to the model of the primary that invoked it. OpenCode has no `inherit` sentinel — omitting the key
 is the only way to express inheritance.
 
-- **Source**: `.claude/agents/<name>.md` frontmatter `model:` field
+- **Source**: `.agents/agents/<name>.md` metadata `tier:` field
 - **Transform**: the declared `opencode` profile omits a model projection, so the native adapter
   drops the field
 - **Sink**: `.opencode/agents/<name>.md` — no `model:` key is written
@@ -340,7 +343,7 @@ per-action verdict of `allow`, `ask`, or `deny`, it supports sub-patterns for ba
 wins**, which makes declaration order significant. This repository's generated mirrors emit
 `permission`; `tools` appears only in the vendored `opencode.json`, never in an emitted agent file.
 
-- **Source**: `.claude/agents/<name>.md` frontmatter `tools:` array
+- **Source**: `.agents/agents/<name>.md` metadata `capabilities:` and `constraints:` lists
 - **Transform**: the declared Rhino adapter profile
 - **Sink**: `.opencode/agents/<name>.md` frontmatter `permission:` map (`read: allow`, `write: allow`, etc.)
 

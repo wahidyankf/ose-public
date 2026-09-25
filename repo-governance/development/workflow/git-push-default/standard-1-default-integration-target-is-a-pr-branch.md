@@ -23,7 +23,7 @@ This is the correct behaviour in all of the following situations, absent an expl
 - General development work.
 - Plan creation, plan quality-gate runs, and plan archival.
 - Governance convention and workflow authoring.
-- Agent definition updates under `.claude/agents/`.
+- Agent definition updates under `.agents/agents/`.
 - Any other change not explicitly assigned a direct-push mode.
 
 **The one exception inside a plan: Phase 0 pushes nothing and opens no PR.** A plan's Phase 0 is

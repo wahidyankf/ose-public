@@ -9,8 +9,8 @@ Authors one plan per sibling repo, grilling every cross-repo gap first.
 
 ## Agent References
 
-Plan authoring and validation use [plan-maker](../../../.claude/agents/plan/plan-maker.md) and
-[plan-checker](../../../.claude/agents/plan/plan-checker.md). Repair belongs to the
+Plan authoring and validation use [plan-maker](../../../.agents/agents/plan-maker.md) and
+[plan-checker](../../../.agents/agents/plan-checker.md). Repair belongs to the
 [plan-quality-gate](./plan-quality-gate.md) itself; there is no separate fixer agent.
 
 ## Goal and Termination

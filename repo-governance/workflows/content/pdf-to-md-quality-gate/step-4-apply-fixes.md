@@ -53,5 +53,5 @@ The fixer MUST downgrade an originally-`HIGH_CONFIDENCE` finding to `MEDIUM_CONF
   same span, and the two fixes might collide.
 
 Downgraded findings appear in the fix report under **Skipped (MEDIUM_CONFIDENCE)** with the
-downgrade reason cited. See [pdf-to-md-fixer agent definition](../../../../.claude/agents/pdf-to-md/pdf-to-md-fixer.md)
+downgrade reason cited. See [pdf-to-md-fixer agent definition](../../../../.agents/agents/pdf-to-md-fixer.md)
 for the binding rule.

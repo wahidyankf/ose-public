@@ -26,7 +26,7 @@ when_to_use: Use before creating a new convention, practice, agent, workflow, or
 1. **Identify governing layers** - Which conventions/practices does this enforce?
 2. **Define atomic responsibility** - One clear purpose
 3. **Choose tools carefully** - Match to task (Read-only, Write, Edit, Bash, Web)
-4. **Document in Agents Index** - Add to `.claude/agents/README.md`
+4. **Document in Agents Index** - Add to `.agents/agents/README.md`
 5. **Reference relevant agent skills** - Which agent skills will help this agent?
 
 ## When Creating Workflows

@@ -5,5 +5,5 @@ when_to_use: Use when looking up the exact agent definition files this workflow 
 
 # Related Agents
 
-- [harness-compatibility-checker](../../../../.claude/agents/repo/harness-compatibility-checker.md) — validates parity invariants (Phase 0) and detects external harness drift (Phase 1)
-- [harness-compatibility-fixer](../../../../.claude/agents/repo/harness-compatibility-fixer.md) — applies validated parity and harness-compatibility fixes
+- [harness-compatibility-checker](../../../../.agents/agents/harness-compatibility-checker.md) — validates parity invariants (Phase 0) and detects external harness drift (Phase 1)
+- [harness-compatibility-fixer](../../../../.agents/agents/harness-compatibility-fixer.md) — applies validated parity and harness-compatibility fixes

@@ -67,9 +67,9 @@ where validation dimensions could run concurrently after user approval.
   pattern
 - **[Fixer Confidence Levels](../../../development/quality/fixer-confidence-levels.md)**: Confidence
   assessment
-- **[`apps-ayokoding-www-primer-checker` agent](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-primer-checker.md)**:
+- **[`apps-ayokoding-www-primer-checker` agent](../../../../.agents/agents/apps-ayokoding-www-primer-checker.md)**:
   Validation agent
-- **[`apps-ayokoding-www-primer-fixer` agent](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-primer-fixer.md)**:
+- **[`apps-ayokoding-www-primer-fixer` agent](../../../../.agents/agents/apps-ayokoding-www-primer-fixer.md)**:
   Fixing agent
-- **[`apps-ayokoding-www-primer-maker` agent](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-primer-maker.md)**:
+- **[`apps-ayokoding-www-primer-maker` agent](../../../../.agents/agents/apps-ayokoding-www-primer-maker.md)**:
   Content creation agent

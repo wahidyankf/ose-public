@@ -10,7 +10,7 @@ when_to_use: Use when deciding how a change reaches main, choosing a delivery mo
   This is duplicated (intentionally) in multiple files for different audiences:
   1. repo-governance/development/workflow/trunk-based-development.md (this file - comprehensive reference)
   2. AGENTS.md (summary for AI agents)
-  3. .claude/agents/plan/plan-maker.md (context for plan creation — hand-authored source;
+  3. .agents/agents/plan-maker.md (context for plan creation — hand-authored source;
      registry-declared generated agent mirrors under .opencode/ and .codex/ are never hand-edited)
   4. repo-governance/workflows/plan/plan-execution.md (context for plan execution — orchestrated by the calling context)
   5. .agents/skills/repo-practicing-trunk-based-development/SKILL.md (operator-facing invocable

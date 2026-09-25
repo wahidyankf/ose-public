@@ -63,7 +63,7 @@ This directory carries one **ecosystem** vision — why Open Sharia Enterprise e
 - [Core Principles](../principles/README.md) - Layer 1: Values serving this vision
 - [Conventions](../conventions/README.md) - Layer 2: Standards supporting the vision
 - [Development](../development/README.md) - Layer 3: Practices aligned with the vision
-- [AI Agents](../../.claude/agents/README.md) - Layer 4: Automation serving the mission
+- [AI Agents](../../.agents/agents/README.md) - Layer 4: Automation serving the mission
 - [Workflows](../workflows/README.md) - Layer 5: Processes supporting our goals
 - [Explanation Index](../../docs/explanation/README.md) - All conceptual documentation
 - [AGENTS.md](../../AGENTS.md) - Project guidance for all agents

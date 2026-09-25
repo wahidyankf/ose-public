@@ -10,7 +10,7 @@ secrets/private values, protected production or staging properties that belong o
 real machine-specific absolute paths. It performs no broad security or semantic review, fixer
 pass, CI wait, retry, or consecutive-clean confirmation.
 
-Run [`pr-review-security-maker`](../../../.claude/agents/pr-review/pr-review-security-maker.md) in
+Run [`pr-review-security-maker`](../../../.agents/agents/pr-review-security-maker.md) in
 **exact leak-only mode**. Its ordinary security charter is disabled for this invocation.
 
 ## Goal and Termination

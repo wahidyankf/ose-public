@@ -37,7 +37,7 @@ graph TD
 
 ## AI Agent Categorization
 
-**Location**: `.claude/agents/README.md`
+**Location**: `.agents/agents/README.md`
 
 ```markdown
 ### 🟦 docs-maker.md

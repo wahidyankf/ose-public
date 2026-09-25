@@ -7,17 +7,17 @@ when_to_use: "Use when you need a related convention on verification or plan str
 
 - [Plan Execution Workflow](../../../workflows/plan/plan-execution.md) — Step 2d mandates evidence capture
   during manual behavioural assertions.
-- [plan-execution-checker](../../../../.claude/agents/plan/plan-execution-checker.md) — validates evidence
+- [plan-execution-checker](../../../../.agents/agents/plan-execution-checker.md) — validates evidence
   presence as part of Step 7.
-- [plan-maker](../../../../.claude/agents/plan/plan-maker.md) — emits evidence-capture steps in delivery
+- [plan-maker](../../../../.agents/agents/plan-maker.md) — emits evidence-capture steps in delivery
   checklists for web-UI plans.
-- [web-exploratory-tester](../../../../.claude/agents/web/web-exploratory-tester.md) — saves screenshots to
+- [web-exploratory-tester](../../../../.agents/agents/web-exploratory-tester.md) — saves screenshots to
   the output destination's `evidence/` folder during exploratory testing: the new backlog plan
   (`plan` mode, explicit), the existing plan's folder (`delivery` mode), or `local-tmp/` (default
   mode).
-- [web-usability-tester](../../../../.claude/agents/web/web-usability-tester.md) — saves screenshots to the
+- [web-usability-tester](../../../../.agents/agents/web-usability-tester.md) — saves screenshots to the
   output destination's `evidence/` folder during usability evaluation (same three-mode selection as
   `web-exploratory-tester`).
-- [web-design-tester](../../../../.claude/agents/web/web-design-tester.md) — saves screenshots to the
+- [web-design-tester](../../../../.agents/agents/web-design-tester.md) — saves screenshots to the
   output destination's `evidence/` folder during design-fidelity evaluation (same three-mode selection
   as `web-exploratory-tester`).

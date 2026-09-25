@@ -14,7 +14,7 @@ All markdown files outside the website app directories:
 
 - `repo-governance/` — conventions, development practices, principles, workflows, vision
 - `docs/` — tutorials, how-to guides, reference, explanation
-- `.claude/agents/` — agent definition files
+- `.agents/agents/` — agent definition files
 - `.agents/skills/` — skill package files
 - `plans/` — planning documents (backlog, in-progress, done, ideas)
 - `specs/` — Gherkin feature files and OpenAPI contracts

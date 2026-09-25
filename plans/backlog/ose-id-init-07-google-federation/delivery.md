@@ -583,7 +583,7 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       Resolve every active hit; explicit plan-history non-goals may remain.
 - [ ] [AI] Run the bounded
       `repo-governance/workflows/api/api-quality-gate.md` twice in `mode: strict`, using
-      `.claude/agents/general/api-exploratory-tester.md` with `output-mode: delivery` and this exact plan
+      `.agents/agents/api-exploratory-tester.md` with `output-mode: delivery` and this exact plan
       path. Backend discovery targets `http://127.0.0.1:8501` with
       `specs/apps/ose/id-be/contracts/google-federation.openapi.yaml`, the backend federation Gherkin, and signed-out,
       recent/stale Person, conflicting-Person, replay, and disabled-provider synthetic contexts. BFF
@@ -604,8 +604,8 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
       relabeling a defect.
 - [ ] [AI] Run the bounded `repo-governance/workflows/ui/ui-quality-gate.md` in `mode: strict` over the
       changed Google route, BFF presentation, account-security, and shared-component source paths. Invoke
-      `.claude/agents/swe/swe-ui-checker.md` once for all seven static dimensions; if it reports
-      in-threshold findings, invoke `.claude/agents/swe/swe-ui-fixer.md` once, preserve false-positive and
+      `.agents/agents/swe-ui-checker.md` once for all seven static dimensions; if it reports
+      in-threshold findings, invoke `.agents/agents/swe-ui-fixer.md` once, preserve false-positive and
       below-threshold dispositions, then invoke the checker once in scoped verification mode. Record the
       audit/fix report paths, original finding IDs, affected components, lifecycle evidence, and final
       status. `partial`, `fail`, pending lifecycle evidence, or unresolved original finding blocks the
@@ -613,9 +613,9 @@ Cleanup after success, failure, or interruption: press Ctrl-C in the service ter
 - [ ] [AI] After visual sign-off, execute the Rule-15 in-place delivery variant described by
       `repo-governance/workflows/web/web-ux-test-fixing-planning.md` sequentially against the running
       `/sign-in`, `/auth/google/callback` result states, and `/account/security` journeys. Invoke
-      `.claude/agents/web/web-exploratory-tester.md` first with canonical specs, then
-      `.claude/agents/web/web-usability-tester.md` spec-blind, then
-      `.claude/agents/web/web-design-tester.md` with this plan's selected mockups/tokens. Each invocation
+      `.agents/agents/web-exploratory-tester.md` first with canonical specs, then
+      `.agents/agents/web-usability-tester.md` spec-blind, then
+      `.agents/agents/web-design-tester.md` with this plan's selected mockups/tokens. Each invocation
       uses `output-mode: delivery`, this plan path, all supported locales, breakpoints 320, 375, 768,
       1024, 1280, and 1440 CSS px, the recurrence-class list, and changed-surface list.
 - [ ] [AI] Reconcile the three live-tester coverage maps into one control × route × locale × breakpoint ×

@@ -56,7 +56,7 @@ We renamed "link-convention" to "linking-convention" for clarity
 
 ### Validation
 
-The [docs-checker agent](../../../.claude/agents/docs/docs-checker.md) validates this two-tier formatting requirement:
+The [docs-checker agent](../../../.agents/agents/docs-checker.md) validates this two-tier formatting requirement:
 
 - **First mention without link** → CRITICAL issue (breaks navigation)
 - **Subsequent mention without inline code** → HIGH issue (convention violation)

@@ -14,7 +14,7 @@ diffs and filters inapplicable lenses.
 ### Risk-tier fan-out (D12)
 
 The primary cost lever is **diff-size tiering**, not model choice. Risk-tier classification is
-performed by [`pr-review-scout-maker`](../../../../.claude/agents/pr-review/pr-review-scout-maker.md), not by
+performed by [`pr-review-scout-maker`](../../../../.agents/agents/pr-review-scout-maker.md), not by
 `pr-review-synthesis-maker` directly — the scout classifies each PR into one of three tiers by line
 count, file count, and whether it touches a security-sensitive path, and the specialist set fans out
 accordingly:

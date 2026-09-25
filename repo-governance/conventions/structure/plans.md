@@ -10,7 +10,7 @@ when_to_use: Use when placing, structuring, naming, or moving a plan.
   This convention is referenced by:
   1. plans/README.md (brief landing page with link to this convention)
   2. AGENTS.md (summary with link to this convention)
-  3. .claude/agents/plan/plan-maker.md (reference to this convention)
+  3. .agents/agents/plan-maker.md (reference to this convention)
   When updating, ensure all references remain accurate.
 -->
 

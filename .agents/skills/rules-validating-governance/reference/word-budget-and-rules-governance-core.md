@@ -30,7 +30,7 @@ are supplied. Re-evaluate contradictions, inaccuracies, semantic inconsistencies
 alignment because those remain domain judgement.
 
 **Scope**: all governance layers (`vision/`, `principles/`, `conventions/`, `development/`,
-`workflows/`, `.claude/agents/**/*.md` content/cross-layer consistency only — frontmatter
+`workflows/`, `.agents/agents/*.md` content/cross-layer consistency only — frontmatter
 shape/naming/mirror parity belong to `Rhino harness` and `harness-compatibility-checker`),
 `repository-governance-architecture.md`, `repo-governance/README.md`, `docs/explanation/README.md`.
 

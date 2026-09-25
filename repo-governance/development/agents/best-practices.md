@@ -1,5 +1,5 @@
 ---
-description: "Proven practices for developing maintainable, secure, and effective AI agents in the .claude/agents/ directory."
+description: "Proven practices for developing maintainable, secure, and effective AI agents in the .agents/agents/ directory."
 when_to_use: Use when authoring a new agent and checking it against proven practices, or citing a best practice in a review.
 ---
 
@@ -7,7 +7,7 @@ when_to_use: Use when authoring a new agent and checking it against proven pract
 
 > **Companion Document**: For common mistakes to avoid, see [Anti-Patterns](../agents/anti-patterns.md)
 
-This document outlines best practices for developing AI agents in the `.claude/agents/` directory. Following these practices ensures agents are maintainable, secure, and effective at automating repository tasks.
+This document outlines best practices for developing AI agents in the `.agents/agents/` directory. Following these practices ensures agents are maintainable, secure, and effective at automating repository tasks.
 
 ## Contents
 
@@ -21,7 +21,7 @@ This document outlines best practices for developing AI agents in the `.claude/a
 
 ## Overview
 
-This document outlines best practices for developing AI agents in the `.claude/agents/` directory. Following these practices ensures agents are maintainable, secure, and effective at automating repository tasks.
+This document outlines best practices for developing AI agents in the `.agents/agents/` directory. Following these practices ensures agents are maintainable, secure, and effective at automating repository tasks.
 
 ## Principles Implemented/Respected
 
@@ -48,7 +48,7 @@ Provide actionable guidance for:
 - [Anti-Patterns](./anti-patterns.md) - Common mistakes to avoid
 - [Skill Context Architecture](./skill-context-architecture.md) - Skill integration patterns
 - [Agent Workflow Orchestration Convention](./agent-workflow-orchestration.md) - How agents plan, verify, and self-improve during multi-step tasks
-- [Agents Index](../../../.claude/agents/README.md) - All available agents
+- [Agents Index](../../../.agents/agents/README.md) - All available agents
 
 ## Summary
 

@@ -244,22 +244,26 @@ After creating your Skill, update agents to reference it:
 
 ### Update Agent Frontmatter
 
-Edit agent file (e.g., `.claude/agents/agent-name.md`):
+Edit the canonical agent file (e.g., `.agents/agents/agent-name.md`):
 
 ```yaml
 ---
 name: agent-name
 description: Agent description
-tools: [Read, Write]
-model: sonnet
-color: blue
-skills: [domain__your-skill-name] # Add your Skill here
+when_to_use: >-
+  Use when [scenario].
+tier: execution
+capabilities:
+  - repository-read
+  - repository-write
+skills:
+  - domain__your-skill-name
 ---
 ```
 
 **Guidelines**:
 
-- Skills field can be empty `[]` (backward compatible)
+- Omit the `skills` field when the agent uses no skill
 - Add 1-3 Skills per agent (avoid overloading)
 - Choose Skills that directly support the agent's core responsibilities
 - Skills composition works (multiple Skills auto-load together)

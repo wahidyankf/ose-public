@@ -504,7 +504,7 @@ friction.
       `http://127.0.0.1:8501`, PostgreSQL `127.0.0.1:5438`, Mailpit SMTP `127.0.0.1:1026`, and Mailpit
       UI `http://127.0.0.1:8026`. Reset to synthetic fixtures before the session.
 - [ ] [AI] Invoke
-      [`api-exploratory-tester`](../../../.claude/agents/general/api-exploratory-tester.md) for one
+      [`api-exploratory-tester`](../../../.agents/agents/api-exploratory-tester.md) for one
       backend discovery run with `quality-gate-phase: discovery`, `output-mode: delivery`, this plan
       path, `mode: strict`, and `max-concurrency: 3`. Pass base `http://127.0.0.1:8501`, only the REST
       authorization/account/session operations consumed by the web, machine contract
@@ -520,8 +520,8 @@ friction.
 - [ ] [AI] Append all `AET-###` findings and save distinct sanitized matrices/transcripts at
       `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-api-quality-gate-backend.md` and
       `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-api-quality-gate-bff.md`. For each run, clean discovery records `pass` and skips
-      fixing. Otherwise invoke [`swe-csharp-dev`](../../../.claude/agents/swe/swe-csharp-dev.md) for
-      backend findings or [`swe-typescript-dev`](../../../.claude/agents/swe/swe-typescript-dev.md) for
+      fixing. Otherwise invoke [`swe-csharp-dev`](../../../.agents/agents/swe-csharp-dev.md) for
+      backend findings or [`swe-typescript-dev`](../../../.agents/agents/swe-typescript-dev.md) for
       BFF findings once, with a failing regression before the root-cause fix.
 - [ ] [AI] Rebuild/restart the affected service once and invoke that scope's tester once in
       `quality-gate-phase: verification` with original IDs/reproduction and affected operations. Both
@@ -536,7 +536,7 @@ API gate and before browser sessions. This is a static source audit; the live de
 runtime complement, not a substitute.
 
 - [ ] [AI] Invoke
-      [`swe-ui-checker`](../../../.claude/agents/swe/swe-ui-checker.md) with
+      [`swe-ui-checker`](../../../.agents/agents/swe-ui-checker.md) with
       `quality-gate-phase: discovery`, `mode: strict`, `max-concurrency: 3`, the lifecycle handoff, and
       scope `apps/ose-id-web/` plus every changed shared component under `libs/web-ui/`. Require all
       seven dimensions: tokens, accessibility, contrast, component patterns, dark mode, responsive
@@ -544,7 +544,7 @@ runtime complement, not a substitute.
       `local-tmp/swe-ui/swe-ui__*__audit.md` path and its sanitized outcome in
       `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-ui-quality-gate.md`.
 - [ ] [AI] If no strict-threshold finding exists, record `final-status: pass` and do not fix. Otherwise
-      invoke [`swe-ui-fixer`](../../../.claude/agents/swe/swe-ui-fixer.md) exactly once with the original
+      invoke [`swe-ui-fixer`](../../../.agents/agents/swe-ui-fixer.md) exactly once with the original
       IDs and lifecycle handoff. It must revalidate, fix only supported findings, and invalidate only
       intersecting lifecycle evidence.
 - [ ] [AI] Invoke `swe-ui-checker` exactly once in `quality-gate-phase: verification`, passing original
@@ -569,7 +569,7 @@ passes.
       accessibly”; all repository-discovered locales; breakpoints `375,768,1280`; changed-surface and
       recurrence lists; synthetic `person.personal@example.test` fixtures; and non-destructive scope.
 - [ ] [AI] First invoke
-      [`web-exploratory-tester`](../../../.claude/agents/web/web-exploratory-tester.md). It must compare
+      [`web-exploratory-tester`](../../../.agents/agents/web-exploratory-tester.md). It must compare
       every route/state/control against mapped `specs/apps/ose/id-web/**`, enumerate happy/error/empty/
       stale/dependency/responsive/a11y/security states, and append `EWT-###` plus `SG-###`. Save its
       coverage map, snapshots, console/network/storage observations, and screenshots under
@@ -579,13 +579,13 @@ passes.
       next tester; only explicit user permission can defer a genuinely impossible fix. Reconcile
       correct-but-unspecified `SG-###` proposals with the app-scoped specs.
 - [ ] [AI] Next invoke
-      [`web-usability-tester`](../../../.claude/agents/web/web-usability-tester.md) spec-blind with the
+      [`web-usability-tester`](../../../.agents/agents/web-usability-tester.md) spec-blind with the
       same URLs/goal/locales/breakpoints. Require a first-time cognitive walkthrough and all loading,
       error, recovery, cancel, context, consent, and session states. Append `UWT-###`/`USS-###`; save
       evidence under `plans/in-progress/ose-id-init-05-first-party-web/evidence/phase-4-web-usability.*`. Apply the same regression-first fix, rebuild,
       and affected-journey retest loop before proceeding.
 - [ ] [AI] Finally invoke
-      [`web-design-tester`](../../../.claude/agents/web/web-design-tester.md) with the same inputs plus
+      [`web-design-tester`](../../../.agents/agents/web-design-tester.md) with the same inputs plus
       the Plan 05 high-fidelity PNGs, runtime theme/tokens, `libs/web-ui`, and cited prior art in the UI
       funnel as design sources. Enumerate visual hierarchy, spacing, typography, focus, errors,
       responsive reflow, dark mode, and cross-screen consistency. Append `DWT-###`/design `SG-###` and

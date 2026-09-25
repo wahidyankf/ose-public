@@ -50,4 +50,4 @@ matching token needs no new token and no exception.
 ## Related
 
 - [File Naming](../../../conventions/structure/file-naming.md) — the kebab-case base rule.
-- [Agent catalog](../../../../.claude/agents/README.md) — the authoritative list of agents.
+- [Agent catalog](../../../../.agents/agents/README.md) — the authoritative list of agents.

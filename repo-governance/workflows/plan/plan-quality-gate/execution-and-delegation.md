@@ -9,7 +9,7 @@ when_to_use: Use when running the plan quality gate, to decide what the subagent
 
 The audit sweep is delegated; the repair is not.
 
-1. The root invokes [`plan-checker`](../../../../.claude/agents/plan/plan-checker.md) through the
+1. The root invokes [`plan-checker`](../../../../.agents/agents/plan-checker.md) through the
    Agent tool. The checker reads the plan, its assets, the relevant implementation, specifications,
    and governance, and returns the frozen ledger. It never edits a file.
 2. The root freezes that ledger, writes it to `local-tmp/plan/`, and performs the repairs itself.
@@ -26,7 +26,7 @@ under the same read-then-freeze discipline.
 ## Web research
 
 `plan-checker` delegates multi-page web research to
-[`web-researcher`](../../../../.claude/agents/web/web-researcher.md) when verifying one technical
+[`web-researcher`](../../../../.agents/agents/web-researcher.md) when verifying one technical
 claim needs more than two searches or more than two fetches. It keeps in-context `WebSearch` and
 `WebFetch` for single-shot verification against a known authoritative URL. The delegation is
 encoded in the checker's prompt and needs no workflow configuration.

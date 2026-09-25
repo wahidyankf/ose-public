@@ -1,5 +1,5 @@
 ---
-description: "Defines which tools an agent needs when it writes to a platform binding directory such as .claude/agents/."
+description: "Defines which tools an agent needs when it writes to a canonical source directory such as .agents/agents/."
 when_to_use: Use when an agent's frontmatter tools list needs to support writing to a platform binding directory.
 ---
 
@@ -12,7 +12,7 @@ within editable paths.
 
 **Applies to**:
 
-- Creating or updating canonical agents in `.claude/agents/`
+- Creating or updating canonical agents in `.agents/agents/`
 - Creating or updating canonical skills and references in `.agents/skills/`
 - Updating source-owned indexes
 - Maintaining an exact registry-declared vendored path in place

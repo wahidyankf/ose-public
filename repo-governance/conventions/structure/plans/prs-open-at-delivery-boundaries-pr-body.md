@@ -44,9 +44,9 @@ finding, not pedantry — it is the one thing the
 against. Raise it as `clarify` and answer it by editing the body.
 
 **Review scope.** The PR description is in scope whenever semantic review is explicitly invoked.
-[`pr-review-docs-maker`](../../../../.claude/agents/pr-review/pr-review-docs-maker.md) owns whether
+[`pr-review-docs-maker`](../../../../.agents/agents/pr-review-docs-maker.md) owns whether
 the body accurately describes the diff it ships — a body contradicted by the diff is doc drift.
-[`pr-review-governance-maker`](../../../../.claude/agents/pr-review/pr-review-governance-maker.md)
+[`pr-review-governance-maker`](../../../../.agents/agents/pr-review-governance-maker.md)
 owns whether the required sections are present at all. The body is never frozen by the
 correction-record freeze.
 

@@ -25,7 +25,7 @@ The content below is platform-specific. It documents the concrete translation ap
 **Single source of truth**: the declared Rhino harness profile. Any mapping change MUST update
 the profile and this table in the same commit.
 
-**Escape hatch**: If you write a hex code (e.g., `#3B82F6`) or a valid OpenCode theme token (e.g., `primary`) directly in `.claude/agents/*.md`, the converter passes it through unchanged.
+**No generated color**: canonical agents in `.agents/agents/` carry no `color`, so no generated route renders one. The table maps role colors for documentation only.
 
 **Edge Case Notes:**
 

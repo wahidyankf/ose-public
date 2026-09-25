@@ -32,7 +32,7 @@ the required format, mechanism, and scope for all such interactions.
 ## Related Documentation
 
 - [grill-me Skill](../../../.agents/skills/grill-me/SKILL.md) — Canonical implementation.
-- [plan-maker Agent](../../../.claude/agents/plan/plan-maker.md) — Invokes grill-me in Steps 1 and 8.
+- [plan-maker Agent](../../../.agents/agents/plan-maker.md) — Invokes grill-me in Steps 1 and 8.
 - [plan-planning Workflow](../../workflows/plan/plan-planning.md) — Invokes grill-me in Steps 1 and 3.
 - [plan-execution Workflow](../../workflows/plan/plan-execution.md) — Invokes grill-me before execution.
 - [Plans Organization Convention](../../conventions/structure/plans.md) — Plan structure this process serves.

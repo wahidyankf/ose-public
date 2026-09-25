@@ -6,8 +6,8 @@ when_to_use: Use when auditing or fixing UI components for token compliance, acc
 # UI Quality Gate Workflow
 
 **Purpose**: Run
-[`swe-ui-checker`](../../../.claude/agents/swe/swe-ui-checker.md), apply at most one
-[`swe-ui-fixer`](../../../.claude/agents/swe/swe-ui-fixer.md) pass, and verify the original UI
+[`swe-ui-checker`](../../../.agents/agents/swe-ui-checker.md), apply at most one
+[`swe-ui-fixer`](../../../.agents/agents/swe-ui-fixer.md) pass, and verify the original UI
 findings plus an affected-component regression smoke.
 
 ## Goal and Termination
@@ -66,7 +66,7 @@ Scenario: Lifecycle evidence remains independently blocking
 
 ## Related Documentation
 
-- [swe-ui-checker](../../../.claude/agents/swe/swe-ui-checker.md) — Validation agent
-- [swe-ui-fixer](../../../.claude/agents/swe/swe-ui-fixer.md) — Fix application agent
-- [swe-ui-maker](../../../.claude/agents/swe/swe-ui-maker.md) — Component creation agent
+- [swe-ui-checker](../../../.agents/agents/swe-ui-checker.md) — Validation agent
+- [swe-ui-fixer](../../../.agents/agents/swe-ui-fixer.md) — Fix application agent
+- [swe-ui-maker](../../../.agents/agents/swe-ui-maker.md) — Component creation agent
 - [Frontend Conventions](../../development/frontend/README.md) — Standards enforced by this workflow

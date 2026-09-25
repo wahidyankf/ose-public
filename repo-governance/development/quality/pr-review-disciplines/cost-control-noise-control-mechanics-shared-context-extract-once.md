@@ -26,7 +26,7 @@ for the rule and the PR #239 evidence behind it.
 Two mechanics keep this full-diff posture tractable rather than merely expensive:
 
 - **Shared context, extracted once.**
-  [`pr-review-scout-maker`](../../../../.claude/agents/pr-review/pr-review-scout-maker.md) assembles the PR
+  [`pr-review-scout-maker`](../../../../.agents/agents/pr-review-scout-maker.md) assembles the PR
   metadata, linked-plan/issue context, and the full diff **once** into a single shared-context
   brief every specialist reads, rather than each specialist separately re-deriving the same context
   (which would multiply token cost by the number of specialists) — this extraction is the scout's

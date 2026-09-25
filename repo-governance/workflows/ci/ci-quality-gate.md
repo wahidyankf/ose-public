@@ -35,8 +35,8 @@ until zero findings are achieved.
 
 ## Agents
 
-- [ci-checker](../../../.claude/agents/general/ci-checker.md) — validates all projects against CI/CD standards
-- [ci-fixer](../../../.claude/agents/general/ci-fixer.md) — applies validated CI/CD compliance fixes
+- [ci-checker](../../../.agents/agents/ci-checker.md) — validates all projects against CI/CD standards
+- [ci-fixer](../../../.agents/agents/ci-fixer.md) — applies validated CI/CD compliance fixes
 
 ## Conventions Implemented/Respected
 

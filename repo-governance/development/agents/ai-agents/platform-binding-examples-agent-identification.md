@@ -11,9 +11,12 @@ when_to_use: Use when working through a concrete example of identifying an agent
 ---
 name: docs-maker
 description: Expert documentation writer specializing in GitHub-compatible markdown and Diátaxis framework. Use when creating, editing, or organizing project documentation.
-tools: Read, Write, Edit, Glob, Grep
-model: sonnet
-color: blue
+when_to_use: >-
+  Use when [scenario].
+tier: execution
+capabilities:
+  - repository-read
+  - repository-write
 ---
 ```
 

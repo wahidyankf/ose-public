@@ -14,7 +14,7 @@ Trunk-Based Dev on `main`. Node.js 24 (Volta), npm.
 ## Glossary
 
 - **Repo rules** — every normative surface, not one directory: `repo-governance/`, `AGENTS.md`,
-  `CLAUDE.md`, `.claude/` + mirrors, `repo-config.yml`, enforcement machinery, SE style guides.
+  `CLAUDE.md`, `.agents/`, `.claude/` + mirrors, `repo-config.yml`, enforcement machinery, SE style guides.
 - **Content trees** — `docs/` explains, `repo-governance/` binds, `plans/` expires, `specs/` tests.
 - **Delivery unit** — one branch, one PR, one shippable slice; phases are smaller.
 - **Surface** — what a gate measures; **binding** — a harness mirror.
@@ -101,7 +101,7 @@ Maintain tasks; plan non-trivial work in the harness task list unless the user l
 repository plan. Exhaust instructions, repository evidence, history, safe diagnostics, and bounded
 reversible assumptions before asking the user; never assume material authority or preference. Preserve
 user-set rules across compaction/handoff; reconcile before resuming. N+1 agents (N=3). Reconcile the
-file ledger with `git status`. Hand-author `.claude/`; generate mirrors together. New worktree: follow
+file ledger with `git status`. Hand-author `.agents/`; generate routes together. New worktree: follow
 [worktree setup](./repo-governance/development/workflow/worktree-setup.md). Poll CI every 2
 minutes; never `gh run watch`. If main only polls non-CI background work, update user every 5 minutes.
 
@@ -116,9 +116,9 @@ Verify UI/API behaviour manually; investigate CI failures at the root cause, nev
 ## AI Agents
 
 [Canonical agents](./.agents/agents/README.md) and canonical skills under `.agents/skills/` are
-authoritative. The three plan agents have generated routes under `.claude/agents/plan/`,
-`.codex/agents/`, and `.opencode/agents/`; regenerate and validate them through the pinned Rhino
-adapter commands rather than hand-editing a route.
+authoritative. Every agent has a generated route under `.claude/agents/`, and the three plan
+agents also under `.codex/agents/` and `.opencode/agents/`; regenerate and validate them through
+the pinned Rhino adapter commands rather than hand-editing a route.
 
 **See**: [ai-agents.md](./repo-governance/development/agents/ai-agents.md)
 

@@ -5,6 +5,6 @@ when_to_use: "Use when looking up the exact agent definition backing a step in t
 
 # Related Agents
 
-- [pdf-to-md-maker](../../../../.claude/agents/pdf-to-md/pdf-to-md-maker.md) — Converts PDF to verbatim Markdown
-- [pdf-to-md-checker](../../../../.claude/agents/pdf-to-md/pdf-to-md-checker.md) — Validates conversion fidelity
-- [pdf-to-md-fixer](../../../../.claude/agents/pdf-to-md/pdf-to-md-fixer.md) — Applies validated fixes
+- [pdf-to-md-maker](../../../../.agents/agents/pdf-to-md-maker.md) — Converts PDF to verbatim Markdown
+- [pdf-to-md-checker](../../../../.agents/agents/pdf-to-md-checker.md) — Validates conversion fidelity
+- [pdf-to-md-fixer](../../../../.agents/agents/pdf-to-md-fixer.md) — Applies validated fixes

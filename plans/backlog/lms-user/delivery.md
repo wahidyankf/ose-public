@@ -901,7 +901,7 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
 
 - [ ] [AI] **Owner: API gate integrator; strict discovery.** Run the bounded
       `repo-governance/workflows/api/api-quality-gate.md` twice in `mode: strict`,
-      using `.claude/agents/general/api-exploratory-tester.md` with `output-mode: delivery` and this exact
+      using `.agents/agents/api-exploratory-tester.md` with `output-mode: delivery` and this exact
       plan path. LMS API discovery targets `http://127.0.0.1:8303` with
       `specs/apps/ose/lms-be/contracts/openapi.yaml`, the full resource-server/domain-authorization
       Gherkin, and valid plus every issuer/audience/algorithm/signature/key/time/scope/entitlement/
@@ -927,8 +927,8 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
       the operation's Phase 2/3 owner.
 - [ ] [AI] **Owner: UI gate integrator; static UI lifecycle.** Run the bounded `repo-governance/workflows/ui/ui-quality-gate.md` in `mode: strict` over every
       new LMS web route, auth/session component, style, story, responsive state, and shared-primitive call
-      site. Invoke `.claude/agents/swe/swe-ui-checker.md` once for all seven static dimensions. If it
-      reports in-threshold findings, invoke `.claude/agents/swe/swe-ui-fixer.md` once for revalidated
+      site. Invoke `.agents/agents/swe-ui-checker.md` once for all seven static dimensions. If it
+      reports in-threshold findings, invoke `.agents/agents/swe-ui-fixer.md` once for revalidated
       high-confidence fixes, preserve false-positive/below-threshold dispositions, then invoke the checker
       once in scoped verification. Record report paths, original IDs, affected components, lifecycle
       evidence, and final status at `plans/in-progress/lms-user/evidence/phase-5/ui-quality/`; `partial`, `fail`, pending lifecycle
@@ -936,9 +936,9 @@ failure, and resource inventory under `plans/in-progress/lms-user/evidence/phase
 - [ ] [AI] **Owner: live-test integrator; sequential tester run.** After visual sign-off, execute the Rule-15 in-place delivery variant described by
       `repo-governance/workflows/web/web-ux-test-fixing-planning.md` sequentially against `/learning`,
       sign-in start/callback/result, personal/company context, switch, both logout modes, error/loading/
-      empty, and dependency-unavailable states. Invoke `.claude/agents/web/web-exploratory-tester.md`
-      first with canonical specs, `.claude/agents/web/web-usability-tester.md` second and spec-blind, and
-      `.claude/agents/web/web-design-tester.md` third with selected mockups, runtime tokens, and shared
+      empty, and dependency-unavailable states. Invoke `.agents/agents/web-exploratory-tester.md`
+      first with canonical specs, `.agents/agents/web-usability-tester.md` second and spec-blind, and
+      `.agents/agents/web-design-tester.md` third with selected mockups, runtime tokens, and shared
       primitives. Every call uses `output-mode: delivery`, this plan path, all supported locales,
       breakpoints 320, 375, 768, 1024, 1280, and 1440 CSS px, the recurrence-class list, and changed-
       surface list. Save the three exact invocation packets and reports under
@@ -978,7 +978,7 @@ requires this complete block at the new HEAD.
       exits 0 and every match is a safe test/name/redacted placeholder or is removed at its producing
       packet; any secret/private value is deleted from ignored evidence, rotated if real, and blocks delivery.
 - [ ] [AI] **Owner: root integrator; preliminary execution audit.** Invoke
-      `.claude/agents/plan/plan-execution-checker.md` against this exact plan, BRD/PRD, both tech docs,
+      `.agents/agents/plan-execution-checker.md` against this exact plan, BRD/PRD, both tech docs,
       file-impact ledger, all TDD/E2E/manual/absence/cleanup evidence, and knowledge requirements at the
       candidate HEAD. Save the report path, finding IDs, head SHA, and status at
       `plans/in-progress/lms-user/evidence/phase-5/plan-execution-audit.md`. Acceptance: terminal PASS with every validated finding
@@ -1041,9 +1041,9 @@ partial, failing, or unverified artifact blocks the Phase 6 gate and keeps the p
 - [ ] [AI] **Owner: review integrator; exact-head review gates.** At the pushed PR head, record
       `rtk git rev-parse HEAD` and require the exact-head/base quality gate, one clean leak review,
       applicable API/UI gate lifecycle records, plus semantic reviews from
-      `.claude/agents/pr-review/pr-review-security-maker.md`,
-      `.claude/agents/pr-review/pr-review-logic-maker.md`, and
-      `.claude/agents/pr-review/pr-review-integrity-maker.md`. Store head/base SHA, run/report links,
+      `.agents/agents/pr-review-security-maker.md`,
+      `.agents/agents/pr-review-logic-maker.md`, and
+      `.agents/agents/pr-review-integrity-maker.md`. Store head/base SHA, run/report links,
       original finding IDs, resolutions, and terminal status at
       `plans/in-progress/lms-user/evidence/phase-6/delivery/review-gates.md`. Acceptance: every required check/review is terminal PASS
       for the same head and no conversation is unresolved; any fix changes HEAD and reruns this packet.
@@ -1053,7 +1053,7 @@ partial, failing, or unverified artifact blocks the Phase 6 gate and keeps the p
       `rtk git merge-base --is-ancestor "$reviewed_head" origin/main`, and
       `rtk git log -1 --format='%H %P %s' origin/main` in the same shell; record reviewed head, merge SHA, containment exit,
       and timestamp at `plans/in-progress/lms-user/evidence/phase-6/delivery/merge-containment.md`. Invoke
-      `.claude/agents/plan/plan-execution-checker.md` against that delivered merge and store its terminal
+      `.agents/agents/plan-execution-checker.md` against that delivered merge and store its terminal
       report at `plans/in-progress/lms-user/evidence/phase-6/terminal-audit/`. A non-contained head or non-PASS audit blocks cleanup
       and reopens the earliest responsible packet; no head other than that captured immediately before
       merge is admissible.

@@ -621,7 +621,7 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       proof of the command/control-file contract.
 - [ ] [AI] Run the bounded `repo-governance/workflows/api/api-quality-gate.md` in `mode: strict` against
       the unchanged live HTTP surfaces through the no-affinity proxies. Invoke
-      `.claude/agents/general/api-exploratory-tester.md` with `output-mode: delivery` and this exact plan
+      `.agents/agents/api-exploratory-tester.md` with `output-mode: delivery` and this exact plan
       path: backend base `http://127.0.0.1:8501` plus
       `specs/apps/ose/id-be/contracts/openapi.yaml` and all referenced Gherkin; BFF base
       `http://127.0.0.1:3500` plus `specs/apps/ose/id-web/contracts/openapi.yaml` and all referenced
@@ -641,15 +641,15 @@ and every manifest-owned process/container/network/volume/temp secret are absent
       applicable only while the reconciled diff changes no component, token, style, responsive layout,
       accessibility behavior, or UI primitive. Shared session/readiness/proxy code alone does not create
       a static UI surface. If execution touches any such UI source, the exemption ends: run
-      `.claude/agents/swe/swe-ui-checker.md` once in `mode: strict`,
-      `.claude/agents/swe/swe-ui-fixer.md` at most once for validated in-threshold findings, then one
+      `.agents/agents/swe-ui-checker.md` once in `mode: strict`,
+      `.agents/agents/swe-ui-fixer.md` at most once for validated in-threshold findings, then one
       scoped checker verification; record report paths, IDs, lifecycle status, and require `pass`.
 - [ ] [AI] Execute the Rule-15 in-place delivery variant described by
       `repo-governance/workflows/web/web-ux-test-fixing-planning.md` sequentially against the running OSE
       sign-in/authorization/account/company-admin handoffs and the synthetic dependent app's identity-
-      unavailable state. Invoke `.claude/agents/web/web-exploratory-tester.md` first with canonical specs,
-      `.claude/agents/web/web-usability-tester.md` second and spec-blind, and
-      `.claude/agents/web/web-design-tester.md` third with delivered mockups/tokens. Every call uses
+      unavailable state. Invoke `.agents/agents/web-exploratory-tester.md` first with canonical specs,
+      `.agents/agents/web-usability-tester.md` second and spec-blind, and
+      `.agents/agents/web-design-tester.md` third with delivered mockups/tokens. Every call uses
       `output-mode: delivery`, this plan path, all supported locales, breakpoints 320, 375, 768, 1024,
       1280, and 1440 CSS px, the recurrence-class list, and changed-surface list.
 - [ ] [AI] Reconcile the three live coverage maps into a control × route × locale × breakpoint × edge-

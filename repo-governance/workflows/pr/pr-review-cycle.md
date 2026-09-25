@@ -7,7 +7,7 @@ when_to_use: "Use only when a user explicitly requests iterative semantic PR rev
 
 Run only on an explicit request for iterative semantic review. The cycle composes
 [`pr-review`](./pr-review.md),
-[`pr-review-fixer`](../../../.claude/agents/pr-review/pr-review-fixer.md), and exact-head CI; plans,
+[`pr-review-fixer`](../../../.agents/agents/pr-review-fixer.md), and exact-head CI; plans,
 risk, content type, and delivery mode never invoke it. It delegates focused leak predicates to
 [`pr-leak-review`](./pr-leak-review.md).
 

@@ -6,7 +6,7 @@ when_to_use: Use when a plan ships an API/backend surface needing contract, func
 # API Quality Gate Workflow
 
 **Purpose**: Use
-[`api-exploratory-tester`](../../../.claude/agents/general/api-exploratory-tester.md) to exercise a
+[`api-exploratory-tester`](../../../.agents/agents/api-exploratory-tester.md) to exercise a
 **running** REST or GraphQL API against its contract and `specs/**` Gherkin, apply at most one fix,
 rebuild/redeploy once, then verify original findings and affected behaviour.
 

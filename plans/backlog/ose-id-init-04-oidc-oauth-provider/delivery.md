@@ -509,8 +509,8 @@ are green without merging or archiving yet.
       [UI Quality Gate](../../../repo-governance/workflows/ui/ui-quality-gate.md) in `strict` mode for
       the backend-rendered `GET /connect/logout` confirmation and cancellation surface. Its immutable
       scope is PRD Option A, the HTML/form contract in `tech-docs/005-api-contract-delta.md`, and
-      `ID04-LOGOUT-001/002`. Invoke `.claude/agents/swe/swe-ui-checker.md`; route each validated finding
-      through the workflow's one bounded `.claude/agents/swe/swe-ui-fixer.md` pass, rebuild, rerun the
+      `ID04-LOGOUT-001/002`. Invoke `.agents/agents/swe-ui-checker.md`; route each validated finding
+      through the workflow's one bounded `.agents/agents/swe-ui-fixer.md` pass, rebuild, rerun the
       affected Unit/Integration/E2E checks, and invoke the checker once for scoped verification. Save
       the request, report, fixes, retest, and final status under `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-ui-quality-gate/`.
 - [ ] [AI] Run the built local stack with
@@ -529,9 +529,9 @@ are green without merging or archiving yet.
       build SHA, viewport/locale/state metadata, snapshots, screenshots, and console transcript under
       `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4/manual-browser/`.
 - [ ] [AI] Against that same build and state matrix, run
-      `.claude/agents/web/web-exploratory-tester.md`, then
-      `.claude/agents/web/web-usability-tester.md`, then
-      `.claude/agents/web/web-design-tester.md` via the
+      `.agents/agents/web-exploratory-tester.md`, then
+      `.agents/agents/web-usability-tester.md`, then
+      `.agents/agents/web-design-tester.md` via the
       [Web UX Test-Fixing Planning workflow](../../../repo-governance/workflows/web/web-ux-test-fixing-planning.md).
       Give each `output-mode: delivery`, this executing plan's `plan-path`, and the immutable logout
       scope above. Append every `EWT-###`, `UWT-###`, and `DWT-###` defect as an unchecked delivery task;
@@ -559,7 +559,7 @@ coverage.
       `http://127.0.0.1:8501/.well-known/openid-configuration` is reachable. Use only synthetic people,
       companies, clients, codes, and tokens; restore the seeded database after destructive probes.
 - [ ] [AI] Invoke
-      [`api-exploratory-tester`](../../../.claude/agents/general/api-exploratory-tester.md) once with
+      [`api-exploratory-tester`](../../../.agents/agents/api-exploratory-tester.md) once with
       `quality-gate-phase: discovery`, `output-mode: delivery`, this executing plan's `plan-path`,
       `mode: strict`, and `max-concurrency: 3`. Pass this exact REST scope: base URL
       `http://127.0.0.1:8501`; only the three `/internal/authorization-transactions/**` operations;
@@ -581,12 +581,12 @@ coverage.
       response assertions and `PROTO-###` findings in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-protocol-conformance.md`; do not
       represent this as an OpenAPI/API-gate run.
 - [ ] [AI] For every protocol finding, add a lowest-layer failing regression, fix with
-      [`swe-csharp-dev`](../../../.claude/agents/swe/swe-csharp-dev.md), rebuild/restart, and rerun the
+      [`swe-csharp-dev`](../../../.agents/agents/swe-csharp-dev.md), rebuild/restart, and rerun the
       exact protocol reproduction plus affected protocol matrix. Any unresolved protocol defect blocks
       Phase 4; deferral requires explicit user permission.
 - [ ] [AI] If discovery has no strict-threshold finding, record `final-status: pass` and do not invoke a
       fixer. If it has an in-threshold finding, run exactly one bounded fix pass with
-      [`swe-csharp-dev`](../../../.claude/agents/swe/swe-csharp-dev.md): revalidate the finding, add a
+      [`swe-csharp-dev`](../../../.agents/agents/swe-csharp-dev.md): revalidate the finding, add a
       failing regression at the lowest applicable layer, implement the root-cause fix, and rerun its
       Unit/Integration/E2E and contract checks. A correct-but-unspecified observation becomes an
       app-scoped `specs/**` scenario before the fix; it is not dismissed as a false positive.

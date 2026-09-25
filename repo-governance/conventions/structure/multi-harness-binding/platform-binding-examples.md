@@ -20,17 +20,17 @@ The following file name is known to be ranked above `AGENTS.md` by a supported h
 
 - **Claude Code** — reads `CLAUDE.md` as its primary instruction file. The repo provides `CLAUDE.md`
   as a one-line `@AGENTS.md` import shim (hand-authored pure pointer; exempt from the generator
-  requirement because the `@`-import directive is the full content and cannot drift). Its
-  `.claude/agents/` and `.agents/skills/` trees are the single hand-authored origin every generated
-  binding derives from.
+  requirement because the `@`-import directive is the full content and cannot drift). The
+  `.agents/agents/` and `.agents/skills/` trees are the single hand-authored origin every generated
+  binding derives from; `.claude/agents/` holds one generated route per canonical agent.
 
 ## Generated tier — mirrors derived from the source tier
 
-- **OpenCode** — reads `AGENTS.md` natively. Agent definition files are auto-synced from
-  `.claude/agents/` to `.opencode/agents/` by `./rhino harness adapters generate`; agent skill
+- **OpenCode** — reads `AGENTS.md` natively. Agent routes for the agents its profile selects are
+  generated from `.agents/agents/` into `.opencode/agents/` by `./rhino harness adapters generate`; agent skill
   files are read natively from `.agents/skills/`.
-- **OpenAI Codex CLI** — reads `AGENTS.md` natively since April 2025. Agent definitions are
-  generated at `.codex/agents/` from `.claude/agents/`, and non-vendored skills are mirrored under
+- **OpenAI Codex CLI** — reads `AGENTS.md` natively since April 2025. Agent routes for the agents its
+  profile selects are generated at `.codex/agents/` from `.agents/agents/`, and non-vendored skills are mirrored under
   `.agents/skills/`, both by `./rhino harness adapters generate`. Registry-declared plugin
   subtrees under the same skills root are vendored and preserved in place.
 

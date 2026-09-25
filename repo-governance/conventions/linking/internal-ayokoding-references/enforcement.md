@@ -27,7 +27,7 @@ find docs/ -name "*.md" -exec markdown-link-check {} \;
 
 ## Agent Validation
 
-The [docs-checker agent](../../../../.claude/agents/docs/docs-checker.md) should validate:
+The [docs-checker agent](../../../../.agents/agents/docs-checker.md) should validate:
 
 - **CRITICAL:** docs/ files containing `https://ayokoding.com/` URLs
 - **HIGH:** Relative paths with incorrect depth (path doesn't resolve)

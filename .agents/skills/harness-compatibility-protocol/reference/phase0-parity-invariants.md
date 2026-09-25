@@ -28,33 +28,29 @@ Run the full standalone inventory before Phase 1. Quality-gate filtering is defi
 - **Tool**: `./rhino harness adapters generate && git diff --quiet .claude/ .opencode/ .codex/`
 - **Pass**: sync exits 0 AND `git diff --quiet` exits 0 (no changes produced)
 - **Fail**: sync produced drift in `.opencode/` — report the changed files
-- **Default criticality**: MEDIUM (drift means upstream `.claude/` edits were not synced).
+- **Default criticality**: MEDIUM (drift means canonical `.agents/` edits were not synced).
   **Confidence**: HIGH
 - **Fix scope**: **auto-fixable** — re-run `./rhino harness adapters generate`, stage the `.opencode/`
   changes, re-run to confirm idempotence, hand them back for commit
-  (`chore(opencode): re-sync agents from .claude/`)
+  (`chore(opencode): re-sync agents from .agents/`)
 
 ## Invariant 4 — Agent inventory parity
 
 - **Tool**: compare filename sets, not counts — equal counts with mismatched names must still fail.
-  `comm -3 <(find .claude/agents -name '*.md' ! -name README.md -exec basename {} \; | sort) <(find .opencode/agents -name '*.md' ! -name README.md -exec basename {} \; | sort)`
+  `comm -3 <(find .agents/agents -maxdepth 1 -name '*.md' ! -name README.md -exec basename {} \; | sort) <(find .claude/agents -maxdepth 1 -name '*.md' -exec basename {} \; | sort)`
 - **Pass**: empty output
-- **Fail**: any line — tab-indented names are `.opencode/` orphans, the rest are missing mirrors
+- **Fail**: any line — tab-indented names are `.claude/` orphans, the rest are missing routes
 - **Default criticality**: HIGH (divergent agent inventories). **Confidence**: HIGH
-- **Known intentional skip**: `README.md` is an index, not an agent, excluded on both sides.
-  `find` is required on the `.claude/` side, which nests into role subfolders.
-- **Fix scope**: human-required — deleting an `.opencode/` orphan or authoring a missing
-  `.claude/` counterpart both have product implications
+- **Known intentional skip**: `README.md` is an index, not an agent. Codex and OpenCode render only the agents their
+  profile's `agents` list in `repo-config.yml` names; `./rhino harness adapters validate` checks those sets.
+- **Fix scope**: human-required — deleting a route orphan or authoring a missing canonical agent both have product
+  implications
 
 ## Invariant 5 — Translation-map coverage
 
-Both greps must be recursive: `.claude/agents/` is nested, and a non-recursive glob silently
-returns nothing.
-
-- **Tools**: color map — `grep -rh "^color:" .claude/agents/ | sort -u` vs. the Color Translation
-  Table in `repo-governance/development/agents/ai-agents.md`; tier map —
-  `grep -rh "^model:" .claude/agents/ .opencode/agents/*.md | sort -u` vs. the capability-tier
-  map in `repo-governance/development/agents/model-selection.md`
+- **Tools**: tier map — `grep -h "^tier:" .agents/agents/*.md | sort -u` vs. the Claude profile's `tiers` map in
+  `repo-config.yml`; constraint map — `grep -h -A9 "^constraints:" .agents/agents/*.md | grep "^  - " | sort -u` vs.
+  `harness.requirements.constraints`
 - **Pass**: every distinct frontmatter value appears in the corresponding map
 - **Fail**: any value not in the map — report the missing entry
 - **Default criticality**: MEDIUM (sync may mistranslate the missing entry). **Confidence**: HIGH

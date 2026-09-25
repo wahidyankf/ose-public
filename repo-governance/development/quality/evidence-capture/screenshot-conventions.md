@@ -29,7 +29,7 @@ For **every web-UI manual verification step**:
 | States        | Normal state; plus error/empty states when the step exercises one |
 
 Zero screenshots for a UI verification step is a finding under
-[Plan Execution Checker](../../../../.claude/agents/plan/plan-execution-checker.md) Step 7.
+[Plan Execution Checker](../../../../.agents/agents/plan-execution-checker.md) Step 7.
 
 ## How to Capture
 

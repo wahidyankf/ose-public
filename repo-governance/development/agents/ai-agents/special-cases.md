@@ -7,13 +7,13 @@ when_to_use: Use when versioning, deprecating, or restructuring an agent's direc
 
 ## Agent Directory Structure
 
-The agent definition directories (`.claude/agents/` primary and `.opencode/agents/` secondary):
+The canonical agent directory `.agents/agents/` (harness directories hold only generated routes):
 
 - **Contains** a `README.md` file for agent index and workflow guidance
 - **Contains** agent definition files (`.md` files)
 - **Follows** flat structure (no subdirectories)
 
-The agent definition `README.md` files (`.claude/agents/README.md` primary and `.opencode/agents/README.md` secondary):
+The agent definition `README.md` files (`.agents/agents/README.md` primary and `.opencode/agents/README.md` secondary):
 
 - Lists all available agents with descriptions
 - Explains agent workflow and best practices

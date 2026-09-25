@@ -68,9 +68,9 @@ where validation dimensions could run concurrently after user approval.
   pattern
 - **[Fixer Confidence Levels](../../../development/quality/fixer-confidence-levels.md)**: Confidence
   assessment
-- **[`apps-ayokoding-www-annotated-concept-checker` agent](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-annotated-concept-checker.md)**:
+- **[`apps-ayokoding-www-annotated-concept-checker` agent](../../../../.agents/agents/apps-ayokoding-www-annotated-concept-checker.md)**:
   Validation agent
-- **[`apps-ayokoding-www-annotated-concept-fixer` agent](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-annotated-concept-fixer.md)**:
+- **[`apps-ayokoding-www-annotated-concept-fixer` agent](../../../../.agents/agents/apps-ayokoding-www-annotated-concept-fixer.md)**:
   Fixing agent
-- **[`apps-ayokoding-www-annotated-concept-maker` agent](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-annotated-concept-maker.md)**:
+- **[`apps-ayokoding-www-annotated-concept-maker` agent](../../../../.agents/agents/apps-ayokoding-www-annotated-concept-maker.md)**:
   Content creation agent

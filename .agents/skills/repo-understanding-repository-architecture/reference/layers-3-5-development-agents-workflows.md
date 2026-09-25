@@ -13,7 +13,7 @@
 - Source code (JS, TS, future: Java, Kotlin, Python)
 - Next.js 16 web applications (ayokoding-web, ose-web)
 - Build systems and tooling
-- AI agents (.claude/agents/ primary, .opencode/agents/ auto-generated secondary)
+- AI agents (.agents/agents/ canonical; .claude/agents/, .codex/agents/, .opencode/agents/ generated routes)
 - Git workflows
 
 **Example Practices**:
@@ -34,7 +34,7 @@
 
 **Purpose**: Automated implementers enforcing conventions and development practices.
 
-**Location**: `.claude/agents/` (primary; `.opencode/agents/` is auto-generated secondary)
+**Location**: `.agents/agents/` (canonical; harness routes under `.claude/agents/` and elsewhere are generated)
 
 **Key Document**: [Agents Index](../../../agents/README.md)
 

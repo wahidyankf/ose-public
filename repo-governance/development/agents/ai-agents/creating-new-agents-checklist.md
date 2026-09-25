@@ -9,12 +9,14 @@ Before submitting a new agent, verify:
 
 ## Frontmatter Complete
 
-- [ ] `name` matches filename (kebab-case, no `.md`)
-- [ ] `description` clearly states when to use this agent
-- [ ] `tools` explicitly lists required tools only (least privilege)
-- [ ] `model` declares one of `fable`/`opus`/`sonnet`/`haiku`/`inherit` — never left blank
-- [ ] `color` assigned based on agent role (blue/green/yellow/purple) - required
-- [ ] `skills` field present (can be empty `[]` or list actual agent skills) - required
+- [ ] File is flat at `.agents/agents/<name>.md`; `name` matches the filename (kebab-case, no `.md`) and is unique
+- [ ] `description` states what the agent does; `when_to_use` states when to use it
+- [ ] `tier` is `ultra`, `plan`, `execution`, or `fast`, justified if above `execution`
+- [ ] `capabilities` lists only what the agent needs (least privilege), in canonical order
+- [ ] `constraints` removes any generated tool the agent must not have (`no-edit`, `no-write`, `no-read`, `no-glob`)
+- [ ] `skills` lists the agent skills it uses
+- [ ] No `tools`, `model`, `effort`, or `color` key; `./rhino harness adapters generate` renders them
+- [ ] `./rhino harness adapters generate` and `./rhino harness adapters validate` both pass
 
 ## Document Structure
 
@@ -58,11 +60,11 @@ Before submitting a new agent, verify:
 - [ ] Confirmed no tool permission creep
 - [ ] Verified model selection is appropriate
 
-**Same-session invocation gap**: a `.claude/agents/<name>.md` file created earlier in the current
+**Same-session invocation gap**: a generated `.claude/agents/<name>.md` route created earlier in the current
 session is not guaranteed to appear in the Agent tool's available `subagent_type` list — that list
 is populated at session/process start, not from a live directory read. A plan that authors a new
 agent and needs to invoke it within the same run (e.g., wiring a freshly created review agent into
 a later phase) should not treat an unlisted `subagent_type` as a broken agent. **Workaround**:
-invoke `general-purpose` and instruct it, as its first step, to `Read` the new agent's `.md` file in
+invoke `general-purpose` and instruct it, as its first step, to `Read` the new canonical `.agents/agents/<name>.md` file in
 full and follow its instructions verbatim, then perform the task — this reproduces the target
 agent's behaviour without requiring session-level registration.

@@ -9,9 +9,9 @@ Run one semantic review only when the user explicitly asks. It reviews every cha
 prose, governance, and plans. It never classifies eligibility, fixes findings, waits for CI,
 retries, or decides merge readiness.
 
-[`pr-review-scout-maker`](../../../.claude/agents/pr-review/pr-review-scout-maker.md) pins base/head,
+[`pr-review-scout-maker`](../../../.agents/agents/pr-review-scout-maker.md) pins base/head,
 selects a risk route, and builds shared context. Selected specialists review concurrently;
-[`pr-review-synthesis-maker`](../../../.claude/agents/pr-review/pr-review-synthesis-maker.md)
+[`pr-review-synthesis-maker`](../../../.agents/agents/pr-review-synthesis-maker.md)
 deduplicates and posts exactly one GitHub `COMMENT` review. A trivial route still gets a generalist
 synthesis pass. `pr-review-fixer` never participates.
 

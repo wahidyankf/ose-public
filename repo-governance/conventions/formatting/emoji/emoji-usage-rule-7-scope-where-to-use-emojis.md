@@ -28,8 +28,8 @@ when_to_use: Use to check whether a file type (docs, agents, config, README) may
 
 5. **Agent configuration files** - AGENTS.md, primary binding agent files, secondary binding agent files
    - AGENTS.md - Human-readable navigation document for developers
-   - Primary binding agent files (`.claude/agents/*.md`) - Primary agent definitions (source of truth) read by developers to understand agent behaviour
-   - Secondary binding agent files (`.opencode/agents/*.md`) - Secondary agent definitions (auto-generated from primary binding) for secondary platform binding compatibility
+   - Canonical agent files (`.agents/agents/*.md`) - Agent definitions (source of truth) read by developers to understand agent behaviour
+   - Generated agent routes (`.claude/agents/*.md`, `.opencode/agents/*.md`) carry no body text of their own, so emoji rules do not apply to them
    - Emojis enhance scannability for:
      - Criticality level definitions (CRITICAL, HIGH, MEDIUM, LOW)
      - Section headers (Purpose, Key Concepts, Reference)
@@ -73,6 +73,6 @@ PASS: **Clear rule:**
 
 ```
 Emojis for humans: docs/, repo-governance/, plans/, README.md files, CLAUDE.md, .agents/skills/*.md
-Emojis for agents: AGENTS.md, .claude/agents/*.md, .opencode/agents/*.md
+Emojis for agents: AGENTS.md, .agents/agents/*.md
 No emojis for machines: config files (*.json, *.yaml, *.toml)
 ```

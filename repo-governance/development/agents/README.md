@@ -29,10 +29,10 @@ These standards define **HOW to develop AI agents**, covering agent file structu
 
 ## Documents
 
-- [AI Agents Convention](./ai-agents.md) — Standards for creating and managing AI agents in the platform binding directory (primary) and secondary agent directories. Use when authoring, reviewing, or restructuring an agent definition file in `.claude/agents/`, or when deciding which sub-topic of agent standards applies.
+- [AI Agents Convention](./ai-agents.md) — Standards for creating and managing canonical AI agents in `.agents/agents/` and their generated harness routes. Use when authoring, reviewing, or restructuring an agent definition file in `.claude/agents/`, or when deciding which sub-topic of agent standards applies.
 - [Agent Workflow Orchestration Convention](./agent-workflow-orchestration.md) — Standards for how AI agents plan, execute, verify, and self-improve during multi-step tasks. Use when planning, delegating, verifying, or self-improving during a multi-step agent task.
 - [Anti-Patterns in AI Agents Development](./anti-patterns.md) — Common mistakes to avoid when developing AI agents, with problem, cause, and solution for each anti-pattern. Use when reviewing an agent definition for a common authoring mistake, or naming which anti-pattern a finding matches.
-- [Best Practices for AI Agents Development](./best-practices.md) — Proven practices for developing maintainable, secure, and effective AI agents in the `.claude/agents/` directory. Use when authoring a new agent and checking it against proven practices, or citing a best practice in a review.
+- [Best Practices for AI Agents Development](./best-practices.md) — Proven practices for developing maintainable, secure, and effective AI agents in the `.agents/agents/` directory. Use when authoring a new agent and checking it against proven practices, or citing a best practice in a review.
 - [AI Agent Model Selection Convention](./model-selection.md) — Standards for selecting the appropriate model grade (ultra, planning-grade, execution-grade, fast) for AI agents based on task complexity. Use when deciding which model grade a new or existing agent should declare, or translating a grade to a concrete model ID.
 - [Planning Capabilities](./planning-capabilities.md) — Defines the planning capability roster a repository must expose and the uniform contract every workflow, skill, and agent in it satisfies. Use when adopting the plan system, auditing planning capabilities, or resolving which form a new planning capability should take.
 - [Skill Context Architecture](./skill-context-architecture.md) — Architectural guidance on skill context modes in `.agents/skills/`. Inline skills work universally; fork skills work from main conversation only. Use when authoring a Skill and deciding its context mode, or when a Skill needs to spawn or delegate work.
@@ -42,7 +42,7 @@ These standards define **HOW to develop AI agents**, covering agent file structu
 
 - [Development Index](../README.md) - All development practices
 - [Automation Over Manual Principle](../../principles/software-engineering/automation-over-manual.md) - Why we build agents
-- [Agents Index](../../../.claude/agents/README.md) - All available agents
+- [Agents Index](../../../.agents/agents/README.md) - All available agents
 - [Repository Architecture](../../repository-governance-architecture.md) - Six-layer governance model
 
 ## Principles Implemented/Respected

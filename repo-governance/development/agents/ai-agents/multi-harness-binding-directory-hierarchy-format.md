@@ -8,7 +8,7 @@ when_to_use: Use when checking which directory is the source of truth for an age
 **Added**: 2026-01-16
 
 This repository maintains **multi-harness compatibility** across multiple AI coding agent platforms.
-Canonical agents and skills live under `.claude/`; `repo-config.yml` assigns ownership per path.
+Canonical agents and skills live under `.agents/`; `repo-config.yml` assigns ownership per path.
 Secondary roots mix generated mirrors with vendored configuration or plugin payloads, so the binding
 generator changes only paths or delimited regions declared as generated.
 
@@ -16,9 +16,9 @@ generator changes only paths or delimited regions declared as generated.
 
 ```binding-example
 .
-├── .claude/                 # Source binding
-│   ├── agents/             # canonical Markdown/YAML agents
-│   ├── skills/             # canonical skills
+├── .claude/                 # Mixed-ownership Claude root
+│   ├── agents/             # generated Markdown/YAML agent routes
+│   ├── skills/             # generated skill routes
 │   └── settings.json       # hand-authored permissions and hooks
 ├── .opencode/              # Mixed-ownership OpenCode root
 │   ├── agents/             # generated Markdown/YAML agents
@@ -26,19 +26,20 @@ generator changes only paths or delimited regions declared as generated.
 ├── .codex/                 # Mixed-ownership Codex root
 │   ├── agents/             # generated TOML agents
 │   └── config.toml         # vendored file; agent-table region is generated
-└── .agents/                # Mixed-ownership cross-harness skills root
-    └── skills/             # generated mirror plus declared vendored plugin subtrees
+└── .agents/                # Canonical cross-harness root
+    ├── agents/             # canonical agents, flat, one file per agent
+    └── skills/             # canonical skills plus declared vendored plugin subtrees
 ```
 
 ## Source of Truth Hierarchy
 
-`.claude/agents/` and `.agents/skills/` are the canonical sources for their generated mirrors.
+`.agents/agents/` and `.agents/skills/` are the canonical sources for their generated routes.
 `repo-config.yml` is authoritative for path-level ownership; a more-specific vendored declaration
 overrides a generated parent. Vendored configuration and plugin paths are maintained in place.
 
 **Making Changes**:
 
-1. Edit an agent in `.claude/agents/` or a mirrored skill in `.agents/skills/`.
+1. Edit an agent in `.agents/agents/` or a skill in `.agents/skills/`.
 2. Run `./rhino harness adapters generate`, then `./rhino harness adapters validate`.
 3. Commit every changed generated mirror in the same commit as its source.
 4. Edit a vendored path directly only when `repo-config.yml` classifies that exact path or a
@@ -55,9 +56,9 @@ each target format.
 ### Tools Format
 
 ```binding-example
-Claude Code (.claude/agents/) — PRIMARY:
-  tools: [Read, Write, Edit, Glob, Grep, Bash]
-  (array format with capitalized tool names)
+Claude Code (.claude/agents/) — GENERATED ROUTE:
+  tools: Read, Glob, Grep, Write, Edit, Bash
+  (comma string rendered from capabilities and constraints)
 
 OpenCode (.opencode/agents/) — SECONDARY:
   permission:

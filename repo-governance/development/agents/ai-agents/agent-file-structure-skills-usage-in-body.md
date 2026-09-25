@@ -11,7 +11,7 @@ when_to_use: Use when writing or reviewing how an agent documents its agent skil
 2. **Relevant agent skills**: agent skills should align with agent's domain
 3. **Order by importance**: List most critical agent skills first
 4. **Keep updated**: Add/remove agent skills as agent evolves
-5. **Validate references**: Ensure referenced agent skills exist in the platform binding skills directory (primary source of truth)
+5. **Validate references**: Ensure referenced agent skills exist in `.agents/skills/` (primary source of truth)
 
 ## Agent skills Documentation: Frontmatter Only (DRY Principle)
 
@@ -69,9 +69,13 @@ Agents can use both agent skills AND direct links to convention documents:
 ---
 name: docs-checker
 description: Validates documentation quality and factual correctness.
-tools: Read, Glob, Grep, Write, Bash
-model: sonnet
-color: green
+when_to_use: >-
+  Use when [scenario].
+tier: execution
+capabilities:
+  - repository-read
+  - repository-write
+  - shell
 skills:
   - repo-applying-maker-checker-fixer
   - repo-assessing-criticality-confidence

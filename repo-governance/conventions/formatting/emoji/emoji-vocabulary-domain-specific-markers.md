@@ -35,7 +35,7 @@ Use for enterprise and financial services content:
 
 ## Domain-Specific: AI Agents
 
-Use for AI agent categorization in `.claude/agents/README.md` (primary) and `.opencode/agents/README.md` (secondary):
+Use for AI agent categorization in `.agents/agents/README.md` (primary) and `.opencode/agents/README.md` (secondary):
 
 | Emoji | Meaning                              | Usage                                                   |
 | ----- | ------------------------------------ | ------------------------------------------------------- |
@@ -44,6 +44,6 @@ Use for AI agent categorization in `.claude/agents/README.md` (primary) and `.op
 | 🟨    | **Fixer Agents (Yellow)**            | Agents that update or modify existing content           |
 | 🟪    | **Implementor Agents (Purple)**      | Agents that execute or implement plans                  |
 
-**Note:** These colored square emojis are used in both `.claude/agents/README.md` (primary) and `.opencode/agents/README.md` (secondary) to visually categorize agents by role. They match the `color` field in agent frontmatter. See [AI Agents Convention](../../../development/agents/ai-agents.md) for complete details on agent color categorization.
+**Note:** These colored square emojis are used in both `.agents/agents/README.md` (primary) and `.opencode/agents/README.md` (secondary) to visually categorize agents by role. They match the `color` field in agent frontmatter. See [AI Agents Convention](../../../development/agents/ai-agents.md) for complete details on agent color categorization.
 
 **Color Accessibility:** All four colors (blue, green, yellow, purple) are from the verified accessible palette and work for all types of color blindness (protanopia, deuteranopia, tritanopia). These emojis are SUPPLEMENTARY to text labels - agents are primarily identified by their name, role suffix, and description, not by color alone. See [Color Accessibility Convention](../color-accessibility.md) for complete details.

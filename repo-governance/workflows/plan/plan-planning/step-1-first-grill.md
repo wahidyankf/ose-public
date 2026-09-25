@@ -23,7 +23,7 @@ Resolve ALL of the following:
 3. **Conflicts**: Does any current convention already address this, conflict with it, or need
    updating?
 4. **Constraints**: Backwards compatibility, multi-harness binding implications (if the plan
-   touches `.claude/agents/`, `.opencode/agents/`, or `repo-governance/` paths, confirm that
+   touches `.agents/`, `.claude/agents/`, `.opencode/agents/`, or `repo-governance/` paths, confirm that
    changes remain vendor-neutral per the
    [Governance Vendor-Independence Convention](../../../conventions/structure/governance-vendor-independence.md)),
    tool dependencies

@@ -8,7 +8,7 @@ when_to_use: Use when orchestrating the API quality gate, to confirm which agent
 There is deliberately **no `api-checker` / `api-fixer` agent pair**, and this workflow must never be
 read as though there were. The bounded run is:
 
-1. [`api-exploratory-tester`](../../../../.claude/agents/general/api-exploratory-tester.md) drives the live API
+1. [`api-exploratory-tester`](../../../../.agents/agents/api-exploratory-tester.md) drives the live API
    and emits `AET-###` findings.
 2. The appropriate `swe-*-dev` agent — chosen by the implementing language of the service under
    test (`swe-fsharp-dev` for `ose-be` / `organiclever-be`, `swe-typescript-dev`, `swe-rust-dev`,

@@ -17,9 +17,9 @@ when_to_use: Use when looking for the agent, workflow, or skill that creates or 
 
 ## Related Agents
 
-- [apps-ayokoding-www-in-the-field-maker](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-in-the-field-maker.md) — Creates in-the-field content
-- [apps-ayokoding-www-in-the-field-checker](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-in-the-field-checker.md) — Validates in-the-field standards
-- [apps-ayokoding-www-in-the-field-fixer](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-in-the-field-fixer.md) — Applies validated fixes
+- [apps-ayokoding-www-in-the-field-maker](../../../../.agents/agents/apps-ayokoding-www-in-the-field-maker.md) — Creates in-the-field content
+- [apps-ayokoding-www-in-the-field-checker](../../../../.agents/agents/apps-ayokoding-www-in-the-field-checker.md) — Validates in-the-field standards
+- [apps-ayokoding-www-in-the-field-fixer](../../../../.agents/agents/apps-ayokoding-www-in-the-field-fixer.md) — Applies validated fixes
 
 ## Related Workflows
 

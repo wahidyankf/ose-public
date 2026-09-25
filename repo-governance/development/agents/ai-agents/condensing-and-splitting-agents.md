@@ -43,6 +43,6 @@ when_to_use: Use when the word-budget gate flags an agent definition and you nee
 - Agent with basic + advanced modes → Split by complexity level
 
 **Where the roster lives**: no document enumerates which agent sits in which complexity tier. The
-[agent catalog](../../../../.claude/agents/README.md) is the only authoritative roster, and a tier
+[agent catalog](../../../../.agents/agents/README.md) is the only authoritative roster, and a tier
 is read off an agent's own scope using
 [Agent Complexity Tiers](./agent-complexity-tiers.md) — never off a hand-maintained table.

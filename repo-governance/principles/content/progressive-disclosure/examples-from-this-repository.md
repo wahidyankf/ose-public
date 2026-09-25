@@ -46,7 +46,7 @@ docs/
 
 ## Agent Tool Permissions
 
-**Location**: `.claude/agents/` frontmatter
+**Location**: `.agents/agents/` frontmatter
 
 **Progressive tool access**:
 

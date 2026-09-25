@@ -26,7 +26,7 @@ jq -r '.targets | keys[]' apps/ose-www/project.json | grep -q '^test:quick$' && 
 jq -r '.dependencies.next // .devDependencies.next' package.json
 
 # Agent/skill exists
-test -f .claude/agents/swe/swe-typescript-dev.md && echo OK
+test -f .agents/agents/swe-typescript-dev.md && echo OK
 test -f .agents/skills/plan-creating-project-plans/SKILL.md && echo OK
 ```
 

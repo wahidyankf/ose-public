@@ -72,7 +72,6 @@ No active plan waits on these and no live defect is running, but each carries a 
 - [standardize-cis](./q2-not-urgent-important/standardize-cis.md) — audit for any CI-standardization residual left by the toolchain-parity work.
 - [syllabus-conformance-validator](./q2-not-urgent-important/syllabus-conformance-validator.md) — a deterministic `./rhino md syllabus validate` for course-file section conformance, deferred until the format settles.
 - [vendor-audit-kiro-term](./q2-not-urgent-important/vendor-audit-kiro-term.md) — add `Kiro` to the vendor-audit denylist before it leaks into governance prose.
-- [vendor-neutral-canonical-source](./q2-not-urgent-important/vendor-neutral-canonical-source.md) — move the canonical agent and skill source out of `.claude/` so no harness is privileged and every harness, Claude Code included, becomes a generated mirror.
 - [vitest-glob-coverage-guard](./q2-not-urgent-important/vitest-glob-coverage-guard.md) — a regression test that matched no Vitest project's include glob ran zero times and passed green; guard the class.
 - [web-ui-alert-destructive-dark-contrast](./q2-not-urgent-important/web-ui-alert-destructive-dark-contrast.md) — shared `Alert variant="destructive"` renders at 1.99:1 in dark mode; the obvious token fix is unsafe.
 

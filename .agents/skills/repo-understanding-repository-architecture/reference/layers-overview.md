@@ -27,5 +27,5 @@ Layer 5: Workflows    WHEN - Orchestrate (multi-step processes)
 | **1** | repo-governance/principles/  | WHY we value approaches       | Rarely          | Why value this approach?  |
 | **2** | repo-governance/conventions/ | WHAT documentation rules      | Occasionally    | What documentation rules? |
 | **3** | repo-governance/development/ | HOW we develop software       | More frequently | How develop software?     |
-| **4** | .claude/agents/              | WHO enforces rules            | Often           | Who enforces rules?       |
+| **4** | .agents/agents/              | WHO enforces rules            | Often           | Who enforces rules?       |
 | **5** | repo-governance/workflows/   | WHEN run agents in what order | As needed       | When run which agents?    |

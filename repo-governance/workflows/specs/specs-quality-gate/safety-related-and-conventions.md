@@ -75,5 +75,5 @@ is reserved for future enhancements where multiple listed folders could be valid
 
 ## Agents
 
-- [specs-checker](../../../../.claude/agents/specs/specs-checker.md) — validates specs directory for structural completeness, content accuracy, and C4 diagram correctness
-- [specs-fixer](../../../../.claude/agents/specs/specs-fixer.md) — fixes specs structural and accuracy issues
+- [specs-checker](../../../../.agents/agents/specs-checker.md) — validates specs directory for structural completeness, content accuracy, and C4 diagram correctness
+- [specs-fixer](../../../../.agents/agents/specs-fixer.md) — fixes specs structural and accuracy issues

@@ -28,7 +28,7 @@ This convention exists to:
 
 ### What This Convention Covers
 
-- Any AI agent in the primary binding directory (`.claude/agents/`) or secondary directories (`.opencode/agents/`) that has `WebSearch` or `WebFetch` in its tool list, or that consumes skills which invoke these tools.
+- Any AI agent in the canonical agent directory (`.agents/agents/`) that declares the `network` capability (its generated routes carry `WebSearch` or `WebFetch`), or that consumes skills which invoke these tools.
 - Any skill in the platform binding skill directories (e.g., `.agents/skills/`) whose workflow calls `WebSearch` or `WebFetch`.
 - Any workflow under `repo-governance/workflows/` that orchestrates agents performing web research.
 - Any `CLAUDE.md` or `AGENTS.md` guidance that shapes agent behaviour around external information gathering.

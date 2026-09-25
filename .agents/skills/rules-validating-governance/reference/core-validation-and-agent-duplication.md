@@ -8,7 +8,7 @@ pre-commit and markdown CI — not in the `repo-governance audit` preflight enve
 AI-re-derive them; re-evaluate only linking correctness and semantic convention compliance not
 caught mechanically.
 
-**Path scope**: `repo-governance/**/*.md`, `.claude/agents/**/*.md`, `.agents/skills/**/*.md`,
+**Path scope**: `repo-governance/**/*.md`, `.agents/agents/*.md`, `.agents/skills/**/*.md`,
 `docs/**/*.md`, root instruction surfaces (`AGENTS.md`, `CLAUDE.md`, `README.md`), active plans
 (`plans/in-progress/**/*.md`, `plans/backlog/**/*.md`). **Exempt**: website content
 (`apps/ayokoding-www/`, `apps/ose-www/`, `apps/organiclever-www/`, `apps/wahidyankf-www/`),
@@ -44,7 +44,7 @@ changed files; if not found, run a full scan.
 harness` gate — do not AI-re-derive the verbatim-match portion; re-evaluate only paraphrased/
 non-verbatim duplication.
 
-Extract content blocks (>20 lines) from all `.claude/agents/` files, compare pairwise (N×(N-1)/2
+Extract content blocks (>20 lines) from all `.agents/agents/` files, compare pairwise (N×(N-1)/2
 pairs), and classify: **Verbatim** (CRITICAL, exact matches ≥30 lines), **Paraphrased** (HIGH,
 same knowledge different wording, ≥20 lines), **Conceptual** (MEDIUM, same concepts different
 structure, ≥15 lines).

@@ -30,6 +30,6 @@ This workflow is part of the **Tutorial Quality Family**:
 
 - **[In-the-Field Tutorial Convention](../../../conventions/tutorials/in-the-field.md)**: Quality standards
 - **[Maker-Checker-Fixer Pattern](../../../development/pattern/maker-checker-fixer.md)**: Workflow pattern
-- **[`apps-ayokoding-www-in-the-field-checker` agent](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-in-the-field-checker.md)**: Validation agent
-- **[`apps-ayokoding-www-in-the-field-fixer` agent](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-in-the-field-fixer.md)**: Fixing agent
-- **[`apps-ayokoding-www-in-the-field-maker` agent](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-in-the-field-maker.md)**: Content creation agent
+- **[`apps-ayokoding-www-in-the-field-checker` agent](../../../../.agents/agents/apps-ayokoding-www-in-the-field-checker.md)**: Validation agent
+- **[`apps-ayokoding-www-in-the-field-fixer` agent](../../../../.agents/agents/apps-ayokoding-www-in-the-field-fixer.md)**: Fixing agent
+- **[`apps-ayokoding-www-in-the-field-maker` agent](../../../../.agents/agents/apps-ayokoding-www-in-the-field-maker.md)**: Content creation agent

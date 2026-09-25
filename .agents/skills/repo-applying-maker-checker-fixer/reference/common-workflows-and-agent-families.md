@@ -30,7 +30,7 @@
 
 ## Agent Families Using This Pattern
 
-Multiple agent families implement this pattern. See [AI Agents Index](../../../../.claude/agents/README.md) for the complete list. Key families include:
+Multiple agent families implement this pattern. See [AI Agents Index](../../../../.agents/agents/README.md) for the complete list. Key families include:
 
 1. **repo-rules-\*** - Repository-wide consistency
 2. **apps-ayokoding-www-\*** - Content (ayokoding-web, Next.js)

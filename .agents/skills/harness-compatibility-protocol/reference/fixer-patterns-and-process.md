@@ -9,7 +9,7 @@ affected row cell.
 field line, verify with Grep that it no longer appears.
 
 **Post-edit sync (D4 Claude Code agent changes)**: after any edit to a canonical agent in
-`.agents/agents/`, run `./rhino harness adapters generate` — this keeps `.claude/agents/plan/`,
+`.agents/agents/`, run `./rhino harness adapters generate` — this keeps `.claude/agents/`,
 `.codex/agents/`, and `.opencode/agents/` aligned. Failure here is a
 blocker; do not mark the fix complete until sync succeeds.
 

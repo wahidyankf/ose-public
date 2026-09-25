@@ -19,16 +19,17 @@ When creating new agents:
 
 Before committing agent changes:
 
-- [ ] No content duplicates agent skills (check the platform binding skills directory catalog)
+- [ ] No content duplicates agent skills (check `.agents/skills/` catalog)
 - [ ] No content duplicates Conventions (check `repo-governance/conventions/`)
-- [ ] All agent skills referenced exist in the platform binding skills directory (primary source of truth)
+- [ ] All agent skills referenced exist in `.agents/skills/` (primary source of truth)
 - [ ] All Convention links point to valid files
 - [ ] Task-specific instructions retained (agent is self-contained for its job)
 - [ ] Agent within tier limits (Simple <800, Standard <1,200, Complex <1,800)
 
 ## Agent skills Frontmatter Field
 
-**REQUIRED**: All agents MUST include `skills:` field in frontmatter.
+**REQUIRED**: Every agent that uses agent skills MUST list them in its `skills:` field, one block-sequence item per
+skill, in the order it should load them.
 
 **Format**:
 
@@ -36,22 +37,17 @@ Before committing agent changes:
 ---
 name: agent-name
 description: Brief description
-tools: Read, Write, Edit
-model:
-color: blue
-skills: [docs-applying-content-quality, docs-creating-accessible-diagrams]
-created: YYYY-MM-DD
+when_to_use: >-
+  Use when [scenario].
+tier: execution
+capabilities:
+  - repository-read
+  - repository-write
+skills:
+  - docs-applying-content-quality
+  - docs-creating-accessible-diagrams
 ---
 ```
 
-**Empty agent skills**: If agent doesn't use any agent skills yet, use empty list:
-
-```yaml
-skills: []
-```
-
-**Multiple agent skills**: List all agent skills the agent references:
-
-```yaml
-skills: [skill-one, skill-two, skill-three]
-```
+**No agent skills**: If the agent uses none yet, omit the `skills` field; the generated Claude route then carries no
+`skills` field either.

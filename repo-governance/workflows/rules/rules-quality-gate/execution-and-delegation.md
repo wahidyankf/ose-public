@@ -5,7 +5,7 @@ when_to_use: Use when running the rules quality gate, to decide what the subagen
 
 # Execution and Delegation
 
-The root invokes [`rules-checker`](../../../../.claude/agents/repo/rules-checker.md) through the
+The root invokes [`rules-checker`](../../../../.agents/agents/rules-checker.md) through the
 Agent tool. The checker reads the affected rule, its points of use, higher authority, and directly
 overlapping guidance, and returns the frozen ledger. It never edits a file.
 

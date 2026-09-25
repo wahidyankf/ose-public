@@ -641,7 +641,7 @@ process/container/network/volume/temp-secret inventories are empty.
       `specs/apps/ose/id-web/contracts/company-admin.openapi.yaml`, the company-admin web Gherkin, and
       synthetic signed-out, personal, Company A admin/member, Company B admin, recent/stale-auth,
       current/stale-version, empty/error, and dependency-unavailable contexts. Invoke
-      `.claude/agents/general/api-exploratory-tester.md` with `output-mode: delivery` and this exact plan
+      `.agents/agents/api-exploratory-tester.md` with `output-mode: delivery` and this exact plan
       path. Enumerate every safe operation, status, schema, auth/context/tenant boundary, pagination,
       idempotency, concurrency, rate-limit, and privacy rule. The tester does not perform successful
       destructive member/invitation/entitlement changes; isolated Integration/E2E owns those rows.
@@ -654,9 +654,9 @@ process/container/network/volume/temp-secret inventories are empty.
       phase. Accept or reject each genuine `SG-###` explicitly; never defer a defect as a spec gap.
 - [ ] [AI] Run the bounded `repo-governance/workflows/ui/ui-quality-gate.md` in `mode: strict` over every
       changed company-admin route, view model, component, style, story, and shared-primitive call site.
-      Invoke `.claude/agents/swe/swe-ui-checker.md` once for tokens, accessibility, contrast, component
+      Invoke `.agents/agents/swe-ui-checker.md` once for tokens, accessibility, contrast, component
       patterns, dark mode, responsiveness, and anti-patterns. When findings are in threshold, invoke
-      `.claude/agents/swe/swe-ui-fixer.md` once for revalidated high-confidence fixes, preserve false-
+      `.agents/agents/swe-ui-fixer.md` once for revalidated high-confidence fixes, preserve false-
       positive/below-threshold dispositions, then invoke one scoped checker verification. Record report
       paths, original IDs, affected components, lifecycle evidence, and final status; `partial`, `fail`,
       pending lifecycle evidence, or unresolved original finding blocks the phase.
@@ -664,9 +664,9 @@ process/container/network/volume/temp-secret inventories are empty.
       `repo-governance/workflows/web/web-ux-test-fixing-planning.md` sequentially against
       `/admin/company` Members, Invitations, and Entitlements plus denied, stale, empty, error, loading,
       destructive-confirmation, and context-exit states. Invoke
-      `.claude/agents/web/web-exploratory-tester.md` first with canonical specs,
-      `.claude/agents/web/web-usability-tester.md` second and spec-blind, and
-      `.claude/agents/web/web-design-tester.md` third with the selected plan mockups, runtime tokens, and
+      `.agents/agents/web-exploratory-tester.md` first with canonical specs,
+      `.agents/agents/web-usability-tester.md` second and spec-blind, and
+      `.agents/agents/web-design-tester.md` third with the selected plan mockups, runtime tokens, and
       shared primitives. Each uses `output-mode: delivery`, this plan path, all supported locales,
       breakpoints 320, 375, 768, 1024, 1280, and 1440 CSS px, the recurrence-class list, and changed-
       surface list.

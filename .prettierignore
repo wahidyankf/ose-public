@@ -23,7 +23,7 @@ graph.html
 
 # Rhino v0.4 owns these adapter routes byte-for-byte. Format canonical `.agents/` sources, then
 # regenerate; formatting a route directly would create a false adapter divergence.
-.claude/agents/plan/
+.claude/agents/
 .claude/skills/
 .codex/agents/
 .opencode/agents/

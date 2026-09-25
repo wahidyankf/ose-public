@@ -24,8 +24,8 @@ occurrence (may be legitimate version bump during execution; flag for review).
 (the test was claimed but never written).
 
 **E. Agent-name claims** — for every agent name cited (especially `_Suggested executor:_`
-annotations): `find .claude/agents -name '<name>.md'` returns a match — definitions live in nested
-role subfolders, so a flat path test always fails. Missing: **HIGH** (AP-7).
+annotations): `test -f .agents/agents/<name>.md` succeeds — definitions live flat in the canonical agent
+directory. Missing: **HIGH** (AP-7).
 
 **F. Behaviour claims** — for every claim about library or framework behaviour in the chosen technical form: verify
 it is backed by a `[Web-cited]` inline excerpt + URL + access date, or by a repo-doc reference.

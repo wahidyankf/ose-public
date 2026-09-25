@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/wahidyankf/rhino/v0.5.0/schemas/repo-config/v2.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/wahidyankf/rhino/v0.6.0/schemas/repo-config/v2.schema.json
 # Repository-owned policy for the checksum-pinned Rhino candidate.
 #
 # The grouped document contains no legacy compatibility section. Each retained
@@ -57,8 +57,13 @@ harness:
       - repository-write
       - shell
       - network
+      - subagent
     constraints:
       - read-only
+      - no-edit
+      - no-glob
+      - no-read
+      - no-write
     routes:
       - canonical-import
     identities:
@@ -71,8 +76,13 @@ harness:
           - repository-write
           - shell
           - network
+          - subagent
         constraints:
           - read-only
+          - no-edit
+          - no-glob
+          - no-read
+          - no-write
         routes:
           - canonical-import
         identities:
@@ -81,11 +91,12 @@ harness:
         path: CLAUDE.md
         route: "@{path}"
       agent-adapter:
-        path: ".claude/agents/plan/{name}.md"
+        path: ".claude/agents/{name}.md"
         format: front-matter
         route-field: body
         route: "Before acting, read the complete canonical agent definition at the repository-root path {path} and follow it as authoritative. If it cannot be read, stop and report the missing path."
         identity: { name: name, description: description }
+        lists: { skills: skills }
         tier-fields: { model: model, effort: effort }
         translations:
           - { when: always, field: tools, members: [Read] }
@@ -93,8 +104,13 @@ harness:
           - { when: requires, capability: repository-write, field: tools, members: [Write, Edit] }
           - { when: requires, capability: shell, field: tools, members: [Bash] }
           - { when: requires, capability: network, field: tools, members: [WebSearch, WebFetch] }
+          - { when: requires, capability: subagent, field: tools, members: [Agent] }
           - { when: denies, capability: repository-write, field: tools, absent-members: [Write, Edit] }
           - { when: denies, capability: shell, field: tools, absent-members: [Bash, PowerShell] }
+          - { when: constrains, capability: no-edit, field: tools, absent-members: [Edit] }
+          - { when: constrains, capability: no-glob, field: tools, absent-members: [Glob] }
+          - { when: constrains, capability: no-read, field: tools, absent-members: [Read] }
+          - { when: constrains, capability: no-write, field: tools, absent-members: [Write] }
       skill-adapter:
         path: ".claude/skills/{name}/SKILL.md"
         format: front-matter
@@ -103,6 +119,8 @@ harness:
         identity: { name: name, description: description }
       tiers:
         plan: { model: opus, effort: high }
+        execution: { model: sonnet, effort: xhigh }
+        fast: { model: haiku, effort: xhigh }
     - id: codex
       supports:
         capabilities:
@@ -110,8 +128,13 @@ harness:
           - repository-write
           - shell
           - network
+          - subagent
         constraints:
           - read-only
+          - no-edit
+          - no-glob
+          - no-read
+          - no-write
         routes:
           - canonical-import
         identities:
@@ -122,6 +145,7 @@ harness:
         route-field: developer_instructions
         route: "Before acting, read the complete canonical agent definition at the repository-root path {path} and follow it as authoritative. If it cannot be read, stop and report the missing path."
         identity: { name: name, description: description }
+        agents: [plan-checker, plan-execution-checker, plan-maker]
         absent: [model, effort]
     - id: opencode
       supports:
@@ -130,8 +154,13 @@ harness:
           - repository-write
           - shell
           - network
+          - subagent
         constraints:
           - read-only
+          - no-edit
+          - no-glob
+          - no-read
+          - no-write
         routes:
           - canonical-import
         identities:
@@ -142,6 +171,7 @@ harness:
         route-field: body
         route: "Before acting, read the complete canonical agent definition at the repository-root path {path} and follow it as authoritative. If it cannot be read, stop and report the missing path."
         identity: { description: description }
+        agents: [plan-checker, plan-execution-checker, plan-maker]
         fixed: { mode: subagent }
         translations:
           - { when: always, field: permission, entries: { read: allow } }
@@ -160,17 +190,17 @@ policies:
           schema: agent
         - glob: ".agents/agents/README.md"
           schema: governance
-        - glob: ".claude/skills/grill-me/SKILL.md"
+        - glob: ".agents/skills/grill-me/SKILL.md"
           schema: skill
-        - glob: ".claude/skills/plan-creating-project-plans/SKILL.md"
+        - glob: ".agents/skills/plan-creating-project-plans/SKILL.md"
           schema: skill
-        - glob: ".claude/skills/plan-grooming-idea-briefs/SKILL.md"
+        - glob: ".agents/skills/plan-grooming-idea-briefs/SKILL.md"
           schema: skill
-        - glob: ".claude/skills/plan-writing-gherkin-criteria/SKILL.md"
+        - glob: ".agents/skills/plan-writing-gherkin-criteria/SKILL.md"
           schema: skill
-        - glob: ".claude/skills/plan-validating-quality/SKILL.md"
+        - glob: ".agents/skills/plan-validating-quality/SKILL.md"
           schema: skill
-        - glob: ".claude/skills/plan-verifying-execution/SKILL.md"
+        - glob: ".agents/skills/plan-verifying-execution/SKILL.md"
           schema: skill
     frontmatter:
       surfaces:
@@ -182,10 +212,10 @@ policies:
         - glob: "repo-governance/**/*.md"
           require: [description, when_to_use]
           forbid: [updated, created]
-        - glob: ".claude/agents/**/*.md"
+        - glob: ".agents/agents/*.md"
           require: []
           forbid: [updated]
-        - glob: ".claude/skills/**/*.md"
+        - glob: ".agents/skills/**/*.md"
           require: []
           forbid: [updated]
         - glob: "plans/**/*.md"
@@ -298,7 +328,7 @@ policies:
         - "**/RTK.md"
     readme-index:
       trees:
-        - path: .claude/agents
+        - path: .agents/agents
         - path: .agents/skills
         - path: docs/explanation
         - path: docs/how-to
@@ -323,7 +353,6 @@ policies:
       count: whitespace-separated
       surfaces:
         - { glob: "repo-governance/**/*.md", target: 650, warn: 750, fail: 750 }
-        - { glob: ".claude/**/*.md", target: 650, warn: 750, fail: 750 }
         - { glob: ".codex/**/*.md", target: 650, warn: 750, fail: 750 }
         - { glob: ".opencode/**/*.md", target: 650, warn: 750, fail: 750 }
         - { glob: ".agents/**/*.md", target: 650, warn: 750, fail: 750 }
@@ -331,7 +360,6 @@ policies:
         - { glob: "CLAUDE.md", target: 650, warn: 750, fail: 750 }
         - { glob: "RTK.md", target: 650, warn: 750, fail: 750 }
         - { glob: "repo-governance/**/README.md", target: 900, warn: 1000, fail: 1000 }
-        - { glob: ".claude/**/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: ".codex/**/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: ".opencode/**/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: ".agents/**/README.md", target: 900, warn: 1000, fail: 1000 }

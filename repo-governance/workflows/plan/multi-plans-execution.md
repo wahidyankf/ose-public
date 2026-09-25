@@ -10,7 +10,7 @@ A scheduling layer over `plan-execution.md`, driving several ready plans togethe
 ## Agent References
 
 Each plan retains its normal specialist ownership; final implementation verification uses
-[plan-execution-checker](../../../.claude/agents/plan/plan-execution-checker.md).
+[plan-execution-checker](../../../.agents/agents/plan-execution-checker.md).
 
 ## Goal and Termination
 

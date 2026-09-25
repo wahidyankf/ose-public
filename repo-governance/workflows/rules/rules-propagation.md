@@ -22,7 +22,7 @@ indexed split; it may not generalize, weaken, compress away, or paraphrase a mat
 make a counter pass. For example, “junior engineer fresh from bootcamp with no professional work
 experience” cannot become merely “new engineer” for brevity.
 
-Agents composed: `.claude/agents/repo/rules-maker.md` and `rules-checker`. There is no
+Agents composed: `.agents/agents/rules-maker.md` and `rules-checker`. There is no
 `rules-fixer`: propagation is the sole writer of every rule edit. It never invokes
 `rules-quality-gate`, which hands work to propagation and is never called back.
 

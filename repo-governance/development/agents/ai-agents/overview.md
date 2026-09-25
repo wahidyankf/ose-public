@@ -36,18 +36,18 @@ This convention ensures all agents are:
 
 This convention applies to:
 
-- All agent files in the platform binding directory (primary) and secondary agent directories
+- All canonical agent files in `.agents/agents/` and their generated harness routes
 - References to agents in `AGENTS.md`
 - Agent validation rules in `rules-checker`
 
 ## Platform Bindings
 
 This repository maintains **multi-harness compatibility** across multiple AI coding agent platforms.
-`.claude/agents/` is the agent source of truth. Secondary harness roots have path-level ownership:
-agent mirrors are generated, while registry-declared configuration and plugin paths remain vendored.
+`.agents/agents/` is the agent source of truth. Every harness agent directory, `.claude/agents/`
+included, holds generated routes, while registry-declared configuration and plugin paths remain vendored.
 
-- **Primary (Source of Truth)**: The platform binding directory — edit agents here first
-- **Secondary mirrors (Generated)**: Synced from the canonical sources using `./rhino harness adapters generate`
+- **Source of Truth**: The canonical agent directory `.agents/agents/` — edit agents here
+- **Harness routes (Generated)**: Synced from the canonical sources using `./rhino harness adapters generate`
 - **Secondary exceptions (Vendored)**: Maintained in place as declared by `repo-config.yml`
 
 **Workflow**: For a generated mirror, edit its declared source and run the binding generator. For a
@@ -59,9 +59,9 @@ case applies.
 ### Platform Binding Examples
 
 ```binding-example
-Claude Code (.claude/agents/) — PRIMARY:
-  - Tool format: arrays [Read, Write]
-  - Model selection: sonnet, haiku, or omit (inherits)
+Claude Code (.claude/agents/) — GENERATED ROUTE:
+  - Tool format: comma string rendered from capabilities and constraints
+  - Model selection: model and effort rendered from the tier
 
 OpenCode (.opencode/agents/) — SECONDARY:
   - Tool format: permission object { read: allow, write: allow }

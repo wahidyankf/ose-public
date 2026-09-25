@@ -33,7 +33,7 @@ when_to_use: Use when converting an existing hardcoded count to a compliant refe
 - **Conventions Index**: [repo-governance/conventions/README.md](./repo-governance/conventions/README.md) — 30 documentation standards
 - **Development Index**: [repo-governance/development/README.md](./repo-governance/development/README.md) — 17 software practices
 - **Principles Index**: [repo-governance/principles/README.md](./repo-governance/principles/README.md) — 11 foundational principles
-- **Agents Index**: [.claude/agents/README.md](./.claude/agents/README.md) — 69 specialized agents
+- **Agents Index**: [.agents/agents/README.md](./.agents/agents/README.md) — 69 specialized agents
 ```
 
 **After (PASS)**:
@@ -42,7 +42,7 @@ when_to_use: Use when converting an existing hardcoded count to a compliant refe
 - **Conventions Index**: [repo-governance/conventions/README.md](./repo-governance/conventions/README.md) — Documentation writing and organization standards
 - **Development Index**: [repo-governance/development/README.md](./repo-governance/development/README.md) — Software development practices and workflows
 - **Principles Index**: [repo-governance/principles/README.md](./repo-governance/principles/README.md) — Foundational values governing all layers
-- **Agents Index**: [.claude/agents/README.md](./.claude/agents/README.md) — Specialized agents organized by role
+- **Agents Index**: [.agents/agents/README.md](./.agents/agents/README.md) — Specialized agents organized by role
 ```
 
 ---

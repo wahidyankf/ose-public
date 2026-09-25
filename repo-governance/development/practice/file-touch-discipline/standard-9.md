@@ -9,7 +9,7 @@ when_to_use: Use whenever you edit a file under the primary binding directory, o
 
 `.agents/agents/` and `.agents/skills/` are the canonical hand-authored agent and Skill sources the
 adapter generator reads; `repo-config.yml` `harness:` declares which routes it emits
-(`.claude/agents/plan/`, `.claude/skills/`, `.codex/agents/`, and `.opencode/agents/`, each with
+(`.claude/agents/`, `.claude/skills/`, `.codex/agents/`, and `.opencode/agents/`, each with
 its `catalog.json` and `provenance.json`). Secondary binding roots also hold hand-maintained paths
 the generator does not own. Editing one canonical definition can therefore modify several
 generated files you never opened — all of those generated changes are yours, while unrelated

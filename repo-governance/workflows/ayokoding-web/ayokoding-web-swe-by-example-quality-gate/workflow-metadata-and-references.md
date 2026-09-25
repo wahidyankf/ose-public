@@ -55,6 +55,6 @@ This workflow is part of the **Tutorial Quality Family**:
 - **[By-Example Tutorial Convention](../../../conventions/tutorials/swe-by-example.md)**: Quality standards
 - **[Maker-Checker-Fixer Pattern](../../../development/pattern/maker-checker-fixer.md)**: Workflow pattern
 - **[Fixer Confidence Levels](../../../development/quality/fixer-confidence-levels.md)**: Confidence assessment
-- **[`apps-ayokoding-www-by-example-checker` agent](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-by-example-checker.md)**: Validation agent
-- **[`apps-ayokoding-www-by-example-fixer` agent](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-by-example-fixer.md)**: Fixing agent
-- **[`apps-ayokoding-www-by-example-maker` agent](../../../../.claude/agents/apps-ayokoding-www/apps-ayokoding-www-by-example-maker.md)**: Content creation agent
+- **[`apps-ayokoding-www-by-example-checker` agent](../../../../.agents/agents/apps-ayokoding-www-by-example-checker.md)**: Validation agent
+- **[`apps-ayokoding-www-by-example-fixer` agent](../../../../.agents/agents/apps-ayokoding-www-by-example-fixer.md)**: Fixing agent
+- **[`apps-ayokoding-www-by-example-maker` agent](../../../../.agents/agents/apps-ayokoding-www-by-example-maker.md)**: Content creation agent

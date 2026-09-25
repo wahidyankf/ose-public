@@ -18,10 +18,10 @@ The repository contains 69 specialized AI agents.
 **PASS: Reference by name with link**:
 
 ```markdown
-The repository contains [specialized AI agents](./.claude/agents/README.md).
+The repository contains [specialized AI agents](./.agents/agents/README.md).
 ```
 
-> **Note**: The path `./.claude/agents/README.md` in the example above is illustrative. Use the correct relative path based on your file's actual location. For example, from `repo-governance/conventions/writing/`, the correct path would be `../../../.claude/agents/README.md`.
+> **Note**: The path `./.agents/agents/README.md` in the example above is illustrative. Use the correct relative path based on your file's actual location. For example, from `repo-governance/conventions/writing/`, the correct path would be `../../../.agents/agents/README.md`.
 
 **PASS: Omit the count entirely**:
 

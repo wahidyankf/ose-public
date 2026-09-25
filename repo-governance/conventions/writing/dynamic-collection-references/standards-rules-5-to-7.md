@@ -11,7 +11,7 @@ Continues from [Standards (Rules 1-4)](./standards-rules-1-to-4.md).
 
 Counts are acceptable in the following contexts:
 
-- **Index documents themselves** (e.g., the README in `.claude/agents/` may state the count as a footer note, but this single location becomes the authoritative source)
+- **Index documents themselves** (e.g., the README in `.agents/agents/` may state the count as a footer note, but this single location becomes the authoritative source)
 - **Generated audit reports** in `local-tmp/<agent-family>/` and human-requested reports in
   `generated-reports/` (these are point-in-time snapshots)
 - **Commit messages** describing a specific change ("add 3 new agents for organiclever")
@@ -26,7 +26,7 @@ If a count is needed anywhere, the index document for that collection is the sin
 
 | Collection       | Authoritative Index                                    |
 | ---------------- | ------------------------------------------------------ |
-| AI Agents        | `.claude/agents/README.md`                             |
+| AI Agents        | `.agents/agents/README.md`                             |
 | agent skills     | `.agents/skills/README.md`                             |
 | Conventions      | `repo-governance/conventions/README.md`                |
 | Principles       | `repo-governance/principles/README.md`                 |

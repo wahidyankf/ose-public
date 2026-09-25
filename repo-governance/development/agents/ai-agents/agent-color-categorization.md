@@ -5,29 +5,16 @@ when_to_use: Use when assigning or validating the color field on an agent defini
 
 # Agent Color Categorization
 
-## Color Field (Required)
+## Role Color (Documentation Only)
 
-The `color` frontmatter field provides visual categorization for agents based on their **primary role**. This helps users quickly identify agent types and understand their capabilities at a glance.
+Each agent has a role color that helps users identify its type at a glance. The color is **not** agent metadata:
+canonical agents in `.agents/agents/` carry no `color` key, `./rhino metadata validate` rejects one, and no generated
+harness route renders one. The color lives in documentation, such as an agent body's `**Role**: Checker (green)` line
+and the tables below.
 
-**Format:**
-
-```yaml
----
-name: agent-name
-description: Expert in X specializing in Y. Use when Z.
-tools: Read, Glob, Grep
-model:
-color: blue
----
-```
-
-**Field Definition:**
-
-- **`color`** (required)
-  - Values: `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, `cyan`
-  - Indicates the agent's primary role category
-  - Used for visual identification in agent listings
-  - Helps users choose the right agent type
+- Values: `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, `cyan`
+- Indicates the agent's primary role category
+- Used for visual identification in agent listings and documentation
 
 ## Color-to-Role Mapping
 
@@ -42,6 +29,7 @@ Agents are categorized by their **primary role** which aligns with naming suffix
 
 ## Platform Binding Color Translation
 
-The named color (`blue`, `green`, etc.) written by hand in `.claude/agents/*.md` is the **source of truth**. Authors never touch `.opencode/agents/*.md` directly — those are regenerated artefacts.
-
-When the sync tool writes secondary binding files, it translates the named color to a platform-compatible value. Some secondary platforms enforce a schema that accepts only hex codes or a fixed set of theme tokens; named colors such as `blue` are rejected by those platforms.
+No harness route carries a color. Canonical agents in `.agents/agents/` are the only authored source, and
+`./rhino harness adapters generate` renders their routes from `name`, `description`, `tier`, `capabilities`, `skills`,
+and `constraints` only. The translation table in the platform binding examples records the historical mapping for
+documentation that still uses role colors.

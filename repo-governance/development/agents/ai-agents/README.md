@@ -1,5 +1,5 @@
 ---
-description: "Standards for creating and managing AI agents in the platform binding directory (primary) and secondary agent directories"
+description: "Standards for creating and managing canonical AI agents in .agents/agents/ and their generated harness routes"
 when_to_use: "Read this index to find the right AI Agents Convention child document."
 ---
 

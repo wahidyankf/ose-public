@@ -34,7 +34,7 @@ Each role is implemented as a separate agent with specific responsibilities and 
 
 ## Scope
 
-This pattern is used across multiple agent families. See [AI Agents Index](../../../../.claude/agents/README.md) for the complete list of agent families using this pattern. Key families include:
+This pattern is used across multiple agent families. See [AI Agents Index](../../../../.agents/agents/README.md) for the complete list of agent families using this pattern. Key families include:
 
 1. **repo-rules-\*** - Repository-wide consistency
 2. **apps-ayokoding-www-\*** - Next.js 16 content for ayokoding-www

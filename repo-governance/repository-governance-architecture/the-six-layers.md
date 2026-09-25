@@ -36,7 +36,7 @@ workflows are when multi-step processes run.
 | **1** | repo-governance/principles/  | WHY we value approaches                                     | Rarely          | Why value this approach?  |
 | **2** | repo-governance/conventions/ | WHAT documentation rules                                    | Occasionally    | What documentation rules? |
 | **3** | repo-governance/development/ | HOW we develop software                                     | More frequently | How develop software?     |
-| **4** | `.claude/agents/`            | WHO enforces rules                                          | Often           | Who enforces rules?       |
+| **4** | `.agents/agents/`            | WHO enforces rules                                          | Often           | Who enforces rules?       |
 | **5** | repo-governance/workflows/   | WHEN orchestrate agents, procedures, and/or other workflows | As needed       | When run which steps?     |
 
 **Agent skills**: `.agents/skills/` - Delivery infrastructure serving agents (inline knowledge injection or fork-based delegation)

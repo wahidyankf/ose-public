@@ -20,7 +20,7 @@
     {
       "id": "skill/agent-developing-agents",
       "path": ".agents/skills/agent-developing-agents/SKILL.md",
-      "digest": "890c5b78e6263b2cc8702a6777664a9798d7537dec68c5098b7696e60ae23d7d"
+      "digest": "c3a63bdb89c26957537f5cf79bd175d29a36a70f49b33d86b2c946dab4d9db78"
     },
     {
       "id": "skill/api-testing-exploratory-methodology",
@@ -210,7 +210,7 @@
     {
       "id": "skill/repo-assessing-criticality-confidence",
       "path": ".agents/skills/repo-assessing-criticality-confidence/SKILL.md",
-      "digest": "12f1d76d242a855eaeddbc239701020d222b05dcc700af718dde7a9a34979b6b"
+      "digest": "d7e4e0fbd644c9157a63e4b4a8ad4e0e5203837008dac4dcca2a0b4c55a6df71"
     },
     {
       "id": "skill/repo-defining-workflows",
@@ -325,7 +325,7 @@
     {
       "id": "instruction",
       "path": "AGENTS.md",
-      "digest": "4e0556a0bfd9f50745392533d336bd3cccb7fd0543ca64cd4ce5ae3ecc6602dc"
+      "digest": "a0e2322944ce0e499ba132ecb84b9e46213fd11b7e845d94a468cab04fe809bd"
     }
   ]
 }

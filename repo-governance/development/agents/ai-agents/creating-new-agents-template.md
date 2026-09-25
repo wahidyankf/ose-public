@@ -5,16 +5,20 @@ when_to_use: Use as the starting skeleton when writing a brand-new agent definit
 
 # Creating New Agents — Agent Template
 
-Use this template when creating new agents:
+Use this template when creating a new canonical agent at `.agents/agents/<name>.md`:
 
 ```markdown
 ---
 name: agent-name
-description: Expert in [domain] specializing in [specific area]. Use when [specific scenario].
-tools: Read, Glob, Grep
-model:
-color: blue
-skills: []
+description: >-
+  Expert in [domain] specializing in [specific area].
+when_to_use: >-
+  Use when [specific scenario].
+tier: execution
+capabilities:
+  - repository-read
+skills:
+  - [skill-name]
 ---
 
 # Agent Name Agent

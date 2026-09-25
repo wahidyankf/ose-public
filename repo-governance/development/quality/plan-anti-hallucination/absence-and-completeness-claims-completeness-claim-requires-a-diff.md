@@ -17,7 +17,7 @@ actually owns the set:
 | Set being claimed complete  | Authoritative enumeration command                            |
 | --------------------------- | ------------------------------------------------------------ |
 | Deploy/environment branches | `git branch -r`                                              |
-| Agents                      | `find .claude/agents -name '*.md' ! -name README.md -print0` |
+| Agents                      | `find .agents/agents -name '*.md' ! -name README.md -print0` |
 | Nx targets on a project     | `nx show project <name> --json`                              |
 | Declared dependencies       | `jq` over `package.json` / `Cargo.toml`                      |
 | Committed files of a kind   | `git ls-files '<pattern>'`                                   |

@@ -54,7 +54,7 @@ expect() {
 expect "governance prose" '{"tool_name":"Edit","tool_input":{"file_path":"repo-governance/glossary.md"}}' fires
 expect "instruction surface" '{"tool_name":"Write","tool_input":{"file_path":"AGENTS.md"}}' fires
 expect "binding shim" '{"tool_name":"Edit","tool_input":{"file_path":"CLAUDE.md"}}' fires
-expect "agent definition" '{"tool_name":"Edit","tool_input":{"file_path":".claude/agents/repo/rules-maker.md"}}' fires
+expect "agent definition" '{"tool_name":"Edit","tool_input":{"file_path":".agents/agents/rules-maker.md"}}' fires
 expect "skill definition" '{"tool_name":"Write","tool_input":{"file_path":".claude/skills/x/SKILL.md"}}' fires
 expect "declarations" '{"tool_name":"Edit","tool_input":{"file_path":"repo-config.yml"}}' fires
 expect "enforcement wiring" '{"tool_name":"Edit","tool_input":{"file_path":".husky/pre-push"}}' fires

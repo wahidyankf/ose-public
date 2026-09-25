@@ -82,7 +82,7 @@ vanishes on clean), so the evidence exists now but decays as vendors keep changi
 - **Platform Bindings reference** — the catalog document itself, the primary artifact this triage
   reconciles. [platform-bindings](../../../docs/reference/platform-bindings.md)
 - **harness-compatibility-checker** — the agent whose 2026-07-20 run produced the drift findings
-  being triaged. [checker agent](../../../.claude/agents/repo/harness-compatibility-checker.md)
+  being triaged. [checker agent](../../../.agents/agents/harness-compatibility-checker.md)
 
 ## Proposed direction (sketch)
 

@@ -37,6 +37,20 @@ No other pack is active. Rust was retired with its agent and skill; its style gu
 [Programming Languages](../../../../docs/explanation/software-engineering/programming-languages/README.md) remains local
 reference only.
 
+## Local Paths
+
+Five adopted catalog modules sit at a local path that differs from their catalog path. Each is a reference module, not
+a step in an ordered sequence, so [Ordinal Filename Prefixes](../../../conventions/structure/ordinal-filename-prefixes.md)
+gives it a plain name and its parent index carries the order. Every other adopted artifact keeps its catalog path.
+
+| Local path                                                                                    | Catalog path                                                                                      |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `repo-governance/conventions/structure/stack-packs/repository-adapter.md`                     | `repo-governance/conventions/structure/stack-packs/001-repository-adapter.md`                     |
+| `repo-governance/conventions/structure/stack-packs/inventory-extension.md`                    | `repo-governance/conventions/structure/stack-packs/002-inventory-extension.md`                    |
+| `repo-governance/development/quality/stacks/csharp-standards/domain-types-and-tests.md`       | `repo-governance/development/quality/stacks/csharp-standards/001-domain-types-and-tests.md`       |
+| `repo-governance/development/quality/stacks/react-standards/library-decisions.md`             | `repo-governance/development/quality/stacks/react-standards/001-library-decisions.md`             |
+| `repo-governance/development/quality/stacks/nextjs-standards/version-hosting-and-examples.md` | `repo-governance/development/quality/stacks/nextjs-standards/001-version-hosting-and-examples.md` |
+
 ## Details
 
 - [Adopter Decisions](repository-adapter/adopter-decisions.md) — Every choice an adopted standard leaves open, plus the

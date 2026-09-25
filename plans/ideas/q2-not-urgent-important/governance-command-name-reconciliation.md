@@ -2,19 +2,22 @@
 
 > **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
 
-One-line summary: governance tables, agent files, and npm scripts all name commands that do not
-exist — Nx targets that were never implemented, a `rhino-cli` subcommand that was removed — so a
-reader following any of them runs something that exits non-zero.
+One-line summary: governance tables, agent files, npm scripts, and approved backlog plans all name
+commands that do not exist — Nx targets that were never implemented, a `rhino-cli` subcommand that
+was removed, a Rhino plan command the pinned release no longer ships — so a reader following any of
+them runs something that exits non-zero.
 
 > Surfaced 2026-08-17 during `optimize-gov` PR review.
 > Merged specs-checker-phantom-nx-targets.md into this brief on 2026-08-19 by plan-ideas-grooming:
 > same underlying defect, and that brief's open "isolated or systemic?" question is answered here.
 > Extended 2026-09-26 by a cross-repository verification pass: added `harness:bindings-validation`,
 > and corrected the claims that it and the `sync:*` scripts exist in ose-public — PR #549 removed both.
+> Extended again 2026-09-26, found during a cross-repository standards adoption: added the retired
+> `./rhino plan validate` and its five backlog-plan citations (the fourth drift below).
 
 ## Problem / context
 
-Three drifts of one shape, each found while fixing something else:
+Four drifts of one shape, each found while fixing something else:
 
 **Docs citing absent commands.** Five names appear in the naming-scheme tables of both repos as
 though they were live gates:
@@ -48,6 +51,26 @@ section instructs the reader to run `validate:specs-adoption`, `validate:specs-t
 `baseerah-repo-reset` plan's Phase 3 Gate deleted-app-name sweep and deliberately left unfixed there
 as out of that sweep's scope. This is the drift that makes the whole set systemic rather than a
 governance-table quirk: the same class of defect reaches `.claude/agents/**` too.
+
+**Approved backlog plans citing a retired Rhino command.** Five plans under `plans/backlog/` tell
+their executor to run `rtk ./rhino plan validate`. The pinned Rhino (`rhino.lock`, v0.6.0) has no
+`plan` command family: `./rhino --help` lists none, and `./rhino plan validate` exits with
+`unrecognized command`. Citations, from `git grep -n "rhino plan validate" -- plans/backlog`:
+
+- `plans/backlog/lms-user/delivery.md:104`, `:175`, and `:1027`;
+- `plans/backlog/ose-id-init-02-local-email-account/delivery.md:77`;
+- `plans/backlog/ose-id-init-03-company-tenancy-core/delivery.md:77`;
+- `plans/backlog/ose-id-init-08-company-admin/delivery.md:97`;
+- `plans/backlog/ose-id-init-09-local-scale-and-composition/delivery.md:76`.
+
+There is no drop-in replacement to cite. The
+[Plan Validator Contract](../../../repo-governance/conventions/structure/plan-validator-contract.md)
+freezes the plan-structure rules but says the catalog ships no validator, and `repo-config.yml`
+declares no plan-structure gate: `./rhino gate list` shows only generic Markdown checks (front
+matter, heading hierarchy, naming, Mermaid) for plans. The Plans Convention's own Validation sections
+assign plan judgement to semantic plan-quality review, which `plan-checker` performs; its "run
+structural validation" step names no command. Today, therefore, structural plan validation is
+review plus the generic Markdown gates, not a single runnable command.
 
 Two per-repo claims in this brief went stale in the other direction. It once said
 `harness:bindings-validation` exists as a real npm script in ose-public, and that ose-public's
@@ -95,7 +118,9 @@ are a dead end rather than a data-loss risk.
 ## Rough scope & non-goals
 
 In scope: `repo-governance/**`, `docs/**`, and the canonical `.agents/agents/**` in ose-public and the private sibling;
-the broken `sync:*` scripts; the triage table's own accuracy. Agent-file corrections regenerate their
+the broken `sync:*` scripts; the triage table's own accuracy. The five backlog plans are approved, so
+their `./rhino plan validate` steps are corrected when each plan is next revised or promoted, not
+rewritten in passing. Agent-file corrections regenerate their
 `.opencode/`/`.codex/` mirrors via `./rhino harness adapters generate` in the same commit — the mirrors are
 never hand-edited.
 
@@ -125,5 +150,5 @@ the inventory to exist first); `plans/done/**`, which records what was true at t
 
 Every command name in a governance or docs surface resolves to something runnable in the repo it is
 written in, or is gone, and neither repo keeps a broken `sync:agents`. Promotion signal: someone produces the
-target/script inventory for both repos and the diff is non-trivial — if the five known names are the
-whole set, this is a small PR, not a plan.
+target/script inventory for both repos and the diff is non-trivial — if the five known table names
+and the retired plan command are the whole set, this is a small PR, not a plan.

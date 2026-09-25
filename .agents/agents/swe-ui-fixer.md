@@ -11,7 +11,7 @@ capabilities:
   - repository-write
   - shell
 skills:
-  - swe-developing-frontend-ui
+  - developing-frontend-ui
   - repo-assessing-criticality-confidence
   - repo-applying-maker-checker-fixer
   - repo-maintaining-task-lists
@@ -110,7 +110,7 @@ the workflow owns verification.
 
 **Skills**:
 
-- `swe-developing-frontend-ui` - UI component development standards
+- `developing-frontend-ui` - UI component development standards
 - `repo-assessing-criticality-confidence` - Criticality and confidence assessment system
 - `repo-applying-maker-checker-fixer` - Three-stage quality workflow pattern
 - `repo-generating-validation-reports` - Progressive report writing with UUID chains

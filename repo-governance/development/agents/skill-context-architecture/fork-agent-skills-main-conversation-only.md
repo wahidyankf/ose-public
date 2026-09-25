@@ -7,7 +7,7 @@ when_to_use: Use when a Skill needs to run in an isolated context outside the cu
 
 ## When You Need Fork Behaviour
 
-**Option 1: Create fork skills in the primary binding skills directory (recommended)**
+**Option 1: Create fork skills in the canonical skills directory (recommended)**
 
 Fork skills in `.agents/skills/` work from main conversation:
 

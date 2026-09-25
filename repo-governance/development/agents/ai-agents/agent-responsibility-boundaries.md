@@ -51,7 +51,7 @@ Before creating a new agent, check if existing agents already cover the domain:
 
 - `docs-maker` - Documentation only
 - `rules-checker` - Consistency validation only
-- `swe-rust-dev` - Rust development only
+- `swe-code-maker` - Application code only
 
 **FAIL: Bad - Over-Generalized:**
 

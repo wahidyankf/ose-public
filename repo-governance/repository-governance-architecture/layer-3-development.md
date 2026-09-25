@@ -15,7 +15,7 @@ when_to_use: Use for Layer 3's scope and governance relationships.
 
 - **Source code** (TypeScript, Rust, F#, and the other languages this repo ships)
 - **Build systems** (Nx, npm, Volta)
-- **AI agents** (primary binding agents directory)
+- **AI agents** (canonical `.agents/agents/` directory)
 - **Git workflows** (commits, branches, hooks)
 
 **Practice Categories**:

@@ -1,9 +1,8 @@
 ---
 name: agent-maker
 description: >-
-  Creates new AI agent files in .claude/agents/ following AI Agents Convention. Canonical agents in .agents/agents/ are
-  then routed to every harness via ./rhino harness adapters generate. Ensures proper structure, skills integration, and
-  documentation.
+  Creates new canonical AI agent files in .agents/agents/ following AI Agents Convention, then routes them to every
+  harness via ./rhino harness adapters generate. Ensures proper structure, skills integration, and documentation.
 when_to_use: >-
   Use when a new AI agent must be created following the AI Agents Convention.
 tier: execution
@@ -42,12 +41,13 @@ Create new AI agent files following AI Agents Convention.
 ## Workflow
 
 1. Define agent purpose and scope
-2. Create frontmatter (name, description, tools, model, color, skills)
+2. Create frontmatter (`name`, `description`, `when_to_use`, `tier`, `capabilities`, optional `skills` and
+   `constraints`, in that order)
 3. Document core responsibility
 4. Define workflow
 5. Reference conventions and Skills
-6. If the agent is canonical in `.agents/agents/`, regenerate its routes with
-   `./rhino harness adapters generate`; never hand-edit a generated mirror
+6. Write the file to `.agents/agents/<name>.md`, then regenerate its routes with
+   `./rhino harness adapters generate`; never hand-edit a generated route
 
 ## Reference Documentation
 

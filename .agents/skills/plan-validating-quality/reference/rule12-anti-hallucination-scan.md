@@ -28,8 +28,8 @@ repo-file-quoting code fence. Bare unlabeled claims default to `[Unverified]`: *
 
 **C. Suggested-executor annotation validity** — where a checkbox carries `_Suggested executor:
 <agent-name>_`: `test -f .agents/agents/<agent-name>.md` succeeds (missing: **HIGH**,
-counts as AP-7); the agent's role suits the action (e.g. `swe-fsharp-dev` for a `.fs` edit, not
-`swe-typescript-dev`; mismatch: **MEDIUM**).
+counts as AP-7); the agent's role suits the action (e.g. `swe-code-maker` for a `.fs` edit, not
+`docs-maker`; mismatch: **MEDIUM**).
 
 **D. Web-citation completeness** — every `[Web-cited]` claim includes URL, access date, and excerpt
 inline; missing any element: **MEDIUM** per occurrence; URL-only citation is forbidden.

@@ -41,10 +41,11 @@ The `harness-ownership` gate is path-gated on the binding trees, the root instru
 
 ## Partial ownership
 
-A file may be **vendored with a delimited generated region**. `.codex/config.toml` is the case:
-tooling maintains its `mcp_servers`, `features`, and `ci-monitor-subagent` tables, the emitter owns
-only the region between its markers, and the byte guard covers that region alone. Half-ownership is
-stated explicitly, never left implicit.
+A file may be **vendored with a delimited region** an emitter owns; no path here has that shape
+today. `.codex/config.toml` is wholly vendored: its `mcp_servers`, `features`, and
+`[agents.<name>]` tables are maintained by hand, and each agent table names only an agent file the
+emitter generates under `.codex/agents/`, updated in the same change that alters that set.
+Half-ownership, where it exists, is stated explicitly, never left implicit.
 
 ## Related
 

@@ -52,7 +52,7 @@ charter-and-contract-driven sweep with reproducible request/response steps and c
    are explicit.
 
 Discovers and documents defects; never fixes them, mutates state beyond authorized writes, or drives
-a browser. Feeds `plan-maker`, `specs-maker`, `swe-*-dev`. Delegates standards lookups to
+a browser. Feeds `plan-maker`, `specs-maker`, `swe-code-maker`. Delegates standards lookups to
 `web-researcher`.
 
 ## Lifecycle-Owned Predicates

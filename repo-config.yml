@@ -693,3 +693,180 @@ gates:
       run-on:
         pre-commit: {}
         pull-request: {}
+
+extensions:
+  # Owner: repo-governance/development/quality/stacks/repository-adapter.md
+  software-development:
+    projects:
+      ayokoding-www:
+        path: apps/ayokoding-www
+        kind: app
+        stacks: [typescript, react, nextjs]
+      ayokoding-www-be-e2e:
+        path: apps/ayokoding-www-be-e2e
+        kind: app
+        stacks: [typescript]
+      ayokoding-www-fe-e2e:
+        path: apps/ayokoding-www-fe-e2e
+        kind: app
+        stacks: [typescript]
+      crane-cli:
+        path: apps/crane-cli
+        kind: app
+        stacks: [fsharp]
+      ferret-cli:
+        path: apps/ferret-cli
+        kind: app
+        stacks: [python]
+      ferret-cli-e2e:
+        path: apps/ferret-cli-e2e
+        kind: app
+        stacks: [python]
+      organiclever-app-web:
+        path: apps/organiclever-app-web
+        kind: app
+        stacks: [typescript, react, nextjs]
+      organiclever-app-web-e2e:
+        path: apps/organiclever-app-web-e2e
+        kind: app
+        stacks: [typescript]
+      organiclever-be:
+        path: apps/organiclever-be
+        kind: app
+        stacks: [fsharp, aspnet-core, giraffe]
+      organiclever-be-e2e:
+        path: apps/organiclever-be-e2e
+        kind: app
+        stacks: [typescript]
+      organiclever-www:
+        path: apps/organiclever-www
+        kind: app
+        stacks: [typescript, react, nextjs]
+      organiclever-www-fe-e2e:
+        path: apps/organiclever-www-fe-e2e
+        kind: app
+        stacks: [typescript]
+      ose-app-web:
+        path: apps/ose-app-web
+        kind: app
+        stacks: [typescript, react, nextjs]
+      ose-app-web-e2e:
+        path: apps/ose-app-web-e2e
+        kind: app
+        stacks: [typescript]
+      ose-be:
+        path: apps/ose-be
+        kind: app
+        stacks: [fsharp, aspnet-core, giraffe]
+      ose-be-e2e:
+        path: apps/ose-be-e2e
+        kind: app
+        stacks: [typescript]
+      ose-id-be:
+        path: apps/ose-id-be
+        kind: app
+        stacks: [csharp, aspnet-core]
+      ose-id-be-e2e:
+        path: apps/ose-id-be-e2e
+        kind: app
+        stacks: [csharp]
+      ose-id-web:
+        path: apps/ose-id-web
+        kind: app
+        stacks: [typescript, react, nextjs]
+      ose-id-web-e2e:
+        path: apps/ose-id-web-e2e
+        kind: app
+        stacks: [typescript]
+      ose-lms-be:
+        path: apps/ose-lms-be
+        kind: app
+        stacks: [java, spring-boot]
+      ose-lms-be-e2e:
+        path: apps/ose-lms-be-e2e
+        kind: app
+        stacks: [typescript]
+      ose-www:
+        path: apps/ose-www
+        kind: app
+        stacks: [typescript, react, nextjs]
+      ose-www-be-e2e:
+        path: apps/ose-www-be-e2e
+        kind: app
+        stacks: [typescript]
+      ose-www-fe-e2e:
+        path: apps/ose-www-fe-e2e
+        kind: app
+        stacks: [typescript]
+      roots-be:
+        path: apps/roots-be
+        kind: app
+        stacks: [golang, gin]
+      roots-be-e2e:
+        path: apps/roots-be-e2e
+        kind: app
+        stacks: [typescript]
+      fsharp-crane-core:
+        path: libs/fsharp-crane-core
+        kind: library
+        stacks: [fsharp]
+      fsharp-env-loader:
+        path: libs/fsharp-env-loader
+        kind: library
+        stacks: [fsharp]
+      ts-env-loader:
+        path: libs/ts-env-loader
+        kind: library
+        stacks: [typescript]
+      web-ui:
+        path: libs/web-ui
+        kind: library
+        stacks: [typescript, react]
+      web-ui-token:
+        path: libs/web-ui-token
+        kind: library
+        stacks: [typescript]
+      organiclever-contracts:
+        path: specs/apps/organiclever/be/contracts
+        kind: tooling
+        stacks: [nx]
+      ose-contracts:
+        path: specs/apps/ose/be/contracts
+        kind: tooling
+        stacks: [nx]
+      ose-id-contracts:
+        path: specs/apps/ose/id-be/contracts
+        kind: tooling
+        stacks: [nx]
+      ose-lms-contracts:
+        path: specs/apps/ose/lms-be/contracts
+        kind: tooling
+        stacks: [nx]
+      roots-contracts:
+        path: specs/apps/roots/be/contracts
+        kind: tooling
+        stacks: [nx]
+      repo-scripts:
+        path: scripts
+        kind: tooling
+        stacks: [javascript, shell]
+      ci-scripts:
+        path: .github/scripts
+        kind: tooling
+        stacks: [shell]
+      agent-hooks:
+        path: .claude/hooks
+        kind: tooling
+        stacks: [shell]
+      opencode-plugins:
+        path: .opencode/plugins
+        kind: tooling
+        stacks: [typescript]
+      public-safety:
+        path: scripts/public-safety
+        kind: tooling
+        stacks: [shell]
+      workspace:
+        path: .
+        kind: tooling
+        stacks: [nx]

@@ -82,7 +82,7 @@ are a dead end rather than a data-loss risk.
 
 ## Rough scope & non-goals
 
-In scope: `repo-governance/**`, `docs/**`, and `.claude/agents/**` in ose-public and the private sibling;
+In scope: `repo-governance/**`, `docs/**`, and the canonical `.agents/agents/**` in ose-public and the private sibling;
 the broken `sync:*` scripts; the triage table's own accuracy. Agent-file corrections regenerate their
 `.opencode/`/`.codex/` mirrors via `./rhino harness adapters generate` in the same commit — the mirrors are
 never hand-edited.

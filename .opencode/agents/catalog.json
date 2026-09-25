@@ -45,7 +45,7 @@
     {
       "id": "skill/apps-organiclever-www-developing-content",
       "path": ".agents/skills/apps-organiclever-www-developing-content/SKILL.md",
-      "digest": "8e2d8d64656cb0697eb5c2ad25e6a5666b0456a5d01b30e8fcd7e98b15f6464f"
+      "digest": "95dca96efe1fed0dd67be78afbc08cc4aa1c81b3c7b2965ed92fd5889e3b751e"
     },
     {
       "id": "skill/apps-ose-www-developing-content",
@@ -61,6 +61,16 @@
       "id": "skill/ci-standards",
       "path": ".agents/skills/ci-standards/SKILL.md",
       "digest": "8420663596da7f657e574616aad575a9745b68bad6cdc03981337dbd91834de9"
+    },
+    {
+      "id": "skill/developing-applications",
+      "path": ".agents/skills/developing-applications/SKILL.md",
+      "digest": "92f3d4cfff3531ca29f3c385ffd27719161e76b17d9ed4fc7d77e5ea606aa5c0"
+    },
+    {
+      "id": "skill/developing-frontend-ui",
+      "path": ".agents/skills/developing-frontend-ui/SKILL.md",
+      "digest": "1be5585a545c72b8f91d0ca2b345016932c5da83b4e20419f64c6284b1808c1e"
     },
     {
       "id": "skill/docs-applying-content-quality",
@@ -138,6 +148,36 @@
       "digest": "0e04d4b5d18d135759cafcb7a55b1788ddd410a28271316cc82ec4177cfe60db"
     },
     {
+      "id": "skill/framework-aspnet-core",
+      "path": ".agents/skills/framework-aspnet-core/SKILL.md",
+      "digest": "b7c4540796a40dbb06af535d1eb0aaa9acd1fcb7abb53e58b0fcef857514c288"
+    },
+    {
+      "id": "skill/framework-gin",
+      "path": ".agents/skills/framework-gin/SKILL.md",
+      "digest": "d53e25ebef2225dc57deea847b0535ffbec03d13061259e4ab3c0bce875e6225"
+    },
+    {
+      "id": "skill/framework-giraffe",
+      "path": ".agents/skills/framework-giraffe/SKILL.md",
+      "digest": "fd763c09aae46e2072970d5c9d522edf5ba8c59ed47770a4b5f596e80abf6365"
+    },
+    {
+      "id": "skill/framework-nextjs",
+      "path": ".agents/skills/framework-nextjs/SKILL.md",
+      "digest": "7ffbfac91dba32d093d093378b3befc0eacd40cf871c1b781b8598cafc27b8bf"
+    },
+    {
+      "id": "skill/framework-react",
+      "path": ".agents/skills/framework-react/SKILL.md",
+      "digest": "1ad91e260123242fbee7ddf5ed9366e302a07b36e3ed39737da53762e76ce9d3"
+    },
+    {
+      "id": "skill/framework-spring-boot",
+      "path": ".agents/skills/framework-spring-boot/SKILL.md",
+      "digest": "b1d6f366bf899d9917aaccd8c8c013f13d3ec78f5e3acfa441acc7cdd41b9c70"
+    },
+    {
       "id": "skill/grill-me",
       "path": ".agents/skills/grill-me/SKILL.md",
       "digest": "0d852127af48866dad5435baaf7df7f3e9a2b30282fafbb58b657aef7898120a"
@@ -191,6 +231,46 @@
       "id": "skill/pr-review-synthesis-coordination",
       "path": ".agents/skills/pr-review-synthesis-coordination/SKILL.md",
       "digest": "135d824f29992ef2132aad2ce5f638cc8df69fdd81f39a17ac49c1f3598685b3"
+    },
+    {
+      "id": "skill/programming-csharp",
+      "path": ".agents/skills/programming-csharp/SKILL.md",
+      "digest": "efd2058d785d81ef844a9c6b0b98f650190e2936d6f9bd37950ef5809e68dc44"
+    },
+    {
+      "id": "skill/programming-fsharp",
+      "path": ".agents/skills/programming-fsharp/SKILL.md",
+      "digest": "7845e5b1e3d0d307d65e9c7a7cb2b565dd5076a05b7db367bf881f3996d8d4c6"
+    },
+    {
+      "id": "skill/programming-golang",
+      "path": ".agents/skills/programming-golang/SKILL.md",
+      "digest": "c8631e282c6772d4389a024d9dbd2b6b418954b2e74f39f23d339946ed4d3109"
+    },
+    {
+      "id": "skill/programming-java",
+      "path": ".agents/skills/programming-java/SKILL.md",
+      "digest": "d1aaed4b1cfc80d53bb4c01926b1c7639ab6f63591139cc9aaf6c33ff76056b7"
+    },
+    {
+      "id": "skill/programming-javascript",
+      "path": ".agents/skills/programming-javascript/SKILL.md",
+      "digest": "936df36d15b08541a82d28a480db5263009e4fc1831ace82cd70e12b832c15f7"
+    },
+    {
+      "id": "skill/programming-python",
+      "path": ".agents/skills/programming-python/SKILL.md",
+      "digest": "e68bb3fd8c8c04ea4aa8a6d24470584d439c7b1670c16593819e25232229ae51"
+    },
+    {
+      "id": "skill/programming-shell",
+      "path": ".agents/skills/programming-shell/SKILL.md",
+      "digest": "73313c9a2a985ee7f8c9bcb6514a181ec962f20ad464a9206ec34e5f391dd376"
+    },
+    {
+      "id": "skill/programming-typescript",
+      "path": ".agents/skills/programming-typescript/SKILL.md",
+      "digest": "057378e957a3aa16a3b999e57ead0215193c7c27b3b66108b89cc77eb0bf0f4e"
     },
     {
       "id": "skill/readme-fixing-quality",
@@ -268,44 +348,9 @@
       "digest": "497ed0e73f14fd7544de75caf8a44329e1e305c2904a8b0f69d9f7d74be35944"
     },
     {
-      "id": "skill/swe-developing-applications-common",
-      "path": ".agents/skills/swe-developing-applications-common/SKILL.md",
-      "digest": "7c496b434184f3515fbff20e721f385086eebd972c0036df2acf74a42784ca4c"
-    },
-    {
-      "id": "skill/swe-developing-e2e-test-with-playwright",
-      "path": ".agents/skills/swe-developing-e2e-test-with-playwright/SKILL.md",
-      "digest": "a12b0392543c43aff89c48240257403fc9c14103778d2975a3382795971e0e6c"
-    },
-    {
-      "id": "skill/swe-developing-frontend-ui",
-      "path": ".agents/skills/swe-developing-frontend-ui/SKILL.md",
-      "digest": "89eb6ba65209896300a107566eff5d25d3b124d2a84a560acc45847626de3b9e"
-    },
-    {
-      "id": "skill/swe-programming-csharp",
-      "path": ".agents/skills/swe-programming-csharp/SKILL.md",
-      "digest": "1a52e3f59950547edb504f33b4bee64b8df51b50f6c2601890f2b282929d6f3c"
-    },
-    {
-      "id": "skill/swe-programming-fsharp",
-      "path": ".agents/skills/swe-programming-fsharp/SKILL.md",
-      "digest": "b06d79e3db5d683ebaed5de11ea40cb127f32b365a649e365f75ef3c887372c3"
-    },
-    {
-      "id": "skill/swe-programming-java",
-      "path": ".agents/skills/swe-programming-java/SKILL.md",
-      "digest": "18a0ce291531ed6a3b75b27aa1e9e99f2950ce2f1a55cc6b04d3a7b119c17a7c"
-    },
-    {
-      "id": "skill/swe-programming-rust",
-      "path": ".agents/skills/swe-programming-rust/SKILL.md",
-      "digest": "931e060ebbecfe8f59d5f63063450718502ac45b414d924540ff0bdbdc224fda"
-    },
-    {
-      "id": "skill/swe-programming-typescript",
-      "path": ".agents/skills/swe-programming-typescript/SKILL.md",
-      "digest": "45a908b23b47b0c21b919bbeac53389ec6772b0fc15288e92b91e41b403775de"
+      "id": "skill/tooling-nx",
+      "path": ".agents/skills/tooling-nx/SKILL.md",
+      "digest": "8e3bd2d76482de3ae82032e869f138937f0526e88cef57cd8b6f5e51f1fca987"
     },
     {
       "id": "skill/web-testing-design-fidelity",
@@ -323,9 +368,14 @@
       "digest": "e05e58b05cd893169c437dd8ac1542d735137358bcf8addb9051388fb4c30b57"
     },
     {
+      "id": "skill/writing-browser-e2e-tests",
+      "path": ".agents/skills/writing-browser-e2e-tests/SKILL.md",
+      "digest": "1d720b51fec7d61c82d58826bf9b683a844c75965ee15c6feb5f80ca2becea74"
+    },
+    {
       "id": "instruction",
       "path": "AGENTS.md",
-      "digest": "a0e2322944ce0e499ba132ecb84b9e46213fd11b7e845d94a468cab04fe809bd"
+      "digest": "916ba4062aa90dfe616de8d60566c1912212d9363cdcc6c9bf057fae62243650"
     }
   ]
 }

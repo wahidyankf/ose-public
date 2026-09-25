@@ -1,6 +1,6 @@
 ---
-description: Generated harness mirrors in the secondary binding directories belong on the ledger and must land in the same commit as their primary binding directory source, never a follow-up sync commit
-when_to_use: Use whenever you edit a file under the primary binding directory, or any other file that has a generated mirror or derived artifact.
+description: Generated harness mirrors in the binding directories belong on the ledger and must land in the same commit as their canonical `.agents/` source, never a follow-up sync commit
+when_to_use: Use whenever you edit a file under the canonical `.agents/` directory, or any other file that has a generated mirror or derived artifact.
 ---
 
 # Standard 9: Generated Mirrors

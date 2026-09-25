@@ -56,7 +56,7 @@ development builds.
 
 ## Reference Documentation
 
-**Related Agents**: `swe-typescript-dev` — develops organiclever-app-web Next.js code.
+**Related Agents**: `swe-code-maker` — develops organiclever-app-web Next.js code.
 
 **Related Conventions**:
 

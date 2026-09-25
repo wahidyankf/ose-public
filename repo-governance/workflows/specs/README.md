@@ -22,7 +22,7 @@ These workflows define **WHEN and HOW to validate specifications**, orchestratin
 
 **Not Included:**
 
-- Implementation code validation (that's per-language developer agents and CI)
+- Implementation code validation (that's `swe-code-maker` and CI)
 - Test binding substance (use the [Gherkin implementation review](../gherkin-implementation-review.md))
 - Repository governance (that's repository/)
 - Documentation quality (that's docs/)

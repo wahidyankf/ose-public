@@ -58,13 +58,12 @@ See [Content Validation Checklist and Common Mistakes](./reference/validation-ch
 **Related Skills**:
 
 - `repo-practicing-trunk-based-development` - Git workflow and branch strategy
-- `swe-programming-typescript` - TypeScript coding standards
+- `programming-typescript` - TypeScript coding standards
 
 **Related Agents**:
 
 - `apps-organiclever-app-web-deployer` - Deploys organiclever-www to production
-- `swe-typescript-dev` - TypeScript/Next.js development
-- `swe-e2e-dev` - E2E testing with Playwright
+- `swe-code-maker` - TypeScript/Next.js development and Playwright E2E tests
 
 ---
 

@@ -58,7 +58,7 @@ charter-and-tour-driven sweep with reproducible steps and cited ground truth.
 
 Discovers and documents defects; never fixes them or changes the site. Distinct from
 `web-usability-tester` (spec-blind) and `web-design-tester` (design-aware) — the three form the
-live-site advocate triad. Feeds `plan-maker`, `specs-maker`, and the `swe-*-dev` families. Delegates
+live-site advocate triad. Feeds `plan-maker`, `specs-maker`, and the `swe-code-*` family. Delegates
 external-standard lookups to `web-researcher`.
 
 ## References

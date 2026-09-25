@@ -94,8 +94,9 @@ directory and fails naming any file it cannot classify.
 | `generated` | Emitted from canonical source; must reproduce byte-for-byte                 | `.opencode/agents/`, `.codex/agents/`, `.agents/skills/` (emitter-owned subdirectories)                                            |
 | `vendored`  | Third-party payload with no in-repo source; survives regeneration untouched | `.opencode/opencode.json`, `.codex/config.toml`, `.codex/ci-monitor-subagent.toml`, the eight `.agents/skills/` plugin directories |
 
-`.codex/config.toml` is `vendored` **with a delimited generated region**: the emitter owns only the
-region between its markers, and the byte guard covers that region alone. Every `vendored`
+`.codex/config.toml` is wholly `vendored`: every table in it, including each `[agents.<name>]`
+registration, is maintained by hand, and each registration names only an agent file the emitter
+generates under `.codex/agents/`. Every `vendored`
 declaration carries a reason, because an exemption from regeneration with a blank justification is
 indistinguishable from an oversight someone silenced.
 
@@ -197,9 +198,11 @@ Every generated-tier harness in `repo-config.yml` receives its binding mechanica
   full config layer, so a `model` set there takes precedence over the session model; a grade with no
   Codex counterpart (`inherit`, a pinned vendor ID) omits the key and raises a conversion warning
   rather than guessing.
-- **`.codex/config.toml`** — only the region between the `Rhino generated` markers is
-  generator-owned. The hand-maintained `mcp_servers`, `features`, and vendored agent tables outside
-  that region are preserved across regeneration.
+- **`.codex/config.toml`** — registers, by hand, one `[agents.<name>]` table for each agent file
+  the emitter generates under `.codex/agents/` (today the three plan agents), beside the
+  `ci-monitor-subagent` table and the `mcp_servers` and `features` settings. The pinned emitter
+  writes none of it; see
+  [Partial ownership](../../repo-governance/conventions/structure/multi-harness-binding/ownership-classes.md#partial-ownership).
 - **`.agents/skills/`** — a real-file mirror of the whole `.agents/skills/` tree, never symlinks, because the
   mirror is committed and a symlink would not survive `git archive`, a Windows checkout, or a
   container `COPY`. Codex discovers skills only under `.agents/skills/`, whereas Claude Code and
@@ -288,16 +291,13 @@ migration is outstanding.
 Mechanical translations that declared platform profiles apply when generating output from canonical
 sources. All translations are performed by `./rhino harness adapters generate`.
 
-### Color Translation (Claude Code → OpenCode)
+### Color Translation (retired)
 
-The Claude Code binding uses named color strings (`blue`, `green`, `yellow`, `purple`, etc.) in
-agent frontmatter. OpenCode uses theme tokens (`primary`, `success`, `warning`, `secondary`, etc.).
-
-- **Source**: formerly `.claude/agents/<name>.md` frontmatter `color:`; canonical agents carry no color today
-- **Transform**: the declared Rhino adapter profile
-- **Sink**: `.opencode/agents/<name>.md` frontmatter `color:` field
-- **Policy**: [Platform Binding Color Translation](../../repo-governance/development/agents/ai-agents/agent-color-categorization.md#platform-binding-color-translation)
-  ("Platform Binding Color Translation" subsection)
+No profile translates a color today: canonical agents declare none and no route emits one. Role
+colors survive only as documentation categories, per
+[Platform Binding Color Translation](../../repo-governance/development/agents/ai-agents/agent-color-categorization.md#platform-binding-color-translation).
+The predecessor binding carried named colors in `.claude/agents/<name>.md` frontmatter, and its
+generator mapped them to OpenCode theme tokens as the table below records.
 
 | Claude Code color | OpenCode theme token | Role hint            |
 | ----------------- | -------------------- | -------------------- |

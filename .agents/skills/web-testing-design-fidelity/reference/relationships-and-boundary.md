@@ -19,7 +19,7 @@ the same running site. They complement each other and never overlap:
 - **Feeds `plan-maker` only in explicitly authorized plan mode** — that mode runs the mature-plan
   grill and creates the fixed core with mapped
   technical companions and a TDD-shaped `delivery.md`.
-- **Feeds the `swe-ui-*` and `swe-*-dev` families** — developers consume `findings.md` (steps to
+- **Feeds the `swe-ui-*` and `swe-code-*` families** — developers consume `findings.md` (steps to
   reproduce, the design ground truth violated) to drive design fixes.
 - **Delegates to `web-researcher`** — for the current, authoritative statement of a design principle it
   does not hold. Per the

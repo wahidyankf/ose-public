@@ -39,7 +39,7 @@ checks component source, while this gate uses tester-driven evidence from actual
 - [Preconditions](./api-quality-gate/preconditions.md) — reachability, contract, non-destructive scope.
 - [Step 1: Discovery](./api-quality-gate/step-1-discovery.md) — invoke the tester for one full API sweep.
 - [Step 2: Triage Against Mode](./api-quality-gate/step-2-triage-against-mode.md) — severity-to-threshold mapping.
-- [Step 3: Fix](./api-quality-gate/step-3-fix.md) — route findings to the matching `swe-*-dev` agent.
+- [Step 3: Fix](./api-quality-gate/step-3-fix.md) — route findings to `swe-code-maker`.
 - [Step 4: Verification](./api-quality-gate/step-4-verification.md) — rebuild and redeploy once, then verify original findings and affected behaviour.
 - [Step 5: Finalization](./api-quality-gate/step-5-finalization.md) — pass, partial, fail, and lifecycle outcomes.
 - [Success Criteria](./api-quality-gate/success-criteria.md) — clean-discovery, verified-fix,

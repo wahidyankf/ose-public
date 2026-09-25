@@ -25,7 +25,7 @@ generator changes only paths or delimited regions declared as generated.
 │   └── opencode.json       # vendored configuration
 ├── .codex/                 # Mixed-ownership Codex root
 │   ├── agents/             # generated TOML agents
-│   └── config.toml         # vendored file; agent-table region is generated
+│   └── config.toml         # vendored file; agent tables hand-maintained
 └── .agents/                # Canonical cross-harness root
     ├── agents/             # canonical agents, flat, one file per agent
     └── skills/             # canonical skills plus declared vendored plugin subtrees

@@ -5,8 +5,8 @@ when_to_use: Use when starting the API quality gate, to decide between Agent Del
 
 # Execution Mode
 
-**Preferred Mode**: Agent Delegation — invoke `api-exploratory-tester` and the fixing `swe-*-dev`
-agent via the Agent tool with `subagent_type` (see
+**Preferred Mode**: Agent Delegation — invoke `api-exploratory-tester` and the fixing `swe-code-maker`
+via the Agent tool with `subagent_type` (see
 [Workflow Execution Modes Convention](../../meta/execution-modes.md)).
 
 **Fallback Mode**: Manual Orchestration — drive the API directly with `curl` and apply fixes with

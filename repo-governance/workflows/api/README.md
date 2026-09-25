@@ -12,8 +12,8 @@ Use these workflows when an API needs to be checked as a real client experiences
 - [api-quality-gate](./api-quality-gate.md) — Runs one live discovery, at most one fix pass, one rebuild/redeployment, and one scoped verification over original findings and affected-API regressions. Use when a plan ships an API/backend surface needing contract, functional, and security validation.
 
 Unlike the checker/fixer gates elsewhere in this directory tree, the API gate is **tester-driven**:
-`api-exploratory-tester` emits `AET-###` findings against a live endpoint, and the `swe-*-dev` agent
-matching the service's implementing language applies the fixes. There is no `api-checker` or
+`api-exploratory-tester` emits `AET-###` findings against a live endpoint, and `swe-code-maker`
+applies the fixes under the service's stack packs. There is no `api-checker` or
 `api-fixer` agent.
 
 ## Related Documentation

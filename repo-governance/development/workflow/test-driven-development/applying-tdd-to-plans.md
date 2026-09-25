@@ -1,5 +1,5 @@
 ---
-description: How plan-maker must express code-shipping delivery items as TDD-shaped steps, and how plan-executor and swe-*-dev agents follow TDD during execution.
+description: How plan-maker must express code-shipping delivery items as TDD-shaped steps, and how plan-executor and swe-code-maker follow TDD during execution.
 when_to_use: Use when authoring a plan's delivery.md checklist, or when executing a delivery item that ships code.
 ---
 
@@ -59,8 +59,8 @@ checkboxes, or omit paths, commands, expected observations, or proof, as HIGH.
 
 ## Plan Execution
 
-`plan-executor` (the calling context orchestrating the plan-execution workflow) and all
-language-specific `swe-*-dev` agents follow TDD when implementing delivery items:
+`plan-executor` (the calling context orchestrating the plan-execution workflow) and
+`swe-code-maker` follow TDD when implementing delivery items:
 
 - Before writing any production code for a checklist item, write a failing test.
 - Confirm the test fails for the right reason.

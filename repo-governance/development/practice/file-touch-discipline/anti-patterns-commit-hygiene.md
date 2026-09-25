@@ -1,6 +1,6 @@
 ---
 description: Three anti-patterns that break commit hygiene - vague-prose ledgers, orphan sync commits, and hand-editing a generated mirror
-when_to_use: Use when writing ledger entries or deciding how to commit a primary binding directory edit and its generated mirrors.
+when_to_use: Use when writing ledger entries or deciding how to commit a canonical `.agents/` edit and its generated mirrors.
 ---
 
 # Anti-Patterns: Commit Hygiene

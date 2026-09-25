@@ -151,16 +151,13 @@ Create and validate specs/ Gherkin feature areas and structure.
 - [specs-fixer](specs-fixer.md) — repairs spec findings
 - [specs-maker](specs-maker.md) — scaffolds spec areas
 
-## SWE Language Dev
+## SWE
 
-Language-specific development agents plus UI and code-quality checkers and fixers.
+Generic code maker, checker, and fixer that load each project's stack packs, plus the UI trio.
 
-- [swe-code-checker](swe-code-checker.md) — audits project coding standards
-- [swe-csharp-dev](swe-csharp-dev.md) — implements C# code
-- [swe-e2e-dev](swe-e2e-dev.md) — implements Playwright end-to-end tests
-- [swe-java-dev](swe-java-dev.md) — implements Java code
-- [swe-rust-dev](swe-rust-dev.md) — implements Rust code
-- [swe-typescript-dev](swe-typescript-dev.md) — implements TypeScript code
+- [swe-code-checker](swe-code-checker.md) — audits code against the adopted standards
+- [swe-code-fixer](swe-code-fixer.md) — applies confirmed code checker findings
+- [swe-code-maker](swe-code-maker.md) — implements code test-first under the adopted standards
 - [swe-ui-checker](swe-ui-checker.md) — audits UI components
 - [swe-ui-fixer](swe-ui-fixer.md) — repairs UI findings
 - [swe-ui-maker](swe-ui-maker.md) — builds shared UI components

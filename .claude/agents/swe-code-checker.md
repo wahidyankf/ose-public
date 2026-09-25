@@ -1,15 +1,13 @@
 ---
 description: |-
-  Validates that application and library projects conform to platform coding standards, Nx target conventions, and language-specific best practices. Outputs to local-tmp/swe-code/ with progressive streaming.
+  Audits application and library code in named projects against the adopted language-neutral and stack standards, including test-first evidence and regression tests, and writes rated findings to local-tmp/swe-code/ without editing code.
 effort: xhigh
 model: sonnet
 name: swe-code-checker
 skills:
-  - repo-generating-validation-reports
+  - developing-applications
   - repo-assessing-criticality-confidence
-  - repo-applying-maker-checker-fixer
-  - repo-maintaining-task-lists
-  - swe-developing-applications-common
+  - repo-generating-validation-reports
 tools: |-
   Read, Glob, Grep, Write, Bash
 ---

@@ -24,7 +24,7 @@ when_to_use: Use when deciding whether a new agent should declare the execution-
 - **social-linkedin-post-maker** -- generates social media posts following a defined template and tone guidelines
 - **Structured makers** -- makers with tight, well-defined skills that pin down most decisions, making them rule-following rather than open-ended creation (docs-maker, readme-maker, agent-maker, repo-workflow-maker, apps-ose-www-content-maker, and every `apps-ayokoding-www-*-maker`)
 - **Testers and converters** -- agents whose sweep is enumerated rather than invented: `web-*-tester` and api-exploratory-tester work through a fixed charter and cite ground truth; `pdf-to-md-*` follows a chunked extract-and-verify procedure; repo-setup-manager runs a five-step sequence with an acceptance condition per step
-- **swe-e2e-dev** -- writes Playwright E2E tests following a dedicated skill with defined patterns (locators, fixtures, waits); lower stakes than production code written by language developer agents
+- **swe-code-maker**, **swe-code-fixer** -- build code and apply findings test-first under the adopted stack standards and skills, which settle the approach; an open design decision goes back to its owner rather than raising the tier
 
 **Frontmatter**: Specify `model: sonnet` explicitly.
 

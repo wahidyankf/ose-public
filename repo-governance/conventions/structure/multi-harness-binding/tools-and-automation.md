@@ -11,7 +11,7 @@ the commit-discipline rule for their output.
 ## Tools and Automation
 
 - **`./rhino harness adapters generate`** — generator subcommand; emits all platform-binding
-  artifacts (generated agent mirrors and Tier-2 bridge files) from the primary binding source
+  artifacts (generated agent mirrors and Tier-2 bridge files) from the canonical `.agents/` source
   in a single invocation (AD4). Run it directly whenever binding sources change; there is no npm
   script wrapper.
 - **`./rhino harness adapters validate`** — deterministic subcommand (AD7); re-derives each

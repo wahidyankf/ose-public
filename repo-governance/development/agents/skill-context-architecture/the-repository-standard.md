@@ -1,11 +1,11 @@
 ---
-description: "Defines the Skill context modes used in the primary binding agent skills directory, including inline context mode."
+description: "Defines the Skill context modes used in the canonical `.agents/skills/` directory, including inline context mode."
 when_to_use: Use when authoring a new Skill and deciding which context mode it declares.
 ---
 
 # The Repository Standard
 
-## Skill Context Modes in the Primary Binding agent skills Directory
+## Skill Context Modes in the Canonical Skills Directory
 
 **Standard**: agent skills in `.agents/skills/` support two context modes:
 

@@ -41,16 +41,15 @@ that was only ever illustrative.
 
 ## Proposed direction (sketch)
 
-- Replace the illustrative example paths in the 4 source `.claude/agents/*.md` files with either
+- Replace the illustrative example paths in the canonical `.agents/agents/*.md` sources with either
   (a) the repo's own surviving app (`rhino-cli`) where the example's shape allows it, or (b) a clearly
   fictional placeholder (e.g. `example-app`) that can't be mistaken for a real path.
-- Regenerate bindings (`./rhino harness adapters generate`) so the `.opencode/`, `.codex/`, and `.agents/`
-  mirrors stay in sync rather than hand-editing them separately.
+- Regenerate routes (`./rhino harness adapters generate`) rather than hand-editing a generated route.
 
 ## Rough scope & non-goals
 
-In scope: `.claude/agents/specs-checker.md`, `specs-maker.md`, `specs-fixer.md`, `swe-golang-dev.md`
-(source files only — mirrors regenerate).
+In scope: `.agents/agents/specs-checker.md`, `specs-maker.md`, and `specs-fixer.md` (canonical sources
+only — routes regenerate).
 
 Out of scope: `docs/explanation/software-engineering/**` (explicitly excluded per
 `baseerah-repo-reset/tech-docs.md` Decision 12); retired product test fixtures and their upstream

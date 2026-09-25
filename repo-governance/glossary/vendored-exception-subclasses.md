@@ -10,10 +10,10 @@ A path the `harness:` registry's `ownership:` list declares `class: vendored` is
 but the exemption is not uniform — it covers two structurally different shapes, both real, and
 confusing one for the other misfires in opposite directions.
 
-| Subclass             | Registry signal                                                                                                            | What is actually true                                                                                                                                                                                                                 |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Delimited-region** | `reason:` names an emitter that owns a marked region (e.g. `.codex/config.toml`: "emitter owns the delimited region only") | **Partially generated.** Content _inside_ the marked region (`>>> ... generated ... <<<`) is emitted from `.claude/` and silently reverted on the next `generate:bindings`; content _outside_ the markers is genuinely hand-authored. |
-| **Wholly external**  | `reason:` states there is no in-repo source (e.g. `.codex/ci-monitor-subagent.toml`, `.opencode/opencode.json`)            | **Fully hand-maintained.** There is no delimited region and nothing to regenerate; the whole path is authored by hand.                                                                                                                |
+| Subclass             | Registry signal                                                                                                                       | What is actually true                                                                                                                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Delimited-region** | `reason:` names an emitter that owns a marked region (no path here has this shape today)                                              | **Partially generated.** Content _inside_ the marked region (`>>> ... generated ... <<<`) is emitted from `.claude/` and silently reverted on the next `generate:bindings`; content _outside_ the markers is genuinely hand-authored. |
+| **Wholly external**  | `reason:` states there is no in-repo source (e.g. `.codex/config.toml`, `.codex/ci-monitor-subagent.toml`, `.opencode/opencode.json`) | **Fully hand-maintained.** There is no delimited region and nothing to regenerate; the whole path is authored by hand.                                                                                                                |
 
 Any surface stating the `class: vendored` rule states one of these two shapes, or links here rather
 than restating either. A claim that "a vendored path has no `.claude/` source to regenerate from"
@@ -21,8 +21,8 @@ is true for the wholly-external subclass and **false** for the delimited-region 
 region is regenerated from `.claude/` on every `generate:bindings` run.
 
 **Failure mode this entry exists to prevent**: an agent reads a too-broad statement of the rule,
-concludes the whole `.codex/config.toml` is hand-editable, edits inside the delimited region, and
-the next pre-commit `generate:bindings` silently reverts it — the exact "Hand-Editing a Generated
+concludes a whole delimited-region file is hand-editable, edits inside the delimited region, and
+the next regeneration silently reverts it — the exact "Hand-Editing a Generated
 Mirror" anti-pattern, with no gate failure, because auto-regeneration self-heals before any diff is
 inspected.
 

@@ -26,7 +26,7 @@ when_to_use: Use to check whether a file type (docs, agents, config, README) may
    - Project plans, requirements, technical docs
    - Human-readable working documents
 
-5. **Agent configuration files** - AGENTS.md, primary binding agent files, secondary binding agent files
+5. **Agent configuration files** - AGENTS.md, canonical agent files, generated agent routes
    - AGENTS.md - Human-readable navigation document for developers
    - Canonical agent files (`.agents/agents/*.md`) - Agent definitions (source of truth) read by developers to understand agent behaviour
    - Generated agent routes (`.claude/agents/*.md`, `.opencode/agents/*.md`) carry no body text of their own, so emoji rules do not apply to them
@@ -35,9 +35,9 @@ when_to_use: Use to check whether a file type (docs, agents, config, README) may
      - Section headers (Purpose, Key Concepts, Reference)
      - Status indicators in examples (PASS: Correct, FAIL: Incorrect, Warning)
 
-6. **Root configuration and skill files** - CLAUDE.md, primary binding skill files
+6. **Root configuration and skill files** - CLAUDE.md, canonical skill files
    - CLAUDE.md - Project guidance document for coding agent sessions, human-readable
-   - Primary binding skill files (`.agents/skills/*.md`) - Skill files providing knowledge and execution services to agents
+   - Canonical skill files (`.agents/skills/*.md`) - Skill files providing knowledge and execution services to agents
    - Emojis support scannability of guidance and knowledge content read by developers
 
 **FAIL: DO NOT use emojis in these files:**

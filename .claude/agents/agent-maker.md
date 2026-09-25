@@ -1,6 +1,6 @@
 ---
 description: |-
-  Creates new AI agent files in .claude/agents/ following AI Agents Convention. Canonical agents in .agents/agents/ are then routed to every harness via ./rhino harness adapters generate. Ensures proper structure, skills integration, and documentation.
+  Creates new canonical AI agent files in .agents/agents/ following AI Agents Convention, then routes them to every harness via ./rhino harness adapters generate. Ensures proper structure, skills integration, and documentation.
 effort: xhigh
 model: sonnet
 name: agent-maker

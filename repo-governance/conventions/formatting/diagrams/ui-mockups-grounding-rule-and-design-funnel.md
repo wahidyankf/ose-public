@@ -17,7 +17,7 @@ lib(s) and build the mockup from what is already there:
 - **Target app** — the app's existing pages, layout shell, theme, and locale/i18n structure so the
   new screen matches the surrounding site.
 - **Sibling screens** — any existing page the new screen should visually match.
-- **Skill reference** — `swe-developing-frontend-ui` documents token usage, component patterns, and
+- **Skill reference** — `developing-frontend-ui` documents token usage, component patterns, and
   the brand context to honour.
 
 Any **net-new component** the mockup introduces MUST be named explicitly (for example the `Table`

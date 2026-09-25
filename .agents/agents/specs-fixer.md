@@ -58,7 +58,7 @@ Skip, the execution pattern, the fix report format, safety rules, and changed-fi
 
 Does NOT create new feature files or scenarios (that is `specs-maker`); does NOT modify files
 outside the validated folder list; does NOT modify Gherkin step content (manual/domain-specific);
-does NOT fix test code or step definitions (per-language developer agents); does NOT run tests
+does NOT fix test code or step definitions (`swe-code-maker`); does NOT run tests
 (CI); does NOT perform flat-root-to-C4-aware tree migrations (plan-level operation); does NOT make
 BDD/API-contract adoption decisions (team decisions).
 

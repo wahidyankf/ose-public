@@ -11,7 +11,7 @@ capabilities:
   - repository-write
   - shell
 skills:
-  - swe-developing-frontend-ui
+  - developing-frontend-ui
   - repo-generating-validation-reports
   - repo-assessing-criticality-confidence
   - repo-maintaining-task-lists
@@ -113,7 +113,7 @@ regressions, changed scope, and errors; never repeat discovery or request anothe
 
 ## Required Reading
 
-Before acting, read every skill listed in this file's `skills:` frontmatter — `swe-developing-frontend-ui`,
+Before acting, read every skill listed in this file's `skills:` frontmatter — `developing-frontend-ui`,
 `repo-generating-validation-reports`, `repo-assessing-criticality-confidence`, and
 `repo-applying-maker-checker-fixer` — for the full development standards, report format, and
 classification system this checker applies.

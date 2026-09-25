@@ -14,7 +14,7 @@ Steps execute one after another. Later steps can reference outputs from earlier 
 ```markdown
 ### 1. Build Project (Sequential)
 
-**Agent**: `swe-typescript-dev`
+**Agent**: `swe-code-maker`
 
 - **Args**: `action: build, project: ayokoding-www`
 - **Output**: `{build-artifacts}`

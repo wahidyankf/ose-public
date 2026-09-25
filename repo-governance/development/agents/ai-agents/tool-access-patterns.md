@@ -12,4 +12,4 @@ Tool permissions follow the **principle of least privilege**: agents should only
 | **Read-Only**     | Read, Glob, Grep                    | Analysis without reports                      | (none currently) | Pure read operations without file output                                    |
 | **Checker**       | Read, Glob, Grep, Write, Bash       | Validation with audit report generation       | rules-checker    | Needs Write for reports in `local-tmp/<agent-family>/`, Bash for timestamps |
 | **Documentation** | Read, Write, Edit, Glob, Grep       | Creating/editing docs, managing doc structure | docs-maker       | Needs file creation/editing but no shell access                             |
-| **Development**   | Read, Write, Edit, Glob, Grep, Bash | Code generation, tests, builds, deployment    | swe-rust-dev     | Requires command execution (powerful, only when necessary)                  |
+| **Development**   | Read, Write, Edit, Glob, Grep, Bash | Code generation, tests, builds, deployment    | swe-code-maker   | Requires command execution (powerful, only when necessary)                  |

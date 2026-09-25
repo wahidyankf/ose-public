@@ -14,7 +14,7 @@ User: "Execute plan plans/in-progress/new-feature/plan.md"
 The calling context orchestrates directly and invokes specialized agents via the Agent tool (default max 10 iterations):
 
 - Read delivery checklist and materialize 1:1 Task list in the calling context
-- Delegate each item to the appropriate specialized agent (e.g., `swe-typescript-dev`)
+- Delegate each item to the appropriate specialized agent (e.g., `swe-code-maker`)
 - Tick checkboxes progressively as each item completes (Atomic Sync Ritual)
 - Validate implementation by invoking `plan-execution-checker` delegated agent
 - Iterate until zero findings and all deliverables complete
@@ -76,22 +76,22 @@ Step 1: Load checklist — 12 items across 3 phases, 12 tasks created
 
 Step 2: Execute all items sequentially
   Phase 1 (Infrastructure):
-    Item 1 → swe-typescript-dev → checkbox ticked
-    Item 2 → swe-typescript-dev → checkbox ticked
+    Item 1 → swe-code-maker → checkbox ticked
+    Item 2 → swe-code-maker → checkbox ticked
     Item 3 → docs-maker              → checkbox ticked
   Phase 2 (Implementation):
-    Item 4 → swe-typescript-dev → checkbox ticked
-    Item 5 → swe-e2e-dev   → checkbox ticked
-    Item 6 → swe-rust-dev       → checkbox ticked
+    Item 4 → swe-code-maker → checkbox ticked
+    Item 5 → swe-code-maker → checkbox ticked
+    Item 6 → swe-code-maker → checkbox ticked
     ...and so on without stopping between phases
 
 Step 3: Validate → 4 findings (quality issues, missing tests)
 
 Step 5: Address findings
-  Finding 1 → swe-typescript-dev → resolved
-  Finding 2 → swe-e2e-dev   → resolved
+  Finding 1 → swe-code-maker → resolved
+  Finding 2 → swe-code-maker → resolved
   Finding 3 → docs-maker               → resolved
-  Finding 4 → swe-typescript-dev → resolved
+  Finding 4 → swe-code-maker → resolved
 
 Step 6: Re-validate → 0 findings
 

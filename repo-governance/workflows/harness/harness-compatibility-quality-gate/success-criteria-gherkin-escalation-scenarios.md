@@ -20,7 +20,7 @@ Scenario: Rhino generator-logic change is surfaced for human resolution
   Given the audit contains a finding that requires changing a binding translation rule
   When harness-compatibility-fixer encounters it
   Then it flags the change as out-of-scope authorship of the pinned Rhino product
-  And the workflow surfaces it for human or swe-rust-dev agent resolution
+  And the workflow surfaces it for human resolution
 
 Scenario: Out-of-scope findings escalate to human without looping
   Given the audit contains a finding that a harness introduced a new higher-precedence filename

@@ -15,7 +15,7 @@ coverage gaps, terminology drift).
 
 This workflow validates **specification files only** in listed folders. It does NOT validate:
 
-- Implementation code in `apps/` (that's per-language developer agents and CI)
+- Implementation code in `apps/` (that's `swe-code-maker` and CI)
 - Test binding substance (use `gherkin-implementation-review`)
 - Governance docs (that's `rules-checker`)
 - Spec folders NOT in the explicit list

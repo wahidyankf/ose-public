@@ -31,8 +31,8 @@ flowchart LR
 - **docs-\*** - Documentation creation and quality
 - **readme-\*** - README file patterns
 - **repo-\*** - Repository-wide patterns
-- **swe-programming-\*** - Language/framework expertise
-- **swe-developing-\*** - Application development patterns
+- **programming-\***, **framework-\***, **tooling-\*** - Stack expertise
+- **developing-\*** - Application development patterns
 - **apps-\*** - Application-specific patterns
 - **agent-\*** - Agent development and selection
 - **plan-\*** - Project planning patterns

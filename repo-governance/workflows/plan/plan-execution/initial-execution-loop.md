@@ -19,7 +19,7 @@ Input/Outcome/Proof stays as shared context):
    - For each cited file path: `Bash test -f <path>`. If missing AND not marked `_New file_`: HALT the item, escalate to user with the failing path (do not invent a substitute).
    - For each cited Nx target: `jq -r '.targets | keys[]' apps/<project>/project.json | grep -qx '<target>'`. If missing AND not marked `_New target_`: HALT the item.
    - For each cited agent: `test -f .agents/agents/<name>.md` succeeds (agent definitions live
-     flat in `.agents/agents/`, e.g. `.agents/agents/swe-typescript-dev.md`). If missing: HALT (no
+     flat in `.agents/agents/`, e.g. `.agents/agents/swe-code-maker.md`). If missing: HALT (no
      fabricating).
    - For each cited symbol: `Grep` for evidence. Missing AND not marked `_New symbol_`: HALT.
    - **Refuse-on-uncertainty**: if a cited fact cannot be grounded and the checkbox does not mark it as new, the orchestrator MUST escalate rather than guess. Surface the failure to the user with the specific claim and the missing artifact.

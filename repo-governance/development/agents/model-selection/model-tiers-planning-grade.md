@@ -28,7 +28,6 @@ creative synthesis across domains, nuanced judgment under ambiguity.
 - **pr-review-scout-maker**, **pr-review-synthesis-maker** — route risk and consolidate nine specialists' findings into one review
 - **docs-tutorial-maker** — produces tutorial content requiring pedagogical reasoning, narrative flow, and learning progression design
 - **swe-ui-maker** — creates UI components requiring CVA variants, Radix composition, accessibility, tests, and stories in one pass
-- **swe-csharp-dev**, **swe-fsharp-dev**, **swe-rust-dev**, **swe-typescript-dev** — write production application code, where the architectural call is open-ended and a wrong one is expensive to undo; swe-e2e-dev is the documented exception
 
 **Frontmatter**: Specify `model: opus` explicitly.
 

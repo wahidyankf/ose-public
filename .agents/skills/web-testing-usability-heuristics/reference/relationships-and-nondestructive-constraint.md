@@ -20,7 +20,7 @@
   and creates the fixed core plus mapped technical
   companions and a TDD-shaped `delivery.md` with the specs/Gherkin coverage steps required by the
   [Specs & Gherkin Completeness rule](../../../../repo-governance/development/quality/feature-change-completeness.md).
-- **Feeds the `swe-ui-*` and `swe-*-dev` families** — developers consume `findings.md` to drive
+- **Feeds the `swe-ui-*` and `swe-code-*` families** — developers consume `findings.md` to drive
   UI/UX fixes.
 - **Delegates to `web-researcher`** — for external-consistency convention checks. Per the
   [Web Research Delegation Convention](../../../../repo-governance/conventions/writing/web-research-delegation.md).

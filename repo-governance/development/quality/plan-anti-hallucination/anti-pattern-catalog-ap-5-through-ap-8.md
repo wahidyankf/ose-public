@@ -19,10 +19,10 @@ If the test does not exist yet, the plan must say `_New test_`. If the file does
 
 ## AP-7: Citing an agent or skill that does not exist
 
-> "Delegate to `swe-rust-dev`..."
+> "Delegate to `swe-scala-dev`..."
 
 The agent must resolve via `test -f .agents/agents/<name>.md` (agent definitions live flat in
-`.agents/agents/`, e.g. `.agents/agents/swe-rust-dev.md`). List the directory first or check the
+`.agents/agents/`, e.g. `.agents/agents/swe-code-maker.md`). List the directory first or check the
 [agent index](../../../../.agents/agents/README.md).
 
 ## AP-8: Citing a CLI flag without `--help`

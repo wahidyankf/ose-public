@@ -170,8 +170,7 @@ When writing code or making architectural decisions:
 
 Skills available for quick reference:
 
-- `swe-programming-typescript` - TypeScript coding standards
-- `swe-programming-rust` - Rust coding standards
+- `programming-typescript` - TypeScript coding standards
 
 ## Validation
 

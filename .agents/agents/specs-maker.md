@@ -46,7 +46,7 @@ structure conventions every scaffolded file follows.
 
 Does NOT validate existing specs (that is `specs-checker`); does NOT fix existing specs (that is
 `specs-fixer`); does NOT create content outside the explicitly specified target path; does NOT
-create implementation code (per-language developer agents); does NOT modify governance docs
+create implementation code (`swe-code-maker`); does NOT modify governance docs
 (`rules-maker`); does NOT perform flat-root-to-C4-aware migrations (plan-level operation);
 does NOT make BDD/API-contract adoption decisions.
 

@@ -24,9 +24,8 @@ Each agent is a separate professional lens; they complement each other and never
 - **Feeds `specs-maker`** — the `spec-gaps.md` catalog proposes Gherkin for behaviours the live API
   exhibits but `specs/**` does not yet cover. On promotion these proposals seed `specs-maker` scenario
   work and the Specs & Gherkin Completeness coverage steps, so observed behaviour becomes protected.
-- **Feeds the `swe-*-dev` family** — developers consume `findings.md` (steps to reproduce as exact
-  `curl`/query, expected vs actual response) to drive fixes; `swe-fsharp-dev` / `swe-typescript-dev`
-  own the backend handlers under test.
+- **Feeds `swe-code-maker`** — it consumes `findings.md` (steps to reproduce as exact `curl`/query,
+  expected vs actual response) to drive fixes to the backend handlers under test.
 - **Delegates to `web-researcher`** — when the goal implies a standard the agent does not hold (an HTTP
   semantics RFC, the exact OWASP API Security recommendation, a GraphQL best-practice, a domain
   calculation), it commissions research rather than guessing. Per the

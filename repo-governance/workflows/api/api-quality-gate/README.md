@@ -10,7 +10,7 @@ when_to_use: "Read this index to find the right API Quality Gate Workflow child 
 - [Preconditions](./preconditions.md) — The three preconditions that must hold before the API quality gate can run — reachable service, identified contract, non-destructive scope. Use when confirming a service is ready to be exercised by the API quality gate.
 - [Step 1: Discovery (Agent Delegation)](./step-1-discovery.md) — How the gate invokes api-exploratory-tester for one full live API sweep. Use when starting the gate.
 - [Step 2: Triage Against Mode](./step-2-triage-against-mode.md) — How AET findings' ISTQB severity ratings map onto the gate's CRITICAL/HIGH/MEDIUM/LOW mode threshold. Use when deciding which findings from the tester block termination under the current mode.
-- [Step 3: Fix (Agent Delegation)](./step-3-fix.md) — How in-threshold findings are routed to the matching swe-\*-dev agent and what every fix must ship with. Use when applying fixes for findings surfaced by the API quality gate tester.
+- [Step 3: Fix (Agent Delegation)](./step-3-fix.md) — How in-threshold findings are routed to swe-code-maker and what every fix must ship with. Use when applying fixes for findings surfaced by the API quality gate tester.
 - [Step 4: Verification](./step-4-verification.md) — How one rebuild/redeployment precedes verification of original findings and a smoke test of affected API behaviour. Use after Step 3.
 - [Step 5: Finalization](./step-5-finalization.md) — The pass, partial, fail, and separate lifecycle outcomes. Use when closing the bounded run.
 - [Success Criteria](./success-criteria.md) — Clean-discovery, verified-fix, partial, and lifecycle

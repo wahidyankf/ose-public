@@ -581,12 +581,12 @@ coverage.
       response assertions and `PROTO-###` findings in `plans/in-progress/ose-id-init-04-oidc-oauth-provider/evidence/phase-4-protocol-conformance.md`; do not
       represent this as an OpenAPI/API-gate run.
 - [ ] [AI] For every protocol finding, add a lowest-layer failing regression, fix with
-      [`swe-csharp-dev`](../../../.agents/agents/swe-csharp-dev.md), rebuild/restart, and rerun the
+      `swe-csharp-dev`, rebuild/restart, and rerun the
       exact protocol reproduction plus affected protocol matrix. Any unresolved protocol defect blocks
       Phase 4; deferral requires explicit user permission.
 - [ ] [AI] If discovery has no strict-threshold finding, record `final-status: pass` and do not invoke a
       fixer. If it has an in-threshold finding, run exactly one bounded fix pass with
-      [`swe-csharp-dev`](../../../.agents/agents/swe-csharp-dev.md): revalidate the finding, add a
+      `swe-csharp-dev`: revalidate the finding, add a
       failing regression at the lowest applicable layer, implement the root-cause fix, and rerun its
       Unit/Integration/E2E and contract checks. A correct-but-unspecified observation becomes an
       app-scoped `specs/**` scenario before the fix; it is not dismissed as a false positive.

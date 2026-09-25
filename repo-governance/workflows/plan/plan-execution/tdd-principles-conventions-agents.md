@@ -5,8 +5,8 @@ when_to_use: Use when confirming TDD is required for a code-shipping checklist i
 
 # Test-Driven Development
 
-When implementing delivery checklist items that ship code, the orchestrator and all delegated
-`swe-*-dev` agents follow TDD: write a failing test first, confirm it fails for the right reason,
+When implementing delivery checklist items that ship code, the orchestrator and every delegated
+`swe-code-maker` follow TDD: write a failing test first, confirm it fails for the right reason,
 write the minimum code to pass, then refactor. Mini-TDD passes are encouraged — split a feature
 into multiple small Red→Green→Refactor cycles rather than one large test up front. Gherkin
 acceptance criteria in `prd.md` are the natural source of the first failing tests.

@@ -19,7 +19,7 @@ on the same running site; they complement each other and never overlap:
 - **Feeds `specs-maker`** — the `spec-gaps.md` catalog proposes Gherkin for behaviours the live
   target exhibits but `specs/**` does not yet cover. During execution these proposals seed `specs-maker`
   scenario work and the Specs & Gherkin Completeness coverage steps.
-- **Feeds the `swe-*-dev` family** — developers consume `findings.md` to drive fixes.
+- **Feeds `swe-code-maker`** — it consumes `findings.md` to drive fixes.
 - **Delegates to `web-researcher`** — when the goal implies a standard the agent does not hold, it
   commissions research rather than guessing. Per the
   [Web Research Delegation Convention](../../../../repo-governance/conventions/writing/web-research-delegation.md).

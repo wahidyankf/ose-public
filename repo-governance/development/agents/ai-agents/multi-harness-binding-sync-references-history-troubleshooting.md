@@ -24,12 +24,11 @@ Neither command has an npm script wrapper.
 - **`.opencode/agents/`**: canonical Markdown/YAML → Markdown/YAML permission object plus model
   mapping
 - **`.codex/agents/`**: canonical metadata/body → TOML `name`, `description`, and
-  `developer_instructions`; tool/model frontmatter is omitted, and the generator also owns the
-  delimited agent-table region in `.codex/config.toml`
+  `developer_instructions`; tool/model frontmatter is omitted; the `[agents.<name>]` tables in
+  `.codex/config.toml` that register those files are hand-maintained
 - **Agent skills**: one harness reads `.agents/skills/` natively; the other gets non-vendored
   real-file byte-copy mirrors under `.agents/skills/`; vendored plugin subtrees are preserved
-- **Validation**: three generated sets now, not two — `.opencode/agents/`, `.codex/agents/` (plus
-  the generated region in `.codex/config.toml`), and non-vendored mirrors under `.agents/skills/`.
+- **Validation**: three generated sets now, not two — `.opencode/agents/`, `.codex/agents/`, and non-vendored mirrors under `.agents/skills/`.
   `./rhino harness adapters validate` checks all three.
 
 ## Documentation References
@@ -50,8 +49,8 @@ Neither command has an npm script wrapper.
 ## Best Practices
 
 1. **Edit the declared source** - Never edit a `class: generated` file directly; changes will be
-   overwritten. Edit registry-declared vendored paths such as `.opencode/opencode.json` or the
-   undelimited region of `.codex/config.toml` in place.
+   overwritten. Edit registry-declared vendored paths such as `.opencode/opencode.json` or
+   `.codex/config.toml` in place.
 2. **Run sync after changes** - Ensure every generated-tier binding stays synchronized
 3. **Test every platform** - Verify agents work in all supported platforms after major changes
 4. **Document sync status** - Keep canonical README indexes current, then regenerate every

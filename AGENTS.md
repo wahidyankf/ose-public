@@ -78,7 +78,8 @@ Create it only at `{repository location}/worktrees/<task>`; sibling `*-worktrees
 Follow the [Principles Index](./repo-governance/principles/README.md). Code changes require TDD and
 the [BDD contract](./repo-governance/development/behaviour-driven-development.md): Gherkin first,
 Unit always, applicable higher layers, static coverage in quick, and semantic review. Bug fixes
-require regression tests. Fix a flaky test at its
+require regression tests. Stack rules and decisions: the
+[repository adapter](./repo-governance/development/quality/stacks/repository-adapter.md). Fix a flaky test at its
 [root cause](./repo-governance/development/workflow/test-driven-development/flaky-tests-are-defects.md);
 never retry, sleep, widen, loosen, skip, or quarantine. Create `plans/` artifacts only on literal plan
 authorization; formal plans follow the

@@ -17,7 +17,7 @@ When creating or reviewing skills in `.agents/skills/`:
 
 ## Common Mistakes
 
-### ❌ Mistake 1: Fork skill with agent field in the primary binding skills directory
+### ❌ Mistake 1: Fork skill with agent field in the canonical skills directory
 
 **Wrong**:
 
@@ -50,7 +50,7 @@ Run the code-checker agent to validate...
 
 **Problem**: Inline skills can't spawn agents. Skill will fail to execute.
 
-**Right**: Either make it a fork skill (outside the primary binding skills directory) or reference conventions instead of delegating to agents.
+**Right**: Either make it a fork skill (outside the canonical skills directory) or reference conventions instead of delegating to agents.
 
 ### ❌ Mistake 3: Mixing inline and fork behaviour
 

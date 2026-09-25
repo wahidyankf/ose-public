@@ -56,8 +56,7 @@ builds.
 
 ## Reference Documentation
 
-**Related Agents**: `swe-typescript-dev` — develops ose-app-web Next.js code; `swe-fsharp-dev` —
-develops ose-be F# backend code.
+**Related Agents**: `swe-code-maker` — develops ose-app-web Next.js code and the ose-be F# backend.
 
 **Related Conventions**:
 

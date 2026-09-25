@@ -1,12 +1,12 @@
 ---
-description: How in-threshold findings are routed to the matching swe-*-dev agent and what every fix must ship with.
+description: How in-threshold findings are routed to swe-code-maker and what every fix must ship with.
 when_to_use: Use when applying fixes for findings surfaced by the API quality gate tester.
 ---
 
 # Step 3: Fix (Agent Delegation)
 
-Run one fix pass. Route each validated in-threshold finding to the `swe-*-dev` agent matching the
-service's language. Every fix lands with a **reproducing test** that fails before the fix and passes after, per the
+Run one fix pass. Route each validated in-threshold finding to `swe-code-maker`, which loads the
+service's stack packs. Every fix lands with a **reproducing test** that fails before the fix and passes after, per the
 [Regression Test Mandate](../../../development/quality/regression-test-mandate.md).
 
 Do not create fixes for delegated lifecycle predicates. After changing files, apply the shared

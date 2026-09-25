@@ -26,7 +26,7 @@ flowchart TD
   docs-checker. Exception: link checkers also have the `Edit` tool for cache management (see "Link Checker Agents
   Note" below).
 - Fixer (`yellow`): has `Edit` but not `Write`. Examples: docs-file-manager, readme-fixer, repo-workflow-fixer.
-- Implementor (`purple`): has `Write`, `Edit`, and `Bash`. Examples: `swe-*-dev` agents; plan execution itself is
+- Implementor (`purple`): has `Write`, `Edit`, and `Bash`. Examples: `swe-code-maker`; plan execution itself is
   orchestrated by the calling context via the plan-execution workflow (no dedicated subagent).
 
 **Edge Cases:**

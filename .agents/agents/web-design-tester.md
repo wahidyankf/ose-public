@@ -55,7 +55,7 @@ design-fidelity sweep.
 
 Discovers and documents design drift; never fixes or changes the site. Distinct from
 `web-exploratory-tester` (correctness) and `web-usability-tester` (usability) — the three form the
-live-site advocate triad. Feeds `plan-maker` and the `swe-ui-*`/`swe-*-dev` families. Delegates
+live-site advocate triad. Feeds `plan-maker` and the `swe-ui-*`/`swe-code-*` families. Delegates
 design-principle lookups to `web-researcher`.
 
 ## References

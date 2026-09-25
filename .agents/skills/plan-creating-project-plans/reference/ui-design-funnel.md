@@ -30,7 +30,7 @@ The funnel produces four kinds of artefact, all visible in the plan (`prd.md` + 
   won and why each runner-up lost.
 - **Grounding note (R5)** — before drafting either tier, survey the existing UI of the related
   app(s) and lib(s) (`libs/web-ui` component inventory + tokens + Storybook, the target app's
-  shell, sibling screens; reference the `swe-developing-frontend-ui` skill) and reuse what already
+  shell, sibling screens; reference the `developing-frontend-ui` skill) and reuse what already
   exists; name any net-new component explicitly.
 - **Prior-art citation (R7)** — consult prior art on how comparable tools solve the screen via the
   `web-researcher` agent, so the divergent alternatives are informed rather than invented.

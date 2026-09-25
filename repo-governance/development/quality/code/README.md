@@ -21,3 +21,8 @@ when_to_use: "Read this index to find the right Code Quality Convention child do
 - [Language-Specific Auto-Formatters](./language-specific-auto-formatters.md) — Auto-formatters used per language across the repository. Use when checking which formatter applies to a given language.
 - [Best Practices](./best-practices.md) — Best practices for working with the code-quality tooling. Use for a quick best-practice reminder on code quality.
 - [Related Documentation and References](./related-documentation-and-references.md) — Related conventions and external references. Use for a related convention or reference.
+
+## Shared Code Standards
+
+- [Type and Boundary Safety](./type-and-boundary-safety.md) — Each language's strongest practical checker, rare reasoned type escapes, and outside input validated where it arrives. Use when writing or reviewing code that parses outside input or weakens a type.
+- [Shell Scripts](./shell-scripts.md) — One declared interpreter in strict mode, the committed executable bit, explanatory comments, and JSON checked with a real parser. Use when writing or reviewing a shell script.

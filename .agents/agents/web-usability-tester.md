@@ -55,7 +55,7 @@ cited rubric.
 
 Discovers and documents friction; never fixes it or changes the site. Distinct from
 `web-exploratory-tester` (spec-aware) and `web-design-tester` (design-aware) — the three form the
-live-site advocate triad. Feeds `plan-maker` and the `swe-ui-*`/`swe-*-dev` families. Delegates
+live-site advocate triad. Feeds `plan-maker` and the `swe-ui-*`/`swe-code-*` families. Delegates
 external-convention lookups to `web-researcher`.
 
 ## References

@@ -25,7 +25,7 @@ Colored square emojis follow the [Emoji Usage Convention](../../../conventions/f
 - Maintain semantic consistency (same color = same role across all docs)
 - Avoid overuse (1 emoji per agent listing)
 
-## Color Field Examples
+## Role Examples
 
 **Maker Agent (Blue):**
 
@@ -78,11 +78,11 @@ capabilities:
 
 ```yaml
 ---
-name: swe-typescript-dev
-description: Develops TypeScript applications following type safety principles, modern patterns, and platform coding standards. Use when implementing TypeScript code for OSE Platform.
+name: swe-code-maker
+description: Implements application, library, script, and test code in named projects test-first under the adopted language-neutral and stack standards, reusing what the repository already holds before adding code.
 when_to_use: >-
   Use when [scenario].
-tier: plan
+tier: execution
 capabilities:
   - repository-read
   - repository-write

@@ -11,7 +11,7 @@ capabilities:
   - repository-write
   - shell
 skills:
-  - swe-developing-frontend-ui
+  - developing-frontend-ui
   - repo-maintaining-task-lists
   - docs-applying-content-quality
 ---
@@ -34,7 +34,7 @@ You are an expert at creating UI components that follow all conventions document
 Create new shared UI components in `libs/web-ui/src/components/` — `component-name.variants.ts`,
 `component-name.tsx`, `component-name.test.tsx`, `component-name.stories.tsx`, and the barrel export
 — following the New Component Checklist, component template, and Do/Do-Not rules in
-`swe-developing-frontend-ui` (not restated here).
+`developing-frontend-ui` (not restated here).
 
 ## When to Use This Agent
 
@@ -75,7 +75,7 @@ Create new shared UI components in `libs/web-ui/src/components/` — `component-
 
 ## Required Reading
 
-Before acting, read every skill listed in this file's `skills:` frontmatter. `swe-developing-frontend-ui`
+Before acting, read every skill listed in this file's `skills:` frontmatter. `developing-frontend-ui`
 holds the New Component Checklist, the component template and complete example, the Do/Do-Not token
 and accessibility rules, the Storybook stories requirements, the unit test coverage requirements, and
 the TDD (Red→Green→Refactor) discipline for UI work — none of it is restated here.

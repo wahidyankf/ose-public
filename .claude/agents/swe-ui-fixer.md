@@ -4,7 +4,7 @@ effort: xhigh
 model: sonnet
 name: swe-ui-fixer
 skills:
-  - swe-developing-frontend-ui
+  - developing-frontend-ui
   - repo-assessing-criticality-confidence
   - repo-applying-maker-checker-fixer
   - repo-maintaining-task-lists

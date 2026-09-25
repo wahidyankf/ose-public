@@ -5,12 +5,12 @@
     {
       "id": "agent/agent-maker",
       "path": ".agents/agents/agent-maker.md",
-      "digest": "c2aef4e8786af0c0c4256a3bcdfcba32c15b9552864b0f413754ef62ded62025"
+      "digest": "5cd440029327ce20e7d68f80b5b6ab490005763573d022f3a147f4f389e00df8"
     },
     {
       "id": "agent/api-exploratory-tester",
       "path": ".agents/agents/api-exploratory-tester.md",
-      "digest": "95b2843029b8f1b24c3def4973f662975ac59297c5ddac36455fe95d437c4bba"
+      "digest": "c9a1c8c7c54cfe51acbdfb48b186f184497ec11c187e16393597a9e68b2bff19"
     },
     {
       "id": "agent/apps-ayokoding-www-annotated-concept-checker",
@@ -115,7 +115,7 @@
     {
       "id": "agent/apps-organiclever-app-web-deployer",
       "path": ".agents/agents/apps-organiclever-app-web-deployer.md",
-      "digest": "5d79ccca7f8f7bb577063b9ba28d32682c3d09cd583e3e3e26dc8b2551dea1b0"
+      "digest": "2f9e3b2776ede65a56bbb023e1ab90e9c7e0291f5161e096382999dc4c14cb3e"
     },
     {
       "id": "agent/apps-organiclever-www-deployer",
@@ -125,7 +125,7 @@
     {
       "id": "agent/apps-ose-app-web-deployer",
       "path": ".agents/agents/apps-ose-app-web-deployer.md",
-      "digest": "caf4fffcd775bc06c0f476fa204b7114c9da9179b0795f85b317c83839f52933"
+      "digest": "47011f8ff30d8aa2fe44723c3112f70683ee12bcd013dfdbaaf5b818879b9c30"
     },
     {
       "id": "agent/apps-ose-www-content-checker",
@@ -370,67 +370,52 @@
     {
       "id": "agent/specs-fixer",
       "path": ".agents/agents/specs-fixer.md",
-      "digest": "5e0d2f882073d51703fdea7d4d846d94a65750fdbdee87ad8064cc34e1f126e8"
+      "digest": "167367a3d1b9ee3ac1ae23755383884dc75c06d42bf0b71427ceb9003fe46828"
     },
     {
       "id": "agent/specs-maker",
       "path": ".agents/agents/specs-maker.md",
-      "digest": "089b8a6488984eafddb3cb292c15345110bafdcda6d2b6511d9aeaebd68f5224"
+      "digest": "017cd8e84d43ee912d775bfceb8a19930750f99213f84866eccb7c6f95d2a2c4"
     },
     {
       "id": "agent/swe-code-checker",
       "path": ".agents/agents/swe-code-checker.md",
-      "digest": "24aa2157f96a23431ad747a66e17709cc25529da573f99c35d836dde2209d448"
+      "digest": "688a36324ecdfff5ec0ec88ee6595a30b0e0e63263d0c36aabe8718f8b190b9b"
     },
     {
-      "id": "agent/swe-csharp-dev",
-      "path": ".agents/agents/swe-csharp-dev.md",
-      "digest": "74ef8ce863acaf2470fd879e63d5b12c9f02cda71a062ade5957c947a38320fa"
+      "id": "agent/swe-code-fixer",
+      "path": ".agents/agents/swe-code-fixer.md",
+      "digest": "a48bd83f97a815025900cb40e4e6d588a740852a1ce8e1a9cc34755ca43853d4"
     },
     {
-      "id": "agent/swe-e2e-dev",
-      "path": ".agents/agents/swe-e2e-dev.md",
-      "digest": "7f2eae2c48a9eb548c3d8004c7d38b190f2d4118f5f8d931a1278df86d493cad"
-    },
-    {
-      "id": "agent/swe-java-dev",
-      "path": ".agents/agents/swe-java-dev.md",
-      "digest": "777160bae923bbc00fe2601ea2836cb7b7e757d676f48b4c7c97d16b8500d2da"
-    },
-    {
-      "id": "agent/swe-rust-dev",
-      "path": ".agents/agents/swe-rust-dev.md",
-      "digest": "2c083ecd3a75552e5959638ab5d1227c7ff66fc4f16d9f4a90af64ef38c7ece4"
-    },
-    {
-      "id": "agent/swe-typescript-dev",
-      "path": ".agents/agents/swe-typescript-dev.md",
-      "digest": "33a40402abb5447b42bbcb682cefe613f66bcae0c7d9db68ff0113258a94f5fc"
+      "id": "agent/swe-code-maker",
+      "path": ".agents/agents/swe-code-maker.md",
+      "digest": "8eb1f35cef505de81959a2214d4335ac7a6815ee7d3f2c522cefc25c1af526b1"
     },
     {
       "id": "agent/swe-ui-checker",
       "path": ".agents/agents/swe-ui-checker.md",
-      "digest": "0eab9c8d7a6fdf2304471481f029ee27a860ce126e0cb83dbfc86ca7323d7440"
+      "digest": "c0b1fe5fb8ed668caae8c1eca7a346503bc4e8327933a15c56bad93efa6e3fa3"
     },
     {
       "id": "agent/swe-ui-fixer",
       "path": ".agents/agents/swe-ui-fixer.md",
-      "digest": "6be8a5bdb1c5ba71ccaeaa3c18b9104d8590332eaec1be288195902157ab2cb1"
+      "digest": "9d2dd78890af2a615949c0e1143d15cf1d91f0fa5a80b2236be510a0d40acb59"
     },
     {
       "id": "agent/swe-ui-maker",
       "path": ".agents/agents/swe-ui-maker.md",
-      "digest": "ed580eee8f250873adc7df7a9f9342b504a9a7dbcc437d440622f17498ed66a5"
+      "digest": "4412e9f068b1bbb8f6239a5fd593fc374841b3c2982d6552fd76e3ccc4405b08"
     },
     {
       "id": "agent/web-design-tester",
       "path": ".agents/agents/web-design-tester.md",
-      "digest": "5dc1744cd04984340ba9060897e36a53278003868d8ef0bf097526cfe65814b7"
+      "digest": "4f038c5ad634f5d2c8ee0e8657ec3cab6ad21d33f1f9620b2628a3fc5555cbed"
     },
     {
       "id": "agent/web-exploratory-tester",
       "path": ".agents/agents/web-exploratory-tester.md",
-      "digest": "f6893bcd802cebde666bba33161e9c8549e77d2578d238af6b18b30707e0579f"
+      "digest": "dd29511d703619b3ce5cfc9a1a1f3896fb5a623e35dbddcb36a7b1547cffe144"
     },
     {
       "id": "agent/web-researcher",
@@ -440,7 +425,7 @@
     {
       "id": "agent/web-usability-tester",
       "path": ".agents/agents/web-usability-tester.md",
-      "digest": "a5d95ae5e946edc9fd11bedd1722079deb3b696d9667b12ee9ad56649c008cdc"
+      "digest": "38964824efcc9e2fc9c73e15b8fb3a7f386944b302cf0610c91727f4b42ef4bb"
     },
     {
       "id": "skill/agent-developing-agents",
@@ -470,7 +455,7 @@
     {
       "id": "skill/apps-organiclever-www-developing-content",
       "path": ".agents/skills/apps-organiclever-www-developing-content/SKILL.md",
-      "digest": "8e2d8d64656cb0697eb5c2ad25e6a5666b0456a5d01b30e8fcd7e98b15f6464f"
+      "digest": "95dca96efe1fed0dd67be78afbc08cc4aa1c81b3c7b2965ed92fd5889e3b751e"
     },
     {
       "id": "skill/apps-ose-www-developing-content",
@@ -486,6 +471,16 @@
       "id": "skill/ci-standards",
       "path": ".agents/skills/ci-standards/SKILL.md",
       "digest": "8420663596da7f657e574616aad575a9745b68bad6cdc03981337dbd91834de9"
+    },
+    {
+      "id": "skill/developing-applications",
+      "path": ".agents/skills/developing-applications/SKILL.md",
+      "digest": "92f3d4cfff3531ca29f3c385ffd27719161e76b17d9ed4fc7d77e5ea606aa5c0"
+    },
+    {
+      "id": "skill/developing-frontend-ui",
+      "path": ".agents/skills/developing-frontend-ui/SKILL.md",
+      "digest": "1be5585a545c72b8f91d0ca2b345016932c5da83b4e20419f64c6284b1808c1e"
     },
     {
       "id": "skill/docs-applying-content-quality",
@@ -563,6 +558,36 @@
       "digest": "0e04d4b5d18d135759cafcb7a55b1788ddd410a28271316cc82ec4177cfe60db"
     },
     {
+      "id": "skill/framework-aspnet-core",
+      "path": ".agents/skills/framework-aspnet-core/SKILL.md",
+      "digest": "b7c4540796a40dbb06af535d1eb0aaa9acd1fcb7abb53e58b0fcef857514c288"
+    },
+    {
+      "id": "skill/framework-gin",
+      "path": ".agents/skills/framework-gin/SKILL.md",
+      "digest": "d53e25ebef2225dc57deea847b0535ffbec03d13061259e4ab3c0bce875e6225"
+    },
+    {
+      "id": "skill/framework-giraffe",
+      "path": ".agents/skills/framework-giraffe/SKILL.md",
+      "digest": "fd763c09aae46e2072970d5c9d522edf5ba8c59ed47770a4b5f596e80abf6365"
+    },
+    {
+      "id": "skill/framework-nextjs",
+      "path": ".agents/skills/framework-nextjs/SKILL.md",
+      "digest": "7ffbfac91dba32d093d093378b3befc0eacd40cf871c1b781b8598cafc27b8bf"
+    },
+    {
+      "id": "skill/framework-react",
+      "path": ".agents/skills/framework-react/SKILL.md",
+      "digest": "1ad91e260123242fbee7ddf5ed9366e302a07b36e3ed39737da53762e76ce9d3"
+    },
+    {
+      "id": "skill/framework-spring-boot",
+      "path": ".agents/skills/framework-spring-boot/SKILL.md",
+      "digest": "b1d6f366bf899d9917aaccd8c8c013f13d3ec78f5e3acfa441acc7cdd41b9c70"
+    },
+    {
       "id": "skill/grill-me",
       "path": ".agents/skills/grill-me/SKILL.md",
       "digest": "0d852127af48866dad5435baaf7df7f3e9a2b30282fafbb58b657aef7898120a"
@@ -616,6 +641,46 @@
       "id": "skill/pr-review-synthesis-coordination",
       "path": ".agents/skills/pr-review-synthesis-coordination/SKILL.md",
       "digest": "135d824f29992ef2132aad2ce5f638cc8df69fdd81f39a17ac49c1f3598685b3"
+    },
+    {
+      "id": "skill/programming-csharp",
+      "path": ".agents/skills/programming-csharp/SKILL.md",
+      "digest": "efd2058d785d81ef844a9c6b0b98f650190e2936d6f9bd37950ef5809e68dc44"
+    },
+    {
+      "id": "skill/programming-fsharp",
+      "path": ".agents/skills/programming-fsharp/SKILL.md",
+      "digest": "7845e5b1e3d0d307d65e9c7a7cb2b565dd5076a05b7db367bf881f3996d8d4c6"
+    },
+    {
+      "id": "skill/programming-golang",
+      "path": ".agents/skills/programming-golang/SKILL.md",
+      "digest": "c8631e282c6772d4389a024d9dbd2b6b418954b2e74f39f23d339946ed4d3109"
+    },
+    {
+      "id": "skill/programming-java",
+      "path": ".agents/skills/programming-java/SKILL.md",
+      "digest": "d1aaed4b1cfc80d53bb4c01926b1c7639ab6f63591139cc9aaf6c33ff76056b7"
+    },
+    {
+      "id": "skill/programming-javascript",
+      "path": ".agents/skills/programming-javascript/SKILL.md",
+      "digest": "936df36d15b08541a82d28a480db5263009e4fc1831ace82cd70e12b832c15f7"
+    },
+    {
+      "id": "skill/programming-python",
+      "path": ".agents/skills/programming-python/SKILL.md",
+      "digest": "e68bb3fd8c8c04ea4aa8a6d24470584d439c7b1670c16593819e25232229ae51"
+    },
+    {
+      "id": "skill/programming-shell",
+      "path": ".agents/skills/programming-shell/SKILL.md",
+      "digest": "73313c9a2a985ee7f8c9bcb6514a181ec962f20ad464a9206ec34e5f391dd376"
+    },
+    {
+      "id": "skill/programming-typescript",
+      "path": ".agents/skills/programming-typescript/SKILL.md",
+      "digest": "057378e957a3aa16a3b999e57ead0215193c7c27b3b66108b89cc77eb0bf0f4e"
     },
     {
       "id": "skill/readme-fixing-quality",
@@ -693,44 +758,9 @@
       "digest": "497ed0e73f14fd7544de75caf8a44329e1e305c2904a8b0f69d9f7d74be35944"
     },
     {
-      "id": "skill/swe-developing-applications-common",
-      "path": ".agents/skills/swe-developing-applications-common/SKILL.md",
-      "digest": "7c496b434184f3515fbff20e721f385086eebd972c0036df2acf74a42784ca4c"
-    },
-    {
-      "id": "skill/swe-developing-e2e-test-with-playwright",
-      "path": ".agents/skills/swe-developing-e2e-test-with-playwright/SKILL.md",
-      "digest": "a12b0392543c43aff89c48240257403fc9c14103778d2975a3382795971e0e6c"
-    },
-    {
-      "id": "skill/swe-developing-frontend-ui",
-      "path": ".agents/skills/swe-developing-frontend-ui/SKILL.md",
-      "digest": "89eb6ba65209896300a107566eff5d25d3b124d2a84a560acc45847626de3b9e"
-    },
-    {
-      "id": "skill/swe-programming-csharp",
-      "path": ".agents/skills/swe-programming-csharp/SKILL.md",
-      "digest": "1a52e3f59950547edb504f33b4bee64b8df51b50f6c2601890f2b282929d6f3c"
-    },
-    {
-      "id": "skill/swe-programming-fsharp",
-      "path": ".agents/skills/swe-programming-fsharp/SKILL.md",
-      "digest": "b06d79e3db5d683ebaed5de11ea40cb127f32b365a649e365f75ef3c887372c3"
-    },
-    {
-      "id": "skill/swe-programming-java",
-      "path": ".agents/skills/swe-programming-java/SKILL.md",
-      "digest": "18a0ce291531ed6a3b75b27aa1e9e99f2950ce2f1a55cc6b04d3a7b119c17a7c"
-    },
-    {
-      "id": "skill/swe-programming-rust",
-      "path": ".agents/skills/swe-programming-rust/SKILL.md",
-      "digest": "931e060ebbecfe8f59d5f63063450718502ac45b414d924540ff0bdbdc224fda"
-    },
-    {
-      "id": "skill/swe-programming-typescript",
-      "path": ".agents/skills/swe-programming-typescript/SKILL.md",
-      "digest": "45a908b23b47b0c21b919bbeac53389ec6772b0fc15288e92b91e41b403775de"
+      "id": "skill/tooling-nx",
+      "path": ".agents/skills/tooling-nx/SKILL.md",
+      "digest": "8e3bd2d76482de3ae82032e869f138937f0526e88cef57cd8b6f5e51f1fca987"
     },
     {
       "id": "skill/web-testing-design-fidelity",
@@ -748,9 +778,14 @@
       "digest": "e05e58b05cd893169c437dd8ac1542d735137358bcf8addb9051388fb4c30b57"
     },
     {
+      "id": "skill/writing-browser-e2e-tests",
+      "path": ".agents/skills/writing-browser-e2e-tests/SKILL.md",
+      "digest": "1d720b51fec7d61c82d58826bf9b683a844c75965ee15c6feb5f80ca2becea74"
+    },
+    {
       "id": "instruction",
       "path": "AGENTS.md",
-      "digest": "a0e2322944ce0e499ba132ecb84b9e46213fd11b7e845d94a468cab04fe809bd"
+      "digest": "916ba4062aa90dfe616de8d60566c1912212d9363cdcc6c9bf057fae62243650"
     }
   ]
 }

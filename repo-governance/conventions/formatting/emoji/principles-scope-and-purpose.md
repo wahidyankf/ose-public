@@ -17,7 +17,7 @@ This convention implements the following core principles:
 
 ### What This Convention Covers
 
-- **Where emojis are allowed** - docs/, READMEs, plans/, repo-governance/, AGENTS.md, CLAUDE.md, primary binding agents and skills directories, secondary binding agents directory
+- **Where emojis are allowed** - docs/, READMEs, plans/, repo-governance/, AGENTS.md, CLAUDE.md, the canonical `.agents/` agent and skill directories, and generated agent routes
 - **Where emojis are forbidden** - config files (_.json,_.yaml, \*.toml), source code
 - **Semantic emoji usage** - Using emojis for meaning, not decoration
 - **Emoji consistency** - Standard emojis for common concepts

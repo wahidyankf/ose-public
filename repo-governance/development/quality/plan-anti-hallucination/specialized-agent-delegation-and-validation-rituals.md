@@ -16,12 +16,12 @@ Domain-specialized agents hallucinate less than generic orchestration because th
       uniqueness constraint. Verify by running
       `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm exec nx -- run organiclever-be:test:unit`
       — new test `User_RejectsDuplicateEmailIgnoringCase` passes.
-  - _Suggested executor: `swe-fsharp-dev`_
+  - _Suggested executor: `swe-code-maker`_
 ```
 
 **When to annotate**:
 
-- The action touches a specific language (`.ts`/`.tsx` → `swe-typescript-dev`, `.rs` → `swe-rust-dev`, `.fs`/`.fsproj` → `swe-fsharp-dev`, etc.).
+- The action changes application, library, or test code (`.ts`/`.tsx`, `.fs`/`.fsproj`, `.java`, and so on → `swe-code-maker`, which loads the project's stack packs).
 - The action touches a specific app context (`apps/ose-www/...` → `apps-ose-www-content-maker` for content edits).
 - The action is a content/documentation change (`docs-maker`, `readme-maker`).
 - The action is repo-governance/repo-rules (`rules-maker`).

@@ -25,9 +25,9 @@ The social-linkedin-post-maker uses execution-grade despite being a "maker" agen
 
 Several maker agents use execution-grade because their output is structured by tight skills with well-defined rubrics -- every `apps-ayokoding-www-*-maker` and `apps-ose-www-content-maker`, plus docs-maker, readme-maker, agent-maker, and repo-workflow-maker. Each has an execution-grade checker and execution-grade fixer in its maker-checker-fixer trio, and the skill pins down most decisions. The governance trios -- `rules-*`, `specs-*`, `plan-*` -- sit a grade higher for the reason given under Model Tiers — Execution-Grade. Contrast with planning-grade makers (plan-maker, docs-tutorial-maker, swe-ui-maker) where the creative work is open-ended, pedagogically demanding, or multi-concern.
 
-## E2E Test Developer as Execution-Grade
+## Code Maker as Execution-Grade
 
-The swe-e2e-dev uses execution-grade despite the four language developer agents -- swe-csharp-dev, swe-fsharp-dev, swe-rust-dev, swe-typescript-dev -- sitting at planning-grade. Playwright E2E tests are pattern-driven (locators, fixtures, waits) with a dedicated skill, and test code regressions surface fast in CI. Production application code written by the language developers has higher stakes and unforgiving idioms, which is what puts them a grade higher.
+The swe-code-maker writes production application code yet uses execution-grade. It loads each project's stack packs from the repository inventory, so the stack standards, the stack skills, and the requirement already settle the approach, and applying them cycle by cycle is rule-following. A requirement that leaves a design decision open goes back to its owner instead of raising the tier.
 
 ## File Manager as Fast-Tier
 

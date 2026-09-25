@@ -16,5 +16,5 @@ prose); Invariant 4 (inventory mismatch — either an orphan deletion or a missi
 authoring, a product decision); Invariant 5 (adding a color/tier mapping); a Tier 1→2
 reclassification; higher-precedence filename discoveries (AD3 implications); new harness
 additions (full onboarding); Rhino generator-logic changes (a translation rule, not just
-regenerated data — surface for human or `swe-rust-dev`); evidence that conflicts across sources.
+regenerated data — surface for human resolution in the RHINO repository); evidence that conflicts across sources.
 Surface these in the fix summary and exit non-zero so the orchestrator escalates.

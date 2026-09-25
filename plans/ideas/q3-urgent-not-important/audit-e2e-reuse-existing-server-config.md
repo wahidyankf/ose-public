@@ -56,7 +56,7 @@ waits.
 - [`apps/organiclever-app-web-e2e/playwright.config.ts`](../../../apps/organiclever-app-web-e2e/playwright.config.ts)
   — the in-repo correct pattern (`reuseExistingServer: !process.env.CI`); the remedy for the other
   configs is most likely to copy it verbatim.
-- [Playwright e2e development skill](../../../.claude/skills/swe-developing-e2e-test-with-playwright/SKILL.md)
+- [Playwright e2e development skill](../../../.agents/skills/writing-browser-e2e-tests/SKILL.md)
   — the authoritative in-repo home for Playwright standards, and the natural place for a documented
   caveat if the remedy turns out to be documentation rather than config.
 - [`ci-checker` agent](../../../.agents/agents/ci-checker.md) — already validates projects against CI

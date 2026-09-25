@@ -31,6 +31,7 @@ Use these conventions to decide where a document belongs, how to name it, and ho
 - [Programming Language Documentation Separation Convention](./programming-language-docs-separation.md) — Establishes the relationship between docs/explanation/ style guides and ayokoding-www educational content. Read this when deciding whether new programming-language content belongs in a style guide or in ayokoding-www.
 - [Related Repositories Convention](./related-repositories.md) — Names the five OSE Code Repositories and defines the two-repository parity set within them, independent upstream/product boundaries, required awareness surfaces, and public-to-private propagation scope. Read this before changing cross-repository references or shared boundaries.
 - [Specs Directory Structure Convention](./specs-directory-structure.md) — Canonical logical-owner-corpus directory structure for specs/ — Gherkin feature files, as-built architecture documents, and OpenAPI contracts. Read this when placing a spec artifact or scaffolding specs/ for a new app or library.
+- [Stack Packs Convention](./stack-packs.md) — Where stack standards, skills, and the repository adapter live, and the closed stack IDs. Use when adopting or locating a stack pack.
 - [Worktree Path Convention](./worktree-path.md) — Defines the worktree directory structure, naming convention, and gitignore requirements for claude --worktree routing. Read this when creating, naming, or cleaning up a worktree, or configuring the WorktreeCreate hook.
 
 ## Related Documentation

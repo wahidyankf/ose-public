@@ -31,6 +31,8 @@ platform, the Nx workspace, and the engineering systems that support an early pr
 
 - [Code Coverage](./code-coverage.md) — check how coverage is measured, validated, and reported for
   workspace projects.
+- [Repository Adapter](../../repo-governance/development/quality/stacks/repository-adapter.md) — find which
+  stack packs each project uses, the decisions they record, and each project's README.
 - [SDLC Gate Standard](./sdlc-gate-standard.md) — understand the target gate sequence and permitted
   differences across the OSE repositories.
 

@@ -15,10 +15,10 @@ capability on different accounts.
   detect and expensive to undo. Currently assigned to no agent; admission requires recorded evidence
   of a planning-grade failure, never anticipated difficulty.
 - **Planning-grade** (`model: opus`): Creative reasoning, code generation, architectural decisions,
-  and nuanced content creation (creative makers, the four language developers, the governance trios).
+  and nuanced content creation (creative makers, the governance trios).
 - **Execution-grade** (`model: sonnet`): Rule-based validation, applying validated fixes,
   template-driven output, and structured pattern-following (checkers, fixers, structured makers,
-  swe-e2e-dev).
+  swe-code-maker).
 - **Fast** (`model: haiku`): Purely mechanical tasks with no reasoning required — URL validation,
   deployment scripts, deterministic file operations (deployers, link checkers, docs-file-manager).
 

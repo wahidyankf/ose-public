@@ -50,7 +50,7 @@ This architectural decision establishes that all skills stored in the `.agents/s
 
 ### Agent skills Documentation
 
-- **[Primary binding skills catalog](../../../.agents/skills/README.md)** - Skill modes (inline vs fork) and organization
+- **[Canonical skills catalog](../../../.agents/skills/README.md)** - Skill modes (inline vs fork) and organization
 - **[How to Create a New Skill](../../../docs/how-to/create-new-skill.md)** - Step-by-step skill creation guide
 
 ### Related Conventions

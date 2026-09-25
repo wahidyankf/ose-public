@@ -79,10 +79,10 @@ All code written in the languages documented here MUST follow the standards, pat
 
 **Skills Available**:
 
-- `swe-programming-typescript` - TypeScript standards quick reference
-- `swe-programming-rust` - Rust standards quick reference
-- `swe-programming-fsharp` - F# standards quick reference
-- `swe-programming-csharp` - C# standards quick reference
+- `programming-typescript` - TypeScript standards procedure
+- `programming-fsharp` - F# standards procedure
+- `programming-csharp` - C# standards procedure
+- `programming-java` - Java standards procedure
 
 <!-- TODO: Software Design Reference - Create governance documentation for software design principles -->
 

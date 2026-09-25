@@ -5,7 +5,7 @@ effort: high
 model: opus
 name: swe-ui-maker
 skills:
-  - swe-developing-frontend-ui
+  - developing-frontend-ui
   - repo-maintaining-task-lists
   - docs-applying-content-quality
 tools: |-

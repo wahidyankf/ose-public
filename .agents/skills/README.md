@@ -70,14 +70,26 @@ below.
 
 ### Software engineering
 
-- [Swe Developing Applications Common](./swe-developing-applications-common/README.md) — shared workflow patterns across language developers
-- [Swe Developing E2e Test With Playwright](./swe-developing-e2e-test-with-playwright/README.md) — Playwright E2E testing standards
-- [Swe Developing Frontend Ui](./swe-developing-frontend-ui/README.md) — UI tokens, shadcn/Radix composition, accessibility
-- [Swe Programming Csharp](./swe-programming-csharp/README.md) — C# coding standards
-- [Swe Programming Fsharp](./swe-programming-fsharp/README.md) — F# coding standards
-- [Swe Programming Java](./swe-programming-java/README.md) — Java coding standards
-- [Swe Programming Rust](./swe-programming-rust/README.md) — Rust coding standards
-- [Swe Programming Typescript](./swe-programming-typescript/README.md) — TypeScript coding standards
+The [repository adapter](../../repo-governance/development/quality/stacks/repository-adapter.md) maps stack skills to projects.
+
+- [Developing Applications](./developing-applications/README.md) — language-agnostic application judgement
+- [Developing Frontend UI](./developing-frontend-ui/README.md) — UI tokens, composition, accessibility
+- [Framework ASP.NET Core](./framework-aspnet-core/README.md) — ASP.NET Core stack skill
+- [Framework Gin](./framework-gin/README.md) — Gin stack skill
+- [Framework Giraffe](./framework-giraffe/README.md) — Giraffe stack skill
+- [Framework Next.js](./framework-nextjs/README.md) — Next.js stack skill
+- [Framework React](./framework-react/README.md) — React stack skill
+- [Framework Spring Boot](./framework-spring-boot/README.md) — Spring Boot stack skill
+- [Programming C#](./programming-csharp/README.md) — C# stack skill
+- [Programming F#](./programming-fsharp/README.md) — F# stack skill
+- [Programming Go](./programming-golang/README.md) — Go stack skill
+- [Programming Java](./programming-java/README.md) — Java stack skill
+- [Programming JavaScript](./programming-javascript/README.md) — JavaScript stack skill
+- [Programming Python](./programming-python/README.md) — Python stack skill
+- [Programming Shell](./programming-shell/README.md) — shell stack skill
+- [Programming TypeScript](./programming-typescript/README.md) — TypeScript stack skill
+- [Tooling Nx](./tooling-nx/README.md) — Nx workspace stack skill
+- [Writing Browser E2E Tests](./writing-browser-e2e-tests/README.md) — Playwright browser end-to-end tests
 
 ### App content and deploy
 

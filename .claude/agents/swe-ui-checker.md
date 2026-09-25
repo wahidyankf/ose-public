@@ -5,7 +5,7 @@ effort: xhigh
 model: sonnet
 name: swe-ui-checker
 skills:
-  - swe-developing-frontend-ui
+  - developing-frontend-ui
   - repo-generating-validation-reports
   - repo-assessing-criticality-confidence
   - repo-maintaining-task-lists

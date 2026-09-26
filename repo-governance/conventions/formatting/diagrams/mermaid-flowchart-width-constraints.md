@@ -14,9 +14,9 @@ Keep any single rank level to a maximum horizontal width of **4 nodes**. No gate
 
 **Counting notes**: Pipe-labeled edges (`A -->|text| B`) are ordinary edges. A cycle ranks as its underlying chain rather than collapsing every node to one rank.
 
-**Label length**: the binding limit is **20 characters per line** (each `<br/>`-separated segment measured individually) — see [Rule 3](./common-syntax-errors-label-constraints-rule-3-line-length.md). No gate enforces it. The `md-mermaid` gate fails only on labels longer than the 30-grapheme limit declared in `repo-config.yml` `policies.markdown.mermaid`, so it is a backstop, not Rule 3.
+**Label length**: the binding limit is **20 characters per line** (each `<br/>`-separated segment measured individually) — see [Rule 3](./common-syntax-errors-label-constraints-rule-3-line-length.md). The `md-mermaid` gate enforces it through the 20-grapheme limit declared in `repo-config.yml` `policies.markdown.mermaid`.
 
-**Automated check** (accessibility, palette, and the 30-grapheme label backstop — not width):
+**Automated check** (accessibility, palette, and the 20-grapheme label limit — not width):
 
 ```bash
 ./hippo run --class ephemeral --resource-tier standard --disk-path . -- \

@@ -22,6 +22,7 @@ flowchart TD
     Q3 -->|No| Q4{"High unique<br/>value?"}
     Q4 -->|Yes| ID2["Indonesian"]
     Q4 -->|No| EN2["English"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Examples by Content Type**:

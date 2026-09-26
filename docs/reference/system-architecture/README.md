@@ -40,16 +40,16 @@ graph TB
         NX[Nx workspace<br/>Task coordination]
     end
 
-    PEOPLE -->|Explore public information| PUBLIC
-    PEOPLE -->|Use product experiences| PRODUCT
-    PRODUCT -.->|Uses service contracts| API
+    PEOPLE -->|Explore public<br/>information| PUBLIC
+    PEOPLE -->|Use product<br/>experiences| PRODUCT
+    PRODUCT -.->|Uses service<br/>contracts| API
     LIBS -.->|Supports| PUBLIC
     LIBS -.->|Supports| PRODUCT
     LIBS -.->|Supports| API
-    NX -.->|Coordinates tasks for| PUBLIC
-    NX -.->|Coordinates tasks for| PRODUCT
-    NX -.->|Coordinates tasks for| API
-    NX -.->|Coordinates tasks for| TOOLS
+    NX -.->|Coordinates<br/>tasks for| PUBLIC
+    NX -.->|Coordinates<br/>tasks for| PRODUCT
+    NX -.->|Coordinates<br/>tasks for| API
+    NX -.->|Coordinates<br/>tasks for| TOOLS
 
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
@@ -61,6 +61,7 @@ graph TB
     class API orange
     class TOOLS,LIBS purple
     class NX brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The key architectural boundaries are:

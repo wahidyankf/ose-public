@@ -95,6 +95,7 @@ graph LR
     classDef pres fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef infra fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef application fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### C4 + DDD Across Web Apps
@@ -128,6 +129,7 @@ graph TB
     classDef parent fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef public fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef private fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 - **`ose-public`** — the main product monorepo. Public on GitHub, MIT. Hosts `organiclever-*`, `ayokoding-web`, `ose-web`, `wahidyankf-web`, and the polyglot CLI tools `rhino-cli`, `ayokoding-cli`, `ose-cli`.

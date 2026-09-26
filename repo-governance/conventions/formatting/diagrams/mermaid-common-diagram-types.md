@@ -27,6 +27,7 @@ flowchart LR
     B -->|Yes| C[Process Request]
     B -->|No| D[Return 401]
     C --> E[Return Response]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Sequence Diagram
@@ -107,6 +108,7 @@ classDiagram
     }
 
     Transaction --> Account : involves
+        classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Entity Relationship Diagram
@@ -153,6 +155,7 @@ erDiagram
         string customer_id FK
         decimal balance
     }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## State Diagram

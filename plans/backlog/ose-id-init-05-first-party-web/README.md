@@ -43,7 +43,7 @@ flowchart TD
   A["04 OIDC provider"] --> B["05 First-party web"]
   B --> C["06 Passkeys + MFA"]
   B --> D["Later Google login"]
-  B -. "production remains off" .-> E["Future Kubernetes delivery"]
+  B -. "production<br/>remains off" .-> E["Future Kubernetes<br/>delivery"]
 
   classDef prior fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
   classDef current fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
@@ -51,6 +51,7 @@ flowchart TD
   class A prior
   class B current
   class C,D,E later
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Navigation

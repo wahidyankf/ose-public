@@ -19,6 +19,7 @@ flowchart TD
     L2 -->|governs| L4["Layer 4: AI Agents"]
     L3 -->|governs| L4
     L4 -->|orchestrated by| L5["Layer 5: Workflows"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The vision inspires the principles but does not govern them, and workflows orchestrate agents without governing
@@ -32,6 +33,7 @@ flowchart LR
     accDescr: Agent skills leads to Agents via serves; Agent skills leads to Agents via does not govern.
     S["Agent skills"] -->|serves| A["Agents"]
     S -.->|does not govern| A
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Agents use agent skills through inline knowledge or fork delegation.

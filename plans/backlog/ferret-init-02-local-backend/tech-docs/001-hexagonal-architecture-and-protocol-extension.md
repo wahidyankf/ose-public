@@ -30,6 +30,7 @@ flowchart LR
   class R,F,PG,N now
   class A,D,P,C core
   class G,M later
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The source dependency rule is absolute:

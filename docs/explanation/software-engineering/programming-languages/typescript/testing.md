@@ -54,6 +54,7 @@ flowchart TD
     class B teal
     class C orange
     class D purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Test Pyramid
@@ -75,6 +76,7 @@ flowchart TD
     class A purple
     class B orange
     class C teal
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ---

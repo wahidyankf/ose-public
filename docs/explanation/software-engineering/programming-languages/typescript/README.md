@@ -1610,6 +1610,7 @@ flowchart LR
     class B orange
     class C,F teal
     class D purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Compilation Process
@@ -1646,4 +1647,5 @@ flowchart TD
     class B orange
     class C teal
     class G purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

@@ -62,6 +62,7 @@ flowchart LR
     O -->|spawns at runtime| A["Agents:<br/>isolated contexts"]
     SK["Agent skills"] -->|via skills field| A
     CV["Conventions"] -->|explicit references| A
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Critical Understanding:**

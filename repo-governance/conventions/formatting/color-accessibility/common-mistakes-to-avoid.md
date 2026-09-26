@@ -31,6 +31,7 @@ graph TD
 
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Mistake 2: Relying on Color Alone
@@ -59,6 +60,7 @@ graph TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Mistake 3: Using Yellow for Important Information
@@ -83,6 +85,7 @@ graph TD
     A[Important!]:::orange
 
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Mistake 4: No Contrast Verification
@@ -107,6 +110,7 @@ graph TD
     A["Text<br/>(Black on Purple)"]:::goodContrast
 
     classDef goodContrast fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Mistake 5: Using CSS Color Names

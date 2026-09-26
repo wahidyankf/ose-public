@@ -17,6 +17,7 @@ flowchart LR
     accDescr: codegen leads to typecheck; codegen leads to build.
     CG["codegen"] --> TC["typecheck"]
     CG --> B["build"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Both `typecheck` and `build` declare `dependsOn: ["codegen"]` in their `project.json`. This

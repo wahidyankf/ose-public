@@ -27,6 +27,7 @@ graph TD
 
     class R,C1,C2,C3,C4 required
     class O,C5,C6 nullable
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 | Column       | Type           | Nullable | Default    | Description                         |

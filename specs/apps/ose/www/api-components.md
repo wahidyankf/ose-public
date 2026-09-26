@@ -55,6 +55,7 @@ graph LR
     classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef handler fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
     classDef procedure fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Procedures and route handlers depend on content services, search, and schemas:**
@@ -112,6 +113,7 @@ graph LR
     classDef service fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef search fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef schema fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Content and search internals resolve to the content directory:**
@@ -156,6 +158,7 @@ graph LR
     classDef search fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef schema fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef datastore fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Gherkin Coverage by Component

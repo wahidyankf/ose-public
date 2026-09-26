@@ -19,6 +19,7 @@ flowchart LR
     ADAPTER --> CLI[ferret-cli]
     DEV[Developer<br/>or script] --> CLI
     CLI --> HOME[(Local data home<br/>SQLite store and<br/>identity)]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Two kinds of caller share one binary. A harness adapter passes one bounded raw payload to `capture-hook` and ignores
@@ -46,14 +47,15 @@ layers know nothing of SQLite, the filesystem, or argv.
 flowchart TD
     accTitle: Components
     accDescr: The cli adapter calls the application layer, which uses the domain layer and reaches SQLite and the filesystem only through outbound adapters.
-    CLI[cli<br/>argv, help, output,<br/>failure contract] --> APP[application<br/>capture, queries,<br/>analytics, maintenance,<br/>install]
+    CLI[cli<br/>argv, help, output,<br/>failure contract] --> APP[application<br/>capture, queries,<br/>analytics,<br/>maintenance, install]
     APP --> DOMAIN[domain<br/>event, capability,<br/>invariants, hash]
-    APP --> OUT[adapters<br/>sqlite repository,<br/>filesystem, POSIX install]
+    APP --> OUT[adapters<br/>sqlite repository,<br/>filesystem, POSIX<br/>install]
 
     classDef adapter fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef core fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     class CLI,OUT adapter
     class APP,DOMAIN core
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 | Component     | Responsibility                                                                                       |

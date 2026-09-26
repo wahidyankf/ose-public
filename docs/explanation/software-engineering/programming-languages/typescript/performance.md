@@ -61,6 +61,7 @@ graph TD
     classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Profiling
@@ -277,6 +278,7 @@ graph TD
     classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Array vs Set vs Map
@@ -1008,4 +1010,5 @@ flowchart LR
     class B,F orange
     class C,G teal
     class D purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

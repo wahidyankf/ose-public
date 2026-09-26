@@ -19,6 +19,7 @@ flowchart TD
     S -->|can use| IS["Inline skills"]
     S -->|can reference| CV["Conventions"]
     S -.->|cannot spawn| X["Further subagents"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Impact on agent skills

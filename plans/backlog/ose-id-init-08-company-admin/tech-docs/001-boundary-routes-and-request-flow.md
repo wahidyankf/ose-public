@@ -46,7 +46,7 @@ flowchart TD
   W --> A["Company admin API"]
   A --> C["Context resolver"]
   C --> P["Admin policy"]
-  P --> D[("PostgreSQL with RLS")]
+  P --> D[("PostgreSQL<br/>with RLS")]
   A --> N["Notification port"]
   N -.-> M["Local Mailpit"]
 
@@ -58,6 +58,7 @@ flowchart TD
   class C,P auth
   class D state
   class M local
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The dashed Mailpit edge is local/test only. A browser never calls PostgreSQL or Mailpit directly for an

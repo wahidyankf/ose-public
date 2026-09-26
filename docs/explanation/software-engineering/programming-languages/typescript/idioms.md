@@ -174,6 +174,7 @@ graph LR
     classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### TypeScript Version Context
@@ -222,6 +223,7 @@ graph TD
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Principles**:
@@ -428,6 +430,7 @@ graph LR
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Where those common uses show up:
@@ -443,6 +446,7 @@ graph LR
     I --> I4["• Union filtering<br/>(Extract)"]
 
     classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Common Utility Types**:
@@ -744,6 +748,7 @@ graph TD
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### infer Keyword
@@ -874,6 +879,7 @@ graph LR
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Every branch above converges on the same guarantees:
@@ -888,6 +894,7 @@ graph LR
     K --> K3["Compiler enforced"]
 
     classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Key Principles**:
@@ -1143,6 +1150,7 @@ graph TD
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Basic Discriminated Unions
@@ -1537,4 +1545,5 @@ flowchart TD
     class B orange
     class C teal
     class D purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

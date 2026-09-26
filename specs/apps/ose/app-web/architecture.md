@@ -20,6 +20,7 @@ flowchart LR
     RISK[Risk team member] --> WEB
     WEB -->|HTTP /api/v1/*| BE[OSE BE]
     WEB --> VERCEL[Vercel Edge Network]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The client never reaches a language model directly. Every AI-assisted step is a call to `ose-be`,

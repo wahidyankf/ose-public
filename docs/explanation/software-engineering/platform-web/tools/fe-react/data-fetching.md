@@ -67,6 +67,7 @@ graph TD
     class D teal
     class E orange
     class G purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 What each choice brings with it:
@@ -93,6 +94,7 @@ graph LR
     class D teal
     class E orange
     class G purple
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Recommendations**:

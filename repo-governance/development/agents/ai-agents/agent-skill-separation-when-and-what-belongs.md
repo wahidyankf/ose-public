@@ -23,6 +23,7 @@ flowchart TD
     Q3 -->|No| Q4{"Convention<br/>details?"}
     Q4 -->|Yes| L4["Link to the<br/>convention doc"]
     Q4 -->|No| E4["Evaluate by<br/>criteria above"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Ask the questions in order; the first Yes decides. Domain expertise covers color palettes, validation standards, and report formats. Agent-specific workflow covers

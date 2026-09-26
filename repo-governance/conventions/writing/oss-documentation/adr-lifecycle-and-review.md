@@ -49,6 +49,7 @@ graph LR
     class Rejected orange
     class Superseded purple
     class Deprecated brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Superseding ADRs:**

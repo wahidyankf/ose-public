@@ -16,6 +16,7 @@ flowchart TD
     L2 -->|governs| L4["Layer 4: AI Agents"]
     L3 -->|governs| L4
     L4 -->|orchestrated by| L5["Layer 5: Workflows"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Each layer answers one question. Vision is why we exist, principles are the values behind it, conventions are what

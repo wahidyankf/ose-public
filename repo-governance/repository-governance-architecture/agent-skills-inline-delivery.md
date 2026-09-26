@@ -32,6 +32,7 @@ flowchart LR
     L2 -->|explicit| DR["Direct references"]
     L3 -->|explicit| DR
     DR --> L4["L4: Agents"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Characteristics**:

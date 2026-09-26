@@ -66,6 +66,7 @@ graph TD
     classDef checker fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef human fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef fixer fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 This three-stage workflow with human review in the middle is crucial. We're not trying to fully automate content creation—we're using AI to handle routine work while preserving human judgment for decisions that matter. The agents catch formatting inconsistencies, broken links, and accessibility issues. Humans make choices about tone, messaging, and content strategy.

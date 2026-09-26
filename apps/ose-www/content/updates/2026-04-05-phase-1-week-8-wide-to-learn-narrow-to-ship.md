@@ -129,6 +129,7 @@ graph LR
     classDef scripting fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef jvm fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef functional fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### What Every Backend Shares
@@ -292,6 +293,7 @@ graph LR
     classDef contract fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef backend fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef testing fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Hugo to Next.js: Platform Migrations
@@ -351,6 +353,7 @@ graph LR
     classDef before fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef after fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef shared fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## OrganicLever Fullstack Evolution
@@ -401,6 +404,7 @@ graph LR
     classDef backend fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef contract fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef external fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Infrastructure Maturation
@@ -497,6 +501,7 @@ graph LR
     classDef backend fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef frontend fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef platform fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The **`demo-ci-test-standardization`** and **`ci-standardization`** plans tracked the workflow buildout. Reusable templates eliminated duplication—each backend workflow is roughly 30 lines composing shared templates, rather than 200+ lines of duplicated YAML.

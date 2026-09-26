@@ -14,7 +14,7 @@ erDiagram
   INSTALLATION ||--o{ EVENT : owns
   WORKSPACE ||--o{ EVENT : groups
   EVENT_BATCH ||--o{ EVENT_BATCH_ITEM : reports
-  EVENT_BATCH ||--o{ CAPABILITY_BATCH_ITEM : reports
+  EVENT_BATCH ||--o{ CAP_BATCH_ITEM : reports
   INSTALLATION ||--o{ CAPABILITY_SNAPSHOT : owns
   CAPABILITY_SNAPSHOT ||--|{ CAPABILITY_ITEM : contains
   PRUNE_RUN ||--o{ PRUNE_RESULT : records
@@ -60,7 +60,7 @@ erDiagram
     bytea stored_response_body
     timestamptz received_at
     integer event_item_count
-    integer capability_item_count
+    integer cap_item_count
     integer accepted_count
     integer duplicate_count
     integer rejected_count
@@ -73,7 +73,7 @@ erDiagram
     text status
     text error_code
   }
-  CAPABILITY_BATCH_ITEM {
+  CAP_BATCH_ITEM {
     uuid batch_id PK,FK
     integer ordinal PK
     uuid snapshot_id
@@ -113,7 +113,10 @@ erDiagram
     bigint deleted_count
     bigint estimated_bytes
   }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
+
+Diagram-only abbreviations: `CAP_BATCH_ITEM` is the `CAPABILITY_BATCH_ITEM` table and `cap_item_count` is `EVENT_BATCH.capability_item_count`.
 
 `EVENT_BATCH.stored_response_body` contains the canonical UTF-8 bytes of only the closed acknowledgement response, never the request, token, or event
 content. Batch item event/snapshot ID/hash columns are response evidence, not foreign keys, because a rejected item

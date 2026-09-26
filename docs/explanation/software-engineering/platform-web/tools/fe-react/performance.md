@@ -67,6 +67,7 @@ graph LR
     class A blue
     class C,G teal
     class D,J orange
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 List and computation optimization strategies:
@@ -95,6 +96,7 @@ graph LR
     class A blue
     class E,M purple
     class F orange
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Optimization Tools**:

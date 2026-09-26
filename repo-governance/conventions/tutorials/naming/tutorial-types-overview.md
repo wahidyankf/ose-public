@@ -40,6 +40,7 @@ graph TB
     class D purple
     class C teal
     class E brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Legend**:

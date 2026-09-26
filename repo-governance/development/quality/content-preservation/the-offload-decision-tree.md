@@ -24,6 +24,7 @@ flowchart TD
     Q4 -->|No| Q5{"Pattern shared<br/>across files?"}
     Q5 -->|Yes| C["C: extract to<br/>shared doc"]
     Q5 -->|No| AD["A or D: create<br/>doc in folder"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Option A creates a new document, and Option D adds the content to the appropriate folder (`conventions/` or

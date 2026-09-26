@@ -40,6 +40,7 @@ graph TD
  accDescr: Input: r_f, beta, r_m leads to r_e = r_f + β * mkt_premium; r_e = r_f + β * mkt_premium leads to Output: Cost of Equity.
  A[Input: r_f, beta,<br/>r_m] --> B[r_e = r_f + β *<br/>mkt_premium]
  B --> C[Output: Cost of<br/>Equity]
+ classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## ASCII Art Diagrams

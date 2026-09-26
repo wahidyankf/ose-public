@@ -71,6 +71,7 @@ graph TD
 
   class FCC lib
   class CC cli
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **OrganicLever product stack:**
@@ -112,6 +113,7 @@ graph TD
   class WU,WUT lib
   class OLWWW,OLAPP,OLB,OLC product
   class OLWWWFEE2E,OLAPPE2E,OLBE2E e2e
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **OSE ID product stack:**
@@ -146,6 +148,7 @@ graph TD
   class OIC,WU,WUT lib
   class OIW,OIB product
   class OIWE2E,OIBE2E e2e
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 `ose-id-contracts` carries no edge on purpose. Unlike `ose-contracts` and `ose-lms-contracts`, the

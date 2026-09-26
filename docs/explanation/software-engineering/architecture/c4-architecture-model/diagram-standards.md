@@ -160,6 +160,7 @@ graph LR
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Container Requirements
@@ -211,7 +212,7 @@ graph LR
     API["Zakat API<br/>[Container: Spring<br/>Boot]<br/>Business logic"]:::blue
     CalcService["Calculation Service<br/>[Container: Spring<br/>Boot]<br/>Zakat calculations"]:::blue
     DB["Zakat Database<br/>[Container:<br/>PostgreSQL]<br/>Assessment storage"]:::teal
-    MQ["Message Broker<br/>[Container: RabbitMQ]<br/>Event distribution"]:::teal
+    MQ["Message Broker<br/>[Container:<br/>RabbitMQ]<br/>Event distribution"]:::teal
 
     Web --> API
     API --> DB
@@ -221,6 +222,7 @@ graph LR
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Component Requirements

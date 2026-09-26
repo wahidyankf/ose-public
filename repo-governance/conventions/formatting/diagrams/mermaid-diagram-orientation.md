@@ -28,6 +28,7 @@ graph TD
     accDescr: Animal leads to Dog; Animal leads to Cat.
     Animal --> Dog
     Animal --> Cat
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **sequenceDiagram is unaffected**: The `sequenceDiagram` type has no orientation directive and is not subject to this rule.
@@ -40,4 +41,5 @@ graph LR
     accDescr: Start leads to Process; Process leads to End.
     A[Start] --> B[Process]
     B --> C[End]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```

@@ -54,6 +54,7 @@ flowchart TB
     class Trust assurance
     class Platform platform
     class Learning learning
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The diagram shows coordination and evidence exchange, not a start-to-finish sequence.

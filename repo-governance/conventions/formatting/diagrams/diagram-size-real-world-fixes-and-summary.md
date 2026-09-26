@@ -23,6 +23,7 @@ graph TD
     Switch --> |Circle| C[Handle Circle]
     Switch --> |Rectangle| R[Handle Rectangle]
     Switch --> |Triangle| T[Handle Triangle]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Example 1: Sealed Classes (After)**
@@ -36,6 +37,7 @@ graph TD
     Shape[Shape<br/>sealed interface] --> Circle
     Shape --> Rectangle
     Shape --> Triangle
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Pattern Matching Switch:**
@@ -48,6 +50,7 @@ graph TD
     B -->|Circle| C[area = π × r²]
     B -->|Rectangle| D[area = w × h]
     B -->|Triangle| E[area = ½ × b × h]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Example 2: Concurrent Collections (Before)**
@@ -64,6 +67,7 @@ graph TD
     CHM[ConcurrentHashMap] --> PutIfAbsent
     PutIfAbsent --> Compute
     Compute --> Merge
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Example 2: Concurrent Collections (After)**
@@ -78,6 +82,7 @@ graph TD
     Queue --> |take#40;#41;| Consumer
     Queue --> |Blocks if full| Producer
     Consumer --> |Blocks if empty| Queue
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **ConcurrentHashMap (Atomic Operations):**
@@ -89,6 +94,7 @@ graph TD
     A[putIfAbsent<br/>#40;k,v#41;] --> B{Key exists?}
     B -->|No| C[Insert value]
     B -->|Yes| D[Return existing]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Summary

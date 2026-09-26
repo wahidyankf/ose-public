@@ -54,6 +54,7 @@ flowchart TD
     Q -->|Nested workflow| NW["Execute that<br/>workflow"]
     NW -.->|recursively| Q
     Q -->|Procedure| MO
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 A named agent is defined when `.agents/agents/` holds it and its generated route makes it a `subagent_type`. A nested workflow applies this

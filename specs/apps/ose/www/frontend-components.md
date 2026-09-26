@@ -42,6 +42,7 @@ graph LR
 
     classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef page fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## View 2 — Pages to Layout Components and Content Renderers
@@ -100,6 +101,7 @@ graph LR
     classDef page fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef layout fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef renderer fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## View 3 — Header, Search, Theme, and the tRPC API
@@ -146,13 +148,14 @@ graph LR
     %% Search + Pages → API
     SP2 -->|"search.query"| API
     UD -->|"content.getBySlug"| API
-    UL -->|"content.listUpdates"| API
+    UL -->|"content.<br/>listUpdates"| API
 
     classDef page fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef layout fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef search fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef theme fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
     classDef external fill:#808080,stroke:#000000,color:#000000,stroke-width:2px,stroke-dasharray:5 5
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Gherkin Coverage by Component

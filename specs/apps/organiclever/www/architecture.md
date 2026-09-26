@@ -19,6 +19,7 @@ flowchart LR
     VISITOR[Visitor<br/>desktop, tablet,<br/>mobile] --> WWW[OrganicLever Web]
     WWW --> VERCEL[Vercel Edge Network]
     WWW --> UI[web-ui and<br/>web-ui-token]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The site is the entry point to the product: a visitor arrives here and leaves for the app. Nothing

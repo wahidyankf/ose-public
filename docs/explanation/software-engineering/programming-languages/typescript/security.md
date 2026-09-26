@@ -164,6 +164,7 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
     classDef brown fill:#CA9161,stroke:#000000,color:#000000
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Defense-in-Depth Layers**:
@@ -1972,4 +1973,5 @@ flowchart LR
     class B,F orange
     class C,G teal
     class D purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

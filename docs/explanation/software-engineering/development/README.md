@@ -56,6 +56,7 @@ graph TD
     class C teal
     class E orange
     class H purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Decision Matrix**:
@@ -176,6 +177,7 @@ graph TD
     class C,E orange
     class G,J brown
     class K purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Legend**: 🟢 Teal = Passing tests (GREEN) | 🟠 Orange = Failing tests (RED) | 🟤 Brown = Refactoring

@@ -19,6 +19,7 @@ graph TD
     accDescr: Client leads to Auth service via JWKS public key; Client leads to API via health check.
     A[Client]-->|"JWKS public key"| B[Auth service]
     C[Client]-->|"health check"| D[API]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **DO NOT:**
@@ -46,6 +47,7 @@ graph TD
     A["Auth service<br/>────────────<br/>issues JWT"]:::blue
     %% Separator length matches "Auth service" (12 chars)
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **DO NOT:**

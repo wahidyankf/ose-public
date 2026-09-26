@@ -43,7 +43,7 @@ the caller for review.
 
 ```mermaid
 flowchart TD
-  accTitle: Phase A — Load Plans and Build the Dependency DAG (Edges, Report, and Diagram)
+  accTitle: Phase A — Load Plans and Build the Dependency DAG — Edges, Report, and Diagram
   accDescr: planA P0 setup leads to planA P1 RED; planA P1 RED leads to planA P1 GREEN; planB P0 setup leads to planB P1 impl; and 1 more links.
   subgraph Legend
     L1[SEQUENTIAL edge]:::seq
@@ -55,6 +55,7 @@ flowchart TD
   A2 -->|shares source| C1[planC source step<br/>waits]:::seq
   classDef seq fill:#0173B2,stroke:#000000,color:#FFFFFF
   classDef par fill:#029E73,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 > **Pause Safety**: safe to stop after Phase A. Nothing has been executed; only the schedule exists.

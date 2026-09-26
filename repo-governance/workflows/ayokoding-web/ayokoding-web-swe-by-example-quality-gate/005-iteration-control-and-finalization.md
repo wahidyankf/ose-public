@@ -62,6 +62,7 @@ graph LR
     class A teal
     class B orange
     class D purple
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## 6. Finalization (Sequential)

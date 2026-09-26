@@ -19,6 +19,7 @@ flowchart LR
     CORE --> PDFADP[PDF adapter]
     CORE --> OCRADP[OCR adapter]
     CORE --> LOCAL[(Report, skiplist,<br/>and cache files)]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The library declares PDF and OCR ports and ships their production adapters. The CLI composition root

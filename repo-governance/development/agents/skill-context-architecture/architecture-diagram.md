@@ -28,6 +28,7 @@ graph TD
     class CONV brown
 
     linkStyle 4 stroke-width:3px,stroke-dasharray:5
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key**:

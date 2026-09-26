@@ -43,6 +43,7 @@ graph LR
     classDef w18 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef w910 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef w1112 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Weeks 1-8: Foundation Establishment**
@@ -121,6 +122,7 @@ graph TD
     classDef agents fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef workflows fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef skills fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Layer 0: Vision**
@@ -353,6 +355,7 @@ graph TD
     classDef client fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef backend fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:4px
     classDef data fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Client Applications:**

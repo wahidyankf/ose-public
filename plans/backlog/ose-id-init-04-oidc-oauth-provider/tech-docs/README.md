@@ -25,7 +25,7 @@ flowchart TD
   accDescr: A browser carries redirects between a synthetic local BFF and OSE ID. OSE ID stores authorization state and consent in PostgreSQL, signs tokens through a shared key provider, and publishes validation keys to the LMS resource.
   U["Person and browser"] --> C["Synthetic LMS BFF"]
   C --> I["ose-id-be OpenIddict"]
-  I --> P[("Shared PostgreSQL")]
+  I --> P[("Shared<br/>PostgreSQL")]
   I --> K["Shared key provider"]
   I --> R["LMS token validator"]
   C --> R
@@ -38,6 +38,7 @@ flowchart TD
   class C client
   class I,R service
   class P,K store
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The process instance is stateless even though the system is not: PostgreSQL and the key provider own

@@ -55,6 +55,7 @@ graph TD
     A -->|iter#40;#41;| B[Iterator]          %% CORRECT: Escaped parentheses in edge label
     B -->|next#40;#41;| C{Has Item?}         %% CORRECT: Escaped parentheses in edge label
     D -->|get#91;key#93;| E[Value]           %% CORRECT: Escaped brackets in edge label
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Rationale**: Mermaid's parser interprets unescaped special characters as syntax elements in BOTH node text and edge labels, not literal characters.

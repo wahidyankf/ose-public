@@ -50,6 +50,7 @@ graph TD
     accTitle: Diagram Size and Splitting: Splitting Guidelines
     accDescr: Load All Data leads to Process Immediately.
     A[Load All Data] --> B[Process Immediately]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Lazy Evaluation:**
@@ -59,6 +60,7 @@ graph TD
     accTitle: Diagram Size and Splitting: Splitting Guidelines (2)
     accDescr: Load On Demand leads to Process When Needed.
     A[Load On Demand] --> B[Process When Needed]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **4. Use Descriptive Headers**

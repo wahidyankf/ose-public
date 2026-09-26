@@ -92,6 +92,7 @@ graph TD
     classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Using `any`
@@ -116,14 +117,14 @@ graph TD
     SafeC["formatCurrency(<br/>value: number)"]:::teal
     CompileError["Compile-time Error<br/>Type mismatch caught"]:::brown
 
-    subgraph Unsafe["Type Safety Erosion with any"]
+    subgraph Unsafe["Type Safety Erosion<br/>with any"]
         Input --> ProcessA
         ProcessA --> ProcessB
         ProcessB --> ProcessC
         ProcessC --> Error
     end
 
-    subgraph Safe["Type Safety Preserved"]
+    subgraph Safe["Type Safety<br/>Preserved"]
         SafeInput --> SafeA
         SafeA --> SafeB
         SafeB --> SafeC
@@ -138,6 +139,7 @@ graph TD
     classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -997,6 +999,7 @@ graph TD
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
     classDef brown fill:#CA9161,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Principles**:
@@ -1958,6 +1961,7 @@ graph TD
     classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### God Object

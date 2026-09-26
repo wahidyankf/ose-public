@@ -26,6 +26,7 @@ flowchart TD
     Q3 -->|Yes| CV["Convention in<br/>conventions/"]
     Q1 -->|No| Q4{"Task-specific<br/>workflow?"}
     Q4 -->|Yes| AG["Keep in the<br/>agent file"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Examples: agent skills such as `applying-content-quality` and `creating-accessible-diagrams`; Conventions such as the

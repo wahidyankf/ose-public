@@ -54,11 +54,12 @@ graph TD
     accDescr: AyoKoding CLI Container: Rust Content link validation leads to AyoKoding Web Next.js 16, tRPC Educational content via Validates links File system; and 2 more links.
     OseWeb["OSE Platform Web<br/>[Next.js 16 App<br/>Router]<br/>Landing page"]:::blue
     AyoWeb["AyoKoding Web<br/>[Next.js 16, tRPC]<br/>Educational content"]:::blue
-    AyoCLI["AyoKoding CLI<br/>[Container: Rust]<br/>Content link validation"]:::blue
+    AyoCLI["AyoKoding CLI<br/>[Container: Rust]<br/>Content link<br/>validation"]:::blue
 
     AyoCLI -->|"Validates links<br/>[File system]"| AyoWeb
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Libs → Supporting Components
@@ -112,7 +113,7 @@ graph LR
     accDescr: AyoKoding CLI Container: Rust Content link validation leads to AyoKoding Web Next.js 16, tRPC Educational content; and 3 more links.
     OseWeb["OSE Platform Web<br/>[Next.js 16 App<br/>Router]<br/>Landing page"]:::blue
     AyoWeb["AyoKoding Web<br/>[Next.js 16, tRPC]<br/>Educational content"]:::blue
-    AyoCLI["AyoKoding CLI<br/>[Container: Rust]<br/>Content link validation"]:::blue
+    AyoCLI["AyoKoding CLI<br/>[Container: Rust]<br/>Content link<br/>validation"]:::blue
     Vercel["Vercel<br/>[Platform]<br/>Next.js hosting"]:::teal
 
     AyoCLI --> AyoWeb
@@ -121,6 +122,7 @@ graph LR
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Future containers (planned):**
@@ -135,6 +137,7 @@ graph LR
     ZakatWeb -.-> ZakatAPI
 
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Note**: Use purple for future/planned containers with dashed lines (`-.->`) for planned relationships.

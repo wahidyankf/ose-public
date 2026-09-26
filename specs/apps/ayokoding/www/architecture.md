@@ -22,6 +22,7 @@ flowchart LR
     WEB --> VERCEL[Vercel Edge Network]
     WEB --> GA4[Google Analytics 4]
     CI[CI pipelines] --> WEB
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 A learner never authenticates, so every page is cacheable and the site can be served statically from

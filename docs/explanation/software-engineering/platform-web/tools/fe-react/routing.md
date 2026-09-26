@@ -94,6 +94,7 @@ graph LR
     class B teal
     class C,D,E orange
     class G purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Nested dashboard routes:
@@ -117,6 +118,7 @@ graph LR
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     class B,M teal
     class D,F orange
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Route Structure**:

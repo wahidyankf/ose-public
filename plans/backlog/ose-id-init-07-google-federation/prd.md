@@ -53,6 +53,7 @@ flowchart TD
   class V,L decision
   class I,N,R,X success
   class E,M safe
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Interaction Sequence

@@ -26,6 +26,7 @@ flowchart TD
     D1 -->|Has experience| H["How-To"]
     U1 -->|Needs facts or data| R["Reference"]
     U1 -->|Needs reasoning| E["Explanation"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Common Mistakes to Avoid

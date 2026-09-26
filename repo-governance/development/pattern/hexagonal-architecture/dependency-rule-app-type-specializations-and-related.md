@@ -26,6 +26,7 @@ flowchart LR
     classDef domain fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef app fill:#029E73,stroke:#000000,color:#000000
     classDef outer fill:#808080,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The diagram reads left-to-right but the dependency rule applies in all directions: adapters depend on application;

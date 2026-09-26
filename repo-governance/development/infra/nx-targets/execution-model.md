@@ -39,6 +39,7 @@ flowchart TD
     class B,F,Q orange
     class E,H,T teal
     class G,S purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Scheduled and On-Demand Testing
@@ -64,4 +65,5 @@ flowchart TD
     classDef brown fill:#CA9161,stroke:#000000,color:#000000
     class H2,J blue
     class C2,I2,E2,K,L,M brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

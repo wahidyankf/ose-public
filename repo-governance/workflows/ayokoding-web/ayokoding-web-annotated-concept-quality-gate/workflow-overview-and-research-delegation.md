@@ -29,6 +29,7 @@ graph TB
     class D teal
     class F purple
     class G brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Research Delegation

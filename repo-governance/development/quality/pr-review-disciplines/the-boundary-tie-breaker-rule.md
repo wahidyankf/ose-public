@@ -45,4 +45,5 @@ flowchart TD
   classDef orange fill:#DE8F05,stroke:#000000,color:#000000
   classDef teal fill:#029E73,stroke:#000000,color:#000000
   classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

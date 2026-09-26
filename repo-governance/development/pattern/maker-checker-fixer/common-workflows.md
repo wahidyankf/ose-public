@@ -19,6 +19,7 @@ flowchart TD
     C --> U2["User approves<br/>fixes in report"]
     U2 --> F["Fixer applies<br/>validated fixes"]
     F --> D["Done: content<br/>production-ready"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The maker creates the content together with all its dependencies.
@@ -53,6 +54,7 @@ flowchart TD
     U --> F["Fixer applies<br/>fixes"]
     F --> C2["Checker confirms<br/>the fixes"]
     C2 --> D["Done: content<br/>verified clean"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The maker updates the content together with its dependencies.
@@ -70,6 +72,7 @@ flowchart TD
     R["User asks to<br/>add a section"] --> M["Maker updates<br/>content"]
     M -.->|optional| C["Checker quick<br/>validation"]
     C --> D["Done: quality<br/>preserved"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The content was already validated during creation, so the quick check is only a confirmation.

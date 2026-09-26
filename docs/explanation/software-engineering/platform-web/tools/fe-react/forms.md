@@ -171,6 +171,7 @@ graph TD
     class A blue
     class H,P,R teal
     class K,Q orange
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Validation Strategy**:

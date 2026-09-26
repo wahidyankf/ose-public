@@ -236,6 +236,7 @@ graph LR
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Container Diagram
@@ -247,7 +248,7 @@ graph TD
     Web["Zakat Web UI<br/>[Container: Next.js]<br/>User interface for<br/>Zakat calculations"]:::blue
     API["Zakat API<br/>[Container: Spring<br/>Boot]<br/>Business logic and<br/>Zakat calculations"]:::blue
     DB["Zakat Database<br/>[Container:<br/>PostgreSQL]<br/>Stores Zakat<br/>assessments"]:::teal
-    MQ["Message Broker<br/>[Container: RabbitMQ]<br/>Event distribution"]:::teal
+    MQ["Message Broker<br/>[Container:<br/>RabbitMQ]<br/>Event distribution"]:::teal
 
     Web -->|"Makes API calls<br/>[HTTPS/REST]"| API
     API -->|"Reads/writes<br/>[TCP/SQL]"| DB
@@ -255,6 +256,7 @@ graph TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Related Documentation

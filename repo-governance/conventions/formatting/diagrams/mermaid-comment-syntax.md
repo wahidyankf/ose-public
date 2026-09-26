@@ -16,6 +16,7 @@ graph TD
     accTitle: Mermaid Comment Syntax
     accDescr: Start leads to End.
     A[Start] --> B[End]
+classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Incorrect Syntax** ():
@@ -42,6 +43,7 @@ graph TD
     accTitle: Mermaid Comment Syntax (2)
     accDescr: Start leads to Process; Process leads to End.
     A[Start] --> B[Process] --> C[End]
+classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Exception - Mermaid Initialization Directives**:

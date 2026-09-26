@@ -83,6 +83,7 @@ flowchart TD
     H -->|Clean| OK["Commit succeeds"]
     H -->|Finding| R["Blocked"]
     OK --> RV["Review checks<br/>format"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The pre-commit hook runs the registry gates, including staged formatting, and the commit-msg hook

@@ -21,6 +21,7 @@ flowchart TD
     Q3 -->|Yes| S1["Strategy 1:<br/>Intermediate Group"]
     Q3 -->|No| S2["Strategy 2:<br/>Diagram Splitting"]
     L{"Label too long<br/>only?"} -->|Yes| S4["Strategy 4:<br/>Label Shortening"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Strategy 0 — Direction Flip** (preferred when the other axis is ≤ 4):
@@ -55,5 +56,5 @@ graph LR
 
 - Replace HTML entities with abbreviated text: `#40;` → `(`, `#41;` → `)`
 - Abbreviate: `Configuration` → `Config`, `Implementation` → `Impl`
-- Split on `<br/>` and shorten each line to ≤ 30 chars
+- Split on `<br/>` and shorten each line to ≤ 20 chars
 - Move dropped detail into prose before/after the diagram

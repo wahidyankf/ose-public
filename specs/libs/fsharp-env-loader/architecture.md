@@ -19,7 +19,8 @@ flowchart LR
     OSB[ose-be] --> LIB[fsharp-env-loader]
     OLB[organiclever-be] --> LIB
     LIB --> FILE[(.env.APP_ENV tier<br/>file)]
-    LIB --> PROC[(process environment)]
+    LIB --> PROC[(process<br/>environment)]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Every consumer calls `EnvTier.loadEnvTierFrom` explicitly from its own composition root

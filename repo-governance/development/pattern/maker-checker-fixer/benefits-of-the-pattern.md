@@ -45,6 +45,7 @@ flowchart TD
     F1 --> F2["Fixer suggests a<br/>checker fix"]
     F2 --> U["User updates<br/>checker logic"]
     U --> C2["More accurate<br/>future runs"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Result**: Pattern enables continuous improvement of validation logic.

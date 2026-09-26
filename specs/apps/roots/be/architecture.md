@@ -25,6 +25,7 @@ flowchart LR
     class BE svc
     class CONSUMER,OPS actor
     class CONTRACT spec
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The contract is drawn as an input rather than an artefact: the service does not describe itself
@@ -51,6 +52,7 @@ flowchart TD
     class MAIN entry
     class CFG,RTR comp
     class GEN gen
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 One process, no sidecar, no broker. The service is deployable as a single container image because

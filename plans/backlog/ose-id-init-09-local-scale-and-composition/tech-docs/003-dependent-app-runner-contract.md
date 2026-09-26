@@ -63,6 +63,7 @@ flowchart TD
   class O,A,T,C,D outer
   class I,X inner
   class R ready
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The outer runner may not kill OSE ID processes/containers directly. The inner runner may not delete app

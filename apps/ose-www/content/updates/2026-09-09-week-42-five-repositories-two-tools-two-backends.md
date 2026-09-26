@@ -68,6 +68,7 @@ accDescr: OSE Public and OSE Private form the only parity pair. HIPPO supplies p
     classDef private fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef family fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef tool fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Solid arrows mark the one source-parity relationship. Dashed arrows show pinned consumption or
@@ -216,6 +217,7 @@ accDescr: OpenAPI and Gherkin generate and specify a Java backend. End-to-end HT
     classDef service fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef proof fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef deferred fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 OpenAPI generates the response models used by the controllers, so a contract change that the code
@@ -253,6 +255,7 @@ accDescr: OpenAPI and Gherkin generate and specify a Go backend. End-to-end HTTP
     classDef service fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef proof fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef deferred fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Its current OpenAPI contract exposes only `/api/v1/health`. The generated server interface makes an

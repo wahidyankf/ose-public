@@ -9,7 +9,7 @@ Both node label lines (each segment between `<br/>` tags) and edge label strings
 
 Count every character including spaces, colons, slashes, and Unicode.
 
-**Enforcement**: none — Rule 3 is a convention that no gate enforces; authors count and reviewers check. The `md-mermaid` registry gate fails only on labels longer than the **30**-grapheme limit declared in `repo-config.yml` `policies.markdown.mermaid` (`node-label-graphemes`, `edge-label-graphemes`) — a backstop rather than this rule — and `./rhino md mermaid validate` has no option to lower that limit. A green `md-mermaid` run does not prove Rule 3 compliance.
+**Enforcement**: the `md-mermaid` registry gate fails any node label line or edge label segment longer than the **20**-grapheme limit declared in `repo-config.yml` `policies.markdown.mermaid` (`node-label-graphemes`, `edge-label-graphemes`). It counts graphemes after decoding entities and stripping markup, so a label it passes can still clip if its characters render wide; visually confirm the rendered diagram.
 
 **Safe examples (≤20 chars):**
 
@@ -37,6 +37,7 @@ graph TD
     A["Backend process<br/>single deployable"]:::blue
     B[Client]-->|"JWKS public key"| A
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **DO NOT:**
@@ -58,4 +59,5 @@ graph TD
     accDescr: Shows Backend process single deployable.
     A["Backend process<br/>single deployable"]:::blue
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

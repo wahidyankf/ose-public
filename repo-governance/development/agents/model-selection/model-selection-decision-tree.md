@@ -21,6 +21,7 @@ flowchart TD
     Q4 -->|Yes, with evidence| U["Ultra:<br/>fable"]
     Q4 -->|No, but feels hard| P
     Q4 -->|None or ambiguous| X
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Structured procedures count as applying rules; code generation, architectural decisions, and nuanced content

@@ -28,6 +28,7 @@ flowchart TD
     P0["P0 fixes"] --> P1["P1 fixes"]
     P1 --> P2["P2 fixes"]
     P2 --> P3["P3-P4 fixes"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 - P0, CRITICAL + HIGH: auto-fix, and block if the fix fails.

@@ -51,6 +51,7 @@ flowchart TD
     Q1 -->|No| Q2{"Software process<br/>or quality?"}
     Q2 -->|Yes| D["development/"]
     Q2 -->|No| E["Elsewhere:<br/>reference/, how-to/"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ### Examples of Scope Boundaries

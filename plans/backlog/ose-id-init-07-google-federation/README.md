@@ -29,6 +29,7 @@ flowchart TD
   class W base
   class G,P,A sibling
   class S cap
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Arrows express dependency, not calendar order. Plans 06, 07, and 08 may execute independently after

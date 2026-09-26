@@ -47,6 +47,7 @@ flowchart TD
     class InProgress brown
     class Done teal
     class Tutorial,HowTo,Reference,Explanation purple
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## The Two Work Folders

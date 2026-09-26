@@ -20,10 +20,10 @@ scope.
 **Label rules**:
 
 - **State display names**: The display name on a state node (e.g., `s1 : My State Name`) is
-  subject to the ≤ 30 raw character limit per line. Labels split with `<br/>` are measured
+  subject to the ≤ 20-grapheme limit per line. Labels split with `<br/>` are measured
   per segment.
 - **Transition edge labels**: The label on a transition arrow (e.g., `s1 --> s2 : long label`)
-  is subject to the ≤ 30 raw character limit. Long trigger/condition names must be abbreviated
+  is subject to the ≤ 20-grapheme limit. Long trigger/condition names must be abbreviated
   or split.
 
 **Skipped lines**: Note blocks (`note right of s1` … `end note`), comment lines (`%%`),
@@ -36,5 +36,5 @@ directive); use Diagram Splitting or Sequential Chaining when width is exceeded.
 **Automated check**: Same gate and location as flowcharts — the `md-mermaid` registry gate
 runs at pre-commit (staged `.md` files) and on the pull-request surface in `pr-quality-gate.yml`.
 On state diagrams it checks `accTitle`/`accDescr`, the colour palette, and labels declared as
-`state "…" as id` against the 30-grapheme limit. It does not measure width, `id : name` display
+`state "…" as id` against the 20-grapheme limit. It does not measure width, `id : name` display
 names, or transition labels, so check those by hand.

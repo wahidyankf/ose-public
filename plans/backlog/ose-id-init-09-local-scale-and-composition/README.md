@@ -28,6 +28,7 @@ flowchart TD
   class P,G,A input
   class S cap
   class L next
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Scope

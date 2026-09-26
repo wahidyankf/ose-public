@@ -65,4 +65,5 @@ graph LR
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     class A blue
     class B teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

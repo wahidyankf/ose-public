@@ -23,6 +23,7 @@ flowchart TD
     end
     T ---|Action-oriented| H
     X ---|Information-oriented| R
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Each category serves a different purpose and addresses different user needs.

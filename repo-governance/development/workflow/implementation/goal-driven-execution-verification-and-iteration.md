@@ -91,4 +91,5 @@ flowchart TD
     V -->|Fails| F["Fix"]
     F --> V
     V -->|Passes| DN["Done"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```

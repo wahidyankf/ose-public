@@ -37,6 +37,7 @@ flowchart LR
     B -->|Yes| C[Process]
     B -->|No| D[Return 401]
     C --> E[Response]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 These two formats are not interchangeable. Using Mermaid for a folder tree introduces a parse target where none is needed. Using ASCII art for a flowchart loses semantic structure and cannot be validated.

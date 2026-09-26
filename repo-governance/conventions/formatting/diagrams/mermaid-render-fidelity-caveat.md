@@ -25,8 +25,10 @@ Two consequences bind any author or checker working on state diagrams:
    a corpus this large.
 
    This does not exempt flowchart labels, where the 20-character limit is
-   [Rule 3](./common-syntax-errors-label-constraints-rule-3-line-length.md), not a heuristic. No
-   gate enforces Rule 3; the `md-mermaid` gate fails only above its declared 30-grapheme limit.
+   [Rule 3](./common-syntax-errors-label-constraints-rule-3-line-length.md), not a heuristic. The
+   `md-mermaid` gate FAILs any node or edge label segment above 20 graphemes: single-line labels
+   of 26 and 29 graphemes were observed clipped on GitHub, and a false positive costs only a
+   `<br/>`. That limit is necessary, not sufficient, so consequence 1 still applies.
 
 A candidate `Rhino` WARN-level rule is tracked as a two-pager idea brief at
 [`plans/ideas/mermaid-state-label-render-clipping-warn.md`](../../../../plans/ideas/q2-not-urgent-important/mermaid-state-label-render-clipping-warn.md).

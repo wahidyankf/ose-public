@@ -22,7 +22,8 @@ flowchart LR
     OSA[ose-app-web] --> LIB
     OSW[ose-www] --> LIB
     LIB --> FILE[(.env.APP_ENV tier<br/>file)]
-    LIB --> PROC[(process environment)]
+    LIB --> PROC[(process<br/>environment)]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Every consumer calls `loadTierEnv()` explicitly from its own composition root — the first import of

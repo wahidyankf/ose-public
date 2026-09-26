@@ -1,21 +1,20 @@
 ---
-description: How this workflow relates to the continuous harness-ownership and harness-bindings CI gates — which mechanism catches which class of drift, and why neither replaces the other.
+description: How this workflow relates to the continuous `harness-adapters` gate — which mechanism catches which class of drift, and why neither replaces the other.
 when_to_use: Read this when deciding whether a harness-drift concern belongs to this periodic workflow or to a continuous CI gate.
 ---
 
 # Complementary Anti-Drift Gates
 
 This workflow is **not** the only anti-drift mechanism, and it is not the first line of defence.
-Three mechanisms operate at different cadences over different failure classes.
+Two mechanisms operate at different cadences over different failure classes.
 
-| Mechanism                    | Cadence               | Catches                                                                     |
-| ---------------------------- | --------------------- | --------------------------------------------------------------------------- |
-| `harness adapters validate`  | pre-push and CI       | byte-drift between a generated mirror and what the emitter would write now  |
-| `harness ownership validate` | pre-push and CI       | a tracked binding file with no declared SOURCE / GENERATED / VENDORED class |
-| This workflow                | on demand / scheduled | upstream harness conventions changing out from under the catalog            |
+| Mechanism                                             | Cadence                     | Catches                                                                                                                                                 |
+| ----------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `harness adapters validate` (`harness-adapters` gate) | pre-commit and pull request | byte-drift between a generated mirror and what the emitter would write now; a tracked binding file with no declared SOURCE / GENERATED / VENDORED class |
+| This workflow                                         | on demand / scheduled       | upstream harness conventions changing out from under the catalog                                                                                        |
 
-The two gates are mechanical and continuous: they compare the repository against itself and fail
-fast, with no judgement and no network. They cannot notice that a harness changed its config format
+The gate is mechanical and continuous: it compares the repository against itself and fails
+fast, with no judgement and no network. It cannot notice that a harness changed its config format
 last week — nothing in the repository records that fact yet.
 
 This workflow closes exactly that gap. Its Phase 1 dimensions are web-research-backed, so they can

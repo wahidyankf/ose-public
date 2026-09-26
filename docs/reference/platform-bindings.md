@@ -211,8 +211,8 @@ Every generated-tier harness in `repo-config.yml` receives its binding mechanica
   ownership there is declared, never inferred from "this directory has no source counterpart".
 
 These files are deterministic and idempotent — never hand-edit them. The companion guard
-`./rhino harness adapters validate` enforces byte-for-byte parity against the generator and runs in
-the pre-push pipeline. The same guard asserts that every present binding directory under `.claude`,
+`./rhino harness adapters validate` enforces byte-for-byte parity against the generator and runs as
+the `harness-adapters` gate on the pre-commit and pull-request surfaces. The same guard asserts that every present binding directory under `.claude`,
 `.opencode`, `.codex`, `.agents`, and `.github` is referenced in this catalog.
 
 ### Accepted capability loss: `.opencode/skills/` and `.opencode/commands/`
@@ -351,7 +351,7 @@ wins**, which makes declaration order significant. This repository's generated m
 
 To add a new generated binding:
 
-1. Add a `harness:` entry to `repo-config.yml` (tier, agent-dir, mirrors, instruction surfaces, shadow globs, and `skills-dir` / `skills-mirrors` / `vendored:` if the harness needs a skills mirror). Add a `model-map:` giving that harness's model ID for each grade named in the top-level `model-grades:` block only if the harness pins a model per agent; omit it — as the `opencode` entry does — and the mirror emits no `model` key. Also add an `ownership:` list classifying every binding path this entry claims as `generated`, `vendored`, or `source` — `harness ownership validate` is a pre-push gate and fails on any tracked binding file with no declared class.
+1. Add a `harness:` entry to `repo-config.yml` (tier, agent-dir, mirrors, instruction surfaces, shadow globs, and `skills-dir` / `skills-mirrors` / `vendored:` if the harness needs a skills mirror). Add a `model-map:` giving that harness's model ID for each grade named in the top-level `model-grades:` block only if the harness pins a model per agent; omit it — as the `opencode` entry does — and the mirror emits no `model` key. Also add an `ownership:` list classifying every binding path this entry claims as `generated`, `vendored`, or `source` — `./rhino harness adapters validate`, which the `harness-adapters` gate runs on the pre-commit and pull-request surfaces, fails on any tracked binding file with no declared class.
 2. Add the profile's native representation and validate that each required capability is representable.
 3. Implement product behavior upstream; consumers only declare profile data and never add a local converter.
 4. Add the appropriate consumer proof and upstream product scenarios.

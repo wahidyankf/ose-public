@@ -47,7 +47,8 @@ rather than a hardcoded list.
 **Solutions**:
 
 1. Identify which gate failed — Rhino prints each gate id. The configuration gate is
-   `repo-config`, which checks `repo-config.yml`. No pre-commit gate validates harness bindings.
+   `repo-config`, which checks `repo-config.yml`. The `harness-adapters` gate checks every generated
+   harness binding.
 
 2. Run validation manually to debug:
 

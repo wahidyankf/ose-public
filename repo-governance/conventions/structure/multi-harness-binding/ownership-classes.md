@@ -1,6 +1,6 @@
 ---
 description: Rule 8 — every tracked file under a binding directory carries exactly one declared ownership class (generated, vendored, or source), with no fourth class and no unclassified residue.
-when_to_use: Read this when adding a file to a binding directory, when deciding whether a third-party payload belongs in the repository, or when `harness ownership validate` names a file you did not expect.
+when_to_use: Read this when adding a file to a binding directory, when deciding whether a third-party payload belongs in the repository, or when `harness adapters validate` names a file you did not expect.
 ---
 
 # Rule 8 — Total Ownership of Binding Files
@@ -36,8 +36,7 @@ directory **from the git index** — so a local scratch file is not a failure �
 cannot classify. The longest matching declaration wins, so a broad tree declaration cannot mask a
 narrower one beneath it.
 
-The `harness-ownership` gate is path-gated on the binding trees, the root instruction files, and
-`repo-config.yml`: its verdict genuinely depends on which paths changed.
+The `harness-adapters` gate runs this check on the pre-commit and pull-request surfaces.
 
 ## Partial ownership
 

@@ -16,4 +16,4 @@ Companion documents for the [Multi-Harness Binding Convention](../multi-harness-
   `binding-example` fence and "Platform Binding Examples" allowlist mechanisms.
 - [harness-compatibility-quality-gate.md](../../../workflows/harness/harness-compatibility-quality-gate.md)
   — Periodic workflow for detecting external upstream convention drift (web-research-backed; distinct
-  from the deterministic pre-push parity guard).
+  from the deterministic `harness-adapters` parity gate).

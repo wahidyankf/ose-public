@@ -15,17 +15,16 @@ the generator does not own. Editing one canonical definition can therefore modif
 generated files you never opened — all of those generated changes are yours, while unrelated
 hand-maintained paths are not.
 
-Rhino provides the generators; nothing runs them for you:
+Rhino provides the generators; nothing runs `generate` for you:
 
 | Command                             | What it does                                                       |
 | ----------------------------------- | ------------------------------------------------------------------ |
 | `./rhino harness adapters generate` | Regenerates every generated mirror in one declared transaction     |
 | `./rhino harness adapters validate` | Byte-parity guard against the emitter output, across every harness |
 
-Neither command has an npm script wrapper, and no hook, registry gate, or CI workflow runs
-either one — not at pre-commit, pre-push, or pull-request (`./rhino gate list` declares no adapter
-gate). A stale adapter is caught only when someone runs `validate`. The obligations follow from
-that:
+Neither command has an npm script wrapper. The `harness-adapters` registry gate runs `validate` on
+the pre-commit and pull-request surfaces, so a stale adapter fails the commit and the pull request
+that carry it; no hook or gate runs `generate`. The obligations follow from that:
 
 1. **Put the mirrors on your ledger.** Generated is not unaccounted-for. Editing
    `.agents/agents/plan-maker.md` rewrites its source digest in the `catalog.json` and
@@ -37,7 +36,8 @@ that:
    `./rhino harness adapters generate` and stage its output with that source, so the adapters are
    current in the commit that changes them.
 4. **Verify rather than assume.** `./rhino harness adapters validate` is the all-harness check. Run
-   it after every canonical-source edit, before committing; no gate runs it for you.
+   it after every canonical-source edit, before committing, rather than waiting for the gate to
+   reject the commit.
 5. **Never hand-edit a generated mirror.** A direct edit to a registry-declared `class: generated`
    path or generated delimited region is overwritten by the next generate. A registry-declared
    `class: vendored` path is maintained in place and covers two structurally different subclasses;

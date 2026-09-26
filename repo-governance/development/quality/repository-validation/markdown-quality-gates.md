@@ -21,9 +21,16 @@ the pinned external RHINO executable, which reads its policy from `repo-config.y
 
 `scripts/validate-mermaid-files` receives the staged (pre-commit) or changed (pull-request) paths,
 keeps the `.md` files, and hands each to RHINO as `--file`. RHINO applies
-`policies.markdown.mermaid`: `accTitle` and `accDescr` on every diagram, node and edge labels of at
-most 30 graphemes, and the declared colour palette. The binding authoring limit is stricter — see
-[Rule 3](../../../conventions/formatting/diagrams/common-syntax-errors-label-constraints-rule-3-line-length.md).
+`policies.markdown.mermaid`: `accTitle` and `accDescr` on every diagram, node and edge label
+segments of at most 20 graphemes
+([Rule 3](../../../conventions/formatting/diagrams/common-syntax-errors-label-constraints-rule-3-line-length.md)),
+and the declared colour palette.
+
+The `md-mermaid-palette` gate (`node scripts/validate-mermaid-palette.mjs <path>`) takes the same
+staged or changed `.md` paths. It fails a `flowchart`, `graph`, `classDiagram`, `erDiagram`, or
+`requirementDiagram` that declares no `classDef default` setting `fill`, `stroke`, and `color`,
+which `md-mermaid` passes because it checks only declared colours. It skips diagram types whose
+renderer never applies `default`, and mermaid fences nested in another code block.
 
 ## 2. Markdown Link Validation
 

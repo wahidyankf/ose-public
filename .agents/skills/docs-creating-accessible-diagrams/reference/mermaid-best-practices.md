@@ -24,12 +24,14 @@ graph TD
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef gray fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Essential Mermaid Rules
 
 1. **Always include palette comment** - First line documents colors used
-2. **Use classDef with accessible hex codes** - REQUIRED for accessibility
+2. **Use classDef with accessible hex codes** - REQUIRED for accessibility, including a palette
+   `classDef default` in every flowchart, graph, class, ER, and requirement diagram
 3. **Include black borders** - `stroke:#000000` for shape definition
 4. **Use white text on dark fills** - `color:#FFFFFF` for readability
 5. **Use black text on light fills** - `color:#000000` when needed

@@ -24,9 +24,19 @@ classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
 classDef gray fill:#808080,stroke:#000000,color:#FFFFFF,stroke-width:2px
 ```
 
+**Required `classDef default` (every flowchart, graph, class, ER, and requirement diagram):** blue, or neutral when blue already
+carries a meaning in the diagram.
+
+```
+classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
+classDef default fill:#FFFFFF,stroke:#000000,color:#000000
+```
+
 **Pre-commit Checklist:**
 
 - [ ] Uses only verified palette colors
+- [ ] Every flowchart, graph, class, ER, and requirement diagram declares a palette `classDef default`
+- [ ] Every label line and edge label is 20 graphemes or fewer (split with `<br/>`)
 - [ ] Black borders on all elements
 - [ ] White text on dark fills
 - [ ] Text labels on all nodes

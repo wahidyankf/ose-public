@@ -18,7 +18,7 @@ This convention establishes the worktree directory structure and routing convent
 ### Platform Binding Compatibility
 
 ```binding-example
-The WorktreeCreate hook is registered in ~/.claude/settings.json. The Claude Code coding agent supports this hook event natively (see https://code.claude.com/docs/en/hooks for the field schema and transport contract); other coding agent platforms that support a `WorktreeCreate` hook with the same JSON-on-stdin contract reuse the same shell script without modification.
+The WorktreeCreate hook is registered in ~/.claude/settings.json. The primary coding agent supports this hook event natively (see https://code.claude.com/docs/en/hooks for the field schema and transport contract); other coding agent platforms that support a `WorktreeCreate` hook with the same JSON-on-stdin contract reuse the same shell script without modification.
 ```
 
 The hook script itself is platform-agnostic bash with `jq` for JSON parsing (`jq` is part of the doctor minimal toolchain per AGENTS.md), ensuring compatibility across platforms.

@@ -1,6 +1,6 @@
 ---
-description: Forbidden model-family/model names and vendor-branded concept terms, part 2 of the Forbidden Vendor Terms catalog, plus the combined audit regex and false-positive notes.
-when_to_use: Use when checking whether a model name or vendor-branded concept term in governance prose is forbidden, or when you need the combined vendor-audit regex.
+description: Forbidden model-family and model names, part 2 of the Forbidden Vendor Terms catalog, plus the branded-concept rule and substring false-positive notes.
+when_to_use: Use when checking whether a model name or vendor-branded concept term in governance prose is forbidden, or how the plain-substring match can misfire.
 ---
 
 # Forbidden Vendor Terms — Models and Branded Concepts
@@ -10,38 +10,44 @@ when_to_use: Use when checking whether a model name or vendor-branded concept te
 
 ## Model family / model names
 
-| Pattern (regex) | Reason                                                       |
-| --------------- | ------------------------------------------------------------ |
-| `\bSonnet\b`    | Vendor model name                                            |
-| `\bOpus\b`      | Vendor model name                                            |
-| `\bHaiku\b`     | Vendor model name (the AI model, not the poem form)          |
-| `\bGPT\b`       | Vendor model family (OpenAI)                                 |
-| `\bGemini\b`    | Vendor model family (Google)                                 |
-| `\bDeepSeek\b`  | Vendor model family (DeepSeek)                               |
-| `\bQwen\b`      | Vendor model family (Alibaba)                                |
-| `\bLlama\b`     | Vendor model family (Meta; FP risk: animal — negligible)     |
-| `\bMistral\b`   | Vendor model family (Mistral AI; FP risk: wind — negligible) |
-| `\bGrok\b`      | Vendor model family (xAI; FP risk: verb "to grok")           |
+| Term       | Reason                                              |
+| ---------- | --------------------------------------------------- |
+| `Sonnet`   | Vendor model name                                   |
+| `Opus`     | Vendor model name                                   |
+| `Haiku`    | Vendor model name (the AI model, not the poem form) |
+| `GPT`      | Vendor model family (OpenAI)                        |
+| `Gemini`   | Vendor model family (Google)                        |
+| `DeepSeek` | Vendor model family (DeepSeek)                      |
+| `Qwen`     | Vendor model family (Alibaba)                       |
+| `Llama`    | Vendor model family (Meta)                          |
+| `Mistral`  | Vendor model family (Mistral AI)                    |
+| `Grok`     | Vendor model family (xAI)                           |
 
 ## Vendor-branded concepts
 
-| Pattern (regex)                                | Reason                                                    |
-| ---------------------------------------------- | --------------------------------------------------------- |
-| `\bSkills\b` (capitalized, as branded concept) | Vendor-branded term; use lowercase "agent skills" instead |
+| Term                          | Reason                                                    |
+| ----------------------------- | --------------------------------------------------------- |
+| `Skills` (as branded concept) | Vendor-branded term; use lowercase "agent skills" instead |
 
-Combined audit regex used by `./rhino governance vendor validate`:
+`Skills` is **unenforced by decision**: capitalized "Skills" is ordinary English in headings and
+sentence starts, so a plain substring gate would fail on legitimate prose. Reviewers apply this rule;
+the gate does not.
 
-```
-Claude Code|OpenCode|\bCursor\b|\bWindsurf\b|\bCodeium\b|\bCopilot\b|\bAider\b|\bCline\b|\bDevin\b|\.claude/|\.opencode/|\.cursor/|\.windsurf/|\.continue/|\.clinerules/|Anthropic|\bOpenAI\b|\bxAI\b|\bSonnet\b|\bOpus\b|\bHaiku\b|\bGPT\b|\bGemini\b|\bDeepSeek\b|\bQwen\b|\bLlama\b|\bMistral\b|\bGrok\b|\bSkills\b|\bJunie\b|\bJetBrains\b|\bAmazon Q\b|\bAntigravity\b|Pi Coding Agent|pi\.dev|\bEarendil\b|\.junie/|\.amazonq/|\.pi/|\.gemini/|\.agent/|\.agents/
-```
+## Matching and false positives
+
+`./rhino governance vendor validate` reads the declared list from `repo-config.yml` and fails on any
+file under the declared roots that contains a term as a plain, case-sensitive substring, unless a
+vocabulary exception pairs that term with that exact file. It has no regular expression, no word
+boundary, and no skipped region.
 
 > **Note**: `MCP`, `AGENTS.md`, and `Goose` are NOT forbidden — all three are Linux Foundation / AAIF cross-vendor standards shared across all major coding agents.
 >
 > **False-positive notes**:
 >
-> - `\bDevin\b` collides with the personal name. Reviewers should confirm context before treating as a violation.
-> - `\bGrok\b` collides with the verb "to grok" (Heinlein, common in tech writing). Reviewers should distinguish product reference from verb usage.
-> - `\bLlama\b`, `\bMistral\b` collide with non-AI English words but rarely appear in governance prose.
-> - `\bAmazon Q\b` is matched only as the qualified phrase; bare `\bQ\b` is intentionally NOT forbidden (single-letter false-positive risk).
-> - `Pi Coding Agent` / `pi\.dev` are matched only as qualified forms; bare `\bpi\b` is intentionally NOT forbidden (collides with the mathematical constant). The binary name `agy` is intentionally NOT forbidden (collides with common substrings).
-> - `\.agents/` is an emerging cross-vendor skills directory; reviewers should confirm a match is load-bearing prose, not an allowlisted Platform Binding Examples region.
+> - A substring also matches inside a longer word: `Devin` inside a personal name, `Grok` in
+>   "Grokking", or `Amazon Q` at the start of "Amazon Queue". Reword the sentence; add an exception
+>   only for a page that must name the vendor.
+> - Lowercase uses never match: "the cursor", "a haiku", "mistral winds", and binding paths such as
+>   `.gemini/` are clean.
+> - Bare `Q`, bare `pi`, and the binary name `agy` are intentionally NOT forbidden (single-letter,
+>   mathematical-constant, and common-substring collisions).

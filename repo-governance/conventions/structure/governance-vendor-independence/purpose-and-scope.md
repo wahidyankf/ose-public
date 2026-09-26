@@ -7,7 +7,7 @@ when_to_use: Use when checking whether a file or line falls inside the vendor-in
 
 ## Purpose
 
-`repo-governance/` contains the rules every contributor follows regardless of toolchain. When vendor-specific product names, model names, or path references appear in governance prose, they:
+`repo-governance/` contains the rules every contributor follows regardless of toolchain. When vendor, product, or model names appear in governance prose, they:
 
 - Exclude contributors using any coding agent other than the one a rule's author happened to have open.
 - Couple governance correctness to a specific vendor's product lifecycle.
@@ -17,12 +17,14 @@ This convention separates **vendor-neutral governance** (the rules) from **platf
 
 ## Scope
 
-**Applies to**: every `.md` file under `repo-governance/`, **plus the canonical root instruction surfaces**:
+**Applies to**: every file under `repo-governance/`, **plus the canonical root instruction surfaces** — the `roots` of `policies.governance.vendor` in `repo-config.yml`:
 
 - `AGENTS.md` — canonical root instruction file (read natively by OpenCode, OpenAI Codex CLI, and other AGENTS.md-aware coding agents). Vendor-neutrality here is the load-bearing surface for cross-vendor behavioural parity.
-- `CLAUDE.md` — Claude Code shim. While CLAUDE.md is itself a Claude-Code platform binding artifact (its filename names the vendor by design), its **prose body** must be vendor-neutral by the same standard as `repo-governance/`. Two specific allowances apply:
-  - The single-line `@AGENTS.md` import directive is treated as an inline binding directive, not a forbidden vendor term.
-  - CLAUDE.md holds that directive and nothing else. Its vendor-specific clarifications live in the [Platform Bindings Catalog](../../../../docs/reference/platform-bindings.md), never in the shim.
+- `CLAUDE.md` — Claude Code shim. While CLAUDE.md is itself a Claude-Code platform binding artifact (its filename names the vendor by design), its **prose body** must be vendor-neutral by the same standard as `repo-governance/`. CLAUDE.md holds only the `@AGENTS.md` import directive, which names no vendor. Its vendor-specific clarifications live in the [Platform Bindings Catalog](../../../../docs/reference/platform-bindings.md), never in the shim.
+
+**Binding directory paths are not in scope as terms.** Any governed file may name `.agents/`,
+`.claude/`, `.codex/`, `.opencode/`, or another binding path; only vendor, product, and model names
+are forbidden.
 
 **Out of scope** (vendor terms are intentionally present here):
 

@@ -34,8 +34,8 @@ when_to_use: Use when looking up which agent validates this convention, finding 
 
 ## Platform Binding Examples
 
-The content under this heading is intentionally vendor-specific and is skipped by the vendor-audit
-scanner.
+The content under this heading is intentionally vendor-specific. The vendor gate has no skip logic,
+so any vendor name here needs a per-term vocabulary exception in `repo-config.yml`.
 
 Listing configured MCP servers and their connection state:
 

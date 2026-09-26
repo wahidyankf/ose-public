@@ -349,6 +349,180 @@ policies:
         - path: specs/apps/ose/www/behaviours/frontend/landing
         - path: specs/apps/roots
   governance:
+    # Owner: repo-governance/conventions/structure/governance-vendor-independence.md.
+    # The validator fails on any listed term found as a case-sensitive substring under `roots`.
+    # The list holds names only; harness directory paths are deliberately absent. The convention
+    # records why the branded-concept term is left to review instead of this list.
+    vendor:
+      roots: [repo-governance, AGENTS.md, CLAUDE.md]
+      forbidden-terms:
+        - "Claude Code"
+        - "OpenCode"
+        - "Cursor"
+        - "Windsurf"
+        - "Codeium"
+        - "Copilot"
+        - "Aider"
+        - "Cline"
+        - "Devin"
+        - "Junie"
+        - "JetBrains"
+        - "Amazon Q"
+        - "Antigravity"
+        - "Pi Coding Agent"
+        - "pi.dev"
+        - "Earendil"
+        - "Anthropic"
+        - "OpenAI"
+        - "xAI"
+        - "Sonnet"
+        - "Opus"
+        - "Haiku"
+        - "GPT"
+        - "Gemini"
+        - "DeepSeek"
+        - "Qwen"
+        - "Llama"
+        - "Mistral"
+        - "Grok"
+      # Exceptions are limited to the convention's own term pages and Platform Binding Examples
+      # pages; other governed files use neutral wording.
+      vocabulary-exceptions:
+        - term: "Claude Code"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/platform-binding-directory-pattern-and-migration.md
+            - repo-governance/conventions/structure/governance-vendor-independence/purpose-and-scope.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+            - repo-governance/conventions/structure/multi-harness-binding/platform-binding-examples.md
+            - repo-governance/development/agents/ai-agents/overview.md
+            - repo-governance/development/agents/model-selection/platform-binding-examples.md
+            - repo-governance/development/workflow/grilling-with-options/platform-binding-examples-claude-code-and-opencode.md
+        - term: "OpenCode"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/platform-binding-directory-pattern-and-migration.md
+            - repo-governance/conventions/structure/governance-vendor-independence/purpose-and-scope.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+            - repo-governance/conventions/structure/multi-harness-binding/platform-binding-examples.md
+            - repo-governance/development/agents/ai-agents/overview.md
+            - repo-governance/development/agents/ai-agents/platform-binding-examples-color-translation-table.md
+            - repo-governance/development/agents/model-selection/platform-binding-examples.md
+            - repo-governance/development/workflow/grilling-with-options/platform-binding-examples-claude-code-and-opencode.md
+        - term: "Cursor"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Windsurf"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Codeium"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Copilot"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Aider"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Cline"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Devin"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Junie"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "JetBrains"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Amazon Q"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Antigravity"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Pi Coding Agent"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+        - term: "pi.dev"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+        - term: "Earendil"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Anthropic"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "OpenAI"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/platform-binding-directory-pattern-and-migration.md
+            - repo-governance/conventions/structure/governance-vendor-independence/purpose-and-scope.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+            - repo-governance/conventions/structure/multi-harness-binding/platform-binding-examples.md
+            - repo-governance/development/workflow/grilling-with-options/platform-binding-examples-codex-and-all-other-harnesses.md
+        - term: "xAI"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-names-and-paths.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Sonnet"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Opus"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Haiku"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "GPT"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Gemini"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "DeepSeek"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Qwen"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Llama"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Mistral"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
+        - term: "Grok"
+          paths:
+            - repo-governance/conventions/structure/governance-vendor-independence/forbidden-vendor-terms-models-and-concepts.md
+            - repo-governance/conventions/structure/governance-vendor-independence/vocabulary-map.md
     word-budget:
       count: whitespace-separated
       surfaces:
@@ -554,6 +728,17 @@ gates:
         args:
           - literal: harness
           - literal: adapters
+          - literal: validate
+      run-on:
+        pre-commit: {}
+        pull-request: {}
+    - id: governance-vendor
+      type: check
+      command:
+        executable: ./rhino
+        args:
+          - literal: governance
+          - literal: vendor
           - literal: validate
       run-on:
         pre-commit: {}

@@ -68,7 +68,7 @@ explanations in the document body below the frontmatter, not as inline comments.
 
 6. **`skills`** (optional)
    - Skill names from `.agents/skills/` that the agent uses, in the order it should load them
-   - The Claude route projects the list as its `skills` field, so Claude Code preloads those skills
+   - The Claude route projects the list as its `skills` field, so the coding agent reading it preloads those skills
    - See "agent skills References" below for complete details
 
 7. **`constraints`** (optional)

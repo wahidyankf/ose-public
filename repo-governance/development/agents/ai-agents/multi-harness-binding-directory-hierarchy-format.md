@@ -20,7 +20,7 @@ generator changes only paths or delimited regions declared as generated.
 │   ├── agents/             # generated Markdown/YAML agent routes
 │   ├── skills/             # generated skill routes
 │   └── settings.json       # hand-authored permissions and hooks
-├── .opencode/              # Mixed-ownership OpenCode root
+├── .opencode/              # Mixed-ownership secondary-harness root
 │   ├── agents/             # generated Markdown/YAML agents
 │   └── opencode.json       # vendored configuration
 ├── .codex/                 # Mixed-ownership Codex root
@@ -56,11 +56,11 @@ each target format.
 ### Tools Format
 
 ```binding-example
-Claude Code (.claude/agents/) — GENERATED ROUTE:
+Primary harness (.claude/agents/) — GENERATED ROUTE:
   tools: Read, Glob, Grep, Write, Edit, Bash
   (comma string rendered from capabilities and constraints)
 
-OpenCode (.opencode/agents/) — SECONDARY:
+Secondary harness (.opencode/agents/) — SECONDARY:
   permission:
     read: allow
     write: allow
@@ -68,7 +68,7 @@ OpenCode (.opencode/agents/) — SECONDARY:
     glob: allow
     grep: allow
     bash: allow
-  (permission object, nested YAML — current OpenCode convention;
+  (permission object, nested YAML — the secondary harness's current convention;
   the historical boolean flags format `tools: { read: true, … }` is
   deprecated/legacy and no longer emitted)
 
@@ -85,15 +85,15 @@ Codex (.codex/agents/) — SECONDARY:
 ### Model References
 
 ```binding-example
-Claude Code:
+Primary harness (.claude/agents/):
   model: fable   # ultra
   model: opus    # planning-grade
   model: sonnet  # execution-grade
   model: haiku   # fast
   # a blank model: is not a grade — always declare one
 
-OpenCode:
-  # no model key at any grade — the developer's active OpenCode model applies
+Secondary harness (.opencode/agents/):
+  # no model key at any grade — the developer's active secondary-harness model applies
 
 Codex:
   model = "gpt-6-astra"   # ultra

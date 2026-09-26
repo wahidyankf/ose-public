@@ -19,7 +19,7 @@ when_to_use: Use when deciding how a change reaches main, choosing a delivery mo
      summary)
   7. .agents/skills/plan-grooming-idea-briefs/SKILL.md (plan-ideas-grooming workflow's invocable
      entry point)
-  Skill sources remain in .agents/skills/: OpenCode reads them natively, while the binding
+  Skill sources remain in .agents/skills/: the secondary coding agent reads them natively, while the binding
   generator mirrors them to non-vendored paths under .agents/skills/ for Codex. Never hand-edit a
   generated mirror; registry-declared vendored plugin subtrees remain hand-maintained.
   When updating, synchronize all seven locations.

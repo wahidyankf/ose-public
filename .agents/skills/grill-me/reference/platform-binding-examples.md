@@ -4,8 +4,8 @@
 
 The content under this heading is intentionally vendor-specific. Per the
 [Governance Vendor-Independence Convention](../../../../repo-governance/conventions/structure/governance-vendor-independence.md),
-the vendor-audit scanner skips every line under this heading until the next same-level heading or
-end of file.
+vendor names are expected here. This file sits in the `.agents/` binding root, outside the vendor
+gate's declared roots, so the gate does not scan it; the gate itself has no skip logic.
 
 ## Claude Code
 

@@ -58,9 +58,9 @@ its reason. Stack IDs per project live in the inventory in `repo-config.yml`.
 
 - `ci-scripts` (`.github/scripts`, `shell`) — Bash scripts that CI workflows and `npm run doctor` call. The `shellcheck`
   gate checks them; they have no Nx project and no Unit target.
-- `agent-hooks` (`.claude/hooks`, `shell`) — Claude Code hook scripts. Each tested hook has a sibling `*.test.sh` run
+- `agent-hooks` (`.claude/hooks`, `shell`) — The primary coding agent's hook scripts. Each tested hook has a sibling `*.test.sh` run
   with `bash`; the `shellcheck` gate checks every script.
-- `opencode-plugins` (`.opencode/plugins`, `typescript`) — The OpenCode FERRET capture plugin. The OpenCode runtime
+- `opencode-plugins` (`.opencode/plugins`, `typescript`) — The secondary coding agent's FERRET capture plugin. That agent's runtime
   loads it, and `ferret-cli`'s fail-open scenarios exercise it; it has no Nx project of its own.
 
 ## Version Sources

@@ -21,7 +21,7 @@ The `skills` field (already defined as field 6 in Required Frontmatter above) ha
 - **Format**: YAML array of strings
 - **Required**: When the agent uses any skill; omit the field rather than writing an empty list
 - **Values**: Skill names matching folder names in `.agents/skills/`
-- **Preloading**: the generated Claude route projects the list as its `skills` field, so Claude Code preloads those skills when the agent starts
+- **Preloading**: the generated Claude route projects the list as its `skills` field, so the coding agent reading it preloads those skills when the agent starts
 - **Validation**: Referenced agent skills must exist in `.agents/skills/`
 - **Example**: `skills: [docs-creating-accessible-diagrams, repo-applying-maker-checker-fixer]`
 

@@ -1,65 +1,56 @@
 ---
-description: How the vendor-audit scanner is run and what it respects, plus the explicit list of situations that never constitute a violation.
-when_to_use: Use when running the vendor-independence audit manually, or checking whether a specific case is an explicitly permitted exception.
+description: How the governance-vendor gate enforces the convention on every commit and pull request, what the scanner reads, and the explicit list of situations that never constitute a violation.
+when_to_use: Use when running the vendor-independence check manually, reading a governance-vendor gate failure, or checking whether a specific case is an explicitly permitted exception.
 ---
 
 # Enforcement, and Exceptions and Escape Hatches
 
 ## Enforcement
 
-Enforcement is automated via `./rhino governance vendor validate`.
+Enforcement is automated via `./rhino governance vendor validate`, which reads
+`policies.governance.vendor` in `repo-config.yml`: its `roots`, `forbidden-terms`, and
+`vocabulary-exceptions`.
 
-### Running the audit manually
+### Gate wiring
+
+The `governance-vendor` gate runs the validator on the pre-commit and pull-request surfaces, so a
+forbidden term blocks the commit that introduces it and the pull request's quality gate. No manual
+invocation is needed on commits.
+
+### Running the check manually
 
 ```bash
-# Audit the repo-governance/ directory (default)
-./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
+./hippo run --class ephemeral --resource-tier light --disk-path . -- \
   ./rhino governance vendor validate
-
-# Audit the canonical root instruction surface
-./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
-  ./rhino governance vendor validate
-
-# Or via Nx (cached)
-./hippo run --class ephemeral --resource-tier standard --disk-path . -- \
-  npm exec nx -- run Rhino:governance:vendor-audit-validation
 ```
 
-The validator takes one path per invocation, so each covered surface is audited separately.
+The validator takes no path argument; one run covers every declared root. Exit code 0 means clean,
+exit code 1 means at least one finding, and exit code 2 means the policy is missing or invalid. Each
+finding names the file and the term.
 
-Exit code 0 means clean; exit code 1 means violations found. Each finding prints:
+### What the scanner reads
 
-```
-<file>:<line>  <forbidden-term>  →  "<suggested-replacement>"
-```
-
-### Pre-push integration
-
-Two gates cover the audit at pre-push and in CI: one triggers on any `repo-governance/**/*.md`
-change, the other on `AGENTS.md`. No manual invocation is needed on pushes.
-
-`CLAUDE.md` carries no gate. It holds only the `@AGENTS.md` import directive, which the scanner
-treats as a binding directive rather than a vendor term, so a gate there could never fail — and a
-check that can never fail is worse than none.
-
-### Scope of the scanner
-
-The scanner respects all exemption mechanisms described in the "Allowlist Mechanism" section above:
-code fences, `binding-example` fences, "Platform Binding Examples" heading sections, inline code
-spans, link URL portions, HTML comments, and YAML frontmatter. The convention file itself
-(`governance-vendor-independence.md`) is also permanently allowlisted.
+The roots are `repo-governance/`, `AGENTS.md`, and `CLAUDE.md`. The scanner reads every file under
+them in full and matches each declared term as a plain, case-sensitive substring. It does not skip
+code fences, `binding-example` fences, "Platform Binding Examples" sections, inline code spans, link
+targets, HTML comments, or YAML frontmatter. A term is permitted only in a file that a vocabulary
+exception for that term names.
 
 The `rules-checker` agent continues to detect violations during its full audit sweep as a
-complementary signal.
+complementary signal, including the reviewer-applied `Skills` rule the gate does not enforce.
 
 ## Exceptions and Escape Hatches
 
 The following are explicitly permitted and never constitute a violation:
 
-1. **Inside `binding-example` fences**: any content, including vendor names and paths.
-2. **Under "Platform Binding Examples" headings**: any content until the next same-level heading.
-3. **The convention file itself** (`governance-vendor-independence.md`): this file uses vendor terms in examples to illustrate the rule. The audit tooling allowlists this file.
-4. **`docs/reference/platform-bindings.md`**: catalog file; explicitly out of scope.
-5. **The single-line `@AGENTS.md` import in `CLAUDE.md`**: treated as an inline binding directive (not a forbidden vendor term). Other appearances of vendor terms inside CLAUDE.md must use the standard allowlist mechanisms.
-6. **Plans files** (`plans/`): explicitly out of scope.
-7. **Citation context**: when citing an external source whose name happens to be a vendor term (e.g., "the AAIF specification donated by Anthropic in December 2025"), the citation is allowed. The pattern must be clearly attributive, not a product mention.
+1. **Files named in a term's vocabulary exception**: that term, in that file. Exceptions cover
+   this convention's term pages and Platform Binding Examples pages only; see
+   [Allowlist Mechanism](./allowlist-mechanism.md).
+2. **Binding directory paths**: `.agents/`, `.claude/`, `.codex/`, `.opencode/`, and similar paths
+   are not vendor terms and may be named anywhere.
+3. **`docs/reference/platform-bindings.md`**: catalog file; outside the declared roots.
+4. **`CLAUDE.md`**: it holds only the `@AGENTS.md` import directive, which names no vendor.
+5. **Plans files** (`plans/`): outside the declared roots.
+6. **Citation context**: when citing an external source whose name happens to be a vendor term,
+   reword the citation to name the standard or organization role rather than the vendor where
+   possible. A page that must keep a vendor name in a citation needs a vocabulary exception for it.

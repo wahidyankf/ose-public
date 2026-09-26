@@ -55,7 +55,7 @@ public class DatabaseExample {
 
         ResultSet rs = stmt.executeQuery();
         // => rs contains query results
-        // => Cursor initially before first row
+        // => The cursor starts before the first row
         // => Must call next() to access data
         // => Holds database resources until closed
 

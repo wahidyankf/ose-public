@@ -1,37 +1,50 @@
 ---
-description: The two mechanisms — binding-example fences and the Platform Binding Examples heading — that allow vendor references inside governance files for illustrative purposes.
-when_to_use: Use when you need to legitimately include a vendor-specific example inside governance prose without triggering the vendor-audit scanner.
+description: The one mechanism that permits a vendor name in a governed file — a per-file vocabulary exception in repo-config.yml — and how binding-example fences and Platform Binding Examples headings relate to it.
+when_to_use: Use when a governed file must legitimately name a vendor, product, or model, and you need to declare that without weakening the vendor gate.
 ---
 
 # Allowlist Mechanism
 
-Two mechanisms allow vendor references inside governance files when genuinely needed for illustrative purposes:
+## Per-file vocabulary exceptions (the only mechanism)
 
-## 1. `binding-example` fenced block (granular, inline)
+A vendor name may appear in a governed file only when `repo-config.yml`
+`policies.governance.vendor.vocabulary-exceptions` holds an entry that pairs that exact term with
+that exact repository-relative file path:
 
-Wrap any inline vendor-specific example in a ` ```binding-example ` fence. The vendor-audit scanner skips the entire content of such fences.
-
-````markdown
-```binding-example
-# Example: how a Claude Code binding resolves this rule
-model: claude-sonnet-4-6
+```yaml
+vocabulary-exceptions:
+  - term: "<forbidden term>"
+    paths:
+      - repo-governance/<path-to>/platform-binding-examples.md
 ```
-````
 
-## 2. "Platform Binding Examples" section heading (page-level)
+An exception covers one term and the listed files only. It never covers a directory, another term,
+or another file, so a broad exception cannot silently disable the gate elsewhere.
 
-Place all vendor-specific content for a page under a heading whose text matches the pattern `Platform Binding Examples` (case-insensitive). The scanner skips every line from that heading until the next same-level heading or end of file.
+Declare an exception only for a file that must name the vendor:
+
+- a page of this convention that catalogues the terms themselves;
+- a Platform Binding Examples page or section, including a page whose vendor-specific content sits in
+  a `binding-example` fence.
+
+Everywhere else, reword with the [Vocabulary Map](./vocabulary-map.md) instead.
+
+## `binding-example` fences and "Platform Binding Examples" headings
+
+Both remain the way a page shows readers where its vendor-specific content lives:
+
+- a ` ```binding-example ` fence marks an inline vendor-specific example;
+- a heading whose text is `Platform Binding Examples` groups a page's vendor-specific content.
+
+Neither is a scanner exemption. `./rhino governance vendor validate` has no skip logic: it reads the
+whole file, fences, headings, code spans, link targets, comments, and frontmatter included. A page
+that uses either marker and names a forbidden term still needs a vocabulary exception for each term
+it names.
 
 ```markdown
 ## Platform Binding Examples
 
-### Claude Code
+### <Harness name>
 
-The `.agents/agents/plan-maker.md` frontmatter sets `model: claude-sonnet-4-6`.
-
-### OpenCode
-
-The `.opencode/agents/plan-maker.md` declares a `permission:` object rather than a `tools:` array.
+The `<binding-directory>/agents/plan-maker.md` frontmatter sets `model: <model-id>`.
 ```
-
-**Precedence**: the fence mechanism wins for any line inside both a fence and a heading scope.

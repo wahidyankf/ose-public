@@ -11,7 +11,7 @@ Perfect for showing file and folder hierarchies:
 
 ```
 open-sharia-enterprise/
- ├── .opencode/                   # OpenCode configuration
+ ├── .opencode/                   # Secondary coding-agent binding
  │   ├── agent/               # Specialized AI agents
  │   └── skill/               # Progressive knowledge packages
  ├── docs/                      # Documentation (Diátaxis framework)

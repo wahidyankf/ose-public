@@ -25,8 +25,8 @@ otherwise the instruction surface fills with rules that a link would have delive
 Neutrality decides, per the Step 2 classification:
 
 - **Vendor-neutral** → the canonical instruction surface. It reaches every harness.
-- **Vendor-specific** → that harness's binding shim, under its allowlisted binding-examples
-  heading, and only there.
+- **Vendor-specific** → that harness's binding shim, under its Platform Binding Examples
+  heading, and only there; each vendor name there needs a per-file vendor exception.
 
 A neutral rule placed in a shim is a silent failure, not a compromise. It looks landed and binds
 one harness.

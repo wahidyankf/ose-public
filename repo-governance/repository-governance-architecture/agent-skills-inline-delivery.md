@@ -22,10 +22,10 @@ when_to_use: Use when explaining inline skill delivery.
 ```mermaid
 flowchart LR
     accTitle: Inline agent skills (Knowledge Delivery)
-    accDescr: L2: Conventions leads to CLAUDE.md or AGENTS.md via startup; L3: Development leads to CLAUDE.md or AGENTS.md via startup; CLAUDE.md or AGENTS.md leads to Claude or OpenCode; and 6 more links.
+    accDescr: L2: Conventions leads to CLAUDE.md or AGENTS.md via startup; L3: Development leads to CLAUDE.md or AGENTS.md via startup; CLAUDE.md or AGENTS.md leads to the coding agent; and 6 more links.
     L2["L2: Conventions"] -->|startup| CM["CLAUDE.md or<br/>AGENTS.md"]
     L3["L3: Development"] -->|startup| CM
-    CM --> H["Claude or<br/>OpenCode"]
+    CM --> H["Coding<br/>agent"]
     L2 -->|on-demand| SK["Inline agent<br/>skills"]
     L3 -->|on-demand| SK
     SK --> CC["Current<br/>conversation"]

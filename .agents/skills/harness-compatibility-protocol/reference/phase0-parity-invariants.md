@@ -6,10 +6,10 @@ Run the full standalone inventory before Phase 1. Quality-gate filtering is defi
 ## Invariant 1 — Governance prose vendor-neutrality
 
 - **Tool**: `./rhino governance vendor validate`
-- **Pass**: exits 0 with `GOVERNANCE VENDOR AUDIT PASSED: no violations found`
+- **Pass**: exits 0; no declared vendor term appears outside its per-file exception
 - **Fail**: any non-zero exit; report each violation (file, line, term, replacement — all in the
   tool output)
-- **Default criticality**: HIGH. **Confidence**: HIGH (deterministic regex match)
+- **Default criticality**: HIGH. **Confidence**: HIGH (deterministic substring match)
 - **Fix scope**: human-required — rewriting governance prose needs judgment per the convention's
   Migration Guidance
 
@@ -17,8 +17,8 @@ Run the full standalone inventory before Phase 1. Quality-gate filtering is defi
 
 - **Tool**: `./rhino governance vendor validate`; its declared roots include the root instruction
   pair.
-- **Pass**: both exit 0, no violations outside `binding-example` fences and "Platform Binding
-  Examples" headings
+- **Pass**: exits 0; the gate has no skip logic, so a vendor name passes only in a file its
+  per-file vocabulary exception names
 - **Fail**: any violation in load-bearing prose
 - **Default criticality**: HIGH (root surface, many agents read it). **Confidence**: HIGH
 - **Fix scope**: human-required — as Invariant 1

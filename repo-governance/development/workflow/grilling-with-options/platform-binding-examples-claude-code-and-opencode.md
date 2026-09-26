@@ -7,8 +7,8 @@ when_to_use: Use when implementing or verifying a grilling interaction on a prim
 
 The content under this heading is intentionally vendor-specific. Per the
 [Governance Vendor-Independence Convention](../../../conventions/structure/governance-vendor-independence.md),
-the vendor-audit scanner skips every line under this heading until the next same-level
-heading or end of file.
+vendor names are expected here. The vendor gate has no skip logic, so this page carries a
+per-term vocabulary exception in `repo-config.yml` for each vendor name it uses.
 
 ## Primary Coding Harness — Claude Code
 

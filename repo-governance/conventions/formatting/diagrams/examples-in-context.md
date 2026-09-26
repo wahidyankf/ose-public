@@ -59,7 +59,7 @@ graph TD
 ## Project Structure
 
 open-sharia-enterprise/
-├── .opencode/ # OpenCode configuration
+├── .opencode/ # Secondary coding-agent binding
 ├── docs/ # Documentation
 │ ├── tutorials/ # Step-by-step guides
 │ ├── how-to/ # Problem solutions
@@ -101,7 +101,7 @@ stateDiagram-v2
 
 ```mermaid
 graph TD
-    A[OpenCode- Main Agent] --> B[docs-maker.md]
+    A[Coding Agent- Main Agent] --> B[docs-maker.md]
     A --> C[rules-checker.md]
     B --> D[rules-maker.md]
     D --> E[plan-maker.md]
@@ -118,7 +118,7 @@ graph TD
 ```markdown
 ## Agent Architecture
 
-OpenCode(Main Agent)
+Coding Agent(Main Agent)
 ├── docs-maker.md (Documentation)
 ├── rules-checker.md (Validation)
 ├── rules-maker.md (Propagation)

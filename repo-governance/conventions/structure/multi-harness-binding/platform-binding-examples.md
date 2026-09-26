@@ -5,8 +5,8 @@ when_to_use: Read this when you need the actual file names that shadow AGENTS.md
 
 # Platform Binding Examples
 
-The content below this heading is intentionally vendor-specific. The vendor-audit scanner skips
-every line under this heading until the next same-level heading or end of file. Part of the
+The content below this heading is intentionally vendor-specific. The vendor gate has no skip logic,
+so this page carries a per-term vocabulary exception in `repo-config.yml` for each vendor name it uses. Part of the
 [Multi-Harness Binding Convention](../multi-harness-binding.md).
 
 ## Files that trigger the No-Shadowing Rule (Rule 3)

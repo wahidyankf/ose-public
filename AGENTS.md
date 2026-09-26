@@ -148,7 +148,7 @@ repository-hygiene executable;
 
 ## Platform Binding Examples
 
-Vendor-specific; audits skip this section. `repo-config.yml` `harness:` is authoritative.
+Vendor names live in the linked catalog, not here. `repo-config.yml` `harness:` is authoritative.
 
 **See**: [platform catalog](./docs/reference/platform-bindings.md)
 

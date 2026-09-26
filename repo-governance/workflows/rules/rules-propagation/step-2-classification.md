@@ -36,7 +36,8 @@ noticed while using one harness.
 
 This distinction decides the file. A neutral rule written into a binding shim is invisible to
 every other harness, which is a silent failure — the rule appears to have landed and does not
-bind. Vendor-specific content belongs under the allowlisted binding-examples surface, and neutral
+bind. Vendor-specific content belongs on a Platform Binding Examples surface with a per-file vendor
+exception, and neutral
 governance prose says "the primary binding", never a product name.
 
 ## 4. Layer

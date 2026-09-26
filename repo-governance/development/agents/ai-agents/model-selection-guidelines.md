@@ -28,10 +28,10 @@ so an agent MUST declare the effort its grade declares.
 
 ```binding-example
 Concrete model identifiers per platform:
-  Ultra:            model: fable    (Claude Code)
-  Planning-grade:   model: opus     (Claude Code)
-  Execution-grade:  model: sonnet   (Claude Code)
-  Fast:             model: haiku    (Claude Code)
+  Ultra:            model: fable    (.claude/agents/ route)
+  Planning-grade:   model: opus     (.claude/agents/ route)
+  Execution-grade:  model: sonnet   (.claude/agents/ route)
+  Fast:             model: haiku    (.claude/agents/ route)
 ```
 
 The grade-to-identifier mapping for every harness lives in the `harness:` registry's `model-map:`

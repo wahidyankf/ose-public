@@ -13,7 +13,7 @@ Companion documents for the [Multi-Harness Binding Convention](../multi-harness-
   catalog of all committed binding directories, their tiers, and provenance.
 - [Governance Vendor-Independence Convention](../governance-vendor-independence.md) — Companion rule
   requiring all governance prose (including this file) to be vendor-neutral; defines the
-  `binding-example` fence and "Platform Binding Examples" allowlist mechanisms.
+  per-file vocabulary exceptions that are the only way a governed file may name a vendor.
 - [harness-compatibility-quality-gate.md](../../../workflows/harness/harness-compatibility-quality-gate.md)
   — Periodic workflow for detecting external upstream convention drift (web-research-backed; distinct
   from the deterministic `harness-adapters` parity gate).

@@ -24,7 +24,8 @@ Canonical agent and skill sources live under `.agents/agents/` and `.agents/skil
 `.claude/agents/` file is a generated route, never hand-authored. After editing a canonical
 source, run `./rhino harness adapters generate`; every changed mirror MUST land in the **same
 commit** as its source. Verify with `./rhino harness adapters validate`, which covers all registered
-harnesses. No hook or CI gate runs either command for you.
+harnesses; the `harness-adapters` gate also runs it at pre-commit and pull request. No hook or gate
+runs `generate` for you.
 Edit a vendored path in place only when the registry assigns that class; see
 [the two vendored subclasses](../../../repo-governance/glossary/vendored-exception-subclasses.md).
 See also [File-Touch Discipline](../../../repo-governance/development/practice/file-touch-discipline.md).

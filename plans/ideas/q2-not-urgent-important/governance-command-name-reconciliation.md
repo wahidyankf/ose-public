@@ -2,10 +2,10 @@
 
 > **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
 
-One-line summary: governance tables, agent files, npm scripts, and approved backlog plans all name
-commands that do not exist — Nx targets that were never implemented, a `rhino-cli` subcommand that
-was removed, Rhino plan and link-validation commands the pinned release no longer ships — so a reader
-following any of them runs something that exits non-zero.
+One-line summary: governance tables, agent files, and npm scripts all name commands that do not
+exist — Nx targets that were never implemented, a `rhino-cli` subcommand that was removed — so a
+reader following any of them runs something that exits non-zero. The retired Rhino commands that
+approved backlog plans cited were corrected in PR #591.
 
 > Surfaced 2026-08-17 during `optimize-gov` PR review.
 > Merged specs-checker-phantom-nx-targets.md into this brief on 2026-08-19 by plan-ideas-grooming:
@@ -16,10 +16,12 @@ following any of them runs something that exits non-zero.
 > `./rhino plan validate` and its five backlog-plan citations (the fourth drift below).
 > Extended a third time 2026-09-26, found during the same adoption: added the retired
 > `./rhino md links validate`, cited by the same five backlog plans and one reference doc.
+> Resolved the fourth drift 2026-09-26 in PR #591, with owner authorization to edit the approved
+> plans: every live citation of a Rhino form pinned v0.6.0 rejects was replaced.
 
 ## Problem / context
 
-Four drifts of one shape, each found while fixing something else:
+Four drifts of one shape, each found while fixing something else; the fourth is resolved:
 
 **Docs citing absent commands.** Five names appear in the naming-scheme tables of both repos as
 though they were live gates:
@@ -54,7 +56,7 @@ section instructs the reader to run `validate:specs-adoption`, `validate:specs-t
 as out of that sweep's scope. This is the drift that makes the whole set systemic rather than a
 governance-table quirk: the same class of defect reaches `.claude/agents/**` too.
 
-**Approved backlog plans citing retired Rhino commands.** Five plans under `plans/backlog/` tell
+**Approved backlog plans citing retired Rhino commands (resolved in PR #591).** Five plans under `plans/backlog/` tell
 their executor to run `rtk ./rhino plan validate`. The pinned Rhino (`rhino.lock`, v0.6.0) has no
 `plan` command family: `./rhino --help` lists none, and `./rhino plan validate` exits with
 `unrecognized command`. Citations, from `git grep -n "rhino plan validate" -- plans/backlog`:
@@ -85,13 +87,28 @@ The same five plans also cite the retired `./rhino md links validate`. Pinned v0
 - `plans/backlog/ose-id-init-03-company-tenancy-core/delivery.md:77`;
 - `plans/backlog/ose-id-init-08-company-admin/delivery.md:97`;
 - `plans/backlog/ose-id-init-09-local-scale-and-composition/delivery.md:76`;
-- `docs/reference/sdlc-gate-standard.md:328` (a docs surface, so in scope for direct correction).
+- `docs/reference/sdlc-gate-standard.md:328` (a docs surface).
 
 This one has a replacement, but not a drop-in one: `md internal-link validate` takes no path
 arguments (a path argument is itself an `unrecognized command`) and checks the whole surface
 `repo-config.yml` declares, whose `exclude-sources` include `plans/done/**`. A plan citation that
 scoped the check to an archived plan therefore cannot be translated literally. The remaining hits of
 that grep are ideas briefs and the ideas index using the old name as shorthand, not commands to run.
+
+A third retired form sat beside them: `./rhino md mermaid validate <path>`. Pinned v0.6.0 accepts
+paths only as repeated `--file <path>` options, and a directory passed as `--file` "cannot be read".
+It was cited at `plans/backlog/lms-user/delivery.md:250`, `:281`, and `:1029`,
+`ose-id-init-02-local-email-account/delivery.md:225`, and
+`ose-id-init-03-company-tenancy-core/delivery.md:227`.
+
+**Resolution (PR #591).** Every citation above, found with
+`git grep -nE "rhino (plan validate|md links validate|md mermaid validate [^-])" -- ':!plans/done'`,
+was replaced; nothing else in those plans changed. `./rhino plan validate` became a `plan-checker`
+structural review against the Plans Convention, since no runnable plan validator exists.
+`./rhino md links validate …` became `./rhino md internal-link validate`, which checks the declared
+surface. Each positional `md mermaid validate` became
+`find <paths> -type f -name '*.md' -exec ./scripts/validate-mermaid-files {} +`: the `md-mermaid`
+gate's own executable, which passes each file as `--file` and propagates a failing exit.
 
 Two per-repo claims in this brief went stale in the other direction. It once said
 `harness:bindings-validation` exists as a real npm script in ose-public, and that ose-public's
@@ -139,9 +156,8 @@ are a dead end rather than a data-loss risk.
 ## Rough scope & non-goals
 
 In scope: `repo-governance/**`, `docs/**`, and the canonical `.agents/agents/**` in ose-public and the private sibling;
-the broken `sync:*` scripts; the triage table's own accuracy. The five backlog plans are approved, so
-their `./rhino plan validate` and `./rhino md links validate` steps are corrected when each plan is next revised or promoted, not
-rewritten in passing. Agent-file corrections regenerate their
+the broken `sync:*` scripts; the triage table's own accuracy. The five approved backlog plans' retired
+Rhino steps are already corrected (PR #591), with owner authorization. Agent-file corrections regenerate their
 `.opencode/`/`.codex/` mirrors via `./rhino harness adapters generate` in the same commit — the mirrors are
 never hand-edited.
 
@@ -172,4 +188,4 @@ the inventory to exist first); `plans/done/**`, which records what was true at t
 Every command name in a governance or docs surface resolves to something runnable in the repo it is
 written in, or is gone, and neither repo keeps a broken `sync:agents`. Promotion signal: someone produces the
 target/script inventory for both repos and the diff is non-trivial — if the five known table names
-and the two retired Rhino commands are the whole set, this is a small PR, not a plan.
+are the whole set, this is a small PR, not a plan.

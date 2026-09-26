@@ -46,7 +46,6 @@ By-concept tutorials MUST follow these general tutorial standards:
 - PASS: **Progressive Disclosure**: Complexity increases gradually (beginner → intermediate → advanced)
 - PASS: **Visual completeness**: Diagrams when appropriate (30-50 diagrams total)
 - PASS: **Hands-on elements**: Every section has runnable code examples
-- PASS: **No time estimates**: Use coverage percentages (0-40%, 40-75%, 75-95%), not time
 - PASS: **Accessibility**: Color-blind friendly diagrams, clear structure
 - PASS: **Real-world relevance**: Connect concepts to production use cases
 

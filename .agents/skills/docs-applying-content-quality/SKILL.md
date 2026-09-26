@@ -31,7 +31,7 @@ This Skill provides comprehensive guidance for applying **universal content qual
 
 See [Writing Style, Heading Hierarchy, and Accessibility](./reference/writing-style-heading-accessibility.md) for active-voice/tone rules, heading nesting requirements, and WCAG AA accessibility standards (alt text, contrast, semantic formatting, screen reader support).
 
-See [Formatting Conventions and Common Mistakes](./reference/formatting-and-common-mistakes.md) for code-block/paragraph/list formatting, the No Time Estimates rule, the pre-publish quality checklist, and five common mistakes with wrong/right examples.
+See [Formatting Conventions and Common Mistakes](./reference/formatting-and-common-mistakes.md) for code-block/paragraph/list formatting, the time-estimate labelling rule, the pre-publish quality checklist, and five common mistakes with wrong/right examples.
 
 ## References
 
@@ -40,7 +40,7 @@ See [Formatting Conventions and Common Mistakes](./reference/formatting-and-comm
 **Related Conventions**:
 
 - [Accessibility First Principle](../../../repo-governance/principles/content/accessibility-first.md) - Foundational accessibility principle
-- [No Time Estimates Principle](../../../repo-governance/principles/content/no-time-estimates.md) - Rationale for avoiding time framing
+- [No Time Estimates Principle](../../../repo-governance/principles/content/no-time-estimates.md) - Plan documents carry no time estimates; labelled estimates are permitted elsewhere
 - [README Quality Convention](../../../repo-governance/conventions/writing/readme-quality.md) - README-specific quality standards
 - [Color Accessibility Convention](../../../repo-governance/conventions/formatting/color-accessibility.md) - WCAG color contrast requirements
 

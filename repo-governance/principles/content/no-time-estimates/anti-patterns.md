@@ -1,78 +1,58 @@
 ---
-description: Common time-estimate mistakes - daily schedules, clickbait titles, speed marketing, and speed comparisons.
-when_to_use: Use when auditing content for time-pressure anti-patterns before publishing.
+description: Common mistakes - effort-sized phases, forecast completion dates, unlabelled estimates, and over-applying the ban.
+when_to_use: Use when auditing a plan or a review finding.
 ---
 
 # Anti-Patterns
 
-## Tutorial Time Estimates
+## Effort-Sized Phases
 
-FAIL: **Problem**: Adding time estimates to educational content.
+FAIL: **Problem**: Sizing plan phases by duration.
 
 ```markdown
-# Python for Beginners
+## Phase 1: Schema (2 days)
 
-️ Total time: 10 hours
-Suggested pace: 2 hours/day for 5 days
-
-- Day 1 (2 hours): Variables and data types
-- Day 2 (2 hours): Control flow
-- Day 3 (2 hours): Functions
+## Phase 2: API (1 week)
 ```
 
 **Why it's bad**:
 
-- Creates artificial daily schedule
-- Pressures learners to "keep up"
-- Ignores individual learning speeds
-- Discourages deep understanding
+- Turns a guess into a commitment
+- Hides the real ordering reason behind a calendar
+- Holds for no particular executor
 
-## "Quick" or "In X Minutes" Titles
+## Forecast Completion Dates
 
-FAIL: **Problem**: Using time in titles.
+FAIL: **Problem**: Stating when planned work will finish.
 
 ```markdown
-- "React in 30 Minutes"
-- "Quick Python Tutorial (45 min)"
-- "Learn Go in 2 Hours"
+Target completion: end of Q4
+Ships by 2026-10-15
 ```
 
 **Why it's bad**:
 
-- Clickbait-style titles
-- False advertising (beginners take much longer)
-- Creates pressure to rush
-- Undermines quality learning
+- Goes stale while the plan waits in `ideas/` or `backlog/`
+- Pressures executors to rush a gate instead of passing it
 
-## Speed as a Selling Point
+## Unlabelled Estimates Outside Plans
 
-FAIL: **Problem**: Emphasizing speed over mastery.
+FAIL: **Problem**: Stating an estimate as if it were a fact.
 
 ```markdown
-Learn React FAST! Complete this bootcamp in just 2 weeks!
-
-Rapid learning path
-Fast-track to employment
+Setup takes 20 minutes.
 ```
+
+PASS: **Better**: `Estimated setup time: about 20 minutes.`
+
+**Why it matters**: Without the label, a reader treats a guess as a measurement.
+
+## Over-Applying the Ban
+
+FAIL: **Problem**: Stripping a labelled estimate from a tutorial, status update, evidence file, or
+`learnings.md`, or flagging a product duration such as a timeout or retention period in a plan.
 
 **Why it's bad**:
 
-- Quality learning takes time
-- Creates unrealistic expectations
-- Discourages beginners who need more time
-- Promotes shallow understanding
-
-## Comparing Learning Speeds
-
-FAIL: **Problem**: Suggesting "normal" learning speeds.
-
-```markdown
-Most people complete this tutorial in 3-4 hours.
-```
-
-**Why it's bad**:
-
-- Implies those taking longer are "slow"
-- Creates anxiety and discouragement
-- No basis for "most people" claim
-- Unhelpful and harmful
+- The ban covers plan documents only
+- A timeout or retention period specifies behaviour; it is not an effort estimate

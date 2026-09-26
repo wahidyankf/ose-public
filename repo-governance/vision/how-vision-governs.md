@@ -16,7 +16,7 @@ Each core principle supports specific aspects of the vision:
 - **Simplicity Over Complexity** → Lowers barriers for developers to build halal enterprise solutions
 - **Automation Over Manual** → Scales knowledge-sharing across the ummah
 - **Progressive Disclosure** → Supports learners at all skill levels
-- **No Time Estimates** → Respects individual learning and working pace
+- **No Time Estimates** → Plans schedule by dependency, respecting individual working pace
 
 ## Vision → Principles → Conventions
 

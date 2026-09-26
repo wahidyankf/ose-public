@@ -41,4 +41,4 @@ This set of conventions implements/respects the following core principles:
 
 - **[Explicit Over Implicit](../../principles/software-engineering/explicit-over-implicit.md)**: Dynamic Collection References convention requires explicit links to authoritative index documents rather than hardcoded counts that can drift. Active voice requirement (Content Quality) makes agent and subject explicit in all writing.
 
-- **[No Time Estimates](../../principles/content/no-time-estimates.md)**: Content Quality Principles explicitly prohibit time-based framing (e.g., "this takes 30 minutes"), ensuring documentation describes what will be accomplished rather than imposing artificial time pressure.
+- **[No Time Estimates](../../principles/content/no-time-estimates.md)**: Content Quality Principles permit labelled time estimates in documentation; the ban covers plan documents only.

@@ -23,9 +23,6 @@ Extend the [SWE By-Example validation checklist](../swe-by-example/frontmatter-r
 - **[Progressive Disclosure](../../../principles/content/progressive-disclosure.md)** — Coverage
   levels (Beginner/Intermediate/Advanced) layer complexity progressively; beginners use only
   built-in OS tools while advanced examples introduce full-ecosystem tooling.
-- **[No Time Estimates](../../../principles/content/no-time-estimates.md)** — Coverage expressed
-  as percentages of the domain's primary framework (MITRE ATT&CK, essential security controls)
-  rather than time-based estimates; practitioners set their own pace.
 - **[Accessibility First](../../../principles/content/accessibility-first.md)** — Color-blind
   friendly Mermaid palette (Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown
   #CA9161) required for all diagrams; WCAG AA compliance throughout.

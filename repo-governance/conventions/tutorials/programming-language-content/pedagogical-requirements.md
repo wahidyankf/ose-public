@@ -47,11 +47,6 @@ Every tutorial MUST include:
    - Reference Cookbook for practical patterns
    - Point to next tutorial level
 
-9. **No Time Estimates**
-   - Never suggest duration ("this takes 30 minutes")
-   - Everyone learns at different speeds
-   - Focus on outcomes, not time
-
 ## Mandatory Patterns for How-To Guides
 
 Every how-to guide MUST include:

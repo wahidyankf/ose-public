@@ -5,7 +5,7 @@ when_to_use: "Read this index to find the right Tutorial Convention child docume
 
 # Tutorial Convention
 
-- [Principles Implemented/Respected](./principles-implemented-respected.md) — Lists the Progressive Disclosure, No Time Estimates, and Accessibility First principles this convention implements.
+- [Principles Implemented/Respected](./principles-implemented-respected.md) — Lists the Progressive Disclosure and Accessibility First principles this convention implements.
 - [Purpose](./purpose.md) — States that this convention establishes standards across all tutorial types and defines the Full Set Tutorial Package.
 - [Scope](./scope.md) — Defines what the general Tutorial Convention covers and does not cover, and where it applies across the repository.
 - [Overview](./overview.md) — Explains that tutorials are learning-oriented documentation and states the convention's purpose and scope of application.

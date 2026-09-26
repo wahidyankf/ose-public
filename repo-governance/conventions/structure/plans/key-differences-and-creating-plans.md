@@ -35,4 +35,6 @@ Plans differ from `docs/` in several important ways:
    multiple-choice questions with 2-4 concrete options, explicit trade-offs, and exactly one Recommended
    option. Never ask open-ended "what approach?" questions without offering structured options.
 7. **Create content**: Write the comprehensive evidence-to-delivery record, including alternatives and prior art.
+   Schedule by dependency, order, and resource; plan documents state no time estimates per
+   [No Time Estimates](../../../principles/content/no-time-estimates.md).
 8. **Update index**: Add the plan to `backlog/README.md`.

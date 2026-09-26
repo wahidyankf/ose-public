@@ -54,7 +54,7 @@ completeness, and hands-on learning elements — the aspects `docs-checker` (fac
 [Tutorial Convention](../../repo-governance/conventions/tutorials/general.md) (required
 sections, narrative scaffolding, visual completeness, hands-on elements, technical standards) and
 the [Tutorial Naming Convention](../../repo-governance/conventions/tutorials/naming.md) (seven
-tutorial types, coverage-percentage depth indicators, no time estimates ever).
+tutorial types, coverage-percentage depth indicators).
 
 ## Validation Workflow
 

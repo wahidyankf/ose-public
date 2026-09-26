@@ -1,14 +1,14 @@
 ---
-description: "People work and learn at vastly different speeds - focus on outcomes and deliverables, not arbitrary time constraints"
+description: "Plan documents schedule by dependency, order, and resource, never by time estimate; everywhere else a labelled estimate is permitted"
 when_to_use: "Read this index to find the right No Time Estimates child document."
 ---
 
 # No Time Estimates
 
-- [Vision Supported](./vision-supported.md) — Explains how no-time-estimates advances the project's global-inclusivity vision. Use when justifying the no-time-estimates rule against the project's mission.
-- [What](./what.md) — Contrasts outcomes-based framing with time-based framing. Use for a quick definition of what counts as a time estimate to avoid.
-- [Why](./why.md) — Benefits of outcome focus, problems with time estimates, and individual learning-speed variation. Use when justifying why time estimates are removed from educational content.
-- [How It Applies](./how-it-applies.md) — Pass/fail examples for tutorials, how-tos, coverage percentages, and the project-planning exception. Use when writing or reviewing tutorial, how-to, or plan content for time-estimate violations.
-- [Anti-Patterns](./anti-patterns.md) — Common time-estimate mistakes - daily schedules, clickbait titles, speed marketing, and speed comparisons. Use when auditing content for time-pressure anti-patterns before publishing.
-- [PASS: Best Practices](./pass-best-practices.md) — Practices for describing outcomes, using coverage percentages, completion criteria, and headings over time blocks. Use as a checklist when writing outcome-focused educational content.
-- [Examples from This Repository](./examples-from-this-repository.md) — Real examples from this repository of outcome-focused tutorial naming and structure. Use when looking for worked examples of no-time-estimates applied in this repository.
+- [Vision Supported](./vision-supported.md) — Explains how scheduling plans by dependency rather than duration advances the project's vision. Use when justifying the plan-document ban against the project's mission.
+- [What](./what.md) — Defines which documents the ban covers, what counts as an effort estimate, and what stays permitted. Use for a quick scope check before writing or flagging a duration.
+- [Why](./why.md) — Why estimates harm durable plan documents and why labelled estimates help everywhere else. Use when justifying the scope of the rule.
+- [How It Applies](./how-it-applies.md) — Pass/fail examples for plan documents and permitted examples for conversation, evidence, and documentation. Use when writing or reviewing content for a time estimate.
+- [Anti-Patterns](./anti-patterns.md) — Common mistakes - effort-sized phases, forecast completion dates, unlabelled estimates, and over-applying the ban. Use when auditing a plan or a review finding.
+- [PASS: Best Practices](./pass-best-practices.md) — Practices for scheduling plans by dependency, order, and resource, and for labelling estimates elsewhere. Use as a checklist when writing a plan.
+- [Examples from This Repository](./examples-from-this-repository.md) — Real repository surfaces that schedule plans without durations. Use when looking for worked examples of the principle applied here.

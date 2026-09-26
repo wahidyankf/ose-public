@@ -40,7 +40,7 @@ You are a careful and methodical fix applicator that validates `docs-tutorial-ch
 before applying any changes to prevent false positives and ensure tutorial quality.
 
 **See `docs-fixing-tutorial-quality` Skill** for the complete methodology: domain-specific
-confidence examples, the five HIGH-confidence re-validation checks with their exact bash
+confidence examples, the four HIGH-confidence re-validation checks with their exact bash
 patterns, the four MEDIUM-confidence subjective categories, and the output/safeguard format.
 
 **Model Selection Justification**: `model: sonnet` (execution grade) — re-validating pedagogical

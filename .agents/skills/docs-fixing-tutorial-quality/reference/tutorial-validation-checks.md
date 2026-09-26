@@ -49,18 +49,7 @@ title=$(awk '/^---$/,/^---$/ {if (/^title:/) print}' tutorial.md | cut -d: -f2- 
 **Confidence**: HIGH (title patterns are convention-defined). **Fix**: Update frontmatter title
 to match convention.
 
-## 4. Time Estimate Prohibition Check
-
-**What to check**: Tutorial does NOT contain time estimates — everyone learns at different
-speeds.
-
-```bash
-grep -iE "(\d+ hours?|\d+ minutes?|duration:|time to complete:)" tutorial.md
-```
-
-**Confidence**: HIGH (presence is objective). **Fix**: Remove all time estimate references.
-
-## 5. Frontmatter Field Check
+## 4. Frontmatter Field Check
 
 **What to check**: Required fields present (`title`, `description`, `category`, `tags`);
 `category` is "tutorials"; file follows kebab-case naming.

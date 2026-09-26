@@ -46,5 +46,4 @@ All content MUST meet:
 - PASS: **Active voice**: Direct, engaging writing
 - PASS: **Single H1**: Only one top-level heading per file
 - PASS: **Proper heading nesting**: No skipped levels (H2 → H4)
-- PASS: **No time estimates**: Focus on outcomes, not duration
 - PASS: **Cross-platform**: Consider Windows, macOS, Linux where relevant

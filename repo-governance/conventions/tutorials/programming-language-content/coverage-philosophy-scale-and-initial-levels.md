@@ -20,7 +20,7 @@ Each tutorial level targets a specific knowledge coverage range:
 **Critical Understanding:**
 
 - Coverage percentages measure **knowledge depth**, NOT time investment
-- Different learners progress at different speeds (respects No Time Estimates principle)
+- Different learners progress at different speeds
 - Percentages provide **scope boundaries** for content creators
 - "95%" is the ceiling - no tutorial claims 100% coverage (humility principle)
 

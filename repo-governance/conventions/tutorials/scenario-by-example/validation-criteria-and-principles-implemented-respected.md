@@ -25,9 +25,6 @@ with:
 - **[Progressive Disclosure](../../../principles/content/progressive-disclosure.md)** — Coverage
   levels (Beginner/Intermediate/Advanced) layer complexity progressively; readers start with simple
   single-factor decisions and advance to complex multi-stakeholder scenarios.
-- **[No Time Estimates](../../../principles/content/no-time-estimates.md)** — Coverage expressed
-  as percentages of domain competency breadth rather than time-based estimates; practitioners set
-  their own pace.
 - **[Accessibility First](../../../principles/content/accessibility-first.md)** — Color-blind
   friendly Mermaid palette (Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown
   #CA9161) required for all diagrams; WCAG AA compliance throughout.

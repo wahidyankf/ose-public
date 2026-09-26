@@ -23,7 +23,7 @@ when_to_use: Use for Layer 1's scope and traceability requirements.
 
 - **Accessibility First** - WCAG compliance, universal design from the start
 - **Documentation First** - Documentation is mandatory, not optional
-- **No Time Estimates** - Outcomes over duration, respect different paces
+- **No Time Estimates** - Plans schedule by dependency, not duration
 - **Progressive Disclosure** - Layer complexity gradually
 
 **Software Engineering Principles:**

@@ -26,7 +26,6 @@ writing style). Apply fixes ONLY for objective, verifiable issues.
 - Missing required section (Introduction, Prerequisites, Learning Objectives)
 - Incorrect LaTeX delimiters (single `$` for display math instead of `$$`)
 - Wrong tutorial type naming pattern (title doesn't match convention)
-- Time estimate violation (contains "30 minutes" — forbidden)
 - Broken internal link (file doesn't exist)
 - Missing frontmatter field (required by convention)
 - Incorrect file naming pattern (prefix mismatch)

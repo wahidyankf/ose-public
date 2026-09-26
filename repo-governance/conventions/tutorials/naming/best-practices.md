@@ -19,7 +19,6 @@ when_to_use: Use as a final checklist before publishing a new or renamed tutoria
 
 - **Mix tutorial types** - Don't combine "Beginner + Intermediate" in one tutorial
 - **Skip prerequisite tutorials** - Each level builds on previous ones
-- **Include time estimates** - No "X hours" or "X minutes" (people learn at different speeds)
 - **Use jargon without explanation** - Define terms appropriate to the level
 - **Create arbitrary levels** - Stick to the six standard types
 - **Make cookbooks too basic** - Cookbook assumes working knowledge

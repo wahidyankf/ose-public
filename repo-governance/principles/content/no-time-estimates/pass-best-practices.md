@@ -1,76 +1,56 @@
 ---
-description: Practices for describing outcomes, using coverage percentages, completion criteria, and headings over time blocks.
-when_to_use: Use as a checklist when writing outcome-focused educational content.
+description: Practices for scheduling plans by dependency, order, and resource, and for labelling estimates elsewhere.
+when_to_use: Use as a checklist when writing a plan.
 ---
 
 # PASS: Best Practices
 
-## 1. Describe Outcomes, Not Duration
+## 1. Schedule by Dependency
 
-**Focus on what learners will achieve**:
+**State what blocks what**:
 
 ```markdown
-PASS: By the end of this tutorial, you'll be able to:
+PASS: Phase 3 is blocked by Phase 2; Phase 4 runs alongside Phase 3.
 
-- Build REST APIs with Express
-- Implement authentication
-- Connect to databases
-- Deploy to production
-
-FAIL: This tutorial takes 4-6 hours
+FAIL: Phase 3 starts in week 2.
 ```
 
-## 2. Use Coverage Percentages for Depth
+## 2. End Each Phase with a Gate, Not a Deadline
 
-**Indicate scope, not time**:
+**Describe how the executor knows the phase is done**:
 
 ```markdown
-PASS: Coverage: 60-85% of domain knowledge (intermediate depth)
+PASS: Phase 1 Gate: `npm run test:quick` passes and the migration rolls back cleanly.
 
-This tutorial covers professional-level techniques for production
-systems. Builds on beginner foundation.
-
-FAIL: This is a 3-week intermediate course
+FAIL: Phase 1 should be finished by Wednesday.
 ```
 
-## 3. Provide Completion Criteria
+## 3. Name the Resource, Not the Duration
 
-**Describe how learners know they're done**:
+**Say who or what runs the work and under which limit**:
 
 ```markdown
-PASS: You've completed this tutorial when you can:
+PASS: [AI] Run the three build nodes concurrently under the plan's N=3.
 
-- [ ] Create components independently
-- [ ] Debug React applications
-- [ ] Build a working app from scratch
-
-FAIL: You should finish this in 2-3 days
+FAIL: The build steps take about an hour.
 ```
 
-## 4. Use Section Headings, Not Time Blocks
+## 4. Size Work by Scope
 
-**Organize by topic, not duration**:
+**Describe how large the change is in terms a reader can check**:
 
 ```markdown
-PASS: ## Core Concepts
+PASS: Touches 14 files across two projects; one delivery unit.
 
-- Variables and types
-- Control flow
-- Functions
-
-FAIL: ## Day 1 (2 hours)
-
-- Variables and types
-- Control flow
+FAIL: Roughly two days of work.
 ```
 
-## 5. Emphasize Mastery Over Speed
+## 5. Label Estimates Outside Plans
 
-**Value understanding, not completion time**:
+**Keep estimates where they help, and mark them**:
 
 ```markdown
-PASS: Take your time to understand each concept. Experiment with the
-code examples. Learning thoroughly now saves time debugging later.
+PASS (status update): Estimate: two more CI cycles before the PR can merge.
 
-FAIL: Try to complete each section in 30 minutes to stay on track.
+PASS (learnings.md): Phase 3 took three review iterations; the plan assumed one.
 ```

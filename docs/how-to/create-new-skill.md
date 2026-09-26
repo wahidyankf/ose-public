@@ -145,7 +145,6 @@ Ensure your Skill follows [Content Quality Principles](../../repo-governance/con
 - [ ] Clear, specific description for auto-loading
 - [ ] Proper heading hierarchy (H1 title, H2 sections, H3+ subsections)
 - [ ] All links validated (relative paths to conventions/development docs)
-- [ ] No time estimates (avoid "this takes 2-3 hours" language)
 - [ ] Accessible formatting (no reliance on color alone for meaning)
 - [ ] References point to authoritative sources (convention/development docs)
 

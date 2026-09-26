@@ -37,7 +37,6 @@ when_to_use: "Use when deciding whether a finding is HIGH_CONFIDENCE."
 - Missing required section verified by section heading search (Introduction, Prerequisites)
 - Incorrect LaTeX delimiter verified by pattern match (single `$` on own line for display math)
 - Wrong tutorial type naming verified against convention patterns
-- Time estimate violation verified by keyword search (forbidden in tutorials)
 
 **apps-ose-www-content-fixer:**
 

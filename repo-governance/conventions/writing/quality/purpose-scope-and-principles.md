@@ -11,7 +11,7 @@ This convention implements the following core principles:
 
 - **[Accessibility First](../../../principles/content/accessibility-first.md)**: Requires alt text for images, proper heading hierarchy, WCAG AA color contrast, semantic HTML structure, and screen reader support. Accessibility is not optional - it's a baseline requirement for all content.
 
-- **[No Time Estimates](../../../principles/content/no-time-estimates.md)**: Explicitly forbids time-based framing ("takes 30 minutes", "2-3 weeks to complete"). Focus on outcomes and deliverables, not arbitrary time constraints that create pressure.
+- **[No Time Estimates](../../../principles/content/no-time-estimates.md)**: Permits labelled time estimates in documentation; only plan documents state no time estimates.
 
 ## Purpose
 

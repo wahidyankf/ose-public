@@ -15,7 +15,7 @@ These MUST be identical:
 - Coverage percentages (0-5%, 5-30%, 0-60%, 60-85%, 85-95%)
 - Diátaxis categorization (tutorials, how-to, explanation, reference)
 - Pedagogical patterns (front hook, learning path, prerequisites)
-- Quality requirements (color palette, no time estimates, runnable code)
+- Quality requirements (color palette, runnable code)
 - Weight numbering (level-based system: level 5 folder uses 10002, level 6 content uses 100000+, level 7 content uses 1000000+ with resets per parent)
 - Frontmatter structure (title, date, draft, description, weight)
 

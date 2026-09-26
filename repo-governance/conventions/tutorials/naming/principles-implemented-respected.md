@@ -1,5 +1,5 @@
 ---
-description: The core content principles the tutorial naming convention implements - progressive disclosure, no time estimates, and explicit over implicit.
+description: The core content principles the tutorial naming convention implements - progressive disclosure and explicit over implicit.
 when_to_use: Use when you need the rationale for why the tutorial naming convention is designed the way it is.
 ---
 
@@ -8,7 +8,5 @@ when_to_use: Use when you need the rationale for why the tutorial naming convent
 This convention implements the following core principles:
 
 - **[Progressive Disclosure](../../../principles/content/progressive-disclosure.md)**: Six tutorial levels (Initial Setup through Cookbook) provide graduated learning paths. Beginners start simple (0-5% coverage), advanced users access deep content (85-95%). Each level is complete and useful on its own.
-
-- **[No Time Estimates](../../../principles/content/no-time-estimates.md)**: Tutorial levels defined by knowledge coverage percentages (0-5%, 5-30%, etc.) instead of completion time. Focus is on WHAT you'll learn and HOW DEEP, not how long it takes.
 
 - **[Explicit Over Implicit](../../../principles/software-engineering/explicit-over-implicit.md)**: Tutorial names explicitly state their level and scope ("Initial Setup", "Beginner Tutorial", "Advanced Guide"). No guessing about difficulty or depth - it's clear from the title.

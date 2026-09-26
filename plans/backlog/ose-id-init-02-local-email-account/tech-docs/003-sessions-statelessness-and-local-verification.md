@@ -59,6 +59,7 @@ flowchart TD
   classDef result fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
   class A,B,C,D,E,F,G,H action
   class I result
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Use Mailpit SMTP `127.0.0.1:1026` through `OSE_ID_MAILPIT_SMTP_PORT=1026` and inbox/API

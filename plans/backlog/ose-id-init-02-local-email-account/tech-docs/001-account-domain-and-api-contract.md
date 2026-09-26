@@ -43,6 +43,7 @@ classDiagram
   Person "1" --> "0..*" AccountSession : holds
   Person "1" --> "0..*" Capability : receives
   Person "1" --> "0..*" AuditEvent : records
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 These concepts use OSE-owned tables and explicit projections. ASP.NET Core Identity entity/store shapes

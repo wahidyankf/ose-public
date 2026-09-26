@@ -54,6 +54,7 @@ flowchart TD
     D -->|governs| A["Agents"]
     A -->|orchestrated by| W["Workflow"]
     W -->|served by| S["Agent skills"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 In this chain the vision is to democratize access, the principle is Accessibility First, the convention is Color

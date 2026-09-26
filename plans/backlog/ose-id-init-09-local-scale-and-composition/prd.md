@@ -58,6 +58,7 @@ flowchart TD
   class Q dependency
   class X,T ready
   class C cleanup
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## No-Affinity Sequence

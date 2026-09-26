@@ -90,6 +90,7 @@ flowchart TD
     Q -->|1-2 files| C["Continue the<br/>rebase"]
     Q -->|3+ files or repeats| M["Abort rebase,<br/>merge instead"]
     Q -->|Unsure or stuck| M
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Resolve a continued rebase commit by commit. To switch to a merge, run `git rebase --abort` and then

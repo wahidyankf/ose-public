@@ -78,6 +78,7 @@ graph TD
     class A blue
     class C,F,O teal
     class D,I,L orange
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **XSS Defense Layers**:

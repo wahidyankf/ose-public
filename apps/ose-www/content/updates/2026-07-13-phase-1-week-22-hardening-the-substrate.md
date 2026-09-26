@@ -110,6 +110,7 @@ graph LR
     classDef spec fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef link fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef impl fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The second half is enforcement: that step implementation is checked at runtime, and the per-tier
@@ -125,6 +126,7 @@ graph LR
 
     classDef impl fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef gate fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The payoff is a spec suite that can no longer lie. If a scenario passes, it ran; if it ran, it
@@ -212,13 +214,14 @@ graph TB
     accDescr: .claude/ + AGENTS.md single source of truth leads to .opencode/ agent mirrors via generate:bindings; .claude/ + AGENTS.md single source of truth leads to .amazonq/ rules + agent config via agents emit-bindings; and 1 more links.
     SRC[".claude/ + AGENTS.md<br/>single source of<br/>truth"]:::source
     SRC -->|"generate:bindings"| OC[".opencode/<br/>agent mirrors"]:::opencode
-    SRC -->|"agents emit-bindings"| AQ[".amazonq/<br/>rules + agent config"]:::amazonq
+    SRC -->|"agents<br/>emit-bindings"| AQ[".amazonq/<br/>rules + agent config"]:::amazonq
     SRC -.->|"read natively"| CC["Claude Code, Codex,<br/>Copilot, Cursor …"]:::native
 
     classDef source fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef opencode fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef amazonq fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef native fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Alongside it, the OpenCode Go model mapping was refreshed to the current roster — **`opencode-go/glm-5.2`**

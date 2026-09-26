@@ -45,6 +45,7 @@ graph TD
     classDef agents fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef workflows fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
     classDef skills fill:#808080,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Six-Layer Governance Architecture:**

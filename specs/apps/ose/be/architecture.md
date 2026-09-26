@@ -20,6 +20,7 @@ flowchart LR
     BE --> PG[(PostgreSQL 17<br/>documents, policies,<br/>reports)]
     BE --> NATS[NATS JetStream]
     BE -->|LLM requests| OR[OpenRouter]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The service is where the audit trail lives: the document that was read, the prompt that was sent,

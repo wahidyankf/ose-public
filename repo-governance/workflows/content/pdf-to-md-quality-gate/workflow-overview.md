@@ -25,4 +25,5 @@ graph TB
     class S1 blue
     class S2,S5 teal
     class S34 purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

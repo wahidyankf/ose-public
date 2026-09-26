@@ -127,6 +127,7 @@ graph TD
     accTitle: Graph Direction
     accDescr: Illustrates graph direction.
     %% diagram content here
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **PROHIBITED**: Do NOT use `graph LR` (left-right), as it makes long labels hard to read.
@@ -147,6 +148,7 @@ graph TD
     API["Zakat API<br/>[Container: Spring<br/>Boot]<br/>Business logic"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Relationship Labels
@@ -187,6 +189,7 @@ graph TD
     API["Zakat API<br/>[Container: Spring<br/>Boot]<br/>Business logic"]:::blue
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Bad** (no line breaks):
@@ -288,6 +291,7 @@ graph TD
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Container Diagram
@@ -299,7 +303,7 @@ graph TD
     Web["Zakat Web UI<br/>[Container: Next.js]<br/>User interface"]:::blue
     API["Zakat API<br/>[Container: Spring<br/>Boot]<br/>Business logic"]:::blue
     DB["Zakat Database<br/>[Container:<br/>PostgreSQL]<br/>Assessment storage"]:::teal
-    MQ["Message Broker<br/>[Container: RabbitMQ]<br/>Event distribution"]:::teal
+    MQ["Message Broker<br/>[Container:<br/>RabbitMQ]<br/>Event distribution"]:::teal
     Cache["Session Cache<br/>[Container: Redis]<br/>User sessions"]:::teal
 
     Web -->|"Makes API calls<br/>[HTTPS/REST]"| API
@@ -309,6 +313,7 @@ graph TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Validation Checklist

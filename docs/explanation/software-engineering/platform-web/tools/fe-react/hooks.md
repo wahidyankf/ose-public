@@ -256,6 +256,7 @@ graph TD
     class B teal
     class G,K orange
     class L purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The lifecycle follows this pattern:

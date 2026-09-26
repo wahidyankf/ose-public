@@ -17,9 +17,9 @@ flowchart TD
   accTitle: LMS OIDC client and resource architecture
   accDescr: The browser uses an LMS backend for frontend, which redirects to OSE ID. The LMS backend calls the LMS API with an audience-bound token. The API maps issuer, subject, and a personal or company context before applying local roles.
   U["Browser"] --> W["ose-lms-app-web BFF"]
-  W -->|"Authorization Code + PKCE"| I["OSE ID"]
+  W -->|"Authorization Code<br/>+ PKCE"| I["OSE ID"]
   W -->|"opaque LMS cookie"| U
-  W -->|"LMS audience access token"| A["ose-lms-be"]
+  W -->|"LMS audience<br/>access token"| A["ose-lms-be"]
   A --> P["Map ID and context"]
   P --> R["Apply LMS policies"]
 
@@ -29,6 +29,7 @@ flowchart TD
   class U person
   class W,A,P,R app
   class I identity
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Arrow labels state the security artifact; color is supplementary.
@@ -118,7 +119,7 @@ migration creates exactly two tables: immutable checksum metadata plus the sessi
 erDiagram
   accTitle: LMS web session storage
   accDescr: The LMS BFF owns immutable migration metadata and durable opaque session rows. Both tables carry the mandatory six-column audit envelope and reject physical deletion.
-  LMS_WEB_SCHEMA_MIGRATION {
+  LMS_WEB_MIGRATION {
     string version PK
     string checksum_sha256 UK
     instant created_at
@@ -150,7 +151,10 @@ erDiagram
     instant deleted_at
     string deleted_by
   }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
+
+Diagram-only abbreviation: `LMS_WEB_MIGRATION` is the `lms_web_schema_migrations` table.
 
 | Table/column                                | PostgreSQL definition                                                 | Purpose and lifecycle                                                                              |
 | ------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |

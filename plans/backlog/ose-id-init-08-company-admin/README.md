@@ -28,6 +28,7 @@ flowchart TD
   class W base
   class A,P,G sibling
   class S cap
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Scope

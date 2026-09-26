@@ -85,6 +85,7 @@ flowchart TD
   class A,B,F serial
   class C,D,E parallel
   class G,H,I,J,K gate
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Ownership must not overlap: Agent 1 owns the version-pinned custom OpenIddict stores, their audit/

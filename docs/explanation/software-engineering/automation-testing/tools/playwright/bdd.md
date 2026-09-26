@@ -56,6 +56,7 @@ flowchart TD
     accDescr: npx bddgen turns the feature files under specs into generated spec files under .features-gen, and npx playwright test runs those specs against the step definitions under tests/steps.
     F["specs/**/*.feature"] -->|npx bddgen| G[".features-gen/<br/>**/*.spec.ts"]
     G -->|npx playwright test| S["tests/steps/**/*.ts"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The specs under `.features-gen/` are generated on every `bddgen` run, so never edit them; the step definitions

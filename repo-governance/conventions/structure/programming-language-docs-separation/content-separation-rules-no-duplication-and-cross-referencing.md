@@ -20,6 +20,7 @@ flowchart TD
     Q1 -->|No| Q2{"OSE Platform-<br/>specific?"}
     Q2 -->|Yes| D["docs/explanation/<br/>style guide"]
     Q2 -->|No| A
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Examples for `ayokoding-www`: syntax, by-example code, generic error patterns, DDD in Rust. Examples for

@@ -44,6 +44,7 @@ graph TD
     classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
     classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Event loop phases** (repeating cycle): (1) **Timers** — execute `setTimeout`/`setInterval` callbacks; (2) **Pending Callbacks** — deferred I/O errors from prior cycle; (3) **Idle/Prepare** — internal use; (4) **Poll** — wait for I/O events, execute I/O callbacks; (5) **Check** — `setImmediate` callbacks; (6) **Close Callbacks** — `socket.on('close')` etc. After Microtasks completes, the loop repeats from Timers. Between phases, `process.nextTick()` and microtasks (`Promise.then`) run before moving to the next phase.
@@ -115,14 +116,14 @@ async function processDonation(id: string): Promise<void> {
 graph TD
     accTitle: Sequential vs Parallel Execution
     accDescr: Start leads to await fetchid1 Wait 100ms; await fetchid1 Wait 100ms leads to await fetchid2 Wait 100ms; await fetchid2 Wait 100ms leads to await fetchid3 Wait 100ms; and 4 more links.
-    subgraph Sequential["Sequential Execution (Slow)"]
+    subgraph Sequential["Sequential Execution<br/>(Slow)"]
         S1["Start"]:::blue --> S2["await fetch(id1)<br/>Wait 100ms"]:::orange
         S2 --> S3["await fetch(id2)<br/>Wait 100ms"]:::orange
         S3 --> S4["await fetch(id3)<br/>Wait 100ms"]:::orange
         S4 --> S5["Complete<br/>Total: 300ms"]:::purple
     end
 
-    subgraph Parallel["Parallel Execution (Fast)"]
+    subgraph Parallel["Parallel Execution<br/>(Fast)"]
         P1["Start"]:::blue --> P2["Promise.all([<br/>  fetch(id1),<br/>  fetch(id2),<br/>  fetch(id3)<br/>])"]:::teal
         P2 --> P3["All run concurrently<br/>Max wait: 100ms"]:::teal
         P3 --> P4["Complete<br/>Total: 100ms"]:::teal
@@ -135,6 +136,7 @@ graph TD
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Principles**:
@@ -220,6 +222,7 @@ graph LR
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 What each combinator resolves to:
@@ -236,6 +239,7 @@ graph LR
 
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Key Principles**:
@@ -523,6 +527,7 @@ graph TD
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Principles**:
@@ -594,6 +599,7 @@ graph LR
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Each batch then completes and the next one starts, until the queue drains:
@@ -614,6 +620,7 @@ graph LR
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Rate Limiting Implementation**:

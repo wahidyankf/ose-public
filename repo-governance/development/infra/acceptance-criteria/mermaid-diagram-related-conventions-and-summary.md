@@ -32,6 +32,7 @@ graph TD
  class B orange
  class I teal
  class J purple
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Related Conventions

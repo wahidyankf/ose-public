@@ -30,6 +30,7 @@ graph TD
     F[let x = hello]              %% CORRECT: No inner quotes
     G[const name = Alice]         %% CORRECT: No inner quotes
     H[let x = string value]       %% CORRECT: Descriptive text
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Rule**: Avoid literal quote characters inside Mermaid node text. If you need to show a string value, omit the quotes or use descriptive text.

@@ -86,6 +86,7 @@ graph TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     class A1,A2,A3 blue
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Limitation**: Database query on every request (high latency, database load).
@@ -106,6 +107,7 @@ graph TD
 
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     class B1,B2,B3,B4,B5,B6,B7 orange
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Improvement**: Single database query during login, subsequent requests use cryptographic verification (fast, stateless).

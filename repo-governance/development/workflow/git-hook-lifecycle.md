@@ -56,6 +56,7 @@ flowchart LR
     class Commit,Push blue
     class Registry tone
     class CI orange
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Staged paths and formatting

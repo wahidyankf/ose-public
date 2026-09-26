@@ -22,6 +22,7 @@ flowchart LR
     OSW[ose-www] --> UI
     UI --> TOK[web-ui-token<br/>structural + brand<br/>tokens]
     UI --> RADIX[Radix UI primitives]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 A consuming application imports components and one brand token sheet. It never restyles a

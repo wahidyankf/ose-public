@@ -40,7 +40,7 @@ graph TD
 
     B --> B1[Active Voice]
     B1 --> B2[Professional Tone]
-    B2 --> B3[Clarity & Conciseness]
+    B2 --> B3[Clarity &<br/>Conciseness]
     B3 --> B4[Audience Awareness]
 
     C --> C1[Single H1 Rule]
@@ -54,6 +54,7 @@ graph TD
     class A blueNode
     class B orangeNode
     class C tealNode
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 %% TD required: concept hierarchy flows top-down from root principle to sub-principles
@@ -75,7 +76,7 @@ graph TD
     E --> E1[Code Block<br/>Formatting]
     E1 --> E2[Text Formatting]
     E2 --> E3[List Formatting]
-    E3 --> E4[Blockquotes & Callouts]
+    E3 --> E4[Blockquotes &<br/>Callouts]
     E4 --> E5[Table Formatting]
     E5 --> E6[Line Length<br/>Guidelines]
 
@@ -85,4 +86,5 @@ graph TD
     class A blueNode
     class D purpleNode
     class E brownNode
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

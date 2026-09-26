@@ -44,6 +44,7 @@ flowchart TD
   class C,F,J decision
   class L success
   class G,K stop
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## UI Design Funnel

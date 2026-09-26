@@ -20,6 +20,7 @@ flowchart LR
     WWW --> CONTENT
     WWW --> VERCEL[Vercel Edge Network]
     WWW --> GA4[Google Analytics 4]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 A content author's only interface is a Markdown file with YAML frontmatter, so an authoring mistake

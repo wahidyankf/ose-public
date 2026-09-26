@@ -43,6 +43,7 @@ flowchart TD
   class MODE,READ gate
   class OK good
   class STOP,FAIL bad
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## The Backend Read

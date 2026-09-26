@@ -511,7 +511,7 @@ graph LR
     accTitle: Context Propagation
     accDescr: AuthProvider leads to App Component; AuthProvider leads to App Component via Provides Auth Context; App Component leads to Dashboard; App Component leads to Profile; App Component leads to Settings; and 5 more links.
     A[AuthProvider] --> B[App Component]
-    A -.->|Provides Auth Context| B
+    A -.->|Provides Auth<br/>Context| B
     B --> C[Dashboard]
     B --> D[Profile]
     B --> E[Settings]
@@ -529,6 +529,7 @@ graph LR
     class B teal
     class C,D,E orange
     class F,G,H,I,J purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Points**:
@@ -1181,6 +1182,7 @@ graph TD
     class G blue
     class I orange
     class J purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Related Documentation

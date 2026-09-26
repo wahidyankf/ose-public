@@ -22,6 +22,7 @@ flowchart LR
   class A done
   class B current
   class C later
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Scope

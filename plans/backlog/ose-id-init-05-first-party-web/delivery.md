@@ -80,6 +80,7 @@ flowchart TD
   class A,B,F serial
   class C,D,E parallel
   class G,H,I,J,K gate
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Agent 1 owns session/BFF/security boundaries; Agent 2 owns sign-in/recovery pages; Agent 3 owns context,

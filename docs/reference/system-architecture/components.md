@@ -42,13 +42,14 @@ graph LR
     CFG[repo-config.yml<br/>declared policy]
 
     WRAP -->|Reads pin| LOCK
-    WRAP -->|Installs, verifies, runs| EXE
+    WRAP -->|Installs, verifies,<br/>runs| EXE
     EXE -->|Reads| CFG
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     class WRAP blue
     class EXE teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Component Responsibilities:**

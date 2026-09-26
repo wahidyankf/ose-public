@@ -94,6 +94,7 @@ graph LR
     classDef jv fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef rs fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef final fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Both backends share the same internal shape: **hexagonal layers inside DDD bounded contexts**, with
@@ -180,6 +181,7 @@ graph TB
     classDef www fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef app fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef be fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The two app clients (`ose-app-web`, `organiclever-app-web`) consume the shared `web-ui` design-system

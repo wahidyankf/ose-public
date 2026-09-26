@@ -18,6 +18,7 @@ flowchart LR
     USER[End user<br/>desktop, mobile] --> APP[OrganicLever App Web]
     APP --> PG[(PGlite<br/>Postgres-WASM in<br/>IndexedDB)]
     APP -->|system-status<br/>diagnostic| BE[OrganicLever BE]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The only outbound call is the system-status diagnostic. Every user-visible write lands in PGlite, so

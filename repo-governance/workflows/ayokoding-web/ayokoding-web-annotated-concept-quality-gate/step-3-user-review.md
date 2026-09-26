@@ -40,10 +40,10 @@ when_to_use: Use when reviewing an Annotated-concept audit report and deciding t
 
 ```mermaid
 graph TD
-    accTitle: 3. User Review (Manual Decision Point)
+    accTitle: 3. User Review — Manual Decision Point
     accDescr: Overall Status? leads to Proceed to Fixer via EXCELLENT or NEEDS IMPROVEMENT; Overall Status? leads to Return to Maker via FAILING; Proceed to Fixer leads to Auto-fix safe?; and 2 more links.
     A{Overall Status?}
-    A -->|EXCELLENT or NEEDS IMPROVEMENT| B[Proceed to Fixer]
+    A -->|EXCELLENT or<br/>NEEDS IMPROVEMENT| B[Proceed to Fixer]
     A -->|FAILING| C[Return to Maker]
 
     B --> D{Auto-fix safe?}
@@ -56,6 +56,7 @@ graph TD
     class A orange
     class B teal
     class C brown
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Decision matrix**:

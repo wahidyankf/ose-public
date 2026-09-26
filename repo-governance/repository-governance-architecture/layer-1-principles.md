@@ -50,6 +50,7 @@ flowchart TD
     V["Vision"] -->|inspires| P["Accessibility<br/>First principle"]
     P -->|governs| C["Color Accessibility<br/>convention"]
     P -->|governs| D["AI Agents<br/>convention"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The vision is to be accessible to everyone. The AI Agents Convention applies the principle by requiring agent

@@ -86,6 +86,7 @@ flowchart TD
   class P0,P1,P5,P6 serial
   class P2,P3,P4 parallel
   class P7 finish
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Assign distinct ownership: backend account/provider files, fake-provider/E2E files, and web/UI files.

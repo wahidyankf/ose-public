@@ -11,6 +11,7 @@ flowchart LR
     accDescr: shell/ leads to core/ via may import; core/ leads to shell/ via must not import.
     SH["shell/"] -->|may import| CO["core/"]
     CO -.->|must not import| SH
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 `core/` MUST NOT import any of: `react`, `react-dom`, `next`, `next/*`, node builtins (`fs`, `path`, `node:*`),

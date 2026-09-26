@@ -40,6 +40,7 @@ graph LR
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     class COMMIT,PUSH blue
     class HOOKS,VALIDATED teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Pre-commit registry gates (declaration order, fail fast):**
@@ -61,6 +62,7 @@ graph LR
     classDef brown fill:#CA9161,stroke:#000000,color:#000000
     class PRE_COMMIT teal
     class SAFETY,FORMAT,CHECKS brown
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Pre-push and remote CI flow:**
@@ -86,6 +88,7 @@ graph LR
     class PRE_PUSH teal
     class PR purple
     class DEPLOY orange
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Git Hooks (Local Quality Gates)
@@ -406,6 +409,7 @@ graph TB
     class L1_LINKS,L1_TEST,L1_MD,L2_LINKS orange
     class L2_FORMAT purple
     class L3_BUILD,L3_CACHE brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Quality Gate Categories

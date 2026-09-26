@@ -92,4 +92,5 @@ flowchart TD
     C --> U["User reviews<br/>approve or reject"]
     U --> F["Fixer applies fixes<br/>corrected"]
     F --> T["Terminate<br/>findings resolved"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```

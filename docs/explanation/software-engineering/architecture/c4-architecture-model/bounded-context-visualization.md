@@ -135,6 +135,7 @@ graph LR
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Container Diagram (Single System with Multiple Contexts)
@@ -148,13 +149,14 @@ graph LR
     ZakatWeb["Zakat Web UI<br/>[Container: Next.js]<br/>User interface"]:::blue
     ZakatAPI["Zakat Calculation<br/>Context<br/>[Container: Spring<br/>Boot]<br/>Calculate Zakat"]:::blue
     DonationAPI["Donation Management<br/>[Container: Spring<br/>Boot]<br/>Manage campaigns"]:::blue
-    BeneficiaryAPI["Beneficiary<br/>Registry<br/>[Container: Spring<br/>Boot]<br/>Register beneficiaries"]:::blue
+    BeneficiaryAPI["Beneficiary<br/>Registry<br/>[Container: Spring<br/>Boot]<br/>Register<br/>beneficiaries"]:::blue
 
     ZakatWeb --> ZakatAPI
     ZakatWeb --> DonationAPI
     DonationAPI --> BeneficiaryAPI
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Persistence and messaging layer:**
@@ -165,10 +167,10 @@ graph LR
     accDescr: Zakat Calculation Container: Spring Boot leads to Zakat Database Container: PostgreSQL Zakat assessment storage; Zakat Calculation Container: Spring Boot leads to Event Bus Container: RabbitMQ Domain events; and 3 more links.
     ZakatAPI["Zakat Calculation<br/>[Container: Spring<br/>Boot]"]:::blue
     DonationAPI["Donation Management<br/>[Container: Spring<br/>Boot]"]:::blue
-    ZakatDB["Zakat Database<br/>[Container:<br/>PostgreSQL]<br/>Zakat assessment storage"]:::teal
+    ZakatDB["Zakat Database<br/>[Container:<br/>PostgreSQL]<br/>Zakat assessment<br/>storage"]:::teal
     DonationDB["Donation Database<br/>[Container:<br/>PostgreSQL]<br/>Campaign storage"]:::teal
     BeneficiaryDB["Beneficiary<br/>Database<br/>[Container:<br/>PostgreSQL]<br/>Beneficiary storage"]:::teal
-    MQ["Event Bus<br/>[Container: RabbitMQ]<br/>Domain events"]:::teal
+    MQ["Event Bus<br/>[Container:<br/>RabbitMQ]<br/>Domain events"]:::teal
 
     ZakatAPI --> ZakatDB
     ZakatAPI --> MQ
@@ -178,6 +180,7 @@ graph LR
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Component Diagram (Bounded Context Internals)
@@ -193,9 +196,9 @@ graph LR
     accTitle: OPTIONAL: Show Aggregates and Domain Services
     accDescr: Zakat Controller Component: REST Controller HTTP endpoints leads to Calculation Service Component: Domain Service Orchestrates calculations; Calculation Service Component: Domain Service Orchestrates calculations leads to Assessment Aggregate Component: Aggregate Root Zakat assessment lifecycle; and 3 more links.
     Controller["Zakat Controller<br/>[Component: REST<br/>Controller]<br/>HTTP endpoints"]:::blue
-    CalcService["Calculation Service<br/>[Component: Domain<br/>Service]<br/>Orchestrates calculations"]:::blue
-    Assessment["Assessment<br/>Aggregate<br/>[Component:<br/>Aggregate Root]<br/>Zakat assessment lifecycle"]:::blue
-    Calculator["Zakat Calculator<br/>[Component: Domain<br/>Service]<br/>Pure calculation logic"]:::blue
+    CalcService["Calculation Service<br/>[Component: Domain<br/>Service]<br/>Orchestrates<br/>calculations"]:::blue
+    Assessment["Assessment<br/>Aggregate<br/>[Component:<br/>Aggregate Root]<br/>Zakat assessment<br/>lifecycle"]:::blue
+    Calculator["Zakat Calculator<br/>[Component: Domain<br/>Service]<br/>Pure calculation<br/>logic"]:::blue
     AssessmentRepo["Assessment<br/>Repository<br/>[Component:<br/>Repository]<br/>Persistence"]:::teal
     EventPublisher["Event Publisher<br/>[Component:<br/>Infrastructure]<br/>Domain events"]:::teal
 
@@ -207,6 +210,7 @@ graph LR
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Shared Kernel Visualization
@@ -221,7 +225,7 @@ graph LR
 graph TD
     accTitle: REQUIRED: Show Shared Kernel as Supporting Components
     accDescr: Zakat Calculation Context Container: Spring Boot leads to Shared Domain Library Library: ts-shared-domain Money, Currency value objects via Uses Money Shared Kernel; and 2 more links.
-    SharedLib["Shared Domain<br/>Library<br/>[Library:<br/>ts-shared-domain]<br/>Money, Currency value objects"]:::purple
+    SharedLib["Shared Domain<br/>Library<br/>[Library:<br/>ts-shared-domain]<br/>Money, Currency<br/>value objects"]:::purple
 
     ZakatAPI["Zakat Calculation<br/>Context<br/>[Container: Spring<br/>Boot]"]:::blue
     DonationAPI["Donation Management<br/>Context<br/>[Container: Spring<br/>Boot]"]:::blue
@@ -233,6 +237,7 @@ graph TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Note**: Use dashed lines (`-.->`) for library dependencies to distinguish from runtime communication.

@@ -59,6 +59,7 @@ flowchart TD
   class WP,BP route
   class D,K state
   class M,F dependency
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The key provider may use PostgreSQL or the precise shared mechanism selected by earlier plans. It must

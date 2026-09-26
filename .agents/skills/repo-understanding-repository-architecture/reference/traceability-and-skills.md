@@ -57,6 +57,7 @@ flowchart LR
     A --> CO["Claude or OpenCode"]
     S --> CV["Current<br/>conversation"]
     R --> AG["L4 Agents"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Characteristics**:
@@ -77,6 +78,7 @@ flowchart LR
     S["Fork skill<br/>context: fork"] -->|delegates to| I["Isolated agent<br/>context"]
     I -->|returns| R["Summarized<br/>results"]
     R -->|to| M["Main<br/>conversation"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Characteristics**:

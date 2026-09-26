@@ -84,6 +84,7 @@ erDiagram
     string event_kind
     uuid correlation_id
   }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 `AUTH_RATE_LIMITS` deliberately has no Person foreign key: its digest hides raw email and network

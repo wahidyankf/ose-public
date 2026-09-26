@@ -28,6 +28,7 @@ flowchart TD
     accDescr: By-Example: 75-85 examples leads to In-the-Field production guides via either path; By-Concept: 40-60 sections leads to In-the-Field production guides via either path.
     BE["By-Example:<br/>75-85 examples"] -->|either path| IF["In-the-Field<br/>production guides"]
     BC["By-Concept:<br/>40-60 sections"] -->|either path| IF
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Learning path example** (Java):

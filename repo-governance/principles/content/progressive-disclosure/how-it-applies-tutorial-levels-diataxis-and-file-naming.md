@@ -38,6 +38,7 @@ graph TD
  class C teal
  class D purple
  class E brown
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Why this works**:

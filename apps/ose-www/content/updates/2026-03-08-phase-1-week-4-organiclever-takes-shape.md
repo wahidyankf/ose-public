@@ -45,6 +45,7 @@ graph TD
     classDef frontend fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef backend fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef testing fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Three-Tier Testing Infrastructure
@@ -78,6 +79,7 @@ graph TD
     classDef unit fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef integration fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef e2e fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Enforcement: Zero to 95 Percent

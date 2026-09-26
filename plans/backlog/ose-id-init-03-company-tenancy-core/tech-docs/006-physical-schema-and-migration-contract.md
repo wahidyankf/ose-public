@@ -128,6 +128,7 @@ erDiagram
     uuid actor_id FK
     string event_kind
   }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The diagram shows ownership and foreign-key direction only. RLS remains authoritative for every

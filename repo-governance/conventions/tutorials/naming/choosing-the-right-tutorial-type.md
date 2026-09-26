@@ -46,6 +46,7 @@ graph TB
  class INT purple
  class ADV brown
  class CB gray
+ classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Quick Reference Table

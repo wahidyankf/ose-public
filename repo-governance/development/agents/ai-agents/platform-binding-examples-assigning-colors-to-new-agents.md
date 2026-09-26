@@ -18,6 +18,7 @@ flowchart TD
     S -->|Validates, reports| C["green:<br/>Checker"]
     S -->|Modifies existing| F["yellow:<br/>Fixer"]
     S -->|Executes plans| I["purple:<br/>Implementor"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 - Maker (`blue`): must have `Write`. Examples: docs-maker, plan-maker.

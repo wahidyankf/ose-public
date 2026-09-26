@@ -25,7 +25,7 @@ flowchart TD
   U["User and browser"] --> W["ose-id-web"]
   W --> A["Authenticator"]
   W --> B["ose-id-be"]
-  B --> P[("Identity PostgreSQL")]
+  B --> P[("Identity<br/>PostgreSQL")]
   B --> O["OIDC auth evidence"]
   O --> C["Local client"]
 
@@ -37,6 +37,7 @@ flowchart TD
   class W web
   class A,B,O,C service
   class P store
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Invariants

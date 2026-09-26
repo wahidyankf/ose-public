@@ -15,6 +15,7 @@ flowchart TD
     Q3 -->|Yes| M["MEDIUM"]
     Q3 -->|No| Q4{"Suggestion or<br/>optimization?"}
     Q4 -->|Yes| L["LOW"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Ask the questions in order and stop at the first yes:

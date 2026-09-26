@@ -69,6 +69,7 @@ graph LR
     class NX_BUILD,LOCAL purple
     class NEXT_BUILD,SPRING_BUILD,RUST_BUILD brown
     class VERCEL_OSE,VERCEL_AYO,VERCEL_OL orange
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Deployment Configuration

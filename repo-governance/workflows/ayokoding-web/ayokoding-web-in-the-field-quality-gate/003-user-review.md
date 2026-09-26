@@ -36,10 +36,10 @@ when_to_use: Use when reviewing an in-the-field audit report and deciding the ne
 
 ```mermaid
 graph TD
-    accTitle: 3. User Review (Manual Decision Point)
+    accTitle: 3. User Review — Manual Decision Point
     accDescr: Overall Status? leads to Proceed to Fixer via EXCELLENT or NEEDS IMPROVEMENT; Overall Status? leads to Return to Maker via FAILING; Proceed to Fixer leads to Auto-fix safe?; and 2 more links.
     A{Overall Status?}
-    A -->|EXCELLENT or NEEDS IMPROVEMENT| B[Proceed to Fixer]
+    A -->|EXCELLENT or<br/>NEEDS IMPROVEMENT| B[Proceed to Fixer]
     A -->|FAILING| C[Return to Maker]
 
     B --> D{Auto-fix safe?}
@@ -52,13 +52,14 @@ graph TD
     class A orange
     class B teal
     class C brown
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 When the status is FAILING, the return-to-maker rework path is:
 
 ```mermaid
 graph TD
-    accTitle: 3. User Review (Manual Decision Point) (2)
+    accTitle: 3. User Review — Manual Decision Point (2)
     accDescr: Return to Maker leads to Major rework needed; Major rework needed leads to Add missing coverage; Major rework needed leads to Fix stdlib ordering; Major rework needed leads to Add code quality.
     C[Return to Maker] --> G[Major rework needed]
     G --> H[Add missing coverage]
@@ -67,6 +68,7 @@ graph TD
 
     classDef brown fill:#CA9161,stroke:#000000,color:#000000
     class C brown
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Depends on**: Step 2 completion

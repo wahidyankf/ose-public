@@ -76,6 +76,7 @@ graph TD
 
     classDef screen fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef action fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Flow B — Check recent activity (< 1 min)**
@@ -96,6 +97,7 @@ graph TD
 
     classDef screen fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef action fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## In plain language

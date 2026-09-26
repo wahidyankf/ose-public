@@ -33,9 +33,10 @@ graph LR
     accTitle: Common Mermaid Syntax Errors: Escape Sequences Do Not Create Line Breaks
     accDescr: Phase 1 leads to Phase 2 via Revenue & Learnings.
     P0["Phase 0<br/>Setup & Knowledge<br/>Base"]:::blue
-    P1["Phase 1"] -->|"Revenue & Learnings"| P2["Phase 2"]
+    P1["Phase 1"] -->|Revenue & Learnings| P2["Phase 2"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
-**Rule**: Never use `\n` in any Mermaid label (node or edge). Use `<br/>` for multi-line node labels. For edge labels, keep them single-line (edge labels do not support `<br/>`).
+**Rule**: Never use `\n` in any Mermaid label (node or edge). Use `<br/>` for multi-line node and edge labels; edge labels take no other HTML (see [Rule 2](./common-syntax-errors-label-constraints-overview-and-rules-1-2.md)).
 
 **Real-World Context**: Discovered when building a roadmap diagram on `apps/ose-www/content/about.md`. Both node labels (`"Phase 3\nEnterprise Application\nLarge Organizations"`) and edge labels (`"Revenue\n& Learnings"`) rendered with literal `\n` characters visible.

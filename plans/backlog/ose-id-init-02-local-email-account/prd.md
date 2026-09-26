@@ -116,6 +116,7 @@ flowchart TD
   class A,B,D,E,F,H action
   class C,G decision
   class I result
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Acceptance Criteria

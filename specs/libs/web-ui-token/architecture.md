@@ -20,6 +20,7 @@ flowchart LR
     OL[organiclever apps] --> TOK
     OSE[ose apps] --> TOK
     TOK --> TW[Tailwind v4 theme<br/>layer]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## The Structural / Brand Split

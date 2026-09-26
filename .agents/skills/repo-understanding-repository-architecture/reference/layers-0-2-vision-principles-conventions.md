@@ -58,6 +58,7 @@ flowchart TD
     V["Vision<br/>Accessible to<br/>everyone"] -->|inspires| P["Principle<br/>Accessibility First"]
     P -->|governs| C["Convention<br/>Color Accessibility"]
     P -->|governs| D["Development<br/>AI Agents"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The development example is the AI Agents Convention: agent colors use the accessible palette.

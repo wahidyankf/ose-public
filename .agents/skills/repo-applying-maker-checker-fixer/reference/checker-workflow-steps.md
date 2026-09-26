@@ -8,6 +8,7 @@ flowchart TD
     accDescr: Step 0 initializes the report, steps 1 to N validate the content, and the final step finalizes the report.
     I["Step 0<br/>Initialize report"] --> V["Steps 1 to N<br/>Validate content"]
     V --> F["Final step<br/>Finalize report"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The validation steps between the first and the last are domain-specific.

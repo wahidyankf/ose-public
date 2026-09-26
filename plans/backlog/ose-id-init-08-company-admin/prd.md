@@ -53,6 +53,7 @@ flowchart TD
   class C,A,M decision
   class Q,S success
   class D denied
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Invitation Sequence

@@ -25,9 +25,9 @@ flowchart TD
   accTitle: Init 05 web architecture
   accDescr: A browser talks to the Next.js OSE ID web BFF. The BFF stores only an opaque cookie in the browser, keeps session and transaction state in shared storage, and calls the authoritative C sharp backend. A local client receives the final callback.
   U["Person and browser"] --> W["ose-id-web BFF"]
-  W --> S[("Shared session store")]
+  W --> S[("Shared session<br/>store")]
   W --> B["ose-id-be authority"]
-  B --> D[("Identity PostgreSQL")]
+  B --> D[("Identity<br/>PostgreSQL")]
   W --> C["Client callback"]
 
   classDef actor fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
@@ -38,6 +38,7 @@ flowchart TD
   class W web
   class B,C service
   class S,D store
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Invariants

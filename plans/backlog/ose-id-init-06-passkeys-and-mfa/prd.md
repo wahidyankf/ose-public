@@ -46,6 +46,7 @@ flowchart TD
   class B,D,I decision
   class L success
   class J stop
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Product Contract

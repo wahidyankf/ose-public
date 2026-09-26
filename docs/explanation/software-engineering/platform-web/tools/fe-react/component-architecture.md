@@ -68,6 +68,7 @@ graph LR
     class A blue
     class B,E,F,G teal
     class C,H,I,J orange
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Custom hooks component type:
@@ -89,6 +90,7 @@ graph LR
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
     class A blue
     class D,K,L,M purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Architecture Layers**:

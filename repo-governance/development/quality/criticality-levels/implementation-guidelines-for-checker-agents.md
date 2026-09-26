@@ -21,6 +21,7 @@ flowchart TD
     Q3 -->|Yes| ME["MEDIUM"]
     Q3 -->|No| Q4{"Suggestion or<br/>optimization?"}
     Q4 -->|Yes| LO["LOW"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 CRITICAL covers anything that breaks functionality or blocks users. HIGH also covers any violation of a documented

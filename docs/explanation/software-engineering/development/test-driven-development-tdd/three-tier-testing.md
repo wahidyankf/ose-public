@@ -156,6 +156,7 @@ flowchart TD
     class E2E purple
     class INT orange
     class UNIT teal
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## File Naming and Directory Structure

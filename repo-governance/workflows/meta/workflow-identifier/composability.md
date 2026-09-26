@@ -55,6 +55,7 @@ flowchart TD
     accDescr: content-creation- workflow leads to full-docs- validation-workflow via new-docs-path; full-docs- validation-workflow leads to deployment- workflow via validation-passed.
     CC["content-creation-<br/>workflow"] -->|new-docs-path| FV["full-docs-<br/>validation-workflow"]
     FV -->|validation-passed| DW["deployment-<br/>workflow"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Each arrow carries the upstream workflow's output, and the deployment workflow consumes `validation-passed`.

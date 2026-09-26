@@ -49,6 +49,7 @@ graph LR
     A[Input] --> B[Transform]
     B --> C[Validate]
     C --> D[Output]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **State transitions**: `stateDiagram-v2`
@@ -85,6 +86,7 @@ graph TD
     A["slice header<br/>ptr, len=3, cap=5"]
     B["backing array<br/>[10, 20, 30, _, _]"]
     A -->|points to| B
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Color-Blind Friendly Palette
@@ -112,4 +114,5 @@ graph LR
     classDef teal fill:#029E73,stroke:#000000,color:#000000
     class A blue
     class B teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

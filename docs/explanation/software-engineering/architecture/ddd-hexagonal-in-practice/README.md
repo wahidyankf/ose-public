@@ -88,6 +88,7 @@ flowchart TD
     B["Bounded Context<br/>Mapping"] --> A["Aggregate Port<br/>Boundary"]
     A --> C["Cross-Context<br/>Integration"]
     C --> M["Module<br/>Organization"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Practitioners working on a specific concern can jump directly to the relevant standard. Each standard cross-references the others where needed.

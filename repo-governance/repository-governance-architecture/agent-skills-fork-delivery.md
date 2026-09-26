@@ -16,6 +16,7 @@ flowchart LR
     S["Agent skills,<br/>context: fork"] -->|delegates to| I["Isolated agent<br/>context"]
     I -->|returns| R["Summarized<br/>results"]
     R -->|to| M["Main conversation"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Characteristics**:

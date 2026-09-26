@@ -22,6 +22,7 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
     class A1,A2,A3,A4,A5 blue
     class note1 purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Use case**: Work queue distribution, only one consumer should process each message.
@@ -35,9 +36,9 @@ graph TD
     accDescr: Producer 1 leads to Topic OrderEvents via Publish event; Producer 2 leads to Topic OrderEvents via Publish event; Topic OrderEvents leads to Consumer Group 1 Inventory Service via All subscribers receive; and 3 more links.
     B1[Producer 1] -->|Publish event| B2[Topic<br/>OrderEvents]
     B3[Producer 2] -->|Publish event| B2
-    B2 -->|All subscribers receive| B4[Consumer Group 1<br/>Inventory Service]
-    B2 -->|All subscribers receive| B5[Consumer Group 2<br/>Email Service]
-    B2 -->|All subscribers receive| B6[Consumer Group 3<br/>Analytics Service]
+    B2 -->|All subscribers<br/>receive| B4[Consumer Group 1<br/>Inventory Service]
+    B2 -->|All subscribers<br/>receive| B5[Consumer Group 2<br/>Email Service]
+    B2 -->|All subscribers<br/>receive| B6[Consumer Group 3<br/>Analytics Service]
 
     note1[Messages retained<br/>for 7 days<br/>Multiple consumers<br/>get copy]
     B2 -.-> note1
@@ -46,6 +47,7 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
     class B1,B2,B3,B4,B5,B6 orange
     class note1 purple
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Use case**: Event broadcasting, multiple services need same events for different purposes.
@@ -69,6 +71,7 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
     class C1,C2,C3,C5,C6,C8 teal
     class note1 purple
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Production benefit**: Parallel processing with ordering guarantees within partition, horizontal scalability.

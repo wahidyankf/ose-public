@@ -32,6 +32,7 @@ flowchart LR
   classDef app fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
   class DEV actor
   class WEB,BE app
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The browser talks only to `ose-id-web`. The readiness read happens inside the server render, so the
@@ -69,6 +70,7 @@ flowchart TD
   class PAGE,PROXY route
   class PANEL,ROW ui
   class SOURCE,CLIENT,GUARD infra
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 | Component                | Responsibility                                                                                             |

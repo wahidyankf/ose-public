@@ -68,6 +68,7 @@ classDiagram
   Person "1" --> "0..*" PersonalEntitlement : receives
   ProductResource "1" --> "0..*" CompanyEntitlement : grants
   Company "1" --> "0..*" CompanyEntitlement : receives
+  classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Membership and Invitation Flow
@@ -121,6 +122,7 @@ flowchart TD
   class A,B,C,D,E,F,H action
   class G decision
   class I,J result
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The core returns an application result for future consent/token issuance. It does not issue JWTs or

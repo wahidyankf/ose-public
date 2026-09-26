@@ -31,6 +31,7 @@ flowchart TD
     class VS teal
     class CP brown
     class X gray
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 - **Web (Vercel)**: The branch push is the entire deploy — Vercel listens to `stag-*`/`prod-*`

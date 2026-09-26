@@ -21,6 +21,7 @@ flowchart LR
     OPS[Ops probe] -->|GET health| BE[OSE LMS BE]
     DEV[Feature author] -->|GET hello| BE
     BE --> ACT[Actuator health]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Both actors reach the service over plain HTTP on a single port. Nothing sits behind it yet: no
@@ -48,6 +49,7 @@ flowchart TD
     APP --> PR[PortResolver]
     HC --> HR[HealthResponse]
     HL --> MR[HelloResponse]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 | Component          | Responsibility                                              |

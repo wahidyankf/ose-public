@@ -21,6 +21,7 @@ flowchart LR
     CLI --> PDF[(PDF and Markdown<br/>files)]
     CLI --> REPORT[(Report and skiplist<br/>files)]
     CLI --> TESS[Tesseract language<br/>data<br/>apps/crane-cli/<br/>tessdata]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Three callers share one argv grammar and one JSON output shape. The agents are the reason the
@@ -45,6 +46,7 @@ flowchart TD
     IN[crane-cli<br/>Adapters/In/<br/>CliAdapter] --> LOGIC[fsharp-crane-core<br/>Core/Logic]
     LOGIC --> DOMAIN[fsharp-crane-core<br/>Core/Domain]
     LOGIC --> OUT[fsharp-crane-core<br/>Adapters/Out]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 | Component      | Responsibility                                                                               |

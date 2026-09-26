@@ -35,6 +35,7 @@ flowchart TD
   class OIDC planned
   class GQL,MCP reserved
   class APP,DOM core
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 | Adapter                | Status                | What it carries                                              |
@@ -73,6 +74,7 @@ flowchart TD
   class SQL,CLK current
   class PROV reserved
   class APP,PORT,DOM core
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The application declares the port and calls it; the adapter implements it. Both dependencies point at
@@ -108,6 +110,7 @@ flowchart TD
   class HOST host
   class CFG,REG,PIPE core
   class INB,OUTB adapter
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The composition root is the only component that names every concrete type. It validates the runtime

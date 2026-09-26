@@ -62,10 +62,11 @@ The comment is helpful for transparency and verification, but the accessible hex
 ```mermaid
 %% Uses accessible colors: blue (#0173B2) for primary, orange (#DE8F05) for warnings
 graph TD
-    accTitle: 4. Document Your Color Choices (Recommended for Transparency)
+    accTitle: 4. Document Your Color Choices — Recommended for Transparency
     accDescr: Shows Item.
     A[Item]:::blue
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Note**: The comment above is somewhat redundant since the `classDef` already contains the hex codes. However, it aids quick verification and signals accessibility intent to readers.

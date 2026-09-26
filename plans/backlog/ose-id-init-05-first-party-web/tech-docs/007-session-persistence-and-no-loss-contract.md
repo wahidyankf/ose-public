@@ -34,6 +34,7 @@ erDiagram
     instant absolute_expires_at
     instant revoked_at
   }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 The repository-owned TypeScript migration runner executes immutable numbered SQL files through `pg`

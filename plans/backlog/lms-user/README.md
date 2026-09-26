@@ -72,6 +72,7 @@ flowchart LR
   classDef downstream fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
   class I upstream
   class C,S downstream
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Arrow order is mandatory; color is only supplementary.

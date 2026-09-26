@@ -70,6 +70,7 @@ flowchart TD
   class PROBE probe
   class HOSTOK,OK good
   class DOWN,INCOMP bad
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 | Route           | Depends on                            | Meaning of success               | Failure codes                                 |

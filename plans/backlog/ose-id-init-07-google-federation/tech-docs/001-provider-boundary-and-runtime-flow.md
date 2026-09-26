@@ -29,6 +29,7 @@ flowchart TD
   class P decision
   class G,T,X external
   class D state
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The dashed edge denotes test-only substitution, not a production runtime option.

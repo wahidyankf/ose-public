@@ -18,8 +18,9 @@ flowchart LR
     accDescr: Operations engineer leads to OrganicLever BE via health check; OrganicLever App Web leads to OrganicLever BE via system-status diagnostic; OpenAPI 3.1 contract leads to OrganicLever BE via generates models; and 1 more links.
     OPS[Operations engineer] -->|health check| BE[OrganicLever BE]
     APP[OrganicLever App Web] -->|system-status<br/>diagnostic| BE
-    CONTRACT[(OpenAPI 3.1 contract)] -->|generates models| BE
+    CONTRACT[(OpenAPI 3.1<br/>contract)] -->|generates models| BE
     CONTRACT -->|generates client<br/>types| APP
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Both callers read the same contract, which is why a route's shape is a cross-project change rather

@@ -14,6 +14,7 @@ flowchart TD
     L2 -->|governs| L3["Layer 3: Development"]
     L3 -->|governs| L4["Layer 4: AI Agents"]
     L4 -->|orchestrated by| L5["Layer 5: Workflows"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 Vision is why we exist, principles are the foundational values, conventions are the documentation rules,

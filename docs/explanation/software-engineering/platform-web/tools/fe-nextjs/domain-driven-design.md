@@ -875,6 +875,7 @@ flowchart TD
     P["Presentation layer<br/>Next.js"] --> A["Application layer"]
     A --> D["Domain layer"]
     D --> I["Infrastructure<br/>layer"]
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 - Presentation: pages and routes in `app/`, React components in `components/`, and Server Actions.

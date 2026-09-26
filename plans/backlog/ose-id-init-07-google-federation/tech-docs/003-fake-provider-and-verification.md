@@ -52,6 +52,7 @@ flowchart TD
   class U,I fast
   class B,W process
   class S full
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Unit

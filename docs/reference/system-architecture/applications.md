@@ -178,6 +178,7 @@ graph LR
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
     class OSE,AYO blue
     class NX purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **OrganicLever platform applications:**
@@ -211,6 +212,7 @@ graph LR
     class OL_BE orange
     class OL_WWW_FE_E2E,OL_BE_E2E brown
     class NX purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Application Interactions

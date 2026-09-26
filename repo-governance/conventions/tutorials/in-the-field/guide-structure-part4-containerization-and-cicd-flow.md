@@ -15,10 +15,11 @@ graph TD
     A1[Build with javac] -- Compile .java --> A2[JAR file]
     A2 -- java -jar app.jar --> A3[JVM Process]
     A3 -- Listens port 8080 --> A4[Host Machine]
-    A4 -- Shared deps conflicts --> A5[Version Issues]
+    A4 -- Shared deps<br/>conflicts --> A5[Version Issues]
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
     class A1,A2,A3,A4,A5 blue
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Limitation**: Dependency conflicts on host machine, manual deployment, no isolation.
@@ -38,6 +39,7 @@ graph TD
 
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000
     class B1,B2,B3,B4,B5,B6 orange
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Improvement**: Application isolation, no dependency conflicts, portable across environments.
@@ -60,6 +62,7 @@ graph TD
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000
     class C1,C2,C3,C4,C7,C8 teal
     class note1 purple
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Production benefit**: High availability, auto-scaling, rolling updates, self-healing, load balancing.
@@ -93,4 +96,5 @@ graph TD
     class C,D,E,F,G,H orange
     class I,J,K,L teal
     class M,note1 purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```

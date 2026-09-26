@@ -39,6 +39,7 @@ flowchart LR
   class DEV,RUN actor
   class BE,WEB app
   class DB store
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Every actor reaches the service over loopback HTTP. Nothing sits in front of it: no gateway, no

@@ -49,6 +49,7 @@ flowchart LR
     class A,B blue
     class Z,Y teal
     class X brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 An invalid non-empty value at either tier (a string that is not one of the four modes) is a

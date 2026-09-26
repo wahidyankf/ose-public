@@ -18,7 +18,8 @@ A specialized workflow pattern that achieves **perfect quality state** by fixing
 
 **When NOT to use**: `plan-quality-gate`, `rules-quality-gate`, and `docs-quality-gate` are
 [governance gates](./governance-gate-class.md), not `*-check-fix` workflows. They use a binary
-admission test, a frozen ledger, at most one stabilization cycle, and a terminal verdict, and they
+admission test, a frozen ledger, at most one stabilization cycle (the docs gate instead re-audits
+after each propagation until two audits are clean), and a terminal verdict, and they
 accept no `mode` threshold.
 
 **Key Differentiators**:

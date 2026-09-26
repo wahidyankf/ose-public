@@ -10,15 +10,15 @@ This repository has **two permanent quality-gate classes**. Neither is deprecate
 
 ## The two classes
 
-| Aspect        | Governance gate                                                                            | `*-check-fix` gate                                  |
-| ------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------- |
-| Members       | `plan-quality-gate`, `rules-quality-gate`, `docs-quality-gate` — these three only          | Every other quality gate                            |
-| Finding model | Binary admission test; no severity, no confidence                                          | Criticality × confidence, `P0`–`P4`                 |
-| Threshold     | None; a `mode` input is forbidden                                                          | `lax`/`normal`/`strict`/`ocd`                       |
-| Convergence   | Frozen ledger, one repair pass, one stabilization cycle                                    | Iterate to double-clean, `max-iterations` default 7 |
-| Result        | One terminal verdict (`PASS` / `BLOCKED_*` / `PASS_*`; docs: `pass` / `needs-propagation`) | `pass` / `partial` / `fail`                         |
-| Authorization | Explicit user naming, or one enumerated caller                                             | Invoked freely by composing workflows               |
-| Report        | Frozen ledger table in `local-tmp/`                                                        | UUID-chained, progressively streamed audit report   |
+| Aspect        | Governance gate                                                                                           | `*-check-fix` gate                                  |
+| ------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Members       | `plan-quality-gate`, `rules-quality-gate`, `docs-quality-gate` — these three only                         | Every other quality gate                            |
+| Finding model | Binary admission test; no severity, no confidence                                                         | Criticality × confidence, `P0`–`P4`                 |
+| Threshold     | None; a `mode` input is forbidden                                                                         | `lax`/`normal`/`strict`/`ocd`                       |
+| Convergence   | Frozen ledger, one repair pass, one stabilization cycle; docs: re-audit to double-clean, default 7 audits | Iterate to double-clean, `max-iterations` default 7 |
+| Result        | One terminal verdict (`PASS` / `BLOCKED_*` / `PASS_*`); docs: `pass`/`partial`/`input-changed`/`fail`     | `pass` / `partial` / `fail`                         |
+| Authorization | Explicit user naming, or one enumerated caller                                                            | Invoked freely by composing workflows               |
+| Report        | Frozen ledger table in `local-tmp/`                                                                       | UUID-chained, progressively streamed audit report   |
 
 ## Choosing a class
 
@@ -35,8 +35,8 @@ Otherwise author a [`*-check-fix` gate](./check-fix-pattern-characteristics.md).
 specs, API, and harness gates all sit there, and belong there: their findings genuinely differ
 in severity, their subjects have no fan-out, and iterating to a clean state is the point.
 
-A governance gate never starts another gate run, and never both audits and writes the same surface
-its sole writer owns.
+A governance gate never starts another gate run itself (the docs gate's caller runs each re-audit),
+and never both audits and writes the same surface its sole writer owns.
 
 ## Related Documents
 

@@ -279,8 +279,8 @@ policies:
         - ".agents/skills/**"
     mermaid:
       authoring-rule: rendered
-      node-label-graphemes: 30
-      edge-label-graphemes: 30
+      node-label-graphemes: 20
+      edge-label-graphemes: 20
       fill-colors:
         - "#0173B2"
         - "#DE8F05"
@@ -577,6 +577,29 @@ gates:
       command:
         executable: ./scripts/validate-mermaid-files
         args:
+          - input: staged.paths
+            expand: repeat
+      run-on:
+        pre-commit:
+          bind:
+            staged:
+              source: git-index
+        pull-request:
+          bind:
+            staged:
+              source: explicit-range
+              range: explicit
+    # Every flowchart, graph, class, ER, and requirement diagram declares a palette classDef default
+    # (repo-governance/conventions/formatting/diagrams/mermaid-color-accessibility-palette.md).
+    - id: md-mermaid-palette
+      type: check
+      inputs:
+        staged:
+          kind: files
+      command:
+        executable: node
+        args:
+          - literal: scripts/validate-mermaid-palette.mjs
           - input: staged.paths
             expand: repeat
       run-on:

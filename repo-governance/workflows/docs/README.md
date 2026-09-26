@@ -29,7 +29,7 @@ These workflows define **WHEN and HOW documentation is kept current and audited*
 ## Workflows
 
 - [docs-propagation](./docs-propagation.md) — Carries one change into every human-facing document it affects in one bounded pass: stale facts corrected, obsolete documents removed, each fact kept in its one home, and the result readable by a newcomer. Use automatically before committing a change that alters what a document describes.
-- [docs-quality-gate](./docs-quality-gate.md) — Audits human-facing documents on explicit request and returns a verdict with a finite ledger, handing every finding to docs-propagation instead of editing. Use for an explicit documentation review, before a release, or to sweep a whole repository.
+- [docs-quality-gate](./docs-quality-gate.md) — Audits human-facing documents on explicit request, handing every finding to docs-propagation and auditing again until two consecutive audits are clean or the ceiling is reached. Use for an explicit documentation review, before a release, or to sweep a whole repository.
 - [docs-software-engineering-separation-quality-gate](./docs-software-engineering-separation-quality-gate.md) — Validates separation between OSE Platform style guides and AyoKoding educational content, then fixes violations iteratively. Use after adding/updating prerequisite relationships or style-guide/AyoKoding content, or periodically for compliance.
 
 ## Related Documentation

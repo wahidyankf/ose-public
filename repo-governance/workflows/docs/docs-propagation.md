@@ -61,7 +61,8 @@ Run docs-propagation for the change on the current branch.
 
 ## Related Workflows
 
-- [Docs Quality Gate](./docs-quality-gate.md) audits documents and hands its findings here.
+- [Docs Quality Gate](./docs-quality-gate.md) audits documents, hands its findings here, and audits
+  the repaired state again.
 - [Plan Establishment](../plan/plan-planning.md) adds this workflow to each delivery unit that
   changes what a document describes.
 - [Rules Propagation](../rules/rules-propagation.md) owns governance and agent instructions.

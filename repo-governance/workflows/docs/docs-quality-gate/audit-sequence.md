@@ -1,12 +1,12 @@
 ---
-description: "The six steps of one read-only docs-quality-gate audit, the six decisions made about each document, and the ledger's admission test."
+description: "The six steps of each read-only docs-quality-gate audit, the six decisions made about each document, and the ledger's admission test."
 when_to_use: "Use while running the docs quality gate."
 ---
 
 # Audit Sequence
 
-1. **Freeze the snapshot:** scope, revision, and uncommitted paths. A material change ends the run
-   as `input-changed`, never restarting it.
+1. **Freeze the snapshot:** scope, revision, and uncommitted paths. A material change other than
+   propagation's repairs ends the run as `input-changed`, never restarting it.
 2. **Bound the audit.** Under `change`, the documents the change touches and every document citing
    what it changed; under `all`, the whole document set
    [Docs Propagation](../docs-propagation.md#document-set) defines.
@@ -37,10 +37,12 @@ when_to_use: "Use while running the docs quality gate."
    deterministic checks, per
    [Deterministic vs AI Validation Split](../../../conventions/structure/deterministic-vs-ai-validation-split.md);
    the audit consumes their result instead of repeating them.
-6. **Return the verdict.** It passes when the ledger is clear and the repository's checks pass.
-   Otherwise the gate hands its ledger to [Docs Propagation](../docs-propagation.md). A finding only
-   the owner can decide, such as a specification that disagrees with the implementation, is asked
-   through [Grill Me](../../../../.agents/skills/grill-me/SKILL.md).
+6. **Hand over or count a clean audit.** A clear ledger with the repository's checks passing is a
+   clean audit. Otherwise the gate hands its ledger to [Docs Propagation](../docs-propagation.md),
+   and the next audit follows per the gate's
+   [Terminal Contract](../docs-quality-gate.md#terminal-contract). A finding only the owner can
+   decide, such as a specification that disagrees with the implementation, is asked through
+   [Grill Me](../../../../.agents/skills/grill-me/SKILL.md).
 
 ## Delegation
 

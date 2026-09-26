@@ -23,7 +23,7 @@ tutorials, distinct from the universal `docs-applying-content-quality` and
 
 ## Core Principles
 
-- **Coverage percentages indicate depth, never duration** — never suggest time estimates.
+- **Coverage percentages indicate depth, never duration** — state any time estimate separately, labelled as an estimate.
 - **Explain WHY before HOW** — tutorials teach, they don't just narrate steps.
 - **By Example tutorials use a separate, fully-specified skill** — see
   `docs-creating-by-example-tutorials` for the 75-90-example annotation methodology; this Skill

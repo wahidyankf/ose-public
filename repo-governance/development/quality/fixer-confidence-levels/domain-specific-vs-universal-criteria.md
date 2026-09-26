@@ -51,7 +51,6 @@ Each fixer agent has domain-specific validation checks:
 - Tutorial-specific structure (Introduction, Prerequisites, Learning Objectives)
 - LaTeX notation compliance
 - Tutorial naming patterns by type
-- No time estimates rule
 
 **apps-ose-www-content-fixer:**
 

@@ -60,7 +60,7 @@ content, and ensure terminology consistency.
    `WebSearch` or 3+ `WebFetch` calls per claim), delegate to `web-researcher` per the
    [Web Research Delegation Convention](../../repo-governance/conventions/writing/web-research-delegation.md).
 2. **Content quality** — `docs-applying-content-quality` Skill (active voice, heading hierarchy,
-   accessibility, code-block language tags, no time estimates).
+   accessibility, code-block language tags, time estimates labelled as estimates).
 3. **Diagram accessibility** — `docs-creating-accessible-diagrams` Skill (color-blind-safe
    palette, shape differentiation, WCAG AA contrast).
 4. **Formatting conventions** — [Mathematical Notation](../../repo-governance/conventions/formatting/mathematical-notation.md)

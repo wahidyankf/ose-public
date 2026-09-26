@@ -18,7 +18,7 @@ This convention establishes universal content quality standards for **ALL markdo
 - [Code Block and Text Formatting](./quality/code-block-and-text-formatting.md) — code block indentation standards and bold/italic/inline-code/strikethrough usage.
 - [List and Blockquote Formatting](./quality/list-and-blockquote-formatting.md) — unordered/ordered/nested/checklist lists and blockquote/callout formatting.
 - [Table Formatting, Line Length, and Paragraph Structure](./quality/table-formatting-line-length-and-paragraphs.md) — table syntax, prose line length, and paragraph structuring.
-- [No Time Estimates](./quality/no-time-estimates.md) — the rule prohibiting time-based framing in educational content.
+- [No Time Estimates](./quality/no-time-estimates.md) — the rule permitting labelled time estimates in documentation; plan documents stay banned.
 - [Quality Checklist, Related Conventions, and References](./quality/quality-checklist-and-references.md) — the pre-commit checklist and links to related conventions.
 
 ## Heading Hierarchy: Single H1 Rule and Nesting

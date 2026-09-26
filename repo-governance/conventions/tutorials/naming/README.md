@@ -5,7 +5,7 @@ when_to_use: "Read this index to find the right Tutorial Naming Convention child
 
 # Tutorial Naming Convention
 
-- [Principles Implemented/Respected](./principles-implemented-respected.md) — The core content principles the tutorial naming convention implements - progressive disclosure, no time estimates, and explicit over implicit. Use when you need the rationale for why the tutorial naming convention is designed the way it is.
+- [Principles Implemented/Respected](./principles-implemented-respected.md) — The core content principles the tutorial naming convention implements - progressive disclosure and explicit over implicit. Use when you need the rationale for why the tutorial naming convention is designed the way it is.
 - [Scope](./scope.md) — What the tutorial naming convention covers and does not cover, and how it relates to tutorial structure and general file naming. Use when you need to confirm whether a naming question falls inside or outside this convention's scope.
 - [Tutorial Types Overview](./tutorial-types-overview.md) — The Full Set Tutorial Package architecture diagram and the five mandatory components - foundational, by-example, by-concept, and cookbook - that together provide 0-95% coverage. Use when you need the big-picture map of how the six tutorial types relate before reading individual type definitions.
 - [Initial Setup](./initial-setup.md) — Definition, content scope, and example titles for the Initial Setup tutorial type covering 0-5% of domain knowledge. Use when writing or naming a 0-5%-coverage getting-started tutorial for a language, framework, or tool.

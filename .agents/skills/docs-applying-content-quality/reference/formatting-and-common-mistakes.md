@@ -28,23 +28,15 @@ const x = 10;  ← No language specified
 - Ordered lists: Use `1.` numbering
 - Nested lists: Indent with 2 spaces per level
 
-## No Time Estimates
+## Time Estimates
 
-**CRITICAL**: Never include time-based framing in content.
+Documentation may state a time estimate when it helps the reader, labelled as an estimate:
 
-❌ **Forbidden**:
+- ✅ "Estimated time: 30-45 minutes, depending on your network speed"
+- ❌ "This takes 30 minutes" (an unlabelled estimate reads as a measurement)
 
-- "This tutorial takes 30 minutes"
-- "Complete this in 2-3 weeks"
-- "You can do this in 5 minutes"
-
-✅ **Instead**:
-
-- Describe what will be accomplished
-- List concrete outcomes
-- Let users determine their own pace
-
-**Rationale**: Time estimates create artificial pressure and vary widely by experience level.
+Plan documents are the exception: they state no time estimates. See the
+[No Time Estimates principle](../../../../repo-governance/principles/content/no-time-estimates.md).
 
 ## Common Quality Checklist
 
@@ -55,7 +47,7 @@ Before publishing any markdown content, verify:
 - [ ] Proper heading nesting (no skipped levels)
 - [ ] All images have descriptive alt text
 - [ ] Code blocks specify language
-- [ ] No time-based estimates or framing
+- [ ] Any time estimate is labelled as an estimate
 - [ ] Professional, welcoming tone
 - [ ] Paragraphs ≤5 lines
 - [ ] Clear, jargon-free language (or jargon explained)
@@ -89,10 +81,10 @@ Before publishing any markdown content, verify:
 ### Subsection
 ```
 
-### ❌ Mistake 3: Time-based framing
+### ❌ Mistake 3: Unlabelled time estimate
 
 **Wrong**: "This tutorial takes 30 minutes to complete."
-**Right**: "This tutorial covers X, Y, and Z concepts."
+**Right**: "Estimated time: about 30 minutes. This tutorial covers X, Y, and Z concepts."
 
 ### ❌ Mistake 4: Passive voice overuse
 

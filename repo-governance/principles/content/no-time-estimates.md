@@ -1,54 +1,39 @@
 ---
-description: People work and learn at vastly different speeds - focus on outcomes and deliverables, not arbitrary time constraints
-when_to_use: Use when deciding whether content should describe outcomes instead of a time-to-complete estimate.
+description: Plan documents schedule by dependency, order, and resource, never by time estimate; everywhere else a labelled estimate is permitted
+when_to_use: Use when writing or reviewing a plan document, or when deciding whether a time estimate is permitted in other content.
 ---
 
 # No Time Estimates
 
-People work and learn at **vastly different speeds**. Focus on **outcomes and deliverables**, not arbitrary time constraints. Time estimates create pressure, anxiety, and artificial deadlines that harm learning and productivity.
+**Plan documents state no time estimates, durations, or dates as effort commitments.** They schedule
+work by **dependency, order, and resource** instead. Plan documents are the core documents at every
+plan lifecycle stage: `README.md`, `brd.md`, `prd.md`, `tech-docs.md` or `tech-docs/`,
+`delivery.md`, and idea two-pagers or other plan-stage briefs.
+
+**Everywhere else an estimate is permitted** and should be labelled as an estimate: conversation,
+execution status updates, git-ignored scratch, a plan's `evidence/` and `learnings.md`, tutorials,
+how-to guides, reference, and all other documentation.
 
 ## Foundations
 
-- [Vision Supported](./no-time-estimates/vision-supported.md) — Explains how no-time-estimates advances the project's global-inclusivity vision. Use when justifying the no-time-estimates rule against the project's mission.
-- [What](./no-time-estimates/what.md) — Contrasts outcomes-based framing with time-based framing. Use for a quick definition of what counts as a time estimate to avoid.
-- [Why](./no-time-estimates/why.md) — Benefits of outcome focus, problems with time estimates, and individual learning-speed variation. Use when justifying why time estimates are removed from educational content.
+- [Vision Supported](./no-time-estimates/vision-supported.md) — Explains how scheduling plans by dependency rather than duration advances the project's vision. Use when justifying the plan-document ban against the project's mission.
+- [What](./no-time-estimates/what.md) — Defines which documents the ban covers, what counts as an effort estimate, and what stays permitted. Use for a quick scope check before writing or flagging a duration.
+- [Why](./no-time-estimates/why.md) — Why estimates harm durable plan documents and why labelled estimates help everywhere else. Use when justifying the scope of the rule.
 
 ## Applying the Principle
 
-- [How It Applies](./no-time-estimates/how-it-applies.md) — Pass/fail examples for tutorials, how-tos, coverage percentages, and the project-planning exception. Use when writing or reviewing tutorial, how-to, or plan content for time-estimate violations.
-- [Anti-Patterns](./no-time-estimates/anti-patterns.md) — Common time-estimate mistakes - daily schedules, clickbait titles, speed marketing, and speed comparisons. Use when auditing content for time-pressure anti-patterns before publishing.
-- [PASS: Best Practices](./no-time-estimates/pass-best-practices.md) — Practices for describing outcomes, using coverage percentages, completion criteria, and headings over time blocks. Use as a checklist when writing outcome-focused educational content.
-- [Examples from This Repository](./no-time-estimates/examples-from-this-repository.md) — Real examples from this repository of outcome-focused tutorial naming and structure. Use when looking for worked examples of no-time-estimates applied in this repository.
-
-## Reference
+- [How It Applies](./no-time-estimates/how-it-applies.md) — Pass/fail examples for plan documents and permitted examples for conversation, evidence, and documentation. Use when writing or reviewing content for a time estimate.
+- [Anti-Patterns](./no-time-estimates/anti-patterns.md) — Common mistakes - effort-sized phases, forecast completion dates, unlabelled estimates, and over-applying the ban. Use when auditing a plan or a review finding.
+- [PASS: Best Practices](./no-time-estimates/pass-best-practices.md) — Practices for scheduling plans by dependency, order, and resource, and for labelling estimates elsewhere. Use as a checklist when writing a plan.
+- [Examples from This Repository](./no-time-estimates/examples-from-this-repository.md) — Real repository surfaces that schedule plans without durations. Use when looking for worked examples of the principle applied here.
 
 ## Related Conventions
 
-- [Tutorial Naming Convention](../../conventions/tutorials/naming.md) - Coverage percentages, not time estimates
-- [Tutorial Convention](../../conventions/tutorials/general.md) - Outcome-focused tutorial structure
-- [Content Quality Principles](../../conventions/writing/quality.md) - Explicit no-time-estimates rule
+- [Plans Organization Convention](../../conventions/structure/plans.md) - Defines the plan documents this principle covers
+- [Delivery Checklists Express a DAG](../../conventions/structure/plans/delivery-checklists-express-a-dag.md) - Schedules delivery by dependency
+- [Content Quality Principles](../../conventions/writing/quality.md) - Permits labelled estimates in documentation
 
 ## Relationship to Other Principles
 
-- [Progressive Disclosure](./progressive-disclosure.md) - Learn at your own pace through progressive levels
-- [Accessibility First](./accessibility-first.md) - Inclusive of different learning speeds
-- [Simplicity Over Complexity](../general/simplicity-over-complexity.md) - Simple outcomes, not complex schedules
-
-## References
-
-**Learning Science**:
-
-- [Spaced Repetition](https://en.wikipedia.org/wiki/Spaced_repetition) - Learning over time
-- [Deliberate Practice](<https://en.wikipedia.org/wiki/Practice_(learning_method)#Deliberate_practice>) - Anders Ericsson
-- [Growth Mindset](https://en.wikipedia.org/wiki/Mindset#Fixed_and_growth_mindset) - Carol Dweck
-
-**Educational Psychology**:
-
-- [Self-Paced Learning](https://www.edutopia.org/article/self-paced-learning) - Benefits of individual pacing
-- [Mastery Learning](https://en.wikipedia.org/wiki/Mastery_learning) - Benjamin Bloom
-- [Zone of Proximal Development](https://en.wikipedia.org/wiki/Zone_of_proximal_development) - Lev Vygotsky
-
-**Documentation Best Practices**:
-
-- [Write the Docs: Learning-Oriented Documentation](https://www.writethedocs.org/guide/writing/beginners-guide-to-docs/) - Focus on outcomes
-- [Diátaxis Framework](https://diataxis.fr/) - Tutorial structure without time constraints
+- [Simplicity Over Complexity](../general/simplicity-over-complexity.md) - Simple dependency order, not complex schedules
+- [Deliberate Problem-Solving](../general/deliberate-problem-solving.md) - Plans commit to verifiable outcomes, not guessed durations

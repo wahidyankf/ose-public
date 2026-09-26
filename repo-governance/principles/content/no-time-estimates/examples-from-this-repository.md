@@ -1,95 +1,33 @@
 ---
-description: Real examples from this repository of outcome-focused tutorial naming and structure.
-when_to_use: Use when looking for worked examples of no-time-estimates applied in this repository.
+description: Real repository surfaces that schedule plans without durations.
+when_to_use: Use when looking for worked examples of the principle applied here.
 ---
 
 # Examples from This Repository
 
-## Tutorial Naming Convention
+## Delivery Checklists Express a DAG
 
-**Location**: `repo-governance/conventions/tutorials/naming.md`
+**Location**: `repo-governance/conventions/structure/plans/delivery-checklists-express-a-dag.md`
 
-**Outcome-focused language**:
+Every non-trivial `delivery.md` carries a `## Parallelization Model` naming which nodes are
+concurrent and which are serial, and why. The schedule is a dependency graph, not a calendar.
 
-```markdown
-## Quick Start
+## Phases as Natural Pauses
 
-Coverage: 5-30% of domain knowledge
-Goal: Learn enough to explore independently
+**Location**: `repo-governance/conventions/structure/plans/phases-as-natural-pauses.md`
 
-After completing a quick start, learners can read documentation,
-try examples, and solve simple problems on their own.
-```
+Every phase ends with a `### Phase N Gate` of must-pass checks. A phase is finished when its gate
+passes, not when a duration elapses.
 
-**No time estimates**: Focus on coverage percentage (depth) and outcomes (what you can do).
+## Multi-Plan Execution
 
-## Content Quality Principles
+**Location**: `repo-governance/workflows/plan/multi-plans-execution/`
 
-**Location**: `repo-governance/conventions/writing/quality.md`
+The workflow schedules several plans by dependency and resource, not by duration.
 
-**Explicit "No Time Estimates" section**:
+## Plan Quality Validation
 
-```markdown
-### No Time Estimates
+**Location**: `.agents/skills/plan-validating-quality/reference/structure-and-requirements-validation.md`
 
-Do NOT include time estimates in educational or tutorial content.
-
-Forbidden:
-FAIL: "This tutorial takes 2-3 hours to complete"
-FAIL: "Estimated time: 45 minutes"
-FAIL: "You'll learn this in 30 minutes"
-
-Correct:
-PASS: "By the end of this tutorial, you'll be able to..."
-PASS: "This tutorial covers the fundamentals of..."
-PASS: "Coverage: 60-85% of domain knowledge (intermediate depth)"
-```
-
-## Tutorial Structure
-
-**Location**: All tutorials in `docs/tutorials/`
-
-**Outcome-focused structure**:
-
-```markdown
-# Tutorial Title
-
-## What You'll Learn
-
-By the end of this tutorial, you'll be able to:
-
-- Outcome 1
-- Outcome 2
-- Outcome 3
-
-## Prerequisites
-
-- Required knowledge
-- Required tools
-
-## Steps
-
-[Step-by-step instructions]
-
-## Verification
-
-How to verify you've achieved the outcomes.
-```
-
-**No**: Time estimates, suggested schedules, "Day 1/Day 2" sections.
-
-## AGENTS.md Guidance
-
-**Location**: `AGENTS.md`
-
-**Explicit guidance**:
-
-```markdown
-## Planning Without Timelines
-
-When planning tasks or creating educational content, provide concrete
-steps without time estimates. Never suggest timelines like "this will
-take 2-3 weeks" or "complete this in 30 minutes."
-
-Focus on WHAT needs to be done or learned, not HOW LONG it takes.
-```
+The plan checker flags a time estimate in a plan document, and a hardcoded or forecast archival
+date, as HIGH findings.

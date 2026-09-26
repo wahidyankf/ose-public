@@ -13,7 +13,6 @@ when_to_use: "Read when determining whether a question about tutorials is answer
 - **Learning progression** - How tutorials build on each other
 - **Full Set Tutorial Package** - How 5 components combine for complete content (see [Tutorial Naming](../naming.md))
 - **Component relationships** - How foundational, learning tracks, and cookbook interact
-- **No time estimates** - Why tutorials use coverage percentages instead of time-based framing
 - **Tutorial quality** - Standards for effective learning content
 
 ## What This Convention Does NOT Cover

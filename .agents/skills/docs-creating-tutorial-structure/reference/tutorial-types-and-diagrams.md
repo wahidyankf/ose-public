@@ -15,8 +15,8 @@ Seven tutorial types with progressive coverage depth:
 
 **Coverage percentages indicate topic depth, NOT time to complete.** See
 [Tutorial Naming Convention](../../../../repo-governance/conventions/tutorials/naming.md) for
-complete details. **CRITICAL**: Never suggest time estimates in tutorial content — coverage
-percentages indicate comprehensiveness, not duration.
+complete details. Coverage percentages indicate comprehensiveness, not duration; a tutorial may
+state a time estimate separately, labelled as an estimate.
 
 ## Diagram Creation
 

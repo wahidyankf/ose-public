@@ -12,8 +12,7 @@ structure, narrative flow, visual completeness, and hands-on elements against th
 referenced docs for consistency.
 
 **Step 2 — Structural validation**: check tutorial-type compliance (title pattern, coverage
-percentage, prerequisites, content depth all match the stated type — CRITICAL if a time estimate
-like "X hours/minutes" appears anywhere), required sections present (title, description, learning
+percentage, prerequisites, content depth all match the stated type), required sections present (title, description, learning
 objectives, prerequisites, main content, next steps), and logical section progression.
 
 **Step 3 — Narrative analysis**: evaluate writing style (engaging vs. dry, explanatory vs.

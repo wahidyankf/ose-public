@@ -72,7 +72,7 @@ needs its own count before it can be scoped; any change to `learning/` or `drill
 - Does the site's navigation render a course root at all, or only `_index.md`? A root page nothing
   links to would be dead weight. (open)
 - Rabbit hole: authoring 23 substantive overview pages is a content task, not a mechanical one, and
-  could quietly become a multi-week effort if each page is written from scratch.
+  could quietly grow large if each page is written from scratch.
 
 ## What success looks like + promotion signal
 

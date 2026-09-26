@@ -66,9 +66,8 @@ During PR quality-gate invocation, first apply the shared
 
 - Stylistic wording preferences with no substantive clarity or completeness impact.
 - Suggesting content that already exists elsewhere in the diff/document — verify absence first.
-- Time-based framing complaints already covered by
-  [No Time Estimates](../../repo-governance/principles/content/no-time-estimates.md) unless the
-  diff actually introduces a time estimate.
+- Time-estimate complaints, unless the diff introduces a time estimate into a plan document per
+  [No Time Estimates](../../repo-governance/principles/content/no-time-estimates.md).
 
 ## Reference Documentation
 

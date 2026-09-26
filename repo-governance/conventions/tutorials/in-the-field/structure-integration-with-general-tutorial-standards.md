@@ -47,7 +47,6 @@ In-the-field tutorials MUST follow these general tutorial standards:
 - PASS: **Progressive Disclosure**: Complexity increases from standard library to frameworks
 - PASS: **Visual completeness**: Diagrams for architecture, flow, and integration patterns
 - PASS: **Hands-on elements**: Production-ready code examples
-- PASS: **No time estimates**: Describe what will be accomplished, not duration
 - PASS: **Accessibility**: Color-blind friendly diagrams, clear structure
 - PASS: **Real-world relevance**: All examples from production contexts
 

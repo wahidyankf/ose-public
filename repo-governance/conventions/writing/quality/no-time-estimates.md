@@ -1,61 +1,22 @@
 ---
-description: "The rule prohibiting time-based framing in educational content, with its rationale and where it does and does not apply"
-when_to_use: "Read this before writing tutorial or how-to content that might mention a duration, or when reviewing content for time-estimate language."
+description: "The rule permitting labelled time estimates in documentation, and the plan documents where estimates stay banned"
+when_to_use: "Read this before writing or reviewing documentation that mentions how long something takes."
 ---
 
 # No Time Estimates
 
-**Do NOT include time estimates in educational or tutorial content.**
-
-**Rationale**:
-
-- Time estimates create artificial pressure on learners
-- Everyone learns at different speeds
-- Focus should be on WHAT learners accomplish, not HOW LONG it takes
-- Makes content evergreen (no need to update time claims)
-- Reduces anxiety and creates pressure-free learning environment
-
-**Forbidden Time Estimates**:
-
-FAIL: **Avoid (time-based claims)**:
+**Time estimates are permitted in documentation, labelled as estimates.** Tutorials, how-to guides,
+reference, explanations, and educational content may tell readers roughly how long something takes:
 
 ```markdown
-This tutorial takes 2-3 hours to complete.
-Estimated time: 45 minutes
-Duration: 1-2 hrs
-You'll learn this in 30 minutes.
-Time needed: 20 min
+Estimated time: 30-45 minutes, depending on your network speed.
 ```
 
-PASS: **Good (focus on outcomes, not duration)**:
+State the figure as an estimate, never as a measurement or a promise. Coverage percentages remain the
+way tutorials express **depth**; an estimate, where given, expresses **duration**.
 
-```markdown
-By the end of this tutorial, you'll be able to...
-This tutorial covers the fundamentals of...
-You'll learn how to build a complete application.
-Coverage: 60-85% of domain knowledge (intermediate depth)
-```
-
-**Exception - Coverage Percentages Allowed**:
-
-Coverage percentages are allowed because they indicate **depth/scope**, not **time**:
-
-- PASS: "Coverage: 0-5%" (indicates initial setup scope)
-- PASS: "Coverage: 60-85%" (indicates intermediate depth)
-- PASS: "Coverage: 85-95%" (indicates advanced depth)
-
-**Where This Applies**:
-
-- All tutorial content (`docs/tutorials/`)
-- Educational content in ayokoding-www
-- How-to guides that teach concepts
-- Reference documentation with learning components
-
-**Where This Does NOT Apply**:
-
-- Project planning documents (`plans/`) - can estimate implementation time
-- Development task tracking - can estimate effort
-- Meeting agendas - can allocate time slots
+**Where the ban applies**: plan documents only, as defined by the
+[No Time Estimates principle](../../../principles/content/no-time-estimates.md).
 
 PASS: **Good (Well-Structured Paragraphs)**:
 

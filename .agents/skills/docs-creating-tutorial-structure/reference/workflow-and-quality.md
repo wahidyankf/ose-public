@@ -36,7 +36,7 @@ link to prerequisites rather than assuming knowledge.
 8. Add troubleshooting if needed — common problems, clear symptoms/causes/solutions
 9. Review against the checklist — all required sections present, steps sequential and complete,
    code examples work and are explained, links valid, quality standards met, diagrams
-   accessible, no time estimates
+   accessible, any time estimate labelled as an estimate
 
 ## Workflow: Updating an Existing Tutorial
 

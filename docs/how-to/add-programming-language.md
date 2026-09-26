@@ -287,7 +287,6 @@ Before starting, ensure you have:
 4. **Quality checklist**:
    - [ ] Mermaid diagram with approved colors
    - [ ] One working example per touchpoint
-   - [ ] No time estimates
    - [ ] Links to Beginner tutorial for depth
    - [ ] Prerequisites section
 
@@ -883,7 +882,6 @@ Use this final checklist to verify completion:
 - [ ] Manual quality review complete
 - [ ] All code examples tested and runnable
 - [ ] Mermaid diagrams use approved color palette
-- [ ] No time estimates in content
 
 ### Publishing
 

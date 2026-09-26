@@ -7,6 +7,11 @@
   `plans/done/YYYY-MM-DD__<slug>/` only after completion. Prospective archival instructions must
   resolve the repository-local date after completion gates and use `<completion-date>` until then;
   a hardcoded or forecast date is **HIGH**.
+- Plan documents (`README.md`, `brd.md`, `prd.md`, technical docs, `delivery.md`, and idea
+  two-pagers) state no time estimate, duration, or date as an effort commitment, per
+  [No Time Estimates](../../../../repo-governance/principles/content/no-time-estimates.md); each
+  occurrence is **HIGH**. Product durations such as timeouts, and `evidence/` and `learnings.md`,
+  are out of scope.
 - File structure for newly created formal plans: `README.md`, `brd.md`, `prd.md`, `delivery.md`,
   `learnings.md`, and exactly one technical form (`tech-docs.md` or mapped `tech-docs/`); flag
   missing core files or both/neither technical forms **HIGH**. Reader jobs and cohesion decide the

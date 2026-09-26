@@ -50,7 +50,7 @@ If a proposed change conflicts with a principle, either revise the change or doc
 
 - "Why we value simplicity in all solutions" → ✅ Principle (foundational value)
 - "Why accessibility must be built in from day one" → ✅ Principle (philosophical stance)
-- "Why we avoid time estimates in learning materials" → ✅ Principle (timeless belief)
+- "Why plan documents carry no time estimates" → ✅ Principle (timeless belief)
 - "File naming must use kebab-case identifiers" → ❌ Convention (specific rule)
 - "Use git hooks for automated validation" → ❌ Development (implementation practice)
 

@@ -28,7 +28,6 @@ when_to_use: Use when deciding how much complexity to expose at once in a docume
 ## Relationship to Other Principles
 
 - [Simplicity Over Complexity](../general/simplicity-over-complexity.md) - Start simple, add complexity only when needed
-- [No Time Estimates](./no-time-estimates.md) - Focus on learning outcomes, not duration
 - [Accessibility First](./accessibility-first.md) - Progressive disclosure improves accessibility
 
 ## What

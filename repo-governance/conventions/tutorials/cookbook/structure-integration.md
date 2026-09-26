@@ -46,7 +46,6 @@ Cookbook tutorials MUST follow these general tutorial standards:
 - PASS: **Learning-oriented approach** (Diátaxis framework): Teach through solving real problems
 - PASS: **Visual completeness**: Diagrams when helpful for understanding solutions
 - PASS: **Hands-on elements**: Every recipe has runnable, copy-paste ready code
-- PASS: **No time estimates**: Focus on problem solved, not time to implement
 - PASS: **Accessibility**: Color-blind friendly diagrams, clear structure
 - PASS: **Real-world relevance**: Every recipe solves an actual production problem
 

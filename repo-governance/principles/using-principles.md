@@ -48,7 +48,7 @@ Prioritize principles in order of importance:
 5. **Simplicity Over Complexity** - Simple solutions first
 6. **Automation Over Manual** - Automate when proven repetitive
 7. **Progressive Disclosure** - Support all skill levels
-8. **No Time Estimates** - Focus on outcomes
+8. **No Time Estimates** - Plans schedule by dependency, not duration
 
 > **Note**: This priority ordering applies when principles appear to conflict. All principles apply in normal circumstances - this list guides conflict resolution, not principle selection. Items 1-2 are general problem-solving principles that apply universally; items 3-8 are content, documentation, and software-engineering principles.
 

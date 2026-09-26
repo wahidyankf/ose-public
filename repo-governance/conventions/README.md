@@ -61,7 +61,7 @@ Use this section when you need the repository's shared rules for writing, organi
 - "Files must use lowercase kebab-case names" - Convention (documentation rule)
 - "Use 2-space indentation for nested lists" - Convention (documentation formatting)
 - "Web app themes use Tailwind CSS" - Development (software practice)
-- "Why we avoid time estimates in tutorials" - Principle (foundational value)
+- "Why plan documents carry no time estimates" - Principle (foundational value)
 
 ## Directory Structure
 

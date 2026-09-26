@@ -1,6 +1,6 @@
 ---
 name: docs-fixing-tutorial-quality
-description: Domain-specific methodology for docs-tutorial-fixer — re-validating docs-tutorial-checker findings on pedagogical structure, then applying fixes only for objective issues (missing sections, LaTeX delimiters, naming, time estimates, frontmatter) while flagging subjective narrative/style findings for manual review. Use when applying validated fixes from a tutorial audit report.
+description: Domain-specific methodology for docs-tutorial-fixer — re-validating docs-tutorial-checker findings on pedagogical structure, then applying fixes only for objective issues (missing sections, LaTeX delimiters, naming, frontmatter) while flagging subjective narrative/style findings for manual review. Use when applying validated fixes from a tutorial audit report.
 ---
 
 # Fixing Tutorial Quality
@@ -15,7 +15,7 @@ covered by `repo-applying-maker-checker-fixer` and `repo-assessing-criticality-c
 
 - [Confidence Assessment and Domain Examples](reference/confidence-and-mode-handling.md) —
   the quick-summary workflow and tutorial-specific HIGH/MEDIUM/FALSE_POSITIVE examples
-- [HIGH-Confidence Validation Checks](reference/tutorial-validation-checks.md) — the five
+- [HIGH-Confidence Validation Checks](reference/tutorial-validation-checks.md) — the four
   objective re-validation checks with their exact bash patterns
 - [MEDIUM-Confidence Subjective Checks](reference/medium-confidence-checks.md) — the four
   subjective-quality categories that always route to manual review
@@ -25,7 +25,7 @@ covered by `repo-applying-maker-checker-fixer` and `repo-assessing-criticality-c
 ## Core Principles
 
 - **Objective issues only get HIGH confidence** — missing sections, LaTeX delimiters, naming
-  patterns, time estimates, and frontmatter fields are binary; everything about narrative flow,
+  patterns, and frontmatter fields are binary; everything about narrative flow,
   diagram placement, content balance, or writing style is subjective and MEDIUM at best.
 - **Re-implement the checker's exact patterns** — use the same bash re-validation snippets as
   `docs-tutorial-checker` so results stay consistent; a mismatch signals a checker bug.

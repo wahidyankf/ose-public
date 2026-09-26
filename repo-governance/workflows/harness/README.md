@@ -8,7 +8,7 @@ when_to_use: Use when routing to a workflow that validates coding-agent bindings
 Use these workflows for periodic or on-demand validation of coding-agent harness adapters,
 cross-vendor parity, platform-binding catalog accuracy, and upstream convention drift.
 
-Deterministic pre-push and CI binding checks remain gates rather than workflows. General
+Deterministic pre-commit and pull-request binding checks remain gates rather than workflows. General
 repository-rule validation remains under [Rules Workflows](../rules/README.md).
 
 ## Available Workflows

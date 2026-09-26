@@ -17,7 +17,7 @@ root instruction file and notes "no committed binding file required". No file is
 
 A harness does not read `AGENTS.md` natively. The CLI tooling generates a bridge file whose content
 is a single sentence pointing contributors to `AGENTS.md` plus the glob that causes the harness to
-load it. The parity guard re-derives this file on every pre-push and asserts byte-equality with the
+load it. The parity guard re-derives this file on every commit and pull request and asserts byte-equality with the
 committed version.
 
 ## PASS: Approved thin pointer for a Tier-1 harness
@@ -29,7 +29,7 @@ pointer adds discovery value. The CLI tooling generates a one-line import direct
 ## FAIL: Hand-maintained bridge file
 
 A bridge file was created manually and not wired to the generator. After three `AGENTS.md` edits the
-bridge is stale. The parity guard fails on pre-push. **Fix**: wire the bridge to the generator,
+bridge is stale. The parity guard fails the commit. **Fix**: wire the bridge to the generator,
 re-generate, commit.
 
 ## FAIL: Higher-precedence file with divergent content

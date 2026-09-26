@@ -547,6 +547,17 @@ gates:
       run-on:
         pre-commit: {}
         pull-request: {}
+    - id: harness-adapters
+      type: check
+      command:
+        executable: ./rhino
+        args:
+          - literal: harness
+          - literal: adapters
+          - literal: validate
+      run-on:
+        pre-commit: {}
+        pull-request: {}
     - id: env-validate
       type: check
       command:

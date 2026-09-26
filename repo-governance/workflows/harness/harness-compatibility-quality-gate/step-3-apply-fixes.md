@@ -43,7 +43,7 @@ lifecycle-evidence: {current-lifecycle-evidence}`
 - **Parity Invariant 5** (color-map or tier-map gap): adding a new color/tier requires a
   decision about role mapping that a fixer cannot make mechanically
 - Tier 1 → Tier 2 reclassification (requires authoring a new generated bridge and updating
-  the pre-push guard corpus)
+  the `harness-adapters` gate corpus)
 - Higher-precedence filename discoveries (AD3 implications require human judgment per the
   [Multi-Harness Binding Convention](../../../conventions/structure/multi-harness-binding.md))
 - New harness additions (full onboarding involves catalog row, binding directory decision,

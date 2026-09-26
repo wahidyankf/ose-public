@@ -1,6 +1,6 @@
 ---
 description: Operational notes on lifecycle delegation, retained parity, external research, idempotence, and bounds.
-when_to_use: Use when clarifying how this workflow relates to the pre-push binding guard or when Phase 1 actually runs.
+when_to_use: Use when clarifying how this workflow relates to the `harness-adapters` binding gate or when Phase 1 actually runs.
 ---
 
 # Notes

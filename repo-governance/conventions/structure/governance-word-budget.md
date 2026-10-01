@@ -18,7 +18,7 @@ Configured in the `governance-word-budget:` section of `repo-config.yml`; enforc
 | Surface                                                             | Budget class  |
 | ------------------------------------------------------------------- | ------------- |
 | `repo-governance/**/*.md`                                           | Instruction   |
-| `AGENTS.md` / `CLAUDE.md` / `RTK.md`                                | Instruction   |
+| `AGENTS.md` / `CLAUDE.md`                                           | Instruction   |
 | Every harness binding directory in the `harness:` registry (`*.md`) | Instruction   |
 | `**/README.md`                                                      | README        |
 | Resolved tree (`CLAUDE.md` + imports)                               | Resolved tree |

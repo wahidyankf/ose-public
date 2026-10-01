@@ -234,7 +234,6 @@ policies:
         - glob: "CONTRIBUTING.md"
         - glob: "LICENSING-NOTICE.md"
         - glob: "README.md"
-        - glob: "RTK.md"
         - glob: "SECURITY.md"
         - glob: "roadmap.md"
         - glob: "apps/ayokoding-www/README.md"
@@ -325,7 +324,6 @@ policies:
         - "**/SECURITY.md"
         - "**/*__linkedin__*.md"
         - "**/pull_request_template.md"
-        - "**/RTK.md"
     readme-index:
       trees:
         - path: .agents/agents
@@ -532,7 +530,6 @@ policies:
         - { glob: ".agents/**/*.md", target: 650, warn: 750, fail: 750 }
         - { glob: "AGENTS.md", target: 650, warn: 750, fail: 750 }
         - { glob: "CLAUDE.md", target: 650, warn: 750, fail: 750 }
-        - { glob: "RTK.md", target: 650, warn: 750, fail: 750 }
         - { glob: "repo-governance/**/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: ".codex/**/README.md", target: 900, warn: 1000, fail: 1000 }
         - { glob: ".opencode/**/README.md", target: 900, warn: 1000, fail: 1000 }

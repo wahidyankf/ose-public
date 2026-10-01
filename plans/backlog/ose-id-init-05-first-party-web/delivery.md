@@ -172,7 +172,7 @@ where safe, and baseline outputs under `plans/in-progress/ose-id-init-05-first-p
       verify with `rtk git -C worktrees/ose-id-init-05-first-party-web status --short`; create the
       execution branch inventory with path, branch, base/head SHAs, dirty-state
       classification, PR field, delivery status, and cleanup status.
-- [ ] [AI] Read root/nested instructions, RTK, predecessor as-built docs at its resolved archived path,
+- [ ] [AI] Read root/nested instructions, predecessor as-built docs at its resolved archived path,
       plan/spec/UI/accessibility/i18n/TDD rules, Next.js precedent, and worktree-to-PR workflow.
 - [ ] [AI] Initialize with `rtk ./hippo run --class transactional --resource-tier standard --disk-path . -- npm install` and
       `rtk npm run doctor` (read-only; only if it reports drift, run

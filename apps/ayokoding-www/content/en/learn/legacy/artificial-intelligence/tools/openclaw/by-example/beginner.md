@@ -18,6 +18,8 @@ OpenClaw is distributed as an npm package requiring Node.js 22.19+ or 24+ (recom
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 1: Installing OpenClaw
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: npm install, openclaw CLI, ~/.openclaw/, Gateway Daemon. Connections: npm install to openclaw CLI (global install), openclaw CLI to ~/.openclaw/ (onboard), ~/.openclaw/ to Gateway Daemon (start).
     A["npm install"]
     B["openclaw CLI"]
     C["~/.openclaw/"]
@@ -27,10 +29,15 @@ graph LR
     B -->|onboard| C
     C -->|start| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -78,7 +85,9 @@ The gateway is OpenClaw's core process — a WebSocket server on `ws://127.0.0.1
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["openclaw gateway start"]
+    accTitle: Example 3: Gateway Status and Control
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: openclaw gateway start, Gateway Process ws://127.0.0.1:18789, Channels Telegram, Slack..., LLM Providers Claude, GPT..., Tools exec, browser.... Connections: openclaw gateway start to Gateway Process ws://127.0.0.1:18789, Gateway Process ws://127.0.0.1:18789 to Channels Telegram, Slack..., Gateway Process ws://127.0.0.1:18789 to LLM Providers Claude, GPT..., Gateway Process ws://127.0.0.1:18789 to Tools exec, browser....
+    A["openclaw gateway<br/>start"]
     B["Gateway Process<br/>ws://127.0.0.1:18789"]
     C["Channels<br/>Telegram, Slack..."]
     D["LLM Providers<br/>Claude, GPT..."]
@@ -89,11 +98,17 @@ graph TD
     B <--> D
     B <--> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:
@@ -280,6 +295,8 @@ Control which tools the AI agent can use. This is your primary security boundary
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 9: Tool Allow and Deny Lists
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Agent Request, Tool Allowed?, Execute Tool, Deny + Log. Connections: Agent Request to Tool Allowed?, Tool Allowed? to Execute Tool (In allow list), Tool Allowed? to Deny + Log (In deny list), Tool Allowed? to Deny + Log (Not in either).
     A["Agent Request"]
     B{"Tool Allowed?"}
     C["Execute Tool"]
@@ -290,10 +307,15 @@ graph TD
     B -->|In deny list| D
     B -->|Not in either| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Configuration**:
@@ -600,6 +622,8 @@ The `browser` tool gives the agent a headless Chromium browser for interacting w
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 18: The browser Tool
+    accDescr: Sequence diagram between AI Agent, Headless Chromium, Web Page. Messages: AI Agent to Headless Chromium: browser.navigate(url); Headless Chromium to Web Page: HTTP request; Web Page to Headless Chromium: Rendered DOM; AI Agent to Headless Chromium: browser.click(login-btn); Headless Chromium to Web Page: Click event; AI Agent to Headless Chromium: browser.screenshot(); Headless Chromium to AI Agent: PNG image data.
     participant Agent as AI Agent
     participant Browser as Headless Chromium
     participant Page as Web Page
@@ -727,6 +751,8 @@ Skills are markdown files that teach the agent how to perform specific tasks. A 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 21: Your First Skill — Hello World
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: SKILL.md, YAML Frontmatter name, description, Markdown Body Instructions, Agent Behavior. Connections: SKILL.md to YAML Frontmatter name, description, SKILL.md to Markdown Body Instructions, YAML Frontmatter name, description to Agent Behavior, Markdown Body Instructions to Agent Behavior.
     A["SKILL.md"]
     B["YAML Frontmatter<br/>name, description"]
     C["Markdown Body<br/>Instructions"]
@@ -737,10 +763,15 @@ graph LR
     B --> D
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Skill file**:

@@ -14,6 +14,8 @@ This By Example tutorial teaches Pi Coding Agent through 80 self-contained, heav
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Tutorial Structure
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner Examples 1-27 0-40 coverage, Intermediate Examples 28-54 40-75 coverage, Advanced Examples 55-80 75-95 coverage. Connections: Beginner Examples 1-27 0-40 coverage to Intermediate Examples 28-54 40-75 coverage, Intermediate Examples 28-54 40-75 coverage to Advanced Examples 55-80 75-95 coverage.
     B["Beginner<br/>Examples 1-27<br/>0-40% coverage"]
     I["Intermediate<br/>Examples 28-54<br/>40-75% coverage"]
     A["Advanced<br/>Examples 55-80<br/>75-95% coverage"]
@@ -21,9 +23,13 @@ graph LR
     B --> I
     I --> A
 
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style I fill:#DE8F05,stroke:#000,color:#fff
-    style A fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class I pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class A pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## What This Tutorial Covers

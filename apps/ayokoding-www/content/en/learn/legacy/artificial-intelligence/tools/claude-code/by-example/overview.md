@@ -168,10 +168,12 @@ All diagrams use a color-blind friendly palette (Blue #0173B2, Orange #DE8F05, T
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Initial Setup 0-5, Quick Start 5-30, By Example: Beginner 0-40 Examples 1-30, By Example: Intermediate 40-75 Examples 31-60, By Example: Advanced 75-95 Examples 61-85. Connections: Initial Setup 0-5 to Quick Start 5-30, Quick Start 5-30 to By Example: Beginner 0-40 Examples 1-30, By Example: Beginner 0-40 Examples 1-30 to By Example: Intermediate 40-75 Examples 31-60, By Example: Intermediate 40-75 Examples 31-60 to By Example: Advanced 75-95 Examples 61-85.
     A["Initial Setup<br/>0-5%"]
     B["Quick Start<br/>5-30%"]
     C["By Example: Beginner<br/>0-40%<br/>Examples 1-30"]
-    D["By Example: Intermediate<br/>40-75%<br/>Examples 31-60"]
+    D["By Example:<br/>Intermediate<br/>40-75%<br/>Examples 31-60"]
     E["By Example: Advanced<br/>75-95%<br/>Examples 61-85"]
 
     A --> B
@@ -179,11 +181,17 @@ graph TD
     C --> D
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## What's Next?

@@ -280,11 +280,13 @@ compromise of one workspace does not compromise all workspaces.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 
 graph TD
+    accTitle: 3. Security Hardening
+    accDescr: Graph with 8 nodes and 10 connections. Nodes: Incoming message, Prompt injection scanner, Gateway auth middleware, Context assembly PII redaction, Agent Runtime permission enforcement, Tool sandbox process isolation, Audit logger append-only log, LLM Provider min-context policy. Connections: Incoming message to Prompt injection scanner, Prompt injection scanner to Gateway auth middleware (clean), Prompt injection scanner to Audit logger append-only log (injection detected), Gateway auth middleware to Context assembly PII redaction (authorized), Context assembly PII redaction to Agent Runtime permission enforcement, Agent Runtime permission enforcement to Tool sandbox process isolation, Tool sandbox process isolation to Agent Runtime permission enforcement (tool result), Agent Runtime permission enforcement to LLM Provider min-context policy, Agent Runtime permission enforcement to Audit logger append-only log, Tool sandbox process isolation to Audit logger append-only log.
     MSG["Incoming message"]:::blue
     PIX["Prompt injection<br/>scanner"]:::orange
     GW["Gateway auth<br/>middleware"]:::orange
     CTX["Context assembly<br/>PII redaction"]:::orange
-    RT["Agent Runtime<br/>permission enforcement"]:::teal
+    RT["Agent Runtime<br/>permission<br/>enforcement"]:::teal
     SBX["Tool sandbox<br/>process isolation"]:::teal
     AUD["Audit logger<br/>append-only log"]:::brown
     LLM["LLM Provider<br/>min-context policy"]:::blue
@@ -301,9 +303,10 @@ graph TD
     SBX --> AUD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -558,6 +561,8 @@ under-engineering complex ones.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 
 graph TD
+    accTitle: 5. Multi-Agent Patterns
+    accDescr: Graph with 10 nodes and 10 connections. Nodes: User request, Orchestrator, Specialist A web research, Specialist B CRM lookup, Specialist C news search, Aggregator combine results, User request, Stage 1 research, Stage 2 summarize, Stage 3 format for CRM. Connections: User request to Orchestrator, Orchestrator to Specialist A web research, Orchestrator to Specialist B CRM lookup, Orchestrator to Specialist C news search, Specialist A web research to Aggregator combine results, Specialist B CRM lookup to Aggregator combine results, Specialist C news search to Aggregator combine results, User request to Stage 1 research, Stage 1 research to Stage 2 summarize (raw research), Stage 2 summarize to Stage 3 format for CRM (summary).
     subgraph "Pattern 1: Fan-out (parallel)"
         U1["User request"]:::blue
         O1["Orchestrator"]:::orange
@@ -585,10 +590,11 @@ graph TD
     end
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -941,6 +947,8 @@ worth understanding for contributors and advanced customizers.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 
 graph TD
+    accTitle: 8. OpenClaw and Pi Architecture
+    accDescr: Graph with 10 nodes and 3 connections. Nodes: Agentic loop LLM → tool → LLM, 4 primitive tools Read Write Edit Bash, Context files AGENTS.md SYSTEM.md, Agentic loop same core pattern, Tool registry TOOLS.md + custom, Context files AGENTS.md SOUL.md TOOLS.md, Channel System Pi has no concept of channels, Skills System Pi: SKILL.md per session OpenClaw: selective injection, Memory System Pi: session only OpenClaw: semantic long-term, Gateway Pi has no equivalent. Connections: Agentic loop LLM → tool → LLM to Agentic loop same core pattern (same pattern), Context files AGENTS.md SYSTEM.md to Context files AGENTS.md SOUL.md TOOLS.md (extended), 4 primitive tools Read Write Edit Bash to Tool registry TOOLS.md + custom (formalized).
     subgraph "Pi: minimal harness"
         P_LOOP["Agentic loop<br/>LLM → tool → LLM"]:::blue
         P_TOOLS["4 primitive tools<br/>Read Write Edit Bash"]:::orange
@@ -950,10 +958,10 @@ graph TD
     subgraph "OpenClaw: full framework"
         OC_LOOP["Agentic loop<br/>same core pattern"]:::blue
         OC_TOOLS["Tool registry<br/>TOOLS.md + custom"]:::orange
-        OC_CTX["Context files<br/>AGENTS.md SOUL.md TOOLS.md"]:::teal
-        OC_CHAN["Channel System<br/>Pi has no concept of channels"]:::purple
-        OC_SK["Skills System<br/>Pi: SKILL.md per session<br/>OpenClaw: selective injection"]:::purple
-        OC_MEM["Memory System<br/>Pi: session only<br/>OpenClaw: semantic long-term"]:::purple
+        OC_CTX["Context files<br/>AGENTS.md SOUL.md<br/>TOOLS.md"]:::teal
+        OC_CHAN["Channel System<br/>Pi has no concept of<br/>channels"]:::purple
+        OC_SK["Skills System<br/>Pi: SKILL.md per<br/>session<br/>OpenClaw: selective<br/>injection"]:::purple
+        OC_MEM["Memory System<br/>Pi: session only<br/>OpenClaw: semantic<br/>long-term"]:::purple
         OC_GW["Gateway<br/>Pi has no equivalent"]:::purple
     end
 
@@ -962,9 +970,10 @@ graph TD
     P_TOOLS -.->|"formalized"| OC_TOOLS
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

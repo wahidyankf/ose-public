@@ -14,10 +14,10 @@ boundaries in the reverse direction.
 flowchart LR
     accTitle: Dependency Rule
     accDescr: Inbound Adapters\nHTTP, CLI, GraphQL leads to Application\nUse-cases, Ports; Application\nUse-cases, Ports leads to Domain\nEntities, Rules; Outbound Adapters\nDB, HTTP clients leads to Application\nUse-cases, Ports.
-    IA["Inbound Adapters\n(HTTP, CLI, GraphQL)"]:::outer
-    AP["Application\n(Use-cases, Ports)"]:::app
-    DO["Domain\n(Entities, Rules)"]:::domain
-    OA["Outbound Adapters\n(DB, HTTP clients)"]:::outer
+    IA["Inbound Adapters<br/>(HTTP, CLI, GraphQL)"]:::outer
+    AP["Application<br/>(Use-cases, Ports)"]:::app
+    DO["Domain<br/>(Entities, Rules)"]:::domain
+    OA["Outbound Adapters<br/>(DB, HTTP clients)"]:::outer
 
     IA --> AP
     AP --> DO

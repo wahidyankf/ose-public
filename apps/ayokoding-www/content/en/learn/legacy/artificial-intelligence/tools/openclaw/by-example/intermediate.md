@@ -18,6 +18,8 @@ Telegram is the most common channel for OpenClaw. Configuration requires a bot t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 28: Telegram Channel Setup
+    accDescr: Sequence diagram between Telegram User, Telegram API, OpenClaw Gateway, LLM Provider. Messages: Telegram User to Telegram API: /ask What is Rust?; Telegram API to OpenClaw Gateway: Webhook message; OpenClaw Gateway to LLM Provider: Forward with context; LLM Provider to OpenClaw Gateway: Response text; OpenClaw Gateway to Telegram API: Send reply; Telegram API to Telegram User: Rust is a systems....
     participant User as Telegram User
     participant TG as Telegram API
     participant GW as OpenClaw Gateway
@@ -723,6 +725,8 @@ Lobster is OpenClaw's companion workflow engine — a typed, local-first "macro 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 45: Your First Lobster Workflow
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Step 1 Shell command, Step 2 Process data, Step 3 LLM analysis, Output. Connections: Step 1 Shell command to Step 2 Process data (stdout), Step 2 Process data to Step 3 LLM analysis (json), Step 3 LLM analysis to Output (text).
     A["Step 1<br/>Shell command"]
     B["Step 2<br/>Process data"]
     C["Step 3<br/>LLM analysis"]
@@ -732,10 +736,15 @@ graph LR
     B -->|json| C
     C -->|text| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Workflow file**:
@@ -1070,6 +1079,8 @@ Subagents are independent agent instances spawned by a parent agent to handle su
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 52: Subagents — Delegating Tasks
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Parent Agent, Subagent 1 Research, Subagent 2 Code Generation, Subagent 3 Testing, Combined Result. Connections: Parent Agent to Subagent 1 Research, Parent Agent to Subagent 2 Code Generation, Parent Agent to Subagent 3 Testing, Subagent 1 Research to Combined Result, Subagent 2 Code Generation to Combined Result, Subagent 3 Testing to Combined Result.
     A["Parent Agent"]
     B["Subagent 1<br/>Research"]
     C["Subagent 2<br/>Code Generation"]
@@ -1083,11 +1094,17 @@ graph TD
     C --> E
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Configuration**:

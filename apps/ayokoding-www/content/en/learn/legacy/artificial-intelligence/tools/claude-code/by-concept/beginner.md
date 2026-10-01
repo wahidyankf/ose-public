@@ -152,11 +152,13 @@ guide it toward completion.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: 3. Interactive Mode
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: You type a message, Claude Code TUI terminal interface, Agentic Loop reason → call tool → read result, Tool Output shown in terminal, Response Claude reports result. Connections: You type a message to Claude Code TUI terminal interface (Enter), Claude Code TUI terminal interface to Agentic Loop reason → call tool → read result, Agentic Loop reason → call tool → read result to Tool Output shown in terminal, Tool Output shown in terminal to Agentic Loop reason → call tool → read result, Agentic Loop reason → call tool → read result to Response Claude reports result (task complete), Response Claude reports result to You type a message (next message).
     YOU["You<br/>type a message"]:::blue
     TUI["Claude Code TUI<br/>terminal interface"]:::orange
-    LOOP["Agentic Loop<br/>reason → call tool → read result"]:::teal
+    LOOP["Agentic Loop<br/>reason → call tool →<br/>read result"]:::teal
     OUTPUT["Tool Output<br/>shown in terminal"]:::purple
-    DONE["Response<br/>Claude reports result"]:::brown
+    DONE["Response<br/>Claude reports<br/>result"]:::brown
 
     YOU -->|"Enter"| TUI
     TUI --> LOOP
@@ -166,10 +168,11 @@ graph LR
     DONE -->|"next message"| YOU
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 When you run `claude` without arguments, the terminal changes into a full-screen TUI
@@ -573,19 +576,22 @@ closest equivalent to the onboarding document you would give a new team member.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    G["~/.claude/CLAUDE.md<br/>Global config<br/>applies to all projects"]:::blue
+    accTitle: 8. CLAUDE.md: Project Context
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: ~/.claude/CLAUDE.md Global config applies to all projects, ./CLAUDE.md Project config applies to this repo, ./src/CLAUDE.md Subdirectory config applies to src/ only, Active session merged context. Connections: ~/.claude/CLAUDE.md Global config applies to all projects to Active session merged context (loaded first), ./CLAUDE.md Project config applies to this repo to Active session merged context (merged second), ./src/CLAUDE.md Subdirectory config applies to src/ only to Active session merged context (merged last (if in src/)).
+    G["~/.claude/CLAUDE.md<br/>Global config<br/>applies to all<br/>projects"]:::blue
     P["./CLAUDE.md<br/>Project config<br/>applies to this repo"]:::orange
     S["./src/CLAUDE.md<br/>Subdirectory config<br/>applies to src/ only"]:::teal
     SESSION["Active session<br/>merged context"]:::purple
 
     G -->|"loaded first"| SESSION
     P -->|"merged second"| SESSION
-    S -->|"merged last (if in src/)"| SESSION
+    S -->|"merged last (if in<br/>src/)"| SESSION
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 `CLAUDE.md` has a three-level scope hierarchy. The global file at `~/.claude/CLAUDE.md`
@@ -675,10 +681,12 @@ unexpected behavior, and know when to intervene.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: 9. The Agentic Loop
+    accDescr: Graph with 7 nodes and 10 connections. Nodes: Receive message from user, Reason about task model decides next action, Call a tool Read /Write /Edit / Bash /Grep /Glob, Receive tool result file contents / command output / matches, Task complete?, Need user input?, Send response to user. Connections: Receive message from user to Reason about task model decides next action, Reason about task model decides next action to Call a tool Read /Write /Edit / Bash /Grep /Glob, Call a tool Read /Write /Edit / Bash /Grep /Glob to Receive tool result file contents / command output / matches, Receive tool result file contents / command output / matches to Reason about task model decides next action, Reason about task model decides next action to Task complete?, Task complete? to Call a tool Read /Write /Edit / Bash /Grep /Glob (no), Task complete? to Send response to user (yes), Reason about task model decides next action to Need user input?, Need user input? to Send response to user (yes), Send response to user to Receive message from user (user replies).
     MSG["Receive message<br/>from user"]:::blue
-    REASON["Reason about task<br/>model decides next action"]:::orange
-    TOOL["Call a tool<br/>Read / Write / Edit / Bash / Grep / Glob"]:::teal
-    RESULT["Receive tool result<br/>file contents / command output / matches"]:::purple
+    REASON["Reason about task<br/>model decides next<br/>action"]:::orange
+    TOOL["Call a tool<br/>Read /Write /Edit /<br/>Bash /Grep /Glob"]:::teal
+    RESULT["Receive tool result<br/>file contents /<br/>command output /<br/>matches"]:::purple
     CHECK{"Task complete?"}:::brown
     CLARIFY{"Need user input?"}:::orange
     RESPOND["Send response<br/>to user"]:::blue
@@ -695,10 +703,11 @@ graph TD
     RESPOND -->|"user replies"| MSG
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The loop has four stages. First, Claude Code receives your message and reasons about what

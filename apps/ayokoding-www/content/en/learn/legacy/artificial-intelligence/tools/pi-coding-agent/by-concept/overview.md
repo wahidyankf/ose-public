@@ -19,6 +19,8 @@ concepts introduced early are assumed known in later sections.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart TD
+    accTitle: Learning Path
+    accDescr: Flowchart with 44 nodes and 43 connections. Nodes: Start here, Beginner Sections 1–16, Intermediate Sections 17–29, Advanced Sections 30–40, What is Pi?, Four Primitive Tools, Installation, Interactive TUI Mode, Your First Session, AGENTS.md: Context, SYSTEM.md: Override, Session Persistence, and 32 more. Connections: Start here to Beginner Sections 1–16, Beginner Sections 1–16 to What is Pi?, What is Pi? to Four Primitive Tools, Four Primitive Tools to Installation, Installation to Interactive TUI Mode, Interactive TUI Mode to Your First Session, Your First Session to AGENTS.md: Context, AGENTS.md: Context to SYSTEM.md: Override, SYSTEM.md: Override to Session Persistence, Session Persistence to Tree-Structured Sessions, Tree-Structured Sessions to Multi-Provider LLM, Multi-Provider LLM to Pi vs. Other Agents, and 31 more.
     START(["Start here"]):::teal
 
     BEG["Beginner<br/>Sections 1–16"]:::blue
@@ -33,35 +35,35 @@ flowchart TD
     B6["AGENTS.md: Context"]:::blue
     B7["SYSTEM.md: Override"]:::blue
     B8["Session Persistence"]:::blue
-    B9["Tree-Structured Sessions"]:::blue
+    B9["Tree-Structured<br/>Sessions"]:::blue
     B10["Multi-Provider LLM"]:::blue
     B11["Pi vs. Other Agents"]:::blue
     B12["Slash Commands"]:::blue
     B13["Session Sharing"]:::blue
     B14["Print/JSON Mode"]:::blue
     B15["Community Extensions"]:::blue
-    B16["Basic Context Engineering"]:::blue
+    B16["Basic Context<br/>Engineering"]:::blue
 
-    I1["Custom TypeScript Extension"]:::orange
-    I2["Registering Custom Tools"]:::orange
+    I1["Custom TypeScript<br/>Extension"]:::orange
+    I2["Registering Custom<br/>Tools"]:::orange
     I3["Skills System"]:::orange
-    I4["Dynamic Skill Injection"]:::orange
-    I5["Context Window Management"]:::orange
-    I6["Branching for Code Review"]:::orange
+    I4["Dynamic Skill<br/>Injection"]:::orange
+    I5["Context Window<br/>Management"]:::orange
+    I6["Branching for Code<br/>Review"]:::orange
     I7["RPC Protocol Mode"]:::orange
     I8["SDK: pi-agent-core"]:::orange
     I9["pi-tui Components"]:::orange
-    I10["Supply-Chain Hardening"]:::orange
+    I10["Supply-Chain<br/>Hardening"]:::orange
     I11["Multi-Agent Patterns"]:::orange
     I12["Prompt Templates"]:::orange
-    I13["pi-ai: Unified LLM API"]:::orange
+    I13["pi-ai: Unified LLM<br/>API"]:::orange
 
     A1["Self-Extensibility"]:::purple
-    A2["Domain-Specific Agent"]:::purple
-    A3["Custom pi-tui Widgets"]:::purple
-    A4["Bedrock + Ollama Offline"]:::purple
-    A5["Session State Deep Dive"]:::purple
-    A6["Hot-Reloading Extensions"]:::purple
+    A2["Domain-Specific<br/>Agent"]:::purple
+    A3["Custom pi-tui<br/>Widgets"]:::purple
+    A4["Bedrock + Ollama<br/>Offline"]:::purple
+    A5["Session State Deep<br/>Dive"]:::purple
+    A6["Hot-Reloading<br/>Extensions"]:::purple
     A7["OpenClaw + Pi"]:::purple
     A8["CI/CD Integration"]:::purple
     A9["Production Hardening"]:::purple
@@ -79,10 +81,11 @@ flowchart TD
     ADV --> A1 --> A2 --> A3 --> A4 --> A5 --> A6
     A6 --> A7 --> A8 --> A9 --> A10 --> A11
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Map

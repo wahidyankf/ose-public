@@ -38,22 +38,25 @@ This section covers what makes a `CLAUDE.md` effective rather than merely presen
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: 1. Writing Effective CLAUDE.md
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: ~/.claude/CLAUDE.md Personal conventions applies everywhere, ./CLAUDE.md Team conventions checked into git, @docs/ architecture.md imported file loaded at session start, ./src/CLAUDE.md Subsystem conventions loaded when in src/, Session context all merged. Connections: ~/.claude/CLAUDE.md Personal conventions applies everywhere to Session context all merged (loaded first), ./CLAUDE.md Team conventions checked into git to Session context all merged (merged second), @docs/ architecture.md imported file loaded at session start to Session context all merged (imported by PROJECT), ./src/CLAUDE.md Subsystem conventions loaded when in src/ to Session context all merged (merged if cwd is src/).
     GLOBAL["~/.claude/CLAUDE.md<br/>Personal conventions<br/>applies everywhere"]:::blue
     PROJECT["./CLAUDE.md<br/>Team conventions<br/>checked into git"]:::orange
-    ARCH["@docs/architecture.md<br/>imported file<br/>loaded at session start"]:::teal
-    SUBDIR["./src/CLAUDE.md<br/>Subsystem conventions<br/>loaded when in src/"]:::purple
+    ARCH["@docs/<br/>architecture.md<br/>imported file<br/>loaded at session<br/>start"]:::teal
+    SUBDIR["./src/CLAUDE.md<br/>Subsystem<br/>conventions<br/>loaded when in src/"]:::purple
 
     GLOBAL -->|"loaded first"| SESSION
     PROJECT -->|"merged second"| SESSION
-    ARCH -->|"imported by PROJECT"| SESSION
-    SUBDIR -->|"merged if cwd is src/"| SESSION
+    ARCH -->|"imported by<br/>PROJECT"| SESSION
+    SUBDIR -->|"merged if cwd is<br/>src/"| SESSION
     SESSION["Session context<br/>all merged"]:::brown
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **What to include**: build and test commands (so Claude Code never guesses wrong),
@@ -154,16 +157,19 @@ take precedence over global settings for overlapping keys.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
-    GLOBAL["~/.claude/settings.json<br/>Global defaults"]:::blue
-    PROJECT[".claude/settings.json<br/>Project overrides"]:::orange
-    MERGED["Effective permissions<br/>for this session"]:::teal
+    accTitle: 2. settings.json: Permissions
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: ~/.claude/ settings.json Global defaults, .claude/ settings.json Project overrides, Effective permissions for this session. Connections: ~/.claude/ settings.json Global defaults to Effective permissions for this session (base config), .claude/ settings.json Project overrides to Effective permissions for this session (overrides global).
+    GLOBAL["~/.claude/<br/>settings.json<br/>Global defaults"]:::blue
+    PROJECT[".claude/<br/>settings.json<br/>Project overrides"]:::orange
+    MERGED["Effective<br/>permissions<br/>for this session"]:::teal
 
     GLOBAL -->|"base config"| MERGED
     PROJECT -->|"overrides global"| MERGED
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```json
@@ -254,14 +260,16 @@ they can block tool calls, log activity, or trigger external processes.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    MSG["User message submitted"]:::blue
-    UPS["UserPromptSubmit hook<br/>runs before message sent to model"]:::orange
+    accTitle: 3. Hooks System
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: User message submitted, UserPromptSubmit hook runs before message sent to model, Model reasons decides tool call, PreToolUse hook runs before tool executes can block the call, Tool executes Read /Write /Edit / Bash, PostToolUse hook runs after tool completes sees output, Loop continues or task completes, Stop hook runs when Claude Code finishes its turn. Connections: User message submitted to UserPromptSubmit hook runs before message sent to model, UserPromptSubmit hook runs before message sent to model to Model reasons decides tool call, Model reasons decides tool call to PreToolUse hook runs before tool executes can block the call, PreToolUse hook runs before tool executes can block the call to Tool executes Read /Write /Edit / Bash (approved), PreToolUse hook runs before tool executes can block the call to Model reasons decides tool call (blocked), Tool executes Read /Write /Edit / Bash to PostToolUse hook runs after tool completes sees output, PostToolUse hook runs after tool completes sees output to Loop continues or task completes, Loop continues or task completes to PreToolUse hook runs before tool executes can block the call (next tool), Loop continues or task completes to Stop hook runs when Claude Code finishes its turn (turn complete).
+    MSG["User message<br/>submitted"]:::blue
+    UPS["UserPromptSubmit<br/>hook<br/>runs before message<br/>sent to model"]:::orange
     MODEL["Model reasons<br/>decides tool call"]:::teal
-    PRE["PreToolUse hook<br/>runs before tool executes<br/>can block the call"]:::orange
-    TOOL["Tool executes<br/>Read / Write / Edit / Bash"]:::teal
-    POST["PostToolUse hook<br/>runs after tool completes<br/>sees output"]:::orange
+    PRE["PreToolUse hook<br/>runs before tool<br/>executes<br/>can block the call"]:::orange
+    TOOL["Tool executes<br/>Read /Write /Edit /<br/>Bash"]:::teal
+    POST["PostToolUse hook<br/>runs after tool<br/>completes<br/>sees output"]:::orange
     LOOP["Loop continues<br/>or task completes"]:::teal
-    STOP["Stop hook<br/>runs when Claude Code<br/>finishes its turn"]:::orange
+    STOP["Stop hook<br/>runs when Claude<br/>Code<br/>finishes its turn"]:::orange
 
     MSG --> UPS
     UPS --> MODEL
@@ -274,8 +282,9 @@ graph TD
     LOOP -->|"turn complete"| STOP
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Four hook types are available. `PreToolUse` fires before Claude Code executes a tool
@@ -410,6 +419,8 @@ queries, external APIs, and any other capability a server can expose.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: 4. MCP Servers
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Claude Code CLI process, Playwright MCP browser automation, Database MCP SQL queries, Custom MCP your API, Real Browser chromium, Database postgres / sqlite, External API your service. Connections: Claude Code CLI process to Playwright MCP browser automation (tool call: browser_navigate), Claude Code CLI process to Database MCP SQL queries (tool call: sql_query), Claude Code CLI process to Custom MCP your API (tool call: custom_action), Playwright MCP browser automation to Real Browser chromium, Database MCP SQL queries to Database postgres / sqlite, Custom MCP your API to External API your service.
     CC["Claude Code<br/>CLI process"]:::blue
     MCP1["Playwright MCP<br/>browser automation"]:::orange
     MCP2["Database MCP<br/>SQL queries"]:::teal
@@ -418,18 +429,19 @@ graph LR
     DB["Database<br/>postgres / sqlite"]:::brown
     API["External API<br/>your service"]:::brown
 
-    CC -->|"tool call: browser_navigate"| MCP1
-    CC -->|"tool call: sql_query"| MCP2
-    CC -->|"tool call: custom_action"| MCP3
+    CC -->|"tool call:<br/>browser_navigate"| MCP1
+    CC -->|"tool call:<br/>sql_query"| MCP2
+    CC -->|"tool call:<br/>custom_action"| MCP3
     MCP1 --> BROWSER
     MCP2 --> DB
     MCP3 --> API
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 MCP servers are configured in `.claude/settings.json` under `mcpServers`. Each entry
@@ -523,12 +535,14 @@ distributes that work across parallel execution contexts.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    ORCH["Orchestrator Agent<br/>receives task, plans subagents"]:::blue
-    S1["Subagent 1<br/>implement UserService"]:::orange
-    S2["Subagent 2<br/>implement PaymentService"]:::orange
+    accTitle: 5. Subagents
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: Orchestrator Agent receives task, plans subagents, Subagent 1 implement UserService, Subagent 2 implement PaymentService, Subagent 3 write tests for both, Result 1 UserService.ts done, Result 2 PaymentService.ts done, Result 3 tests written, Orchestrator integrates results reports to user. Connections: Orchestrator Agent receives task, plans subagents to Subagent 1 implement UserService (spawn parallel), Orchestrator Agent receives task, plans subagents to Subagent 2 implement PaymentService (spawn parallel), Subagent 1 implement UserService to Result 1 UserService.ts done, Subagent 2 implement PaymentService to Result 2 PaymentService.ts done, Result 1 UserService.ts done to Orchestrator Agent receives task, plans subagents (both complete), Result 2 PaymentService.ts done to Orchestrator Agent receives task, plans subagents (both complete), Orchestrator Agent receives task, plans subagents to Subagent 3 write tests for both (spawn sequential), Subagent 3 write tests for both to Result 3 tests written, Result 3 tests written to Orchestrator integrates results reports to user.
+    ORCH["Orchestrator Agent<br/>receives task, plans<br/>subagents"]:::blue
+    S1["Subagent 1<br/>implement<br/>UserService"]:::orange
+    S2["Subagent 2<br/>implement<br/>PaymentService"]:::orange
     S3["Subagent 3<br/>write tests for both"]:::teal
     R1["Result 1<br/>UserService.ts done"]:::orange
-    R2["Result 2<br/>PaymentService.ts done"]:::orange
+    R2["Result 2<br/>PaymentService.ts<br/>done"]:::orange
     R3["Result 3<br/>tests written"]:::teal
     FINAL["Orchestrator<br/>integrates results<br/>reports to user"]:::blue
 
@@ -543,8 +557,9 @@ graph TD
     R3 --> FINAL
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 When Claude Code calls the `Agent` tool, it specifies a task description, an optional
@@ -1020,12 +1035,14 @@ productive sessions.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
-    BUDGET["Context Window<br/>~200k tokens (Sonnet)"]:::blue
+    accTitle: 10. Context Management
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Context Window ~200k tokens (Sonnet), CLAUDE.md ~2k tokens, Memory ~1k tokens, Conversation history grows with each turn, File contents read largest variable, Tool outputs test results, git diff. Connections: CLAUDE.md ~2k tokens to Context Window ~200k tokens (Sonnet), Memory ~1k tokens to Context Window ~200k tokens (Sonnet), Conversation history grows with each turn to Context Window ~200k tokens (Sonnet), File contents read largest variable to Context Window ~200k tokens (Sonnet), Tool outputs test results, git diff to Context Window ~200k tokens (Sonnet).
+    BUDGET["Context Window<br/>~200k tokens<br/>(Sonnet)"]:::blue
     CM["CLAUDE.md<br/>~2k tokens"]:::orange
     MEM["Memory<br/>~1k tokens"]:::orange
     CONV["Conversation history<br/>grows with each turn"]:::teal
     FILES["File contents read<br/>largest variable"]:::purple
-    TOOLS["Tool outputs<br/>test results, git diff"]:::brown
+    TOOLS["Tool outputs<br/>test results, git<br/>diff"]:::brown
 
     CM --> BUDGET
     MEM --> BUDGET
@@ -1034,10 +1051,11 @@ graph LR
     TOOLS --> BUDGET
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 File contents are the largest context consumer. A single 1,000-line TypeScript file
@@ -1118,19 +1136,22 @@ makes experimental changes without affecting your main working directory).
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    REPO["Git Repository<br/>.git/ (shared object store)"]:::blue
+    accTitle: 11. Worktrees
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Git Repository .git/(shared object store), Main checkout branch: main path: ./, Worktree 1 branch: worktree-feature-x path: worktrees/feature-x/, Worktree 2 branch: worktree-bugfix-y path: worktrees/bugfix-y/. Connections: Git Repository .git/(shared object store) to Main checkout branch: main path: ./, Git Repository .git/(shared object store) to Worktree 1 branch: worktree-feature-x path: worktrees/feature-x/, Git Repository .git/(shared object store) to Worktree 2 branch: worktree-bugfix-y path: worktrees/bugfix-y/.
+    REPO["Git Repository<br/>.git/(shared object<br/>store)"]:::blue
     MAIN["Main checkout<br/>branch: main<br/>path: ./"]:::orange
-    WT1["Worktree 1<br/>branch: worktree-feature-x<br/>path: worktrees/feature-x/"]:::teal
-    WT2["Worktree 2<br/>branch: worktree-bugfix-y<br/>path: worktrees/bugfix-y/"]:::purple
+    WT1["Worktree 1<br/>branch:<br/>worktree-feature-x<br/>path:<br/>worktrees/feature-x/"]:::teal
+    WT2["Worktree 2<br/>branch:<br/>worktree-bugfix-y<br/>path:<br/>worktrees/bugfix-y/"]:::purple
 
     REPO --- MAIN
     REPO --- WT1
     REPO --- WT2
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1319,16 +1340,18 @@ of a task are truly independent is the design skill.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    TASK["Complex task<br/>decompose into subtasks"]:::blue
-    DEP["Dependency analysis<br/>which tasks are independent?"]:::orange
+    accTitle: 13. Parallel Subagent Patterns
+    accDescr: Graph with 10 nodes and 12 connections. Nodes: Complex task decompose into subtasks, Dependency analysis which tasks are independent?, Independent task A, Independent task B, Independent task C, Dependent task D needs As output, Orchestrator spawns parallel where possible, Parallel batch 1 A + B + C simultaneously, Sequential step D after A completes, Aggregated result. Connections: Complex task decompose into subtasks to Dependency analysis which tasks are independent?, Dependency analysis which tasks are independent? to Independent task A, Dependency analysis which tasks are independent? to Independent task B, Dependency analysis which tasks are independent? to Independent task C, Dependency analysis which tasks are independent? to Dependent task D needs As output, Independent task A to Orchestrator spawns parallel where possible, Independent task B to Orchestrator spawns parallel where possible, Independent task C to Orchestrator spawns parallel where possible, Dependent task D needs As output to Orchestrator spawns parallel where possible, Orchestrator spawns parallel where possible to Parallel batch 1 A + B + C simultaneously, Parallel batch 1 A + B + C simultaneously to Sequential step D after A completes (A,B,C complete), Sequential step D after A completes to Aggregated result.
+    TASK["Complex task<br/>decompose into<br/>subtasks"]:::blue
+    DEP["Dependency analysis<br/>which tasks are<br/>independent?"]:::orange
 
     IND1["Independent task A"]:::teal
     IND2["Independent task B"]:::teal
     IND3["Independent task C"]:::teal
     DEP1["Dependent task D<br/>needs A's output"]:::purple
 
-    ORCH["Orchestrator<br/>spawns parallel where possible"]:::blue
-    P1["Parallel batch 1<br/>A + B + C simultaneously"]:::teal
+    ORCH["Orchestrator<br/>spawns parallel<br/>where possible"]:::blue
+    P1["Parallel batch 1<br/>A + B + C<br/>simultaneously"]:::teal
     S1["Sequential step<br/>D after A completes"]:::purple
     RESULT["Aggregated result"]:::brown
 
@@ -1343,10 +1366,11 @@ graph TD
     S1 --> RESULT
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Three common parallel patterns:

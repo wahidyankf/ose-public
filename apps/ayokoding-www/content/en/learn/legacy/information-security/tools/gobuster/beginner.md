@@ -40,11 +40,13 @@ Understanding how Gobuster works helps you use it effectively.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Gobuster Architecture Overview
+    accDescr: Flowchart with 11 nodes and 12 connections. Nodes: Wordlist File, Gobuster Core, Mode Selection, HTTP Requests, DNS Queries, Virtual Host Requests, Target Web Server, DNS Resolver, Response Analysis, Filtered Results, Output Format. Connections: Wordlist File to Gobuster Core, Gobuster Core to Mode Selection, Mode Selection to HTTP Requests (dir), Mode Selection to DNS Queries (dns), Mode Selection to Virtual Host Requests (vhost), HTTP Requests to Target Web Server, DNS Queries to DNS Resolver, Virtual Host Requests to Target Web Server, Target Web Server to Response Analysis, DNS Resolver to Response Analysis, Response Analysis to Filtered Results, Filtered Results to Output Format.
     A[Wordlist File] --> B[Gobuster Core]
     B --> C{Mode Selection}
     C -->|dir| D[HTTP Requests]
     C -->|dns| E[DNS Queries]
-    C -->|vhost| F[Virtual Host Requests]
+    C -->|vhost| F[Virtual Host<br/>Requests]
     D --> G[Target Web Server]
     E --> H[DNS Resolver]
     F --> G
@@ -53,17 +55,23 @@ flowchart TD
     I --> J[Filtered Results]
     J --> K[Output Format]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#000
-    style H fill:#CA9161,stroke:#000,color:#000
-    style I fill:#0173B2,stroke:#000,color:#fff
-    style J fill:#DE8F05,stroke:#000,color:#000
-    style K fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-CA9161
+    class I pal-0173B2
+    class J pal-DE8F05
+    class K pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Components**:
@@ -285,23 +293,31 @@ Some domains use wildcard DNS (\*.example.com resolves to the same IP). Gobuster
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: DNS Enumeration Strategy
+    accDescr: Flowchart with 8 nodes and 8 connections. Nodes: Start DNS Enum, Use Small Wordlist, Found Subdomains?, Use Larger Wordlist, Check Wildcard DNS, Enumerate Each Subdomain, Try Different Wordlist, Document Findings. Connections: Start DNS Enum to Use Small Wordlist, Use Small Wordlist to Found Subdomains?, Found Subdomains? to Use Larger Wordlist (Yes), Found Subdomains? to Check Wildcard DNS (No), Use Larger Wordlist to Enumerate Each Subdomain, Check Wildcard DNS to Try Different Wordlist, Enumerate Each Subdomain to Document Findings, Try Different Wordlist to Found Subdomains?.
     A[Start DNS Enum] --> B[Use Small Wordlist]
     B --> C{Found Subdomains?}
     C -->|Yes| D[Use Larger Wordlist]
     C -->|No| E[Check Wildcard DNS]
-    D --> F[Enumerate Each Subdomain]
-    E --> G[Try Different Wordlist]
+    D --> F[Enumerate Each<br/>Subdomain]
+    E --> G[Try Different<br/>Wordlist]
     F --> H[Document Findings]
     G --> C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#000
-    style H fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-DE8F05
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Recommended Wordlists for DNS**:
@@ -510,6 +526,8 @@ gobuster dir -u http://example.com -w combined.txt
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Wordlist Optimization Strategy
+    accDescr: Flowchart with 8 nodes and 8 connections. Nodes: Start Enumeration, Small Wordlist, Found Results?, Use Medium Wordlist, Try Tech-Specific, Focus on Discoveries, Custom Wordlist, Document Findings. Connections: Start Enumeration to Small Wordlist, Small Wordlist to Found Results?, Found Results? to Use Medium Wordlist (Many), Found Results? to Try Tech-Specific (Few), Use Medium Wordlist to Focus on Discoveries, Try Tech-Specific to Custom Wordlist, Focus on Discoveries to Document Findings, Custom Wordlist to Document Findings.
     A[Start Enumeration] --> B[Small Wordlist]
     B --> C{Found Results?}
     C -->|Many| D[Use Medium Wordlist]
@@ -519,14 +537,20 @@ flowchart TD
     F --> H[Document Findings]
     G --> H
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#000
-    style H fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-DE8F05
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Real-World Enumeration Scenarios
@@ -780,6 +804,8 @@ gobuster dir -u http://example.com \
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Balancing Speed and Stealth
+    accDescr: Flowchart with 9 nodes and 6 connections. Nodes: Stealth Mode, 10 threads, 100ms delay, Balanced Mode, 30 threads, No delay, Aggressive Mode, 100 threads, No delay. Connections: Stealth Mode to 10 threads, 10 threads to 100ms delay, Balanced Mode to 30 threads, 30 threads to No delay, Aggressive Mode to 100 threads, 100 threads to No delay.
     A[Stealth Mode] --> B[10 threads]
     B --> C[100ms delay]
 
@@ -789,15 +815,20 @@ flowchart LR
     G[Aggressive Mode] --> H[100 threads]
     H --> I[No delay]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#000
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    class E pal-029E73
+    class F pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-029E73
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Stealth Configuration** (avoid detection):

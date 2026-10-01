@@ -6,7 +6,6 @@ when_to_use: "Use when you need a visual summary of the workflow's control flow 
 # Workflow Overview
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'fontSize':'14px'}}}%%
 graph TB
     accTitle: Workflow Overview
     accDescr: [Start] leads to Step 1: Maker if MD missing; Step 1: Maker if MD missing leads to Step 2: Checker validate; Step 2: Checker validate leads to Step 3-4: Findings + Fix; and 5 more links.

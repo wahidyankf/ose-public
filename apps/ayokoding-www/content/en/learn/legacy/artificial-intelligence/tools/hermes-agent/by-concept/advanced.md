@@ -37,30 +37,33 @@ attacker-controlled URL.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Section 30: Security Deep Dive
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Legitimate user, Hermes Agent, External web content (untrusted), Attacker (injected instructions), Indirect prompt injection (hidden instructions in fetched content), Defense 1: SSRF protection (block private IP ranges), Defense 2: Command approval (user reviews before execution), Defense 3: Network egress isolation (allowlist outbound destinations), Defense 4: Injection-aware system prompt (skepticism about fetched content). Connections: Legitimate user to Hermes Agent (task: fetch and summarize), Hermes Agent to External web content (untrusted) (fetch URL), External web content (untrusted) to Hermes Agent (content + hidden injection), Attacker (injected instructions) to External web content (untrusted) (embeds instructions), Indirect prompt injection (hidden instructions in fetched content) to Defense 1: SSRF protection (block private IP ranges), Indirect prompt injection (hidden instructions in fetched content) to Defense 2: Command approval (user reviews before execution), Indirect prompt injection (hidden instructions in fetched content) to Defense 3: Network egress isolation (allowlist outbound destinations), Indirect prompt injection (hidden instructions in fetched content) to Defense 4: Injection-aware system prompt (skepticism about fetched content).
     USER["Legitimate user"]:::teal
     HERMES["Hermes Agent"]:::blue
     WEB["External web content<br/>(untrusted)"]:::orange
-    ATTACKER["Attacker<br/>(injected instructions)"]:::purple
+    ATTACKER["Attacker<br/>(injected<br/>instructions)"]:::purple
 
-    INJECTION["Indirect prompt injection<br/>(hidden instructions in fetched content)"]:::purple
-    DEFENSE1["Defense 1: SSRF protection<br/>(block private IP ranges)"]:::teal
-    DEFENSE2["Defense 2: Command approval<br/>(user reviews before execution)"]:::teal
-    DEFENSE3["Defense 3: Network egress isolation<br/>(allowlist outbound destinations)"]:::teal
-    DEFENSE4["Defense 4: Injection-aware system prompt<br/>(skepticism about fetched content)"]:::teal
+    INJECTION["Indirect prompt<br/>injection<br/>(hidden instructions<br/>in fetched content)"]:::purple
+    DEFENSE1["Defense 1: SSRF<br/>protection<br/>(block private IP<br/>ranges)"]:::teal
+    DEFENSE2["Defense 2: Command<br/>approval<br/>(user reviews before<br/>execution)"]:::teal
+    DEFENSE3["Defense 3: Network<br/>egress isolation<br/>(allowlist outbound<br/>destinations)"]:::teal
+    DEFENSE4["Defense 4:<br/>Injection-aware<br/>system prompt<br/>(skepticism about<br/>fetched content)"]:::teal
 
-    USER -->|"task: fetch and summarize"| HERMES
+    USER -->|"task: fetch and<br/>summarize"| HERMES
     HERMES -->|"fetch URL"| WEB
-    WEB -->|"content + hidden injection"| HERMES
-    ATTACKER -->|"embeds instructions"| WEB
+    WEB -->|"content + hidden<br/>injection"| HERMES
+    ATTACKER -->|"embeds<br/>instructions"| WEB
     INJECTION --> DEFENSE1
     INJECTION --> DEFENSE2
     INJECTION --> DEFENSE3
     INJECTION --> DEFENSE4
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml
@@ -236,10 +239,12 @@ context across team members.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: Section 32: Docker Terminal Backend
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Hermes Agent (host process), Docker Container (isolated execution), /workspace (mounted volume), Host filesystem (selected directories only), Network: none (optional air-gap). Connections: Hermes Agent (host process) to Docker Container (isolated execution) (bash tool call), Docker Container (isolated execution) to /workspace (mounted volume) (reads / writes), /workspace (mounted volume) to Host filesystem (selected directories only) (volume mount), Docker Container (isolated execution) to Network: none (optional air-gap) (blocked).
     HERMES["Hermes Agent<br/>(host process)"]:::blue
     CONTAINER["Docker Container<br/>(isolated execution)"]:::orange
     WORKSPACE["/workspace<br/>(mounted volume)"]:::teal
-    HOST_FS["Host filesystem<br/>(selected directories only)"]:::purple
+    HOST_FS["Host filesystem<br/>(selected<br/>directories only)"]:::purple
     NETWORK_NONE["Network: none<br/>(optional air-gap)"]:::brown
 
     HERMES -->|"bash tool call"| CONTAINER
@@ -248,10 +253,11 @@ graph LR
     CONTAINER -.->|"blocked"| NETWORK_NONE
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```yaml

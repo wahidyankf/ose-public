@@ -38,27 +38,30 @@ design enables hooks to act as filters, not just blockers.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: 1. Advanced Hooks
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Claude Code decides tool call, PreToolUse hook receives JSON on stdin, Hook inspects input tool name + arguments, Exit 0 tool call proceeds with original input, Exit 0 + stdout JSON tool call proceeds with modified input, Exit non-zero tool call blocked Claude Code sees stderr, Tool executes. Connections: Claude Code decides tool call to PreToolUse hook receives JSON on stdin (JSON: tool + input), PreToolUse hook receives JSON on stdin to Hook inspects input tool name + arguments, Hook inspects input tool name + arguments to Exit 0 tool call proceeds with original input (safe), Hook inspects input tool name + arguments to Exit 0 + stdout JSON tool call proceeds with modified input (safe but needs adjustment), Hook inspects input tool name + arguments to Exit non-zero tool call blocked Claude Code sees stderr (blocked), Exit 0 tool call proceeds with original input to Tool executes, Exit 0 + stdout JSON tool call proceeds with modified input to Tool executes.
     CC["Claude Code<br/>decides tool call"]:::blue
-    HOOK["PreToolUse hook<br/>receives JSON on stdin"]:::orange
-    INSPECT["Hook inspects input<br/>tool name + arguments"]:::orange
+    HOOK["PreToolUse hook<br/>receives JSON on<br/>stdin"]:::orange
+    INSPECT["Hook inspects input<br/>tool name +<br/>arguments"]:::orange
     ALLOW["Exit 0<br/>tool call proceeds<br/>with original input"]:::teal
     MODIFY["Exit 0 + stdout JSON<br/>tool call proceeds<br/>with modified input"]:::purple
-    BLOCK["Exit non-zero<br/>tool call blocked<br/>Claude Code sees stderr"]:::brown
+    BLOCK["Exit non-zero<br/>tool call blocked<br/>Claude Code sees<br/>stderr"]:::brown
     TOOL["Tool executes"]:::teal
 
     CC -->|"JSON: tool + input"| HOOK
     HOOK --> INSPECT
     INSPECT -->|"safe"| ALLOW
-    INSPECT -->|"safe but needs adjustment"| MODIFY
+    INSPECT -->|"safe but needs<br/>adjustment"| MODIFY
     INSPECT -->|"blocked"| BLOCK
     ALLOW --> TOOL
     MODIFY --> TOOL
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Input modification** — a hook that intercepts `Write` calls and redirects writes to
@@ -203,25 +206,28 @@ a specialized analysis tool that runs faster as a local service than as a shell 
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
+    accTitle: 2. Building Custom MCP Servers
+    accDescr: Graph with 5 nodes and 7 connections. Nodes: Claude Code, Custom MCP Server your process, Tool schema name, description, inputSchema, Tool handler executes logic, Your system DB / API / service. Connections: Claude Code to Custom MCP Server your process (initialize: list tools), Custom MCP Server your process to Claude Code (tool definitions (JSON schema)), Claude Code to Custom MCP Server your process (call: tool_name + args), Custom MCP Server your process to Tool handler executes logic, Tool handler executes logic to Your system DB / API / service, Your system DB / API / service to Tool handler executes logic (result), Tool handler executes logic to Claude Code (content: text/json).
     CC["Claude Code"]:::blue
     MCP["Custom MCP Server<br/>your process"]:::orange
-    SCHEMA["Tool schema<br/>name, description, inputSchema"]:::teal
+    SCHEMA["Tool schema<br/>name, description,<br/>inputSchema"]:::teal
     HANDLER["Tool handler<br/>executes logic"]:::purple
     TARGET["Your system<br/>DB / API / service"]:::brown
 
-    CC -->|"initialize: list tools"| MCP
-    MCP -->|"tool definitions (JSON schema)"| CC
-    CC -->|"call: tool_name + args"| MCP
+    CC -->|"initialize: list<br/>tools"| MCP
+    MCP -->|"tool definitions<br/>(JSON schema)"| CC
+    CC -->|"call: tool_name +<br/>args"| MCP
     MCP --> HANDLER
     HANDLER --> TARGET
     TARGET -->|"result"| HANDLER
     HANDLER -->|"content: text/json"| CC
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 A minimal MCP server in TypeScript using the official `@modelcontextprotocol/sdk`:
@@ -481,27 +487,30 @@ and a restricted tool set that matches that task.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: 4. Subagent Orchestration at Scale
+    accDescr: Graph with 7 nodes and 10 connections. Nodes: User task large or complex, Orchestrator decomposes, delegates, synthesizes, Specialist: Analyzer tools: Read, Glob, Grep only no write access, Specialist: Implementer tools: Read, Write, Edit no Bash, Specialist: Verifier tools: Read, Bash only runs tests, lint, Specialist: Documenter tools: Read, Write only updates docs, Orchestrator synthesizes results and reports. Connections: User task large or complex to Orchestrator decomposes, delegates, synthesizes, Orchestrator decomposes, delegates, synthesizes to Specialist: Analyzer tools: Read, Glob, Grep only no write access (parallel), Orchestrator decomposes, delegates, synthesizes to Specialist: Implementer tools: Read, Write, Edit no Bash (parallel), Specialist: Analyzer tools: Read, Glob, Grep only no write access to Orchestrator decomposes, delegates, synthesizes (analysis report), Specialist: Implementer tools: Read, Write, Edit no Bash to Orchestrator decomposes, delegates, synthesizes (implementation complete), Orchestrator decomposes, delegates, synthesizes to Specialist: Verifier tools: Read, Bash only runs tests, lint (sequential), Specialist: Verifier tools: Read, Bash only runs tests, lint to Orchestrator decomposes, delegates, synthesizes (verification report), Orchestrator decomposes, delegates, synthesizes to Specialist: Documenter tools: Read, Write only updates docs (sequential), Specialist: Documenter tools: Read, Write only updates docs to Orchestrator decomposes, delegates, synthesizes (docs updated), Orchestrator decomposes, delegates, synthesizes to Orchestrator synthesizes results and reports.
     USER["User task<br/>large or complex"]:::blue
-    ORCH["Orchestrator<br/>decomposes, delegates, synthesizes"]:::orange
-    S1["Specialist: Analyzer<br/>tools: Read, Glob, Grep only<br/>no write access"]:::teal
-    S2["Specialist: Implementer<br/>tools: Read, Write, Edit\nno Bash"]:::teal
-    S3["Specialist: Verifier<br/>tools: Read, Bash only\nruns tests, lint"]:::teal
-    S4["Specialist: Documenter<br/>tools: Read, Write only\nupdates docs"]:::teal
-    SYNTH["Orchestrator synthesizes<br/>results and reports"]:::orange
+    ORCH["Orchestrator<br/>decomposes,<br/>delegates,<br/>synthesizes"]:::orange
+    S1["Specialist: Analyzer<br/>tools: Read, Glob,<br/>Grep only<br/>no write access"]:::teal
+    S2["Specialist:<br/>Implementer<br/>tools: Read, Write,<br/>Edit<br/>no Bash"]:::teal
+    S3["Specialist: Verifier<br/>tools: Read, Bash<br/>only<br/>runs tests, lint"]:::teal
+    S4["Specialist:<br/>Documenter<br/>tools: Read, Write<br/>only<br/>updates docs"]:::teal
+    SYNTH["Orchestrator<br/>synthesizes<br/>results and reports"]:::orange
 
     USER --> ORCH
     ORCH -->|"parallel"| S1 & S2
     S1 -->|"analysis report"| ORCH
-    S2 -->|"implementation complete"| ORCH
+    S2 -->|"implementation<br/>complete"| ORCH
     ORCH -->|"sequential"| S3
-    S3 -->|"verification report"| ORCH
+    S3 -->|"verification<br/>report"| ORCH
     ORCH -->|"sequential"| S4
     S4 -->|"docs updated"| ORCH
     ORCH --> SYNTH
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Worktree isolation for parallel implementers**: When multiple subagents write
@@ -609,12 +618,14 @@ safely in environments with sensitive data or elevated access.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: 5. Security Model
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Claude Code process runs as your user, OS permissions same as your shell, Tool permissions settings.json allowedTools, Hook enforcement pre-tool blocking scripts, Approval prompts for destructive commands, Audit log via PostToolUse hooks. Connections: Claude Code process runs as your user to OS permissions same as your shell, Claude Code process runs as your user to Tool permissions settings.json allowedTools, Claude Code process runs as your user to Hook enforcement pre-tool blocking scripts, Claude Code process runs as your user to Approval prompts for destructive commands, Claude Code process runs as your user to Audit log via PostToolUse hooks.
     CC["Claude Code process<br/>runs as your user"]:::blue
     PERM["OS permissions<br/>same as your shell"]:::orange
-    TOOLS["Tool permissions<br/>settings.json allowedTools"]:::teal
-    HOOKS["Hook enforcement<br/>pre-tool blocking scripts"]:::purple
-    APPROVAL["Approval prompts<br/>for destructive commands"]:::brown
-    AUDIT["Audit log<br/>via PostToolUse hooks"]:::teal
+    TOOLS["Tool permissions<br/>settings.json<br/>allowedTools"]:::teal
+    HOOKS["Hook enforcement<br/>pre-tool blocking<br/>scripts"]:::purple
+    APPROVAL["Approval prompts<br/>for destructive<br/>commands"]:::brown
+    AUDIT["Audit log<br/>via PostToolUse<br/>hooks"]:::teal
 
     CC --> PERM
     CC --> TOOLS
@@ -623,10 +634,11 @@ graph TD
     CC --> AUDIT
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **OS-level permissions**: Claude Code inherits your user's permissions exactly.
@@ -765,8 +777,10 @@ in automated systems.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
-    CI["CI Pipeline<br/>GitHub Actions / GitLab CI"]:::blue
-    CC["claude --headless<br/>non-interactive process"]:::orange
+    accTitle: 6. Headless Mode and CI/CD
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: CI Pipeline GitHub Actions / GitLab CI, CC, headless, File + Shell tools same as interactive, Stdout output JSON or text, Next pipeline step parse, act on output. Connections: CC to headless, CI Pipeline GitHub Actions / GitLab CI to CC (subprocess call), CC to File + Shell tools same as interactive, File + Shell tools same as interactive to CC (results), CC to Stdout output JSON or text, Stdout output JSON or text to Next pipeline step parse, act on output.
+    CI["CI Pipeline<br/>GitHub Actions /<br/>GitLab CI"]:::blue
+    CC["claude --headless<br/>non-interactive<br/>process"]:::orange
     TOOLS["File + Shell tools<br/>same as interactive"]:::teal
     OUTPUT["Stdout output<br/>JSON or text"]:::purple
     NEXT["Next pipeline step<br/>parse, act on output"]:::brown
@@ -778,10 +792,11 @@ graph LR
     OUTPUT --> NEXT
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1179,9 +1194,11 @@ where a higher-level orchestrator delegates coding tasks to Claude Code instance
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph LR
-    CLIENT["MCP Client<br/>orchestrator / custom app"]:::blue
-    CC_SERVER["Claude Code<br/>running as MCP server"]:::orange
-    TOOLS["Claude Code tools<br/>Read Write Edit Bash Glob Grep"]:::teal
+    accTitle: 9. Claude Code as MCP Server
+    accDescr: Graph with 4 nodes and 6 connections. Nodes: MCP Client orchestrator /custom app, Claude Code running as MCP server, Claude Code tools Read Write Edit Bash Glob Grep, Local filesystem and shell. Connections: MCP Client orchestrator /custom app to Claude Code running as MCP server (MCP: execute_task), Claude Code running as MCP server to Claude Code tools Read Write Edit Bash Glob Grep, Claude Code tools Read Write Edit Bash Glob Grep to Local filesystem and shell, Local filesystem and shell to Claude Code tools Read Write Edit Bash Glob Grep (results), Claude Code tools Read Write Edit Bash Glob Grep to Claude Code running as MCP server (task result), Claude Code running as MCP server to MCP Client orchestrator /custom app (MCP response).
+    CLIENT["MCP Client<br/>orchestrator /custom<br/>app"]:::blue
+    CC_SERVER["Claude Code<br/>running as MCP<br/>server"]:::orange
+    TOOLS["Claude Code tools<br/>Read Write Edit Bash<br/>Glob Grep"]:::teal
     FS["Local filesystem<br/>and shell"]:::brown
 
     CLIENT -->|"MCP: execute_task"| CC_SERVER
@@ -1192,9 +1209,10 @@ graph LR
     CC_SERVER -->|"MCP response"| CLIENT
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

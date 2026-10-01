@@ -26,10 +26,12 @@ distinction shapes everything about how you learn and use it effectively.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
-    USER["You<br/>natural language task"]:::blue
+    accTitle: What Claude Code Is
+    accDescr: Graph with 5 nodes and 8 connections. Nodes: You natural language task, Claude Code CLI claude command, Claude Model Sonnet /Opus /Haiku, Tools Read · Write · Edit · Bash Glob · Grep · Agent, Local Filesystem and Shell. Connections: You natural language task to Claude Code CLI claude command (task description), Claude Code CLI claude command to Claude Model Sonnet /Opus /Haiku (message + context), Claude Model Sonnet /Opus /Haiku to Claude Code CLI claude command (tool call decision), Claude Code CLI claude command to Tools Read · Write · Edit · Bash Glob · Grep · Agent (executes tool), Tools Read · Write · Edit · Bash Glob · Grep · Agent to Claude Code CLI claude command (tool result), Claude Code CLI claude command to Claude Model Sonnet /Opus /Haiku (tool result), Claude Model Sonnet /Opus /Haiku to Claude Code CLI claude command (next tool call or final answer), Claude Code CLI claude command to Local Filesystem and Shell (reads/writes/runs).
+    USER["You<br/>natural language<br/>task"]:::blue
     CC["Claude Code CLI<br/>claude command"]:::orange
-    MODEL["Claude Model<br/>Sonnet / Opus / Haiku"]:::teal
-    TOOLS["Tools<br/>Read · Write · Edit · Bash<br/>Glob · Grep · Agent"]:::purple
+    MODEL["Claude Model<br/>Sonnet /Opus /Haiku"]:::teal
+    TOOLS["Tools<br/>Read · Write · Edit<br/>· Bash<br/>Glob · Grep · Agent"]:::purple
     FS["Local Filesystem<br/>and Shell"]:::brown
 
     USER -->|"task description"| CC
@@ -38,14 +40,15 @@ graph TD
     CC -->|"executes tool"| TOOLS
     TOOLS -->|"tool result"| CC
     CC -->|"tool result"| MODEL
-    MODEL -->|"next tool call or final answer"| CC
+    MODEL -->|"next tool call or<br/>final answer"| CC
     CC -->|"reads/writes/runs"| FS
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef brown fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef brown fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The diagram shows the core agentic loop: you give Claude Code a task, it reasons about
@@ -71,27 +74,29 @@ language-agnostic.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 17 nodes and 15 connections. Nodes: Beginner 16 sections Concepts 1–16, Intermediate 13 sections Concepts 17–29, Advanced 11 sections Concepts 30–40, What is Claude Code?, B2, Auth, Interactive Mode, Core Tools: Read, Write, Edit, Bash Tool, The Agentic Loop, Writing Effective CLAUDE.md, Hooks System, and 5 more. Connections: Beginner 16 sections Concepts 1–16 to Intermediate 13 sections Concepts 17–29 (internalize core concepts), Intermediate 13 sections Concepts 17–29 to Advanced 11 sections Concepts 30–40 (build custom workflows), Beginner 16 sections Concepts 1–16 to What is Claude Code?, Beginner 16 sections Concepts 1–16 to B2, Beginner 16 sections Concepts 1–16 to Interactive Mode, Beginner 16 sections Concepts 1–16 to Core Tools: Read, Write, Edit, Beginner 16 sections Concepts 1–16 to Bash Tool, Beginner 16 sections Concepts 1–16 to The Agentic Loop, Intermediate 13 sections Concepts 17–29 to Writing Effective CLAUDE.md, Intermediate 13 sections Concepts 17–29 to Hooks System, Intermediate 13 sections Concepts 17–29 to MCP Servers, Intermediate 13 sections Concepts 17–29 to Subagents, and 3 more.
     B["Beginner<br/>16 sections<br/>Concepts 1–16"]:::blue
     I["Intermediate<br/>13 sections<br/>Concepts 17–29"]:::orange
     A["Advanced<br/>11 sections<br/>Concepts 30–40"]:::teal
 
-    B -->|"internalize core concepts"| I
-    I -->|"build custom workflows"| A
+    B -->|"internalize core<br/>concepts"| I
+    I -->|"build custom<br/>workflows"| A
 
     B1["What is Claude Code?"]:::blue
     B2["Installation & Auth"]:::blue
     B3["Interactive Mode"]:::blue
-    B4["Core Tools: Read, Write, Edit"]:::blue
+    B4["Core Tools: Read,<br/>Write, Edit"]:::blue
     B5["Bash Tool"]:::blue
     B6["The Agentic Loop"]:::blue
 
-    I1["Writing Effective CLAUDE.md"]:::orange
+    I1["Writing Effective<br/>CLAUDE.md"]:::orange
     I2["Hooks System"]:::orange
     I3["MCP Servers"]:::orange
     I4["Subagents"]:::orange
 
     A1["Advanced Hooks"]:::teal
-    A2["Headless Mode & CI/CD"]:::teal
+    A2["Headless Mode &<br/>CI/CD"]:::teal
     A3["Security Model"]:::teal
 
     B --- B1
@@ -111,8 +116,9 @@ graph TD
     A --- A3
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## What Each Level Covers

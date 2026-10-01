@@ -39,6 +39,8 @@ The `claude` command without arguments starts interactive mode - a conversationa
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 2: Starting Interactive Session
+    accDescr: Sequence diagram between Developer, claude command, Claude AI, Project Files. Messages: Developer to claude command: claude; claude command to Project Files: Loads .claude/ config; claude command to Claude AI: Initializes session; Claude AI to Developer: Ready for prompts; Developer to Claude AI: Create user.ts; Claude AI to Project Files: Writes user.ts; Claude AI to Developer: File created.
     participant Dev as Developer
     participant CLI as claude command
     participant AI as Claude AI
@@ -134,6 +136,8 @@ Exit Claude with `exit` command or Ctrl+D. Resume previous conversations with `c
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 6: Exiting and Resuming Sessions
+    accDescr: Sequence diagram between Developer, claude command, Session Storage. Messages: Developer to claude command: claude; claude command to Session Storage: Save session; Developer to claude command: exit; claude command to Session Storage: Persist conversation; Developer to claude command: claude -c; claude command to Session Storage: Load last session; claude command to Developer: Resumed conversation.
     participant Dev as Developer
     participant Claude as claude command
     participant Disk as Session Storage
@@ -676,6 +680,8 @@ Request error handling additions to existing code. Claude wraps operations in tr
 
 ```mermaid
 graph TD
+    accTitle: Example 27: Adding Error Handling
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Existing Code, Analyze Operation, Database Query, Add Try-Catch, Return JSON Response, Log Error, 500 Error Response. Connections: Existing Code to Analyze Operation (Read), Analyze Operation to Database Query (Identify), Database Query to Add Try-Catch (Wrap), Add Try-Catch to Return JSON Response (Success Path), Add Try-Catch to Log Error (Error Path), Log Error to 500 Error Response (Return).
     A[Existing Code] -->|Read| B[Analyze Operation]
     B -->|Identify| C[Database Query]
     C -->|Wrap| D[Add Try-Catch]
@@ -683,13 +689,19 @@ graph TD
     D -->|Error Path| F[Log Error]
     F -->|Return| G[500 Error Response]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Commands**:

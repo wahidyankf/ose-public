@@ -70,18 +70,26 @@ For example, a financial institution might hire penetration testers to assess wh
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Penetration Testing
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: A, Scoping, Reconnaissance, Vulnerability Discovery, Exploitation, Post-Exploitation, Reporting. Connections: A to Reconnaissance, Scoping to Reconnaissance, Reconnaissance to Vulnerability Discovery, Vulnerability Discovery to Exploitation, Exploitation to Post-Exploitation, Post-Exploitation to Reporting.
     A[Planning & Scoping] --> B[Reconnaissance]
-    B --> C[Vulnerability Discovery]
+    B --> C[Vulnerability<br/>Discovery]
     C --> D[Exploitation]
     D --> E[Post-Exploitation]
     E --> F[Reporting]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Red Team Operations

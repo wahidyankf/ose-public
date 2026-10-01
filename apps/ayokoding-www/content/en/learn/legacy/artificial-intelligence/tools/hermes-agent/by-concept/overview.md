@@ -19,13 +19,15 @@ build on each other, so concepts introduced early are assumed known in later sec
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart TD
+    accTitle: Learning Path
+    accDescr: Flowchart with 44 nodes and 43 connections. Nodes: Start here, Beginner Sections 1–16, Intermediate Sections 17–29, Advanced Sections 30–40, What is Hermes Agent?, The Learning Loop, Installation, CLI Basics, YAML Configuration, Your First Session, Tools Overview, Memory Basics, and 32 more. Connections: Start here to Beginner Sections 1–16, Beginner Sections 1–16 to What is Hermes Agent?, What is Hermes Agent? to The Learning Loop, The Learning Loop to Installation, Installation to CLI Basics, CLI Basics to YAML Configuration, YAML Configuration to Your First Session, Your First Session to Tools Overview, Tools Overview to Memory Basics, Memory Basics to Skills Basics, Skills Basics to LLM Provider Configuration, LLM Provider Configuration to Smart Model Routing, and 31 more.
     START(["Start here"]):::teal
 
     BEG["Beginner<br/>Sections 1–16"]:::blue
     INT["Intermediate<br/>Sections 17–29"]:::orange
     ADV["Advanced<br/>Sections 30–40"]:::purple
 
-    B1["What is Hermes Agent?"]:::blue
+    B1["What is Hermes<br/>Agent?"]:::blue
     B2["The Learning Loop"]:::blue
     B3["Installation"]:::blue
     B4["CLI Basics"]:::blue
@@ -34,39 +36,39 @@ flowchart TD
     B7["Tools Overview"]:::blue
     B8["Memory Basics"]:::blue
     B9["Skills Basics"]:::blue
-    B10["LLM Provider Configuration"]:::blue
+    B10["LLM Provider<br/>Configuration"]:::blue
     B11["Smart Model Routing"]:::blue
     B12["Context Compression"]:::blue
     B13["Security Basics"]:::blue
-    B14["Token and Cost Tracking"]:::blue
-    B15["Messaging Gateway Basics"]:::blue
+    B14["Token and Cost<br/>Tracking"]:::blue
+    B15["Messaging Gateway<br/>Basics"]:::blue
     B16["Hermes vs. OpenClaw"]:::blue
 
-    I1["Skills System Deep Dive"]:::orange
+    I1["Skills System Deep<br/>Dive"]:::orange
     I2["Session Search FTS5"]:::orange
     I3["Subagent Delegation"]:::orange
-    I4["Messaging Platform Integration"]:::orange
+    I4["Messaging Platform<br/>Integration"]:::orange
     I5["Terminal Backends"]:::orange
-    I6["Browser Automation Tools"]:::orange
-    I7["Code Execution Toolset"]:::orange
+    I6["Browser Automation<br/>Tools"]:::orange
+    I7["Code Execution<br/>Toolset"]:::orange
     I8["Cron Scheduling"]:::orange
-    I9["Honcho Dialectic Integration"]:::orange
+    I9["Honcho Dialectic<br/>Integration"]:::orange
     I10["Mixture of Agents"]:::orange
-    I11["MCP Client Integration"]:::orange
+    I11["MCP Client<br/>Integration"]:::orange
     I12["MCP Server Mode"]:::orange
     I13["Skills Hub"]:::orange
 
     A1["Security Deep Dive"]:::purple
     A2["Voice Mode"]:::purple
-    A3["Docker Terminal Backend"]:::purple
-    A4["Advanced Subagent Patterns"]:::purple
-    A5["Custom Tool Development"]:::purple
-    A6["Production Deployment"]:::purple
-    A7["Reinforcement Learning Toolset"]:::purple
-    A8["Advanced Memory Architecture"]:::purple
+    A3["Docker Terminal<br/>Backend"]:::purple
+    A4["Advanced Subagent<br/>Patterns"]:::purple
+    A5["Custom Tool<br/>Development"]:::purple
+    A6["Production<br/>Deployment"]:::purple
+    A7["Reinforcement<br/>Learning Toolset"]:::purple
+    A8["Advanced Memory<br/>Architecture"]:::purple
     A9["Custom LLM Provider"]:::purple
-    A10["Migrating from OpenClaw Deep Dive"]:::purple
-    A11["Contributing to Hermes Agent"]:::purple
+    A10["Migrating from<br/>OpenClaw Deep Dive"]:::purple
+    A11["Contributing to<br/>Hermes Agent"]:::purple
 
     START --> BEG
     BEG --> B1 --> B2 --> B3 --> B4 --> B5
@@ -79,10 +81,11 @@ flowchart TD
     ADV --> A1 --> A2 --> A3 --> A4 --> A5 --> A6
     A6 --> A7 --> A8 --> A9 --> A10 --> A11
 
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Map

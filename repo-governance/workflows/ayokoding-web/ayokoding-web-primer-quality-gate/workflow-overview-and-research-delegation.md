@@ -8,7 +8,6 @@ when_to_use: Use when you need a visual summary of the quality-gate flow or want
 ## Workflow Overview
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'fontSize':'14px'}}}%%
 graph TB
     accTitle: Workflow Overview
     accDescr: Maker: Create/Update Examples leads to Checker: Validate Density + Scope Discipline via maker or manual; Checker: Validate Density + Scope Discipline leads to User Review via checker; and 5 more links.

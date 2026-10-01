@@ -71,7 +71,7 @@ For example, a financial institution might hire penetration testers to assess wh
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
     accTitle: Penetration Testing
-    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: A, Scoping, Reconnaissance, Vulnerability Discovery, Exploitation, Post-Exploitation, Reporting. Connections: A to Reconnaissance, Scoping to Reconnaissance, Reconnaissance to Vulnerability Discovery, Vulnerability Discovery to Exploitation, Exploitation to Post-Exploitation, Post-Exploitation to Reporting.
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Planning & Scoping, Reconnaissance, Vulnerability Discovery, Exploitation, Post-Exploitation, Reporting. Connections: Planning & Scoping to Reconnaissance, Reconnaissance to Vulnerability Discovery, Vulnerability Discovery to Exploitation, Exploitation to Post-Exploitation, Post-Exploitation to Reporting.
     A[Planning & Scoping] --> B[Reconnaissance]
     B --> C[Vulnerability<br/>Discovery]
     C --> D[Exploitation]

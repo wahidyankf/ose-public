@@ -28,7 +28,7 @@ Claude Code is a command-line tool that brings Claude AI's capabilities directly
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: How Claude Code Works
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Developer Request (Natural Language), Claude Code Analyzes Codebase, AI Generates Solution, Executes Operations (Read/Write/Bash), E, Iteration. Connections: Developer Request (Natural Language) to Claude Code Analyzes Codebase, Claude Code Analyzes Codebase to AI Generates Solution, AI Generates Solution to Executes Operations (Read/Write/Bash), Executes Operations (Read/Write/Bash) to E, E to Developer Request (Natural Language) (Refine).
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Developer Request (Natural Language), Claude Code Analyzes Codebase, AI Generates Solution, Executes Operations (Read/Write/Bash), Developer Review & Iteration. Connections: Developer Request (Natural Language) to Claude Code Analyzes Codebase, Claude Code Analyzes Codebase to AI Generates Solution, AI Generates Solution to Executes Operations (Read/Write/Bash), Executes Operations (Read/Write/Bash) to Developer Review & Iteration, Developer Review & Iteration to Developer Request (Natural Language) (Refine).
     A["Developer Request<br/>(Natural Language)"]
     B["Claude Code<br/>Analyzes Codebase"]
     C["AI Generates<br/>Solution"]
@@ -293,7 +293,7 @@ Before using Claude Code, ensure you have:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Learning Path
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, Basic Commands (Ask, Read, Write), File Operations (Edit, Create), Advanced Workflows (Multi-file, Debugging), Best Practices (Prompting, Review). Connections: A to Basic Commands (Ask, Read, Write), Basic Commands (Ask, Read, Write) to File Operations (Edit, Create), File Operations (Edit, Create) to Advanced Workflows (Multi-file, Debugging), Advanced Workflows (Multi-file, Debugging) to Best Practices (Prompting, Review).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Installation & Setup, Basic Commands (Ask, Read, Write), File Operations (Edit, Create), Advanced Workflows (Multi-file, Debugging), Best Practices (Prompting, Review). Connections: Installation & Setup to Basic Commands (Ask, Read, Write), Basic Commands (Ask, Read, Write) to File Operations (Edit, Create), File Operations (Edit, Create) to Advanced Workflows (Multi-file, Debugging), Advanced Workflows (Multi-file, Debugging) to Best Practices (Prompting, Review).
     A["Installation &<br/>Setup"]
     B["Basic Commands<br/>(Ask, Read, Write)"]
     C["File Operations<br/>(Edit, Create)"]

@@ -778,7 +778,7 @@ in automated systems.
 
 graph LR
     accTitle: 6. Headless Mode and CI/CD
-    accDescr: Graph with 6 nodes and 6 connections. Nodes: CI Pipeline GitHub Actions / GitLab CI, CC, headless, File + Shell tools same as interactive, Stdout output JSON or text, Next pipeline step parse, act on output. Connections: CC to headless, CI Pipeline GitHub Actions / GitLab CI to CC (subprocess call), CC to File + Shell tools same as interactive, File + Shell tools same as interactive to CC (results), CC to Stdout output JSON or text, Stdout output JSON or text to Next pipeline step parse, act on output.
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: CI Pipeline GitHub Actions / GitLab CI, claude --headless non-interactive process, File + Shell tools same as interactive, Stdout output JSON or text, Next pipeline step parse, act on output. Connections: CI Pipeline GitHub Actions / GitLab CI to claude --headless non-interactive process (subprocess call), claude --headless non-interactive process to File + Shell tools same as interactive, File + Shell tools same as interactive to claude --headless non-interactive process (results), claude --headless non-interactive process to Stdout output JSON or text, Stdout output JSON or text to Next pipeline step parse, act on output.
     CI["CI Pipeline<br/>GitHub Actions /<br/>GitLab CI"]:::blue
     CC["claude --headless<br/>non-interactive<br/>process"]:::orange
     TOOLS["File + Shell tools<br/>same as interactive"]:::teal

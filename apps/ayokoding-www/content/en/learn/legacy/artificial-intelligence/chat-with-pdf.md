@@ -41,7 +41,7 @@ Let's start with the big picture. A PDF chat system has two main phases: **Inges
 ```mermaid
 graph TD
  accTitle: 🏗️ System Architecture
- accDescr: Graph with 12 nodes and 11 connections. Nodes: 📄 PDF Upload, Text Extraction, Document Chunking, Generate Embeddings, Store in Vector DB, ❓ User Question, Generate Query Embedding, Semantic Search, Retrieve Relevant Chunks, Build Context, LLM Generation, 📝 Answer. Connections: 📄 PDF Upload to Text Extraction, Text Extraction to Document Chunking, Document Chunking to Generate Embeddings, Generate Embeddings to Store in Vector DB, ❓ User Question to Generate Query Embedding, Generate Query Embedding to Semantic Search, Store in Vector DB to Semantic Search, Semantic Search to Retrieve Relevant Chunks, Retrieve Relevant Chunks to Build Context, Build Context to LLM Generation, LLM Generation to 📝 Answer.
+ accDescr: Graph with 12 nodes and 11 connections. Nodes: A, Text Extraction, Document Chunking, Generate Embeddings, Store in Vector DB, ❓ User Question, Generate Query Embedding, Semantic Search, Retrieve Relevant Chunks, Build Context, LLM Generation, 📝 Answer. Connections: A to Text Extraction, Text Extraction to Document Chunking, Document Chunking to Generate Embeddings, Generate Embeddings to Store in Vector DB, ❓ User Question to Generate Query Embedding, Generate Query Embedding to Semantic Search, Store in Vector DB to Semantic Search, Semantic Search to Retrieve Relevant Chunks, Retrieve Relevant Chunks to Build Context, Build Context to LLM Generation, LLM Generation to 📝 Answer.
  subgraph "Phase 1: Document Ingestion (One-time)"
   A[📄 PDF Upload] --> B[Text Extraction]
   B --> C[Document Chunking]

@@ -203,6 +203,8 @@ for k, v in parsed.items():  # => Print each field name and decoded value
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 59: Python asyncio for Async Networking
+    accDescr: Graph with 5 nodes and 7 connections. Nodes: Event Loop, Task 1 await recv(), Task 2 await connect(), Task 3 await send(), I/O Readiness epoll/kqueue. Connections: Event Loop to Task 1 await recv() (schedule), Event Loop to Task 2 await connect() (schedule), Event Loop to Task 3 await send() (schedule), Task 1 await recv() to I/O Readiness epoll/kqueue (suspend on await), Task 2 await connect() to I/O Readiness epoll/kqueue (suspend on await), Task 3 await send() to I/O Readiness epoll/kqueue (suspend on await), I/O Readiness epoll/kqueue to Event Loop (fd ready).
     EL["Event Loop"]
     T1["Task 1<br/>await recv()"]
     T2["Task 2<br/>await connect()"]
@@ -217,11 +219,17 @@ graph TD
     T3 -->|"suspend on await"| IO
     IO -->|"fd ready"| EL
 
-    style EL fill:#0173B2,stroke:#000,color:#fff
-    style T1 fill:#DE8F05,stroke:#000,color:#fff
-    style T2 fill:#029E73,stroke:#000,color:#fff
-    style T3 fill:#CC78BC,stroke:#000,color:#fff
-    style IO fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class EL pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class T1 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class T2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class T3 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class IO pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -473,17 +481,24 @@ gRPC is a high-performance RPC framework using Protocol Buffers (protobuf) for s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    subgraph Patterns["gRPC Communication Patterns"]
+    accTitle: Example 62: gRPC Concepts — Protobuf and Streams
+    accDescr: Graph with 4 nodes and 0 connections. Nodes: Unary req -> resp, Server Stream req -> stream, Client Stream stream -> resp, Bidirectional stream stream.
+    subgraph Patterns["gRPC Communication<br/>Patterns"]
         U["Unary<br/>req -> resp"]
         SS["Server Stream<br/>req -> stream"]
         CS["Client Stream<br/>stream -> resp"]
         BD["Bidirectional<br/>stream <-> stream"]
     end
 
-    style U fill:#0173B2,stroke:#000,color:#fff
-    style SS fill:#DE8F05,stroke:#000,color:#fff
-    style CS fill:#029E73,stroke:#000,color:#fff
-    style BD fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class U pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SS pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class CS pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class BD pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -597,8 +612,10 @@ MQTT is a lightweight publish-subscribe protocol for constrained devices. Client
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 63: MQTT Protocol — Pub/Sub for IoT
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Publisher sensor/temp/room1, Publisher sensor/humidity/ room1, MQTT Broker Routes by topic, Subscriber sensor/temp/, Subscriber sensor/+/room1, Subscriber sensor/. Connections: Publisher sensor/temp/room1 to MQTT Broker Routes by topic (publish), Publisher sensor/humidity/ room1 to MQTT Broker Routes by topic (publish), MQTT Broker Routes by topic to Subscriber sensor/temp/ (matched: sensor/temp/), MQTT Broker Routes by topic to Subscriber sensor/+/room1 (matched: sensor/+/room1), MQTT Broker Routes by topic to Subscriber sensor/ (matched: sensor/).
     P1["Publisher<br/>sensor/temp/room1"]
-    P2["Publisher<br/>sensor/humidity/room1"]
+    P2["Publisher<br/>sensor/humidity/<br/>room1"]
     B["MQTT Broker<br/>Routes by topic"]
     S1["Subscriber<br/>sensor/temp/#"]
     S2["Subscriber<br/>sensor/+/room1"]
@@ -606,16 +623,22 @@ graph TD
 
     P1 -->|publish| B
     P2 -->|publish| B
-    B -->|"matched: sensor/temp/#"| S1
-    B -->|"matched: sensor/+/room1"| S2
+    B -->|"matched:<br/>sensor/temp/#"| S1
+    B -->|"matched:<br/>sensor/+/room1"| S2
     B -->|"matched: sensor/#"| S3
 
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style P1 fill:#0173B2,stroke:#000,color:#fff
-    style P2 fill:#0173B2,stroke:#000,color:#fff
-    style S1 fill:#029E73,stroke:#000,color:#fff
-    style S2 fill:#CC78BC,stroke:#000,color:#fff
-    style S3 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P1 pal-0173B2
+    class P2 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S1 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class S2 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class S3 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -732,25 +755,33 @@ WebRTC enables browser-to-browser real-time communication (audio, video, data) w
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 64: WebRTC Overview — ICE, STUN, TURN
+    accDescr: Graph with 5 nodes and 7 connections. Nodes: Peer A (behind NAT), Peer B (behind NAT), Signaling Server Exchange SDP offers/answers, STUN Server Discover public IP:port, TURN Server Relay when direct fails. Connections: Peer A (behind NAT) to STUN Server Discover public IP:port (1. Get public addr), Peer B (behind NAT) to STUN Server Discover public IP:port (2. Get public addr), Peer A (behind NAT) to Signaling Server Exchange SDP offers/answers (3. Exchange ICE candidates via SDP), Signaling Server Exchange SDP offers/answers to Peer B (behind NAT) (4. Forward to Peer B), Peer A (behind NAT) to Peer B (behind NAT) (5. Direct connection (if NAT allows)), Peer A (behind NAT) to TURN Server Relay when direct fails (6. Relay via TURN (if direct fails)), TURN Server Relay when direct fails to Peer B (behind NAT) (relay).
     A["Peer A (behind NAT)"]
     B["Peer B (behind NAT)"]
-    SIG["Signaling Server<br/>Exchange SDP offers/answers"]
-    STUN["STUN Server<br/>Discover public IP:port"]
-    TURN["TURN Server<br/>Relay when direct fails"]
+    SIG["Signaling Server<br/>Exchange SDP<br/>offers/answers"]
+    STUN["STUN Server<br/>Discover public<br/>IP:port"]
+    TURN["TURN Server<br/>Relay when direct<br/>fails"]
 
     A -->|"1. Get public addr"| STUN
     B -->|"2. Get public addr"| STUN
-    A -->|"3. Exchange ICE candidates via SDP"| SIG
-    SIG -->|"4. Forward to Peer B"| B
-    A -.->|"5. Direct connection (if NAT allows)"| B
-    A -->|"6. Relay via TURN (if direct fails)"| TURN
+    A -->|"3. Exchange ICE<br/>candidates via SDP"| SIG
+    SIG -->|"4. Forward to Peer<br/>B"| B
+    A -.->|"5. Direct<br/>connection (if NAT<br/>allows)"| B
+    A -->|"6. Relay via TURN<br/>(if direct fails)"| TURN
     TURN -->|"relay"| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style SIG fill:#029E73,stroke:#000,color:#fff
-    style STUN fill:#CC78BC,stroke:#000,color:#fff
-    style TURN fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class SIG pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class STUN pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class TURN pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -850,6 +881,8 @@ A VPN (Virtual Private Network) creates an encrypted tunnel between endpoints, m
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 65: VPN — Tunnel and Encryption Overview
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Client 192.0.2.10, TUN Interface 10.8.x.2 (virtual), Encryption AES-256-GCM, UDP/443 Outer packet, VPN Server 203.0.113.1, Target Network 10.0.0.0/8. Connections: Client 192.0.2.10 to TUN Interface 10.8.x.2 (virtual) (traffic to 10.0.x.5), TUN Interface 10.8.x.2 (virtual) to Encryption AES-256-GCM (capture + encrypt), Encryption AES-256-GCM to UDP/443 Outer packet (encapsulate), UDP/443 Outer packet to VPN Server 203.0.113.1 (internet), VPN Server 203.0.113.1 to Target Network 10.0.0.0/8 (decrypt + forward).
     C["Client<br/>192.0.2.10"]
     TUN["TUN Interface<br/>10.8.x.2 (virtual)"]
     ENC["Encryption<br/>AES-256-GCM"]
@@ -857,17 +890,23 @@ graph LR
     VPN["VPN Server<br/>203.0.113.1"]
     NET["Target Network<br/>10.0.0.0/8"]
 
-    C -->|"traffic to 10.0.x.5"| TUN
+    C -->|"traffic to<br/>10.0.x.5"| TUN
     TUN -->|"capture + encrypt"| ENC
     ENC -->|"encapsulate"| UDP
     UDP -->|"internet"| VPN
     VPN -->|"decrypt + forward"| NET
 
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style TUN fill:#DE8F05,stroke:#000,color:#fff
-    style ENC fill:#029E73,stroke:#000,color:#fff
-    style VPN fill:#CC78BC,stroke:#000,color:#fff
-    style NET fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class TUN pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ENC pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class VPN pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class NET pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -971,13 +1010,15 @@ Firewalls filter packets based on source/destination IP, port, protocol, and con
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 66: Firewall Rules — iptables Concepts
+    accDescr: Graph with 9 nodes and 9 connections. Nodes: Incoming Packet, PREROUTING (nat table — DNAT), Routing Decision, INPUT chain (for this host), FORWARD chain (routed through), OUTPUT chain (locally generated), POSTROUTING (nat table — SNAT/MASQUERADE), Local Application, Network / Wire. Connections: Incoming Packet to PREROUTING (nat table — DNAT), PREROUTING (nat table — DNAT) to Routing Decision, Routing Decision to INPUT chain (for this host) (dst = this host), INPUT chain (for this host) to Local Application, Routing Decision to FORWARD chain (routed through) (dst = another host), FORWARD chain (routed through) to POSTROUTING (nat table — SNAT/MASQUERADE), POSTROUTING (nat table — SNAT/MASQUERADE) to Network / Wire, Local Application to OUTPUT chain (locally generated), OUTPUT chain (locally generated) to POSTROUTING (nat table — SNAT/MASQUERADE).
     PKT["Incoming Packet"]
     PRE["PREROUTING<br/>(nat table — DNAT)"]
     RT["Routing Decision"]
     IN["INPUT chain<br/>(for this host)"]
     FW["FORWARD chain<br/>(routed through)"]
     OUT["OUTPUT chain<br/>(locally generated)"]
-    POST["POSTROUTING<br/>(nat table — SNAT/MASQUERADE)"]
+    POST["POSTROUTING<br/>(nat table —<br/>SNAT/MASQUERADE)"]
     APP["Local Application"]
     WIRE["Network / Wire"]
 
@@ -986,12 +1027,18 @@ graph TD
     RT -->|"dst = another host"| FW --> POST --> WIRE
     APP --> OUT --> POST
 
-    style PKT fill:#0173B2,stroke:#000,color:#fff
-    style IN fill:#029E73,stroke:#000,color:#fff
-    style FW fill:#DE8F05,stroke:#000,color:#fff
-    style OUT fill:#CC78BC,stroke:#000,color:#fff
-    style PRE fill:#CA9161,stroke:#000,color:#fff
-    style POST fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class PKT pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class IN pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class FW pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class OUT pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PRE pal-CA9161
+    class POST pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1311,20 +1358,27 @@ TCP BBR (Bottleneck Bandwidth and Round-trip time) replaces loss-based congestio
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 69: TCP BBR Congestion Control
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: STARTUP Exponential grow Detect BtlBw, DRAIN Drain startup queue RTT back to RTprop, PROBE_BW Steady state 8-cycle gain [1.25 0.75 1.0...], PROBE_RTT Every 10s cwnd=4 to measure RTT. Connections: STARTUP Exponential grow Detect BtlBw to DRAIN Drain startup queue RTT back to RTprop (BtlBw stable 3 RTTs), DRAIN Drain startup queue RTT back to RTprop to PROBE_BW Steady state 8-cycle gain [1.25 0.75 1.0...] (RTT = RTprop), PROBE_BW Steady state 8-cycle gain [1.25 0.75 1.0...] to PROBE_RTT Every 10s cwnd=4 to measure RTT (10 seconds elapsed), PROBE_RTT Every 10s cwnd=4 to measure RTT to PROBE_BW Steady state 8-cycle gain [1.25 0.75 1.0...] (200ms complete).
     STARTUP["STARTUP<br/>Exponential grow<br/>Detect BtlBw"]
     DRAIN["DRAIN<br/>Drain startup queue<br/>RTT back to RTprop"]
-    PROBE_BW["PROBE_BW<br/>Steady state<br/>8-cycle gain [1.25 0.75 1.0...]"]
-    PROBE_RTT["PROBE_RTT<br/>Every 10s<br/>cwnd=4 to measure RTT"]
+    PROBE_BW["PROBE_BW<br/>Steady state<br/>8-cycle gain [1.25<br/>0.75 1.0...]"]
+    PROBE_RTT["PROBE_RTT<br/>Every 10s<br/>cwnd=4 to measure<br/>RTT"]
 
-    STARTUP -->|"BtlBw stable 3 RTTs"| DRAIN
+    STARTUP -->|"BtlBw stable 3<br/>RTTs"| DRAIN
     DRAIN -->|"RTT = RTprop"| PROBE_BW
     PROBE_BW -->|"10 seconds elapsed"| PROBE_RTT
     PROBE_RTT -->|"200ms complete"| PROBE_BW
 
-    style STARTUP fill:#0173B2,stroke:#000,color:#fff
-    style DRAIN fill:#DE8F05,stroke:#000,color:#fff
-    style PROBE_BW fill:#029E73,stroke:#000,color:#fff
-    style PROBE_RTT fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class STARTUP pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class DRAIN pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class PROBE_BW pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PROBE_RTT pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1562,12 +1616,14 @@ Network observability combines metrics (counters/gauges), flow data (NetFlow/IPF
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 71: Network Observability — Metrics, Flow Data
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: Network Packets / Flows, Counters bytes_total, packets_tcp, Gauges active_connections, Histograms RTT p50/p95/p99, Flow Records src, dst, bytes, proto, Dashboard Alerts + Capacity Planning. Connections: Network Packets / Flows to Counters bytes_total, packets_tcp, Network Packets / Flows to Gauges active_connections, Network Packets / Flows to Histograms RTT p50/p95/p99, Network Packets / Flows to Flow Records src, dst, bytes, proto, Counters bytes_total, packets_tcp to Dashboard Alerts + Capacity Planning, Gauges active_connections to Dashboard Alerts + Capacity Planning, Histograms RTT p50/p95/p99 to Dashboard Alerts + Capacity Planning, Flow Records src, dst, bytes, proto to Dashboard Alerts + Capacity Planning.
     NET["Network<br/>Packets / Flows"]
-    CNT["Counters<br/>bytes_total, packets_tcp"]
+    CNT["Counters<br/>bytes_total,<br/>packets_tcp"]
     GAU["Gauges<br/>active_connections"]
     HIS["Histograms<br/>RTT p50/p95/p99"]
-    FLW["Flow Records<br/>src, dst, bytes, proto"]
-    DASH["Dashboard<br/>Alerts + Capacity Planning"]
+    FLW["Flow Records<br/>src, dst, bytes,<br/>proto"]
+    DASH["Dashboard<br/>Alerts + Capacity<br/>Planning"]
 
     NET --> CNT
     NET --> GAU
@@ -1578,12 +1634,18 @@ graph LR
     HIS --> DASH
     FLW --> DASH
 
-    style NET fill:#0173B2,stroke:#000,color:#fff
-    style CNT fill:#DE8F05,stroke:#000,color:#fff
-    style GAU fill:#029E73,stroke:#000,color:#fff
-    style HIS fill:#CC78BC,stroke:#000,color:#fff
-    style FLW fill:#CA9161,stroke:#000,color:#fff
-    style DASH fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class NET pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CNT pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class GAU pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class HIS pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class FLW pal-CA9161
+    class DASH pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1791,9 +1853,11 @@ Network performance metrics quantify path quality. Throughput measures data rate
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 73: Network Performance Testing — Throughput, Latency, Jitter
+    accDescr: Graph with 7 nodes and 4 connections. Nodes: Throughput Mbps / Gbps How much data/sec?, Latency p50 / p95 / p99 How long per packet?, Jitter Std deviation of RTT How variable is delay?, VoIP/Video Jitter < 30ms RTT < 150ms, Web Browsing RTT < 200ms Throughput secondary, Database RTT < 1ms local < 5ms same DC, Bulk Transfer Throughput primary Latency secondary. Connections: Throughput Mbps / Gbps How much data/sec? to Bulk Transfer Throughput primary Latency secondary, Latency p50 / p95 / p99 How long per packet? to Database RTT < 1ms local < 5ms same DC, Latency p50 / p95 / p99 How long per packet? to Web Browsing RTT < 200ms Throughput secondary, Jitter Std deviation of RTT How variable is delay? to VoIP/Video Jitter < 30ms RTT < 150ms.
     THR["Throughput<br/>Mbps / Gbps<br/>How much data/sec?"]
     LAT["Latency<br/>p50 / p95 / p99<br/>How long per packet?"]
-    JIT["Jitter<br/>Std deviation of RTT<br/>How variable is delay?"]
+    JIT["Jitter<br/>Std deviation of RTT<br/>How variable is<br/>delay?"]
 
     VoIP["VoIP/Video<br/>Jitter < 30ms<br/>RTT < 150ms"]
     Web["Web Browsing<br/>RTT < 200ms<br/>Throughput secondary"]
@@ -1805,11 +1869,17 @@ graph LR
     LAT --> Web
     JIT --> VoIP
 
-    style THR fill:#0173B2,stroke:#000,color:#fff
-    style LAT fill:#DE8F05,stroke:#000,color:#fff
-    style JIT fill:#029E73,stroke:#000,color:#fff
-    style VoIP fill:#CC78BC,stroke:#000,color:#fff
-    style DB fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class THR pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class LAT pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class JIT pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class VoIP pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class DB pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1908,12 +1978,14 @@ Zero Trust replaces perimeter-based security with continuous verification. Every
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 74: Zero Trust Networking Model
+    accDescr: Graph with 7 nodes and 9 connections. Nodes: Request (any network source), Identity Check Valid JWT + roles?, Device Posture Managed + compliant?, Token Freshness Expiry < now?, Policy Match Service + method allowed?, ALLOW Access granted + logged, DENY Reason logged. Connections: Request (any network source) to Identity Check Valid JWT + roles?, Identity Check Valid JWT + roles? to DENY Reason logged (fail), Identity Check Valid JWT + roles? to Device Posture Managed + compliant? (pass), Device Posture Managed + compliant? to DENY Reason logged (fail), Device Posture Managed + compliant? to Token Freshness Expiry < now? (pass), Token Freshness Expiry < now? to DENY Reason logged (expired), Token Freshness Expiry < now? to Policy Match Service + method allowed? (valid), Policy Match Service + method allowed? to DENY Reason logged (no match), Policy Match Service + method allowed? to ALLOW Access granted + logged (match).
     REQ["Request<br/>(any network source)"]
     IDCHECK["Identity Check<br/>Valid JWT + roles?"]
     DEVCHECK["Device Posture<br/>Managed + compliant?"]
     TOKCHECK["Token Freshness<br/>Expiry < now?"]
-    POLCHECK["Policy Match<br/>Service + method allowed?"]
-    ALLOW["ALLOW<br/>Access granted + logged"]
+    POLCHECK["Policy Match<br/>Service + method<br/>allowed?"]
+    ALLOW["ALLOW<br/>Access granted +<br/>logged"]
     DENY["DENY<br/>Reason logged"]
 
     REQ --> IDCHECK
@@ -1926,13 +1998,19 @@ graph TD
     POLCHECK -->|"no match"| DENY
     POLCHECK -->|"match"| ALLOW
 
-    style ALLOW fill:#029E73,stroke:#000,color:#fff
-    style DENY fill:#CA9161,stroke:#000,color:#fff
-    style REQ fill:#0173B2,stroke:#000,color:#fff
-    style IDCHECK fill:#DE8F05,stroke:#000,color:#fff
-    style DEVCHECK fill:#DE8F05,stroke:#000,color:#fff
-    style TOKCHECK fill:#DE8F05,stroke:#000,color:#fff
-    style POLCHECK fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ALLOW pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class DENY pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class REQ pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class IDCHECK pal-DE8F05
+    class DEVCHECK pal-DE8F05
+    class TOKCHECK pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class POLCHECK pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2078,6 +2156,8 @@ Mutual TLS (mTLS) requires both client and server to present and verify X.509 ce
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 75: mTLS — Mutual TLS
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: ClientHello; Server to Client: ServerHello + Server Certificate; Server to Client: CertificateRequest; Client to Server: Client Certificate + CertificateVerify; Client to Server: Finished; Server to Client: Finished.
     participant C as Client
     participant S as Server
 
@@ -2772,6 +2852,8 @@ Token bucket allows bursts within capacity; leaky bucket smooths bursty traffic 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 82: Rate Limiting Algorithms — Token Bucket and Leaky Bucket
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: Refill rate r tokens/sec, Bucket max capacity c, Consume 1 token -> ALLOW, No token -> DENY, Input bursty, Queue capacity c, Output constant rate r, Overflow -> DROP. Connections: Refill rate r tokens/sec to Bucket max capacity c, Bucket max capacity c to Consume 1 token -> ALLOW, Bucket max capacity c to No token -> DENY, Input bursty to Queue capacity c, Queue capacity c to Output constant rate r, Input bursty to Overflow -> DROP (full).
     subgraph TB["Token Bucket"]
         TR["Refill rate<br/>r tokens/sec"]
         TK["Bucket<br/>max capacity c"]
@@ -2791,10 +2873,14 @@ graph LR
     LI --> LQ --> LO
     LI -->|full| LF
 
-    style TK fill:#0173B2,stroke:#000,color:#fff
-    style LQ fill:#DE8F05,stroke:#000,color:#fff
-    style TP fill:#029E73,stroke:#000,color:#fff
-    style LO fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class TK pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class LQ pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class TP pal-029E73
+    class LO pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

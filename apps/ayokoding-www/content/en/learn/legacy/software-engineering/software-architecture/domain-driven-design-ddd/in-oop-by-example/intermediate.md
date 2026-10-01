@@ -18,7 +18,9 @@ An aggregate root is the single entry point for a cluster of related objects. Al
 ```mermaid
 %% Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A["PurchaseOrder (Aggregate Root)"]:::blue
+    accTitle: Example 26: Aggregate root — PurchaseOrder identity and boundary
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: PurchaseOrder (Aggregate Root), Value Objects, PurchaseOrderStatus, PurchaseOrderId, PurchaseOrderLine[], Money (total), SupplierId. Connections: PurchaseOrder (Aggregate Root) to Value Objects, PurchaseOrder (Aggregate Root) to PurchaseOrderStatus, Value Objects to PurchaseOrderId, Value Objects to PurchaseOrderLine[], Value Objects to Money (total), Value Objects to SupplierId.
+    A["PurchaseOrder<br/>(Aggregate Root)"]:::blue
     VOs["Value Objects"]:::teal
     F["PurchaseOrderStatus"]:::orange
 
@@ -30,8 +32,9 @@ graph TD
     VOs --> E["SupplierId"]:::teal
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -6701,19 +6704,22 @@ A `Specification<T>` encapsulates a named business predicate. Specifications com
 
 ```mermaid
 graph LR
+    accTitle: Example 47: Specification pattern — composing query predicates from domain concepts
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: AwaitingApprovalSpec, HighValueSpec, combined.and(), PORepository. findAll(combined). Connections: AwaitingApprovalSpec to combined.and(), HighValueSpec to combined.and(), combined.and() to PORepository. findAll(combined).
     A["AwaitingApprovalSpec"]:::blue
     B["HighValueSpec"]:::orange
     C["combined.and()"]:::teal
-    D["PORepository.findAll(combined)"]:::purple
+    D["PORepository.<br/>findAll(combined)"]:::purple
 
     A --> C
     B --> C
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -7474,19 +7480,22 @@ The hexagonal (ports-and-adapters) architecture separates the domain from infras
 
 ```mermaid
 graph LR
+    accTitle: Example 49: Hexagonal architecture — port and adapter for PurchaseOrderRepository
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Application Service, PurchaseOrder Repository port, JpaPurchaseOrder Adapter (infrastructure), InMemoryPurchase OrderAdapter (test). Connections: Application Service to PurchaseOrder Repository port (uses), PurchaseOrder Repository port to JpaPurchaseOrder Adapter (infrastructure) (implemented by), PurchaseOrder Repository port to InMemoryPurchase OrderAdapter (test) (implemented by).
     A["Application Service"]:::blue
-    B["PurchaseOrderRepository port"]:::teal
-    C["JpaPurchaseOrderAdapter<br/>(infrastructure)"]:::orange
-    D["InMemoryPurchaseOrderAdapter<br/>(test)"]:::purple
+    B["PurchaseOrder<br/>Repository port"]:::teal
+    C["JpaPurchaseOrder<br/>Adapter<br/>(infrastructure)"]:::orange
+    D["InMemoryPurchase<br/>OrderAdapter<br/>(test)"]:::purple
 
     A -->|uses| B
     B -->|implemented by| C
     B -->|implemented by| D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}

@@ -755,19 +755,22 @@ The `payments` context introduces `BankingPort` — the output port that initiat
 
 ```mermaid
 graph LR
-    PS["PaymentService\ninitiateDisbursement"]:::blue
-    BP["BankingPort\ndisburseFunds"]:::teal
-    PD["PgBankingAdapter\nHTTP → Bank API"]:::orange
-    TD["TestBankingAdapter\ncaptures call"]:::purple
+    accTitle: Example 58: BankingPort — Initiating a Disbursement
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: PaymentService initiateDisbursement, BankingPort disburseFunds, PgBankingAdapter HTTP → Bank API, TestBankingAdapter captures call. Connections: PaymentService initiateDisbursement to BankingPort disburseFunds, BankingPort disburseFunds to PgBankingAdapter HTTP → Bank API (production), BankingPort disburseFunds to TestBankingAdapter captures call (tests).
+    PS["PaymentService<br/>initiateDisbursement"]:::blue
+    BP["BankingPort<br/>disburseFunds"]:::teal
+    PD["PgBankingAdapter<br/>HTTP → Bank API"]:::orange
+    TD["TestBankingAdapter<br/>captures call"]:::purple
 
     PS --> BP
     BP -->|production| PD
     BP -->|tests| TD
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1902,11 +1905,13 @@ The composition root for the `procurement-platform-be` wires all four advanced c
 
 ```mermaid
 graph TD
-    CR["Composition Root\nComposition.fs"]:::orange
-    PA["PurchaseOrder\nPorts"]:::blue
-    RA["GoodsReceipt\nPorts"]:::blue
-    IA["Invoice\nPorts"]:::blue
-    PY["Payment\nPorts"]:::blue
+    accTitle: Example 61: Multi-Context Composition Root — Wiring Four Contexts
+    accDescr: Graph with 10 nodes and 12 connections. Nodes: Composition Root Composition.fs, PurchaseOrder Ports, GoodsReceipt Ports, Invoice Ports, Payment Ports, PurchasingService, ReceivingService, InvoicingService, PaymentService, HTTP Controllers. Connections: Composition Root Composition.fs to PurchaseOrder Ports, Composition Root Composition.fs to GoodsReceipt Ports, Composition Root Composition.fs to Invoice Ports, Composition Root Composition.fs to Payment Ports, PurchaseOrder Ports to PurchasingService, GoodsReceipt Ports to ReceivingService, Invoice Ports to InvoicingService, Payment Ports to PaymentService, PurchasingService to HTTP Controllers, ReceivingService to HTTP Controllers, InvoicingService to HTTP Controllers, PaymentService to HTTP Controllers.
+    CR["Composition Root<br/>Composition.fs"]:::orange
+    PA["PurchaseOrder<br/>Ports"]:::blue
+    RA["GoodsReceipt<br/>Ports"]:::blue
+    IA["Invoice<br/>Ports"]:::blue
+    PY["Payment<br/>Ports"]:::blue
     PS["PurchasingService"]:::teal
     RS["ReceivingService"]:::teal
     IS["InvoicingService"]:::teal
@@ -1926,10 +1931,11 @@ graph TD
     IS --> HTTP
     PYS --> HTTP
 
-    classDef orange fill:#DE8F05,stroke:#000,color:#000
-    classDef blue fill:#0173B2,stroke:#000,color:#fff
-    classDef teal fill:#029E73,stroke:#000,color:#fff
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}

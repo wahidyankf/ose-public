@@ -190,8 +190,10 @@ t.join(timeout=3)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 32: select for I/O Multiplexing
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Single Thread, select() call watch: sock1, sock2, sock3, sock1 ready, sock3 ready, Process sock1, Process sock3, Back to select(). Connections: Single Thread to select() call watch: sock1, sock2, sock3, select() call watch: sock1, sock2, sock3 to sock1 ready (data arrived on sock1 + sock3), select() call watch: sock1, sock2, sock3 to sock3 ready, sock1 ready to Process sock1, sock3 ready to Process sock3, Process sock1 to Back to select(), Process sock3 to Back to select().
     A["Single Thread"]
-    B["select() call<br/>watch: sock1, sock2, sock3"]
+    B["select() call<br/>watch: sock1, sock2,<br/>sock3"]
     C["sock1 ready"]
     D["sock3 ready"]
     E["Process sock1"]
@@ -199,20 +201,25 @@ graph TD
     G["Back to select()"]
 
     A --> B
-    B -->|"data arrived on sock1 + sock3"| C
+    B -->|"data arrived on<br/>sock1 + sock3"| C
     B --> D
     C --> E
     D --> F
     E --> G
     F --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-CC78BC
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -583,22 +590,27 @@ HTTP/2 multiplexes multiple requests over a single TCP connection using binary f
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    subgraph HTTP1["HTTP/1.1 — Multiple connections"]
-        C1["Connection 1: GET /page"] --> S1["Response 1"]
-        C2["Connection 2: GET /css"]  --> S2["Response 2"]
-        C3["Connection 3: GET /js"]   --> S3["Response 3"]
+    accTitle: Example 35: HTTP/2 Concepts — Multiplexing and Frames
+    accDescr: Graph with 10 nodes and 6 connections. Nodes: Connection 1: GET /page, Response 1, Connection 2: GET /css, Response 2, Connection 3: GET /js, Response 3, One TCP Connection, Response 1, Response 2, Response 3. Connections: Connection 1: GET /page to Response 1, Connection 2: GET /css to Response 2, Connection 3: GET /js to Response 3, One TCP Connection to Response 1 (Stream 1: GET /page), One TCP Connection to Response 2 (Stream 3: GET /css), One TCP Connection to Response 3 (Stream 5: GET /js).
+    subgraph HTTP1["HTTP/1.1 — Multiple<br/>connections"]
+        C1["Connection 1: GET<br/>/page"] --> S1["Response 1"]
+        C2["Connection 2: GET<br/>/css"]  --> S2["Response 2"]
+        C3["Connection 3: GET<br/>/js"]   --> S3["Response 3"]
     end
-    subgraph HTTP2["HTTP/2 — Single connection, multiplexed streams"]
+    subgraph HTTP2["HTTP/2 — Single<br/>connection,<br/>multiplexed streams"]
         MC["One TCP Connection"]
-        MC -->|"Stream 1: GET /page"| R1["Response 1"]
+        MC -->|"Stream 1: GET<br/>/page"| R1["Response 1"]
         MC -->|"Stream 3: GET /css"| R2["Response 2"]
         MC -->|"Stream 5: GET /js"| R3["Response 3"]
     end
 
-    style MC fill:#0173B2,stroke:#000,color:#fff
-    style R1 fill:#029E73,stroke:#000,color:#fff
-    style R2 fill:#029E73,stroke:#000,color:#fff
-    style R3 fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class MC pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class R1 pal-029E73
+    class R2 pal-029E73
+    class R3 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -682,9 +694,11 @@ HTTP/3 runs over QUIC instead of TCP. QUIC is a UDP-based transport protocol tha
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 36: HTTP/3 and QUIC Overview
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: HTTP/3 Application, QUIC Transport (reliability + security), UDP, IP, HTTP/2 Application, TLS 1.3, TCP, IP. Connections: HTTP/3 Application to QUIC Transport (reliability + security), QUIC Transport (reliability + security) to UDP, UDP to IP, HTTP/2 Application to TLS 1.3, TLS 1.3 to TCP, TCP to IP.
     subgraph HTTP3Stack["HTTP/3 Stack"]
         A3["HTTP/3 Application"]
-        B3["QUIC Transport<br/>(reliability + security)"]
+        B3["QUIC Transport<br/>(reliability +<br/>security)"]
         C3["UDP"]
         D3["IP"]
     end
@@ -698,10 +712,15 @@ graph TD
     A3 --> B3 --> C3 --> D3
     A2 --> B2 --> C2 --> D2
 
-    style A3 fill:#0173B2,stroke:#000,color:#fff
-    style B3 fill:#DE8F05,stroke:#000,color:#fff
-    style A2 fill:#029E73,stroke:#000,color:#fff
-    style B2 fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A3 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B3 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class A2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B2 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -803,6 +822,8 @@ WebSockets provide full-duplex communication over a single TCP connection. The c
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 37: WebSockets — Handshake and Frames
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: HTTP GET /ws Upgrade: websocket Sec-WebSocket-Key: abc...; Server to Client: HTTP 101 Switching Protocols Upgrade: websocket Sec-WebSocket-Accept: xyz...; Client to Server: WS Frame: text hello; Server to Client: WS Frame: text world; Client to Server: WS Frame: close (1000); Server to Client: WS Frame: close (1000).
     participant C as Client
     participant S as Server
 
@@ -922,6 +943,8 @@ The TLS 1.3 handshake establishes an encrypted channel in one round trip. It neg
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 38: TLS Handshake Deep-Dive
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: ClientHello supported TLS versions cipher suites key_share (DH public key); Server to Client: ServerHello chosen cipher suite key_share (DH public key) Certificate CertificateVerify Finished (encrypted); Client to Server: Finished (encrypted).
     participant C as Client
     participant S as Server
 
@@ -1011,19 +1034,26 @@ TLS certificates form a chain of trust from root Certificate Authorities (CA) th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Root CA Certificate<br/>Self-signed, in OS trust store<br/>Valid: 20-30 years"]
-    B["Intermediate CA Certificate<br/>Signed by Root CA<br/>Valid: 5-10 years"]
-    C["Leaf Certificate<br/>Signed by Intermediate CA<br/>Valid: 1-2 years"]
-    D["Your Server<br/>Presents leaf + chain"]
+    accTitle: Example 39: TLS Certificates — Chain of Trust
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Root CA Certificate Self-signed, in OS trust store Valid: 20-30 years, Intermediate CA Certificate Signed by Root CA Valid: 5-10 years, Leaf Certificate Signed by Intermediate CA Valid: 1-2 years, Your Server Presents leaf + chain. Connections: Root CA Certificate Self-signed, in OS trust store Valid: 20-30 years to Intermediate CA Certificate Signed by Root CA Valid: 5-10 years (signs), Intermediate CA Certificate Signed by Root CA Valid: 5-10 years to Leaf Certificate Signed by Intermediate CA Valid: 1-2 years (signs), Leaf Certificate Signed by Intermediate CA Valid: 1-2 years to Your Server Presents leaf + chain.
+    A["Root CA Certificate<br/>Self-signed, in OS<br/>trust store<br/>Valid: 20-30 years"]
+    B["Intermediate CA<br/>Certificate<br/>Signed by Root CA<br/>Valid: 5-10 years"]
+    C["Leaf Certificate<br/>Signed by<br/>Intermediate CA<br/>Valid: 1-2 years"]
+    D["Your Server<br/>Presents leaf +<br/>chain"]
 
     A -->|signs| B
     B -->|signs| C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1332,7 +1362,9 @@ NAT allows multiple devices on a private network to share one public IP address.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    subgraph Private["Private Network 192.168.x.0/24"]
+    accTitle: Example 42: NAT — Network Address Translation
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Host A 192.168.x.10, Host B 192.168.x.20, NAT Router Private: 192.168.x.1 Public: 203.0.113.5, Server 93.184.216.34. Connections: Host A 192.168.x.10 to NAT Router Private: 192.168.x.1 Public: 203.0.113.5 (src=192.168.x. 10:54321), Host B 192.168.x.20 to NAT Router Private: 192.168.x.1 Public: 203.0.113.5 (src=192.168.x. 20:54322), NAT Router Private: 192.168.x.1 Public: 203.0.113.5 to Server 93.184.216.34 (src=203.0.113. 5:10001), NAT Router Private: 192.168.x.1 Public: 203.0.113.5 to Server 93.184.216.34 (src=203.0.113. 5:10002).
+    subgraph Private["Private Network<br/>192.168.x.0/24"]
         H1["Host A<br/>192.168.x.10"]
         H2["Host B<br/>192.168.x.20"]
     end
@@ -1341,15 +1373,19 @@ graph LR
         S["Server<br/>93.184.216.34"]
     end
 
-    H1 -->|"src=192.168.x.10:54321"| NAT
-    H2 -->|"src=192.168.x.20:54322"| NAT
-    NAT -->|"src=203.0.113.5:10001"| S
-    NAT -->|"src=203.0.113.5:10002"| S
+    H1 -->|"src=192.168.x.<br/>10:54321"| NAT
+    H2 -->|"src=192.168.x.<br/>20:54322"| NAT
+    NAT -->|"src=203.0.113.<br/>5:10001"| S
+    NAT -->|"src=203.0.113.<br/>5:10002"| S
 
-    style NAT fill:#DE8F05,stroke:#000,color:#fff
-    style H1 fill:#0173B2,stroke:#000,color:#fff
-    style H2 fill:#0173B2,stroke:#000,color:#fff
-    style S fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class NAT pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class H1 pal-0173B2
+    class H2 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1545,20 +1581,27 @@ BGP (Border Gateway Protocol) is the routing protocol that holds the internet to
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 44: BGP Basics — Autonomous Systems
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: AS 65001 Your ISP 10.0.0.0/8, AS 65002 Peer ISP 172.16.0.0/12, AS 65003 Upstream 192.168.0.0/16, AS 65004 Content Provider 203.0.113.0/24. Connections: AS 65001 Your ISP 10.0.0.0/8 to AS 65002 Peer ISP 172.16.0.0/12 (eBGP: advertise prefixes), AS 65002 Peer ISP 172.16.0.0/12 to AS 65003 Upstream 192.168.0.0/16 (eBGP: advertise prefixes), AS 65003 Upstream 192.168.0.0/16 to AS 65004 Content Provider 203.0.113.0/24 (eBGP: advertise prefixes), AS 65001 Your ISP 10.0.0.0/8 to AS 65001 Your ISP 10.0.0.0/8 (iBGP: internal sync).
     A["AS 65001<br/>Your ISP<br/>10.0.0.0/8"]
     B["AS 65002<br/>Peer ISP<br/>172.16.0.0/12"]
     C["AS 65003<br/>Upstream<br/>192.168.0.0/16"]
     D["AS 65004<br/>Content Provider<br/>203.0.113.0/24"]
 
-    A -->|"eBGP: advertise prefixes"| B
-    B -->|"eBGP: advertise prefixes"| C
-    C -->|"eBGP: advertise prefixes"| D
-    A -->|"iBGP: internal sync"| A
+    A -->|"eBGP: advertise<br/>prefixes"| B
+    B -->|"eBGP: advertise<br/>prefixes"| C
+    C -->|"eBGP: advertise<br/>prefixes"| D
+    A -->|"iBGP: internal<br/>sync"| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1653,6 +1696,8 @@ Load balancers distribute traffic across multiple backend servers to improve ava
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 45: Load Balancing Strategies
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client Requests, Load Balancer, Backend 1 weight=3, Backend 2 weight=2, Backend 3 weight=1. Connections: Client Requests to Load Balancer, Load Balancer to Backend 1 weight=3 (60 traffic), Load Balancer to Backend 2 weight=2 (33 traffic), Load Balancer to Backend 3 weight=1 (17 traffic).
     C["Client Requests"]
     LB["Load Balancer"]
     B1["Backend 1<br/>weight=3"]
@@ -1664,11 +1709,17 @@ graph TD
     LB -->|"33% traffic"| B2
     LB -->|"17% traffic"| B3
 
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style LB fill:#DE8F05,stroke:#000,color:#fff
-    style B1 fill:#029E73,stroke:#000,color:#fff
-    style B2 fill:#CC78BC,stroke:#000,color:#fff
-    style B3 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class LB pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B1 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B2 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B3 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -2006,22 +2057,29 @@ TCP congestion control prevents senders from overwhelming the network. Slow star
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Slow Start<br/>cwnd doubles each RTT<br/>1->2->4->8->16 MSS"]
+    accTitle: Example 48: TCP Congestion Control — Slow Start and AIMD
+    accDescr: Graph with 4 nodes and 6 connections. Nodes: Slow Start cwnd doubles each RTT 1->2->4->8->16 MSS, Congestion Avoidance cwnd += 1 MSS/RTT Linear growth, Loss Detected timeout or 3 dup ACKs, Fast Recovery cwnd halved ssthresh updated. Connections: Slow Start cwnd doubles each RTT 1->2->4->8->16 MSS to Congestion Avoidance cwnd += 1 MSS/RTT Linear growth (cwnd >= ssthresh), Congestion Avoidance cwnd += 1 MSS/RTT Linear growth to Loss Detected timeout or 3 dup ACKs, Slow Start cwnd doubles each RTT 1->2->4->8->16 MSS to Loss Detected timeout or 3 dup ACKs, Loss Detected timeout or 3 dup ACKs to Fast Recovery cwnd halved ssthresh updated (3 dup ACKs: fast retransmit), Fast Recovery cwnd halved ssthresh updated to Congestion Avoidance cwnd += 1 MSS/RTT Linear growth, Loss Detected timeout or 3 dup ACKs to Slow Start cwnd doubles each RTT 1->2->4->8->16 MSS (timeout: severe congestion).
+    A["Slow Start<br/>cwnd doubles each<br/>RTT<br/>1->2->4->8->16 MSS"]
     B["Congestion Avoidance<br/>cwnd += 1 MSS/RTT<br/>Linear growth"]
-    C["Loss Detected<br/>timeout or 3 dup ACKs"]
+    C["Loss Detected<br/>timeout or 3 dup<br/>ACKs"]
     D["Fast Recovery<br/>cwnd halved<br/>ssthresh updated"]
 
     A -->|"cwnd >= ssthresh"| B
     B --> C
     A --> C
-    C -->|"3 dup ACKs: fast retransmit"| D
+    C -->|"3 dup ACKs: fast<br/>retransmit"| D
     D --> B
-    C -->|"timeout: severe congestion"| A
+    C -->|"timeout: severe<br/>congestion"| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

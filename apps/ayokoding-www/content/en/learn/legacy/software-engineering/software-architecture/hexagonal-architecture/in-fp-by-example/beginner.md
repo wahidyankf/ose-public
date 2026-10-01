@@ -29,16 +29,18 @@ Hexagonal Architecture divides a system into three zones. The **Domain** zone ho
 
 ```mermaid
 graph TD
-    subgraph Adapters["Adapters Zone (outer)"]
-        HTTP["HttpAdapter\nopen Microsoft.AspNetCore"]
-        DB["PostgresAdapter\nopen Npgsql"]
+    accTitle: Example 1: The Hexagon Metaphor — Three Zones as Namespaces / Modules
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: HttpAdapter open Microsoft.AspNetCore, PostgresAdapter open Npgsql, PurchaseOrderService open Domain only, Ports (function type aliases), Domain.fs no external imports. Connections: HttpAdapter open Microsoft.AspNetCore to Ports (function type aliases), PostgresAdapter open Npgsql to Ports (function type aliases), Ports (function type aliases) to PurchaseOrderService open Domain only, PurchaseOrderService open Domain only to Domain.fs no external imports.
+    subgraph Adapters["Adapters Zone<br/>(outer)"]
+        HTTP["HttpAdapter<br/>open<br/>Microsoft.AspNetCore"]
+        DB["PostgresAdapter<br/>open Npgsql"]
     end
-    subgraph Application["Application Zone (middle)"]
-        SVC["PurchaseOrderService\nopen Domain only"]
-        PORT["Ports (function type aliases)"]
+    subgraph Application["Application Zone<br/>(middle)"]
+        SVC["PurchaseOrderService<br/>open Domain only"]
+        PORT["Ports (function type<br/>aliases)"]
     end
     subgraph Domain["Domain Zone (inner)"]
-        DOM["Domain.fs\nno external imports"]
+        DOM["Domain.fs<br/>no external imports"]
     end
 
     HTTP --> PORT
@@ -46,9 +48,13 @@ graph TD
     PORT --> SVC
     SVC --> DOM
 
-    style Domain fill:#0173B2,stroke:#000,color:#fff
-    style Application fill:#029E73,stroke:#000,color:#fff
-    style Adapters fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Domain pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Application pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Adapters pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -584,22 +590,30 @@ An **input port** is the entry point into the application. Any adapter (HTTP han
 
 ```mermaid
 graph LR
-    HTTP["HTTP Adapter\nPOST /purchase-orders"]
-    CLI["CLI Adapter\n./submit-po"]
-    TEST["Test\nxUnit / Expecto"]
-    PORT["SubmitPurchaseOrderUseCase\nfunction type alias"]
-    SVC["submitPurchaseOrder\n(implementation)"]
+    accTitle: Example 3: Input Port as a Function Type Alias
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: HTTP Adapter POST /purchase-orders, CLI Adapter ./submit-po, Test xUnit / Expecto, SubmitPurchaseOrder UseCase function type alias, submitPurchaseOrder (implementation). Connections: HTTP Adapter POST /purchase-orders to SubmitPurchaseOrder UseCase function type alias (calls port), CLI Adapter ./submit-po to SubmitPurchaseOrder UseCase function type alias (calls port), Test xUnit / Expecto to SubmitPurchaseOrder UseCase function type alias (calls port), SubmitPurchaseOrder UseCase function type alias to submitPurchaseOrder (implementation) (satisfied by).
+    HTTP["HTTP Adapter<br/>POST<br/>/purchase-orders"]
+    CLI["CLI Adapter<br/>./submit-po"]
+    TEST["Test<br/>xUnit / Expecto"]
+    PORT["SubmitPurchaseOrder<br/>UseCase<br/>function type alias"]
+    SVC["submitPurchaseOrder<br/>(implementation)"]
 
     HTTP -- "calls port" --> PORT
     CLI  -- "calls port" --> PORT
     TEST -- "calls port" --> PORT
     PORT -- "satisfied by" --> SVC
 
-    style PORT fill:#0173B2,stroke:#000,color:#fff
-    style SVC fill:#029E73,stroke:#000,color:#fff
-    style HTTP fill:#DE8F05,stroke:#000,color:#000
-    style CLI fill:#CA9161,stroke:#000,color:#000
-    style TEST fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class PORT pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class SVC pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class HTTP pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class CLI pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class TEST pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -7280,15 +7294,17 @@ This example combines all concepts into one end-to-end flow within the `purchasi
 
 ```mermaid
 graph TD
-    REQ["HTTP POST /purchase-orders\nHttpPoDto"]
-    PARSE["HTTP Adapter\ntoDomainInput"]
-    UC["SubmitPurchaseOrderUseCase\n(input port)"]
-    VAL["validatePO\ndomain fn — pure"]
-    LVL["determineApprovalLevel\ndomain fn — pure"]
-    SAVE["PORepository.save\noutput port"]
-    CLK["Clock\noutput port"]
-    MAP["HTTP Adapter\ntoHttpResponse"]
-    RESP["HTTP 201\nHttpPoResponse"]
+    accTitle: Example 25: Full Hexagonal Flow — HTTP to Domain to Repository to Response
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: HTTP POST /purchase-orders HttpPoDto, HTTP Adapter toDomainInput, SubmitPurchaseOrder UseCase (input port), validatePO domain fn — pure, determineApproval Level domain fn — pure, PORepository.save output port, Clock output port, HTTP Adapter toHttpResponse, HTTP 201 HttpPoResponse. Connections: HTTP POST /purchase-orders HttpPoDto to HTTP Adapter toDomainInput, HTTP Adapter toDomainInput to SubmitPurchaseOrder UseCase (input port) (DraftPO), SubmitPurchaseOrder UseCase (input port) to validatePO domain fn — pure, validatePO domain fn — pure to determineApproval Level domain fn — pure (ValidatedPO), determineApproval Level domain fn — pure to PORepository.save output port (ApprovalLevel), Clock output port to PORepository.save output port (DateTimeOffset), PORepository.save output port to HTTP Adapter toHttpResponse (Ok ()), HTTP Adapter toHttpResponse to HTTP 201 HttpPoResponse.
+    REQ["HTTP POST<br/>/purchase-orders<br/>HttpPoDto"]
+    PARSE["HTTP Adapter<br/>toDomainInput"]
+    UC["SubmitPurchaseOrder<br/>UseCase<br/>(input port)"]
+    VAL["validatePO<br/>domain fn — pure"]
+    LVL["determineApproval<br/>Level<br/>domain fn — pure"]
+    SAVE["PORepository.save<br/>output port"]
+    CLK["Clock<br/>output port"]
+    MAP["HTTP Adapter<br/>toHttpResponse"]
+    RESP["HTTP 201<br/>HttpPoResponse"]
 
     REQ --> PARSE
     PARSE -- "DraftPO" --> UC
@@ -7299,15 +7315,22 @@ graph TD
     SAVE -- "Ok ()" --> MAP
     MAP --> RESP
 
-    style REQ fill:#DE8F05,stroke:#000,color:#000
-    style PARSE fill:#CA9161,stroke:#000,color:#000
-    style UC fill:#0173B2,stroke:#000,color:#fff
-    style VAL fill:#029E73,stroke:#000,color:#fff
-    style LVL fill:#029E73,stroke:#000,color:#fff
-    style SAVE fill:#CC78BC,stroke:#000,color:#000
-    style CLK fill:#CC78BC,stroke:#000,color:#000
-    style MAP fill:#CA9161,stroke:#000,color:#000
-    style RESP fill:#808080,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class REQ pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class PARSE pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class UC pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class VAL pal-029E73
+    class LVL pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class SAVE pal-CC78BC
+    class CLK pal-CC78BC
+    class MAP pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class RESP pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}

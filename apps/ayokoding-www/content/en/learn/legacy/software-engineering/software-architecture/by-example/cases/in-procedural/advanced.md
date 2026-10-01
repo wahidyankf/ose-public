@@ -15,16 +15,19 @@ The composition root is the single location where every infrastructure choice is
 
 ```mermaid
 graph TD
-    A["main.go / main.rs\n(Composition Root)"]:::infra --> B["Infra Adapters\n(Postgres, Kafka, HTTP client)"]:::infra
-    A --> C["Decorator Stack\n(metrics → retry → logging)"]:::infra
-    C --> D["Application Service\n(domain.POApprovalService)"]:::domain
-    D --> E["Port Interfaces\n(PORepository, EventBus)"]:::domain
+    accTitle: Why It Matters
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: main.go / main.rs (Composition Root), Infra Adapters (Postgres, Kafka, HTTP client), Decorator Stack (metrics → retry → logging), Application Service (domain. POApprovalService), Port Interfaces (PORepository, EventBus), HTTP Handler (chi / axum). Connections: main.go / main.rs (Composition Root) to Infra Adapters (Postgres, Kafka, HTTP client), main.go / main.rs (Composition Root) to Decorator Stack (metrics → retry → logging), Decorator Stack (metrics → retry → logging) to Application Service (domain. POApprovalService), Application Service (domain. POApprovalService) to Port Interfaces (PORepository, EventBus), Port Interfaces (PORepository, EventBus) to Infra Adapters (Postgres, Kafka, HTTP client), main.go / main.rs (Composition Root) to HTTP Handler (chi / axum), HTTP Handler (chi / axum) to Application Service (domain. POApprovalService).
+    A["main.go / main.rs<br/>(Composition Root)"]:::infra --> B["Infra Adapters<br/>(Postgres, Kafka,<br/>HTTP client)"]:::infra
+    A --> C["Decorator Stack<br/>(metrics → retry →<br/>logging)"]:::infra
+    C --> D["Application Service<br/>(domain.<br/>POApprovalService)"]:::domain
+    D --> E["Port Interfaces<br/>(PORepository,<br/>EventBus)"]:::domain
     E --> B
-    A --> F["HTTP Handler\n(chi / axum)"]:::infra
+    A --> F["HTTP Handler<br/>(chi / axum)"]:::infra
     F --> D
 
-    classDef infra fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef domain fill:#029E73,color:#fff,stroke:#029E73
+    classDef infra fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef domain fill:#029E73,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -596,6 +599,8 @@ Fixed-interval retries cause thundering herd: when a downstream database has a b
 
 ```mermaid
 sequenceDiagram
+    accTitle: Why It Matters
+    accDescr: Sequence diagram between Client, RetryingAdapter, Downstream (Postgres/API). Messages: Client to RetryingAdapter: Save(ctx, po); RetryingAdapter to Downstream (Postgres/API): attempt 1; Downstream (Postgres/API) to RetryingAdapter: error (retryable); RetryingAdapter to Downstream (Postgres/API): attempt 2; Downstream (Postgres/API) to RetryingAdapter: error (retryable); RetryingAdapter to Downstream (Postgres/API): attempt 3; Downstream (Postgres/API) to RetryingAdapter: ok; RetryingAdapter to Client: nil.
     participant C as Client
     participant R as RetryingAdapter
     participant D as Downstream (Postgres/API)
@@ -812,6 +817,8 @@ Retry policies assume failures are transient. Circuit breakers protect against s
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Why It Matters
+    accDescr: State diagram with 4 items: start or end, Closed, Open, HalfOpen. Relationships: start or end to Closed; Closed to Open: failure_rate > threshold AND requests >= min_count; Open to HalfOpen: probe_interval elapsed; HalfOpen to Closed: probe call succeeds; HalfOpen to Open: probe call fails.
     [*] --> Closed
 
     Closed --> Open : failure_rate > threshold\nAND requests >= min_count
@@ -1100,6 +1107,8 @@ Writing a domain aggregate and publishing a domain event are two separate I/O op
 
 ```mermaid
 sequenceDiagram
+    accTitle: Why It Matters
+    accDescr: Sequence diagram between Application Service, PostgreSQL, OutboxWorker, Kafka/SQS. Messages: Application Service to PostgreSQL: BEGIN; Application Service to PostgreSQL: INSERT purchase_orders; Application Service to PostgreSQL: INSERT outbox_events (status=pending); Application Service to PostgreSQL: COMMIT; OutboxWorker to PostgreSQL: SELECT * FROM outbox_events WHERE status=pending LIMIT 100; OutboxWorker to Kafka/SQS: Publish(event); OutboxWorker to PostgreSQL: UPDATE outbox_events SET status=published.
     participant S as Application Service
     participant DB as PostgreSQL
     participant W as OutboxWorker
@@ -2659,20 +2668,22 @@ A production container with no resource limits can consume all memory on a node 
 
 ```mermaid
 graph LR
+    accTitle: Why It Matters
+    accDescr: Graph with 10 nodes and 5 connections. Nodes: app container (Go/Rust binary) cpu: 100m-500m mem: 128Mi-256Mi, otel-collector sidecar (OpenTelemetry Collector) cpu: 50m-200m mem: 64Mi-128Mi, app container (Go/Rust binary), otel-collector sidecar, Kubernetes Service (ClusterIP / LoadBalancer), PostgreSQL (managed: RDS /Cloud SQL), Kafka (managed: MSK / Confluent), Jaeger / Tempo (observability backend), Pod, Pod2. Connections: Kubernetes Service (ClusterIP / LoadBalancer) to Pod, Kubernetes Service (ClusterIP / LoadBalancer) to Pod2, app container (Go/Rust binary) cpu: 100m-500m mem: 128Mi-256Mi to PostgreSQL (managed: RDS /Cloud SQL), app container (Go/Rust binary) cpu: 100m-500m mem: 128Mi-256Mi to Kafka (managed: MSK / Confluent), otel-collector sidecar (OpenTelemetry Collector) cpu: 50m-200m mem: 64Mi-128Mi to Jaeger / Tempo (observability backend).
     subgraph Node["Kubernetes Node"]
-        subgraph Pod["procurement-service Pod"]
-            APP["app container\n(Go/Rust binary)\ncpu: 100m-500m\nmem: 128Mi-256Mi"]:::app
-            OTC["otel-collector sidecar\n(OpenTelemetry Collector)\ncpu: 50m-200m\nmem: 64Mi-128Mi"]:::sidecar
+        subgraph Pod["procurement-service<br/>Pod"]
+            APP["app container<br/>(Go/Rust binary)<br/>cpu: 100m-500m<br/>mem: 128Mi-256Mi"]:::app
+            OTC["otel-collector<br/>sidecar<br/>(OpenTelemetry<br/>Collector)<br/>cpu: 50m-200m<br/>mem: 64Mi-128Mi"]:::sidecar
         end
-        subgraph Pod2["procurement-service Pod (replica 2)"]
-            APP2["app container\n(Go/Rust binary)"]:::app
-            OTC2["otel-collector sidecar"]:::sidecar
+        subgraph Pod2["procurement-service<br/>Pod (replica 2)"]
+            APP2["app container<br/>(Go/Rust binary)"]:::app
+            OTC2["otel-collector<br/>sidecar"]:::sidecar
         end
     end
-    SVC["Kubernetes Service\n(ClusterIP / LoadBalancer)"]:::infra
-    PG["PostgreSQL\n(managed: RDS / Cloud SQL)"]:::infra
-    KAFKA["Kafka\n(managed: MSK / Confluent)"]:::infra
-    JAEGER["Jaeger / Tempo\n(observability backend)"]:::infra
+    SVC["Kubernetes Service<br/>(ClusterIP /<br/>LoadBalancer)"]:::infra
+    PG["PostgreSQL<br/>(managed: RDS /Cloud<br/>SQL)"]:::infra
+    KAFKA["Kafka<br/>(managed: MSK /<br/>Confluent)"]:::infra
+    JAEGER["Jaeger / Tempo<br/>(observability<br/>backend)"]:::infra
 
     SVC --> Pod
     SVC --> Pod2
@@ -2680,9 +2691,10 @@ graph LR
     APP --> KAFKA
     OTC --> JAEGER
 
-    classDef app fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef sidecar fill:#029E73,color:#fff,stroke:#029E73
-    classDef infra fill:#DE8F05,color:#000,stroke:#DE8F05
+    classDef app fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef sidecar fill:#029E73,color:#000000,stroke:#000000
+    classDef infra fill:#DE8F05,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}

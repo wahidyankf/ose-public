@@ -36,28 +36,38 @@ The `>>` operator composes two functions into one. It is the mathematical compos
 
 ```mermaid
 graph LR
-    In["'  req-f4c2  '\n(raw input)"]
-    T["trimInput\nstring→string"]
-    U["toUpperCase\nstring→string"]
+    accTitle: Example 26: Function Composition with >>
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: req-f4c2 (raw input), trimInput string→string, toUpperCase string→string. Connections: req-f4c2 (raw input) to trimInput string→string, trimInput string→string to toUpperCase string→string.
+    In["'  req-f4c2  '<br/>(raw input)"]
+    T["trimInput<br/>string→string"]
+    U["toUpperCase<br/>string→string"]
 
     In --> T --> U
 
-    style In fill:#DE8F05,stroke:#000,color:#000
-    style T fill:#0173B2,stroke:#000,color:#fff
-    style U fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class In pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class T pal-0173B2
+    class U pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 graph LR
-    U["toUpperCase\nstring→string"]
-    P["addPrefix\nstring→string"]
-    Out["'REQ_F4C2'\n(normalised)"]
+    accTitle: Example 26: Function Composition with >>
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: toUpperCase string→string, addPrefix string→string, REQ_F4C2 (normalised). Connections: toUpperCase string→string to addPrefix string→string, addPrefix string→string to REQ_F4C2 (normalised).
+    U["toUpperCase<br/>string→string"]
+    P["addPrefix<br/>string→string"]
+    Out["'REQ_F4C2'<br/>(normalised)"]
 
     U --> P --> Out
 
-    style U fill:#0173B2,stroke:#000,color:#fff
-    style P fill:#0173B2,stroke:#000,color:#fff
-    style Out fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class U pal-0173B2
+    class P pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Out pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -732,14 +742,21 @@ A complete procurement workflow is a composition of pure steps. The `submitAndRo
 
 ```mermaid
 graph LR
-    A["validateLines\nResult<RawLine list, string>"] -->|"Result.map"| B["computeTotal\ndecimal"]
-    B -->|"Result.map"| C["deriveLevel\nApprovalLevel"]
-    C -->|"Result.map"| D["buildEvent\nRequisitionSubmittedPayload"]
+    accTitle: Example 29: Workflow Expressed as Function Composition
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: validateLines Result, computeTotal decimal, deriveLevel ApprovalLevel, buildEvent RequisitionSubmitted Payload. Connections: validateLines Result to computeTotal decimal (Result.map), computeTotal decimal to deriveLevel ApprovalLevel (Result.map), deriveLevel ApprovalLevel to buildEvent RequisitionSubmitted Payload (Result.map).
+    A["validateLines\nResult<RawLine list, string>"] -->|"Result.map"| B["computeTotal<br/>decimal"]
+    B -->|"Result.map"| C["deriveLevel<br/>ApprovalLevel"]
+    C -->|"Result.map"| D["buildEvent<br/>RequisitionSubmitted<br/>Payload"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1367,6 +1384,8 @@ main = do
 
 ```mermaid
 graph LR
+    accTitle: Example 31: Result.bind — Chaining Fallible Steps
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: findRequisition Result, checkBudget Result, deriveLevel Result, Ok ApprovalLevel. Connections: findRequisition Result to checkBudget Result (Ok), checkBudget Result to deriveLevel Result (Ok), deriveLevel Result to Ok ApprovalLevel (Ok).
     S1["findRequisition\nResult<Req, Err>"]
     S2["checkBudget\nResult<unit, Err>"]
     S3["deriveLevel\nResult<Level, Err>"]
@@ -1376,29 +1395,37 @@ graph LR
     S2 -- "Ok" --> S3
     S3 -- "Ok" --> OkOut
 
-    style OkOut fill:#029E73,stroke:#000,color:#fff
-    style S1 fill:#0173B2,stroke:#000,color:#fff
-    style S2 fill:#0173B2,stroke:#000,color:#fff
-    style S3 fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class OkOut pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class S1 pal-0173B2
+    class S2 pal-0173B2
+    class S3 pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Error track** (first failure short-circuits):
 
 ```mermaid
 graph LR
+    accTitle: Example 31: Result.bind — Chaining Fallible Steps
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: findRequisition, checkBudget, deriveLevel, Error ProcurementError. Connections: findRequisition to Error ProcurementError (Error), checkBudget to Error ProcurementError (Error), deriveLevel to Error ProcurementError (Error).
     S1["findRequisition"]
     S2["checkBudget"]
     S3["deriveLevel"]
-    ErrOut["Error\nProcurementError"]
+    ErrOut["Error<br/>ProcurementError"]
 
     S1 -- "Error" --> ErrOut
     S2 -- "Error" --> ErrOut
     S3 -- "Error" --> ErrOut
 
-    style ErrOut fill:#CC78BC,stroke:#000,color:#000
-    style S1 fill:#0173B2,stroke:#000,color:#fff
-    style S2 fill:#0173B2,stroke:#000,color:#fff
-    style S3 fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ErrOut pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class S1 pal-0173B2
+    class S2 pal-0173B2
+    class S3 pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -2820,22 +2847,30 @@ A comprehensive `ProcurementError` discriminated union names every failure mode 
 
 ```mermaid
 graph TD
+    accTitle: Example 36: Domain Error DU — Every Failure Mode Named
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: PurchasingError DU, Requisition errors NotFound / AlreadySubmitted HasNoLines, PO errors (NotFound / NotApproved / BudgetExceeded), Supplier errors NotFound / NotEligible, Infra errors DBTimeout / EventPubFailed. Connections: PurchasingError DU to Requisition errors NotFound / AlreadySubmitted HasNoLines, PurchasingError DU to PO errors (NotFound / NotApproved / BudgetExceeded), PurchasingError DU to Supplier errors NotFound / NotEligible, PurchasingError DU to Infra errors DBTimeout / EventPubFailed.
     E["PurchasingError DU"]
-    R["Requisition errors\nNotFound / AlreadySubmitted\nHasNoLines"]
-    P["PO errors\n(NotFound / NotApproved /\nBudgetExceeded)"]
-    S["Supplier errors\nNotFound / NotEligible"]
-    I["Infra errors\nDBTimeout / EventPubFailed"]
+    R["Requisition errors<br/>NotFound /<br/>AlreadySubmitted<br/>HasNoLines"]
+    P["PO errors<br/>(NotFound /<br/>NotApproved /<br/>BudgetExceeded)"]
+    S["Supplier errors<br/>NotFound /<br/>NotEligible"]
+    I["Infra errors<br/>DBTimeout /<br/>EventPubFailed"]
 
     E --> R
     E --> P
     E --> S
     E --> I
 
-    style E fill:#0173B2,stroke:#000,color:#fff
-    style R fill:#DE8F05,stroke:#000,color:#000
-    style P fill:#CC78BC,stroke:#000,color:#000
-    style S fill:#029E73,stroke:#000,color:#fff
-    style I fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class E pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class R pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class P pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class I pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -3144,6 +3179,8 @@ The `PurchaseOrder` is the workhorse aggregate of the purchasing context. Its st
 
 ```mermaid
 graph LR
+    accTitle: Example 37: PurchaseOrder Aggregate — Full State Machine
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Draft, AwaitingApproval, Approved, Issued. Connections: Draft to AwaitingApproval (submit), AwaitingApproval to Approved (approve), Approved to Issued (issue).
     D["Draft"]
     AA["AwaitingApproval"]
     AP["Approved"]
@@ -3153,16 +3190,22 @@ graph LR
     AA -- "approve"  --> AP
     AP -- "issue"    --> IS
 
-    style D  fill:#DE8F05,stroke:#000,color:#000
-    style AA fill:#0173B2,stroke:#000,color:#fff
-    style AP fill:#029E73,stroke:#000,color:#fff
-    style IS fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class AA pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class AP pal-029E73
+    class IS pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Off-ramps and disputes** (Cancelled / Disputed states from various points):
 
 ```mermaid
 graph LR
+    accTitle: Example 37: PurchaseOrder Aggregate — Full State Machine
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: AwaitingApproval, Approved, Issued, Cancelled, Disputed. Connections: AwaitingApproval to Cancelled (reject), Issued to Cancelled (cancel), Issued to Disputed (dispute), Disputed to Approved (resolve-approve), Disputed to Cancelled (resolve-cancel).
     AA["AwaitingApproval"]
     AP["Approved"]
     IS["Issued"]
@@ -3175,11 +3218,16 @@ graph LR
     DI -- "resolve-approve" --> AP
     DI -- "resolve-cancel"  --> CA
 
-    style AA fill:#0173B2,stroke:#000,color:#fff
-    style AP fill:#029E73,stroke:#000,color:#fff
-    style IS fill:#029E73,stroke:#000,color:#fff
-    style CA fill:#CC78BC,stroke:#000,color:#000
-    style DI fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class AA pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class AP pal-029E73
+    class IS pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class CA pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class DI pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -3825,6 +3873,8 @@ The `Supplier` aggregate lives in the `supplier` bounded context. Its lifecycle 
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 39: Supplier Aggregate — Lifecycle States
+    accDescr: State diagram with 5 items: start or end, Pending, Approved, Blacklisted, Suspended. Relationships: start or end to Pending: onboard supplier; Pending to Approved: vetting passes; Pending to Blacklisted: vetting fails (fraud); Approved to Suspended: compliance issue; Suspended to Approved: issue resolved; Suspended to Blacklisted: escalated; Blacklisted to start or end: permanent exclusion.
     [*] --> Pending : onboard supplier
     Pending --> Approved : vetting passes
     Pending --> Blacklisted : vetting fails (fraud)
@@ -4176,22 +4226,28 @@ The aggregate boundary defines what is consistent together and what is communica
 
 ```mermaid
 graph TD
-    subgraph PO["PurchaseOrder aggregate boundary"]
-        Root["PurchaseOrder\n(aggregate root)"]
-        Lines["PoLine list\n(owned, consistent)"]
+    accTitle: Example 40: Aggregate Boundary — What Goes Inside
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: PurchaseOrder (aggregate root), PoLine list (owned, consistent), SupplierId (not Supplier record), RequisitionId (not Requisition record). Connections: PurchaseOrder (aggregate root) to PoLine list (owned, consistent), PurchaseOrder (aggregate root) to SupplierId (not Supplier record) (reference by ID), PurchaseOrder (aggregate root) to RequisitionId (not Requisition record) (reference by ID).
+    subgraph PO["PurchaseOrder<br/>aggregate boundary"]
+        Root["PurchaseOrder<br/>(aggregate root)"]
+        Lines["PoLine list<br/>(owned, consistent)"]
         Root --> Lines
     end
-    subgraph Refs["Cross-aggregate references (ID only)"]
-        SupRef["SupplierId\n(not Supplier record)"]
-        ReqRef["RequisitionId\n(not Requisition record)"]
+    subgraph Refs["Cross-aggregate<br/>references (ID only)"]
+        SupRef["SupplierId<br/>(not Supplier<br/>record)"]
+        ReqRef["RequisitionId<br/>(not Requisition<br/>record)"]
     end
     Root -.->|"reference by ID"| SupRef
     Root -.->|"reference by ID"| ReqRef
 
-    style Root fill:#0173B2,stroke:#000,color:#fff
-    style Lines fill:#029E73,stroke:#000,color:#fff
-    style SupRef fill:#CC78BC,stroke:#000,color:#000
-    style ReqRef fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Root pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Lines pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class SupRef pal-CC78BC
+    class ReqRef pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -5348,19 +5404,26 @@ The `ApprovePO` workflow needs access to the supplier repository (to check eligi
 
 ```mermaid
 graph TD
-    Deps["Injected Deps\nLoadPO · CheckSupplier ·\nRecordApproval"]
-    Cmd["ApprovePOCommand\n(runtime input)"]
-    WF["approvePOWorkflow\n(pure function)"]
-    Out["Async&lt;Result&lt;ApprovedPO,\nApprovalError&gt;&gt;"]
+    accTitle: Example 44: ApprovePO Workflow Signature with Dependencies
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: Injected Deps LoadPO · CheckSupplier · RecordApproval, ApprovePOCommand (runtime input), approvePOWorkflow (pure function), Out, lt, gt. Connections: Injected Deps LoadPO · CheckSupplier · RecordApproval to approvePOWorkflow (pure function) (partial application), ApprovePOCommand (runtime input) to approvePOWorkflow (pure function) (final argument), approvePOWorkflow (pure function) to Out.
+    Deps["Injected Deps<br/>LoadPO ·<br/>CheckSupplier ·<br/>RecordApproval"]
+    Cmd["ApprovePOCommand<br/>(runtime input)"]
+    WF["approvePOWorkflow<br/>(pure function)"]
+    Out["Async&lt;<br/>Result&lt;ApprovedPO,<br/>ApprovalError&gt;&gt;"]
 
-    Deps -->|"partial application"| WF
+    Deps -->|"partial<br/>application"| WF
     Cmd -->|"final argument"| WF
     WF --> Out
 
-    style Deps fill:#DE8F05,stroke:#000,color:#000
-    style Cmd fill:#CA9161,stroke:#000,color:#000
-    style WF fill:#0173B2,stroke:#000,color:#fff
-    style Out fill:#029E73,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Deps pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Cmd pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class WF pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Out pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -6406,12 +6469,18 @@ The complete PO lifecycle from Draft to Issued involves three workflow steps: `C
 
 ```mermaid
 graph LR
-    A["createDraft\nDraftPO"] -->|"|> approveDraft"| B["Result<ApprovedPO, string>"]
-    B -->|"Result.map issueApproved"| C["Result<IssuedPO*string,string>"]
+    accTitle: Example 47: Pipeline Composition — Wiring Three Workflow Steps
+    accDescr: Graph with 3 nodes and 1 connections. Nodes: createDraft DraftPO, B, Result. Connections: B to Result (Result.map issueApproved).
+    A["createDraft<br/>DraftPO"] -->|"|> approveDraft"| B["Result<ApprovedPO, string>"]
+    B -->|"Result.map<br/>issueApproved"| C["Result<IssuedPO*string,string>"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -7486,13 +7555,18 @@ The functional core of the procurement domain is pure — no I/O, no side effect
 
 ```mermaid
 graph TD
-    Shell["Imperative Shell\nload / save / notify (I/O)"]
-    Core["Functional Core\ncanApprove / applyApproval"]
+    accTitle: Example 50: Pushing Effects to the Edges
+    accDescr: Graph with 2 nodes and 2 connections. Nodes: Imperative Shell load /save /notify (I/O), Functional Core canApprove / applyApproval. Connections: Imperative Shell load /save /notify (I/O) to Functional Core canApprove / applyApproval (passes DraftPO), Functional Core canApprove / applyApproval to Imperative Shell load /save /notify (I/O) (returns Result + ApprovedPO).
+    Shell["Imperative Shell<br/>load /save /notify<br/>(I/O)"]
+    Core["Functional Core<br/>canApprove /<br/>applyApproval"]
     Shell -->|"passes DraftPO"| Core
-    Core -->|"returns Result<unit, string> + ApprovedPO"| Shell
+    Core -->|"returns<br/>Result<unit, string><br/>+ ApprovedPO"| Shell
 
-    style Shell fill:#CA9161,stroke:#000,color:#000
-    style Core fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Shell pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Core pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -7842,14 +7916,19 @@ The edge of the system is where pure domain functions meet impure I/O. This exam
 
 ```mermaid
 graph LR
-    Load["load poId\n(I/O read)"] -->|"PoData"| Core["transition data\n(pure core)"]
-    Core -->|"Ok (PoIssued, PoEvent)"| Save["save issued\n(I/O write)"]
-    Save --> Pub["pub event\n(I/O write)"]
+    accTitle: Example 51: Pure Core Wrapping at the Edge
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: load poId (I/O read), transition data (pure core), save issued (I/O write), pub event (I/O write). Connections: load poId (I/O read) to transition data (pure core) (PoData), transition data (pure core) to save issued (I/O write) (Ok (PoIssued, PoEvent)), save issued (I/O write) to pub event (I/O write).
+    Load["load poId<br/>(I/O read)"] -->|"PoData"| Core["transition data<br/>(pure core)"]
+    Core -->|"Ok (PoIssued,<br/>PoEvent)"| Save["save issued<br/>(I/O write)"]
+    Save --> Pub["pub event<br/>(I/O write)"]
 
-    style Load fill:#CA9161,stroke:#000,color:#000
-    style Core fill:#0173B2,stroke:#000,color:#fff
-    style Save fill:#CA9161,stroke:#000,color:#000
-    style Pub fill:#CA9161,stroke:#000,color:#000
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Load pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Core pal-0173B2
+    class Save pal-CA9161
+    class Pub pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}

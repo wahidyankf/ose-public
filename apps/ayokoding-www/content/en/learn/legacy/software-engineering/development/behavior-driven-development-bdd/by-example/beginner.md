@@ -20,18 +20,25 @@ BDD tests are written in Gherkin language using `.feature` files that describe a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Feature File .feature] --> B[Feature Keyword]
+    accTitle: Diagram
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Feature File .feature, Feature Keyword, Scenario Block, Given Step, When Step, Then Step. Connections: Feature File .feature to Feature Keyword, Feature Keyword to Scenario Block, Scenario Block to Given Step, Scenario Block to When Step, Scenario Block to Then Step.
+    A[Feature File<br/>.feature] --> B[Feature Keyword]
     B --> C[Scenario Block]
     C --> D[Given Step]
     C --> E[When Step]
     C --> F[Then Step]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```gherkin
@@ -66,12 +73,18 @@ Given-When-Then is BDD's core pattern: Given sets up context, When triggers acti
 
 ```mermaid
 graph TD
+    accTitle: Example 2: Given-When-Then Structure
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Given: Setup State, When: Trigger Action, Then: Verify Outcome. Connections: Given: Setup State to When: Trigger Action, When: Trigger Action to Then: Verify Outcome.
     A[Given: Setup State] --> B[When: Trigger Action]
     B --> C[Then: Verify Outcome]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```gherkin
@@ -154,6 +167,8 @@ Background runs before EACH scenario in a feature file, eliminating repetitive G
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Diagram
+    accDescr: Sequence diagram between Cucumber Runner, Background, Scenario. Messages: Cucumber Runner to Background: Run Background steps; Background to Cucumber Runner: Setup complete; Cucumber Runner to Scenario: Run Scenario steps; Scenario to Cucumber Runner: Scenario complete; Cucumber Runner to Background: Run Background steps again; Background to Cucumber Runner: Setup complete; Cucumber Runner to Scenario: Run next Scenario; Scenario to Cucumber Runner: Scenario complete.
     participant CU as Cucumber Runner
     participant BG as Background
     participant SC as Scenario
@@ -291,22 +306,29 @@ Scenario Outline defines a template scenario executed once per row in the Exampl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Scenario Outline Template] --> B[Examples Table]
-    B --> C[Row 1: alice/wrong123]
-    B --> D[Row 2: bob/incorrect456]
-    B --> E[Row 3: charlie/bad789]
+    accTitle: Diagram
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Scenario Outline Template, Examples Table, Row 1: alice/wrong123, Row 2: bob/incorrect456, Row 3: charlie/bad789, Test Run 1, Test Run 2, Test Run 3. Connections: Scenario Outline Template to Examples Table, Examples Table to Row 1: alice/wrong123, Examples Table to Row 2: bob/incorrect456, Examples Table to Row 3: charlie/bad789, Row 1: alice/wrong123 to Test Run 1, Row 2: bob/incorrect456 to Test Run 2, Row 3: charlie/bad789 to Test Run 3.
+    A[Scenario Outline<br/>Template] --> B[Examples Table]
+    B --> C[Row 1:<br/>alice/wrong123]
+    B --> D[Row 2:<br/>bob/incorrect456]
+    B --> E[Row 3:<br/>charlie/bad789]
     C --> F[Test Run 1]
     D --> G[Test Run 2]
     E --> H[Test Run 3]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CC78BC,stroke:#000,color:#000
-    style H fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-CC78BC
+    class H pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```gherkin
@@ -350,21 +372,29 @@ Tags categorize scenarios for selective execution, enabling filtering by feature
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Diagram
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: All Scenarios, Tag Filter, Smoke Suite, Critical Fast Suite, Auth Suite, Quick CI Run, Full Regression. Connections: All Scenarios to Tag Filter, Tag Filter to Smoke Suite (@smoke), Tag Filter to Critical Fast Suite (@critical and not @slow), Tag Filter to Auth Suite (@authentication), Smoke Suite to Quick CI Run, Critical Fast Suite to Quick CI Run, Auth Suite to Full Regression.
     A[All Scenarios] --> B{Tag Filter}
     B -->|@smoke| C[Smoke Suite]
-    B -->|@critical and not @slow| D[Critical Fast Suite]
+    B -->|@critical and not<br/>@slow| D[Critical Fast Suite]
     B -->|@authentication| E[Auth Suite]
     C --> F[Quick CI Run]
     D --> F
     E --> G[Full Regression]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```gherkin
@@ -794,6 +824,8 @@ Hooks run code at specific points in the test lifecycle. Before hooks execute be
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Diagram
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Cucumber Runner, Before Hook, Scenario Steps, After Hook, More Scenarios?, Test Suite Complete. Connections: Cucumber Runner to Before Hook, Before Hook to Scenario Steps, Scenario Steps to After Hook, After Hook to More Scenarios?, More Scenarios? to Before Hook (Yes), More Scenarios? to Test Suite Complete (No).
     A[Cucumber Runner] --> B[Before Hook]
     B --> C[Scenario Steps]
     C --> D[After Hook]
@@ -801,12 +833,18 @@ graph TD
     E -->|Yes| B
     E -->|No| F[Test Suite Complete]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -959,18 +997,25 @@ The World object provides shared context across steps in a scenario. Cucumber cr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[Cucumber Creates World] --> B[Given Step: Sets World.testUser]
-    B --> C[When Step: Reads World.testUser]
-    C --> D[Then Step: Reads World.apiResponse]
-    D --> E[Scenario Ends: World Destroyed]
-    E --> F[New World for Next Scenario]
+    accTitle: Diagram
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Cucumber Creates World, Given Step: Sets World.testUser, When Step: Reads World.testUser, Then Step: Reads World.apiResponse, Scenario Ends: World Destroyed, New World for Next Scenario. Connections: Cucumber Creates World to Given Step: Sets World.testUser, Given Step: Sets World.testUser to When Step: Reads World.testUser, When Step: Reads World.testUser to Then Step: Reads World.apiResponse, Then Step: Reads World.apiResponse to Scenario Ends: World Destroyed, Scenario Ends: World Destroyed to New World for Next Scenario.
+    A[Cucumber Creates<br/>World] --> B[Given Step: Sets<br/>World.testUser]
+    B --> C[When Step: Reads<br/>World.testUser]
+    C --> D[Then Step: Reads<br/>World.apiResponse]
+    D --> E[Scenario Ends: World<br/>Destroyed]
+    E --> F[New World for Next<br/>Scenario]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -2238,22 +2283,30 @@ Background runs before each scenario but is visible in Gherkin, while Before hoo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Diagram
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Setup Needed, Stakeholder Visible?, Use Background, Use Before Hook, Visible in Feature File, Hidden in Step Definitions, Business Stakeholders Can Read, Developer Concern Only. Connections: Setup Needed to Stakeholder Visible?, Stakeholder Visible? to Use Background (Yes - Business Rule), Stakeholder Visible? to Use Before Hook (No - Technical Only), Use Background to Visible in Feature File, Use Before Hook to Hidden in Step Definitions, Visible in Feature File to Business Stakeholders Can Read, Hidden in Step Definitions to Developer Concern Only.
     A[Setup Needed] --> B{Stakeholder Visible?}
     B -->|Yes - Business Rule| C[Use Background]
     B -->|No - Technical Only| D[Use Before Hook]
-    C --> E[Visible in Feature File]
-    D --> F[Hidden in Step Definitions]
-    E --> G[Business Stakeholders Can Read]
-    F --> H[Developer Concern Only]
+    C --> E[Visible in Feature<br/>File]
+    D --> F[Hidden in Step<br/>Definitions]
+    E --> G[Business<br/>Stakeholders Can<br/>Read]
+    F --> H[Developer Concern<br/>Only]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#CA9161,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#000
-    style G fill:#0173B2,stroke:#000,color:#fff
-    style H fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    class E pal-029E73
+    class F pal-DE8F05
+    class G pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Background - Visible in Feature File**:
@@ -2424,27 +2477,35 @@ BDD follows a three-step workflow: Write feature → Implement steps → Refacto
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Diagram
+    accDescr: Graph with 10 nodes and 10 connections. Nodes: Write Feature File, Run Cucumber, Steps Implemented?, Implement Step Definitions, Run Cucumber Again, Tests Pass?, Fix Implementation, Refactor Code, Run Cucumber Again, Done: Living Documentation. Connections: Write Feature File to Run Cucumber, Run Cucumber to Steps Implemented?, Steps Implemented? to Implement Step Definitions (No - Pending), Implement Step Definitions to Run Cucumber Again, Run Cucumber Again to Tests Pass?, Tests Pass? to Fix Implementation (No - Red), Fix Implementation to Run Cucumber Again, Tests Pass? to Refactor Code (Yes - Green), Refactor Code to Run Cucumber Again, Run Cucumber Again to Done: Living Documentation.
     A[Write Feature File] --> B[Run Cucumber]
     B --> C{Steps Implemented?}
-    C -->|No - Pending| D[Implement Step Definitions]
+    C -->|No - Pending| D[Implement Step<br/>Definitions]
     D --> E[Run Cucumber Again]
     E --> F{Tests Pass?}
     F -->|No - Red| G[Fix Implementation]
     G --> E
     F -->|Yes - Green| H[Refactor Code]
     H --> I[Run Cucumber Again]
-    I --> J[Done: Living Documentation]
+    I --> J[Done: Living<br/>Documentation]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CA9161,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#DE8F05,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#000
-    style H fill:#029E73,stroke:#000,color:#fff
-    style I fill:#DE8F05,stroke:#000,color:#000
-    style J fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-DE8F05
+    class F pal-CA9161
+    class G pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class H pal-029E73
+    class I pal-DE8F05
+    class J pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Step 1: Write Feature (Specification-First)**:
@@ -2600,6 +2661,8 @@ Organize feature files by business domain (authentication, shopping, payments) r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Diagram
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: features/, authentication/, shopping/, payments/, admin/, login.feature, registration.feature, cart.feature, checkout.feature, credit-card.feature, refunds.feature. Connections: features/ to authentication/, features/ to shopping/, features/ to payments/, features/ to admin/, authentication/ to login.feature, authentication/ to registration.feature, shopping/ to cart.feature, shopping/ to checkout.feature, payments/ to credit-card.feature, payments/ to refunds.feature.
     A[features/] --> B[authentication/]
     A --> C[shopping/]
     A --> D[payments/]
@@ -2611,17 +2674,21 @@ graph TD
     D --> D1[credit-card.feature]
     D --> D2[refunds.feature]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#DE8F05,stroke:#000,color:#000
-    style B1 fill:#029E73,stroke:#000,color:#fff
-    style B2 fill:#029E73,stroke:#000,color:#fff
-    style C1 fill:#029E73,stroke:#000,color:#fff
-    style C2 fill:#029E73,stroke:#000,color:#fff
-    style D1 fill:#029E73,stroke:#000,color:#fff
-    style D2 fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B1 pal-029E73
+    class B2 pal-029E73
+    class C1 pal-029E73
+    class C2 pal-029E73
+    class D1 pal-029E73
+    class D2 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Project structure - Domain-based (Recommended)**:

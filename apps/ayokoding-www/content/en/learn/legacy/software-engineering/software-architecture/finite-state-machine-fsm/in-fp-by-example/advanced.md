@@ -33,6 +33,8 @@ A `Supplier` record tracks vendor approval status. Unlike `PurchaseOrder`, the S
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 51: Supplier States and Risk-Tier Semantics
+    accDescr: State diagram with 9 items: start or end, Pending, Approved, Blacklisted, Suspended, Pending pending, Approved approved, Suspended suspended, Blacklisted blacklisted. Relationships: start or end to Pending; Pending to Approved: approve; Pending to Blacklisted: blacklist; Approved to Suspended: suspend; Approved to Blacklisted: blacklist; Suspended to Approved: reinstate; Suspended to Blacklisted: blacklist; Blacklisted to start or end.
     [*] --> Pending
     Pending --> Approved: approve
     Pending --> Blacklisted: blacklist
@@ -42,10 +44,10 @@ stateDiagram-v2
     Suspended --> Blacklisted: blacklist
     Blacklisted --> [*]
 
-    classDef pending fill:#DE8F05,stroke:#000,color:#000
-    classDef approved fill:#029E73,stroke:#000,color:#fff
-    classDef suspended fill:#CC78BC,stroke:#000,color:#fff
-    classDef blacklisted fill:#CA9161,stroke:#000,color:#fff
+    classDef pending fill:#DE8F05,stroke:#000000,color:#000000
+    classDef approved fill:#029E73,stroke:#000000,color:#000000
+    classDef suspended fill:#CC78BC,stroke:#000000,color:#000000
+    classDef blacklisted fill:#CA9161,stroke:#000000,color:#000000
 
     class Pending pending
     class Approved approved
@@ -348,6 +350,8 @@ The Supplier FSM state gates which suppliers are selectable for new POs — a gu
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 52: Supplier State Consequences on PO Selection
+    accDescr: State diagram with 11 items: Supplier Eligibility, Pending, Blocked, Approved, Allowed, Suspended, Blacklisted, NewPO, Rejected, Pending pending, Suspended suspended. Relationships: Pending to Blocked: supplierEligibleForPO = false; Approved to Allowed: supplierEligibleForPO = true; Suspended to Blocked: supplierEligibleForPO = false; Blacklisted to Blocked: supplierEligibleForPO = false; Allowed to NewPO: PO can be created; Blocked to Rejected: PO creation rejected.
     direction LR
     state "Supplier Eligibility" as Check {
         Pending --> Blocked: supplierEligibleForPO = false
@@ -359,10 +363,10 @@ stateDiagram-v2
     Allowed --> NewPO: PO can be created
     Blocked --> Rejected: PO creation rejected
 
-    classDef allowed fill:#029E73,stroke:#000,color:#fff
-    classDef blocked fill:#CA9161,stroke:#000,color:#fff
-    classDef pending fill:#DE8F05,stroke:#000,color:#000
-    classDef suspended fill:#CC78BC,stroke:#000,color:#fff
+    classDef allowed fill:#029E73,stroke:#000000,color:#000000
+    classDef blocked fill:#CA9161,stroke:#000000,color:#000000
+    classDef pending fill:#DE8F05,stroke:#000000,color:#000000
+    classDef suspended fill:#CC78BC,stroke:#000000,color:#000000
 
     class Approved,Allowed,NewPO allowed
     class Pending pending
@@ -1917,6 +1921,8 @@ A `Payment` record tracks money movement from authorisation through disbursement
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 58: Payment States and the Disbursement Lifecycle
+    accDescr: State diagram with 10 items: start or end, Pending, Authorised, Processing, Settled, Failed, Cancelled, Failed warning, Settled success, Cancelled terminal. Relationships: start or end to Pending; Pending to Authorised: authorise; Authorised to Processing: process; Processing to Settled: settle; Processing to Failed: fail; Failed to Processing: retry; Settled to start or end; Pending to Cancelled: cancel; Authorised to Cancelled: cancel.
     [*] --> Pending
     Pending --> Authorised: authorise
     Authorised --> Processing: process
@@ -1927,10 +1933,10 @@ stateDiagram-v2
     Pending --> Cancelled: cancel
     Authorised --> Cancelled: cancel
 
-    classDef active fill:#0173B2,stroke:#000,color:#fff
-    classDef warning fill:#DE8F05,stroke:#000,color:#000
-    classDef success fill:#029E73,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef active fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef warning fill:#DE8F05,stroke:#000000,color:#000000
+    classDef success fill:#029E73,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class Pending,Authorised,Processing active
     class Failed warning
@@ -3715,6 +3721,8 @@ A `MurabahaContract` is a cost-plus-profit Islamic finance instrument. Its state
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 65: MurabahaContract State Machine
+    accDescr: State diagram with 11 items: start or end, OfferPending, OfferAccepted, OfferRejected, Active, Repaying, Settled, Defaulted, Defaulted warning, Settled success, OfferRejected terminal. Relationships: start or end to OfferPending; OfferPending to OfferAccepted: accept; OfferPending to OfferRejected: reject; OfferAccepted to Active: activate; Active to Repaying: firstPayment; Repaying to Settled: fullRepayment; Repaying to Defaulted: missPayment; Defaulted to Repaying: remediate; Settled to start or end; OfferRejected to start or end.
     [*] --> OfferPending
     OfferPending --> OfferAccepted: accept
     OfferPending --> OfferRejected: reject
@@ -3726,10 +3734,10 @@ stateDiagram-v2
     Settled --> [*]
     OfferRejected --> [*]
 
-    classDef active fill:#0173B2,stroke:#000,color:#fff
-    classDef warning fill:#DE8F05,stroke:#000,color:#000
-    classDef success fill:#029E73,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef active fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef warning fill:#DE8F05,stroke:#000000,color:#000000
+    classDef success fill:#029E73,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class OfferPending,OfferAccepted,Active,Repaying active
     class Defaulted warning

@@ -18,19 +18,22 @@ The `receiving` context owns `GoodsReceiptNote`, which records physical delivery
 ```mermaid
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05, Purple #CC78BC
 graph TD
+    accTitle: Example 56: Receiving context — GoodsReceiptNote aggregate and port
+    accDescr: Graph with 5 nodes and 1 connections. Nodes: GoodsReceiptNote 40aggregate41, GoodsReceipt Repository EventPublisher 40output ports41, RecordGoodsReceipt Service 40application service41, GrnController 40in-adapter41, PurchaseOrderId 40value from purchasing41. Connections: GoodsReceiptNote 40aggregate41 to PurchaseOrderId 40value from purchasing41.
     subgraph REC["receiving hexagon"]
-        GRN["GoodsReceiptNote\n#40;aggregate#41;"]:::blue
-        PORT["GoodsReceiptRepository\nEventPublisher\n#40;output ports#41;"]:::teal
-        SVC["RecordGoodsReceiptService\n#40;application service#41;"]:::teal
-        CTRL["GrnController\n#40;in-adapter#41;"]:::orange
+        GRN["GoodsReceiptNote<br/>#40;aggregate#41;"]:::blue
+        PORT["GoodsReceipt<br/>Repository<br/>EventPublisher<br/>#40;output ports#41;"]:::teal
+        SVC["RecordGoodsReceipt<br/>Service<br/>#40;application<br/>service#41;"]:::teal
+        CTRL["GrnController<br/>#40;in-adapter#41;"]:::orange
     end
-    PO_ID["PurchaseOrderId\n#40;value from purchasing#41;"]:::purple
+    PO_ID["PurchaseOrderId<br/>#40;value from<br/>purchasing#41;"]:::purple
     GRN --> PO_ID
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -1399,19 +1402,22 @@ A decorator wraps an existing adapter and adds retry logic without modifying the
 ```mermaid
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05, Purple #CC78BC
 graph LR
-    SVC["DisbursementService\n#40;application#41;"]:::teal
-    RET["RetryingBankingAdapter\n#40;decorator#41;"]:::orange
-    REST["RestBankingAdapter\n#40;real adapter#41;"]:::blue
-    BANK["Bank REST API\n#40;external#41;"]:::purple
+    accTitle: Example 61: RetryingBankingAdapter — retry decorator for BankingPort
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: DisbursementService 40application41, RetryingBanking Adapter 40decorator41, RestBankingAdapter 40real adapter41, Bank REST API 40external41. Connections: DisbursementService 40application41 to RetryingBanking Adapter 40decorator41 (BankingPort. disburse), RetryingBanking Adapter 40decorator41 to RestBankingAdapter 40real adapter41 (delegate with retry), RestBankingAdapter 40real adapter41 to Bank REST API 40external41 (HTTP POST).
+    SVC["DisbursementService<br/>#40;application#41;"]:::teal
+    RET["RetryingBanking<br/>Adapter<br/>#40;decorator#41;"]:::orange
+    REST["RestBankingAdapter<br/>#40;real adapter#41;"]:::blue
+    BANK["Bank REST API<br/>#40;external#41;"]:::purple
 
-    SVC -->|"BankingPort.disburse"| RET
-    RET -->|"delegate with retry"| REST
+    SVC -->|"BankingPort.<br/>disburse"| RET
+    RET -->|"delegate with<br/>retry"| REST
     REST -->|"HTTP POST"| BANK
 
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}

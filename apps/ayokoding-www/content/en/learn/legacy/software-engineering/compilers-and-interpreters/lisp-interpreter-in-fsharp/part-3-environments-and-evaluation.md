@@ -18,10 +18,13 @@ There are two mental models for how a programming language evaluates expressions
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart LR
-    S1["(define x 5)\n(+ x 3)"] --> S2["Substitute x → 5\n(+ 5 3)"] --> S3["Result: 8"]
+    accTitle: CS Concept: Two Models of Evaluation
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: (define x 5) (+ x 3), Substitute x → 5 (+ 5 3), Result: 8. Connections: (define x 5) (+ x 3) to Substitute x → 5 (+ 5 3), Substitute x → 5 (+ 5 3) to Result: 8.
+    S1["(define x 5)<br/>(+ x 3)"] --> S2["Substitute x → 5<br/>(+ 5 3)"] --> S3["Result: 8"]
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
     class S1,S2,S3 blue
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Environment model** — look up names in an environment chain at runtime:
@@ -29,16 +32,19 @@ flowchart LR
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
+    accTitle: CS Concept: Two Models of Evaluation
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: (+ x 3), Environment x → 5, Look up x → 5 Apply + to (5, 3), Result: 8. Connections: (+ x 3) to Look up x → 5 Apply + to (5, 3), Environment x → 5 to Look up x → 5 Apply + to (5, 3), Look up x → 5 Apply + to (5, 3) to Result: 8.
     E1["(+ x 3)"]
-    E2["Environment\nx → 5"]
-    E3["Look up x → 5\nApply + to (5, 3)"]
+    E2["Environment<br/>x → 5"]
+    E3["Look up x → 5<br/>Apply + to (5, 3)"]
     E4["Result: 8"]
     E1 --> E3
     E2 --> E3
     E3 --> E4
 
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
     class E1,E2,E3,E4 teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **The substitution model** — a name is replaced by its value before evaluation. Intuitive, but breaks down for mutation and closures.
@@ -52,20 +58,23 @@ An environment is not a single flat dictionary. It is a **chain of frames**, whe
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    G["Global Frame\n+ → builtin\n- → builtin\n* → builtin\ndefine → special"]
-    L["Local Frame\nn → 5\nx → 10"]
-    I["Inner Frame\nz → 15"]
+    accTitle: CS Concept: The Environment as a Chain of Frames
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Global Frame + → builtin - → builtin * → builtin define → special, Local Frame n → 5 x → 10, Inner Frame z → 15. Connections: Local Frame n → 5 x → 10 to Global Frame + → builtin - → builtin * → builtin define → special (parent), Inner Frame z → 15 to Local Frame n → 5 x → 10 (parent).
+    G["Global Frame<br/>+ → builtin<br/>- → builtin<br/>* → builtin<br/>define → special"]
+    L["Local Frame<br/>n → 5<br/>x → 10"]
+    I["Inner Frame<br/>z → 15"]
 
     L -->|"parent"| G
     I -->|"parent"| L
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
 
     class G blue
     class L orange
     class I teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Variable lookup traverses this chain: check the innermost frame first; if not found, check the parent; repeat until the global frame.
@@ -73,11 +82,13 @@ Variable lookup traverses this chain: check the innermost frame first; if not fo
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
+    accTitle: CS Concept: The Environment as a Chain of Frames
+    accDescr: Flowchart with 6 nodes and 7 connections. Nodes: Look up n, In Inner Frame?, In Local Frame?, In Global Frame?, Error: Unbound variable, Return value. Connections: Look up n to In Inner Frame?, In Inner Frame? to Return value (yes), In Inner Frame? to In Local Frame? (no), In Local Frame? to Return value (yes), In Local Frame? to In Global Frame? (no), In Global Frame? to Return value (yes), In Global Frame? to Error: Unbound variable (no).
     Q["Look up 'n'"]
-    F1{"In Inner\nFrame?"}
-    F2{"In Local\nFrame?"}
-    F3{"In Global\nFrame?"}
-    E["Error:\nUnbound variable"]
+    F1{"In Inner<br/>Frame?"}
+    F2{"In Local<br/>Frame?"}
+    F3{"In Global<br/>Frame?"}
+    E["Error:<br/>Unbound variable"]
     R["Return value"]
 
     Q --> F1
@@ -88,15 +99,16 @@ flowchart TB
     F3 -->|"yes"| R
     F3 -->|"no"| E
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
 
     class Q blue
     class F1,F2,F3 orange
     class R teal
     class E brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 This chain structure is what implements **lexical scope**: a function's free variables resolve in the frame where the function was _defined_, not where it is _called_.
@@ -133,16 +145,18 @@ The evaluator is structured as two mutually recursive functions: `eval` and `app
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart LR
+    accTitle: CS Concept: Eval and Apply
+    accDescr: Flowchart with 8 nodes and 8 connections. Nodes: eval(expr, env), apply(proc, args, env), Self-evaluating Number/Str/Bool → return as-is, Symbol → envLookup in chain, Special form define/if/lambda/ begin → handled directly, General application → eval head + all args then call apply, Builtin → call F fn directly, Lambda → extend closureEnv with args → eval body. Connections: eval(expr, env) to Self-evaluating Number/Str/Bool → return as-is, eval(expr, env) to Symbol → envLookup in chain, eval(expr, env) to Special form define/if/lambda/ begin → handled directly, eval(expr, env) to General application → eval head + all args then call apply, General application → eval head + all args then call apply to apply(proc, args, env) (calls), Lambda → extend closureEnv with args → eval body to eval(expr, env) (calls back), apply(proc, args, env) to Builtin → call F fn directly, apply(proc, args, env) to Lambda → extend closureEnv with args → eval body.
     EVAL["eval(expr, env)"]
-    APPLY["apply(proc, args, env)"]
+    APPLY["apply(proc, args,<br/>env)"]
 
-    SE["Self-evaluating\nNumber/Str/Bool\n→ return as-is"]
-    SY["Symbol\n→ envLookup in chain"]
-    SF["Special form\ndefine/if/lambda/begin\n→ handled directly"]
-    GA["General application\n→ eval head + all args\nthen call apply"]
+    SE["Self-evaluating<br/>Number/Str/Bool<br/>→ return as-is"]
+    SY["Symbol<br/>→ envLookup in chain"]
+    SF["Special form<br/>define/if/lambda/<br/>begin<br/>→ handled directly"]
+    GA["General application<br/>→ eval head + all<br/>args<br/>then call apply"]
 
-    BI["Builtin\n→ call F# fn directly"]
-    LA["Lambda\n→ extend closureEnv\nwith args\n→ eval body"]
+    BI["Builtin<br/>→ call F# fn<br/>directly"]
+    LA["Lambda<br/>→ extend closureEnv<br/>with args<br/>→ eval body"]
 
     EVAL --> SE
     EVAL --> SY
@@ -155,15 +169,16 @@ flowchart LR
     APPLY --> BI
     APPLY --> LA
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
 
     class EVAL blue
     class APPLY orange
     class SE,SY,SF,GA teal
     class BI,LA purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Neither `eval` nor `apply` is simpler than the other. They are symmetric: `eval` produces values from expressions; `apply` produces values from procedures and argument values.
@@ -204,6 +219,8 @@ and apply (proc: LispVal) (args: LispVal list) (env: Env list) : LispVal =
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 sequenceDiagram
+    accTitle: Tracing 4)
+    accDescr: Sequence diagram between Caller, eval, apply. Messages: Caller to eval: List [Symbol * List [Symbol + 1 2] Number 4]; eval to eval: eval Symbol * → Builtin multiply; eval to eval: eval List [Symbol + 1 2]; eval to eval: eval Symbol + → Builtin add; eval to eval: eval Number 1 → 1; eval to eval: eval Number 2 → 2; eval to apply: apply Builtin add [1 2]; apply to eval: Number 3; eval to eval: eval Number 4 → 4; eval to apply: apply Builtin multiply [3 4]; apply to eval: Number 12; eval to Caller: Number 12.
     participant C as Caller
     participant EV as eval
     participant AP as apply
@@ -232,10 +249,13 @@ Notice that `apply` for a `Lambda` extends `closureEnv` — the environment capt
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    LD["define f\nas lambda using n"] --> LE["Closure captures env\nwhere lambda was defined\nwhere n is bound"]
+    accTitle: The Substitution Model vs Environment Model: Why It Matters
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: define f as lambda using n, Closure captures env where lambda was defined where n is bound. Connections: define f as lambda using n to Closure captures env where lambda was defined where n is bound.
+    LD["define f<br/>as lambda using n"] --> LE["Closure captures env<br/>where lambda was<br/>defined<br/>where n is bound"]
 
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
     class LD,LE teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Dynamic scope** (wrong for Scheme) — would look up n in caller's environment:
@@ -243,10 +263,13 @@ flowchart TB
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    DD["define f\nas lambda using n"] --> DE["Would look up n\nin caller's environment\npredictable!"]
+    accTitle: The Substitution Model vs Environment Model: Why It Matters
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: define f as lambda using n, Would look up n in callers environment predictable!. Connections: define f as lambda using n to Would look up n in callers environment predictable!.
+    DD["define f<br/>as lambda using n"] --> DE["Would look up n<br/>in caller's<br/>environment<br/>predictable!"]
 
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
     class DD,DE brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 If we extended `env` (the call-site environment) instead of `closureEnv`, we would get **dynamic scope**: a function's free variables resolve in the caller's environment. Scheme mandates lexical scope. The `closureEnv` field in `Lambda` is what enforces it.
@@ -321,10 +344,12 @@ We cannot yet evaluate `(define x 10)` or `(lambda (x) x)` — those require spe
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    A["LispVal tree\n(from Part 2)"]
+    accTitle: Summary
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: LispVal tree (from Part 2), eval, apply, Env chain (frame list), LispVal result. Connections: LispVal tree (from Part 2) to eval, Env chain (frame list) to eval, eval to apply (mutual recursion), apply to LispVal result.
+    A["LispVal tree<br/>(from Part 2)"]
     B["eval"]
     C["apply"]
-    D["Env chain\n(frame list)"]
+    D["Env chain<br/>(frame list)"]
     E["LispVal result"]
 
     A --> B
@@ -332,13 +357,14 @@ flowchart TB
     B <-->|"mutual recursion"| C
     C --> E
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
 
     class A,D blue
     class B,C orange
     class E teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 The environment model maintains a chain of frames mapping names to values. `eval` and `apply` form a mutually recursive pair. The closure's captured environment (not the call-site environment) is used when applying a lambda — this is what enforces lexical scope.

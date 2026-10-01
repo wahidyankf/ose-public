@@ -242,23 +242,26 @@ services:
 
 ```mermaid
 flowchart TD
-    host["Host machine\n(CI runner or dev)"]:::brown
-    compose["docker-compose up\n--abort-on-container-exit"]:::orange
-    pg["postgres:17-alpine\n(procurement_platform_test DB)"]:::teal
-    runner["test-runner container\n(dotnet test)"]:::blue
-    hc["pg_isready healthcheck\nevery 2s / 10 retries"]:::purple
+    accTitle: => This file defines the docker-compose harness for integration tests — not used in production
+    accDescr: Flowchart with 6 nodes and 6 connections. Nodes: Host machine (CI runner or dev), compose, abort-on-, postgres:17-alpine (procurement_ platform_test DB), test-runner container (dotnet test), pg_isready healthcheck every 2s /10 retries. Connections: compose to abort-on-, Host machine (CI runner or dev) to compose (invokes), compose to postgres:17-alpine (procurement_ platform_test DB) (starts), postgres:17-alpine (procurement_ platform_test DB) to pg_isready healthcheck every 2s /10 retries (signals ready via), pg_isready healthcheck every 2s /10 retries to test-runner container (dotnet test) (healthy → starts), test-runner container (dotnet test) to postgres:17-alpine (procurement_ platform_test DB) (DATABASE_URL connects).
+    host["Host machine<br/>(CI runner or dev)"]:::brown
+    compose["docker-compose up<br/>--abort-on-<br/>container-exit"]:::orange
+    pg["postgres:17-alpine<br/>(procurement_<br/>platform_test DB)"]:::teal
+    runner["test-runner<br/>container<br/>(dotnet test)"]:::blue
+    hc["pg_isready<br/>healthcheck<br/>every 2s /10 retries"]:::purple
 
     host -->|"invokes"| compose
     compose -->|"starts"| pg
     pg -->|"signals ready via"| hc
     hc -->|"healthy → starts"| runner
-    runner -->|"DATABASE_URL\nconnects"| pg
+    runner -->|"DATABASE_URL<br/>connects"| pg
 
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -5120,26 +5123,29 @@ spec:
 
 ```mermaid
 flowchart LR
-    ci["CI workflow\n(build + push OCI image)"]:::orange
-    secret["Kubernetes Secret\n(DATABASE_URL, BankApiKey)"]:::purple
-    cm["Kubernetes ConfigMap\n(URL, Timeouts, Thresholds)"]:::teal
-    dep["Deployment\n(2 replicas)"]:::blue
-    svc["Service\n(ClusterIP :80 → :8080)"]:::brown
-    pg["PostgreSQL\n(postgres-svc)"]:::teal
-    otel["OTLP Collector\n(observability)"]:::orange
+    accTitle: => Deployment: manages a ReplicaSet — handles rollout, rollback, and scaling
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: CI workflow (build + push OCI image), Kubernetes Secret (DATABASE_URL, BankApiKey), Kubernetes ConfigMap (URL, Timeouts, Thresholds), Deployment (2 replicas), Service (ClusterIP :80 → :8080), PostgreSQL (postgres-svc), OTLP Collector (observability). Connections: CI workflow (build + push OCI image) to Deployment (2 replicas) (OCI image pull), Kubernetes Secret (DATABASE_URL, BankApiKey) to Deployment (2 replicas) (envFrom secretRef), Kubernetes ConfigMap (URL, Timeouts, Thresholds) to Deployment (2 replicas) (envFrom configMapRef), Deployment (2 replicas) to PostgreSQL (postgres-svc) (Npgsql adapter DATABASE_URL), Deployment (2 replicas) to OTLP Collector (observability) (OTLP exporter :4317), Service (ClusterIP :80 → :8080) to Deployment (2 replicas) (routes :80 → pod :8080).
+    ci["CI workflow<br/>(build + push OCI<br/>image)"]:::orange
+    secret["Kubernetes Secret<br/>(DATABASE_URL,<br/>BankApiKey)"]:::purple
+    cm["Kubernetes ConfigMap<br/>(URL, Timeouts,<br/>Thresholds)"]:::teal
+    dep["Deployment<br/>(2 replicas)"]:::blue
+    svc["Service<br/>(ClusterIP :80 →<br/>:8080)"]:::brown
+    pg["PostgreSQL<br/>(postgres-svc)"]:::teal
+    otel["OTLP Collector<br/>(observability)"]:::orange
 
     ci -->|"OCI image pull"| dep
     secret -->|"envFrom secretRef"| dep
-    cm -->|"envFrom configMapRef"| dep
-    dep -->|"Npgsql adapter\nDATABASE_URL"| pg
-    dep -->|"OTLP exporter\n:4317"| otel
-    svc -->|"routes :80 → pod :8080"| dep
+    cm -->|"envFrom<br/>configMapRef"| dep
+    dep -->|"Npgsql adapter<br/>DATABASE_URL"| pg
+    dep -->|"OTLP exporter<br/>:4317"| otel
+    svc -->|"routes :80 → pod<br/>:8080"| dep
 
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Trade-offs**: `envFrom` with `secretRef` exposes all Secret keys as environment variables — any process inside the container can read them. For stricter secret isolation, mount the Secret as a filesystem volume and read it with `File.ReadAllText` in a custom `IConfiguration` provider. Kubernetes Secrets are base64-encoded, not encrypted at rest by default; enable etcd encryption and use Sealed Secrets or External Secrets Operator before moving to production.

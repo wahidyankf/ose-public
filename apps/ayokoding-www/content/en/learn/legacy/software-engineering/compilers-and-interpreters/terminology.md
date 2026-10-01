@@ -16,39 +16,42 @@ Before diving into individual definitions, here is how all the terms relate to e
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
+    accTitle: How the Pieces Fit Together
+    accDescr: Flowchart with 8 nodes and 7 connections. Nodes: characters e.g. ( + 1 2 ), Lexer, Tokens LPAREN · PLUS · INT · RPAREN, Parser, AST List: Symbol · Number · Number, Interpreter eval / apply, Environment frame chain, Result: Number 3. Connections: characters e.g. ( + 1 2 ) to Lexer, Lexer to Tokens LPAREN · PLUS · INT · RPAREN, Tokens LPAREN · PLUS · INT · RPAREN to Parser, Parser to AST List: Symbol · Number · Number, AST List: Symbol · Number · Number to Interpreter eval / apply, Environment frame chain to Interpreter eval / apply, Interpreter eval / apply to Result: Number 3.
     subgraph Input["Source text"]
-        SRC["characters\ne.g. ( + 1 2 )"]
+        SRC["characters<br/>e.g. ( + 1 2 )"]
     end
 
     subgraph Lexing["Lexical analysis"]
         LEX["Lexer"]
-        TOK["Tokens\nLPAREN · PLUS · INT · RPAREN"]
+        TOK["Tokens<br/>LPAREN · PLUS · INT<br/>· RPAREN"]
         SRC --> LEX --> TOK
     end
 
     subgraph Parsing["Syntax analysis"]
         PAR["Parser"]
-        AST["AST\nList: Symbol · Number · Number"]
+        AST["AST<br/>List: Symbol ·<br/>Number · Number"]
         TOK --> PAR --> AST
     end
 
     subgraph Execution["Execution"]
-        EV["Interpreter\neval / apply"]
-        ENV["Environment\nframe chain"]
+        EV["Interpreter<br/>eval / apply"]
+        ENV["Environment<br/>frame chain"]
         RES["Result: Number 3"]
         AST --> EV
         ENV --> EV
         EV --> RES
     end
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
 
     class SRC,LEX,TOK blue
     class PAR,AST orange
     class EV,ENV,RES teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ---
@@ -74,7 +77,9 @@ _Source: Aho, Lam, Sethi, Ullman — "Compilers: Principles, Techniques, and Too
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart LR
-    CH["Characters\n( + 4 2 )"]
+    accTitle: Token
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Characters ( + 4 2 ), Lexer, Token: LPAREN, Token: SYMBOL +, Token: NUMBER 42, Token: RPAREN. Connections: Characters ( + 4 2 ) to Lexer, Lexer to Token: LPAREN, Lexer to Token: SYMBOL +, Lexer to Token: NUMBER 42, Lexer to Token: RPAREN.
+    CH["Characters<br/>( + 4 2 )"]
     LX["Lexer"]
     T1["Token: LPAREN"]
     T2["Token: SYMBOL '+'"]
@@ -86,11 +91,12 @@ flowchart LR
     LX --> T3
     LX --> T4
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
 
     class CH,LX blue
     class T1,T2,T3,T4 teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Lexer / Tokenizer / Scanner
@@ -128,14 +134,17 @@ For the expression `(+ 1 2)`:
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart LR
+    accTitle: Abstract Syntax Tree
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: expr, LPAREN, SYMBOL: plus, NUMBER: 1, NUMBER: 2, RPAREN. Connections: expr to LPAREN, expr to SYMBOL: plus, expr to NUMBER: 1, expr to NUMBER: 2, expr to RPAREN.
     C1["expr"] --> C2["LPAREN"]
     C1 --> C3["SYMBOL: plus"]
     C1 --> C4["NUMBER: 1"]
     C1 --> C5["NUMBER: 2"]
     C1 --> C6["RPAREN"]
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
     class C1,C2,C3,C4,C5,C6 blue
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **AST** — only meaningful structure, punctuation dropped:
@@ -143,12 +152,15 @@ flowchart LR
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart LR
+    accTitle: Abstract Syntax Tree
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: apply, op: plus, arg: 1, arg: 2. Connections: apply to op: plus, apply to arg: 1, apply to arg: 2.
     A1["apply"] --> A2["op: plus"]
     A1 --> A3["arg: 1"]
     A1 --> A4["arg: 2"]
 
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
     class A1,A2,A3,A4 teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Source: Dragon Book, §5; Wikipedia: Abstract syntax tree_
@@ -180,10 +192,13 @@ A program that directly executes source code or an intermediate representation, 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    CS["Source code"] --> CC["Compiler\n(offline)"] --> CA["Binary /\nmachine code"] --> CR["Runs\nindependently"]
+    accTitle: Interpreter
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Source code, Compiler (offline), Binary / machine code, Runs independently. Connections: Source code to Compiler (offline), Compiler (offline) to Binary / machine code, Binary / machine code to Runs independently.
+    CS["Source code"] --> CC["Compiler<br/>(offline)"] --> CA["Binary /<br/>machine code"] --> CR["Runs<br/>independently"]
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
     class CS,CC,CA,CR blue
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Interpreter** — translates and executes together at runtime:
@@ -191,10 +206,13 @@ flowchart TB
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    IS["Source code"] --> II["Interpreter\n(reads + executes)"] --> IR["Result"]
+    accTitle: Interpreter
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Source code, Interpreter (reads + executes), Result. Connections: Source code to Interpreter (reads + executes), Interpreter (reads + executes) to Result.
+    IS["Source code"] --> II["Interpreter<br/>(reads + executes)"] --> IR["Result"]
 
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
     class IS,II,IR teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Spectrum of interpretation** — interpreters exist on a spectrum:
@@ -240,10 +258,13 @@ In Lisp: both code and data are S-expressions (lists). A macro receives its argu
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    OC["Source code\n(text)"] -. "separate\nrepresentations" .-> OD["Runtime data\n(objects)"]
+    accTitle: Homoiconicity
+    accDescr: Flowchart with 1 nodes and 0 connections. Nodes: Source code (text)] -. separate representations .-> OD[Runtime data (objects).
+    OC["Source code<br/>(text)"] -. "separate\nrepresentations" .-> OD["Runtime data<br/>(objects)"]
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
     class OC,OD blue
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Lisp** — code and data share the same S-expression structure:
@@ -251,10 +272,13 @@ flowchart TB
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    LC["Code:\n(+ 1 2)"] <-->|"same structure"| LD["Data:\nList of Symbol and Numbers"]
+    accTitle: Homoiconicity
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: Code: (+ 1 2), Data: List of Symbol and Numbers. Connections: Code: (+ 1 2) to Data: List of Symbol and Numbers (same structure).
+    LC["Code:<br/>(+ 1 2)"] <-->|"same structure"| LD["Data:<br/>List of Symbol and<br/>Numbers"]
 
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
     class LC,LD teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Caveat**: no single consensus definition exists. The strongest claim applies to Lisp dialects where the parser's native output _is_ the primary data type. Julia (`Expr`), Prolog (terms), and Elixir (`quote`) have weaker forms of the same property.
@@ -300,17 +324,20 @@ _Source: R5RS §7.3; Wikipedia: Syntactic sugar_
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    R["READ\nparse one\nS-expression"] --> E["EVAL\nevaluate in\ncurrent env"] --> P["PRINT\ndisplay\nresult"] --> L["LOOP\nback to READ"] --> R
+    accTitle: REPL
+    accDescr: Flowchart with 4 nodes and 4 connections. Nodes: READ parse one S-expression, EVAL evaluate in current env, PRINT display result, LOOP back to READ. Connections: READ parse one S-expression to EVAL evaluate in current env, EVAL evaluate in current env to PRINT display result, PRINT display result to LOOP back to READ, LOOP back to READ to READ parse one S-expression.
+    R["READ<br/>parse one<br/>S-expression"] --> E["EVAL<br/>evaluate in<br/>current env"] --> P["PRINT<br/>display<br/>result"] --> L["LOOP<br/>back to READ"] --> R
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
-    classDef purple fill:#CC78BC,color:#fff,stroke:#CC78BC
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
+    classDef purple fill:#CC78BC,color:#000000,stroke:#000000
 
     class R blue
     class E orange
     class P teal
     class L purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Each letter names a Lisp primitive function. The REPL does not terminate between inputs — it returns to `read` after each `print`.
@@ -332,19 +359,22 @@ A single table of bindings for one scope — the local variables of one function
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    GF["Global Frame\n+ → builtin\ndefine → special\nfact → Lambda"]
-    LF["Call Frame\nn → 5"]
-    IF["Inner Frame\nacc → 120"]
+    accTitle: Frame
+    accDescr: Flowchart with 3 nodes and 2 connections. Nodes: Global Frame + → builtin define → special fact → Lambda, Call Frame n → 5, Inner Frame acc → 120. Connections: Global Frame + → builtin define → special fact → Lambda to Call Frame n → 5 (enclosed by), Call Frame n → 5 to Inner Frame acc → 120 (enclosed by).
+    GF["Global Frame<br/>+ → builtin<br/>define → special<br/>fact → Lambda"]
+    LF["Call Frame<br/>n → 5"]
+    IF["Inner Frame<br/>acc → 120"]
 
     GF -->|"enclosed by"| LF -->|"enclosed by"| IF
 
-    classDef blue fill:#0173B2,color:#fff,stroke:#0173B2
-    classDef orange fill:#DE8F05,color:#fff,stroke:#DE8F05
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef blue fill:#0173B2,color:#FFFFFF,stroke:#000000
+    classDef orange fill:#DE8F05,color:#000000,stroke:#000000
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
 
     class GF blue
     class LF orange
     class IF teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Source: SICP §3.2_
@@ -378,10 +408,13 @@ A scoping rule where a variable's binding is determined by the **runtime call st
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    LS1["n=1, define f,\nredefine n=100"] --> LS2["f sees n=1\n(definition env)"]
+    accTitle: Dynamic Scope
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: n=1, define f, redefine n=100, f sees n=1 (definition env). Connections: n=1, define f, redefine n=100 to f sees n=1 (definition env).
+    LS1["n=1, define f,<br/>redefine n=100"] --> LS2["f sees n=1<br/>(definition env)"]
 
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
     class LS1,LS2 teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Dynamic scope** — name resolves at call site:
@@ -389,10 +422,13 @@ flowchart TB
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    DS1["n=1, define f,\nredefine n=100, call f"] --> DS2["f sees n=100\n(caller's env)"]
+    accTitle: Dynamic Scope
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: n=1, define f, redefine n=100, call f, f sees n=100 (callers env). Connections: n=1, define f, redefine n=100, call f to f sees n=100 (callers env).
+    DS1["n=1, define f,<br/>redefine n=100, call<br/>f"] --> DS2["f sees n=100<br/>(caller's env)"]
 
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
     class DS1,DS2 brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Where dynamic scope appears today**: Emacs Lisp (default, opt-in lexical since 2012), Bash/POSIX shell variables, Perl's `local`, Common Lisp's `special` declarations.
@@ -425,10 +461,13 @@ A function call in **tail position** — the final operation performed before a 
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    NT1["return foo() + 1"] --> NT2["foo() returns\nthen + 1 must still happen\ncaller frame stays alive"]
+    accTitle: Tail Call
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: return foo() + 1, foo() returns then + 1 must still happen caller frame stays alive. Connections: return foo() + 1 to foo() returns then + 1 must still happen caller frame stays alive.
+    NT1["return foo() + 1"] --> NT2["foo() returns<br/>then + 1 must still<br/>happen<br/>caller frame stays<br/>alive"]
 
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
     class NT1,NT2 brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **IS a tail call** — result is returned directly, caller frame is immediately useless:
@@ -436,10 +475,13 @@ flowchart TB
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    T1["return foo()"] --> T2["foo() result IS\nthe caller's result\ncaller frame immediately useless"]
+    accTitle: Tail Call
+    accDescr: Flowchart with 2 nodes and 1 connections. Nodes: return foo(), foo() result IS the callers result caller frame immediately useless. Connections: return foo() to foo() result IS the callers result caller frame immediately useless.
+    T1["return foo()"] --> T2["foo() result IS<br/>the caller's result<br/>caller frame<br/>immediately useless"]
 
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
     class T1,T2 teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Tail position is a syntactic property**, not a property of what function is called. A recursive call, a call to a different function, and a builtin call can all be in tail position.
@@ -455,10 +497,13 @@ flowchart TB
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
+    accTitle: Tail-Call Optimization vs Proper Tail Calls
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: call f(n), call f(n-1), call f(n-2), ... n frames ..., stack overflow. Connections: call f(n) to call f(n-1), call f(n-1) to call f(n-2), call f(n-2) to ... n frames ..., ... n frames ... to stack overflow.
     W1["call f(n)"] --> W2["call f(n-1)"] --> W3["call f(n-2)"] --> Wd["... n frames ..."] --> We["stack overflow"]
 
-    classDef brown fill:#CA9161,color:#fff,stroke:#CA9161
+    classDef brown fill:#CA9161,color:#000000,stroke:#000000
     class W1,W2,W3,Wd,We brown
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **With TCO** — tail call reuses the same frame, stack stays O(1):
@@ -466,10 +511,13 @@ flowchart TB
 ```mermaid
 %% Color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161, Gray #808080
 flowchart TB
-    T1["call f(n)\nreuse frame"] --> T2["update args"] --> T3["update args"] --> T4["done"]
+    accTitle: Tail-Call Optimization vs Proper Tail Calls
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: call f(n) reuse frame, update args, update args, done. Connections: call f(n) reuse frame to update args, update args to update args, update args to done.
+    T1["call f(n)<br/>reuse frame"] --> T2["update args"] --> T3["update args"] --> T4["done"]
 
-    classDef teal fill:#029E73,color:#fff,stroke:#029E73
+    classDef teal fill:#029E73,color:#000000,stroke:#000000
     class T1,T2,T3,T4 teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key distinction**: TCO is something a compiler _may_ do. PTC is something a language _requires_ — making unbounded tail recursion semantically equivalent to iteration. R5RS §3.5 states: "Implementations of Scheme are required to be properly tail-recursive."

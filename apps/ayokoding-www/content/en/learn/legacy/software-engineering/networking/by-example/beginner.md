@@ -55,8 +55,10 @@ The OSI model defines seven layers of abstraction for network communication. Eac
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 2: OSI Model Layers
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Layer 7: Application HTTP, DNS, SMTP, Layer 6: Presentation TLS, encoding, Layer 5: Session Session management, Layer 4: Transport TCP, UDP, Layer 3: Network IP routing, Layer 2: Data Link Ethernet, MAC, Layer 1: Physical Bits on wire. Connections: Layer 7: Application HTTP, DNS, SMTP to Layer 6: Presentation TLS, encoding, Layer 6: Presentation TLS, encoding to Layer 5: Session Session management, Layer 5: Session Session management to Layer 4: Transport TCP, UDP, Layer 4: Transport TCP, UDP to Layer 3: Network IP routing, Layer 3: Network IP routing to Layer 2: Data Link Ethernet, MAC, Layer 2: Data Link Ethernet, MAC to Layer 1: Physical Bits on wire.
     A["Layer 7: Application<br/>HTTP, DNS, SMTP"]
-    B["Layer 6: Presentation<br/>TLS, encoding"]
+    B["Layer 6:<br/>Presentation<br/>TLS, encoding"]
     C["Layer 5: Session<br/>Session management"]
     D["Layer 4: Transport<br/>TCP, UDP"]
     E["Layer 3: Network<br/>IP routing"]
@@ -65,13 +67,19 @@ graph TD
 
     A --> B --> C --> D --> E --> F --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -134,6 +142,8 @@ The TCP/IP model collapses the OSI seven layers into four practical layers used 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 3: TCP/IP Model vs OSI Model
+    accDescr: Graph with 11 nodes and 7 connections. Nodes: 7: Application, 6: Presentation, 5: Session, 4: Transport, 3: Network, 2: Data Link, 1: Physical, Application HTTP, DNS, SMTP, TLS, Transport TCP, UDP, Internet IP, ICMP, Network Access Ethernet, Wi-Fi. Connections: 7: Application to Application HTTP, DNS, SMTP, TLS, 6: Presentation to Application HTTP, DNS, SMTP, TLS, 5: Session to Application HTTP, DNS, SMTP, TLS, 4: Transport to Transport TCP, UDP, 3: Network to Internet IP, ICMP, 2: Data Link to Network Access Ethernet, Wi-Fi, 1: Physical to Network Access Ethernet, Wi-Fi.
     subgraph OSI["OSI Model (7 layers)"]
         O7["7: Application"]
         O6["6: Presentation"]
@@ -143,7 +153,7 @@ graph LR
         O2["2: Data Link"]
         O1["1: Physical"]
     end
-    subgraph TCPIP["TCP/IP Model (4 layers)"]
+    subgraph TCPIP["TCP/IP Model (4<br/>layers)"]
         T4["Application<br/>HTTP, DNS, SMTP, TLS"]
         T3["Transport<br/>TCP, UDP"]
         T2["Internet<br/>IP, ICMP"]
@@ -158,10 +168,15 @@ graph LR
     O2 --> T1
     O1 --> T1
 
-    style T4 fill:#0173B2,stroke:#000,color:#fff
-    style T3 fill:#DE8F05,stroke:#000,color:#fff
-    style T2 fill:#029E73,stroke:#000,color:#fff
-    style T1 fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class T4 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class T3 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class T2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class T1 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -264,22 +279,30 @@ Subnetting divides a larger network into smaller sub-networks. The subnet mask d
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    P["Parent: 198.51.100.0/24<br/>256 addresses"]
-    S1["Subnet 1: 198.51.100.0/26<br/>.0 - .63 (62 hosts)"]
-    S2["Subnet 2: 198.51.100.64/26<br/>.64 - .127 (62 hosts)"]
-    S3["Subnet 3: 198.51.100.128/26<br/>.128 - .191 (62 hosts)"]
-    S4["Subnet 4: 198.51.100.192/26<br/>.192 - .255 (62 hosts)"]
+    accTitle: Example 5: Subnet Masks and Subnetting
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Parent: 198.51.100.0/24 256 addresses, Subnet 1: 198.51.100.0/26 .0 - .63 (62 hosts), Subnet 2: 198.51.100.64/26 .64 - .127 (62 hosts), Subnet 3: 198.51.100.128/26 .128 - .191 (62 hosts), Subnet 4: 198.51.100.192/26 .192 - .255 (62 hosts). Connections: Parent: 198.51.100.0/24 256 addresses to Subnet 1: 198.51.100.0/26 .0 - .63 (62 hosts) (prefixlen_diff=2), Parent: 198.51.100.0/24 256 addresses to Subnet 2: 198.51.100.64/26 .64 - .127 (62 hosts), Parent: 198.51.100.0/24 256 addresses to Subnet 3: 198.51.100.128/26 .128 - .191 (62 hosts), Parent: 198.51.100.0/24 256 addresses to Subnet 4: 198.51.100.192/26 .192 - .255 (62 hosts).
+    P["Parent:<br/>198.51.100.0/24<br/>256 addresses"]
+    S1["Subnet 1:<br/>198.51.100.0/26<br/>.0 - .63 (62 hosts)"]
+    S2["Subnet 2:<br/>198.51.100.64/26<br/>.64 - .127 (62<br/>hosts)"]
+    S3["Subnet 3:<br/>198.51.100.128/26<br/>.128 - .191 (62<br/>hosts)"]
+    S4["Subnet 4:<br/>198.51.100.192/26<br/>.192 - .255 (62<br/>hosts)"]
 
     P -->|"prefixlen_diff=2"| S1
     P --> S2
     P --> S3
     P --> S4
 
-    style P fill:#0173B2,stroke:#000,color:#fff
-    style S1 fill:#DE8F05,stroke:#000,color:#fff
-    style S2 fill:#029E73,stroke:#000,color:#fff
-    style S3 fill:#CC78BC,stroke:#000,color:#fff
-    style S4 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class S1 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class S2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class S3 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class S4 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -451,10 +474,12 @@ DNS translates human-readable domain names into IP addresses. A query travels fr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 8: DNS Resolution — Query Lifecycle
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: Client wants example.com, Recursive Resolver ISP or 8.8.8.8, Root Nameserver Knows .com TLD servers, TLD Nameserver .com — Knows example.com NS, Authoritative NS example.com zone, IP Address 93.184.216.34. Connections: Client wants example.com to Recursive Resolver ISP or 8.8.8.8 (1. Query), Recursive Resolver ISP or 8.8.8.8 to Root Nameserver Knows .com TLD servers (2. Ask root), Root Nameserver Knows .com TLD servers to Recursive Resolver ISP or 8.8.8.8 (3. Refer to TLD), Recursive Resolver ISP or 8.8.8.8 to TLD Nameserver .com — Knows example.com NS (4. Ask TLD), TLD Nameserver .com — Knows example.com NS to Recursive Resolver ISP or 8.8.8.8 (5. Refer to auth NS), Recursive Resolver ISP or 8.8.8.8 to Authoritative NS example.com zone (6. Ask auth NS), Authoritative NS example.com zone to Recursive Resolver ISP or 8.8.8.8 (7. Answer), Recursive Resolver ISP or 8.8.8.8 to IP Address 93.184.216.34 (8. Return to client).
     A["Client<br/>wants example.com"]
     B["Recursive Resolver<br/>ISP or 8.8.8.8"]
-    C["Root Nameserver<br/>Knows .com TLD servers"]
-    D["TLD Nameserver<br/>.com — Knows example.com NS"]
+    C["Root Nameserver<br/>Knows .com TLD<br/>servers"]
+    D["TLD Nameserver<br/>.com — Knows<br/>example.com NS"]
     E["Authoritative NS<br/>example.com zone"]
     F["IP Address<br/>93.184.216.34"]
 
@@ -467,12 +492,18 @@ graph TD
     E -->|7. Answer| B
     B -->|8. Return to client| F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -618,6 +649,8 @@ UDP (User Datagram Protocol) is connectionless. Packets are sent without establi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 10: UDP Basics — Python Socket
+    accDescr: Sequence diagram between UDP Client, Network, UDP Server. Messages: UDP Client to Network: sendto(data, (host, port)); Network to UDP Server: Datagram (may be lost, reordered); UDP Server to Network: sendto(reply, client_addr); Network to UDP Client: Reply datagram (optional).
     participant C as UDP Client
     participant N as Network
     participant S as UDP Server
@@ -794,6 +827,8 @@ TCP establishes a connection with a three-step handshake: SYN (client initiates)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 12: TCP Three-Way Handshake
+    accDescr: Sequence diagram between Client, Server. Messages: Client to Server: SYN (seq=x); Server to Client: SYN-ACK (seq=y, ack=x+1); Client to Server: ACK (ack=y+1).
     participant C as Client
     participant S as Server
 
@@ -1237,11 +1272,13 @@ UDP server and client use `recvfrom` and `sendto` instead of `accept` and `conne
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    C1["Client A<br/>sendto(msg, (host, port))"]
-    C2["Client B<br/>sendto(msg, (host, port))"]
-    S["UDP Server<br/>Single socket — no connection state"]
-    R["recvfrom()<br/>Returns (data, sender_addr)"]
-    T["sendto(reply, sender_addr)<br/>Reply to each client"]
+    accTitle: Example 17: Socket Programming — UDP Server and Client
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Client A sendto(msg, (host, port)), Client B sendto(msg, (host, port)), UDP Server Single socket — no connection state, recvfrom() Returns (data, sender_addr), sendto(reply, sender_addr) Reply to each client. Connections: Client A sendto(msg, (host, port)) to UDP Server Single socket — no connection state (Datagram 1), Client B sendto(msg, (host, port)) to UDP Server Single socket — no connection state (Datagram 2), UDP Server Single socket — no connection state to recvfrom() Returns (data, sender_addr), recvfrom() Returns (data, sender_addr) to sendto(reply, sender_addr) Reply to each client, sendto(reply, sender_addr) Reply to each client to Client A sendto(msg, (host, port)) (Reply to A), sendto(reply, sender_addr) Reply to each client to Client B sendto(msg, (host, port)) (Reply to B).
+    C1["Client A<br/>sendto(msg, (host,<br/>port))"]
+    C2["Client B<br/>sendto(msg, (host,<br/>port))"]
+    S["UDP Server<br/>Single socket — no<br/>connection state"]
+    R["recvfrom()<br/>Returns (data,<br/>sender_addr)"]
+    T["sendto(reply,<br/>sender_addr)<br/>Reply to each client"]
 
     C1 -->|"Datagram 1"| S
     C2 -->|"Datagram 2"| S
@@ -1250,11 +1287,17 @@ graph TD
     T -->|"Reply to A"| C1
     T -->|"Reply to B"| C2
 
-    style S fill:#0173B2,stroke:#000,color:#fff
-    style R fill:#DE8F05,stroke:#000,color:#fff
-    style T fill:#029E73,stroke:#000,color:#fff
-    style C1 fill:#CC78BC,stroke:#000,color:#fff
-    style C2 fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class S pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class R pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class T pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C1 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C2 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1618,12 +1661,14 @@ HTTP status codes are three-digit integers grouped into five classes. Each class
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 21: HTTP Status Codes
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: HTTP Request, 1xx Informational 100 Continue 101 Switching Protocols, 2xx Success 200 OK · 201 Created 204 No Content, 3xx Redirection 301 Moved · 302 Found 304 Not Modified, 4xx Client Error 400 Bad Request · 401 Unauth 403 Forbidden · 404 Not Found, 5xx Server Error 500 Internal · 502 Bad Gateway 503 Unavailable · 504 Timeout. Connections: HTTP Request to 1xx Informational 100 Continue 101 Switching Protocols, HTTP Request to 2xx Success 200 OK · 201 Created 204 No Content, HTTP Request to 3xx Redirection 301 Moved · 302 Found 304 Not Modified, HTTP Request to 4xx Client Error 400 Bad Request · 401 Unauth 403 Forbidden · 404 Not Found, HTTP Request to 5xx Server Error 500 Internal · 502 Bad Gateway 503 Unavailable · 504 Timeout.
     REQ["HTTP Request"]
-    C1xx["1xx Informational<br/>100 Continue<br/>101 Switching Protocols"]
+    C1xx["1xx Informational<br/>100 Continue<br/>101 Switching<br/>Protocols"]
     C2xx["2xx Success<br/>200 OK · 201 Created<br/>204 No Content"]
-    C3xx["3xx Redirection<br/>301 Moved · 302 Found<br/>304 Not Modified"]
-    C4xx["4xx Client Error<br/>400 Bad Request · 401 Unauth<br/>403 Forbidden · 404 Not Found"]
-    C5xx["5xx Server Error<br/>500 Internal · 502 Bad Gateway<br/>503 Unavailable · 504 Timeout"]
+    C3xx["3xx Redirection<br/>301 Moved · 302<br/>Found<br/>304 Not Modified"]
+    C4xx["4xx Client Error<br/>400 Bad Request ·<br/>401 Unauth<br/>403 Forbidden · 404<br/>Not Found"]
+    C5xx["5xx Server Error<br/>500 Internal · 502<br/>Bad Gateway<br/>503 Unavailable ·<br/>504 Timeout"]
 
     REQ --> C1xx
     REQ --> C2xx
@@ -1631,12 +1676,18 @@ graph TD
     REQ --> C4xx
     REQ --> C5xx
 
-    style C2xx fill:#029E73,stroke:#000,color:#fff
-    style C3xx fill:#DE8F05,stroke:#000,color:#fff
-    style C4xx fill:#CC78BC,stroke:#000,color:#fff
-    style C5xx fill:#CA9161,stroke:#000,color:#fff
-    style C1xx fill:#0173B2,stroke:#000,color:#fff
-    style REQ fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C2xx pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C3xx pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C4xx pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C5xx pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C1xx pal-0173B2
+    class REQ pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python

@@ -27,16 +27,22 @@ The networking by-example tutorial guides you through 83 examples organized into
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Beginner (Examples 1-29)<br/>Fundamentals<br/>Packets, DNS, TCP, HTTP"]
-    B["Intermediate (Examples 30-56)<br/>Production Patterns<br/>TLS, Multiplexing, Caching"]
-    C["Advanced (Examples 57-83)<br/>Expert Mastery<br/>Raw sockets, asyncio, observability"]
+    accTitle: Learning Path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner (Examples 1-29) Fundamentals Packets, DNS, TCP, HTTP, Intermediate (Examples 30-56) Production Patterns TLS, Multiplexing, Caching, Advanced (Examples 57-83) Expert Mastery Raw sockets, asyncio, observability. Connections: Beginner (Examples 1-29) Fundamentals Packets, DNS, TCP, HTTP to Intermediate (Examples 30-56) Production Patterns TLS, Multiplexing, Caching (Master foundations), Intermediate (Examples 30-56) Production Patterns TLS, Multiplexing, Caching to Advanced (Examples 57-83) Expert Mastery Raw sockets, asyncio, observability (Advanced patterns).
+    A["Beginner (Examples<br/>1-29)<br/>Fundamentals<br/>Packets, DNS, TCP,<br/>HTTP"]
+    B["Intermediate<br/>(Examples 30-56)<br/>Production Patterns<br/>TLS, Multiplexing,<br/>Caching"]
+    C["Advanced (Examples<br/>57-83)<br/>Expert Mastery<br/>Raw sockets,<br/>asyncio,<br/>observability"]
 
     A -->|Master foundations| B
     B -->|Advanced patterns| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Philosophy

@@ -21,6 +21,8 @@ A `PurchaseOrder` begins as a `Draft`, moves through approval, gets issued to a 
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 1: States as Distinct Structs
+    accDescr: State diagram with 11 items: start or end, Draft, Submitted, ApprovalPending, Issued, Cancelled, Received, Paid, Disputed, Draft draft, Disputed disputed. Relationships: start or end to Draft; Draft to Submitted: submit; Submitted to ApprovalPending: request_approval; ApprovalPending to Issued: approve; ApprovalPending to Cancelled: reject; Issued to Received: receive; Received to Paid: pay; Draft to Cancelled: cancel; Issued to Disputed: dispute.
     [*] --> Draft
     Draft --> Submitted: submit
     Submitted --> ApprovalPending: request_approval
@@ -31,11 +33,11 @@ stateDiagram-v2
     Draft --> Cancelled: cancel
     Issued --> Disputed: dispute
 
-    classDef draft fill:#0173B2,stroke:#000,color:#fff
-    classDef pending fill:#DE8F05,stroke:#000,color:#000
-    classDef active fill:#029E73,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
-    classDef disputed fill:#CC78BC,stroke:#000,color:#fff
+    classDef draft fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef pending fill:#DE8F05,stroke:#000000,color:#000000
+    classDef active fill:#029E73,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
+    classDef disputed fill:#CC78BC,stroke:#000000,color:#000000
 
     class Draft draft
     class Submitted,ApprovalPending pending
@@ -531,6 +533,8 @@ Defining all transitions in one place makes the full state machine inspectable a
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 6: The Full Transition Table
+    accDescr: State diagram with 11 items: start or end, Draft, Submitted, ApprovalPending, Issued, Cancelled, Received, Disputed, Paid, Draft start, Disputed disputed. Relationships: start or end to Draft; Draft to Submitted: submit; Submitted to ApprovalPending: request_approval; ApprovalPending to Issued: approve; ApprovalPending to Cancelled: reject; Issued to Received: receive; Issued to Disputed: dispute; Issued to Cancelled: cancel; Received to Paid: pay; Received to Disputed: dispute; Draft to Cancelled: cancel; Submitted to Cancelled: cancel.
     [*] --> Draft
     Draft --> Submitted: submit
     Submitted --> ApprovalPending: request_approval
@@ -544,11 +548,11 @@ stateDiagram-v2
     Draft --> Cancelled: cancel
     Submitted --> Cancelled: cancel
 
-    classDef start fill:#0173B2,stroke:#000,color:#fff
-    classDef pending fill:#DE8F05,stroke:#000,color:#000
-    classDef active fill:#029E73,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
-    classDef disputed fill:#CC78BC,stroke:#000,color:#fff
+    classDef start fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef pending fill:#DE8F05,stroke:#000000,color:#000000
+    classDef active fill:#029E73,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
+    classDef disputed fill:#CC78BC,stroke:#000000,color:#000000
 
     class Draft start
     class Submitted,ApprovalPending pending

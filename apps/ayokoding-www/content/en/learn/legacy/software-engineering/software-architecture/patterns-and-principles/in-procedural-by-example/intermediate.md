@@ -35,6 +35,8 @@ The Strategy pattern replaces a `switch` or if-chain on pricing type with plugga
 
 ```mermaid
 classDiagram
+    accTitle: Example 29: PricingStrategy Interface
+    accDescr: Class diagram with 4 items: PricingStrategy, LumpSumPricing, PerUnitPricing, TieredPricing.
     class PricingStrategy {
         <<interface>>
         +Calculate(unitPrice Money, qty Quantity) Money
@@ -53,6 +55,7 @@ classDiagram
     PricingStrategy <|.. LumpSumPricing
     PricingStrategy <|.. PerUnitPricing
     PricingStrategy <|.. TieredPricing
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -211,6 +214,8 @@ Dependency injection delivers the strategy to its consumer — the caller choose
 
 ```mermaid
 classDiagram
+    accTitle: Example 30: Injecting PricingStrategy into LineItem Processor
+    accDescr: Class diagram with 2 items: LineItemProcessor, PricingStrategy. Relationships: LineItemProcessor to PricingStrategy: depends on.
     class LineItemProcessor {
         -pricing PricingStrategy
         +NewLineItemProcessor(p PricingStrategy) LineItemProcessor
@@ -221,6 +226,7 @@ classDiagram
         +Calculate(unitPrice Money, qty Quantity) Money
     }
     LineItemProcessor --> PricingStrategy : depends on
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -309,6 +315,8 @@ Discount strategies apply after pricing — composable with pricing strategies v
 
 ```mermaid
 classDiagram
+    accTitle: Example 31: Discount Strategy
+    accDescr: Class diagram with 4 items: DiscountStrategy, PercentDiscount, FixedDiscount, NoDiscount.
     class DiscountStrategy {
         <<interface>>
         +Apply(amount Money) Money
@@ -327,6 +335,7 @@ classDiagram
     DiscountStrategy <|.. PercentDiscount
     DiscountStrategy <|.. FixedDiscount
     DiscountStrategy <|.. NoDiscount
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -456,7 +465,9 @@ Routing a PO to the right approval level is a strategy — determined by PO valu
 
 ```mermaid
 classDiagram
-    class ApprovalRoutingStrategy {
+    accTitle: Example 32: Approval Routing Strategy
+    accDescr: Class diagram with 3 items: ApprovalRoutingStrategy, ValueBasedRouting, SupplierTierRouting.
+    class ARS["ApprovalRouting<br/>Strategy"] {
         <<interface>>
         +Route(po PurchaseOrder) ApprovalLevel
     }
@@ -469,8 +480,9 @@ classDiagram
         +tierMap map
         +Route(po PurchaseOrder) ApprovalLevel
     }
-    ApprovalRoutingStrategy <|.. ValueBasedRouting
-    ApprovalRoutingStrategy <|.. SupplierTierRouting
+    ARS <|.. ValueBasedRouting
+    ARS <|.. SupplierTierRouting
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -602,7 +614,9 @@ A factory selects the correct strategy at runtime based on context — strategie
 
 ```mermaid
 graph TD
-    A["Select#40;poType,terms#41;"]:::orange
+    accTitle: Example 33: Strategy Selection via Factory
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Select40po Type,terms41, LumpSumPricing, PerUnitPricing, TieredPricing. Connections: Select40po Type,terms41 to LumpSumPricing (POTypeBlank), Select40po Type,terms41 to PerUnitPricing (POTypeUnit), Select40po Type,terms41 to TieredPricing (POTypeFramework).
+    A["Select#40;po<br/>Type,terms#41;"]:::orange
     B["LumpSumPricing"]:::blue
     C["PerUnitPricing"]:::teal
     D["TieredPricing"]:::purple
@@ -610,10 +624,11 @@ graph TD
     A -->|POTypeUnit| C
     A -->|POTypeFramework| D
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -703,6 +718,8 @@ The Observer pattern allows components to react to events without the event sour
 
 ```mermaid
 classDiagram
+    accTitle: Example 34: Observer Interface + Registration
+    accDescr: Class diagram with 4 items: POObserver, POEventBus, SupplierNotificationObserver, AuditObserver. Relationships: POEventBus to POObserver: notifies 0..*.
     class POObserver {
         <<interface>>
         +OnPOEvent(event POEvent) error
@@ -713,15 +730,16 @@ classDiagram
         +Register(eventType, obs POObserver)
         +Notify(event POEvent) error
     }
-    class SupplierNotificationObserver {
+    class SNO["Supplier<br/>Notification<br/>Observer"] {
         +OnPOEvent(event POEvent) error
     }
     class AuditObserver {
         +OnPOEvent(event POEvent) error
     }
     POEventBus --> POObserver : notifies 0..*
-    POObserver <|.. SupplierNotificationObserver
+    POObserver <|.. SNO
     POObserver <|.. AuditObserver
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -841,6 +859,8 @@ A synchronous observer executes in the same call stack — simple but blocks the
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 35: Synchronous Observer — Supplier Notification
+    accDescr: Sequence diagram between PurchaseOrder, POEventBus, SupplierNotificationObserver, EmailNotifier. Messages: PurchaseOrder to POEventBus: Notify40POApprovedEvent41; POEventBus to SupplierNotificationObserver: OnPOEvent40event41; SupplierNotificationObserver to EmailNotifier: Send40supplierEmail, subject, body41; EmailNotifier to SupplierNotificationObserver: ok; SupplierNotificationObserver to POEventBus: nil; POEventBus to PurchaseOrder: nil.
     participant PO as PurchaseOrder
     participant Bus as POEventBus
     participant Obs as SupplierNotificationObserver
@@ -936,6 +956,8 @@ Asynchronous observers decouple the event publisher from slow operations — the
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 36: Asynchronous Observer via Goroutine / Tokio Task
+    accDescr: Sequence diagram between PurchaseOrder, POEventBus, Goroutine/Task, SlowObserver. Messages: PurchaseOrder to POEventBus: NotifyAsync40event41; POEventBus to Goroutine/Task: go/spawn40notify observers41; POEventBus to PurchaseOrder: returns immediately; Goroutine/Task to SlowObserver: OnPOEvent40event41; SlowObserver to Goroutine/Task: result40logged if error41.
     participant PO as PurchaseOrder
     participant Bus as POEventBus
     participant G as Goroutine/Task
@@ -1029,6 +1051,8 @@ Go channels allow distributing the same event to multiple concurrent observers w
 
 ```mermaid
 graph TD
+    accTitle: Example 37: Channel-Based Fan-Out
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: POEvent Channel, Fan-out Goroutine, Subscriber 1 Chan, Subscriber 2 Chan, Subscriber 3 Chan. Connections: POEvent Channel to Fan-out Goroutine, Fan-out Goroutine to Subscriber 1 Chan, Fan-out Goroutine to Subscriber 2 Chan, Fan-out Goroutine to Subscriber 3 Chan.
     A["POEvent Channel"]:::blue
     B["Fan-out Goroutine"]:::orange
     C["Subscriber 1 Chan"]:::teal
@@ -1040,8 +1064,9 @@ graph TD
     B --> E
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1162,6 +1187,8 @@ Fine-grained subscriptions reduce unnecessary processing — observers declare i
 
 ```mermaid
 classDiagram
+    accTitle: Example 38: Filtering Observers by Event Attribute
+    accDescr: Class diagram with 3 items: POObserver, FilteredObserver, HighValuePOObserver. Relationships: FilteredObserver to POObserver: wraps.
     class POObserver {
         <<interface>>
         +OnPOEvent(event POEvent) error
@@ -1177,6 +1204,7 @@ classDiagram
     POObserver <|.. FilteredObserver
     POObserver <|.. HighValuePOObserver
     FilteredObserver --> POObserver : wraps
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1273,6 +1301,8 @@ The Decorator pattern adds logging to any repository without modifying the repos
 
 ```mermaid
 classDiagram
+    accTitle: Example 39: Logging Decorator for Repository
+    accDescr: Class diagram with 3 items: PORepository, LoggingPORepository, PostgresPORepository. Relationships: LoggingPORepository to PORepository: wraps.
     class PORepository {
         <<interface>>
         +Save(ctx, po) error
@@ -1291,6 +1321,7 @@ classDiagram
     PORepository <|.. LoggingPORepository
     PORepository <|.. PostgresPORepository
     LoggingPORepository --> PORepository : wraps
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1401,6 +1432,8 @@ The Retry decorator transparently retries transient failures — callers see a r
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 40: Retry Decorator for External Calls
+    accDescr: Sequence diagram between Caller, RetrySupplierClient, ExternalSupplierClient. Messages: Caller to RetrySupplierClient: FetchSupplier40code41; RetrySupplierClient to ExternalSupplierClient: attempt 1; ExternalSupplierClient to RetrySupplierClient: 503 transient error; RetrySupplierClient to ExternalSupplierClient: attempt 2 40backoff 100ms41; ExternalSupplierClient to RetrySupplierClient: 503 transient error; RetrySupplierClient to ExternalSupplierClient: attempt 3 40backoff 200ms41; ExternalSupplierClient to RetrySupplierClient: 200 OK; RetrySupplierClient to Caller: SupplierDTO.
     participant Caller
     participant Retry as RetrySupplierClient
     participant Inner as ExternalSupplierClient
@@ -1608,6 +1641,8 @@ A caching decorator reduces database load for read-heavy queries — transparent
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 42: Caching Decorator
+    accDescr: Sequence diagram between Caller, CachingPORepository, PostgresPORepository. Messages: Caller to CachingPORepository: FindById40id41; CachingPORepository to CachingPORepository: cache.Get40id41 miss; CachingPORepository to PostgresPORepository: FindById40id41; PostgresPORepository to CachingPORepository: PurchaseOrder; CachingPORepository to CachingPORepository: cache.Set40id, po, ttl41; CachingPORepository to Caller: PurchaseOrder; Caller to CachingPORepository: FindById40id41 again; CachingPORepository to CachingPORepository: cache.Get40id41 hit; CachingPORepository to Caller: PurchaseOrder 40from cache41.
     participant Caller
     participant Cache as CachingPORepository
     participant DB as PostgresPORepository
@@ -1715,6 +1750,8 @@ Multiple decorators can stack — each adds one concern and the stack is assembl
 
 ```mermaid
 classDiagram
+    accTitle: Example 43: Chaining Decorators
+    accDescr: Class diagram with 5 items: PORepository, MetricsPORepository, LoggingPORepository, CachingPORepository, PostgresPORepository. Relationships: MetricsPORepository to LoggingPORepository: inner; LoggingPORepository to CachingPORepository: inner; CachingPORepository to PostgresPORepository: inner.
     class PORepository {
         <<interface>>
     }
@@ -1736,6 +1773,7 @@ classDiagram
     MetricsPORepository --> LoggingPORepository : inner
     LoggingPORepository --> CachingPORepository : inner
     CachingPORepository --> PostgresPORepository : inner
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1810,6 +1848,8 @@ The Command pattern encapsulates a request as an object — enabling queuing, lo
 
 ```mermaid
 classDiagram
+    accTitle: Example 44: Command Pattern — POCommand Interface
+    accDescr: Class diagram with 5 items: POCommand, CommandBus, CommandHandler, CreatePOCommand, ApprovePOCommand. Relationships: CommandBus to CommandHandler: routes to.
     class POCommand {
         <<interface>>
         +Execute(ctx Context) error
@@ -1835,6 +1875,7 @@ classDiagram
     POCommand <|.. CreatePOCommand
     POCommand <|.. ApprovePOCommand
     CommandBus --> CommandHandler : routes to
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1945,6 +1986,8 @@ impl CommandBus {
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 45: CreatePOCommand
+    accDescr: Sequence diagram between Client, CommandBus, CreatePOCommandHandler, PORepository, DomainEventBus. Messages: Client to CommandBus: Dispatch40CreatePOCommand41; CommandBus to CreatePOCommandHandler: Handle40ctx, cmd41; CreatePOCommandHandler to CreatePOCommandHandler: PurchaseOrder.Create40...41; CreatePOCommandHandler to PORepository: Save40po41; CreatePOCommandHandler to DomainEventBus: Publish40POCreatedEvent41; CreatePOCommandHandler to CommandBus: nil; CommandBus to Client: nil.
     participant Client
     participant Bus as CommandBus
     participant Handler as CreatePOCommandHandler
@@ -2077,6 +2120,8 @@ Commands can support undo by capturing the pre-command state before execution. A
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 46: ApprovePOCommand with Undo Capability
+    accDescr: Sequence diagram between Client, UndoableApprovePOCommand, PORepository. Messages: Client to UndoableApprovePOCommand: Execute40ctx41; UndoableApprovePOCommand to PORepository: FindById40po_id41 capture previous state; UndoableApprovePOCommand to PORepository: Save40po with approved status41; Client to UndoableApprovePOCommand: Undo40ctx41; UndoableApprovePOCommand to PORepository: Save40po with previous status41.
     participant Client
     participant Undoable as UndoableApprovePOCommand
     participant Repo as PORepository
@@ -2320,6 +2365,8 @@ A Macro command executes multiple commands as a single logical unit — if any s
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 48: Macro Command
+    accDescr: Sequence diagram between Client, MacroCommand, Command1, Command2, Command3. Messages: Client to MacroCommand: Execute40ctx41; MacroCommand to Command1: Execute; Command1 to MacroCommand: ok; MacroCommand to Command2: Execute; Command2 to MacroCommand: ok; MacroCommand to Command3: Execute; Command3 to MacroCommand: ERROR; MacroCommand to Command2: Undo 40compensation41; MacroCommand to Command1: Undo 40compensation41; MacroCommand to Client: error.
     participant Client
     participant Macro as MacroCommand
     participant C1 as Command1
@@ -2441,6 +2488,8 @@ The Builder pattern constructs complex objects step-by-step — especially usefu
 
 ```mermaid
 classDiagram
+    accTitle: Example 49: Builder Pattern for PurchaseOrder Configuration
+    accDescr: Class diagram with 1 items: POBuilder.
     class POBuilder {
         -supplierID SupplierId
         -lineItems []LineItem
@@ -2452,6 +2501,7 @@ classDiagram
         +WithPriority#40;p POPriority#41; POBuilder
         +Build#40;#41; PurchaseOrder
     }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2595,12 +2645,14 @@ Functional options are the idiomatic Go alternative to Builder — variadic func
 
 ```mermaid
 graph TD
-    A["NewHTTPAdapter#40;u,opts#41;"]:::orange
-    B["defaultHTTPConfig#40;#41;"]:::blue
-    C["WithTimeout#40;30s#41;"]:::teal
+    accTitle: Example 50: Functional Options Pattern
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: NewHTTPAdapter40u,opts41, defaultHTTP Config4041, With Timeout4030s41, WithRetry40341, WithUserAgent40... 41, http Adapter123cfg125. Connections: NewHTTPAdapter40u,opts41 to defaultHTTP Config4041, NewHTTPAdapter40u,opts41 to With Timeout4030s41, NewHTTPAdapter40u,opts41 to WithRetry40341, NewHTTPAdapter40u,opts41 to WithUserAgent40... 41, defaultHTTP Config4041 to http Adapter123cfg125, With Timeout4030s41 to http Adapter123cfg125, WithRetry40341 to http Adapter123cfg125, WithUserAgent40... 41 to http Adapter123cfg125.
+    A["NewHTTPAdapter(<br/>u,opts)"]:::orange
+    B["defaultHTTP<br/>Config#40;#41;"]:::blue
+    C["With<br/>Timeout#40;30s#41;"]:::teal
     D["WithRetry#40;3#41;"]:::teal
-    E["WithUserAgent#40;...#41;"]:::teal
-    F["httpAdapter#123;cfg#125;"]:::purple
+    E["WithUserAgent#40;...<br/>#41;"]:::teal
+    F["http<br/>Adapter#123;cfg#125;"]:::purple
     A --> B
     A --> C
     A --> D
@@ -2610,10 +2662,11 @@ graph TD
     D --> F
     E --> F
 
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2940,24 +2993,27 @@ The Rust typestate builder enforces required fields at compile time using phanto
 
 ```mermaid
 classDiagram
+    accTitle: Example 53: Builder Validation — Type-State Builder in Rust
+    accDescr: Class diagram with 5 items: Missing, Present, POBuilder_Missing_Missing, POBuilder_Present_Missing, POBuilder_Present_Present. Relationships: POBuilder_Missing_Missing to POBuilder_Present_Missing: set_supplier; POBuilder_Present_Missing to POBuilder_Present_Present: add_items; POBuilder_Present_Present to POBuilder_Present_Present: build available.
     class Missing {
         <<marker>>
     }
     class Present {
         <<marker>>
     }
-    class POBuilder_Missing_Missing {
+    class PMM["POBuilder_<br/>Missing_Missing"] {
         +set_supplier#40;id#41; POBuilder_Present_Missing
     }
-    class POBuilder_Present_Missing {
+    class PPM["POBuilder_<br/>Present_Missing"] {
         +add_items#40;items#41; POBuilder_Present_Present
     }
-    class POBuilder_Present_Present {
+    class PPP["POBuilder_<br/>Present_Present"] {
         +build#40;#41; PurchaseOrder
     }
-    POBuilder_Missing_Missing --> POBuilder_Present_Missing : set_supplier
-    POBuilder_Present_Missing --> POBuilder_Present_Present : add_items
-    POBuilder_Present_Present --> POBuilder_Present_Present : build available
+    PMM --> PPM : set_supplier
+    PPM --> PPP : add_items
+    PPP --> PPP : build available
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -3081,6 +3137,8 @@ The Pipeline pattern chains handlers where each processes input and passes to th
 
 ```mermaid
 graph TD
+    accTitle: Example 54: Pipeline Pattern — Handler Chain
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: PO Input, ValidationHandler, AuditLogHandler, BusinessRulesHandler, PO Output, Error. Connections: PO Input to ValidationHandler, ValidationHandler to AuditLogHandler (ok), ValidationHandler to Error (error), AuditLogHandler to BusinessRulesHandler (ok), BusinessRulesHandler to PO Output (ok), BusinessRulesHandler to Error (error).
     A["PO Input"]:::blue
     B["ValidationHandler"]:::teal
     C["AuditLogHandler"]:::orange
@@ -3095,9 +3153,10 @@ graph TD
     D -->|error| F
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -3386,6 +3445,8 @@ A circuit breaker handler prevents cascading failures when a downstream service 
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 57: Circuit Breaker Handler
+    accDescr: State diagram with 4 items: start or end, Closed, Open, HalfOpen. Relationships: start or end to Closed; Closed to Open: failures >= threshold; Open to HalfOpen: reset timeout elapsed; HalfOpen to Closed: probe succeeds; HalfOpen to Open: probe fails.
     [*] --> Closed
     Closed --> Open : failures >= threshold
     Open --> HalfOpen : reset timeout elapsed

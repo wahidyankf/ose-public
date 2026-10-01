@@ -32,6 +32,8 @@ A `PurchaseOrder` moves through a defined set of states: Draft, AwaitingApproval
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 1: States as a Discriminated Union
+    accDescr: State diagram with 10 items: start or end, Draft, AwaitingApproval, Approved, Cancelled, Issued, Acknowledged, Closed, Draft draft, AwaitingApproval waiting. Relationships: start or end to Draft; Draft to AwaitingApproval: submit; AwaitingApproval to Approved: approve; AwaitingApproval to Cancelled: reject; Approved to Issued: issue; Issued to Acknowledged: acknowledge; Acknowledged to Closed: close; Draft to Cancelled: cancel; Approved to Cancelled: cancel.
     [*] --> Draft
     Draft --> AwaitingApproval: submit
     AwaitingApproval --> Approved: approve
@@ -42,10 +44,10 @@ stateDiagram-v2
     Draft --> Cancelled: cancel
     Approved --> Cancelled: cancel
 
-    classDef draft fill:#0173B2,stroke:#000,color:#fff
-    classDef waiting fill:#DE8F05,stroke:#000,color:#000
-    classDef approved fill:#029E73,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef draft fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef waiting fill:#DE8F05,stroke:#000000,color:#000000
+    classDef approved fill:#029E73,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class Draft draft
     class AwaitingApproval waiting

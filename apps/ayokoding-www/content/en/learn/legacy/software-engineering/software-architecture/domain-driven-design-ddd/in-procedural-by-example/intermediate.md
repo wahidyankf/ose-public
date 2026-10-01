@@ -19,6 +19,8 @@ The full aggregate exposes every lifecycle transition as a method on the root st
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 26: Full PurchaseOrder Aggregate with Complete Lifecycle
+    accDescr: State diagram with 9 items: start or end, Draft, Submitted, ApprovalPending, Issued, Received, Paid, Cancelled, Disputed. Relationships: start or end to Draft: NewPurchaseOrder; Draft to Submitted: Submit; Submitted to ApprovalPending: RequestApproval; ApprovalPending to Issued: Approve; Issued to Received: MarkReceived; Received to Paid: MarkPaid; Draft to Cancelled: Cancel; Submitted to Cancelled: Cancel; Issued to Disputed: Dispute.
     [*] --> Draft: NewPurchaseOrder
     Draft --> Submitted: Submit
     Submitted --> ApprovalPending: RequestApproval
@@ -158,9 +160,11 @@ Two-step approval: `RequestApproval` captures which approval chain handles this 
 
 ```mermaid
 stateDiagram-v2
-    Submitted --> ApprovalPending: RequestApproval#40;chain#41;
+    accTitle: Example 27: RequestApproval and Approve with Budget Check
+    accDescr: State diagram with 4 items: Submitted, ApprovalPending, Issued, Rejected. Relationships: Submitted to ApprovalPending: RequestApproval40chain41; ApprovalPending to Issued: Approve40by41 [total≤cap]; ApprovalPending to Rejected: Reject40reason41.
+    Submitted --> ApprovalPending: RequestApproval(chain)
     ApprovalPending --> Issued: Approve#40;by#41; [total≤cap]
-    ApprovalPending --> Rejected: Reject#40;reason#41;
+    ApprovalPending --> Rejected: Reject(reason)
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -293,7 +297,9 @@ impl PurchaseOrder {
 
 ```mermaid
 stateDiagram-v2
-    Issued --> Received: MarkReceived#40;grnID#41;
+    accTitle: Example 28: MarkReceived and MarkPaid
+    accDescr: State diagram with 3 items: Issued, Received, Paid. Relationships: Issued to Received: MarkReceived40grnID41; Received to Paid: MarkPaid4041 [grnId set].
+    Issued --> Received: MarkReceived(grnID)
     Received --> Paid: MarkPaid#40;#41; [grnId set]
 ```
 
@@ -406,6 +412,8 @@ GRN is its own aggregate with its own lifecycle — it references the PO by ID, 
 
 ```mermaid
 classDiagram
+    accTitle: Example 29: GoodReceiptNote Aggregate
+    accDescr: Class diagram with 2 items: GoodReceiptNote, ReceivedItem. Relationships: GoodReceiptNote to ReceivedItem: owns.
     class GoodReceiptNote {
         +GRNId id
         +PurchaseOrderId poID
@@ -422,6 +430,7 @@ classDiagram
         +string unit
     }
     GoodReceiptNote "1" --> "many" ReceivedItem : owns
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -563,6 +572,8 @@ Approval chains define multi-level escalation — each level has a budget cap; l
 
 ```mermaid
 classDiagram
+    accTitle: Example 30: ApprovalChain Value Object
+    accDescr: Class diagram with 3 items: ApprovalChain, ApprovalLevel, Approval. Relationships: ApprovalChain to ApprovalLevel: defines; ApprovalChain to Approval: records.
     class ApprovalChain {
         +[]ApprovalLevel levels
         +[]Approval approvals
@@ -584,6 +595,7 @@ classDiagram
     }
     ApprovalChain "1" --> "many" ApprovalLevel : defines
     ApprovalChain "1" --> "many" Approval : records
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -735,6 +747,8 @@ Once a PO is issued, the supplier has received the commitment. Adding or removin
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 31: Aggregate Invariant — Line Items Immutable After Issued
+    accDescr: State diagram with 3 items: Draft, Submitted, start or end. Relationships: Draft to Draft: AddLineItem [status==Draft]; Draft to Draft: RemoveLineItem [status==Draft]; Draft to Submitted: Submit; Submitted to start or end: AddLineItem BLOCKED; Submitted to start or end: RemoveLineItem BLOCKED.
     Draft --> Draft: AddLineItem [status==Draft]
     Draft --> Draft: RemoveLineItem [status==Draft]
     Draft --> Submitted: Submit
@@ -838,6 +852,8 @@ Storing events in the same database transaction as the aggregate prevents ghost 
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 32: Outbox Pattern for Reliable Event Publishing
+    accDescr: Sequence diagram between AppService, Database, OutboxPublisher, EventBus. Messages: AppService to Database: BEGIN TX; AppService to Database: INSERT/UPDATE aggregate; AppService to Database: INSERT outbox_entries; AppService to Database: COMMIT; OutboxPublisher to Database: SELECT unpublished; OutboxPublisher to EventBus: Publish each event; OutboxPublisher to Database: UPDATE published_at.
     participant AS as AppService
     participant DB as Database
     participant PUB as OutboxPublisher
@@ -971,6 +987,8 @@ The event bus is a port in hexagonal architecture — the domain package defines
 
 ```mermaid
 classDiagram
+    accTitle: Example 33: DomainEventBus Interface
+    accDescr: Class diagram with 3 items: DomainEventBus, InMemoryEventBus, KafkaEventBus. Relationships: DomainEventBus to InMemoryEventBus; DomainEventBus to KafkaEventBus.
     class DomainEventBus {
         <<interface>>
         +Publish(ctx, events) error
@@ -987,6 +1005,7 @@ classDiagram
     }
     DomainEventBus <|-- InMemoryEventBus
     DomainEventBus <|-- KafkaEventBus
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1103,6 +1122,8 @@ Event handlers consume domain events and perform side effects — sending email,
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 34: EventHandler Pattern
+    accDescr: Sequence diagram between EventBus, POApprovedEmailHandler, SupplierRepository, EmailService. Messages: EventBus to POApprovedEmailHandler: Handle(ctx, POApproved); POApprovedEmailHandler to POApprovedEmailHandler: CanHandle(POApproved) → true; POApprovedEmailHandler to SupplierRepository: FindById(supplierID); POApprovedEmailHandler to EmailService: Send(supplier.email, body).
     participant BUS as EventBus
     participant H as POApprovedEmailHandler
     participant SUP as SupplierRepository
@@ -1220,6 +1241,8 @@ A saga coordinates multiple aggregates across a business transaction that spans 
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 35: Three-Way Match Saga
+    accDescr: Sequence diagram between ThreeWayMatchSaga, PORepository, GRNRepository, InvoiceRepository, MatchGuard, BUS. Messages: ThreeWayMatchSaga to PORepository: FindById(poID); ThreeWayMatchSaga to GRNRepository: FindById(grnID); ThreeWayMatchSaga to InvoiceRepository: FindByPO(poID); ThreeWayMatchSaga to MatchGuard: Match(po, grn, invoices); ThreeWayMatchSaga to InvoiceRepository: Approve(invoiceID); ThreeWayMatchSaga to BUS: Publish(InvoiceApproved); ThreeWayMatchSaga to InvoiceRepository: RecordMatchFailure(reason).
     participant S as ThreeWayMatchSaga
     participant PO as PORepository
     participant GRN as GRNRepository
@@ -1357,6 +1380,8 @@ Process managers track their own state across events, unlike stateless sagas. Th
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 36: ProcessManager
+    accDescr: State diagram with 5 items: start or end, WaitingGRN, MatchPending, Complete, Failed. Relationships: start or end to WaitingGRN: POIssued event; WaitingGRN to MatchPending: GRNFinalized event; MatchPending to Complete: ThreeWayMatchPassed event; MatchPending to Failed: ThreeWayMatchFailed event.
     [*] --> WaitingGRN: POIssued event
     WaitingGRN --> MatchPending: GRNFinalized event
     MatchPending --> Complete: ThreeWayMatchPassed event
@@ -1479,6 +1504,8 @@ Read models are projections built by applying events to a flat data structure op
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 37: Read Model from Event Stream
+    accDescr: Sequence diagram between EventBus, POListProjection, QueryAPI. Messages: EventBus to POListProjection: Apply(POCreated); EventBus to POListProjection: Apply(POApproved); EventBus to POListProjection: Apply(POCancelled); QueryAPI to POListProjection: ListByStatus(Issued); POListProjection to QueryAPI: []POListEntry.
     participant BUS as EventBus
     participant PROJ as POListProjection
     participant API as QueryAPI
@@ -1637,6 +1664,8 @@ The ACL translates external supplier data from the ERP system into internal doma
 
 ```mermaid
 classDiagram
+    accTitle: Example 38: Anti-Corruption Layer
+    accDescr: Class diagram with 3 items: ExternalSupplierDTO, SupplierACL, Supplier. Relationships: ExternalSupplierDTO to SupplierACL: input; SupplierACL to Supplier: output.
     class ExternalSupplierDTO {
         +string VendorCode
         +string LegalName
@@ -1655,6 +1684,7 @@ classDiagram
     }
     ExternalSupplierDTO ..> SupplierACL : input
     SupplierACL ..> Supplier : output
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1772,6 +1802,8 @@ Purchasing and Finance have overlapping real-world concepts — a Supplier in Pu
 
 ```mermaid
 classDiagram
+    accTitle: Example 39: Context Map — Purchasing and Finance Contexts
+    accDescr: Class diagram with 3 items: Supplier, Vendor, ContextMapTranslator. Relationships: Supplier to ContextMapTranslator: input; ContextMapTranslator to Vendor: output.
     class Supplier {
         +SupplierId id
         +SupplierCode code
@@ -1788,6 +1820,7 @@ classDiagram
     }
     Supplier ..> ContextMapTranslator : input
     ContextMapTranslator ..> Vendor : output
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -1897,6 +1930,8 @@ The shared kernel contains only concepts that both bounded contexts need to rema
 
 ```mermaid
 classDiagram
+    accTitle: Example 40: Shared Kernel — Money Type
+    accDescr: Class diagram with 3 items: Money, PurchaseOrder, Invoice. Relationships: Money to PurchaseOrder: uses; Money to Invoice: uses.
     class Money {
         +int64 amountCents
         +string currency
@@ -1912,6 +1947,7 @@ classDiagram
     }
     Money <-- PurchaseOrder : uses
     Money <-- Invoice : uses
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2024,6 +2060,8 @@ Integration events cross context boundaries and use only primitive types — no 
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 41: Integration Event
+    accDescr: Sequence diagram between Purchasing Context, Message Broker, Finance Context ACL. Messages: Purchasing Context to Message Broker: Publish POApprovedIntegrationEventpo_id: string, ...; Message Broker to Finance Context ACL: Deliver POApprovedIntegrationEvent; Finance Context ACL to Finance Context ACL: ACL translates to VendorPaymentScheduled.
     participant PUR as Purchasing Context
     participant MSG as Message Broker
     participant FIN as Finance Context ACL
@@ -2116,6 +2154,8 @@ Finance context's ACL receives the `POApprovedIntegrationEvent` integration even
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 42: ACL Translating Integration Events
+    accDescr: Sequence diagram between Finance Subscriber, FinanceACL, Finance Domain. Messages: Finance Subscriber to FinanceACL: OnPOApproved(POApprovedIntegrationEvent); FinanceACL to FinanceACL: Validate currency, compute due date; FinanceACL to Finance Domain: Emit VendorPaymentScheduledvendorId, amount, dueDate.
     participant SUB as Finance Subscriber
     participant ACL as FinanceACL
     participant FIN as Finance Domain
@@ -2218,6 +2258,8 @@ When the shared kernel must change, both teams coordinate. Versioned types preve
 
 ```mermaid
 classDiagram
+    accTitle: Example 43: Shared Kernel Version Evolution
+    accDescr: Class diagram with 2 items: MoneyV1, MoneyV2. Relationships: MoneyV1 to MoneyV2: migrates to.
     class MoneyV1 {
         +int64 amountCents
         +string currency
@@ -2229,6 +2271,7 @@ classDiagram
         +MigrateFromV1(MoneyV1) MoneyV2
     }
     MoneyV1 ..> MoneyV2 : migrates to
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2322,7 +2365,9 @@ The repository interface is a port in hexagonal architecture — the domain pack
 
 ```mermaid
 classDiagram
-    class PurchaseOrderRepository {
+    accTitle: Example 44: Repository Interface
+    accDescr: Class diagram with 3 items: PurchaseOrderRepo, InMemoryPORepository, PostgresPORepository. Relationships: PurchaseOrderRepo to InMemoryPORepository; PurchaseOrderRepo to PostgresPORepository.
+    class PurchaseOrderRepo {
         <<interface>>
         +Save(ctx, po) error
         +FindById(ctx, id) PurchaseOrder
@@ -2339,8 +2384,9 @@ classDiagram
         +Save(ctx, po) error
         +FindById(ctx, id) PurchaseOrder
     }
-    PurchaseOrderRepository <|-- InMemoryPORepository
-    PurchaseOrderRepository <|-- PostgresPORepository
+    PurchaseOrderRepo <|-- InMemoryPORepository
+    PurchaseOrderRepo <|-- PostgresPORepository
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2406,6 +2452,8 @@ The in-memory implementation allows full unit tests of application services with
 
 ```mermaid
 classDiagram
+    accTitle: Example 45: In-Memory Repository
+    accDescr: Class diagram with 1 items: InMemoryPORepository.
     class InMemoryPORepository {
         -mu sync.RWMutex
         -store map[PurchaseOrderId]*PurchaseOrder
@@ -2413,6 +2461,7 @@ classDiagram
         +FindById(ctx, id) *PurchaseOrder
         +FindByStatus(ctx, status) []*PurchaseOrder
     }
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2544,6 +2593,8 @@ The PostgreSQL adapter maps between domain aggregates and relational rows. Line 
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 46: PostgreSQL Repository
+    accDescr: Sequence diagram between AppService, PostgresPORepository, PostgreSQL. Messages: AppService to PostgresPORepository: Save(ctx, po); PostgresPORepository to PostgreSQL: INSERT ... ON CONFLICT DO UPDATE; AppService to PostgresPORepository: FindById(ctx, id); PostgreSQL to PostgresPORepository: row: id, status, line_items JSONB; PostgresPORepository to AppService: *PurchaseOrder.
     participant SVC as AppService
     participant REPO as PostgresPORepository
     participant DB as PostgreSQL
@@ -2697,6 +2748,8 @@ Unit of Work wraps multiple repository operations in a single atomic transaction
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 47: Unit of Work Pattern
+    accDescr: Sequence diagram between AppService, UnitOfWork, txPORepository, txGRNRepository, PostgreSQL. Messages: AppService to UnitOfWork: Begin(ctx); AppService to txPORepository: Save(ctx, po) via UoW; AppService to txGRNRepository: Save(ctx, grn) via UoW; AppService to UnitOfWork: Commit(ctx); UnitOfWork to PostgreSQL: COMMIT — both saves atomic.
     participant SVC as AppService
     participant UOW as UnitOfWork
     participant PO as txPORepository
@@ -2814,6 +2867,8 @@ Specifications encapsulate complex filter criteria as composable objects. The `A
 
 ```mermaid
 classDiagram
+    accTitle: Example 48: Query Specification Pattern
+    accDescr: Class diagram with 4 items: POSpecification, POByStatusSpec, POBySupplierSpec, AndSpec. Relationships: POSpecification to POByStatusSpec; POSpecification to POBySupplierSpec; POSpecification to AndSpec; AndSpec to POSpecification: left; AndSpec to POSpecification: right.
     class POSpecification {
         <<interface>>
         +IsSatisfiedBy(po) bool
@@ -2834,6 +2889,7 @@ classDiagram
     POSpecification <|-- AndSpec
     AndSpec --> POSpecification : left
     AndSpec --> POSpecification : right
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 {{< tabs items="Go,Rust" >}}
@@ -2954,6 +3010,8 @@ Command handlers are application services — they orchestrate the use case: con
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 49: CreatePurchaseOrderCommand and Handler
+    accDescr: Sequence diagram between CreatePOCommand, CreatePOHandler, PurchaseOrder, PORepository, EventBus. Messages: CreatePOCommand to CreatePOHandler: Handle(ctx, cmd); CreatePOHandler to PurchaseOrder: NewPurchaseOrder(id, supplierID); CreatePOHandler to PurchaseOrder: AddLineItem(item); CreatePOHandler to PORepository: Save(ctx, po); CreatePOHandler to PurchaseOrder: DrainEvents(); CreatePOHandler to EventBus: Publish(events...); CreatePOHandler to CreatePOCommand: PurchaseOrderId.
     participant CMD as CreatePOCommand
     participant H as CreatePOHandler
     participant PO as PurchaseOrder
@@ -3100,6 +3158,8 @@ Query handlers are read-only — they fetch and shape data, potentially from a r
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 50: GetPurchaseOrderQuery and Handler
+    accDescr: Sequence diagram between GetPOQuery, GetPOQueryHandler, PORepository. Messages: GetPOQuery to GetPOQueryHandler: Handle(ctx, query); GetPOQueryHandler to PORepository: FindById(ctx, id); PORepository to GetPOQueryHandler: *PurchaseOrder; GetPOQueryHandler to GetPOQueryHandler: mapToPODetailResult(po); GetPOQueryHandler to GetPOQuery: *PODetailResult.
     participant Q as GetPOQuery
     participant H as GetPOQueryHandler
     participant REPO as PORepository
@@ -3222,6 +3282,8 @@ The read model is a pre-computed view optimized for the query side — updated b
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 51: POList Read Model Projection
+    accDescr: Sequence diagram between EventBus, POListReadModel, QueryAPI. Messages: EventBus to POListReadModel: On(POCreated); EventBus to POListReadModel: On(POApproved); EventBus to POListReadModel: On(POCancelled); QueryAPI to POListReadModel: ListByStatus(Issued); POListReadModel to QueryAPI: []POSummary.
     participant BUS as EventBus
     participant RM as POListReadModel
     participant API as QueryAPI

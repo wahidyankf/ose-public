@@ -17,6 +17,8 @@ Code diagrams (Level 4) show implementation details for critical domain componen
 
 ```mermaid
 classDiagram
+    accTitle: Example 61: PurchaseOrder Aggregate — Class Structure
+    accDescr: Class diagram with 5 items: PurchaseOrder, POState, Money, ApprovalLevel, POLine. Relationships: PurchaseOrder to POState: current state; PurchaseOrder to Money: total amount; PurchaseOrder to ApprovalLevel: required level; PurchaseOrder to POLine: line items; Money to ApprovalLevel: drives derivation.
     class PurchaseOrder {
         +PurchaseOrderId id
         +RequisitionId sourceRequisitionId
@@ -79,6 +81,7 @@ classDiagram
     PurchaseOrder "1" --> "1" ApprovalLevel : required level
     PurchaseOrder "1" --> "*" POLine : line items
     Money --> ApprovalLevel : drives derivation
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Key Elements**:
@@ -102,16 +105,18 @@ The `approve()` method is the most critical method in the aggregate. It enforces
 
 ```mermaid
 flowchart TD
-    Start(["approve#40;approverId#41;"])
+    accTitle: Example 62: PurchaseOrder.approve — FSM Transition Guard
+    accDescr: Flowchart with 10 nodes and 9 connections. Nodes: approve40approver Id41, CheckState, Does approverId meet ApprovalLevel?, Does PO have at least one line?, Throw: InvalidState Transition Current state: status Expected: AwaitingApproval, Throw: InsufficientApproval Authority Req: required ApprovalLevel, Throw: PurchaseOrder HasNoLines Cannot approve with zero lines, Set status = Approved, Append PurchaseOrder Approved event to uncommittedEvents, Return Purchase OrderApproved. Connections: approve40approver Id41 to CheckState, CheckState to Throw: InvalidState Transition Current state: status Expected: AwaitingApproval (No), CheckState to Does PO have at least one line? (Yes), Does PO have at least one line? to Throw: PurchaseOrder HasNoLines Cannot approve with zero lines (No), Does PO have at least one line? to Does approverId meet ApprovalLevel? (Yes), Does approverId meet ApprovalLevel? to Throw: InsufficientApproval Authority Req: required ApprovalLevel (No), Does approverId meet ApprovalLevel? to Set status = Approved (Yes), Set status = Approved to Append PurchaseOrder Approved event to uncommittedEvents, Append PurchaseOrder Approved event to uncommittedEvents to Return Purchase OrderApproved.
+    Start(["approve(<br/>approverId)"])
     CheckState{"Is status ==<br/>AwaitingApproval?"}
     CheckLevel{"Does approverId<br/>meet ApprovalLevel?"}
     CheckLines{"Does PO have<br/>at least one line?"}
-    ThrowState["Throw: InvalidStateTransition<br/>Current state: {status}<br/>Expected: AwaitingApproval"]
-    ThrowAuth["Throw:<br/>InsufficientApprovalAuthority<br/>Req: {requiredApprovalLevel}"]
-    ThrowLines["Throw: PurchaseOrderHasNoLines<br/>Cannot approve with zero lines"]
-    SetStatus["Set status = Approved"]
-    AppendEvent["Append PurchaseOrderApproved<br/>event to uncommittedEvents"]
-    Return(["Return PurchaseOrderApproved"])
+    ThrowState["Throw: InvalidState<br/>Transition<br/>Current state:<br/>{status}<br/>Expected:<br/>AwaitingApproval"]
+    ThrowAuth["Throw:<br/>InsufficientApproval<br/>Authority<br/>Req: {required<br/>ApprovalLevel}"]
+    ThrowLines["Throw: PurchaseOrder<br/>HasNoLines<br/>Cannot approve with<br/>zero lines"]
+    SetStatus["Set status =<br/>Approved"]
+    AppendEvent["Append PurchaseOrder<br/>Approved<br/>event to<br/>uncommittedEvents"]
+    Return(["Return Purchase<br/>OrderApproved"])
 
     Start --> CheckState
     CheckState -->|"No"| ThrowState
@@ -123,16 +128,21 @@ flowchart TD
     SetStatus --> AppendEvent
     AppendEvent --> Return
 
-    style Start fill:#029E73,stroke:#000,color:#fff
-    style CheckState fill:#DE8F05,stroke:#000,color:#fff
-    style CheckLevel fill:#DE8F05,stroke:#000,color:#fff
-    style CheckLines fill:#DE8F05,stroke:#000,color:#fff
-    style ThrowState fill:#CA9161,stroke:#000,color:#fff
-    style ThrowAuth fill:#CA9161,stroke:#000,color:#fff
-    style ThrowLines fill:#CA9161,stroke:#000,color:#fff
-    style SetStatus fill:#0173B2,stroke:#000,color:#fff
-    style AppendEvent fill:#0173B2,stroke:#000,color:#fff
-    style Return fill:#029E73,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Start pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CheckState pal-DE8F05
+    class CheckLevel pal-DE8F05
+    class CheckLines pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class ThrowState pal-CA9161
+    class ThrowAuth pal-CA9161
+    class ThrowLines pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class SetStatus pal-0173B2
+    class AppendEvent pal-0173B2
+    class Return pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -156,6 +166,8 @@ The full FSM for PurchaseOrder shows every state and transition, including off-r
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 63: PurchaseOrder State Machine — Full Transition Diagram
+    accDescr: State diagram with 13 items: start or end, Draft, AwaitingApproval, Approved, Cancelled, Issued, Acknowledged, PartiallyReceived, Received, Invoiced, Paid, Closed, and 1 more. Relationships: start or end to Draft: created; Draft to AwaitingApproval: submit(); AwaitingApproval to Approved: approve(); AwaitingApproval to Cancelled: reject(); Approved to Issued: issue(); Issued to Acknowledged: acknowledge(); Acknowledged to PartiallyReceived: partialReceive(); Acknowledged to Received: fullReceive(); PartiallyReceived to PartiallyReceived: partialReceive(); PartiallyReceived to Received: fullReceive(); Received to Invoiced: invoiceMatched(); Invoiced to Paid: pay(); and 13 more.
     [*] --> Draft : created
     Draft --> AwaitingApproval : submit()
     AwaitingApproval --> Approved : approve()
@@ -204,6 +216,8 @@ PurchaseRequisition has a shorter lifecycle: it exists only until converted to a
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 64: PurchaseRequisition — Simplified State Machine
+    accDescr: State diagram with 7 items: start or end, Draft, Submitted, ManagerReview, Approved, Rejected, ConvertedToPO. Relationships: start or end to Draft: createDraft(); Draft to Submitted: submit(); Submitted to ManagerReview: routeForApproval(); ManagerReview to Approved: approve(); ManagerReview to Rejected: reject(); Approved to ConvertedToPO: convertToPO(); Rejected to start or end; ConvertedToPO to start or end.
     [*] --> Draft : createDraft()
     Draft --> Submitted : submit()
     Submitted --> ManagerReview : routeForApproval()
@@ -234,6 +248,8 @@ Value objects at code level show immutability, validation, and equality semantic
 
 ```mermaid
 classDiagram
+    accTitle: Example 65: PurchaseOrderId Value Object — Code Level
+    accDescr: Class diagram with 2 items: PurchaseOrderId, POIdFactory. Relationships: POIdFactory to PurchaseOrderId: creates.
     class PurchaseOrderId {
         -String value
         +PurchaseOrderId(rawValue String)
@@ -242,15 +258,16 @@ classDiagram
         +toString() String
     }
 
-    class PurchaseOrderIdFactory {
+    class POIdFactory {
         +generate() PurchaseOrderId
         +fromString(rawValue String) PurchaseOrderId
     }
 
     note for PurchaseOrderId "Invariant: value must match po_{uuid-v4}\nImmutable — no setters\nEquality by value, not reference"
-    note for PurchaseOrderIdFactory "generate() uses UUID v4\nfromString() validates format before constructing"
+    note for POIdFactory "generate() uses UUID v4\nfromString() validates format before constructing"
 
-    PurchaseOrderIdFactory --> PurchaseOrderId : creates
+    POIdFactory --> PurchaseOrderId : creates
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Key Elements**:
@@ -274,6 +291,8 @@ Money implements safe arithmetic to prevent currency mismatch bugs.
 
 ```mermaid
 classDiagram
+    accTitle: Example 66: Money Value Object — Arithmetic Safety
+    accDescr: Class diagram with 1 items: Money.
     class Money {
         -Decimal amount
         -String currency
@@ -286,6 +305,7 @@ classDiagram
     }
 
     note for Money "Invariant: amount >= 0\nInvariant: currency is ISO 4217 (3-letter)\nadd() throws CurrencyMismatch if currencies differ\nall arithmetic returns new Money — immutable"
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Key Elements**:
@@ -309,6 +329,8 @@ GoodsReceiptNote models the physical receipt event with quantity tolerance check
 
 ```mermaid
 classDiagram
+    accTitle: Example 67: GoodsReceiptNote Aggregate — Code Level
+    accDescr: Class diagram with 3 items: GoodsReceiptNote, GRNLine, Tolerance. Relationships: GoodsReceiptNote to GRNLine: receipt lines; GRNLine to Tolerance: checks against.
     class GoodsReceiptNote {
         +GoodsReceiptNoteId id
         +PurchaseOrderId purchaseOrderId
@@ -338,6 +360,7 @@ classDiagram
 
     GoodsReceiptNote "1" --> "*" GRNLine : receipt lines
     GRNLine --> Tolerance : checks against
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Key Elements**:
@@ -360,6 +383,8 @@ Domain events are immutable value objects with a timestamp, a source aggregate I
 
 ```mermaid
 classDiagram
+    accTitle: Example 68: Domain Event — Code Level Structure
+    accDescr: Class diagram with 4 items: DomainEvent, POApproved, PurchaseOrderIssued, GoodsReceived. Relationships: DomainEvent to POApproved; DomainEvent to PurchaseOrderIssued; DomainEvent to GoodsReceived.
     class DomainEvent {
         <<abstract>>
         +EventId eventId
@@ -369,7 +394,7 @@ classDiagram
         +Integer aggregateVersion
     }
 
-    class PurchaseOrderApproved {
+    class POApproved {
         +PurchaseOrderId purchaseOrderId
         +String approverId
         +ApprovalLevel approvalLevel
@@ -392,9 +417,10 @@ classDiagram
         +DateTime receivedAt
     }
 
-    DomainEvent <|-- PurchaseOrderApproved
+    DomainEvent <|-- POApproved
     DomainEvent <|-- PurchaseOrderIssued
     DomainEvent <|-- GoodsReceived
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Key Elements**:
@@ -419,6 +445,8 @@ A dynamic sequence diagram traces one request across all containers and componen
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 69: Requisition Submission Flow — Dynamic Sequence
+    accDescr: Sequence diagram between Buyer Employee, web-ui, purchasing-api, postgres, event-bus/Kafka, Approving Manager. Messages: Buyer Employee to web-ui: Fill requisition form [HTTPS browser]; web-ui to purchasing-api: POST /requisitions [HTTPS/JSON]; purchasing-api to purchasing-api: Validate SubmitRequisitionRequest DTO; purchasing-api to postgres: INSERT into requisitions [TCP/5432]; purchasing-api to postgres: INSERT into outbox [same transaction]; postgres to purchasing-api: Commit OK; purchasing-api to web-ui: 201 Created requisitionId; web-ui to Buyer Employee: Requisition submitted — awaiting approval; purchasing-api to event-bus/Kafka: Publish RequisitionSubmitted [async, after HTTP response]; event-bus/Kafka to Approving Manager: Email notification via NotificationService.
     participant Buyer as Buyer Employee
     participant WebUI as web-ui
     participant PurchAPI as purchasing-api
@@ -459,6 +487,8 @@ Tracing the approval flow through all three authorization levels as a dynamic se
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 70: PO Approval Flow — Multi-Level Sequence
+    accDescr: Sequence diagram between web-ui, purchasing-api, ApprovalRouterAdapter, Email Service, Approving Manager. Messages: web-ui to purchasing-api: PATCH /purchase-orders/id/approve [HTTPS]; purchasing-api to purchasing-api: Load PO from postgres; purchasing-api to purchasing-api: Call PO.approve(approverId); purchasing-api to purchasing-api: Set status = Approved; purchasing-api to purchasing-api: Append PurchaseOrderApproved event; purchasing-api to purchasing-api: Save PO to postgres; purchasing-api to ApprovalRouterAdapter: Route to next level if required; ApprovalRouterAdapter to Email Service: Send approval notification [SMTP]; Email Service to Approving Manager: PO id approved — ready for issuance; purchasing-api to web-ui: 200 OK status: Approved; purchasing-api to web-ui: 409 Conflict error: InvalidStateTransition; purchasing-api to web-ui: 403 Forbidden error: InsufficientApprovalAuthority.
     participant WebUI as web-ui
     participant PurchAPI as purchasing-api
     participant ApprovalRouter as ApprovalRouterAdapter
@@ -504,6 +534,8 @@ The goods receipt flow shows how a warehouse operator entry triggers state chang
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 71: Goods Receipt Flow — Dynamic Sequence
+    accDescr: Sequence diagram between Warehouse Operator, receiving-api, postgres, event-bus/Kafka, purchasing-api, invoicing-api. Messages: Warehouse Operator to receiving-api: POST /grn purchaseOrderId, lines [HTTPS]; receiving-api to postgres: Load open PO expectation [TCP/5432]; receiving-api to receiving-api: GoodsReceiptNote.verifyQuantities(); receiving-api to postgres: INSERT into grn table [TCP/5432]; receiving-api to postgres: INSERT GoodsReceived into outbox [same transaction]; receiving-api to Warehouse Operator: 201 Created grnId; receiving-api to event-bus/Kafka: Publish GoodsReceived [async]; event-bus/Kafka to purchasing-api: Update PO state to PartiallyReceived or Received; event-bus/Kafka to invoicing-api: Enable invoice matching for this PO; receiving-api to postgres: INSERT into grn table with DISCREPANCY flag; receiving-api to event-bus/Kafka: Publish GoodsReceiptDiscrepancyDetected [async]; receiving-api to Warehouse Operator: 422 Unprocessable discrepantLines: [...]; and 1 more.
     participant Warehouse as Warehouse Operator
     participant RecvAPI as receiving-api
     participant PG as postgres
@@ -549,6 +581,8 @@ Invoice matching is the most complex flow in P2P, correlating data from three so
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 72: Three-Way Match Flow — Dynamic Sequence
+    accDescr: Sequence diagram between Supplier, invoicing-api, postgres, event-bus/Kafka, payments-worker. Messages: Supplier to invoicing-api: POST /invoices purchaseOrderId, amount, lines [HTTPS]; invoicing-api to postgres: Load cached PO data (from po-events) [TCP/5432]; invoicing-api to postgres: Load cached GRN data (from grn-events) [TCP/5432]; invoicing-api to invoicing-api: ThreeWayMatchService.match(PO, GRN, Invoice); invoicing-api to postgres: INSERT invoice with status=Matched; invoicing-api to postgres: INSERT InvoiceMatched into outbox [same transaction]; invoicing-api to Supplier: 201 Created invoiceId, status: Matched; invoicing-api to event-bus/Kafka: Publish InvoiceMatched [async]; event-bus/Kafka to payments-worker: Schedule payment run for this invoice; invoicing-api to postgres: INSERT invoice with status=Disputed; invoicing-api to event-bus/Kafka: Publish InvoiceDisputed [async]; invoicing-api to Supplier: 422 Unprocessable mismatch: expected, actual, delta; and 1 more.
     participant Supplier as Supplier
     participant InvAPI as invoicing-api
     participant PG as postgres
@@ -596,6 +630,8 @@ The payment run flow shows how the payments-worker processes a batch of matched 
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 73: Payment Run Flow — Dynamic Sequence
+    accDescr: Sequence diagram between event-bus/Kafka, payments-worker, postgres, Bank, purchasing-api. Messages: event-bus/Kafka to payments-worker: Deliver InvoiceMatched event; payments-worker to payments-worker: IdempotencyChecker.check(paymentId); payments-worker to postgres: SELECT payment by invoiceId [idempotency check]; payments-worker to postgres: INSERT payment with status=Scheduled; payments-worker to payments-worker: Build ISO 20022 pain.001 payment file; payments-worker to Bank: POST pain.001 file [HTTPS/ISO 20022]; Bank to payments-worker: ACK bankReferenceId; payments-worker to postgres: UPDATE payment status=Disbursed bankReferenceId; payments-worker to event-bus/Kafka: Publish PaymentDisbursed [async]; event-bus/Kafka to purchasing-api: Update PO status to Paid; payments-worker to payments-worker: Skip — idempotency guard triggered; Bank to payments-worker: Deliver pain.002 status report [async webhook]; and 1 more.
     participant Kafka as event-bus/Kafka
     participant PayWorker as payments-worker
     participant PG as postgres
@@ -642,6 +678,8 @@ When a GRN or invoice is disputed, a resolution flow must transition the PO thro
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 74: Dispute Resolution Flow — Dynamic Sequence
+    accDescr: Sequence diagram between Finance Clerk, invoicing-api, postgres, event-bus/Kafka, purchasing-api, Supplier. Messages: Finance Clerk to invoicing-api: PATCH /invoices/id/dispute reason; invoicing-api to postgres: Update invoice status=Disputed; invoicing-api to event-bus/Kafka: Publish InvoiceDisputed; event-bus/Kafka to purchasing-api: Transition PO to Disputed state; event-bus/Kafka to Supplier: Notify supplier of dispute via SupplierNotifierPort; Supplier to invoicing-api: PATCH /invoices/id/correct revisedAmount; invoicing-api to invoicing-api: ThreeWayMatchService.match(PO, GRN, RevisedInvoice); invoicing-api to postgres: Update invoice status=Matched; invoicing-api to event-bus/Kafka: Publish InvoiceMatched; event-bus/Kafka to purchasing-api: Transition PO to Approved via resolveApprove(); invoicing-api to event-bus/Kafka: Publish InvoiceDisputed again; invoicing-api to Supplier: 422 Unprocessable — still outside tolerance.
     participant FinClerk as Finance Clerk
     participant InvAPI as invoicing-api
     participant PG as postgres
@@ -690,6 +728,8 @@ A cancelled PO must notify the supplier and prevent further processing.
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 75: Cancelled PO Flow — Off-Ramp Sequence
+    accDescr: Sequence diagram between Approving Manager, purchasing-api, postgres, event-bus/Kafka, receiving-api, invoicing-api, Supplier. Messages: Approving Manager to purchasing-api: DELETE /purchase-orders/id [cancel]; purchasing-api to purchasing-api: PO.cancel() — FSM guard: pre-Paid state only; purchasing-api to postgres: UPDATE po status=Cancelled; purchasing-api to event-bus/Kafka: Publish PurchaseOrderCancelled; postgres to purchasing-api: Commit OK; purchasing-api to Approving Manager: 200 OK status: Cancelled; event-bus/Kafka to receiving-api: Close open GRN expectation for this PO; event-bus/Kafka to invoicing-api: Reject any pending invoice for this PO; event-bus/Kafka to Supplier: Notify PO cancellation via SupplierNotifierPort.
     participant Manager as Approving Manager
     participant PurchAPI as purchasing-api
     participant PG as postgres
@@ -729,6 +769,8 @@ The complete happy-path flow from requisition submission to payment confirmation
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 76: Full P2P Happy Path — Abbreviated Sequence
+    accDescr: Sequence diagram between Buyer Employee, purchasing-api, receiving-api, invoicing-api, payments-worker, Bank. Messages: Buyer Employee to purchasing-api: Submit requisition; purchasing-api to Buyer Employee: RequisitionId; purchasing-api to purchasing-api: Issue PurchaseOrder; purchasing-api to Buyer Employee: PO issued to supplier; receiving-api to receiving-api: Warehouse enters GRN; receiving-api to invoicing-api: GoodsReceived event [Kafka]; invoicing-api to invoicing-api: ThreeWayMatchService.match(); invoicing-api to payments-worker: InvoiceMatched event [Kafka]; payments-worker to Bank: ISO 20022 pain.001 payment file; Bank to payments-worker: pain.002 disbursement confirmed; payments-worker to purchasing-api: PaymentDisbursed event [Kafka]; purchasing-api to purchasing-api: PO.pay() → PO.close().
     participant Buyer as Buyer Employee
     participant PurchAPI as purchasing-api
     participant RecvAPI as receiving-api
@@ -773,6 +815,8 @@ When a high-value PO is financed through a Murabaha contract, the payment flow c
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 77: Murabaha Financing Flow — Dynamic Sequence
+    accDescr: Sequence diagram between purchasing-api, Murabaha Bank, Supplier, payments-worker, postgres. Messages: purchasing-api to Murabaha Bank: Request murabaha financing for PO amount, supplierId; Murabaha Bank to purchasing-api: MurabahaContractId + markup schedule; purchasing-api to postgres: Link MurabahaContractId to PurchaseOrder; Murabaha Bank to Supplier: Wire payment for asset acquisition; Supplier to Murabaha Bank: Asset ownership transferred; Murabaha Bank to purchasing-api: Asset resold to buyer at cost + markup; payments-worker to Murabaha Bank: Send installment [ISO 20022]; Murabaha Bank to payments-worker: InstallmentPaid confirmation; payments-worker to postgres: Update MurabahaContract installment record; payments-worker to purchasing-api: PaymentDisbursed event [Kafka].
     participant PurchAPI as purchasing-api
     participant MurabahaBank as Murabaha Bank
     participant Supplier as Supplier
@@ -818,17 +862,19 @@ A deployment diagram shows where containers run and on what infrastructure. This
 
 ```mermaid
 graph TD
-    subgraph K8sCluster["Kubernetes Cluster — AWS EKS"]
-        subgraph PurchNS["Namespace: purchasing"]
-            PurchPod["[Pod]<br/>purchasing-api<br/>3 replicas<br/>2 vCPU / 4 GB RAM per pod"]
+    accTitle: Example 78: Kubernetes Deployment — Basic Pod Layout
+    accDescr: Graph with 8 nodes and 13 connections. Nodes: [Pod] purchasing-api 3 replicas 2 vCPU /4 GB RAM per pod, [Pod] receiving-api 2 replicas 1 vCPU /2 GB RAM per pod, [Pod] invoicing-api 2 replicas 1 vCPU /2 GB RAM per pod, [Pod] payments-worker 1 replica 2 vCPU / 4 GB RAM, [Ingress Controller] AWS ALB TLS termination, WAF, [Managed Service] AWS RDS PostgreSQL 16 Multi-AZ, db.r6g.xlarge, [Managed Service] AWS MSK Kafka 3.7 3 brokers, 6 partitions, [Managed Service] AWS Secrets Manager. Connections: [Ingress Controller] AWS ALB TLS termination, WAF to [Pod] purchasing-api 3 replicas 2 vCPU /4 GB RAM per pod (Routes to purchasing namespace), [Ingress Controller] AWS ALB TLS termination, WAF to [Pod] receiving-api 2 replicas 1 vCPU /2 GB RAM per pod (Routes to receiving namespace), [Ingress Controller] AWS ALB TLS termination, WAF to [Pod] invoicing-api 2 replicas 1 vCPU /2 GB RAM per pod (Routes to invoicing namespace), [Pod] purchasing-api 3 replicas 2 vCPU /4 GB RAM per pod to [Managed Service] AWS RDS PostgreSQL 16 Multi-AZ, db.r6g.xlarge (TCP/5432), [Pod] receiving-api 2 replicas 1 vCPU /2 GB RAM per pod to [Managed Service] AWS RDS PostgreSQL 16 Multi-AZ, db.r6g.xlarge (TCP/5432), [Pod] invoicing-api 2 replicas 1 vCPU /2 GB RAM per pod to [Managed Service] AWS RDS PostgreSQL 16 Multi-AZ, db.r6g.xlarge (TCP/5432), [Pod] payments-worker 1 replica 2 vCPU / 4 GB RAM to [Managed Service] AWS RDS PostgreSQL 16 Multi-AZ, db.r6g.xlarge (TCP/5432), [Pod] purchasing-api 3 replicas 2 vCPU /4 GB RAM per pod to [Managed Service] AWS MSK Kafka 3.7 3 brokers, 6 partitions (Kafka protocol), [Pod] receiving-api 2 replicas 1 vCPU /2 GB RAM per pod to [Managed Service] AWS MSK Kafka 3.7 3 brokers, 6 partitions (Kafka protocol), [Pod] invoicing-api 2 replicas 1 vCPU /2 GB RAM per pod to [Managed Service] AWS MSK Kafka 3.7 3 brokers, 6 partitions (Kafka protocol), [Pod] payments-worker 1 replica 2 vCPU / 4 GB RAM to [Managed Service] AWS MSK Kafka 3.7 3 brokers, 6 partitions (Kafka protocol), [Pod] purchasing-api 3 replicas 2 vCPU /4 GB RAM per pod to [Managed Service] AWS Secrets Manager (HTTPS), and 1 more.
+    subgraph K8sCluster["Kubernetes Cluster —<br/>AWS EKS"]
+        subgraph PurchNS["Namespace:<br/>purchasing"]
+            PurchPod["[Pod]<br/>purchasing-api<br/>3 replicas<br/>2 vCPU /4 GB RAM per<br/>pod"]
         end
 
         subgraph RecvNS["Namespace: receiving"]
-            RecvPod["[Pod]<br/>receiving-api<br/>2 replicas<br/>1 vCPU / 2 GB RAM per pod"]
+            RecvPod["[Pod]<br/>receiving-api<br/>2 replicas<br/>1 vCPU /2 GB RAM per<br/>pod"]
         end
 
         subgraph InvNS["Namespace: invoicing"]
-            InvPod["[Pod]<br/>invoicing-api<br/>2 replicas<br/>1 vCPU / 2 GB RAM per pod"]
+            InvPod["[Pod]<br/>invoicing-api<br/>2 replicas<br/>1 vCPU /2 GB RAM per<br/>pod"]
         end
 
         subgraph PayNS["Namespace: payments"]
@@ -838,13 +884,13 @@ graph TD
         Ingress["[Ingress Controller]<br/>AWS ALB<br/>TLS termination, WAF"]
     end
 
-    RDS["[Managed Service]<br/>AWS RDS PostgreSQL 16<br/>Multi-AZ, db.r6g.xlarge"]
-    MSK["[Managed Service]<br/>AWS MSK Kafka 3.7<br/>3 brokers, 6 partitions"]
+    RDS["[Managed Service]<br/>AWS RDS PostgreSQL<br/>16<br/>Multi-AZ,<br/>db.r6g.xlarge"]
+    MSK["[Managed Service]<br/>AWS MSK Kafka 3.7<br/>3 brokers, 6<br/>partitions"]
     Secrets["[Managed Service]<br/>AWS Secrets Manager"]
 
-    Ingress -->|"Routes to purchasing namespace"| PurchPod
-    Ingress -->|"Routes to receiving namespace"| RecvPod
-    Ingress -->|"Routes to invoicing namespace"| InvPod
+    Ingress -->|"Routes to<br/>purchasing<br/>namespace"| PurchPod
+    Ingress -->|"Routes to receiving<br/>namespace"| RecvPod
+    Ingress -->|"Routes to invoicing<br/>namespace"| InvPod
     PurchPod -->|"TCP/5432"| RDS
     RecvPod -->|"TCP/5432"| RDS
     InvPod -->|"TCP/5432"| RDS
@@ -856,14 +902,21 @@ graph TD
     PurchPod -->|"HTTPS"| Secrets
     PayPod -->|"HTTPS"| Secrets
 
-    style PurchPod fill:#0173B2,stroke:#000,color:#fff
-    style RecvPod fill:#029E73,stroke:#000,color:#fff
-    style InvPod fill:#029E73,stroke:#000,color:#fff
-    style PayPod fill:#CC78BC,stroke:#000,color:#fff
-    style Ingress fill:#DE8F05,stroke:#000,color:#fff
-    style RDS fill:#CA9161,stroke:#000,color:#fff
-    style MSK fill:#CA9161,stroke:#000,color:#fff
-    style Secrets fill:#808080,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class PurchPod pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class RecvPod pal-029E73
+    class InvPod pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PayPod pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Ingress pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class RDS pal-CA9161
+    class MSK pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class Secrets pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -887,28 +940,35 @@ Deployment diagrams can show health check configuration and rolling update strat
 
 ```mermaid
 graph TD
-    subgraph PurchDeployment["purchasing-api Deployment"]
+    accTitle: Example 79: Kubernetes — Health Check and Rolling Update
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Pod v1.2.0 RUNNING health: READY, Pod v1.2.0 RUNNING health: READY, Pod v1.3.0 STARTING health: NOT READY, ALB Ingress Routes to READY pods only, [Probe] GET /health → 200 failureThreshold: 3 periodSeconds: 10, [Probe] GET /ready → 200 Checks DB connection failureThreshold: 1. Connections: ALB Ingress Routes to READY pods only to Pod v1.2.0 RUNNING health: READY (Traffic to READY pods), ALB Ingress Routes to READY pods only to Pod v1.2.0 RUNNING health: READY (Traffic to READY pods), ALB Ingress Routes to READY pods only to Pod v1.3.0 STARTING health: NOT READY (No traffic — NOT READY), [Probe] GET /health → 200 failureThreshold: 3 periodSeconds: 10 to Pod v1.3.0 STARTING health: NOT READY (Checks liveness), [Probe] GET /ready → 200 Checks DB connection failureThreshold: 1 to Pod v1.3.0 STARTING health: NOT READY (Checks readiness).
+    subgraph PurchDeployment["purchasing-api<br/>Deployment"]
         Pod1["Pod v1.2.0<br/>RUNNING<br/>health: READY"]
         Pod2["Pod v1.2.0<br/>RUNNING<br/>health: READY"]
         Pod3["Pod v1.3.0<br/>STARTING<br/>health: NOT READY"]
     end
 
-    ALB["ALB Ingress<br/>Routes to READY pods only"]
+    ALB["ALB Ingress<br/>Routes to READY pods<br/>only"]
     LivenessProbe["[Probe]<br/>GET /health → 200<br/>failureThreshold: 3<br/>periodSeconds: 10"]
     ReadinessProbe["[Probe]<br/>GET /ready → 200<br/>Checks DB connection<br/>failureThreshold: 1"]
 
-    ALB -->|"Traffic to READY pods"| Pod1
-    ALB -->|"Traffic to READY pods"| Pod2
-    ALB -.->|"No traffic — NOT READY"| Pod3
+    ALB -->|"Traffic to READY<br/>pods"| Pod1
+    ALB -->|"Traffic to READY<br/>pods"| Pod2
+    ALB -.->|"No traffic — NOT<br/>READY"| Pod3
     LivenessProbe -->|"Checks liveness"| Pod3
     ReadinessProbe -->|"Checks readiness"| Pod3
 
-    style Pod1 fill:#029E73,stroke:#000,color:#fff
-    style Pod2 fill:#029E73,stroke:#000,color:#fff
-    style Pod3 fill:#DE8F05,stroke:#000,color:#fff
-    style ALB fill:#0173B2,stroke:#000,color:#fff
-    style LivenessProbe fill:#CA9161,stroke:#000,color:#fff
-    style ReadinessProbe fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Pod1 pal-029E73
+    class Pod2 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Pod3 pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class ALB pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class LivenessProbe pal-CA9161
+    class ReadinessProbe pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -931,20 +991,26 @@ The HPA scales purchasing-api pods based on CPU and custom Kafka lag metrics.
 
 ```mermaid
 graph TD
-    HPA["[HPA]<br/>HorizontalPodAutoscaler<br/>purchasing-api<br/>minReplicas: 3<br/>maxReplicas: 10<br/>CPU target: 70%<br/>Kafka lag target: 5000 messages"]
+    accTitle: Example 80: Kubernetes — Horizontal Pod Autoscaler
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: [HPA] HorizontalPod Autoscaler purchasing-api minReplicas: 3 maxReplicas: 10 CPU target: 70 Kafka lag target: 5000 messages, [Pods] purchasing-api Current: 3 replicas, [Monitoring] Prometheus Scrapes CPU and Kafka lag metrics, [Adapter] Prometheus Adapter Exposes custom Kafka lag metric to Kubernetes metrics API. Connections: [Monitoring] Prometheus Scrapes CPU and Kafka lag metrics to [Pods] purchasing-api Current: 3 replicas (Collects Kafka consumer lag), [Monitoring] Prometheus Scrapes CPU and Kafka lag metrics to [Adapter] Prometheus Adapter Exposes custom Kafka lag metric to Kubernetes metrics API (Exposes custom metrics [HTTP]), [Adapter] Prometheus Adapter Exposes custom Kafka lag metric to Kubernetes metrics API to [HPA] HorizontalPod Autoscaler purchasing-api minReplicas: 3 maxReplicas: 10 CPU target: 70 Kafka lag target: 5000 messages (Serves /apis/ custom.metrics.k8s. io), [HPA] HorizontalPod Autoscaler purchasing-api minReplicas: 3 maxReplicas: 10 CPU target: 70 Kafka lag target: 5000 messages to [Pods] purchasing-api Current: 3 replicas (Scales deployment up or down).
+    HPA["[HPA]<br/>HorizontalPod<br/>Autoscaler<br/>purchasing-api<br/>minReplicas: 3<br/>maxReplicas: 10<br/>CPU target: 70%<br/>Kafka lag target:<br/>5000 messages"]
     PurchPods["[Pods]<br/>purchasing-api<br/>Current: 3 replicas"]
-    Prometheus["[Monitoring]<br/>Prometheus<br/>Scrapes CPU and Kafka lag metrics"]
-    MetricsAdapter["[Adapter]<br/>Prometheus Adapter<br/>Exposes custom Kafka lag metric<br/>to Kubernetes metrics API"]
+    Prometheus["[Monitoring]<br/>Prometheus<br/>Scrapes CPU and<br/>Kafka lag metrics"]
+    MetricsAdapter["[Adapter]<br/>Prometheus Adapter<br/>Exposes custom Kafka<br/>lag metric<br/>to Kubernetes<br/>metrics API"]
 
-    Prometheus -->|"Collects Kafka consumer lag"| PurchPods
-    Prometheus -->|"Exposes custom metrics [HTTP]"| MetricsAdapter
-    MetricsAdapter -->|"Serves /apis/custom.metrics.k8s.io"| HPA
-    HPA -->|"Scales deployment up or down"| PurchPods
+    Prometheus -->|"Collects Kafka<br/>consumer lag"| PurchPods
+    Prometheus -->|"Exposes custom<br/>metrics [HTTP]"| MetricsAdapter
+    MetricsAdapter -->|"Serves /apis/<br/>custom.metrics.k8s.<br/>io"| HPA
+    HPA -->|"Scales deployment<br/>up or down"| PurchPods
 
-    style HPA fill:#0173B2,stroke:#000,color:#fff
-    style PurchPods fill:#DE8F05,stroke:#000,color:#fff
-    style Prometheus fill:#CA9161,stroke:#000,color:#fff
-    style MetricsAdapter fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class HPA pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PurchPods pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Prometheus pal-CA9161
+    class MetricsAdapter pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -967,23 +1033,25 @@ For global P2P operations, the platform deploys in two regions with active-activ
 
 ```mermaid
 graph TD
-    subgraph Route53["AWS Route53 — Global DNS"]
-        DNS["Latency-based routing<br/>Buyer in APAC → APAC endpoint<br/>Buyer in EU → EU endpoint"]
+    accTitle: Example 81: Deployment Diagram — Multi-Region Active-Active
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: Latency-based routing Buyer in APAC → APAC endpoint Buyer in EU → EU endpoint, EKS Cluster purchasing-api + receiving-api invoicing-api, RDS PostgreSQL Primary write node, MSK Kafka 3-broker cluster, EKS Cluster purchasing-api + receiving-api invoicing-api, RDS PostgreSQL Primary write node, MSK Kafka 3-broker cluster, Cross-Region MirrorMaker 2 Replicates events cross-region RPO: 30 seconds. Connections: Latency-based routing Buyer in APAC → APAC endpoint Buyer in EU → EU endpoint to EKS Cluster purchasing-api + receiving-api invoicing-api (Routes APAC buyers), Latency-based routing Buyer in APAC → APAC endpoint Buyer in EU → EU endpoint to EKS Cluster purchasing-api + receiving-api invoicing-api (Routes EU buyers), EKS Cluster purchasing-api + receiving-api invoicing-api to RDS PostgreSQL Primary write node (Writes [TCP/5432]), EKS Cluster purchasing-api + receiving-api invoicing-api to MSK Kafka 3-broker cluster (Events [Kafka]), EKS Cluster purchasing-api + receiving-api invoicing-api to RDS PostgreSQL Primary write node (Writes [TCP/5432]), EKS Cluster purchasing-api + receiving-api invoicing-api to MSK Kafka 3-broker cluster (Events [Kafka]), MSK Kafka 3-broker cluster to Cross-Region MirrorMaker 2 Replicates events cross-region RPO: 30 seconds (Replicates to EU), Cross-Region MirrorMaker 2 Replicates events cross-region RPO: 30 seconds to MSK Kafka 3-broker cluster (Delivers to EU Kafka).
+    subgraph Route53["AWS Route53 — Global<br/>DNS"]
+        DNS["Latency-based<br/>routing<br/>Buyer in APAC → APAC<br/>endpoint<br/>Buyer in EU → EU<br/>endpoint"]
     end
 
-    subgraph APACRegion["APAC Region — ap-southeast-1"]
-        APACCluster["EKS Cluster<br/>purchasing-api + receiving-api<br/>invoicing-api"]
+    subgraph APACRegion["APAC Region —<br/>ap-southeast-1"]
+        APACCluster["EKS Cluster<br/>purchasing-api +<br/>receiving-api<br/>invoicing-api"]
         APACPostgres["RDS PostgreSQL<br/>Primary write node"]
         APACKafka["MSK Kafka<br/>3-broker cluster"]
     end
 
-    subgraph EURegion["EU Region — eu-west-1"]
-        EUCluster["EKS Cluster<br/>purchasing-api + receiving-api<br/>invoicing-api"]
+    subgraph EURegion["EU Region —<br/>eu-west-1"]
+        EUCluster["EKS Cluster<br/>purchasing-api +<br/>receiving-api<br/>invoicing-api"]
         EUPostgres["RDS PostgreSQL<br/>Primary write node"]
         EUKafka["MSK Kafka<br/>3-broker cluster"]
     end
 
-    CrossRegionReplication["Cross-Region MirrorMaker 2<br/>Replicates events cross-region<br/>RPO: 30 seconds"]
+    CrossRegionReplication["Cross-Region<br/>MirrorMaker 2<br/>Replicates events<br/>cross-region<br/>RPO: 30 seconds"]
 
     DNS -->|"Routes APAC buyers"| APACCluster
     DNS -->|"Routes EU buyers"| EUCluster
@@ -992,16 +1060,22 @@ graph TD
     EUCluster -->|"Writes [TCP/5432]"| EUPostgres
     EUCluster -->|"Events [Kafka]"| EUKafka
     APACKafka -->|"Replicates to EU"| CrossRegionReplication
-    CrossRegionReplication -->|"Delivers to EU Kafka"| EUKafka
+    CrossRegionReplication -->|"Delivers to EU<br/>Kafka"| EUKafka
 
-    style DNS fill:#0173B2,stroke:#000,color:#fff
-    style APACCluster fill:#029E73,stroke:#000,color:#fff
-    style EUCluster fill:#029E73,stroke:#000,color:#fff
-    style APACPostgres fill:#CA9161,stroke:#000,color:#fff
-    style EUPostgres fill:#CA9161,stroke:#000,color:#fff
-    style APACKafka fill:#DE8F05,stroke:#000,color:#fff
-    style EUKafka fill:#DE8F05,stroke:#000,color:#fff
-    style CrossRegionReplication fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class DNS pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class APACCluster pal-029E73
+    class EUCluster pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class APACPostgres pal-CA9161
+    class EUPostgres pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class APACKafka pal-DE8F05
+    class EUKafka pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class CrossRegionReplication pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -1025,32 +1099,39 @@ Blue-green deployment enables zero-downtime releases with instant rollback capab
 
 ```mermaid
 graph TD
-    ALB["AWS Application Load Balancer<br/>Current weights:<br/>Blue: 100%<br/>Green: 0%"]
+    accTitle: Example 82: Deployment Diagram — Blue-Green Deployment
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: AWS Application Load Balancer Current weights: Blue: 100 Green: 0, purchasing-api v1.4.2 3 pods — SERVING TRAFFIC, RDS PostgreSQL Schema v14, purchasing-api v1.5.0 3 pods — WARMED UP, IDLE, RDS PostgreSQL Schema v15 — migration run, [Test Suite] Green environment smoke tests Must pass before traffic switch. Connections: AWS Application Load Balancer Current weights: Blue: 100 Green: 0 to purchasing-api v1.4.2 3 pods — SERVING TRAFFIC (100 traffic), AWS Application Load Balancer Current weights: Blue: 100 Green: 0 to purchasing-api v1.5.0 3 pods — WARMED UP, IDLE (0 traffic (ready to switch)), purchasing-api v1.4.2 3 pods — SERVING TRAFFIC to RDS PostgreSQL Schema v14 (Reads/writes), purchasing-api v1.5.0 3 pods — WARMED UP, IDLE to RDS PostgreSQL Schema v15 — migration run (Reads/writes), [Test Suite] Green environment smoke tests Must pass before traffic switch to purchasing-api v1.5.0 3 pods — WARMED UP, IDLE (POST /requisitions smoke test [HTTPS]).
+    ALB["AWS Application Load<br/>Balancer<br/>Current weights:<br/>Blue: 100%<br/>Green: 0%"]
 
-    subgraph BlueEnv["Blue Environment — Current Production"]
-        BluePods["purchasing-api v1.4.2<br/>3 pods — SERVING TRAFFIC"]
+    subgraph BlueEnv["Blue Environment —<br/>Current Production"]
+        BluePods["purchasing-api<br/>v1.4.2<br/>3 pods — SERVING<br/>TRAFFIC"]
         BlueDB["RDS PostgreSQL<br/>Schema v14"]
     end
 
-    subgraph GreenEnv["Green Environment — New Release"]
-        GreenPods["purchasing-api v1.5.0<br/>3 pods — WARMED UP, IDLE"]
-        GreenDB["RDS PostgreSQL<br/>Schema v15 — migration run"]
+    subgraph GreenEnv["Green Environment —<br/>New Release"]
+        GreenPods["purchasing-api<br/>v1.5.0<br/>3 pods — WARMED UP,<br/>IDLE"]
+        GreenDB["RDS PostgreSQL<br/>Schema v15 —<br/>migration run"]
     end
 
-    SmokeTest["[Test Suite]<br/>Green environment smoke tests<br/>Must pass before traffic switch"]
+    SmokeTest["[Test Suite]<br/>Green environment<br/>smoke tests<br/>Must pass before<br/>traffic switch"]
 
     ALB -->|"100% traffic"| BluePods
-    ALB -.->|"0% traffic (ready to switch)"| GreenPods
+    ALB -.->|"0% traffic (ready<br/>to switch)"| GreenPods
     BluePods -->|"Reads/writes"| BlueDB
     GreenPods -->|"Reads/writes"| GreenDB
-    SmokeTest -->|"POST /requisitions smoke test [HTTPS]"| GreenPods
+    SmokeTest -->|"POST /requisitions<br/>smoke test [HTTPS]"| GreenPods
 
-    style ALB fill:#0173B2,stroke:#000,color:#fff
-    style BluePods fill:#0173B2,stroke:#000,color:#fff
-    style BlueDB fill:#CA9161,stroke:#000,color:#fff
-    style GreenPods fill:#029E73,stroke:#000,color:#fff
-    style GreenDB fill:#CA9161,stroke:#000,color:#fff
-    style SmokeTest fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class ALB pal-0173B2
+    class BluePods pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class BlueDB pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class GreenPods pal-029E73
+    class GreenDB pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SmokeTest pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -1074,24 +1155,30 @@ Database migrations in a multi-service deployment require careful ordering to pr
 
 ```mermaid
 graph LR
-    subgraph Step1["Step 1: Backward-Compatible Migration"]
-        M1["ALTER TABLE purchase_orders<br/>ADD COLUMN new_field TEXT<br/>DEFAULT NULL<br/>Old code: ignores new column<br/>New code: writes new column"]
+    accTitle: Example 83: Deployment Diagram — Database Migration Strategy
+    accDescr: Graph with 6 nodes and 2 connections. Nodes: ALTER TABLE purchase_orders ADD COLUMN new_field TEXT DEFAULT NULL Old code: ignores new column New code: writes new column, Deploy purchasing-api v1.5.0 Reads and writes new_field Old code runs during rollout, ALTER TABLE purchase_orders ALTER new_field NOT NULL After 100 pods on v1.5.0, Step1, Step2, Step3. Connections: Step1 to Step2 (Migration runs first), Step2 to Step3 (All pods updated).
+    subgraph Step1["Step 1:<br/>Backward-Compatible<br/>Migration"]
+        M1["ALTER TABLE<br/>purchase_orders<br/>ADD COLUMN new_field<br/>TEXT<br/>DEFAULT NULL<br/>Old code: ignores<br/>new column<br/>New code: writes new<br/>column"]
     end
 
-    subgraph Step2["Step 2: Deploy New Code"]
-        D1["Deploy purchasing-api v1.5.0<br/>Reads and writes new_field<br/>Old code runs during rollout"]
+    subgraph Step2["Step 2: Deploy New<br/>Code"]
+        D1["Deploy<br/>purchasing-api<br/>v1.5.0<br/>Reads and writes<br/>new_field<br/>Old code runs during<br/>rollout"]
     end
 
-    subgraph Step3["Step 3: Remove Old Compatibility"]
-        M2["ALTER TABLE purchase_orders<br/>ALTER new_field NOT NULL<br/>After 100% pods on v1.5.0"]
+    subgraph Step3["Step 3: Remove Old<br/>Compatibility"]
+        M2["ALTER TABLE<br/>purchase_orders<br/>ALTER new_field NOT<br/>NULL<br/>After 100% pods on<br/>v1.5.0"]
     end
 
-    Step1 -->|"Migration runs first"| Step2
+    Step1 -->|"Migration runs<br/>first"| Step2
     Step2 -->|"All pods updated"| Step3
 
-    style M1 fill:#0173B2,stroke:#000,color:#fff
-    style D1 fill:#DE8F05,stroke:#000,color:#fff
-    style M2 fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class M1 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D1 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class M2 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -1114,7 +1201,9 @@ The observability infrastructure for the Procurement Platform collects metrics, 
 
 ```mermaid
 graph TD
-    subgraph AppTier["Application Containers"]
+    accTitle: Example 84: Deployment Diagram — Observability Stack
+    accDescr: Graph with 11 nodes and 11 connections. Nodes: purchasing-api, receiving-api, invoicing-api, payments-worker, [Sidecar] OpenTelemetry Agent Collects traces and metrics per pod, [Deployment] OpenTelemetry Collector Central aggregation and export, Prometheus Metrics storage, Grafana Tempo Trace storage, Grafana Loki Log aggregation, Grafana Unified dashboard, [Person] On-Call Engineer. Connections: purchasing-api to [Sidecar] OpenTelemetry Agent Collects traces and metrics per pod (OTLP/gRPC traces and metrics), receiving-api to [Sidecar] OpenTelemetry Agent Collects traces and metrics per pod (OTLP/gRPC), invoicing-api to [Sidecar] OpenTelemetry Agent Collects traces and metrics per pod (OTLP/gRPC), payments-worker to [Sidecar] OpenTelemetry Agent Collects traces and metrics per pod (OTLP/gRPC), [Sidecar] OpenTelemetry Agent Collects traces and metrics per pod to [Deployment] OpenTelemetry Collector Central aggregation and export (Forwards to collector [OTLP]), [Deployment] OpenTelemetry Collector Central aggregation and export to Prometheus Metrics storage (Exports metrics [remote_write]), [Deployment] OpenTelemetry Collector Central aggregation and export to Grafana Tempo Trace storage (Exports traces [OTLP]), [Deployment] OpenTelemetry Collector Central aggregation and export to Grafana Loki Log aggregation (Exports logs [OTLP]), Prometheus Metrics storage to Grafana Unified dashboard (Queries metrics [PromQL]), Prometheus Metrics storage to [Person] On-Call Engineer (Alerts on threshold breach), Grafana Unified dashboard to [Person] On-Call Engineer (Displays metrics, traces, logs).
+    subgraph AppTier["Application<br/>Containers"]
         PurchAPI["purchasing-api"]
         RecvAPI["receiving-api"]
         InvAPI["invoicing-api"]
@@ -1122,8 +1211,8 @@ graph TD
     end
 
     subgraph OtelLayer["OpenTelemetry Layer"]
-        OtelAgent["[Sidecar]<br/>OpenTelemetry Agent<br/>Collects traces and metrics<br/>per pod"]
-        OtelCollector["[Deployment]<br/>OpenTelemetry Collector<br/>Central aggregation and export"]
+        OtelAgent["[Sidecar]<br/>OpenTelemetry Agent<br/>Collects traces and<br/>metrics<br/>per pod"]
+        OtelCollector["[Deployment]<br/>OpenTelemetry<br/>Collector<br/>Central aggregation<br/>and export"]
     end
 
     subgraph ObsSinks["Observability Sinks"]
@@ -1135,29 +1224,36 @@ graph TD
 
     OnCall["[Person]<br/>On-Call Engineer"]
 
-    PurchAPI -->|"OTLP/gRPC traces and metrics"| OtelAgent
+    PurchAPI -->|"OTLP/gRPC traces<br/>and metrics"| OtelAgent
     RecvAPI -->|"OTLP/gRPC"| OtelAgent
     InvAPI -->|"OTLP/gRPC"| OtelAgent
     PayWorker -->|"OTLP/gRPC"| OtelAgent
-    OtelAgent -->|"Forwards to collector [OTLP]"| OtelCollector
-    OtelCollector -->|"Exports metrics [remote_write]"| Prometheus
-    OtelCollector -->|"Exports traces [OTLP]"| Tempo
-    OtelCollector -->|"Exports logs [OTLP]"| Loki
-    Prometheus -->|"Queries metrics [PromQL]"| Grafana
-    Prometheus -->|"Alerts on threshold breach"| OnCall
-    Grafana -->|"Displays metrics, traces, logs"| OnCall
+    OtelAgent -->|"Forwards to<br/>collector [OTLP]"| OtelCollector
+    OtelCollector -->|"Exports metrics<br/>[remote_write]"| Prometheus
+    OtelCollector -->|"Exports traces<br/>[OTLP]"| Tempo
+    OtelCollector -->|"Exports logs<br/>[OTLP]"| Loki
+    Prometheus -->|"Queries metrics<br/>[PromQL]"| Grafana
+    Prometheus -->|"Alerts on threshold<br/>breach"| OnCall
+    Grafana -->|"Displays metrics,<br/>traces, logs"| OnCall
 
-    style PurchAPI fill:#0173B2,stroke:#000,color:#fff
-    style RecvAPI fill:#029E73,stroke:#000,color:#fff
-    style InvAPI fill:#029E73,stroke:#000,color:#fff
-    style PayWorker fill:#CC78BC,stroke:#000,color:#fff
-    style OtelAgent fill:#DE8F05,stroke:#000,color:#fff
-    style OtelCollector fill:#DE8F05,stroke:#000,color:#fff
-    style Prometheus fill:#CA9161,stroke:#000,color:#fff
-    style Tempo fill:#CA9161,stroke:#000,color:#fff
-    style Loki fill:#CA9161,stroke:#000,color:#fff
-    style Grafana fill:#808080,stroke:#000,color:#fff
-    style OnCall fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class PurchAPI pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class RecvAPI pal-029E73
+    class InvAPI pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class PayWorker pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class OtelAgent pal-DE8F05
+    class OtelCollector pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Prometheus pal-CA9161
+    class Tempo pal-CA9161
+    class Loki pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class Grafana pal-808080
+    class OnCall pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:
@@ -1180,26 +1276,34 @@ Managing C4 diagrams as versioned artifacts alongside code prevents documentatio
 
 ```mermaid
 graph TD
-    ArchRepo["[Repository]<br/>Architecture Diagrams<br/>Stored as Mermaid text in Git<br/>Same repo as application code"]
-    PRCheck["[CI Check]<br/>Architecture Review Gate<br/>PR requires diagram update<br/>if container or component added"]
-    ADRDir["[Directory]<br/>Architecture Decision Records<br/>ADR-001: Use Kafka for events<br/>ADR-002: Schema-per-service<br/>ADR-003: Outbox pattern"]
-    ContainerDiagram["[Artifact]<br/>Container Diagram v2.4<br/>Last updated: when payments-worker added<br/>Linked from ARCHITECTURE.md"]
-    ComponentDiagram["[Artifact]<br/>Component Diagram v1.8<br/>purchasing-api internal structure<br/>Updated with each new handler"]
-    TeamReview["[Process]<br/>Monthly Architecture Review<br/>Validate diagrams match implementation<br/>Identify drift"]
+    accTitle: Example 85: C4 Diagram Versioning and Change Management
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: [Repository] Architecture Diagrams Stored as Mermaid text in Git Same repo as application code, [CI Check] Architecture Review Gate PR requires diagram update if container or component added, [Directory] Architecture Decision Records ADR-001: Use Kafka for events ADR-002: Schema-per-service ADR-003: Outbox pattern, [Artifact] Container Diagram v2.4 Last updated: when payments-worker added Linked from ARCHITECTURE.md, [Artifact] Component Diagram v1.8 purchasing-api internal structure Updated with each new handler, [Process] Monthly Architecture Review Validate diagrams match implementation Identify drift. Connections: [Repository] Architecture Diagrams Stored as Mermaid text in Git Same repo as application code to [CI Check] Architecture Review Gate PR requires diagram update if container or component added (PR lint checks diagram syntax), [Repository] Architecture Diagrams Stored as Mermaid text in Git Same repo as application code to [Directory] Architecture Decision Records ADR-001: Use Kafka for events ADR-002: Schema-per-service ADR-003: Outbox pattern (Stores), [Repository] Architecture Diagrams Stored as Mermaid text in Git Same repo as application code to [Artifact] Container Diagram v2.4 Last updated: when payments-worker added Linked from ARCHITECTURE.md (Stores), [Repository] Architecture Diagrams Stored as Mermaid text in Git Same repo as application code to [Artifact] Component Diagram v1.8 purchasing-api internal structure Updated with each new handler (Stores), [Artifact] Container Diagram v2.4 Last updated: when payments-worker added Linked from ARCHITECTURE.md to [Directory] Architecture Decision Records ADR-001: Use Kafka for events ADR-002: Schema-per-service ADR-003: Outbox pattern (References), [Process] Monthly Architecture Review Validate diagrams match implementation Identify drift to [Repository] Architecture Diagrams Stored as Mermaid text in Git Same repo as application code (Validates diagrams against).
+    ArchRepo["[Repository]<br/>Architecture<br/>Diagrams<br/>Stored as Mermaid<br/>text in Git<br/>Same repo as<br/>application code"]
+    PRCheck["[CI Check]<br/>Architecture Review<br/>Gate<br/>PR requires diagram<br/>update<br/>if container or<br/>component added"]
+    ADRDir["[Directory]<br/>Architecture<br/>Decision Records<br/>ADR-001: Use Kafka<br/>for events<br/>ADR-002:<br/>Schema-per-service<br/>ADR-003: Outbox<br/>pattern"]
+    ContainerDiagram["[Artifact]<br/>Container Diagram<br/>v2.4<br/>Last updated: when<br/>payments-worker<br/>added<br/>Linked from<br/>ARCHITECTURE.md"]
+    ComponentDiagram["[Artifact]<br/>Component Diagram<br/>v1.8<br/>purchasing-api<br/>internal structure<br/>Updated with each<br/>new handler"]
+    TeamReview["[Process]<br/>Monthly Architecture<br/>Review<br/>Validate diagrams<br/>match implementation<br/>Identify drift"]
 
-    ArchRepo -->|"PR lint checks diagram syntax"| PRCheck
+    ArchRepo -->|"PR lint checks<br/>diagram syntax"| PRCheck
     ArchRepo -->|"Stores"| ADRDir
     ArchRepo -->|"Stores"| ContainerDiagram
     ArchRepo -->|"Stores"| ComponentDiagram
     ContainerDiagram -->|"References"| ADRDir
-    TeamReview -->|"Validates diagrams against"| ArchRepo
+    TeamReview -->|"Validates diagrams<br/>against"| ArchRepo
 
-    style ArchRepo fill:#0173B2,stroke:#000,color:#fff
-    style PRCheck fill:#DE8F05,stroke:#000,color:#fff
-    style ADRDir fill:#CA9161,stroke:#000,color:#fff
-    style ContainerDiagram fill:#029E73,stroke:#000,color:#fff
-    style ComponentDiagram fill:#029E73,stroke:#000,color:#fff
-    style TeamReview fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class ArchRepo pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PRCheck pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class ADRDir pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ContainerDiagram pal-029E73
+    class ComponentDiagram pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class TeamReview pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Elements**:

@@ -18,18 +18,21 @@ The `supplier` bounded context manages vendor master data. Its output port, `Sup
 ```mermaid
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph LR
-    APP["SupplierApplicationService\n#40;application zone#41;"]:::teal
-    PORT["SupplierRepository\n#40;output port interface#41;"]:::teal
-    INMEM["InMemorySupplierRepository\n#40;test adapter#41;"]:::orange
-    PG["PgSupplierRepository\n#40;production adapter#41;"]:::blue
+    accTitle: Example 21: SupplierRepository output port
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: SupplierApplication Service 40application zone41, SupplierRepository 40output port interface41, InMemorySupplier Repository 40test adapter41, PgSupplierRepository 40production adapter41. Connections: SupplierApplication Service 40application zone41 to SupplierRepository 40output port interface41 (calls), InMemorySupplier Repository 40test adapter41 to SupplierRepository 40output port interface41 (implements), PgSupplierRepository 40production adapter41 to SupplierRepository 40output port interface41 (implements).
+    APP["SupplierApplication<br/>Service<br/>#40;application<br/>zone#41;"]:::teal
+    PORT["SupplierRepository<br/>#40;output port<br/>interface#41;"]:::teal
+    INMEM["InMemorySupplier<br/>Repository<br/>#40;test adapter#41;"]:::orange
+    PG["PgSupplierRepository<br/>#40;production<br/>adapter#41;"]:::blue
 
     APP -->|"calls"| PORT
     INMEM -->|"implements"| PORT
     PG -->|"implements"| PORT
 
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -2466,20 +2469,23 @@ When the `purchasing` context calls the `supplier` context, it must not let the 
 ```mermaid
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05, Purple #CC78BC
 graph LR
-    PUR["PurchasingContext\n#40;domain types#41;"]:::blue
-    ACL["SupplierACL\n#40;anti-corruption layer#41;"]:::purple
-    SUP["SupplierContext\n#40;supplier domain types#41;"]:::teal
-    PORT["SupplierRepository\n#40;output port#41;"]:::orange
+    accTitle: Example 31: Anti-corruption layer — translating supplier context types into purchasing
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: PurchasingContext 40domain types41, SupplierACL 40anti-corruption layer41, SupplierContext 40supplier domain types41, SupplierRepository 40output port41. Connections: PurchasingContext 40domain types41 to SupplierACL 40anti-corruption layer41 (calls), SupplierACL 40anti-corruption layer41 to SupplierRepository 40output port41 (translates + calls), SupplierRepository 40output port41 to SupplierACL 40anti-corruption layer41 (returns Supplier), SupplierACL 40anti-corruption layer41 to PurchasingContext 40domain types41 (returns SupplierSummary).
+    PUR["PurchasingContext<br/>#40;domain types#41;"]:::blue
+    ACL["SupplierACL<br/>#40;anti-corruption<br/>layer#41;"]:::purple
+    SUP["SupplierContext<br/>#40;supplier domain<br/>types#41;"]:::teal
+    PORT["SupplierRepository<br/>#40;output port#41;"]:::orange
 
     PUR -->|"calls"| ACL
     ACL -->|"translates + calls"| PORT
     PORT -->|"returns Supplier"| ACL
-    ACL -->|"returns SupplierSummary"| PUR
+    ACL -->|"returns<br/>SupplierSummary"| PUR
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef purple fill:#CC78BC,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}

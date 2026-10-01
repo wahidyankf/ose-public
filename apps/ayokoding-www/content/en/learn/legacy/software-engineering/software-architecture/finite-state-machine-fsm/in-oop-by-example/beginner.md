@@ -19,6 +19,8 @@ A `PurchaseOrder` (PO) begins as a Draft, moves through approval, gets issued to
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 1: States as a Sealed Type
+    accDescr: State diagram with 11 items: start or end, Draft, AwaitingApproval, Approved, Cancelled, Issued, Acknowledged, Closed, Draft draft, AwaitingApproval waiting, Approved approved. Relationships: start or end to Draft; Draft to AwaitingApproval: submit; AwaitingApproval to Approved: approve; AwaitingApproval to Cancelled: reject; Approved to Issued: issue; Issued to Acknowledged: acknowledge; Acknowledged to Closed: close; Draft to Cancelled: cancel; Approved to Cancelled: cancel.
     [*] --> Draft
     Draft --> AwaitingApproval: submit
     AwaitingApproval --> Approved: approve
@@ -29,10 +31,10 @@ stateDiagram-v2
     Draft --> Cancelled: cancel
     Approved --> Cancelled: cancel
 
-    classDef draft fill:#0173B2,stroke:#000,color:#fff
-    classDef waiting fill:#DE8F05,stroke:#000,color:#000
-    classDef approved fill:#029E73,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef draft fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef waiting fill:#DE8F05,stroke:#000000,color:#000000
+    classDef approved fill:#029E73,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class Draft draft
     class AwaitingApproval waiting
@@ -327,6 +329,8 @@ A transition table maps `(currentState, event) → nextState`. Expressing it as 
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 3: The Transition Table
+    accDescr: State diagram with 12 items: start or end, Draft, AwaitingApproval, Cancelled, Approved, Issued, Disputed, Acknowledged, Closed, Draft start, AwaitingApproval waiting, Disputed dispute. Relationships: start or end to Draft; Draft to AwaitingApproval: submit; Draft to Cancelled: cancel; AwaitingApproval to Approved: approve; AwaitingApproval to Cancelled: reject / cancel; Approved to Issued: issue; Approved to Cancelled: cancel; Approved to Disputed: dispute; Issued to Acknowledged: acknowledge; Issued to Cancelled: cancel; Issued to Disputed: dispute; Acknowledged to Closed: close; and 4 more.
     [*] --> Draft
     Draft --> AwaitingApproval: submit
     Draft --> Cancelled: cancel
@@ -344,11 +348,11 @@ stateDiagram-v2
     Disputed --> Approved: approve
     Disputed --> Cancelled: cancel
 
-    classDef start fill:#0173B2,stroke:#000,color:#fff
-    classDef waiting fill:#DE8F05,stroke:#000,color:#000
-    classDef active fill:#029E73,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
-    classDef dispute fill:#CC78BC,stroke:#000,color:#fff
+    classDef start fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef waiting fill:#DE8F05,stroke:#000000,color:#000000
+    classDef active fill:#029E73,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
+    classDef dispute fill:#CC78BC,stroke:#000000,color:#000000
 
     class Draft start
     class AwaitingApproval waiting
@@ -971,6 +975,8 @@ The P2P domain defines approval thresholds: POs ≤ $1k need L1 approval, ≤ $1
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 6: Approval-Level Guard
+    accDescr: State diagram with 7 items: start or end, AwaitingApproval, Approved, Rejected, AwaitingApproval waiting, Approved approved, Rejected rejected. Relationships: start or end to AwaitingApproval; AwaitingApproval to Approved: approve [canApprove = true]; AwaitingApproval to Rejected: approve [canApprove = false].
     [*] --> AwaitingApproval
     AwaitingApproval --> Approved: approve [canApprove = true]
     AwaitingApproval --> Rejected: approve [canApprove = false]
@@ -980,9 +986,9 @@ stateDiagram-v2
         L3: amount > $10k
     end note
 
-    classDef waiting fill:#DE8F05,stroke:#000,color:#000
-    classDef approved fill:#029E73,stroke:#000,color:#fff
-    classDef rejected fill:#CA9161,stroke:#000,color:#fff
+    classDef waiting fill:#DE8F05,stroke:#000000,color:#000000
+    classDef approved fill:#029E73,stroke:#000000,color:#000000
+    classDef rejected fill:#CA9161,stroke:#000000,color:#000000
 
     class AwaitingApproval waiting
     class Approved approved
@@ -1687,6 +1693,8 @@ Once a PO is `Issued`, its lines must not change. Enforcing this at the state le
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 9: Immutable Lines After Issue
+    accDescr: State diagram with 6 items: Draft, Approved, Issued, Acknowledged, Closed, Closed terminal. Relationships: Draft to Approved: (line items mutable); Approved to Issued: issue; Issued to Acknowledged: acknowledge; Acknowledged to Closed: close.
     Draft --> Approved: (line items mutable)
     Approved --> Issued: issue
     note right of Issued
@@ -1697,9 +1705,9 @@ stateDiagram-v2
     Issued --> Acknowledged: acknowledge
     Acknowledged --> Closed: close
 
-    classDef mutable fill:#0173B2,stroke:#000,color:#fff
-    classDef immutable fill:#029E73,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef mutable fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef immutable fill:#029E73,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class Draft,Approved mutable
     class Issued,Acknowledged immutable
@@ -1918,6 +1926,8 @@ The same PO machine in Python illustrates how the "cancel from any pre-paid stat
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 10: Cancel From Any Pre-Paid State
+    accDescr: State diagram with 7 items: Draft, Cancelled, AwaitingApproval, Approved, Issued, Acknowledged, Closed. Relationships: Draft to Cancelled: cancel ✓; AwaitingApproval to Cancelled: cancel ✓; Approved to Cancelled: cancel ✓; Issued to Cancelled: cancel ✓; Acknowledged to Cancelled: cancel ✓; Closed to Cancelled: cancel ✗ (terminal).
     direction LR
     Draft --> Cancelled: cancel ✓
     AwaitingApproval --> Cancelled: cancel ✓
@@ -1930,9 +1940,9 @@ stateDiagram-v2
         transitions possible
     end note
 
-    classDef cancellable fill:#0173B2,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
-    classDef locked fill:#CC78BC,stroke:#000,color:#fff
+    classDef cancellable fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
+    classDef locked fill:#CC78BC,stroke:#000000,color:#000000
 
     class Draft,AwaitingApproval,Approved,Issued,Acknowledged cancellable
     class Cancelled,Closed terminal
@@ -2156,6 +2166,8 @@ The `Disputed` state is an off-ramp from several states and resolves back to eit
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 11: Dispute Transition and Resolution
+    accDescr: State diagram with 7 items: Approved, Disputed, Issued, Acknowledged, Cancelled, Disputed disputed, Cancelled terminal. Relationships: Approved to Disputed: dispute; Issued to Disputed: dispute; Acknowledged to Disputed: dispute; Disputed to Approved: resolve_approve; Disputed to Cancelled: resolve_cancel.
     Approved --> Disputed: dispute
     Issued --> Disputed: dispute
     Acknowledged --> Disputed: dispute
@@ -2167,9 +2179,9 @@ stateDiagram-v2
         2. resolve_cancel → terminal
     end note
 
-    classDef active fill:#029E73,stroke:#000,color:#fff
-    classDef disputed fill:#CC78BC,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef active fill:#029E73,stroke:#000000,color:#000000
+    classDef disputed fill:#CC78BC,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class Approved,Issued,Acknowledged active
     class Disputed disputed
@@ -2423,6 +2435,8 @@ Putting the complete PurchaseOrder state machine — all states and transitions 
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 12: The Full Transition Table
+    accDescr: State diagram with 12 items: start or end, Draft, AwaitingApproval, Cancelled, Approved, Issued, Disputed, Acknowledged, Closed, Draft draft, AwaitingApproval waiting, Disputed dispute. Relationships: start or end to Draft; Draft to AwaitingApproval: submit; Draft to Cancelled: cancel; AwaitingApproval to Approved: approve; AwaitingApproval to Cancelled: reject; AwaitingApproval to Cancelled: cancel; Approved to Issued: issue; Approved to Cancelled: cancel; Approved to Disputed: dispute; Issued to Acknowledged: acknowledge; Issued to Cancelled: cancel; Issued to Disputed: dispute; and 7 more.
     [*] --> Draft
     Draft --> AwaitingApproval: submit
     Draft --> Cancelled: cancel
@@ -2443,11 +2457,11 @@ stateDiagram-v2
     Closed --> [*]
     Cancelled --> [*]
 
-    classDef draft fill:#0173B2,stroke:#000,color:#fff
-    classDef waiting fill:#DE8F05,stroke:#000,color:#000
-    classDef active fill:#029E73,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
-    classDef dispute fill:#CC78BC,stroke:#000,color:#fff
+    classDef draft fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef waiting fill:#DE8F05,stroke:#000000,color:#000000
+    classDef active fill:#029E73,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
+    classDef dispute fill:#CC78BC,stroke:#000000,color:#000000
 
     class Draft draft
     class AwaitingApproval waiting
@@ -3590,6 +3604,8 @@ When a PO enters `AwaitingApproval`, the system should route the approval reques
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 16: Entry Action on AwaitingApproval
+    accDescr: State diagram with 7 items: start or end, Draft, AwaitingApproval, Approved, Draft draft, AwaitingApproval waiting, Approved approved. Relationships: start or end to Draft; Draft to AwaitingApproval: submit; AwaitingApproval to Approved: approve.
     [*] --> Draft
     Draft --> AwaitingApproval: submit
     AwaitingApproval --> Approved: approve
@@ -3598,9 +3614,9 @@ stateDiagram-v2
         Route approval request to manager
     end note
 
-    classDef draft fill:#0173B2,stroke:#000,color:#fff
-    classDef waiting fill:#DE8F05,stroke:#000,color:#000
-    classDef approved fill:#029E73,stroke:#000,color:#fff
+    classDef draft fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef waiting fill:#DE8F05,stroke:#000000,color:#000000
+    classDef approved fill:#029E73,stroke:#000000,color:#000000
 
     class Draft draft
     class AwaitingApproval waiting
@@ -5654,6 +5670,8 @@ If all events are stored, the current state is derivable by replaying them from 
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 23: Replaying Events to Reconstruct State
+    accDescr: State diagram with 8 items: start or end, Draft, AwaitingApproval, Approved, Issued, Acknowledged, Draft draft, AwaitingApproval waiting. Relationships: start or end to Draft: createPO (initial); Draft to AwaitingApproval: replay: submit; AwaitingApproval to Approved: replay: approve; Approved to Issued: replay: issue; Issued to Acknowledged: replay: acknowledge.
     [*] --> Draft: createPO (initial)
     Draft --> AwaitingApproval: replay: submit
     AwaitingApproval --> Approved: replay: approve
@@ -5665,9 +5683,9 @@ stateDiagram-v2
         stored event in order
     end note
 
-    classDef draft fill:#0173B2,stroke:#000,color:#fff
-    classDef active fill:#029E73,stroke:#000,color:#fff
-    classDef waiting fill:#DE8F05,stroke:#000,color:#000
+    classDef draft fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef active fill:#029E73,stroke:#000000,color:#000000
+    classDef waiting fill:#DE8F05,stroke:#000000,color:#000000
 
     class Draft draft
     class AwaitingApproval waiting
@@ -6077,6 +6095,8 @@ The final beginner example reframes the FSM: it is not just state management, it
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 25: The PO FSM as a Protocol
+    accDescr: State diagram with 10 items: start or end, Draft, AwaitingApproval, Approved, Cancelled, Issued, Acknowledged, Closed, Draft draft, AwaitingApproval waiting. Relationships: start or end to Draft: Buyer creates PO; Draft to AwaitingApproval: Buyer submits; AwaitingApproval to Approved: Manager approves; AwaitingApproval to Cancelled: Manager rejects; Approved to Issued: Finance issues; Issued to Acknowledged: Supplier acknowledges; Acknowledged to Closed: System closes.
     [*] --> Draft: Buyer creates PO
     Draft --> AwaitingApproval: Buyer submits
     AwaitingApproval --> Approved: Manager approves
@@ -6094,10 +6114,10 @@ stateDiagram-v2
         Actor: Supplier
     end note
 
-    classDef draft fill:#0173B2,stroke:#000,color:#fff
-    classDef waiting fill:#DE8F05,stroke:#000,color:#000
-    classDef active fill:#029E73,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef draft fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef waiting fill:#DE8F05,stroke:#000000,color:#000000
+    classDef active fill:#029E73,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class Draft draft
     class AwaitingApproval waiting

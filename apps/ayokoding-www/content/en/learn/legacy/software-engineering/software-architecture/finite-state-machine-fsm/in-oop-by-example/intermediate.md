@@ -17,6 +17,8 @@ An `Invoice` from a supplier goes through matching before payment is scheduled. 
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 26: Invoice States and the Three-Way Match
+    accDescr: State diagram with 11 items: start or end, Registered, Matching, Matched, Disputed, ScheduledForPayment, Paid, Registered registered, Matching matching, Matched matched, Disputed disputed. Relationships: start or end to Registered; Registered to Matching: start_match; Matching to Matched: match_ok; Matching to Disputed: match_fail; Disputed to Matching: resubmit; Matched to ScheduledForPayment: schedule; ScheduledForPayment to Paid: pay; Paid to start or end.
     [*] --> Registered
     Registered --> Matching: start_match
     Matching --> Matched: match_ok
@@ -26,11 +28,11 @@ stateDiagram-v2
     ScheduledForPayment --> Paid: pay
     Paid --> [*]
 
-    classDef registered fill:#0173B2,stroke:#000,color:#fff
-    classDef matching fill:#DE8F05,stroke:#000,color:#000
-    classDef matched fill:#029E73,stroke:#000,color:#fff
-    classDef disputed fill:#CC78BC,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef registered fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef matching fill:#DE8F05,stroke:#000000,color:#000000
+    classDef matched fill:#029E73,stroke:#000000,color:#000000
+    classDef disputed fill:#CC78BC,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class Registered registered
     class Matching matching
@@ -250,6 +252,8 @@ The `match_ok` event is only valid if the invoice amount falls within tolerance 
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 27: The Three-Way Match Guard
+    accDescr: State diagram with 7 items: start or end, Matching, Matched, Disputed, Matching matching, Matched matched, Disputed disputed. Relationships: start or end to Matching; Matching to Matched: match_ok [within tolerance]; Matching to Disputed: match_fail [outside tolerance]; Disputed to Matching: resubmit.
     [*] --> Matching
     Matching --> Matched: match_ok [within tolerance]
     Matching --> Disputed: match_fail [outside tolerance]
@@ -260,9 +264,9 @@ stateDiagram-v2
     end note
     Disputed --> Matching: resubmit
 
-    classDef matching fill:#DE8F05,stroke:#000,color:#000
-    classDef matched fill:#029E73,stroke:#000,color:#fff
-    classDef disputed fill:#CC78BC,stroke:#000,color:#fff
+    classDef matching fill:#DE8F05,stroke:#000000,color:#000000
+    classDef matched fill:#029E73,stroke:#000000,color:#000000
+    classDef disputed fill:#CC78BC,stroke:#000000,color:#000000
 
     class Matching matching
     class Matched matched
@@ -837,6 +841,8 @@ When an Invoice is matched, the corresponding PurchaseOrder should transition to
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 29: Linking Invoice and PurchaseOrder State Machines
+    accDescr: State diagram with 9 items: PurchaseOrderFSM, start or end, Acknowledged, Invoiced, Closed, InvoiceFSM, Matching, Matched, ScheduledForPayment. Relationships: start or end to Acknowledged; Acknowledged to Invoiced: invoice_matched event; Invoiced to Closed: close; start or end to Matching; Matching to Matched: match_ok; Matched to ScheduledForPayment: schedule; InvoiceFSM to PurchaseOrderFSM: InvoiceMatched domain event.
     state PurchaseOrderFSM {
         [*] --> Acknowledged
         Acknowledged --> Invoiced: invoice_matched event
@@ -851,8 +857,8 @@ stateDiagram-v2
 
     InvoiceFSM --> PurchaseOrderFSM: InvoiceMatched domain event
 
-    classDef po fill:#0173B2,stroke:#000,color:#fff
-    classDef inv fill:#029E73,stroke:#000,color:#fff
+    classDef po fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef inv fill:#029E73,stroke:#000000,color:#000000
 
     class Acknowledged,Invoiced,Closed po
     class Matching,Matched,ScheduledForPayment inv
@@ -2225,6 +2231,8 @@ Entry actions are the natural place to trigger notifications. This example shows
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 34: State Entry Actions as Notification Triggers
+    accDescr: State diagram with 8 items: Matching, Disputed, Matched, ScheduledForPayment, Matching matching, Matched matched, Disputed disputed, ScheduledForPayment scheduled. Relationships: Matching to Disputed: match_fail; Matching to Matched: match_ok; Matched to ScheduledForPayment: schedule.
     Matching --> Disputed: match_fail
     note right of Disputed
         Entry action fires:
@@ -2241,10 +2249,10 @@ stateDiagram-v2
         Notify supplier of payment date
     end note
 
-    classDef matching fill:#DE8F05,stroke:#000,color:#000
-    classDef matched fill:#029E73,stroke:#000,color:#fff
-    classDef disputed fill:#CC78BC,stroke:#000,color:#fff
-    classDef scheduled fill:#CA9161,stroke:#000,color:#fff
+    classDef matching fill:#DE8F05,stroke:#000000,color:#000000
+    classDef matched fill:#029E73,stroke:#000000,color:#000000
+    classDef disputed fill:#CC78BC,stroke:#000000,color:#000000
+    classDef scheduled fill:#CA9161,stroke:#000000,color:#000000
 
     class Matching matching
     class Matched matched
@@ -2791,6 +2799,8 @@ The FSM enforces the invoice lifecycle as a strict protocol. Events sent out of 
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 36: FSM as Protocol Enforcement
+    accDescr: State diagram with 9 items: start or end, Registered, Matching, Matched, Disputed, ScheduledForPayment, Paid, Disputed disputed, Paid terminal. Relationships: start or end to Registered; Registered to Matching: start_match ✓; Matching to Matched: match_ok ✓; Matching to Disputed: match_fail ✓; Disputed to Matching: resubmit ✓; Matched to ScheduledForPayment: schedule ✓; ScheduledForPayment to Paid: pay ✓; Registered to Paid: pay ✗ REJECTED; Matching to Paid: pay ✗ REJECTED.
     [*] --> Registered
     Registered --> Matching: start_match ✓
     Matching --> Matched: match_ok ✓
@@ -2801,10 +2811,10 @@ stateDiagram-v2
     Registered --> Paid: pay ✗ REJECTED
     Matching --> Paid: pay ✗ REJECTED
 
-    classDef valid fill:#029E73,stroke:#000,color:#fff
-    classDef waiting fill:#DE8F05,stroke:#000,color:#000
-    classDef disputed fill:#CC78BC,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef valid fill:#029E73,stroke:#000000,color:#000000
+    classDef waiting fill:#DE8F05,stroke:#000000,color:#000000
+    classDef disputed fill:#CC78BC,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class Registered,ScheduledForPayment waiting
     class Matching,Matched valid
@@ -3044,6 +3054,8 @@ The full PO machine includes `PartiallyReceived` for cases where a supplier ship
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 37: PO Lifecycle Coverage — PartiallyReceived State
+    accDescr: State diagram with 8 items: start or end, Acknowledged, PartiallyReceived, Received, Invoiced, Closed, PartiallyReceived partial, Closed terminal. Relationships: start or end to Acknowledged; Acknowledged to PartiallyReceived: receive_partial; PartiallyReceived to PartiallyReceived: receive_partial; PartiallyReceived to Received: receive_final; Acknowledged to Received: receive_final; Received to Invoiced: invoice_matched; Invoiced to Closed: close.
     [*] --> Acknowledged
     Acknowledged --> PartiallyReceived: receive_partial
     PartiallyReceived --> PartiallyReceived: receive_partial
@@ -3052,9 +3064,9 @@ stateDiagram-v2
     Received --> Invoiced: invoice_matched
     Invoiced --> Closed: close
 
-    classDef active fill:#029E73,stroke:#000,color:#fff
-    classDef partial fill:#CC78BC,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef active fill:#029E73,stroke:#000000,color:#000000
+    classDef partial fill:#CC78BC,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class Acknowledged,Received,Invoiced active
     class PartiallyReceived partial
@@ -3827,6 +3839,8 @@ Rather than returning on the first validation failure, accumulate all errors and
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 40: Validation Error Accumulation
+    accDescr: State diagram with 9 items: start or end, Validating, Valid, AccumulatingErrors, Invalid, Disputed, StillDisputed, Validating validating, AccumulatingErrors acc. Relationships: start or end to Validating; Validating to Valid: all checks pass; Validating to AccumulatingErrors: any check fails; AccumulatingErrors to AccumulatingErrors: more checks fail; AccumulatingErrors to Invalid: all checks complete; Valid to Disputed: resubmit allowed; Invalid to StillDisputed: resubmit blocked.
     [*] --> Validating
     Validating --> Valid: all checks pass
     Validating --> AccumulatingErrors: any check fails
@@ -3835,10 +3849,10 @@ stateDiagram-v2
     Valid --> Disputed: resubmit allowed
     Invalid --> StillDisputed: resubmit blocked
 
-    classDef validating fill:#DE8F05,stroke:#000,color:#000
-    classDef valid fill:#029E73,stroke:#000,color:#fff
-    classDef invalid fill:#CA9161,stroke:#000,color:#fff
-    classDef acc fill:#CC78BC,stroke:#000,color:#fff
+    classDef validating fill:#DE8F05,stroke:#000000,color:#000000
+    classDef valid fill:#029E73,stroke:#000000,color:#000000
+    classDef invalid fill:#CA9161,stroke:#000000,color:#000000
+    classDef acc fill:#CC78BC,stroke:#000000,color:#000000
 
     class Validating validating
     class AccumulatingErrors acc
@@ -4147,6 +4161,8 @@ The Invoice FSM runs inside the PO lifecycle: a PO moves from `Received` to `Inv
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 41: State Machine Composition — Invoice Inside PO Lifecycle
+    accDescr: State diagram with 9 items: start or end, Received, Invoiced, Closed, Matched, ScheduledForPayment, Paid, Inv, PO. Relationships: start or end to Received; Received to Invoiced: InvoicePaid event; Invoiced to Closed: close; start or end to Matched; Matched to ScheduledForPayment: schedule; ScheduledForPayment to Paid: pay; Inv to PO: Paid → emits InvoicePaid event.
     state "PO FSM (Outer)" as PO {
         [*] --> Received
         Received --> Invoiced: InvoicePaid event
@@ -4161,8 +4177,8 @@ stateDiagram-v2
 
     Inv --> PO: Paid → emits InvoicePaid event
 
-    classDef po fill:#0173B2,stroke:#000,color:#fff
-    classDef inv fill:#029E73,stroke:#000,color:#fff
+    classDef po fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef inv fill:#029E73,stroke:#000000,color:#000000
 
     class Received,Invoiced,Closed po
     class Matched,ScheduledForPayment,Paid inv
@@ -6137,6 +6153,8 @@ A sequence diagram showing how the PO FSM and Invoice FSM coordinate across serv
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 48: Two-Machine Sequence Diagram
+    accDescr: Sequence diagram between Buyer/Finance, PurchaseOrder FSM, Event Bus, Invoice FSM, Supplier. Messages: Buyer/Finance to PurchaseOrder FSM: issue (Approved → Issued); PurchaseOrder FSM to Event Bus: PurchaseOrderIssued; Event Bus to Supplier: EDI/email notification; Supplier to PurchaseOrder FSM: acknowledge (Issued → Acknowledged); Supplier to Invoice FSM: submit invoice (Registered); Invoice FSM to Event Bus: InvoiceRegistered; Event Bus to Invoice FSM: start_match; Invoice FSM to Invoice FSM: three-way match guard; Invoice FSM to Event Bus: InvoiceMatched; Event Bus to PurchaseOrder FSM: invoice_matched (Received → Invoiced); Event Bus to Buyer/Finance: notify payment scheduled.
     participant Buyer as Buyer/Finance
     participant PO as PurchaseOrder FSM
     participant Bus as Event Bus

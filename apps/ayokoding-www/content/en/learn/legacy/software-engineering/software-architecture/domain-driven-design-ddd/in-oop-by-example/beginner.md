@@ -194,19 +194,22 @@ A Value Object has no identity. Two `Money` instances with the same amount and c
 ```mermaid
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph LR
-    A["Money #40;Value Object#41;"]:::blue
+    accTitle: Example 2: Value Object — immutable Money
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Money 40Value Object41, amount: BigDecimal, currency: ISO 4217, add40Money41 → Money, multiply40int41 → Money. Connections: Money 40Value Object41 to amount: BigDecimal, Money 40Value Object41 to currency: ISO 4217, Money 40Value Object41 to add40Money41 → Money, Money 40Value Object41 to multiply40int41 → Money.
+    A["Money #40;Value<br/>Object#41;"]:::blue
     B["amount: BigDecimal"]:::teal
     C["currency: ISO 4217"]:::teal
-    D["add#40;Money#41; → Money"]:::orange
-    E["multiply#40;int#41; → Money"]:::orange
+    D["add#40;Money#41; →<br/>Money"]:::orange
+    E["multiply#40;int#41;<br/>→ Money"]:::orange
     A --> B
     A --> C
     A --> D
     A --> E
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -2107,19 +2110,22 @@ An Entity has a unique identity that persists across state changes. Two `LineIte
 ```mermaid
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph LR
+    accTitle: Example 11: Entity vs Value Object — identity matters
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Entity: LineItem, id: LineItemId (identity), skuCode: SkuCode 40VO41, quantity: Quantity 40VO41, unitPrice: Money 40VO41. Connections: Entity: LineItem to id: LineItemId (identity), Entity: LineItem to skuCode: SkuCode 40VO41, Entity: LineItem to quantity: Quantity 40VO41, Entity: LineItem to unitPrice: Money 40VO41.
     A["Entity: LineItem"]:::blue
-    B["id: LineItemId (identity)"]:::orange
-    C["skuCode: SkuCode #40;VO#41;"]:::teal
-    D["quantity: Quantity #40;VO#41;"]:::teal
-    E["unitPrice: Money #40;VO#41;"]:::teal
+    B["id: LineItemId<br/>(identity)"]:::orange
+    C["skuCode: SkuCode<br/>#40;VO#41;"]:::teal
+    D["quantity: Quantity<br/>#40;VO#41;"]:::teal
+    E["unitPrice: Money<br/>#40;VO#41;"]:::teal
     A --> B
     A --> C
     A --> D
     A --> E
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}
@@ -3716,6 +3722,8 @@ The `Status` enum with a transition table makes invalid state changes a runtime 
 ```mermaid
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05, Purple #CC78BC
 stateDiagram-v2
+    accTitle: Example 16: State machine — PurchaseRequisition lifecycle
+    accDescr: State diagram with 7 items: start or end, Draft, Submitted, ManagerReview, Approved, Rejected, ConvertedToPO. Relationships: start or end to Draft; Draft to Submitted: submit; Submitted to ManagerReview: escalate; ManagerReview to Approved: approve; ManagerReview to Rejected: reject; Approved to ConvertedToPO: convert; Rejected to start or end; ConvertedToPO to start or end.
     [*] --> Draft
     Draft --> Submitted : submit
     Submitted --> ManagerReview : escalate

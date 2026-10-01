@@ -1385,17 +1385,19 @@ impl ApprovalRouterPort for InMemoryApprovalRouter {
 
 ```mermaid
 flowchart TD
-    A["HTTP POST /purchase-orders<br/>chi router — primary adapter"]:::blue
-    B["IssuePurchaseOrderService<br/>app layer"]:::teal
-    C["SupplierRepository.FindByID<br/>output port — cross-context"]:::orange
+    accTitle: Example 32: Full intermediate flow diagram — two contexts, four ports
+    accDescr: Flowchart with 8 nodes and 14 connections. Nodes: HTTP POST /purchase-orders chi router — primary adapter, IssuePurchaseOrder Service app layer, SupplierRepository. FindByID output port — cross-context, InMemory or Postgres SupplierRepo adapter, PurchaseOrder Repository.Save output port — same context, InMemory or Postgres PORepo adapter, EventPublisher. Publish output port — event bus, InMemory or Outbox EventPublisher adapter. Connections: HTTP POST /purchase-orders chi router — primary adapter to IssuePurchaseOrder Service app layer (IssueCommand DTO), IssuePurchaseOrder Service app layer to SupplierRepository. FindByID output port — cross-context (FindByID(supplier ID)), SupplierRepository. FindByID output port — cross-context to InMemory or Postgres SupplierRepo adapter, InMemory or Postgres SupplierRepo adapter to SupplierRepository. FindByID output port — cross-context (Supplier aggregate), SupplierRepository. FindByID output port — cross-context to IssuePurchaseOrder Service app layer (domain.Supplier), IssuePurchaseOrder Service app layer to PurchaseOrder Repository.Save output port — same context (Save(po)), PurchaseOrder Repository.Save output port — same context to InMemory or Postgres PORepo adapter, InMemory or Postgres PORepo adapter to PurchaseOrder Repository.Save output port — same context (ok), PurchaseOrder Repository.Save output port — same context to IssuePurchaseOrder Service app layer (ok), IssuePurchaseOrder Service app layer to EventPublisher. Publish output port — event bus (Publish(event)), EventPublisher. Publish output port — event bus to InMemory or Outbox EventPublisher adapter, InMemory or Outbox EventPublisher adapter to EventPublisher. Publish output port — event bus (ok), and 2 more.
+    A["HTTP POST<br/>/purchase-orders<br/>chi router — primary<br/>adapter"]:::blue
+    B["IssuePurchaseOrder<br/>Service<br/>app layer"]:::teal
+    C["SupplierRepository.<br/>FindByID<br/>output port —<br/>cross-context"]:::orange
     D["InMemory or Postgres<br/>SupplierRepo adapter"]:::teal
-    E["PurchaseOrderRepository.Save<br/>output port — same context"]:::orange
+    E["PurchaseOrder<br/>Repository.Save<br/>output port — same<br/>context"]:::orange
     F["InMemory or Postgres<br/>PORepo adapter"]:::teal
-    G["EventPublisher.Publish<br/>output port — event bus"]:::orange
-    H["InMemory or Outbox<br/>EventPublisher adapter"]:::teal
+    G["EventPublisher.<br/>Publish<br/>output port — event<br/>bus"]:::orange
+    H["InMemory or Outbox<br/>EventPublisher<br/>adapter"]:::teal
 
     A -->|"IssueCommand DTO"| B
-    B -->|"FindByID(supplierID)"| C
+    B -->|"FindByID(supplier<br/>ID)"| C
     C --> D
     D -->|"Supplier aggregate"| C
     C -->|"domain.Supplier"| B
@@ -1410,8 +1412,9 @@ flowchart TD
     B -->|"PurchaseOrderID"| A
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 This diagram traces a single HTTP request through the complete intermediate hexagonal wiring: one primary adapter, one application service, three output ports each backed by a swappable adapter pair.
@@ -3221,19 +3224,21 @@ mod tests {
 
 ```mermaid
 flowchart LR
+    accTitle: Example 50: Full intermediate flow recap — CQRS + query facade + notifier
+    accDescr: Flowchart with 14 nodes and 14 connections. Nodes: HTTP POST primary adapter, IssuePOCommand Service command side, PurchaseOrderWriter output port, PostgresPurchase OrderRepo write adapter, SupplierRepository output port, PostgresSupplierRepo read adapter, EventPublisher output port, NATSEventPublisher adapter, HTTP GET primary adapter, FindPurchaseOrders QueryService query side, PurchaseOrderReader output port, PostgresPurchase OrderReadRepo read adapter, and 2 more. Connections: HTTP POST primary adapter to IssuePOCommand Service command side (IssueCommand), IssuePOCommand Service command side to PurchaseOrderWriter output port (Save(po)), PurchaseOrderWriter output port to PostgresPurchase OrderRepo write adapter, IssuePOCommand Service command side to SupplierRepository output port (FindByID(supplier ID)), SupplierRepository output port to PostgresSupplierRepo read adapter, IssuePOCommand Service command side to EventPublisher output port (Publish(event)), EventPublisher output port to NATSEventPublisher adapter, IssuePOCommand Service command side to SupplierNotifierPort output port (Notify Approved(supplier)), SupplierNotifierPort output port to EmailNotifier adapter, IssuePOCommand Service command side to HTTP POST primary adapter (PurchaseOrderID), HTTP GET primary adapter to FindPurchaseOrders QueryService query side (FindByStatusQuery), FindPurchaseOrders QueryService query side to PurchaseOrderReader output port (FindBy Status(status,page)), and 2 more.
     A["HTTP POST<br/>primary adapter"]:::blue
-    B["IssuePOCommandService<br/>command side"]:::teal
+    B["IssuePOCommand<br/>Service<br/>command side"]:::teal
     C["PurchaseOrderWriter<br/>output port"]:::orange
-    D["PostgresPurchaseOrderRepo<br/>write adapter"]:::teal
+    D["PostgresPurchase<br/>OrderRepo<br/>write adapter"]:::teal
     E["SupplierRepository<br/>output port"]:::orange
     F["PostgresSupplierRepo<br/>read adapter"]:::teal
     G["EventPublisher<br/>output port"]:::orange
     H["NATSEventPublisher<br/>adapter"]:::teal
 
     I["HTTP GET<br/>primary adapter"]:::blue
-    J["FindPurchaseOrdersQueryService<br/>query side"]:::teal
+    J["FindPurchaseOrders<br/>QueryService<br/>query side"]:::teal
     K["PurchaseOrderReader<br/>output port"]:::orange
-    L["PostgresPurchaseOrderReadRepo<br/>read adapter"]:::teal
+    L["PostgresPurchase<br/>OrderReadRepo<br/>read adapter"]:::teal
 
     M["SupplierNotifierPort<br/>output port"]:::orange
     N["EmailNotifier<br/>adapter"]:::teal
@@ -3241,22 +3246,23 @@ flowchart LR
     A -->|"IssueCommand"| B
     B -->|"Save(po)"| C
     C --> D
-    B -->|"FindByID(supplierID)"| E
+    B -->|"FindByID(supplier<br/>ID)"| E
     E --> F
     B -->|"Publish(event)"| G
     G --> H
-    B -->|"NotifyApproved(supplier)"| M
+    B -->|"Notify<br/>Approved(supplier)"| M
     M --> N
     B -->|"PurchaseOrderID"| A
 
     I -->|"FindByStatusQuery"| J
-    J -->|"FindByStatus(status,page)"| K
+    J -->|"FindBy<br/>Status(status,page)"| K
     K --> L
-    J -->|"Page[PurchaseOrderSummary]"| I
+    J -->|"Page[PurchaseOrder<br/>Summary]"| I
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 This diagram shows the complete intermediate wiring: the command path (left) and the query path (right) each pass through their own ports and adapters without sharing any code paths after the composition root.

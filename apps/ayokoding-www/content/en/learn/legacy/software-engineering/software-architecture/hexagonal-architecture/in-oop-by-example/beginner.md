@@ -18,19 +18,21 @@ Hexagonal architecture divides every application into three concentric zones: th
 ```mermaid
 %% Palette: Blue #0173B2, Teal #029E73, Orange #DE8F05
 graph TD
-    subgraph Adapter["Adapter Zone (outermost)"]
-        WEB["HttpController\n#40;REST entry point#41;"]:::orange
-        DB["PgPurchaseOrderRepository\n#40;Postgres adapter#41;"]:::orange
+    accTitle: Example 1: The hexagon metaphor — three zones as packages
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: HttpController 40REST entry point41, PgPurchaseOrder Repository 40Postgres adapter41, IssuePurchaseOrder UseCase 40input port41, PurchaseOrder Repository 40output port41, IssuePurchaseOrder Service 40application service41, PurchaseOrder 40aggregate root41, PurchaseOrderId 40value object41, Money 40value object41. Connections: HttpController 40REST entry point41 to IssuePurchaseOrder UseCase 40input port41 (calls), IssuePurchaseOrder Service 40application service41 to IssuePurchaseOrder UseCase 40input port41 (implements), IssuePurchaseOrder Service 40application service41 to PurchaseOrder Repository 40output port41 (calls), PgPurchaseOrder Repository 40Postgres adapter41 to PurchaseOrder Repository 40output port41 (implements), IssuePurchaseOrder Service 40application service41 to PurchaseOrder 40aggregate root41 (uses), PurchaseOrder 40aggregate root41 to PurchaseOrderId 40value object41 (has), PurchaseOrder 40aggregate root41 to Money 40value object41 (has).
+    subgraph Adapter["Adapter Zone<br/>(outermost)"]
+        WEB["HttpController<br/>#40;REST entry<br/>point#41;"]:::orange
+        DB["PgPurchaseOrder<br/>Repository<br/>#40;Postgres<br/>adapter#41;"]:::orange
     end
-    subgraph Application["Application Zone (middle)"]
-        UC["IssuePurchaseOrderUseCase\n#40;input port#41;"]:::teal
-        REPO["PurchaseOrderRepository\n#40;output port#41;"]:::teal
-        SVC["IssuePurchaseOrderService\n#40;application service#41;"]:::teal
+    subgraph Application["Application Zone<br/>(middle)"]
+        UC["IssuePurchaseOrder<br/>UseCase<br/>#40;input port#41;"]:::teal
+        REPO["PurchaseOrder<br/>Repository<br/>#40;output port#41;"]:::teal
+        SVC["IssuePurchaseOrder<br/>Service<br/>#40;application<br/>service#41;"]:::teal
     end
-    subgraph Domain["Domain Zone (innermost)"]
-        PO["PurchaseOrder\n#40;aggregate root#41;"]:::blue
-        POID["PurchaseOrderId\n#40;value object#41;"]:::blue
-        MONEY["Money\n#40;value object#41;"]:::blue
+    subgraph Domain["Domain Zone<br/>(innermost)"]
+        PO["PurchaseOrder<br/>#40;aggregate<br/>root#41;"]:::blue
+        POID["PurchaseOrderId<br/>#40;value object#41;"]:::blue
+        MONEY["Money<br/>#40;value object#41;"]:::blue
     end
 
     WEB -- "calls" --> UC
@@ -41,9 +43,10 @@ graph TD
     PO -- "has" --> POID
     PO -- "has" --> MONEY
 
-    classDef blue fill:#0173B2,stroke:#000,color:#fff,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000,color:#fff,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000,color:#fff,stroke-width:2px
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Java,Kotlin,C#,TypeScript" >}}

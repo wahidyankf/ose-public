@@ -18,8 +18,10 @@ Characterization tests capture current behavior of legacy code without refactori
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 59: Characterization Tests for Legacy Code
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Legacy Code, Characterization Tests, Refactoring, Verified Code. Connections: Legacy Code to Characterization Tests (Capture behavior), Characterization Tests to Refactoring (Safety net created), Refactoring to Verified Code (Tests pass).
     A[Legacy Code]
-    B[Characterization Tests]
+    B[Characterization<br/>Tests]
     C[Refactoring]
     D[Verified Code]
 
@@ -27,10 +29,15 @@ graph TD
     B -->|Safety net created| C
     C -->|Tests pass| D
 
-    style A fill:#DE8F05,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test unknown legacy behavior**
@@ -316,19 +323,24 @@ Microservices require testing individual services in isolation without full envi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A[Order Service Under Test]
+    accTitle: Example 63: TDD for Microservices - Service Isolation
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Order Service Under Test, Payment Service Stub, Inventory Service Stub, Notification Service Stub. Connections: Order Service Under Test to Payment Service Stub (isolated call), Order Service Under Test to Inventory Service Stub (isolated call), Order Service Under Test to Notification Service Stub (isolated call).
+    A[Order Service Under<br/>Test]
     B[Payment Service Stub]
-    C[Inventory Service Stub]
-    D[Notification Service Stub]
+    C[Inventory Service<br/>Stub]
+    D[Notification Service<br/>Stub]
 
     A -->|"isolated call"| B
     A -->|"isolated call"| C
     A -->|"isolated call"| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test service depending on other microservices**
@@ -392,20 +404,27 @@ Contract testing verifies service integrations match expected contracts without 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 64: Contract Testing for Microservices
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Consumer Service, Consumer Contract, Provider Service, Provider Verification. Connections: Consumer Service to Consumer Contract (defines), Consumer Contract to Provider Service (verified against), Provider Service to Provider Verification (validated by), Provider Verification to Consumer Service (CI gate).
     A[Consumer Service]
     B[Consumer Contract]
     C[Provider Service]
-    D[Provider Verification]
+    D[Provider<br/>Verification]
 
     A -->|"defines"| B
     B -->|"verified against"| C
     C -->|"validated by"| D
     D -->|"CI gate"| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Integration test requiring both services**
@@ -484,6 +503,8 @@ Distributed systems often have eventual consistency. Tests must account for asyn
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 sequenceDiagram
+    accTitle: Example 65: Testing Distributed Systems - Eventual Consistency
+    accDescr: Sequence diagram between Test, Primary, Replica. Messages: Test to Primary: Write data; Primary to Test: Write confirmed; Test to Replica: Eventually read (poll); Replica to Test: Data available.
     participant Test
     participant Primary
     participant Replica
@@ -552,19 +573,26 @@ Event sourcing stores state changes as events. TDD for event sourcing tests even
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 66: Testing Event Sourcing Systems
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: AccountCreated, MoneyDeposited(100), MoneyWithdrawn(30), Rebuilt State: Balance=70. Connections: AccountCreated to MoneyDeposited(100) (apply), MoneyDeposited(100) to MoneyWithdrawn(30) (apply), MoneyWithdrawn(30) to Rebuilt State: Balance=70 (fold all events).
     A["AccountCreated"]
     B["MoneyDeposited(100)"]
     C["MoneyWithdrawn(30)"]
-    D["Rebuilt State: Balance=70"]
+    D["Rebuilt State:<br/>Balance=70"]
 
     A -->|"apply"| B
     B -->|"apply"| C
     C -->|"fold all events"| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test event sourcing without infrastructure**
@@ -666,6 +694,8 @@ CQRS (Command Query Responsibility Segregation) separates read and write models.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 67: Testing CQRS Patterns
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Client Request, Command or Query?, Command Handler, Write Store, Query Handler, Read Model. Connections: Client Request to Command or Query?, Command or Query? to Command Handler (mutation), Command Handler to Write Store, Command or Query? to Query Handler (read-only), Query Handler to Read Model.
     A[Client Request]
     B{Command or Query?}
     C[Command Handler]
@@ -677,12 +707,17 @@ graph TD
     B -->|"mutation"| C --> D
     B -->|"read-only"| E --> F
 
-    style A fill:#CA9161,stroke:#000,color:#fff
-    style B fill:#CC78BC,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test CQRS without separation**
@@ -1149,12 +1184,14 @@ Large organizations need consistent TDD practices across teams. Establish shared
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 73: Scaling TDD Across Teams
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: Engineering Org, Shared TDD Standards, Team A, Team B, Team C, Shared Test Utilities, CI Enforcement. Connections: Engineering Org to Shared TDD Standards (defines), Shared TDD Standards to Team A (adopted by), Shared TDD Standards to Team B (adopted by), Shared TDD Standards to Team C (adopted by), Shared Test Utilities to Team A (used by), Shared Test Utilities to Team B (used by), Shared Test Utilities to Team C (used by), CI Enforcement to Shared TDD Standards (enforces).
     A[Engineering Org]
     B[Shared TDD Standards]
     C[Team A]
     D[Team B]
     E[Team C]
-    F[Shared Test Utilities]
+    F[Shared Test<br/>Utilities]
     G[CI Enforcement]
 
     A -- defines --> B
@@ -1166,13 +1203,19 @@ graph TD
     F -- used by --> E
     G -- enforces --> B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Challenge**: 50+ teams with inconsistent testing practices
@@ -1785,22 +1828,30 @@ Evolutionary architecture evolves through incremental changes guided by fitness 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A[Architecture Decision]
-    B[Fitness Function Test]
+    accTitle: Example 80: Evolutionary Architecture with TDD
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Architecture Decision, Fitness Function Test, Constraint Met?, CI Passes, Arch Violation Detected. Connections: Architecture Decision to Fitness Function Test (encoded as), Fitness Function Test to Constraint Met?, Constraint Met? to CI Passes (yes), Constraint Met? to Arch Violation Detected (no).
+    A[Architecture<br/>Decision]
+    B[Fitness Function<br/>Test]
     C{Constraint Met?}
     D[CI Passes]
-    E[Arch Violation Detected]
+    E[Arch Violation<br/>Detected]
 
     A -->|"encoded as"| B
     B --> C
     C -->|"yes"| D
     C -->|"no"| E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Red: Test architectural constraint (fitness function)**
@@ -1886,17 +1937,24 @@ Continuous deployment requires high confidence in automated tests. TDD enables s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph LR
+    accTitle: Example 81: TDD in Continuous Deployment
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Code Commit, Unit + Integration Tests, Canary Deploy 1, Full Deploy 100. Connections: Code Commit to Unit + Integration Tests, Unit + Integration Tests to Canary Deploy 1, Canary Deploy 1 to Full Deploy 100.
     A[Code Commit]
-    B["Unit + Integration Tests"]
+    B["Unit + Integration<br/>Tests"]
     C[Canary Deploy 1%]
     D[Full Deploy 100%]
 
     A --> B --> C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Challenge**: Deploy to production safely without manual testing

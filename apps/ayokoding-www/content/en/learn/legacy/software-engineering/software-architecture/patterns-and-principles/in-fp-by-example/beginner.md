@@ -761,18 +761,24 @@ A layered architecture organizes code into a presentation layer (handles user in
 
 ```mermaid
 graph TD
+    accTitle: Example 3: Three-Layer Architecture
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: Presentation Layer (format / display), Business Logic Layer (pure domain functions), Data Access Layer (find /save functions). Connections: Presentation Layer (format / display) to Business Logic Layer (pure domain functions) (calls), Business Logic Layer (pure domain functions) to Data Access Layer (find /save functions) (calls), Data Access Layer (find /save functions) to Business Logic Layer (pure domain functions) (returns data), Business Logic Layer (pure domain functions) to Presentation Layer (format / display) (returns result).
     A["Presentation Layer<br/>(format / display)"]
-    B["Business Logic Layer<br/>(pure domain functions)"]
-    C["Data Access Layer<br/>(find / save functions)"]
+    B["Business Logic Layer<br/>(pure domain<br/>functions)"]
+    C["Data Access Layer<br/>(find /save<br/>functions)"]
 
     A -->|calls| B
     B -->|calls| C
     C -->|returns data| B
     B -->|returns result| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -1297,6 +1303,8 @@ MVC separates a program into a Model (data and rules), a View (formatting output
 
 ```mermaid
 graph LR
+    accTitle: Example 5: Model-View-Controller Basics
+    accDescr: Graph with 4 nodes and 5 connections. Nodes: User Input, Controller module (coordinates), Model module (data + rules), View module (formats output). Connections: User Input to Controller module (coordinates) (request), Controller module (coordinates) to Model module (data + rules) (queries / commands), Model module (data + rules) to Controller module (coordinates) (data), Controller module (coordinates) to View module (formats output) (data), View module (formats output) to User Input (response).
     User["User Input"]
     C["Controller module<br/>(coordinates)"]
     M["Model module<br/>(data + rules)"]
@@ -1308,10 +1316,15 @@ graph LR
     C -->|data| V
     V -->|response| User
 
-    style User fill:#CA9161,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style M fill:#DE8F05,stroke:#000,color:#fff
-    style V fill:#029E73,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class User pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class M pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class V pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -2016,17 +2029,23 @@ Dependency injection means passing dependencies into a function rather than hard
 
 ```mermaid
 graph TD
-    Caller["Caller / Composition Root"]
-    Store["User Store (real or fake)"]
+    accTitle: Example 7: Manual Dependency Injection
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Caller /Composition Root, User Store (real or fake), greetUser function. Connections: Caller /Composition Root to User Store (real or fake) (creates and passes), Caller /Composition Root to greetUser function (calls with Store injected), greetUser function to User Store (real or fake) (uses injected Store).
+    Caller["Caller /Composition<br/>Root"]
+    Store["User Store (real or<br/>fake)"]
     Svc["greetUser function"]
 
     Caller -->|creates and passes| Store
-    Caller -->|calls with Store injected| Svc
+    Caller -->|calls with Store<br/>injected| Svc
     Svc -->|uses injected Store| Store
 
-    style Caller fill:#0173B2,stroke:#000,color:#fff
-    style Store fill:#029E73,stroke:#000,color:#fff
-    style Svc fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Caller pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Store pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Svc pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Without dependency injection (hard-coded dependency):**
@@ -2871,6 +2890,8 @@ The Open/Closed Principle states that a function or module should be open for ex
 
 ```mermaid
 graph TD
+    accTitle: Example 10: Open for Extension, Closed for Modification
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client Code, Discount Strategy (function type), regularDiscount, loyaltyDiscount, seasonalDiscount. Connections: Client Code to Discount Strategy (function type) (calls with), Discount Strategy (function type) to regularDiscount (implemented by), Discount Strategy (function type) to loyaltyDiscount (implemented by), Discount Strategy (function type) to seasonalDiscount (implemented by).
     Client["Client Code"]
     Base["Discount Strategy<br/>(function type)"]
     A["regularDiscount"]
@@ -2882,11 +2903,15 @@ graph TD
     Base -- "implemented by" --> B
     Base -- "implemented by" --> C
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style Base fill:#DE8F05,stroke:#000,color:#fff
-    style A fill:#029E73,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Base pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class A pal-029E73
+    class B pal-029E73
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Closed approach — requires modifying existing code for every new discount:**
@@ -4421,6 +4446,8 @@ Reducing coupling means modules communicate through stable function interfaces, 
 
 ```mermaid
 graph LR
+    accTitle: Example 16: Low Coupling Through Encapsulation
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: placeOrder function, Customer module (encapsulated), Inventory module (encapsulated). Connections: placeOrder function to Customer module (encapsulated) (canAcceptCharge), placeOrder function to Customer module (encapsulated) (recordCharge), placeOrder function to Inventory module (encapsulated) (isAvailable), placeOrder function to Inventory module (encapsulated) (decrement).
     OS["placeOrder function"]
     C["Customer module<br/>(encapsulated)"]
     I["Inventory module<br/>(encapsulated)"]
@@ -4430,9 +4457,13 @@ graph LR
     OS -->|isAvailable| I
     OS -->|decrement| I
 
-    style OS fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style I fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class OS pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -5323,6 +5354,8 @@ Composition over inheritance means building complex behavior by combining simple
 
 ```mermaid
 graph TD
+    accTitle: Example 19: Preferring Composition
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: Bird concept, fly behavior, swim behavior, eagle, duck, penguin. Connections: eagle to fly behavior (has), duck to fly behavior (has), duck to swim behavior (has), penguin to swim behavior (has).
     Bird["Bird concept"]
     Fly["fly behavior"]
     Swim["swim behavior"]
@@ -5335,12 +5368,17 @@ graph TD
     Duck  -- "has" --> Swim
     Penguin -- "has" --> Swim
 
-    style Bird fill:#CA9161,stroke:#000,color:#fff
-    style Fly fill:#0173B2,stroke:#000,color:#fff
-    style Swim fill:#029E73,stroke:#000,color:#fff
-    style Eagle fill:#DE8F05,stroke:#000,color:#fff
-    style Duck fill:#DE8F05,stroke:#000,color:#fff
-    style Penguin fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Bird pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Fly pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Swim pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Eagle pal-DE8F05
+    class Duck pal-DE8F05
+    class Penguin pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Function composition approach — flexible assembly of behaviors:**
@@ -5849,8 +5887,10 @@ The Repository pattern abstracts the data access layer behind a collection-like 
 
 ```mermaid
 graph LR
+    accTitle: Example 21: Repository Pattern Basics
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Business Logic (pure functions), Repository (record of functions), inMemoryRepo (tests), dbRepo (production). Connections: Business Logic (pure functions) to Repository (record of functions) (depends on), Repository (record of functions) to inMemoryRepo (tests) (implemented by), Repository (record of functions) to dbRepo (production) (implemented by).
     Service["Business Logic<br/>(pure functions)"]
-    Repo["Repository<br/>(record of functions)"]
+    Repo["Repository<br/>(record of<br/>functions)"]
     ImplA["inMemoryRepo<br/>(tests)"]
     ImplB["dbRepo<br/>(production)"]
 
@@ -5858,10 +5898,15 @@ graph LR
     Repo -->|implemented by| ImplA
     Repo -->|implemented by| ImplB
 
-    style Service fill:#0173B2,stroke:#000,color:#fff
-    style Repo fill:#DE8F05,stroke:#000,color:#fff
-    style ImplA fill:#029E73,stroke:#000,color:#fff
-    style ImplB fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Service pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Repo pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ImplA pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ImplB pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -6925,6 +6970,8 @@ A Data Transfer Object (DTO) is a simple container for carrying data between lay
 
 ```mermaid
 graph TD
+    accTitle: Example 25: Data Transfer Objects
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: External Client (API / CLI), CreateUserRequest (input record), Service Layer (pure functions), User domain record (internal), UserResponse (output record). Connections: External Client (API / CLI) to CreateUserRequest (input record) (sends), CreateUserRequest (input record) to User domain record (internal) (mapped to), User domain record (internal) to Service Layer (pure functions) (processed by), Service Layer (pure functions) to UserResponse (output record) (mapped to), UserResponse (output record) to External Client (API / CLI) (returned to).
     Ext["External Client<br/>(API / CLI)"]
     DTO["CreateUserRequest<br/>(input record)"]
     Svc["Service Layer<br/>(pure functions)"]
@@ -6937,11 +6984,17 @@ graph TD
     Svc -->|mapped to| RespDTO
     RespDTO -->|returned to| Ext
 
-    style Ext fill:#CA9161,stroke:#000,color:#fff
-    style DTO fill:#0173B2,stroke:#000,color:#fff
-    style Svc fill:#DE8F05,stroke:#000,color:#fff
-    style Domain fill:#029E73,stroke:#000,color:#fff
-    style RespDTO fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Ext pal-CA9161
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class DTO pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Svc pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Domain pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class RespDTO pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="F#,Clojure,TypeScript,Haskell" >}}
@@ -7901,6 +7954,8 @@ Architecture smells are patterns in code structure that signal design problems. 
 
 ```mermaid
 graph TD
+    accTitle: Example 28: Recognizing Architecture Smells
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Architecture Smell, God Module Does everything, Leaking Layers DB logic in handler, Anemic Domain Empty domain types, Implicit Coupling Global mutable state. Connections: Architecture Smell to God Module Does everything, Architecture Smell to Leaking Layers DB logic in handler, Architecture Smell to Anemic Domain Empty domain types, Architecture Smell to Implicit Coupling Global mutable state.
     A["Architecture Smell"]
     B["God Module<br/>Does everything"]
     C["Leaking Layers<br/>DB logic in handler"]
@@ -7912,11 +7967,16 @@ graph TD
     A --> D
     A --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Smell 1: God Module — one namespace knows everything:**

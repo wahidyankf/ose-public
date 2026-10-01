@@ -17,6 +17,8 @@ A monolithic handler does HTTP parsing, business logic, and database access in o
 
 ```mermaid
 graph TD
+    accTitle: Example 1: Monolithic Handler vs. Clear Separation
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Monolithic Handler HTTP + Logic + DB, Handler HTTP only, Service Business Logic only, Repo Persistence only. Connections: Monolithic Handler HTTP + Logic + DB to Handler HTTP only (refactor into), Handler HTTP only to Service Business Logic only, Service Business Logic only to Repo Persistence only.
     A["Monolithic Handler<br/>HTTP + Logic + DB"]:::orange
 
     B["Handler<br/>HTTP only"]:::blue
@@ -28,8 +30,9 @@ graph TD
     C --> D
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef orange fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 {{< tabs items="Go,Rust" >}}

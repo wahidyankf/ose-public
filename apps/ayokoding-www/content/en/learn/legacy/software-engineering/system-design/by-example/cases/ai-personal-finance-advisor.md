@@ -230,10 +230,12 @@ When you're validating product-market fit with your first thousand users, simpli
 ```mermaid
 %%  Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161 %%
 flowchart TB
+    accTitle: Startup Scale
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Client (Mobile/Web), Single Application Server (Monolith), Single Database (PostgreSQL/MySQL), Cloud OCR API (Google Vision/AWS Textract), Object Storage (S3/Cloud Storage). Connections: Client (Mobile/Web) to Single Application Server (Monolith), Single Application Server (Monolith) to Single Database (PostgreSQL/MySQL), Single Application Server (Monolith) to Cloud OCR API (Google Vision/AWS Textract), Single Application Server (Monolith) to Object Storage (S3/Cloud Storage).
     Client["Client<br/>(Mobile/Web)"]
-    AppServer["Single Application Server<br/>(Monolith)"]
+    AppServer["Single Application<br/>Server<br/>(Monolith)"]
     Database["Single Database<br/>(PostgreSQL/MySQL)"]
-    CloudOCR["Cloud OCR API<br/>(Google Vision/AWS Textract)"]
+    CloudOCR["Cloud OCR API<br/>(Google Vision/AWS<br/>Textract)"]
     ObjectStorage["Object Storage<br/>(S3/Cloud Storage)"]
 
     Client --> AppServer
@@ -241,11 +243,17 @@ flowchart TB
     AppServer --> CloudOCR
     AppServer --> ObjectStorage
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style AppServer fill:#DE8F05,stroke:#000,color:#000
-    style Database fill:#029E73,stroke:#000,color:#fff
-    style CloudOCR fill:#CC78BC,stroke:#000,color:#000
-    style ObjectStorage fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class AppServer pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Database pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class CloudOCR pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class ObjectStorage pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Components**:
@@ -269,6 +277,8 @@ The first major architectural shift happens here: we split synchronous from asyn
 ```mermaid
 %%  Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161 %%
 flowchart TB
+    accTitle: Small Scale
+    accDescr: Flowchart with 12 nodes and 16 connections. Nodes: Mobile App, Web App, Load Balancer, App Server 1, App Server 2, App Server 3, Message Queue (RabbitMQ/Redis), Primary DB, Read Replica, Cache (Redis), Self-Hosted OCR (Tesseract), Object Storage. Connections: Mobile App to Load Balancer, Web App to Load Balancer, Load Balancer to App Server 1, Load Balancer to App Server 2, Load Balancer to App Server 3, App Server 1 to Message Queue (RabbitMQ/Redis), App Server 2 to Message Queue (RabbitMQ/Redis), App Server 3 to Message Queue (RabbitMQ/Redis), App Server 1 to Cache (Redis), App Server 2 to Cache (Redis), App Server 3 to Cache (Redis), App Server 1 to Primary DB, and 4 more.
     subgraph Client["Clients"]
         Mobile["Mobile App"]
         Web["Web App"]
@@ -276,7 +286,7 @@ flowchart TB
 
     LB["Load Balancer"]
 
-    subgraph AppServers["Application Servers (3-5 instances)"]
+    subgraph AppServers["Application Servers<br/>(3-5 instances)"]
         App1["App Server 1"]
         App2["App Server 2"]
         App3["App Server 3"]
@@ -310,18 +320,24 @@ flowchart TB
     Queue --> Storage
     OCREngine --> Primary
 
-    style Mobile fill:#0173B2,stroke:#000,color:#fff
-    style Web fill:#0173B2,stroke:#000,color:#fff
-    style LB fill:#DE8F05,stroke:#000,color:#000
-    style App1 fill:#029E73,stroke:#000,color:#fff
-    style App2 fill:#029E73,stroke:#000,color:#fff
-    style App3 fill:#029E73,stroke:#000,color:#fff
-    style Queue fill:#CC78BC,stroke:#000,color:#000
-    style Primary fill:#CA9161,stroke:#000,color:#000
-    style Replica fill:#CA9161,stroke:#000,color:#000
-    style Cache fill:#0173B2,stroke:#000,color:#fff
-    style OCREngine fill:#DE8F05,stroke:#000,color:#000
-    style Storage fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Mobile pal-0173B2
+    class Web pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class LB pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class App1 pal-029E73
+    class App2 pal-029E73
+    class App3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Queue pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Primary pal-CA9161
+    class Replica pal-CA9161
+    class Cache pal-0173B2
+    class OCREngine pal-DE8F05
+    class Storage pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Components Added**:
@@ -348,18 +364,20 @@ The cost of this flexibility? Significantly more operational complexity. You now
 ```mermaid
 %%  Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161 %%
 flowchart TB
+    accTitle: Medium Scale
+    accDescr: Flowchart with 19 nodes and 19 connections. Nodes: Mobile/Web, CDN (CloudFlare/ CloudFront), Load Balancer (Auto-scaling), API Gateway (Rate Limiting), Auth Service, Upload Service, OCR Service, Analysis Service, Insights Service, Upload Queue, OCR Queue, Analysis Queue, and 7 more. Connections: Mobile/Web to CDN (CloudFlare/ CloudFront), CDN (CloudFlare/ CloudFront) to Load Balancer (Auto-scaling), Load Balancer (Auto-scaling) to API Gateway (Rate Limiting), API Gateway (Rate Limiting) to Auth Service, API Gateway (Rate Limiting) to Upload Service, API Gateway (Rate Limiting) to Analysis Service, API Gateway (Rate Limiting) to Insights Service, Upload Service to Upload Queue, OCR Service to OCR Queue, Analysis Service to Analysis Queue, Upload Queue to Object Storage (Multi-region), OCR Queue to OCR Cluster, and 7 more.
     subgraph Client["Clients"]
         Mobile["Mobile/Web"]
     end
 
-    CDN["CDN<br/>(CloudFlare/CloudFront)"]
+    CDN["CDN<br/>(CloudFlare/<br/>CloudFront)"]
     LB["Load Balancer<br/>(Auto-scaling)"]
 
     subgraph Gateway["API Gateway"]
         API["API Gateway<br/>(Rate Limiting)"]
     end
 
-    subgraph Services["Microservices (10-20 instances)"]
+    subgraph Services["Microservices (10-20<br/>instances)"]
         Auth["Auth Service"]
         Upload["Upload Service"]
         OCR["OCR Service"]
@@ -410,25 +428,31 @@ flowchart TB
     OCRCluster --> Shard1
     OCRCluster --> Shard2
 
-    style Mobile fill:#0173B2,stroke:#000,color:#fff
-    style CDN fill:#DE8F05,stroke:#000,color:#000
-    style LB fill:#029E73,stroke:#000,color:#fff
-    style API fill:#CC78BC,stroke:#000,color:#000
-    style Auth fill:#CA9161,stroke:#000,color:#000
-    style Upload fill:#0173B2,stroke:#000,color:#fff
-    style OCR fill:#DE8F05,stroke:#000,color:#000
-    style Analysis fill:#029E73,stroke:#000,color:#fff
-    style Insights fill:#CC78BC,stroke:#000,color:#000
-    style UploadQ fill:#CA9161,stroke:#000,color:#000
-    style OCRQ fill:#0173B2,stroke:#000,color:#fff
-    style AnalysisQ fill:#DE8F05,stroke:#000,color:#000
-    style Shard1 fill:#029E73,stroke:#000,color:#fff
-    style Shard2 fill:#029E73,stroke:#000,color:#fff
-    style Replica1 fill:#CC78BC,stroke:#000,color:#000
-    style OCRCluster fill:#CA9161,stroke:#000,color:#000
-    style MLInference fill:#0173B2,stroke:#000,color:#fff
-    style CacheCluster fill:#DE8F05,stroke:#000,color:#000
-    style Storage fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Mobile pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CDN pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class LB pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class API pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Auth pal-CA9161
+    class Upload pal-0173B2
+    class OCR pal-DE8F05
+    class Analysis pal-029E73
+    class Insights pal-CC78BC
+    class UploadQ pal-CA9161
+    class OCRQ pal-0173B2
+    class AnalysisQ pal-DE8F05
+    class Shard1 pal-029E73
+    class Shard2 pal-029E73
+    class Replica1 pal-CC78BC
+    class OCRCluster pal-CA9161
+    class MLInference pal-0173B2
+    class CacheCluster pal-DE8F05
+    class Storage pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Components Added**:
@@ -457,6 +481,8 @@ The benefit? Users everywhere get fast, local responses. The cost? You've just m
 ```mermaid
 %%  Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161 %%
 flowchart TB
+    accTitle: Large Scale
+    accDescr: Flowchart with 21 nodes and 16 connections. Nodes: CDN Edge, Load Balancer, Microservices (20+ instances), Database Cluster, Cache Cluster, ML Cluster, CDN Edge, Load Balancer, Microservices (20+ instances), Database Cluster, Cache Cluster, ML Cluster, and 9 more. Connections: Clients Worldwide to Global Load Balancer (Geo-routing), Global Load Balancer (Geo-routing) to CDN Edge, Global Load Balancer (Geo-routing) to CDN Edge, Global Load Balancer (Geo-routing) to CDN Edge, CDN Edge to Load Balancer, CDN Edge to Load Balancer, CDN Edge to Load Balancer, Load Balancer to Microservices (20+ instances), Load Balancer to Microservices (20+ instances), Load Balancer to Microservices (20+ instances), Microservices (20+ instances) to Database Cluster, Microservices (20+ instances) to Database Cluster, and 4 more.
     subgraph Region1["Region 1 (US-East)"]
         CDN1["CDN Edge"]
         LB1["Load Balancer"]
@@ -475,7 +501,7 @@ flowchart TB
         ML2["ML Cluster"]
     end
 
-    subgraph Region3["Region 3 (Asia-Pacific)"]
+    subgraph Region3["Region 3<br/>(Asia-Pacific)"]
         CDN3["CDN Edge"]
         LB3["Load Balancer"]
         Services3["Microservices<br/>(20+ instances)"]
@@ -485,7 +511,7 @@ flowchart TB
     end
 
     GlobalLB["Global Load Balancer<br/>(Geo-routing)"]
-    Storage["Global Object Storage<br/>(Cross-region replication)"]
+    Storage["Global Object<br/>Storage<br/>(Cross-region<br/>replication)"]
 
     Client["Clients Worldwide"]
 
@@ -514,27 +540,33 @@ flowchart TB
     Services2 --> Storage
     Services3 --> Storage
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style GlobalLB fill:#DE8F05,stroke:#000,color:#000
-    style CDN1 fill:#029E73,stroke:#000,color:#fff
-    style CDN2 fill:#029E73,stroke:#000,color:#fff
-    style CDN3 fill:#029E73,stroke:#000,color:#fff
-    style LB1 fill:#CC78BC,stroke:#000,color:#000
-    style LB2 fill:#CC78BC,stroke:#000,color:#000
-    style LB3 fill:#CC78BC,stroke:#000,color:#000
-    style Services1 fill:#CA9161,stroke:#000,color:#000
-    style Services2 fill:#CA9161,stroke:#000,color:#000
-    style Services3 fill:#CA9161,stroke:#000,color:#000
-    style DB1 fill:#0173B2,stroke:#000,color:#fff
-    style DB2 fill:#0173B2,stroke:#000,color:#fff
-    style DB3 fill:#0173B2,stroke:#000,color:#fff
-    style Cache1 fill:#DE8F05,stroke:#000,color:#000
-    style Cache2 fill:#DE8F05,stroke:#000,color:#000
-    style Cache3 fill:#DE8F05,stroke:#000,color:#000
-    style ML1 fill:#029E73,stroke:#000,color:#fff
-    style ML2 fill:#029E73,stroke:#000,color:#fff
-    style ML3 fill:#029E73,stroke:#000,color:#fff
-    style Storage fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class GlobalLB pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class CDN1 pal-029E73
+    class CDN2 pal-029E73
+    class CDN3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class LB1 pal-CC78BC
+    class LB2 pal-CC78BC
+    class LB3 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Services1 pal-CA9161
+    class Services2 pal-CA9161
+    class Services3 pal-CA9161
+    class DB1 pal-0173B2
+    class DB2 pal-0173B2
+    class DB3 pal-0173B2
+    class Cache1 pal-DE8F05
+    class Cache2 pal-DE8F05
+    class Cache3 pal-DE8F05
+    class ML1 pal-029E73
+    class ML2 pal-029E73
+    class ML3 pal-029E73
+    class Storage pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Components Added**:
@@ -562,13 +594,15 @@ This isn't architecture for the sake of complexity—it's the minimum viable inf
 ```mermaid
 %%  Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161 %%
 flowchart TB
+    accTitle: Planet Scale
+    accDescr: Flowchart with 16 nodes and 18 connections. Nodes: Global CDN (Edge Computing), Global Load Balancer (Anycast), Global Event Bus (Kafka/Kinesis), AWS Regions, GCP Regions, Data Lake (Analytics), OLTP Databases (Sharded globally), OLAP Warehouse (BigQuery/Redshift), Stream Processing (Flink/Spark), Model Training (Distributed), Model Serving (Auto-scaled), MLOps Pipeline (A/B Testing), and 4 more. Connections: Clients Worldwide to Global CDN (Edge Computing), Global CDN (Edge Computing) to Global Load Balancer (Anycast), Global Load Balancer (Anycast) to AWS Regions, Global Load Balancer (Anycast) to GCP Regions, AWS Regions to Global Event Bus (Kafka/Kinesis), GCP Regions to Global Event Bus (Kafka/Kinesis), Global Event Bus (Kafka/Kinesis) to Data Lake (Analytics), Global Event Bus (Kafka/Kinesis) to Stream Processing (Flink/Spark), Global Event Bus (Kafka/Kinesis) to OLTP Databases (Sharded globally), Stream Processing (Flink/Spark) to OLAP Warehouse (BigQuery/Redshift), Stream Processing (Flink/Spark) to Model Serving (Auto-scaled), Model Training (Distributed) to Model Serving (Auto-scaled), and 6 more.
     subgraph Global["Global Layer"]
         GlobalCDN["Global CDN<br/>(Edge Computing)"]
         GlobalLB["Global Load Balancer<br/>(Anycast)"]
         EventBus["Global Event Bus<br/>(Kafka/Kinesis)"]
     end
 
-    subgraph MultiCloud["Multi-Cloud (AWS + GCP)"]
+    subgraph MultiCloud["Multi-Cloud (AWS +<br/>GCP)"]
         AWS["AWS Regions"]
         GCP["GCP Regions"]
     end
@@ -618,22 +652,28 @@ flowchart TB
     Tracing --> Metrics
     Metrics --> Logging
 
-    style Client fill:#0173B2,stroke:#000,color:#fff
-    style GlobalCDN fill:#DE8F05,stroke:#000,color:#000
-    style GlobalLB fill:#029E73,stroke:#000,color:#fff
-    style EventBus fill:#CC78BC,stroke:#000,color:#000
-    style AWS fill:#CA9161,stroke:#000,color:#000
-    style GCP fill:#CA9161,stroke:#000,color:#000
-    style DataLake fill:#0173B2,stroke:#000,color:#fff
-    style OLTP fill:#DE8F05,stroke:#000,color:#000
-    style OLAP fill:#029E73,stroke:#000,color:#fff
-    style Streaming fill:#CC78BC,stroke:#000,color:#000
-    style Training fill:#CA9161,stroke:#000,color:#000
-    style Inference fill:#0173B2,stroke:#000,color:#fff
-    style MLOps fill:#DE8F05,stroke:#000,color:#000
-    style Tracing fill:#029E73,stroke:#000,color:#fff
-    style Metrics fill:#CC78BC,stroke:#000,color:#000
-    style Logging fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class GlobalCDN pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class GlobalLB pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class EventBus pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class AWS pal-CA9161
+    class GCP pal-CA9161
+    class DataLake pal-0173B2
+    class OLTP pal-DE8F05
+    class OLAP pal-029E73
+    class Streaming pal-CC78BC
+    class Training pal-CA9161
+    class Inference pal-0173B2
+    class MLOps pal-DE8F05
+    class Tracing pal-029E73
+    class Metrics pal-CC78BC
+    class Logging pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Components Added**:
@@ -833,6 +873,8 @@ Response (202 Accepted):
 ```mermaid
 %%  Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161 %%
 sequenceDiagram
+    accTitle: Receipt Upload Flow
+    accDescr: Sequence diagram between Client, Database.
     participant Client
     participant API Gateway
     participant Upload Service
@@ -883,6 +925,8 @@ sequenceDiagram
 ```mermaid
 %%  Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161 %%
 sequenceDiagram
+    accTitle: Insight Generation Flow
+    accDescr: Sequence diagram between Client, Cache, Database.
     participant Client
     participant API Gateway
     participant Insights Service
@@ -938,6 +982,8 @@ This diagram shows the end-to-end user experience from authentication to viewing
 ```mermaid
 %%  Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161 %%
 sequenceDiagram
+    accTitle: Complete User Journey Flow
+    accDescr: Sequence diagram between User, Mobile App, API Gateway, Auth Service, Upload Service, Object Storage, OCR Service, Database, Insights Service, ML Service, Redis Cache. Messages: User to Mobile App: Open app; Mobile App to API Gateway: Login request; API Gateway to Auth Service: Validate credentials; Auth Service to Database: Check user exists; Database to Auth Service: User record; Auth Service to API Gateway: JWT token; API Gateway to Mobile App: Auth token + user profile; Mobile App to User: Dashboard displayed; User to Mobile App: Take photo of receipt; Mobile App to API Gateway: Upload receipt; API Gateway to Upload Service: Store receipt; Upload Service to Object Storage: Save file; and 23 more.
     actor User
     participant Mobile as Mobile App
     participant Gateway as API Gateway

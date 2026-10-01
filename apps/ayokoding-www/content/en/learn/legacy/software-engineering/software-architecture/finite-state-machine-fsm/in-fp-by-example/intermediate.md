@@ -32,6 +32,8 @@ An invoice in a P2P system must pass a three-way match before it can be approved
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Example 26: Invoice States and the Three-Way Match
+    accDescr: State diagram with 9 items: start or end, Received, UnderReview, Approved, Disputed, Paid, Rejected, Disputed warning, Rejected terminal. Relationships: start or end to Received; Received to UnderReview: review; UnderReview to Approved: approve (3-way match passes); UnderReview to Disputed: dispute; Disputed to UnderReview: resubmit; Approved to Paid: pay; UnderReview to Rejected: reject; Rejected to start or end; Paid to start or end.
     [*] --> Received
     Received --> UnderReview: review
     UnderReview --> Approved: approve (3-way match passes)
@@ -42,10 +44,10 @@ stateDiagram-v2
     Rejected --> [*]
     Paid --> [*]
 
-    classDef active fill:#0173B2,stroke:#000,color:#fff
-    classDef warning fill:#DE8F05,stroke:#000,color:#000
-    classDef success fill:#029E73,stroke:#000,color:#fff
-    classDef terminal fill:#CA9161,stroke:#000,color:#fff
+    classDef active fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef warning fill:#DE8F05,stroke:#000000,color:#000000
+    classDef success fill:#029E73,stroke:#000000,color:#000000
+    classDef terminal fill:#CA9161,stroke:#000000,color:#000000
 
     class Received,UnderReview active
     class Disputed warning
@@ -5638,6 +5640,8 @@ A sequence diagram shows how the PO FSM and Invoice FSM interact over the P2P li
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 48: Two-Machine Sequence Diagram
+    accDescr: Sequence diagram between Employee, PO FSM, Invoice FSM, Finance. Messages: Employee to PO FSM: Submit (Draft -> AwaitingApproval); PO FSM to PO FSM: Approve (AwaitingApproval -> Approved); PO FSM to PO FSM: Issue (Approved -> Issued); PO FSM to Invoice FSM: Invoice registered (Received); Invoice FSM to Invoice FSM: Review (Received -> UnderReview); Invoice FSM to Invoice FSM: Approve (three-way match passes); Invoice FSM to PO FSM: AdvancePOToInvoiced command; PO FSM to PO FSM: Acknowledge (Issued -> Acknowledged); Finance to Invoice FSM: Pay (Approved -> Paid); PO FSM to PO FSM: Close (Acknowledged -> Closed).
     participant E as Employee
     participant POFSM as PO FSM
     participant IFSM as Invoice FSM

@@ -331,7 +331,7 @@ Clean Architecture organises code into concentric rings: Entities → Use Cases 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 30: Clean Architecture — Layer Separation with Dependency Rule
-    accDescr: Graph with 5 nodes and 3 connections. Nodes: A, Drivers, Interface Adapters Controller Module, Use Cases Application Module, Entities Domain Module. Connections: A to Interface Adapters Controller Module (depends on), Interface Adapters Controller Module to Use Cases Application Module (depends on), Use Cases Application Module to Entities Domain Module (depends on).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Frameworks & Drivers In-Memory Adapter, Interface Adapters Controller Module, Use Cases Application Module, Entities Domain Module. Connections: Frameworks & Drivers In-Memory Adapter to Interface Adapters Controller Module (depends on), Interface Adapters Controller Module to Use Cases Application Module (depends on), Use Cases Application Module to Entities Domain Module (depends on).
     A["Frameworks & Drivers<br/>In-Memory Adapter"]
     B["Interface Adapters<br/>Controller Module"]
     C["Use Cases<br/>Application Module"]

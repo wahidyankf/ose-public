@@ -1858,7 +1858,7 @@ The token bucket algorithm maintains a bucket that fills with tokens at a fixed 
 ```mermaid
 graph LR
     accTitle: Example 36: Token Bucket Rate Limiter
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Incoming Requests, Token Bucket capacity=10 rate=5/sec, Allowed Requests, Rejected Requests 4042941. Connections: Incoming Requests to Token Bucket capacity=10 rate=5/sec (consume token), Token Bucket capacity=10 rate=5/sec to Allowed Requests (token available), Token Bucket capacity=10 rate=5/sec to Rejected Requests 4042941 (bucket empty).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Incoming Requests, Token Bucket capacity=10 rate=5/sec, Allowed Requests, Rejected Requests (429). Connections: Incoming Requests to Token Bucket capacity=10 rate=5/sec (consume token), Token Bucket capacity=10 rate=5/sec to Allowed Requests (token available), Token Bucket capacity=10 rate=5/sec to Rejected Requests (429) (bucket empty).
     Req["Incoming<br/>Requests"]:::blue
     Bucket["Token Bucket<br/>capacity=10<br/>rate=5/sec"]:::orange
     Allow["Allowed<br/>Requests"]:::teal
@@ -2293,7 +2293,7 @@ The circuit breaker pattern wraps external calls and tracks failures. After a fa
 ```mermaid
 graph LR
     accTitle: Example 38: Circuit Breaker with Three States
-    accDescr: Graph with 3 nodes and 4 connections. Nodes: CLOSED Normal operation, OPEN Fast fail 40reject all41, HALF-OPEN Probe recovery. Connections: CLOSED Normal operation to OPEN Fast fail 40reject all41 (failures >= threshold), OPEN Fast fail 40reject all41 to HALF-OPEN Probe recovery (timeout elapsed), HALF-OPEN Probe recovery to CLOSED Normal operation (probe succeeds), HALF-OPEN Probe recovery to OPEN Fast fail 40reject all41 (probe fails).
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: CLOSED Normal operation, OPEN Fast fail (reject all), HALF-OPEN Probe recovery. Connections: CLOSED Normal operation to OPEN Fast fail (reject all) (failures >= threshold), OPEN Fast fail (reject all) to HALF-OPEN Probe recovery (timeout elapsed), HALF-OPEN Probe recovery to CLOSED Normal operation (probe succeeds), HALF-OPEN Probe recovery to OPEN Fast fail (reject all) (probe fails).
     Closed["CLOSED<br/>Normal operation"]:::teal
     Open["OPEN<br/>Fast fail #40;reject<br/>all#41;"]:::purple
     HalfOpen["HALF-OPEN<br/>Probe recovery"]:::orange

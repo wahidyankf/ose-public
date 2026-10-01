@@ -18,7 +18,7 @@ The C4 Model provides a hierarchical approach to visualizing software architectu
 ```mermaid
 graph TD
     accTitle: Example 1: The Four Levels of C4
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Level 1 — Context System relationships, B, Level 3 — Components Internal container structure, Level 4 — Code Classes, functions, interfaces. Connections: Level 1 — Context System relationships to B (zoom in), B to Level 3 — Components Internal container structure (zoom in), Level 3 — Components Internal container structure to Level 4 — Code Classes, functions, interfaces (zoom in).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Level 1 — Context System relationships, Level 2 — Containers Deployable units & data stores, Level 3 — Components Internal container structure, Level 4 — Code Classes, functions, interfaces. Connections: Level 1 — Context System relationships to Level 2 — Containers Deployable units & data stores (zoom in), Level 2 — Containers Deployable units & data stores to Level 3 — Components Internal container structure (zoom in), Level 3 — Components Internal container structure to Level 4 — Code Classes, functions, interfaces (zoom in).
     A["Level 1 — Context<br/>System relationships"]
     B["Level 2 — Containers<br/>Deployable units &<br/>data stores"]
     C["Level 3 — Components<br/>Internal container<br/>structure"]

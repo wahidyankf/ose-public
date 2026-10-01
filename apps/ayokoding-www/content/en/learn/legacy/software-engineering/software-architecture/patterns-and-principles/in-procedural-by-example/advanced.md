@@ -697,7 +697,7 @@ Structured logging attaches machine-readable key-value fields to every log entry
 ```mermaid
 graph LR
     accTitle: Example 63: Structured Logging Pattern
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: AppService log.Info40msg, fields...41, Logger interface Info / Error / With, JSONFormatter marshal to JSON, Log Sink stdout /file / Datadog. Connections: AppService log.Info40msg, fields...41 to Logger interface Info / Error / With, Logger interface Info / Error / With to JSONFormatter marshal to JSON, JSONFormatter marshal to JSON to Log Sink stdout /file / Datadog.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: AppService log.Info(msg, fields...), Logger interface Info / Error / With, JSONFormatter marshal to JSON, Log Sink stdout /file / Datadog. Connections: AppService log.Info(msg, fields...) to Logger interface Info / Error / With, Logger interface Info / Error / With to JSONFormatter marshal to JSON, JSONFormatter marshal to JSON to Log Sink stdout /file / Datadog.
     SVC["AppService<br/>log.Info#40;msg,<br/>fields...#41;"]:::blue
     IFACE["Logger interface<br/>Info / Error / With"]:::orange
     FMT["JSONFormatter<br/>marshal to JSON"]:::teal

@@ -4617,7 +4617,7 @@ Reducing coupling means modules communicate through stable public interfaces, no
 ```mermaid
 graph LR
     accTitle: Example 16: Low Coupling Through Encapsulation
-    accDescr: Graph with 3 nodes and 4 connections. Nodes: OrderService, Customer (encapsulated), Inventory (encapsulated). Connections: OrderService to Customer (encapsulated) (canAccept Charge40price41), OrderService to Customer (encapsulated) (record Charge40price41), OrderService to Inventory (encapsulated) (isAvailable40item41), OrderService to Inventory (encapsulated) (decrement40item41).
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: OrderService, Customer (encapsulated), Inventory (encapsulated). Connections: OrderService to Customer (encapsulated) (canAccept Charge(price)), OrderService to Customer (encapsulated) (record Charge(price)), OrderService to Inventory (encapsulated) (isAvailable( item)), OrderService to Inventory (encapsulated) (decrement( item)).
     OS["OrderService"]
     C["Customer<br/>(encapsulated)"]
     I["Inventory<br/>(encapsulated)"]

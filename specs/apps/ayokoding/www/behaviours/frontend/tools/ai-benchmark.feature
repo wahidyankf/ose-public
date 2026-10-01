@@ -87,6 +87,16 @@ Feature: AI model benchmark tool
     Then every tier anchor has general access
     And every tier anchor has a newer model from the same vendor in the roster
 
+  # Exemption(integration): the roster invariant is pure in-process data validation with no local-resource boundary; alternative-proof: ayokoding-www:test:unit / Every listed harness's in-house model line is in the roster
+  @integration-exempt
+  # Exemption(e2e): the set of in-house model lines is a dataset constant with no public browser control; alternative-proof: ayokoding-www:test:unit / Every listed harness's in-house model line is in the roster
+  @e2e-exempt
+  Scenario: Every listed harness's in-house model line is in the roster
+    Given the full roster is loaded
+    When the in-house model lines of the listed harnesses are inspected
+    Then each in-house model line has at least one model in the roster
+    And each of those models is offered in its own harness
+
   # Exemption(integration): the scenario is observable at the public browser boundary and has no separate local resource boundary; alternative-proof: ayokoding-www-fe-e2e:test:e2e / Every roster model belongs to exactly one tier group
   @integration-exempt
   Scenario: Every roster model belongs to exactly one tier group
@@ -266,6 +276,7 @@ Feature: AI model benchmark tool
     Given the AI benchmark page is open
     When the reader opens the methodology section
     Then it lists every composite benchmark with its version and weight
+    And it states which models the roster covers
     And it states the operator order used to pick each figure
     And it states the minimum number of benchmarks needed for a tier
     And it lists every tier anchor with its floor score

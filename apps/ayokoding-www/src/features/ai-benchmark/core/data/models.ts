@@ -1,7 +1,8 @@
 // AI BENCHMARK DATASET — last updated 2026-10-01.
 //
-// Roster: every model from the four frontier vendors (Anthropic, OpenAI, Google, xAI) plus every
-// model on OpenCode Go with an identified vendor, keeping up to three generations of each line (the
+// Roster: every model from the four frontier vendors (Anthropic, OpenAI, Google, xAI), every model
+// on OpenCode Go with an identified vendor, and each listed harness's own in-house models
+// (`HARNESS_IN_HOUSE_LINES`, e.g. Cursor Composer), keeping up to three generations of each line (the
 // latest and the two before it) that are still served by the vendor's API or a listed harness.
 //
 // Figures: independent runs only. For each (model, benchmark) the first available source wins:
@@ -63,6 +64,7 @@ const PRICE_URL = {
   openai: "https://developers.openai.com/api/docs/pricing",
   google: "https://ai.google.dev/gemini-api/docs/pricing",
   xai: "https://docs.x.ai/docs/models",
+  cursor: "https://cursor.com/docs/models-and-pricing",
   zai: "https://docs.z.ai/guides/overview/pricing",
   moonshot: "https://platform.kimi.ai/docs/pricing/chat",
   deepseek: "https://api-docs.deepseek.com/quick_start/pricing",
@@ -462,6 +464,20 @@ export const dataset: Dataset = {
       harnesses: ["opencode-zen"],
       figures: [],
       price: vendorPrice(1, 2, PRICE_URL.xai),
+    },
+
+    // ── Cursor (in-house) ───────────────────────────────────────────────────────
+    {
+      id: "composer-2.5",
+      name: "Composer 2.5",
+      vendor: "Cursor",
+      line: "Composer",
+      releaseDate: "2026-05-18",
+      access: "general",
+      harnesses: ["cursor"],
+      figures: [],
+      price: vendorPrice(0.5, 2.5, PRICE_URL.cursor, "Fast mode: $3 / $15."),
+      note: "Cursor only (app, CLI, and SDK); Composer 2 now runs as 2.5.",
     },
 
     // ── Z.ai ────────────────────────────────────────────────────────────────────

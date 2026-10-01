@@ -60,8 +60,8 @@ item carries its [executor tag](./executor-tagging-tags-and-bias.md).
 - **The planning workflow's decision gates:** a defect has one correct behaviour, so there is nothing to grill.
 - **[Plan-Artifact Authorization](./plan-artifact-authorization-and-transition.md):** it needs no separate request when
   written under [Upstream Tool Defects](../../../development/workflow/upstream-tool-defects.md), or when the owner asks.
-  That standing request also directs its plan quality gate and its execution: once the plan lands, run the gate on it
-  and execute on a passing verdict, without a further prompt.
+  That standing request also directs its plan quality gate and execution: once the plan lands, run the gate on it and
+  execute on a passing verdict, without a further prompt.
 
 Every other plan rule holds: slug rules, one lifecycle root, executor tags, no time estimates, the delivery mode,
 Knowledge Capture, and archival.

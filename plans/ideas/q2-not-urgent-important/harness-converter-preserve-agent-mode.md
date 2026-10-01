@@ -90,7 +90,7 @@ itself, which behaved correctly throughout.
 ## Risks & open questions
 
 - Does OpenCode actually degrade without `mode: subagent`, or infer subagent status another way?
-  Unverified — this decides whether the converter gap is a real defect or a cosmetic one.
+  Not yet verified — this decides whether the converter gap is a real defect or a cosmetic one.
 - Does a partial `permission` map deny unlisted tools in OpenCode, including MCP? If it does, any
   generated mirror of this agent is a functional narrowing.
 - `apps/rhino-cli/**` is the parity boundary across both repos, so a converter change is a

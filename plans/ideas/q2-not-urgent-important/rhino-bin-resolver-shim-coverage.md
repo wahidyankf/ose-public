@@ -89,7 +89,7 @@ Out of scope:
 ## Risks & open questions
 
 - **Can TickSpec express shell-script invocation cleanly, or does this take the documented xunit
-  fallback?** Unverified. It changes the file layout and the coverage registration, not the
+  fallback?** Not yet verified. It changes the file layout and the coverage registration, not the
   scenarios. (open)
 - **Is `bats` a better fit than either?** The subject is a bash script, and the repo's F# test
   harness is being asked to drive it. Uncosted build-vs-buy. (open)

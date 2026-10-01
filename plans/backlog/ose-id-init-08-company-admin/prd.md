@@ -139,22 +139,22 @@ No persistence migration is permitted.
 
 ### Grounding and Prior Art
 
-- **[Repo-grounded]** Current inventory includes `libs/web-ui/src/components/button`, `input`, `alert`,
+- Current inventory includes `libs/web-ui/src/components/button`, `input`, `alert`,
   `dialog`, `sheet`, `card`, `table`, `tabs`, `search-component`, `side-nav`, and `app-header`, plus
   `libs/web-ui-token/src/ose.css`. `apps/ose-id-web` does not exist at authoring time; Plan 05 creates it,
   so Phase 0 must repeat this inventory against the delivered shell and stories.
-- **[Web-cited, official, accessed 2026-09-15]** W3C's
+- Official source (accessed 2026-09-15): W3C's
   [Tables Tutorial](https://www.w3.org/WAI/tutorials/tables/) says accessible tables need markup that
   identifies header/data cells and their relationships. That supports a semantic desktop roster rather
   than a visual grid posing as a table.
-- **[Web-cited, official, accessed 2026-09-15]** W3C's
+- Official source (accessed 2026-09-15): W3C's
   [modal dialog pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) states that focus moves
   inside an opened dialog and returns to its invoker when closed. That binds every confirmation state.
-- **[Web-cited, official, accessed 2026-09-15]** GitHub's
+- Official source (accessed 2026-09-15): GitHub's
   [organization invitation documentation](https://docs.github.com/en/organizations/managing-membership-in-your-organization/inviting-users-to-join-your-organization)
   separates inviting people from managing current membership. This is prior-art evidence for distinct
   invitation status and member-detail states, not a source for OSE domain policy.
-- **[Judgment call]** A roster/detail primary flow is selected because this is transactional company
+- A roster/detail primary flow is selected because this is transactional company
   administration, not analytics; execution validates the judgment with the design/usability tester triad.
 
 ### Diverge — Low-Fidelity Alternatives

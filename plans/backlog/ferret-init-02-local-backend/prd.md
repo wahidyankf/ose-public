@@ -1,9 +1,9 @@
 # Product Requirements — FERRET Init 02 Protocol-Independent Local Backend
 
-> **Evidence scope:** Current repository workflows and the delivered Plan 01 contract are **[Repo-grounded]**.
+> **Evidence scope:** Current repository workflows and the delivered Plan 01 contract were verified against the repository.
 > Every FERRET API path, command, port allocation, type, limit, status, and future source/test path in this PRD is
-> an approved **[Judgment call — new artifact]** unless marked otherwise. Dependency versions remain
-> **[Unverified]** until the execution worktree locks and audits them.
+> an approved new artifact unless stated otherwise. Dependency versions stay unconfirmed until the execution
+> worktree locks and audits them.
 
 ## Product Overview
 
@@ -48,11 +48,11 @@ deployment, multi-user identity, OAuth, durable realtime publication, and automa
 - Behavioral metadata can still be sensitive; loopback binding, bearer scope, redaction, and closed schemas are
   mandatory.
 - Storage estimates are provisional until deterministic benchmarks replace them; capacity claims carry their
-  evidence and confidence label.
+  evidence and say plainly whether they are measured.
 
 ## Local Operation
 
-- **[Repo-grounded target]** HTTP binds to `127.0.0.1:8601`; PostgreSQL binds to `127.0.0.1:5440` through the
+- HTTP binds to `127.0.0.1:8601`; PostgreSQL binds to `127.0.0.1:5440` through the
   Compose-owned local runner. These author-time selections are free in `docs/reference/web-sites.md`; Phase 0
   verifies availability and stops on a collision instead of silently changing the contract. Tests use isolated
   runner-assigned ports.

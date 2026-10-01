@@ -1,8 +1,7 @@
 # BDD/Spec Delta and Adapter Map
 
-**Evidence scope:** Plan 01 corpus ownership and repository BDD rules are **[Repo-grounded]**. Every Plan 02
-feature path, scenario title, binding, and test disposition below is an approved **[Judgment call — new
-artifact]**.
+**Evidence scope:** Plan 01 corpus ownership and repository BDD rules were verified against the repository. Every
+Plan 02 feature path, scenario title, binding, and test disposition below is an approved new artifact.
 
 ## Canonical Corpora
 

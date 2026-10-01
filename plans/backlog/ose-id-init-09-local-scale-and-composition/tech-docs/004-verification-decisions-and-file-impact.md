@@ -90,12 +90,12 @@ before edit; no whole-app wildcard is authorized.
 
 ## Evidence Confidence
 
-- **[Repo-grounded]** Delivered Plans 06–08, their archived audits, and actual project targets are the
+- Delivered Plans 06–08, their archived audits, and actual project targets are the
   authority resolved during Phase 0.
-- **[Web-cited, official, accessed 2026-09-15]** Microsoft
+- Official source (accessed 2026-09-15): Microsoft
   [ASP.NET Core Data Protection configuration](https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-10.0)
   documents explicit shared key persistence/protection configuration, supporting cross-instance proof.
-- **[Judgment call]** Fixed family ports and manifest-owned cleanup make local evidence deterministic;
+- Fixed family ports and manifest-owned cleanup make local evidence deterministic;
   Phase 0 stops for conflicts rather than silently remapping them.
 
 ## Rollback and Recovery

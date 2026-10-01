@@ -2,11 +2,10 @@
 
 > **Stable v0.4 routing:** References below to the retired in-tree Rhino implementation are historical evidence only. ose-public has no product source at that location; promote any still-relevant product work to the upstream Rhino repository and use its current stable commands.
 
-Evidence labels are plan-wide: `[Judgment call]` marks an approved design or new artifact, `[Repo-grounded]`
-marks inspected repository fact, `[Web-cited]` marks an authoritative external publication, and `[Unverified]`
-marks a claim requiring delivery-time proof. External sources were accessed 2026-09-18. Unless a narrower label
-overrides it, every FERRET path/symbol/target below is `[Judgment call — new artifact]`; every named existing
-repository precedent is `[Repo-grounded]`.
+Evidence notes are plan-wide and carry no inline labels: external claims cite their authoritative publication
+inline, and a claim requiring delivery-time proof says so in plain prose. External sources were accessed
+2026-09-18. Unless the text states otherwise, every FERRET path/symbol/target below is an approved new artifact;
+every named existing repository precedent was verified against the repository.
 
 Repository prior art inspected before this draft: `apps/rhino-cli` and `apps/crane-cli` for CLI/Nx packaging;
 existing dedicated `*-e2e` projects for owner/E2E separation; `repo-governance/development/infra/nx-targets/`
@@ -30,7 +29,7 @@ FastAPI support already exists.
 
 ### D1 — REST/OpenAPI for synchronization and scripting
 
-**Selected [Judgment call — user-approved]:** contract-first OpenAPI 3.1 REST adapter.
+**Selected (user-approved):** contract-first OpenAPI 3.1 REST adapter.
 
 - Need: a stdlib Python CLI needs simple bounded batch request/response and local scripts need stable raw/
   aggregate access.
@@ -41,14 +40,14 @@ FastAPI support already exists.
 - Consequence: REST remains the automatic ingestion interface; later protocols are peers over the same core.
   Revisit only if a consumer proves a missing capability, not merely to offer protocol variety.
 
-`[Web-cited]` OpenAPI defines a language-agnostic HTTP interface description, matching the need for a
+OpenAPI defines a language-agnostic HTTP interface description, matching the need for a
 shared contract without generated runtime coupling:
 [OpenAPI 3.1 specification](https://spec.openapis.org/oas/v3.1.0) (the specification defines the standard,
 language-agnostic description for HTTP APIs).
 
 ### D2 — Hexagonal ports and adapters
 
-**Selected [Judgment call — user-approved]:** framework-free domain/application packages, inbound protocol adapters, outbound persistence and
+**Selected (user-approved):** framework-free domain/application packages, inbound protocol adapters, outbound persistence and
 change ports.
 
 - Need: user-approved future REST, GraphQL, and MCP surfaces must share behaviour without handler reuse.
@@ -61,7 +60,7 @@ change ports.
 
 ### D3 — Defer GraphQL subscriptions
 
-**Selected [Judgment call]:** no GraphQL endpoint; provide post-commit change port and no-op adapter.
+**Selected:** no GraphQL endpoint; provide post-commit change port and no-op adapter.
 
 - Need: a future dashboard may want realtime updates, but no UI/frequency/latency requirement exists now.
 - Alternative 1: implement Strawberry queries/subscriptions immediately. It prepares a dashboard but adds SDL,
@@ -71,13 +70,13 @@ change ports.
   guarantees are needed. Revisit when a dashboard demonstrates frequent incremental updates where polling is
   inadequate.
 
-`[Web-cited]` Official GraphQL guidance identifies subscriptions as long-lived and commonly backed by
+Official GraphQL guidance identifies subscriptions as long-lived and commonly backed by
 pub/sub: [GraphQL subscriptions](https://graphql.org/learn/subscriptions/). The reconnect/scaling consequence is
 this plan's engineering judgment, not a quotation.
 
 ### D4 — Defer MCP while preserving an adapter seam
 
-**Selected [Judgment call — user-approved]:** no MCP SDK/endpoint; future tools/resources call application ports.
+**Selected (user-approved):** no MCP SDK/endpoint; future tools/resources call application ports.
 
 - Need: MCP may make analytics available to agents, but automatic telemetry cannot depend on voluntary tool use.
 - Alternative 1: expose ingestion/query tools now. It broadens access but creates a second contract/auth/test
@@ -87,13 +86,13 @@ this plan's engineering judgment, not a quotation.
 - Consequence: future plan selects then-current spec/version and stdio/Streamable HTTP. Revisit when one
   supported harness has a concrete MCP consumer workflow.
 
-`[Web-cited]` [MCP July 2026 release](https://blog.modelcontextprotocol.io/posts/2026-07-28/) describes a
+The [MCP July 2026 release](https://blog.modelcontextprotocol.io/posts/2026-07-28/) describes a
 stateless protocol core with capabilities around it. The future plan must verify the then-current normative
 specification; this release post is evidence for direction, not a pinned wire contract.
 
 ### D5 — At-least-once delivery plus server idempotency
 
-**Selected [Judgment call]:** durable SQLite leases and per-record idempotent ACK.
+**Selected:** durable SQLite leases and per-record idempotent ACK.
 
 - Need: no transaction can atomically span SQLite and PostgreSQL/HTTP.
 - Alternative 1: delete locally before send (at-most-once). It avoids duplicates but loses events on failure.
@@ -104,7 +103,7 @@ specification; this release post is evidence for direction, not a pinned wire co
 
 ### D6 — Local bearer token and loopback guard
 
-**Selected [Judgment call]:** 256-bit token file, constant-time comparison, loopback Local/Test only.
+**Selected:** 256-bit token file, constant-time comparison, loopback Local/Test only.
 
 - Need: local APIs still expose behavioural metadata and must not be unauthenticated to arbitrary processes or a
   misbound network interface.
@@ -116,7 +115,7 @@ specification; this release post is evidence for direction, not a pinned wire co
 
 ### D7 — PostgreSQL retention only by explicit prune
 
-**Selected [Judgment call]:** unlimited age until dry-run + explicit execute.
+**Selected:** unlimited age until dry-run + explicit execute.
 
 - Need: backend is the durable history and its capacity policy is not yet known.
 - Alternative 1: inherit 30 days. It defeats backend history.
@@ -126,7 +125,7 @@ specification; this release post is evidence for direction, not a pinned wire co
 
 ### D8 — Opportunistic and manual synchronization, no daemon
 
-**Selected [Judgment call — user-approved]:** `ferret sync --once` plus one detached attempt when capture observes that the five-minute interval
+**Selected (user-approved):** `ferret sync --once` plus one detached attempt when capture observes that the five-minute interval
 is due.
 
 - Need: recent events should move without requiring an always-running client process, while capture remains
@@ -140,7 +139,7 @@ is due.
 
 ### D9 — One tested delivery-verification dispatcher
 
-**Selected [Judgment call]:** `ferret-be:verify:delivery --args='--phase=N'` delegates only to the exact
+**Selected:** `ferret-be:verify:delivery --args='--phase=N'` delegates only to the exact
 project/contract/manual commands declared in `delivery.md` and verifies their evidence.
 
 - Need: the phase-gate rule requires one copyable resume command per phase, while this delivery spans Python,
@@ -155,7 +154,7 @@ project/contract/manual commands declared in `delivery.md` and verifies their ev
 
 ### D10 — Configuration stays in the data home
 
-**Selected [Judgment call]:** `ferret backend configure` writes the backend URL and token-file path to
+**Selected:** `ferret backend configure` writes the backend URL and token-file path to
 `<FERRET_DATA_HOME>/config.json`. This plan creates nothing under `$XDG_CONFIG_HOME`.
 
 - Need: `--url` is the first field a person authors by hand, which is exactly the trigger Plan 01's D14 names for
@@ -173,17 +172,17 @@ project/contract/manual commands declared in `delivery.md` and verifies their ev
   `backend-api.token` and `identity.key` stay in the data home in every case, so a configuration directory that
   is later symlinked into a dotfiles repository cannot publish a bearer token or the derivation key.
 
-**[Repo-grounded]** Plan 01 `tech-docs/005-cli-and-shared-data-contract.md` requires this plan's backend
+Plan 01 `tech-docs/005-cli-and-shared-data-contract.md` requires this plan's backend
 enable/reconfigure operation to use the same configuration lock as capture and to replace the complete
 configuration atomically; that lock and the existing `config.json` are both data-home objects.
 
 ## Dependencies and Licenses
 
-- **[Unverified]** Backend runtime: Python 3.14, FastAPI, Uvicorn, Pydantic/settings, SQLAlchemy 2, Alembic, psycopg, PostgreSQL
+- Backend runtime (unconfirmed until locked): Python 3.14, FastAPI, Uvicorn, Pydantic/settings, SQLAlchemy 2, Alembic, psycopg, PostgreSQL
   driver dependencies resolved and locked by `uv`.
 - Backend development: pytest, pytest-bdd, coverage.py, Pyright, Ruff, contract/schema validator.
 - E2E: repository-standard TypeScript/Playwright API stack.
-- **[Unverified]** Local infrastructure: PostgreSQL 18 container pinned by immutable image digest
+- Local infrastructure (unconfirmed until Phase 0 verification): PostgreSQL 18 container pinned by immutable image digest
   after Phase 0 verification.
 - CLI runtime remains standard-library only.
 

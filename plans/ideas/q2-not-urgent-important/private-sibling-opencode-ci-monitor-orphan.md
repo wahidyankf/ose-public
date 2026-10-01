@@ -136,7 +136,7 @@ Out of scope:
   question shape as
   [sibling-main-ci-never-runs-on-merge](./sibling-main-ci-never-runs-on-merge.md). (open)
 - Deleting a mirror file that an active OpenCode session resolves by name could break that session
-  silently, since nothing else references it. Unverified.
+  silently, since nothing else references it. Not yet verified.
 
 ## What success looks like + promotion signal
 

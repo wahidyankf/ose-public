@@ -1,7 +1,7 @@
 # FERRET Init 02 — Protocol-Independent Local Backend
 
-**Evidence scope:** Existing repository and Plan 01 facts are **[Repo-grounded]**; every Plan 02 path, interface,
-limit, and target is an approved **[Judgment call — new artifact]** unless marked otherwise.
+**Evidence scope:** Existing repository and Plan 01 facts were verified against the repository; every Plan 02 path,
+interface, limit, and target is an approved new artifact unless stated otherwise.
 
 > **Status:** Backlog — blocked until FERRET Init 01 is merged and archived on `origin/main`, its terminal audit
 > passes, and its canonical cleanup proves the Plan 01 worktree plus local/remote delivery branch absent.

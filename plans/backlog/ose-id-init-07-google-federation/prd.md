@@ -120,19 +120,19 @@ sequenceDiagram
 
 ### Grounding and Prior Art
 
-- **[Repo-grounded]** Current inventory includes `libs/web-ui/src/components/button`, `input`, `alert`,
+- Current inventory includes `libs/web-ui/src/components/button`, `input`, `alert`,
   `dialog`, `sheet`, and `card`, plus `libs/web-ui-token/src/ose.css`. Plan 05 will create
   `apps/ose-id-web`; Phase 0 must inventory its delivered sign-in shell, stories, focus/error patterns,
   and responsive tokens before editing.
-- **[Web-cited, official, accessed 2026-09-15]** Google's
+- Official source (accessed 2026-09-15): Google's
   [branding guidelines](https://developers.google.com/identity/branding-guidelines) require compliant
   button display for app verification and recommend “Continue with Google” as permitted action text.
   Current assets/SDK output, logo aspect ratio, prominence, localized text, and color mode are rechecked
   at execution.
-- **[Web-cited, official, accessed 2026-09-15]** W3C's
+- Official source (accessed 2026-09-15): W3C's
   [modal-dialog pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/) says focus moves inside
   an opened dialog and returns to its invoker when closed; explicit linking follows this contract.
-- **[Judgment call]** Keep Plan 05's identifier-first hierarchy because it preserves an OSE-owned fallback
+- Keep Plan 05's identifier-first hierarchy because it preserves an OSE-owned fallback
   and limits change; tester evidence may select the documented runner-up without changing security scope.
 
 ### Diverge — Low-Fidelity Alternatives

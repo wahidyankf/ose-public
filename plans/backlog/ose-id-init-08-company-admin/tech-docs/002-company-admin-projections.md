@@ -48,8 +48,8 @@ implicitly.
 
 ## Source Confidence
 
-- **[Repo-grounded]** Plan 03's delivered API and archived terminal evidence are authoritative; Phase 0
+- Plan 03's delivered API and archived terminal evidence are authoritative; Phase 0
   resolves exact paths because backlog plans may move on completion.
-- **[Repo-grounded]** Plan 05's delivered session/BFF conventions are authoritative for adapter placement.
-- **[Judgment call]** Named view models are the minimum presentation boundary; Phase 0 may adjust names to
+- Plan 05's delivered session/BFF conventions are authoritative for adapter placement.
+- Named view models are the minimum presentation boundary; Phase 0 may adjust names to
   repository conventions without broadening fields or ownership.

@@ -38,7 +38,7 @@ Workflows support two execution modes and standard inputs (`mode`, `max-concurre
   applicable scenario adapter for real production invocation and independent evidence; static
   binding counts cannot replace it.
 - [API Workflows](api/README.md) — Orchestrated processes for live REST and GraphQL API quality validation and remediation. Use when routing to a workflow that exercises a running REST or GraphQL API against its contract and specs.
-- [AyoKoding Web Workflows](ayokoding-web/README.md) — Workflows for keeping AyoKoding learning content accurate, useful, and well structured. Use when routing to a workflow that validates a specific AyoKoding tutorial type's quality.
+- [AyoKoding Web Workflows](ayokoding-web/README.md) — Workflows for AyoKoding learning-content quality and AI benchmark data refreshes. Use when routing to a workflow that validates an AyoKoding tutorial type's quality or refreshes the AI benchmark data.
 - [CI Workflows](ci/README.md) — Workflows for checking that repository CI setup follows its documented standards. Use when routing to a workflow that validates or fixes CI/CD standards compliance.
 - [Content Workflows](content/README.md) — Workflows for creating, converting, and validating content in various formats. Use when routing to a workflow that converts a source document to Markdown or validates conversion fidelity.
 - [Dependency Workflows](dependencies/README.md) — Workflows for dependency inventory, security and compatibility clearance, and upgrade planning. Use when routing to a workflow that surveys or plans dependency changes across the monorepo.

@@ -44,7 +44,7 @@ By the end of this tutorial, you will understand:
 ```mermaid
 graph TB
     accTitle: Learning Path
-    accDescr: Graph with 16 nodes and 15 connections. Nodes: Quick Start, Prerequisites Check, Functional Components, JSX, Props, useState Hook, useEffect Hook, Event Handling, Conditional Rendering, Lists, Keys, Forms, and 4 more. Connections: Quick Start to Prerequisites Check, Prerequisites Check to Functional Components, Functional Components to JSX, Functional Components to Props, JSX to useState Hook, useState Hook to useEffect Hook, useEffect Hook to Event Handling, Event Handling to Conditional Rendering, Conditional Rendering to Lists, Conditional Rendering to Keys, Lists to Forms, Forms to Component Composition, and 3 more.
+    accDescr: Graph with 14 nodes and 13 connections. Nodes: Quick Start, Prerequisites Check, Functional Components, JSX & Props, useState Hook, useEffect Hook, Event Handling, Conditional Rendering, Lists & Keys, Forms, Component Composition, Custom Hooks, and 2 more. Connections: Quick Start to Prerequisites Check, Prerequisites Check to Functional Components, Functional Components to JSX & Props, JSX & Props to useState Hook, useState Hook to useEffect Hook, useEffect Hook to Event Handling, Event Handling to Conditional Rendering, Conditional Rendering to Lists & Keys, Lists & Keys to Forms, Forms to Component Composition, Component Composition to Custom Hooks, Custom Hooks to API Calls, and 1 more.
     Start[Quick Start] --> Setup[Prerequisites Check]
     Setup --> Component[Functional<br/>Components]
     Component --> JSX[JSX & Props]

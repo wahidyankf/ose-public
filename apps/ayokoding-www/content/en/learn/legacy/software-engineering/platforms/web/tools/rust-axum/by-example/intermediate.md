@@ -29,7 +29,7 @@ SQLx provides compile-time checked SQL queries and async database access. Set up
 ```mermaid
 graph TD
     accTitle: Example 28: SQLx Connection Pool Setup
-    accDescr: Graph with 6 nodes and 6 connections. Nodes: App Startup, PgPool::connect_with max_connections: 10, Arc60AppState62 db_pool: PgPool, Handler A State60App State62, Handler B State60App State62, pool.acquire4041 Connection from Pool. Connections: App Startup to PgPool::connect_with max_connections: 10, PgPool::connect_with max_connections: 10 to Arc60AppState62 db_pool: PgPool, Arc60AppState62 db_pool: PgPool to Handler A State60App State62, Arc60AppState62 db_pool: PgPool to Handler B State60App State62, Handler A State60App State62 to pool.acquire4041 Connection from Pool, Handler B State60App State62 to pool.acquire4041 Connection from Pool.
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: App Startup, PgPool::connect_with max_connections: 10, Arc<AppState> db_pool: PgPool, Handler A State<App State>, Handler B State<App State>, pool.acquire() Connection from Pool. Connections: App Startup to PgPool::connect_with max_connections: 10, PgPool::connect_with max_connections: 10 to Arc<AppState> db_pool: PgPool, Arc<AppState> db_pool: PgPool to Handler A State<App State>, Arc<AppState> db_pool: PgPool to Handler B State<App State>, Handler A State<App State> to pool.acquire() Connection from Pool, Handler B State<App State> to pool.acquire() Connection from Pool.
     A["App Startup"] --> B["PgPool::connect_with<br/>max_connections: 10"]
     B --> C["Arc#60;AppState#62;<br/>db_pool: PgPool"]
     C --> D["Handler A<br/>State#60;App<br/>State#62;"]
@@ -762,7 +762,7 @@ Axum supports WebSocket upgrades via `axum::extract::ws`. The connection upgrade
 ```mermaid
 graph TD
     accTitle: Example 37: Basic WebSocket Handler
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client HTTP Upgrade Request, Axum WebSocket Upgrade, ws.on_upgrade Async Handler, send40Message41 recv4041, Client WebSocket Messages. Connections: Client HTTP Upgrade Request to Axum WebSocket Upgrade, Axum WebSocket Upgrade to ws.on_upgrade Async Handler, ws.on_upgrade Async Handler to send40Message41 recv4041, send40Message41 recv4041 to Client WebSocket Messages.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Client HTTP Upgrade Request, Axum WebSocket Upgrade, ws.on_upgrade Async Handler, send(Message) recv(), Client WebSocket Messages. Connections: Client HTTP Upgrade Request to Axum WebSocket Upgrade, Axum WebSocket Upgrade to ws.on_upgrade Async Handler, ws.on_upgrade Async Handler to send(Message) recv(), send(Message) recv() to Client WebSocket Messages.
     A["Client<br/>HTTP Upgrade Request"] --> B["Axum<br/>WebSocket Upgrade"]
     B --> C["ws.on_upgrade<br/>Async Handler"]
     C --> D["send#40;Message#41;<br/>recv#40;#41;"]

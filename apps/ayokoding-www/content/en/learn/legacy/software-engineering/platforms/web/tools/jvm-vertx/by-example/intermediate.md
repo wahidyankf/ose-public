@@ -420,7 +420,7 @@ JSON Web Tokens provide stateless authentication. Vert.x Web's `JWTAuthHandler` 
 ```mermaid
 graph TD
   accTitle: Example 32: JWT Authentication
-  accDescr: Graph with 7 nodes and 6 connections. Nodes: Client POST /auth/login, JWTAuth.generate Token4041, Returns JWT Token, Client GET /api/resource Authorization: Bearer token, JWTAuthHandler validates, Handler runs, 401 Unauthorized. Connections: Client POST /auth/login to JWTAuth.generate Token4041, JWTAuth.generate Token4041 to Returns JWT Token, Returns JWT Token to Client GET /api/resource Authorization: Bearer token, Client GET /api/resource Authorization: Bearer token to JWTAuthHandler validates, JWTAuthHandler validates to Handler runs (valid), JWTAuthHandler validates to 401 Unauthorized (invalid).
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: Client POST /auth/login, JWTAuth.generate Token(), Returns JWT Token, Client GET /api/resource Authorization: Bearer token, JWTAuthHandler validates, Handler runs, 401 Unauthorized. Connections: Client POST /auth/login to JWTAuth.generate Token(), JWTAuth.generate Token() to Returns JWT Token, Returns JWT Token to Client GET /api/resource Authorization: Bearer token, Client GET /api/resource Authorization: Bearer token to JWTAuthHandler validates, JWTAuthHandler validates to Handler runs (valid), JWTAuthHandler validates to 401 Unauthorized (invalid).
   A["Client POST<br/>/auth/login"] --> B["JWTAuth.generate<br/>Token#40;#41;"]
   B --> C["Returns JWT Token"]
   C --> D["Client GET<br/>/api/resource<br/>Authorization:<br/>Bearer token"]

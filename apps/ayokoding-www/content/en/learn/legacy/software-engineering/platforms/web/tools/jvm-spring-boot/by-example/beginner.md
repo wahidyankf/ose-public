@@ -2132,7 +2132,7 @@ JPA supports four relationship types: `@OneToOne`, `@OneToMany`, `@ManyToOne`, `
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 12: Entity Relationships
-    accDescr: Graph with 2 nodes and 2 connections. Nodes: User 40141, Order 40*41. Connections: User 40141 to Order 40*41 (@OneToMany), Order 40*41 to User 40141 (@ManyToOne).
+    accDescr: Graph with 2 nodes and 2 connections. Nodes: User (1), Order (*). Connections: User (1) to Order (*) (@OneToMany), Order (*) to User (1) (@ManyToOne).
     User["User #40;1#41;"] -->|"@OneToMany"| Order["Order #40;*#41;"]
     Order -->|"@ManyToOne"| User
 

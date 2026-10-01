@@ -16,7 +16,7 @@ The `Effect<Success, Error, Requirements>` type is the foundation of the entire 
 ```mermaid
 graph LR
   accTitle: Example 1: Understanding the Effect Type Signature
-  accDescr: Graph with 4 nodes and 3 connections. Nodes: Effect A, E, R, A Success value, E Error type, R Requirements 40services41. Connections: Effect A, E, R to A Success value, Effect A, E, R to E Error type, Effect A, E, R to R Requirements 40services41.
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: Effect A, E, R, A Success value, E Error type, R Requirements (services). Connections: Effect A, E, R to A Success value, Effect A, E, R to E Error type, Effect A, E, R to R Requirements (services).
   A["Effect<br/>A, E, R"] --> B["A<br/>Success value"]
   A --> C["E<br/>Error type"]
   A --> D["R<br/>Requirements<br/>#40;services#41;"]

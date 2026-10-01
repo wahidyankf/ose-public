@@ -1546,7 +1546,7 @@ OpenAPI supports five primitive types: string, number, integer, boolean, and nul
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 23: Primitive Schema Types
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Schema Types, string format: date, email, uuid, uri, ..., number format: float, double, integer format: int32, int64, boolean true or false, null 403.1 only41. Connections: Schema Types to string format: date, email, uuid, uri, ..., Schema Types to number format: float, double, Schema Types to integer format: int32, int64, Schema Types to boolean true or false, Schema Types to null 403.1 only41.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Schema Types, string format: date, email, uuid, uri, ..., number format: float, double, integer format: int32, int64, boolean true or false, null (3.1 only). Connections: Schema Types to string format: date, email, uuid, uri, ..., Schema Types to number format: float, double, Schema Types to integer format: int32, int64, Schema Types to boolean true or false, Schema Types to null (3.1 only).
     Schema["Schema Types"] --> Str["string<br/>format: date, email,<br/>uuid, uri, ..."]
     Schema --> Num["number<br/>format: float,<br/>double"]
     Schema --> Int["integer<br/>format: int32, int64"]

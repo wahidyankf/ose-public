@@ -32,7 +32,7 @@ tags:
 ```mermaid
 graph LR
   accTitle: Example 56: Cubit
-  accDescr: Graph with 2 nodes and 2 connections. Nodes: UI Widget BlocBuilder, Cubit emits state. Connections: UI Widget BlocBuilder to Cubit emits state (cubit. method4041), Cubit emits state to UI Widget BlocBuilder (new state).
+  accDescr: Graph with 2 nodes and 2 connections. Nodes: UI Widget BlocBuilder, Cubit emits state. Connections: UI Widget BlocBuilder to Cubit emits state (cubit. method()), Cubit emits state to UI Widget BlocBuilder (new state).
   A["UI Widget<br/>BlocBuilder"] -->|"cubit.<br/>method#40;#41;"| B["Cubit<br/>emits state"]
   B -->|"new state"| A
 

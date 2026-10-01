@@ -822,7 +822,7 @@ Ecto schemas define your database structure. Migrations create and modify databa
 %% Ecto schema to database mapping
 graph LR
     accTitle: Example 11: Schema and Migrations
-    accDescr: Graph with 9 nodes and 1 connections. Nodes: A, B, schema, field, C, posts, title, D, priv. Connections: B to C (mix ecto.migrate).
+    accDescr: Graph with 9 nodes and 1 connections. Nodes: A, schema, field, B, C, posts, title, D, priv. Connections: B to C (mix ecto.migrate).
     A["Elixir Struct
 %Post{}"] -->|"use Ecto.Schema"| B["Ecto Schema
 schema posts do
@@ -977,7 +977,7 @@ Changesets track data changes and validate them before saving. They're Ecto's wa
 %% Changeset validation pipeline
 graph TD
     accTitle: Example 13: Changesets and Validation
-    accDescr: Graph with 12 nodes and 6 connections. Nodes: A, B, Filter, C, Check, D, E, valid?, G, Save, H, with. Connections: B to C, C to D, D to E, E to valid?, valid? to G (true), valid? to H (false).
+    accDescr: Graph with 12 nodes and 6 connections. Nodes: A, Filter, B, C, Check, D, E, valid?, G, Save, H, with. Connections: B to C, C to D, D to E, E to valid?, valid? to G (true), valid? to H (false).
     A["Input Attrs
 %{title: '', email:<br/>'bad'}"] --> B["cast/3
 Filter allowed fields"]

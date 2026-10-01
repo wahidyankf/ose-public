@@ -28,7 +28,7 @@ This quick start follows a structured learning path:
 ```mermaid
 graph TD
     accTitle: Learning Path
-    accDescr: Graph with 15 nodes and 14 connections. Nodes: Project Setup, B, REST, Dependency Injection, D, Business, Data Models, Repository Pattern, Database Integration, Exception Handling, Configuration, Testing, and 3 more. Connections: Project Setup to B, Project Setup to REST, B to Dependency Injection, Dependency Injection to D, Dependency Injection to Business, D to Data Models, Data Models to Repository Pattern, Repository Pattern to Database Integration, Database Integration to Exception Handling, Exception Handling to Configuration, Configuration to Testing, Testing to Production Features, and 2 more.
+    accDescr: Graph with 12 nodes and 11 connections. Nodes: Project Setup, Controllers & REST, Dependency Injection, Services & Business Logic, Data Models, Repository Pattern, Database Integration, Exception Handling, Configuration, Testing, Production Features, Build & Deploy. Connections: Project Setup to Controllers & REST, Controllers & REST to Dependency Injection, Dependency Injection to Services & Business Logic, Services & Business Logic to Data Models, Data Models to Repository Pattern, Repository Pattern to Database Integration, Database Integration to Exception Handling, Exception Handling to Configuration, Configuration to Testing, Testing to Production Features, Production Features to Build & Deploy.
     A[Project Setup] --> B[Controllers & REST]
     B --> C[Dependency Injection]
     C --> D[Services & Business<br/>Logic]

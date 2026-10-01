@@ -28,7 +28,7 @@ Unlike narrative tutorials that build understanding through explanation and stor
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Learning Path
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Beginner Examples 1-30 Core Concepts, B, State, Advanced Examples 61-85 Production Patterns. Connections: Beginner Examples 1-30 Core Concepts to B, Beginner Examples 1-30 Core Concepts to State, B to Advanced Examples 61-85 Production Patterns.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner Examples 1-30 Core Concepts, Intermediate Examples 31-60 Forms & State, Advanced Examples 61-85 Production Patterns. Connections: Beginner Examples 1-30 Core Concepts to Intermediate Examples 31-60 Forms & State, Intermediate Examples 31-60 Forms & State to Advanced Examples 61-85 Production Patterns.
     A["Beginner<br/>Examples 1-30<br/>Core Concepts"] --> B["Intermediate<br/>Examples 31-60<br/>Forms & State"]
     B --> C["Advanced<br/>Examples 61-85<br/>Production Patterns"]
 

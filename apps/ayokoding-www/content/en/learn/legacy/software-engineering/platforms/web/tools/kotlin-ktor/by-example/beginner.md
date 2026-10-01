@@ -16,7 +16,7 @@ Ktor runs as an embedded server inside your JVM application rather than deployin
 ```mermaid
 graph TD
   accTitle: Example 1: Minimal Embedded Server
-  accDescr: Graph with 6 nodes and 5 connections. Nodes: main4041, embedded Server40Netty41, Install Plugins, Define Routes, server.start40wait=true41, HTTP Requests. Connections: main4041 to embedded Server40Netty41, embedded Server40Netty41 to Install Plugins, Install Plugins to Define Routes, Define Routes to server.start40wait=true41, server.start40wait=true41 to HTTP Requests.
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: main(), embedded Server(Netty), Install Plugins, Define Routes, server.start( wait=true), HTTP Requests. Connections: main() to embedded Server(Netty), embedded Server(Netty) to Install Plugins, Install Plugins to Define Routes, Define Routes to server.start( wait=true), server.start( wait=true) to HTTP Requests.
   A["main#40;#41;"] --> B["embedded<br/>Server#40;Netty#41;"]
   B --> C["Install Plugins"]
   C --> D["Define Routes"]

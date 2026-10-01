@@ -397,7 +397,7 @@ The fundamental RAG loop: embed the user's query, retrieve semantically similar 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
   accTitle: Example 34: Basic RAG Pipeline — Embed, Retrieve, Inject
-  accDescr: Graph with 7 nodes and 6 connections. Nodes: User Query, embed40query41, Vector DB similarity search, Top-K Documents, Inject into system prompt, generateText4041, Grounded Answer. Connections: User Query to embed40query41, embed40query41 to Vector DB similarity search, Vector DB similarity search to Top-K Documents, Top-K Documents to Inject into system prompt, Inject into system prompt to generateText4041, generateText4041 to Grounded Answer.
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: User Query, embed(query), Vector DB similarity search, Top-K Documents, Inject into system prompt, generateText(), Grounded Answer. Connections: User Query to embed(query), embed(query) to Vector DB similarity search, Vector DB similarity search to Top-K Documents, Top-K Documents to Inject into system prompt, Inject into system prompt to generateText(), generateText() to Grounded Answer.
   A["User Query"] --> B["embed#40;query#41;"]
   B --> C["Vector DB<br/>similarity search"]
   C --> D["Top-K<br/>Documents"]

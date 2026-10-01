@@ -43,7 +43,7 @@ Several distinctions matter before you write a single line:
 ```mermaid
 graph TD
   accTitle: Learning Path
-  accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, D, E. Connections: A to B, B to C, D to A, C to E.
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner& Core State Machines& Examples 1-27, Intermediate& Actors, React, Testing& Examples 28-54, Advanced& Complex Patterns& Examples 55-80, 0& No XState Knowledge, 95& XState Mastery. Connections: Beginner& Core State Machines& Examples 1-27 to Intermediate& Actors, React, Testing& Examples 28-54, Intermediate& Actors, React, Testing& Examples 28-54 to Advanced& Complex Patterns& Examples 55-80, 0& No XState Knowledge to Beginner& Core State Machines& Examples 1-27, Advanced& Complex Patterns& Examples 55-80 to 95& XState Mastery.
   A["Beginner&#10;Core State<br/>Machines&#10;Examples<br/>1-27"] --> B["Intermediate&#10;Actors,<br/>React,<br/>Testing&#10;Examples<br/>28-54"]
   B --> C["Advanced&#10;Complex<br/>Patterns&#10;Examples<br/>55-80"]
   D["0%&#10;No XState<br/>Knowledge"] -.-> A

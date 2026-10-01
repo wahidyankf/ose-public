@@ -40,7 +40,7 @@ By the end of this tutorial, you will have touchpoints for:
 ```mermaid
 graph TD
     accTitle: Learning Path
-    accDescr: Graph with 14 nodes and 28 connections. Nodes: Quick Start: Shell, File Operations, Text Processing, D, Redirection, Process Management, Permissions, Archives, Networking, Variables, Scripting, Find Files, and 2 more. Connections: Quick Start: Shell to File Operations, Quick Start: Shell to Text Processing, Quick Start: Shell to D, Quick Start: Shell to Redirection, Quick Start: Shell to Process Management, Quick Start: Shell to Permissions, Quick Start: Shell to Archives, Quick Start: Shell to Networking, Quick Start: Shell to Variables, Quick Start: Shell to Scripting, Quick Start: Shell to Find Files, File Operations to Text Processing, and 16 more.
+    accDescr: Graph with 13 nodes and 27 connections. Nodes: Quick Start: Shell, File Operations, Text Processing, Pipes & Redirection, Process Management, Permissions, Archives, Networking, Variables, Scripting, Find Files, Beginner Tutorial, and 1 more. Connections: Quick Start: Shell to File Operations, Quick Start: Shell to Text Processing, Quick Start: Shell to Pipes & Redirection, Quick Start: Shell to Process Management, Quick Start: Shell to Permissions, Quick Start: Shell to Archives, Quick Start: Shell to Networking, Quick Start: Shell to Variables, Quick Start: Shell to Scripting, Quick Start: Shell to Find Files, File Operations to Text Processing, Text Processing to Process Management, and 15 more.
     A[Quick Start: Shell] --> B[File Operations]
     A --> C[Text Processing]
     A --> D[Pipes & Redirection]

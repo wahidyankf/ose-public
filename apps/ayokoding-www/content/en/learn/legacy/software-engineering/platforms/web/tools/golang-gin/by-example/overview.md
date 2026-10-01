@@ -36,7 +36,7 @@ Gin is a **high-performance HTTP web framework for Go** that prioritizes speed, 
 ```mermaid
 graph TD
   accTitle: Learning Path
-  accDescr: Graph with 6 nodes and 5 connections. Nodes: Beginner Core Gin Concepts Examples 1-27, Intermediate Production Patterns Examples 28-55, C, Resilience, 0 No Gin Knowledge, 95 Framework Mastery. Connections: Beginner Core Gin Concepts Examples 1-27 to Intermediate Production Patterns Examples 28-55, Intermediate Production Patterns Examples 28-55 to C, Intermediate Production Patterns Examples 28-55 to Resilience, 0 No Gin Knowledge to Beginner Core Gin Concepts Examples 1-27, C to 95 Framework Mastery.
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Core Gin Concepts Examples 1-27, Intermediate Production Patterns Examples 28-55, Advanced Scale & Resilience Examples 56-80, 0 No Gin Knowledge, 95 Framework Mastery. Connections: Beginner Core Gin Concepts Examples 1-27 to Intermediate Production Patterns Examples 28-55, Intermediate Production Patterns Examples 28-55 to Advanced Scale & Resilience Examples 56-80, 0 No Gin Knowledge to Beginner Core Gin Concepts Examples 1-27, Advanced Scale & Resilience Examples 56-80 to 95 Framework Mastery.
   A["Beginner<br/>Core Gin Concepts<br/>Examples 1-27"] --> B["Intermediate<br/>Production Patterns<br/>Examples 28-55"]
   B --> C["Advanced<br/>Scale & Resilience<br/>Examples 56-80"]
   D["0%<br/>No Gin Knowledge"] -.-> A

@@ -30,7 +30,7 @@ A verticle is the fundamental unit of deployment in Vert.x—an actor-like compo
 ```mermaid
 graph TD
   accTitle: Example 1: Creating and Deploying a Verticle
-  accDescr: Graph with 5 nodes and 4 connections. Nodes: Vertx Instance, Deploy Verticle, AbstractVerticle. start4041, Event Loop Thread, Handles Events. Connections: Vertx Instance to Deploy Verticle, Deploy Verticle to AbstractVerticle. start4041, AbstractVerticle. start4041 to Event Loop Thread, Event Loop Thread to Handles Events.
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Vertx Instance, Deploy Verticle, AbstractVerticle. start(), Event Loop Thread, Handles Events. Connections: Vertx Instance to Deploy Verticle, Deploy Verticle to AbstractVerticle. start(), AbstractVerticle. start() to Event Loop Thread, Event Loop Thread to Handles Events.
   A["Vertx Instance"] --> B["Deploy Verticle"]
   B --> C["AbstractVerticle.<br/>start#40;#41;"]
   C --> D["Event Loop Thread"]
@@ -1136,7 +1136,7 @@ The Vert.x event bus is a lightweight message-passing system connecting verticle
 ```mermaid
 graph LR
   accTitle: Example 15: Event Bus Point-to-Point Messaging
-  accDescr: Graph with 3 nodes and 4 connections. Nodes: Sender Verticle, Event Bus, Consumer Verticle. Connections: Sender Verticle to Event Bus (eventBus. send40address, msg41), Event Bus to Consumer Verticle (delivers to ONE), Consumer Verticle to Event Bus (message.reply40response41), Event Bus to Sender Verticle (delivers reply).
+  accDescr: Graph with 3 nodes and 4 connections. Nodes: Sender Verticle, Event Bus, Consumer Verticle. Connections: Sender Verticle to Event Bus (eventBus. send(address, msg)), Event Bus to Consumer Verticle (delivers to ONE), Consumer Verticle to Event Bus (message.reply( response)), Event Bus to Sender Verticle (delivers reply).
   A["Sender Verticle"] -->|"eventBus.<br/>send#40;address,<br/>msg#41;"| B["Event Bus"]
   B -->|"delivers to ONE"| C["Consumer Verticle"]
   C -->|"message.reply#40;<br/>response#41;"| B

@@ -19,7 +19,7 @@ In XState v5, every running state machine is an actor. Actors are isolated units
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 28: Actors vs Machines — The Actor Model
-    accDescr: Graph with 3 nodes and 4 connections. Nodes: Actor A (Machine), Actor B (Machine), Actor System system.get40id41. Connections: Actor A (Machine) to Actor B (Machine) (sendTo: EVENT_X), Actor B (Machine) to Actor A (Machine) (sendTo: RESPONSE_Y), Actor System system.get40id41 to Actor A (Machine), Actor System system.get40id41 to Actor B (Machine).
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: Actor A (Machine), Actor B (Machine), Actor System system.get(id). Connections: Actor A (Machine) to Actor B (Machine) (sendTo: EVENT_X), Actor B (Machine) to Actor A (Machine) (sendTo: RESPONSE_Y), Actor System system.get(id) to Actor A (Machine), Actor System system.get(id) to Actor B (Machine).
     A["Actor A<br/>(Machine)"] -->|"sendTo: EVENT_X"| B["Actor B<br/>(Machine)"]
     B -->|"sendTo: RESPONSE_Y"| A
     C["Actor System<br/>system.get#40;id#41;"] --> A
@@ -124,7 +124,7 @@ actor.send({ type: "TICK" });
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 29: fromPromise — Promise Actors
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: idle not started, pending promise running, done output available, error snapshot.error set. Connections: idle not started to pending promise running (actor. start4041), pending promise running to done output available (resolves), pending promise running to error snapshot.error set (rejects).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: idle not started, pending promise running, done output available, error snapshot.error set. Connections: idle not started to pending promise running (actor. start()), pending promise running to done output available (resolves), pending promise running to error snapshot.error set (rejects).
     A["idle<br/>not started"] -->|"actor.<br/>start#40;#41;"| B["pending<br/>promise running"]
     B -->|"resolves"| C["done<br/>output available"]
     B -->|"rejects"| D["error<br/>snapshot.error set"]
@@ -215,7 +215,7 @@ userActor.start();
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
     accTitle: Example 30: fromCallback — Callback Actors
-    accDescr: Sequence diagram between Parent Machine, Callback Actor, External Source. Messages: Parent Machine to Callback Actor: spawn / invoke (starts actor); Callback Actor to External Source: subscribe / addEventListener; External Source to Callback Actor: event arrives; Callback Actor to Parent Machine: sendBack40event41; Parent Machine to Callback Actor: receive40event41 via send; Callback Actor to External Source: cleanup on stop.
+    accDescr: Sequence diagram between Parent Machine, Callback Actor, External Source. Messages: Parent Machine to Callback Actor: spawn / invoke (starts actor); Callback Actor to External Source: subscribe / addEventListener; External Source to Callback Actor: event arrives; Callback Actor to Parent Machine: sendBack(event); Parent Machine to Callback Actor: receive(event) via send; Callback Actor to External Source: cleanup on stop.
     participant P as Parent Machine
     participant C as Callback Actor
     participant E as External Source
@@ -610,7 +610,7 @@ cartActor.send({ type: "REMOVE_ITEM", id: "book-1" });
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 33: spawn — Creating Child Actors
-    accDescr: Graph with 4 nodes and 5 connections. Nodes: Parent Machine, Worker Actor 1, Worker Actor 2, Worker Actor 3. Connections: Parent Machine to Worker Actor 1 (spawn40worker Machine41), Parent Machine to Worker Actor 2 (spawn40worker Machine41), Parent Machine to Worker Actor 3 (spawn40worker Machine41), Parent Machine to Worker Actor 1 (sendTo40ref41), Worker Actor 1 to Parent Machine (sendBack: DONE).
+    accDescr: Graph with 4 nodes and 5 connections. Nodes: Parent Machine, Worker Actor 1, Worker Actor 2, Worker Actor 3. Connections: Parent Machine to Worker Actor 1 (spawn(worker Machine)), Parent Machine to Worker Actor 2 (spawn(worker Machine)), Parent Machine to Worker Actor 3 (spawn(worker Machine)), Parent Machine to Worker Actor 1 (sendTo(ref)), Worker Actor 1 to Parent Machine (sendBack: DONE).
     P["Parent Machine"] -->|"spawn#40;worker<br/>Machine#41;"| W1["Worker Actor 1"]
     P -->|"spawn#40;worker<br/>Machine#41;"| W2["Worker Actor 2"]
     P -->|"spawn#40;worker<br/>Machine#41;"| W3["Worker Actor 3"]
@@ -779,7 +779,7 @@ pool.send({ type: "START_TASK", taskId: "task-1" });
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
     accTitle: Example 34: sendTo — Messaging Between Actors
-    accDescr: Sequence diagram between User / UI, Parent Actor, Child Actor. Messages: User / UI to Parent Actor: SUBMIT_ORDER event; Parent Actor to Child Actor: sendTo40childRef, PROCESS41; Child Actor to Child Actor: process order internally; Child Actor to Parent Actor: sendBack40ORDER_COMPLETE41; Parent Actor to Parent Actor: transition to confirmed state; Parent Actor to User / UI: snapshot update.
+    accDescr: Sequence diagram between User / UI, Parent Actor, Child Actor. Messages: User / UI to Parent Actor: SUBMIT_ORDER event; Parent Actor to Child Actor: sendTo(childRef, PROCESS); Child Actor to Child Actor: process order internally; Child Actor to Parent Actor: sendBack(ORDER_COMPLETE); Parent Actor to Parent Actor: transition to confirmed state; Parent Actor to User / UI: snapshot update.
     participant U as User / UI
     participant P as Parent Actor
     participant C as Child Actor
@@ -1039,7 +1039,7 @@ Machine `input` lets you pass runtime data into a machine at creation time. The 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 36: Machine Input — Parameterizing Machines
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: create Actor40machine, input: data 41, context initializer 40 input 41 => ..., Machine runs with parameterized context, Type: setup40 types: input 4141. Connections: create Actor40machine, input: data 41 to context initializer 40 input 41 => ..., context initializer 40 input 41 => ... to Machine runs with parameterized context, Type: setup40 types: input 4141 to create Actor40machine, input: data 41 (enforces).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: create Actor(machine, input: data ), context initializer ( input ) => ..., Machine runs with parameterized context, Type: setup( types: input )). Connections: create Actor(machine, input: data ) to context initializer ( input ) => ..., context initializer ( input ) => ... to Machine runs with parameterized context, Type: setup( types: input )) to create Actor(machine, input: data ) (enforces).
     A["create<br/>Actor#40;machine,<br/>{ input: data }#41;"] --> B["context initializer<br/>#40;{ input }#41; =><br/>..."]
     B --> C["Machine runs with<br/>parameterized<br/>context"]
     D["Type: setup#40;{<br/>types: { input<br/>}#41;#41;"] -.->|"enforces"| A
@@ -1563,7 +1563,7 @@ console.log(snapshot.hasTag("success"));
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 40: useMachine — React Hook Basics
-    accDescr: Graph with 3 nodes and 4 connections. Nodes: React Component, useMachine actor, Re-render triggered. Connections: React Component to useMachine actor (send40event41), useMachine actor to React Component (snapshot), useMachine actor to Re-render triggered (state change), Re-render triggered to React Component.
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: React Component, useMachine actor, Re-render triggered. Connections: React Component to useMachine actor (send(event)), useMachine actor to React Component (snapshot), useMachine actor to Re-render triggered (state change), Re-render triggered to React Component.
     A["React Component"] -->|"send#40;event#41;"| B["useMachine<br/>actor"]
     B -->|"snapshot"| A
     B -->|"state change"| C["Re-render<br/>triggered"]
@@ -1986,7 +1986,7 @@ React Context is the standard pattern for sharing a machine's `ActorRef` across 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 43: Providing Actors via Context
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: ActorProvider (creates actor), React Context (ActorRef), ComponentA useSelector: count, ComponentB useSelector: status, ComponentC actorRef. send40event41. Connections: ActorProvider (creates actor) to React Context (ActorRef), React Context (ActorRef) to ComponentA useSelector: count, React Context (ActorRef) to ComponentB useSelector: status, React Context (ActorRef) to ComponentC actorRef. send40event41.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: ActorProvider (creates actor), React Context (ActorRef), ComponentA useSelector: count, ComponentB useSelector: status, ComponentC actorRef. send(event). Connections: ActorProvider (creates actor) to React Context (ActorRef), React Context (ActorRef) to ComponentA useSelector: count, React Context (ActorRef) to ComponentB useSelector: status, React Context (ActorRef) to ComponentC actorRef. send(event).
     A["ActorProvider<br/>(creates actor)"] --> B["React Context<br/>(ActorRef)"]
     B --> C["ComponentA<br/>useSelector: count"]
     B --> D["ComponentB<br/>useSelector: status"]
@@ -2469,7 +2469,7 @@ XState machines are pure — given the same sequence of events, they produce the
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 46: Testing Machines with createActor
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: create Actor40machine41, Running Actor, State Transition, Assert snapshot.value, Test Passes. Connections: create Actor40machine41 to Running Actor (.start4041), Running Actor to State Transition (actor. send40event41), State Transition to Assert snapshot.value (actor. getSnapshot4041), Assert snapshot.value to Test Passes (assert snapshot.context).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: create Actor(machine), Running Actor, State Transition, Assert snapshot.value, Test Passes. Connections: create Actor(machine) to Running Actor (.start()), Running Actor to State Transition (actor. send(event)), State Transition to Assert snapshot.value (actor. getSnapshot()), Assert snapshot.value to Test Passes (assert snapshot.context).
     A["create<br/>Actor#40;machine#41;"] -->|".start#40;#41;"| B["Running Actor"]
     B -->|"actor.<br/>send#40;event#41;"| C["State Transition"]
     C -->|"actor.<br/>getSnapshot#40;#41;"| D["Assert<br/>snapshot.value"]
@@ -2754,7 +2754,7 @@ console.log("All match assertions passed");
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 48: Testing Invocations — Mocking Services
-    accDescr: Graph with 5 nodes and 3 connections. Nodes: Production Machine, Real fetchUser Actor 40network call41, Test Machine machine.provide40. ..41, Mock fetchUser Actor 40fromPromise mock41, Known test data. Connections: Production Machine to Real fetchUser Actor 40network call41 (invokes), Test Machine machine.provide40. ..41 to Mock fetchUser Actor 40fromPromise mock41 (invokes), Mock fetchUser Actor 40fromPromise mock41 to Known test data (returns).
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: Production Machine, Real fetchUser Actor (network call), Test Machine machine.provide(. ..), Mock fetchUser Actor (fromPromise mock), Known test data. Connections: Production Machine to Real fetchUser Actor (network call) (invokes), Test Machine machine.provide(. ..) to Mock fetchUser Actor (fromPromise mock) (invokes), Mock fetchUser Actor (fromPromise mock) to Known test data (returns).
     A["Production Machine"] -->|"invokes"| B["Real fetchUser Actor<br/>#40;network call#41;"]
     C["Test Machine<br/>machine.provide#40;.<br/>..#41;"] -->|"invokes"| D["Mock fetchUser Actor<br/>#40;fromPromise<br/>mock#41;"]
     D -->|"returns"| E["Known test data"]

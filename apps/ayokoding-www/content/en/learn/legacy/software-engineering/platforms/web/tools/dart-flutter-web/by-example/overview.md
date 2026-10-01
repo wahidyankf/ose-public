@@ -36,7 +36,7 @@ Flutter Web is **Google's UI toolkit for building web applications** using the D
 ```mermaid
 graph TD
   accTitle: Learning Path
-  accDescr: Graph with 6 nodes and 5 connections. Nodes: Beginner Core Flutter Concepts Examples 1-27, Intermediate Production Patterns Examples 28-55, C, Scale, 0 No Flutter Knowledge, 95 Framework Mastery. Connections: Beginner Core Flutter Concepts Examples 1-27 to Intermediate Production Patterns Examples 28-55, Intermediate Production Patterns Examples 28-55 to C, Intermediate Production Patterns Examples 28-55 to Scale, 0 No Flutter Knowledge to Beginner Core Flutter Concepts Examples 1-27, C to 95 Framework Mastery.
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Core Flutter Concepts Examples 1-27, Intermediate Production Patterns Examples 28-55, Advanced Platform & Scale Examples 56-80, 0 No Flutter Knowledge, 95 Framework Mastery. Connections: Beginner Core Flutter Concepts Examples 1-27 to Intermediate Production Patterns Examples 28-55, Intermediate Production Patterns Examples 28-55 to Advanced Platform & Scale Examples 56-80, 0 No Flutter Knowledge to Beginner Core Flutter Concepts Examples 1-27, Advanced Platform & Scale Examples 56-80 to 95 Framework Mastery.
   A["Beginner<br/>Core Flutter<br/>Concepts<br/>Examples 1-27"] --> B["Intermediate<br/>Production Patterns<br/>Examples 28-55"]
   B --> C["Advanced<br/>Platform & Scale<br/>Examples 56-80"]
   D["0%<br/>No Flutter Knowledge"] -.-> A

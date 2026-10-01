@@ -1419,7 +1419,7 @@ Stream transformations build data pipelines over sequences. Like Effect's `map` 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
   accTitle: Example 46: Stream Transformations — map, filter, flatMap
-  accDescr: Graph with 6 nodes and 15 connections. Nodes: A, lt, subset), B, C, D. Connections: A to B (Stream.map(f)), A to lt (Stream.map(f)), A to subset) (Stream.map(f)), lt to B (Stream.map(f)), lt to lt (Stream.map(f)), lt to subset) (Stream.map(f)), subset) to B (Stream.map(f)), subset) to lt (Stream.map(f)), subset) to subset) (Stream.map(f)), B to C (Stream.filter(p)), B to lt (Stream.filter(p)), B to subset) (Stream.filter(p)), and 3 more.
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: Stream<A>, Stream<B>, Stream<B> (subset), Stream<C> (flattened). Connections: Stream<A> to Stream<B> (Stream.map(f)), Stream<B> to Stream<B> (subset) (Stream.filter(p)), Stream<B> (subset) to Stream<C> (flattened) (Stream.flatMap(g)).
   A["Stream&lt;A&gt;"] -->|"Stream.map(f)"| B["Stream&lt;B&gt;"]
   B -->|"Stream.filter(p)"| C["Stream&lt;B&gt;<br/>(subset)"]
   C -->|"Stream.flatMap(g)"| D["Stream&lt;C&gt;<br/>(flattened)"]

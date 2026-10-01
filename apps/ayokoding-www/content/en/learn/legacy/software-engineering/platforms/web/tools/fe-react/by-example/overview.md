@@ -36,7 +36,7 @@ React is a **JavaScript library for building user interfaces** that prioritizes 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
   accTitle: Learning Path
-  accDescr: Graph with 6 nodes and 5 connections. Nodes: Beginner Core React Concepts Examples 1-25, Intermediate Production Patterns Examples 26-50, C, Scale, 0 No React Knowledge, 95 Framework Mastery. Connections: Beginner Core React Concepts Examples 1-25 to Intermediate Production Patterns Examples 26-50, Intermediate Production Patterns Examples 26-50 to C, Intermediate Production Patterns Examples 26-50 to Scale, 0 No React Knowledge to Beginner Core React Concepts Examples 1-25, C to 95 Framework Mastery.
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Core React Concepts Examples 1-25, Intermediate Production Patterns Examples 26-50, Advanced Performance & Scale Examples 51-90, 0 No React Knowledge, 95 Framework Mastery. Connections: Beginner Core React Concepts Examples 1-25 to Intermediate Production Patterns Examples 26-50, Intermediate Production Patterns Examples 26-50 to Advanced Performance & Scale Examples 51-90, 0 No React Knowledge to Beginner Core React Concepts Examples 1-25, Advanced Performance & Scale Examples 51-90 to 95 Framework Mastery.
   A["Beginner<br/>Core React Concepts<br/>Examples 1-25"] --> B["Intermediate<br/>Production Patterns<br/>Examples 26-50"]
   B --> C["Advanced<br/>Performance & Scale<br/>Examples 51-90"]
   D["0%<br/>No React Knowledge"] -.-> A

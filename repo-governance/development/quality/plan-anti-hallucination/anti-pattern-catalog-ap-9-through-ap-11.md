@@ -9,7 +9,7 @@ when_to_use: "Use as a checklist for AP-9 - AP-11."
 
 > "Vercel automatically caches static assets for 31 days..."
 
-Behaviour claims need either a repo-doc reference, an inline `[Web-cited]` excerpt with URL + date, or `[Judgment call]`.
+Behaviour claims need either a repo-doc reference, a plain inline citation (excerpt + URL + access date), or rewording as a plainly stated expectation.
 
 ## AP-10: Cross-link to a file that does not exist
 

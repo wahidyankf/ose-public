@@ -1,5 +1,5 @@
 ---
-description: "Mandatory pre-write verification, repo-grounding, refuse-on-uncertainty, and confidence-labeling rules for plan content authored by AI agents"
+description: "Mandatory pre-write verification, repo-grounding, refuse-on-uncertainty, and plain-citation rules for plan content authored by AI agents"
 when_to_use: "Read this index to find the right Plan Anti-Hallucination Convention child document."
 ---
 
@@ -8,7 +8,7 @@ when_to_use: "Read this index to find the right Plan Anti-Hallucination Conventi
 - [Principles/Purpose](./principles-implemented-respected-and-purpose.md) — Principles implemented, and why this convention exists. Use to trace this convention's rationale.
 - [Scope](./scope.md) — Which agents and content this convention covers. Use to check whether this applies to an agent.
 - [Hallucination Categories](./hallucination-categories-in-plan-context.md) — Categories of hallucination in plan content. Use to classify a suspected hallucination.
-- [The Four Confidence Labels](./the-four-confidence-labels.md) — The four confidence labels for plan claims. Use when labeling a claim's confidence.
+- [No Inline Confidence Labels](./no-inline-confidence-labels.md) — Plan claims carry no inline confidence labels; web sources are plain citations; plan-checker verifies. Use when recording a plan claim's evidence or source.
 - [Repo-Grounding Rule (HARD)](./repo-grounding-rule-hard.md) — The mandatory repo-grounding rule for presence claims. Use when a plan asserts something exists.
 - [Absence/Completeness: Zero-Result Evidence (1)](./absence-and-completeness-claims-zero-result-search-evidence-checklist.md) — Why absence claims fail differently; the four-point checklist. Use before citing a zero-result search as evidence.
 - [Absence/Completeness: Zero-Result Evidence (2)](./absence-and-completeness-claims-zero-result-search-evidence-worked-example.md) — A measured example, plus a verification recipe. Use for a worked example before trusting a zero result.

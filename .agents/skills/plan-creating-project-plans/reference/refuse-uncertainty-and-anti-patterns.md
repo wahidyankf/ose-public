@@ -5,11 +5,12 @@
 When verification (see [verification-recipes.md](verification-recipes.md)) fails or is impossible: REFUSE to write the claim as a fact. Acceptable refusals:
 
 1. **Skip the claim** (preferred when omission keeps the plan coherent)
-2. **Use `[Unverified]` label** (flagged for verification before execution)
-3. **Use `[Judgment call]` label** (explicitly subjective)
-4. **Use placeholder** — `_Unknown — verify before authoring_` under Open Questions
+2. **Use placeholder** — `_Unknown — verify before authoring_` under Open Questions (flagged for
+   verification before execution)
+3. **Reword as an expectation** — a plainly worded best guess ("we expect …; no baseline measured")
 
-Forbidden: writing the claim without a label and hoping it is correct.
+Forbidden: writing an unverified claim as a fact and hoping it is correct. No refusal uses an inline
+confidence label.
 
 ## Web-Research Delegation (Lower Threshold for Plan Content)
 

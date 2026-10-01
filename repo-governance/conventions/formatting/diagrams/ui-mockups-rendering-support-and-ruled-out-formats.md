@@ -38,11 +38,11 @@ with a one-line reason:
 `id`, `<style>`, and `<script>` entirely — only a legacy set of presentation attributes survives
 (`align`, `border`, `color`, `width`, `height`, `colspan`, `rowspan`, `href`, `src`, `alt`).
 An `<div style="...">` mockup renders fully in VSCode but becomes an unstyled bare element on
-GitHub. [Web-cited: `rhysd/marked-sanitizer-github` confirms `style`, `class`, `id` absent from
-the allowed-attribute list; accessed 2026-06-16]
+GitHub. (Source: `rhysd/marked-sanitizer-github` confirms `style`, `class`, `id` absent from
+the allowed-attribute list; accessed 2026-06-16.)
 
 **Why `.excalidraw.png` is required over `.excalidraw.svg`**: Excalidraw's custom hand-drawn fonts
 (Virgil, Cascadia) load from a CDN that GitHub's CSP blocks for SVG files, so `.excalidraw.svg`
 text labels fall back to a generic font on GitHub. `.excalidraw.png` rasterises the fonts and
-renders faithfully. [Web-cited: excalidraw/excalidraw#4855 confirms font CSP fallback on GitHub;
-accessed 2026-06-16]
+renders faithfully. (Source: excalidraw/excalidraw#4855 confirms font CSP fallback on GitHub;
+accessed 2026-06-16.)

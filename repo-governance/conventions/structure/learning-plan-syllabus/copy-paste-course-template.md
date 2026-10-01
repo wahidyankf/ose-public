@@ -37,8 +37,8 @@ material>.
 ## Accuracy notes
 
 - <fact-by-fact provenance for every non-obvious claim in this file, e.g.
-  `[Verified — stable, non-dynamic domain fact]`, `[Repo-grounded, <file>]`, or
-  `[Web-cited: <source>; accessed YYYY-MM-DD]`>.
+  `stable, non-dynamic domain fact`, `repository: <file>`, or
+  `<source URL>, accessed YYYY-MM-DD`, written as plain provenance with no inline confidence label>.
 
 ## Concepts
 

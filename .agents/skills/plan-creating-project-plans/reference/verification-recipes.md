@@ -1,4 +1,4 @@
-# Pre-Write Verification — Recipes and Confidence Labels (Anti-Hallucination — HARD)
+# Pre-Write Verification — Recipes and Plain Citations (Anti-Hallucination — HARD)
 
 Before writing any non-trivial factual claim into a plan, run the verification recipe for the claim's category. Hallucinated content (fabricated file paths, invented Nx targets, made-up versions, fictitious APIs, fabricated KPIs) turns a plan into broken work the moment execution begins. Verify at authoring time — it is the cheapest place to catch fabrication.
 
@@ -20,17 +20,19 @@ See [Plan Anti-Hallucination Convention](../../../../repo-governance/development
 | External standard | Delegate to `web-researcher`; cite URL + access date + excerpt                                  |
 | Behaviour claim   | `web-researcher` with cited official-doc excerpt                                                |
 | Cross-link target | `Bash test -f` on the resolved relative path                                                    |
-| Numeric KPI       | Forbidden as bare fact; observable check / cited measurement / `_Judgment call:_` only          |
+| Numeric KPI       | Forbidden as bare fact; observable check / cited measurement / worded expectation only          |
 
-## Confidence Labels (Inline)
+## No Inline Confidence Labels
 
-Write one of the following next to each non-trivial claim:
+Write no inline confidence label — `[Repo-grounded]`, `[Web-cited]`, `[Judgment call]`, or
+`[Unverified]` — on any plan claim:
 
-- **`[Repo-grounded]`** — verified in current commit via `Glob` / `Grep` / `Bash` / `Read`
-- **`[Web-cited]`** — verified externally; URL + access date + excerpt inline
-- **`[Judgment call]`** — explicit subjective claim; numeric gut targets MUST use this label
-- **`[Unverified]`** — flagged for follow-up; `plan-checker` reports as MEDIUM
+- **Repo claims** — run the recipe above before writing; the verification is the evidence.
+- **External claims** — a plain inline citation: URL + access date + excerpt.
+- **Gut targets** — worded as an expectation ("we expect …; no baseline measured").
+- **Unverifiable claims** — refused per the refuse-on-uncertainty rule.
 
-Bare unlabeled claims default to `[Unverified]`. Label proactively.
+`plan-checker` verifies every claim and never flags a missing label. See
+[No Inline Confidence Labels](../../../../repo-governance/development/quality/plan-anti-hallucination/no-inline-confidence-labels.md).
 
 See [refuse-uncertainty-and-anti-patterns.md](refuse-uncertainty-and-anti-patterns.md) for what to do when verification fails.

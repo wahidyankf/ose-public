@@ -45,7 +45,7 @@ a stylistic issue.
 **In `brd.md` (business perspective)**: business goal/rationale; business impact (pain points,
 expected benefits); affected roles — **not** sponsor/stakeholder sign-off mapping (flag **HIGH** if
 present); business-level success metrics grounded in observable facts, cited measurements (inline
-excerpt, URL, access date), qualitative reasoning, or explicitly labeled Judgment calls — flag
+excerpt, URL, access date), qualitative reasoning, or expectations worded explicitly as unmeasured — flag
 **HIGH** a fabricated numeric target presented as already-measured with no baseline; business-scope
 Non-Goals; business risks and mitigations.
 

@@ -19,7 +19,7 @@ Build on Testing Library fundamentals through 27 annotated examples covering asy
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 29: waitFor - Waiting for DOM Updates
-    accDescr: Graph with 10 nodes and 9 connections. Nodes: User Action /State Update, React schedules re-render, Async batched update, DOM updates, Assertion passes, wait For40callback41, Retries callback every 50ms, Assertion passes?, Test continues, Test fails with last error. Connections: User Action /State Update to React schedules re-render, React schedules re-render to Async batched update, Async batched update to DOM updates, DOM updates to Assertion passes, wait For40callback41 to Retries callback every 50ms, Retries callback every 50ms to Assertion passes?, Assertion passes? to Retries callback every 50ms (No), Assertion passes? to Test continues (Yes), Assertion passes? to Test fails with last error (Timeout).
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: User Action /State Update, React schedules re-render, Async batched update, DOM updates, Assertion passes, wait For(callback), Retries callback every 50ms, Assertion passes?, Test continues, Test fails with last error. Connections: User Action /State Update to React schedules re-render, React schedules re-render to Async batched update, Async batched update to DOM updates, DOM updates to Assertion passes, wait For(callback) to Retries callback every 50ms, Retries callback every 50ms to Assertion passes?, Assertion passes? to Retries callback every 50ms (No), Assertion passes? to Test continues (Yes), Assertion passes? to Test fails with last error (Timeout).
     Action["User Action /State<br/>Update"] --> React["React schedules<br/>re-render"]
     React --> Async["Async batched update"]
     Async --> DOM["DOM updates"]
@@ -563,7 +563,7 @@ Most production React apps require context providers (theme, auth, router). A cu
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 36: Custom render with Context Providers
-    accDescr: Graph with 7 nodes and 8 connections. Nodes: customRender40UI, options41, Wraps with Providers, ThemeProvider, AuthProvider, RouterProvider, Test Component, screen queries. Connections: customRender40UI, options41 to Wraps with Providers, Wraps with Providers to ThemeProvider, Wraps with Providers to AuthProvider, Wraps with Providers to RouterProvider, ThemeProvider to Test Component, AuthProvider to Test Component, RouterProvider to Test Component, Test Component to screen queries.
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: customRender(UI, options), Wraps with Providers, ThemeProvider, AuthProvider, RouterProvider, Test Component, screen queries. Connections: customRender(UI, options) to Wraps with Providers, Wraps with Providers to ThemeProvider, Wraps with Providers to AuthProvider, Wraps with Providers to RouterProvider, ThemeProvider to Test Component, AuthProvider to Test Component, RouterProvider to Test Component, Test Component to screen queries.
     Custom["customRender#40;UI,<br/>options#41;"] --> Wrap["Wraps with Providers"]
     Wrap --> ThemeProvider["ThemeProvider"]
     Wrap --> AuthProvider["AuthProvider"]

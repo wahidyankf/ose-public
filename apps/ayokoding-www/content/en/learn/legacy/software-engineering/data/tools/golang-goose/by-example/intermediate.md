@@ -26,7 +26,7 @@ Go-based migrations let you execute arbitrary Go code as part of a schema migrat
 %% Go migration registration flow
 graph TD
     accTitle: Example 31: Go-Based Migrations
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Go migration file, goose.AddMigrationNo TxContext, upFn + downFn, upFn called with *sql.DB, downFn called with *sql.DB. Connections: Go migration file to goose.AddMigrationNo TxContext (init4041), goose.AddMigrationNo TxContext to upFn + downFn (registers), upFn + downFn to upFn called with *sql.DB (goose up), upFn + downFn to downFn called with *sql.DB (goose down).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Go migration file, goose.AddMigrationNo TxContext, upFn + downFn, upFn called with *sql.DB, downFn called with *sql.DB. Connections: Go migration file to goose.AddMigrationNo TxContext (init()), goose.AddMigrationNo TxContext to upFn + downFn (registers), upFn + downFn to upFn called with *sql.DB (goose up), upFn + downFn to downFn called with *sql.DB (goose down).
     A[Go migration file] -->|init#40;#41;| B[goose.AddMigrationNo<br/>TxContext]
     B -->|registers| C[upFn + downFn]
     C -->|goose up| D[upFn called with<br/>*sql.DB]

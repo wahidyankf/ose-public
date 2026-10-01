@@ -2389,7 +2389,7 @@ SQLite's JSON1 extension provides JSON creation, extraction, and manipulation fu
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 47: JSON Creation and Extraction
-    accDescr: Graph with 6 nodes and 4 connections. Nodes: A, Columns, JSON Functions json_object, json_array, JSON Text Stored in TEXT column, JSON Extraction json_extract, ->, Relational Values Scalar results. Connections: A to JSON Functions json_object, json_array, JSON Functions json_object, json_array to JSON Text Stored in TEXT column, JSON Text Stored in TEXT column to JSON Extraction json_extract, ->, JSON Extraction json_extract, -> to Relational Values Scalar results.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Relational Data Tables & Columns, JSON Functions json_object, json_array, JSON Text Stored in TEXT column, JSON Extraction json_extract, ->, Relational Values Scalar results. Connections: Relational Data Tables & Columns to JSON Functions json_object, json_array, JSON Functions json_object, json_array to JSON Text Stored in TEXT column, JSON Text Stored in TEXT column to JSON Extraction json_extract, ->, JSON Extraction json_extract, -> to Relational Values Scalar results.
     A["Relational Data<br/>Tables & Columns"]
     B["JSON Functions<br/>json_object,<br/>json_array"]
     C["JSON Text<br/>Stored in TEXT<br/>column"]

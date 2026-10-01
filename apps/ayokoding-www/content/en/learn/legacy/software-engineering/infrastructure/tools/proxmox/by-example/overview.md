@@ -43,7 +43,7 @@ Unlike narrative tutorials that build understanding through explanation and stor
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Learning Path
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Examples 1-28 Install, VMs, LXC, Storage Basic Operations, B, Automation, C, Tuning. Connections: Beginner Examples 1-28 Install, VMs, LXC, Storage Basic Operations to B, Beginner Examples 1-28 Install, VMs, LXC, Storage Basic Operations to Automation, B to C, B to Tuning.
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner Examples 1-28 Install, VMs, LXC, Storage Basic Operations, Intermediate Examples 29-57 Clustering, Ceph, SDN Backup & Automation, Advanced Examples 58-85 HA, IaC, GPU Passthrough Upgrades & Tuning. Connections: Beginner Examples 1-28 Install, VMs, LXC, Storage Basic Operations to Intermediate Examples 29-57 Clustering, Ceph, SDN Backup & Automation, Intermediate Examples 29-57 Clustering, Ceph, SDN Backup & Automation to Advanced Examples 58-85 HA, IaC, GPU Passthrough Upgrades & Tuning.
     A["Beginner<br/>Examples 1-28<br/>Install, VMs, LXC,<br/>Storage<br/>Basic Operations"] --> B["Intermediate<br/>Examples 29-57<br/>Clustering, Ceph,<br/>SDN<br/>Backup & Automation"]
     B --> C["Advanced<br/>Examples 58-85<br/>HA, IaC, GPU<br/>Passthrough<br/>Upgrades & Tuning"]
 

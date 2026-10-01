@@ -19,7 +19,7 @@ Vitest tests use `test` or `it` functions to define test cases. The test runner 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 1: Hello World - Your First Vitest Test
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: vitest run, Discover Test Files 42.test.ts / 42.spec.ts, Vite Transform 40TypeScript, ESM41, Execute Tests, Report Results. Connections: vitest run to Discover Test Files 42.test.ts / 42.spec.ts, Discover Test Files 42.test.ts / 42.spec.ts to Vite Transform 40TypeScript, ESM41, Vite Transform 40TypeScript, ESM41 to Execute Tests, Execute Tests to Report Results.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: vitest run, Discover Test Files *.test.ts / *.spec.ts, Vite Transform (TypeScript, ESM), Execute Tests, Report Results. Connections: vitest run to Discover Test Files *.test.ts / *.spec.ts, Discover Test Files *.test.ts / *.spec.ts to Vite Transform (TypeScript, ESM), Vite Transform (TypeScript, ESM) to Execute Tests, Execute Tests to Report Results.
     A["vitest run"] --> B["Discover Test Files<br/>#42;.test.ts /<br/>#42;.spec.ts"]
     B --> C["Vite Transform<br/>#40;TypeScript,<br/>ESM#41;"]
     C --> D["Execute Tests"]
@@ -127,7 +127,7 @@ Vitest configuration extends Vite's config. You can define test-specific setting
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 3: Test Configuration with vitest.config.ts
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: vite.config.ts Build Config, vitest.config.ts Test Config, Test Environment 40node/happy-dom/ jsdom41, Coverage Provider 40v8/istanbul41, Include/Exclude Patterns. Connections: vite.config.ts Build Config to vitest.config.ts Test Config, vitest.config.ts Test Config to Test Environment 40node/happy-dom/ jsdom41, vitest.config.ts Test Config to Coverage Provider 40v8/istanbul41, vitest.config.ts Test Config to Include/Exclude Patterns.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: vite.config.ts Build Config, vitest.config.ts Test Config, Test Environment (node/happy-dom/ jsdom), Coverage Provider (v8/istanbul), Include/Exclude Patterns. Connections: vite.config.ts Build Config to vitest.config.ts Test Config, vitest.config.ts Test Config to Test Environment (node/happy-dom/ jsdom), vitest.config.ts Test Config to Coverage Provider (v8/istanbul), vitest.config.ts Test Config to Include/Exclude Patterns.
     A["vite.config.ts<br/>Build Config"] --> B["vitest.config.ts<br/>Test Config"]
     B --> C["Test Environment<br/>#40;node/happy-dom/<br/>jsdom#41;"]
     B --> D["Coverage Provider<br/>#40;v8/istanbul#41;"]
@@ -288,7 +288,7 @@ describe("CLI demonstration", () => {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 6: Equality Matchers - toBe vs toEqual
-    accDescr: Graph with 4 nodes and 2 connections. Nodes: toBe4041, Object.is4041 Reference Equality, toEqual4041, Deep Comparison Structural Equality. Connections: toBe4041 to Object.is4041 Reference Equality, toEqual4041 to Deep Comparison Structural Equality.
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: toBe(), Object.is() Reference Equality, toEqual(), Deep Comparison Structural Equality. Connections: toBe() to Object.is() Reference Equality, toEqual() to Deep Comparison Structural Equality.
     A["toBe#40;#41;"] --> B["Object.is#40;#41;<br/>Reference Equality"]
     C["toEqual#40;#41;"] --> D["Deep Comparison<br/>Structural Equality"]
 
@@ -1284,7 +1284,7 @@ describe("todo tests", () => {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 23: test.each - Parameterized Tests
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: test. each40data41, Test with Input 1, Test with Input 2, Test with Input N. Connections: test. each40data41 to Test with Input 1, test. each40data41 to Test with Input 2, test. each40data41 to Test with Input N.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: test. each(data), Test with Input 1, Test with Input 2, Test with Input N. Connections: test. each(data) to Test with Input 1, test. each(data) to Test with Input 2, test. each(data) to Test with Input N.
     A["test.<br/>each#40;data#41;"] --> B["Test with Input 1"]
     A --> C["Test with Input 2"]
     A --> D["Test with Input N"]
@@ -1562,7 +1562,7 @@ test("event emitter", () => {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 27: vi.fn - Creating Mock Functions
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: vi.fn4041, Mock Function, Tracks Calls, Tracks Arguments, Tracks Return Values, Custom Implementation. Connections: vi.fn4041 to Mock Function, Mock Function to Tracks Calls, Mock Function to Tracks Arguments, Mock Function to Tracks Return Values, Mock Function to Custom Implementation.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: vi.fn(), Mock Function, Tracks Calls, Tracks Arguments, Tracks Return Values, Custom Implementation. Connections: vi.fn() to Mock Function, Mock Function to Tracks Calls, Mock Function to Tracks Arguments, Mock Function to Tracks Return Values, Mock Function to Custom Implementation.
     A["vi.fn#40;#41;"] --> B["Mock Function"]
     B --> C["Tracks Calls"]
     B --> D["Tracks Arguments"]
@@ -1796,7 +1796,7 @@ test("spyOn console.log", () => {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 30: Timer Mocks - vi.useFakeTimers
-    accDescr: Graph with 5 nodes and 5 connections. Nodes: vi.useFake Timers4041, Replace setTimeout setInterval, Date, vi.advanceTimersBy Time40ms41 Fast-forward time, vi. runAllTimers4041 Execute all pending, Callbacks Execute Instantly. Connections: vi.useFake Timers4041 to Replace setTimeout setInterval, Date, Replace setTimeout setInterval, Date to vi.advanceTimersBy Time40ms41 Fast-forward time, Replace setTimeout setInterval, Date to vi. runAllTimers4041 Execute all pending, vi.advanceTimersBy Time40ms41 Fast-forward time to Callbacks Execute Instantly, vi. runAllTimers4041 Execute all pending to Callbacks Execute Instantly.
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: vi.useFake Timers(), Replace setTimeout setInterval, Date, vi.advanceTimersBy Time(ms) Fast-forward time, vi. runAllTimers() Execute all pending, Callbacks Execute Instantly. Connections: vi.useFake Timers() to Replace setTimeout setInterval, Date, Replace setTimeout setInterval, Date to vi.advanceTimersBy Time(ms) Fast-forward time, Replace setTimeout setInterval, Date to vi. runAllTimers() Execute all pending, vi.advanceTimersBy Time(ms) Fast-forward time to Callbacks Execute Instantly, vi. runAllTimers() Execute all pending to Callbacks Execute Instantly.
     A["vi.useFake<br/>Timers#40;#41;"] --> B["Replace setTimeout<br/>setInterval, Date"]
     B --> C["vi.advanceTimersBy<br/>Time#40;ms#41;<br/>Fast-forward time"]
     B --> D["vi.<br/>runAllTimers#40;#41;<br/>Execute all pending"]

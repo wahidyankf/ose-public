@@ -1417,7 +1417,7 @@ PCIe passthrough gives a VM direct access to a physical PCI device, bypassing th
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 71: Configure PCIe Passthrough
-    accDescr: Graph with 8 nodes and 7 connections. Nodes: BIOS: IOMMU enabled (Intel VT-d /AMD-Vi), Kernel: iommu=pt VFIO modules loaded, GPU bound to vfio-pci (not nvidia driver), D, hostpci0, machine, bios, Guest VM Sees real GPU CUDA available. Connections: BIOS: IOMMU enabled (Intel VT-d /AMD-Vi) to Kernel: iommu=pt VFIO modules loaded, Kernel: iommu=pt VFIO modules loaded to GPU bound to vfio-pci (not nvidia driver), GPU bound to vfio-pci (not nvidia driver) to D, D to hostpci0, hostpci0 to machine, machine to bios, D to Guest VM Sees real GPU CUDA available.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: BIOS: IOMMU enabled (Intel VT-d /AMD-Vi), Kernel: iommu=pt VFIO modules loaded, GPU bound to vfio-pci (not nvidia driver), VM Config --hostpci0 01:00.0 --machine q35 --bios ovmf, Guest VM Sees real GPU CUDA available. Connections: BIOS: IOMMU enabled (Intel VT-d /AMD-Vi) to Kernel: iommu=pt VFIO modules loaded, Kernel: iommu=pt VFIO modules loaded to GPU bound to vfio-pci (not nvidia driver), GPU bound to vfio-pci (not nvidia driver) to VM Config --hostpci0 01:00.0 --machine q35 --bios ovmf, VM Config --hostpci0 01:00.0 --machine q35 --bios ovmf to Guest VM Sees real GPU CUDA available.
     A["BIOS: IOMMU enabled<br/>(Intel VT-d /AMD-Vi)"] --> B["Kernel: iommu=pt<br/>VFIO modules loaded"]
     B --> C["GPU bound to<br/>vfio-pci<br/>(not nvidia driver)"]
     C --> D["VM Config<br/>--hostpci0 01:00.0<br/>--machine q35<br/>--bios ovmf"]

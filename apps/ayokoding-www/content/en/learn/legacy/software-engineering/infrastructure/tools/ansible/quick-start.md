@@ -755,7 +755,7 @@ You've completed 10 essential Ansible touchpoints:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
     accTitle: Learning Path Summary
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, D, E. Connections: A to B, B to C, C to D, D to E.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Playbooks & Inventory, Modules & Variables, Facts & Handlers, Conditionals & Loops, Roles & Vault. Connections: Playbooks & Inventory to Modules & Variables, Modules & Variables to Facts & Handlers, Facts & Handlers to Conditionals & Loops, Conditionals & Loops to Roles & Vault.
     A["Playbooks &<br/>Inventory"] --> B["Modules &<br/>Variables"]
     B --> C["Facts &<br/>Handlers"]
     C --> D["Conditionals &<br/>Loops"]

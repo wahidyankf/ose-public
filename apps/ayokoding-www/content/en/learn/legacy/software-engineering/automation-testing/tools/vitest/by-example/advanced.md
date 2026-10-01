@@ -19,7 +19,7 @@ Vitest includes a built-in benchmarking API that measures function performance w
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 59: Basic Benchmarking with bench
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: bench40name, fn41, Warm-up Runs, Measurement Runs 40configurable iterations41, Statistical Analysis ops/sec, margin, p75/p99, Benchmark Report. Connections: bench40name, fn41 to Warm-up Runs, Warm-up Runs to Measurement Runs 40configurable iterations41, Measurement Runs 40configurable iterations41 to Statistical Analysis ops/sec, margin, p75/p99, Statistical Analysis ops/sec, margin, p75/p99 to Benchmark Report.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: bench(name, fn), Warm-up Runs, Measurement Runs (configurable iterations), Statistical Analysis ops/sec, margin, p75/p99, Benchmark Report. Connections: bench(name, fn) to Warm-up Runs, Warm-up Runs to Measurement Runs (configurable iterations), Measurement Runs (configurable iterations) to Statistical Analysis ops/sec, margin, p75/p99, Statistical Analysis ops/sec, margin, p75/p99 to Benchmark Report.
     A["bench#40;name,<br/>fn#41;"] --> B["Warm-up Runs"]
     B --> C["Measurement Runs<br/>#40;configurable<br/>iterations#41;"]
     C --> D["Statistical Analysis<br/>ops/sec, margin,<br/>p75/p99"]
@@ -244,7 +244,7 @@ Vitest can run tests in a real browser (Chromium, Firefox, WebKit) instead of a 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 62: Browser Mode Configuration
-    accDescr: Graph with 5 nodes and 5 connections. Nodes: vitest.config.ts browser: true, Browser Provider?, Playwright 40Chromium/ Firefox/WebKit41, WebDriver 40Chrome/ Firefox41, Tests Run in Real Browser. Connections: vitest.config.ts browser: true to Browser Provider?, Browser Provider? to Playwright 40Chromium/ Firefox/WebKit41 (playwright), Browser Provider? to WebDriver 40Chrome/ Firefox41 (webdriverio), Playwright 40Chromium/ Firefox/WebKit41 to Tests Run in Real Browser, WebDriver 40Chrome/ Firefox41 to Tests Run in Real Browser.
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: vitest.config.ts browser: true, Browser Provider?, Playwright (Chromium/ Firefox/WebKit), WebDriver (Chrome/ Firefox), Tests Run in Real Browser. Connections: vitest.config.ts browser: true to Browser Provider?, Browser Provider? to Playwright (Chromium/ Firefox/WebKit) (playwright), Browser Provider? to WebDriver (Chrome/ Firefox) (webdriverio), Playwright (Chromium/ Firefox/WebKit) to Tests Run in Real Browser, WebDriver (Chrome/ Firefox) to Tests Run in Real Browser.
     A["vitest.config.ts<br/>browser: true"] --> B{"Browser<br/>Provider?"}
     B -->|playwright| C["Playwright<br/>#40;Chromium/<br/>Firefox/WebKit#41;"]
     B -->|webdriverio| D["WebDriver<br/>#40;Chrome/<br/>Firefox#41;"]
@@ -509,7 +509,7 @@ Vitest supports multiple worker pool types for test execution, each with differe
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 65: Pool Configuration
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: Pool Type, threads 40Worker Threads41, forks 40Child Processes41, vmThreads 40VM Modules41, Shared Memory Fast, Less Isolated, Full Isolation Slower, Safer, Module Isolation Moderate Speed. Connections: Pool Type to threads 40Worker Threads41, Pool Type to forks 40Child Processes41, Pool Type to vmThreads 40VM Modules41, threads 40Worker Threads41 to Shared Memory Fast, Less Isolated, forks 40Child Processes41 to Full Isolation Slower, Safer, vmThreads 40VM Modules41 to Module Isolation Moderate Speed.
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Pool Type, threads (Worker Threads), forks (Child Processes), vmThreads (VM Modules), Shared Memory Fast, Less Isolated, Full Isolation Slower, Safer, Module Isolation Moderate Speed. Connections: Pool Type to threads (Worker Threads), Pool Type to forks (Child Processes), Pool Type to vmThreads (VM Modules), threads (Worker Threads) to Shared Memory Fast, Less Isolated, forks (Child Processes) to Full Isolation Slower, Safer, vmThreads (VM Modules) to Module Isolation Moderate Speed.
     A["Pool Type"] --> B["threads<br/>#40;Worker<br/>Threads#41;"]
     A --> C["forks<br/>#40;Child<br/>Processes#41;"]
     A --> D["vmThreads<br/>#40;VM Modules#41;"]
@@ -1223,7 +1223,7 @@ Configure CI to block merges when test coverage drops below thresholds.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 74: Coverage Enforcement in CI
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: A, coverage, Collect Coverage Data, Meets Thresholds?, Exit Code 0 CI Passes, Exit Code 1 CI Fails. Connections: A to coverage, coverage to Collect Coverage Data, Collect Coverage Data to Meets Thresholds?, Meets Thresholds? to Exit Code 0 CI Passes (Yes), Meets Thresholds? to Exit Code 1 CI Fails (No).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: npx vitest run --coverage, Collect Coverage Data, Meets Thresholds?, Exit Code 0 CI Passes, Exit Code 1 CI Fails. Connections: npx vitest run --coverage to Collect Coverage Data, Collect Coverage Data to Meets Thresholds?, Meets Thresholds? to Exit Code 0 CI Passes (Yes), Meets Thresholds? to Exit Code 1 CI Fails (No).
     A["npx vitest run<br/>--coverage"] --> B["Collect Coverage<br/>Data"]
     B --> C{"Meets<br/>Thresholds?"}
     C -->|Yes| D["Exit Code 0<br/>CI Passes"]
@@ -1536,7 +1536,7 @@ Test code that behaves differently based on environment variables without modify
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 78: Mocking Environment Variables
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: vi.stubEnv40key, value41, process.env Modified, Test Reads env, vi.unstubAll Envs4041, Original env Restored. Connections: vi.stubEnv40key, value41 to process.env Modified, process.env Modified to Test Reads env, Test Reads env to vi.unstubAll Envs4041, vi.unstubAll Envs4041 to Original env Restored.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: vi.stubEnv(key, value), process.env Modified, Test Reads env, vi.unstubAll Envs(), Original env Restored. Connections: vi.stubEnv(key, value) to process.env Modified, process.env Modified to Test Reads env, Test Reads env to vi.unstubAll Envs(), vi.unstubAll Envs() to Original env Restored.
     A["vi.stubEnv#40;key,<br/>value#41;"] --> B["process.env Modified"]
     B --> C["Test Reads env"]
     C --> D["vi.unstubAll<br/>Envs#40;#41;"]
@@ -1713,7 +1713,7 @@ MSW intercepts HTTP requests at the network level, enabling integration tests wi
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 80: Integration Testing with MSW
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Code calls fetch40url41, MSW Intercepts at Network Layer, Match Handler, Return Mock Response, Code receives Response. Connections: Code calls fetch40url41 to MSW Intercepts at Network Layer, MSW Intercepts at Network Layer to Match Handler, Match Handler to Return Mock Response, Return Mock Response to Code receives Response.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Code calls fetch(url), MSW Intercepts at Network Layer, Match Handler, Return Mock Response, Code receives Response. Connections: Code calls fetch(url) to MSW Intercepts at Network Layer, MSW Intercepts at Network Layer to Match Handler, Match Handler to Return Mock Response, Return Mock Response to Code receives Response.
     A["Code calls<br/>fetch#40;url#41;"] --> B["MSW Intercepts<br/>at Network Layer"]
     B --> C["Match Handler"]
     C --> D["Return Mock<br/>Response"]
@@ -2121,7 +2121,7 @@ Advanced patterns for ensuring complete test isolation in complex applications w
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 85: Test Isolation Patterns - Preventing State Leaks
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Test Isolation Strategies, Module Reset vi. resetModules4041, Mock Restore vi.restoreAll Mocks4041, Timer Reset vi.useReal Timers4041, Env Reset vi.unstubAll Envs4041. Connections: Test Isolation Strategies to Module Reset vi. resetModules4041, Test Isolation Strategies to Mock Restore vi.restoreAll Mocks4041, Test Isolation Strategies to Timer Reset vi.useReal Timers4041, Test Isolation Strategies to Env Reset vi.unstubAll Envs4041.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Test Isolation Strategies, Module Reset vi. resetModules(), Mock Restore vi.restoreAll Mocks(), Timer Reset vi.useReal Timers(), Env Reset vi.unstubAll Envs(). Connections: Test Isolation Strategies to Module Reset vi. resetModules(), Test Isolation Strategies to Mock Restore vi.restoreAll Mocks(), Test Isolation Strategies to Timer Reset vi.useReal Timers(), Test Isolation Strategies to Env Reset vi.unstubAll Envs().
     A["Test Isolation<br/>Strategies"] --> B["Module Reset<br/>vi.<br/>resetModules#40;#41;"]
     A --> C["Mock Restore<br/>vi.restoreAll<br/>Mocks#40;#41;"]
     A --> D["Timer Reset<br/>vi.useReal<br/>Timers#40;#41;"]

@@ -2224,7 +2224,7 @@ HorizontalPodAutoscaler (HPA) automatically scales Deployment/ReplicaSet replica
 %% HPA scaling decision
 graph TD
  accTitle: Example 51: Horizontal Pod Autoscaler
- accDescr: Graph with 7 nodes and 7 connections. Nodes: HPA checks metrics every 15s, CPU > 70?, Calculate replicas ceil402 × 85/7041 = 3, Calculate replicas ceil403 × 50/7041 = 3, Scale up: 2 → 3, No change, Wait for stabilization. Connections: HPA checks metrics every 15s to CPU > 70?, CPU > 70? to Calculate replicas ceil402 × 85/7041 = 3 (Yes: 85), CPU > 70? to Calculate replicas ceil403 × 50/7041 = 3 (No: 50), Calculate replicas ceil402 × 85/7041 = 3 to Scale up: 2 → 3, Calculate replicas ceil403 × 50/7041 = 3 to No change, Scale up: 2 → 3 to Wait for stabilization, No change to HPA checks metrics every 15s.
+ accDescr: Graph with 7 nodes and 7 connections. Nodes: HPA checks metrics every 15s, CPU > 70?, Calculate replicas ceil(2 × 85/70) = 3, Calculate replicas ceil(3 × 50/70) = 3, Scale up: 2 → 3, No change, Wait for stabilization. Connections: HPA checks metrics every 15s to CPU > 70?, CPU > 70? to Calculate replicas ceil(2 × 85/70) = 3 (Yes: 85), CPU > 70? to Calculate replicas ceil(3 × 50/70) = 3 (No: 50), Calculate replicas ceil(2 × 85/70) = 3 to Scale up: 2 → 3, Calculate replicas ceil(3 × 50/70) = 3 to No change, Scale up: 2 → 3 to Wait for stabilization, No change to HPA checks metrics every 15s.
  A[HPA checks metrics<br/>every 15s] --> B{CPU > 70%?}
  B -->|Yes: 85%| C[Calculate replicas<br/>ceil#40;2 ×<br/>85/70#41; = 3]
  B -->|No: 50%| D[Calculate replicas<br/>ceil#40;3 ×<br/>50/70#41; = 3]

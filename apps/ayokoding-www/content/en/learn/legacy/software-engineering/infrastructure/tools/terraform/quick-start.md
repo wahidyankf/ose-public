@@ -1104,7 +1104,7 @@ You've completed 10 essential Terraform touchpoints:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
     accTitle: Learning Path Summary
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, D, E. Connections: A to B, B to C, C to D, D to E.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Resources & Variables, Outputs & Data, Provisioners & Modules, State & Workspaces, Backends & Import. Connections: Resources & Variables to Outputs & Data, Outputs & Data to Provisioners & Modules, Provisioners & Modules to State & Workspaces, State & Workspaces to Backends & Import.
     A["Resources &<br/>Variables"] --> B["Outputs &<br/>Data"]
     B --> C["Provisioners &<br/>Modules"]
     C --> D["State &<br/>Workspaces"]

@@ -19,7 +19,7 @@ MSW's `server.use()` overrides specific handlers for individual tests. This enab
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 56: MSW Handler Overrides Per Test
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: Base Handlers 40setupServer41, Default: 200 OK responses, server. use40override41, Per-test: error / edge case, afterEach: server. reset Handlers4041. Connections: Base Handlers 40setupServer41 to Default: 200 OK responses, server. use40override41 to Per-test: error / edge case, Per-test: error / edge case to afterEach: server. reset Handlers4041, afterEach: server. reset Handlers4041 to Default: 200 OK responses.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Base Handlers (setupServer), Default: 200 OK responses, server. use(override), Per-test: error / edge case, afterEach: server. reset Handlers(). Connections: Base Handlers (setupServer) to Default: 200 OK responses, server. use(override) to Per-test: error / edge case, Per-test: error / edge case to afterEach: server. reset Handlers(), afterEach: server. reset Handlers() to Default: 200 OK responses.
     BaseHandlers["Base Handlers<br/>#40;setupServer#41;"] --> DefaultBehavior["Default: 200 OK<br/>responses"]
     TestOverride["server.<br/>use#40;override#41;"] --> PerTestBehavior["Per-test: error /<br/>edge case"]
     PerTestBehavior --> Reset["afterEach: server.<br/>reset<br/>Handlers#40;#41;"]

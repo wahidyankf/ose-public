@@ -81,7 +81,7 @@ The Proxmox VE graphical installer presents a step-by-step wizard. This example 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 3: Run the Graphical PVE Installer
-    accDescr: Graph with 10 nodes and 9 connections. Nodes: Boot from USB Select: Install Proxmox VE, Accept EULA Click I agree, Select Target Disk ext4 /zfs /xfs / btrfs, D, Keyboard, E, Admin, Configure Network IP/Mask/GW/DNS, Review Summary Click Install, Reboot Remove USB. Connections: Boot from USB Select: Install Proxmox VE to Accept EULA Click I agree, Accept EULA Click I agree to Select Target Disk ext4 /zfs /xfs / btrfs, Select Target Disk ext4 /zfs /xfs / btrfs to D, Select Target Disk ext4 /zfs /xfs / btrfs to Keyboard, D to E, D to Admin, E to Configure Network IP/Mask/GW/DNS, Configure Network IP/Mask/GW/DNS to Review Summary Click Install, Review Summary Click Install to Reboot Remove USB.
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Boot from USB Select: Install Proxmox VE, Accept EULA Click I agree, Select Target Disk ext4 /zfs /xfs / btrfs, Set Country/Timezone & Keyboard Layout, Set Root Password & Admin Email, Configure Network IP/Mask/GW/DNS, Review Summary Click Install, Reboot Remove USB. Connections: Boot from USB Select: Install Proxmox VE to Accept EULA Click I agree, Accept EULA Click I agree to Select Target Disk ext4 /zfs /xfs / btrfs, Select Target Disk ext4 /zfs /xfs / btrfs to Set Country/Timezone & Keyboard Layout, Set Country/Timezone & Keyboard Layout to Set Root Password & Admin Email, Set Root Password & Admin Email to Configure Network IP/Mask/GW/DNS, Configure Network IP/Mask/GW/DNS to Review Summary Click Install, Review Summary Click Install to Reboot Remove USB.
     A["Boot from USB<br/>Select: Install<br/>Proxmox VE"] --> B["Accept EULA<br/>Click 'I agree'"]
     B --> C["Select Target Disk<br/>ext4 /zfs /xfs /<br/>btrfs"]
     C --> D["Set Country/Timezone<br/>& Keyboard Layout"]
@@ -319,7 +319,7 @@ The `qm create` command creates a VM with specified hardware configuration. This
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 8: Create a Basic KVM VM from ISO
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Guest OS (Ubuntu 24.04), VirtIO Drivers NIC + SCSI + Balloon, C, Memory, Linux Host Kernel KVM Module, Physical Hardware CPU /RAM /Disk /NIC. Connections: Guest OS (Ubuntu 24.04) to VirtIO Drivers NIC + SCSI + Balloon, VirtIO Drivers NIC + SCSI + Balloon to C, VirtIO Drivers NIC + SCSI + Balloon to Memory, C to Linux Host Kernel KVM Module, Linux Host Kernel KVM Module to Physical Hardware CPU /RAM /Disk /NIC.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Guest OS (Ubuntu 24.04), VirtIO Drivers NIC + SCSI + Balloon, QEMU/KVM Layer CPU & Memory Emulation, Linux Host Kernel KVM Module, Physical Hardware CPU /RAM /Disk /NIC. Connections: Guest OS (Ubuntu 24.04) to VirtIO Drivers NIC + SCSI + Balloon, VirtIO Drivers NIC + SCSI + Balloon to QEMU/KVM Layer CPU & Memory Emulation, QEMU/KVM Layer CPU & Memory Emulation to Linux Host Kernel KVM Module, Linux Host Kernel KVM Module to Physical Hardware CPU /RAM /Disk /NIC.
     A["Guest OS<br/>(Ubuntu 24.04)"] --> B["VirtIO Drivers<br/>NIC + SCSI + Balloon"]
     B --> C["QEMU/KVM Layer<br/>CPU & Memory<br/>Emulation"]
     C --> D["Linux Host Kernel<br/>KVM Module"]

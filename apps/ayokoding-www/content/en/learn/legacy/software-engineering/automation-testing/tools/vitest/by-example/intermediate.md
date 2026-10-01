@@ -19,7 +19,7 @@ This tutorial covers intermediate Vitest techniques including module mocking, ma
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 31: vi.mock - Mocking Entire Modules
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: vi.mock40./ module41, Hoisted to Top of File, Module Imports Receive Mock, All Exports Auto-Mocked, Functions return undefined by default. Connections: vi.mock40./ module41 to Hoisted to Top of File, Hoisted to Top of File to Module Imports Receive Mock, Module Imports Receive Mock to All Exports Auto-Mocked, All Exports Auto-Mocked to Functions return undefined by default.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: vi.mock(./ module), Hoisted to Top of File, Module Imports Receive Mock, All Exports Auto-Mocked, Functions return undefined by default. Connections: vi.mock(./ module) to Hoisted to Top of File, Hoisted to Top of File to Module Imports Receive Mock, Module Imports Receive Mock to All Exports Auto-Mocked, All Exports Auto-Mocked to Functions return undefined by default.
     A["vi.mock#40;'./<br/>module'#41;"] --> B["Hoisted to Top<br/>of File"]
     B --> C["Module Imports<br/>Receive Mock"]
     C --> D["All Exports<br/>Auto-Mocked"]
@@ -102,7 +102,7 @@ When `vi.mock` is called without a factory function, Vitest auto-mocks all expor
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 32: vi.mock with Auto-Mocking
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: vi.mock40./ module41 No Factory, Auto-Mock Engine, Functions -> vi.fn4041, Objects -> Deep Mock, Classes -> Mock Constructor. Connections: vi.mock40./ module41 No Factory to Auto-Mock Engine, Auto-Mock Engine to Functions -> vi.fn4041, Auto-Mock Engine to Objects -> Deep Mock, Auto-Mock Engine to Classes -> Mock Constructor.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: vi.mock(./ module) No Factory, Auto-Mock Engine, Functions -> vi.fn(), Objects -> Deep Mock, Classes -> Mock Constructor. Connections: vi.mock(./ module) No Factory to Auto-Mock Engine, Auto-Mock Engine to Functions -> vi.fn(), Auto-Mock Engine to Objects -> Deep Mock, Auto-Mock Engine to Classes -> Mock Constructor.
     A["vi.mock#40;'./<br/>module'#41;<br/>No Factory"] --> B["Auto-Mock Engine"]
     B --> C["Functions -><br/>vi.fn#40;#41;"]
     B --> D["Objects -> Deep Mock"]
@@ -256,7 +256,7 @@ Sometimes you need to mock some exports while keeping others real. `vi.importAct
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 34: Mocking Module Factories with Partial Mocking
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: vi. importActual4041, Real Module Exports, Spread ...actual, vi.fn4041, Mock Override, Partial Mock Real + Mock. Connections: vi. importActual4041 to Real Module Exports, Real Module Exports to Spread ...actual, vi.fn4041 to Mock Override, Spread ...actual to Partial Mock Real + Mock, Mock Override to Partial Mock Real + Mock.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: vi. importActual(), Real Module Exports, Spread ...actual, vi.fn(), Mock Override, Partial Mock Real + Mock. Connections: vi. importActual() to Real Module Exports, Real Module Exports to Spread ...actual, vi.fn() to Mock Override, Spread ...actual to Partial Mock Real + Mock, Mock Override to Partial Mock Real + Mock.
     A["vi.<br/>importActual#40;#41;"] --> B["Real Module Exports"]
     B --> C["Spread ...actual"]
     D["vi.fn#40;#41;"] --> E["Mock Override"]
@@ -480,7 +480,7 @@ Mocking global functions like `fetch` enables testing HTTP-dependent code withou
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 37: Mocking Global Functions - fetch
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: Code calls fetch4041, global.fetch = vi.fn4041, Mock Response, Success Path, Error Path, Network Error. Connections: Code calls fetch4041 to global.fetch = vi.fn4041, global.fetch = vi.fn4041 to Mock Response, Mock Response to Success Path (ok: true), Mock Response to Error Path (ok: false), Mock Response to Network Error (reject).
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Code calls fetch(), global.fetch = vi.fn(), Mock Response, Success Path, Error Path, Network Error. Connections: Code calls fetch() to global.fetch = vi.fn(), global.fetch = vi.fn() to Mock Response, Mock Response to Success Path (ok: true), Mock Response to Error Path (ok: false), Mock Response to Network Error (reject).
     A["Code calls<br/>fetch#40;#41;"] --> B["global.fetch =<br/>vi.fn#40;#41;"]
     B --> C{"Mock Response"}
     C -->|ok: true| D["Success Path"]
@@ -1165,7 +1165,7 @@ Vitest supports code coverage through v8 (default, fast) or istanbul (traditiona
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 46: Coverage Configuration
-    accDescr: Graph with 5 nodes and 5 connections. Nodes: vitest.config.ts coverage config, Provider?, V8 Built-in Coverage 40Fast, native41, Istanbul Instrumentation 40Detailed, traditional41, Reports: text, lcov, html. Connections: vitest.config.ts coverage config to Provider?, Provider? to V8 Built-in Coverage 40Fast, native41 (v8), Provider? to Istanbul Instrumentation 40Detailed, traditional41 (istanbul), V8 Built-in Coverage 40Fast, native41 to Reports: text, lcov, html, Istanbul Instrumentation 40Detailed, traditional41 to Reports: text, lcov, html.
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: vitest.config.ts coverage config, Provider?, V8 Built-in Coverage (Fast, native), Istanbul Instrumentation (Detailed, traditional), Reports: text, lcov, html. Connections: vitest.config.ts coverage config to Provider?, Provider? to V8 Built-in Coverage (Fast, native) (v8), Provider? to Istanbul Instrumentation (Detailed, traditional) (istanbul), V8 Built-in Coverage (Fast, native) to Reports: text, lcov, html, Istanbul Instrumentation (Detailed, traditional) to Reports: text, lcov, html.
     A["vitest.config.ts<br/>coverage config"] --> B{"Provider?"}
     B -->|v8| C["V8 Built-in Coverage<br/>#40;Fast, native#41;"]
     B -->|istanbul| D["Istanbul<br/>Instrumentation<br/>#40;Detailed,<br/>traditional#41;"]
@@ -1269,7 +1269,7 @@ Vitest supports defining tests directly in source files, co-locating tests with 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 47: In-Source Testing
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: source.ts Code + Tests, import.meta.vitest?, Tests Execute, Tree-Shaken 40Tests Removed41. Connections: source.ts Code + Tests to import.meta.vitest?, import.meta.vitest? to Tests Execute (Vitest), import.meta.vitest? to Tree-Shaken 40Tests Removed41 (Production Build).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: source.ts Code + Tests, import.meta.vitest?, Tests Execute, Tree-Shaken (Tests Removed). Connections: source.ts Code + Tests to import.meta.vitest?, import.meta.vitest? to Tests Execute (Vitest), import.meta.vitest? to Tree-Shaken (Tests Removed) (Production Build).
     A["source.ts<br/>Code + Tests"] --> B{"import.meta.vitest?"}
     B -->|Vitest| C["Tests Execute"]
     B -->|Production Build| D["Tree-Shaken<br/>#40;Tests<br/>Removed#41;"]
@@ -1500,7 +1500,7 @@ describe("reporter demonstration", () => {
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 50: Concurrent Tests
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: describe.concurrent, Test 1 40parallel41, Test 2 40parallel41, Test 3 40parallel41. Connections: describe.concurrent to Test 1 40parallel41, describe.concurrent to Test 2 40parallel41, describe.concurrent to Test 3 40parallel41.
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: describe.concurrent, Test 1 (parallel), Test 2 (parallel), Test 3 (parallel). Connections: describe.concurrent to Test 1 (parallel), describe.concurrent to Test 2 (parallel), describe.concurrent to Test 3 (parallel).
     A["describe.concurrent"] --> B["Test 1<br/>#40;parallel#41;"]
     A --> C["Test 2<br/>#40;parallel#41;"]
     A --> D["Test 3<br/>#40;parallel#41;"]
@@ -1579,7 +1579,7 @@ Vitest provides `expectTypeOf` for testing TypeScript types at compile time. The
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 51: expectTypeOf - Compile-Time Type Assertions
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: expectType Of40value41, Compile-Time Type Check, toBeString4041, toBeNumber4041, toEqualType Of60T624041, toHave Property4041. Connections: expectType Of40value41 to Compile-Time Type Check, Compile-Time Type Check to toBeString4041, Compile-Time Type Check to toBeNumber4041, Compile-Time Type Check to toEqualType Of60T624041, Compile-Time Type Check to toHave Property4041.
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: expectType Of(value), Compile-Time Type Check, toBeString(), toBeNumber(), toEqualType Of<T>(), toHave Property(). Connections: expectType Of(value) to Compile-Time Type Check, Compile-Time Type Check to toBeString(), Compile-Time Type Check to toBeNumber(), Compile-Time Type Check to toEqualType Of<T>(), Compile-Time Type Check to toHave Property().
     A["expectType<br/>Of#40;value#41;"] --> B["Compile-Time<br/>Type Check"]
     B --> C["toBeString#40;#41;"]
     B --> D["toBeNumber#40;#41;"]

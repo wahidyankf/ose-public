@@ -761,7 +761,7 @@ You've completed 10 essential Docker touchpoints:
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
     accTitle: Learning Path Summary
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, D, E. Connections: A to B, B to C, C to D, D to E.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Containers & Dockerfiles, Images & Ports, Volumes & Networks, Env Vars & Compose, Multi-Stage & Health. Connections: Containers & Dockerfiles to Images & Ports, Images & Ports to Volumes & Networks, Volumes & Networks to Env Vars & Compose, Env Vars & Compose to Multi-Stage & Health.
     A["Containers &<br/>Dockerfiles"] --> B["Images &<br/>Ports"]
     B --> C["Volumes &<br/>Networks"]
     C --> D["Env Vars &<br/>Compose"]

@@ -325,7 +325,7 @@ Molecule automates role testing across multiple platforms. It creates test insta
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 58: Testing with Molecule - Scenario
- accDescr: Graph with 9 nodes and 8 connections. Nodes: molecule test, Create Docker Instance, Converge Apply Role, Verify Run Tests, Tests Pass?, Destroy Cleanup, G, Report, Success. Connections: molecule test to Create Docker Instance, Create Docker Instance to Converge Apply Role, Converge Apply Role to Verify Run Tests, Verify Run Tests to Tests Pass?, Tests Pass? to Destroy Cleanup (Yes), Tests Pass? to G (No), Tests Pass? to Report (No), Destroy Cleanup to Success.
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: molecule test, Create Docker Instance, Converge Apply Role, Verify Run Tests, Tests Pass?, Destroy Cleanup, Fail & Report, Success. Connections: molecule test to Create Docker Instance, Create Docker Instance to Converge Apply Role, Converge Apply Role to Verify Run Tests, Verify Run Tests to Tests Pass?, Tests Pass? to Destroy Cleanup (Yes), Tests Pass? to Fail & Report (No), Destroy Cleanup to Success.
  A["molecule test"] --> B["Create<br/>Docker Instance"]
  B --> C["Converge<br/>Apply Role"]
  C --> D["Verify<br/>Run Tests"]
@@ -500,7 +500,7 @@ Fact gathering is slow on large inventories. Enable fact caching to store facts 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 60: Performance - Fact Caching
- accDescr: Graph with 7 nodes and 8 connections. Nodes: Playbook Run 1, Facts Cached?, Gather Facts 40Slow41, Cache Facts Redis/File, Load from Cache 40Fast41, Execute Tasks, Playbook Run 2. Connections: Playbook Run 1 to Facts Cached?, Facts Cached? to Gather Facts 40Slow41 (No), Gather Facts 40Slow41 to Cache Facts Redis/File, Facts Cached? to Load from Cache 40Fast41 (Yes), Cache Facts Redis/File to Execute Tasks, Load from Cache 40Fast41 to Execute Tasks, Execute Tasks to Playbook Run 2, Playbook Run 2 to Load from Cache 40Fast41.
+ accDescr: Graph with 7 nodes and 8 connections. Nodes: Playbook Run 1, Facts Cached?, Gather Facts (Slow), Cache Facts Redis/File, Load from Cache (Fast), Execute Tasks, Playbook Run 2. Connections: Playbook Run 1 to Facts Cached?, Facts Cached? to Gather Facts (Slow) (No), Gather Facts (Slow) to Cache Facts Redis/File, Facts Cached? to Load from Cache (Fast) (Yes), Cache Facts Redis/File to Execute Tasks, Load from Cache (Fast) to Execute Tasks, Execute Tasks to Playbook Run 2, Playbook Run 2 to Load from Cache (Fast).
  A["Playbook Run 1"] --> B{Facts Cached?}
  B -->|No| C["Gather Facts<br/>#40;Slow#41;"]
  C --> D["Cache Facts<br/>Redis/File"]
@@ -771,7 +771,7 @@ Rolling updates deploy changes gradually to avoid downtime. Use `serial` to cont
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 63: Production Pattern - Rolling Updates
- accDescr: Graph with 11 nodes and 10 connections. Nodes: Start Rolling Update, Batch 1: 2 Hosts, Remove from LB, D, Test, Success?, Add to LB, G, Rollback, Batch 2: 2 Hosts, Repeat Process. Connections: Start Rolling Update to Batch 1: 2 Hosts, Batch 1: 2 Hosts to Remove from LB, Remove from LB to D, Remove from LB to Test, D to Success?, Success? to Add to LB (Yes), Success? to G (No), Success? to Rollback (No), Add to LB to Batch 2: 2 Hosts, Batch 2: 2 Hosts to Repeat Process.
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: Start Rolling Update, Batch 1: 2 Hosts, Remove from LB, Deploy & Test, Success?, Add to LB, Abort & Rollback, Batch 2: 2 Hosts, Repeat Process. Connections: Start Rolling Update to Batch 1: 2 Hosts, Batch 1: 2 Hosts to Remove from LB, Remove from LB to Deploy & Test, Deploy & Test to Success?, Success? to Add to LB (Yes), Success? to Abort & Rollback (No), Add to LB to Batch 2: 2 Hosts, Batch 2: 2 Hosts to Repeat Process.
  A["Start Rolling Update"] --> B["Batch 1: 2 Hosts"]
  B --> C["Remove from LB"]
  C --> D["Deploy & Test"]
@@ -896,7 +896,7 @@ Canary deployments test new versions on a subset of servers before full rollout.
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 64: Production Pattern - Canary Deployment
- accDescr: Graph with 8 nodes and 7 connections. Nodes: New Version, Deploy to Canary 401 Server41, Monitor Metrics, Metrics OK?, Deploy to All 4099 Servers41, Rollback Canary, Complete, Fix Issues. Connections: New Version to Deploy to Canary 401 Server41, Deploy to Canary 401 Server41 to Monitor Metrics, Monitor Metrics to Metrics OK?, Metrics OK? to Deploy to All 4099 Servers41 (Yes), Metrics OK? to Rollback Canary (No), Deploy to All 4099 Servers41 to Complete, Rollback Canary to Fix Issues.
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: New Version, Deploy to Canary (1 Server), Monitor Metrics, Metrics OK?, Deploy to All (99 Servers), Rollback Canary, Complete, Fix Issues. Connections: New Version to Deploy to Canary (1 Server), Deploy to Canary (1 Server) to Monitor Metrics, Monitor Metrics to Metrics OK?, Metrics OK? to Deploy to All (99 Servers) (Yes), Metrics OK? to Rollback Canary (No), Deploy to All (99 Servers) to Complete, Rollback Canary to Fix Issues.
  A["New Version"] --> B["Deploy to Canary<br/>#40;1 Server#41;"]
  B --> C["Monitor Metrics"]
  C --> D{Metrics OK?}
@@ -1492,7 +1492,7 @@ Automate disaster recovery with playbooks that restore from backups, recreate in
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 69: Disaster Recovery Pattern
- accDescr: Graph with 10 nodes and 9 connections. Nodes: Disaster Occurs, Provision New Infrastructure, Restore Database from Backup, Restore App Files, Verify Integrity, Data Valid?, Update DNS to DR Site, H, Investigate, DR Complete. Connections: Disaster Occurs to Provision New Infrastructure, Provision New Infrastructure to Restore Database from Backup, Restore Database from Backup to Restore App Files, Restore App Files to Verify Integrity, Verify Integrity to Data Valid?, Data Valid? to Update DNS to DR Site (Yes), Data Valid? to H (No), Data Valid? to Investigate (No), Update DNS to DR Site to DR Complete.
+ accDescr: Graph with 9 nodes and 8 connections. Nodes: Disaster Occurs, Provision New Infrastructure, Restore Database from Backup, Restore App Files, Verify Integrity, Data Valid?, Update DNS to DR Site, Alert & Investigate, DR Complete. Connections: Disaster Occurs to Provision New Infrastructure, Provision New Infrastructure to Restore Database from Backup, Restore Database from Backup to Restore App Files, Restore App Files to Verify Integrity, Verify Integrity to Data Valid?, Data Valid? to Update DNS to DR Site (Yes), Data Valid? to Alert & Investigate (No), Update DNS to DR Site to DR Complete.
  A["Disaster Occurs"] --> B["Provision New<br/>Infrastructure"]
  B --> C["Restore Database<br/>from Backup"]
  C --> D["Restore App Files"]
@@ -1641,7 +1641,7 @@ Detect configuration drift by comparing desired state (playbooks) against actual
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 70: Configuration Drift Detection
- accDescr: Graph with 9 nodes and 8 connections. Nodes: Playbook 40Desired State41, B, check, Target Hosts 40Actual State41, State Matches?, No Drift Report: OK, Drift Detected, Generate Report, Alert Ops Team. Connections: Playbook 40Desired State41 to B, B to check, Target Hosts 40Actual State41 to B, B to State Matches?, State Matches? to No Drift Report: OK (Yes), State Matches? to Drift Detected (No), Drift Detected to Generate Report, Generate Report to Alert Ops Team.
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Playbook (Desired State), Run in --check Mode, Target Hosts (Actual State), State Matches?, No Drift Report: OK, Drift Detected, Generate Report, Alert Ops Team. Connections: Playbook (Desired State) to Run in --check Mode, Target Hosts (Actual State) to Run in --check Mode, Run in --check Mode to State Matches?, State Matches? to No Drift Report: OK (Yes), State Matches? to Drift Detected (No), Drift Detected to Generate Report, Generate Report to Alert Ops Team.
  A["Playbook<br/>#40;Desired<br/>State#41;"] --> B["Run in<br/>--check Mode"]
  C["Target Hosts<br/>#40;Actual State#41;"] --> B
  B --> D{State Matches?}
@@ -1913,7 +1913,7 @@ Integrate Ansible with HashiCorp Vault for dynamic secrets. Fetch credentials at
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 72: Secrets Management with HashiCorp Vault
- accDescr: Graph with 7 nodes and 6 connections. Nodes: Ansible Task, Request Creds from Vault API, Vault Server, Generate Dynamic DB Credentials, Return Creds 401h Lease41, Use in Task, Revoke Lease on Completion. Connections: Ansible Task to Request Creds from Vault API, Request Creds from Vault API to Vault Server, Vault Server to Generate Dynamic DB Credentials, Generate Dynamic DB Credentials to Return Creds 401h Lease41, Return Creds 401h Lease41 to Use in Task, Use in Task to Revoke Lease on Completion.
+ accDescr: Graph with 7 nodes and 6 connections. Nodes: Ansible Task, Request Creds from Vault API, Vault Server, Generate Dynamic DB Credentials, Return Creds (1h Lease), Use in Task, Revoke Lease on Completion. Connections: Ansible Task to Request Creds from Vault API, Request Creds from Vault API to Vault Server, Vault Server to Generate Dynamic DB Credentials, Generate Dynamic DB Credentials to Return Creds (1h Lease), Return Creds (1h Lease) to Use in Task, Use in Task to Revoke Lease on Completion.
  A["Ansible Task"] --> B["Request Creds<br/>from Vault API"]
  B --> C["Vault Server"]
  C --> D["Generate Dynamic<br/>DB Credentials"]
@@ -2517,7 +2517,7 @@ Implement self-healing by detecting failures and automatically remediating. Moni
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
  accTitle: Example 78: Self-Healing Infrastructure
- accDescr: Graph with 8 nodes and 7 connections. Nodes: Scheduled Playbook 40Every 15min41, Check Service Health, Service Running?, No Action, Restart Service, Restart Success?, Log Recovery, Alert Ops Team. Connections: Scheduled Playbook 40Every 15min41 to Check Service Health, Check Service Health to Service Running?, Service Running? to No Action (Yes), Service Running? to Restart Service (No), Restart Service to Restart Success?, Restart Success? to Log Recovery (Yes), Restart Success? to Alert Ops Team (No).
+ accDescr: Graph with 8 nodes and 7 connections. Nodes: Scheduled Playbook (Every 15min), Check Service Health, Service Running?, No Action, Restart Service, Restart Success?, Log Recovery, Alert Ops Team. Connections: Scheduled Playbook (Every 15min) to Check Service Health, Check Service Health to Service Running?, Service Running? to No Action (Yes), Service Running? to Restart Service (No), Restart Service to Restart Success?, Restart Success? to Log Recovery (Yes), Restart Success? to Alert Ops Team (No).
  A["Scheduled Playbook<br/>#40;Every 15min#41;"] --> B["Check Service<br/>Health"]
  B --> C{Service Running?}
  C -->|Yes| D["No Action"]

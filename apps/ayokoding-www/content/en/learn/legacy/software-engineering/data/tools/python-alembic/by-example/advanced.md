@@ -1298,7 +1298,7 @@ Blue-green deployments run two identical environments simultaneously during a sw
 %% Blue-green migration sequence
 graph TD
     accTitle: Example 78: Blue-Green Deployment Migrations
-    accDescr: Graph with 4 nodes and 3 connections. Nodes: Blue env 40v1 app41 Schema v1, Schema v1+compat, Green env 40v2 app41 Schema v1+compat, Schema v2 40clean41. Connections: Blue env 40v1 app41 Schema v1 to Schema v1+compat (apply forward-compat migration), Schema v1+compat to Green env 40v2 app41 Schema v1+compat (switch traffic to green), Green env 40v2 app41 Schema v1+compat to Schema v2 40clean41 (cleanup migration after blue drains).
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Blue env (v1 app) Schema v1, Schema v1+compat, Green env (v2 app) Schema v1+compat, Schema v2 (clean). Connections: Blue env (v1 app) Schema v1 to Schema v1+compat (apply forward-compat migration), Schema v1+compat to Green env (v2 app) Schema v1+compat (switch traffic to green), Green env (v2 app) Schema v1+compat to Schema v2 (clean) (cleanup migration after blue drains).
     A["Blue env #40;v1<br/>app#41;<br/>Schema v1"] -->|apply forward-compat<br/>migration| B["Schema v1+compat"]
     B -->|switch traffic to<br/>green| C["Green env #40;v2<br/>app#41;<br/>Schema v1+compat"]
     C -->|cleanup migration<br/>after blue drains| D["Schema v2<br/>#40;clean#41;"]

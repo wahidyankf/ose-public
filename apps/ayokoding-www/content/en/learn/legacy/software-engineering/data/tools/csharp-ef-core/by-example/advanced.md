@@ -584,7 +584,7 @@ CI/CD pipelines should validate migrations at build time and apply them in a con
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 69: EF Core Migrations in CI/CD Pipeline
-    accDescr: Graph with 10 nodes and 9 connections. Nodes: git push, B, Test, Generate Migration SQL Script, Store as Pipeline Artifact, Deploy to Staging, Apply SQL Script, Smoke Tests Pass?, Deploy to Production, Rollback. Connections: git push to B, git push to Test, B to Generate Migration SQL Script, Generate Migration SQL Script to Store as Pipeline Artifact, Store as Pipeline Artifact to Deploy to Staging, Deploy to Staging to Apply SQL Script, Apply SQL Script to Smoke Tests Pass?, Smoke Tests Pass? to Deploy to Production (Yes), Smoke Tests Pass? to Rollback (No).
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: git push, CI: Build & Test, Generate Migration SQL Script, Store as Pipeline Artifact, Deploy to Staging, Apply SQL Script, Smoke Tests Pass?, Deploy to Production, Rollback. Connections: git push to CI: Build & Test, CI: Build & Test to Generate Migration SQL Script, Generate Migration SQL Script to Store as Pipeline Artifact, Store as Pipeline Artifact to Deploy to Staging, Deploy to Staging to Apply SQL Script, Apply SQL Script to Smoke Tests Pass?, Smoke Tests Pass? to Deploy to Production (Yes), Smoke Tests Pass? to Rollback (No).
     A[git push] --> B[CI: Build & Test]
     B --> C[Generate Migration<br/>SQL Script]
     C --> D[Store as Pipeline<br/>Artifact]

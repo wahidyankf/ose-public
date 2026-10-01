@@ -1952,7 +1952,7 @@ git log --notes --all --pretty=format:"%H %s %N" | grep -i "regression"
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 88: Git Reflog — Recovering Lost Commits and Branches
-    accDescr: Graph with 7 nodes and 6 connections. Nodes: reflog (all HEAD movements), HEAD@0: current commit, C2, hard, HEAD@2: before rebase, HEAD@5: lost feature work, recovered branch. Connections: C2 to hard, reflog (all HEAD movements) to HEAD@0: current commit, reflog (all HEAD movements) to C2, reflog (all HEAD movements) to HEAD@2: before rebase, reflog (all HEAD movements) to HEAD@5: lost feature work, HEAD@5: lost feature work to recovered branch (git checkout -b recovered).
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: reflog (all HEAD movements), HEAD@0: current commit, HEAD@1: before reset --hard, HEAD@2: before rebase, HEAD@5: lost feature work, recovered branch. Connections: reflog (all HEAD movements) to HEAD@0: current commit, reflog (all HEAD movements) to HEAD@1: before reset --hard, reflog (all HEAD movements) to HEAD@2: before rebase, reflog (all HEAD movements) to HEAD@5: lost feature work, HEAD@5: lost feature work to recovered branch (git checkout -b recovered).
     R["reflog<br/>(all HEAD movements)"]
     C1["HEAD@{0}: current<br/>commit"]
     C2["HEAD@{1}: before<br/>reset --hard"]

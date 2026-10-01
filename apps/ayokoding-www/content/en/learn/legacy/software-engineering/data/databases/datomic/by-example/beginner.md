@@ -966,7 +966,7 @@ Compare-and-swap (CAS) provides optimistic concurrency control. The transaction 
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 8: Transaction Functions with :db/cas
-    accDescr: Graph with 6 nodes and 5 connections. Nodes: [:db/cas entity attr expected new], B, expected, Transaction commits value updated to new, Transaction aborted CAS exception thrown, New DB value with updated attribute. Connections: [:db/cas entity attr expected new] to B, B to expected, B to Transaction commits value updated to new (Yes), B to Transaction aborted CAS exception thrown (No), Transaction commits value updated to new to New DB value with updated attribute.
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: [:db/cas entity attr expected new], current == expected?, Transaction commits value updated to new, Transaction aborted CAS exception thrown, New DB value with updated attribute. Connections: [:db/cas entity attr expected new] to current == expected?, current == expected? to Transaction commits value updated to new (Yes), current == expected? to Transaction aborted CAS exception thrown (No), Transaction commits value updated to new to New DB value with updated attribute.
     A["[:db/cas entity attr<br/>expected new]"] --> B{"current == expected?"}
     B -->|"Yes"| C["Transaction commits<br/>value updated to new"]
     B -->|"No"| D["Transaction aborted<br/>CAS exception thrown"]

@@ -410,7 +410,7 @@ The `migrate!()` macro reads migration files from a directory at Rust compile ti
 %% migrate!() macro compile-time embedding vs runtime application
 graph TD
     accTitle: Example 12: Embedded Migrations with migrate! Macro
-    accDescr: Graph with 5 nodes and 4 connections. Nodes: migrations/directory SQL files on disk, Rust binary SQL embedded in binary, Database _sqlx_migrations check, Execute SQL statements, Record applied version. Connections: migrations/directory SQL files on disk to Rust binary SQL embedded in binary (cargo build compile time), Rust binary SQL embedded in binary to Database _sqlx_migrations check (runtime: migrate. run40&pool41), Database _sqlx_migrations check to Execute SQL statements (pending versions found), Execute SQL statements to Record applied version (success).
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: migrations/directory SQL files on disk, Rust binary SQL embedded in binary, Database _sqlx_migrations check, Execute SQL statements, Record applied version. Connections: migrations/directory SQL files on disk to Rust binary SQL embedded in binary (cargo build compile time), Rust binary SQL embedded in binary to Database _sqlx_migrations check (runtime: migrate. run(&pool)), Database _sqlx_migrations check to Execute SQL statements (pending versions found), Execute SQL statements to Record applied version (success).
     A["migrations/directory<br/>SQL files on disk"] -->|"cargo build compile<br/>time"| B["Rust binary<br/>SQL embedded in<br/>binary"]
     B -->|"runtime: migrate.<br/>run#40;&pool#41;"| C["Database<br/>_sqlx_migrations<br/>check"]
     C -->|"pending versions<br/>found"| D["Execute SQL<br/>statements"]

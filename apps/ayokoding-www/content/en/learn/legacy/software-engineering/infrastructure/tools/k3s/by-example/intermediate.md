@@ -19,7 +19,7 @@ K3s supports high availability with an embedded etcd datastore. The first server
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
     accTitle: Example 29: HA K3s Cluster — Embedded etcd
-    accDescr: Graph with 8 nodes and 11 connections. Nodes: Load Balancer VIP or kube-vip Port 6443, S1, cluster-init, S2, server, S3, Worker Node 1 k3s-agent, Worker Node 2 k3s-agent. Connections: S1 to cluster-init, S2 to server, S3 to server, Load Balancer VIP or kube-vip Port 6443 to S1, Load Balancer VIP or kube-vip Port 6443 to S2, Load Balancer VIP or kube-vip Port 6443 to S3, S1 to S2 (etcd raft), S2 to S3 (etcd raft), S1 to S3 (etcd raft), Worker Node 1 k3s-agent to Load Balancer VIP or kube-vip Port 6443 (K3S_URL), Worker Node 2 k3s-agent to Load Balancer VIP or kube-vip Port 6443 (K3S_URL).
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: Load Balancer VIP or kube-vip Port 6443, K3s Server 1 --cluster-init etcd member, K3s Server 2 --server etcd member, K3s Server 3 --server etcd member, Worker Node 1 k3s-agent, Worker Node 2 k3s-agent. Connections: Load Balancer VIP or kube-vip Port 6443 to K3s Server 1 --cluster-init etcd member, Load Balancer VIP or kube-vip Port 6443 to K3s Server 2 --server etcd member, Load Balancer VIP or kube-vip Port 6443 to K3s Server 3 --server etcd member, K3s Server 1 --cluster-init etcd member to K3s Server 2 --server etcd member (etcd raft), K3s Server 2 --server etcd member to K3s Server 3 --server etcd member (etcd raft), K3s Server 1 --cluster-init etcd member to K3s Server 3 --server etcd member (etcd raft), Worker Node 1 k3s-agent to Load Balancer VIP or kube-vip Port 6443 (K3S_URL), Worker Node 2 k3s-agent to Load Balancer VIP or kube-vip Port 6443 (K3S_URL).
     LB["Load Balancer<br/>VIP or kube-vip<br/>Port 6443"]
     S1["K3s Server 1<br/>--cluster-init<br/>etcd member"]
     S2["K3s Server 2<br/>--server<br/>etcd member"]
@@ -111,7 +111,7 @@ Instead of embedded etcd, K3s can use an external PostgreSQL or MySQL database a
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
     accTitle: Example 30: HA K3s with External PostgreSQL Datastore
-    accDescr: Graph with 4 nodes and 4 connections. Nodes: S1, datastore-endpoint, S2, PostgreSQL HA db.example.com:5432 (Patroni / RDS). Connections: S1 to datastore-endpoint, S2 to datastore-endpoint, S1 to PostgreSQL HA db.example.com:5432 (Patroni / RDS) (reads/writes cluster state), S2 to PostgreSQL HA db.example.com:5432 (Patroni / RDS) (reads/writes cluster state).
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: K3s Server 1 --datastore-endpoint, K3s Server 2 --datastore-endpoint, PostgreSQL HA db.example.com:5432 (Patroni / RDS). Connections: K3s Server 1 --datastore-endpoint to PostgreSQL HA db.example.com:5432 (Patroni / RDS) (reads/writes cluster state), K3s Server 2 --datastore-endpoint to PostgreSQL HA db.example.com:5432 (Patroni / RDS) (reads/writes cluster state).
     S1["K3s Server 1<br/>--datastore-endpoint"]
     S2["K3s Server 2<br/>--datastore-endpoint"]
     PG["PostgreSQL HA<br/>db.example.com:5432<br/>(Patroni / RDS)"]

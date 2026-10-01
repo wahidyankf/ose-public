@@ -809,6 +809,8 @@ app.get("/profile", requiresAuth(), (req, res) => {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 sequenceDiagram
+    accTitle: Authentication Flow Progression Diagram
+    accDescr: Sequence diagram between User, Client, Server, Identity Provider. Messages: User to Client: Enter credentials; Client to Server: Authorization: Basic base64(user:pass); Server to Server: Verify credentials; Server to Client: 200 OK or 401 Unauthorized; User to Client: Login; Client to Server: POST /auth/login username, password; Server to Server: Verify credentials; Server to Client: token: eyJhbGc..., expiresIn: 2h; Client to Server: Authorization: Bearer eyJhbGc...; Server to Server: Verify JWT signature; Server to Client: Protected resource; User to Client: Click Login with Google; and 8 more.
     participant User
     participant Client
     participant Server

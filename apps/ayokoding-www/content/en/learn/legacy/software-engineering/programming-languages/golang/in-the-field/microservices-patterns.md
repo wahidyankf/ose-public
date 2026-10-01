@@ -26,10 +26,12 @@ Microservices decompose systems into independently deployable services, requirin
 
 ```mermaid
 graph TD
+    accTitle: Microservices Communication Flow
+    accDescr: Graph with 8 nodes and 10 connections. Nodes: Client, API Gateway, Consul Registry, Circuit Breaker, Payment Service, Fallback Response, Invoice Service, Accounting Service. Connections: Client to API Gateway (HTTP Request), API Gateway to Consul Registry (Service Discovery), Consul Registry to API Gateway (Service Address), API Gateway to Circuit Breaker (Circuit Breaker Check), Circuit Breaker to Payment Service (Closed State), Circuit Breaker to Fallback Response (Open State), Payment Service to Invoice Service (Create Invoice), Payment Service to Accounting Service (Record Transaction), Invoice Service to Consul Registry (Health Check), Accounting Service to Consul Registry (Health Check).
     Client["Client"] -->|"HTTP Request"| Gateway["API Gateway"]
     Gateway -->|"Service Discovery"| Consul["Consul Registry"]
     Consul -->|"Service Address"| Gateway
-    Gateway -->|"Circuit Breaker Check"| CB["Circuit Breaker"]
+    Gateway -->|"Circuit Breaker<br/>Check"| CB["Circuit Breaker"]
     CB -->|"Closed State"| Payment["Payment Service"]
     CB -->|"Open State"| Fallback["Fallback Response"]
     Payment -->|"Create Invoice"| Invoice["Invoice Service"]
@@ -37,14 +39,20 @@ graph TD
     Invoice -->|"Health Check"| Consul
     Accounting -->|"Health Check"| Consul
 
-    style Client fill:#0173B2,stroke:#0173B2,color:#fff
-    style Gateway fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style Consul fill:#029E73,stroke:#029E73,color:#fff
-    style CB fill:#CC78BC,stroke:#CC78BC,color:#fff
-    style Payment fill:#CA9161,stroke:#CA9161,color:#fff
-    style Invoice fill:#0173B2,stroke:#0173B2,color:#fff
-    style Accounting fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style Fallback fill:#029E73,stroke:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Gateway pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Consul pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class CB pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Payment pal-CA9161
+    class Invoice pal-0173B2
+    class Accounting pal-DE8F05
+    class Fallback pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Flow explanation**:

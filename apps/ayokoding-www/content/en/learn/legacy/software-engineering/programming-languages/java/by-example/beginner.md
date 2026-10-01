@@ -33,16 +33,24 @@ Java programs run on the JVM (Java Virtual Machine). Code is compiled to bytecod
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: Hello World and JVM Compilation
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Java Source Code (.java files), Java Compiler (javac), Bytecode (.class files), Java Virtual Machine (JVM), Program Output. Connections: Java Source Code (.java files) to Java Compiler (javac), Java Compiler (javac) to Bytecode (.class files), Bytecode (.class files) to Java Virtual Machine (JVM), Java Virtual Machine (JVM) to Program Output.
     Source["Java Source Code<br/>(.java files)"] --> Compiler["Java Compiler<br/>(javac)"]
     Compiler --> Bytecode["Bytecode<br/>(.class files)"]
     Bytecode --> JVM["Java Virtual Machine<br/>(JVM)"]
     JVM --> Output["Program Output"]
 
-    style Source fill:#0173B2,color:#fff
-    style Compiler fill:#DE8F05,color:#fff
-    style Bytecode fill:#029E73,color:#fff
-    style JVM fill:#CC78BC,color:#fff
-    style Output fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Source pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Compiler pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Bytecode pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class JVM pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Output pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -111,14 +119,21 @@ Java's `Scanner` class reads formatted input from various sources (console, file
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 3: Basic Input/Output with Scanner
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: User Input (System.in), Scanner Object, Parse Methods (nextInt, nextLine, etc.), Java Variable. Connections: User Input (System.in) to Scanner Object, Scanner Object to Parse Methods (nextInt, nextLine, etc.), Parse Methods (nextInt, nextLine, etc.) to Java Variable.
     Input["User Input<br/>(System.in)"] --> Scanner["Scanner Object"]
-    Scanner --> Parse["Parse Methods<br/>(nextInt, nextLine, etc.)"]
+    Scanner --> Parse["Parse Methods<br/>(nextInt, nextLine,<br/>etc.)"]
     Parse --> Variable["Java Variable"]
 
-    style Input fill:#0173B2,color:#fff
-    style Scanner fill:#DE8F05,color:#fff
-    style Parse fill:#029E73,color:#fff
-    style Variable fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Input pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Scanner pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Parse pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Variable pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -222,17 +237,25 @@ The `for` loop is used when you know how many iterations you need. It has three 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 5: For Loop Basics
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Initialize: i = 0, Condition: i < 5?, Execute body: print i, Update: i++, Exit loop. Connections: Initialize: i = 0 to Condition: i < 5?, Condition: i < 5? to Execute body: print i (Yes), Execute body: print i to Update: i++, Update: i++ to Condition: i < 5?, Condition: i < 5? to Exit loop (No).
     Init["Initialize: i = 0"] --> Check{"Condition:<br/>i < 5?"}
     Check -->|Yes| Body["Execute body:<br/>print i"]
     Body --> Update["Update: i++"]
     Update --> Check
     Check -->|No| End["Exit loop"]
 
-    style Init fill:#0173B2,color:#fff
-    style Check fill:#DE8F05,color:#fff
-    style Body fill:#029E73,color:#fff
-    style Update fill:#CC78BC,color:#fff
-    style End fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Init pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Check pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Body pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Update pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class End pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -273,6 +296,8 @@ While loops continue as long as a condition is true. Do-while loops execute the 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 6: While and Do-While Loops
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: While: Check first, Condition true?, Execute body, Exit, Do-While: Execute first, Execute body, Condition true?, Exit. Connections: While: Check first to Condition true?, Condition true? to Execute body (Yes), Execute body to While: Check first, Condition true? to Exit (No), Do-While: Execute first to Execute body, Execute body to Condition true?, Condition true? to Execute body (Yes), Condition true? to Exit (No).
     W1["While:<br/>Check first"] --> W2{"Condition<br/>true?"}
     W2 -->|Yes| W3["Execute body"]
     W3 --> W1
@@ -283,12 +308,16 @@ graph TD
     D3 -->|Yes| D2
     D3 -->|No| D4["Exit"]
 
-    style W1 fill:#0173B2,color:#fff
-    style W2 fill:#DE8F05,color:#fff
-    style W3 fill:#029E73,color:#fff
-    style D1 fill:#0173B2,color:#fff
-    style D2 fill:#029E73,color:#fff
-    style D3 fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class W1 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class W2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class W3 pal-029E73
+    class D1 pal-0173B2
+    class D2 pal-029E73
+    class D3 pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -389,14 +418,21 @@ Arrays are fixed-size, indexed collections storing elements of a single type. Th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 8: Array Basics
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Array Declaration int[] arr, Memory Allocation new int[5], Contiguous Memory [0][1][2][3][4], Index Access arr[2]. Connections: Array Declaration int[] arr to Memory Allocation new int[5], Memory Allocation new int[5] to Contiguous Memory [0][1][2][3][4], Contiguous Memory [0][1][2][3][4] to Index Access arr[2].
     Declaration["Array Declaration<br/>int[] arr"] --> Allocation["Memory Allocation<br/>new int[5]"]
     Allocation --> Elements["Contiguous Memory<br/>[0][1][2][3][4]"]
     Elements --> Access["Index Access<br/>arr[2]"]
 
-    style Declaration fill:#0173B2,color:#fff
-    style Allocation fill:#DE8F05,color:#fff
-    style Elements fill:#029E73,color:#fff
-    style Access fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Declaration pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Allocation pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Elements pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Access pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -487,19 +523,26 @@ Classes are blueprints for objects, defining fields (state) and methods (behavio
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 10: Classes and Objects
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Class Person 40Blueprint41, Fields: name, age 40State41, Methods: introduce4041 40Behavior41, Constructor Person40name, age41, Object: alice name=quotAlicequot, age=30, Object: bob name=quotBobquot, age=25. Connections: Class Person 40Blueprint41 to Fields: name, age 40State41, Class Person 40Blueprint41 to Methods: introduce4041 40Behavior41, Class Person 40Blueprint41 to Constructor Person40name, age41, Constructor Person40name, age41 to Object: alice name=quotAlicequot, age=30, Constructor Person40name, age41 to Object: bob name=quotBobquot, age=25.
     Class["Class Person<br/>#40;Blueprint#41;"] --> Fields["Fields: name, age<br/>#40;State#41;"]
-    Class --> Methods["Methods: introduce#40;#41;<br/>#40;Behavior#41;"]
-    Class --> Constructor["Constructor<br/>Person#40;name, age#41;"]
+    Class --> Methods["Methods:<br/>introduce#40;#41;<br/>#40;Behavior#41;"]
+    Class --> Constructor["Constructor<br/>Person#40;name,<br/>age#41;"]
 
-    Constructor --> Object1["Object: alice<br/>name=#quot;Alice#quot;, age=30"]
-    Constructor --> Object2["Object: bob<br/>name=#quot;Bob#quot;, age=25"]
+    Constructor --> Object1["Object: alice<br/>name=#quot;<br/>Alice#quot;,<br/>age=30"]
+    Constructor --> Object2["Object: bob<br/>name=#quot;<br/>Bob#quot;,<br/>age=25"]
 
-    style Class fill:#0173B2,color:#fff
-    style Fields fill:#DE8F05,color:#fff
-    style Methods fill:#DE8F05,color:#fff
-    style Constructor fill:#029E73,color:#fff
-    style Object1 fill:#CC78BC,color:#fff
-    style Object2 fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Class pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Fields pal-DE8F05
+    class Methods pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Constructor pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Object1 pal-CC78BC
+    class Object2 pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -555,16 +598,22 @@ Inheritance creates class hierarchies where subclasses extend superclasses, inhe
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 11: Inheritance and Polymorphism
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Animal Superclass makeSound4041, Dog Subclass extends Animal, Cat Subclass extends Animal, Dog object: makeSound4041 → Woof, Cat object: makeSound4041 → Meow. Connections: Animal Superclass makeSound4041 to Dog Subclass extends Animal, Animal Superclass makeSound4041 to Cat Subclass extends Animal, Dog Subclass extends Animal to Dog object: makeSound4041 → Woof, Cat Subclass extends Animal to Cat object: makeSound4041 → Meow.
     Animal["Animal Superclass<br/>makeSound#40;#41;"] --> Dog["Dog Subclass<br/>extends Animal"]
     Animal --> Cat["Cat Subclass<br/>extends Animal"]
-    Dog --> DogObj["Dog object:<br/>makeSound#40;#41; → Woof"]
-    Cat --> CatObj["Cat object:<br/>makeSound#40;#41; → Meow"]
+    Dog --> DogObj["Dog object:<br/>makeSound#40;#41; →<br/>Woof"]
+    Cat --> CatObj["Cat object:<br/>makeSound#40;#41; →<br/>Meow"]
 
-    style Animal fill:#0173B2,color:#fff
-    style Dog fill:#DE8F05,color:#fff
-    style Cat fill:#DE8F05,color:#fff
-    style DogObj fill:#029E73,color:#fff
-    style CatObj fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Animal pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Dog pal-DE8F05
+    class Cat pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class DogObj pal-029E73
+    class CatObj pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -710,17 +759,25 @@ ArrayList is a resizable array implementation providing fast random access and a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 13: ArrayList - Dynamic Arrays
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: ArrayList names, Internal array capacity=10, add Alice, [Alice, null, null, ...], add Bob, [Alice, Bob, null, ...], add401, Charlie41, Shift Bob right [Alice, Charlie, Bob, ...]. Connections: ArrayList names to Internal array capacity=10, Internal array capacity=10 to add Alice, add Alice to [Alice, null, null, ...], [Alice, null, null, ...] to add Bob, add Bob to [Alice, Bob, null, ...], [Alice, Bob, null, ...] to add401, Charlie41, add401, Charlie41 to Shift Bob right [Alice, Charlie, Bob, ...].
     Create["ArrayList<String> names"] --> Internal["Internal array<br/>capacity=10"]
-    Internal --> Add1["add Alice"] --> Grow1["[Alice, null, null, ...]"]
-    Grow1 --> Add2["add Bob"] --> Grow2["[Alice, Bob, null, ...]"]
-    Grow2 --> Insert["add#40;1, Charlie#41;"] --> Shift["Shift Bob right<br/>[Alice, Charlie, Bob, ...]"]
+    Internal --> Add1["add Alice"] --> Grow1["[Alice, null, null,<br/>...]"]
+    Grow1 --> Add2["add Bob"] --> Grow2["[Alice, Bob, null,<br/>...]"]
+    Grow2 --> Insert["add#40;1,<br/>Charlie#41;"] --> Shift["Shift Bob right<br/>[Alice, Charlie,<br/>Bob, ...]"]
 
-    style Create fill:#0173B2,color:#fff
-    style Internal fill:#DE8F05,color:#fff
-    style Add1 fill:#029E73,color:#fff
-    style Add2 fill:#029E73,color:#fff
-    style Insert fill:#CC78BC,color:#fff
-    style Shift fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Create pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Internal pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Add1 pal-029E73
+    class Add2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Insert pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Shift pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -776,16 +833,24 @@ HashMap stores key-value pairs with O(1) average-case lookup using hash-based in
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 14: HashMap - Key-Value Mappings
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Key: Alice, hashCode4041 hash value, Bucket index 40hash array.length41, Entry: Alice=30 stored in bucket, get Alice, Return value: 30. Connections: Key: Alice to hashCode4041 hash value, hashCode4041 hash value to Bucket index 40hash array.length41, Bucket index 40hash array.length41 to Entry: Alice=30 stored in bucket, Entry: Alice=30 stored in bucket to get Alice, get Alice to Return value: 30.
     Key["Key: Alice"] --> Hash["hashCode#40;#41;<br/>hash value"]
-    Hash --> Bucket["Bucket index<br/>#40;hash % array.length#41;"]
+    Hash --> Bucket["Bucket index<br/>#40;hash %<br/>array.length#41;"]
     Bucket --> Entry["Entry: Alice=30<br/>stored in bucket"]
     Entry --> Lookup["get Alice"] --> Found["Return value: 30"]
 
-    style Key fill:#0173B2,color:#fff
-    style Hash fill:#DE8F05,color:#fff
-    style Bucket fill:#029E73,color:#fff
-    style Entry fill:#CC78BC,color:#fff
-    style Found fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Key pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Hash pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Bucket pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Entry pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Found pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1051,22 +1116,30 @@ Java methods encapsulate reusable logic with parameters and return values. Param
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Call["Method Call<br/>modifyPrimitive#40;num#41;"] --> CopyPrim["Copy primitive value<br/>param x = 10"]
+    accTitle: Example 18: Methods and Parameter Passing
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: Method Call modify Primitive40num41, Copy primitive value param x = 10, Modify x = 100 40local copy41, Return Original num still 10, Method Call modify Array40arr41, Copy reference param points to same array, Modify arr[0] = 999 40affects original41, Return Original array modified. Connections: Method Call modify Primitive40num41 to Copy primitive value param x = 10, Copy primitive value param x = 10 to Modify x = 100 40local copy41, Modify x = 100 40local copy41 to Return Original num still 10, Method Call modify Array40arr41 to Copy reference param points to same array, Copy reference param points to same array to Modify arr[0] = 999 40affects original41, Modify arr[0] = 999 40affects original41 to Return Original array modified.
+    Call["Method Call<br/>modify<br/>Primitive#40;num#41;"] --> CopyPrim["Copy primitive value<br/>param x = 10"]
     CopyPrim --> ModifyPrim["Modify x = 100<br/>#40;local copy#41;"]
-    ModifyPrim --> ReturnPrim["Return<br/>Original num still 10"]
+    ModifyPrim --> ReturnPrim["Return<br/>Original num still<br/>10"]
 
-    Call2["Method Call<br/>modifyArray#40;arr#41;"] --> CopyRef["Copy reference<br/>param points to same array"]
-    CopyRef --> ModifyHeap["Modify arr[0] = 999<br/>#40;affects original#41;"]
-    ModifyHeap --> ReturnRef["Return<br/>Original array modified"]
+    Call2["Method Call<br/>modify<br/>Array#40;arr#41;"] --> CopyRef["Copy reference<br/>param points to same<br/>array"]
+    CopyRef --> ModifyHeap["Modify arr[0] = 999<br/>#40;affects<br/>original#41;"]
+    ModifyHeap --> ReturnRef["Return<br/>Original array<br/>modified"]
 
-    style Call fill:#0173B2,color:#fff
-    style Call2 fill:#0173B2,color:#fff
-    style CopyPrim fill:#DE8F05,color:#fff
-    style CopyRef fill:#DE8F05,color:#fff
-    style ModifyPrim fill:#029E73,color:#fff
-    style ModifyHeap fill:#029E73,color:#fff
-    style ReturnPrim fill:#CC78BC,color:#fff
-    style ReturnRef fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Call pal-0173B2
+    class Call2 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CopyPrim pal-DE8F05
+    class CopyRef pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ModifyPrim pal-029E73
+    class ModifyHeap pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ReturnPrim pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class ReturnRef pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

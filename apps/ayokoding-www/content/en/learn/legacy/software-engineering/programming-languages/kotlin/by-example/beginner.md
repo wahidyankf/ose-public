@@ -47,6 +47,8 @@ Kotlin distinguishes between immutable (`val`) and mutable (`var`) variables to 
 ```mermaid
 %% Variable declaration flow
 graph TD
+    accTitle: Example 2: Variable Declaration - val vs var
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Variable Declaration, Needs Reassignment?, val - Immutable, var - Mutable, Type Inference, Variable Ready. Connections: Variable Declaration to Needs Reassignment?, Needs Reassignment? to val - Immutable (No), Needs Reassignment? to var - Mutable (Yes), val - Immutable to Type Inference, var - Mutable to Type Inference, Type Inference to Variable Ready.
     A[Variable Declaration] --> B{Needs Reassignment?}
     B -->|No| C[val - Immutable]
     B -->|Yes| D[var - Mutable]
@@ -54,12 +56,18 @@ graph TD
     D --> E
     E --> F[Variable Ready]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -219,21 +227,29 @@ Kotlin functions are first-class citizens defined with the `fun` keyword. Single
 ```mermaid
 %% Function declaration options
 graph TD
+    accTitle: Example 5: Functions
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Function Definition, Single Expression?, = expression syntax, Block body with return, Return type inferred, Return type explicit or Unit, Function Ready. Connections: Function Definition to Single Expression?, Single Expression? to = expression syntax (Yes), Single Expression? to Block body with return (No), = expression syntax to Return type inferred, Block body with return to Return type explicit or Unit, Return type inferred to Function Ready, Return type explicit or Unit to Function Ready.
     A[Function Definition] --> B{Single Expression?}
     B -->|Yes| C[= expression syntax]
-    B -->|No| D[Block body with return]
+    B -->|No| D[Block body with<br/>return]
     C --> E[Return type inferred]
-    D --> F[Return type explicit or Unit]
+    D --> F[Return type explicit<br/>or Unit]
     E --> G[Function Ready]
     F --> G
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -626,6 +642,8 @@ Kotlin's type system distinguishes between nullable and non-nullable references,
 ```mermaid
 %% Null safety flow
 graph TD
+    accTitle: Example 10: Null Safety - Nullable Types
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Variable Declaration, Can be null?, Type? - Nullable, Type - Non-null, Safe Call ?., Elvis ?:, Not-null !!, Direct Access. Connections: Variable Declaration to Can be null?, Can be null? to Type? - Nullable (Yes), Can be null? to Type - Non-null (No), Type? - Nullable to Safe Call ?., Type? - Nullable to Elvis ?:, Type? - Nullable to Not-null !!, Type - Non-null to Direct Access.
     A[Variable Declaration] --> B{Can be null?}
     B -->|Yes| C[Type? - Nullable]
     B -->|No| D[Type - Non-null]
@@ -634,14 +652,20 @@ graph TD
     C --> G[Not-null !!]
     D --> H[Direct Access]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#CA9161,color:#fff
-    style H fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-CA9161
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -1014,18 +1038,26 @@ Kotlin classes are concise with properties declared in the primary constructor. 
 ```mermaid
 %% Class instantiation flow
 graph TD
+    accTitle: Example 14: Classes and Objects
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Class Declaration, Primary Constructor, Property Initialization, init Block Execution, Secondary Constructor, Object Ready. Connections: Class Declaration to Primary Constructor, Primary Constructor to Property Initialization, Property Initialization to init Block Execution, init Block Execution to Secondary Constructor, Secondary Constructor to Object Ready.
     A[Class Declaration] --> B[Primary Constructor]
-    B --> C[Property Initialization]
+    B --> C[Property<br/>Initialization]
     C --> D[init Block Execution]
-    D --> E[Secondary Constructor]
+    D --> E[Secondary<br/>Constructor]
     E --> F[Object Ready]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CA9161,color:#fff
-    style D fill:#CA9161,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -1198,16 +1230,22 @@ Kotlin classes are final by default, preventing unintended inheritance. Mark cla
 ```mermaid
 %% Inheritance hierarchy
 graph TD
+    accTitle: Example 16: Inheritance and Open Classes
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: open class Animal, class Dog: Animal, class Cat: Animal, override fun sound, override fun sound. Connections: open class Animal to class Dog: Animal, open class Animal to class Cat: Animal, class Dog: Animal to override fun sound, class Cat: Animal to override fun sound.
     A[open class Animal] --> B[class Dog: Animal]
     A --> C[class Cat: Animal]
     B --> D[override fun sound]
     C --> E[override fun sound]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Open classes and methods**: Classes are final by default (use `open` to allow inheritance). Methods require `open` to be overridable. This prevents fragile base class problems.
@@ -1794,14 +1832,19 @@ Sealed classes represent restricted class hierarchies where all subclasses are k
 ```mermaid
 %% Sealed class hierarchy
 graph TD
+    accTitle: Example 21: Sealed Classes
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: sealed class Result, data class Success, data class Error, object Loading. Connections: sealed class Result to data class Success, sealed class Result to data class Error, sealed class Result to object Loading.
     A[sealed class Result] --> B[data class Success]
     A --> C[data class Error]
     A --> D[object Loading]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Exhaustive When Expression:**
@@ -1809,20 +1852,27 @@ graph TD
 ```mermaid
 %% When expression flow
 graph TD
+    accTitle: Example 21: Sealed Classes
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: when40result41, Type check, Access data property, Access message and code, No properties, No else needed. Connections: when40result41 to Type check, Type check to Access data property (is Success), Type check to Access message and code (is Error), Type check to No properties (is Loading), Access data property to No else needed, Access message and code to No else needed, No properties to No else needed.
     E[when#40;result#41;] --> F{Type check}
     F -->|is Success| G[Access data property]
-    F -->|is Error| H[Access message and code]
+    F -->|is Error| H[Access message and<br/>code]
     F -->|is Loading| I[No properties]
     G --> J[No else needed]
     H --> J
     I --> J
 
-    style E fill:#0173B2,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#DE8F05,color:#fff
-    style H fill:#DE8F05,color:#fff
-    style I fill:#DE8F05,color:#fff
-    style J fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class E pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class G pal-DE8F05
+    class H pal-DE8F05
+    class I pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Restricted hierarchies**: The `sealed` keyword restricts subclasses to the same file where the sealed class is defined. The compiler knows ALL possible subclasses at compile time (closed hierarchy), enabling exhaustive `when` expressions without `else` branches. Adding a new subclass requires updating all `when` expressions (compile-time safety).
@@ -2008,16 +2058,23 @@ Kotlin treats functions as first-class citizens. Lambdas are anonymous functions
 ```mermaid
 %% Lambda execution flow
 graph TD
-    A[Higher-Order Function] --> B[Accepts Lambda]
+    accTitle: Example 23: Lambdas and Higher-Order Functions
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Higher-Order Function, Accepts Lambda, Lambda Body, Returns Result, Function Returns. Connections: Higher-Order Function to Accepts Lambda, Accepts Lambda to Lambda Body, Lambda Body to Returns Result, Returns Result to Function Returns.
+    A[Higher-Order<br/>Function] --> B[Accepts Lambda]
     B --> C[Lambda Body]
     C --> D[Returns Result]
     D --> E[Function Returns]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CA9161,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -2259,18 +2316,26 @@ Kotlin's `is` operator checks types at runtime and automatically smart casts the
 ```mermaid
 %% Smart cast flow
 graph TD
+    accTitle: Example 26: Type Checks and Smart Casts
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Type Check with is, Type Matches?, Smart Cast to Type, No Cast, Access Type Members, Continue Execution. Connections: Type Check with is to Type Matches?, Type Matches? to Smart Cast to Type (Yes), Type Matches? to No Cast (No), Smart Cast to Type to Access Type Members, No Cast to Continue Execution.
     A[Type Check with is] --> B{Type Matches?}
     B -->|Yes| C[Smart Cast to Type]
     B -->|No| D[No Cast]
     C --> E[Access Type Members]
     D --> F[Continue Execution]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin

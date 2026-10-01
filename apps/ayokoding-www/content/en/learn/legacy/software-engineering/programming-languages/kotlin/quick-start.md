@@ -37,13 +37,15 @@ By the end of this tutorial, you will have touchpoints for:
 
 ```mermaid
 graph LR
-    A[Quick Start: Kotlin] --> B[Functions & Variables]
+    accTitle: Learning Path
+    accDescr: Graph with 14 nodes and 22 connections. Nodes: Quick Start: Kotlin, B, Null Safety, D, Objects, Control Flow, Collections, Extension Functions, Higher-Order Functions, Lambdas, Coroutines, Sealed Classes, and 2 more. Connections: Quick Start: Kotlin to B, Quick Start: Kotlin to Null Safety, Quick Start: Kotlin to D, Quick Start: Kotlin to Objects, Quick Start: Kotlin to Control Flow, Quick Start: Kotlin to Collections, Quick Start: Kotlin to Extension Functions, Quick Start: Kotlin to Higher-Order Functions, Quick Start: Kotlin to Lambdas, Quick Start: Kotlin to Coroutines, Quick Start: Kotlin to Sealed Classes, B to Beginner Tutorial, and 10 more.
+    A[Quick Start: Kotlin] --> B[Functions &<br/>Variables]
     A --> C[Null Safety]
     A --> D[Classes & Objects]
     A --> E[Control Flow]
     A --> F[Collections]
     A --> G[Extension Functions]
-    A --> H[Higher-Order Functions]
+    A --> H[Higher-Order<br/>Functions]
     A --> I[Lambdas]
     A --> J[Coroutines]
     A --> K[Sealed Classes]
@@ -61,9 +63,11 @@ graph LR
 
     L --> M[By-Example: Kotlin]
 
-    style A fill:#e1f5ff
-    style L fill:#fff4e1
-    style M fill:#f0e6ff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    class L pal-CC78BC
+    class M pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Concept 1: Functions and Variables - Type-Safe Basics

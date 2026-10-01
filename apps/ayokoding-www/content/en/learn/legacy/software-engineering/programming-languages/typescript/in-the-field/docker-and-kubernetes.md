@@ -982,17 +982,19 @@ kubectl describe hpa typescript-api-hpa
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TB
+    accTitle: Container Deployment Progression Diagram
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: npm scripts + PM2, Docker, Docker Compose, Kubernetes. Connections: npm scripts + PM2 to Docker (Container isolation), Docker to Docker Compose (Multi-container orchestration), Docker Compose to Kubernetes (Production orchestration).
     A[npm scripts + PM2] -->|Container isolation| B[Docker]
-    B -->|Multi-container orchestration| C[Docker Compose]
-    C -->|Production orchestration| D[Kubernetes]
+    B -->|Multi-container<br/>orchestration| C[Docker Compose]
+    C -->|Production<br/>orchestration| D[Kubernetes]
 
     A:::standard
     B:::framework
     C:::framework
     D:::production
 
-    classDef standard fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef framework fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef standard fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef framework fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef production fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
 
     subgraph Standard[" Standard Node.js "]
@@ -1008,9 +1010,13 @@ graph TB
         D
     end
 
-    style Standard fill:#F0F0F0,stroke:#CC78BC,stroke-width:3px
-    style Containers fill:#F0F0F0,stroke:#029E73,stroke-width:3px
-    style Orchestration fill:#F0F0F0,stroke:#0173B2,stroke-width:3px
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:3px
+    class Standard pal-CC78BC
+    classDef pal-CC78BC-2 fill:#CC78BC,stroke:#029E73,color:#000000,stroke-width:3px
+    class Containers pal-CC78BC-2
+    classDef pal-CC78BC-3 fill:#CC78BC,stroke:#0173B2,color:#000000,stroke-width:3px
+    class Orchestration pal-CC78BC-3
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Best Practices

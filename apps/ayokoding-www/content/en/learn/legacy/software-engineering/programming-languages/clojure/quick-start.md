@@ -38,6 +38,8 @@ By the end of this tutorial, you will have touchpoints for:
 
 ```mermaid
 graph LR
+    accTitle: Learning Path
+    accDescr: Graph with 13 nodes and 21 connections. Nodes: Quick Start: Clojure, Data Structures, Functions, Immutability, Sequences, Destructuring, Namespaces, Macros, State Management, Concurrency, Java Interop, Beginner Tutorial, and 1 more. Connections: Quick Start: Clojure to Data Structures, Quick Start: Clojure to Functions, Quick Start: Clojure to Immutability, Quick Start: Clojure to Sequences, Quick Start: Clojure to Destructuring, Quick Start: Clojure to Namespaces, Quick Start: Clojure to Macros, Quick Start: Clojure to State Management, Quick Start: Clojure to Concurrency, Quick Start: Clojure to Java Interop, Data Structures to Beginner Tutorial, Functions to Beginner Tutorial, and 9 more.
     A[Quick Start: Clojure] --> B[Data Structures]
     A --> C[Functions]
     A --> D[Immutability]
@@ -62,9 +64,11 @@ graph LR
 
     L --> M[By-Example: Clojure]
 
-    style A fill:#e1f5ff
-    style L fill:#fff4e1
-    style M fill:#f0e6ff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    class L pal-CC78BC
+    class M pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Concept 1: Data Structures and Literals - Code as Data

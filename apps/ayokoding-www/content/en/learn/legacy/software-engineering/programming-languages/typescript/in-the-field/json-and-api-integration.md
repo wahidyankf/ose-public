@@ -902,6 +902,8 @@ try {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart TD
+    accTitle: API Client Pattern Comparison
+    accDescr: Flowchart with 15 nodes and 16 connections. Nodes: Choose HTTP Client, Requirements?, fetch, axios, got, fetch Features, axios Features, got Features, ✓ Built-in Node 18+ ✓ Promise-based ✓ AbortController ✗ No retry ✗ No interceptors, ✓ Interceptors ✓ Auto JSON parse ✓ Retry with plugin ✓ Progress events ✗ External dep 135KB, ✓ Built-in retry ✓ Hooks ✓ HTTP caching ✓ Streams ✗ External dep 180KB ✗ Node.js only, Use Cases, and 3 more. Connections: Choose HTTP Client to Requirements?, Requirements? to fetch (Built-in Simple GET/POST), Requirements? to axios (Interceptors Retry Browser + Node), Requirements? to got (Advanced retry Hooks Node.js only), fetch to fetch Features, axios to axios Features, got to got Features, fetch Features to ✓ Built-in Node 18+ ✓ Promise-based ✓ AbortController ✗ No retry ✗ No interceptors, axios Features to ✓ Interceptors ✓ Auto JSON parse ✓ Retry with plugin ✓ Progress events ✗ External dep 135KB, got Features to ✓ Built-in retry ✓ Hooks ✓ HTTP caching ✓ Streams ✗ External dep 180KB ✗ Node.js only, ✓ Built-in Node 18+ ✓ Promise-based ✓ AbortController ✗ No retry ✗ No interceptors to Use Cases, ✓ Interceptors ✓ Auto JSON parse ✓ Retry with plugin ✓ Progress events ✗ External dep 135KB to Use Cases, and 4 more.
     A[Choose HTTP Client] --> B{Requirements?}
 
     B -->|Built-in<br/>Simple GET/POST| C[fetch]
@@ -922,14 +924,18 @@ flowchart TD
     D2 --> F
     E2 --> F
 
-    F --> F1[fetch: Simple apps<br/>Browser compatibility<br/>No dependencies]
-    F --> F2[axios: Production apps<br/>Complex APIs<br/>Interceptors needed]
-    F --> F3[got: Node.js services<br/>Advanced retry<br/>HTTP caching]
+    F --> F1[fetch: Simple apps<br/>Browser<br/>compatibility<br/>No dependencies]
+    F --> F2[axios: Production<br/>apps<br/>Complex APIs<br/>Interceptors needed]
+    F --> F3[got: Node.js<br/>services<br/>Advanced retry<br/>HTTP caching]
 
-    style A fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style D fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-DE8F05
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Best Practices

@@ -37,7 +37,9 @@ By the end of this tutorial, you will have touchpoints for:
 
 ```mermaid
 graph TD
-    A[Quick Start: TypeScript] --> B[Basic Types]
+    accTitle: Learning Path
+    accDescr: Graph with 13 nodes and 27 connections. Nodes: Quick Start: TypeScript, Basic Types, Interfaces, Functions, Classes, Generics, Union Types, Literal Types, Type Guards, Utility Types, Async Patterns, By-Example Tutorial, and 1 more. Connections: Quick Start: TypeScript to Basic Types, Quick Start: TypeScript to Interfaces, Quick Start: TypeScript to Functions, Quick Start: TypeScript to Classes, Quick Start: TypeScript to Generics, Quick Start: TypeScript to Union Types, Quick Start: TypeScript to Literal Types, Quick Start: TypeScript to Type Guards, Quick Start: TypeScript to Utility Types, Quick Start: TypeScript to Async Patterns, Basic Types to Interfaces, Interfaces to Functions, and 15 more.
+    A[Quick Start:<br/>TypeScript] --> B[Basic Types]
     A --> C[Interfaces]
     A --> D[Functions]
     A --> E[Classes]
@@ -66,11 +68,13 @@ graph TD
     J --> L
     K --> L
 
-    L --> M[Production TypeScript]
+    L --> M[Production<br/>TypeScript]
 
-    style A fill:#e1f5ff
-    style L fill:#fff4e1
-    style M fill:#f0e6ff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    class L pal-CC78BC
+    class M pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Project Setup

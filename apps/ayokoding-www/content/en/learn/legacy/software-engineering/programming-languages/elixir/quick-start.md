@@ -39,8 +39,9 @@ By the end of this tutorial, you will understand:
 ## Learning Path
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0ea5e9','primaryTextColor':'#1e293b','primaryBorderColor':'#0369a1','lineColor':'#64748b','secondaryColor':'#f97316','tertiaryColor':'#8b5cf6','background':'#ffffff','mainBkg':'#f1f5f9','secondBkg':'#e2e8f0'}}}%%
 graph TB
+    accTitle: Learning Path
+    accDescr: Graph with 15 nodes and 14 connections. Nodes: Quick Start, Prerequisites Check, Pattern Matching, Immutability, Basic Types, Funcs, Modules, Pipeline Operator, Recursion, Enumerables, Multi-Clause Functions, Processes, and 3 more. Connections: Quick Start to Prerequisites Check, Prerequisites Check to Pattern Matching, Pattern Matching to Immutability, Immutability to Basic Types, Basic Types to Funcs, Basic Types to Modules, Funcs to Pipeline Operator, Pipeline Operator to Recursion, Recursion to Enumerables, Enumerables to Multi-Clause Functions, Multi-Clause Functions to Processes, Processes to Message Passing, and 2 more.
     Start[Quick Start] --> Setup[Prerequisites Check]
     Setup --> Pattern[Pattern Matching]
     Pattern --> Immut[Immutability]
@@ -49,16 +50,21 @@ graph TB
     Funcs --> Pipeline[Pipeline Operator]
     Pipeline --> Recur[Recursion]
     Recur --> Enum[Enumerables]
-    Enum --> MultiClause[Multi-Clause Functions]
+    Enum --> MultiClause[Multi-Clause<br/>Functions]
     MultiClause --> Proc[Processes]
     Proc --> Msg[Message Passing]
     Msg --> Gen[GenServer]
     Gen --> Next[Next Steps]
 
-    style Start fill:#0ea5e9,stroke:#0369a1,stroke-width:3px,color:#ffffff
-    style Next fill:#10b981,stroke:#059669,stroke-width:3px,color:#ffffff
-    style Pattern fill:#f97316,stroke:#c2410c,stroke-width:2px,color:#ffffff
-    style Proc fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#ffffff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:3px
+    class Start pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:3px
+    class Next pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Pattern pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Proc pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Pattern Matching Fundamentals

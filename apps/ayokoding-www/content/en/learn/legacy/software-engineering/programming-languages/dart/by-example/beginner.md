@@ -61,6 +61,8 @@ Dart enforces null safety, preventing null reference errors at compile time.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Example 2: Null Safety Basics
+    accDescr: Flowchart with 11 nodes and 10 connections. Nodes: Variable Type, String, int, bool, String?, int?, bool?, Must initialize Cannot be null, Can be null Default: null, Use directly No checks needed, Check before use, Type promoted Safe to use, Provide default value ?? default, Assert non-null Throws if null, Safe access Returns null if null. Connections: Variable Type to String, int, bool (Non-nullable), Variable Type to String?, int?, bool? (Nullable), String, int, bool to Must initialize Cannot be null, String?, int?, bool? to Can be null Default: null, Must initialize Cannot be null to Use directly No checks needed, Can be null Default: null to Check before use, Check before use to Type promoted Safe to use (if != null), Check before use to Provide default value ?? default (Use ??), Check before use to Assert non-null Throws if null (Use !), Check before use to Safe access Returns null if null (Use ?.).
     VarType{Variable Type} -->|Non-nullable| NonNull[String, int, bool]
     VarType -->|Nullable| Nullable[String?, int?, bool?]
 
@@ -75,10 +77,14 @@ flowchart TD
     CheckRequired -->|Use !| AssertNonNull[Assert non-null<br/>Throws if null]
     CheckRequired -->|Use ?.| SafeAccess[Safe access<br/>Returns null if null]
 
-    style NonNull fill:#029E73
-    style Nullable fill:#DE8F05
-    style TypePromote fill:#0173B2
-    style DirectUse fill:#029E73
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class NonNull pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Nullable pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class TypePromote pal-0173B2
+    class DirectUse pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -190,6 +196,8 @@ Dart provides standard arithmetic operators and operator precedence.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 4: Basic Arithmetic and Operators
+    accDescr: Flowchart with 8 nodes and 7 connections. Nodes: Operands, Operator, Addition wealth + bonus, Subtraction wealth - zakat, Multiplication wealth * rate, Division double zakat / wealth, Integer Division zakat ~/ 1000, Modulo total 1000. Connections: Operands to Operator, Operator to Addition wealth + bonus (+), Operator to Subtraction wealth - zakat (-), Operator to Multiplication wealth * rate (*), Operator to Division double zakat / wealth (/), Operator to Integer Division zakat ~/ 1000 (~/), Operator to Modulo total 1000.
     A[Operands] --> B{Operator}
     B -->|+| Add[Addition<br/>wealth + bonus]
     B -->|-| Sub[Subtraction<br/>wealth - zakat]
@@ -198,13 +206,19 @@ flowchart LR
     B -->|~/| IntDiv[Integer Division<br/>zakat ~/ 1000]
     B -->|%| Mod[Modulo<br/>total % 1000]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style Add fill:#029E73,stroke:#000,color:#fff
-    style Sub fill:#DE8F05,stroke:#000,color:#000
-    style Mul fill:#029E73,stroke:#000,color:#fff
-    style Div fill:#CC78BC,stroke:#000,color:#000
-    style IntDiv fill:#CA9161,stroke:#000,color:#fff
-    style Mod fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Add pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Sub pal-DE8F05
+    class Mul pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Div pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class IntDiv pal-CA9161
+    class Mod pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -360,17 +374,25 @@ For loops iterate a fixed number of times with counter variable.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Example 6: Control Flow - For Loops
+    accDescr: Flowchart with 5 nodes and 5 connections. Nodes: Initialize month = 1, Condition month <= 5?, Execute Body print month data, Increment month++, Loop Exits Continue program. Connections: Initialize month = 1 to Condition month <= 5?, Condition month <= 5? to Execute Body print month data (true), Execute Body print month data to Increment month++, Increment month++ to Condition month <= 5?, Condition month <= 5? to Loop Exits Continue program (false).
     Init[Initialize<br/>month = 1] --> Cond{Condition<br/>month <= 5?}
     Cond -->|true| Body[Execute Body<br/>print month data]
     Body --> Incr[Increment<br/>month++]
     Incr --> Cond
     Cond -->|false| End[Loop Exits<br/>Continue program]
 
-    style Init fill:#0173B2,stroke:#000,color:#fff
-    style Cond fill:#DE8F05,stroke:#000,color:#000
-    style Body fill:#029E73,stroke:#000,color:#fff
-    style Incr fill:#CC78BC,stroke:#000,color:#000
-    style End fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Init pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Cond pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Body pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Incr pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class End pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -632,6 +654,8 @@ Switch statements match a value against multiple cases for multi-way branching.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart TD
+    accTitle: Example 8: Switch Statements
+    accDescr: Flowchart with 9 nodes and 11 connections. Nodes: switch value, case 1?, Execute block 1 break, case 2?, Execute block 2 break, case 3?, Execute block 3 break, default block break, Continue program. Connections: switch value to case 1?, case 1? to Execute block 1 break (match), case 1? to case 2? (no match), case 2? to Execute block 2 break (match), case 2? to case 3? (no match), case 3? to Execute block 3 break (match), case 3? to default block break (no match), Execute block 1 break to Continue program, Execute block 2 break to Continue program, Execute block 3 break to Continue program, default block break to Continue program.
     Val[switch value] --> C1{case 1?}
     C1 -->|match| B1[Execute block 1<br/>break]
     C1 -->|no match| C2{case 2?}
@@ -644,11 +668,17 @@ flowchart TD
     B3 --> Exit
     Def --> Exit
 
-    style Val fill:#0173B2,stroke:#000,color:#fff
-    style B1 fill:#029E73,stroke:#000,color:#fff
-    style B2 fill:#DE8F05,stroke:#000,color:#000
-    style B3 fill:#CC78BC,stroke:#000,color:#000
-    style Def fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Val pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B1 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B2 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B3 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Def pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -824,21 +854,29 @@ Lists are ordered collections of elements with dynamic or fixed length.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 9: Lists - Creation and Basic Operations
+    accDescr: Flowchart with 9 nodes and 8 connections. Nodes: List Ordered Collection, Index Access list[0] O1, Modification add, insert, remove, Iteration for-in loop, Properties length, isEmpty, contains, Ahmad = index 0, Fatimah = index 1, add appends to end, for donor in donors. Connections: List Ordered Collection to Index Access list[0] O1, List Ordered Collection to Modification add, insert, remove, List Ordered Collection to Iteration for-in loop, List Ordered Collection to Properties length, isEmpty, contains, Index Access list[0] O1 to Ahmad = index 0, Index Access list[0] O1 to Fatimah = index 1, Modification add, insert, remove to add appends to end, Iteration for-in loop to for donor in donors.
     L[List<br/>Ordered Collection] --> Idx[Index Access<br/>list[0] O1]
     L --> Add[Modification<br/>add, insert, remove]
     L --> Iter[Iteration<br/>for-in loop]
-    L --> Info[Properties<br/>length, isEmpty, contains]
+    L --> Info[Properties<br/>length, isEmpty,<br/>contains]
 
     Idx --> Ex1[Ahmad = index 0]
     Idx --> Ex2[Fatimah = index 1]
     Add --> Ex3[add appends to end]
     Iter --> Ex4[for donor in donors]
 
-    style L fill:#0173B2,stroke:#000,color:#fff
-    style Idx fill:#029E73,stroke:#000,color:#fff
-    style Add fill:#DE8F05,stroke:#000,color:#000
-    style Iter fill:#CC78BC,stroke:#000,color:#000
-    style Info fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class L pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Idx pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Add pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Iter pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Info pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -953,21 +991,28 @@ Maps store data as key-value pairs for efficient lookups.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 10: Maps - Key-Value Storage
+    accDescr: Flowchart with 9 nodes and 8 connections. Nodes: Map Key-Value Storage, Key: String Value: int, Ahmad → 500000, Fatimah → 1000000, Ali → 750000, Operations, map key → value or null, map key = value, map.remove key. Connections: Map Key-Value Storage to Key: String Value: int, Key: String Value: int to Ahmad → 500000, Key: String Value: int to Fatimah → 1000000, Key: String Value: int to Ali → 750000, Map Key-Value Storage to Operations, Operations to map key → value or null, Operations to map key = value, Operations to map.remove key.
     M[Map<br/>Key-Value Storage] --> KV[Key: String<br/>Value: int]
     KV --> K1[Ahmad → 500000]
     KV --> K2[Fatimah → 1000000]
     KV --> K3[Ali → 750000]
     M --> Ops[Operations]
-    Ops --> Get[map key → value or null]
+    Ops --> Get[map key → value or<br/>null]
     Ops --> Set[map key = value]
     Ops --> Del[map.remove key]
 
-    style M fill:#0173B2,stroke:#000,color:#fff
-    style KV fill:#DE8F05,stroke:#000,color:#000
-    style K1 fill:#029E73,stroke:#000,color:#fff
-    style K2 fill:#029E73,stroke:#000,color:#fff
-    style K3 fill:#029E73,stroke:#000,color:#fff
-    style Ops fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class M pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class KV pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class K1 pal-029E73
+    class K2 pal-029E73
+    class K3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Ops pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -1099,6 +1144,8 @@ Functions encapsulate reusable code with parameters and return values.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 flowchart LR
+    accTitle: Example 11: Function Basics
+    accDescr: Flowchart with 7 nodes and 6 connections. Nodes: Input Parameters, Function Body Execute logic, Has return type?, return value Must match type, No return void function, Caller receives returned value, Caller continues no value received. Connections: Input Parameters to Function Body Execute logic, Function Body Execute logic to Has return type?, Has return type? to return value Must match type (Yes), Has return type? to No return void function (No void), return value Must match type to Caller receives returned value, No return void function to Caller continues no value received.
     Params[Input Parameters] --> Function[Function Body<br/>Execute logic]
     Function --> Return{Has return<br/>type?}
 
@@ -1108,9 +1155,13 @@ flowchart LR
     ReturnVal --> Caller[Caller receives<br/>returned value]
     NoReturn --> CallerVoid[Caller continues<br/>no value received]
 
-    style Function fill:#0173B2
-    style ReturnVal fill:#029E73
-    style Params fill:#DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Function pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ReturnVal pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Params pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart

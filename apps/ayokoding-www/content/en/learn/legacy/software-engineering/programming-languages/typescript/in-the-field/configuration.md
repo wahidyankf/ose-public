@@ -999,11 +999,13 @@ function loadConfig(): z.infer<typeof baseSchema> {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart TD
-    A[Configuration Sources] --> B[1. Code Defaults]
-    A --> C[2. config/default.json]
-    A --> D[3. config/environment.json]
+    accTitle: Configuration Hierarchy Progression Diagram
+    accDescr: Flowchart with 15 nodes and 19 connections. Nodes: Configuration Sources, 1. Code Defaults, 2. config/default.json, 3. config/ environment.json, 4. .env File, 5. Environment Variables, 6. config/local.json, Lowest Priority, Highest Priority, Merged Configuration, Zod Validation, Type-Safe Config Object, and 3 more. Connections: Configuration Sources to 1. Code Defaults, Configuration Sources to 2. config/default.json, Configuration Sources to 3. config/ environment.json, Configuration Sources to 4. .env File, Configuration Sources to 5. Environment Variables, Configuration Sources to 6. config/local.json, 1. Code Defaults to Lowest Priority, 6. config/local.json to Highest Priority, Lowest Priority to Merged Configuration, 2. config/default.json to Merged Configuration, 3. config/ environment.json to Merged Configuration, 4. .env File to Merged Configuration, and 7 more.
+    A[Configuration<br/>Sources] --> B[1. Code Defaults]
+    A --> C[2.<br/>config/default.json]
+    A --> D[3. config/<br/>environment.json]
     A --> E[4. .env File]
-    A --> F[5. Environment Variables]
+    A --> F[5. Environment<br/>Variables]
     A --> G[6. config/local.json]
 
     B --> H[Lowest Priority]
@@ -1017,17 +1019,22 @@ flowchart TD
     I --> J
 
     J --> K{Zod Validation}
-    K -->|Valid| L[Type-Safe Config Object]
-    K -->|Invalid| M[Startup Error with Details]
+    K -->|Valid| L[Type-Safe Config<br/>Object]
+    K -->|Invalid| M[Startup Error with<br/>Details]
 
-    L --> N[Application Uses Config]
-    M --> O[Fix Configuration & Restart]
+    L --> N[Application Uses<br/>Config]
+    M --> O[Fix Configuration &<br/>Restart]
 
-    style A fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style J fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style K fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style L fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style M fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class J pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class K pal-DE8F05
+    class L pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class M pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Best Practices

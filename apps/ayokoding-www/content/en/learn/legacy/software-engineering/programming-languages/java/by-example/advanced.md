@@ -42,13 +42,19 @@ Concurrent collections provide thread safety with better performance than synchr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 65: Concurrent Collections
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Producer Thread put elements, BlockingQueue bounded capacity, Consumer Thread take elements. Connections: Producer Thread put elements to BlockingQueue bounded capacity, BlockingQueue bounded capacity to Consumer Thread take elements.
     Producer["Producer Thread<br/>put elements"]
     Producer --> Queue["BlockingQueue<br/>bounded capacity"]
     Queue --> Consumer["Consumer Thread<br/>take elements"]
 
-    style Producer fill:#0173B2,color:#fff
-    style Queue fill:#DE8F05,color:#fff
-    style Consumer fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Producer pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Queue pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Consumer pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **ConcurrentHashMap (Lock Striping):**
@@ -56,15 +62,20 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 65: Concurrent Collections
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: ConcurrentHashMap parallel access, Segment 1 independent lock, Segment 2 independent lock, Segment N independent lock. Connections: ConcurrentHashMap parallel access to Segment 1 independent lock, ConcurrentHashMap parallel access to Segment 2 independent lock, ConcurrentHashMap parallel access to Segment N independent lock.
     CHM["ConcurrentHashMap<br/>parallel access"]
     CHM --> Segment1["Segment 1<br/>independent lock"]
     CHM --> Segment2["Segment 2<br/>independent lock"]
     CHM --> Segment3["Segment N<br/>independent lock"]
 
-    style CHM fill:#0173B2,color:#fff
-    style Segment1 fill:#029E73,color:#fff
-    style Segment2 fill:#029E73,color:#fff
-    style Segment3 fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class CHM pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Segment1 pal-029E73
+    class Segment2 pal-029E73
+    class Segment3 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -178,6 +189,8 @@ Atomic variables use hardware-level Compare-And-Swap (CAS) operations for lock-f
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 66: Atomic Variables
+    accDescr: Graph with 12 nodes and 14 connections. Nodes: Thread 1, compareAndSet (expected, new), Thread 2, compareAndSet (expected, new), Check1, expected, Check2, Update atomically Return true, Return false (retry), Update atomically Return true, Return false (retry), Shared AtomicInteger. Connections: Thread 1 to compareAndSet (expected, new), Thread 2 to compareAndSet (expected, new), compareAndSet (expected, new) to Check1, Check1 to expected, compareAndSet (expected, new) to Check2, Check2 to expected, Check1 to Update atomically Return true (Yes), Check1 to Return false (retry) (No), Check2 to Update atomically Return true (Yes), Check2 to Return false (retry) (No), Update atomically Return true to Shared AtomicInteger, Update atomically Return true to Shared AtomicInteger, and 2 more.
     Thread1["Thread 1"] --> CAS1["compareAndSet<br/>(expected, new)"]
     Thread2["Thread 2"] --> CAS2["compareAndSet<br/>(expected, new)"]
 
@@ -195,13 +208,18 @@ graph TD
     Retry1 -.->|Read again| CAS1
     Retry2 -.->|Read again| CAS2
 
-    style Thread1 fill:#0173B2,color:#fff
-    style Thread2 fill:#0173B2,color:#fff
-    style Check1 fill:#DE8F05,color:#fff
-    style Check2 fill:#DE8F05,color:#fff
-    style Update1 fill:#029E73,color:#fff
-    style Update2 fill:#029E73,color:#fff
-    style Value fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Thread1 pal-0173B2
+    class Thread2 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Check1 pal-DE8F05
+    class Check2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Update1 pal-029E73
+    class Update2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Value pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -294,23 +312,29 @@ System.out.println("Final count: " + sharedCounter.get());
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A[CountDownLatch] --> B[Initialize with count N]
-    B --> C[Threads call countDown]
+    accTitle: Example 67: CountDownLatch and CyclicBarrier
+    accDescr: Graph with 11 nodes and 11 connections. Nodes: CountDownLatch, Initialize with count N, Threads call countDown, Count reaches 0?, Waiting threads released, CyclicBarrier, Initialize with parties N, Threads call await, All N threads waiting?, All threads released, Barrier resets for reuse. Connections: CountDownLatch to Initialize with count N, Initialize with count N to Threads call countDown, Threads call countDown to Count reaches 0?, Count reaches 0? to Waiting threads released (Yes), Count reaches 0? to Threads call countDown (No), CyclicBarrier to Initialize with parties N, Initialize with parties N to Threads call await, Threads call await to All N threads waiting?, All N threads waiting? to All threads released (Yes), All N threads waiting? to Threads call await (No), All threads released to Barrier resets for reuse.
+    A[CountDownLatch] --> B[Initialize with<br/>count N]
+    B --> C[Threads call<br/>countDown]
     C --> D{Count reaches 0?}
-    D -->|Yes| E[Waiting threads released]
+    D -->|Yes| E[Waiting threads<br/>released]
     D -->|No| C
 
-    F[CyclicBarrier] --> G[Initialize with parties N]
+    F[CyclicBarrier] --> G[Initialize with<br/>parties N]
     G --> H[Threads call await]
-    H --> I{All N threads waiting?}
+    H --> I{All N threads<br/>waiting?}
     I -->|Yes| J[All threads released]
     I -->|No| H
-    J --> K[Barrier resets for reuse]
+    J --> K[Barrier resets for<br/>reuse]
 
-    style A fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style J fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -970,18 +994,25 @@ Sealed classes restrict which classes can extend or implement them, enabling exh
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 71: Sealed Classes and Pattern Matching
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: sealed class Shape, final class Circle, final class Rectangle, non-sealed class Triangle, class RightTriangle, class IsoscelesTriangle. Connections: sealed class Shape to final class Circle, sealed class Shape to final class Rectangle, sealed class Shape to non-sealed class Triangle, non-sealed class Triangle to class RightTriangle, non-sealed class Triangle to class IsoscelesTriangle.
     A[sealed class Shape] --> B[final class Circle]
-    A --> C[final class Rectangle]
-    A --> D[non-sealed class Triangle]
+    A --> C[final class<br/>Rectangle]
+    A --> D[non-sealed class<br/>Triangle]
     D --> E[class RightTriangle]
-    D --> F[class IsoscelesTriangle]
+    D --> F[class<br/>IsoscelesTriangle]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1440,6 +1471,8 @@ Garbage collection automatically reclaims memory from unreachable objects. The g
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 75: Garbage Collection Basics
+    accDescr: Graph with 10 nodes and 12 connections. Nodes: Java Heap, Young Generation, Old Generation, Eden Space, Survivor S0, Survivor S1, New Object, Survives Minor GC?, Collected, Survives multiple GCs?. Connections: Java Heap to Young Generation, Java Heap to Old Generation, Young Generation to Eden Space, Young Generation to Survivor S0, Young Generation to Survivor S1, New Object to Eden Space, Eden Space to Survives Minor GC?, Survives Minor GC? to Collected (No), Survives Minor GC? to Survivor S0 (Yes), Survivor S0 to Survives multiple GCs?, Survives multiple GCs? to Old Generation (Yes), Survives multiple GCs? to Survivor S1 (No).
     A[Java Heap] --> B[Young Generation]
     A --> C[Old Generation]
     B --> D[Eden Space]
@@ -1450,14 +1483,19 @@ graph TD
     D --> H{Survives Minor GC?}
     H -->|No| I[Collected]
     H -->|Yes| E
-    E --> J{Survives multiple GCs?}
+    E --> J{Survives multiple<br/>GCs?}
     J -->|Yes| C
     J -->|No| F
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2136,6 +2174,8 @@ Production database applications use connection pooling to reuse expensive datab
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 79: Connection Pool Factory Pattern
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: Client Thread 1, ConnectionPool (Singleton), Client Thread 2, Client Thread 3, Available Connections, In-Use Connections, Connection 1, Connection 2, Connection 3, ConnectionFactory (creates connections), Database. Connections: Client Thread 1 to ConnectionPool (Singleton), Client Thread 2 to ConnectionPool (Singleton), Client Thread 3 to ConnectionPool (Singleton), ConnectionPool (Singleton) to Available Connections, ConnectionPool (Singleton) to In-Use Connections, Available Connections to Connection 1, Available Connections to Connection 2, In-Use Connections to Connection 3, ConnectionPool (Singleton) to ConnectionFactory (creates connections), ConnectionFactory (creates connections) to Database.
     Client1["Client Thread 1"] --> Pool["ConnectionPool<br/>(Singleton)"]
     Client2["Client Thread 2"] --> Pool
     Client3["Client Thread 3"] --> Pool
@@ -2147,17 +2187,23 @@ graph TD
     Available --> Conn2["Connection 2"]
     InUse --> Conn3["Connection 3"]
 
-    Pool --> Factory["ConnectionFactory<br/>(creates connections)"]
+    Pool --> Factory["ConnectionFactory<br/>(creates<br/>connections)"]
     Factory --> DB["Database"]
 
-    style Client1 fill:#0173B2,color:#fff
-    style Client2 fill:#0173B2,color:#fff
-    style Client3 fill:#0173B2,color:#fff
-    style Pool fill:#DE8F05,color:#fff
-    style Available fill:#029E73,color:#fff
-    style InUse fill:#CC78BC,color:#fff
-    style Factory fill:#CA9161,color:#fff
-    style DB fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client1 pal-0173B2
+    class Client2 pal-0173B2
+    class Client3 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Pool pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Available pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class InUse pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Factory pal-CA9161
+    class DB pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2694,6 +2740,8 @@ Behavioral patterns define communication between objects. Strategy encapsulates 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 80: Strategy, Observer, Decorator
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Context, Strategy Interface, ConcreteStrategyA, ConcreteStrategyB, ConcreteStrategyC, Client. Connections: Context to Strategy Interface, Strategy Interface to ConcreteStrategyA, Strategy Interface to ConcreteStrategyB, Strategy Interface to ConcreteStrategyC, Client to Context, Client to ConcreteStrategyA (Selects).
     A[Context] --> B[Strategy Interface]
     B --> C[ConcreteStrategyA]
     B --> D[ConcreteStrategyB]
@@ -2702,11 +2750,15 @@ graph TD
     F[Client] --> A
     F -->|Selects| C
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3441,9 +3493,11 @@ ClassLoaders dynamically load classes into the JVM. The delegation model ensures
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 82: Immutability Patterns
+    accDescr: Graph with 6 nodes and 11 connections. Nodes: Custom ClassLoader (app-specific), System ClassLoader (classpath), Platform ClassLoader (Java SE modules), Bootstrap ClassLoader (core Java classes), Load MyClass, MyClass.class. Connections: Custom ClassLoader (app-specific) to System ClassLoader (classpath), System ClassLoader (classpath) to Platform ClassLoader (Java SE modules), Platform ClassLoader (Java SE modules) to Bootstrap ClassLoader (core Java classes), Load MyClass to Custom ClassLoader (app-specific), Custom ClassLoader (app-specific) to System ClassLoader (classpath) (Delegate), System ClassLoader (classpath) to Platform ClassLoader (Java SE modules) (Delegate), Platform ClassLoader (Java SE modules) to Bootstrap ClassLoader (core Java classes) (Delegate), Bootstrap ClassLoader (core Java classes) to Platform ClassLoader (Java SE modules) (Not found), Platform ClassLoader (Java SE modules) to System ClassLoader (classpath) (Not found), System ClassLoader (classpath) to Custom ClassLoader (app-specific) (Not found), Custom ClassLoader (app-specific) to MyClass.class (Load).
     Custom["Custom ClassLoader<br/>(app-specific)"] --> System["System ClassLoader<br/>(classpath)"]
     System --> Platform["Platform ClassLoader<br/>(Java SE modules)"]
-    Platform --> Bootstrap["Bootstrap ClassLoader<br/>(core Java classes)"]
+    Platform --> Bootstrap["Bootstrap<br/>ClassLoader<br/>(core Java classes)"]
 
     Request["Load MyClass"] --> Custom
     Custom -->|Delegate| System
@@ -3454,12 +3508,18 @@ graph TD
     System -->|Not found| Custom
     Custom -->|Load| MyClass["MyClass.class"]
 
-    style Custom fill:#0173B2,color:#fff
-    style System fill:#DE8F05,color:#fff
-    style Platform fill:#029E73,color:#fff
-    style Bootstrap fill:#CC78BC,color:#fff
-    style Request fill:#CA9161,color:#fff
-    style MyClass fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Custom pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class System pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Platform pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Bootstrap pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Request pal-CA9161
+    class MyClass pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3636,6 +3696,8 @@ Virtual threads enable millions of lightweight threads with low overhead. M:N ma
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 83: Virtual Threads
+    accDescr: Graph with 9 nodes and 12 connections. Nodes: Platform Threads, OS Thread 1, OS Thread 2, OS Thread N, Virtual Threads, Virtual 1-1000, Virtual 1001-2000, Virtual N, Carrier Thread Pool. Connections: Platform Threads to OS Thread 1, Platform Threads to OS Thread 2, Platform Threads to OS Thread N, Virtual Threads to Virtual 1-1000, Virtual Threads to Virtual 1001-2000, Virtual Threads to Virtual N, Virtual 1-1000 to Carrier Thread Pool, Virtual 1001-2000 to Carrier Thread Pool, Virtual N to Carrier Thread Pool, Carrier Thread Pool to OS Thread 1, Carrier Thread Pool to OS Thread 2, Carrier Thread Pool to OS Thread N.
     A[Platform Threads] --> B[OS Thread 1]
     A --> C[OS Thread 2]
     A --> D[OS Thread N]
@@ -3647,9 +3709,13 @@ graph TD
     F & G & H --> I[Carrier Thread Pool]
     I --> B & C & D
 
-    style A fill:#0173B2,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style I fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -4050,6 +4116,8 @@ The JVM divides memory into distinct regions: heap (shared object storage), stac
 
 ```mermaid
 graph TD
+    accTitle: Example 85: JVM Memory Model and Regions
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: JVM Memory Space, Heap Shared Objects, NonHeap, Code, Thread-Local Per-Thread State, Young Generation Eden + Survivor, Old Generation Long-lived Objects, Metaspace Class Metadata, Code Cache JIT Compiled Code, Thread Stack Method Frames, Program Counter Instruction Pointer. Connections: JVM Memory Space to Heap Shared Objects, JVM Memory Space to NonHeap, JVM Memory Space to Code, JVM Memory Space to Thread-Local Per-Thread State, Heap Shared Objects to Young Generation Eden + Survivor, Heap Shared Objects to Old Generation Long-lived Objects, NonHeap to Metaspace Class Metadata, NonHeap to Code Cache JIT Compiled Code, Thread-Local Per-Thread State to Thread Stack Method Frames, Thread-Local Per-Thread State to Program Counter Instruction Pointer.
     JVM["JVM Memory Space"]
     JVM --> Heap["Heap<br/>Shared Objects"]
     JVM --> NonHeap["Non-Heap<br/>Metadata & Code"]
@@ -4064,16 +4132,21 @@ graph TD
     Thread --> Stack["Thread Stack<br/>Method Frames"]
     Thread --> PC["Program Counter<br/>Instruction Pointer"]
 
-    style JVM fill:#0173B2,color:#fff
-    style Heap fill:#029E73,color:#fff
-    style NonHeap fill:#DE8F05,color:#fff
-    style Thread fill:#CC78BC,color:#fff
-    style Young fill:#029E73,color:#fff
-    style Old fill:#029E73,color:#fff
-    style Metaspace fill:#DE8F05,color:#fff
-    style CodeCache fill:#DE8F05,color:#fff
-    style Stack fill:#CC78BC,color:#fff
-    style PC fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class JVM pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Heap pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class NonHeap pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Thread pal-CC78BC
+    class Young pal-029E73
+    class Old pal-029E73
+    class Metaspace pal-DE8F05
+    class CodeCache pal-DE8F05
+    class Stack pal-CC78BC
+    class PC pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -4138,6 +4211,8 @@ G1GC (Garbage First) is Java's default collector (since Java 9), designed for ba
 
 ```mermaid
 graph TD
+    accTitle: Example 86: Garbage Collection with G1GC
+    accDescr: Graph with 5 nodes and 7 connections. Nodes: G1 Heap Divided into Regions, Eden Regions New Objects, Survivor Regions Minor GC Survivors, Old Regions Tenured Objects, Humongous Regions Large Objects. Connections: G1 Heap Divided into Regions to Eden Regions New Objects, G1 Heap Divided into Regions to Survivor Regions Minor GC Survivors, G1 Heap Divided into Regions to Old Regions Tenured Objects, G1 Heap Divided into Regions to Humongous Regions Large Objects, Eden Regions New Objects to Survivor Regions Minor GC Survivors (Minor GC), Survivor Regions Minor GC Survivors to Old Regions Tenured Objects (Aging), Eden Regions New Objects to Humongous Regions Large Objects (Large).
     Heap["G1 Heap<br/>Divided into Regions"]
 
     Heap --> Eden["Eden Regions<br/>New Objects"]
@@ -4149,11 +4224,16 @@ graph TD
     Survivor -->|Aging| Old
     Eden -->|Large| Humongous
 
-    style Heap fill:#0173B2,color:#fff
-    style Eden fill:#029E73,color:#fff
-    style Survivor fill:#029E73,color:#fff
-    style Old fill:#DE8F05,color:#fff
-    style Humongous fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Heap pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Eden pal-029E73
+    class Survivor pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Old pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Humongous pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -4209,23 +4289,29 @@ ZGC is a scalable low-latency garbage collector designed for heaps up to 16TB wi
 
 ```mermaid
 graph TD
+    accTitle: Example 87: Ultra-Low Latency with ZGC
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Application Running, Concurrent Marking Trace Object Graph, Concurrent Relocation Move Objects, Concurrent Remapping Update References, Pause Mark Start, Pause Mark End, Pause Relocate Start. Connections: Application Running to Concurrent Marking Trace Object Graph (Concurrent), Concurrent Marking Trace Object Graph to Concurrent Relocation Move Objects (Concurrent), Concurrent Relocation Move Objects to Concurrent Remapping Update References (Concurrent), Concurrent Marking Trace Object Graph to Pause Mark Start (STW <1ms), Concurrent Marking Trace Object Graph to Pause Mark End (STW <1ms), Concurrent Relocation Move Objects to Pause Relocate Start (STW <1ms).
     App["Application Running"]
 
     App -->|Concurrent| Mark["Concurrent Marking<br/>Trace Object Graph"]
-    Mark -->|Concurrent| Relocate["Concurrent Relocation<br/>Move Objects"]
+    Mark -->|Concurrent| Relocate["Concurrent<br/>Relocation<br/>Move Objects"]
     Relocate -->|Concurrent| Remap["Concurrent Remapping<br/>Update References"]
 
     Mark -->|STW <1ms| MarkStart["Pause Mark Start"]
     Mark -->|STW <1ms| MarkEnd["Pause Mark End"]
     Relocate -->|STW <1ms| RelocStart["Pause Relocate Start"]
 
-    style App fill:#0173B2,color:#fff
-    style Mark fill:#029E73,color:#fff
-    style Relocate fill:#029E73,color:#fff
-    style Remap fill:#029E73,color:#fff
-    style MarkStart fill:#CC78BC,color:#fff
-    style MarkEnd fill:#CC78BC,color:#fff
-    style RelocStart fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class App pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Mark pal-029E73
+    class Relocate pal-029E73
+    class Remap pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class MarkStart pal-CC78BC
+    class MarkEnd pal-CC78BC
+    class RelocStart pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

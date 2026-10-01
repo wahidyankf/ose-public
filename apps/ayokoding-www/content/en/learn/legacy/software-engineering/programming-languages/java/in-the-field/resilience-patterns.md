@@ -210,6 +210,8 @@ public boolean shouldRetry(Exception e) {
 
 ```mermaid
 stateDiagram-v2
+    accTitle: Circuit Breaker States
+    accDescr: State diagram with 4 items: start or end, CLOSED, OPEN, HALF_OPEN. Relationships: start or end to CLOSED; CLOSED to OPEN: Failure threshold exceeded; OPEN to HALF_OPEN: Timeout elapsed; HALF_OPEN to CLOSED: Success threshold met; HALF_OPEN to OPEN: Failure detected; CLOSED to CLOSED: Success; OPEN to OPEN: Requests blocked.
     [*] --> CLOSED
     CLOSED --> OPEN: Failure threshold exceeded
     OPEN --> HALF_OPEN: Timeout elapsed
@@ -218,9 +220,11 @@ stateDiagram-v2
     CLOSED --> CLOSED: Success
     OPEN --> OPEN: Requests blocked
 
-    style CLOSED fill:#029E73,stroke:#000,color:#fff
-    style OPEN fill:#CC3311,stroke:#000,color:#fff
-    style HALF_OPEN fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class CLOSED pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class OPEN pal-DE8F05
+    class HALF_OPEN pal-DE8F05
 ```
 
 | State     | Behavior                      | Transition                       |
@@ -448,6 +452,8 @@ public class ResilientHttpClient {
 
 ```mermaid
 graph TD
+    accTitle: Combining Patterns
+    accDescr: Graph with 13 nodes and 14 connections. Nodes: Request, Circuit Open?, Fail Fast, Attempt Request, Success?, Return Result, Retryable Error?, Attempts Remaining?, Record Failure, Exponential Backoff, Threshold Exceeded?, Open Circuit, and 1 more. Connections: Request to Circuit Open?, Circuit Open? to Fail Fast (Yes), Circuit Open? to Attempt Request (No), Attempt Request to Success?, Success? to Return Result (Yes), Success? to Retryable Error? (No), Retryable Error? to Attempts Remaining? (Yes), Retryable Error? to Record Failure (No), Attempts Remaining? to Exponential Backoff (Yes), Exponential Backoff to Attempt Request, Attempts Remaining? to Record Failure (No), Record Failure to Threshold Exceeded?, and 2 more.
     Start["Request"] --> CircuitOpen{"Circuit<br/>Open?"}
     CircuitOpen -->|Yes| FailFast["Fail Fast"]
     CircuitOpen -->|No| Attempt["Attempt Request"]
@@ -463,11 +469,15 @@ graph TD
     ThresholdExceeded -->|Yes| OpenCircuit["Open Circuit"]
     ThresholdExceeded -->|No| FailRequest["Fail Request"]
 
-    style Start fill:#0173B2,stroke:#000,color:#fff
-    style Return fill:#029E73,stroke:#000,color:#fff
-    style FailFast fill:#CC3311,stroke:#000,color:#fff
-    style OpenCircuit fill:#CC3311,stroke:#000,color:#fff
-    style FailRequest fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Start pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Return pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class FailFast pal-DE8F05
+    class OpenCircuit pal-DE8F05
+    class FailRequest pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Fallback Strategies

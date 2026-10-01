@@ -48,6 +48,8 @@ A **Task Processing Pipeline** that:
 
 ```mermaid
 graph LR
+    accTitle: Project Structure
+    accDescr: Graph with 12 nodes and 19 connections. Nodes: Quick Start: F, Immutable Values, Functions, Pattern Matching, Piping, Option Types, Records, Discriminated Unions, Computation Expressions, Async Workflows, Task Pipeline, By-Example Tutorial. Connections: Quick Start: F to Immutable Values, Quick Start: F to Functions, Quick Start: F to Pattern Matching, Quick Start: F to Piping, Quick Start: F to Option Types, Quick Start: F to Records, Quick Start: F to Discriminated Unions, Quick Start: F to Computation Expressions, Quick Start: F to Async Workflows, Immutable Values to Task Pipeline, Functions to Task Pipeline, Pattern Matching to Task Pipeline, and 7 more.
     A[Quick Start: F#] --> B[Immutable Values]
     A --> C[Functions]
     A --> D[Pattern Matching]
@@ -55,7 +57,7 @@ graph LR
     A --> F[Option Types]
     A --> G[Records]
     A --> H[Discriminated Unions]
-    A --> I[Computation Expressions]
+    A --> I[Computation<br/>Expressions]
     A --> J[Async Workflows]
 
     B --> K[Task Pipeline]
@@ -70,9 +72,13 @@ graph LR
 
     K --> L[By-Example Tutorial]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style K fill:#DE8F05,stroke:#000,color:#fff
-    style L fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class K pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class L pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Step 1: Create Project

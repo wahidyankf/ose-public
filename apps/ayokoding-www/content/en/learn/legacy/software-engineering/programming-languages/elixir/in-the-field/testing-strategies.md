@@ -720,9 +720,11 @@ end
 
 ```mermaid
 graph LR
+    accTitle: Visualization - Testing Strategy
+    accDescr: Graph with 13 nodes and 12 connections. Nodes: Testing Strategies, Unit Tests - ExUnit, Property Tests - StreamData, Integration Tests - Database, Pattern Matching, Assertions, Pure Functions, Random Generation, Invariants, Edge Case Discovery, Database Sandbox, Transactions, and 1 more. Connections: Testing Strategies to Unit Tests - ExUnit, Testing Strategies to Property Tests - StreamData, Testing Strategies to Integration Tests - Database, Unit Tests - ExUnit to Pattern Matching, Unit Tests - ExUnit to Assertions, Unit Tests - ExUnit to Pure Functions, Property Tests - StreamData to Random Generation, Property Tests - StreamData to Invariants, Property Tests - StreamData to Edge Case Discovery, Integration Tests - Database to Database Sandbox, Integration Tests - Database to Transactions, Integration Tests - Database to Full Workflows.
     A[Testing Strategies] --> B[Unit Tests - ExUnit]
-    A --> C[Property Tests - StreamData]
-    A --> D[Integration Tests - Database]
+    A --> C[Property Tests -<br/>StreamData]
+    A --> D[Integration Tests -<br/>Database]
 
     B --> B1[Pattern Matching]
     B --> B2[Assertions]
@@ -736,19 +738,23 @@ graph LR
     D --> D2[Transactions]
     D --> D3[Full Workflows]
 
-    style A fill:#e1f5ff,stroke:#01579b,stroke-width:3px,color:#000000
-    style B fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000000
-    style C fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:#000000
-    style D fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px,color:#000000
-    style B1 fill:#ffe0b2,stroke:#e65100,stroke-width:1px,color:#000000
-    style B2 fill:#ffe0b2,stroke:#e65100,stroke-width:1px,color:#000000
-    style B3 fill:#ffe0b2,stroke:#e65100,stroke-width:1px,color:#000000
-    style C1 fill:#f3e5f5,stroke:#4a148c,stroke-width:1px,color:#000000
-    style C2 fill:#f3e5f5,stroke:#4a148c,stroke-width:1px,color:#000000
-    style C3 fill:#f3e5f5,stroke:#4a148c,stroke-width:1px,color:#000000
-    style D1 fill:#c8e6c9,stroke:#1b5e20,stroke-width:1px,color:#000000
-    style D2 fill:#c8e6c9,stroke:#1b5e20,stroke-width:1px,color:#000000
-    style D3 fill:#c8e6c9,stroke:#1b5e20,stroke-width:1px,color:#000000
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:3px
+    class A pal-CC78BC
+    classDef pal-CC78BC-2 fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-CC78BC-2
+    class C pal-CC78BC-2
+    class D pal-CC78BC-2
+    classDef pal-CC78BC-3 fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:1px
+    class B1 pal-CC78BC-3
+    class B2 pal-CC78BC-3
+    class B3 pal-CC78BC-3
+    class C1 pal-CC78BC-3
+    class C2 pal-CC78BC-3
+    class C3 pal-CC78BC-3
+    class D1 pal-CC78BC-3
+    class D2 pal-CC78BC-3
+    class D3 pal-CC78BC-3
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## When to Use Each Testing Strategy

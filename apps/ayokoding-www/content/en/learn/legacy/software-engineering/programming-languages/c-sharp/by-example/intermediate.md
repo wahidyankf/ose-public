@@ -16,6 +16,8 @@ Interfaces define contracts that types must implement, enabling polymorphic beha
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 31: Interfaces for Polymorphism
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: IShape Interface, Circle Class, Rectangle Class, Polymorphic Code uses IShape. Connections: IShape Interface to Circle Class (implements), IShape Interface to Rectangle Class (implements), Circle Class to Polymorphic Code uses IShape, Rectangle Class to Polymorphic Code uses IShape.
     A["IShape Interface"]
     B["Circle Class"]
     C["Rectangle Class"]
@@ -26,10 +28,15 @@ graph TD
     B --> D
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -199,14 +206,21 @@ Abstract classes combine interface contracts (abstract methods) with shared impl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["abstract Shape\n(abstract class)\ncannot instantiate"] -->|"inherits"| B["Circle\n(concrete class)\nGetArea() overrides"]
-    A -->|"inherits"| C["Rectangle\n(concrete class)\nGetArea() overrides"]
-    A -->|"provides shared impl"| D["Describe()\n(concrete method)\nshared by all subclasses"]
+    accTitle: Diagram
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: abstract Shape (abstract class) cannot instantiate, Circle (concrete class) GetArea() overrides, Rectangle (concrete class) GetArea() overrides, Describe() (concrete method) shared by all subclasses. Connections: abstract Shape (abstract class) cannot instantiate to Circle (concrete class) GetArea() overrides (inherits), abstract Shape (abstract class) cannot instantiate to Rectangle (concrete class) GetArea() overrides (inherits), abstract Shape (abstract class) cannot instantiate to Describe() (concrete method) shared by all subclasses (provides shared impl).
+    A["abstract Shape<br/>(abstract class)<br/>cannot instantiate"] -->|"inherits"| B["Circle<br/>(concrete class)<br/>GetArea() overrides"]
+    A -->|"inherits"| C["Rectangle<br/>(concrete class)<br/>GetArea() overrides"]
+    A -->|"provides shared<br/>impl"| D["Describe()<br/>(concrete method)<br/>shared by all<br/>subclasses"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -300,14 +314,20 @@ Async/await enables non-blocking I/O operations using Task-based asynchronous pr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 34: Async/Await - Basic Asynchronous Operations
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: async method, await Task.Delay, Thread released non-blocking, Continue after completion. Connections: async method to await Task.Delay, await Task.Delay to Thread released non-blocking, Thread released non-blocking to Continue after completion.
     A[async method]:::blue --> B[await Task.Delay]:::orange
     B --> C[Thread released<br/>non-blocking]:::teal
-    C --> D[Continue after completion]:::orange
+    C --> D[Continue after<br/>completion]:::orange
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -359,6 +379,8 @@ Console.WriteLine(result);// => Output: Data
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 35: Task.WhenAll - Parallel Async Operations
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Start, Task 1: 500ms, Task 2: 500ms, Task 3: 500ms, All complete ~500ms total. Connections: Start to Task 1: 500ms, Start to Task 2: 500ms, Start to Task 3: 500ms, Task 1: 500ms to All complete ~500ms total, Task 2: 500ms to All complete ~500ms total, Task 3: 500ms to All complete ~500ms total.
     A[Start]:::blue --> B[Task 1: 500ms]:::orange
     A --> C[Task 2: 500ms]:::orange
     A --> D[Task 3: 500ms]:::orange
@@ -366,11 +388,15 @@ graph TD
     C --> E
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -438,16 +464,23 @@ Console.WriteLine(string.Join(", ", results));
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Task.WhenAny(task1, task2, timeoutTask)"] -->|"first to complete wins"| B{"Which finished first?"}
-    B -->|"SlowService"| C["Use SlowService result"]
-    B -->|"FastService"| D["Use FastService result"]
-    B -->|"timeoutTask"| E["Timeout - use fallback"]
+    accTitle: Diagram
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Task.WhenAny(task1, task2, timeoutTask), Which finished first?, Use SlowService result, Use FastService result, Timeout - use fallback. Connections: Task.WhenAny(task1, task2, timeoutTask) to Which finished first? (first to complete wins), Which finished first? to Use SlowService result (SlowService), Which finished first? to Use FastService result (FastService), Which finished first? to Timeout - use fallback (timeoutTask).
+    A["Task.WhenAny(task1,<br/>task2, timeoutTask)"] -->|"first to complete<br/>wins"| B{"Which finished<br/>first?"}
+    B -->|"SlowService"| C["Use SlowService<br/>result"]
+    B -->|"FastService"| D["Use FastService<br/>result"]
+    B -->|"timeoutTask"| E["Timeout - use<br/>fallback"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -723,12 +756,18 @@ postResponse.EnsureSuccessStatusCode();
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 40: LINQ GroupBy - Grouping Data
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Products, GroupBy Category, Electronics: [...] Books: [...] Clothing: [.... Connections: Products to GroupBy Category, GroupBy Category to Electronics: [...] Books: [...] Clothing: [....
     A[Products]:::blue --> B[GroupBy Category]:::orange
     B --> C[Electronics: [...]<br/>Books: [...]<br/>Clothing: [...]]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -824,14 +863,20 @@ foreach (var ct in categoryTotals)
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 41: LINQ Join - Combining Collections
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Customers, Join on CustomerId, Orders, Customer-Order Pairs. Connections: Customers to Join on CustomerId, Orders to Join on CustomerId, Join on CustomerId to Customer-Order Pairs.
     A[Customers]:::blue --> C[Join on CustomerId]:::teal
     B[Orders]:::orange --> C
     C --> D[Customer-Order Pairs]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1036,12 +1081,18 @@ Delegates are type-safe function pointers that reference methods with matching s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 43: Delegates - Function Pointers
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Delegate Declaration, Points to Method, Invoke via Delegate. Connections: Delegate Declaration to Points to Method, Points to Method to Invoke via Delegate.
     A[Delegate Declaration]:::blue --> B[Points to Method]:::orange
     B --> C[Invoke via Delegate]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1117,14 +1168,20 @@ Events enable the publisher-subscriber pattern where objects notify subscribers 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 44: Events - Publisher-Subscriber Pattern
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Publisher Button, Event Raised OnClick, Subscriber 1 Logger, Subscriber 2 Analytics. Connections: Publisher Button to Event Raised OnClick, Event Raised OnClick to Subscriber 1 Logger, Event Raised OnClick to Subscriber 2 Analytics.
     A[Publisher<br/>Button]:::blue --> B[Event Raised<br/>OnClick]:::orange
     B --> C[Subscriber 1<br/>Logger]:::teal
     B --> D[Subscriber 2<br/>Analytics]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1217,18 +1274,26 @@ Generics enable writing reusable code that works with multiple types while maint
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Diagram
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Box (generic class), Box stores integers only, Box stores strings only, Box stores Person only, Compiler enforces correct type at compile time. Connections: Box (generic class) to Box stores integers only (T = int), Box (generic class) to Box stores strings only (T = string), Box (generic class) to Box stores Person only (T = Person), Box stores integers only to Compiler enforces correct type at compile time (type safety), Box stores strings only to Compiler enforces correct type at compile time (type safety), Box stores Person only to Compiler enforces correct type at compile time (type safety).
     A["Box<T>\n(generic class)"] -->|"T = int"| B["Box<int>\nstores integers only"]
     A -->|"T = string"| C["Box<string>\nstores strings only"]
     A -->|"T = Person"| D["Box<Person>\nstores Person only"]
-    B -->|"type safety"| E["Compiler enforces\ncorrect type at compile time"]
+    B -->|"type safety"| E["Compiler enforces<br/>correct type at<br/>compile time"]
     C -->|"type safety"| E
     D -->|"type safety"| E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -1308,18 +1373,26 @@ Generic constraints restrict type parameters to specific types or capabilities, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Repository<T>\nwhere T : IStorable, new()"] -->|"constraint: T must implement"| B["IStorable\n(has Id property)"]
-    A -->|"constraint: T must have"| C["new()\n(parameterless constructor)"]
-    A -->|"enables"| D["Save(entity)\nGetById(id)"]
+    accTitle: Diagram
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Repository where T : IStorable, new(), IStorable (has Id property), new() (parameterless constructor), Save(entity) GetById(id), User : IStorable, Product : IStorable. Connections: Repository where T : IStorable, new() to IStorable (has Id property) (constraint: T must implement), Repository where T : IStorable, new() to new() (parameterless constructor) (constraint: T must have), Repository where T : IStorable, new() to Save(entity) GetById(id) (enables), IStorable (has Id property) to User : IStorable (satisfied by), IStorable (has Id property) to Product : IStorable (satisfied by).
+    A["Repository<T>\nwhere T :\nIStorable, new()"] -->|"constraint: T must<br/>implement"| B["IStorable<br/>(has Id property)"]
+    A -->|"constraint: T must<br/>have"| C["new()<br/>(parameterless<br/>constructor)"]
+    A -->|"enables"| D["Save(entity)<br/>GetById(id)"]
     B -->|"satisfied by"| E["User : IStorable"]
     B -->|"satisfied by"| F["Product : IStorable"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -1408,16 +1481,22 @@ Extension methods enable adding methods to existing types without modifying thei
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["static class StringExtensions\n(extension method host)"] -->|"extends"| B["string type\n(existing type, not modified)"]
-    B -->|"new methods available"| C["str.IsPalindrome()"]
-    B -->|"new methods available"| D["str.WordCount()"]
-    B -->|"new methods available"| E["str.ToTitleCase()"]
+    accTitle: Diagram
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: static class StringExtensions (extension method host), string type (existing type, not modified), str.IsPalindrome(), str.WordCount(), str.ToTitleCase(). Connections: static class StringExtensions (extension method host) to string type (existing type, not modified) (extends), string type (existing type, not modified) to str.IsPalindrome() (new methods available), string type (existing type, not modified) to str.WordCount() (new methods available), string type (existing type, not modified) to str.ToTitleCase() (new methods available).
+    A["static class<br/>StringExtensions<br/>(extension method<br/>host)"] -->|"extends"| B["string type<br/>(existing type, not<br/>modified)"]
+    B -->|"new methods<br/>available"| C["str.IsPalindrome()"]
+    B -->|"new methods<br/>available"| D["str.WordCount()"]
+    B -->|"new methods<br/>available"| E["str.ToTitleCase()"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -2078,15 +2157,21 @@ Dependency injection inverts control by having dependencies provided to classes 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 54: Dependency Injection - Constructor Injection
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: DI Container, Creates ILogger, Creates EmailService, Injects into UserService. Connections: DI Container to Creates ILogger, DI Container to Creates EmailService, Creates ILogger to Injects into UserService, Creates EmailService to Injects into UserService.
     A[DI Container]:::blue --> B[Creates ILogger]:::orange
     A --> C[Creates EmailService]:::orange
-    B --> D[Injects into UserService]:::teal
+    B --> D[Injects into<br/>UserService]:::teal
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

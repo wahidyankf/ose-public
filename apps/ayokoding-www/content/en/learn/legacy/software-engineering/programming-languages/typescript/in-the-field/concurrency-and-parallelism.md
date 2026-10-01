@@ -766,6 +766,8 @@ parentPort!.on("message", (msg) => {
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TB
+    accTitle: Concurrency Pattern Progression Diagram
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: async/await, Promise combinators, Worker threads. Connections: async/await to Promise combinators (Coordinate tasks), async/await to Worker threads (CPU-bound work), Promise combinators to Worker threads (CPU parallelism).
     A[async/await] -->|Coordinate tasks| B[Promise combinators]
     A -->|CPU-bound work| C[Worker threads]
     B -->|CPU parallelism| C
@@ -774,20 +776,23 @@ graph TB
     B:::standard
     C:::framework
 
-    classDef standard fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef framework fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef standard fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef framework fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 
     subgraph Standard[" Standard Library "]
         A
         B
     end
 
-    subgraph Production[" Production Framework "]
+    subgraph Production["Production Framework"]
         C
     end
 
-    style Standard fill:#F0F0F0,stroke:#0173B2,stroke-width:3px
-    style Production fill:#F0F0F0,stroke:#029E73,stroke-width:3px
+    classDef pal-CC78BC fill:#CC78BC,stroke:#0173B2,color:#000000,stroke-width:3px
+    class Standard pal-CC78BC
+    classDef pal-CC78BC-2 fill:#CC78BC,stroke:#029E73,color:#000000,stroke-width:3px
+    class Production pal-CC78BC-2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns and Best Practices

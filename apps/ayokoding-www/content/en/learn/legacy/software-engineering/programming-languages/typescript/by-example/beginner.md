@@ -14,14 +14,21 @@ TypeScript is a statically-typed superset of JavaScript that adds compile-time t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 1: Basic Types and Type Annotations
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: TypeScript Code .ts files, TypeScript Compiler (tsc), JavaScript Code .js files, Runtime (Node.js/Browser). Connections: TypeScript Code .ts files to TypeScript Compiler (tsc), TypeScript Compiler (tsc) to JavaScript Code .js files, JavaScript Code .js files to Runtime (Node.js/Browser).
     A["TypeScript Code<br/>.ts files"] --> B["TypeScript Compiler<br/>(tsc)"]
     B --> C["JavaScript Code<br/>.js files"]
     C --> D["Runtime<br/>(Node.js/Browser)"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -119,6 +126,8 @@ Interfaces define the structure of objects—required properties, optional prope
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 3: Interfaces for Object Shapes
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Interface Definition, Required Properties, Optional Properties, Methods, Compile-Time Check. Connections: Interface Definition to Required Properties, Interface Definition to Optional Properties, Interface Definition to Methods, Required Properties to Compile-Time Check, Optional Properties to Compile-Time Check, Methods to Compile-Time Check.
     A["Interface Definition"] --> B["Required Properties"]
     A --> C["Optional Properties"]
     A --> D["Methods"]
@@ -127,11 +136,17 @@ graph TD
     C --> E
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -323,16 +338,23 @@ Enums define a set of named constants. Numeric enums auto-increment, string enum
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 6: Enums for Named Constants
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Enum Declaration, Numeric Enum (0, 1, 2...), String Enum (explicit values), Runtime Object. Connections: Enum Declaration to Numeric Enum (0, 1, 2...), Enum Declaration to String Enum (explicit values), Numeric Enum (0, 1, 2...) to Runtime Object, String Enum (explicit values) to Runtime Object.
     A["Enum Declaration"] --> B["Numeric Enum<br/>(0, 1, 2...)"]
     A --> C["String Enum<br/>(explicit values)"]
 
     B --> D["Runtime Object"]
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -544,16 +566,23 @@ Classes can extend other classes to inherit properties and methods. Subclasses c
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 9: Inheritance and Method Overriding
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Base Class Animal, Derived Class Dog, Derived Class Cat, D, Methods. Connections: Base Class Animal to Derived Class Dog, Base Class Animal to Derived Class Cat, Derived Class Dog to D, Derived Class Dog to Methods, Derived Class Cat to D.
     A["Base Class<br/>Animal"] --> B["Derived Class<br/>Dog"]
     A --> C["Derived Class<br/>Cat"]
 
     B --> D["Inherits Properties<br/>& Methods"]
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -719,27 +748,41 @@ Literal types restrict values to specific literals. Type narrowing uses control 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["string | number | boolean"] -->|"typeof x === 'string'"| B["string"]
-    A -->|"typeof x === 'number'"| C["number"]
-    A -->|"typeof x === 'boolean'"| D["boolean"]
+    accTitle: Example 11: Literal Types and Type Narrowing
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: string | number | boolean, string, number, boolean. Connections: string | number | boolean to string (typeof x === string), string | number | boolean to number (typeof x === number), string | number | boolean to boolean (typeof x === boolean).
+    A["string | number |<br/>boolean"] -->|"typeof x ===<br/>'string'"| B["string"]
+    A -->|"typeof x ===<br/>'number'"| C["number"]
+    A -->|"typeof x ===<br/>'boolean'"| D["boolean"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Union Type: string | number | boolean"] -->|"typeof x === 'string'"| B["Narrowed: string"]
-    A -->|"typeof x === 'number'"| C["Narrowed: number"]
-    A -->|"typeof x === 'boolean'"| D["Narrowed: boolean"]
+    accTitle: Example 11: Literal Types and Type Narrowing
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Union Type: string | number | boolean, Narrowed: string, Narrowed: number, Narrowed: boolean. Connections: Union Type: string | number | boolean to Narrowed: string (typeof x === string), Union Type: string | number | boolean to Narrowed: number (typeof x === number), Union Type: string | number | boolean to Narrowed: boolean (typeof x === boolean).
+    A["Union Type:<br/>string | number<br/>| boolean"] -->|"typeof x ===<br/>'string'"| B["Narrowed: string"]
+    A -->|"typeof x ===<br/>'number'"| C["Narrowed: number"]
+    A -->|"typeof x ===<br/>'boolean'"| D["Narrowed: boolean"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -942,27 +985,39 @@ Custom type guard functions use `is` keyword to narrow types. They return boolea
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 13: Type Guards with User-Defined Functions
+    accDescr: Graph with 5 nodes and 2 connections. Nodes: value: Cat | Dog, B, ) available, C, ) available. Connections: value: Cat | Dog to B (isCat(value) === true), value: Cat | Dog to C (isDog(value) === true).
     A["value: Cat | Dog"] -->|"isCat(value) === true"| B["Cat
 .meow() available"]
-    A -->|"isDog(value) === true"| C["Dog
+    A -->|"isDog(value) ===<br/>true"| C["Dog
 .bark() available"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 13: Type Guards with User-Defined Functions
+    accDescr: Graph with 5 nodes and 2 connections. Nodes: value: Cat | Dog, B, ) available, C, ) available. Connections: value: Cat | Dog to B (isCat(value) === true), value: Cat | Dog to C (isDog(value) === true).
     A["value: Cat | Dog"] -->|"isCat(value) === true"| B["Narrowed: Cat
 .meow() available"]
-    A -->|"isDog(value) === true"| C["Narrowed: Dog
+    A -->|"isDog(value) ===<br/>true"| C["Narrowed: Dog
 .bark() available"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2240,25 +2295,35 @@ Discriminated unions use a common literal property (discriminator) to distinguis
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Shape (union)"] -->|"kind: 'circle'"| B["Circle {kind, radius}"]
-    A -->|"kind: 'square'"| C["Square {kind, sideLength}"]
-    A -->|"kind: 'triangle'"| D["Triangle {kind, base, height}"]
+    accTitle: Example 26: Discriminated Unions
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: Shape (union), Circle kind, radius, Square kind, sideLength, Triangle kind, base, height, switch(shape.kind), pi * radius^2, sideLength^2, base * height / 2. Connections: Shape (union) to Circle kind, radius (kind: circle), Shape (union) to Square kind, sideLength (kind: square), Shape (union) to Triangle kind, base, height (kind: triangle), switch(shape.kind) to pi * radius^2 (case circle), switch(shape.kind) to sideLength^2 (case square), switch(shape.kind) to base * height / 2 (case triangle).
+    A["Shape (union)"] -->|"kind: 'circle'"| B["Circle {kind,<br/>radius}"]
+    A -->|"kind: 'square'"| C["Square {kind,<br/>sideLength}"]
+    A -->|"kind: 'triangle'"| D["Triangle {kind,<br/>base, height}"]
 
     E["switch(shape.kind)"] -->|"case 'circle'"| F["pi * radius^2"]
     E -->|"case 'square'"| G["sideLength^2"]
     E -->|"case 'triangle'"| H["base * height / 2"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Shape (discriminated union)"] -->|"kind: 'circle'"| B["Circle
+    accTitle: Example 26: Discriminated Unions
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: Shape (discriminated union), B, C, D, switch(shape.kind), π × radius², sideLength², base × height / 2. Connections: Shape (discriminated union) to B (kind: circle), Shape (discriminated union) to C (kind: square), Shape (discriminated union) to D (kind: triangle), switch(shape.kind) to π × radius² (case circle), switch(shape.kind) to sideLength² (case square), switch(shape.kind) to base × height / 2 (case triangle).
+    A["Shape (discriminated<br/>union)"] -->|"kind: 'circle'"| B["Circle
 {kind, radius}"]
     A -->|"kind: 'square'"| C["Square
 {kind, sideLength}"]
@@ -2269,11 +2334,17 @@ graph TD
     E -->|"case 'square'"| G["sideLength²"]
     E -->|"case 'triangle'"| H["base × height / 2"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2531,37 +2602,53 @@ Conditional types select types based on conditions using `extends` keyword. They
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 28: Conditional Types
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: T extends string ?, TrueType, FalseType, D, lt, gt, true, F, false. Connections: T extends string ? to TrueType (true), T extends string ? to FalseType (false), D to true, lt to true, gt to true, F to false, lt to false, gt to false.
     A["T extends string ?"] -->|"true"| B["TrueType"]
     A -->|"false"| C["FalseType"]
 
     D["IsString&lt;string&gt;"] --> E["true"]
     F["IsString&lt;number&gt;"] --> G["false"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#000
-    style G fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 28: Conditional Types
+    accDescr: Graph with 7 nodes and 4 connections. Nodes: T extends string ?, TrueType, FalseType, IsString, true, IsString, false. Connections: T extends string ? to TrueType (true), T extends string ? to FalseType (false), IsString to true, IsString to false.
     A["T extends string ?"] -->|"true"| B["TrueType"]
     A -->|"false"| C["FalseType"]
 
     D["IsString<string>"] --> E["true"]
     F["IsString<number>"] --> G["false"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#000
-    style G fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

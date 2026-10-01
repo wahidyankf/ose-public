@@ -222,15 +222,23 @@ Rust has two string types and understanding both is the single most important pr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["String literal in binary<br/>&quot;hello&quot; : &amp;str"] --> B["&amp;str: pointer + length<br/>borrows the literal"]
-    C["String::from#40;&quot;hello&quot;#41;<br/>heap allocation"] --> D["String: ptr + len + cap<br/>OWNS the heap data"]
-    D --> E["&amp;str: borrow of String<br/>via &amp;my_string or .as_str#40;#41;"]
+    accTitle: Example 5: String Types
+    accDescr: Graph with 7 nodes and 14 connections. Nodes: A, quot, amp, B, C, String: ptr + len + cap OWNS the heap data, E. Connections: A to B, A to amp, quot to B, quot to amp, quot to B, quot to amp, amp to B, amp to amp, C to String: ptr + len + cap OWNS the heap data, quot to String: ptr + len + cap OWNS the heap data, quot to String: ptr + len + cap OWNS the heap data, String: ptr + len + cap OWNS the heap data to E, and 2 more.
+    A["String literal in<br/>binary<br/>&quot;hello&quot; : &amp;str"] --> B["&amp;str: pointer +<br/>length<br/>borrows the literal"]
+    C["String::from#40;<br/>&quot;hello&quot;#41;<br/>heap allocation"] --> D["String: ptr + len +<br/>cap<br/>OWNS the heap data"]
+    D --> E["&amp;str: borrow of<br/>String<br/>via &amp;my_string or<br/>.as_str#40;#41;"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Why functions should take `&str` not `&String`**: A `&String` is a reference to a `String`. A `&str` is a string slice that can come from a `String`, a literal, or any other string storage. Functions that take `&str` accept both—this is called Deref coercion and happens automatically. Functions that take `&String` reject string literals unnecessarily.
@@ -370,18 +378,27 @@ Every value in Rust has exactly one owner. When the owner goes out of scope, the
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["String::from#40;&quot;validate&quot;#41;<br/>heap allocated"] --> B["cmd_name owns the String"]
-    B --> C["process_command#40;cmd_name#41;<br/>ownership moves in"]
-    C --> D["Inside process_command<br/>cmd owns the String"]
+    accTitle: Example 7: Ownership Basics
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: A, quot, cmd_name owns the String, process_ command40cmd_ name41 ownership moves in, Inside process_command cmd owns the String, Function returns cmd drops here, Heap memory freed automatically. Connections: A to cmd_name owns the String, quot to cmd_name owns the String, quot to cmd_name owns the String, cmd_name owns the String to process_ command40cmd_ name41 ownership moves in, process_ command40cmd_ name41 ownership moves in to Inside process_command cmd owns the String, Inside process_command cmd owns the String to Function returns cmd drops here, Function returns cmd drops here to Heap memory freed automatically.
+    A["String::from#40;<br/>&quot;validate&quot;#41;<br/>heap allocated"] --> B["cmd_name owns the<br/>String"]
+    B --> C["process_<br/>command#40;cmd_<br/>name#41;<br/>ownership moves in"]
+    C --> D["Inside<br/>process_command<br/>cmd owns the String"]
     D --> E["Function returns<br/>cmd drops here"]
     E --> F["Heap memory freed<br/>automatically"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#808080,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef pal-808080 fill:#808080,stroke:#000000,color:#000000
+    class F pal-808080
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust

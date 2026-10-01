@@ -123,10 +123,15 @@ Each guide follows this structure:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example Progression
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: Standard Library assert module, Production Framework Jest/Vitest. Connections: Standard Library assert module to Production Framework Jest/Vitest (Limitations: No test runner No reporting).
     A["Standard Library<br/>assert module"] -->|Limitations:<br/>No test runner<br/>No reporting| B["Production Framework<br/>Jest/Vitest"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Standard Library**: `assert` module provides basic assertions, but no test organization or reporting.

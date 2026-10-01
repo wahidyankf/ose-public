@@ -1171,21 +1171,23 @@ await emailQueue.close();
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart TD
-    A[Choose Messaging System] --> B{Use Case?}
+    accTitle: Messaging Pattern Comparison
+    accDescr: Flowchart with 19 nodes and 21 connections. Nodes: Choose Messaging System, Use Case?, EventEmitter, RabbitMQ, Kafka, Bull Redis, EventEmitter Features, RabbitMQ Features, Kafka Features, Bull Features, ✓ Built-in ✓ Synchronous ✓ Simple API ✗ In-process only ✗ No persistence, ✓ Distributed ✓ Flexible routing ✓ Dead-letter queues ✓ RPC support ✗ Operational complexity, and 7 more. Connections: Choose Messaging System to Use Case?, Use Case? to EventEmitter (In-process events No persistence), Use Case? to RabbitMQ (Distributed queues RPC patterns), Use Case? to Kafka (Event streaming High throughput), Use Case? to Bull Redis (Background jobs Scheduling), EventEmitter to EventEmitter Features, RabbitMQ to RabbitMQ Features, Kafka to Kafka Features, Bull Redis to Bull Features, EventEmitter Features to ✓ Built-in ✓ Synchronous ✓ Simple API ✗ In-process only ✗ No persistence, RabbitMQ Features to ✓ Distributed ✓ Flexible routing ✓ Dead-letter queues ✓ RPC support ✗ Operational complexity, Kafka Features to ✓ High throughput ✓ Log retention ✓ Replay events ✓ Partitioning ✗ Complex setup, and 9 more.
+    A[Choose Messaging<br/>System] --> B{Use Case?}
 
     B -->|In-process events<br/>No persistence| C[EventEmitter]
     B -->|Distributed queues<br/>RPC patterns| D[RabbitMQ]
     B -->|Event streaming<br/>High throughput| E[Kafka]
     B -->|Background jobs<br/>Scheduling| F[Bull Redis]
 
-    C --> C1[EventEmitter Features]
+    C --> C1[EventEmitter<br/>Features]
     D --> D1[RabbitMQ Features]
     E --> E1[Kafka Features]
     F --> F1[Bull Features]
 
     C1 --> C2[✓ Built-in<br/>✓ Synchronous<br/>✓ Simple API<br/>✗ In-process only<br/>✗ No persistence]
 
-    D1 --> D2[✓ Distributed<br/>✓ Flexible routing<br/>✓ Dead-letter queues<br/>✓ RPC support<br/>✗ Operational complexity]
+    D1 --> D2[✓ Distributed<br/>✓ Flexible routing<br/>✓ Dead-letter queues<br/>✓ RPC support<br/>✗ Operational<br/>complexity]
 
     E1 --> E2[✓ High throughput<br/>✓ Log retention<br/>✓ Replay events<br/>✓ Partitioning<br/>✗ Complex setup]
 
@@ -1196,15 +1198,19 @@ flowchart TD
     E2 --> G
     F2 --> G
 
-    G --> G1[EventEmitter: Module communication<br/>In-app events]
-    G --> G2[RabbitMQ: Microservices<br/>Task distribution<br/>Pub/Sub]
-    G --> G3[Kafka: Event streaming<br/>Data pipelines<br/>Analytics]
-    G --> G4[Bull: Background jobs<br/>Email/image processing<br/>Cron tasks]
+    G --> G1[EventEmitter: Module<br/>communication<br/>In-app events]
+    G --> G2[RabbitMQ:<br/>Microservices<br/>Task distribution<br/>Pub/Sub]
+    G --> G3[Kafka: Event<br/>streaming<br/>Data pipelines<br/>Analytics]
+    G --> G4[Bull: Background<br/>jobs<br/>Email/image<br/>processing<br/>Cron tasks]
 
-    style A fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style D fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style F fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Best Practices

@@ -16,16 +16,22 @@ F# is a functional-first language that compiles to .NET bytecode. You can run F#
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 1: Hello World and F Interactive
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Source Code program.fs, F Compiler fsc, F Interactive fsi, Executable program.exe, REPL Output. Connections: Source Code program.fs to F Compiler fsc, Source Code program.fs to F Interactive fsi, F Compiler fsc to Executable program.exe, F Interactive fsi to REPL Output.
     A[Source Code<br/>program.fs]:::blue --> B[F# Compiler<br/>fsc]:::orange
     A --> C[F# Interactive<br/>fsi]:::teal
     B --> D[Executable<br/>program.exe]:::orange
     C --> E[REPL Output]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -50,14 +56,21 @@ F# defaults to immutability - values bound with `let` cannot be changed. This el
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 2: Immutable Values with let
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: let x = 10, Immutable Binding, Cannot reassign x, let x = 20 New binding shadows old. Connections: let x = 10 to Immutable Binding, Immutable Binding to Cannot reassign x, let x = 10 to let x = 20 New binding shadows old.
     A[let x = 10]:::blue --> B[Immutable Binding]:::orange
     B --> C[Cannot reassign x]:::teal
     A --> D[let x = 20<br/>New binding<br/>shadows old]:::purple
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -181,16 +194,22 @@ The `>>` operator composes functions left-to-right, creating pipelines that tran
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 6: Function Composition
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Input: 5, double x * 2, Result: 10, addTen x + 10, Final: 20. Connections: Input: 5 to double x * 2, double x * 2 to Result: 10, Result: 10 to addTen x + 10, addTen x + 10 to Final: 20.
     A[Input: 5]:::blue --> B[double<br/>x * 2]:::orange
     B --> C[Result: 10]:::teal
     C --> D[addTen<br/>x + 10]:::orange
     D --> E[Final: 20]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -226,16 +245,22 @@ The pipe operator `|>` feeds values through function chains, making data transfo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 7: Piping with |>
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: 5, |> double, 10, |> addTen, 20. Connections: 5 to |> double, |> double to 10, 10 to |> addTen, |> addTen to 20.
     A[5]:::blue --> B[|> double]:::orange
     B --> C[10]:::teal
     C --> D[|> addTen]:::orange
     D --> E[20]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -266,16 +291,22 @@ Pattern matching is F#'s primary control flow mechanism, replacing if/else chain
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 8: Pattern Matching Basics
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: match number, Pattern?, One, Two, Other. Connections: match number to Pattern?, Pattern? to One (1), Pattern? to Two (2), Pattern? to Other (_).
     A[match number]:::blue --> B{Pattern?}:::orange
     B -->|1| C[One]:::teal
     B -->|2| D[Two]:::teal
     B -->|_| E[Other]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -347,20 +378,28 @@ Recursion is the primary iteration mechanism in functional programming, replacin
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 10: Recursion
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: sum 9112393, List empty?, Return 0, head + sum tail, 1 + sum 912393, 1 + 2 + sum 91393, 1 + 2 + 3 + 0 = 6. Connections: sum 9112393 to List empty?, List empty? to Return 0 (Yes), List empty? to head + sum tail (No), head + sum tail to 1 + sum 912393, 1 + sum 912393 to 1 + 2 + sum 91393, 1 + 2 + sum 91393 to 1 + 2 + 3 + 0 = 6.
     A[sum #91;1;2;3#93;]:::blue --> B{List empty?}:::orange
     B -->|Yes| C[Return 0]:::teal
     B -->|No| D[head + sum tail]:::purple
     D --> E[1 + sum #91;2;3#93;]:::brown
-    E --> F[1 + 2 + sum #91;3#93;]:::brown
+    E --> F[1 + 2 + sum<br/>#91;3#93;]:::brown
     F --> G[1 + 2 + 3 + 0 = 6]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -454,16 +493,22 @@ printfn "%A" greaterThanFive
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 13: List.fold - Aggregating Values
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Initial: 0, Fold step 1 0 + 1 = 1, Fold step 2 1 + 2 = 3, Fold step 3 3 + 3 = 6, Result: 6. Connections: Initial: 0 to Fold step 1 0 + 1 = 1, Fold step 1 0 + 1 = 1 to Fold step 2 1 + 2 = 3, Fold step 2 1 + 2 = 3 to Fold step 3 3 + 3 = 6, Fold step 3 3 + 3 = 6 to Result: 6.
     A[Initial: 0]:::blue --> B[Fold step 1<br/>0 + 1 = 1]:::orange
     B --> C[Fold step 2<br/>1 + 2 = 3]:::orange
     C --> D[Fold step 3<br/>3 + 3 = 6]:::orange
     D --> E[Result: 6]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -571,14 +616,21 @@ Discriminated unions (DUs) define types that can be one of several named cases, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 16: Discriminated Unions
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Shape type, Circle of float, Rectangle of float * float, Triangle of float * float * float. Connections: Shape type to Circle of float, Shape type to Rectangle of float * float, Shape type to Triangle of float * float * float.
     A[Shape type]:::blue --> B[Circle of float]:::orange
-    A --> C[Rectangle of float * float]:::teal
-    A --> D[Triangle of float * float * float]:::purple
+    A --> C[Rectangle of float *<br/>float]:::teal
+    A --> D[Triangle of float *<br/>float * float]:::purple
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -626,12 +678,17 @@ The `Option` type represents values that may or may not exist, replacing null wi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05
 graph TD
+    accTitle: Example 17: Option Type - Null Safety
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Option type, Some of value, None. Connections: Option type to Some of value, Option type to None.
     A[Option type]:::blue --> B[Some of value]:::orange
     A --> C[None]:::orange
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1051,12 +1108,18 @@ F# functions are curried by default - multi-parameter functions can be partially
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
-    A[add: int -> int -> int]:::blue --> B[addFive = add 5<br/>int -> int]:::orange
+    accTitle: Example 29: Partial Application
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: add: int -> int -> int, addFive = add 5 int -> int, addFive 3 Returns 8. Connections: add: int -> int -> int to addFive = add 5 int -> int, addFive = add 5 int -> int to addFive 3 Returns 8.
+    A[add: int -> int -><br/>int]:::blue --> B[addFive = add 5<br/>int -> int]:::orange
     B --> C[addFive 3<br/>Returns 8]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

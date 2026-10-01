@@ -878,6 +878,8 @@ service.send("TOGGLE_THEME");
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 stateDiagram-v2
+    accTitle: State Machine Progression Diagram
+    accDescr: State diagram with 6 items: start or end, Discriminated_Unions, XState, Nested_States, Parallel_States, Discriminated_Unions standard. Relationships: start or end to Discriminated_Unions: Simple FSM; Discriminated_Unions to XState: Complex states; XState to Nested_States: Hierarchical; XState to Parallel_States: Concurrent.
     [*] --> Discriminated_Unions: Simple FSM
     Discriminated_Unions --> XState: Complex states
     XState --> Nested_States: Hierarchical
@@ -907,8 +909,8 @@ stateDiagram-v2
         No ordering dependencies
     end note
 
-    classDef standard fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef framework fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef standard fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef framework fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 
     class Discriminated_Unions standard
     class XState,Nested_States,Parallel_States framework

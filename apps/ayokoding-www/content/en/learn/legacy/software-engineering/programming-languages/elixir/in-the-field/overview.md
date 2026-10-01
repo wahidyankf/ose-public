@@ -134,10 +134,15 @@ Each guide follows this structure:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example Progression
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: OTP Primitives GenServer + Plug, Production Framework Phoenix. Connections: OTP Primitives GenServer + Plug to Production Framework Phoenix (Limitations: No routing No lifecycle Manual setup).
     A["OTP Primitives<br/>GenServer + Plug"] -->|Limitations:<br/>No routing<br/>No lifecycle<br/>Manual setup| B["Production Framework<br/>Phoenix"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **OTP Primitives**: You can build web servers with GenServer + Plug, handling HTTP manually.

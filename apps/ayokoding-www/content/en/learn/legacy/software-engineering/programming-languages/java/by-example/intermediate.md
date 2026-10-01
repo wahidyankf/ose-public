@@ -31,12 +31,18 @@ Abstract classes provide partial implementations with abstract methods that subc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Abstract["Abstract Class<br/>template method#40;#41;"] --> Concrete1["Concrete Class A<br/>implements abstract methods"]
-    Abstract --> Concrete2["Concrete Class B<br/>implements abstract methods"]
+    accTitle: Example 34: Abstract Classes and Template Method Pattern
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Abstract Class template method4041, Concrete Class A implements abstract methods, Concrete Class B implements abstract methods. Connections: Abstract Class template method4041 to Concrete Class A implements abstract methods, Abstract Class template method4041 to Concrete Class B implements abstract methods.
+    Abstract["Abstract Class<br/>template<br/>method#40;#41;"] --> Concrete1["Concrete Class A<br/>implements abstract<br/>methods"]
+    Abstract --> Concrete2["Concrete Class B<br/>implements abstract<br/>methods"]
 
-    style Abstract fill:#0173B2,color:#fff
-    style Concrete1 fill:#DE8F05,color:#fff
-    style Concrete2 fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Abstract pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Concrete1 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Concrete2 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -409,16 +415,24 @@ Reflection allows runtime inspection and manipulation of classes, methods, and f
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 37: Reflection API - Runtime Introspection
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Class Object, Methods getMethods4041, Fields getFields4041, Constructors get Constructors4041, Invoke method. invoke4041. Connections: Class Object to Methods getMethods4041, Class Object to Fields getFields4041, Class Object to Constructors get Constructors4041, Methods getMethods4041 to Invoke method. invoke4041.
     Class["Class Object"] --> Methods["Methods<br/>getMethods#40;#41;"]
     Class --> Fields["Fields<br/>getFields#40;#41;"]
-    Class --> Constructors["Constructors<br/>getConstructors#40;#41;"]
-    Methods --> Invoke["Invoke<br/>method.invoke#40;#41;"]
+    Class --> Constructors["Constructors<br/>get<br/>Constructors#40;#41;"]
+    Methods --> Invoke["Invoke<br/>method.<br/>invoke#40;#41;"]
 
-    style Class fill:#0173B2,color:#fff
-    style Methods fill:#DE8F05,color:#fff
-    style Fields fill:#029E73,color:#fff
-    style Constructors fill:#CC78BC,color:#fff
-    style Invoke fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Class pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Methods pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Fields pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Constructors pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Invoke pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -700,19 +714,27 @@ Generic methods enable type-safe method implementations that work with any type.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Method["Generic Method<br/><T> void print#40;T item#41;"] --> AnyType["Accepts any type<br/>String, Integer, etc."]
+    accTitle: Example 39: Generic Methods and Bounded Type Parameters
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: Generic Method void print40T item41, Accepts any type String, Integer, etc., Bounded Method, Only Number subclasses Integer, Double, etc., Can call Number methods doubleValue4041, MultiBound, B, Extends class A, Implements interface B. Connections: Generic Method void print40T item41 to Accepts any type String, Integer, etc., Bounded Method to Only Number subclasses Integer, Double, etc., Only Number subclasses Integer, Double, etc. to Can call Number methods doubleValue4041, MultiBound to Extends class A, B to Extends class A, MultiBound to Implements interface B.
+    Method["Generic Method<br/><T> void<br/>print#40;T item#41;"] --> AnyType["Accepts any type<br/>String, Integer,<br/>etc."]
 
-    Bounded["Bounded Method<br/><T extends Number>"] --> Restrict["Only Number subclasses<br/>Integer, Double, etc."]
-    Restrict --> Access["Can call Number methods<br/>doubleValue#40;#41;"]
+    Bounded["Bounded Method<br/><T extends Number>"] --> Restrict["Only Number<br/>subclasses<br/>Integer, Double,<br/>etc."]
+    Restrict --> Access["Can call Number<br/>methods<br/>doubleValue#40;#41;"]
 
     MultiBound["Multiple Bounds<br/><T extends A & B>"] --> Class["Extends class A"]
-    MultiBound --> Interface["Implements interface B"]
+    MultiBound --> Interface["Implements interface<br/>B"]
 
-    style Method fill:#0173B2,color:#fff
-    style Bounded fill:#DE8F05,color:#fff
-    style MultiBound fill:#029E73,color:#fff
-    style Access fill:#CC78BC,color:#fff
-    style Class fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Method pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Bounded pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class MultiBound pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Access pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Class pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -823,20 +845,28 @@ Wildcards (`?`) represent unknown types in generics. Upper-bounded wildcards (`?
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 40: Wildcards and Type Variance
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: Unbounded List, Read as Object, Cannot write, Upper bound List, Read as Number, Cannot write 40unknown exact type41, Lower bound List, Write Integer, Read as Object only. Connections: Unbounded List to Read as Object, Unbounded List to Cannot write, Upper bound List to Read as Number, Upper bound List to Cannot write 40unknown exact type41, Lower bound List to Write Integer, Lower bound List to Read as Object only.
     Unbounded["Unbounded<br/>List<?>"] --> ReadObj["Read as Object"]
     Unbounded --> NoWrite["Cannot write"]
 
     Upper["Upper bound<br/>List<? extends Number>"] --> ReadNum["Read as Number"]
-    Upper --> NoWriteNum["Cannot write<br/>#40;unknown exact type#41;"]
+    Upper --> NoWriteNum["Cannot write<br/>#40;unknown exact<br/>type#41;"]
 
     Lower["Lower bound<br/>List<? super Integer>"] --> WriteInt["Write Integer"]
     Lower --> ReadObjLower["Read as Object only"]
 
-    style Unbounded fill:#0173B2,color:#fff
-    style Upper fill:#DE8F05,color:#fff
-    style Lower fill:#029E73,color:#fff
-    style ReadNum fill:#CC78BC,color:#fff
-    style WriteInt fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Unbounded pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Upper pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Lower pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ReadNum pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class WriteInt pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1118,16 +1148,24 @@ Concurrent collections provide thread-safe operations without external synchroni
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Legacy["Legacy Collections<br/>ArrayList, HashMap"] --> Sync["Synchronized Wrappers<br/>Collections.synchronized*"]
-    Legacy --> Concurrent["Concurrent Collections<br/>ConcurrentHashMap"]
+    accTitle: Example 44: Concurrent Collections for Thread Safety
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Legacy Collections ArrayList, HashMap, Synchronized Wrappers Collections. synchronized*, Concurrent Collections ConcurrentHashMap, Single Lock Poor Concurrency, Fine-Grained Locking High Concurrency. Connections: Legacy Collections ArrayList, HashMap to Synchronized Wrappers Collections. synchronized*, Legacy Collections ArrayList, HashMap to Concurrent Collections ConcurrentHashMap, Synchronized Wrappers Collections. synchronized* to Single Lock Poor Concurrency, Concurrent Collections ConcurrentHashMap to Fine-Grained Locking High Concurrency.
+    Legacy["Legacy Collections<br/>ArrayList, HashMap"] --> Sync["Synchronized<br/>Wrappers<br/>Collections.<br/>synchronized*"]
+    Legacy --> Concurrent["Concurrent<br/>Collections<br/>ConcurrentHashMap"]
     Sync --> Problem["Single Lock<br/>Poor Concurrency"]
     Concurrent --> Solution["Fine-Grained Locking<br/>High Concurrency"]
 
-    style Legacy fill:#0173B2,color:#fff
-    style Sync fill:#DE8F05,color:#fff
-    style Concurrent fill:#029E73,color:#fff
-    style Problem fill:#CC78BC,color:#fff
-    style Solution fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Legacy pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Sync pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Concurrent pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Problem pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Solution pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1234,20 +1272,28 @@ Stream operations are lazy (intermediate) or eager (terminal). Understanding laz
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 45: Stream Pipeline Optimization
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Collection [1,2,3,4,5], stream4041, filter 40intermediate/ lazy41, map 40intermediate/ lazy41, collect 40terminal/ eager41, Execute pipeline process elements, Result: List. Connections: Collection [1,2,3,4,5] to stream4041, stream4041 to filter 40intermediate/ lazy41, filter 40intermediate/ lazy41 to map 40intermediate/ lazy41, map 40intermediate/ lazy41 to collect 40terminal/ eager41, collect 40terminal/ eager41 to Execute pipeline process elements, Execute pipeline process elements to Result: List.
     Source["Collection<br/>[1,2,3,4,5]"] --> Stream["stream#40;#41;"]
-    Stream --> Filter["filter<br/>#40;intermediate/lazy#41;"]
-    Filter --> Map["map<br/>#40;intermediate/lazy#41;"]
-    Map --> Terminal["collect<br/>#40;terminal/eager#41;"]
+    Stream --> Filter["filter<br/>#40;intermediate/<br/>lazy#41;"]
+    Filter --> Map["map<br/>#40;intermediate/<br/>lazy#41;"]
+    Map --> Terminal["collect<br/>#40;terminal/<br/>eager#41;"]
     Terminal --> Execute["Execute pipeline<br/>process elements"]
 
     Execute --> Result["Result: List"]
 
-    style Source fill:#0173B2,color:#fff
-    style Filter fill:#DE8F05,color:#fff
-    style Map fill:#DE8F05,color:#fff
-    style Terminal fill:#029E73,color:#fff
-    style Execute fill:#CC78BC,color:#fff
-    style Result fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Source pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Filter pal-DE8F05
+    class Map pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Terminal pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Execute pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Result pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1343,18 +1389,25 @@ Collectors transform stream results into collections, maps, or aggregated values
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Stream["Stream<String>"] --> Collect["collect#40;Collector#41;"]
+    accTitle: Example 46: Collectors and Stream Reduction
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Stream, collect40Collector41, toList4041 → List, groupingBy4041 → Map, joining4041 → String, Custom Collector → Any type. Connections: Stream to collect40Collector41, collect40Collector41 to toList4041 → List, collect40Collector41 to groupingBy4041 → Map, collect40Collector41 to joining4041 → String, collect40Collector41 to Custom Collector → Any type.
+    Stream["Stream<String>"] --> Collect["collect(Collector)"]
     Collect --> ToList["toList#40;#41;<br/>→ List"]
     Collect --> GroupBy["groupingBy#40;#41;<br/>→ Map"]
     Collect --> Joining["joining#40;#41;<br/>→ String"]
     Collect --> Custom["Custom Collector<br/>→ Any type"]
 
-    style Stream fill:#0173B2,color:#fff
-    style Collect fill:#DE8F05,color:#fff
-    style ToList fill:#029E73,color:#fff
-    style GroupBy fill:#029E73,color:#fff
-    style Joining fill:#029E73,color:#fff
-    style Custom fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Stream pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Collect pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ToList pal-029E73
+    class GroupBy pal-029E73
+    class Joining pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Custom pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1848,19 +1901,27 @@ Shared mutable state requires synchronization to prevent race conditions. Java p
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 50: Synchronization and Thread Safety
+    accDescr: Graph with 8 nodes and 5 connections. Nodes: Unsynchronized count++, Race Condition Lost updates, synchronized method, Acquire intrinsic lock, Execute method 40exclusive access41, Release lock, AtomicInteger incrementAndGet, Compare-And-Swap 40lock-free41. Connections: Unsynchronized count++ to Race Condition Lost updates, synchronized method to Acquire intrinsic lock, Acquire intrinsic lock to Execute method 40exclusive access41, Execute method 40exclusive access41 to Release lock, AtomicInteger incrementAndGet to Compare-And-Swap 40lock-free41.
     Unsafe["Unsynchronized<br/>count++"] --> Race["Race Condition<br/>Lost updates"]
 
-    Sync["synchronized method"] --> Lock["Acquire intrinsic lock"]
-    Lock --> Execute["Execute method<br/>#40;exclusive access#41;"]
+    Sync["synchronized method"] --> Lock["Acquire intrinsic<br/>lock"]
+    Lock --> Execute["Execute method<br/>#40;exclusive<br/>access#41;"]
     Execute --> Unlock["Release lock"]
 
     Atomic["AtomicInteger<br/>incrementAndGet"] --> CAS["Compare-And-Swap<br/>#40;lock-free#41;"]
 
-    style Unsafe fill:#0173B2,color:#fff
-    style Race fill:#DE8F05,color:#fff
-    style Sync fill:#029E73,color:#fff
-    style Execute fill:#CC78BC,color:#fff
-    style Atomic fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Unsafe pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Race pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Sync pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Execute pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Atomic pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2394,13 +2455,19 @@ Records provide concise syntax for immutable data carriers, automatically genera
 
 ```mermaid
 graph TD
-    Traditional["Traditional Class<br/>99 lines: constructor,<br/>getters, equals, hashCode,<br/>toString"] --> Record["Record<br/>19 lines: compact constructor<br/>+ validation only"]
+    accTitle: Example 53: Records for Immutable Data
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Traditional Class 99 lines: constructor, getters, equals, hashCode, toString, Record 19 lines: compact constructor + validation only, Auto-generated: getters, equals, hashCode, toString. Connections: Traditional Class 99 lines: constructor, getters, equals, hashCode, toString to Record 19 lines: compact constructor + validation only, Record 19 lines: compact constructor + validation only to Auto-generated: getters, equals, hashCode, toString.
+    Traditional["Traditional Class<br/>99 lines:<br/>constructor,<br/>getters, equals,<br/>hashCode,<br/>toString"] --> Record["Record<br/>19 lines: compact<br/>constructor<br/>+ validation only"]
 
     Record --> Auto["Auto-generated:<br/>getters, equals,<br/>hashCode, toString"]
 
-    style Traditional fill:#DE8F05,color:#fff
-    style Record fill:#029E73,color:#fff
-    style Auto fill:#0173B2,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Traditional pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Record pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Auto pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2557,16 +2624,23 @@ Sealed classes restrict which classes can extend or implement them, enabling exh
 
 ```mermaid
 graph TD
+    accTitle: Example 54: Sealed Classes for Closed Hierarchies
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: sealed interface TransactionType, final class CashTransaction, final class CardTransaction, final class BankTransfer, Compiler enforces: No other classes can implement. Connections: sealed interface TransactionType to final class CashTransaction, sealed interface TransactionType to final class CardTransaction, sealed interface TransactionType to final class BankTransfer, Compiler enforces: No other classes can implement to sealed interface TransactionType.
     Sealed["sealed interface<br/>TransactionType"] --> Cash["final class<br/>CashTransaction"]
     Sealed --> Card["final class<br/>CardTransaction"]
     Sealed --> Bank["final class<br/>BankTransfer"]
 
     Note["Compiler enforces:<br/>No other classes<br/>can implement"] --> Sealed
 
-    style Sealed fill:#0173B2,color:#fff
-    style Cash fill:#DE8F05,color:#fff
-    style Card fill:#029E73,color:#fff
-    style Bank fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Sealed pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Cash pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Card pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Bank pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2781,19 +2855,27 @@ Pattern matching for switch combines type checking, casting, and conditional log
 
 ```mermaid
 graph TD
+    accTitle: Example 55: Pattern Matching for Switch
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: switch40object41, case String s, case Integer i, case List list, case null, when s.length4041 > 10, when i > 100. Connections: switch40object41 to case String s, switch40object41 to case Integer i, switch40object41 to case List list, switch40object41 to case null, case String s to when s.length4041 > 10, case Integer i to when i > 100.
     Switch["switch#40;object#41;"] --> Type1["case String s"]
     Switch --> Type2["case Integer i"]
     Switch --> Type3["case List list"]
     Switch --> Null["case null"]
 
-    Type1 --> Guard1["when s.length#40;#41; > 10"]
+    Type1 --> Guard1["when<br/>s.length#40;#41; ><br/>10"]
     Type2 --> Guard2["when i > 100"]
 
-    style Switch fill:#0173B2,color:#fff
-    style Type1 fill:#DE8F05,color:#fff
-    style Type2 fill:#029E73,color:#fff
-    style Type3 fill:#CC78BC,color:#fff
-    style Null fill:#CA9161,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Switch pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Type1 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Type2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Type3 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Null pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

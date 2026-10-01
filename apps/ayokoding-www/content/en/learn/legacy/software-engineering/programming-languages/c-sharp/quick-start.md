@@ -46,6 +46,8 @@ A **Task Management CLI** that:
 
 ```mermaid
 graph LR
+    accTitle: Project Structure
+    accDescr: Graph with 15 nodes and 23 connections. Nodes: Quick Start: C, B, Types, Collections, D, Objects, String Interpolation, Control Flow, LINQ, Methods, Error Handling, File I/O, and 3 more. Connections: Quick Start: C to B, Quick Start: C to Types, Quick Start: C to Collections, Quick Start: C to D, Quick Start: C to Objects, Quick Start: C to String Interpolation, Quick Start: C to Control Flow, Quick Start: C to LINQ, Quick Start: C to Methods, Quick Start: C to Error Handling, Quick Start: C to File I/O, Quick Start: C to Async/Await, and 11 more.
     A[Quick Start: C#] --> B[Variables & Types]
     A --> C[Collections]
     A --> D[Classes & Objects]
@@ -70,9 +72,11 @@ graph LR
 
     L --> M[By-Example Tutorial]
 
-    style A fill:#e1f5ff
-    style L fill:#fff4e1
-    style M fill:#f0e6ff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    class L pal-CC78BC
+    class M pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Step 1: Create Project

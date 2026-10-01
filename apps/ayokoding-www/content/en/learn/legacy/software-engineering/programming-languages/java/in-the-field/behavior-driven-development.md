@@ -285,6 +285,8 @@ Manual BDD with JUnit lacks collaboration features that make BDD valuable.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 flowchart TD
+    accTitle: BDD Three-Phase Cycle
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: BDD CYCLE, DISCOVERY Collaborate on examples, FORMULATION Document in Gherkin, AUTOMATION Implement step defs, Living Documentation. Connections: BDD CYCLE to DISCOVERY Collaborate on examples, DISCOVERY Collaborate on examples to FORMULATION Document in Gherkin, FORMULATION Document in Gherkin to AUTOMATION Implement step defs, AUTOMATION Implement step defs to Living Documentation.
     Start([BDD CYCLE]):::purple
     Discovery[DISCOVERY<br/>Collaborate<br/>on examples]:::blue
     Formulation[FORMULATION<br/>Document<br/>in Gherkin]:::orange
@@ -299,8 +301,9 @@ flowchart TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef purple fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Discovery**: Business stakeholders, developers, and testers explore examples together. "What happens if donation amount is negative?" "What about zero?" "What about amounts over $10,000?" These questions become scenarios.
@@ -320,6 +323,8 @@ flowchart TD
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: Gherkin Given-When-Then Structure
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Scenario Execution, GIVEN Setup Context Create test data, WHEN Execute Action Trigger behavior, THEN Assert Outcome Verify results, Scenario Complete. Connections: Scenario Execution to GIVEN Setup Context Create test data, GIVEN Setup Context Create test data to WHEN Execute Action Trigger behavior, WHEN Execute Action Trigger behavior to THEN Assert Outcome Verify results, THEN Assert Outcome Verify results to Scenario Complete.
     Start([Scenario Execution]) --> Given[GIVEN<br/>Setup Context<br/>Create test data]:::blue
     Given --> When[WHEN<br/>Execute Action<br/>Trigger behavior]:::orange
     When --> Then[THEN<br/>Assert Outcome<br/>Verify results]:::teal
@@ -327,7 +332,8 @@ graph TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Given**: Establishes context (preconditions).
@@ -1174,8 +1180,10 @@ Scenario: No Zakat due when haul is incomplete
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TD
+    accTitle: BDD vs TDD: Complementary Practices
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: BDD Scenario Acceptance Test Given-When-Then, TDD Unit Tests testDonation Creation4041 testDonation Processing4041, Production Code Donation class DonationService. Connections: BDD Scenario Acceptance Test Given-When-Then to TDD Unit Tests testDonation Creation4041 testDonation Processing4041 (Drives), TDD Unit Tests testDonation Creation4041 testDonation Processing4041 to Production Code Donation class DonationService (Implements), Production Code Donation class DonationService to BDD Scenario Acceptance Test Given-When-Then (Satisfies).
     BDD[BDD Scenario<br/>Acceptance Test<br/>Given-When-Then]:::blue
-    TDD[TDD Unit Tests<br/>testDonationCreation#40;#41;<br/>testDonationProcessing#40;#41;]:::orange
+    TDD[TDD Unit Tests<br/>testDonation<br/>Creation#40;#41;<br/>testDonation<br/>Processing#40;#41;]:::orange
     Code[Production Code<br/>Donation class<br/>DonationService]:::teal
 
     BDD -->|Drives| TDD
@@ -1184,7 +1192,8 @@ graph TD
 
     classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
     classDef orange fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
-    classDef teal fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef teal fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Typical Workflow**:

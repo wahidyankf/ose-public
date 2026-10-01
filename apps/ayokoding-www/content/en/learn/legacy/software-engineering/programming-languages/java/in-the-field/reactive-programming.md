@@ -180,8 +180,9 @@ public interface Processor<T, R> extends Subscriber<T>, Publisher<R> {
 **Example flow:**
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 sequenceDiagram
+    accTitle: The Reactive Streams Contract
+    accDescr: Sequence diagram between Subscriber, Publisher. Messages: Subscriber to Publisher: subscribe(subscriber); Publisher to Subscriber: onSubscribe(subscription); Subscriber to Publisher: request(10); Publisher to Subscriber: onNext(item1); Publisher to Subscriber: onNext(item2); Publisher to Subscriber: ...; Publisher to Subscriber: onNext(item10); Subscriber to Publisher: request(10); Publisher to Subscriber: onNext(item11); Publisher to Subscriber: ...; Publisher to Subscriber: onComplete().
     participant Subscriber
     participant Publisher
 

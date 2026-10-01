@@ -52,16 +52,22 @@ Clojure provides two primary sequential collections: lists (linked lists optimiz
 ```mermaid
 %% Collection types comparison
 graph TD
-    A[Sequential Collections] --> B[Lists: Prepend O-1]
+    accTitle: Example 2: Lists and Vectors
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Sequential Collections, Lists: Prepend O-1, Vectors: Index O-1, (1 2 3), [1 2 3]. Connections: Sequential Collections to Lists: Prepend O-1, Sequential Collections to Vectors: Index O-1, Lists: Prepend O-1 to (1 2 3), Vectors: Index O-1 to [1 2 3].
+    A[Sequential<br/>Collections] --> B[Lists: Prepend O-1]
     A --> C[Vectors: Index O-1]
     B --> D["(1 2 3)"]
     C --> E["[1 2 3]"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -169,16 +175,22 @@ Functions are first-class values in Clojure defined with `defn` (named) or `fn` 
 ```mermaid
 %% Function definition types
 graph TD
+    accTitle: Example 4: Defining Functions
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Function Definitions, defn: Named, fn: Anonymous, Multi-arity, E. Connections: Function Definitions to defn: Named, Function Definitions to fn: Anonymous, defn: Named to Multi-arity, defn: Named to E.
     A[Function Definitions] --> B[defn: Named]
     A --> C[fn: Anonymous]
     B --> D[Multi-arity]
     B --> E[Variadic with &]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -362,14 +374,20 @@ Map destructuring extracts values by key using `:keys`, `:strs`, or `:syms`. It 
 ```mermaid
 %% Map destructuring keys
 graph TD
-    A["Map: {:name 'Alice' :age 30}"] --> B[":keys [name age]"]
+    accTitle: Example 7: Destructuring Maps
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Map: :name Alice :age 30, :keys [name age], name → Alice, age → 30. Connections: Map: :name Alice :age 30 to :keys [name age], :keys [name age] to name → Alice, :keys [name age] to age → 30.
+    A["Map: {:name 'Alice'<br/>:age 30}"] --> B[":keys [name age]"]
     B --> C["name → 'Alice'"]
     B --> D["age → 30"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -529,17 +547,25 @@ Clojure uses recursion instead of loops. The `recur` special form enables tail-c
 ```mermaid
 %% Recursion with recur
 graph TD
+    accTitle: Example 9: Recursion and loop/recur
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: loop bindings, Evaluate body, Base case?, Return value, recur with new bindings. Connections: loop bindings to Evaluate body, Evaluate body to Base case?, Base case? to Return value (Yes), Base case? to recur with new bindings (No), recur with new bindings to Evaluate body.
     A[loop bindings] --> B[Evaluate body]
     B --> C{Base case?}
     C -->|Yes| D[Return value]
-    C -->|No| E[recur with new bindings]
+    C -->|No| E[recur with new<br/>bindings]
     E --> B
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -669,6 +695,8 @@ Higher-order functions `map`, `filter`, and `reduce` are fundamental to function
 ```mermaid
 %% Map filter reduce pipeline
 graph TD
+    accTitle: Example 11: Map, Filter, and Reduce
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: [1 2 3 4 5], map: x * 2, [2 4 6 8 10], filter: even?, [2 4 6 8 10], reduce: +, 30. Connections: [1 2 3 4 5] to map: x * 2, map: x * 2 to [2 4 6 8 10], [2 4 6 8 10] to filter: even?, filter: even? to [2 4 6 8 10], [2 4 6 8 10] to reduce: +, reduce: + to 30.
     A["[1 2 3 4 5]"] --> B[map: x * 2]
     B --> C["[2 4 6 8 10]"]
     C --> D[filter: even?]
@@ -676,13 +704,18 @@ graph TD
     E --> F[reduce: +]
     F --> G["30"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CA9161,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    class D pal-DE8F05
+    class E pal-CA9161
+    class F pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -884,6 +917,8 @@ Atoms provide synchronous, independent state management. They support lock-free 
 ```mermaid
 %% Atom state transitions
 stateDiagram-v2
+    accTitle: Example 14: Atoms
+    accDescr: State diagram with 4 items: start or end, Initial, Updated, Reset. Relationships: start or end to Initial: atom; Initial to Updated: swap!; Updated to Reset: reset!; Reset to Updated: swap!; Updated to start or end: deref.
     [*] --> Initial: atom
     Initial --> Updated: swap!
     Updated --> Reset: reset!
@@ -1480,14 +1515,20 @@ Clojure provides two syntaxes for anonymous functions: `fn` (full syntax) and `#
 ```mermaid
 %% Function composition flow
 graph TD
+    accTitle: Example 20: Partial Application and Comp
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Input: 5, inc: 6, * 2: 12, str: 12. Connections: Input: 5 to inc: 6, inc: 6 to * 2: 12, * 2: 12 to str: 12.
     A[Input: 5] --> B[inc: 6]
     B --> C[* 2: 12]
     C --> D[str: 12]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -2119,14 +2160,21 @@ Collection slicing functions enable working with subsequences. `take` and `drop`
 ```mermaid
 %% Partition operation
 graph TD
+    accTitle: Example 27: Take, Drop, and Partition
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: [1 2 3 4 5 6 7 8], partition 3, ((1 2 3) (4 5 6)), Remainder: 7 8 dropped. Connections: [1 2 3 4 5 6 7 8] to partition 3, partition 3 to ((1 2 3) (4 5 6)), ((1 2 3) (4 5 6)) to Remainder: 7 8 dropped.
     A["[1 2 3 4 5 6 7 8]"] --> B[partition 3]
     B --> C["((1 2 3) (4 5 6))"]
-    C --> D[Remainder: 7 8 dropped]
+    C --> D[Remainder: 7 8<br/>dropped]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure

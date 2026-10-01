@@ -189,19 +189,25 @@ jobs:
 **Workflow visualization**:
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#000','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC'}}}%%
 graph TD
+    accTitle: File: .github/workflows/ci.yml
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Push/PR, Lint Job, Test Job, Build Job, Artifacts. Connections: Push/PR to Lint Job (Triggers), Push/PR to Test Job (Triggers), Lint Job to Build Job (Pass), Test Job to Build Job (Pass), Build Job to Artifacts (6 parallel builds).
     A[Push/PR] -->|Triggers| B[Lint Job]
     A -->|Triggers| C[Test Job]
     B -->|Pass| D[Build Job]
     C -->|Pass| D
     D -->|6 parallel builds| E[Artifacts]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Pipeline execution time**:

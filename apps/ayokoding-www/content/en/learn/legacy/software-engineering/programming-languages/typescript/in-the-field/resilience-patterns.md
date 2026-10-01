@@ -565,26 +565,31 @@ circuit_breaker_latency_ms{percentile="99"} ${stats.latencyP99}
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TB
-    A[Manual Retry] -->|Need auto failure detection| B[Circuit Breaker]
+    accTitle: Resilience Pattern Progression Diagram
+    accDescr: Graph with 2 nodes and 3 connections. Nodes: Manual Retry, Circuit Breaker. Connections: Manual Retry to Circuit Breaker (Need auto failure detection), Manual Retry to Circuit Breaker (Need metrics), Manual Retry to Circuit Breaker (Need fallback).
+    A[Manual Retry] -->|Need auto failure<br/>detection| B[Circuit Breaker]
     A -->|Need metrics| B
     A -->|Need fallback| B
 
     A:::standard
     B:::framework
 
-    classDef standard fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef framework fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef standard fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef framework fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 
     subgraph Standard[" Standard Library "]
         A
     end
 
-    subgraph Production[" Production Framework "]
+    subgraph Production["Production Framework"]
         B
     end
 
-    style Standard fill:#F0F0F0,stroke:#0173B2,stroke-width:3px
-    style Production fill:#F0F0F0,stroke:#029E73,stroke-width:3px
+    classDef pal-CC78BC fill:#CC78BC,stroke:#0173B2,color:#000000,stroke-width:3px
+    class Standard pal-CC78BC
+    classDef pal-CC78BC-2 fill:#CC78BC,stroke:#029E73,color:#000000,stroke-width:3px
+    class Production pal-CC78BC-2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Additional Resilience Patterns

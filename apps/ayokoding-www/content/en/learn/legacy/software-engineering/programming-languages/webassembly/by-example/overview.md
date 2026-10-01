@@ -24,12 +24,18 @@ Wasm is **not** a programming language you write by hand in production. It is th
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Beginner<br/>Examples 1-28<br/>WAT Fundamentals + JS API"] --> B["Intermediate<br/>Examples 29-57<br/>Rust Toolchain + Emscripten + WASI"]
-    B --> C["Advanced<br/>Examples 58-85<br/>Threads + SIMD + WasmGC + Component Model"]
+    accTitle: Learning Path
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Beginner Examples 1-28 WAT Fundamentals + JS API, Intermediate Examples 29-57 Rust Toolchain + Emscripten + WASI, Advanced Examples 58-85 Threads + SIMD + WasmGC + Component Model. Connections: Beginner Examples 1-28 WAT Fundamentals + JS API to Intermediate Examples 29-57 Rust Toolchain + Emscripten + WASI, Intermediate Examples 29-57 Rust Toolchain + Emscripten + WASI to Advanced Examples 58-85 Threads + SIMD + WasmGC + Component Model.
+    A["Beginner<br/>Examples 1-28<br/>WAT Fundamentals +<br/>JS API"] --> B["Intermediate<br/>Examples 29-57<br/>Rust Toolchain +<br/>Emscripten + WASI"]
+    B --> C["Advanced<br/>Examples 58-85<br/>Threads + SIMD +<br/>WasmGC + Component<br/>Model"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Progress from WAT binary fundamentals through production toolchains to cutting-edge features. Each level builds on the previous.

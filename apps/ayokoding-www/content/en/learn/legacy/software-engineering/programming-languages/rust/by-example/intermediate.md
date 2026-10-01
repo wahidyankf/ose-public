@@ -19,20 +19,28 @@ Lifetimes ensure references remain valid by tracking how long borrowed data live
 
 ```mermaid
 graph TD
+    accTitle: Example 29: Lifetime Annotations Basics
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Function Call, Borrow Parameters, References Outlive?, Return Valid Reference, Compile Error, Use Reference, Reference Expires. Connections: Function Call to Borrow Parameters, Borrow Parameters to References Outlive?, References Outlive? to Return Valid Reference (Yes), References Outlive? to Compile Error (No), Return Valid Reference to Use Reference, Use Reference to Reference Expires.
     A[Function Call] --> B[Borrow Parameters]
     B --> C{References Outlive?}
-    C -->|Yes| D[Return Valid Reference]
+    C -->|Yes| D[Return Valid<br/>Reference]
     C -->|No| E[Compile Error]
     D --> F[Use Reference]
     F --> G[Reference Expires]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-DE8F05
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -188,22 +196,30 @@ Structs holding references need lifetime annotations to ensure referenced data o
 ```mermaid
 %% Struct lifetime constraint visualization
 graph TD
+    accTitle: Example 31: Struct Lifetimes
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: String: novel, B, str, ImportantExcerpt, Lifetime Check, Valid: Use struct, Compile Error, Access struct.part, Dangling Reference Prevented. Connections: String: novel to B, String: novel to str, B to ImportantExcerpt, ImportantExcerpt to Lifetime Check, Lifetime Check to Valid: Use struct (excerpt lifetime ≤ novel), Lifetime Check to Compile Error (excerpt lifetime > novel), Valid: Use struct to Access struct.part, Compile Error to Dangling Reference Prevented.
     A[String: novel] --> B[Create &str slice]
     B --> C[ImportantExcerpt]
     C --> D{Lifetime Check}
-    D -->|excerpt lifetime ≤ novel| E[Valid: Use struct]
-    D -->|excerpt lifetime > novel| F[Compile Error]
+    D -->|excerpt lifetime ≤<br/>novel| E[Valid: Use struct]
+    D -->|excerpt lifetime ><br/>novel| F[Compile Error]
     E --> G[Access struct.part]
-    F --> H[Dangling Reference Prevented]
+    F --> H[Dangling Reference<br/>Prevented]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#DE8F05,color:#fff
-    style H fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-DE8F05
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -609,20 +625,28 @@ Generic functions can require types to implement specific traits using trait bou
 ```mermaid
 %% Trait bounds compile-time verification
 graph TD
-    A[Generic Function: notify<T>] --> B[Trait Bound: T: Summary]
-    B --> C{Type implements Summary?}
+    accTitle: Example 35: Trait Bounds
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Generic Function: notify, Trait Bound: T: Summary, Type implements Summary?, Compile Success, Compile Error, Can call summarize, Method not found. Connections: Generic Function: notify to Trait Bound: T: Summary, Trait Bound: T: Summary to Type implements Summary?, Type implements Summary? to Compile Success (Yes), Type implements Summary? to Compile Error (No), Compile Success to Can call summarize, Compile Error to Method not found.
+    A[Generic Function:<br/>notify<T>] --> B[Trait Bound: T:<br/>Summary]
+    B --> C{Type implements<br/>Summary?}
     C -->|Yes| D[Compile Success]
     C -->|No| E[Compile Error]
     D --> F[Can call summarize]
     E --> G[Method not found]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -751,21 +775,28 @@ Structs and enums can be generic over types, enabling reusable data structures l
 ```mermaid
 %% Monomorphization process at compile time
 graph TD
+    accTitle: Example 36: Generics with Structs and Enums
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Generic: Point, Compile-time Types, Point_i32 generated, Point_f64 generated, Specialized i32 code, Specialized f64 code, Binary: Zero runtime cost. Connections: Generic: Point to Compile-time Types, Compile-time Types to Point_i32 generated (T = i32), Compile-time Types to Point_f64 generated (T = f64), Point_i32 generated to Specialized i32 code, Point_f64 generated to Specialized f64 code, Specialized i32 code to Binary: Zero runtime cost, Specialized f64 code to Binary: Zero runtime cost.
     A[Generic: Point<T>] --> B{Compile-time Types}
     B -->|T = i32| C[Point_i32 generated]
     B -->|T = f64| D[Point_f64 generated]
     C --> E[Specialized i32 code]
     D --> F[Specialized f64 code]
-    E --> G[Binary: Zero runtime cost]
+    E --> G[Binary: Zero runtime<br/>cost]
     F --> G
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#CC78BC,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-029E73
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -928,6 +959,8 @@ Closures are anonymous functions that capture their environment, enabling functi
 
 ```mermaid
 graph TD
+    accTitle: Example 38: Closures Basics
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: Define Closure, Capture Environment, Capture Mode?, D, T, E, mut, T, Execute Closure. Connections: Define Closure to Capture Environment, Capture Environment to Capture Mode?, Capture Mode? to D (Borrow), Capture Mode? to T (Borrow), Capture Mode? to E (Mutable Borrow), Capture Mode? to mut (Mutable Borrow), Capture Mode? to T (Move), D to Execute Closure, E to Execute Closure, T to Execute Closure.
     A[Define Closure] --> B[Capture Environment]
     B --> C{Capture Mode?}
     C -->|Borrow| D[&T]
@@ -937,13 +970,19 @@ graph TD
     E --> G
     F --> G
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -1150,22 +1189,29 @@ fn main() {
 ```mermaid
 %% Box heap allocation and recursive types
 graph TD
+    accTitle: Example 41: Box Smart Pointer
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: Stack: Box pointer, Heap: Value, Recursive List without Box, Infinite Size!, Recursive List with Box, Finite Size, Stack: Cons + Box pointer, Heap: Next Cons, Heap: Next Cons.... Connections: Stack: Box pointer to Heap: Value, Recursive List without Box to Infinite Size!, Recursive List with Box to Finite Size, Finite Size to Stack: Cons + Box pointer, Stack: Cons + Box pointer to Heap: Next Cons, Heap: Next Cons to Heap: Next Cons....
     A[Stack: Box pointer] --> B[Heap: Value]
-    C[Recursive List without Box] --> D[Infinite Size!]
-    E[Recursive List with Box] --> F[Finite Size]
-    F --> G[Stack: Cons + Box pointer]
+    C[Recursive List<br/>without Box] --> D[Infinite Size!]
+    E[Recursive List with<br/>Box] --> F[Finite Size]
+    F --> G[Stack: Cons + Box<br/>pointer]
     G --> H[Heap: Next Cons]
     H --> I[Heap: Next Cons...]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#CA9161,color:#fff
-    style D fill:#CA9161,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#0173B2,color:#fff
-    style H fill:#029E73,color:#fff
-    style I fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    class D pal-CA9161
+    class E pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    class G pal-0173B2
+    class H pal-029E73
+    class I pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -1291,22 +1337,29 @@ fn trait_object_example() {
 ```mermaid
 %% Rc reference counting mechanism
 graph TD
-    A[Heap: Value + RefCount] --> B[Rc pointer 1: count=1]
+    accTitle: Example 42: Rc Smart Pointer
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Heap: Value + RefCount, Rc pointer 1: count=1, Rc::clone: count=2, Rc::clone: count=3, Drop Rc 1: count=2, Drop Rc 2: count=1, Drop Rc 3: count=0, Deallocate heap value. Connections: Heap: Value + RefCount to Rc pointer 1: count=1, Heap: Value + RefCount to Rc::clone: count=2, Heap: Value + RefCount to Rc::clone: count=3, Rc::clone: count=2 to Drop Rc 1: count=2, Drop Rc 1: count=2 to Drop Rc 2: count=1, Drop Rc 2: count=1 to Drop Rc 3: count=0, Drop Rc 3: count=0 to Deallocate heap value.
+    A[Heap: Value +<br/>RefCount] --> B[Rc pointer 1:<br/>count=1]
     A --> C[Rc::clone: count=2]
     A --> D[Rc::clone: count=3]
     C --> E[Drop Rc 1: count=2]
     E --> F[Drop Rc 2: count=1]
     F --> G[Drop Rc 3: count=0]
-    G --> H[Deallocate heap value]
+    G --> H[Deallocate heap<br/>value]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -1435,22 +1488,30 @@ fn graph_example() {
 ```mermaid
 %% RefCell runtime borrow checking
 graph TD
-    A[RefCell<T>: immutable binding] --> B{borrow or borrow_mut?}
-    B -->|borrow| C[Runtime Check: Active borrows?]
-    B -->|borrow_mut| D[Runtime Check: Any borrows?]
+    accTitle: Example 43: RefCell and Interior Mutability
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: RefCell: immutable binding, borrow or borrow_mut?, Runtime Check: Active borrows?, Runtime Check: Any borrows?, Return Ref: count++, PANIC: BorrowError, Return RefMut: exclusive, PANIC: BorrowMutError. Connections: RefCell: immutable binding to borrow or borrow_mut?, borrow or borrow_mut? to Runtime Check: Active borrows? (borrow), borrow or borrow_mut? to Runtime Check: Any borrows? (borrow_mut), Runtime Check: Active borrows? to Return Ref: count++ (No mut borrows), Runtime Check: Active borrows? to PANIC: BorrowError (Mut borrow active), Runtime Check: Any borrows? to Return RefMut: exclusive (No borrows), Runtime Check: Any borrows? to PANIC: BorrowMutError (Any borrow active).
+    A[RefCell<T>:<br/>immutable binding] --> B{borrow or<br/>borrow_mut?}
+    B -->|borrow| C[Runtime Check:<br/>Active borrows?]
+    B -->|borrow_mut| D[Runtime Check: Any<br/>borrows?]
     C -->|No mut borrows| E[Return Ref<T>: count++]
     C -->|Mut borrow active| F[PANIC: BorrowError]
-    D -->|No borrows| G[Return RefMut<T>: exclusive]
-    D -->|Any borrow active| H[PANIC: BorrowMutError]
+    D -->|No borrows| G[Return RefMut<T>:<br/>exclusive]
+    D -->|Any borrow active| H[PANIC:<br/>BorrowMutError]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#CC78BC,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-029E73
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -1605,24 +1666,31 @@ Combining `Rc<RefCell<T>>` enables multiple ownership of mutable data, a common 
 ```mermaid
 %% Rc<RefCell<T>> shared mutable state pattern
 graph TD
-    A[Heap: RefCell<T> + RefCount] --> B[Rc clone 1: shared ownership]
-    A --> C[Rc clone 2: shared ownership]
-    A --> D[Rc clone 3: shared ownership]
-    B --> E[borrow_mut: mutate value]
+    accTitle: Example 44: Rc and RefCell Combined
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: Heap: RefCell + RefCount, Rc clone 1: shared ownership, Rc clone 2: shared ownership, Rc clone 3: shared ownership, borrow_mut: mutate value, borrow: read value, borrow_mut: mutate value, Runtime borrow check ensures safety. Connections: Heap: RefCell + RefCount to Rc clone 1: shared ownership, Heap: RefCell + RefCount to Rc clone 2: shared ownership, Heap: RefCell + RefCount to Rc clone 3: shared ownership, Rc clone 1: shared ownership to borrow_mut: mutate value, Rc clone 2: shared ownership to borrow: read value, Rc clone 3: shared ownership to borrow_mut: mutate value, borrow_mut: mutate value to Runtime borrow check ensures safety, borrow: read value to Runtime borrow check ensures safety, borrow_mut: mutate value to Runtime borrow check ensures safety.
+    A[Heap: RefCell<T><br/>+ RefCount] --> B[Rc clone 1: shared<br/>ownership]
+    A --> C[Rc clone 2: shared<br/>ownership]
+    A --> D[Rc clone 3: shared<br/>ownership]
+    B --> E[borrow_mut: mutate<br/>value]
     C --> F[borrow: read value]
-    D --> G[borrow_mut: mutate value]
-    E --> H[Runtime borrow check ensures safety]
+    D --> G[borrow_mut: mutate<br/>value]
+    E --> H[Runtime borrow check<br/>ensures safety]
     F --> H
     G --> H
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#CC78BC,color:#fff
-    style H fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class G pal-CC78BC
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -1772,6 +1840,8 @@ Threads enable concurrent execution through `std::thread::spawn`, which takes a 
 
 ```mermaid
 graph TD
+    accTitle: Example 45: Thread Basics
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: Main Thread, Spawn Thread, Thread Executes, Continue Main, Thread Completes, Join Handle, Wait for Thread, Thread Result. Connections: Main Thread to Spawn Thread, Spawn Thread to Thread Executes, Main Thread to Continue Main, Thread Executes to Thread Completes, Continue Main to Join Handle, Join Handle to Wait for Thread, Thread Completes to Wait for Thread, Wait for Thread to Thread Result.
     A[Main Thread] --> B[Spawn Thread]
     B --> C[Thread Executes]
     A --> D[Continue Main]
@@ -1781,14 +1851,20 @@ graph TD
     E --> G
     G --> H[Thread Result]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#CA9161,color:#fff
-    style H fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    class F pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -2046,18 +2122,26 @@ Channels enable safe message passing between threads through `mpsc` (multiple pr
 
 ```mermaid
 graph TD
+    accTitle: Example 47: Message Passing with Channels
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Sender Thread, Send Message, Channel, Receiver Thread, Receive Message, Process Data. Connections: Sender Thread to Send Message, Send Message to Channel, Channel to Receiver Thread, Receiver Thread to Receive Message, Receive Message to Process Data.
     A[Sender Thread] --> B[Send Message]
     B --> C[Channel]
     C --> D[Receiver Thread]
     D --> E[Receive Message]
     E --> F[Process Data]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust
@@ -2401,26 +2485,34 @@ fn main() {
 ```mermaid
 %% Arc<Mutex<T>> thread-safe shared mutable state
 graph TD
-    A[Heap: Mutex<T> + Atomic RefCount] --> B[Thread 1: Arc clone]
+    accTitle: Example 49: Arc and Mutex Combined
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Heap: Mutex + Atomic RefCount, Thread 1: Arc clone, Thread 2: Arc clone, Thread 3: Arc clone, lock: acquire mutex, lock: blocked, waiting, lock: blocked, waiting, MutexGuard: exclusive access, Drop guard: release lock, Next thread acquires lock. Connections: Heap: Mutex + Atomic RefCount to Thread 1: Arc clone, Heap: Mutex + Atomic RefCount to Thread 2: Arc clone, Heap: Mutex + Atomic RefCount to Thread 3: Arc clone, Thread 1: Arc clone to lock: acquire mutex, Thread 2: Arc clone to lock: blocked, waiting, Thread 3: Arc clone to lock: blocked, waiting, lock: acquire mutex to MutexGuard: exclusive access, MutexGuard: exclusive access to Drop guard: release lock, Drop guard: release lock to Next thread acquires lock.
+    A[Heap: Mutex<T><br/>+ Atomic RefCount] --> B[Thread 1: Arc clone]
     A --> C[Thread 2: Arc clone]
     A --> D[Thread 3: Arc clone]
     B --> E[lock: acquire mutex]
-    C --> F[lock: blocked, waiting]
-    D --> G[lock: blocked, waiting]
-    E --> H[MutexGuard: exclusive access]
-    H --> I[Drop guard: release lock]
-    I --> J[Next thread acquires lock]
+    C --> F[lock: blocked,<br/>waiting]
+    D --> G[lock: blocked,<br/>waiting]
+    E --> H[MutexGuard:<br/>exclusive access]
+    H --> I[Drop guard: release<br/>lock]
+    I --> J[Next thread acquires<br/>lock]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#CA9161,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style I fill:#029E73,color:#fff
-    style J fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    class I pal-029E73
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust

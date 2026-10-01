@@ -186,16 +186,23 @@ Multi-clause functions use pattern matching in function heads to elegantly handl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 32: Pattern Matching in Function Heads
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Function Call: handle(:ok, data), Clause 1: :error, _?, Clause 2: :ok, data?, Execute: Process data, Execute: Handle error. Connections: Function Call: handle(:ok, data) to Clause 1: :error, _?, Clause 1: :error, _? to Clause 2: :ok, data? (No), Clause 2: :ok, data? to Execute: Process data (Yes), Clause 1: :error, _? to Execute: Handle error (Yes).
     Input["Function Call:<br/>handle({:ok, data})"] --> Clause1{" Clause 1:<br/>{:error, _}?"}
     Clause1 -->|No| Clause2{"Clause 2:<br/>{:ok, data}?"}
     Clause2 -->|Yes| Execute["Execute:<br/>Process data"]
     Clause1 -->|Yes| Error["Execute:<br/>Handle error"]
 
-    style Input fill:#0173B2,color:#fff
-    style Clause1 fill:#DE8F05,color:#fff
-    style Clause2 fill:#DE8F05,color:#fff
-    style Execute fill:#029E73,color:#fff
-    style Error fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Input pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Clause1 pal-DE8F05
+    class Clause2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Execute pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Error pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -375,21 +382,28 @@ The `with` expression chains pattern matches, short-circuiting on the first mism
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Start["with"] --> Match1["Step 1:<br/>{:ok, user} <- get_user()"]
-    Match1 -->|Match| Match2["Step 2:<br/>{:ok, account} <- get_account()"]
-    Match2 -->|Match| Match3["Step 3:<br/>{:ok, balance} <- get_balance()"]
+    accTitle: Example 33: With Expression
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: with, Step 1: :ok, user <- get_user(), Step 2: :ok, account <- get_account(), Step 3: :ok, balance <- get_balance(), do: Process happy path, else: Handle error. Connections: with to Step 1: :ok, user <- get_user(), Step 1: :ok, user <- get_user() to Step 2: :ok, account <- get_account() (Match), Step 2: :ok, account <- get_account() to Step 3: :ok, balance <- get_balance() (Match), Step 3: :ok, balance <- get_balance() to do: Process happy path (Match), Step 1: :ok, user <- get_user() to else: Handle error (No Match), Step 2: :ok, account <- get_account() to else: Handle error (No Match), Step 3: :ok, balance <- get_balance() to else: Handle error (No Match).
+    Start["with"] --> Match1["Step 1:<br/>{:ok, user} <-<br/>get_user()"]
+    Match1 -->|Match| Match2["Step 2:<br/>{:ok, account} <-<br/>get_account()"]
+    Match2 -->|Match| Match3["Step 3:<br/>{:ok, balance} <-<br/>get_balance()"]
     Match3 -->|Match| Do["do:<br/>Process happy path"]
 
     Match1 -->|No Match| Else["else:<br/>Handle error"]
     Match2 -->|No Match| Else
     Match3 -->|No Match| Else
 
-    style Start fill:#0173B2,color:#fff
-    style Match1 fill:#DE8F05,color:#fff
-    style Match2 fill:#DE8F05,color:#fff
-    style Match3 fill:#DE8F05,color:#fff
-    style Do fill:#029E73,color:#fff
-    style Else fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Start pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Match1 pal-DE8F05
+    class Match2 pal-DE8F05
+    class Match3 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Do pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Else pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -609,16 +623,24 @@ Structs are extensions of maps with compile-time guarantees and default values. 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Map["Regular Map<br/>%{any: keys, ...}"] --> Struct["Struct<br/>%User{name: ..., age: ...}"]
-    Struct --> Tag["Special __struct__: User key"]
+    accTitle: Example 34: Structs
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Regular Map any: keys, ..., Struct Username: ..., age: ..., Special __struct__: User key, Enforced keys: name, age, Default values: active: true. Connections: Regular Map any: keys, ... to Struct Username: ..., age: ..., Struct Username: ..., age: ... to Special __struct__: User key, Struct Username: ..., age: ... to Enforced keys: name, age, Struct Username: ..., age: ... to Default values: active: true.
+    Map["Regular Map<br/>%{any: keys, ...}"] --> Struct["Struct<br/>%User{name: ...,<br/>age: ...}"]
+    Struct --> Tag["Special __struct__:<br/>User key"]
     Struct --> Keys["Enforced keys:<br/>name, age"]
     Struct --> Defaults["Default values:<br/>active: true"]
 
-    style Map fill:#0173B2,color:#fff
-    style Struct fill:#DE8F05,color:#fff
-    style Tag fill:#029E73,color:#fff
-    style Keys fill:#CC78BC,color:#fff
-    style Defaults fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Map pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Struct pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Tag pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Keys pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Defaults pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Struct Features
@@ -725,6 +747,8 @@ Streams are lazy enumerables that build a recipe for computation without executi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 35: Streams
+    accDescr: Graph with 9 nodes and 7 connections. Nodes: Enum (Eager) [1,2,3,4,5], map: [2,4,6,8,10] EXECUTES, filter: [2,4,6,8,10] EXECUTES, take 2: [2,4] EXECUTES, Stream (Lazy) [1,2,3,4,5], map: recipe NO EXECUTION, filter: recipe NO EXECUTION, take 2: recipe NO EXECUTION, Enum.to_list: [2,4] EXECUTE ONCE. Connections: Enum (Eager) [1,2,3,4,5] to map: [2,4,6,8,10] EXECUTES, map: [2,4,6,8,10] EXECUTES to filter: [2,4,6,8,10] EXECUTES, filter: [2,4,6,8,10] EXECUTES to take 2: [2,4] EXECUTES, Stream (Lazy) [1,2,3,4,5] to map: recipe NO EXECUTION, map: recipe NO EXECUTION to filter: recipe NO EXECUTION, filter: recipe NO EXECUTION to take 2: recipe NO EXECUTION, take 2: recipe NO EXECUTION to Enum.to_list: [2,4] EXECUTE ONCE.
     Eager["Enum (Eager)<br/>[1,2,3,4,5]"] --> Map1["map: [2,4,6,8,10]<br/>EXECUTES"]
     Map1 --> Filter1["filter: [2,4,6,8,10]<br/>EXECUTES"]
     Filter1 --> Take1["take 2: [2,4]<br/>EXECUTES"]
@@ -734,15 +758,20 @@ graph TD
     Filter2 --> Take2["take 2: recipe<br/>NO EXECUTION"]
     Take2 --> Realize["Enum.to_list: [2,4]<br/>EXECUTE ONCE"]
 
-    style Eager fill:#0173B2,color:#fff
-    style Lazy fill:#0173B2,color:#fff
-    style Map1 fill:#CC78BC,color:#fff
-    style Filter1 fill:#CC78BC,color:#fff
-    style Take1 fill:#CC78BC,color:#fff
-    style Map2 fill:#DE8F05,color:#fff
-    style Filter2 fill:#DE8F05,color:#fff
-    style Take2 fill:#DE8F05,color:#fff
-    style Realize fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Eager pal-0173B2
+    class Lazy pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Map1 pal-CC78BC
+    class Filter1 pal-CC78BC
+    class Take1 pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Map2 pal-DE8F05
+    class Filter2 pal-DE8F05
+    class Take2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Realize pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1002,35 +1031,43 @@ Module attributes are compile-time constants defined with `@`. They're commonly 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    CompileTime["Compile Time"] --> Attrs["Module Attributes Evaluated"]
+    accTitle: Example 37: Module Attributes
+    accDescr: Graph with 16 nodes and 13 connections. Nodes: Compile Time, Module Attributes Evaluated, @version = 1.0.0, @default_timeout = 5000, @languages = [...list...], @language_count = 3 (computed: length list), Runtime, Attributes inlined, version() -> 1.0.0 (zero-cost constant), wait(5000) (default from @default_timeout), language_count() -> 3 (pre-computed), Reserved Attributes, and 4 more. Connections: Compile Time to Module Attributes Evaluated, Module Attributes Evaluated to @version = 1.0.0, Module Attributes Evaluated to @default_timeout = 5000, Module Attributes Evaluated to @languages = [...list...], @languages = [...list...] to @language_count = 3 (computed: length list), Runtime to Attributes inlined, Attributes inlined to version() -> 1.0.0 (zero-cost constant), Attributes inlined to wait(5000) (default from @default_timeout), Attributes inlined to language_count() -> 3 (pre-computed), Reserved Attributes to @moduledoc (documentation), Reserved Attributes to @doc (function docs), Reserved Attributes to @behaviour (callback verification), and 1 more.
+    CompileTime["Compile Time"] --> Attrs["Module Attributes<br/>Evaluated"]
     Attrs --> Version["@version = '1.0.0'"]
-    Attrs --> Timeout["@default_timeout = 5000"]
-    Attrs --> Languages["@languages = [...list...]"]
-    Languages --> Count["@language_count = 3<br/>(computed: length list)"]
+    Attrs --> Timeout["@default_timeout =<br/>5000"]
+    Attrs --> Languages["@languages =<br/>[...list...]"]
+    Languages --> Count["@language_count = 3<br/>(computed: length<br/>list)"]
 
     Runtime["Runtime"] --> Inline["Attributes inlined"]
     Inline --> VersionFunc["version() -> '1.0.0'<br/>(zero-cost constant)"]
-    Inline --> TimeoutFunc["wait(5000)<br/>(default from @default_timeout)"]
-    Inline --> CountFunc["language_count() -> 3<br/>(pre-computed)"]
+    Inline --> TimeoutFunc["wait(5000)<br/>(default from<br/>@default_timeout)"]
+    Inline --> CountFunc["language_count() -><br/>3<br/>(pre-computed)"]
 
     Reserved["Reserved Attributes"] --> ModuleDoc["@moduledoc<br/>(documentation)"]
     Reserved --> Doc["@doc<br/>(function docs)"]
-    Reserved --> Behaviour["@behaviour<br/>(callback verification)"]
+    Reserved --> Behaviour["@behaviour<br/>(callback<br/>verification)"]
     Reserved --> Impl["@impl<br/>(marks callbacks)"]
 
-    style CompileTime fill:#0173B2,color:#fff
-    style Attrs fill:#DE8F05,color:#fff
-    style Version fill:#029E73,color:#fff
-    style Timeout fill:#029E73,color:#fff
-    style Languages fill:#029E73,color:#fff
-    style Count fill:#029E73,color:#fff
-    style Runtime fill:#CC78BC,color:#fff
-    style Inline fill:#DE8F05,color:#fff
-    style Reserved fill:#CA9161,color:#fff
-    style ModuleDoc fill:#CA9161,color:#fff
-    style Doc fill:#CA9161,color:#fff
-    style Behaviour fill:#CA9161,color:#fff
-    style Impl fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class CompileTime pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Attrs pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Version pal-029E73
+    class Timeout pal-029E73
+    class Languages pal-029E73
+    class Count pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Runtime pal-CC78BC
+    class Inline pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Reserved pal-CA9161
+    class ModuleDoc pal-CA9161
+    class Doc pal-CA9161
+    class Behaviour pal-CA9161
+    class Impl pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1177,23 +1214,31 @@ MyModule.colors()
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 38: Import, Alias, Require
+    accDescr: Graph with 10 nodes and 5 connections. Nodes: alias MyApp.User, User -> MyApp.User Shorten module names, import Enum, only: [map: 2], map(list, fn) -> Enum.map Remove module prefix, require Logger, Logger.info -> Macro Enable macro expansion, Module-level (outside def), Available in all functions, Function-level (inside def), Available in that function only. Connections: alias MyApp.User to User -> MyApp.User Shorten module names, import Enum, only: [map: 2] to map(list, fn) -> Enum.map Remove module prefix, require Logger to Logger.info -> Macro Enable macro expansion, Module-level (outside def) to Available in all functions, Function-level (inside def) to Available in that function only.
     Alias["alias MyApp.User"] --> Short["User -> MyApp.User<br/>Shorten module names"]
-    Import["import Enum, only: [map: 2]"] --> NoPrefix["map(list, fn) -> Enum.map<br/>Remove module prefix"]
-    Require["require Logger"] --> Macros["Logger.info -> Macro<br/>Enable macro expansion"]
+    Import["import Enum, only:<br/>[map: 2]"] --> NoPrefix["map(list, fn) -><br/>Enum.map<br/>Remove module prefix"]
+    Require["require Logger"] --> Macros["Logger.info -> Macro<br/>Enable macro<br/>expansion"]
 
-    ModLevel["Module-level<br/>(outside def)"] --> AllFuncs["Available in all functions"]
-    FuncLevel["Function-level<br/>(inside def)"] --> OnlyFunc["Available in that function only"]
+    ModLevel["Module-level<br/>(outside def)"] --> AllFuncs["Available in all<br/>functions"]
+    FuncLevel["Function-level<br/>(inside def)"] --> OnlyFunc["Available in that<br/>function only"]
 
-    style Alias fill:#0173B2,color:#fff
-    style Import fill:#DE8F05,color:#fff
-    style Require fill:#029E73,color:#fff
-    style Short fill:#0173B2,color:#fff
-    style NoPrefix fill:#DE8F05,color:#fff
-    style Macros fill:#029E73,color:#fff
-    style ModLevel fill:#CC78BC,color:#fff
-    style FuncLevel fill:#CA9161,color:#fff
-    style AllFuncs fill:#CC78BC,color:#fff
-    style OnlyFunc fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Alias pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Import pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Require pal-029E73
+    class Short pal-0173B2
+    class NoPrefix pal-DE8F05
+    class Macros pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ModLevel pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class FuncLevel pal-CA9161
+    class AllFuncs pal-CC78BC
+    class OnlyFunc pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Directive Comparison
@@ -1328,21 +1373,28 @@ Protocols enable polymorphism—defining a function that works differently for d
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Protocol["Protocol: Printable<br/>defines print/1"] --> ImplList["Implementation for List"]
-    Protocol --> ImplMap["Implementation for Map"]
-    Protocol --> ImplStruct["Implementation for User struct"]
+    accTitle: Example 39: Protocols
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: Protocol: Printable defines print/1, Implementation for List, Implementation for Map, Implementation for User struct, Printable. print(data), Dispatch by type. Connections: Protocol: Printable defines print/1 to Implementation for List, Protocol: Printable defines print/1 to Implementation for Map, Protocol: Printable defines print/1 to Implementation for User struct, Printable. print(data) to Dispatch by type, Dispatch by type to Implementation for List, Dispatch by type to Implementation for Map, Dispatch by type to Implementation for User struct.
+    Protocol["Protocol: Printable<br/>defines print/1"] --> ImplList["Implementation for<br/>List"]
+    Protocol --> ImplMap["Implementation for<br/>Map"]
+    Protocol --> ImplStruct["Implementation for<br/>User struct"]
 
-    Call["Printable.print(data)"] --> Dispatch{Dispatch by type}
+    Call["Printable.<br/>print(data)"] --> Dispatch{Dispatch by type}
     Dispatch --> ImplList
     Dispatch --> ImplMap
     Dispatch --> ImplStruct
 
-    style Protocol fill:#0173B2,color:#fff
-    style ImplList fill:#DE8F05,color:#fff
-    style ImplMap fill:#DE8F05,color:#fff
-    style ImplStruct fill:#DE8F05,color:#fff
-    style Call fill:#029E73,color:#fff
-    style Dispatch fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Protocol pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class ImplList pal-DE8F05
+    class ImplMap pal-DE8F05
+    class ImplStruct pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Call pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Dispatch pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1566,6 +1618,8 @@ Elixir idiomatically uses tagged tuples `{:ok, value}` or `{:error, reason}` to 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 40: Result Tuples
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: Function Call: divide(10, 2), Result?, :ok, 5.0 Return success tuple, :error, :reason Return error tuple, Caller, Pattern Match, Use value Continue execution, Handle error Recover or propagate. Connections: Function Call: divide(10, 2) to Result?, Result? to :ok, 5.0 Return success tuple (Success), Result? to :error, :reason Return error tuple (Failure), Caller to Pattern Match, Pattern Match to Use value Continue execution (:ok, value), Pattern Match to Handle error Recover or propagate (:error, reason).
     Call["Function Call:<br/>divide(10, 2)"] --> Check{" Result?"}
     Check -->|Success| OK["{:ok, 5.0}<br/>Return success tuple"]
     Check -->|Failure| Error["{:error, :reason}<br/>Return error tuple"]
@@ -1574,14 +1628,19 @@ graph TD
     Match -->|" {:ok, value}"| HandleSuccess["Use value<br/>Continue execution"]
     Match -->|" {:error, reason}"| HandleError["Handle error<br/>Recover or propagate"]
 
-    style Call fill:#0173B2,color:#fff
-    style Check fill:#DE8F05,color:#fff
-    style OK fill:#029E73,color:#fff
-    style Error fill:#CC78BC,color:#fff
-    style Caller fill:#0173B2,color:#fff
-    style Match fill:#DE8F05,color:#fff
-    style HandleSuccess fill:#029E73,color:#fff
-    style HandleError fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Call pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Check pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class OK pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Error pal-CC78BC
+    class Caller pal-0173B2
+    class Match pal-DE8F05
+    class HandleSuccess pal-029E73
+    class HandleError pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2033,25 +2092,32 @@ Use `raise` to throw exceptions. Define custom exception modules for domain-spec
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 42: Raise and Custom Exceptions
+    accDescr: Graph with 12 nodes and 8 connections. Nodes: Safe Function: fetch(key), Key exists?, :ok, value Explicit success, :error, :not_found Explicit error, Bang Function: fetch!(key), Key exists?, value Return value directly, raise KeyError Exception thrown, Caller handles:, Pattern match :ok, v or :error, r, Caller handles:, try/rescue or let it crash. Connections: Safe Function: fetch(key) to Key exists?, Key exists? to :ok, value Explicit success (Yes), Key exists? to :error, :not_found Explicit error (No), Bang Function: fetch!(key) to Key exists?, Key exists? to value Return value directly (Yes), Key exists? to raise KeyError Exception thrown (No), Caller handles: to Pattern match :ok, v or :error, r, Caller handles: to try/rescue or let it crash.
     SafeFunc["Safe Function:<br/>fetch(key)"] --> Check{" Key exists?"}
     Check -->|Yes| OkTuple["{:ok, value}<br/>Explicit success"]
     Check -->|No| ErrorTuple["{:error, :not_found}<br/>Explicit error"]
 
     BangFunc["Bang Function:<br/>fetch!(key)"] --> Check2{" Key exists?"}
-    Check2 -->|Yes| Value["value<br/>Return value directly"]
+    Check2 -->|Yes| Value["value<br/>Return value<br/>directly"]
     Check2 -->|No| Raise["raise KeyError<br/>Exception thrown"]
 
-    Caller["Caller handles:"] --> Pattern["Pattern match<br/>{:ok, v} or {:error, r}"]
+    Caller["Caller handles:"] --> Pattern["Pattern match<br/>{:ok, v} or {:error,<br/>r}"]
     Caller2["Caller handles:"] --> TryRescue["try/rescue<br/>or let it crash"]
 
-    style SafeFunc fill:#0173B2,color:#fff
-    style BangFunc fill:#0173B2,color:#fff
-    style OkTuple fill:#029E73,color:#fff
-    style ErrorTuple fill:#DE8F05,color:#fff
-    style Value fill:#029E73,color:#fff
-    style Raise fill:#CC78BC,color:#fff
-    style Pattern fill:#029E73,color:#fff
-    style TryRescue fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class SafeFunc pal-0173B2
+    class BangFunc pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class OkTuple pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class ErrorTuple pal-DE8F05
+    class Value pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Raise pal-CC78BC
+    class Pattern pal-029E73
+    class TryRescue pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Exception Conventions
@@ -2236,6 +2302,8 @@ Processes are Elixir's lightweight concurrency primitive. Each process has its o
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 43: Spawning Processes
+    accDescr: Graph with 6 nodes and 8 connections. Nodes: Main Process, spawn(fn -> ... end), Process 1 Isolated Memory, Process 2 Isolated Memory, Process 3 Isolated Memory, send(pid, message). Connections: Main Process to spawn(fn -> ... end), spawn(fn -> ... end) to Process 1 Isolated Memory, spawn(fn -> ... end) to Process 2 Isolated Memory, spawn(fn -> ... end) to Process 3 Isolated Memory, Main Process to send(pid, message), send(pid, message) to Process 1 Isolated Memory, send(pid, message) to Process 2 Isolated Memory, send(pid, message) to Process 3 Isolated Memory.
     Main["Main Process"] --> Spawn["spawn(fn -> ... end)"]
     Spawn --> P1["Process 1<br/>Isolated Memory"]
     Spawn --> P2["Process 2<br/>Isolated Memory"]
@@ -2246,12 +2314,17 @@ graph TD
     Send --> P2
     Send --> P3
 
-    style Main fill:#0173B2,color:#fff
-    style Spawn fill:#DE8F05,color:#fff
-    style P1 fill:#029E73,color:#fff
-    style P2 fill:#029E73,color:#fff
-    style P3 fill:#029E73,color:#fff
-    style Send fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Main pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Spawn pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class P1 pal-029E73
+    class P2 pal-029E73
+    class P3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Send pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Process Lifecycle
@@ -2406,16 +2479,24 @@ Processes communicate by sending and receiving messages. Messages go into a proc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Sender["Sender Process"] --> Send["send(pid, {:msg, data})"]
+    accTitle: Example 44: Send and Receive
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Sender Process, send(pid, :msg, data), Receiver Mailbox [:msg, data], receive do :msg, data -> ..., Process Message. Connections: Sender Process to send(pid, :msg, data), send(pid, :msg, data) to Receiver Mailbox [:msg, data], Receiver Mailbox [:msg, data] to receive do :msg, data -> ..., receive do :msg, data -> ... to Process Message.
+    Sender["Sender Process"] --> Send["send(pid, {:msg,<br/>data})"]
     Send --> Mailbox["Receiver Mailbox<br/>[{:msg, data}]"]
     Mailbox --> Receive["receive do<br/>{:msg, data} -> ..."]
     Receive --> Process["Process Message"]
 
-    style Sender fill:#0173B2,color:#fff
-    style Send fill:#DE8F05,color:#fff
-    style Mailbox fill:#029E73,color:#fff
-    style Receive fill:#CC78BC,color:#fff
-    style Process fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Sender pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Send pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Mailbox pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Receive pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Process pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2678,27 +2759,34 @@ Process monitoring allows you to detect when other processes crash or exit. Use 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    subgraph Linking["Process Linking (Bidirectional)"]
+    accTitle: Example 45: Process Monitoring
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: Process A, Process B, Process B crashes 💥, Both processes terminate, Monitor Process, Monitored Process, Monitored crashes 💥, Monitor receives :DOWN, ref, :process, pid, reason, Monitor survives, handles :DOWN message. Connections: Process A to Process B (link), Process B to Process A (link), Process B crashes 💥 to Both processes terminate, Monitor Process to Monitored Process (monitor), Monitored crashes 💥 to Monitor receives :DOWN, ref, :process, pid, reason, Monitor receives :DOWN, ref, :process, pid, reason to Monitor survives, handles :DOWN message.
+    subgraph Linking["Process Linking<br/>(Bidirectional)"]
         P1["Process A"] -->|link| P2["Process B"]
         P2 -->|link| P1
-        P2Crash["Process B crashes 💥"] --> BothDie["Both processes terminate"]
+        P2Crash["Process B crashes 💥"] --> BothDie["Both processes<br/>terminate"]
     end
 
-    subgraph Monitoring["Process Monitoring (Unidirectional)"]
+    subgraph Monitoring["Process Monitoring<br/>(Unidirectional)"]
         M1["Monitor Process"] -->|monitor| M2["Monitored Process"]
-        M2Crash["Monitored crashes 💥"] --> DownMsg["Monitor receives<br/>{:DOWN, ref, :process, pid, reason}"]
-        DownMsg --> MonitorSurvives["Monitor survives,<br/>handles :DOWN message"]
+        M2Crash["Monitored crashes 💥"] --> DownMsg["Monitor receives<br/>{:DOWN, ref,<br/>:process, pid,<br/>reason}"]
+        DownMsg --> MonitorSurvives["Monitor survives,<br/>handles :DOWN<br/>message"]
     end
 
-    style P1 fill:#0173B2,color:#fff
-    style P2 fill:#029E73,color:#fff
-    style P2Crash fill:#CC78BC,color:#fff
-    style BothDie fill:#CC78BC,color:#fff
-    style M1 fill:#0173B2,color:#fff
-    style M2 fill:#029E73,color:#fff
-    style M2Crash fill:#CC78BC,color:#fff
-    style DownMsg fill:#DE8F05,color:#fff
-    style MonitorSurvives fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P1 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class P2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class P2Crash pal-CC78BC
+    class BothDie pal-CC78BC
+    class M1 pal-0173B2
+    class M2 pal-029E73
+    class M2Crash pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class DownMsg pal-DE8F05
+    class MonitorSurvives pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Monitoring vs Linking
@@ -2893,10 +2981,12 @@ The `Task` module provides a simple abstraction for spawning processes and await
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 46: Task Module
+    accDescr: Graph with 11 nodes and 9 connections. Nodes: Main Process, Task.async(fn), Task Process Execute function, Task.await(task), Return result to main, Main Process, Task.async_stream, Process Pool, Task 1, Task 2, Task 3. Connections: Main Process to Task.async(fn), Task.async(fn) to Task Process Execute function, Task Process Execute function to Task.await(task), Task.await(task) to Return result to main, Main Process to Task.async_stream, Task.async_stream to Process Pool, Process Pool to Task 1, Process Pool to Task 2, Process Pool to Task 3.
     Main["Main Process"] --> Async["Task.async(fn)"]
     Async --> Task1["Task Process<br/>Execute function"]
     Task1 --> Await["Task.await(task)"]
-    Await --> Result["Return result to main"]
+    Await --> Result["Return result to<br/>main"]
 
     Main2["Main Process"] --> AsyncStream["Task.async_stream"]
     AsyncStream --> Pool["Process Pool"]
@@ -2904,16 +2994,22 @@ graph TD
     Pool --> T2["Task 2"]
     Pool --> T3["Task 3"]
 
-    style Main fill:#0173B2,color:#fff
-    style Main2 fill:#0173B2,color:#fff
-    style Async fill:#DE8F05,color:#fff
-    style Task1 fill:#029E73,color:#fff
-    style Await fill:#CC78BC,color:#fff
-    style AsyncStream fill:#DE8F05,color:#fff
-    style Pool fill:#CA9161,color:#fff
-    style T1 fill:#029E73,color:#fff
-    style T2 fill:#029E73,color:#fff
-    style T3 fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Main pal-0173B2
+    class Main2 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Async pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Task1 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Await pal-CC78BC
+    class AsyncStream pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Pool pal-CA9161
+    class T1 pal-029E73
+    class T2 pal-029E73
+    class T3 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Task Functions Comparison
@@ -3112,20 +3208,27 @@ ExUnit is Elixir's built-in testing framework. Tests are organized into test mod
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Setup["setup do<br/>..."] --> Test1["test 'description' do<br/>..."]
-    Test1 --> Assert1["assert value == expected"]
+    accTitle: Test Organization
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: setup do ..., test description do ..., Assert1, (automatic cleanup), test another do ..., refute condition. Connections: setup do ... to test description do ..., test description do ... to Assert1, Assert1 to (automatic cleanup), setup do ... to test another do ..., test another do ... to refute condition, refute condition to (automatic cleanup).
+    Setup["setup do<br/>..."] --> Test1["test 'description'<br/>do<br/>..."]
+    Test1 --> Assert1["assert value ==<br/>expected"]
     Assert1 --> Teardown["(automatic cleanup)"]
 
     Setup --> Test2["test 'another' do<br/>..."]
     Test2 --> Assert2["refute condition"]
     Assert2 --> Teardown
 
-    style Setup fill:#0173B2,color:#fff
-    style Test1 fill:#DE8F05,color:#fff
-    style Test2 fill:#DE8F05,color:#fff
-    style Assert1 fill:#029E73,color:#fff
-    style Assert2 fill:#029E73,color:#fff
-    style Teardown fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Setup pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Test1 pal-DE8F05
+    class Test2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Assert1 pal-029E73
+    class Assert2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Teardown pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3880,29 +3983,37 @@ GenServer is OTP's generic server behavior - a process that maintains state and 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 51: GenServer Session Manager
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Client 1, put(key, value), Client 2, get(key), Client 3, delete(key), GenServer Process State: sessions: map, ttl: 300, handle_call/cast Thread-safe operations, Updated State, Periodic Cleanup :cleanup_expired. Connections: Client 1 to put(key, value), Client 2 to get(key), Client 3 to delete(key), put(key, value) to GenServer Process State: sessions: map, ttl: 300, get(key) to GenServer Process State: sessions: map, ttl: 300, delete(key) to GenServer Process State: sessions: map, ttl: 300, GenServer Process State: sessions: map, ttl: 300 to handle_call/cast Thread-safe operations, handle_call/cast Thread-safe operations to Updated State, Periodic Cleanup :cleanup_expired to GenServer Process State: sessions: map, ttl: 300.
     Client1["Client 1"] --> Put["put(key, value)"]
     Client2["Client 2"] --> Get["get(key)"]
     Client3["Client 3"] --> Delete["delete(key)"]
 
-    Put --> GenServer["GenServer Process<br/>State: %{sessions: map, ttl: 300}"]
+    Put --> GenServer["GenServer Process<br/>State: %{sessions:<br/>map, ttl: 300}"]
     Get --> GenServer
     Delete --> GenServer
 
-    GenServer --> Handle["handle_call/cast<br/>Thread-safe operations"]
+    GenServer --> Handle["handle_call/cast<br/>Thread-safe<br/>operations"]
     Handle --> State["Updated State"]
 
     Timer["Periodic Cleanup<br/>:cleanup_expired"] --> GenServer
 
-    style Client1 fill:#0173B2,color:#fff
-    style Client2 fill:#0173B2,color:#fff
-    style Client3 fill:#0173B2,color:#fff
-    style Put fill:#DE8F05,color:#fff
-    style Get fill:#DE8F05,color:#fff
-    style Delete fill:#DE8F05,color:#fff
-    style GenServer fill:#029E73,color:#fff
-    style Handle fill:#CC78BC,color:#fff
-    style State fill:#CA9161,color:#fff
-    style Timer fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client1 pal-0173B2
+    class Client2 pal-0173B2
+    class Client3 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Put pal-DE8F05
+    class Get pal-DE8F05
+    class Delete pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class GenServer pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Handle pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class State pal-CA9161
+    class Timer pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

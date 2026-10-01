@@ -685,8 +685,9 @@ java -jar myapp.jar --spring.profiles.active=prod,metrics,tracing
 **Architecture:**
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0173B2','primaryTextColor':'#fff','primaryBorderColor':'#0173B2','lineColor':'#029E73','secondaryColor':'#DE8F05','tertiaryColor':'#CC78BC','fontSize':'16px'}}}%%
 flowchart TD
+    accTitle: Spring Cloud Config
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Config Server Centralized, Git Repository Configuration Files, Service A, Service B, Service C. Connections: Git Repository Configuration Files to Config Server Centralized (Configuration source), Config Server Centralized to Service A (Serves config), Config Server Centralized to Service B (Serves config), Config Server Centralized to Service C (Serves config).
     CS[Config Server<br/>Centralized]
     GIT[(Git Repository<br/>Configuration Files)]
     SA[Service A]
@@ -698,11 +699,15 @@ flowchart TD
     CS -->|Serves config| SB
     CS -->|Serves config| SC
 
-    style CS fill:#0173B2,stroke:#0173B2,color:#fff
-    style GIT fill:#029E73,stroke:#029E73,color:#fff
-    style SA fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style SB fill:#DE8F05,stroke:#DE8F05,color:#fff
-    style SC fill:#DE8F05,stroke:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class CS pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class GIT pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SA pal-DE8F05
+    class SB pal-DE8F05
+    class SC pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Config Server Setup

@@ -30,6 +30,8 @@ ValueTask is a struct-based alternative to Task that reduces allocations when op
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 61: ValueTask for High-Performance Async
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Method Call, Already Completed?, Return ValueTask No Allocation, Return ValueTask Wrapping Task Allocation. Connections: Method Call to Already Completed?, Already Completed? to Return ValueTask No Allocation (Yes), Already Completed? to Return ValueTask Wrapping Task Allocation (No).
     A["Method Call"]
     B{"Already<br/>Completed?"}
     C["Return ValueTask<br/>No Allocation"]
@@ -39,10 +41,15 @@ graph TD
     B -->|Yes| C
     B -->|No| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -117,6 +124,8 @@ IAsyncEnumerable enables streaming data processing - producing and consuming ite
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 62: IAsyncEnumerable for Streaming Data
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Producer yield return, Item 1, Item 2, Item N, Consumer await foreach. Connections: Producer yield return to Item 1 (async), Item 1 to Consumer await foreach, Producer yield return to Item 2 (async), Item 2 to Consumer await foreach, Producer yield return to Item N (async), Item N to Consumer await foreach.
     A["Producer<br/>yield return"]
     B["Item 1"]
     C["Item 2"]
@@ -130,11 +139,16 @@ graph TD
     A -->|async| D
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -221,6 +235,8 @@ Span&lt;T&gt; is a stack-only type providing safe, zero-copy access to contiguou
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 63: Span<T> for Zero-Copy Memory Access
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: Array in Memory, B, lt, gt, C, No Copying Direct Access. Connections: Array in Memory to B, Array in Memory to C, B to No Copying Direct Access, C to No Copying Direct Access.
     A["Array in Memory"]
     B["Span&lt;T&gt; #1<br/>Elements 0-4"]
     C["Span&lt;T&gt; #2<br/>Elements 5-9"]
@@ -231,10 +247,15 @@ graph TD
     B --> D
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -534,6 +555,8 @@ Reflection inspects types, methods, properties, and attributes at runtime. Enabl
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 66: Reflection Basics - Type Inspection
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Runtime Unknown Type, Reflection API Type.GetType(), Type Metadata Methods/Properties, Dynamic Invocation MethodInfo.Invoke(). Connections: Runtime Unknown Type to Reflection API Type.GetType(), Reflection API Type.GetType() to Type Metadata Methods/Properties, Type Metadata Methods/Properties to Dynamic Invocation MethodInfo.Invoke().
     A["Runtime<br/>Unknown Type"]
     B["Reflection API<br/>Type.GetType()"]
     C["Type Metadata<br/>Methods/Properties"]
@@ -543,10 +566,15 @@ graph TD
     B --> C
     C --> D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -710,6 +738,8 @@ Expression trees represent code as data structures that can be analyzed, transfo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 68: Expression Trees - Code as Data
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Lambda Expression, Expression Tree Data Structure, Analyze/ Transform, Compile to Delegate, Translate to SQL/Other. Connections: Lambda Expression to Expression Tree Data Structure, Expression Tree Data Structure to Analyze/ Transform, Expression Tree Data Structure to Compile to Delegate, Expression Tree Data Structure to Translate to SQL/Other.
     A["Lambda<br/>Expression"]
     B["Expression Tree<br/>Data Structure"]
     C["Analyze/<br/>Transform"]
@@ -721,11 +751,16 @@ graph TD
     B --> D
     B --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -953,6 +988,8 @@ Channels provide thread-safe queues for asynchronous producer-consumer scenarios
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 71: Channels for Producer-Consumer Patterns
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: Producer WriteAsync, Bounded Channel Capacity Limit, Consumer ReadAsync, Backpressure When Full. Connections: Producer WriteAsync to Bounded Channel Capacity Limit (Write), Bounded Channel Capacity Limit to Consumer ReadAsync (Read), Bounded Channel Capacity Limit to Backpressure When Full (Block), Backpressure When Full to Producer WriteAsync (Wait).
     A["Producer<br/>WriteAsync"]
     B["Bounded Channel<br/>Capacity Limit"]
     C["Consumer<br/>ReadAsync"]
@@ -963,10 +1000,15 @@ graph TD
     B -.->|Block| D
     D -.->|Wait| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1054,6 +1096,8 @@ SemaphoreSlim limits concurrent access to resources in async code. Use for rate 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 72: SemaphoreSlim for Async Concurrency Control
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: SemaphoreSlim Count: 3, Task 1 Acquired, Task 2 Acquired, Task 3 Acquired, Task 4 Waiting.... Connections: SemaphoreSlim Count: 3 to Task 1 Acquired, SemaphoreSlim Count: 3 to Task 2 Acquired, SemaphoreSlim Count: 3 to Task 3 Acquired.
     A[SemaphoreSlim<br/>Count: 3]:::blue
     B[Task 1<br/>Acquired]:::orange
     C[Task 2<br/>Acquired]:::teal
@@ -1065,11 +1109,16 @@ graph TD
     A --> D
     A -.blocked.-> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1887,18 +1936,25 @@ Middleware processes HTTP requests in a pipeline, with each component choosing t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 78: Middleware Pipeline - Request Processing
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Request, Middleware 1 Logging, Middleware 2 Auth, Middleware 3 Routing, Endpoint, Response. Connections: Request to Middleware 1 Logging, Middleware 1 Logging to Middleware 2 Auth, Middleware 2 Auth to Middleware 3 Routing, Middleware 3 Routing to Endpoint, Endpoint to Response.
     A["Request"] --> B["Middleware 1<br/>Logging"]
     B --> C["Middleware 2<br/>Auth"]
     C --> D["Middleware 3<br/>Routing"]
     D --> E["Endpoint"]
     E --> F["Response"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#0173B2,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-0173B2
+    class F pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2169,18 +2225,25 @@ OpenTelemetry provides distributed tracing, metrics, and logs for observability 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
+    accTitle: Example 80: OpenTelemetry - Distributed Tracing
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Client Request, Service A Span 1, Service B Span 2, Service C Span 3, Database Span 4, Cache Span 5. Connections: Client Request to Service A Span 1, Service A Span 1 to Service B Span 2, Service A Span 1 to Service C Span 3, Service B Span 2 to Database Span 4, Service C Span 3 to Cache Span 5.
     A["Client Request"] --> B["Service A<br/>Span 1"]
     B --> C["Service B<br/>Span 2"]
     B --> D["Service C<br/>Span 3"]
     C --> E["Database<br/>Span 4"]
     D --> F["Cache<br/>Span 5"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#0173B2,stroke:#000,color:#fff
-    style F fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-0173B2
+    class F pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2721,13 +2784,19 @@ Comparing SemaphoreSlim (async-compatible) and lock (sync-only) for different co
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73
 graph TD
+    accTitle: Example 84: SemaphoreSlim vs lock Performance
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Synchronous Code, lock Statement Fast, Simple, Async Code, SemaphoreSlim Async-Compatible. Connections: Synchronous Code to lock Statement Fast, Simple (Use), Async Code to SemaphoreSlim Async-Compatible (Use).
     A[Synchronous Code]:::blue -->|Use| B[lock Statement<br/>Fast, Simple]:::orange
     C[Async Code]:::blue -->|Use| D[SemaphoreSlim<br/>Async-Compatible]:::teal
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#0173B2,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

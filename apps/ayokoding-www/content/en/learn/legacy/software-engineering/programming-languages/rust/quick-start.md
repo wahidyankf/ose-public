@@ -37,7 +37,9 @@ By the end of this tutorial, you will have touchpoints for:
 
 ```mermaid
 graph LR
-    A[Quick Start: Rust] --> B[Variables & Mutability]
+    accTitle: Learning Path
+    accDescr: Graph with 14 nodes and 22 connections. Nodes: Quick Start: Rust, B, Ownership, Borrowing, Structs, F, Match, Error Handling, Traits, Collections, Iterators, Lifetimes, and 2 more. Connections: Quick Start: Rust to B, Quick Start: Rust to Ownership, Quick Start: Rust to Borrowing, Quick Start: Rust to Structs, Quick Start: Rust to F, Quick Start: Rust to Match, Quick Start: Rust to Error Handling, Quick Start: Rust to Traits, Quick Start: Rust to Collections, Quick Start: Rust to Iterators, Quick Start: Rust to Lifetimes, B to Beginner Tutorial, and 10 more.
+    A[Quick Start: Rust] --> B[Variables &<br/>Mutability]
     A --> C[Ownership]
     A --> D[Borrowing]
     A --> E[Structs]
@@ -61,9 +63,11 @@ graph LR
 
     L --> M[By-Example: Rust]
 
-    style A fill:#e1f5ff
-    style L fill:#fff4e1
-    style M fill:#f0e6ff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    class L pal-CC78BC
+    class M pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ## Concept 1: Variables and Mutability - Immutable by Default

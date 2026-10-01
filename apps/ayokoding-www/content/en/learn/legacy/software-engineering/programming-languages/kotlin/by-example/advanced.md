@@ -17,28 +17,39 @@ SupervisorScope prevents child coroutine failures from cancelling siblings, enab
 
 ```mermaid
 graph TD
+    accTitle: Example 55: SupervisorScope for Independent Failure Handling
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: coroutineScope, Child 1 fails, Cancels ALL siblings, Parent scope fails. Connections: coroutineScope to Child 1 fails, Child 1 fails to Cancels ALL siblings, Cancels ALL siblings to Parent scope fails.
     A[coroutineScope] --> B[Child 1 fails]
     B --> C[Cancels ALL siblings]
     C --> D[Parent scope fails]
 
-    style A fill:#DE8F05,color:#fff
-    style B fill:#CA9161,color:#fff
-    style C fill:#CA9161,color:#fff
-    style D fill:#CA9161,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class A pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class B pal-CA9161
+    class C pal-CA9161
+    class D pal-CA9161
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Supervisor Isolation:**
 
 ```mermaid
 graph TD
+    accTitle: Example 55: SupervisorScope for Independent Failure Handling
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: supervisorScope, Child 1 fails, Other children continue, Parent scope survives. Connections: supervisorScope to Child 1 fails, Child 1 fails to Other children continue, Other children continue to Parent scope survives.
     E[supervisorScope] --> F[Child 1 fails]
-    F --> G[Other children continue]
-    G --> H[Parent scope survives]
+    F --> G[Other children<br/>continue]
+    G --> H[Parent scope<br/>survives]
 
-    style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class E pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -201,31 +212,45 @@ CoroutineContext is an indexed set of elements (Job, Dispatcher, Name, Exception
 
 ```mermaid
 graph TD
+    accTitle: Example 56: CoroutineContext and Job Hierarchy
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: CoroutineContext, Job Lifecycle control, Dispatcher Thread pool, CoroutineName Debugging, ExceptionHandler Error handling. Connections: CoroutineContext to Job Lifecycle control, CoroutineContext to Dispatcher Thread pool, CoroutineContext to CoroutineName Debugging, CoroutineContext to ExceptionHandler Error handling.
     A[CoroutineContext] --> B[Job<br/>Lifecycle control]
     A --> C[Dispatcher<br/>Thread pool]
     A --> D[CoroutineName<br/>Debugging]
     A --> E[ExceptionHandler<br/>Error handling]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Job Hierarchy:**
 
 ```mermaid
 graph TD
+    accTitle: Example 56: CoroutineContext and Job Hierarchy
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: Parent Job, Child Job 1, Child Job 2, cancel parent, Auto-cancel children. Connections: Parent Job to Child Job 1, Parent Job to Child Job 2, cancel parent to Auto-cancel children.
     B[Parent Job] --> F[Child Job 1]
     B --> G[Child Job 2]
     H[cancel parent] --> I[Auto-cancel children]
 
-    style B fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CA9161,color:#fff
-    style I fill:#CA9161,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class G pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    class I pal-CA9161
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```kotlin
@@ -385,26 +410,39 @@ Coroutine exception handling has distinct propagation rules: launch propagates e
 
 ```mermaid
 graph TD
+    accTitle: Example 57: Exception Handling in Coroutines
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: launch exception, Propagates to parent, CoroutineException Handler. Connections: launch exception to Propagates to parent, Propagates to parent to CoroutineException Handler.
     A[launch exception] --> B[Propagates to parent]
-    B --> C[CoroutineExceptionHandler]
+    B --> C[CoroutineException<br/>Handler]
 
-    style A fill:#CA9161,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#0173B2,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class C pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Async Exception Storage:**
 
 ```mermaid
 graph TD
+    accTitle: Example 57: Exception Handling in Coroutines
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: async exception, Stored in Deferred, await throws, try-catch required. Connections: async exception to Stored in Deferred, Stored in Deferred to await throws, await throws to try-catch required.
     D[async exception] --> E[Stored in Deferred]
     E --> F[await throws]
     F --> G[try-catch required]
 
-    style D fill:#CA9161,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#0173B2,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -1580,6 +1618,8 @@ Serialize data classes to JSON with compile-time safety and zero reflection over
 ```mermaid
 %% kotlinx.serialization compile-time processing
 graph TD
+    accTitle: Example 64: Serialization with kotlinx.serialization
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: @Serializable data class User, Compiler Plugin, Generated Serializer, encodeToString, JSON String, decodeFromString, User Object. Connections: @Serializable data class User to Compiler Plugin, Compiler Plugin to Generated Serializer, Generated Serializer to encodeToString, encodeToString to JSON String, JSON String to decodeFromString, decodeFromString to User Object.
     A["@Serializable<br/>data class User"] --> B[Compiler Plugin]
     B --> C[Generated Serializer]
     C --> D[encodeToString]
@@ -1587,12 +1627,17 @@ graph TD
     E --> F[decodeFromString]
     F --> G[User Object]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class F pal-CC78BC
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -2066,6 +2111,8 @@ Automatic JSON serialization/deserialization with content negotiation plugin.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 67: Ktor Content Negotiation and Serialization
+    accDescr: Graph with 9 nodes and 9 connections. Nodes: HTTP Client, HTTP Request, Content-Type Header?, JSON Plugin, XML Plugin, Deserialize to Kotlin Object, Route Handler, Serialize to JSON, HTTP Response. Connections: HTTP Client to HTTP Request, HTTP Request to Content-Type Header?, Content-Type Header? to JSON Plugin (application/json), Content-Type Header? to XML Plugin (application/xml), JSON Plugin to Deserialize to Kotlin Object, Deserialize to Kotlin Object to Route Handler, Route Handler to Serialize to JSON, Serialize to JSON to HTTP Response, HTTP Response to HTTP Client.
     Client[HTTP Client] --> Request[HTTP Request]
     Request --> Header{Content-Type<br/>Header?}
     Header -->|application/json| JSON[JSON Plugin]
@@ -2076,14 +2123,19 @@ graph TD
     Serialize --> Response[HTTP Response]
     Response --> Client
 
-    style Client fill:#0173B2,color:#fff
-    style Request fill:#CC78BC,color:#fff
-    style Header fill:#DE8F05,color:#fff
-    style JSON fill:#029E73,color:#fff
-    style Deserialize fill:#CC78BC,color:#fff
-    style Handler fill:#0173B2,color:#fff
-    style Serialize fill:#CC78BC,color:#fff
-    style Response fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Client pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Request pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Header pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class JSON pal-029E73
+    class Deserialize pal-CC78BC
+    class Handler pal-0173B2
+    class Serialize pal-CC78BC
+    class Response pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -2285,6 +2337,8 @@ Use Arrow's Either type for type-safe error handling without exceptions.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 68: Arrow Either for Functional Error Handling
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: findUser40id41, Validation, Left: InvalidId, Left: NotFound, Right: User, fold, Handle Error, Process User. Connections: findUser40id41 to Validation, Validation to Left: InvalidId (id <= 0), Validation to Left: NotFound (user not found), Validation to Right: User (user exists), Left: InvalidId to fold, Left: NotFound to fold, Right: User to fold, fold to Handle Error (Left), fold to Process User (Right).
     A[findUser#40;id#41;] --> B{Validation}
     B -->|id <= 0| C[Left: InvalidId]
     B -->|user not found| D[Left: NotFound]
@@ -2297,14 +2351,20 @@ graph TD
     F -->|Left| G[Handle Error]
     F -->|Right| H[Process User]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#CC78BC,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CA9161,color:#fff
-    style H fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class B pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Either Chaining with map/flatMap:**
@@ -2312,6 +2372,8 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 68: Arrow Either for Functional Error Handling
+    accDescr: Graph with 9 nodes and 10 connections. Nodes: Either60E,A62, map, f40A41 -> B, Propagate Error, Either60E,B62, flatMap, f40B41 -> Either60E,C62, Propagate Error, Either60E,C62. Connections: Either60E,A62 to map, map to f40A41 -> B (Right), map to Propagate Error (Left), f40A41 -> B to Either60E,B62, Propagate Error to Either60E,B62, Either60E,B62 to flatMap, flatMap to f40B41 -> Either60E,C62 (Right), flatMap to Propagate Error (Left), f40B41 -> Either60E,C62 to Either60E,C62, Propagate Error to Either60E,C62.
     Start[Either#60;E,A#62;] --> Map{map}
     Map -->|Right| Transform[f#40;A#41; -> B]
     Map -->|Left| PropagateE1[Propagate Error]
@@ -2319,19 +2381,24 @@ graph TD
     PropagateE1 --> Result1
 
     Result1 --> FlatMap{flatMap}
-    FlatMap -->|Right| Chain[f#40;B#41; -> Either#60;E,C#62;]
+    FlatMap -->|Right| Chain[f#40;B#41; -><br/>Either#60;E,C#62;]
     FlatMap -->|Left| PropagateE2[Propagate Error]
     Chain --> Result2[Either#60;E,C#62;]
     PropagateE2 --> Result2
 
-    style Start fill:#0173B2,color:#fff
-    style Map fill:#CC78BC,color:#fff
-    style Transform fill:#029E73,color:#fff
-    style PropagateE1 fill:#DE8F05,color:#fff
-    style FlatMap fill:#CC78BC,color:#fff
-    style Chain fill:#029E73,color:#fff
-    style PropagateE2 fill:#DE8F05,color:#fff
-    style Result2 fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Start pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Map pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Transform pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class PropagateE1 pal-DE8F05
+    class FlatMap pal-CC78BC
+    class Chain pal-029E73
+    class PropagateE2 pal-DE8F05
+    class Result2 pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -2587,6 +2654,8 @@ Validated accumulates all validation errors instead of failing fast like Either.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 69: Arrow Validated for Accumulating Errors
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: User Input, Error Strategy, Fail Fast, Stop at first error, Return 1 error, Accumulate, Check all validations, Return ALL errors. Connections: User Input to Error Strategy, Error Strategy to Fail Fast (Either), Fail Fast to Stop at first error, Stop at first error to Return 1 error, Error Strategy to Accumulate (Validated), Accumulate to Check all validations, Check all validations to Return ALL errors.
     Input[User Input] --> Strategy{Error Strategy}
 
     Strategy -->|Either| FailFast[Fail Fast]
@@ -2597,14 +2666,19 @@ graph TD
     Accumulate --> CheckAll[Check all<br/>validations]
     CheckAll --> AllErrors[Return ALL<br/>errors]
 
-    style Input fill:#0173B2,color:#fff
-    style Strategy fill:#CC78BC,color:#fff
-    style FailFast fill:#DE8F05,color:#fff
-    style FirstError fill:#DE8F05,color:#fff
-    style OneError fill:#DE8F05,color:#fff
-    style Accumulate fill:#029E73,color:#fff
-    style CheckAll fill:#029E73,color:#fff
-    style AllErrors fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Input pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Strategy pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class FailFast pal-DE8F05
+    class FirstError pal-DE8F05
+    class OneError pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Accumulate pal-029E73
+    class CheckAll pal-029E73
+    class AllErrors pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Validated Applicative Functor Flow:**
@@ -2612,6 +2686,8 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 69: Arrow Validated for Accumulating Errors
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Validated60E,A62, zipOrAccumulate, Validated60E,B62, Validated60E,C62, All Valid?, Combine A,B,C, Accumulate all errors, Valid40Result41, Invalid40List60E6241. Connections: Validated60E,A62 to zipOrAccumulate, Validated60E,B62 to zipOrAccumulate, Validated60E,C62 to zipOrAccumulate, zipOrAccumulate to All Valid?, All Valid? to Combine A,B,C (Yes), All Valid? to Accumulate all errors (No), Combine A,B,C to Valid40Result41, Accumulate all errors to Invalid40List60E6241.
     V1[Validated#60;E,A#62;] --> Zip[zipOrAccumulate]
     V2[Validated#60;E,B#62;] --> Zip
     V3[Validated#60;E,C#62;] --> Zip
@@ -2621,17 +2697,22 @@ graph TD
     Check -->|No| Errors[Accumulate<br/>all errors]
 
     Combine --> Result[Valid#40;Result#41;]
-    Errors --> Invalid[Invalid#40;List#60;E#62;#41;]
+    Errors --> Invalid["Invalid#40;List<br/>#60;E#62;#41;"]
 
-    style V1 fill:#0173B2,color:#fff
-    style V2 fill:#0173B2,color:#fff
-    style V3 fill:#0173B2,color:#fff
-    style Zip fill:#CC78BC,color:#fff
-    style Check fill:#DE8F05,color:#fff
-    style Combine fill:#029E73,color:#fff
-    style Errors fill:#DE8F05,color:#fff
-    style Result fill:#029E73,color:#fff
-    style Invalid fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class V1 pal-0173B2
+    class V2 pal-0173B2
+    class V3 pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Zip pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Check pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Combine pal-029E73
+    class Errors pal-DE8F05
+    class Result pal-029E73
+    class Invalid pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -2907,17 +2988,25 @@ Use inline classes to eliminate allocation overhead for wrapper types.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Wrapper[UserId wrapper created]
+    accTitle: Example 70: Performance - Inline Classes
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: UserId wrapper created, Heap Object 8 byte header, Int field 4 bytes, Total per instance: 12+ bytes, Garbage collection overhead. Connections: UserId wrapper created to Heap Object 8 byte header, Heap Object 8 byte header to Int field 4 bytes, Int field 4 bytes to Total per instance: 12+ bytes, Total per instance: 12+ bytes to Garbage collection overhead.
+    Wrapper[UserId wrapper<br/>created]
     Wrapper --> Header[Heap Object<br/>8 byte header]
     Header --> Field[Int field<br/>4 bytes]
     Field --> Total[Total per instance:<br/>12+ bytes]
     Total --> GC[Garbage collection<br/>overhead]
 
-    style Wrapper fill:#0173B2,color:#fff
-    style Header fill:#DE8F05,color:#fff
-    style Field fill:#029E73,color:#fff
-    style Total fill:#CC78BC,color:#fff
-    style GC fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Wrapper pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Header pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Field pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Total pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class GC pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Inline Value Class (Zero Allocation):**
@@ -2925,17 +3014,25 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 70: Performance - Inline Classes
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: @JvmInline value class UserId, Compiler inlines, Compiled to: primitive Int, Memory usage: 4 bytes, Zero allocation No GC overhead. Connections: @JvmInline value class UserId to Compiler inlines, Compiler inlines to Compiled to: primitive Int, Compiled to: primitive Int to Memory usage: 4 bytes, Memory usage: 4 bytes to Zero allocation No GC overhead.
     Source["@JvmInline<br/>value class UserId"]
     Source --> Compile[Compiler inlines]
     Compile --> Result[Compiled to:<br/>primitive Int]
     Result --> Memory[Memory usage:<br/>4 bytes]
     Memory --> Benefit[Zero allocation<br/>No GC overhead]
 
-    style Source fill:#0173B2,color:#fff
-    style Compile fill:#DE8F05,color:#fff
-    style Result fill:#029E73,color:#fff
-    style Memory fill:#CC78BC,color:#fff
-    style Benefit fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Source pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Compile pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Result pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Memory pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Benefit pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -3095,19 +3192,26 @@ Use sequences for large collections to avoid intermediate allocations.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Source[Range: 1..10M elements]
+    accTitle: Example 71: Performance - Sequences for Lazy Evaluation
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Range: 1..10M elements, toList4041: Allocate 10M list, map: Allocate 10M list, filter: Allocate large list, take401041: Allocate 10-element list, Result: 10 elements. Connections: Range: 1..10M elements to toList4041: Allocate 10M list, toList4041: Allocate 10M list to map: Allocate 10M list, map: Allocate 10M list to filter: Allocate large list, filter: Allocate large list to take401041: Allocate 10-element list, take401041: Allocate 10-element list to Result: 10 elements.
+    Source[Range: 1..10M<br/>elements]
     Source --> ToList[toList#40;#41;:<br/>Allocate 10M list]
     ToList --> Map[map:<br/>Allocate 10M list]
     Map --> Filter[filter:<br/>Allocate large list]
-    Filter --> Take[take#40;10#41;:<br/>Allocate 10-element list]
+    Filter --> Take[take#40;10#41;:<br/>Allocate 10-element<br/>list]
     Take --> Result[Result: 10 elements]
 
-    style Source fill:#0173B2,color:#fff
-    style ToList fill:#DE8F05,color:#fff
-    style Map fill:#DE8F05,color:#fff
-    style Filter fill:#DE8F05,color:#fff
-    style Take fill:#029E73,color:#fff
-    style Result fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Source pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class ToList pal-DE8F05
+    class Map pal-DE8F05
+    class Filter pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Take pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Result pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Lazy Sequence Operations (Single Pass):**
@@ -3115,19 +3219,25 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Source[Range: 1..10M elements]
+    accTitle: Example 71: Performance - Sequences for Lazy Evaluation
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Range: 1..10M elements, asSequence4041: No allocation, map: Lazy transform, filter: Lazy predicate, take401041: Computes 10 elements, Result: 10 elements. Connections: Range: 1..10M elements to asSequence4041: No allocation, asSequence4041: No allocation to map: Lazy transform, map: Lazy transform to filter: Lazy predicate, filter: Lazy predicate to take401041: Computes 10 elements, take401041: Computes 10 elements to Result: 10 elements.
+    Source[Range: 1..10M<br/>elements]
     Source --> AsSeq[asSequence#40;#41;:<br/>No allocation]
     AsSeq --> Map[map:<br/>Lazy transform]
     Map --> Filter[filter:<br/>Lazy predicate]
     Filter --> Take[take#40;10#41;:<br/>Computes 10 elements]
     Take --> Result[Result: 10 elements]
 
-    style Source fill:#0173B2,color:#fff
-    style AsSeq fill:#029E73,color:#fff
-    style Map fill:#029E73,color:#fff
-    style Filter fill:#029E73,color:#fff
-    style Take fill:#029E73,color:#fff
-    style Result fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Source pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class AsSeq pal-029E73
+    class Map pal-029E73
+    class Filter pal-029E73
+    class Take pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Result pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -3301,17 +3411,23 @@ Write expressive tests using Kotest's specification styles and rich matchers.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 72: Testing with Kotest
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Kotest Framework, StringSpec: Simple string-based tests, FunSpec: Structured with context, DescribeSpec: BDD-style testing, WordSpec, BehaviorSpec, FreeSpec, etc.. Connections: Kotest Framework to StringSpec: Simple string-based tests, Kotest Framework to FunSpec: Structured with context, Kotest Framework to DescribeSpec: BDD-style testing, Kotest Framework to WordSpec, BehaviorSpec, FreeSpec, etc..
     Kotest[Kotest Framework]
-    Kotest --> StringSpec[StringSpec:<br/>Simple string-based tests]
-    Kotest --> FunSpec[FunSpec:<br/>Structured with context]
+    Kotest --> StringSpec[StringSpec:<br/>Simple string-based<br/>tests]
+    Kotest --> FunSpec[FunSpec:<br/>Structured with<br/>context]
     Kotest --> DescribeSpec[DescribeSpec:<br/>BDD-style testing]
-    Kotest --> Other[WordSpec, BehaviorSpec,<br/>FreeSpec, etc.]
+    Kotest --> Other[WordSpec,<br/>BehaviorSpec,<br/>FreeSpec, etc.]
 
-    style Kotest fill:#0173B2,color:#fff
-    style StringSpec fill:#029E73,color:#fff
-    style FunSpec fill:#029E73,color:#fff
-    style DescribeSpec fill:#029E73,color:#fff
-    style Other fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Kotest pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class StringSpec pal-029E73
+    class FunSpec pal-029E73
+    class DescribeSpec pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Other pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Matcher Hierarchy:**
@@ -3319,17 +3435,23 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 72: Testing with Kotest
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Kotest Matchers, shouldBe: Equality check, String matchers: shouldStartWith, include, Collection matchers: shouldHaveSize, shouldContainAll, Exception matchers: shouldThrow, shouldNotThrow. Connections: Kotest Matchers to shouldBe: Equality check, Kotest Matchers to String matchers: shouldStartWith, include, Kotest Matchers to Collection matchers: shouldHaveSize, shouldContainAll, Kotest Matchers to Exception matchers: shouldThrow, shouldNotThrow.
     Matchers[Kotest Matchers]
     Matchers --> Equality[shouldBe:<br/>Equality check]
-    Matchers --> Strings[String matchers:<br/>shouldStartWith, include]
-    Matchers --> Collections[Collection matchers:<br/>shouldHaveSize, shouldContainAll]
-    Matchers --> Exceptions[Exception matchers:<br/>shouldThrow, shouldNotThrow]
+    Matchers --> Strings[String matchers:<br/>shouldStartWith,<br/>include]
+    Matchers --> Collections[Collection matchers:<br/>shouldHaveSize,<br/>shouldContainAll]
+    Matchers --> Exceptions[Exception matchers:<br/>shouldThrow,<br/>shouldNotThrow]
 
-    style Matchers fill:#0173B2,color:#fff
-    style Equality fill:#029E73,color:#fff
-    style Strings fill:#029E73,color:#fff
-    style Collections fill:#029E73,color:#fff
-    style Exceptions fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Matchers pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Equality pal-029E73
+    class Strings pal-029E73
+    class Collections pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Exceptions pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -3719,6 +3841,8 @@ Test coroutines with virtual time using runTest from kotlinx-coroutines-test. Th
 ```mermaid
 %% Virtual time testing flow
 sequenceDiagram
+    accTitle: Example 73: Testing Coroutines with runTest
+    accDescr: Sequence diagram between Test Code, Virtual Time, Coroutine. Messages: Test Code to Virtual Time: runTest starts; Test Code to Coroutine: launch with delay(1000); Test Code to Virtual Time: advanceUntilIdle(); Virtual Time to Coroutine: Resume coroutine; Coroutine to Coroutine: Execute; Test Code to Virtual Time: currentTime; Test Code to Test Code: assert results.
     participant T as Test Code
     participant V as Virtual Time
     participant C as Coroutine
@@ -5146,15 +5270,22 @@ Master variance (in/out) and star projection for flexible generic types.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Source["Producer#60;out Animal#62;"]
+    accTitle: Example 80: Advanced Generics - Variance and Star Projection
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Producer60out Animal62, Can assign: Producer60Dog62, Produces T Cannot consume T, List60out T62 read-only. Connections: Producer60out Animal62 to Can assign: Producer60Dog62, Can assign: Producer60Dog62 to Produces T Cannot consume T, Produces T Cannot consume T to List60out T62 read-only.
+    Source["Producer#60;out<br/>Animal#62;"]
     Source --> SubType["Can assign:<br/>Producer#60;Dog#62;"]
     SubType --> Behavior[Produces T<br/>Cannot consume T]
     Behavior --> Example["List#60;out T#62;<br/>read-only"]
 
-    style Source fill:#0173B2,color:#fff
-    style SubType fill:#029E73,color:#fff
-    style Behavior fill:#DE8F05,color:#fff
-    style Example fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Source pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class SubType pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Behavior pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Example pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Contravariance (in T - Consumer):**
@@ -5162,15 +5293,22 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Source["Consumer#60;in Dog#62;"]
-    Source --> SuperType["Can assign:<br/>Consumer#60;Animal#62;"]
+    accTitle: Example 80: Advanced Generics - Variance and Star Projection
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Consumer60in Dog62, Can assign: Consumer60Animal62, Consumes T Cannot produce T, Comparable60in T62 compare method. Connections: Consumer60in Dog62 to Can assign: Consumer60Animal62, Can assign: Consumer60Animal62 to Consumes T Cannot produce T, Consumes T Cannot produce T to Comparable60in T62 compare method.
+    Source["Consumer#60;in<br/>Dog#62;"]
+    Source --> SuperType["Can assign:<br/>Consumer#60;<br/>Animal#62;"]
     SuperType --> Behavior[Consumes T<br/>Cannot produce T]
-    Behavior --> Example["Comparable#60;in T#62;<br/>compare method"]
+    Behavior --> Example["Comparable#60;in<br/>T#62;<br/>compare method"]
 
-    style Source fill:#0173B2,color:#fff
-    style SuperType fill:#029E73,color:#fff
-    style Behavior fill:#DE8F05,color:#fff
-    style Example fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Source pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class SuperType pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Behavior pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Example pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Star Projection (Unknown Type):**
@@ -5178,16 +5316,23 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 80: Advanced Generics - Variance and Star Projection
+    accDescr: Graph with 4 nodes and 4 connections. Nodes: List60*62, Can read: Any?, Cannot write: Nothing, Type-safe reading. Connections: List60*62 to Can read: Any?, List60*62 to Cannot write: Nothing, Can read: Any? to Type-safe reading, Cannot write: Nothing to Type-safe reading.
     Star["List#60;*#62;"]
     Star --> Read["Can read:<br/>Any?"]
     Star --> Write["Cannot write:<br/>Nothing"]
     Read --> Safety[Type-safe reading]
     Write --> Safety
 
-    style Star fill:#0173B2,color:#fff
-    style Read fill:#029E73,color:#fff
-    style Write fill:#DE8F05,color:#fff
-    style Safety fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Star pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Read pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Write pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Safety pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Variance Summary:**

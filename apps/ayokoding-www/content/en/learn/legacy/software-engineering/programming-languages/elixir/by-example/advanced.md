@@ -16,22 +16,30 @@ GenServer (Generic Server) is OTP's abstraction for stateful processes with sync
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Start["GenServer.start_link/2"] --> Init["init/1<br/>Initialize state"]
+    accTitle: Example 61: GenServer Basics
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: GenServer.start_ link/2, init/1 Initialize state, Running State, Client: GenServer.call, handle_call/3 Synchronous, Reply + New State, Client: GenServer.cast, handle_cast/2 Asynchronous, New State (no reply). Connections: GenServer.start_ link/2 to init/1 Initialize state, init/1 Initialize state to Running State, Client: GenServer.call to handle_call/3 Synchronous, handle_call/3 Synchronous to Reply + New State, Reply + New State to Running State, Client: GenServer.cast to handle_cast/2 Asynchronous, handle_cast/2 Asynchronous to New State (no reply), New State (no reply) to Running State.
+    Start["GenServer.start_<br/>link/2"] --> Init["init/1<br/>Initialize state"]
     Init --> Running["Running State"]
 
-    Client1["Client: GenServer.call"] --> Call["handle_call/3<br/>Synchronous"]
+    Client1["Client:<br/>GenServer.call"] --> Call["handle_call/3<br/>Synchronous"]
     Call --> Reply["Reply + New State"]
     Reply --> Running
 
-    Client2["Client: GenServer.cast"] --> Cast["handle_cast/2<br/>Asynchronous"]
+    Client2["Client:<br/>GenServer.cast"] --> Cast["handle_cast/2<br/>Asynchronous"]
     Cast --> NoReply["New State (no reply)"]
     NoReply --> Running
 
-    style Start fill:#0173B2,color:#fff
-    style Init fill:#DE8F05,color:#fff
-    style Running fill:#029E73,color:#fff
-    style Call fill:#CC78BC,color:#fff
-    style Cast fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Start pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Init pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Running pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Call pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Cast pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -215,25 +223,32 @@ GenServer state is immutable. Updates return new state, and the GenServer mainta
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 62: GenServer State Management
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: init/1 Initial State, State: balance=1000, handle_call :deposit, 500, State: balance=1500 transactions=[:deposit, 500, ...], handle_call :withdraw, 200, State: balance=1300 transactions=[:withdrawal, 200, ..., ...], handle_call :withdraw, 2000, State unchanged balance=1300 Return: :error, :insufficient_funds. Connections: init/1 Initial State to State: balance=1000, State: balance=1000 to handle_call :deposit, 500, handle_call :deposit, 500 to State: balance=1500 transactions=[:deposit, 500, ...], State: balance=1500 transactions=[:deposit, 500, ...] to handle_call :withdraw, 200, handle_call :withdraw, 200 to State: balance=1300 transactions=[:withdrawal, 200, ..., ...], State: balance=1300 transactions=[:withdrawal, 200, ..., ...] to handle_call :withdraw, 2000, handle_call :withdraw, 2000 to State unchanged balance=1300 Return: :error, :insufficient_funds.
     Init["init/1<br/>Initial State"] --> State1["State: balance=1000"]
 
-    State1 --> Deposit["handle_call {:deposit, 500}"]
-    Deposit --> State2["State: balance=1500<br/>transactions=[{:deposit, 500, ...}]"]
+    State1 --> Deposit["handle_call<br/>{:deposit, 500}"]
+    Deposit --> State2["State: balance=1500<br/>transactions=<br/>[{:deposit, 500,<br/>...}]"]
 
-    State2 --> Withdraw["handle_call {:withdraw, 200}"]
-    Withdraw --> State3["State: balance=1300<br/>transactions=[{:withdrawal, 200, ...}, {...}]"]
+    State2 --> Withdraw["handle_call<br/>{:withdraw, 200}"]
+    Withdraw --> State3["State: balance=1300<br/>transactions=<br/>[{:withdrawal, 200,<br/>...}, {...}]"]
 
-    State3 --> InvalidWithdraw["handle_call {:withdraw, 2000}"]
-    InvalidWithdraw --> State3b["State unchanged<br/>balance=1300<br/>Return: {:error, :insufficient_funds}"]
+    State3 --> InvalidWithdraw["handle_call<br/>{:withdraw, 2000}"]
+    InvalidWithdraw --> State3b["State unchanged<br/>balance=1300<br/>Return: {:error,<br/>:insufficient_funds}"]
 
-    style Init fill:#0173B2,color:#fff
-    style State1 fill:#029E73,color:#fff
-    style State2 fill:#029E73,color:#fff
-    style State3 fill:#029E73,color:#fff
-    style State3b fill:#029E73,color:#fff
-    style Deposit fill:#DE8F05,color:#fff
-    style Withdraw fill:#DE8F05,color:#fff
-    style InvalidWithdraw fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Init pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class State1 pal-029E73
+    class State2 pal-029E73
+    class State3 pal-029E73
+    class State3b pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Deposit pal-DE8F05
+    class Withdraw pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class InvalidWithdraw pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -460,22 +475,30 @@ GenServers can timeout, crash, or handle unexpected messages. Understanding erro
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Call["GenServer.call with timeout"] --> Work["handle_call processes request"]
-    Work --> Complete["Completes within timeout"]
+    accTitle: Example 63: GenServer Error Handling
+    accDescr: Graph with 9 nodes and 7 connections. Nodes: GenServer.call with timeout, handle_call processes request, Completes within timeout, Exceeds timeout, Returns reply, Raises timeout error, handle_cast raises exception, terminate/2 cleanup, GenServer terminates. Connections: GenServer.call with timeout to handle_call processes request, handle_call processes request to Completes within timeout, handle_call processes request to Exceeds timeout, Completes within timeout to Returns reply, Exceeds timeout to Raises timeout error, handle_cast raises exception to terminate/2 cleanup, terminate/2 cleanup to GenServer terminates.
+    Call["GenServer.call with<br/>timeout"] --> Work["handle_call<br/>processes request"]
+    Work --> Complete["Completes within<br/>timeout"]
     Work --> Timeout["Exceeds timeout"]
 
     Complete --> Reply["Returns reply"]
     Timeout --> Error["Raises timeout error"]
 
-    Crash["handle_cast raises exception"] --> Terminate["terminate/2 cleanup"]
+    Crash["handle_cast raises<br/>exception"] --> Terminate["terminate/2 cleanup"]
     Terminate --> ProcessDies["GenServer terminates"]
 
-    style Call fill:#0173B2,color:#fff
-    style Work fill:#029E73,color:#fff
-    style Complete fill:#029E73,color:#fff
-    style Timeout fill:#DE8F05,color:#fff
-    style Crash fill:#CC78BC,color:#fff
-    style Terminate fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Call pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Work pal-029E73
+    class Complete pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Timeout pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Crash pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Terminate pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -673,33 +696,41 @@ Named GenServers can be referenced by atom name instead of PID. This enables eas
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    subgraph PID["PID-Based (Manual Tracking)"]
-        StartPID["start_link() -> {:ok, pid}"] --> StorePID["Store PID in state/ETS"]
-        StorePID --> PassPID["Pass PID to every function"]
-        PassPID --> CallPID["GenServer.call(pid, msg)"]
+    accTitle: Example 64: GenServer Named Processes
+    accDescr: Graph with 11 nodes and 7 connections. Nodes: start_link() -> :ok, pid, Store PID in state/ETS, Pass PID to every function, GenServer.call(pid, msg), start_link(name: :cache), Process Registry :cache -> PID, GenServer. call(:cache, msg), Lookup PID by :cache (automatic), Execute on found PID, ✅ Benefits: • No PID passing • Singleton pattern • Process discovery, ⚠️ Tradeoffs: • Global atom namespace • Name conflicts crash • ~1M atom limit. Connections: start_link() -> :ok, pid to Store PID in state/ETS, Store PID in state/ETS to Pass PID to every function, Pass PID to every function to GenServer.call(pid, msg), start_link(name: :cache) to Process Registry :cache -> PID, Process Registry :cache -> PID to GenServer. call(:cache, msg), GenServer. call(:cache, msg) to Lookup PID by :cache (automatic), Lookup PID by :cache (automatic) to Execute on found PID.
+    subgraph PID["PID-Based (Manual<br/>Tracking)"]
+        StartPID["start_link() -><br/>{:ok, pid}"] --> StorePID["Store PID in<br/>state/ETS"]
+        StorePID --> PassPID["Pass PID to every<br/>function"]
+        PassPID --> CallPID["GenServer.call(pid,<br/>msg)"]
     end
 
-    subgraph Named["Name-Based (Automatic Discovery)"]
-        StartNamed["start_link(name: :cache)"] --> Register["Process Registry<br/>:cache -> PID"]
-        Register --> CallNamed["GenServer.call(:cache, msg)"]
+    subgraph Named["Name-Based<br/>(Automatic<br/>Discovery)"]
+        StartNamed["start_link(name:<br/>:cache)"] --> Register["Process Registry<br/>:cache -> PID"]
+        Register --> CallNamed["GenServer.<br/>call(:cache, msg)"]
         CallNamed --> Lookup["Lookup PID by :cache<br/>(automatic)"]
         Lookup --> Execute["Execute on found PID"]
     end
 
     Benefits["✅ Benefits:<br/>• No PID passing<br/>• Singleton pattern<br/>• Process discovery"]
-    Tradeoffs["⚠️ Tradeoffs:<br/>• Global atom namespace<br/>• Name conflicts crash<br/>• ~1M atom limit"]
+    Tradeoffs["⚠️ Tradeoffs:<br/>• Global atom<br/>namespace<br/>• Name conflicts<br/>crash<br/>• ~1M atom limit"]
 
-    style StartPID fill:#CC78BC,color:#fff
-    style StorePID fill:#CC78BC,color:#fff
-    style PassPID fill:#CC78BC,color:#fff
-    style CallPID fill:#CC78BC,color:#fff
-    style StartNamed fill:#0173B2,color:#fff
-    style Register fill:#DE8F05,color:#fff
-    style CallNamed fill:#029E73,color:#fff
-    style Lookup fill:#DE8F05,color:#fff
-    style Execute fill:#029E73,color:#fff
-    style Benefits fill:#029E73,color:#fff
-    style Tradeoffs fill:#CA9161,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class StartPID pal-CC78BC
+    class StorePID pal-CC78BC
+    class PassPID pal-CC78BC
+    class CallPID pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class StartNamed pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Register pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class CallNamed pal-029E73
+    class Lookup pal-DE8F05
+    class Execute pal-029E73
+    class Benefits pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Tradeoffs pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1093,19 +1124,26 @@ Supervisors monitor child processes and restart them on failure. They're the fou
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 66: Supervisor Basics
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Supervisor, Worker 1, Worker 2, Worker 3, 💥 Crash, Supervisor Restarts Worker 2. Connections: Supervisor to Worker 1, Supervisor to Worker 2, Supervisor to Worker 3, Worker 2 to 💥 Crash, 💥 Crash to Supervisor Restarts Worker 2.
     Supervisor["Supervisor"] --> Worker1["Worker 1"]
     Supervisor --> Worker2["Worker 2"]
     Supervisor --> Worker3["Worker 3"]
 
     Worker2 --> Crash["💥 Crash"]
-    Crash --> Restart["Supervisor Restarts Worker 2"]
+    Crash --> Restart["Supervisor Restarts<br/>Worker 2"]
 
-    style Supervisor fill:#0173B2,color:#fff
-    style Worker1 fill:#029E73,color:#fff
-    style Worker2 fill:#CC78BC,color:#fff
-    style Worker3 fill:#029E73,color:#fff
-    style Crash fill:#DE8F05,color:#fff
-    style Restart fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Supervisor pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Worker1 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Worker2 pal-CC78BC
+    class Worker3 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Crash pal-DE8F05
+    class Restart pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1272,42 +1310,60 @@ Supervisors support different restart strategies based on child process dependen
 
 ```mermaid
 graph TD
+    accTitle: Example 67: Restart Strategies
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Supervisor, Worker 1, Worker 2 💥, Worker 3, Restart Worker 2 only. Connections: Supervisor to Worker 1, Supervisor to Worker 2 💥, Supervisor to Worker 3, Worker 2 💥 to Restart Worker 2 only.
     S1["Supervisor"] --> W1["Worker 1"]
     S1 --> W2["Worker 2 💥"]
     S1 --> W3["Worker 3"]
-    W2 --> R1["Restart Worker 2 only"]
+    W2 --> R1["Restart Worker 2<br/>only"]
 
-    style S1 fill:#0173B2,color:#fff
-    style W2 fill:#CC78BC,color:#fff
-    style R1 fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class S1 pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class W2 pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class R1 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **one_for_all Strategy**:
 
 ```mermaid
 graph TD
+    accTitle: Example 67: Restart Strategies
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Supervisor, Worker 1, Worker 2 💥, Worker 3, Restart ALL workers. Connections: Supervisor to Worker 1, Supervisor to Worker 2 💥, Supervisor to Worker 3, Worker 2 💥 to Restart ALL workers.
     S2["Supervisor"] --> W4["Worker 1"]
     S2 --> W5["Worker 2 💥"]
     S2 --> W6["Worker 3"]
     W5 --> R2["Restart ALL workers"]
 
-    style S2 fill:#0173B2,color:#fff
-    style W5 fill:#CC78BC,color:#fff
-    style R2 fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class S2 pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class W5 pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class R2 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **rest_for_one Strategy**:
 
 ```mermaid
 graph TD
+    accTitle: Example 67: Restart Strategies
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Supervisor, Worker 1, Worker 2 💥, Worker 3, R3, 3. Connections: Supervisor to Worker 1, Supervisor to Worker 2 💥, Supervisor to Worker 3, Worker 2 💥 to R3, Worker 2 💥 to 3.
     S3["Supervisor"] --> W7["Worker 1"]
     S3 --> W8["Worker 2 💥"]
     S3 --> W9["Worker 3"]
     W8 --> R3["Restart Worker 2 & 3"]
 
-    style S3 fill:#0173B2,color:#fff
-    style W8 fill:#CC78BC,color:#fff
-    style R3 fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class S3 pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class W8 pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class R3 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1527,44 +1583,61 @@ DynamicSupervisors start children on demand rather than at supervisor init. Use 
 
 ```mermaid
 graph TD
-    Supervisor["DynamicSupervisor<br/>Started with 0 children"]
-    Request1["start_child#40;worker1#41;"] --> Worker1["Worker 1"]
-    Request2["start_child#40;worker2#41;"] --> Worker2["Worker 2"]
-    Request3["start_child#40;worker3#41;"] --> Worker3["Worker 3"]
+    accTitle: Example 68: Dynamic Supervisors
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: DynamicSupervisor Started with 0 children, start_ child40worker141, Worker 1, start_ child40worker241, Worker 2, start_ child40worker341, Worker 3. Connections: start_ child40worker141 to Worker 1, start_ child40worker241 to Worker 2, start_ child40worker341 to Worker 3, DynamicSupervisor Started with 0 children to Worker 1, DynamicSupervisor Started with 0 children to Worker 2, DynamicSupervisor Started with 0 children to Worker 3.
+    Supervisor["DynamicSupervisor<br/>Started with 0<br/>children"]
+    Request1["start_<br/>child#40;worker1#41;"] --> Worker1["Worker 1"]
+    Request2["start_<br/>child#40;worker2#41;"] --> Worker2["Worker 2"]
+    Request3["start_<br/>child#40;worker3#41;"] --> Worker3["Worker 3"]
 
     Supervisor --> Worker1
     Supervisor --> Worker2
     Supervisor --> Worker3
 
-    style Supervisor fill:#0173B2,color:#fff
-    style Worker1 fill:#029E73,color:#fff
-    style Worker2 fill:#029E73,color:#fff
-    style Worker3 fill:#029E73,color:#fff
-    style Request1 fill:#DE8F05,color:#fff
-    style Request2 fill:#DE8F05,color:#fff
-    style Request3 fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Supervisor pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Worker1 pal-029E73
+    class Worker2 pal-029E73
+    class Worker3 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Request1 pal-DE8F05
+    class Request2 pal-DE8F05
+    class Request3 pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Terminating Children**:
 
 ```mermaid
 graph TD
-    Terminate["terminate_child#40;worker2#41;"] --> Remove["Worker 2 stopped"]
+    accTitle: Example 68: Dynamic Supervisors
+    accDescr: Graph with 2 nodes and 1 connections. Nodes: terminate_ child40worker241, Worker 2 stopped. Connections: terminate_ child40worker241 to Worker 2 stopped.
+    Terminate["terminate_<br/>child#40;worker2#41;"] --> Remove["Worker 2 stopped"]
 
-    style Terminate fill:#CC78BC,color:#fff
-    style Remove fill:#DE8F05,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Terminate pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Remove pal-DE8F05
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Use Case - Connection Pool**:
 
 ```mermaid
 graph TD
+    accTitle: Example 68: Dynamic Supervisors
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Connection Pool, Add connections on demand, Remove idle connections. Connections: Connection Pool to Add connections on demand, Connection Pool to Remove idle connections.
     Pool["Connection Pool"] --> Dynamic["Add connections<br/>on demand"]
     Pool --> Scale["Remove idle<br/>connections"]
 
-    style Pool fill:#0173B2,color:#fff
-    style Dynamic fill:#029E73,color:#fff
-    style Scale fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Pool pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Dynamic pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Scale pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1794,32 +1867,39 @@ Applications are OTP's top-level component. They bundle code, define dependencie
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Start["Application.start"] --> Init["MyApp.Application.start/2"]
-    Init --> SupTree["Start Supervision Tree"]
+    accTitle: Example 69: Application Module
+    accDescr: Graph with 13 nodes and 11 connections. Nodes: Application.start, MyApp.Application. start/2, Start Supervision Tree, Root Supervisor, Registry Process Discovery, Cache GenServer, Worker 1 GenServer, Worker 2 GenServer, Application.stop, Stop Workers (reverse order), Stop Cache, Stop Registry, and 1 more. Connections: Application.start to MyApp.Application. start/2, MyApp.Application. start/2 to Start Supervision Tree, Start Supervision Tree to Root Supervisor, Root Supervisor to Registry Process Discovery, Root Supervisor to Cache GenServer, Root Supervisor to Worker 1 GenServer, Root Supervisor to Worker 2 GenServer, Application.stop to Stop Workers (reverse order), Stop Workers (reverse order) to Stop Cache, Stop Cache to Stop Registry, Stop Registry to MyApp.Application. stop/1.
+    Start["Application.start"] --> Init["MyApp.Application.<br/>start/2"]
+    Init --> SupTree["Start Supervision<br/>Tree"]
     SupTree --> RootSup["Root Supervisor"]
     RootSup --> Registry["Registry<br/>Process Discovery"]
     RootSup --> Cache["Cache<br/>GenServer"]
     RootSup --> Worker1["Worker 1<br/>GenServer"]
     RootSup --> Worker2["Worker 2<br/>GenServer"]
 
-    Stop["Application.stop"] --> StopWorkers["Stop Workers (reverse order)"]
+    Stop["Application.stop"] --> StopWorkers["Stop Workers<br/>(reverse order)"]
     StopWorkers --> StopCache["Stop Cache"]
     StopCache --> StopRegistry["Stop Registry"]
-    StopRegistry --> Cleanup["MyApp.Application.stop/1"]
+    StopRegistry --> Cleanup["MyApp.Application.<br/>stop/1"]
 
-    style Start fill:#0173B2,color:#fff
-    style Init fill:#DE8F05,color:#fff
-    style SupTree fill:#029E73,color:#fff
-    style RootSup fill:#0173B2,color:#fff
-    style Registry fill:#029E73,color:#fff
-    style Cache fill:#029E73,color:#fff
-    style Worker1 fill:#029E73,color:#fff
-    style Worker2 fill:#029E73,color:#fff
-    style Stop fill:#CC78BC,color:#fff
-    style StopWorkers fill:#DE8F05,color:#fff
-    style StopCache fill:#DE8F05,color:#fff
-    style StopRegistry fill:#DE8F05,color:#fff
-    style Cleanup fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Start pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Init pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class SupTree pal-029E73
+    class RootSup pal-0173B2
+    class Registry pal-029E73
+    class Cache pal-029E73
+    class Worker1 pal-029E73
+    class Worker2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Stop pal-CC78BC
+    class StopWorkers pal-DE8F05
+    class StopCache pal-DE8F05
+    class StopRegistry pal-DE8F05
+    class Cleanup pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1954,28 +2034,36 @@ Application configuration uses `config/*.exs` files to manage environment-specif
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 70: Application Configuration
+    accDescr: Graph with 9 nodes and 9 connections. Nodes: config/config.exs (Compile time), config/dev.exs, config/test.exs, config/prod.exs, config/runtime.exs (Application startup), System.get_env() Environment Variables, Application.get_ env() Access in code, ⚠️ Never commit secrets to config.exs, ✓ Use runtime.exs with ENV vars. Connections: config/config.exs (Compile time) to config/dev.exs, config/config.exs (Compile time) to config/test.exs, config/config.exs (Compile time) to config/prod.exs, config/dev.exs to config/runtime.exs (Application startup), config/test.exs to config/runtime.exs (Application startup), config/prod.exs to config/runtime.exs (Application startup), config/runtime.exs (Application startup) to System.get_env() Environment Variables, System.get_env() Environment Variables to Application.get_ env() Access in code, ⚠️ Never commit secrets to config.exs to ✓ Use runtime.exs with ENV vars.
     ConfigBase["config/config.exs<br/>(Compile time)"] --> Dev["config/dev.exs"]
     ConfigBase --> Test["config/test.exs"]
     ConfigBase --> Prod["config/prod.exs"]
 
-    Dev --> Runtime["config/runtime.exs<br/>(Application startup)"]
+    Dev --> Runtime["config/runtime.exs<br/>(Application<br/>startup)"]
     Test --> Runtime
     Prod --> Runtime
 
-    Runtime --> ENV["System.get_env()<br/>Environment Variables"]
-    ENV --> App["Application.get_env()<br/>Access in code"]
+    Runtime --> ENV["System.get_env()<br/>Environment<br/>Variables"]
+    ENV --> App["Application.get_<br/>env()<br/>Access in code"]
 
-    Warning["⚠️ Never commit secrets<br/>to config.exs"] --> UseRuntime["✓ Use runtime.exs<br/>with ENV vars"]
+    Warning["⚠️ Never commit<br/>secrets<br/>to config.exs"] --> UseRuntime["✓ Use runtime.exs<br/>with ENV vars"]
 
-    style ConfigBase fill:#0173B2,color:#fff
-    style Dev fill:#029E73,color:#fff
-    style Test fill:#029E73,color:#fff
-    style Prod fill:#029E73,color:#fff
-    style Runtime fill:#DE8F05,color:#fff
-    style ENV fill:#CC78BC,color:#fff
-    style App fill:#CA9161,color:#fff
-    style Warning fill:#CC78BC,color:#fff
-    style UseRuntime fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class ConfigBase pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Dev pal-029E73
+    class Test pal-029E73
+    class Prod pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Runtime pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class ENV pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class App pal-CA9161
+    class Warning pal-CC78BC
+    class UseRuntime pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2252,17 +2340,24 @@ end
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 72: Quote and Unquote
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: 1 + 2, quote do 1 + 2 end, :+, [], [1, 2], x = 5, quote do 1 + unquote(x) end, :+, [], [1, 5]. Connections: 1 + 2 to quote do 1 + 2 end, quote do 1 + 2 end to :+, [], [1, 2], x = 5 to quote do 1 + unquote(x) end, quote do 1 + unquote(x) end to :+, [], [1, 5].
     Code["1 + 2"] --> Quote["quote do 1 + 2 end"]
     Quote --> AST["{:+, [], [1, 2]}"]
 
-    Value["x = 5"] --> Unquote["quote do 1 + unquote(x) end"]
+    Value["x = 5"] --> Unquote["quote do 1 +<br/>unquote(x) end"]
     Unquote --> AST2["{:+, [], [1, 5]}"]
 
-    style Code fill:#0173B2,color:#fff
-    style Quote fill:#DE8F05,color:#fff
-    style AST fill:#029E73,color:#fff
-    style Unquote fill:#CC78BC,color:#fff
-    style AST2 fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Code pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Quote pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class AST pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Unquote pal-CC78BC
+    class AST2 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2379,6 +2474,8 @@ Macros receive code as AST and return transformed AST. They run at compile time,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 73: Writing Simple Macros
+    accDescr: Graph with 11 nodes and 8 connections. Nodes: Call Site: double(5), Compile Time, Macro receives: AST of 5, Macro returns: :*, [], [5, 2], Compiler injects AST at call site, Runtime: Executes 5 * 2, Result: 10, Regular Function: Receives value 5, Runtime evaluation, Macro: Receives AST, Compile time transformation. Connections: Call Site: double(5) to Compile Time, Compile Time to Macro receives: AST of 5, Macro receives: AST of 5 to Macro returns: :*, [], [5, 2], Macro returns: :*, [], [5, 2] to Compiler injects AST at call site, Compiler injects AST at call site to Runtime: Executes 5 * 2, Runtime: Executes 5 * 2 to Result: 10, Regular Function: Receives value 5 to Runtime evaluation, Macro: Receives AST to Compile time transformation.
     CallSite["Call Site:<br/>double(5)"] --> CompileTime["Compile Time"]
     CompileTime --> MacroReceives["Macro receives:<br/>AST of 5"]
     MacroReceives --> MacroReturns["Macro returns:<br/>{:*, [], [5, 2]}"]
@@ -2387,19 +2484,24 @@ graph TD
     Runtime --> Result["Result: 10"]
 
     Function["Regular Function:<br/>Receives value 5"] --> FuncRuntime["Runtime evaluation"]
-    Macro["Macro:<br/>Receives AST"] --> MacroCompile["Compile time transformation"]
+    Macro["Macro:<br/>Receives AST"] --> MacroCompile["Compile time<br/>transformation"]
 
-    style CallSite fill:#0173B2,color:#fff
-    style CompileTime fill:#DE8F05,color:#fff
-    style MacroReceives fill:#DE8F05,color:#fff
-    style MacroReturns fill:#029E73,color:#fff
-    style Inject fill:#029E73,color:#fff
-    style Runtime fill:#CC78BC,color:#fff
-    style Result fill:#029E73,color:#fff
-    style Function fill:#0173B2,color:#fff
-    style Macro fill:#DE8F05,color:#fff
-    style FuncRuntime fill:#CC78BC,color:#fff
-    style MacroCompile fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class CallSite pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class CompileTime pal-DE8F05
+    class MacroReceives pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class MacroReturns pal-029E73
+    class Inject pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Runtime pal-CC78BC
+    class Result pal-029E73
+    class Function pal-0173B2
+    class Macro pal-DE8F05
+    class FuncRuntime pal-CC78BC
+    class MacroCompile pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3172,18 +3274,25 @@ Agent wraps GenServer for simple state storage with functional API. Use for cach
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Agent["Agent (wraps GenServer)"] --> Get["Agent.get<br/>Read State"]
+    accTitle: Example 77: Agent for Simple State
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Agent (wraps GenServer), Agent.get Read State, Agent.update Modify State, GetAndUpdate, Modify, Returns State, Returns :ok, Sets New State, Both, Sets. Connections: Agent (wraps GenServer) to Agent.get Read State, Agent (wraps GenServer) to Agent.update Modify State, Agent (wraps GenServer) to GetAndUpdate, Agent (wraps GenServer) to Modify, Agent.get Read State to Returns State, Agent.update Modify State to Returns :ok, Sets New State, GetAndUpdate to Both, GetAndUpdate to Sets.
+    Agent["Agent (wraps<br/>GenServer)"] --> Get["Agent.get<br/>Read State"]
     Agent --> Update["Agent.update<br/>Modify State"]
     Agent --> GetAndUpdate["Agent.get_and_update<br/>Read & Modify"]
 
     Get --> Return["Returns State"]
-    Update --> NewState["Returns :ok, Sets New State"]
-    GetAndUpdate --> Both["Returns Value & Sets New State"]
+    Update --> NewState["Returns :ok, Sets<br/>New State"]
+    GetAndUpdate --> Both["Returns Value & Sets<br/>New State"]
 
-    style Agent fill:#0173B2,color:#fff
-    style Get fill:#029E73,color:#fff
-    style Update fill:#DE8F05,color:#fff
-    style GetAndUpdate fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Agent pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Get pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Update pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class GetAndUpdate pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3314,32 +3423,39 @@ Registry maps keys to processes, enabling process lookup and pub/sub patterns. U
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 78: Registry for Process Discovery
+    accDescr: Graph with 15 nodes and 12 connections. Nodes: Registry MyApp.Registry, Unique Keys One PID per key, Duplicate Keys Multiple PIDs per key, Registry. register(registry, key, value), key1 -> PID1, Registry. register(registry, key1, value), Registry. register(registry, key2, value), key2 -> PID2, Registry. lookup(registry, key1), [PID1, value], Registry (duplicate keys), Subscriber 1, and 3 more. Connections: Registry MyApp.Registry to Unique Keys One PID per key, Registry MyApp.Registry to Duplicate Keys Multiple PIDs per key, Registry. register(registry, key, value) to key1 -> PID1, Registry. register(registry, key1, value) to key1 -> PID1, Registry. register(registry, key2, value) to key2 -> PID2, Registry. lookup(registry, key1) to [PID1, value], Registry (duplicate keys) to Subscriber 1, Registry (duplicate keys) to Subscriber 2, Registry (duplicate keys) to Subscriber 3, dispatch(topic, message) to Subscriber 1, dispatch(topic, message) to Subscriber 2, dispatch(topic, message) to Subscriber 3.
     Registry["Registry<br/>MyApp.Registry"] --> Unique["Unique Keys<br/>One PID per key"]
-    Registry --> Duplicate["Duplicate Keys<br/>Multiple PIDs per key"]
+    Registry --> Duplicate["Duplicate Keys<br/>Multiple PIDs per<br/>key"]
 
-    Register1["Registry.register(registry, key, value)"] --> Map1["key1 -> PID1"]
-    Register2["Registry.register(registry, key1, value)"] --> Map1
-    Register3["Registry.register(registry, key2, value)"] --> Map2["key2 -> PID2"]
+    Register1["Registry.<br/>register(registry,<br/>key, value)"] --> Map1["key1 -> PID1"]
+    Register2["Registry.<br/>register(registry,<br/>key1, value)"] --> Map1
+    Register3["Registry.<br/>register(registry,<br/>key2, value)"] --> Map2["key2 -> PID2"]
 
-    Lookup["Registry.lookup(registry, key1)"] --> Return["[{PID1, value}]"]
+    Lookup["Registry.<br/>lookup(registry,<br/>key1)"] --> Return["[{PID1, value}]"]
 
-    PubSub["Registry (duplicate keys)"] --> Sub1["Subscriber 1"]
+    PubSub["Registry (duplicate<br/>keys)"] --> Sub1["Subscriber 1"]
     PubSub --> Sub2["Subscriber 2"]
     PubSub --> Sub3["Subscriber 3"]
-    Dispatch["dispatch(topic, message)"] --> Sub1
+    Dispatch["dispatch(topic,<br/>message)"] --> Sub1
     Dispatch --> Sub2
     Dispatch --> Sub3
 
-    style Registry fill:#0173B2,color:#fff
-    style Unique fill:#029E73,color:#fff
-    style Duplicate fill:#DE8F05,color:#fff
-    style Map1 fill:#029E73,color:#fff
-    style Map2 fill:#029E73,color:#fff
-    style PubSub fill:#0173B2,color:#fff
-    style Dispatch fill:#CC78BC,color:#fff
-    style Sub1 fill:#029E73,color:#fff
-    style Sub2 fill:#029E73,color:#fff
-    style Sub3 fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Registry pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Unique pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Duplicate pal-DE8F05
+    class Map1 pal-029E73
+    class Map2 pal-029E73
+    class PubSub pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Dispatch pal-CC78BC
+    class Sub1 pal-029E73
+    class Sub2 pal-029E73
+    class Sub3 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3473,30 +3589,44 @@ ETS (Erlang Term Storage) provides fast in-memory key-value storage. Tables are 
 
 ```mermaid
 graph TD
+    accTitle: Example 79: ETS Tables
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: :set Unique keys, Key to One Value, :bag Allow duplicates, Key to Multiple Values, :duplicate_bag Exact duplicates, Key to Exact Duplicate Values. Connections: :set Unique keys to Key to One Value, :bag Allow duplicates to Key to Multiple Values, :duplicate_bag Exact duplicates to Key to Exact Duplicate Values.
     Set[":set<br/>Unique keys"] --> One["Key to One Value"]
-    Bag[":bag<br/>Allow duplicates"] --> Many["Key to Multiple Values"]
-    DupBag[":duplicate_bag<br/>Exact duplicates"] --> Exact["Key to Exact Duplicate Values"]
+    Bag[":bag<br/>Allow duplicates"] --> Many["Key to Multiple<br/>Values"]
+    DupBag[":duplicate_bag<br/>Exact duplicates"] --> Exact["Key to Exact<br/>Duplicate Values"]
 
-    style Set fill:#0173B2,color:#fff
-    style Bag fill:#DE8F05,color:#fff
-    style DupBag fill:#029E73,color:#fff
-    style One fill:#CC78BC,color:#fff
-    style Many fill:#CC78BC,color:#fff
-    style Exact fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Set pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Bag pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class DupBag pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class One pal-CC78BC
+    class Many pal-CC78BC
+    class Exact pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Access Types**:
 
 ```mermaid
 graph TD
+    accTitle: Example 79: ETS Tables
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Access Types, :public All processes, :protected Owner writes, all read, :private Owner only. Connections: Access Types to :public All processes, Access Types to :protected Owner writes, all read, Access Types to :private Owner only.
     Access["Access Types"] --> Public[":public<br/>All processes"]
-    Access --> Protected[":protected<br/>Owner writes, all read"]
+    Access --> Protected[":protected<br/>Owner writes, all<br/>read"]
     Access --> Private[":private<br/>Owner only"]
 
-    style Access fill:#0173B2,color:#fff
-    style Public fill:#029E73,color:#fff
-    style Protected fill:#DE8F05,color:#fff
-    style Private fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Access pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Public pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Protected pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Private pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3717,17 +3847,23 @@ Behaviours define contracts for modules. They specify required callbacks, enabli
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Behaviour["@behaviour definition<br/>with @callback"] --> Impl1["Implementation 1<br/>@impl true"]
+    accTitle: Example 81: Behaviours
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: @behaviour definition with @callback, Implementation 1 @impl true, Implementation 2 @impl true, Implementation 3 @impl true, Compile Time, Verify all callbacks implemented. Connections: @behaviour definition with @callback to Implementation 1 @impl true, @behaviour definition with @callback to Implementation 2 @impl true, @behaviour definition with @callback to Implementation 3 @impl true, Compile Time to Verify all callbacks implemented.
+    Behaviour["@behaviour<br/>definition<br/>with @callback"] --> Impl1["Implementation 1<br/>@impl true"]
     Behaviour --> Impl2["Implementation 2<br/>@impl true"]
     Behaviour --> Impl3["Implementation 3<br/>@impl true"]
 
     Compile["Compile Time"] --> Check["Verify all callbacks<br/>implemented"]
 
-    style Behaviour fill:#0173B2,color:#fff
-    style Impl1 fill:#029E73,color:#fff
-    style Impl2 fill:#029E73,color:#fff
-    style Impl3 fill:#029E73,color:#fff
-    style Check fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Behaviour pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Impl1 pal-029E73
+    class Impl2 pal-029E73
+    class Impl3 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Check pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -3902,36 +4038,48 @@ Comprehensions generate collections from enumerables with filtering and transfor
 
 ```mermaid
 graph TD
-    Input["Input: #91;1,2,3,4,5,6#93;"] --> Generator["Generator: x from list"]
-    Generator --> Filter1["Filter 1: rem#40;x, 2#41; == 0"]
-    Filter1 --> Filter2["Filter 2: x greater than 2"]
+    accTitle: Example 82: Comprehensions Deep Dive
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Input: 911,2,3,4,5,693, Generator: x from list, Filter1, 0, Filter 2: x greater than 2, Transform: x * 2, Output: 918, 1293. Connections: Input: 911,2,3,4,5,693 to Generator: x from list, Generator: x from list to Filter1, Filter1 to 0, Filter1 to Filter 2: x greater than 2, Filter 2: x greater than 2 to Transform: x * 2, Transform: x * 2 to Output: 918, 1293.
+    Input["Input:<br/>#91;1,2,3,4,5,6#93;"] --> Generator["Generator: x from<br/>list"]
+    Generator --> Filter1["Filter 1: rem#40;x,<br/>2#41; == 0"]
+    Filter1 --> Filter2["Filter 2: x greater<br/>than 2"]
     Filter2 --> Transform["Transform: x * 2"]
-    Transform --> Output["Output: #91;8, 12#93;"]
+    Transform --> Output["Output: #91;8,<br/>12#93;"]
 
-    style Input fill:#0173B2,color:#fff
-    style Generator fill:#DE8F05,color:#fff
-    style Filter1 fill:#CC78BC,color:#fff
-    style Filter2 fill:#CC78BC,color:#fff
-    style Transform fill:#029E73,color:#fff
-    style Output fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Input pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Generator pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Filter1 pal-CC78BC
+    class Filter2 pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Transform pal-029E73
+    class Output pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Process Flow - Element by Element**:
 
 ```mermaid
 graph TD
-    G1["Element 1: fails filter 1"] --> G2["Element 2: fails filter 2"]
-    G2 --> G3["Element 3: fails filter 1"]
-    G3 --> G4["Element 4: passes, 4*2=8"]
-    G4 --> G5["Element 5: fails filter 1"]
-    G5 --> G6["Element 6: passes, 6*2=12"]
+    accTitle: Example 82: Comprehensions Deep Dive
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Element 1: fails filter 1, Element 2: fails filter 2, Element 3: fails filter 1, Element 4: passes, 4*2=8, Element 5: fails filter 1, Element 6: passes, 6*2=12. Connections: Element 1: fails filter 1 to Element 2: fails filter 2, Element 2: fails filter 2 to Element 3: fails filter 1, Element 3: fails filter 1 to Element 4: passes, 4*2=8, Element 4: passes, 4*2=8 to Element 5: fails filter 1, Element 5: fails filter 1 to Element 6: passes, 6*2=12.
+    G1["Element 1: fails<br/>filter 1"] --> G2["Element 2: fails<br/>filter 2"]
+    G2 --> G3["Element 3: fails<br/>filter 1"]
+    G3 --> G4["Element 4: passes,<br/>4*2=8"]
+    G4 --> G5["Element 5: fails<br/>filter 1"]
+    G5 --> G6["Element 6: passes,<br/>6*2=12"]
 
-    style G1 fill:#CC78BC,color:#fff
-    style G2 fill:#CC78BC,color:#fff
-    style G3 fill:#CC78BC,color:#fff
-    style G4 fill:#029E73,color:#fff
-    style G5 fill:#CC78BC,color:#fff
-    style G6 fill:#029E73,color:#fff
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G1 pal-CC78BC
+    class G2 pal-CC78BC
+    class G3 pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G4 pal-029E73
+    class G5 pal-CC78BC
+    class G6 pal-029E73
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Code**:
@@ -4042,32 +4190,44 @@ Bitstrings enable binary pattern matching with precise control over bit sizes an
 
 ```mermaid
 graph TD
-    Binary["Binary #60;#60;1,2,3,4#62;#62;"] --> Match["Pattern Match"]
-    Match --> Parts["Pattern #60;a::8,b::8,rest#62;"]
-    Parts --> Values["a=1,b=2,rest=#60;3,4#62;"]
+    accTitle: Example 83: Bitstring Pattern Matching
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Binary 60601,2,3,46262, Pattern Match, Pattern 60a::8,b::8,rest62, a=1,b=2,rest=603,462. Connections: Binary 60601,2,3,46262 to Pattern Match, Pattern Match to Pattern 60a::8,b::8,rest62, Pattern 60a::8,b::8,rest62 to a=1,b=2,rest=603,462.
+    Binary["Binary #60;#60;<br/>1,2,3,4#62;#62;"] --> Match["Pattern Match"]
+    Match --> Parts["Pattern #60;<br/>a::8,b::8,<br/>rest#62;"]
+    Parts --> Values["a=1,b=2,<br/>rest=#60;3,4#62;"]
 
-    style Binary fill:#0173B2,color:#fff
-    style Match fill:#DE8F05,color:#fff
-    style Parts fill:#029E73,color:#fff
-    style Values fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Binary pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Match pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Parts pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Values pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Type Specifiers**:
 
 ```mermaid
 graph LR
-    Format["Type Specifiers"] --> Int["integer #40;default#41;"]
+    accTitle: Example 83: Bitstring Pattern Matching
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Type Specifiers, integer 40default41, float, binary, bits, utf8/utf16/utf32. Connections: Type Specifiers to integer 40default41, Type Specifiers to float, Type Specifiers to binary, Type Specifiers to bits, Type Specifiers to utf8/utf16/utf32.
+    Format["Type Specifiers"] --> Int["integer<br/>#40;default#41;"]
     Format --> Float["float"]
     Format --> Bin["binary"]
     Format --> Bits["bits"]
     Format --> UTF["utf8/utf16/utf32"]
 
-    style Format fill:#0173B2,color:#fff
-    style Int fill:#029E73,color:#fff
-    style Float fill:#029E73,color:#fff
-    style Bin fill:#029E73,color:#fff
-    style Bits fill:#029E73,color:#fff
-    style UTF fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Format pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Int pal-029E73
+    class Float pal-029E73
+    class Bin pal-029E73
+    class Bits pal-029E73
+    class UTF pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

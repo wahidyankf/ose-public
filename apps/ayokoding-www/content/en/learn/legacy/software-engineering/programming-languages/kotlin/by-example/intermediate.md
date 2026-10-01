@@ -26,6 +26,8 @@ Coroutines enable asynchronous programming without blocking threads. `runBlockin
 ```mermaid
 %% Coroutine execution flow showing suspension without blocking
 sequenceDiagram
+    accTitle: Example 28: Basic Coroutines - Launch and RunBlocking
+    accDescr: Sequence diagram between Main Thread, runBlocking Scope, launch Coroutine, Delay Scheduler. Messages: Main Thread to runBlocking Scope: runBlocking; runBlocking Scope to launch Coroutine: launch; launch Coroutine to launch Coroutine: println(Starting...); launch Coroutine to Delay Scheduler: delay(1000); Delay Scheduler to launch Coroutine: Resume after 1s; launch Coroutine to launch Coroutine: println(Done); runBlocking Scope to Main Thread: All coroutines complete.
     participant Main as Main Thread
     participant Scope as runBlocking Scope
     participant Coroutine as launch Coroutine
@@ -226,7 +228,9 @@ Structured concurrency ensures child coroutines are cancelled when the parent sc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Parent[Parent CoroutineScope]
+    accTitle: Example 30: Structured Concurrency with CoroutineScope
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: Parent CoroutineScope, async Task 1 1000ms, async Task 2 500ms, launch Task 3 800ms, All tasks complete Parent returns. Connections: Parent CoroutineScope to async Task 1 1000ms, Parent CoroutineScope to async Task 2 500ms, Parent CoroutineScope to launch Task 3 800ms, async Task 1 1000ms to All tasks complete Parent returns, async Task 2 500ms to All tasks complete Parent returns, launch Task 3 800ms to All tasks complete Parent returns.
+    Parent[Parent<br/>CoroutineScope]
     Parent --> Child1[async Task 1<br/>1000ms]
     Parent --> Child2[async Task 2<br/>500ms]
     Parent --> Child3[launch Task 3<br/>800ms]
@@ -235,11 +239,15 @@ graph TD
     Child2 --> Complete
     Child3 --> Complete
 
-    style Parent fill:#0173B2,color:#fff
-    style Child1 fill:#029E73,color:#fff
-    style Child2 fill:#029E73,color:#fff
-    style Child3 fill:#029E73,color:#fff
-    style Complete fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Parent pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Child1 pal-029E73
+    class Child2 pal-029E73
+    class Child3 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Complete pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Cancellation Propagation:**
@@ -247,22 +255,29 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 30: Structured Concurrency with CoroutineScope
+    accDescr: Graph with 6 nodes and 7 connections. Nodes: scope.cancel called, Cancel Parent, Cancel Task 1, Cancel Task 2, Cancel Task 3, All children cancelled No leaks. Connections: scope.cancel called to Cancel Parent, Cancel Parent to Cancel Task 1, Cancel Parent to Cancel Task 2, Cancel Parent to Cancel Task 3, Cancel Task 1 to All children cancelled No leaks, Cancel Task 2 to All children cancelled No leaks, Cancel Task 3 to All children cancelled No leaks.
     Cancel[scope.cancel called]
     Cancel --> Parent[Cancel Parent]
     Parent --> Child1[Cancel Task 1]
     Parent --> Child2[Cancel Task 2]
     Parent --> Child3[Cancel Task 3]
 
-    Child1 --> Result[All children cancelled<br/>No leaks]
+    Child1 --> Result[All children<br/>cancelled<br/>No leaks]
     Child2 --> Result
     Child3 --> Result
 
-    style Cancel fill:#0173B2,color:#fff
-    style Parent fill:#DE8F05,color:#fff
-    style Child1 fill:#029E73,color:#fff
-    style Child2 fill:#029E73,color:#fff
-    style Child3 fill:#029E73,color:#fff
-    style Result fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Cancel pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Parent pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Child1 pal-029E73
+    class Child2 pal-029E73
+    class Child3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Result pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -686,6 +701,8 @@ Flow is a cold asynchronous stream that emits values on demand. Unlike channels 
 ```mermaid
 %% Cold Flow execution model showing lazy collection
 sequenceDiagram
+    accTitle: Example 33: Flow for Cold Asynchronous Streams
+    accDescr: Sequence diagram between Main Code, Flow Builder, collect. Messages: Main Code to Flow Builder: numbersFlow(); Flow Builder to Main Code: Flow reference; Main Code to collect: flow.collect; collect to Flow Builder: Start execution; Flow Builder to Flow Builder: emit(1); Flow Builder to collect: value 1; collect to collect: process value; Flow Builder to Flow Builder: emit(2); Flow Builder to collect: value 2.
     participant Code as Main Code
     participant Flow as Flow Builder
     participant Collect as collect { }
@@ -805,6 +822,8 @@ Flow operators enable complex asynchronous data processing. `transform` emits mu
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 34: Flow Operators - Transform, Buffer, Conflate
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: flow 1, 2, 3, transform 1, transform 2, transform 3, emit 1 emit 10, emit 2 emit 20, emit 3 emit 30, Output: 1, 10, 2, 20, 3, 30. Connections: flow 1, 2, 3 to transform 1, flow 1, 2, 3 to transform 2, flow 1, 2, 3 to transform 3, transform 1 to emit 1 emit 10, transform 2 to emit 2 emit 20, transform 3 to emit 3 emit 30, emit 1 emit 10 to Output: 1, 10, 2, 20, 3, 30, emit 2 emit 20 to Output: 1, 10, 2, 20, 3, 30, emit 3 emit 30 to Output: 1, 10, 2, 20, 3, 30.
     Flow[flow 1, 2, 3]
     Flow --> T1[transform 1]
     Flow --> T2[transform 2]
@@ -818,11 +837,15 @@ graph TD
     E2 --> Result
     E3 --> Result
 
-    style Flow fill:#0173B2,color:#fff
-    style T1 fill:#029E73,color:#fff
-    style T2 fill:#029E73,color:#fff
-    style T3 fill:#029E73,color:#fff
-    style Result fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Flow pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class T1 pal-029E73
+    class T2 pal-029E73
+    class T3 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Result pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Buffer Operator (Parallel Processing):**
@@ -830,6 +853,8 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 34: Flow Operators - Transform, Buffer, Conflate
+    accDescr: Graph with 5 nodes and 2 connections. Nodes: Producer emit every 100ms, buffer, Consumer process every 300ms, No buffer: 1200ms total, With buffer: 900ms total overlapped. Connections: Producer emit every 100ms to buffer, buffer to Consumer process every 300ms.
     Producer[Producer<br/>emit every 100ms]
     Producer --> Buffer[buffer]
     Buffer --> Consumer[Consumer<br/>process every 300ms]
@@ -837,11 +862,17 @@ graph TD
     NoBuffer[No buffer:<br/>1200ms total]
     WithBuffer[With buffer:<br/>900ms total<br/>overlapped]
 
-    style Producer fill:#0173B2,color:#fff
-    style Buffer fill:#029E73,color:#fff
-    style Consumer fill:#DE8F05,color:#fff
-    style NoBuffer fill:#CC78BC,color:#fff
-    style WithBuffer fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Producer pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Buffer pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Consumer pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class NoBuffer pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class WithBuffer pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Conflate Operator (Drop Intermediate):**
@@ -849,6 +880,8 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 34: Flow Operators - Transform, Buffer, Conflate
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Emit 0, 1, 2, 3, 4 every 100ms, conflate, Slow consumer 300ms per item, Drop intermediate values 1, 2, 3, Collect: 0, 4 only. Connections: Emit 0, 1, 2, 3, 4 every 100ms to conflate, conflate to Slow consumer 300ms per item, conflate to Drop intermediate values 1, 2, 3, Drop intermediate values 1, 2, 3 to Collect: 0, 4 only.
     Emit[Emit 0, 1, 2, 3, 4<br/>every 100ms]
     Emit --> Conflate[conflate]
     Conflate --> Slow[Slow consumer<br/>300ms per item]
@@ -856,11 +889,17 @@ graph TD
     Conflate --> Drop[Drop intermediate<br/>values 1, 2, 3]
     Drop --> Collect[Collect:<br/>0, 4 only]
 
-    style Emit fill:#0173B2,color:#fff
-    style Conflate fill:#029E73,color:#fff
-    style Slow fill:#DE8F05,color:#fff
-    style Drop fill:#CC78BC,color:#fff
-    style Collect fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Emit pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Conflate pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Slow pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Drop pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Collect pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -1065,14 +1104,19 @@ fun main() = runBlocking {
 ```mermaid
 %% StateFlow holds state with initial value
 graph TD
+    accTitle: Example 35: StateFlow and SharedFlow for Hot Streams
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: MutableStateFlow initial value: 0, Collector 1, Collector 2, update value, New collectors get current state immediately. Connections: MutableStateFlow initial value: 0 to Collector 1, MutableStateFlow initial value: 0 to Collector 2, update value to MutableStateFlow initial value: 0.
     SF1[MutableStateFlow<br/>initial value: 0] --> SFC1[Collector 1]
     SF1 --> SFC2[Collector 2]
     SFU[update value] --> SF1
-    Note1[New collectors get<br/>current state immediately]
+    Note1[New collectors get<br/>current state<br/>immediately]
 
-    style SF1 fill:#0173B2,color:#fff
-    style SFC1 fill:#029E73,color:#fff
-    style SFC2 fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class SF1 pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class SFC1 pal-029E73
+    class SFC2 pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **SharedFlow Behavior:**
@@ -1080,14 +1124,19 @@ graph TD
 ```mermaid
 %% SharedFlow broadcasts events without state
 graph TD
+    accTitle: Example 35: StateFlow and SharedFlow for Hot Streams
+    accDescr: Graph with 5 nodes and 3 connections. Nodes: MutableSharedFlow, Collector 1, Collector 2, emit event, No state retention events broadcasted. Connections: MutableSharedFlow to Collector 1, MutableSharedFlow to Collector 2, emit event to MutableSharedFlow.
     SHF1[MutableSharedFlow] --> SHFC1[Collector 1]
     SHF1 --> SHFC2[Collector 2]
     SHE[emit event] --> SHF1
     Note2[No state retention<br/>events broadcasted]
 
-    style SHF1 fill:#DE8F05,color:#fff
-    style SHFC1 fill:#CC78BC,color:#fff
-    style SHFC2 fill:#CC78BC,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class SHF1 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class SHFC1 pal-CC78BC
+    class SHFC2 pal-CC78BC
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 **Implementation Pattern:**
@@ -1486,21 +1535,28 @@ Sequences compute elements lazily, avoiding intermediate collection creation. Us
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 38: Sequences for Lazy Evaluation
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: 1 million elements, map: multiply by 2, Creates 1M element list, filter: greater than 1000, Creates another 1M element list, take 5, Final: 5 elements Memory: 3 large lists. Connections: 1 million elements to map: multiply by 2, map: multiply by 2 to Creates 1M element list, Creates 1M element list to filter: greater than 1000, filter: greater than 1000 to Creates another 1M element list, Creates another 1M element list to take 5, take 5 to Final: 5 elements Memory: 3 large lists.
     Input[1 million elements]
     Input --> Map[map: multiply by 2]
-    Map --> MapList[Creates 1M element list]
-    MapList --> Filter[filter: greater than 1000]
-    Filter --> FilterList[Creates another 1M element list]
+    Map --> MapList[Creates 1M element<br/>list]
+    MapList --> Filter[filter: greater than<br/>1000]
+    Filter --> FilterList[Creates another 1M<br/>element list]
     FilterList --> Take[take 5]
-    Take --> Result[Final: 5 elements<br/>Memory: 3 large lists]
+    Take --> Result[Final: 5 elements<br/>Memory: 3 large<br/>lists]
 
-    style Input fill:#0173B2,color:#fff
-    style Map fill:#DE8F05,color:#fff
-    style MapList fill:#CC78BC,color:#fff
-    style Filter fill:#DE8F05,color:#fff
-    style FilterList fill:#CC78BC,color:#fff
-    style Take fill:#DE8F05,color:#fff
-    style Result fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Input pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Map pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class MapList pal-CC78BC
+    class Filter pal-DE8F05
+    class FilterList pal-CC78BC
+    class Take pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Result pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Lazy Evaluation (Sequence):**
@@ -1508,6 +1564,8 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 38: Sequences for Lazy Evaluation
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Process element 1, map: 1 × 2 = 2, filter: 2 > 1000?, No: skip, Process element 501, map: 501 × 2 = 1002, filter: 1002 > 1000?, Yes: collect 1, Continue until 5 found, Final: 5 elements Memory: No intermediate lists. Connections: Process element 1 to map: 1 × 2 = 2, map: 1 × 2 = 2 to filter: 2 > 1000?, filter: 2 > 1000? to No: skip, No: skip to Process element 501, Process element 501 to map: 501 × 2 = 1002, map: 501 × 2 = 1002 to filter: 1002 > 1000?, filter: 1002 > 1000? to Yes: collect 1, Yes: collect 1 to Continue until 5 found, Continue until 5 found to Final: 5 elements Memory: No intermediate lists.
     Start[Process element 1]
     Start --> Map1[map: 1 × 2 = 2]
     Map1 --> Filter1[filter: 2 > 1000?]
@@ -1518,15 +1576,20 @@ graph TD
     Map2 --> Filter2[filter: 1002 > 1000?]
     Filter2 --> Take[Yes: collect 1]
 
-    Take --> Continue[Continue until 5 found]
-    Continue --> Result[Final: 5 elements<br/>Memory: No intermediate lists]
+    Take --> Continue[Continue until 5<br/>found]
+    Continue --> Result[Final: 5 elements<br/>Memory: No<br/>intermediate lists]
 
-    style Start fill:#0173B2,color:#fff
-    style Map1 fill:#029E73,color:#fff
-    style Map2 fill:#029E73,color:#fff
-    style Filter1 fill:#DE8F05,color:#fff
-    style Filter2 fill:#DE8F05,color:#fff
-    style Result fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Start pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Map1 pal-029E73
+    class Map2 pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Filter1 pal-DE8F05
+    class Filter2 pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Result pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Execution Order Comparison:**
@@ -1677,6 +1740,8 @@ Delegate property implementations to reusable delegate objects. `lazy` computes 
 ```mermaid
 %% Property delegation flow showing lazy initialization and observable pattern
 graph TD
+    accTitle: Example 39: Property Delegation - Lazy and Observable
+    accDescr: Graph with 16 nodes and 15 connections. Nodes: Property Access, Delegation Type?, First Access?, Set New Value, Set New Value, Execute Initializer, Return Cached Value, Cache Result, Return Value, Invoke Callback, property, oldValue, newValue, Property Updated, and 4 more. Connections: Property Access to Delegation Type?, Delegation Type? to First Access? (lazy), Delegation Type? to Set New Value (observable), Delegation Type? to Set New Value (vetoable), First Access? to Execute Initializer (Yes), First Access? to Return Cached Value (No), Execute Initializer to Cache Result, Cache Result to Return Value, Set New Value to Invoke Callback, Invoke Callback to property, oldValue, newValue, property, oldValue, newValue to Property Updated, Set New Value to Invoke Validator, and 3 more.
     A[Property Access] --> B{Delegation Type?}
     B -->|lazy| C[First Access?]
     B -->|observable| H[Set New Value]
@@ -1688,7 +1753,7 @@ graph TD
     F --> G[Return Value]
 
     H --> I[Invoke Callback]
-    I --> J[property, oldValue, newValue]
+    I --> J[property, oldValue,<br/>newValue]
     J --> K[Property Updated]
 
     L --> M[Invoke Validator]
@@ -1696,13 +1761,19 @@ graph TD
     N -->|true| O[Property Updated]
     N -->|false| P[Property Unchanged]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#029E73,color:#fff
-    style I fill:#CC78BC,color:#fff
-    style M fill:#CC78BC,color:#fff
-    style F fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class I pal-CC78BC
+    class M pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -1821,6 +1892,8 @@ Create custom delegates by implementing `getValue` and `setValue` operators. Del
 ```mermaid
 %% Custom delegate getValue/setValue flow
 sequenceDiagram
+    accTitle: Example 40: Custom Property Delegates
+    accDescr: Sequence diagram between Property Access, Custom Delegate, Backing Storage. Messages: Property Access to Custom Delegate: Read property; Custom Delegate to Custom Delegate: getValue(); Custom Delegate to Backing Storage: Read from storage; Backing Storage to Custom Delegate: Return value; Custom Delegate to Property Access: Return value; Property Access to Custom Delegate: Write property; Custom Delegate to Custom Delegate: setValue(newValue); Custom Delegate to Custom Delegate: Validate/Transform; Custom Delegate to Backing Storage: Write to storage; Backing Storage to Custom Delegate: Confirm; Custom Delegate to Property Access: Complete.
     participant Client as Property Access
     participant Delegate as Custom Delegate
     participant Storage as Backing Storage
@@ -2217,8 +2290,10 @@ Override operators like `+`, `-`, `*`, `[]`, `in` to create domain-specific synt
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 43: Operator Overloading
+    accDescr: Graph with 9 nodes and 6 connections. Nodes: -point, operator fun unaryMinus, Returns Point-x, -y, point1 + point2, operator fun plus, Returns new Point, point1 < point2, operator fun compareTo, Returns Int: -1, 0, 1. Connections: -point to operator fun unaryMinus, operator fun unaryMinus to Returns Point-x, -y, point1 + point2 to operator fun plus, operator fun plus to Returns new Point, point1 < point2 to operator fun compareTo, operator fun compareTo to Returns Int: -1, 0, 1.
     Unary["-point"]
-    Unary --> UnaryFn["operator fun unaryMinus"]
+    Unary --> UnaryFn["operator fun<br/>unaryMinus"]
     UnaryFn --> U[Returns Point-x, -y]
 
     Binary["point1 + point2"]
@@ -2226,15 +2301,18 @@ graph TD
     BinaryFn --> B[Returns new Point]
 
     Compare["point1 < point2"]
-    Compare --> CompareFn["operator fun compareTo"]
-    CompareFn --> C[Returns Int: -1, 0, 1]
+    Compare --> CompareFn["operator fun<br/>compareTo"]
+    CompareFn --> C[Returns Int: -1, 0,<br/>1]
 
-    style Unary fill:#0173B2,color:#fff
-    style UnaryFn fill:#029E73,color:#fff
-    style Binary fill:#0173B2,color:#fff
-    style BinaryFn fill:#029E73,color:#fff
-    style Compare fill:#0173B2,color:#fff
-    style CompareFn fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Unary pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class UnaryFn pal-029E73
+    class Binary pal-0173B2
+    class BinaryFn pal-029E73
+    class Compare pal-0173B2
+    class CompareFn pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Access and Special Operators:**
@@ -2242,12 +2320,14 @@ graph TD
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 43: Operator Overloading
+    accDescr: Graph with 12 nodes and 8 connections. Nodes: matrix91i, j93, operator fun get, Returns element, value in matrix, operator fun contains, Returns Boolean, matrix40row41, operator fun invoke, Returns result, point += other, operator fun plusAssign, Modifies in place. Connections: matrix91i, j93 to operator fun get, operator fun get to Returns element, value in matrix to operator fun contains, operator fun contains to Returns Boolean, matrix40row41 to operator fun invoke, operator fun invoke to Returns result, point += other to operator fun plusAssign, operator fun plusAssign to Modifies in place.
     Index["matrix#91;i, j#93;"]
     Index --> IndexFn["operator fun get"]
     IndexFn --> I[Returns element]
 
     Contains["value in matrix"]
-    Contains --> ContainsFn["operator fun contains"]
+    Contains --> ContainsFn["operator fun<br/>contains"]
     ContainsFn --> Co[Returns Boolean]
 
     Invoke["matrix#40;row#41;"]
@@ -2255,17 +2335,20 @@ graph TD
     InvokeFn --> Inv[Returns result]
 
     Augmented["point += other"]
-    Augmented --> AugFn["operator fun plusAssign"]
+    Augmented --> AugFn["operator fun<br/>plusAssign"]
     AugFn --> A[Modifies in place]
 
-    style Index fill:#0173B2,color:#fff
-    style IndexFn fill:#029E73,color:#fff
-    style Contains fill:#0173B2,color:#fff
-    style ContainsFn fill:#029E73,color:#fff
-    style Invoke fill:#0173B2,color:#fff
-    style InvokeFn fill:#029E73,color:#fff
-    style Augmented fill:#0173B2,color:#fff
-    style AugFn fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Index pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class IndexFn pal-029E73
+    class Contains pal-0173B2
+    class ContainsFn pal-029E73
+    class Invoke pal-0173B2
+    class InvokeFn pal-029E73
+    class Augmented pal-0173B2
+    class AugFn pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -2459,6 +2542,8 @@ Create type-safe DSLs using lambda with receiver. The receiver provides implicit
 
 ```mermaid
 sequenceDiagram
+    accTitle: Example 44: DSL Building with Lambda with Receiver
+    accDescr: Sequence diagram between Client, HTML, Head, Body. Messages: Client to HTML: html lambda invoked; HTML to HTML: Create HTML instance; HTML to Head: head lambda called; Head to Head: Set title property; Head to HTML: Return head content; HTML to Body: body lambda called; Body to Body: h1 method invoked; Body to Body: p method invoked; Body to HTML: Return body content; HTML to Client: Return complete HTML.
     participant Client
     participant HTML
     participant Head

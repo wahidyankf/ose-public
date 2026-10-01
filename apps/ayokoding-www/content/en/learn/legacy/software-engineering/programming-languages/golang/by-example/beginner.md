@@ -14,6 +14,8 @@ Go is a compiled language - you write source code, compile it into a binary exec
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: Hello World and Go Compilation
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Source Code main.go, Go Compiler, Binary Executable main, Running Binary Output. Connections: Source Code main.go to Go Compiler (go build), Go Compiler to Binary Executable main (code generation), Binary Executable main to Running Binary Output (./main).
     A["Source Code<br/>main.go"]
     B["Go Compiler"]
     C["Binary Executable<br/>main"]
@@ -23,10 +25,15 @@ graph TD
     B -->|code generation| C
     C -->|./main| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -119,16 +126,24 @@ Constants are immutable values determined at compile-time. The `iota` enumerator
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["const StatusPending = iota"] -->|0| B["StatusPending = 0"]
+    accTitle: Example 3: Constants and iota
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: const StatusPending = iota, StatusPending = 0, StatusApproved = 1, StatusRejected = 2, StatusArchived = 3. Connections: const StatusPending = iota to StatusPending = 0 (0), const StatusPending = iota to StatusApproved = 1 (1), const StatusPending = iota to StatusRejected = 2 (2), const StatusPending = iota to StatusArchived = 3 (3).
+    A["const StatusPending<br/>= iota"] -->|0| B["StatusPending = 0"]
     A -->|1| C["StatusApproved = 1"]
     A -->|2| D["StatusRejected = 2"]
     A -->|3| E["StatusArchived = 3"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -189,16 +204,22 @@ Arrays have fixed size declared upfront. Slices are dynamic collections backed b
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Slice s := []int{1, 2, 3}"]
-    B["Backing Array [3]int{1, 2, 3}"]
+    accTitle: Example 4: Arrays and Slices
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Slice s := []int1, 2, 3, Backing Array [3]int1, 2, 3, C, 0] len=3 cap=3. Connections: Slice s := []int1, 2, 3 to C, C to Backing Array [3]int1, 2, 3.
+    A["Slice s := []int{1,<br/>2, 3}"]
+    B["Backing Array<br/>[3]int{1, 2, 3}"]
     C["Slice Header<br/>ptr=&arr[0]<br/>len=3<br/>cap=3"]
 
     A --> C
     C --> B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -343,6 +364,8 @@ Structs group related data into named fields. Methods can operate on structs by 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 6: Structs
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: Function Call, Pass by Value struct Person, Pass by Pointer *Person, Copy Created Memory: 0x1000, Original Struct Memory: 0x2000, Pointer to Original Points to: 0x2000. Connections: Function Call to Pass by Value struct Person, Function Call to Pass by Pointer *Person, Pass by Value struct Person to Copy Created Memory: 0x1000, Pass by Value struct Person to Original Struct Memory: 0x2000 (Original safe), Pass by Pointer *Person to Pointer to Original Points to: 0x2000, Pointer to Original Points to: 0x2000 to Original Struct Memory: 0x2000.
     A["Function Call"]
     B["Pass by Value<br/>struct Person"]
     C["Pass by Pointer<br/>*Person"]
@@ -357,12 +380,18 @@ graph TD
     C --> F
     F --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -626,16 +655,22 @@ Pointers hold memory addresses. The `&` operator takes an address, `*` dereferen
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Variable x = 10<br/>Memory Address: 0x1234"]
-    B["Pointer p = &x<br/>Holds Address: 0x1234"]
-    C["*p dereferencing<br/>Access value at address<br/>Result: 10"]
+    accTitle: Example 9: Pointers
+    accDescr: Graph with 4 nodes and 2 connections. Nodes: Variable x = 10 Memory Address: 0x1234, B, x, *p dereferencing Access value at address Result: 10. Connections: Variable x = 10 Memory Address: 0x1234 to B (&x), B to *p dereferencing Access value at address Result: 10 (*p).
+    A["Variable x = 10<br/>Memory Address:<br/>0x1234"]
+    B["Pointer p = &x<br/>Holds Address:<br/>0x1234"]
+    C["*p dereferencing<br/>Access value at<br/>address<br/>Result: 10"]
 
     A ---|&x| B
     B ---|*p| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -746,9 +781,11 @@ Methods are functions attached to a type via a receiver. Go distinguishes value 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 10: Methods
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Original Person Name: Alice, Age: 30, Value Receiver func p Person PrintInfo, Pointer Receiver func p *Person HaveBirthday, Copy of Person Name: Alice, Age: 30, Pointer to Original Can modify Age, Original Unchanged Age still 30, Original Modified Age now 31. Connections: Original Person Name: Alice, Age: 30 to Value Receiver func p Person PrintInfo, Original Person Name: Alice, Age: 30 to Pointer Receiver func p *Person HaveBirthday, Value Receiver func p Person PrintInfo to Copy of Person Name: Alice, Age: 30, Copy of Person Name: Alice, Age: 30 to Original Unchanged Age still 30, Pointer Receiver func p *Person HaveBirthday to Pointer to Original Can modify Age, Pointer to Original Can modify Age to Original Modified Age now 31.
     A["Original Person<br/>Name: Alice, Age: 30"]
-    B["Value Receiver<br/>func p Person PrintInfo"]
-    C["Pointer Receiver<br/>func p *Person HaveBirthday"]
+    B["Value Receiver<br/>func p Person<br/>PrintInfo"]
+    C["Pointer Receiver<br/>func p *Person<br/>HaveBirthday"]
     D["Copy of Person<br/>Name: Alice, Age: 30"]
     E["Pointer to Original<br/>Can modify Age"]
     F["Original Unchanged<br/>Age still 30"]
@@ -761,13 +798,19 @@ graph TD
     C --> E
     E --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -853,6 +896,8 @@ Interfaces define method contracts. A type satisfies an interface implicitly - n
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 11: Interfaces
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Interface Writer Write method, Type File Has Write method, Type Buffer Has Write method. Connections: Interface Writer Write method to Type File Has Write method (satisfied by), Interface Writer Write method to Type Buffer Has Write method (satisfied by).
     A["Interface Writer<br/>Write method"]
     B["Type File<br/>Has Write method"]
     C["Type Buffer<br/>Has Write method"]
@@ -860,9 +905,13 @@ graph TD
     A -->|satisfied by| B
     A -->|satisfied by| C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1261,13 +1310,15 @@ Go supports bitwise operations on integers and compound assignment operators tha
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 16: Bitwise and Compound Assignment Operators
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: a = 12 Binary: 1100, b = 10 Binary: 1010, C, b, 1010, OR: a | b 1100 | 1010 = 1110 Result: 14, XOR: a ^ b 1100 ^ 1010 = 0110 Result: 6, Left Shift: a << 1 1100 << 1 = 11000 Result: 24 multiply by 2, Right Shift: a >> 1 1100 >> 1 = 0110 Result: 6 divide by 2. Connections: a = 12 Binary: 1100 to C, b = 10 Binary: 1010 to C, a = 12 Binary: 1100 to OR: a | b 1100 | 1010 = 1110 Result: 14, b = 10 Binary: 1010 to OR: a | b 1100 | 1010 = 1110 Result: 14, a = 12 Binary: 1100 to XOR: a ^ b 1100 ^ 1010 = 0110 Result: 6, b = 10 Binary: 1010 to XOR: a ^ b 1100 ^ 1010 = 0110 Result: 6, a = 12 Binary: 1100 to Left Shift: a << 1 1100 << 1 = 11000 Result: 24 multiply by 2, a = 12 Binary: 1100 to Right Shift: a >> 1 1100 >> 1 = 0110 Result: 6 divide by 2.
     A["a = 12<br/>Binary: 1100"]
     B["b = 10<br/>Binary: 1010"]
     C["AND: a & b<br/>1100 & 1010 = 1000<br/>Result: 8"]
     D["OR: a | b<br/>1100 | 1010 = 1110<br/>Result: 14"]
     E["XOR: a ^ b<br/>1100 ^ 1010 = 0110<br/>Result: 6"]
-    F["Left Shift: a << 1<br/>1100 << 1 = 11000<br/>Result: 24 multiply by 2"]
-    G["Right Shift: a >> 1<br/>1100 >> 1 = 0110<br/>Result: 6 divide by 2"]
+    F["Left Shift: a << 1<br/>1100 << 1 = 11000<br/>Result: 24 multiply<br/>by 2"]
+    G["Right Shift: a >> 1<br/>1100 >> 1 = 0110<br/>Result: 6 divide by<br/>2"]
 
     A --> C
     B --> C
@@ -1278,13 +1329,19 @@ graph TD
     A --> F
     A --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class B pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1443,6 +1500,8 @@ Anonymous functions (functions without names) can be assigned to variables or ex
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 18: Anonymous Functions and Closures
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Outer Function counter := 0, Closure Function accesses counter, Each call increments shared counter. Connections: Outer Function counter := 0 to Closure Function accesses counter (creates), Closure Function accesses counter to Outer Function counter := 0 (maintains access), Closure Function accesses counter to Each call increments shared counter.
     A["Outer Function<br/>counter := 0"]
     B["Closure Function<br/>accesses counter"]
     C["Each call increments<br/>shared counter"]
@@ -1451,9 +1510,13 @@ graph TD
     B -->|maintains access| A
     B --> C
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1563,11 +1626,13 @@ func makeCounter() func() int {    // => Returns func() int (function factory pa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 19: Defer, Panic, and Recover
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Function starts, defer cleanup, Normal execution, panic occurs, defer runs with recover, Panic caught or propagates up. Connections: Function starts to defer cleanup, defer cleanup to Normal execution, Normal execution to panic occurs, panic occurs to defer runs with recover, defer runs with recover to Panic caught or propagates up.
     A["Function starts"]
     B["defer cleanup"]
     C["Normal execution"]
     D["panic occurs"]
-    E["defer runs with recover"]
+    E["defer runs with<br/>recover"]
     F["Panic caught or<br/>propagates up"]
 
     A --> B
@@ -1576,12 +1641,18 @@ graph TD
     D --> E
     E --> F
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2157,6 +2228,8 @@ Arrays and slices have critical differences in behavior, especially when passing
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 26: Array vs Slice Deep Dive
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Array [3]int Fixed size Passed by value, Slice []int Dynamic size Passed by reference, Backing Array Actual data storage. Connections: Array [3]int Fixed size Passed by value to Array [3]int Fixed size Passed by value (Full copy on function call), Slice []int Dynamic size Passed by reference to Backing Array Actual data storage (Points to), Slice []int Dynamic size Passed by reference to Slice []int Dynamic size Passed by reference (Only header copied on call).
     A["Array [3]int<br/>Fixed size<br/>Passed by value"]
     B["Slice []int<br/>Dynamic size<br/>Passed by reference"]
     C["Backing Array<br/>Actual data storage"]
@@ -2165,9 +2238,13 @@ graph TD
     B -->|"Points to"| C
     B -->|"Only header<br/>copied on call"| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Array behavior (value semantics)**:

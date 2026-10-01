@@ -16,14 +16,21 @@ Decorators wrap functions to modify behavior without changing function code.
 ```mermaid
 %% Decorator wrapping pattern
 graph TD
+    accTitle: Example 28: Basic Decorator
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Original Function add(a, b), Decorator @trace, Wrapper Function logs calls + result, Returns wrapped function. Connections: Original Function add(a, b) to Decorator @trace, Decorator @trace to Wrapper Function logs calls + result, Wrapper Function logs calls + result to Returns wrapped function.
     A["Original Function<br/>add(a, b)"] --> B["Decorator<br/>@trace"]
     B --> C["Wrapper Function<br/>logs calls + result"]
     C --> D["Returns<br/>wrapped function"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -65,16 +72,24 @@ Decorators can accept configuration parameters for flexible behavior modificatio
 ```mermaid
 %% Three-layer decorator factory pattern
 graph TD
+    accTitle: Example 29: Decorator with Arguments
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: @repeat(3) Decorator Factory, Returns decorator function, decorator(func) Actual Decorator, Returns wrapper function, wrapper(*args) Executes 3 times. Connections: @repeat(3) Decorator Factory to Returns decorator function, Returns decorator function to decorator(func) Actual Decorator, decorator(func) Actual Decorator to Returns wrapper function, Returns wrapper function to wrapper(*args) Executes 3 times.
     A["@repeat(3)<br/>Decorator Factory"] --> B["Returns<br/>decorator function"]
     B --> C["decorator(func)<br/>Actual Decorator"]
     C --> D["Returns<br/>wrapper function"]
     D --> E["wrapper(*args)<br/>Executes 3 times"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -162,6 +177,8 @@ Generators produce values lazily using yield, enabling memory-efficient iteratio
 ```mermaid
 %% Generator yield flow and state
 stateDiagram-v2
+    accTitle: Example 31: Basic Generator
+    accDescr: State diagram with 8 items: start or end, Created, Running, Suspended, Suspended2, Running2, Suspended3, Running3. Relationships: start or end to Created: countdown(3); Created to Running: next() called; Running to Suspended: yield 3; Suspended to Running: next() called; Running to Suspended2: yield 2; Suspended2 to Running2: next() called; Running2 to Suspended3: yield 1; Suspended3 to Running3: next() called; Running3 to start or end: StopIteration.
     [*] --> Created: countdown(3)
     Created --> Running: next() called
     Running --> Suspended: yield 3
@@ -258,6 +275,8 @@ Context managers handle setup/cleanup automatically using **enter** and **exit**
 ```mermaid
 %% Context manager lifecycle
 sequenceDiagram
+    accTitle: Example 33: Context Manager
+    accDescr: Sequence diagram between with FileManager as f, Context Manager, File Resource. Messages: with FileManager as f to Context Manager: Enter with block; Context Manager to Context Manager: __enter__4041 called; Context Manager to File Resource: open40data.txt, w41; File Resource to Context Manager: File object; Context Manager to with FileManager as f: Return file object to f; with FileManager as f to File Resource: f.write40Hello41; with FileManager as f to Context Manager: Exit with block; Context Manager to Context Manager: __exit__4041 called; Context Manager to File Resource: f.close4041.
     participant Code as "with FileManager as f"
     participant CM as "Context Manager"
     participant File as "File Resource"
@@ -323,18 +342,26 @@ Use @contextmanager decorator to create context managers from generator function
 ```mermaid
 %% Contextlib setup-yield-cleanup flow
 graph TD
-    A["with timer('Processing')"] --> B["Setup Code<br/>start = time.time()"]
+    accTitle: Example 34: contextlib for Simple Context Managers
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: with timer(Processing), Setup Code start = time.time(), yield (pause generator), Execute with block total = sum(...), Resume generator finally block, Cleanup Code print duration. Connections: with timer(Processing) to Setup Code start = time.time(), Setup Code start = time.time() to yield (pause generator), yield (pause generator) to Execute with block total = sum(...), Execute with block total = sum(...) to Resume generator finally block, Resume generator finally block to Cleanup Code print duration.
+    A["with<br/>timer('Processing')"] --> B["Setup Code<br/>start = time.time()"]
     B --> C["yield<br/>(pause generator)"]
     C --> D["Execute with block<br/>total = sum(...)"]
     D --> E["Resume generator<br/>finally block"]
     E --> F["Cleanup Code<br/>print duration"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#CC78BC,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -719,6 +746,8 @@ defaultdict provides default values for missing keys, eliminating KeyError check
 ```mermaid
 %% defaultdict key access with factory
 graph TD
+    accTitle: Example 42: Collections - defaultdict
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Access groups[a], Key a exists?, Return existing list, Call factory list(), Create empty list [], Store at key a, Return new list. Connections: Access groups[a] to Key a exists?, Key a exists? to Return existing list (Yes), Key a exists? to Call factory list() (No), Call factory list() to Create empty list [], Create empty list [] to Store at key a, Store at key a to Return new list.
     A["Access groups['a']"] --> B{Key 'a'<br/>exists?}
     B -->|Yes| C["Return existing<br/>list"]
     B -->|No| D["Call factory<br/>list()"]
@@ -726,13 +755,19 @@ graph TD
     E --> F["Store at key 'a'"]
     F --> G["Return new list"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
-    style F fill:#CA9161,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -779,6 +814,8 @@ deque (double-ended queue) provides O(1) append/pop from both ends.
 ```mermaid
 %% Deque double-ended operations
 graph TD
+    accTitle: Example 43: Collections - deque
+    accDescr: Graph with 9 nodes and 7 connections. Nodes: appendleft40041 O40141, 910, 1, 2, 393 deque, append40441 O40141, popleft4041 O40141 returns 0, pop4041 O40141 returns 4, rotate40141, 913, 1, 293 shift right, rotate40-141, 911, 2, 393 shift left. Connections: appendleft40041 O40141 to 910, 1, 2, 393 deque, 910, 1, 2, 393 deque to append40441 O40141, popleft4041 O40141 returns 0 to 910, 1, 2, 393 deque, 910, 1, 2, 393 deque to pop4041 O40141 returns 4, rotate40141 to 913, 1, 293 shift right, 913, 1, 293 shift right to rotate40-141, rotate40-141 to 911, 2, 393 shift left.
     A["appendleft#40;0#41;<br/>O#40;1#41;"] --> B["#91;0, 1, 2, 3#93;<br/>deque"]
     B --> C["append#40;4#41;<br/>O#40;1#41;"]
 
@@ -788,13 +825,18 @@ graph TD
     F["rotate#40;1#41;"] --> G["#91;3, 1, 2#93;<br/>shift right"]
     G --> H["rotate#40;-1#41;"] --> I["#91;1, 2, 3#93;<br/>shift left"]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style D fill:#DE8F05,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style H fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    class C pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class H pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -894,6 +936,8 @@ lru_cache memoizes function results for repeated calls with same arguments.
 ```mermaid
 %% LRU cache mechanism
 graph TD
+    accTitle: Example 45: functools - lrucache
+    accDescr: Graph with 10 nodes and 8 connections. Nodes: fibonacci(10) called, Result in cache?, Return cached result (hit), Compute result fib(9) + fib(8), Store in cache max 128 entries, Return result, Cache Full?, LRU eviction, Remove least recently used, Add to cache. Connections: fibonacci(10) called to Result in cache?, Result in cache? to Return cached result (hit) (Yes), Result in cache? to Compute result fib(9) + fib(8) (No), Compute result fib(9) + fib(8) to Store in cache max 128 entries, Store in cache max 128 entries to Return result, Cache Full? to LRU eviction, LRU eviction to Remove least recently used (Yes), LRU eviction to Add to cache (No).
     A["fibonacci(10) called"] --> B{Result in<br/>cache?}
     B -->|Yes| C["Return cached<br/>result (hit)"]
     B -->|No| D["Compute result<br/>fib(9) + fib(8)"]
@@ -904,11 +948,17 @@ graph TD
     H -->|Yes| I["Remove least<br/>recently used"]
     H -->|No| J["Add to cache"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -961,20 +1011,27 @@ itertools provides composable iterator building blocks for efficient iteration.
 ```mermaid
 %% Itertools chain and groupby
 graph TD
+    accTitle: Example 46: itertools - Powerful Iteration
+    accDescr: Graph with 9 nodes and 7 connections. Nodes: [1, 2], chain(), [3, 4], [5], 1, 2, 3, 4, 5 (single iterable), [(A,1), (A,2), (B,3), (B,4)], groupby(key=lambda x: x[0]), Group A [(A,1), (A,2)], Group B [(B,3), (B,4)]. Connections: [1, 2] to chain(), [3, 4] to chain(), [5] to chain(), chain() to 1, 2, 3, 4, 5 (single iterable), [(A,1), (A,2), (B,3), (B,4)] to groupby(key=lambda x: x[0]), groupby(key=lambda x: x[0]) to Group A [(A,1), (A,2)], groupby(key=lambda x: x[0]) to Group B [(B,3), (B,4)].
     A["[1, 2]"] --> Chain
     B["[3, 4]"] --> Chain
     C["[5]"] --> Chain["chain()"]
     Chain --> D["1, 2, 3, 4, 5<br/>(single iterable)"]
 
-    E["[('A',1), ('A',2),<br/>('B',3), ('B',4)]"] --> GroupBy["groupby(key=lambda x: x[0])"]
+    E["[('A',1), ('A',2),<br/>('B',3), ('B',4)]"] --> GroupBy["groupby(key=lambda<br/>x: x[0])"]
     GroupBy --> F["Group 'A'<br/>[('A',1), ('A',2)]"]
     GroupBy --> G["Group 'B'<br/>[('B',3), ('B',4)]"]
 
-    style Chain fill:#0173B2,color:#fff
-    style D fill:#029E73,color:#fff
-    style GroupBy fill:#DE8F05,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Chain pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class GroupBy pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```python
@@ -1257,6 +1314,8 @@ ABCs define interfaces that subclasses must implement.
 ```mermaid
 %% Abstract base class inheritance
 classDiagram
+    accTitle: Example 51: Abstract Base Classes
+    accDescr: Class diagram with 3 items: PaymentProcessor, StripeProcessor, PayPalProcessor. Relationships: PaymentProcessor to StripeProcessor: implements; PaymentProcessor to PayPalProcessor: implements.
     class PaymentProcessor {
         <<abstract>>
         +process_payment(amount)* abstract
@@ -1278,6 +1337,7 @@ classDiagram
 
     note for PaymentProcessor "Cannot instantiate<br/>abstract class directly"
     note for StripeProcessor "Must implement all<br/>abstract methods"
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```python

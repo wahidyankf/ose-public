@@ -805,8 +805,10 @@ const uppercased = userCityLens.modify((city) => city.toUpperCase())(user);
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TB
-    A[Basic FP: map/filter/reduce] -->|Error handling needs| B[fp-ts Option/Either]
-    A -->|Async composition needs| C[fp-ts Task/TaskEither]
+    accTitle: Functional Programming Progression Diagram
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Basic FP: map/filter/reduce, fp-ts Option/Either, fp-ts Task/TaskEither, monocle-ts Lenses. Connections: Basic FP: map/filter/reduce to fp-ts Option/Either (Error handling needs), Basic FP: map/filter/reduce to fp-ts Task/TaskEither (Async composition needs), Basic FP: map/filter/reduce to monocle-ts Lenses (Deep nesting).
+    A[Basic FP:<br/>map/filter/reduce] -->|Error handling needs| B[fp-ts Option/Either]
+    A -->|Async composition<br/>needs| C[fp-ts<br/>Task/TaskEither]
     A -->|Deep nesting| D[monocle-ts Lenses]
 
     A:::standard
@@ -814,8 +816,8 @@ graph TB
     C:::framework
     D:::framework
 
-    classDef standard fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef framework fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef standard fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef framework fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
 
     subgraph Standard[" Standard Library "]
         A
@@ -827,8 +829,11 @@ graph TB
         D
     end
 
-    style Standard fill:#F0F0F0,stroke:#CC78BC,stroke-width:3px
-    style Production fill:#F0F0F0,stroke:#029E73,stroke-width:3px
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:3px
+    class Standard pal-CC78BC
+    classDef pal-CC78BC-2 fill:#CC78BC,stroke:#029E73,color:#000000,stroke-width:3px
+    class Production pal-CC78BC-2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Best Practices

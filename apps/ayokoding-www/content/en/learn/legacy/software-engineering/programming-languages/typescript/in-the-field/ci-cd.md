@@ -567,10 +567,12 @@ git commit -m "feat!: migrate to TypeScript 5\n\nBREAKING CHANGE: Requires Node.
 %% All colors are color-blind friendly and meet WCAG AA contrast standards
 
 graph TB
+    accTitle: CI/CD Pipeline Progression Diagram
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Manual Scripts, GitHub Actions CI, C, Push, CD Pipeline, Semantic Release. Connections: Manual Scripts to GitHub Actions CI (Automated triggers), GitHub Actions CI to C (Docker builds), GitHub Actions CI to Push (Docker builds), C to CD Pipeline (Deployment automation), CD Pipeline to Semantic Release (Versioning automation).
     A[Manual Scripts] -->|Automated triggers| B[GitHub Actions CI]
     B -->|Docker builds| C[Build & Push]
-    C -->|Deployment automation| D[CD Pipeline]
-    D -->|Versioning automation| E[Semantic Release]
+    C -->|Deployment<br/>automation| D[CD Pipeline]
+    D -->|Versioning<br/>automation| E[Semantic Release]
 
     A:::standard
     B:::framework
@@ -578,8 +580,8 @@ graph TB
     D:::production
     E:::production
 
-    classDef standard fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    classDef framework fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef standard fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    classDef framework fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
     classDef production fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
 
     subgraph Standard[" Manual "]
@@ -593,8 +595,11 @@ graph TB
         E
     end
 
-    style Standard fill:#F0F0F0,stroke:#CC78BC,stroke-width:3px
-    style Automation fill:#F0F0F0,stroke:#029E73,stroke-width:3px
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:3px
+    class Standard pal-CC78BC
+    classDef pal-CC78BC-2 fill:#CC78BC,stroke:#029E73,color:#000000,stroke-width:3px
+    class Automation pal-CC78BC-2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Best Practices

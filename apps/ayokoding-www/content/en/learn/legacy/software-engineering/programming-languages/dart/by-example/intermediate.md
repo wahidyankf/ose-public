@@ -26,6 +26,8 @@ Asynchronous operations with Future for delayed computations. Futures represent 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 26: Future Basics - async/await
+    accDescr: State diagram with 6 items: start or end, Pending, Completed, Error, ValueAvailable, ExceptionThrown. Relationships: start or end to Pending: Future created; Pending to Completed: Operation succeeds; Pending to Error: Operation fails; Completed to ValueAvailable: await returns value; Error to ExceptionThrown: await throws error; ValueAvailable to start or end; ExceptionThrown to start or end.
     [*] --> Pending: Future created
     Pending --> Completed: Operation succeeds
     Pending --> Error: Operation fails
@@ -154,6 +156,8 @@ Execute multiple asynchronous operations in parallel and wait for all to complet
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 27: Future.wait - Parallel Execution
+    accDescr: Sequence diagram between Main, Future 1, Future 2, Future 3, Future.wait. Messages: Main to Future 1: Start; Main to Future 2: Start; Main to Future 3: Start; Future 1 to Future 1: Processing; Future 2 to Future 2: Processing; Future 3 to Future 3: Processing; Future 1 to Future.wait: Result 1; Future 2 to Future.wait: Result 2; Future 3 to Future.wait: Result 3; Future.wait to Future.wait: Combine results; Future.wait to Main: List of all results.
     participant Main
     participant F1 as Future 1
     participant F2 as Future 2
@@ -307,6 +311,8 @@ Proper error handling patterns in async code with try-catch and Future.catchErro
 
 ```mermaid
 flowchart TD
+    accTitle: Example 28: Async Error Handling
+    accDescr: Flowchart with 8 nodes and 9 connections. Nodes: await asyncOp, Throws?, Return Value, catch block?, Handle ArgumentError Return default, Handle Error Rethrow or log, finally block Cleanup runs always, Execution continues. Connections: await asyncOp to Throws?, Throws? to Return Value (no), Throws? to catch block? (yes), catch block? to Handle ArgumentError Return default (ArgumentError), catch block? to Handle Error Rethrow or log (other Error), Handle ArgumentError Return default to finally block Cleanup runs always, Handle Error Rethrow or log to finally block Cleanup runs always, Return Value to finally block Cleanup runs always, finally block Cleanup runs always to Execution continues.
     Await[await asyncOp] --> Throws{Throws?}
     Throws -->|no| Success[Return Value]
     Throws -->|yes| Catch{catch block?}
@@ -317,9 +323,13 @@ flowchart TD
     Success --> Finally
     Finally --> Done[Execution continues]
 
-    style ArgErr fill:#029E73,color:#fff
-    style OtherErr fill:#DE8F05,color:#fff
-    style Finally fill:#0173B2,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class ArgErr pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class OtherErr pal-DE8F05
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Finally pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -715,6 +725,8 @@ Asynchronous sequence of events with Stream and listen(). Streams emit multiple 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+    accTitle: Example 31: Stream Basics
+    accDescr: Sequence diagram between async* Generator, Stream, await for. Messages: async* Generator to Stream: yield value1; Stream to await for: emit value1; async* Generator to Stream: yield value2; Stream to await for: emit value2; async* Generator to Stream: yield value3; Stream to await for: emit value3; async* Generator to Stream: Function completes; Stream to await for: Stream done.
     participant Generator as async* Generator
     participant Stream
     participant Listener as await for
@@ -831,14 +843,21 @@ Transforming streams with map(), where(), and take() methods. Stream transformat
 
 ```mermaid
 flowchart LR
+    accTitle: Example 32: Stream Transformations
+    accDescr: Flowchart with 4 nodes and 3 connections. Nodes: Source Stream raw donations, Filtered Stream valid donations, Transformed Stream zakat amounts, Subscriber process results. Connections: Source Stream raw donations to Filtered Stream valid donations (where amount > 0), Filtered Stream valid donations to Transformed Stream zakat amounts (map to zakat), Transformed Stream zakat amounts to Subscriber process results (listen).
     Source[Source Stream<br/>raw donations] -->|where amount > 0| Filter[Filtered Stream<br/>valid donations]
     Filter -->|map to zakat| Transform[Transformed Stream<br/>zakat amounts]
     Transform -->|listen| Output[Subscriber<br/>process results]
 
-    style Source fill:#0173B2,color:#fff
-    style Filter fill:#029E73,color:#fff
-    style Transform fill:#DE8F05,color:#fff
-    style Output fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Source pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Filter pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Transform pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class Output pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -1535,6 +1554,8 @@ void main() async {                     // => Main function with async support
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 35: Stream Subscription Management
+    accDescr: State diagram with 4 items: start or end, Active, Paused, Cancelled. Relationships: start or end to Active: listen(); Active to Paused: pause(); Paused to Active: resume(); Active to Cancelled: cancel(); Paused to Cancelled: cancel(); Cancelled to start or end.
     [*] --> Active: listen()
     Active --> Paused: pause()
     Paused --> Active: resume()
@@ -1711,6 +1732,8 @@ void main() {                           // => Execute statement
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 classDiagram
+    accTitle: Example 36: Inheritance and Method Overriding
+    accDescr: Class diagram with 3 items: Donor, PremiumDonor, CorporateDonor. Relationships: Donor to PremiumDonor; Donor to CorporateDonor.
     class Donor {
         +String name
         +double totalDonations
@@ -1735,9 +1758,13 @@ classDiagram
     Donor <|-- PremiumDonor
     Donor <|-- CorporateDonor
 
-    style Donor fill:#0173B2,stroke:#000,color:#fff
-    style PremiumDonor fill:#DE8F05,stroke:#000,color:#fff
-    style CorporateDonor fill:#029E73,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    cssClass "Donor" blue
+    cssClass "PremiumDonor" orange
+    cssClass "CorporateDonor" teal
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Key Takeaway**: Use `extends` for inheritance. Subclass inherits all public members. `super` accesses parent constructor/methods. `@override` marks overridden methods. Polymorphism enables treating subclasses as parent type.
@@ -2099,6 +2126,8 @@ void main() {                           // => Main function entry point
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 classDiagram
+    accTitle: Example 38: Implementing Multiple Interfaces
+    accDescr: Class diagram with 4 items: Timestamped, Auditable, Donation, Transaction.
     class Timestamped {
         <<interface>>
         +DateTime createdAt
@@ -2127,10 +2156,15 @@ classDiagram
     Timestamped <|.. Transaction : implements
     Auditable <|.. Transaction : implements
 
-    style Timestamped fill:#0173B2,stroke:#000,color:#fff
-    style Auditable fill:#DE8F05,stroke:#000,color:#fff
-    style Donation fill:#029E73,stroke:#000,color:#fff
-    style Transaction fill:#CC78BC,stroke:#000,color:#fff
+    classDef blue fill:#0173B2,stroke:#000000,color:#FFFFFF
+    classDef orange fill:#DE8F05,stroke:#000000,color:#000000
+    classDef teal fill:#029E73,stroke:#000000,color:#000000
+    classDef purple fill:#CC78BC,stroke:#000000,color:#000000
+    cssClass "Timestamped" blue
+    cssClass "Auditable" orange
+    cssClass "Donation" teal
+    cssClass "Transaction" purple
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **implements vs extends**:
@@ -2165,6 +2199,8 @@ Sharing functionality across classes with mixins for composition over inheritanc
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 classDiagram
+    accTitle: Example 39: Mixins for Composition
+    accDescr: Class diagram with 5 items: Timestamped, Auditable, Serializable, Donation, Transaction. Relationships: Timestamped to Donation: with; Auditable to Donation: with; Serializable to Donation: with; Timestamped to Transaction: with; Auditable to Transaction: with.
     class Timestamped {
         <<mixin>>
         -DateTime? _timestamp
@@ -2206,6 +2242,7 @@ classDiagram
 
     note for Donation "3 mixins added<br/>Gains all methods<br/>No inheritance"
     note for Transaction "2 mixins added<br/>Different mix"
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -2627,6 +2664,8 @@ Creating type-safe generic classes with bounded type parameters. Generics enable
 
 ```mermaid
 classDiagram
+    accTitle: Example 41: Generic Classes with Type Constraints
+    accDescr: Class diagram of three generic classes. Box of T holds content and returns it, FinancialRecord of T extends Comparable holds a value and currency and compares values, and Repository of T holds a list of items with add and find methods. Notes say Box works with any type T and FinancialRecord requires T to be Comparable.
     class Box~T~ {
         T content
         Box(T content)
@@ -2644,6 +2683,7 @@ classDiagram
     }
     note for Box~T~ "Works with any type T"
     note for FinancialRecord~T extends Comparable~ "Bounded: T must be Comparable"
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```dart
@@ -3224,14 +3264,19 @@ Using cascade notation to perform multiple operations on the same object without
 
 ```mermaid
 flowchart TD
+    accTitle: Example 45: Cascade Notation
+    accDescr: Flowchart with 6 nodes and 5 connections. Nodes: Donation(), donor = Ahmad, amount = 500.0, category = Zakat, timestamp = now, Returns same Donation object. Connections: Donation() to donor = Ahmad (..setDonor), donor = Ahmad to amount = 500.0 (..setAmount), amount = 500.0 to category = Zakat (..setCategory), category = Zakat to timestamp = now (..setTimestamp), timestamp = now to Returns same Donation object.
     Create["Donation()"] -->|..setDonor| A[donor = 'Ahmad']
     A -->|..setAmount| B[amount = 500.0]
     B -->|..setCategory| C[category = 'Zakat']
     C -->|..setTimestamp| D[timestamp = now]
     D --> Return[Returns same<br/>Donation object]
 
-    style Create fill:#0173B2,color:#fff
-    style Return fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Create pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Return pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -3561,14 +3606,20 @@ Using assert statements to validate assumptions during development, automaticall
 
 ```mermaid
 flowchart TD
+    accTitle: Example 47: Assert Statements for Development-Time Checks
+    accDescr: Flowchart with 5 nodes and 4 connections. Nodes: Code execution, assert condition?, Continue normally, AssertionError thrown Optional message shown, Assert skipped No performance cost. Connections: Code execution to assert condition?, assert condition? to Continue normally (true - dev mode), assert condition? to AssertionError thrown Optional message shown (false - dev mode), assert condition? to Assert skipped No performance cost (any - prod mode).
     Code[Code execution] --> Assert{assert condition?}
     Assert -->|true - dev mode| Continue[Continue normally]
-    Assert -->|false - dev mode| Fail[AssertionError thrown<br/>Optional message shown]
+    Assert -->|false - dev mode| Fail[AssertionError<br/>thrown<br/>Optional message<br/>shown]
     Assert -->|any - prod mode| Skip[Assert skipped<br/>No performance cost]
 
-    style Continue fill:#029E73,color:#fff
-    style Fail fill:#DE8F05,color:#fff
-    style Skip fill:#CA9161,color:#fff
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Continue pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class Fail pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class Skip pal-CA9161
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```dart

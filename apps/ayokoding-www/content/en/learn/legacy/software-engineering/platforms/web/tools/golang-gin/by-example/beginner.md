@@ -603,6 +603,8 @@ Route groups namespace related routes under a common path prefix and apply share
 ```mermaid
 %% Route group hierarchy
 graph TD
+    accTitle: Example 11: Route Groups
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: Router /, Group /api/v1, Group /admin, GET /api/v1/users, POST /api/v1/users, GET /api/v1/posts, GET /admin/dashboard, POST /admin/users. Connections: Router / to Group /api/v1, Router / to Group /admin, Group /api/v1 to GET /api/v1/users, Group /api/v1 to POST /api/v1/users, Group /api/v1 to GET /api/v1/posts, Group /admin to GET /admin/dashboard, Group /admin to POST /admin/users.
     A[Router /] --> B[Group /api/v1]
     A --> C[Group /admin]
     B --> D[GET /api/v1/users]
@@ -611,14 +613,20 @@ graph TD
     C --> G[GET /admin/dashboard]
     C --> H[POST /admin/users]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style G fill:#CA9161,color:#fff
-    style H fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-CC78BC
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```go
@@ -1168,20 +1176,26 @@ Understanding middleware execution order—including how `c.Next()` creates a pr
 ```mermaid
 %% Middleware execution order with c.Next()
 graph TD
-    A["Request arrives"] --> B["Middleware 1 - before c.Next#40;#41;"]
-    B --> C["Middleware 2 - before c.Next#40;#41;"]
+    accTitle: Example 20: Middleware Execution Order
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Request arrives, Middleware 1 - before c.Next4041, Middleware 2 - before c.Next4041, Handler executes, Middleware 2 - after c.Next4041, Middleware 1 - after c.Next4041, Response sent. Connections: Request arrives to Middleware 1 - before c.Next4041, Middleware 1 - before c.Next4041 to Middleware 2 - before c.Next4041, Middleware 2 - before c.Next4041 to Handler executes, Handler executes to Middleware 2 - after c.Next4041, Middleware 2 - after c.Next4041 to Middleware 1 - after c.Next4041, Middleware 1 - after c.Next4041 to Response sent.
+    A["Request arrives"] --> B["Middleware 1 -<br/>before<br/>c.Next#40;#41;"]
+    B --> C["Middleware 2 -<br/>before<br/>c.Next#40;#41;"]
     C --> D["Handler executes"]
-    D --> E["Middleware 2 - after c.Next#40;#41;"]
-    E --> F["Middleware 1 - after c.Next#40;#41;"]
+    D --> E["Middleware 2 - after<br/>c.Next#40;#41;"]
+    E --> F["Middleware 1 - after<br/>c.Next#40;#41;"]
     F --> G["Response sent"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-DE8F05
+    class F pal-DE8F05
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```go

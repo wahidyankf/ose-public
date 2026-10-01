@@ -35,16 +35,23 @@ Flutter Web is **Google's UI toolkit for building web applications** using the D
 
 ```mermaid
 graph TD
-  A["Beginner<br/>Core Flutter Concepts<br/>Examples 1-27"] --> B["Intermediate<br/>Production Patterns<br/>Examples 28-55"]
+  accTitle: Learning Path
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Beginner Core Flutter Concepts Examples 1-27, Intermediate Production Patterns Examples 28-55, C, Scale, 0 No Flutter Knowledge, 95 Framework Mastery. Connections: Beginner Core Flutter Concepts Examples 1-27 to Intermediate Production Patterns Examples 28-55, Intermediate Production Patterns Examples 28-55 to C, Intermediate Production Patterns Examples 28-55 to Scale, 0 No Flutter Knowledge to Beginner Core Flutter Concepts Examples 1-27, C to 95 Framework Mastery.
+  A["Beginner<br/>Core Flutter<br/>Concepts<br/>Examples 1-27"] --> B["Intermediate<br/>Production Patterns<br/>Examples 28-55"]
   B --> C["Advanced<br/>Platform & Scale<br/>Examples 56-80"]
   D["0%<br/>No Flutter Knowledge"] -.-> A
   C -.-> E["95%<br/>Framework Mastery"]
 
-  style A fill:#0173B2,color:#fff
-  style B fill:#DE8F05,color:#fff
-  style C fill:#029E73,color:#fff
-  style D fill:#CC78BC,color:#fff
-  style E fill:#029E73,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Philosophy: 95% Through 80 Examples

@@ -464,8 +464,9 @@ Click "Zakat Calculator" button
 How Server Components, Client Components, and Server Actions work together.
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#2563eb','primaryTextColor':'#1e293b','primaryBorderColor':'#1e40af','lineColor':'#64748b','secondaryColor':'#10b981','tertiaryColor':'#f59e0b','fontSize':'14px'}}}%%
 sequenceDiagram
+    accTitle: Understanding the Architecture
+    accDescr: Sequence diagram between Browser, Server, ServerAction. Messages: Browser to Server: Request /zakat page; Server to Server: Render ZakatPage (Server Component); Server to Browser: Send HTML with hydration code; Browser to Browser: Hydrate ZakatForm (Client Component); Browser to Browser: User enters wealth amount; Browser to Browser: User clicks Calculate; Browser to ServerAction: Call calculateZakat(); ServerAction to ServerAction: Validate input; ServerAction to ServerAction: Calculate zakat (2.5); ServerAction to Browser: Return result; Browser to Browser: Update UI with result.
     participant Browser
     participant Server
     participant ServerAction

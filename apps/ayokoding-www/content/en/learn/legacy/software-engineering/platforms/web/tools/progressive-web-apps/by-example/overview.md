@@ -37,16 +37,23 @@ PWAs are not a framework — they are a set of browser standards layered on any 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Beginner<br/>Manifests, SW Basics, Install<br/>Examples 1-28"] --> B["Intermediate<br/>Workbox, Push, IndexedDB<br/>Examples 29-57"]
-  B --> C["Advanced<br/>Architecture, Testing, Production<br/>Examples 58-85"]
+  accTitle: Learning Path
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Manifests, SW Basics, Install Examples 1-28, Intermediate Workbox, Push, IndexedDB Examples 29-57, Advanced Architecture, Testing, Production Examples 58-85, 0 No PWA Knowledge, 95 PWA Production Mastery. Connections: Beginner Manifests, SW Basics, Install Examples 1-28 to Intermediate Workbox, Push, IndexedDB Examples 29-57, Intermediate Workbox, Push, IndexedDB Examples 29-57 to Advanced Architecture, Testing, Production Examples 58-85, 0 No PWA Knowledge to Beginner Manifests, SW Basics, Install Examples 1-28, Advanced Architecture, Testing, Production Examples 58-85 to 95 PWA Production Mastery.
+  A["Beginner<br/>Manifests, SW<br/>Basics, Install<br/>Examples 1-28"] --> B["Intermediate<br/>Workbox, Push,<br/>IndexedDB<br/>Examples 29-57"]
+  B --> C["Advanced<br/>Architecture,<br/>Testing, Production<br/>Examples 58-85"]
   D["0%<br/>No PWA Knowledge"] -.-> A
-  C -.-> E["95%<br/>PWA Production Mastery"]
+  C -.-> E["95%<br/>PWA Production<br/>Mastery"]
 
-  style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-CC78BC
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Philosophy: 95% Through 85 Examples

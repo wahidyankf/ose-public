@@ -27,12 +27,18 @@ Every guide follows three-stage progression showing why Spring Boot adds value:
 
 ```mermaid
 graph LR
+    accTitle: Spring Core First Principle
+    accDescr: Graph with 3 nodes and 2 connections. Nodes: Manual Spring XML or Java Config, Spring Boot Auto-configuration, Production Override Conventions. Connections: Manual Spring XML or Java Config to Spring Boot Auto-configuration (Boilerplate), Spring Boot Auto-configuration to Production Override Conventions (Customization).
     A[Manual Spring<br/>XML or Java Config] -->|Boilerplate| B[Spring Boot<br/>Auto-configuration]
     B -->|Customization| C[Production<br/>Override Conventions]
 
-    style A fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ### Stage 1: Manual Spring Framework

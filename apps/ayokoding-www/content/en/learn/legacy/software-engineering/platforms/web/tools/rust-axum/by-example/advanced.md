@@ -28,16 +28,24 @@ Custom extractors let you encapsulate reusable extraction logic. Implement `From
 
 ```mermaid
 graph TD
-    A["Incoming Request<br/>Headers + Parts"] --> B["FromRequestParts<br/>impl for CustomExtractor"]
+    accTitle: Example 50: Implementing FromRequestParts
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Incoming Request Headers + Parts, FromRequestParts impl for CustomExtractor, Extraction Succeeds?, Handler receives CustomExtractor value, Rejection Response 400/401/403. Connections: Incoming Request Headers + Parts to FromRequestParts impl for CustomExtractor, FromRequestParts impl for CustomExtractor to Extraction Succeeds?, Extraction Succeeds? to Handler receives CustomExtractor value (Yes), Extraction Succeeds? to Rejection Response 400/401/403 (No).
+    A["Incoming Request<br/>Headers + Parts"] --> B["FromRequestParts<br/>impl for<br/>CustomExtractor"]
     B --> C{"Extraction<br/>Succeeds?"}
-    C -->|Yes| D["Handler receives<br/>CustomExtractor value"]
+    C -->|Yes| D["Handler receives<br/>CustomExtractor<br/>value"]
     C -->|No| E["Rejection Response<br/>400/401/403"]
 
-    style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style C fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style E fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```rust

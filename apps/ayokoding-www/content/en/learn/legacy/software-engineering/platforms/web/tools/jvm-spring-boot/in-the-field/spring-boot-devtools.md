@@ -115,23 +115,29 @@ public class ZakatController {
 
 ```mermaid
 graph TD
-    A["File Saved: ZakatController"] -->|"File Watcher"| B["DevTools Detects Change"]
-    B -->|"Classpath Modified"| C["Determine Restart Strategy"]
-    C -->|"User Code Changed"| D["Restart 'restart' Classloader"]
-    C -->|"Dependency Changed"| E["Full JVM Restart Required"]
+    accTitle: Spring Boot DevTools Automatic Restart
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: File Saved: ZakatController, DevTools Detects Change, Determine Restart Strategy, Restart restart Classloader, Full JVM Restart Required, Unload User Classes, Load New User Classes, Base Classloader Unchanged (Spring, Hibernate, Jackson), Re-initialize Spring Context, Application Running, LiveReload Browser Refresh. Connections: File Saved: ZakatController to DevTools Detects Change (File Watcher), DevTools Detects Change to Determine Restart Strategy (Classpath Modified), Determine Restart Strategy to Restart restart Classloader (User Code Changed), Determine Restart Strategy to Full JVM Restart Required (Dependency Changed), Restart restart Classloader to Unload User Classes (Unload), Unload User Classes to Load New User Classes (Reload), Load New User Classes to Base Classloader Unchanged (Spring, Hibernate, Jackson) (Keep), Base Classloader Unchanged (Spring, Hibernate, Jackson) to Re-initialize Spring Context (Restart), Re-initialize Spring Context to Application Running (Ready in 1-2 seconds), Application Running to LiveReload Browser Refresh (Trigger).
+    A["File Saved:<br/>ZakatController"] -->|"File Watcher"| B["DevTools Detects<br/>Change"]
+    B -->|"Classpath Modified"| C["Determine Restart<br/>Strategy"]
+    C -->|"User Code Changed"| D["Restart 'restart'<br/>Classloader"]
+    C -->|"Dependency Changed"| E["Full JVM Restart<br/>Required"]
 
     D -->|"Unload"| F["Unload User Classes"]
-    F -->|"Reload"| G["Load New User Classes"]
-    G -->|"Keep"| H["Base Classloader Unchanged<br/>(Spring, Hibernate, Jackson)"]
-    H -->|"Restart"| I["Re-initialize Spring Context"]
-    I -->|"Ready in 1-2 seconds"| J["Application Running"]
+    F -->|"Reload"| G["Load New User<br/>Classes"]
+    G -->|"Keep"| H["Base Classloader<br/>Unchanged<br/>(Spring, Hibernate,<br/>Jackson)"]
+    H -->|"Restart"| I["Re-initialize Spring<br/>Context"]
+    I -->|"Ready in 1-2<br/>seconds"| J["Application Running"]
 
-    J -->|"Trigger"| K["LiveReload Browser Refresh"]
+    J -->|"Trigger"| K["LiveReload Browser<br/>Refresh"]
 
-    style B fill:#0173B2,color:#fff
-    style D fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style J fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class B pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Trade-offs**:

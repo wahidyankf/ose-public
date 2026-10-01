@@ -15,18 +15,25 @@ Ktor runs as an embedded server inside your JVM application rather than deployin
 
 ```mermaid
 graph TD
-  A["main#40;#41;"] --> B["embeddedServer#40;Netty#41;"]
+  accTitle: Example 1: Minimal Embedded Server
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: main4041, embedded Server40Netty41, Install Plugins, Define Routes, server.start40wait=true41, HTTP Requests. Connections: main4041 to embedded Server40Netty41, embedded Server40Netty41 to Install Plugins, Install Plugins to Define Routes, Define Routes to server.start40wait=true41, server.start40wait=true41 to HTTP Requests.
+  A["main#40;#41;"] --> B["embedded<br/>Server#40;Netty#41;"]
   B --> C["Install Plugins"]
   C --> D["Define Routes"]
-  D --> E["server.start#40;wait=true#41;"]
+  D --> E["server.start(<br/>wait=true)"]
   E --> F["HTTP Requests"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
-  style F fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  class E pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class F pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -548,20 +555,26 @@ Content negotiation lets Ktor automatically serialize response objects to JSON a
 
 ```mermaid
 graph TD
-  A["Client Request<br/>Content-Type: application/json"] --> B["ContentNegotiation Plugin"]
+  accTitle: Example 10: Installing Content Negotiation with kotlinx.serialization
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: Client Request Content-Type: application/json, ContentNegotiation Plugin, Deserialize Body to Data Class, Route Handler, Return Data Class, Serialize to JSON, Client Response application/json. Connections: Client Request Content-Type: application/json to ContentNegotiation Plugin, ContentNegotiation Plugin to Deserialize Body to Data Class, Deserialize Body to Data Class to Route Handler, Route Handler to Return Data Class, Return Data Class to Serialize to JSON, Serialize to JSON to Client Response application/json.
+  A["Client Request<br/>Content-Type:<br/>application/json"] --> B["ContentNegotiation<br/>Plugin"]
   B --> C["Deserialize Body<br/>to Data Class"]
   C --> D["Route Handler"]
   D --> E["Return Data Class"]
   E --> F["Serialize to JSON"]
   F --> G["Client Response<br/>application/json"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
-  style F fill:#DE8F05,stroke:#000,color:#fff
-  style G fill:#0173B2,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  class E pal-029E73
+  class F pal-DE8F05
+  class G pal-0173B2
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin
@@ -1312,15 +1325,21 @@ The CORS plugin adds Cross-Origin Resource Sharing headers to responses, allowin
 
 ```mermaid
 graph LR
-  A["Browser<br/>origin: app.example.com"] -->|"OPTIONS /api/users<br/>Origin: app.example.com"| B["Ktor CORS Plugin"]
-  B -->|"200 OK<br/>Access-Control-Allow-Origin: app.example.com"| A
-  A -->|"GET /api/users<br/>Origin: app.example.com"| B
-  B -->|"200 OK with CORS headers"| C["API Response"]
+  accTitle: Example 21: CORS Plugin Configuration
+  accDescr: Graph with 3 nodes and 5 connections. Nodes: Browser origin: app.example.com, Ktor CORS Plugin, API Response. Connections: Browser origin: app.example.com to Ktor CORS Plugin (OPTIONS /api/users Origin: app.example.com), Ktor CORS Plugin to Browser origin: app.example.com (200 OK Access-Control- Allow-Origin: app.example.com), Browser origin: app.example.com to Ktor CORS Plugin (GET /api/users Origin: app.example.com), Ktor CORS Plugin to API Response (200 OK with CORS headers), API Response to Browser origin: app.example.com.
+  A["Browser<br/>origin:<br/>app.example.com"] -->|"OPTIONS /api/users<br/>Origin:<br/>app.example.com"| B["Ktor CORS Plugin"]
+  B -->|"200 OK<br/>Access-Control-<br/>Allow-Origin:<br/>app.example.com"| A
+  A -->|"GET /api/users<br/>Origin:<br/>app.example.com"| B
+  B -->|"200 OK with CORS<br/>headers"| C["API Response"]
   C --> A
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```kotlin

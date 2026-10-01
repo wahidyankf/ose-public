@@ -31,11 +31,16 @@ tags:
 
 ```mermaid
 graph LR
-  A["UI Widget<br/>BlocBuilder"] -->|"cubit.method#40;#41;"| B["Cubit<br/>emits state"]
+  accTitle: Example 56: Cubit
+  accDescr: Graph with 2 nodes and 2 connections. Nodes: UI Widget BlocBuilder, Cubit emits state. Connections: UI Widget BlocBuilder to Cubit emits state (cubit. method4041), Cubit emits state to UI Widget BlocBuilder (new state).
+  A["UI Widget<br/>BlocBuilder"] -->|"cubit.<br/>method#40;#41;"| B["Cubit<br/>emits state"]
   B -->|"new state"| A
 
-  style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart

@@ -42,16 +42,24 @@ useReducer manages complex state with multiple related values. It accepts reduce
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["dispatch(increment, 10)"] -->|"counterReducer"| B["New State\n count: 10\n history: [0,10]"]
-    C["dispatch(decrement, 5)"] -->|"counterReducer"| D["New State\n count: 5\n history: [0,10,5]"]
-    E["dispatch(reset)"] -->|"counterReducer"| F["New State\n count: 0\n history: [0]"]
+    accTitle: Example 1: useReducer for Complex State
+    accDescr: Graph with 6 nodes and 3 connections. Nodes: dispatch(increment, 10), New State count: 10 history: [0,10], dispatch(decrement, 5), New State count: 5 history: [0,10,5], dispatch(reset), New State count: 0 history: [0]. Connections: dispatch(increment, 10) to New State count: 10 history: [0,10] (counterReducer), dispatch(decrement, 5) to New State count: 5 history: [0,10,5] (counterReducer), dispatch(reset) to New State count: 0 history: [0] (counterReducer).
+    A["dispatch(increment,<br/>10)"] -->|"counterReducer"| B["New State<br/> count: 10<br/> history: [0,10]"]
+    C["dispatch(decrement,<br/>5)"] -->|"counterReducer"| D["New State<br/> count: 5<br/> history: [0,10,5]"]
+    E["dispatch(reset)"] -->|"counterReducer"| F["New State<br/> count: 0<br/> history: [0]"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **useReducer state machine**: Actions dispatch to pure reducer, producing new state.
@@ -317,17 +325,25 @@ useMemo memoizes expensive computations. Recomputes only when dependencies chang
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["useMemo(fn, deps)"] -->|"contracts unchanged"| B["Returns cached result\n(no recompute)"]
-    A -->|"contracts changed"| C["Runs fn()\nreturns new result\ncaches it"]
-    D["filterTerm changes"] -->|"filteredContracts\ndependency"| E["filteredContracts\nuseMemo recomputes"]
-    E -->|"averageProfit\ndependency"| F["averageProfit\nuseMemo recomputes"]
+    accTitle: Example 3: useMemo for Value Memoization
+    accDescr: Graph with 6 nodes and 4 connections. Nodes: useMemo(fn, deps), Returns cached result (no recompute), Runs fn() returns new result caches it, filterTerm changes, filteredContracts useMemo recomputes, averageProfit useMemo recomputes. Connections: useMemo(fn, deps) to Returns cached result (no recompute) (contracts unchanged), useMemo(fn, deps) to Runs fn() returns new result caches it (contracts changed), filterTerm changes to filteredContracts useMemo recomputes (filteredContracts dependency), filteredContracts useMemo recomputes to averageProfit useMemo recomputes (averageProfit dependency).
+    A["useMemo(fn, deps)"] -->|"contracts<br/>unchanged"| B["Returns cached<br/>result<br/>(no recompute)"]
+    A -->|"contracts changed"| C["Runs fn()<br/>returns new result<br/>caches it"]
+    D["filterTerm changes"] -->|"filteredContracts<br/>dependency"| E["filteredContracts<br/>useMemo recomputes"]
+    E -->|"averageProfit<br/>dependency"| F["averageProfit<br/>useMemo recomputes"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **useMemo cache**: Recomputes only when specified dependencies change.
@@ -815,22 +831,30 @@ Custom hooks extract reusable logic. Start with "use" prefix, can use other hook
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["useCounter Hook\n state: count, step"] -->|"increment()"| B["count + step"]
+    accTitle: Example 6: Creating Custom Hooks
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: useCounter Hook state: count, step, count + step, count - step, count = 0, Component A useCounter(), Component B useCounter(), useCounter Hook own state. Connections: useCounter Hook state: count, step to count + step (increment()), useCounter Hook state: count, step to count - step (decrement()), useCounter Hook state: count, step to count = 0 (reset()), count + step to useCounter Hook state: count, step, count - step to useCounter Hook state: count, step, count = 0 to useCounter Hook state: count, step, Component A useCounter() to useCounter Hook state: count, step, Component B useCounter() to useCounter Hook own state (independent instance).
+    A["useCounter Hook<br/> state: count, step"] -->|"increment()"| B["count + step"]
     A -->|"decrement()"| C["count - step"]
     A -->|"reset()"| D["count = 0"]
     B --> A
     C --> A
     D --> A
-    E["Component A\nuseCounter()"] --> A
-    F["Component B\nuseCounter()"] -->|"independent instance"| G["useCounter Hook\n own state"]
+    E["Component A<br/>useCounter()"] --> A
+    F["Component B<br/>useCounter()"] -->|"independent<br/>instance"| G["useCounter Hook<br/> own state"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#000
-    style G fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Custom hooks**: Each component gets an independent hook instance.
@@ -2150,18 +2174,26 @@ Context provides global state without prop drilling. Create context, provide val
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["App\n ThemeProvider\n value: dark, setTheme"] --> B["Sidebar\n no props needed"]
-    A --> C["Header\n no props needed"]
-    A --> D["Main\n no props needed"]
-    D --> E["ThemeToggle\n useContext(ThemeContext)"]
-    B --> F["NavItem\n useContext(ThemeContext)"]
+    accTitle: Example 11: Creating and Using Context
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: App ThemeProvider value: dark, setTheme, Sidebar no props needed, Header no props needed, Main no props needed, ThemeToggle useContext(Theme Context), NavItem useContext(Theme Context). Connections: App ThemeProvider value: dark, setTheme to Sidebar no props needed, App ThemeProvider value: dark, setTheme to Header no props needed, App ThemeProvider value: dark, setTheme to Main no props needed, Main no props needed to ThemeToggle useContext(Theme Context), Sidebar no props needed to NavItem useContext(Theme Context).
+    A["App<br/> ThemeProvider<br/>value: dark,<br/>setTheme"] --> B["Sidebar<br/> no props needed"]
+    A --> C["Header<br/> no props needed"]
+    A --> D["Main<br/> no props needed"]
+    D --> E["ThemeToggle<br/>useContext(Theme<br/>Context)"]
+    B --> F["NavItem<br/>useContext(Theme<br/>Context)"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Context Provider tree**: Provider at top, any descendant can consume via useContext.
@@ -2903,18 +2935,26 @@ Combine Context with useReducer for complex state management with actions.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["AppContext Provider\nstate: items[]\nactions: add, remove"] --> B["Sidebar\n(consumer)"]
-    A --> C["Main Content\n(consumer)"]
-    A --> D["Header\n(consumer)"]
-    E["dispatch(ADD_ITEM, payload)"] -->|"contextReducer"| F["New state\nitems: [...old, new]"]
+    accTitle: Example 14: Context with useReducer
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: AppContext Provider state: items[] actions: add, remove, Sidebar (consumer), Main Content (consumer), Header (consumer), dispatch(ADD_ITEM, payload), New state items: [...old, new]. Connections: AppContext Provider state: items[] actions: add, remove to Sidebar (consumer), AppContext Provider state: items[] actions: add, remove to Main Content (consumer), AppContext Provider state: items[] actions: add, remove to Header (consumer), dispatch(ADD_ITEM, payload) to New state items: [...old, new] (contextReducer), New state items: [...old, new] to AppContext Provider state: items[] actions: add, remove.
+    A["AppContext Provider<br/>state: items[]<br/>actions: add, remove"] --> B["Sidebar<br/>(consumer)"]
+    A --> C["Main Content<br/>(consumer)"]
+    A --> D["Header<br/>(consumer)"]
+    E["dispatch(ADD_ITEM,<br/>payload)"] -->|"contextReducer"| F["New state<br/>items: [...old, new]"]
     F --> A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Context + useReducer**: Provider wraps app, useReducer manages transitions.
@@ -3575,18 +3615,26 @@ React Query simplifies server state management with automatic caching, refetchin
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["Component mounts\nuseQuery fires"] -->|"fetch /api/data"| B["React Query Cache"]
-    B -->|"loading state"| C["isLoading: true\nUI: spinner"]
-    B -->|"success"| D["data: result\nUI: renders data"]
-    B -->|"error"| E["error: Error\nUI: error message"]
+    accTitle: Example 16: React Query Basics
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Component mounts useQuery fires, React Query Cache, isLoading: true UI: spinner, data: result UI: renders data, error: Error UI: error message, 60s stale timeout. Connections: Component mounts useQuery fires to React Query Cache (fetch /api/data), React Query Cache to isLoading: true UI: spinner (loading state), React Query Cache to data: result UI: renders data (success), React Query Cache to error: Error UI: error message (error), 60s stale timeout to Component mounts useQuery fires (background refetch).
+    A["Component mounts<br/>useQuery fires"] -->|"fetch /api/data"| B["React Query Cache"]
+    B -->|"loading state"| C["isLoading: true<br/>UI: spinner"]
+    B -->|"success"| D["data: result<br/>UI: renders data"]
+    B -->|"error"| E["error: Error<br/>UI: error message"]
     F["60s stale timeout"] -->|"background refetch"| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CA9161,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **React Query data flow**: Cache-first with automatic stale refetching.
@@ -3746,16 +3794,23 @@ Mutations handle data modifications (POST, PUT, DELETE). Use useMutation for cre
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["useMutation hook"] -->|"mutate(newDonation)"| B["POST /api/donations"]
-    B -->|"onSuccess"| C["queryClient.invalidate\n('donations')"]
-    C -->|"triggers refetch"| D["useQuery('donations')\nupdated data"]
+    accTitle: Example 17: React Query Mutations
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: useMutation hook, POST /api/donations, queryClient. invalidate (donations), use Query(donations) updated data, Show error toast. Connections: useMutation hook to POST /api/donations (mutate(new Donation)), POST /api/donations to queryClient. invalidate (donations) (onSuccess), queryClient. invalidate (donations) to use Query(donations) updated data (triggers refetch), POST /api/donations to Show error toast (onError).
+    A["useMutation hook"] -->|"mutate(new<br/>Donation)"| B["POST /api/donations"]
+    B -->|"onSuccess"| C["queryClient.<br/>invalidate<br/>('donations')"]
+    C -->|"triggers refetch"| D["use<br/>Query('donations')<br/>updated data"]
     B -->|"onError"| E["Show error toast"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **React Query mutations**: Write operations invalidate cache to trigger fresh reads.
@@ -4737,20 +4792,28 @@ React Router provides client-side routing for single-page applications. Basic se
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["BrowserRouter\n (URL state)"] --> B["Routes"]
+    accTitle: Example 21: React Router Setup
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: BrowserRouter (URL state), Routes, HomePage component, DonationsPage component, AboutPage component, Link to /donations, useNavigate(). Connections: BrowserRouter (URL state) to Routes, Routes to HomePage component (/ path), Routes to DonationsPage component (/donations path), Routes to AboutPage component (/about path), Link to /donations to DonationsPage component (no page reload), useNavigate() to Routes (programmatic nav).
+    A["BrowserRouter<br/> (URL state)"] --> B["Routes"]
     B -->|"/ path"| C["HomePage component"]
-    B -->|"/donations path"| D["DonationsPage component"]
+    B -->|"/donations path"| D["DonationsPage<br/>component"]
     B -->|"/about path"| E["AboutPage component"]
     F["Link to /donations"] -->|"no page reload"| D
     G["useNavigate()"] -->|"programmatic nav"| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **React Router structure**: BrowserRouter → Routes → Route components map URLs to views.
@@ -4913,18 +4976,26 @@ Dynamic routes accept URL parameters for flexible navigation. Use useParams hook
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 22: Dynamic Routes with Params
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: URL: /donations/42, params.id = 42, fetch /api/donations/42, Spinner UI, DonationDetail renders data.amount, data.donor, ..., Not Found UI. Connections: URL: /donations/42 to params.id = 42 (useParams()), params.id = 42 to fetch /api/donations/42 (use Query([donation, id])), fetch /api/donations/42 to Spinner UI (loading), fetch /api/donations/42 to DonationDetail renders data.amount, data.donor, ... (data), fetch /api/donations/42 to Not Found UI (404 error).
     A["URL: /donations/42"] -->|"useParams()"| B["params.id = '42'"]
-    B -->|"useQuery(['donation', id])"| C["fetch /api/donations/42"]
+    B -->|"use<br/>Query(['donation',<br/>id])"| C["fetch<br/>/api/donations/42"]
     C -->|"loading"| D["Spinner UI"]
-    C -->|"data"| E["DonationDetail renders\ndata.amount, data.donor, ..."]
+    C -->|"data"| E["DonationDetail<br/>renders<br/>data.amount,<br/>data.donor, ..."]
     C -->|"404 error"| F["Not Found UI"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CA9161,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Dynamic routes**: URL parameters drive data fetching and conditional rendering.
@@ -5171,20 +5242,28 @@ Implement authentication-based route protection. Redirect unauthenticated users 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 23: Protected Routes Pattern
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Route: /dashboard, isAuthenticated?, Navigate to /login ?returnTo=/dashboard, Loading spinner, hasPermission(role)?, Navigate to /unauthorized, Render protected content. Connections: Route: /dashboard to isAuthenticated? (check auth), isAuthenticated? to Navigate to /login ?returnTo=/dashboard (false), isAuthenticated? to Loading spinner (loading), isAuthenticated? to hasPermission(role)? (true, check role), hasPermission(role)? to Navigate to /unauthorized (false), hasPermission(role)? to Render protected content (true).
     A["Route: /dashboard"] -->|"check auth"| B{"isAuthenticated?"}
-    B -->|"false"| C["Navigate to /login\n?returnTo=/dashboard"]
+    B -->|"false"| C["Navigate to /login<br/>?returnTo=/dashboard"]
     B -->|"loading"| D["Loading spinner"]
     B -->|"true, check role"| E{"hasPermission(role)?"}
-    E -->|"false"| F["Navigate to /unauthorized"]
-    E -->|"true"| G["Render protected content"]
+    E -->|"false"| F["Navigate to<br/>/unauthorized"]
+    E -->|"true"| G["Render protected<br/>content"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CC78BC,stroke:#000,color:#000
-    style D fill:#CA9161,stroke:#000,color:#000
-    style E fill:#DE8F05,stroke:#000,color:#000
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    class E pal-DE8F05
+    class F pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Protected routes**: Multi-level access control with auth and role checks.

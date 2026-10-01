@@ -32,7 +32,9 @@ tags:
 ```mermaid
 %% Controller request flow
 graph TD
-    A["HTTP Request"] --> B["Routing<br/>Matches controller/action"]
+    accTitle: Example 28: API Controller Basics
+    accDescr: Graph with 8 nodes and 7 connections. Nodes: HTTP Request, Routing Matches controller/action, Action Filters OnActionExecuting, Model Binding Populate parameters, Model Validation Check annotations, Action Method Business logic, Result Filters OnResultExecuting, HTTP Response. Connections: HTTP Request to Routing Matches controller/action, Routing Matches controller/action to Action Filters OnActionExecuting, Action Filters OnActionExecuting to Model Binding Populate parameters, Model Binding Populate parameters to Model Validation Check annotations, Model Validation Check annotations to Action Method Business logic, Action Method Business logic to Result Filters OnResultExecuting, Result Filters OnResultExecuting to HTTP Response.
+    A["HTTP Request"] --> B["Routing<br/>Matches<br/>controller/action"]
     B --> C["Action Filters<br/>OnActionExecuting"]
     C --> D["Model Binding<br/>Populate parameters"]
     D --> E["Model Validation<br/>Check annotations"]
@@ -40,14 +42,20 @@ graph TD
     F --> G["Result Filters<br/>OnResultExecuting"]
     G --> H["HTTP Response"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-029E73
+    class H pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -306,26 +314,34 @@ JSON Web Tokens (JWTs) are the standard authentication mechanism for REST APIs. 
 ```mermaid
 %% JWT authentication flow
 graph TD
-    A["Client Login<br/>POST /auth/login"] --> B["Validate Credentials<br/>Check username/password"]
+    accTitle: Example 31: JWT Bearer Authentication
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Client Login POST /auth/login, Validate Credentials Check username/password, Generate JWT Sign with secret key, Return Token to client, Client stores token, API Request Authorization: Bearer token, UseAuthentication Validate JWT signature, Populate HttpContext.User with claims, UseAuthorization Check [Authorize], Handler executes with user identity. Connections: Client Login POST /auth/login to Validate Credentials Check username/password, Validate Credentials Check username/password to Generate JWT Sign with secret key, Generate JWT Sign with secret key to Return Token to client, Return Token to client to Client stores token, Client stores token to API Request Authorization: Bearer token, API Request Authorization: Bearer token to UseAuthentication Validate JWT signature, UseAuthentication Validate JWT signature to Populate HttpContext.User with claims, Populate HttpContext.User with claims to UseAuthorization Check [Authorize], UseAuthorization Check [Authorize] to Handler executes with user identity.
+    A["Client Login<br/>POST /auth/login"] --> B["Validate Credentials<br/>Check<br/>username/password"]
     B --> C["Generate JWT<br/>Sign with secret key"]
     C --> D["Return Token<br/>to client"]
     D --> E["Client stores token"]
-    E --> F["API Request<br/>Authorization: Bearer token"]
-    F --> G["UseAuthentication<br/>Validate JWT signature"]
-    G --> H["Populate HttpContext.User<br/>with claims"]
+    E --> F["API Request<br/>Authorization:<br/>Bearer token"]
+    F --> G["UseAuthentication<br/>Validate JWT<br/>signature"]
+    G --> H["Populate<br/>HttpContext.User<br/>with claims"]
     H --> I["UseAuthorization<br/>Check [Authorize]"]
     I --> J["Handler executes<br/>with user identity"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#fff
-    style H fill:#CC78BC,stroke:#000,color:#fff
-    style I fill:#DE8F05,stroke:#000,color:#fff
-    style J fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    class H pal-CC78BC
+    class I pal-DE8F05
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp
@@ -1420,22 +1436,30 @@ Health checks expose readiness and liveness endpoints that orchestrators (Kubern
 ```mermaid
 %% Health check types and their purposes
 graph LR
+    accTitle: Example 43: Health Check Endpoints
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: Load Balancer or Kubernetes, GET /health/live Liveness probe, GET /health/ready Readiness probe, Is process alive? Basic self-check, Database check External dependencies, Cache check Redis connectivity, Healthy: include in LB Unhealthy: restart pod. Connections: Load Balancer or Kubernetes to GET /health/live Liveness probe, Load Balancer or Kubernetes to GET /health/ready Readiness probe, GET /health/live Liveness probe to Is process alive? Basic self-check, GET /health/ready Readiness probe to Database check External dependencies, GET /health/ready Readiness probe to Cache check Redis connectivity, Is process alive? Basic self-check to Healthy: include in LB Unhealthy: restart pod, Database check External dependencies to Healthy: include in LB Unhealthy: restart pod, Cache check Redis connectivity to Healthy: include in LB Unhealthy: restart pod.
     A["Load Balancer<br/>or Kubernetes"] --> B["GET /health/live<br/>Liveness probe"]
     A --> C["GET /health/ready<br/>Readiness probe"]
     B --> D["Is process alive?<br/>Basic self-check"]
-    C --> E["Database check<br/>External dependencies"]
+    C --> E["Database check<br/>External<br/>dependencies"]
     C --> F["Cache check<br/>Redis connectivity"]
-    D --> G["Healthy: include in LB<br/>Unhealthy: restart pod"]
+    D --> G["Healthy: include in<br/>LB<br/>Unhealthy: restart<br/>pod"]
     E --> G
     F --> G
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#fff
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    class E pal-CA9161
+    class F pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```csharp

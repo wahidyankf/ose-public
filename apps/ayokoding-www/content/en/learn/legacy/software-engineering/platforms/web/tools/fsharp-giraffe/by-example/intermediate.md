@@ -28,16 +28,23 @@ The `>=>` operator (Kleisli composition for `HttpHandler`) chains two handlers s
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 28: The Fish Operator >=> in Depth
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Handler A runs first, Handler B runs second, Skip B return None, Continue pipeline, Return None. Connections: Handler A runs first to Handler B runs second (Some ctx), Handler A runs first to Skip B return None (None), Handler B runs second to Continue pipeline (Some ctx), Handler B runs second to Return None (None).
     A["Handler A<br/>runs first"] -->|"Some ctx"| B["Handler B<br/>runs second"]
     A -->|"None"| C["Skip B<br/>return None"]
     B -->|"Some ctx"| D["Continue pipeline"]
     B -->|"None"| E["Return None"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp
@@ -204,18 +211,25 @@ JWT authentication in Giraffe uses ASP.NET Core's JWT Bearer middleware. After r
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Request with<br/>Authorization: Bearer token"] --> B["JWT Bearer Middleware<br/>Validates token"]
-    B -->|valid token| C["ctx.User populated<br/>IsAuthenticated = true"]
-    B -->|invalid/missing| D["ctx.User = anonymous<br/>IsAuthenticated = false"]
-    C --> E["requiresAuthentication<br/>passes through"]
-    D --> F["requiresAuthentication<br/>returns 401"]
+    accTitle: Example 30: JWT Bearer Authentication
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Request with Authorization: Bearer token, JWT Bearer Middleware Validates token, ctx.User populated IsAuthenticated = true, ctx.User = anonymous IsAuthenticated = false, requires Authentication passes through, requires Authentication returns 401. Connections: Request with Authorization: Bearer token to JWT Bearer Middleware Validates token, JWT Bearer Middleware Validates token to ctx.User populated IsAuthenticated = true (valid token), JWT Bearer Middleware Validates token to ctx.User = anonymous IsAuthenticated = false (invalid/missing), ctx.User populated IsAuthenticated = true to requires Authentication passes through, ctx.User = anonymous IsAuthenticated = false to requires Authentication returns 401.
+    A["Request with<br/>Authorization:<br/>Bearer token"] --> B["JWT Bearer<br/>Middleware<br/>Validates token"]
+    B -->|valid token| C["ctx.User populated<br/>IsAuthenticated =<br/>true"]
+    B -->|invalid/missing| D["ctx.User = anonymous<br/>IsAuthenticated =<br/>false"]
+    C --> E["requires<br/>Authentication<br/>passes through"]
+    D --> F["requires<br/>Authentication<br/>returns 401"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-029E73
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp

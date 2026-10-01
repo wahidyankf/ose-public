@@ -370,8 +370,10 @@ public class ZakatReportRepository {
 
 ```mermaid
 graph TD
-    A[Raw JDBC<br/>Manual Resources] -->|30 Lines of Boilerplate| B[Resource Leaks]
-    A -->|Manual Exception Handling| C[Generic SQLException]
+    accTitle: Progression Diagram
+    accDescr: Graph with 13 nodes and 12 connections. Nodes: Raw JDBC Manual Resources, Resource Leaks, Generic SQLException, Slow Performance, JdbcTemplate Automatic Resources, No Boilerplate, No Resource Leaks, Better Exceptions, Fast Performance, NamedParameterJdbc Template Named Parameters, Maintainable, Complex Queries, and 1 more. Connections: Raw JDBC Manual Resources to Resource Leaks (30 Lines of Boilerplate), Raw JDBC Manual Resources to Generic SQLException (Manual Exception Handling), Raw JDBC Manual Resources to Slow Performance (No Pooling), Slow Performance to JdbcTemplate Automatic Resources (Migrate To), JdbcTemplate Automatic Resources to No Boilerplate (3 Lines), JdbcTemplate Automatic Resources to No Resource Leaks (Automatic Cleanup), JdbcTemplate Automatic Resources to Better Exceptions (DataAccessException), JdbcTemplate Automatic Resources to Fast Performance (Connection Pooling), Fast Performance to NamedParameterJdbc Template Named Parameters (Migrate To), NamedParameterJdbc Template Named Parameters to Maintainable (Readable SQL), NamedParameterJdbc Template Named Parameters to Complex Queries (IN Clause Support), NamedParameterJdbc Template Named Parameters to Bulk Efficiency (Batch Operations).
+    A[Raw JDBC<br/>Manual Resources] -->|30 Lines of<br/>Boilerplate| B[Resource Leaks]
+    A -->|Manual Exception<br/>Handling| C[Generic SQLException]
     A -->|No Pooling| D[Slow Performance]
     D -->|Migrate To| E[JdbcTemplate<br/>Automatic Resources]
 
@@ -379,15 +381,19 @@ graph TD
     E -->|Automatic Cleanup| G[No Resource Leaks]
     E -->|DataAccessException| H[Better Exceptions]
     E -->|Connection Pooling| I[Fast Performance]
-    I -->|Migrate To| J[NamedParameterJdbcTemplate<br/>Named Parameters]
+    I -->|Migrate To| J[NamedParameterJdbc<br/>Template<br/>Named Parameters]
 
     J -->|Readable SQL| K[Maintainable]
     J -->|IN Clause Support| L[Complex Queries]
     J -->|Batch Operations| M[Bulk Efficiency]
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style J fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class J pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

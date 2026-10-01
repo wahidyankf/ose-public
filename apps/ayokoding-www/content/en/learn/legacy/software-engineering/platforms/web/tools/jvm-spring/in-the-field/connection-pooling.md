@@ -452,7 +452,9 @@ public class HikariPoolMetrics implements MeterBinder {
 
 ```mermaid
 graph TD
-    A[DriverManager<br/>No Pooling] -->|50-100ms per Connection| B[Slow]
+    accTitle: Progression Diagram
+    accDescr: Graph with 13 nodes and 17 connections. Nodes: DriverManager No Pooling, Slow, High Load, Broken Connections, HikariCP Connection Pool, Fast, Low Load, Reliability, Safety, Spring Boot Auto-Configuration, Convention, Environment-Specific, and 1 more. Connections: DriverManager No Pooling to Slow (50-100ms per Connection), DriverManager No Pooling to High Load (No Reuse), DriverManager No Pooling to Broken Connections (No Health Checks), Slow to High Load, High Load to Broken Connections, HikariCP Connection Pool to Fast (<1ms per Connection), HikariCP Connection Pool to Low Load (Reuse Connections), HikariCP Connection Pool to Reliability (Health Checks), HikariCP Connection Pool to Safety (Leak Detection), Fast to Low Load, Low Load to Reliability, Reliability to Safety, and 5 more.
+    A[DriverManager<br/>No Pooling] -->|50-100ms per<br/>Connection| B[Slow]
     A -->|No Reuse| C[High Load]
     A -->|No Health Checks| D[Broken Connections]
     B --- C
@@ -467,14 +469,18 @@ graph TD
     H --- I
 
     J[Spring Boot<br/>Auto-Configuration] -->|Zero Config| K[Convention]
-    J -->|Externalized Properties| L[Environment-Specific]
+    J -->|Externalized<br/>Properties| L[Environment-Specific]
     J -->|Actuator Integration| M[Monitoring]
     K --- L
     L --- M
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style J fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class J pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

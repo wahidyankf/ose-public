@@ -45,16 +45,23 @@ This tutorial targets:
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Beginner<br/>Core RN Concepts<br/>Examples 1-28"] --> B["Intermediate<br/>State, Animations, Navigation<br/>Examples 29-56"]
-  B --> C["Advanced<br/>Native Modules, Performance, CI<br/>Examples 57-85"]
+  accTitle: Learning Path
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Core RN Concepts Examples 1-28, Intermediate State, Animations, Navigation Examples 29-56, Advanced Native Modules, Performance, CI Examples 57-85, 0 No RN Knowledge, 95 Production Mastery. Connections: Beginner Core RN Concepts Examples 1-28 to Intermediate State, Animations, Navigation Examples 29-56, Intermediate State, Animations, Navigation Examples 29-56 to Advanced Native Modules, Performance, CI Examples 57-85, 0 No RN Knowledge to Beginner Core RN Concepts Examples 1-28, Advanced Native Modules, Performance, CI Examples 57-85 to 95 Production Mastery.
+  A["Beginner<br/>Core RN Concepts<br/>Examples 1-28"] --> B["Intermediate<br/>State, Animations,<br/>Navigation<br/>Examples 29-56"]
+  B --> C["Advanced<br/>Native Modules,<br/>Performance, CI<br/>Examples 57-85"]
   D["0%<br/>No RN Knowledge"] -.-> A
   C -.-> E["95%<br/>Production Mastery"]
 
-  style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-CC78BC
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Philosophy: 95% Through 85 Examples
@@ -104,16 +111,24 @@ Since React Native 0.82, the **legacy bridge is permanently removed**. Every exa
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  JS["JavaScript Thread<br/>React / Business Logic"] -->|JSI - direct C++ refs| Native["Native Thread<br/>iOS / Android"]
+  accTitle: New Architecture: Why It Matters
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: JavaScript Thread React /Business Logic, Native Thread iOS / Android, Renderer Yoga / CSS Flexbox, Native Modules Camera, Storage, GPS, TypeScript Spec Build-time generation. Connections: JavaScript Thread React /Business Logic to Native Thread iOS / Android (JSI - direct C++ refs), Native Thread iOS / Android to Renderer Yoga / CSS Flexbox (Fabric - sync layout), JavaScript Thread React /Business Logic to Native Modules Camera, Storage, GPS (TurboModules - lazy load), Native Modules Camera, Storage, GPS to TypeScript Spec Build-time generation (Codegen - type-safe glue).
+  JS["JavaScript Thread<br/>React /Business<br/>Logic"] -->|JSI - direct C++<br/>refs| Native["Native Thread<br/>iOS / Android"]
   Native -->|Fabric - sync layout| Render["Renderer<br/>Yoga / CSS Flexbox"]
-  JS -->|TurboModules - lazy load| Mods["Native Modules<br/>Camera, Storage, GPS"]
-  Mods -->|Codegen - type-safe glue| Spec["TypeScript Spec<br/>Build-time generation"]
+  JS -->|TurboModules - lazy<br/>load| Mods["Native Modules<br/>Camera, Storage, GPS"]
+  Mods -->|Codegen - type-safe<br/>glue| Spec["TypeScript Spec<br/>Build-time<br/>generation"]
 
-  style JS fill:#0173B2,stroke:#000,color:#fff
-  style Native fill:#DE8F05,stroke:#000,color:#fff
-  style Render fill:#029E73,stroke:#000,color:#fff
-  style Mods fill:#CC78BC,stroke:#000,color:#fff
-  style Spec fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class JS pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class Native pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class Render pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class Mods pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class Spec pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 - **JSI (JavaScript Interface)**: Direct C++ references from JS — no JSON serialization, sub-millisecond interop

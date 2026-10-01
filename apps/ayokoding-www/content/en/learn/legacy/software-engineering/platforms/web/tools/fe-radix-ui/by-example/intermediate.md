@@ -18,16 +18,24 @@ Portal renders content at a different DOM location (default: `document.body`), e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 31: Understanding Portal Rendering
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: App Component, Parent div overflow: hidden, Dialog.Trigger inside parent, document.body, Dialog.Content not clipped by parent. Connections: App Component to Parent div overflow: hidden, Parent div overflow: hidden to Dialog.Trigger inside parent, Dialog.Trigger inside parent to document.body (Portal renders outside), document.body to Dialog.Content not clipped by parent.
     App["App Component"] --> Parent["Parent div<br/>overflow: hidden"]
     Parent --> Trigger["Dialog.Trigger<br/>inside parent"]
-    Trigger -.->|"Portal renders outside"| Body["document.body"]
-    Body --> Content["Dialog.Content<br/>not clipped by parent"]
+    Trigger -.->|"Portal renders<br/>outside"| Body["document.body"]
+    Body --> Content["Dialog.Content<br/>not clipped by<br/>parent"]
 
-    style App fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Parent fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Trigger fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Body fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Content fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class App pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Parent pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Trigger pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Body pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Content pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1251,24 +1259,32 @@ NavigationMenu provides accessible site navigation with dropdown content panels,
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 45: NavigationMenu for Site Navigation
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: NavigationMenu.Root, NavigationMenu.List Top-level items, NavigationMenu.Item Products, NavigationMenu.Item Docs, NavigationMenu.Link Blog, NavigationMenu. Trigger Opens panel, NavigationMenu. Content Product links, NavigationMenu. Trigger, NavigationMenu. Content Doc sections. Connections: NavigationMenu.Root to NavigationMenu.List Top-level items, NavigationMenu.List Top-level items to NavigationMenu.Item Products, NavigationMenu.List Top-level items to NavigationMenu.Item Docs, NavigationMenu.List Top-level items to NavigationMenu.Link Blog, NavigationMenu.Item Products to NavigationMenu. Trigger Opens panel, NavigationMenu.Item Products to NavigationMenu. Content Product links, NavigationMenu.Item Docs to NavigationMenu. Trigger, NavigationMenu.Item Docs to NavigationMenu. Content Doc sections.
     Root["NavigationMenu.Root"] --> List["NavigationMenu.List<br/>Top-level items"]
     List --> Item1["NavigationMenu.Item<br/>Products"]
     List --> Item2["NavigationMenu.Item<br/>Docs"]
     List --> Item3["NavigationMenu.Link<br/>Blog"]
-    Item1 --> Trigger1["NavigationMenu.Trigger<br/>Opens panel"]
-    Item1 --> Content1["NavigationMenu.Content<br/>Product links"]
-    Item2 --> Trigger2["NavigationMenu.Trigger"]
-    Item2 --> Content2["NavigationMenu.Content<br/>Doc sections"]
+    Item1 --> Trigger1["NavigationMenu.<br/>Trigger<br/>Opens panel"]
+    Item1 --> Content1["NavigationMenu.<br/>Content<br/>Product links"]
+    Item2 --> Trigger2["NavigationMenu.<br/>Trigger"]
+    Item2 --> Content2["NavigationMenu.<br/>Content<br/>Doc sections"]
 
-    style Root fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style List fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Item1 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Item2 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Item3 fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
-    style Trigger1 fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Content1 fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Trigger2 fill:#CA9161,stroke:#000000,stroke-width:2px,color:#fff
-    style Content2 fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Root pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class List pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Item1 pal-029E73
+    class Item2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Item3 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+    class Trigger1 pal-CA9161
+    class Content1 pal-0173B2
+    class Trigger2 pal-CA9161
+    class Content2 pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1876,14 +1892,21 @@ Building a multi-step wizard inside a Dialog requires coordinating step state wi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 52: Dialog Form with Multi-Step Wizard
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: Step 1 Personal Info, Step 2 Preferences, Step 3 Confirmation, Done Dialog closes. Connections: Step 1 Personal Info to Step 2 Preferences, Step 2 Preferences to Step 3 Confirmation, Step 3 Confirmation to Done Dialog closes.
     Step1["Step 1<br/>Personal Info"] --> Step2["Step 2<br/>Preferences"]
     Step2 --> Step3["Step 3<br/>Confirmation"]
     Step3 --> Done["Done<br/>Dialog closes"]
 
-    style Step1 fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-    style Step2 fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-    style Step3 fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-    style Done fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Step1 pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Step2 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Step3 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Done pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

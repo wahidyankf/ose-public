@@ -30,6 +30,8 @@ Understanding the precise order interceptors run in is critical for writing corr
 
 ```mermaid
 sequenceDiagram
+  accTitle: Example 28: Interceptor Execution Order
+  accDescr: Sequence diagram between Client, Interceptor A, Interceptor B, Handler. Messages: Client to Interceptor A: Request; Interceptor A to Interceptor B: enter-A; Interceptor B to Handler: enter-B; Handler to Interceptor B: response set; Interceptor B to Interceptor A: leave-B; Interceptor A to Client: leave-A (response sent).
   participant Client
   participant A as Interceptor A
   participant B as Interceptor B

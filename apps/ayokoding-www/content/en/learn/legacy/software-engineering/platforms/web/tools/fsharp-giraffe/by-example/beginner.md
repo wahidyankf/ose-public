@@ -17,14 +17,21 @@ The `HttpHandler` type is Giraffe's core abstraction. Every route, middleware, a
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+    accTitle: Example 1: The HttpHandler Type
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: HttpContext 40request41, HttpHandler function, Next Handler 40success41, Short-circuit 40handled or error41. Connections: HttpContext 40request41 to HttpHandler function (passed to), HttpHandler function to Next Handler 40success41 (Some ctx), HttpHandler function to Short-circuit 40handled or error41 (None).
     A["HttpContext<br/>#40;request#41;"] -->|passed to| B["HttpHandler<br/>function"]
     B -->|Some ctx| C["Next Handler<br/>#40;success#41;"]
-    B -->|None| D["Short-circuit<br/>#40;handled or error#41;"]
+    B -->|None| D["Short-circuit<br/>#40;handled or<br/>error#41;"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp
@@ -181,21 +188,27 @@ app.Run()
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Incoming Request"] --> B["choose #91;handlers#93;"]
+    accTitle: Example 4: The choose Combinator and Basic Routing
+    accDescr: Graph with 8 nodes and 9 connections. Nodes: Incoming Request, choose 91handlers93, route quot/quot, route quot/healthquot, route quot/aboutquot, text quotHomequot, json healthStatus, text quotAboutquot. Connections: Incoming Request to choose 91handlers93, choose 91handlers93 to route quot/quot, choose 91handlers93 to route quot/healthquot, choose 91handlers93 to route quot/aboutquot, route quot/quot to text quotHomequot (matches), route quot/healthquot to json healthStatus (matches), route quot/aboutquot to text quotAboutquot (matches), route quot/quot to route quot/healthquot (no match), route quot/healthquot to route quot/aboutquot (no match).
+    A["Incoming Request"] --> B["choose<br/>#91;handlers#93;"]
     B --> C["route #quot;/#quot;"]
-    B --> D["route #quot;/health#quot;"]
-    B --> E["route #quot;/about#quot;"]
-    C -->|matches| F["text #quot;Home#quot;"]
+    B --> D["route<br/>#quot;/health#quot;"]
+    B --> E["route<br/>#quot;/about#quot;"]
+    C -->|matches| F["text<br/>#quot;Home#quot;"]
     D -->|matches| G["json healthStatus"]
-    E -->|matches| H["text #quot;About#quot;"]
+    E -->|matches| H["text<br/>#quot;About#quot;"]
     C -->|no match| D
     D -->|no match| E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class G pal-029E73
+    class H pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp
@@ -1868,20 +1881,28 @@ Understanding the execution order of ASP.NET Core middleware and Giraffe handler
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 27: Request Pipeline Order and Middleware Integration
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: HTTP Request, HTTPS Redirection Middleware, Static Files Middleware, Authentication Middleware, Authorization Middleware, Giraffe UseGiraffe40web App41, Handler Pipeline choose91...93. Connections: HTTP Request to HTTPS Redirection Middleware, HTTPS Redirection Middleware to Static Files Middleware, Static Files Middleware to Authentication Middleware, Authentication Middleware to Authorization Middleware, Authorization Middleware to Giraffe UseGiraffe40web App41, Giraffe UseGiraffe40web App41 to Handler Pipeline choose91...93.
     A["HTTP Request"] --> B["HTTPS Redirection<br/>Middleware"]
     B --> C["Static Files<br/>Middleware"]
     C --> D["Authentication<br/>Middleware"]
     D --> E["Authorization<br/>Middleware"]
-    E --> F["Giraffe<br/>UseGiraffe#40;webApp#41;"]
+    E --> F["Giraffe<br/>UseGiraffe#40;web<br/>App#41;"]
     F --> G["Handler Pipeline<br/>choose#91;...#93;"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```fsharp

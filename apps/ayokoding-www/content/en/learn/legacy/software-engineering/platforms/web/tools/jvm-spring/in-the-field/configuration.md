@@ -272,18 +272,24 @@ public class Application {
 
 ```mermaid
 graph LR
-    A[Manual Factory<br/>Static Methods] -->|Type Safety<br/>IDE Support| B[Java Config<br/>@Configuration + @Bean]
+    accTitle: Progression Diagram
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Manual Factory Static Methods, Java Config @Configuration + @Bean, Component Scanning @ComponentScan, No Flexibility, Runtime Decisions, Zero Config. Connections: Manual Factory Static Methods to Java Config @Configuration + @Bean (Type Safety IDE Support), Java Config @Configuration + @Bean to Component Scanning @ComponentScan (Auto-Discovery Less Config), Manual Factory Static Methods to No Flexibility (Hard-coded), Java Config @Configuration + @Bean to Runtime Decisions (Conditional Logic), Component Scanning @ComponentScan to Zero Config (Convention-based).
+    A[Manual Factory<br/>Static Methods] -->|Type Safety<br/>IDE Support| B[Java Config<br/>@Configuration +<br/>@Bean]
     B -->|Auto-Discovery<br/>Less Config| C[Component Scanning<br/>@ComponentScan]
 
     A -->|Hard-coded| D[No Flexibility]
     B -->|Conditional Logic| E[Runtime Decisions]
     C -->|Convention-based| F[Zero Config]
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style B fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style C fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style F fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class B pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class C pal-0173B2
+    class E pal-029E73
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

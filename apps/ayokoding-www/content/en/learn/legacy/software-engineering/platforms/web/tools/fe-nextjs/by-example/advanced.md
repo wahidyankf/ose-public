@@ -27,8 +27,10 @@ Use generateStaticParams to pre-render dynamic routes at build time. Creates sta
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 51: Static Site Generation with generateStaticParams
+  accDescr: Graph with 7 nodes and 8 connections. Nodes: Build time, generateStaticParams, params: id 1, 2, 3..., Pre-render /posts/1, Pre-render /posts/2, Pre-render /posts/3, Static HTML files. Connections: Build time to generateStaticParams, generateStaticParams to params: id 1, 2, 3..., params: id 1, 2, 3... to Pre-render /posts/1, params: id 1, 2, 3... to Pre-render /posts/2, params: id 1, 2, 3... to Pre-render /posts/3, Pre-render /posts/1 to Static HTML files, Pre-render /posts/2 to Static HTML files, Pre-render /posts/3 to Static HTML files.
   A[Build time] --> B[generateStaticParams]
-  B --> C[params: id 1, 2, 3...]
+  B --> C[params: id 1, 2,<br/>3...]
   C --> D[Pre-render /posts/1]
   C --> E[Pre-render /posts/2]
   C --> F[Pre-render /posts/3]
@@ -36,10 +38,14 @@ graph TD
   E --> G
   F --> G
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#000
-  style C fill:#DE8F05,stroke:#000,color:#000
-  style G fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class G pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -103,6 +109,8 @@ Combine static generation with time-based revalidation. Serve stale content inst
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 52: Incremental Static Regeneration
+  accDescr: Sequence diagram between User (t=0), User (t=3700), Cache. Messages: User (t=0) to Cache: Request /posts; Cache to User (t=0): Cached page (instant); User (t=3700) to Cache: Request /posts; Cache to User (t=3700): Stale page (instant); Cache to Cache: Background regeneration.
   participant U1 as User (t=0)
   participant U2 as User (t=3700)
   participant C as Cache
@@ -271,6 +279,8 @@ Stream page sections independently to show content as it loads. Improves perceiv
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 54: Streaming with Suspense Boundaries
+  accDescr: Sequence diagram between Browser, Next.js, Data Sources. Messages: Browser to Next.js: Request /posts/1; Next.js to Browser: Stream: page shell + loading fallbacks; Next.js to Data Sources: Fetch post (fast); Next.js to Data Sources: Fetch comments (slow); Data Sources to Next.js: Post ready (100ms); Next.js to Browser: Stream: PostContent; Data Sources to Next.js: Comments ready (2s); Next.js to Browser: Stream: Comments.
   participant B as Browser
   participant N as Next.js
   participant D as Data Sources
@@ -620,20 +630,28 @@ Use unstable_cache to cache expensive operations with custom keys and revalidati
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 57: Custom Cache with unstablecache
+  accDescr: Graph with 7 nodes and 7 connections. Nodes: Request, Cache hit?, Return cached data, Run expensive query, Store in cache, revalidateTag, Invalidate cache entry. Connections: Request to Cache hit?, Cache hit? to Return cached data (Yes), Cache hit? to Run expensive query (No), Run expensive query to Store in cache, Store in cache to Return cached data, revalidateTag to Invalidate cache entry, Invalidate cache entry to Cache hit?.
   A[Request] --> B{Cache hit?}
   B -->|Yes| C[Return cached data]
   B -->|No| D[Run expensive query]
   D --> E[Store in cache]
   E --> C
-  F[revalidateTag] --> G[Invalidate cache entry]
+  F[revalidateTag] --> G[Invalidate cache<br/>entry]
   G --> B
 
-  style A fill:#CC78BC,stroke:#000,color:#000
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CA9161,stroke:#000,color:#fff
-  style E fill:#DE8F05,stroke:#000,color:#000
-  style F fill:#CC78BC,stroke:#000,color:#000
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class B pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class D pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class E pal-DE8F05
+  class F pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -812,6 +830,8 @@ Use dynamic rendering modes to opt out of static generation for specific pages. 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 59: Force Dynamic Rendering
+  accDescr: Graph with 6 nodes and 3 connections. Nodes: Build time render, Per-request render, Always from cache, cookies/headers, force-dynamic, force-static. Connections: cookies/headers to Per-request render (auto-detects), force-dynamic to Per-request render, force-static to Build time render.
   subgraph Static["Static (default)"]
     S[Build time render]
   end
@@ -825,9 +845,13 @@ graph LR
   B[force-dynamic] --> D
   E[force-static] --> S
 
-  style S fill:#029E73,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#000
-  style C fill:#0173B2,stroke:#000,color:#fff
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class S pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class D pal-DE8F05
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class C pal-0173B2
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1122,17 +1146,24 @@ Generate dynamic OpenGraph images for social media sharing. Perfect for blog pos
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A[Social share] --> B[GET /api/og?title=...]
+  accTitle: Example 63: Dynamic OpenGraph Images
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Social share, GET /api/og?title=..., ImageResponse JSX, PNG image generated, Cached at edge CDN, Social preview rendered. Connections: Social share to GET /api/og?title=..., GET /api/og?title=... to ImageResponse JSX, ImageResponse JSX to PNG image generated, PNG image generated to Cached at edge CDN, Cached at edge CDN to Social preview rendered.
+  A[Social share] --> B[GET<br/>/api/og?title=...]
   B --> C[ImageResponse JSX]
   C --> D[PNG image generated]
   D --> E[Cached at edge CDN]
-  E --> F[Social preview rendered]
+  E --> F[Social preview<br/>rendered]
 
-  style A fill:#CC78BC,stroke:#000,color:#000
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#000
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class B pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1686,12 +1717,14 @@ Combine static shell with dynamic content for best of both worlds. Static parts 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 69: Partial Prerendering Pattern
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Header, Navigation, Footer, User Cart, Recommendations, Complete Page. Connections: Header to Complete Page, Navigation to Complete Page, Footer to Complete Page, User Cart to Complete Page, Recommendations to Complete Page.
   subgraph Static["Static (CDN cached)"]
     A[Header]
     B[Navigation]
     C[Footer]
   end
-  subgraph Dynamic["Dynamic (per request)"]
+  subgraph Dynamic["Dynamic (per<br/>request)"]
     D[User Cart]
     E[Recommendations]
   end
@@ -1701,11 +1734,14 @@ graph LR
   D --> F
   E --> F
 
-  style A fill:#029E73,stroke:#000,color:#fff
-  style B fill:#029E73,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#000
-  style E fill:#DE8F05,stroke:#000,color:#000
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class A pal-029E73
+  class B pal-029E73
+  class C pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class D pal-DE8F05
+  class E pal-DE8F05
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1801,20 +1837,27 @@ Chain multiple middleware functions for composable request processing. Cleaner t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 70: Middleware Chaining Pattern
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: Request, Auth Check, Rate Limit Check, 401 Redirect, Add Headers, 429 Too Many Requests, Route Handler. Connections: Request to Auth Check, Auth Check to Rate Limit Check (pass), Auth Check to 401 Redirect (fail), Rate Limit Check to Add Headers (pass), Rate Limit Check to 429 Too Many Requests (fail), Add Headers to Route Handler.
   A[Request] --> B[Auth Check]
   B -->|pass| C[Rate Limit Check]
   B -->|fail| G[401 Redirect]
   C -->|pass| D[Add Headers]
-  C -->|fail| H[429 Too Many Requests]
+  C -->|fail| H[429 Too Many<br/>Requests]
   D --> E[Route Handler]
 
-  style A fill:#CC78BC,stroke:#000,color:#000
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#0173B2,stroke:#000,color:#fff
-  style D fill:#0173B2,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
-  style G fill:#CA9161,stroke:#000,color:#fff
-  style H fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class B pal-0173B2
+  class C pal-0173B2
+  class D pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class G pal-CA9161
+  class H pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1918,18 +1961,25 @@ Implement multi-step form wizard using Server Actions and session storage. Maint
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A[Step 1: Personal Info] -->|Next| B[Step 2: Donation Amount]
-  B -->|Next| C[Step 3: Payment Method]
-  C -->|Submit| D[Server Action: process]
+  accTitle: Example 71: Multi-Step Form with Server Actions
+  accDescr: Graph with 5 nodes and 6 connections. Nodes: Step 1: Personal Info, Step 2: Donation Amount, Step 3: Payment Method, Server Action: process, Success Page. Connections: Step 1: Personal Info to Step 2: Donation Amount (Next), Step 2: Donation Amount to Step 3: Payment Method (Next), Step 3: Payment Method to Server Action: process (Submit), Server Action: process to Success Page, Step 2: Donation Amount to Step 1: Personal Info (Back), Step 3: Payment Method to Step 2: Donation Amount (Back).
+  A[Step 1: Personal<br/>Info] -->|Next| B[Step 2: Donation<br/>Amount]
+  B -->|Next| C[Step 3: Payment<br/>Method]
+  C -->|Submit| D[Server Action:<br/>process]
   D --> E[Success Page]
   B -->|Back| A
   C -->|Back| B
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#000
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CA9161,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class D pal-CA9161
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -2116,6 +2166,8 @@ Trigger background jobs from Server Actions using queue systems. Returns immedia
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 72: Background Jobs with Server Actions
+  accDescr: Sequence diagram between User, Server Action, Job Queue, Worker. Messages: User to Server Action: Submit form; Server Action to Job Queue: Enqueue job; Server Action to User: Return Processing... (immediate); Job Queue to Worker: Dequeue job; Worker to Worker: Process (slow: send emails, generate PDF); Worker to Job Queue: Mark complete.
   participant U as User
   participant SA as Server Action
   participant Q as Job Queue
@@ -2299,23 +2351,31 @@ Implement role-based access control with middleware and Server Components. Restr
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A[Request] --> B[Middleware: check auth]
+  accTitle: Example 73: Role-Based Access Control
+  accDescr: Graph with 8 nodes and 8 connections. Nodes: Request, Middleware: check auth, Redirect /login, Server Component: check role, Admin Dashboard, User Dashboard, 403 Forbidden, Server Action: verify role again. Connections: Request to Middleware: check auth, Middleware: check auth to Redirect /login (no token), Middleware: check auth to Server Component: check role (has token), Server Component: check role to Admin Dashboard (admin role), Server Component: check role to User Dashboard (user role), Server Component: check role to 403 Forbidden (wrong role), Admin Dashboard to Server Action: verify role again, User Dashboard to Server Action: verify role again.
+  A[Request] --> B[Middleware: check<br/>auth]
   B -->|no token| C[Redirect /login]
-  B -->|has token| D[Server Component: check role]
+  B -->|has token| D[Server Component:<br/>check role]
   D -->|admin role| E[Admin Dashboard]
   D -->|user role| F[User Dashboard]
   D -->|wrong role| G[403 Forbidden]
-  E --> H[Server Action: verify role<br/>again]
+  E --> H[Server Action:<br/>verify role<br/>again]
   F --> H
 
-  style A fill:#CC78BC,stroke:#000,color:#000
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#CA9161,stroke:#000,color:#fff
-  style D fill:#0173B2,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
-  style F fill:#DE8F05,stroke:#000,color:#000
-  style G fill:#CA9161,stroke:#000,color:#fff
-  style H fill:#029E73,stroke:#000,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class B pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class C pal-CA9161
+  class D pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class F pal-DE8F05
+  class G pal-CA9161
+  class H pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -2644,17 +2704,23 @@ Use Prisma transactions for atomic multi-table operations. Ensures data consiste
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A[prisma.$transaction] --> B[Create donation record]
+  accTitle: Example 75: Database Transactions with Prisma
+  accDescr: Graph with 6 nodes and 7 connections. Nodes: prisma.$transaction, Create donation record, Update donor total, Update charity balance, COMMIT: all 3 updates persist, ROLLBACK: none of the 3 persist. Connections: prisma.$transaction to Create donation record, Create donation record to Update donor total, Update donor total to Update charity balance, Update charity balance to COMMIT: all 3 updates persist (all succeed), Create donation record to ROLLBACK: none of the 3 persist (any error), Update donor total to ROLLBACK: none of the 3 persist (any error), Update charity balance to ROLLBACK: none of the 3 persist (any error).
+  A[prisma.$transaction] --> B[Create donation<br/>record]
   B --> C[Update donor total]
-  C --> D[Update charity balance]
-  D -->|all succeed| E[COMMIT: all 3 updates persist]
-  B -->|any error| F[ROLLBACK: none of the 3<br/>persist]
+  C --> D[Update charity<br/>balance]
+  D -->|all succeed| E[COMMIT: all 3<br/>updates persist]
+  B -->|any error| F[ROLLBACK: none of<br/>the 3<br/>persist]
   C -->|any error| F
   D -->|any error| F
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
-  style F fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class F pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

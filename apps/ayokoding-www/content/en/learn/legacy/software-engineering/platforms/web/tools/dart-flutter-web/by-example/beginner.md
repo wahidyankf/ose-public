@@ -28,16 +28,23 @@ Every Flutter application starts with `runApp`, which inflates the root widget a
 
 ```mermaid
 graph TD
+  accTitle: Example 1: MaterialApp and runApp
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: runApp4041, MaterialApp, ThemeData, Navigator, home: widget. Connections: runApp4041 to MaterialApp, MaterialApp to ThemeData, MaterialApp to Navigator, MaterialApp to home: widget.
   A["runApp#40;#41;"] --> B["MaterialApp"]
   B --> C["ThemeData"]
   B --> D["Navigator"]
   B --> E["home: widget"]
 
-  style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style D fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style E fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  class D pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -771,19 +778,27 @@ class StatelessDemo extends StatelessWidget {
 
 ```mermaid
 graph TD
+  accTitle: Example 10: StatefulWidget and setState
+  accDescr: Graph with 6 nodes and 6 connections. Nodes: StatefulWidget immutable config, createState4041, State object persists across rebuilds, initState4041 called once, build4041 renders UI, setState4041 triggers rebuild. Connections: StatefulWidget immutable config to createState4041, createState4041 to State object persists across rebuilds, State object persists across rebuilds to initState4041 called once, initState4041 called once to build4041 renders UI, build4041 renders UI to setState4041 triggers rebuild, setState4041 triggers rebuild to build4041 renders UI.
   A["StatefulWidget<br/>immutable config"] --> B["createState#40;#41;"]
-  B --> C["State object<br/>persists across rebuilds"]
+  B --> C["State object<br/>persists across<br/>rebuilds"]
   C --> D["initState#40;#41;<br/>called once"]
   D --> E["build#40;#41;<br/>renders UI"]
   E --> F["setState#40;#41;<br/>triggers rebuild"]
   F --> E
 
-  style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style C fill:#029E73,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style D fill:#CC78BC,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style E fill:#CA9161,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style F fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000,stroke-width:2px
+  class E pal-CA9161
+  class F pal-0173B2
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart
@@ -1472,11 +1487,16 @@ Flutter's Navigator maintains a stack of routes. `Navigator.push` adds a route t
 
 ```mermaid
 graph LR
+  accTitle: Example 17: Navigator Push and Pop
+  accDescr: Graph with 2 nodes and 2 connections. Nodes: Screen A Stack: 91A93, Screen B Stack: 91A, B93. Connections: Screen A Stack: 91A93 to Screen B Stack: 91A, B93 (Navigator.push), Screen B Stack: 91A, B93 to Screen A Stack: 91A93 (Navigator.pop).
   A["Screen A<br/>Stack: #91;A#93;"] -->|"Navigator.push"| B["Screen B<br/>Stack: #91;A, B#93;"]
   B -->|"Navigator.pop"| A
 
-  style A fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
-  style B fill:#DE8F05,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dart

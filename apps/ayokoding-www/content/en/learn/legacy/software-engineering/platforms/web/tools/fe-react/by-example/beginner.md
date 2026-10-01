@@ -102,16 +102,24 @@ Props pass data from parent to child components. Use TypeScript interfaces for t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    P["App (Parent)\n passes props"] -->|"name='Aisha' age=28\nisStudent=false"| C1["Greeting\ncomponent"]
-    P -->|"name='Omar' age=22\nisStudent=true"| C2["Greeting\ncomponent"]
-    C1 -->|"read-only props"| R1["Renders profile\nfor Aisha"]
-    C2 -->|"read-only props"| R2["Renders profile\nfor Omar"]
+    accTitle: Example 3: Component Props with Interfaces
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: App (Parent) passes props, Greeting component, Greeting component, Renders profile for Aisha, Renders profile for Omar. Connections: App (Parent) passes props to Greeting component (name=Aisha age=28 isStudent=false), App (Parent) passes props to Greeting component (name=Omar age=22 isStudent=true), Greeting component to Renders profile for Aisha (read-only props), Greeting component to Renders profile for Omar (read-only props).
+    P["App (Parent)<br/> passes props"] -->|"name='Aisha' age=28<br/>isStudent=false"| C1["Greeting<br/>component"]
+    P -->|"name='Omar' age=22<br/>isStudent=true"| C2["Greeting<br/>component"]
+    C1 -->|"read-only props"| R1["Renders profile<br/>for Aisha"]
+    C2 -->|"read-only props"| R2["Renders profile<br/>for Omar"]
 
-    style P fill:#0173B2,stroke:#000,color:#fff
-    style C1 fill:#DE8F05,stroke:#000,color:#000
-    style C2 fill:#029E73,stroke:#000,color:#fff
-    style R1 fill:#CC78BC,stroke:#000,color:#000
-    style R2 fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class P pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C1 pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C2 pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class R1 pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class R2 pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Props flow**: Parent controls child data through one-way prop passing.
@@ -178,6 +186,8 @@ The `children` prop passes nested JSX content to components. Use `ReactNode` typ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 4: Children Props Pattern
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: App (Parent), Card Component, title: string, children: ReactNode, Text nodes, JSX elements, Mixed content. Connections: App (Parent) to Card Component (children prop), Card Component to title: string, Card Component to children: ReactNode, children: ReactNode to Text nodes, children: ReactNode to JSX elements, children: ReactNode to Mixed content.
     A["App (Parent)"] -->|"children prop"| B["Card Component"]
     B --> C["title: string"]
     B --> D["children: ReactNode"]
@@ -185,13 +195,19 @@ graph TD
     D --> F["JSX elements"]
     D --> G["Mixed content"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CA9161
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -333,14 +349,20 @@ State stores component data that changes over time. `useState` returns current v
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["useState(0)\n count = 0"] -->|"setCount(1)"| B["Re-render\n count = 1"]
-    B -->|"setCount(2)"| C["Re-render\n count = 2"]
+    accTitle: Example 6: useState Hook with TypeScript
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: useState(0) count = 0, Re-render count = 1, Re-render count = 2, User clicks button. Connections: useState(0) count = 0 to Re-render count = 1 (setCount(1)), Re-render count = 1 to Re-render count = 2 (setCount(2)), User clicks button to useState(0) count = 0 (handleIncrement()).
+    A["useState(0)<br/> count = 0"] -->|"setCount(1)"| B["Re-render<br/> count = 1"]
+    B -->|"setCount(2)"| C["Re-render<br/> count = 2"]
     D["User clicks button"] -->|"handleIncrement()"| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **State update cycle**: useState triggers re-render when setter called.
@@ -561,18 +583,26 @@ Arrays in state require creating new arrays for updates. Use array methods that 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-    A["todos: [Pray Fajr,\nRead Quran]"] -->|"addTodo(text)"| B["[...todos, newTodo]\nnew array"]
-    A -->|"toggleTodo(id)"| C["todos.map(...)\nnew array"]
-    A -->|"deleteTodo(id)"| D["todos.filter(...)\nnew array"]
-    B --> E["React re-render\nDOM updated"]
+    accTitle: Example 9: State with Arrays
+    accDescr: Graph with 5 nodes and 6 connections. Nodes: todos: [Pray Fajr, Read Quran], [...todos, newTodo] new array, todos.map(...) new array, todos.filter(...) new array, React re-render DOM updated. Connections: todos: [Pray Fajr, Read Quran] to [...todos, newTodo] new array (addTodo(text)), todos: [Pray Fajr, Read Quran] to todos.map(...) new array (toggleTodo(id)), todos: [Pray Fajr, Read Quran] to todos.filter(...) new array (deleteTodo(id)), [...todos, newTodo] new array to React re-render DOM updated, todos.map(...) new array to React re-render DOM updated, todos.filter(...) new array to React re-render DOM updated.
+    A["todos: [Pray Fajr,<br/>Read Quran]"] -->|"addTodo(text)"| B["[...todos, newTodo]<br/>new array"]
+    A -->|"toggleTodo(id)"| C["todos.map(...)<br/>new array"]
+    A -->|"deleteTodo(id)"| D["todos.filter(...)<br/>new array"]
+    B --> E["React re-render<br/>DOM updated"]
     C --> E
     D --> E
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Immutable array updates**: Always return new arrays, never mutate in place.
@@ -755,13 +785,19 @@ export default ZakatCalculator;
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 11: useEffect Basics
+    accDescr: Graph with 3 nodes and 3 connections. Nodes: Component Renders, useEffect runs, Effect executes (DOM updates, fetch, timer). Connections: Component Renders to useEffect runs (After paint), useEffect runs to Effect executes (DOM updates, fetch, timer) (No cleanup), Effect executes (DOM updates, fetch, timer) to Component Renders (State changes).
     A["Component Renders"] -->|"After paint"| B["useEffect runs"]
-    B -->|"No cleanup"| C["Effect executes\n (DOM updates, fetch, timer)"]
+    B -->|"No cleanup"| C["Effect executes<br/>(DOM updates, fetch,<br/>timer)"]
     C -->|"State changes"| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **useEffect lifecycle**: Runs after every render without dependency array.
@@ -954,16 +990,24 @@ Fetch external data in `useEffect` with proper loading and error states.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Component mounts\nuseEffect fires"] -->|"fetch()"| B["Network request"]
-    B -->|"loading"| C["isLoading=true\nUI: spinner"]
-    B -->|"success"| D["setUser(data)\nisLoading=false\nUI: profile"]
-    B -->|"error"| E["setError(msg)\nisLoading=false\nUI: error"]
+    accTitle: Example 14: Fetching Data with useEffect
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Component mounts useEffect fires, Network request, isLoading=true UI: spinner, setUser(data) isLoading=false UI: profile, setError(msg) isLoading=false UI: error. Connections: Component mounts useEffect fires to Network request (fetch()), Network request to isLoading=true UI: spinner (loading), Network request to setUser(data) isLoading=false UI: profile (success), Network request to setError(msg) isLoading=false UI: error (error).
+    A["Component mounts<br/>useEffect fires"] -->|"fetch()"| B["Network request"]
+    B -->|"loading"| C["isLoading=true<br/>UI: spinner"]
+    B -->|"success"| D["setUser(data)<br/>isLoading=false<br/>UI: profile"]
+    B -->|"error"| E["setError(msg)<br/>isLoading=false<br/>UI: error"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CA9161,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Data fetching states**: Loading → success or error, with conditional UI rendering.
@@ -1857,6 +1901,8 @@ Render different UI based on state. Use ternary operators, `&&` operator, or ear
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 21: Conditional Rendering
+    accDescr: Graph with 8 nodes and 6 connections. Nodes: isAuthenticated?, Dashboard renders, Login page renders, isLoading?, Spinner renders, hasItems?, List renders, Empty state renders. Connections: isAuthenticated? to Dashboard renders (true), isAuthenticated? to Login page renders (false), isLoading? to Spinner renders (true), isLoading? to isAuthenticated? (false), hasItems? to List renders (true), hasItems? to Empty state renders (false).
     A{"isAuthenticated?"} -->|"true"| B["Dashboard renders"]
     A -->|"false"| C["Login page renders"]
     D{"isLoading?"} -->|"true"| E["Spinner renders"]
@@ -1864,14 +1910,20 @@ graph TD
     F{"hasItems?"} -->|"true"| G["List renders"]
     F -->|"false"| H["Empty state renders"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#000
-    style D fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#0173B2,stroke:#000,color:#fff
-    style G fill:#029E73,stroke:#000,color:#fff
-    style H fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class D pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-0173B2
+    class G pal-029E73
+    class H pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Conditional rendering tree**: Different UI states based on boolean conditions.
@@ -1982,14 +2034,21 @@ Render arrays of data with `map()`. Provide unique `key` prop for performance.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["prayers array\n[5 items]"] -->|".map()"| B["JSX elements\n[li key=fajr]\n[li key=dhuhr]\n..."]
-    B -->|"React reconciliation"| C["DOM list\n5 rendered items"]
+    accTitle: Example 22: Lists and Keys
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: prayers array [5 items], JSX elements [li key=fajr] [li key=dhuhr] ..., DOM list 5 rendered items, togglePrayer(id). Connections: prayers array [5 items] to JSX elements [li key=fajr] [li key=dhuhr] ... (.map()), JSX elements [li key=fajr] [li key=dhuhr] ... to DOM list 5 rendered items (React reconciliation), togglePrayer(id) to prayers array [5 items] (setState).
+    A["prayers array<br/>[5 items]"] -->|".map()"| B["JSX elements<br/>[li key=fajr]<br/>[li key=dhuhr]<br/>..."]
+    B -->|"React<br/>reconciliation"| C["DOM list<br/>5 rendered items"]
     D["togglePrayer(id)"] -->|"setState"| A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **List rendering**: Array maps to JSX elements via key-tracked reconciliation.
@@ -2127,14 +2186,20 @@ Share state between components by lifting it to common parent.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    Parent["TemperatureConverter\n state: celsius, fahrenheit"] -->|"celsius prop + handler"| C["CelsiusInput"]
-    Parent -->|"fahrenheit prop + handler"| F["FahrenheitInput"]
-    C -->|"onChange → handleCelsiusChange"| Parent
-    F -->|"onChange → handleFahrenheitChange"| Parent
+    accTitle: Example 23: Lifting State Up
+    accDescr: Graph with 3 nodes and 4 connections. Nodes: TemperatureConverter state: celsius, fahrenheit, CelsiusInput, FahrenheitInput. Connections: TemperatureConverter state: celsius, fahrenheit to CelsiusInput (celsius prop + handler), TemperatureConverter state: celsius, fahrenheit to FahrenheitInput (fahrenheit prop + handler), CelsiusInput to TemperatureConverter state: celsius, fahrenheit (onChange → handleCelsiusChange), FahrenheitInput to TemperatureConverter state: celsius, fahrenheit (onChange → handle FahrenheitChange).
+    Parent["TemperatureConverter<br/>state: celsius,<br/>fahrenheit"] -->|"celsius prop +<br/>handler"| C["CelsiusInput"]
+    Parent -->|"fahrenheit prop +<br/>handler"| F["FahrenheitInput"]
+    C -->|"onChange →<br/>handleCelsiusChange"| Parent
+    F -->|"onChange → handle<br/>FahrenheitChange"| Parent
 
-    style Parent fill:#0173B2,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class Parent pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Lifting state up**: Parent owns state, siblings share via parent props/callbacks.
@@ -2422,19 +2487,27 @@ Combine concepts from all previous examples into practical application.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["WealthCategories\n state: categories[]"] -->|"updateCategory(id, amount)"| A
+    accTitle: Example 25: Simple Zakat Calculator
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: WealthCategories state: categories[], totalWealth, zakatableWealth, isZakatDue, zakatAmount = 2.5, zakatAmount = 0. Connections: WealthCategories state: categories[] to WealthCategories state: categories[] (updateCategory(id, amount)), WealthCategories state: categories[] to totalWealth (reduce), totalWealth to zakatableWealth (- debts), zakatableWealth to isZakatDue (>= nisab?), isZakatDue to zakatAmount = 2.5 (Yes), isZakatDue to zakatAmount = 0 (No).
+    A["WealthCategories<br/> state: categories[]"] -->|"updateCategory(id,<br/>amount)"| A
     A -->|"reduce"| B["totalWealth"]
     B -->|"- debts"| C["zakatableWealth"]
     C -->|">= nisab?"| D{"isZakatDue"}
     D -->|"Yes"| E["zakatAmount = 2.5%"]
     D -->|"No"| F["zakatAmount = 0"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CA9161,stroke:#000,color:#000
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Data flow**: State → derived values → conditional output.

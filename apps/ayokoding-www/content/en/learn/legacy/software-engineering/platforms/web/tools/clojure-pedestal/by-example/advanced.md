@@ -280,6 +280,8 @@ A circuit breaker prevents cascading failures when a downstream service is unava
 
 ```mermaid
 graph TD
+  accTitle: Example 60: Circuit Breaker Pattern
+  accDescr: Graph with 9 nodes and 10 connections. Nodes: Request, Circuit State?, Call Downstream, Reject: 503, Test Call, Stay Closed, Threshold?, Open Circuit, Close Circuit. Connections: Request to Circuit State?, Circuit State? to Call Downstream (Closed), Circuit State? to Reject: 503 (Open), Circuit State? to Test Call (Half-Open), Call Downstream to Stay Closed (Success), Call Downstream to Threshold? (Failure), Threshold? to Open Circuit (Exceeded), Threshold? to Stay Closed (Under), Test Call to Close Circuit (Success), Test Call to Open Circuit (Failure).
   A["Request"] --> B{"Circuit State?"}
   B -->|Closed| C["Call Downstream"]
   B -->|Open| D["Reject: 503"]
@@ -291,12 +293,18 @@ graph TD
   E -->|Success| I["Close Circuit"]
   E -->|Failure| H
 
-  style A fill:#0173B2,color:#fff
-  style B fill:#DE8F05,color:#fff
-  style C fill:#029E73,color:#fff
-  style D fill:#CA9161,color:#fff
-  style H fill:#CC78BC,color:#fff
-  style I fill:#029E73,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class D pal-CA9161
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class H pal-CC78BC
+  class I pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure

@@ -28,6 +28,8 @@ useFormState hook provides Server Action state and pending status in Client Comp
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 26: Server Action with useFormState Hook
+  accDescr: Sequence diagram between User, Form (Client), Server Action. Messages: User to Form (Client): Submit form; Form (Client) to Server Action: Call with prevState + formData; Server Action to Form (Client): Return FormState errors, message; Form (Client) to User: Show validation errors or success.
   participant U as User
   participant F as Form (Client)
   participant SA as Server Action
@@ -668,6 +670,8 @@ Use revalidate option to set cache lifetime. Next.js regenerates page after expi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 29: Time-Based Revalidation
+  accDescr: Sequence diagram between User, Cache, Server. Messages: User to Cache: Request /posts; Cache to User: Serve cached page (instant); Cache to Server: Background regeneration; Server to Cache: New page generated.
   participant U as User
   participant C as Cache
   participant S as Server
@@ -752,18 +756,26 @@ Use revalidatePath() to invalidate specific route cache immediately. Perfect for
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A[Server Action: updatePost] --> B[Update Database]
-  B --> C[revalidatePath /posts]
+  accTitle: Example 30: On-Demand Revalidation with revalidatePath
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Server Action: updatePost, Update Database, revalidatePath /posts, Cache invalidated, Next request regenerates page, User sees fresh data. Connections: Server Action: updatePost to Update Database, Update Database to revalidatePath /posts, revalidatePath /posts to Cache invalidated, Cache invalidated to Next request regenerates page, Next request regenerates page to User sees fresh data.
+  A[Server Action:<br/>updatePost] --> B[Update Database]
+  B --> C[revalidatePath<br/>/posts]
   C --> D[Cache invalidated]
-  D --> E[Next request regenerates page]
+  D --> E[Next request<br/>regenerates page]
   E --> F[User sees fresh data]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#CA9161,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#000
-  style D fill:#CC78BC,stroke:#000,color:#000
-  style E fill:#029E73,stroke:#000,color:#fff
-  style F fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class B pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  class F pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1152,14 +1164,21 @@ Use @folder syntax to render multiple pages in the same layout simultaneously. P
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A[app/dashboard/layout.tsx] --> B[@analytics/page.tsx]
-  A --> C[@notifications/page.tsx]
+  accTitle: Example 33: Parallel Routes with @folder Convention
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: app/dashboard/ layout.tsx, @analytics/page.tsx, @notifications/ page.tsx, page.tsx. Connections: app/dashboard/ layout.tsx to @analytics/page.tsx, app/dashboard/ layout.tsx to @notifications/ page.tsx, app/dashboard/ layout.tsx to page.tsx.
+  A[app/dashboard/<br/>layout.tsx] --> B[@analytics/page.tsx]
+  A --> C[@notifications/<br/>page.tsx]
   A --> D[page.tsx]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#000
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#000
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1470,6 +1489,8 @@ Use useOptimistic hook to show immediate UI feedback while Server Action process
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 36: Optimistic Updates with useOptimistic
+  accDescr: Sequence diagram between User, UI State, Server Action. Messages: User to UI State: Click Add Comment; UI State to UI State: Show optimistic comment immediately; UI State to Server Action: Submit to server; Server Action to UI State: Confirm saved; UI State to UI State: Replace optimistic with real data; Server Action to UI State: Return error; UI State to UI State: Remove optimistic comment.
   participant U as User
   participant UI as UI State
   participant SA as Server Action
@@ -1683,16 +1704,24 @@ Use middleware to protect multiple routes at once. More efficient than checking 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 38: Middleware-Based Authentication
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Request, middleware.ts, Protected Route, Redirect to /login, /login?redirect=original-path. Connections: Request to middleware.ts, middleware.ts to Protected Route (has auth cookie), middleware.ts to Redirect to /login (no auth cookie), Redirect to /login to /login?redirect=original-path.
   A[Request] --> B{middleware.ts}
   B -->|has auth cookie| C[Protected Route]
   B -->|no auth cookie| D[Redirect to /login]
-  D --> E[/login?redirect=original-path]
+  D --> E[/login?redirect=<br/>original-path]
 
-  style A fill:#CC78BC,stroke:#000,color:#000
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#000
-  style E fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class B pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class D pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class E pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -2630,17 +2659,24 @@ Implement infinite scroll in Client Component using Intersection Observer API. L
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A[Page loads: show posts 1-10] --> B[User scrolls down]
-  B --> C{Sentinel div visible?}
+  accTitle: Example 47: Infinite Scroll with Intersection Observer
+  accDescr: Graph with 5 nodes and 6 connections. Nodes: Page loads: show posts 1-10, User scrolls down, Sentinel div visible?, Fetch next page, Append posts 11-20. Connections: Page loads: show posts 1-10 to User scrolls down, User scrolls down to Sentinel div visible?, Sentinel div visible? to User scrolls down (No), Sentinel div visible? to Fetch next page (Yes), Fetch next page to Append posts 11-20, Append posts 11-20 to User scrolls down.
+  A[Page loads: show<br/>posts 1-10] --> B[User scrolls down]
+  B --> C{Sentinel div<br/>visible?}
   C -->|No| B
   C -->|Yes| D[Fetch next page]
   D --> E[Append posts 11-20]
   E --> B
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#000
-  style D fill:#CA9161,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class D pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -2750,6 +2786,8 @@ Implement search with debouncing to reduce API calls. Waits for user to stop typ
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 48: Search with Debouncing
+  accDescr: Sequence diagram between User, Debounce Timer, Search API. Messages: User to Debounce Timer: Type z (set 300ms timer); User to Debounce Timer: Type za (reset timer); User to Debounce Timer: Type zak (reset timer); Debounce Timer to Search API: Search zak; Search API to User: Show results for zak.
   participant U as User
   participant D as Debounce Timer
   participant API as Search API

@@ -460,6 +460,8 @@ public class CronScheduledTasks {
 
 ```mermaid
 sequenceDiagram
+    accTitle: Scheduling Execution Model Diagram
+    accDescr: Sequence diagram between Spring Application, TaskScheduler, @Scheduled(fixedRate), @Scheduled(cron), Thread Pool. Messages: Spring Application to TaskScheduler: @EnableScheduling initializes; TaskScheduler to TaskScheduler: Scan for @Scheduled methods; TaskScheduler to TaskScheduler: Register Task1 (fixedRate=60s); TaskScheduler to TaskScheduler: Register Task2 (cron=0 0 * * * *); TaskScheduler to Thread Pool: Execute Task1; Thread Pool to @Scheduled(fixedRate): calculateZakatFixedRate(); @Scheduled(fixedRate) to Thread Pool: Complete; TaskScheduler to Thread Pool: Execute Task2; Thread Pool to @Scheduled(cron): monthEndZakatCalculation(); @Scheduled(cron) to Thread Pool: Complete.
     participant App as Spring Application
     participant Scheduler as TaskScheduler
     participant Task1 as @Scheduled(fixedRate)
@@ -486,10 +488,6 @@ sequenceDiagram
     Note over Scheduler,Pool: Thread pool (10 threads)
     Note over Task1,Task2: Exceptions caught, logged, continue
 
-    style Scheduler fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style Pool fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style Task1 fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style Task2 fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
 ```
 
 ## Production Patterns

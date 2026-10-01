@@ -43,16 +43,24 @@ The Vercel AI SDK (`ai@6.0.168`) is a **TypeScript-first framework** for integra
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Beginner<br/>Examples 1–28<br/>First calls, streaming, chat UI<br/>embeddings, structured output"] --> B["Intermediate<br/>Examples 29–57<br/>RAG pipelines, tool calling<br/>image gen, middleware, MCP"]
-  B --> C["Advanced<br/>Examples 58–85<br/>Agents, multi-agent orchestration<br/>evaluation, production hardening"]
-  D["Prerequisites<br/>TypeScript + Next.js basics"] -.-> A
-  C -.-> E["Production-ready<br/>AI Application Skills"]
+  accTitle: Learning Path
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Examples 1–28 First calls, streaming, chat UI embeddings, structured output, Intermediate Examples 29–57 RAG pipelines, tool calling image gen, middleware, MCP, Advanced Examples 58–85 Agents, multi-agent orchestration evaluation, production hardening, Prerequisites TypeScript + Next.js basics, Production-ready AI Application Skills. Connections: Beginner Examples 1–28 First calls, streaming, chat UI embeddings, structured output to Intermediate Examples 29–57 RAG pipelines, tool calling image gen, middleware, MCP, Intermediate Examples 29–57 RAG pipelines, tool calling image gen, middleware, MCP to Advanced Examples 58–85 Agents, multi-agent orchestration evaluation, production hardening, Prerequisites TypeScript + Next.js basics to Beginner Examples 1–28 First calls, streaming, chat UI embeddings, structured output, Advanced Examples 58–85 Agents, multi-agent orchestration evaluation, production hardening to Production-ready AI Application Skills.
+  A["Beginner<br/>Examples 1–28<br/>First calls,<br/>streaming, chat UI<br/>embeddings,<br/>structured output"] --> B["Intermediate<br/>Examples 29–57<br/>RAG pipelines, tool<br/>calling<br/>image gen,<br/>middleware, MCP"]
+  B --> C["Advanced<br/>Examples 58–85<br/>Agents, multi-agent<br/>orchestration<br/>evaluation,<br/>production hardening"]
+  D["Prerequisites<br/>TypeScript + Next.js<br/>basics"] -.-> A
+  C -.-> E["Production-ready<br/>AI Application<br/>Skills"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class E pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage by Difficulty

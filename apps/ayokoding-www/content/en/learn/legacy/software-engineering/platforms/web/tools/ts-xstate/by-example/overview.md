@@ -42,16 +42,23 @@ Several distinctions matter before you write a single line:
 
 ```mermaid
 graph TD
-  A["Beginner&#10;Core State Machines&#10;Examples 1-27"] --> B["Intermediate&#10;Actors, React, Testing&#10;Examples 28-54"]
-  B --> C["Advanced&#10;Complex Patterns&#10;Examples 55-80"]
-  D["0%&#10;No XState Knowledge"] -.-> A
+  accTitle: Learning Path
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, D, E. Connections: A to B, B to C, D to A, C to E.
+  A["Beginner&#10;Core State<br/>Machines&#10;Examples<br/>1-27"] --> B["Intermediate&#10;Actors,<br/>React,<br/>Testing&#10;Examples<br/>28-54"]
+  B --> C["Advanced&#10;Complex<br/>Patterns&#10;Examples<br/>55-80"]
+  D["0%&#10;No XState<br/>Knowledge"] -.-> A
   C -.-> E["95%&#10;XState Mastery"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 _Accessible color palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC. All colors meet WCAG AA contrast standards and are color-blind friendly._

@@ -538,13 +538,15 @@ public class MonitoredZakatService {
 
 ```mermaid
 flowchart TB
+    accTitle: Performance Optimization Flow Diagram
+    accDescr: Flowchart with 12 nodes and 9 connections. Nodes: Client Request (zakat calculation), Cache Hit? (Spring Cache), Return Cached Result (sub-ms latency), Connection Pool (HikariCP), Database Query (batch if multiple accounts), Complex Calculation (cached result), Metrics Collection (Micrometer), Prometheus (metrics storage), Grafana (visualization), Lazy Init (beans created on-demand), Connection Pool (5-20 connections), Cache: TTL-based expiration. Connections: Client Request (zakat calculation) to Cache Hit? (Spring Cache), Cache Hit? (Spring Cache) to Return Cached Result (sub-ms latency) (Yes), Cache Hit? (Spring Cache) to Connection Pool (HikariCP) (No), Connection Pool (HikariCP) to Database Query (batch if multiple accounts), Database Query (batch if multiple accounts) to Complex Calculation (cached result), Complex Calculation (cached result) to Metrics Collection (Micrometer), Metrics Collection (Micrometer) to Prometheus (metrics storage), Prometheus (metrics storage) to Grafana (visualization), Return Cached Result (sub-ms latency) to Metrics Collection (Micrometer).
     Request["Client Request<br/>(zakat calculation)"]
 
     Cache{"Cache Hit?<br/>(Spring Cache)"}
     CacheHit["Return Cached Result<br/>(sub-ms latency)"]
 
     Pool["Connection Pool<br/>(HikariCP)"]
-    DB["Database Query<br/>(batch if multiple accounts)"]
+    DB["Database Query<br/>(batch if multiple<br/>accounts)"]
 
     Calc["Complex Calculation<br/>(cached result)"]
 
@@ -565,14 +567,19 @@ flowchart TB
 
     CacheHit --> Metrics
 
-    Note1["Lazy Init<br/>(beans created on-demand)"]
+    Note1["Lazy Init<br/>(beans created<br/>on-demand)"]
     Note2["Connection Pool<br/>(5-20 connections)"]
-    Note3["Cache: TTL-based expiration"]
+    Note3["Cache: TTL-based<br/>expiration"]
 
-    style Cache fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
-    style Pool fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style Calc fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style Prometheus fill:#CC78BC,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class Cache pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class Pool pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class Calc pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Prometheus pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Production Patterns

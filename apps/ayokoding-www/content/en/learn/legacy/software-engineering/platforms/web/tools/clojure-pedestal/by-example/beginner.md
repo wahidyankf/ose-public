@@ -28,16 +28,24 @@ A Pedestal service starts with a plain Clojure map called the **service map**. T
 
 ```mermaid
 graph TD
+  accTitle: Example 1: Minimal Pedestal Service
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: service-map (plain map), http/create-server validates + builds, server handle, http/start binds port, HTTP requests accepted. Connections: service-map (plain map) to http/create-server validates + builds, http/create-server validates + builds to server handle, server handle to http/start binds port, http/start binds port to HTTP requests accepted.
   A["service-map<br/>(plain map)"] --> B["http/create-server<br/>validates + builds"]
   B --> C["server handle"]
   C --> D["http/start<br/>binds port"]
   D --> E["HTTP requests<br/>accepted"]
 
-  style A fill:#0173B2,color:#fff
-  style B fill:#DE8F05,color:#fff
-  style C fill:#CA9161,color:#fff
-  style D fill:#029E73,color:#fff
-  style E fill:#CC78BC,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class C pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class E pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure
@@ -363,6 +371,8 @@ An interceptor is a map with up to three keys: `:enter`, `:leave`, and `:error`.
 
 ```mermaid
 graph TD
+  accTitle: Example 8: Interceptor Anatomy
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Interceptor A :enter, Interceptor B :enter, Handler :enter, Handler :leave, Interceptor B :leave, Interceptor A :leave. Connections: Interceptor A :enter to Interceptor B :enter, Interceptor B :enter to Handler :enter, Handler :leave to Interceptor B :leave, Interceptor B :leave to Interceptor A :leave, Handler :enter to Handler :leave.
   subgraph "Enter Stage (forward)"
     A["Interceptor A<br/>:enter"] --> B["Interceptor B<br/>:enter"] --> C["Handler<br/>:enter"]
   end
@@ -371,12 +381,16 @@ graph TD
   end
   C --> C2
 
-  style A fill:#0173B2,color:#fff
-  style B fill:#0173B2,color:#fff
-  style C fill:#029E73,color:#fff
-  style C2 fill:#029E73,color:#fff
-  style B2 fill:#DE8F05,color:#fff
-  style A2 fill:#DE8F05,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  class B pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  class C2 pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B2 pal-DE8F05
+  class A2 pal-DE8F05
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```clojure

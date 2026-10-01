@@ -79,6 +79,8 @@ Trap handlers execute code when signals are received, enabling cleanup on exit, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Diagram
+    accDescr: Graph with 7 nodes and 9 connections. Nodes: Script Running, Signal Received?, trap INT handler, trap TERM handler, trap EXIT handler always runs, cleanup function remove temp files, exit with code. Connections: Script Running to Signal Received?, Signal Received? to trap INT handler (SIGINT Ctrl+C), Signal Received? to trap TERM handler (SIGTERM), Signal Received? to trap EXIT handler always runs (EXIT), trap INT handler to cleanup function remove temp files, trap TERM handler to cleanup function remove temp files, cleanup function remove temp files to exit with code, trap EXIT handler always runs to exit with code, Signal Received? to Script Running (no signal).
     A[Script Running] --> B{Signal Received?}
     B -->|SIGINT Ctrl+C| C[trap INT handler]
     B -->|SIGTERM| D[trap TERM handler]
@@ -89,13 +91,19 @@ graph TD
     E --> G
     B -->|no signal| A
 
-    style A fill:#029E73,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CC78BC,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#0173B2,stroke:#000,color:#fff
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#000
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class A pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    class D pal-CC78BC
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class E pal-0173B2
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -173,6 +181,8 @@ Bash parameter expansion provides powerful string manipulation, default values, 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Diagram
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: $var..., Expansion Type, Use default if unset or empty, Assign default if unset or empty, Substring extraction, Strip prefix shortest match, Strip prefix longest match, Strip suffix shortest match, Replace first match. Connections: $var... to Expansion Type, Expansion Type to Use default if unset or empty (:-default), Expansion Type to Assign default if unset or empty (:=default), Expansion Type to Substring extraction (:offset:len), Expansion Type to Strip prefix shortest match (pattern), Expansion Type to Strip prefix longest match (pattern), Expansion Type to Strip suffix shortest match (pattern), Expansion Type to Replace first match (/old/new).
     A[\${var...}] --> B{Expansion Type}
     B -->|:-default| C[Use default<br/>if unset or empty]
     B -->|:=default| D[Assign default<br/>if unset or empty]
@@ -182,15 +192,21 @@ graph TD
     B -->|%pattern| H[Strip suffix<br/>shortest match]
     B -->|/old/new| I[Replace<br/>first match]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
-    style F fill:#CA9161,stroke:#000,color:#fff
-    style G fill:#CA9161,stroke:#000,color:#fff
-    style H fill:#CC78BC,stroke:#000,color:#000
-    style I fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class G pal-CA9161
+    class H pal-CC78BC
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -1183,6 +1199,8 @@ Real-world deployment scripts combine all advanced techniques: error handling, l
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Diagram
+    accDescr: Graph with 12 nodes and 12 connections. Nodes: Start Deployment, B, Prerequisites, Validation OK?, Exit Error log failure, Backup Current State, Deploy New Version, Health Check, Health OK?, Rollback to backup, Update Symlink cleanup old, Deployment Complete log success. Connections: Start Deployment to B, Start Deployment to Prerequisites, B to Validation OK?, Validation OK? to Exit Error log failure (no), Validation OK? to Backup Current State (yes), Backup Current State to Deploy New Version, Deploy New Version to Health Check, Health Check to Health OK?, Health OK? to Rollback to backup (no), Health OK? to Update Symlink cleanup old (yes), Rollback to backup to Exit Error log failure, Update Symlink cleanup old to Deployment Complete log success.
     A[Start Deployment] --> B[Validate Config<br/>& Prerequisites]
     B --> C{Validation OK?}
     C -->|no| D[Exit Error<br/>log failure]
@@ -1195,17 +1213,23 @@ graph TD
     I --> D
     J --> K[Deployment Complete<br/>log success]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#fff
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#DE8F05,stroke:#000,color:#000
-    style H fill:#DE8F05,stroke:#000,color:#000
-    style I fill:#CC78BC,stroke:#000,color:#000
-    style J fill:#029E73,stroke:#000,color:#fff
-    style K fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class G pal-DE8F05
+    class H pal-DE8F05
+    class I pal-CC78BC
+    class J pal-029E73
+    class K pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash
@@ -3837,6 +3861,8 @@ Production deployment patterns combine all techniques for reliable, zero-downtim
 ```mermaid
 %% Production deployment flow
 graph TD
+    accTitle: Example 80: Production Deployment Patterns
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: Start Deployment, Pre-flight Checks, Checks Pass?, Abort, Deploy to Canary, Monitor Metrics, Healthy?, Rollback, Deploy to All, Verify, Complete. Connections: Start Deployment to Pre-flight Checks, Pre-flight Checks to Checks Pass?, Checks Pass? to Abort (No), Checks Pass? to Deploy to Canary (Yes), Deploy to Canary to Monitor Metrics, Monitor Metrics to Healthy?, Healthy? to Rollback (No), Healthy? to Deploy to All (Yes), Deploy to All to Verify, Verify to Complete.
     A[Start Deployment] --> B[Pre-flight Checks]
     B --> C{Checks Pass?}
     C -->|No| D[Abort]
@@ -3848,10 +3874,14 @@ graph TD
     I --> J[Verify]
     J --> K[Complete]
 
-    style A fill:#0173B2,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style H fill:#CC78BC,color:#fff
-    style K fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class H pal-CC78BC
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class K pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

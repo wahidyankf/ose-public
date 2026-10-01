@@ -27,6 +27,8 @@ Execute multiple database operations atomically. If any fails, all rollback.
 ```mermaid
 %% Ecto.Multi transaction flow
 graph TD
+    accTitle: Example 51: Transactions and Concurrency with Ecto.Multi
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: Multi.new, Multi.update :debit, Multi.update :credit, Multi.insert :log, Repo.transaction, All succeed?, Commit all changes, Rollback everything, Return :ok, results, Return :error, failed_op. Connections: Multi.new to Multi.update :debit, Multi.update :debit to Multi.update :credit, Multi.update :credit to Multi.insert :log, Multi.insert :log to Repo.transaction, Repo.transaction to All succeed?, All succeed? to Commit all changes (Yes), All succeed? to Rollback everything (No), Commit all changes to Return :ok, results, Rollback everything to Return :error, failed_op.
     A[Multi.new] --> B[Multi.update :debit]
     B --> C[Multi.update :credit]
     C --> D[Multi.insert :log]
@@ -34,13 +36,18 @@ graph TD
     E --> F{All succeed?}
     F -->|Yes| G[Commit all changes]
     F -->|No| H[Rollback everything]
-    G --> I[Return {:ok, results}]
-    H --> J[Return {:error, failed_op}]
+    G --> I[Return {:ok,<br/>results}]
+    H --> J[Return {:error,<br/>failed_op}]
 
-    style A fill:#0173B2,color:#fff
-    style E fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class E pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -158,19 +165,26 @@ Handle database constraint violations (unique, foreign key, etc.) gracefully in 
 ```mermaid
 %% Constraint violation handling
 graph TD
+    accTitle: Example 52: Database Constraints and Error Handling
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: Insert user, Database, Constraint violated?, unique_constraint catches, assoc_constraint catches, Insert succeeds, Return changeset with error, Return :ok, user. Connections: Insert user to Database, Database to Constraint violated?, Constraint violated? to unique_constraint catches (UNIQUE email), Constraint violated? to assoc_constraint catches (FK organization_id), Constraint violated? to Insert succeeds (No violation), unique_constraint catches to Return changeset with error, assoc_constraint catches to Return changeset with error, Insert succeeds to Return :ok, user.
     A[Insert user] --> B[Database]
     B --> C{Constraint violated?}
-    C -->|UNIQUE email| D[unique_constraint catches]
-    C -->|FK organization_id| E[assoc_constraint catches]
+    C -->|UNIQUE email| D[unique_constraint<br/>catches]
+    C -->|FK organization_id| E[assoc_constraint<br/>catches]
     C -->|No violation| F[Insert succeeds]
-    D --> G[Return changeset with error]
+    D --> G[Return changeset<br/>with error]
     E --> G
     F --> H[Return {:ok, user}]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style F fill:#029E73,color:#fff
-    style G fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -266,11 +280,14 @@ Model flexible relationships where the same entity can have many different types
 ```mermaid
 %% Many-to-many through join table
 erDiagram
+    accTitle: Example 53: Polymorphic Associations with manytomany :through
+    accDescr: Entity relationship diagram of a many-to-many association through join tables. POST and COMMENT each relate to TAG through the POST_TAG and COMMENT_TAG join tables, which hold foreign keys to both sides.
     POST ||--o{POST_TAG : has TAG ||--o{<br/>POST_TAG : has COMMENT ||--o{<br/>COMMENT_TAG : has TAG ||--o{<br/>COMMENT_TAG : has POST { int<br/>id PK string title}
     TAG {int id PK string name}
     POST_TAG {int post_id FK int tag_id FK}
     COMMENT {int id PK string body}
     COMMENT_TAG {int comment_id FK int tag_id<br/>FK}
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```elixir
@@ -527,19 +544,24 @@ Load related data efficiently to avoid N+1 queries where one query results in N 
 ```mermaid
 %% N+1 problem vs preload solution
 graph TD
-    A[❌ N+1 Problem] --> B[Query 1: SELECT * FROM posts]
-    B --> C[Query 2: SELECT * FROM authors<br/>WHERE id = 1]
-    B --> D[Query 3: SELECT * FROM authors<br/>WHERE id = 2]
-    B --> E[Query 4: SELECT * FROM authors<br/>WHERE id = 3]
+    accTitle: Example 56: Query Optimization - N+1 Prevention
+    accDescr: Graph with 10 nodes and 8 connections. Nodes: ❌ N+1 Problem, Query 1: SELECT * FROM posts, Query 2: SELECT * FROM authors WHERE id = 1, Query 3: SELECT * FROM authors WHERE id = 2, Query 4: SELECT * FROM authors WHERE id = 3, ... N queries, ✅ Preload Solution, Query 1: SELECT * FROM posts, Query 2: SELECT * FROM authors WHERE id IN, Total: 2 queries. Connections: ❌ N+1 Problem to Query 1: SELECT * FROM posts, Query 1: SELECT * FROM posts to Query 2: SELECT * FROM authors WHERE id = 1, Query 1: SELECT * FROM posts to Query 3: SELECT * FROM authors WHERE id = 2, Query 1: SELECT * FROM posts to Query 4: SELECT * FROM authors WHERE id = 3, Query 1: SELECT * FROM posts to ... N queries, ✅ Preload Solution to Query 1: SELECT * FROM posts, Query 1: SELECT * FROM posts to Query 2: SELECT * FROM authors WHERE id IN, Query 2: SELECT * FROM authors WHERE id IN to Total: 2 queries.
+    A[❌ N+1 Problem] --> B[Query 1: SELECT *<br/>FROM posts]
+    B --> C[Query 2: SELECT *<br/>FROM authors<br/>WHERE id = 1]
+    B --> D[Query 3: SELECT *<br/>FROM authors<br/>WHERE id = 2]
+    B --> E[Query 4: SELECT *<br/>FROM authors<br/>WHERE id = 3]
     B --> F[... N queries]
 
-    G[✅ Preload Solution] --> H[Query 1: SELECT * FROM posts]
-    H --> I[Query 2: SELECT * FROM authors<br/>WHERE id IN]
+    G[✅ Preload Solution] --> H[Query 1: SELECT *<br/>FROM posts]
+    H --> I[Query 2: SELECT *<br/>FROM authors<br/>WHERE id IN]
     I --> J[Total: 2 queries]
 
-    style A fill:#CA9161,color:#fff
-    style G fill:#029E73,color:#fff
-    style J fill:#029E73,color:#fff
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class A pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    class J pal-029E73
+    classDef default fill:#0173B2,stroke:#000000,color:#FFFFFF
 ```
 
 ```elixir
@@ -695,6 +717,8 @@ Execute long-running tasks asynchronously. Schedule recurring jobs.
 ```mermaid
 %% Oban job processing flow
 graph TD
+    accTitle: Example 58: Background Jobs with Oban
+    accDescr: Graph with 8 nodes and 8 connections. Nodes: User Registration, Insert Oban Job, oban_jobs table, Oban Worker Pool, EmailWorker.perform, Success?, Mark completed, Retry with backoff. Connections: User Registration to Insert Oban Job, Insert Oban Job to oban_jobs table, oban_jobs table to Oban Worker Pool, Oban Worker Pool to EmailWorker.perform, EmailWorker.perform to Success?, Success? to Mark completed (Yes), Success? to Retry with backoff (No), Retry with backoff to Oban Worker Pool.
     A[User Registration] --> B[Insert Oban Job]
     B --> C[oban_jobs table]
     C --> D[Oban Worker Pool]
@@ -704,10 +728,15 @@ graph TD
     F -->|No| H[Retry with backoff]
     H --> D
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style H fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class H pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1027,21 +1056,27 @@ Build optimized Docker image with minimal size and security.
 ```mermaid
 %% Docker multi-stage build
 graph TD
+    accTitle: Example 62: Docker Containerization with Multi-Stage Build
+    accDescr: Graph with 11 nodes and 9 connections. Nodes: Stage 1: Builder, elixir:1.14-alpine, Install build deps, Copy source code, mix deps.get, MIX_ENV=prod mix release, Stage 2: Runtime, alpine:latest, Install runtime deps, Copy release from builder, Final image 50MB. Connections: Stage 1: Builder to elixir:1.14-alpine, elixir:1.14-alpine to Install build deps, Install build deps to Copy source code, Copy source code to mix deps.get, mix deps.get to MIX_ENV=prod mix release, Stage 2: Runtime to alpine:latest, alpine:latest to Install runtime deps, Install runtime deps to Copy release from builder, Copy release from builder to Final image 50MB.
     A[Stage 1: Builder] --> B[elixir:1.14-alpine]
     B --> C[Install build deps]
     C --> D[Copy source code]
     D --> E[mix deps.get]
-    E --> F[MIX_ENV=prod mix release]
+    E --> F[MIX_ENV=prod mix<br/>release]
 
     G[Stage 2: Runtime] --> H[alpine:latest]
     H --> I[Install runtime deps]
-    I --> J[Copy release from builder]
+    I --> J[Copy release from<br/>builder]
     J --> K[Final image 50MB]
 
-    style A fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
-    style K fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class G pal-029E73
+    class K pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```dockerfile
@@ -1131,6 +1166,8 @@ Implement liveness and readiness endpoints for orchestration systems to manage p
 ```mermaid
 %% Health check flow in Kubernetes
 graph TD
+    accTitle: Example 63: Health Checks for Kubernetes
+    accDescr: Graph with 11 nodes and 10 connections. Nodes: Kubernetes, Liveness Probe, Health endpoint, App alive?, Keep running, Restart pod, Readiness Probe, Health endpoint, DB connected?, Send traffic, Remove from load balancer. Connections: Kubernetes to Liveness Probe, Liveness Probe to Health endpoint (GET /health/live), Health endpoint to App alive?, App alive? to Keep running (Yes 200), App alive? to Restart pod (No 5xx), Kubernetes to Readiness Probe, Readiness Probe to Health endpoint (GET /health/ready), Health endpoint to DB connected?, DB connected? to Send traffic (Yes 200), DB connected? to Remove from load balancer (No 503).
     A[Kubernetes] --> B{Liveness Probe}
     B -->|GET /health/live| C[Health endpoint]
     C --> D{App alive?}
@@ -1141,13 +1178,18 @@ graph TD
     G -->|GET /health/ready| H[Health endpoint]
     H --> I{DB connected?}
     I -->|Yes 200| J[Send traffic]
-    I -->|No 503| K[Remove from load balancer]
+    I -->|No 503| K[Remove from load<br/>balancer]
 
-    style A fill:#0173B2,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CA9161,color:#fff
-    style J fill:#029E73,color:#fff
-    style K fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    class J pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class K pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1456,6 +1498,8 @@ Prevent abuse by limiting requests per IP or user. Token bucket algorithm refill
 ```mermaid
 %% Rate limiting state machine
 stateDiagram-v2
+    accTitle: Example 67: Rate Limiting with Token Bucket
+    accDescr: State diagram with 7 items: start or end, CheckBucket, HasTokens, NoTokens, ConsumeToken, AllowRequest, RejectRequest. Relationships: start or end to CheckBucket: Request arrives; CheckBucket to HasTokens: Tokens available; CheckBucket to NoTokens: Bucket empty; HasTokens to ConsumeToken: Take 1 token; ConsumeToken to AllowRequest: Process request; NoTokens to RejectRequest: 429 Too Many Requests; AllowRequest to start or end; RejectRequest to start or end.
     [*] --> CheckBucket: Request arrives
     CheckBucket --> HasTokens: Tokens available
     CheckBucket --> NoTokens: Bucket empty
@@ -1573,6 +1617,8 @@ Connect multiple Phoenix instances for distributed state and fault tolerance.
 ```mermaid
 %% Distributed Phoenix cluster
 graph TD
+    accTitle: Example 68: Distributed Phoenix Clustering
+    accDescr: Graph with 6 nodes and 10 connections. Nodes: Load Balancer, Phoenix Node 1, Phoenix Node 2, Phoenix Node 3, PubSub broadcasts to all nodes, PostgreSQL. Connections: Load Balancer to Phoenix Node 1, Load Balancer to Phoenix Node 2, Load Balancer to Phoenix Node 3, Phoenix Node 1 to Phoenix Node 2 (Distributed Erlang), Phoenix Node 2 to Phoenix Node 3 (Distributed Erlang), Phoenix Node 1 to Phoenix Node 3 (Distributed Erlang), Phoenix Node 1 to PubSub broadcasts to all nodes, Phoenix Node 2 to PubSub broadcasts to all nodes, Phoenix Node 3 to PubSub broadcasts to all nodes, PubSub broadcasts to all nodes to PostgreSQL.
     A[Load Balancer] --> B[Phoenix Node 1]
     A --> C[Phoenix Node 2]
     A --> D[Phoenix Node 3]
@@ -1581,17 +1627,21 @@ graph TD
     C <-->|Distributed Erlang| D
     B <-->|Distributed Erlang| D
 
-    B --> E[PubSub broadcasts to all nodes]
+    B --> E[PubSub broadcasts to<br/>all nodes]
     C --> E
     D --> E
 
     E --> F[PostgreSQL]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#029E73,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#029E73,color:#fff
-    style F fill:#DE8F05,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class F pal-DE8F05
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```elixir
@@ -1758,20 +1808,28 @@ Run two production environments. Switch traffic after verifying new version work
 ```mermaid
 %% Blue-green deployment flow
 graph TD
+    accTitle: Example 70: Blue-Green Deployment for Zero-Downtime Releases
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: Current: Blue v1.0, Deploy Green v1.1, Test Green in isolation, Tests pass?, Switch traffic to Green, Keep Blue, fix Green, Green is now production, Blue becomes standby, Rollback available. Connections: Current: Blue v1.0 to Deploy Green v1.1, Deploy Green v1.1 to Test Green in isolation, Test Green in isolation to Tests pass?, Tests pass? to Switch traffic to Green (Yes), Tests pass? to Keep Blue, fix Green (No), Switch traffic to Green to Green is now production, Green is now production to Blue becomes standby, Blue becomes standby to Rollback available.
     A[Current: Blue v1.0] --> B[Deploy Green v1.1]
-    B --> C[Test Green in isolation]
+    B --> C[Test Green in<br/>isolation]
     C --> D{Tests pass?}
-    D -->|Yes| E[Switch traffic to Green]
+    D -->|Yes| E[Switch traffic to<br/>Green]
     D -->|No| F[Keep Blue, fix Green]
-    E --> G[Green is now production]
+    E --> G[Green is now<br/>production]
     G --> H[Blue becomes standby]
     H --> I[Rollback available]
 
-    style A fill:#0173B2,color:#fff
-    style C fill:#DE8F05,color:#fff
-    style E fill:#029E73,color:#fff
-    style F fill:#CA9161,color:#fff
-    style I fill:#CC78BC,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class E pal-029E73
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class I pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```bash

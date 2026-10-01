@@ -82,8 +82,9 @@ Large talent pool, extensive resources, and proven scalability.
 ## React Ecosystem
 
 ```mermaid
-%%{init: {'theme':'base',<br/>'themeVariables': {<br/>'primaryColor':'#2563eb','primaryTextColor':'#1e293b','primaryBorderColor':'#1e40af','lineColor':'#64748b','secondaryColor':'#10b981','tertiaryColor':'#f59e0b','fontSize':'14px'}}}%%
 graph TB
+    accTitle: React Ecosystem
+    accDescr: Graph with 18 nodes and 17 connections. Nodes: React Core, React Router, State Management, Data Fetching, UI Libraries, Testing, Redux Toolkit, Zustand, Jotai, TanStack Query, SWR, Apollo Client, and 6 more. Connections: React Core to React Router, React Core to State Management, React Core to Data Fetching, React Core to UI Libraries, React Core to Testing, State Management to Redux Toolkit, State Management to Zustand, State Management to Jotai, Data Fetching to TanStack Query, Data Fetching to SWR, Data Fetching to Apollo Client, UI Libraries to shadcn/ui, and 5 more.
     A[React Core] --> B[React Router]
     A --> C[State Management]
     A --> D[Data Fetching]
@@ -102,16 +103,19 @@ graph TB
     E --> E2[Material-UI]
     E --> E3[Chakra UI]
 
-    F --> F1[React Testing Library]
+    F --> F1[React Testing<br/>Library]
     F --> F2[Vitest]
     F --> F3[Playwright]
 
-    style A fill:#2563eb,stroke:#1e40af,color:#fff
-    style B fill:#10b981,stroke:#059669,color:#fff
-    style C fill:#10b981,stroke:#059669,color:#fff
-    style D fill:#10b981,stroke:#059669,color:#fff
-    style E fill:#10b981,stroke:#059669,color:#fff
-    style F fill:#10b981,stroke:#059669,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Color Legend**: Blue (core library), Green (ecosystem categories and tools)

@@ -41,12 +41,18 @@ Unlike narrative tutorials that build understanding through explanation and stor
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Learning Path
+    accDescr: Graph with 4 nodes and 3 connections. Nodes: A, APIs, Intermediate Examples 21-50 Production Patterns, C. Connections: A to Intermediate Examples 21-50 Production Patterns, APIs to Intermediate Examples 21-50 Production Patterns, Intermediate Examples 21-50 Production Patterns to C.
     A["Beginner<br/>Examples 1-25<br/>Core Concepts & APIs"] --> B["Intermediate<br/>Examples 21-50<br/>Production Patterns"]
-    B --> C["Advanced<br/>Examples 41-70<br/>Microservices & Cloud-Native"]
+    B --> C["Advanced<br/>Examples 41-70<br/>Microservices &<br/>Cloud-Native"]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 Progress from Spring Boot fundamentals (dependency injection, REST APIs, data access) through production patterns (security, testing, caching) to microservices architecture and observability. Each level builds on the previous, introducing more sophisticated Spring Boot features and real-world patterns.

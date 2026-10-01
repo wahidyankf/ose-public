@@ -30,14 +30,21 @@ Clustering connects multiple Vert.x instances into a distributed system where th
 
 ```mermaid
 graph TD
-  A["JVM Node 1<br/>Verticle A"] <-->|"Clustered Event Bus"| C["Hazelcast Cluster"]
-  B["JVM Node 2<br/>Verticle B"] <-->|"Clustered Event Bus"| C
-  D["JVM Node 3<br/>Verticle C"] <-->|"Clustered Event Bus"| C
+  accTitle: Example 56: Clustered Vert.x with Hazelcast
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: JVM Node 1 Verticle A, Hazelcast Cluster, JVM Node 2 Verticle B, JVM Node 3 Verticle C. Connections: JVM Node 1 Verticle A to Hazelcast Cluster (Clustered Event Bus), JVM Node 2 Verticle B to Hazelcast Cluster (Clustered Event Bus), JVM Node 3 Verticle C to Hazelcast Cluster (Clustered Event Bus).
+  A["JVM Node 1<br/>Verticle A"] <-->|"Clustered Event<br/>Bus"| C["Hazelcast Cluster"]
+  B["JVM Node 2<br/>Verticle B"] <-->|"Clustered Event<br/>Bus"| C
+  D["JVM Node 3<br/>Verticle C"] <-->|"Clustered Event<br/>Bus"| C
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#029E73,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class B pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class D pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class C pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java

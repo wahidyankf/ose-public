@@ -27,17 +27,24 @@ Server Components are Next.js default. They run on the server and send HTML to t
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 1: Basic Server Component
+  accDescr: Graph with 5 nodes and 5 connections. Nodes: Request, Server Component, Database/API, HTML Response, Browser. Connections: Request to Server Component, Server Component to Database/API, Database/API to Server Component, Server Component to HTML Response, HTML Response to Browser.
   A[Request] --> B[Server Component]
   B --> C[Database/API]
   C --> B
   B --> D[HTML Response]
   D --> E[Browser]
 
-  style A fill:#CC78BC,stroke:#000,color:#000
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#CA9161,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#CC78BC,stroke:#000,color:#000
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class B pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class C pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  class E pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -159,16 +166,23 @@ Client Components opt-in with 'use client' directive. They enable React hooks, e
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 3: Adding Client Component with use client
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Server Component page.tsx, Client Component CounterButton.tsx, Browser State, Click Events, Browser HTML. Connections: Server Component page.tsx to Client Component CounterButton.tsx (renders), Client Component CounterButton.tsx to Browser State (useState), Client Component CounterButton.tsx to Click Events (event handlers), Server Component page.tsx to Browser HTML (no JS sent).
   A[Server Component<br/>page.tsx] -->|renders| B[Client Component<br/>CounterButton.tsx]
   B -->|useState| C[Browser State]
   B -->|event handlers| D[Click Events]
   A -->|no JS sent| E[Browser HTML]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#000
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#CC78BC,stroke:#000,color:#000
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  class D pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class E pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -405,16 +419,22 @@ Layouts wrap page content and persist across route changes. They prevent unneces
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A[RootLayout<br/>app/layout.tsx] --> B[DashboardLayout<br/>app/dashboard/layout.tsx]
+  accTitle: Example 5: Creating Layouts
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: RootLayout app/layout.tsx, DashboardLayout app/dashboard/ layout.tsx, MarketingPage app/page.tsx, DashboardPage app/dashboard/ page.tsx, SettingsPage app/dashboard/ settings/page.tsx. Connections: RootLayout app/layout.tsx to DashboardLayout app/dashboard/ layout.tsx, RootLayout app/layout.tsx to MarketingPage app/page.tsx, DashboardLayout app/dashboard/ layout.tsx to DashboardPage app/dashboard/ page.tsx, DashboardLayout app/dashboard/ layout.tsx to SettingsPage app/dashboard/ settings/page.tsx.
+  A[RootLayout<br/>app/layout.tsx] --> B[DashboardLayout<br/>app/dashboard/<br/>layout.tsx]
   A --> C[MarketingPage<br/>app/page.tsx]
-  B --> D[DashboardPage<br/>app/dashboard/page.tsx]
-  B --> E[SettingsPage<br/>app/dashboard/settings/page.tsx]
+  B --> D[DashboardPage<br/>app/dashboard/<br/>page.tsx]
+  B --> E[SettingsPage<br/>app/dashboard/<br/>settings/page.tsx]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#000
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  class D pal-029E73
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -574,16 +594,23 @@ Next.js Link component enables client-side navigation with prefetching. It's fas
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 6: Navigation with Link Component
+  accDescr: Graph with 7 nodes and 5 connections. Nodes: Link hover, Prefetch /about, Code cached in browser, Link click, Client-side navigation, Instant page transition, No full page reload. Connections: Link hover to Prefetch /about, Prefetch /about to Code cached in browser, Link click to Client-side navigation, Client-side navigation to Instant page transition, Client-side navigation to No full page reload.
   A[Link hover] --> B[Prefetch /about]
-  B --> C[Code cached in browser]
-  A2[Link click] --> D[Client-side navigation]
-  D --> E[Instant page transition]
+  B --> C[Code cached in<br/>browser]
+  A2[Link click] --> D[Client-side<br/>navigation]
+  D --> E[Instant page<br/>transition]
   D --> F[No full page reload]
 
-  style A fill:#CC78BC,stroke:#000,color:#000
-  style B fill:#DE8F05,stroke:#000,color:#000
-  style D fill:#0173B2,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class D pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -828,18 +855,26 @@ Server Actions are async functions that run on the server. They enable backend l
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 8: Basic Server Action for Form Handling
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: HTML Form, Server Action use server, Validate Input, Database Write, revalidatePath, Updated UI. Connections: HTML Form to Server Action use server (submit), Server Action use server to Validate Input, Validate Input to Database Write, Database Write to revalidatePath, revalidatePath to Updated UI.
   A[HTML Form] -->|submit| B[Server Action<br/>use server]
   B --> C[Validate Input]
   C --> D[Database Write]
   D --> E[revalidatePath]
   E --> F[Updated UI]
 
-  style A fill:#CC78BC,stroke:#000,color:#000
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#000
-  style D fill:#CA9161,stroke:#000,color:#fff
-  style E fill:#DE8F05,stroke:#000,color:#000
-  style F fill:#029E73,stroke:#000,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class B pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class D pal-CA9161
+  class E pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class F pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1191,17 +1226,25 @@ Server Actions can revalidate cached data after mutations. Use revalidatePath or
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 10: Server Action with Revalidation
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: Server Action, Update Database, revalidatePath /donations, Stale cache cleared, Next request fetches fresh data, User sees updated list. Connections: Server Action to Update Database, Update Database to revalidatePath /donations, revalidatePath /donations to Stale cache cleared, Stale cache cleared to Next request fetches fresh data, Next request fetches fresh data to User sees updated list.
   A[Server Action] --> B[Update Database]
-  B --> C[revalidatePath '/donations']
+  B --> C[revalidatePath<br/>'/donations']
   C --> D[Stale cache cleared]
-  D --> E[Next request fetches fresh<br/>data]
-  E --> F[User sees updated list]
+  D --> E[Next request fetches<br/>fresh<br/>data]
+  E --> F[User sees updated<br/>list]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#CA9161,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#000
-  style D fill:#CC78BC,stroke:#000,color:#000
-  style F fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class B pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class F pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1362,6 +1405,8 @@ Server Components can fetch multiple data sources in parallel using Promise.all.
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 11: Parallel Data Fetching
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: Fetch Donations, Fetch Stats, Render: 300ms, Promise.all, Fetch Donations, Fetch Stats, Render: 100ms. Connections: Fetch Donations to Fetch Stats, Fetch Stats to Render: 300ms, Promise.all to Fetch Donations, Promise.all to Fetch Stats, Fetch Donations to Render: 100ms, Fetch Stats to Render: 100ms.
   subgraph Sequential["Sequential (slow)"]
     direction TB
     S1[Fetch Donations] --> S2[Fetch Stats] --> S3[Render: 300ms]
@@ -1375,12 +1420,16 @@ graph LR
     P3 --> P4
   end
 
-  style S1 fill:#CA9161,stroke:#000,color:#fff
-  style S2 fill:#CA9161,stroke:#000,color:#fff
-  style P1 fill:#0173B2,stroke:#000,color:#fff
-  style P2 fill:#029E73,stroke:#000,color:#fff
-  style P3 fill:#029E73,stroke:#000,color:#fff
-  style P4 fill:#029E73,stroke:#000,color:#fff
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class S1 pal-CA9161
+  class S2 pal-CA9161
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class P1 pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class P2 pal-029E73
+  class P3 pal-029E73
+  class P4 pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1695,6 +1744,8 @@ Create loading.tsx file to show instant loading states while page data fetches. 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 sequenceDiagram
+  accTitle: Example 13: Loading UI with loading.tsx
+  accDescr: Sequence diagram between Browser, Next.js Server. Messages: Browser to Next.js Server: GET /donations; Next.js Server to Browser: Sends loading.tsx immediately; Next.js Server to Browser: Streams page.tsx when ready.
   participant B as Browser
   participant N as Next.js Server
 
@@ -1827,16 +1878,23 @@ Use React Suspense to show loading states for specific components rather than en
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A[Page renders immediately] --> B[Fast section: shows at once]
+  accTitle: Example 14: Manual Suspense Boundaries for Granular Loading
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Page renders immediately, Fast section: shows at once, Suspense boundary, Fallback: spinner, Slow component: shows later. Connections: Page renders immediately to Fast section: shows at once, Page renders immediately to Suspense boundary, Suspense boundary to Fallback: spinner (loading), Suspense boundary to Slow component: shows later (data ready).
+  A[Page renders<br/>immediately] --> B[Fast section: shows<br/>at once]
   A --> C[Suspense boundary]
   C -->|loading| D[Fallback: spinner]
-  C -->|data ready| E[Slow component: shows later]
+  C -->|data ready| E[Slow component:<br/>shows later]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#029E73,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#000
-  style D fill:#CC78BC,stroke:#000,color:#000
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class B pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -2349,19 +2407,26 @@ Use generateMetadata function to create metadata based on dynamic route paramete
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 18: Dynamic Metadata with generateMetadata
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: Request /posts/1, generateMetadata, Fetch post data, Build Metadata object, title: post.title, description: post.excerpt, openGraph.image: post.image. Connections: Request /posts/1 to generateMetadata, generateMetadata to Fetch post data, Fetch post data to Build Metadata object, Build Metadata object to title: post.title, Build Metadata object to description: post.excerpt, Build Metadata object to openGraph.image: post.image.
   A[Request /posts/1] --> B[generateMetadata]
   B --> C[Fetch post data]
-  C --> D[Build Metadata object]
+  C --> D[Build Metadata<br/>object]
   D --> E[title: post.title]
-  D --> F[description: post.excerpt]
-  D --> G[openGraph.image: post.image]
+  D --> F[description:<br/>post.excerpt]
+  D --> G[openGraph.image:<br/>post.image]
 
-  style A fill:#CC78BC,stroke:#000,color:#000
-  style B fill:#0173B2,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#000
-  style E fill:#029E73,stroke:#000,color:#fff
-  style F fill:#029E73,stroke:#000,color:#fff
-  style G fill:#029E73,stroke:#000,color:#fff
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class B pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class D pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  class F pal-029E73
+  class G pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -3218,16 +3283,22 @@ The `template.tsx` file creates a new instance on every navigation, while `layou
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 26: template.tsx vs layout.tsx Behavior
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Navigate /a, layout.tsx persists, template.tsx remounts, Navigate /b, template.tsx new instance. Connections: Navigate /a to layout.tsx persists, Navigate /a to template.tsx remounts, Navigate /b to layout.tsx persists, Navigate /b to template.tsx new instance.
   A[Navigate /a] --> B[layout.tsx persists]
-  A --> C[template.tsx remounts]
+  A --> C[template.tsx<br/>remounts]
   D[Navigate /b] --> B
-  D --> E[template.tsx new instance]
+  D --> E[template.tsx new<br/>instance]
 
-  style A fill:#CC78BC,stroke:#000,color:#000
-  style B fill:#029E73,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#000
-  style D fill:#CC78BC,stroke:#000,color:#000
-  style E fill:#DE8F05,stroke:#000,color:#000
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class A pal-CC78BC
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class B pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  class D pal-CC78BC
+  class E pal-DE8F05
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

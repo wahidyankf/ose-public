@@ -419,19 +419,27 @@ JSON Web Tokens provide stateless authentication. Vert.x Web's `JWTAuthHandler` 
 
 ```mermaid
 graph TD
-  A["Client POST /auth/login"] --> B["JWTAuth.generateToken#40;#41;"]
+  accTitle: Example 32: JWT Authentication
+  accDescr: Graph with 7 nodes and 6 connections. Nodes: Client POST /auth/login, JWTAuth.generate Token4041, Returns JWT Token, Client GET /api/resource Authorization: Bearer token, JWTAuthHandler validates, Handler runs, 401 Unauthorized. Connections: Client POST /auth/login to JWTAuth.generate Token4041, JWTAuth.generate Token4041 to Returns JWT Token, Returns JWT Token to Client GET /api/resource Authorization: Bearer token, Client GET /api/resource Authorization: Bearer token to JWTAuthHandler validates, JWTAuthHandler validates to Handler runs (valid), JWTAuthHandler validates to 401 Unauthorized (invalid).
+  A["Client POST<br/>/auth/login"] --> B["JWTAuth.generate<br/>Token#40;#41;"]
   B --> C["Returns JWT Token"]
-  C --> D["Client GET /api/resource<br/>Authorization: Bearer token"]
-  D --> E["JWTAuthHandler validates"]
+  C --> D["Client GET<br/>/api/resource<br/>Authorization:<br/>Bearer token"]
+  D --> E["JWTAuthHandler<br/>validates"]
   E -->|"valid"| F["Handler runs"]
   E -->|"invalid"| G["401 Unauthorized"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style E fill:#CC78BC,stroke:#000,color:#fff
-  style F fill:#029E73,stroke:#000,color:#fff
-  style G fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class E pal-CC78BC
+  class F pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class G pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -821,18 +829,26 @@ Vert.x HTTP servers support WebSocket upgrades. Upgraded connections remain open
 
 ```mermaid
 graph TD
+  accTitle: Example 36: WebSocket Server
+  accDescr: Graph with 5 nodes and 6 connections. Nodes: Client, Vert.x HTTP Server, WebSocket Handler, Broadcast via Event Bus, Other Clients. Connections: Client to Vert.x HTTP Server (HTTP Upgrade), Vert.x HTTP Server to Client (101 Switching Protocols), Client to Vert.x HTTP Server (WebSocket Frames), Vert.x HTTP Server to WebSocket Handler, WebSocket Handler to Broadcast via Event Bus, Broadcast via Event Bus to Other Clients.
   A["Client"] -->|"HTTP Upgrade"| B["Vert.x HTTP Server"]
-  B -->|"101 Switching Protocols"| A
+  B -->|"101 Switching<br/>Protocols"| A
   A <-->|"WebSocket Frames"| B
   B --> C["WebSocket Handler"]
-  C --> D["Broadcast via Event Bus"]
+  C --> D["Broadcast via Event<br/>Bus"]
   D --> E["Other Clients"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
-  style E fill:#CA9161,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class E pal-CA9161
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java
@@ -1436,22 +1452,30 @@ The circuit breaker pattern prevents cascading failures by short-circuiting call
 
 ```mermaid
 graph TD
+  accTitle: Example 42: Circuit Breaker
+  accDescr: Graph with 9 nodes and 9 connections. Nodes: Request, Circuit State?, Execute Operation, Return Result, Increment Failure Count, OPEN Circuit, Execute Fallback, HALF-OPEN, CLOSED Circuit. Connections: Request to Circuit State?, Circuit State? to Execute Operation (CLOSED), Execute Operation to Return Result (success), Execute Operation to Increment Failure Count (failure), Increment Failure Count to OPEN Circuit (threshold reached), Circuit State? to Execute Fallback (OPEN), OPEN Circuit to HALF-OPEN (after timeout), HALF-OPEN to CLOSED Circuit (success), HALF-OPEN to OPEN Circuit (failure).
   A["Request"] --> B{"Circuit State?"}
   B -->|"CLOSED"| C["Execute Operation"]
   C -->|"success"| D["Return Result"]
-  C -->|"failure"| E["Increment Failure Count"]
+  C -->|"failure"| E["Increment Failure<br/>Count"]
   E -->|"threshold reached"| F["OPEN Circuit"]
   B -->|"OPEN"| G["Execute Fallback"]
   F -->|"after timeout"| H["HALF-OPEN"]
   H -->|"success"| I["CLOSED Circuit"]
   H -->|"failure"| F
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style F fill:#CA9161,stroke:#000,color:#fff
-  style G fill:#CC78BC,stroke:#000,color:#fff
-  style H fill:#DE8F05,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class F pal-CA9161
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class G pal-CC78BC
+  class H pal-DE8F05
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```java

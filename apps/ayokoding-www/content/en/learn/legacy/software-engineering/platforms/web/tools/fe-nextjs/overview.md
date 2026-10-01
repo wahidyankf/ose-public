@@ -154,8 +154,9 @@ app/
 ## Next.js Ecosystem
 
 ```mermaid
-%%{init: {'theme':'base',<br/>'themeVariables': {<br/>'primaryColor':'#2563eb','primaryTextColor':'#1e293b','primaryBorderColor':'#1e40af','lineColor':'#64748b','secondaryColor':'#10b981','tertiaryColor':'#f59e0b','fontSize':'14px'}}}%%
 graph TB
+    accTitle: Next.js Ecosystem
+    accDescr: Graph with 18 nodes and 17 connections. Nodes: Next.js Core, React Foundation, Vercel Platform, Authentication, Database, Styling, Server Components, Client Components, React Hooks, Auth.js / NextAuth, Clerk, Supabase Auth, and 6 more. Connections: Next.js Core to React Foundation, Next.js Core to Vercel Platform, Next.js Core to Authentication, Next.js Core to Database, Next.js Core to Styling, React Foundation to Server Components, React Foundation to Client Components, React Foundation to React Hooks, Authentication to Auth.js / NextAuth, Authentication to Clerk, Authentication to Supabase Auth, Database to Prisma, and 5 more.
     A[Next.js Core] --> B[React Foundation]
     A --> C[Vercel Platform]
     A --> D[Authentication]
@@ -178,12 +179,15 @@ graph TB
     F --> F2[CSS Modules]
     F --> F3[shadcn/ui]
 
-    style A fill:#2563eb,stroke:#1e40af,color:#fff
-    style B fill:#10b981,stroke:#059669,color:#fff
-    style C fill:#10b981,stroke:#059669,color:#fff
-    style D fill:#10b981,stroke:#059669,color:#fff
-    style E fill:#10b981,stroke:#059669,color:#fff
-    style F fill:#10b981,stroke:#059669,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    class C pal-029E73
+    class D pal-029E73
+    class E pal-029E73
+    class F pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Color Legend**: Blue (Next.js core), Green (ecosystem categories and tools)

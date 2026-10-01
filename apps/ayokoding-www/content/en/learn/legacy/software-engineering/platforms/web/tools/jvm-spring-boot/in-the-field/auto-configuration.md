@@ -173,19 +173,24 @@ public class ZakatApplication {
 
 ```mermaid
 graph TD
-    A["@SpringBootApplication"] -->|"Enables"| B["@EnableAutoConfiguration"]
-    B -->|"Scans"| C["META-INF/spring.factories"]
-    C -->|"Lists"| D["Auto-Configuration Classes"]
-    D -->|"Loads"| E["DataSourceAutoConfiguration"]
-    D -->|"Loads"| F["HibernateJpaAutoConfiguration"]
-    E -->|"Checks"| G["@ConditionalOnClass(DataSrc)"]
-    G -->|"True: H2/PostgreSQL on classpath"| H["Register DataSource Bean"]
-    F -->|"Checks"| I["@ConditionalOnMissingBean(EMF)"]
-    I -->|"True: No manual config"| J["Register EMF Bean"]
+    accTitle: => Repository uses Spring Data JPA: no manual EntityManager
+    accDescr: Graph with 10 nodes and 9 connections. Nodes: @SpringBoot Application, @EnableAuto Configuration, META-INF/ spring.factories, Auto-Configuration Classes, DataSourceAuto Configuration, HibernateJpaAuto Configuration, @ConditionalOn Class(DataSrc), Register DataSource Bean, @ConditionalOn MissingBean(EMF), Register EMF Bean. Connections: @SpringBoot Application to @EnableAuto Configuration (Enables), @EnableAuto Configuration to META-INF/ spring.factories (Scans), META-INF/ spring.factories to Auto-Configuration Classes (Lists), Auto-Configuration Classes to DataSourceAuto Configuration (Loads), Auto-Configuration Classes to HibernateJpaAuto Configuration (Loads), DataSourceAuto Configuration to @ConditionalOn Class(DataSrc) (Checks), @ConditionalOn Class(DataSrc) to Register DataSource Bean (True: H2/PostgreSQL on classpath), HibernateJpaAuto Configuration to @ConditionalOn MissingBean(EMF) (Checks), @ConditionalOn MissingBean(EMF) to Register EMF Bean (True: No manual config).
+    A["@SpringBoot<br/>Application"] -->|"Enables"| B["@EnableAuto<br/>Configuration"]
+    B -->|"Scans"| C["META-INF/<br/>spring.factories"]
+    C -->|"Lists"| D["Auto-Configuration<br/>Classes"]
+    D -->|"Loads"| E["DataSourceAuto<br/>Configuration"]
+    D -->|"Loads"| F["HibernateJpaAuto<br/>Configuration"]
+    E -->|"Checks"| G["@ConditionalOn<br/>Class(DataSrc)"]
+    G -->|"True: H2/PostgreSQL<br/>on classpath"| H["Register DataSource<br/>Bean"]
+    F -->|"Checks"| I["@ConditionalOn<br/>MissingBean(EMF)"]
+    I -->|"True: No manual<br/>config"| J["Register EMF Bean"]
 
-    style A fill:#0173B2,color:#fff
-    style H fill:#029E73,color:#fff
-    style J fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class H pal-029E73
+    class J pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Trade-offs**:

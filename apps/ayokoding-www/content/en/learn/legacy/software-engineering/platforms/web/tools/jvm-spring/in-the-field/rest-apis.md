@@ -699,21 +699,27 @@ public class WebConfig implements WebMvcConfigurer {
 
 ```mermaid
 graph LR
+    accTitle: Progression Diagram
+    accDescr: Graph with 12 nodes and 9 connections. Nodes: Manual Servlet REST ObjectMapper + HttpServletResponse, Manual JSON, Boilerplate, JSON Only, @RestController Automatic Serialization, Automatic JSON, HTTP Semantics, Type-Safe, Advanced REST HATEOAS + Negotiation, Hypermedia Links, XML/JSON, API Evolution. Connections: Manual Servlet REST ObjectMapper + HttpServletResponse to Manual JSON (80+ Lines), Manual Servlet REST ObjectMapper + HttpServletResponse to Boilerplate (Manual Status Codes), Manual Servlet REST ObjectMapper + HttpServletResponse to JSON Only (No Content Negotiation), @RestController Automatic Serialization to Automatic JSON (10 Lines), @RestController Automatic Serialization to HTTP Semantics (ResponseEntity), @RestController Automatic Serialization to Type-Safe (@RequestBody/ @ResponseBody), Advanced REST HATEOAS + Negotiation to Hypermedia Links (EntityModel), Advanced REST HATEOAS + Negotiation to XML/JSON (produces/consumes), Advanced REST HATEOAS + Negotiation to API Evolution (Versioning).
     A[Manual Servlet REST<br/>ObjectMapper +<br/>HttpServletResponse] -->|80+ Lines| B[Manual JSON]
     A -->|Manual Status Codes| C[Boilerplate]
-    A -->|No Content Negotiation| D[JSON Only]
+    A -->|No Content<br/>Negotiation| D[JSON Only]
 
-    E[@RestController<br/>Automatic Serialization] -->|10 Lines| F[Automatic JSON]
+    E[@RestController<br/>Automatic<br/>Serialization] -->|10 Lines| F[Automatic JSON]
     E -->|ResponseEntity| G[HTTP Semantics]
-    E -->|@RequestBody/@ResponseBody| H[Type-Safe]
+    E -->|@RequestBody/<br/>@ResponseBody| H[Type-Safe]
 
-    I[Advanced REST<br/>HATEOAS + Negotiation] -->|EntityModel| J[Hypermedia Links]
+    I[Advanced REST<br/>HATEOAS +<br/>Negotiation] -->|EntityModel| J[Hypermedia Links]
     I -->|produces/consumes| K[XML/JSON]
     I -->|Versioning| L[API Evolution]
 
-    style A fill:#DE8F05,stroke:#333,stroke-width:2px,color:#fff
-    style E fill:#029E73,stroke:#333,stroke-width:2px,color:#fff
-    style I fill:#0173B2,stroke:#333,stroke-width:2px,color:#fff
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class A pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+    class E pal-029E73
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    class I pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Trade-offs and When to Use

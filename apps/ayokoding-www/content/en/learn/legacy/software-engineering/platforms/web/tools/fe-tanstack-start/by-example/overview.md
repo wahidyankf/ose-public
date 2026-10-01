@@ -39,16 +39,23 @@ TanStack Start is a **full-stack React framework built on TanStack Router and Vi
 
 ```mermaid
 graph TD
-  A["Beginner<br/>Core Routing & Loaders<br/>Examples 1-27"] --> B["Intermediate<br/>Server Functions & Auth<br/>Examples 28-55"]
-  B --> C["Advanced<br/>SSR, Deployment & Scale<br/>Examples 56-80"]
+  accTitle: Learning Path
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: A, B, C, 0 React + TypeScript 40Prerequisite41, 95 Framework Mastery. Connections: A to B, B to C, 0 React + TypeScript 40Prerequisite41 to A, C to 95 Framework Mastery.
+  A["Beginner<br/>Core Routing &<br/>Loaders<br/>Examples 1-27"] --> B["Intermediate<br/>Server Functions &<br/>Auth<br/>Examples 28-55"]
+  B --> C["Advanced<br/>SSR, Deployment &<br/>Scale<br/>Examples 56-80"]
   D["0%<br/>React + TypeScript<br/>#40;Prerequisite#41;"] -.-> A
   C -.-> E["95%<br/>Framework Mastery"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Color Legend**: Blue (beginner), Orange (intermediate), Green (advanced/mastery), Purple (prerequisite)

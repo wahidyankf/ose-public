@@ -34,16 +34,23 @@ Zod is a **TypeScript-first schema declaration and validation library** that bri
 
 ```mermaid
 graph TD
+  accTitle: Learning Path
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Zod Fundamentals Examples 1-28, Intermediate Production Patterns Examples 29-55, Advanced Expert Mastery Examples 56-80, 0 No Zod Knowledge, 95 Zod Mastery. Connections: Beginner Zod Fundamentals Examples 1-28 to Intermediate Production Patterns Examples 29-55, Intermediate Production Patterns Examples 29-55 to Advanced Expert Mastery Examples 56-80, 0 No Zod Knowledge to Beginner Zod Fundamentals Examples 1-28, Advanced Expert Mastery Examples 56-80 to 95 Zod Mastery.
   A["Beginner<br/>Zod Fundamentals<br/>Examples 1-28"] --> B["Intermediate<br/>Production Patterns<br/>Examples 29-55"]
   B --> C["Advanced<br/>Expert Mastery<br/>Examples 56-80"]
   D["0%<br/>No Zod Knowledge"] -.-> A
   C -.-> E["95%<br/>Zod Mastery"]
 
-  style A fill:#0173B2,color:#fff
-  style B fill:#DE8F05,color:#fff
-  style C fill:#029E73,color:#fff
-  style D fill:#CC78BC,color:#fff
-  style E fill:#029E73,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Philosophy: 95% Through 80 Examples

@@ -28,14 +28,21 @@ A scoped Layer acquires a resource when the layer is built and releases it when 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Layer.scoped\n(acquire)"] -->|"resource open"| B["Resource\nin use"]
-  B -->|"Scope closes"| C["release\n(always runs)"]
-  D["Error or\ninterrupt"] -->|"Scope closes"| C
+  accTitle: Example 28: Scoped Layers — Resource Lifecycle Management
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: Layer.scoped (acquire), Resource in use, release (always runs), Error or interrupt. Connections: Layer.scoped (acquire) to Resource in use (resource open), Resource in use to release (always runs) (Scope closes), Error or interrupt to release (always runs) (Scope closes).
+  A["Layer.scoped<br/>(acquire)"] -->|"resource open"| B["Resource<br/>in use"]
+  B -->|"Scope closes"| C["release<br/>(always runs)"]
+  D["Error or<br/>interrupt"] -->|"Scope closes"| C
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -101,14 +108,21 @@ Effect.runPromise(program.pipe(Effect.provide(DatabasePoolLayer)));
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["LayerA\nService A"] --> C["Layer.provideMerge\nor Layer.merge"]
-  B["LayerB\nService B"] --> C
-  C --> D["Combined Layer\nService A + Service B"]
+  accTitle: Example 29: Layer.provideMerge and Layer.mergeAll
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: LayerA Service A, Layer.provideMerge or Layer.merge, LayerB Service B, Combined Layer Service A + Service B. Connections: LayerA Service A to Layer.provideMerge or Layer.merge, LayerB Service B to Layer.provideMerge or Layer.merge, Layer.provideMerge or Layer.merge to Combined Layer Service A + Service B.
+  A["LayerA<br/>Service A"] --> C["Layer.provideMerge<br/>or Layer.merge"]
+  B["LayerB<br/>Service B"] --> C
+  C --> D["Combined Layer<br/>Service A + Service<br/>B"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#CA9161,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class B pal-CA9161
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class C pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -203,14 +217,21 @@ Effect.runSync(program.pipe(Effect.provide(FullLayer)));
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["Effect.all(effects)"] -->|"concurrency: 1\n(default)"| B["sequential\ne1 → e2 → e3"]
-  A -->|"concurrency: 'unbounded'"| C["parallel\ne1 ∥ e2 ∥ e3"]
-  A -->|"concurrency: N"| D["bounded parallel\nN at a time"]
+  accTitle: Example 30: Effect.all Concurrency Modes
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: Effect.all(effects), sequential e1 → e2 → e3, parallel e1 ∥ e2 ∥ e3, bounded parallel N at a time. Connections: Effect.all(effects) to sequential e1 → e2 → e3 (concurrency: 1 (default)), Effect.all(effects) to parallel e1 ∥ e2 ∥ e3 (concurrency: unbounded), Effect.all(effects) to bounded parallel N at a time (concurrency: N).
+  A["Effect.all(effects)"] -->|"concurrency: 1<br/>(default)"| B["sequential<br/>e1 → e2 → e3"]
+  A -->|"concurrency:<br/>'unbounded'"| C["parallel<br/>e1 ∥ e2 ∥ e3"]
+  A -->|"concurrency: N"| D["bounded parallel<br/>N at a time"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#CA9161,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class B pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class D pal-DE8F05
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -270,15 +291,22 @@ Effect.runPromise(parallel).then((results) => {
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["parent fiber"] -->|"Fiber.fork"| B["child fiber\n(runs concurrently)"]
+  accTitle: Example 31: Fiber — Forking and Joining
+  accDescr: Graph with 4 nodes and 4 connections. Nodes: parent fiber, child fiber (runs concurrently), parent work, child result (await at join point). Connections: parent fiber to child fiber (runs concurrently) (Fiber.fork), parent fiber to parent work (continues), child fiber (runs concurrently) to child result (await at join point) (Fiber.join), parent work to child result (await at join point).
+  A["parent fiber"] -->|"Fiber.fork"| B["child fiber<br/>(runs concurrently)"]
   A -->|"continues"| C["parent work"]
-  B -->|"Fiber.join"| D["child result\n(await at join point)"]
+  B -->|"Fiber.join"| D["child result<br/>(await at join<br/>point)"]
   C --> D
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#CA9161,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+  class C pal-CA9161
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -347,16 +375,23 @@ Interrupting a fiber stops it and runs any finalizers it registered. Structured 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-  A["parent scope"] -->|"forks"| B["child fiber\nrunning"]
-  B -->|"Fiber.interrupt"| C["interrupted\nExit.interrupt"]
-  A -->|"scope closes"| D["all children\ninterrupted"]
+  accTitle: Example 32: Fiber.interrupt and Structured Concurrency
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: parent scope, child fiber running, interrupted Exit.interrupt, all children interrupted, Exit.succeed. Connections: parent scope to child fiber running (forks), child fiber running to interrupted Exit.interrupt (Fiber.interrupt), parent scope to all children interrupted (scope closes), child fiber running to Exit.succeed (completes first).
+  A["parent scope"] -->|"forks"| B["child fiber<br/>running"]
+  B -->|"Fiber.interrupt"| C["interrupted<br/>Exit.interrupt"]
+  A -->|"scope closes"| D["all children<br/>interrupted"]
   B -->|"completes first"| E["Exit.succeed"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#CC78BC,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class C pal-CC78BC
+  class D pal-CC78BC
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -427,18 +462,25 @@ const structuredProgram = Effect.scoped(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["effect\nfails"] -->|"Schedule.recurs(3)"| B["retry 1"]
+  accTitle: Example 33: Schedule Basics — recurs, spaced, exponential
+  accDescr: Graph with 6 nodes and 5 connections. Nodes: effect fails, retry 1, retry 2, retry 3, propagate failure, success. Connections: effect fails to retry 1 (Schedule.recurs(3)), retry 1 to retry 2 (still fails), retry 2 to retry 3 (still fails), retry 3 to propagate failure (still fails), retry 2 to success (succeeds).
+  A["effect<br/>fails"] -->|"Schedule.recurs(3)"| B["retry 1"]
   B -->|"still fails"| C["retry 2"]
   C -->|"still fails"| D["retry 3"]
-  D -->|"still fails"| E["propagate\nfailure"]
+  D -->|"still fails"| E["propagate<br/>failure"]
   C -->|"succeeds"| F["success"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
-  style E fill:#CC78BC,stroke:#000,color:#fff
-  style F fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  class D pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class E pal-CC78BC
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class F pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -628,14 +670,20 @@ Effect.runSync(program);
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Producer\nfiber"] -->|"Queue.offer"| B["Queue\n(bounded/unbounded)"]
-  B -->|"Queue.take\n(blocks if empty)"| C["Consumer\nfiber"]
+  accTitle: Example 36: Queue — Concurrent Message Passing
+  accDescr: Graph with 4 nodes and 3 connections. Nodes: Producer fiber, Queue (bounded/unbounded), Consumer fiber, Producer 2. Connections: Producer fiber to Queue (bounded/unbounded) (Queue.offer), Queue (bounded/unbounded) to Consumer fiber (Queue.take (blocks if empty)), Producer 2 to Queue (bounded/unbounded) (Queue.offer).
+  A["Producer<br/>fiber"] -->|"Queue.offer"| B["Queue<br/>(bounded/unbounded)"]
+  B -->|"Queue.take<br/>(blocks if empty)"| C["Consumer<br/>fiber"]
   A2["Producer 2"] -->|"Queue.offer"| B
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style A2 fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  class A2 pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -708,16 +756,22 @@ const slidingQueue = Queue.sliding<number>(100);
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Publisher\nfiber"] -->|"PubSub.publish"| B["PubSub\n(topic)"]
-  B -->|"broadcast"| C["Subscriber 1\nQueue"]
-  B -->|"broadcast"| D["Subscriber 2\nQueue"]
-  B -->|"broadcast"| E["Subscriber 3\nQueue"]
+  accTitle: Example 37: PubSub — Broadcast Messaging
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Publisher fiber, PubSub (topic), Subscriber 1 Queue, Subscriber 2 Queue, Subscriber 3 Queue. Connections: Publisher fiber to PubSub (topic) (PubSub.publish), PubSub (topic) to Subscriber 1 Queue (broadcast), PubSub (topic) to Subscriber 2 Queue (broadcast), PubSub (topic) to Subscriber 3 Queue (broadcast).
+  A["Publisher<br/>fiber"] -->|"PubSub.publish"| B["PubSub<br/>(topic)"]
+  B -->|"broadcast"| C["Subscriber 1<br/>Queue"]
+  B -->|"broadcast"| D["Subscriber 2<br/>Queue"]
+  B -->|"broadcast"| E["Subscriber 3<br/>Queue"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  class D pal-029E73
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1280,16 +1334,22 @@ console.log(Chunk.toArray(doubled));
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["Stream.make\nor Stream.fromIterable"] -->|"lazy pull"| B["element 1"]
+  accTitle: Example 45: Stream — Creating and Running Streams
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Stream.make or Stream.fromIterable, element 1, element 2, element N, final result. Connections: Stream.make or Stream.fromIterable to element 1 (lazy pull), element 1 to element 2, element 2 to element N, element N to final result (Stream.runCollect or runFold).
+  A["Stream.make<br/>or<br/>Stream.fromIterable"] -->|"lazy pull"| B["element 1"]
   B --> C["element 2"]
   C --> D["element N"]
-  D -->|"Stream.runCollect\nor runFold"| E["final\nresult"]
+  D -->|"Stream.runCollect<br/>or runFold"| E["final<br/>result"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#DE8F05,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  class D pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1358,14 +1418,21 @@ Stream transformations build data pipelines over sequences. Like Effect's `map` 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
+  accTitle: Example 46: Stream Transformations — map, filter, flatMap
+  accDescr: Graph with 6 nodes and 15 connections. Nodes: A, lt, subset), B, C, D. Connections: A to B (Stream.map(f)), A to lt (Stream.map(f)), A to subset) (Stream.map(f)), lt to B (Stream.map(f)), lt to lt (Stream.map(f)), lt to subset) (Stream.map(f)), subset) to B (Stream.map(f)), subset) to lt (Stream.map(f)), subset) to subset) (Stream.map(f)), B to C (Stream.filter(p)), B to lt (Stream.filter(p)), B to subset) (Stream.filter(p)), and 3 more.
   A["Stream&lt;A&gt;"] -->|"Stream.map(f)"| B["Stream&lt;B&gt;"]
-  B -->|"Stream.filter(p)"| C["Stream&lt;B&gt;\n(subset)"]
-  C -->|"Stream.flatMap(g)"| D["Stream&lt;C&gt;\n(flattened)"]
+  B -->|"Stream.filter(p)"| C["Stream&lt;B&gt;<br/>(subset)"]
+  C -->|"Stream.flatMap(g)"| D["Stream&lt;C&gt;<br/>(flattened)"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#CC78BC,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class C pal-CC78BC
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1879,16 +1946,22 @@ Effect.runSync(program);
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+  accTitle: Example 54: Effect.race — First to Succeed Wins
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Effect.race(e1, e2), e1 running, e2 running, result from e1 e2 interrupted, result from e2 e1 interrupted. Connections: Effect.race(e1, e2) to e1 running (starts both), Effect.race(e1, e2) to e2 running (starts both), e1 running to result from e1 e2 interrupted (wins (faster)), e2 running to result from e2 e1 interrupted (wins (faster)).
   A["Effect.race(e1, e2)"] -->|"starts both"| B["e1 running"]
   A -->|"starts both"| C["e2 running"]
-  B -->|"wins (faster)"| D["result from e1\ne2 interrupted"]
-  C -->|"wins (faster)"| E["result from e2\ne1 interrupted"]
+  B -->|"wins (faster)"| D["result from e1<br/>e2 interrupted"]
+  C -->|"wins (faster)"| E["result from e2<br/>e1 interrupted"]
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#DE8F05,stroke:#000,color:#fff
-  style D fill:#029E73,stroke:#000,color:#fff
-  style E fill:#029E73,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  class C pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class D pal-029E73
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript
@@ -1964,15 +2037,22 @@ const withTimeout = Effect.race(
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph LR
-  A["acquire\n(open resource)"] -->|"success"| B["use(resource)\n(your logic)"]
-  B -->|"always"| C["release(resource)\n(guaranteed cleanup)"]
-  A -->|"acquire fails"| D["release\nnot called"]
-  B -->|"use fails or\ninterrupt"| C
+  accTitle: Example 55: Effect.acquireUseRelease — Safe Resource Patterns
+  accDescr: Graph with 4 nodes and 4 connections. Nodes: acquire (open resource), use(resource) (your logic), release(resource) (guaranteed cleanup), release not called. Connections: acquire (open resource) to use(resource) (your logic) (success), use(resource) (your logic) to release(resource) (guaranteed cleanup) (always), acquire (open resource) to release not called (acquire fails), use(resource) (your logic) to release(resource) (guaranteed cleanup) (use fails or interrupt).
+  A["acquire<br/>(open resource)"] -->|"success"| B["use(resource)<br/>(your logic)"]
+  B -->|"always"| C["release(resource)<br/>(guaranteed cleanup)"]
+  A -->|"acquire fails"| D["release<br/>not called"]
+  B -->|"use fails or<br/>interrupt"| C
 
-  style A fill:#0173B2,stroke:#000,color:#fff
-  style B fill:#DE8F05,stroke:#000,color:#fff
-  style C fill:#029E73,stroke:#000,color:#fff
-  style D fill:#CC78BC,stroke:#000,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+  class D pal-CC78BC
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ```typescript

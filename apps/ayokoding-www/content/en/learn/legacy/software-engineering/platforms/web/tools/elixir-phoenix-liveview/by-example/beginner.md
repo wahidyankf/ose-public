@@ -79,17 +79,24 @@ Mount is where LiveView state begins. This example shows how to initialize socke
 ```mermaid
 %% Mount initialization flow
 graph TD
+    accTitle: Example 2: Mount Lifecycle with Initial State
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: mount/3 Called, assign/3 :count 0, assign/3 :message, Return socket, render/1 Called, Display @count and @message. Connections: mount/3 Called to assign/3 :count 0, assign/3 :count 0 to assign/3 :message, assign/3 :message to Return socket, Return socket to render/1 Called, render/1 Called to Display @count and @message.
     A[mount/3 Called] --> B[assign/3 :count 0]
     B --> C[assign/3 :message]
     C --> D[Return socket]
     D --> E[render/1 Called]
-    E --> F[Display @count and @message]
+    E --> F[Display @count and<br/>@message]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style F fill:#0173B2,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class F pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -373,21 +380,28 @@ Understanding the LiveView lifecycle helps you know when each callback runs. Thi
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC
 graph TD
-    A[Client Requests LiveView] -->|HTTP GET| B[mount/3 Called]
+    accTitle: Example 6: LiveView Lifecycle Flow
+    accDescr: Graph with 7 nodes and 7 connections. Nodes: Client Requests LiveView, mount/3 Called, render/1 Called, Initial Page Sent to Client, LiveView Connected, handle_event/3 Called, render/1 Called Again. Connections: Client Requests LiveView to mount/3 Called (HTTP GET), mount/3 Called to render/1 Called (Returns socket), render/1 Called to Initial Page Sent to Client (Returns HTML), Initial Page Sent to Client to LiveView Connected (Upgrades to WebSocket), LiveView Connected to handle_event/3 Called (User Action), handle_event/3 Called to render/1 Called Again (Updates socket assigns), render/1 Called Again to LiveView Connected (Sends HTML Diff).
+    A[Client Requests<br/>LiveView] -->|HTTP GET| B[mount/3 Called]
     B -->|Returns socket| C[render/1 Called]
-    C -->|Returns HTML| D[Initial Page Sent to Client]
-    D -->|Upgrades to WebSocket| E[LiveView Connected]
-    E -->|User Action| F[handle_event/3 Called]
-    F -->|Updates socket assigns| G[render/1 Called Again]
+    C -->|Returns HTML| D[Initial Page Sent to<br/>Client]
+    D -->|Upgrades to<br/>WebSocket| E[LiveView Connected]
+    E -->|User Action| F[handle_event/3<br/>Called]
+    F -->|Updates socket<br/>assigns| G[render/1 Called<br/>Again]
     G -->|Sends HTML Diff| E
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#0173B2,color:#fff
-    style F fill:#DE8F05,color:#fff
-    style G fill:#029E73,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    class E pal-0173B2
+    class F pal-DE8F05
+    class G pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -479,6 +493,8 @@ Distinguishing between initial state (set in mount) and dynamic state (updated b
 ```mermaid
 %% Socket assigns state transitions
 stateDiagram-v2
+    accTitle: Example 7: Initial vs Dynamic State
+    accDescr: State diagram with 3 items: start or end, Initialized, Updated. Relationships: start or end to Initialized: mount/3 assigns defaults; Initialized to Updated: handle_event changes assign; Updated to Updated: further events; Updated to start or end: LiveView terminated.
     [*] --> Initialized: mount/3 assigns defaults
     Initialized --> Updated: handle_event changes assign
     Updated --> Updated: further events
@@ -753,6 +769,8 @@ LiveView mounts twice - once for static HTML, once for WebSocket connection. Use
 ```mermaid
 %% Connected vs disconnected mount sequence
 sequenceDiagram
+    accTitle: Example 10: Connected vs Disconnected Mount
+    accDescr: Sequence diagram between Browser, LiveView. Messages: Browser to LiveView: HTTP GET (static render); LiveView to Browser: HTML (connected? = false); Browser to LiveView: WebSocket connect; LiveView to Browser: Live data (connected? = true).
     participant Browser
     participant LiveView
     Browser->>LiveView: HTTP GET (static render)
@@ -848,16 +866,24 @@ HEEx provides powerful template syntax for dynamic HTML generation. This example
 ```mermaid
 %% HEEx template rendering pipeline
 graph LR
+    accTitle: Example 11: HEEx Template Syntax Deep Dive
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: HEEx Template, Compile Time Parse, Static Parts Cached, Runtime: Dynamic Expressions Evaluated, HTML Output with Assigns. Connections: HEEx Template to Compile Time Parse, Compile Time Parse to Static Parts Cached, Static Parts Cached to Runtime: Dynamic Expressions Evaluated, Runtime: Dynamic Expressions Evaluated to HTML Output with Assigns.
     A[HEEx Template] --> B[Compile Time Parse]
     B --> C[Static Parts Cached]
-    C --> D[Runtime: Dynamic Expressions<br/>Evaluated]
-    D --> E[HTML Output with Assigns]
+    C --> D[Runtime: Dynamic<br/>Expressions<br/>Evaluated]
+    D --> E[HTML Output with<br/>Assigns]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style D fill:#CC78BC,color:#fff
-    style E fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -1191,17 +1217,25 @@ Loops transform collections into lists of elements. This example shows for compr
 ```mermaid
 %% List rendering with for comprehension
 graph TD
+    accTitle: Example 14: Looping with for Comprehension
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: @items List, for item <- @items, Render each item template, Key by id field, Keyed DOM nodes, Efficient diff on updates. Connections: @items List to for item <- @items, for item <- @items to Render each item template, Render each item template to Key by id field, Key by id field to Keyed DOM nodes, Keyed DOM nodes to Efficient diff on updates.
     A[@items List] --> B[for item <- @items]
-    B --> C[Render each item template]
+    B --> C[Render each item<br/>template]
     C --> D[Key by id field]
     D --> E[Keyed DOM nodes]
-    E --> F[Efficient diff on updates]
+    E --> F[Efficient diff on<br/>updates]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style E fill:#CC78BC,color:#fff
-    style F fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class F pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:
@@ -2204,20 +2238,28 @@ Forms are central to web interactions. This example demonstrates live form event
 ```mermaid
 %% Form event handling cycle
 graph TD
-    A[User types input] -->|phx-change fires| B[handle_event validate]
+    accTitle: Example 22: Form Events - phx-change and phx-submit
+    accDescr: Graph with 9 nodes and 8 connections. Nodes: User types input, handle_event validate, Build changeset, Re-render with errors, phx-submit fires, handle_event save, Valid?, Process and redirect, Show errors. Connections: User types input to handle_event validate (phx-change fires), handle_event validate to Build changeset, Build changeset to Re-render with errors, Re-render with errors to phx-submit fires (User clicks submit), phx-submit fires to handle_event save, handle_event save to Valid?, Valid? to Process and redirect (Yes), Valid? to Show errors (No).
+    A[User types input] -->|phx-change fires| B[handle_event<br/>validate]
     B --> C[Build changeset]
-    C --> D[Re-render with errors]
+    C --> D[Re-render with<br/>errors]
     D -->|User clicks submit| E[phx-submit fires]
     E --> F[handle_event save]
     F --> G{Valid?}
     G -->|Yes| H[Process and redirect]
     G -->|No| I[Show errors]
 
-    style A fill:#0173B2,color:#fff
-    style B fill:#DE8F05,color:#fff
-    style C fill:#029E73,color:#fff
-    style F fill:#CC78BC,color:#fff
-    style H fill:#CA9161,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class H pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code**:

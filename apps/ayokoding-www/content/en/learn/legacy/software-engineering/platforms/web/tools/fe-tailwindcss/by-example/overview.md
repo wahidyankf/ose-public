@@ -34,16 +34,23 @@ Tailwind CSS is a **utility-first CSS framework** that provides low-level utilit
 
 ```mermaid
 graph TD
+  accTitle: Learning Path
+  accDescr: Graph with 5 nodes and 4 connections. Nodes: Beginner Core Utilities Examples 1-28, Intermediate Production Patterns Examples 29-55, Advanced Expert Mastery Examples 56-80, 0 No Tailwind Knowledge, 95 Framework Mastery. Connections: Beginner Core Utilities Examples 1-28 to Intermediate Production Patterns Examples 29-55, Intermediate Production Patterns Examples 29-55 to Advanced Expert Mastery Examples 56-80, 0 No Tailwind Knowledge to Beginner Core Utilities Examples 1-28, Advanced Expert Mastery Examples 56-80 to 95 Framework Mastery.
   A["Beginner<br/>Core Utilities<br/>Examples 1-28"] --> B["Intermediate<br/>Production Patterns<br/>Examples 29-55"]
   B --> C["Advanced<br/>Expert Mastery<br/>Examples 56-80"]
-  D["0%<br/>No Tailwind Knowledge"] -.-> A
+  D["0%<br/>No Tailwind<br/>Knowledge"] -.-> A
   C -.-> E["95%<br/>Framework Mastery"]
 
-  style A fill:#0173B2,stroke:#000000,stroke-width:2px,color:#fff
-  style B fill:#DE8F05,stroke:#000000,stroke-width:2px,color:#fff
-  style C fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
-  style D fill:#CC78BC,stroke:#000000,stroke-width:2px,color:#fff
-  style E fill:#029E73,stroke:#000000,stroke-width:2px,color:#fff
+  classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:2px
+  class A pal-0173B2
+  classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+  class B pal-DE8F05
+  classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:2px
+  class C pal-029E73
+  classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+  class D pal-CC78BC
+  class E pal-029E73
+  classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Coverage Philosophy: 95% Through 80 Examples

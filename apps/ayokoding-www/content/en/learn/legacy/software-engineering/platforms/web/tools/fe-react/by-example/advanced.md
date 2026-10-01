@@ -42,16 +42,24 @@ Generic components work with multiple data types while maintaining type safety. 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 1: Generic Components with TypeScript
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: List Generic component, List type-safe, List type-safe, List type-safe, items: T[] renderItem: (T) => ReactNode keyExtractor: (T) => string. Connections: List Generic component to List type-safe (T = Donation), List Generic component to List type-safe (T = ZakatPayment), List Generic component to List type-safe (T = User), items: T[] renderItem: (T) => ReactNode keyExtractor: (T) => string to List Generic component.
     A["List<T>\n Generic component"] -->|"T = Donation"| B["List<Donation>\n type-safe"]
     A -->|"T = ZakatPayment"| C["List<ZakatPayment>\n type-safe"]
     A -->|"T = User"| D["List<User>\n type-safe"]
-    E["items: T[]\nrenderItem: (T) => ReactNode\nkeyExtractor: (T) => string"] --> A
+    E["items: T[]<br/>renderItem: (T) =><br/>ReactNode<br/>keyExtractor: (T) =><br/>string"] --> A
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Generic component**: Single implementation works with any type T.
@@ -310,6 +318,8 @@ Discriminated unions model mutually exclusive states with type safety. Use a com
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 stateDiagram-v2
+    accTitle: Example 3: Discriminated Unions for State
+    accDescr: State diagram with 5 items: start or end, Idle, Loading, Success, Error. Relationships: start or end to Idle: initial; Idle to Loading: fetch(); Loading to Success: onSuccess; Loading to Error: onError; Success to Loading: refetch(); Error to Loading: retry().
     [*] --> Idle: initial
     Idle --> Loading: fetch()
     Loading --> Success: onSuccess
@@ -830,22 +840,30 @@ Zustand provides lightweight global state management without boilerplate. Create
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["useDonationStore\n Zustand store"] --> B["donations: []\ntotalAmount: 0\nisLoading: false"]
-    A --> C["addDonation(amount, donor)"]
+    accTitle: Example 6: Zustand Store Setup
+    accDescr: Graph with 7 nodes and 8 connections. Nodes: useDonationStore Zustand store, donations: [] totalAmount: 0 isLoading: false, addDonation(amount, donor), removeDonation(id), clearDonations(), ComponentA useStore(s => s.donations), ComponentB useStore(s => s.totalAmount). Connections: useDonationStore Zustand store to donations: [] totalAmount: 0 isLoading: false, useDonationStore Zustand store to addDonation(amount, donor), useDonationStore Zustand store to removeDonation(id), useDonationStore Zustand store to clearDonations(), ComponentA useStore(s => s.donations) to useDonationStore Zustand store (subscribes to donations slice), ComponentB useStore(s => s.totalAmount) to useDonationStore Zustand store (subscribes to totalAmount only), addDonation(amount, donor) to donations: [] totalAmount: 0 isLoading: false (set(state => ...)), removeDonation(id) to donations: [] totalAmount: 0 isLoading: false (set(state => ...)).
+    A["useDonationStore<br/> Zustand store"] --> B["donations: []<br/>totalAmount: 0<br/>isLoading: false"]
+    A --> C["addDonation(amount,<br/>donor)"]
     A --> D["removeDonation(id)"]
     A --> E["clearDonations()"]
-    F["ComponentA\nuseStore(s => s.donations)"] -->|"subscribes to donations slice"| A
-    G["ComponentB\nuseStore(s => s.totalAmount)"] -->|"subscribes to totalAmount only"| A
+    F["ComponentA<br/>useStore(s =><br/>s.donations)"] -->|"subscribes to<br/>donations slice"| A
+    G["ComponentB<br/>useStore(s =><br/>s.totalAmount)"] -->|"subscribes to<br/>totalAmount only"| A
     C -->|"set(state => ...)"| B
     D -->|"set(state => ...)"| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#029E73,stroke:#000,color:#fff
-    style C fill:#DE8F05,stroke:#000,color:#000
-    style D fill:#DE8F05,stroke:#000,color:#000
-    style E fill:#DE8F05,stroke:#000,color:#000
-    style F fill:#CC78BC,stroke:#000,color:#000
-    style G fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class B pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class C pal-DE8F05
+    class D pal-DE8F05
+    class E pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class G pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Zustand store**: Slice subscriptions prevent re-renders from unrelated state changes.
@@ -997,19 +1015,27 @@ Slices organize large stores into logical modules. Combine slices for separation
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["useAuthStore slice\nuser, isAuthenticated\nlogin(), logout()"] --> Z["Combined store\nRootState"]
-    B["useCartSlice\ncart[], total\naddItem(), removeItem()"] --> Z
-    C["ComponentA\nuseStore(s => s.user)"] -->|"subscribes to user"| A
+    accTitle: Example 7: Zustand with TypeScript and Slices
+    accDescr: Graph with 6 nodes and 6 connections. Nodes: useAuthStore slice user, isAuthenticated login(), logout(), Combined store RootState, useCartSlice cart[], total addItem(), removeItem(), ComponentA useStore(s => s.user), ComponentB useStore(s => s.cart)|, login() fires. Connections: useAuthStore slice user, isAuthenticated login(), logout() to Combined store RootState, useCartSlice cart[], total addItem(), removeItem() to Combined store RootState, ComponentA useStore(s => s.user) to useAuthStore slice user, isAuthenticated login(), logout() (subscribes to user), ComponentB useStore(s => s.cart)| to useCartSlice cart[], total addItem(), removeItem() (subscribes to cart), login() fires to useAuthStore slice user, isAuthenticated login(), logout() (updates auth slice only), login() fires to ComponentB useStore(s => s.cart)| (ComponentB NOT re-rendered).
+    A["useAuthStore slice<br/>user,<br/>isAuthenticated<br/>login(), logout()"] --> Z["Combined store<br/>RootState"]
+    B["useCartSlice<br/>cart[], total<br/>addItem(),<br/>removeItem()"] --> Z
+    C["ComponentA<br/>useStore(s =><br/>s.user)"] -->|"subscribes to user"| A
     D["ComponentB\nuseStore(s => s.cart)"| ]-->|"subscribes to cart"| B
-    E["login() fires"] -->|"updates auth slice only"| A
-    E -->|"ComponentB NOT re-rendered"| D
+    E["login() fires"] -->|"updates auth slice<br/>only"| A
+    E -->|"ComponentB NOT<br/>re-rendered"| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style Z fill:#029E73,stroke:#000,color:#fff
-    style C fill:#CC78BC,stroke:#000,color:#000
-    style D fill:#CA9161,stroke:#000,color:#000
-    style E fill:#0173B2,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class Z pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class C pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class D pal-CA9161
+    class E pal-0173B2
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Zustand slices**: Separate domains, selective subscriptions prevent cross-slice re-renders.
@@ -2013,16 +2039,23 @@ Code splitting reduces initial bundle size by loading components on-demand. Use 
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Initial bundle\n(small, fast load)"] -->|"user navigates to /admin"| B["Lazy import\nAdminPage chunk"]
+    accTitle: Example 11: Code Splitting with React.lazy and Suspense
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: Initial bundle (small, fast load), Lazy import AdminPage chunk, Suspense fallback, AdminPage renders, DashboardPage (already loaded). Connections: Initial bundle (small, fast load) to Lazy import AdminPage chunk (user navigates to /admin), Lazy import AdminPage chunk to Suspense fallback (loading), Lazy import AdminPage chunk to AdminPage renders (loaded), Initial bundle (small, fast load) to DashboardPage (already loaded) (user stays on home).
+    A["Initial bundle<br/>(small, fast load)"] -->|"user navigates to<br/>/admin"| B["Lazy import<br/>AdminPage chunk"]
     B -->|"loading"| C["Suspense fallback\n<Loading />"]
     B -->|"loaded"| D["AdminPage renders"]
-    A -->|"user stays on home"| E["DashboardPage\n(already loaded)"]
+    A -->|"user stays on home"| E["DashboardPage<br/>(already loaded)"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CA9161,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Code splitting**: Lazy loading defers bundle download until component is needed.
@@ -2338,18 +2371,26 @@ React.memo prevents unnecessary re-renders of child components. Use for expensiv
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Parent re-renders\n(unrelated state change)"] -->|"React.memo check"| B{"Props changed?"}
-    B -->|"No (same reference)"| C["Child skips re-render\n(optimization wins)"]
-    B -->|"Yes (new reference)"| D["Child re-renders\n(necessary update)"]
-    E["useCallback memoized fn"] -->|"same reference"| B
-    F["New fn every render"] -->|"always new reference"| D
+    accTitle: Example 13: React.memo and Memoization Strategies
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Parent re-renders (unrelated state change), Props changed?, Child skips re-render (optimization wins), Child re-renders (necessary update), useCallback memoized fn, New fn every render. Connections: Parent re-renders (unrelated state change) to Props changed? (React.memo check), Props changed? to Child skips re-render (optimization wins) (No (same reference)), Props changed? to Child re-renders (necessary update) (Yes (new reference)), useCallback memoized fn to Props changed? (same reference), New fn every render to Child re-renders (necessary update) (always new reference).
+    A["Parent re-renders<br/>(unrelated state<br/>change)"] -->|"React.memo check"| B{"Props changed?"}
+    B -->|"No (same<br/>reference)"| C["Child skips<br/>re-render<br/>(optimization wins)"]
+    B -->|"Yes (new<br/>reference)"| D["Child re-renders<br/>(necessary update)"]
+    E["useCallback memoized<br/>fn"] -->|"same reference"| B
+    F["New fn every render"] -->|"always new<br/>reference"| D
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **React.memo + useCallback**: Stable references prevent expensive child re-renders.
@@ -3034,17 +3075,25 @@ Suspense handles async data loading declaratively. Components "suspend" while lo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
+    accTitle: Example 16: Suspense for Data Fetching
+    accDescr: Graph with 5 nodes and 5 connections. Nodes: Suspense boundary fallback=, DataComponent, Renders with data, startFetch() called before render, React Query cache warms up. Connections: Suspense boundary fallback= to DataComponent, DataComponent to Suspense boundary fallback= (data not ready), DataComponent to Renders with data (data ready), startFetch() called before render to React Query cache warms up (prefetch), React Query cache warms up to DataComponent (component renders).
     A["Suspense boundary\n fallback=<Loading />"] --> B["DataComponent"]
     B -->|"data not ready"| A
     B -->|"data ready"| C["Renders with data"]
-    D["startFetch() called\nbefore render"] -->|"prefetch"| E["React Query cache\nwarms up"]
+    D["startFetch() called<br/>before render"] -->|"prefetch"| E["React Query cache<br/>warms up"]
     E -->|"component renders"| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#CC78BC,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class D pal-CC78BC
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class E pal-CA9161
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Suspense for data**: Render-as-you-fetch pre-warms cache before component renders.
@@ -3200,16 +3249,23 @@ startTransition marks state updates as low-priority, keeping UI responsive durin
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["User types in search\nhigh priority input"] -->|"startTransition()"| B["Filter computation\nlow priority"]
-    B -->|"React defers"| C["Input stays responsive\nno jank"]
-    B -->|"main thread free"| D["Filter results update\nwhen ready"]
-    E["Typing continues"] -->|"interrupts if needed"| B
+    accTitle: Example 17: startTransition for Non-Urgent Updates
+    accDescr: Graph with 5 nodes and 4 connections. Nodes: User types in search high priority input, Filter computation low priority, Input stays responsive no jank, Filter results update when ready, Typing continues. Connections: User types in search high priority input to Filter computation low priority (startTransition()), Filter computation low priority to Input stays responsive no jank (React defers), Filter computation low priority to Filter results update when ready (main thread free), Typing continues to Filter computation low priority (interrupts if needed).
+    A["User types in search<br/>high priority input"] -->|"startTransition()"| B["Filter computation<br/>low priority"]
+    B -->|"React defers"| C["Input stays<br/>responsive<br/>no jank"]
+    B -->|"main thread free"| D["Filter results<br/>update<br/>when ready"]
+    E["Typing continues"] -->|"interrupts if<br/>needed"| B
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#029E73,stroke:#000,color:#fff
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class C pal-029E73
+    class D pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class E pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **startTransition**: Marks expensive updates as non-urgent, keeps urgent updates fast.
@@ -3581,20 +3637,27 @@ Error boundaries catch React component errors and show fallback UI. Add retry lo
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Component mounts\nfetch fails"] -->|"error caught"| B["Error Boundary\nerrorInfo captured"]
-    B -->|"1st retry"| C["Fetch attempt 2\ndelay 1s"]
-    C -->|"fails again"| D["2nd retry\ndelay 2s"]
-    D -->|"fails again"| E["3rd retry\ndelay 4s"]
-    E -->|"success"| F["Component renders\nerror cleared"]
-    E -->|"max retries"| G["Permanent error state\nManual retry button"]
+    accTitle: Example 19: Error Boundaries with Retry Logic
+    accDescr: Graph with 7 nodes and 6 connections. Nodes: Component mounts fetch fails, Error Boundary errorInfo captured, Fetch attempt 2 delay 1s, 2nd retry delay 2s, 3rd retry delay 4s, Component renders error cleared, Permanent error state Manual retry button. Connections: Component mounts fetch fails to Error Boundary errorInfo captured (error caught), Error Boundary errorInfo captured to Fetch attempt 2 delay 1s (1st retry), Fetch attempt 2 delay 1s to 2nd retry delay 2s (fails again), 2nd retry delay 2s to 3rd retry delay 4s (fails again), 3rd retry delay 4s to Component renders error cleared (success), 3rd retry delay 4s to Permanent error state Manual retry button (max retries).
+    A["Component mounts<br/>fetch fails"] -->|"error caught"| B["Error Boundary<br/>errorInfo captured"]
+    B -->|"1st retry"| C["Fetch attempt 2<br/>delay 1s"]
+    C -->|"fails again"| D["2nd retry<br/>delay 2s"]
+    D -->|"fails again"| E["3rd retry<br/>delay 4s"]
+    E -->|"success"| F["Component renders<br/>error cleared"]
+    E -->|"max retries"| G["Permanent error<br/>state<br/>Manual retry button"]
 
-    style A fill:#CC78BC,stroke:#000,color:#000
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CA9161,stroke:#000,color:#000
-    style D fill:#CA9161,stroke:#000,color:#000
-    style E fill:#CA9161,stroke:#000,color:#000
-    style F fill:#029E73,stroke:#000,color:#fff
-    style G fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class A pal-CC78BC
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    class D pal-CA9161
+    class E pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class F pal-029E73
+    class G pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **Error boundary retry**: Automatic retries with exponential backoff and manual fallback.
@@ -4211,18 +4274,26 @@ Vitest provides fast unit testing for React components. React Testing Library en
 ```mermaid
 %% Color Palette: Blue #0173B2, Orange #DE8F05, Teal #029E73, Purple #CC78BC, Brown #CA9161
 graph TD
-    A["Component under test"] -->|"render()"| B["React Testing Library\nDOM"]
-    B -->|"getByRole('button')"| C["Button element"]
+    accTitle: Example 21: Vitest with React Testing Library
+    accDescr: Graph with 6 nodes and 5 connections. Nodes: Component under test, React Testing Library DOM, Button element, Click event fires, Re-render, Assertion: text visible. Connections: Component under test to React Testing Library DOM (render()), React Testing Library DOM to Button element (getBy Role(button)), Button element to Click event fires (userEvent.click()), Click event fires to Re-render (state update), Re-render to Assertion: text visible (expect(screen. getByText(...))).
+    A["Component under test"] -->|"render()"| B["React Testing<br/>Library<br/>DOM"]
+    B -->|"getBy<br/>Role('button')"| C["Button element"]
     C -->|"userEvent.click()"| D["Click event fires"]
     D -->|"state update"| E["Re-render"]
-    E -->|"expect(screen.getByText(...))"| F["Assertion: text visible"]
+    E -->|"expect(screen.<br/>getByText(...))"| F["Assertion: text<br/>visible"]
 
-    style A fill:#0173B2,stroke:#000,color:#fff
-    style B fill:#DE8F05,stroke:#000,color:#000
-    style C fill:#CA9161,stroke:#000,color:#000
-    style D fill:#029E73,stroke:#000,color:#fff
-    style E fill:#029E73,stroke:#000,color:#fff
-    style F fill:#CC78BC,stroke:#000,color:#000
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF
+    class A pal-0173B2
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000
+    class B pal-DE8F05
+    classDef pal-CA9161 fill:#CA9161,stroke:#000000,color:#000000
+    class C pal-CA9161
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000
+    class D pal-029E73
+    class E pal-029E73
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000
+    class F pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 **RTL testing**: Test user behavior (what users see/do), not implementation details.

@@ -42,26 +42,32 @@ By the end of this tutorial, you will understand:
 ## Learning Path
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#0ea5e9','primaryTextColor':'#1e293b','primaryBorderColor':'#0369a1','lineColor':'#64748b','secondaryColor':'#f97316','tertiaryColor':'#8b5cf6','background':'#ffffff','mainBkg':'#f1f5f9','secondBkg':'#e2e8f0'}}}%%
 graph TB
+    accTitle: Learning Path
+    accDescr: Graph with 16 nodes and 15 connections. Nodes: Quick Start, Prerequisites Check, Functional Components, JSX, Props, useState Hook, useEffect Hook, Event Handling, Conditional Rendering, Lists, Keys, Forms, and 4 more. Connections: Quick Start to Prerequisites Check, Prerequisites Check to Functional Components, Functional Components to JSX, Functional Components to Props, JSX to useState Hook, useState Hook to useEffect Hook, useEffect Hook to Event Handling, Event Handling to Conditional Rendering, Conditional Rendering to Lists, Conditional Rendering to Keys, Lists to Forms, Forms to Component Composition, and 3 more.
     Start[Quick Start] --> Setup[Prerequisites Check]
-    Setup --> Component[Functional Components]
+    Setup --> Component[Functional<br/>Components]
     Component --> JSX[JSX & Props]
     JSX --> State[useState Hook]
     State --> Effect[useEffect Hook]
     Effect --> Events[Event Handling]
-    Events --> Cond[Conditional Rendering]
+    Events --> Cond[Conditional<br/>Rendering]
     Cond --> Lists[Lists & Keys]
     Lists --> Forms[Forms]
-    Forms --> Compose[Component Composition]
+    Forms --> Compose[Component<br/>Composition]
     Compose --> Custom[Custom Hooks]
     Custom --> API[API Calls]
     API --> Next[Next Steps]
 
-    style Start fill:#0ea5e9,stroke:#0369a1,stroke-width:3px,color:#ffffff
-    style Next fill:#10b981,stroke:#059669,stroke-width:3px,color:#ffffff
-    style State fill:#f97316,stroke:#c2410c,stroke-width:2px,color:#ffffff
-    style Custom fill:#8b5cf6,stroke:#6d28d9,stroke-width:2px,color:#ffffff
+    classDef pal-0173B2 fill:#0173B2,stroke:#000000,color:#FFFFFF,stroke-width:3px
+    class Start pal-0173B2
+    classDef pal-029E73 fill:#029E73,stroke:#000000,color:#000000,stroke-width:3px
+    class Next pal-029E73
+    classDef pal-DE8F05 fill:#DE8F05,stroke:#000000,color:#000000,stroke-width:2px
+    class State pal-DE8F05
+    classDef pal-CC78BC fill:#CC78BC,stroke:#000000,color:#000000,stroke-width:2px
+    class Custom pal-CC78BC
+    classDef default fill:#FFFFFF,stroke:#000000,color:#000000
 ```
 
 ## Project Setup

@@ -11,7 +11,7 @@ created: 2026-04-19
 
 # AI Model Benchmarks Reference
 
-Canonical benchmark reference for all AI models used in this project. Last updated: 2026-07-28 (generated tables — roster, pricing, frontier, capability-summary); hand-curated model-by-model prose was last refreshed 2026-07-05 — see the snapshot captions inside each generated block for the authoritative date.
+Canonical benchmark reference for all AI models used in this project. Last updated: 2026-10-01 (generated tables — roster, pricing, frontier, capability-summary); hand-curated model-by-model prose was last refreshed 2026-07-05 and describes the older benchmark set — see the captions inside each generated block for the authoritative date, and [Current Composite](#current-composite-independent-results-only) for how the generated tables score models.
 
 > **Derived data tables.** The data tables in this reference are generated from
 > [`apps/ayokoding-www/src/features/ai-benchmark/core/data/models.ts`](../../apps/ayokoding-www/src/features/ai-benchmark/core/data/models.ts)
@@ -43,6 +43,29 @@ All docs that cite benchmark numbers link to this file. This file links to prima
 ---
 
 ## Benchmark Definitions
+
+### Current Composite (Independent Results Only)
+
+Since 2026-10-01 the generated tables below — and the
+[ayokoding.com AI benchmark tool](https://ayokoding.com/en/tools/ai-benchmark) — score models on
+three coding-agent benchmarks, equally weighted, using only results run by an independent operator.
+Vendor-reported figures are not recorded.
+
+| Benchmark      | Version | What it measures                                      | Operators, in order of preference                                            |
+| -------------- | ------- | ----------------------------------------------------- | ---------------------------------------------------------------------------- |
+| DeepSWE        | 1.1     | Long-horizon changes across real repositories         | Artificial Analysis Coding Agent Index → Datacurve board                     |
+| Terminal-Bench | 4.0     | Autonomous work in real shell environments            | Artificial Analysis (index, then evaluation page) → official board → Vals AI |
+| SWE-Atlas      | QnA     | Answering questions about large, unfamiliar codebases | Artificial Analysis Coding Agent Index → Scale AI board                      |
+
+- **Index** — the mean of a model's scores on the benchmarks it has; at least two are required,
+  otherwise the model is listed as `insufficient`.
+- **Tiers** — one previous-generation anchor each: `ultra` ≥ Claude Opus 5, `planning` ≥ GPT-5.6
+  Sol, `execution` ≥ GPT-5.6 Terra, `fast` below. A model goes in the highest tier whose anchor's
+  index its own index matches or beats, so tier always follows index. Indexes built from different
+  benchmarks are not exactly comparable (GPT-5.6 Terra has no independent SWE-Atlas QnA result).
+- **Retired from the composite** — SWE-bench Verified (saturated), SWE-bench Pro (V1 tasks found
+  broken; V2 unverified), Terminal-Bench 2.x (superseded), and GPQA Diamond (saturated). The sections
+  below still describe them for the hand-curated model notes.
 
 ### Quick Reference
 
@@ -143,18 +166,19 @@ Opus 4.8 and Claude Sonnet 5 superseded Opus 4.7/Sonnet 4.6 during this refresh 
 [VentureBeat on Claude Opus 4.8](https://venturebeat.com/technology/anthropics-claude-opus-4-8-is-here-with-3x-cheaper-fast-mode-and-near-mythos-level-alignment)
 (accessed 2026-07-05)
 
-| Feature                   | Claude Opus 4.8         | Claude Sonnet 5     | Claude Haiku 4.5            |
-| ------------------------- | ----------------------- | ------------------- | --------------------------- |
-| **API Model ID**          | `claude-opus-4-8`       | `claude-sonnet-5`   | `claude-haiku-4-5-20251001` |
-| **Alias**                 | `opus`                  | `sonnet`            | `haiku`                     |
-| **Pricing (in/out MTok)** | $5 / $25                | $2→$3 (a) / $10→$15 | $1 / $5                     |
-| **SWE-bench Verified**    | 88.6% `[Verified]`      | 85.2% `[Verified]`  | 73.3% `[Verified]`          |
-| **SWE-bench Pro**         | 69.2% `[Verified]`      | 63.2% `[Verified]`  | 39.5% `[Self-reported]`     |
-| **Terminal-Bench 2.1**    | not confirmed this pass | 80.4% `[Verified]`  | not confirmed this pass     |
-| **OSWorld-Verified**      | 83.4% `[Verified]`      | 81.2% `[Verified]`  | 50.7% `[Self-reported]`     |
-| **Release date**          | 2026-05-28              | 2026-06-30          | 2025-10-15                  |
+| Feature                   | Claude Opus 4.8         | Claude Sonnet 5    | Claude Haiku 4.5            |
+| ------------------------- | ----------------------- | ------------------ | --------------------------- |
+| **API Model ID**          | `claude-opus-4-8`       | `claude-sonnet-5`  | `claude-haiku-4-5-20251001` |
+| **Alias**                 | `opus`                  | `sonnet`           | `haiku`                     |
+| **Pricing (in/out MTok)** | $5 / $25                | $2 / $10 (a)       | $1 / $5                     |
+| **SWE-bench Verified**    | 88.6% `[Verified]`      | 85.2% `[Verified]` | 73.3% `[Verified]`          |
+| **SWE-bench Pro**         | 69.2% `[Verified]`      | 63.2% `[Verified]` | 39.5% `[Self-reported]`     |
+| **Terminal-Bench 2.1**    | not confirmed this pass | 80.4% `[Verified]` | not confirmed this pass     |
+| **OSWorld-Verified**      | 83.4% `[Verified]`      | 81.2% `[Verified]` | 50.7% `[Self-reported]`     |
+| **Release date**          | 2026-05-28              | 2026-06-30         | 2025-10-15                  |
 
-(a) introductory rate through 2026-08-31, then standard rate.
+(a) launched as an introductory rate; Anthropic later made $2 / $10 the standard price and cancelled
+the scheduled rise to $3 / $15.
 
 **Scope note (2026-07-05 refresh)**: this table's Opus 4.8/Sonnet 5 rows carry only the benchmarks
 independently re-verified for the `upgrade-opencode-go-models` plan (SWE-bench Verified/Pro,
@@ -215,8 +239,8 @@ continuity with Opus 4.7's figures above.
 | Terminal-Bench 2.1 | **80.4%** | `[Verified]` | Official launch post; corroborated by MarkTechPost |
 | OSWorld-Verified   | **81.2%** | `[Verified]` | Official launch post; corroborated by MarkTechPost |
 
-**Pricing**: $2/$10 per MTok (in/out) introductory rate through 2026-08-31, then $3/$15 standard —
-per [Anthropic API Pricing](https://platform.claude.com/docs/en/about-claude/pricing).
+**Pricing**: $2/$10 per MTok (in/out), now the permanent standard rate — the scheduled rise to
+$3/$15 was cancelled — per [Anthropic API Pricing](https://platform.claude.com/docs/en/about-claude/pricing).
 
 **Scope note**: only the benchmarks re-verified for the `upgrade-opencode-go-models` plan
 (2026-07-05) are listed above; other secondary benchmarks this doc tracked for Sonnet 4.6 (GPQA
@@ -364,25 +388,39 @@ the roster meets — an explicit, accepted tradeoff, not an oversight. See Decis
 
 <!-- BEGIN GENERATED: roster -->
 
-> Snapshot 2026-07-28 — 15 models selectable via the `opencode-go/` flat-rate subscription. Derived from `apps/ayokoding-www/src/features/ai-benchmark/core/data/models.ts`.
+> Last updated 2026-10-01 — 29 OpenCode Go models with an identified vendor. Muse Spark is listed on OpenCode Go under its `-contributor` id. Derived from `apps/ayokoding-www/src/features/ai-benchmark/core/data/models.ts`.
 
-| Model ID                      | Display Name      | Provider | Other Harnesses      | SWE-bench Pro         |
-| ----------------------------- | ----------------- | -------- | -------------------- | --------------------- |
-| opencode-go/grok-4.5          | Grok 4.5          | xAI      | cursor, opencode-zen | 64.7% [Self-reported] |
-| opencode-go/glm-5.2           | GLM 5.2           | Z.ai     | cursor, opencode-zen | 62.1% [Secondary]     |
-| opencode-go/glm-5.1           | GLM 5.1           | Z.ai     | opencode-zen         | —                     |
-| opencode-go/kimi-k3           | Kimi K3           | Moonshot | cursor, opencode-zen | —                     |
-| opencode-go/kimi-k2.7-code    | Kimi K2.7 Code    | Moonshot | cursor, opencode-zen | —                     |
-| opencode-go/kimi-k2.6         | Kimi K2.6         | Moonshot | opencode-zen         | 58.6% [Secondary]     |
-| opencode-go/minimax-m3        | MiniMax M3        | MiniMax  | opencode-zen         | 59% [Secondary]       |
-| opencode-go/minimax-m2.7      | MiniMax M2.7      | MiniMax  | opencode-zen         | —                     |
-| opencode-go/qwen3.7-max       | Qwen3.7 Max       | Alibaba  | opencode-zen         | —                     |
-| opencode-go/qwen3.7-plus      | Qwen3.7 Plus      | Alibaba  | opencode-zen         | —                     |
-| opencode-go/qwen3.6-plus      | Qwen3.6 Plus      | Alibaba  | opencode-zen         | —                     |
-| opencode-go/deepseek-v4-pro   | DeepSeek V4 Pro   | DeepSeek | opencode-zen         | —                     |
-| opencode-go/deepseek-v4-flash | DeepSeek V4 Flash | DeepSeek | opencode-zen         | —                     |
-| opencode-go/mimo-v2.5         | MiMo v2.5         | Xiaomi   | opencode-zen         | —                     |
-| opencode-go/mimo-v2.5-pro     | MiMo v2.5 Pro     | Xiaomi   | —                    | —                     |
+| Model ID                     | Name                                    | Vendor      | Tier         | Index | Other harnesses                 |
+| ---------------------------- | --------------------------------------- | ----------- | ------------ | ----- | ------------------------------- |
+| gpt-6-luna                   | GPT-6 Luna                              | OpenAI      | fast         | 41.07 | codex-cli, opencode-zen         |
+| gpt-5.6-luna                 | GPT-5.6 Luna                            | OpenAI      | fast         | 43.23 | codex-cli, cursor, opencode-zen |
+| grok-4.7                     | Grok 4.7                                | xAI         | planning     | 56.27 | cursor, opencode-zen            |
+| grok-4.6                     | Grok 4.6                                | xAI         | execution    | 46.97 | cursor, opencode-zen            |
+| glm-5.3                      | GLM-5.3                                 | Z.ai        | execution    | 53.56 | cursor, opencode-zen            |
+| glm-5.2                      | GLM-5.2                                 | Z.ai        | execution    | 45.95 | cursor, opencode-zen            |
+| glm-5.3-flash                | GLM-5.3 Flash                           | Z.ai        | execution    | 48.09 | cursor, opencode-zen            |
+| kimi-k3                      | Kimi K3                                 | Moonshot AI | execution    | 51.93 | cursor, opencode-zen            |
+| kimi-k2.6                    | Kimi K2.6                               | Moonshot AI | insufficient | —     | opencode-zen                    |
+| kimi-k2.7-code               | Kimi K2.7 Code                          | Moonshot AI | insufficient | —     | cursor, opencode-zen            |
+| deepseek-v4-pro              | DeepSeek V4 Pro                         | DeepSeek    | fast         | 43.05 | opencode-zen                    |
+| deepseek-v4.1-flash          | DeepSeek V4.1 Flash                     | DeepSeek    | insufficient | —     | opencode-zen                    |
+| deepseek-v4-flash            | DeepSeek V4 Flash                       | DeepSeek    | fast         | 38.74 | opencode-zen                    |
+| deepseek-v4-flash-vision-exp | DeepSeek V4 Flash Vision (experimental) | DeepSeek    | insufficient | —     | opencode-zen                    |
+| qwen3.8-max                  | Qwen3.8 Max                             | Alibaba     | fast         | 43.27 | opencode-zen                    |
+| qwen3.8-flash                | Qwen3.8 Flash                           | Alibaba     | insufficient | —     | opencode-zen                    |
+| qwen3.7-plus                 | Qwen3.7 Plus                            | Alibaba     | insufficient | —     | opencode-zen                    |
+| muse-spark-1.3               | Muse Spark 1.3                          | Meta        | execution    | 54.30 | cursor, opencode-zen            |
+| muse-spark-1.2               | Muse Spark 1.2                          | Meta        | fast         | 30.46 | opencode-zen                    |
+| minimax-m3                   | MiniMax M3                              | MiniMax     | insufficient | —     | opencode-zen                    |
+| minimax-m2.7                 | MiniMax M2.7                            | MiniMax     | insufficient | —     | opencode-zen                    |
+| mimo-v2.6-pro                | MiMo V2.6 Pro                           | Xiaomi      | insufficient | —     | —                               |
+| mimo-v2.5-pro                | MiMo V2.5 Pro                           | Xiaomi      | insufficient | —     | —                               |
+| mimo-v2.6-flash              | MiMo V2.6 Flash                         | Xiaomi      | insufficient | —     | —                               |
+| mimo-v2.5                    | MiMo V2.5                               | Xiaomi      | insufficient | —     | —                               |
+| hy4-preview                  | Hy4 (preview)                           | Tencent     | insufficient | —     | —                               |
+| hy3                          | Hy3                                     | Tencent     | insufficient | —     | —                               |
+| longcat-2.5-preview-free     | LongCat 2.5 (preview)                   | Meituan     | insufficient | —     | opencode-zen                    |
+| longcat-2.0                  | LongCat 2.0                             | Meituan     | insufficient | —     | —                               |
 
 <!-- END GENERATED: roster -->
 
@@ -699,149 +737,143 @@ has been repointed.
 
 ## Per-Harness Standard-Tier Pricing
 
-Per-harness standard-tier rates for every model in the dataset (generated, snapshot 2026-07-28 — see
-the block below). Metered harnesses (`claude-code`, `codex-cli`, `cursor`, `opencode-zen`) bill per
-1M tokens at each model's own provider's direct pay-as-you-go rate; the `opencode-go` rows are the
-flat-rate subscription ($5 first month, then $10/month) shown as `$10/mo sub` — not a per-token
-rate — and are listed alongside the metered rows for direct cost comparison. The per-model prose
-pricing notes higher up (e.g. `glm-5.2` $1.40/$4.40, `minimax-m3` $0.30/$1.20) were last
-hand-researched 2026-07-05 and may lag the generated table — where the two disagree, the generated
-block below is authoritative.
+One standard API price per model (generated — see the block below for its date), from the vendor's
+own pricing page, or from OpenCode's docs where the vendor publishes no reachable price page.
+Subscriptions (including the OpenCode Go plan) are not compared. The per-model prose pricing notes
+higher up were last hand-researched 2026-07-05 and may lag the generated table — where the two
+disagree, the generated block below is authoritative.
 
 <!-- BEGIN GENERATED: pricing -->
 
-> Per-harness standard-tier rates, snapshot 2026-07-28. Metered prices are USD per 1M tokens; `opencode-go` rows are the flat-rate subscription. Derived from `models.ts`.
+> Standard API prices, USD per 1M tokens, last updated 2026-10-01. Blended = (3 × input + output) ÷ 4. `opencode` = the rate OpenCode lists, used only where the vendor publishes no reachable price page.
 
-| Model                 | Harness      | Input $/1M | Output $/1M | Grade       |
-| --------------------- | ------------ | ---------- | ----------- | ----------- |
-| Claude Fable 5        | claude-code  | $10        | $50         | [Verified]  |
-| Claude Fable 5        | cursor       | $10        | $50         | [Verified]  |
-| Claude Fable 5        | opencode-zen | $10        | $50         | [Verified]  |
-| Claude Opus 5         | claude-code  | $5         | $25         | [Verified]  |
-| Claude Opus 5         | cursor       | $5         | $25         | [Verified]  |
-| Claude Opus 5         | opencode-zen | $5         | $25         | [Verified]  |
-| Claude Opus 4.8       | claude-code  | $5         | $25         | [Verified]  |
-| Claude Opus 4.8       | cursor       | $5         | $25         | [Verified]  |
-| Claude Opus 4.8       | opencode-zen | $5         | $25         | [Verified]  |
-| Claude Sonnet 5       | claude-code  | $3         | $15         | [Verified]  |
-| Claude Sonnet 5       | cursor       | $3         | $15         | [Verified]  |
-| Claude Sonnet 5       | opencode-zen | $3         | $15         | [Verified]  |
-| Claude Sonnet 4.6     | claude-code  | $3         | $15         | [Verified]  |
-| Claude Sonnet 4.6     | cursor       | $3         | $15         | [Verified]  |
-| Claude Sonnet 4.6     | opencode-zen | $3         | $15         | [Verified]  |
-| Claude Haiku 4.5      | claude-code  | $1         | $5          | [Verified]  |
-| Claude Haiku 4.5      | cursor       | $1         | $5          | [Verified]  |
-| Claude Haiku 4.5      | opencode-zen | $1         | $5          | [Verified]  |
-| GPT-5.6 Sol           | codex-cli    | $5         | $30         | [Verified]  |
-| GPT-5.6 Sol           | cursor       | $5         | $30         | [Verified]  |
-| GPT-5.6 Sol           | opencode-zen | $5         | $30         | [Verified]  |
-| GPT-5.6 Terra         | codex-cli    | $2.5       | $15         | [Verified]  |
-| GPT-5.6 Terra         | cursor       | $2.5       | $15         | [Verified]  |
-| GPT-5.6 Terra         | opencode-zen | $2.5       | $15         | [Verified]  |
-| GPT-5.6 Luna          | codex-cli    | $1         | $6          | [Verified]  |
-| GPT-5.6 Luna          | cursor       | $1         | $6          | [Verified]  |
-| GPT-5.6 Luna          | opencode-zen | $1         | $6          | [Verified]  |
-| GPT-5.5               | codex-cli    | $5         | $30         | [Verified]  |
-| GPT-5.5               | cursor       | $5         | $30         | [Verified]  |
-| GPT-5.5               | opencode-zen | $5         | $30         | [Verified]  |
-| GPT-5.5 Pro           | opencode-zen | $30        | $180        | [Verified]  |
-| GPT-5.4               | codex-cli    | $2.5       | $15         | [Verified]  |
-| GPT-5.4               | cursor       | $2.5       | $15         | [Verified]  |
-| GPT-5.4               | opencode-zen | $2.5       | $15         | [Verified]  |
-| GPT-5.4 Mini          | codex-cli    | $0.75      | $4.5        | [Verified]  |
-| GPT-5.4 Mini          | cursor       | $0.75      | $4.5        | [Verified]  |
-| GPT-5.4 Mini          | opencode-zen | $0.75      | $4.5        | [Verified]  |
-| GPT-5.4 Nano          | cursor       | $0.2       | $1.25       | [Verified]  |
-| GPT-5.4 Nano          | opencode-zen | $0.2       | $1.25       | [Verified]  |
-| GPT-5.3 Codex Spark   | codex-cli    | $1.75      | $14         | [Verified]  |
-| GPT-5.3 Codex Spark   | opencode-zen | $1.75      | $14         | [Verified]  |
-| Gemini 3.6 Flash      | cursor       | $1.5       | $7.5        | [Verified]  |
-| Gemini 3.6 Flash      | opencode-zen | $1.5       | $7.5        | [Verified]  |
-| Gemini 3.5 Flash      | cursor       | $1.5       | $9          | [Verified]  |
-| Gemini 3.5 Flash      | opencode-zen | $1.5       | $9          | [Verified]  |
-| Gemini 3.5 Flash Lite | opencode-zen | $0.3       | $2.5        | [Verified]  |
-| Grok 4.5              | cursor       | $2         | $6          | [Verified]  |
-| Grok 4.5              | opencode-go  | $10/mo sub | —           | —           |
-| Grok 4.5              | opencode-zen | $2         | $6          | [Verified]  |
-| grok-build-0.1        | opencode-zen | $1         | $2          | [Verified]  |
-| Cursor Composer 2.5   | cursor       | $0.5       | $2.5        | [Verified]  |
-| Cursor Composer 1     | cursor       | $1.25      | $10         | [Verified]  |
-| GLM 5.2               | cursor       | $1.4       | $4.4        | [Verified]  |
-| GLM 5.2               | opencode-go  | $10/mo sub | —           | —           |
-| GLM 5.2               | opencode-zen | $1.4       | $4.4        | [Verified]  |
-| GLM 5.1               | opencode-go  | $10/mo sub | —           | —           |
-| GLM 5.1               | opencode-zen | $1.4       | $4.4        | [Verified]  |
-| Kimi K3               | cursor       | $3         | $15         | [Verified]  |
-| Kimi K3               | opencode-go  | $10/mo sub | —           | —           |
-| Kimi K3               | opencode-zen | $3         | $15         | [Verified]  |
-| Kimi K2.7 Code        | cursor       | $0.95      | $4          | [Secondary] |
-| Kimi K2.7 Code        | opencode-go  | $10/mo sub | —           | —           |
-| Kimi K2.7 Code        | opencode-zen | $0.95      | $4          | [Secondary] |
-| Kimi K2.6             | opencode-go  | $10/mo sub | —           | —           |
-| Kimi K2.6             | opencode-zen | $0.95      | $4          | [Verified]  |
-| MiniMax M3            | opencode-go  | $10/mo sub | —           | —           |
-| MiniMax M3            | opencode-zen | $0.3       | $1.2        | [Verified]  |
-| MiniMax M2.7          | opencode-go  | $10/mo sub | —           | —           |
-| MiniMax M2.7          | opencode-zen | $0.3       | $1.2        | [Verified]  |
-| Qwen3.7 Max           | opencode-go  | $10/mo sub | —           | —           |
-| Qwen3.7 Max           | opencode-zen | $2.5       | $7.5        | [Verified]  |
-| Qwen3.7 Plus          | opencode-go  | $10/mo sub | —           | —           |
-| Qwen3.7 Plus          | opencode-zen | $0.4       | $1.6        | [Verified]  |
-| Qwen3.6 Plus          | opencode-go  | $10/mo sub | —           | —           |
-| Qwen3.6 Plus          | opencode-zen | $0.5       | $3          | [Verified]  |
-| DeepSeek V4 Pro       | opencode-go  | $10/mo sub | —           | —           |
-| DeepSeek V4 Pro       | opencode-zen | $1.74      | $3.48       | [Verified]  |
-| DeepSeek V4 Flash     | opencode-go  | $10/mo sub | —           | —           |
-| DeepSeek V4 Flash     | opencode-zen | $0.14      | $0.28       | [Verified]  |
-| MiMo v2.5             | opencode-go  | $10/mo sub | —           | —           |
-| MiMo v2.5 Pro         | opencode-go  | $10/mo sub | —           | —           |
+| Model                                   | Vendor      | Input  | Output | Blended | Listed by | Note                                                                                      |
+| --------------------------------------- | ----------- | ------ | ------ | ------- | --------- | ----------------------------------------------------------------------------------------- |
+| Claude Fable 5.1                        | Anthropic   | $10    | $50    | $20     | vendor    |                                                                                           |
+| Claude Fable 5                          | Anthropic   | $10    | $50    | $20     | vendor    |                                                                                           |
+| Claude Opus 5.5                         | Anthropic   | $4     | $20    | $8      | vendor    |                                                                                           |
+| Claude Opus 5                           | Anthropic   | $5     | $25    | $10     | vendor    |                                                                                           |
+| Claude Opus 4.8                         | Anthropic   | $5     | $25    | $10     | vendor    |                                                                                           |
+| Claude Sonnet 5.5                       | Anthropic   | $2     | $10    | $4      | vendor    |                                                                                           |
+| Claude Sonnet 5                         | Anthropic   | $2     | $10    | $4      | vendor    |                                                                                           |
+| Claude Sonnet 4.6                       | Anthropic   | $3     | $15    | $6      | vendor    |                                                                                           |
+| Claude Haiku 4.5                        | Anthropic   | $1     | $5     | $2      | vendor    |                                                                                           |
+| Claude Mythos 5.1                       | Anthropic   | $10    | $50    | $20     | vendor    | Invitation only (Project Glasswing).                                                      |
+| Claude Mythos 5                         | Anthropic   | $10    | $50    | $20     | vendor    | Invitation only (Project Glasswing).                                                      |
+| GPT-6 Astra                             | OpenAI      | $10    | $50    | $20     | vendor    | Prompts over 272K tokens: 2× input, 1.5× output.                                          |
+| GPT-6.1 Sol                             | OpenAI      | $2     | $10    | $4      | vendor    |                                                                                           |
+| GPT-6 Sol                               | OpenAI      | $2     | $10    | $4      | vendor    |                                                                                           |
+| GPT-5.6 Sol                             | OpenAI      | $4     | $20    | $8      | vendor    | Promotional price, held at least through 2026-11-21.                                      |
+| GPT-5.6 Terra                           | OpenAI      | $2     | $12    | $4.5    | vendor    |                                                                                           |
+| GPT-5.4 mini                            | OpenAI      | $0.75  | $4.5   | $1.688  | vendor    | The mini tier that Terra succeeds. Codex CLI only with an API key.                        |
+| GPT-6 Luna                              | OpenAI      | $0.1   | $0.5   | $0.2    | vendor    |                                                                                           |
+| GPT-5.6 Luna                            | OpenAI      | $0.2   | $1.2   | $0.45   | vendor    |                                                                                           |
+| GPT-5.4 nano                            | OpenAI      | $0.2   | $1.25  | $0.463  | vendor    | The nano tier that Luna succeeds.                                                         |
+| Gemini 4 Argon                          | Google      | —      | —      | —       | —         | Limited access; no public API price yet.                                                  |
+| Gemini 3.1 Pro (preview)                | Google      | $2     | $12    | $4.5    | vendor    | Prompts over 200K tokens: $4 / $18.                                                       |
+| Gemini 3.8 Flash                        | Google      | $0.75  | $3.75  | $1.5    | vendor    | Promotional through 2026-12-31; $1.50 / $7.50 from 2027-01-01.                            |
+| Gemini 3.7 Flash                        | Google      | $0.75  | $3.75  | $1.5    | vendor    | Promotional through 2026-12-31; $1.50 / $7.50 from 2027-01-01.                            |
+| Gemini 3.6 Flash                        | Google      | $0.75  | $3.75  | $1.5    | vendor    | Promotional through 2026-12-31; $1.50 / $7.50 from 2027-01-01.                            |
+| Gemini 3.5 Flash-Lite                   | Google      | $0.3   | $2.5   | $0.85   | vendor    |                                                                                           |
+| Gemini 3.1 Flash-Lite                   | Google      | $0.25  | $1.5   | $0.563  | vendor    | Shuts down 2027-05-07.                                                                    |
+| Grok 4.7                                | xAI         | $2     | $6     | $3      | vendor    | Prompts of 200K tokens or more: $4 / $12.                                                 |
+| Grok 4.6                                | xAI         | $2     | $6     | $3      | vendor    | Prompts of 200K tokens or more: $4 / $12.                                                 |
+| Grok 4.5                                | xAI         | $2     | $6     | $3      | vendor    | Prompts of 200K tokens or more: $4 / $12.                                                 |
+| Grok Build 0.1                          | xAI         | $1     | $2     | $1.25   | vendor    |                                                                                           |
+| GLM-5.3                                 | Z.ai        | $1.4   | $4.4   | $2.15   | vendor    |                                                                                           |
+| GLM-5.2                                 | Z.ai        | $1.4   | $4.4   | $2.15   | vendor    |                                                                                           |
+| GLM-5.1                                 | Z.ai        | $1.4   | $4.4   | $2.15   | vendor    |                                                                                           |
+| GLM-5.3 Flash                           | Z.ai        | $0.15  | $0.5   | $0.237  | vendor    |                                                                                           |
+| GLM-4.7-Flash                           | Z.ai        | $0     | $0     | $0      | vendor    | Free on the Z.ai API.                                                                     |
+| Kimi K3                                 | Moonshot AI | $3     | $15    | $6      | vendor    |                                                                                           |
+| Kimi K2.6                               | Moonshot AI | $0.95  | $4     | $1.712  | vendor    |                                                                                           |
+| Kimi K2.7 Code                          | Moonshot AI | $0.95  | $4     | $1.712  | vendor    |                                                                                           |
+| DeepSeek V4 Pro                         | DeepSeek    | $1.32  | $3.96  | $1.98   | vendor    | Peak-hour rate; off-peak is half.                                                         |
+| DeepSeek V4.1 Flash                     | DeepSeek    | $0.3   | $1.2   | $0.525  | vendor    | Peak-hour rate; off-peak is half.                                                         |
+| DeepSeek V4 Flash                       | DeepSeek    | $0.3   | $1.2   | $0.525  | opencode  | DeepSeek routes this name to V4.1 Flash; peak-hour rate.                                  |
+| DeepSeek V4 Flash Vision (experimental) | DeepSeek    | $0.3   | $1.2   | $0.525  | opencode  | Peak-hour rate; off-peak is half.                                                         |
+| Qwen3.8 Max                             | Alibaba     | $2     | $6     | $3      | vendor    |                                                                                           |
+| Qwen3.7 Max                             | Alibaba     | $2.5   | $7.5   | $3.75   | vendor    |                                                                                           |
+| Qwen3.6 Max (preview)                   | Alibaba     | $1.3   | $7.8   | $2.925  | vendor    | Prompts over 128K tokens: $2 / $12.                                                       |
+| Qwen3.8 Flash                           | Alibaba     | $0.15  | $0.47  | $0.23   | vendor    |                                                                                           |
+| Qwen3.7 Flash                           | Alibaba     | $0.1   | $0.4   | $0.175  | vendor    | Prompts of 32K–256K tokens; up to 32K: $0.03 / $0.13; over 256K: $0.20 / $0.80.           |
+| Qwen3.6 Flash                           | Alibaba     | $0.25  | $1.5   | $0.563  | vendor    | Prompts over 256K tokens: $1 / $4.                                                        |
+| Qwen3.7 Plus                            | Alibaba     | $0.4   | $1.6   | $0.7    | vendor    | Prompts over 256K tokens: $1.20 / $4.80.                                                  |
+| Qwen3.6 Plus                            | Alibaba     | $0.5   | $3     | $1.125  | vendor    | Prompts over 256K tokens: $2 / $6.                                                        |
+| Qwen3.5 Plus                            | Alibaba     | $0.4   | $2.4   | $0.9    | vendor    | Prompts over 256K tokens cost more.                                                       |
+| Muse Spark 1.3                          | Meta        | $1.25  | $4.25  | $2      | opencode  | OpenCode Go carries the cheaper Contributor tier, on which Meta may train on submissions. |
+| Muse Spark 1.2                          | Meta        | $1.25  | $4.25  | $2      | opencode  | OpenCode Go carries the cheaper Contributor tier, on which Meta may train on submissions. |
+| Muse Spark 1.1                          | Meta        | $1.25  | $4.25  | $2      | vendor    |                                                                                           |
+| MiniMax M3                              | MiniMax     | $0.3   | $1.2   | $0.525  | vendor    | Up to 512K tokens, after a vendor discount with no stated end date.                       |
+| MiniMax M2.7                            | MiniMax     | $0.3   | $1.2   | $0.525  | vendor    |                                                                                           |
+| MiniMax M2.5                            | MiniMax     | $0.3   | $1.2   | $0.525  | vendor    | Listed by MiniMax as a legacy model.                                                      |
+| MiMo V2.6 Pro                           | Xiaomi      | $0.435 | $0.87  | $0.544  | opencode  |                                                                                           |
+| MiMo V2.5 Pro                           | Xiaomi      | $0.435 | $0.87  | $0.544  | opencode  | Xiaomi takes this model offline on 2026-10-21.                                            |
+| MiMo V2.6 Flash                         | Xiaomi      | $0.14  | $0.28  | $0.175  | opencode  |                                                                                           |
+| MiMo V2.5                               | Xiaomi      | $0.14  | $0.28  | $0.175  | opencode  | Xiaomi takes this model offline on 2026-10-21.                                            |
+| Hy4 (preview)                           | Tencent     | $0.834 | $2.501 | $1.251  | opencode  |                                                                                           |
+| Hy3                                     | Tencent     | $0.14  | $0.58  | $0.25   | opencode  |                                                                                           |
+| LongCat 2.5 (preview)                   | Meituan     | —      | —      | —       | —         | Free on OpenCode for a limited time; no API price published.                              |
+| LongCat 2.0                             | Meituan     | $0.3   | $1.2   | $0.525  | opencode  | Promotional rate with no published end date.                                              |
 
 <!-- END GENERATED: pricing -->
 
-Notes: (a) GLM-5.1/5.2 show identical official rates on Z.ai's own pricing page — some aggregators list a lower third-party-hosted GLM-5.1 rate; that is reseller pricing, not Z.ai's. (b) MiniMax-M2.7/M3 show identical standard-tier rates on MiniMax's own pricing page — unusual for two model generations, worth a spot-check on next refresh. (c) DeepSeek V4 Pro's $1.74/$3.48 opencode-zen rate (above) — DeepSeek's live official page shows no expiry note, but a secondary source flags it as a promotional rate that may revert to a higher list price; re-verify before relying on it long-term. (d) Alibaba Cloud Model Studio prices by region; Singapore/International rates shown as the globally-reachable rate — China-mainland pricing is substantially lower. (Xiaomi MiMo has no metered row in this table — it is opencode-go subscription-only as of this snapshot, so the prior CNY→USD conversion note no longer applies.)
+Notes: (a) Alibaba Cloud Model Studio prices by region; Singapore/International rates are shown as the globally reachable rate. (b) DeepSeek prices by time of day; the peak rate is shown. (c) Xiaomi, Meta, Tencent, and Meituan publish no reachable API price page, so their rows use OpenCode's listed rate.
 
 ---
 
 ## Frontier/Big-Brand Model Reference (Informational Only — Not Available via `opencode-go`)
 
-Current Anthropic/OpenAI/Google/xAI flagship pricing and benchmarks (generated table snapshots 2026-07-28; per-model prose above was last hand-researched 2026-07-05), purely for
+Current Anthropic/OpenAI/Google/xAI pricing and independent benchmark results (generated — see the
+block caption for its date; per-model prose above was last hand-researched 2026-07-05). A few of these
+(GPT Luna, Grok) are also selectable on OpenCode Go, but they are listed here purely for
 cost/capability contrast — **none of these are, or will be, routed to by this repo's `convert_model()`
 or Pi's model pin** (see Decision 0, `upgrade-opencode-go-models` plan `tech-docs.md`: BYOM harnesses
 in this repo must not route to Anthropic, OpenAI, Google, or other frontier/big-brand providers).
 
 <!-- BEGIN GENERATED: frontier -->
 
-> Frontier/big-brand models in the dataset, snapshot 2026-07-28. Pricing shown is the vendor-native harness rate where one is recorded. Derived from `models.ts`.
+> Anthropic, OpenAI, Google, and xAI models, last updated 2026-10-01. Independent results only.
 
-| Provider  | Model                 | SWE-bench Verified    | SWE-bench Pro         | Terminal-Bench 2.1    | GPQA Diamond            | In $/1M | Out $/1M |
-| --------- | --------------------- | --------------------- | --------------------- | --------------------- | ----------------------- | ------- | -------- |
-| Anthropic | Claude Fable 5        | 95% [Self-reported]   | 80.3% [Self-reported] | 84.3% [Self-reported] | —                       | $10     | $50      |
-| Anthropic | Claude Opus 5         | 96% [Self-reported]   | —                     | —                     | 93.2–94.3% [Conflicted] | $5      | $25      |
-| Anthropic | Claude Opus 4.8       | 88.6% [Verified]      | 69.2% [Verified]      | —                     | —                       | $5      | $25      |
-| Anthropic | Claude Sonnet 5       | 85.2% [Self-reported] | 63.2% [Self-reported] | 80.4% [Self-reported] | —                       | $3      | $15      |
-| Anthropic | Claude Sonnet 4.6     | 79.6% [Secondary]     | —                     | —                     | 74.1–89.9% [Conflicted] | $3      | $15      |
-| Anthropic | Claude Haiku 4.5      | 73.3% [Verified]      | 39.5% [Secondary]     | —                     | 67.2–74.1% [Conflicted] | $1      | $5       |
-| OpenAI    | GPT-5.6 Sol           | —                     | —                     | 91.9% [Self-reported] | 94.1% [Secondary]       | $5      | $30      |
-| OpenAI    | GPT-5.6 Terra         | —                     | —                     | 87.4% [Self-reported] | —                       | $2.5    | $15      |
-| OpenAI    | GPT-5.6 Luna          | —                     | —                     | 84.7% [Self-reported] | —                       | $1      | $6       |
-| OpenAI    | GPT-5.5               | —                     | —                     | —                     | —                       | $5      | $30      |
-| OpenAI    | GPT-5.5 Pro           | —                     | —                     | —                     | —                       | —       | —        |
-| OpenAI    | GPT-5.4               | —                     | —                     | —                     | —                       | $2.5    | $15      |
-| OpenAI    | GPT-5.4 Mini          | —                     | —                     | —                     | —                       | $0.75   | $4.5     |
-| OpenAI    | GPT-5.4 Nano          | —                     | —                     | —                     | —                       | —       | —        |
-| OpenAI    | GPT-5.3 Codex Spark   | —                     | —                     | —                     | —                       | $1.75   | $14      |
-| Google    | Gemini 3.6 Flash      | —                     | —                     | 78% [Secondary]       | —                       | $1.5    | $7.5     |
-| Google    | Gemini 3.5 Flash      | —                     | —                     | —                     | —                       | $1.5    | $9       |
-| Google    | Gemini 3.5 Flash Lite | —                     | —                     | —                     | —                       | —       | —        |
-| Google    | Gemini 3.1 Pro        | 80.6% [Self-reported] | —                     | —                     | 94.1–94.3% [Conflicted] | —       | —        |
-| Google    | Gemini 3 Flash        | 76.2–78% [Conflicted] | —                     | —                     | —                       | —       | —        |
+| Vendor    | Model                    | Access  | DeepSWE 1.1        | Terminal-Bench 4.0   | SWE-Atlas QnA  | Index | Tier         | Input | Output |
+| --------- | ------------------------ | ------- | ------------------ | -------------------- | -------------- | ----- | ------------ | ----- | ------ |
+| Anthropic | Claude Fable 5.1         | general | 64.31% (AA)        | 57.58% (AA)          | 64.78% (AA)    | 62.22 | ultra        | $10   | $50    |
+| Anthropic | Claude Fable 5           | general | 69.91% (Datacurve) | 44.55% (TB official) | 39.00% (Scale) | 51.15 | execution    | $10   | $50    |
+| Anthropic | Claude Opus 5.5          | general | 68.44% (AA)        | 63.13% (AA)          | 66.40% (AA)    | 65.99 | ultra        | $4    | $20    |
+| Anthropic | Claude Opus 5            | general | 62.54% (AA)        | 54.55% (AA)          | 62.10% (AA)    | 59.73 | ultra        | $5    | $25    |
+| Anthropic | Claude Opus 4.8          | general | 58.97% (Datacurve) | 23.64% (TB official) | 57.26% (Scale) | 46.62 | execution    | $5    | $25    |
+| Anthropic | Claude Sonnet 5.5        | general | 71.98% (AA)        | 66.16% (AA)          | 66.94% (AA)    | 68.36 | ultra        | $2    | $10    |
+| Anthropic | Claude Sonnet 5          | general | 53.85% (Datacurve) | 12.42% (TB official) | —              | 33.13 | fast         | $2    | $10    |
+| Anthropic | Claude Sonnet 4.6        | general | 29.93% (Datacurve) | —                    | 31.20% (Scale) | 30.56 | fast         | $3    | $15    |
+| Anthropic | Claude Haiku 4.5         | general | —                  | —                    | —              | —     | insufficient | $1    | $5     |
+| Anthropic | Claude Mythos 5.1        | limited | —                  | —                    | —              | —     | insufficient | $10   | $50    |
+| Anthropic | Claude Mythos 5          | limited | —                  | —                    | —              | —     | insufficient | $10   | $50    |
+| OpenAI    | GPT-6 Astra              | limited | 67.55% (AA)        | 55.56% (AA)          | 61.83% (AA)    | 61.65 | ultra        | $10   | $50    |
+| OpenAI    | GPT-6.1 Sol              | general | 73.16% (AA)        | 54.55% (AA)          | 61.02% (AA)    | 62.91 | ultra        | $2    | $10    |
+| OpenAI    | GPT-6 Sol                | general | 69.03% (AA)        | 43.43% (AA)          | 57.53% (AA)    | 56.66 | planning     | $2    | $10    |
+| OpenAI    | GPT-5.6 Sol              | general | 72.27% (AA)        | 37.37% (AA)          | 54.03% (AA)    | 54.56 | planning     | $4    | $20    |
+| OpenAI    | GPT-5.6 Terra            | general | 69.62% (Datacurve) | 21.52% (TB official) | —              | 45.57 | execution    | $2    | $12    |
+| OpenAI    | GPT-5.4 mini             | general | —                  | 2.52% (Vals)         | —              | —     | insufficient | $0.75 | $4.5   |
+| OpenAI    | GPT-6 Luna               | general | 63.72% (AA)        | 15.15% (AA)          | 44.35% (AA)    | 41.07 | fast         | $0.1  | $0.5   |
+| OpenAI    | GPT-5.6 Luna             | general | 66.37% (AA)        | 14.65% (AA)          | 48.66% (AA)    | 43.23 | fast         | $0.2  | $1.2   |
+| OpenAI    | GPT-5.4 nano             | general | —                  | —                    | —              | —     | insufficient | $0.2  | $1.25  |
+| Google    | Gemini 4 Argon           | limited | 78.76% (AA)        | 56.06% (AA)          | 56.45% (AA)    | 63.76 | ultra        | —     | —      |
+| Google    | Gemini 3.1 Pro (preview) | general | 11.73% (Datacurve) | 2.52% (Vals)         | 13.50% (Scale) | 9.25  | fast         | $2    | $12    |
+| Google    | Gemini 3.8 Flash         | general | 65.78% (AA)        | 14.65% (AA)          | 45.16% (AA)    | 41.86 | fast         | $0.75 | $3.75  |
+| Google    | Gemini 3.7 Flash         | general | 65.49% (Datacurve) | 11.21% (TB official) | —              | 38.35 | fast         | $0.75 | $3.75  |
+| Google    | Gemini 3.6 Flash         | general | 46.68% (Datacurve) | —                    | —              | —     | insufficient | $0.75 | $3.75  |
+| Google    | Gemini 3.5 Flash-Lite    | general | —                  | —                    | —              | —     | insufficient | $0.3  | $2.5   |
+| Google    | Gemini 3.1 Flash-Lite    | general | —                  | —                    | —              | —     | insufficient | $0.25 | $1.5   |
+| xAI       | Grok 4.7                 | general | 72.57% (AA)        | 33.33% (AA)          | 62.90% (AA)    | 56.27 | planning     | $2    | $6     |
+| xAI       | Grok 4.6                 | general | 64.90% (AA)        | 17.68% (AA)          | 58.33% (AA)    | 46.97 | execution    | $2    | $6     |
+| xAI       | Grok 4.5                 | general | 53.76% (Datacurve) | 12.42% (TB official) | —              | 33.09 | fast         | $2    | $6     |
+| xAI       | Grok Build 0.1           | general | —                  | —                    | —              | —     | insufficient | $1    | $2     |
 
 <!-- END GENERATED: frontier -->
 
-Notes: (a) introductory rate through 2026-08-31, then standard rate. (b) third-party transcription of an image-embedded table on Anthropic's own announcement page — treat as directionally correct, not exact. (c) quoted consistently across independent outlets citing OpenAI's own announcement; the primary page returned HTTP 403 on every direct fetch attempt. (d) OpenAI has publicly stopped reporting SWE-bench Verified for current-generation models (training-data contamination/reward-hacking concerns); recommends SWE-bench Pro instead. Last officially-reported Verified figure was GPT-5.2 Thinking at 80% (2026-12-11), two generations behind current. (e) Scale AI's independent SWE-bench Pro leaderboard, xHigh reasoning setting — not vendor-self-reported. (f) a 78% figure circulates across secondary sources for Gemini 3 Flash but could not be confirmed on Google's own model card.
-
-**Not shown**: Gemini 3.5 Pro (still limited enterprise preview, not GA/priced as of 2026-07-05).
-Claude Mythos 5 (gated to Project Glasswing, not generally accessible).
+Notes: `limited` access = invitation-only or staged rollout (Claude Mythos 5.1, GPT-6 Astra, Gemini 4
+Argon). Each figure names its operator: AA = Artificial Analysis, Datacurve, TB official = the
+Terminal-Bench board, Vals = Vals AI, Scale = Scale AI.
 
 ---
 
@@ -849,54 +881,81 @@ Claude Mythos 5 (gated to Project Glasswing, not generally accessible).
 
 <!-- BEGIN GENERATED: capability-summary -->
 
-> Composite-benchmark figures for every model in the dataset, snapshot 2026-07-28. Conflicted figures show their published LOW–HIGH range; the LOW enters the composite (DD-6). Derived from `models.ts`.
+> Independent composite-benchmark results for every model, last updated 2026-10-01. Index = equal-weight mean of the scored benchmarks (at least two); tier = highest tier whose anchor's index the model's index matches or beats. Cost per task from Artificial Analysis.
 
-| Model                 | Provider  | SWE-bench Verified    | SWE-bench Pro         | Terminal-Bench 2.1    | GPQA Diamond            |
-| --------------------- | --------- | --------------------- | --------------------- | --------------------- | ----------------------- |
-| Claude Fable 5        | Anthropic | 95% [Self-reported]   | 80.3% [Self-reported] | 84.3% [Self-reported] | —                       |
-| Claude Opus 5         | Anthropic | 96% [Self-reported]   | —                     | —                     | 93.2–94.3% [Conflicted] |
-| Claude Opus 4.8       | Anthropic | 88.6% [Verified]      | 69.2% [Verified]      | —                     | —                       |
-| Claude Sonnet 5       | Anthropic | 85.2% [Self-reported] | 63.2% [Self-reported] | 80.4% [Self-reported] | —                       |
-| Claude Sonnet 4.6     | Anthropic | 79.6% [Secondary]     | —                     | —                     | 74.1–89.9% [Conflicted] |
-| Claude Haiku 4.5      | Anthropic | 73.3% [Verified]      | 39.5% [Secondary]     | —                     | 67.2–74.1% [Conflicted] |
-| GPT-5.6 Sol           | OpenAI    | —                     | —                     | 91.9% [Self-reported] | 94.1% [Secondary]       |
-| GPT-5.6 Terra         | OpenAI    | —                     | —                     | 87.4% [Self-reported] | —                       |
-| GPT-5.6 Luna          | OpenAI    | —                     | —                     | 84.7% [Self-reported] | —                       |
-| GPT-5.5               | OpenAI    | —                     | —                     | —                     | —                       |
-| GPT-5.5 Pro           | OpenAI    | —                     | —                     | —                     | —                       |
-| GPT-5.4               | OpenAI    | —                     | —                     | —                     | —                       |
-| GPT-5.4 Mini          | OpenAI    | —                     | —                     | —                     | —                       |
-| GPT-5.4 Nano          | OpenAI    | —                     | —                     | —                     | —                       |
-| GPT-5.3 Codex Spark   | OpenAI    | —                     | —                     | —                     | —                       |
-| Gemini 3.6 Flash      | Google    | —                     | —                     | 78% [Secondary]       | —                       |
-| Gemini 3.5 Flash      | Google    | —                     | —                     | —                     | —                       |
-| Gemini 3.5 Flash Lite | Google    | —                     | —                     | —                     | —                       |
-| Gemini 3.1 Pro        | Google    | 80.6% [Self-reported] | —                     | —                     | 94.1–94.3% [Conflicted] |
-| Gemini 3 Flash        | Google    | 76.2–78% [Conflicted] | —                     | —                     | —                       |
-| Grok 4.5              | xAI       | —                     | 64.7% [Self-reported] | 83.3% [Self-reported] | —                       |
-| grok-build-0.1        | xAI       | —                     | —                     | —                     | —                       |
-| Cursor Composer 2.5   | Cursor    | —                     | —                     | —                     | —                       |
-| Cursor Composer 1     | Cursor    | —                     | —                     | —                     | —                       |
-| GLM 5.2               | Z.ai      | —                     | 62.1% [Secondary]     | 81–82.7% [Conflicted] | 91.2% [Secondary]       |
-| GLM 5.1               | Z.ai      | —                     | —                     | —                     | —                       |
-| Kimi K3               | Moonshot  | 76.8% [Secondary]     | —                     | 88.3% [Secondary]     | 93.5% [Secondary]       |
-| Kimi K2.7 Code        | Moonshot  | —                     | —                     | —                     | —                       |
-| Kimi K2.6             | Moonshot  | 80.2% [Secondary]     | 58.6% [Secondary]     | —                     | —                       |
-| MiniMax M3            | MiniMax   | 80.5% [Secondary]     | 59% [Secondary]       | 66% [Secondary]       | —                       |
-| MiniMax M2.7          | MiniMax   | —                     | —                     | —                     | —                       |
-| Qwen3.7 Max           | Alibaba   | 80.4% [Secondary]     | —                     | —                     | —                       |
-| Qwen3.7 Plus          | Alibaba   | —                     | —                     | —                     | —                       |
-| Qwen3.6 Plus          | Alibaba   | —                     | —                     | —                     | —                       |
-| DeepSeek V4 Pro       | DeepSeek  | 80.6% [Secondary]     | —                     | —                     | 90.1% [Secondary]       |
-| DeepSeek V4 Flash     | DeepSeek  | 79% [Secondary]       | —                     | —                     | —                       |
-| MiMo v2.5             | Xiaomi    | —                     | —                     | —                     | —                       |
-| MiMo v2.5 Pro         | Xiaomi    | —                     | —                     | —                     | —                       |
+| Model                                   | Vendor      | DeepSWE 1.1        | Terminal-Bench 4.0   | SWE-Atlas QnA  | Index | Tier         | Cost/task |
+| --------------------------------------- | ----------- | ------------------ | -------------------- | -------------- | ----- | ------------ | --------- |
+| Claude Fable 5.1                        | Anthropic   | 64.31% (AA)        | 57.58% (AA)          | 64.78% (AA)    | 62.22 | ultra        | $12.39    |
+| Claude Fable 5                          | Anthropic   | 69.91% (Datacurve) | 44.55% (TB official) | 39.00% (Scale) | 51.15 | execution    | —         |
+| Claude Opus 5.5                         | Anthropic   | 68.44% (AA)        | 63.13% (AA)          | 66.40% (AA)    | 65.99 | ultra        | $13.04    |
+| Claude Opus 5                           | Anthropic   | 62.54% (AA)        | 54.55% (AA)          | 62.10% (AA)    | 59.73 | ultra        | $10.79    |
+| Claude Opus 4.8                         | Anthropic   | 58.97% (Datacurve) | 23.64% (TB official) | 57.26% (Scale) | 46.62 | execution    | —         |
+| Claude Sonnet 5.5                       | Anthropic   | 71.98% (AA)        | 66.16% (AA)          | 66.94% (AA)    | 68.36 | ultra        | $14.19    |
+| Claude Sonnet 5                         | Anthropic   | 53.85% (Datacurve) | 12.42% (TB official) | —              | 33.13 | fast         | —         |
+| Claude Sonnet 4.6                       | Anthropic   | 29.93% (Datacurve) | —                    | 31.20% (Scale) | 30.56 | fast         | —         |
+| Claude Haiku 4.5                        | Anthropic   | —                  | —                    | —              | —     | insufficient | —         |
+| Claude Mythos 5.1                       | Anthropic   | —                  | —                    | —              | —     | insufficient | —         |
+| Claude Mythos 5                         | Anthropic   | —                  | —                    | —              | —     | insufficient | —         |
+| GPT-6 Astra                             | OpenAI      | 67.55% (AA)        | 55.56% (AA)          | 61.83% (AA)    | 61.65 | ultra        | $7.47     |
+| GPT-6.1 Sol                             | OpenAI      | 73.16% (AA)        | 54.55% (AA)          | 61.02% (AA)    | 62.91 | ultra        | $1.04     |
+| GPT-6 Sol                               | OpenAI      | 69.03% (AA)        | 43.43% (AA)          | 57.53% (AA)    | 56.66 | planning     | $2.99     |
+| GPT-5.6 Sol                             | OpenAI      | 72.27% (AA)        | 37.37% (AA)          | 54.03% (AA)    | 54.56 | planning     | $6.35     |
+| GPT-5.6 Terra                           | OpenAI      | 69.62% (Datacurve) | 21.52% (TB official) | —              | 45.57 | execution    | —         |
+| GPT-5.4 mini                            | OpenAI      | —                  | 2.52% (Vals)         | —              | —     | insufficient | —         |
+| GPT-6 Luna                              | OpenAI      | 63.72% (AA)        | 15.15% (AA)          | 44.35% (AA)    | 41.07 | fast         | $0.18     |
+| GPT-5.6 Luna                            | OpenAI      | 66.37% (AA)        | 14.65% (AA)          | 48.66% (AA)    | 43.23 | fast         | $0.44     |
+| GPT-5.4 nano                            | OpenAI      | —                  | —                    | —              | —     | insufficient | —         |
+| Gemini 4 Argon                          | Google      | 78.76% (AA)        | 56.06% (AA)          | 56.45% (AA)    | 63.76 | ultra        | $5.84     |
+| Gemini 3.1 Pro (preview)                | Google      | 11.73% (Datacurve) | 2.52% (Vals)         | 13.50% (Scale) | 9.25  | fast         | —         |
+| Gemini 3.8 Flash                        | Google      | 65.78% (AA)        | 14.65% (AA)          | 45.16% (AA)    | 41.86 | fast         | $2.47     |
+| Gemini 3.7 Flash                        | Google      | 65.49% (Datacurve) | 11.21% (TB official) | —              | 38.35 | fast         | —         |
+| Gemini 3.6 Flash                        | Google      | 46.68% (Datacurve) | —                    | —              | —     | insufficient | —         |
+| Gemini 3.5 Flash-Lite                   | Google      | —                  | —                    | —              | —     | insufficient | —         |
+| Gemini 3.1 Flash-Lite                   | Google      | —                  | —                    | —              | —     | insufficient | —         |
+| Grok 4.7                                | xAI         | 72.57% (AA)        | 33.33% (AA)          | 62.90% (AA)    | 56.27 | planning     | $8.82     |
+| Grok 4.6                                | xAI         | 64.90% (AA)        | 17.68% (AA)          | 58.33% (AA)    | 46.97 | execution    | $3.57     |
+| Grok 4.5                                | xAI         | 53.76% (Datacurve) | 12.42% (TB official) | —              | 33.09 | fast         | —         |
+| Grok Build 0.1                          | xAI         | —                  | —                    | —              | —     | insufficient | —         |
+| GLM-5.3                                 | Z.ai        | 61.36% (AA)        | 39.90% (AA)          | 59.41% (AA)    | 53.56 | execution    | $4.24     |
+| GLM-5.2                                 | Z.ai        | 43.78% (Datacurve) | —                    | 48.12% (Scale) | 45.95 | execution    | —         |
+| GLM-5.1                                 | Z.ai        | —                  | 2.00% (AA)           | —              | —     | insufficient | —         |
+| GLM-5.3 Flash                           | Z.ai        | 63.39% (Datacurve) | 32.80% (AA)          | —              | 48.09 | execution    | —         |
+| GLM-4.7-Flash                           | Z.ai        | —                  | —                    | —              | —     | insufficient | —         |
+| Kimi K3                                 | Moonshot AI | 68.44% (AA)        | 21.21% (AA)          | 66.13% (AA)    | 51.93 | execution    | $5.05     |
+| Kimi K2.6                               | Moonshot AI | —                  | —                    | —              | —     | insufficient | —         |
+| Kimi K2.7 Code                          | Moonshot AI | 30.53% (Datacurve) | —                    | —              | —     | insufficient | —         |
+| DeepSeek V4 Pro                         | DeepSeek    | 57.23% (AA)        | 10.10% (AA)          | 61.83% (AA)    | 43.05 | fast         | $0.24     |
+| DeepSeek V4.1 Flash                     | DeepSeek    | —                  | 26.80% (AA)          | —              | —     | insufficient | —         |
+| DeepSeek V4 Flash                       | DeepSeek    | 54.28% (AA)        | 10.61% (AA)          | 51.34% (AA)    | 38.74 | fast         | $0.09     |
+| DeepSeek V4 Flash Vision (experimental) | DeepSeek    | —                  | —                    | —              | —     | insufficient | —         |
+| Qwen3.8 Max                             | Alibaba     | 51.03% (AA)        | 16.67% (AA)          | 62.10% (AA)    | 43.27 | fast         | $3.48     |
+| Qwen3.7 Max                             | Alibaba     | —                  | 2.00% (AA)           | —              | —     | insufficient | —         |
+| Qwen3.6 Max (preview)                   | Alibaba     | —                  | —                    | —              | —     | insufficient | —         |
+| Qwen3.8 Flash                           | Alibaba     | —                  | —                    | —              | —     | insufficient | —         |
+| Qwen3.7 Flash                           | Alibaba     | —                  | —                    | —              | —     | insufficient | —         |
+| Qwen3.6 Flash                           | Alibaba     | —                  | —                    | —              | —     | insufficient | —         |
+| Qwen3.7 Plus                            | Alibaba     | —                  | —                    | —              | —     | insufficient | —         |
+| Qwen3.6 Plus                            | Alibaba     | —                  | —                    | —              | —     | insufficient | —         |
+| Qwen3.5 Plus                            | Alibaba     | —                  | —                    | —              | —     | insufficient | —         |
+| Muse Spark 1.3                          | Meta        | 71.68% (AA)        | 31.82% (AA)          | 59.41% (AA)    | 54.30 | execution    | $3.98     |
+| Muse Spark 1.2                          | Meta        | 54.87% (Datacurve) | 6.06% (Vals)         | —              | 30.46 | fast         | —         |
+| Muse Spark 1.1                          | Meta        | 53.32% (Datacurve) | 6.00% (AA)           | 42.20% (Scale) | 33.84 | fast         | —         |
+| MiniMax M3                              | MiniMax     | —                  | 2.00% (AA)           | —              | —     | insufficient | —         |
+| MiniMax M2.7                            | MiniMax     | —                  | —                    | —              | —     | insufficient | —         |
+| MiniMax M2.5                            | MiniMax     | —                  | —                    | 10.30% (Scale) | —     | insufficient | —         |
+| MiMo V2.6 Pro                           | Xiaomi      | —                  | 34.80% (AA)          | —              | —     | insufficient | —         |
+| MiMo V2.5 Pro                           | Xiaomi      | —                  | 0.51% (Vals)         | —              | —     | insufficient | —         |
+| MiMo V2.6 Flash                         | Xiaomi      | —                  | 24.24% (Vals)        | —              | —     | insufficient | —         |
+| MiMo V2.5                               | Xiaomi      | —                  | —                    | —              | —     | insufficient | —         |
+| Hy4 (preview)                           | Tencent     | —                  | 8.08% (Vals)         | —              | —     | insufficient | —         |
+| Hy3                                     | Tencent     | —                  | —                    | —              | —     | insufficient | —         |
+| LongCat 2.5 (preview)                   | Meituan     | —                  | —                    | —              | —     | insufficient | —         |
+| LongCat 2.0                             | Meituan     | —                  | —                    | —              | —     | insufficient | —         |
 
 <!-- END GENERATED: capability-summary -->
 
-(a) vs. older Opus 4.6, not Opus 4.8 — generation mismatch flagged in the original source.
-
-Retired since the 2026-05-07 refresh — no longer in the live roster (13 models at the 2026-07-05 refresh; 15 as of the 2026-07-28 snapshot — see the roster table above): unsuffixed GLM-5, Kimi K2.5, MiniMax M2.5, Qwen3.5 Plus.
+Dropped from OpenCode Go between the 2026-07-28 and 2026-10-01 refreshes: Grok 4.5, GLM-5.1, Qwen3.7 Max,
+Qwen3.6 Plus. Space Bunny Free is on OpenCode Go but excluded here: it names no vendor.
 
 ---
 

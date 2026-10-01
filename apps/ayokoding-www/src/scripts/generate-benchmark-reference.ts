@@ -1,7 +1,8 @@
-// DD-18 — generates the DATA TABLES of docs/reference/ai-model-benchmarks.md from the single source
-// of truth at apps/ayokoding-www/src/features/ai-benchmark/core/data/models.ts. Hand-written prose
-// (benchmark definitions, tier rationale, caveats) is preserved verbatim: only the text between
-// `<!-- BEGIN GENERATED: <name> -->` / `<!-- END GENERATED: <name> -->` marker pairs is rewritten.
+// Generates the DATA TABLES of docs/reference/ai-model-benchmarks.md from the single source of truth
+// at apps/ayokoding-www/src/features/ai-benchmark/core/data/models.ts, scored with the same core the
+// page uses. Hand-written prose (benchmark definitions, tier rationale, caveats) is preserved
+// verbatim: only the text between `<!-- BEGIN GENERATED: <name> -->` /
+// `<!-- END GENERATED: <name> -->` marker pairs is rewritten.
 //
 // Marker-first guard: the generator locates a BEGIN/END pair BEFORE substituting and throws loudly
 // when one is missing. It NEVER falls back to inserting at an anchor — an insert-style substitution
@@ -18,54 +19,40 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  dataset,
-  isConflictedFigure,
-  type BenchmarkId,
-  type Dataset,
-  type EvidenceGrade,
-  type HarnessId,
-  type Model,
-} from "../features/ai-benchmark/core/data/models";
+import { BENCHMARK_SPECS, FRONTIER_VENDORS } from "../features/ai-benchmark/core/data/benchmarks";
+import { dataset } from "../features/ai-benchmark/core/data/models";
+import type { BenchmarkId, Dataset, Model, OperatorId } from "../features/ai-benchmark/core/data/types";
+import { blendedPrice } from "../features/ai-benchmark/core/price";
+import { scoredFigure } from "../features/ai-benchmark/core/score";
+import { scoreModels, type ScoredModel } from "../features/ai-benchmark/core/tiers";
 
 /** A generated block's inner content, keyed by marker name. */
 export type GeneratedTables = Record<string, string>;
 
-// ─── Evidence-grade presentation ──────────────────────────────────────────────
-
-const GRADE_LABEL: Record<EvidenceGrade, string> = {
-  verified: "[Verified]",
-  "self-reported": "[Self-reported]",
-  secondary: "[Secondary]",
-  conflicted: "[Conflicted]",
-  unavailable: "[Unavailable]",
+/** Short operator labels used in table cells. */
+const OPERATOR_LABEL: Record<OperatorId, string> = {
+  "artificial-analysis": "AA",
+  datacurve: "Datacurve",
+  "terminal-bench": "TB official",
+  vals: "Vals",
+  scale: "Scale",
 };
-
-/** The four composite benchmarks (DD-5), in display order. */
-const BENCHMARK_ORDER: BenchmarkId[] = ["swe-bench-verified", "swe-bench-pro", "terminal-bench-2-1", "gpqa-diamond"];
-
-/** Canonical harness display order for the per-harness pricing table. */
-const HARNESS_ORDER: HarnessId[] = ["claude-code", "codex-cli", "cursor", "opencode-go", "opencode-zen"];
 
 // ─── Pure table-rendering helpers ─────────────────────────────────────────────
 
-/**
- * Render a single benchmark cell for a model. Returns `—` when the model has no figure for that
- * benchmark; for a conflicted figure, shows the published LOW–HIGH range (the LOW enters the
- * composite, per DD-6); otherwise shows `value% [Grade]`.
- */
+/** `value% (operator)` for the model's scored figure, or `—` when it has none. */
 function figureCell(model: Model, benchmark: BenchmarkId): string {
-  const fig = model.figures.find((f) => f.benchmark === benchmark);
-  if (!fig) return "—";
-  if (isConflictedFigure(fig)) {
-    return `${fig.low}–${fig.high}% ${GRADE_LABEL.conflicted}`;
-  }
-  return `${fig.value}% ${GRADE_LABEL[fig.grade]}`;
+  const f = scoredFigure(model, benchmark);
+  return f === undefined ? "—" : `${f.value.toFixed(2)}% (${OPERATOR_LABEL[f.operator]})`;
 }
 
-/** Format a USD-per-1M-tokens rate with no trailing-zero noise (e.g. 5 → "$5", 0.435 → "$0.435"). */
-function money(n: number): string {
-  return Number.isInteger(n) ? `$${n}` : `$${n.toString()}`;
+/** USD with no trailing-zero noise (5 → "$5", 0.435 → "$0.435"); `—` when absent. */
+function money(n: number | undefined): string {
+  return n === undefined ? "—" : `$${Number(n.toFixed(3)).toString()}`;
+}
+
+function indexCell(s: ScoredModel): string {
+  return s.index === undefined ? "—" : s.index.toFixed(2);
 }
 
 /**
@@ -83,111 +70,81 @@ function formatTable(header: string[], rows: string[][]): string {
   return [padRow(header), separator, ...rows.map(padRow)].join("\n");
 }
 
-/** Wrap a block body in the standard leading/trailing blank lines that separate it from its markers. */
-function block(body: string): string {
-  return `\n\n${body}\n\n`;
+/** A caption and a table, wrapped in the blank lines that separate a block from its markers. */
+function block(caption: string, table: string): string {
+  return `\n\n${caption}\n\n${table}\n\n`;
 }
 
-function renderRoster(ds: Dataset): string {
-  const goModels = ds.models.filter((m) => m.harnesses.includes("opencode-go"));
-  const rows = goModels.map((m) => {
-    const others = m.harnesses.filter((h) => h !== "opencode-go").join(", ") || "—";
-    return [`opencode-go/${m.id}`, m.name, m.vendor, others, figureCell(m, "swe-bench-pro")];
-  });
-  const table = formatTable(["Model ID", "Display Name", "Provider", "Other Harnesses", "SWE-bench Pro"], rows);
+const BENCHMARK_HEADERS = BENCHMARK_SPECS.map((b) => `${b.name} ${b.version}`);
+
+function renderRoster(ds: Dataset, scored: ScoredModel[]): string {
+  const rows = scored
+    .filter((s) => s.model.harnesses.includes("opencode-go"))
+    .map((s) => [
+      s.model.id,
+      s.model.name,
+      s.model.vendor,
+      s.tier,
+      indexCell(s),
+      s.model.harnesses.filter((h) => h !== "opencode-go").join(", ") || "—",
+    ]);
   const caption =
-    `> Snapshot ${ds.snapshotDate} — ${goModels.length} models selectable via the ` +
-    "`opencode-go/`" +
-    ` flat-rate subscription. Derived from ` +
-    "`apps/ayokoding-www/src/features/ai-benchmark/core/data/models.ts`.";
-  return block(`${caption}\n\n${table}`);
+    `> Last updated ${ds.lastUpdated} — ${rows.length} OpenCode Go models with an identified vendor. ` +
+    "Muse Spark is listed on OpenCode Go under its `-contributor` id. " +
+    "Derived from `apps/ayokoding-www/src/features/ai-benchmark/core/data/models.ts`.";
+  return block(caption, formatTable(["Model ID", "Name", "Vendor", "Tier", "Index", "Other harnesses"], rows));
 }
 
 function renderPricing(ds: Dataset): string {
-  const rows: string[][] = [];
-  for (const m of ds.models) {
-    for (const h of HARNESS_ORDER) {
-      const price = m.pricing[h];
-      if (!price) continue;
-      if (price.kind === "metered") {
-        rows.push([m.name, h, money(price.input), money(price.output), GRADE_LABEL[price.grade]]);
-      } else {
-        rows.push([m.name, h, `$${price.planCostUsd}/mo sub`, "—", "—"]);
-      }
-    }
-  }
-  const table = formatTable(["Model", "Harness", "Input $/1M", "Output $/1M", "Grade"], rows);
+  const rows = ds.models.map((m) => [
+    m.name,
+    m.vendor,
+    money(m.price?.input),
+    money(m.price?.output),
+    money(blendedPrice(m.price)),
+    m.price?.listedBy ?? "—",
+    m.price?.note ?? m.note ?? "",
+  ]);
   const caption =
-    `> Per-harness standard-tier rates, snapshot ${ds.snapshotDate}. Metered prices are USD per 1M ` +
-    "tokens; `opencode-go` rows are the flat-rate subscription. Derived from `models.ts`.";
-  return block(`${caption}\n\n${table}`);
+    `> Standard API prices, USD per 1M tokens, last updated ${ds.lastUpdated}. Blended = (3 × input + ` +
+    "output) ÷ 4. `opencode` = the rate OpenCode lists, used only where the vendor publishes no reachable price page.";
+  return block(caption, formatTable(["Model", "Vendor", "Input", "Output", "Blended", "Listed by", "Note"], rows));
 }
 
-function renderFrontier(ds: Dataset): string {
-  const bigBrands = new Set(["Anthropic", "OpenAI", "Google"]);
-  const preferredHarness: Record<string, HarnessId> = {
-    Anthropic: "claude-code",
-    OpenAI: "codex-cli",
-    Google: "cursor",
-  };
-  const header = [
-    "Provider",
-    "Model",
-    ...BENCHMARK_ORDER.map((b) =>
-      b === "swe-bench-verified"
-        ? "SWE-bench Verified"
-        : b === "swe-bench-pro"
-          ? "SWE-bench Pro"
-          : b === "terminal-bench-2-1"
-            ? "Terminal-Bench 2.1"
-            : "GPQA Diamond",
-    ),
-    "In $/1M",
-    "Out $/1M",
-  ];
-  const rows = ds.models
-    .filter((m) => bigBrands.has(m.vendor))
-    .map((m) => {
-      const harness: HarnessId = preferredHarness[m.vendor] ?? m.harnesses[0] ?? "opencode-zen";
-      const price = m.pricing[harness];
-      let inCell = "—";
-      let outCell = "—";
-      if (price && price.kind === "metered") {
-        inCell = money(price.input);
-        outCell = money(price.output);
-      } else if (price && price.kind === "subscription") {
-        inCell = `$${price.planCostUsd}/mo sub`;
-      }
-      return [m.vendor, m.name, ...BENCHMARK_ORDER.map((b) => figureCell(m, b)), inCell, outCell];
-    });
-  const table = formatTable(header, rows);
-  const caption =
-    `> Frontier/big-brand models in the dataset, snapshot ${ds.snapshotDate}. Pricing shown is the ` +
-    "vendor-native harness rate where one is recorded. Derived from `models.ts`.";
-  return block(`${caption}\n\n${table}`);
+function renderFrontier(ds: Dataset, scored: ScoredModel[]): string {
+  const rows = scored
+    .filter((s) => FRONTIER_VENDORS.includes(s.model.vendor))
+    .map((s) => [
+      s.model.vendor,
+      s.model.name,
+      s.model.access,
+      ...BENCHMARK_SPECS.map((b) => figureCell(s.model, b.id)),
+      indexCell(s),
+      s.tier,
+      money(s.model.price?.input),
+      money(s.model.price?.output),
+    ]);
+  const caption = `> Anthropic, OpenAI, Google, and xAI models, last updated ${ds.lastUpdated}. Independent results only.`;
+  return block(
+    caption,
+    formatTable(["Vendor", "Model", "Access", ...BENCHMARK_HEADERS, "Index", "Tier", "Input", "Output"], rows),
+  );
 }
 
-function renderCapabilitySummary(ds: Dataset): string {
-  const header = [
-    "Model",
-    "Provider",
-    ...BENCHMARK_ORDER.map((b) =>
-      b === "swe-bench-verified"
-        ? "SWE-bench Verified"
-        : b === "swe-bench-pro"
-          ? "SWE-bench Pro"
-          : b === "terminal-bench-2-1"
-            ? "Terminal-Bench 2.1"
-            : "GPQA Diamond",
-    ),
-  ];
-  const rows = ds.models.map((m) => [m.name, m.vendor, ...BENCHMARK_ORDER.map((b) => figureCell(m, b))]);
-  const table = formatTable(header, rows);
+function renderCapabilitySummary(ds: Dataset, scored: ScoredModel[]): string {
+  const rows = scored.map((s) => [
+    s.model.name,
+    s.model.vendor,
+    ...BENCHMARK_SPECS.map((b) => figureCell(s.model, b.id)),
+    indexCell(s),
+    s.tier,
+    s.model.costPerTask === undefined ? "—" : `$${s.model.costPerTask.usd.toFixed(2)}`,
+  ]);
   const caption =
-    `> Composite-benchmark figures for every model in the dataset, snapshot ${ds.snapshotDate}. ` +
-    "Conflicted figures show their published LOW–HIGH range; the LOW enters the composite (DD-6). " +
-    "Derived from `models.ts`.";
-  return block(`${caption}\n\n${table}`);
+    `> Independent composite-benchmark results for every model, last updated ${ds.lastUpdated}. Index = ` +
+    "equal-weight mean of the scored benchmarks (at least two); tier = highest tier whose anchor's " +
+    "index the model's index matches or beats. Cost per task from Artificial Analysis.";
+  return block(caption, formatTable(["Model", "Vendor", ...BENCHMARK_HEADERS, "Index", "Tier", "Cost/task"], rows));
 }
 
 /**
@@ -195,11 +152,12 @@ function renderCapabilitySummary(ds: Dataset): string {
  * The keys MUST match the marker names written into the reference document.
  */
 export function renderTables(ds: Dataset): GeneratedTables {
+  const scored = scoreModels(ds);
   return {
-    roster: renderRoster(ds),
+    roster: renderRoster(ds, scored),
     pricing: renderPricing(ds),
-    frontier: renderFrontier(ds),
-    "capability-summary": renderCapabilitySummary(ds),
+    frontier: renderFrontier(ds, scored),
+    "capability-summary": renderCapabilitySummary(ds, scored),
   };
 }
 

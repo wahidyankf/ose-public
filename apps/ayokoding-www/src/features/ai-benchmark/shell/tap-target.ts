@@ -8,8 +8,8 @@
 // than their English counterparts, shrinking the gap further). Sizing the target directly, via one
 // shared class, is the durable fix.
 //
-// Every consumer applies this ONE class string rather than hand-declaring its own minimum height —
-// `evidence-badge.tsx`'s anchor, the integrity-note anchor in `model-figures.tsx`, and every
-// `<summary>` this plan introduces (`how-to-read.tsx` x3, `model-detail-disclosure.tsx` x1) — so a
-// future consumer inherits the guarantee for free instead of re-deriving its own minimum.
+// Every link on the page applies this ONE class string rather than hand-declaring its own minimum —
+// the methodology jump link, the table's score links, and the source links — so a future consumer
+// inherits the guarantee instead of re-deriving it. min-width has no effect on an inline box, so a
+// consumer also lays its link out as `inline-flex` (or `inline-block`).
 export const TAP_TARGET_MIN_CLASS = "min-h-6 min-w-6 py-1";

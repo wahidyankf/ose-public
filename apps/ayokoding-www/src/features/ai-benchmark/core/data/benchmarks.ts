@@ -1,33 +1,104 @@
-// AI BENCHMARK — benchmark display metadata (Phase 5).
+// AI BENCHMARK — scoring constants.
 //
-// The data table renders one column per composite benchmark, in a fixed order, with a localized
-// header label. This is the single place that maps a `BenchmarkId` to its i18n label key and
-// column order — the shell reads it verbatim, so reordering or renaming a column is a one-line
-// change here, not a table edit. No figures live here (FCIS boundary): only identifiers and the
-// i18n key that resolves to localized copy.
+// Everything the methodology section states (benchmarks, versions, weights, operator order,
+// minimum coverage, tier anchors) is read from here, so the page text and the scoring code cannot
+// drift apart. No figures live here.
 
-import type { BenchmarkId } from "./models";
+import type { AnchoredTier, BenchmarkId, HarnessId, OperatorId, Tier } from "./types";
 
-/** A benchmark column: its id and the i18n key for its localized header label. */
-export type BenchmarkColumn = {
+export type BenchmarkSpec = {
   id: BenchmarkId;
-  /** i18n key resolving to the localized column header (e.g. "SWE-bench Verified"). */
-  labelKey: string;
+  /** Proper-noun display name (not translated). */
+  name: string;
+  /** The only version whose figures enter the composite. */
+  version: string;
+  /** Relative weight in the composite. */
+  weight: number;
+  /** Operators tried in order when picking a model's figure for this benchmark. */
+  operatorOrder: readonly OperatorId[];
+  /** Benchmark home page. */
+  url: string;
 };
 
 /**
- * The four composite benchmarks in canonical column order, each mapped to its localized label key.
- * The data table renders exactly these columns (AC-20).
+ * The composite benchmarks, in column order. Equal weights: each is a different kind of coding
+ * work (long-horizon repository changes, terminal tasks, and codebase question answering).
  */
-export const BENCHMARK_COLUMNS: readonly BenchmarkColumn[] = [
-  { id: "swe-bench-verified", labelKey: "aiBenchBenchSweVerified" },
-  { id: "swe-bench-pro", labelKey: "aiBenchBenchSwePro" },
-  { id: "terminal-bench-2-1", labelKey: "aiBenchBenchTerminalBench" },
-  { id: "gpqa-diamond", labelKey: "aiBenchBenchGpqa" },
+export const BENCHMARK_SPECS: readonly BenchmarkSpec[] = [
+  {
+    id: "deep-swe",
+    name: "DeepSWE",
+    version: "1.1",
+    weight: 1,
+    operatorOrder: ["artificial-analysis", "datacurve"],
+    url: "https://deepswe.datacurve.ai/",
+  },
+  {
+    id: "terminal-bench",
+    name: "Terminal-Bench",
+    version: "4.0",
+    weight: 1,
+    operatorOrder: ["artificial-analysis", "terminal-bench", "vals"],
+    url: "https://www.tbench.ai/",
+  },
+  {
+    id: "swe-atlas-qna",
+    name: "SWE-Atlas",
+    version: "QnA",
+    weight: 1,
+    operatorOrder: ["artificial-analysis", "scale"],
+    url: "https://labs.scale.com/leaderboard/sweatlas-qna",
+  },
 ];
 
+/** Look up a benchmark's spec. Every `BenchmarkId` has exactly one entry above. */
+export function benchmarkSpec(id: BenchmarkId): BenchmarkSpec {
+  return BENCHMARK_SPECS.find((s) => s.id === id) as BenchmarkSpec;
+}
+
+/** A model needs independent scores on at least this many composite benchmarks to be tiered. */
+export const MIN_SCORED_BENCHMARKS = 2;
+
+/** The composite index is a mean of percentages, so it never exceeds this. */
+export const COMPOSITE_INDEX_MAX = 100;
+
+/**
+ * One previous-generation anchor per tier, highest tier first. A model belongs to the highest
+ * tier whose anchor's composite index it matches or beats.
+ */
+export const TIER_ANCHORS: Readonly<Record<AnchoredTier, string>> = {
+  ultra: "claude-opus-5",
+  planning: "gpt-5.6-sol",
+  execution: "gpt-5.6-terra",
+};
+
+/** Anchored tiers in the order they are tested. */
+export const ANCHORED_TIERS: readonly AnchoredTier[] = ["ultra", "planning", "execution"];
+
+/** Every tier in display order. */
+export const TIERS: readonly Tier[] = ["ultra", "planning", "execution", "fast", "insufficient"];
+
+/** Vendors treated as frontier labs; their models are the substitute finder's targets. */
+export const FRONTIER_VENDORS: readonly string[] = ["Anthropic", "OpenAI", "Google", "xAI"];
+
+/** The harness whose models the substitute finder suggests. */
+export const SUBSTITUTE_HARNESS: HarnessId = "opencode-go";
+
+/** How many nearest options the finder shows when no substitute reaches the target's tier. */
+export const NEAREST_OPTION_COUNT = 3;
+
+/**
+ * Models the methodology's worked example uses: one model's index arithmetic, and one model compared
+ * with a tier anchor.
+ */
+export const METHOD_EXAMPLE = {
+  indexModel: "glm-5.3",
+  compareModel: "kimi-k3",
+  compareTier: "execution",
+} as const satisfies { indexModel: string; compareModel: string; compareTier: AnchoredTier };
+
 /** Display names for the five harnesses — proper nouns, not translated. */
-export const HARNESS_DISPLAY_NAMES: Readonly<Record<string, string>> = {
+export const HARNESS_DISPLAY_NAMES: Readonly<Record<HarnessId, string>> = {
   "claude-code": "Claude Code",
   "codex-cli": "Codex CLI",
   cursor: "Cursor",
@@ -35,19 +106,6 @@ export const HARNESS_DISPLAY_NAMES: Readonly<Record<string, string>> = {
   "opencode-zen": "OpenCode Zen",
 };
 
-/** i18n label keys for the four capability bands. */
-export const BAND_LABEL_KEYS: Readonly<Record<string, string>> = {
-  opus: "aiBenchBandOpus",
-  sonnet: "aiBenchBandSonnet",
-  haiku: "aiBenchBandHaiku",
-  unrated: "aiBenchBandUnrated",
-};
-
-/** i18n label keys for the five evidence grades. */
-export const GRADE_LABEL_KEYS: Readonly<Record<string, string>> = {
-  verified: "aiBenchGradeVerified",
-  "self-reported": "aiBenchGradeSelfReported",
-  secondary: "aiBenchGradeSecondary",
-  conflicted: "aiBenchGradeConflicted",
-  unavailable: "aiBenchGradeUnavailable",
-};
+/** Blended price weighting: three input tokens for every output token. */
+export const BLEND_INPUT_SHARE = 3;
+export const BLEND_OUTPUT_SHARE = 1;

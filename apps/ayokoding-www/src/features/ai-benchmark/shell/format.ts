@@ -1,77 +1,92 @@
-// AI BENCHMARK — presentation formatting helpers (Phase 5).
-//
-// Pure presenters that turn a dataset number into a localized display string. They contain NO
-// literal figures (FCIS boundary): every value they render is passed in from the dataset. The
-// `%`, `$`, and token-unit symbols are formatting, not data.
+// AI BENCHMARK — presentation formatting. Pure presenters: every value comes from the dataset or
+// the core; the `%`, `$`, and `×` symbols are formatting, not data.
 
+import { t } from "@/features/i18n/core/translations";
 import type { Locale } from "@/features/i18n/core/config";
 
-function localeTagOf(locale: Locale): string {
+function localeTag(locale: Locale): string {
   return locale === "id" ? "id-ID" : "en-US";
 }
 
-/**
- * Formatter instances are cached per (formatter kind, locale) — only two locales exist, so each
- * cache holds at most two entries. Constructing an `Intl.NumberFormat` is expensive relative to
- * reusing one (~100x measured on this dataset's render volume: up to ~600 formatted cells per
- * page view — 38 roster models × several numeric columns × both the desktop and mobile DOM
- * representations rendered simultaneously). This matches MDN's own guidance to cache `Intl`
- * instances when formatting many values, rather than constructing one per call.
- */
-function memoizedNumberFormatter(
-  cache: Map<string, Intl.NumberFormat>,
-  localeTag: string,
-  options: Intl.NumberFormatOptions,
-): Intl.NumberFormat {
-  const cached = cache.get(localeTag);
-  if (cached) return cached;
-  const formatter = new Intl.NumberFormat(localeTag, options);
-  cache.set(localeTag, formatter);
-  return formatter;
+// Two locales only, so each cache holds at most two formatters; constructing `Intl` formatters is
+// far costlier than reusing them across the few hundred cells a page renders.
+const cache = new Map<string, Intl.NumberFormat>();
+
+function numberFormat(locale: Locale, kind: string, options: Intl.NumberFormatOptions): Intl.NumberFormat {
+  const key = `${kind}:${locale}`;
+  let f = cache.get(key);
+  if (f === undefined) {
+    f = new Intl.NumberFormat(localeTag(locale), options);
+    cache.set(key, f);
+  }
+  return f;
 }
 
-const percentFormatters = new Map<string, Intl.NumberFormat>();
-const priceUsdFormatters = new Map<string, Intl.NumberFormat>();
-const coverageFormatters = new Map<string, Intl.NumberFormat>();
-const indexFormatters = new Map<string, Intl.NumberFormat>();
+/** A composite index, one decimal. */
+export function formatIndex(value: number, locale: Locale): string {
+  return numberFormat(locale, "index", { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value);
+}
 
-/** Format a 0–100 benchmark score as a locale-aware percentage with one decimal. */
+/** A 0–100 benchmark score, one decimal, with a literal percent sign (no Intl double-scaling). */
 export function formatPercent(value: number, locale: Locale): string {
-  // Values are stored on a 0–100 scale and rendered with a literal percent sign and one decimal
-  // place, so screen readers announce "percent". Intl 'percent' style would double-scale.
-  const localeTag = localeTagOf(locale);
-  const formatter = memoizedNumberFormatter(percentFormatters, localeTag, {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1,
-  });
-  return `${formatter.format(value)}%`;
+  return `${formatIndex(value, locale)}%`;
 }
 
-/** Format a USD per-1M-tokens price as a localized currency string. */
-export function formatPriceUsd(value: number, locale: Locale): string {
-  const localeTag = localeTagOf(locale);
-  const formatter = memoizedNumberFormatter(priceUsdFormatters, localeTag, {
+/** USD, two to three decimals so sub-cent rates such as $0.435 stay exact. */
+export function formatUsd(value: number, locale: Locale): string {
+  return numberFormat(locale, "usd", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-  return formatter.format(value);
+    maximumFractionDigits: 3,
+  }).format(value);
 }
 
-/** Format a coverage ratio (0–1) as a locale-aware percentage with no decimals. */
-export function formatCoverage(ratio: number, locale: Locale): string {
-  const localeTag = localeTagOf(locale);
-  const formatter = memoizedNumberFormatter(coverageFormatters, localeTag, { maximumFractionDigits: 0 });
-  return `${formatter.format(ratio * 100)}%`;
+/** A price multiple: one decimal below 10, whole numbers above. */
+export function formatRatio(value: number, locale: Locale): string {
+  const digits = value < 10 ? 1 : 0;
+  return numberFormat(locale, `ratio${digits}`, { maximumFractionDigits: digits }).format(value);
 }
 
-/** Format a composite index (0–100 scale) with one decimal. */
-export function formatIndex(value: number, locale: Locale): string {
-  const localeTag = localeTagOf(locale);
-  const formatter = memoizedNumberFormatter(indexFormatters, localeTag, {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1,
-  });
-  return formatter.format(value);
+/**
+ * An ISO date as a long, localized date. Pinned to UTC: the ISO date parses as UTC midnight, so
+ * any other zone would show the previous day west of Greenwich and break hydration.
+ */
+export function formatDate(iso: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(localeTag(locale), {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(iso));
+}
+
+/** Fill `{name}` placeholders in a translated template. Unknown placeholders are left as-is. */
+export function fill(template: string, values: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (match, name: string) => (name in values ? String(values[name]) : match));
+}
+
+/** Translate `key` and fill its placeholders. */
+export function tf(locale: Locale, key: string, values: Record<string, string | number>): string {
+  return fill(t(locale, key), values);
+}
+
+/** Ratios within this band of 1 read as "about the same price". */
+const SAME_PRICE_BAND = 0.05;
+
+/** Is a candidate clearly cheaper than its reference (outside the "about the same" band)? */
+export function isCheaper(ratio: number | undefined): boolean {
+  return ratio !== undefined && ratio < 1 - SAME_PRICE_BAND;
+}
+
+/**
+ * How a candidate's price compares with a reference's, given `ratio` = candidate ÷ reference
+ * (from `core/price.ts`'s `priceRatio`).
+ */
+export function priceComparison(ratio: number | undefined, locale: Locale): string {
+  if (ratio === undefined || ratio === 0) return t(locale, "aiBenchPriceUnknown");
+  if (Math.abs(ratio - 1) <= SAME_PRICE_BAND) return t(locale, "aiBenchPriceSame");
+  return ratio < 1
+    ? tf(locale, "aiBenchPriceCheaper", { ratio: formatRatio(1 / ratio, locale) })
+    : tf(locale, "aiBenchPricePricier", { ratio: formatRatio(ratio, locale) });
 }

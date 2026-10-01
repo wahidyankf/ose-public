@@ -1,171 +1,50 @@
-// AI BENCHMARK — pure scoring core (Phase 4, steps C-1..C-11).
+// AI BENCHMARK — composite index.
 //
-// Implements the composite-capability index from
-// `plans/done/2026-07-30__ayokoding-www-tools-ai-benchmark/tech-docs.md` §"Scoring pipeline" and
-// §"DD-5a" / §"DD-6". No React, no router, no side effects — every function is pure over the
-// dataset, mirroring `src/features/cost-of-living-calculator/core/`.
+//   scoreOver(m, B)   = Σ weight(b) × value(m, b) ÷ Σ weight(b), over b ∈ B — raw percentages, no
+//                       roster normalization, so a model's score never moves when others are added
+//   compositeIndex(m) = scoreOver(m, every benchmark m has a scored figure for), defined only when
+//                       that is at least MIN_SCORED_BENCHMARKS benchmarks
 //
-// Arithmetic:
-//   rosterMax(b) = max over all INCLUDED models m of score(m, b)
-//   rel(m, b)    = 100 × score(m, b) / rosterMax(b)            — undefined when m has no included figure
-//   W(m)         = Σ weight(b) for b ∈ present(m)
-//   index(m)     = Σ weight(b) × rel(m, b) / W(m)              — undefined when W(m) = 0
-//   coverage(m)  = W(m) / 100
-//
-// "Included" excludes the version-trap figures (Terminal-Bench 2.0 in a 2.1 slot, SWE-bench
-// Multilingual in a Verified slot) — they count as absent. For a CONFLICTED figure the LOW
-// published value enters the composite (the dataset already stores `value === low`).
+// A figure is scored only when it is on the benchmark's pinned version.
 
-import {
-  BENCHMARK_WEIGHTS,
-  isConflictedFigure,
-  type BenchmarkId,
-  type Dataset,
-  type Figure,
-  type Model,
-} from "./data/models";
+import { BENCHMARK_SPECS, MIN_SCORED_BENCHMARKS, benchmarkSpec } from "./data/benchmarks";
+import type { BenchmarkId, Figure, Model } from "./data/types";
 
-/** A roster-max value per benchmark; `undefined` when no included figure exists for it. */
-export type RosterMaxes = Record<BenchmarkId, number | undefined>;
+/** Is this figure on the pinned version of its benchmark? */
+export function isScoredFigure(f: Figure): boolean {
+  return f.version === benchmarkSpec(f.benchmark).version;
+}
 
-/** Coverage ratio below which a rated model is marked low-coverage (DD-6). */
-export const LOW_COVERAGE_THRESHOLD = 0.5;
+/** The model's scored figure for a benchmark, if it has one. */
+export function scoredFigure(model: Model, benchmark: BenchmarkId): Figure | undefined {
+  return model.figures.find((f) => f.benchmark === benchmark && isScoredFigure(f));
+}
 
-/**
- * The composite index's fixed scale ceiling (Phase 6). `computeIndex` is a weight-renormalized
- * mean of `rel` values that are each themselves bounded to `[0, 100]` (the roster-max holder for
- * a benchmark always scores exactly 100 on that benchmark), so the composite index can never
- * exceed 100. The capability chart's axis reads this constant rather than hardcoding `100` in a
- * `shell/` file (the FCIS boundary forbids a literal threshold there).
- */
-export const COMPOSITE_INDEX_MAX = 100;
-
-/**
- * May a figure enter the composite? This is the defensive mirror of dataset invariant 9: a
- * Terminal-Bench 2.0 figure must never enter a `terminal-bench-2-1` slot, and a SWE-bench
- * Multilingual figure must never enter a `swe-bench-verified` slot. Such figures are recorded
- * in the dataset for honesty but EXCLUDED from the composite (they count as absent).
- *
- * The dataset is curated clean, so this guard is a safety net: if a wrongly-versioned figure
- * ever lands, it is scored as absent rather than silently corrupting the index.
- */
-export function isIncludedFigure(f: Figure): boolean {
-  const trail = `${f.benchmarkVersion ?? ""} ${f.conditions ?? ""}`.toLowerCase();
-  if (f.benchmark === "terminal-bench-2-1" && trail.includes("2.0")) {
-    return false;
-  }
-  if (f.benchmark === "swe-bench-verified" && trail.includes("multilingual")) {
-    return false;
-  }
-  return true;
+/** The benchmarks the model has a scored figure for, in column order. */
+export function scoredBenchmarks(model: Model): BenchmarkId[] {
+  return BENCHMARK_SPECS.filter((s) => scoredFigure(model, s.id) !== undefined).map((s) => s.id);
 }
 
 /**
- * The roster-max for a benchmark: the highest INCLUDED figure value across the roster. For a
- * conflicted figure the LOW published value is the composite input (the dataset stores
- * `value === low`), so the low is what is compared here. Returns `undefined` when no included
- * figure exists for the benchmark.
+ * The weighted mean of the model's scored figures over exactly `benchmarks`. Undefined when the
+ * list is empty or the model lacks a scored figure for any of them.
  */
-export function rosterMax(dataset: Dataset, benchmark: BenchmarkId): number | undefined {
-  let max: number | undefined;
-  for (const m of dataset.models) {
-    for (const f of m.figures) {
-      if (f.benchmark !== benchmark) continue;
-      if (!isIncludedFigure(f)) continue;
-      // `value` is the composite input — for a conflicted figure it is already the low end.
-      const v = f.value;
-      if (max === undefined || v > max) {
-        max = v;
-      }
-    }
-  }
-  return max;
-}
-
-/**
- * The per-benchmark roster-max map for the whole roster. Convenience over calling
- * {@link rosterMax} once per benchmark.
- */
-export function computeRosterMaxes(dataset: Dataset): RosterMaxes {
-  const out = {} as RosterMaxes;
-  for (const b of Object.keys(BENCHMARK_WEIGHTS) as BenchmarkId[]) {
-    out[b] = rosterMax(dataset, b);
-  }
-  return out;
-}
-
-/**
- * Relative normalized score: `100 × score(m, b) / rosterMax`. The roster-max holder scores
- * exactly 100. Returns `undefined` when the model has no included figure for the benchmark
- * (absent — never imputed, never zero).
- */
-export function rel(model: Model, benchmark: BenchmarkId, max: number): number | undefined {
-  const f = model.figures.find((fig) => fig.benchmark === benchmark && isIncludedFigure(fig));
-  if (f === undefined) {
-    return undefined;
-  }
-  return (100 * f.value) / max;
-}
-
-/**
- * Σ weight(b) over the benchmarks the model has an included figure for (DD-6 `W(m)`). Shared by
- * {@link computeIndex} (as its denominator) and {@link coverage} (as `W(m) / 100`) so the two
- * never disagree on what "present" means (C-11 refactor).
- */
-function presentWeight(model: Model): number {
-  let w = 0;
-  for (const f of model.figures) {
-    if (!isIncludedFigure(f)) continue;
-    w += BENCHMARK_WEIGHTS[f.benchmark];
-  }
-  return w;
-}
-
-/**
- * The composite index: the weight-renormalized mean of the present normalized scores
- * (`Σ weight × rel ÷ W`). Returns `undefined` when `W = 0` (no included figure on any composite
- * benchmark) — never `0`, never `NaN`. The model is then unrated.
- *
- * A present benchmark always has a roster max (the model's own figure contributes to it), so the
- * `max === undefined` guard is unreachable for valid data; it keeps the function total.
- */
-export function computeIndex(model: Model, rosterMaxes: RosterMaxes): number | undefined {
-  const w = presentWeight(model);
-  if (w === 0) {
-    return undefined;
-  }
+export function scoreOver(model: Model, benchmarks: readonly BenchmarkId[]): number | undefined {
+  if (benchmarks.length === 0) return undefined;
   let weighted = 0;
-  for (const f of model.figures) {
-    if (!isIncludedFigure(f)) continue;
-    const max = rosterMaxes[f.benchmark];
-    if (max === undefined || max <= 0) {
-      continue;
-    }
-    weighted += BENCHMARK_WEIGHTS[f.benchmark] * ((100 * f.value) / max);
+  let totalWeight = 0;
+  for (const b of benchmarks) {
+    const f = scoredFigure(model, b);
+    if (f === undefined) return undefined;
+    const w = benchmarkSpec(b).weight;
+    weighted += w * f.value;
+    totalWeight += w;
   }
-  return weighted / w;
+  return weighted / totalWeight;
 }
 
-/**
- * Coverage ratio: `W(m) / 100` — the fraction of the composite weight the model covers. `0`
- * means the model has no included figure on any composite benchmark (unrated).
- */
-export function coverage(model: Model): number {
-  return presentWeight(model) / 100;
+/** The model's composite index, or undefined when it has too few scored benchmarks. */
+export function compositeIndex(model: Model): number | undefined {
+  const present = scoredBenchmarks(model);
+  return present.length < MIN_SCORED_BENCHMARKS ? undefined : scoreOver(model, present);
 }
-
-/**
- * True for a RATED model whose coverage is below {@link LOW_COVERAGE_THRESHOLD}. An unrated
- * (zero-coverage) model is its own state and is NOT low-coverage — the marker describes "this
- * index exists but rests on sparse data", which an absent index cannot (scoring-pipeline
- * branches Y and K).
- */
-export function isLowCoverage(model: Model): boolean {
-  const c = coverage(model);
-  return c > 0 && c < LOW_COVERAGE_THRESHOLD;
-}
-
-// Re-export the conflicted-figure guard for callers that compose this core (e.g. the data table
-// rendering a range instead of a single number). Kept here so the scoring core is the one place
-// that knows a conflicted figure carries a range.
-export { isConflictedFigure };
